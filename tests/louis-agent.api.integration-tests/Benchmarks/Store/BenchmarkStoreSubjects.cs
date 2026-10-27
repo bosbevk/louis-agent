@@ -19,7 +19,9 @@ public class MongoBenchmarkStoreTests : BenchmarkStoreContract
 
     /// <summary>The test database's name, from the environment or a default.</summary>
     private static string Database =>
-        Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_DATABASE") is { Length: > 0 } name ? name : "puls_benchmarks_test";
+        Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_DATABASE") is { Length: > 0 } name
+            ? name
+            : "puls_benchmarks_test";
 
     /// <summary>Skips when there's no Mongo to test against, and fails on CI.</summary>
     [OneTimeSetUp]

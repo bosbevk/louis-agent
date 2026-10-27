@@ -15,28 +15,33 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class RescoreEndpoints
 {
-    public static void MapRescore(this RouteGroupBuilder admin, BenchmarkCatalog catalog, BenchmarkRunner runner, IBenchmarkStore? store, BenchmarkRecorder? recorder,
+    public static void MapRescore(this RouteGroupBuilder admin, BenchmarkCatalog catalog, BenchmarkRunner runner,
+        IBenchmarkStore? store, BenchmarkRecorder? recorder,
         Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf)
     {
-        admin.MapPost("/benchmarks/runs/{id}/rescore", (string id, CancellationToken cancellationToken) => AdminEndpoints.FromStore(store, async s =>
-        {
-            if (recorder is null)
-                return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", MessageText.Format(ApiUserText.NoBenchmarkStore));
-            if (await s.GetRunAsync(id, cancellationToken) is not { } stored)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
-            if (catalog.Checks.FirstOrDefault(c => c.Id == stored.Check) is not { } check)
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
-                    MessageText.Format(ApiUserText.RescoreNeedsEval, new { Id = id, Check = stored.Check }));
-            if (runner.IsRunning)
-                return Busy(runner);
+        admin.MapPost("/benchmarks/runs/{id}/rescore", (string id, CancellationToken cancellationToken) =>
+            AdminEndpoints.FromStore(store, async s =>
+            {
+                if (recorder is null)
+                    return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
+                        MessageText.Format(ApiUserText.NoBenchmarkStore));
+                if (await s.GetRunAsync(id, cancellationToken) is not { } stored)
+                    return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
+                        MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
+                if (catalog.Checks.FirstOrDefault(c => c.Id == stored.Check) is not { } check)
+                    return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
+                        MessageText.Format(ApiUserText.RescoreNeedsEval, new { Id = id, Check = stored.Check }));
+                if (runner.IsRunning)
+                    return Busy(runner);
 
-            string export = await BenchmarkProtocolExport.BuildAsync(s, stored, cancellationToken);
-            if (runner.StartRescore(check.Id, id, export, stored.Repeat) is not { } run) return Busy(runner);
-            recorder.Attach(run, settingsOf(check));
-            return Results.Created($"/v1/admin/benchmarks/runs/{run.Id}", Row(run));
-        }));
+                string export = await BenchmarkProtocolExport.BuildAsync(s, stored, cancellationToken);
+                if (runner.StartRescore(check.Id, id, export, stored.Repeat) is not { } run) return Busy(runner);
+                recorder.Attach(run, settingsOf(check));
+                return Results.Created($"/v1/admin/benchmarks/runs/{run.Id}", Row(run));
+            }));
     }
 
     private static IResult Busy(BenchmarkRunner runner) =>
-        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
+        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
+            MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
 }

@@ -7,5 +7,13 @@ public sealed record TotalSummary(decimal? Cost, int Requests);
 /// One stored run in the Benchmarks page's list (<c>GET /v1/admin/benchmarks</c>, <c>runs[]</c>). <see cref="RescoreOf"/> (F18 step 5b.2) is the run it
 /// re-scored, null for a run that asked the model.
 /// </summary>
-public sealed record RunSummary(string Id, string Check, int Repeat, string Status, DateTimeOffset StartedAt, TotalSummary? Total, string? StoreError,
-    IReadOnlyList<string>? Models = null, string? RescoreOf = null);
+public sealed record RunSummary(
+    string Id,
+    string Check,
+    int Repeat,
+    string Status,
+    DateTimeOffset StartedAt,
+    TotalSummary? Total,
+    string? StoreError,
+    IReadOnlyList<string>? Models = null,
+    string? RescoreOf = null);

@@ -14,10 +14,12 @@ public enum EvalLogMessage
     [Description("Could not close session '{Session}', so the run goes on: {Reason}.")]
     CloseFailed,
 
-    [Description("Grader '{Grader}' of eval '{Eval}' threw on scenario '{Scenario}', so its grade is Unknown and the run goes on: {Reason}.")]
+    [Description(
+        "Grader '{Grader}' of eval '{Eval}' threw on scenario '{Scenario}', so its grade is Unknown and the run goes on: {Reason}.")]
     GraderThrew,
 
-    [Description("Could not open the session for '{Scenario}' ({Failure}), so every turn of it is recorded as failed: {Reason}.")]
+    [Description(
+        "Could not open the session for '{Scenario}' ({Failure}), so every turn of it is recorded as failed: {Reason}.")]
     OpenFailed,
 
     [Description("Turn {Turn} of '{Scenario}' failed ({Failure}), recorded, and the run goes on: {Reason}.")]

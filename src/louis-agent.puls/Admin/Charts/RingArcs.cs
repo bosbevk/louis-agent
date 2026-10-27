@@ -28,6 +28,7 @@ public static class RingArcs
             arcs.Add(new RingArc(i, length, offset));
             offset -= length;
         }
+
         return arcs;
     }
 }

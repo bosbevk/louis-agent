@@ -37,8 +37,11 @@ public class ConversationListTests
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        if (reviewer is not null) ctx.JSInterop.Setup<string?>("localStorage.getItem", ReviewerState.StorageKey).SetResult(reviewer);
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        if (reviewer is not null)
+            ctx.JSInterop.Setup<string?>("localStorage.getItem", ReviewerState.StorageKey).SetResult(reviewer);
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(_ => new HttpResponseMessage()))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         var state = new ReviewerState(ctx.JSInterop.JSRuntime);
         ctx.Services.AddSingleton(state);
         var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(Run).RootElement.Clone()));
@@ -48,14 +51,17 @@ public class ConversationListTests
     }
 
     private static Dictionary<string, string> Pills(IRenderedComponent<RunExplorer> cut) =>
-        cut.FindAll(".conv-card").ToDictionary(card => card.QuerySelector("code")!.TextContent, card => card.QuerySelector(".review-pill")!.TextContent);
+        cut.FindAll(".conv-card").ToDictionary(card => card.QuerySelector("code")!.TextContent,
+            card => card.QuerySelector(".review-pill")!.TextContent);
 
     [Test]
     public void EachConversationIsACard_WithAReviewPill_ThatSaysWhetherThisReviewerStillHasToGradeIt()
     {
         var (cut, _) = Render("Louis");
 
-        Assert.That(Pills(cut), Is.EqualTo(new Dictionary<string, string> { ["bobotie"] = "to review", ["curry"] = "reviewed ✓", ["control"] = "no review" }));
+        Assert.That(Pills(cut),
+            Is.EqualTo(new Dictionary<string, string>
+            { ["bobotie"] = "to review", ["curry"] = "reviewed ✓", ["control"] = "no review" }));
         Assert.That(cut.Find(".conv-card[data-review=to-review] code").TextContent, Is.EqualTo("bobotie"));
     }
 
@@ -65,7 +71,8 @@ public class ConversationListTests
         var (cut, _) = Render("Louis");
 
         cut.Find(".conv-filter [data-filter=to-review]").Click();
-        Assert.That(cut.FindAll(".conv-card").Select(c => c.QuerySelector("code")!.TextContent), Is.EqualTo(new[] { "bobotie" }));
+        Assert.That(cut.FindAll(".conv-card").Select(c => c.QuerySelector("code")!.TextContent),
+            Is.EqualTo(new[] { "bobotie" }));
 
         cut.Find(".conv-filter [data-filter=all]").Click();
         Assert.That(cut.FindAll(".conv-card"), Has.Count.EqualTo(3));
@@ -83,5 +90,6 @@ public class ConversationListTests
 
     [Test]
     public void TheCostStrip_ShowsOnlyWhenTheRunCostSomething() =>
-        Assert.That(Render("Louis").Cut.FindAll(".conv-strip"), Is.Empty, "a re-score: R0 everywhere, so no empty bars");
+        Assert.That(Render("Louis").Cut.FindAll(".conv-strip"), Is.Empty,
+            "a re-score: R0 everywhere, so no empty bars");
 }

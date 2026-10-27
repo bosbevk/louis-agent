@@ -15,12 +15,15 @@ public class UsageRecordingChatClientCacheHitTests
     {
         private AdditionalPropertiesDictionary? Tag => tagged ? new() { ["replay_hit"] = true } : null;
 
-        public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default) =>
-            Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi")) { Usage = Recorded, ModelId = "m1", AdditionalProperties = Tag });
+        public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
+            CancellationToken cancellationToken = default) =>
+            Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi"))
+            { Usage = Recorded, ModelId = "m1", AdditionalProperties = Tag });
 
         public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
             IEnumerable<ChatMessage> messages, ChatOptions? options = null,
-            [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+            [System.Runtime.CompilerServices.EnumeratorCancellation]
+            CancellationToken cancellationToken = default)
         {
             yield return new ChatResponseUpdate(ChatRole.Assistant, "hi") { ModelId = "m1" };
             yield return new ChatResponseUpdate { AdditionalProperties = Tag, FinishReason = ChatFinishReason.Stop };
@@ -28,15 +31,22 @@ public class UsageRecordingChatClientCacheHitTests
         }
 
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
-        public void Dispose() { }
+
+        public void Dispose()
+        {
+        }
     }
 
     private static async Task<UsageRecord> Run(bool tagged, bool streamed)
     {
         var sink = new ListUsageSink();
         using var client = new UsageRecordingChatClient(new TaggedClient(tagged), sink);
-        if (streamed) await foreach (var _ in client.GetStreamingResponseAsync("hello")) { }
+        if (streamed)
+            await foreach (var _ in client.GetStreamingResponseAsync("hello"))
+            {
+            }
         else await client.GetResponseAsync("hello");
+
         return sink.Records.Single();
     }
 

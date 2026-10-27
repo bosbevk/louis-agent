@@ -20,7 +20,8 @@ public class BenchmarkProtocolExportTests
     private const string AdminKey = "admin-secret";
 
     private static string[] StubLines() =>
-        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt")).Where(l => l.StartsWith('@')).ToArray();
+        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt"))
+            .Where(l => l.StartsWith('@')).ToArray();
 
     private static async Task<InMemoryBenchmarkStore> Recorded(IEnumerable<string> lines)
     {
@@ -64,8 +65,20 @@ public class BenchmarkProtocolExportTests
         string At(object e) => "@" + JsonSerializer.Serialize(e);
         var lines = new[]
         {
-            At(new { @event = "protocol", version = 1, eval = SampleEval.Beta, eval_version = 9, commit = "abc", graders = new object[] { new { name = "meal-for-people.human", version = 1, kind = "Human", question = "Is this a meal?" } }, models = Array.Empty<object>() }),
-            At(new { @event = "mode", mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+            At(new
+            {
+                @event = "protocol", version = 1, eval = SampleEval.Beta, eval_version = 9, commit = "abc",
+                graders = new object[]
+                {
+                    new { name = "meal-for-people.human", version = 1, kind = "Human", question = "Is this a meal?" }
+                },
+                models = Array.Empty<object>()
+            }),
+            At(new
+            {
+                @event = "mode", mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha },
+                role = (string?)null, llm = (string?)null, conversations = 0
+            }),
             At(new { @event = "mode_done", mode = SampleMode.Beta, repeat = 1 }),
         };
         var store = await Recorded(lines);
@@ -82,8 +95,16 @@ public class BenchmarkProtocolExportTests
         string At(object e) => "@" + JsonSerializer.Serialize(e);
         var lines = new[]
         {
-            At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 3, commit = "abc123", split = "held_out", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-            At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+            At(new
+            {
+                @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 3,
+                commit = "abc123", split = "held_out", graders = Array.Empty<object>(), models = Array.Empty<object>()
+            }),
+            At(new
+            {
+                @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1,
+                toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0
+            }),
             At(new { @event = "mode_done", t = 1700000005.0, mode = SampleMode.Beta, repeat = 1 }),
         };
         var store = await Recorded(lines);
@@ -103,23 +124,47 @@ public class BenchmarkProtocolExportTests
         {
             At(new
             {
-                @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 2, commit = "abc123",
+                @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 2,
+                commit = "abc123",
                 graders = new[] { new { name = "cook-no-error", version = 1, kind = "FixedRule" } },
-                models = new[] { new { mode = SampleMode.Beta, level = "Agent", role = "puls/voice-af", model = "claude-haiku-5-5" } },
+                models = new[]
+                {
+                    new { mode = SampleMode.Beta, level = "Agent", role = "puls/voice-af", model = "claude-haiku-5-5" }
+                },
             }),
-            At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
-            At(new { @event = "question", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
-            At(new { @event = "sse", t = 1700000002.25, mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, type = "content_block_delta", data = new { delta = new { text = "Hé" } } }),
             At(new
             {
-                @event = "turn", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie",
-                answer = "Hé", role = SampleRole.Alpha, continued = (string?)null, puls_calls = 1, specialist_calls = 6, hosts = new[] { "www.checkers.co.za" },
+                @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1,
+                toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha }, role = "puls/voice-af",
+                llm = (string?)null, conversations = 1
+            }),
+            At(new
+            {
+                @event = "question", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1,
+                session = "sess_1", text = "Maak bobotie"
+            }),
+            At(new
+            {
+                @event = "sse", t = 1700000002.25, mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1,
+                type = "content_block_delta", data = new { delta = new { text = "Hé" } }
+            }),
+            At(new
+            {
+                @event = "turn", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1,
+                session = "sess_1", question = "Maak bobotie",
+                answer = "Hé", role = SampleRole.Alpha, continued = (string?)null, puls_calls = 1, specialist_calls = 6,
+                hosts = new[] { "www.checkers.co.za" },
                 seconds = 30.5, error = (string?)null,
             }),
             At(new
             {
-                @event = "conversation", t = 1700000004.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie", role = SampleRole.Alpha, scores = new { routed_right = true },
-                errors = 0, seconds = 30.5, grades = new[] { new { grader = "cook-no-error", version = 1, score = 1.0, outcome = "Pass", reason = "no error" } },
+                @event = "conversation", t = 1700000004.0, mode = SampleMode.Beta, repeat = 1, task = "bobotie",
+                role = SampleRole.Alpha, scores = new { routed_right = true },
+                errors = 0, seconds = 30.5,
+                grades = new[]
+                {
+                    new { grader = "cook-no-error", version = 1, score = 1.0, outcome = "Pass", reason = "no error" }
+                },
                 outcome = "Pass",
             }),
             At(new { @event = "mode_done", t = 1700000005.0, mode = SampleMode.Beta, repeat = 1 }),
@@ -140,19 +185,44 @@ public class BenchmarkProtocolExportTests
         var lines = new[]
         {
             At(new { @event = "protocol", version = 1 }),
-            At(new { @event = "mode", mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
-            At(new { @event = "question", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
-            At(new { @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie", answer = "", role = (string?)null, seconds = 3.0 }),
-            At(new { @event = "conversation", mode = SampleMode.Beta, repeat = 1, task = "bobotie", role = (string?)null, scores = new { }, errors = 0, seconds = 3.0,
-                grades = new[] { new { grader = "meal-for-people", version = 1, score = 1.0, outcome = "Pass", reason = "feeds four", judge_model = "qwen3:8b", judge_prompt_hash = "abc123def456" } } }),
+            At(new
+            {
+                @event = "mode", mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha },
+                role = "puls/voice-af", llm = (string?)null, conversations = 1
+            }),
+            At(new
+            {
+                @event = "question", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1",
+                text = "Maak bobotie"
+            }),
+            At(new
+            {
+                @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1",
+                question = "Maak bobotie", answer = "", role = (string?)null, seconds = 3.0
+            }),
+            At(new
+            {
+                @event = "conversation", mode = SampleMode.Beta, repeat = 1, task = "bobotie", role = (string?)null,
+                scores = new { }, errors = 0, seconds = 3.0,
+                grades = new[]
+                {
+                    new
+                    {
+                        grader = "meal-for-people", version = 1, score = 1.0, outcome = "Pass", reason = "feeds four",
+                        judge_model = "qwen3:8b", judge_prompt_hash = "abc123def456"
+                    }
+                }
+            }),
             At(new { @event = "mode_done", mode = SampleMode.Beta, repeat = 1 }),
         };
         var store = await Recorded(lines);
 
         string text = await Export(store);
 
-        var conversation = (ConversationEnded)Parse(text.Split((char)10, StringSplitOptions.RemoveEmptyEntries).Single(l => l.Contains("\"event\":\"conversation\"")));
-        Assert.That((conversation.Grades!.Single().JudgeModel, conversation.Grades!.Single().JudgePromptHash), Is.EqualTo(("qwen3:8b", "abc123def456")));
+        var conversation = (ConversationEnded)Parse(text.Split((char)10, StringSplitOptions.RemoveEmptyEntries)
+            .Single(l => l.Contains("\"event\":\"conversation\"")));
+        Assert.That((conversation.Grades!.Single().JudgeModel, conversation.Grades!.Single().JudgePromptHash),
+            Is.EqualTo(("qwen3:8b", "abc123def456")));
     }
 
     [Test]
@@ -162,11 +232,27 @@ public class BenchmarkProtocolExportTests
         var lines = new[]
         {
             At(new { @event = "protocol", version = 1 }),
-            At(new { @event = "mode", mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
-            At(new { @event = "question", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
-            At(new { @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie", answer = "", role = (string?)null,
-                seconds = 600.0, failure = "replay_miss" }),
-            At(new { @event = "conversation", mode = SampleMode.Beta, repeat = 1, task = "bobotie", role = (string?)null, scores = new { }, errors = 0, seconds = 600.0 }),
+            At(new
+            {
+                @event = "mode", mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha },
+                role = "puls/voice-af", llm = (string?)null, conversations = 1
+            }),
+            At(new
+            {
+                @event = "question", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1",
+                text = "Maak bobotie"
+            }),
+            At(new
+            {
+                @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_1",
+                question = "Maak bobotie", answer = "", role = (string?)null,
+                seconds = 600.0, failure = "replay_miss"
+            }),
+            At(new
+            {
+                @event = "conversation", mode = SampleMode.Beta, repeat = 1, task = "bobotie", role = (string?)null,
+                scores = new { }, errors = 0, seconds = 600.0
+            }),
             At(new { @event = "mode_done", mode = SampleMode.Beta, repeat = 1 }),
         };
         var store = await Recorded(lines);
@@ -187,8 +273,10 @@ public class BenchmarkProtocolExportTests
         var lines = (await Export(store)).Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
         Assert.That(lines, Has.All.StartsWith("@{"));
-        Assert.That(lines.Select(l => JsonDocument.Parse(l[1..]).RootElement.GetProperty("event").GetString()).First(), Is.EqualTo("protocol"));
-        Assert.That(lines.Select(l => JsonDocument.Parse(l[1..]).RootElement.GetProperty("event").GetString()).Last(), Is.EqualTo("mode_done"));
+        Assert.That(lines.Select(l => JsonDocument.Parse(l[1..]).RootElement.GetProperty("event").GetString()).First(),
+            Is.EqualTo("protocol"));
+        Assert.That(lines.Select(l => JsonDocument.Parse(l[1..]).RootElement.GetProperty("event").GetString()).Last(),
+            Is.EqualTo("mode_done"));
     }
 
     [Test]

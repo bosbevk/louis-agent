@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Shared;
+
 namespace LouisAgent.Evals.Puls.Evals.Cook;
 
 /// <summary>
@@ -9,9 +10,10 @@ namespace LouisAgent.Evals.Puls.Evals.Cook;
 public static class CookSetup
 {
     /// <summary>The modes: Puls with its own shop tools, and Puls with its cook (F34: the same toolsets the cook has).</summary>
-    public static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> Modes = new Dictionary<string, IReadOnlyList<string>>
-    {
-        [CookMode.Tools.Wire()] = [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()],
-        [CookMode.Cook.Wire()] = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()],
-    };
+    public static readonly IReadOnlyDictionary<string, IReadOnlyList<string>> Modes =
+        new Dictionary<string, IReadOnlyList<string>>
+        {
+            [CookMode.Tools.Wire()] = [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()],
+            [CookMode.Cook.Wire()] = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()],
+        };
 }

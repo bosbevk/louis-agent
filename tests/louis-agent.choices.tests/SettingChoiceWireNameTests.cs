@@ -37,7 +37,8 @@ public class SettingChoiceWireNameTests
 
     public enum DotNetMarked
     {
-        [JsonStringEnumMemberName("by-dotnet")] ByDotNet,
+        [JsonStringEnumMemberName("by-dotnet")]
+        ByDotNet,
     }
 
     // SettingChoice reads .NET's attribute (WireName is built on it), so a member someone marks with .NET's own name works too.
@@ -52,7 +53,8 @@ public class SettingChoiceWireNameTests
     [TestCase("1")]
     [TestCase("puls_only")]
     [TestCase("pulse")]
-    public void ANumberOrAnythingElse_IsUnknown(string text) => Assert.That(SettingChoice.TryParse(text, out Mode? _), Is.False);
+    public void ANumberOrAnythingElse_IsUnknown(string text) =>
+        Assert.That(SettingChoice.TryParse(text, out Mode? _), Is.False);
 
     [Test]
     public void WireWritesTheTextBack_TheMembersLowerCaseNameWhenItHasNone()
@@ -80,11 +82,16 @@ public class SettingChoiceWireNameTests
     [Test]
     public void WhatSettingChoiceWrites_IsWhatTheJsonWriterWrites_ForEveryMember()
     {
-        var options = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) } };
+        var options = new JsonSerializerOptions
+        { Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) } };
 
         foreach (var member in Enum.GetValues<Written>())
-            Assert.That(SettingChoice.Wire(member), Is.EqualTo(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(member, options))), member.ToString());
+            Assert.That(SettingChoice.Wire(member),
+                Is.EqualTo(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(member, options))),
+                member.ToString());
         foreach (var member in Enum.GetValues<Mode>())
-            Assert.That(SettingChoice.Wire(member), Is.EqualTo(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(member, options))), member.ToString());
+            Assert.That(SettingChoice.Wire(member),
+                Is.EqualTo(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(member, options))),
+                member.ToString());
     }
 }

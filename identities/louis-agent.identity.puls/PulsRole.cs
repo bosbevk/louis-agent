@@ -14,5 +14,7 @@ public enum PulsRole
     [WireName("puls-analyst")] Analyst,
     [WireName("puls-historian")] Historian,
     [WireName("puls-reader")] Reader,
-    [WireName("puls-minion-web-price-lookup")] MinionWebPriceLookup,
+
+    [WireName("puls-minion-web-price-lookup")]
+    MinionWebPriceLookup,
 }

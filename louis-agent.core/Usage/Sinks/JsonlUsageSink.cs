@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Usage.Sinks;
 
 using LouisAgent.Core.Usage.Records;
 using System.Text;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Usage.Messages;
 
+namespace LouisAgent.Core.Usage.Sinks;
 /// <summary>
 /// Appends each record as one JSON line to <c>{directory}/usage-YYYY-MM.jsonl</c> (monthly, append-only), and raises
 /// <see cref="UsageRecorded"/> for hosts that show live totals (F3). A write that fails logs a warning and never reaches
@@ -22,7 +22,8 @@ public sealed class JsonlUsageSink(string directory) : IUsageSink
     private static readonly ILogger Log = AgentLogging.For<JsonlUsageSink>();
 
     // The usage spec's field names: duration_ms, cache_write, ... Nulls are written, since null means "not reported".
-    internal static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
+    internal static readonly JsonSerializerOptions Json = new()
+    { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
 
     private static readonly object Gate = new();
 
@@ -39,7 +40,8 @@ public sealed class JsonlUsageSink(string directory) : IUsageSink
             {
                 Directory.CreateDirectory(directory);
                 // Shared, so another process (the orchestrator next to the API) can append to the same month at once.
-                using var file = new FileStream(Path.Combine(directory, fileName), FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+                using var file = new FileStream(Path.Combine(directory, fileName), FileMode.Append, FileAccess.Write,
+                    FileShare.ReadWrite);
                 file.Write(line);
             }
         }

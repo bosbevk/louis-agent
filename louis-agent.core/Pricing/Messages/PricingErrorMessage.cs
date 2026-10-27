@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Pricing.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Pricing.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -48,7 +48,8 @@ public enum PricingErrorMessage
     [Description("RATES_URL must be an http or https URL (or off), got '{Url}'.")]
     RatesUrlInvalid,
 
-    [Description("Exchange rates {Source} are from {Base}, but the price table is in {Currency}: set RATES_URL to rates from {Currency}.")]
+    [Description(
+        "Exchange rates {Source} are from {Base}, but the price table is in {Currency}: set RATES_URL to rates from {Currency}.")]
     RatesWrongBase,
 
     [Description("RATES_FORMAT must be '{Frankfurter}' or '{Json}', got '{Format}'.")]

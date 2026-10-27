@@ -16,13 +16,15 @@ public static class EvalSetSelection
         if (string.IsNullOrWhiteSpace(value)) return Enum.GetValues<EvalSetKind>();
 
         var kinds = new List<EvalSetKind>();
-        foreach (string name in value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        foreach (string name in value.Split(',',
+                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             if (!SettingChoice.TryParse(name, out EvalSetKind? kind) || kind is null)
                 throw new RunnerException(MessageText.Format(RunnerMessage.UnknownEvalSet,
                     new { Name = name, Supported = string.Join(", ", SettingChoice.Names<EvalSetKind>()) }));
             if (!kinds.Contains(kind.Value)) kinds.Add(kind.Value);
         }
+
         return kinds;
     }
 }

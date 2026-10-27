@@ -22,14 +22,17 @@ public class TurnReplayTests
     private static async Task<string> RunTurnAsync(SessionReplay? replay)
     {
         var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(
-                _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("call_1", "WhichTrial", new Dictionary<string, object?>())])),
+                _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
+                    [new FunctionCallContent("call_1", "WhichTrial", new Dictionary<string, object?>())])),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("done")]))),
             TestPaths.Agent(), toolsets: [new WhichTrialTools()], usageSink: new ListUsageSink());
-        var session = new AgentSession("sess_replay", engine, [CoreToolset.Web.Wire()], 0, UsageTags.None, replay: replay);
+        var session = new AgentSession("sess_replay", engine, [CoreToolset.Web.Wire()], 0, UsageTags.None,
+            replay: replay);
         Assert.That(session.TryStartTurn(CancellationToken.None, out var turn), Is.True);
 
         var written = new List<string>();
-        await foreach (var item in TurnStream.StreamTurnAsync(engine, session, "Which trial?", turn)) written.Add(item.Data ?? "");
+        await foreach (var item in TurnStream.StreamTurnAsync(engine, session, "Which trial?", turn))
+            written.Add(item.Data ?? "");
         Assert.That(SessionReplay.Current, Is.Null, "the turn leaves nothing behind in the caller's flow");
         return string.Join("\n", written);
     }

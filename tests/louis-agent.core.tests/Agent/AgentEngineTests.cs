@@ -19,8 +19,11 @@ public class AgentEngineTests
     private static AgentEngine Engine(IChatClient client, bool supportsTools = true, string? paymoKey = null)
     {
         var options = TestPaths.Agent(paymoKey);
-        string[] toolsets = paymoKey is null ? [CoreToolset.Files.Wire()] : [CoreToolset.Files.Wire(), CoreToolset.Paymo.Wire()];
-        return new(HelloSkills(), client, options, supportsTools, toolsets: TestPaths.Toolsets(options, toolsets), selfExtension: true);
+        string[] toolsets = paymoKey is null
+            ? [CoreToolset.Files.Wire()]
+            : [CoreToolset.Files.Wire(), CoreToolset.Paymo.Wire()];
+        return new(HelloSkills(), client, options, supportsTools, toolsets: TestPaths.Toolsets(options, toolsets),
+            selfExtension: true);
     }
 
     [Test]
@@ -60,7 +63,8 @@ public class AgentEngineTests
     [Test]
     public void Constructor_WithToolsets_RegistersOnlyThoseAndExecuteSkill()
     {
-        var engine = new AgentEngine(HelloSkills(), new FakeChatClient(), TestPaths.Agent(), toolsets: [new PingTools()]);
+        var engine = new AgentEngine(HelloSkills(), new FakeChatClient(), TestPaths.Agent(),
+            toolsets: [new PingTools()]);
 
         Assert.That(engine.Tools.Select(t => t.Name), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday", "Ping" }));
     }
@@ -76,9 +80,13 @@ public class AgentEngineTests
             var tools = new SlowTools();
             var client = new FakeChatClient(
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
-                    [new FunctionCallContent("c1", "Slow"), new FunctionCallContent("c2", "Slow"), new FunctionCallContent("c3", "Slow")])),
+                [
+                    new FunctionCallContent("c1", "Slow"), new FunctionCallContent("c2", "Slow"),
+                    new FunctionCallContent("c3", "Slow")
+                ])),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
-            var engine = new AgentEngine(HelloSkills(), client, TestPaths.Agent(), toolsets: [tools], concurrentToolCalls: concurrent);
+            var engine = new AgentEngine(HelloSkills(), client, TestPaths.Agent(), toolsets: [tools],
+                concurrentToolCalls: concurrent);
             await engine.ProcessPromptAsync(engine.NewHistory(), "go");
             return tools.MostAtOnce;
         }
@@ -129,7 +137,8 @@ public class AgentEngineTests
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
             [
                 new FunctionCallContent("call_1", "ExecuteSkill",
-                    new Dictionary<string, object?> { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"Agent\"}" })
+                    new Dictionary<string, object?>
+                        { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"Agent\"}" })
             ])),
             messages =>
             {
@@ -258,7 +267,8 @@ public class AgentEngineTests
             [
                 new FunctionCallContent("call_1", "WriteWorkspaceFile",
                     new Dictionary<string, object?> { ["relativePath"] = relative })
-            ])) { FinishReason = ChatFinishReason.Length },
+            ]))
+            { FinishReason = ChatFinishReason.Length },
             messages =>
             {
                 var toolResult = messages.Last().Contents.OfType<FunctionResultContent>().Single();
@@ -301,7 +311,8 @@ public class AgentEngineTests
             [
                 new TextContent("Let me run it. "),
                 new FunctionCallContent("call_1", "ExecuteSkill",
-                    new Dictionary<string, object?> { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"Agent\"}" })
+                    new Dictionary<string, object?>
+                        { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"Agent\"}" })
             ])),
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "All done.")));
         var engine = Engine(client);
@@ -311,9 +322,11 @@ public class AgentEngineTests
         await foreach (var update in engine.StreamPromptAsync(history, "say hello"))
             contents.AddRange(update.Contents);
 
-        Assert.That(contents.OfType<TextContent>().Select(t => t.Text), Is.EqualTo(new[] { "Let me run it. ", "All done." }));
+        Assert.That(contents.OfType<TextContent>().Select(t => t.Text),
+            Is.EqualTo(new[] { "Let me run it. ", "All done." }));
         Assert.That(contents.OfType<FunctionCallContent>().Single().Name, Is.EqualTo("ExecuteSkill"));
-        Assert.That(contents.OfType<FunctionResultContent>().Single().Result?.ToString(), Does.Contain("Hello, Agent!"));
+        Assert.That(contents.OfType<FunctionResultContent>().Single().Result?.ToString(),
+            Does.Contain("Hello, Agent!"));
         Assert.That(history.Last().Text, Is.EqualTo("All done."));
         Assert.That(history.Select(m => m.Role), Does.Contain(ChatRole.Tool), "tool result is kept in history");
     }
@@ -327,7 +340,8 @@ public class AgentEngineTests
             [
                 new FunctionCallContent("call_1", "WriteWorkspaceFile",
                     new Dictionary<string, object?> { ["relativePath"] = relative })
-            ])) { FinishReason = ChatFinishReason.Length },
+            ]))
+            { FinishReason = ChatFinishReason.Length },
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "ok")));
         var engine = Engine(client);
 
@@ -345,7 +359,7 @@ public class AgentEngineTests
         // A streamed tool call cut off mid-arguments is dropped, leaving only the text before it.
         var client = new FakeChatClient(
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Now I'll append the rest:"))
-                { FinishReason = ChatFinishReason.Length },
+            { FinishReason = ChatFinishReason.Length },
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Done in smaller chunks.")));
         var engine = Engine(client);
         var history = engine.NewHistory();
@@ -380,7 +394,9 @@ public class AgentEngineTests
         var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Answer.")));
         var engine = Engine(client);
 
-        await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "hi")) { }
+        await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "hi"))
+        {
+        }
 
         Assert.That(client.Requests[0].Options!.Reasoning, Is.Null);
     }

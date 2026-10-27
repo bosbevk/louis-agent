@@ -17,21 +17,25 @@ public class SlicePricerTests
         new(mode, "overall", n, passed, n - passed, 0, 0, tasks, TooFew: true, null, null, null, [], [], []);
 
     private static Request Row(string task, decimal? cost, int repeat = 1, string mode = SampleMode.Beta) =>
-        new("run1", new TurnKey(mode, repeat, task, 1), DateTimeOffset.UnixEpoch, "turn", "s", null, "claude-haiku-5-5", 10, 10, 0, 0, cost, 1);
+        new("run1", new TurnKey(mode, repeat, task, 1), DateTimeOffset.UnixEpoch, "turn", "s", null, "claude-haiku-5-5",
+            10, 10, 0, 0, cost, 1);
 
     [Test]
     public void TheCost_IsTheSumOfTheSlicesConversations_OverItsTrials_AndItsPasses()
     {
-        var cost = SlicePricer.Of(Slice(["a", "b"]), Known, [Row("a", 0.25m), Row("a", 0.25m, repeat: 2), Row("b", 0.5m), Row("c", 9m)]);
+        var cost = SlicePricer.Of(Slice(["a", "b"]), Known,
+            [Row("a", 0.25m), Row("a", 0.25m, repeat: 2), Row("b", 0.5m), Row("c", 9m)]);
 
-        Assert.That(cost.PerTrial, Is.EqualTo(1m / 4), "a and b, both repeats, 1.00 over 4 trials; c is not in the slice");
+        Assert.That(cost.PerTrial, Is.EqualTo(1m / 4),
+            "a and b, both repeats, 1.00 over 4 trials; c is not in the slice");
         Assert.That(cost.PerPass, Is.EqualTo(1m / 2));
     }
 
     [Test]
     public void AnotherModesConversationOfTheSameTask_IsNotInTheSlice()
     {
-        var cost = SlicePricer.Of(Slice(["a"], n: 1, passed: 1), Known, [Row("a", 0.2m), Row("a", 7m, mode: SampleMode.Gamma)]);
+        var cost = SlicePricer.Of(Slice(["a"], n: 1, passed: 1), Known,
+            [Row("a", 0.2m), Row("a", 7m, mode: SampleMode.Gamma)]);
 
         Assert.That(cost.PerTrial, Is.EqualTo(0.2m));
     }
@@ -46,7 +50,8 @@ public class SlicePricerTests
 
     [Test]
     public void ARowOfAnotherSlice_WithAnUnknownPrice_DoesNotSpoilThisOne() =>
-        Assert.That(SlicePricer.Of(Slice(["a"], n: 2, passed: 2), Known, [Row("a", 0.4m), Row("z", null)]).PerTrial, Is.EqualTo(0.2m));
+        Assert.That(SlicePricer.Of(Slice(["a"], n: 2, passed: 2), Known, [Row("a", 0.4m), Row("z", null)]).PerTrial,
+            Is.EqualTo(0.2m));
 
     // Review of 5c.2: a ledger row that can't be placed on a conversation still counts in the run's total, so a slice priced from the rows that were placed would be "a sum of the rest" and
     // come out lower than what the mode really cost. A run with such a row prices no slice: unknown, as an unknown price does (ADR 0007).
@@ -62,7 +67,8 @@ public class SlicePricerTests
 
     [Test]
     public void AnUnplacedRowWithNoPrice_AlsoMakesTheCostUnknown() =>
-        Assert.That(SlicePricer.Of(Slice(["a"]), Known, [Row("a", 0.4m), Row("a", null) with { Turn = null }]).PerTrial, Is.Null);
+        Assert.That(SlicePricer.Of(Slice(["a"]), Known, [Row("a", 0.4m), Row("a", null) with { Turn = null }]).PerTrial,
+            Is.Null);
 
     [Test]
     public void WhenNothingPassed_ThereIsNoCostPerPass()

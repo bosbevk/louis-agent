@@ -35,7 +35,10 @@ public static class EngineEvents
         if (Field(usage, "unpriced", out var unpriced)
             && !(unpriced.ValueKind == JsonValueKind.Number && unpriced.TryGetInt32(out int count) && count == 0))
             return null;
-        return Field(usage, "cost", out var cost) && cost.ValueKind == JsonValueKind.Number && cost.TryGetDecimal(out var value) ? value : null;
+        return Field(usage, "cost", out var cost) && cost.ValueKind == JsonValueKind.Number &&
+               cost.TryGetDecimal(out var value)
+            ? value
+            : null;
     }
 
     /// <summary>The role of the turn's first StartSubSession call that names a role, or null when the agent answered itself or no such call names one.</summary>
@@ -45,9 +48,11 @@ public static class EngineEvents
         {
             if (e is not ContentBlockStarted || !Field(e.Data, "content_block", out var block)) continue;
             if (Text(block, "type") == "tool_use" && Text(block, "name") == StartSubSession
-                && Field(block, "input", out var input) && Text(input, "role") is { } role && !string.IsNullOrWhiteSpace(role))
+                                                  && Field(block, "input", out var input) &&
+                                                  Text(input, "role") is { } role && !string.IsNullOrWhiteSpace(role))
                 return role;
         }
+
         return null;
     }
 
@@ -84,7 +89,9 @@ public static class EngineEvents
     private static JsonElement? Usage(TurnTranscript turn)
     {
         var end = turn.Events.LastOrDefault(e => e is MessageDelta or ErrorReported);
-        return end is not null && Field(end.Data, "usage", out var usage) && usage.ValueKind == JsonValueKind.Object ? usage : null;
+        return end is not null && Field(end.Data, "usage", out var usage) && usage.ValueKind == JsonValueKind.Object
+            ? usage
+            : null;
     }
 
     /// <summary>A field of a JSON object; false when the element is not an object, or has no such field.</summary>

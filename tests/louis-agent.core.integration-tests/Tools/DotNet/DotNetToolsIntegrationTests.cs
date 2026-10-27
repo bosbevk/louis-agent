@@ -20,7 +20,14 @@ public class DotNetToolsIntegrationTests
     [TearDown]
     public void TearDown()
     {
-        try { Directory.Delete(_root, recursive: true); } catch (IOException) { /* build servers may hold files briefly */ }
+        try
+        {
+            Directory.Delete(_root, recursive: true);
+        }
+        catch (IOException)
+        {
+            /* build servers may hold files briefly */
+        }
     }
 
     [Test]
@@ -38,9 +45,9 @@ public class DotNetToolsIntegrationTests
     public void DotNetRun_ReturnsOutputAndUnhandledExceptionStackTrace()
     {
         WriteConsoleApp("App", """
-            System.Console.WriteLine("hello " + args[0] + " " + System.Console.ReadLine());
-            throw new System.InvalidOperationException("boom");
-            """);
+                               System.Console.WriteLine("hello " + args[0] + " " + System.Console.ReadLine());
+                               throw new System.InvalidOperationException("boom");
+                               """);
 
         var result = _tools.DotNetRun("App/App.csproj", "\"big world\"", standardInput: "from stdin");
 
@@ -66,14 +73,14 @@ public class DotNetToolsIntegrationTests
     {
         string dir = Directory.CreateDirectory(Path.Combine(_root, name)).FullName;
         File.WriteAllText(Path.Combine(dir, $"{name}.csproj"), """
-            <Project Sdk="Microsoft.NET.Sdk">
-              <PropertyGroup>
-                <OutputType>Exe</OutputType>
-                <TargetFramework>net10.0</TargetFramework>
-                <Nullable>disable</Nullable>
-              </PropertyGroup>
-            </Project>
-            """);
+                                                               <Project Sdk="Microsoft.NET.Sdk">
+                                                                 <PropertyGroup>
+                                                                   <OutputType>Exe</OutputType>
+                                                                   <TargetFramework>net10.0</TargetFramework>
+                                                                   <Nullable>disable</Nullable>
+                                                                 </PropertyGroup>
+                                                               </Project>
+                                                               """);
         File.WriteAllText(Path.Combine(dir, "Program.cs"), program);
     }
 }

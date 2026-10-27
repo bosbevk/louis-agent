@@ -20,10 +20,12 @@ public static partial class BranchReading
         foreach (var table in Lists.Tables(section))
         {
             var header = Lists.Cells(table[0]);
-            int shopColumn = header.FindIndex(cell => ShopHeader().IsMatch(cell)), branchColumn = header.FindIndex(cell => BranchHeader().IsMatch(cell));
+            int shopColumn = header.FindIndex(cell => ShopHeader().IsMatch(cell)),
+                branchColumn = header.FindIndex(cell => BranchHeader().IsMatch(cell));
             if (shopColumn < 0 || branchColumn < 0) continue;
             sawTable = true;
-            var placeColumns = header.Select((cell, index) => (cell, index)).Where(c => c.index == branchColumn || StreetHeader().IsMatch(c.cell)).Select(c => c.index).ToList();
+            var placeColumns = header.Select((cell, index) => (cell, index))
+                .Where(c => c.index == branchColumn || StreetHeader().IsMatch(c.cell)).Select(c => c.index).ToList();
             foreach (var row in table.Skip(1).Where(row => !Lists.IsSeparator(row)).Select(Lists.Cells))
             {
                 if (shopColumn >= row.Count || !names.IsMatch(row[shopColumn])) continue;
@@ -32,11 +34,13 @@ public static partial class BranchReading
                 nearest |= cells.Any(cell => Nearest().IsMatch(cell));
             }
         }
+
         if (sawTable) return nearest ? BranchFinding.OnlyNearest : BranchFinding.NoBranchOfShop;
 
         string text = InlineLinkText().Replace(section, " ").Replace("*", "");
         foreach (Match name in names.Matches(text))
-            if (PlaceAfter(text[(name.Index + name.Length)..].Split('\n')[0]) is not null) return BranchFinding.Named;
+            if (PlaceAfter(text[(name.Index + name.Length)..].Split('\n')[0]) is not null)
+                return BranchFinding.Named;
         return Nearest().IsMatch(text) ? BranchFinding.OnlyNearest : BranchFinding.NoBranchOfShop;
     }
 
@@ -44,27 +48,36 @@ public static partial class BranchReading
     private static Regex NamesOf(string shop)
     {
         string host = Shops.Hosts.First(known => known.Name == shop).Host;
-        string names = string.Join("|", Shops.Hosts.Where(known => known.Host == host).Select(known => Regex.Escape(known.Name)));
+        string names = string.Join("|",
+            Shops.Hosts.Where(known => known.Host == host).Select(known => Regex.Escape(known.Name)));
         return new Regex($@"\b(?:{names})\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 
     /// <summary>The words between a shop's name and its place that name no place ("PnP in Paarl", "Pick n Pay se tak in Malmesbury"), and the ones that mean no place yet.</summary>
     private static readonly HashSet<string> NoPlaceWords =
-        ["in", "te", "by", "at", "near", "naby", "se", "tak", "branch", "op", "website", "shop", "winkel", "nearest", "naaste", "closest"];
+    [
+        "in", "te", "by", "at", "near", "naby", "se", "tak", "branch", "op", "website", "shop", "winkel", "nearest",
+        "naaste", "closest"
+    ];
 
     /// <summary>The place that follows a shop's name on a line: its first word that is no filler, when it is capitalised and is no shop's name.</summary>
     private static string? PlaceAfter(string rest)
     {
-        string? place = SplitAtPlace().Split(rest).FirstOrDefault(token => token.Length > 0 && !NoPlaceWords.Contains(token.ToLowerInvariant()));
-        return place is { Length: > 0 } && char.IsUpper(place[0]) && !Shops.Hosts.Any(known => known.Name.StartsWith(place, StringComparison.OrdinalIgnoreCase)) ? place : null;
+        string? place = SplitAtPlace().Split(rest)
+            .FirstOrDefault(token => token.Length > 0 && !NoPlaceWords.Contains(token.ToLowerInvariant()));
+        return place is { Length: > 0 } && char.IsUpper(place[0]) && !Shops.Hosts.Any(known =>
+            known.Name.StartsWith(place, StringComparison.OrdinalIgnoreCase))
+            ? place
+            : null;
     }
 
     /// <summary>Whether a table cell holds a place: a capitalised word that is neither the shop's name, a filler nor another shop's name.</summary>
     private static bool HoldsAPlace(string cell, Regex names)
     {
         string text = names.Replace(InlineLinkText().Replace(cell, " ").Replace("*", ""), " ");
-        return SplitAtPlace().Split(text).Any(token => token.Length > 0 && char.IsUpper(token[0]) && !NoPlaceWords.Contains(token.ToLowerInvariant())
-                                                       && !Shops.Hosts.Any(known => known.Name.StartsWith(token, StringComparison.OrdinalIgnoreCase)));
+        return SplitAtPlace().Split(text).Any(token =>
+            token.Length > 0 && char.IsUpper(token[0]) && !NoPlaceWords.Contains(token.ToLowerInvariant())
+            && !Shops.Hosts.Any(known => known.Name.StartsWith(token, StringComparison.OrdinalIgnoreCase)));
     }
 
     /// <summary>The lines under the Where to buy heading (<c>Waar om te koop</c>) up to the next heading or bold line; null when there is no such heading.</summary>
@@ -72,7 +85,9 @@ public static partial class BranchReading
     {
         var lines = (answer ?? "").Split('\n');
         int start = Array.FindIndex(lines, line => Heading().IsMatch(line));
-        return start < 0 ? null : string.Join('\n', lines.Skip(start + 1).TakeWhile(line => !EndsSection().IsMatch(line)));
+        return start < 0
+            ? null
+            : string.Join('\n', lines.Skip(start + 1).TakeWhile(line => !EndsSection().IsMatch(line)));
     }
 
     /// <summary>A heading or a bold line, with anything that is no letter (an emoji, a number, a dot) before its words.</summary>

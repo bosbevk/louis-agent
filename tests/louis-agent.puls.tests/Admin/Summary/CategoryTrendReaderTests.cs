@@ -11,13 +11,13 @@ public class CategoryTrendReaderTests
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
     private static readonly string Category = SampleMode.Fill("""
-        {"category":"budget","modes":[
-          {"name":"<ModeBeta> (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
-            {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,"n":6},
-            {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0.67,"pass_at_k":1.0,"pass_hat_k":0.5,"n":6}]},
-          {"name":"<ModeGamma>","model":null,"points":[
-            {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0,"pass_at_k":0,"pass_hat_k":0,"n":6}]}]}
-        """);
+                                                              {"category":"budget","modes":[
+                                                                {"name":"<ModeBeta> (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
+                                                                  {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,"n":6},
+                                                                  {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0.67,"pass_at_k":1.0,"pass_hat_k":0.5,"n":6}]},
+                                                                {"name":"<ModeGamma>","model":null,"points":[
+                                                                  {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0,"pass_at_k":0,"pass_hat_k":0,"n":6}]}]}
+                                                              """);
 
     [Test]
     public void EachLine_HasItsLatestPoint_AndItsRunCount()
@@ -36,10 +36,10 @@ public class CategoryTrendReaderTests
     public void TheLatestIsByTime_NotByOrder()
     {
         var card = CategoryTrendReader.Read(Json("""
-            {"category":"x","modes":[{"name":"m","model":null,"points":[
-              {"run":"new","at":"2026-10-26T09:00:00+00:00","pass_rate":1,"pass_at_k":1,"pass_hat_k":1,"n":6},
-              {"run":"old","at":"2026-10-20T09:00:00+00:00","pass_rate":0,"pass_at_k":0,"pass_hat_k":0,"n":6}]}]}
-            """));
+                                                 {"category":"x","modes":[{"name":"m","model":null,"points":[
+                                                   {"run":"new","at":"2026-10-26T09:00:00+00:00","pass_rate":1,"pass_at_k":1,"pass_hat_k":1,"n":6},
+                                                   {"run":"old","at":"2026-10-20T09:00:00+00:00","pass_rate":0,"pass_at_k":0,"pass_hat_k":0,"n":6}]}]}
+                                                 """));
 
         Assert.That(card.Lines.Single().LatestRun, Is.EqualTo("new"));
     }
@@ -48,7 +48,8 @@ public class CategoryTrendReaderTests
     public void ThereIsATrendToDraw_OnlyWithTwoRunsOrMoreOnSomeLine()
     {
         Assert.That(CategoryTrendReader.Read(Json(Category)).HasTrend, Is.True);
-        const string one = """{"category":"x","modes":[{"name":"m","model":null,"points":[{"run":"r","at":"2026-10-26T09:00:00+00:00","pass_rate":1,"pass_at_k":1,"pass_hat_k":1,"n":6}]}]}""";
+        const string one =
+            """{"category":"x","modes":[{"name":"m","model":null,"points":[{"run":"r","at":"2026-10-26T09:00:00+00:00","pass_rate":1,"pass_at_k":1,"pass_hat_k":1,"n":6}]}]}""";
         Assert.That(CategoryTrendReader.Read(Json(one)).HasTrend, Is.False);
     }
 

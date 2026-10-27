@@ -13,7 +13,9 @@ namespace LouisAgent.Core.Tests.Hosting.Prompts;
 public class SkillLoaderTests
 {
     private static readonly string[] OtherGuides =
-        ["# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills", "# Paymo Skills", "# DevOps Skills"];
+    [
+        "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills", "# Paymo Skills", "# DevOps Skills"
+    ];
 
     private static AgentOptions Options() => new() { SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills") };
 
@@ -23,7 +25,8 @@ public class SkillLoaderTests
     [Test]
     public void FilesAndGit_HaveTheirGuides_AndNoOthers()
     {
-        string docs = SkillLoader.Load(Options(), Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire())).Documentation;
+        string docs = SkillLoader.Load(Options(), Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire()))
+            .Documentation;
 
         Assert.That(docs, Does.Contain("# Files Skills").And.Contain("# Git Skills"));
         foreach (string guide in OtherGuides)
@@ -61,7 +64,7 @@ public class SkillLoaderTests
     [TestCase("testprod/voice-af", RoleLevel.Agent)]
     [TestCase("testprod-specialist", RoleLevel.Specialist)]
     [TestCase(null, RoleLevel.Specialist)]
-    [TestCase("testprod-minion-lookup", RoleLevel.Minion)]   // F30: a minion always has a role
+    [TestCase("testprod-minion-lookup", RoleLevel.Minion)] // F30: a minion always has a role
     public void EveryPrompt_StartsWithThePrinciples(string? role, RoleLevel level)
     {
         // CL9 step 2: every agent, at every level, whatever its voice or role, gets the shared principles first, so no
@@ -89,7 +92,8 @@ public class SkillLoaderTests
         string docs = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation;
 
         foreach (string guide in OtherGuides.Append("# Files Skills").Append("# Git Skills").Append("# .NET Skills"))
-            Assert.That(Regex.Matches(docs, "^" + Regex.Escape(guide) + @"\r?$", RegexOptions.Multiline).Count, Is.EqualTo(1), guide);
+            Assert.That(Regex.Matches(docs, "^" + Regex.Escape(guide) + @"\r?$", RegexOptions.Multiline).Count,
+                Is.EqualTo(1), guide);
     }
 
     [Test]
@@ -101,11 +105,16 @@ public class SkillLoaderTests
         try
         {
             Directory.CreateDirectory(Path.Combine(skills, "agent", "functions"));
-            File.WriteAllText(Path.Combine(skills, "agent", "functions", "greeting.md"), "# Greeting Skills\n\nGreets people.");
+            File.WriteAllText(Path.Combine(skills, "agent", "functions", "greeting.md"),
+                "# Greeting Skills\n\nGreets people.");
             var options = new AgentOptions { SkillsDirectory = skills };
 
-            Assert.That(SkillLoader.Load(options, Toolsets(CoreToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation, Does.Contain("# Greeting Skills"));
-            Assert.That(SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire())).Documentation, Does.Not.Contain("# Greeting Skills"));
+            Assert.That(
+                SkillLoader.Load(options, Toolsets(CoreToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
+                Does.Contain("# Greeting Skills"));
+            Assert.That(
+                SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()))
+                    .Documentation, Does.Not.Contain("# Greeting Skills"));
         }
         finally
         {
@@ -117,7 +126,9 @@ public class SkillLoaderTests
     public void ThePromptShrinks_WithTheToolset()
     {
         int all = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation.Length;
-        int coding = SkillLoader.Load(Options(), Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire(), CoreToolset.DotNet.Wire(), CoreToolset.Skills.Wire())).Documentation.Length;
+        int coding = SkillLoader.Load(Options(),
+            Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire(), CoreToolset.DotNet.Wire(),
+                CoreToolset.Skills.Wire())).Documentation.Length;
 
         Assert.That(coding, Is.LessThan(all));
     }

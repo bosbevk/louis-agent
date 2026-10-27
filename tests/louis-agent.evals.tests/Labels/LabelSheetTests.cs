@@ -18,36 +18,94 @@ public class LabelSheetTests
     /// <summary>The stored lines of a run: a conversation per (task, mode, repeat), each with one turn that answered "answer of {task}/{mode}/{repeat}".</summary>
     private static string[] Stored(IEnumerable<string> tasks, string[] modes, int repeats)
     {
-        var lines = new List<string> { At(new { @event = "protocol", version = 1, eval = "sample", eval_version = 1, graders = Array.Empty<object>(), models = Array.Empty<object>() }) };
+        var lines = new List<string>
+        {
+            At(new
+            {
+                @event = "protocol", version = 1, eval = "sample", eval_version = 1, graders = Array.Empty<object>(),
+                models = Array.Empty<object>()
+            })
+        };
         foreach (string mode in modes)
             for (int repeat = 1; repeat <= repeats; repeat++)
             {
-                lines.Add(At(new { @event = "mode", mode, repeat, toolsets = new[] { SampleToolset.Alpha }, role = "r", llm = (string?)null, conversations = tasks.Count() }));
+                lines.Add(At(new
+                {
+                    @event = "mode",
+                    mode,
+                    repeat,
+                    toolsets = new[] { SampleToolset.Alpha },
+                    role = "r",
+                    llm = (string?)null,
+                    conversations = tasks.Count()
+                }));
                 foreach (string task in tasks)
                 {
                     string answer = $"answer of {task}/{mode}/{repeat}";
-                    lines.Add(At(new { @event = "question", mode, repeat, task, turn = 1, session = "sess_1", text = "q" }));
-                    lines.Add(At(new { @event = "sse", mode, repeat, task, turn = 1, type = "content_block_delta", data = new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text = answer } } }));
-                    lines.Add(At(new { @event = "turn", mode, repeat, task, turn = 1, session = "sess_1", question = "q", answer, role = (string?)null, seconds = 1.0 }));
-                    lines.Add(At(new { @event = "conversation", mode, repeat, task, role = (string?)null, scores = new { }, errors = 0, seconds = 1.0 }));
+                    lines.Add(At(new
+                    { @event = "question", mode, repeat, task, turn = 1, session = "sess_1", text = "q" }));
+                    lines.Add(At(new
+                    {
+                        @event = "sse",
+                        mode,
+                        repeat,
+                        task,
+                        turn = 1,
+                        type = "content_block_delta",
+                        data = new
+                        {
+                            type = "content_block_delta",
+                            index = 0,
+                            delta = new { type = "text_delta", text = answer }
+                        }
+                    }));
+                    lines.Add(At(new
+                    {
+                        @event = "turn",
+                        mode,
+                        repeat,
+                        task,
+                        turn = 1,
+                        session = "sess_1",
+                        question = "q",
+                        answer,
+                        role = (string?)null,
+                        seconds = 1.0
+                    }));
+                    lines.Add(At(new
+                    {
+                        @event = "conversation",
+                        mode,
+                        repeat,
+                        task,
+                        role = (string?)null,
+                        scores = new { },
+                        errors = 0,
+                        seconds = 1.0
+                    }));
                 }
+
                 lines.Add(At(new { @event = "mode_done", mode, repeat }));
             }
+
         return [.. lines];
     }
 
     private static EvalScenario Scenario(string id, string expected) =>
-        new(id, new EvalInput(null, "Africa/Johannesburg", ["q"]), JsonDocument.Parse(expected).RootElement.Clone(), [], DatasetSplit.Dev);
+        new(id, new EvalInput(null, "Africa/Johannesburg", ["q"]), JsonDocument.Parse(expected).RootElement.Clone(), [],
+            DatasetSplit.Dev);
 
     private static readonly IReadOnlyList<EvalScenario> Scenarios =
     [
-        Scenario(SampleScenario.Alpha, """{"serves":4}"""), Scenario(SampleScenario.Beta, """{"serves":2}"""), Scenario("cook-shops", """{"serves":4}"""), Scenario("control-web", """{"routes_to":"puls"}"""),
+        Scenario(SampleScenario.Alpha, """{"serves":4}"""), Scenario(SampleScenario.Beta, """{"serves":2}"""),
+        Scenario("cook-shops", """{"serves":4}"""), Scenario("control-web", """{"routes_to":"puls"}"""),
     ];
 
     private static string TempFolder() => Path.Combine(Path.GetTempPath(), "labels-" + Guid.NewGuid().ToString("N"));
 
     private static List<LabelFile> Written(string folder) =>
-        Directory.GetFiles(folder).Order().Select(f => JsonSerializer.Deserialize<LabelFile>(File.ReadAllText(f), LabelJson.Options)!).ToList();
+        Directory.GetFiles(folder).Order()
+            .Select(f => JsonSerializer.Deserialize<LabelFile>(File.ReadAllText(f), LabelJson.Options)!).ToList();
 
     [Test]
     public void OneFilePerConversation_WithTheAnswerInIt_AndNoLabelYet()
@@ -55,16 +113,27 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "8f7802b9a72e", Stored([SampleScenario.Alpha], [SampleMode.Beta], 1), folder, count: 10);
+            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "8f7802b9a72e",
+                Stored([SampleScenario.Alpha], [SampleMode.Beta], 1), folder, count: 10);
 
-            Assert.That(names, Is.EqualTo(new[] { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.8f7802b9a72e.1.json") }));
+            Assert.That(names,
+                Is.EqualTo(new[]
+                    { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.8f7802b9a72e.1.json") }));
             var file = Written(folder).Single();
-            Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer), Is.EqualTo((SampleScenario.Alpha, SampleMode.Beta, "8f7802b9a72e", 1, 1, SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1"))));
-            Assert.That(file.Turns, Is.EqualTo(new[] { new LabelTurn("q", SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1")) }), "6a.4f: every turn, question and answer");
+            Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer),
+                Is.EqualTo((SampleScenario.Alpha, SampleMode.Beta, "8f7802b9a72e", 1, 1,
+                    SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1"))));
+            Assert.That(file.Turns,
+                Is.EqualTo(new[]
+                    { new LabelTurn("q", SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1")) }),
+                "6a.4f: every turn, question and answer");
             Assert.That(file.Label, Is.Null, "the person's part");
             Assert.That(file.Grader, Is.EqualTo("meal-for-people"), "the grader it is a label for");
         }
-        finally { Directory.Delete(folder, true); }
+        finally
+        {
+            Directory.Delete(folder, true);
+        }
     }
 
     [Test]
@@ -73,11 +142,16 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored([SampleScenario.Alpha, "control-web"], [SampleMode.Beta], 1), folder, count: 10);
+            LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run",
+                Stored([SampleScenario.Alpha, "control-web"], [SampleMode.Beta], 1), folder, count: 10);
 
-            Assert.That(Written(folder).Select(f => f.Scenario), Is.EqualTo(new[] { SampleScenario.Alpha }), "the control question sets no serves: no meal to label");
+            Assert.That(Written(folder).Select(f => f.Scenario), Is.EqualTo(new[] { SampleScenario.Alpha }),
+                "the control question sets no serves: no meal to label");
         }
-        finally { Directory.Delete(folder, true); }
+        finally
+        {
+            Directory.Delete(folder, true);
+        }
     }
 
     [Test]
@@ -86,15 +160,23 @@ public class LabelSheetTests
         string folder = TempFolder();
         try
         {
-            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", Stored([SampleScenario.Alpha, SampleScenario.Beta, "cook-shops"], [SampleMode.Gamma, SampleMode.Beta], 3), folder, count: 4);
+            var names = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run",
+                Stored([SampleScenario.Alpha, SampleScenario.Beta, "cook-shops"], [SampleMode.Gamma, SampleMode.Beta],
+                    3), folder, count: 4);
 
             var files = Written(folder);
             Assert.That(names, Has.Count.EqualTo(4));
-            Assert.That(files.Select(f => f.Scenario).Distinct(), Is.EquivalentTo(new[] { SampleScenario.Alpha, SampleScenario.Beta, "cook-shops" }), "all three before a second of any");
+            Assert.That(files.Select(f => f.Scenario).Distinct(),
+                Is.EquivalentTo(new[] { SampleScenario.Alpha, SampleScenario.Beta, "cook-shops" }),
+                "all three before a second of any");
             Assert.That(files.GroupBy(f => f.Scenario).Max(g => g.Count()), Is.EqualTo(2));
-            Assert.That(files.Select(f => (f.Scenario, f.Mode, f.Repeat)).Distinct().Count(), Is.EqualTo(4), "no conversation twice");
+            Assert.That(files.Select(f => (f.Scenario, f.Mode, f.Repeat)).Distinct().Count(), Is.EqualTo(4),
+                "no conversation twice");
         }
-        finally { Directory.Delete(folder, true); }
+        finally
+        {
+            Directory.Delete(folder, true);
+        }
     }
 
     [Test]
@@ -103,14 +185,19 @@ public class LabelSheetTests
         string one = TempFolder(), two = TempFolder();
         try
         {
-            var stored = Stored([SampleScenario.Alpha, SampleScenario.Beta, "cook-shops"], [SampleMode.Gamma, SampleMode.Beta], 3);
+            var stored = Stored([SampleScenario.Alpha, SampleScenario.Beta, "cook-shops"],
+                [SampleMode.Gamma, SampleMode.Beta], 3);
 
             var first = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, one, count: 5);
             var second = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, two, count: 5);
 
             Assert.That(second, Is.EqualTo(first), "a person who asks twice labels the same answers");
         }
-        finally { Directory.Delete(one, true); Directory.Delete(two, true); }
+        finally
+        {
+            Directory.Delete(one, true);
+            Directory.Delete(two, true);
+        }
     }
 
     // A second sheet for the same run (fresh answers to check a tuned judge on) goes into the folder the first one was labelled in: it must never write over a person's labels,
@@ -123,16 +210,27 @@ public class LabelSheetTests
         {
             var stored = Stored([SampleScenario.Alpha, SampleScenario.Beta], [SampleMode.Beta], 3);
             LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
-            string labelled = Path.Combine(folder, SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json"));
-            File.WriteAllText(labelled, File.ReadAllText(labelled).Replace("\"label\": null", "\"label\": { \"meal\": true, \"note\": \"mine\" }"));
+            string labelled = Path.Combine(folder,
+                SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json"));
+            File.WriteAllText(labelled,
+                File.ReadAllText(labelled)
+                    .Replace("\"label\": null", "\"label\": { \"meal\": true, \"note\": \"mine\" }"));
 
             var second = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 2);
 
             Assert.That(File.ReadAllText(labelled), Does.Contain("mine"), "the person's label is still there");
-            Assert.That(second, Is.EqualTo(new[] { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.2.json"), SampleScenario.Fill($"meal-for-people.<ScenarioBeta>.{SampleMode.Beta}.run.2.json") }), "two new files, from the next repeat");
+            Assert.That(second,
+                Is.EqualTo(new[]
+                {
+                    SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.2.json"),
+                    SampleScenario.Fill($"meal-for-people.<ScenarioBeta>.{SampleMode.Beta}.run.2.json")
+                }), "two new files, from the next repeat");
             Assert.That(Directory.GetFiles(folder), Has.Length.EqualTo(4));
         }
-        finally { Directory.Delete(folder, true); }
+        finally
+        {
+            Directory.Delete(folder, true);
+        }
     }
 
     // F18 step 6a.0b (the review): the grader is in the file's name, so two graders labelling the same answer have two files. Without it the second sheet would find the first grader's file
@@ -148,11 +246,20 @@ public class LabelSheetTests
             var first = LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", stored, folder, count: 10);
             var second = LabelSheet.Write(Scenarios, "another-judge", ["serves"], "run", stored, folder, count: 10);
 
-            Assert.That(first, Is.EqualTo(new[] { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }));
-            Assert.That(second, Is.EqualTo(new[] { SampleScenario.Fill($"another-judge.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }), "not skipped for the first grader's file");
-            Assert.That(Written(folder).Select(f => f.Grader), Is.EquivalentTo(new[] { "meal-for-people", "another-judge" }));
+            Assert.That(first,
+                Is.EqualTo(new[]
+                    { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }));
+            Assert.That(second,
+                Is.EqualTo(new[]
+                    { SampleScenario.Fill($"another-judge.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }),
+                "not skipped for the first grader's file");
+            Assert.That(Written(folder).Select(f => f.Grader),
+                Is.EquivalentTo(new[] { "meal-for-people", "another-judge" }));
         }
-        finally { Directory.Delete(folder, true); }
+        finally
+        {
+            Directory.Delete(folder, true);
+        }
     }
 
     [Test]
@@ -160,7 +267,9 @@ public class LabelSheetTests
     {
         string folder = TempFolder();
 
-        Assert.That(() => LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", [At(new { @event = "protocol", version = 1 })], folder, count: 10),
+        Assert.That(
+            () => LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run",
+                [At(new { @event = "protocol", version = 1 })], folder, count: 10),
             Throws.TypeOf<InvalidDataException>());
     }
 }

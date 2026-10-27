@@ -1,12 +1,11 @@
 using System.Text.Json;
 
-namespace LouisAgent.Web.Shared.Chats;
-
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Text;
 using LouisAgent.Web.Shared.Usage;
 
+namespace LouisAgent.Web.Shared.Chats;
 /// <summary>Folds louis-agent.api's streamed events (Claude's shape, read by the session-stream reader) into a
 /// <see cref="Turn"/>, for every chat page.</summary>
 public static class TurnStream
@@ -85,8 +84,10 @@ public static class TurnStream
                     tool.ToolFailed = block.GetProperty("is_error").GetBoolean();
                     // FX22: the images a tool read, taken now, before the saved chat cuts the text. A delegation call's result is the
                     // specialist's own answer, written by a model, so it proves nothing.
-                    if (!tool.ToolFailed && !Delegation.IsDelegationTool(tool.ToolName)) tool.Images = [.. ImageLinks.Of(tool.ToolResult)];
+                    if (!tool.ToolFailed && !Delegation.IsDelegationTool(tool.ToolName))
+                        tool.Images = [.. ImageLinks.Of(tool.ToolResult)];
                 }
+
                 break;
         }
     }
@@ -108,12 +109,20 @@ public static class TurnStream
 
     private static TurnUsage ReadUsage(JsonElement usage)
     {
-        long Count(string name) => usage.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetInt64() : 0;
+        long Count(string name) => usage.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number
+            ? value.GetInt64()
+            : 0;
+
         return new TurnUsage(
-            Count("input_tokens"), Count("cache_creation_input_tokens"), Count("cache_read_input_tokens"), Count("output_tokens"),
+            Count("input_tokens"), Count("cache_creation_input_tokens"), Count("cache_read_input_tokens"),
+            Count("output_tokens"),
             (int)Count("requests"),
-            usage.TryGetProperty("cost", out var cost) && cost.ValueKind == JsonValueKind.Number ? cost.GetDecimal() : null,
-            usage.TryGetProperty("currency", out var currency) && currency.ValueKind == JsonValueKind.String ? currency.GetString() : null,
+            usage.TryGetProperty("cost", out var cost) && cost.ValueKind == JsonValueKind.Number
+                ? cost.GetDecimal()
+                : null,
+            usage.TryGetProperty("currency", out var currency) && currency.ValueKind == JsonValueKind.String
+                ? currency.GetString()
+                : null,
             (int)Count("unpriced"));
     }
 

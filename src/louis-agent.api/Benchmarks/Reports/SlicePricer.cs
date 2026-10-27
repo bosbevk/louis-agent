@@ -21,7 +21,8 @@ public static class SlicePricer
         // A row nobody could place on a conversation still counts in the run's total: pricing a slice from the rows that were placed would be a sum of the rest (ADR 0007).
         if (requests.Any(r => r.Turn is null)) return new SliceCost(null, null);
 
-        var rows = requests.Where(r => r.Turn is { } turn && turn.Mode == slice.Mode && slice.Tasks.Contains(turn.Task)).ToList();
+        var rows = requests.Where(r => r.Turn is { } turn && turn.Mode == slice.Mode && slice.Tasks.Contains(turn.Task))
+            .ToList();
         if (rows.Any(r => r.Cost is null)) return new SliceCost(null, null);
 
         decimal cost = rows.Sum(r => r.Cost!.Value);

@@ -14,5 +14,6 @@ public static class PulsRoute
 {
     public static RoutedToGrader Grader() => new(ExpectedRole, expectedKeys: new HashSet<string> { ExpectedRoute.Key });
 
-    private static string? ExpectedRole(Trial trial) => PulsModes.CanDelegate(trial.Mode) ? ExpectedRoute.Of(trial.Scenario) : null;
+    private static string? ExpectedRole(Trial trial) =>
+        PulsModes.CanDelegate(trial.Mode) ? ExpectedRoute.Of(trial.Scenario) : null;
 }

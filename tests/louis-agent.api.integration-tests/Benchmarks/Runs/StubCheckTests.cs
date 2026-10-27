@@ -12,7 +12,8 @@ namespace LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 public class StubCheckTests
 {
     /// <summary>The C# stub through the runner's own listing, the real runner, and the recorder.</summary>
-    private static async Task<(BenchmarkRun Run, List<string> Lines)> RunEvalStub(InMemoryBenchmarkStore store, int repeat = 1)
+    private static async Task<(BenchmarkRun Run, List<string> Lines)> RunEvalStub(InMemoryBenchmarkStore store,
+        int repeat = 1)
     {
         var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "Stub")]);
         var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
@@ -33,7 +34,9 @@ public class StubCheckTests
         Assert.That(run.Status, Is.EqualTo(BenchmarkRunStatus.Done), string.Join("\n", lines));
         var unread = lines.Where(l => l.StartsWith('@') && Parse(l) is LogLine).ToList();
         Assert.That(unread, Is.Empty, "a line the parser doesn't know");
-        Assert.That(Parse(lines.First(l => l.StartsWith('@'))) is ProtocolStarted { Version: BenchmarkProtocol.Version }, "the protocol first");
+        Assert.That(
+            Parse(lines.First(l => l.StartsWith('@'))) is ProtocolStarted { Version: BenchmarkProtocol.Version },
+            "the protocol first");
     }
 
     [Test]
@@ -46,10 +49,13 @@ public class StubCheckTests
         // The stub's own names are held by the runner's tests; here the stored shape: two modes, each with its repeats together, the delegating one second.
         var names = stored!.Modes!.Select(m => m.Name).Distinct().ToList();
         Assert.That(names, Has.Count.EqualTo(2));
-        Assert.That(stored.Modes!.Select(m => (m.Name, m.Repeat)), Is.EqualTo(new[] { (names[0], 1), (names[0], 2), (names[1], 1), (names[1], 2) }), "the runner takes a mode's repeats together");
+        Assert.That(stored.Modes!.Select(m => (m.Name, m.Repeat)),
+            Is.EqualTo(new[] { (names[0], 1), (names[0], 2), (names[1], 1), (names[1], 2) }),
+            "the runner takes a mode's repeats together");
         var conversations = await store.ConversationsAsync(run.Id);
         Assert.That(conversations.Count, Is.EqualTo(8), "two modes × two conversations × two repeats");
-        Assert.That(conversations.All(c => c.Scores.TryGetProperty("routed_right", out _)), Is.True, "every conversation scored");
+        Assert.That(conversations.All(c => c.Scores.TryGetProperty("routed_right", out _)), Is.True,
+            "every conversation scored");
 
         var bobotie = new ConversationKey(names[1], 1, "bobotie");
         var turns = await store.TurnsAsync(run.Id, bobotie);
@@ -72,7 +78,8 @@ public class StubCheckTests
         // F18 step 4.5a: the runner grades each trial with the eval's graders, so every stored conversation carries the stub's two, in order.
         foreach (var conversation in conversations)
         {
-            Assert.That(conversation.Grades?.Select(g => g.Grader), Is.EqualTo(new[] { "no-error", "within-time" }), conversation.Key.ToString());
+            Assert.That(conversation.Grades?.Select(g => g.Grader), Is.EqualTo(new[] { "no-error", "within-time" }),
+                conversation.Key.ToString());
             Assert.That(conversation.Outcome, Is.EqualTo(BenchmarkOutcome.Pass), conversation.Key.ToString());
         }
     }

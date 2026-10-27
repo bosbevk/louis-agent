@@ -29,7 +29,8 @@ internal static class RunnerStartInfo
         // Arguments as data (ADR 0004): the runner's path and its arguments are a list, never a command string.
         Arguments(check, run, paths, start.ArgumentList);
         // FX25: the process sees only what it reads and what it needs to start, never the API's secrets; the parent's copy is replaced by the selection.
-        var allowed = RunnerEnvironment.Select(Environment.GetEnvironmentVariables().Cast<System.Collections.DictionaryEntry>()
+        var allowed = RunnerEnvironment.Select(Environment.GetEnvironmentVariables()
+            .Cast<System.Collections.DictionaryEntry>()
             .ToDictionary(e => (string)e.Key, e => e.Value as string ?? ""));
         start.Environment.Clear();
         foreach (var (name, value) in allowed) start.Environment[name] = value;
@@ -39,15 +40,18 @@ internal static class RunnerStartInfo
         return start;
     }
 
-    private static void Arguments(BenchmarkCheck check, BenchmarkRun run, RunnerPaths paths, ICollection<string> arguments)
+    private static void Arguments(BenchmarkCheck check, BenchmarkRun run, RunnerPaths paths,
+        ICollection<string> arguments)
     {
         arguments.Add(paths.EvalRunner);
         // A judge check (6a.5b) is no run: the runner calibrates the grader on the label lines it reads from stdin.
         if (run.Calibration is { } calibration)
         {
-            foreach (string argument in new[] { "--calibrate", check.Id, calibration.Grader, "--labels", "-" }) arguments.Add(argument);
+            foreach (string argument in new[] { "--calibrate", check.Id, calibration.Grader, "--labels", "-" })
+                arguments.Add(argument);
             return;
         }
+
         arguments.Add("run");
         arguments.Add(check.Id);
         // A re-score takes the repeats, the web and the split from the stored run: its only flag is the run it grades again.
@@ -57,6 +61,7 @@ internal static class RunnerStartInfo
             arguments.Add(rescoreOf);
             return;
         }
+
         arguments.Add("--repeat");
         arguments.Add(run.Repeat.ToString());
         // The web (F18 step 5.5): a recording, or a replay of another run with the model's answers too (--replay).

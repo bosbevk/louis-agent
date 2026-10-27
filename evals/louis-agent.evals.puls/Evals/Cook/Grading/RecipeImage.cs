@@ -31,14 +31,16 @@ public sealed class RecipeImage : IGrader
     {
         var turns = trial.Transcript.Turns;
         if (Verdict.InfrastructureFailure(Name, Version, turns) is { } unknown) return unknown;
-        if (!Asked(trial.Scenario.Expected)) return Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.RecipeImageNotSet));
+        if (!Asked(trial.Scenario.Expected))
+            return Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.RecipeImageNotSet));
 
         var view = turns.Select(TurnView.From).FirstOrDefault();
         if (view is null || view.Error is not null || view.Answer.Length == 0)
             return Verdict.Unknown(Name, Version, MessageText.Format(GradeMessage.ShopNothingToRead, new { Turn = 1 }));
 
         var onPages = CitedPages(view).SelectMany(Links.RecipePhotos).ToHashSet();
-        if (onPages.Count == 0) return Verdict.Unknown(Name, Version, MessageText.Format(GradeMessage.RecipeImageNoneOnPages));
+        if (onPages.Count == 0)
+            return Verdict.Unknown(Name, Version, MessageText.Format(GradeMessage.RecipeImageNoneOnPages));
 
         var shown = Links.RecipePhotos(view.Answer);
         if (shown.Count == 0) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.RecipeImageMissing));
@@ -56,7 +58,8 @@ public sealed class RecipeImage : IGrader
     {
         var results = view.Results.Concat(view.SpecialistResults).ToList();
         string answer = Plain(view.Answer);
-        var cited = results.Where(result => UrlOf(result) is { } url && answer.Contains(Plain(url), StringComparison.OrdinalIgnoreCase)).ToList();
+        var cited = results.Where(result =>
+            UrlOf(result) is { } url && answer.Contains(Plain(url), StringComparison.OrdinalIgnoreCase)).ToList();
         return cited.Count > 0 ? cited : results;
     }
 
@@ -69,8 +72,10 @@ public sealed class RecipeImage : IGrader
     }
 
     /// <summary>An address without its scheme, its <c>www.</c> and its closing slash, so the same page written two ways is the same page.</summary>
-    private static string Plain(string text) => text.Replace("https://", "").Replace("http://", "").Replace("www.", "").TrimEnd('/');
+    private static string Plain(string text) =>
+        text.Replace("https://", "").Replace("http://", "").Replace("www.", "").TrimEnd('/');
 
     private static bool Asked(JsonElement expected) =>
-        expected.ValueKind == JsonValueKind.Object && expected.TryGetProperty("recipe_image", out var value) && value.ValueKind == JsonValueKind.True;
+        expected.ValueKind == JsonValueKind.Object && expected.TryGetProperty("recipe_image", out var value) &&
+        value.ValueKind == JsonValueKind.True;
 }

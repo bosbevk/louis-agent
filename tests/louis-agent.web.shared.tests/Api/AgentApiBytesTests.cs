@@ -9,13 +9,19 @@ namespace LouisAgent.Web.Shared.Tests.Api;
 public class AgentApiBytesTests
 {
     private static AgentApi Api(HttpStatusCode status, byte[] body) =>
-        new(new HttpClient(new StubHandler(_ => new HttpResponseMessage(status) { Content = new ByteArrayContent(body) })) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings());
+        new(
+            new HttpClient(
+                    new StubHandler(_ => new HttpResponseMessage(status) { Content = new ByteArrayContent(body) }))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings());
 
     [Test]
     public async Task TheBytesComeBackAsTheyWereSent() =>
-        Assert.That(await Api(HttpStatusCode.OK, [80, 75, 3, 4]).GetBytesAsync("v1/admin/benchmarks/runs/r/labels?grader=g"), Is.EqualTo(new byte[] { 80, 75, 3, 4 }));
+        Assert.That(
+            await Api(HttpStatusCode.OK, [80, 75, 3, 4]).GetBytesAsync("v1/admin/benchmarks/runs/r/labels?grader=g"),
+            Is.EqualTo(new byte[] { 80, 75, 3, 4 }));
 
     [Test]
     public void AnErrorIsAnApiException_NotAFileOfTheErrorText() =>
-        Assert.That(async () => await Api(HttpStatusCode.NotFound, [1]).GetBytesAsync("v1/x"), Throws.InstanceOf<AgentApiException>());
+        Assert.That(async () => await Api(HttpStatusCode.NotFound, [1]).GetBytesAsync("v1/x"),
+            Throws.InstanceOf<AgentApiException>());
 }

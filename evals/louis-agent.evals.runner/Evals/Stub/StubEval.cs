@@ -29,7 +29,8 @@ public sealed class StubEval : IEval
     public int Version => 1;
     public string Proves => MessageText.Format(RunnerMessage.StubProves);
 
-    public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
+    public ValueTask<IReadOnlyList<EvalMode>>
+        ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(
         [
             new EvalMode(StubMode.Direct.Wire(), Role, [StubToolset.Web.Wire()]),
@@ -41,15 +42,18 @@ public sealed class StubEval : IEval
         new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg",
                 [MessageText.Format(StubMessage.BobotieFirst), MessageText.Format(StubMessage.BobotieFollowUp)]),
             JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev),
-        new EvalScenario("cottage-pie", new EvalInput(null, "Africa/Johannesburg", [MessageText.Format(StubMessage.CottagePie)]),
+        new EvalScenario("cottage-pie",
+            new EvalInput(null, "Africa/Johannesburg", [MessageText.Format(StubMessage.CottagePie)]),
             JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev),
     ];
 
     /// <summary>The stub's graders: no turn errored, and each turn was answered within a minute (a stuck run, the only slow one).</summary>
-    public IReadOnlyList<IGrader> Graders { get; } = [new NoErrorGrader(), new WithinTimeGrader(TimeSpan.FromMinutes(1))];
+    public IReadOnlyList<IGrader> Graders { get; } =
+        [new NoErrorGrader(), new WithinTimeGrader(TimeSpan.FromMinutes(1))];
 
     /// <summary>The stub's run is fixed, so its route is always right, and the score counts the turns (the Python's scores).</summary>
-    public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new StubScores(RoutedRight: true, Turns: trial.Transcript.Turns.Count);
+    public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
+        new StubScores(RoutedRight: true, Turns: trial.Transcript.Turns.Count);
 
     /// <summary>The canned facts the Python stub writes: the cook answers with one call and three specialist events, and a follow-up continues it.</summary>
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode)

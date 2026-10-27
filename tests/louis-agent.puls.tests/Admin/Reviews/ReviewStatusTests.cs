@@ -8,38 +8,58 @@ namespace LouisAgent.Puls.Tests.Admin.Reviews;
 // Written first: nothing told the list apart.
 public class ReviewStatusTests
 {
-    private static readonly GraderRow[] Order = [new("no-error", 1, "FixedRule"), new("meal-for-people", 1, "Model"), new("meal-for-people.human", 2, "Human", "Is this a meal?")];
+    private static readonly GraderRow[] Order =
+    [
+        new("no-error", 1, "FixedRule"), new("meal-for-people", 1, "Model"),
+        new("meal-for-people.human", 2, "Human", "Is this a meal?")
+    ];
 
     private static ConversationGrades With(bool pending, params HumanGradeRow[] humans) => new(
         pending
-            ? [new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"), new GradeRow("meal-for-people", 1, 1, GradeOutcome.Pass, "feeds"), new GradeRow("meal-for-people.human", 2, 0, GradeOutcome.Pending, "waits")]
-            : [new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"), new GradeRow("meal-for-people", 1, 1, GradeOutcome.Pass, "not asked")],
+            ?
+            [
+                new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"),
+                new GradeRow("meal-for-people", 1, 1, GradeOutcome.Pass, "feeds"),
+                new GradeRow("meal-for-people.human", 2, 0, GradeOutcome.Pending, "waits")
+            ]
+            :
+            [
+                new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"),
+                new GradeRow("meal-for-people", 1, 1, GradeOutcome.Pass, "not asked")
+            ],
         GradeOutcome.Pass, humans);
 
-    private static readonly HumanGradeRow Mine = new("meal-for-people.human", "meal-for-people", "pass", "", "louis", DateTimeOffset.UnixEpoch);
+    private static readonly HumanGradeRow Mine = new("meal-for-people.human", "meal-for-people", "pass", "", "louis",
+        DateTimeOffset.UnixEpoch);
 
     [Test]
     public void AConversationWithNoReviewGrade_NeedsNoReview() =>
-        Assert.That(ReviewStatus.Of(With(pending: false), Order, "Louis", _ => false), Is.EqualTo(ReviewState.NoReview));
+        Assert.That(ReviewStatus.Of(With(pending: false), Order, "Louis", _ => false),
+            Is.EqualTo(ReviewState.NoReview));
 
     [Test]
     public void APendingReviewThisReviewerHasNotAnswered_IsToReview()
     {
         Assert.That(ReviewStatus.Of(With(pending: true), Order, "Louis", _ => false), Is.EqualTo(ReviewState.ToReview));
-        Assert.That(ReviewStatus.Of(With(pending: true, Mine with { Reviewer = "Anna" }), Order, "Louis", _ => false), Is.EqualTo(ReviewState.ToReview), "Anna's grade is not Louis's");
-        Assert.That(ReviewStatus.Of(With(pending: true), Order, null, _ => false), Is.EqualTo(ReviewState.ToReview), "no name yet: still to do");
+        Assert.That(ReviewStatus.Of(With(pending: true, Mine with { Reviewer = "Anna" }), Order, "Louis", _ => false),
+            Is.EqualTo(ReviewState.ToReview), "Anna's grade is not Louis's");
+        Assert.That(ReviewStatus.Of(With(pending: true), Order, null, _ => false), Is.EqualTo(ReviewState.ToReview),
+            "no name yet: still to do");
     }
 
     [Test]
     public void APendingReviewThisReviewerAnswered_IsReviewed_WhateverTheNamesCase_OrGivenThisSession()
     {
-        Assert.That(ReviewStatus.Of(With(pending: true, Mine), Order, "Louis", _ => false), Is.EqualTo(ReviewState.Reviewed));
-        Assert.That(ReviewStatus.Of(With(pending: true), Order, "Louis", judge => judge == "meal-for-people"), Is.EqualTo(ReviewState.Reviewed));
+        Assert.That(ReviewStatus.Of(With(pending: true, Mine), Order, "Louis", _ => false),
+            Is.EqualTo(ReviewState.Reviewed));
+        Assert.That(ReviewStatus.Of(With(pending: true), Order, "Louis", judge => judge == "meal-for-people"),
+            Is.EqualTo(ReviewState.Reviewed));
     }
 
     [Test]
     public void ARunWithNoReviewGrader_NeedsNoReview() =>
-        Assert.That(ReviewStatus.Of(With(pending: true), [new("no-error", 1, "FixedRule")], "Louis", _ => false), Is.EqualTo(ReviewState.NoReview));
+        Assert.That(ReviewStatus.Of(With(pending: true), [new("no-error", 1, "FixedRule")], "Louis", _ => false),
+            Is.EqualTo(ReviewState.NoReview));
 
     [Test]
     public void EachStateHasItsWords()

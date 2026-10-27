@@ -20,7 +20,13 @@ public class BashToolsIntegrationTests
     [TearDown]
     public void TearDown()
     {
-        try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
+        try
+        {
+            Directory.Delete(_root, recursive: true);
+        }
+        catch (IOException)
+        {
+        }
     }
 
     [Test]
@@ -117,14 +123,16 @@ public class BashToolsIntegrationTests
     public void BashRun_InlineCrlfScriptIsNormalised()
     {
         RequireBash();
-        Assert.That(_tools.BashRun(script: "echo one\r\necho two\r\n"), Does.Contain("one\ntwo").Or.Contain("one\r\ntwo"));
+        Assert.That(_tools.BashRun(script: "echo one\r\necho two\r\n"),
+            Does.Contain("one\ntwo").Or.Contain("one\r\ntwo"));
     }
 
     [Test]
     public void BashRun_KillsScriptAfterTimeout()
     {
         RequireBash();
-        Assert.That(_tools.BashRun(script: "while true; do sleep 1; done", timeoutSeconds: 2), Does.Contain("was killed"));
+        Assert.That(_tools.BashRun(script: "while true; do sleep 1; done", timeoutSeconds: 2),
+            Does.Contain("was killed"));
     }
 
     [Test]

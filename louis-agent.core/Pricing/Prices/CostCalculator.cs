@@ -1,8 +1,7 @@
-namespace LouisAgent.Core.Pricing.Prices;
 
 using LouisAgent.Core.Usage.Records;
 
-
+namespace LouisAgent.Core.Pricing.Prices;
 /// <summary>
 /// Prices a usage record (Usage spec §4.2): each token kind times its price per million tokens. The kinds don't overlap
 /// (F1 subtracts cache reads and writes from the input), so the cost is a plain sum.
@@ -33,7 +32,8 @@ public static class CostCalculator
 
         // Each write at its lifetime's price. Reasoning isn't added: it is already part of the output count.
         decimal amount = (input * tier.Input + output * tier.Output + cacheRead * tier.CacheRead +
-                          (cacheWrite - cacheWrite1h) * tier.CacheWrite5m + cacheWrite1h * tier.CacheWrite1h) / TokensPerPrice;
+                          (cacheWrite - cacheWrite1h) * tier.CacheWrite5m + cacheWrite1h * tier.CacheWrite1h) /
+                         TokensPerPrice;
 
         return new UsageCost(prices.Currency, Math.Round(amount, 6, MidpointRounding.AwayFromZero), prices.AsOf);
     }

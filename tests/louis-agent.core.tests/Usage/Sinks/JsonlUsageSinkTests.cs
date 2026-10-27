@@ -25,7 +25,8 @@ public class JsonlUsageSinkTests
 
     private static UsageRecord Record(DateTimeOffset at, UsageTokens? tokens = null) => new(
         At: at, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null, Task: null, Run: null,
-        Service: null, Model: "claude-haiku-4-5-20251001", Tokens: tokens ?? new UsageTokens(39, null, 10_227, 206, null),
+        Service: null, Model: "claude-haiku-4-5-20251001",
+        Tokens: tokens ?? new UsageTokens(39, null, 10_227, 206, null),
         DurationMs: 1_234, Stop: "stop");
 
     private string[] Lines(string fileName) => File.ReadAllLines(Path.Combine(_directory, fileName));
@@ -73,7 +74,8 @@ public class JsonlUsageSinkTests
     public void Record_LineWrittenBeforeF2_ReadsBackWithNoCost()
     {
         // Ledgers written before prices existed have no "cost"; they must still read back, unpriced.
-        const string line = """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
+        const string line =
+            """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
 
         UsageRecord record = JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!;
 
@@ -99,7 +101,8 @@ public class JsonlUsageSinkTests
     [Test]
     public void Record_LineWrittenBeforeStep4c_ReadsBackWithANullPromptHash()
     {
-        const string line = """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
+        const string line =
+            """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
 
         UsageRecord record = JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!;
 
@@ -130,11 +133,13 @@ public class JsonlUsageSinkTests
     [Test]
     public void Record_NullCountsWrittenAsNull()
     {
-        new JsonlUsageSink(_directory).Record(Record(DateTimeOffset.UtcNow, new UsageTokens(null, null, null, null, null)));
+        new JsonlUsageSink(_directory).Record(Record(DateTimeOffset.UtcNow,
+            new UsageTokens(null, null, null, null, null)));
 
         using var json = JsonDocument.Parse(Lines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single());
         JsonElement tokens = json.RootElement.GetProperty("tokens");
-        Assert.That(tokens.GetProperty("input").ValueKind, Is.EqualTo(JsonValueKind.Null), "null means not reported; never 0");
+        Assert.That(tokens.GetProperty("input").ValueKind, Is.EqualTo(JsonValueKind.Null),
+            "null means not reported; never 0");
         Assert.That(tokens.GetProperty("cache_write").ValueKind, Is.EqualTo(JsonValueKind.Null));
     }
 
@@ -234,9 +239,12 @@ public class JsonlUsageSinkTests
     [Test]
     public void ALineWithoutCacheHit_ReadsBackWithNull()
     {
-        string line = JsonSerializer.Serialize(Record(new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero)), JsonlUsageSink.Json);
+        string line = JsonSerializer.Serialize(Record(new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero)),
+            JsonlUsageSink.Json);
 
         Assert.That(JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!.CacheHit, Is.Null);
-        Assert.That(JsonSerializer.Deserialize<UsageRecord>(line[..^1] + ",\"cache_hit\":true}", JsonlUsageSink.Json)!.CacheHit, Is.True);
+        Assert.That(
+            JsonSerializer.Deserialize<UsageRecord>(line[..^1] + ",\"cache_hit\":true}", JsonlUsageSink.Json)!.CacheHit,
+            Is.True);
     }
 }

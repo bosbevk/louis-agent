@@ -18,18 +18,27 @@ public class EvalRunnerSplitTests
 
     private static async Task<List<JsonElement>> Run(SplitSelection split)
     {
-        var turn = new[] { SessionEvent.From("content_block_delta", JsonDocument.Parse("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""").RootElement.Clone()) };
+        var turn = new[]
+        {
+            SessionEvent.From("content_block_delta",
+                JsonDocument
+                    .Parse("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")
+                    .RootElement.Clone())
+        };
         var sink = new StringWriter();
-        var runner = new EvalRunner(new CannedSessionClient(turn, turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(new CannedSessionClient(turn, turn), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new TwoSplitsEval(), new EvalRun("run_1", 1, Split: split), CancellationToken.None);
 
-        return sink.ToString().Split((char)10, StringSplitOptions.RemoveEmptyEntries).Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement.Clone()).ToList();
+        return sink.ToString().Split((char)10, StringSplitOptions.RemoveEmptyEntries)
+            .Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement.Clone()).ToList();
     }
 
     private static IEnumerable<string> Tasks(IEnumerable<JsonElement> lines) =>
-        lines.Where(l => l.GetProperty("event").GetString() == "conversation").Select(l => l.GetProperty("task").GetString()!);
+        lines.Where(l => l.GetProperty("event").GetString() == "conversation")
+            .Select(l => l.GetProperty("task").GetString()!);
 
     [TestCase(SplitSelection.Dev, "dev")]
     [TestCase(SplitSelection.HeldOut, "held_out")]
@@ -48,7 +57,9 @@ public class EvalRunnerSplitTests
         var lines = await Run(SplitSelection.Dev);
 
         Assert.That(Tasks(lines), Is.EqualTo(new[] { "tune" }));
-        Assert.That(lines.Single(l => l.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(), Is.EqualTo(1));
+        Assert.That(
+            lines.Single(l => l.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(),
+            Is.EqualTo(1));
     }
 
     [Test]
@@ -61,7 +72,9 @@ public class EvalRunnerSplitTests
         var lines = await Run(SplitSelection.All);
 
         Assert.That(Tasks(lines), Is.EqualTo(new[] { "tune", "release" }));
-        Assert.That(lines.Single(l => l.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(), Is.EqualTo(2));
+        Assert.That(
+            lines.Single(l => l.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(),
+            Is.EqualTo(2));
     }
 
     [TestCase(SplitSelection.Dev, DatasetSplit.Dev, true)]
@@ -79,13 +92,18 @@ public class EvalRunnerSplitTests
         public int Version => 1;
         public string Proves => "A dev and a held-out scenario.";
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([
+                new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])
+            ]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
         [
-            new EvalScenario("tune", new EvalInput(null, "Africa/Johannesburg", ["Een"]), default, [], DatasetSplit.Dev),
-            new EvalScenario("release", new EvalInput(null, "Africa/Johannesburg", ["Twee"]), default, [], DatasetSplit.HeldOut),
+            new EvalScenario("tune", new EvalInput(null, "Africa/Johannesburg", ["Een"]), default, [],
+                DatasetSplit.Dev),
+            new EvalScenario("release", new EvalInput(null, "Africa/Johannesburg", ["Twee"]), default, [],
+                DatasetSplit.HeldOut),
         ];
 
         public IReadOnlyList<IGrader> Graders => [];

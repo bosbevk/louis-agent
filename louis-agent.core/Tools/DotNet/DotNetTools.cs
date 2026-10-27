@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.DotNet;
 
 using System.ComponentModel;
 using System.Text;
@@ -6,6 +5,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.DotNet.Messages;
 
+namespace LouisAgent.Core.Tools.DotNet;
 /// <summary>
 /// .NET SDK toolset: build, test, run and inspect projects inside the workspace.
 /// Output is condensed (diagnostics, failed tests, stack traces) so the model sees what matters, not MSBuild noise.
@@ -28,7 +28,8 @@ public sealed class DotNetTools
         _workspaceRoot = Path.GetFullPath(workspaceRoot);
     }
 
-    [Description("Lists every .sln/.slnx solution and .csproj/.fsproj project file found anywhere in the workspace, excluding build output directories (bin, obj, node_modules, .git). Solutions are listed before projects, both sorted alphabetically. Use this first to discover a valid target path before calling DotNetBuild, DotNetTest or DotNetRun -- it does not inspect project contents or installed SDKs, only locate files.")]
+    [Description(
+        "Lists every .sln/.slnx solution and .csproj/.fsproj project file found anywhere in the workspace, excluding build output directories (bin, obj, node_modules, .git). Solutions are listed before projects, both sorted alphabetically. Use this first to discover a valid target path before calling DotNetBuild, DotNetTest or DotNetRun -- it does not inspect project contents or installed SDKs, only locate files.")]
     public string DotNetListProjects()
     {
         string root = WorkingDirectory;
@@ -42,7 +43,8 @@ public sealed class DotNetTools
         return files.Count == 0 ? MessageText.Format(DotNetToolMessage.NoDotNetProjects) : string.Join('\n', files);
     }
 
-    [Description("Reports the .NET SDKs and runtimes installed on the machine running the agent, via `dotnet --list-sdks` and `dotnet --list-runtimes`. Use this to check whether a specific SDK or runtime version is available before a build fails with a version-mismatch error, or when asked what .NET version is installed. It reports nothing about the workspace's own projects -- use DotNetListProjects for that.")]
+    [Description(
+        "Reports the .NET SDKs and runtimes installed on the machine running the agent, via `dotnet --list-sdks` and `dotnet --list-runtimes`. Use this to check whether a specific SDK or runtime version is available before a build fails with a version-mismatch error, or when asked what .NET version is installed. It reports nothing about the workspace's own projects -- use DotNetListProjects for that.")]
     public string DotNetSdkInfo()
     {
         var sdks = RunDotNet(["--list-sdks"], TimeSpan.FromSeconds(30));
@@ -50,43 +52,60 @@ public sealed class DotNetTools
         return $"SDKs:\n{sdks.Output.Trim()}\n\nRuntimes:\n{runtimes.Output.Trim()}";
     }
 
-    [Description("Builds a .NET solution, project or folder (or the whole workspace root if `project` is empty) with `dotnet build`, and returns a condensed summary of errors and warnings in `file(line,col): code: message` form, with raw MSBuild noise filtered out. Only the first 50 errors and 30 warnings are included; set `includeWarnings` to false to see errors only. Times out after 5 minutes. Use this to check whether code compiles -- it does not run tests (use DotNetTest) or execute the program (use DotNetRun, which builds internally anyway).")]
+    [Description(
+        "Builds a .NET solution, project or folder (or the whole workspace root if `project` is empty) with `dotnet build`, and returns a condensed summary of errors and warnings in `file(line,col): code: message` form, with raw MSBuild noise filtered out. Only the first 50 errors and 30 warnings are included; set `includeWarnings` to false to see errors only. Times out after 5 minutes. Use this to check whether code compiles -- it does not run tests (use DotNetTest) or execute the program (use DotNetRun, which builds internally anyway).")]
     public string DotNetBuild(
-        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "",
-        [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug",
-        [Description("If true, include warnings in the summary (errors are always included)")] bool includeWarnings = true)
+        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")]
+        string project = "",
+        [Description("Build configuration, e.g. Debug or Release")]
+        string configuration = "Debug",
+        [Description("If true, include warnings in the summary (errors are always included)")]
+        bool includeWarnings = true)
     {
         if (!TryResolveTarget(project, out var target, out var error)) return error;
 
-        var result = RunDotNet(["build", .. target, "-c", configuration, "-nologo", "-nodeReuse:false", "-v:q", "-clp:NoSummary"], BuildTimeout);
+        var result =
+            RunDotNet(
+                ["build", .. target, "-c", configuration, "-nologo", "-nodeReuse:false", "-v:q", "-clp:NoSummary"],
+                BuildTimeout);
         return SummarizeBuild(result, includeWarnings);
     }
 
-    [Description("Restores NuGet package dependencies for a solution, project or folder via `dotnet restore`, returning the same condensed error/warning summary as DotNetBuild. Needed before a build or test run only when packages have changed or a restore error is suspected -- DotNetBuild and DotNetTest already restore implicitly as part of the build. Times out after 5 minutes.")]
+    [Description(
+        "Restores NuGet package dependencies for a solution, project or folder via `dotnet restore`, returning the same condensed error/warning summary as DotNetBuild. Needed before a build or test run only when packages have changed or a restore error is suspected -- DotNetBuild and DotNetTest already restore implicitly as part of the build. Times out after 5 minutes.")]
     public string DotNetRestore(
-        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "")
+        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")]
+        string project = "")
     {
         if (!TryResolveTarget(project, out var target, out var error)) return error;
         var result = RunDotNet(["restore", .. target, "-nologo", "-v:q"], BuildTimeout);
         return SummarizeBuild(result, includeWarnings: true);
     }
 
-    [Description("Removes build output (bin/obj) for a solution, project or folder via `dotnet clean`, returning a condensed summary with warnings always omitted. Use this to force a full rebuild when stale build artifacts are suspected of causing incorrect behavior -- it does not rebuild afterward, so follow it with DotNetBuild if fresh output is needed. Times out after 5 minutes.")]
+    [Description(
+        "Removes build output (bin/obj) for a solution, project or folder via `dotnet clean`, returning a condensed summary with warnings always omitted. Use this to force a full rebuild when stale build artifacts are suspected of causing incorrect behavior -- it does not rebuild afterward, so follow it with DotNetBuild if fresh output is needed. Times out after 5 minutes.")]
     public string DotNetClean(
-        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "",
-        [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug")
+        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")]
+        string project = "",
+        [Description("Build configuration, e.g. Debug or Release")]
+        string configuration = "Debug")
     {
         if (!TryResolveTarget(project, out var target, out var error)) return error;
         var result = RunDotNet(["clean", .. target, "-c", configuration, "-nologo", "-v:q"], BuildTimeout);
         return SummarizeBuild(result, includeWarnings: false);
     }
 
-    [Description("Runs the test suite for a solution, test project or folder via `dotnet test`, building first unless `noBuild` is true, and returns the pass/fail summary plus the failure message and stack trace for each failed test (up to 20). If compilation fails before any test runs, the build-error summary is returned instead of a test summary. Use `filter` to scope to specific tests (e.g. `FullyQualifiedName~ParserTests`) rather than running the whole suite. Times out after 10 minutes -- a hanging test is killed and reported as a timeout rather than left to run indefinitely.")]
+    [Description(
+        "Runs the test suite for a solution, test project or folder via `dotnet test`, building first unless `noBuild` is true, and returns the pass/fail summary plus the failure message and stack trace for each failed test (up to 20). If compilation fails before any test runs, the build-error summary is returned instead of a test summary. Use `filter` to scope to specific tests (e.g. `FullyQualifiedName~ParserTests`) rather than running the whole suite. Times out after 10 minutes -- a hanging test is killed and reported as a timeout rather than left to run indefinitely.")]
     public string DotNetTest(
-        [Description("Relative path to a .sln/test .csproj or folder; empty = workspace root")] string project = "",
-        [Description("Optional test filter, e.g. 'FullyQualifiedName~ParserTests' or 'Name=MyTest'")] string filter = "",
-        [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug",
-        [Description("If true, skip the build step (use after a successful Build)")] bool noBuild = false)
+        [Description("Relative path to a .sln/test .csproj or folder; empty = workspace root")]
+        string project = "",
+        [Description("Optional test filter, e.g. 'FullyQualifiedName~ParserTests' or 'Name=MyTest'")]
+        string filter = "",
+        [Description("Build configuration, e.g. Debug or Release")]
+        string configuration = "Debug",
+        [Description("If true, skip the build step (use after a successful Build)")]
+        bool noBuild = false)
     {
         if (!TryResolveTarget(project, out var target, out var error)) return error;
 
@@ -98,19 +117,28 @@ public sealed class DotNetTools
         return SummarizeTests(result);
     }
 
-    [Description("Builds the given project and, if the build succeeds, runs it via `dotnet run --no-build` with the given command-line arguments and standard input, returning the exit code and captured output (or the compile-error summary instead, if the build failed). Use this specifically to reproduce and debug a runtime error or unexpected program output -- for checking whether code merely compiles, use DotNetBuild instead, and for automated tests use DotNetTest. The program is killed and reported as timed out if it runs longer than `timeoutSeconds` (default 60, max 600); stdin is closed after the given input is sent, so a prompt expecting more input will hang until the timeout.")]
+    [Description(
+        "Builds the given project and, if the build succeeds, runs it via `dotnet run --no-build` with the given command-line arguments and standard input, returning the exit code and captured output (or the compile-error summary instead, if the build failed). Use this specifically to reproduce and debug a runtime error or unexpected program output -- for checking whether code merely compiles, use DotNetBuild instead, and for automated tests use DotNetTest. The program is killed and reported as timed out if it runs longer than `timeoutSeconds` (default 60, max 600); stdin is closed after the given input is sent, so a prompt expecting more input will hang until the timeout.")]
     public string DotNetRun(
-        [Description("Relative path to the .csproj or its folder")] string project,
-        [Description("Arguments passed to the program, space separated; wrap an argument in double quotes to keep spaces")] string arguments = "",
-        [Description("Text sent to the program's standard input (stdin is closed afterwards)")] string standardInput = "",
-        [Description("Maximum seconds to let the program run before it is killed (default 60)")] int timeoutSeconds = 60,
-        [Description("Build configuration, e.g. Debug or Release")] string configuration = "Debug")
+        [Description("Relative path to the .csproj or its folder")]
+        string project,
+        [Description(
+            "Arguments passed to the program, space separated; wrap an argument in double quotes to keep spaces")]
+        string arguments = "",
+        [Description("Text sent to the program's standard input (stdin is closed afterwards)")]
+        string standardInput = "",
+        [Description("Maximum seconds to let the program run before it is killed (default 60)")]
+        int timeoutSeconds = 60,
+        [Description("Build configuration, e.g. Debug or Release")]
+        string configuration = "Debug")
     {
         if (string.IsNullOrWhiteSpace(project)) return MessageText.Format(DotNetToolMessage.DotNetProjectRequired);
         if (!TryResolveTarget(project, out var target, out var error)) return error;
 
         // Build separately so compile errors come back as a clean diagnostic summary.
-        var build = RunDotNet(["build", .. target, "-c", configuration, "-nologo", "-nodeReuse:false", "-v:q", "-clp:NoSummary"], BuildTimeout);
+        var build = RunDotNet(
+            ["build", .. target, "-c", configuration, "-nologo", "-nodeReuse:false", "-v:q", "-clp:NoSummary"],
+            BuildTimeout);
         if (build.ExitCode != 0) return SummarizeBuild(build, includeWarnings: false);
 
         var args = new List<string> { "run", "--project", target[0], "-c", configuration, "--no-build" };
@@ -127,10 +155,13 @@ public sealed class DotNetTools
         return Truncate(sb.ToString());
     }
 
-    [Description("Lists the NuGet packages referenced by a project via `dotnet list package`, optionally filtered to only outdated packages or only vulnerable ones (the vulnerability scan includes transitive dependencies). Use this to audit dependencies before deciding whether to upgrade or patch a package -- it only reports, it does not change anything (use DotNetAddPackage or DotNetRemovePackage for that).")]
+    [Description(
+        "Lists the NuGet packages referenced by a project via `dotnet list package`, optionally filtered to only outdated packages or only vulnerable ones (the vulnerability scan includes transitive dependencies). Use this to audit dependencies before deciding whether to upgrade or patch a package -- it only reports, it does not change anything (use DotNetAddPackage or DotNetRemovePackage for that).")]
     public string DotNetListPackages(
-        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")] string project = "",
-        [Description("Filter: '' for all, 'outdated' or 'vulnerable'")] string filter = "")
+        [Description("Relative path to a .sln/.csproj or folder; empty = workspace root")]
+        string project = "",
+        [Description("Filter: '' for all, 'outdated' or 'vulnerable'")]
+        string filter = "")
     {
         if (!TryResolveTarget(project, out var target, out var error)) return error;
 
@@ -147,11 +178,15 @@ public sealed class DotNetTools
         return Truncate(FormatResult(result));
     }
 
-    [Description("Adds a NuGet package reference to a project's .csproj via `dotnet add package`, installing the latest stable version unless a specific `version` is given. This modifies the project file and restores the package; use DotNetListPackages first if the current or latest version needs checking before deciding, since this tool does not report available versions.")]
+    [Description(
+        "Adds a NuGet package reference to a project's .csproj via `dotnet add package`, installing the latest stable version unless a specific `version` is given. This modifies the project file and restores the package; use DotNetListPackages first if the current or latest version needs checking before deciding, since this tool does not report available versions.")]
     public string DotNetAddPackage(
-        [Description("Relative path to the .csproj or its folder")] string project,
-        [Description("Package id, e.g. Newtonsoft.Json")] string packageId,
-        [Description("Optional version; empty = latest stable")] string version = "")
+        [Description("Relative path to the .csproj or its folder")]
+        string project,
+        [Description("Package id, e.g. Newtonsoft.Json")]
+        string packageId,
+        [Description("Optional version; empty = latest stable")]
+        string version = "")
     {
         if (!TryResolveTarget(project, out var target, out var error)) return error;
         List<string> args = ["add", .. target, "package", packageId];
@@ -159,9 +194,11 @@ public sealed class DotNetTools
         return Truncate(FormatResult(RunDotNet(args, TimeSpan.FromMinutes(2))));
     }
 
-    [Description("Removes a NuGet package reference from a project's .csproj via `dotnet remove package`. This only removes the reference -- it does not remove any using-directives or code that depends on the package, so a build or test afterward may reveal compile errors that still need fixing by hand.")]
+    [Description(
+        "Removes a NuGet package reference from a project's .csproj via `dotnet remove package`. This only removes the reference -- it does not remove any using-directives or code that depends on the package, so a build or test afterward may reveal compile errors that still need fixing by hand.")]
     public string DotNetRemovePackage(
-        [Description("Relative path to the .csproj or its folder")] string project,
+        [Description("Relative path to the .csproj or its folder")]
+        string project,
         [Description("Package id to remove")] string packageId)
     {
         if (!TryResolveTarget(project, out var target, out var error)) return error;
@@ -179,7 +216,8 @@ public sealed class DotNetTools
         target = [];
         error = "";
 
-        string rootWithSeparator = root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
+        string rootWithSeparator =
+            root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
         if (!full.Equals(root, StringComparison.OrdinalIgnoreCase) &&
             !full.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
         {
@@ -199,7 +237,8 @@ public sealed class DotNetTools
 
     internal static string SummarizeBuild(ProcessRunner.Result result, bool includeWarnings)
     {
-        if (result.TimedOut) return MessageText.Format(DotNetToolMessage.TimedOutWithOutput, new { Output = Tail(result.Output) });
+        if (result.TimedOut)
+            return MessageText.Format(DotNetToolMessage.TimedOutWithOutput, new { Output = Tail(result.Output) });
 
         var diagnostics = DiagnosticLine.Matches(result.Output)
             .Select(m => (Kind: m.Groups["kind"].Value, Text: m.Groups["text"].Value.Trim()))
@@ -209,13 +248,16 @@ public sealed class DotNetTools
         var warnings = diagnostics.Where(d => d.Kind == "warning").Select(d => d.Text).ToList();
 
         var sb = new StringBuilder();
-        sb.AppendLine(result.ExitCode == 0 ? MessageText.Format(DotNetToolMessage.BuildSucceeded) : MessageText.Format(DotNetToolMessage.BuildFailed, new { result.ExitCode }));
+        sb.AppendLine(result.ExitCode == 0
+            ? MessageText.Format(DotNetToolMessage.BuildSucceeded)
+            : MessageText.Format(DotNetToolMessage.BuildFailed, new { result.ExitCode }));
         sb.AppendLine($"{errors.Count} error(s), {warnings.Count} warning(s).");
         foreach (var e in errors.Take(50)) sb.AppendLine(e);
         if (includeWarnings)
         {
             foreach (var w in warnings.Take(30)) sb.AppendLine(w);
-            if (warnings.Count > 30) sb.AppendLine(MessageText.Format(DotNetToolMessage.MoreWarnings, new { Count = warnings.Count - 30 }));
+            if (warnings.Count > 30)
+                sb.AppendLine(MessageText.Format(DotNetToolMessage.MoreWarnings, new { Count = warnings.Count - 30 }));
         }
 
         // A failure with no parsed diagnostics (e.g. missing SDK, bad path): show the raw tail instead.
@@ -225,16 +267,19 @@ public sealed class DotNetTools
 
     internal static string SummarizeTests(ProcessRunner.Result result)
     {
-        if (result.TimedOut) return MessageText.Format(DotNetToolMessage.TestRunTimedOut, new { Output = Tail(result.Output) });
+        if (result.TimedOut)
+            return MessageText.Format(DotNetToolMessage.TestRunTimedOut, new { Output = Tail(result.Output) });
 
         var lines = result.Output.Split('\n').Select(l => l.TrimEnd('\r')).ToList();
 
         // Compile errors stop the run before any tests execute.
         if (DiagnosticLine.Matches(result.Output).Any(m => m.Groups["kind"].Value == "error"))
-            return MessageText.Format(DotNetToolMessage.BuildFailedBeforeTests, new { Build = SummarizeBuild(result, includeWarnings: false) });
+            return MessageText.Format(DotNetToolMessage.BuildFailedBeforeTests,
+                new { Build = SummarizeBuild(result, includeWarnings: false) });
 
         var sb = new StringBuilder();
-        foreach (var summary in lines.Where(l => Regex.IsMatch(l, @"^\s*(Passed!|Failed!|Total tests:|\s*Passed:|\s*Failed:|\s*Skipped:)")))
+        foreach (var summary in lines.Where(l =>
+                     Regex.IsMatch(l, @"^\s*(Passed!|Failed!|Total tests:|\s*Passed:|\s*Failed:|\s*Skipped:)")))
             sb.AppendLine(summary.Trim());
 
         // Each failed test block starts with "  Failed <name>" and runs until the next test result line.
@@ -244,7 +289,12 @@ public sealed class DotNetTools
         {
             if (Regex.IsMatch(line, @"^\s{2}Failed\s+\S"))
             {
-                if (++failures > 20) { sb.AppendLine(MessageText.Format(DotNetToolMessage.MoreFailures)); break; }
+                if (++failures > 20)
+                {
+                    sb.AppendLine(MessageText.Format(DotNetToolMessage.MoreFailures));
+                    break;
+                }
+
                 inFailure = true;
                 sb.AppendLine().AppendLine(line.Trim());
                 continue;
@@ -259,7 +309,9 @@ public sealed class DotNetTools
             if (inFailure && !string.IsNullOrWhiteSpace(line)) sb.AppendLine(line);
         }
 
-        if (sb.Length == 0) sb.AppendLine(result.ExitCode == 0 ? MessageText.Format(DotNetToolMessage.TestsPassed) : Tail(result.Output));
+        if (sb.Length == 0)
+            sb.AppendLine(
+                result.ExitCode == 0 ? MessageText.Format(DotNetToolMessage.TestsPassed) : Tail(result.Output));
         else if (result.ExitCode != 0 && failures == 0) sb.AppendLine(Tail(result.Output));
         return Truncate(sb.ToString().TrimEnd());
     }
@@ -274,14 +326,26 @@ public sealed class DotNetTools
         bool inQuotes = false;
         foreach (char c in arguments)
         {
-            if (c == '"') { inQuotes = !inQuotes; continue; }
-            if (char.IsWhiteSpace(c) && !inQuotes)
+            if (c == '"')
             {
-                if (current.Length > 0) { result.Add(current.ToString()); current.Clear(); }
+                inQuotes = !inQuotes;
                 continue;
             }
+
+            if (char.IsWhiteSpace(c) && !inQuotes)
+            {
+                if (current.Length > 0)
+                {
+                    result.Add(current.ToString());
+                    current.Clear();
+                }
+
+                continue;
+            }
+
             current.Append(c);
         }
+
         if (current.Length > 0) result.Add(current.ToString());
         return result;
     }
@@ -298,7 +362,9 @@ public sealed class DotNetTools
 
     private static string FormatResult(ProcessRunner.Result result) =>
         result.TimedOut ? MessageText.Format(DotNetToolMessage.TimedOutWithOutput, new { Output = Tail(result.Output) })
-        : result.ExitCode == 0 ? (string.IsNullOrWhiteSpace(result.Output) ? MessageText.Format(ToolMessage.SucceededNoOutput) : result.Output.Trim())
+        : result.ExitCode == 0 ? (string.IsNullOrWhiteSpace(result.Output)
+            ? MessageText.Format(ToolMessage.SucceededNoOutput)
+            : result.Output.Trim())
         : MessageText.Format(ToolMessage.ExitCode, new { Code = result.ExitCode, Output = result.Output.Trim() });
 
     private static bool IsBuildOutput(string path) =>

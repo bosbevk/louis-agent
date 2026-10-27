@@ -17,23 +17,27 @@ namespace LouisAgent.Core.Tools.Web.Replay;
 /// </summary>
 public sealed class RecordedFetchHandler(ReplayStore store) : DelegatingHandler
 {
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
         if (ReplayTrial.Current is not { } trial) return await base.SendAsync(request, cancellationToken);
 
-        var ask = ReplayAsk.Of(ReplayKind.Fetch, new { Method = request.Method.Method, Url = request.RequestUri!.AbsoluteUri });
+        var ask = ReplayAsk.Of(ReplayKind.Fetch,
+            new { Method = request.Method.Method, Url = request.RequestUri!.AbsoluteUri });
         return trial.Replaying
             ? await ReplayAsync(trial.Of, ask, request, cancellationToken)
             : await RecordAsync(trial.Of, ask, request, cancellationToken);
     }
 
-    private async Task<HttpResponseMessage> RecordAsync(string trial, ReplayAsk ask, HttpRequestMessage request, CancellationToken cancellationToken)
+    private async Task<HttpResponseMessage> RecordAsync(string trial, ReplayAsk ask, HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
         var response = await base.SendAsync(request, cancellationToken);
         try
         {
             await response.Content.LoadIntoBufferAsync(PageFetcher.MaxResponseBytes, cancellationToken);
-            await store.SaveAnswerAsync(trial, ask, await ReplayResponse.OfAsync(response, cancellationToken), cancellationToken);
+            await store.SaveAnswerAsync(trial, ask, await ReplayResponse.OfAsync(response, cancellationToken),
+                cancellationToken);
             return response;
         }
         catch
@@ -43,10 +47,12 @@ public sealed class RecordedFetchHandler(ReplayStore store) : DelegatingHandler
         }
     }
 
-    private async Task<HttpResponseMessage> ReplayAsync(string trial, ReplayAsk ask, HttpRequestMessage request, CancellationToken cancellationToken)
+    private async Task<HttpResponseMessage> ReplayAsync(string trial, ReplayAsk ask, HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
         if (await store.FindAsync<ReplayResponse>(trial, ask, cancellationToken) is not { } recorded)
-            throw new HttpRequestException(MessageText.Format(WebToolMessage.ReplayMiss, new { Url = request.RequestUri!.AbsoluteUri }));
+            throw new HttpRequestException(MessageText.Format(WebToolMessage.ReplayMiss,
+                new { Url = request.RequestUri!.AbsoluteUri }));
         return recorded.OrThrow(error => new HttpRequestException(error)).ToResponse(request);
     }
 }

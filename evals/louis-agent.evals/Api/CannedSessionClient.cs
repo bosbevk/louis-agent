@@ -32,6 +32,7 @@ public sealed class CannedSessionClient(params IReadOnlyList<SessionEvent>[] tur
             cancellationToken.ThrowIfCancellationRequested();
             yield return streamEvent;
         }
+
         await Task.CompletedTask;
     }
 

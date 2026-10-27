@@ -14,20 +14,23 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.Judges;
 // A scenario that asks for no number of people has no meal to judge, and costs no request. Written first: MealForPeopleGrader did not exist.
 public class MealForPeopleGraderTests
 {
-    private static readonly MealForPeopleTests.ScriptedJudge Client = new("""{"meal": true, "reason": "a main dish for the people asked"}""");
+    private static readonly MealForPeopleTests.ScriptedJudge Client =
+        new("""{"meal": true, "reason": "a main dish for the people asked"}""");
 
     private static MealForPeopleGrader Grader(MealForPeopleTests.ScriptedJudge? client = null) =>
         MealForPeopleGrader.Create(() => new ConfiguredJudge(new ChatConfiguration(client ?? Client), "qwen3:8b"));
 
     private static Trial Cook(string expected, int turns) =>
-        Trial(CookEvalMode, "cook-x", expected, "Malmesbury", Enumerable.Range(1, turns).Select(n => Turn(n, [Text($"antwoord {n}")])).ToArray());
+        Trial(CookEvalMode, "cook-x", expected, "Malmesbury",
+            Enumerable.Range(1, turns).Select(n => Turn(n, [Text($"antwoord {n}")])).ToArray());
 
     [Test]
     public void ItIsAModelGrader_ThatReadsServes_AndIsNotRequired()
     {
         var grader = Grader();
 
-        Assert.That((grader.Name, grader.Kind, grader.Required), Is.EqualTo(("meal-for-people", GraderKind.Model, false)));
+        Assert.That((grader.Name, grader.Kind, grader.Required),
+            Is.EqualTo(("meal-for-people", GraderKind.Model, false)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "serves" }));
     }
 
@@ -44,13 +47,16 @@ public class MealForPeopleGraderTests
     {
         var client = new MealForPeopleTests.ScriptedJudge("""{"meal": true, "reason": "feeds four"}""");
 
-        var grade = await Grader(client).GradeAsync(Cook("""{"serves":4,"budget":150,"town":"Malmesbury"}""", turns: 1), CancellationToken.None);
+        var grade = await Grader(client).GradeAsync(Cook("""{"serves":4,"budget":150,"town":"Malmesbury"}""", turns: 1),
+            CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Pass, "feeds four")));
         Assert.That(grade.Judge, Is.EqualTo(new GradeJudge("qwen3:8b", MealForPeoplePrompt.Hash)));
         string user = client.Sent.Single()[1].Text;
         // 6a.4f: the judge is not told the budget. It must never judge it, and a small model judged it anyway when told; another grader checks the cost.
-        Assert.That(user, Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain("antwoord 1"));
+        Assert.That(user,
+            Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And
+                .Contain("antwoord 1"));
     }
 
     [TestCase("""{"serves":[4,6]}""", 2, 6)]
@@ -65,7 +71,8 @@ public class MealForPeopleGraderTests
         string user = client.Sent.Single()[1].Text;
         // 6a.4f: the earlier answers are sent too, under "the conversation so far", and the judged one last, under "the answer to judge".
         Assert.That(user, Does.Contain($"People: {people}").And.EndWith($"The answer to judge:\nantwoord {turns}"));
-        if (turns > 1) Assert.That(user, Does.Contain("The conversation so far:").And.Contain($"Assistant: antwoord {turns - 1}"));
+        if (turns > 1)
+            Assert.That(user, Does.Contain("The conversation so far:").And.Contain($"Assistant: antwoord {turns - 1}"));
     }
 
     [Test]
@@ -84,7 +91,8 @@ public class MealForPeopleGraderTests
     [Test]
     public async Task WithNoJudgeConfigured_TheGradeIsUnknown()
     {
-        var grade = await MealForPeopleGrader.Create(() => null).GradeAsync(Cook("""{"serves":4}""", turns: 1), CancellationToken.None);
+        var grade = await MealForPeopleGrader.Create(() => null)
+            .GradeAsync(Cook("""{"serves":4}""", turns: 1), CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Unknown, "no judge configured")));
     }

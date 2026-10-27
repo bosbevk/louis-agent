@@ -15,19 +15,23 @@ public class AgreementPanelTests
         JsonDocument.Parse("{\"run\":{\"id\":\"run1\"},\"agreement\":" + agreement + "}").RootElement.Clone();
 
     private const string Cook = """
-        [{"grader":"meal-for-people","person_pass":{"judge_pass":13,"judge_fail":1,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":4,"judge_unknown":0}}]
-        """;
+                                [{"grader":"meal-for-people","person_pass":{"judge_pass":13,"judge_fail":1,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":4,"judge_unknown":0}}]
+                                """;
 
-    private static (IRenderedComponent<AgreementPanel> Cut, StubHandler Handler, BunitContext Ctx) Render(string agreement)
+    private static (IRenderedComponent<AgreementPanel> Cut, StubHandler Handler, BunitContext Ctx) Render(
+        string agreement)
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         // The labels download gets a zip; the judge check's read (6a.5c) gets an empty list.
         var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/calibrations")
-            ? new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("{\"calibrations\":[]}", System.Text.Encoding.UTF8, "application/json") }
+            ? new HttpResponseMessage(HttpStatusCode.OK)
+            { Content = new StringContent("{\"calibrations\":[]}", System.Text.Encoding.UTF8, "application/json") }
             : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([80, 75, 3, 4]) });
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
-        return (ctx.Render<AgreementPanel>(p => p.Add(x => x.Run, Run(agreement)).Add(x => x.RunId, "run1")), handler, ctx);
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") },
+            new ChatSettings()));
+        return (ctx.Render<AgreementPanel>(p => p.Add(x => x.Run, Run(agreement)).Add(x => x.RunId, "run1")), handler,
+            ctx);
     }
 
     // Louis, 2026-10-26: "like the pass rates": a row per judge, with a bar per class of the people's grades (what you passed, what you failed) that shows the share the judge agreed,
@@ -39,10 +43,12 @@ public class AgreementPanelTests
         var (cut, _, _) = Render(Cook);
 
         Assert.That(cut.Find(".agreement-judge h4").TextContent, Is.EqualTo("meal-for-people"));
-        Assert.That(cut.Find(".agreement-pass .agreement-sentence").TextContent, Is.EqualTo("You passed 14 answers. The judge passed 13 of them."));
+        Assert.That(cut.Find(".agreement-pass .agreement-sentence").TextContent,
+            Is.EqualTo("You passed 14 answers. The judge passed 13 of them."));
         Assert.That(cut.Find(".agreement-pass .rate-fill").GetAttribute("style"), Does.Contain("93%"));
         Assert.That(cut.Find(".agreement-pass .agreement-share").TextContent, Is.EqualTo("93%"));
-        Assert.That(cut.Find(".agreement-fail .agreement-sentence").TextContent, Is.EqualTo("You failed 4 answers. The judge failed all 4."));
+        Assert.That(cut.Find(".agreement-fail .agreement-sentence").TextContent,
+            Is.EqualTo("You failed 4 answers. The judge failed all 4."));
         Assert.That(cut.Find(".agreement-fail .agreement-share").TextContent, Is.EqualTo("100% · few labels"));
         Assert.That(cut.Find(".agreement-lead").TextContent, Does.Contain("see what you see"));
         Assert.That(cut.Markup, Does.Not.Contain("<table"));
@@ -51,9 +57,12 @@ public class AgreementPanelTests
     [Test]
     public void AClassNobodyHasGraded_SaysSo_WithAnEmptyBar()
     {
-        var (cut, _, _) = Render("""[{"grader":"g","person_pass":{"judge_pass":3,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":0,"judge_unknown":0}}]""");
+        var (cut, _, _) =
+            Render(
+                """[{"grader":"g","person_pass":{"judge_pass":3,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":0,"judge_unknown":0}}]""");
 
-        Assert.That(cut.Find(".agreement-fail .agreement-sentence").TextContent, Is.EqualTo("You have failed no answers yet."));
+        Assert.That(cut.Find(".agreement-fail .agreement-sentence").TextContent,
+            Is.EqualTo("You have failed no answers yet."));
         Assert.That(cut.Find(".agreement-fail .agreement-share").TextContent, Is.EqualTo("no labels"));
         Assert.That(cut.Find(".agreement-fail .rate-fill").GetAttribute("style"), Does.Contain("0%"));
     }
@@ -75,14 +84,21 @@ public class AgreementPanelTests
         cut.Find(".agreement-download").Click();
 
         cut.WaitForAssertion(() => Assert.That(handler.Requests.Count(r => r.Url.Contains("/labels")), Is.EqualTo(1)));
-        Assert.That(handler.Requests.Single(r => r.Url.Contains("/labels")).Url, Does.EndWith("v1/admin/benchmarks/runs/run1/labels?grader=meal-for-people"));
-        cut.WaitForAssertion(() => Assert.That(ctx.JSInterop.Invocations.Any(i => i.Identifier == "louisDownload" && (string)i.Arguments[0]! == "meal-for-people-labels-run1.zip"), Is.True));
+        Assert.That(handler.Requests.Single(r => r.Url.Contains("/labels")).Url,
+            Does.EndWith("v1/admin/benchmarks/runs/run1/labels?grader=meal-for-people"));
+        cut.WaitForAssertion(() =>
+            Assert.That(
+                ctx.JSInterop.Invocations.Any(i =>
+                    i.Identifier == "louisDownload" && (string)i.Arguments[0]! == "meal-for-people-labels-run1.zip"),
+                Is.True));
     }
 
     [Test]
     public void WithNobodyGradedYet_ThereIsNoDownload()
     {
-        var (cut, _, _) = Render("""[{"grader":"g","person_pass":{"judge_pass":0,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":0,"judge_unknown":0}}]""");
+        var (cut, _, _) =
+            Render(
+                """[{"grader":"g","person_pass":{"judge_pass":0,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":0,"judge_unknown":0}}]""");
 
         Assert.That(cut.FindAll(".agreement-download"), Is.Empty);
         Assert.That(cut.Find(".agreement-none").TextContent, Does.Contain("Nobody has graded"));

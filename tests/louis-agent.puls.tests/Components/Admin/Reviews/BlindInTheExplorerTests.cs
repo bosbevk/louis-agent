@@ -19,19 +19,19 @@ public class BlindInTheExplorerTests
 
     /// <summary>A run with a human review and one conversation.</summary>
     private static readonly string Run = SampleRole.Fill("""
-        {"run":{"id":"run1","check":"puls-cook","repeat":1,
-                "graders":[{"name":"no-error","version":1,"kind":"FixedRule","question":null},{"name":"meal-for-people","version":1,"kind":"Model","question":null},
-                           {"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}]},
-         "modes":[{"name":"puls-cook","repeat":1,"toolsets":["web"]}],
-         "conversations":[{"mode":"puls-cook","repeat":1,"task":"bobotie","role":null,"scores":{},"errors":0,"outcome":"Pass",
-            "grades":[{"grader":"no-error","version":1,"score":1,"outcome":"Pass","reason":"fine"},
-                      {"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"__REASON__"},
-                      {"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}],
-            "human_grades":[]}],
-         "turns":[{"mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"Wat kan ek vanaand kook?","answer":"Bobotie vir vier.","role":"<RoleAlpha>","seconds":3.0,
-                   "hosts":[],"error":null,"tools":{"calls":0,"failed":0,"reasons":[]}}],
-         "requests":[]}
-        """).Replace("__REASON__", JudgeReason);
+                                                         {"run":{"id":"run1","check":"puls-cook","repeat":1,
+                                                                 "graders":[{"name":"no-error","version":1,"kind":"FixedRule","question":null},{"name":"meal-for-people","version":1,"kind":"Model","question":null},
+                                                                            {"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}]},
+                                                          "modes":[{"name":"puls-cook","repeat":1,"toolsets":["web"]}],
+                                                          "conversations":[{"mode":"puls-cook","repeat":1,"task":"bobotie","role":null,"scores":{},"errors":0,"outcome":"Pass",
+                                                             "grades":[{"grader":"no-error","version":1,"score":1,"outcome":"Pass","reason":"fine"},
+                                                                       {"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"__REASON__"},
+                                                                       {"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}],
+                                                             "human_grades":[]}],
+                                                          "turns":[{"mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"Wat kan ek vanaand kook?","answer":"Bobotie vir vier.","role":"<RoleAlpha>","seconds":3.0,
+                                                                    "hosts":[],"error":null,"tools":{"calls":0,"failed":0,"reasons":[]}}],
+                                                          "requests":[]}
+                                                         """).Replace("__REASON__", JudgeReason);
 
     /// <summary>Renders the explorer as this reviewer (or nobody), opened at a task if one is given.</summary>
     private static IRenderedComponent<RunExplorer> Render(string? reviewer, string? openTask)
@@ -40,16 +40,20 @@ public class BlindInTheExplorerTests
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
 
         // The reviewer's name is kept in the browser's storage; pretend this reviewer already typed theirs.
-        if (reviewer is not null) ctx.JSInterop.Setup<string?>("localStorage.getItem", ReviewerState.StorageKey).SetResult(reviewer);
+        if (reviewer is not null)
+            ctx.JSInterop.Setup<string?>("localStorage.getItem", ReviewerState.StorageKey).SetResult(reviewer);
 
         // What the explorer needs: an API that answers nothing, who the reviewer is, and the notes state.
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(_ => new HttpResponseMessage()))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         var state = new ReviewerState(ctx.JSInterop.JSRuntime);
         ctx.Services.AddSingleton(state);
         ctx.Services.AddSingleton(new RunNotesState());
 
         // Render it on the run. With no task to open we are at the run's tiles, so click through to the list of conversations.
-        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(Run).RootElement.Clone()).Add(x => x.OpenTask, openTask));
+        var cut = ctx.Render<RunExplorer>(p =>
+            p.Add(x => x.Run, JsonDocument.Parse(Run).RootElement.Clone()).Add(x => x.OpenTask, openTask));
         if (openTask is null) cut.Find(".tile").Click();
 
         // Wait until the reviewer's name has loaded, so the blind rules know who is looking.
@@ -84,7 +88,8 @@ public class BlindInTheExplorerTests
         var cut = Render("Louis", null);
 
         var chips = cut.FindAll(".grade-chips .chip");
-        Assert.That(chips.Single(c => c.TextContent == "meal-for-people").ClassList, Does.Not.Contain("ok").And.Not.Contain("bad").And.Not.Contain("warn"));
+        Assert.That(chips.Single(c => c.TextContent == "meal-for-people").ClassList,
+            Does.Not.Contain("ok").And.Not.Contain("bad").And.Not.Contain("warn"));
         Assert.That(chips.Single(c => c.TextContent == "no-error").ClassList, Does.Contain("ok"));
     }
 
@@ -93,14 +98,19 @@ public class BlindInTheExplorerTests
     public void AConversationWithNoPendingReviewGrade_ShowsNoPanel_ThoughTheRunHasAReview()
     {
         // A control the judge had nothing to judge: the review grader gave it no grade (step 6a.4), so there is nothing for a person to answer.
-        var run = Run.Replace("""{"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}""", """{"grader":"no-error","version":1,"score":1,"outcome":"Pass","reason":"again"}""");
+        var run = Run.Replace(
+            """{"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}""",
+            """{"grader":"no-error","version":1,"score":1,"outcome":"Pass","reason":"again"}""");
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(_ => new HttpResponseMessage()))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
 
-        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(run).RootElement.Clone()).Add(x => x.OpenTask, "bobotie"));
+        var cut = ctx.Render<RunExplorer>(p =>
+            p.Add(x => x.Run, JsonDocument.Parse(run).RootElement.Clone()).Add(x => x.OpenTask, "bobotie"));
 
         Assert.That(cut.FindAll(".review-panel"), Is.Empty);
     }
@@ -109,17 +119,23 @@ public class BlindInTheExplorerTests
     [Test]
     public void ARunWithNoHumanReview_ShowsNoPanel_AndTheJudgesChipAsItWas()
     {
-        var run = Run.Replace("""{"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}""", """{"name":"x","version":1,"kind":"FixedRule","question":null}""");
+        var run = Run.Replace(
+            """{"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}""",
+            """{"name":"x","version":1,"kind":"FixedRule","question":null}""");
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(_ => new HttpResponseMessage()))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
 
-        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(run).RootElement.Clone()).Add(x => x.OpenTask, null));
+        var cut = ctx.Render<RunExplorer>(p =>
+            p.Add(x => x.Run, JsonDocument.Parse(run).RootElement.Clone()).Add(x => x.OpenTask, null));
         cut.Find(".tile").Click();
 
         Assert.That(cut.FindAll(".review-panel"), Is.Empty);
-        Assert.That(cut.FindAll(".grade-chips .chip").Single(c => c.TextContent == "meal-for-people").ClassList, Does.Contain("ok"));
+        Assert.That(cut.FindAll(".grade-chips .chip").Single(c => c.TextContent == "meal-for-people").ClassList,
+            Does.Contain("ok"));
     }
 }

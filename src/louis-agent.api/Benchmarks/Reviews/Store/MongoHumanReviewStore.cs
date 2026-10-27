@@ -24,7 +24,9 @@ public sealed class MongoHumanReviewStore : IHumanReviewStore
         settings.ServerSelectionTimeout = Timeout;
         settings.ConnectTimeout = Timeout;
         _grades = new MongoClient(settings).GetDatabase(database).GetCollection<BsonDocument>("human_grades");
-        _index = new OnceItWorks(() => _grades.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at"))));
+        _index = new OnceItWorks(() =>
+            _grades.Indexes.CreateOneAsync(
+                new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at"))));
     }
 
     /// <summary>The database itself, for the tests to drop theirs.</summary>
@@ -35,8 +37,14 @@ public sealed class MongoHumanReviewStore : IHumanReviewStore
         await _index.RunAsync();
         await _grades.InsertOneAsync(new BsonDocument
         {
-            ["run"] = grade.Run, ["mode"] = grade.Conversation.Mode, ["repeat"] = grade.Conversation.Repeat, ["task"] = grade.Conversation.Task,
-            ["grader"] = grade.Grader, ["verdict"] = grade.Verdict.Wire(), ["note"] = grade.Note, ["reviewer"] = grade.Reviewer,
+            ["run"] = grade.Run,
+            ["mode"] = grade.Conversation.Mode,
+            ["repeat"] = grade.Conversation.Repeat,
+            ["task"] = grade.Conversation.Task,
+            ["grader"] = grade.Grader,
+            ["verdict"] = grade.Verdict.Wire(),
+            ["note"] = grade.Note,
+            ["reviewer"] = grade.Reviewer,
             ["at"] = new BsonDateTime(grade.At.UtcDateTime),
         }, cancellationToken: cancellationToken);
     }
@@ -44,12 +52,19 @@ public sealed class MongoHumanReviewStore : IHumanReviewStore
     public async Task<IReadOnlyList<HumanGrade>> OfRunAsync(string run, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        var documents = await _grades.Find(Builders<BsonDocument>.Filter.Eq("run", run)).Sort(Builders<BsonDocument>.Sort.Ascending("at")).ToListAsync(cancellationToken);
-        return [.. documents.Select(d => new HumanGrade(d["run"].AsString, new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString), d["grader"].AsString,
-            Enum.Parse<HumanVerdict>(d["verdict"].AsString, ignoreCase: true), d["note"].AsString, d["reviewer"].AsString,
-            new DateTimeOffset(d["at"].ToUniversalTime(), TimeSpan.Zero)))];
+        var documents = await _grades.Find(Builders<BsonDocument>.Filter.Eq("run", run))
+            .Sort(Builders<BsonDocument>.Sort.Ascending("at")).ToListAsync(cancellationToken);
+        return
+        [
+            .. documents.Select(d => new HumanGrade(d["run"].AsString,
+                new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString), d["grader"].AsString,
+                Enum.Parse<HumanVerdict>(d["verdict"].AsString, ignoreCase: true), d["note"].AsString,
+                d["reviewer"].AsString,
+                new DateTimeOffset(d["at"].ToUniversalTime(), TimeSpan.Zero)))
+        ];
     }
 
     public async Task<int> DeleteRunAsync(string run, CancellationToken cancellationToken = default) =>
-        (int)(await _grades.DeleteManyAsync(Builders<BsonDocument>.Filter.Eq("run", run), cancellationToken)).DeletedCount;
+        (int)(await _grades.DeleteManyAsync(Builders<BsonDocument>.Filter.Eq("run", run), cancellationToken))
+        .DeletedCount;
 }

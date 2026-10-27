@@ -9,13 +9,16 @@ public class NoteListTests
 {
     /// <summary>The moment the tests count from.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 9, 0, 0, TimeSpan.Zero);
+
     /// <summary>A conversation key.</summary>
     private static readonly ConversationRef Bobotie = new("run1", SampleMode.Beta, 1, "bobotie");
+
     /// <summary>Another conversation key.</summary>
     private static readonly ConversationRef Sosaties = new("run1", SampleMode.Beta, 1, "sosaties");
 
     /// <summary>A note a number of minutes after T0.</summary>
-    private static RunNoteEntry Note(string text, int minutes, ConversationRef? conversation = null) => new(text, T0.AddMinutes(minutes), conversation);
+    private static RunNoteEntry Note(string text, int minutes, ConversationRef? conversation = null) =>
+        new(text, T0.AddMinutes(minutes), conversation);
 
     /// <summary>The run's panel shows only the notes that aren't on a conversation, newest first.</summary>
     [Test]
@@ -30,7 +33,10 @@ public class NoteListTests
     [Test]
     public void AConversationsNotes_AreOnlyThatConversations()
     {
-        var all = new[] { Note("run", 1), Note("bobotie 1", 2, Bobotie), Note("sosaties", 3, Sosaties), Note("bobotie 2", 4, Bobotie) };
+        var all = new[]
+        {
+            Note("run", 1), Note("bobotie 1", 2, Bobotie), Note("sosaties", 3, Sosaties), Note("bobotie 2", 4, Bobotie)
+        };
 
         Assert.That(NoteList.Newest(all, Bobotie).Select(n => n.Text), Is.EqualTo(new[] { "bobotie 2", "bobotie 1" }));
     }

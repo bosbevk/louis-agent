@@ -23,15 +23,19 @@ public enum ReviewUserText
     [Description("Run {Id} has no conversation {Mode}/{Repeat}/{Task}.")]
     NoStoredConversation,
 
-    [Description("Say which judge's labels to export, as ?grader=. The judges of this run with a human review: {Graders}. (None means the run was made before the human reviews, or its eval has no judge to review.)")]
+    [Description(
+        "Say which judge's labels to export, as ?grader=. The judges of this run with a human review: {Graders}. (None means the run was made before the human reviews, or its eval has no judge to review.)")]
     LabelsNeedAGrader,
 
-    [Description("No one has passed or failed an answer of {Grader} in run {Id} yet, so there are no labels to export.")]
+    [Description(
+        "No one has passed or failed an answer of {Grader} in run {Id} yet, so there are no labels to export.")]
     NoLabelsYet,
 
-    [Description("'{Grader}' is not a judge with a human review in run {Id}, so there is nothing to check it against. The judges with one: {Graders}.")]
+    [Description(
+        "'{Grader}' is not a judge with a human review in run {Id}, so there is nothing to check it against. The judges with one: {Graders}.")]
     CalibrationNeedsAJudge,
 
-    [Description("Run {Id} is of '{Check}', which the eval runner does not list: only a listed eval's judge is checked against the people.")]
+    [Description(
+        "Run {Id} is of '{Check}', which the eval runner does not list: only a listed eval's judge is checked against the people.")]
     CalibrationNeedsEval,
 }

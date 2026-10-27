@@ -7,7 +7,8 @@ namespace LouisAgent.Puls.Tests.Styles;
 // stylesheet is what sizes it, so this holds the rule in the file; how it looks is checked in the browser.
 public partial class RecipePhotoStyleTests
 {
-    private static string Css => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.puls", "wwwroot", "css", "app.css"));
+    private static string Css =>
+        File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.puls", "wwwroot", "css", "app.css"));
 
     private static string RuleOf(string selector)
     {
@@ -23,7 +24,8 @@ public partial class RecipePhotoStyleTests
 
         Assert.That(rule, Does.Contain("width: 100%"), "never wider than the chat");
         Assert.That(rule, Does.Contain("max-width: 480px"));
-        Assert.That(rule, Does.Contain("height: 320px"), "a fixed height, so a tall or a wide photo takes the same room");
+        Assert.That(rule, Does.Contain("height: 320px"),
+            "a fixed height, so a tall or a wide photo takes the same room");
         Assert.That(rule, Does.Contain("object-fit: cover"), "cropped to the box, never stretched");
     }
 

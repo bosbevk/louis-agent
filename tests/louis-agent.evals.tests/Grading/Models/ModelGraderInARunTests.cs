@@ -21,16 +21,24 @@ public class ModelGraderInARunTests
     private static readonly DateTimeOffset At = DateTimeOffset.FromUnixTimeMilliseconds(1700000000123);
 
     private static readonly IReadOnlyList<SessionEvent> Answer =
-        [SessionEvent.From("content_block_delta", JsonDocument.Parse("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie vir vier"}}""").RootElement.Clone())];
+    [
+        SessionEvent.From("content_block_delta",
+            JsonDocument
+                .Parse(
+                    """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie vir vier"}}""")
+                .RootElement.Clone())
+    ];
 
     private static ModelEval Eval(bool withJudge) => new(new EvaluatorGrader(
         new FakeEvaluator(new BooleanMetric("meal", true, "feeds four")),
-        withJudge ? new ConfiguredJudge(new ChatConfiguration(new FakeChatClient()), "qwen3:8b") : null, "meal-for-people", 1, "abc123def456"));
+        withJudge ? new ConfiguredJudge(new ChatConfiguration(new FakeChatClient()), "qwen3:8b") : null,
+        "meal-for-people", 1, "abc123def456"));
 
     private static async Task<string[]> RunAsync(ModelEval eval)
     {
         var sink = new StringWriter();
-        var runner = new EvalRunner(new CannedSessionClient(Answer), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At), NullLogger<EvalRunner>.Instance);
+        var runner = new EvalRunner(new CannedSessionClient(Answer), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At), NullLogger<EvalRunner>.Instance);
         await runner.RunAsync(eval, new EvalRun("run_old", 1), CancellationToken.None);
         return Lines(sink);
     }
@@ -43,7 +51,8 @@ public class ModelGraderInARunTests
         var grade = Conversation(lines).GetProperty("grades")[0];
         Assert.That(grade.GetProperty("outcome").GetString(), Is.EqualTo("Unknown"));
         Assert.That(grade.GetProperty("reason").GetString(), Is.EqualTo("no judge configured"));
-        Assert.That(Conversation(lines).GetProperty("outcome").GetString(), Is.EqualTo("Unknown"), "the run finished and said it could not tell");
+        Assert.That(Conversation(lines).GetProperty("outcome").GetString(), Is.EqualTo("Unknown"),
+            "the run finished and said it could not tell");
     }
 
     [Test]
@@ -51,7 +60,8 @@ public class ModelGraderInARunTests
     {
         string[] stored = await RunAsync(Eval(withJudge: true));
         var sink = new StringWriter();
-        var runner = new EvalRunner(new NoSessionClient(), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At), NullLogger<EvalRunner>.Instance);
+        var runner = new EvalRunner(new NoSessionClient(), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At), NullLogger<EvalRunner>.Instance);
 
         await runner.RescoreAsync(Eval(withJudge: true), "run_new", "run_old", stored, CancellationToken.None);
 
@@ -64,10 +74,12 @@ public class ModelGraderInARunTests
         }
     }
 
-    private static string[] Lines(StringWriter sink) => sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+    private static string[] Lines(StringWriter sink) =>
+        sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
     private static JsonElement Conversation(IEnumerable<string> lines) =>
-        lines.Select(line => JsonDocument.Parse(line.TrimStart('@')).RootElement.Clone()).Single(e => e.GetProperty("event").GetString() == "conversation");
+        lines.Select(line => JsonDocument.Parse(line.TrimStart('@')).RootElement.Clone())
+            .Single(e => e.GetProperty("event").GetString() == "conversation");
 
     /// <summary>An eval of one scenario and one model grader, the shape of the cook's judge before it has a prompt.</summary>
     private sealed class ModelEval(IGrader grader) : IEval
@@ -76,11 +88,17 @@ public class ModelGraderInARunTests
         public int Version => 1;
         public string Proves => "A model grader in a run.";
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([
+                new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])
+            ]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
-            [new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Gee my 'n resep vir vier"]), default, [], DatasetSplit.Dev)];
+        [
+            new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Gee my 'n resep vir vier"]),
+                default, [], DatasetSplit.Dev)
+        ];
 
         public IReadOnlyList<IGrader> Graders { get; } = [grader];
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new Scores();

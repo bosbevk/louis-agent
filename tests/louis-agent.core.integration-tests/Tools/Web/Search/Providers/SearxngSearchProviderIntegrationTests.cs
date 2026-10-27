@@ -20,7 +20,9 @@ public class SearxngSearchProviderIntegrationTests
     {
         string url = Outside.Stack("SEARXNG_URL", "SearXNG to search");
 
-        var results = await new SearxngSearchProvider(new Uri(url!)).SearchAsync(new WebSearchQuery("beef mince price", 5, "pnp.co.za"));
+        var results =
+            await new SearxngSearchProvider(new Uri(url!)).SearchAsync(new WebSearchQuery("beef mince price", 5,
+                "pnp.co.za"));
 
         Assert.That(results, Is.Not.Empty, "settings.yml lists json, and at least one engine answered");
         Assert.That(results.Select(r => r.Url), Has.Some.Contains("pnp.co.za"));

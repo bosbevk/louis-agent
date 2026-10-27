@@ -18,9 +18,12 @@ public class CheckersStoreIntegrationTests
     {
         string url = Outside.Stack("BROWSER_URL", "browser to ask Checkers with");
 
-        var session = await new CheckersStore(new ChromeWebBrowser(new Uri(url!)), LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync).ForAsync("Malmesbury");
+        var session =
+            await new CheckersStore(new ChromeWebBrowser(new Uri(url!)),
+                LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync).ForAsync("Malmesbury");
 
         Assert.That(session, Is.Not.Null);
-        Assert.That(session!.Cookies.Single(c => c.Name == "storeids").Value, Does.Not.StartWith("5ece6935faafe599532665b2"), "the default store's id");
+        Assert.That(session!.Cookies.Single(c => c.Name == "storeids").Value,
+            Does.Not.StartWith("5ece6935faafe599532665b2"), "the default store's id");
     }
 }

@@ -10,13 +10,16 @@ namespace LouisAgent.Core.Tools.Web.Replay.Answers;
 /// </summary>
 public sealed record ReplayResponse(int Status, string? Reason, string? ContentType, string? Location, byte[] Body)
 {
-    public static async Task<ReplayResponse> OfAsync(HttpResponseMessage response, CancellationToken cancellationToken) =>
-        new((int)response.StatusCode, response.ReasonPhrase, response.Content.Headers.ContentType?.ToString(), response.Headers.Location?.OriginalString,
+    public static async Task<ReplayResponse>
+        OfAsync(HttpResponseMessage response, CancellationToken cancellationToken) =>
+        new((int)response.StatusCode, response.ReasonPhrase, response.Content.Headers.ContentType?.ToString(),
+            response.Headers.Location?.OriginalString,
             await response.Content.ReadAsByteArrayAsync(cancellationToken));
 
     public HttpResponseMessage ToResponse(HttpRequestMessage request)
     {
-        var response = new HttpResponseMessage((HttpStatusCode)Status) { RequestMessage = request, ReasonPhrase = Reason, Content = new ByteArrayContent(Body) };
+        var response = new HttpResponseMessage((HttpStatusCode)Status)
+        { RequestMessage = request, ReasonPhrase = Reason, Content = new ByteArrayContent(Body) };
         if (ContentType is not null) response.Content.Headers.TryAddWithoutValidation("Content-Type", ContentType);
         if (Location is not null) response.Headers.Location = new Uri(Location, UriKind.RelativeOrAbsolute);
         return response;

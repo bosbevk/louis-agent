@@ -1,4 +1,3 @@
-
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Browsing;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Tools.Web.Rendering.Setups;
 using LouisAgent.Choices;
 
 namespace LouisAgent.Core.Tools.Web.Rendering;
+
 /// <summary>
 /// Picks the page renderer you configured, or else the first one that's set up: our own Chrome, then Tavily's Extract. A missing setting never stops start-up; a call just tells the model what to set.
 /// </summary>

@@ -22,7 +22,8 @@ public class CookEvalTests
     public void ItIsPulsCooksEval_UnderTheNameItsDatasetCarries()
     {
         Assert.That((Eval.Name, Eval.Version), Is.EqualTo((PulsEvalName.Cook.Wire(), 9)));
-        Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.CookProves)), "the portal's title is a message enum member (ADR 0009)");
+        Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.CookProves)),
+            "the portal's title is a message enum member (ADR 0009)");
     }
 
     [Test]
@@ -41,15 +42,22 @@ public class CookEvalTests
     public void ItsScenariosAreTheCookDatasets()
     {
         Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id), Is.EquivalentTo(
-            new[] { PulsCookScenarioIds.CookAf, PulsCookScenarioIds.CookEn, "cook-shops", "cook-malmesbury", "cook-no-branch", "cook-recipe-only", "cook-asks-first", "control-web" }));
+            new[]
+            {
+                PulsCookScenarioIds.CookAf, PulsCookScenarioIds.CookEn, "cook-shops", "cook-malmesbury",
+                "cook-no-branch", "cook-recipe-only", "cook-asks-first", "control-web"
+            }));
         Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).Select(s => s.Id), Is.EquivalentTo(
             new[] { "cook-paarl", "cook-worcester-budget", "cook-follow-up" }));
-        Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-malmesbury").Input.Place, Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
-        Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-no-branch").Input.Place, Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
+        Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-malmesbury").Input.Place,
+            Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
+        Assert.That(Eval.Scenarios.Single(s => s.Id == "cook-no-branch").Input.Place,
+            Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
     }
 
     [Test]
-    public void ItsGradersAreTheRouteTheErrorsTheBudgetTheEstimatesAndTheRecipeImage_AndTheServesRuleAndTheMealJudgeAndItsHumanReviewThatAreNotRequired() =>
+    public void
+        ItsGradersAreTheRouteTheErrorsTheBudgetTheEstimatesAndTheRecipeImage_AndTheServesRuleAndTheMealJudgeAndItsHumanReviewThatAreNotRequired() =>
         Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)), Is.EqualTo(new[]
         {
             ("cook-no-error", true, GraderKind.FixedRule),
@@ -65,7 +73,8 @@ public class CookEvalTests
     [Test]
     public void ItsScoresAreTheCookScorers_KeyForKey()
     {
-        var trial = Trial(CookEvalMode, PulsCookScenarioIds.CookAf, """{"routes_to":"puls-cook","serves":4}""", null, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
+        var trial = Trial(CookEvalMode, PulsCookScenarioIds.CookAf, """{"routes_to":"puls-cook","serves":4}""", null,
+            Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 

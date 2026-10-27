@@ -21,7 +21,8 @@ public class PageRendererFactoryTests
     [TestCase("tavily", Browser, "tvly-key", typeof(TavilyPageRenderer))]
     [TestCase("TAVILY", Browser, null, typeof(UnavailablePageRenderer))]
     [TestCase("playwright", Browser, "tvly-key", typeof(UnavailablePageRenderer))]
-    public void TheRenderer_IsPickedFromConfiguration(string? renderer, string? browserUrl, string? tavilyKey, Type expected)
+    public void TheRenderer_IsPickedFromConfiguration(string? renderer, string? browserUrl, string? tavilyKey,
+        Type expected)
     {
         var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
 
@@ -34,7 +35,8 @@ public class PageRendererFactoryTests
     [TestCase(null, null, null, null)]
     [TestCase("TAVILY", Browser, null, PageRendererKind.Tavily)]
     [TestCase("playwright", Browser, "tvly-key", null)]
-    public void Resolve_NamesTheRendererThatCreateWouldPick(string? renderer, string? browserUrl, string? tavilyKey, PageRendererKind? expected)
+    public void Resolve_NamesTheRendererThatCreateWouldPick(string? renderer, string? browserUrl, string? tavilyKey,
+        PageRendererKind? expected)
     {
         // Nothing comes back for a name we don't know, or when nothing is set up.
         var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
@@ -51,7 +53,8 @@ public class PageRendererFactoryTests
     [TestCase(null, null, "tvly-key", true)]
     [TestCase(null, null, null, false)]
     [TestCase("playwright", Browser, "tvly-key", false)]
-    public void IsReady_SaysWhetherTheSelectedRendererCanWork_AndCreateAgrees(string? renderer, string? browserUrl, string? tavilyKey, bool expected)
+    public void IsReady_SaysWhetherTheSelectedRendererCanWork_AndCreateAgrees(string? renderer, string? browserUrl,
+        string? tavilyKey, bool expected)
     {
         var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
 
@@ -69,7 +72,8 @@ public class PageRendererFactoryTests
         // The process builds one browser and hands it in, so Chrome's reads are recorded along with the shops'.
         var browser = new CountingBrowser();
 
-        var made = PageRendererFactory.Create(new AgentOptions { PageRenderer = renderer, BrowserUrl = Browser }, browser: browser);
+        var made = PageRendererFactory.Create(new AgentOptions { PageRenderer = renderer, BrowserUrl = Browser },
+            browser: browser);
         await made.RenderAsync(new Uri("https://example.com/recipe"));
 
         Assert.That(made, Is.TypeOf<ChromePageRenderer>());
@@ -79,7 +83,8 @@ public class PageRendererFactoryTests
     /// <summary>Handing over a browser doesn't make Chrome available when we don't know where Chrome runs.</summary>
     [Test]
     public void ABrowserGiven_NeverMakesChromeAvailableWhereBrowserUrlIsNotSet() =>
-        Assert.That(PageRendererFactory.Create(new AgentOptions { PageRenderer = "chrome" }, browser: new CountingBrowser()),
+        Assert.That(
+            PageRendererFactory.Create(new AgentOptions { PageRenderer = "chrome" }, browser: new CountingBrowser()),
             Is.TypeOf<UnavailablePageRenderer>());
 
     /// <summary>A fake browser that counts how often it is asked to visit a page.</summary>
@@ -89,7 +94,8 @@ public class PageRendererFactoryTests
         public int Calls { get; private set; }
 
         /// <summary>Pretends to visit the page, and counts the visit.</summary>
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
+            string? script = null,
             string? readySelector = null, CancellationToken cancellationToken = default)
         {
             Calls++;
@@ -102,7 +108,9 @@ public class PageRendererFactoryTests
     /// <summary>Chrome with no browser address gives a renderer that says to set `BROWSER_URL`.</summary>
     [Test]
     public void ChromeWithoutABrowser_SaysToSetBrowserUrl() =>
-        Assert.That(() => PageRendererFactory.Create(new AgentOptions { PageRenderer = "chrome" }).RenderAsync(new Uri("https://www.pnp.co.za/")),
+        Assert.That(
+            () => PageRendererFactory.Create(new AgentOptions { PageRenderer = "chrome" })
+                .RenderAsync(new Uri("https://www.pnp.co.za/")),
             Throws.TypeOf<PageRenderException>().With.Message.Contains("BROWSER_URL"));
 
     /// <summary>A renderer name we do not know gives one that lists the names we do.</summary>
@@ -110,8 +118,11 @@ public class PageRendererFactoryTests
     public void AnUnknownRenderer_SaysWhichAreSupported()
     {
         // The error names what we were given and the names we do support.
-        Assert.That(() => PageRendererFactory.Create(new AgentOptions { PageRenderer = "playwright" }).RenderAsync(new Uri("https://www.pnp.co.za/")),
-            Throws.TypeOf<PageRenderException>().With.Message.Contains("playwright").And.Message.Contains("chrome, tavily"));
+        Assert.That(
+            () => PageRendererFactory.Create(new AgentOptions { PageRenderer = "playwright" })
+                .RenderAsync(new Uri("https://www.pnp.co.za/")),
+            Throws.TypeOf<PageRenderException>().With.Message.Contains("playwright").And.Message
+                .Contains("chrome, tavily"));
 
         // And that list of names is the enum's, in order.
         Assert.That(PageRendererFactory.SupportedRenderers, Is.EqualTo(new[] { "chrome", "tavily" }));

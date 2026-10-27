@@ -70,7 +70,9 @@ public class EvalCatalogTests
     [Test]
     public void AcceptsAnEvalWithARequiredFixedRule()
     {
-        var catalog = new EvalCatalog([new FakeSet(new FakeEval("cook", [new FakeGrader(GraderKind.FixedRule, required: true)]))], Stub);
+        var catalog =
+            new EvalCatalog([new FakeSet(new FakeEval("cook", [new FakeGrader(GraderKind.FixedRule, required: true)]))],
+                Stub);
 
         Assert.That(catalog.Find("cook"), Is.Not.Null);
     }
@@ -102,8 +104,11 @@ public class EvalCatalogTests
         var listing = new EvalCatalog([], Stub).Listing();
         var line = JsonDocument.Parse(JsonSerializer.Serialize(listing.Single(), EvalJson.SnakeCase)).RootElement;
 
-        Assert.That(line.EnumerateObject().Select(p => p.Name), Is.EqualTo(new[] { "name", "identity", "version", "proves", "manual" }));
-        Assert.That(line.GetProperty("manual").GetString(), Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"), "the manual's path from the repo root, forward slashes (7.1)");
+        Assert.That(line.EnumerateObject().Select(p => p.Name),
+            Is.EqualTo(new[] { "name", "identity", "version", "proves", "manual" }));
+        Assert.That(line.GetProperty("manual").GetString(),
+            Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"),
+            "the manual's path from the repo root, forward slashes (7.1)");
         Assert.That(line.GetProperty("name").GetString(), Is.EqualTo("stub"));
         Assert.That(line.GetProperty("identity").ValueKind, Is.EqualTo(JsonValueKind.Null));
         Assert.That(line.GetProperty("version").GetInt32(), Is.EqualTo(1));
@@ -114,7 +119,8 @@ public class EvalCatalogTests
     public void RefusesAScenarioWithNoMessages()
     {
         // Nothing to send is nothing to run: refused when the catalogue is built, not skipped by the runner (F18 step 4.1 review).
-        var empty = new EvalScenario("empty", new EvalInput(null, "Africa/Johannesburg", []), default, [], DatasetSplit.Dev);
+        var empty = new EvalScenario("empty", new EvalInput(null, "Africa/Johannesburg", []), default, [],
+            DatasetSplit.Dev);
 
         Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", scenarios: [empty]))], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'empty'").And.Message.Contains("no messages"));
@@ -126,7 +132,8 @@ public class EvalCatalogTests
         // The eval belongs to exactly one set, so the set says whose it is (F18 step 7.5.4d); an eval no longer says it itself.
         var catalog = new EvalCatalog([new FakeSet(new FakeEval("cook"), SampleIdentity.Alpha)], Stub);
 
-        Assert.That(catalog.Listing().Select(l => (l.Name, l.Identity)), Is.EqualTo(new (string, string?)[] { ("cook", SampleIdentity.Alpha), ("stub", null) }));
+        Assert.That(catalog.Listing().Select(l => (l.Name, l.Identity)),
+            Is.EqualTo(new (string, string?)[] { ("cook", SampleIdentity.Alpha), ("stub", null) }));
     }
 
     private sealed class FakeSet(IEval eval, string identity = SampleIdentity.Alpha) : IEvalSet
@@ -135,14 +142,23 @@ public class EvalCatalogTests
         public IReadOnlyList<IEval> Evals { get; } = [eval];
     }
 
-    private sealed class FakeEval(string name, IReadOnlyList<IGrader>? graders = null, IReadOnlyList<EvalScenario>? scenarios = null) : IEval
+    private sealed class FakeEval(
+        string name,
+        IReadOnlyList<IGrader>? graders = null,
+        IReadOnlyList<EvalScenario>? scenarios = null) : IEval
     {
         public string Name { get; } = name;
         public int Version => 1;
         public string Proves => "A fake eval, to test the catalogue.";
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotImplementedException();
+
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) => throw new NotImplementedException();
+
         public IReadOnlyList<EvalScenario> Scenarios { get; } = scenarios ?? [];
-        public IReadOnlyList<IGrader> Graders { get; } = graders ?? [new FakeGrader(GraderKind.FixedRule, required: true)];
+
+        public IReadOnlyList<IGrader> Graders { get; } =
+            graders ?? [new FakeGrader(GraderKind.FixedRule, required: true)];
+
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotImplementedException();
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
     }
@@ -154,6 +170,8 @@ public class EvalCatalogTests
         public GraderKind Kind { get; } = kind;
         public bool Required { get; } = required;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 }

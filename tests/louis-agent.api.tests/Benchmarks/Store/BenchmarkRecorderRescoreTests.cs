@@ -35,17 +35,28 @@ public class BenchmarkRecorderRescoreTests
         {
             // The ledger may hold the original run's rows; the re-score must not count them.
             if (ledgerHoldsTheOriginalsRows)
-                new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(new LouisAgent.Core.Usage.Records.UsageRecord(
-                    DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Turn, "api", "sess_old", 1, null, "old123456789:cook:1", null, "claude-haiku-5-5",
-                    new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
-                    new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.5m, "2026-10-10"), null, null));
+                new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(
+                    new LouisAgent.Core.Usage.Records.UsageRecord(
+                        DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Turn, "api", "sess_old", 1,
+                        null, "old123456789:cook:1", null, "claude-haiku-5-5",
+                        new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
+                        new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.5m, "2026-10-10"), null, null));
 
             // A re-score of the old run, recorded against that ledger.
             var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
             var recording = new BenchmarkRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
 
             // Its first line says it re-scores the old run, then the run ends.
-            run.Add(At(new { @event = "protocol", version = 1, eval = "cook", eval_version = 1, rescore_of = "old123456789", graders = Array.Empty<object>(), models = Array.Empty<object>() }));
+            run.Add(At(new
+            {
+                @event = "protocol",
+                version = 1,
+                eval = "cook",
+                eval_version = 1,
+                rescore_of = "old123456789",
+                graders = Array.Empty<object>(),
+                models = Array.Empty<object>()
+            }));
             run.Complete(0);
             await recording;
 
@@ -69,18 +80,38 @@ public class BenchmarkRecorderRescoreTests
         try
         {
             // The judge asked a paid model, so the ledger has a row under the re-score's own tag.
-            new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(new LouisAgent.Core.Usage.Records.UsageRecord(
-                DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Grading, "api", "sess_1", 1, "bobotie", "new123456789:cook:1", null, "claude-haiku-5-5",
-                new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
-                new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.25m, "2026-10-10"), null, null));
+            new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(
+                new LouisAgent.Core.Usage.Records.UsageRecord(
+                    DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Grading, "api", "sess_1", 1,
+                    "bobotie", "new123456789:cook:1", null, "claude-haiku-5-5",
+                    new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
+                    new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.25m, "2026-10-10"), null, null));
 
             // A re-score of the old run with one question, recorded against that ledger.
             var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
             var recording = new BenchmarkRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
 
             // Its first line says it re-scores the old run; then the question; then the run ends.
-            run.Add(At(new { @event = "protocol", version = 1, eval = "cook", eval_version = 1, rescore_of = "old123456789", graders = Array.Empty<object>(), models = Array.Empty<object>() }));
-            run.Add(At(new { @event = "question", mode = "cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }));
+            run.Add(At(new
+            {
+                @event = "protocol",
+                version = 1,
+                eval = "cook",
+                eval_version = 1,
+                rescore_of = "old123456789",
+                graders = Array.Empty<object>(),
+                models = Array.Empty<object>()
+            }));
+            run.Add(At(new
+            {
+                @event = "question",
+                mode = "cook",
+                repeat = 1,
+                task = "bobotie",
+                turn = 1,
+                session = "sess_1",
+                text = "Maak bobotie"
+            }));
             run.Complete(0);
             await recording;
 

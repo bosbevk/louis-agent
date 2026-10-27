@@ -1,5 +1,4 @@
 using LouisAgent.Choices;
-namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
@@ -24,6 +23,7 @@ using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Hosting.Messages;
 
+namespace LouisAgent.Core.Hosting;
 /// <summary>
 /// One engine per toolset profile (F5): a session names its toolsets, and gets an engine with only those tools and
 /// only their guides in its system prompt. Engines are cached by their normalised list, its role, its level
@@ -73,8 +73,13 @@ public sealed class AgentEngineFactory
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
         // One store where recordings are kept, and one browser, for every engine of this process (F18 steps 4a and 4b): the shops and the page renderer read through them.
         var replay = _replay = ReplayStore.From(agent);
-        _clock = replay is null ? null : new ReplayClock(replay);   // one clock per process, so a trial's frozen time is shared by every engine and sub-session
-        Context = new ToolsetContext(agent, RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates, usageSink,
+        _clock = replay is null
+            ? null
+            : new ReplayClock(
+                replay); // one clock per process, so a trial's frozen time is shared by every engine and sub-session
+        Context = new ToolsetContext(agent,
+            RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates,
+            usageSink,
             WebBrowser: WebBrowserFactory.Create(agent, replay), Replay: replay);
     }
 
@@ -85,7 +90,8 @@ public sealed class AgentEngineFactory
     public AgentCatalog Catalog { get; }
 
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
-    public IReadOnlyList<string> Available => Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
+    public IReadOnlyList<string> Available =>
+        Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
     /// <summary>The LLM profiles a session can name besides the instance's own model (F30, <c>LLM_SESSION_PROFILES</c>).</summary>
     public IReadOnlyList<string> SessionLlms => _sessionLlms.Keys.ToList();
@@ -112,7 +118,8 @@ public sealed class AgentEngineFactory
     /// <param name="tool">A minion's one tool (F30): the engine keeps only it, with no toolset guide and no router, so a
     /// small model reads a prompt it can follow. It must be a tool of <paramref name="toolsets"/>, else
     /// <see cref="ToolsetException"/>. Null: every tool of the toolsets.</param>
-    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? role = null, RoleLevel level = RoleLevel.Agent,
+    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? role = null,
+        RoleLevel level = RoleLevel.Agent,
         string? llm = null, string? tool = null)
     {
         var resolved = Catalog.Resolve(toolsets, Context);
@@ -122,7 +129,11 @@ public sealed class AgentEngineFactory
         var model = FindLlm(key.Llm);
         if (key.Tool is not null && !Catalog.ToolNamesOf(resolved).Contains(key.Tool))
             throw new ToolsetException(MessageText.Format(HostingErrorMessage.ToolNotInToolsets,
-                new { Tool = key.Tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
+                new
+                {
+                    Tool = key.Tool,
+                    Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name))
+                }));
 
         return _engines.GetOrAdd(key, () => Build(resolved, key, model));
     }
@@ -143,9 +154,11 @@ public sealed class AgentEngineFactory
         var guided = tool is null ? resolved : [];
         // A session's own model (F30) brings its provider's client, usage mapping, tool support and thinking; the
         // ledger, prices and display currency are the instance's.
-        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient, _agent,
+        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient,
+            _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink,
-            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved), clock: _clock, replay: _replay)
+            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved),
+            clock: _clock, replay: _replay)
         {
             SkillsDirectory = SkillFolder.Find(_agent),
             // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
@@ -159,12 +172,14 @@ public sealed class AgentEngineFactory
         if (selfExtension) engine.LoadApprovedTools();
         if (tool is not null) engine.KeepOnlyTool(tool);
 
-        string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>().Select(t => new { t.Name, t.Description, t.JsonSchema }));
+        string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>()
+            .Select(t => new { t.Name, t.Description, t.JsonSchema }));
         Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileBuilt, new
         {
             Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
-                + (role is null ? "" : $" · role {role}") + (level == RoleLevel.Agent ? "" : $" · {level.Wire()}")
-                + (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}"),
+                       + (role is null ? "" : $" · role {role}") +
+                       (level == RoleLevel.Agent ? "" : $" · {level.Wire()}")
+                       + (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}"),
             Tools = engine.Tools.Count,
             PromptChars = engine.SkillDocumentation.Length,
             // About four characters a token: an estimate of the fixed prefix every request of this profile sends.

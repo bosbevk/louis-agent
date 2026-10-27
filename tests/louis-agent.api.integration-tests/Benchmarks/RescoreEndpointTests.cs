@@ -30,7 +30,12 @@ public class RescoreEndpointTests
     [TearDown]
     public void TearDown() => Directory.Delete(_workspace, recursive: true);
 
-    private sealed record Host(WebApplication App, HttpClient Client, InMemoryBenchmarkStore Store, BenchmarkRunner Runner, BenchmarkRecorder Recorder) : IAsyncDisposable
+    private sealed record Host(
+        WebApplication App,
+        HttpClient Client,
+        InMemoryBenchmarkStore Store,
+        BenchmarkRunner Runner,
+        BenchmarkRecorder Recorder) : IAsyncDisposable
     {
         public async ValueTask DisposeAsync() => await App.DisposeAsync();
     }
@@ -42,7 +47,8 @@ public class RescoreEndpointTests
         var recorder = new BenchmarkRecorder(store);
         var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "Stub")]);
         var runner = new BenchmarkRunner(catalog, _workspace, "http://127.0.0.1:1/", RunnerBuild.Dll);
-        var app = ApiTestHost.Build(adminKey: AdminKey, store: store, runner: runner, recorder: recorder, catalog: catalog);
+        var app = ApiTestHost.Build(adminKey: AdminKey, store: store, runner: runner, recorder: recorder,
+            catalog: catalog);
         await app.StartAsync();
         return new Host(app, app.GetTestClient(), store, runner, recorder);
     }
@@ -52,7 +58,10 @@ public class RescoreEndpointTests
     {
         var run = host.Runner.Start("stub", 1)!;
         var recording = host.Recorder.RecordAsync(run);
-        await foreach (string _ in host.Runner.EventsAsync(run.Id)) { }
+        await foreach (string _ in host.Runner.EventsAsync(run.Id))
+        {
+        }
+
         await recording;
         Outside.Tool(run.ExitCode == 0, "dotnet isn't here to run the eval runner");
         return run.Id;
@@ -73,17 +82,22 @@ public class RescoreEndpointTests
 
         using var response = await Post(host.Client, stored);
 
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created), await response.Content.ReadAsStringAsync());
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created),
+            await response.Content.ReadAsStringAsync());
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         string id = body.RootElement.GetProperty("id").GetString()!;
         Assert.That(id, Is.Not.EqualTo(stored));
         Assert.That(response.Headers.Location!.OriginalString, Is.EqualTo($"/v1/admin/benchmarks/runs/{id}"));
 
-        await foreach (string _ in host.Runner.EventsAsync(id)) { }
+        await foreach (string _ in host.Runner.EventsAsync(id))
+        {
+        }
+
         await host.Recorder.RecordingOf(id)!;
         var rescored = (await host.Store.GetRunAsync(id))!;
         Assert.That(rescored.RescoreOf, Is.EqualTo(stored));
-        Assert.That((rescored.Total!.Cost, rescored.Total.Requests), Is.EqualTo(((decimal?)0m, 0)), "known: nothing was asked, never null (unknown) and never the original's");
+        Assert.That((rescored.Total!.Cost, rescored.Total.Requests), Is.EqualTo(((decimal?)0m, 0)),
+            "known: nothing was asked, never null (unknown) and never the original's");
         Assert.That((await host.Store.GetRunAsync(stored))!.RescoreOf, Is.Null, "the old run is not changed");
     }
 
@@ -108,14 +122,17 @@ public class RescoreEndpointTests
         using var response = await Post(host.Client, stored);
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Conflict));
-        await foreach (string _ in host.Runner.EventsAsync(busy.Id)) { }
+        await foreach (string _ in host.Runner.EventsAsync(busy.Id))
+        {
+        }
     }
 
     [Test]
     public async Task ARunOfACheckTheRunnerDoesNotList_Is400_BecauseThereIsNoEvalToGradeItAgain()
     {
         await using var host = await StartAsync();
-        await host.Store.SaveRunAsync(new BenchmarkDocuments.Run("gone-run", "gone-check", 1, BenchmarkRunStatus.Done, DateTimeOffset.UnixEpoch));
+        await host.Store.SaveRunAsync(new BenchmarkDocuments.Run("gone-run", "gone-check", 1, BenchmarkRunStatus.Done,
+            DateTimeOffset.UnixEpoch));
 
         using var response = await Post(host.Client, "gone-run");
 

@@ -8,8 +8,15 @@ namespace LouisAgent.Evals.Api;
 /// </summary>
 internal static class SessionWire
 {
-    internal sealed record OpenBody(IReadOnlyList<string> Toolsets, string Role, string TimeZone, string Task, string Run, string? Location,
-        string? Llm, ReplayBody Replay);
+    internal sealed record OpenBody(
+        IReadOnlyList<string> Toolsets,
+        string Role,
+        string TimeZone,
+        string Task,
+        string Run,
+        string? Location,
+        string? Llm,
+        ReplayBody Replay);
 
     /// <summary><c>Web</c> is null (left out) when the instance's WEB_REPLAY decides; <c>Model</c> is always sent.</summary>
     internal sealed record ReplayBody(WebReplayMode? Web, string? Of, bool Model);

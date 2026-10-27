@@ -16,7 +16,10 @@ public class DelegationTests
     [Test]
     public void AStart_StillRunning_ReadsTheCall()
     {
-        var delegation = Delegation.From(Call("StartSubSession", SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill("""{"agent":"<IdentityAlpha>","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}""")))))!;
+        var delegation = Delegation.From(Call("StartSubSession",
+                SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill(
+                    """{"agent":"<IdentityAlpha>","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}""")))))
+            !;
 
         Assert.That(delegation.Agent, Is.EqualTo(SampleIdentity.Alpha));
         Assert.That(delegation.Role, Is.EqualTo(SampleRole.Alpha));
@@ -30,23 +33,29 @@ public class DelegationTests
     [Test]
     public void AStart_ThatReturned_ReadsTheAnswerAndTheFooter()
     {
-        var block = Call("StartSubSession", SampleToolset.Fill(SampleRole.Fill("""{"agent":"","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}""")),
-            SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill("Bobotie vir vier.\n\n[Sub-session sub-1 on <IdentityAlpha> (<Alpha>, <Beta>; <RoleAlpha>): 3 requests, $0.01. It stays open: ContinueSubSession]"))));
+        var block = Call("StartSubSession",
+            SampleToolset.Fill(
+                SampleRole.Fill("""{"agent":"","toolsets":["<Alpha>"],"message":"Kook iets","role":"<RoleAlpha>"}""")),
+            SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill(
+                "Bobotie vir vier.\n\n[Sub-session sub-1 on <IdentityAlpha> (<Alpha>, <Beta>; <RoleAlpha>): 3 requests, $0.01. It stays open: ContinueSubSession]"))));
 
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Answer, Is.EqualTo("Bobotie vir vier."));
         Assert.That(delegation.UsageLine, Is.EqualTo("3 requests, $0.01"));
-        Assert.That(delegation.ResultAgent, Is.EqualTo(SampleIdentity.Alpha), "the peer actually used, since the call named none");
+        Assert.That(delegation.ResultAgent, Is.EqualTo(SampleIdentity.Alpha),
+            "the peer actually used, since the call named none");
         Assert.That(delegation.Handle, Is.EqualTo("sub-1"));
-        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }), "F34: what the specialist loaded wins over what was sent");
+        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }),
+            "F34: what the specialist loaded wins over what was sent");
         Assert.That(delegation.Failed, Is.False);
     }
 
     [Test]
     public void AContinue_IsAFollowUp_ToTheHandle()
     {
-        var delegation = Delegation.From(Call("ContinueSubSession", """{"handle":"sub-1","message":"Maak dit vir ses"}"""))!;
+        var delegation =
+            Delegation.From(Call("ContinueSubSession", """{"handle":"sub-1","message":"Maak dit vir ses"}"""))!;
 
         Assert.That(delegation.Continued, Is.True);
         Assert.That(delegation.Handle, Is.EqualTo("sub-1"));
@@ -69,7 +78,9 @@ public class DelegationTests
     [Test]
     public void AFailedCall_IsFailed_WithTheErrorAsItsAnswer()
     {
-        var delegation = Delegation.From(Call("StartSubSession", SampleIdentity.Fill("""{"agent":"<IdentityAlpha>","toolsets":["web"],"message":"Kook"}"""), SampleIdentity.Fill("Error: no peer named <IdentityAlpha>")))!;
+        var delegation = Delegation.From(Call("StartSubSession",
+            SampleIdentity.Fill("""{"agent":"<IdentityAlpha>","toolsets":["web"],"message":"Kook"}"""),
+            SampleIdentity.Fill("Error: no peer named <IdentityAlpha>")))!;
 
         Assert.That(delegation.Failed, Is.True);
         Assert.That(delegation.Answer, Is.EqualTo(SampleIdentity.Fill("Error: no peer named <IdentityAlpha>")));
@@ -79,8 +90,10 @@ public class DelegationTests
     [Test]
     public void AMinion_ReadsItsRoleToolAndModel()
     {
-        var block = Call("StartMinion", SampleRole.Fill("""{"role":"<RoleZeta>","tool":"WebSearch","task":"Prys van rys"}"""),
-            SampleRole.Fill("R24,99\n\n[Minion <RoleZeta> on ollama-puls with WebSearch: 1 request, price unknown; handle sub-2: kept]"));
+        var block = Call("StartMinion",
+            SampleRole.Fill("""{"role":"<RoleZeta>","tool":"WebSearch","task":"Prys van rys"}"""),
+            SampleRole.Fill(
+                "R24,99\n\n[Minion <RoleZeta> on ollama-puls with WebSearch: 1 request, price unknown; handle sub-2: kept]"));
 
         var delegation = Delegation.From(block)!;
 

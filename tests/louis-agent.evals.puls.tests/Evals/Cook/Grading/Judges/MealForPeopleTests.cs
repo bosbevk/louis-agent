@@ -13,10 +13,12 @@ public class MealForPeopleTests
     private static readonly CookAsk Ask = new(people: 4, town: "Malmesbury");
     private const string Answer = "Bobotie vir vier: 'n hoofgereg met 500 g maalvleis, rys en 'n eier-melk-bedekking.";
 
-    private static async Task<(BooleanMetric Metric, ScriptedJudge Client)> JudgeAsync(string reply, CookAsk? ask = null)
+    private static async Task<(BooleanMetric Metric, ScriptedJudge Client)> JudgeAsync(string reply,
+        CookAsk? ask = null)
     {
         var client = new ScriptedJudge(reply);
-        var result = await new MealForPeople("THE PROMPT").EvaluateAsync([new ChatMessage(ChatRole.User, "Wat kan ek kook?")],
+        var result = await new MealForPeople("THE PROMPT").EvaluateAsync(
+            [new ChatMessage(ChatRole.User, "Wat kan ek kook?")],
             new ChatResponse(new ChatMessage(ChatRole.Assistant, Answer)), new ChatConfiguration(client), [ask ?? Ask]);
         return (result.Metrics.Values.OfType<BooleanMetric>().Single(), client);
     }
@@ -29,7 +31,9 @@ public class MealForPeopleTests
         var sent = client.Sent.Single();
         Assert.That(sent.Select(m => m.Role), Is.EqualTo(new[] { ChatRole.System, ChatRole.User }));
         Assert.That(sent[0].Text, Is.EqualTo("THE PROMPT"));
-        Assert.That(sent[1].Text, Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain(Answer), "6a.4f: the budget is not the judge's to see");
+        Assert.That(sent[1].Text,
+            Does.Contain("People: 4").And.Not.Contain("Budget").And.Contain("Town: Malmesbury").And.Contain(Answer),
+            "6a.4f: the budget is not the judge's to see");
     }
 
     // 6a.4f (Louis: the judge failed a follow-up turn that swapped the meat and gave the list, since the recipe was in the turn before): the judge is sent the earlier turns too, question
@@ -38,15 +42,25 @@ public class MealForPeopleTests
     public async Task TheEarlierTurns_AreSentBeforeTheAnswer_SoAFollowUpIsJudgedWithWhatItReliesOn()
     {
         var client = new ScriptedJudge("""{"meal": true, "reason": "r"}""");
-        ChatMessage[] conversation = [new(ChatRole.User, "Wat kan ek kook vir vier?"), new(ChatRole.Assistant, "Bobotie vir vier: 500 g maalvleis, rys; bak 40 minute."), new(ChatRole.User, "Maak dit vir ses.")];
+        ChatMessage[] conversation =
+        [
+            new(ChatRole.User, "Wat kan ek kook vir vier?"),
+            new(ChatRole.Assistant, "Bobotie vir vier: 500 g maalvleis, rys; bak 40 minute."),
+            new(ChatRole.User, "Maak dit vir ses.")
+        ];
 
-        await new MealForPeople("THE PROMPT").EvaluateAsync(conversation, new ChatResponse(new ChatMessage(ChatRole.Assistant, "Vir ses: 750 g maalvleis, meer rys.")), new ChatConfiguration(client), [Ask]);
+        await new MealForPeople("THE PROMPT").EvaluateAsync(conversation,
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, "Vir ses: 750 g maalvleis, meer rys.")),
+            new ChatConfiguration(client), [Ask]);
 
         string sent = client.Sent.Single()[1].Text!;
-        Assert.That(sent, Does.Contain("The conversation so far:").And.Contain("User: Wat kan ek kook vir vier?").And.Contain("Assistant: Bobotie vir vier").And.Contain("User: Maak dit vir ses."));
+        Assert.That(sent,
+            Does.Contain("The conversation so far:").And.Contain("User: Wat kan ek kook vir vier?").And
+                .Contain("Assistant: Bobotie vir vier").And.Contain("User: Maak dit vir ses."));
         Assert.That(sent.IndexOf("The conversation so far:"), Is.LessThan(sent.IndexOf("The answer to judge:")));
         Assert.That(sent, Does.EndWith("Vir ses: 750 g maalvleis, meer rys."));
-        Assert.That(MealForPeoplePrompt.Text, Does.Contain("follow-up"), "the prompt says a follow-up may rely on the turns before");
+        Assert.That(MealForPeoplePrompt.Text, Does.Contain("follow-up"),
+            "the prompt says a follow-up may rely on the turns before");
     }
 
     // F18 step 6a.1: the question a person is asked to review is the judge prompt's own title, read from it, so the judge and the person answer the same words.
@@ -74,14 +88,16 @@ public class MealForPeopleTests
 
         Assert.That((yes.Value, yes.Reason), Is.EqualTo((true, "a main dish for four")));
         Assert.That((no.Value, no.Reason), Is.EqualTo((false, "a side dish")));
-        Assert.That((unsure.Value, unsure.Reason), Is.EqualTo(((bool?)null, "no quantities to tell")), "can't tell is an answer, and it is no value");
+        Assert.That((unsure.Value, unsure.Reason), Is.EqualTo(((bool?)null, "no quantities to tell")),
+            "can't tell is an answer, and it is no value");
     }
 
     [Test]
     public async Task AVerdictInACodeFence_OrWithWordsAround_IsStillRead()
     {
         var fenced = (await JudgeAsync("```json\n{\"meal\": false, \"reason\": \"a snack\"}\n```")).Metric;
-        var wrapped = (await JudgeAsync("Here is my verdict: {\"meal\": true, \"reason\": \"fine\"} Hope that helps.")).Metric;
+        var wrapped = (await JudgeAsync("Here is my verdict: {\"meal\": true, \"reason\": \"fine\"} Hope that helps."))
+            .Metric;
 
         Assert.That(fenced.Value, Is.False);
         Assert.That(wrapped.Value, Is.True);
@@ -105,7 +121,8 @@ public class MealForPeopleTests
     {
         var (_, client) = await JudgeAsync("""{"meal": null, "reason": "r"}""", new CookAsk(people: null, town: null));
 
-        Assert.That(client.Sent.Single()[1].Text, Does.Contain("People: not said").And.Not.Contain("Budget").And.Contain("Town: not said"));
+        Assert.That(client.Sent.Single()[1].Text,
+            Does.Contain("People: not said").And.Not.Contain("Budget").And.Contain("Town: not said"));
     }
 
     // The prompt is a markdown file beside the eval (ADR 0011), embedded; its hash is of its bytes, so a re-score with a changed prompt is a different measure.
@@ -114,8 +131,11 @@ public class MealForPeopleTests
     {
         string text = MealForPeoplePrompt.Text;
 
-        Assert.That(text, Does.Contain("main dish").And.Contain("can't tell").And.Contain("never the prices").And.Contain("\"meal\""));
-        Assert.That(MealForPeoplePrompt.Hash, Is.EqualTo(Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)))[..12]));
+        Assert.That(text,
+            Does.Contain("main dish").And.Contain("can't tell").And.Contain("never the prices").And
+                .Contain("\"meal\""));
+        Assert.That(MealForPeoplePrompt.Hash,
+            Is.EqualTo(Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)))[..12]));
         Assert.That(MealForPeoplePrompt.Hash, Does.Match("^[0-9a-f]{12}$"));
     }
 
@@ -124,9 +144,12 @@ public class MealForPeopleTests
     public async Task WhatTheJudgeIsSent_IsPinned()
     {
         var recorder = new ScriptedJudge("""{"meal": true, "reason": "x"}""");
-        await new MealForPeople(MealForPeoplePrompt.Text).EvaluateAsync([new ChatMessage(ChatRole.User, "Wat kan ek kook?")], new ChatResponse(new ChatMessage(ChatRole.Assistant, Answer)),
+        await new MealForPeople(MealForPeoplePrompt.Text).EvaluateAsync(
+            [new ChatMessage(ChatRole.User, "Wat kan ek kook?")],
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, Answer)),
             new ChatConfiguration(recorder), [Ask]);
-        string actual = string.Join("\n", recorder.Sent.Single().Select(m => $"[{m.Role.Value}]\n{m.Text}")).ReplaceLineEndings("\n") + "\n";
+        string actual = string.Join("\n", recorder.Sent.Single().Select(m => $"[{m.Role.Value}]\n{m.Text}"))
+            .ReplaceLineEndings("\n") + "\n";
         string golden = GoldenPath();
 
         if (Environment.GetEnvironmentVariable("LOUIS_UPDATE_GOLDEN") == "1")
@@ -138,7 +161,8 @@ public class MealForPeopleTests
         Assert.That(actual, Is.EqualTo(File.ReadAllText(golden).ReplaceLineEndings("\n")));
     }
 
-    private static string GoldenPath([CallerFilePath] string here = "") => Path.Combine(Path.GetDirectoryName(here)!, "meal-for-people.sent.txt");
+    private static string GoldenPath([CallerFilePath] string here = "") =>
+        Path.Combine(Path.GetDirectoryName(here)!, "meal-for-people.sent.txt");
 
     /// <summary>A judge model that answers with a canned reply and keeps what it was sent.</summary>
     internal sealed class ScriptedJudge(string reply) : IChatClient
@@ -146,17 +170,22 @@ public class MealForPeopleTests
         public List<List<ChatMessage>> Sent { get; } = [];
         public List<ChatOptions?> Options { get; } = [];
 
-        public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
+        public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
+            CancellationToken cancellationToken = default)
         {
             Sent.Add(messages.ToList());
             Options.Add(options);
             return Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, reply)));
         }
 
-        public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default) =>
+        public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
+            ChatOptions? options = null, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
-        public void Dispose() { }
+
+        public void Dispose()
+        {
+        }
     }
 }

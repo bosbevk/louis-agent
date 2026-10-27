@@ -1,5 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
+
 namespace LouisAgent.Evals.Puls.Evals.Routing;
 
 /// <summary>
@@ -12,5 +13,6 @@ public static class RoutingSetup
     public static readonly IReadOnlyList<string> Delegated = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()];
 
     /// <summary>The toolsets that let an agent hand a question on.</summary>
-    public static readonly IReadOnlyList<string> DelegatingToolsets = [PulsToolset.Specialists.Wire(), PulsToolset.Minions.Wire()];
+    public static readonly IReadOnlyList<string> DelegatingToolsets =
+        [PulsToolset.Specialists.Wire(), PulsToolset.Minions.Wire()];
 }

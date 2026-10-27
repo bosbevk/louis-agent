@@ -22,14 +22,17 @@ public sealed class TrendReading(IReadOnlyList<TrendRun> runs, string? marked)
         hover is { } h && h.Topic == topic ? runs.FirstOrDefault(r => r.Run == h.Run) ?? Shown : Shown;
 
     /// <summary>The run the panel reads because of a hover, null when the mouse is elsewhere (the panel then says nothing extra).</summary>
-    public TrendRun? Hovered(string topic, (string Topic, string Run)? hover) => hover is { } h && h.Topic == topic ? ShownIn(topic, hover) : null;
+    public TrendRun? Hovered(string topic, (string Topic, string Run)? hover) =>
+        hover is { } h && h.Topic == topic ? ShownIn(topic, hover) : null;
 
-    public static TrendValue Value(string name, string color, IEnumerable<TrendSample> points, string run, Func<double, string> label)
+    public static TrendValue Value(string name, string color, IEnumerable<TrendSample> points, string run,
+        Func<double, string> label)
     {
         var known = points.Where(p => p.Value is not null).OrderBy(p => p.At).ToList();
         int at = known.FindIndex(p => p.Run == run);
         if (at < 0) return new TrendValue(name, color, "–", null, false);
         double value = known[at].Value!.Value, delta = at > 0 ? value - known[at - 1].Value!.Value : 0;
-        return new TrendValue(name, color, label(value), delta == 0 ? null : (delta > 0 ? "▲ +" : "▼ −") + label(Math.Abs(delta)), delta > 0);
+        return new TrendValue(name, color, label(value),
+            delta == 0 ? null : (delta > 0 ? "▲ +" : "▼ −") + label(Math.Abs(delta)), delta > 0);
     }
 }

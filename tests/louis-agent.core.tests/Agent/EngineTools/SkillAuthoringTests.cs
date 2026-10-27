@@ -15,21 +15,21 @@ namespace LouisAgent.Core.Tests.Agent.EngineTools;
 public class SkillAuthoringTests
 {
     private const string EchoSkill = """
-        # Greeting Skills
+                                     # Greeting Skills
 
-        Greets people.
+                                     Greets people.
 
-        ## Skill: Greet
+                                     ## Skill: Greet
 
-        - Description: Print a greeting
-        - Parameters:
-          - `who` (required): who to greet
-        - Execution:
+                                     - Description: Print a greeting
+                                     - Parameters:
+                                       - `who` (required): who to greet
+                                     - Execution:
 
-        ```bash
-        echo "hello ${SKILL_ARG_who}"
-        ```
-        """;
+                                     ```bash
+                                     echo "hello ${SKILL_ARG_who}"
+                                     ```
+                                     """;
 
     private string _skillsDir = null!;
 
@@ -88,7 +88,8 @@ public class SkillAuthoringTests
         Assert.That(File.Exists(ApprovedFile("greeting")), Is.False, "not approved yet");
         Assert.That(result, Does.Contain(Path.Combine("agent", "functions", "pending", "greeting.md")));
         Assert.That(engine.SkillDocumentation, Does.Contain("# Greeting Skills"));
-        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"), "active in the engine that wrote it");
+        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"),
+            "active in the engine that wrote it");
     }
 
     [Test]
@@ -113,10 +114,13 @@ public class SkillAuthoringTests
         Assert.That(reply, Does.Contain("Approved").And.Contain("greeting"));
         Assert.That(File.Exists(ApprovedFile("greeting")), Is.True);
         Assert.That(File.Exists(PendingFile("greeting")), Is.False);
-        Assert.That(Engine().ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"), "a later session loads it");
-        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"), "this one keeps it");
+        Assert.That(Engine().ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"),
+            "a later session loads it");
+        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"),
+            "this one keeps it");
         engine.ReloadSkills();
-        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"), "and still finds it at its new path");
+        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"),
+            "and still finds it at its new path");
         Assert.That(CountOf(engine.SkillDocumentation, "# Greeting Skills"), Is.EqualTo(1), "loaded once, not twice");
     }
 
@@ -153,8 +157,10 @@ public class SkillAuthoringTests
     [Test]
     public void Approve_OfAnUnknownName_SaysSo()
     {
-        Assert.That(Engine().HandleUserCommand("/approve nothing"), Does.Contain("No pending tool or skill file named 'nothing'"));
-        Assert.That(Engine().HandleUserCommand("/reject nothing"), Does.Contain("No pending tool or skill file named 'nothing'"));
+        Assert.That(Engine().HandleUserCommand("/approve nothing"),
+            Does.Contain("No pending tool or skill file named 'nothing'"));
+        Assert.That(Engine().HandleUserCommand("/reject nothing"),
+            Does.Contain("No pending tool or skill file named 'nothing'"));
     }
 
     [Test]
@@ -163,7 +169,8 @@ public class SkillAuthoringTests
         var engine = Engine();
         engine.CreateSkillFile("greeting", EchoSkill);
         Directory.CreateDirectory(Path.Combine(_skillsDir, "tools", "pending"));
-        File.WriteAllText(Path.Combine(_skillsDir, "tools", "pending", "greeting.tool.md"), "# Tool: greeting\n- Description: x\n");
+        File.WriteAllText(Path.Combine(_skillsDir, "tools", "pending", "greeting.tool.md"),
+            "# Tool: greeting\n- Description: x\n");
 
         string reply = engine.HandleUserCommand("/approve greeting")!;
 
@@ -179,12 +186,15 @@ public class SkillAuthoringTests
         engine.CreateSkillFile("greeting", EchoSkill);
         engine.HandleUserCommand("/approve greeting");
 
-        Assert.That(engine.CreateSkillFile("greeting", EchoSkill.Replace("hello", "hi"), overwrite: true), Does.Contain("/approve greeting"));
+        Assert.That(engine.CreateSkillFile("greeting", EchoSkill.Replace("hello", "hi"), overwrite: true),
+            Does.Contain("/approve greeting"));
 
         Assert.That(File.ReadAllText(PendingFile("greeting")), Does.Contain("hi"));
         Assert.That(File.ReadAllText(ApprovedFile("greeting")), Does.Contain("hello"), "the approved version stays");
-        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"), "the engine that wrote it runs the new one");
-        Assert.That(Engine().ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"), "a later session runs the approved one");
+        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"),
+            "the engine that wrote it runs the new one");
+        Assert.That(Engine().ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hello Louis"),
+            "a later session runs the approved one");
 
         engine.HandleUserCommand("/approve greeting");
 
@@ -263,7 +273,8 @@ public class SkillAuthoringTests
         foreach (string guide in ToolsetCatalog.All.Select(t => t.GuideFile!))
         {
             string name = Path.GetFileNameWithoutExtension(guide);
-            Assert.That(engine.CreateSkillFile(name, EchoSkill), Does.Contain("built-in"), $"{name} is a toolset's guide");
+            Assert.That(engine.CreateSkillFile(name, EchoSkill), Does.Contain("built-in"),
+                $"{name} is a toolset's guide");
         }
     }
 
@@ -282,7 +293,8 @@ public class SkillAuthoringTests
         engine.CreateSkillFile("greeting", EchoSkill);
 
         Assert.That(engine.CreateSkillFile("greeting", EchoSkill), Does.Contain("already exists"));
-        Assert.That(engine.CreateSkillFile("greeting", EchoSkill.Replace("hello", "hi"), overwrite: true), Does.Contain("Saved"));
+        Assert.That(engine.CreateSkillFile("greeting", EchoSkill.Replace("hello", "hi"), overwrite: true),
+            Does.Contain("Saved"));
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"));
     }
 

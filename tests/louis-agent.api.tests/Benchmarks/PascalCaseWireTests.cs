@@ -10,13 +10,18 @@ public class PascalCaseWireTests
     [Test]
     public void TheEnumsTheStoreKeeps_WriteTheirMemberName()
     {
-        foreach (var m in Enum.GetValues<BenchmarkOutcome>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"BenchmarkOutcome.{m}");
-        foreach (var m in Enum.GetValues<BenchmarkGraderKind>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"BenchmarkGraderKind.{m}");
-        foreach (var m in Enum.GetValues<BenchmarkModelLevel>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"BenchmarkModelLevel.{m}");
-        foreach (var m in Enum.GetValues<HumanVerdict>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"HumanVerdict.{m}");
+        foreach (var m in Enum.GetValues<BenchmarkOutcome>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"BenchmarkOutcome.{m}");
+        foreach (var m in Enum.GetValues<BenchmarkGraderKind>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"BenchmarkGraderKind.{m}");
+        foreach (var m in Enum.GetValues<BenchmarkModelLevel>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"BenchmarkModelLevel.{m}");
+        foreach (var m in Enum.GetValues<HumanVerdict>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"HumanVerdict.{m}");
     }
 
     [Test]
     public void TheApiWordsAVerdictInLowerCase_NotFromItsWireName() =>
-        Assert.That(Enum.GetValues<HumanVerdict>().Select(HumanVerdicts.Word), Is.EqualTo(new[] { "pass", "fail", "unsure" }));
+        Assert.That(Enum.GetValues<HumanVerdict>().Select(HumanVerdicts.Word),
+            Is.EqualTo(new[] { "pass", "fail", "unsure" }));
 }

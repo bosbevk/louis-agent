@@ -7,7 +7,13 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// the lines so far and then each new one as it arrives (<see cref="BenchmarkRunner.EventsAsync"/>), so a page that
 /// opens late sees the whole story.
 /// </summary>
-public sealed class BenchmarkRun(string id, string check, int repeat, BenchmarkRunOptions? options = null, string? rescoreOf = null, string? input = null,
+public sealed class BenchmarkRun(
+    string id,
+    string check,
+    int repeat,
+    BenchmarkRunOptions? options = null,
+    string? rescoreOf = null,
+    string? input = null,
     BenchmarkCalibration? calibration = null)
 {
     // The cook check forwards every stream event of its conversations as a line (the portal replays them as the chat),
@@ -43,7 +49,10 @@ public sealed class BenchmarkRun(string id, string check, int repeat, BenchmarkR
     /// <summary>The lines printed so far (the last <see cref="MaxLines"/>).</summary>
     public IReadOnlyList<string> Lines
     {
-        get { lock (_lock) return _lines.ToArray(); }
+        get
+        {
+            lock (_lock) return _lines.ToArray();
+        }
     }
 
     internal void Add(string line)

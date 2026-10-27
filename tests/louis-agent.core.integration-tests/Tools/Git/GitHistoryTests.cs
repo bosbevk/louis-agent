@@ -33,18 +33,22 @@ public class GitHistoryTests
     public void TearDown()
     {
         // git makes its object files read-only; clear that so the folder can go.
-        foreach (string file in Directory.EnumerateFiles(_repo, "*", SearchOption.AllDirectories)) File.SetAttributes(file, FileAttributes.Normal);
+        foreach (string file in Directory.EnumerateFiles(_repo, "*", SearchOption.AllDirectories))
+            File.SetAttributes(file, FileAttributes.Normal);
         Directory.Delete(_repo, recursive: true);
     }
 
-    private ProcessRunner.Result Git(params string[] args) => ProcessRunner.Run("git", args, _repo, TimeSpan.FromSeconds(30));
+    private ProcessRunner.Result Git(params string[] args) =>
+        ProcessRunner.Run("git", args, _repo, TimeSpan.FromSeconds(30));
 
     private void Commit(string file, string content, string message, string author, string date)
     {
         File.WriteAllText(Path.Combine(_repo, file), content);
         Git("add", file);
-        ProcessRunner.Run("git", ["commit", "-q", "-m", message, "--author", $"{author} <{author.ToLowerInvariant()}@example.com>"], _repo,
-            TimeSpan.FromSeconds(30), environment: new Dictionary<string, string> { ["GIT_AUTHOR_DATE"] = date, ["GIT_COMMITTER_DATE"] = date });
+        ProcessRunner.Run("git",
+            ["commit", "-q", "-m", message, "--author", $"{author} <{author.ToLowerInvariant()}@example.com>"], _repo,
+            TimeSpan.FromSeconds(30),
+            environment: new Dictionary<string, string> { ["GIT_AUTHOR_DATE"] = date, ["GIT_COMMITTER_DATE"] = date });
     }
 
     [Test]
@@ -52,8 +56,10 @@ public class GitHistoryTests
     {
         string history = _history.FileHistory("readme.md");
 
-        Assert.That(history, Does.Contain("Voeg wêreld by").And.Contain("Begin die projek").And.Not.Contain("Ander lêer"));
-        Assert.That(history.IndexOf("Voeg wêreld by", StringComparison.Ordinal), Is.LessThan(history.IndexOf("Begin die projek", StringComparison.Ordinal)));
+        Assert.That(history,
+            Does.Contain("Voeg wêreld by").And.Contain("Begin die projek").And.Not.Contain("Ander lêer"));
+        Assert.That(history.IndexOf("Voeg wêreld by", StringComparison.Ordinal),
+            Is.LessThan(history.IndexOf("Begin die projek", StringComparison.Ordinal)));
         Assert.That(history, Does.Contain("2026-10-01").And.Contain("Ben"));
     }
 
@@ -70,8 +76,10 @@ public class GitHistoryTests
     [Test]
     public void SearchCommits_ByText_Author_AndDate()
     {
-        Assert.That(_history.SearchCommits(text: "WÊRELD"), Does.Contain("Voeg wêreld by").And.Not.Contain("Begin"), "case-insensitive");
-        Assert.That(_history.SearchCommits(author: "anna"), Does.Contain("Begin die projek").And.Contain("Ander lêer").And.Not.Contain("Voeg"));
+        Assert.That(_history.SearchCommits(text: "WÊRELD"), Does.Contain("Voeg wêreld by").And.Not.Contain("Begin"),
+            "case-insensitive");
+        Assert.That(_history.SearchCommits(author: "anna"),
+            Does.Contain("Begin die projek").And.Contain("Ander lêer").And.Not.Contain("Voeg"));
         Assert.That(_history.SearchCommits(since: "2026-10-03"), Does.Contain("Ander lêer").And.Not.Contain("Voeg"));
         Assert.That(_history.SearchCommits(text: "niks hiervan"), Is.EqualTo("No commits match."));
         Assert.That(_history.SearchCommits(), Does.Contain("at least one of"));

@@ -19,14 +19,20 @@ internal static class NoteEndpoints
     public static void MapNotes(this RouteGroupBuilder admin, IBenchmarkStore? store, TimeProvider time)
     {
         // The time comes from our own clock, never from the request. Each answer of the store becomes one status: 201, 404 or 400.
-        admin.MapPost("/benchmarks/runs/{id}/notes", (string id, NoteRequest? request, CancellationToken cancellationToken) => AdminEndpoints.FromStore(store, async s =>
-            await s.AddNoteAsync(id, request?.Text, time.GetUtcNow(), request?.Conversation, cancellationToken) switch
-            {
-                NoteResult.Added added => Results.Created($"/v1/admin/benchmarks/runs/{Uri.EscapeDataString(id)}/notes", Row(added.Note)),
-                NoteResult.NoRun => ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoStoredRun, new { Id = id })),
-                NoteResult.Refused refused => ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", Reason(refused)),
-                var other => throw new InvalidOperationException(other.GetType().Name),
-            }));
+        admin.MapPost("/benchmarks/runs/{id}/notes",
+            (string id, NoteRequest? request, CancellationToken cancellationToken) => AdminEndpoints.FromStore(store,
+                async s =>
+                    await s.AddNoteAsync(id, request?.Text, time.GetUtcNow(), request?.Conversation,
+                            cancellationToken) switch
+                        {
+                            NoteResult.Added added => Results.Created(
+                                $"/v1/admin/benchmarks/runs/{Uri.EscapeDataString(id)}/notes", Row(added.Note)),
+                            NoteResult.NoRun => ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
+                                MessageText.Format(ApiUserText.NoStoredRun, new { Id = id })),
+                            NoteResult.Refused refused => ApiErrors.Result(StatusCodes.Status400BadRequest,
+                                "invalid_request_error", Reason(refused)),
+                            var other => throw new InvalidOperationException(other.GetType().Name),
+                        }));
     }
 
     /// <summary>A note the way the portal reads it.</summary>
@@ -41,7 +47,8 @@ internal static class NoteEndpoints
     private static string Reason(NoteResult.Refused refused) => refused.Reason switch
     {
         NoteRefusal.Blank => MessageText.Format(NoteUserText.NoteBlank),
-        NoteRefusal.TooLong => MessageText.Format(NoteUserText.NoteTooLong, new { Limit = RunNotes.MaxLength, Length = refused.Length }),
+        NoteRefusal.TooLong => MessageText.Format(NoteUserText.NoteTooLong,
+            new { Limit = RunNotes.MaxLength, Length = refused.Length }),
         _ => throw new ArgumentOutOfRangeException(nameof(refused), refused.Reason, null),
     };
 }

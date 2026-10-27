@@ -14,5 +14,6 @@ public static class SampleToolset
 
     /// <summary>A test's JSON or text with <c>&lt;Alpha&gt;</c>, <c>&lt;Beta&gt;</c>... where it names a toolset: filled with the sample names, so the input and what the test expects are one constant.</summary>
     public static string Fill(string text) =>
-        text.Replace("<Alpha>", Alpha).Replace("<Beta>", Beta).Replace("<Gamma>", Gamma).Replace("<Delta>", Delta).Replace("<Epsilon>", Epsilon);
+        text.Replace("<Alpha>", Alpha).Replace("<Beta>", Beta).Replace("<Gamma>", Gamma).Replace("<Delta>", Delta)
+            .Replace("<Epsilon>", Epsilon);
 }

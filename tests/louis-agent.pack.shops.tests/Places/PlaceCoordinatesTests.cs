@@ -7,12 +7,14 @@ namespace LouisAgent.Packs.Shops.Tests.Places;
 // is its real answer for Malmesbury, recorded 2026-10-17 and trimmed.
 public class PlaceCoordinatesTests
 {
-    private static string Fixture => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.pack.shops.tests", "Places", "Fixtures", "nominatim-malmesbury.json"));
+    private static string Fixture => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests",
+        "louis-agent.pack.shops.tests", "Places", "Fixtures", "nominatim-malmesbury.json"));
 
     [Test]
     public void TheLookup_IsTheTownOnOpenStreetMap_InSouthAfrica() =>
         Assert.That(PlaceCoordinates.Url(" Malmesbury, Wes-Kaap ").AbsoluteUri,
-            Is.EqualTo("https://nominatim.openstreetmap.org/search?q=Malmesbury%2C%20Wes-Kaap&format=json&limit=1&countrycodes=za"));
+            Is.EqualTo(
+                "https://nominatim.openstreetmap.org/search?q=Malmesbury%2C%20Wes-Kaap&format=json&limit=1&countrycodes=za"));
 
     [Test]
     public void ATownsAnswer_IsItsCentre() =>
@@ -30,9 +32,11 @@ public class PlaceCoordinatesTests
     [TestCase(System.Net.HttpStatusCode.OK, "<html>blocked</html>")]
     public void NominatimNotAnswering_IsNoAnswer_NotNoTown(System.Net.HttpStatusCode status, string body)
     {
-        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(status) { Content = new StringContent(body) }));
+        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(status)
+        { Content = new StringContent(body) }));
 
-        Assert.That(() => PlaceCoordinates.OfAsync("Malmesbury", http, CancellationToken.None), Throws.TypeOf<PlaceUnavailableException>());
+        Assert.That(() => PlaceCoordinates.OfAsync("Malmesbury", http, CancellationToken.None),
+            Throws.TypeOf<PlaceUnavailableException>());
     }
 
     [Test]
@@ -41,17 +45,22 @@ public class PlaceCoordinatesTests
     {
         // F18 step 4f.2: the line says which service failed; the town the user named is a keyed hash and a length.
         using var stderr = new CapturedStderr();
-        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK) { Content = new StringContent("<html>blocked</html>") }));
+        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+        { Content = new StringContent("<html>blocked</html>") }));
 
-        Assert.That(() => PlaceCoordinates.OfAsync("Malmesbury", http, CancellationToken.None), Throws.TypeOf<PlaceUnavailableException>());
+        Assert.That(() => PlaceCoordinates.OfAsync("Malmesbury", http, CancellationToken.None),
+            Throws.TypeOf<PlaceUnavailableException>());
 
-        Assert.That(stderr.Text, Does.Contain("OpenStreetMap couldn't find the store for #").And.Contain("(10)").And.Not.Contain("Malmesbury"));
+        Assert.That(stderr.Text,
+            Does.Contain("OpenStreetMap couldn't find the store for #").And.Contain("(10)").And.Not
+                .Contain("Malmesbury"));
     }
 
     [Test]
     public async Task ATownNominatimDoesntKnow_IsNoCentre()
     {
-        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK) { Content = new StringContent("[]") }));
+        var http = new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.OK)
+        { Content = new StringContent("[]") }));
 
         Assert.That(await PlaceCoordinates.OfAsync("Atlantis", http, CancellationToken.None), Is.Null);
     }

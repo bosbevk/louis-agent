@@ -20,7 +20,13 @@ public class PowerShellToolsIntegrationTests
     [TearDown]
     public void TearDown()
     {
-        try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
+        try
+        {
+            Directory.Delete(_root, recursive: true);
+        }
+        catch (IOException)
+        {
+        }
     }
 
     [Test]
@@ -28,7 +34,8 @@ public class PowerShellToolsIntegrationTests
     {
         RequirePowerShell();
 
-        var result = _tools.PowerShellRun(script: "\"héllo ✓ $([Console]::In.ReadToEnd().Trim())\"", standardInput: "from stdin");
+        var result = _tools.PowerShellRun(script: "\"héllo ✓ $([Console]::In.ReadToEnd().Trim())\"",
+            standardInput: "from stdin");
 
         Assert.That(result, Does.Contain("Exit code: 0"));
         Assert.That(result, Does.Contain("héllo ✓ from stdin"));
@@ -43,7 +50,8 @@ public class PowerShellToolsIntegrationTests
 
         Assert.That(_tools.PowerShellRun(scriptPath: "greet.ps1", arguments: "-Name \"Louis M\" -Count 3 -Loud"),
             Does.Contain("Name=Louis M Count=3 Loud=True"));
-        Assert.That(_tools.PowerShellRun(scriptPath: "greet.ps1", arguments: "Solo"), Does.Contain("Name=Solo Count=1"));
+        Assert.That(_tools.PowerShellRun(scriptPath: "greet.ps1", arguments: "Solo"),
+            Does.Contain("Name=Solo Count=1"));
     }
 
     [TestCase("throw 'boom'", "Exit code: 1", "boom")]
@@ -63,7 +71,8 @@ public class PowerShellToolsIntegrationTests
     public void PowerShellRun_KillsScriptAfterTimeout()
     {
         RequirePowerShell();
-        Assert.That(_tools.PowerShellRun(script: "while ($true) { Start-Sleep -Seconds 1 }", timeoutSeconds: 3), Does.Contain("was killed"));
+        Assert.That(_tools.PowerShellRun(script: "while ($true) { Start-Sleep -Seconds 1 }", timeoutSeconds: 3),
+            Does.Contain("was killed"));
     }
 
     [Test]

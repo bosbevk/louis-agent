@@ -11,7 +11,8 @@ public partial class SummaryPanel
     [Inject] private NavigationManager Navigation { get; set; } = null!;
 
     /// <summary>The run as <c>GET /v1/admin/benchmarks/runs/{id}</c> answers it.</summary>
-    [Parameter, EditorRequired] public JsonElement Run { get; set; }
+    [Parameter, EditorRequired]
+    public JsonElement Run { get; set; }
 
     [Parameter] public CurrencyChoice? Currency { get; set; }
 

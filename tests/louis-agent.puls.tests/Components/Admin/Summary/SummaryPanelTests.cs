@@ -31,7 +31,8 @@ public class SummaryPanelTests
         {
             Content = new StringContent("""{"id":"new987654321"}""", Encoding.UTF8, "application/json"),
         });
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") },
+            new ChatSettings()));
         return (ctx.Render<SummaryPanel>(p => p.Add(x => x.Run, Json(run))), handler);
     }
 
@@ -41,8 +42,10 @@ public class SummaryPanelTests
         var (cut, _) = Render(Run);
 
         var modes = cut.FindAll(".summary-mode");
-        Assert.That(modes.Select(m => m.QuerySelector("h3")!.TextContent), Is.EqualTo(new[] { SampleMode.Beta, SampleMode.Gamma }));
-        Assert.That(modes[0].QuerySelectorAll(".s-slice").Select(c => c.TextContent), Is.EqualTo(new[] { "overall", "language:af", "budget" }));
+        Assert.That(modes.Select(m => m.QuerySelector("h3")!.TextContent),
+            Is.EqualTo(new[] { SampleMode.Beta, SampleMode.Gamma }));
+        Assert.That(modes[0].QuerySelectorAll(".s-slice").Select(c => c.TextContent),
+            Is.EqualTo(new[] { "overall", "language:af", "budget" }));
     }
 
     [Test]
@@ -56,7 +59,8 @@ public class SummaryPanelTests
         Assert.That(overall.QuerySelector(".s-rate")!.TextContent, Is.EqualTo("75%"));
         Assert.That(overall.QuerySelector(".s-at-k")!.TextContent, Is.EqualTo("100%"));
         Assert.That(overall.QuerySelector(".s-hat-k")!.TextContent, Is.EqualTo("50%"));
-        Assert.That((overall.QuerySelector(".s-unknown")!.TextContent, overall.QuerySelector(".s-infra")!.TextContent), Is.EqualTo(("1", "0")));
+        Assert.That((overall.QuerySelector(".s-unknown")!.TextContent, overall.QuerySelector(".s-infra")!.TextContent),
+            Is.EqualTo(("1", "0")));
         Assert.That(overall.QuerySelector(".s-cost-trial")!.TextContent, Does.StartWith("$0.01"));
         Assert.That(overall.QuerySelector(".s-cost-pass")!.TextContent, Does.StartWith("$0.01"));
     }
@@ -108,9 +112,11 @@ public class SummaryPanelTests
     [Test]
     public void ARunFromBefore5c_SaysSo_AndOffersTheReScore()
     {
-        var (cut, handler) = Render("""{"run":{"id":"old123456789","check":"puls-cook","status":"done"},"summaries":null}""");
+        var (cut, handler) =
+            Render("""{"run":{"id":"old123456789","check":"puls-cook","status":"done"},"summaries":null}""");
 
-        Assert.That(cut.Find(".summary-none").TextContent, Does.Contain("no categories: re-score this run to see them"));
+        Assert.That(cut.Find(".summary-none").TextContent,
+            Does.Contain("no categories: re-score this run to see them"));
         Assert.That(cut.FindAll(".summary-mode"), Is.Empty);
 
         cut.Find("button.rescore").Click();

@@ -8,7 +8,8 @@ public static class StandInBuild
         get
         {
             var build = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-            return Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.api.standin", "bin", build.Parent!.Name, build.Name, "louis-agent.api.standin.dll");
+            return Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.api.standin", "bin", build.Parent!.Name,
+                build.Name, "louis-agent.api.standin.dll");
         }
     }
 }

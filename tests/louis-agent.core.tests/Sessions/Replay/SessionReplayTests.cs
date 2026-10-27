@@ -45,7 +45,9 @@ public class SessionReplayTests
     {
         var error = Assert.Throws<ArgumentException>(() => SessionReplay.DefaultMode("sometimes"))!;
 
-        Assert.That(error.Message, Does.Contain("sometimes").And.Contain("WEB_REPLAY").And.Contain("off").And.Contain("record").And.Contain("replay"));
+        Assert.That(error.Message,
+            Does.Contain("sometimes").And.Contain("WEB_REPLAY").And.Contain("off").And.Contain("record").And
+                .Contain("replay"));
     }
 
     [Test]

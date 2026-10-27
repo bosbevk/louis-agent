@@ -42,24 +42,29 @@ public sealed class CalibrationRecorder(ICalibrationStore store, ILogger? logger
 
     public async Task<Result> RecordAsync(BenchmarkRun run, CancellationToken cancellationToken = default)
     {
-        if (run.Calibration is not { } calibration) return new Result(false, MessageText.Format(ApiUserText.CalibrationNotACheck, new { Run = run.Id }));
+        if (run.Calibration is not { } calibration)
+            return new Result(false, MessageText.Format(ApiUserText.CalibrationNotACheck, new { Run = run.Id }));
 
         // Listen before the first await, so no line printed meanwhile is missed.
         var (soFar, live) = run.Listen();
         CalibrationRecord? report = null;
         string? last = null;
+
         void Fold(string line)
         {
             if (!string.IsNullOrWhiteSpace(line)) last = line;
             // The line's time is the run's end, which isn't known yet: the record is remade with it below.
             report = CalibrationLineReader.Read(line, calibration.Of, DateTimeOffset.UtcNow) ?? report;
         }
+
         foreach (string line in soFar) Fold(line);
         await foreach (string line in live.ReadAllAsync(cancellationToken)) Fold(line);
 
         string? reason = run.ExitCode != 0
             ? MessageText.Format(ApiUserText.CalibrationRunFailed, new { Code = run.ExitCode, Last = last ?? "" })
-            : report is null ? MessageText.Format(ApiUserText.CalibrationNoReport, new { Last = last ?? "" }) : null;
+            : report is null
+                ? MessageText.Format(ApiUserText.CalibrationNoReport, new { Last = last ?? "" })
+                : null;
         if (reason is null)
         {
             try
@@ -72,7 +77,9 @@ public sealed class CalibrationRecorder(ICalibrationStore store, ILogger? logger
                 reason = ex.Message;
             }
         }
-        logger?.Log(LogLevel.Warning, ApiLogMessage.CalibrationNotStored, new { Run = calibration.Of, calibration.Grader, Reason = reason }, tag: "API");
+
+        logger?.Log(LogLevel.Warning, ApiLogMessage.CalibrationNotStored,
+            new { Run = calibration.Of, calibration.Grader, Reason = reason }, tag: "API");
         return new Result(false, reason);
     }
 }

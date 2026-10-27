@@ -1,7 +1,7 @@
-namespace LouisAgent.Api.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Api.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -12,7 +12,8 @@ public enum ApiErrorMessage
     [Description("depth must be between 0 and {Max}: a specialist is one level down, a minion two.")]
     SessionDepthInvalid,
 
-    [Description("A sub-session can't load the '{Toolset}' toolset: only the agent the user talks to delegates to specialists.")]
+    [Description(
+        "A sub-session can't load the '{Toolset}' toolset: only the agent the user talks to delegates to specialists.")]
     SubSessionCannotDelegate,
 
     [Description("A minion (depth {Depth}) names the one tool it gets: 'tool' is required.")]
@@ -33,7 +34,8 @@ public enum ApiErrorMessage
     [Description("The parent session has no '{Tool}' tool: a minion gets one of its specialist's own tools.")]
     ParentLacksTool,
 
-    [Description("The 'minions' toolset is a specialist's (depth 1): the agent the user talks to delegates to specialists, and a minion delegates to no one.")]
+    [Description(
+        "The 'minions' toolset is a specialist's (depth 1): the agent the user talks to delegates to specialists, and a minion delegates to no one.")]
     MinionsOnlyForSpecialists,
 
     [Description("No toolset builds a '{Tool}' tool.")]

@@ -6,7 +6,8 @@ namespace LouisAgent.Puls.Admin.Charts;
 /// </summary>
 public static class ChartPalette
 {
-    public static readonly IReadOnlyList<string> Colours = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
+    public static readonly IReadOnlyList<string> Colours =
+        ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
 
     public static string Series(int i) => Colours[i % Colours.Count];
 }

@@ -11,7 +11,8 @@ namespace LouisAgent.Core.Tests.Messages;
 public class MessageEnumTests
 {
     private static readonly Type[] MessageEnums =
-        typeof(MessageText).Assembly.GetTypes().Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages").ToArray();
+        typeof(MessageText).Assembly.GetTypes().Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
+            .ToArray();
 
     private static IEnumerable<Enum> AllMembers() =>
         MessageEnums.SelectMany(t => Enum.GetValues(t).Cast<Enum>());
@@ -21,12 +22,18 @@ public class MessageEnumTests
     {
         Assert.That(MessageEnums.Select(t => t.Name), Is.EquivalentTo(new[]
         {
-            "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage", "ConfigErrorMessage", "ConfigLogMessage",
-            "CurrencyToolMessage", "DevOpsToolMessage", "DocumentToolMessage", "DotNetToolMessage", "ErrorMessage", "GitToolMessage",
-            "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage", "LlmErrorMessage",
-            "LoggingErrorMessage", "LoggingLogMessage", "PaymoToolMessage", "PricingErrorMessage", "PricingLogMessage", "ProtocolLogMessage", "ScriptToolMessage",
-            "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage", "SkillLogMessage", "SubSessionToolMessage", "ToolMessage",
-            "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage", "WorkspaceToolMessage",
+            "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage", "ConfigErrorMessage",
+            "ConfigLogMessage",
+            "CurrencyToolMessage", "DevOpsToolMessage", "DocumentToolMessage", "DotNetToolMessage", "ErrorMessage",
+            "GitToolMessage",
+            "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
+            "LlmErrorMessage",
+            "LoggingErrorMessage", "LoggingLogMessage", "PaymoToolMessage", "PricingErrorMessage", "PricingLogMessage",
+            "ProtocolLogMessage", "ScriptToolMessage",
+            "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage", "SkillLogMessage", "SubSessionToolMessage",
+            "ToolMessage",
+            "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage",
+            "WorkspaceToolMessage",
         }));
     }
 
@@ -35,7 +42,8 @@ public class MessageEnumTests
     {
         // An enum named for messages but placed outside a Messages folder would skip every check above, so it fails here.
         var stray = typeof(MessageText).Assembly.GetTypes()
-            .Where(t => t.IsEnum && (t.Name.EndsWith("Message", StringComparison.Ordinal) || t.Name.EndsWith("Text", StringComparison.Ordinal)))
+            .Where(t => t.IsEnum && (t.Name.EndsWith("Message", StringComparison.Ordinal) ||
+                                     t.Name.EndsWith("Text", StringComparison.Ordinal)))
             .Where(t => t.Namespace?.Split('.').Last() != "Messages")
             .Select(t => t.FullName)
             .ToList();
@@ -48,7 +56,8 @@ public class MessageEnumTests
     {
         foreach (Enum member in AllMembers())
         {
-            string? text = member.GetType().GetField(member.ToString())!.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description;
+            string? text = member.GetType().GetField(member.ToString())!
+                .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description;
             Assert.That(text, Is.Not.Null.And.Not.Empty, $"{member.GetType().Name}.{member} has no [Description]");
         }
     }
@@ -60,15 +69,18 @@ public class MessageEnumTests
         foreach (Enum member in AllMembers())
         {
             string template = MessageText.Template(member);
-            string withoutHoles = System.Text.RegularExpressions.Regex.Replace(template, @"\{[A-Za-z][A-Za-z0-9]*\}", "");
-            Assert.That(withoutHoles, Does.Not.Contain("{").And.Not.Contain("}"), $"{member.GetType().Name}.{member}: \"{template}\"");
+            string withoutHoles =
+                System.Text.RegularExpressions.Regex.Replace(template, @"\{[A-Za-z][A-Za-z0-9]*\}", "");
+            Assert.That(withoutHoles, Does.Not.Contain("{").And.Not.Contain("}"),
+                $"{member.GetType().Name}.{member}: \"{template}\"");
         }
     }
 
     [Test]
     public void Format_FillsNamedHoles()
     {
-        Assert.That(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = "10m" }), Is.EqualTo("Unknown LLM_CACHE_TTL '10m'. Use 5m or 1h."));
+        Assert.That(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = "10m" }),
+            Is.EqualTo("Unknown LLM_CACHE_TTL '10m'. Use 5m or 1h."));
     }
 
     [Test]
@@ -76,13 +88,16 @@ public class MessageEnumTests
     {
         // A message never goes out with a gap in it.
         Assert.That(() => MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Other = "x" }),
-            Throws.ArgumentException.With.Message.Contain("ConfigErrorMessage.UnknownCacheTtl needs a value for '{Value}'"));
+            Throws.ArgumentException.With.Message.Contain(
+                "ConfigErrorMessage.UnknownCacheTtl needs a value for '{Value}'"));
     }
 
     [Test]
     public void Template_KeepsTheHolesForAStructuredLogger()
     {
-        Assert.That(MessageText.Template(ConfigErrorMessage.UnknownCacheTtl), Is.EqualTo("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."));
-        Assert.That(MessageText.Holes(MessageText.Template(ConfigErrorMessage.UnknownCacheTtl)), Is.EqualTo(new[] { "Value" }));
+        Assert.That(MessageText.Template(ConfigErrorMessage.UnknownCacheTtl),
+            Is.EqualTo("Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."));
+        Assert.That(MessageText.Holes(MessageText.Template(ConfigErrorMessage.UnknownCacheTtl)),
+            Is.EqualTo(new[] { "Value" }));
     }
 }

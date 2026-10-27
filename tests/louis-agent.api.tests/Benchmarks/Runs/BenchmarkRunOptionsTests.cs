@@ -60,22 +60,27 @@ public class BenchmarkRunOptionsTests
 
     // --- what the runner is started with
 
-    private static BenchmarkRunner RunnerWith(BenchmarkCheck check) => new(new BenchmarkCatalog([check]), Path.GetTempPath(), "http://127.0.0.1:1/", "/app/evals/x.dll");
+    private static BenchmarkRunner RunnerWith(BenchmarkCheck check) => new(new BenchmarkCatalog([check]),
+        Path.GetTempPath(), "http://127.0.0.1:1/", "/app/evals/x.dll");
 
     [Test]
     public void ARecordingEvalStartsWithWebRecord()
     {
-        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_1", SampleEval.Beta, 1, new BenchmarkRunOptions(WebReplayMode.Record, null)));
+        var start = RunnerWith(Eval).StartInfoFor(Eval,
+            new BenchmarkRun("run_1", SampleEval.Beta, 1, new BenchmarkRunOptions(WebReplayMode.Record, null)));
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "1", "--web", "record" }));
+        Assert.That(start.ArgumentList,
+            Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "1", "--web", "record" }));
     }
 
     [Test]
     public void AReplayingEvalStartsWithReplayAndTheRunsId()
     {
-        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_2", SampleEval.Beta, 1, new BenchmarkRunOptions(null, "run_1")));
+        var start = RunnerWith(Eval).StartInfoFor(Eval,
+            new BenchmarkRun("run_2", SampleEval.Beta, 1, new BenchmarkRunOptions(null, "run_1")));
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "1", "--replay", "run_1" }));
+        Assert.That(start.ArgumentList,
+            Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "1", "--replay", "run_1" }));
     }
 
     [Test]
@@ -83,7 +88,8 @@ public class BenchmarkRunOptionsTests
     {
         var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_3", SampleEval.Beta, 2));
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "2" }));
+        Assert.That(start.ArgumentList,
+            Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "2" }));
     }
 
     // --- what a stored run keeps
@@ -94,7 +100,9 @@ public class BenchmarkRunOptionsTests
         var plain = new Dictionary<string, string> { ["provider"] = "anthropic" };
 
         Assert.That(BenchmarkSettings.WithOptions(plain, BenchmarkRunOptions.None), Is.EqualTo(plain));
-        Assert.That(BenchmarkSettings.WithOptions(plain, new BenchmarkRunOptions(WebReplayMode.Record, null))["web"], Is.EqualTo("record"));
-        Assert.That(BenchmarkSettings.WithOptions(plain, new BenchmarkRunOptions(null, "run_1"))["replay_of"], Is.EqualTo("run_1"));
+        Assert.That(BenchmarkSettings.WithOptions(plain, new BenchmarkRunOptions(WebReplayMode.Record, null))["web"],
+            Is.EqualTo("record"));
+        Assert.That(BenchmarkSettings.WithOptions(plain, new BenchmarkRunOptions(null, "run_1"))["replay_of"],
+            Is.EqualTo("run_1"));
     }
 }

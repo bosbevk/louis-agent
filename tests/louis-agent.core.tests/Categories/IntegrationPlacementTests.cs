@@ -22,14 +22,24 @@ public class IntegrationPlacementTests
         var found = new List<string>();
         for (int i = 0; i < lines.Length; i++)
         {
-            if (!lines[i].StartsWith("public class ", StringComparison.Ordinal) && !lines[i].StartsWith("public sealed class ", StringComparison.Ordinal)) continue;
-            int end = Enumerable.Range(i + 1, lines.Length - i - 1).FirstOrDefault(k => lines[k].StartsWith("public ", StringComparison.Ordinal) || lines[k].StartsWith("internal ", StringComparison.Ordinal) || lines[k].StartsWith('['), lines.Length);
-            bool hasTest = Enumerable.Range(i, end - i).Any(k => System.Text.RegularExpressions.Regex.IsMatch(lines[k], @"^\s*\[(Test|TestCase|TestCaseSource)\b"));
+            if (!lines[i].StartsWith("public class ", StringComparison.Ordinal) &&
+                !lines[i].StartsWith("public sealed class ", StringComparison.Ordinal)) continue;
+            int end = Enumerable.Range(i + 1, lines.Length - i - 1).FirstOrDefault(
+                k => lines[k].StartsWith("public ", StringComparison.Ordinal) ||
+                     lines[k].StartsWith("internal ", StringComparison.Ordinal) || lines[k].StartsWith('['),
+                lines.Length);
+            bool hasTest = Enumerable.Range(i, end - i).Any(k =>
+                System.Text.RegularExpressions.Regex.IsMatch(lines[k], @"^\s*\[(Test|TestCase|TestCaseSource)\b"));
             if (!hasTest) continue;
             bool marked = i > 0 && lines[i - 1].Contains(Marked, StringComparison.Ordinal);
-            if (marked && unitProject) found.Add($"{rel}:{i + 1}  marked Integration, but in a unit project: it belongs in {project[..^".tests".Length]}.integration-tests");
-            if (!marked && integrationProject) found.Add($"{rel}:{i + 1}  in an integration project, but not marked [Category(\"Integration\")] on the class");
+            if (marked && unitProject)
+                found.Add(
+                    $"{rel}:{i + 1}  marked Integration, but in a unit project: it belongs in {project[..^".tests".Length]}.integration-tests");
+            if (!marked && integrationProject)
+                found.Add(
+                    $"{rel}:{i + 1}  in an integration project, but not marked [Category(\"Integration\")] on the class");
         }
+
         return found;
     }
 
@@ -42,6 +52,7 @@ public class IntegrationPlacementTests
             .SelectMany(file => Misplaced(file.Rel, file.Text))
             .ToList();
 
-        Assert.That(misplaced, Is.Empty, "unit and integration tests are apart (F18 step 7.6.3):\n" + string.Join("\n", misplaced));
+        Assert.That(misplaced, Is.Empty,
+            "unit and integration tests are apart (F18 step 7.6.3):\n" + string.Join("\n", misplaced));
     }
 }

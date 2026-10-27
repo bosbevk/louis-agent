@@ -14,7 +14,11 @@ public class CostCalculatorTests
 
     private static ModelPrice Price(TokenPricesFor p, LongPromptPrices? longPrompt = null) => new()
     {
-        Input = p.Input, Output = p.Output, CacheRead = p.CacheRead, CacheWrite5m = p.Write5m, CacheWrite1h = p.Write1h,
+        Input = p.Input,
+        Output = p.Output,
+        CacheRead = p.CacheRead,
+        CacheWrite5m = p.Write5m,
+        CacheWrite1h = p.Write1h,
         LongPrompt = longPrompt,
     };
 
@@ -27,22 +31,28 @@ public class CostCalculatorTests
             ["claude-haiku-4-5"] = Price(Haiku45),
             ["claude-haiku-5-5"] = Price(Haiku55, new LongPromptPrices
             {
-                AboveTokens = 100_000, Input = Haiku55Long.Input, Output = Haiku55Long.Output, CacheRead = Haiku55Long.CacheRead,
-                CacheWrite5m = Haiku55Long.Write5m, CacheWrite1h = Haiku55Long.Write1h,
+                AboveTokens = 100_000,
+                Input = Haiku55Long.Input,
+                Output = Haiku55Long.Output,
+                CacheRead = Haiku55Long.CacheRead,
+                CacheWrite5m = Haiku55Long.Write5m,
+                CacheWrite1h = Haiku55Long.Write1h,
             }),
             ["llama"] = Price(new TokenPricesFor(0, 0, 0, 0, 0)),
         },
     };
 
     private static UsageRecord Record(string? model, UsageTokens tokens) => new(
-        At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null, Task: null,
+        At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null,
+        Task: null,
         Run: null, Service: null, Model: model, Tokens: tokens, DurationMs: 1, Stop: "stop");
 
     [Test]
     public void For_SpecsWorkedExample()
     {
         // Usage spec §4.1: 1,840 input + 26,110 cache-write + 412 output on Haiku 4.5 prices ≈ $0.0365.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-4-5-20251001", new UsageTokens(1_840, 26_110, 0, 412, 210)), Table);
+        UsageCost? cost =
+            CostCalculator.For(Record("claude-haiku-4-5-20251001", new UsageTokens(1_840, 26_110, 0, 412, 210)), Table);
 
         Assert.That(cost, Is.EqualTo(new UsageCost("USD", 0.036538m, "2026-10-10")));
     }
@@ -51,7 +61,9 @@ public class CostCalculatorTests
     public void For_OneHourWrites_AtTheOneHourPrice_TheRestAtFiveMinutes()
     {
         // F4: 248 written, 100 of them for an hour. 10 × 0.10 + 148 × 0.125 + 100 × 0.20 + 2 × 0.50 = 40.5 per million.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(10, 248, 0, 2, null, CacheWrite1h: 100)), Table);
+        UsageCost? cost =
+            CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(10, 248, 0, 2, null, CacheWrite1h: 100)),
+                Table);
 
         Assert.That(cost!.Amount, Is.EqualTo(0.000041m));
     }
@@ -60,7 +72,9 @@ public class CostCalculatorTests
     public void For_AllWritesForAnHour_CostTheOneHourPrice()
     {
         // 1,000,000 written, all for an hour, on Haiku 4.5: exactly the cache_write_1h price, not cache_write_5m.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-4-5", new UsageTokens(0, 1_000_000, 0, 0, null, CacheWrite1h: 1_000_000)), Table);
+        UsageCost? cost =
+            CostCalculator.For(
+                Record("claude-haiku-4-5", new UsageTokens(0, 1_000_000, 0, 0, null, CacheWrite1h: 1_000_000)), Table);
 
         Assert.That(cost!.Amount, Is.EqualTo(2.00m));
     }
@@ -69,7 +83,8 @@ public class CostCalculatorTests
     public void For_WritesWithoutTheSplit_AtTheFiveMinutePrice_AsBeforeF4()
     {
         // Old records, and providers that don't report lifetimes, have no split: priced as they always were.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-4-5", new UsageTokens(0, 1_000_000, 0, 0, null)), Table);
+        UsageCost? cost =
+            CostCalculator.For(Record("claude-haiku-4-5", new UsageTokens(0, 1_000_000, 0, 0, null)), Table);
 
         Assert.That(cost!.Amount, Is.EqualTo(1.25m));
     }
@@ -78,7 +93,8 @@ public class CostCalculatorTests
     public void For_CacheReads_AtTheReadPrice()
     {
         // 39 uncached + 10,227 read + 206 output: the F1 spike's cache-read request.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-4-5", new UsageTokens(39, null, 10_227, 206, null)), Table);
+        UsageCost? cost = CostCalculator.For(Record("claude-haiku-4-5", new UsageTokens(39, null, 10_227, 206, null)),
+            Table);
 
         // 39 × 1.00 + 10,227 × 0.10 + 206 × 5.00 = 2,091.7 per million.
         Assert.That(cost!.Amount, Is.EqualTo(0.002092m));
@@ -88,7 +104,8 @@ public class CostCalculatorTests
     public void For_RealRecordFromTheDemoLedger()
     {
         // A recorded fix request (the orchestrator demo, before CL10): 47,605 input, 0 cached, 470 output on Haiku 5.5.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(47_605, null, 0, 470, null)), Table);
+        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(47_605, null, 0, 470, null)),
+            Table);
 
         Assert.That(cost!.Amount, Is.EqualTo(0.004996m));
     }
@@ -98,16 +115,19 @@ public class CostCalculatorTests
     [TestCase(100_001, 0.50)]
     public void For_LongPromptTier_AppliesOnlyAboveTheThreshold(long input, decimal inputPrice)
     {
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(input, null, null, 0, null)), Table);
+        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(input, null, null, 0, null)),
+            Table);
 
-        Assert.That(cost!.Amount, Is.EqualTo(Math.Round(input * inputPrice / 1_000_000m, 6, MidpointRounding.AwayFromZero)));
+        Assert.That(cost!.Amount,
+            Is.EqualTo(Math.Round(input * inputPrice / 1_000_000m, 6, MidpointRounding.AwayFromZero)));
     }
 
     [Test]
     public void For_LongPromptTier_CountsCacheAndPricesTheWholeRequest()
     {
         // 1,000 uncached + 99,500 read = 100,500 prompt tokens: over the threshold, so every kind uses the long prices.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1_000, null, 99_500, 2_000, null)), Table);
+        UsageCost? cost =
+            CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1_000, null, 99_500, 2_000, null)), Table);
 
         // 1,000 × 0.50 + 99,500 × 0.05 + 2,000 × 2.50 = 10,475 per million.
         Assert.That(cost!.Amount, Is.EqualTo(0.010475m));
@@ -131,14 +151,19 @@ public class CostCalculatorTests
     [Test]
     public void For_InputOrOutputNotReported_IsNull()
     {
-        Assert.That(CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(null, null, null, 100, null)), Table), Is.Null);
-        Assert.That(CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1_000, null, null, null, null)), Table), Is.Null);
+        Assert.That(CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(null, null, null, 100, null)), Table),
+            Is.Null);
+        Assert.That(
+            CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1_000, null, null, null, null)), Table),
+            Is.Null);
     }
 
     [Test]
     public void For_EmptyTable_IsNull()
     {
-        Assert.That(CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1_000, null, null, 100, null)), PriceTable.Empty),
+        Assert.That(
+            CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1_000, null, null, 100, null)),
+                PriceTable.Empty),
             Is.Null);
     }
 
@@ -146,7 +171,8 @@ public class CostCalculatorTests
     public void For_RoundsToSixDecimals()
     {
         // 1 input token on Haiku 5.5 = 0.0000001: rounds to 0.000000, stored as an exact decimal.
-        UsageCost? cost = CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1, null, null, 0, null)), Table);
+        UsageCost? cost =
+            CostCalculator.For(Record("claude-haiku-5-5", new UsageTokens(1, null, null, 0, null)), Table);
 
         Assert.That(cost!.Amount, Is.EqualTo(0m));
     }
@@ -164,6 +190,8 @@ public class CostCalculatorTests
     [Test]
     public void For_ARecordThatIsNotAHit_AndHasAnUnpricedModel_IsStillUnknown()
     {
-        Assert.That(CostCalculator.For(Record("a-model-the-table-does-not-price", new UsageTokens(0, 0, 0, 0, 0)), Table), Is.Null);
+        Assert.That(
+            CostCalculator.For(Record("a-model-the-table-does-not-price", new UsageTokens(0, 0, 0, 0, 0)), Table),
+            Is.Null);
     }
 }

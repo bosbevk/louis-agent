@@ -17,18 +17,13 @@ public enum StubMessage
     [Description("Hoe maak ek cottage pie?")]
     CottagePie,
 
-    [Description("Wat vra hulle? ")]
-    ThinkingFirst,
+    [Description("Wat vra hulle? ")] ThinkingFirst,
 
-    [Description("'n Resep.")]
-    ThinkingSecond,
+    [Description("'n Resep.")] ThinkingSecond,
 
-    [Description("Die kok se resep.")]
-    CookReply,
+    [Description("Die kok se resep.")] CookReply,
 
-    [Description("Hier is {Task}, ")]
-    AnswerStart,
+    [Description("Hier is {Task}, ")] AnswerStart,
 
-    [Description("stap vir stap.")]
-    AnswerEnd,
+    [Description("stap vir stap.")] AnswerEnd,
 }

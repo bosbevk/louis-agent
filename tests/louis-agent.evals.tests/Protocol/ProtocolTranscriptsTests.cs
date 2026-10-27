@@ -11,13 +11,20 @@ public class ProtocolTranscriptsTests
     private static readonly string[] Lines =
     [
         "@{\"event\": \"protocol\", \"t\": 1.0, \"version\": 1}",
-        SampleMode.Fill("@{\"event\": \"mode\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"toolsets\": [], \"role\": \"puls/voice-af\", \"llm\": null, \"conversations\": 1}"),
-        SampleMode.Fill("@{\"event\": \"question\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"session\": \"sess_1\", \"text\": \"Hallo\"}"),
-        SampleMode.Fill("@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"type\": \"content_block_start\", \"data\": {\"type\": \"content_block_start\", \"index\": 0, \"content_block\": {\"type\": \"text\", \"text\": \"\"}}}"),
-        SampleMode.Fill("@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"type\": \"content_block_delta\", \"data\": {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \"Hallo\"}}}"),
-        SampleMode.Fill("@{\"event\": \"turn\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"session\": \"sess_1\", \"question\": \"Hallo\", \"answer\": \"Hallo\", \"role\": null, \"continued\": null, \"puls_calls\": 0, \"specialist_calls\": 0, \"hosts\": [], \"seconds\": 0.5, \"error\": null}"),
-        SampleMode.Fill("@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeAlpha>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"type\": \"error\", \"data\": {\"type\": \"error\"}}"),
-        SampleMode.Fill("@{\"event\": \"conversation\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"role\": null, \"scores\": {\"routed_right\": true}, \"errors\": 0, \"seconds\": 0.5}"),
+        SampleMode.Fill(
+            "@{\"event\": \"mode\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"toolsets\": [], \"role\": \"puls/voice-af\", \"llm\": null, \"conversations\": 1}"),
+        SampleMode.Fill(
+            "@{\"event\": \"question\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"session\": \"sess_1\", \"text\": \"Hallo\"}"),
+        SampleMode.Fill(
+            "@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"type\": \"content_block_start\", \"data\": {\"type\": \"content_block_start\", \"index\": 0, \"content_block\": {\"type\": \"text\", \"text\": \"\"}}}"),
+        SampleMode.Fill(
+            "@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"type\": \"content_block_delta\", \"data\": {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \"Hallo\"}}}"),
+        SampleMode.Fill(
+            "@{\"event\": \"turn\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"session\": \"sess_1\", \"question\": \"Hallo\", \"answer\": \"Hallo\", \"role\": null, \"continued\": null, \"puls_calls\": 0, \"specialist_calls\": 0, \"hosts\": [], \"seconds\": 0.5, \"error\": null}"),
+        SampleMode.Fill(
+            "@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeAlpha>\", \"repeat\": 1, \"task\": \"bobotie\", \"turn\": 1, \"type\": \"error\", \"data\": {\"type\": \"error\"}}"),
+        SampleMode.Fill(
+            "@{\"event\": \"conversation\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"bobotie\", \"role\": null, \"scores\": {\"routed_right\": true}, \"errors\": 0, \"seconds\": 0.5}"),
     ];
 
     [Test]

@@ -12,9 +12,11 @@ namespace LouisAgent.Evals.Grading.Models;
 public sealed record JudgeSettings(JudgeProvider Provider, string Model, string? Endpoint, string? ApiKey)
 {
     /// <summary>Never the key: a record prints all its members, and a log line with a key in it is a leaked key.</summary>
-    public override string ToString() => $"{Provider}:{Model} (endpoint={Endpoint ?? "default"}, apiKey={(string.IsNullOrEmpty(ApiKey) ? "unset" : "set")})";
+    public override string ToString() =>
+        $"{Provider}:{Model} (endpoint={Endpoint ?? "default"}, apiKey={(string.IsNullOrEmpty(ApiKey) ? "unset" : "set")})";
 
-    private static readonly Dictionary<string, JudgeProvider> Aliases = new() { ["openai-compatible"] = JudgeProvider.OpenAiCompatible };
+    private static readonly Dictionary<string, JudgeProvider> Aliases = new()
+    { ["openai-compatible"] = JudgeProvider.OpenAiCompatible };
 
     public static JudgeSettings? FromEnvironment(Func<string, string?>? getVariable = null)
     {
@@ -27,8 +29,11 @@ public sealed record JudgeSettings(JudgeProvider Provider, string Model, string?
             throw new InvalidDataException(MessageText.Format(EvalErrorMessage.UnknownJudgeProvider,
                 new { Value = named, Supported = string.Join(", ", SettingChoice.Names<JudgeProvider>()) }));
 
-        var provider = choice ?? (model.StartsWith("claude", StringComparison.OrdinalIgnoreCase) ? JudgeProvider.Anthropic : JudgeProvider.Ollama);
-        string? key = Get("EVAL_JUDGE_API_KEY") ?? (provider == JudgeProvider.Anthropic ? Get("ANTHROPIC_API_KEY") : null);
+        var provider = choice ?? (model.StartsWith("claude", StringComparison.OrdinalIgnoreCase)
+            ? JudgeProvider.Anthropic
+            : JudgeProvider.Ollama);
+        string? key = Get("EVAL_JUDGE_API_KEY") ??
+                      (provider == JudgeProvider.Anthropic ? Get("ANTHROPIC_API_KEY") : null);
         return new JudgeSettings(provider, model, Get("EVAL_JUDGE_ENDPOINT"), key);
     }
 }

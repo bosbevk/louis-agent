@@ -17,13 +17,15 @@ public sealed class EvalCatalog
 
     public EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
     {
-        _entries = sets.SelectMany(set => set.Evals.Select(eval => (eval, (string?)set.Identity))).Append((stub, (string?)null)).ToList();
+        _entries = sets.SelectMany(set => set.Evals.Select(eval => (eval, (string?)set.Identity)))
+            .Append((stub, (string?)null)).ToList();
         _evals = Check(_entries.Select(entry => entry.Eval).ToList());
     }
 
     public IReadOnlyList<IEval> Evals => _evals;
 
-    public IEval? Find(string name) => _evals.FirstOrDefault(eval => string.Equals(eval.Name, name, StringComparison.Ordinal));
+    public IEval? Find(string name) =>
+        _evals.FirstOrDefault(eval => string.Equals(eval.Name, name, StringComparison.Ordinal));
 
     /// <summary>The eval a name names; a name no eval has is refused, naming the evals there are.</summary>
     public IEval Get(string name) =>
@@ -32,7 +34,8 @@ public sealed class EvalCatalog
 
     /// <summary>One line per eval, in the catalogue's order: what the API's catalogue reads (F18 step 4.3).</summary>
     public IReadOnlyList<ListedEval> Listing() =>
-        _entries.Select(entry => new ListedEval(entry.Eval.Name, entry.Identity, entry.Eval.Version, entry.Eval.Proves, entry.Eval.Manual)).ToList();
+        _entries.Select(entry => new ListedEval(entry.Eval.Name, entry.Identity, entry.Eval.Version, entry.Eval.Proves,
+            entry.Eval.Manual)).ToList();
 
     private static IReadOnlyList<IEval> Check(IReadOnlyList<IEval> evals)
     {
@@ -44,10 +47,13 @@ public sealed class EvalCatalog
             if (!eval.Graders.Any(grader => grader.Required && grader.Kind == GraderKind.FixedRule))
                 throw Refuse(RunnerMessage.NoFixedRuleGrader, new { Name = eval.Name });
             foreach (var scenario in eval.Scenarios)
-                if (scenario.Input.Messages.Count == 0) throw Refuse(RunnerMessage.NoMessages, new { Name = eval.Name, Scenario = scenario.Id });
+                if (scenario.Input.Messages.Count == 0)
+                    throw Refuse(RunnerMessage.NoMessages, new { Name = eval.Name, Scenario = scenario.Id });
         }
+
         return evals;
     }
 
-    private static RunnerException Refuse(RunnerMessage message, object values) => new(MessageText.Format(message, values));
+    private static RunnerException Refuse(RunnerMessage message, object values) =>
+        new(MessageText.Format(message, values));
 }

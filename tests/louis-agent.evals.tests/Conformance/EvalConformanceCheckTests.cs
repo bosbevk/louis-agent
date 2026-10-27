@@ -27,7 +27,8 @@ public class EvalConformanceCheckTests
     [Test]
     public async Task ANameThatIsNotSafeAsAnMCPToolNameFails()
     {
-        Assert.That(Joined(await CheckAsync(Conforming(name: "bad name!"), Case(Clean, Errored))), Does.Contain("bad name!"));
+        Assert.That(Joined(await CheckAsync(Conforming(name: "bad name!"), Case(Clean, Errored))),
+            Does.Contain("bad name!"));
     }
 
     [Test]
@@ -49,14 +50,16 @@ public class EvalConformanceCheckTests
     {
         var scenario = Bobotie with { Expected = JsonDocument.Parse("""{"shop":true}""").RootElement.Clone() };
 
-        Assert.That(Joined(await CheckAsync(Conforming(scenarios: [scenario]), Case(Clean, Errored))), Does.Contain("'shop'"));
+        Assert.That(Joined(await CheckAsync(Conforming(scenarios: [scenario]), Case(Clean, Errored))),
+            Does.Contain("'shop'"));
     }
 
     [Test]
     public async Task AKnownBadTranscriptThatPassesEveryRequiredGraderIsCaught()
     {
         // A grader that passes everything can't be told from a good one: the known-bad transcript exposes it.
-        var eval = Conforming(graders: [new FakeGrader("always-pass", _ => new Grade("always-pass", 1, 1, GradeOutcome.Pass, "always"))]);
+        var eval = Conforming(graders:
+            [new FakeGrader("always-pass", _ => new Grade("always-pass", 1, 1, GradeOutcome.Pass, "always"))]);
 
         Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("passes every required grader"));
     }
@@ -64,13 +67,15 @@ public class EvalConformanceCheckTests
     [Test]
     public async Task AReferenceThatFailsARequiredGraderIsCaught()
     {
-        Assert.That(Joined(await CheckAsync(Conforming(), Case(Errored, Errored))), Does.Contain("reference transcript fails"));
+        Assert.That(Joined(await CheckAsync(Conforming(), Case(Errored, Errored))),
+            Does.Contain("reference transcript fails"));
     }
 
     [Test]
     public async Task AGradeWithNoReasonIsCaught()
     {
-        var eval = Conforming(graders: [new FakeGrader("no-reason", _ => new Grade("no-reason", 1, 1, GradeOutcome.Pass, " "))]);
+        var eval = Conforming(graders:
+            [new FakeGrader("no-reason", _ => new Grade("no-reason", 1, 1, GradeOutcome.Pass, " "))]);
 
         Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("no reason"));
     }
@@ -78,7 +83,8 @@ public class EvalConformanceCheckTests
     [Test]
     public async Task AScoreOutsideZeroToOneIsCaught()
     {
-        var eval = Conforming(graders: [new FakeGrader("too-high", _ => new Grade("too-high", 1, 2, GradeOutcome.Pass, "two"))]);
+        var eval = Conforming(graders:
+            [new FakeGrader("too-high", _ => new Grade("too-high", 1, 2, GradeOutcome.Pass, "two"))]);
 
         Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("between 0 and 1"));
     }
@@ -86,7 +92,8 @@ public class EvalConformanceCheckTests
     [Test]
     public async Task AnOutcomeThatDisagreesWithItsScoreIsCaught()
     {
-        var eval = Conforming(graders: [new FakeGrader("liar", _ => new Grade("liar", 1, 0, GradeOutcome.Pass, "passed"))]);
+        var eval = Conforming(graders:
+            [new FakeGrader("liar", _ => new Grade("liar", 1, 0, GradeOutcome.Pass, "passed"))]);
 
         Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("disagrees"));
     }
@@ -105,13 +112,16 @@ public class EvalConformanceCheckTests
     [Test]
     public async Task AGradersOwnTimeoutIsReportedAsAThrow_AndTheChecksCancelStillStopsIt()
     {
-        var eval = Conforming(graders: [new FakeGrader("slow", _ => throw new TaskCanceledException("the judge timed out"))]);
+        var eval = Conforming(graders:
+            [new FakeGrader("slow", _ => throw new TaskCanceledException("the judge timed out"))]);
 
-        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("threw").And.Contain("the judge timed out"));
+        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))),
+            Does.Contain("threw").And.Contain("the judge timed out"));
 
         using var cancelled = new CancellationTokenSource();
         cancelled.Cancel();
-        Assert.That(async () => await EvalConformance.CheckAsync(eval, [Case(Clean, Errored)], cancelled.Token), Throws.InstanceOf<OperationCanceledException>());
+        Assert.That(async () => await EvalConformance.CheckAsync(eval, [Case(Clean, Errored)], cancelled.Token),
+            Throws.InstanceOf<OperationCanceledException>());
     }
 
     [Test]
@@ -134,9 +144,10 @@ public class EvalConformanceCheckTests
     public async Task AnUnknownIsNotAFail()
     {
         // Unknown means the grader can't tell: it doesn't show that a grader fails on a known-bad transcript.
-        var unknownOnError = new FakeGrader("unknown-on-error", trial => EngineEvents.StreamedError(trial.Transcript.Turns[0])
-            ? new Grade("unknown-on-error", 1, 0, GradeOutcome.Unknown, "can't tell")
-            : Passed("unknown-on-error"));
+        var unknownOnError = new FakeGrader("unknown-on-error", trial =>
+            EngineEvents.StreamedError(trial.Transcript.Turns[0])
+                ? new Grade("unknown-on-error", 1, 0, GradeOutcome.Unknown, "can't tell")
+                : Passed("unknown-on-error"));
 
         Assert.That(Joined(await CheckAsync(Conforming(graders: [unknownOnError]), Case(Clean, Errored))),
             Does.Contain("no known-bad transcript of any scenario fails the required grader 'unknown-on-error'"));
@@ -147,7 +158,8 @@ public class EvalConformanceCheckTests
     {
         var none = new ConformanceCase("bobotie", Mode, Clean, []);
 
-        Assert.That(Joined(await CheckAsync(Conforming(), none)), Does.Contain("no known-bad transcript of any scenario fails the required grader 'no-error'"));
+        Assert.That(Joined(await CheckAsync(Conforming(), none)),
+            Does.Contain("no known-bad transcript of any scenario fails the required grader 'no-error'"));
     }
 
     [Test]
@@ -171,7 +183,11 @@ public class EvalConformanceCheckTests
     {
         // Each required grader fails a known-bad of some scenario, not all: A on the first scenario's, B on the second's. The eval conforms.
         var eval = Conforming(
-            graders: [new FakeGrader("a", trial => Judge("a", trial, "one")), new FakeGrader("b", trial => Judge("b", trial, "two"))],
+            graders:
+            [
+                new FakeGrader("a", trial => Judge("a", trial, "one")),
+                new FakeGrader("b", trial => Judge("b", trial, "two"))
+            ],
             scenarios: [Named("one"), Named("two")]);
 
         Assert.That(Joined(await CheckAsync(eval,
@@ -194,12 +210,15 @@ public class EvalConformanceCheckTests
     {
         var eval = Conforming(graders: [new FakeGrader("bad name!", _ => Passed("bad name!"))]);
 
-        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))), Does.Contain("grader name 'bad name!' is not safe"));
+        Assert.That(Joined(await CheckAsync(eval, Case(Clean, Errored))),
+            Does.Contain("grader name 'bad name!' is not safe"));
     }
 
     /// <summary>A grader's verdict on the first turn: a fail for the scenario it names, a pass for the others.</summary>
     private static Grade Judge(string name, Trial trial, string failsOn) =>
-        EngineEvents.StreamedError(trial.Transcript.Turns[0]) && trial.Scenario.Id == failsOn ? Failed(name) : Passed(name);
+        EngineEvents.StreamedError(trial.Transcript.Turns[0]) && trial.Scenario.Id == failsOn
+            ? Failed(name)
+            : Passed(name);
 
     private static Grade Failed(string name) => new(name, 1, 0, GradeOutcome.Fail, "failed");
 
@@ -219,13 +238,20 @@ public class EvalConformanceCheckTests
 
     private static string Joined(IEnumerable<string> failures) => string.Join("\n", failures);
 
-    private sealed class FakeEval(string name, int version, IReadOnlyList<IGrader> graders, IReadOnlyList<EvalScenario> scenarios) : IEval
+    private sealed class FakeEval(
+        string name,
+        int version,
+        IReadOnlyList<IGrader> graders,
+        IReadOnlyList<EvalScenario> scenarios) : IEval
     {
         public string Name { get; } = name;
         public int Version { get; } = version;
         public string Proves => "A fake eval, for the conformance check.";
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(LouisAgent.Evals.Api.ISessionClient sessions, CancellationToken cancellationToken) =>
+
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(LouisAgent.Evals.Api.ISessionClient sessions,
+            CancellationToken cancellationToken) =>
             throw new NotImplementedException();
+
         public IReadOnlyList<EvalScenario> Scenarios { get; } = scenarios;
         public IReadOnlyList<IGrader> Graders { get; } = graders;
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotImplementedException();
@@ -240,6 +266,8 @@ public class EvalConformanceCheckTests
         public GraderKind Kind => GraderKind.FixedRule;
         public bool Required => true;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => ValueTask.FromResult(grade(trial));
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            ValueTask.FromResult(grade(trial));
     }
 }

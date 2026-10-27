@@ -22,7 +22,8 @@ public class ReplayFolderIsPrivateTests
     [Test]
     public void OnlyTheSettingAndTheStoreNameTheReplayFolder()
     {
-        var naming = Scanned.SelectMany(Files).Where(f => Names.IsMatch(File.ReadAllText(f))).Select(Relative).Except(MayName).Order().ToList();
+        var naming = Scanned.SelectMany(Files).Where(f => Names.IsMatch(File.ReadAllText(f))).Select(Relative)
+            .Except(MayName).Order().ToList();
 
         Assert.That(naming, Is.Empty,
             "Only the store opens the replay folder, so no endpoint can serve it (use AgentOptions.KeepsRecordings to ask whether one is kept):\n  "
@@ -31,13 +32,17 @@ public class ReplayFolderIsPrivateTests
 
     [Test]
     public void TheTwoFilesThatMayNameIt_StillExist_AndDo() =>
-        Assert.That(MayName.Select(f => File.Exists(Path.Combine(TestPaths.RepoRoot, f)) && Names.IsMatch(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, f)))),
+        Assert.That(
+            MayName.Select(f =>
+                File.Exists(Path.Combine(TestPaths.RepoRoot, f)) &&
+                Names.IsMatch(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, f)))),
             Is.All.True, "the allowed list names a file that moved, or that no longer holds the setting: update it");
 
     private static IEnumerable<string> Files(string folder)
     {
         string dir = Path.Combine(TestPaths.RepoRoot, folder);
-        Assert.That(Directory.Exists(dir), Is.True, $"No folder {folder}: it was moved or renamed, so update this test's list.");
+        Assert.That(Directory.Exists(dir), Is.True,
+            $"No folder {folder}: it was moved or renamed, so update this test's list.");
         return Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories)
             .Where(f => (f.EndsWith(".cs") || f.EndsWith(".razor"))
                         && !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")

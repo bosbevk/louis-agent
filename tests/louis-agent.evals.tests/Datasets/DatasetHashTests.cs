@@ -25,7 +25,8 @@ public class DatasetHashTests
         using var crlf = new DatasetFolder().Write("scenarios/dev/a.json", "{\r\n  \"id\": \"a\"\r\n}\r\n");
         using var lf = new DatasetFolder().Write("scenarios/dev/a.json", "{\n  \"id\": \"a\"\n}\n");
 
-        Assert.That(DatasetHash.Of(Path.Combine(crlf.Root, "scenarios")), Is.EqualTo(DatasetHash.Of(Path.Combine(lf.Root, "scenarios"))));
+        Assert.That(DatasetHash.Of(Path.Combine(crlf.Root, "scenarios")),
+            Is.EqualTo(DatasetHash.Of(Path.Combine(lf.Root, "scenarios"))));
     }
 
     [Test]
@@ -46,7 +47,8 @@ public class DatasetHashTests
         string before = DatasetHash.Of(Path.Combine(folder.Root, "scenarios"));
 
         Directory.CreateDirectory(Path.Combine(folder.Root, "scenarios", "held-out"));
-        File.Move(Path.Combine(folder.Root, "scenarios", "dev", "a.json"), Path.Combine(folder.Root, "scenarios", "held-out", "a.json"));
+        File.Move(Path.Combine(folder.Root, "scenarios", "dev", "a.json"),
+            Path.Combine(folder.Root, "scenarios", "held-out", "a.json"));
 
         Assert.That(DatasetHash.Of(Path.Combine(folder.Root, "scenarios")), Is.Not.EqualTo(before));
     }

@@ -1,4 +1,3 @@
-
 using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Scoring;
@@ -9,9 +8,11 @@ public class PricesTotalTests
 {
     private const string Checkers = "https://www.checkers.co.za/p/";
 
-    private static string Row(string item, string price, string site = Checkers) => $"| {item} | {price} [kyk]({site}{item}) |";
+    private static string Row(string item, string price, string site = Checkers) =>
+        $"| {item} | {price} [kyk]({site}{item}) |";
 
-    private static string Table(params string[] rows) => "| Bestanddeel | Checkers |\n|---|---|\n" + string.Join("\n", rows) + "\n";
+    private static string Table(params string[] rows) =>
+        "| Bestanddeel | Checkers |\n|---|---|\n" + string.Join("\n", rows) + "\n";
 
     [TestCase("| **Totaal** | **R149,95** |", 149.95)]
     [TestCase("Totaal: R149,95", 149.95)]
@@ -49,7 +50,8 @@ public class PricesTotalTests
     {
         string answer = Table(Row("uie", "R45,99"), "| **Totaal** | **R200,00** |");
 
-        Assert.That(Prices.Total(answer), Is.EqualTo(new BasketTotal(200m, TotalSource.ListTotalRow)), "a bold total row of the list is read as the list's total row (FX24)");
+        Assert.That(Prices.Total(answer), Is.EqualTo(new BasketTotal(200m, TotalSource.ListTotalRow)),
+            "a bold total row of the list is read as the list's total row (FX24)");
     }
 
     [Test]
@@ -67,7 +69,7 @@ public class PricesTotalTests
     public void ARowPricedAtTwoShops_IsNoSum_BecauseWhichShopIsTheBasketsIsUnknown()
     {
         string answer = "| Bestanddeel | Checkers | Pick n Pay |\n|---|---|---|\n"
-            + "| uie | R45,99 [a](https://www.checkers.co.za/p/1) | R47,00 [b](https://www.pnp.co.za/p/1) |\n";
+                        + "| uie | R45,99 [a](https://www.checkers.co.za/p/1) | R47,00 [b](https://www.pnp.co.za/p/1) |\n";
 
         Assert.That(Prices.Total(answer), Is.Null);
     }
@@ -93,7 +95,8 @@ public class PricesTotalTests
 
     [Test]
     public void ARow_WithAThousandsSeparator_StillReadsItsWholeAmount() =>
-        Assert.That(Prices.Total(Table("| braai | R1 250 [kyk](https://www.checkers.co.za/p/braai) |")), Is.EqualTo(new BasketTotal(1250m, TotalSource.RowSum)));
+        Assert.That(Prices.Total(Table("| braai | R1 250 [kyk](https://www.checkers.co.za/p/braai) |")),
+            Is.EqualTo(new BasketTotal(1250m, TotalSource.RowSum)));
 
     [Test]
     public void ARowWithARange_IsNoSum() =>

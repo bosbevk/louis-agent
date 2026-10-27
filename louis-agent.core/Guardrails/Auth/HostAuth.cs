@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Guardrails.Auth;
 
 using System.Security.Cryptography;
 using System.Text;
@@ -7,6 +6,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
 
+namespace LouisAgent.Core.Guardrails.Auth;
 /// <summary>
 /// The rule for a host that serves the agent's tools over the network (the API; the MCP server over HTTP), FX18: it
 /// fails closed. Without a key it refuses to start, unless <c>AGENT_AUTH=off</c> says it may be open on purpose; a key
@@ -51,9 +51,12 @@ public static class HostAuth
     public static bool HasKey(string? apiKeyHeader, string? authorization, string expected)
     {
         string presented = apiKeyHeader
-                           ?? (authorization is { } auth && auth.StartsWith(BearerPrefix, StringComparison.OrdinalIgnoreCase)
-                               ? auth[BearerPrefix.Length..] : authorization)
+                           ?? (authorization is { } auth &&
+                               auth.StartsWith(BearerPrefix, StringComparison.OrdinalIgnoreCase)
+                               ? auth[BearerPrefix.Length..]
+                               : authorization)
                            ?? string.Empty;
-        return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(presented), Encoding.UTF8.GetBytes(expected));
+        return CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(presented),
+            Encoding.UTF8.GetBytes(expected));
     }
 }

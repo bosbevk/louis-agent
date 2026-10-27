@@ -9,7 +9,8 @@ namespace LouisAgent.Core.Tests.Tools.Web.Rendering.Setups;
 public class PageRendererSetupTests
 {
     /// <summary>The setup for one renderer.</summary>
-    private static IPageRendererSetup SetupFor(PageRendererKind kind) => PageRendererFactory.Setups.Single(s => s.Kind == kind);
+    private static IPageRendererSetup SetupFor(PageRendererKind kind) =>
+        PageRendererFactory.Setups.Single(s => s.Kind == kind);
 
     /// <summary>Each renderer is ready with its own setting and not without it. A blank key or a bad address counts as missing.</summary>
     [TestCase(PageRendererKind.Chrome, "http://puls-browser:9222", null, true)]
@@ -18,7 +19,8 @@ public class PageRendererSetupTests
     [TestCase(PageRendererKind.Tavily, null, "tvly", true)]
     [TestCase(PageRendererKind.Tavily, null, "  ", false)]
     [TestCase(PageRendererKind.Tavily, "http://puls-browser:9222", null, false)]
-    public void ASetup_IsReady_WithItsSetting_AndNotWithout(PageRendererKind kind, string? browserUrl, string? tavilyKey, bool expected)
+    public void ASetup_IsReady_WithItsSetting_AndNotWithout(PageRendererKind kind, string? browserUrl,
+        string? tavilyKey, bool expected)
     {
         var options = new AgentOptions { BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
 
@@ -34,16 +36,20 @@ public class PageRendererSetupTests
         // Every setup, once with nothing set and once with everything set.
         foreach (var setup in PageRendererFactory.Setups)
             foreach (var options in new[] { new AgentOptions(), everything })
-                Assert.That(setup.Create(options, null, null) is UnavailablePageRenderer, Is.EqualTo(!setup.IsReady(options)), $"{setup.Kind}, ready: {setup.IsReady(options)}");
+                Assert.That(setup.Create(options, null, null) is UnavailablePageRenderer,
+                    Is.EqualTo(!setup.IsReady(options)), $"{setup.Kind}, ready: {setup.IsReady(options)}");
     }
 
     /// <summary>Each renderer has exactly one setup, so you can't add a renderer and forget its setup.</summary>
     [Test]
     public void EveryRenderer_HasExactlyOneSetup() =>
-        Assert.That(Enum.GetValues<PageRendererKind>().Select(kind => PageRendererFactory.Setups.Count(s => s.Kind == kind)), Is.All.EqualTo(1));
+        Assert.That(
+            Enum.GetValues<PageRendererKind>().Select(kind => PageRendererFactory.Setups.Count(s => s.Kind == kind)),
+            Is.All.EqualTo(1));
 
     /// <summary>The order is the fallback order: Chrome, then Tavily.</summary>
     [Test]
     public void TheSetups_AreInFallbackOrder() =>
-        Assert.That(PageRendererFactory.Setups.Select(s => s.Kind), Is.EqualTo(new[] { PageRendererKind.Chrome, PageRendererKind.Tavily }));
+        Assert.That(PageRendererFactory.Setups.Select(s => s.Kind),
+            Is.EqualTo(new[] { PageRendererKind.Chrome, PageRendererKind.Tavily }));
 }

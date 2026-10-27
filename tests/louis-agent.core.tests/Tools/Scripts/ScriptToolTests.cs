@@ -16,20 +16,20 @@ namespace LouisAgent.Core.Tests.Tools.Scripts;
 public class ScriptToolTests
 {
     private const string AddTool = """
-        # Tool: AddNumbers
-        - Description: Add two integers
-        - Timeout: 30
-        - Parameters:
-          - `a` (integer, required): first number
-          - `b` (integer, optional): second number, default 0
-        - Implementation:
+                                   # Tool: AddNumbers
+                                   - Description: Add two integers
+                                   - Timeout: 30
+                                   - Parameters:
+                                     - `a` (integer, required): first number
+                                     - `b` (integer, optional): second number, default 0
+                                   - Implementation:
 
-        ```python
-        import json, sys
-        args = json.load(sys.stdin)
-        print(json.dumps({"sum": args["a"] + args.get("b", 0)}))
-        ```
-        """;
+                                   ```python
+                                   import json, sys
+                                   args = json.load(sys.stdin)
+                                   print(json.dumps({"sum": args["a"] + args.get("b", 0)}))
+                                   ```
+                                   """;
 
     private string _skillsDir = null!;
 
@@ -72,16 +72,16 @@ public class ScriptToolTests
     public void Parse_ReportsAllProblemsAtOnce()
     {
         const string broken = """
-            # Tool: bad name
-            - Parameters:
-              - `x` (date, required): unsupported type
-              - just text
-            - Implementation:
+                              # Tool: bad name
+                              - Parameters:
+                                - `x` (date, required): unsupported type
+                                - just text
+                              - Implementation:
 
-            ```ruby
-            puts 1
-            ```
-            """;
+                              ```ruby
+                              puts 1
+                              ```
+                              """;
 
         var (definition, errors) = ScriptToolDefinition.Parse(broken);
 
@@ -99,8 +99,10 @@ public class ScriptToolTests
         var tool = new ScriptTool(ScriptToolDefinition.Parse(AddTool).Definition!, approved: false, (_, _, _) => "");
         var schema = tool.JsonSchema;
 
-        Assert.That(schema.GetProperty("properties").GetProperty("a").GetProperty("type").GetString(), Is.EqualTo("integer"));
-        Assert.That(schema.GetProperty("required").EnumerateArray().Select(e => e.GetString()), Is.EqualTo(new[] { "a" }));
+        Assert.That(schema.GetProperty("properties").GetProperty("a").GetProperty("type").GetString(),
+            Is.EqualTo("integer"));
+        Assert.That(schema.GetProperty("required").EnumerateArray().Select(e => e.GetString()),
+            Is.EqualTo(new[] { "a" }));
         Assert.That(tool.Description, Does.Contain("pending user approval"));
     }
 
@@ -109,7 +111,9 @@ public class ScriptToolTests
     {
         var tool = new ScriptTool(ScriptToolDefinition.Parse(AddTool).Definition!, approved: true, (_, _, _) => "");
 
-        Assert.That(tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "5" }, out var json, out var env, out _), Is.True,
+        Assert.That(
+            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "5" }, out var json, out var env, out _),
+            Is.True,
             "numeric strings are accepted for integer parameters");
         Assert.That(json, Is.EqualTo("""{"a":5}"""));
         Assert.That(env["TOOL_ARG_a"], Is.EqualTo("5"));
@@ -117,10 +121,14 @@ public class ScriptToolTests
         Assert.That(tool.TryBuildInput(new Dictionary<string, object?>(), out _, out _, out var missing), Is.False);
         Assert.That(missing, Does.Contain("missing required parameter 'a'"));
 
-        Assert.That(tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "five" }, out _, out _, out var wrongType), Is.False);
+        Assert.That(
+            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "five" }, out _, out _, out var wrongType),
+            Is.False);
         Assert.That(wrongType, Does.Contain("must be a integer"));
 
-        Assert.That(tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = 1, ["c"] = 2 }, out _, out _, out var unknown), Is.False);
+        Assert.That(
+            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = 1, ["c"] = 2 }, out _, out _, out var unknown),
+            Is.False);
         Assert.That(unknown, Does.Contain("unknown parameter 'c'"));
     }
 
@@ -153,7 +161,8 @@ public class ScriptToolTests
         engine.CreateTool(AddTool);
 
         Assert.That(engine.CreateTool(AddTool), Does.Contain("overwrite=true"));
-        Assert.That(engine.CreateTool(AddTool.Replace("Add two integers", "Sum"), overwrite: true), Does.Contain("Created"));
+        Assert.That(engine.CreateTool(AddTool.Replace("Add two integers", "Sum"), overwrite: true),
+            Does.Contain("Created"));
         Assert.That(engine.Tools.Count(t => t.Name == "AddNumbers"), Is.EqualTo(1));
     }
 
@@ -214,7 +223,8 @@ public class ScriptToolTests
         var engine = Engine();
         Assert.That(engine.Skills.Select(s => s.Name), Does.Not.Contain("Greet"));
 
-        engine.CreateSkillFile("greeting", "## Skill: Greet\n\n- Description: hi\n- Execution:\n\n```bash\necho hi\n```\n");
+        engine.CreateSkillFile("greeting",
+            "## Skill: Greet\n\n- Description: hi\n- Execution:\n\n```bash\necho hi\n```\n");
 
         Assert.That(engine.Skills.Single(s => s.Name == "Greet").Language, Is.EqualTo(ScriptLanguage.Bash));
     }

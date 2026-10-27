@@ -20,20 +20,25 @@ public class RunSummaryTests
 
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    private static Grade G(IGrader grader, GradeOutcome outcome) => new(grader.Name, grader.Version, outcome == GradeOutcome.Pass ? 1 : 0, outcome, "because");
+    private static Grade G(IGrader grader, GradeOutcome outcome) => new(grader.Name, grader.Version,
+        outcome == GradeOutcome.Pass ? 1 : 0, outcome, "because");
 
-    private static TrialResult T(string scenario, TrialOutcome outcome, string[]? categories = null, string scores = "{}", GradeOutcome route = GradeOutcome.Pass,
+    private static TrialResult T(string scenario, TrialOutcome outcome, string[]? categories = null,
+        string scores = "{}", GradeOutcome route = GradeOutcome.Pass,
         GradeOutcome judge = GradeOutcome.Pass) =>
         new(scenario, categories ?? [], outcome, [G(Route, route), G(Judge, judge)], Json(scores));
 
-    private static TrialResult Pass(string scenario, params string[] categories) => T(scenario, TrialOutcome.Pass, categories);
+    private static TrialResult Pass(string scenario, params string[] categories) =>
+        T(scenario, TrialOutcome.Pass, categories);
 
     private static TrialResult Fail(string scenario, params string[] categories) =>
         T(scenario, TrialOutcome.Fail, categories, route: GradeOutcome.Fail);
 
-    private static SummaryLine Line(IEnumerable<SummaryLine> lines, string slice) => lines.Single(line => line.Slice == slice);
+    private static SummaryLine Line(IEnumerable<SummaryLine> lines, string slice) =>
+        lines.Single(line => line.Slice == slice);
 
-    private static IReadOnlyList<SummaryLine> Of(params TrialResult[] trials) => RunSummary.Of(SampleMode.Beta, trials, Graders);
+    private static IReadOnlyList<SummaryLine> Of(params TrialResult[] trials) =>
+        RunSummary.Of(SampleMode.Beta, trials, Graders);
 
     [Test]
     public void TheOverallLineComesFirst_ThenEachCategoryByName_AllForTheMode()
@@ -47,16 +52,19 @@ public class RunSummaryTests
     [Test]
     public void TheOverallCountsAreTheSumOfTheTrials_AndEachCategorysAreTheSumOfItsOwn()
     {
-        var lines = Of(Pass("a", "x"), Pass("b", "x"), Fail("c", "x"), Pass("d", "y"), T("e", TrialOutcome.Unknown, ["y"], judge: GradeOutcome.Unknown),
+        var lines = Of(Pass("a", "x"), Pass("b", "x"), Fail("c", "x"), Pass("d", "y"),
+            T("e", TrialOutcome.Unknown, ["y"], judge: GradeOutcome.Unknown),
             T("f", TrialOutcome.Infrastructure, ["y"]));
 
         var overall = Line(lines, "overall");
-        Assert.That((overall.N, overall.Passed, overall.Failed, overall.Unknown, overall.Infrastructure), Is.EqualTo((6, 3, 1, 1, 1)));
+        Assert.That((overall.N, overall.Passed, overall.Failed, overall.Unknown, overall.Infrastructure),
+            Is.EqualTo((6, 3, 1, 1, 1)));
         var x = Line(lines, "x");
         Assert.That((x.N, x.Passed, x.Failed, x.Unknown, x.Infrastructure), Is.EqualTo((3, 2, 1, 0, 0)));
         var y = Line(lines, "y");
         Assert.That((y.N, y.Passed, y.Failed, y.Unknown, y.Infrastructure), Is.EqualTo((3, 1, 0, 1, 1)));
-        Assert.That(x.N + y.N, Is.EqualTo(overall.N), "no trial is in two of these categories, so they sum to the overall line");
+        Assert.That(x.N + y.N, Is.EqualTo(overall.N),
+            "no trial is in two of these categories, so they sum to the overall line");
     }
 
     [Test]
@@ -67,18 +75,24 @@ public class RunSummaryTests
         Assert.That(Line(lines, "overall").N, Is.EqualTo(2));
         Assert.That(Line(lines, "a").N, Is.EqualTo(1));
         Assert.That(Line(lines, "b").N, Is.EqualTo(1));
-        Assert.That(lines.Select(l => l.Slice), Is.EqualTo(new[] { "overall", "a", "b" }), "a trial with no category makes no line of its own");
+        Assert.That(lines.Select(l => l.Slice), Is.EqualTo(new[] { "overall", "a", "b" }),
+            "a trial with no category makes no line of its own");
     }
 
     [Test]
     public void AnUnknownTrialIsNotPassed_AndAnInfrastructureOneIsCountedButLeftOutOfTheRates()
     {
-        var trials = new[] { Pass("a"), Pass("b"), Pass("c"), Pass("d"), T("e", TrialOutcome.Unknown, route: GradeOutcome.Unknown), T("f", TrialOutcome.Infrastructure) };
+        var trials = new[]
+        {
+            Pass("a"), Pass("b"), Pass("c"), Pass("d"), T("e", TrialOutcome.Unknown, route: GradeOutcome.Unknown),
+            T("f", TrialOutcome.Infrastructure)
+        };
 
         var overall = Line(RunSummary.Of("m", trials, Graders), "overall");
 
         Assert.That((overall.N, overall.Passed, overall.Unknown, overall.Infrastructure), Is.EqualTo((6, 4, 1, 1)));
-        Assert.That(overall.PassRate, Is.EqualTo(4.0 / 5), "passed over the five that counted: the infrastructure trial is not one of them");
+        Assert.That(overall.PassRate, Is.EqualTo(4.0 / 5),
+            "passed over the five that counted: the infrastructure trial is not one of them");
     }
 
     [Test]
@@ -89,9 +103,11 @@ public class RunSummaryTests
 
         Assert.That(few.TooFew, Is.True);
         Assert.That((few.N, few.Passed, few.Failed), Is.EqualTo((3, 2, 1)), "the counts stay");
-        Assert.That((few.PassRate, few.PassAtK, few.PassHatK), Is.EqualTo(((double?)null, (double?)null, (double?)null)), "never 0");
+        Assert.That((few.PassRate, few.PassAtK, few.PassHatK),
+            Is.EqualTo(((double?)null, (double?)null, (double?)null)), "never 0");
         Assert.That(five.TooFew, Is.False);
-        Assert.That((five.PassRate, five.PassAtK, five.PassHatK), Is.EqualTo((0.8, 0.8, 0.8)), "five scenarios, one trial each: pass@1 and pass^1 are the pass rate");
+        Assert.That((five.PassRate, five.PassAtK, five.PassHatK), Is.EqualTo((0.8, 0.8, 0.8)),
+            "five scenarios, one trial each: pass@1 and pass^1 are the pass rate");
     }
 
     [Test]
@@ -109,7 +125,8 @@ public class RunSummaryTests
     [Test]
     public void FiveTrialsOfWhichOnlyThreeCount_AreTooFew()
     {
-        var lines = Of(Pass("a"), Pass("b"), Pass("c"), T("d", TrialOutcome.Infrastructure), T("e", TrialOutcome.Infrastructure));
+        var lines = Of(Pass("a"), Pass("b"), Pass("c"), T("d", TrialOutcome.Infrastructure),
+            T("e", TrialOutcome.Infrastructure));
 
         Assert.That(Line(lines, "overall").TooFew, Is.True, "the rates are from the counted trials");
     }
@@ -147,7 +164,8 @@ public class RunSummaryTests
     [Test]
     public void TheGraderCounts_AreOfTheRequiredGradersOnly_ByNameAndByKind()
     {
-        var lines = Of(Pass("a"), Fail("b"), T("c", TrialOutcome.Unknown, judge: GradeOutcome.Unknown), T("d", TrialOutcome.Infrastructure));
+        var lines = Of(Pass("a"), Fail("b"), T("c", TrialOutcome.Unknown, judge: GradeOutcome.Unknown),
+            T("d", TrialOutcome.Infrastructure));
 
         var overall = Line(lines, "overall");
         Assert.That(overall.Graders.Select(g => (g.Grader, g.Kind, g.Passed, g.Failed, g.Unknown)), Is.EqualTo(new[]
@@ -176,12 +194,14 @@ public class RunSummaryTests
     public void TheScoreMeans_AreOfTheNumericKeys_WithTheirOwnN_AStringOrABooleanSkipped_AMissingKeyNotCounted()
     {
         var lines = Of(
-            T("a", TrialOutcome.Pass, scores: SampleRole.Fill("""{"priced_ratio":1,"routed_right":true,"role":"<RoleAlpha>","errors":0}""")),
+            T("a", TrialOutcome.Pass,
+                scores: SampleRole.Fill("""{"priced_ratio":1,"routed_right":true,"role":"<RoleAlpha>","errors":0}""")),
             T("b", TrialOutcome.Pass, scores: """{"priced_ratio":0.5,"routed_right":false,"role":null}"""),
             T("c", TrialOutcome.Pass, scores: """{"errors":2}"""));
 
         var means = Line(lines, "overall").Scores.ToDictionary(s => s.Key);
-        Assert.That(means.Keys, Is.EquivalentTo(new[] { "priced_ratio", "errors" }), "role (a string) and routed_right (a boolean) are skipped");
+        Assert.That(means.Keys, Is.EquivalentTo(new[] { "priced_ratio", "errors" }),
+            "role (a string) and routed_right (a boolean) are skipped");
         Assert.That(means["priced_ratio"], Is.EqualTo(new ScoreMean("priced_ratio", 0.75, 2)));
         Assert.That(means["errors"], Is.EqualTo(new ScoreMean("errors", 1.0, 2)));
     }
@@ -189,7 +209,8 @@ public class RunSummaryTests
     [Test]
     public void AnInfrastructureTrialsScores_AreNotInTheMeans()
     {
-        var lines = Of(T("a", TrialOutcome.Pass, scores: """{"errors":0}"""), T("b", TrialOutcome.Infrastructure, scores: """{"errors":9}"""));
+        var lines = Of(T("a", TrialOutcome.Pass, scores: """{"errors":0}"""),
+            T("b", TrialOutcome.Infrastructure, scores: """{"errors":9}"""));
 
         Assert.That(Line(lines, "overall").Scores.Single(), Is.EqualTo(new ScoreMean("errors", 0, 1)));
     }
@@ -207,6 +228,7 @@ public class RunSummaryTests
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => required;
 
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 }

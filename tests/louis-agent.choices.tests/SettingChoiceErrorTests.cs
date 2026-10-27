@@ -7,7 +7,11 @@ namespace LouisAgent.Choices.Tests;
 // names the enum and the value, and its text is a member of the project's own message enum (ADR 0009): this project references nothing, so it cannot use core's MessageText.
 public class SettingChoiceErrorTests
 {
-    public enum Mode { Fast, Slow }
+    public enum Mode
+    {
+        Fast,
+        Slow
+    }
 
     [Test]
     public void WireOnAValueTheEnumDoesNotDefine_NamesTheEnumAndTheValue()
@@ -23,10 +27,12 @@ public class SettingChoiceErrorTests
     {
         foreach (var member in Enum.GetValues<ChoiceMessage>())
         {
-            var template = typeof(ChoiceMessage).GetField(member.ToString())!.GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description;
+            var template = typeof(ChoiceMessage).GetField(member.ToString())!
+                .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?.Description;
 
             Assert.That(template, Is.Not.Null.And.Not.Empty, member.ToString());
-            Assert.That(template!.Count(c => c == '{'), Is.EqualTo(template.Count(c => c == '}')), member + ": braces match");
+            Assert.That(template!.Count(c => c == '{'), Is.EqualTo(template.Count(c => c == '}')),
+                member + ": braces match");
         }
     }
 }

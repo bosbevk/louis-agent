@@ -37,25 +37,29 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
         using var response = await http.GetAsync("v1/toolsets", cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
         // The API names the list "toolsets"; each entry says whether this instance has its settings.
-        var reply = await response.Content.ReadFromJsonAsync<SessionWire.ToolsetsReply>(EvalJson.SnakeCase, cancellationToken);
+        var reply = await response.Content.ReadFromJsonAsync<SessionWire.ToolsetsReply>(EvalJson.SnakeCase,
+            cancellationToken);
         return reply!.Toolsets.Where(t => t.Available).Select(t => t.Name).ToList();
     }
 
     public async Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken)
     {
-        using var response = await http.PostAsJsonAsync("v1/sessions", Body(request), EvalJson.SnakeCaseNoNulls, cancellationToken);
+        using var response =
+            await http.PostAsJsonAsync("v1/sessions", Body(request), EvalJson.SnakeCaseNoNulls, cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
-        var opened = await response.Content.ReadFromJsonAsync<SessionWire.Opened>(EvalJson.SnakeCase, cancellationToken);
+        var opened =
+            await response.Content.ReadFromJsonAsync<SessionWire.Opened>(EvalJson.SnakeCase, cancellationToken);
         return opened!.SessionId;
     }
 
     public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        using var send = new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(session)}/messages")
-        {
-            Content = JsonContent.Create(new SessionWire.MessageBody(message), options: EvalJson.SnakeCaseNoNulls),
-        };
+        using var send =
+            new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(session)}/messages")
+            {
+                Content = JsonContent.Create(new SessionWire.MessageBody(message), options: EvalJson.SnakeCaseNoNulls),
+            };
         using var response = await http.SendAsync(send, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         await EnsureSuccessAsync(response, cancellationToken);
 
@@ -80,7 +84,8 @@ public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = nu
     }
 
     private static SessionWire.OpenBody Body(SessionRequest request) =>
-        new(request.Mode.Toolsets, request.Mode.Role, request.TimeZone, request.Task, request.RunTag, request.Place, request.Mode.Llm,
+        new(request.Mode.Toolsets, request.Mode.Role, request.TimeZone, request.Task, request.RunTag, request.Place,
+            request.Mode.Llm,
             new SessionWire.ReplayBody(request.Replay.Web, request.Replay.Of, request.Replay.Model));
 
     /// <summary>The API's own message (<c>{"error":{"message"}}</c>) when the body has one, else the body's text, else the reason phrase.</summary>

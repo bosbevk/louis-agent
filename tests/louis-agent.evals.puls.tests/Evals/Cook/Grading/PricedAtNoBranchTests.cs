@@ -13,23 +13,33 @@ public class PricedAtNoBranchTests
 {
     private const string NoBranch = """{"town":"Prince Albert","shop":"no-branch"}""";
 
-    private const string Estimates = "| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Uie | 2 | onions 1 kg | ± R25 |\n";
+    private const string Estimates =
+        "| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Uie | 2 | onions 1 kg | ± R25 |\n";
+
     private const string EstimatesLine = "*Pryse is skattings, nie by 'n winkel nagegaan nie.*\n";
     private const string NoBranchLine = "*Daar is geen PnP-tak in Prince Albert nie.*\n";
-    private const string Priced = "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
 
-    private static readonly SessionEvent ReadsPnp = SpecialistCall("ReadRenderedPage", """{"url":"https://www.pnp.co.za/search/uie","maxChars":3000}""");
+    private const string Priced =
+        "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
+
+    private static readonly SessionEvent ReadsPnp = SpecialistCall("ReadRenderedPage",
+        """{"url":"https://www.pnp.co.za/search/uie","maxChars":3000}""");
 
     private static Task<Grade> Grade(params SessionEvent[] events) =>
-        new EstimatesAtShop().GradeAsync(Trial(CookEvalMode, "cook-no-branch", NoBranch, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new EstimatesAtShop().GradeAsync(Trial(CookEvalMode, "cook-no-branch", NoBranch, null, Turn(1, events)),
+            CancellationToken.None).AsTask();
 
     [Test]
     public async Task ItPasses_WhenNothingIsPricedTheEstimatesAreSaidAndTheMissingBranchIsSaid() =>
-        Assert.That((await Grade(Text(Estimates + EstimatesLine + NoBranchLine))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(Text(Estimates + EstimatesLine + NoBranchLine))).Outcome,
+            Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task TheEnglishWordsCountToo() =>
-        Assert.That((await Grade(Text(Estimates + "*Prices are estimates, not checked at a shop.*\nThere is no PnP branch in Prince Albert.\n"))).Outcome,
+        Assert.That(
+            (await Grade(Text(Estimates +
+                              "*Prices are estimates, not checked at a shop.*\nThere is no PnP branch in Prince Albert.\n")))
+            .Outcome,
             Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
@@ -56,7 +66,8 @@ public class PricedAtNoBranchTests
 
     [Test]
     public async Task ItFails_WhenAShopToolWasCalled() =>
-        Assert.That((await Grade(SpecialistCall("FindProducts", """{"shop":"checkers","area":"Prince Albert","query":"uie"}"""),
+        Assert.That((await Grade(
+            SpecialistCall("FindProducts", """{"shop":"checkers","area":"Prince Albert","query":"uie"}"""),
             Text(Estimates + EstimatesLine + NoBranchLine))).Outcome, Is.EqualTo(GradeOutcome.Fail));
 
     [Test]

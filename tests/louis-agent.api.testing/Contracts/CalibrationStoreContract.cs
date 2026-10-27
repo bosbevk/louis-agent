@@ -22,12 +22,17 @@ public abstract class CalibrationStoreContract
 
     private static string NewRun() => Guid.NewGuid().ToString("N")[..12];
 
-    private static CalibrationRecord Report(string run, int seconds, int agreed = 35, string grader = "meal-for-people", string? judge = "qwen3:4b") =>
-        new(run, grader, judge, T0.AddSeconds(seconds), agreed, 36, 90, agreed == 36, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(36 - agreed, 9 - (36 - agreed), 0),
-            agreed == 36 ? [] : [new CalibrationDisagreement("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish with steps")]);
+    private static CalibrationRecord Report(string run, int seconds, int agreed = 35, string grader = "meal-for-people",
+        string? judge = "qwen3:4b") =>
+        new(run, grader, judge, T0.AddSeconds(seconds), agreed, 36, 90, agreed == 36,
+            new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(36 - agreed, 9 - (36 - agreed), 0),
+            agreed == 36
+                ? []
+                : [new CalibrationDisagreement("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish with steps")]);
 
     /// <summary>Records with a list inside compare by their JSON: a record's own equality compares the list by reference.</summary>
-    private static string[] Json(IEnumerable<CalibrationRecord> records) => [.. records.Select(r => JsonSerializer.Serialize(r))];
+    private static string[] Json(IEnumerable<CalibrationRecord> records) =>
+        [.. records.Select(r => JsonSerializer.Serialize(r))];
 
     [Test]
     public async Task AReport_ReadsBackWithEverythingItWasGivenWith()

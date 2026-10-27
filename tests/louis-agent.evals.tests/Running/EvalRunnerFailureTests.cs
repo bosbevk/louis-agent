@@ -19,31 +19,40 @@ public class EvalRunnerFailureTests
     private static readonly DateTimeOffset At = DateTimeOffset.FromUnixTimeMilliseconds(1700000000123);
 
     private static readonly SessionEvent Hallo =
-        SessionEvent.From("content_block_delta", JsonDocument.Parse("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""").RootElement.Clone());
+        SessionEvent.From("content_block_delta",
+            JsonDocument
+                .Parse("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")
+                .RootElement.Clone());
 
-    private static async Task<(List<JsonElement> Lines, FailingClient Client)> Run(FailingClient client, int messages = 1, CancellationToken token = default)
+    private static async Task<(List<JsonElement> Lines, FailingClient Client)> Run(FailingClient client,
+        int messages = 1, CancellationToken token = default)
     {
         var sink = new StringWriter();
-        var runner = new EvalRunner(client, new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At), NullLogger<EvalRunner>.Instance);
+        var runner = new EvalRunner(client, new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
         try
         {
             await runner.RunAsync(new TwoTurnEval(messages), new EvalRun("run_1", 1), token);
         }
         finally
         {
-            Lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement.Clone()).ToList();
+            Lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement.Clone()).ToList();
         }
+
         return (Lines, client);
     }
 
     private static List<JsonElement> Lines = [];
 
-    private static IEnumerable<JsonElement> Of(string kind) => Lines.Where(l => l.GetProperty("event").GetString() == kind);
+    private static IEnumerable<JsonElement> Of(string kind) =>
+        Lines.Where(l => l.GetProperty("event").GetString() == kind);
 
     [Test]
     public async Task AStreamThatBreaksPartway_KeepsItsFirstEvents_AndGetsTransport()
     {
-        var (lines, client) = await Run(new FailingClient { Events = [Hallo], SendFails = new HttpRequestException("the connection was reset") });
+        var (lines, client) = await Run(new FailingClient
+        { Events = [Hallo], SendFails = new HttpRequestException("the connection was reset") });
 
         // A transport failure is run once more (step 5a): this client breaks every time, so the trial has two attempts, each recorded and each closed.
         Assert.That(Of("sse").Count(), Is.EqualTo(2), "the event read before the break is kept, in each attempt");
@@ -53,7 +62,8 @@ public class EvalRunnerFailureTests
         Assert.That(client.Closed, Is.EqualTo(new[] { "sess_f", "sess_f" }), "each attempt's session is closed");
         Assert.That(Of("conversation").Count(), Is.EqualTo(1), "the run goes on to the conversation's end");
         // The mode's roll-up follows its last mode_done (F18 step 5c).
-        Assert.That(lines.Select(l => l.GetProperty("event").GetString()).TakeLast(2), Is.EqualTo(new[] { "mode_done", "summary" }));
+        Assert.That(lines.Select(l => l.GetProperty("event").GetString()).TakeLast(2),
+            Is.EqualTo(new[] { "mode_done", "summary" }));
     }
 
     [TestCase(typeof(TimeoutException), "timeout")]
@@ -84,9 +94,11 @@ public class EvalRunnerFailureTests
     [Test]
     public async Task AFailedOpenFailsEveryTurnTheSameWay_AndClosesNothing()
     {
-        var (_, client) = await Run(new FailingClient { OpenFails = new EvalApiException(400, "Unknown role.") }, messages: 2);
+        var (_, client) = await Run(new FailingClient { OpenFails = new EvalApiException(400, "Unknown role.") },
+            messages: 2);
 
-        Assert.That(Of("turn").Select(t => t.GetProperty("failure").GetString()), Is.EqualTo(new[] { "api_error", "api_error" }));
+        Assert.That(Of("turn").Select(t => t.GetProperty("failure").GetString()),
+            Is.EqualTo(new[] { "api_error", "api_error" }));
         Assert.That(Of("question").Count(), Is.EqualTo(2));
         Assert.That(client.Closed, Is.Empty);
         Assert.That(Of("conversation").Count(), Is.EqualTo(1));
@@ -99,7 +111,8 @@ public class EvalRunnerFailureTests
         source.Cancel();
         var client = new FailingClient { SendFails = new OperationCanceledException(source.Token) };
 
-        Assert.That(async () => await Run(client, token: source.Token), Throws.InstanceOf<OperationCanceledException>());
+        Assert.That(async () => await Run(client, token: source.Token),
+            Throws.InstanceOf<OperationCanceledException>());
         Assert.That(client.Closed, Is.EqualTo(new[] { "sess_f" }));
     }
 
@@ -111,7 +124,8 @@ public class EvalRunnerFailureTests
         var read = ProtocolTranscripts.ReadConversation(Lines.Select(l => "@" + l.GetRawText()));
 
         Assert.That(read.Turns.Single().Failure, Is.EqualTo(TrialFailure.Transport));
-        Assert.That(read.Turns.Single().Events.Count, Is.EqualTo(1), "the retried turn reads as its last attempt, not both attempts' events together");
+        Assert.That(read.Turns.Single().Events.Count, Is.EqualTo(1),
+            "the retried turn reads as its last attempt, not both attempts' events together");
     }
 
     private sealed class FailingClient : ISessionClient
@@ -121,12 +135,14 @@ public class EvalRunnerFailureTests
         public Exception? OpenFails { get; init; }
         public List<string> Closed { get; } = [];
 
-        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) => Task.FromResult<IReadOnlyList<string>>([]);
+        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<string>>([]);
 
         public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) =>
             OpenFails is null ? Task.FromResult("sess_f") : Task.FromException<string>(OpenFails);
 
-        public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+            [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             foreach (var e in Events) yield return e;
             if (SendFails is not null) throw SendFails;
@@ -146,11 +162,18 @@ public class EvalRunnerFailureTests
         public int Version => 1;
         public string Proves => "A turn that fails for the infrastructure.";
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([
+                new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])
+            ]);
 
-        public IReadOnlyList<EvalScenario> Scenarios { get; } = [new EvalScenario("pannekoek",
-            new EvalInput(null, "Africa/Johannesburg", Enumerable.Range(1, messages).Select(n => $"Vraag {n}").ToList()), default, [], DatasetSplit.Dev)];
+        public IReadOnlyList<EvalScenario> Scenarios { get; } =
+        [
+            new EvalScenario("pannekoek",
+                new EvalInput(null, "Africa/Johannesburg",
+                    Enumerable.Range(1, messages).Select(n => $"Vraag {n}").ToList()), default, [], DatasetSplit.Dev)
+        ];
 
         public IReadOnlyList<IGrader> Graders => [];
 

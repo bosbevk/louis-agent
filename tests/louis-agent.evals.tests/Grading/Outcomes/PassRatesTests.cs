@@ -41,7 +41,11 @@ public class PassRatesTests
     [Test]
     public void AnOptionalFailOrUnknown_StillPasses()
     {
-        var graders = new IGrader[] { new FakeGrader("a", required: true), new FakeGrader("b", required: false), new FakeGrader("c", required: false) };
+        var graders = new IGrader[]
+        {
+            new FakeGrader("a", required: true), new FakeGrader("b", required: false),
+            new FakeGrader("c", required: false)
+        };
 
         Assert.That(PassRates.Of([Pass("a"), Fail("b"), Unknown("c")], graders), Is.EqualTo(TrialOutcome.Pass));
     }
@@ -73,6 +77,7 @@ public class PassRatesTests
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => required;
 
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 }

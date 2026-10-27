@@ -15,17 +15,19 @@ namespace LouisAgent.Puls.Tests.Components.Admin;
 public class RunExplorerOpenTaskTests
 {
     /// <summary>One mode's JSON for a repeat.</summary>
-    private static string ModeJson(int repeat) => $$"""{"name":"puls-cook","repeat":{{repeat}},"toolsets":["{{SampleToolset.Alpha}}"]}""";
+    private static string ModeJson(int repeat) =>
+        $$"""{"name":"puls-cook","repeat":{{repeat}},"toolsets":["{{SampleToolset.Alpha}}"]}""";
 
     /// <summary>One conversation's JSON for a repeat and a task.</summary>
-    private static string ConversationJson(int repeat, string task) => $$"""{"mode":"puls-cook","repeat":{{repeat}},"task":"{{task}}","role":null,"scores":{},"errors":0}""";
+    private static string ConversationJson(int repeat, string task) =>
+        $$"""{"mode":"puls-cook","repeat":{{repeat}},"task":"{{task}}","role":null,"scores":{},"errors":0}""";
 
     /// <summary>A run with this many repeats, each with two conversations.</summary>
     private static string Run(int repeats) => SampleScenario.Fill($$"""
-        {"run":{"id":"run123456789","check":"puls-cook","repeat":{{repeats}}},"modes":[{{string.Join(",", Enumerable.Range(1, repeats).Select(ModeJson))}}],
-         "conversations":[{{string.Join(",", Enumerable.Range(1, repeats).SelectMany(r => new[] { "<ScenarioAlpha>", "<ScenarioBeta>" }.Select(t => ConversationJson(r, t))))}}],
-         "turns":[],"requests":[]}
-        """);
+                                                                    {"run":{"id":"run123456789","check":"puls-cook","repeat":{{repeats}}},"modes":[{{string.Join(",", Enumerable.Range(1, repeats).Select(ModeJson))}}],
+                                                                     "conversations":[{{string.Join(",", Enumerable.Range(1, repeats).SelectMany(r => new[] { "<ScenarioAlpha>", "<ScenarioBeta>" }.Select(t => ConversationJson(r, t))))}}],
+                                                                     "turns":[],"requests":[]}
+                                                                    """);
 
     /// <summary>Renders the explorer on a run, opened at a task if one is given.</summary>
     private static IRenderedComponent<RunExplorer> Render(string? openTask, int repeats = 1)
@@ -34,11 +36,14 @@ public class RunExplorerOpenTaskTests
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
 
         // What the explorer needs: an API that answers nothing, a reviewer, and the notes state.
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(_ => new HttpResponseMessage()))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
 
-        return ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(Run(repeats)).RootElement.Clone()).Add(x => x.OpenTask, openTask));
+        return ctx.Render<RunExplorer>(p =>
+            p.Add(x => x.Run, JsonDocument.Parse(Run(repeats)).RootElement.Clone()).Add(x => x.OpenTask, openTask));
     }
 
     /// <summary>A task to open takes you straight to its conversation.</summary>

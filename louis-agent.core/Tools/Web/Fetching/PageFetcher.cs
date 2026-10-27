@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.Web.Fetching;
 
 using LouisAgent.Core.Sessions.Replay;
 using System.Net;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 
+namespace LouisAgent.Core.Tools.Web.Fetching;
 /// <summary>
 /// The guarded client the web tools fetch pages with (S, CL15, from WebTools): it refuses private, loopback and
 /// link-local addresses through <see cref="SsrfGuard"/>, the one rule in one place, on every redirect hop and again at
@@ -31,13 +31,15 @@ public sealed class PageFetcher
     /// <param name="handler">Test seam; production uses a handler that re-checks the address at connect time.</param>
     /// <param name="resolve">Test seam for DNS resolution.</param>
     /// <param name="replay">The process's store of recorded web answers, or null where none is kept.</param>
-    public PageFetcher(HttpMessageHandler? handler = null, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null,
+    public PageFetcher(HttpMessageHandler? handler = null,
+        Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null,
         ReplayStore? replay = null)
     {
         _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
         _replay = replay;
         var inner = handler ?? SsrfGuard.CreateGuardedHandler();
-        _http = new HttpClient(replay is null ? inner : new RecordedFetchHandler(replay) { InnerHandler = inner }, disposeHandler: true)
+        _http = new HttpClient(replay is null ? inner : new RecordedFetchHandler(replay) { InnerHandler = inner },
+            disposeHandler: true)
         {
             Timeout = TimeSpan.FromSeconds(20),
             MaxResponseContentBufferSize = MaxResponseBytes,
@@ -58,12 +60,19 @@ public sealed class PageFetcher
         {
             if (!Replaying) await SsrfGuard.EnsurePublicHostAsync(uri, _resolve);
             var response = await _http.SendAsync(new HttpRequestMessage(HttpMethod.Get, uri));
-            if ((int)response.StatusCode is < 300 or >= 400 || response.Headers.Location is null) return (response, uri);
+            if ((int)response.StatusCode is < 300 or >= 400 || response.Headers.Location is null)
+                return (response, uri);
 
             response.Dispose();
-            if (hop == MaxRedirects) throw new HttpRequestException(MessageText.Format(WebToolMessage.FetchTooManyRedirects, new { Count = MaxRedirects }));
-            var next = response.Headers.Location.IsAbsoluteUri ? response.Headers.Location : new Uri(uri, response.Headers.Location);
-            if (next.Scheme is not ("http" or "https")) throw new BlockedAddressException(MessageText.Format(WebToolMessage.FetchRedirectScheme, new { next.Scheme }));
+            if (hop == MaxRedirects)
+                throw new HttpRequestException(MessageText.Format(WebToolMessage.FetchTooManyRedirects,
+                    new { Count = MaxRedirects }));
+            var next = response.Headers.Location.IsAbsoluteUri
+                ? response.Headers.Location
+                : new Uri(uri, response.Headers.Location);
+            if (next.Scheme is not ("http" or "https"))
+                throw new BlockedAddressException(MessageText.Format(WebToolMessage.FetchRedirectScheme,
+                    new { next.Scheme }));
             uri = next;
         }
     }

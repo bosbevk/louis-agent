@@ -24,7 +24,10 @@ public class BenchmarkRunnerIntegrationTests
     {
         // A test may leave its child running; the folder can't go while it does.
         if (_runner?.Current is { Status: BenchmarkRunStatus.Running } run)
-            await foreach (string _ in _runner.EventsAsync(run.Id)) { }
+            await foreach (string _ in _runner.EventsAsync(run.Id))
+            {
+            }
+
         Directory.Delete(_workspace, recursive: true);
     }
 
@@ -51,7 +54,8 @@ public class BenchmarkRunnerIntegrationTests
 
         BenchmarkRun run = runner.Start("args", repeat: 2)!;
 
-        Assert.That(await LinesOf(runner, run), Is.EqualTo(new[] { "run", "args", "--repeat", "2" }), "an argument list, never a shell string");
+        Assert.That(await LinesOf(runner, run), Is.EqualTo(new[] { "run", "args", "--repeat", "2" }),
+            "an argument list, never a shell string");
     }
 
     [Test]
@@ -76,7 +80,10 @@ public class BenchmarkRunnerIntegrationTests
         BenchmarkRun first = runner.Start("slow", 1)!;
         Assert.That(runner.Start("slow", 1), Is.Null, "refused while one runs");
 
-        await foreach (string _ in runner.EventsAsync(first.Id)) { }
+        await foreach (string _ in runner.EventsAsync(first.Id))
+        {
+        }
+
         Assert.That(runner.Start("args", 1), Is.Not.Null, "free again when it ends");
     }
 

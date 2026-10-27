@@ -14,7 +14,9 @@ public sealed class InMemoryCalibrationStore : ICalibrationStore
 
     public Task<IReadOnlyList<CalibrationRecord>> OfRunAsync(string run, CancellationToken cancellationToken = default)
     {
-        lock (_lock) return Task.FromResult<IReadOnlyList<CalibrationRecord>>(_reports.Where(r => r.Run == run).OrderByDescending(r => r.At).ToArray());
+        lock (_lock)
+            return Task.FromResult<IReadOnlyList<CalibrationRecord>>(_reports.Where(r => r.Run == run)
+                .OrderByDescending(r => r.At).ToArray());
     }
 
     public Task<int> DeleteRunAsync(string run, CancellationToken cancellationToken = default)

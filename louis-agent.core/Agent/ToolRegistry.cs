@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Agent;
 
 using LouisAgent.Core.Agent.Catalog;
 using System.Reflection;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Agent.Messages;
 
+namespace LouisAgent.Core.Agent;
 /// <summary>
 /// The agent's tools, kept in name order (ordinal), so the tool list, and with it the start of every request, is the
 /// same bytes from one run to the next (F4: the prompt cache is keyed by the exact prefix, and reflection's method order
@@ -18,7 +18,8 @@ internal sealed class ToolRegistry
 {
     private static readonly ILogger Log = AgentLogging.For<ToolRegistry>();
 
-    private static readonly Comparer<AITool> ByName = Comparer<AITool>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name));
+    private static readonly Comparer<AITool> ByName =
+        Comparer<AITool>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name));
 
     /// <summary>
     /// The live list the engine sends with every request (<c>BeginTurn</c>, the loop's final request). Every open chat
@@ -33,7 +34,8 @@ internal sealed class ToolRegistry
     {
         int at = Live.BinarySearch(tool, ByName);
         if (at >= 0)
-            throw new InvalidOperationException(MessageText.Format(AgentErrorMessage.DuplicateToolName, new { tool.Name }));
+            throw new InvalidOperationException(MessageText.Format(AgentErrorMessage.DuplicateToolName,
+                new { tool.Name }));
         Live.Insert(~at, tool);
     }
 
@@ -69,7 +71,8 @@ internal sealed class ToolRegistry
 
         // Log discovered tool for informational purposes
         // Full MCP tool invocation would require a complete MCP protocol client
-        Log.Log(LogLevel.Information, AgentLogMessage.McpToolDiscovered, new { Name = name, Description = description }, tag: "MCP");
+        Log.Log(LogLevel.Information, AgentLogMessage.McpToolDiscovered, new { Name = name, Description = description },
+            tag: "MCP");
         return true;
     }
 }

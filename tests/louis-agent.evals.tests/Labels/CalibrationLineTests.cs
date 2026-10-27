@@ -10,12 +10,20 @@ namespace LouisAgent.Evals.Tests.Labels;
 public class CalibrationLineTests
 {
     private static LabeledAnswer Label(string scenario, bool pass, int repeat = 1) =>
-        new($"{scenario}.{repeat}.json", "meal-for-people", scenario, SampleMode.Beta, "76667d39dcdb", repeat, [new LabelTurn("q", "a")], pass, "");
+        new($"{scenario}.{repeat}.json", "meal-for-people", scenario, SampleMode.Beta, "76667d39dcdb", repeat,
+            [new LabelTurn("q", "a")], pass, "");
 
     private static readonly CalibrationReport Report = new(Agreed: 3, Total: 4,
-        [new Disagreement(Label(SampleScenario.Alpha, pass: false, repeat: 2), GradeOutcome.Unknown, "too little to decide")],
-        [new JudgedAnswer(Label(SampleScenario.Beta, true), GradeOutcome.Pass), new JudgedAnswer(Label(SampleScenario.Alpha, true), GradeOutcome.Pass),
-         new JudgedAnswer(Label("cook-shops", false), GradeOutcome.Fail), new JudgedAnswer(Label(SampleScenario.Alpha, false, repeat: 2), GradeOutcome.Unknown)]);
+        [
+            new Disagreement(Label(SampleScenario.Alpha, pass: false, repeat: 2), GradeOutcome.Unknown,
+                "too little to decide")
+        ],
+        [
+            new JudgedAnswer(Label(SampleScenario.Beta, true), GradeOutcome.Pass),
+            new JudgedAnswer(Label(SampleScenario.Alpha, true), GradeOutcome.Pass),
+            new JudgedAnswer(Label("cook-shops", false), GradeOutcome.Fail),
+            new JudgedAnswer(Label(SampleScenario.Alpha, false, repeat: 2), GradeOutcome.Unknown)
+        ]);
 
     [Test]
     public void TheLine_CarriesTheReport_InTheAgreementCardsShape()
@@ -25,13 +33,22 @@ public class CalibrationLineTests
         Assert.That(text, Does.StartWith("@{").And.Not.Contain("\n"));
         var line = JsonDocument.Parse(text[1..]).RootElement;
         Assert.That(line.GetProperty("event").GetString(), Is.EqualTo("calibration"));
-        Assert.That((line.GetProperty("eval").GetString(), line.GetProperty("grader").GetString(), line.GetProperty("judge_model").GetString()), Is.EqualTo((SampleEval.Beta, "meal-for-people", "qwen3:4b")));
-        Assert.That((line.GetProperty("agreed").GetInt32(), line.GetProperty("total").GetInt32(), line.GetProperty("bar").GetInt32(), line.GetProperty("passes").GetBoolean()), Is.EqualTo((3, 4, 90, false)));
+        Assert.That(
+            (line.GetProperty("eval").GetString(), line.GetProperty("grader").GetString(),
+                line.GetProperty("judge_model").GetString()),
+            Is.EqualTo((SampleEval.Beta, "meal-for-people", "qwen3:4b")));
+        Assert.That(
+            (line.GetProperty("agreed").GetInt32(), line.GetProperty("total").GetInt32(),
+                line.GetProperty("bar").GetInt32(), line.GetProperty("passes").GetBoolean()),
+            Is.EqualTo((3, 4, 90, false)));
         Assert.That(line.GetProperty("person_pass").GetProperty("judge_pass").GetInt32(), Is.EqualTo(2));
         Assert.That(line.GetProperty("person_fail").GetProperty("judge_fail").GetInt32(), Is.EqualTo(1));
         Assert.That(line.GetProperty("person_fail").GetProperty("judge_unknown").GetInt32(), Is.EqualTo(1));
         var d = line.GetProperty("disagreements").EnumerateArray().Single();
-        Assert.That((d.GetProperty("scenario").GetString(), d.GetProperty("repeat").GetInt32(), d.GetProperty("label").GetString(), d.GetProperty("judge").GetString(), d.GetProperty("reason").GetString()),
+        Assert.That(
+            (d.GetProperty("scenario").GetString(), d.GetProperty("repeat").GetInt32(),
+                d.GetProperty("label").GetString(), d.GetProperty("judge").GetString(),
+                d.GetProperty("reason").GetString()),
             Is.EqualTo((SampleScenario.Alpha, 2, "fail", "unknown", "too little to decide")));
     }
 

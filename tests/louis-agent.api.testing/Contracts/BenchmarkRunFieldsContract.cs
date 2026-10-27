@@ -31,7 +31,12 @@ public abstract class BenchmarkRunFieldsContract
     public async Task AHumanReviewsQuestion_ReadsBackWithTheRunsGraders()
     {
         string id = NewId();
-        var graders = new[] { new Grader("routed-to", 1, BenchmarkGraderKind.FixedRule), new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human, "Is this a meal for the people asked for?") };
+        var graders = new[]
+        {
+            new Grader("routed-to", 1, BenchmarkGraderKind.FixedRule),
+            new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human,
+                "Is this a meal for the people asked for?")
+        };
         await _store.SaveRunAsync(NewRun(id) with { Graders = graders });
 
         var read = (await _store.GetRunAsync(id))!;
@@ -70,15 +75,18 @@ public abstract class BenchmarkRunFieldsContract
         var slices = new[]
         {
             new BenchmarkSlice(SampleMode.Beta, "overall", 8, 6, 1, 1, 0, ["a", "b"], false, 0.75, 1.0, 0.5,
-                [new SliceGrader("routed-to", BenchmarkGraderKind.FixedRule, 7, 1, 0)], [new SliceKind(BenchmarkGraderKind.FixedRule, 7, 1, 0)], [new SliceScore("priced_ratio", 0.5, 8)]),
-            new BenchmarkSlice(SampleMode.Beta, "language:af", 3, 3, 0, 0, 0, ["a"], true, null, null, null, [], [], []),
+                [new SliceGrader("routed-to", BenchmarkGraderKind.FixedRule, 7, 1, 0)],
+                [new SliceKind(BenchmarkGraderKind.FixedRule, 7, 1, 0)], [new SliceScore("priced_ratio", 0.5, 8)]),
+            new BenchmarkSlice(SampleMode.Beta, "language:af", 3, 3, 0, 0, 0, ["a"], true, null, null, null, [], [],
+                []),
         };
 
         await _store.SaveRunAsync(NewRun(rolled) with { Slices = slices });
         await _store.SaveRunAsync(NewRun(older));
 
         // A record holds its lists by reference, so the slices are compared by what they say.
-        Assert.That(JsonSerializer.Serialize((await _store.GetRunAsync(rolled))!.Slices), Is.EqualTo(JsonSerializer.Serialize(slices)), "every field, a rate left out still null");
+        Assert.That(JsonSerializer.Serialize((await _store.GetRunAsync(rolled))!.Slices),
+            Is.EqualTo(JsonSerializer.Serialize(slices)), "every field, a rate left out still null");
         Assert.That((await _store.GetRunAsync(older))!.Slices, Is.Null, "never an empty list, never zeros");
     }
 }

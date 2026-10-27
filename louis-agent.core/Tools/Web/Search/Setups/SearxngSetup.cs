@@ -28,5 +28,6 @@ internal sealed class SearxngSetup : ISearchProviderSetup
             : new UnavailableSearchProvider("SearXNG", MessageText.Format(WebToolMessage.SearxngNotConfigured));
 
     /// <summary>Reads the address, or nothing if it isn't a real URL.</summary>
-    private static Uri? AddressOf(AgentOptions options) => Uri.TryCreate(options.SearxngUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
+    private static Uri? AddressOf(AgentOptions options) =>
+        Uri.TryCreate(options.SearxngUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
 }

@@ -22,18 +22,19 @@ public class UsageReportTests
         AsOf = "2026-10-10",
         Models = new()
         {
-            ["claude-haiku-5-5"] = new ModelPrice { Input = 0.10m, Output = 0.50m, CacheRead = 0.01m, CacheWrite5m = 0.125m, CacheWrite1h = 0.20m },
+            ["claude-haiku-5-5"] = new ModelPrice
+            { Input = 0.10m, Output = 0.50m, CacheRead = 0.01m, CacheWrite5m = 0.125m, CacheWrite1h = 0.20m },
         },
     };
 
     // Three lines from a demo ledger (written before F2, so no "cost"): two fix requests and a triage, plus one unpriced model.
     private const string Ledger = """
-        {"at":"2026-10-10T17:43:13+00:00","round":1,"purpose":"triage","host":"orchestrator","session":"triage_83d0","turn":1,"task":null,"run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":7000,"cache_write":null,"cache_read":0,"output":300,"reasoning":null},"duration_ms":1,"stop":"tool_calls"}
-        {"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":"fix:83d0","run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":1,"stop":"tool_calls"}
+                                  {"at":"2026-10-10T17:43:13+00:00","round":1,"purpose":"triage","host":"orchestrator","session":"triage_83d0","turn":1,"task":null,"run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":7000,"cache_write":null,"cache_read":0,"output":300,"reasoning":null},"duration_ms":1,"stop":"tool_calls"}
+                                  {"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":"fix:83d0","run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":1,"stop":"tool_calls"}
 
-        {"at":"2026-10-10T17:43:25+00:00","round":2,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":"fix:83d0","run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":48000,"cache_write":null,"cache_read":0,"output":200,"reasoning":null},"duration_ms":1,"stop":"stop"}
-        {"at":"2026-10-10T17:44:00+00:00","round":1,"purpose":"turn","host":"cli","session":"cli_1","turn":1,"task":null,"run":null,"service":null,"model":"gpt-5","tokens":{"input":1000,"cache_write":null,"cache_read":null,"output":10,"reasoning":null},"duration_ms":1,"stop":"stop"}
-        """;
+                                  {"at":"2026-10-10T17:43:25+00:00","round":2,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":"fix:83d0","run":"run-1","service":"order-service","model":"claude-haiku-5-5","tokens":{"input":48000,"cache_write":null,"cache_read":0,"output":200,"reasoning":null},"duration_ms":1,"stop":"stop"}
+                                  {"at":"2026-10-10T17:44:00+00:00","round":1,"purpose":"turn","host":"cli","session":"cli_1","turn":1,"task":null,"run":null,"service":null,"model":"gpt-5","tokens":{"input":1000,"cache_write":null,"cache_read":null,"output":10,"reasoning":null},"duration_ms":1,"stop":"stop"}
+                                  """;
 
     private string WriteLedger(string text)
     {
@@ -115,7 +116,10 @@ public class UsageReportTests
     public void Total_ARollUpRecord_CountsItsRequests()
     {
         // F5 follow-up: a turn that delegated once made 1 request itself and 3 through the specialist, so it says 4.
-        UsageRecord own = UsageReport.Read(WriteLedger(Ledger)).Skip(1).First() with { Cost = new UsageCost("USD", 0.005m, null) };
+        UsageRecord own = UsageReport.Read(WriteLedger(Ledger)).Skip(1).First() with
+        {
+            Cost = new UsageCost("USD", 0.005m, null)
+        };
 
         UsageTotal total = UsageReport.Total("turn", [own, RollUp()]);
 
@@ -151,7 +155,8 @@ public class UsageReportTests
         UsageRecord back = UsageReport.Read(WriteLedger(line + "\n")).Single();
 
         Assert.That(line, Does.Contain("\"requests\":3").And.Contain("\"purpose\":\"sub_session\""));
-        Assert.That((back.Requests, back.Purpose, back.Cost?.Amount), Is.EqualTo(((int?)3, "sub_session", (decimal?)0.0123m)));
+        Assert.That((back.Requests, back.Purpose, back.Cost?.Amount),
+            Is.EqualTo(((int?)3, "sub_session", (decimal?)0.0123m)));
     }
 
     [Test]
@@ -161,7 +166,8 @@ public class UsageReportTests
         var priced = new UsageTotal("a", 3, 100, 10, 1_000, 50, 0.01m, 0);
         var unpriced = new UsageTotal("b", 1, 200, 0, 0, 20, null, 1);
 
-        Assert.That(UsageReport.Sum("sum", [priced, unpriced]), Is.EqualTo(new UsageTotal("sum", 4, 300, 10, 1_000, 70, 0.01m, 1)));
+        Assert.That(UsageReport.Sum("sum", [priced, unpriced]),
+            Is.EqualTo(new UsageTotal("sum", 4, 300, 10, 1_000, 70, 0.01m, 1)));
         Assert.That(UsageReport.Sum("sum", [unpriced, unpriced]).Cost, Is.Null);
         Assert.That(UsageReport.Sum("sum", []), Is.EqualTo(new UsageTotal("sum", 0, 0, 0, 0, 0, null, 0)));
     }

@@ -17,16 +17,21 @@ public enum ReviewState
 /// </summary>
 public static class ReviewStatus
 {
-    public static ReviewState Of(ConversationGrades grades, IReadOnlyList<GraderRow>? order, string? reviewer, Func<string, bool> gradedThisSession)
+    public static ReviewState Of(ConversationGrades grades, IReadOnlyList<GraderRow>? order, string? reviewer,
+        Func<string, bool> gradedThisSession)
     {
         var reviews = (order ?? []).Where(BlindReview.IsReview).Select(g => g.Name).ToList();
-        var pending = grades.Grades?.Where(g => g.Outcome == GradeOutcome.Pending && reviews.Contains(g.Grader)).Select(g => BlindReview.JudgeOf(g.Grader)).ToList() ?? [];
+        var pending = grades.Grades?.Where(g => g.Outcome == GradeOutcome.Pending && reviews.Contains(g.Grader))
+            .Select(g => BlindReview.JudgeOf(g.Grader)).ToList() ?? [];
         if (pending.Count == 0) return ReviewState.NoReview;
-        return pending.All(judge => BlindReview.Answered(grades, judge, reviewer, gradedThisSession)) ? ReviewState.Reviewed : ReviewState.ToReview;
+        return pending.All(judge => BlindReview.Answered(grades, judge, reviewer, gradedThisSession))
+            ? ReviewState.Reviewed
+            : ReviewState.ToReview;
     }
 
     /// <summary>The list's filter (6a.3b, out of the page): a task stays when the filter is off, or when any mode's conversation of it is still to review.</summary>
-    public static bool Keeps(bool onlyToReview, IEnumerable<ReviewState> statesAcrossModes) => !onlyToReview || statesAcrossModes.Contains(ReviewState.ToReview);
+    public static bool Keeps(bool onlyToReview, IEnumerable<ReviewState> statesAcrossModes) =>
+        !onlyToReview || statesAcrossModes.Contains(ReviewState.ToReview);
 
     public static string Text(ReviewState state) => state switch
     {

@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Llm.Replay;
 
 using System.Text.Json;
 using LouisAgent.Core.Llm.Messages;
@@ -7,6 +6,7 @@ using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Llm.Replay;
 /// <summary>
 /// The model's answers, recorded and replayed (F18 step 4e, skill 13: a response cache for exactly repeated requests). It is
 /// Microsoft.Extensions.AI's <see cref="CachingChatClient"/> with streaming updates coalesced, so a streamed request is stored and read as
@@ -41,7 +41,8 @@ public sealed class ModelReplayChatClient(IChatClient inner, ReplayStore store) 
     protected override bool EnableCaching(IEnumerable<ChatMessage> messages, ChatOptions? options) =>
         base.EnableCaching(messages, options) && Active() is not null;
 
-    protected override string GetCacheKey(IEnumerable<ChatMessage> messages, ChatOptions? options, params ReadOnlySpan<object?> additionalValues) =>
+    protected override string GetCacheKey(IEnumerable<ChatMessage> messages, ChatOptions? options,
+        params ReadOnlySpan<object?> additionalValues) =>
         ModelAsk.Of(messages, options, _defaultModel).ToAsk().Key;
 
     protected override async Task<ChatResponse?> ReadCacheAsync(string key, CancellationToken cancellationToken)
@@ -69,14 +70,17 @@ public sealed class ModelReplayChatClient(IChatClient inner, ReplayStore store) 
 
     private async Task<string> MissAsync(string trial, ReplayAsk ask, CancellationToken cancellationToken)
     {
-        var recorded = (await store.AsksAsync(trial, ReplayKind.Model, cancellationToken)).Select(ModelAsk.From).OfType<ModelAsk>().ToList();
+        var recorded = (await store.AsksAsync(trial, ReplayKind.Model, cancellationToken)).Select(ModelAsk.From)
+            .OfType<ModelAsk>().ToList();
         return ReplayMiss.Describe(trial, ModelAsk.From(ask)!, recorded);
     }
 
     // Only reached with CoalesceStreamingUpdates off; the key and the store are made for the coalesced response.
-    protected override Task<IReadOnlyList<ChatResponseUpdate>?> ReadCacheStreamingAsync(string key, CancellationToken cancellationToken) =>
+    protected override Task<IReadOnlyList<ChatResponseUpdate>?> ReadCacheStreamingAsync(string key,
+        CancellationToken cancellationToken) =>
         throw new NotSupportedException(MessageText.Format(LlmErrorMessage.ModelReplayNeedsCoalescing, new { }));
 
-    protected override Task WriteCacheStreamingAsync(string key, IReadOnlyList<ChatResponseUpdate> value, CancellationToken cancellationToken) =>
+    protected override Task WriteCacheStreamingAsync(string key, IReadOnlyList<ChatResponseUpdate> value,
+        CancellationToken cancellationToken) =>
         throw new NotSupportedException(MessageText.Format(LlmErrorMessage.ModelReplayNeedsCoalescing, new { }));
 }

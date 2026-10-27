@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -18,8 +18,7 @@ public enum ToolMessage
     [Description("[Exit Code {Code}] {Output}")]
     ExitCode,
 
-    [Description("Error: {Reason}")]
-    ErrorWithReason,
+    [Description("Error: {Reason}")] ErrorWithReason,
 
     [Description("Error running {Program}: {Reason}")]
     ProcessStartFailed,
@@ -30,12 +29,10 @@ public enum ToolMessage
     [Description("File not found: {Path}")]
     FileNotFound,
 
-    [Description("Success (no output).")]
-    SucceededNoOutput,
+    [Description("Success (no output).")] SucceededNoOutput,
 
     [Description("Program was still running after {Seconds}s and was killed.")]
     ProgramKilled,
 
-    [Description("Exit code: {ExitCode}")]
-    ProcessExitCode,
+    [Description("Exit code: {ExitCode}")] ProcessExitCode,
 }

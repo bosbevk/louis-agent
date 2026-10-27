@@ -7,7 +7,8 @@ namespace LouisAgent.Core.Tests.Llm.Replay;
 // reason). Pure functions over two asks, so no store is needed here.
 public class ReplayMissTests
 {
-    private static AIFunction Tool(string name, string description = "does it") => AIFunctionFactory.Create(() => "x", name, description);
+    private static AIFunction Tool(string name, string description = "does it") =>
+        AIFunctionFactory.Create(() => "x", name, description);
 
     private static ModelAsk Ask(
         string system = "You are Puls.", string[]? messages = null, ChatOptions? options = null, string model = "m1")
@@ -20,12 +21,14 @@ public class ReplayMissTests
         return ModelAsk.Of(chat, options, null);
     }
 
-    private static string Miss(ModelAsk requested, params ModelAsk[] recorded) => ReplayMiss.Describe("r1:a:1/t1", requested, recorded);
+    private static string Miss(ModelAsk requested, params ModelAsk[] recorded) =>
+        ReplayMiss.Describe("r1:a:1/t1", requested, recorded);
 
     [Test]
     public void TheModel()
     {
-        Assert.That(Miss(Ask(model: "m2"), Ask()), Does.Contain("r1:a:1/t1").And.Contain("model").And.Contain("m1").And.Contain("m2"));
+        Assert.That(Miss(Ask(model: "m2"), Ask()),
+            Does.Contain("r1:a:1/t1").And.Contain("model").And.Contain("m1").And.Contain("m2"));
     }
 
     [Test]
@@ -37,15 +40,21 @@ public class ReplayMissTests
     [Test]
     public void AToolThatChanged_AddedOrGone_IsNamed()
     {
-        Assert.That(Miss(Ask(options: new ChatOptions { Tools = [Tool("Search", "other"), Tool("Fetch")] }), Ask()), Does.Contain("tool 'Search' changed"));
-        Assert.That(Miss(Ask(options: new ChatOptions { Tools = [Tool("Search"), Tool("Fetch"), Tool("Extra")] }), Ask()), Does.Contain("tool 'Extra' was added"));
-        Assert.That(Miss(Ask(options: new ChatOptions { Tools = [Tool("Search")] }), Ask()), Does.Contain("tool 'Fetch' is gone"));
+        Assert.That(Miss(Ask(options: new ChatOptions { Tools = [Tool("Search", "other"), Tool("Fetch")] }), Ask()),
+            Does.Contain("tool 'Search' changed"));
+        Assert.That(
+            Miss(Ask(options: new ChatOptions { Tools = [Tool("Search"), Tool("Fetch"), Tool("Extra")] }), Ask()),
+            Does.Contain("tool 'Extra' was added"));
+        Assert.That(Miss(Ask(options: new ChatOptions { Tools = [Tool("Search")] }), Ask()),
+            Does.Contain("tool 'Fetch' is gone"));
     }
 
     [Test]
     public void TheSettings()
     {
-        Assert.That(Miss(Ask(options: new ChatOptions { Tools = [Tool("Search"), Tool("Fetch")], Temperature = 0.9f }), Ask()), Does.Contain("settings"));
+        Assert.That(
+            Miss(Ask(options: new ChatOptions { Tools = [Tool("Search"), Tool("Fetch")], Temperature = 0.9f }), Ask()),
+            Does.Contain("settings"));
     }
 
     [Test]
@@ -61,7 +70,8 @@ public class ReplayMissTests
     {
         string text = Miss(Ask());
 
-        Assert.That(text, Does.Contain("r1:a:1/t1").And.Contain("recorded before step 4e").And.Contain("different run"));
+        Assert.That(text,
+            Does.Contain("r1:a:1/t1").And.Contain("recorded before step 4e").And.Contain("different run"));
     }
 
     [Test]

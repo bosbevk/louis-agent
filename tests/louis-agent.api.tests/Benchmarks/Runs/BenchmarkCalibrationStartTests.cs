@@ -12,15 +12,20 @@ public class BenchmarkCalibrationStartTests
     [Test]
     public void TheRow_SaysWhatRunItChecksAndWhichJudge_AndItsLastLine()
     {
-        var run = new BenchmarkRun("cal123456789", "stub", 1, calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
+        var run = new BenchmarkRun("cal123456789", "stub", 1,
+            calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
         run.Add("Agreement: 36 of 36");
 
         var row = JsonDocument.Parse(JsonSerializer.Serialize(AdminRows.Row(run))).RootElement;
-        var ordinary = JsonDocument.Parse(JsonSerializer.Serialize(AdminRows.Row(new BenchmarkRun("run123456789", "stub", 1)))).RootElement;
+        var ordinary = JsonDocument
+            .Parse(JsonSerializer.Serialize(AdminRows.Row(new BenchmarkRun("run123456789", "stub", 1)))).RootElement;
 
-        Assert.That((row.GetProperty("calibration_of").GetString(), row.GetProperty("grader").GetString(), row.GetProperty("last_line").GetString()),
+        Assert.That(
+            (row.GetProperty("calibration_of").GetString(), row.GetProperty("grader").GetString(),
+                row.GetProperty("last_line").GetString()),
             Is.EqualTo(("76667d39dcdb", "meal-for-people", "Agreement: 36 of 36")));
         Assert.That(ordinary.GetProperty("calibration_of").ValueKind, Is.EqualTo(JsonValueKind.Null));
-        Assert.That(ordinary.GetProperty("last_line").ValueKind, Is.EqualTo(JsonValueKind.Null), "an ordinary run's lines are streamed, not summarised");
+        Assert.That(ordinary.GetProperty("last_line").ValueKind, Is.EqualTo(JsonValueKind.Null),
+            "an ordinary run's lines are streamed, not summarised");
     }
 }

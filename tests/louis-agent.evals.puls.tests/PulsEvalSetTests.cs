@@ -17,7 +17,8 @@ public class PulsEvalSetTests
         var set = new PulsEvalSet();
 
         Assert.That(set.Identity, Is.EqualTo(PulsEvalIdentity.Puls.Wire()));
-        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { PulsEvalName.Cook.Wire(), PulsEvalName.Routing.Wire() }));
+        Assert.That(set.Evals.Select(e => e.Name),
+            Is.EqualTo(new[] { PulsEvalName.Cook.Wire(), PulsEvalName.Routing.Wire() }));
     }
 
     [Test]
@@ -37,20 +38,28 @@ public class PulsEvalSetTests
         // The failed turn has a whole, good answer: without the infrastructure check each grader would pass it, so the test tells a grader that
         // checked from one that was merely handed an empty turn (reviewed on 5.4: three checks could be removed and the tests still passed).
         const string answer = """
-            Hoender vir 4 mense.
+                              Hoender vir 4 mense.
 
-            | Ingredient | For the recipe | To buy | Checkers |
-            |---|---|---|---|
-            | Hoender | 1 kg | Hoender 1 kg | [R69,99](https://www.checkers.co.za/p/1) |
-            | **Totaal** | | | **R69,99** |
-            """;
-        var trial = Trial(CookEvalMode, "cook", """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"checkers"}""", "Malmesbury, Wes-Kaap, Suid-Afrika",
-            Turn(1, [Start(PulsEvalRole.Cook.Wire()), SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"hoender"}"""), Text(answer)],
+                              | Ingredient | For the recipe | To buy | Checkers |
+                              |---|---|---|---|
+                              | Hoender | 1 kg | Hoender 1 kg | [R69,99](https://www.checkers.co.za/p/1) |
+                              | **Totaal** | | | **R69,99** |
+                              """;
+        var trial = Trial(CookEvalMode, "cook",
+            """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"checkers"}""",
+            "Malmesbury, Wes-Kaap, Suid-Afrika",
+            Turn(1,
+                [
+                    Start(PulsEvalRole.Cook.Wire()),
+                    SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"hoender"}"""),
+                    Text(answer)
+                ],
                 failure: LouisAgent.Evals.Trials.TrialFailure.Timeout));
 
         var grade = await grader.GradeAsync(trial, CancellationToken.None);
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
-        Assert.That(grade.Reason, Does.Contain("infrastructure"), "Unknown because of the failure, not because there was nothing to read");
+        Assert.That(grade.Reason, Does.Contain("infrastructure"),
+            "Unknown because of the failure, not because there was nothing to read");
     }
 }

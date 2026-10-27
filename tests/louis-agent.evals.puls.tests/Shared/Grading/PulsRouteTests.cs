@@ -29,11 +29,15 @@ public class PulsRouteTests
 
     [Test]
     public async Task AMealGoesToTheCook_InAModeThatCanHandItOn() =>
-        Assert.That((await Grade(CookEvalMode, CookRoute, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That(
+            (await Grade(CookEvalMode, CookRoute, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]))).Outcome,
+            Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task AModeIsOnTheCookBecauseOfItsToolsets_NotItsName() =>
-        Assert.That((await Grade(new EvalMode("puls-cook-sonnet", PulsEvalRole.Cook.Wire(), [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), CookRoute,
+        Assert.That((await Grade(
+            new EvalMode("puls-cook-sonnet", PulsEvalRole.Cook.Wire(),
+                [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), CookRoute,
             Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
@@ -47,11 +51,14 @@ public class PulsRouteTests
 
     [Test]
     public async Task AModeThatCannotHandItOn_ExpectsPulsToAnswerItself() =>
-        Assert.That((await Grade(ToolsEvalMode, CookRoute, Turn(1, [Text("Die koers is 10.5%.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(ToolsEvalMode, CookRoute, Turn(1, [Text("Die koers is 10.5%.")]))).Outcome,
+            Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task TheBaselineIsRightToAnswerAMealItself() =>
-        Assert.That((await Grade(new EvalMode("baseline", Role, [PulsToolset.Web.Wire(), PulsToolset.Files.Wire()]), CookRoute, Turn(1, [Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That(
+            (await Grade(new EvalMode("baseline", Role, [PulsToolset.Web.Wire(), PulsToolset.Files.Wire()]), CookRoute,
+                Turn(1, [Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task AWebQuestionHandedToTheCookIsWrong()

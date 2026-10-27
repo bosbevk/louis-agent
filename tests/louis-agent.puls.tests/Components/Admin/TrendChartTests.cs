@@ -10,10 +10,10 @@ public class TrendChartTests
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
     private const string Trend = """
-        {"check":"puls-cook","modes":[{"name":"puls-cook","points":[
-          {"run":"run_1","at":"2026-10-24T09:00:00+00:00","cost":0.1,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":1,"pass_hat_k":0.5,"k":2},
-          {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.1,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":1,"pass_hat_k":1,"k":2}]}]}
-        """;
+                                 {"check":"puls-cook","modes":[{"name":"puls-cook","points":[
+                                   {"run":"run_1","at":"2026-10-24T09:00:00+00:00","cost":0.1,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":1,"pass_hat_k":0.5,"k":2},
+                                   {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.1,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":1,"pass_hat_k":1,"k":2}]}]}
+                                 """;
 
     private static IRenderedComponent<TrendChart> Render(string trend)
     {
@@ -39,10 +39,12 @@ public class TrendChartTests
     [Test]
     public void ARunWithNoRates_SaysNoKnownValues_NotAZeroLine()
     {
-        var cut = Render(Trend.Replace("\"pass_at_k\":1,\"pass_hat_k\":0.5,\"k\":2", "\"pass_at_k\":null,\"pass_hat_k\":null,\"k\":null")
+        var cut = Render(Trend
+            .Replace("\"pass_at_k\":1,\"pass_hat_k\":0.5,\"k\":2", "\"pass_at_k\":null,\"pass_hat_k\":null,\"k\":null")
             .Replace("\"pass_at_k\":1,\"pass_hat_k\":1,\"k\":2", "\"pass_at_k\":null,\"pass_hat_k\":null,\"k\":null"));
 
-        var panel = cut.FindAll(".trend-panel").Single(p => p.QuerySelector(".chart-head")!.TextContent.TrimStart().StartsWith("pass@k"));
+        var panel = cut.FindAll(".trend-panel")
+            .Single(p => p.QuerySelector(".chart-head")!.TextContent.TrimStart().StartsWith("pass@k"));
         Assert.That(panel.QuerySelector(".trend-top")!.TextContent, Is.EqualTo("no known values yet"));
         Assert.That(panel.QuerySelectorAll(".trend-line"), Is.Empty);
     }
@@ -50,14 +52,15 @@ public class TrendChartTests
     // The trend rework (Louis, 2026-10-26: "more explanatory and maybe more interactive"): each panel's head reads the shown run's value per mode, with a delta against the run
     // before it; the shown run is the one hovered, else the one marked, else the last; dates sit under the axis; the scale says its two ends. Written first: the head said only "top".
     private const string TwoRuns = """
-        {"check":"puls-cook","modes":[{"name":"puls-cook","points":[
-          {"run":"run_1","at":"2026-10-24T09:00:00+00:00","cost":0.10,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":0.5,"pass_hat_k":0.5,"k":2},
-          {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.20,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":0.75,"pass_hat_k":0.25,"k":2}]}]}
-        """;
+                                   {"check":"puls-cook","modes":[{"name":"puls-cook","points":[
+                                     {"run":"run_1","at":"2026-10-24T09:00:00+00:00","cost":0.10,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":0.5,"pass_hat_k":0.5,"k":2},
+                                     {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.20,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":0.75,"pass_hat_k":0.25,"k":2}]}]}
+                                   """;
 
     /// <summary>The panel whose title starts so; an info tip may name another panel's measure, so the whole head is no match.</summary>
     private static AngleSharp.Dom.IElement PanelTitled(IRenderedComponent<TrendChart> cut, string title) =>
-        cut.FindAll(".trend-panel").First(p => p.QuerySelector(".chart-title > strong")!.TextContent.StartsWith(title, StringComparison.Ordinal));
+        cut.FindAll(".trend-panel").First(p =>
+            p.QuerySelector(".chart-title > strong")!.TextContent.StartsWith(title, StringComparison.Ordinal));
 
     private static IRenderedComponent<TrendChart> RenderMarked(string trend, string highlight)
     {
@@ -76,7 +79,8 @@ public class TrendChartTests
         Assert.That(passAt.QuerySelector(".trend-delta.up")!.TextContent, Does.Contain("+25"), "run_2 against run_1");
         var passHat = PanelTitled(cut, "pass^k");
         Assert.That(passHat.QuerySelector(".trend-delta.down")!.TextContent, Does.Contain("25"));
-        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_2"), "the trend says which run it is reading");
+        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_2"),
+            "the trend says which run it is reading");
     }
 
     [Test]
@@ -95,15 +99,21 @@ public class TrendChartTests
     {
         var cut = RenderMarked(TwoRuns, "run_2");
 
-        PanelTitled(cut, "pass@k").QuerySelectorAll("a.trend-run").First(a => a.GetAttribute("href")!.EndsWith("run_1")).MouseEnter();
+        PanelTitled(cut, "pass@k").QuerySelectorAll("a.trend-run").First(a => a.GetAttribute("href")!.EndsWith("run_1"))
+            .MouseEnter();
 
         var passAt = PanelTitled(cut, "pass@k");
-        Assert.That(passAt.QuerySelector(".trend-values")!.TextContent, Does.Contain("50%"), "run_1 in the panel hovered");
-        Assert.That(passAt.QuerySelector(".trend-reading")!.TextContent, Does.Contain("run_1"), "the panel says which run it reads");
-        Assert.That(passAt.QuerySelectorAll(".trend-hover"), Has.Count.EqualTo(1), "a guide line at the hovered run, in this panel");
+        Assert.That(passAt.QuerySelector(".trend-values")!.TextContent, Does.Contain("50%"),
+            "run_1 in the panel hovered");
+        Assert.That(passAt.QuerySelector(".trend-reading")!.TextContent, Does.Contain("run_1"),
+            "the panel says which run it reads");
+        Assert.That(passAt.QuerySelectorAll(".trend-hover"), Has.Count.EqualTo(1),
+            "a guide line at the hovered run, in this panel");
         var passHat = PanelTitled(cut, "pass^k");
-        Assert.That(passHat.QuerySelector(".trend-values")!.TextContent, Does.Contain("25%"), "run_2 still, the marked run");
+        Assert.That(passHat.QuerySelector(".trend-values")!.TextContent, Does.Contain("25%"),
+            "run_2 still, the marked run");
         Assert.That(passHat.QuerySelectorAll(".trend-hover"), Is.Empty);
-        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_2"), "the trend's own line keeps the marked run");
+        Assert.That(cut.Find(".trend-shown").TextContent, Does.Contain("run_2"),
+            "the trend's own line keeps the marked run");
     }
 }

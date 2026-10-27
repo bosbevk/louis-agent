@@ -17,7 +17,11 @@ public sealed record EvalListingResult(IReadOnlyList<EvalLine> Evals, string? Fa
 /// reference the runner, so <see cref="EvalLine"/> is its own record. A listing that can't be read is a warning and no evals, never a failure
 /// of the portal.
 /// </summary>
-public sealed class EvalListing(string command, IReadOnlyList<string> arguments, TimeSpan timeout, string? requiredFile = null)
+public sealed class EvalListing(
+    string command,
+    IReadOnlyList<string> arguments,
+    TimeSpan timeout,
+    string? requiredFile = null)
 {
     internal const string DotNetHost = "dotnet";
 
@@ -36,7 +40,8 @@ public sealed class EvalListing(string command, IReadOnlyList<string> arguments,
 
     public EvalListingResult Read()
     {
-        if (requiredFile is not null && !File.Exists(requiredFile)) return Failed(EvalListingMessage.Missing, new { Path = requiredFile });
+        if (requiredFile is not null && !File.Exists(requiredFile))
+            return Failed(EvalListingMessage.Missing, new { Path = requiredFile });
 
         var start = new ProcessStartInfo(command)
         {
@@ -57,10 +62,13 @@ public sealed class EvalListing(string command, IReadOnlyList<string> arguments,
                 process.Kill(entireProcessTree: true);
                 return Failed(EvalListingMessage.TimedOut, new { Seconds = timeout.TotalSeconds });
             }
+
             if (process.ExitCode != 0)
             {
                 // The runner's refusal is the last line it writes to stderr: that line is the reason, when there is one.
-                string? reason = errors.Result.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).LastOrDefault();
+                string? reason = errors.Result
+                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .LastOrDefault();
                 return reason is null
                     ? Failed(EvalListingMessage.ExitCode, new { Code = process.ExitCode })
                     : Failed(EvalListingMessage.ExitCodeWithReason, new { Code = process.ExitCode, Reason = reason });
@@ -81,7 +89,8 @@ public sealed class EvalListing(string command, IReadOnlyList<string> arguments,
     public static EvalListingResult Parse(string stdout)
     {
         var evals = new List<EvalLine>();
-        foreach (string line in stdout.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        foreach (string line in stdout.Split('\n',
+                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             EvalLine? eval;
             try
@@ -92,9 +101,11 @@ public sealed class EvalListing(string command, IReadOnlyList<string> arguments,
             {
                 eval = null;
             }
+
             if (eval is null) return Failed(EvalListingMessage.NotAnEval, new { Line = line });
             evals.Add(eval);
         }
+
         return new EvalListingResult(evals, null);
     }
 

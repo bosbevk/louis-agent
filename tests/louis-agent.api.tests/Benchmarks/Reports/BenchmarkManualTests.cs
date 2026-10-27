@@ -27,7 +27,9 @@ public class BenchmarkManualTests
     {
         Assert.That(new BenchmarkCheck("ghost", "Ghost").ManualPath, Is.Null);
         Assert.That(BenchmarkManuals.Read(RepoRoot, new BenchmarkCheck("ghost", "Ghost")), Is.Null);
-        Assert.That(BenchmarkManuals.Read(RepoRoot, new BenchmarkCheck("ghost", "Ghost", "evals/ghost/Manuals/ghost.md")), Is.Null, "a path that names no file");
+        Assert.That(
+            BenchmarkManuals.Read(RepoRoot, new BenchmarkCheck("ghost", "Ghost", "evals/ghost/Manuals/ghost.md")),
+            Is.Null, "a path that names no file");
     }
 
     [TestCase("evals/../config/prices.json")]

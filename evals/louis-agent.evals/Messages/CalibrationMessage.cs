@@ -8,14 +8,14 @@ public enum CalibrationMessage
     [Description("Agreement: {Agreed} of {Total}")]
     Agreement,
 
-    [Description("Labelled {Label}: judge pass {Passed}, fail {Failed}, can't tell {CantTell} ({Agreed} of {Total}, {Percent}%){Few}")]
+    [Description(
+        "Labelled {Label}: judge pass {Passed}, fail {Failed}, can't tell {CantTell} ({Agreed} of {Total}, {Percent}%){Few}")]
     ClassLine,
 
     [Description("Labelled {Label}: no labels")]
     ClassNone,
 
-    [Description(", few labels")]
-    FewLabels,
+    [Description(", few labels")] FewLabels,
 
     [Description("Result: pass, at least {Bar}% in each class")]
     ResultPass,
@@ -32,12 +32,9 @@ public enum CalibrationMessage
     [Description("{Scenario} (run {Run}, repeat {Repeat}, {Mode}): label: {Label}, judge: {Judge}: {Reason}")]
     Disagreement,
 
-    [Description("pass")]
-    Pass,
+    [Description("pass")] Pass,
 
-    [Description("fail")]
-    Fail,
+    [Description("fail")] Fail,
 
-    [Description("can't tell")]
-    CantTell,
+    [Description("can't tell")] CantTell,
 }

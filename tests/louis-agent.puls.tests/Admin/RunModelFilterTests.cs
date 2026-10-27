@@ -12,20 +12,23 @@ public class RunModelFilterTests
 
     [Test]
     public void TheModelsListed_AreTheNamedOnes_DistinctAndInOrder() =>
-        Assert.That(RunModelFilter.ModelsOf([Haiku, null, Unknown, Sonnet]), Is.EqualTo(new[] { "claude-haiku-5-5", "claude-sonnet-5-5" }));
+        Assert.That(RunModelFilter.ModelsOf([Haiku, null, Unknown, Sonnet]),
+            Is.EqualTo(new[] { "claude-haiku-5-5", "claude-sonnet-5-5" }));
 
     [Test]
     public void APickedModel_ShowsTheRunsThatNamedIt_AndNoOthers()
     {
         Assert.That(RunModelFilter.Matches(Haiku, "claude-haiku-5-5"), Is.True);
-        Assert.That(RunModelFilter.Matches(Sonnet, "claude-haiku-5-5"), Is.True, "a run with the model in any of its modes");
+        Assert.That(RunModelFilter.Matches(Sonnet, "claude-haiku-5-5"), Is.True,
+            "a run with the model in any of its modes");
         Assert.That(RunModelFilter.Matches(Sonnet, "claude-sonnet-5-5"), Is.True);
         Assert.That(RunModelFilter.Matches(Haiku, "claude-sonnet-5-5"), Is.False);
     }
 
     [Test]
     public void WithNoModelPicked_EveryRunShows_AndAnUnknownRunOnlyThen() =>
-        Assert.That(new[] { RunModelFilter.Matches(Unknown, null), RunModelFilter.Matches(null, null) }, Is.EqualTo(new[] { true, true }));
+        Assert.That(new[] { RunModelFilter.Matches(Unknown, null), RunModelFilter.Matches(null, null) },
+            Is.EqualTo(new[] { true, true }));
 
     [Test]
     public void AnUnknownRun_IsNotUnderAnyModel() =>

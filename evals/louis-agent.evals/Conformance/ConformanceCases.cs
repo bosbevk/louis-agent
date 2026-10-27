@@ -21,7 +21,8 @@ public static class ConformanceCases
         var cases = new List<ConformanceCase>();
         if (!Directory.Exists(folder)) return cases;
 
-        var names = Directory.GetFiles(folder).Select(Path.GetFileName).OfType<string>().OrderBy(n => n, StringComparer.Ordinal).ToList();
+        var names = Directory.GetFiles(folder).Select(Path.GetFileName).OfType<string>()
+            .OrderBy(n => n, StringComparer.Ordinal).ToList();
         foreach (string name in names)
             if (!scenarios.Any(scenario => IsOf(name, scenario.Id)))
                 throw Stray(name);
@@ -45,19 +46,22 @@ public static class ConformanceCases
             cases.Add(new ConformanceCase(scenario.Id, ProtocolTranscripts.ReadMode(referenceLines),
                 ProtocolTranscripts.ReadConversation(referenceLines), knownBad));
         }
+
         return cases;
     }
 
     /// <summary>Whether a file belongs to a scenario: its reference, or one of its known-bad transcripts.</summary>
-    private static bool IsOf(string name, string scenario) => name == scenario + ReferenceSuffix || IsKnownBadOf(name, scenario);
+    private static bool IsOf(string name, string scenario) =>
+        name == scenario + ReferenceSuffix || IsKnownBadOf(name, scenario);
 
     /// <summary>Whether a file is a known-bad of a scenario: <c>{scenario}.bad.{label}.txt</c>, with a label.</summary>
     private static bool IsKnownBadOf(string name, string scenario)
     {
         string prefix = scenario + ".bad.";
         return name.StartsWith(prefix, StringComparison.Ordinal) && name.EndsWith(BadSuffix, StringComparison.Ordinal)
-            && name.Length > prefix.Length + BadSuffix.Length;
+                                                                 && name.Length > prefix.Length + BadSuffix.Length;
     }
 
-    private static InvalidDataException Stray(string name) => new(MessageText.Format(EvalErrorMessage.StrayTranscript, new { File = name }));
+    private static InvalidDataException Stray(string name) =>
+        new(MessageText.Format(EvalErrorMessage.StrayTranscript, new { File = name }));
 }

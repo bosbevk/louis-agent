@@ -15,7 +15,8 @@ namespace LouisAgent.Evals.Runner.Evals.Stub;
 /// </summary>
 public sealed class StubSessionClient : ISessionClient
 {
-    private readonly Dictionary<string, (EvalMode Mode, int Repeat, string Task, int Turns)> _sessions = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, (EvalMode Mode, int Repeat, string Task, int Turns)> _sessions =
+        new(StringComparer.Ordinal);
 
     public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<string>>([]);
@@ -38,6 +39,7 @@ public sealed class StubSessionClient : ISessionClient
             cancellationToken.ThrowIfCancellationRequested();
             yield return SessionEvent.From(type, JsonSerializer.SerializeToElement(data));
         }
+
         await Task.CompletedTask;
     }
 

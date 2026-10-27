@@ -14,11 +14,12 @@ public class StoredNamesTests
 {
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 9, 0, 0, TimeSpan.Zero);
 
-    private static BsonDocument Stored() => MongoBenchmarkStore.ToBson(new Run("run123456789", "check-x", 1, BenchmarkRunStatus.Done, T0)
-    {
-        Graders = [new Grader("no-error", 1, BenchmarkGraderKind.FixedRule)],
-        Models = [new ModelUse(SampleMode.Alpha, BenchmarkModelLevel.Agent, null, "model-x")],
-    });
+    private static BsonDocument Stored() => MongoBenchmarkStore.ToBson(
+        new Run("run123456789", "check-x", 1, BenchmarkRunStatus.Done, T0)
+        {
+            Graders = [new Grader("no-error", 1, BenchmarkGraderKind.FixedRule)],
+            Models = [new ModelUse(SampleMode.Alpha, BenchmarkModelLevel.Agent, null, "model-x")],
+        });
 
     [Test]
     public void TheNamesTheStoreWrites_ReadBack()
@@ -38,7 +39,8 @@ public class StoredNamesTests
 
         var error = Assert.Throws<InvalidDataException>(() => MongoBenchmarkStore.RunOf(document))!;
 
-        Assert.That(error.Message, Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = "kind", Value = stored })));
+        Assert.That(error.Message,
+            Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = "kind", Value = stored })));
     }
 
     [TestCase("1")]
@@ -50,6 +52,7 @@ public class StoredNamesTests
 
         var error = Assert.Throws<InvalidDataException>(() => MongoBenchmarkStore.RunOf(document))!;
 
-        Assert.That(error.Message, Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = "level", Value = stored })));
+        Assert.That(error.Message,
+            Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = "level", Value = stored })));
     }
 }

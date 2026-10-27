@@ -43,19 +43,27 @@ public class GitResourceTests
     public void TearDown()
     {
         // git makes its object files read-only; clear that so the folder can go.
-        foreach (string file in Directory.EnumerateFiles(_repo, "*", SearchOption.AllDirectories)) File.SetAttributes(file, FileAttributes.Normal);
+        foreach (string file in Directory.EnumerateFiles(_repo, "*", SearchOption.AllDirectories))
+            File.SetAttributes(file, FileAttributes.Normal);
         Directory.Delete(_repo, recursive: true);
     }
 
     private string Git(params string[] args)
     {
-        var psi = new ProcessStartInfo("git") { WorkingDirectory = _repo, RedirectStandardOutput = true, RedirectStandardError = true, UseShellExecute = false };
+        var psi = new ProcessStartInfo("git")
+        {
+            WorkingDirectory = _repo,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false
+        };
         foreach (string arg in args) psi.ArgumentList.Add(arg);
         using var process = Process.Start(psi)!;
         var error = process.StandardError.ReadToEndAsync();
         string output = process.StandardOutput.ReadToEnd();
         process.WaitForExit();
-        if (process.ExitCode != 0) throw new InvalidOperationException($"git {string.Join(' ', args)} failed: {error.Result}");
+        if (process.ExitCode != 0)
+            throw new InvalidOperationException($"git {string.Join(' ', args)} failed: {error.Result}");
         return output;
     }
 
@@ -71,7 +79,8 @@ public class GitResourceTests
         using var response = await client.PostAsJsonAsync("/v1/git/commits", new { message = "Add notes" });
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
-        Assert.That(response.Headers.Location?.OriginalString, Is.EqualTo($"/v1/git/commits/{Git("rev-parse", "HEAD").Trim()}"));
+        Assert.That(response.Headers.Location?.OriginalString,
+            Is.EqualTo($"/v1/git/commits/{Git("rev-parse", "HEAD").Trim()}"));
         using var read = await client.GetAsync(response.Headers.Location);
         Assert.That(read.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
@@ -82,7 +91,7 @@ public class GitResourceTests
         await using var app = ApiTestHost.Build(workspaceRoot: _repo);
         await app.StartAsync();
         var client = app.GetTestClient();
-        Git("branch", "feature/x");   // on HEAD, so already merged
+        Git("branch", "feature/x"); // on HEAD, so already merged
 
         using var read = await client.GetAsync("/v1/git/branches/feature/x");
         using var body = JsonDocument.Parse(await read.Content.ReadAsStringAsync());

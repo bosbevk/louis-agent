@@ -12,9 +12,13 @@ public class PascalCaseWireTests
     [Test]
     public void TheHarnessEnumsStoredRunsCarry_WriteTheirMemberName()
     {
-        foreach (var m in Enum.GetValues<GradeOutcome>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"GradeOutcome.{m}");
-        foreach (var m in Enum.GetValues<TrialOutcome>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"TrialOutcome.{m}");
-        foreach (var m in Enum.GetValues<GraderKind>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"GraderKind.{m}");
-        foreach (var m in Enum.GetValues<ModelLevel>()) Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"ModelLevel.{m}");
+        foreach (var m in Enum.GetValues<GradeOutcome>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"GradeOutcome.{m}");
+        foreach (var m in Enum.GetValues<TrialOutcome>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"TrialOutcome.{m}");
+        foreach (var m in Enum.GetValues<GraderKind>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"GraderKind.{m}");
+        foreach (var m in Enum.GetValues<ModelLevel>())
+            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"ModelLevel.{m}");
     }
 }

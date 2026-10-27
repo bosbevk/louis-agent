@@ -22,30 +22,34 @@ public class BenchmarkLedgerTests
     private static readonly ConversationKey Bobotie = new(SampleMode.Beta, 1, "bobotie");
     private static readonly ConversationKey CottagePie = new(SampleMode.Beta, 1, "cottage-pie");
 
-    private static UsageRecord Row(int second, string? session, int? turn, string? run = Run + ":puls-cook:1", string? parent = null,
+    private static UsageRecord Row(int second, string? session, int? turn, string? run = Run + ":puls-cook:1",
+        string? parent = null,
         string purpose = UsagePurpose.Turn, decimal? cost = 0.01m, int? requests = null, long input = 1000) =>
         new(T0.AddSeconds(second), 1, purpose, "api", session, turn, null, run, null, "claude-haiku-5-5",
-            new UsageTokens(input, 0, 4000, 200, null), 1500, "stop", cost is null ? null : new UsageCost("USD", cost.Value, "2026-10-10"),
+            new UsageTokens(input, 0, 4000, 200, null), 1500, "stop",
+            cost is null ? null : new UsageCost("USD", cost.Value, "2026-10-10"),
             parent, requests);
 
-    private static readonly IReadOnlyDictionary<string, ConversationKey> Sessions = new Dictionary<string, ConversationKey>
-    {
-        ["sess_puls_bobotie"] = Bobotie,
-        ["sess_puls_pie"] = CottagePie,
-    };
+    private static readonly IReadOnlyDictionary<string, ConversationKey> Sessions =
+        new Dictionary<string, ConversationKey>
+        {
+            ["sess_puls_bobotie"] = Bobotie,
+            ["sess_puls_pie"] = CottagePie,
+        };
 
     private static readonly UsageRecord[] Ledger =
     [
-        Row(1, "sess_puls_bobotie", 1),                                                           // Puls, bobotie turn 1
-        Row(2, "sess_cook", 1, parent: "sess_puls_bobotie#1"),                                    // the cook it called
-        Row(3, "sess_minion", 1, parent: "sess_cook#1", cost: 0.001m),                            // a minion the cook sent
-        Row(4, "sess_puls_bobotie", 1, purpose: UsagePurpose.SubSession, cost: 0.011m, requests: 2), // the roll-up: skipped
-        Row(5, "sess_puls_bobotie", 2),                                                           // bobotie turn 2
-        Row(6, "sess_puls_pie", 1, cost: null),                                                   // a request with no price
-        Row(7, "sess_elsewhere", 1, run: "run999999999:puls-cook:1"),                            // another run
-        Row(8, "sess_elsewhere", 1, run: Run + "x:puls-cook:1"),                                 // a run whose id starts with this one's
-        Row(9, "sess_chat", 3, run: null),                                                        // somebody's chat meanwhile
-        Row(10, "sess_lost", 1),                                                                  // this run's, but no turn knows it
+        Row(1, "sess_puls_bobotie", 1), // Puls, bobotie turn 1
+        Row(2, "sess_cook", 1, parent: "sess_puls_bobotie#1"), // the cook it called
+        Row(3, "sess_minion", 1, parent: "sess_cook#1", cost: 0.001m), // a minion the cook sent
+        Row(4, "sess_puls_bobotie", 1, purpose: UsagePurpose.SubSession, cost: 0.011m,
+            requests: 2), // the roll-up: skipped
+        Row(5, "sess_puls_bobotie", 2), // bobotie turn 2
+        Row(6, "sess_puls_pie", 1, cost: null), // a request with no price
+        Row(7, "sess_elsewhere", 1, run: "run999999999:puls-cook:1"), // another run
+        Row(8, "sess_elsewhere", 1, run: Run + "x:puls-cook:1"), // a run whose id starts with this one's
+        Row(9, "sess_chat", 3, run: null), // somebody's chat meanwhile
+        Row(10, "sess_lost", 1), // this run's, but no turn knows it
     ];
 
     [Test]
@@ -64,15 +68,17 @@ public class BenchmarkLedgerTests
         Assert.That(requests.Select(r => (r.At.Second, r.Turn)), Is.EqualTo(new (int, TurnKey?)[]
         {
             (1, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)),
-            (2, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)),      // the cook's, by its parent
-            (3, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)),      // the minion's, through the cook
+            (2, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)), // the cook's, by its parent
+            (3, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)), // the minion's, through the cook
             (5, new TurnKey(SampleMode.Beta, 1, "bobotie", 2)),
             (6, new TurnKey(SampleMode.Beta, 1, "cottage-pie", 1)),
-            (10, null),                                           // kept and counted, but no turn to show it under
+            (10, null), // kept and counted, but no turn to show it under
         }));
         var cook = requests[1];
-        Assert.That((cook.Run, cook.Purpose, cook.Session, cook.Parent, cook.Model), Is.EqualTo((Run, UsagePurpose.Turn, "sess_cook", "sess_puls_bobotie#1", "claude-haiku-5-5")));
-        Assert.That((cook.InputTokens, cook.CacheReadTokens, cook.OutputTokens, cook.CacheWriteTokens), Is.EqualTo(((long?)1000, (long?)4000, (long?)200, (long?)0)));
+        Assert.That((cook.Run, cook.Purpose, cook.Session, cook.Parent, cook.Model),
+            Is.EqualTo((Run, UsagePurpose.Turn, "sess_cook", "sess_puls_bobotie#1", "claude-haiku-5-5")));
+        Assert.That((cook.InputTokens, cook.CacheReadTokens, cook.OutputTokens, cook.CacheWriteTokens),
+            Is.EqualTo(((long?)1000, (long?)4000, (long?)200, (long?)0)));
         Assert.That((cook.Cost, cook.DurationMs), Is.EqualTo(((decimal?)0.01m, 1500L)));
         Assert.That(requests[4].Cost, Is.Null, "an unpriced request stays unknown, never 0");
     }
@@ -94,7 +100,9 @@ public class BenchmarkLedgerTests
 
         var total = BenchmarkLedger.TotalOf(ofRun);
 
-        Assert.That((total.Cost, total.Requests, total.Tokens), Is.EqualTo((report.Cost, report.Requests, report.Input + report.CacheWrite + report.CacheRead + report.Output)));
+        Assert.That((total.Cost, total.Requests, total.Tokens),
+            Is.EqualTo((report.Cost, report.Requests,
+                report.Input + report.CacheWrite + report.CacheRead + report.Output)));
     }
 
     [Test]
@@ -120,7 +128,8 @@ public class BenchmarkLedgerTests
             var read = BenchmarkLedger.Read(directory, september.AddMinutes(-1), september.AddMinutes(3)).ToList();
             var none = BenchmarkLedger.Read(Path.Combine(directory, "missing"), september, september).ToList();
 
-            Assert.That(read.Select(r => r.Turn), Is.EqualTo(new int?[] { 1, 2 }), "September's and October's files, not August's");
+            Assert.That(read.Select(r => r.Turn), Is.EqualTo(new int?[] { 1, 2 }),
+                "September's and October's files, not August's");
             Assert.That(none, Is.Empty, "no ledger yet is no rows, not an error");
         }
         finally
@@ -132,7 +141,11 @@ public class BenchmarkLedgerTests
     [Test]
     public void PromptHashesOf_AreTheDistinctOnesSorted_AndRowsWithNoneAreSkipped()
     {
-        UsageRecord[] rows = [Row(1, "s", 1) with { PromptHash = "b" }, Row(2, "s", 1) with { PromptHash = "a" }, Row(3, "s", 1) with { PromptHash = "b" }, Row(4, "s", 1)];
+        UsageRecord[] rows =
+        [
+            Row(1, "s", 1) with { PromptHash = "b" }, Row(2, "s", 1) with { PromptHash = "a" },
+            Row(3, "s", 1) with { PromptHash = "b" }, Row(4, "s", 1)
+        ];
 
         Assert.That(BenchmarkLedger.PromptHashesOf(rows), Is.EqualTo(new[] { "a", "b" }));
         Assert.That(BenchmarkLedger.PromptHashesOf([Row(1, "s", 1)]), Is.Empty);
@@ -146,7 +159,8 @@ public class BenchmarkLedgerTests
             var store = new InMemoryBenchmarkStore();
             var run = new BenchmarkRun(Run, "cook", 1);
             var sink = new JsonlUsageSink(directory);
-            foreach (string? hash in hashes) sink.Record(Row(0, "sess_puls_bobotie", 1) with { At = DateTimeOffset.UtcNow, PromptHash = hash });
+            foreach (string? hash in hashes)
+                sink.Record(Row(0, "sess_puls_bobotie", 1) with { At = DateTimeOffset.UtcNow, PromptHash = hash });
 
             var recording = new BenchmarkRecorder(store, ledgerDirectory: directory).RecordAsync(run, settings);
             run.Add("@" + JsonSerializer.Serialize(new { @event = "protocol", version = 1 }));
@@ -165,7 +179,8 @@ public class BenchmarkLedgerTests
     {
         var stored = await RecordedWith(new Dictionary<string, string> { ["model"] = "m" }, "b", "a", "b");
 
-        Assert.That(stored.Settings, Is.EquivalentTo(new Dictionary<string, string> { ["model"] = "m", ["prompt_hashes"] = "a,b" }));
+        Assert.That(stored.Settings,
+            Is.EquivalentTo(new Dictionary<string, string> { ["model"] = "m", ["prompt_hashes"] = "a,b" }));
     }
 
     [Test]
@@ -189,13 +204,34 @@ public class BenchmarkLedgerTests
             var now = DateTimeOffset.UtcNow;
             sink.Record(Row(0, "sess_puls_bobotie", 1) with { At = now });
             sink.Record(Row(0, "sess_cook", 1, parent: "sess_puls_bobotie#1") with { At = now });
-            sink.Record(Row(0, "sess_puls_bobotie", 1, purpose: UsagePurpose.SubSession, requests: 1) with { At = now });
+            sink.Record(Row(0, "sess_puls_bobotie", 1, purpose: UsagePurpose.SubSession, requests: 1) with
+            {
+                At = now
+            });
 
             var recording = new BenchmarkRecorder(store, ledgerDirectory: directory).RecordAsync(run);
             string At(object e) => "@" + JsonSerializer.Serialize(e);
             run.Add(At(new { @event = "protocol", version = 1 }));
-            run.Add(At(new { @event = "question", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_puls_bobotie", text = "?" }));
-            run.Add(At(new { @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_puls_bobotie", question = "?" }));
+            run.Add(At(new
+            {
+                @event = "question",
+                mode = SampleMode.Beta,
+                repeat = 1,
+                task = "bobotie",
+                turn = 1,
+                session = "sess_puls_bobotie",
+                text = "?"
+            }));
+            run.Add(At(new
+            {
+                @event = "turn",
+                mode = SampleMode.Beta,
+                repeat = 1,
+                task = "bobotie",
+                turn = 1,
+                session = "sess_puls_bobotie",
+                question = "?"
+            }));
             run.Complete(0);
             await recording;
 

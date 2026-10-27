@@ -32,8 +32,12 @@ public sealed class CookEval : IEval
     private static IReadOnlyList<IGrader> BuildGraders()
     {
         var judge = MealForPeopleGrader.Create(() => JudgeClients.FromEnvironment());
-        return [new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new EstimatesAtShop(), new RecipeImage(), new ServesAsAsked(), judge,
-            HumanReviewGrader.For(judge, MealForPeoplePrompt.Question)];
+        return
+        [
+            new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new EstimatesAtShop(), new RecipeImage(),
+            new ServesAsAsked(), judge,
+            HumanReviewGrader.For(judge, MealForPeoplePrompt.Question)
+        ];
     }
 
     public string Name => PulsEvalName.Cook.Wire();
@@ -41,8 +45,10 @@ public sealed class CookEval : IEval
     public int Version => 9;
     public string Proves => MessageText.Format(PulsEvalMessage.CookProves);
 
-    public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-        ValueTask.FromResult<IReadOnlyList<EvalMode>>(CookSetup.Modes.Select(mode => new EvalMode(mode.Key, PulsVoice.Role, mode.Value)).ToList());
+    public ValueTask<IReadOnlyList<EvalMode>>
+        ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
+        ValueTask.FromResult<IReadOnlyList<EvalMode>>(CookSetup.Modes
+            .Select(mode => new EvalMode(mode.Key, PulsVoice.Role, mode.Value)).ToList());
 
     private static readonly Dataset Loaded = Load();
 

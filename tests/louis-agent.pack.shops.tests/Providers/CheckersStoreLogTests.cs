@@ -10,7 +10,9 @@ namespace LouisAgent.Packs.Shops.Tests.Providers;
 public class CheckersStoreLogTests
 {
     private const string Town = "Malmesbury, Wes-Kaap";
-    private static readonly string Contexts = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.pack.shops.tests", "Providers", "Fixtures", "checkers-store-contexts.json"));
+
+    private static readonly string Contexts = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests",
+        "louis-agent.pack.shops.tests", "Providers", "Fixtures", "checkers-store-contexts.json"));
 
     private static readonly BrowserCookie[] SetByCheckers =
     [
@@ -21,20 +23,27 @@ public class CheckersStoreLogTests
 
     private sealed class FakeBrowser(string? answer = null, Exception? fails = null) : IWebBrowser
     {
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
+            string? script = null,
             string? readySelector = null, CancellationToken cancellationToken = default) =>
-            fails is not null ? throw fails : Task.FromResult(new BrowserVisit(url.AbsoluteUri, "<html></html>", [], answer, SetByCheckers));
+            fails is not null
+                ? throw fails
+                : Task.FromResult(new BrowserVisit(url.AbsoluteUri, "<html></html>", [], answer, SetByCheckers));
     }
 
     private static Task<(double Latitude, double Longitude)?> Centre(string _, CancellationToken __) =>
         Task.FromResult<(double, double)?>((-33.460278, 18.723611));
 
-    private static readonly string[] Private = ["Malmesbury", "Wes-Kaap", "-33.46", "33.4603", "18.72", "6a60644dcd48d5c3791143cf", "655b0c8fb44cda100fd99383"];
+    private static readonly string[] Private =
+    [
+        "Malmesbury", "Wes-Kaap", "-33.46", "33.4603", "18.72", "6a60644dcd48d5c3791143cf", "655b0c8fb44cda100fd99383"
+    ];
 
     private static async Task<string> LogOfAsync(IWebBrowser browser)
     {
         using var stderr = new CapturedStderr();
-        await new CheckersStore(browser, Centre, new StoreSessionCache(), new ShopThrottle(2, TimeSpan.Zero, null, (_, _) => Task.CompletedTask)).ForAsync(Town);
+        await new CheckersStore(browser, Centre, new StoreSessionCache(),
+            new ShopThrottle(2, TimeSpan.Zero, null, (_, _) => Task.CompletedTask)).ForAsync(Town);
         return stderr.Text;
     }
 
@@ -49,7 +58,8 @@ public class CheckersStoreLogTests
         string log = await LogOfAsync(new FakeBrowser(Contexts));
 
         AssertNoneOfThePrivateValues(log);
-        Assert.That(log, Does.Contain("Checkers serves #").And.Contain($"({Town.Length})"), "the shop and what happened stay; the town is a hash and its length");
+        Assert.That(log, Does.Contain("Checkers serves #").And.Contain($"({Town.Length})"),
+            "the shop and what happened stay; the town is a hash and its length");
         Assert.That(log, Does.Contain("(its centre #").And.Contain("from stores #"));
     }
 
@@ -65,10 +75,12 @@ public class CheckersStoreLogTests
     [Test]
     public async Task ALookupThatFails_LogsTheTownAndItsReasonAsHashes()
     {
-        string log = await LogOfAsync(new FakeBrowser(fails: new WebBrowserException($"The page for {Town} did not load.")));
+        string log =
+            await LogOfAsync(new FakeBrowser(fails: new WebBrowserException($"The page for {Town} did not load.")));
 
         AssertNoneOfThePrivateValues(log);
-        Assert.That(log, Does.Contain("Checkers couldn't find the store for #").And.Contain("the default store answers"));
+        Assert.That(log,
+            Does.Contain("Checkers couldn't find the store for #").And.Contain("the default store answers"));
     }
 
     [Test]

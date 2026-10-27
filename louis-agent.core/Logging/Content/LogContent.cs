@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Logging.Content;
 
 using System.Security.Cryptography;
 using System.Text;
@@ -7,6 +6,7 @@ using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Choices;
 
+namespace LouisAgent.Core.Logging.Content;
 /// <summary>
 /// What a log line shows of a value it was given (F18 step 4f; GOAL skill 17, with skill 15's practice). A user's words reach a log
 /// through any argument, because the model copies them into a search query or a sub-session's task, so no list of "personal" fields
@@ -30,7 +30,11 @@ public static class LogContent
     {
         if (!SettingChoice.TryParse(setting, out LogContentMode? mode))
             throw new ArgumentException(MessageText.Format(LoggingErrorMessage.UnknownLogContent,
-                new { Value = setting?.Trim(), Supported = string.Join(" or ", SettingChoice.Names<LogContentMode>()) }));
+                new
+                {
+                    Value = setting?.Trim(),
+                    Supported = string.Join(" or ", SettingChoice.Names<LogContentMode>())
+                }));
         return mode ?? LogContentMode.Hashed;
     }
 

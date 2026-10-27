@@ -10,7 +10,8 @@ namespace LouisAgent.Core.Tests.Logging.Content;
 [NonParallelizable]
 public class LogContentTests
 {
-    private static readonly Dictionary<string, object?> Args = new() { ["area"] = "Malmesbury", ["limit"] = 5, ["near"] = new { lat = -33.46, lon = 18.73 }, ["note"] = null };
+    private static readonly Dictionary<string, object?> Args = new()
+    { ["area"] = "Malmesbury", ["limit"] = 5, ["near"] = new { lat = -33.46, lon = 18.73 }, ["note"] = null };
 
     [TearDown]
     public void TearDown() => AgentLogging.Configure(null);
@@ -23,7 +24,8 @@ public class LogContentTests
         Assert.That(LogContent.Of("Malmesbury"), Is.EqualTo(LogContent.Of("Malmesbury")));
         Assert.That(LogContent.Of("Malmesbury"), Is.Not.EqualTo(LogContent.Of("Paarl")));
         byte[] one = new byte[32], other = [.. Enumerable.Repeat((byte)7, 32)];
-        Assert.That(LogContent.Hash("Malmesbury", one), Is.Not.EqualTo(LogContent.Hash("Malmesbury", other)), "a plain SHA-256 would be the same everywhere");
+        Assert.That(LogContent.Hash("Malmesbury", one), Is.Not.EqualTo(LogContent.Hash("Malmesbury", other)),
+            "a plain SHA-256 would be the same everywhere");
     }
 
     [Test]
@@ -34,7 +36,8 @@ public class LogContentTests
         Assert.That(LogContent.Of("Malmesbury"), Does.Match(@"^#[0-9a-f]{12} \(10\)$"));
         Assert.That(LogContent.Of(""), Does.Match(@"^#[0-9a-f]{12} \(0\)$"));
         Assert.That(LogContent.Of(null), Is.EqualTo("null"));
-        Assert.That(LogContent.Of("Malmesbury", cut: 3), Does.Match(@"^#[0-9a-f]{12} \(10\)$"), "the cut is for the full text; the hash is of the whole value");
+        Assert.That(LogContent.Of("Malmesbury", cut: 3), Does.Match(@"^#[0-9a-f]{12} \(10\)$"),
+            "the cut is for the full text; the hash is of the whole value");
     }
 
     [Test]
@@ -63,7 +66,8 @@ public class LogContentTests
         AgentLogging.Configure(null, LogContentMode.Full);
 
         Assert.That(LogContent.OfArguments(Args), Is.EqualTo(JsonSerializer.Serialize(Args)));
-        Assert.That(LogContent.OfArguments(new Dictionary<string, object?> { ["to"] = "Louis" }), Is.EqualTo("{\"to\":\"Louis\"}"));
+        Assert.That(LogContent.OfArguments(new Dictionary<string, object?> { ["to"] = "Louis" }),
+            Is.EqualTo("{\"to\":\"Louis\"}"));
         Assert.That(LogContent.OfArguments(null), Is.EqualTo("null"));
     }
 
@@ -74,7 +78,9 @@ public class LogContentTests
 
         string text = LogContent.OfArguments(Args);
 
-        Assert.That(text, Does.Match(@"^area=#[0-9a-f]{12} \(10\), limit=#[0-9a-f]{12} \(1\), near=#[0-9a-f]{12} \(\d+\), note=null$"));
+        Assert.That(text,
+            Does.Match(
+                @"^area=#[0-9a-f]{12} \(10\), limit=#[0-9a-f]{12} \(1\), near=#[0-9a-f]{12} \(\d+\), note=null$"));
         Assert.That(text, Does.Not.Contain("Malmesbury").And.Not.Contain("33.46").And.Not.Contain("18.73"));
         Assert.That(LogContent.OfArguments(new Dictionary<string, object?>()), Is.EqualTo("{}"));
         Assert.That(LogContent.OfArguments(null), Is.EqualTo("null"));
@@ -85,9 +91,12 @@ public class LogContentTests
     {
         AgentLogging.Configure(null, LogContentMode.Hashed);
 
-        string text = LogContent.OfArguments(new Dictionary<string, object?> { ["area"] = "Malmesbury", ["limit"] = 5, ["near"] = new { lat = 1 } });
+        string text = LogContent.OfArguments(new Dictionary<string, object?>
+        { ["area"] = "Malmesbury", ["limit"] = 5, ["near"] = new { lat = 1 } });
 
-        Assert.That(text, Does.Contain($"area={LogContent.Of("Malmesbury")}").And.Contain($"limit={LogContent.Of("5")}").And.Contain($"near={LogContent.Of("{\"lat\":1}")}"));
+        Assert.That(text,
+            Does.Contain($"area={LogContent.Of("Malmesbury")}").And.Contain($"limit={LogContent.Of("5")}").And
+                .Contain($"near={LogContent.Of("{\"lat\":1}")}"));
     }
 
     [Test]
@@ -97,14 +106,18 @@ public class LogContentTests
         // differently from the same town logged by the shops as a plain string, so one town had two hashes in one log. The live check of
         // 4f found it (#138099225789 (12)): a string element hashes as its text, so the tool call and the shop's lines can be followed.
         AgentLogging.Configure(null, LogContentMode.Hashed);
-        using var document = JsonDocument.Parse("""{"area":"Malmesbury","q":"café","limit":5,"near":{"lat":1},"on":true,"none":null}""");
+        using var document =
+            JsonDocument.Parse("""{"area":"Malmesbury","q":"café","limit":5,"near":{"lat":1},"on":true,"none":null}""");
         var arguments = document.RootElement.EnumerateObject().ToDictionary(p => p.Name, p => (object?)p.Value.Clone());
 
         string text = LogContent.OfArguments(arguments);
 
         Assert.That(text, Does.Contain($"area={LogContent.Of("Malmesbury")}").And.Contain("(10)"));
-        Assert.That(text, Does.Contain($"q={LogContent.Of("café")}"), "the text, unescaped, not the serializer's \\u00e9");
-        Assert.That(text, Does.Contain($"limit={LogContent.Of("5")}").And.Contain($"near={LogContent.Of("{\"lat\":1}")}").And.Contain($"on={LogContent.Of("true")}"),
+        Assert.That(text, Does.Contain($"q={LogContent.Of("café")}"),
+            "the text, unescaped, not the serializer's \\u00e9");
+        Assert.That(text,
+            Does.Contain($"limit={LogContent.Of("5")}").And.Contain($"near={LogContent.Of("{\"lat\":1}")}").And
+                .Contain($"on={LogContent.Of("true")}"),
             "anything else hashes as its JSON, as before");
         Assert.That(text, Does.Contain("none=null"), "a JSON null logs as null, as a missing argument does");
     }
@@ -134,7 +147,8 @@ public class LogContentTests
     {
         var error = Assert.Throws<ArgumentException>(() => LogContent.ModeOf(setting))!;
 
-        Assert.That(error.Message, Does.Contain($"'{setting}'").And.Contain("LOG_CONTENT").And.Contain("hashed or full"));
+        Assert.That(error.Message,
+            Does.Contain($"'{setting}'").And.Contain("LOG_CONTENT").And.Contain("hashed or full"));
     }
 
     [Test]

@@ -11,19 +11,25 @@ public class BlindReviewTests
 {
     private static readonly GraderRow[] Order =
     [
-        new("no-error", 1, "FixedRule"), new("meal-for-people", 1, "Model"), new("meal-for-people.human", 1, "Human", "Is this a meal?"), new("another-judge", 1, "Model"),
+        new("no-error", 1, "FixedRule"), new("meal-for-people", 1, "Model"),
+        new("meal-for-people.human", 1, "Human", "Is this a meal?"), new("another-judge", 1, "Model"),
     ];
 
-    private static GradeRow Grade(string grader, GradeOutcome outcome, string reason = "because") => new(grader, 1, outcome == GradeOutcome.Pass ? 1 : 0, outcome, reason);
+    private static GradeRow Grade(string grader, GradeOutcome outcome, string reason = "because") =>
+        new(grader, 1, outcome == GradeOutcome.Pass ? 1 : 0, outcome, reason);
 
     private static HumanGradeRow Human(string reviewer, string verdict = "pass") =>
         new("meal-for-people.human", "meal-for-people", verdict, "", reviewer, DateTimeOffset.UnixEpoch);
 
     private static ConversationGrades Grades(params HumanGradeRow[] humans) =>
-        new([Grade("no-error", GradeOutcome.Pass), Grade("meal-for-people", GradeOutcome.Pass, "feeds four"), Grade("another-judge", GradeOutcome.Fail),
-             new("meal-for-people.human", 1, 0, GradeOutcome.Pending, "waits")], GradeOutcome.Pass, humans);
+        new([
+            Grade("no-error", GradeOutcome.Pass), Grade("meal-for-people", GradeOutcome.Pass, "feeds four"),
+            Grade("another-judge", GradeOutcome.Fail),
+            new("meal-for-people.human", 1, 0, GradeOutcome.Pending, "waits")
+        ], GradeOutcome.Pass, humans);
 
-    private static IReadOnlySet<string> Hidden(ConversationGrades grades, string? reviewer, bool gradedThisSession = false) =>
+    private static IReadOnlySet<string> Hidden(ConversationGrades grades, string? reviewer,
+        bool gradedThisSession = false) =>
         BlindReview.HiddenJudges(grades, Order, reviewer, _ => gradedThisSession);
 
     [Test]
@@ -64,7 +70,8 @@ public class BlindReviewTests
         var noReview = Order.Where(g => g.Kind != "Human").ToArray();
 
         Assert.That(BlindReview.HiddenJudges(Grades(), noReview, null, _ => false), Is.Empty);
-        Assert.That(BlindReview.HiddenJudges(Grades(), null, null, _ => false), Is.Empty, "a run from before the graders were recorded");
+        Assert.That(BlindReview.HiddenJudges(Grades(), null, null, _ => false), Is.Empty,
+            "a run from before the graders were recorded");
     }
 
     [Test]
@@ -72,11 +79,14 @@ public class BlindReviewTests
     {
         var chips = GradeChipList.Of(Grades(), Order, Hidden(Grades(), "Louis"));
 
-        Assert.That(chips.Single(c => c.Text == "meal-for-people"), Is.EqualTo(new GradeChip("meal-for-people", "", null)));
+        Assert.That(chips.Single(c => c.Text == "meal-for-people"),
+            Is.EqualTo(new GradeChip("meal-for-people", "", null)));
         Assert.That(chips.Single(c => c.Text == "no-error").Kind, Is.EqualTo("ok"), "a fixed rule is never hidden");
         Assert.That(chips.Single(c => c.Text == "another-judge").Kind, Is.EqualTo("bad"), "nor a judge nobody reviews");
-        Assert.That(chips.Single(c => c.Text.StartsWith("meal-for-people.human")).Text, Does.Contain("waiting for review"));
-        Assert.That(string.Join(" ", chips.Select(c => c.Title)), Does.Not.Contain("feeds four"), "the judge's reason is nowhere in the chips");
+        Assert.That(chips.Single(c => c.Text.StartsWith("meal-for-people.human")).Text,
+            Does.Contain("waiting for review"));
+        Assert.That(string.Join(" ", chips.Select(c => c.Title)), Does.Not.Contain("feeds four"),
+            "the judge's reason is nowhere in the chips");
     }
 
     [Test]
@@ -84,7 +94,8 @@ public class BlindReviewTests
     {
         var chips = GradeChipList.Of(Grades(Human("Louis")), Order, Hidden(Grades(Human("Louis")), "Louis"));
 
-        Assert.That(chips.Single(c => c.Text == "meal-for-people"), Is.EqualTo(new GradeChip("meal-for-people", "ok", "feeds four")));
+        Assert.That(chips.Single(c => c.Text == "meal-for-people"),
+            Is.EqualTo(new GradeChip("meal-for-people", "ok", "feeds four")));
     }
 
     [TestCase("pass", GradeOutcome.Pass, ReviewVerdictKind.Agreed)]
@@ -94,7 +105,8 @@ public class BlindReviewTests
     [TestCase("unsure", GradeOutcome.Pass, ReviewVerdictKind.YouWereUnsure)]
     [TestCase("pass", GradeOutcome.Unknown, ReviewVerdictKind.JudgeCouldNotTell)]
     [TestCase("fail", GradeOutcome.Pending, ReviewVerdictKind.JudgeCouldNotTell)]
-    public void WhatTheReviewerSees_AfterGrading_IsWhetherTheyAgreedWithTheJudge(string person, GradeOutcome judge, ReviewVerdictKind expected)
+    public void WhatTheReviewerSees_AfterGrading_IsWhetherTheyAgreedWithTheJudge(string person, GradeOutcome judge,
+        ReviewVerdictKind expected)
     {
         Assert.That(BlindReview.Compare(person, judge), Is.EqualTo(expected));
     }

@@ -15,6 +15,7 @@ public static class SampleRole
     public const string Eta = "role-eta";
 
     /// <summary>A test's JSON or text with <c>&lt;RoleAlpha&gt;</c>... where it names a role: filled with the sample names, so the input and what the test expects are one constant.</summary>
-    public static string Fill(string text) => text.Replace("<RoleAlpha>", Alpha).Replace("<RoleBeta>", Beta).Replace("<RoleGamma>", Gamma).Replace("<RoleDelta>", Delta)
+    public static string Fill(string text) => text.Replace("<RoleAlpha>", Alpha).Replace("<RoleBeta>", Beta)
+        .Replace("<RoleGamma>", Gamma).Replace("<RoleDelta>", Delta)
         .Replace("<RoleEpsilon>", Epsilon).Replace("<RoleZeta>", Zeta).Replace("<RoleEta>", Eta);
 }

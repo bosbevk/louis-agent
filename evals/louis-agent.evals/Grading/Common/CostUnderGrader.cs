@@ -18,22 +18,30 @@ public sealed class CostUnderGrader(decimal limitUsd, bool required = true) : IG
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
-        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
+        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown)
+            return ValueTask.FromResult(unknown);
         decimal total = 0;
         foreach (var turn in trial.Transcript.Turns)
         {
             if (!EngineEvents.HasUsage(turn))
-                return ValueTask.FromResult(Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.NoUsage, new { Turn = turn.Turn })));
-            if (EngineEvents.CurrencyOf(turn) is { } currency && !string.Equals(currency, "USD", StringComparison.OrdinalIgnoreCase))
                 return ValueTask.FromResult(Verdict.Unknown(Name, Version,
-                    MessageText.Format(CommonGradeMessage.OtherCurrency, new { Turn = turn.Turn, Currency = currency })));
+                    MessageText.Format(CommonGradeMessage.NoUsage, new { Turn = turn.Turn })));
+            if (EngineEvents.CurrencyOf(turn) is { } currency &&
+                !string.Equals(currency, "USD", StringComparison.OrdinalIgnoreCase))
+                return ValueTask.FromResult(Verdict.Unknown(Name, Version,
+                    MessageText.Format(CommonGradeMessage.OtherCurrency,
+                        new { Turn = turn.Turn, Currency = currency })));
             var cost = EngineEvents.CostOf(turn);
             if (cost is null)
-                return ValueTask.FromResult(Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.Unpriced, new { Turn = turn.Turn })));
+                return ValueTask.FromResult(Verdict.Unknown(Name, Version,
+                    MessageText.Format(CommonGradeMessage.Unpriced, new { Turn = turn.Turn })));
             total += cost.Value;
         }
+
         return ValueTask.FromResult(total <= limitUsd
-            ? Verdict.Pass(Name, Version, MessageText.Format(CommonGradeMessage.CostPass, new { Cost = total, Limit = limitUsd }))
-            : Verdict.Fail(Name, Version, MessageText.Format(CommonGradeMessage.CostOver, new { Cost = total, Limit = limitUsd })));
+            ? Verdict.Pass(Name, Version,
+                MessageText.Format(CommonGradeMessage.CostPass, new { Cost = total, Limit = limitUsd }))
+            : Verdict.Fail(Name, Version,
+                MessageText.Format(CommonGradeMessage.CostOver, new { Cost = total, Limit = limitUsd })));
     }
 }

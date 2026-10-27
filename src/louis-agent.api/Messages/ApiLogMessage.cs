@@ -1,11 +1,12 @@
-namespace LouisAgent.Api.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Api.Messages;
 /// <summary>The API's log lines; written to stderr.</summary>
 public enum ApiLogMessage
 {
-    [Description("AGENT_AUTH=off: no AGENT_API_KEY, so the API accepts unauthenticated requests, on purpose. Only expose it on localhost.")]
+    [Description(
+        "AGENT_AUTH=off: no AGENT_API_KEY, so the API accepts unauthenticated requests, on purpose. Only expose it on localhost.")]
     NoApiKey,
 
     [Description("Turn failed in {Session}")]

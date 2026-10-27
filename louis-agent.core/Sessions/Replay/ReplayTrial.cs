@@ -10,7 +10,8 @@ public sealed record ReplayTrial(WebReplayMode Mode, string Of)
     {
         null or { Web: WebReplayMode.Off } => null,
         { Of: { } of } replay => new ReplayTrial(replay.Web, of),
-        { } replay => throw new InvalidOperationException(MessageText.Format(SessionErrorMessage.NeedsTrial, new { Mode = replay.Web })),
+        { } replay => throw new InvalidOperationException(MessageText.Format(SessionErrorMessage.NeedsTrial,
+            new { Mode = replay.Web })),
     };
 
     public bool Replaying => Mode == WebReplayMode.Replay;

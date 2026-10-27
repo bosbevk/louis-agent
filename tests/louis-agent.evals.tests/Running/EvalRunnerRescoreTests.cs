@@ -20,7 +20,10 @@ public class EvalRunnerRescoreTests
     private static readonly DateTimeOffset At = DateTimeOffset.FromUnixTimeMilliseconds(1700000000123);
 
     private static readonly IReadOnlyList<SessionEvent> Answer =
-        [SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))];
+    [
+        SessionEvent.From("content_block_delta",
+            Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))
+    ];
 
     /// <summary>Runs <paramref name="eval"/> against a canned client and returns the lines it wrote: the stored run a re-score reads.</summary>
     private static async Task<string[]> StoredRunAsync(RescoreEval eval, int repeats = 1, ISessionClient? client = null)
@@ -37,7 +40,8 @@ public class EvalRunnerRescoreTests
     private static async Task<string[]> RescoreAsync(RescoreEval eval, string[] stored)
     {
         var sink = new StringWriter();
-        var runner = new EvalRunner(new NoCallsClient(), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At), NullLogger<EvalRunner>.Instance);
+        var runner = new EvalRunner(new NoCallsClient(), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At), NullLogger<EvalRunner>.Instance);
 
         await runner.RescoreAsync(eval, "run_new", "run_old", stored, CancellationToken.None);
         return Lines(sink);
@@ -50,9 +54,11 @@ public class EvalRunnerRescoreTests
 
         string[] rescored = await RescoreAsync(new RescoreEval(), stored);
 
-        Assert.That(Events(rescored, "conversation").Select(Grades), Is.EqualTo(Events(stored, "conversation").Select(Grades)));
+        Assert.That(Events(rescored, "conversation").Select(Grades),
+            Is.EqualTo(Events(stored, "conversation").Select(Grades)));
         Assert.That(Events(rescored, "mode_done").Select(Rates), Is.EqualTo(Events(stored, "mode_done").Select(Rates)));
-        Assert.That(Events(rescored, "conversation").Select(Outcome), Is.EqualTo(Events(stored, "conversation").Select(Outcome)));
+        Assert.That(Events(rescored, "conversation").Select(Outcome),
+            Is.EqualTo(Events(stored, "conversation").Select(Outcome)));
     }
 
     [Test]
@@ -66,7 +72,8 @@ public class EvalRunnerRescoreTests
         var grade = Events(rescored, "conversation").First().GetProperty("grades")[0];
         Assert.That(grade.GetProperty("version").GetInt32(), Is.EqualTo(2));
         Assert.That(grade.GetProperty("outcome").GetString(), Is.EqualTo("Fail"), "today's rule, the old transcript");
-        Assert.That(Events(stored, "conversation").First().GetProperty("grades")[0].GetProperty("outcome").GetString(), Is.EqualTo("Pass"));
+        Assert.That(Events(stored, "conversation").First().GetProperty("grades")[0].GetProperty("outcome").GetString(),
+            Is.EqualTo("Pass"));
         Assert.That(stored, Is.EqualTo(before));
     }
 
@@ -75,7 +82,8 @@ public class EvalRunnerRescoreTests
     {
         string[] stored = await StoredRunAsync(new RescoreEval());
         var client = new NoCallsClient();
-        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At), NullLogger<EvalRunner>.Instance);
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)),
+            new FixedClock(At), NullLogger<EvalRunner>.Instance);
 
         await runner.RescoreAsync(new RescoreEval(), "run_new", "run_old", stored, CancellationToken.None);
 
@@ -86,7 +94,8 @@ public class EvalRunnerRescoreTests
     public async Task TheBeginLineNamesTheRunItRescored_AndTheEvalAndDatasetAsTheyAreNow()
     {
         string[] stored = await StoredRunAsync(new RescoreEval());
-        var today = new RescoreEval(version: 4, graderVersion: 2, dataset: new DatasetManifest("cook", 7, "cooking", "abc123", []));
+        var today = new RescoreEval(version: 4, graderVersion: 2,
+            dataset: new DatasetManifest("cook", 7, "cooking", "abc123", []));
 
         string[] rescored = await RescoreAsync(today, stored);
 
@@ -96,8 +105,10 @@ public class EvalRunnerRescoreTests
         Assert.That(begin.GetProperty("eval_version").GetInt32(), Is.EqualTo(4));
         Assert.That(begin.GetProperty("graders")[0].GetProperty("version").GetInt32(), Is.EqualTo(2));
         var dataset = begin.GetProperty("dataset");
-        Assert.That((dataset.GetProperty("version").GetInt32(), dataset.GetProperty("hash").GetString()), Is.EqualTo((7, "abc123")));
-        Assert.That(Events(stored, "protocol").First().TryGetProperty("rescore_of", out _), Is.False, "a run that is no re-score names nothing");
+        Assert.That((dataset.GetProperty("version").GetInt32(), dataset.GetProperty("hash").GetString()),
+            Is.EqualTo((7, "abc123")));
+        Assert.That(Events(stored, "protocol").First().TryGetProperty("rescore_of", out _), Is.False,
+            "a run that is no re-score names nothing");
     }
 
     [Test]
@@ -108,7 +119,8 @@ public class EvalRunnerRescoreTests
         string[] rescored = await RescoreAsync(new RescoreEval(), stored);
 
         foreach (string kind in new[] { "mode", "question", "sse", "turn" })
-            Assert.That(Events(rescored, kind).Select(e => e.GetRawText()), Is.EqualTo(Events(stored, kind).Select(e => e.GetRawText())), kind);
+            Assert.That(Events(rescored, kind).Select(e => e.GetRawText()),
+                Is.EqualTo(Events(stored, kind).Select(e => e.GetRawText())), kind);
         Assert.That(Events(rescored, "mode_done"), Has.Count.EqualTo(2), "the repeats come from the stored run");
     }
 
@@ -126,17 +138,21 @@ public class EvalRunnerRescoreTests
         Assert.That(grade.GetProperty("outcome").GetString(), Is.EqualTo("Unknown"));
         Assert.That(grade.GetProperty("reason").GetString(), Does.Contain("koeksister"));
         Assert.That(gone.GetProperty("outcome").GetString(), Is.EqualTo("Unknown"));
-        Assert.That(conversations.Single(c => c.GetProperty("task").GetString() == "pannekoek").GetProperty("outcome").GetString(), Is.EqualTo("Pass"));
+        Assert.That(
+            conversations.Single(c => c.GetProperty("task").GetString() == "pannekoek").GetProperty("outcome")
+                .GetString(), Is.EqualTo("Pass"));
     }
 
     [Test]
     public async Task AnInfrastructureFailedTrial_StaysOne_LeftOutOfKAndCounted()
     {
-        string[] stored = await StoredRunAsync(new RescoreEval(scenarios: ["pannekoek"]), client: new TimingOutClient());
+        string[] stored =
+            await StoredRunAsync(new RescoreEval(scenarios: ["pannekoek"]), client: new TimingOutClient());
 
         string[] rescored = await RescoreAsync(new RescoreEval(scenarios: ["pannekoek"]), stored);
 
-        Assert.That(Events(rescored, "conversation").Single().GetProperty("outcome").GetString(), Is.EqualTo("Infrastructure"));
+        Assert.That(Events(rescored, "conversation").Single().GetProperty("outcome").GetString(),
+            Is.EqualTo("Infrastructure"));
         var done = Events(rescored, "mode_done").Single();
         Assert.That(done.GetProperty("infrastructure").GetInt32(), Is.EqualTo(1));
         Assert.That(done.TryGetProperty("pass_at_k", out _), Is.False, "no counted trial, so no rate: never 0");
@@ -146,8 +162,10 @@ public class EvalRunnerRescoreTests
     public async Task ATrialsRetryCount_CarriesOverFromTheStoredRun()
     {
         // The re-score runs no trial, so it retries none; the count the stored run recorded is part of what that run was.
-        string[] stored = (await StoredRunAsync(new RescoreEval())).Select(line => line.Contains("\"event\":\"mode_done\"") ? line.Replace("\"retried\":0", "\"retried\":1") : line).ToArray();
-        Assume.That(stored.Count(line => line.Contains("\"retried\":1")), Is.EqualTo(1), "the stored run says it retried one trial");
+        string[] stored = (await StoredRunAsync(new RescoreEval())).Select(line =>
+            line.Contains("\"event\":\"mode_done\"") ? line.Replace("\"retried\":0", "\"retried\":1") : line).ToArray();
+        Assume.That(stored.Count(line => line.Contains("\"retried\":1")), Is.EqualTo(1),
+            "the stored run says it retried one trial");
 
         string[] rescored = await RescoreAsync(new RescoreEval(), stored);
 
@@ -158,7 +176,10 @@ public class EvalRunnerRescoreTests
     public async Task AConversationLineWithNoSeconds_IsRescoredAsZeroSeconds_NotACrash()
     {
         string[] stored = (await StoredRunAsync(new RescoreEval(scenarios: ["pannekoek"])))
-            .Select(line => line.Contains("\"event\":\"conversation\"") ? System.Text.RegularExpressions.Regex.Replace(line, ",\"seconds\":[0-9.]+", "") : line).ToArray();
+            .Select(line =>
+                line.Contains("\"event\":\"conversation\"")
+                    ? System.Text.RegularExpressions.Regex.Replace(line, ",\"seconds\":[0-9.]+", "")
+                    : line).ToArray();
         Assume.That(stored.Single(line => line.Contains("\"event\":\"conversation\"")), Does.Not.Contain("seconds"));
 
         string[] rescored = await RescoreAsync(new RescoreEval(scenarios: ["pannekoek"]), stored);
@@ -166,7 +187,8 @@ public class EvalRunnerRescoreTests
         Assert.That(Events(rescored, "conversation").Single().GetProperty("seconds").GetDouble(), Is.Zero);
     }
 
-    private static string[] Lines(StringWriter sink) => sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+    private static string[] Lines(StringWriter sink) =>
+        sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
     private static List<JsonElement> Events(IEnumerable<string> lines, string kind) =>
         lines.Select(line => JsonDocument.Parse(line.TrimStart('@')).RootElement.Clone())
@@ -177,7 +199,8 @@ public class EvalRunnerRescoreTests
     private static string Outcome(JsonElement conversation) => conversation.GetProperty("outcome").GetString()!;
 
     private static (double?, double?) Rates(JsonElement done) =>
-        (done.TryGetProperty("pass_at_k", out var at) ? at.GetDouble() : null, done.TryGetProperty("pass_hat_k", out var hat) ? hat.GetDouble() : null);
+        (done.TryGetProperty("pass_at_k", out var at) ? at.GetDouble() : null,
+            done.TryGetProperty("pass_hat_k", out var hat) ? hat.GetDouble() : null);
 
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
@@ -190,7 +213,8 @@ public class EvalRunnerRescoreTests
 
         public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) => throw Called();
 
-        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, CancellationToken cancellationToken) => throw Called();
+        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+            CancellationToken cancellationToken) => throw Called();
 
         public Task CloseAsync(string session, CancellationToken cancellationToken) => throw Called();
 
@@ -204,11 +228,14 @@ public class EvalRunnerRescoreTests
     /// <summary>A client whose every turn times out, as a dead connection does: the stored run has an infrastructure failure to keep.</summary>
     private sealed class TimingOutClient : ISessionClient
     {
-        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) => Task.FromResult<IReadOnlyList<string>>([]);
+        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<string>>([]);
 
-        public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) => Task.FromResult("sess_timeout");
+        public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) =>
+            Task.FromResult("sess_timeout");
 
-        public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+            [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
             throw new TimeoutException("the API did not answer");
@@ -231,13 +258,19 @@ public class EvalRunnerRescoreTests
 
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
         {
-            bool held = trial.Transcript.Turns.All(turn => EngineEvents.AnswerOf(turn)?.Contains(wanted, StringComparison.Ordinal) == true);
-            return ValueTask.FromResult(new Grade(Name, Version, held ? 1 : 0, held ? GradeOutcome.Pass : GradeOutcome.Fail, held ? "held" : "missing"));
+            bool held = trial.Transcript.Turns.All(turn =>
+                EngineEvents.AnswerOf(turn)?.Contains(wanted, StringComparison.Ordinal) == true);
+            return ValueTask.FromResult(new Grade(Name, Version, held ? 1 : 0,
+                held ? GradeOutcome.Pass : GradeOutcome.Fail, held ? "held" : "missing"));
         }
     }
 
     /// <summary>An eval with two scenarios (or the ones given), one mode and one grader, the shape of the eval as it was or as it is today.</summary>
-    private sealed class RescoreEval(int version = 1, int graderVersion = 1, string wanted = "Hallo", string[]? scenarios = null,
+    private sealed class RescoreEval(
+        int version = 1,
+        int graderVersion = 1,
+        string wanted = "Hallo",
+        string[]? scenarios = null,
         DatasetManifest? dataset = null) : IEval
     {
         public string Name => "rescore-cook";
@@ -245,15 +278,20 @@ public class EvalRunnerRescoreTests
         public string Proves => "A canned trial, to re-score.";
         public DatasetManifest? Dataset => dataset;
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([
+                new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])
+            ]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = (scenarios ?? ["pannekoek", "koeksister"])
-            .Select(id => new EvalScenario(id, new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)).ToList();
+            .Select(id => new EvalScenario(id, new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default,
+                [], DatasetSplit.Dev)).ToList();
 
         public IReadOnlyList<IGrader> Graders { get; } = [new WantsText(graderVersion, wanted)];
 
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new Scores(trial.Transcript.Turns.Count);
+        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
+            new Scores(trial.Transcript.Turns.Count);
 
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
     }

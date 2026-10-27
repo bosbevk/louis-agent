@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.Shell;
 
 using System.ComponentModel;
 using System.Text;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shell.Messages;
 
+namespace LouisAgent.Core.Tools.Shell;
 /// <summary>
 /// Python toolset: run inline code or workspace scripts and manage packages in a dedicated virtual environment,
 /// so installs never touch the system Python or the repository.
@@ -40,22 +40,29 @@ public sealed partial class PythonTools
     private static string DefaultVenvDirectory() =>
         Environment.GetEnvironmentVariable("PYTHON_VENV") is { Length: > 0 } configured
             ? configured
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "louis-agent", "python-venv");
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "louis-agent",
+                "python-venv");
 
     [Description("Runs Python code, either inline via 'code' or an existing workspace-relative '.py' file via " +
-        "'scriptPath' — pass exactly one of the two. Uses the agent's own virtual environment once " +
-        "PythonInstallPackages has created one (so installed packages are isolated from the system Python and never " +
-        "touch the repository), otherwise the first Python 3 interpreter found on the machine; it never uses a " +
-        "Windows Store Python stub. Output is capped at 12,000 characters, and the process is killed after " +
-        "timeoutSeconds (default 60, max 600) with its exit code and any traceback included in the result. Use this " +
-        "for data processing, calculations, or anything needing a Python package; for simple file reads/writes " +
-        "prefer the WorkspaceTools file tools, and for shell commands prefer BashRun.")]
+                 "'scriptPath' — pass exactly one of the two. Uses the agent's own virtual environment once " +
+                 "PythonInstallPackages has created one (so installed packages are isolated from the system Python and never " +
+                 "touch the repository), otherwise the first Python 3 interpreter found on the machine; it never uses a " +
+                 "Windows Store Python stub. Output is capped at 12,000 characters, and the process is killed after " +
+                 "timeoutSeconds (default 60, max 600) with its exit code and any traceback included in the result. Use this " +
+                 "for data processing, calculations, or anything needing a Python package; for simple file reads/writes " +
+                 "prefer the WorkspaceTools file tools, and for shell commands prefer BashRun.")]
     public string PythonRun(
-        [Description("Inline Python source to run (leave empty when using scriptPath)")] string code = "",
-        [Description("Workspace-relative path to a .py file to run (leave empty when using code)")] string scriptPath = "",
-        [Description("Arguments for the script (sys.argv[1:]), space separated; wrap an argument in double quotes to keep spaces")] string arguments = "",
-        [Description("Text sent to the program's standard input (stdin is closed afterwards)")] string standardInput = "",
-        [Description("Maximum seconds to run before the process is killed (default 60, max 600)")] int timeoutSeconds = 60)
+        [Description("Inline Python source to run (leave empty when using scriptPath)")]
+        string code = "",
+        [Description("Workspace-relative path to a .py file to run (leave empty when using code)")]
+        string scriptPath = "",
+        [Description(
+            "Arguments for the script (sys.argv[1:]), space separated; wrap an argument in double quotes to keep spaces")]
+        string arguments = "",
+        [Description("Text sent to the program's standard input (stdin is closed afterwards)")]
+        string standardInput = "",
+        [Description("Maximum seconds to run before the process is killed (default 60, max 600)")]
+        int timeoutSeconds = 60)
     {
         bool hasCode = !string.IsNullOrWhiteSpace(code);
         bool hasScript = !string.IsNullOrWhiteSpace(scriptPath);
@@ -65,7 +72,8 @@ public sealed partial class PythonTools
         if (hasScript)
         {
             if (!TryResolveWorkspacePath(scriptPath, out script, out var error)) return error;
-            if (!File.Exists(script)) return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
+            if (!File.Exists(script))
+                return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
         var result = RunScript(hasCode ? code : null, script, DotNetTools.SplitArguments(arguments), standardInput,
@@ -111,11 +119,13 @@ public sealed partial class PythonTools
 
         var env = new Dictionary<string, string>(PythonEnvironment);
         if (environment is not null)
-            foreach (var (key, value) in environment) env[key] = value;
+            foreach (var (key, value) in environment)
+                env[key] = value;
 
         try
         {
-            var result = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, tempFile ?? scriptFile!, .. arguments],
+            var result = ProcessRunner.Run(python.FileName,
+                [.. python.PrefixArgs, tempFile ?? scriptFile!, .. arguments],
                 WorkingDirectory, timeout, standardInput, env);
             // Inline snippets run from a temp file; show a stable name in tracebacks instead.
             return tempFile is null ? result : result with { Output = result.Output.Replace(tempFile, "<snippet>") };
@@ -126,7 +136,8 @@ public sealed partial class PythonTools
         }
     }
 
-    [Description("Installs one or more packages with pip into the agent's dedicated virtual environment, creating that " +
+    [Description(
+        "Installs one or more packages with pip into the agent's dedicated virtual environment, creating that " +
         "environment on first use so installs never affect the system Python or any other project. Takes " +
         "space-separated pip requirement specifiers only (e.g. 'requests' or 'numpy>=2 pandas==2.2.2') — pip options " +
         "like --index-url or -r requirements.txt are rejected, and each specifier is validated against a strict " +
@@ -134,7 +145,8 @@ public sealed partial class PythonTools
         "afterward to confirm what actually got installed. Use this before PythonRun needs a package that isn't " +
         "already present — check PythonInfo first if unsure what's installed.")]
     public string PythonInstallPackages(
-        [Description("Space-separated pip requirement specifiers, e.g. 'requests' or 'numpy>=2 pandas==2.2.2'")] string packages)
+        [Description("Space-separated pip requirement specifiers, e.g. 'requests' or 'numpy>=2 pandas==2.2.2'")]
+        string packages)
     {
         var specs = (packages ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         if (specs.Length == 0) return MessageText.Format(ShellToolMessage.PackagesRequired);
@@ -146,33 +158,38 @@ public sealed partial class PythonTools
 
         var result = ProcessRunner.Run(VenvPython, ["-m", "pip", "install", "--disable-pip-version-check", .. specs],
             WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
-        if (result.TimedOut) return MessageText.Format(ShellToolMessage.PipTimedOut, new { Output = ProcessRunner.Tail(result.Output) });
+        if (result.TimedOut)
+            return MessageText.Format(ShellToolMessage.PipTimedOut, new { Output = ProcessRunner.Tail(result.Output) });
 
         // pip is chatty; the final lines say what was installed or why it failed.
         return result.ExitCode == 0
             ? ProcessRunner.Tail(result.Output, 1500)
-            : MessageText.Format(ShellToolMessage.PipFailed, new { result.ExitCode, Output = ProcessRunner.Tail(result.Output) });
+            : MessageText.Format(ShellToolMessage.PipFailed,
+                new { result.ExitCode, Output = ProcessRunner.Tail(result.Output) });
     }
 
     [Description("Reports which Python interpreter PythonRun will use, its version, the virtual environment's " +
-        "location, and the full list of packages currently installed in it (via pip list). If the virtual " +
-        "environment hasn't been created yet, says so rather than listing packages. Use this to check whether a " +
-        "package is already available before calling PythonInstallPackages, or to diagnose a PythonRun failure caused " +
-        "by a missing interpreter or package. It makes no changes and runs only version/package-listing probes, not " +
-        "arbitrary commands.")]
+                 "location, and the full list of packages currently installed in it (via pip list). If the virtual " +
+                 "environment hasn't been created yet, says so rather than listing packages. Use this to check whether a " +
+                 "package is already available before calling PythonInstallPackages, or to diagnose a PythonRun failure caused " +
+                 "by a missing interpreter or package. It makes no changes and runs only version/package-listing probes, not " +
+                 "arbitrary commands.")]
     public string PythonInfo()
     {
         if (ResolveInterpreter() is not { } python) return NotInstalledMessage;
 
-        var version = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "--version"], WorkingDirectory, ProbeTimeout);
+        var version = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "--version"], WorkingDirectory,
+            ProbeTimeout);
         var sb = new StringBuilder();
         sb.AppendLine($"Interpreter: {python.FileName} {string.Join(' ', python.PrefixArgs)}".TrimEnd());
         sb.AppendLine($"Version: {version.Output.Trim()}");
-        sb.AppendLine($"Virtual environment: {_venvDirectory} ({(File.Exists(VenvPython) ? MessageText.Format(ShellToolMessage.VenvCreated) : MessageText.Format(ShellToolMessage.VenvNotCreatedYet))})");
+        sb.AppendLine(
+            $"Virtual environment: {_venvDirectory} ({(File.Exists(VenvPython) ? MessageText.Format(ShellToolMessage.VenvCreated) : MessageText.Format(ShellToolMessage.VenvNotCreatedYet))})");
 
         if (File.Exists(VenvPython))
         {
-            var packages = ProcessRunner.Run(VenvPython, ["-m", "pip", "list", "--format=freeze", "--disable-pip-version-check"],
+            var packages = ProcessRunner.Run(VenvPython,
+                ["-m", "pip", "list", "--format=freeze", "--disable-pip-version-check"],
                 WorkingDirectory, TimeSpan.FromMinutes(1), environment: PythonEnvironment);
             sb.AppendLine("Installed packages:");
             sb.Append(string.IsNullOrWhiteSpace(packages.Output) ? "(none)" : packages.Output.Trim());
@@ -199,8 +216,10 @@ public sealed partial class PythonTools
     private Interpreter? FindBaseInterpreter()
     {
         var candidates = new List<Interpreter>();
-        if (Environment.GetEnvironmentVariable("PYTHON_PATH") is { Length: > 0 } configured) candidates.Add(new(configured, []));
-        if (OperatingSystem.IsWindows()) candidates.AddRange([new("py", ["-3"]), new("python", []), new("python3", [])]);
+        if (Environment.GetEnvironmentVariable("PYTHON_PATH") is { Length: > 0 } configured)
+            candidates.Add(new(configured, []));
+        if (OperatingSystem.IsWindows())
+            candidates.AddRange([new("py", ["-3"]), new("python", []), new("python3", [])]);
         else candidates.AddRange([new("python3", []), new("python", [])]);
 
         // Probing with --version also rejects the Windows Store stub, which prints an install hint and exits non-zero.
@@ -220,7 +239,8 @@ public sealed partial class PythonTools
         var result = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "-m", "venv", _venvDirectory],
             WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
         if (result.ExitCode != 0 || !File.Exists(VenvPython))
-            return MessageText.Format(ShellToolMessage.VenvNotCreated, new { Directory = _venvDirectory, Output = ProcessRunner.Tail(result.Output) });
+            return MessageText.Format(ShellToolMessage.VenvNotCreated,
+                new { Directory = _venvDirectory, Output = ProcessRunner.Tail(result.Output) });
 
         _baseInterpreter = null;
         return null;
@@ -232,7 +252,8 @@ public sealed partial class PythonTools
         fullPath = Path.GetFullPath(Path.Combine(root, relativePath));
         error = "";
 
-        string rootWithSeparator = root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
+        string rootWithSeparator =
+            root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
         if (fullPath.Equals(root, StringComparison.OrdinalIgnoreCase) ||
             fullPath.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
             return true;
@@ -243,10 +264,20 @@ public sealed partial class PythonTools
 
     private static void TryDelete(string path)
     {
-        try { File.Delete(path); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+        try
+        {
+            File.Delete(path);
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
     }
 
     // name[extras] followed by optional version constraints, e.g. requests, uvicorn[standard], numpy>=2,<3
-    [GeneratedRegex(@"^[A-Za-z0-9][A-Za-z0-9._-]*(\[[A-Za-z0-9._,-]+\])?([<>=!~]=?[A-Za-z0-9.*+!_-]+(,[<>=!~]=?[A-Za-z0-9.*+!_-]+)*)?$")]
+    [GeneratedRegex(
+        @"^[A-Za-z0-9][A-Za-z0-9._-]*(\[[A-Za-z0-9._,-]+\])?([<>=!~]=?[A-Za-z0-9.*+!_-]+(,[<>=!~]=?[A-Za-z0-9.*+!_-]+)*)?$")]
     internal static partial Regex RequirementSpec();
 }

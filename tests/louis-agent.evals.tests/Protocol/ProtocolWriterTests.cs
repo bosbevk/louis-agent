@@ -34,7 +34,8 @@ public class ProtocolWriterTests
     {
         var sink = new StringWriter();
 
-        new ProtocolWriter(sink, new FixedClock(At)).Question("cook", 1, "pannekoek", 1, "sess_1", "Gee my 'n resep – rand, Ünïcode");
+        new ProtocolWriter(sink, new FixedClock(At)).Question("cook", 1, "pannekoek", 1, "sess_1",
+            "Gee my 'n resep – rand, Ünïcode");
 
         Assert.That(sink.ToString().All(c => c < 128), Is.True, sink.ToString());
     }
@@ -47,8 +48,10 @@ public class ProtocolWriterTests
         writer.Started();
         writer.Mode("cook", 1, ["web", "shops"], "puls-cook", null);
         writer.Question("cook", 1, "pannekoek", 1, "sess_1", "Gee my 'n resep vir pannekoek – rand");
-        writer.Sse("cook", 1, "pannekoek", 1, "content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo – wêreld"}}"""));
-        writer.Turn("cook", 1, "pannekoek", 1, "sess_1", "Gee my 'n resep vir pannekoek – rand", "Hallo – wêreld", "puls-cook", 1.5);
+        writer.Sse("cook", 1, "pannekoek", 1, "content_block_delta",
+            Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo – wêreld"}}"""));
+        writer.Turn("cook", 1, "pannekoek", 1, "sess_1", "Gee my 'n resep vir pannekoek – rand", "Hallo – wêreld",
+            "puls-cook", 1.5);
         writer.Conversation("cook", 1, "pannekoek", "puls-cook", Json("""{"routed_right":true,"priced":2}"""), 3.25);
         writer.ModeDone("cook", 1);
 
@@ -57,7 +60,8 @@ public class ProtocolWriterTests
 
         Assert.That(mine, Has.Length.EqualTo(python.Length));
         for (int i = 0; i < python.Length; i++)
-            Assert.That(Describe(BenchmarkProtocol.Parse(mine[i])), Is.EqualTo(Describe(BenchmarkProtocol.Parse(python[i]))),
+            Assert.That(Describe(BenchmarkProtocol.Parse(mine[i])),
+                Is.EqualTo(Describe(BenchmarkProtocol.Parse(python[i]))),
                 $"line {i + 1}: {mine[i]}");
     }
 
@@ -67,18 +71,24 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
 
         new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123",
-            [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)], [new ModelUse("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
+            [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)],
+            [new ModelUse("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
 
         var started = (BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0]);
-        Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit), Is.EqualTo((1, "cook", (int?)2, "abc123")));
-        Assert.That(started.Graders!.Single(), Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
-        Assert.That(started.Models!.Single(), Is.EqualTo(new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, "puls-cook", "claude-haiku-5-5")));
+        Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit),
+            Is.EqualTo((1, "cook", (int?)2, "abc123")));
+        Assert.That(started.Graders!.Single(),
+            Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
+        Assert.That(started.Models!.Single(),
+            Is.EqualTo(new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, "puls-cook",
+                "claude-haiku-5-5")));
     }
 
     [TestCase(SplitSelection.Dev, BenchmarkRunSplit.Dev, "dev")]
     [TestCase(SplitSelection.HeldOut, BenchmarkRunSplit.HeldOut, "held_out")]
     [TestCase(SplitSelection.All, BenchmarkRunSplit.All, "all")]
-    public void TheFirstLine_SaysWhichScenariosTheRunAskedFor(SplitSelection split, BenchmarkRunSplit expected, string wire)
+    public void TheFirstLine_SaysWhichScenariosTheRunAskedFor(SplitSelection split, BenchmarkRunSplit expected,
+        string wire)
     {
         // F18 step 5.4 review: a held-out run is stored like a dev one unless it says what it was, and would join the dev trend.
         var sink = new StringWriter();
@@ -86,7 +96,8 @@ public class ProtocolWriterTests
         new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123", [], [], split);
 
         Assert.That(Lines(sink)[0], Does.Contain($"\"split\":\"{wire}\""));
-        Assert.That(((BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0])).Split, Is.EqualTo(expected));
+        Assert.That(((BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0])).Split,
+            Is.EqualTo(expected));
     }
 
     [Test]
@@ -95,11 +106,14 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
 
         new ProtocolWriter(sink, new FixedClock(At)).Conversation("cook", 1, "pannekoek", "puls-cook", Json("{}"), 3.25,
-            [new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source")], TrialOutcome.Pass);
+            [new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source")],
+            TrialOutcome.Pass);
 
         var ended = (BenchmarkProtocol.ConversationEnded)BenchmarkProtocol.Parse(Lines(sink)[0]);
         Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
-        Assert.That(ended.Grades!.Single(), Is.EqualTo(new BenchmarkProtocol.GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source")));
+        Assert.That(ended.Grades!.Single(),
+            Is.EqualTo(new BenchmarkProtocol.GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass,
+                "2 of 2 priced with a source")));
     }
 
     // F18 step 6.1: a model grader's grade says what judged (the judge's model and its prompt's hash); a code grader's has neither field. The API's reader still reads the line.
@@ -109,11 +123,13 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
         Grade[] grades =
         [
-            new Grade("meal-for-people", 3, 1, GradeOutcome.Pass, "feeds four", new GradeJudge("qwen3:8b", "abc123def456")),
+            new Grade("meal-for-people", 3, 1, GradeOutcome.Pass, "feeds four",
+                new GradeJudge("qwen3:8b", "abc123def456")),
             new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source"),
         ];
 
-        new ProtocolWriter(sink, new FixedClock(At)).Conversation("cook", 1, "pannekoek", "puls-cook", Json("{}"), 3.25, grades, TrialOutcome.Pass);
+        new ProtocolWriter(sink, new FixedClock(At)).Conversation("cook", 1, "pannekoek", "puls-cook", Json("{}"), 3.25,
+            grades, TrialOutcome.Pass);
 
         var written = Json(Lines(sink)[0].TrimStart('@')).GetProperty("grades").EnumerateArray().ToList();
         Assert.That(written[0].GetProperty("judge_model").GetString(), Is.EqualTo("qwen3:8b"));
@@ -132,7 +148,9 @@ public class ProtocolWriterTests
         public GraderKind Kind { get; } = kind;
         public bool Required => true;
         public IReadOnlySet<string> ExpectedKeys => System.Collections.Frozen.FrozenSet<string>.Empty;
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 
     // F18 step 4.1: the stub's parity with the Python stub needs these fields, in the Python's order. Written first: the writer
@@ -142,9 +160,11 @@ public class ProtocolWriterTests
     {
         var sink = new StringWriter();
 
-        new ProtocolWriter(sink, new FixedClock(At)).Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], "puls/voice-af", null, conversations: 2);
+        new ProtocolWriter(sink, new FixedClock(At)).Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], "puls/voice-af",
+            null, conversations: 2);
 
-        Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[] { "event", "t", "mode", "repeat", "toolsets", "role", "llm", "conversations" }));
+        Assert.That(Keys(Lines(sink)[0]),
+            Is.EqualTo(new[] { "event", "t", "mode", "repeat", "toolsets", "role", "llm", "conversations" }));
     }
 
     [Test]
@@ -153,12 +173,14 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
         var facts = new TurnFacts("puls-cook", "sub-1", 1, 3, ["www.checkers.co.za"], null);
 
-        new ProtocolWriter(sink, new FixedClock(At)).Turn(SampleMode.Beta, 1, "bobotie", 2, "sess_1", "En as ek dit vir 6 wil maak?",
+        new ProtocolWriter(sink, new FixedClock(At)).Turn(SampleMode.Beta, 1, "bobotie", 2, "sess_1",
+            "En as ek dit vir 6 wil maak?",
             "Hier is bobotie.", "puls-cook", 0.1, facts);
 
         Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[]
         {
-            "event", "t", "mode", "repeat", "task", "turn", "session", "question", "answer", "role", "continued", "puls_calls",
+            "event", "t", "mode", "repeat", "task", "turn", "session", "question", "answer", "role", "continued",
+            "puls_calls",
             "specialist_calls", "hosts", "seconds", "error",
         }));
     }
@@ -168,16 +190,19 @@ public class ProtocolWriterTests
     {
         var sink = new StringWriter();
 
-        new ProtocolWriter(sink, new FixedClock(At)).Conversation(SampleMode.Beta, 1, "bobotie", "puls-cook", Json("""{"routed_right":true,"turns":2}"""),
+        new ProtocolWriter(sink, new FixedClock(At)).Conversation(SampleMode.Beta, 1, "bobotie", "puls-cook",
+            Json("""{"routed_right":true,"turns":2}"""),
             3.25, errors: 1);
 
-        Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[] { "event", "t", "mode", "repeat", "task", "role", "scores", "errors", "seconds" }));
+        Assert.That(Keys(Lines(sink)[0]),
+            Is.EqualTo(new[] { "event", "t", "mode", "repeat", "task", "role", "scores", "errors", "seconds" }));
     }
 
     private static string[] Keys(string line) =>
         JsonDocument.Parse(line.TrimStart('@')).RootElement.EnumerateObject().Select(p => p.Name).ToArray();
 
-    private static string[] Lines(StringWriter sink) => sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
+    private static string[] Lines(StringWriter sink) =>
+        sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 

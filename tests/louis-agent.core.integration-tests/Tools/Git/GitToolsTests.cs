@@ -50,11 +50,13 @@ public class GitToolsTests
     public void TearDown()
     {
         // git makes its object files read-only; clear that so the folder can go.
-        foreach (string file in Directory.EnumerateFiles(_root, "*", SearchOption.AllDirectories)) File.SetAttributes(file, FileAttributes.Normal);
+        foreach (string file in Directory.EnumerateFiles(_root, "*", SearchOption.AllDirectories))
+            File.SetAttributes(file, FileAttributes.Normal);
         Directory.Delete(_root, recursive: true);
     }
 
-    private static ProcessRunner.Result Git(string repo, params string[] args) => ProcessRunner.Run("git", args, repo, TimeSpan.FromSeconds(30));
+    private static ProcessRunner.Result Git(string repo, params string[] args) =>
+        ProcessRunner.Run("git", args, repo, TimeSpan.FromSeconds(30));
 
     private string Out(params string[] args) => Git(_repo, args).Output.Trim();
 
@@ -98,10 +100,12 @@ public class GitToolsTests
     {
         string file = Outside("touched.txt");
 
-        Assert.That(_remotes.Fetch($"--upload-pack=touch {file}"), Does.Contain("starts with '-'").And.Contain("remote"));
+        Assert.That(_remotes.Fetch($"--upload-pack=touch {file}"),
+            Does.Contain("starts with '-'").And.Contain("remote"));
         Assert.That(_branches.CreateBranch("--orphan"), Does.Contain("starts with '-'").And.Contain("branchName"));
         Assert.That(_branches.SwitchBranch("-"), Does.Contain("starts with '-'"));
-        Assert.That(_remotes.AddRemote("-x", "https://example.com/r.git"), Does.Contain("starts with '-'").And.Contain("name"));
+        Assert.That(_remotes.AddRemote("-x", "https://example.com/r.git"),
+            Does.Contain("starts with '-'").And.Contain("name"));
         Assert.That(_remotes.AddRemote("x", "--mirror=fetch"), Does.Contain("starts with '-'").And.Contain("url"));
         Assert.That(_changes.ResetHard("--soft"), Does.Contain("starts with '-'"));
         Assert.That(_config.GetConfig("--global"), Does.Contain("starts with '-'").And.Contain("key"));
@@ -121,10 +125,13 @@ public class GitToolsTests
         Git(_repo, "reset", "-q", "--hard", "HEAD~1");
         Commit("readme.md", "Hallo\nOther\n", "Diverged");
 
-        Assert.That(_remotes.Push("origin", "+main"), Does.Contain("refspec").And.Contain("branch"), "a forced push, with force: false");
-        Assert.That(Git(_origin, "log", "-1", "--format=%s", "main").Output.Trim(), Is.EqualTo("Second"), "origin's main was overwritten");
+        Assert.That(_remotes.Push("origin", "+main"), Does.Contain("refspec").And.Contain("branch"),
+            "a forced push, with force: false");
+        Assert.That(Git(_origin, "log", "-1", "--format=%s", "main").Output.Trim(), Is.EqualTo("Second"),
+            "origin's main was overwritten");
         Assert.That(_remotes.Push("origin", ":main"), Does.Contain("refspec").And.Contain("branch"), "a delete");
-        Assert.That(Git(_origin, "rev-parse", "--verify", "refs/heads/main").ExitCode, Is.Zero, "origin's main was deleted");
+        Assert.That(Git(_origin, "rev-parse", "--verify", "refs/heads/main").ExitCode, Is.Zero,
+            "origin's main was deleted");
         Assert.That(_remotes.Push("origin", "main:other"), Does.Contain("refspec"), "a push to another ref");
         Assert.That(_remotes.Pull("origin", "+main"), Does.Contain("refspec"), "the same value on pull");
     }
@@ -194,7 +201,8 @@ public class GitToolsTests
         Assert.That(_changes.GetStatus(), Does.Contain("?? new.txt"));
         Assert.That(_changes.Stage("."), Does.Not.Contain("Exit Code"));
         Assert.That(_changes.Commit("Voeg wêreld by"), Does.Contain("Voeg wêreld by"));
-        Assert.That(_history.ShowCommit("HEAD"), Does.Contain("Voeg wêreld by").And.Contain("readme.md").And.Contain("new.txt"));
+        Assert.That(_history.ShowCommit("HEAD"),
+            Does.Contain("Voeg wêreld by").And.Contain("readme.md").And.Contain("new.txt"));
         Assert.That(_history.GetLog(5), Does.Contain("Voeg wêreld by").And.Contain("Begin die projek"));
 
         File.WriteAllText(Path.Combine(_repo, "readme.md"), "changed\n");
@@ -280,6 +288,7 @@ public class GitToolsTests
         _branches.SwitchBranch("main");
         Assert.That(_branches.CherryPick(topic2), Does.Not.Contain("Exit Code"));
         Assert.That(File.Exists(Path.Combine(_repo, "t2.txt")), Is.True);
-        Assert.That(_branches.Rebase("main", abort: true), Does.Contain("Exit Code"), "no rebase in progress: git says so, nothing else runs");
+        Assert.That(_branches.Rebase("main", abort: true), Does.Contain("Exit Code"),
+            "no rebase in progress: git says so, nothing else runs");
     }
 }

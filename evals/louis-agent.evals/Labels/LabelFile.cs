@@ -15,17 +15,35 @@ public sealed record LabelTurn(string Question, string Answer);
 /// follow-up turn's answer relies on the recipe given earlier), and the person's <see cref="Label"/> of the last turn's answer, null until they give it. Nothing in it names a product, so
 /// the next judge uses the same shape.
 /// </summary>
-public sealed record LabelFile(string Grader, string Scenario, string Mode, string Run, int Repeat, IReadOnlyList<LabelTurn> Turns, AnswerLabel? Label)
+public sealed record LabelFile(
+    string Grader,
+    string Scenario,
+    string Mode,
+    string Run,
+    int Repeat,
+    IReadOnlyList<LabelTurn> Turns,
+    AnswerLabel? Label)
 {
     /// <summary>The turn whose answer is labelled: the last one.</summary>
-    [JsonIgnore] public int Turn => Turns.Count;
+    [JsonIgnore]
+    public int Turn => Turns.Count;
 
     /// <summary>The answer that is labelled: the last turn's.</summary>
-    [JsonIgnore] public string Answer => Turns.Count == 0 ? "" : Turns[^1].Answer;
+    [JsonIgnore]
+    public string Answer => Turns.Count == 0 ? "" : Turns[^1].Answer;
 }
 
 /// <summary>A labelled answer as the dataset holds it: the file it came from, the conversation it labels and the person's verdict on its last answer.</summary>
-public sealed record LabeledAnswer(string File, string Grader, string Scenario, string Mode, string Run, int Repeat, IReadOnlyList<LabelTurn> Turns, bool Pass, string Note)
+public sealed record LabeledAnswer(
+    string File,
+    string Grader,
+    string Scenario,
+    string Mode,
+    string Run,
+    int Repeat,
+    IReadOnlyList<LabelTurn> Turns,
+    bool Pass,
+    string Note)
 {
     public int Turn => Turns.Count;
 

@@ -13,7 +13,9 @@ namespace LouisAgent.Evals.Runner.Tests.Layout;
 public class EvalFilesCopyTests
 {
     private const string CookDataset = "EvalFiles/louis-agent.evals.puls/Evals/Cook/Dataset/dataset.json";
-    private const string StubReference = "EvalFiles/louis-agent.evals.runner/Evals/Stub/Transcripts/bobotie.reference.txt";
+
+    private const string StubReference =
+        "EvalFiles/louis-agent.evals.runner/Evals/Stub/Transcripts/bobotie.reference.txt";
 
     [Test]
     public void ADatasetReachesThisProjectsOutput_ThroughTheProjectReference() =>
@@ -27,17 +29,25 @@ public class EvalFilesCopyTests
     public void ADatasetReachesTheRunnersOwnOutput_ThroughItsReferenceToThePulsProject()
     {
         // This project's output is bin/{Config}/net10.0/; the runner's is the same under its own folder.
-        var output = new DirectoryInfo(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
-        string runnerOutput = Path.Combine(output.Parent!.Parent!.Parent!.Parent!.Parent!.FullName, "evals", "louis-agent.evals.runner", "bin", output.Parent.Name, output.Name);
+        var output =
+            new DirectoryInfo(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar,
+                Path.AltDirectorySeparatorChar));
+        string runnerOutput = Path.Combine(output.Parent!.Parent!.Parent!.Parent!.Parent!.FullName, "evals",
+            "louis-agent.evals.runner", "bin", output.Parent.Name, output.Name);
 
-        Assert.That(File.Exists(Path.Combine(runnerOutput, CookDataset)), Is.True, Path.Combine(runnerOutput, CookDataset));
+        Assert.That(File.Exists(Path.Combine(runnerOutput, CookDataset)), Is.True,
+            Path.Combine(runnerOutput, CookDataset));
     }
 
     [Test]
     public void EvalFiles_SaysWhereTheItemPutThem()
     {
-        Assert.That(EvalFiles.DatasetOf(typeof(CookEval)), Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "louis-agent.evals.puls", "Evals", "Cook", "Dataset")));
-        Assert.That(EvalFiles.TranscriptsOf(typeof(StubEval)), Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "louis-agent.evals.runner", "Evals", "Stub", "Transcripts")));
+        Assert.That(EvalFiles.DatasetOf(typeof(CookEval)),
+            Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "louis-agent.evals.puls", "Evals", "Cook",
+                "Dataset")));
+        Assert.That(EvalFiles.TranscriptsOf(typeof(StubEval)),
+            Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "louis-agent.evals.runner", "Evals", "Stub",
+                "Transcripts")));
         Assert.That(File.Exists(Path.Combine(EvalFiles.DatasetOf(typeof(CookEval)), "dataset.json")), Is.True);
     }
 }

@@ -24,7 +24,8 @@ public abstract class HumanReviewStoreContract
 
     private static string NewRun() => Guid.NewGuid().ToString("N")[..12];
 
-    private static HumanGrade Grade(string run, int seconds, HumanVerdict verdict = HumanVerdict.Pass, string reviewer = "Louis", string note = "", BenchmarkProtocol.ConversationKey? key = null,
+    private static HumanGrade Grade(string run, int seconds, HumanVerdict verdict = HumanVerdict.Pass,
+        string reviewer = "Louis", string note = "", BenchmarkProtocol.ConversationKey? key = null,
         string grader = "meal-for-people") =>
         new(run, key ?? Bobotie, grader, verdict, note, reviewer, T0.AddSeconds(seconds));
 

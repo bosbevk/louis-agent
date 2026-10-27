@@ -7,7 +7,8 @@ namespace LouisAgent.Identities.Puls.Tests;
 // and name the shop's branch; the router and the cook's reading rule say the same. Written first: the router still promised prices and photos.
 public class PulsEstimatesPromptsTests
 {
-    private static string Read(string path) => SkillFileSource.ReadEmbedded(path) ?? throw new FileNotFoundException(path);
+    private static string Read(string path) =>
+        SkillFileSource.ReadEmbedded(path) ?? throw new FileNotFoundException(path);
 
     /// <summary>A prompt with its line breaks and indents as single spaces, for a phrase the file wraps.</summary>
     private static string Flat(string text) => Regex.Replace(text, @"\s+", " ");
@@ -17,7 +18,8 @@ public class PulsEstimatesPromptsTests
     {
         string router = Flat(Read("agent/puls/voice.md"));
 
-        Assert.That(router, Does.Contain("without its estimated costs and where to buy near the user is half an answer"));
+        Assert.That(router,
+            Does.Contain("without its estimated costs and where to buy near the user is half an answer"));
         Assert.That(router, Does.Not.Contain("today's prices"));
         Assert.That(router, Does.Not.Contain("It has the pages and prices you never saw"));
     }
@@ -39,20 +41,25 @@ public class PulsEstimatesPromptsTests
 
         Assert.That(router, Does.Not.Contain("The cook prices at that shop alone"));
         Assert.That(router, Does.Contain("names that shop's branch under *Where to buy* and estimates the prices"));
-        Assert.That(router, Does.Contain("Waar gaan jy inkopies doen"), "still asked when missing: the branch needs the shop");
+        Assert.That(router, Does.Contain("Waar gaan jy inkopies doen"),
+            "still asked when missing: the branch needs the shop");
         Assert.That(router, Does.Contain("A follow-up keeps the shop until the user changes it"));
     }
 
     [Test]
     public void TheRolesRows_EstimateTheCosts_AndNameTheBranch_ComparingNoShopsPrices()
     {
-        string[] rows = Read("agent/puls/voice.md").Split('\n').Where(row => row.StartsWith("| `web`, for every") && row.Contains("`puls-cook`")).ToArray();
+        string[] rows = Read("agent/puls/voice.md").Split('\n')
+            .Where(row => row.StartsWith("| `web`, for every") && row.Contains("`puls-cook`")).ToArray();
 
         Assert.That(rows, Has.Length.EqualTo(2), "cooking and shopping");
         Assert.That(rows, Is.All.Contain("estimates the costs and names the branch of the shop the user will buy at"));
         Assert.That(rows, Is.All.Contain("put their town and their shop in the task"));
-        Assert.That(rows, Is.All.Not.Contain("prices the ingredients").And.Not.Contain("prices/compares").And.Not.Contain("prices/comparison"));
-        Assert.That(rows.Single(row => row.Contains("shopping/grocery")), Does.Contain("no comparison of shops' prices"));
+        Assert.That(rows,
+            Is.All.Not.Contain("prices the ingredients").And.Not.Contain("prices/compares").And.Not
+                .Contain("prices/comparison"));
+        Assert.That(rows.Single(row => row.Contains("shopping/grocery")),
+            Does.Contain("no comparison of shops' prices"));
     }
 
     [Test]
@@ -60,8 +67,12 @@ public class PulsEstimatesPromptsTests
     {
         string router = Flat(Read("agent/puls/voice.md"));
 
-        Assert.That(router, Does.Contain("Ek soek vir eers nie winkels se pryse op nie (ek het hulle om toestemming gevra); die koste is skattings."));
-        Assert.That(router, Does.Contain("I don't look up shops' prices for now (I asked them for permission); the costs are estimates."));
+        Assert.That(router,
+            Does.Contain(
+                "Ek soek vir eers nie winkels se pryse op nie (ek het hulle om toestemming gevra); die koste is skattings."));
+        Assert.That(router,
+            Does.Contain(
+                "I don't look up shops' prices for now (I asked them for permission); the costs are estimates."));
         Assert.That(router, Does.Contain("Never offer another shop's prices instead"));
     }
 
@@ -72,9 +83,14 @@ public class PulsEstimatesPromptsTests
         // (Boerekos) or a 429 (News24): a site that refuses automated readers refuses this one. The check in code is Sources as data's RobotsPolicy.
         string cook = Flat(Read("specialists/puls-cook.md"));
 
-        foreach (string domain in new[] { "huisgenoot.com", "sarie.com", "netwerk24.com", "news24.com", "food24.com", "maroelamedia.co.za", "eatout.co.za", "halaal.recipes", "boerekos.co.za" })
+        foreach (string domain in new[]
+                 {
+                     "huisgenoot.com", "sarie.com", "netwerk24.com", "news24.com", "food24.com", "maroelamedia.co.za",
+                     "eatout.co.za", "halaal.recipes", "boerekos.co.za"
+                 })
             Assert.That(cook, Does.Contain($"`{domain}`"), domain);
         Assert.That(cook, Does.Contain("Skip the results on these sites"));
-        Assert.That(cook, Does.Contain("answers with a captcha or a block, or holds no recipe is dropped for the next result"));
+        Assert.That(cook,
+            Does.Contain("answers with a captcha or a block, or holds no recipe is dropped for the next result"));
     }
 }

@@ -17,7 +17,8 @@ namespace LouisAgent.Evals.Running;
 /// </summary>
 public static class TrialGrading
 {
-    public static async Task<IReadOnlyList<Grade>> GradeAsync(IEval eval, Trial trial, ILogger logger, CancellationToken cancellationToken)
+    public static async Task<IReadOnlyList<Grade>> GradeAsync(IEval eval, Trial trial, ILogger logger,
+        CancellationToken cancellationToken)
     {
         var grades = new List<Grade>(eval.Graders.Count);
         foreach (IGrader grader in eval.Graders)
@@ -30,11 +31,18 @@ public static class TrialGrading
             catch (Exception error) when (!GraderFailures.IsRunCancel(error, cancellationToken))
             {
                 logger.Log(LogLevel.Warning, EvalLogMessage.GraderThrew,
-                    new { Eval = eval.Name, Grader = grader.Name, Scenario = trial.Scenario.Id, Reason = error.Message }, exception: error);
+                    new
+                    {
+                        Eval = eval.Name,
+                        Grader = grader.Name,
+                        Scenario = trial.Scenario.Id,
+                        Reason = error.Message
+                    }, exception: error);
                 grades.Add(Verdict.Unknown(grader.Name, grader.Version,
                     MessageText.Format(CommonGradeMessage.GraderThrew, new { Reason = error.Message })));
             }
         }
+
         return grades;
     }
 }

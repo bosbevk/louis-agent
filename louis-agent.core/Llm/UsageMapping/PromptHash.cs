@@ -1,10 +1,10 @@
-namespace LouisAgent.Core.Llm.UsageMapping;
 
 using System.Security.Cryptography;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Llm.UsageMapping;
 /// <summary>
 /// The version of a prompt, as its own content's hash (F18 step 4c, skill 3's prompt versioning): the same system prompt and
 /// tools always hash the same, and one changed word gives a new hash.
@@ -76,7 +76,10 @@ public static class PromptHash
         json.WriteString("name", tool.Name);
         json.WriteString("description", tool.Description);
         json.WritePropertyName("schema");
-        if (tool is AIFunctionDeclaration { JsonSchema: { ValueKind: not JsonValueKind.Undefined } schema }) schema.WriteTo(json);
+        if (tool is AIFunctionDeclaration
+            {
+                JsonSchema: { ValueKind: not JsonValueKind.Undefined } schema
+            }) schema.WriteTo(json);
         else json.WriteNullValue();
         json.WriteEndObject();
     }

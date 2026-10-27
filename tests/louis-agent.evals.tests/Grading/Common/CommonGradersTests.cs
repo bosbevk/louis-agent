@@ -10,7 +10,8 @@ namespace LouisAgent.Evals.Tests.Grading.Common;
 // they threw NotImplementedException on the red run.
 public class CommonGradersTests
 {
-    private static async Task<Grade> GradeAsync(IGrader grader, Trial trial) => await grader.GradeAsync(trial, CancellationToken.None);
+    private static async Task<Grade> GradeAsync(IGrader grader, Trial trial) =>
+        await grader.GradeAsync(trial, CancellationToken.None);
 
     [Test]
     public async Task NoError_PassesACleanTrial()
@@ -65,7 +66,8 @@ public class CommonGradersTests
     [Test]
     public async Task WithinTime_PassesWhenEveryTurnIsWithinTheLimit()
     {
-        var grade = await GradeAsync(new WithinTimeGrader(TimeSpan.FromSeconds(10)), Trial(Turn(1, seconds: 1), Turn(2, seconds: 10)));
+        var grade = await GradeAsync(new WithinTimeGrader(TimeSpan.FromSeconds(10)),
+            Trial(Turn(1, seconds: 1), Turn(2, seconds: 10)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
     }
@@ -73,7 +75,8 @@ public class CommonGradersTests
     [Test]
     public async Task WithinTime_FailsAndNamesTheSlowTurn()
     {
-        var grade = await GradeAsync(new WithinTimeGrader(TimeSpan.FromSeconds(10)), Trial(Turn(1, seconds: 1), Turn(2, seconds: 11)));
+        var grade = await GradeAsync(new WithinTimeGrader(TimeSpan.FromSeconds(10)),
+            Trial(Turn(1, seconds: 1), Turn(2, seconds: 11)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("turn 2"));
@@ -83,7 +86,8 @@ public class CommonGradersTests
     public async Task WithinTime_IsUnknownForAnInfrastructureFailure()
     {
         // A timed-out turn's duration is the timeout, not the agent's time: the grader can't tell.
-        var grade = await GradeAsync(new WithinTimeGrader(TimeSpan.FromSeconds(10)), Trial(Turn(1, seconds: 60, failure: TrialFailure.Timeout)));
+        var grade = await GradeAsync(new WithinTimeGrader(TimeSpan.FromSeconds(10)),
+            Trial(Turn(1, seconds: 60, failure: TrialFailure.Timeout)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
@@ -91,7 +95,8 @@ public class CommonGradersTests
     [Test]
     public async Task CostUnder_IsUnknownForAnInfrastructureFailure()
     {
-        var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25")], failure: TrialFailure.Timeout)));
+        var grade = await GradeAsync(new CostUnderGrader(1m),
+            Trial(Turn(1, [Usage("0.25")], failure: TrialFailure.Timeout)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
@@ -108,7 +113,8 @@ public class CommonGradersTests
     [Test]
     public async Task CostUnder_PassesAtTheLimit()
     {
-        var grade = await GradeAsync(new CostUnderGrader(0.75m), Trial(Turn(1, [Usage("0.25")]), Turn(2, [Usage("0.5")])));
+        var grade = await GradeAsync(new CostUnderGrader(0.75m),
+            Trial(Turn(1, [Usage("0.25")]), Turn(2, [Usage("0.5")])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
     }
@@ -116,7 +122,8 @@ public class CommonGradersTests
     [Test]
     public async Task CostUnder_FailsWhenOverTheLimit()
     {
-        var grade = await GradeAsync(new CostUnderGrader(0.5m), Trial(Turn(1, [Usage("0.25")]), Turn(2, [Usage("0.5")])));
+        var grade = await GradeAsync(new CostUnderGrader(0.5m),
+            Trial(Turn(1, [Usage("0.25")]), Turn(2, [Usage("0.5")])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("0.75"));
@@ -126,7 +133,8 @@ public class CommonGradersTests
     public async Task CostUnder_IsUnknownWhenACostIsUnknown()
     {
         // Unknown is never a pass, and never a fail: the grader can't tell.
-        var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25")]), Turn(2, [Usage("null")])));
+        var grade = await GradeAsync(new CostUnderGrader(1m),
+            Trial(Turn(1, [Usage("0.25")]), Turn(2, [Usage("null")])));
 
         Assert.That((grade.Outcome, grade.Score), Is.EqualTo((GradeOutcome.Unknown, 0.0)));
     }
@@ -135,7 +143,8 @@ public class CommonGradersTests
     public async Task CostUnder_IsUnknownWithoutUsage()
     {
         // A turn that reported no usage is not a turn with a price: the grader can't tell, and says which.
-        var grade = await GradeAsync(new CostUnderGrader(1m), Trial(Turn(1, [Usage("0.25")]), Turn(2, [Text("Hallo")])));
+        var grade = await GradeAsync(new CostUnderGrader(1m),
+            Trial(Turn(1, [Usage("0.25")]), Turn(2, [Text("Hallo")])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(grade.Reason, Does.Contain("reported no usage"));
@@ -178,7 +187,8 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_PassesWhenTheFirstTurnWentToTheRole()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Call(SampleRole.Alpha)]), Turn(2)));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha),
+            Trial(Turn(1, [Call(SampleRole.Alpha)]), Turn(2)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
         Assert.That(grade.Reason, Does.Contain(SampleRole.Alpha));
@@ -216,7 +226,8 @@ public class CommonGradersTests
         // The eval says where each trial should go (Puls's routing expects a different role per question).
         var grader = new RoutedToGrader(trial => trial.Scenario.Id == "bobotie" ? SampleRole.Alpha : SampleRole.Eta);
 
-        Assert.That((await GradeAsync(grader, Trial(Turn(1, [Call(SampleRole.Alpha)])))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await GradeAsync(grader, Trial(Turn(1, [Call(SampleRole.Alpha)])))).Outcome,
+            Is.EqualTo(GradeOutcome.Pass));
     }
 
     [Test]
@@ -241,7 +252,8 @@ public class CommonGradersTests
     public async Task RoutedTo_FailsAnErroredTurnEvenWhenTheRouteIsRight()
     {
         // As the Python check: not an error, and the expected role.
-        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Call(SampleRole.Alpha), Error()])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha),
+            Trial(Turn(1, [Call(SampleRole.Alpha), Error()])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("failed"));
@@ -250,7 +262,8 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_IsUnknownForAnInfrastructureFailure()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Call(SampleRole.Alpha)], failure: TrialFailure.Timeout)));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha),
+            Trial(Turn(1, [Call(SampleRole.Alpha)], failure: TrialFailure.Timeout)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
@@ -267,7 +280,8 @@ public class CommonGradersTests
     [Test]
     public async Task RoutedTo_OnlyTheFirstTurnCounts()
     {
-        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha), Trial(Turn(1, [Text("Hallo")]), Turn(2, [Call(SampleRole.Alpha)])));
+        var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha),
+            Trial(Turn(1, [Text("Hallo")]), Turn(2, [Call(SampleRole.Alpha)])));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
     }
@@ -277,6 +291,7 @@ public class CommonGradersTests
     {
         // F18 step 5.4: an eval whose route is a scenario's `routes_to` says so, so the loader can check the key is read and fed.
         Assert.That(new RoutedToGrader(_ => null).ExpectedKeys, Is.Empty);
-        Assert.That(new RoutedToGrader(_ => null, expectedKeys: new HashSet<string> { "routes_to" }).ExpectedKeys, Is.EqualTo(new[] { "routes_to" }));
+        Assert.That(new RoutedToGrader(_ => null, expectedKeys: new HashSet<string> { "routes_to" }).ExpectedKeys,
+            Is.EqualTo(new[] { "routes_to" }));
     }
 }

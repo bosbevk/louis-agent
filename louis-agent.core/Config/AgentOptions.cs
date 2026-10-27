@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Config;
 
 using System.Globalization;
 using LouisAgent.Core.Config.Messages;
@@ -6,6 +5,7 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Config;
 /// <summary>Agent runtime settings, resolved once at startup instead of read from the environment inside core.</summary>
 public sealed class AgentOptions
 {
@@ -152,18 +152,20 @@ public sealed class AgentOptions
     /// cheapest first, e.g. <c>*=ollama-local&gt;instance,acme-minion-web-summary=instance</c>. Every profile must be in
     /// <see cref="SessionLlmProfiles"/> (checked at start-up). Empty: no <c>minions</c> toolset.
     /// </summary>
-    public IReadOnlyDictionary<string, IReadOnlyList<string>> MinionLlms { get; set; } = new Dictionary<string, IReadOnlyList<string>>();
+    public IReadOnlyDictionary<string, IReadOnlyList<string>> MinionLlms { get; set; } =
+        new Dictionary<string, IReadOnlyList<string>>();
 
     /// <summary>Parses <c>MINION_LLMS</c>; an entry without a role or without a model is dropped, names are lowercased.</summary>
     internal static IReadOnlyDictionary<string, IReadOnlyList<string>> ParseMinionLlms(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
-            .Where(pair => pair.Length == 2 && pair[0].Length > 0)
-            .Select(pair => (Role: pair[0].ToLowerInvariant(), Models: (IReadOnlyList<string>)pair[1]
-                .Split('>', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Select(m => m.ToLowerInvariant()).Distinct().ToList()))
-            .Where(x => x.Models.Count > 0)
-            .GroupBy(x => x.Role, StringComparer.Ordinal)
-            .ToDictionary(g => g.Key, g => g.Last().Models, StringComparer.Ordinal);
+        .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
+        .Where(pair => pair.Length == 2 && pair[0].Length > 0)
+        .Select(pair => (Role: pair[0].ToLowerInvariant(), Models: (IReadOnlyList<string>)pair[1]
+            .Split('>', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(m => m.ToLowerInvariant()).Distinct().ToList()))
+        .Where(x => x.Models.Count > 0)
+        .GroupBy(x => x.Role, StringComparer.Ordinal)
+        .ToDictionary(g => g.Key, g => g.Last().Models, StringComparer.Ordinal);
 
     /// <summary>
     /// The default of <see cref="SubSessionPromptBudget"/>: below Claude Haiku 5.5's long-prompt threshold (100k in
@@ -190,15 +192,16 @@ public sealed class AgentOptions
     /// <summary>Parses AGENT_PEERS; an entry without a name or an absolute http(s) URL is skipped.</summary>
     internal static IReadOnlyList<string> ParseNames(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(name => name.ToLowerInvariant()).Distinct().ToList();
+        .Select(name => name.ToLowerInvariant()).Distinct().ToList();
 
     internal static IReadOnlyDictionary<string, Uri> ParsePeers(string? value) =>
         (value ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
-            .Where(pair => pair.Length == 2 && pair[0].Length > 0
-                && Uri.TryCreate(pair[1], UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https")
-            .GroupBy(pair => pair[0].ToLowerInvariant())
-            .ToDictionary(g => g.Key, g => new Uri(g.Last()[1].TrimEnd('/') + "/"), StringComparer.OrdinalIgnoreCase);
+        .Select(entry => entry.Split('=', 2, StringSplitOptions.TrimEntries))
+        .Where(pair => pair.Length == 2 && pair[0].Length > 0
+                                        && Uri.TryCreate(pair[1], UriKind.Absolute, out var uri) &&
+                                        uri.Scheme is "http" or "https")
+        .GroupBy(pair => pair[0].ToLowerInvariant())
+        .ToDictionary(g => g.Key, g => new Uri(g.Last()[1].TrimEnd('/') + "/"), StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// ROLES_ENABLED, or PERSONALITIES_ENABLED (its name before CL14) when it's unset. Read raw: set but empty is "every
@@ -210,7 +213,8 @@ public sealed class AgentOptions
         string? roles = raw("ROLES_ENABLED");
         string? old = raw("PERSONALITIES_ENABLED");
         if (old is not null)
-            Log.Log(LogLevel.Warning, roles is null ? ConfigLogMessage.RolesSettingRenamed : ConfigLogMessage.RolesSettingIgnored,
+            Log.Log(LogLevel.Warning,
+                roles is null ? ConfigLogMessage.RolesSettingRenamed : ConfigLogMessage.RolesSettingIgnored,
                 new { Old = "PERSONALITIES_ENABLED", New = "ROLES_ENABLED" });
         return roles ?? old;
     }
@@ -232,7 +236,9 @@ public sealed class AgentOptions
             SearxngUrl = Get("SEARXNG_URL"),
             BrowserUrl = Get("BROWSER_URL"),
             PageRenderer = Get("PAGE_RENDERER"),
-            BrowserUserAgent = string.IsNullOrWhiteSpace(Get("BROWSER_USER_AGENT")) ? null : Get("BROWSER_USER_AGENT")!.Trim(),
+            BrowserUserAgent = string.IsNullOrWhiteSpace(Get("BROWSER_USER_AGENT"))
+                ? null
+                : Get("BROWSER_USER_AGENT")!.Trim(),
             WebReplay = Get("WEB_REPLAY"),
             LogContent = Get("LOG_CONTENT"),
             ReplayDirectory = Get("REPLAY_DIRECTORY"),
@@ -263,8 +269,10 @@ public sealed class AgentOptions
             MinionLlms = ParseMinionLlms(Get("MINION_LLMS")),
             AgentApiKey = Get("AGENT_API_KEY"),
             HostTimeZone = TimeZoneChecked(Get("HOST_TIME_ZONE")),
-            SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None, CultureInfo.InvariantCulture, out int budget)
-                ? budget : DefaultSubSessionPromptBudget,
+            SubSessionPromptBudget = int.TryParse(Get("SUB_SESSION_PROMPT_BUDGET"), NumberStyles.None,
+                CultureInfo.InvariantCulture, out int budget)
+                ? budget
+                : DefaultSubSessionPromptBudget,
         };
         if (Get("WORKSPACE_ROOT") is { } root) options.WorkspaceRoot = root;
         else if (FindRepositoryRoot(Environment.CurrentDirectory) is { } repoRoot)
@@ -272,7 +280,10 @@ public sealed class AgentOptions
             options.WorkspaceRoot = repoRoot;
             Log.Log(LogLevel.Information, ConfigLogMessage.WorkspaceRootFromRepository, new { Path = repoRoot });
         }
-        else Log.Log(LogLevel.Warning, ConfigLogMessage.WorkspaceRootFromCurrentDirectory, new { Path = options.WorkspaceRoot });
+        else
+            Log.Log(LogLevel.Warning, ConfigLogMessage.WorkspaceRootFromCurrentDirectory,
+                new { Path = options.WorkspaceRoot });
+
         options.WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         return options;
     }
@@ -284,7 +295,8 @@ public sealed class AgentOptions
     private static string? TimeZoneChecked(string? name) =>
         name is null || TimeZoneInfo.TryFindSystemTimeZoneById(name, out _)
             ? name
-            : throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownHostTimeZone, new { Value = name }));
+            : throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownHostTimeZone,
+                new { Value = name }));
 
     /// <summary>Nearest directory at or above <paramref name="startDirectory"/> containing .git or a .sln file.</summary>
     internal static string? FindRepositoryRoot(string startDirectory)

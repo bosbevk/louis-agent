@@ -33,9 +33,12 @@ internal static class ApiTestHost
     /// Starts the API in memory the way Program.cs builds it, on a test server with no port. Give it an admin key and a store to open the admin portal, and a clock to fix
     /// the time notes are stamped with. A test that writes or commits gives its own workspace folder.
     /// </summary>
-    public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null, IBenchmarkStore? store = null,
-        BenchmarkRunner? runner = null, BenchmarkRecorder? recorder = null, BenchmarkCatalog? catalog = null, IHumanReviewStore? reviews = null,
-        ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null, TimeProvider? time = null)
+    public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null,
+        IBenchmarkStore? store = null,
+        BenchmarkRunner? runner = null, BenchmarkRecorder? recorder = null, BenchmarkCatalog? catalog = null,
+        IHumanReviewStore? reviews = null,
+        ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
+        TimeProvider? time = null)
     {
         var host = HostContext(workspaceRoot ?? RepoRoot);
         var builder = WebApplication.CreateBuilder();
@@ -47,14 +50,18 @@ internal static class ApiTestHost
         var api = app.MapApi(host);
 
         var benchmarks = catalog ?? new BenchmarkCatalog();
-        api.MapAdmin(benchmarks, runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey, store, recorder,
-            _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations, calibrationRecorder, time);
+        api.MapAdmin(benchmarks,
+            runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey,
+            store, recorder,
+            _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations,
+            calibrationRecorder, time);
         return app;
     }
 
     /// <summary>Every route the API maps, endpoint by endpoint.</summary>
     public static IReadOnlyList<RouteEndpoint> Routes(WebApplication app) =>
-        ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>().ToList();
+        ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>()
+        .ToList();
 
     /// <summary>The route's pattern with its group prefix and constraints (<c>/v1/admin/benchmarks/runs/{id}</c>); every route's starts with a slash.</summary>
     public static string Pattern(RouteEndpoint endpoint)
@@ -73,17 +80,20 @@ internal static class ApiTestHost
     }
 
     /// <summary>Who may call the route, as the key gate reads it.</summary>
-    public static RouteAccess Access(RouteEndpoint endpoint) => AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
+    public static RouteAccess Access(RouteEndpoint endpoint) =>
+        AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
 
     /// <summary>What the API runs on: an engine over a model that is never called, with the Puls identity and the shops pack.</summary>
     private static AgentHostContext HostContext(string workspaceRoot)
     {
-        var options = new AgentOptions { WorkspaceRoot = workspaceRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null };
+        var options = new AgentOptions
+        { WorkspaceRoot = workspaceRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null };
         var catalog = new AgentCatalog([new LouisAgent.Identities.Puls.PulsIdentity()],
             [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions())]);
         var engines = new AgentEngineFactory(new NoModel(), options, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
-        return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty, DisplayCurrency.Charged("USD"), engines);
+        return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,
+            DisplayCurrency.Charged("USD"), engines);
     }
 
     /// <summary>A chat client that is never called: no route test sends a message.</summary>
@@ -95,11 +105,15 @@ internal static class ApiTestHost
 
         /// <summary>Never called: no route test streams a message.</summary>
         public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
-            ChatOptions? options = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
+            ChatOptions? options = null, CancellationToken cancellationToken = default) =>
+            throw new NotSupportedException();
 
         /// <summary>Has no services to offer.</summary>
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
+
         /// <summary>Nothing to clean up.</summary>
-        public void Dispose() { }
+        public void Dispose()
+        {
+        }
     }
 }

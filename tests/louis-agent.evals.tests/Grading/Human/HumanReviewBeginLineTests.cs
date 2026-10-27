@@ -22,7 +22,9 @@ public class HumanReviewBeginLineTests
         public GraderKind Kind => GraderKind.Model;
         public bool Required => false;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotSupportedException();
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 
     private sealed class Rule : IGrader
@@ -32,13 +34,16 @@ public class HumanReviewBeginLineTests
         public GraderKind Kind => GraderKind.FixedRule;
         public bool Required => true;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotSupportedException();
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 
     private static JsonElement[] Graders(params IGrader[] graders)
     {
         var sink = new StringWriter();
-        new ProtocolWriter(sink, new FixedClock(DateTimeOffset.UnixEpoch)).Begin(SampleEval.Beta, 9, "abc", graders, []);
+        new ProtocolWriter(sink, new FixedClock(DateTimeOffset.UnixEpoch)).Begin(SampleEval.Beta, 9, "abc", graders,
+            []);
         using var line = JsonDocument.Parse(sink.ToString().Trim().TrimStart('@'));
         return [.. line.RootElement.GetProperty("graders").EnumerateArray().Select(g => g.Clone())];
     }
@@ -57,6 +62,7 @@ public class HumanReviewBeginLineTests
     {
         var entries = Graders(new Rule(), new Judge());
 
-        Assert.That(entries.Any(e => e.TryGetProperty("question", out _)), Is.False, "the lines of every other grader are as they were");
+        Assert.That(entries.Any(e => e.TryGetProperty("question", out _)), Is.False,
+            "the lines of every other grader are as they were");
     }
 }

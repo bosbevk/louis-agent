@@ -34,19 +34,21 @@ public static class BenchmarkLedger
     /// <summary>The rows of <paramref name="run"/>, each model request once: without the sub-session roll-ups.</summary>
     public static IReadOnlyList<UsageRecord> OfRun(string run, IEnumerable<UsageRecord> records) =>
         records.Where(r => r.Run is { } tag && (tag == run || tag.StartsWith(run + ":", StringComparison.Ordinal))
-                           && r.Purpose != UsagePurpose.SubSession)
+                                            && r.Purpose != UsagePurpose.SubSession)
             .ToArray();
 
     /// <summary>
     /// The run's rows as requests, each with its turn when one is known. <paramref name="sessions"/> are the sessions the
     /// script opened, by the conversation each belongs to; a row nobody can place is kept, with no turn.
     /// </summary>
-    public static IReadOnlyList<Request> Join(string run, IReadOnlyList<UsageRecord> ofRun, IReadOnlyDictionary<string, ConversationKey> sessions)
+    public static IReadOnlyList<Request> Join(string run, IReadOnlyList<UsageRecord> ofRun,
+        IReadOnlyDictionary<string, ConversationKey> sessions)
     {
         // Every child session's parent turn, from the child's own rows: a specialist's is a Puls turn, a minion's a specialist's.
         var parents = new Dictionary<string, (string Session, int Turn)>();
         foreach (var record in ofRun)
-            if (record.Session is { } session && ParentOf(record) is { } parent) parents.TryAdd(session, parent);
+            if (record.Session is { } session && ParentOf(record) is { } parent)
+                parents.TryAdd(session, parent);
 
         TurnKey? TurnOf(string? session, int? turn)
         {
@@ -57,10 +59,12 @@ public static class BenchmarkLedger
                 if (!parents.TryGetValue(session, out var up)) return null;
                 (session, turn) = (up.Session, up.Turn);
             }
+
             return null;
         }
 
-        return ofRun.Select(r => new Request(run, TurnOf(r.Session, r.Turn), r.At, r.Purpose, r.Session, r.Parent, r.Model,
+        return ofRun.Select(r => new Request(run, TurnOf(r.Session, r.Turn), r.At, r.Purpose, r.Session, r.Parent,
+                r.Model,
                 r.Tokens.Input, r.Tokens.Output, r.Tokens.CacheRead, r.Tokens.CacheWrite, r.Cost?.Amount, r.DurationMs))
             .OrderBy(r => r.At)
             .ToArray();
@@ -71,7 +75,8 @@ public static class BenchmarkLedger
     {
         var total = UsageReport.Total("run", ofRun);
         string currency = ofRun.Select(r => r.Cost?.Currency).FirstOrDefault(c => c is not null) ?? "USD";
-        return new Total(total.Cost, currency, total.Input + total.CacheWrite + total.CacheRead + total.Output, total.Requests);
+        return new Total(total.Cost, currency, total.Input + total.CacheWrite + total.CacheRead + total.Output,
+            total.Requests);
     }
 
     /// <summary>
@@ -84,7 +89,8 @@ public static class BenchmarkLedger
 
     /// <summary><c>{session}#{turn}</c> as its parts; null for a row with no parent.</summary>
     private static (string Session, int Turn)? ParentOf(UsageRecord record) =>
-        record.Parent is { } parent && parent.LastIndexOf('#') is > 0 and var hash && int.TryParse(parent.AsSpan(hash + 1), out int turn)
+        record.Parent is { } parent && parent.LastIndexOf('#') is > 0 and var hash &&
+        int.TryParse(parent.AsSpan(hash + 1), out int turn)
             ? (parent[..hash], turn)
             : null;
 }

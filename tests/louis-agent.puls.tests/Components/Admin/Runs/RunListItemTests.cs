@@ -21,17 +21,22 @@ public class RunListItemTests
     private static HttpResponseMessage Answer(HttpStatusCode code, string body) =>
         new(code) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
 
-    private static (IRenderedComponent<RunListItem> Cut, StubHandler Handler, List<string> Started) Render(RunSummary run, Func<HttpRequestMessage, HttpResponseMessage>? respond = null,
+    private static (IRenderedComponent<RunListItem> Cut, StubHandler Handler, List<string> Started) Render(
+        RunSummary run, Func<HttpRequestMessage, HttpResponseMessage>? respond = null,
         bool disabled = false)
     {
         var ctx = new BunitContext();
-        var handler = new StubHandler(respond ?? (_ => Answer(HttpStatusCode.Created, """{"id":"new987654321","check":"stub"}""")));
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        var handler = new StubHandler(respond ?? (_ =>
+            Answer(HttpStatusCode.Created, """{"id":"new987654321","check":"stub"}""")));
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") },
+            new ChatSettings()));
         var started = new List<string>();
         var cut = ctx.Render<RunListItem>(p => p
             .Add(x => x.Run, run)
             .Add(x => x.Disabled, disabled)
-            .Add(x => x.OnRescored, Microsoft.AspNetCore.Components.EventCallback.Factory.Create<string>(started, (Action<string>)(id => started.Add(id)))));
+            .Add(x => x.OnRescored,
+                Microsoft.AspNetCore.Components.EventCallback.Factory.Create<string>(started,
+                    (Action<string>)(id => started.Add(id)))));
         return (cut, handler, started);
     }
 
@@ -50,11 +55,14 @@ public class RunListItemTests
     [Test]
     public void ARefusedReScore_SaysWhy_AndReportsNothing()
     {
-        var (cut, _, started) = Render(Run(), _ => Answer(HttpStatusCode.Conflict, """{"type":"error","error":{"type":"conflict_error","message":"A run of stub is running."}}"""));
+        var (cut, _, started) = Render(Run(),
+            _ => Answer(HttpStatusCode.Conflict,
+                """{"type":"error","error":{"type":"conflict_error","message":"A run of stub is running."}}"""));
 
         cut.Find("button.rescore").Click();
 
-        cut.WaitForAssertion(() => Assert.That(cut.Find(".rescore-error").TextContent, Does.Contain("A run of stub is running.")));
+        cut.WaitForAssertion(() =>
+            Assert.That(cut.Find(".rescore-error").TextContent, Does.Contain("A run of stub is running.")));
         Assert.That(started, Is.Empty);
     }
 
@@ -62,7 +70,8 @@ public class RunListItemTests
     public void ARunStillRunning_OrWhileAnotherDoes_HasNoEnabledButton()
     {
         Assert.That(Render(Run(status: "running")).Cut.FindAll("button.rescore"), Is.Empty, "nothing to re-score yet");
-        Assert.That(Render(Run(), disabled: true).Cut.Find("button.rescore").HasAttribute("disabled"), Is.True, "one run at a time");
+        Assert.That(Render(Run(), disabled: true).Cut.Find("button.rescore").HasAttribute("disabled"), Is.True,
+            "one run at a time");
     }
 
     [Test]

@@ -28,7 +28,8 @@ public class StalledStreamTests
         // .NET changes that, this fails, and the idle limit in SendAsync may be redundant.
         await using var server = new SlowSseServer((None, SlowSseServer.Event("een")));
         using var http = new HttpClient { BaseAddress = server.Address, Timeout = TimeSpan.FromMilliseconds(400) };
-        using var request = new HttpRequestMessage(HttpMethod.Post, "v1/sessions/s/messages") { Content = new StringContent("{}") };
+        using var request = new HttpRequestMessage(HttpMethod.Post, "v1/sessions/s/messages")
+        { Content = new StringContent("{}") };
 
         using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
         await using var body = await response.Content.ReadAsStreamAsync();
@@ -37,11 +38,14 @@ public class StalledStreamTests
         var clock = Stopwatch.StartNew();
         var next = Assert.CatchAsync<OperationCanceledException>(async () =>
         {
-            await foreach (var _ in SessionStreamReader.ReadAsync(body, ours.Token)) { }
+            await foreach (var _ in SessionStreamReader.ReadAsync(body, ours.Token))
+            {
+            }
         });
 
         Assert.That(first.Type, Is.EqualTo("content_block_delta"));
-        Assert.That(next!.CancellationToken, Is.EqualTo(ours.Token), "it was our token that stopped the read, not HttpClient's 400 ms timeout");
+        Assert.That(next!.CancellationToken, Is.EqualTo(ours.Token),
+            "it was our token that stopped the read, not HttpClient's 400 ms timeout");
         Assert.That(clock.Elapsed, Is.GreaterThan(TimeSpan.FromMilliseconds(1000)));
     }
 
@@ -65,7 +69,8 @@ public class StalledStreamTests
     public async Task EachEventRestartsTheIdleClock_SoALongTurnOfLiveEventsIsNotCutOff()
     {
         var wait = TimeSpan.FromMilliseconds(250);
-        await using var server = new SlowSseServer(Enumerable.Range(1, 6).Select(n => (wait, SlowSseServer.Event("n" + n))).ToArray());
+        await using var server =
+            new SlowSseServer(Enumerable.Range(1, 6).Select(n => (wait, SlowSseServer.Event("n" + n))).ToArray());
         var client = ClientTo(server, TimeSpan.FromSeconds(30), idle: TimeSpan.FromMilliseconds(700));
         var clock = Stopwatch.StartNew();
         int seen = 0;
@@ -85,7 +90,8 @@ public class StalledStreamTests
     public async Task TheCallersOwnTimeBetweenEvents_IsNotCountedAgainstTheStream()
     {
         // The idle limit is the stream's silence, not the caller's work: the runner writes protocol lines between events.
-        await using var server = new SlowSseServer((None, SlowSseServer.Event("een")), (TimeSpan.FromMilliseconds(100), SlowSseServer.Event("twee")));
+        await using var server = new SlowSseServer((None, SlowSseServer.Event("een")),
+            (TimeSpan.FromMilliseconds(100), SlowSseServer.Event("twee")));
         var client = ClientTo(server, TimeSpan.FromSeconds(30), idle: TimeSpan.FromMilliseconds(300));
         var seen = new List<string>();
 
@@ -94,11 +100,12 @@ public class StalledStreamTests
             await foreach (var streamEvent in client.SendAsync("s", "Hallo", Run))
             {
                 seen.Add(streamEvent.Type);
-                if (seen.Count == 1) await Task.Delay(700, Run);   // slower than the idle limit
+                if (seen.Count == 1) await Task.Delay(700, Run); // slower than the idle limit
             }
         });
 
-        Assert.That(seen, Has.Count.EqualTo(2), "the second event was waiting; the caller's 700 ms was not the stream's silence");
+        Assert.That(seen, Has.Count.EqualTo(2),
+            "the second event was waiting; the caller's 700 ms was not the stream's silence");
     }
 
     [Test, CancelAfter(15_000)]

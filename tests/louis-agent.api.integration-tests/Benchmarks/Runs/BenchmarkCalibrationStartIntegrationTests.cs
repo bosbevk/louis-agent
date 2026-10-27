@@ -18,11 +18,15 @@ public class BenchmarkCalibrationStartIntegrationTests
     [Test]
     public void ACalibrationStartsTheRunnerWithAnArgumentList_AndPipesTheLabels()
     {
-        var run = new BenchmarkRun("cal123456789", "stub", 1, calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{\"grader\":\"meal-for-people\"}\n");
+        var run = new BenchmarkRun("cal123456789", "stub", 1,
+            calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"),
+            input: "{\"grader\":\"meal-for-people\"}\n");
 
         var start = Runner().StartInfoFor(Stub, run);
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { RunnerBuild.Dll, "--calibrate", "stub", "meal-for-people", "--labels", "-" }), "no run, no --repeat: a check of the judge, not a run");
+        Assert.That(start.ArgumentList,
+            Is.EqualTo(new[] { RunnerBuild.Dll, "--calibrate", "stub", "meal-for-people", "--labels", "-" }),
+            "no run, no --repeat: a check of the judge, not a run");
         Assert.That(start.RedirectStandardInput, Is.True);
         Assert.That(start.Environment["BENCHMARK_RUN"], Is.EqualTo("cal123456789"));
     }
@@ -30,6 +34,7 @@ public class BenchmarkCalibrationStartIntegrationTests
     [Test]
     public void ACalibrationOfACheckTheRunnerDoesNotList_IsRefused()
     {
-        Assert.That(Runner().StartCalibration("unknown", "76667d39dcdb", "meal-for-people", "{}\n"), Is.Null, "no eval of that name, so no judge to check");
+        Assert.That(Runner().StartCalibration("unknown", "76667d39dcdb", "meal-for-people", "{}\n"), Is.Null,
+            "no eval of that name, so no judge to check");
     }
 }

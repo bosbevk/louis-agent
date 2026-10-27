@@ -21,13 +21,15 @@ namespace LouisAgent.Api.Tests.Sessions;
 // writer (the stream format seam, F18 step 1f) moves no byte. Regenerate with LOUIS_UPDATE_GOLDEN=1.
 public class StreamGoldenTests
 {
-    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.api.tests", "Sessions", "StreamGolden.sse");
+    private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.api.tests",
+        "Sessions", "StreamGolden.sse");
 
     /// <summary>The one tool of the scripted turns: a note by name, as the ACP transcript's tool is.</summary>
     private sealed class NoteTools
     {
         [System.ComponentModel.Description("Reads a note by name")]
-        public string ReadNote([System.ComponentModel.Description("The note's name")] string name) => $"note {name}: melktert, Sunday";
+        public string ReadNote([System.ComponentModel.Description("The note's name")] string name) =>
+            $"note {name}: melktert, Sunday";
     }
 
     /// <summary>
@@ -39,22 +41,28 @@ public class StreamGoldenTests
         private int _streams;
 
         public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
-            CancellationToken cancellationToken = default) => first.GetResponseAsync(messages, options, cancellationToken);
+            CancellationToken cancellationToken = default) =>
+            first.GetResponseAsync(messages, options, cancellationToken);
 
         public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
             ChatOptions? options = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (++_streams == 1)
             {
-                await foreach (var update in first.GetStreamingResponseAsync(messages, options, cancellationToken)) yield return update;
+                await foreach (var update in first.GetStreamingResponseAsync(messages, options, cancellationToken))
+                    yield return update;
                 yield break;
             }
+
             yield return new ChatResponseUpdate(ChatRole.Assistant, [new TextContent("Checking the second note")]);
             throw new InvalidOperationException("the connection dropped");
         }
 
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
-        public void Dispose() { }
+
+        public void Dispose()
+        {
+        }
     }
 
     [Test]
@@ -62,7 +70,8 @@ public class StreamGoldenTests
     {
         byte[] written = await WrittenAsync(await ScriptedAsync());
 
-        if (Environment.GetEnvironmentVariable("LOUIS_UPDATE_GOLDEN") == "1") await File.WriteAllBytesAsync(GoldenFile, written);
+        if (Environment.GetEnvironmentVariable("LOUIS_UPDATE_GOLDEN") == "1")
+            await File.WriteAllBytesAsync(GoldenFile, written);
         Assert.That(written, Is.EqualTo(await File.ReadAllBytesAsync(GoldenFile)));
     }
 
@@ -73,7 +82,8 @@ public class StreamGoldenTests
 
         var read = new List<SessionEvent>();
         await using (var stream = File.OpenRead(GoldenFile))
-        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, CancellationToken.None)) read.Add(streamEvent);
+            await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, CancellationToken.None))
+                read.Add(streamEvent);
 
         Assert.That(read.Select(e => e.Type), Is.EqualTo(written.Select(w => w.EventType)));
         Assert.That(read.Select(e => e.Data.GetRawText()), Is.EqualTo(written.Select(w => w.Data)));
@@ -86,19 +96,22 @@ public class StreamGoldenTests
 
         // A turn that thinks, says something, calls a tool and answers; both requests carry their usage.
         events.AddRange(await TurnAsync(_ => new FakeChatClient(
-            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
-            [
-                new TextReasoningContent("The user attached a note; the tool can read it."),
-                new TextContent("Let me check the note."),
-                new FunctionCallContent("call_1", "ReadNote", new Dictionary<string, object?> { ["name"] = "recipe" }),
-                Usage(120, 20),
-            ])),
-            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("The note says: melktert on Sunday."), Usage(150, 12)]))),
+                _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
+                [
+                    new TextReasoningContent("The user attached a note; the tool can read it."),
+                    new TextContent("Let me check the note."),
+                    new FunctionCallContent("call_1", "ReadNote",
+                        new Dictionary<string, object?> { ["name"] = "recipe" }),
+                    Usage(120, 20),
+                ])),
+                _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
+                    [new TextContent("The note says: melktert on Sunday."), Usage(150, 12)]))),
             "Read the recipe note.", toolsets: [new NoteTools()]));
 
         // A sub-session's event, as the specialist's stream reached the chat while its call ran.
-        events.Add(StreamFormats.Create(StreamFormat.Claude, "sess_golden", [CoreToolset.Web.Wire()], null).SubSession(new SubSessionEvent("call_sub", "puls", "message_start",
-            """{"type":"message_start","message":{"session_id":"sess_peer","role":"assistant","toolsets":["web"]}}""")));
+        events.Add(StreamFormats.Create(StreamFormat.Claude, "sess_golden", [CoreToolset.Web.Wire()], null).SubSession(
+            new SubSessionEvent("call_sub", "puls", "message_start",
+                """{"type":"message_start","message":{"session_id":"sess_peer","role":"assistant","toolsets":["web"]}}""")));
 
         // A command is answered without the model.
         events.AddRange(await TurnAsync(_ => new FakeChatClient(), "/tools"));
@@ -112,8 +125,8 @@ public class StreamGoldenTests
 
         // A turn that fails on its second request, with a text block open: the block closes, then the error, with the usage
         // of the request that answered before it.
-        events.AddRange(await TurnAsync(_ => new DropsAfterText(new FakeChatClient(
-            _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
+        events.AddRange(await TurnAsync(_ => new DropsAfterText(new FakeChatClient(_ =>
+            new ChatResponse(new ChatMessage(ChatRole.Assistant,
             [
                 new FunctionCallContent("call_2", "ReadNote", new Dictionary<string, object?> { ["name"] = "recipe" }),
                 Usage(80, 5),

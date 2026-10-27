@@ -39,14 +39,17 @@ public sealed class ServesAsAsked : IGrader
             int number = i + 1;
             var view = i < turns.Count ? TurnView.From(turns[i]) : null;
             if (view is null || view.Error is not null || view.Answer.Length == 0)
-                return Verdict.Unknown(Name, Version, MessageText.Format(GradeMessage.ServesNothingToRead, new { Turn = number }));
+                return Verdict.Unknown(Name, Version,
+                    MessageText.Format(GradeMessage.ServesNothingToRead, new { Turn = number }));
 
             var found = Servings.Of(view.Answer);
             if (found.Contains(asked[i])) continue;
             return Verdict.Fail(Name, Version, found.Count == 0
                 ? MessageText.Format(GradeMessage.ServesForgotten, new { Turn = number, Asked = asked[i] })
-                : MessageText.Format(GradeMessage.ServesWrong, new { Turn = number, Found = string.Join(", ", found), Asked = asked[i] }));
+                : MessageText.Format(GradeMessage.ServesWrong,
+                    new { Turn = number, Found = string.Join(", ", found), Asked = asked[i] }));
         }
+
         return Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ServesRight));
     }
 }

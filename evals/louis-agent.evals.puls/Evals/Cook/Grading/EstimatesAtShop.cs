@@ -50,7 +50,8 @@ public sealed class EstimatesAtShop : IGrader
         var priced = Prices.Priced(answer);
         if ((priced?.Priced ?? 0) + (priced?.Guessed ?? 0) > 0 || Prices.PriceLinkHosts(answer).Count > 0)
             return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPriceForAny));
-        if (!Shops.EstimatesLine(answer)) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesNotSaid));
+        if (!Shops.EstimatesLine(answer))
+            return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesNotSaid));
 
         return shop switch
         {
@@ -65,16 +66,23 @@ public sealed class EstimatesAtShop : IGrader
     /// <summary>The branch under Where to buy: named, or the case it is not (no section, no branch with a place, only a nearest one), so a fail says why.</summary>
     private Grade BranchVerdict(string answer, string shop) => BranchReading.Of(answer, shop) switch
     {
-        BranchFinding.Named => Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopEstimatesRight, new { Shop = shop })),
-        BranchFinding.NoSection => Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoWhereToBuySection)),
-        BranchFinding.OnlyNearest => Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopOnlyNearestBranch, new { Shop = shop })),
+        BranchFinding.Named => Verdict.Pass(Name, Version,
+            MessageText.Format(GradeMessage.ShopEstimatesRight, new { Shop = shop })),
+        BranchFinding.NoSection => Verdict.Fail(Name, Version,
+            MessageText.Format(GradeMessage.ShopNoWhereToBuySection)),
+        BranchFinding.OnlyNearest => Verdict.Fail(Name, Version,
+            MessageText.Format(GradeMessage.ShopOnlyNearestBranch, new { Shop = shop })),
         _ => Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoBranchWithPlace, new { Shop = shop })),
     };
 
     /// <summary>A page of a shop's site read, by either tool that reads a page: the cook looks up no shop now.</summary>
     private static bool ReadsAShop(ToolCall call) =>
-        call.Name is Shops.PageTool or "FetchUrl" && Text(call.Input, "url") is { } url && Shops.SiteOf(url) is not null;
+        call.Name is Shops.PageTool or "FetchUrl" && Text(call.Input, "url") is { } url &&
+        Shops.SiteOf(url) is not null;
 
     private static string? Text(JsonElement input, string name) =>
-        input.ValueKind == JsonValueKind.Object && input.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+        input.ValueKind == JsonValueKind.Object && input.TryGetProperty(name, out var value) &&
+        value.ValueKind == JsonValueKind.String
+            ? value.GetString()
+            : null;
 }

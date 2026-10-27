@@ -8,7 +8,8 @@ namespace LouisAgent.Evals.Protocol;
 /// <summary>The fields of a run's first line (F18 step 2a): the eval, its version, the commit, its split, its graders and the model each mode ran on. The writer emits them.</summary>
 internal static class RunBeginLine
 {
-    public static void Write(Utf8JsonWriter json, string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models,
+    public static void Write(Utf8JsonWriter json, string eval, int evalVersion, string commit,
+        IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models,
         SplitSelection split, string? rescoreOf = null, DatasetManifest? dataset = null)
     {
         json.WriteNumber("version", ProtocolWriter.Version);
@@ -26,6 +27,7 @@ internal static class RunBeginLine
             json.WriteString("hash", dataset.ContentHash);
             json.WriteEndObject();
         }
+
         json.WriteStartArray("graders");
         foreach (var grader in graders)
         {
@@ -37,6 +39,7 @@ internal static class RunBeginLine
             if (grader is Grading.Human.HumanReviewGrader review) json.WriteString("question", review.Question);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
         json.WriteStartArray("models");
         foreach (var use in models)
@@ -48,6 +51,7 @@ internal static class RunBeginLine
             WriteText(json, "model", use.Model);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
     }
 

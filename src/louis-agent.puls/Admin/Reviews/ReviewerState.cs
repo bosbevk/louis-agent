@@ -32,6 +32,7 @@ public sealed class ReviewerState(IJSRuntime js)
         {
             // Storage blocked or unavailable: no remembered name, and the person types one for this visit.
         }
+
         if (Name is not null) Changed?.Invoke();
     }
 
@@ -49,6 +50,7 @@ public sealed class ReviewerState(IJSRuntime js)
         {
             // Not remembered, but the name works for this visit.
         }
+
         Changed?.Invoke();
         return true;
     }
@@ -65,6 +67,7 @@ public sealed class ReviewerState(IJSRuntime js)
         {
             // Not forgotten by the browser, but gone for this visit.
         }
+
         Changed?.Invoke();
     }
 

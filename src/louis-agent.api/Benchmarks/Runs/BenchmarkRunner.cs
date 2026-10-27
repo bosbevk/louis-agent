@@ -11,7 +11,12 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// ledger and timings. Its lines (stdout and stderr) are kept on the run and streamed to listeners.
 /// </summary>
 /// <param name="evalHost">What runs the eval runner's dll: <c>dotnet</c>; a test gives a stand-in.</param>
-public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRoot, string pulsApi, string evalRunner = AdminOptions.DefaultEvalRunner, string evalHost = "dotnet")
+public sealed class BenchmarkRunner(
+    BenchmarkCatalog catalog,
+    string workspaceRoot,
+    string pulsApi,
+    string evalRunner = AdminOptions.DefaultEvalRunner,
+    string evalHost = "dotnet")
 {
     /// <summary>Repeats one run may ask for.</summary>
     public const int MaxRepeat = 5;
@@ -39,7 +44,8 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     public BenchmarkRun? StartRescore(string checkId, string rescoreOf, string export, int repeat)
     {
         if (EvalCheck(checkId) is not { } check) return null;
-        return StartLocked(check, new BenchmarkRun(NewId(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), rescoreOf: rescoreOf, input: export));
+        return StartLocked(check,
+            new BenchmarkRun(NewId(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), rescoreOf: rescoreOf, input: export));
     }
 
     /// <summary>
@@ -50,11 +56,14 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     public BenchmarkRun? StartCalibration(string checkId, string calibrationOf, string grader, string labels)
     {
         if (EvalCheck(checkId) is not { } check) return null;
-        return StartLocked(check, new BenchmarkRun(NewId(), check.Id, 1, calibration: new BenchmarkCalibration(calibrationOf, grader), input: labels));
+        return StartLocked(check,
+            new BenchmarkRun(NewId(), check.Id, 1, calibration: new BenchmarkCalibration(calibrationOf, grader),
+                input: labels));
     }
 
     /// <summary>The run's lines: those so far, then each new one until it ends. Empty for an unknown id.</summary>
-    public async IAsyncEnumerable<string> EventsAsync(string id, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<string> EventsAsync(string id,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         if (Current is not { } run || run.Id != id) yield break;
         var (soFar, live) = run.Listen();
@@ -63,7 +72,8 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
     }
 
     /// <summary>The start of one run's process (F18 step 4.3), as <see cref="RunnerStartInfo"/> builds it with this runner's paths.</summary>
-    internal ProcessStartInfo StartInfoFor(BenchmarkCheck check, BenchmarkRun run) => RunnerStartInfo.For(check, run, _paths);
+    internal ProcessStartInfo StartInfoFor(BenchmarkCheck check, BenchmarkRun run) =>
+        RunnerStartInfo.For(check, run, _paths);
 
     /// <summary>Writes the stored run's export to the runner's stdin and closes it; a runner that ended without reading it is not an error here, its exit code says how it ended.</summary>
     internal static async Task PumpAsync(TextWriter stdin, string input)
@@ -98,8 +108,14 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
         var start = StartInfoFor(check, run);
 
         var process = new Process { StartInfo = start, EnableRaisingEvents = true };
-        process.OutputDataReceived += (_, e) => { if (e.Data is not null) run.Add(e.Data); };
-        process.ErrorDataReceived += (_, e) => { if (e.Data is not null) run.Add(e.Data); };
+        process.OutputDataReceived += (_, e) =>
+        {
+            if (e.Data is not null) run.Add(e.Data);
+        };
+        process.ErrorDataReceived += (_, e) =>
+        {
+            if (e.Data is not null) run.Add(e.Data);
+        };
         process.Exited += (_, _) =>
         {
             // The stream readers may still be draining when Exited fires; wait for them so the last lines arrive first.

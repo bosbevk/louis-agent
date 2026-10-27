@@ -6,8 +6,10 @@ namespace LouisAgent.Puls.Components.Admin.Summary;
 public partial class RateBar
 {
     /// <summary>The rate, 0 to 1; null draws nothing.</summary>
-    [Parameter] public double? Rate { get; set; }
+    [Parameter]
+    public double? Rate { get; set; }
 
     /// <summary>Orange, for pass^k.</summary>
-    [Parameter] public bool Hat { get; set; }
+    [Parameter]
+    public bool Hat { get; set; }
 }

@@ -17,21 +17,32 @@ public class HtmlTextLeadImageTests
     [Test]
     public void ARecipesJsonLdImage_IsTheFirstLine()
     {
-        var (_, text) = HtmlText.ToText(Html(JsonLd("""{"@context":"https://schema.org","@type":"Recipe","name":"Pap","image":"https://recipes.example.co.za/wp-content/uploads/pap.jpg"}""")), Page);
+        var (_, text) =
+            HtmlText.ToText(
+                Html(JsonLd(
+                    """{"@context":"https://schema.org","@type":"Recipe","name":"Pap","image":"https://recipes.example.co.za/wp-content/uploads/pap.jpg"}""")),
+                Page);
 
-        Assert.That(text.Split('\n')[0], Is.EqualTo("![Pap en wors tert](https://recipes.example.co.za/wp-content/uploads/pap.jpg)"));
+        Assert.That(text.Split('\n')[0],
+            Is.EqualTo("![Pap en wors tert](https://recipes.example.co.za/wp-content/uploads/pap.jpg)"));
     }
 
     [Test]
     public void TheImage_MayBeAnArray_AnImageObject_OrInAGraph()
     {
-        string graph = JsonLd("""{"@graph":[{"@type":"WebSite"},{"@type":["Recipe"],"image":[{"@type":"ImageObject","url":"https://r.example.co.za/a.jpg"},"https://r.example.co.za/b.jpg"]}]}""");
-        string single = JsonLd("""{"@type":"Recipe","image":{"@type":"ImageObject","url":"https://r.example.co.za/c.jpg"}}""");
+        string graph =
+            JsonLd(
+                """{"@graph":[{"@type":"WebSite"},{"@type":["Recipe"],"image":[{"@type":"ImageObject","url":"https://r.example.co.za/a.jpg"},"https://r.example.co.za/b.jpg"]}]}""");
+        string single =
+            JsonLd("""{"@type":"Recipe","image":{"@type":"ImageObject","url":"https://r.example.co.za/c.jpg"}}""");
         string list = JsonLd("""[{"@type":"Recipe","image":["https://r.example.co.za/d.jpg"]}]""");
 
-        Assert.That(HtmlText.ToText(Html(graph), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/a.jpg)"));
-        Assert.That(HtmlText.ToText(Html(single), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/c.jpg)"));
-        Assert.That(HtmlText.ToText(Html(list), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/d.jpg)"));
+        Assert.That(HtmlText.ToText(Html(graph), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/a.jpg)"));
+        Assert.That(HtmlText.ToText(Html(single), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/c.jpg)"));
+        Assert.That(HtmlText.ToText(Html(list), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/d.jpg)"));
     }
 
     [Test]
@@ -47,22 +58,30 @@ public class HtmlTextLeadImageTests
     {
         string og = """<meta property="og:image" content="https://r.example.co.za/og.jpg">""";
 
-        Assert.That(HtmlText.ToText(Html(og), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
-        Assert.That(HtmlText.ToText(Html(og + JsonLd("""{"@type":"Recipe","image":"https://r.example.co.za/recipe.jpg"}""")), Page).Text,
+        Assert.That(HtmlText.ToText(Html(og), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
+        Assert.That(
+            HtmlText.ToText(Html(og + JsonLd("""{"@type":"Recipe","image":"https://r.example.co.za/recipe.jpg"}""")),
+                Page).Text,
             Does.StartWith("![Pap en wors tert](https://r.example.co.za/recipe.jpg)"));
     }
 
     [Test]
     public void AnOgImage_WithTheContentAttributeFirst_IsStillRead() =>
-        Assert.That(HtmlText.ToText(Html("""<meta content="https://r.example.co.za/og.jpg" property="og:image" />"""), Page).Text,
+        Assert.That(
+            HtmlText.ToText(Html("""<meta content="https://r.example.co.za/og.jpg" property="og:image" />"""), Page)
+                .Text,
             Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
 
     [Test]
     public void AnImageThePageAlreadyShows_IsNotAddedTwice()
     {
-        string body = """<main><h1>Pap</h1><img src="https://r.example.co.za/pap.jpg" alt="Pap en wors tert"><p>500 g wors</p></main>""";
+        string body =
+            """<main><h1>Pap</h1><img src="https://r.example.co.za/pap.jpg" alt="Pap en wors tert"><p>500 g wors</p></main>""";
 
-        var (_, text) = HtmlText.ToText(Html(JsonLd("""{"@type":"Recipe","image":"https://r.example.co.za/pap.jpg"}"""), body), Page);
+        var (_, text) =
+            HtmlText.ToText(Html(JsonLd("""{"@type":"Recipe","image":"https://r.example.co.za/pap.jpg"}"""), body),
+                Page);
 
         Assert.That(text.Split("https://r.example.co.za/pap.jpg").Length - 1, Is.EqualTo(1));
     }
@@ -83,53 +102,79 @@ public class HtmlTextLeadImageTests
     [Test]
     public void ANonRecipePage_GivesItsMainEntitiesImage_SkippingTheEntitiesThatDescribeTheSite()
     {
-        string graph = JsonLd("""{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/logo-photo.jpg"},{"@type":"WebSite"},{"@type":"WebPage","image":"https://r.example.co.za/page.jpg"},{"@type":"Person","image":"https://r.example.co.za/author.jpg"},{"@type":"NewsArticle","image":["https://r.example.co.za/story.jpg"]}]}""");
+        string graph =
+            JsonLd(
+                """{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/logo-photo.jpg"},{"@type":"WebSite"},{"@type":"WebPage","image":"https://r.example.co.za/page.jpg"},{"@type":"Person","image":"https://r.example.co.za/author.jpg"},{"@type":"NewsArticle","image":["https://r.example.co.za/story.jpg"]}]}""");
 
-        Assert.That(HtmlText.ToText(Html(graph), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/story.jpg)"));
+        Assert.That(HtmlText.ToText(Html(graph), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/story.jpg)"));
     }
 
     [Test]
     public void APageWhoseOnlyEntitiesDescribeTheSite_FallsBackToItsOgImage()
     {
-        string only = JsonLd("""{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/the-company.jpg"},{"@type":"ImageObject","url":"https://r.example.co.za/x.jpg"}]}""");
+        string only =
+            JsonLd(
+                """{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/the-company.jpg"},{"@type":"ImageObject","url":"https://r.example.co.za/x.jpg"}]}""");
         string og = """<meta property="og:image" content="https://r.example.co.za/og.jpg">""";
 
-        Assert.That(HtmlText.ToText(Html(only + og), Page).Text, Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
+        Assert.That(HtmlText.ToText(Html(only + og), Page).Text,
+            Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
     }
 
     // The page's main item, whatever it is (ADR 0027: core names no domain). A breadcrumb trail is the page's furniture too.
     [Test]
     public void AnArticlePage_GivesItsNewsArticlesImage() =>
-        Assert.That(HtmlText.ToText(Html(JsonLd("""{"@type":"NewsArticle","headline":"Big news","image":["https://r.example.co.za/story.jpg"]}""")), Page).Text,
+        Assert.That(
+            HtmlText.ToText(
+                Html(JsonLd(
+                    """{"@type":"NewsArticle","headline":"Big news","image":["https://r.example.co.za/story.jpg"]}""")),
+                Page).Text,
             Does.StartWith("![Pap en wors tert](https://r.example.co.za/story.jpg)"));
 
     [Test]
     public void AnOrganizationsLogo_BesideARecipe_IsNotTheLeadImage() =>
-        Assert.That(HtmlText.ToText(Html(JsonLd("""[{"@type":"Organization","image":"https://r.example.co.za/logo-photo.jpg"},{"@type":"Recipe","image":"https://r.example.co.za/dish.jpg"}]""")), Page).Text,
+        Assert.That(
+            HtmlText.ToText(
+                Html(JsonLd(
+                    """[{"@type":"Organization","image":"https://r.example.co.za/logo-photo.jpg"},{"@type":"Recipe","image":"https://r.example.co.za/dish.jpg"}]""")),
+                Page).Text,
             Does.StartWith("![Pap en wors tert](https://r.example.co.za/dish.jpg)"));
 
     [Test]
     public void AnOrganizationAndAWebSiteOnly_GiveNoImageFromJsonLd_SoOgImageIsUsed()
     {
-        string site = JsonLd("""{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/the-company.jpg"},{"@type":"WebSite","image":"https://r.example.co.za/site.jpg"}]}""");
+        string site =
+            JsonLd(
+                """{"@graph":[{"@type":"Organization","image":"https://r.example.co.za/the-company.jpg"},{"@type":"WebSite","image":"https://r.example.co.za/site.jpg"}]}""");
 
-        Assert.That(HtmlText.ToText(Html(site), Page).Text, Does.Not.Contain("!["), "nothing declared by the page itself");
-        Assert.That(HtmlText.ToText(Html(site + """<meta property="og:image" content="https://r.example.co.za/og.jpg">"""), Page).Text,
+        Assert.That(HtmlText.ToText(Html(site), Page).Text, Does.Not.Contain("!["),
+            "nothing declared by the page itself");
+        Assert.That(
+            HtmlText.ToText(Html(site + """<meta property="og:image" content="https://r.example.co.za/og.jpg">"""),
+                Page).Text,
             Does.StartWith("![Pap en wors tert](https://r.example.co.za/og.jpg)"));
     }
 
     [Test]
     public void ABreadcrumbList_IsNoSubject() =>
-        Assert.That(HtmlText.ToText(Html(JsonLd("""{"@graph":[{"@type":"BreadcrumbList","image":"https://r.example.co.za/crumb.jpg"},{"@type":"Article","image":"https://r.example.co.za/story.jpg"}]}""")), Page).Text,
+        Assert.That(
+            HtmlText.ToText(
+                Html(JsonLd(
+                    """{"@graph":[{"@type":"BreadcrumbList","image":"https://r.example.co.za/crumb.jpg"},{"@type":"Article","image":"https://r.example.co.za/story.jpg"}]}""")),
+                Page).Text,
             Does.StartWith("![Pap en wors tert](https://r.example.co.za/story.jpg)"));
 
     [Test]
     public void ALazyImageWithItsFileInAnotherAttribute_IsKept()
     {
-        string body = """<main><img src="data:image/gif;base64,R0lGOD" data-lazy-src="https://r.example.co.za/lazy.jpg" alt="Pap"><img src="p.gif" data-orig-file="https://r.example.co.za/orig.jpg" alt="Wors"></main>""";
+        string body =
+            """<main><img src="data:image/gif;base64,R0lGOD" data-lazy-src="https://r.example.co.za/lazy.jpg" alt="Pap"><img src="p.gif" data-orig-file="https://r.example.co.za/orig.jpg" alt="Wors"></main>""";
 
         var (_, text) = HtmlText.ToText(Html("", body), Page);
 
-        Assert.That(text, Does.Contain("![Pap](https://r.example.co.za/lazy.jpg)").And.Contain("![Wors](https://r.example.co.za/orig.jpg)"));
+        Assert.That(text,
+            Does.Contain("![Pap](https://r.example.co.za/lazy.jpg)").And
+                .Contain("![Wors](https://r.example.co.za/orig.jpg)"));
     }
 }

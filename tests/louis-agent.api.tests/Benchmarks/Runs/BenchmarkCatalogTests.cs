@@ -1,5 +1,4 @@
 using LouisAgent.Testing;
-
 using LouisAgent.Api.Benchmarks.Runs;
 using Microsoft.Extensions.Logging;
 
@@ -22,22 +21,32 @@ public class BenchmarkCatalogTests
 
     [Test]
     public void AnEvalCheckHasTheManualItsEvalListed() =>
-        Assert.That(new BenchmarkCheck("stub", "Stub", "evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
+        Assert.That(new BenchmarkCheck("stub", "Stub", "evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath,
+            Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
 
     [Test]
     public void TheCatalogue_KeepsTheManualPathTheRunnerListed()
     {
-        var merged = BenchmarkCatalog.Merge([new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha, "evals/louis-agent.evals.puls/Manuals/cook.md"), new EvalLine("quiet", 1, "No manual")]);
+        var merged = BenchmarkCatalog.Merge([
+            new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha,
+                "evals/louis-agent.evals.puls/Manuals/cook.md"),
+            new EvalLine("quiet", 1, "No manual")
+        ]);
 
-        Assert.That(merged.Select(c => c.ManualPath), Is.EqualTo(new string?[] { "evals/louis-agent.evals.puls/Manuals/cook.md", null }));
+        Assert.That(merged.Select(c => c.ManualPath),
+            Is.EqualTo(new string?[] { "evals/louis-agent.evals.puls/Manuals/cook.md", null }));
     }
 
     [Test]
     public void EachListedEval_IsACheck_WithItsProvesAsItsTitle()
     {
-        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", SampleIdentity.Alpha), new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha)]);
+        var merged = BenchmarkCatalog.Merge([
+            new EvalLine("stub", 1, "A canned run", SampleIdentity.Alpha),
+            new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha)
+        ]);
 
-        Assert.That(merged.Select(c => (c.Id, c.Title)), Is.EqualTo(new[] { ("stub", "A canned run"), (SampleEval.Beta, "A meal") }));
+        Assert.That(merged.Select(c => (c.Id, c.Title)),
+            Is.EqualTo(new[] { ("stub", "A canned run"), (SampleEval.Beta, "A meal") }));
     }
 
     [Test]
@@ -75,7 +84,8 @@ public class BenchmarkCatalogTests
 
         catalog.Warm();
 
-        Assert.That(log.Messages, Has.Some.Contains("isn't at /nope/louis-agent.evals.runner.dll"), "start-up says why, not the first request");
+        Assert.That(log.Messages, Has.Some.Contains("isn't at /nope/louis-agent.evals.runner.dll"),
+            "start-up says why, not the first request");
     }
 
     /// <summary>Keeps what the catalogue logs, formatted, so a test can read the warning.</summary>
@@ -87,7 +97,8 @@ public class BenchmarkCatalogTests
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) =>
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+            Func<TState, Exception?, string> formatter) =>
             Messages.Add(formatter(state, exception));
     }
 }

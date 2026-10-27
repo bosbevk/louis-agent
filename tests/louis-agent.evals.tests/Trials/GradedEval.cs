@@ -13,7 +13,8 @@ internal sealed class GradedEval(params IGrader[] graders) : IEval
     public int Version => 1;
     public string Proves => "The grading step.";
 
-    public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
+    public ValueTask<IReadOnlyList<EvalMode>>
+        ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>([Mode]);
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } = [];

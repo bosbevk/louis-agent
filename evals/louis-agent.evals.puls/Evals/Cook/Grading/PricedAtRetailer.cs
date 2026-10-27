@@ -35,7 +35,8 @@ public sealed class PricedAtRetailer : IGrader
     {
         var turns = trial.Transcript.Turns;
         if (Verdict.InfrastructureFailure(Name, Version, turns) is { } unknown) return unknown;
-        if (CookExpectations.ShopOf(trial.Scenario) is not { } shop || shop is ShopExpectation.Any or ShopExpectation.NoBranch)
+        if (CookExpectations.ShopOf(trial.Scenario) is not { } shop ||
+            shop is ShopExpectation.Any or ShopExpectation.NoBranch)
             return Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopNotSet));
 
         var views = turns.Select(TurnView.From).ToList();
@@ -53,8 +54,10 @@ public sealed class PricedAtRetailer : IGrader
     private Grade ForPage(string shop, IReadOnlyList<ToolCall> allCalls, string answer)
     {
         string host = Shops.Hosts.First(known => known.Name == shop).Host;
-        bool read = allCalls.Any(call => call.Name == Shops.PageTool && Text(call.Input, "url") is { } url && Links.IsHost(url, host));
-        if (!read) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPageNotRead, new { Shop = shop }));
+        bool read = allCalls.Any(call =>
+            call.Name == Shops.PageTool && Text(call.Input, "url") is { } url && Links.IsHost(url, host));
+        if (!read)
+            return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPageNotRead, new { Shop = shop }));
         return Prices.PriceLinkHosts(answer).Contains(host)
             ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopPageRight, new { Shop = shop }))
             : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPricesNotLinked, new { Shop = shop }));
@@ -62,11 +65,14 @@ public sealed class PricedAtRetailer : IGrader
 
     private Grade ForShop(string shop, string town, IReadOnlyList<ToolCall> shopCalls, string answer)
     {
-        var calls = shopCalls.Where(call => string.Equals(Text(call.Input, "shop")?.Trim(), shop, StringComparison.OrdinalIgnoreCase)).ToList();
-        if (calls.Count == 0) return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNotCalled, new { Shop = shop }));
+        var calls = shopCalls.Where(call =>
+            string.Equals(Text(call.Input, "shop")?.Trim(), shop, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (calls.Count == 0)
+            return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNotCalled, new { Shop = shop }));
         // The cook's prompt: area is the user's town in every call, so the shop's store there is the one searched.
         if (calls.Any(call => !InTown(Text(call.Input, "area"), town)))
-            return Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopWrongArea, new { Shop = shop, Town = town }));
+            return Verdict.Fail(Name, Version,
+                MessageText.Format(GradeMessage.ShopWrongArea, new { Shop = shop, Town = town }));
 
         string host = Shops.Hosts.First(known => known.Name == shop).Host;
         return Prices.PriceLinkHosts(answer).Contains(host)
@@ -77,8 +83,12 @@ public sealed class PricedAtRetailer : IGrader
     /// <summary>Whether a tool's <c>area</c> names the town: either contains the other, case ignored ("malmesbury, western cape" is Malmesbury). No area names none.</summary>
     private static bool InTown(string? area, string town) =>
         !string.IsNullOrWhiteSpace(area)
-        && (area.Contains(town, StringComparison.OrdinalIgnoreCase) || town.Contains(area.Trim(), StringComparison.OrdinalIgnoreCase));
+        && (area.Contains(town, StringComparison.OrdinalIgnoreCase) ||
+            town.Contains(area.Trim(), StringComparison.OrdinalIgnoreCase));
 
     private static string? Text(JsonElement input, string name) =>
-        input.ValueKind == JsonValueKind.Object && input.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+        input.ValueKind == JsonValueKind.Object && input.TryGetProperty(name, out var value) &&
+        value.ValueKind == JsonValueKind.String
+            ? value.GetString()
+            : null;
 }

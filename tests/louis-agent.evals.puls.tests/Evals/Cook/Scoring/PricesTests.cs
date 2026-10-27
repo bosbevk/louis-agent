@@ -1,4 +1,3 @@
-
 using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Scoring;
@@ -7,9 +6,14 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Scoring;
 // expected value is the Python's, so the C# and the Python score an answer the same way.
 public class PricesTests
 {
-    private const string HeaderEn = "| Ingredient | Recipe needs | Buy | Checkers | Shoprite | Pick n Pay | Best price |\n|---|---|---|---|---|---|---|\n";
-    private const string HeaderAf = "| Bestanddeel | Hoeveel | Koop | Checkers | Shoprite | Goedkoopste |\n|---|---|---|---|---|---|\n";
-    private const string Thighs = "https://www.checkers.co.za/product/farmers-choice-chicken-8-piece-thighs-per-kg-10732975KG";
+    private const string HeaderEn =
+        "| Ingredient | Recipe needs | Buy | Checkers | Shoprite | Pick n Pay | Best price |\n|---|---|---|---|---|---|---|\n";
+
+    private const string HeaderAf =
+        "| Bestanddeel | Hoeveel | Koop | Checkers | Shoprite | Goedkoopste |\n|---|---|---|---|---|---|\n";
+
+    private const string Thighs =
+        "https://www.checkers.co.za/product/farmers-choice-chicken-8-piece-thighs-per-kg-10732975KG";
 
     [Test]
     public void RandAmounts_AreCounted() =>
@@ -21,7 +25,8 @@ public class PricesTests
         string answer = "| Bestanddeel | Checkers |\n|---|---|\n| Meel | [R22.99](https://www.checkers.co.za/p/1) |\n"
                         + "| Eiers | onbekend |\n| Melk | ±R18 |\n";
 
-        Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 3, 0, 0, 1)), "the unknown row is neither priced nor an estimate; the Melk one is an estimate");
+        Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 3, 0, 0, 1)),
+            "the unknown row is neither priced nor an estimate; the Melk one is an estimate");
     }
 
     [Test]
@@ -39,7 +44,8 @@ public class PricesTests
     [Test]
     public void APriceWithoutALink_IsAGuessNotPriced()
     {
-        string answer = "| Bestanddeel | Prys |\n|---|---|\n| Meel | R22.99 |\n| Eiers | R45.00 |\n| Melk | [R18](https://pnp.co.za/m) |\n";
+        string answer =
+            "| Bestanddeel | Prys |\n|---|---|\n| Meel | R22.99 |\n| Eiers | R45.00 |\n| Melk | [R18](https://pnp.co.za/m) |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 3, 2, 0)));
     }
@@ -47,7 +53,8 @@ public class PricesTests
     [Test]
     public void ARecipeLink_IsNoSource()
     {
-        string answer = "| Bestanddeel | Checkers |\n|---|---|\n| Hoender | [R89,99](https://www.food24.com/recipes/hoender) |\n";
+        string answer =
+            "| Bestanddeel | Checkers |\n|---|---|\n| Hoender | [R89,99](https://www.food24.com/recipes/hoender) |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 1, 0)));
     }
@@ -117,7 +124,8 @@ public class PricesTests
     [Test]
     public void AShopsOwnSubdomain_IsTheShop()
     {
-        string answer = "| Bestanddeel | Woolworths |\n|---|---|\n| Melk | [R32,99](https://shop.woolworths.co.za/melk) |\n";
+        string answer =
+            "| Bestanddeel | Woolworths |\n|---|---|\n| Melk | [R32,99](https://shop.woolworths.co.za/melk) |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 1, 0, 0)));
     }
@@ -163,7 +171,8 @@ public class PricesTests
     public void APriceThatSaysPerKg_IsNoPacksPrice()
     {
         // The cook-en row as the run wrote it (review of PR #58).
-        string answer = HeaderEn + $"| Chicken thighs (Farmer's Choice, 8 piece) | 700 g | 1 kg | [R99,99/kg]({Thighs}) | - | - | R99,99 Checkers |\n";
+        string answer = HeaderEn +
+                        $"| Chicken thighs (Farmer's Choice, 8 piece) | 700 g | 1 kg | [R99,99/kg]({Thighs}) | - | - | R99,99 Checkers |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 0, 1)));
     }
@@ -172,7 +181,8 @@ public class PricesTests
     public void OnePriceForAProductSoldByWeight_IsItsPricePerKg()
     {
         // The cook-shops row: a 1–1,2 kg pack at R99,99, the price per kg (Checkers' link ends in the unit, KG).
-        string answer = HeaderAf + $"| Hoender, bo-been dye en boude | 1 kg | 1–1,2 kg pak | [R99,99]({Thighs}) | - | R99,99 Checkers |\n";
+        string answer = HeaderAf +
+                        $"| Hoender, bo-been dye en boude | 1 kg | 1–1,2 kg pak | [R99,99]({Thighs}) | - | R99,99 Checkers |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 0, 1)));
     }
@@ -180,8 +190,9 @@ public class PricesTests
     [Test]
     public void ARangeForAProductSoldByWeight_IsItsPacksPrice()
     {
-        string answer = HeaderAf + $"| Hoender | 1 kg | 1–1,2 kg pak | [R99,99–R119,99]({Thighs}) | - | R119,99 Checkers |\n"
-                        + $"| Hoender | 1 kg | 1–1,2 kg pak | [R99,99 – 119,99]({Thighs}) | - | R119,99 Checkers |\n";
+        string answer =
+            HeaderAf + $"| Hoender | 1 kg | 1–1,2 kg pak | [R99,99–R119,99]({Thighs}) | - | R119,99 Checkers |\n"
+                     + $"| Hoender | 1 kg | 1–1,2 kg pak | [R99,99 – 119,99]({Thighs}) | - | R119,99 Checkers |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(2, 2, 0, 0)));
     }
@@ -189,7 +200,8 @@ public class PricesTests
     [Test]
     public void OnePriceForAProductSoldEach_IsItsPacksPrice()
     {
-        string answer = HeaderAf + "| Uie | 2 | 1 kg sak | [R34,99](https://www.checkers.co.za/product/onions-1kg-10135699EA) | - | R34,99 Checkers |\n";
+        string answer = HeaderAf +
+                        "| Uie | 2 | 1 kg sak | [R34,99](https://www.checkers.co.za/product/onions-1kg-10135699EA) | - | R34,99 Checkers |\n";
 
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 1, 0, 0)));
     }

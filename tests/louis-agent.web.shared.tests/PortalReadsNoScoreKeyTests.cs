@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 
 namespace LouisAgent.Web.Shared.Tests;
 
@@ -13,10 +13,12 @@ namespace LouisAgent.Web.Shared.Tests;
 public class PortalReadsNoScoreKeyTests
 {
     /// <summary>A read of a conversation's scores, or a test on a task's name.</summary>
-    private static readonly Regex ScoreRead = new("\"scores\"|\\.Scores\\b|Task\\.StartsWith\\(|Task == \"", RegexOptions.CultureInvariant);
+    private static readonly Regex ScoreRead = new("\"scores\"|\\.Scores\\b|Task\\.StartsWith\\(|Task == \"",
+        RegexOptions.CultureInvariant);
 
     /// <summary>Anything of Puls: its texts, their namespace, or its brand components.</summary>
-    private static readonly Regex NamesPuls = new("PulsText|LouisAgent\\.Puls\\.Text|Components\\.Brand", RegexOptions.CultureInvariant);
+    private static readonly Regex NamesPuls = new("PulsText|LouisAgent\\.Puls\\.Text|Components\\.Brand",
+        RegexOptions.CultureInvariant);
 
     private static readonly string[] Scanned =
     [
@@ -43,7 +45,8 @@ public class PortalReadsNoScoreKeyTests
     [Test]
     public void AnAdminView_ReadsNoScoreKey_UnlessStillListed()
     {
-        var reading = Scanned.SelectMany(Files).Where(f => ScoreRead.IsMatch(File.ReadAllText(f))).Select(Relative).ToHashSet();
+        var reading = Scanned.SelectMany(Files).Where(f => ScoreRead.IsMatch(File.ReadAllText(f))).Select(Relative)
+            .ToHashSet();
 
         var newOffenders = reading.Except(ReadsScores).Order().ToList();
         var done = ReadsScores.Except(reading).Order().ToList();
@@ -61,7 +64,8 @@ public class PortalReadsNoScoreKeyTests
     [Test]
     public void TheGradesFolders_NameNothingOfPuls()
     {
-        var naming = BuiltToMove.SelectMany(Files).Where(f => NamesPuls.IsMatch(File.ReadAllText(f))).Select(Relative).Order().ToList();
+        var naming = BuiltToMove.SelectMany(Files).Where(f => NamesPuls.IsMatch(File.ReadAllText(f))).Select(Relative)
+            .Order().ToList();
 
         Assert.That(naming, Is.Empty,
             "The admin's grades code names nothing of Puls (no PulsText, no Components.Brand), so the admin can move out as a folder:\n  "
@@ -72,7 +76,8 @@ public class PortalReadsNoScoreKeyTests
     private static IEnumerable<string> Files(string folder)
     {
         string dir = Path.Combine(TestPaths.RepoRoot, folder.Replace('/', Path.DirectorySeparatorChar));
-        Assert.That(Directory.Exists(dir), Is.True, $"No folder {folder}: it was moved or renamed, so update this test's list.");
+        Assert.That(Directory.Exists(dir), Is.True,
+            $"No folder {folder}: it was moved or renamed, so update this test's list.");
         return Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories)
             .Where(f => (f.EndsWith(".cs") || f.EndsWith(".razor"))
                         && !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")

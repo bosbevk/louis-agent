@@ -32,7 +32,8 @@ public sealed class ExampleEval : IEval
     public string Proves => MessageText.Format(TemplateMessage.ExampleProves);
 
     // The modes the task runs in, each a role and the toolsets a session opens with; some evals read them from the instance (section 4). Write it.
-    public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotImplementedException();
+    public ValueTask<IReadOnlyList<EvalMode>>
+        ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotImplementedException();
 
     // The scenarios, from the dataset beside this eval: EvalFiles finds it, so no eval builds a path (sections 2 and 4).
     private static readonly Dataset Loaded = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(ExampleEval)), GraderList);

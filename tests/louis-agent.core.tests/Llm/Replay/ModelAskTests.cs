@@ -15,13 +15,16 @@ public class ModelAskTests
     private static ModelAsk Ask(IEnumerable<ChatMessage>? messages = null, ChatOptions? options = null) =>
         ModelAsk.Of(messages ?? Chat(), options ?? new ChatOptions { ModelId = "m1" }, defaultModel: null);
 
-    private static AIFunction Tool(string name, string description = "does it") => AIFunctionFactory.Create(() => "x", name, description);
+    private static AIFunction Tool(string name, string description = "does it") =>
+        AIFunctionFactory.Create(() => "x", name, description);
 
     [Test]
     public void MessagesThatDifferOnlyInCreatedAtAndMessageId_HaveTheSameKey()
     {
-        var first = new ChatMessage(ChatRole.Tool, [new FunctionResultContent("c1", "ok")]) { CreatedAt = DateTimeOffset.UnixEpoch, MessageId = "a" };
-        var second = new ChatMessage(ChatRole.Tool, [new FunctionResultContent("c1", "ok")]) { CreatedAt = DateTimeOffset.UtcNow, MessageId = "b" };
+        var first = new ChatMessage(ChatRole.Tool, [new FunctionResultContent("c1", "ok")])
+        { CreatedAt = DateTimeOffset.UnixEpoch, MessageId = "a" };
+        var second = new ChatMessage(ChatRole.Tool, [new FunctionResultContent("c1", "ok")])
+        { CreatedAt = DateTimeOffset.UtcNow, MessageId = "b" };
 
         Assert.That(Ask([.. Chat(), first]).ToAsk(), Is.EqualTo(Ask([.. Chat(), second]).ToAsk()));
     }
@@ -32,7 +35,8 @@ public class ModelAskTests
         ModelAsk before = Ask(Chat("hello")), after = Ask(Chat("hullo"));
 
         Assert.That(after.Messages, Is.Not.EqualTo(before.Messages));
-        Assert.That((after.Model, after.System, after.Tools, after.Settings), Is.EqualTo((before.Model, before.System, before.Tools, before.Settings)));
+        Assert.That((after.Model, after.System, after.Tools, after.Settings),
+            Is.EqualTo((before.Model, before.System, before.Tools, before.Settings)));
     }
 
     [Test]
@@ -42,7 +46,8 @@ public class ModelAskTests
 
         Assert.That(ask.Messages, Has.Count.EqualTo(1));
         Assert.That(ask.Messages[0].Role, Is.EqualTo("user"));
-        Assert.That(Ask([new ChatMessage(ChatRole.System, "You are Louis."), Chat()[1]]).System, Is.Not.EqualTo(ask.System));
+        Assert.That(Ask([new ChatMessage(ChatRole.System, "You are Louis."), Chat()[1]]).System,
+            Is.Not.EqualTo(ask.System));
     }
 
     [Test]
@@ -58,18 +63,22 @@ public class ModelAskTests
     {
         ModelAsk With(Action<ChatOptions> change)
         {
-            var options = new ChatOptions { ModelId = "m1", Instructions = "i", Temperature = 0.2f, Tools = [Tool("A")] };
+            var options = new ChatOptions
+            { ModelId = "m1", Instructions = "i", Temperature = 0.2f, Tools = [Tool("A")] };
             change(options);
             return Ask(options: options);
         }
+
         ModelAsk baseline = With(_ => { });
 
         Assert.That(With(o => o.ModelId = "m2").Model, Is.Not.EqualTo(baseline.Model));
         Assert.That(With(o => o.Instructions = "j").System, Is.Not.EqualTo(baseline.System));
         Assert.That(With(o => o.Tools = [Tool("A", "other")]).Tools, Is.Not.EqualTo(baseline.Tools));
         Assert.That(With(o => o.Temperature = 0.9f).Settings, Is.Not.EqualTo(baseline.Settings));
-        Assert.That(With(o => o.Temperature = 0.9f).Tools, Is.EqualTo(baseline.Tools), "settings leave the tools alone");
-        Assert.That(With(o => o.Instructions = "j").Settings, Is.EqualTo(baseline.Settings), "the instructions are the system part, not the settings");
+        Assert.That(With(o => o.Temperature = 0.9f).Tools, Is.EqualTo(baseline.Tools),
+            "settings leave the tools alone");
+        Assert.That(With(o => o.Instructions = "j").Settings, Is.EqualTo(baseline.Settings),
+            "the instructions are the system part, not the settings");
     }
 
     [Test]
@@ -94,7 +103,8 @@ public class ModelAskTests
         ReplayAsk ask = Ask(options: new ChatOptions { ModelId = "m1", Tools = [Tool("A")] }).ToAsk();
 
         Assert.That(ask.Kind, Is.EqualTo(ReplayKind.Model));
-        Assert.That(ask.Key, Does.StartWith("{\"model\":\"m1\",\"system\":\"").And.Contain("\"tools\":[{\"name\":\"A\",\"hash\":\"")
+        Assert.That(ask.Key, Does.StartWith("{\"model\":\"m1\",\"system\":\"").And
+            .Contain("\"tools\":[{\"name\":\"A\",\"hash\":\"")
             .And.Contain("\"settings\":\"").And.Contain("\"messages\":[{\"role\":\"user\",\"hash\":\""));
         Assert.That(ModelAsk.From(ask)!.ToAsk(), Is.EqualTo(ask));
     }

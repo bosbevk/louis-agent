@@ -12,10 +12,12 @@ public partial class RunListItem
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
     /// <summary>Another run is running, so a re-score cannot start (one run at a time).</summary>
-    [Parameter] public bool Disabled { get; set; }
+    [Parameter]
+    public bool Disabled { get; set; }
 
     /// <summary>The id of the new run, once a re-score was started.</summary>
-    [Parameter] public EventCallback<string> OnRescored { get; set; }
+    [Parameter]
+    public EventCallback<string> OnRescored { get; set; }
 
     private string StatusText => Run.Status switch { "running" => "running", "done" => "done", _ => "failed" };
 

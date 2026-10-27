@@ -25,5 +25,6 @@ public class WireExtensionTests
 
     [Test]
     public void AValueTheEnumDoesNotDefine_IsRefusedNamingTheEnum() =>
-        Assert.That(() => ((Mode)99).Wire(), Throws.TypeOf<ArgumentOutOfRangeException>().With.Message.Contain(nameof(Mode)));
+        Assert.That(() => ((Mode)99).Wire(),
+            Throws.TypeOf<ArgumentOutOfRangeException>().With.Message.Contain(nameof(Mode)));
 }

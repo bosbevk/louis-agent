@@ -16,9 +16,11 @@ public class RecordedSearchProviderTests
         new("Eggs | PnP", "https://www.pnp.co.za/eggs", ""),
     ];
 
-    private static IDisposable Using(WebReplayMode mode, string? of) => SessionReplay.Use(new SessionReplay(mode, of, Model: false));
+    private static IDisposable Using(WebReplayMode mode, string? of) =>
+        SessionReplay.Use(new SessionReplay(mode, of, Model: false));
 
-    private static async Task<string> SearchAsync(IWebSearchProvider provider, string query = "eggs", int max = 5, string site = "", string freshness = "") =>
+    private static async Task<string> SearchAsync(IWebSearchProvider provider, string query = "eggs", int max = 5,
+        string site = "", string freshness = "") =>
         await WebToolsOn(_ => Html(""), provider).WebSearch(query, max, site, freshness);
 
     [Test]
@@ -29,8 +31,10 @@ public class RecordedSearchProviderTests
         var dead = new CountingSearch(throws: new InvalidOperationException("the network must not be used"));
 
         string recorded, replayed;
-        using (Using(WebReplayMode.Record, "t")) recorded = await SearchAsync(new RecordedSearchProvider(live, folder.Store), freshness: "week");
-        using (Using(WebReplayMode.Replay, "t")) replayed = await SearchAsync(new RecordedSearchProvider(dead, folder.Store), freshness: "week");
+        using (Using(WebReplayMode.Record, "t"))
+            recorded = await SearchAsync(new RecordedSearchProvider(live, folder.Store), freshness: "week");
+        using (Using(WebReplayMode.Replay, "t"))
+            replayed = await SearchAsync(new RecordedSearchProvider(dead, folder.Store), freshness: "week");
 
         Assert.That(recorded, Does.Contain("Large Eggs 6 Pack"));
         Assert.That(replayed, Is.EqualTo(recorded));
@@ -41,17 +45,23 @@ public class RecordedSearchProviderTests
     [TestCase(5, "checkers.co.za", "week", "FakeSearch")]
     [TestCase(5, "", "day", "FakeSearch")]
     [TestCase(5, "", "week", "Other")]
-    public async Task AnotherMaxResultsSiteRecencyOrProvider_IsAMiss_WithTheNewText(int max, string site, string freshness, string provider)
+    public async Task AnotherMaxResultsSiteRecencyOrProvider_IsAMiss_WithTheNewText(int max, string site,
+        string freshness, string provider)
     {
         using var folder = new ReplayFolder();
         using (Using(WebReplayMode.Record, "t"))
-            await SearchAsync(new RecordedSearchProvider(new CountingSearch(Eggs), folder.Store), max: 5, freshness: "week");
+            await SearchAsync(new RecordedSearchProvider(new CountingSearch(Eggs), folder.Store), max: 5,
+                freshness: "week");
         var inner = new CountingSearch(Eggs, name: provider);
 
         string text;
-        using (Using(WebReplayMode.Replay, "t")) text = await SearchAsync(new RecordedSearchProvider(inner, folder.Store), max: max, site: site, freshness: freshness);
+        using (Using(WebReplayMode.Replay, "t"))
+            text = await SearchAsync(new RecordedSearchProvider(inner, folder.Store), max: max, site: site,
+                freshness: freshness);
 
-        Assert.That(text, Does.Contain("'eggs'").And.Contain("was not run in the recorded run").And.Contain("Treat what it would find as unknown"));
+        Assert.That(text,
+            Does.Contain("'eggs'").And.Contain("was not run in the recorded run").And
+                .Contain("Treat what it would find as unknown"));
         Assert.That(inner.Calls, Is.Zero);
     }
 
@@ -59,12 +69,16 @@ public class RecordedSearchProviderTests
     public async Task AWebSearchException_WhileRecording_ReplaysAsTheSameText()
     {
         using var folder = new ReplayFolder();
-        var refused = new CountingSearch(throws: new WebSearchException("Google search quota exceeded (daily). Try again later."));
+        var refused =
+            new CountingSearch(
+                throws: new WebSearchException("Google search quota exceeded (daily). Try again later."));
 
         string recorded, replayed;
-        using (Using(WebReplayMode.Record, "t")) recorded = await SearchAsync(new RecordedSearchProvider(refused, folder.Store));
+        using (Using(WebReplayMode.Record, "t"))
+            recorded = await SearchAsync(new RecordedSearchProvider(refused, folder.Store));
         var dead = new CountingSearch(Eggs);
-        using (Using(WebReplayMode.Replay, "t")) replayed = await SearchAsync(new RecordedSearchProvider(dead, folder.Store));
+        using (Using(WebReplayMode.Replay, "t"))
+            replayed = await SearchAsync(new RecordedSearchProvider(dead, folder.Store));
 
         Assert.That(recorded, Does.Contain("quota exceeded"));
         Assert.That(replayed, Is.EqualTo(recorded));
@@ -81,7 +95,8 @@ public class RecordedSearchProviderTests
 
         Assert.That(folder.Entries, Is.Empty);
         string text;
-        using (Using(WebReplayMode.Replay, "t")) text = await SearchAsync(new RecordedSearchProvider(new CountingSearch(Eggs), folder.Store));
+        using (Using(WebReplayMode.Replay, "t"))
+            text = await SearchAsync(new RecordedSearchProvider(new CountingSearch(Eggs), folder.Store));
         Assert.That(text, Does.Contain("was not run in the recorded run"));
     }
 
@@ -89,10 +104,12 @@ public class RecordedSearchProviderTests
     public async Task ACancel_IsRethrown_AndNeverRecorded()
     {
         using var folder = new ReplayFolder();
-        var provider = new RecordedSearchProvider(new CountingSearch(throws: new OperationCanceledException()), folder.Store);
+        var provider =
+            new RecordedSearchProvider(new CountingSearch(throws: new OperationCanceledException()), folder.Store);
 
         using (Using(WebReplayMode.Record, "t"))
-            Assert.ThrowsAsync<OperationCanceledException>(async () => await provider.SearchAsync(new WebSearchQuery("eggs", 5)));
+            Assert.ThrowsAsync<OperationCanceledException>(async () =>
+                await provider.SearchAsync(new WebSearchQuery("eggs", 5)));
 
         Assert.That(folder.Entries, Is.Empty);
         await Task.CompletedTask;
@@ -131,7 +148,8 @@ public class RecordedSearchProviderTests
         using var folder = new ReplayFolder();
 
         using (Using(WebReplayMode.Record, "t"))
-            await new RecordedSearchProvider(new CountingSearch(Eggs), folder.Store).SearchAsync(new WebSearchQuery("eggs", 5, "checkers.co.za", SearchRecency.Week));
+            await new RecordedSearchProvider(new CountingSearch(Eggs), folder.Store).SearchAsync(
+                new WebSearchQuery("eggs", 5, "checkers.co.za", SearchRecency.Week));
 
         var line = JsonDocument.Parse(File.ReadAllLines(folder.Trials.Single()).Single()).RootElement;
         Assert.That(line.GetProperty("kind").GetString(), Is.EqualTo("search"));

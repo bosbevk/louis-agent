@@ -15,7 +15,8 @@ public class StreamFormatChoiceTests
 
     [Test]
     public void TheNameIsReadWithItsCaseIgnored() =>
-        Assert.That(new CreateSessionRequest(null, null, null, Stream: " CLAUDE ").StreamFormatOrNull(), Is.EqualTo(StreamFormat.Claude));
+        Assert.That(new CreateSessionRequest(null, null, null, Stream: " CLAUDE ").StreamFormatOrNull(),
+            Is.EqualTo(StreamFormat.Claude));
 
     [Test]
     public void AFormatNoneOfWhoseNamesFitsIsRefused() =>

@@ -17,7 +17,8 @@ public class ContinuedSpecialistRoleTests
     [Test]
     public void ASessionsStream_StartsWithItsRole()
     {
-        var start = new ClaudeStreamFormat("sess_1", [SampleToolset.Alpha, SampleToolset.Beta], SampleRole.Alpha).Start();
+        var start =
+            new ClaudeStreamFormat("sess_1", [SampleToolset.Alpha, SampleToolset.Beta], SampleRole.Alpha).Start();
 
         using var data = JsonDocument.Parse(start.Data);
         var message = data.RootElement.GetProperty("message");
@@ -38,8 +39,18 @@ public class ContinuedSpecialistRoleTests
                 },
             ],
         };
-        var inner = JsonDocument.Parse(SampleRole.Fill("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"],"session_role":"<RoleAlpha>"}}""")).RootElement;
-        var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_9", agent = SampleIdentity.Alpha, @event = "message_start", data = inner });
+        var inner = JsonDocument
+            .Parse(SampleRole.Fill(
+                """{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"],"session_role":"<RoleAlpha>"}}"""))
+            .RootElement;
+        var outer = JsonSerializer.SerializeToElement(new
+        {
+            type = "sub_session",
+            tool_use_id = "toolu_9",
+            agent = SampleIdentity.Alpha,
+            @event = "message_start",
+            data = inner
+        });
         TurnStream.Apply(turn, SessionEvent.From("sub_session", outer));
         return turn;
     }
@@ -51,7 +62,12 @@ public class ContinuedSpecialistRoleTests
     [Test]
     public void AFollowUpsLine_SaysWhatTheCookIsDoing()
     {
-        var text = new ChatText { Processing = "BESIG", RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") } };
+        var text = new ChatText
+        {
+            Processing = "BESIG",
+            RolePhases = new Dictionary<string, RolePhases>
+            { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") }
+        };
 
         Assert.That(WorkStatus.Label(AFollowUpThatStarted(), text), Is.EqualTo("Soek bestanddele"));
     }

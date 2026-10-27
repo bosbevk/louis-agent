@@ -8,4 +8,9 @@ namespace LouisAgent.Evals.Reports;
 /// One graded trial, as the roll-up reads it (F18 step 5c): its scenario and that scenario's categories, its outcome, the grades behind it and the
 /// eval's scores for it. A value: the roll-up is a pure function of these.
 /// </summary>
-public sealed record TrialResult(string Scenario, IReadOnlyList<string> Categories, TrialOutcome Outcome, IReadOnlyList<Grade> Grades, JsonElement Scores);
+public sealed record TrialResult(
+    string Scenario,
+    IReadOnlyList<string> Categories,
+    TrialOutcome Outcome,
+    IReadOnlyList<Grade> Grades,
+    JsonElement Scores);

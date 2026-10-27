@@ -41,7 +41,10 @@ public class EvalListingTests
     [Test]
     public void AListedEvalLineIsRead()
     {
-        var result = EvalListing.Parse(SampleIdentity.Fill("""{"name":"stub","identity":"<IdentityAlpha>","version":2,"proves":"A canned run"}"""));
+        var result =
+            EvalListing.Parse(
+                SampleIdentity.Fill(
+                    """{"name":"stub","identity":"<IdentityAlpha>","version":2,"proves":"A canned run"}"""));
 
         Assert.That(result.Failure, Is.Null);
         Assert.That(result.Evals.Single(), Is.EqualTo(new EvalLine("stub", 2, "A canned run", SampleIdentity.Alpha)));
@@ -50,7 +53,8 @@ public class EvalListingTests
     [Test]
     public void AListedEvalsManualPathIsRead_AndIsNullWhenTheLineLeavesItOut()
     {
-        var with = EvalListing.Parse("""{"name":"stub","identity":null,"version":1,"proves":"A canned run","manual":"evals/louis-agent.evals.runner/Manuals/stub.md"}""");
+        var with = EvalListing.Parse(
+            """{"name":"stub","identity":null,"version":1,"proves":"A canned run","manual":"evals/louis-agent.evals.runner/Manuals/stub.md"}""");
         var without = EvalListing.Parse("""{"name":"stub","version":1,"proves":"A canned run"}""");
 
         Assert.That(with.Evals.Single().Manual, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
@@ -88,7 +92,9 @@ public class EvalListingTests
     {
         var timeout = TimeSpan.FromSeconds(30);
         if (OperatingSystem.IsWindows())
-            return new EvalListing("cmd", ["/c", string.Concat(stderr.Select(line => $"echo {line} 1>&2 & ")) + $"exit {code}"], timeout);
-        return new EvalListing("sh", ["-c", string.Concat(stderr.Select(line => $"echo '{line}' >&2; ")) + $"exit {code}"], timeout);
+            return new EvalListing("cmd",
+                ["/c", string.Concat(stderr.Select(line => $"echo {line} 1>&2 & ")) + $"exit {code}"], timeout);
+        return new EvalListing("sh",
+            ["-c", string.Concat(stderr.Select(line => $"echo '{line}' >&2; ")) + $"exit {code}"], timeout);
     }
 }

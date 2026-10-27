@@ -48,10 +48,12 @@ internal static class SessionEventMapper
         if (message.ValueKind == JsonValueKind.Object
             && message.TryGetProperty("toolsets", out var list) && list.ValueKind == JsonValueKind.Array)
         {
-            toolsets.AddRange(list.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String).Select(t => t.GetString()!));
+            toolsets.AddRange(list.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String)
+                .Select(t => t.GetString()!));
         }
+
         var role = message.ValueKind == JsonValueKind.Object
-            && message.TryGetProperty("session_role", out var r) && r.ValueKind == JsonValueKind.String
+                   && message.TryGetProperty("session_role", out var r) && r.ValueKind == JsonValueKind.String
             ? r.GetString()
             : null;
         return new MessageStarted(data, toolsets, role);

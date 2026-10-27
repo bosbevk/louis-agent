@@ -1,4 +1,3 @@
-
 using System.Net;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Tools.Web.Search.Setups;
 using LouisAgent.Choices;
 
 namespace LouisAgent.Core.Tools.Web.Search;
+
 /// <summary>
 /// Picks the search engine you configured, or else the first one that's set up: Tavily, then Google, then SearXNG, then DuckDuckGo. A missing setting never stops start-up; the search just tells the model what to set.
 /// </summary>
@@ -26,7 +26,8 @@ public static class WebSearchProviderFactory
         new Dictionary<string, WebSearchProviderKind> { ["ddg"] = WebSearchProviderKind.DuckDuckGo };
 
     /// <summary>The engines, in the order we fall back to them.</summary>
-    internal static IReadOnlyList<ISearchProviderSetup> Setups { get; } = [new TavilySetup(), new GoogleSetup(), new SearxngSetup(), new DuckDuckGoSetup()];
+    internal static IReadOnlyList<ISearchProviderSetup> Setups { get; } =
+        [new TavilySetup(), new GoogleSetup(), new SearxngSetup(), new DuckDuckGoSetup()];
 
     /// <summary>Tells you which engine these settings pick: the one named, or else the first that's set up. Nothing if the name is unknown.</summary>
     public static WebSearchProviderKind? Resolve(AgentOptions options) => Pick(options)?.Kind;

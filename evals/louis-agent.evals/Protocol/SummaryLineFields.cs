@@ -37,6 +37,7 @@ internal static class SummaryLineFields
             Counts(json, grader.Passed, grader.Failed, grader.Unknown);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
 
         json.WriteStartArray("kinds");
@@ -47,6 +48,7 @@ internal static class SummaryLineFields
             Counts(json, kind.Passed, kind.Failed, kind.Unknown);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
 
         json.WriteStartArray("scores");
@@ -58,6 +60,7 @@ internal static class SummaryLineFields
             json.WriteNumber("n", score.N);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
     }
 

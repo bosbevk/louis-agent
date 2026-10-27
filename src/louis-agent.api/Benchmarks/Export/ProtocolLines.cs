@@ -11,7 +11,8 @@ namespace LouisAgent.Api.Benchmarks.Export;
 /// <summary>The lines of an exported run, written one event at a time (F18 step 5.2): <c>@</c> and one JSON object each, ASCII only, as the harness writes them. <see cref="BenchmarkProtocolExport"/> walks the store and calls it.</summary>
 internal sealed class ProtocolLines(DateTimeOffset start)
 {
-    private static readonly JsonWriterOptions Options = new() { Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin) };
+    private static readonly JsonWriterOptions Options = new()
+    { Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin) };
 
     private readonly StringBuilder _text = new();
     private double _t = Seconds(start);
@@ -37,6 +38,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
             if (grader.Question is { } question) json.WriteString("question", question);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
         json.WriteStartArray("models");
         foreach (var use in run.Models ?? [])
@@ -48,6 +50,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
             Text(json, "model", use.Model);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
     });
 
@@ -125,8 +128,10 @@ internal sealed class ProtocolLines(DateTimeOffset start)
                 if (grade.JudgePromptHash is not null) json.WriteString("judge_prompt_hash", grade.JudgePromptHash);
                 json.WriteEndObject();
             }
+
             json.WriteEndArray();
         }
+
         if (conversation.Outcome is { } outcome) json.WriteString("outcome", outcome.Wire());
     });
 
@@ -173,6 +178,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
             fields(json);
             json.WriteEndObject();
         }
+
         _text.Append('@').Append(Encoding.ASCII.GetString(buffer.ToArray())).Append('\n');
     }
 }

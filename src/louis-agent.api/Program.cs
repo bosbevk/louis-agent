@@ -33,12 +33,13 @@ string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("AGENT_API_KEY"
 switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
 {
     case HostAuthDecision.Refuse:
-        throw new InvalidOperationException(MessageText.Format(ErrorMessage.ApiKeyRequired, new { Setting = "AGENT_API_KEY" }));
+        throw new InvalidOperationException(MessageText.Format(ErrorMessage.ApiKeyRequired,
+            new { Setting = "AGENT_API_KEY" }));
     case HostAuthDecision.StartOpen:
         AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Warning, ApiLogMessage.NoApiKey);
         break;
     case HostAuthDecision.Start:
-        app.UseAgentKey(apiKey!);   // apiKey is set whenever the decision is Start
+        app.UseAgentKey(apiKey!); // apiKey is set whenever the decision is Start
         break;
 }
 
@@ -59,19 +60,30 @@ var admin = AdminOptions.FromEnvironment();
 var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Benchmarks");
 // The checks: the C# evals the runner lists (read on first use), and the Python checks it doesn't list yet.
 var benchmarks = BenchmarkCatalog.From(EvalListing.ForRunner(admin.EvalRunner), benchmarkLog);
-IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase) : null;
-IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase) : null;
+IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl
+    ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase)
+    : null;
+IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl
+    ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase)
+    : null;
 // F18 step 6a.5b: the judge checks, beside the grades; a check's report is kept by its own recorder, never by the benchmark store.
-ICalibrationStore? calibrationStore = admin.BenchmarksMongoUrl is { } calibrationsUrl ? new MongoCalibrationStore(calibrationsUrl, admin.BenchmarksDatabase) : null;
-CalibrationRecorder? calibrationRecorder = calibrationStore is null ? null : new CalibrationRecorder(calibrationStore, benchmarkLog);
-BenchmarkRecorder? recorder = benchmarkStore is null ? null : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);
+ICalibrationStore? calibrationStore = admin.BenchmarksMongoUrl is { } calibrationsUrl
+    ? new MongoCalibrationStore(calibrationsUrl, admin.BenchmarksDatabase)
+    : null;
+CalibrationRecorder? calibrationRecorder =
+    calibrationStore is null ? null : new CalibrationRecorder(calibrationStore, benchmarkLog);
+BenchmarkRecorder? recorder = benchmarkStore is null
+    ? null
+    : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);
 if (benchmarkStore is not null)
     _ = Task.Run(async () =>
     {
         try
         {
             int closed = await benchmarkStore.CloseOrphansAsync(DateTimeOffset.UtcNow);
-            if (closed > 0) benchmarkLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed }, tag: "API");
+            if (closed > 0)
+                benchmarkLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed },
+                    tag: "API");
         }
         catch (Exception ex)
         {
@@ -80,10 +92,13 @@ if (benchmarkStore is not null)
     });
 // The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait for it).
 _ = Task.Run(benchmarks.Warm);
-api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner), admin.AdminKey, benchmarkStore, recorder,
+api.MapAdmin(benchmarks,
+    new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner),
+    admin.AdminKey, benchmarkStore, recorder,
     check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner,
         WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
-        WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)), host.Engine.WorkspaceRoot, reviewStore,
+        WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
+    host.Engine.WorkspaceRoot, reviewStore,
     calibrationStore, calibrationRecorder);
 
 app.Run();

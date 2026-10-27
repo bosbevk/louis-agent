@@ -21,7 +21,8 @@ public sealed record BenchmarkRunOptions(WebReplayMode? Web = null, string? Repl
         web = web?.Trim();
         replay = replay?.Trim();
         if (string.IsNullOrEmpty(web) && string.IsNullOrEmpty(replay)) return (None, null);
-        if (!string.IsNullOrEmpty(web) && !string.IsNullOrEmpty(replay)) return (null, MessageText.Format(ApiUserText.RunWebAndReplay));
+        if (!string.IsNullOrEmpty(web) && !string.IsNullOrEmpty(replay))
+            return (null, MessageText.Format(ApiUserText.RunWebAndReplay));
 
         if (!string.IsNullOrEmpty(replay))
             return replay.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-')
@@ -36,5 +37,6 @@ public sealed record BenchmarkRunOptions(WebReplayMode? Web = null, string? Repl
     }
 
     /// <summary>What <c>web</c> accepts: the modes but replay, which is its own field because it names a run.</summary>
-    private static string Supported => string.Join(", ", SettingChoice.Names<WebReplayMode>().Where(name => name != "replay"));
+    private static string Supported =>
+        string.Join(", ", SettingChoice.Names<WebReplayMode>().Where(name => name != "replay"));
 }

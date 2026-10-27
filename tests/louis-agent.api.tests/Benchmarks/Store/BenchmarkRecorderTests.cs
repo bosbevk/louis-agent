@@ -15,6 +15,7 @@ public class BenchmarkRecorderTests
 {
     /// <summary>The store the recorder writes into.</summary>
     private InMemoryBenchmarkStore _store = null!;
+
     /// <summary>The run being recorded, fed by hand.</summary>
     private BenchmarkRun _run = null!;
 
@@ -40,7 +41,15 @@ public class BenchmarkRecorderTests
 
     /// <summary>The line that opens a mode's repeat.</summary>
     private static string Mode(string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new { @event = "mode", mode, repeat, toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha }, role = "puls/voice-af", conversations = 2 });
+        At(new
+        {
+            @event = "mode",
+            mode,
+            repeat,
+            toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha },
+            role = "puls/voice-af",
+            conversations = 2
+        });
 
     /// <summary>The line that opens a turn with its question.</summary>
     private static string Question(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
@@ -48,7 +57,16 @@ public class BenchmarkRecorderTests
 
     /// <summary>One piece of the answer streaming in.</summary>
     private static string Sse(string task, string text, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new { @event = "sse", mode, repeat, task, turn, type = "content_block_delta", data = new { delta = new { text } } });
+        At(new
+        {
+            @event = "sse",
+            mode,
+            repeat,
+            task,
+            turn,
+            type = "content_block_delta",
+            data = new { delta = new { text } }
+        });
 
     /// <summary>The line that closes a turn with its answer.</summary>
     private static string TurnDone(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
@@ -71,10 +89,21 @@ public class BenchmarkRecorderTests
 
     /// <summary>The line that closes a conversation with its scores.</summary>
     private static string ConversationDone(string task, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new { @event = "conversation", mode, repeat, task, role = SampleRole.Alpha, scores = new { routed_right = true }, errors = 0, seconds = 30.5 });
+        At(new
+        {
+            @event = "conversation",
+            mode,
+            repeat,
+            task,
+            role = SampleRole.Alpha,
+            scores = new { routed_right = true },
+            errors = 0,
+            seconds = 30.5
+        });
 
     /// <summary>The line that closes a mode's repeat.</summary>
-    private static string ModeDone(string mode = SampleMode.Beta, int repeat = 1) => At(new { @event = "mode_done", mode, repeat });
+    private static string ModeDone(string mode = SampleMode.Beta, int repeat = 1) =>
+        At(new { @event = "mode_done", mode, repeat });
 
     /// <summary>Waits, up to two seconds, for something the recorder does in the background.</summary>
     private static async Task Eventually(Func<Task<bool>> condition)
@@ -84,6 +113,7 @@ public class BenchmarkRecorderTests
             if (await condition()) return;
             await Task.Delay(10);
         }
+
         Assert.Fail("the store never got there");
     }
 
@@ -91,30 +121,39 @@ public class BenchmarkRecorderTests
     [Test]
     public async Task AWholeRun_IsInTheStore_WhenItEnds()
     {
-        var recording = new BenchmarkRecorder(_store).RecordAsync(_run, new Dictionary<string, string> { ["model"] = "claude-haiku-5-5" });
-        Add(Protocol(), "Puls cook check, 1 repeat", Mode(), Question("bobotie"), Sse("bobotie", "Hal"), Sse("bobotie", "lo"),
-            TurnDone("bobotie"), ConversationDone("bobotie"), SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>"), ModeDone());
+        var recording = new BenchmarkRecorder(_store).RecordAsync(_run,
+            new Dictionary<string, string> { ["model"] = "claude-haiku-5-5" });
+        Add(Protocol(), "Puls cook check, 1 repeat", Mode(), Question("bobotie"), Sse("bobotie", "Hal"),
+            Sse("bobotie", "lo"),
+            TurnDone("bobotie"), ConversationDone("bobotie"), SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>"),
+            ModeDone());
         _run.Complete(0);
 
         var result = await recording;
 
         Assert.That(result, Is.EqualTo(new BenchmarkRecorder.Result(true, null)));
         var run = await _store.GetRunAsync(_run.Id);
-        Assert.That((run!.Check, run.Repeat, run.Status, run.ExitCode), Is.EqualTo(("cook", 1, BenchmarkRunStatus.Done, (int?)0)));
+        Assert.That((run!.Check, run.Repeat, run.Status, run.ExitCode),
+            Is.EqualTo(("cook", 1, BenchmarkRunStatus.Done, (int?)0)));
         Assert.That(run.EndedAt, Is.Not.Null);
         Assert.That(run.Settings!["model"], Is.EqualTo("claude-haiku-5-5"));
         Assert.That(run.Modes!.Single() is { Name: SampleMode.Beta, Repeat: 1, Role: "puls/voice-af" });
-        Assert.That(run.Log, Is.EqualTo(new[] { "Puls cook check, 1 repeat", SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>") }), "the plain lines, not the events");
+        Assert.That(run.Log,
+            Is.EqualTo(new[] { "Puls cook check, 1 repeat", SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>") }),
+            "the plain lines, not the events");
 
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
-        Assert.That((conversation.Key, conversation.Order, conversation.Role), Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha)));
+        Assert.That((conversation.Key, conversation.Order, conversation.Role),
+            Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha)));
         Assert.That(conversation.Scores.GetProperty("routed_right").GetBoolean(), Is.True);
 
         var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         var turn = (await _store.TurnsAsync(_run.Id, key.Conversation)).Single();
-        Assert.That((turn.Session, turn.Answer, turn.SpecialistCalls, turn.Error), Is.EqualTo(("sess_bobotie", "Hier is…", 6, (string?)null)));
+        Assert.That((turn.Session, turn.Answer, turn.SpecialistCalls, turn.Error),
+            Is.EqualTo(("sess_bobotie", "Hier is…", 6, (string?)null)));
         var events = await _store.TurnEventsAsync(_run.Id, key);
-        Assert.That(events.Select(e => e.Data.GetProperty("delta").GetProperty("text").GetString()), Is.EqualTo(new[] { "Hal", "lo" }));
+        Assert.That(events.Select(e => e.Data.GetProperty("delta").GetProperty("text").GetString()),
+            Is.EqualTo(new[] { "Hal", "lo" }));
     }
 
     /// <summary>The run's split is kept, read from the very first line.</summary>
@@ -122,7 +161,16 @@ public class BenchmarkRecorderTests
     public async Task ARunsSplit_IsKept_FromItsFirstLine()
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
-        Add(At(new { @event = "protocol", version = 1, eval = SampleEval.Beta, eval_version = 2, commit = "abc", split = "held_out" }), Mode(), ModeDone());
+        Add(
+            At(new
+            {
+                @event = "protocol",
+                version = 1,
+                eval = SampleEval.Beta,
+                eval_version = 2,
+                commit = "abc",
+                split = "held_out"
+            }), Mode(), ModeDone());
         _run.Complete(0);
         await recording;
 
@@ -163,7 +211,17 @@ public class BenchmarkRecorderTests
     public async Task ATurnsToolCounts_AreKept_WhenItEnds()
     {
         // Review of PR #55: counted once when the turn is recorded, so reading a run never needs its events for them.
-        string Block(object block) => At(new { @event = "sse", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, type = "content_block_start", data = new { content_block = block } });
+        string Block(object block) => At(new
+        {
+            @event = "sse",
+            mode = SampleMode.Beta,
+            repeat = 1,
+            task = "bobotie",
+            turn = 1,
+            type = "content_block_start",
+            data = new { content_block = block }
+        });
+
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"),
             Block(new { type = "tool_use", id = "u1", name = "WebSearch", input = new { } }),
@@ -173,10 +231,12 @@ public class BenchmarkRecorderTests
         _run.Complete(0);
         await recording;
 
-        var tools = (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single().Tools!;
+        var tools = (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single()
+            .Tools!;
 
         Assert.That((tools.Calls, tools.Failed), Is.EqualTo((2, 1)));
-        Assert.That(tools.Reasons.Single(), Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: limit reached", 1)));
+        Assert.That(tools.Reasons.Single(),
+            Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: limit reached", 1)));
     }
 
     /// <summary>You can read a run while it is still going: its finished turns, its mode, and a conversation that has no scores yet.</summary>
@@ -184,15 +244,18 @@ public class BenchmarkRecorderTests
     public async Task AHalfDoneRun_IsReadable_WhileItRuns()
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
-        Add(Protocol(), Mode(), Question("bobotie"), Sse("bobotie", "a"), TurnDone("bobotie"), Question("bobotie", turn: 2), Sse("bobotie", "b", turn: 2));
+        Add(Protocol(), Mode(), Question("bobotie"), Sse("bobotie", "a"), TurnDone("bobotie"),
+            Question("bobotie", turn: 2), Sse("bobotie", "b", turn: 2));
 
-        await Eventually(async () => (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count == 1);
+        await Eventually(async () =>
+            (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count == 1);
 
         var run = await _store.GetRunAsync(_run.Id);
         Assert.That(run!.Status, Is.EqualTo(BenchmarkRunStatus.Running));
         Assert.That(run.Modes!.Count, Is.EqualTo(1), "the mode is written when it starts");
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
-        Assert.That((conversation.Order, conversation.Role), Is.EqualTo((1, (string?)null)), "the conversation is there before its scores");
+        Assert.That((conversation.Order, conversation.Role), Is.EqualTo((1, (string?)null)),
+            "the conversation is there before its scores");
 
         _run.Complete(0);
         await recording;
@@ -205,13 +268,15 @@ public class BenchmarkRecorderTests
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("cottage-pie"), TurnDone("cottage-pie"), ConversationDone("cottage-pie"),
             Question("bobotie"), TurnDone("bobotie"), ConversationDone("bobotie"), ModeDone(),
-            Mode(repeat: 2), Question("cottage-pie", repeat: 2), TurnDone("cottage-pie", repeat: 2), ConversationDone("cottage-pie", repeat: 2));
+            Mode(repeat: 2), Question("cottage-pie", repeat: 2), TurnDone("cottage-pie", repeat: 2),
+            ConversationDone("cottage-pie", repeat: 2));
         _run.Complete(0);
         await recording;
 
         var conversations = await _store.ConversationsAsync(_run.Id);
 
-        Assert.That(conversations.Select(c => (c.Key.Task, c.Key.Repeat, c.Order)), Is.EqualTo(new[] { ("cottage-pie", 1, 1), ("bobotie", 1, 2), ("cottage-pie", 2, 3) }));
+        Assert.That(conversations.Select(c => (c.Key.Task, c.Key.Repeat, c.Order)),
+            Is.EqualTo(new[] { ("cottage-pie", 1, 1), ("bobotie", 1, 2), ("cottage-pie", 2, 3) }));
         Assert.That((await _store.GetRunAsync(_run.Id))!.Modes!.Select(m => m.Repeat), Is.EqualTo(new[] { 1, 2 }));
     }
 
@@ -226,7 +291,8 @@ public class BenchmarkRecorderTests
 
         var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         var turn = (await _store.TurnsAsync(_run.Id, key.Conversation)).Single();
-        Assert.That((turn.Session, turn.Question, turn.Answer), Is.EqualTo(("sess_bobotie", "bobotie?", (string?)null)));
+        Assert.That((turn.Session, turn.Question, turn.Answer),
+            Is.EqualTo(("sess_bobotie", "bobotie?", (string?)null)));
         Assert.That(turn.Error, Does.Contain("ended before this turn"));
         Assert.That((await _store.TurnEventsAsync(_run.Id, key)).Count, Is.EqualTo(1));
         var run = await _store.GetRunAsync(_run.Id);
@@ -259,7 +325,8 @@ public class BenchmarkRecorderTests
 
         var run = await _store.GetRunAsync(_run.Id);
         Assert.That(run!.Log!.First(), Does.Contain("protocol 2").And.Contain("reads 1"));
-        Assert.That((await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count, Is.EqualTo(1));
+        Assert.That((await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count,
+            Is.EqualTo(1));
     }
 
     /// <summary>A store that passes everything to a real one except writing a turn, which fails. It counts the other writes.</summary>
@@ -269,33 +336,69 @@ public class BenchmarkRecorderTests
         public int Writes { get; private set; }
 
         /// <summary>Counts the write and passes it on.</summary>
-        public Task SaveRunAsync(Run run, CancellationToken c = default) { Writes++; return inner.SaveRunAsync(run, c); }
+        public Task SaveRunAsync(Run run, CancellationToken c = default)
+        {
+            Writes++;
+            return inner.SaveRunAsync(run, c);
+        }
+
         /// <summary>Passes the read on.</summary>
         public Task<Run?> GetRunAsync(string id, CancellationToken c = default) => inner.GetRunAsync(id, c);
+
         /// <summary>Passes the read on.</summary>
-        public Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50, CancellationToken c = default) => inner.ListRunsAsync(check, limit, c);
+        public Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
+            CancellationToken c = default) => inner.ListRunsAsync(check, limit, c);
+
         /// <summary>Counts the write and passes it on.</summary>
-        public Task SaveConversationAsync(string run, Conversation conversation, CancellationToken c = default) { Writes++; return inner.SaveConversationAsync(run, conversation, c); }
+        public Task SaveConversationAsync(string run, Conversation conversation, CancellationToken c = default)
+        {
+            Writes++;
+            return inner.SaveConversationAsync(run, conversation, c);
+        }
+
         /// <summary>Passes the read on.</summary>
-        public Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken c = default) => inner.ConversationsAsync(run, c);
+        public Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken c = default) =>
+            inner.ConversationsAsync(run, c);
+
         /// <summary>Fails, as if the database were down.</summary>
-        public Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events, CancellationToken c = default) => throw new TimeoutException("mongo is down");
+        public Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
+            CancellationToken c = default) => throw new TimeoutException("mongo is down");
+
         /// <summary>Passes the read on.</summary>
-        public Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation, CancellationToken c = default) => inner.TurnsAsync(run, conversation, c);
+        public Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
+            CancellationToken c = default) => inner.TurnsAsync(run, conversation, c);
+
         /// <summary>Passes the read on.</summary>
-        public Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn, CancellationToken c = default) => inner.TurnEventsAsync(run, turn, c);
+        public Task<IReadOnlyList<StreamEvent>>
+            TurnEventsAsync(string run, TurnKey turn, CancellationToken c = default) =>
+            inner.TurnEventsAsync(run, turn, c);
+
         /// <summary>Counts the write and passes it on.</summary>
-        public Task AddRequestsAsync(string run, IReadOnlyList<Request> requests, CancellationToken c = default) { Writes++; return inner.AddRequestsAsync(run, requests, c); }
+        public Task AddRequestsAsync(string run, IReadOnlyList<Request> requests, CancellationToken c = default)
+        {
+            Writes++;
+            return inner.AddRequestsAsync(run, requests, c);
+        }
+
         /// <summary>Passes the read on.</summary>
-        public Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken c = default) => inner.RequestsAsync(run, c);
+        public Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken c = default) =>
+            inner.RequestsAsync(run, c);
+
         /// <summary>Passes it on.</summary>
-        public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken c = default) => inner.CloseOrphansAsync(now, c);
+        public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken c = default) =>
+            inner.CloseOrphansAsync(now, c);
+
         /// <summary>Passes it on.</summary>
         public Task<bool> DeleteRunAsync(string id, CancellationToken c = default) => inner.DeleteRunAsync(id, c);
+
         /// <summary>Passes the note on to the real store.</summary>
-        public Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at, ConversationKey? conversation = null, CancellationToken c = default) => inner.AddNoteAsync(run, text, at, conversation, c);
+        public Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
+            ConversationKey? conversation = null, CancellationToken c = default) =>
+            inner.AddNoteAsync(run, text, at, conversation, c);
+
         /// <summary>Passes the read on.</summary>
-        public Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken c = default) => inner.NotesAsync(run, c);
+        public Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken c = default) =>
+            inner.NotesAsync(run, c);
     }
 
     /// <summary>When the store fails, the recording stops and says why, but the run itself still finishes.</summary>
@@ -304,7 +407,8 @@ public class BenchmarkRecorderTests
     {
         var failing = new TurnsFail(_store);
         var recording = new BenchmarkRecorder(failing).RecordAsync(_run);
-        Add(Protocol(), Mode(), Question("bobotie"), TurnDone("bobotie"), ConversationDone("bobotie"), Question("cottage-pie"), ModeDone());
+        Add(Protocol(), Mode(), Question("bobotie"), TurnDone("bobotie"), ConversationDone("bobotie"),
+            Question("cottage-pie"), ModeDone());
         _run.Complete(0);
 
         var result = await recording;
@@ -312,10 +416,12 @@ public class BenchmarkRecorderTests
         Assert.That(result.Stored, Is.False);
         Assert.That(result.StoreError, Does.Contain("mongo is down"));
         var run = await _store.GetRunAsync(_run.Id);
-        Assert.That(run!.StoreError, Does.Contain("mongo is down"), "the run says what wasn't kept, when the store takes that much");
+        Assert.That(run!.StoreError, Does.Contain("mongo is down"),
+            "the run says what wasn't kept, when the store takes that much");
         Assert.That(run.Status, Is.EqualTo(BenchmarkRunStatus.Done), "the run itself finished");
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
-        Assert.That(conversation.Role, Is.Null, "nothing after the failure was written: not bobotie's scores, not cottage-pie");
+        Assert.That(conversation.Role, Is.Null,
+            "nothing after the failure was written: not bobotie's scores, not cottage-pie");
     }
 
     /// <summary>A recording attached to a run is kept by it, so the end can say whether everything was stored.</summary>

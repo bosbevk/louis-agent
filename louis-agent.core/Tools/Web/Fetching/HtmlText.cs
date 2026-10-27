@@ -1,8 +1,8 @@
-namespace LouisAgent.Core.Tools.Web.Fetching;
 
 using System.Net;
 using System.Text.RegularExpressions;
 
+namespace LouisAgent.Core.Tools.Web.Fetching;
 /// <summary>HTML as readable text (S, CL15, from WebTools): what FetchUrl, the page renderer and the search providers show.</summary>
 internal static partial class HtmlText
 {
@@ -57,7 +57,8 @@ internal static partial class HtmlText
         return (title, text);
     }
 
-    private static string UrlOf(string imageMarkdown) => imageMarkdown[(imageMarkdown.LastIndexOf("](", StringComparison.Ordinal) + 2)..^1];
+    private static string UrlOf(string imageMarkdown) =>
+        imageMarkdown[(imageMarkdown.LastIndexOf("](", StringComparison.Ordinal) + 2)..^1];
 
     /// <summary>
     /// An image as <c>![alt](url)</c> (a product's photo on a shop's page), or nothing: only one with alt text and an
@@ -72,12 +73,14 @@ internal static partial class HtmlText
         if (alt.Length == 0) return "";
         // A lazy-loading plugin keeps the real file in one of these while src holds a placeholder (FX24: WordPress sites use all four).
         string? file = new[] { "data-src", "data-lazy-src", "data-orig-file", "data-original" }
-            .Select(name => attributes.GetValueOrDefault(name)).FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
+            .Select(name => attributes.GetValueOrDefault(name))
+            .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
         if (string.IsNullOrWhiteSpace(file) && attributes.GetValueOrDefault("srcset") is { } set)
             file = set.Split(',')[0].Trim().Split(' ', 2)[0];
         if (string.IsNullOrWhiteSpace(file)) file = attributes.GetValueOrDefault("src");
         if (string.IsNullOrWhiteSpace(file) || !Uri.TryCreate(baseUri, file.Trim(), out var target)
-            || target.Scheme is not ("http" or "https") || target.AbsolutePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+                                            || target.Scheme is not ("http" or "https") ||
+                                            target.AbsolutePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
             return "";
         return $"![{alt}]({target})";
     }
@@ -105,10 +108,12 @@ internal static partial class HtmlText
     [GeneratedRegex(@"<!--.*?-->", RegexOptions.Singleline)]
     private static partial Regex Comment();
 
-    [GeneratedRegex(@"<(script|style|noscript|svg|nav|footer|aside|form|iframe|template|button)\b[^>]*>.*?</\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    [GeneratedRegex(@"<(script|style|noscript|svg|nav|footer|aside|form|iframe|template|button)\b[^>]*>.*?</\1>",
+        RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex NonContent();
 
-    [GeneratedRegex(@"<(script|style|noscript|template)\b[^>]*>.*?</\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    [GeneratedRegex(@"<(script|style|noscript|template)\b[^>]*>.*?</\1>",
+        RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex ScriptOrStyle();
 
     [GeneratedRegex(@"<pre[^>]*>(.*?)</pre>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
@@ -117,7 +122,8 @@ internal static partial class HtmlText
     [GeneratedRegex(@"<h([1-6])[^>]*>(.*?)</h\1>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex Heading();
 
-    [GeneratedRegex(@"<a\b[^>]*href=""(?<href>[^""]*)""[^>]*>(?<text>.*?)</a>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    [GeneratedRegex(@"<a\b[^>]*href=""(?<href>[^""]*)""[^>]*>(?<text>.*?)</a>",
+        RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex Anchor();
 
     // An AMP page draws its images as <amp-img> (FX24): an image like any other.
@@ -131,7 +137,8 @@ internal static partial class HtmlText
     private static partial Regex ListItem();
 
     // No </li>: each <li> already starts a new "- " line.
-    [GeneratedRegex(@"<(br|/p|p|/div|div|/tr|tr|/ul|/ol|/table|/section|section|/blockquote|blockquote|hr)\b[^>]*>", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"<(br|/p|p|/div|div|/tr|tr|/ul|/ol|/table|/section|section|/blockquote|blockquote|hr)\b[^>]*>",
+        RegexOptions.IgnoreCase)]
     private static partial Regex BlockBreak();
 
     [GeneratedRegex(@"<code[^>]*>(.*?)</code>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]

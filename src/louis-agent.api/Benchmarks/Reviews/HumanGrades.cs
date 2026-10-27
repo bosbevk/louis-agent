@@ -12,10 +12,17 @@ public static class HumanGrades
     private sealed record Slot(ConversationKey Conversation, string Grader);
 
     public static IReadOnlyList<HumanGrade> Latest(IEnumerable<HumanGrade> grades) =>
-        [.. grades.GroupBy(g => new Slot(g.Conversation, g.Grader))
-            .SelectMany(slot => slot.GroupBy(g => g.Reviewer, StringComparer.OrdinalIgnoreCase).Select(reviewer => reviewer.OrderBy(g => g.At).Last()))
-            .OrderBy(g => g.At)];
+    [
+        .. grades.GroupBy(g => new Slot(g.Conversation, g.Grader))
+            .SelectMany(slot =>
+                slot.GroupBy(g => g.Reviewer, StringComparer.OrdinalIgnoreCase)
+                    .Select(reviewer => reviewer.OrderBy(g => g.At).Last()))
+            .OrderBy(g => g.At)
+    ];
 
     public static IReadOnlyList<HumanGrade> Decided(IEnumerable<HumanGrade> grades) =>
-        [.. Latest(grades).Where(g => g.Verdict != HumanVerdict.Unsure).GroupBy(g => new Slot(g.Conversation, g.Grader)).Select(group => group.OrderBy(g => g.At).Last()).OrderBy(g => g.At)];
+    [
+        .. Latest(grades).Where(g => g.Verdict != HumanVerdict.Unsure).GroupBy(g => new Slot(g.Conversation, g.Grader))
+            .Select(group => group.OrderBy(g => g.At).Last()).OrderBy(g => g.At)
+    ];
 }

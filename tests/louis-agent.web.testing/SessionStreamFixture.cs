@@ -17,10 +17,12 @@ public static class SessionStreamFixture
     public const string CookRole = "puls-cook";
 
     /// <summary>The question the recording answered.</summary>
-    public const string Question = "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
+    public const string Question =
+        "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
 
     /// <summary>Where the recording lives: the session-stream tests' fixtures, read from the source tree (the same on Windows and Linux).</summary>
-    public static string Folder => Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.session-stream.tests", "Fixtures");
+    public static string Folder =>
+        Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.session-stream.tests", "Fixtures");
 
     public static string StreamFile => Path.Combine(Folder, "session-stream.sse");
 

@@ -12,6 +12,6 @@ public static class ChipKind
     };
 
     /// <summary>A person's verdict as a chip kind (6a.4e): pass is good, fail is bad, unsure a warning.</summary>
-    public static string OfVerdict(string verdict) => verdict switch { "pass" => "ok", "fail" => "bad", "unsure" => "warn", _ => "" };
+    public static string OfVerdict(string verdict) =>
+        verdict switch { "pass" => "ok", "fail" => "bad", "unsure" => "warn", _ => "" };
 }
-

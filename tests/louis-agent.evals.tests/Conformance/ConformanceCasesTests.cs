@@ -12,9 +12,14 @@ public class ConformanceCasesTests
 {
     private static readonly string[] Conversation =
     [
-        SampleMode.Fill("@{\"event\": \"mode\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"toolsets\": [\"") + SampleToolset.Gamma + "\", \"" + SampleToolset.Alpha + "\"], \"role\": \"puls/voice-af\", \"llm\": null, \"conversations\": 1}",
-        SampleMode.Fill("@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"type\": \"content_block_delta\", \"data\": {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \"Hallo\"}}}"),
-        SampleMode.Fill("@{\"event\": \"turn\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"session\": \"sess_1\", \"question\": \"Hallo\", \"answer\": \"Hallo\", \"role\": null, \"seconds\": 0.5, \"error\": null}"),
+        SampleMode.Fill(
+            "@{\"event\": \"mode\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"toolsets\": [\"") +
+        SampleToolset.Gamma + "\", \"" + SampleToolset.Alpha +
+        "\"], \"role\": \"puls/voice-af\", \"llm\": null, \"conversations\": 1}",
+        SampleMode.Fill(
+            "@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"type\": \"content_block_delta\", \"data\": {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \"Hallo\"}}}"),
+        SampleMode.Fill(
+            "@{\"event\": \"turn\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"session\": \"sess_1\", \"question\": \"Hallo\", \"answer\": \"Hallo\", \"role\": null, \"seconds\": 0.5, \"error\": null}"),
     ];
 
     [Test]
@@ -67,5 +72,6 @@ public class ConformanceCasesTests
     }
 
     private static EvalScenario Scenario(string id) =>
-        new(id, new EvalInput(null, "Etc/UTC", ["Hallo"]), JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev);
+        new(id, new EvalInput(null, "Etc/UTC", ["Hallo"]), JsonDocument.Parse("{}").RootElement.Clone(), [],
+            DatasetSplit.Dev);
 }

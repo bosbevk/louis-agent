@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Agent.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Agent.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -18,8 +18,7 @@ public enum AgentLogMessage
     [Description("<- {Tool} failed: {ErrorType}: {Reason}")]
     ToolCallFailed,
 
-    [Description("<- {Tool}: {Result}")]
-    ToolCallResult,
+    [Description("<- {Tool}: {Result}")] ToolCallResult,
 
     [Description("summarising {Tool} output ({Chars} chars)")]
     ToolResultSummarising,
@@ -51,7 +50,8 @@ public enum AgentLogMessage
     [Description("Loaded {Count} agent-built tool(s) from {Directory}")]
     AgentToolsLoaded,
 
-    [Description("Sub-session prompt budget: the last request's prompt was {Last} tokens and the next is expected at {Next}, over the budget of {Budget}; the next request answers without tools")]
+    [Description(
+        "Sub-session prompt budget: the last request's prompt was {Last} tokens and the next is expected at {Next}, over the budget of {Budget}; the next request answers without tools")]
     SubSessionPromptBudgetReached,
 
     [Description("Optional toolset '{Name}' left out: this instance needs {Settings} for it")]

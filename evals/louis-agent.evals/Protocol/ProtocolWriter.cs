@@ -32,7 +32,8 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// </summary>
     public void Started() => Emit("protocol", json => json.WriteNumber("version", Version));
 
-    public void Mode(string mode, int repeat, IReadOnlyList<string> toolsets, string? role, string? llm, int? conversations = null) =>
+    public void Mode(string mode, int repeat, IReadOnlyList<string> toolsets, string? role, string? llm,
+        int? conversations = null) =>
         Emit("mode", json =>
         {
             json.WriteString("mode", mode);
@@ -64,7 +65,8 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
         });
 
     /// <summary>A turn; <paramref name="failure"/> is the infrastructure failure that ended it (F18 step 5.1), left out when it ended on its own.</summary>
-    public void Turn(string mode, int repeat, string task, int turn, string session, string question, string? answer, string? role,
+    public void Turn(string mode, int repeat, string task, int turn, string session, string question, string? answer,
+        string? role,
         double seconds, TurnFacts? facts = null, TrialFailure? failure = null) =>
         Emit("turn", json =>
         {
@@ -108,17 +110,22 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
                         json.WriteString("judge_model", judge.Model);
                         json.WriteString("judge_prompt_hash", judge.PromptHash);
                     }
+
                     json.WriteEndObject();
                 }
+
                 json.WriteEndArray();
             }
+
             if (outcome is not null) json.WriteString("outcome", outcome.Value.Wire());
         });
 
     /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split, step 5.4), its graders and the model each mode ran on.</summary>
-    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders, IReadOnlyList<ModelUse> models,
+    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders,
+        IReadOnlyList<ModelUse> models,
         SplitSelection split = SplitSelection.Dev, string? rescoreOf = null, DatasetManifest? dataset = null) =>
-        Emit("protocol", json => RunBeginLine.Write(json, eval, evalVersion, commit, graders, models, split, rescoreOf, dataset));
+        Emit("protocol",
+            json => RunBeginLine.Write(json, eval, evalVersion, commit, graders, models, split, rescoreOf, dataset));
 
     /// <summary>A line of a stored run, written as it was (F18 step 5b): a re-score keeps the questions, events and turns it grades again.</summary>
     public void Copy(string line)
@@ -132,7 +139,8 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// A mode's repeat is done (F18 step 5a). With <paramref name="rates"/> the line also carries the mode's pass@k and pass^k over the repeats so far (left
     /// out when null: no trial counted, never 0), the <paramref name="k"/> they are over, and how many trials were left out for the infrastructure or run twice.
     /// </summary>
-    public void ModeDone(string mode, int repeat, PassShare? rates = null, int? k = null, int? infrastructure = null, int? retried = null) =>
+    public void ModeDone(string mode, int repeat, PassShare? rates = null, int? k = null, int? infrastructure = null,
+        int? retried = null) =>
         Emit("mode_done", json =>
         {
             json.WriteString("mode", mode);

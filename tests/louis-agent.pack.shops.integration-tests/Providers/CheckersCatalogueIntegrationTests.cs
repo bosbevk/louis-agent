@@ -14,17 +14,21 @@ namespace LouisAgent.Packs.Shops.IntegrationTests.Providers;
 public class CheckersCatalogueIntegrationTests
 {
     // F34 step 1b: the search runs in the store that serves the user's town, when they shared it; the answer says which.
-    private static readonly BrowserSession MalmesburysStore = new([new BrowserCookie("storeids", "655b0c8fb44cda100fd99383", "www.checkers.co.za")]);
+    private static readonly BrowserSession MalmesburysStore =
+        new([new BrowserCookie("storeids", "655b0c8fb44cda100fd99383", "www.checkers.co.za")]);
 
     private sealed class OneTownsStore : IWebBrowser
     {
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
+            string? script = null,
             string? readySelector = null, CancellationToken cancellationToken = default) =>
-            Task.FromResult(new BrowserVisit(url.AbsoluteUri, "", [], """{"storeContexts":[{"storeId":"655b0c8fb44cda100fd99383"}]}""", MalmesburysStore.Cookies));
+            Task.FromResult(new BrowserVisit(url.AbsoluteUri, "", [],
+                """{"storeContexts":[{"storeId":"655b0c8fb44cda100fd99383"}]}""", MalmesburysStore.Cookies));
     }
 
     private static CheckersStore Store() =>
-        new(new OneTownsStore(), (place, _) => Task.FromResult<(double, double)?>(place == "Malmesbury" ? (-33.46, 18.72) : null));
+        new(new OneTownsStore(),
+            (place, _) => Task.FromResult<(double, double)?>(place == "Malmesbury" ? (-33.46, 18.72) : null));
 
     [Test, Category("Live")]
     public async Task FromMalmesbury_TheSearchIsMalmesburysStore()
@@ -32,7 +36,9 @@ public class CheckersCatalogueIntegrationTests
         string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
         var browser = new ChromeWebBrowser(new Uri(url!));
 
-        var found = await new CheckersCatalogue(browser, new CheckersStore(browser, LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync)).SearchAsync("chicken", 5, "Malmesbury");
+        var found = await new CheckersCatalogue(browser,
+                new CheckersStore(browser, LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync))
+            .SearchAsync("chicken", 5, "Malmesbury");
 
         Assert.That(found.Area, Is.EqualTo("Malmesbury"));
         Assert.That(found.Store, Does.Not.StartWith("5ece6935"), "the default store's id: the town's store answered");
@@ -44,9 +50,11 @@ public class CheckersCatalogueIntegrationTests
     {
         string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
 
-        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chicken", 16)).Products;
+        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chicken", 16))
+            .Products;
 
-        Assert.That(products, Has.Some.Matches<ShopProduct>(p => p.Deal is { Text.Length: > 0 }), "deals come and go; chicken has had one all week");
+        Assert.That(products, Has.Some.Matches<ShopProduct>(p => p.Deal is { Text.Length: > 0 }),
+            "deals come and go; chicken has had one all week");
     }
 
     [Test, Category("Live")]
@@ -54,9 +62,11 @@ public class CheckersCatalogueIntegrationTests
     {
         string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
 
-        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chakalaka", 5)).Products;
+        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chakalaka", 5))
+            .Products;
 
         Assert.That(products, Is.Not.Empty);
-        Assert.That(products, Has.All.Matches<ShopProduct>(p => (p.Price > 0 || p.UnitPrice > 0) && p.Url.Host == "www.checkers.co.za"));
+        Assert.That(products,
+            Has.All.Matches<ShopProduct>(p => (p.Price > 0 || p.UnitPrice > 0) && p.Url.Host == "www.checkers.co.za"));
     }
 }

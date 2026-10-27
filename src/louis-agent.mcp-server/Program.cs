@@ -24,7 +24,8 @@ var engine = AgentHost.BuildToolHost(Plugins.FromEnvironment());
 // Default (unset or anything but "http"): stdio, for a client that launches this as a local subprocess (Rider,
 // Claude Desktop) - unchanged from before. "http" serves Streamable HTTP instead, for a remote client that isn't
 // local (an agent built with another SDK/provider, e.g. OpenAI's Agents SDK, connecting over the network).
-bool useHttp = string.Equals(Environment.GetEnvironmentVariable("MCP_TRANSPORT"), "http", StringComparison.OrdinalIgnoreCase);
+bool useHttp = string.Equals(Environment.GetEnvironmentVariable("MCP_TRANSPORT"), "http",
+    StringComparison.OrdinalIgnoreCase);
 
 if (useHttp)
 {
@@ -40,10 +41,7 @@ static async Task RunStdioAsync(string[] args, AgentEngine engine)
     var builder = Host.CreateApplicationBuilder(args);
 
     // Log to stderr only (critical for stdio transport)
-    builder.Logging.AddConsole(opts =>
-    {
-        opts.LogToStandardErrorThreshold = LogLevel.Trace;
-    });
+    builder.Logging.AddConsole(opts => { opts.LogToStandardErrorThreshold = LogLevel.Trace; });
 
     builder.Services.AddSingleton(engine);
 
@@ -67,10 +65,7 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Logging.AddConsole(opts =>
-    {
-        opts.LogToStandardErrorThreshold = LogLevel.Trace;
-    });
+    builder.Logging.AddConsole(opts => { opts.LogToStandardErrorThreshold = LogLevel.Trace; });
 
     builder.Services.AddSingleton(engine);
 
@@ -94,18 +89,22 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
     // shared key still works for anyone who hasn't split them. FX18: with neither the server refuses to start, before
     // it listens, unless AGENT_AUTH=off says it is open on purpose (HostAuth, core's one rule for this and the API).
     // Over stdio no key is needed: a child process on this machine.
-    string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("MCP_API_KEY"), Environment.GetEnvironmentVariable("AGENT_API_KEY"));
+    string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("MCP_API_KEY"),
+        Environment.GetEnvironmentVariable("AGENT_API_KEY"));
     switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
     {
         case HostAuthDecision.Refuse:
-            throw new InvalidOperationException(MessageText.Format(ErrorMessage.ApiKeyRequired, new { Setting = "MCP_API_KEY (or AGENT_API_KEY)" }));
+            throw new InvalidOperationException(MessageText.Format(ErrorMessage.ApiKeyRequired,
+                new { Setting = "MCP_API_KEY (or AGENT_API_KEY)" }));
         case HostAuthDecision.StartOpen:
-            AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Warning, McpServerLogMessage.NoApiKey);
+            AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer")
+                .Log(LogLevel.Warning, McpServerLogMessage.NoApiKey);
             break;
         case HostAuthDecision.Start:
             app.Use(async (context, next) =>
             {
-                if (HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(), context.Request.Headers.Authorization.FirstOrDefault(), apiKey))
+                if (HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(),
+                        context.Request.Headers.Authorization.FirstOrDefault(), apiKey))
                 {
                     await next(context);
                     return;
@@ -130,7 +129,9 @@ internal static class EngineToolSync
     public static void Attach(AgentEngine engine, McpServerPrimitiveCollection<McpServerTool> collection)
     {
         // Name -> (engine function, its published MCP tool, description at publish time).
-        var published = new Dictionary<string, (AIFunction Function, McpServerTool Tool, string Description)>(StringComparer.Ordinal);
+        var published =
+            new Dictionary<string, (AIFunction Function, McpServerTool Tool, string Description)>(
+                StringComparer.Ordinal);
         object gate = new();
 
         void Sync()
@@ -158,7 +159,9 @@ internal static class EngineToolSync
 
                     var tool = McpServerTool.Create(function);
                     if (collection.TryAdd(tool)) published[name] = (function, tool, function.Description);
-                    else AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");
+                    else
+                        AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Information,
+                            McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");
                 }
             }
         }
@@ -185,14 +188,16 @@ public class SkillsToolProvider
     [Description("List all available skills (run one with ExecuteSkill)")]
     public string ListSkills()
     {
-        var skillList = string.Join("\n", _engine.Skills.OrderBy(s => s.Name).Select(s => $"- {s.Name} ({s.Language.Wire()}): {s.Description}"));
+        var skillList = string.Join("\n",
+            _engine.Skills.OrderBy(s => s.Name).Select(s => $"- {s.Name} ({s.Language.Wire()}): {s.Description}"));
         return $"Available skills:\n{skillList}";
     }
 
     [McpServerTool]
     [Description("Get detailed information about a specific skill, including its command")]
     public string GetSkillInfo(
-        [Description("Name of the skill to get information about")] string skillName)
+        [Description("Name of the skill to get information about")]
+        string skillName)
     {
         var skill = _engine.Skills.FirstOrDefault(s =>
             s.Name.Equals(skillName, StringComparison.OrdinalIgnoreCase));
@@ -202,11 +207,13 @@ public class SkillsToolProvider
             return MessageText.Format(McpServerText.UnknownSkill, new { Name = skillName });
         }
 
-        return $"Skill: {skill.Name}\nDescription: {skill.Description}\nLanguage: {skill.Language.Wire()}\nCommand: {skill.Command}";
+        return
+            $"Skill: {skill.Name}\nDescription: {skill.Description}\nLanguage: {skill.Language.Wire()}\nCommand: {skill.Command}";
     }
 
     [McpServerTool]
-    [Description("Get the agent's full guidance: default instructions plus the .NET, Python, PowerShell, Bash, self-extension and skill documentation")]
+    [Description(
+        "Get the agent's full guidance: default instructions plus the .NET, Python, PowerShell, Bash, self-extension and skill documentation")]
     public string GetSkillDocumentation()
     {
         return _engine.SkillDocumentation;

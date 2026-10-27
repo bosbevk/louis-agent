@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Llm.UsageMapping;
 
 using LouisAgent.Core.Llm.Replay;
 using LouisAgent.Core.Usage.Records;
@@ -7,6 +6,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Llm.UsageMapping;
 /// <summary>
 /// Writes one <see cref="UsageRecord"/> per model request. Sits inside <c>UseFunctionInvocation</c> in
 /// <c>AgentEngine</c>, so it sees every round of the tool loop as its own request, and the prompt's hash, taken when the
@@ -17,7 +17,10 @@ using Microsoft.Extensions.AI;
 /// <param name="defaultModel">Recorded when the response doesn't name its model.</param>
 /// <param name="mapper">The provider's usage mapping; <see cref="StandardUsageMapper"/> when null.</param>
 public sealed class UsageRecordingChatClient(
-    IChatClient innerClient, IUsageSink sink, string? defaultModel = null, IUsageMapper? mapper = null)
+    IChatClient innerClient,
+    IUsageSink sink,
+    string? defaultModel = null,
+    IUsageMapper? mapper = null)
     : DelegatingChatClient(innerClient)
 {
     private readonly IUsageMapper _mapper = mapper ?? new StandardUsageMapper();
@@ -38,14 +41,18 @@ public sealed class UsageRecordingChatClient(
         {
             // A timeout or a stopped caller (FX9): recorded as the streaming path records a cancelled stream. A cancelled
             // call returns no usage, so its tokens stay unknown (null), never 0. Provider errors stay unrecorded.
-            Store(scope, CreateRecord(scope, round, usage: null, model: null, Cancelled, stopwatch.Elapsed, promptHash: promptHash));
+            Store(scope,
+                CreateRecord(scope, round, usage: null, model: null, Cancelled, stopwatch.Elapsed,
+                    promptHash: promptHash));
             throw;
         }
 
         // Non-streaming responses carry their usage on ChatResponse.Usage, not as UsageContent.
         object[] raw = response.RawRepresentation is { } r && _mapper.Keeps(r) ? [r] : [];
         bool hit = response.AdditionalProperties?.ContainsKey(ModelReplayChatClient.HitTag) == true;
-        Store(scope, CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value, stopwatch.Elapsed, promptHash, raw, hit));
+        Store(scope,
+            CreateRecord(scope, round, response.Usage, response.ModelId, response.FinishReason?.Value,
+                stopwatch.Elapsed, promptHash, raw, hit));
         return response;
     }
 
@@ -88,6 +95,7 @@ public sealed class UsageRecordingChatClient(
                     usage ??= new UsageDetails();
                     usage.Add(content.Details);
                 }
+
                 // Only what the mapper asks for (on Anthropic, one event per request), not the whole stream.
                 if (update.RawRepresentation is { } r && _mapper.Keeps(r)) raw.Add(r);
                 hit |= update.AdditionalProperties?.ContainsKey(ModelReplayChatClient.HitTag) == true;
@@ -103,7 +111,9 @@ public sealed class UsageRecordingChatClient(
         {
             // Reached on normal completion, an exception, or the caller disposing the stream early (a cancelled turn).
             if (!failed)
-                Store(scope, CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed, promptHash, raw, hit));
+                Store(scope,
+                    CreateRecord(scope, round, usage, model, completed ? stop : Cancelled, stopwatch.Elapsed,
+                        promptHash, raw, hit));
         }
     }
 
@@ -129,7 +139,8 @@ public sealed class UsageRecordingChatClient(
 
     /// <summary>Builds the record for a finished request from the scope it started in.</summary>
     internal UsageRecord CreateRecord(
-        UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration, string? promptHash,
+        UsageScope? scope, int round, UsageDetails? usage, string? model, string? stop, TimeSpan duration,
+        string? promptHash,
         IReadOnlyList<object>? raw = null, bool cacheHit = false) =>
         new(
             At: DateTimeOffset.UtcNow,

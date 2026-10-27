@@ -7,7 +7,8 @@ namespace LouisAgent.Puls.Tests.Styles;
 // how it looks is checked in the browser.
 public class SummaryTableStyleTests
 {
-    private static string Css => File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.puls", "wwwroot", "css", "app.css"));
+    private static string Css =>
+        File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.puls", "wwwroot", "css", "app.css"));
 
     private static string RuleOf(string selector)
     {
@@ -20,7 +21,9 @@ public class SummaryTableStyleTests
     public void TheCells_AreSpacedApart_AndTheTableFillsItsCard()
     {
         Assert.That(RuleOf(".summary-table th, .summary-table td"), Does.Match(@"padding:\s*\d+px\s+\d+px"));
-        Assert.That(RuleOf(".summary-table"), Does.Contain("width: 100%").And.Contain("border-collapse: separate").And.Match(@"border-spacing:\s*0\s+\d+px"), "rows apart, as rounded cards (6a.4)");
+        Assert.That(RuleOf(".summary-table"),
+            Does.Contain("width: 100%").And.Contain("border-collapse: separate").And
+                .Match(@"border-spacing:\s*0\s+\d+px"), "rows apart, as rounded cards (6a.4)");
     }
 
     [Test]
@@ -34,10 +37,15 @@ public class SummaryTableStyleTests
     [Test]
     public void TheOverallLine_StandsOut_AndTheModeHeadingIsHeadingSized()
     {
-        Assert.That(RuleOf(".summary-table tr.overall td"), Does.Contain("font-weight: 600").And.Not.Contain("245, 130, 32"), "bold, not edged (Louis: an orange heading instead)");
-        Assert.That(RuleOf(".summary-mode h3"), Does.Contain("var(--orange-text)"), "the mode's heading is the orange, as the run table's mode lines are");
-        Assert.That(RuleOf(".summary-table .summary-row td"), Does.Contain("background: var(--bg)").And.Contain("border-top"), "each row its own rounded card");
-        Assert.That(RuleOf(".summary-mode h3"), Does.Match(@"font-size:\s*(1\d|2[0-2])px"), "a heading, not the page's title");
+        Assert.That(RuleOf(".summary-table tr.overall td"),
+            Does.Contain("font-weight: 600").And.Not.Contain("245, 130, 32"),
+            "bold, not edged (Louis: an orange heading instead)");
+        Assert.That(RuleOf(".summary-mode h3"), Does.Contain("var(--orange-text)"),
+            "the mode's heading is the orange, as the run table's mode lines are");
+        Assert.That(RuleOf(".summary-table .summary-row td"),
+            Does.Contain("background: var(--bg)").And.Contain("border-top"), "each row its own rounded card");
+        Assert.That(RuleOf(".summary-mode h3"), Does.Match(@"font-size:\s*(1\d|2[0-2])px"),
+            "a heading, not the page's title");
     }
 
     [Test]

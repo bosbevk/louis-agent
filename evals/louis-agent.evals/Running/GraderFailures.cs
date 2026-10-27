@@ -6,5 +6,6 @@ namespace LouisAgent.Evals.Running;
 /// </summary>
 public static class GraderFailures
 {
-    public static bool IsRunCancel(Exception error, CancellationToken run) => error is OperationCanceledException && run.IsCancellationRequested;
+    public static bool IsRunCancel(Exception error, CancellationToken run) =>
+        error is OperationCanceledException && run.IsCancellationRequested;
 }

@@ -1,9 +1,9 @@
-namespace LouisAgent.Core.Tools.Web.Fetching;
 
 using System.Text;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Messages;
 
+namespace LouisAgent.Core.Tools.Web.Fetching;
 /// <summary>One part of a fetched or rendered page as the model gets it (S, CL15, from WebTools).</summary>
 internal static class PageText
 {
@@ -24,7 +24,8 @@ internal static class PageText
         sb.AppendLine(text.Length == 0 ? MessageText.Format(WebToolMessage.NoReadableText) : text[startIndex..end]);
         sb.Append("--- end of web content ---");
         if (end < text.Length)
-            sb.Append(MessageText.Format(WebToolMessage.PageContinues, new { Start = startIndex, End = end, text.Length, Tool = tool }));
+            sb.Append(MessageText.Format(WebToolMessage.PageContinues,
+                new { Start = startIndex, End = end, text.Length, Tool = tool }));
         return sb.ToString();
     }
 }

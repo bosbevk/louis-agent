@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Llm.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Llm.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -25,7 +25,8 @@ public enum LlmErrorMessage
     [Description("No recorded model answer for this request in trial '{Trial}': {Change}. The model was not called.")]
     ModelReplayMiss,
 
-    [Description("Trial '{Trial}' has no recorded model answers: it was recorded before step 4e, or is a different run. The model was not called.")]
+    [Description(
+        "Trial '{Trial}' has no recorded model answers: it was recorded before step 4e, or is a different run. The model was not called.")]
     ModelReplayNoAnswers,
 
     [Description("the model changed (recorded '{Recorded}', now '{Requested}')")]
@@ -46,8 +47,7 @@ public enum LlmErrorMessage
     [Description("the tools came in another order")]
     ReplayReorderedTools,
 
-    [Description("the settings changed")]
-    ReplayChangedSettings,
+    [Description("the settings changed")] ReplayChangedSettings,
 
     [Description("message {Number} ({Role}) changed")]
     ReplayChangedMessage,

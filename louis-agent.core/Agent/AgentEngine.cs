@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Agent;
 
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
@@ -17,6 +16,7 @@ using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Agent;
 /// <summary>
 /// One agent: its tools, its skills and the model behind <see cref="IChatClient"/>, wired once (S, CL15: the engine is the
 /// facade). A turn runs on <see cref="TurnRunner"/> over the <see cref="ChatPipeline"/>, where
@@ -37,6 +37,7 @@ public class AgentEngine
 
     /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
     public string SkillDocumentation => _skillTools.Documentation;
+
     public string WorkspaceRoot { get; }
     public bool SupportsTools { get; }
 
@@ -51,6 +52,7 @@ public class AgentEngine
     /// Hosts give it to their <see cref="UsageSession"/>s.
     /// </summary>
     public DisplayCurrency? Display { get; set; }
+
     public IReadOnlyList<AITool> Tools => _registry.Live;
 
     /// <summary>The tool-call guards in this engine's pipeline (tests call them directly).</summary>
@@ -67,13 +69,21 @@ public class AgentEngine
     }
 
     /// <summary>The skills folder; <see cref="CreateSkillFile"/> writes into its agent/functions/; null disables skill authoring.</summary>
-    public string? SkillsDirectory { get => _skillTools.SkillsDirectory; init => _skillTools.SkillsDirectory = value; }
+    public string? SkillsDirectory
+    {
+        get => _skillTools.SkillsDirectory;
+        init => _skillTools.SkillsDirectory = value;
+    }
 
     /// <summary>Reasoning effort for each turn (the model's thinking is streamed to hosts); null disables thinking.</summary>
     public ReasoningEffort? Thinking { get; init; }
 
     /// <summary>Rebuilds the skill set from disk for <see cref="ReloadSkills"/>; null disables reloading.</summary>
-    public Func<ISkillProvider>? SkillReloader { get => _skillTools.SkillReloader; init => _skillTools.SkillReloader = value; }
+    public Func<ISkillProvider>? SkillReloader
+    {
+        get => _skillTools.SkillReloader;
+        init => _skillTools.SkillReloader = value;
+    }
 
     /// <summary>Approved agent-built tools live here (*.tool.md); new ones wait in its 'pending' subfolder.</summary>
     public string? ToolsDirectory => _agentBuiltTools.ToolsDirectory;
@@ -98,21 +108,27 @@ public class AgentEngine
     /// On a toolsets engine, also register the self-extension tools (CreateSkillFile, ReloadSkills, CreateTool,
     /// ListAgentTools): the <c>skills</c> toolset. Ignored when <paramref name="toolsets"/> is null, which always registers them.
     /// </param>
-    public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options, bool supportsTools = true,
+    public AgentEngine(ISkillProvider skillProvider, IChatClient chatClient, AgentOptions options,
+        bool supportsTools = true,
         IEnumerable<object>? toolsets = null,
-        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false, bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null)
+        IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, bool selfExtension = false,
+        bool concurrentToolCalls = false, TimeProvider? clock = null, Sessions.Replay.Store.ReplayStore? replay = null)
     {
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         _python = new PythonTools(WorkspaceRoot);
         _powerShell = new PowerShellTools(WorkspaceRoot);
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, _python, _powerShell);
-        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell, () => SkillsDirectory, () => ReservedToolNames);
+        _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, _python, _powerShell,
+            () => SkillsDirectory, () => ReservedToolNames);
         _commands = new UserCommands(_agentBuiltTools, _skillTools, () => Display);
 
         RecordsUsage = usageSink is not null;
-        _guards = new ToolCallGuards(_registry, ChatPipeline.BuildSummaryClient(chatClient, usageSink, usageMapper, replay), options.SubSessionPromptBudget);
-        _turns = new TurnRunner(ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls, replay), _registry,
+        _guards = new ToolCallGuards(_registry,
+            ChatPipeline.BuildSummaryClient(chatClient, usageSink, usageMapper, replay),
+            options.SubSessionPromptBudget);
+        _turns = new TurnRunner(
+            ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls, replay), _registry,
             () => SkillDocumentation, () => Thinking, supportsTools);
 
         if (!supportsTools)
@@ -130,7 +146,8 @@ public class AgentEngine
     /// </summary>
     public void KeepOnlyTool(string name)
     {
-        foreach (var other in _registry.Live.Where(t => !string.Equals(t.Name, name, StringComparison.Ordinal)).ToList())
+        foreach (var other in _registry.Live.Where(t => !string.Equals(t.Name, name, StringComparison.Ordinal))
+                     .ToList())
             _registry.Remove(other);
     }
 
@@ -154,15 +171,18 @@ public class AgentEngine
     public List<ChatMessage> NewHistory() => _turns.NewHistory();
 
     /// <summary>One prompt, the reply whole (<see cref="TurnRunner.ProcessAsync"/>): the turn, tool calls included, lands in <paramref name="history"/>.</summary>
-    public Task<string> ProcessPromptAsync(List<ChatMessage> history, string userInput, CancellationToken cancellationToken = default) =>
+    public Task<string> ProcessPromptAsync(List<ChatMessage> history, string userInput,
+        CancellationToken cancellationToken = default) =>
         _turns.ProcessAsync(history, userInput, cancellationToken);
 
     /// <summary>One prompt, the reply streamed (<see cref="TurnRunner.StreamAsync"/>): text, each tool call and its outcome as they happen.</summary>
-    public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(List<ChatMessage> history, string userInput, CancellationToken cancellationToken = default) =>
+    public IAsyncEnumerable<ChatResponseUpdate> StreamPromptAsync(List<ChatMessage> history, string userInput,
+        CancellationToken cancellationToken = default) =>
         _turns.StreamAsync(history, userInput, cancellationToken);
 
     /// <summary>Runs a loaded skill (the <c>ExecuteSkill</c> tool; see <see cref="SkillTools.ExecuteSkill"/>).</summary>
-    public string ExecuteSkill(string skillName, string jsonArgs = "{}") => _skillTools.ExecuteSkill(skillName, jsonArgs);
+    public string ExecuteSkill(string skillName, string jsonArgs = "{}") =>
+        _skillTools.ExecuteSkill(skillName, jsonArgs);
 
     /// <summary>Saves and loads a skills file (the <c>CreateSkillFile</c> tool; see <see cref="SkillTools.CreateSkillFile"/>).</summary>
     public string CreateSkillFile(string name, string markdown, bool overwrite = false) =>
@@ -172,7 +192,8 @@ public class AgentEngine
     public string ReloadSkills() => _skillTools.ReloadSkills();
 
     /// <summary>Builds an agent tool (the <c>CreateTool</c> tool; see <see cref="AgentBuiltTools.CreateTool"/>).</summary>
-    public string CreateTool(string definition, bool overwrite = false) => _agentBuiltTools.CreateTool(definition, overwrite);
+    public string CreateTool(string definition, bool overwrite = false) =>
+        _agentBuiltTools.CreateTool(definition, overwrite);
 
     /// <summary>The agent-built tools (the <c>ListAgentTools</c> tool; see <see cref="AgentBuiltTools.ListAgentTools"/>).</summary>
     public string ListAgentTools() => _agentBuiltTools.ListAgentTools();
@@ -185,7 +206,8 @@ public class AgentEngine
     /// /usage (<see cref="UserCommands"/>). Returns the reply, or null when the input is not one of these commands.
     /// </summary>
     /// <param name="sessionUsage">The session's usage records so far, for /usage (F3); null when the host doesn't track usage.</param>
-    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null) => _commands.Handle(input, sessionUsage);
+    public string? HandleUserCommand(string input, IReadOnlyList<UsageRecord>? sessionUsage = null) =>
+        _commands.Handle(input, sessionUsage);
 
     /// <summary>
     /// What the model is sent must be the same bytes on every machine. Text read from the skill files, and a

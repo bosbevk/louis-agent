@@ -19,7 +19,8 @@ public static class TrialFileName
     public static string Of(string trial)
     {
         var clean = new StringBuilder(Math.Min(trial.Length, MaxCleanLength));
-        foreach (char c in trial.Take(MaxCleanLength)) clean.Append(c is '_' or '-' || char.IsAsciiLetterOrDigit(c) ? c : '_');
+        foreach (char c in trial.Take(MaxCleanLength))
+            clean.Append(c is '_' or '-' || char.IsAsciiLetterOrDigit(c) ? c : '_');
         string hash = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(trial)))[..HashLength];
         return $"{clean}-{hash}";
     }
@@ -30,7 +31,8 @@ public static class TrialFileName
         string root = Path.GetFullPath(folder);
         string full = Path.GetFullPath(Path.Combine(root, fileName));
         if (!full.StartsWith(root + Path.DirectorySeparatorChar, StringComparison.Ordinal))
-            throw new InvalidOperationException(MessageText.Format(SessionErrorMessage.OutsideFolder, new { Name = fileName }));
+            throw new InvalidOperationException(MessageText.Format(SessionErrorMessage.OutsideFolder,
+                new { Name = fileName }));
         return full;
     }
 }

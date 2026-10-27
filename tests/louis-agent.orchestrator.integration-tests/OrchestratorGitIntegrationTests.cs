@@ -23,7 +23,8 @@ public class OrchestratorGitIntegrationTests
     public void TearDown()
     {
         // git marks objects read-only on Windows
-        foreach (var file in new DirectoryInfo(_dir).EnumerateFiles("*", SearchOption.AllDirectories)) file.Attributes = FileAttributes.Normal;
+        foreach (var file in new DirectoryInfo(_dir).EnumerateFiles("*", SearchOption.AllDirectories))
+            file.Attributes = FileAttributes.Normal;
         Directory.Delete(_dir, recursive: true);
     }
 
@@ -39,8 +40,10 @@ public class OrchestratorGitIntegrationTests
         string fixCommit = Git("rev-parse", "HEAD");
 
         var tools = Tools(FeedWith());
-        Assert.That(tools.VerifyFixCommit(fixCommit, "fix/order-total-abc123"), Does.EndWith("VERIFIED" + Environment.NewLine).And.Not.Contain("FAIL"));
-        Assert.That(tools.VerifyFixCommit(mainCommit, "fix/order-total-abc123"), Does.Contain("FAIL commit is not on main").And.Contain("NOT VERIFIED"));
+        Assert.That(tools.VerifyFixCommit(fixCommit, "fix/order-total-abc123"),
+            Does.EndWith("VERIFIED" + Environment.NewLine).And.Not.Contain("FAIL"));
+        Assert.That(tools.VerifyFixCommit(mainCommit, "fix/order-total-abc123"),
+            Does.Contain("FAIL commit is not on main").And.Contain("NOT VERIFIED"));
         Assert.That(tools.VerifyFixCommit("deadbeef", "fix/order-total-abc123"), Does.Contain("FAIL commit exists"));
         Assert.That(tools.VerifyFixCommit("--all", "fix/x"), Does.StartWith("Error"));
     }
@@ -64,7 +67,8 @@ public class OrchestratorGitIntegrationTests
         Git("config", "user.email", "test@localhost");
         Git("config", "user.name", "test");
         File.WriteAllText(Path.Combine(_dir, "a.txt"), "one");
-        File.WriteAllText(Path.Combine(_dir, ".gitignore"), "errors.jsonl\nstate/\n"); // like the service's ignored logs/
+        File.WriteAllText(Path.Combine(_dir, ".gitignore"),
+            "errors.jsonl\nstate/\n"); // like the service's ignored logs/
         Git("add", ".");
         Git("commit", "-m", "initial");
     }
@@ -93,7 +97,8 @@ public class OrchestratorGitIntegrationTests
 
     private string Git(params string[] args)
     {
-        var psi = new ProcessStartInfo("git") { WorkingDirectory = _dir, RedirectStandardOutput = true, RedirectStandardError = true };
+        var psi = new ProcessStartInfo("git")
+        { WorkingDirectory = _dir, RedirectStandardOutput = true, RedirectStandardError = true };
         foreach (string arg in args) psi.ArgumentList.Add(arg);
         using var process = Process.Start(psi)!;
         string output = process.StandardOutput.ReadToEnd();
@@ -105,7 +110,8 @@ public class OrchestratorGitIntegrationTests
     {
         try
         {
-            using var process = Process.Start(new ProcessStartInfo("git", "--version") { RedirectStandardOutput = true })!;
+            using var process =
+                Process.Start(new ProcessStartInfo("git", "--version") { RedirectStandardOutput = true })!;
             process.WaitForExit();
             return process.ExitCode == 0;
         }

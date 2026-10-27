@@ -44,10 +44,14 @@ public class SkillAuthoringIntegrationTests
     [TestCase(ScriptLanguage.Python, "print('hello', {{who}})")]
     public void ExecuteSkill_RunsSkillInItsFenceLanguage(ScriptLanguage language, string code)
     {
-        if (language == ScriptLanguage.Python) Outside.Tool(new PythonTools(_skillsDir).ResolveInterpreter() is not null, "Python 3 is not installed");
-        if (language == ScriptLanguage.PowerShell) Outside.Tool(new PowerShellTools(_skillsDir).ResolveInterpreter() is not null, "PowerShell is not installed");
+        if (language == ScriptLanguage.Python)
+            Outside.Tool(new PythonTools(_skillsDir).ResolveInterpreter() is not null, "Python 3 is not installed");
+        if (language == ScriptLanguage.PowerShell)
+            Outside.Tool(new PowerShellTools(_skillsDir).ResolveInterpreter() is not null,
+                "PowerShell is not installed");
         var engine = Engine();
-        string markdown = $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language.Wire()}\n{code}\n```\n";
+        string markdown =
+            $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language.Wire()}\n{code}\n```\n";
 
         Assert.That(engine.CreateSkillFile("greeting", markdown), Does.Contain("Saved"));
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis; rm -rf /"}"""), Is.EqualTo("hello Louis; rm -rf /"),

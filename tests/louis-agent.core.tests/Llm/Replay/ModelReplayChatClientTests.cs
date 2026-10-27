@@ -19,19 +19,23 @@ public class ModelReplayChatClientTests
     public void TearDown() => _folder.Dispose();
 
     private static ChatResponse Reply(string text, UsageDetails? usage = null) =>
-        new(new ChatMessage(ChatRole.Assistant, text)) { Usage = usage, ModelId = "m1", FinishReason = ChatFinishReason.Stop };
+        new(new ChatMessage(ChatRole.Assistant, text))
+        { Usage = usage, ModelId = "m1", FinishReason = ChatFinishReason.Stop };
 
-    private static FakeChatClient Fake(params string[] texts) => new([.. texts.Select(t => (Func<IList<ChatMessage>, ChatResponse>)(_ => Reply(t)))]);
+    private static FakeChatClient Fake(params string[] texts) =>
+        new([.. texts.Select(t => (Func<IList<ChatMessage>, ChatResponse>)(_ => Reply(t)))]);
 
     /// <summary>A provider that reports its usage the way a real one does: on the response, and as a UsageContent update when streamed.</summary>
     private sealed class ReportsUsage(string text, UsageDetails usage) : IChatClient
     {
-        public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default) =>
+        public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
+            CancellationToken cancellationToken = default) =>
             Task.FromResult(Reply(text, usage));
 
         public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
             IEnumerable<ChatMessage> messages, ChatOptions? options = null,
-            [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
+            [System.Runtime.CompilerServices.EnumeratorCancellation]
+            CancellationToken cancellationToken = default)
         {
             yield return new ChatResponseUpdate(ChatRole.Assistant, text) { ModelId = "m1" };
             yield return new ChatResponseUpdate(ChatRole.Assistant, [new UsageContent(usage)]);
@@ -40,21 +44,27 @@ public class ModelReplayChatClientTests
         }
 
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
-        public void Dispose() { }
+
+        public void Dispose()
+        {
+        }
     }
 
     private static FakeChatClient Throwing() => new(_ => throw new InvalidOperationException("the model was called"));
 
     private ModelReplayChatClient Client(IChatClient inner) => new(inner, _folder.Store);
 
-    private static IDisposable Flow(WebReplayMode web, bool model, string trial = Trial) => SessionReplay.Use(new SessionReplay(web, trial, model));
+    private static IDisposable Flow(WebReplayMode web, bool model, string trial = Trial) =>
+        SessionReplay.Use(new SessionReplay(web, trial, model));
 
     private static readonly ChatOptions Options = new() { ModelId = "m1" };
 
-    private static List<ChatMessage> Chat(string user = "hello") => [new(ChatRole.System, "You are Puls."), new(ChatRole.User, user)];
+    private static List<ChatMessage> Chat(string user = "hello") =>
+        [new(ChatRole.System, "You are Puls."), new(ChatRole.User, user)];
 
     /// <summary>The answer, and whether any update (or the response) carried the hit tag.</summary>
-    private static async Task<(ChatResponse Response, bool Tagged)> Ask(IChatClient client, bool streamed, IEnumerable<ChatMessage> messages)
+    private static async Task<(ChatResponse Response, bool Tagged)> Ask(IChatClient client, bool streamed,
+        IEnumerable<ChatMessage> messages)
     {
         if (!streamed)
         {
@@ -63,7 +73,8 @@ public class ModelReplayChatClientTests
         }
 
         var updates = new List<ChatResponseUpdate>();
-        await foreach (ChatResponseUpdate update in client.GetStreamingResponseAsync(messages, Options)) updates.Add(update);
+        await foreach (ChatResponseUpdate update in client.GetStreamingResponseAsync(messages, Options))
+            updates.Add(update);
         return (updates.ToChatResponse(), updates.Any(u => u.AdditionalProperties?.ContainsKey("replay_hit") == true));
     }
 
@@ -133,8 +144,10 @@ public class ModelReplayChatClientTests
     [TestCase(true)]
     public async Task TheSameRequestInTwoTrials_ReplaysEachTrialsOwnAnswer(bool streamed)
     {
-        using (Flow(WebReplayMode.Record, model: false, "r1:a:1/t1")) await Ask(Client(Fake("first")), streamed, Chat());
-        using (Flow(WebReplayMode.Record, model: false, "r1:a:2/t1")) await Ask(Client(Fake("second")), streamed, Chat());
+        using (Flow(WebReplayMode.Record, model: false, "r1:a:1/t1"))
+            await Ask(Client(Fake("first")), streamed, Chat());
+        using (Flow(WebReplayMode.Record, model: false, "r1:a:2/t1"))
+            await Ask(Client(Fake("second")), streamed, Chat());
 
         using (Flow(WebReplayMode.Replay, model: true, "r1:a:2/t1"))
             Assert.That((await Ask(Client(Throwing()), streamed, Chat())).Response.Text, Is.EqualTo("second"));
@@ -152,7 +165,8 @@ public class ModelReplayChatClientTests
         var throwing = Throwing();
         using (Flow(WebReplayMode.Replay, model: true))
         {
-            var thrown = Assert.ThrowsAsync<InvalidOperationException>(async () => await Ask(Client(throwing), streamed, Chat("another question")));
+            var thrown = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await Ask(Client(throwing), streamed, Chat("another question")));
 
             Assert.That(thrown!.Message, Does.Contain(Trial).And.Contain("message 1 (user) changed"));
         }
@@ -166,7 +180,9 @@ public class ModelReplayChatClientTests
     {
         using (Flow(WebReplayMode.Replay, model: true))
         {
-            var thrown = Assert.ThrowsAsync<InvalidOperationException>(async () => await Ask(Client(Throwing()), streamed, Chat()));
+            var thrown =
+                Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                    await Ask(Client(Throwing()), streamed, Chat()));
 
             Assert.That(thrown!.Message, Does.Contain("recorded before step 4e"));
         }
@@ -177,7 +193,10 @@ public class ModelReplayChatClientTests
     public async Task Thinking_SurvivesByteEqual_AndTheNextRequestWithTheReplayedReplyHitsToo(bool streamed)
     {
         var reply = new ChatResponse(new ChatMessage(ChatRole.Assistant,
-            [new TextReasoningContent("let me think") { ProtectedData = "c2lnbmF0dXJl==" }, new TextContent("the answer")]))
+            [
+                new TextReasoningContent("let me think") { ProtectedData = "c2lnbmF0dXJl==" },
+                new TextContent("the answer")
+            ]))
         { ModelId = "m1", FinishReason = ChatFinishReason.Stop };
         var second = Reply("second answer");
 
@@ -187,7 +206,11 @@ public class ModelReplayChatClientTests
         {
             var client = Client(new FakeChatClient(_ => reply, _ => second));
             var (live, _) = await Ask(client, streamed, Chat());
-            turn2Live = [.. Chat(), .. live.Messages, new ChatMessage(ChatRole.User, "and then?") { CreatedAt = DateTimeOffset.UnixEpoch, MessageId = "live" }];
+            turn2Live =
+            [
+                .. Chat(), .. live.Messages,
+                new ChatMessage(ChatRole.User, "and then?") { CreatedAt = DateTimeOffset.UnixEpoch, MessageId = "live" }
+            ];
             await Ask(client, streamed, turn2Live);
         }
 
@@ -200,7 +223,11 @@ public class ModelReplayChatClientTests
             var thinking = replayed.Messages[0].Contents.OfType<TextReasoningContent>().Single();
             Assert.That((thinking.Text, thinking.ProtectedData), Is.EqualTo(("let me think", "c2lnbmF0dXJl==")));
 
-            List<ChatMessage> turn2 = [.. Chat(), .. replayed.Messages, new ChatMessage(ChatRole.User, "and then?") { CreatedAt = DateTimeOffset.UtcNow, MessageId = "replay" }];
+            List<ChatMessage> turn2 =
+            [
+                .. Chat(), .. replayed.Messages,
+                new ChatMessage(ChatRole.User, "and then?") { CreatedAt = DateTimeOffset.UtcNow, MessageId = "replay" }
+            ];
             Assert.That((await Ask(client, streamed, turn2)).Response.Text, Is.EqualTo("second answer"));
         }
 

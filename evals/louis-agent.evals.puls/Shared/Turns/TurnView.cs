@@ -14,8 +14,15 @@ public sealed record ToolCall(string Name, JsonElement Input);
 /// the calls, the results and the handle are read here, as only an identity cares about them. A specialist's error is the specialist's,
 /// not the turn's; an empty handle is none, as the Python's truthiness reads it.
 /// </summary>
-public sealed record TurnView(string Answer, IReadOnlyList<ToolCall> Calls, IReadOnlyList<ToolCall> SpecialistCalls,
-    string? Role, string? Continued, string? Error, IReadOnlyList<string> Results, IReadOnlyList<string> SpecialistResults)
+public sealed record TurnView(
+    string Answer,
+    IReadOnlyList<ToolCall> Calls,
+    IReadOnlyList<ToolCall> SpecialistCalls,
+    string? Role,
+    string? Continued,
+    string? Error,
+    IReadOnlyList<string> Results,
+    IReadOnlyList<string> SpecialistResults)
 {
     /// <summary>Reads some events as a turn: for the scorer, which holds events and no turn.</summary>
     public static TurnView From(IEnumerable<SessionEvent> events) =>
@@ -43,8 +50,10 @@ public sealed record TurnView(string Answer, IReadOnlyList<ToolCall> Calls, IRea
                         string name = Str(block, "name") ?? "";
                         var input = Object(block, "input") ?? Empty;
                         (specialist ? specialistCalls : calls).Add(new ToolCall(name, input));
-                        if (!specialist && name == "ContinueSubSession" && continued is null) continued = Str(input, "handle");
+                        if (!specialist && name == "ContinueSubSession" && continued is null)
+                            continued = Str(input, "handle");
                     }
+
                     break;
                 case SubSessionStreamed sub:
                     Read(sub.Inner, specialist: true);
@@ -53,7 +62,8 @@ public sealed record TurnView(string Answer, IReadOnlyList<ToolCall> Calls, IRea
         }
 
         foreach (var streamEvent in turn.Events) Read(streamEvent, specialist: false);
-        return new TurnView(EngineEvents.AnswerOf(turn), calls, specialistCalls, EngineEvents.RoutedRole(turn), Truthy(continued),
+        return new TurnView(EngineEvents.AnswerOf(turn), calls, specialistCalls, EngineEvents.RoutedRole(turn),
+            Truthy(continued),
             Truthy(EngineEvents.ErrorTextOf(turn)), results, specialistResults);
     }
 
@@ -67,13 +77,17 @@ public sealed record TurnView(string Answer, IReadOnlyList<ToolCall> Calls, IRea
 
     /// <summary>The object under a name, or null when it isn't one.</summary>
     private static JsonElement? Object(JsonElement e, string name) =>
-        e.ValueKind == JsonValueKind.Object && e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Object
-            ? value : null;
+        e.ValueKind == JsonValueKind.Object && e.TryGetProperty(name, out var value) &&
+        value.ValueKind == JsonValueKind.Object
+            ? value
+            : null;
 
     /// <summary>The string under a name, or null when it's missing or isn't a string.</summary>
     private static string? Str(JsonElement e, string name) =>
-        e.ValueKind == JsonValueKind.Object && e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String
-            ? value.GetString() : null;
+        e.ValueKind == JsonValueKind.Object && e.TryGetProperty(name, out var value) &&
+        value.ValueKind == JsonValueKind.String
+            ? value.GetString()
+            : null;
 
     private static string? Truthy(string? value) => string.IsNullOrEmpty(value) ? null : value;
 }

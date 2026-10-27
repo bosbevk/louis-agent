@@ -12,12 +12,12 @@ public static class RunModelFilter
         var models = new List<string>();
         foreach (var run in runs)
             foreach (string model in run ?? [])
-                if (!models.Contains(model)) models.Add(model);
+                if (!models.Contains(model))
+                    models.Add(model);
         return models;
     }
 
     /// <summary>Whether a run that named <paramref name="runModels"/> is shown for the picked model (null: every run is shown).</summary>
     public static bool Matches(IReadOnlyList<string>? runModels, string? picked) =>
         picked is null || (runModels is not null && runModels.Contains(picked));
-
 }

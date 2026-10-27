@@ -25,7 +25,8 @@ public class SessionStreamReaderTests
 
         var names = events.Where(e => e is not SubSessionStreamed).SelectMany(ToolUseNames).ToList();
 
-        Assert.That(names, Is.EqualTo(Expected().GetProperty("puls_tools").EnumerateArray().Select(n => n.GetString())));
+        Assert.That(names,
+            Is.EqualTo(Expected().GetProperty("puls_tools").EnumerateArray().Select(n => n.GetString())));
     }
 
     [Test]
@@ -35,7 +36,8 @@ public class SessionStreamReaderTests
 
         var names = events.OfType<SubSessionStreamed>().SelectMany(ToolUseNames).ToList();
 
-        Assert.That(names, Is.EqualTo(Expected().GetProperty("specialist_tools").EnumerateArray().Select(n => n.GetString())));
+        Assert.That(names,
+            Is.EqualTo(Expected().GetProperty("specialist_tools").EnumerateArray().Select(n => n.GetString())));
     }
 
     [Test]
@@ -44,7 +46,9 @@ public class SessionStreamReaderTests
         var events = await ReadRecordedTurnAsync();
 
         var start = events.SelectMany(ToolUses).First(t => t.Name == "StartSubSession").Input;
-        var role = start.TryGetProperty("role", out var r) ? r.GetString() : start.GetProperty("personality").GetString();
+        var role = start.TryGetProperty("role", out var r)
+            ? r.GetString()
+            : start.GetProperty("personality").GetString();
 
         Assert.That(role, Is.EqualTo(Expected().GetProperty("role").GetString()));
     }
@@ -56,7 +60,7 @@ public class SessionStreamReaderTests
 
         var hosts = events.SelectMany(ToolUses).Concat(events.OfType<SubSessionStreamed>().SelectMany(ToolUses))
             .Where(t => t.Name is "FetchUrl" or "ReadRenderedPage" && t.Input.ValueKind == JsonValueKind.Object
-                && t.Input.TryGetProperty("url", out _))
+                                                                   && t.Input.TryGetProperty("url", out _))
             .Select(t => new Uri(t.Input.GetProperty("url").GetString()!).Host.ToLowerInvariant())
             .Select(h => h.StartsWith("www.", StringComparison.Ordinal) ? h[4..] : h)
             .Distinct()
@@ -78,6 +82,7 @@ public class SessionStreamReaderTests
                 text.Append(e.Data.GetProperty("delta").GetProperty("text").GetString());
             }
         }
+
         var answer = text.ToString().Trim();
 
         Assert.That(answer, Does.StartWith(Expected().GetProperty("answer_starts").GetString()!));
@@ -183,7 +188,8 @@ public class SessionStreamReaderTests
     {
         var events = await ReadAsync(
             "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"session_id\":\"s\"," +
-            "\"toolsets\":[\"" + SampleToolset.Alpha + "\",\"" + SampleToolset.Beta + SampleRole.Fill("\"],\"session_role\":\"<RoleAlpha>\"}}\n\n"));
+            "\"toolsets\":[\"" + SampleToolset.Alpha + "\",\"" + SampleToolset.Beta +
+            SampleRole.Fill("\"],\"session_role\":\"<RoleAlpha>\"}}\n\n"));
 
         var started = events.Single() as MessageStarted;
         Assert.That(started, Is.Not.Null);
@@ -219,7 +225,9 @@ public class SessionStreamReaderTests
     [Test]
     public void FromMapsAnEventTheSameWayTheReaderDoes()
     {
-        using var document = JsonDocument.Parse("{\"type\":\"message_start\",\"message\":{\"toolsets\":[\"" + SampleToolset.Alpha + SampleRole.Fill("\"],\"session_role\":\"<RoleAlpha>\"}}"));
+        using var document = JsonDocument.Parse("{\"type\":\"message_start\",\"message\":{\"toolsets\":[\"" +
+                                                SampleToolset.Alpha +
+                                                SampleRole.Fill("\"],\"session_role\":\"<RoleAlpha>\"}}"));
 
         var started = SessionEvent.From("message_start", document.RootElement) as MessageStarted;
 
@@ -236,7 +244,8 @@ public class SessionStreamReaderTests
 
     private static JsonElement Expected()
     {
-        using var document = JsonDocument.Parse(File.ReadAllText(Path.Combine(FixtureDirectory, "session-stream.expected.json")));
+        using var document =
+            JsonDocument.Parse(File.ReadAllText(Path.Combine(FixtureDirectory, "session-stream.expected.json")));
         return document.RootElement.Clone();
     }
 
@@ -248,6 +257,7 @@ public class SessionStreamReaderTests
         {
             events.Add(e);
         }
+
         return events;
     }
 
@@ -257,8 +267,10 @@ public class SessionStreamReaderTests
     private static IEnumerable<ToolUse> ToolUses(SessionEvent e) => e switch
     {
         ContentBlockStarted s when s.Data.GetProperty("content_block").GetProperty("type").GetString() == "tool_use" =>
-            [new ToolUse(s.Data.GetProperty("content_block").GetProperty("name").GetString()!,
-                s.Data.GetProperty("content_block").TryGetProperty("input", out var input) ? input : default)],
+        [
+            new ToolUse(s.Data.GetProperty("content_block").GetProperty("name").GetString()!,
+                s.Data.GetProperty("content_block").TryGetProperty("input", out var input) ? input : default)
+        ],
         SubSessionStreamed s => ToolUses(s.Inner),
         _ => [],
     };

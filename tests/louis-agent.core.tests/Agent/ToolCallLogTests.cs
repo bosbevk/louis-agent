@@ -27,7 +27,7 @@ public class ToolCallLogTests
         Console.SetError(stderr);
         try
         {
-            AgentLogging.Configure(null, LogContentMode.Full);   // the values, as a developer's own machine shows them
+            AgentLogging.Configure(null, LogContentMode.Full); // the values, as a developer's own machine shows them
             var client = new FakeChatClient(
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
                     [new FunctionCallContent("call_1", "Ping", new Dictionary<string, object?> { ["to"] = "Louis" })])),
@@ -75,11 +75,15 @@ public class ToolCallLogTests
             AgentLogging.Configure(null);
             client = new FakeChatClient(
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
-                    [new FunctionCallContent("call_1", "ReadWorkspaceFile", new Dictionary<string, object?> { ["relativePath"] = relative })])),
+                [
+                    new FunctionCallContent("call_1", "ReadWorkspaceFile",
+                        new Dictionary<string, object?> { ["relativePath"] = relative })
+                ])),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "a file full of x")),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
             var skills = new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md"));
-            var engine = new AgentEngine(skills, client, TestPaths.Agent(), toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]));
+            var engine = new AgentEngine(skills, client, TestPaths.Agent(),
+                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]));
 
             await engine.ProcessPromptAsync(engine.NewHistory(), "Ek is in Malmesbury, wat kan ek kook?");
         }
@@ -109,7 +113,10 @@ public class ToolCallLogTests
         {
             AgentLogging.Configure(directory);
             runFile = AgentLogging.RunFile!;
-            FunctionCallContent Call(string id) => new(id, "FindPlace", new Dictionary<string, object?> { ["area"] = "Malmesbury" });
+
+            FunctionCallContent Call(string id) =>
+                new(id, "FindPlace", new Dictionary<string, object?> { ["area"] = "Malmesbury" });
+
             var client = new FakeChatClient(
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [Call("call_1")])),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [Call("call_2")])),
@@ -122,7 +129,7 @@ public class ToolCallLogTests
         finally
         {
             Console.SetError(original);
-            AgentLogging.Configure(null);   // flushes and closes the run file
+            AgentLogging.Configure(null); // flushes and closes the run file
         }
 
         string file = File.ReadAllText(runFile);
@@ -133,6 +140,7 @@ public class ToolCallLogTests
             Assert.That(log, Does.Contain("[TOOL] <- FindPlace: #"), "the result is a hash and a length too");
             Assert.That(log, Does.Contain("InvalidOperationException"), "the failure still says what kind it was");
         }
+
         Directory.Delete(directory, recursive: true);
     }
 }

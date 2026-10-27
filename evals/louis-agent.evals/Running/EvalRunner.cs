@@ -20,7 +20,11 @@ namespace LouisAgent.Evals.Running;
 /// are written as they arrive, then the turn, and the conversation with its grades (every grader of the eval, <see cref="TrialGrading"/>),
 /// its outcome (<see cref="PassRates.Of"/>) and its scores, then the mode's end (F18 step 4.5a).
 /// </summary>
-public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol, TimeProvider clock, ILogger<EvalRunner> logger)
+public sealed class EvalRunner(
+    ISessionClient sessions,
+    ProtocolWriter protocol,
+    TimeProvider clock,
+    ILogger<EvalRunner> logger)
 {
     public async Task RunAsync(IEval eval, EvalRun run, CancellationToken cancellationToken)
     {
@@ -43,6 +47,7 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
                 // The rates over the repeats so far: the last line of a mode is the mode's (F18 step 5a).
                 protocol.ModeDone(mode.Name, repeat, tally.Share, repeat, tally.Infrastructure, tally.Retried);
             }
+
             // The mode rolled up, overall and by category (F18 step 5c), after its last mode_done.
             foreach (var line in RunSummary.Of(mode.Name, tally.Results, eval.Graders)) protocol.Summary(line);
         }
@@ -55,10 +60,12 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     /// the graders the code under test (GOAL skills 12 and 13). The plan's signature took a <c>StoredRun</c> the API would build; the runner reads
     /// the protocol's own lines instead (the same reader a run and the conformance check use), so the API only pipes its export.
     /// </summary>
-    public Task RescoreAsync(IEval eval, string runId, string rescoreOf, IEnumerable<string> storedLines, CancellationToken cancellationToken) =>
+    public Task RescoreAsync(IEval eval, string runId, string rescoreOf, IEnumerable<string> storedLines,
+        CancellationToken cancellationToken) =>
         new Rescorer(protocol, logger).RunAsync(eval, runId, rescoreOf, storedLines, cancellationToken);
 
-    private async Task RunScenarioAsync(IEval eval, EvalRun run, EvalMode mode, int repeat, EvalScenario scenario, ModeTally tally,
+    private async Task RunScenarioAsync(IEval eval, EvalRun run, EvalMode mode, int repeat, EvalScenario scenario,
+        ModeTally tally,
         CancellationToken cancellationToken)
     {
         if (scenario.Input.Messages.Count == 0)
@@ -73,7 +80,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         // second attempt is a new session and the trial's; the failed one stays in the protocol, and the same turn keys written again replace it in the store.
         if (turns.FirstOrDefault(turn => turn.Failure is not null) is { Failure: TrialFailure.Transport } failed)
         {
-            logger.Log(LogLevel.Warning, EvalLogMessage.TrialRetried, new { Scenario = scenario.Id, Turn = failed.Turn });
+            logger.Log(LogLevel.Warning, EvalLogMessage.TrialRetried,
+                new { Scenario = scenario.Id, Turn = failed.Turn });
             tally.CountRetry();
             (turns, facts) = await AttemptAsync(eval, run, mode, repeat, scenario, cancellationToken);
         }
@@ -90,7 +98,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     }
 
     /// <summary>One attempt at a scenario: a session, its turns, and the session closed however they end.</summary>
-    private async Task<(List<TurnTranscript> Turns, List<TurnFacts> Facts)> AttemptAsync(IEval eval, EvalRun run, EvalMode mode, int repeat,
+    private async Task<(List<TurnTranscript> Turns, List<TurnFacts> Facts)> AttemptAsync(IEval eval, EvalRun run,
+        EvalMode mode, int repeat,
         EvalScenario scenario, CancellationToken cancellationToken)
     {
         // A session that can't open fails every turn of its scenario the same way, and there is nothing to close (F18 step 5.1).
@@ -99,14 +108,16 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         try
         {
             session = await sessions.OpenAsync(
-                new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat, RunTag(run.RunId, mode, repeat),
+                new SessionRequest(mode, scenario.Input.Place, scenario.Input.TimeZone, scenario.Id, repeat,
+                    RunTag(run.RunId, mode, repeat),
                     ReplayFor(run, mode, repeat, scenario)),
                 cancellationToken);
         }
         catch (Exception ex) when (TurnFailures.Of(ex, cancellationToken) is { } failure)
         {
             openFailure = failure;
-            logger.Log(LogLevel.Warning, EvalLogMessage.OpenFailed, new { Scenario = scenario.Id, Failure = failure, Reason = ex.Message }, exception: ex);
+            logger.Log(LogLevel.Warning, EvalLogMessage.OpenFailed,
+                new { Scenario = scenario.Id, Failure = failure, Reason = ex.Message }, exception: ex);
         }
 
         // The session is closed however its turns end: a turn that throws (a timeout, a dead connection) must not leave it open.
@@ -117,7 +128,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         {
             for (int number = 1; number <= scenario.Input.Messages.Count; number++)
             {
-                var turn = await RunTurnAsync(eval, mode, repeat, scenario.Id, number, session, openFailure, scenario.Input.Messages[number - 1],
+                var turn = await RunTurnAsync(eval, mode, repeat, scenario.Id, number, session, openFailure,
+                    scenario.Input.Messages[number - 1],
                     cancellationToken);
                 turns.Add(turn.Transcript);
                 facts.Add(turn.Facts);
@@ -133,7 +145,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
                 }
                 catch (Exception ex)
                 {
-                    logger.Log(LogLevel.Warning, EvalLogMessage.CloseFailed, new { Session = session, Reason = ex.Message }, exception: ex);
+                    logger.Log(LogLevel.Warning, EvalLogMessage.CloseFailed,
+                        new { Session = session, Reason = ex.Message }, exception: ex);
                 }
         }
 
@@ -157,7 +170,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
     /// One turn. A failure of the infrastructure (<see cref="TurnFailures"/>) ends it with its <see cref="TrialFailure"/>, keeping the events read
     /// before it; a turn whose session never opened (<paramref name="session"/> null) is that failure from the start. A cancelled run throws.
     /// </summary>
-    private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat, string task, int number,
+    private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat,
+        string task, int number,
         string? session, TrialFailure? openFailure, string message,
         CancellationToken cancellationToken)
     {
@@ -178,7 +192,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
             catch (Exception ex) when (TurnFailures.Of(ex, cancellationToken) is { } turnFailure)
             {
                 failure = turnFailure;
-                logger.Log(LogLevel.Warning, EvalLogMessage.TurnFailed, new { Scenario = task, Turn = number, Failure = turnFailure, Reason = ex.Message }, exception: ex);
+                logger.Log(LogLevel.Warning, EvalLogMessage.TurnFailed,
+                    new { Scenario = task, Turn = number, Failure = turnFailure, Reason = ex.Message }, exception: ex);
             }
 
         var duration = clock.GetUtcNow() - started;
@@ -186,7 +201,8 @@ public sealed class EvalRunner(ISessionClient sessions, ProtocolWriter protocol,
         var facts = eval.TurnFactsOf(transcript, mode);
         // The answer through the one reader of the engine's events: the runner's own loop called GetString() on each delta's text, which
         // throws on a number, so one odd delta stopped the run; AnswerOf skips it (F18 step 4.5a, ADR 0030).
-        protocol.Turn(mode.Name, repeat, task, number, transcript.Session, message, EngineEvents.AnswerOf(transcript), facts.Role, duration.TotalSeconds, facts, failure);
+        protocol.Turn(mode.Name, repeat, task, number, transcript.Session, message, EngineEvents.AnswerOf(transcript),
+            facts.Role, duration.TotalSeconds, facts, failure);
         return (transcript, facts);
     }
 }

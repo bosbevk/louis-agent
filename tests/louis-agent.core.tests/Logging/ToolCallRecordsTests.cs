@@ -26,7 +26,7 @@ public class ToolCallRecordsTests
         AgentLogging.Configure(_directory, mode);
         ToolCallRecords.OversizedToolResult("WebSearch", Arguments, 60_000, request, "summarised", 812);
         ToolCallRecords.TruncatedToolCall("WebSearch", Arguments, 16_000);
-        AgentLogging.Configure(null);   // flushes and closes the files
+        AgentLogging.Configure(null); // flushes and closes the files
         return (File.ReadAllText(Path.Combine(_directory, "oversized-tool-results.jsonl")),
             File.ReadAllText(Path.Combine(_directory, "truncated-tool-calls.jsonl")));
     }
@@ -36,11 +36,14 @@ public class ToolCallRecordsTests
     {
         var (oversized, truncated) = Written(LogContentMode.Hashed);
 
-        Assert.That(oversized, Does.Contain("WebSearch").And.Contain("60000").And.Contain("summarised").And.Contain("812"));
+        Assert.That(oversized,
+            Does.Contain("WebSearch").And.Contain("60000").And.Contain("summarised").And.Contain("812"));
         Assert.That(truncated, Does.Contain("WebSearch").And.Contain("16000"));
         foreach (string file in new[] { oversized, truncated })
-            Assert.That(file, Does.Not.Contain("Malmesbury").And.Not.Contain("recipes").And.Not.Contain("kook").And.Contain("#"));
-        Assert.That(oversized, Does.Contain($"({Arguments.Length})").And.Contain($"({Request.Length})"), "the lengths are what is left");
+            Assert.That(file,
+                Does.Not.Contain("Malmesbury").And.Not.Contain("recipes").And.Not.Contain("kook").And.Contain("#"));
+        Assert.That(oversized, Does.Contain($"({Arguments.Length})").And.Contain($"({Request.Length})"),
+            "the lengths are what is left");
     }
 
     [Test]

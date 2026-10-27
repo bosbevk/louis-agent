@@ -10,7 +10,8 @@ public partial class SummaryTable
     [Parameter, EditorRequired] public ModeSlices Mode { get; set; } = null!;
 
     /// <summary>The run the slices are of: its explorer opens a task's conversation.</summary>
-    [Parameter, EditorRequired] public string RunId { get; set; } = "";
+    [Parameter, EditorRequired]
+    public string RunId { get; set; } = "";
 
     [Parameter] public CurrencyChoice? Currency { get; set; }
 }

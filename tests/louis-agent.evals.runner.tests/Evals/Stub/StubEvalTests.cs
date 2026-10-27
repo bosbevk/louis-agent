@@ -16,13 +16,15 @@ namespace LouisAgent.Evals.Runner.Tests.Evals.Stub;
 public class StubEvalTests
 {
     private static string[] ExpectedLines =>
-        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt")).Where(l => l.StartsWith('@')).ToArray();
+        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt"))
+            .Where(l => l.StartsWith('@')).ToArray();
 
     [Test]
     public async Task ARunIsTheStubsExpectedLinesLineForLine()
     {
         // The mode's roll-up (F18 step 5c) is the harness's, like the grades: the stub's expected lines have none.
-        string[] mine = (await RunAsync(repeat: 1)).Skip(1).Where(line => !line.StartsWith("@{\"event\":\"summary\"", StringComparison.Ordinal)).ToArray();
+        string[] mine = (await RunAsync(repeat: 1)).Skip(1)
+            .Where(line => !line.StartsWith("@{\"event\":\"summary\"", StringComparison.Ordinal)).ToArray();
         string[] expected = ExpectedLines.Skip(1).ToArray();
 
         Assert.That(mine, Has.Length.EqualTo(expected.Length));
@@ -50,7 +52,8 @@ public class StubEvalTests
     {
         // The ledger's rows find their run by this tag (F18 step 4.1 review): {run}:{mode}:{repeat}, the run being BENCHMARK_RUN.
         var client = new RecordingClient(new StubSessionClient());
-        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), TimeProvider.System), TimeProvider.System,
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), TimeProvider.System),
+            TimeProvider.System,
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new StubEval(), new EvalRun("portal-run-7", 1), CancellationToken.None);
@@ -65,7 +68,8 @@ public class StubEvalTests
     {
         public List<string> Tags { get; } = [];
 
-        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) => inner.ToolsetsAsync(cancellationToken);
+        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
+            inner.ToolsetsAsync(cancellationToken);
 
         public async Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken)
         {
@@ -73,16 +77,19 @@ public class StubEvalTests
             return await inner.OpenAsync(request, cancellationToken);
         }
 
-        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, CancellationToken cancellationToken) =>
+        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+            CancellationToken cancellationToken) =>
             inner.SendAsync(session, message, cancellationToken);
 
-        public Task CloseAsync(string session, CancellationToken cancellationToken) => inner.CloseAsync(session, cancellationToken);
+        public Task CloseAsync(string session, CancellationToken cancellationToken) =>
+            inner.CloseAsync(session, cancellationToken);
     }
 
     private static async Task<string[]> RunAsync(int repeat)
     {
         var sink = new StringWriter();
-        var runner = new EvalRunner(new StubSessionClient(), new ProtocolWriter(sink, TimeProvider.System), TimeProvider.System,
+        var runner = new EvalRunner(new StubSessionClient(), new ProtocolWriter(sink, TimeProvider.System),
+            TimeProvider.System,
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new StubEval(), new EvalRun("run_test", repeat), CancellationToken.None);
@@ -97,8 +104,11 @@ public class StubEvalTests
 
     private static string Canonical(JsonElement element, string? name) => element.ValueKind switch
     {
-        JsonValueKind.Object => "{" + string.Join(",", element.EnumerateObject().Where(p => p.Name is not ("grades" or "outcome" or "pass_at_k" or "pass_hat_k" or "k" or "infrastructure" or "retried"))
-            .Select(p => JsonSerializer.Serialize(p.Name) + ":" + Canonical(p.Value, p.Name))) + "}",
+        JsonValueKind.Object => "{" + string.Join(",",
+            element.EnumerateObject().Where(p =>
+                    p.Name is not ("grades" or "outcome" or "pass_at_k" or "pass_hat_k" or "k" or "infrastructure"
+                        or "retried"))
+                .Select(p => JsonSerializer.Serialize(p.Name) + ":" + Canonical(p.Value, p.Name))) + "}",
         JsonValueKind.Array => "[" + string.Join(",", element.EnumerateArray().Select(v => Canonical(v, null))) + "]",
         _ when name is "t" or "seconds" => "<clock>",
         JsonValueKind.String => JsonSerializer.Serialize(element.GetString()),

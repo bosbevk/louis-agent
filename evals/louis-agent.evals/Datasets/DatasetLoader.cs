@@ -30,7 +30,8 @@ public static class DatasetLoader
     };
 
     /// <summary>The folder names a split can have, parsed once where they enter (ADR 0024).</summary>
-    private static readonly IReadOnlyDictionary<string, DatasetSplit> SplitAliases = new Dictionary<string, DatasetSplit> { ["held-out"] = DatasetSplit.HeldOut };
+    private static readonly IReadOnlyDictionary<string, DatasetSplit> SplitAliases =
+        new Dictionary<string, DatasetSplit> { ["held-out"] = DatasetSplit.HeldOut };
 
     public static Dataset Load(string folder, IReadOnlyList<IGrader> graders)
     {
@@ -40,7 +41,8 @@ public static class DatasetLoader
         ManifestFile file = Read<ManifestFile>(manifestPath, EvalErrorMessage.InvalidManifest);
         var manifest = new DatasetManifest(file.Name, file.Version, file.Covers, file.ContentHash, file.Changes);
         if (manifest.Version < 1 || manifest.Changes.Count != manifest.Version)
-            throw Refuse(EvalErrorMessage.ChangesNotVersion, new { Dataset = manifest.Name, Version = manifest.Version, Count = manifest.Changes.Count });
+            throw Refuse(EvalErrorMessage.ChangesNotVersion,
+                new { Dataset = manifest.Name, Version = manifest.Version, Count = manifest.Changes.Count });
 
         // The files are read before the hash is compared: a stray file is then named as the problem, not as a change to bump.
         string scenarios = Path.Combine(folder, ScenariosFolder);
@@ -49,7 +51,8 @@ public static class DatasetLoader
 
         string hash = DatasetHash.Of(scenarios);
         if (!string.Equals(hash, manifest.ContentHash, StringComparison.OrdinalIgnoreCase))
-            throw Refuse(EvalErrorMessage.HashChanged, new { Dataset = manifest.Name, Hash = hash, Recorded = manifest.ContentHash });
+            throw Refuse(EvalErrorMessage.HashChanged,
+                new { Dataset = manifest.Name, Hash = hash, Recorded = manifest.ContentHash });
 
         var ids = new HashSet<string>(StringComparer.Ordinal);
         foreach (EvalScenario scenario in found)
@@ -61,7 +64,8 @@ public static class DatasetLoader
             if (!found.Any(scenario => scenario.Expected.TryGetProperty(key, out _)))
                 throw Refuse(EvalErrorMessage.UnfedKey, new { Dataset = manifest.Name, Key = key });
 
-        return new Dataset(manifest, found, Labels.LabelLoader.Load(folder, found, graders.Select(grader => grader.Name).ToHashSet()));
+        return new Dataset(manifest, found,
+            Labels.LabelLoader.Load(folder, found, graders.Select(grader => grader.Name).ToHashSet()));
     }
 
     /// <summary>
@@ -80,7 +84,8 @@ public static class DatasetLoader
         string[] parts = relative.Split('/');
         if (parts is [var folder, _] && !TryParseSplit(folder, out _))
             throw Refuse(EvalErrorMessage.UnknownSplitFolder, new { Folder = folder });
-        if (parts is not [var split, var name] || !TryParseSplit(split, out DatasetSplit parsed) || !IsScenarioName(name))
+        if (parts is not [var split, var name] || !TryParseSplit(split, out DatasetSplit parsed) ||
+            !IsScenarioName(name))
             throw Refuse(EvalErrorMessage.UnexpectedFile, new { File = relative });
 
         ScenarioFile scenario = Read<ScenarioFile>(full, EvalErrorMessage.InvalidScenario);
@@ -103,7 +108,8 @@ public static class DatasetLoader
         return true;
     }
 
-    private static bool IsScenarioName(string name) => name.EndsWith(".json", StringComparison.Ordinal) && name == name.ToLowerInvariant();
+    private static bool IsScenarioName(string name) =>
+        name.EndsWith(".json", StringComparison.Ordinal) && name == name.ToLowerInvariant();
 
     /// <summary>A JSON file read strictly; a file that doesn't parse, or holds no object, is refused with the given text.</summary>
     private static T Read<T>(string file, EvalErrorMessage refusal) where T : class
@@ -112,7 +118,8 @@ public static class DatasetLoader
         try
         {
             return JsonSerializer.Deserialize<T>(File.ReadAllText(file), Strict)
-                ?? throw Refuse(refusal, new { File = name, Reason = MessageText.Format(EvalErrorMessage.EmptyFile) });
+                   ?? throw Refuse(refusal,
+                       new { File = name, Reason = MessageText.Format(EvalErrorMessage.EmptyFile) });
         }
         catch (JsonException error)
         {
@@ -120,7 +127,8 @@ public static class DatasetLoader
         }
     }
 
-    private static InvalidDataException Refuse(EvalErrorMessage message, object values) => new(MessageText.Format(message, values));
+    private static InvalidDataException Refuse(EvalErrorMessage message, object values) =>
+        new(MessageText.Format(message, values));
 
     /// <summary>A manifest as <c>dataset.json</c> holds it: every field is required.</summary>
     private sealed class ManifestFile

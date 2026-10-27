@@ -23,11 +23,15 @@ public class HumanReviewAppliesTests
         public GraderKind Kind => GraderKind.Model;
         public bool Required => false;
         public IReadOnlySet<string> ExpectedKeys { get; } = keys.ToHashSet();
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => ValueTask.FromResult(Verdict.Pass(Name, 1, "fine"));
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            ValueTask.FromResult(Verdict.Pass(Name, 1, "fine"));
     }
 
     private static Trial With(string expected) =>
-        new("run_1", Mode, 1, new EvalScenario("s", new EvalInput(null, "Africa/Johannesburg", ["Hallo"]), Json(expected), [], DatasetSplit.Dev), new Transcript([Turn(1)]));
+        new("run_1", Mode, 1,
+            new EvalScenario("s", new EvalInput(null, "Africa/Johannesburg", ["Hallo"]), Json(expected), [],
+                DatasetSplit.Dev), new Transcript([Turn(1)]));
 
     [Test]
     public void AReviewTakesItsJudgesKeys_AndIsVersionTwo()
@@ -60,11 +64,15 @@ public class HumanReviewAppliesTests
     {
         var eval = new OneEval([new Judge("serves"), HumanReviewGrader.For(new Judge("serves"), "q")]);
 
-        var control = await TrialGrading.GradeAsync(eval, With("""{"routes_to":null}"""), NullLogger.Instance, CancellationToken.None);
-        var meal = await TrialGrading.GradeAsync(eval, With("""{"serves":4}"""), NullLogger.Instance, CancellationToken.None);
+        var control = await TrialGrading.GradeAsync(eval, With("""{"routes_to":null}"""), NullLogger.Instance,
+            CancellationToken.None);
+        var meal = await TrialGrading.GradeAsync(eval, With("""{"serves":4}"""), NullLogger.Instance,
+            CancellationToken.None);
 
         Assert.That(control.Select(g => g.Grader), Is.EqualTo(new[] { "meal-for-people" }));
-        Assert.That(meal.Select(g => (g.Grader, g.Outcome)), Is.EqualTo(new[] { ("meal-for-people", GradeOutcome.Pass), ("meal-for-people.human", GradeOutcome.Pending) }));
+        Assert.That(meal.Select(g => (g.Grader, g.Outcome)),
+            Is.EqualTo(
+                new[] { ("meal-for-people", GradeOutcome.Pass), ("meal-for-people.human", GradeOutcome.Pending) }));
     }
 
     private sealed class OneEval(IReadOnlyList<IGrader> graders) : IEval
@@ -72,7 +80,10 @@ public class HumanReviewAppliesTests
         public string Name => "applies-eval";
         public int Version => 1;
         public string Proves => "A review that applies only where its judge does.";
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => ValueTask.FromResult<IReadOnlyList<EvalMode>>([Mode]);
+
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) => ValueTask.FromResult<IReadOnlyList<EvalMode>>([Mode]);
+
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
         public IReadOnlyList<IGrader> Graders { get; } = graders;
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new Scores();

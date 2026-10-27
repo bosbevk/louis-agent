@@ -16,30 +16,40 @@ public class ReviewRulesTests
 
     private static BenchmarkProtocol.ConversationKey Key(string task) => new(SampleMode.Beta, 1, task);
 
-    private static HumanGrade Grade(string task, int seconds, HumanVerdict verdict, string reviewer = "Louis", string grader = "meal-for-people") =>
+    private static HumanGrade Grade(string task, int seconds, HumanVerdict verdict, string reviewer = "Louis",
+        string grader = "meal-for-people") =>
         new("run1", Key(task), grader, verdict, "", reviewer, T0.AddSeconds(seconds));
 
     [Test]
     public void EachReviewersLatestGrade_IsTheOneThatCounts()
     {
-        var latest = HumanGrades.Latest([Grade("a", 1, HumanVerdict.Fail), Grade("a", 5, HumanVerdict.Pass), Grade("a", 2, HumanVerdict.Fail, reviewer: "Anna")]);
+        var latest = HumanGrades.Latest([
+            Grade("a", 1, HumanVerdict.Fail), Grade("a", 5, HumanVerdict.Pass),
+            Grade("a", 2, HumanVerdict.Fail, reviewer: "Anna")
+        ]);
 
-        Assert.That(latest.Select(g => (g.Reviewer, g.Verdict)), Is.EquivalentTo(new[] { ("Louis", HumanVerdict.Pass), ("Anna", HumanVerdict.Fail) }));
+        Assert.That(latest.Select(g => (g.Reviewer, g.Verdict)),
+            Is.EquivalentTo(new[] { ("Louis", HumanVerdict.Pass), ("Anna", HumanVerdict.Fail) }));
     }
 
     // F18 step 6a.2b (the review's nit): a name typed as "Louis" once and "louis" the next time is one person, so the later grade is their latest and an unsure takes back their pass.
     [Test]
     public void AReviewersName_IsTheSameNameWhateverItsCase_AndTheLaterGradeIsTheirLatest()
     {
-        var latest = HumanGrades.Latest([Grade("a", 1, HumanVerdict.Fail, reviewer: "Louis"), Grade("a", 5, HumanVerdict.Pass, reviewer: "louis")]);
+        var latest = HumanGrades.Latest([
+            Grade("a", 1, HumanVerdict.Fail, reviewer: "Louis"), Grade("a", 5, HumanVerdict.Pass, reviewer: "louis")
+        ]);
 
-        Assert.That(latest.Select(g => (g.Reviewer, g.Verdict)), Is.EqualTo(new[] { ("louis", HumanVerdict.Pass) }), "one reviewer, and the name is kept as the later grade typed it");
+        Assert.That(latest.Select(g => (g.Reviewer, g.Verdict)), Is.EqualTo(new[] { ("louis", HumanVerdict.Pass) }),
+            "one reviewer, and the name is kept as the later grade typed it");
     }
 
     [Test]
     public void AnUnsureInAnotherCase_StillTakesBackTheSameReviewersPass()
     {
-        var decided = HumanGrades.Decided([Grade("a", 1, HumanVerdict.Pass, reviewer: "Louis"), Grade("a", 2, HumanVerdict.Unsure, reviewer: "LOUIS")]);
+        var decided = HumanGrades.Decided([
+            Grade("a", 1, HumanVerdict.Pass, reviewer: "Louis"), Grade("a", 2, HumanVerdict.Unsure, reviewer: "LOUIS")
+        ]);
 
         Assert.That(decided, Is.Empty);
     }
@@ -47,9 +57,13 @@ public class ReviewRulesTests
     [Test]
     public void ADecidedGrade_IsTheLatestPassOrFail_AcrossReviewers()
     {
-        var decided = HumanGrades.Decided([Grade("a", 1, HumanVerdict.Fail), Grade("a", 5, HumanVerdict.Pass, reviewer: "Anna"), Grade("b", 2, HumanVerdict.Pass)]);
+        var decided = HumanGrades.Decided([
+            Grade("a", 1, HumanVerdict.Fail), Grade("a", 5, HumanVerdict.Pass, reviewer: "Anna"),
+            Grade("b", 2, HumanVerdict.Pass)
+        ]);
 
-        Assert.That(decided.Select(g => (g.Conversation.Task, g.Verdict)), Is.EquivalentTo(new[] { ("a", HumanVerdict.Pass), ("b", HumanVerdict.Pass) }));
+        Assert.That(decided.Select(g => (g.Conversation.Task, g.Verdict)),
+            Is.EquivalentTo(new[] { ("a", HumanVerdict.Pass), ("b", HumanVerdict.Pass) }));
     }
 
     [Test]
@@ -61,7 +75,8 @@ public class ReviewRulesTests
             Grade("b", 1, HumanVerdict.Fail), Grade("b", 2, HumanVerdict.Unsure, reviewer: "Anna"),
         ]);
 
-        Assert.That(decided.Select(g => g.Conversation.Task), Is.EqualTo(new[] { "b" }), "a is unsure now; b still has Louis's fail");
+        Assert.That(decided.Select(g => g.Conversation.Task), Is.EqualTo(new[] { "b" }),
+            "a is unsure now; b still has Louis's fail");
     }
 
     [Test]
@@ -73,41 +88,51 @@ public class ReviewRulesTests
     [Test]
     public void ADecidedGrade_IsPerGrader_SoTwoJudgesDoNotShareOne()
     {
-        var decided = HumanGrades.Decided([Grade("a", 1, HumanVerdict.Pass), Grade("a", 2, HumanVerdict.Fail, grader: "another-judge")]);
+        var decided = HumanGrades.Decided([
+            Grade("a", 1, HumanVerdict.Pass), Grade("a", 2, HumanVerdict.Fail, grader: "another-judge")
+        ]);
 
-        Assert.That(decided.Select(g => (g.Grader, g.Verdict)), Is.EquivalentTo(new[] { ("meal-for-people", HumanVerdict.Pass), ("another-judge", HumanVerdict.Fail) }));
+        Assert.That(decided.Select(g => (g.Grader, g.Verdict)),
+            Is.EquivalentTo(new[] { ("meal-for-people", HumanVerdict.Pass), ("another-judge", HumanVerdict.Fail) }));
     }
 
     private static Conversation Conversation(string task, params (string Grader, BenchmarkOutcome Outcome)[] grades) =>
-        new(Key(task), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0, [.. grades.Select(g => new Grade(g.Grader, 1, g.Outcome == BenchmarkOutcome.Pass ? 1 : 0, g.Outcome, "r"))]);
+        new(Key(task), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
+        [
+            .. grades.Select(g => new Grade(g.Grader, 1, g.Outcome == BenchmarkOutcome.Pass ? 1 : 0, g.Outcome, "r"))
+        ]);
 
     [Test]
     public void TheAgreement_IsTheCountsOfThePersonAgainstTheJudge_ForOneGrader()
     {
         var conversations = new[]
         {
-            Conversation("a", ("meal-for-people", BenchmarkOutcome.Pass)), Conversation("b", ("meal-for-people", BenchmarkOutcome.Pass)),
-            Conversation("c", ("meal-for-people", BenchmarkOutcome.Fail)), Conversation("d", ("meal-for-people", BenchmarkOutcome.Unknown)),
+            Conversation("a", ("meal-for-people", BenchmarkOutcome.Pass)),
+            Conversation("b", ("meal-for-people", BenchmarkOutcome.Pass)),
+            Conversation("c", ("meal-for-people", BenchmarkOutcome.Fail)),
+            Conversation("d", ("meal-for-people", BenchmarkOutcome.Unknown)),
             Conversation("e", ("meal-for-people", BenchmarkOutcome.Pass)), Conversation("f"),
         };
         var decided = new[]
         {
-            Grade("a", 1, HumanVerdict.Pass), Grade("b", 1, HumanVerdict.Fail), Grade("c", 1, HumanVerdict.Fail), Grade("d", 1, HumanVerdict.Pass),
+            Grade("a", 1, HumanVerdict.Pass), Grade("b", 1, HumanVerdict.Fail), Grade("c", 1, HumanVerdict.Fail),
+            Grade("d", 1, HumanVerdict.Pass),
             Grade("e", 1, HumanVerdict.Pass, grader: "another-judge"), Grade("f", 1, HumanVerdict.Fail),
         };
 
         var tally = ReviewAgreement.Of(conversations, decided, "meal-for-people");
 
         Assert.That(tally, Is.EqualTo(new AgreementTally(
-            PersonPassJudgePass: 1, PersonPassJudgeFail: 0, PersonPassJudgeUnknown: 1,
-            PersonFailJudgePass: 1, PersonFailJudgeFail: 1, PersonFailJudgeUnknown: 1)),
+                PersonPassJudgePass: 1, PersonPassJudgeFail: 0, PersonPassJudgeUnknown: 1,
+                PersonFailJudgePass: 1, PersonFailJudgeFail: 1, PersonFailJudgeUnknown: 1)),
             "a: pass/pass; d: pass/unknown; b: fail/pass; c: fail/fail; f: fail, no grade from the judge is unknown; e is another judge's");
     }
 
     [Test]
     public void WithNoPeopleGrades_TheAgreementIsAllZeros_NotMissing()
     {
-        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", BenchmarkOutcome.Pass))], [], "meal-for-people");
+        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", BenchmarkOutcome.Pass))], [],
+            "meal-for-people");
 
         Assert.That(tally, Is.EqualTo(new AgreementTally(0, 0, 0, 0, 0, 0)));
     }
@@ -115,7 +140,8 @@ public class ReviewRulesTests
     [Test]
     public void AGradeOfAConversationTheRunDoesNotHave_IsLeftOut()
     {
-        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", BenchmarkOutcome.Pass))], [Grade("zzz", 1, HumanVerdict.Pass)], "meal-for-people");
+        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", BenchmarkOutcome.Pass))],
+            [Grade("zzz", 1, HumanVerdict.Pass)], "meal-for-people");
 
         Assert.That(tally, Is.EqualTo(new AgreementTally(0, 0, 0, 0, 0, 0)));
     }

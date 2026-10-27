@@ -30,6 +30,7 @@ public class AccuracyRingTests
     {
         var ring = AccuracyRing.Of(priced: 2, noShop: 0, guessed: 1, estimated: null, items: 5);
 
-        Assert.That((ring.Right, ring.Estimated, ring.Guessed, ring.NoPrice, ring.Share), Is.EqualTo((2, 0, 1, 2, "40%")));
+        Assert.That((ring.Right, ring.Estimated, ring.Guessed, ring.NoPrice, ring.Share),
+            Is.EqualTo((2, 0, 1, 2, "40%")));
     }
 }

@@ -16,7 +16,8 @@ public class ToolMessageSnapshotTests
         Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.core.tests", "Messages", "ToolMessageSnapshot.json");
 
     private static readonly Type[] ToolMessages = typeof(MessageText).Assembly.GetTypes()
-        .Where(t => t.IsEnum && t.Name.EndsWith("ToolMessage", StringComparison.Ordinal) && t.Namespace?.Split('.').Last() == "Messages")
+        .Where(t => t.IsEnum && t.Name.EndsWith("ToolMessage", StringComparison.Ordinal) &&
+                    t.Namespace?.Split('.').Last() == "Messages")
         .ToArray();
 
     private static string Snapshot()
@@ -48,7 +49,8 @@ public class ToolMessageSnapshotTests
             .Select(g => $"{g.Key}: {string.Join(", ", g.Select(m => m.Enum))}")
             .ToList();
 
-        Assert.That(owners, Is.Empty, "These member names appear in more than one *ToolMessage enum:\n  " + string.Join("\n  ", owners));
+        Assert.That(owners, Is.Empty,
+            "These member names appear in more than one *ToolMessage enum:\n  " + string.Join("\n  ", owners));
     }
 
     [Test]

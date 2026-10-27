@@ -10,5 +10,7 @@ public class PulsWebRoleTests
 {
     [Test]
     public void EveryRoleTheWebAppHasWordsFor_IsARoleTheIdentityOffers() =>
-        Assert.That(Enum.GetValues<PulsWebRole>().Select(r => r.Wire()).Except(Enum.GetValues<PulsRole>().Select(r => r.Wire())), Is.Empty);
+        Assert.That(
+            Enum.GetValues<PulsWebRole>().Select(r => r.Wire())
+                .Except(Enum.GetValues<PulsRole>().Select(r => r.Wire())), Is.Empty);
 }

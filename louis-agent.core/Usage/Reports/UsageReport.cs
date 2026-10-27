@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Usage.Reports;
 
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Usage.Messages;
@@ -7,6 +6,7 @@ using LouisAgent.Core.Usage.Sinks;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 
+namespace LouisAgent.Core.Usage.Reports;
 /// <summary>Reads a usage ledger back, prices records written before F2, and totals them (the M1 baseline; F3 and F11 later).</summary>
 public static class UsageReport
 {
@@ -26,7 +26,9 @@ public static class UsageReport
             }
             catch (JsonException ex)
             {
-                throw new InvalidDataException(MessageText.Format(UsageErrorMessage.NotAUsageRecord, new { Path = path, Number = number, Reason = ex.Message }), ex);
+                throw new InvalidDataException(
+                    MessageText.Format(UsageErrorMessage.NotAUsageRecord,
+                        new { Path = path, Number = number, Reason = ex.Message }), ex);
             }
 
             if (record is not null) yield return record;
@@ -89,5 +91,7 @@ public static class UsageReport
     /// The piece of work a record belongs to: its task (e.g. <c>fix:e8b0b572223d</c>), else its triage or chat session.
     /// </summary>
     public static string WorkOf(UsageRecord record) =>
-        record.Task ?? (record.Purpose == UsagePurpose.Triage ? $"triage:{record.Session}" : record.Session ?? "(no session)");
+        record.Task ?? (record.Purpose == UsagePurpose.Triage
+            ? $"triage:{record.Session}"
+            : record.Session ?? "(no session)");
 }

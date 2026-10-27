@@ -13,9 +13,13 @@ public class DelegationRoleTests
 
     [Test]
     public void ACall_ShowsItsRole() =>
-        Assert.That(Card(SampleRole.Fill("""{"toolsets":["web"],"message":"Wat kook ek?","role":"<RoleAlpha>"}"""))!.Role, Is.EqualTo(SampleRole.Alpha));
+        Assert.That(
+            Card(SampleRole.Fill("""{"toolsets":["web"],"message":"Wat kook ek?","role":"<RoleAlpha>"}"""))!.Role,
+            Is.EqualTo(SampleRole.Alpha));
 
     [Test]
     public void ACallRecordedBeforeCL14_ShowsItsPersonality() =>
-        Assert.That(Card(SampleRole.Fill("""{"toolsets":["web"],"message":"Wat kook ek?","personality":"<RoleAlpha>"}"""))!.Role, Is.EqualTo(SampleRole.Alpha));
+        Assert.That(
+            Card(SampleRole.Fill("""{"toolsets":["web"],"message":"Wat kook ek?","personality":"<RoleAlpha>"}"""))!
+                .Role, Is.EqualTo(SampleRole.Alpha));
 }

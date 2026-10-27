@@ -19,7 +19,13 @@ public class BashToolsTests
     [TearDown]
     public void TearDown()
     {
-        try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
+        try
+        {
+            Directory.Delete(_root, recursive: true);
+        }
+        catch (IOException)
+        {
+        }
     }
 
     [TestCase("", "")]

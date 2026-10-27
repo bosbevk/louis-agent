@@ -27,7 +27,10 @@ public class EvalConformanceTests
     [TestCaseSource(nameof(EvalsOfEverySet))]
     public async Task EvalConforms(IEval eval)
     {
-        var cases = ConformanceCases.Load(eval is FakeEval ? Path.Combine(AppContext.BaseDirectory, "Transcripts", "fake") : EvalFiles.TranscriptsOf(eval), eval.Scenarios);
+        var cases = ConformanceCases.Load(
+            eval is FakeEval
+                ? Path.Combine(AppContext.BaseDirectory, "Transcripts", "fake")
+                : EvalFiles.TranscriptsOf(eval), eval.Scenarios);
 
         var failures = await EvalConformance.CheckAsync(eval, cases, CancellationToken.None);
 
@@ -59,8 +62,12 @@ public class EvalConformanceTests
         public int Version => 1;
         public string Proves => "A fake eval, to test the conformance check on a set that isn't Puls's.";
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode(StubMode.Delegating.Wire(), StubEval.Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()])]);
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([
+                new EvalMode(StubMode.Delegating.Wire(), StubEval.Role,
+                    [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()])
+            ]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
         [

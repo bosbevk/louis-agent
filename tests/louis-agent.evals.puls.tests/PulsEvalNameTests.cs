@@ -9,7 +9,9 @@ public class PulsEvalNameTests
     [Test]
     public void TheEvalsTheSetOffers_AreExactlyTheEnum_UnderTheirRecordedNames()
     {
-        Assert.That(new PulsEvalSet().Evals.Select(e => e.Name), Is.EqualTo(Enum.GetValues<PulsEvalName>().Select(n => n.Wire())));
-        Assert.That(Enum.GetValues<PulsEvalName>().Select(n => n.Wire()), Is.EqualTo(new[] { "puls-cook", "puls-routing" }));
+        Assert.That(new PulsEvalSet().Evals.Select(e => e.Name),
+            Is.EqualTo(Enum.GetValues<PulsEvalName>().Select(n => n.Wire())));
+        Assert.That(Enum.GetValues<PulsEvalName>().Select(n => n.Wire()),
+            Is.EqualTo(new[] { "puls-cook", "puls-routing" }));
     }
 }

@@ -23,6 +23,7 @@ public class BenchmarkRunTests
     {
         public override DateTimeOffset GetUtcNow() => at;
 
-        public override TimeZoneInfo LocalTimeZone => TimeZoneInfo.CreateCustomTimeZone("fixed", TimeSpan.FromHours(2), "fixed", "fixed");
+        public override TimeZoneInfo LocalTimeZone =>
+            TimeZoneInfo.CreateCustomTimeZone("fixed", TimeSpan.FromHours(2), "fixed", "fixed");
     }
 }

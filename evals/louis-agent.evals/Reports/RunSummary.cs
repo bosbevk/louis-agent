@@ -23,38 +23,50 @@ public static class RunSummary
     public const string Overall = "overall";
 
     /// <summary>The mode's lines: the overall one first, then each category by name (ordinal). No trials, no lines.</summary>
-    public static IReadOnlyList<SummaryLine> Of(string mode, IReadOnlyList<TrialResult> trials, IReadOnlyList<IGrader> graders)
+    public static IReadOnlyList<SummaryLine> Of(string mode, IReadOnlyList<TrialResult> trials,
+        IReadOnlyList<IGrader> graders)
     {
         if (trials.Count == 0) return [];
 
         var required = graders.Where(grader => grader.Required).ToList();
         var lines = new List<SummaryLine> { Slice(mode, Overall, trials, required) };
-        foreach (string category in trials.SelectMany(trial => trial.Categories).Distinct().Order(StringComparer.Ordinal))
-            lines.Add(Slice(mode, category, trials.Where(trial => trial.Categories.Contains(category)).ToList(), required));
+        foreach (string category in trials.SelectMany(trial => trial.Categories).Distinct()
+                     .Order(StringComparer.Ordinal))
+            lines.Add(Slice(mode, category, trials.Where(trial => trial.Categories.Contains(category)).ToList(),
+                required));
         return lines;
     }
 
-    private static SummaryLine Slice(string mode, string slice, IReadOnlyList<TrialResult> trials, IReadOnlyList<IGrader> required)
+    private static SummaryLine Slice(string mode, string slice, IReadOnlyList<TrialResult> trials,
+        IReadOnlyList<IGrader> required)
     {
         var counted = trials.Where(trial => trial.Outcome != TrialOutcome.Infrastructure).ToList();
         int Count(TrialOutcome outcome) => trials.Count(trial => trial.Outcome == outcome);
         int passed = Count(TrialOutcome.Pass);
         bool tooFew = counted.Count < MinimumForRates;
-        var share = tooFew ? null : PassRates.ShareOf(trials.GroupBy(trial => trial.Scenario).Select(scenario => PassRates.Over([.. scenario.Select(trial => trial.Outcome)])));
+        var share = tooFew
+            ? null
+            : PassRates.ShareOf(trials.GroupBy(trial => trial.Scenario)
+                .Select(scenario => PassRates.Over([.. scenario.Select(trial => trial.Outcome)])));
         var graders = required.Select(grader => GraderCountOf(grader, counted)).ToList();
         var kinds = graders.GroupBy(count => count.Kind).OrderBy(group => group.Key)
-            .Select(group => new KindCount(group.Key, group.Sum(c => c.Passed), group.Sum(c => c.Failed), group.Sum(c => c.Unknown))).ToList();
+            .Select(group => new KindCount(group.Key, group.Sum(c => c.Passed), group.Sum(c => c.Failed),
+                group.Sum(c => c.Unknown))).ToList();
 
-        return new SummaryLine(mode, slice, trials.Count, passed, Count(TrialOutcome.Fail), Count(TrialOutcome.Unknown), Count(TrialOutcome.Infrastructure),
+        return new SummaryLine(mode, slice, trials.Count, passed, Count(TrialOutcome.Fail), Count(TrialOutcome.Unknown),
+            Count(TrialOutcome.Infrastructure),
             [.. trials.Select(trial => trial.Scenario).Distinct().Order(StringComparer.Ordinal)], tooFew,
-            tooFew ? null : (double)passed / counted.Count, share?.PassAtK, share?.PassHatK, graders, kinds, ScoreMeans.Of(counted.Select(trial => trial.Scores)));
+            tooFew ? null : (double)passed / counted.Count, share?.PassAtK, share?.PassHatK, graders, kinds,
+            ScoreMeans.Of(counted.Select(trial => trial.Scores)));
     }
 
     /// <summary>One grader's counts over the counted trials; a trial that has no grade from it counts as Unknown for it.</summary>
     private static GraderCount GraderCountOf(IGrader grader, IReadOnlyList<TrialResult> counted)
     {
-        var outcomes = counted.Select(trial => trial.Grades.FirstOrDefault(grade => grade.Grader == grader.Name)?.Outcome).ToList();
-        return new GraderCount(grader.Name, grader.Kind, outcomes.Count(o => o == GradeOutcome.Pass), outcomes.Count(o => o == GradeOutcome.Fail),
+        var outcomes = counted
+            .Select(trial => trial.Grades.FirstOrDefault(grade => grade.Grader == grader.Name)?.Outcome).ToList();
+        return new GraderCount(grader.Name, grader.Kind, outcomes.Count(o => o == GradeOutcome.Pass),
+            outcomes.Count(o => o == GradeOutcome.Fail),
             outcomes.Count(o => o is null or GradeOutcome.Unknown));
     }
 }

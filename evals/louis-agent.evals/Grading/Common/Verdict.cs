@@ -10,13 +10,17 @@ namespace LouisAgent.Evals.Grading.Common;
 /// </summary>
 public static class Verdict
 {
-    public static Grade Pass(string grader, int version, string reason) => new(grader, version, 1, GradeOutcome.Pass, reason);
+    public static Grade Pass(string grader, int version, string reason) =>
+        new(grader, version, 1, GradeOutcome.Pass, reason);
 
-    public static Grade Fail(string grader, int version, string reason) => new(grader, version, 0, GradeOutcome.Fail, reason);
+    public static Grade Fail(string grader, int version, string reason) =>
+        new(grader, version, 0, GradeOutcome.Fail, reason);
 
-    public static Grade Pending(string grader, int version, string reason) => new(grader, version, 0, GradeOutcome.Pending, reason);
+    public static Grade Pending(string grader, int version, string reason) =>
+        new(grader, version, 0, GradeOutcome.Pending, reason);
 
-    public static Grade Unknown(string grader, int version, string reason) => new(grader, version, 0, GradeOutcome.Unknown, reason);
+    public static Grade Unknown(string grader, int version, string reason) =>
+        new(grader, version, 0, GradeOutcome.Unknown, reason);
 
     /// <summary>
     /// The Unknown grade of the first turn that failed for the infrastructure (a timeout, a dropped connection), or null when none did.

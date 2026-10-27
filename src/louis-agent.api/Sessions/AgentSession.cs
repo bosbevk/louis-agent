@@ -20,8 +20,17 @@ namespace LouisAgent.Api.Sessions;
 /// One conversation: its engine (the toolsets it chose, fixed for its lifetime, F5), its history and the turn in
 /// progress, if any.
 /// </summary>
-internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
-    string? role = null, UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude,
+internal sealed class AgentSession(
+    string id,
+    AgentEngine engine,
+    IReadOnlyList<string> toolsets,
+    int depth,
+    UsageTags tags,
+    string? role = null,
+    UserPlace? place = null,
+    string? llm = null,
+    string? tool = null,
+    StreamFormat format = StreamFormat.Claude,
     SessionReplay? replay = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
@@ -81,6 +90,7 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.</summary>
     public UsageTags Tags { get; } = tags;
+
     public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
     public DateTimeOffset LastActivity { get; private set; } = DateTimeOffset.UtcNow;
     public bool IsBusy => _turnLock.CurrentCount == 0;
@@ -116,8 +126,15 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
     public bool Cancel()
     {
         if (Volatile.Read(ref _activeTurn) is not { } turn) return false;
-        try { turn.Cancel(); }
-        catch (ObjectDisposedException) { return false; }
+        try
+        {
+            turn.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            return false;
+        }
+
         return true;
     }
 }

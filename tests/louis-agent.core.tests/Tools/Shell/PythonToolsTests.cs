@@ -22,7 +22,13 @@ public class PythonToolsTests
     [TearDown]
     public void TearDown()
     {
-        try { Directory.Delete(_root, recursive: true); } catch (IOException) { }
+        try
+        {
+            Directory.Delete(_root, recursive: true);
+        }
+        catch (IOException)
+        {
+        }
     }
 
     [TestCase("requests")]
@@ -44,7 +50,8 @@ public class PythonToolsTests
     [Test]
     public void PythonInstallPackages_RejectsPipOptions()
     {
-        Assert.That(_tools.PythonInstallPackages("requests --index-url http://evil"), Does.Contain("not a valid package specifier"));
+        Assert.That(_tools.PythonInstallPackages("requests --index-url http://evil"),
+            Does.Contain("not a valid package specifier"));
     }
 
     [TestCase("", "")]

@@ -31,5 +31,6 @@ internal sealed class ChromeSetup : IPageRendererSetup
             : new UnavailablePageRenderer(MessageText.Format(WebToolMessage.BrowserNotConfigured));
 
     /// <summary>Reads the browser's address, or nothing if it isn't a real URL.</summary>
-    private static Uri? AddressOf(AgentOptions options) => Uri.TryCreate(options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
+    private static Uri? AddressOf(AgentOptions options) =>
+        Uri.TryCreate(options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
 }

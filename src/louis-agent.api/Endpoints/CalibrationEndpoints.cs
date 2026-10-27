@@ -19,39 +19,53 @@ namespace LouisAgent.Api.Endpoints;
 /// </summary>
 internal static class CalibrationEndpoints
 {
-    public static void MapCalibrations(this RouteGroupBuilder admin, BenchmarkCatalog catalog, BenchmarkRunner runner, IBenchmarkStore? store, IHumanReviewStore? reviews,
+    public static void MapCalibrations(this RouteGroupBuilder admin, BenchmarkCatalog catalog, BenchmarkRunner runner,
+        IBenchmarkStore? store, IHumanReviewStore? reviews,
         ICalibrationStore? calibrations, CalibrationRecorder? recorder)
     {
-        admin.MapPost("/benchmarks/runs/{id}/calibrations/{grader}", (string id, string grader, CancellationToken cancellationToken) =>
-            Guarded(store, reviews, calibrations, async (s, r, c) =>
+        admin.MapPost("/benchmarks/runs/{id}/calibrations/{grader}",
+            (string id, string grader, CancellationToken cancellationToken) =>
+                Guarded(store, reviews, calibrations, async (s, r, c) =>
+                {
+                    if (recorder is null) return NoStore();
+                    if (await s.GetRunAsync(id, cancellationToken) is not { } run) return NoRun(id);
+                    var humans = ReviewEndpoints.HumanReviewsOf(run);
+                    if (!humans.Contains(grader + HumanReview.Suffix))
+                        return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsAJudge,
+                            new
+                            {
+                                Grader = grader,
+                                Id = id,
+                                Graders = string.Join(", ",
+                                    humans.Select(h => h[..^HumanReview.Suffix.Length]).Order(StringComparer.Ordinal))
+                            }));
+                    if (catalog.Checks.FirstOrDefault(k => k.Id == run.Check) is not { } check)
+                        return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsEval,
+                            new { Id = id, Check = run.Check }));
+                    var labels = await ReviewEndpoints.DecidedLabelsAsync(s, r, id, grader, cancellationToken);
+                    if (labels.Count == 0)
+                        return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
+                            MessageText.Format(ReviewUserText.NoLabelsYet, new { Grader = grader, Id = id }));
+                    if (runner.IsRunning) return Busy(runner);
+
+                    // One label per line, as the zip's files hold them: the runner reads them with the same loader.
+                    string lines = string.Concat(labels.Select(l => ReviewLabels.Line(l.Grade, l.Turns) + "\n"));
+                    if (runner.StartCalibration(check.Id, id, grader, lines) is not { } started) return Busy(runner);
+                    recorder.Attach(started);
+                    return Results.Json(Row(started), statusCode: StatusCodes.Status202Accepted);
+                }));
+
+        admin.MapGet("/benchmarks/runs/{id}/calibrations", (string id, CancellationToken cancellationToken) => Guarded(
+            store, reviews, calibrations, async (s, _, c) =>
             {
-                if (recorder is null) return NoStore();
-                if (await s.GetRunAsync(id, cancellationToken) is not { } run) return NoRun(id);
-                var humans = ReviewEndpoints.HumanReviewsOf(run);
-                if (!humans.Contains(grader + HumanReview.Suffix))
-                    return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsAJudge, new { Grader = grader, Id = id, Graders = string.Join(", ", humans.Select(h => h[..^HumanReview.Suffix.Length]).Order(StringComparer.Ordinal)) }));
-                if (catalog.Checks.FirstOrDefault(k => k.Id == run.Check) is not { } check)
-                    return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsEval, new { Id = id, Check = run.Check }));
-                var labels = await ReviewEndpoints.DecidedLabelsAsync(s, r, id, grader, cancellationToken);
-                if (labels.Count == 0)
-                    return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ReviewUserText.NoLabelsYet, new { Grader = grader, Id = id }));
-                if (runner.IsRunning) return Busy(runner);
-
-                // One label per line, as the zip's files hold them: the runner reads them with the same loader.
-                string lines = string.Concat(labels.Select(l => ReviewLabels.Line(l.Grade, l.Turns) + "\n"));
-                if (runner.StartCalibration(check.Id, id, grader, lines) is not { } started) return Busy(runner);
-                recorder.Attach(started);
-                return Results.Json(Row(started), statusCode: StatusCodes.Status202Accepted);
+                if (await s.GetRunAsync(id, cancellationToken) is null) return NoRun(id);
+                return Results.Json(new
+                { calibrations = (await c.OfRunAsync(id, cancellationToken)).Select(CalibrationRow) });
             }));
-
-        admin.MapGet("/benchmarks/runs/{id}/calibrations", (string id, CancellationToken cancellationToken) => Guarded(store, reviews, calibrations, async (s, _, c) =>
-        {
-            if (await s.GetRunAsync(id, cancellationToken) is null) return NoRun(id);
-            return Results.Json(new { calibrations = (await c.OfRunAsync(id, cancellationToken)).Select(CalibrationRow) });
-        }));
     }
 
-    private static async Task<IResult> Guarded(IBenchmarkStore? store, IHumanReviewStore? reviews, ICalibrationStore? calibrations,
+    private static async Task<IResult> Guarded(IBenchmarkStore? store, IHumanReviewStore? reviews,
+        ICalibrationStore? calibrations,
         Func<IBenchmarkStore, IHumanReviewStore, ICalibrationStore, Task<IResult>> work)
     {
         if (store is null || reviews is null || calibrations is null) return NoStore();
@@ -61,17 +75,22 @@ internal static class CalibrationEndpoints
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", AdminEndpoints.Unavailable(ex));
+            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
+                AdminEndpoints.Unavailable(ex));
         }
     }
 
-    private static IResult NoStore() => ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", MessageText.Format(ApiUserText.NoBenchmarkStore));
+    private static IResult NoStore() => ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
+        MessageText.Format(ApiUserText.NoBenchmarkStore));
 
-    private static IResult Bad(string message) => ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
+    private static IResult Bad(string message) =>
+        ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
 
     private static IResult NoRun(string id) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
+        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
+            MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
 
     private static IResult Busy(BenchmarkRunner runner) =>
-        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
+        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
+            MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
 }

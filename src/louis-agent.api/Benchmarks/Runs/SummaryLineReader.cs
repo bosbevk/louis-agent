@@ -13,27 +13,39 @@ internal static class SummaryLineReader
     public static BenchmarkProtocol.SummaryReported? Of(JsonElement e, DateTimeOffset? at)
     {
         if (Text(e, "mode") is not { } mode || Text(e, "slice") is not { } slice
-            || Int(e, "n") is not { } n || Int(e, "passed") is not { } passed || Int(e, "failed") is not { } failed
-            || Int(e, "unknown") is not { } unknown || Int(e, "infrastructure") is not { } infrastructure
-            || !e.TryGetProperty("too_few", out var tooFew) || tooFew.ValueKind is not (JsonValueKind.True or JsonValueKind.False)
-            || Graders(e) is not { } graders || Kinds(e) is not { } kinds || Scores(e) is not { } scores)
+                                            || Int(e, "n") is not { } n || Int(e, "passed") is not { } passed ||
+                                            Int(e, "failed") is not { } failed
+                                            || Int(e, "unknown") is not { } unknown || Int(e, "infrastructure") is not
+                                            { } infrastructure
+                                            || !e.TryGetProperty("too_few", out var tooFew) ||
+                                            tooFew.ValueKind is not (JsonValueKind.True or JsonValueKind.False)
+                                            || Graders(e) is not { } graders || Kinds(e) is not { } kinds ||
+                                            Scores(e) is not { } scores)
             return null;
 
         var tasks = e.TryGetProperty("tasks", out var list) && list.ValueKind == JsonValueKind.Array
-            ? list.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String).Select(t => t.GetString()!).ToArray()
+            ? list.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String).Select(t => t.GetString()!)
+                .ToArray()
             : [];
-        return new BenchmarkProtocol.SummaryReported(new BenchmarkSlice(mode, slice, n, passed, failed, unknown, infrastructure, tasks, tooFew.GetBoolean(),
+        return new BenchmarkProtocol.SummaryReported(new BenchmarkSlice(mode, slice, n, passed, failed, unknown,
+            infrastructure, tasks, tooFew.GetBoolean(),
             Number(e, "pass_rate"), Number(e, "pass_at_k"), Number(e, "pass_hat_k"), graders, kinds, scores), at);
     }
 
     private static IReadOnlyList<SliceGrader>? Graders(JsonElement e) => Objects(e, "graders", g =>
-        Text(g, "grader") is { } name && Kind(g) is { } kind && Counts(g) is var (passed, failed, unknown) ? new SliceGrader(name, kind, passed, failed, unknown) : null);
+        Text(g, "grader") is { } name && Kind(g) is { } kind && Counts(g) is var (passed, failed, unknown)
+            ? new SliceGrader(name, kind, passed, failed, unknown)
+            : null);
 
     private static IReadOnlyList<SliceKind>? Kinds(JsonElement e) => Objects(e, "kinds", k =>
-        Kind(k) is { } kind && Counts(k) is var (passed, failed, unknown) ? new SliceKind(kind, passed, failed, unknown) : null);
+        Kind(k) is { } kind && Counts(k) is var (passed, failed, unknown)
+            ? new SliceKind(kind, passed, failed, unknown)
+            : null);
 
     private static IReadOnlyList<SliceScore>? Scores(JsonElement e) => Objects(e, "scores", s =>
-        Text(s, "key") is { } key && Number(s, "mean") is { } mean && Int(s, "n") is { } n ? new SliceScore(key, mean, n) : null);
+        Text(s, "key") is { } key && Number(s, "mean") is { } mean && Int(s, "n") is { } n
+            ? new SliceScore(key, mean, n)
+            : null);
 
     /// <summary>The objects of an array property, each read by <paramref name="read"/>; null when the property is missing or any element can't be read.</summary>
     private static IReadOnlyList<T>? Objects<T>(JsonElement e, string name, Func<JsonElement, T?> read) where T : class
@@ -47,13 +59,17 @@ internal static class SummaryLineReader
         SettingChoice.TryParse(Text(e, "kind"), out BenchmarkGraderKind? kind) ? kind : null;
 
     private static (int Passed, int Failed, int Unknown)? Counts(JsonElement e) =>
-        Int(e, "passed") is { } passed && Int(e, "failed") is { } failed && Int(e, "unknown") is { } unknown ? (passed, failed, unknown) : null;
+        Int(e, "passed") is { } passed && Int(e, "failed") is { } failed && Int(e, "unknown") is { } unknown
+            ? (passed, failed, unknown)
+            : null;
 
     private static string? Text(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
     private static int? Int(JsonElement e, string name) =>
-        e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int n) ? n : null;
+        e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int n)
+            ? n
+            : null;
 
     private static double? Number(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetDouble() : null;

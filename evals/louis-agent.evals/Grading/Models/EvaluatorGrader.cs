@@ -23,17 +23,20 @@ public sealed class EvaluatorGrader : IGrader
     private readonly int _version;
     private readonly Func<Trial, IEnumerable<EvaluationContext>>? _context;
 
-    public EvaluatorGrader(IEvaluator evaluator, ConfiguredJudge? judge, string name, int version, string promptHash, IReadOnlySet<string>? expectedKeys = null,
+    public EvaluatorGrader(IEvaluator evaluator, ConfiguredJudge? judge, string name, int version, string promptHash,
+        IReadOnlySet<string>? expectedKeys = null,
         Func<Trial, IEnumerable<EvaluationContext>>? context = null)
         : this(evaluator, () => judge, name, version, promptHash, expectedKeys, context)
     {
     }
 
     /// <summary>The judge is built when a trial is first graded, not when the eval is listed, so listing reads no settings and opens no ledger.</summary>
-    public EvaluatorGrader(IEvaluator evaluator, Func<ConfiguredJudge?> judge, string name, int version, string promptHash, IReadOnlySet<string>? expectedKeys = null,
+    public EvaluatorGrader(IEvaluator evaluator, Func<ConfiguredJudge?> judge, string name, int version,
+        string promptHash, IReadOnlySet<string>? expectedKeys = null,
         Func<Trial, IEnumerable<EvaluationContext>>? context = null)
     {
-        (_evaluator, _judge, _name, _version, _promptHash, _context) = (evaluator, new Lazy<ConfiguredJudge?>(judge), name, version, promptHash, context);
+        (_evaluator, _judge, _name, _version, _promptHash, _context) = (evaluator, new Lazy<ConfiguredJudge?>(judge),
+            name, version, promptHash, context);
         ExpectedKeys = expectedKeys ?? new HashSet<string>();
     }
 
@@ -46,14 +49,16 @@ public sealed class EvaluatorGrader : IGrader
     public async ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
         if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } failed) return failed;
-        if (_judge.Value is not { } judge) return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.NoJudge));
+        if (_judge.Value is not { } judge)
+            return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.NoJudge));
 
         var (messages, answer) = Conversation(trial);
         // Tagged as the turns are, {run}:{mode}:{repeat}, and placed on the conversation's last turn, so the API's join puts the judging on its conversation and a slice's cost counts it.
         var last = trial.Transcript.Turns.Count == 0 ? null : trial.Transcript.Turns[^1];
         using var scope = UsageScope.Begin(UsagePurpose.Grading, session: last?.Session, turn: last?.Turn,
             tags: new UsageTags(trial.Scenario.Id, $"{trial.RunId}:{trial.Mode.Name}:{trial.Repeat}", null));
-        var result = await _evaluator.EvaluateAsync(messages, answer, judge.Chat, _context?.Invoke(trial), cancellationToken);
+        var result =
+            await _evaluator.EvaluateAsync(messages, answer, judge.Chat, _context?.Invoke(trial), cancellationToken);
         return Read(result) with { Judge = new GradeJudge(judge.Model, _promptHash) };
     }
 
@@ -67,6 +72,7 @@ public sealed class EvaluatorGrader : IGrader
             messages.Add(new ChatMessage(ChatRole.User, turns[i].Question));
             if (i < turns.Count - 1) messages.Add(new ChatMessage(ChatRole.Assistant, EngineEvents.AnswerOf(turns[i])));
         }
+
         string last = turns.Count == 0 ? "" : EngineEvents.AnswerOf(turns[^1]);
         return (messages, new ChatResponse(new ChatMessage(ChatRole.Assistant, last)));
     }
@@ -74,15 +80,18 @@ public sealed class EvaluatorGrader : IGrader
     private Grade Read(EvaluationResult result)
     {
         var metrics = result.Metrics.Values.OfType<BooleanMetric>().ToList();
-        if (metrics.Count != 1) return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.JudgeNoVerdict));
+        if (metrics.Count != 1)
+            return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.JudgeNoVerdict));
 
         var metric = metrics[0];
         string? reason = string.IsNullOrWhiteSpace(metric.Reason) ? null : metric.Reason;
         bool unrated = metric.Interpretation?.Rating is EvaluationRating.Unknown or EvaluationRating.Inconclusive;
         return metric.Value switch
         {
-            true when !unrated => Verdict.Pass(Name, Version, reason ?? MessageText.Format(CommonGradeMessage.JudgeSaidYes)),
-            false when !unrated => Verdict.Fail(Name, Version, reason ?? MessageText.Format(CommonGradeMessage.JudgeSaidNo)),
+            true when !unrated => Verdict.Pass(Name, Version,
+                reason ?? MessageText.Format(CommonGradeMessage.JudgeSaidYes)),
+            false when !unrated => Verdict.Fail(Name, Version,
+                reason ?? MessageText.Format(CommonGradeMessage.JudgeSaidNo)),
             _ => Verdict.Unknown(Name, Version, reason ?? MessageText.Format(CommonGradeMessage.JudgeNoVerdict)),
         };
     }

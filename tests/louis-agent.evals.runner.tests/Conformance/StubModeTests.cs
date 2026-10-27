@@ -8,5 +8,6 @@ public class StubModeTests
 {
     [Test]
     public void TheModesTheStubRunsIn_TravelUnderTheirRecordedNames() =>
-        Assert.That(Enum.GetValues<StubMode>().Select(m => m.Wire()), Is.EqualTo(new[] { "stub-direct", "stub-delegating" }));
+        Assert.That(Enum.GetValues<StubMode>().Select(m => m.Wire()),
+            Is.EqualTo(new[] { "stub-direct", "stub-delegating" }));
 }

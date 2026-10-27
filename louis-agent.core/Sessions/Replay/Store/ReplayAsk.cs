@@ -10,5 +10,6 @@ namespace LouisAgent.Core.Sessions.Replay.Store;
 /// </summary>
 public sealed record ReplayAsk(ReplayKind Kind, string Key)
 {
-    public static ReplayAsk Of(ReplayKind kind, object key) => new(kind, JsonSerializer.Serialize(key, ReplayStore.Json));
+    public static ReplayAsk Of(ReplayKind kind, object key) =>
+        new(kind, JsonSerializer.Serialize(key, ReplayStore.Json));
 }

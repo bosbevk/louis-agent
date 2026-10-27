@@ -13,13 +13,17 @@ public class ReviewerStateTests
 
     private sealed class BlockedStorage : IJSRuntime
     {
-        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) => throw new JSException("storage is blocked");
-        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => throw new JSException("storage is blocked");
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args) =>
+            throw new JSException("storage is blocked");
+
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken,
+            object?[]? args) => throw new JSException("storage is blocked");
     }
 
     [TestCase("Louis", "Louis")]
     [TestCase("  Louis  ", "Louis")]
-    public void ANameIsTrimmed(string typed, string expected) => Assert.That(ReviewerName.Clean(typed), Is.EqualTo(expected));
+    public void ANameIsTrimmed(string typed, string expected) =>
+        Assert.That(ReviewerName.Clean(typed), Is.EqualTo(expected));
 
     [TestCase(null)]
     [TestCase("")]
@@ -56,7 +60,8 @@ public class ReviewerStateTests
         bool accepted = await state.SetAsync("  Louis ");
 
         Assert.That((accepted, state.Name, changes), Is.EqualTo((true, "Louis", 1)));
-        Assert.That(ctx.JSInterop.Invocations.Single(i => i.Identifier == "localStorage.setItem").Arguments, Is.EqualTo(new object?[] { ReviewerState.StorageKey, "Louis" }));
+        Assert.That(ctx.JSInterop.Invocations.Single(i => i.Identifier == "localStorage.setItem").Arguments,
+            Is.EqualTo(new object?[] { ReviewerState.StorageKey, "Louis" }));
     }
 
     // 6a.4 (Louis, "not you?"): a kept name can be let go, so another person can grade in this browser; the page is told, so the panels ask for a name again.
@@ -96,7 +101,8 @@ public class ReviewerStateTests
         await state.LoadAsync();
         bool accepted = await state.SetAsync("Louis");
 
-        Assert.That((accepted, state.Name), Is.EqualTo((true, "Louis")), "the person can grade; the name is just not remembered");
+        Assert.That((accepted, state.Name), Is.EqualTo((true, "Louis")),
+            "the person can grade; the name is just not remembered");
     }
 
     [Test]

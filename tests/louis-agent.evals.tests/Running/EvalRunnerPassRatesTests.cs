@@ -20,7 +20,10 @@ public class EvalRunnerPassRatesTests
     private static readonly DateTimeOffset At = DateTimeOffset.FromUnixTimeMilliseconds(1700000000123);
 
     private static SessionEvent Said(string text) =>
-        SessionEvent.From("content_block_delta", JsonDocument.Parse(JsonSerializer.Serialize(new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text } })).RootElement.Clone());
+        SessionEvent.From("content_block_delta",
+            JsonDocument.Parse(JsonSerializer.Serialize(new
+            { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text } })).RootElement
+                .Clone());
 
     /// <summary>What one send does: answers, or throws.</summary>
     private abstract record Send
@@ -30,18 +33,22 @@ public class EvalRunnerPassRatesTests
         public sealed record Throws(Exception Error) : Send;
     }
 
-    private static async Task<(List<JsonElement> Lines, ScriptedClient Client, CapturingLogger Log)> Run(int repeats, params Send[] sends)
+    private static async Task<(List<JsonElement> Lines, ScriptedClient Client, CapturingLogger Log)> Run(int repeats,
+        params Send[] sends)
     {
         var sink = new StringWriter();
         var client = new ScriptedClient(sends);
         var log = new CapturingLogger();
-        var runner = new EvalRunner(client, new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At), new TypedLogger(log));
+        var runner = new EvalRunner(client, new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+            new TypedLogger(log));
         await runner.RunAsync(new OneScenarioEval(), new EvalRun("run_1", repeats), CancellationToken.None);
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement.Clone()).ToList();
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement.Clone()).ToList();
         return (lines, client, log);
     }
 
-    private static IEnumerable<JsonElement> Of(List<JsonElement> lines, string kind) => lines.Where(l => l.GetProperty("event").GetString() == kind);
+    private static IEnumerable<JsonElement> Of(List<JsonElement> lines, string kind) =>
+        lines.Where(l => l.GetProperty("event").GetString() == kind);
 
     private static Send Right => new Send.Answers("Hallo");
 
@@ -71,7 +78,8 @@ public class EvalRunnerPassRatesTests
         var (lines, _, _) = await Run(1, new Send.Throws(new TimeoutException("too slow")));
 
         var done = Of(lines, "mode_done").Single();
-        Assert.That(Of(lines, "conversation").Single().GetProperty("outcome").GetString(), Is.EqualTo("Infrastructure"));
+        Assert.That(Of(lines, "conversation").Single().GetProperty("outcome").GetString(),
+            Is.EqualTo("Infrastructure"));
         Assert.That(done.TryGetProperty("pass_at_k", out _), Is.False, "no countable trial: no rate, never 0");
         Assert.That(done.TryGetProperty("pass_hat_k", out _), Is.False);
         Assert.That(done.GetProperty("infrastructure").GetInt32(), Is.EqualTo(1));
@@ -91,18 +99,22 @@ public class EvalRunnerPassRatesTests
         Assert.That(Of(lines, "conversation").Single().GetProperty("outcome").GetString(), Is.EqualTo("Pass"));
         Assert.That(Of(lines, "mode_done").Single().GetProperty("retried").GetInt32(), Is.EqualTo(1));
         Assert.That(Of(lines, "mode_done").Single().GetProperty("infrastructure").GetInt32(), Is.EqualTo(0));
-        Assert.That(Of(lines, "turn").Select(t => t.TryGetProperty("failure", out var f) ? f.GetString() : null), Is.EqualTo(new string?[] { "transport", null }),
+        Assert.That(Of(lines, "turn").Select(t => t.TryGetProperty("failure", out var f) ? f.GetString() : null),
+            Is.EqualTo(new string?[] { "transport", null }),
             "the failed attempt stays in the protocol; the same turn key written again replaces it in the store");
-        Assert.That(log.Warnings.Any(w => w.Contains("Retrying") && w.Contains("pannekoek")), Is.True, "the retry is logged");
+        Assert.That(log.Warnings.Any(w => w.Contains("Retrying") && w.Contains("pannekoek")), Is.True,
+            "the retry is logged");
     }
 
     [Test]
     public async Task ATransportFailureTwice_IsRetriedOnlyOnce_AndIsAnInfrastructureTrial()
     {
-        var (lines, client, _) = await Run(1, new Send.Throws(new HttpRequestException("reset")), new Send.Throws(new IOException("broken pipe")));
+        var (lines, client, _) = await Run(1, new Send.Throws(new HttpRequestException("reset")),
+            new Send.Throws(new IOException("broken pipe")));
 
         Assert.That(client.Opened.Count, Is.EqualTo(2), "one retry, not a loop");
-        Assert.That(Of(lines, "conversation").Single().GetProperty("outcome").GetString(), Is.EqualTo("Infrastructure"));
+        Assert.That(Of(lines, "conversation").Single().GetProperty("outcome").GetString(),
+            Is.EqualTo("Infrastructure"));
         var done = Of(lines, "mode_done").Single();
         Assert.That(done.GetProperty("retried").GetInt32(), Is.EqualTo(1));
         Assert.That(done.GetProperty("infrastructure").GetInt32(), Is.EqualTo(1));
@@ -126,7 +138,8 @@ public class EvalRunnerPassRatesTests
         public List<string> Opened { get; } = [];
         public List<string> Closed { get; } = [];
 
-        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) => Task.FromResult<IReadOnlyList<string>>([]);
+        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<string>>([]);
 
         public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken)
         {
@@ -134,7 +147,8 @@ public class EvalRunnerPassRatesTests
             return Task.FromResult(Opened[^1]);
         }
 
-        public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+            [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
             var send = _sends.Count > 0 ? _sends.Dequeue() : new Send.Answers("Hallo");
@@ -170,11 +184,17 @@ public class EvalRunnerPassRatesTests
         public int Version => 1;
         public string Proves => "pass@k and pass^k.";
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([
+                new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])
+            ]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
-            [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Vraag"]), default, [], DatasetSplit.Dev)];
+        [
+            new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Vraag"]), default, [],
+                DatasetSplit.Dev)
+        ];
 
         public IReadOnlyList<IGrader> Graders { get; } = [new AnswerGrader()];
 
@@ -191,7 +211,8 @@ public class EvalRunnerPassRatesTests
 
         public bool IsEnabled(LogLevel logLevel) => inner.IsEnabled(logLevel);
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) =>
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+            Func<TState, Exception?, string> formatter) =>
             inner.Log(logLevel, eventId, state, exception, formatter);
     }
 }

@@ -22,6 +22,7 @@ public static class ToolHosts
                 host = Shops.Hosts.FirstOrDefault(h => h.Name == shop.Trim().ToLowerInvariant()).Host;
             if (!string.IsNullOrEmpty(host) && !seen.Contains(host)) seen.Add(host);
         }
+
         return seen;
     }
 
@@ -33,5 +34,8 @@ public static class ToolHosts
 
     private static string? Text(System.Text.Json.JsonElement input, string name) =>
         input.ValueKind == System.Text.Json.JsonValueKind.Object && input.TryGetProperty(name, out var value)
-        && value.ValueKind == System.Text.Json.JsonValueKind.String ? value.GetString() : null;
+                                                                 && value.ValueKind ==
+                                                                 System.Text.Json.JsonValueKind.String
+            ? value.GetString()
+            : null;
 }

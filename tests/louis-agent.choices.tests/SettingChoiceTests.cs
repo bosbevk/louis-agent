@@ -7,9 +7,15 @@ namespace LouisAgent.Choices.Tests;
 // never a number (Enum.TryParse takes "1"); and the names the "supported" messages list, from the enum itself.
 public class SettingChoiceTests
 {
-    public enum Engine { Tavily, Google, DuckDuckGo }
+    public enum Engine
+    {
+        Tavily,
+        Google,
+        DuckDuckGo
+    }
 
-    private static readonly IReadOnlyDictionary<string, Engine> Aliases = new Dictionary<string, Engine> { ["ddg"] = Engine.DuckDuckGo };
+    private static readonly IReadOnlyDictionary<string, Engine> Aliases = new Dictionary<string, Engine>
+    { ["ddg"] = Engine.DuckDuckGo };
 
     [TestCase(null)]
     [TestCase("")]

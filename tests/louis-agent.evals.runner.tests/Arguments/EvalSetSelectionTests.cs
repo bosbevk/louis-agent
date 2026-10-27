@@ -22,5 +22,6 @@ public class EvalSetSelectionTests
     [Test]
     public void RefusesAnUnknownSetNamingTheSupportedOnes() =>
         Assert.That(() => EvalSetSelection.Parse("pulss"),
-            Throws.InstanceOf<RunnerException>().With.Message.Contains("'pulss'").And.Message.Contains(EvalSetKind.Puls.Wire()));
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("'pulss'").And.Message
+                .Contains(EvalSetKind.Puls.Wire()));
 }

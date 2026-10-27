@@ -23,20 +23,24 @@ public static class ReviewLabels
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     };
 
-    public static string FileName(string grader, ConversationKey key, string run) => $"{grader}.{key.Task}.{key.Mode}.{run}.{key.Repeat}.json";
+    public static string FileName(string grader, ConversationKey key, string run) =>
+        $"{grader}.{key.Task}.{key.Mode}.{run}.{key.Repeat}.json";
 
     /// <summary>The same wire on one line (6a.5b): what the runner reads on its stdin, one label per line.</summary>
     private static readonly JsonSerializerOptions LineWire = new(Wire) { WriteIndented = false };
 
     /// <summary>One label file's text for a decided grade and every turn of its conversation (6a.4f), in turn order; the last turn's answer is the one the grade is of.</summary>
-    public static string Content(HumanGrade grade, IReadOnlyList<Turn> turns) => JsonSerializer.Serialize(Record(grade, turns), Wire) + "\n";
+    public static string Content(HumanGrade grade, IReadOnlyList<Turn> turns) =>
+        JsonSerializer.Serialize(Record(grade, turns), Wire) + "\n";
 
     /// <summary>The same label on one line, for the runner's stdin (6a.5b).</summary>
-    public static string Line(HumanGrade grade, IReadOnlyList<Turn> turns) => JsonSerializer.Serialize(Record(grade, turns), LineWire);
+    public static string Line(HumanGrade grade, IReadOnlyList<Turn> turns) =>
+        JsonSerializer.Serialize(Record(grade, turns), LineWire);
 
     private static LabelRecord Record(HumanGrade grade, IReadOnlyList<Turn> turns) =>
         new(grade.Grader, grade.Conversation.Task, grade.Conversation.Mode, grade.Run, grade.Conversation.Repeat,
-            [.. turns.OrderBy(t => t.Key.Turn).Select(t => new LabelTurnRecord(t.Question, t.Answer ?? ""))], new LabelBody(grade.Verdict == HumanVerdict.Pass, grade.Note));
+            [.. turns.OrderBy(t => t.Key.Turn).Select(t => new LabelTurnRecord(t.Question, t.Answer ?? ""))],
+            new LabelBody(grade.Verdict == HumanVerdict.Pass, grade.Note));
 
     /// <summary>The zip of the files, one per decided grade with its conversation's turns.</summary>
     public static byte[] Zip(IReadOnlyList<(HumanGrade Grade, IReadOnlyList<Turn> Turns)> labels)
@@ -45,13 +49,23 @@ public static class ReviewLabels
         using (var zip = new ZipArchive(bytes, ZipArchiveMode.Create, leaveOpen: true))
             foreach (var (grade, turns) in labels)
             {
-                using var writer = new StreamWriter(zip.CreateEntry(FileName(grade.Grader, grade.Conversation, grade.Run)).Open(), new UTF8Encoding(false));
+                using var writer =
+                    new StreamWriter(zip.CreateEntry(FileName(grade.Grader, grade.Conversation, grade.Run)).Open(),
+                        new UTF8Encoding(false));
                 writer.Write(Content(grade, turns));
             }
+
         return bytes.ToArray();
     }
 
-    private sealed record LabelRecord(string Grader, string Scenario, string Mode, string Run, int Repeat, IReadOnlyList<LabelTurnRecord> Turns, LabelBody Label);
+    private sealed record LabelRecord(
+        string Grader,
+        string Scenario,
+        string Mode,
+        string Run,
+        int Repeat,
+        IReadOnlyList<LabelTurnRecord> Turns,
+        LabelBody Label);
 
     private sealed record LabelTurnRecord(string Question, string Answer);
 

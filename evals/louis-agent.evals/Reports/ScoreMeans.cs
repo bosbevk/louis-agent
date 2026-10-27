@@ -12,11 +12,13 @@ internal static class ScoreMeans
     {
         var values = new SortedDictionary<string, List<double>>(StringComparer.Ordinal);
         foreach (var score in scores.Where(score => score.ValueKind == JsonValueKind.Object))
-            foreach (var property in score.EnumerateObject().Where(property => property.Value.ValueKind == JsonValueKind.Number))
+            foreach (var property in score.EnumerateObject()
+                         .Where(property => property.Value.ValueKind == JsonValueKind.Number))
             {
                 if (!values.TryGetValue(property.Name, out var list)) values[property.Name] = list = [];
                 list.Add(property.Value.GetDouble());
             }
+
         return [.. values.Select(pair => new ScoreMean(pair.Key, pair.Value.Average(), pair.Value.Count))];
     }
 }

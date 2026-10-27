@@ -13,10 +13,13 @@ public class RecordedWebBrowserTests
 {
     private static readonly Uri Page = new("https://www.checkers.co.za/search?q=eggs");
 
-    private static readonly BrowserVisit Visit = new("https://www.checkers.co.za/search?q=eggs&r=1", "<html>eggs R54.99</html>",
-        ["{\"price\":54.99}", "{\"price\":49.99}"], "{\"store\":\"Malmesbury\"}", [new BrowserCookie("store", "6001", ".checkers.co.za")]);
+    private static readonly BrowserVisit Visit = new("https://www.checkers.co.za/search?q=eggs&r=1",
+        "<html>eggs R54.99</html>",
+        ["{\"price\":54.99}", "{\"price\":49.99}"], "{\"store\":\"Malmesbury\"}",
+        [new BrowserCookie("store", "6001", ".checkers.co.za")]);
 
-    private static IDisposable Using(WebReplayMode mode, string? of) => SessionReplay.Use(new SessionReplay(mode, of, Model: false));
+    private static IDisposable Using(WebReplayMode mode, string? of) =>
+        SessionReplay.Use(new SessionReplay(mode, of, Model: false));
 
     [Test]
     public async Task RecordingThenReplaying_WithABrowserThatThrows_GivesBackTheSameVisit()
@@ -26,10 +29,12 @@ public class RecordedWebBrowserTests
         var dead = new FakeBrowser(throws: new InvalidOperationException("Chrome must not be opened in a replay"));
 
         using (Using(WebReplayMode.Record, "run_1:cook:1/bobotie"))
-            await new RecordedWebBrowser(live, folder.Store).VisitAsync(Page, script: "return 1", readySelector: ".price");
+            await new RecordedWebBrowser(live, folder.Store).VisitAsync(Page, script: "return 1",
+                readySelector: ".price");
         BrowserVisit replayed;
         using (Using(WebReplayMode.Replay, "run_1:cook:1/bobotie"))
-            replayed = await new RecordedWebBrowser(dead, folder.Store).VisitAsync(Page, script: "return 1", readySelector: ".price");
+            replayed = await new RecordedWebBrowser(dead, folder.Store).VisitAsync(Page, script: "return 1",
+                readySelector: ".price");
 
         Assert.That(dead.Calls, Is.Zero);
         Assert.That(replayed.Url, Is.EqualTo(Visit.Url));
@@ -57,7 +62,8 @@ public class RecordedWebBrowserTests
         using var folder = new ReplayFolder();
 
         using (Using(WebReplayMode.Record, "run_1:cook:1/bobotie"))
-            await new RecordedWebBrowser(new FakeBrowser(Visit), folder.Store).VisitAsync(Page, script: "return 1", readySelector: ".price");
+            await new RecordedWebBrowser(new FakeBrowser(Visit), folder.Store).VisitAsync(Page, script: "return 1",
+                readySelector: ".price");
 
         var line = JsonDocument.Parse(File.ReadAllLines(folder.Trials.Single()).Single()).RootElement;
         string pageFile = folder.Answers.Single();
@@ -94,11 +100,12 @@ public class RecordedWebBrowserTests
 
         using (Using(WebReplayMode.Replay, "run_1:cook:1/bobotie"))
         {
-            var error = Assert.ThrowsAsync<WebBrowserException>(
-                async () => await new RecordedWebBrowser(inner, folder.Store).VisitAsync(Page))!;
+            var error = Assert.ThrowsAsync<WebBrowserException>(async () =>
+                await new RecordedWebBrowser(inner, folder.Store).VisitAsync(Page))!;
 
             Assert.That(error.Message, Does.Contain(Page.AbsoluteUri).And.Contain("not read in the recorded run"));
         }
+
         Assert.That(inner.Calls, Is.Zero);
         Assert.That(folder.Entries, Is.Empty, "a miss writes nothing");
     }
@@ -107,13 +114,17 @@ public class RecordedWebBrowserTests
     public async Task AnAskWithAnotherScriptOrSelector_IsAMiss()
     {
         using var folder = new ReplayFolder();
-        using (Using(WebReplayMode.Record, "t")) await new RecordedWebBrowser(new FakeBrowser(Visit), folder.Store).VisitAsync(Page, script: "a", readySelector: ".x");
+        using (Using(WebReplayMode.Record, "t"))
+            await new RecordedWebBrowser(new FakeBrowser(Visit), folder.Store).VisitAsync(Page, script: "a",
+                readySelector: ".x");
         var replay = new RecordedWebBrowser(new FakeBrowser(), folder.Store);
 
         using (Using(WebReplayMode.Replay, "t"))
         {
-            Assert.ThrowsAsync<WebBrowserException>(async () => await replay.VisitAsync(Page, script: "b", readySelector: ".x"));
-            Assert.ThrowsAsync<WebBrowserException>(async () => await replay.VisitAsync(Page, script: "a", readySelector: ".y"));
+            Assert.ThrowsAsync<WebBrowserException>(async () =>
+                await replay.VisitAsync(Page, script: "b", readySelector: ".x"));
+            Assert.ThrowsAsync<WebBrowserException>(async () =>
+                await replay.VisitAsync(Page, script: "a", readySelector: ".y"));
             Assert.ThrowsAsync<WebBrowserException>(async () => await replay.VisitAsync(Page));
             Assert.That((await replay.VisitAsync(Page, script: "a", readySelector: ".x")).Html, Is.EqualTo(Visit.Html));
         }
@@ -123,13 +134,17 @@ public class RecordedWebBrowserTests
     public async Task ARecordedFailure_ReplaysAsTheSameText_AndHasNoHash()
     {
         using var folder = new ReplayFolder();
-        var refused = new FakeBrowser(throws: new WebBrowserException("The page at https://x couldn't run the browser's script: boom."));
+        var refused =
+            new FakeBrowser(
+                throws: new WebBrowserException("The page at https://x couldn't run the browser's script: boom."));
 
         using (Using(WebReplayMode.Record, "t"))
         {
-            var recorded = Assert.ThrowsAsync<WebBrowserException>(async () => await new RecordedWebBrowser(refused, folder.Store).VisitAsync(Page))!;
+            var recorded = Assert.ThrowsAsync<WebBrowserException>(async () =>
+                await new RecordedWebBrowser(refused, folder.Store).VisitAsync(Page))!;
             Assert.That(recorded.Message, Does.Contain("boom"));
         }
+
         var line = JsonDocument.Parse(File.ReadAllLines(folder.Trials.Single()).Single()).RootElement;
         Assert.That(line.GetProperty("hash").ValueKind, Is.EqualTo(JsonValueKind.Null));
         Assert.That(folder.Answers, Is.Empty);
@@ -137,7 +152,8 @@ public class RecordedWebBrowserTests
         using (Using(WebReplayMode.Replay, "t"))
         {
             var inner = new FakeBrowser(Visit);
-            var replayed = Assert.ThrowsAsync<WebBrowserException>(async () => await new RecordedWebBrowser(inner, folder.Store).VisitAsync(Page))!;
+            var replayed = Assert.ThrowsAsync<WebBrowserException>(async () =>
+                await new RecordedWebBrowser(inner, folder.Store).VisitAsync(Page))!;
             Assert.That(replayed.Message, Is.EqualTo("The page at https://x couldn't run the browser's script: boom."));
             Assert.That(inner.Calls, Is.Zero);
         }
@@ -150,7 +166,8 @@ public class RecordedWebBrowserTests
         var cancelled = new FakeBrowser(throws: new OperationCanceledException());
 
         using (Using(WebReplayMode.Record, "t"))
-            Assert.ThrowsAsync<OperationCanceledException>(async () => await new RecordedWebBrowser(cancelled, folder.Store).VisitAsync(Page));
+            Assert.ThrowsAsync<OperationCanceledException>(async () =>
+                await new RecordedWebBrowser(cancelled, folder.Store).VisitAsync(Page));
 
         Assert.That(folder.Entries, Is.Empty);
         await Task.CompletedTask;
@@ -191,7 +208,8 @@ public class RecordedWebBrowserTests
         {
             var replay = new RecordedWebBrowser(new FakeBrowser(), folder.Store);
             Assert.That((await replay.VisitAsync(Page)).Html, Is.EqualTo("<html>first</html>"));
-            Assert.That((await replay.VisitAsync(Page)).Html, Is.EqualTo("<html>first</html>"), "no counters: the same answer again");
+            Assert.That((await replay.VisitAsync(Page)).Html, Is.EqualTo("<html>first</html>"),
+                "no counters: the same answer again");
         }
     }
 
@@ -203,7 +221,8 @@ public class RecordedWebBrowserTests
         var inner = new FakeBrowser(Visit);
 
         using (Using(mode, null))
-            Assert.ThrowsAsync<InvalidOperationException>(async () => await new RecordedWebBrowser(inner, folder.Store).VisitAsync(Page));
+            Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await new RecordedWebBrowser(inner, folder.Store).VisitAsync(Page));
 
         Assert.That(inner.Calls, Is.Zero);
         await Task.CompletedTask;

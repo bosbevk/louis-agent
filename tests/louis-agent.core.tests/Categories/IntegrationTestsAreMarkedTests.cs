@@ -14,15 +14,19 @@ public class IntegrationTestsAreMarkedTests
 
     /// <summary>The old way to ask for the outside: a raw skip. It is banned in the tests now (<see cref="Outside"/> is the one way), but still read as a guard so a stray one is also seen as unmarked.</summary>
     public static readonly Regex RawGuard = new(
-        @"Assert\.Ignore\(|Assume\.That\(.*(isn't set|not installed|isn't installed|isn't here|ResolveInterpreter\(\)|FindBash\(\))", RegexOptions.Compiled);
+        @"Assert\.Ignore\(|Assume\.That\(.*(isn't set|not installed|isn't installed|isn't here|ResolveInterpreter\(\)|FindBash\(\))",
+        RegexOptions.Compiled);
 
     private static readonly Regex Guard = new(@"Outside\.(Tool|Stack)\(|" + RawGuard, RegexOptions.Compiled);
 
-    private static readonly Regex MethodHeader = new(@"^\s*(public|private|protected|internal)\b[^=;]*\)\s*(=>.*)?$", RegexOptions.Compiled);
+    private static readonly Regex MethodHeader = new(@"^\s*(public|private|protected|internal)\b[^=;]*\)\s*(=>.*)?$",
+        RegexOptions.Compiled);
 
-    private static readonly Regex ClassHeader = new(@"^\s*(public|internal)\s+(sealed\s+|abstract\s+)*class\s", RegexOptions.Compiled);
+    private static readonly Regex ClassHeader =
+        new(@"^\s*(public|internal)\s+(sealed\s+|abstract\s+)*class\s", RegexOptions.Compiled);
 
-    private static readonly Regex TestAttribute = new(@"^\s*\[(Test|TestCase|TestCaseSource|Theory)\b", RegexOptions.Compiled);
+    private static readonly Regex TestAttribute =
+        new(@"^\s*\[(Test|TestCase|TestCaseSource|Theory)\b", RegexOptions.Compiled);
 
     public sealed record Unmarked(string File, int Line, string Where);
 
@@ -37,11 +41,13 @@ public class IntegrationTestsAreMarkedTests
     private static int NearestAbove(string[] lines, int from, Regex pattern)
     {
         for (int i = from; i >= 0; i--)
-            if (pattern.IsMatch(lines[i])) return i;
+            if (pattern.IsMatch(lines[i]))
+                return i;
         return -1;
     }
 
-    private static bool Has(IEnumerable<string> attributes, string text) => attributes.Any(a => a.Contains(text, StringComparison.Ordinal));
+    private static bool Has(IEnumerable<string> attributes, string text) =>
+        attributes.Any(a => a.Contains(text, StringComparison.Ordinal));
 
     /// <summary>
     /// Every guard in the text that is outside a marked test or class; <paramref name="file"/> only names it in the result. A guard in a test is covered by that test's mark (or the class's); one in a
@@ -69,15 +75,19 @@ public class IntegrationTestsAreMarkedTests
             else if (Has(methodAttributes, "SetUp"))
                 found.Add(new Unmarked(file, i + 1, "a SetUp: mark the class"));
             else
-                found.AddRange(UnmarkedCallers(file, lines, headers, method).Select(c => new Unmarked(file, c + 1, "a test that calls a helper which checks")));
+                found.AddRange(UnmarkedCallers(file, lines, headers, method).Select(c =>
+                    new Unmarked(file, c + 1, "a test that calls a helper which checks")));
         }
+
         return found;
     }
 
     /// <summary>What takes a test out of its process in the code itself: a real process, Mongo, the stand-in build or the runner's built dll.</summary>
-    private const string UseMarkers = @"\bnew\s+ProcessStartInfo\(|\bProcessStartInfo\(|\bProcess\.Start\(|\bMongoClient\b|\bStandInBuild\b|\bRunnerBuild\b";
+    private const string UseMarkers =
+        @"\bnew\s+ProcessStartInfo\(|\bProcessStartInfo\(|\bProcess\.Start\(|\bMongoClient\b|\bStandInBuild\b|\bRunnerBuild\b";
 
-    private static readonly Regex TopLevelClass = new(@"^(public|internal)\s+(sealed\s+|abstract\s+|static\s+)*class\s", RegexOptions.Compiled);
+    private static readonly Regex TopLevelClass = new(@"^(public|internal)\s+(sealed\s+|abstract\s+|static\s+)*class\s",
+        RegexOptions.Compiled);
 
     /// <summary>
     /// The second signal (Louis, 2026-10-27: "both signals"): a test class that uses a real process, Mongo, the stand-in build or the runner's built dll, or calls a helper type that does
@@ -87,7 +97,9 @@ public class IntegrationTestsAreMarkedTests
     {
         string[] lines = text.Split('\n');
         string[] code = CodeOnly.Of(text).Split('\n');
-        string pattern = helperTypes.Count == 0 ? UseMarkers : UseMarkers + @"|\b(" + string.Join("|", helperTypes.Select(Regex.Escape)) + @")\b";
+        string pattern = helperTypes.Count == 0
+            ? UseMarkers
+            : UseMarkers + @"|\b(" + string.Join("|", helperTypes.Select(Regex.Escape)) + @")\b";
         var uses = new Regex(pattern);
         var starts = Enumerable.Range(0, lines.Length).Where(i => TopLevelClass.IsMatch(lines[i])).ToList();
         var found = new List<Unmarked>();
@@ -97,8 +109,11 @@ public class IntegrationTestsAreMarkedTests
             var body = Enumerable.Range(starts[k], end - starts[k]).ToList();
             bool hasTest = body.Any(l => TestAttribute.IsMatch(lines[l]));
             bool marked = Has(AttributesAbove(lines, starts[k]), Marked);
-            if (hasTest && !marked && body.Any(l => uses.IsMatch(code[l]))) found.Add(new Unmarked(file, starts[k] + 1, "a test class that uses a process, Mongo or the runner: mark the class"));
+            if (hasTest && !marked && body.Any(l => uses.IsMatch(code[l])))
+                found.Add(new Unmarked(file, starts[k] + 1,
+                    "a test class that uses a process, Mongo or the runner: mark the class"));
         }
+
         return found;
     }
 
@@ -106,8 +121,15 @@ public class IntegrationTestsAreMarkedTests
     public static IReadOnlyCollection<string> HelperTypes(IEnumerable<(string Rel, string Text)> files)
     {
         var uses = new Regex(UseMarkers);
-        return [.. files.Where(f => f.Rel.StartsWith("tests/louis-agent.testing/", StringComparison.Ordinal) && uses.IsMatch(CodeOnly.Of(f.Text)))
-            .SelectMany(f => Regex.Matches(f.Text, @"\b(?:class|record|struct)\s+(\w+)").Select(m => m.Groups[1].Value)).Distinct()];
+        return
+        [
+            .. files.Where(f =>
+                    f.Rel.StartsWith("tests/louis-agent.testing/", StringComparison.Ordinal) &&
+                    uses.IsMatch(CodeOnly.Of(f.Text)))
+                .SelectMany(f =>
+                    Regex.Matches(f.Text, @"\b(?:class|record|struct)\s+(\w+)").Select(m => m.Groups[1].Value))
+                .Distinct()
+        ];
     }
 
     /// <summary>The tests, in the same file, that call the helper at <paramref name="helper"/> and are not marked.</summary>
@@ -119,9 +141,11 @@ public class IntegrationTestsAreMarkedTests
         for (int k = 0; k < headers.Count; k++)
         {
             int end = k + 1 < headers.Count ? headers[k + 1] : lines.Length;
-            bool calls = Enumerable.Range(headers[k], end - headers[k]).Any(l => (l != helper) && call.IsMatch(lines[l]));
+            bool calls = Enumerable.Range(headers[k], end - headers[k])
+                .Any(l => (l != helper) && call.IsMatch(lines[l]));
             var attributes = AttributesAbove(lines, headers[k]);
-            if (headers[k] != helper && calls && attributes.Any(a => TestAttribute.IsMatch(a)) && !Has(attributes, Marked)) yield return headers[k];
+            if (headers[k] != helper && calls && attributes.Any(a => TestAttribute.IsMatch(a)) &&
+                !Has(attributes, Marked)) yield return headers[k];
         }
     }
 
@@ -130,13 +154,16 @@ public class IntegrationTestsAreMarkedTests
     {
         var unmarked = SourceTree.Files()
             .Select(path => (path, rel: SourceTree.Relative(path)))
-            .Where(file => file.rel.StartsWith("tests/", StringComparison.Ordinal) && !file.rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal))
+            .Where(file => file.rel.StartsWith("tests/", StringComparison.Ordinal) &&
+                           !file.rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal))
             .Select(file => file.path)
             .SelectMany(path => Scan(SourceTree.Relative(path), File.ReadAllText(path)))
             .Select(u => $"{u.File}:{u.Line}  {u.Where}")
             .ToList();
 
-        Assert.That(unmarked, Is.Empty, "a test that skips itself when git, a browser, a database or an interpreter is missing is an integration test (F18 step 7.6):\n" + string.Join("\n", unmarked));
+        Assert.That(unmarked, Is.Empty,
+            "a test that skips itself when git, a browser, a database or an interpreter is missing is an integration test (F18 step 7.6):\n" +
+            string.Join("\n", unmarked));
     }
 
     [Test]
@@ -144,13 +171,17 @@ public class IntegrationTestsAreMarkedTests
     {
         var files = SourceTree.Files()
             .Select(path => (Rel: SourceTree.Relative(path), Text: File.ReadAllText(path)))
-            .Where(file => file.Rel.StartsWith("tests/", StringComparison.Ordinal) && !file.Rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal))
+            .Where(file => file.Rel.StartsWith("tests/", StringComparison.Ordinal) &&
+                           !file.Rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal))
             .ToList();
         var helpers = HelperTypes(files);
 
-        var unmarked = files.SelectMany(file => ScanUses(file.Rel, file.Text, helpers)).Select(u => $"{u.File}:{u.Line}  {u.Where}").ToList();
+        var unmarked = files.SelectMany(file => ScanUses(file.Rel, file.Text, helpers))
+            .Select(u => $"{u.File}:{u.Line}  {u.Where}").ToList();
 
-        Assert.That(unmarked, Is.Empty, "a test class that starts a process, opens Mongo or runs the stand-in or the runner is an integration test (F18 step 7.6):\n" + string.Join("\n", unmarked));
+        Assert.That(unmarked, Is.Empty,
+            "a test class that starts a process, opens Mongo or runs the stand-in or the runner is an integration test (F18 step 7.6):\n" +
+            string.Join("\n", unmarked));
     }
 
     [Test]
@@ -158,12 +189,16 @@ public class IntegrationTestsAreMarkedTests
     {
         var raw = SourceTree.Files()
             .Select(path => (path, rel: SourceTree.Relative(path)))
-            .Where(file => file.rel.StartsWith("tests/", StringComparison.Ordinal) && !file.rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal) && !file.rel.EndsWith("/Outside.cs", StringComparison.Ordinal))
+            .Where(file => file.rel.StartsWith("tests/", StringComparison.Ordinal) &&
+                           !file.rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal) &&
+                           !file.rel.EndsWith("/Outside.cs", StringComparison.Ordinal))
             .SelectMany(file => File.ReadAllLines(file.path).Select((line, i) => (file.rel, line, number: i + 1)))
             .Where(l => RawGuard.IsMatch(l.line) && !l.line.TrimStart().StartsWith("//"))
             .Select(l => $"{l.rel}:{l.number}  {l.line.Trim()}")
             .ToList();
 
-        Assert.That(raw, Is.Empty, "a test asks for git, a tool or an address with Outside.Tool or Outside.Stack, so that a missing tool fails where INTEGRATION_REQUIRED is set (F18 step 7.6):\n" + string.Join("\n", raw));
+        Assert.That(raw, Is.Empty,
+            "a test asks for git, a tool or an address with Outside.Tool or Outside.Stack, so that a missing tool fails where INTEGRATION_REQUIRED is set (F18 step 7.6):\n" +
+            string.Join("\n", raw));
     }
 }

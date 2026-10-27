@@ -11,9 +11,17 @@ internal static class SessionView
     /// <summary>The answer to <c>POST /v1/sessions</c>: what the session opened with.</summary>
     public static object Created(AgentSession session) => new
     {
-        session_id = session.Id, created_at = session.CreatedAt, toolsets = session.Toolsets, depth = session.Depth,
-        role = session.Role, llm = session.Llm, tool = session.Tool, task = session.Tags.Task, run = session.Tags.Run,
-        service = session.Tags.Service, parent = session.Tags.Parent,
+        session_id = session.Id,
+        created_at = session.CreatedAt,
+        toolsets = session.Toolsets,
+        depth = session.Depth,
+        role = session.Role,
+        llm = session.Llm,
+        tool = session.Tool,
+        task = session.Tags.Task,
+        run = session.Tags.Run,
+        service = session.Tags.Service,
+        parent = session.Tags.Parent,
     };
 
     /// <summary>
@@ -22,13 +30,24 @@ internal static class SessionView
     /// </summary>
     public static object Of(AgentSession session) => new
     {
-        session_id = session.Id, created_at = session.CreatedAt, last_activity = session.LastActivity, busy = session.IsBusy,
-        toolsets = session.Toolsets, depth = session.Depth, role = session.Role, llm = session.Llm, tool = session.Tool,
+        session_id = session.Id,
+        created_at = session.CreatedAt,
+        last_activity = session.LastActivity,
+        busy = session.IsBusy,
+        toolsets = session.Toolsets,
+        depth = session.Depth,
+        role = session.Role,
+        llm = session.Llm,
+        tool = session.Tool,
         tools = session.Engine.Tools.Count,
-        task = session.Tags.Task, run = session.Tags.Run, service = session.Tags.Service,
-        sub_sessions = session.SubSessions.Open.Select(o => new { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, role = o.Role }),
+        task = session.Tags.Task,
+        run = session.Tags.Run,
+        service = session.Tags.Service,
+        sub_sessions = session.SubSessions.Open.Select(o => new
+        { handle = o.Handle, agent = o.Agent, toolsets = o.Toolsets, role = o.Role }),
         usage = session.Engine.RecordsUsage
-            ? StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role).RenderUsage(TurnUsage.From(session.Usage.Records, session.Engine.Display))
+            ? StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role)
+                .RenderUsage(TurnUsage.From(session.Usage.Records, session.Engine.Display))
             : null,
     };
 }

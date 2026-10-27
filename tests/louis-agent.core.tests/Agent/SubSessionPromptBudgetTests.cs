@@ -19,18 +19,20 @@ public class SubSessionPromptBudgetTests
     {
         AgentOptions options = TestPaths.Agent();
         options.SubSessionPromptBudget = budget;
-        return new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, options,
+        return new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client,
+            options,
             toolsets: TestPaths.Toolsets(options, [CoreToolset.Files.Wire()]), usageSink: sink);
     }
 
     /// <summary>Rounds 1–4 call a tool, each prompt 300 tokens bigger than the last; round 5 answers.</summary>
     private static FakeChatClient GrowingPrompt() => new(Enumerable.Range(1, 4)
-        .Select<int, Func<IList<ChatMessage>, ChatResponse>>(i => _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
-        [
-            new FunctionCallContent($"call_{i}", "ExecuteSkill",
-                new Dictionary<string, object?> { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"x\"}" }),
-            new UsageContent(new UsageDetails { InputTokenCount = 300 * i, OutputTokenCount = 10 }),
-        ])))
+        .Select<int, Func<IList<ChatMessage>, ChatResponse>>(i => _ => new ChatResponse(new ChatMessage(
+            ChatRole.Assistant,
+            [
+                new FunctionCallContent($"call_{i}", "ExecuteSkill",
+                    new Dictionary<string, object?> { ["skillName"] = "SayHello", ["jsonArgs"] = "{\"name\":\"x\"}" }),
+                new UsageContent(new UsageDetails { InputTokenCount = 300 * i, OutputTokenCount = 10 }),
+            ])))
         .Append(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "The answer, from what I found.")))
         .ToArray());
 
@@ -38,11 +40,15 @@ public class SubSessionPromptBudgetTests
     {
         var client = GrowingPrompt();
         var engine = Engine(client, new ListUsageSink(), budget);
-        using (var scope = UsageScope.Begin(session: "sess_child", turn: 1, tags: new UsageTags(null, null, null, parent)))
+        using (var scope =
+               UsageScope.Begin(session: "sess_child", turn: 1, tags: new UsageTags(null, null, null, parent)))
         {
             before?.Invoke(scope);
-            await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "count them")) { }
+            await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "count them"))
+            {
+            }
         }
+
         return client;
     }
 
@@ -52,11 +58,14 @@ public class SubSessionPromptBudgetTests
         // F5 follow-up: a sub-session's roll-up record carries the specialist's tokens, not this prompt's size. Counted,
         // its 5,000 input tokens would already be over the budget before the first request.
         var client = await RunAsync(budget: 1_000, parent: "sess_puls#1", before: scope => scope.Add(new UsageRecord(
-            DateTimeOffset.UtcNow, 0, UsagePurpose.SubSession, "api", "sess_child", 1, null, null, null, "sub-session:puls",
+            DateTimeOffset.UtcNow, 0, UsagePurpose.SubSession, "api", "sess_child", 1, null, null, null,
+            "sub-session:puls",
             new UsageTokens(5_000, 0, 0, 100, null), 1, "sub_session", Requests: 3)));
 
-        Assert.That(client.Requests[0].Options?.ToolMode, Is.Not.EqualTo(ChatToolMode.None), "the first request keeps its tools");
-        Assert.That(client.Requests[3].Options?.ToolMode, Is.EqualTo(ChatToolMode.None), "the budget still works on the real prompts");
+        Assert.That(client.Requests[0].Options?.ToolMode, Is.Not.EqualTo(ChatToolMode.None),
+            "the first request keeps its tools");
+        Assert.That(client.Requests[3].Options?.ToolMode, Is.EqualTo(ChatToolMode.None),
+            "the budget still works on the real prompts");
     }
 
     [Test]
@@ -67,7 +76,8 @@ public class SubSessionPromptBudgetTests
 
         Assert.That(client.Requests.Take(3).Select(r => r.Options?.ToolMode), Is.All.Not.EqualTo(ChatToolMode.None));
         Assert.That(client.Requests[3].Options?.ToolMode, Is.EqualTo(ChatToolMode.None));
-        Assert.That(client.Requests[3].Options?.Tools, Is.Not.Empty, "the tool list stays the same (thinking is bound to it)");
+        Assert.That(client.Requests[3].Options?.Tools, Is.Not.Empty,
+            "the tool list stays the same (thinking is bound to it)");
     }
 
     [Test]

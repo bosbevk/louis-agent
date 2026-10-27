@@ -23,7 +23,8 @@ public class ChartsTests
     {
         var arcs = RingArcs.Of([1, 3]);
 
-        Assert.That(arcs.Select(a => (a.Index, a.Length, a.Offset)), Is.EqualTo(new[] { (0, 25.0, 25.0), (1, 75.0, 0.0) }));
+        Assert.That(arcs.Select(a => (a.Index, a.Length, a.Offset)),
+            Is.EqualTo(new[] { (0, 25.0, 25.0), (1, 75.0, 0.0) }));
     }
 
     [Test]
@@ -31,15 +32,19 @@ public class ChartsTests
     {
         Assert.That(RingArcs.Of([0, 0, 0]), Is.Empty);
         Assert.That(RingArcs.Of([]), Is.Empty);
-        Assert.That(RingArcs.Of([0, 2, 2]).Select(a => (a.Index, a.Length)), Is.EqualTo(new[] { (1, 50.0), (2, 50.0) }));
+        Assert.That(RingArcs.Of([0, 2, 2]).Select(a => (a.Index, a.Length)),
+            Is.EqualTo(new[] { (1, 50.0), (2, 50.0) }));
     }
 
     [Test]
     public void TheFourTokenKinds_HaveTheirNamesInOrder_AndTheirColoursFromThePalette()
     {
         Assert.That(TokenKinds.Names, Is.EqualTo(new[] { "input", "cache written", "cache read", "output" }));
-        Assert.That(TokenKinds.Colours, Is.EqualTo(new[] { ChartPalette.Series(0), ChartPalette.Series(1), ChartPalette.Series(2), ChartPalette.Series(3) }));
-        Assert.That(TokenKinds.Titles([12, 0, 3, 4]), Is.EqualTo(new[] { "input 12", "cache written 0", "cache read 3", "output 4" }));
+        Assert.That(TokenKinds.Colours,
+            Is.EqualTo(new[]
+                { ChartPalette.Series(0), ChartPalette.Series(1), ChartPalette.Series(2), ChartPalette.Series(3) }));
+        Assert.That(TokenKinds.Titles([12, 0, 3, 4]),
+            Is.EqualTo(new[] { "input 12", "cache written 0", "cache read 3", "output 4" }));
     }
 
     [Test]
@@ -47,7 +52,8 @@ public class ChartsTests
     {
         Assert.That(ChartNumbers.Percent(1L, 3L), Is.EqualTo("33.3"));
         Assert.That(ChartNumbers.Percent(5m, 0m), Is.EqualTo("0"));
-        Assert.That(ChartNumbers.Percent(1m, 2m), Is.EqualTo("50.0"), "a decimal keeps its scale, as the page always showed it");
+        Assert.That(ChartNumbers.Percent(1m, 2m), Is.EqualTo("50.0"),
+            "a decimal keeps its scale, as the page always showed it");
     }
 
     [Test]

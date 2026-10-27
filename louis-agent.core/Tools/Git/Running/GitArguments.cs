@@ -1,8 +1,8 @@
-namespace LouisAgent.Core.Tools.Git.Running;
 
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Git.Messages;
 
+namespace LouisAgent.Core.Tools.Git.Running;
 /// <summary>
 /// The FX19 rules a value from the model passes before git runs (S, CL15, from GitTools): our own options come first,
 /// then <see cref="EndOfOptions"/>, then the model's values, with paths after <c>--</c>; and a value that names

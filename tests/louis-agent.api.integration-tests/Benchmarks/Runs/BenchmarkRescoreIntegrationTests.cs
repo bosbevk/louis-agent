@@ -21,13 +21,17 @@ public class BenchmarkRescoreIntegrationTests
     [Test]
     public void ARescoreStartsTheRunnerWithAnArgumentList_AndPipesStdin()
     {
-        var run = new BenchmarkRun("new123456789", "stub", 1, rescoreOf: "old123456789", input: "@{\"event\":\"protocol\"}\n");
+        var run = new BenchmarkRun("new123456789", "stub", 1, rescoreOf: "old123456789",
+            input: "@{\"event\":\"protocol\"}\n");
 
         var start = RealRunner().StartInfoFor(Stub, run);
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { RunnerBuild.Dll, "run", "stub", "--rescore", "old123456789" }), "no --repeat: the stored run's is used");
+        Assert.That(start.ArgumentList,
+            Is.EqualTo(new[] { RunnerBuild.Dll, "run", "stub", "--rescore", "old123456789" }),
+            "no --repeat: the stored run's is used");
         Assert.That(start.RedirectStandardInput, Is.True);
-        Assert.That(start.Environment["BENCHMARK_RUN"], Is.EqualTo("new123456789"), "the new run's id, so the ledger would find any row it wrote (it writes none)");
+        Assert.That(start.Environment["BENCHMARK_RUN"], Is.EqualTo("new123456789"),
+            "the new run's id, so the ledger would find any row it wrote (it writes none)");
     }
 
     [Test]
@@ -46,10 +50,15 @@ public class BenchmarkRescoreIntegrationTests
         var runner = RealRunner();
         var first = runner.Start("stub", 2)!;
         var firstRecording = new BenchmarkRecorder(store).RecordAsync(first);
-        await foreach (string _ in runner.EventsAsync(first.Id)) { }
+        await foreach (string _ in runner.EventsAsync(first.Id))
+        {
+        }
+
         await firstRecording;
         Outside.Tool(first.ExitCode == 0, "dotnet isn't here to run the eval runner");
-        string export = await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(first.Id))!, CancellationToken.None);
+        string export =
+            await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(first.Id))!,
+                CancellationToken.None);
 
         var second = runner.StartRescore("stub", first.Id, export, repeat: 2)!;
         var secondRecording = new BenchmarkRecorder(store).RecordAsync(second);
@@ -61,14 +70,17 @@ public class BenchmarkRescoreIntegrationTests
         var original = (await store.ConversationsAsync(first.Id)).Select(c => (c.Key, GradesOf(c))).ToList();
         var rescored = (await store.ConversationsAsync(second.Id)).Select(c => (c.Key, GradesOf(c))).ToList();
         Assert.That(rescored, Is.Not.Empty);
-        Assert.That(rescored, Is.EqualTo(original), "the stub's graders are today's graders, so the grades are the same");
+        Assert.That(rescored, Is.EqualTo(original),
+            "the stub's graders are today's graders, so the grades are the same");
         Assert.That((await store.GetRunAsync(second.Id))!.RescoreOf, Is.EqualTo(first.Id));
         // 6a.4c (Louis, on a re-score of a --repeat 3 run that said "1 repeat" and hid repeats 2 and 3 in the explorer): a re-score keeps the stored run's repeats.
-        Assert.That((await store.GetRunAsync(second.Id))!.Repeat, Is.EqualTo(2), "the re-score has the repeats of the run it grades again");
+        Assert.That((await store.GetRunAsync(second.Id))!.Repeat, Is.EqualTo(2),
+            "the re-score has the repeats of the run it grades again");
     }
 
     private static string GradesOf(BenchmarkDocuments.Conversation conversation) =>
-        JsonSerializer.Serialize(conversation.Grades?.Select(g => (g.Grader, g.Version, g.Outcome))) + conversation.Outcome;
+        JsonSerializer.Serialize(conversation.Grades?.Select(g => (g.Grader, g.Version, g.Outcome))) +
+        conversation.Outcome;
 
     // Review of 5b.2: the export was written to the runner's stdin inside the runner's lock, so a runner that is slow to read it (or never does) held every other start
     // behind it. It is written on its own task now. The stand-in "runner" (F18 step 7.4: a real child process, no Python) sleeps and never reads its stdin; with a big export, a write
@@ -76,13 +88,16 @@ public class BenchmarkRescoreIntegrationTests
     [Test]
     public async Task StartRescore_ReturnsAtOnce_EvenWhenTheRunnerNeverReadsItsStdin()
     {
-        var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("sleeper", "Sleeper")]), TestPaths.RepoRoot, "http://127.0.0.1:1/", StandInBuild.Dll);
+        var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("sleeper", "Sleeper")]),
+            TestPaths.RepoRoot, "http://127.0.0.1:1/", StandInBuild.Dll);
         string export = new('x', 20_000_000);
         var started = System.Diagnostics.Stopwatch.StartNew();
 
         var run = runner.StartRescore("sleeper", "old123456789", export, repeat: 1)!;
 
         Assert.That(started.Elapsed, Is.LessThan(TimeSpan.FromSeconds(2)), "the write must not hold the start");
-        await foreach (string _ in runner.EventsAsync(run.Id)) { }
+        await foreach (string _ in runner.EventsAsync(run.Id))
+        {
+        }
     }
 }

@@ -10,5 +10,7 @@ public class PulsEvalRoleTests
 {
     [Test]
     public void EveryRoleThePulsEvalsName_IsARoleTheIdentityOffers() =>
-        Assert.That(Enum.GetValues<PulsEvalRole>().Select(r => r.Wire()).Except(Enum.GetValues<PulsRole>().Select(r => r.Wire())), Is.Empty);
+        Assert.That(
+            Enum.GetValues<PulsEvalRole>().Select(r => r.Wire())
+                .Except(Enum.GetValues<PulsRole>().Select(r => r.Wire())), Is.Empty);
 }

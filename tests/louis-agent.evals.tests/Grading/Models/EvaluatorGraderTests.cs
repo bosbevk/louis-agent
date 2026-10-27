@@ -24,7 +24,8 @@ public class EvaluatorGraderTests
     private static EvaluatorGrader Grader(IEvaluator evaluator, ConfiguredJudge? judge = null, bool noJudge = false) =>
         new(evaluator, noJudge ? null : judge ?? Judge, "meal-for-people", 3, "abc123def456");
 
-    private static BooleanMetric Metric(bool? value, string? reason = "a main dish for four", EvaluationMetricInterpretation? interpretation = null) =>
+    private static BooleanMetric Metric(bool? value, string? reason = "a main dish for four",
+        EvaluationMetricInterpretation? interpretation = null) =>
         new("meal", value, reason) { Interpretation = interpretation };
 
     [Test]
@@ -45,7 +46,8 @@ public class EvaluatorGraderTests
 
         await Grader(evaluator).GradeAsync(trial, CancellationToken.None);
 
-        Assert.That(evaluator.Messages.Select(m => (m.Role, m.Text)), Is.EqualTo(new[] { (ChatRole.User, "Hallo") }), "the user's side of the conversation");
+        Assert.That(evaluator.Messages.Select(m => (m.Role, m.Text)), Is.EqualTo(new[] { (ChatRole.User, "Hallo") }),
+            "the user's side of the conversation");
         Assert.That(evaluator.Response!.Text, Is.EqualTo("Bobotie vir vier"));
         Assert.That(evaluator.Chat, Is.SameAs(Judge.Chat), "the judge's own client");
     }
@@ -55,11 +57,13 @@ public class EvaluatorGraderTests
     public async Task TheContext_IsBuiltFromTheTrial_AndHandedToTheEvaluator()
     {
         var evaluator = new FakeEvaluator(Metric(true));
-        var grader = new EvaluatorGrader(evaluator, Judge, "meal-for-people", 3, "abc123def456", context: trial => [new AskContext("for " + trial.Scenario.Id)]);
+        var grader = new EvaluatorGrader(evaluator, Judge, "meal-for-people", 3, "abc123def456",
+            context: trial => [new AskContext("for " + trial.Scenario.Id)]);
 
         await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
 
-        Assert.That(evaluator.Context.Select(c => (c.Name, ((TextContent)c.Contents.Single()).Text)), Is.EqualTo(new[] { ("ask", "for bobotie") }));
+        Assert.That(evaluator.Context.Select(c => (c.Name, ((TextContent)c.Contents.Single()).Text)),
+            Is.EqualTo(new[] { ("ask", "for bobotie") }));
     }
 
     [Test]
@@ -77,7 +81,11 @@ public class EvaluatorGraderTests
     public async Task ALazyJudge_IsResolvedOnTheFirstGrade_AndOnlyOnce()
     {
         int resolved = 0;
-        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () => { resolved++; return Judge; }, "meal-for-people", 3, "abc123def456");
+        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () =>
+        {
+            resolved++;
+            return Judge;
+        }, "meal-for-people", 3, "abc123def456");
         Assert.That(resolved, Is.Zero, "not at construction");
 
         await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
@@ -89,7 +97,8 @@ public class EvaluatorGraderTests
     [Test]
     public async Task ALazyJudgeThatIsNone_GivesTheNoJudgeGrade()
     {
-        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () => null, "meal-for-people", 3, "abc123def456");
+        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () => null, "meal-for-people", 3,
+            "abc123def456");
 
         var grade = await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
 
@@ -99,8 +108,10 @@ public class EvaluatorGraderTests
     [Test]
     public async Task ATrueMetric_IsPass_AFalseOneFail_WithTheMetricsReason()
     {
-        var pass = await Grader(new FakeEvaluator(Metric(true, "feeds four"))).GradeAsync(Trial(Turn(1)), CancellationToken.None);
-        var fail = await Grader(new FakeEvaluator(Metric(false, "a side dish"))).GradeAsync(Trial(Turn(1)), CancellationToken.None);
+        var pass = await Grader(new FakeEvaluator(Metric(true, "feeds four")))
+            .GradeAsync(Trial(Turn(1)), CancellationToken.None);
+        var fail = await Grader(new FakeEvaluator(Metric(false, "a side dish")))
+            .GradeAsync(Trial(Turn(1)), CancellationToken.None);
 
         Assert.That((pass.Outcome, pass.Score, pass.Reason), Is.EqualTo((GradeOutcome.Pass, 1d, "feeds four")));
         Assert.That((fail.Outcome, fail.Score, fail.Reason), Is.EqualTo((GradeOutcome.Fail, 0d, "a side dish")));
@@ -109,8 +120,10 @@ public class EvaluatorGraderTests
     [Test]
     public async Task NoValue_OrAnInterpretationWithNoRating_IsUnknown_NeverAGuessedPass()
     {
-        var noValue = await Grader(new FakeEvaluator(Metric(null, "cannot tell from this answer"))).GradeAsync(Trial(Turn(1)), CancellationToken.None);
-        var inconclusive = await Grader(new FakeEvaluator(Metric(true, "unsure", new EvaluationMetricInterpretation(EvaluationRating.Inconclusive, failed: false))))
+        var noValue = await Grader(new FakeEvaluator(Metric(null, "cannot tell from this answer")))
+            .GradeAsync(Trial(Turn(1)), CancellationToken.None);
+        var inconclusive = await Grader(new FakeEvaluator(Metric(true, "unsure",
+                new EvaluationMetricInterpretation(EvaluationRating.Inconclusive, failed: false))))
             .GradeAsync(Trial(Turn(1)), CancellationToken.None);
         var noMetric = await Grader(new FakeEvaluator()).GradeAsync(Trial(Turn(1)), CancellationToken.None);
 
@@ -124,7 +137,8 @@ public class EvaluatorGraderTests
     [Test]
     public async Task AMetricWithNoReason_StillGetsOne()
     {
-        var grade = await Grader(new FakeEvaluator(Metric(true, reason: null))).GradeAsync(Trial(Turn(1)), CancellationToken.None);
+        var grade = await Grader(new FakeEvaluator(Metric(true, reason: null)))
+            .GradeAsync(Trial(Turn(1)), CancellationToken.None);
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
         Assert.That(grade.Reason, Is.Not.Empty);
@@ -147,7 +161,8 @@ public class EvaluatorGraderTests
     {
         var evaluator = new FakeEvaluator(Metric(true));
 
-        var grade = await Grader(evaluator).GradeAsync(Trial(Turn(1, failure: TrialFailure.Transport)), CancellationToken.None);
+        var grade = await Grader(evaluator)
+            .GradeAsync(Trial(Turn(1, failure: TrialFailure.Transport)), CancellationToken.None);
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(evaluator.Calls, Is.Zero, "a flake is not paid for");
@@ -165,7 +180,8 @@ public class EvaluatorGraderTests
     [Test]
     public async Task AnErrorThrown_IsUnknownWithItsReason_WhenTheEvalGradesTheTrial_NeverPass()
     {
-        var eval = new GradedEval(Grader(new FakeEvaluator(new InvalidOperationException("ollama refused the connection"))));
+        var eval = new GradedEval(
+            Grader(new FakeEvaluator(new InvalidOperationException("ollama refused the connection"))));
 
         var grades = await TrialGrading.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), CancellationToken.None);
 
@@ -177,9 +193,11 @@ public class EvaluatorGraderTests
     public async Task ItsRequests_AreRecordedAsGrading_TaggedLikeTheTurns_OnTheConversationsLastTurn()
     {
         var sink = new ListUsageSink();
-        var recorded = new UsageRecordingChatClient(new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "yes"))), sink, "qwen3:8b");
+        var recorded = new UsageRecordingChatClient(
+            new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "yes"))), sink, "qwen3:8b");
         var judge = new ConfiguredJudge(new ChatConfiguration(recorded), "qwen3:8b");
-        var evaluator = new FakeEvaluator(Metric(true)) { OnEvaluate = chat => chat.ChatClient.GetResponseAsync([new ChatMessage(ChatRole.User, "judge this")]) };
+        var evaluator = new FakeEvaluator(Metric(true))
+        { OnEvaluate = chat => chat.ChatClient.GetResponseAsync([new ChatMessage(ChatRole.User, "judge this")]) };
 
         await Grader(evaluator, judge).GradeAsync(Trial(Turn(1)), CancellationToken.None);
 

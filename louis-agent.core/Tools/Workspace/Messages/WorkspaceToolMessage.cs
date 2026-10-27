@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Tools.Workspace.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Tools.Workspace.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -9,8 +9,7 @@ using System.ComponentModel;
 /// <summary>Strings for the workspace toolset (files and folders), returned to the model: what went wrong and what to do instead.</summary>
 public enum WorkspaceToolMessage
 {
-    [Description("Invalid file path.")]
-    InvalidFilePath,
+    [Description("Invalid file path.")] InvalidFilePath,
 
     [Description("Error searching for files: {Reason}")]
     FileSearchFailed,
@@ -18,8 +17,7 @@ public enum WorkspaceToolMessage
     [Description("Directory not found: {Path}")]
     DirectoryNotFound,
 
-    [Description("Directory is empty.")]
-    DirectoryEmpty,
+    [Description("Directory is empty.")] DirectoryEmpty,
 
     [Description("File is larger than the 1 MB reading limit.")]
     FileTooLarge,
@@ -27,8 +25,7 @@ public enum WorkspaceToolMessage
     [Description("Search query cannot be empty.")]
     WorkspaceSearchQueryEmpty,
 
-    [Description("No matches found.")]
-    NoMatches,
+    [Description("No matches found.")] NoMatches,
 
     [Description("Writing this sensitive file is not allowed.")]
     SensitiveWrite,
@@ -45,8 +42,7 @@ public enum WorkspaceToolMessage
     [Description("Deleting this sensitive file is not allowed.")]
     SensitiveDelete,
 
-    [Description("Deleted file: {Path}")]
-    FileDeleted,
+    [Description("Deleted file: {Path}")] FileDeleted,
 
     [Description("This directory contains a sensitive file and cannot be deleted.")]
     SensitiveDirectoryDelete,
@@ -81,8 +77,7 @@ public enum WorkspaceToolMessage
     [Description("No files matching pattern '{Pattern}' found.")]
     NoFilesMatching,
 
-    [Description("File exists: {Path}")]
-    FileExists,
+    [Description("File exists: {Path}")] FileExists,
 
     [Description("Directory exists: {Path}")]
     DirectoryExists,

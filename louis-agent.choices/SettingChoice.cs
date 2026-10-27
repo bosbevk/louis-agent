@@ -19,14 +19,16 @@ public static class SettingChoice
     /// False only for a value that names nothing. A value that isn't set is no choice (<paramref name="choice"/> null,
     /// true), so a caller can fall back to its default.
     /// </summary>
-    public static bool TryParse<T>(string? value, out T? choice, IReadOnlyDictionary<string, T>? aliases = null) where T : struct, Enum
+    public static bool TryParse<T>(string? value, out T? choice, IReadOnlyDictionary<string, T>? aliases = null)
+        where T : struct, Enum
     {
         choice = null;
         string text = value?.Trim() ?? "";
         if (text.Length == 0) return true;
 
         foreach (var (member, wire) in Table<T>.Members)
-            if (string.Equals(member.ToString(), text, StringComparison.OrdinalIgnoreCase) || string.Equals(wire, text, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(member.ToString(), text, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(wire, text, StringComparison.OrdinalIgnoreCase))
             {
                 choice = member;
                 return true;
@@ -38,6 +40,7 @@ public static class SettingChoice
             choice = found.Value;
             return true;
         }
+
         return false;
     }
 
@@ -45,8 +48,10 @@ public static class SettingChoice
     public static string Wire<T>(T member) where T : struct, Enum
     {
         foreach (var (known, wire) in Table<T>.Members)
-            if (EqualityComparer<T>.Default.Equals(known, member)) return wire;
-        throw new ArgumentOutOfRangeException(nameof(member), member, ChoiceText.Format(ChoiceMessage.ValueNotDefined, typeof(T).Name, member));
+            if (EqualityComparer<T>.Default.Equals(known, member))
+                return wire;
+        throw new ArgumentOutOfRangeException(nameof(member), member,
+            ChoiceText.Format(ChoiceMessage.ValueNotDefined, typeof(T).Name, member));
     }
 
     /// <summary>The enum's wire names, in the order it declares them: what a "supported" message lists.</summary>
@@ -56,6 +61,10 @@ public static class SettingChoice
     private static class Table<T> where T : struct, Enum
     {
         public static readonly IReadOnlyList<(T Member, string Wire)> Members =
-            [.. Enum.GetValues<T>().Select(member => (member, typeof(T).GetField(member.ToString())!.GetCustomAttribute<JsonStringEnumMemberNameAttribute>()?.Name ?? member.ToString().ToLowerInvariant()))];
+        [
+            .. Enum.GetValues<T>().Select(member => (member,
+                typeof(T).GetField(member.ToString())!.GetCustomAttribute<JsonStringEnumMemberNameAttribute>()?.Name ??
+                member.ToString().ToLowerInvariant()))
+        ];
     }
 }

@@ -1,6 +1,5 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
-namespace LouisAgent.Core.Agent.Toolsets;
 
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Messages;
@@ -22,6 +21,7 @@ using LouisAgent.Core.Tools.Web.Quotes;
 using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Agent.Toolsets;
 /// <summary>
 /// The toolsets a session can load (F5). Nothing is loaded by default: a session names the toolsets it needs, and
 /// <see cref="Resolve"/> checks each name before any tool is built.
@@ -37,22 +37,36 @@ public static class ToolsetCatalog
             GuideFile: SkillFiles.Guide(CoreToolset.Files.Wire()),
             MissingSettings: _ => [],
             // S (CL15): five classes, one concern each (a file's content, the tree's shape, browsing, searching, documents).
-            ToolTypes: [typeof(WorkspaceFileTools), typeof(WorkspaceOrganiseTools), typeof(WorkspaceBrowseTools), typeof(WorkspaceSearchTools), typeof(DocumentTools)],
+            ToolTypes:
+            [
+                typeof(WorkspaceFileTools), typeof(WorkspaceOrganiseTools), typeof(WorkspaceBrowseTools),
+                typeof(WorkspaceSearchTools), typeof(DocumentTools)
+            ],
             CreateTools: ctx =>
             [
-                new WorkspaceFileTools(Root(ctx)), new WorkspaceOrganiseTools(Root(ctx)), new WorkspaceBrowseTools(Root(ctx)),
+                new WorkspaceFileTools(Root(ctx)), new WorkspaceOrganiseTools(Root(ctx)),
+                new WorkspaceBrowseTools(Root(ctx)),
                 new WorkspaceSearchTools(Root(ctx)), new DocumentTools(Root(ctx)),
             ]),
 
-        new(CoreToolset.Git.Wire(), "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
+        new(CoreToolset.Git.Wire(),
+            "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
             GuideFile: SkillFiles.Guide(CoreToolset.Git.Wire()),
             MissingSettings: _ => [],
             // S (CL15): five classes (changes, branches, remotes, history, config) on one runner.
-            ToolTypes: [typeof(GitChangeTools), typeof(GitBranchTools), typeof(GitRemoteTools), typeof(GitHistoryTools), typeof(GitConfigTools)],
+            ToolTypes:
+            [
+                typeof(GitChangeTools), typeof(GitBranchTools), typeof(GitRemoteTools), typeof(GitHistoryTools),
+                typeof(GitConfigTools)
+            ],
             CreateTools: ctx =>
             {
                 var git = new GitRunner(Root(ctx));
-                return [new GitChangeTools(git), new GitBranchTools(git), new GitRemoteTools(git), new GitHistoryTools(git), new GitConfigTools(git)];
+                return
+                [
+                    new GitChangeTools(git), new GitBranchTools(git), new GitRemoteTools(git), new GitHistoryTools(git),
+                    new GitConfigTools(git)
+                ];
             }),
 
         new(CoreToolset.DotNet.Wire(), "Build, test, run and restore .NET projects; list packages; SDK information",
@@ -61,13 +75,15 @@ public static class ToolsetCatalog
             ToolTypes: [typeof(DotNetTools)],
             CreateTools: ctx => [new DotNetTools(Root(ctx))]),
 
-        new(CoreToolset.Python.Wire(), "Run Python code or scripts and manage packages in the agent's own virtual environment",
+        new(CoreToolset.Python.Wire(),
+            "Run Python code or scripts and manage packages in the agent's own virtual environment",
             GuideFile: SkillFiles.Guide(CoreToolset.Python.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(PythonTools)],
             CreateTools: ctx => [new PythonTools(Root(ctx))]),
 
-        new(CoreToolset.PowerShell.Wire(), "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
+        new(CoreToolset.PowerShell.Wire(),
+            "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
             GuideFile: SkillFiles.Guide(CoreToolset.PowerShell.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(PowerShellTools)],
@@ -87,7 +103,11 @@ public static class ToolsetCatalog
             CreateTools: ctx =>
             {
                 var fetcher = new PageFetcher(replay: ctx.Replay);
-                return [new WebTools(ctx.WebSearch, fetcher, ctx.Renderer), new QuoteTools(fetcher, ctx.Renderer), new CurrencyTools(ctx.Rates)];
+                return
+                [
+                    new WebTools(ctx.WebSearch, fetcher, ctx.Renderer), new QuoteTools(fetcher, ctx.Renderer),
+                    new CurrencyTools(ctx.Rates)
+                ];
             },
             ParallelSafe: true),
 
@@ -106,18 +126,28 @@ public static class ToolsetCatalog
                 ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
                 ("DEVOPS_PROJECT", ctx.Options.DevopsProject)),
             ToolTypes: [typeof(DevOpsTools)],
-            CreateTools: ctx => [new DevOpsTools(
-                ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
+            CreateTools: ctx =>
+            [
+                new DevOpsTools(
+                    ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!,
+                    ctx.Options.DevopsTeam)
+            ]),
 
-        new(CoreToolset.Specialists.Wire(), "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
+        new(CoreToolset.Specialists.Wire(),
+            "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
             GuideFile: SkillFiles.Guide(CoreToolset.Specialists.Wire()),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolTypes: [typeof(SpecialistTools)],
             CreateTools: ctx => [new SpecialistTools(ctx.Options, ctx.UsageSink)]),
 
-        new(CoreToolset.Minions.Wire(), "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
+        new(CoreToolset.Minions.Wire(),
+            "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
             GuideFile: SkillFiles.Guide(CoreToolset.Minions.Wire()),
-            MissingSettings: ctx => new[] { ctx.Options.AgentPeers.Count == 0 ? "AGENT_PEERS" : null, ctx.Options.MinionLlms.Count == 0 ? "MINION_LLMS" : null }
+            MissingSettings: ctx => new[]
+                {
+                    ctx.Options.AgentPeers.Count == 0 ? "AGENT_PEERS" : null,
+                    ctx.Options.MinionLlms.Count == 0 ? "MINION_LLMS" : null
+                }
                 .OfType<string>().ToList(),
             ToolTypes: [typeof(MinionTools)],
             CreateTools: ctx => [new MinionTools(ctx.Options, ctx.UsageSink)]),
@@ -182,7 +212,8 @@ public static class ToolsetCatalog
         Resolve(names, context, All);
 
     /// <summary>The same, over <paramref name="toolsets"/>: core's and a catalogue's packs', in that order (CL15).</summary>
-    internal static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context, IReadOnlyList<ToolsetDefinition> toolsets)
+    internal static IReadOnlyList<ToolsetDefinition> Resolve(IEnumerable<string>? names, ToolsetContext context,
+        IReadOnlyList<ToolsetDefinition> toolsets)
     {
         var requested = Normalise(names);
 
@@ -200,13 +231,16 @@ public static class ToolsetCatalog
             .ToList();
         foreach (var skipped in unavailable.Where(x => optional.Contains(x.Toolset.Name)))
         {
-            Log.Log(LogLevel.Information, AgentLogMessage.OptionalToolsetSkipped, new { skipped.Toolset.Name, Settings = string.Join(", ", skipped.Missing) });
+            Log.Log(LogLevel.Information, AgentLogMessage.OptionalToolsetSkipped,
+                new { skipped.Toolset.Name, Settings = string.Join(", ", skipped.Missing) });
             resolved.Remove(skipped.Toolset);
         }
+
         var refused = unavailable.Where(x => !optional.Contains(x.Toolset.Name)).ToList();
         if (refused.Count > 0)
-            throw new ToolsetException(string.Join(" ", refused.Select(x => MessageText.Format(AgentErrorMessage.ToolsetSettingsMissing,
-                new { x.Toolset.Name, Settings = string.Join(", ", x.Missing) }))));
+            throw new ToolsetException(string.Join(" ", refused.Select(x =>
+                MessageText.Format(AgentErrorMessage.ToolsetSettingsMissing,
+                    new { x.Toolset.Name, Settings = string.Join(", ", x.Missing) }))));
 
         return resolved;
     }
@@ -220,10 +254,12 @@ public static class ToolsetCatalog
 
     /// <summary>The guides the resolved toolsets need, in catalogue order.</summary>
     public static IReadOnlyList<string> GuideFiles(IEnumerable<ToolsetDefinition> resolved) =>
-        resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal).ToList();
+        resolved.Where(t => t.GuideFile is not null).Select(t => t.GuideFile!).Distinct(StringComparer.Ordinal)
+            .ToList();
 
     private static string Root(ToolsetContext context) => Path.GetFullPath(context.Options.WorkspaceRoot);
 
-    private static IReadOnlyList<string> Missing(ToolsetContext context, params (string Setting, string? Value)[] settings) =>
+    private static IReadOnlyList<string> Missing(ToolsetContext context,
+        params (string Setting, string? Value)[] settings) =>
         settings.Where(s => string.IsNullOrWhiteSpace(s.Value)).Select(s => s.Setting).ToList();
 }

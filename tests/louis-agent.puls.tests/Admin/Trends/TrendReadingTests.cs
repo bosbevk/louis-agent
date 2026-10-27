@@ -9,7 +9,9 @@ namespace LouisAgent.Puls.Tests.Admin.Trends;
 public class TrendReadingTests
 {
     private static readonly DateTimeOffset At = new(2026, 10, 24, 9, 0, 0, TimeSpan.Zero);
-    private static readonly TrendRun[] Runs = [new("run_1", At), new("run_2", At.AddDays(1)), new("run_3", At.AddDays(2))];
+
+    private static readonly TrendRun[] Runs =
+        [new("run_1", At), new("run_2", At.AddDays(1)), new("run_3", At.AddDays(2))];
 
     private static string Percent(double v) => v.ToString("0%", CultureInfo.InvariantCulture);
 
@@ -20,7 +22,8 @@ public class TrendReadingTests
     {
         Assert.That(new TrendReading(Runs, "run_2").Shown.Run, Is.EqualTo("run_2"));
         Assert.That(new TrendReading(Runs, null).Shown.Run, Is.EqualTo("run_3"));
-        Assert.That(new TrendReading(Runs, "run_gone").Shown.Run, Is.EqualTo("run_3"), "a run the chart doesn't have is no mark");
+        Assert.That(new TrendReading(Runs, "run_gone").Shown.Run, Is.EqualTo("run_3"),
+            "a run the chart doesn't have is no mark");
     }
 
     [Test]
@@ -29,9 +32,11 @@ public class TrendReadingTests
         var reading = new TrendReading(Runs, "run_3");
 
         Assert.That(reading.ShownIn("cost", ("cost", "run_1")).Run, Is.EqualTo("run_1"));
-        Assert.That(reading.ShownIn("tokens", ("cost", "run_1")).Run, Is.EqualTo("run_3"), "another panel keeps the shown run");
+        Assert.That(reading.ShownIn("tokens", ("cost", "run_1")).Run, Is.EqualTo("run_3"),
+            "another panel keeps the shown run");
         Assert.That(reading.ShownIn("cost", null).Run, Is.EqualTo("run_3"));
-        Assert.That(reading.ShownIn("cost", ("cost", "run_gone")).Run, Is.EqualTo("run_3"), "an unknown hovered run falls back");
+        Assert.That(reading.ShownIn("cost", ("cost", "run_gone")).Run, Is.EqualTo("run_3"),
+            "an unknown hovered run falls back");
     }
 
     [Test]
@@ -62,8 +67,10 @@ public class TrendReadingTests
     {
         var points = new[] { Sample(0, 0.5), Sample(1, 0.5) };
 
-        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_1", Percent).Change, Is.Null, "nothing before it");
-        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_2", Percent).Change, Is.Null, "no change is no arrow");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_1", Percent).Change, Is.Null,
+            "nothing before it");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_2", Percent).Change, Is.Null,
+            "no change is no arrow");
     }
 
     [Test]
@@ -71,8 +78,11 @@ public class TrendReadingTests
     {
         var points = new[] { Sample(0, 0.5), Sample(1, null), Sample(2, 0.75) };
 
-        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_2", Percent).Text, Is.EqualTo("–"), "nobody measured run_2");
-        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_3", Percent).Change, Is.EqualTo("▲ +25%"), "against run_1, the run before that has a value");
-        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", [], "run_1", Percent).Text, Is.EqualTo("–"), "a mode with no points");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_2", Percent).Text, Is.EqualTo("–"),
+            "nobody measured run_2");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", points, "run_3", Percent).Change, Is.EqualTo("▲ +25%"),
+            "against run_1, the run before that has a value");
+        Assert.That(TrendReading.Value(SampleMode.Alpha, "#fff", [], "run_1", Percent).Text, Is.EqualTo("–"),
+            "a mode with no points");
     }
 }

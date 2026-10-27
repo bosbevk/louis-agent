@@ -25,33 +25,48 @@ public class EvalRunnerTests
     {
         var turn = new[]
         {
-            SessionEvent.From("message_start", Json(SampleRole.Fill("""{"type":"message_start","message":{"session_id":"sess_canned","role":"assistant","toolsets":["web"],"session_role":"<RoleAlpha>"}}"""))),
-            SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")),
+            SessionEvent.From("message_start",
+                Json(SampleRole.Fill(
+                    """{"type":"message_start","message":{"session_id":"sess_canned","role":"assistant","toolsets":["web"],"session_role":"<RoleAlpha>"}}"""))),
+            SessionEvent.From("content_block_delta",
+                Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")),
         };
         var sink = new StringWriter();
-        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
 
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse).ToList();
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+            .ToList();
         Assert.That(lines.Select(l => l.GetType().Name),
-            Is.EqualTo(new[] { "ProtocolStarted", "ModeStarted", "QuestionAsked", "SseEvent", "SseEvent", "TurnEnded", "ConversationEnded", "ModeEnded", "SummaryReported" }),
+            Is.EqualTo(new[]
+            {
+                "ProtocolStarted", "ModeStarted", "QuestionAsked", "SseEvent", "SseEvent", "TurnEnded",
+                "ConversationEnded", "ModeEnded", "SummaryReported"
+            }),
             "the mode's summary line (F18 step 5c), read since 5c.2");
         var first = (BenchmarkProtocol.ProtocolStarted)lines[0];
-        Assert.That((first.Eval, first.Commit, first.Models!.Single()), Is.EqualTo(("stub-cook", EvalBuild.Commit, new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, SampleRole.Alpha, null))));
+        Assert.That((first.Eval, first.Commit, first.Models!.Single()),
+            Is.EqualTo(("stub-cook", EvalBuild.Commit,
+                new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, SampleRole.Alpha, null))));
         Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo("Hallo"));
-        Assert.That(lines.OfType<BenchmarkProtocol.ConversationEnded>().Single().Scores.GetProperty("routed_right").GetBoolean(), Is.True);
+        Assert.That(
+            lines.OfType<BenchmarkProtocol.ConversationEnded>().Single().Scores.GetProperty("routed_right")
+                .GetBoolean(), Is.True);
     }
 
     [Test]
     public async Task ASessionIsClosedWhenItsTurnThrows()
     {
         var client = new ThrowingSessionClient();
-        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
-        Assert.That(async () => await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None),
+        Assert.That(
+            async () => await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None),
             Throws.InstanceOf<InvalidOperationException>().With.Message.EqualTo("the connection timed out"));
         Assert.That(client.Closed, Is.EqualTo(new[] { "sess_throws" }));
     }
@@ -60,10 +75,12 @@ public class EvalRunnerTests
     public void TheSendsErrorSurvivesAFailedClose()
     {
         var client = new ThrowingSessionClient(closeFails: true);
-        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
-        Assert.That(async () => await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None),
+        Assert.That(
+            async () => await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None),
             Throws.InstanceOf<InvalidOperationException>().With.Message.EqualTo("the connection timed out"));
         Assert.That(client.Closed, Is.EqualTo(new[] { "sess_throws" }));
     }
@@ -77,12 +94,14 @@ public class EvalRunnerTests
             SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":7}""")),
         };
         var sink = new StringWriter();
-        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
 
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse).ToList();
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+            .ToList();
         Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo(""));
     }
 
@@ -91,10 +110,15 @@ public class EvalRunnerTests
     {
         // F18 step 4.1: the runner writes what the eval says about each turn (who answered, the calls, the hosts), and the mode's
         // number of conversations and the conversation's errors.
-        var turn = new[] { SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")) };
+        var turn = new[]
+        {
+            SessionEvent.From("content_block_delta",
+                Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))
+        };
         var facts = new TurnFacts(SampleRole.Alpha, null, 1, 3, ["www.checkers.co.za"], null);
         var sink = new StringWriter();
-        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new CannedEval(facts), new EvalRun("run_1", 1), CancellationToken.None);
@@ -105,24 +129,37 @@ public class EvalRunnerTests
         Assert.That(turnLine.GetProperty("role").GetString(), Is.EqualTo(SampleRole.Alpha));
         Assert.That(turnLine.GetProperty("puls_calls").GetInt32(), Is.EqualTo(1));
         Assert.That(turnLine.GetProperty("specialist_calls").GetInt32(), Is.EqualTo(3));
-        Assert.That(turnLine.GetProperty("hosts").EnumerateArray().Select(h => h.GetString()), Is.EqualTo(new[] { "www.checkers.co.za" }));
-        Assert.That(lines.Single(e => e.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(), Is.EqualTo(1));
-        Assert.That(lines.Single(e => e.GetProperty("event").GetString() == "conversation").GetProperty("errors").GetInt32(), Is.EqualTo(0));
+        Assert.That(turnLine.GetProperty("hosts").EnumerateArray().Select(h => h.GetString()),
+            Is.EqualTo(new[] { "www.checkers.co.za" }));
+        Assert.That(
+            lines.Single(e => e.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(),
+            Is.EqualTo(1));
+        Assert.That(
+            lines.Single(e => e.GetProperty("event").GetString() == "conversation").GetProperty("errors").GetInt32(),
+            Is.EqualTo(0));
     }
 
     [Test]
     public async Task TheConversationLineCarriesOneGradePerGraderInOrder_AndTheOutcome()
     {
         // F18 step 4.5a: the runner grades the trial with the eval's graders and writes the grades and the outcome on the conversation.
-        var turn = new[] { SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")) };
+        var turn = new[]
+        {
+            SessionEvent.From("content_block_delta",
+                Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))
+        };
         var sink = new StringWriter();
-        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
-        await runner.RunAsync(new CannedEval(graders: [new WithinTimeGrader(TimeSpan.FromMinutes(1)), new NoErrorGrader()]), new EvalRun("run_1", 1),
+        await runner.RunAsync(
+            new CannedEval(graders: [new WithinTimeGrader(TimeSpan.FromMinutes(1)), new NoErrorGrader()]),
+            new EvalRun("run_1", 1),
             CancellationToken.None);
 
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse).ToList();
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+            .ToList();
         var conversation = lines.OfType<BenchmarkProtocol.ConversationEnded>().Single();
         Assert.That(conversation.Grades!.Select(g => (g.Grader, g.Outcome)),
             Is.EqualTo(new[] { ("within-time", BenchmarkOutcome.Pass), ("no-error", BenchmarkOutcome.Pass) }));
@@ -132,9 +169,14 @@ public class EvalRunnerTests
     [Test]
     public async Task ScoresOfReceivesTheGrades()
     {
-        var turn = new[] { SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")) };
+        var turn = new[]
+        {
+            SessionEvent.From("content_block_delta",
+                Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))
+        };
         var eval = new CannedEval(graders: [new NoErrorGrader()]);
-        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(new CannedSessionClient(turn),
+            new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(eval, new EvalRun("run_1", 1), CancellationToken.None);
@@ -148,30 +190,40 @@ public class EvalRunnerTests
         // The runner's own loop called GetString() on the text, which throws on a number; EngineEvents.AnswerOf skips such a delta.
         var turn = new[]
         {
-            SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":42}}""")),
-            SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Ja "}}""")),
+            SessionEvent.From("content_block_delta",
+                Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":42}}""")),
+            SessionEvent.From("content_block_delta",
+                Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" Ja "}}""")),
         };
         var sink = new StringWriter();
-        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
 
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse).ToList();
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+            .ToList();
         var turnLine = lines.OfType<BenchmarkProtocol.TurnEnded>().Single();
-        Assert.That(turnLine.Answer, Is.EqualTo(EngineEvents.AnswerOf(new TurnTranscript(1, "sess_canned", "Gee my resep", turn, TimeSpan.Zero, null))));
+        Assert.That(turnLine.Answer,
+            Is.EqualTo(EngineEvents.AnswerOf(new TurnTranscript(1, "sess_canned", "Gee my resep", turn, TimeSpan.Zero,
+                null))));
         Assert.That(turnLine.Answer, Is.EqualTo("Ja"));
     }
 
     // F18 step 4a.3: every session the runner opens sends a replay (the eval's mark); its web and its trial follow the run's flags.
     private static readonly IReadOnlyList<SessionEvent> OneAnswer =
-        [SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))];
+    [
+        SessionEvent.From("content_block_delta",
+            Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))
+    ];
 
     /// <summary>Runs one eval with its sessions answered from <paramref name="turns"/> canned turns; returns the client, with what it was asked to open.</summary>
     private static async Task<CannedSessionClient> RunAndOpened(EvalRun run, int turns = 1)
     {
         var client = new CannedSessionClient(Enumerable.Repeat(OneAnswer, turns).ToArray());
-        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)), new FixedClock(At),
+        var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), new FixedClock(At)),
+            new FixedClock(At),
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new CannedEval(), run, CancellationToken.None);
@@ -191,7 +243,8 @@ public class EvalRunnerTests
     {
         var client = await RunAndOpened(new EvalRun("run_1", 1, WebReplayMode.Record));
 
-        Assert.That(client.Opened.Select(s => s.Replay), Is.EqualTo(new[] { new WebReplayRequest(WebReplayMode.Record, null) }));
+        Assert.That(client.Opened.Select(s => s.Replay),
+            Is.EqualTo(new[] { new WebReplayRequest(WebReplayMode.Record, null) }));
     }
 
     [Test]
@@ -199,7 +252,8 @@ public class EvalRunnerTests
     {
         var client = await RunAndOpened(new EvalRun("run_new", 2, WebReplayMode.Replay, "run_A"), turns: 2);
 
-        Assert.That(client.Opened.Select(s => s.Replay.Of), Is.EqualTo(new[] { "run_A:cook:1/pannekoek", "run_A:cook:2/pannekoek" }));
+        Assert.That(client.Opened.Select(s => s.Replay.Of),
+            Is.EqualTo(new[] { "run_A:cook:1/pannekoek", "run_A:cook:2/pannekoek" }));
         Assert.That(client.Opened.Select(s => s.Replay.Web).Distinct(), Is.EqualTo(new[] { WebReplayMode.Replay }));
     }
 
@@ -207,7 +261,8 @@ public class EvalRunnerTests
     public async Task AReplayWithTheModel_SendsModelTrue_WithEachTrialsKey_AndEveryOtherRunSendsFalse()
     {
         // F18 step 4e.4: --replay is the web replay plus the model's answers; the API decides whether it accepts it.
-        var withModel = await RunAndOpened(new EvalRun("run_new", 2, WebReplayMode.Replay, "run_A", Model: true), turns: 2);
+        var withModel = await RunAndOpened(new EvalRun("run_new", 2, WebReplayMode.Replay, "run_A", Model: true),
+            turns: 2);
         var webOnly = await RunAndOpened(new EvalRun("run_new", 1, WebReplayMode.Replay, "run_A"));
         var recording = await RunAndOpened(new EvalRun("run_R", 1, WebReplayMode.Record));
         var noFlags = await RunAndOpened(new EvalRun("run_1", 1));
@@ -241,9 +296,11 @@ public class EvalRunnerTests
         public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
             Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 
-        public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) => Task.FromResult("sess_throws");
+        public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) =>
+            Task.FromResult("sess_throws");
 
-        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, CancellationToken cancellationToken) =>
+        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+            CancellationToken cancellationToken) =>
             throw new InvalidOperationException("the connection timed out");
 
         public Task CloseAsync(string session, CancellationToken cancellationToken)
@@ -265,11 +322,17 @@ public class EvalRunnerTests
         public int Version => 1;
         public string Proves => "A canned trial, to see the runner's lines.";
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])]);
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([
+                new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha])
+            ]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
-            [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)];
+        [
+            new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [],
+                DatasetSplit.Dev)
+        ];
 
         public IReadOnlyList<IGrader> Graders { get; } = graders ?? [];
 
@@ -279,7 +342,8 @@ public class EvalRunnerTests
             return new CannedScores(RoutedRight: true);
         }
 
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => facts ?? new TurnFacts(null, null, 0, 0, [], null);
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>
+            facts ?? new TurnFacts(null, null, 0, 0, [], null);
     }
 
     private sealed record CannedScores(bool RoutedRight) : EvalScores;

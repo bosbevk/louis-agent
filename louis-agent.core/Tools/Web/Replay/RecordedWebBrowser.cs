@@ -16,19 +16,24 @@ namespace LouisAgent.Core.Tools.Web.Replay;
 /// </summary>
 public sealed class RecordedWebBrowser(IWebBrowser inner, ReplayStore store) : IWebBrowser
 {
-    public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+    public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
+        string? script = null,
         string? readySelector = null, CancellationToken cancellationToken = default)
     {
         if (ReplayTrial.Current is not { } trial)
             return await inner.VisitAsync(url, capture, session, script, readySelector, cancellationToken);
 
-        var ask = ReplayAsk.Of(ReplayKind.Visit, new { Url = url.AbsoluteUri, Script = script, ReadySelector = readySelector });
+        var ask = ReplayAsk.Of(ReplayKind.Visit,
+            new { Url = url.AbsoluteUri, Script = script, ReadySelector = readySelector });
         return trial.Replaying
             ? await ReplayAsync(trial.Of, ask, url, cancellationToken)
-            : await RecordAsync(trial.Of, ask, () => inner.VisitAsync(url, capture, session, script, readySelector, cancellationToken), cancellationToken);
+            : await RecordAsync(trial.Of, ask,
+                () => inner.VisitAsync(url, capture, session, script, readySelector, cancellationToken),
+                cancellationToken);
     }
 
-    private async Task<BrowserVisit> RecordAsync(string trial, ReplayAsk ask, Func<Task<BrowserVisit>> visitInner, CancellationToken cancellationToken)
+    private async Task<BrowserVisit> RecordAsync(string trial, ReplayAsk ask, Func<Task<BrowserVisit>> visitInner,
+        CancellationToken cancellationToken)
     {
         BrowserVisit visit;
         try
@@ -40,11 +45,13 @@ public sealed class RecordedWebBrowser(IWebBrowser inner, ReplayStore store) : I
             await store.SaveFailureAsync(trial, ask, failure.Message, cancellationToken);
             throw;
         }
+
         await store.SaveAnswerAsync(trial, ask, ReplayPage.Of(visit), cancellationToken);
         return visit;
     }
 
-    private async Task<BrowserVisit> ReplayAsync(string trial, ReplayAsk ask, Uri url, CancellationToken cancellationToken)
+    private async Task<BrowserVisit> ReplayAsync(string trial, ReplayAsk ask, Uri url,
+        CancellationToken cancellationToken)
     {
         if (await store.FindAsync<ReplayPage>(trial, ask, cancellationToken) is not { } recorded)
             throw new WebBrowserException(MessageText.Format(WebToolMessage.ReplayMiss, new { Url = url.AbsoluteUri }));

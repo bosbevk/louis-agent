@@ -19,8 +19,8 @@ public class ModeRatesListTests
     public void EachMode_ShowsItsRates_LabelledWithK()
     {
         var cut = Render(SampleMode.Fill("""
-            {"modes":[{"name":"<ModeBeta>","repeat":3,"pass_at_k":1,"pass_hat_k":0.5,"k":3,"infrastructure":1,"retried":2}]}
-            """));
+                                         {"modes":[{"name":"<ModeBeta>","repeat":3,"pass_at_k":1,"pass_hat_k":0.5,"k":3,"infrastructure":1,"retried":2}]}
+                                         """));
 
         var item = cut.Find(".mode-rate");
         Assert.That(item.QuerySelector(".mode-rate-name")!.TextContent, Is.EqualTo(SampleMode.Beta));
@@ -33,7 +33,8 @@ public class ModeRatesListTests
     [Test]
     public void ARateNoTrialMade_IsADash_AndNothingLeftOutShowsNoChip()
     {
-        var cut = Render(SampleMode.Fill("""{"modes":[{"name":"<ModeBeta>","repeat":1,"pass_at_k":null,"pass_hat_k":null,"k":1,"infrastructure":0,"retried":0}]}"""));
+        var cut = Render(SampleMode.Fill(
+            """{"modes":[{"name":"<ModeBeta>","repeat":1,"pass_at_k":null,"pass_hat_k":null,"k":1,"infrastructure":0,"retried":0}]}"""));
 
         Assert.That(cut.Find(".pass-at").TextContent, Is.EqualTo("pass@1 –"));
         Assert.That(cut.Find(".pass-hat").TextContent, Is.EqualTo("pass^1 –"));

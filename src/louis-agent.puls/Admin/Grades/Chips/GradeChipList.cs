@@ -7,7 +7,8 @@ namespace LouisAgent.Puls.Admin.Grades.Chips;
 /// </summary>
 public static class GradeChipList
 {
-    public static IReadOnlyList<GradeChip> Of(ConversationGrades grades, IReadOnlyList<GraderRow>? order, IReadOnlySet<string>? hidden = null, string? reviewer = null)
+    public static IReadOnlyList<GradeChip> Of(ConversationGrades grades, IReadOnlyList<GraderRow>? order,
+        IReadOnlySet<string>? hidden = null, string? reviewer = null)
     {
         if (grades.Grades is not { Count: > 0 } list) return [new GradeChip(GradesText.NoGrades)];
         return list
@@ -17,7 +18,8 @@ public static class GradeChipList
                 ? new GradeChip(g.grade.Grader)
                 : g.grade.Outcome == GradeOutcome.Pending
                     ? Review(g.grade, grades, reviewer)
-                    : new GradeChip(GradesText.Chip(g.grade.Grader, g.grade.Score), ChipKind.Of(g.grade.Outcome), g.grade.Reason))
+                    : new GradeChip(GradesText.Chip(g.grade.Grader, g.grade.Score), ChipKind.Of(g.grade.Outcome),
+                        g.grade.Reason))
             .ToList();
     }
 
@@ -27,12 +29,16 @@ public static class GradeChipList
     /// </summary>
     private static GradeChip Review(GradeRow grade, ConversationGrades grades, string? reviewer)
     {
-        var mine = reviewer is null ? null : grades.Human
-            .Where(h => h.Grader == grade.Grader && string.Equals(h.Reviewer, reviewer, StringComparison.OrdinalIgnoreCase))
-            .OrderByDescending(h => h.At).FirstOrDefault();
+        var mine = reviewer is null
+            ? null
+            : grades.Human
+                .Where(h => h.Grader == grade.Grader &&
+                            string.Equals(h.Reviewer, reviewer, StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(h => h.At).FirstOrDefault();
         return mine is null
             ? new GradeChip(GradesText.PendingChip(grade.Grader), ChipKind.Of(grade.Outcome), grade.Reason)
-            : new GradeChip(GradesText.ReviewedChip(grade.Grader, mine.Verdict, reviewer), ChipKind.OfVerdict(mine.Verdict), mine.Note.Length > 0 ? mine.Note : null);
+            : new GradeChip(GradesText.ReviewedChip(grade.Grader, mine.Verdict, reviewer),
+                ChipKind.OfVerdict(mine.Verdict), mine.Note.Length > 0 ? mine.Note : null);
     }
 
     /// <summary>The grader's place in the run's order; past the end when the run doesn't list it.</summary>
@@ -40,7 +46,8 @@ public static class GradeChipList
     {
         if (order is null) return int.MaxValue;
         for (int i = 0; i < order.Count; i++)
-            if (order[i].Name == grader) return i;
+            if (order[i].Name == grader)
+                return i;
         return int.MaxValue;
     }
 }

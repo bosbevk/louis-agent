@@ -14,7 +14,8 @@ namespace LouisAgent.Evals.Grading.Human;
 /// </summary>
 public sealed class HumanReviewGrader : IGrader
 {
-    private HumanReviewGrader(string reviews, string question, IReadOnlySet<string> expectedKeys) => (Reviews, Question, ExpectedKeys) = (reviews, question, expectedKeys);
+    private HumanReviewGrader(string reviews, string question, IReadOnlySet<string> expectedKeys) =>
+        (Reviews, Question, ExpectedKeys) = (reviews, question, expectedKeys);
 
     /// <summary>The model grader this reviews.</summary>
     public string Reviews { get; }
@@ -26,7 +27,7 @@ public sealed class HumanReviewGrader : IGrader
     public int Version => 2;
     public GraderKind Kind => GraderKind.Human;
     public bool Required => false;
-    
+
     /// <summary>The keys its judge reads: a scenario without them gives the judge nothing to judge, so a person has nothing to review (<see cref="AppliesTo"/>).</summary>
     public IReadOnlySet<string> ExpectedKeys { get; }
 
@@ -34,14 +35,19 @@ public sealed class HumanReviewGrader : IGrader
     public static HumanReviewGrader For(IGrader modelGrader, string question) =>
         modelGrader.Kind == GraderKind.Model
             ? new HumanReviewGrader(modelGrader.Name, question, modelGrader.ExpectedKeys)
-            : throw new ArgumentException(MessageText.Format(EvalErrorMessage.ReviewNeedsAModelGrader, new { Grader = modelGrader.Name }));
+            : throw new ArgumentException(MessageText.Format(EvalErrorMessage.ReviewNeedsAModelGrader,
+                new { Grader = modelGrader.Name }));
 
-    public static HumanReviewGrader For(string modelGrader, string question, IReadOnlySet<string>? expectedKeys = null) => new(modelGrader, question, expectedKeys ?? new HashSet<string>());
+    public static HumanReviewGrader
+        For(string modelGrader, string question, IReadOnlySet<string>? expectedKeys = null) =>
+        new(modelGrader, question, expectedKeys ?? new HashSet<string>());
 
     /// <summary>Whether this review has a question to ask about the trial: its judge's expected keys are all in the scenario.</summary>
     public bool AppliesTo(Trial trial) =>
-        ExpectedKeys.Count == 0 || (trial.Scenario.Expected.ValueKind == JsonValueKind.Object && ExpectedKeys.All(key => trial.Scenario.Expected.TryGetProperty(key, out _)));
+        ExpectedKeys.Count == 0 || (trial.Scenario.Expected.ValueKind == JsonValueKind.Object &&
+                                    ExpectedKeys.All(key => trial.Scenario.Expected.TryGetProperty(key, out _)));
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
-        ValueTask.FromResult(Verdict.Pending(Name, Version, MessageText.Format(CommonGradeMessage.HumanWaits, new { Question })));
+        ValueTask.FromResult(Verdict.Pending(Name, Version,
+            MessageText.Format(CommonGradeMessage.HumanWaits, new { Question })));
 }

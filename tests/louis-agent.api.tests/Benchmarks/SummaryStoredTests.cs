@@ -21,13 +21,24 @@ public class SummaryStoredTests
 
     private static string At(object e) => "@" + JsonSerializer.Serialize(e);
 
-    private static string SummaryLine(string mode = SampleMode.Beta, string slice = "overall", bool tooFew = false, double? passRate = 0.75, string[]? tasks = null)
+    private static string SummaryLine(string mode = SampleMode.Beta, string slice = "overall", bool tooFew = false,
+        double? passRate = 0.75, string[]? tasks = null)
     {
         var fields = new Dictionary<string, object?>
         {
-            ["event"] = "summary", ["t"] = 1700000009.0, ["mode"] = mode, ["slice"] = slice, ["n"] = 8, ["passed"] = 6, ["failed"] = 1, ["unknown"] = 1, ["infrastructure"] = 0,
-            ["tasks"] = tasks ?? ["a", "b"], ["too_few"] = tooFew,
-            ["graders"] = new[] { new { grader = "routed-to", kind = "FixedRule", passed = 7, failed = 1, unknown = 0 } },
+            ["event"] = "summary",
+            ["t"] = 1700000009.0,
+            ["mode"] = mode,
+            ["slice"] = slice,
+            ["n"] = 8,
+            ["passed"] = 6,
+            ["failed"] = 1,
+            ["unknown"] = 1,
+            ["infrastructure"] = 0,
+            ["tasks"] = tasks ?? ["a", "b"],
+            ["too_few"] = tooFew,
+            ["graders"] = new[]
+                { new { grader = "routed-to", kind = "FixedRule", passed = 7, failed = 1, unknown = 0 } },
             ["kinds"] = new[] { new { kind = "FixedRule", passed = 7, failed = 1, unknown = 0 } },
             ["scores"] = new[] { new { key = "priced_ratio", mean = 0.5, n = 8 } },
         };
@@ -37,15 +48,32 @@ public class SummaryStoredTests
             fields["pass_at_k"] = 1.0;
             fields["pass_hat_k"] = 0.5;
         }
+
         return At(fields);
     }
 
     private static readonly string[] Run =
     [
-        At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 7, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-        At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
-        At(new { @event = "conversation", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, task = "a", role = SampleRole.Alpha, scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass" }),
-        At(new { @event = "mode_done", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
+        At(new
+        {
+            @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 7,
+            commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>()
+        }),
+        At(new
+        {
+            @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1,
+            toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0
+        }),
+        At(new
+        {
+            @event = "conversation", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, task = "a",
+            role = SampleRole.Alpha, scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass"
+        }),
+        At(new
+        {
+            @event = "mode_done", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0,
+            pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0
+        }),
         SummaryLine(),
         SummaryLine(slice: "language:af", tooFew: true, passRate: null, tasks: ["a"]),
     ];
@@ -71,8 +99,10 @@ public class SummaryStoredTests
         Assert.That((slice.Mode, slice.Slice, slice.N, slice.Passed, slice.Failed, slice.Unknown, slice.Infrastructure),
             Is.EqualTo((SampleMode.Beta, "overall", 8, 6, 1, 1, 0)));
         Assert.That(slice.Tasks, Is.EqualTo(new[] { "a", "b" }));
-        Assert.That((slice.TooFew, slice.PassRate, slice.PassAtK, slice.PassHatK), Is.EqualTo((false, (double?)0.75, (double?)1.0, (double?)0.5)));
-        Assert.That(slice.Graders, Is.EqualTo(new[] { new SliceGrader("routed-to", BenchmarkGraderKind.FixedRule, 7, 1, 0) }));
+        Assert.That((slice.TooFew, slice.PassRate, slice.PassAtK, slice.PassHatK),
+            Is.EqualTo((false, (double?)0.75, (double?)1.0, (double?)0.5)));
+        Assert.That(slice.Graders,
+            Is.EqualTo(new[] { new SliceGrader("routed-to", BenchmarkGraderKind.FixedRule, 7, 1, 0) }));
         Assert.That(slice.Kinds, Is.EqualTo(new[] { new SliceKind(BenchmarkGraderKind.FixedRule, 7, 1, 0) }));
         Assert.That(slice.Scores, Is.EqualTo(new[] { new SliceScore("priced_ratio", 0.5, 8) }));
     }
@@ -82,7 +112,8 @@ public class SummaryStoredTests
     {
         var slice = ((SummaryReported)Parse(SummaryLine(tooFew: true, passRate: null))).Slice;
 
-        Assert.That((slice.TooFew, slice.PassRate, slice.PassAtK, slice.PassHatK), Is.EqualTo((true, (double?)null, (double?)null, (double?)null)));
+        Assert.That((slice.TooFew, slice.PassRate, slice.PassAtK, slice.PassHatK),
+            Is.EqualTo((true, (double?)null, (double?)null, (double?)null)));
     }
 
     [Test]
@@ -97,7 +128,8 @@ public class SummaryStoredTests
         var store = await Recorded(Run);
 
         var slices = (await store.GetRunAsync(Id))!.Slices!;
-        Assert.That(slices.Select(s => (s.Mode, s.Slice, s.TooFew)), Is.EqualTo(new[] { (SampleMode.Beta, "overall", false), (SampleMode.Beta, "language:af", true) }));
+        Assert.That(slices.Select(s => (s.Mode, s.Slice, s.TooFew)),
+            Is.EqualTo(new[] { (SampleMode.Beta, "overall", false), (SampleMode.Beta, "language:af", true) }));
     }
 
     [Test]
@@ -127,12 +159,16 @@ public class SummaryStoredTests
         string text = await BenchmarkProtocolExport.BuildAsync(store, run, CancellationToken.None);
 
         var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        var exported = lines.Where(l => l.Contains("\"event\":\"summary\"")).Select(l => ((SummaryReported)Parse(l)).Slice).ToList();
+        var exported = lines.Where(l => l.Contains("\"event\":\"summary\""))
+            .Select(l => ((SummaryReported)Parse(l)).Slice).ToList();
         // A record holds its lists by reference, so the slices are compared by what they say.
         Assert.That(JsonSerializer.Serialize(exported), Is.EqualTo(JsonSerializer.Serialize(run.Slices)));
-        Assert.That(lines.Where(l => l.Contains("\"event\":\"summary\"")).All(l => !l.Contains("cost")), Is.True, "the ledger prices a slice, never the export");
-        string[] events = lines.Select(l => JsonDocument.Parse(l[1..]).RootElement.GetProperty("event").GetString()!).ToArray();
-        Assert.That(events.TakeLast(3), Is.EqualTo(new[] { "mode_done", "summary", "summary" }), "after the mode's last mode_done");
+        Assert.That(lines.Where(l => l.Contains("\"event\":\"summary\"")).All(l => !l.Contains("cost")), Is.True,
+            "the ledger prices a slice, never the export");
+        string[] events = lines.Select(l => JsonDocument.Parse(l[1..]).RootElement.GetProperty("event").GetString()!)
+            .ToArray();
+        Assert.That(events.TakeLast(3), Is.EqualTo(new[] { "mode_done", "summary", "summary" }),
+            "after the mode's last mode_done");
     }
 
     [Test]
@@ -140,7 +176,8 @@ public class SummaryStoredTests
     {
         var store = await Recorded(Run.Take(4));
 
-        string text = await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(Id))!, CancellationToken.None);
+        string text =
+            await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(Id))!, CancellationToken.None);
 
         Assert.That(text, Does.Not.Contain("\"summary\""));
     }
@@ -169,12 +206,15 @@ public class SummaryStoredTests
         Assert.That(overall.GetProperty("cost_per_pass").GetDecimal(), Is.EqualTo(0.8m / 6));
         var few = summaries.Single(s => s.GetProperty("slice").GetString() == "language:af");
         Assert.That(few.GetProperty("too_few").GetBoolean(), Is.True);
-        Assert.That(few.TryGetProperty("pass_rate", out var rate) && rate.ValueKind != JsonValueKind.Null, Is.False, "no rate: absent or null, never 0");
-        Assert.That(older.RootElement.GetProperty("summaries").ValueKind, Is.EqualTo(JsonValueKind.Null), "a run from before 5c has none, never zeros");
+        Assert.That(few.TryGetProperty("pass_rate", out var rate) && rate.ValueKind != JsonValueKind.Null, Is.False,
+            "no rate: absent or null, never 0");
+        Assert.That(older.RootElement.GetProperty("summaries").ValueKind, Is.EqualTo(JsonValueKind.Null),
+            "a run from before 5c has none, never zeros");
     }
 
     private static Request Request(string task, decimal cost) =>
-        new(Id, new TurnKey(SampleMode.Beta, 1, task, 1), DateTimeOffset.UnixEpoch, "turn", "sess_" + task, null, "claude-haiku-5-5", 100, 10, 0, 0, cost, 100);
+        new(Id, new TurnKey(SampleMode.Beta, 1, task, 1), DateTimeOffset.UnixEpoch, "turn", "sess_" + task, null,
+            "claude-haiku-5-5", 100, 10, 0, 0, cost, 100);
 
     private static async Task<JsonDocument> Get(HttpClient client, string path)
     {

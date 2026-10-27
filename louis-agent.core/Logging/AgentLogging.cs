@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Logging;
 
 using System.Globalization;
 using System.Reflection;
@@ -13,6 +12,7 @@ using Serilog.Filters;
 using SerilogConfiguration = Serilog.LoggerConfiguration;
 using Serilog.Sinks.SystemConsole.Themes;
 
+namespace LouisAgent.Core.Logging;
 /// <summary>
 /// Logging for every host: <see cref="ILogger"/> (Microsoft.Extensions.Logging) with Serilog behind it, configured once
 /// per process by <c>AgentHost</c> (docs/CLAUDE.md, *Messages and logging*). Everything goes to <b>stderr</b>, never
@@ -40,8 +40,10 @@ public static class AgentLogging
     // One root logger for the life of the process, its only sink forwarding to the current configuration: loggers bind
     // to the root when created, so one made before Configure (a static field) still writes where Configure says.
     private static readonly ForwardingSink Current = new();
+
     private static readonly Serilog.Core.Logger Root =
         new SerilogConfiguration().MinimumLevel.Verbose().WriteTo.Sink(Current).CreateLogger();
+
     private static readonly SerilogLoggerFactory Factory = new(Root);
 
     static AgentLogging() => Configure(null);
@@ -86,10 +88,13 @@ public static class AgentLogging
             try
             {
                 Directory.CreateDirectory(logDirectory);
-                runFile = _runFile is { } previous && previous.Directory == logDirectory ? previous.File : NewRunFile(logDirectory);
+                runFile = _runFile is { } previous && previous.Directory == logDirectory
+                    ? previous.File
+                    : NewRunFile(logDirectory);
                 configuration.WriteTo.Logger(file => file
                     .Filter.ByExcluding(Matching.WithProperty(RecordProperty))
-                    .WriteTo.File(runFile, outputTemplate: FileTemplate, formatProvider: CultureInfo.InvariantCulture, shared: true));
+                    .WriteTo.File(runFile, outputTemplate: FileTemplate, formatProvider: CultureInfo.InvariantCulture,
+                        shared: true));
                 foreach (var (record, file) in RecordFiles)
                 {
                     configuration.WriteTo.Logger(records => records
@@ -110,7 +115,8 @@ public static class AgentLogging
 
         var log = Factory.CreateLogger(typeof(AgentLogging));
         if (unusable is not null)
-            log.Log(LogLevel.Warning, LoggingLogMessage.FileLoggingDisabled, new { Directory = logDirectory, Reason = unusable.Message });
+            log.Log(LogLevel.Warning, LoggingLogMessage.FileLoggingDisabled,
+                new { Directory = logDirectory, Reason = unusable.Message });
         else if (announce)
             log.Log(LogLevel.Information, LoggingLogMessage.LoggingTo, new { Path = runFile });
     }

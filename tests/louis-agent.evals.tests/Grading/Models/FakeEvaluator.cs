@@ -28,7 +28,8 @@ internal sealed class FakeEvaluator : IEvaluator
 
     public IReadOnlyCollection<string> EvaluationMetricNames => _metrics.Select(m => m.Name).ToArray();
 
-    public async ValueTask<EvaluationResult> EvaluateAsync(IEnumerable<ChatMessage> messages, ChatResponse modelResponse, ChatConfiguration? chatConfiguration = null,
+    public async ValueTask<EvaluationResult> EvaluateAsync(IEnumerable<ChatMessage> messages,
+        ChatResponse modelResponse, ChatConfiguration? chatConfiguration = null,
         IEnumerable<EvaluationContext>? additionalContext = null, CancellationToken cancellationToken = default)
     {
         Calls++;

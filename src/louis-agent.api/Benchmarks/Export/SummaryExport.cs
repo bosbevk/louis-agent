@@ -26,12 +26,27 @@ internal static class SummaryExport
         if (slice.PassRate is { } passRate) json.WriteNumber("pass_rate", passRate);
         if (slice.PassAtK is { } passAtK) json.WriteNumber("pass_at_k", passAtK);
         if (slice.PassHatK is { } passHatK) json.WriteNumber("pass_hat_k", passHatK);
-        Array(json, "graders", slice.Graders, (g, o) => { o.WriteString("grader", g.Grader); o.WriteString("kind", g.Kind.Wire()); Counts(o, g.Passed, g.Failed, g.Unknown); });
-        Array(json, "kinds", slice.Kinds, (k, o) => { o.WriteString("kind", k.Kind.Wire()); Counts(o, k.Passed, k.Failed, k.Unknown); });
-        Array(json, "scores", slice.Scores, (s, o) => { o.WriteString("key", s.Key); o.WriteNumber("mean", s.Mean); o.WriteNumber("n", s.N); });
+        Array(json, "graders", slice.Graders, (g, o) =>
+        {
+            o.WriteString("grader", g.Grader);
+            o.WriteString("kind", g.Kind.Wire());
+            Counts(o, g.Passed, g.Failed, g.Unknown);
+        });
+        Array(json, "kinds", slice.Kinds, (k, o) =>
+        {
+            o.WriteString("kind", k.Kind.Wire());
+            Counts(o, k.Passed, k.Failed, k.Unknown);
+        });
+        Array(json, "scores", slice.Scores, (s, o) =>
+        {
+            o.WriteString("key", s.Key);
+            o.WriteNumber("mean", s.Mean);
+            o.WriteNumber("n", s.N);
+        });
     });
 
-    private static void Array<T>(Utf8JsonWriter json, string name, IReadOnlyList<T> items, Action<T, Utf8JsonWriter> write)
+    private static void Array<T>(Utf8JsonWriter json, string name, IReadOnlyList<T> items,
+        Action<T, Utf8JsonWriter> write)
     {
         json.WriteStartArray(name);
         foreach (var item in items)
@@ -40,6 +55,7 @@ internal static class SummaryExport
             write(item, json);
             json.WriteEndObject();
         }
+
         json.WriteEndArray();
     }
 

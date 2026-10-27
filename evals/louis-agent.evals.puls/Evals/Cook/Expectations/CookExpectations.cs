@@ -12,7 +12,12 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Expectations;
 /// (<c>serves</c>: a number for the first turn, or one per turn), the rand budget of the first turn's basket, and the shop the user chose.
 /// Each key is read by a named grader. A key that is missing is not asked for; one of the wrong kind is refused, naming the scenario.
 /// </summary>
-public sealed record CookExpectations(string? RoutesTo, string? Town, IReadOnlyList<int> Serves, decimal? Budget, ShopExpectation? Shop)
+public sealed record CookExpectations(
+    string? RoutesTo,
+    string? Town,
+    IReadOnlyList<int> Serves,
+    decimal? Budget,
+    ShopExpectation? Shop)
 {
     public static CookExpectations Of(EvalScenario scenario) =>
         new(ExpectedRoute.Of(scenario), TownOf(scenario), ServesOf(scenario), BudgetOf(scenario), ShopOf(scenario));
@@ -24,7 +29,9 @@ public sealed record CookExpectations(string? RoutesTo, string? Town, IReadOnlyL
     public static string? TownOf(EvalScenario scenario)
     {
         if (!TryGet(scenario, "town", out var town))
-            return ShopOf(scenario) == ShopExpectation.Checkers ? throw new InvalidDataException(MessageText.Format(ExpectationMessage.NoTown, new { scenario.Id })) : null;
+            return ShopOf(scenario) == ShopExpectation.Checkers
+                ? throw new InvalidDataException(MessageText.Format(ExpectationMessage.NoTown, new { scenario.Id }))
+                : null;
         if (town.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(town.GetString()))
             throw new InvalidDataException(MessageText.Format(ExpectationMessage.BadTown, new { scenario.Id }));
         return town.GetString()!.Trim();
@@ -41,7 +48,8 @@ public sealed record CookExpectations(string? RoutesTo, string? Town, IReadOnlyL
             JsonValueKind.Array => serves.EnumerateArray().ToList(),
             _ => [],
         };
-        if (counts.Count == 0 || counts.Any(c => c.ValueKind != JsonValueKind.Number || !c.TryGetInt32(out int n) || n < 1))
+        if (counts.Count == 0 ||
+            counts.Any(c => c.ValueKind != JsonValueKind.Number || !c.TryGetInt32(out int n) || n < 1))
             throw new InvalidDataException(MessageText.Format(ExpectationMessage.BadServes, new { Id = id }));
         return counts.Select(c => c.GetInt32()).ToList();
     }
@@ -56,14 +64,16 @@ public sealed record CookExpectations(string? RoutesTo, string? Town, IReadOnlyL
         return rand;
     }
 
-    private static readonly IReadOnlyDictionary<string, ShopExpectation> Aliases = new Dictionary<string, ShopExpectation> { ["no-branch"] = ShopExpectation.NoBranch };
+    private static readonly IReadOnlyDictionary<string, ShopExpectation> Aliases =
+        new Dictionary<string, ShopExpectation> { ["no-branch"] = ShopExpectation.NoBranch };
 
     /// <summary>The shop the user chose; null when the scenario names none.</summary>
     public static ShopExpectation? ShopOf(EvalScenario scenario)
     {
         string id = scenario.Id;
         if (!TryGet(scenario, "shop", out var shop)) return null;
-        if (shop.ValueKind != JsonValueKind.String || !SettingChoice.TryParse(shop.GetString(), out ShopExpectation? parsed, Aliases) || parsed is null)
+        if (shop.ValueKind != JsonValueKind.String ||
+            !SettingChoice.TryParse(shop.GetString(), out ShopExpectation? parsed, Aliases) || parsed is null)
             throw new InvalidDataException(MessageText.Format(ExpectationMessage.BadShop,
                 new { Id = id, Supported = string.Join(", ", SettingChoice.Names<ShopExpectation>()) }));
         return parsed;

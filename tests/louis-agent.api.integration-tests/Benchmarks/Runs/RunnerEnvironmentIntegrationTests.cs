@@ -18,13 +18,15 @@ public class RunnerEnvironmentIntegrationTests
         Environment.SetEnvironmentVariable("BENCHMARKS_MONGO_URL", "mongodb://user:secret@mongo/puls");
         try
         {
-            var start = new BenchmarkRunner(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll)
+            var start = new BenchmarkRunner(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/",
+                    RunnerBuild.Dll)
                 .StartInfoFor(Stub, new BenchmarkRun("run123456789", "stub", 1));
 
             Assert.That(start.Environment.ContainsKey("BENCHMARKS_MONGO_URL"), Is.False);
             Assert.That(start.Environment["PULS_API"], Is.EqualTo("http://127.0.0.1:1/"));
             Assert.That(start.Environment["BENCHMARK_RUN"], Is.EqualTo("run123456789"));
-            Assert.That(start.Environment.ContainsKey("PATH") || start.Environment.ContainsKey("Path"), Is.True, "the runtime's path comes through");
+            Assert.That(start.Environment.ContainsKey("PATH") || start.Environment.ContainsKey("Path"), Is.True,
+                "the runtime's path comes through");
         }
         finally
         {
@@ -44,16 +46,21 @@ public class RunnerEnvironmentIntegrationTests
         Environment.SetEnvironmentVariable("ANTHROPIC_API_KEY", "sk-ant-secret");
         try
         {
-            var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("env", "Env")]), Path.GetTempPath(), "http://x/", StandInBuild.Dll);
+            var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("env", "Env")]),
+                Path.GetTempPath(), "http://x/", StandInBuild.Dll);
             var run = runner.Start("env", 1)!;
             var lines = new List<string>();
             await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
 
             Assert.That(run.ExitCode, Is.EqualTo(0), string.Join(" | ", lines));
             var names = lines.Where(l => l.StartsWith("env:")).Select(l => l[4..]).ToList();
-            Assert.That(names, Has.None.EqualTo("BENCHMARKS_MONGO_URL").And.None.EqualTo("ADMIN_API_KEY").And.None.EqualTo("ANTHROPIC_API_KEY"), "the API's secrets never reach the child");
-            Assert.That(names.Any(n => n.Equals("PATH", StringComparison.OrdinalIgnoreCase)), Is.True, "the path the runtime needs comes through");
-            Assert.That(lines, Does.Contain("api=http://x/").And.Contain($"run={run.Id}"), "what the API tells the run arrives");
+            Assert.That(names,
+                Has.None.EqualTo("BENCHMARKS_MONGO_URL").And.None.EqualTo("ADMIN_API_KEY").And.None
+                    .EqualTo("ANTHROPIC_API_KEY"), "the API's secrets never reach the child");
+            Assert.That(names.Any(n => n.Equals("PATH", StringComparison.OrdinalIgnoreCase)), Is.True,
+                "the path the runtime needs comes through");
+            Assert.That(lines, Does.Contain("api=http://x/").And.Contain($"run={run.Id}"),
+                "what the API tells the run arrives");
         }
         finally
         {

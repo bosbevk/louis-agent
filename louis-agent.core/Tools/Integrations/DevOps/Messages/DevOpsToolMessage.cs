@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Tools.Integrations.DevOps.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Tools.Integrations.DevOps.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -21,7 +21,8 @@ public enum DevOpsToolMessage
     [Description("Error retrieving sprints: {Reason}")]
     DevOpsSprintsFailed,
 
-    [Description("Error {Status} looking up the current sprint: {Content} Pass a sprint name (GetAvailableSprints lists them).")]
+    [Description(
+        "Error {Status} looking up the current sprint: {Content} Pass a sprint name (GetAvailableSprints lists them).")]
     DevOpsCurrentSprintHttpError,
 
     [Description("Error: the team has no current sprint. Pass a sprint name (GetAvailableSprints lists them).")]
@@ -39,8 +40,7 @@ public enum DevOpsToolMessage
     [Description("Error updating work item: {Reason}")]
     DevOpsUpdateFailed,
 
-    [Description("No sprints found.")]
-    NoSprints,
+    [Description("No sprints found.")] NoSprints,
 
     [Description("Created {Type} #{Id} - {Title}")]
     WorkItemCreated,

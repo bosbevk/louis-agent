@@ -9,7 +9,8 @@ public static class RunnerBuild
         {
             // tests/{project}/bin/{configuration}/{framework}: the runner is built in the same two folders.
             var build = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-            return Path.Combine(TestPaths.RepoRoot, "evals", "louis-agent.evals.runner", "bin", build.Parent!.Name, build.Name, "louis-agent.evals.runner.dll");
+            return Path.Combine(TestPaths.RepoRoot, "evals", "louis-agent.evals.runner", "bin", build.Parent!.Name,
+                build.Name, "louis-agent.evals.runner.dll");
         }
     }
 }

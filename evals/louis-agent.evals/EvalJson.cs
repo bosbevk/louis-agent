@@ -9,7 +9,8 @@ namespace LouisAgent.Evals;
 /// </summary>
 public static class EvalJson
 {
-    public static readonly JsonSerializerOptions SnakeCase = new() { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
+    public static readonly JsonSerializerOptions SnakeCase = new()
+    { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
 
     /// <summary>
     /// The same, for what is sent to the API (ADR 0041): a null property is left out, so the API's own default holds, and an enum goes by

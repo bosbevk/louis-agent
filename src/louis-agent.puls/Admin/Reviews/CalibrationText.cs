@@ -13,17 +13,20 @@ public static class CalibrationText
     public static string Verdict(CalibrationReportView r)
     {
         if (r.Passes) return $"It sees what you see: at least {r.Bar}% in each class.";
-        var shortClasses = new[] { r.PersonPass, r.PersonFail }.Where(c => !Clears(c, r.Bar)).Select(c => Short(c, r.Bar));
+        var shortClasses = new[] { r.PersonPass, r.PersonFail }.Where(c => !Clears(c, r.Bar))
+            .Select(c => Short(c, r.Bar));
         return $"Not yet: {string.Join("; ", shortClasses)}.";
     }
 
     public static string Where(CalibrationDisagreementView d) =>
         $"{d.Scenario} · {d.Mode} · repeat {d.Repeat}: you said {d.Label}, {(d.Judge == "unknown" ? "the judge couldn't tell" : $"the judge said {d.Judge}")}.";
 
-    public static string Earlier(CalibrationReportView r, string when) => $"{when} · {Judge(r)} · {r.Agreed} of {r.Total} · {(r.Passes ? "pass" : "not yet")}";
+    public static string Earlier(CalibrationReportView r, string when) =>
+        $"{when} · {Judge(r)} · {r.Agreed} of {r.Total} · {(r.Passes ? "pass" : "not yet")}";
 
     /// <summary>A check whose run failed: the runner's last line is the reason (6a.5e: the card's words live here).</summary>
-    public static string Failed(string? lastLine) => $"The check ended without a report. The runner's last line: {lastLine}";
+    public static string Failed(string? lastLine) =>
+        $"The check ended without a report. The runner's last line: {lastLine}";
 
     /// <summary>A check whose run ended well but left no report in the store.</summary>
     public const string NoReportKept = "The check ended, but no report was kept: the API's log says why.";

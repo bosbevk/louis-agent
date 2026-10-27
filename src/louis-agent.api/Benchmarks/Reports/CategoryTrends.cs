@@ -12,14 +12,21 @@ namespace LouisAgent.Api.Benchmarks.Reports;
 public static class CategoryTrends
 {
     /// <summary>One run in one line: the runner's rates for the slice, and its n.</summary>
-    public sealed record Point(string Run, DateTimeOffset At, double? PassRate, double? PassAtK, double? PassHatK, int N);
+    public sealed record Point(
+        string Run,
+        DateTimeOffset At,
+        double? PassRate,
+        double? PassAtK,
+        double? PassHatK,
+        int N);
 
     /// <summary>A mode on one model, named as the overall trend names it: the mode, with its model in brackets when the model is named.</summary>
     public sealed record Line(string Name, IReadOnlyList<Point> Points, string? Model = null);
 
     public sealed record Category(string Name, IReadOnlyList<Line> Lines);
 
-    public static async Task<IReadOnlyList<Category>> ComputeAsync(IBenchmarkStore store, string check, int limit = 20, CancellationToken cancellationToken = default)
+    public static async Task<IReadOnlyList<Category>> ComputeAsync(IBenchmarkStore store, string check, int limit = 20,
+        CancellationToken cancellationToken = default)
     {
         var runs = await BenchmarkTrends.FinishedRunsAsync(store, check, limit, cancellationToken);
 
@@ -28,12 +35,22 @@ public static class CategoryTrends
             foreach (var slice in run.Slices ?? [])
             {
                 if (slice.TooFew || slice.PassRate is null) continue;
-                string? model = run.Models?.FirstOrDefault(m => m.Mode == slice.Mode && m.Level == BenchmarkModelLevel.Agent)?.Model;
-                if (!lines.TryGetValue((slice.Slice, slice.Mode, model), out var points)) lines[(slice.Slice, slice.Mode, model)] = points = [];
+                string? model = run.Models
+                    ?.FirstOrDefault(m => m.Mode == slice.Mode && m.Level == BenchmarkModelLevel.Agent)?.Model;
+                if (!lines.TryGetValue((slice.Slice, slice.Mode, model), out var points))
+                    lines[(slice.Slice, slice.Mode, model)] = points = [];
                 points.Add(new Point(run.Id, run.StartedAt, slice.PassRate, slice.PassAtK, slice.PassHatK, slice.N));
             }
 
-        return [.. lines.GroupBy(line => line.Key.Category).OrderBy(group => group.Key, StringComparer.Ordinal)
-            .Select(group => new Category(group.Key, [.. group.Select(line => new Line(line.Key.Model is null ? line.Key.Mode : $"{line.Key.Mode} ({line.Key.Model})", line.Value, line.Key.Model))]))];
+        return
+        [
+            .. lines.GroupBy(line => line.Key.Category).OrderBy(group => group.Key, StringComparer.Ordinal)
+                .Select(group => new Category(group.Key,
+                [
+                    .. group.Select(line =>
+                        new Line(line.Key.Model is null ? line.Key.Mode : $"{line.Key.Mode} ({line.Key.Model})",
+                            line.Value, line.Key.Model))
+                ]))
+        ];
     }
 }

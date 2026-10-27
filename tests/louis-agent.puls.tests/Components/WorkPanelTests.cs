@@ -24,7 +24,10 @@ public class WorkPanelTests
 
         Assert.That(cut.Find(".work-count").TextContent, Is.EqualTo("1"));
         Assert.That(cut.Find(".work-who strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole));
-        Assert.That(cut.FindAll(".work-step"), Has.Count.EqualTo(turn.Blocks.Single(b => b.ToolName == "StartSubSession").SubTurn!.Blocks.Count(b => b.Kind == BlockKind.Tool)));
+        Assert.That(cut.FindAll(".work-step"),
+            Has.Count.EqualTo(
+                turn.Blocks.Single(b => b.ToolName == "StartSubSession").SubTurn!.Blocks.Count(b =>
+                    b.Kind == BlockKind.Tool)));
         Snapshots.Match("louis-agent.puls.tests", "Components/WorkPanel.html", cut.Markup);
     }
 

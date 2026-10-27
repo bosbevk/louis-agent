@@ -15,7 +15,8 @@ public class BrowserSideNamesTests
     {
         foreach (var asked in Enum.GetValues<AskedToolset>())
         {
-            Assert.That(SettingChoice.TryParse(asked.Wire(), out CoreToolset? core), Is.True, $"{asked}: core has no toolset of that name");
+            Assert.That(SettingChoice.TryParse(asked.Wire(), out CoreToolset? core), Is.True,
+                $"{asked}: core has no toolset of that name");
             Assert.That(core!.Value.Wire(), Is.EqualTo(asked.Wire()), asked.ToString());
         }
     }

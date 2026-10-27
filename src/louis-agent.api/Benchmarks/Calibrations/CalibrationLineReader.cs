@@ -17,7 +17,8 @@ public static class CalibrationLineReader
             using var document = JsonDocument.Parse(line.AsMemory(1));
             var e = document.RootElement;
             if (e.ValueKind != JsonValueKind.Object || Text(e, "event") != "calibration") return null;
-            return new CalibrationRecord(run, Text(e, "grader") ?? "", Text(e, "judge_model"), at, Int(e, "agreed"), Int(e, "total"), Int(e, "bar"),
+            return new CalibrationRecord(run, Text(e, "grader") ?? "", Text(e, "judge_model"), at, Int(e, "agreed"),
+                Int(e, "total"), Int(e, "bar"),
                 e.TryGetProperty("passes", out var passes) && passes.ValueKind == JsonValueKind.True,
                 Class(e, "person_pass"), Class(e, "person_fail"), Disagreements(e));
         }
@@ -34,10 +35,17 @@ public static class CalibrationLineReader
 
     private static IReadOnlyList<CalibrationDisagreement> Disagreements(JsonElement e) =>
         e.TryGetProperty("disagreements", out var list) && list.ValueKind == JsonValueKind.Array
-            ? [.. list.EnumerateArray().Select(d => new CalibrationDisagreement(Text(d, "scenario") ?? "", Text(d, "mode") ?? "", Int(d, "repeat"), Text(d, "label") ?? "", Text(d, "judge") ?? "", Text(d, "reason") ?? ""))]
+            ?
+            [
+                .. list.EnumerateArray().Select(d => new CalibrationDisagreement(Text(d, "scenario") ?? "",
+                    Text(d, "mode") ?? "", Int(d, "repeat"), Text(d, "label") ?? "", Text(d, "judge") ?? "",
+                    Text(d, "reason") ?? ""))
+            ]
             : [];
 
-    private static string? Text(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    private static string? Text(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
 
-    private static int Int(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
+    private static int Int(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
 }

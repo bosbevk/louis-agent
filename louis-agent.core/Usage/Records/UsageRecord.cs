@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Usage.Records;
 
 using System.Text.Json.Serialization;
 
+namespace LouisAgent.Core.Usage.Records;
 /// <summary>
 /// One model request in the usage ledger (Usage spec §4.1). Holds counts, ids, names, timings and the prompt's hash:
 /// never prompt text or tool output (F1-S4).
@@ -46,6 +46,9 @@ public sealed record UsageRecord(
     string? Stop,
     UsageCost? Cost = null,
     string? Parent = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] int? Requests = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? PromptHash = null,
-    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] bool? CacheHit = null);
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    int? Requests = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    string? PromptHash = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    bool? CacheHit = null);

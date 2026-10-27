@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
 
 using System.Net;
 using System.Net.Http.Headers;
@@ -8,6 +7,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Rendering;
 
+namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
 /// <summary>
 /// Tavily's Extract endpoint as the page renderer (F25 step 7; Louis's choice over a hosted reader and a headless
 /// browser in the container): <c>POST https://api.tavily.com/extract</c> with the key as a bearer header, one URL per
@@ -42,15 +42,19 @@ public sealed class TavilyPageRenderer(string apiKey, HttpClient? http = null) :
             string detail = TavilyError(json) ?? response.ReasonPhrase ?? "";
             throw new PageRenderException(response.StatusCode switch
             {
-                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(WebToolMessage.TavilyRejected, new { Detail = detail }),
-                HttpStatusCode.TooManyRequests or (HttpStatusCode)432 or (HttpStatusCode)433 => MessageText.Format(WebToolMessage.TavilyLimit, new { Detail = detail }),
-                _ => MessageText.Format(WebToolMessage.RenderFailed, new { Url = url, Reason = $"HTTP {(int)response.StatusCode} {detail}" }),
+                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(
+                    WebToolMessage.TavilyRejected, new { Detail = detail }),
+                HttpStatusCode.TooManyRequests or (HttpStatusCode)432 or (HttpStatusCode)433 => MessageText.Format(
+                    WebToolMessage.TavilyLimit, new { Detail = detail }),
+                _ => MessageText.Format(WebToolMessage.RenderFailed,
+                    new { Url = url, Reason = $"HTTP {(int)response.StatusCode} {detail}" }),
             });
         }
 
         using var doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
-        if (root.TryGetProperty("results", out var results) && results.ValueKind == JsonValueKind.Array && results.GetArrayLength() > 0)
+        if (root.TryGetProperty("results", out var results) && results.ValueKind == JsonValueKind.Array &&
+            results.GetArrayLength() > 0)
         {
             var first = results[0];
             string text = first.TryGetProperty("raw_content", out var c) ? c.GetString() ?? "" : "";
@@ -58,9 +62,13 @@ public sealed class TavilyPageRenderer(string apiKey, HttpClient? http = null) :
             return new RenderedPage(reported, text.ReplaceLineEndings("\n").Trim());
         }
 
-        string reason = root.TryGetProperty("failed_results", out var failed) && failed.ValueKind == JsonValueKind.Array && failed.GetArrayLength() > 0
-            && failed[0].TryGetProperty("error", out var e) ? e.GetString() ?? "" : MessageText.Format(WebToolMessage.RenderNoResult);
-        throw new PageRenderException(MessageText.Format(WebToolMessage.RenderFailed, new { Url = url, Reason = reason }));
+        string reason = root.TryGetProperty("failed_results", out var failed) &&
+                        failed.ValueKind == JsonValueKind.Array && failed.GetArrayLength() > 0
+                        && failed[0].TryGetProperty("error", out var e)
+            ? e.GetString() ?? ""
+            : MessageText.Format(WebToolMessage.RenderNoResult);
+        throw new PageRenderException(MessageText.Format(WebToolMessage.RenderFailed,
+            new { Url = url, Reason = reason }));
     }
 
     /// <summary>Tavily's error body: <c>{"detail": {"error": "…"}}</c>, or <c>{"detail": "…"}</c> from its framework.</summary>

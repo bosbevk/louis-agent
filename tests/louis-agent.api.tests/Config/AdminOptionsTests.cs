@@ -49,7 +49,8 @@ public class AdminOptionsTests
 
     [Test]
     public void TheEvalRunnerIsReadFromEVAL_RUNNER() =>
-        Assert.That(From(("EVAL_RUNNER", "/x/louis-agent.evals.runner.dll")).EvalRunner, Is.EqualTo(Path.GetFullPath("/x/louis-agent.evals.runner.dll")));
+        Assert.That(From(("EVAL_RUNNER", "/x/louis-agent.evals.runner.dll")).EvalRunner,
+            Is.EqualTo(Path.GetFullPath("/x/louis-agent.evals.runner.dll")));
 
     [Test]
     public void TheEvalRunnerDefaultsToTheImagesPath() =>

@@ -9,7 +9,8 @@ namespace LouisAgent.Puls.Tests.Components.Admin.Grades;
 // outcome first) and GradeChips.none.html (no grades: one chip, no kind). Written first: the goldens weren't there on the red run.
 public class GradeChipsTests
 {
-    private static readonly GraderRow[] Order = [new("no-error", 1, "FixedRule"), new("priced", 1, "FixedRule"), new("meal", 1, "Model")];
+    private static readonly GraderRow[] Order =
+        [new("no-error", 1, "FixedRule"), new("priced", 1, "FixedRule"), new("meal", 1, "Model")];
 
     [Test]
     public void ThreeGrades_MatchTheGoldenFile()

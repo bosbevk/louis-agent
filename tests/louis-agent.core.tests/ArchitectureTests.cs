@@ -12,9 +12,17 @@ public partial class ArchitectureTests
     // A folder may use its own layer and the ones below; Tools never uses Llm (a tool doesn't call a model).
     private static readonly Dictionary<string, int> Layers = new()
     {
-        ["Config"] = 0, ["Messages"] = 0, ["Logging"] = 0,
+        ["Config"] = 0,
+        ["Messages"] = 0,
+        ["Logging"] = 0,
         ["Guardrails"] = 1,
-        ["Llm"] = 2, ["Tools"] = 2, ["Sessions"] = 2, ["Skills"] = 2, ["Usage"] = 2, ["Pricing"] = 2, ["Protocols"] = 2,
+        ["Llm"] = 2,
+        ["Tools"] = 2,
+        ["Sessions"] = 2,
+        ["Skills"] = 2,
+        ["Usage"] = 2,
+        ["Pricing"] = 2,
+        ["Protocols"] = 2,
         ["Agent"] = 3,
         ["Hosting"] = 4,
     };
@@ -31,7 +39,8 @@ public partial class ArchitectureTests
     {
         List<string> unexpected = Violations().Where(v => !Pending.Contains(v)).ToList();
 
-        Assert.That(unexpected, Is.Empty, "Layout violations (docs/CLAUDE.md, Project layout):\n" + string.Join("\n", unexpected));
+        Assert.That(unexpected, Is.Empty,
+            "Layout violations (docs/CLAUDE.md, Project layout):\n" + string.Join("\n", unexpected));
     }
 
     [Test]
@@ -40,7 +49,8 @@ public partial class ArchitectureTests
         HashSet<string> current = Violations().ToHashSet();
         List<string> fixedAlready = Pending.Where(p => !current.Contains(p)).ToList();
 
-        Assert.That(fixedAlready, Is.Empty, "No longer violations; remove them from Pending:\n" + string.Join("\n", fixedAlready));
+        Assert.That(fixedAlready, Is.Empty,
+            "No longer violations; remove them from Pending:\n" + string.Join("\n", fixedAlready));
     }
 
     private static IEnumerable<string> Violations()
@@ -96,11 +106,14 @@ public partial class ArchitectureTests
         {
             string file = Path.GetRelativePath(skills, path).Replace('\\', '/');
             string folder = Path.GetDirectoryName(file)!.Replace('\\', '/');
-            foreach (string used in SkillsUsing().Matches(File.ReadAllText(path)).Select(u => u.Groups[1].Value).Distinct())
-                if (used != folder && used is not ("Messages" or "Languages")) found.Add($"Skills/{file} uses Skills.{used}");
+            foreach (string used in SkillsUsing().Matches(File.ReadAllText(path)).Select(u => u.Groups[1].Value)
+                         .Distinct())
+                if (used != folder && used is not ("Messages" or "Languages"))
+                    found.Add($"Skills/{file} uses Skills.{used}");
         }
 
-        Assert.That(found, Is.Empty, "Skills/: the top uses nothing below it except Messages/ and Languages/; Providers/ and Roles/ use only the top, Messages/ and Languages/");
+        Assert.That(found, Is.Empty,
+            "Skills/: the top uses nothing below it except Messages/ and Languages/; Providers/ and Roles/ use only the top, Messages/ and Languages/");
     }
 
     // FX19 (ADR 0004): a process starts from an argument list, never from one command-line string, so a value from the
@@ -114,10 +127,13 @@ public partial class ArchitectureTests
         var found = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
             .Select(f => Path.GetRelativePath(core, f).Replace('\\', '/'))
             .Where(f => !f.StartsWith("bin/") && !f.StartsWith("obj/"))
-            .Where(f => File.ReadAllText(Path.Combine(core, f)) is { } source && source.Contains("ProcessStartInfo") && ArgumentsString().IsMatch(source))
+            .Where(f => File.ReadAllText(Path.Combine(core, f)) is { } source && source.Contains("ProcessStartInfo") &&
+                        ArgumentsString().IsMatch(source))
             .ToList();
 
-        Assert.That(found, Is.Empty, "Builds a command line as one string (ADR 0004); use ProcessRunner's argument list:\n" + string.Join("\n", found));
+        Assert.That(found, Is.Empty,
+            "Builds a command line as one string (ADR 0004); use ProcessRunner's argument list:\n" +
+            string.Join("\n", found));
     }
 
     [GeneratedRegex(@"(^|[\s.])Arguments\s*=[^=]", RegexOptions.Multiline)]
@@ -130,10 +146,12 @@ public partial class ArchitectureTests
     public void Core_ReferencesNoIdentityOrPack()
     {
         string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
-        Assert.That(ForbiddenReferences(File.ReadAllText(Path.Combine(core, "louis-agent.core.csproj"))), Is.Empty, "core's csproj references an identity or a pack");
+        Assert.That(ForbiddenReferences(File.ReadAllText(Path.Combine(core, "louis-agent.core.csproj"))), Is.Empty,
+            "core's csproj references an identity or a pack");
 
         var usings = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
-            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") &&
+                        !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
             .Where(f => OutsideCoreUsing().IsMatch(File.ReadAllText(f)))
             .Select(f => Path.GetRelativePath(core, f))
             .ToList();
@@ -145,21 +163,30 @@ public partial class ArchitectureTests
     {
         // The rule on a fixture, read as text (never a loose csproj the build would pick up), then on every pack on disk.
         const string offending = """
-            <Project Sdk="Microsoft.NET.Sdk">
-              <ItemGroup>
-                <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
-                <ProjectReference Include="..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
-                <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
-              </ItemGroup>
-            </Project>
-            """;
-        Assert.That(ForbiddenReferences(offending), Is.EqualTo(new[] { @"..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj", @"..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" }));
+                                 <Project Sdk="Microsoft.NET.Sdk">
+                                   <ItemGroup>
+                                     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+                                     <ProjectReference Include="..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+                                     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+                                   </ItemGroup>
+                                 </Project>
+                                 """;
+        Assert.That(ForbiddenReferences(offending),
+            Is.EqualTo(new[]
+            {
+                @"..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj",
+                @"..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj"
+            }));
 
         string packs = Path.Combine(TestPaths.RepoRoot, "packs");
-        var found = (Directory.Exists(packs) ? Directory.EnumerateFiles(packs, "*.csproj", SearchOption.AllDirectories) : [])
-            .SelectMany(f => ForbiddenReferences(File.ReadAllText(f)).Select(r => $"{Path.GetRelativePath(packs, f)}: {r}"))
+        var found = (Directory.Exists(packs)
+                ? Directory.EnumerateFiles(packs, "*.csproj", SearchOption.AllDirectories)
+                : [])
+            .SelectMany(f =>
+                ForbiddenReferences(File.ReadAllText(f)).Select(r => $"{Path.GetRelativePath(packs, f)}: {r}"))
             .ToList();
-        Assert.That(found, Is.Empty, "a pack references another pack or an identity (ADR 0027):\n" + string.Join("\n", found));
+        Assert.That(found, Is.Empty,
+            "a pack references another pack or an identity (ADR 0027):\n" + string.Join("\n", found));
     }
 
     [Test]
@@ -170,14 +197,16 @@ public partial class ArchitectureTests
         // use made-up names.
         string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
         var found = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
-            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+            .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") &&
+                        !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
             .Append(Path.Combine(core, "CLAUDE.md"))
             .SelectMany(f => File.ReadLines(f)
                 .Select((line, i) => (Line: line, Number: i + 1))
                 .Where(x => ProductName().IsMatch(x.Line))
                 .Select(x => $"{Path.GetRelativePath(core, f).Replace('\\', '/')}:{x.Number}: {x.Line.Trim()}"))
             .ToList();
-        Assert.That(found, Is.Empty, "core's source names a product, a shop or a country (CL15 step 5):\n" + string.Join("\n", found));
+        Assert.That(found, Is.Empty,
+            "core's source names a product, a shop or a country (CL15 step 5):\n" + string.Join("\n", found));
     }
 
     [Test]
@@ -192,7 +221,8 @@ public partial class ArchitectureTests
             .Select(f => Path.GetRelativePath(tests, f).Replace('\\', '/'))
             .ToList();
         Assert.That(leaning, Is.Empty, "a test project references core.tests; its fakes belong in louis-agent.testing");
-        Assert.That(File.ReadAllText(Path.Combine(tests, "louis-agent.core.tests", "louis-agent.core.tests.csproj")), Does.Not.Contain("InternalsVisibleTo"));
+        Assert.That(File.ReadAllText(Path.Combine(tests, "louis-agent.core.tests", "louis-agent.core.tests.csproj")),
+            Does.Not.Contain("InternalsVisibleTo"));
     }
 
     [GeneratedRegex(@"\b(puls|checkers|south\s+africa|johannesburg)\b", RegexOptions.IgnoreCase)]
@@ -224,7 +254,8 @@ public partial class ArchitectureTests
     public void CoresModelVisibleText_NamesNoProduct_BeyondThePendingList()
     {
         List<string> unexpected = ProductText().Where(v => !PendingProductText.Contains(v)).ToList();
-        Assert.That(unexpected, Is.Empty, "Core's model-visible text names a product (CL15):\n" + string.Join("\n", unexpected));
+        Assert.That(unexpected, Is.Empty,
+            "Core's model-visible text names a product (CL15):\n" + string.Join("\n", unexpected));
     }
 
     [Test]
@@ -232,7 +263,8 @@ public partial class ArchitectureTests
     {
         HashSet<string> current = ProductText().ToHashSet();
         List<string> gone = PendingProductText.Where(p => !current.Contains(p)).ToList();
-        Assert.That(gone, Is.Empty, "No longer there; remove them from PendingProductText:\n" + string.Join("\n", gone));
+        Assert.That(gone, Is.Empty,
+            "No longer there; remove them from PendingProductText:\n" + string.Join("\n", gone));
     }
 
     /// <summary>Every "file: word" in core's embedded prompts and in the [Description] texts of its C# (tool descriptions, ToolMessage members).</summary>
@@ -240,20 +272,25 @@ public partial class ArchitectureTests
     {
         string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
         var pieces = new SortedSet<string>(StringComparer.Ordinal);
-        foreach (string file in Directory.EnumerateFiles(Path.Combine(core, "Prompts"), "*.md", SearchOption.AllDirectories))
+        foreach (string file in Directory.EnumerateFiles(Path.Combine(core, "Prompts"), "*.md",
+                     SearchOption.AllDirectories))
             Add(Path.GetRelativePath(core, file), File.ReadAllText(file));
         foreach (string file in Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories))
         {
-            if (file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") || file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")) continue;
-            string descriptions = string.Join("\n", DescriptionText().Matches(File.ReadAllText(file)).Select(m => m.Groups[1].Value));
+            if (file.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") ||
+                file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")) continue;
+            string descriptions = string.Join("\n",
+                DescriptionText().Matches(File.ReadAllText(file)).Select(m => m.Groups[1].Value));
             Add(Path.GetRelativePath(core, file), descriptions);
         }
+
         return pieces;
 
         void Add(string file, string text)
         {
             foreach (var (label, pattern) in ProductWords)
-                if (pattern.IsMatch(text)) pieces.Add($"{file.Replace('\\', '/')}: {label}");
+                if (pattern.IsMatch(text))
+                    pieces.Add($"{file.Replace('\\', '/')}: {label}");
         }
     }
 
@@ -277,7 +314,8 @@ public partial class ArchitectureTests
     private static partial Regex Namespace();
 
     // Top-level declarations start at column 0 (file-scoped namespaces); nested types are indented.
-    [GeneratedRegex(@"^(?:(?:public|internal|file|static|sealed|abstract|partial|readonly)\s+)*(?:class|record|enum|interface|struct)\s+\w",
+    [GeneratedRegex(
+        @"^(?:(?:public|internal|file|static|sealed|abstract|partial|readonly)\s+)*(?:class|record|enum|interface|struct)\s+\w",
         RegexOptions.Multiline)]
     private static partial Regex TopLevelType();
 

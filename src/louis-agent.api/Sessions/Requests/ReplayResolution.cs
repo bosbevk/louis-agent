@@ -19,7 +19,8 @@ namespace LouisAgent.Api.Sessions.Requests;
 /// </summary>
 internal static class ReplayResolution
 {
-    public static bool TryResolve(CreateSessionRequest? request, WebReplayMode defaultMode, bool keepsRecordings, out SessionReplay? replay,
+    public static bool TryResolve(CreateSessionRequest? request, WebReplayMode defaultMode, bool keepsRecordings,
+        out SessionReplay? replay,
         out string? refusal)
     {
         replay = null;
@@ -29,10 +30,12 @@ internal static class ReplayResolution
 
         if (!SettingChoice.TryParse(sent.Web, out WebReplayMode? choice))
             return Refuse(ApiUserText.UnknownReplayWeb,
-                new { Value = sent.Web!.Trim(), Supported = string.Join(", ", SettingChoice.Names<WebReplayMode>()) }, out refusal);
+                new { Value = sent.Web!.Trim(), Supported = string.Join(", ", SettingChoice.Names<WebReplayMode>()) },
+                out refusal);
 
         var mode = choice ?? defaultMode;
-        if (sent.Model && mode != WebReplayMode.Replay) return Refuse(ApiUserText.ReplayModelNeedsReplay, null, out refusal);
+        if (sent.Model && mode != WebReplayMode.Replay)
+            return Refuse(ApiUserText.ReplayModelNeedsReplay, null, out refusal);
         if (mode == WebReplayMode.Off) return true;
         if (!keepsRecordings) return Refuse(ApiUserText.ReplayNoRecordings, null, out refusal);
 

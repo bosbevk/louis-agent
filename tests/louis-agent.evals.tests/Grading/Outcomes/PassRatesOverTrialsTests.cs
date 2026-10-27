@@ -22,7 +22,8 @@ public class PassRatesOverTrialsTests
 
     private static Trial TrialOf(params TurnTranscript[] turns) =>
         new("run_1", new EvalMode("cook", SampleRole.Alpha, [SampleToolset.Alpha]), 1,
-            new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Vraag"]), default, [], DatasetSplit.Dev), new Transcript(turns));
+            new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Vraag"]), default, [],
+                DatasetSplit.Dev), new Transcript(turns));
 
     private static readonly IGrader[] Required = [new RequiredGrader()];
 
@@ -33,16 +34,22 @@ public class PassRatesOverTrialsTests
     {
         var grades = new[] { Verdict.Pass("always", 1, "fine") };
 
-        Assert.That(PassRates.Of(TrialOf(Turn(1), Turn(2, TrialFailure.Timeout)), grades, Required), Is.EqualTo(TrialOutcome.Infrastructure));
-        Assert.That(PassRates.Of(TrialOf(Turn(1, TrialFailure.ReplayMiss)), [Verdict.Fail("always", 1, "wrong")], Required), Is.EqualTo(TrialOutcome.Infrastructure));
+        Assert.That(PassRates.Of(TrialOf(Turn(1), Turn(2, TrialFailure.Timeout)), grades, Required),
+            Is.EqualTo(TrialOutcome.Infrastructure));
+        Assert.That(
+            PassRates.Of(TrialOf(Turn(1, TrialFailure.ReplayMiss)), [Verdict.Fail("always", 1, "wrong")], Required),
+            Is.EqualTo(TrialOutcome.Infrastructure));
     }
 
     [Test]
     public void ATrialWithNoFailedTurn_KeepsTheRulesOfItsGrades()
     {
-        Assert.That(PassRates.Of(TrialOf(Turn(1)), [Verdict.Pass("always", 1, "fine")], Required), Is.EqualTo(TrialOutcome.Pass));
-        Assert.That(PassRates.Of(TrialOf(Turn(1)), [Verdict.Fail("always", 1, "wrong")], Required), Is.EqualTo(TrialOutcome.Fail));
-        Assert.That(PassRates.Of(TrialOf(Turn(1)), [Verdict.Unknown("always", 1, "can't tell")], Required), Is.EqualTo(TrialOutcome.Unknown));
+        Assert.That(PassRates.Of(TrialOf(Turn(1)), [Verdict.Pass("always", 1, "fine")], Required),
+            Is.EqualTo(TrialOutcome.Pass));
+        Assert.That(PassRates.Of(TrialOf(Turn(1)), [Verdict.Fail("always", 1, "wrong")], Required),
+            Is.EqualTo(TrialOutcome.Fail));
+        Assert.That(PassRates.Of(TrialOf(Turn(1)), [Verdict.Unknown("always", 1, "can't tell")], Required),
+            Is.EqualTo(TrialOutcome.Unknown));
     }
 
     // --- one scenario over its k trials
@@ -82,7 +89,8 @@ public class PassRatesOverTrialsTests
     [Test]
     public void AModesShare_IsTheShareOfItsScenariosThatPassThatWay()
     {
-        var scenarios = new[] { PassRates.Over([P, F]), PassRates.Over([P, P]), PassRates.Over([F, F]), PassRates.Over([P, P]) };
+        var scenarios = new[]
+            { PassRates.Over([P, F]), PassRates.Over([P, P]), PassRates.Over([F, F]), PassRates.Over([P, P]) };
 
         var share = PassRates.ShareOf(scenarios);
 
@@ -113,6 +121,7 @@ public class PassRatesOverTrialsTests
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => true;
 
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 }

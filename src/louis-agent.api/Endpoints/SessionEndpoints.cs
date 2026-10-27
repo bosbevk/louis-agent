@@ -37,35 +37,48 @@ internal static class SessionEndpoints
         {
             if (request?.InvalidTag() is { } invalid)
                 return Results.Json(Error("invalid_request_error",
-                        MessageText.Format(ApiUserText.InvalidTag, new { Tag = invalid, Max = CreateSessionRequest.MaxTagLength })),
+                        MessageText.Format(ApiUserText.InvalidTag,
+                            new { Tag = invalid, Max = CreateSessionRequest.MaxTagLength })),
                     statusCode: StatusCodes.Status400BadRequest);
             if (!string.IsNullOrWhiteSpace(request?.TimeZone) && UserPlace.FindTimeZone(request.TimeZone) is null)
-                return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone })),
+                return Results.Json(
+                    Error("invalid_request_error",
+                        MessageText.Format(ApiUserText.UnknownTimeZone, new { request.TimeZone })),
                     statusCode: StatusCodes.Status400BadRequest);
 
             // "stream" names the format the session's events are written in (F18 step 1f), refused before any engine is built.
             StreamFormat? format = request is null ? StreamFormat.Claude : request.StreamFormatOrNull();
             if (format is null)
                 return Results.Json(Error("invalid_request_error",
-                        MessageText.Format(ApiUserText.UnknownStreamFormat, new { Format = request!.Stream, Supported = string.Join(", ", SettingChoice.Names<StreamFormat>()) })),
+                        MessageText.Format(ApiUserText.UnknownStreamFormat,
+                            new
+                            {
+                                Format = request!.Stream,
+                                Supported = string.Join(", ", SettingChoice.Names<StreamFormat>())
+                            })),
                     statusCode: StatusCodes.Status400BadRequest);
 
-            if (!ReplayResolution.TryResolve(request, defaultReplay, host.Agent.KeepsRecordings, out var replay, out string? refusal))
-                return Results.Json(Error("invalid_request_error", refusal!), statusCode: StatusCodes.Status400BadRequest);
+            if (!ReplayResolution.TryResolve(request, defaultReplay, host.Agent.KeepsRecordings, out var replay,
+                    out string? refusal))
+                return Results.Json(Error("invalid_request_error", refusal!),
+                    statusCode: StatusCodes.Status400BadRequest);
 
             // A trial recorded again (the runner's one retry) starts afresh, so a replay sees the second attempt, not the first (F18 step 5a).
-            if (recordings is not null && ReplayResolution.FreshTrial(request, replay) is { } fresh) await recordings.StartTrialAsync(fresh);
+            if (recordings is not null && ReplayResolution.FreshTrial(request, replay) is { } fresh)
+                await recordings.StartTrialAsync(fresh);
 
             AgentSession session;
             try
             {
                 session = sessions.Create(request?.Toolsets,
-                    request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent), request?.Depth ?? 0,
+                    request is null ? null : new UsageTags(request.Task, request.Run, request.Service, request.Parent),
+                    request?.Depth ?? 0,
                     request?.RoleOrNull(), request?.Place(), request?.Llm, request?.Tool, format.Value, replay);
             }
             catch (Exception ex) when (ex is ToolsetException or RoleException or SessionLlmException)
             {
-                return Results.Json(Error("invalid_request_error", ex.Message), statusCode: StatusCodes.Status400BadRequest);
+                return Results.Json(Error("invalid_request_error", ex.Message),
+                    statusCode: StatusCodes.Status400BadRequest);
             }
 
             return Results.Created($"{ApiMap.Version}/sessions/{session.Id}", SessionView.Created(session));
@@ -82,31 +95,41 @@ internal static class SessionEndpoints
                 ? Results.Json(new { session_id = id, cancelled = session.Cancel() })
                 : UnknownSession(id));
 
-        routes.MapPost("/sessions/{id}/messages", (string id, SendMessageRequest request, AgentSessions sessions, HttpContext http) =>
-        {
-            if (sessions.Get(id) is not { } session) return UnknownSession(id);
+        routes.MapPost("/sessions/{id}/messages",
+            (string id, SendMessageRequest request, AgentSessions sessions, HttpContext http) =>
+            {
+                if (sessions.Get(id) is not { } session) return UnknownSession(id);
 
-            string prompt = TurnStream.BuildPrompt(request);
-            if (string.IsNullOrWhiteSpace(prompt))
-                return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.EmptyMessage)), statusCode: StatusCodes.Status400BadRequest);
+                string prompt = TurnStream.BuildPrompt(request);
+                if (string.IsNullOrWhiteSpace(prompt))
+                    return Results.Json(Error("invalid_request_error", MessageText.Format(ApiUserText.EmptyMessage)),
+                        statusCode: StatusCodes.Status400BadRequest);
 
-            if (!session.TryStartTurn(http.RequestAborted, out var turn))
-                return Results.Json(Error("conflict_error", MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" })),
-                    statusCode: StatusCodes.Status409Conflict);
+                if (!session.TryStartTurn(http.RequestAborted, out var turn))
+                    return Results.Json(
+                        Error("conflict_error", MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" })),
+                        statusCode: StatusCodes.Status409Conflict);
 
-            // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
-            foreach (var attachment in request.Attachments ?? []) session.Remember(attachment.Name, attachment.Content);
+                // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
+                foreach (var attachment in request.Attachments ?? [])
+                    session.Remember(attachment.Name, attachment.Content);
 
-            // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).
-            if (session.Turns == 1 && session.Place is { Location: { } location } place)
-                prompt = MessageText.Format(ApiModelText.UserPlace, new { Location = location, TimeZone = place.TimeZone ?? host.Agent.HostTimeZone ?? TimeZoneInfo.Local.Id }) + "\n\n" + prompt;
+                // Where the user is, said once, in the first message: per session, so not in the shared system prompt (F22).
+                if (session.Turns == 1 && session.Place is { Location: { } location } place)
+                    prompt = MessageText.Format(ApiModelText.UserPlace,
+                        new
+                        {
+                            Location = location,
+                            TimeZone = place.TimeZone ?? host.Agent.HostTimeZone ?? TimeZoneInfo.Local.Id
+                        }) + "\n\n" + prompt;
 
-            return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn));
-        });
+                return TypedResults.ServerSentEvents(TurnStream.StreamTurnAsync(session.Engine, session, prompt, turn));
+            });
     }
 
     private static IResult UnknownSession(string id) =>
-        Results.Json(Error("not_found_error", MessageText.Format(ApiUserText.UnknownSession, new { Id = id })), statusCode: StatusCodes.Status404NotFound);
+        Results.Json(Error("not_found_error", MessageText.Format(ApiUserText.UnknownSession, new { Id = id })),
+            statusCode: StatusCodes.Status404NotFound);
 
     private static object Error(string type, string message) => ApiErrors.Body(type, message);
 }

@@ -12,16 +12,20 @@ namespace LouisAgent.Api.Tests.Benchmarks.Reviews;
 // LabelLoader. Change the wire, and both fail until the fixture and the two records agree. LOUIS_UPDATE_GOLDEN=1 rewrites the fixture; review its diff before committing.
 public class ExportedLabelFixtureTests
 {
-    private static readonly string Fixture = System.IO.Path.Combine(ApiTestHost.RepoRoot, "tests", "louis-agent.evals.tests", "Labels", "Fixtures", "exported-label.json");
+    private static readonly string Fixture = System.IO.Path.Combine(ApiTestHost.RepoRoot, "tests",
+        "louis-agent.evals.tests", "Labels", "Fixtures", "exported-label.json");
 
     private static readonly HumanGrade Grade =
-        new("8f7802b9a72e", new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "sample-dev"), "meal-for-people", HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
+        new("8f7802b9a72e", new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "sample-dev"), "meal-for-people",
+            HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
 
     // 6a.4f: a label carries every turn of its conversation, so the fixture pins a two-turn one.
     private static readonly Turn[] Turns =
     [
-        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", SampleRole.Alpha, null, 1, 1, [], 1.0, null),
-        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", SampleRole.Alpha, null, 1, 1, [], 1.0, null),
+        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier",
+            SampleRole.Alpha, null, 1, 1, [], 1.0, null),
+        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 2), "sess_1", "Make it six",
+            "Bobotie vir ses", SampleRole.Alpha, null, 1, 1, [], 1.0, null),
     ];
 
     private static string Written() => ReviewLabels.Content(Grade, Turns);
@@ -33,7 +37,8 @@ public class ExportedLabelFixtureTests
         string line = ReviewLabels.Line(Grade, Turns);
 
         Assert.That(line, Does.Not.Contain("\n").And.Not.Contain("\r"));
-        Assert.That(System.Text.Json.Nodes.JsonNode.Parse(line)!.ToJsonString(), Is.EqualTo(System.Text.Json.Nodes.JsonNode.Parse(Written())!.ToJsonString()));
+        Assert.That(System.Text.Json.Nodes.JsonNode.Parse(line)!.ToJsonString(),
+            Is.EqualTo(System.Text.Json.Nodes.JsonNode.Parse(Written())!.ToJsonString()));
     }
 
     [Test]
@@ -56,6 +61,7 @@ public class ExportedLabelFixtureTests
     {
         var key = new BenchmarkProtocol.ConversationKey(SampleMode.Gamma, 2, SampleScenario.Alpha);
 
-        Assert.That(ReviewLabels.FileName("meal-for-people", key, "8f7802b9a72e"), Is.EqualTo(SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Gamma}.8f7802b9a72e.2.json")));
+        Assert.That(ReviewLabels.FileName("meal-for-people", key, "8f7802b9a72e"),
+            Is.EqualTo(SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Gamma}.8f7802b9a72e.2.json")));
     }
 }

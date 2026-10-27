@@ -47,9 +47,18 @@ public class BenchmarkRunTests
         var handler = new StubHandler(request =>
         {
             string url = request.RequestUri!.PathAndQuery;
-            if (url.EndsWith("/runs/run1")) { runReads++; return Json(Run); }
+            if (url.EndsWith("/runs/run1"))
+            {
+                runReads++;
+                return Json(Run);
+            }
+
             if (url.EndsWith("/v1/admin/benchmarks")) return Json(Checks);
-            return new HttpResponseMessage(HttpStatusCode.NotFound) { Content = new StringContent("""{"type":"error","error":{"type":"not_found","message":"no"}}""", Encoding.UTF8, "application/json") };
+            return new HttpResponseMessage(HttpStatusCode.NotFound)
+            {
+                Content = new StringContent("""{"type":"error","error":{"type":"not_found","message":"no"}}""",
+                    Encoding.UTF8, "application/json")
+            };
         });
 
         // The services the page injects.
@@ -73,7 +82,8 @@ public class BenchmarkRunTests
         state.Record(new ConversationRef("run1", SampleMode.Beta, 1, "bobotie"), "meal-for-people");
 
         cut.WaitForAssertion(() => Assert.That(runReads, Is.EqualTo(2), "the run is fetched again after a grade"));
-        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".review-panel"), Has.Count.EqualTo(1), "and the open conversation stays open"));
+        cut.WaitForAssertion(() =>
+            Assert.That(cut.FindAll(".review-panel"), Has.Count.EqualTo(1), "and the open conversation stays open"));
     }
 
     /// <summary>After a note is written the page fetches the run again and shows the notes the store holds, not a copy it made itself.</summary>
@@ -91,10 +101,18 @@ public class BenchmarkRunTests
             if (url.EndsWith("/runs/run1"))
             {
                 runReads++;
-                return Json(runReads == 1 ? Run : Run.Replace("\"requests\":[],", "\"requests\":[],\"notes\":[{\"text\":\"judge changed\",\"at\":\"2026-10-27T09:00:00+00:00\",\"conversation\":null}],"));
+                return Json(runReads == 1
+                    ? Run
+                    : Run.Replace("\"requests\":[],",
+                        "\"requests\":[],\"notes\":[{\"text\":\"judge changed\",\"at\":\"2026-10-27T09:00:00+00:00\",\"conversation\":null}],"));
             }
+
             if (url.EndsWith("/v1/admin/benchmarks")) return Json(Checks);
-            return new HttpResponseMessage(HttpStatusCode.NotFound) { Content = new StringContent("""{"type":"error","error":{"type":"not_found","message":"no"}}""", Encoding.UTF8, "application/json") };
+            return new HttpResponseMessage(HttpStatusCode.NotFound)
+            {
+                Content = new StringContent("""{"type":"error","error":{"type":"not_found","message":"no"}}""",
+                    Encoding.UTF8, "application/json")
+            };
         });
 
         // The services the page injects.
@@ -121,5 +139,6 @@ public class BenchmarkRunTests
     }
 
     /// <summary>A 200 answer with this JSON.</summary>
-    private static HttpResponseMessage Json(string body) => new(HttpStatusCode.OK) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
+    private static HttpResponseMessage Json(string body) => new(HttpStatusCode.OK)
+    { Content = new StringContent(body, Encoding.UTF8, "application/json") };
 }

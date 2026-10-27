@@ -23,8 +23,11 @@ public class ReviewPanelTests
     private static readonly ConversationRef Bobotie = new("run1", SampleMode.Beta, 1, "bobotie");
 
     private static ConversationGrades Grades(GradeOutcome judge = GradeOutcome.Pass, params HumanGradeRow[] humans) =>
-        new([new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"), new GradeRow("meal-for-people", 1, judge == GradeOutcome.Pass ? 1 : 0, judge, JudgeReason),
-             new GradeRow("meal-for-people.human", 1, 0, GradeOutcome.Pending, "waits")], GradeOutcome.Pass, humans);
+        new([
+            new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"),
+            new GradeRow("meal-for-people", 1, judge == GradeOutcome.Pass ? 1 : 0, judge, JudgeReason),
+            new GradeRow("meal-for-people.human", 1, 0, GradeOutcome.Pending, "waits")
+        ], GradeOutcome.Pass, humans);
 
     private sealed record Rendered(IRenderedComponent<ReviewPanel> Cut, StubHandler Handler, ReviewerState State);
 
@@ -32,17 +35,23 @@ public class ReviewPanelTests
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        if (reviewer is not null) ctx.JSInterop.Setup<string?>("localStorage.getItem", ReviewerState.StorageKey).SetResult(reviewer);
+        if (reviewer is not null)
+            ctx.JSInterop.Setup<string?>("localStorage.getItem", ReviewerState.StorageKey).SetResult(reviewer);
         var handler = new StubHandler(_ => new HttpResponseMessage(put)
         {
-            Content = new StringContent(put == HttpStatusCode.OK ? """{"verdict":"pass"}""" : """{"type":"error","error":{"type":"invalid_request_error","message":"A review needs the name of who gave it."}}""",
+            Content = new StringContent(
+                put == HttpStatusCode.OK
+                    ? """{"verdict":"pass"}"""
+                    : """{"type":"error","error":{"type":"invalid_request_error","message":"A review needs the name of who gave it."}}""",
                 Encoding.UTF8, "application/json"),
         });
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") },
+            new ChatSettings()));
         var state = new ReviewerState(ctx.JSInterop.JSRuntime);
         ctx.Services.AddSingleton(state);
         var cut = ctx.Render<ReviewPanel>(p => p.Add(x => x.Conversation, Bobotie).Add(x => x.Review, Review)
-            .Add(x => x.Asked, ["Wat kan ek vanaand vir vier mense kook?", "Maak dit eerder vir ses."]).Add(x => x.Answer, "Bobotie vir ses: 'n hoofgereg.").Add(x => x.Grades, grades));
+            .Add(x => x.Asked, ["Wat kan ek vanaand vir vier mense kook?", "Maak dit eerder vir ses."])
+            .Add(x => x.Answer, "Bobotie vir ses: 'n hoofgereg.").Add(x => x.Grades, grades));
         cut.WaitForState(() => state.Name == reviewer || reviewer is null);
         return new Rendered(cut, handler, state);
     }
@@ -53,11 +62,15 @@ public class ReviewPanelTests
         var (cut, _, _) = Render("Louis", Grades());
 
         Assert.That(cut.Find(".review-question").TextContent, Is.EqualTo(Question));
-        Assert.That(cut.Find(".review-ask").TextContent, Does.Contain("Wat kan ek vanaand vir vier mense kook?").And.Contain("Maak dit eerder vir ses."));
+        Assert.That(cut.Find(".review-ask").TextContent,
+            Does.Contain("Wat kan ek vanaand vir vier mense kook?").And.Contain("Maak dit eerder vir ses."));
         Assert.That(cut.Find(".review-answer").TextContent, Does.Contain("Bobotie vir ses"));
-        Assert.That(new[] { ".review-pass", ".review-fail", ".review-unsure" }.Select(s => cut.Find(s).HasAttribute("disabled")), Is.EqualTo(new[] { false, false, false }));
+        Assert.That(
+            new[] { ".review-pass", ".review-fail", ".review-unsure" }.Select(s =>
+                cut.Find(s).HasAttribute("disabled")), Is.EqualTo(new[] { false, false, false }));
         Assert.That(cut.Find(".review-note").TagName, Is.EqualTo("TEXTAREA"));
-        Assert.That(cut.Find(".review-note").GetAttribute("maxlength"), Is.EqualTo("2000"), "the limit the API holds a note to (6a.3c: ReviewNote.MaxLength)");
+        Assert.That(cut.Find(".review-note").GetAttribute("maxlength"), Is.EqualTo("2000"),
+            "the limit the API holds a note to (6a.3c: ReviewNote.MaxLength)");
     }
 
     [Test]
@@ -75,7 +88,9 @@ public class ReviewPanelTests
     {
         var (cut, _, _) = Render(null, Grades());
 
-        Assert.That(new[] { ".review-pass", ".review-fail", ".review-unsure" }.All(s => cut.Find(s).HasAttribute("disabled")), Is.True);
+        Assert.That(
+            new[] { ".review-pass", ".review-fail", ".review-unsure" }.All(s => cut.Find(s).HasAttribute("disabled")),
+            Is.True);
         Assert.That(cut.Find(".review-need-name").TextContent, Does.Contain("name"));
         Assert.That(cut.Markup, Does.Not.Contain(JudgeReason));
     }
@@ -104,9 +119,12 @@ public class ReviewPanelTests
         cut.WaitForAssertion(() => Assert.That(handler.Requests, Has.Count.EqualTo(1)));
         var (method, url, body) = handler.Requests.Single();
         Assert.That(method, Is.EqualTo(HttpMethod.Put));
-        Assert.That(url, Does.EndWith($"v1/admin/benchmarks/runs/run1/reviews/{SampleMode.Beta}/1/bobotie/meal-for-people.human"));
+        Assert.That(url,
+            Does.EndWith($"v1/admin/benchmarks/runs/run1/reviews/{SampleMode.Beta}/1/bobotie/meal-for-people.human"));
         var sent = JsonDocument.Parse(body!).RootElement;
-        Assert.That((sent.GetProperty("verdict").GetString(), sent.GetProperty("note").GetString(), sent.GetProperty("reviewer").GetString()),
+        Assert.That(
+            (sent.GetProperty("verdict").GetString(), sent.GetProperty("note").GetString(),
+                sent.GetProperty("reviewer").GetString()),
             Is.EqualTo(("pass", "a main dish, feeds six", "Louis")));
     }
 
@@ -146,10 +164,12 @@ public class ReviewPanelTests
     [Test]
     public void AConversationThisReviewerAlreadyGraded_ShowsTheJudgeAtOnce_ThoughNotAnotherReviewers()
     {
-        var mine = new HumanGradeRow("meal-for-people.human", "meal-for-people", "pass", "", "Louis", DateTimeOffset.UnixEpoch);
+        var mine = new HumanGradeRow("meal-for-people.human", "meal-for-people", "pass", "", "Louis",
+            DateTimeOffset.UnixEpoch);
         var anna = mine with { Reviewer = "Anna" };
 
-        Assert.That(Render("Louis", Grades(GradeOutcome.Pass, mine)).Cut.Find(".review-judge").TextContent, Does.Contain(JudgeReason));
+        Assert.That(Render("Louis", Grades(GradeOutcome.Pass, mine)).Cut.Find(".review-judge").TextContent,
+            Does.Contain(JudgeReason));
         Assert.That(Render("Louis", Grades(GradeOutcome.Pass, anna)).Cut.Markup, Does.Not.Contain(JudgeReason));
     }
 
@@ -160,7 +180,8 @@ public class ReviewPanelTests
 
         cut.Find(".review-pass").Click();
 
-        cut.WaitForAssertion(() => Assert.That(cut.Find(".review-error").TextContent, Does.Contain("A review needs the name")));
+        cut.WaitForAssertion(() =>
+            Assert.That(cut.Find(".review-error").TextContent, Does.Contain("A review needs the name")));
         Assert.That(cut.Markup, Does.Not.Contain(JudgeReason));
         Assert.That(state.Graded(Bobotie, "meal-for-people"), Is.False);
     }
@@ -176,12 +197,16 @@ public class ReviewPanelTests
 
         cut.Find(".review-fail").Click();
 
-        cut.WaitForAssertion(() => Assert.That(cut.Find(".review-fail").GetAttribute("aria-checked"), Is.EqualTo("true")));
+        cut.WaitForAssertion(() =>
+            Assert.That(cut.Find(".review-fail").GetAttribute("aria-checked"), Is.EqualTo("true")));
         Assert.That(cut.Find(".review-fail").ClassList, Does.Contain("active"));
         Assert.That(cut.Find(".review-pass").GetAttribute("aria-checked"), Is.EqualTo("false"));
 
-        var stored = new HumanGradeRow("meal-for-people.human", "meal-for-people", "unsure", "", "Louis", DateTimeOffset.UnixEpoch);
-        Assert.That(Render("Louis", Grades(GradeOutcome.Pass, stored)).Cut.Find(".review-unsure").GetAttribute("aria-checked"), Is.EqualTo("true"));
+        var stored = new HumanGradeRow("meal-for-people.human", "meal-for-people", "unsure", "", "Louis",
+            DateTimeOffset.UnixEpoch);
+        Assert.That(
+            Render("Louis", Grades(GradeOutcome.Pass, stored)).Cut.Find(".review-unsure").GetAttribute("aria-checked"),
+            Is.EqualTo("true"));
     }
 
     // 6a.4 (Louis: the grades went out under a name typed in another tab): with a name kept, the panel says whose grades these are and offers "not you?", which lets the name go.
@@ -203,10 +228,13 @@ public class ReviewPanelTests
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(_ => new HttpResponseMessage()))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
 
-        var cut = ctx.Render<ReviewPanel>(p => p.Add(x => x.Conversation, Bobotie).Add(x => x.Review, new GraderRow("meal-for-people.human", 1, "Human"))
+        var cut = ctx.Render<ReviewPanel>(p => p.Add(x => x.Conversation, Bobotie)
+            .Add(x => x.Review, new GraderRow("meal-for-people.human", 1, "Human"))
             .Add(x => x.Asked, ["q"]).Add(x => x.Answer, "a").Add(x => x.Grades, Grades()));
 
         Assert.That(cut.Find(".review-question").TextContent, Does.Contain("meal-for-people"));

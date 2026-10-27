@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Hosting.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Hosting.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -30,19 +30,19 @@ public enum HostingLogMessage
     [Description("MCP discovery disabled or not configured")]
     McpDiscoveryDisabled,
 
-    [Description("Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.")]
+    [Description(
+        "Usage ledger off: LOG_DIRECTORY is not set. Set it to record token usage, or USAGE_LEDGER=off to silence this.")]
     LedgerOff,
 
-    [Description("Usage ledger: {Path}")]
-    LedgerAt,
+    [Description("Usage ledger: {Path}")] LedgerAt,
 
-    [Description("Loaded {Provider}")]
-    SkillProviderLoaded,
+    [Description("Loaded {Provider}")] SkillProviderLoaded,
 
     [Description("Loaded {Provider} (built in)")]
     SkillFileEmbedded,
 
-    [Description("Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens of fixed prefix")]
+    [Description(
+        "Toolsets {Toolsets}: {Tools} tools, a {PromptChars}-character system prompt, about {PrefixTokens} tokens of fixed prefix")]
     ToolsetProfileBuilt,
 
     [Description("Toolsets {Toolsets}: dropped from the cache, the least recently used of {Capacity} profiles")]

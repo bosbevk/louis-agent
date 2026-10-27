@@ -24,7 +24,8 @@ public sealed class MealForPeopleGrader : IGrader
     private MealForPeopleGrader(EvaluatorGrader inner) => _inner = inner;
 
     public static MealForPeopleGrader Create(Func<ConfiguredJudge?> judge) =>
-        new(new EvaluatorGrader(new MealForPeople(MealForPeoplePrompt.Text), judge, MealForPeople.MetricName, JudgeVersion, MealForPeoplePrompt.Hash,
+        new(new EvaluatorGrader(new MealForPeople(MealForPeoplePrompt.Text), judge, MealForPeople.MetricName,
+            JudgeVersion, MealForPeoplePrompt.Hash,
             new HashSet<string> { "serves" }, trial => [CookAsk.Of(trial)]));
 
     public string Name => _inner.Name;

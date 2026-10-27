@@ -26,5 +26,6 @@ public sealed class ExampleGrader : IGrader
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "example" };
 
     // The rule itself. Write it (and its tests: a pass and a fail, on made-up transcripts).
-    public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
+    public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+        throw new NotImplementedException();
 }

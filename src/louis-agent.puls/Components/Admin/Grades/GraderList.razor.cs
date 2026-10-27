@@ -9,7 +9,8 @@ namespace LouisAgent.Puls.Components.Admin.Grades;
 public partial class GraderList
 {
     /// <summary>The run as <c>GET /v1/admin/benchmarks/runs/{id}</c> answers it.</summary>
-    [Parameter, EditorRequired] public JsonElement Run { get; set; }
+    [Parameter, EditorRequired]
+    public JsonElement Run { get; set; }
 
     private RunGraders Graders => RunGradersReader.Read(Run);
 }

@@ -11,7 +11,8 @@ public static partial class Shops
     /// <summary>The shops by the name a column header uses, and their sites. The first name a header contains wins.</summary>
     public static readonly IReadOnlyList<(string Name, string Host)> Hosts =
     [
-        ("checkers", "checkers.co.za"), ("shoprite", "shoprite.co.za"), ("pick n pay", "pnp.co.za"), ("pnp", "pnp.co.za"),
+        ("checkers", "checkers.co.za"), ("shoprite", "shoprite.co.za"), ("pick n pay", "pnp.co.za"),
+        ("pnp", "pnp.co.za"),
         ("spar", "spar.co.za"), ("usave", "usave.co.za"), ("woolworths", "woolworths.co.za"),
     ];
 
@@ -26,6 +27,7 @@ public static partial class Shops
 
     /// <summary>The shop tools, and the two that name a deal.</summary>
     public static readonly IReadOnlyList<string> ShopTools = ["FindProducts", "SearchSpecials", "SearchPromotions"];
+
     public static readonly IReadOnlyList<string> DealTools = ["SearchSpecials", "SearchPromotions"];
 
     /// <summary>The site of the shop a column names (Checkers gives checkers.co.za), or null for a column that names no shop.</summary>
@@ -36,7 +38,8 @@ public static partial class Shops
     }
 
     /// <summary>The shop site a URL is on (a subdomain counts), or null when it is on none of them.</summary>
-    public static string? SiteOf(string url) => Hosts.Select(shop => shop.Host).Distinct().FirstOrDefault(site => Links.IsHost(url, site));
+    public static string? SiteOf(string url) =>
+        Hosts.Select(shop => shop.Host).Distinct().FirstOrDefault(site => Links.IsHost(url, site));
 
     /// <summary>How many of the list's rows name a deal beside a linked price (`· BUY 2 FOR R45`, `SAVE`).</summary>
     public static int DealsNamed(string? answer) =>
@@ -51,10 +54,12 @@ public static partial class Shops
     }
 
     /// <summary>How many shop searches the store serving the user's town answered (the tool names the store that answered).</summary>
-    public static int StoreForArea(IEnumerable<string?> results) => results.Count(result => StoreServing().IsMatch(result ?? ""));
+    public static int StoreForArea(IEnumerable<string?> results) =>
+        results.Count(result => StoreServing().IsMatch(result ?? ""));
 
     /// <summary>How many shop searches the shop's default store answered: no town, none served, or the town's not used.</summary>
-    public static int StoreDefault(IEnumerable<string?> results) => results.Count(result => StoreDefaulted().IsMatch(result ?? ""));
+    public static int StoreDefault(IEnumerable<string?> results) =>
+        results.Count(result => StoreDefaulted().IsMatch(result ?? ""));
 
     /// <summary>
     /// Whether the answer says its prices are estimates, not checked at a shop, in either language: the line the cook writes under its list when the user
@@ -66,7 +71,8 @@ public static partial class Shops
     public static bool NoBranchLine(string? answer) => NoBranch().IsMatch(answer ?? "");
 
     /// <summary>Whether the answer names the shop's branch under Where to buy, in either language (<see cref="BranchReading"/> says which case it is when it doesn't).</summary>
-    public static bool NamesBranch(string? answer, string shop) => BranchReading.Of(answer, shop) == BranchFinding.Named;
+    public static bool NamesBranch(string? answer, string shop) =>
+        BranchReading.Of(answer, shop) == BranchFinding.Named;
 
     /// <summary>Whether the answer says no shop near the user has a catalogue here yet, in either language.</summary>
     public static bool NoCatalogueLine(string? answer) => NoCatalogue().IsMatch(answer ?? "");
@@ -86,6 +92,7 @@ public static partial class Shops
     [GeneratedRegex(@"\b(?:no|geen)\b[^.\n|]{0,40}\b(?:branch|tak)\b", RegexOptions.IgnoreCase)]
     private static partial Regex NoBranch();
 
-    [GeneratedRegex(@"No shop near you has a catalogue|Geen winkel naby jou het nog 'n katalogus", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"No shop near you has a catalogue|Geen winkel naby jou het nog 'n katalogus",
+        RegexOptions.IgnoreCase)]
     private static partial Regex NoCatalogue();
 }

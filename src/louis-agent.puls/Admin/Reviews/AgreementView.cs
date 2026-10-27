@@ -37,8 +37,12 @@ public static class AgreementView
     public static IReadOnlyList<JudgeAgreement> Of(JsonElement run)
     {
         if (!run.TryGetProperty("agreement", out var list) || list.ValueKind != JsonValueKind.Array) return [];
-        return [.. list.EnumerateArray().Select(judge => new JudgeAgreement(judge.GetProperty("grader").GetString() ?? "",
-            Class(judge.GetProperty("person_pass"), personPassed: true), Class(judge.GetProperty("person_fail"), personPassed: false)))];
+        return
+        [
+            .. list.EnumerateArray().Select(judge => new JudgeAgreement(judge.GetProperty("grader").GetString() ?? "",
+                Class(judge.GetProperty("person_pass"), personPassed: true),
+                Class(judge.GetProperty("person_fail"), personPassed: false)))
+        ];
     }
 
     private static ClassAgreement Class(JsonElement counts, bool personPassed) => ClassOf(counts, personPassed);
@@ -47,5 +51,6 @@ public static class AgreementView
     public static ClassAgreement ClassOf(JsonElement counts, bool personPassed) =>
         new(Count(counts, "judge_pass"), Count(counts, "judge_fail"), Count(counts, "judge_unknown"), personPassed);
 
-    private static int Count(JsonElement counts, string name) => counts.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
+    private static int Count(JsonElement counts, string name) =>
+        counts.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
 }

@@ -9,22 +9,32 @@ namespace LouisAgent.Testing;
 /// </summary>
 public static class Outside
 {
-    public enum Outcome { Run, Skip, Fail }
+    public enum Outcome
+    {
+        Run,
+        Skip,
+        Fail
+    }
 
     public const string RequiredVariable = "INTEGRATION_REQUIRED";
 
-    public static Outcome Decide(bool available, bool required) => available ? Outcome.Run : required ? Outcome.Fail : Outcome.Skip;
+    public static Outcome Decide(bool available, bool required) =>
+        available ? Outcome.Run : required ? Outcome.Fail : Outcome.Skip;
 
-    public static bool IsRequired(string? value) => value is not null && (value == "1" || value.Equals("true", StringComparison.OrdinalIgnoreCase));
+    public static bool IsRequired(string? value) => value is not null &&
+                                                    (value == "1" || value.Equals("true",
+                                                        StringComparison.OrdinalIgnoreCase));
 
     /// <summary>Runs on, skips or fails the test by <see cref="Decide"/>, with <paramref name="required"/> read from the environment.</summary>
-    public static void Tool(bool available, string reason) => Tool(available, reason, IsRequired(Environment.GetEnvironmentVariable(RequiredVariable)));
+    public static void Tool(bool available, string reason) => Tool(available, reason,
+        IsRequired(Environment.GetEnvironmentVariable(RequiredVariable)));
 
     public static void Tool(bool available, string reason, bool required)
     {
         switch (Decide(available, required))
         {
-            case Outcome.Fail: Assert.Fail($"{reason}, and {RequiredVariable} is set: this machine is meant to have it."); break;
+            case Outcome.Fail:
+                Assert.Fail($"{reason}, and {RequiredVariable} is set: this machine is meant to have it."); break;
             case Outcome.Skip: Assert.Ignore(reason); break;
         }
     }

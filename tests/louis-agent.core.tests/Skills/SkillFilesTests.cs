@@ -29,10 +29,12 @@ public class SkillFilesTests
         {
             Assert.That(toolset.GuideFile, Is.Not.Null, $"{toolset.Name} has a guide");
             string guide = toolset.GuideFile!;
-            Assert.That(guide, Does.StartWith("toolsets/"), "CL8: every level shares the guides, so they're in toolsets/");
+            Assert.That(guide, Does.StartWith("toolsets/"),
+                "CL8: every level shares the guides, so they're in toolsets/");
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
             string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First();
-            Assert.That(SkillLoader.Load(options, [toolset]).Documentation, Does.Contain(title), $"{guide} loads with {toolset.Name}");
+            Assert.That(SkillLoader.Load(options, [toolset]).Documentation, Does.Contain(title),
+                $"{guide} loads with {toolset.Name}");
             Assert.That(SkillFiles.IsBuiltIn(guide), Is.True, $"{guide} can't be overwritten by the agent");
         }
     }
@@ -45,10 +47,13 @@ public class SkillFilesTests
     public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
     {
         // The coding agent's routing (CL9): Puls's routes only what Puls does.
-        string doc = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!).Routing;
+        string doc = RoleCatalog
+            .ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!)
+            .Routing;
 
         // Every toolset but minions (F30): a specialist's toolset, never a chat's, and the coding product has no minion roles.
-        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name).Where(name => name != CoreToolset.Minions.Wire()))
+        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name)
+                     .Where(name => name != CoreToolset.Minions.Wire()))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
         Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds minions");
 
@@ -66,7 +71,9 @@ public class SkillFilesTests
     public void CodeReview_IsPartOfTheCodingAgentsMode()
     {
         // CL9 step 4: the placeholder code-review skills (they only echoed) go; how to review a change is in the mode.
-        string routing = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!).Routing;
+        string routing = RoleCatalog
+            .ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!)
+            .Routing;
 
         Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
         Assert.That(routing, Does.Contain("Reviewing a change").And.Contain("`git`"));
@@ -86,7 +93,8 @@ public class SkillFilesTests
             .ToList();
 
         // CL13: PersonalitySkillsProvider went, unused since F5 step 4b; the providers sit in Providers/, as every seam's do.
-        Assert.That(providers.Select(t => t.Name), Is.EquivalentTo(new[] { nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider) }));
+        Assert.That(providers.Select(t => t.Name),
+            Is.EquivalentTo(new[] { nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider) }));
         Assert.That(providers.Select(t => t.Namespace), Has.All.EqualTo("LouisAgent.Core.Skills.Providers"));
     }
 
@@ -122,7 +130,8 @@ public class SkillFilesTests
     {
         // A guide that shows ExecuteSkill("X") for a procedure nobody defines sends the model to a failing call.
         var files = Directory.GetFiles(SkillsDirectory, "*.md");
-        var defined = files.SelectMany(f => Regex.Matches(File.ReadAllText(f), @"^## Skill:\s*(\S+)", RegexOptions.Multiline))
+        var defined = files
+            .SelectMany(f => Regex.Matches(File.ReadAllText(f), @"^## Skill:\s*(\S+)", RegexOptions.Multiline))
             .Select(m => m.Groups[1].Value)
             .ToHashSet();
         var dangling = files

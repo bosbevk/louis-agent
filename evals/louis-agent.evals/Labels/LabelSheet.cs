@@ -15,11 +15,15 @@ namespace LouisAgent.Evals.Labels;
 public static class LabelSheet
 {
     /// <returns>The names of the files written, in the order they were chosen.</returns>
-    public static IReadOnlyList<string> Write(IReadOnlyList<EvalScenario> scenarios, string grader, IReadOnlyCollection<string> keys, string runId, IEnumerable<string> storedLines,
+    public static IReadOnlyList<string> Write(IReadOnlyList<EvalScenario> scenarios, string grader,
+        IReadOnlyCollection<string> keys, string runId, IEnumerable<string> storedLines,
         string folder, int count)
     {
         var stored = StoredRun.Read(storedLines);
-        var eligible = scenarios.Where(s => keys.All(key => s.Expected.ValueKind == JsonValueKind.Object && s.Expected.TryGetProperty(key, out _))).Select(s => s.Id).ToHashSet();
+        var eligible = scenarios
+            .Where(s => keys.All(key =>
+                s.Expected.ValueKind == JsonValueKind.Object && s.Expected.TryGetProperty(key, out _)))
+            .Select(s => s.Id).ToHashSet();
 
         var turnLines = new Dictionary<(string Mode, int Repeat, string Task), List<string>>();
         var conversations = new List<StoredLine>();
@@ -36,23 +40,28 @@ public static class LabelSheet
         var files = new List<LabelFile>();
         foreach (var line in conversations)
         {
-            var turns = ProtocolTranscripts.Read(turnLines.GetValueOrDefault(line.Key) ?? [], line.Mode, line.Repeat, line.Task).Turns;
+            var turns = ProtocolTranscripts
+                .Read(turnLines.GetValueOrDefault(line.Key) ?? [], line.Mode, line.Repeat, line.Task).Turns;
             if (turns.Count == 0 || turns[^1].Failure is not null) continue;
             string answer = EngineEvents.AnswerOf(turns[^1]);
             // 6a.4f: every turn, question and answer, so the judge sees what a follow-up relies on when the labels are calibrated against.
-            if (answer.Length > 0) files.Add(new LabelFile(grader, line.Task, line.Mode, runId, line.Repeat, [.. turns.Select(t => new LabelTurn(t.Question, EngineEvents.AnswerOf(t)))], null));
+            if (answer.Length > 0)
+                files.Add(new LabelFile(grader, line.Task, line.Mode, runId, line.Repeat,
+                    [.. turns.Select(t => new LabelTurn(t.Question, EngineEvents.AnswerOf(t)))], null));
         }
 
         // A label a person has given (or a sheet already made) is never written over: the next conversation is taken instead, so a second sheet for the same run is all new files.
         var chosen = Spread(files.Where(file => !File.Exists(Path.Combine(folder, NameOf(file)))), count);
         Directory.CreateDirectory(folder);
         foreach (var file in chosen)
-            File.WriteAllText(Path.Combine(folder, NameOf(file)), JsonSerializer.Serialize(file, LabelJson.Options) + "\n");
+            File.WriteAllText(Path.Combine(folder, NameOf(file)),
+                JsonSerializer.Serialize(file, LabelJson.Options) + "\n");
         return [.. chosen.Select(NameOf)];
     }
 
     /// <summary>The grader is in the name, so two graders labelling the same answer have two files, and the sheet's never-overwrite rule never skips one grader for another's.</summary>
-    private static string NameOf(LabelFile file) => $"{file.Grader}.{file.Scenario}.{file.Mode}.{file.Run}.{file.Repeat}.json";
+    private static string NameOf(LabelFile file) =>
+        $"{file.Grader}.{file.Scenario}.{file.Mode}.{file.Run}.{file.Repeat}.json";
 
     /// <summary>The first of each scenario, then the second of each, and so on: scenarios in name order, a scenario's conversations by repeat and mode.</summary>
     private static List<LabelFile> Spread(IEnumerable<LabelFile> files, int count)
@@ -62,7 +71,8 @@ public static class LabelSheet
         var chosen = new List<LabelFile>();
         for (int round = 0; chosen.Count < count && byScenario.Any(list => list.Count > round); round++)
             foreach (var list in byScenario)
-                if (list.Count > round && chosen.Count < count) chosen.Add(list[round]);
+                if (list.Count > round && chosen.Count < count)
+                    chosen.Add(list[round]);
         return chosen;
     }
 }

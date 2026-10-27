@@ -15,10 +15,12 @@ public sealed class WithinTimeGrader(TimeSpan limit, bool required = true) : IGr
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
-        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
+        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown)
+            return ValueTask.FromResult(unknown);
         var slow = trial.Transcript.Turns.FirstOrDefault(turn => turn.Duration > limit);
         return ValueTask.FromResult(slow is null
-            ? Verdict.Pass(Name, Version, MessageText.Format(CommonGradeMessage.WithinTimePass, new { Limit = limit.TotalSeconds }))
+            ? Verdict.Pass(Name, Version,
+                MessageText.Format(CommonGradeMessage.WithinTimePass, new { Limit = limit.TotalSeconds }))
             : Verdict.Fail(Name, Version, MessageText.Format(CommonGradeMessage.SlowTurn,
                 new { Turn = slow.Turn, Seconds = slow.Duration.TotalSeconds, Limit = limit.TotalSeconds })));
     }

@@ -10,11 +10,15 @@ namespace LouisAgent.Evals.Api;
 /// </summary>
 public sealed class NoSessionClient : ISessionClient
 {
-    public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) => throw Refused(nameof(ToolsetsAsync));
+    public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
+        throw Refused(nameof(ToolsetsAsync));
 
-    public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) => throw Refused(nameof(OpenAsync));
+    public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) =>
+        throw Refused(nameof(OpenAsync));
 
-    public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, CancellationToken cancellationToken) => throw Refused(nameof(SendAsync));
+    public IAsyncEnumerable<SessionEvent>
+        SendAsync(string session, string message, CancellationToken cancellationToken) =>
+        throw Refused(nameof(SendAsync));
 
     public Task CloseAsync(string session, CancellationToken cancellationToken) => throw Refused(nameof(CloseAsync));
 

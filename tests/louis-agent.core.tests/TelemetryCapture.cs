@@ -2,6 +2,7 @@
 // variable once per process (TelemetryHelpers.EnableSensitiveDataDefault is a static readonly), so a test that sets it
 // halfway through changes nothing; only a fixture that runs before the first client is built can. With it on, the
 // pipeline's explicit EnableSensitiveData = false is what keeps a user's words out of the spans, and the tests prove that.
+
 [SetUpFixture]
 public class TelemetryCapture
 {

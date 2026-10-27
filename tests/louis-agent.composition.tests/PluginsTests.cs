@@ -19,9 +19,11 @@ public class PluginsTests
     {
         AgentCatalog puls = Plugins.FromSettings(IdentityKind.Puls.Wire(), null);
         Assert.That(puls.Identities.Select(i => i.Name), Is.EqualTo(new[] { IdentityKind.Puls.Wire() }));
-        Assert.That(puls.Packs.Select(p => p.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }), "Puls names the shops pack (step 4)");
+        Assert.That(puls.Packs.Select(p => p.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }),
+            "Puls names the shops pack (step 4)");
 
-        Assert.That(Plugins.FromSettings($"{IdentityKind.Puls.Wire()}, PULS", null).Identities, Has.Count.EqualTo(1), "a name twice, any case, is one identity");
+        Assert.That(Plugins.FromSettings($"{IdentityKind.Puls.Wire()}, PULS", null).Identities, Has.Count.EqualTo(1),
+            "a name twice, any case, is one identity");
         Assert.That(Plugins.FromSettings(null, null).Identities, Is.Empty);
         Assert.That(Plugins.FromSettings("", "").Identities, Is.Empty);
     }
@@ -30,7 +32,8 @@ public class PluginsTests
     public void AnUnknownIdentity_OrPack_IsRefused_NamingTheSupportedOnes()
     {
         var identity = Assert.Throws<AgentCatalogException>(() => Plugins.FromSettings("nope", null))!;
-        Assert.That(identity.Message, Does.Contain("nope").And.Contain("IDENTITIES").And.Contain(IdentityKind.Puls.Wire()));
+        Assert.That(identity.Message,
+            Does.Contain("nope").And.Contain("IDENTITIES").And.Contain(IdentityKind.Puls.Wire()));
 
         var pack = Assert.Throws<AgentCatalogException>(() => Plugins.FromSettings(null, "nope"))!;
         Assert.That(pack.Message, Does.Contain("nope").And.Contain("PACKS"));
@@ -47,7 +50,8 @@ public class PluginsTests
     public void PacksShops_GivesTheCodingAgentShops_WhenItsSettingsAreThere()
     {
         // CL15 step 4: the pack loads on its own, with no identity, and reads its own setting at the composition root.
-        Assume.That(Environment.GetEnvironmentVariable("SHOP_CATALOGUES"), Is.Null, "the process has no SHOP_CATALOGUES of its own");
+        Assume.That(Environment.GetEnvironmentVariable("SHOP_CATALOGUES"), Is.Null,
+            "the process has no SHOP_CATALOGUES of its own");
         Environment.SetEnvironmentVariable("SHOP_CATALOGUES", "checkers");
         try
         {
@@ -55,11 +59,14 @@ public class PluginsTests
             Assert.That(catalog.Identities, Is.Empty);
             Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }));
 
-            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch());
-            Assert.That(catalog.Resolve([ShopsToolset.Shops.Wire()], withBrowser).Select(t => t.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }));
+            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
+                new NoSearch());
+            Assert.That(catalog.Resolve([ShopsToolset.Shops.Wire()], withBrowser).Select(t => t.Name),
+                Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }));
 
             var withoutBrowser = new ToolsetContext(new AgentOptions(), new NoSearch());
-            var refused = Assert.Throws<ToolsetException>(() => catalog.Resolve([ShopsToolset.Shops.Wire()], withoutBrowser))!;
+            var refused =
+                Assert.Throws<ToolsetException>(() => catalog.Resolve([ShopsToolset.Shops.Wire()], withoutBrowser))!;
             Assert.That(refused.Message, Does.Contain(ShopsToolset.Shops.Wire()).And.Contain("BROWSER_URL"));
         }
         finally
@@ -71,7 +78,9 @@ public class PluginsTests
     private sealed class NoSearch : IWebSearchProvider
     {
         public string Name => "none";
-        public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query, CancellationToken cancellationToken = default) =>
+
+        public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
+            CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 
@@ -82,14 +91,16 @@ public class PluginsTests
         // the file itself first, or IDENTITIES set only there would be read too late.
         string root = Directory.CreateTempSubdirectory("plugins-").FullName;
         string before = Environment.CurrentDirectory;
-        Assume.That(Environment.GetEnvironmentVariable("IDENTITIES"), Is.Null, "the process has no IDENTITIES of its own");
+        Assume.That(Environment.GetEnvironmentVariable("IDENTITIES"), Is.Null,
+            "the process has no IDENTITIES of its own");
         try
         {
             Directory.CreateDirectory(Path.Combine(root, "config"));
             File.WriteAllText(Path.Combine(root, "config", ".env"), "IDENTITIES=puls\n");
             Environment.CurrentDirectory = root;
 
-            Assert.That(Plugins.FromEnvironment().Identities.Select(i => i.Name), Is.EqualTo(new[] { IdentityKind.Puls.Wire() }));
+            Assert.That(Plugins.FromEnvironment().Identities.Select(i => i.Name),
+                Is.EqualTo(new[] { IdentityKind.Puls.Wire() }));
         }
         finally
         {

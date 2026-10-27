@@ -45,7 +45,13 @@ public static class BenchmarkDocuments
     public sealed record ModelUse(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
     /// <summary>One repeat of a mode: the toolsets and role it opened its sessions with and, once the repeat is done, its pass rates.</summary>
-    public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm, ModeRates? Rates = null);
+    public sealed record Mode(
+        string Name,
+        int Repeat,
+        IReadOnlyList<string> Toolsets,
+        string? Role,
+        string? Llm,
+        ModeRates? Rates = null);
 
     /// <summary>The pass rates the runner wrote when a repeat finished: pass@k and pass^k, over how many trials, and how many were left out or run again. We only keep them; the maths is the runner's.</summary>
     public sealed record ModeRates(double? PassAtK, double? PassHatK, int K, int Infrastructure, int Retried);
@@ -54,11 +60,25 @@ public static class BenchmarkDocuments
     public sealed record Total(decimal? Cost, string Currency, long Tokens, int Requests);
 
     /// <summary>How one conversation went: its scores, errors, time and each grader's verdict. `Order` is when it started, so the eval's own order holds.</summary>
-    public sealed record Conversation(ConversationKey Key, int Order, string? Role, JsonElement Scores, int Errors, double Seconds,
-        IReadOnlyList<Grade>? Grades = null, BenchmarkOutcome? Outcome = null);
+    public sealed record Conversation(
+        ConversationKey Key,
+        int Order,
+        string? Role,
+        JsonElement Scores,
+        int Errors,
+        double Seconds,
+        IReadOnlyList<Grade>? Grades = null,
+        BenchmarkOutcome? Outcome = null);
 
     /// <summary>One grader's verdict on a conversation, with its reason and, for a model judge, which model and prompt gave it.</summary>
-    public sealed record Grade(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason, string? JudgeModel = null, string? JudgePromptHash = null);
+    public sealed record Grade(
+        string Grader,
+        int Version,
+        double Score,
+        BenchmarkOutcome Outcome,
+        string Reason,
+        string? JudgeModel = null,
+        string? JudgePromptHash = null);
 
     /// <summary>One turn of a conversation, without its stream events: what was asked and answered, what the tools did, how long it took, and how it failed if it did.</summary>
     public sealed record Turn(

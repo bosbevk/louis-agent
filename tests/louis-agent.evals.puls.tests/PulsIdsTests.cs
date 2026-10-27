@@ -6,7 +6,8 @@ namespace LouisAgent.Evals.Puls.Tests;
 public class PulsIdsTests
 {
     private static IEnumerable<string> ConstantsOf(Type ids) =>
-        ids.GetFields().Where(f => f.IsLiteral && f.FieldType == typeof(string)).Select(f => (string)f.GetRawConstantValue()!);
+        ids.GetFields().Where(f => f.IsLiteral && f.FieldType == typeof(string))
+            .Select(f => (string)f.GetRawConstantValue()!);
 
     [Test]
     public void EveryRoutingTaskId_IsATaskOfTheRoutingDataset()

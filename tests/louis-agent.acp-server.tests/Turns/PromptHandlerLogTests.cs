@@ -25,7 +25,9 @@ public class PromptHandlerLogTests
         try
         {
             AgentLogging.Configure(null, mode);
-            var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Melktert."))), TestPaths.Agent());
+            var engine = new AgentEngine(new CompositeSkillProvider(),
+                new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Melktert."))),
+                TestPaths.Agent());
             var console = new ScriptedConsole();
             Task run = new AcpServer(engine, usageInChat: false, console.Input, console.Output).RunAsync();
 
@@ -33,8 +35,10 @@ public class PromptHandlerLogTests
             await console.LinesAsync(1);
             console.Send($$$"""{"jsonrpc":"2.0","id":2,"method":"session/new","params":{"cwd":"{{{folder}}}"}}""");
             var lines = await console.LinesAsync(2);
-            string session = JsonDocument.Parse(lines[1]).RootElement.GetProperty("result").GetProperty("sessionId").GetString()!;
-            console.Send($$$"""{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"{{{session}}}","prompt":[{"type":"text","text":"{{{Words}}}"}]}}""");
+            string session = JsonDocument.Parse(lines[1]).RootElement.GetProperty("result").GetProperty("sessionId")
+                .GetString()!;
+            console.Send(
+                $$$"""{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"{{{session}}}","prompt":[{"type":"text","text":"{{{Words}}}"}]}}""");
             console.End();
             await run.WaitAsync(TimeSpan.FromSeconds(30));
             return stderr.ToString();
@@ -54,7 +58,8 @@ public class PromptHandlerLogTests
 
         Assert.That(log, Does.Not.Contain("Malmesbury").And.Not.Contain("kook"));
         Assert.That(log, Does.Match(@"Raw parameters:\s*#[0-9a-f]{12} \(\d+\)"));
-        Assert.That(log, Does.Match(@"Prompt: \d+ chars: #[0-9a-f]{12} \(\d+\)"), "the count of characters stays; the text is a hash");
+        Assert.That(log, Does.Match(@"Prompt: \d+ chars: #[0-9a-f]{12} \(\d+\)"),
+            "the count of characters stays; the text is a hash");
     }
 
     [Test]

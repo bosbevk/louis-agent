@@ -1,4 +1,3 @@
-
 namespace LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 
 /// <summary>

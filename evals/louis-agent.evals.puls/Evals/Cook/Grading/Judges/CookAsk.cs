@@ -19,7 +19,9 @@ public sealed class CookAsk(int? people, string? town) : EvaluationContext("cook
     public static CookAsk Of(Trial trial)
     {
         var serves = CookExpectations.ServesOf(trial.Scenario);
-        int? people = serves.Count == 0 ? null : serves[Math.Min(Math.Max(trial.Transcript.Turns.Count, 1), serves.Count) - 1];
+        int? people = serves.Count == 0
+            ? null
+            : serves[Math.Min(Math.Max(trial.Transcript.Turns.Count, 1), serves.Count) - 1];
         return new CookAsk(people, CookExpectations.TownOf(trial.Scenario));
     }
 

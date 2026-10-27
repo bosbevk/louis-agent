@@ -14,5 +14,19 @@ public sealed record SliceScore(string Key, double Mean, int N);
 /// computes no rate; the rates are null when the slice had too few trials (<see cref="TooFew"/>), never 0. The cost is not here: the ledger prices a slice when it is read
 /// (<see cref="Reports.SlicePricer"/>), so an export carries none, and re-scoring an export can't carry a cost into a new run (ADR 0007).
 /// </summary>
-public sealed record BenchmarkSlice(string Mode, string Slice, int N, int Passed, int Failed, int Unknown, int Infrastructure, IReadOnlyList<string> Tasks,
-    bool TooFew, double? PassRate, double? PassAtK, double? PassHatK, IReadOnlyList<SliceGrader> Graders, IReadOnlyList<SliceKind> Kinds, IReadOnlyList<SliceScore> Scores);
+public sealed record BenchmarkSlice(
+    string Mode,
+    string Slice,
+    int N,
+    int Passed,
+    int Failed,
+    int Unknown,
+    int Infrastructure,
+    IReadOnlyList<string> Tasks,
+    bool TooFew,
+    double? PassRate,
+    double? PassAtK,
+    double? PassHatK,
+    IReadOnlyList<SliceGrader> Graders,
+    IReadOnlyList<SliceKind> Kinds,
+    IReadOnlyList<SliceScore> Scores);

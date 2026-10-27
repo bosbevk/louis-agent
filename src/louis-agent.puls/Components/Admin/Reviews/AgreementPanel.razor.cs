@@ -24,8 +24,10 @@ public partial class AgreementPanel
         _error = null;
         try
         {
-            byte[] zip = await Api.GetBytesAsync($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/labels?grader={Uri.EscapeDataString(grader)}");
-            await Js.InvokeVoidAsync("louisDownload", $"{grader}-labels-{RunId}.zip", Convert.ToBase64String(zip), "application/zip");
+            byte[] zip = await Api.GetBytesAsync(
+                $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/labels?grader={Uri.EscapeDataString(grader)}");
+            await Js.InvokeVoidAsync("louisDownload", $"{grader}-labels-{RunId}.zip", Convert.ToBase64String(zip),
+                "application/zip");
         }
         catch (AgentApiException ex)
         {

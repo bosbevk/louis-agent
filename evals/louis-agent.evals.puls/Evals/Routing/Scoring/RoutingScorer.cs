@@ -1,4 +1,3 @@
-
 using LouisAgent.Evals.Puls.Evals.Routing;
 using LouisAgent.Evals.Puls.Shared.Turns;
 
@@ -11,7 +10,8 @@ namespace LouisAgent.Evals.Puls.Evals.Routing.Scoring;
 public static class RoutingScorer
 {
     /// <summary>The calls that hand a question on (the Python's stream.DELEGATIONS).</summary>
-    private static readonly IReadOnlySet<string> Delegations = new HashSet<string> { "StartSubSession", "ContinueSubSession" };
+    private static readonly IReadOnlySet<string> Delegations = new HashSet<string>
+        { "StartSubSession", "ContinueSubSession" };
 
     /// <summary>One agent with every toolset this instance has, but none it could delegate with.</summary>
     public static IReadOnlyList<string> Baseline(IEnumerable<string> available) =>

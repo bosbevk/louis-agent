@@ -12,7 +12,8 @@ public class WireNameAttributeTests
         Plain,
     }
 
-    private static readonly JsonSerializerOptions Options = new() { Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) } };
+    private static readonly JsonSerializerOptions Options = new()
+    { Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) } };
 
     [Test]
     public void AMemberMarkedWireName_ParsesAndWritesBackItsName()

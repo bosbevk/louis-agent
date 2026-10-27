@@ -19,7 +19,8 @@ public sealed class BenchmarkCatalog
         _checks = new Lazy<IReadOnlyList<BenchmarkCheck>>(() => list);
     }
 
-    private BenchmarkCatalog(Func<IReadOnlyList<BenchmarkCheck>> checks) => _checks = new Lazy<IReadOnlyList<BenchmarkCheck>>(checks);
+    private BenchmarkCatalog(Func<IReadOnlyList<BenchmarkCheck>> checks) =>
+        _checks = new Lazy<IReadOnlyList<BenchmarkCheck>>(checks);
 
     /// <summary>Reads the listing now, so a warning lands in the start-up log rather than on the first request.</summary>
     public void Warm() => _ = _checks.Value;
@@ -36,6 +37,7 @@ public sealed class BenchmarkCatalog
             log.Log(LogLevel.Warning, ApiLogMessage.BenchmarkListingUnavailable, new { Reason = reason });
             return [];
         }
+
         return Merge(result.Evals);
     });
 

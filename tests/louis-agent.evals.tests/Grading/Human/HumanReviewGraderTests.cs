@@ -17,7 +17,9 @@ public class HumanReviewGraderTests
         public GraderKind Kind => kind;
         public bool Required => false;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotSupportedException();
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 
     private const string Question = "Is this a meal for the people asked for?";
@@ -27,7 +29,8 @@ public class HumanReviewGraderTests
     {
         var grader = HumanReviewGrader.For(new ModelGrader(), Question);
 
-        Assert.That((grader.Name, grader.Kind, grader.Required, grader.Version), Is.EqualTo(("meal-for-people.human", GraderKind.Human, false, 2)));
+        Assert.That((grader.Name, grader.Kind, grader.Required, grader.Version),
+            Is.EqualTo(("meal-for-people.human", GraderKind.Human, false, 2)));
         Assert.That((grader.Reviews, grader.Question), Is.EqualTo(("meal-for-people", Question)));
         Assert.That(grader.ExpectedKeys, Is.Empty);
     }
@@ -54,7 +57,8 @@ public class HumanReviewGraderTests
 
         var grade = await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
 
-        Assert.That((grade.Grader, grade.Outcome, grade.Score), Is.EqualTo(("meal-for-people.human", GradeOutcome.Pending, 0d)));
+        Assert.That((grade.Grader, grade.Outcome, grade.Score),
+            Is.EqualTo(("meal-for-people.human", GradeOutcome.Pending, 0d)));
         Assert.That(grade.Judge, Is.Null);
         Assert.That(grade.Reason, Does.Contain("person").And.Contain(Question));
     }
@@ -70,7 +74,8 @@ public class HumanReviewGraderTests
     }
 
     // The question a person is asked is the judge prompt's own title, read from it, so it is not typed twice.
-    [TestCase("# Judge: is this a meal for the people asked for\n\nYou check one answer.", "Is this a meal for the people asked for?")]
+    [TestCase("# Judge: is this a meal for the people asked for\n\nYou check one answer.",
+        "Is this a meal for the people asked for?")]
     [TestCase("# Is the recipe safe to eat?\n\nBody", "Is the recipe safe to eat?")]
     [TestCase("# Judge: does the plant need water?  \r\n\r\nBody", "Does the plant need water?")]
     public void TheQuestionIsThePromptsTitleLine(string prompt, string expected)
@@ -83,12 +88,14 @@ public class HumanReviewGraderTests
     [TestCase("#  \n\nBody")]
     public void ATitleWithNothingAfterIt_IsNoTitle_NotACrash(string prompt)
     {
-        Assert.That(() => ReviewQuestion.From(prompt), Throws.TypeOf<InvalidDataException>().With.Message.Contains("title"));
+        Assert.That(() => ReviewQuestion.From(prompt),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("title"));
     }
 
     [Test]
     public void APromptWithNoTitle_HasNoQuestion_SoNoReviewIsMadeForIt()
     {
-        Assert.That(() => ReviewQuestion.From("You check one answer."), Throws.TypeOf<InvalidDataException>().With.Message.Contains("title"));
+        Assert.That(() => ReviewQuestion.From("You check one answer."),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("title"));
     }
 }

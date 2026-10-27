@@ -16,7 +16,9 @@ public class ChromePageRendererIntegrationTests
     {
         string url = Outside.Stack("BROWSER_URL", "browser to render with");
 
-        var page = await new ChromePageRenderer(new ChromeWebBrowser(new Uri(url!))).RenderAsync(new Uri("https://example.com/"));
+        var page =
+            await new ChromePageRenderer(new ChromeWebBrowser(new Uri(url!))).RenderAsync(
+                new Uri("https://example.com/"));
 
         Assert.That(page.Text, Does.Contain("Example Domain"));
         Assert.That(page.Url, Does.StartWith("https://example.com"));

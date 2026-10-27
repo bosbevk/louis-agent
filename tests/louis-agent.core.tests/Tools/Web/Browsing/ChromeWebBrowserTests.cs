@@ -11,6 +11,7 @@ public class ChromeWebBrowserTests
 {
     [Test]
     public void ABrowserThatDoesntAnswer_IsAWebBrowserException_SayingSo() =>
-        Assert.That(() => new ChromeWebBrowser(new Uri("http://127.0.0.1:1")).VisitAsync(new Uri("https://example.com/")),
+        Assert.That(
+            () => new ChromeWebBrowser(new Uri("http://127.0.0.1:1")).VisitAsync(new Uri("https://example.com/")),
             Throws.TypeOf<WebBrowserException>().With.Message.Contains("127.0.0.1:1"));
 }

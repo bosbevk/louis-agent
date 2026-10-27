@@ -31,16 +31,20 @@ public static class ProtocolTranscripts
             var element = document.RootElement;
             if (element.GetProperty("event").GetString() != "mode") continue;
 
-            var toolsets = element.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString() ?? string.Empty).ToList();
-            return new EvalMode(element.GetProperty("mode").GetString()!, element.GetProperty("role").GetString() ?? string.Empty, toolsets);
+            var toolsets = element.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString() ?? string.Empty)
+                .ToList();
+            return new EvalMode(element.GetProperty("mode").GetString()!,
+                element.GetProperty("role").GetString() ?? string.Empty, toolsets);
         }
+
         throw new InvalidDataException(MessageText.Format(EvalErrorMessage.NoModeLine));
     }
 
     private static Transcript Collect(IEnumerable<string> lines, Func<JsonElement, bool> keep)
     {
         var events = new Dictionary<int, List<SessionEvent>>();
-        var sessions = new SortedDictionary<int, (string Session, string Question, double Seconds, TrialFailure? Failure)>();
+        var sessions =
+            new SortedDictionary<int, (string Session, string Question, double Seconds, TrialFailure? Failure)>();
         foreach (string line in lines)
         {
             if (!line.StartsWith('@')) continue;
@@ -59,26 +63,34 @@ public static class ProtocolTranscripts
                     list = [];
                     events[turn] = list;
                 }
-                list.Add(SessionEvent.From(element.GetProperty("type").GetString()!, element.GetProperty("data").Clone()));
+
+                list.Add(SessionEvent.From(element.GetProperty("type").GetString()!,
+                    element.GetProperty("data").Clone()));
             }
             else
             {
-                sessions[turn] = (element.GetProperty("session").GetString()!, element.GetProperty("question").GetString()!,
+                sessions[turn] = (element.GetProperty("session").GetString()!,
+                    element.GetProperty("question").GetString()!,
                     element.GetProperty("seconds").GetDouble(),
                     Failure(element));
             }
         }
 
         return new Transcript(sessions.Select(s => new TurnTranscript(s.Key, s.Value.Session, s.Value.Question,
-            events.TryGetValue(s.Key, out var list) ? list : [], TimeSpan.FromSeconds(s.Value.Seconds), s.Value.Failure)).ToList());
+            events.TryGetValue(s.Key, out var list) ? list : [], TimeSpan.FromSeconds(s.Value.Seconds),
+            s.Value.Failure)).ToList());
     }
 
     private static bool IsOf(JsonElement element, string mode, int repeat, string task) =>
         element.TryGetProperty("mode", out var m) && m.GetString() == mode
-        && element.TryGetProperty("repeat", out var r) && r.GetInt32() == repeat
-        && element.TryGetProperty("task", out var t) && t.GetString() == task;
+                                                  && element.TryGetProperty("repeat", out var r) &&
+                                                  r.GetInt32() == repeat
+                                                  && element.TryGetProperty("task", out var t) && t.GetString() == task;
 
     /// <summary>The infrastructure failure a turn's line names; none when it names none, or one this build doesn't know (a run written by a newer harness).</summary>
     private static TrialFailure? Failure(JsonElement element) =>
-        element.TryGetProperty("failure", out var name) && SettingChoice.TryParse(name.GetString(), out TrialFailure? failure) ? failure : null;
+        element.TryGetProperty("failure", out var name) &&
+        SettingChoice.TryParse(name.GetString(), out TrialFailure? failure)
+            ? failure
+            : null;
 }

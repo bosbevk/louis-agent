@@ -9,7 +9,11 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>What the ledger gave a finished run (F31, F18 step 5c.2): its total, its settings with the prompt hashes its rows carried, its requests, and the lines for its log.</summary>
-internal sealed record LedgerJoinResult(Total? Total, IReadOnlyDictionary<string, string>? Settings, IReadOnlyList<Request> Requests, IReadOnlyList<string> Log);
+internal sealed record LedgerJoinResult(
+    Total? Total,
+    IReadOnlyDictionary<string, string>? Settings,
+    IReadOnlyList<Request> Requests,
+    IReadOnlyList<string> Log);
 
 /// <summary>
 /// The run's requests and total from the ledger, read once the script has ended (taken out of <see cref="BenchmarkRecorder"/>, F18 step 5c.2, which was past 200 lines). A request's
@@ -18,7 +22,8 @@ internal sealed record LedgerJoinResult(Total? Total, IReadOnlyDictionary<string
 /// </summary>
 internal static class LedgerJoin
 {
-    public static LedgerJoinResult Of(BenchmarkRun run, string? rescoreOf, string? ledgerDirectory, IReadOnlyDictionary<string, string>? settings,
+    public static LedgerJoinResult Of(BenchmarkRun run, string? rescoreOf, string? ledgerDirectory,
+        IReadOnlyDictionary<string, string>? settings,
         IReadOnlyList<ModelInfo>? declared, IReadOnlyDictionary<string, ConversationKey> sessions)
     {
         var free = new LedgerJoinResult(new Total(0m, "USD", 0, 0), settings, [], []);
@@ -27,11 +32,13 @@ internal static class LedgerJoin
         IReadOnlyList<UsageRecord> ofRun;
         try
         {
-            ofRun = BenchmarkLedger.OfRun(run.Id, BenchmarkLedger.Read(ledgerDirectory, run.StartedAt, run.EndedAt ?? DateTimeOffset.UtcNow));
+            ofRun = BenchmarkLedger.OfRun(run.Id,
+                BenchmarkLedger.Read(ledgerDirectory, run.StartedAt, run.EndedAt ?? DateTimeOffset.UtcNow));
         }
         catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
         {
-            return new LedgerJoinResult(null, settings, [], [MessageText.Format(ApiUserText.BenchmarkLedgerUnreadable, new { Reason = ex.Message })]);
+            return new LedgerJoinResult(null, settings, [],
+                [MessageText.Format(ApiUserText.BenchmarkLedgerUnreadable, new { Reason = ex.Message })]);
         }
 
         // A re-score asks the model nothing, unless a grader does (a judge, F18 step 6.1b): it has rows only then, and they are its cost, shown as any run's.
@@ -40,7 +47,10 @@ internal static class LedgerJoin
         var requests = BenchmarkLedger.Join(run.Id, ofRun, sessions);
         // F18 step 2a: a row on a model the run didn't declare is named in the run's log, so a trend can't mix it in silently.
         var unlisted = RunModels.Unlisted(declared, requests.Select(r => r.Model));
-        return new LedgerJoinResult(BenchmarkLedger.TotalOf(ofRun), BenchmarkSettings.WithPromptHashes(settings, BenchmarkLedger.PromptHashesOf(ofRun)), requests,
-            unlisted.Count > 0 ? [MessageText.Format(ApiUserText.BenchmarkModelUnlisted, new { Model = string.Join(", ", unlisted) })] : []);
+        return new LedgerJoinResult(BenchmarkLedger.TotalOf(ofRun),
+            BenchmarkSettings.WithPromptHashes(settings, BenchmarkLedger.PromptHashesOf(ofRun)), requests,
+            unlisted.Count > 0
+                ? [MessageText.Format(ApiUserText.BenchmarkModelUnlisted, new { Model = string.Join(", ", unlisted) })]
+                : []);
     }
 }

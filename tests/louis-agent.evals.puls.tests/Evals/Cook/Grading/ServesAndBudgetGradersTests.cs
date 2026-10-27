@@ -16,9 +16,11 @@ public class ServesAndBudgetGradersTests
         Trial(CookEvalMode, "cook-x", expected, "Stellenbosch, Wes-Kaap, Suid-Afrika",
             answers.Select((answer, i) => Turn(i + 1, [Text(answer)])).ToArray());
 
-    private static Task<Grade> Serves(Trial trial) => new ServesAsAsked().GradeAsync(trial, CancellationToken.None).AsTask();
+    private static Task<Grade> Serves(Trial trial) =>
+        new ServesAsAsked().GradeAsync(trial, CancellationToken.None).AsTask();
 
-    private static Task<Grade> Budget(Trial trial) => new WithinBudget().GradeAsync(trial, CancellationToken.None).AsTask();
+    private static Task<Grade> Budget(Trial trial) =>
+        new WithinBudget().GradeAsync(trial, CancellationToken.None).AsTask();
 
     // --- ServesAsAsked
 
@@ -27,7 +29,8 @@ public class ServesAndBudgetGradersTests
     {
         var grader = new ServesAsAsked();
 
-        Assert.That((grader.Name, grader.Kind, grader.Required), Is.EqualTo(("serves-as-asked", GraderKind.FixedRule, false)));
+        Assert.That((grader.Name, grader.Kind, grader.Required),
+            Is.EqualTo(("serves-as-asked", GraderKind.FixedRule, false)));
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "serves" }));
     }
 
@@ -81,7 +84,8 @@ public class ServesAndBudgetGradersTests
     public async Task ServesIsUnknown_ForAnInfrastructureFailure_EvenWhenTheAnswerNamesTheNumber()
     {
         // The turn has a good answer: without the infrastructure check this would pass, so the reason shows the check ran.
-        var failed = Trial(CookEvalMode, "cook-x", """{"serves":4}""", null, Turn(1, [Text("Hier is bobotie vir 4 mense.")], TrialFailure.Timeout));
+        var failed = Trial(CookEvalMode, "cook-x", """{"serves":4}""", null,
+            Turn(1, [Text("Hier is bobotie vir 4 mense.")], TrialFailure.Timeout));
 
         var grade = await Serves(failed);
 
@@ -100,7 +104,8 @@ public class ServesAndBudgetGradersTests
     {
         var grader = new WithinBudget();
 
-        Assert.That((grader.Name, grader.Kind, grader.Required), Is.EqualTo(("within-budget", GraderKind.FixedRule, true)));
+        Assert.That((grader.Name, grader.Kind, grader.Required),
+            Is.EqualTo(("within-budget", GraderKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "budget" }));
     }
 
@@ -120,7 +125,8 @@ public class ServesAndBudgetGradersTests
     {
         var byLine = await Budget(Asked("""{"budget":150}""", "Totaal: R150,01"));
         var byRows = await Budget(Asked("""{"budget":150}""",
-            "| Bestanddeel | Checkers |\n|---|---|\n| bees | R120,00 [a](" + Checkers + "1) |\n| uie | R45,00 [b](" + Checkers + "2) |\n"));
+            "| Bestanddeel | Checkers |\n|---|---|\n| bees | R120,00 [a](" + Checkers + "1) |\n| uie | R45,00 [b](" +
+            Checkers + "2) |\n"));
 
         Assert.That(byLine.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(byLine.Reason, Does.Contain("150,01").Or.Contain("150.01"));
@@ -151,7 +157,8 @@ public class ServesAndBudgetGradersTests
         Assert.That((await Budget(Asked("{}", "Totaal: R999,00"))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
         // A turn that failed but whose answer is within the budget: without the infrastructure check this would pass.
-        var failed = await Budget(Trial(CookEvalMode, "cook-x", """{"budget":150}""", null, Turn(1, [Text("Totaal: R100,00")], TrialFailure.Transport)));
+        var failed = await Budget(Trial(CookEvalMode, "cook-x", """{"budget":150}""", null,
+            Turn(1, [Text("Totaal: R100,00")], TrialFailure.Transport)));
 
         Assert.That(failed.Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(failed.Reason, Does.Contain("infrastructure"));

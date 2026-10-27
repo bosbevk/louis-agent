@@ -30,7 +30,8 @@ public class ReplayStoreTests
 
         string trials = Path.Combine(folder.Path, "trials");
         Assert.That(Path.GetDirectoryName(folder.Trials.Single()), Is.EqualTo(trials));
-        Assert.That(Directory.GetDirectories(folder.Path).Select(Path.GetFileName), Is.EquivalentTo(new[] { "answers", "trials" }));
+        Assert.That(Directory.GetDirectories(folder.Path).Select(Path.GetFileName),
+            Is.EquivalentTo(new[] { "answers", "trials" }));
         Assert.That(Directory.GetFiles(folder.Path), Is.Empty, "nothing beside the two folders");
     }
 
@@ -87,7 +88,8 @@ public class ReplayStoreTests
     public async Task AFoundPage_ComesBackWithItsFields_AndAFoundFailureWithItsText()
     {
         using var folder = new ReplayFolder();
-        var page = new ReplayPage("https://example.com/after", "<html>é</html>", ["{}"], "r", [new BrowserCookie("a", "b", ".example.com")]);
+        var page = new ReplayPage("https://example.com/after", "<html>é</html>", ["{}"], "r",
+            [new BrowserCookie("a", "b", ".example.com")]);
         await folder.Store.SaveAnswerAsync("t", Ask, page);
         await folder.Store.SaveFailureAsync("t", Bad, "it refused: ‘quoted’");
 
@@ -113,9 +115,12 @@ public class ReplayStoreTests
         await folder.Store.StartTrialAsync("run:cook:1/bobotie");
         await folder.Store.SaveAnswerAsync("run:cook:1/bobotie", Ask, second);
 
-        var found = (ReplayAnswer<ReplayPage>.Answered)(await folder.Store.FindAsync<ReplayPage>("run:cook:1/bobotie", Ask))!;
-        Assert.That(found.Value.Html, Is.EqualTo("<html>second</html>"), "the second attempt's answer, not the first's");
-        Assert.That(await folder.Store.FindAsync<ReplayPage>("run:cook:1/bobotie", Other), Is.Null, "nothing of the first attempt is left");
+        var found =
+            (ReplayAnswer<ReplayPage>.Answered)(await folder.Store.FindAsync<ReplayPage>("run:cook:1/bobotie", Ask))!;
+        Assert.That(found.Value.Html, Is.EqualTo("<html>second</html>"),
+            "the second attempt's answer, not the first's");
+        Assert.That(await folder.Store.FindAsync<ReplayPage>("run:cook:1/bobotie", Other), Is.Null,
+            "nothing of the first attempt is left");
         Assert.That(await folder.Store.AsksAsync("run:cook:1/bobotie", ReplayKind.Visit), Is.EqualTo(new[] { Ask }));
     }
 
@@ -170,7 +175,8 @@ public class ReplayStoreTests
     {
         Assert.Throws<System.Text.Json.JsonException>(() =>
             System.Text.Json.JsonSerializer.Deserialize<ReplayKind>("0", ReplayStore.Json));
-        Assert.That(System.Text.Json.JsonSerializer.Serialize(ReplayKind.Visit, ReplayStore.Json), Is.EqualTo("\"visit\""));
+        Assert.That(System.Text.Json.JsonSerializer.Serialize(ReplayKind.Visit, ReplayStore.Json),
+            Is.EqualTo("\"visit\""));
     }
 
     [Test]
@@ -205,7 +211,8 @@ public class ReplayStoreTests
         var clock = ReplayAsk.Of(ReplayKind.Clock, new { });
         await folder.Store.SaveAnswerAsync("t", clock, new DateTimeOffset(2026, 10, 25, 6, 0, 0, TimeSpan.Zero));
         string index = folder.Trials.Single();
-        string hash = System.Text.Json.JsonDocument.Parse(File.ReadAllLines(index).Single()).RootElement.GetProperty("hash").GetString()!;
+        string hash = System.Text.Json.JsonDocument.Parse(File.ReadAllLines(index).Single()).RootElement
+            .GetProperty("hash").GetString()!;
         File.WriteAllText(index, File.ReadAllText(index).Replace(hash, "../../x"));
 
         Assert.That(await folder.Store.FindAsync<DateTimeOffset>("t", clock), Is.Null);
@@ -213,5 +220,6 @@ public class ReplayStoreTests
 
     private static bool SamePage(ReplayPage? a, ReplayPage? b) =>
         a is not null && b is not null && a.Url == b.Url && a.Html == b.Html && a.Captured.SequenceEqual(b.Captured)
-        && a.ScriptResult == b.ScriptResult && (a.Cookies ?? []).SequenceEqual(b.Cookies ?? []) && (a.Cookies is null) == (b.Cookies is null);
+        && a.ScriptResult == b.ScriptResult && (a.Cookies ?? []).SequenceEqual(b.Cookies ?? []) &&
+        (a.Cookies is null) == (b.Cookies is null);
 }

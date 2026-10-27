@@ -20,8 +20,14 @@ public sealed record ListRequest : CommandLineRequest;
 /// with <paramref name="Model"/> set: the model's answers come from the recording too (step 4e), so it costs nothing.
 /// <paramref name="RescoreOf"/> (F18 step 5b, <c>--rescore {runId}</c>) re-grades that stored run's transcripts, read from stdin, and opens no session.
 /// </summary>
-public sealed record RunRequest(string Name, int Repeat, WebReplayMode? Web = null, string? Of = null, bool Model = false,
-    SplitSelection Split = SplitSelection.Dev, string? RescoreOf = null) : CommandLineRequest;
+public sealed record RunRequest(
+    string Name,
+    int Repeat,
+    WebReplayMode? Web = null,
+    string? Of = null,
+    bool Model = false,
+    SplitSelection Split = SplitSelection.Dev,
+    string? RescoreOf = null) : CommandLineRequest;
 
 /// <summary>
 /// <c>--calibrate {eval} {grader} [--labels -]</c> (F18 step 6.3): asks a model grader about every labelled answer of the eval and prints how often it agrees with the person.
@@ -33,7 +39,8 @@ public sealed record CalibrateRequest(string Eval, string Grader, bool LabelsOnS
 /// <c>--label-sheet {eval} {grader} {runId} {folder} [{count}]</c> (F18 step 6.3): writes up to <paramref name="Count"/> label files, for a person to fill in, from a stored run's
 /// protocol export on stdin (as <c>--rescore</c> reads it).
 /// </summary>
-public sealed record LabelSheetRequest(string Eval, string Grader, string RunId, string Folder, int Count) : CommandLineRequest;
+public sealed record LabelSheetRequest(string Eval, string Grader, string RunId, string Folder, int Count)
+    : CommandLineRequest;
 
 /// <summary>The command line: <c>--list</c>, or <c>run {name}</c> and its flags. A refusal is a <see cref="RunnerException"/>.</summary>
 public static class CommandLine
@@ -52,9 +59,12 @@ public static class CommandLine
         if (args is ["--list"]) return new ListRequest();
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
         if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
-        if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where]) return new CalibrateRequest(fromStdin, judged, LabelsOnStdin: ParseLabels(where));
-        if (args is ["--label-sheet", var sheeted, var graded, var runId, var folder]) return new LabelSheetRequest(sheeted, graded, ParseOf(runId), folder, DefaultLabelCount);
-        if (args is ["--label-sheet", var named, var by, var run, var into, var count]) return new LabelSheetRequest(named, by, ParseOf(run), into, ParseCount(count));
+        if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where])
+            return new CalibrateRequest(fromStdin, judged, LabelsOnStdin: ParseLabels(where));
+        if (args is ["--label-sheet", var sheeted, var graded, var runId, var folder])
+            return new LabelSheetRequest(sheeted, graded, ParseOf(runId), folder, DefaultLabelCount);
+        if (args is ["--label-sheet", var named, var by, var run, var into, var count])
+            return new LabelSheetRequest(named, by, ParseOf(run), into, ParseCount(count));
         if (args is ["--calibrate", ..] or ["--label-sheet", ..]) throw Refuse(RunnerMessage.Usage, null);
         if (args.Count == 0 || args[0] == "run") throw Refuse(RunnerMessage.Usage, null);
         throw Refuse(RunnerMessage.UnknownArgument, new { Argument = args[0] });
@@ -76,36 +86,53 @@ public static class CommandLine
             string value = rest[++i];
             switch (flag)
             {
-                case "--repeat": repeat = ParseRepeat(value); shapesARun = true; break;
-                case "--web": web = ParseWeb(value); shapesARun = true; break;
+                case "--repeat":
+                    repeat = ParseRepeat(value);
+                    shapesARun = true;
+                    break;
+                case "--web":
+                    web = ParseWeb(value);
+                    shapesARun = true;
+                    break;
                 case "--of": of = ParseOf(value); break;
-                case "--replay": replay = ParseOf(value); shapesARun = true; break;
-                case "--split": split = ParseSplit(value); shapesARun = true; break;
+                case "--replay":
+                    replay = ParseOf(value);
+                    shapesARun = true;
+                    break;
+                case "--split":
+                    split = ParseSplit(value);
+                    shapesARun = true;
+                    break;
                 case "--rescore": rescore = ParseOf(value); break;
                 default: throw Refuse(RunnerMessage.UnknownArgument, new { Argument = flag });
             }
         }
+
         if (rescore is not null)
         {
             if (shapesARun || of is not null) throw Refuse(RunnerMessage.RescoreExcludesRunFlags, null);
             return new RunRequest(name, repeat, RescoreOf: rescore);
         }
+
         if (replay is not null)
         {
             if (web is not null || of is not null) throw Refuse(RunnerMessage.ReplayExcludesWebAndOf, null);
             return new RunRequest(name, repeat, WebReplayMode.Replay, replay, Model: true, Split: split);
         }
+
         if (web == WebReplayMode.Replay && of is null) throw Refuse(RunnerMessage.ReplayNeedsOf, null);
         if (web != WebReplayMode.Replay && of is not null) throw Refuse(RunnerMessage.OfNeedsReplay, null);
         return new RunRequest(name, repeat, web, of, Split: split);
     }
 
     /// <summary><c>--labels</c> takes only <c>-</c>, stdin (6a.5a): the dataset's folder is where labels live otherwise.</summary>
-    private static bool ParseLabels(string value) => value == "-" ? true : throw Refuse(RunnerMessage.LabelsOnlyStdin, new { Value = value });
+    private static bool ParseLabels(string value) =>
+        value == "-" ? true : throw Refuse(RunnerMessage.LabelsOnlyStdin, new { Value = value });
 
     private static int ParseCount(string value)
     {
-        if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int n) || n < 1) throw Refuse(RunnerMessage.BadLabelCount, new { Value = value });
+        if (!int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out int n) || n < 1)
+            throw Refuse(RunnerMessage.BadLabelCount, new { Value = value });
         return n;
     }
 
@@ -120,7 +147,8 @@ public static class CommandLine
     private static WebReplayMode ParseWeb(string value)
     {
         if (!SettingChoice.TryParse(value, out WebReplayMode? web) || web is null)
-            throw Refuse(RunnerMessage.UnknownWeb, new { Value = value, Supported = string.Join(", ", SettingChoice.Names<WebReplayMode>()) });
+            throw Refuse(RunnerMessage.UnknownWeb,
+                new { Value = value, Supported = string.Join(", ", SettingChoice.Names<WebReplayMode>()) });
         return web.Value;
     }
 
@@ -128,11 +156,13 @@ public static class CommandLine
     private static SplitSelection ParseSplit(string value)
     {
         if (!SettingChoice.TryParse(value, out SplitSelection? split, SplitAliases) || split is null)
-            throw Refuse(RunnerMessage.UnknownSplit, new { Value = value, Supported = string.Join(", ", SettingChoice.Names<SplitSelection>()) });
+            throw Refuse(RunnerMessage.UnknownSplit,
+                new { Value = value, Supported = string.Join(", ", SettingChoice.Names<SplitSelection>()) });
         return split.Value;
     }
 
-    private static readonly IReadOnlyDictionary<string, SplitSelection> SplitAliases = new Dictionary<string, SplitSelection> { ["held-out"] = SplitSelection.HeldOut };
+    private static readonly IReadOnlyDictionary<string, SplitSelection> SplitAliases =
+        new Dictionary<string, SplitSelection> { ["held-out"] = SplitSelection.HeldOut };
 
     /// <summary>A run id's characters only, <c>[A-Za-z0-9_-]</c>: the API writes the trial's key from it, so it never carries a separator.</summary>
     private static string ParseOf(string value)
@@ -142,5 +172,6 @@ public static class CommandLine
         return value;
     }
 
-    private static RunnerException Refuse(RunnerMessage message, object? values) => new(MessageText.Format(message, values));
+    private static RunnerException Refuse(RunnerMessage message, object? values) =>
+        new(MessageText.Format(message, values));
 }

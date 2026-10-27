@@ -9,12 +9,12 @@ namespace LouisAgent.Api.Benchmarks.Reports;
 public static class RunModels
 {
     /// <summary>The models the ledger's rows name that the run's declared models don't list; none when the run declared none.</summary>
-    public static IReadOnlyList<string> Unlisted(IReadOnlyList<BenchmarkProtocol.ModelInfo>? declared, IEnumerable<string?> rowModels)
+    public static IReadOnlyList<string> Unlisted(IReadOnlyList<BenchmarkProtocol.ModelInfo>? declared,
+        IEnumerable<string?> rowModels)
     {
         // A model that is null is unknown: it declares nothing to check the rows against.
         var listed = declared?.Where(m => m.Model is not null).Select(m => m.Model!).ToHashSet();
         if (listed is null || listed.Count == 0) return [];
         return rowModels.OfType<string>().Where(m => !listed.Contains(m)).Distinct().ToList();
     }
-
 }

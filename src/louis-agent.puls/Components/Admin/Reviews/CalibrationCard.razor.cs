@@ -19,13 +19,16 @@ public partial class CalibrationCard : IDisposable
     [Parameter, EditorRequired] public string RunId { get; set; } = "";
 
     /// <summary>The judge (the model grader) to check.</summary>
-    [Parameter, EditorRequired] public string Grader { get; set; } = "";
+    [Parameter, EditorRequired]
+    public string Grader { get; set; } = "";
 
     /// <summary>Whether anyone has passed or failed an answer of this judge: without a label there is nothing to check against.</summary>
-    [Parameter] public bool HasLabels { get; set; }
+    [Parameter]
+    public bool HasLabels { get; set; }
 
     /// <summary>How long between looks at the running check; a test shortens it.</summary>
-    [Parameter] public TimeSpan Poll { get; set; } = TimeSpan.FromSeconds(2);
+    [Parameter]
+    public TimeSpan Poll { get; set; } = TimeSpan.FromSeconds(2);
 
     private IReadOnlyList<CalibrationReportView> _reports = [];
     private bool _loading = true, _running;
@@ -46,7 +49,9 @@ public partial class CalibrationCard : IDisposable
     {
         try
         {
-            _reports = CalibrationView.Of(await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/calibrations"));
+            _reports = CalibrationView.Of(
+                await Api.GetAsync<JsonElement>(
+                    $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/calibrations"));
         }
         catch (AgentApiException ex)
         {
@@ -65,7 +70,9 @@ public partial class CalibrationCard : IDisposable
         int before = _reports.Count;
         try
         {
-            var row = await Api.PostAsync($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/calibrations/{Uri.EscapeDataString(Grader)}", new { });
+            var row = await Api.PostAsync(
+                $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/calibrations/{Uri.EscapeDataString(Grader)}",
+                new { });
             string id = row.GetProperty("id").GetString() ?? "";
             // The check runs in the API's runner; its row says when it has ended, and its last line why, when it failed (its lines are not streamed here).
             while (Text(row, "status") == "running" && Text(row, "id") == id)
@@ -74,6 +81,7 @@ public partial class CalibrationCard : IDisposable
                 row = await Api.GetAsync<JsonElement>("v1/admin/benchmarks/runs/current");
                 if (_gone.IsCancellationRequested) return;
             }
+
             if (Text(row, "status") == "failed") _error = CalibrationText.Failed(Text(row, "last_line"));
             await LoadAsync();
             if (_error is null && _reports.Count == before) _error = CalibrationText.NoReportKept;
@@ -92,7 +100,8 @@ public partial class CalibrationCard : IDisposable
         }
     }
 
-    private static string? Text(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    private static string? Text(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
 
     /// <summary>The check's time as the page shows times: the viewer's clock.</summary>
     private static string When(CalibrationReportView r) => r.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm");

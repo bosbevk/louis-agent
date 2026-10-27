@@ -8,7 +8,8 @@ namespace LouisAgent.Api.Tests.Sessions.Requests;
 // parent's `of`), and must never clear it. Written first: FreshTrial did not exist.
 public class ReplayFreshTrialTests
 {
-    private static CreateSessionRequest Request(ReplayRequest replay) => new("bobotie", "run_1:puls-cook:1", null, Replay: replay);
+    private static CreateSessionRequest Request(ReplayRequest replay) =>
+        new("bobotie", "run_1:puls-cook:1", null, Replay: replay);
 
     private static string? Fresh(ReplayRequest sent, bool resolved = true)
     {

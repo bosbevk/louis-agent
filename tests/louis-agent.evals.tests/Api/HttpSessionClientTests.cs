@@ -12,12 +12,16 @@ namespace LouisAgent.Evals.Tests.Api;
 // NotImplementedException on the red run. The API is a stub handler, so no network and no model.
 public class HttpSessionClientTests
 {
-    private static readonly EvalMode Mode = new(SampleMode.Beta, "puls/voice-af", [SampleToolset.Gamma, SampleToolset.Alpha]);
+    private static readonly EvalMode Mode = new(SampleMode.Beta, "puls/voice-af",
+        [SampleToolset.Gamma, SampleToolset.Alpha]);
 
-    private static SessionRequest Request(string? place = "Malmesbury, Wes-Kaap, Suid-Afrika", WebReplayRequest? replay = null) =>
-        new(Mode, place, "Africa/Johannesburg", "cook-malmesbury", 2, "run_7:puls-cook:2", replay ?? new WebReplayRequest(WebReplayMode.Record, null));
+    private static SessionRequest Request(string? place = "Malmesbury, Wes-Kaap, Suid-Afrika",
+        WebReplayRequest? replay = null) =>
+        new(Mode, place, "Africa/Johannesburg", "cook-malmesbury", 2, "run_7:puls-cook:2",
+            replay ?? new WebReplayRequest(WebReplayMode.Record, null));
 
-    private static (HttpSessionClient Client, StubHandler Handler) ClientOver(Func<HttpRequestMessage, HttpResponseMessage> respond)
+    private static (HttpSessionClient Client, StubHandler Handler) ClientOver(
+        Func<HttpRequestMessage, HttpResponseMessage> respond)
     {
         var handler = new StubHandler(respond);
         return (new HttpSessionClient(HttpSessionClient.CreateHttp(null, null, handler)), handler);
@@ -44,7 +48,8 @@ public class HttpSessionClientTests
         var (method, url, text) = handler.Requests.Single();
         Assert.That((method, url), Is.EqualTo((HttpMethod.Post, "http://127.0.0.1:5070/v1/sessions")));
         var body = JsonDocument.Parse(text!).RootElement;
-        Assert.That(body.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
+        Assert.That(body.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
+            Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
         Assert.That(body.GetProperty("role").GetString(), Is.EqualTo("puls/voice-af"));
         Assert.That(body.GetProperty("time_zone").GetString(), Is.EqualTo("Africa/Johannesburg"));
         Assert.That(body.GetProperty("location").GetString(), Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
@@ -64,7 +69,8 @@ public class HttpSessionClientTests
     [Test]
     public async Task TheReplayIsAlwaysSent_WebIsItsLowerCaseName_AndLeftOutWhenNull()
     {
-        var recording = (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Record, null)))).GetProperty("replay");
+        var recording =
+            (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Record, null)))).GetProperty("replay");
         var nothing = (await OpenBody(Request(replay: new WebReplayRequest(null, null)))).GetProperty("replay");
 
         Assert.That(recording.GetProperty("web").GetString(), Is.EqualTo("record"));
@@ -76,9 +82,12 @@ public class HttpSessionClientTests
     public async Task OfIsSentOnAReplayOnly_AndModelIsTrueOnlyWhenAsked()
     {
         const string trial = "run_6:puls-cook:2/cook-malmesbury";
-        var recording = (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Record, null)))).GetProperty("replay");
-        var replay = (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Replay, trial)))).GetProperty("replay");
-        var withModel = (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Replay, trial, true)))).GetProperty("replay");
+        var recording =
+            (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Record, null)))).GetProperty("replay");
+        var replay =
+            (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Replay, trial)))).GetProperty("replay");
+        var withModel = (await OpenBody(Request(replay: new WebReplayRequest(WebReplayMode.Replay, trial, true))))
+            .GetProperty("replay");
 
         Assert.That(recording.TryGetProperty("of", out _), Is.False);
         Assert.That(replay.GetProperty("of").GetString(), Is.EqualTo(trial));
@@ -90,14 +99,17 @@ public class HttpSessionClientTests
     public async Task TheKeyIsSentWhenSet_AndNotWithout()
     {
         var seen = new List<string?>();
+
         HttpResponseMessage Record(HttpRequestMessage request)
         {
             seen.Add(request.Headers.TryGetValues("x-api-key", out var values) ? values.Single() : null);
             return Json("""{"toolsets":[]}""");
         }
 
-        await new HttpSessionClient(HttpSessionClient.CreateHttp(null, "secret", new StubHandler(Record))).ToolsetsAsync(CancellationToken.None);
-        await new HttpSessionClient(HttpSessionClient.CreateHttp(null, null, new StubHandler(Record))).ToolsetsAsync(CancellationToken.None);
+        await new HttpSessionClient(HttpSessionClient.CreateHttp(null, "secret", new StubHandler(Record)))
+            .ToolsetsAsync(CancellationToken.None);
+        await new HttpSessionClient(HttpSessionClient.CreateHttp(null, null, new StubHandler(Record))).ToolsetsAsync(
+            CancellationToken.None);
 
         Assert.That(seen, Is.EqualTo(new string?[] { "secret", null }));
     }
@@ -117,44 +129,54 @@ public class HttpSessionClientTests
     public async Task ToolsetsAreOnlyTheAvailableOnes()
     {
         var (client, handler) = ClientOver(_ => Json(SampleToolset.Fill("""
-            {"default":["skills"],"toolsets":[
-              {"name":"<Alpha>","available":true},{"name":"<Beta>","available":false,"missing_settings":["SHOP_CATALOGUES"]},{"name":"<Gamma>","available":true}]}
-            """)));
+                                                                        {"default":["skills"],"toolsets":[
+                                                                          {"name":"<Alpha>","available":true},{"name":"<Beta>","available":false,"missing_settings":["SHOP_CATALOGUES"]},{"name":"<Gamma>","available":true}]}
+                                                                        """)));
 
         var toolsets = await client.ToolsetsAsync(CancellationToken.None);
 
         Assert.That(toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Gamma }));
-        Assert.That((handler.Requests.Single().Method, handler.Requests.Single().Url), Is.EqualTo((HttpMethod.Get, "http://127.0.0.1:5070/v1/toolsets")));
+        Assert.That((handler.Requests.Single().Method, handler.Requests.Single().Url),
+            Is.EqualTo((HttpMethod.Get, "http://127.0.0.1:5070/v1/toolsets")));
     }
 
     [Test]
     public async Task ASendPostsTheMessage_AndYieldsTheStreamsEventsInOrder()
     {
-        const string stream = "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"session_id\":\"sess_1\"}}\n\n"
+        const string stream =
+            "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"session_id\":\"sess_1\"}}\n\n"
             + "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"Hallo\"}}\n\n"
             + "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n";
         var (client, handler) = ClientOver(_ => new HttpResponseMessage(HttpStatusCode.OK)
-            { Content = new StringContent(stream, Encoding.UTF8, "text/event-stream") });
+        { Content = new StringContent(stream, Encoding.UTF8, "text/event-stream") });
 
         var events = new List<SessionEvent>();
         await foreach (var e in client.SendAsync("sess_1", "Gee my 'n resep", CancellationToken.None)) events.Add(e);
 
-        Assert.That(events.Select(e => e.Type), Is.EqualTo(new[] { "message_start", "content_block_delta", "message_stop" }));
+        Assert.That(events.Select(e => e.Type),
+            Is.EqualTo(new[] { "message_start", "content_block_delta", "message_stop" }));
         var (method, url, body) = handler.Requests.Single();
         Assert.That((method, url), Is.EqualTo((HttpMethod.Post, "http://127.0.0.1:5070/v1/sessions/sess_1/messages")));
-        Assert.That(JsonDocument.Parse(body!).RootElement.GetProperty("message").GetString(), Is.EqualTo("Gee my 'n resep"));
+        Assert.That(JsonDocument.Parse(body!).RootElement.GetProperty("message").GetString(),
+            Is.EqualTo("Gee my 'n resep"));
     }
 
-    [TestCase(HttpStatusCode.BadRequest, """{"type":"error","error":{"type":"invalid_request","message":"Unknown role 'x'."}}""", 400, "Unknown role 'x'.")]
-    [TestCase(HttpStatusCode.InternalServerError, """{"type":"error","error":{"type":"api_error","message":"The model is down."}}""", 500, "The model is down.")]
+    [TestCase(HttpStatusCode.BadRequest,
+        """{"type":"error","error":{"type":"invalid_request","message":"Unknown role 'x'."}}""", 400,
+        "Unknown role 'x'.")]
+    [TestCase(HttpStatusCode.InternalServerError,
+        """{"type":"error","error":{"type":"api_error","message":"The model is down."}}""", 500, "The model is down.")]
     public void ANon2xxThrowsWithTheApisMessage(HttpStatusCode status, string body, int code, string message)
     {
         var (client, _) = ClientOver(_ => Json(body, status));
 
-        var open = Assert.ThrowsAsync<EvalApiException>(async () => await client.OpenAsync(Request(), CancellationToken.None));
+        var open = Assert.ThrowsAsync<EvalApiException>(async () =>
+            await client.OpenAsync(Request(), CancellationToken.None));
         var send = Assert.ThrowsAsync<EvalApiException>(async () =>
         {
-            await foreach (var _ in client.SendAsync("sess_1", "Hallo", CancellationToken.None)) { }
+            await foreach (var _ in client.SendAsync("sess_1", "Hallo", CancellationToken.None))
+            {
+            }
         });
 
         Assert.That(open!.Status, Is.EqualTo(code));
@@ -165,9 +187,11 @@ public class HttpSessionClientTests
     [Test]
     public void ABodyThatIsNotTheApisErrorShapeStillNamesTheStatus()
     {
-        var (client, _) = ClientOver(_ => new HttpResponseMessage(HttpStatusCode.BadGateway) { Content = new StringContent("<html>bad gateway</html>") });
+        var (client, _) = ClientOver(_ => new HttpResponseMessage(HttpStatusCode.BadGateway)
+        { Content = new StringContent("<html>bad gateway</html>") });
 
-        var error = Assert.ThrowsAsync<EvalApiException>(async () => await client.ToolsetsAsync(CancellationToken.None));
+        var error = Assert.ThrowsAsync<EvalApiException>(async () =>
+            await client.ToolsetsAsync(CancellationToken.None));
 
         Assert.That(error!.Status, Is.EqualTo(502));
         Assert.That(error.Message, Does.Contain("502"));
@@ -180,6 +204,7 @@ public class HttpSessionClientTests
 
         await client.CloseAsync("sess_9", CancellationToken.None);
 
-        Assert.That((handler.Requests.Single().Method, handler.Requests.Single().Url), Is.EqualTo((HttpMethod.Delete, "http://127.0.0.1:5070/v1/sessions/sess_9")));
+        Assert.That((handler.Requests.Single().Method, handler.Requests.Single().Url),
+            Is.EqualTo((HttpMethod.Delete, "http://127.0.0.1:5070/v1/sessions/sess_9")));
     }
 }

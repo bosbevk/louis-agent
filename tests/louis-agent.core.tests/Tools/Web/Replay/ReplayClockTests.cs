@@ -13,7 +13,8 @@ public class ReplayClockTests
 {
     private const string Johannesburg = "Africa/Johannesburg";
 
-    private static IDisposable Using(WebReplayMode mode, string? of) => SessionReplay.Use(new SessionReplay(mode, of, Model: false));
+    private static IDisposable Using(WebReplayMode mode, string? of) =>
+        SessionReplay.Use(new SessionReplay(mode, of, Model: false));
 
     private static string Today(TimeProvider clock) => new ClockTools(clock, Johannesburg).GetToday();
 
@@ -80,9 +81,12 @@ public class ReplayClockTests
         using (Using(WebReplayMode.Replay, "t"))
         {
             var first = Assert.Throws<InvalidOperationException>(() => clock.GetUtcNow())!;
-            Assert.That(first.Message, Does.Contain("never read the clock").And.Contain("treat today's date and the time as unknown"));
-            Assert.Throws<InvalidOperationException>(() => clock.GetUtcNow(), "a Lazy keeps its exception: a miss stays a miss for the trial");
+            Assert.That(first.Message,
+                Does.Contain("never read the clock").And.Contain("treat today's date and the time as unknown"));
+            Assert.Throws<InvalidOperationException>(() => clock.GetUtcNow(),
+                "a Lazy keeps its exception: a miss stays a miss for the trial");
         }
+
         Assert.That(folder.Entries, Is.Empty);
     }
 
@@ -108,11 +112,13 @@ public class ReplayClockTests
     {
         // A parent and its sub-session read at the same moment: the Lazy makes it one recording, not two.
         using var folder = new ReplayFolder();
-        var clock = new ReplayClock(folder.Store, new FakeTimeProvider(new DateTimeOffset(2026, 10, 25, 6, 0, 0, TimeSpan.Zero)));
+        var clock = new ReplayClock(folder.Store,
+            new FakeTimeProvider(new DateTimeOffset(2026, 10, 25, 6, 0, 0, TimeSpan.Zero)));
 
         DateTimeOffset[] times;
         using (Using(WebReplayMode.Record, "t"))
-            times = Enumerable.Range(0, 20).AsParallel().WithDegreeOfParallelism(20).Select(_ => clock.GetUtcNow()).ToArray();
+            times = Enumerable.Range(0, 20).AsParallel().WithDegreeOfParallelism(20).Select(_ => clock.GetUtcNow())
+                .ToArray();
 
         Assert.That(times.Distinct().Count(), Is.EqualTo(1));
         Assert.That(File.ReadAllLines(folder.Trials.Single()), Has.Length.EqualTo(1));

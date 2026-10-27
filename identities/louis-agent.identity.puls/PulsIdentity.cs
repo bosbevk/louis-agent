@@ -1,9 +1,9 @@
-namespace LouisAgent.Identities.Puls;
 
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
 
+namespace LouisAgent.Identities.Puls;
 /// <summary>
 /// Puls, the South African general assistant (CL15, ADR 0027): its modes (<c>agent/puls/</c>), its specialists
 /// (<c>specialists/puls-*</c>) and its minion roles (<c>minions/puls-*</c>), and the packs it uses by name. Loaded by a host

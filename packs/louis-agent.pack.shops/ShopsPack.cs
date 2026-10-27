@@ -1,6 +1,5 @@
 using LouisAgent.Packs.Shops;
 using LouisAgent.Choices;
-namespace LouisAgent.Packs.Shops;
 
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -10,6 +9,7 @@ using LouisAgent.Packs.Shops.Tools;
 using LouisAgent.Core.Skills;
 using Microsoft.Extensions.FileProviders;
 
+namespace LouisAgent.Packs.Shops;
 /// <summary>
 /// The shops as a pack (CL15, ADR 0027): one toolset, <c>shops</c>, with its guide, its own settings and its own store
 /// cache (one per pack, so every engine this host builds shares it, F34). It loads only where <c>SHOP_CATALOGUES</c>
@@ -35,7 +35,11 @@ public sealed class ShopsPack : IAgentPack
                     ctx.Browser is null ? "BROWSER_URL" : null,
                 }.OfType<string>().ToList(),
                 ToolTypes: [typeof(ShopTools)],
-                CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(options.ShopCatalogues), ctx.Browser!, _stores))],
+                CreateTools: ctx =>
+                [
+                    new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(options.ShopCatalogues),
+                        ctx.Browser!, _stores))
+                ],
                 // F34: searches read a catalogue and change nothing; the browser opens at most four pages at once.
                 ParallelSafe: true),
         ];

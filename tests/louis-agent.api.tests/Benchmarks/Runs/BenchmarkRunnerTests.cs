@@ -23,7 +23,10 @@ public class BenchmarkRunnerTests
     {
         // A test may leave its child running; the folder can't go while it does.
         if (_runner?.Current is { Status: BenchmarkRunStatus.Running } run)
-            await foreach (string _ in _runner.EventsAsync(run.Id)) { }
+            await foreach (string _ in _runner.EventsAsync(run.Id))
+            {
+            }
+
         Directory.Delete(_workspace, recursive: true);
     }
 
@@ -32,13 +35,15 @@ public class BenchmarkRunnerTests
     {
         // The argument list and the environment, from the start info, so nothing has to run: dotnet, the runner, its run and repeat.
         var eval = new BenchmarkCheck("stub", "Stub");
-        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", "/app/evals/x.dll");
+        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/",
+            "/app/evals/x.dll");
 
         var start = runner.StartInfoFor(eval, new BenchmarkRun("run_1", "stub", 2));
 
         Assert.That(start.FileName, Is.EqualTo("dotnet"));
         Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", "stub", "--repeat", "2" }));
-        Assert.That((start.Environment["BENCHMARK_RUN"], start.Environment["PULS_API"]), Is.EqualTo(("run_1", "http://127.0.0.1:1/")));
+        Assert.That((start.Environment["BENCHMARK_RUN"], start.Environment["PULS_API"]),
+            Is.EqualTo(("run_1", "http://127.0.0.1:1/")));
     }
 
     [Test]
@@ -46,7 +51,8 @@ public class BenchmarkRunnerTests
     {
         // F18 step 7.4: the API runs evals and nothing else, so no start names Python or sets its flags.
         var eval = new BenchmarkCheck("stub", "Stub");
-        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", "/app/evals/x.dll");
+        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/",
+            "/app/evals/x.dll");
 
         var start = runner.StartInfoFor(eval, new BenchmarkRun("run_1", "stub", 1));
 

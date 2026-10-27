@@ -15,7 +15,8 @@ public static class EnumToStringScan
 {
     public sealed record Site(string Assembly, string Method, string Enum);
 
-    private static readonly Dictionary<short, OpCode> OpCodeTable = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static)
+    private static readonly Dictionary<short, OpCode> OpCodeTable = typeof(OpCodes)
+        .GetFields(BindingFlags.Public | BindingFlags.Static)
         .Select(f => (OpCode)f.GetValue(null)!).ToDictionary(o => o.Value);
 
     public static IReadOnlyList<Site> Find(IEnumerable<string> assemblies)
@@ -35,6 +36,7 @@ public static class EnumToStringScan
                     foreach (string enumName in ToStringCalls(reader, il).Where(ours.Contains))
                         found.Add(new Site(Path.GetFileNameWithoutExtension(path), MethodName(reader, method), enumName));
                 }
+
             return found;
         }
         finally
@@ -48,7 +50,8 @@ public static class EnumToStringScan
         foreach (var handle in reader.TypeDefinitions)
         {
             var type = reader.GetTypeDefinition(handle);
-            if (type.BaseType.Kind == HandleKind.TypeReference && reader.GetString(reader.GetTypeReference((TypeReferenceHandle)type.BaseType).Name) == "Enum")
+            if (type.BaseType.Kind == HandleKind.TypeReference &&
+                reader.GetString(reader.GetTypeReference((TypeReferenceHandle)type.BaseType).Name) == "Enum")
                 yield return FullName(reader, handle);
         }
     }
@@ -99,13 +102,15 @@ public static class EnumToStringScan
                 OperandType.InlineSwitch => 4 + 4 * BitConverter.ToInt32(il, i),
                 _ => 4,
             };
-            if (op == OpCodes.Constrained && TypeFromToken(reader, BitConverter.ToInt32(il, i)) is { } type) constrained = type;
+            if (op == OpCodes.Constrained && TypeFromToken(reader, BitConverter.ToInt32(il, i)) is { } type)
+                constrained = type;
             else if ((op == OpCodes.Callvirt || op == OpCodes.Call) && constrained is not null)
             {
                 if (MethodNamed(reader, BitConverter.ToInt32(il, i)) == "ToString") yield return constrained;
                 constrained = null;
             }
             else if (op != OpCodes.Constrained) constrained = null;
+
             i += size;
         }
     }
@@ -121,8 +126,10 @@ public static class EnumToStringScan
         var handle = MetadataTokens.EntityHandle(token);
         return handle.Kind switch
         {
-            HandleKind.MemberReference => reader.GetString(reader.GetMemberReference((MemberReferenceHandle)handle).Name),
-            HandleKind.MethodDefinition => reader.GetString(reader.GetMethodDefinition((MethodDefinitionHandle)handle).Name),
+            HandleKind.MemberReference => reader.GetString(
+                reader.GetMemberReference((MemberReferenceHandle)handle).Name),
+            HandleKind.MethodDefinition => reader.GetString(reader.GetMethodDefinition((MethodDefinitionHandle)handle)
+                .Name),
             _ => null,
         };
     }

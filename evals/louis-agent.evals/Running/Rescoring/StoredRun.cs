@@ -26,11 +26,14 @@ internal sealed record StoredLine(string Raw, string Kind, JsonElement Json)
     /// <summary>What the same turn or conversation is called in the lines of a run: its mode, repeat and task.</summary>
     public (string Mode, int Repeat, string Task) Key => (Mode, Repeat, Task);
 
-    public string? Text(string name) => Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
+    public string? Text(string name) =>
+        Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
-    public double? Decimal(string name) => Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetDouble() : null;
+    public double? Decimal(string name) =>
+        Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetDouble() : null;
 
-    public int? Number(string name) => Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetInt32() : null;
+    public int? Number(string name) =>
+        Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetInt32() : null;
 }
 
 /// <summary>
@@ -66,9 +69,12 @@ internal sealed class StoredRun
     /// <summary>The mode a <c>mode</c> line named, as the run opened it.</summary>
     public static EvalMode ModeOf(StoredLine line) =>
         new(line.Mode, line.Text("role") ?? string.Empty,
-            [.. line.Json.GetProperty("toolsets").EnumerateArray().Select(toolset => toolset.GetString() ?? string.Empty)], Llm: line.Text("llm"));
+        [
+            .. line.Json.GetProperty("toolsets").EnumerateArray().Select(toolset => toolset.GetString() ?? string.Empty)
+        ], Llm: line.Text("llm"));
 
     private static ModelUse ModelOf(JsonElement model) =>
         new(model.GetProperty("mode").GetString()!, Enum.Parse<ModelLevel>(model.GetProperty("level").GetString()!),
-            model.TryGetProperty("role", out var role) ? role.GetString() : null, model.TryGetProperty("model", out var name) ? name.GetString() : null);
+            model.TryGetProperty("role", out var role) ? role.GetString() : null,
+            model.TryGetProperty("model", out var name) ? name.GetString() : null);
 }

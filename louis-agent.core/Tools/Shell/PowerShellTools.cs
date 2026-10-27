@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.Shell;
 
 using System.ComponentModel;
 using System.Text;
@@ -6,6 +5,7 @@ using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shell.Messages;
 
+namespace LouisAgent.Core.Tools.Shell;
 /// <summary>
 /// PowerShell toolset: run inline scripts or workspace .ps1 files with PowerShell 7 (pwsh) or, on Windows,
 /// Windows PowerShell 5.1. Runs without profiles or prompts, with UTF-8 output and a timeout.
@@ -21,14 +21,14 @@ public sealed class PowerShellTools
     // Runs the target script with UTF-8 output (5.1 otherwise writes redirected output in the OEM code page)
     // and propagates its exit code: an explicit 'exit n' wins, an uncaught error gives 1.
     private const string WrapperScript = """
-        [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-        $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-        $target = $args[0]
-        $rest = @($args | Select-Object -Skip 1)
-        $global:LASTEXITCODE = 0
-        try { & $target @rest } catch { [Console]::Error.WriteLine(($_ | Out-String).Trim()); exit 1 }
-        exit $LASTEXITCODE
-        """;
+                                         [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+                                         $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+                                         $target = $args[0]
+                                         $rest = @($args | Select-Object -Skip 1)
+                                         $global:LASTEXITCODE = 0
+                                         try { & $target @rest } catch { [Console]::Error.WriteLine(($_ | Out-String).Trim()); exit 1 }
+                                         exit $LASTEXITCODE
+                                         """;
 
     private readonly string _workspaceRoot;
     private Interpreter? _interpreter;
@@ -38,7 +38,8 @@ public sealed class PowerShellTools
         _workspaceRoot = Path.GetFullPath(workspaceRoot);
     }
 
-    [Description("Runs a PowerShell script, either inline via 'script' or an existing workspace-relative '.ps1' file via " +
+    [Description(
+        "Runs a PowerShell script, either inline via 'script' or an existing workspace-relative '.ps1' file via " +
         "'scriptPath' — pass exactly one of the two. Prefers PowerShell 7 (pwsh) when installed and falls back to " +
         "Windows PowerShell 5.1 on Windows; it always runs without a profile, without prompts, and with UTF-8 console " +
         "output so non-ASCII text round-trips correctly on 5.1. An uncaught error inside the script sets exit code 1 " +
@@ -47,11 +48,17 @@ public sealed class PowerShellTools
         ".NET object pipelines, or PowerShell cmdlets; for portable shell scripting or Unix text tools use BashRun " +
         "instead.")]
     public string PowerShellRun(
-        [Description("Inline PowerShell script to run (leave empty when using scriptPath)")] string script = "",
-        [Description("Workspace-relative path to a .ps1 file to run (leave empty when using script)")] string scriptPath = "",
-        [Description("Arguments for the script ($args / param block), space separated; wrap an argument in double quotes to keep spaces")] string arguments = "",
-        [Description("Text sent to standard input; read it with [Console]::In.ReadToEnd()")] string standardInput = "",
-        [Description("Maximum seconds to run before the process is killed (default 60, max 600)")] int timeoutSeconds = 60)
+        [Description("Inline PowerShell script to run (leave empty when using scriptPath)")]
+        string script = "",
+        [Description("Workspace-relative path to a .ps1 file to run (leave empty when using script)")]
+        string scriptPath = "",
+        [Description(
+            "Arguments for the script ($args / param block), space separated; wrap an argument in double quotes to keep spaces")]
+        string arguments = "",
+        [Description("Text sent to standard input; read it with [Console]::In.ReadToEnd()")]
+        string standardInput = "",
+        [Description("Maximum seconds to run before the process is killed (default 60, max 600)")]
+        int timeoutSeconds = 60)
     {
         bool hasScript = !string.IsNullOrWhiteSpace(script);
         bool hasPath = !string.IsNullOrWhiteSpace(scriptPath);
@@ -61,12 +68,15 @@ public sealed class PowerShellTools
         if (hasPath)
         {
             if (!TryResolveWorkspacePath(scriptPath, out target, out var error)) return error;
-            if (!File.Exists(target)) return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
-            if (!target.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase)) return MessageText.Format(ShellToolMessage.ScriptPathNotPs1);
+            if (!File.Exists(target))
+                return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
+            if (!target.EndsWith(".ps1", StringComparison.OrdinalIgnoreCase))
+                return MessageText.Format(ShellToolMessage.ScriptPathNotPs1);
         }
         else target = "";
 
-        var result = RunScript(hasScript ? script : null, hasPath ? target : null, DotNetTools.SplitArguments(arguments),
+        var result = RunScript(hasScript ? script : null, hasPath ? target : null,
+            DotNetTools.SplitArguments(arguments),
             standardInput, TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 1, 600)), out string? notInstalled);
         if (notInstalled is not null) return notInstalled;
 
@@ -80,17 +90,17 @@ public sealed class PowerShellTools
     }
 
     [Description("Reports which PowerShell interpreter PowerShellRun will use — pwsh (PowerShell 7, preferred) or " +
-        "Windows PowerShell 5.1 — along with its edition, version, and operating system. Use this to diagnose a " +
-        "PowerShellRun failure caused by a missing interpreter before retrying the same script, or to confirm which " +
-        "PowerShell edition's cmdlets are actually available. It makes no changes and runs only a fixed version probe, " +
-        "not arbitrary commands.")]
+                 "Windows PowerShell 5.1 — along with its edition, version, and operating system. Use this to diagnose a " +
+                 "PowerShellRun failure caused by a missing interpreter before retrying the same script, or to confirm which " +
+                 "PowerShell edition's cmdlets are actually available. It makes no changes and runs only a fixed version probe, " +
+                 "not arbitrary commands.")]
     public string PowerShellInfo()
     {
         var result = RunScript("""
-            "Edition: $($PSVersionTable.PSEdition)"
-            "Version: $($PSVersionTable.PSVersion)"
-            "OS: $([System.Environment]::OSVersion.VersionString)"
-            """, null, [], null, ProbeTimeout, out string? notInstalled);
+                               "Edition: $($PSVersionTable.PSEdition)"
+                               "Version: $($PSVersionTable.PSVersion)"
+                               "OS: $([System.Environment]::OSVersion.VersionString)"
+                               """, null, [], null, ProbeTimeout, out string? notInstalled);
         if (notInstalled is not null) return notInstalled;
         return $"Executable: {_interpreter!.FileName}\n{result!.Output.Trim()}";
     }
@@ -151,7 +161,8 @@ public sealed class PowerShellTools
     private Interpreter? FindInterpreter()
     {
         var candidates = new List<string>();
-        if (Environment.GetEnvironmentVariable("POWERSHELL_PATH") is { Length: > 0 } configured) candidates.Add(configured);
+        if (Environment.GetEnvironmentVariable("POWERSHELL_PATH") is { Length: > 0 } configured)
+            candidates.Add(configured);
         candidates.Add("pwsh");
         if (OperatingSystem.IsWindows()) candidates.Add("powershell.exe");
 
@@ -161,8 +172,10 @@ public sealed class PowerShellTools
             string[] baseArgs = OperatingSystem.IsWindows()
                 ? ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass"]
                 : ["-NoProfile", "-NonInteractive"];
-            var probe = ProcessRunner.Run(candidate, [.. baseArgs, "-Command", "$PSVersionTable.PSVersion.Major"], WorkingDirectory, ProbeTimeout);
-            if (probe.ExitCode == 0 && int.TryParse(probe.Output.Trim(), out _)) return new Interpreter(candidate, baseArgs);
+            var probe = ProcessRunner.Run(candidate, [.. baseArgs, "-Command", "$PSVersionTable.PSVersion.Major"],
+                WorkingDirectory, ProbeTimeout);
+            if (probe.ExitCode == 0 && int.TryParse(probe.Output.Trim(), out _))
+                return new Interpreter(candidate, baseArgs);
         }
 
         return null;
@@ -174,7 +187,8 @@ public sealed class PowerShellTools
         fullPath = Path.GetFullPath(Path.Combine(root, relativePath));
         error = "";
 
-        string rootWithSeparator = root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
+        string rootWithSeparator =
+            root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
         if (fullPath.Equals(root, StringComparison.OrdinalIgnoreCase) ||
             fullPath.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
             return true;
@@ -185,6 +199,15 @@ public sealed class PowerShellTools
 
     private static void TryDelete(string path)
     {
-        try { File.Delete(path); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+        try
+        {
+            File.Delete(path);
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
     }
 }

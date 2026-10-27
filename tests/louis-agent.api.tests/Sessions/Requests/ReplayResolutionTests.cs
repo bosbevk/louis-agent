@@ -16,13 +16,16 @@ public class ReplayResolutionTests
     /// <summary>An eval session's own mark: <c>replay: {}</c>, which takes the instance default for its web and nothing else.</summary>
     private static readonly ReplayRequest Eval = new(null, null);
 
-    private static CreateSessionRequest Request(string? run = Run, string? task = "bobotie", ReplayRequest? replay = null) =>
+    private static CreateSessionRequest Request(string? run = Run, string? task = "bobotie",
+        ReplayRequest? replay = null) =>
         new(task, run, null, Replay: replay);
 
-    private static (bool Ok, SessionReplay? Replay, string? Refusal) Resolve(CreateSessionRequest? request, WebReplayMode defaultMode = WebReplayMode.Off,
+    private static (bool Ok, SessionReplay? Replay, string? Refusal) Resolve(CreateSessionRequest? request,
+        WebReplayMode defaultMode = WebReplayMode.Off,
         bool keepsRecordings = true)
     {
-        bool ok = ReplayResolution.TryResolve(request, defaultMode, keepsRecordings, out var replay, out string? refusal);
+        bool ok = ReplayResolution.TryResolve(request, defaultMode, keepsRecordings, out var replay,
+            out string? refusal);
         return (ok, replay, refusal);
     }
 
@@ -61,7 +64,8 @@ public class ReplayResolutionTests
     public void ARunTagAlone_IsNotAnEval_AndGetsNoReplay_WhateverTheDefault(WebReplayMode defaultMode)
     {
         Assert.That(Resolve(Request(), defaultMode), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
-        Assert.That(Resolve(Request(), defaultMode, keepsRecordings: false), Is.EqualTo((true, (SessionReplay?)null, (string?)null)),
+        Assert.That(Resolve(Request(), defaultMode, keepsRecordings: false),
+            Is.EqualTo((true, (SessionReplay?)null, (string?)null)),
             "and an instance that keeps no recordings has nothing to refuse");
     }
 
@@ -79,7 +83,8 @@ public class ReplayResolutionTests
     [Test]
     public void AnEmptyReplay_TakesTheDefault_OffGivesNone()
     {
-        Assert.That(Resolve(Request(replay: Eval), WebReplayMode.Off), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
+        Assert.That(Resolve(Request(replay: Eval), WebReplayMode.Off),
+            Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
     }
 
     [Test]
@@ -93,7 +98,8 @@ public class ReplayResolutionTests
     [Test]
     public void ARecordingWithNoTask_UsesTheRunTagAlone()
     {
-        Assert.That(Resolve(Request(task: null, replay: Eval), WebReplayMode.Record).Replay, Is.EqualTo(new SessionReplay(WebReplayMode.Record, Run, false)));
+        Assert.That(Resolve(Request(task: null, replay: Eval), WebReplayMode.Record).Replay,
+            Is.EqualTo(new SessionReplay(WebReplayMode.Record, Run, false)));
         Assert.That(Resolve(Request(task: " ", replay: Eval), WebReplayMode.Record).Replay!.Of, Is.EqualTo(Run));
     }
 
@@ -110,14 +116,16 @@ public class ReplayResolutionTests
     [Test]
     public void WebOff_GivesNone_EvenWhereTheDefaultRecords()
     {
-        Assert.That(Resolve(Request(replay: new ReplayRequest("off", null)), WebReplayMode.Record), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
+        Assert.That(Resolve(Request(replay: new ReplayRequest("off", null)), WebReplayMode.Record),
+            Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
     }
 
     [TestCase("record", WebReplayMode.Record)]
     [TestCase("RECORD", WebReplayMode.Record)]
     [TestCase(" Replay ", WebReplayMode.Replay)]
     public void WebIsParsedWithTheCaseIgnored(string web, WebReplayMode expected) =>
-        Assert.That(Resolve(Request(replay: new ReplayRequest(web, "run_0:puls-cook:1/bobotie"))).Replay!.Web, Is.EqualTo(expected));
+        Assert.That(Resolve(Request(replay: new ReplayRequest(web, "run_0:puls-cook:1/bobotie"))).Replay!.Web,
+            Is.EqualTo(expected));
 
     [TestCase("sometimes")]
     [TestCase("1")]
@@ -132,7 +140,8 @@ public class ReplayResolutionTests
     [Test]
     public void AReplayWithNoWeb_UsesTheInstanceDefault()
     {
-        Assert.That(Resolve(Request(replay: new ReplayRequest(null, "run_0:puls-cook:1/bobotie")), WebReplayMode.Replay).Replay,
+        Assert.That(
+            Resolve(Request(replay: new ReplayRequest(null, "run_0:puls-cook:1/bobotie")), WebReplayMode.Replay).Replay,
             Is.EqualTo(new SessionReplay(WebReplayMode.Replay, "run_0:puls-cook:1/bobotie", false)));
         Assert.That(Resolve(Request(replay: new ReplayRequest(null, null)), WebReplayMode.Off).Replay, Is.Null);
     }
@@ -141,15 +150,19 @@ public class ReplayResolutionTests
     [Test]
     public void ModelTrue_WithWebReplay_GivesAReplayThatAsksForTheModelsAnswers()
     {
-        var (ok, replay, _) = Resolve(Request(replay: new ReplayRequest("replay", "run_0:puls-cook:1/bobotie", Model: true)));
+        var (ok, replay, _) =
+            Resolve(Request(replay: new ReplayRequest("replay", "run_0:puls-cook:1/bobotie", Model: true)));
 
-        Assert.That((ok, replay), Is.EqualTo((true, new SessionReplay(WebReplayMode.Replay, "run_0:puls-cook:1/bobotie", Model: true))));
+        Assert.That((ok, replay),
+            Is.EqualTo((true, new SessionReplay(WebReplayMode.Replay, "run_0:puls-cook:1/bobotie", Model: true))));
     }
 
     [Test]
     public void ModelTrue_WithNoWeb_OnAnInstanceThatDefaultsToReplay_IsAReplayToo()
     {
-        Assert.That(Resolve(Request(replay: new ReplayRequest(null, "run_0:puls-cook:1/bobotie", Model: true)), WebReplayMode.Replay).Replay!.Model, Is.True);
+        Assert.That(
+            Resolve(Request(replay: new ReplayRequest(null, "run_0:puls-cook:1/bobotie", Model: true)),
+                WebReplayMode.Replay).Replay!.Model, Is.True);
     }
 
     [TestCase("record")]
@@ -158,7 +171,8 @@ public class ReplayResolutionTests
     public void ModelTrue_WithAnyOtherWeb_IsRefused(string? web)
     {
         // null is the instance's default, off here: the model's answers need a replay to come from, so it can't be asked for.
-        var (ok, replay, refusal) = Resolve(Request(replay: new ReplayRequest(web, "run_0:puls-cook:1/bobotie", Model: true)));
+        var (ok, replay, refusal) =
+            Resolve(Request(replay: new ReplayRequest(web, "run_0:puls-cook:1/bobotie", Model: true)));
 
         Assert.That((ok, replay), Is.EqualTo((false, (SessionReplay?)null)));
         Assert.That(refusal, Does.Contain("replay.model").And.Contain("'replay'"));
@@ -167,8 +181,11 @@ public class ReplayResolutionTests
     [Test]
     public void ModelTrue_WithWebReplay_StillNeedsOf_AndAnInstanceThatKeepsRecordings()
     {
-        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", null, Model: true))).Refusal, Does.Contain("needs 'of'"));
-        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", "x", Model: true)), keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"));
+        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", null, Model: true))).Refusal,
+            Does.Contain("needs 'of'"));
+        Assert.That(
+            Resolve(Request(replay: new ReplayRequest("replay", "x", Model: true)), keepsRecordings: false).Refusal,
+            Does.Contain("keeps no recordings"));
     }
 
     [Test]
@@ -179,14 +196,18 @@ public class ReplayResolutionTests
     [Test]
     public void RecordOrReplayWithoutAReplayDirectory_IsRefused_ThisInstanceKeepsNoRecordings()
     {
-        Assert.That(Resolve(Request(replay: new ReplayRequest("record", null)), keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"));
-        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", "x")), keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"));
-        Assert.That(Resolve(Request(replay: Eval), WebReplayMode.Record, keepsRecordings: false).Refusal, Does.Contain("keeps no recordings"), "the default is held to it too");
+        Assert.That(Resolve(Request(replay: new ReplayRequest("record", null)), keepsRecordings: false).Refusal,
+            Does.Contain("keeps no recordings"));
+        Assert.That(Resolve(Request(replay: new ReplayRequest("replay", "x")), keepsRecordings: false).Refusal,
+            Does.Contain("keeps no recordings"));
+        Assert.That(Resolve(Request(replay: Eval), WebReplayMode.Record, keepsRecordings: false).Refusal,
+            Does.Contain("keeps no recordings"), "the default is held to it too");
     }
 
     [Test]
     public void OffNeedsNoReplayDirectory() =>
-        Assert.That(Resolve(Request(replay: new ReplayRequest("off", null)), keepsRecordings: false), Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
+        Assert.That(Resolve(Request(replay: new ReplayRequest("off", null)), keepsRecordings: false),
+            Is.EqualTo((true, (SessionReplay?)null, (string?)null)));
 
     // 6. replay without of.
     [TestCase(null)]
@@ -204,16 +225,19 @@ public class ReplayResolutionTests
     [Test]
     public void RecordWithoutOf_IsRunSlashTask()
     {
-        Assert.That(Resolve(Request(replay: new ReplayRequest("record", null))).Replay, Is.EqualTo(new SessionReplay(WebReplayMode.Record, $"{Run}/bobotie", false)));
+        Assert.That(Resolve(Request(replay: new ReplayRequest("record", null))).Replay,
+            Is.EqualTo(new SessionReplay(WebReplayMode.Record, $"{Run}/bobotie", false)));
     }
 
     [Test]
     public void ASubSessionsOf_IsKept_ItNeverWorksOutAKeyOfItsOwn()
     {
         // A sub-session's own task is sub-session:{name}, and one run tag holds every scenario of a mode and repeat.
-        var request = Request(task: "sub-session:puls-cook", replay: new ReplayRequest("record", "run_1:puls-cook:1/bobotie"));
+        var request = Request(task: "sub-session:puls-cook",
+            replay: new ReplayRequest("record", "run_1:puls-cook:1/bobotie"));
 
-        Assert.That(Resolve(request).Replay, Is.EqualTo(new SessionReplay(WebReplayMode.Record, "run_1:puls-cook:1/bobotie", false)));
+        Assert.That(Resolve(request).Replay,
+            Is.EqualTo(new SessionReplay(WebReplayMode.Record, "run_1:puls-cook:1/bobotie", false)));
     }
 
     [Test]
@@ -226,7 +250,8 @@ public class ReplayResolutionTests
     public void ReplayOf_IsATag_ShortAndPrintable()
     {
         Assert.That(Request(replay: new ReplayRequest("replay", new string('x', 200))).InvalidTag(), Is.Null);
-        Assert.That(Request(replay: new ReplayRequest("replay", new string('x', 201))).InvalidTag(), Is.EqualTo("replay.of"));
+        Assert.That(Request(replay: new ReplayRequest("replay", new string('x', 201))).InvalidTag(),
+            Is.EqualTo("replay.of"));
         Assert.That(Request(replay: new ReplayRequest("replay", "a\nb")).InvalidTag(), Is.EqualTo("replay.of"));
         Assert.That(Request().InvalidTag(), Is.Null);
     }

@@ -12,8 +12,10 @@ public class ShopKindsTests
         foreach (var kind in Enum.GetValues<ShopKind>())
         {
             Assert.That(ShopKinds.DisplayName(kind), Is.Not.Empty, kind.ToString());
-            Assert.That(ShopKinds.DisplayName(kind), Is.Not.EqualTo(kind.Wire()), "the display name is written out, apart from the wire name");
+            Assert.That(ShopKinds.DisplayName(kind), Is.Not.EqualTo(kind.Wire()),
+                "the display name is written out, apart from the wire name");
         }
+
         Assert.That(ShopKinds.DisplayName(ShopKind.Checkers), Is.EqualTo("Checkers"));
     }
 }

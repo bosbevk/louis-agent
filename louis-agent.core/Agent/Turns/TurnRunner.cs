@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Agent.Turns;
 
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;
@@ -9,13 +8,19 @@ using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Agent.Turns;
 /// <summary>
 /// One chat turn (S, CL15, from AgentEngine): the history seeded and kept current, the prompt sent on the pipeline,
 /// the reply read whole or streamed, and a reply cut off by the output limit continued.
 /// </summary>
 /// <param name="systemPrompt">The system prompt as it is now: skills may have been reloaded since a conversation started.</param>
 /// <param name="thinking">Reasoning effort for each turn, as the engine has it; null disables thinking.</param>
-internal sealed class TurnRunner(IChatClient chatClient, ToolRegistry registry, Func<string> systemPrompt, Func<ReasoningEffort?> thinking, bool supportsTools)
+internal sealed class TurnRunner(
+    IChatClient chatClient,
+    ToolRegistry registry,
+    Func<string> systemPrompt,
+    Func<ReasoningEffort?> thinking,
+    bool supportsTools)
 {
     private static readonly ILogger Log = AgentLogging.For<TurnRunner>();
 
@@ -41,7 +46,8 @@ internal sealed class TurnRunner(IChatClient chatClient, ToolRegistry registry, 
     /// transported. Tool calls made by the model are executed and recorded in <paramref name="history"/> along with the
     /// final answer.
     /// </summary>
-    public async Task<string> ProcessAsync(List<ChatMessage> history, string userInput, CancellationToken cancellationToken = default)
+    public async Task<string> ProcessAsync(List<ChatMessage> history, string userInput,
+        CancellationToken cancellationToken = default)
     {
         ChatOptions chatOptions = Begin(history, userInput);
         ChatResponse response = await chatClient.GetResponseAsync(history, chatOptions, cancellationToken);
@@ -72,7 +78,8 @@ internal sealed class TurnRunner(IChatClient chatClient, ToolRegistry registry, 
             history.AddMessages(updates);
 
             // When streaming, a tool call cut off by the output limit is dropped entirely, so the turn would just stop.
-            bool cutOff = updates.LastOrDefault(u => u.FinishReason is not null)?.FinishReason == ChatFinishReason.Length;
+            bool cutOff = updates.LastOrDefault(u => u.FinishReason is not null)?.FinishReason ==
+                          ChatFinishReason.Length;
             if (!cutOff || continuation >= MaxCutOffContinuations) yield break;
 
             Log.Log(LogLevel.Warning, AgentLogMessage.ReplyCutOff, new { MaxOutputTokens });

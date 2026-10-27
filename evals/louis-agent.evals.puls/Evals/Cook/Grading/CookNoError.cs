@@ -19,11 +19,13 @@ public sealed class CookNoError : IGrader
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
     {
         // A turn that failed for the infrastructure is not the agent's: Unknown, never a fail (F18 step 5.3).
-        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
+        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown)
+            return ValueTask.FromResult(unknown);
 
         int errors = trial.Transcript.Turns.Count(EngineEvents.StreamedError);
         return ValueTask.FromResult(errors == 0
             ? new Grade(Name, Version, 1, GradeOutcome.Pass, MessageText.Format(GradeMessage.NoTurnFailed))
-            : new Grade(Name, Version, 0, GradeOutcome.Fail, MessageText.Format(GradeMessage.TurnsFailed, new { Count = errors })));
+            : new Grade(Name, Version, 0, GradeOutcome.Fail,
+                MessageText.Format(GradeMessage.TurnsFailed, new { Count = errors })));
     }
 }

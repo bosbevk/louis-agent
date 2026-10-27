@@ -27,10 +27,14 @@ public static partial class Prices
     [GeneratedRegex(@"\bR\s?\d[\d\s,.]*")]
     private static partial Regex Rand();
 
-    [GeneratedRegex(@"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|nie gevind)\b", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(
+        @"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|nie gevind)\b",
+        RegexOptions.IgnoreCase)]
     private static partial Regex Estimate();
 
-    [GeneratedRegex(@"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|snippets?|soekresultate|soekindeks)\b", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(
+        @"\b(unknown|onbekend|geskat|skatting|skattings|estimate[ds]?|nie bevestig|unverified|onbevestig|snippets?|soekresultate|soekindeks)\b",
+        RegexOptions.IgnoreCase)]
     private static partial Regex Unconfirmed();
 
     /// <summary>How many rand amounts an answer gives.</summary>
@@ -56,7 +60,8 @@ public static partial class Prices
             {
                 listed++;
                 string row = "| " + string.Join(" | ", cells) + " |";
-                string linked = string.Join(" ", cells.SelectMany(cell => Links.Urls(cell, references)).Select(url => $"[]({url})"));
+                string linked = string.Join(" ",
+                    cells.SelectMany(cell => Links.Urls(cell, references)).Select(url => $"[]({url})"));
                 var sourced = new List<string>();
                 for (int i = 1; i < cells.Count; i++)
                 {
@@ -73,6 +78,7 @@ public static partial class Prices
                 else if (Rand().IsMatch(row)) guessed++;
             }
         }
+
         return listed == 0 ? null : new PriceCount(priced, listed, guessed, perKg, estimated);
     }
 
@@ -99,7 +105,8 @@ public static partial class Prices
         if (listTotals.Count > 1) return null;
 
         var lines = answer.Split(["\r\n", "\n", "\r"], StringSplitOptions.None);
-        var amounts = lines.Where(line => TotalWord().IsMatch(line) && !Saving().IsMatch(line)).SelectMany(Money.Amounts).Distinct().ToList();
+        var amounts = lines.Where(line => TotalWord().IsMatch(line) && !Saving().IsMatch(line))
+            .SelectMany(Money.Amounts).Distinct().ToList();
         if (amounts.Count == 1) return new BasketTotal(amounts[0], TotalSource.TotalLine);
         return amounts.Count > 1 ? null : RowSum(answer);
     }
@@ -112,13 +119,15 @@ public static partial class Prices
         foreach (var list in Lists.Of(answer))
             foreach (var cells in list.Rows)
             {
-                string linked = string.Join(" ", cells.SelectMany(cell => Links.Urls(cell, references)).Select(url => $"[]({url})"));
+                string linked = string.Join(" ",
+                    cells.SelectMany(cell => Links.Urls(cell, references)).Select(url => $"[]({url})"));
                 var sourced = new List<string>();
                 for (int i = 1; i < cells.Count; i++)
                 {
                     if (Money.Amounts(cells[i]).Count == 0) continue;
                     string? shop = i < list.Header.Count ? Shops.ShopOf(list.Header[i]) : null;
-                    if (Links.Sourced(cells[i], shop, references) || Links.Sourced(linked, shop, references)) sourced.Add(cells[i]);
+                    if (Links.Sourced(cells[i], shop, references) || Links.Sourced(linked, shop, references))
+                        sourced.Add(cells[i]);
                 }
 
                 if (sourced.Count == 0 || sourced.Any(cell => Links.PerKg(cell, references))) continue;
@@ -127,6 +136,7 @@ public static partial class Prices
                 sum += amounts[0];
                 rows++;
             }
+
         return rows == 0 ? null : new BasketTotal(sum, TotalSource.RowSum);
     }
 
@@ -136,9 +146,11 @@ public static partial class Prices
         answer ??= "";
         var references = Links.References(answer);
         var sites = new List<string>();
-        foreach (var cell in Lists.Of(answer).SelectMany(list => list.Rows).SelectMany(cells => cells.Skip(1)).Where(cell => Money.Amounts(cell).Count > 0))
+        foreach (var cell in Lists.Of(answer).SelectMany(list => list.Rows).SelectMany(cells => cells.Skip(1))
+                     .Where(cell => Money.Amounts(cell).Count > 0))
             foreach (string url in Links.Urls(cell, references))
-                if (Shops.SiteOf(url) is { } site && !sites.Contains(site)) sites.Add(site);
+                if (Shops.SiteOf(url) is { } site && !sites.Contains(site))
+                    sites.Add(site);
         return sites;
     }
 }

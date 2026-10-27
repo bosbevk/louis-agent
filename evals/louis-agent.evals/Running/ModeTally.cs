@@ -16,7 +16,8 @@ public sealed class ModeTally
     public int Retried { get; private set; }
 
     /// <summary>The trials left out of the rates: a failure of the infrastructure, not the agent's.</summary>
-    public int Infrastructure => _outcomes.Values.Sum(outcomes => outcomes.Count(outcome => outcome == TrialOutcome.Infrastructure));
+    public int Infrastructure =>
+        _outcomes.Values.Sum(outcomes => outcomes.Count(outcome => outcome == TrialOutcome.Infrastructure));
 
     /// <summary>The mode's pass@k and pass^k over the trials so far; null when none counts.</summary>
     public PassShare Share => PassRates.ShareOf(_outcomes.Values.Select(outcomes => PassRates.Over(outcomes)));

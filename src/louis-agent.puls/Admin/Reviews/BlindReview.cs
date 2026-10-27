@@ -22,28 +22,37 @@ public static class BlindReview
     private const string HumanSuffix = ".human";
 
     /// <summary>Whether a grader is a human review: a Human grader named for its judge.</summary>
-    public static bool IsReview(GraderRow grader) => grader.Kind == "Human" && grader.Name.EndsWith(HumanSuffix, StringComparison.Ordinal);
+    public static bool IsReview(GraderRow grader) =>
+        grader.Kind == "Human" && grader.Name.EndsWith(HumanSuffix, StringComparison.Ordinal);
 
     /// <summary>The judge a review is of: <c>cook-judge.human</c> gives <c>cook-judge</c>; a name without the suffix is its own judge.</summary>
-    public static string JudgeOf(string review) => review.EndsWith(HumanSuffix, StringComparison.Ordinal) ? review[..^HumanSuffix.Length] : review;
+    public static string JudgeOf(string review) => review.EndsWith(HumanSuffix, StringComparison.Ordinal)
+        ? review[..^HumanSuffix.Length]
+        : review;
 
     /// <summary>The grades this reviewer gave the judge on this conversation, stored under their name (whatever its case); none without a name. The one place that knows whose a grade is.</summary>
     public static IEnumerable<HumanGradeRow> OwnGrades(ConversationGrades grades, string judge, string? reviewer) =>
         ReviewerName.Clean(reviewer) is { } name
-            ? grades.Human.Where(h => h.ModelGrader == judge && string.Equals(h.Reviewer, name, StringComparison.OrdinalIgnoreCase))
+            ? grades.Human.Where(h =>
+                h.ModelGrader == judge && string.Equals(h.Reviewer, name, StringComparison.OrdinalIgnoreCase))
             : [];
 
     /// <summary>Whether this reviewer has answered the judge on this conversation: a grade stored under their name, or one given this session. Nobody has without a name.</summary>
-    public static bool Answered(ConversationGrades grades, string judge, string? reviewer, Func<string, bool> gradedThisSession) =>
-        ReviewerName.Clean(reviewer) is not null && (OwnGrades(grades, judge, reviewer).Any() || gradedThisSession(judge));
+    public static bool Answered(ConversationGrades grades, string judge, string? reviewer,
+        Func<string, bool> gradedThisSession) =>
+        ReviewerName.Clean(reviewer) is not null &&
+        (OwnGrades(grades, judge, reviewer).Any() || gradedThisSession(judge));
 
     /// <summary>The run's review that has a Pending grade on this conversation, for the page to show its panel; none where the question doesn't apply (a control, 6a.4a).</summary>
     public static GraderRow? ReviewOf(IReadOnlyList<GraderRow>? graders, ConversationGrades grades) =>
-        (graders ?? []).FirstOrDefault(g => IsReview(g) && grades.Grades?.Any(x => x.Grader == g.Name && x.Outcome == GradeOutcome.Pending) == true);
+        (graders ?? []).FirstOrDefault(g =>
+            IsReview(g) && grades.Grades?.Any(x => x.Grader == g.Name && x.Outcome == GradeOutcome.Pending) == true);
 
     /// <summary>The judges whose grades this reviewer may not see yet, by name.</summary>
-    public static IReadOnlySet<string> HiddenJudges(ConversationGrades grades, IReadOnlyList<GraderRow>? order, string? reviewer, Func<string, bool> gradedThisSession) =>
-        (order ?? []).Where(IsReview).Select(g => JudgeOf(g.Name)).Where(judge => !Answered(grades, judge, reviewer, gradedThisSession)).ToHashSet();
+    public static IReadOnlySet<string> HiddenJudges(ConversationGrades grades, IReadOnlyList<GraderRow>? order,
+        string? reviewer, Func<string, bool> gradedThisSession) =>
+        (order ?? []).Where(IsReview).Select(g => JudgeOf(g.Name))
+        .Where(judge => !Answered(grades, judge, reviewer, gradedThisSession)).ToHashSet();
 
     /// <summary>Whether the person's verdict (pass, fail or unsure) agrees with the judge's outcome; a judge that didn't say pass or fail has nothing to agree with.</summary>
     public static ReviewVerdictKind Compare(string person, GradeOutcome judge)

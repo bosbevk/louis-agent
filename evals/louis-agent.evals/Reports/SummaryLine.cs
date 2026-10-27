@@ -16,5 +16,19 @@ public sealed record ScoreMean(string Key, double Mean, int N);
 /// the counts say what became of them; the rates are over the counted ones (an infrastructure trial is left out of them, as in 5a) and are
 /// null when fewer than <see cref="RunSummary.MinimumForRates"/> trials count (<see cref="TooFew"/>), never 0.
 /// </summary>
-public sealed record SummaryLine(string Mode, string Slice, int N, int Passed, int Failed, int Unknown, int Infrastructure, IReadOnlyList<string> Tasks,
-    bool TooFew, double? PassRate, double? PassAtK, double? PassHatK, IReadOnlyList<GraderCount> Graders, IReadOnlyList<KindCount> Kinds, IReadOnlyList<ScoreMean> Scores);
+public sealed record SummaryLine(
+    string Mode,
+    string Slice,
+    int N,
+    int Passed,
+    int Failed,
+    int Unknown,
+    int Infrastructure,
+    IReadOnlyList<string> Tasks,
+    bool TooFew,
+    double? PassRate,
+    double? PassAtK,
+    double? PassHatK,
+    IReadOnlyList<GraderCount> Graders,
+    IReadOnlyList<KindCount> Kinds,
+    IReadOnlyList<ScoreMean> Scores);

@@ -62,11 +62,13 @@ public class RefusalReportTests
         public int Version => 1;
         public string Proves => "A dataset that doesn't load.";
 
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) =>
             ValueTask.FromResult<IReadOnlyList<EvalMode>>([]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
-            DatasetLoader.Load(Path.Combine(Path.GetTempPath(), "louis-agent-no-such-dataset"), [new NoErrorGrader()]).Scenarios;
+            DatasetLoader.Load(Path.Combine(Path.GetTempPath(), "louis-agent-no-such-dataset"), [new NoErrorGrader()])
+                .Scenarios;
 
         public IReadOnlyList<IGrader> Graders { get; } = [new NoErrorGrader()];
 

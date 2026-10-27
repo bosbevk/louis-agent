@@ -50,7 +50,8 @@ public class EngineEventsTests
     public void AnInfrastructureFailureIsReportedApart()
     {
         // A timeout is the infrastructure's, not the agent's: it is reported as its own failure, and no error event.
-        Assert.That(EngineEvents.InfrastructureFailure(Turn(1, failure: TrialFailure.Timeout)), Is.EqualTo(TrialFailure.Timeout));
+        Assert.That(EngineEvents.InfrastructureFailure(Turn(1, failure: TrialFailure.Timeout)),
+            Is.EqualTo(TrialFailure.Timeout));
         Assert.That(EngineEvents.StreamedError(Turn(1, failure: TrialFailure.Timeout)), Is.False);
         Assert.That(EngineEvents.InfrastructureFailure(Turn(1, [Text("Hallo")])), Is.Null);
     }
@@ -77,8 +78,10 @@ public class EngineEventsTests
     public void AContentBlockWithNoNameIsNoRoute()
     {
         // An odd event is read as saying nothing, rather than throwing and failing the whole grade.
-        var odd = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":{"id":"t1"}}"""));
-        var notAnObject = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":"text"}"""));
+        var odd = SessionEvent.From("content_block_start",
+            Json("""{"type":"content_block_start","index":0,"content_block":{"id":"t1"}}"""));
+        var notAnObject = SessionEvent.From("content_block_start",
+            Json("""{"type":"content_block_start","index":0,"content_block":"text"}"""));
 
         Assert.That(EngineEvents.RoutedRole(Turn(1, [odd])), Is.Null);
         Assert.That(EngineEvents.RoutedRole(Turn(1, [notAnObject])), Is.Null);
@@ -87,7 +90,9 @@ public class EngineEventsTests
     [Test]
     public void AnUnpricedCountThatIsNotANumberMakesTheCostUnknown()
     {
-        var odd = SessionEvent.From("message_delta", Json("""{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"cost":0.25,"unpriced":null}}"""));
+        var odd = SessionEvent.From("message_delta",
+            Json(
+                """{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"cost":0.25,"unpriced":null}}"""));
 
         Assert.That(EngineEvents.CostOf(Turn(1, [odd])), Is.Null);
     }
@@ -102,8 +107,12 @@ public class EngineEventsTests
     [Test]
     public void ABlankRoleIsNoRoute()
     {
-        var empty = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":""}}}"""));
-        var spaces = SessionEvent.From("content_block_start", Json("""{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":"   "}}}"""));
+        var empty = SessionEvent.From("content_block_start",
+            Json(
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":""}}}"""));
+        var spaces = SessionEvent.From("content_block_start",
+            Json(
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"role":"   "}}}"""));
 
         Assert.That(EngineEvents.RoutedRole(Turn(1, [empty])), Is.Null);
         Assert.That(EngineEvents.RoutedRole(Turn(1, [spaces])), Is.Null);

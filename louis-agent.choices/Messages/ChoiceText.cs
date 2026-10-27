@@ -9,5 +9,6 @@ internal static class ChoiceText
     public static string Format(ChoiceMessage message, string enumName, object value) =>
         typeof(ChoiceMessage).GetField(message.ToString())!.GetCustomAttribute<DescriptionAttribute>()!.Description
             .Replace("{Enum}", enumName, StringComparison.Ordinal)
-            .Replace("{Value}", Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture), StringComparison.Ordinal);
+            .Replace("{Value}", Convert.ToString(value, System.Globalization.CultureInfo.InvariantCulture),
+                StringComparison.Ordinal);
 }

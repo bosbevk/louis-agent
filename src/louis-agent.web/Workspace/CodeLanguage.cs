@@ -14,7 +14,8 @@ public static class CodeLanguage
         {
             ".cs" or ".csx" => "csharp",
             // Razor is mostly markup; highlighting it as HTML reads better than as C#.
-            ".razor" or ".cshtml" or ".html" or ".htm" or ".xml" or ".csproj" or ".props" or ".targets" or ".svg" => "xml",
+            ".razor" or ".cshtml" or ".html" or ".htm" or ".xml" or ".csproj" or ".props" or ".targets"
+                or ".svg" => "xml",
             ".json" => "json",
             ".yml" or ".yaml" => "yaml",
             ".md" => "markdown",

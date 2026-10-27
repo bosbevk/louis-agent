@@ -12,15 +12,18 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Expectations;
 public class ExpectationsTests
 {
     private static EvalScenario Scenario(string expected) =>
-        new("cook-x", new EvalInput("Malmesbury, Wes-Kaap, Suid-Afrika", "Africa/Johannesburg", ["x"]), JsonDocument.Parse(expected).RootElement.Clone(), [], DatasetSplit.Dev);
+        new("cook-x", new EvalInput("Malmesbury, Wes-Kaap, Suid-Afrika", "Africa/Johannesburg", ["x"]),
+            JsonDocument.Parse(expected).RootElement.Clone(), [], DatasetSplit.Dev);
 
     [Test]
     public void AWholeExpectationIsRead()
     {
-        var expected = CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"checkers"}"""));
+        var expected = CookExpectations.Of(Scenario(
+            """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"checkers"}"""));
 
         Assert.That((expected.RoutesTo, expected.Town, expected.Budget, expected.Shop),
-            Is.EqualTo((PulsEvalName.Cook.Wire(), "Stellenbosch", (decimal?)250m, (ShopExpectation?)ShopExpectation.Checkers)));
+            Is.EqualTo((PulsEvalName.Cook.Wire(), "Stellenbosch", (decimal?)250m,
+                (ShopExpectation?)ShopExpectation.Checkers)));
         Assert.That(expected.Serves, Is.EqualTo(new[] { 4, 6 }));
     }
 
@@ -44,7 +47,9 @@ public class ExpectationsTests
     [TestCase("no-branch", ShopExpectation.NoBranch)]
     [TestCase("NoBranch", ShopExpectation.NoBranch)]
     public void TheShopIsParsedOnceByItsName_CaseIgnored(string name, ShopExpectation expected) =>
-        Assert.That(CookExpectations.Of(Scenario("""{"routes_to":null,"town":"Paarl","shop":"NAME"}""".Replace("NAME", name))).Shop, Is.EqualTo(expected));
+        Assert.That(
+            CookExpectations.Of(Scenario("""{"routes_to":null,"town":"Paarl","shop":"NAME"}""".Replace("NAME", name)))
+                .Shop, Is.EqualTo(expected));
 
     [Test]
     public void AShopAtATown_NeedsItsTown()
@@ -52,7 +57,8 @@ public class ExpectationsTests
         // The cook's prompt: area = the user's town in every call. A scenario that expects a shop without its town couldn't be graded.
         Assert.That(() => CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","shop":"checkers"}""")),
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'town'"));
-        Assert.That(CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","shop":"any"}""")).Shop, Is.EqualTo(ShopExpectation.Any), "no shop is searched, so no town is needed");
+        Assert.That(CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","shop":"any"}""")).Shop,
+            Is.EqualTo(ShopExpectation.Any), "no shop is searched, so no town is needed");
     }
 
     [TestCase("""{}""", "routes_to")]

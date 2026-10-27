@@ -6,7 +6,8 @@ namespace LouisAgent.Puls.Admin.Charts;
 public static class ChartNumbers
 {
     /// <summary>A share as a percentage to one decimal, "0" against nothing.</summary>
-    public static string Percent(decimal part, decimal whole) => whole <= 0 ? "0" : Math.Round(part / whole * 100, 1).ToString(CultureInfo.InvariantCulture);
+    public static string Percent(decimal part, decimal whole) =>
+        whole <= 0 ? "0" : Math.Round(part / whole * 100, 1).ToString(CultureInfo.InvariantCulture);
 
     public static string Percent(long part, long whole) => Percent((decimal)part, whole);
 

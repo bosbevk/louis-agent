@@ -15,7 +15,8 @@ public class DatasetLoaderTests
     public void LoadsTheManifestAndBothSplits()
     {
         using var folder = new DatasetFolder()
-            .Write("scenarios/dev/sample-dev.json", DatasetFolder.Scenario("sample-dev", categories: "[\"sample:first\"]"))
+            .Write("scenarios/dev/sample-dev.json",
+                DatasetFolder.Scenario("sample-dev", categories: "[\"sample:first\"]"))
             .Write("scenarios/held-out/sample-held.json", DatasetFolder.Scenario("sample-held"))
             .WithManifest();
 
@@ -146,7 +147,8 @@ public class DatasetLoaderTests
     {
         // A missing constructor parameter is refused, not bound to null: the run would fail far from the file.
         using var folder = new DatasetFolder()
-            .Write("scenarios/dev/a.json", "{\"id\": \"a\", \"input\": {\"place\": null, \"messages\": [\"Hello\"]}, \"expected\": {\"routed\": true}, \"categories\": []}")
+            .Write("scenarios/dev/a.json",
+                "{\"id\": \"a\", \"input\": {\"place\": null, \"messages\": [\"Hello\"]}, \"expected\": {\"routed\": true}, \"categories\": []}")
             .WithManifest();
 
         Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
@@ -228,7 +230,8 @@ public class DatasetLoaderTests
     public void RefusesAScenarioWithNoMessages()
     {
         using var folder = new DatasetFolder()
-            .Write("scenarios/dev/a.json", "{\"id\": \"a\", \"input\": {\"place\": null, \"time_zone\": \"Etc/UTC\", \"messages\": []}, \"expected\": {\"routed\": true}, \"categories\": []}")
+            .Write("scenarios/dev/a.json",
+                "{\"id\": \"a\", \"input\": {\"place\": null, \"time_zone\": \"Etc/UTC\", \"messages\": []}, \"expected\": {\"routed\": true}, \"categories\": []}")
             .WithManifest();
 
         Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
@@ -265,6 +268,8 @@ public class DatasetLoaderTests
         public GraderKind Kind => GraderKind.FixedRule;
         public bool Required => true;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>(keys);
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => throw new NotImplementedException();
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            throw new NotImplementedException();
     }
 }

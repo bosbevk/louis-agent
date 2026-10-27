@@ -27,8 +27,14 @@ public class CalibrationEndpointTests
 
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
-    private sealed record Host(WebApplication App, HttpClient Client, InMemoryBenchmarkStore Store, InMemoryHumanReviewStore Reviews, InMemoryCalibrationStore Calibrations,
-        BenchmarkRunner Runner, CalibrationRecorder Recorder) : IAsyncDisposable
+    private sealed record Host(
+        WebApplication App,
+        HttpClient Client,
+        InMemoryBenchmarkStore Store,
+        InMemoryHumanReviewStore Reviews,
+        InMemoryCalibrationStore Calibrations,
+        BenchmarkRunner Runner,
+        CalibrationRecorder Recorder) : IAsyncDisposable
     {
         public async ValueTask DisposeAsync() => await App.DisposeAsync();
     }
@@ -40,24 +46,43 @@ public class CalibrationEndpointTests
         var reviews = new InMemoryHumanReviewStore();
         var calibrations = new InMemoryCalibrationStore();
         var recorder = new CalibrationRecorder(calibrations);
-        await store.SaveRunAsync(new Run(RunId, SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0, Eval: SampleEval.Beta,
-            Graders: [new Grader("cook-no-error", 1, BenchmarkGraderKind.FixedRule), new Grader("meal-for-people", 1, BenchmarkGraderKind.Model),
-                      new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
-        await store.SaveRunAsync(new Run("gone1234567", "gone-check", 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0,
-            Graders: [new Grader("meal-for-people", 1, BenchmarkGraderKind.Model), new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
-        foreach (var (task, answer) in new[] { (SampleScenario.Beta, "Bobotie for four"), (SampleScenario.Alpha, "Net 'n sousie") })
+        await store.SaveRunAsync(new Run(RunId, SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0,
+            Eval: SampleEval.Beta,
+            Graders:
+            [
+                new Grader("cook-no-error", 1, BenchmarkGraderKind.FixedRule),
+                new Grader("meal-for-people", 1, BenchmarkGraderKind.Model),
+                new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)
+            ]));
+        await store.SaveRunAsync(new Run("gone1234567", "gone-check", 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5),
+            0,
+            Graders:
+            [
+                new Grader("meal-for-people", 1, BenchmarkGraderKind.Model),
+                new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)
+            ]));
+        foreach (var (task, answer) in new[]
+                     { (SampleScenario.Beta, "Bobotie for four"), (SampleScenario.Alpha, "Net 'n sousie") })
         {
             var key = new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, task);
-            await store.SaveConversationAsync(RunId, new Conversation(key, 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
+            await store.SaveConversationAsync(RunId, new Conversation(key, 1, null,
+                JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
                 [new Grade("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "the judge's reason")]));
-            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer, SampleRole.Alpha, null, 1, 1, [], 1.0, null), []);
+            await store.SaveTurnAsync(RunId,
+                new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer,
+                    SampleRole.Alpha, null, 1, 1, [], 1.0, null), []);
         }
+
         if (graded)
-            await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, SampleScenario.Beta), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));
+            await reviews.AddAsync(new HumanGrade(RunId,
+                new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, SampleScenario.Beta), "meal-for-people",
+                HumanVerdict.Pass, "a meal", "Louis", T0));
         var catalog = new BenchmarkCatalog([new BenchmarkCheck(SampleEval.Beta, "Cook")]);
         var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
-        var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews, catalog: catalog, runner: runner,
-            calibrations: withCalibrations ? calibrations : null, calibrationRecorder: withCalibrations ? recorder : null);
+        var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews, catalog: catalog,
+            runner: runner,
+            calibrations: withCalibrations ? calibrations : null,
+            calibrationRecorder: withCalibrations ? recorder : null);
         await app.StartAsync();
         return new Host(app, app.GetTestClient(), store, reviews, calibrations, runner, recorder);
     }
@@ -69,7 +94,8 @@ public class CalibrationEndpointTests
         return client.SendAsync(request);
     }
 
-    private static string Path(string run = RunId, string tail = "") => $"/v1/admin/benchmarks/runs/{run}/calibrations{tail}";
+    private static string Path(string run = RunId, string tail = "") =>
+        $"/v1/admin/benchmarks/runs/{run}/calibrations{tail}";
 
     [Test]
     public async Task APost_StartsTheRunnerOnThePeoplesLabels_AndAnswers202WithTheRun()
@@ -80,22 +106,32 @@ public class CalibrationEndpointTests
         var row = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement;
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Accepted));
-        Assert.That((row.GetProperty("check").GetString(), row.GetProperty("calibration_of").GetString(), row.GetProperty("grader").GetString()), Is.EqualTo((SampleEval.Beta, RunId, "meal-for-people")));
+        Assert.That(
+            (row.GetProperty("check").GetString(), row.GetProperty("calibration_of").GetString(),
+                row.GetProperty("grader").GetString()), Is.EqualTo((SampleEval.Beta, RunId, "meal-for-people")));
         string id = row.GetProperty("id").GetString()!;
         Assert.That(host.Runner.Current!.Id, Is.EqualTo(id), "the runner's one run at a time");
-        Assert.That(host.Runner.Current.Input, Does.Contain("\"grader\":\"meal-for-people\"").And.Contain(SampleScenario.Fill("\"scenario\":\"<ScenarioBeta>\"")).And.Not.Contain(SampleScenario.Alpha),
+        Assert.That(host.Runner.Current.Input,
+            Does.Contain("\"grader\":\"meal-for-people\"").And
+                .Contain(SampleScenario.Fill("\"scenario\":\"<ScenarioBeta>\"")).And.Not.Contain(SampleScenario.Alpha),
             "one label line per decided grade, as the zip would hold them");
         Assert.That(host.Runner.Current.Input!.TrimEnd('\n'), Does.Not.Contain("\n"), "one line per label");
 
         // The real runner, on the real cook eval: on a machine with no judge set it judges "can't tell" and reports, so the one label's report lands in the store, the proof that
         // the line went in through stdin and the report came back; in CI the runner refuses (--calibrate never runs there), so nothing is stored and the result says why.
-        await foreach (string _ in host.Runner.EventsAsync(id)) { }
+        await foreach (string _ in host.Runner.EventsAsync(id))
+        {
+        }
+
         var result = await host.Recorder.RecordingOf(id)!;
         var reports = await host.Calibrations.OfRunAsync(RunId);
         if (result.Stored)
         {
             var report = reports.Single();
-            Assert.That((report.Run, report.Grader, report.Total, report.PersonPass.JudgePass + report.PersonPass.JudgeFail + report.PersonPass.JudgeUnknown), Is.EqualTo((RunId, "meal-for-people", 1, 1)),
+            Assert.That(
+                (report.Run, report.Grader, report.Total,
+                    report.PersonPass.JudgePass + report.PersonPass.JudgeFail + report.PersonPass.JudgeUnknown),
+                Is.EqualTo((RunId, "meal-for-people", 1, 1)),
                 "the one label Louis gave, judged");
             Assert.That(report.At, Is.EqualTo(host.Runner.Current.EndedAt));
         }
@@ -114,7 +150,8 @@ public class CalibrationEndpointTests
         var response = await Send(host.Client, HttpMethod.Post, Path(tail: "/cook-no-error"));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-        Assert.That(await response.Content.ReadAsStringAsync(), Does.Contain("cook-no-error").And.Contain("meal-for-people"));
+        Assert.That(await response.Content.ReadAsStringAsync(),
+            Does.Contain("cook-no-error").And.Contain("meal-for-people"));
     }
 
     [Test]
@@ -134,9 +171,12 @@ public class CalibrationEndpointTests
     {
         await using var host = await StartAsync();
 
-        Assert.That((await Send(host.Client, HttpMethod.Post, Path("gone1234567", "/meal-for-people"))).StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-        Assert.That((await Send(host.Client, HttpMethod.Post, Path("nope00000000", "/meal-for-people"))).StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
-        Assert.That((await Send(host.Client, HttpMethod.Get, Path("nope00000000"))).StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        Assert.That((await Send(host.Client, HttpMethod.Post, Path("gone1234567", "/meal-for-people"))).StatusCode,
+            Is.EqualTo(HttpStatusCode.BadRequest));
+        Assert.That((await Send(host.Client, HttpMethod.Post, Path("nope00000000", "/meal-for-people"))).StatusCode,
+            Is.EqualTo(HttpStatusCode.NotFound));
+        Assert.That((await Send(host.Client, HttpMethod.Get, Path("nope00000000"))).StatusCode,
+            Is.EqualTo(HttpStatusCode.NotFound));
     }
 
     [Test]
@@ -144,30 +184,42 @@ public class CalibrationEndpointTests
     {
         await using var host = await StartAsync(withCalibrations: false);
 
-        Assert.That((await Send(host.Client, HttpMethod.Post, Path(tail: "/meal-for-people"))).StatusCode, Is.EqualTo(HttpStatusCode.ServiceUnavailable));
-        Assert.That((await Send(host.Client, HttpMethod.Get, Path())).StatusCode, Is.EqualTo(HttpStatusCode.ServiceUnavailable));
+        Assert.That((await Send(host.Client, HttpMethod.Post, Path(tail: "/meal-for-people"))).StatusCode,
+            Is.EqualTo(HttpStatusCode.ServiceUnavailable));
+        Assert.That((await Send(host.Client, HttpMethod.Get, Path())).StatusCode,
+            Is.EqualTo(HttpStatusCode.ServiceUnavailable));
     }
 
     [Test]
     public async Task AGet_ListsTheRunsReports_NewestFirst_InThePortalsShape()
     {
         await using var host = await StartAsync();
-        await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", "qwen3:4b", T0, 35, 36, 90, false, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(1, 8, 0),
+        await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", "qwen3:4b", T0, 35, 36, 90,
+            false, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(1, 8, 0),
             [new CalibrationDisagreement("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish with steps")]));
-        await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", "qwen3:4b", T0.AddMinutes(10), 36, 36, 90, true, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(0, 9, 0), []));
+        await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", "qwen3:4b", T0.AddMinutes(10),
+            36, 36, 90, true, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(0, 9, 0), []));
 
         var response = await Send(host.Client, HttpMethod.Get, Path());
-        var list = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.GetProperty("calibrations");
+        var list = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement
+            .GetProperty("calibrations");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
-        Assert.That(list.EnumerateArray().Select(c => c.GetProperty("agreed").GetInt32()), Is.EqualTo(new[] { 36, 35 }));
+        Assert.That(list.EnumerateArray().Select(c => c.GetProperty("agreed").GetInt32()),
+            Is.EqualTo(new[] { 36, 35 }));
         var older = list[1];
-        Assert.That((older.GetProperty("grader").GetString(), older.GetProperty("judge_model").GetString(), older.GetProperty("total").GetInt32(), older.GetProperty("bar").GetInt32(), older.GetProperty("passes").GetBoolean()),
+        Assert.That(
+            (older.GetProperty("grader").GetString(), older.GetProperty("judge_model").GetString(),
+                older.GetProperty("total").GetInt32(), older.GetProperty("bar").GetInt32(),
+                older.GetProperty("passes").GetBoolean()),
             Is.EqualTo(("meal-for-people", "qwen3:4b", 36, 90, false)));
         Assert.That(older.GetProperty("at").GetDateTimeOffset(), Is.EqualTo(T0));
         Assert.That(older.GetProperty("person_fail").GetProperty("judge_pass").GetInt32(), Is.EqualTo(1));
         var d = older.GetProperty("disagreements").EnumerateArray().Single();
-        Assert.That((d.GetProperty("scenario").GetString(), d.GetProperty("mode").GetString(), d.GetProperty("repeat").GetInt32(), d.GetProperty("label").GetString(), d.GetProperty("judge").GetString(), d.GetProperty("reason").GetString()),
+        Assert.That(
+            (d.GetProperty("scenario").GetString(), d.GetProperty("mode").GetString(),
+                d.GetProperty("repeat").GetInt32(), d.GetProperty("label").GetString(),
+                d.GetProperty("judge").GetString(), d.GetProperty("reason").GetString()),
             Is.EqualTo(("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish with steps")));
     }
 
@@ -175,7 +227,8 @@ public class CalibrationEndpointTests
     public async Task DeletingARun_DeletesItsReportsToo()
     {
         await using var host = await StartAsync();
-        await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", null, T0, 36, 36, 90, true, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(0, 9, 0), []));
+        await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", null, T0, 36, 36, 90, true,
+            new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(0, 9, 0), []));
 
         var response = await Send(host.Client, HttpMethod.Delete, $"/v1/admin/benchmarks/runs/{RunId}");
 

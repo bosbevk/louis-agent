@@ -18,15 +18,21 @@ public class CategoryTrendTests
     [SetUp]
     public void SetUp() => _store = new InMemoryBenchmarkStore();
 
-    private static BenchmarkSlice Slice(string slice, double? rate, string mode = SampleMode.Beta, bool tooFew = false, int n = 8) =>
-        new(mode, slice, n, 6, 2, 0, 0, ["a"], tooFew, tooFew ? null : rate, tooFew ? null : rate, tooFew ? null : rate / 2, [], [], []);
+    private static BenchmarkSlice Slice(string slice, double? rate, string mode = SampleMode.Beta, bool tooFew = false,
+        int n = 8) =>
+        new(mode, slice, n, 6, 2, 0, 0, ["a"], tooFew, tooFew ? null : rate, tooFew ? null : rate,
+            tooFew ? null : rate / 2, [], [], []);
 
-    private async Task Run(string id, int hour, IReadOnlyList<BenchmarkSlice>? slices, string? model = "claude-haiku-5-5", BenchmarkRunStatus status = BenchmarkRunStatus.Done,
-        BenchmarkRunSplit? split = null, string? rescoreOf = null, IReadOnlyDictionary<string, string>? settings = null) =>
-        await _store.SaveRunAsync(new Run(id, SampleEval.Beta, 1, status, T0.AddHours(hour), Settings: settings, Split: split, RescoreOf: rescoreOf, Slices: slices,
+    private async Task Run(string id, int hour, IReadOnlyList<BenchmarkSlice>? slices,
+        string? model = "claude-haiku-5-5", BenchmarkRunStatus status = BenchmarkRunStatus.Done,
+        BenchmarkRunSplit? split = null, string? rescoreOf = null,
+        IReadOnlyDictionary<string, string>? settings = null) =>
+        await _store.SaveRunAsync(new Run(id, SampleEval.Beta, 1, status, T0.AddHours(hour), Settings: settings,
+            Split: split, RescoreOf: rescoreOf, Slices: slices,
             Models: model is null ? null : [new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, null, model)]));
 
-    private async Task<IReadOnlyList<CategoryTrends.Category>> Compute() => await CategoryTrends.ComputeAsync(_store, SampleEval.Beta);
+    private async Task<IReadOnlyList<CategoryTrends.Category>> Compute() =>
+        await CategoryTrends.ComputeAsync(_store, SampleEval.Beta);
 
     [Test]
     public async Task EachCategory_HasALinePerModeOnItsModel_AndAPointPerRunWithARate()
@@ -75,7 +81,8 @@ public class CategoryTrendTests
 
         var lines = (await Compute()).Single().Lines;
 
-        Assert.That(lines.Select(l => l.Name), Is.EquivalentTo(new[] { $"{SampleMode.Beta} (claude-haiku-5-5)", $"{SampleMode.Beta} (claude-opus-5-5)" }));
+        Assert.That(lines.Select(l => l.Name),
+            Is.EquivalentTo(new[] { $"{SampleMode.Beta} (claude-haiku-5-5)", $"{SampleMode.Beta} (claude-opus-5-5)" }));
         Assert.That(lines.All(l => l.Points.Count == 1), Is.True);
     }
 
@@ -86,14 +93,18 @@ public class CategoryTrendTests
 
         var lines = (await Compute()).Single().Lines;
 
-        Assert.That(lines.Select(l => (l.Name, l.Points.Single().PassRate)), Is.EquivalentTo(new[] { ($"{SampleMode.Beta} (claude-haiku-5-5)", (double?)0.5), (SampleMode.Gamma, (double?)0.1) }), "a mode the run names no model for is named by itself");
+        Assert.That(lines.Select(l => (l.Name, l.Points.Single().PassRate)),
+            Is.EquivalentTo(new[]
+                { ($"{SampleMode.Beta} (claude-haiku-5-5)", (double?)0.5), (SampleMode.Gamma, (double?)0.1) }),
+            "a mode the run names no model for is named by itself");
     }
 
     [Test]
     public async Task AReplay_AReScore_AHeldOutRun_AndARunStillGoing_AreNoPoints()
     {
         await Run("kept", 1, [Slice("overall", 0.5)]);
-        await Run("replay", 2, [Slice("overall", 0.5)], settings: new Dictionary<string, string> { ["replay_of"] = "kept" });
+        await Run("replay", 2, [Slice("overall", 0.5)],
+            settings: new Dictionary<string, string> { ["replay_of"] = "kept" });
         await Run("rescore", 3, [Slice("overall", 0.9)], rescoreOf: "kept");
         await Run("held", 4, [Slice("overall", 0.5)], split: BenchmarkRunSplit.HeldOut);
         await Run("going", 5, [Slice("overall", 0.5)], status: BenchmarkRunStatus.Running);

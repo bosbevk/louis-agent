@@ -33,12 +33,14 @@ public partial class ReviewPanel : IDisposable
 
     private bool HasName => Reviewer.Name is not null;
 
-    private bool JudgeShown => !BlindReview.HiddenJudges(Grades, [Review], Reviewer.Name, j => Reviewer.Graded(Conversation, j)).Contains(Judge);
+    private bool JudgeShown => !BlindReview
+        .HiddenJudges(Grades, [Review], Reviewer.Name, j => Reviewer.Graded(Conversation, j)).Contains(Judge);
 
     private GradeRow? JudgeGrade => Grades.Grades?.FirstOrDefault(g => g.Grader == Judge);
 
     /// <summary>What this reviewer said: just now, else their latest grade stored before.</summary>
-    private string? PersonVerdict => _verdict ?? BlindReview.OwnGrades(Grades, Judge, Reviewer.Name).OrderByDescending(h => h.At).Select(h => h.Verdict).FirstOrDefault();
+    private string? PersonVerdict => _verdict ?? BlindReview.OwnGrades(Grades, Judge, Reviewer.Name)
+        .OrderByDescending(h => h.At).Select(h => h.Verdict).FirstOrDefault();
 
     /// <summary>The segmented group's lit class on the button of the verdict this reviewer gave.</summary>
     private string Pressed(string verdict) => PersonVerdict == verdict ? "active" : "";
@@ -74,8 +76,14 @@ public partial class ReviewPanel : IDisposable
         _error = null;
         try
         {
-            string path = string.Join('/', new[] { Conversation.Run, "reviews", Conversation.Mode, Conversation.Repeat.ToString(), Conversation.Task, Review.Name }.Select(Uri.EscapeDataString));
-            using var request = new HttpRequestMessage(HttpMethod.Put, $"v1/admin/benchmarks/runs/{path}") { Content = JsonContent.Create(new { verdict, note = _note, reviewer = name }) };
+            string path = string.Join('/',
+                new[]
+                {
+                    Conversation.Run, "reviews", Conversation.Mode, Conversation.Repeat.ToString(), Conversation.Task,
+                    Review.Name
+                }.Select(Uri.EscapeDataString));
+            using var request = new HttpRequestMessage(HttpMethod.Put, $"v1/admin/benchmarks/runs/{path}")
+            { Content = JsonContent.Create(new { verdict, note = _note, reviewer = name }) };
             using var _ = await Api.SendAsync(request);
             _verdict = verdict;
             Reviewer.Record(Conversation, Judge);

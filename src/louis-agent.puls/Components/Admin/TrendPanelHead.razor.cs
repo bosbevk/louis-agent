@@ -11,8 +11,10 @@ public partial class TrendPanelHead
     [Parameter] public IReadOnlyList<TrendValue> Values { get; set; } = [];
 
     /// <summary>The run a hover is reading in this panel; null when the mouse is elsewhere.</summary>
-    [Parameter] public TrendRun? Hovered { get; set; }
+    [Parameter]
+    public TrendRun? Hovered { get; set; }
 
     /// <summary>The scale's ends ("0 – 75%"), or why there is none.</summary>
-    [Parameter] public string Top { get; set; } = "";
+    [Parameter]
+    public string Top { get; set; } = "";
 }

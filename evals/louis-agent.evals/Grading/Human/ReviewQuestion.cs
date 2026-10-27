@@ -11,11 +11,13 @@ public static class ReviewQuestion
 {
     public static string From(string promptText)
     {
-        string? title = promptText.ReplaceLineEndings("\n").Split('\n').Select(line => line.Trim()).FirstOrDefault(line => line.StartsWith("# ", StringComparison.Ordinal));
+        string? title = promptText.ReplaceLineEndings("\n").Split('\n').Select(line => line.Trim())
+            .FirstOrDefault(line => line.StartsWith("# ", StringComparison.Ordinal));
         if (title is null) throw new InvalidDataException(MessageText.Format(EvalErrorMessage.PromptHasNoTitle));
 
         string question = title[2..].Trim();
-        if (question.StartsWith("Judge:", StringComparison.OrdinalIgnoreCase)) question = question["Judge:".Length..].Trim();
+        if (question.StartsWith("Judge:", StringComparison.OrdinalIgnoreCase))
+            question = question["Judge:".Length..].Trim();
         // A title with nothing after it asks nothing: no title, not a crash on its first letter.
         if (question.Length == 0) throw new InvalidDataException(MessageText.Format(EvalErrorMessage.PromptHasNoTitle));
         question = char.ToUpperInvariant(question[0]) + question[1..];

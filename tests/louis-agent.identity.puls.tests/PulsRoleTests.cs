@@ -8,7 +8,12 @@ public class PulsRoleTests
 {
     [Test]
     public void TheRolesPulsOffers_TravelUnderTheirFileNames() =>
-        Assert.That(Enum.GetValues<PulsRole>().Select(r => r.Wire()), Is.EqualTo(new[] { "puls-cook", "puls-researcher", "puls-analyst", "puls-historian", "puls-reader", "puls-minion-web-price-lookup" }));
+        Assert.That(Enum.GetValues<PulsRole>().Select(r => r.Wire()),
+            Is.EqualTo(new[]
+            {
+                "puls-cook", "puls-researcher", "puls-analyst", "puls-historian", "puls-reader",
+                "puls-minion-web-price-lookup"
+            }));
 
     [Test]
     public void EachRole_IsAFileOfTheIdentity()
@@ -16,7 +21,9 @@ public class PulsRoleTests
         var identity = new PulsIdentity();
         foreach (var role in Enum.GetValues<PulsRole>())
         {
-            string folder = role == PulsRole.MinionWebPriceLookup ? RoleCatalog.MinionsFolder : RoleCatalog.SpecialistsFolder;
+            string folder = role == PulsRole.MinionWebPriceLookup
+                ? RoleCatalog.MinionsFolder
+                : RoleCatalog.SpecialistsFolder;
             Assert.That(identity.Prompts.GetFileInfo($"{folder}/{role.Wire()}.md").Exists, Is.True, role.ToString());
         }
     }

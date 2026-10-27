@@ -41,16 +41,19 @@ public enum EvalErrorMessage
     [Description("Dataset folder '{Folder}' has no dataset.json.")]
     NoManifest,
 
-    [Description("Dataset '{Dataset}' is at version {Version}, so changes needs {Version} dated line(s), not {Count}: one per version, from 1.")]
+    [Description(
+        "Dataset '{Dataset}' is at version {Version}, so changes needs {Version} dated line(s), not {Count}: one per version, from 1.")]
     ChangesNotVersion,
 
-    [Description("Dataset '{Dataset}': the scenarios hash to {Hash}, not content_hash {Recorded}. If a scenario changed, bump the version and add a dated line to changes; then set content_hash to {Hash}.")]
+    [Description(
+        "Dataset '{Dataset}': the scenarios hash to {Hash}, not content_hash {Recorded}. If a scenario changed, bump the version and add a dated line to changes; then set content_hash to {Hash}.")]
     HashChanged,
 
     [Description("The API answered {Status}: {Reason}")]
     ApiRefused,
 
-    [Description("Dataset '{Dataset}': a grader reads '{Key}', which no scenario sets in expected, so it would grade nothing.")]
+    [Description(
+        "Dataset '{Dataset}': a grader reads '{Key}', which no scenario sets in expected, so it would grade nothing.")]
     UnfedKey,
 
     [Description("The stored run has no first line naming its eval, so there is nothing to re-score.")]
@@ -62,10 +65,12 @@ public enum EvalErrorMessage
     [Description("Label file '{File}' is not valid: {Reason}.")]
     InvalidLabel,
 
-    [Description("Label file '{File}' has no label yet. Give it a label (\"pass\" true or false, and a note), or delete the file.")]
+    [Description(
+        "Label file '{File}' has no label yet. Give it a label (\"pass\" true or false, and a note), or delete the file.")]
     LabelNotGiven,
 
-    [Description("Label file '{File}' is a label for the grader '{Grader}', which the eval does not have. Its graders are {Graders}.")]
+    [Description(
+        "Label file '{File}' is a label for the grader '{Grader}', which the eval does not have. Its graders are {Graders}.")]
     LabelGraderUnknown,
 
     [Description("Label file '{File}' labels the scenario '{Scenario}', which the dataset does not have.")]

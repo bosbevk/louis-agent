@@ -18,7 +18,9 @@ public class HumanReviewConformanceTests
         public GraderKind Kind => kind;
         public bool Required => required;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
-        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) => ValueTask.FromResult(Verdict.Pass(name, 1, "fine"));
+
+        public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
+            ValueTask.FromResult(Verdict.Pass(name, 1, "fine"));
     }
 
     private static readonly IGrader Fixed = new Rule("routed-to", GraderKind.FixedRule, required: true);
@@ -29,7 +31,8 @@ public class HumanReviewConformanceTests
     [Test]
     public async Task AReviewOfAModelGraderOfTheSameEval_IsAccepted()
     {
-        var failures = await CheckAsync(Fixed, new Rule("meal-for-people", GraderKind.Model), new Rule("meal-for-people.human", GraderKind.Human));
+        var failures = await CheckAsync(Fixed, new Rule("meal-for-people", GraderKind.Model),
+            new Rule("meal-for-people.human", GraderKind.Human));
 
         Assert.That(failures.Where(f => f.Contains("human review")), Is.Empty);
     }
@@ -40,7 +43,8 @@ public class HumanReviewConformanceTests
         var failures = await CheckAsync(Fixed, new Rule("meal-for-people.human", GraderKind.Human));
 
         var refusal = failures.Single(f => f.Contains("human review"));
-        Assert.That(refusal, Does.Contain("'meal-for-people.human'").And.Contain("'meal-for-people'").And.Contain("model grader"));
+        Assert.That(refusal,
+            Does.Contain("'meal-for-people.human'").And.Contain("'meal-for-people'").And.Contain("model grader"));
     }
 
     [Test]
@@ -48,13 +52,15 @@ public class HumanReviewConformanceTests
     {
         var failures = await CheckAsync(Fixed, new Rule("routed-to.human", GraderKind.Human));
 
-        Assert.That(failures.Single(f => f.Contains("human review")), Does.Contain("'routed-to.human'").And.Contain("'routed-to'"));
+        Assert.That(failures.Single(f => f.Contains("human review")),
+            Does.Contain("'routed-to.human'").And.Contain("'routed-to'"));
     }
 
     [Test]
     public async Task AReviewNotNamedForAGrader_IsRefused()
     {
-        var failures = await CheckAsync(Fixed, new Rule("meal-for-people", GraderKind.Model), new Rule("reviewer", GraderKind.Human));
+        var failures = await CheckAsync(Fixed, new Rule("meal-for-people", GraderKind.Model),
+            new Rule("reviewer", GraderKind.Human));
 
         Assert.That(failures.Single(f => f.Contains("human review")), Does.Contain("'reviewer'"));
     }
@@ -80,7 +86,10 @@ public class HumanReviewConformanceTests
         public string Name => "reviewed-eval";
         public int Version => 1;
         public string Proves => "A review beside its judge.";
-        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) => throw new NotSupportedException();
+
+        public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+            CancellationToken cancellationToken) => throw new NotSupportedException();
+
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
         public IReadOnlyList<IGrader> Graders { get; } = graders;
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotSupportedException();

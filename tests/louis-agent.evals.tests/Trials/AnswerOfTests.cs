@@ -19,7 +19,9 @@ public class AnswerOfTests
     [Test]
     public void ASubSessionsTextIsNotTheAnswer()
     {
-        var specialist = SessionEvent.From("sub_session", Json("""{"tool_use_id":"t0","agent":"puls","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Spesialis"}}}"""));
+        var specialist = SessionEvent.From("sub_session",
+            Json(
+                """{"tool_use_id":"t0","agent":"puls","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Spesialis"}}}"""));
         var turn = Turn(1, [Text("Antwoord"), specialist]);
 
         Assert.That(EngineEvents.AnswerOf(turn), Is.EqualTo("Antwoord"));

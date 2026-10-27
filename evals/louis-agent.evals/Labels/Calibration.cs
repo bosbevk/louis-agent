@@ -19,7 +19,11 @@ public sealed record JudgedAnswer(LabeledAnswer Answer, GradeOutcome Verdict);
 /// be gamed: a judge that always passes agrees on every label that is a pass, so with 14 pass labels in 18 it scores 78% without judging anything. So the bar is held in each class:
 /// <see cref="Bar"/> of the labels of the class (of the labelled-pass, and of the labelled-fail), and a class with no labels is untested, which does not pass.
 /// </summary>
-public sealed record CalibrationReport(int Agreed, int Total, IReadOnlyList<Disagreement> Disagreements, IReadOnlyList<JudgedAnswer> Judged)
+public sealed record CalibrationReport(
+    int Agreed,
+    int Total,
+    IReadOnlyList<Disagreement> Disagreements,
+    IReadOnlyList<JudgedAnswer> Judged)
 {
     /// <summary>The share of a class's labels the judge must agree with: 90%.</summary>
     public const int Bar = 90;
@@ -51,14 +55,16 @@ public sealed record CalibrationReport(int Agreed, int Total, IReadOnlyList<Disa
         })),
     ];
 
-    private static string Word(bool pass) => MessageText.Format(pass ? CalibrationMessage.Pass : CalibrationMessage.Fail);
+    private static string Word(bool pass) =>
+        MessageText.Format(pass ? CalibrationMessage.Pass : CalibrationMessage.Fail);
 
     /// <summary>The judge's answers to the labels of one class: how many it passed, failed and could not tell, and how many agreed. Public since 6a.5a: the data line carries it.</summary>
     public ClassReport ClassOf(bool pass)
     {
         var verdicts = Judged.Where(j => j.Answer.Pass == pass).Select(j => j.Verdict).ToList();
         int agreed = verdicts.Count(v => v == (pass ? GradeOutcome.Pass : GradeOutcome.Fail));
-        return new ClassReport(pass, verdicts.Count, agreed, verdicts.Count(v => v == GradeOutcome.Pass), verdicts.Count(v => v == GradeOutcome.Fail),
+        return new ClassReport(pass, verdicts.Count, agreed, verdicts.Count(v => v == GradeOutcome.Pass),
+            verdicts.Count(v => v == GradeOutcome.Fail),
             verdicts.Count(v => v == GradeOutcome.Unknown));
     }
 
@@ -66,7 +72,13 @@ public sealed record CalibrationReport(int Agreed, int Total, IReadOnlyList<Disa
         ? MessageText.Format(CalibrationMessage.ClassNone, new { Label = Word(c.Pass) })
         : MessageText.Format(CalibrationMessage.ClassLine, new
         {
-            Label = Word(c.Pass), c.Passed, c.Failed, c.CantTell, c.Agreed, c.Total, Percent = c.Percent,
+            Label = Word(c.Pass),
+            c.Passed,
+            c.Failed,
+            c.CantTell,
+            c.Agreed,
+            c.Total,
+            Percent = c.Percent,
             Few = c.Few ? MessageText.Format(CalibrationMessage.FewLabels) : "",
         });
 
@@ -78,10 +90,10 @@ public sealed record CalibrationReport(int Agreed, int Total, IReadOnlyList<Disa
         {
             Short = string.Join("; ", shortClasses.Select(c => c.Total == 0
                 ? MessageText.Format(CalibrationMessage.ShortNone, new { Label = Word(c.Pass) })
-                : MessageText.Format(CalibrationMessage.ShortOf, new { Label = Word(c.Pass), c.Agreed, c.Total, Bar }))),
+                : MessageText.Format(CalibrationMessage.ShortOf,
+                    new { Label = Word(c.Pass), c.Agreed, c.Total, Bar }))),
         });
     }
-
 }
 
 /// <summary>One class of a person's labels (those they passed, or those they failed) and what the judge said to each: the total, how many agreed, and the judge's pass, fail and can't-tell counts.</summary>
@@ -103,7 +115,8 @@ public sealed record ClassReport(bool Pass, int Total, int Agreed, int Passed, i
 /// </summary>
 public static class Calibration
 {
-    public static async Task<CalibrationReport> RunAsync(IGrader grader, IReadOnlyList<EvalScenario> scenarios, IReadOnlyList<LabeledAnswer> labels, CancellationToken cancellationToken)
+    public static async Task<CalibrationReport> RunAsync(IGrader grader, IReadOnlyList<EvalScenario> scenarios,
+        IReadOnlyList<LabeledAnswer> labels, CancellationToken cancellationToken)
     {
         var judged = new List<JudgedAnswer>();
         var disagreements = new List<Disagreement>();
@@ -112,19 +125,26 @@ public static class Calibration
             var scenario = scenarios.First(s => s.Id == label.Scenario);
             var grade = await grader.GradeAsync(TrialOf(label, scenario), cancellationToken);
             judged.Add(new JudgedAnswer(label, grade.Outcome));
-            bool agrees = grade.Outcome == GradeOutcome.Pass && label.Pass || grade.Outcome == GradeOutcome.Fail && !label.Pass;
+            bool agrees = grade.Outcome == GradeOutcome.Pass && label.Pass ||
+                          grade.Outcome == GradeOutcome.Fail && !label.Pass;
             if (!agrees) disagreements.Add(new Disagreement(label, grade.Outcome, grade.Reason));
         }
+
         return new CalibrationReport(labels.Count - disagreements.Count, labels.Count, disagreements, judged);
     }
 
     /// <summary>The trial as the judge is to see it: every turn of the labelled conversation, question and answer (6a.4f), the labelled answer last, so a follow-up is judged with what it relies on.</summary>
     private static Trial TrialOf(LabeledAnswer label, EvalScenario scenario)
     {
-        var turns = label.Turns.Select((turn, i) => new TurnTranscript(i + 1, "calibration", turn.Question, [Answer(turn.Answer)], TimeSpan.Zero, null)).ToList();
-        return new Trial("calibration", new EvalMode(label.Mode, "", []), label.Repeat, scenario, new Transcript(turns));
+        var turns = label.Turns.Select((turn, i) =>
+                new TurnTranscript(i + 1, "calibration", turn.Question, [Answer(turn.Answer)], TimeSpan.Zero, null))
+            .ToList();
+        return new Trial("calibration", new EvalMode(label.Mode, "", []), label.Repeat, scenario,
+            new Transcript(turns));
     }
 
     private static SessionEvent Answer(string text) =>
-        SessionEvent.From("content_block_delta", JsonSerializer.SerializeToElement(new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text } }));
+        SessionEvent.From("content_block_delta",
+            JsonSerializer.SerializeToElement(new
+            { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text } }));
 }

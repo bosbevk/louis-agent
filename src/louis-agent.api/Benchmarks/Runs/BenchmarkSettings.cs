@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Search;
+
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
@@ -15,8 +16,10 @@ public static class BenchmarkSettings
     /// <param name="searchProviderReady">Whether the search engine was set up. Only written when there is an engine.</param>
     /// <param name="pageRendererReady">Whether the page renderer was set up. Only written when there is a renderer.</param>
     /// <param name="evalRunner">The runner's path the API starts an eval check from. Required, so a caller can't leave it out.</param>
-    public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model, IReadOnlyList<string> roles, string evalRunner,
-        WebSearchProviderKind? searchProvider, PageRendererKind? pageRenderer, bool searchProviderReady, bool pageRendererReady)
+    public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model,
+        IReadOnlyList<string> roles, string evalRunner,
+        WebSearchProviderKind? searchProvider, PageRendererKind? pageRenderer, bool searchProviderReady,
+        bool pageRendererReady)
     {
         var settings = new Dictionary<string, string>
         {
@@ -36,16 +39,19 @@ public static class BenchmarkSettings
             settings["web_search_provider"] = search.Wire();
             settings["web_search_provider_ready"] = searchProviderReady ? "true" : "false";
         }
+
         if (pageRenderer is { } renderer)
         {
             settings["page_renderer"] = renderer.Wire();
             settings["page_renderer_ready"] = pageRendererReady ? "true" : "false";
         }
+
         return settings;
     }
 
     /// <summary>Adds how the run's web was handled: whether it asked for one, and whether it replays an earlier run. The trend leaves replays out, since a replay costs nothing and measures nothing new.</summary>
-    public static IReadOnlyDictionary<string, string> WithOptions(IReadOnlyDictionary<string, string> settings, BenchmarkRunOptions options)
+    public static IReadOnlyDictionary<string, string> WithOptions(IReadOnlyDictionary<string, string> settings,
+        BenchmarkRunOptions options)
     {
         // Nothing asked for: the settings stay exactly as they were.
         if (options.Web is null && options.Replay is null) return settings;
@@ -58,6 +64,10 @@ public static class BenchmarkSettings
     }
 
     /// <summary>Adds the hashes of the prompts the run used. It's the set the run used, not all it has, so a shorter list may only mean a different path through the eval and not a changed prompt.</summary>
-    public static IReadOnlyDictionary<string, string>? WithPromptHashes(IReadOnlyDictionary<string, string>? settings, IReadOnlyList<string> hashes) =>
-        hashes.Count == 0 ? settings : new Dictionary<string, string>(settings ?? new Dictionary<string, string>()) { ["prompt_hashes"] = string.Join(",", hashes) };
+    public static IReadOnlyDictionary<string, string>? WithPromptHashes(IReadOnlyDictionary<string, string>? settings,
+        IReadOnlyList<string> hashes) =>
+        hashes.Count == 0
+            ? settings
+            : new Dictionary<string, string>(settings ?? new Dictionary<string, string>())
+            { ["prompt_hashes"] = string.Join(",", hashes) };
 }

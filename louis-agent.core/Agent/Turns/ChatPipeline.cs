@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Agent.Turns;
 
 using LouisAgent.Core.Llm.Replay;
 using LouisAgent.Core.Llm.UsageMapping;
@@ -6,6 +5,7 @@ using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Agent.Turns;
 /// <summary>
 /// The chat client a turn runs on (S, CL15, from AgentEngine): the middleware in its order, the one place to read when a
 /// request looks wrong. Outermost first: the tool loop with the guards, the tools kept on the final request, usage recorded
@@ -18,7 +18,8 @@ using Microsoft.Extensions.AI;
 internal static class ChatPipeline
 {
     /// <param name="concurrentToolCalls">Run a round's tool calls at once (F34); only for toolsets that allow it.</param>
-    public static IChatClient Build(IChatClient chatClient, ToolCallGuards guards, IUsageSink? usageSink, IUsageMapper? usageMapper, bool concurrentToolCalls,
+    public static IChatClient Build(IChatClient chatClient, ToolCallGuards guards, IUsageSink? usageSink,
+        IUsageMapper? usageMapper, bool concurrentToolCalls,
         ReplayStore? replay = null)
     {
         var pipeline = new ChatClientBuilder(chatClient)
@@ -47,7 +48,8 @@ internal static class ChatPipeline
     /// Summaries call the model directly, outside the tool loop, so they are traced and recorded by their own layers; the
     /// span is a child of the call it summarises.
     /// </summary>
-    public static IChatClient BuildSummaryClient(IChatClient chatClient, IUsageSink? usageSink, IUsageMapper? usageMapper, ReplayStore? replay = null)
+    public static IChatClient BuildSummaryClient(IChatClient chatClient, IUsageSink? usageSink,
+        IUsageMapper? usageMapper, ReplayStore? replay = null)
     {
         // A summary is a model request too: replayed with the rest, or a free replay would pay for its summaries.
         var traced = new ChatClientBuilder(chatClient).UseOpenTelemetry(configure: WithoutContent)

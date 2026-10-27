@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Agent.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Agent.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -27,7 +27,8 @@ public enum AgentErrorMessage
     [Description("Packs require each other in a cycle: {Cycle}.")]
     CatalogRequiresCycle,
 
-    [Description("Tool '{Tool}' is in two toolsets, '{First}' and '{Second}'; tool names are unique across all toolsets.")]
+    [Description(
+        "Tool '{Tool}' is in two toolsets, '{First}' and '{Second}'; tool names are unique across all toolsets.")]
     CatalogToolNameTwice,
 
     [Description("Tool '{Tool}' in toolset '{Toolset}' takes the engine's own tool name.")]

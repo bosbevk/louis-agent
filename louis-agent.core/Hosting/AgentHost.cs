@@ -1,5 +1,4 @@
 using LouisAgent.Choices;
-namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Catalog;
@@ -18,6 +17,7 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Hosting;
 /// <summary>
 /// Single bootstrap shared by the CLI, ACP, API and MCP entry points: the flow only (S, CL15). The .env files are
 /// <see cref="HostEnvironment"/>, the roles <see cref="RoleFiles"/>, the session models <see cref="SessionLlmLoader"/>,
@@ -47,7 +47,8 @@ public static class AgentHost
         return engines.GetOrCreate(engines.Available);
     }
 
-    public static AgentHostContext Build(ILlmClientFactory? clientFactory = null) => Build(AgentCatalog.CoreOnly, clientFactory);
+    public static AgentHostContext Build(ILlmClientFactory? clientFactory = null) =>
+        Build(AgentCatalog.CoreOnly, clientFactory);
 
     /// <summary>The same, with the identities and packs the host was given (CL15): their prompts registered, the roles checked.</summary>
     public static AgentHostContext Build(AgentCatalog catalog, ILlmClientFactory? clientFactory = null)
@@ -66,7 +67,8 @@ public static class AgentHost
     /// every toolset this instance can load: what the CLI and the ACP server use, one session per process. The API
     /// builds each session's engine from <see cref="AgentHostContext.Engines"/>.
     /// </summary>
-    public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory, AgentCatalog? catalog = null)
+    public static AgentHostContext Build(LlmOptions llm, AgentOptions agent, ILlmClientFactory clientFactory,
+        AgentCatalog? catalog = null)
     {
         catalog ??= AgentCatalog.CoreOnly;
         // The identities' and packs' prompts, before any is read (CL15); then every ROLES_ENABLED name and the default
@@ -79,14 +81,23 @@ public static class AgentHost
         DisplayCurrency display = DisplayCurrency.Resolve(agent, prices.Currency, rates);
         Log.Log(LogLevel.Information, HostingLogMessage.DisplayCurrencyChosen, new { Display = display });
         // The profiles sit beside .env: the repo's config/ when run from it, the mounted workspace's in a container.
-        string configDirectory = EnvFile.FindConfigDirectory(Environment.CurrentDirectory) ?? Path.Combine(agent.WorkspaceRoot, "config");
-        var sessionLlms = SessionLlmLoader.Load(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
+        string configDirectory = EnvFile.FindConfigDirectory(Environment.CurrentDirectory) ??
+                                 Path.Combine(agent.WorkspaceRoot, "config");
+        var sessionLlms =
+            SessionLlmLoader.Load(agent, clientFactory, configDirectory, Environment.GetEnvironmentVariable);
         SessionLlmLoader.CheckMinionLlms(agent);
-        var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(), UsageLedger.Open(agent, prices),
-            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms, catalog: catalog);
+        var engines = new AgentEngineFactory(chatClient, agent, llm.ResolveSupportsTools(),
+            UsageLedger.Open(agent, prices),
+            clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates,
+            sessionLlms: sessionLlms, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, HostingLogMessage.LlmChosen,
-            new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.Wire() ?? "off" });
+            new
+            {
+                Llm = llm,
+                Tools = engine.SupportsTools ? "on" : "off",
+                Thinking = engine.Thinking?.Wire() ?? "off"
+            });
 
         RiderMcpToolDiscovery.StartInBackground(engine, agent);
 

@@ -1,4 +1,3 @@
-namespace LouisAgent.Composition;
 
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Agent.Catalog;
@@ -9,6 +8,7 @@ using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Shops;
 using LouisAgent.Choices;
 
+namespace LouisAgent.Composition;
 /// <summary>
 /// The composition root (CL15, ADR 0027): the one place that knows every identity and pack. A host calls
 /// <see cref="FromEnvironment"/> once at start-up and hands the catalogue to <c>AgentHost.Build</c>; the catalogue then
@@ -24,7 +24,8 @@ public static class Plugins
     public static AgentCatalog FromEnvironment()
     {
         HostEnvironment.Load();
-        return FromSettings(Environment.GetEnvironmentVariable("IDENTITIES"), Environment.GetEnvironmentVariable("PACKS"));
+        return FromSettings(Environment.GetEnvironmentVariable("IDENTITIES"),
+            Environment.GetEnvironmentVariable("PACKS"));
     }
 
     /// <summary>
@@ -39,7 +40,8 @@ public static class Plugins
 
         var chosen = identityKinds.Select(Create).ToList();
         var named = packKinds
-            .Concat(chosen.SelectMany(i => i.Packs).Select(name => SettingChoice.TryParse(name, out PackKind? kind) ? kind : null).OfType<PackKind>())
+            .Concat(chosen.SelectMany(i => i.Packs)
+                .Select(name => SettingChoice.TryParse(name, out PackKind? kind) ? kind : null).OfType<PackKind>())
             .Distinct()
             .ToList();
         // A name no pack has is left to the catalogue, which refuses it naming the registered ones.
@@ -61,15 +63,18 @@ public static class Plugins
     private static IReadOnlyList<T> Parse<T>(string? setting, CompositionErrorMessage unknown) where T : struct, Enum
     {
         var kinds = new List<T>();
-        foreach (string name in (setting ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        foreach (string name in (setting ?? "").Split(',',
+                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
             if (!SettingChoice.TryParse(name, out T? kind) || kind is null)
                 throw new AgentCatalogException(MessageText.Format(unknown, new
                 {
-                    Name = name, Supported = SettingChoice.Names<T>() is { Count: > 0 } names ? string.Join(", ", names) : "none",
+                    Name = name,
+                    Supported = SettingChoice.Names<T>() is { Count: > 0 } names ? string.Join(", ", names) : "none",
                 }));
             if (!kinds.Contains(kind.Value)) kinds.Add(kind.Value);
         }
+
         return kinds;
     }
 }

@@ -7,5 +7,6 @@ namespace LouisAgent.Puls.Components.Admin.Runs;
 public partial class RescoredFrom
 {
     /// <summary>The id of the run that was re-scored.</summary>
-    [Parameter, EditorRequired] public string Id { get; set; } = "";
+    [Parameter, EditorRequired]
+    public string Id { get; set; } = "";
 }

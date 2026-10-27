@@ -1,4 +1,3 @@
-namespace LouisAgent.Packs.Shops.Providers;
 
 using LouisAgent.Packs.Shops.Catalogues;
 using System.Globalization;
@@ -12,6 +11,7 @@ using LouisAgent.Packs.Shops.Messages;
 using LouisAgent.Core.Tools.Web.Browsing;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Packs.Shops.Providers;
 /// <summary>
 /// Checkers' products from its own catalogue (F33 step 2). Its search page, at the address its own search box sends
 /// (<c>/search?Search=…</c>; <c>/search?q=</c> finds nothing), fetches <c>/api/catalogue/get-products-filter</c>, whose
@@ -22,12 +22,17 @@ using Microsoft.Extensions.Logging;
 /// (F34: <see cref="CheckersStore"/>), else in Checkers' default store; the answer says which. Searches go through
 /// <paramref name="throttle"/> (F34): a few at once, and a pause after Checkers refuses one.
 /// </summary>
-public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore? store = null, ShopThrottle? throttle = null) : IShopCatalogue
+public sealed partial class CheckersCatalogue(
+    IWebBrowser browser,
+    CheckersStore? store = null,
+    ShopThrottle? throttle = null) : IShopCatalogue
 {
     private static readonly ILogger Log = AgentLogging.For<CheckersCatalogue>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
     private const string CataloguePath = "/api/catalogue/get-products-filter";
+
     private const string ProductCard = "div[class*='product-card_card__']";
+
     // Where the search page's cards load a product's photo from, by the answer's imageId (seen live, 2026-10-17).
     private static readonly Uri Images = new("https://catalog.sixty60.co.za/v2/files/");
 
@@ -35,13 +40,16 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
 
     private readonly ShopThrottle _throttle = throttle ?? new ShopThrottle();
 
-    public async Task<ShopSearch> SearchAsync(string query, int maxResults, string? place = null, CancellationToken cancellationToken = default)
+    public async Task<ShopSearch> SearchAsync(string query, int maxResults, string? place = null,
+        CancellationToken cancellationToken = default)
     {
         BrowserSession? area = store is null ? null : await store.ForAsync(place, cancellationToken);
-        return await _throttle.RunAsync(() => SearchInAsync(query, maxResults, place, area, cancellationToken), cancellationToken);
+        return await _throttle.RunAsync(() => SearchInAsync(query, maxResults, place, area, cancellationToken),
+            cancellationToken);
     }
 
-    private async Task<ShopSearch> SearchInAsync(string query, int maxResults, string? place, BrowserSession? area, CancellationToken cancellationToken)
+    private async Task<ShopSearch> SearchInAsync(string query, int maxResults, string? place, BrowserSession? area,
+        CancellationToken cancellationToken)
     {
         var search = SearchUri(query);
         BrowserVisit visit;
@@ -49,7 +57,8 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
         {
             // Done once the answer is in and a product's card is drawn (its deal's wording is on it), not when the page
             // goes quiet: it never does (F34).
-            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, area, readySelector: ProductCard,
+            visit = await browser.VisitAsync(search, url => url.AbsolutePath == CataloguePath, area,
+                readySelector: ProductCard,
                 cancellationToken: cancellationToken);
         }
         catch (WebBrowserException ex)
@@ -60,8 +69,10 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
         if (visit.Captured.Count == 0)
         {
             _throttle.Refused();
-            throw new ShopCatalogueException(MessageText.Format(ShopToolMessage.ShopCatalogueNoAnswer, new { Shop = "Checkers", Query = query, Url = search }));
+            throw new ShopCatalogueException(MessageText.Format(ShopToolMessage.ShopCatalogueNoAnswer,
+                new { Shop = "Checkers", Query = query, Url = search }));
         }
+
         try
         {
             var products = Parse(visit.Captured[0], visit.Html, search, maxResults);
@@ -69,15 +80,19 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
             // store that priced each product: the town's only when it's one its lookup named.
             string? answered = AnsweredBy(visit.Captured[0]);
             if (area is null) return new ShopSearch(products, null, answered);
-            if (answered is not null && StoresOf(area).Contains(answered)) return new ShopSearch(products, place!.Trim(), answered);
+            if (answered is not null && StoresOf(area).Contains(answered))
+                return new ShopSearch(products, place!.Trim(), answered);
             if (answered is null) return new ShopSearch(products, null);
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreNotUsed, new { Shop = "Checkers", Place = LogContent.Of(place!.Trim()), Store = LogContent.Of(answered) });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreNotUsed,
+                new { Shop = "Checkers", Place = LogContent.Of(place!.Trim()), Store = LogContent.Of(answered) });
             return new ShopSearch(products, null, answered, AreaIgnored: true);
         }
-        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
+        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException
+                                       or FormatException)
         {
             _throttle.Refused();
-            throw new ShopCatalogueException(MessageText.Format(ShopToolMessage.ShopCatalogueUnreadable, new { Shop = "Checkers", Query = query, Reason = ex.Message }));
+            throw new ShopCatalogueException(MessageText.Format(ShopToolMessage.ShopCatalogueUnreadable,
+                new { Shop = "Checkers", Query = query, Reason = ex.Message }));
         }
     }
 
@@ -86,8 +101,14 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
     {
         using var doc = JsonDocument.Parse(json);
         return doc.RootElement.TryGetProperty("products", out var products) && products.ValueKind == JsonValueKind.Array
-            && products.EnumerateArray().FirstOrDefault() is { ValueKind: JsonValueKind.Object } first
-            && first.TryGetProperty("storeId", out var id) && id.ValueKind == JsonValueKind.String
+                                                                            && products.EnumerateArray()
+                                                                                    .FirstOrDefault() is
+                                                                            {
+                                                                                ValueKind: JsonValueKind.Object
+                                                                            } first
+                                                                            && first.TryGetProperty("storeId",
+                                                                                out var id) &&
+                                                                            id.ValueKind == JsonValueKind.String
             ? id.GetString()
             : null;
     }
@@ -95,7 +116,9 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
     /// <summary>The stores a town's session names: Checkers' own <c>storeids</c> cookie, ids joined by dashes.</summary>
     private static HashSet<string> StoresOf(BrowserSession session) =>
         session.Cookies.Where(c => c.Name is "storeids" or "istio-storeIds")
-            .SelectMany(c => Uri.UnescapeDataString(c.Value).Split('-', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .SelectMany(c =>
+                Uri.UnescapeDataString(c.Value).Split('-',
+                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             .ToHashSet(StringComparer.Ordinal);
 
     /// <summary>The search, as Checkers' own search box sends it.</summary>
@@ -113,11 +136,13 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
         foreach (var p in doc.RootElement.GetProperty("products").EnumerateArray())
         {
             if (p.TryGetProperty("isStockAvailable", out var stock) && stock.ValueKind == JsonValueKind.False) continue;
-            if (!p.TryGetProperty("price", out var priceValue) || priceValue.ValueKind != JsonValueKind.Number) continue;
+            if (!p.TryGetProperty("price", out var priceValue) ||
+                priceValue.ValueKind != JsonValueKind.Number) continue;
 
             decimal price = priceValue.GetDecimal();
             if (p.TryGetProperty("discountedPrice", out var discounted) && discounted.ValueKind == JsonValueKind.Number
-                && discounted.GetDecimal() is > 0 and var now && now < price)
+                                                                        && discounted.GetDecimal() is > 0 and var now &&
+                                                                        now < price)
                 price = now;
 
             string unit = p.TryGetProperty("unitOfMeasure", out var u) ? u.GetString() ?? "" : "";
@@ -138,13 +163,15 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
                 DealOf(p, html, article, unit)));
             if (products.Count == maxResults) break;
         }
+
         return products;
     }
 
     /// <summary>A product sold by weight comes in packs of a range of grams ("1100-1300"): 1.1 to 1.3 kg.</summary>
     private static (decimal MinKg, decimal MaxKg)? Weight(JsonElement p)
     {
-        if (!p.TryGetProperty("weightOptions", out var options) || options.ValueKind != JsonValueKind.Array || options.GetArrayLength() == 0)
+        if (!p.TryGetProperty("weightOptions", out var options) || options.ValueKind != JsonValueKind.Array ||
+            options.GetArrayLength() == 0)
             return null;
         decimal[] kg = (options[0].GetString() ?? "").Split('-', StringSplitOptions.TrimEntries)
             .Select(g => decimal.Parse(g, CultureInfo.InvariantCulture) / 1000m).ToArray();
@@ -164,7 +191,8 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
 
     /// <summary>The product's photo, as its card shows it (256 pixels), or none when the answer names none.</summary>
     private static Uri? ImageOf(JsonElement p) =>
-        p.TryGetProperty("imageId", out var id) && id.ValueKind == JsonValueKind.String && id.GetString() is { Length: > 0 } image
+        p.TryGetProperty("imageId", out var id) && id.ValueKind == JsonValueKind.String &&
+        id.GetString() is { Length: > 0 } image
             ? new Uri(Images, Uri.EscapeDataString(image) + "?width=256&height=256")
             : null;
 
@@ -176,9 +204,12 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
     private static ShopDeal? DealOf(JsonElement p, string html, string article, string unit)
     {
         ShopDealKind? kind =
-            p.TryGetProperty("bonusBuyIds", out var bonusBuys) && bonusBuys.ValueKind == JsonValueKind.Array && bonusBuys.GetArrayLength() > 0
+            p.TryGetProperty("bonusBuyIds", out var bonusBuys) && bonusBuys.ValueKind == JsonValueKind.Array &&
+            bonusBuys.GetArrayLength() > 0
                 ? ShopDealKind.Special
-                : p.TryGetProperty("isOnPromotion", out var promoted) && promoted.ValueKind == JsonValueKind.True ? ShopDealKind.Promotion : null;
+                : p.TryGetProperty("isOnPromotion", out var promoted) && promoted.ValueKind == JsonValueKind.True
+                    ? ShopDealKind.Promotion
+                    : null;
         return kind is { } deal ? new ShopDeal(deal, BadgeOf(html, article, unit)) : null;
     }
 
@@ -190,21 +221,25 @@ public sealed partial class CheckersCatalogue(IWebBrowser browser, CheckersStore
     private static string? BadgeOf(string html, string article, string unit)
     {
         if (article.Length == 0) return null;
-        var link = Regex.Match(html, "href=\"/product/[^\"]*-" + Regex.Escape(article) + Regex.Escape(unit) + "\"", RegexOptions.IgnoreCase);
+        var link = Regex.Match(html, "href=\"/product/[^\"]*-" + Regex.Escape(article) + Regex.Escape(unit) + "\"",
+            RegexOptions.IgnoreCase);
         if (!link.Success) return null;
         const string Card = "product-card_card__";
         int start = html.LastIndexOf(Card, link.Index, StringComparison.Ordinal);
         int end = html.IndexOf(Card, link.Index, StringComparison.Ordinal);
         string card = html[(start < 0 ? link.Index : start)..(end < 0 ? html.Length : end)];
         var badge = Regex.Match(card, "class=\"[^\"]*promotion-badge_save[^\"]*\"[^>]*>([^<]+)<");
-        return badge.Success && WebUtility.HtmlDecode(badge.Groups[1].Value).Trim() is { Length: > 0 } wording ? wording : null;
+        return badge.Success && WebUtility.HtmlDecode(badge.Groups[1].Value).Trim() is { Length: > 0 } wording
+            ? wording
+            : null;
     }
 
     /// <summary>The product's card on the search page: a link ending in its article number and unit.</summary>
     private static Uri? LinkOf(string html, string article, string unit)
     {
         if (article.Length == 0) return null;
-        var link = Regex.Match(html, "href=\"(/product/[^\"]*-" + Regex.Escape(article) + Regex.Escape(unit) + ")\"", RegexOptions.IgnoreCase);
+        var link = Regex.Match(html, "href=\"(/product/[^\"]*-" + Regex.Escape(article) + Regex.Escape(unit) + ")\"",
+            RegexOptions.IgnoreCase);
         return link.Success ? new Uri(Site, link.Groups[1].Value) : null;
     }
 }

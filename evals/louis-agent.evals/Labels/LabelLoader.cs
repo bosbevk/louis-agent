@@ -14,7 +14,8 @@ public static class LabelLoader
 {
     private const string LabelsFolder = "labels";
 
-    public static IReadOnlyList<LabeledAnswer> Load(string datasetFolder, IReadOnlyList<EvalScenario> scenarios, IReadOnlySet<string> graders)
+    public static IReadOnlyList<LabeledAnswer> Load(string datasetFolder, IReadOnlyList<EvalScenario> scenarios,
+        IReadOnlySet<string> graders)
     {
         string folder = Path.Combine(datasetFolder, LabelsFolder);
         if (!Directory.Exists(folder)) return [];
@@ -26,13 +27,15 @@ public static class LabelLoader
     }
 
     /// <summary>One label from its text (6a.5a: the API writes them to the runner's stdin), with the same checks as a file's; <paramref name="name"/> is how a refusal names it.</summary>
-    public static LabeledAnswer Parse(string name, string text, IReadOnlyList<EvalScenario> scenarios, IReadOnlySet<string> graders)
+    public static LabeledAnswer Parse(string name, string text, IReadOnlyList<EvalScenario> scenarios,
+        IReadOnlySet<string> graders)
     {
         LabelFile file;
         try
         {
             file = JsonSerializer.Deserialize<LabelFile>(text, LabelJson.Options)
-                   ?? throw Refuse(EvalErrorMessage.InvalidLabel, new { File = name, Reason = MessageText.Format(EvalErrorMessage.EmptyFile) });
+                   ?? throw Refuse(EvalErrorMessage.InvalidLabel,
+                       new { File = name, Reason = MessageText.Format(EvalErrorMessage.EmptyFile) });
         }
         catch (JsonException error)
         {
@@ -40,14 +43,18 @@ public static class LabelLoader
         }
 
         if (file.Label?.Pass is not { } pass) throw Refuse(EvalErrorMessage.LabelNotGiven, new { File = name });
-        if (!graders.Contains(file.Grader)) throw Refuse(EvalErrorMessage.LabelGraderUnknown, new { File = name, file.Grader, Graders = string.Join(", ", graders.Order(StringComparer.Ordinal)) });
+        if (!graders.Contains(file.Grader))
+            throw Refuse(EvalErrorMessage.LabelGraderUnknown,
+                new { File = name, file.Grader, Graders = string.Join(", ", graders.Order(StringComparer.Ordinal)) });
         var scenario = scenarios.FirstOrDefault(s => s.Id == file.Scenario)
                        ?? throw Refuse(EvalErrorMessage.LabelScenarioUnknown, new { File = name, file.Scenario });
         if (file.Turn < 1 || file.Turn > scenario.Input.Messages.Count)
             throw Refuse(EvalErrorMessage.LabelTurnUnknown, new { File = name, file.Turn, file.Scenario });
 
-        return new LabeledAnswer(name, file.Grader, file.Scenario, file.Mode, file.Run, file.Repeat, file.Turns, pass, file.Label.Note);
+        return new LabeledAnswer(name, file.Grader, file.Scenario, file.Mode, file.Run, file.Repeat, file.Turns, pass,
+            file.Label.Note);
     }
 
-    private static InvalidDataException Refuse(EvalErrorMessage message, object values) => new(MessageText.Format(message, values));
+    private static InvalidDataException Refuse(EvalErrorMessage message, object values) =>
+        new(MessageText.Format(message, values));
 }

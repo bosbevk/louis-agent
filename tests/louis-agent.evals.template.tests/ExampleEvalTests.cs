@@ -18,7 +18,8 @@ public class ExampleEvalTests
     private static readonly EvalMode AnyMode = new("example", "example/voice", []);
 
     private static readonly Trial AnyTrial = new("run_1", AnyMode, 1,
-        new EvalScenario("example", new EvalInput(null, "Etc/UTC", ["x"]), default, [], DatasetSplit.Dev), new Transcript([]));
+        new EvalScenario("example", new EvalInput(null, "Etc/UTC", ["x"]), default, [], DatasetSplit.Dev),
+        new Transcript([]));
 
     [Test]
     public void TheSetListsItsOneEval()
@@ -63,8 +64,10 @@ public class ExampleEvalTests
     {
         // Each is a member the next person writes: the modes, the facts of a turn, the grader's rule, the scorer.
         Assert.Throws<NotImplementedException>(() => Eval.ModesAsync(null!, CancellationToken.None));
-        Assert.Throws<NotImplementedException>(() => Eval.TurnFactsOf(new TurnTranscript(1, "s", "q", [], TimeSpan.Zero, null), AnyMode));
-        Assert.Throws<NotImplementedException>(() => Eval.Graders.Single().GradeAsync(AnyTrial, CancellationToken.None));
+        Assert.Throws<NotImplementedException>(() =>
+            Eval.TurnFactsOf(new TurnTranscript(1, "s", "q", [], TimeSpan.Zero, null), AnyMode));
+        Assert.Throws<NotImplementedException>(() =>
+            Eval.Graders.Single().GradeAsync(AnyTrial, CancellationToken.None));
         Assert.Throws<NotImplementedException>(() => ExampleScorer.Score(AnyTrial));
         Assert.Throws<NotImplementedException>(() => Eval.ScoresOf(AnyTrial, []));
     }

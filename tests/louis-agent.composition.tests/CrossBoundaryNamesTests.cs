@@ -18,7 +18,8 @@ public class CrossBoundaryNamesTests
     {
         // ADR 0043: IdentityKind is the host's copy of each identity's name (it picks with IDENTITIES); the identity says its own. This project sees both.
         foreach (var kind in Enum.GetValues<IdentityKind>())
-            Assert.That(Plugins.FromSettings(kind.Wire(), null).Identities.Select(i => i.Name), Is.EqualTo(new[] { kind.Wire() }), kind.ToString());
+            Assert.That(Plugins.FromSettings(kind.Wire(), null).Identities.Select(i => i.Name),
+                Is.EqualTo(new[] { kind.Wire() }), kind.ToString());
     }
 
     [Test]
@@ -26,7 +27,8 @@ public class CrossBoundaryNamesTests
     {
         // ADR 0043: PackKind is the host's copy of each pack's name (it picks with PACKS, and an identity names its packs by text); the pack says its own. This project sees both.
         foreach (var kind in Enum.GetValues<PackKind>())
-            Assert.That(Plugins.FromSettings(null, kind.Wire()).Packs.Select(p => p.Name), Is.EqualTo(new[] { kind.Wire() }), kind.ToString());
+            Assert.That(Plugins.FromSettings(null, kind.Wire()).Packs.Select(p => p.Name),
+                Is.EqualTo(new[] { kind.Wire() }), kind.ToString());
     }
 
     [Test]
@@ -36,7 +38,8 @@ public class CrossBoundaryNamesTests
         var known = catalog.Packs.Select(p => p.Name).ToHashSet(StringComparer.Ordinal);
 
         foreach (var identity in catalog.Identities)
-            Assert.That(identity.Packs.Where(p => !known.Contains(p)), Is.Empty, $"{identity.Name} names a pack the catalogue does not have");
+            Assert.That(identity.Packs.Where(p => !known.Contains(p)), Is.Empty,
+                $"{identity.Name} names a pack the catalogue does not have");
     }
 
     [Test]
@@ -46,7 +49,8 @@ public class CrossBoundaryNamesTests
         var known = catalog.Toolsets.Select(t => t.Name).ToHashSet(StringComparer.Ordinal);
 
         foreach (var identity in catalog.Identities)
-            Assert.That(Unknown(identity.Prompts, known), Is.Empty, $"{identity.Name}: a role's header lists a toolset no pack or core provides");
+            Assert.That(Unknown(identity.Prompts, known), Is.Empty,
+                $"{identity.Name}: a role's header lists a toolset no pack or core provides");
     }
 
     // The check itself, on role files written for the test: a name the catalogue has passes (the optional mark does not matter), a typo is reported with its file.
@@ -56,7 +60,8 @@ public class CrossBoundaryNamesTests
         var known = new HashSet<string> { CoreToolset.Web.Wire(), CoreToolset.Files.Wire() };
         var roles = new[]
         {
-            ("specialists/good.md", $"---\ntoolsets: {CoreToolset.Web.Wire()}, {CoreToolset.Files.Wire()}?\n---\nA role."),
+            ("specialists/good.md",
+                $"---\ntoolsets: {CoreToolset.Web.Wire()}, {CoreToolset.Files.Wire()}?\n---\nA role."),
             ("specialists/typo.md", $"---\ntoolsets: {CoreToolset.Web.Wire()}, fils?\n---\nA role."),
             ("specialists/none.md", "A role with no header."),
         };
@@ -64,14 +69,20 @@ public class CrossBoundaryNamesTests
         Assert.That(Unknown(roles, known), Is.EqualTo(new[] { "specialists/typo.md: fils" }));
     }
 
-    private static List<string> Unknown(IFileProvider prompts, ISet<string> known) => Unknown(RoleFiles(prompts), known);
+    private static List<string> Unknown(IFileProvider prompts, ISet<string> known) =>
+        Unknown(RoleFiles(prompts), known);
 
     /// <summary>The toolsets (without the optional mark) that role files list in their headers and <paramref name="known"/> lacks, each with its file.</summary>
     private static List<string> Unknown(IEnumerable<(string File, string Text)> roles, ISet<string> known) =>
-        [.. roles.SelectMany(r => RoleHeader.Split(r.Text).Toolsets.Select(ToolsetCatalog.NameOf).Where(name => !known.Contains(name)).Select(name => $"{r.File}: {name}"))];
+    [
+        .. roles.SelectMany(r =>
+            RoleHeader.Split(r.Text).Toolsets.Select(ToolsetCatalog.NameOf).Where(name => !known.Contains(name))
+                .Select(name => $"{r.File}: {name}"))
+    ];
 
     private static IEnumerable<(string File, string Text)> RoleFiles(IFileProvider prompts) =>
-        new[] { RoleCatalog.SpecialistsFolder, RoleCatalog.MinionsFolder, RoleCatalog.AgentFolder }.SelectMany(folder => MarkdownIn(prompts, folder));
+        new[] { RoleCatalog.SpecialistsFolder, RoleCatalog.MinionsFolder, RoleCatalog.AgentFolder }.SelectMany(folder =>
+            MarkdownIn(prompts, folder));
 
     private static IEnumerable<(string File, string Text)> MarkdownIn(IFileProvider prompts, string folder)
     {
@@ -79,7 +90,8 @@ public class CrossBoundaryNamesTests
         {
             string path = $"{folder}/{entry.Name}";
             if (entry.IsDirectory)
-                foreach (var nested in MarkdownIn(prompts, path)) yield return nested;
+                foreach (var nested in MarkdownIn(prompts, path))
+                    yield return nested;
             else if (entry.Name.EndsWith(".md", StringComparison.Ordinal))
             {
                 using var reader = new StreamReader(entry.CreateReadStream());

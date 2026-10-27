@@ -15,9 +15,16 @@ public class WebSearchProviderFactoryTests
     [TestCase("Google", "tvly", null, null, WebSearchProviderKind.Google)]
     [TestCase("ddg", "tvly", null, null, WebSearchProviderKind.DuckDuckGo)]
     [TestCase("searxng", null, null, null, WebSearchProviderKind.Searxng)]
-    public void TheEngine_IsTheOneNamed_ElseTheFirstWhoseSettingsAreSet(string? named, string? tavilyKey, string? googleKey, string? engineId, WebSearchProviderKind expected)
+    public void TheEngine_IsTheOneNamed_ElseTheFirstWhoseSettingsAreSet(string? named, string? tavilyKey,
+        string? googleKey, string? engineId, WebSearchProviderKind expected)
     {
-        var options = new AgentOptions { WebSearchProvider = named, TavilyApiKey = tavilyKey, GoogleSearchApiKey = googleKey, GoogleSearchEngineId = engineId };
+        var options = new AgentOptions
+        {
+            WebSearchProvider = named,
+            TavilyApiKey = tavilyKey,
+            GoogleSearchApiKey = googleKey,
+            GoogleSearchEngineId = engineId
+        };
 
         Assert.That(WebSearchProviderFactory.Resolve(options), Is.EqualTo(expected));
     }
@@ -25,7 +32,8 @@ public class WebSearchProviderFactoryTests
     /// <summary>With no key set but a SearXNG address, SearXNG is the one.</summary>
     [Test]
     public void SearxngUrl_IsTheFallback_WhenNoKeyIsSet() =>
-        Assert.That(WebSearchProviderFactory.Resolve(new AgentOptions { SearxngUrl = "http://searxng:8080" }), Is.EqualTo(WebSearchProviderKind.Searxng));
+        Assert.That(WebSearchProviderFactory.Resolve(new AgentOptions { SearxngUrl = "http://searxng:8080" }),
+            Is.EqualTo(WebSearchProviderKind.Searxng));
 
     /// <summary>Says whether the engine you'd get is set up, and `Create` agrees: you get the "not set up" provider exactly when this says no.</summary>
     [TestCase("tavily", "tvly", null, null, null, true)]
@@ -42,7 +50,8 @@ public class WebSearchProviderFactoryTests
     [TestCase(null, "tvly", null, null, null, true)]
     [TestCase(null, null, null, null, "http://searxng:8080", true)]
     [TestCase("bing", "tvly", null, null, null, false)]
-    public void IsReady_SaysWhetherTheSelectedEngineCanWork_AndCreateAgrees(string? named, string? tavilyKey, string? googleKey, string? engineId, string? searxngUrl, bool expected)
+    public void IsReady_SaysWhetherTheSelectedEngineCanWork_AndCreateAgrees(string? named, string? tavilyKey,
+        string? googleKey, string? engineId, string? searxngUrl, bool expected)
     {
         var options = new AgentOptions
         {

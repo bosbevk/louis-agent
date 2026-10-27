@@ -16,9 +16,22 @@ namespace LouisAgent.Api.Benchmarks.Reports;
 public static class BenchmarkTrends
 {
     /// <summary>One run in one mode.</summary>
-    public sealed record Point(string Run, DateTimeOffset At, decimal? Cost, double? Score, int Conversations,
-        long? Tokens = null, double? SecondsPerTurn = null, double? CacheShare = null, double? Sourced = null,
-        double? ToolsFailed = null, decimal? CostPerAnswer = null, int? Sites = null, double? PassAtK = null, double? PassHatK = null, int? K = null);
+    public sealed record Point(
+        string Run,
+        DateTimeOffset At,
+        decimal? Cost,
+        double? Score,
+        int Conversations,
+        long? Tokens = null,
+        double? SecondsPerTurn = null,
+        double? CacheShare = null,
+        double? Sourced = null,
+        double? ToolsFailed = null,
+        decimal? CostPerAnswer = null,
+        int? Sites = null,
+        double? PassAtK = null,
+        double? PassHatK = null,
+        int? K = null);
 
     /// <summary>One line of the trend: a mode on one model. Its name is the mode, with its model in brackets when the model is named (F18 step 2a).</summary>
     public sealed record Series(string Name, IReadOnlyList<Point> Points, string? Model = null);
@@ -30,7 +43,8 @@ public static class BenchmarkTrends
 
     private static string SeriesName(string mode, string? model) => model is null ? mode : $"{mode} ({model})";
 
-    public static async Task<Trend> ComputeAsync(IBenchmarkStore store, string check, int limit = 20, CancellationToken cancellationToken = default)
+    public static async Task<Trend> ComputeAsync(IBenchmarkStore store, string check, int limit = 20,
+        CancellationToken cancellationToken = default)
     {
         var runs = await FinishedRunsAsync(store, check, limit, cancellationToken);
 
@@ -44,9 +58,15 @@ public static class BenchmarkTrends
             int repeats = Math.Max(1, run.Repeat);
             foreach (var mode in conversations.GroupBy(c => c.Key.Mode))
             {
-                string? model = run.Models?.FirstOrDefault(m => m.Mode == mode.Key && m.Level == BenchmarkModelLevel.Agent)?.Model;
+                string? model = run.Models
+                    ?.FirstOrDefault(m => m.Mode == mode.Key && m.Level == BenchmarkModelLevel.Agent)?.Model;
                 var line = (mode.Key, model);
-                if (!points.ContainsKey(line)) { lines.Add(line); points[line] = []; }
+                if (!points.ContainsKey(line))
+                {
+                    lines.Add(line);
+                    points[line] = [];
+                }
+
                 var mine = requests.Where(r => r.Turn?.Mode == mode.Key).ToList();
                 var costs = mine.Where(r => r.Cost is not null).Select(r => r.Cost!.Value).ToList();
                 int right = mode.Count(Right);
@@ -62,20 +82,30 @@ public static class BenchmarkTrends
                         failed += tools.Failed;
                     }
 
-                long cached = mine.Sum(r => r.CacheReadTokens ?? 0), input = cached + mine.Sum(r => (r.InputTokens ?? 0) + (r.CacheWriteTokens ?? 0));
+                long cached = mine.Sum(r => r.CacheReadTokens ?? 0),
+                    input = cached + mine.Sum(r => (r.InputTokens ?? 0) + (r.CacheWriteTokens ?? 0));
                 // Accurate rows (FX24, as the explorer's AccuracyRing counts them): priced with a source, estimated (the cook's answer while no shop's prices are read), or
                 // rightly without a price in a town with no shop. A guess and a row with no price are not.
-                var (priced, listed) = mode.Aggregate((0, 0), (sum, c) => (sum.Item1 + Number(c, "priced") + Number(c, "estimated") + Number(c, "no_shop_rows"), sum.Item2 + Number(c, "ingredients")));
+                var (priced, listed) = mode.Aggregate((0, 0),
+                    (sum, c) => (sum.Item1 + Number(c, "priced") + Number(c, "estimated") + Number(c, "no_shop_rows"),
+                        sum.Item2 + Number(c, "ingredients")));
                 var answered = mode.Where(Answered).Select(c => c.Key).ToHashSet();
-                var answeredCosts = mine.Where(r => r.Turn is not null && answered.Contains(r.Turn.Conversation) && r.Cost is not null).Sum(r => r.Cost!.Value);
+                var answeredCosts =
+                    mine.Where(r => r.Turn is not null && answered.Contains(r.Turn.Conversation) && r.Cost is not null)
+                        .Sum(r => r.Cost!.Value);
 
                 // The runner's rates for this mode, from its last repeat (F18 step 5a): they are cumulative over the repeats, so the last is the mode's.
-                var rates = run.Modes?.Where(m => m.Name == mode.Key && m.Rates is not null).OrderBy(m => m.Repeat).LastOrDefault()?.Rates;
+                var rates = run.Modes?.Where(m => m.Name == mode.Key && m.Rates is not null).OrderBy(m => m.Repeat)
+                    .LastOrDefault()?.Rates;
                 points[line].Add(new Point(run.Id, run.StartedAt,
                     costs.Count == 0 ? null : costs.Sum() / repeats,
                     mode.Any() ? (double)right / mode.Count() : null,
                     mode.Count(),
-                    Tokens: mine.Count == 0 ? null : mine.Sum(r => (r.InputTokens ?? 0) + (r.OutputTokens ?? 0) + (r.CacheReadTokens ?? 0) + (r.CacheWriteTokens ?? 0)) / repeats,
+                    Tokens: mine.Count == 0
+                        ? null
+                        : mine.Sum(r =>
+                            (r.InputTokens ?? 0) + (r.OutputTokens ?? 0) + (r.CacheReadTokens ?? 0) +
+                            (r.CacheWriteTokens ?? 0)) / repeats,
                     SecondsPerTurn: turns.Count == 0 ? null : turns.Average(t => t.Seconds),
                     CacheShare: input == 0 ? null : (double)cached / input,
                     Sourced: listed == 0 ? null : (double)priced / listed,
@@ -85,7 +115,9 @@ public static class BenchmarkTrends
                     PassAtK: rates?.PassAtK, PassHatK: rates?.PassHatK, K: rates?.K));
             }
         }
-        return new Trend(check, lines.Select(l => new Series(SeriesName(l.Mode, l.Model), points[l], l.Model)).ToList());
+
+        return new Trend(check,
+            lines.Select(l => new Series(SeriesName(l.Mode, l.Model), points[l], l.Model)).ToList());
     }
 
     /// <summary>
@@ -93,7 +125,8 @@ public static class BenchmarkTrends
     /// re-score are left out (the recorded run again, and old transcripts graded again), a held-out run or one of all of them is a different set of conversations, and a run still going
     /// has an incomplete cost.
     /// </summary>
-    internal static async Task<List<Run>> FinishedRunsAsync(IBenchmarkStore store, string check, int limit, CancellationToken cancellationToken)
+    internal static async Task<List<Run>> FinishedRunsAsync(IBenchmarkStore store, string check, int limit,
+        CancellationToken cancellationToken)
     {
         // One run at a time (the runner's rule), so one more than the limit covers a run still going.
         return (await store.ListRunsAsync(check, limit + 1, cancellationToken))
@@ -109,10 +142,14 @@ public static class BenchmarkTrends
     }
 
     private static bool Right(Conversation c) =>
-        c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty("routed_right", out var v) && v.ValueKind == JsonValueKind.True;
+        c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty("routed_right", out var v) &&
+        v.ValueKind == JsonValueKind.True;
 
     private static int Number(Conversation c, string name) =>
-        c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
+        c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty(name, out var v) &&
+        v.ValueKind == JsonValueKind.Number
+            ? v.GetInt32()
+            : 0;
 
     /// <summary>A real answer: routed right, and a meal at least <see cref="AnsweredShare"/> priced with sources (a meal without a list isn't one).</summary>
     private static bool Answered(Conversation c)
@@ -120,6 +157,7 @@ public static class BenchmarkTrends
         if (!Right(c)) return false;
         if (!c.Scores.TryGetProperty("ingredients", out var n)) return true;
         if (n.ValueKind != JsonValueKind.Number) return !c.Key.Task.StartsWith("cook", StringComparison.Ordinal);
-        return c.Scores.TryGetProperty("priced_ratio", out var r) && r.ValueKind == JsonValueKind.Number && r.GetDouble() >= AnsweredShare;
+        return c.Scores.TryGetProperty("priced_ratio", out var r) && r.ValueKind == JsonValueKind.Number &&
+               r.GetDouble() >= AnsweredShare;
     }
 }

@@ -70,8 +70,10 @@ public abstract class BenchmarkNotesContract
         var notes = await _store.NotesAsync(id);
 
         Assert.That(notes.Where(n => n.Conversation is null).Select(n => n.Text), Is.EqualTo(new[] { "on the run" }));
-        Assert.That(notes.Where(n => n.Conversation == Conversation("bobotie")).Select(n => n.Text), Is.EqualTo(new[] { "on bobotie" }));
-        Assert.That(notes.Where(n => n.Conversation == Conversation("sosaties")).Select(n => n.Text), Is.EqualTo(new[] { "on sosaties" }));
+        Assert.That(notes.Where(n => n.Conversation == Conversation("bobotie")).Select(n => n.Text),
+            Is.EqualTo(new[] { "on bobotie" }));
+        Assert.That(notes.Where(n => n.Conversation == Conversation("sosaties")).Select(n => n.Text),
+            Is.EqualTo(new[] { "on sosaties" }));
     }
 
     /// <summary>One run's notes never show up under another run.</summary>

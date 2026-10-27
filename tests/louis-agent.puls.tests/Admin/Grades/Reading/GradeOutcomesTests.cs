@@ -13,11 +13,13 @@ public class GradeOutcomesTests
     [TestCase("unknown", GradeOutcome.Unknown)]
     [TestCase("Pending", GradeOutcome.Pending)]
     [TestCase("pending", GradeOutcome.Pending)]
-    public void TheCaseIsIgnored(string text, GradeOutcome expected) => Assert.That(GradeOutcomes.Parse(text), Is.EqualTo(expected));
+    public void TheCaseIsIgnored(string text, GradeOutcome expected) =>
+        Assert.That(GradeOutcomes.Parse(text), Is.EqualTo(expected));
 
     [TestCase("Passed")]
     [TestCase("0")]
     [TestCase("")]
     [TestCase(null)]
-    public void AWordItDoesNotKnow_IsUnknown(string? text) => Assert.That(GradeOutcomes.Parse(text), Is.EqualTo(GradeOutcome.Unknown));
+    public void AWordItDoesNotKnow_IsUnknown(string? text) =>
+        Assert.That(GradeOutcomes.Parse(text), Is.EqualTo(GradeOutcome.Unknown));
 }

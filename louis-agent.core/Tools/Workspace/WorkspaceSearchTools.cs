@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.Workspace;
 
 using LouisAgent.Core.Guardrails.Workspace;
 using System.ComponentModel;
@@ -7,6 +6,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Workspace.Listing;
 using LouisAgent.Core.Tools.Workspace.Messages;
 
+namespace LouisAgent.Core.Tools.Workspace;
 /// <summary>Finding across the tree (the files toolset, S: one of its five classes): text in files, files by name.</summary>
 public sealed class WorkspaceSearchTools
 {
@@ -19,10 +19,12 @@ public sealed class WorkspaceSearchTools
         _root = _boundary.Root;
     }
 
-    [Description("Recursively search source and documentation files under the workspace root for a case-insensitive literal text match, returning each hit as path:line: text. Only a fixed set of extensions is searched (code, config, markdown, etc.), and sensitive files, files over 1 MB, and excluded directories (.git, node_modules, bin, obj, etc.) are skipped. Results stop at maxResults (1-100, default 30) even if more matches exist, so a \"no matches\" result does not prove the term is absent from excluded files. Use FindFiles instead when you're matching file names rather than file content.")]
+    [Description(
+        "Recursively search source and documentation files under the workspace root for a case-insensitive literal text match, returning each hit as path:line: text. Only a fixed set of extensions is searched (code, config, markdown, etc.), and sensitive files, files over 1 MB, and excluded directories (.git, node_modules, bin, obj, etc.) are skipped. Results stop at maxResults (1-100, default 30) even if more matches exist, so a \"no matches\" result does not prove the term is absent from excluded files. Use FindFiles instead when you're matching file names rather than file content.")]
     public string SearchWorkspace(
         [Description("Text to find.")] string query,
-        [Description("Maximum number of matching lines to return (1-100).")] int maxResults = 30)
+        [Description("Maximum number of matching lines to return (1-100).")]
+        int maxResults = 30)
     {
         if (string.IsNullOrWhiteSpace(query))
         {
@@ -72,13 +74,18 @@ public sealed class WorkspaceSearchTools
             }
         }
 
-        return matches.Count == 0 ? MessageText.Format(WorkspaceToolMessage.NoMatches) : string.Join(Environment.NewLine, matches);
+        return matches.Count == 0
+            ? MessageText.Format(WorkspaceToolMessage.NoMatches)
+            : string.Join(Environment.NewLine, matches);
     }
 
-    [Description("Recursively search the workspace for files whose name matches a wildcard pattern (* for any characters, ? for a single character), such as '*.cs' or 'test*.txt' — this matches file names only, not file content. Excluded directories (.git, node_modules, bin, obj, etc.) are skipped and results are capped at 500 files. Use SearchWorkspace instead when you're looking for a piece of text inside files rather than files by name.")]
+    [Description(
+        "Recursively search the workspace for files whose name matches a wildcard pattern (* for any characters, ? for a single character), such as '*.cs' or 'test*.txt' — this matches file names only, not file content. Excluded directories (.git, node_modules, bin, obj, etc.) are skipped and results are capped at 500 files. Use SearchWorkspace instead when you're looking for a piece of text inside files rather than files by name.")]
     public string FindFiles(
-        [Description("File name pattern (e.g., '*.cs', 'test*.txt'). Use '*' for all files.")] string pattern,
-        [Description("Workspace-relative directory to search in; use '.' for entire workspace.")] string searchPath = ".")
+        [Description("File name pattern (e.g., '*.cs', 'test*.txt'). Use '*' for all files.")]
+        string pattern,
+        [Description("Workspace-relative directory to search in; use '.' for entire workspace.")]
+        string searchPath = ".")
     {
         string directory = ResolvePath(searchPath);
         if (!Directory.Exists(directory))

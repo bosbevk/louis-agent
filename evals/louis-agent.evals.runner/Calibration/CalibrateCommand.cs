@@ -14,20 +14,27 @@ namespace LouisAgent.Evals.Runner.Calibration;
 /// </summary>
 public static class CalibrateCommand
 {
-    public static async Task<int> RunAsync(CalibrateRequest request, IEval eval, Func<string, string?> getVariable, TextReader stdin, TextWriter stdout,
+    public static async Task<int> RunAsync(CalibrateRequest request, IEval eval, Func<string, string?> getVariable,
+        TextReader stdin, TextWriter stdout,
         CancellationToken cancellationToken)
     {
-        if (!string.IsNullOrWhiteSpace(getVariable("CI"))) throw new RunnerException(MessageText.Format(RunnerMessage.CalibrationNotInCi));
+        if (!string.IsNullOrWhiteSpace(getVariable("CI")))
+            throw new RunnerException(MessageText.Format(RunnerMessage.CalibrationNotInCi));
 
         var grader = ModelGraderOf(eval, request.Grader);
         // The labels folder (or stdin) may hold labels of more than one grader: this calibration reads those of the one it is asked about.
-        var labels = (request.LabelsOnStdin ? FromStdin(stdin, eval) : eval.Labels).Where(label => label.Grader == grader.Name).ToList();
+        var labels = (request.LabelsOnStdin ? FromStdin(stdin, eval) : eval.Labels)
+            .Where(label => label.Grader == grader.Name).ToList();
         if (labels.Count == 0)
-            throw new RunnerException(MessageText.Format(request.LabelsOnStdin ? RunnerMessage.NoLabelsOnStdin : RunnerMessage.NoLabels, new { Eval = eval.Name, Grader = grader.Name }));
+            throw new RunnerException(MessageText.Format(
+                request.LabelsOnStdin ? RunnerMessage.NoLabelsOnStdin : RunnerMessage.NoLabels,
+                new { Eval = eval.Name, Grader = grader.Name }));
 
         var report = await Labels.Calibration.RunAsync(grader, eval.Scenarios, labels, cancellationToken);
         foreach (string line in report.Lines()) stdout.WriteLine(line);
-        string? judgeModel = getVariable("EVAL_JUDGE_MODEL") is { } model && !string.IsNullOrWhiteSpace(model) ? model.Trim() : null;
+        string? judgeModel = getVariable("EVAL_JUDGE_MODEL") is { } model && !string.IsNullOrWhiteSpace(model)
+            ? model.Trim()
+            : null;
         stdout.WriteLine(CalibrationLine.Of(eval.Name, grader.Name, judgeModel, report).ToLine());
         return 0;
     }
@@ -41,8 +48,10 @@ public static class CalibrateCommand
         while (stdin.ReadLine() is { } line)
         {
             number++;
-            if (!string.IsNullOrWhiteSpace(line)) labels.Add(LabelLoader.Parse($"line {number}", line, eval.Scenarios, graders));
+            if (!string.IsNullOrWhiteSpace(line))
+                labels.Add(LabelLoader.Parse($"line {number}", line, eval.Scenarios, graders));
         }
+
         return labels;
     }
 
@@ -51,8 +60,15 @@ public static class CalibrateCommand
     {
         var grader = eval.Graders.FirstOrDefault(g => g.Name == name)
                      ?? throw new RunnerException(MessageText.Format(RunnerMessage.NoSuchGrader,
-                         new { Eval = eval.Name, Grader = name, Graders = string.Join(", ", eval.Graders.Select(g => g.Name)) }));
-        if (grader.Kind != GraderKind.Model) throw new RunnerException(MessageText.Format(RunnerMessage.GraderNotModel, new { Eval = eval.Name, Grader = name }));
+                         new
+                         {
+                             Eval = eval.Name,
+                             Grader = name,
+                             Graders = string.Join(", ", eval.Graders.Select(g => g.Name))
+                         }));
+        if (grader.Kind != GraderKind.Model)
+            throw new RunnerException(MessageText.Format(RunnerMessage.GraderNotModel,
+                new { Eval = eval.Name, Grader = name }));
         return grader;
     }
 }

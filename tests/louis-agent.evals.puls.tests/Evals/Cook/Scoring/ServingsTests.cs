@@ -1,4 +1,3 @@
-
 using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Scoring;
@@ -22,7 +21,8 @@ public class ServingsTests
 
     [Test]
     public void ItReadsEveryNumberTheAnswerNames_InTheOrderItFirstSaysThem() =>
-        Assert.That(Servings.Of("Vir 4 mense, of vir ses mense as julle honger is. Vir 4 mense: R120."), Is.EqualTo(new[] { 4, 6 }));
+        Assert.That(Servings.Of("Vir 4 mense, of vir ses mense as julle honger is. Vir 4 mense: R120."),
+            Is.EqualTo(new[] { 4, 6 }));
 
     [TestCase("Bak vir 45 minute by 180 grade.")]
     [TestCase("Bake for 45 minutes, then rest for 2 hours.")]

@@ -26,13 +26,16 @@ internal sealed class DatasetFolder : IDisposable
     {
         string hash = DatasetHash.Of(Path.Combine(Root, "scenarios"));
         string changes = string.Join(", ", Enumerable.Repeat("\"2026-10-24: a sample change\"", lines));
-        return Write("dataset.json", "{\"name\": \"sample-eval\", \"version\": " + version + ", \"covers\": \"A sample task\", \"content_hash\": \""
-            + hash + "\", \"changes\": [" + changes + "]}");
+        return Write("dataset.json", "{\"name\": \"sample-eval\", \"version\": " + version +
+                                     ", \"covers\": \"A sample task\", \"content_hash\": \""
+                                     + hash + "\", \"changes\": [" + changes + "]}");
     }
 
     /// <summary>One scenario file's text: the input is a sample, the expected and categories are the test's.</summary>
-    public static string Scenario(string id, string expected = "{\"routed\": true}", string categories = "[]", string extra = "") =>
-        "{\"id\": \"" + id + "\", \"input\": {\"place\": \"Sample town\", \"time_zone\": \"Etc/UTC\", \"messages\": [\"Hello\"]},"
+    public static string Scenario(string id, string expected = "{\"routed\": true}", string categories = "[]",
+        string extra = "") =>
+        "{\"id\": \"" + id +
+        "\", \"input\": {\"place\": \"Sample town\", \"time_zone\": \"Etc/UTC\", \"messages\": [\"Hello\"]},"
         + " \"expected\": " + expected + ", \"categories\": " + categories + extra + "}";
 
     public void Dispose()

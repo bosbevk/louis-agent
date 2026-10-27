@@ -1,5 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
+
 namespace LouisAgent.Evals.Puls.Tests.Manuals;
 
 // F18 step 7.1: each Puls eval's manual lives beside the eval (evals/louis-agent.evals.puls/Manuals/{cook,routing}.md), in English, opens with a title, and names the eval and every grader it declares,
@@ -10,18 +11,23 @@ public class PulsManualTests
 
     private static string FindRepoRoot()
     {
-        for (var directory = new DirectoryInfo(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
-            if (File.Exists(Path.Combine(directory.FullName, "louis-agent-solution.sln"))) return directory.FullName;
+        for (var directory = new DirectoryInfo(AppContext.BaseDirectory);
+             directory is not null;
+             directory = directory.Parent)
+            if (File.Exists(Path.Combine(directory.FullName, "louis-agent-solution.sln")))
+                return directory.FullName;
         throw new InvalidOperationException("the solution's folder was not found above " + AppContext.BaseDirectory);
     }
 
-    private static string Manual(IEval eval) => File.ReadAllText(Path.Combine(RepoRoot, eval.Manual!.Replace('/', Path.DirectorySeparatorChar)));
+    private static string Manual(IEval eval) =>
+        File.ReadAllText(Path.Combine(RepoRoot, eval.Manual!.Replace('/', Path.DirectorySeparatorChar)));
 
     private static IEval Eval(PulsEvalName name) => new PulsEvalSet().Evals.Single(e => e.Name == name.Wire());
 
     [TestCase(PulsEvalName.Cook, "evals/louis-agent.evals.puls/Manuals/cook.md")]
     [TestCase(PulsEvalName.Routing, "evals/louis-agent.evals.puls/Manuals/routing.md")]
-    public void AnEvalListsItsManual_BesideItself(PulsEvalName eval, string path) => Assert.That(Eval(eval).Manual, Is.EqualTo(path));
+    public void AnEvalListsItsManual_BesideItself(PulsEvalName eval, string path) =>
+        Assert.That(Eval(eval).Manual, Is.EqualTo(path));
 
     [TestCase(PulsEvalName.Cook)]
     [TestCase(PulsEvalName.Routing)]
@@ -32,7 +38,8 @@ public class PulsManualTests
 
         Assert.That(text, Does.StartWith("# "));
         Assert.That(text, Does.Contain($"`{eval.Name}`"));
-        Assert.That(eval.Graders.Select(g => g.Name), Has.All.Matches<string>(grader => text.Contains($"`{grader}`")), "every grader, in backticks");
+        Assert.That(eval.Graders.Select(g => g.Name), Has.All.Matches<string>(grader => text.Contains($"`{grader}`")),
+            "every grader, in backticks");
     }
 
     [Test]
@@ -41,6 +48,7 @@ public class PulsManualTests
         var eval = Eval(PulsEvalName.Cook);
         string text = Manual(eval);
 
-        Assert.That((await eval.ModesAsync(null!, CancellationToken.None)).Select(m => m.Name), Has.All.Matches<string>(mode => text.Contains($"`{mode}`")));
+        Assert.That((await eval.ModesAsync(null!, CancellationToken.None)).Select(m => m.Name),
+            Has.All.Matches<string>(mode => text.Contains($"`{mode}`")));
     }
 }

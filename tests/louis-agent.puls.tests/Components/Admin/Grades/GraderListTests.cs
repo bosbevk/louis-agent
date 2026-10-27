@@ -14,13 +14,14 @@ public class GraderListTests
     {
         using var ctx = new BunitContext();
         var run = Json("""
-            {"run":{"id":"run_1","eval":"stub","eval_version":1,"commit":"abc1234",
-                    "graders":[{"name":"no-error","version":1,"kind":"FixedRule"},{"name":"within-time","version":1,"kind":"FixedRule"}]}}
-            """);
+                       {"run":{"id":"run_1","eval":"stub","eval_version":1,"commit":"abc1234",
+                               "graders":[{"name":"no-error","version":1,"kind":"FixedRule"},{"name":"within-time","version":1,"kind":"FixedRule"}]}}
+                       """);
 
         var cut = ctx.Render<GraderList>(p => p.Add(c => c.Run, run));
 
-        Assert.That(cut.FindAll(".chip").Select(c => c.TextContent), Is.EqualTo(new[] { "no-error v1 · FixedRule", "within-time v1 · FixedRule" }));
+        Assert.That(cut.FindAll(".chip").Select(c => c.TextContent),
+            Is.EqualTo(new[] { "no-error v1 · FixedRule", "within-time v1 · FixedRule" }));
         Snapshots.Match("louis-agent.puls.tests", "Components/Admin/Grades/GraderList.graders.html", cut.Markup);
     }
 

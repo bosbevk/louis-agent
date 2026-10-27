@@ -35,8 +35,7 @@ public enum CommonGradeMessage
     [Description("turn {Turn} was priced in {Currency}, not USD")]
     OtherCurrency,
 
-    [Description("routed to {Role}")]
-    RoutedPass,
+    [Description("routed to {Role}")] RoutedPass,
 
     [Description("routed to {Actual}, not {Role}")]
     RoutedElsewhere,
@@ -50,8 +49,7 @@ public enum CommonGradeMessage
     [Description("turn {Turn} failed for the infrastructure ({Failure}), so it can't be judged")]
     InfrastructureFailure,
 
-    [Description("the turn failed")]
-    TurnFailed,
+    [Description("the turn failed")] TurnFailed,
 
     [Description("answered itself, as expected")]
     AnsweredAsExpected,
@@ -65,17 +63,14 @@ public enum CommonGradeMessage
     [Description("waits for a person to answer: {Question}")]
     HumanWaits,
 
-    [Description("no judge configured")]
-    NoJudge,
+    [Description("no judge configured")] NoJudge,
 
     [Description("the judge gave no yes-or-no verdict")]
     JudgeNoVerdict,
 
-    [Description("the judge said yes")]
-    JudgeSaidYes,
+    [Description("the judge said yes")] JudgeSaidYes,
 
-    [Description("the judge said no")]
-    JudgeSaidNo,
+    [Description("the judge said no")] JudgeSaidNo,
 
     [Description("scenario '{Scenario}' is no longer in the dataset, so this conversation can't be graded")]
     ScenarioGone,

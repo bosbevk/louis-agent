@@ -17,18 +17,20 @@ namespace LouisAgent.Core.Tests.Usage.Records;
 public class UsageScopeTotalsTests
 {
     private const string Prices = """
-        {
-          "as_of": "2026-10-10",
-          "currency": "USD",
-          "models": {
-            "claude-haiku-5-5": { "input": 1.00, "output": 5.00, "cache_read": 0.10, "cache_write_5m": 1.25, "cache_write_1h": 2.00 }
-          }
-        }
-        """;
+                                  {
+                                    "as_of": "2026-10-10",
+                                    "currency": "USD",
+                                    "models": {
+                                      "claude-haiku-5-5": { "input": 1.00, "output": 5.00, "cache_read": 0.10, "cache_write_5m": 1.25, "cache_write_1h": 2.00 }
+                                    }
+                                  }
+                                  """;
 
     private static UsageRecord Record(long input, decimal? cost = null) => new(
-        At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null, Task: null,
-        Run: null, Service: null, Model: "claude-haiku-5-5", Tokens: new UsageTokens(input, 0, 0, 10, null), DurationMs: 1,
+        At: DateTimeOffset.UtcNow, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null,
+        Task: null,
+        Run: null, Service: null, Model: "claude-haiku-5-5", Tokens: new UsageTokens(input, 0, 0, 10, null),
+        DurationMs: 1,
         Stop: "stop", Cost: cost is null ? null : new UsageCost("USD", cost.Value, "2026-10-10"));
 
     private static ChatResponse Reply(string text) =>
@@ -123,7 +125,8 @@ public class UsageScopeTotalsTests
 
             // 1,000 input at $1/M + 100 output at $5/M.
             Assert.That(turn.Records.Single().Cost!.Amount, Is.EqualTo(0.0015m));
-            Assert.That(turn.Records.Single(), Is.EqualTo(ledger.Records.Single()), "the same record the ledger stored");
+            Assert.That(turn.Records.Single(), Is.EqualTo(ledger.Records.Single()),
+                "the same record the ledger stored");
         }
         finally
         {
@@ -146,10 +149,12 @@ public class UsageScopeTotalsTests
     public void Recorder_CancelledStream_StillCounts()
     {
         // Whatever a cancelled request used was still charged.
-        using var client = new UsageRecordingChatClient(new FailingStreamClient(new OperationCanceledException()), new ListUsageSink());
+        using var client = new UsageRecordingChatClient(new FailingStreamClient(new OperationCanceledException()),
+            new ListUsageSink());
 
         using var turn = UsageScope.Begin();
-        Assert.ThrowsAsync<OperationCanceledException>(async () => await client.GetStreamingResponseAsync("hi").ToListAsync());
+        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            await client.GetStreamingResponseAsync("hi").ToListAsync());
 
         Assert.That(turn.Records.Single().Stop, Is.EqualTo(UsageRecordingChatClient.Cancelled));
     }
@@ -157,10 +162,13 @@ public class UsageScopeTotalsTests
     [Test]
     public void Recorder_ProviderError_AddsNothing()
     {
-        using var client = new UsageRecordingChatClient(new FailingStreamClient(new HttpRequestException("529 overloaded")), new ListUsageSink());
+        using var client =
+            new UsageRecordingChatClient(new FailingStreamClient(new HttpRequestException("529 overloaded")),
+                new ListUsageSink());
 
         using var turn = UsageScope.Begin();
-        Assert.ThrowsAsync<HttpRequestException>(async () => await client.GetStreamingResponseAsync("hi").ToListAsync());
+        Assert.ThrowsAsync<HttpRequestException>(async () =>
+            await client.GetStreamingResponseAsync("hi").ToListAsync());
 
         Assert.That(turn.Records, Is.Empty);
     }
@@ -183,8 +191,10 @@ public class UsageScopeTotalsTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "It's all x.")),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Yes.")));
             var engine = new AgentEngine(
-                new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
-                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: new ListUsageSink());
+                new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client,
+                TestPaths.Agent(),
+                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]),
+                usageSink: new ListUsageSink());
             var history = engine.NewHistory();
 
             IReadOnlyList<UsageRecord> first, second;
@@ -193,13 +203,15 @@ public class UsageScopeTotalsTests
                 await engine.ProcessPromptAsync(history, "what is in the file?");
                 first = turn.Records;
             }
+
             using (var turn = UsageScope.Begin(turn: 2))
             {
                 await engine.ProcessPromptAsync(history, "are you sure?");
                 second = turn.Records;
             }
 
-            Assert.That(first.Select(r => r.Purpose), Is.EqualTo(new[] { UsagePurpose.Turn, UsagePurpose.Summary, UsagePurpose.Turn }));
+            Assert.That(first.Select(r => r.Purpose),
+                Is.EqualTo(new[] { UsagePurpose.Turn, UsagePurpose.Summary, UsagePurpose.Turn }));
             Assert.That(second, Has.Count.EqualTo(1));
         }
         finally

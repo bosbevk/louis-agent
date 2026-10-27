@@ -1,9 +1,9 @@
-namespace LouisAgent.Core.Config;
 
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Config;
 /// <summary>
 /// Which LLM to talk to. Changing <see cref="Provider"/>/<see cref="Model"/> is all that is needed to switch backends.
 /// </summary>
@@ -14,7 +14,8 @@ public sealed class LlmOptions
     public const string OpenAiCompatible = "openai-compatible";
 
     // Models known to reject tool definitions or to answer with tool-call JSON as text (qwen2); everything else is assumed to support them unless overridden.
-    private static readonly string[] KnownNoToolsPrefixes = ["llama2", "codellama", "deepseek-r1", "deepseek-coder", "qwen2"];
+    private static readonly string[] KnownNoToolsPrefixes =
+        ["llama2", "codellama", "deepseek-r1", "deepseek-coder", "qwen2"];
 
     /// <summary>anthropic | ollama | openai-compatible</summary>
     public string Provider { get; set; } = Anthropic;
@@ -27,7 +28,7 @@ public sealed class LlmOptions
     /// <summary>Never logged; see <see cref="ToString"/>.</summary>
     public string? ApiKey { get; set; }
 
-        /// <summary>Anthropic workspace to bill/route to; required when the API key is not scoped to a workspace.</summary>
+    /// <summary>Anthropic workspace to bill/route to; required when the API key is not scoped to a workspace.</summary>
     public string? WorkspaceId { get; set; }
 
     /// <summary>Explicit override for tool support; null means infer from provider/model.</summary>
@@ -38,13 +39,15 @@ public sealed class LlmOptions
 
     /// <summary>How hard the model should reason before answering; null disables thinking.</summary>
     public ReasoningEffort? ResolveThinking() =>
-        (Thinking ?? (Provider.Equals(Anthropic, StringComparison.OrdinalIgnoreCase) ? "medium" : "off")).ToLowerInvariant() switch
+        (Thinking ?? (Provider.Equals(Anthropic, StringComparison.OrdinalIgnoreCase) ? "medium" : "off"))
+            .ToLowerInvariant() switch
         {
             "low" => ReasoningEffort.Low,
             "medium" => ReasoningEffort.Medium,
             "high" => ReasoningEffort.High,
             "off" or "none" or "false" => null,
-            var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownThinking, new { Value = other })),
+            var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownThinking,
+                new { Value = other })),
         };
 
     /// <summary>LLM_CACHE: on | off. Null means on. Only providers with a caching strategy act on it (F4: Anthropic).</summary>
@@ -55,7 +58,8 @@ public sealed class LlmOptions
     {
         "on" or "true" => true,
         "off" or "false" => false,
-        var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheSetting, new { Value = other })),
+        var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheSetting,
+            new { Value = other })),
     };
 
     /// <summary>
@@ -70,7 +74,8 @@ public sealed class LlmOptions
     {
         "5m" => CacheLifetime.FiveMinutes,
         "1h" => CacheLifetime.OneHour,
-        var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = other })),
+        var other => throw new ArgumentException(MessageText.Format(ConfigErrorMessage.UnknownCacheTtl,
+            new { Value = other })),
     };
 
     public bool ResolveSupportsTools()
@@ -100,7 +105,9 @@ public sealed class LlmOptions
 
         options.Provider = (provider ?? (options.Model.StartsWith("claude", StringComparison.OrdinalIgnoreCase)
             ? Anthropic
-            : model is null ? Anthropic : Ollama)).ToLowerInvariant();
+            : model is null
+                ? Anthropic
+                : Ollama)).ToLowerInvariant();
         options.Endpoint = Get("LLM_ENDPOINT");
         options.ApiKey = Get("LLM_API_KEY")
                          ?? (options.Provider == Anthropic ? Get("ANTHROPIC_API_KEY") : null);

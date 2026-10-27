@@ -11,5 +11,6 @@ public static class SampleEval
     public const string Gamma = "eval-gamma";
 
     /// <summary>A test's JSON or text with <c>&lt;EvalAlpha&gt;</c>, <c>&lt;EvalBeta&gt;</c>, <c>&lt;EvalGamma&gt;</c> where it names an eval: filled with the sample names, so the input and what the test expects are one constant.</summary>
-    public static string Fill(string text) => text.Replace("<EvalAlpha>", Alpha).Replace("<EvalBeta>", Beta).Replace("<EvalGamma>", Gamma);
+    public static string Fill(string text) =>
+        text.Replace("<EvalAlpha>", Alpha).Replace("<EvalBeta>", Beta).Replace("<EvalGamma>", Gamma);
 }

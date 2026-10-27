@@ -15,7 +15,8 @@ public class PulsIdentityTests
         var puls = new PulsIdentity();
 
         Assert.That(puls.Name, Is.EqualTo(PulsIdentityName.Puls.Wire()));
-        Assert.That(puls.Packs, Is.EqualTo(new[] { PulsPack.Shops.Wire() }), "step 4: the cook's shops are a pack Puls names, in the identity's own enum (ADR 0043)");
+        Assert.That(puls.Packs, Is.EqualTo(new[] { PulsPack.Shops.Wire() }),
+            "step 4: the cook's shops are a pack Puls names, in the identity's own enum (ADR 0043)");
         // Step 3: its prompts are its own, embedded with their paths (the manifest lines in its csproj work).
         Assert.That(puls.Prompts.GetFileInfo("agent/puls/voice.md").Exists, Is.True, "a mode");
         Assert.That(puls.Prompts.GetFileInfo("specialists/puls-cook.md").Exists, Is.True, "a specialist");

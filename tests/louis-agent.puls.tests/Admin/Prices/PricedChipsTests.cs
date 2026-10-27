@@ -11,7 +11,8 @@ public class PricedChipsTests
     {
         var chips = PricedChips.Of(priced: 0, estimated: 5, items: 5, ratio: 1.0m);
 
-        Assert.That(chips, Is.EqualTo(new[] { new PricedChip("priced 5 / 5", "ok"), new PricedChip("estimated 5", "") }));
+        Assert.That(chips,
+            Is.EqualTo(new[] { new PricedChip("priced 5 / 5", "ok"), new PricedChip("estimated 5", "") }));
     }
 
     [Test]
@@ -26,13 +27,16 @@ public class PricedChipsTests
     [Test]
     public void AListWithNoEstimates_IsTheChipItWas()
     {
-        Assert.That(PricedChips.Of(priced: 1, estimated: 0, items: 4, ratio: 0.25m), Is.EqualTo(new[] { new PricedChip("priced 1 / 4", "bad") }));
-        Assert.That(PricedChips.Of(priced: 3, estimated: 0, items: 5, ratio: 0.6m), Is.EqualTo(new[] { new PricedChip("priced 3 / 5", "") }));
+        Assert.That(PricedChips.Of(priced: 1, estimated: 0, items: 4, ratio: 0.25m),
+            Is.EqualTo(new[] { new PricedChip("priced 1 / 4", "bad") }));
+        Assert.That(PricedChips.Of(priced: 3, estimated: 0, items: 5, ratio: 0.6m),
+            Is.EqualTo(new[] { new PricedChip("priced 3 / 5", "") }));
     }
 
     [Test]
     public void AScoresDocumentFromBeforeEstimates_HasNone()
     {
-        Assert.That(PricedChips.Of(priced: 2, estimated: null, items: 2, ratio: 1.0m).Select(c => c.Text), Is.EqualTo(new[] { "priced 2 / 2" }));
+        Assert.That(PricedChips.Of(priced: 2, estimated: null, items: 2, ratio: 1.0m).Select(c => c.Text),
+            Is.EqualTo(new[] { "priced 2 / 2" }));
     }
 }

@@ -6,9 +6,11 @@ namespace LouisAgent.Puls.Admin.Runs;
 /// </summary>
 public static class RepeatSwitch
 {
-    public static int LevelAfter(int level, string? task, int? turn, IEnumerable<(string Task, IEnumerable<int> Turns)> conversations)
+    public static int LevelAfter(int level, string? task, int? turn,
+        IEnumerable<(string Task, IEnumerable<int> Turns)> conversations)
     {
-        bool stays = task is not null && conversations.Any(c => c.Task == task && (turn is null || c.Turns.Contains(turn.Value)));
+        bool stays = task is not null &&
+                     conversations.Any(c => c.Task == task && (turn is null || c.Turns.Contains(turn.Value)));
         return stays ? Math.Min(level, 3) : 0;
     }
 }

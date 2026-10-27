@@ -25,7 +25,8 @@ public class CommandLineTests
     [TestCase("0", 1)]
     [TestCase("-2", 1)]
     public void RepeatIsClampedToOneThroughFive(string value, int expected) =>
-        Assert.That(CommandLine.Parse(["run", "stub", "--repeat", value]), Is.EqualTo(new RunRequest("stub", expected)));
+        Assert.That(CommandLine.Parse(["run", "stub", "--repeat", value]),
+            Is.EqualTo(new RunRequest("stub", expected)));
 
     [Test]
     public void RefusesARepeatThatIsNotAWholeNumber() =>
@@ -38,7 +39,8 @@ public class CommandLineTests
 
     [Test]
     public void RefusesARunWithoutAName() =>
-        Assert.That(() => CommandLine.Parse(["run"]), Throws.InstanceOf<RunnerException>().With.Message.Contains("Usage:"));
+        Assert.That(() => CommandLine.Parse(["run"]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("Usage:"));
 
     [Test]
     public void RefusesAnUnknownArgument() =>
@@ -54,7 +56,8 @@ public class CommandLineTests
     [TestCase("RECORD", WebReplayMode.Record)]
     [TestCase("off", WebReplayMode.Off)]
     public void WebIsParsedWithTheCaseIgnored(string value, WebReplayMode expected) =>
-        Assert.That(CommandLine.Parse(["run", "stub", "--web", value]), Is.EqualTo(new RunRequest("stub", 1, expected, null)));
+        Assert.That(CommandLine.Parse(["run", "stub", "--web", value]),
+            Is.EqualTo(new RunRequest("stub", 1, expected, null)));
 
     [Test]
     public void AReplayNamesItsRecordedRun() =>
@@ -68,12 +71,14 @@ public class CommandLineTests
 
     [Test]
     public void AFlagGivenTwice_KeepsTheLastValue() =>
-        Assert.That(CommandLine.Parse(["run", "stub", "--web", "record", "--web", "off"]), Is.EqualTo(new RunRequest("stub", 1, WebReplayMode.Off, null)));
+        Assert.That(CommandLine.Parse(["run", "stub", "--web", "record", "--web", "off"]),
+            Is.EqualTo(new RunRequest("stub", 1, WebReplayMode.Off, null)));
 
     // F18 step 4e.4: --replay is --web replay --of {runId} with the model's answers too.
     [Test]
     public void Replay_IsTheWebReplayOfARun_WithTheModelsAnswersToo() =>
-        Assert.That(CommandLine.Parse(["run", "stub", "--replay", "run_A"]), Is.EqualTo(new RunRequest("stub", 1, WebReplayMode.Replay, "run_A", Model: true)));
+        Assert.That(CommandLine.Parse(["run", "stub", "--replay", "run_A"]),
+            Is.EqualTo(new RunRequest("stub", 1, WebReplayMode.Replay, "run_A", Model: true)));
 
     [Test]
     public void Replay_TakesAnyOrder_MixedWithRepeat() =>
@@ -82,7 +87,8 @@ public class CommandLineTests
 
     [Test]
     public void TheOtherWebFlags_NeverAskForTheModel() =>
-        Assert.That(((RunRequest)CommandLine.Parse(["run", "stub", "--web", "replay", "--of", "run_A"])).Model, Is.False);
+        Assert.That(((RunRequest)CommandLine.Parse(["run", "stub", "--web", "replay", "--of", "run_A"])).Model,
+            Is.False);
 
     [TestCase("--web", "replay")]
     [TestCase("--web", "record")]
@@ -90,7 +96,8 @@ public class CommandLineTests
     public void RefusesReplayGivenWithWebOrOf_InEitherOrder(string flag, string value)
     {
         Assert.That(() => CommandLine.Parse(["run", "stub", "--replay", "run_A", flag, value]),
-            Throws.InstanceOf<RunnerException>().With.Message.Contains("--replay").And.Message.Contains("--web or --of"));
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("--replay").And.Message
+                .Contains("--web or --of"));
         Assert.That(() => CommandLine.Parse(["run", "stub", flag, value, "--replay", "run_A"]),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("--web or --of"));
     }
@@ -103,14 +110,18 @@ public class CommandLineTests
     {
         var error = Assert.Throws<RunnerException>(() => CommandLine.Parse(["run", "stub", "--replay", value]))!;
 
-        Assert.That(error.Message, Is.EqualTo(Assert.Throws<RunnerException>(() => CommandLine.Parse(["run", "stub", "--of", value]))!.Message));
+        Assert.That(error.Message,
+            Is.EqualTo(Assert.Throws<RunnerException>(() => CommandLine.Parse(["run", "stub", "--of", value]))!
+                .Message));
     }
 
     [Test]
     public void TheUsageText_NamesReplay()
     {
-        Assert.That(Assert.Throws<RunnerException>(() => CommandLine.Parse(["run"]))!.Message, Does.Contain("--replay <runId>"));
-        Assert.That(Assert.Throws<RunnerException>(() => CommandLine.Parse(["frobnicate"]))!.Message, Does.Contain("--replay <runId>"));
+        Assert.That(Assert.Throws<RunnerException>(() => CommandLine.Parse(["run"]))!.Message,
+            Does.Contain("--replay <runId>"));
+        Assert.That(Assert.Throws<RunnerException>(() => CommandLine.Parse(["frobnicate"]))!.Message,
+            Does.Contain("--replay <runId>"));
     }
 
     [TestCase("sometimes", "'sometimes'")]
@@ -125,7 +136,8 @@ public class CommandLineTests
 
     [Test]
     public void RefusesReplayWithoutAnOf() =>
-        Assert.That(() => CommandLine.Parse(["run", "stub", "--web", "replay"]), Throws.InstanceOf<RunnerException>().With.Message.Contains("needs --of"));
+        Assert.That(() => CommandLine.Parse(["run", "stub", "--web", "replay"]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains("needs --of"));
 
     [TestCase("record")]
     [TestCase("off")]
@@ -144,7 +156,8 @@ public class CommandLineTests
     [TestCase("", "''")]
     public void RefusesAnOfThatIsNotARunIdsCharacters(string value, string shown)
     {
-        var error = Assert.Throws<RunnerException>(() => CommandLine.Parse(["run", "stub", "--web", "replay", "--of", value]))!;
+        var error = Assert.Throws<RunnerException>(() =>
+            CommandLine.Parse(["run", "stub", "--web", "replay", "--of", value]))!;
 
         Assert.That(error.Message, Does.Contain(shown));
     }
@@ -153,12 +166,14 @@ public class CommandLineTests
     [TestCase("--of")]
     [TestCase("--repeat")]
     public void AFlagWithNothingAfterIt_IsRefused_AsTheFlag(string flag) =>
-        Assert.That(() => CommandLine.Parse(["run", "stub", flag]), Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{flag}'"));
+        Assert.That(() => CommandLine.Parse(["run", "stub", flag]),
+            Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{flag}'"));
 
     // F18 step 5.4: --split picks the scenarios; a run asks for the dev ones unless it says otherwise.
     [Test]
     public void ARunWithNoSplit_IsTheDevScenarios() =>
-        Assert.That(((RunRequest)CommandLine.Parse(["run", "stub"])).Split, Is.EqualTo(LouisAgent.Evals.Datasets.SplitSelection.Dev));
+        Assert.That(((RunRequest)CommandLine.Parse(["run", "stub"])).Split,
+            Is.EqualTo(LouisAgent.Evals.Datasets.SplitSelection.Dev));
 
     [TestCase("dev", LouisAgent.Evals.Datasets.SplitSelection.Dev)]
     [TestCase("held-out", LouisAgent.Evals.Datasets.SplitSelection.HeldOut)]
@@ -166,24 +181,28 @@ public class CommandLineTests
     [TestCase("all", LouisAgent.Evals.Datasets.SplitSelection.All)]
     [TestCase("ALL", LouisAgent.Evals.Datasets.SplitSelection.All)]
     public void ASplitIsParsedOnceByItsName(string value, LouisAgent.Evals.Datasets.SplitSelection expected) =>
-        Assert.That(CommandLine.Parse(["run", "stub", "--split", value]), Is.EqualTo(new RunRequest("stub", 1, Split: expected)));
+        Assert.That(CommandLine.Parse(["run", "stub", "--split", value]),
+            Is.EqualTo(new RunRequest("stub", 1, Split: expected)));
 
     [TestCase("tuning")]
     [TestCase("1")]
     [TestCase("2")]
     public void RefusesAnUnknownSplit_AndANumber(string value) =>
         Assert.That(() => CommandLine.Parse(["run", "stub", "--split", value]),
-            Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{value}'").And.Message.Contains("dev, held_out, all"));
+            Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{value}'").And.Message
+                .Contains("dev, held_out, all"));
 
     [Test]
     public void ASplitComesWithAnyOtherFlag() =>
         Assert.That(CommandLine.Parse(["run", "stub", "--split", "all", "--repeat", "2", "--web", "record"]),
-            Is.EqualTo(new RunRequest("stub", 2, LouisAgent.Core.Sessions.Replay.WebReplayMode.Record, Split: LouisAgent.Evals.Datasets.SplitSelection.All)));
+            Is.EqualTo(new RunRequest("stub", 2, LouisAgent.Core.Sessions.Replay.WebReplayMode.Record,
+                Split: LouisAgent.Evals.Datasets.SplitSelection.All)));
 
     // F18 step 5b: --rescore {runId} re-grades a stored run's transcripts; it opens no session, so the flags that shape a session or a run are refused with it.
     [Test]
     public void ARescoreNamesTheRunItGradesAgain() =>
-        Assert.That(CommandLine.Parse(["run", "stub", "--rescore", "run_A"]), Is.EqualTo(new RunRequest("stub", 1, RescoreOf: "run_A")));
+        Assert.That(CommandLine.Parse(["run", "stub", "--rescore", "run_A"]),
+            Is.EqualTo(new RunRequest("stub", 1, RescoreOf: "run_A")));
 
     [TestCase("--web", "record")]
     [TestCase("--replay", "run_B")]

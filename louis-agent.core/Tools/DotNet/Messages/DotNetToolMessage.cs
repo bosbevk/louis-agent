@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Tools.DotNet.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Tools.DotNet.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
 // as code is written or moved; the refactor after F4 moves the existing messages here.
@@ -21,11 +21,9 @@ public enum DotNetToolMessage
     [Description("No .NET solutions or projects found.")]
     NoDotNetProjects,
 
-    [Description("Timed out.\n{Output}")]
-    TimedOutWithOutput,
+    [Description("Timed out.\n{Output}")] TimedOutWithOutput,
 
-    [Description("Succeeded.")]
-    BuildSucceeded,
+    [Description("Succeeded.")] BuildSucceeded,
 
     [Description("FAILED (exit code {ExitCode}).")]
     BuildFailed,
@@ -39,8 +37,7 @@ public enum DotNetToolMessage
     [Description("... more failures omitted")]
     MoreFailures,
 
-    [Description("Tests passed.")]
-    TestsPassed,
+    [Description("Tests passed.")] TestsPassed,
 
     [Description("Build failed before tests ran.\n{Build}")]
     BuildFailedBeforeTests,

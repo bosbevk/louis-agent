@@ -17,10 +17,13 @@ public class NoteEndpointTests
 {
     /// <summary>The admin key the test API is started with.</summary>
     private const string AdminKey = "admin-secret";
+
     /// <summary>The id of the one stored run.</summary>
     private const string RunId = "8f7802b9a72e";
+
     /// <summary>When the stored run started.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 9, 0, 0, TimeSpan.Zero);
+
     /// <summary>The time the fixed clock always says.</summary>
     private static readonly DateTimeOffset Now = new(2026, 10, 27, 14, 30, 0, TimeSpan.Zero);
 
@@ -66,7 +69,8 @@ public class NoteEndpointTests
     }
 
     /// <summary>The response body as JSON.</summary>
-    private static async Task<JsonElement> JsonOf(HttpResponseMessage response) => JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.Clone();
+    private static async Task<JsonElement> JsonOf(HttpResponseMessage response) =>
+        JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.Clone();
 
     /// <summary>The run's own read, with the admin key.</summary>
     private static async Task<JsonElement> ReadRun(HttpClient client)
@@ -82,7 +86,8 @@ public class NoteEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Post(host.Client, NotesPath(), new { text = "  the judge changed  ", conversation = (object?)null, at = "2001-01-01T00:00:00Z" });
+        var response = await Post(host.Client, NotesPath(),
+            new { text = "  the judge changed  ", conversation = (object?)null, at = "2001-01-01T00:00:00Z" });
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         Assert.That(response.Headers.Location?.ToString(), Is.EqualTo(NotesPath()));
@@ -99,13 +104,21 @@ public class NoteEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Post(host.Client, NotesPath(), new { text = "hallucinated a price", conversation = new { mode = SampleMode.Beta, repeat = 2, task = "bobotie" } });
+        var response = await Post(host.Client, NotesPath(),
+            new
+            {
+                text = "hallucinated a price",
+                conversation = new { mode = SampleMode.Beta, repeat = 2, task = "bobotie" }
+            });
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         var kept = (await host.Store.NotesAsync(RunId)).Single();
-        Assert.That(kept.Conversation, Is.EqualTo(new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 2, "bobotie")));
+        Assert.That(kept.Conversation,
+            Is.EqualTo(new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 2, "bobotie")));
         var echoed = (await JsonOf(response)).GetProperty("conversation");
-        Assert.That((echoed.GetProperty("mode").GetString(), echoed.GetProperty("repeat").GetInt32(), echoed.GetProperty("task").GetString()), Is.EqualTo((SampleMode.Beta, 2, "bobotie")));
+        Assert.That(
+            (echoed.GetProperty("mode").GetString(), echoed.GetProperty("repeat").GetInt32(),
+                echoed.GetProperty("task").GetString()), Is.EqualTo((SampleMode.Beta, 2, "bobotie")));
     }
 
     /// <summary>The run's own read carries its notes, in the order written.</summary>
@@ -114,7 +127,8 @@ public class NoteEndpointTests
     {
         await using var host = await StartAsync();
         await host.Store.AddNoteAsync(RunId, "first", T0.AddMinutes(1));
-        await host.Store.AddNoteAsync(RunId, "second", T0.AddMinutes(2), new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "bobotie"));
+        await host.Store.AddNoteAsync(RunId, "second", T0.AddMinutes(2),
+            new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "bobotie"));
 
         var notes = (await ReadRun(host.Client)).GetProperty("notes").EnumerateArray().ToList();
 
@@ -144,7 +158,8 @@ public class NoteEndpointTests
         var response = await Post(host.Client, NotesPath(), new { text });
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
-        Assert.That(await response.Content.ReadAsStringAsync(), Does.Contain(MessageText.Format(NoteUserText.NoteBlank)));
+        Assert.That(await response.Content.ReadAsStringAsync(),
+            Does.Contain(MessageText.Format(NoteUserText.NoteBlank)));
         Assert.That(await host.Store.NotesAsync(RunId), Is.Empty);
     }
 
@@ -158,7 +173,8 @@ public class NoteEndpointTests
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That(await response.Content.ReadAsStringAsync(),
-            Does.Contain(MessageText.Format(NoteUserText.NoteTooLong, new { Limit = RunNotes.MaxLength, Length = RunNotes.MaxLength + 1 })));
+            Does.Contain(MessageText.Format(NoteUserText.NoteTooLong,
+                new { Limit = RunNotes.MaxLength, Length = RunNotes.MaxLength + 1 })));
     }
 
     /// <summary>A note on a run that isn't stored is a 404.</summary>

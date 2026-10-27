@@ -25,7 +25,8 @@ internal sealed class SlowSseServer : IAsyncDisposable
 
     /// <summary>One event as the session's stream sends it.</summary>
     public static string Event(string text) =>
-        "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"" + text + "\"}}\n\n";
+        "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"text_delta\",\"text\":\"" +
+        text + "\"}}\n\n";
 
     private async Task ServeAsync((TimeSpan Wait, string Event)[] events)
     {
@@ -42,15 +43,18 @@ internal sealed class SlowSseServer : IAsyncDisposable
                 request.Append((char)one[0]);
             }
 
-            await WriteAsync(stream, "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nTransfer-Encoding: chunked\r\n\r\n");
+            await WriteAsync(stream,
+                "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nTransfer-Encoding: chunked\r\n\r\n");
             foreach (var (wait, text) in events)
             {
                 await Task.Delay(wait, _stop.Token);
                 await WriteAsync(stream, $"{Encoding.UTF8.GetByteCount(text):x}\r\n{text}\r\n");
             }
-            await Task.Delay(Timeout.Infinite, _stop.Token);   // silence, with the connection open
+
+            await Task.Delay(Timeout.Infinite, _stop.Token); // silence, with the connection open
         }
-        catch (Exception error) when (error is OperationCanceledException or IOException or SocketException or ObjectDisposedException)
+        catch (Exception error) when (error is OperationCanceledException or IOException or SocketException
+                                          or ObjectDisposedException)
         {
             // The test is over.
         }

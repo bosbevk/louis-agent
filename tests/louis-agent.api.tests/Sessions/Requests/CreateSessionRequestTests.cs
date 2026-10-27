@@ -17,7 +17,9 @@ public class CreateSessionRequestTests
 
     [Test]
     public void APersonality_IsNotRead() =>
-        Assert.That(JsonSerializer.Deserialize<CreateSessionRequest>(SampleRole.Fill("""{"personality":"<RoleAlpha>"}"""), JsonSerializerOptions.Web)!.RoleOrNull(),
+        Assert.That(
+            JsonSerializer.Deserialize<CreateSessionRequest>(SampleRole.Fill("""{"personality":"<RoleAlpha>"}"""),
+                JsonSerializerOptions.Web)!.RoleOrNull(),
             Is.Null);
 
     [Test]

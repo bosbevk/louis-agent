@@ -14,8 +14,10 @@ namespace LouisAgent.Puls.Components.Admin.Runs;
 public partial class RunSettings
 {
     /// <summary>The run as the API sent it.</summary>
-    [Parameter, EditorRequired] public JsonElement Run { get; set; }
+    [Parameter, EditorRequired]
+    public JsonElement Run { get; set; }
 
     /// <summary>A text from the JSON, or nothing if it is not there.</summary>
-    private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    private static string? S(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
 }

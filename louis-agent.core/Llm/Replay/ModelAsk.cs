@@ -1,10 +1,10 @@
-namespace LouisAgent.Core.Llm.Replay;
 
 using System.Text.Json;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Sessions.Replay.Store;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Llm.Replay;
 /// <summary>
 /// What a model request is, as a recording keys it (F18 step 4e, ADR 0040: a value). Its fields are the recording format, written
 /// snake_case by <see cref="ToAsk"/>: changing them makes earlier recordings miss. Every hash is a SHA-256 as 64 lowercase hex characters
@@ -20,7 +20,12 @@ using Microsoft.Extensions.AI;
 /// </list>
 /// Whether the request was streamed is left out: the cache stores both ways as one response. The messages are only read (ADR 0008).
 /// </summary>
-public sealed record ModelAsk(string? Model, string System, IReadOnlyList<ModelAsk.ToolHash> Tools, string Settings, IReadOnlyList<ModelAsk.MessageHash> Messages)
+public sealed record ModelAsk(
+    string? Model,
+    string System,
+    IReadOnlyList<ModelAsk.ToolHash> Tools,
+    string Settings,
+    IReadOnlyList<ModelAsk.MessageHash> Messages)
 {
     /// <summary>One tool of a request: its name, and the hash of its name, description and schema (<see cref="PromptHash.ToolOf"/>).</summary>
     public sealed record ToolHash(string Name, string Hash);
@@ -36,7 +41,10 @@ public sealed record ModelAsk(string? Model, string System, IReadOnlyList<ModelA
             PromptHash.SystemOf(all, options),
             [.. (options?.Tools ?? []).Select(tool => new ToolHash(tool.Name, PromptHash.ToolOf(tool)))],
             SettingsHash(options),
-            [.. all.SkipWhile(m => m.Role == ChatRole.System).Select(m => new MessageHash(m.Role.Value, MessageDigest(m)))]);
+            [
+                .. all.SkipWhile(m => m.Role == ChatRole.System)
+                    .Select(m => new MessageHash(m.Role.Value, MessageDigest(m)))
+            ]);
     }
 
     public ReplayAsk ToAsk() => ReplayAsk.Of(ReplayKind.Model, this);
@@ -45,8 +53,14 @@ public sealed record ModelAsk(string? Model, string System, IReadOnlyList<ModelA
     public static ModelAsk? From(ReplayAsk ask)
     {
         if (ask.Kind != ReplayKind.Model) return null;
-        try { return JsonSerializer.Deserialize<ModelAsk>(ask.Key, ReplayStore.Json); }
-        catch (JsonException) { return null; }
+        try
+        {
+            return JsonSerializer.Deserialize<ModelAsk>(ask.Key, ReplayStore.Json);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 
     private static string SettingsHash(ChatOptions? options)
@@ -60,9 +74,14 @@ public sealed record ModelAsk(string? Model, string System, IReadOnlyList<ModelA
     private static string MessageDigest(ChatMessage message)
     {
         JsonElement element = JsonSerializer.SerializeToElement(
-            new MessageKey(message.Role.Value, message.AuthorName, message.Contents, message.AdditionalProperties), AIJsonUtilities.DefaultOptions);
+            new MessageKey(message.Role.Value, message.AuthorName, message.Contents, message.AdditionalProperties),
+            AIJsonUtilities.DefaultOptions);
         return PromptHash.Digest(element.WriteTo);
     }
 
-    private sealed record MessageKey(string Role, string? Author, IList<AIContent> Contents, AdditionalPropertiesDictionary? AdditionalProperties);
+    private sealed record MessageKey(
+        string Role,
+        string? Author,
+        IList<AIContent> Contents,
+        AdditionalPropertiesDictionary? AdditionalProperties);
 }

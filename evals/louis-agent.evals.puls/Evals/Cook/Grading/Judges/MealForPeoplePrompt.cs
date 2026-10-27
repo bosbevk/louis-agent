@@ -23,7 +23,8 @@ public static class MealForPeoplePrompt
     private static byte[] Read()
     {
         var assembly = typeof(MealForPeoplePrompt).Assembly;
-        string name = assembly.GetManifestResourceNames().Single(n => n.EndsWith("meal-for-people.md", StringComparison.Ordinal));
+        string name = assembly.GetManifestResourceNames()
+            .Single(n => n.EndsWith("meal-for-people.md", StringComparison.Ordinal));
         using var stream = assembly.GetManifestResourceStream(name)!;
         using var bytes = new MemoryStream();
         stream.CopyTo(bytes);

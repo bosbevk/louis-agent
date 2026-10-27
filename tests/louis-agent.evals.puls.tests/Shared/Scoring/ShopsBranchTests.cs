@@ -18,7 +18,11 @@ public class ShopsBranchTests
 
     [Test]
     public void ATableRowWhoseBranchCellHasThePlace_IsABranch() =>
-        Assert.That(Shops.NamesBranch(Heading + "| Shop | Branch | Street or mall |\n|---|---|---|\n| Pick n Pay | Pick n Pay Malmesbury | Voortrekker Street |\n", "pnp"), Is.True);
+        Assert.That(
+            Shops.NamesBranch(
+                Heading +
+                "| Shop | Branch | Street or mall |\n|---|---|---|\n| Pick n Pay | Pick n Pay Malmesbury | Voortrekker Street |\n",
+                "pnp"), Is.True);
 
     [Test]
     public void TheAfrikaansHeading_Counts() =>
@@ -38,7 +42,9 @@ public class ShopsBranchTests
 
     [Test]
     public void ABranchOutsideTheWhereToBuySection_DoesNotCount() =>
-        Assert.That(Shops.NamesBranch("### Recipe\n\nBuy at Pick n Pay Malmesbury.\n\n" + Heading + "Any supermarket near you.", "pnp"), Is.False);
+        Assert.That(
+            Shops.NamesBranch("### Recipe\n\nBuy at Pick n Pay Malmesbury.\n\n" + Heading + "Any supermarket near you.",
+                "pnp"), Is.False);
 
     [Test]
     public void NoWhereToBuySection_IsNoBranch() =>
@@ -65,7 +71,10 @@ public class ShopsBranchTests
 
     [Test]
     public void TheTableIsReadByItsColumns_InAfrikaansToo() =>
-        Assert.That(Shops.NamesBranch("### Waar om te koop\n\n| Winkel | Tak | Straat |\n|---|---|---|\n| Pick n Pay | Pick n Pay Menlyn | Atterburystraat |\n", "pnp"), Is.True);
+        Assert.That(
+            Shops.NamesBranch(
+                "### Waar om te koop\n\n| Winkel | Tak | Straat |\n|---|---|---|\n| Pick n Pay | Pick n Pay Menlyn | Atterburystraat |\n",
+                "pnp"), Is.True);
 
     [TestCase("| Pick n Pay | nearest Pick n Pay | |", BranchFinding.OnlyNearest)]
     [TestCase("| Pick n Pay | naaste Pick n Pay | |", BranchFinding.OnlyNearest)]
@@ -76,7 +85,9 @@ public class ShopsBranchTests
 
     [Test]
     public void TheTableDecides_WhenThereIsOne_SoAnotherShopsBranchInTheTextBesideItDoesNotCount() =>
-        Assert.That(BranchReading.Of(Heading + "Woolworths Paarl Mall\n\n" + Table + "| Pick n Pay | nearest Pick n Pay | |\n", "pnp"), Is.EqualTo(BranchFinding.OnlyNearest));
+        Assert.That(
+            BranchReading.Of(Heading + "Woolworths Paarl Mall\n\n" + Table + "| Pick n Pay | nearest Pick n Pay | |\n",
+                "pnp"), Is.EqualTo(BranchFinding.OnlyNearest));
 
     [TestCase("### Recipe\n\nPick n Pay Menlyn", BranchFinding.NoSection)]
     [TestCase("### Where to buy\n\nAny supermarket near you.", BranchFinding.NoBranchOfShop)]
@@ -88,5 +99,6 @@ public class ShopsBranchTests
 
     [Test]
     public void ABoldLineEndsTheSection_AsAHeadingDoes() =>
-        Assert.That(BranchReading.Of("**Where to buy**\n\nAny supermarket.\n\n**Unsure**\n\nPick n Pay Menlyn", "pnp"), Is.EqualTo(BranchFinding.NoBranchOfShop));
+        Assert.That(BranchReading.Of("**Where to buy**\n\nAny supermarket.\n\n**Unsure**\n\nPick n Pay Menlyn", "pnp"),
+            Is.EqualTo(BranchFinding.NoBranchOfShop));
 }

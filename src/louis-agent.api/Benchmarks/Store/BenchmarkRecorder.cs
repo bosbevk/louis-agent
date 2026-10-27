@@ -65,8 +65,13 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
     }
 
     /// <summary>One run's state while it is recorded: what is open, and whether the store still takes writes.</summary>
-    private sealed class Recording(BenchmarkRun run, IReadOnlyDictionary<string, string>? settings, IBenchmarkStore store,
-        ILogger? logger, string? ledgerDirectory, CancellationToken cancellationToken)
+    private sealed class Recording(
+        BenchmarkRun run,
+        IReadOnlyDictionary<string, string>? settings,
+        IBenchmarkStore store,
+        ILogger? logger,
+        string? ledgerDirectory,
+        CancellationToken cancellationToken)
     {
         private readonly List<Mode> _modes = [];
         private readonly List<BenchmarkSlice> _slices = [];
@@ -96,7 +101,8 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     _log.Add(line.Text);
                     break;
                 case ProtocolStarted started when started.Version != BenchmarkProtocol.Version:
-                    _log.Add(MessageText.Format(ApiUserText.BenchmarkProtocolUnknown, new { started.Version, Supported = BenchmarkProtocol.Version }));
+                    _log.Add(MessageText.Format(ApiUserText.BenchmarkProtocolUnknown,
+                        new { started.Version, Supported = BenchmarkProtocol.Version }));
                     break;
                 case ProtocolStarted started:
                     // F18 step 2a: what the run ran (its eval, graders and models), kept on the run once the line says so.
@@ -105,6 +111,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                         _protocol = started;
                         await SaveRunAsync();
                     }
+
                     break;
                 case ModeStarted mode:
                     _modes.Add(new Mode(mode.Mode, mode.Repeat, mode.Toolsets, mode.Role, mode.Llm));
@@ -115,9 +122,14 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     int at = _modes.FindLastIndex(m => m.Name == ended.Mode && m.Repeat == ended.Repeat);
                     if (at >= 0)
                     {
-                        _modes[at] = _modes[at] with { Rates = new ModeRates(rates.PassAtK, rates.PassHatK, rates.K, rates.Infrastructure, rates.Retried) };
+                        _modes[at] = _modes[at] with
+                        {
+                            Rates = new ModeRates(rates.PassAtK, rates.PassHatK, rates.K, rates.Infrastructure,
+                                rates.Retried)
+                        };
                         await SaveRunAsync();
                     }
+
                     break;
                 case SummaryReported summary:
                     _slices.Add(summary.Slice);
@@ -127,7 +139,8 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     _sessions.TryAdd(question.Session, question.Key.Conversation);
                     if (!_order.ContainsKey(question.Key.Conversation))
                         await WriteAsync(() => store.SaveConversationAsync(run.Id,
-                            new Conversation(question.Key.Conversation, OrderOf(question.Key.Conversation), null, NoScores, 0, 0), cancellationToken));
+                            new Conversation(question.Key.Conversation, OrderOf(question.Key.Conversation), null,
+                                NoScores, 0, 0), cancellationToken));
                     break;
                 case SseEvent sse:
                     OpenOf(sse.Key).Events.Add(new StreamEvent(sse.Type, sse.Data, sse.At));
@@ -135,14 +148,18 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 case TurnEnded turn:
                     _sessions.TryAdd(turn.Session, turn.Key.Conversation);
                     var events = _open.Remove(turn.Key, out var open) ? open.Events : [];
-                    await WriteAsync(() => store.SaveTurnAsync(run.Id, new Turn(turn.Key, turn.Session, turn.Question, turn.Answer, turn.Role,
-                        turn.Continued, turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error, BenchmarkTools.Of(events), turn.Failure),
+                    await WriteAsync(() => store.SaveTurnAsync(run.Id, new Turn(turn.Key, turn.Session, turn.Question,
+                            turn.Answer, turn.Role,
+                            turn.Continued, turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error,
+                            BenchmarkTools.Of(events), turn.Failure),
                         events, cancellationToken));
                     break;
                 case ConversationEnded conversation:
-                    await WriteAsync(() => store.SaveConversationAsync(run.Id, new Conversation(conversation.Key, OrderOf(conversation.Key),
+                    await WriteAsync(() => store.SaveConversationAsync(run.Id, new Conversation(conversation.Key,
+                        OrderOf(conversation.Key),
                         conversation.Role, conversation.Scores, conversation.Errors, conversation.Seconds,
-                        conversation.Grades?.Select(g => new Grade(g.Grader, g.Version, g.Score, g.Outcome, g.Reason, g.JudgeModel, g.JudgePromptHash)).ToArray(),
+                        conversation.Grades?.Select(g => new Grade(g.Grader, g.Version, g.Score, g.Outcome, g.Reason,
+                            g.JudgeModel, g.JudgePromptHash)).ToArray(),
                         conversation.Outcome), cancellationToken));
                     break;
             }
@@ -154,7 +171,8 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             string cutOff = MessageText.Format(ApiUserText.BenchmarkTurnCutOff);
             foreach (var (key, open) in _open)
                 await WriteAsync(() => store.SaveTurnAsync(run.Id,
-                    new Turn(key, open.Session, open.Question, null, null, null, 0, 0, [], 0, cutOff, BenchmarkTools.Of(open.Events)), open.Events, cancellationToken));
+                    new Turn(key, open.Session, open.Question, null, null, null, 0, 0, [], 0, cutOff,
+                        BenchmarkTools.Of(open.Events)), open.Events, cancellationToken));
             _open.Clear();
             await JoinLedgerAsync();
 
@@ -169,6 +187,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 Failed(ex);
                 stored = false;
             }
+
             return new Result(stored, _storeError);
         }
 
@@ -178,7 +197,8 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             var joined = LedgerJoin.Of(run, RescoreOf, ledgerDirectory, _settings, _protocol?.Models, _sessions);
             (_total, _settings) = (joined.Total, joined.Settings);
             _log.AddRange(joined.Log);
-            if (joined.Requests.Count > 0) await WriteAsync(() => store.AddRequestsAsync(run.Id, joined.Requests, cancellationToken));
+            if (joined.Requests.Count > 0)
+                await WriteAsync(() => store.AddRequestsAsync(run.Id, joined.Requests, cancellationToken));
         }
 
         private int OrderOf(ConversationKey key)
@@ -195,11 +215,13 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         }
 
         private Run Document() =>
-            new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, _settings, _modes.ToArray(),
+            new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, _settings,
+                _modes.ToArray(),
                 _total, Log: run.Status == BenchmarkRunStatus.Running ? null : _log.ToArray(), StoreError: _storeError,
                 Eval: _protocol?.Eval, EvalVersion: _protocol?.EvalVersion, Commit: _protocol?.Commit,
                 Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind, g.Question)).ToArray(),
-                Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Role, m.Model)).ToArray(), Split: _protocol?.Split,
+                Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Role, m.Model)).ToArray(),
+                Split: _protocol?.Split,
                 RescoreOf: RescoreOf, Slices: _slices.Count == 0 ? null : _slices.ToArray());
 
         /// <summary>The run this one re-scored (F18 step 5b.2): what it was started with, else what its first line says.</summary>
@@ -223,7 +245,8 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         {
             if (_storeError is not null) return;
             _storeError = MessageText.Format(ApiUserText.BenchmarkStoreFailed, new { Reason = ex.Message });
-            logger?.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreFailed, new { Run = run.Id }, exception: ex, tag: "API");
+            logger?.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreFailed, new { Run = run.Id }, exception: ex,
+                tag: "API");
         }
     }
 }

@@ -26,7 +26,9 @@ public static class PassRates
     /// Unknown at best); otherwise <see cref="Of(IReadOnlyList{Grade}, IReadOnlyList{IGrader})"/>.
     /// </summary>
     public static TrialOutcome Of(Trial trial, IReadOnlyList<Grade> grades, IReadOnlyList<IGrader> graders) =>
-        trial.Transcript.Turns.Any(turn => EngineEvents.InfrastructureFailure(turn) is not null) ? TrialOutcome.Infrastructure : Of(grades, graders);
+        trial.Transcript.Turns.Any(turn => EngineEvents.InfrastructureFailure(turn) is not null)
+            ? TrialOutcome.Infrastructure
+            : Of(grades, graders);
 
     /// <summary>
     /// A trial's outcome from its grades: only the required graders count. Fail when any required grader failed, even beside an
@@ -38,9 +40,11 @@ public static class PassRates
         var required = graders.Where(grader => grader.Required).ToList();
         if (required.Count == 0) return TrialOutcome.Unknown;
 
-        var outcomes = required.Select(grader => grades.FirstOrDefault(grade => grade.Grader == grader.Name)?.Outcome).ToList();
+        var outcomes = required.Select(grader => grades.FirstOrDefault(grade => grade.Grader == grader.Name)?.Outcome)
+            .ToList();
         if (outcomes.Any(outcome => outcome == GradeOutcome.Fail)) return TrialOutcome.Fail;
-        if (outcomes.Any(outcome => outcome is null or GradeOutcome.Unknown or GradeOutcome.Pending)) return TrialOutcome.Unknown;
+        if (outcomes.Any(outcome => outcome is null or GradeOutcome.Unknown or GradeOutcome.Pending))
+            return TrialOutcome.Unknown;
         return TrialOutcome.Pass;
     }
 
@@ -59,6 +63,7 @@ public static class PassRates
         var counted = scenarios.Where(rate => rate.PassAtK is not null && rate.PassHatK is not null).ToList();
         return counted.Count == 0
             ? new PassShare(null, null)
-            : new PassShare(counted.Average(rate => rate.PassAtK!.Value), counted.Average(rate => rate.PassHatK!.Value));
+            : new PassShare(counted.Average(rate => rate.PassAtK!.Value),
+                counted.Average(rate => rate.PassHatK!.Value));
     }
 }

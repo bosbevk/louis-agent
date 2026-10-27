@@ -28,10 +28,15 @@ public sealed class RoutingEval : IEval
     public int Version => 2;
     public string Proves => MessageText.Format(PulsEvalMessage.RoutingProves);
 
-    public async ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken)
+    public async ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
+        CancellationToken cancellationToken)
     {
         var baseline = RoutingScorer.Baseline(await sessions.ToolsetsAsync(cancellationToken));
-        return [new EvalMode("baseline", PulsVoice.Role, baseline), new EvalMode("delegated", PulsVoice.Role, RoutingSetup.Delegated)];
+        return
+        [
+            new EvalMode("baseline", PulsVoice.Role, baseline),
+            new EvalMode("delegated", PulsVoice.Role, RoutingSetup.Delegated)
+        ];
     }
 
     private static readonly Dataset Loaded = Load();
@@ -51,7 +56,8 @@ public sealed class RoutingEval : IEval
     public IReadOnlyList<IGrader> Graders => GraderList;
 
     public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
-        RoutingScorer.Score(ExpectedRoute.Of(trial.Scenario), TurnView.From(trial.Transcript.Turns[0]), PulsModes.CanDelegate(trial.Mode));
+        RoutingScorer.Score(ExpectedRoute.Of(trial.Scenario), TurnView.From(trial.Transcript.Turns[0]),
+            PulsModes.CanDelegate(trial.Mode));
 
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => PulsTurnFacts.Of(turn);
 }

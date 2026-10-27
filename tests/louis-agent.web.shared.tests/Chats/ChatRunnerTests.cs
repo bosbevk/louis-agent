@@ -29,7 +29,8 @@ public class ChatRunnerTests
         {
             var api = FixtureApi.Client(Settings, out Handler, sessionGone);
             Store = new ChatStore(Js, Settings);
-            Runner = new ChatRunner(api, Store, text ?? new ChatText(), () => api.CreateSessionAsync([SampleToolset.Alpha]), Clock);
+            Runner = new ChatRunner(api, Store, text ?? new ChatText(),
+                () => api.CreateSessionAsync([SampleToolset.Alpha]), Clock);
             Runner.SessionOpened += id => Opened.Add(id);
             Runner.Changed += () => Changed++;
             Runner.TurnEnded += () => Ended++;
@@ -53,7 +54,8 @@ public class ChatRunnerTests
 
         var turn = h.Runner.Chat.Turns.Single();
         Assert.That(turn.UserText, Is.EqualTo(SessionStreamFixture.Question), "trimmed");
-        Assert.That(turn.Blocks.Where(b => b.Kind == BlockKind.Tool).Select(b => b.ToolName), Is.EqualTo(new[] { "StartSubSession" }));
+        Assert.That(turn.Blocks.Where(b => b.Kind == BlockKind.Tool).Select(b => b.ToolName),
+            Is.EqualTo(new[] { "StartSubSession" }));
         Assert.That(turn.Usage, Is.Not.Null);
         Assert.That(turn.Error, Is.Null);
         Assert.That(h.Js.Calls, Does.Contain("localStorage.setItem"), "saved when the stream ended");
@@ -86,7 +88,8 @@ public class ChatRunnerTests
 
         await h.Runner.StopAsync();
 
-        Assert.That(h.Handler.Requests.Single().Url, Is.EqualTo($"http://localhost/v1/sessions/{FixtureApi.SessionId}/cancel"));
+        Assert.That(h.Handler.Requests.Single().Url,
+            Is.EqualTo($"http://localhost/v1/sessions/{FixtureApi.SessionId}/cancel"));
         Assert.That(h.Runner.Notice, Is.Null);
     }
 
@@ -102,7 +105,8 @@ public class ChatRunnerTests
     public async Task AGoneSession_EndsTheChat_WithTheAppsWords()
     {
         var text = new ChatText { SessionGone = "Die sessie is weg." };
-        var h = new Harness(sessionGone: true, text) { Runner = { Chat = new ChatModel { SessionId = FixtureApi.SessionId }, Draft = "nog iets" } };
+        var h = new Harness(sessionGone: true, text)
+        { Runner = { Chat = new ChatModel { SessionId = FixtureApi.SessionId }, Draft = "nog iets" } };
 
         await h.Runner.SendAsync();
 
@@ -118,9 +122,11 @@ public class ChatRunnerTests
         var text = new ChatText { NeedsKey = "Sleutel!", StillAnswering = "Wag!", ApiUnreachable = "Weg!" };
         var h = new Harness(text: text);
 
-        Assert.That(h.Runner.Describe(new AgentApiException(HttpStatusCode.Unauthorized, "401")), Is.EqualTo("Sleutel!"));
+        Assert.That(h.Runner.Describe(new AgentApiException(HttpStatusCode.Unauthorized, "401")),
+            Is.EqualTo("Sleutel!"));
         Assert.That(h.Runner.Describe(new AgentApiException(HttpStatusCode.Conflict, "409")), Is.EqualTo("Wag!"));
-        Assert.That(h.Runner.Describe(new AgentApiException(HttpStatusCode.BadRequest, "Unknown toolset(s): x")), Is.EqualTo("Unknown toolset(s): x"));
+        Assert.That(h.Runner.Describe(new AgentApiException(HttpStatusCode.BadRequest, "Unknown toolset(s): x")),
+            Is.EqualTo("Unknown toolset(s): x"));
         Assert.That(h.Runner.Describe(new HttpRequestException("socket")), Is.EqualTo("Weg!"));
         Assert.That(h.Runner.Describe(new InvalidOperationException("boom")), Is.EqualTo("boom"));
     }
@@ -131,6 +137,7 @@ public class ChatRunnerTests
         public DateTimeOffset LastModified => DateTimeOffset.MinValue;
         public long Size => size ?? content.Length;
         public string ContentType => "text/plain";
+
         public Stream OpenReadStream(long maxAllowedSize = 512000, CancellationToken cancellationToken = default) =>
             new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
     }
@@ -139,7 +146,9 @@ public class ChatRunnerTests
     public async Task Attachments_AreRead_AndALargeOneIsRefusedWithANotice()
     {
         var h = new Harness();
-        var files = new InputFileChangeEventArgs([new FakeFile("notes.md", "# Notes"), new FakeFile("huge.log", "", size: ChatRunner.MaxAttachmentBytes + 1)]);
+        var files = new InputFileChangeEventArgs([
+            new FakeFile("notes.md", "# Notes"), new FakeFile("huge.log", "", size: ChatRunner.MaxAttachmentBytes + 1)
+        ]);
 
         await h.Runner.AddFilesAsync(files);
 
@@ -177,7 +186,8 @@ public class ChatRunnerTests
     public async Task AFailedSessionOpen_KeepsTheDraft_AndSaysWhy()
     {
         var h = new Harness { Runner = { Draft = "Hallo" } };
-        var failing = new ChatRunner(FixtureApi.Client(h.Settings), h.Store, new ChatText(), () => throw new HttpRequestException("down"), h.Clock)
+        var failing = new ChatRunner(FixtureApi.Client(h.Settings), h.Store, new ChatText(),
+            () => throw new HttpRequestException("down"), h.Clock)
         {
             Draft = "Hallo",
         };
@@ -205,7 +215,8 @@ public class ChatRunnerTests
 
         Assert.That(h.Store.Chats, Is.Empty);
         Assert.That(h.Runner.Chat, Is.Null);
-        Assert.That(h.Handler.Requests.Select(r => r.Method.Method), Is.EqualTo(new[] { "DELETE", "DELETE" }), "a 404 for the other is swallowed");
+        Assert.That(h.Handler.Requests.Select(r => r.Method.Method), Is.EqualTo(new[] { "DELETE", "DELETE" }),
+            "a 404 for the other is swallowed");
     }
 
     [Test]

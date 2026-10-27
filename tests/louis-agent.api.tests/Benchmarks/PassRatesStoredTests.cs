@@ -25,11 +25,31 @@ public class PassRatesStoredTests
 
     private static readonly string[] EvalRun =
     [
-        At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 3, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-        At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
-        At(new { @event = "mode_done", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
-        At(new { @event = "mode", t = 1700000003.0, mode = SampleMode.Beta, repeat = 2, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
-        At(new { @event = "mode_done", t = 1700000004.0, mode = SampleMode.Beta, repeat = 2, pass_at_k = 1.0, pass_hat_k = 0.5, k = 2, infrastructure = 1, retried = 1 }),
+        At(new
+        {
+            @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 3,
+            commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>()
+        }),
+        At(new
+        {
+            @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1,
+            toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0
+        }),
+        At(new
+        {
+            @event = "mode_done", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0,
+            pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0
+        }),
+        At(new
+        {
+            @event = "mode", t = 1700000003.0, mode = SampleMode.Beta, repeat = 2,
+            toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0
+        }),
+        At(new
+        {
+            @event = "mode_done", t = 1700000004.0, mode = SampleMode.Beta, repeat = 2, pass_at_k = 1.0,
+            pass_hat_k = 0.5, k = 2, infrastructure = 1, retried = 1
+        }),
     ];
 
     private static async Task<InMemoryBenchmarkStore> Recorded(IEnumerable<string> lines, string id = Id)
@@ -64,7 +84,8 @@ public class PassRatesStoredTests
     [Test]
     public void ARateLeftOut_BecauseNoTrialCounted_ReadsAsNull_WithItsCounts()
     {
-        var ended = (ModeEnded)Parse(SampleMode.Fill("""@{"event":"mode_done","mode":"<ModeBeta>","repeat":1,"k":1,"infrastructure":3,"retried":2}"""));
+        var ended = (ModeEnded)Parse(SampleMode.Fill(
+            """@{"event":"mode_done","mode":"<ModeBeta>","repeat":1,"k":1,"infrastructure":3,"retried":2}"""));
 
         Assert.That(ended.Rates, Is.EqualTo(new RatesInfo(null, null, 1, 3, 2)));
     }
@@ -88,7 +109,8 @@ public class PassRatesStoredTests
     [Test]
     public async Task ARunFromBeforeTheRates_HasNoRatesOnItsModes()
     {
-        var store = await Recorded(EvalRun.Select((line, i) => i is 2 or 4 ? line[..line.IndexOf(",\"pass_at_k\"", StringComparison.Ordinal)] + "}" : line));
+        var store = await Recorded(EvalRun.Select((line, i) =>
+            i is 2 or 4 ? line[..line.IndexOf(",\"pass_at_k\"", StringComparison.Ordinal)] + "}" : line));
 
         Assert.That((await store.GetRunAsync(Id))!.Modes!.Select(m => m.Rates), Is.All.Null);
     }
@@ -100,9 +122,11 @@ public class PassRatesStoredTests
     {
         var store = await Recorded(EvalRun);
 
-        string text = await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(Id))!, CancellationToken.None);
+        string text =
+            await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(Id))!, CancellationToken.None);
 
-        var done = text.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(Parse).OfType<ModeEnded>().Select(e => e.Rates).ToList();
+        var done = text.Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(Parse).OfType<ModeEnded>()
+            .Select(e => e.Rates).ToList();
         Assert.That(done, Is.EqualTo(new RatesInfo?[] { new(1.0, 1.0, 1, 0, 0), new(1.0, 0.5, 2, 1, 1) }));
     }
 
@@ -112,7 +136,9 @@ public class PassRatesStoredTests
     public async Task ATrendPoint_CarriesTheRatesOfItsRunsLastRepeatOfTheMode()
     {
         var store = await Recorded(EvalRun);
-        await store.SaveConversationAsync(Id, new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
+        await store.SaveConversationAsync(Id,
+            new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null,
+                JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
         var point = (await BenchmarkTrends.ComputeAsync(store, SampleEval.Beta)).Modes.Single().Points.Single();
 
@@ -123,8 +149,11 @@ public class PassRatesStoredTests
     public async Task ATrendPointOfARunFromBefore_HasNullRates()
     {
         var store = new InMemoryBenchmarkStore();
-        await store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], null, null)]));
-        await store.SaveConversationAsync("old", new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
+        await store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0,
+            Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], null, null)]));
+        await store.SaveConversationAsync("old",
+            new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null,
+                JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
         var point = (await BenchmarkTrends.ComputeAsync(store, SampleEval.Beta)).Modes.Single().Points.Single();
 
@@ -137,7 +166,14 @@ public class PassRatesStoredTests
     public async Task TheRunsJson_NamesEachModesRates_AndNullWhereThereAreNone()
     {
         var store = await Recorded(EvalRun);
-        await store.SaveRunAsync((await store.GetRunAsync(Id))! with { Modes = [.. (await store.GetRunAsync(Id))!.Modes!, new Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], null, null)] });
+        await store.SaveRunAsync((await store.GetRunAsync(Id))! with
+        {
+            Modes =
+            [
+                .. (await store.GetRunAsync(Id))!.Modes!,
+                new Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], null, null)
+            ]
+        });
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
         var client = app.GetTestClient();
@@ -154,7 +190,8 @@ public class PassRatesStoredTests
         Assert.That(modes[1].GetProperty("k").GetInt32(), Is.EqualTo(2));
         Assert.That(modes[1].GetProperty("infrastructure").GetInt32(), Is.EqualTo(1));
         Assert.That(modes[1].GetProperty("retried").GetInt32(), Is.EqualTo(1));
-        Assert.That(modes[2].GetProperty("pass_at_k").ValueKind, Is.EqualTo(JsonValueKind.Null), "no rates: null, never 0");
+        Assert.That(modes[2].GetProperty("pass_at_k").ValueKind, Is.EqualTo(JsonValueKind.Null),
+            "no rates: null, never 0");
         Assert.That(modes[2].GetProperty("k").ValueKind, Is.EqualTo(JsonValueKind.Null));
     }
 }

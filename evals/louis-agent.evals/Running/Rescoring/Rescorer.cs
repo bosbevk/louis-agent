@@ -20,12 +20,19 @@ namespace LouisAgent.Evals.Running.Rescoring;
 /// </summary>
 internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
 {
-    public async Task RunAsync(IEval eval, string runId, string rescoreOf, IEnumerable<string> storedLines, CancellationToken cancellationToken)
+    public async Task RunAsync(IEval eval, string runId, string rescoreOf, IEnumerable<string> storedLines,
+        CancellationToken cancellationToken)
     {
         var stored = StoredRun.Read(storedLines);
         logger.Log(LogLevel.Information, EvalLogMessage.RescoreStarted,
-            new { Source = rescoreOf, Run = runId, Conversations = stored.Lines.Count(line => line.Kind == "conversation") });
-        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders, stored.Models, stored.Split, rescoreOf, eval.Dataset);
+            new
+            {
+                Source = rescoreOf,
+                Run = runId,
+                Conversations = stored.Lines.Count(line => line.Kind == "conversation")
+            });
+        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders, stored.Models, stored.Split, rescoreOf,
+            eval.Dataset);
 
         string? current = null;
         var modes = new Dictionary<string, EvalMode>(StringComparer.Ordinal);
@@ -50,15 +57,18 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
                     break;
                 case "conversation":
                     turns.TryGetValue(line.Key, out var own);
-                    await RescoreConversationAsync(eval, runId, modes[line.Mode], line, own ?? [], tallies[line.Mode], cancellationToken);
+                    await RescoreConversationAsync(eval, runId, modes[line.Mode], line, own ?? [], tallies[line.Mode],
+                        cancellationToken);
                     break;
                 case "mode_done":
                     var tally = tallies[line.Mode];
                     tally.CarryRetried(line.Number("retried") ?? 0);
-                    protocol.ModeDone(line.Mode, line.Repeat, tally.Share, line.Repeat, tally.Infrastructure, tally.Retried);
+                    protocol.ModeDone(line.Mode, line.Repeat, tally.Share, line.Repeat, tally.Infrastructure,
+                        tally.Retried);
                     break;
             }
         }
+
         if (current is not null) WriteSummary(eval, current, tallies[current]);
     }
 
@@ -68,14 +78,16 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         foreach (var line in RunSummary.Of(mode, tally.Results, eval.Graders)) protocol.Summary(line);
     }
 
-    private async Task RescoreConversationAsync(IEval eval, string runId, EvalMode mode, StoredLine stored, List<string> turnLines, ModeTally tally,
+    private async Task RescoreConversationAsync(IEval eval, string runId, EvalMode mode, StoredLine stored,
+        List<string> turnLines, ModeTally tally,
         CancellationToken cancellationToken)
     {
         var transcript = ProtocolTranscripts.Read(turnLines, stored.Mode, stored.Repeat, stored.Task);
         var scenario = eval.Scenarios.FirstOrDefault(s => s.Id == stored.Task);
         // A scenario renamed or removed since the run is Unknown, never a Fail: the agent didn't do worse, the question is gone.
         bool gone = scenario is null;
-        scenario ??= new EvalScenario(stored.Task, new EvalInput(null, string.Empty, []), default, [], DatasetSplit.Dev);
+        scenario ??= new EvalScenario(stored.Task, new EvalInput(null, string.Empty, []), default, [],
+            DatasetSplit.Dev);
         var trial = new Trial(runId, mode, stored.Repeat, scenario, transcript);
 
         IReadOnlyList<Grade> grades;

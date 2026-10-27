@@ -17,8 +17,10 @@ namespace LouisAgent.Core.Tests.Agent;
 public class AgentEngineUsageTests
 {
     private static AgentEngine Engine(IChatClient client, IUsageSink sink, IUsageMapper? mapper = null) =>
-        new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: sink, usageMapper: mapper);
+        new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client,
+            TestPaths.Agent(),
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: sink,
+            usageMapper: mapper);
 
     private static ChatResponse CallSayHello(string callId) =>
         new(new ChatMessage(ChatRole.Assistant,
@@ -38,7 +40,9 @@ public class AgentEngineUsageTests
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "say hello twice")) { }
+            await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "say hello twice"))
+            {
+            }
 
         Assert.That(sink.Records.Select(r => r.Round), Is.EqualTo(new[] { 1, 2, 3 }));
         Assert.That(sink.Records.Select(r => r.Purpose), Is.All.EqualTo(UsagePurpose.Turn));
@@ -78,7 +82,8 @@ public class AgentEngineUsageTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "It's all x.")));
             var engine = Engine(client, sink);
 
-            using (UsageScope.Begin(host: "api", session: "sess_1", turn: 4, tags: new UsageTags("fix:e8b0", "run-1", "order-service")))
+            using (UsageScope.Begin(host: "api", session: "sess_1", turn: 4,
+                       tags: new UsageTags("fix:e8b0", "run-1", "order-service")))
                 await engine.ProcessPromptAsync(engine.NewHistory(), "what is in the file?");
 
             Assert.That(sink.Records.Select(r => (r.Purpose, r.Round)), Is.EqualTo(new[]
@@ -88,9 +93,11 @@ public class AgentEngineUsageTests
                 // The summary has its own scope, so the turn's next request is still round 2.
                 (UsagePurpose.Turn, 2),
             }));
-            Assert.That(sink.Records.Select(r => (r.Host, r.Session, r.Turn)), Is.All.EqualTo(("api", "sess_1", (int?)4)),
+            Assert.That(sink.Records.Select(r => (r.Host, r.Session, r.Turn)),
+                Is.All.EqualTo(("api", "sess_1", (int?)4)),
                 "the summary is attributed to the turn it served");
-            Assert.That(sink.Records.Select(r => (r.Task, r.Run, r.Service)), Is.All.EqualTo(("fix:e8b0", "run-1", "order-service")),
+            Assert.That(sink.Records.Select(r => (r.Task, r.Run, r.Service)),
+                Is.All.EqualTo(("fix:e8b0", "run-1", "order-service")),
                 "and to the fix and run it was part of");
         }
         finally
@@ -105,12 +112,14 @@ public class AgentEngineUsageTests
         var sink = new ListUsageSink();
         var client = new FakeChatClient(
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Now I'll append the rest:"))
-                { FinishReason = ChatFinishReason.Length },
+            { FinishReason = ChatFinishReason.Length },
             _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Done in smaller chunks.")));
         var engine = Engine(client, sink);
 
         using (UsageScope.Begin())
-            await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "write a big file")) { }
+            await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), "write a big file"))
+            {
+            }
 
         Assert.That(sink.Records.Select(r => (r.Purpose, r.Round, r.Stop)), Is.EqualTo(new[]
         {
@@ -130,7 +139,8 @@ public class AgentEngineUsageTests
             OutputTokenCount = 144,
             AdditionalCounts = new AdditionalPropertiesDictionary<long> { ["CacheCreationInputTokens"] = 10_227 },
         };
-        var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi")) { Usage = usage });
+        var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi"))
+        { Usage = usage });
         var engine = Engine(client, sink, new AnthropicUsageMapper());
 
         await engine.ProcessPromptAsync(engine.NewHistory(), "hi");
@@ -143,7 +153,8 @@ public class AgentEngineUsageTests
     {
         var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi")));
         var engine = new AgentEngine(
-            new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent());
+            new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client,
+            TestPaths.Agent());
 
         Assert.That(await engine.ProcessPromptAsync(engine.NewHistory(), "hi"), Is.EqualTo("hi"));
     }

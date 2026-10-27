@@ -1,10 +1,10 @@
-namespace LouisAgent.Core.Guardrails.Network;
 
 using System.Net;
 using System.Net.Sockets;
 using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
 
+namespace LouisAgent.Core.Guardrails.Network;
 /// <summary>
 /// Server-side request forgery guard for fetching URLs: only public addresses, checked before every request (and every
 /// redirect hop) and again at connect time, so the agent cannot be used to reach internal services or cloud metadata.
@@ -12,17 +12,22 @@ using LouisAgent.Core.Messages;
 internal static class SsrfGuard
 {
     /// <summary>Throws <see cref="BlockedAddressException"/> unless every address the URI's host resolves to is public.</summary>
-    internal static async Task EnsurePublicHostAsync(Uri uri, Func<string, CancellationToken, Task<IPAddress[]>> resolve)
+    internal static async Task EnsurePublicHostAsync(Uri uri,
+        Func<string, CancellationToken, Task<IPAddress[]>> resolve)
     {
         if (uri.IsLoopback || uri.Host.Equals("localhost", StringComparison.OrdinalIgnoreCase))
-            throw new BlockedAddressException(MessageText.Format(GuardrailToolMessage.FetchLocalAddress, new { uri.Host }));
+            throw new BlockedAddressException(MessageText.Format(GuardrailToolMessage.FetchLocalAddress,
+                new { uri.Host }));
 
         IPAddress[] addresses = IPAddress.TryParse(uri.Host.Trim('[', ']'), out var literal)
             ? [literal]
             : await resolve(uri.DnsSafeHost, CancellationToken.None);
-        if (addresses.Length == 0) throw new HttpRequestException(MessageText.Format(GuardrailToolMessage.FetchUnresolvable, new { uri.Host }));
+        if (addresses.Length == 0)
+            throw new HttpRequestException(MessageText.Format(GuardrailToolMessage.FetchUnresolvable,
+                new { uri.Host }));
         if (addresses.FirstOrDefault(a => !IsPublicAddress(a)) is { } blocked)
-            throw new BlockedAddressException(MessageText.Format(GuardrailToolMessage.FetchPrivateAddress, new { uri.Host, Address = blocked }));
+            throw new BlockedAddressException(MessageText.Format(GuardrailToolMessage.FetchPrivateAddress,
+                new { uri.Host, Address = blocked }));
     }
 
     /// <summary>
@@ -75,7 +80,8 @@ internal static class SsrfGuard
                 : await Dns.GetHostAddressesAsync(context.DnsEndPoint.Host, ct);
             var allowed = addresses.Where(IsPublicAddress).ToArray();
             if (allowed.Length == 0)
-                throw new BlockedAddressException(MessageText.Format(GuardrailToolMessage.ConnectPrivateAddress, new { context.DnsEndPoint.Host }));
+                throw new BlockedAddressException(MessageText.Format(GuardrailToolMessage.ConnectPrivateAddress,
+                    new { context.DnsEndPoint.Host }));
 
             var socket = new Socket(SocketType.Stream, ProtocolType.Tcp) { NoDelay = true };
             try

@@ -21,7 +21,9 @@ public static class SplitSelections
 
     /// <summary>The selection a first line names (<see cref="WireName"/>); the default when it names none this build knows, as a run that predates the split did.</summary>
     public static SplitSelection FromWireName(string? name) =>
-        SettingChoice.TryParse(name, out SplitSelection? selection) && selection is { } known ? known : SplitSelection.Dev;
+        SettingChoice.TryParse(name, out SplitSelection? selection) && selection is { } known
+            ? known
+            : SplitSelection.Dev;
 
     /// <summary>Whether a run with this selection runs a scenario of the split.</summary>
     public static bool Includes(this SplitSelection selection, DatasetSplit split) => selection switch

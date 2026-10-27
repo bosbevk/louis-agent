@@ -30,7 +30,8 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
     private string Trials => Path.Combine(directory, "trials");
 
     /// <summary>The process's one store: where <c>REPLAY_DIRECTORY</c> is set, else null. The only place outside the setting that names it.</summary>
-    public static ReplayStore? From(AgentOptions options) => options.ReplayDirectory is { } directory ? new ReplayStore(directory) : null;
+    public static ReplayStore? From(AgentOptions options) =>
+        options.ReplayDirectory is { } directory ? new ReplayStore(directory) : null;
 
     /// <summary>
     /// A trial's recording starts afresh (F18 step 5a): what an earlier attempt of it wrote is removed. A retried trial records under the same key.
@@ -54,19 +55,23 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
         }
     }
 
-    public async Task SaveAnswerAsync<T>(string trial, ReplayAsk ask, T answer, CancellationToken cancellationToken = default)
+    public async Task SaveAnswerAsync<T>(string trial, ReplayAsk ask, T answer,
+        CancellationToken cancellationToken = default)
     {
         byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(answer, Json);
         string hash = Convert.ToHexStringLower(SHA256.HashData(bytes));
         await WriteAnswerOnceAsync(hash, bytes, cancellationToken);
-        await AppendAsync(new ReplayIndexLine(trial, ask.Kind, ask.Key, _clock.GetUtcNow(), hash, null), cancellationToken);
+        await AppendAsync(new ReplayIndexLine(trial, ask.Kind, ask.Key, _clock.GetUtcNow(), hash, null),
+            cancellationToken);
     }
 
-    public Task SaveFailureAsync(string trial, ReplayAsk ask, string error, CancellationToken cancellationToken = default) =>
+    public Task SaveFailureAsync(string trial, ReplayAsk ask, string error,
+        CancellationToken cancellationToken = default) =>
         AppendAsync(new ReplayIndexLine(trial, ask.Kind, ask.Key, _clock.GetUtcNow(), null, error), cancellationToken);
 
     /// <summary>The first recording of <paramref name="ask"/> in the trial, or null when there is none (or no such trial).</summary>
-    public async Task<ReplayAnswer<T>?> FindAsync<T>(string trial, ReplayAsk ask, CancellationToken cancellationToken = default)
+    public async Task<ReplayAnswer<T>?> FindAsync<T>(string trial, ReplayAsk ask,
+        CancellationToken cancellationToken = default)
     {
         string index = TrialFileName.Under(Trials, TrialFileName.Of(trial) + ".jsonl");
         if (!File.Exists(index)) return null;
@@ -77,6 +82,7 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
             if (line.Error is not null) return new ReplayAnswer<T>.Failed(line.Error);
             if (await ReadAnswerAsync<T>(line.Hash, cancellationToken) is { } answered) return answered;
         }
+
         return null;
     }
 
@@ -84,20 +90,28 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
     /// Every distinct ask of <paramref name="kind"/> recorded in the trial, in the order recorded; empty when there is none (or no such
     /// trial). A miss compares its request with these to say what changed (F18 step 4e).
     /// </summary>
-    public async Task<IReadOnlyList<ReplayAsk>> AsksAsync(string trial, ReplayKind kind, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<ReplayAsk>> AsksAsync(string trial, ReplayKind kind,
+        CancellationToken cancellationToken = default)
     {
         string index = TrialFileName.Under(Trials, TrialFileName.Of(trial) + ".jsonl");
         if (!File.Exists(index)) return [];
 
         return (await File.ReadAllLinesAsync(index, cancellationToken))
-            .Select(ParseLine).OfType<ReplayIndexLine>().Where(line => line.Kind == kind).Select(line => line.Ask).Distinct().ToList();
+            .Select(ParseLine).OfType<ReplayIndexLine>().Where(line => line.Kind == kind).Select(line => line.Ask)
+            .Distinct().ToList();
     }
 
     private static ReplayIndexLine? ParseLine(string text)
     {
         if (string.IsNullOrWhiteSpace(text)) return null;
-        try { return JsonSerializer.Deserialize<ReplayIndexLine>(text, Json); }
-        catch (JsonException) { return null; }
+        try
+        {
+            return JsonSerializer.Deserialize<ReplayIndexLine>(text, Json);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 
     /// <summary>
@@ -109,7 +123,9 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
         if (hash is not { Length: 64 } || !hash.All(char.IsAsciiHexDigitLower)) return null;
         string path = Path.Combine(Answers, hash + ".json");
         if (!File.Exists(path)) return null;
-        return JsonSerializer.Deserialize<T>(await File.ReadAllBytesAsync(path, cancellationToken), Json) is { } value ? new ReplayAnswer<T>.Answered(value) : null;
+        return JsonSerializer.Deserialize<T>(await File.ReadAllBytesAsync(path, cancellationToken), Json) is { } value
+            ? new ReplayAnswer<T>.Answered(value)
+            : null;
     }
 
     /// <summary>Written to a temporary name and moved into place; a hash that is already there is skipped, and a racing writer is no error.</summary>
@@ -121,8 +137,14 @@ public sealed class ReplayStore(string directory, TimeProvider? clock = null)
 
         string temporary = $"{path}.{Guid.NewGuid():N}.tmp";
         await File.WriteAllBytesAsync(temporary, bytes, cancellationToken);
-        try { File.Move(temporary, path); }
-        catch (IOException) when (File.Exists(path)) { File.Delete(temporary); }
+        try
+        {
+            File.Move(temporary, path);
+        }
+        catch (IOException) when (File.Exists(path))
+        {
+            File.Delete(temporary);
+        }
     }
 
     private async Task AppendAsync(ReplayIndexLine line, CancellationToken cancellationToken)

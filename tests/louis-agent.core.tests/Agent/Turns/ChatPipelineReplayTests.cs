@@ -27,18 +27,24 @@ public class ChatPipelineReplayTests
     public void TearDown() => _folder.Dispose();
 
     private AgentEngine Engine(IChatClient client, ListUsageSink ledger) =>
-        new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
+        new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client,
+            TestPaths.Agent(),
             toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]),
             // Priced the way the ledger is, from a table that knows no model: a hit must still be a known 0, and a live request unknown.
-            usageSink: new PricingUsageSink(ledger, new PriceTable { AsOf = "2026-10-25", Currency = "USD" }), replay: _folder.Store);
+            usageSink: new PricingUsageSink(ledger, new PriceTable { AsOf = "2026-10-25", Currency = "USD" }),
+            replay: _folder.Store);
 
     private static ChatResponse Read(string relative) =>
         new(new ChatMessage(ChatRole.Assistant,
-            [new FunctionCallContent("call_1", "ReadWorkspaceFile", new Dictionary<string, object?> { ["relativePath"] = relative })]));
+        [
+            new FunctionCallContent("call_1", "ReadWorkspaceFile",
+                new Dictionary<string, object?> { ["relativePath"] = relative })
+        ]));
 
     private static ChatResponse Say(string text) => new(new ChatMessage(ChatRole.Assistant, text));
 
-    private static IDisposable Flow(WebReplayMode web, bool model) => SessionReplay.Use(new SessionReplay(web, Trial, model));
+    private static IDisposable Flow(WebReplayMode web, bool model) =>
+        SessionReplay.Use(new SessionReplay(web, Trial, model));
 
     /// <summary>Two streamed turns on one history; returns each turn's streamed text and the history.</summary>
     private static async Task<(string[] Texts, List<ChatMessage> History)> TwoTurns(AgentEngine engine)
@@ -49,9 +55,11 @@ public class ChatPipelineReplayTests
         {
             var text = new System.Text.StringBuilder();
             using (UsageScope.Begin(host: "test", session: "s1", turn: texts.Count + 1))
-                await foreach (var update in engine.StreamPromptAsync(history, prompt)) text.Append(update.Text);
+                await foreach (var update in engine.StreamPromptAsync(history, prompt))
+                    text.Append(update.Text);
             texts.Add(text.ToString());
         }
+
         return ([.. texts], history);
     }
 
@@ -72,7 +80,8 @@ public class ChatPipelineReplayTests
         try
         {
             var live = oversizedResult
-                ? new FakeChatClient(_ => Read(relative), _ => Say("a file full of x"), _ => Say("It's all x."), _ => Say("You're welcome."))
+                ? new FakeChatClient(_ => Read(relative), _ => Say("a file full of x"), _ => Say("It's all x."),
+                    _ => Say("You're welcome."))
                 : new FakeChatClient(_ => Read(relative), _ => Say("It's all x."), _ => Say("You're welcome."));
             var recording = new ListUsageSink();
             string[] recorded;
@@ -82,14 +91,20 @@ public class ChatPipelineReplayTests
             var replaying = new ListUsageSink();
             string[] replayed;
             List<ChatMessage> history;
-            using (Flow(WebReplayMode.Replay, model: true)) (replayed, history) = await TwoTurns(Engine(throwing, replaying));
+            using (Flow(WebReplayMode.Replay, model: true))
+                (replayed, history) = await TwoTurns(Engine(throwing, replaying));
 
             Assert.That(replayed, Is.EqualTo(recorded));
             Assert.That(throwing.Requests, Is.Empty);
-            Assert.That(replaying.Records, Has.Count.EqualTo(recording.Records.Count), "the same requests, each one a row");
-            Assert.That(replaying.Records, Has.All.Matches<UsageRecord>(r => r.CacheHit == true && r.Cost == new UsageCost("USD", 0m, "2026-10-25")));
-            Assert.That(recording.Records, Has.All.Matches<UsageRecord>(r => r.CacheHit is null && r.Cost is null), "a live request on an unpriced model stays unknown");
-            Assert.That(history.SelectMany(m => m.AdditionalProperties?.Keys ?? []), Does.Not.Contain("replay_hit"), "the tag never enters the history (ADR 0008)");
+            Assert.That(replaying.Records, Has.Count.EqualTo(recording.Records.Count),
+                "the same requests, each one a row");
+            Assert.That(replaying.Records,
+                Has.All.Matches<UsageRecord>(r =>
+                    r.CacheHit == true && r.Cost == new UsageCost("USD", 0m, "2026-10-25")));
+            Assert.That(recording.Records, Has.All.Matches<UsageRecord>(r => r.CacheHit is null && r.Cost is null),
+                "a live request on an unpriced model stays unknown");
+            Assert.That(history.SelectMany(m => m.AdditionalProperties?.Keys ?? []), Does.Not.Contain("replay_hit"),
+                "the tag never enters the history (ADR 0008)");
         }
         finally
         {

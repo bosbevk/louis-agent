@@ -10,13 +10,16 @@ public class TurnFailuresTests
 {
     [Test]
     public void TheApisRefusalIsAnApiError() =>
-        Assert.That(TurnFailures.Of(new EvalApiException(500, "down"), CancellationToken.None), Is.EqualTo(TrialFailure.ApiError));
+        Assert.That(TurnFailures.Of(new EvalApiException(500, "down"), CancellationToken.None),
+            Is.EqualTo(TrialFailure.ApiError));
 
     [Test]
     public void ABrokenConnectionIsATransportFailure()
     {
-        Assert.That(TurnFailures.Of(new HttpRequestException("refused", new SocketException()), CancellationToken.None), Is.EqualTo(TrialFailure.Transport));
-        Assert.That(TurnFailures.Of(new IOException("the stream ended"), CancellationToken.None), Is.EqualTo(TrialFailure.Transport));
+        Assert.That(TurnFailures.Of(new HttpRequestException("refused", new SocketException()), CancellationToken.None),
+            Is.EqualTo(TrialFailure.Transport));
+        Assert.That(TurnFailures.Of(new IOException("the stream ended"), CancellationToken.None),
+            Is.EqualTo(TrialFailure.Transport));
     }
 
     [Test]
@@ -24,7 +27,9 @@ public class TurnFailuresTests
     {
         Assert.That(TurnFailures.Of(new TimeoutException(), CancellationToken.None), Is.EqualTo(TrialFailure.Timeout));
         // HttpClient's own timeout surfaces as a TaskCanceledException while the run's token is still live.
-        Assert.That(TurnFailures.Of(new TaskCanceledException("timed out", new TimeoutException()), CancellationToken.None), Is.EqualTo(TrialFailure.Timeout));
+        Assert.That(
+            TurnFailures.Of(new TaskCanceledException("timed out", new TimeoutException()), CancellationToken.None),
+            Is.EqualTo(TrialFailure.Timeout));
     }
 
     [Test]

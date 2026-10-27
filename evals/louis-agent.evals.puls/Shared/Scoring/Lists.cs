@@ -38,6 +38,7 @@ public static partial class Lists
                 current = [];
             }
         }
+
         if (current.Count > 0) tables.Add(current);
         return tables;
     }
@@ -51,7 +52,8 @@ public static partial class Lists
 
     /// <summary>The bold rows that close a shopping list (`**Totaal** … **± R312**`, `**Per persoon** …`), as their cells, in order (FX24); none for another table.</summary>
     public static List<List<string>> TotalRows(string? answer) =>
-        Tables(answer ?? "").Where(table => IsList(table[0])).SelectMany(table => table.Skip(1).Where(IsTotal).Select(Cells)).ToList();
+        Tables(answer ?? "").Where(table => IsList(table[0]))
+            .SelectMany(table => table.Skip(1).Where(IsTotal).Select(Cells)).ToList();
 
     /// <summary>Whether a table's header is a shopping list's: an ingredient column first, and no why column.</summary>
     public static bool IsList(string header) => Header().IsMatch(header) && !WhyColumn().IsMatch(header);
@@ -61,5 +63,6 @@ public static partial class Lists
     public static bool IsTotal(string row) => Total().IsMatch(row);
 
     /// <summary>A table row's cells, without the outer pipes.</summary>
-    public static List<string> Cells(string row) => row.Trim().Trim('|').Split('|').Select(cell => cell.Trim()).ToList();
+    public static List<string> Cells(string row) =>
+        row.Trim().Trim('|').Split('|').Select(cell => cell.Trim()).ToList();
 }

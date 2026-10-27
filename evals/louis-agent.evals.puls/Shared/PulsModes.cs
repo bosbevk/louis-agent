@@ -1,5 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
+
 namespace LouisAgent.Evals.Puls.Shared;
 
 /// <summary>
@@ -8,5 +9,6 @@ namespace LouisAgent.Evals.Puls.Shared;
 /// </summary>
 public static class PulsModes
 {
-    public static bool CanDelegate(EvalMode mode) => mode.Toolsets.Contains(PulsToolset.Specialists.Wire(), StringComparer.Ordinal);
+    public static bool CanDelegate(EvalMode mode) =>
+        mode.Toolsets.Contains(PulsToolset.Specialists.Wire(), StringComparer.Ordinal);
 }

@@ -7,7 +7,9 @@ namespace LouisAgent.Core.Sessions.Replay.Store;
 /// </summary>
 public abstract record ReplayAnswer<T>
 {
-    private ReplayAnswer() { }
+    private ReplayAnswer()
+    {
+    }
 
     /// <summary>The recorded value; throws <paramref name="failure"/>(the recorded text) when the recording is a failure.</summary>
     public abstract T OrThrow(Func<string, Exception> failure);

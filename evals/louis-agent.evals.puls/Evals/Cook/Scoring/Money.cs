@@ -12,7 +12,9 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 /// </summary>
 public static partial class Money
 {
-    [GeneratedRegex(@"\bR\s?(?:(?<whole>\d{1,3}(?:[ \u00A0.,]\d{3})+)(?!\s*(?:kg|g|gram|ml|l|liter|litre)\b)|(?<whole>\d+))(?:[.,](?<cents>\d{1,2}))?(?!\d)", RegexOptions.CultureInvariant)]
+    [GeneratedRegex(
+        @"\bR\s?(?:(?<whole>\d{1,3}(?:[ \u00A0.,]\d{3})+)(?!\s*(?:kg|g|gram|ml|l|liter|litre)\b)|(?<whole>\d+))(?:[.,](?<cents>\d{1,2}))?(?!\d)",
+        RegexOptions.CultureInvariant)]
     private static partial Regex Amount();
 
     /// <summary>Every amount in the text, in order.</summary>

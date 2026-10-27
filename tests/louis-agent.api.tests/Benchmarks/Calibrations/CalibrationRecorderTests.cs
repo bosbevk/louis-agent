@@ -15,7 +15,8 @@ public class CalibrationRecorderTests
         """)));
 
     private static BenchmarkRun Calibration(string id = "cal123456789") =>
-        new(id, SampleEval.Beta, 1, calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
+        new(id, SampleEval.Beta, 1, calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"),
+            input: "{}\n");
 
     [Test]
     public async Task ARunThatEndsWell_StoresTheReportItsLineCarries()
@@ -33,10 +34,14 @@ public class CalibrationRecorderTests
 
         Assert.That(result.Stored, Is.True, result.Error);
         var report = (await store.OfRunAsync("76667d39dcdb")).Single();
-        Assert.That((report.Run, report.Grader, report.JudgeModel, report.Agreed, report.Total, report.Bar, report.Passes), Is.EqualTo(("76667d39dcdb", "meal-for-people", "qwen3:4b", 2, 3, 90, false)));
+        Assert.That(
+            (report.Run, report.Grader, report.JudgeModel, report.Agreed, report.Total, report.Bar, report.Passes),
+            Is.EqualTo(("76667d39dcdb", "meal-for-people", "qwen3:4b", 2, 3, 90, false)));
         Assert.That(report.PersonPass, Is.EqualTo(new CalibrationClassCounts(1, 0, 0)));
         Assert.That(report.PersonFail, Is.EqualTo(new CalibrationClassCounts(1, 1, 0)));
-        Assert.That(report.Disagreements, Is.EqualTo(new[] { new CalibrationDisagreement(SampleScenario.Beta, SampleMode.Beta, 3, "fail", "pass", "a meal") }));
+        Assert.That(report.Disagreements,
+            Is.EqualTo(new[]
+                { new CalibrationDisagreement(SampleScenario.Beta, SampleMode.Beta, 3, "fail", "pass", "a meal") }));
         Assert.That(report.At, Is.EqualTo(run.EndedAt));
     }
 
@@ -96,7 +101,9 @@ public class CalibrationRecorderTests
         var at = new DateTimeOffset(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
         Assert.That(CalibrationLineReader.Read(Line, "76667d39dcdb", at)?.Agreed, Is.EqualTo(2));
-        Assert.That(CalibrationLineReader.Read(SampleMode.Fill("""@{"event":"mode","mode":"<ModeBeta>","repeat":1}"""), "76667d39dcdb", at), Is.Null);
+        Assert.That(
+            CalibrationLineReader.Read(SampleMode.Fill("""@{"event":"mode","mode":"<ModeBeta>","repeat":1}"""),
+                "76667d39dcdb", at), Is.Null);
         Assert.That(CalibrationLineReader.Read("Agreement: 2 of 3", "76667d39dcdb", at), Is.Null);
         Assert.That(CalibrationLineReader.Read("@{not json", "76667d39dcdb", at), Is.Null);
     }

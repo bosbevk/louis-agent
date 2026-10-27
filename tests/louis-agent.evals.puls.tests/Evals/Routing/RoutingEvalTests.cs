@@ -23,13 +23,16 @@ public class RoutingEvalTests
     public void ItIsPulsRoutingEval_UnderTheNameItsDatasetCarries()
     {
         Assert.That((Eval.Name, Eval.Version), Is.EqualTo((PulsEvalName.Routing.Wire(), 2)));
-        Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.RoutingProves)), "the portal's title is a message enum member (ADR 0009)");
+        Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.RoutingProves)),
+            "the portal's title is a message enum member (ADR 0009)");
     }
 
     [Test]
     public async Task TheBaselineIsEveryToolsetTheInstanceHasButTheDelegatingOnes_AndTheDelegatedIsPulsAsBuilt()
     {
-        var modes = await Eval.ModesAsync(new ToolsetsClient(PulsToolset.Web.Wire(), PulsToolset.Files.Wire(), PulsToolset.Specialists.Wire(), PulsToolset.Git.Wire(), PulsToolset.Minions.Wire()), CancellationToken.None);
+        var modes = await Eval.ModesAsync(
+            new ToolsetsClient(PulsToolset.Web.Wire(), PulsToolset.Files.Wire(), PulsToolset.Specialists.Wire(),
+                PulsToolset.Git.Wire(), PulsToolset.Minions.Wire()), CancellationToken.None);
 
         Assert.That(modes.Select(m => (m.Name, m.Role, string.Join(",", m.Toolsets))), Is.EqualTo(new[]
         {
@@ -43,7 +46,8 @@ public class RoutingEvalTests
     {
         Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id), Is.EquivalentTo(new[]
         {
-            PulsTaskIds.Web, PulsTaskIds.Files, PulsTaskIds.Git, PulsTaskIds.Numbers, PulsTaskIds.Chat, PulsTaskIds.Cook, "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
+            PulsTaskIds.Web, PulsTaskIds.Files, PulsTaskIds.Git, PulsTaskIds.Numbers, PulsTaskIds.Chat,
+            PulsTaskIds.Cook, "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
         }));
         Assert.That(Eval.Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).Select(s => s.Id), Is.EquivalentTo(new[]
         {
@@ -55,13 +59,15 @@ public class RoutingEvalTests
     public void ItsOneGraderIsTheRequiredRoute_AndNoErrorGraderWouldAddToIt()
     {
         // A route is right only without an error (RoutingScorer), so a no-error grader on a one-turn question repeats it.
-        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)), Is.EqualTo(new[] { ("routed-to", true, GraderKind.FixedRule) }));
+        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)),
+            Is.EqualTo(new[] { ("routed-to", true, GraderKind.FixedRule) }));
     }
 
     [Test]
     public void ItsScoresAreTheRoutingScorers_KeyForKey()
     {
-        var trial = Trial(CookEvalMode, "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]));
+        var trial = Trial(CookEvalMode, "cook", """{"routes_to":"puls-cook"}""", null,
+            Turn(1, [Start(PulsEvalRole.Cook.Wire()), Text("Resep.")]));
 
         var scores = Eval.ScoresOf(trial, []);
 
@@ -71,17 +77,21 @@ public class RoutingEvalTests
     [Test]
     public void ABaselineQuestionIsScoredWithoutDelegation()
     {
-        var trial = Trial(new EvalMode("baseline", Role, [PulsToolset.Web.Wire()]), "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Text("Ek kan nie.")]));
+        var trial = Trial(new EvalMode("baseline", Role, [PulsToolset.Web.Wire()]), "cook",
+            """{"routes_to":"puls-cook"}""", null, Turn(1, [Text("Ek kan nie.")]));
 
-        Assert.That(Json(Eval.ScoresOf(trial, [])), Does.Contain("\"expected_role\":null").And.Contain("\"routed_right\":true"));
+        Assert.That(Json(Eval.ScoresOf(trial, [])),
+            Does.Contain("\"expected_role\":null").And.Contain("\"routed_right\":true"));
     }
 
     [Test]
     public void ATurnsFacts_AreWhatTheTurnViewReads()
     {
-        var facts = Eval.TurnFactsOf(Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.news24.com/a")]), CookEvalMode);
+        var facts = Eval.TurnFactsOf(Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.news24.com/a")]),
+            CookEvalMode);
 
-        Assert.That((facts.Role, facts.AgentCalls, facts.SpecialistCalls, facts.Error), Is.EqualTo((PulsEvalRole.Cook.Wire(), 2, 0, (string?)null)));
+        Assert.That((facts.Role, facts.AgentCalls, facts.SpecialistCalls, facts.Error),
+            Is.EqualTo((PulsEvalRole.Cook.Wire(), 2, 0, (string?)null)));
         Assert.That(facts.Hosts, Is.EqualTo(new[] { "news24.com" }));
     }
 
@@ -90,9 +100,16 @@ public class RoutingEvalTests
     /// <summary>A session client that lists the toolsets an instance has, as GET /v1/toolsets does.</summary>
     private sealed class ToolsetsClient(params string[] toolsets) : ISessionClient
     {
-        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) => Task.FromResult<IReadOnlyList<string>>(toolsets);
-        public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) => throw new NotSupportedException();
-        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message, CancellationToken cancellationToken) => throw new NotSupportedException();
-        public Task CloseAsync(string session, CancellationToken cancellationToken) => throw new NotSupportedException();
+        public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<string>>(toolsets);
+
+        public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
+
+        public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
+            CancellationToken cancellationToken) => throw new NotSupportedException();
+
+        public Task CloseAsync(string session, CancellationToken cancellationToken) =>
+            throw new NotSupportedException();
     }
 }

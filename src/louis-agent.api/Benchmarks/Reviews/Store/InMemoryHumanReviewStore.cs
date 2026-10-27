@@ -14,7 +14,9 @@ public sealed class InMemoryHumanReviewStore : IHumanReviewStore
 
     public Task<IReadOnlyList<HumanGrade>> OfRunAsync(string run, CancellationToken cancellationToken = default)
     {
-        lock (_lock) return Task.FromResult<IReadOnlyList<HumanGrade>>(_grades.Where(g => g.Run == run).OrderBy(g => g.At).ToArray());
+        lock (_lock)
+            return Task.FromResult<IReadOnlyList<HumanGrade>>(_grades.Where(g => g.Run == run).OrderBy(g => g.At)
+                .ToArray());
     }
 
     public Task<int> DeleteRunAsync(string run, CancellationToken cancellationToken = default)

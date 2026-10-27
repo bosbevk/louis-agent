@@ -24,10 +24,13 @@ public sealed class NoErrorGrader(bool required = true) : IGrader
             string? message = EngineEvents.ErrorMessageOf(errored);
             string reason = message is null
                 ? MessageText.Format(CommonGradeMessage.ErrorInTurn, new { Turn = errored.Turn })
-                : MessageText.Format(CommonGradeMessage.ErrorInTurnWithMessage, new { Turn = errored.Turn, Message = message });
+                : MessageText.Format(CommonGradeMessage.ErrorInTurnWithMessage,
+                    new { Turn = errored.Turn, Message = message });
             return ValueTask.FromResult(Verdict.Fail(Name, Version, reason));
         }
-        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown) return ValueTask.FromResult(unknown);
+
+        if (Verdict.InfrastructureFailure(Name, Version, trial.Transcript.Turns) is { } unknown)
+            return ValueTask.FromResult(unknown);
         return ValueTask.FromResult(Verdict.Pass(Name, Version, MessageText.Format(CommonGradeMessage.NoErrorPass)));
     }
 }

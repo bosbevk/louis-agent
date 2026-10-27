@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
-﻿using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Core.Tests.Skills;
 
@@ -13,7 +13,8 @@ public class MarkdownSkillLoaderTests
     [Test]
     public void Load_WhenSkillsFileContainsMarkdownSkills_ReturnsParsedDefinitions()
     {
-        var repoRoot = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
+        var repoRoot =
+            Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
         // Use default.md which should contain skill definitions
         var filePath = Path.Combine(TestPaths.Prompts, "agent", "louis-agent", "voice.md");
 
@@ -27,10 +28,12 @@ public class MarkdownSkillLoaderTests
     [TestCase("sh", ScriptLanguage.Bash)]
     [TestCase("pwsh", ScriptLanguage.PowerShell)]
     [TestCase("py", ScriptLanguage.Python)]
-    public void Load_RecordsExecutionBlockLanguage_ForNoTagOrAnAlias(string fence, ScriptLanguage expected) => LoadsAs(fence, expected);
+    public void Load_RecordsExecutionBlockLanguage_ForNoTagOrAnAlias(string fence, ScriptLanguage expected) =>
+        LoadsAs(fence, expected);
 
     [Test]
-    public void Load_RecordsExecutionBlockLanguage_ForEachLanguagesOwnTag([Values] ScriptLanguage language) => LoadsAs(language.Wire(), language);
+    public void Load_RecordsExecutionBlockLanguage_ForEachLanguagesOwnTag([Values] ScriptLanguage language) =>
+        LoadsAs(language.Wire(), language);
 
     private static void LoadsAs(string fence, ScriptLanguage expected)
     {
@@ -69,7 +72,8 @@ public class MarkdownSkillLoaderTests
     [Test]
     public void Load_WhenHelloWorldSkillsFileExists_ReturnsParsedDefinitions()
     {
-        var repoRoot = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
+        var repoRoot =
+            Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
         var filePath = Path.Combine(repoRoot, "Skills", "HelloWorld.md");
 
         var skills = MarkdownSkillLoader.Load(filePath);
@@ -87,7 +91,8 @@ public class MarkdownSkillLoaderTests
     [Test]
     public void Load_WhenSkillHasDescription_ParsesDescriptionCorrectly()
     {
-        var repoRoot = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
+        var repoRoot =
+            Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
         var filePath = Path.Combine(repoRoot, "Skills", "HelloWorld.md");
 
         var skills = MarkdownSkillLoader.Load(filePath);
@@ -110,7 +115,8 @@ public class MarkdownSkillLoaderTests
     [Test]
     public void Load_WhenSkillCommandHasMultipleLines_ParsesCompleteCommand()
     {
-        var repoRoot = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
+        var repoRoot =
+            Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
         var filePath = Path.Combine(repoRoot, "Skills", "HelloWorld.md");
 
         var skills = MarkdownSkillLoader.Load(filePath);
@@ -127,4 +133,3 @@ public class MarkdownSkillLoaderTests
         }
     }
 }
-

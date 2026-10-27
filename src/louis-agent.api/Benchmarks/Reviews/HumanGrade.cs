@@ -17,7 +17,14 @@ public enum HumanVerdict
 /// <c>{grader}.human</c>), with the verdict, a note, who and when. The portal's gate is one shared key, so <see cref="Reviewer"/> is a name the person gave, not proof of who they are.
 /// A grade is added and never replaced: the latest of a reviewer's grades counts, and the earlier ones are the history.
 /// </summary>
-public sealed record HumanGrade(string Run, ConversationKey Conversation, string Grader, HumanVerdict Verdict, string Note, string Reviewer, DateTimeOffset At);
+public sealed record HumanGrade(
+    string Run,
+    ConversationKey Conversation,
+    string Grader,
+    HumanVerdict Verdict,
+    string Note,
+    string Reviewer,
+    DateTimeOffset At);
 
 public static class HumanVerdicts
 {

@@ -5,6 +5,7 @@
 //   env     prints `env:{NAME}` for every variable it can see, and `api=` and `run=` with their values         slow    prints `start`, then sleeps 2 s and never reads stdin
 //   late    prints `one`, sleeps 1 s, prints `two`       fail    writes `boom` to stderr and exits 3              stdin   prints each line of stdin as `in:{line}`
 //   sleeper sleeps 4 s and never reads stdin (a runner slow to take the export it is handed)
+
 if (args.Length < 2) return 64;
 
 switch (args[1])
@@ -20,7 +21,8 @@ switch (args[1])
         Console.WriteLine(Environment.GetEnvironmentVariable("BENCHMARK_RUN"));
         return 0;
     case "env":
-        foreach (string name in Environment.GetEnvironmentVariables().Keys.Cast<string>().Order(StringComparer.Ordinal)) Console.WriteLine($"env:{name}");
+        foreach (string name in Environment.GetEnvironmentVariables().Keys.Cast<string>().Order(StringComparer.Ordinal))
+            Console.WriteLine($"env:{name}");
         Console.WriteLine($"api={Environment.GetEnvironmentVariable("PULS_API")}");
         Console.WriteLine($"run={Environment.GetEnvironmentVariable("BENCHMARK_RUN")}");
         return 0;

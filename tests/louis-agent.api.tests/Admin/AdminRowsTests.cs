@@ -19,29 +19,38 @@ public class AdminRowsTests
     private static JsonElement Json(object row) => JsonSerializer.SerializeToElement(row, Web);
 
     private static BenchmarkDocuments.Run Run(string? eval, IReadOnlyList<BenchmarkDocuments.Grader>? graders) =>
-        new("run_1", "stub", 1, BenchmarkRunStatus.Done, At, Eval: eval, EvalVersion: eval is null ? null : 3, Commit: eval is null ? null : "abc1234",
+        new("run_1", "stub", 1, BenchmarkRunStatus.Done, At, Eval: eval, EvalVersion: eval is null ? null : 3,
+            Commit: eval is null ? null : "abc1234",
             Graders: graders);
 
-    private static BenchmarkDocuments.Conversation Conversation(IReadOnlyList<BenchmarkDocuments.Grade>? grades, BenchmarkOutcome? outcome) =>
-        new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 0, SampleRole.Alpha, JsonDocument.Parse("{}").RootElement, 0, 1.5, grades, outcome);
+    private static BenchmarkDocuments.Conversation Conversation(IReadOnlyList<BenchmarkDocuments.Grade>? grades,
+        BenchmarkOutcome? outcome) =>
+        new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 0, SampleRole.Alpha,
+            JsonDocument.Parse("{}").RootElement, 0, 1.5, grades, outcome);
 
     [Test]
     public void ARunWithAnEvalAndTwoGraders_GivesThemInOrder()
     {
-        var row = Json(AdminRows.RunRow(Run("stub", [new("no-error", 1, BenchmarkGraderKind.FixedRule), new("meal", 2, BenchmarkGraderKind.Model)])));
+        var row = Json(AdminRows.RunRow(Run("stub",
+            [new("no-error", 1, BenchmarkGraderKind.FixedRule), new("meal", 2, BenchmarkGraderKind.Model)])));
 
         Assert.That(row.GetProperty("eval").GetString(), Is.EqualTo("stub"));
         Assert.That(row.GetProperty("eval_version").GetInt32(), Is.EqualTo(3));
         Assert.That(row.GetProperty("commit").GetString(), Is.EqualTo("abc1234"));
         var graders = row.GetProperty("graders").EnumerateArray()
-            .Select(g => (g.GetProperty("name").GetString(), g.GetProperty("version").GetInt32(), g.GetProperty("kind").GetString())).ToList();
+            .Select(g => (g.GetProperty("name").GetString(), g.GetProperty("version").GetInt32(),
+                g.GetProperty("kind").GetString())).ToList();
         Assert.That(graders, Is.EqualTo(new[] { ("no-error", 1, "FixedRule"), ("meal", 2, "Model") }));
     }
 
     [Test]
     public void AHumanReviewsQuestion_RidesOnItsGraderRow_AndAnotherGradersHasNone()
     {
-        var row = Json(AdminRows.RunRow(Run("stub", [new("no-error", 1, BenchmarkGraderKind.FixedRule), new("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")])));
+        var row = Json(AdminRows.RunRow(Run("stub",
+        [
+            new("no-error", 1, BenchmarkGraderKind.FixedRule),
+            new("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")
+        ])));
 
         var graders = row.GetProperty("graders").EnumerateArray().ToList();
         Assert.That(graders[0].GetProperty("question").ValueKind, Is.EqualTo(JsonValueKind.Null));
@@ -70,7 +79,8 @@ public class AdminRowsTests
         var row = Json(AdminRows.ConversationRow(Conversation(grades, BenchmarkOutcome.Fail)));
 
         var sent = row.GetProperty("grades").EnumerateArray()
-            .Select(g => (g.GetProperty("grader").GetString(), g.GetProperty("version").GetInt32(), g.GetProperty("score").GetDouble(),
+            .Select(g => (g.GetProperty("grader").GetString(), g.GetProperty("version").GetInt32(),
+                g.GetProperty("score").GetDouble(),
                 g.GetProperty("outcome").GetString(), g.GetProperty("reason").GetString()))
             .ToList();
         Assert.That(sent, Is.EqualTo(new[]

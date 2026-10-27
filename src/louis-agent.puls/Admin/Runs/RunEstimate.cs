@@ -9,16 +9,21 @@ public static class RunEstimate
 {
     public static decimal? For(string check, IReadOnlyList<RunSummary> runs, int repeats)
     {
-        var measured = runs.Where(run => run.Check == check && run.Status == "done" && run.RescoreOf is null && run.Total?.Cost is not null)
+        var measured = runs.Where(run =>
+                run.Check == check && run.Status == "done" && run.RescoreOf is null && run.Total?.Cost is not null)
             .OrderByDescending(run => run.StartedAt).FirstOrDefault();
         return measured is null ? null : measured.Total!.Cost!.Value / Math.Max(1, measured.Repeat) * repeats;
     }
 
     /// <summary>The line beside the Run button: "free" for the stub, else the estimate at the repeats chosen, in the page's money; empty when no cost is known.</summary>
     public static string Text(string check, IReadOnlyList<RunSummary> runs, int repeats, Func<decimal, string> money) =>
-        check == "stub" ? "free"
-        : For(check, runs, repeats) is { } cost ? $"≈ {money(cost)} for {repeats} {(repeats == 1 ? "repeat" : "repeats")}" : "";
+        check == "stub"
+            ? "free"
+            : For(check, runs, repeats) is { } cost
+                ? $"≈ {money(cost)} for {repeats} {(repeats == 1 ? "repeat" : "repeats")}"
+                : "";
 
     public static string? DefaultCheck(IReadOnlyList<string> checks, IReadOnlyList<RunSummary> runs) =>
-        runs.OrderByDescending(run => run.StartedAt).Select(run => run.Check).FirstOrDefault(check => checks.Contains(check)) ?? checks.FirstOrDefault();
+        runs.OrderByDescending(run => run.StartedAt).Select(run => run.Check)
+            .FirstOrDefault(check => checks.Contains(check)) ?? checks.FirstOrDefault();
 }

@@ -16,7 +16,8 @@ namespace LouisAgent.Evals.Puls.Tests;
 // Puls's own graders; scenarios compare as sets, since the loader orders them by file name. Written first: the folders didn't exist yet, so every load failed.
 public class PulsDatasetsTests
 {
-    internal static IReadOnlyList<IGrader> GradersOf(PulsEvalName dataset) => dataset == PulsEvalName.Cook ? new CookEval().Graders : new RoutingEval().Graders;
+    internal static IReadOnlyList<IGrader> GradersOf(PulsEvalName dataset) =>
+        dataset == PulsEvalName.Cook ? new CookEval().Graders : new RoutingEval().Graders;
 
     [TestCase(PulsEvalName.Cook, 6)]
     [TestCase(PulsEvalName.Routing, 3)]
@@ -30,10 +31,12 @@ public class PulsDatasetsTests
 
     [Test]
     public void TheRoutingScenariosAreTwelveQuestions() =>
-        Assert.That(Load(PulsEvalName.Routing).Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id), Is.EquivalentTo(new[]
-        {
-            PulsTaskIds.Web, PulsTaskIds.Files, PulsTaskIds.Git, PulsTaskIds.Numbers, PulsTaskIds.Chat, PulsTaskIds.Cook, "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
-        }));
+        Assert.That(Load(PulsEvalName.Routing).Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id),
+            Is.EquivalentTo(new[]
+            {
+                PulsTaskIds.Web, PulsTaskIds.Files, PulsTaskIds.Git, PulsTaskIds.Numbers, PulsTaskIds.Chat,
+                PulsTaskIds.Cook, "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
+            }));
 
     [Test]
     public void TheCheckAsksInMalmesburyAndInATownWithNoBranch()
@@ -60,7 +63,9 @@ public class PulsDatasetsTests
             ["control-web"] = ["language:af", "control"],
         };
 
-        Assert.That(Load(PulsEvalName.Cook).Scenarios.Where(s => s.Split == DatasetSplit.Dev).ToDictionary(s => s.Id, s => s.Categories.ToArray()), Is.EqualTo(expected));
+        Assert.That(
+            Load(PulsEvalName.Cook).Scenarios.Where(s => s.Split == DatasetSplit.Dev)
+                .ToDictionary(s => s.Id, s => s.Categories.ToArray()), Is.EqualTo(expected));
     }
 
     [Test]
@@ -70,24 +75,32 @@ public class PulsDatasetsTests
         var expected = new Dictionary<string, string>
         {
             ["control-web"] = """{"routes_to":null}""",
-            [PulsCookScenarioIds.CookAf] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp","recipe_image":true}""",
-            [PulsCookScenarioIds.CookEn] = """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp","recipe_image":true}""",
-            ["cook-malmesbury"] = """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp","recipe_image":true}""",
-            ["cook-no-branch"] = """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"no-branch","recipe_image":true}""",
-            ["cook-recipe-only"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"any","recipe_image":true}""",
+            [PulsCookScenarioIds.CookAf] =
+                """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp","recipe_image":true}""",
+            [PulsCookScenarioIds.CookEn] =
+                """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp","recipe_image":true}""",
+            ["cook-malmesbury"] =
+                """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp","recipe_image":true}""",
+            ["cook-no-branch"] =
+                """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"no-branch","recipe_image":true}""",
+            ["cook-recipe-only"] =
+                """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"any","recipe_image":true}""",
             ["cook-asks-first"] = """{"routes_to":null}""",
-            ["cook-shops"] = """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"pnp","recipe_image":true}""",
+            ["cook-shops"] =
+                """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"pnp","recipe_image":true}""",
         };
 
         var dev = Load(PulsEvalName.Cook).Scenarios.Where(s => s.Split == DatasetSplit.Dev);
-        Assert.That(dev.ToDictionary(s => s.Id, s => Normal(s.Expected)), Is.EqualTo(expected.ToDictionary(e => e.Key, e => Normal(JsonDocument.Parse(e.Value).RootElement))));
+        Assert.That(dev.ToDictionary(s => s.Id, s => Normal(s.Expected)),
+            Is.EqualTo(expected.ToDictionary(e => e.Key, e => Normal(JsonDocument.Parse(e.Value).RootElement))));
     }
 
     [Test]
     public void TheHeldOutCookScenariosAreASecondTownAnEnglishBudgetAndAFollowUp()
     {
         // F18 step 5.4: new, never used while tuning a prompt; each states its requirements like the dev ones.
-        var held = Load(PulsEvalName.Cook).Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).ToDictionary(s => s.Id);
+        var held = Load(PulsEvalName.Cook).Scenarios.Where(s => s.Split == DatasetSplit.HeldOut)
+            .ToDictionary(s => s.Id);
 
         Assert.That(held.Keys, Is.EquivalentTo(new[] { "cook-paarl", "cook-worcester-budget", "cook-follow-up" }));
         Assert.That(held["cook-paarl"].Input.Place, Does.StartWith("Paarl"));
@@ -96,7 +109,9 @@ public class PulsDatasetsTests
         Assert.That(held["cook-follow-up"].Input.Messages, Has.Count.EqualTo(2));
         Assert.That(CookExpectations.ServesOf(held["cook-follow-up"]), Is.EqualTo(new[] { 4, 6 }));
         Assert.That(held["cook-follow-up"].Categories, Is.EqualTo(new[] { "language:af", "follow-up" }));
-        Assert.That(held.Values.Select(s => CookExpectations.TownOf(s)), Is.EqualTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }).Or.EquivalentTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }));
+        Assert.That(held.Values.Select(s => CookExpectations.TownOf(s)),
+            Is.EqualTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }).Or
+                .EquivalentTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }));
         Assert.That(held.Values.Select(s => CookExpectations.ShopOf(s)), Is.All.EqualTo(ShopExpectation.Pnp));
     }
 
@@ -105,8 +120,10 @@ public class PulsDatasetsTests
     {
         var held = Load(PulsEvalName.Routing).Scenarios.Where(s => s.Split == DatasetSplit.HeldOut).ToList();
 
-        Assert.That(held.Select(s => s.Id), Is.EquivalentTo(new[] { "web-3", "files-3", "git-3", "numbers-3", "chat-3", "cook-3" }));
-        Assert.That(held.Select(s => ExpectedRoute.Of(s)), Is.EquivalentTo(new string?[] { null, null, null, null, null, PulsEvalRole.Cook.Wire() }));
+        Assert.That(held.Select(s => s.Id),
+            Is.EquivalentTo(new[] { "web-3", "files-3", "git-3", "numbers-3", "chat-3", "cook-3" }));
+        Assert.That(held.Select(s => ExpectedRoute.Of(s)),
+            Is.EquivalentTo(new string?[] { null, null, null, null, null, PulsEvalRole.Cook.Wire() }));
     }
 
     [Test]
@@ -119,14 +136,17 @@ public class PulsDatasetsTests
             {
                 string first = scenario.Input.Messages[0];
                 Assert.That(Servings.Of(first), Is.Not.Empty, $"{scenario.Id}: the people");
-                Assert.That(first, Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"), $"{scenario.Id}: the shop");
+                Assert.That(first, Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"),
+                    $"{scenario.Id}: the shop");
                 if (name == PulsEvalName.Cook)
                 {
                     var expected = CookExpectations.Of(scenario);
-                    Assert.That(Servings.Of(first), Does.Contain(expected.Serves[0]), $"{scenario.Id}: the first turn's people");
+                    Assert.That(Servings.Of(first), Does.Contain(expected.Serves[0]),
+                        $"{scenario.Id}: the first turn's people");
                     Assert.That(first + scenario.Input.Place, Does.Contain(expected.Town), $"{scenario.Id}: the town");
                     if (expected.Budget is { } budget)
-                        Assert.That(first, Does.Contain("R" + budget.ToString("0")), $"{scenario.Id}: the budget the grader checks is the one the question names");
+                        Assert.That(first, Does.Contain("R" + budget.ToString("0")),
+                            $"{scenario.Id}: the budget the grader checks is the one the question names");
                 }
             }
     }
@@ -148,7 +168,9 @@ public class PulsDatasetsTests
         {
             var scenarios = Load(name).Scenarios;
             var dev = scenarios.Where(s => s.Split == DatasetSplit.Dev).SelectMany(s => s.Input.Messages).ToHashSet();
-            Assert.That(scenarios.Where(s => s.Split == DatasetSplit.HeldOut).SelectMany(s => s.Input.Messages).Where(dev.Contains), Is.Empty, name.Wire());
+            Assert.That(
+                scenarios.Where(s => s.Split == DatasetSplit.HeldOut).SelectMany(s => s.Input.Messages)
+                    .Where(dev.Contains), Is.Empty, name.Wire());
         }
     }
 
@@ -156,7 +178,8 @@ public class PulsDatasetsTests
     public void TheRoutingQuestionsExpectTheCookForAMealAndNobodyOtherwise()
     {
         foreach (EvalScenario scenario in Load(PulsEvalName.Routing).Scenarios)
-            Assert.That(ExpectedRoute.Of(scenario), scenario.Id.StartsWith("cook") ? Is.EqualTo(PulsEvalRole.Cook.Wire()) : Is.Null, scenario.Id);
+            Assert.That(ExpectedRoute.Of(scenario),
+                scenario.Id.StartsWith("cook") ? Is.EqualTo(PulsEvalRole.Cook.Wire()) : Is.Null, scenario.Id);
     }
 
     private static string Normal(JsonElement element) => JsonSerializer.Serialize(element);
@@ -169,5 +192,6 @@ public class PulsDatasetsTests
     }
 
     internal static Dataset Load(PulsEvalName name) =>
-        DatasetLoader.Load(EvalFiles.DatasetOf(name == PulsEvalName.Cook ? typeof(CookEval) : typeof(RoutingEval)), GradersOf(name));
+        DatasetLoader.Load(EvalFiles.DatasetOf(name == PulsEvalName.Cook ? typeof(CookEval) : typeof(RoutingEval)),
+            GradersOf(name));
 }

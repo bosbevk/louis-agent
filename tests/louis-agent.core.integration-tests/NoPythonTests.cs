@@ -13,14 +13,25 @@ public class NoPythonTests
     {
         var tracked = TrackedFiles();
 
-        var python = tracked.Where(f => f.EndsWith(".py", StringComparison.OrdinalIgnoreCase) && !f.StartsWith("Skills/", StringComparison.Ordinal)).Order(StringComparer.Ordinal).ToList();
+        var python = tracked
+            .Where(f => f.EndsWith(".py", StringComparison.OrdinalIgnoreCase) &&
+                        !f.StartsWith("Skills/", StringComparison.Ordinal)).Order(StringComparer.Ordinal).ToList();
 
-        Assert.That(python, Is.Empty, "The repo is C#: a skill's Python lives under Skills/ and nothing else is tracked (F18 step 7):\n  " + string.Join("\n  ", python));
+        Assert.That(python, Is.Empty,
+            "The repo is C#: a skill's Python lives under Skills/ and nothing else is tracked (F18 step 7):\n  " +
+            string.Join("\n  ", python));
     }
 
     private static List<string> TrackedFiles()
     {
-        var start = new ProcessStartInfo("git") { WorkingDirectory = TestPaths.RepoRoot, UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true, CreateNoWindow = true };
+        var start = new ProcessStartInfo("git")
+        {
+            WorkingDirectory = TestPaths.RepoRoot,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            CreateNoWindow = true
+        };
         start.ArgumentList.Add("ls-files");
         start.ArgumentList.Add("-z");
         try
@@ -29,7 +40,9 @@ public class NoPythonTests
             var output = process.StandardOutput.ReadToEndAsync();
             var errors = process.StandardError.ReadToEndAsync();
             process.WaitForExit();
-            if (process.ExitCode != 0) Assert.Fail($"git ls-files failed (exit {process.ExitCode}), so no file could be checked: {errors.Result.Trim()}");
+            if (process.ExitCode != 0)
+                Assert.Fail(
+                    $"git ls-files failed (exit {process.ExitCode}), so no file could be checked: {errors.Result.Trim()}");
             return [.. output.Result.Split('\0', StringSplitOptions.RemoveEmptyEntries)];
         }
         catch (System.ComponentModel.Win32Exception ex)

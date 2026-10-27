@@ -55,21 +55,26 @@ public class RenderPolicyTests
         // tracker domain on a shop's page); it never returns []. Escaping the browser's async void request handler, the
         // exception would end the process, every open chat with it.
         static Task<IPAddress[]> NoSuchHost(string host, CancellationToken _) =>
-            Task.FromException<IPAddress[]>(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.HostNotFound));
+            Task.FromException<IPAddress[]>(
+                new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.HostNotFound));
 
-        Assert.That(await RenderPolicy.DecideAsync(new Uri("https://dead-tracker.example/pixel.js"), ResourceType.Script, NoSuchHost),
+        Assert.That(
+            await RenderPolicy.DecideAsync(new Uri("https://dead-tracker.example/pixel.js"), ResourceType.Script,
+                NoSuchHost),
             Is.EqualTo(RenderVerdict.Refuse));
     }
 
     [Test]
     public async Task AResolverThatThrowsAnything_IsARefusal() =>
         Assert.That(await RenderPolicy.DecideAsync(new Uri("https://www.pnp.co.za/"), ResourceType.Document,
-            (_, _) => Task.FromException<IPAddress[]>(new InvalidOperationException("resolver broke"))), Is.EqualTo(RenderVerdict.Refuse));
+                (_, _) => Task.FromException<IPAddress[]>(new InvalidOperationException("resolver broke"))),
+            Is.EqualTo(RenderVerdict.Refuse));
 
     [TestCase("file:///etc/passwd")]
     [TestCase("ftp://www.pnp.co.za/prices.csv")]
     [TestCase("chrome://settings/")]
     [TestCase("https://nowhere.example/")]
     public async Task AnotherScheme_OrAHostThatDoesntResolve_IsRefused(string url) =>
-        Assert.That(await RenderPolicy.DecideAsync(new Uri(url), ResourceType.Document, Resolve), Is.EqualTo(RenderVerdict.Refuse));
+        Assert.That(await RenderPolicy.DecideAsync(new Uri(url), ResourceType.Document, Resolve),
+            Is.EqualTo(RenderVerdict.Refuse));
 }

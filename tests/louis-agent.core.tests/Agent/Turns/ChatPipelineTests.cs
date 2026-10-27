@@ -25,26 +25,32 @@ public class ChatPipelineTests
     ];
 
     private static AgentEngine Engine(IChatClient client, IUsageSink sink) =>
-        new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
+        new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client,
+            TestPaths.Agent(),
             toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: sink);
 
     private static ChatResponse Read(string relative, string callId) =>
         new(new ChatMessage(ChatRole.Assistant,
         [
-            new FunctionCallContent(callId, "ReadWorkspaceFile", new Dictionary<string, object?> { ["relativePath"] = relative })
+            new FunctionCallContent(callId, "ReadWorkspaceFile",
+                new Dictionary<string, object?> { ["relativePath"] = relative })
         ]));
 
     private static ChatResponse Say(string text) => new(new ChatMessage(ChatRole.Assistant, text));
 
     /// <summary>Runs a turn under a root span and returns the spans of that trace only, so parallel tests don't mix.</summary>
-    private static async Task<(Activity Root, List<Activity> Spans)> Trace(AgentEngine engine, string prompt, bool streamed)
+    private static async Task<(Activity Root, List<Activity> Spans)> Trace(AgentEngine engine, string prompt,
+        bool streamed)
     {
         var spans = new List<Activity>();
         using var listener = new ActivityListener
         {
             ShouldListenTo = _ => true,
             Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
-            ActivityStopped = a => { lock (spans) spans.Add(a); },
+            ActivityStopped = a =>
+            {
+                lock (spans) spans.Add(a);
+            },
         };
         ActivitySource.AddActivityListener(listener);
 
@@ -52,7 +58,9 @@ public class ChatPipelineTests
         using (UsageScope.Begin())
         {
             if (streamed)
-                await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), prompt)) { }
+                await foreach (var _ in engine.StreamPromptAsync(engine.NewHistory(), prompt))
+                {
+                }
             else
                 await engine.ProcessPromptAsync(engine.NewHistory(), prompt);
         }
@@ -81,7 +89,7 @@ public class ChatPipelineTests
             var client = new FakeChatClient(
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant,
                 [
-                    ..Read(relative, "call_1").Messages[0].Contents, ..Read(relative, "call_2").Messages[0].Contents,
+                    .. Read(relative, "call_1").Messages[0].Contents, .. Read(relative, "call_2").Messages[0].Contents,
                 ])),
                 _ => Say("Read it twice."));
 
@@ -92,9 +100,12 @@ public class ChatPipelineTests
             var loop = spans.Single(a => a.OperationName == "orchestrate_tools");
             Assert.That(chats, Has.Count.EqualTo(2));
             Assert.That(chats.Select(a => a.Kind), Is.All.EqualTo(ActivityKind.Client));
-            Assert.That(tools.Select(a => (string?)a.GetTagItem("gen_ai.tool.name")), Is.All.EqualTo("ReadWorkspaceFile"));
-            Assert.That(tools.Select(a => (string?)a.GetTagItem("gen_ai.tool.call.id")), Is.EquivalentTo(new[] { "call_1", "call_2" }));
-            Assert.That(chats.Concat(tools).Select(a => a.ParentId), Is.All.EqualTo(loop.Id), "the loop's span holds every request and call");
+            Assert.That(tools.Select(a => (string?)a.GetTagItem("gen_ai.tool.name")),
+                Is.All.EqualTo("ReadWorkspaceFile"));
+            Assert.That(tools.Select(a => (string?)a.GetTagItem("gen_ai.tool.call.id")),
+                Is.EquivalentTo(new[] { "call_1", "call_2" }));
+            Assert.That(chats.Concat(tools).Select(a => a.ParentId), Is.All.EqualTo(loop.Id),
+                "the loop's span holds every request and call");
             Assert.That(loop.ParentId, Is.EqualTo(root.Id));
         }
         finally
@@ -110,15 +121,18 @@ public class ChatPipelineTests
         try
         {
             var sink = new ListUsageSink();
-            var client = new FakeChatClient(_ => Read(relative, "call_1"), _ => Say("a file full of x"), _ => Say("It's all x."));
+            var client = new FakeChatClient(_ => Read(relative, "call_1"), _ => Say("a file full of x"),
+                _ => Say("It's all x."));
 
             var (_, spans) = await Trace(Engine(client, sink), "what is in the file?", streamed: false);
 
             var chats = WithOperation(spans, "chat");
             var tool = WithOperation(spans, "execute_tool").Single();
             Assert.That(chats, Has.Count.EqualTo(3));
-            Assert.That(chats.Count(a => a.ParentId == tool.Id), Is.EqualTo(1), "the summary's span sits under the call it summarises");
-            Assert.That(chats, Has.Count.EqualTo(sink.Records.Count), "the traces and the ledger count the same requests");
+            Assert.That(chats.Count(a => a.ParentId == tool.Id), Is.EqualTo(1),
+                "the summary's span sits under the call it summarises");
+            Assert.That(chats, Has.Count.EqualTo(sink.Records.Count),
+                "the traces and the ledger count the same requests");
         }
         finally
         {
@@ -133,16 +147,20 @@ public class ChatPipelineTests
             "the capture variable is on for this process (TelemetryCapture)");
 
         string[] markers = ["MARKER-USER-WORDS", "MARKER-FILE-NAME", "MARKER-FILE-CONTENT", "MARKER-REPLY"];
-        string path = Written("MARKER-FILE-CONTENT" + new string('x', ToolCallGuards.MaxToolResultChars + 1), out string relative, "MARKER-FILE-NAME");
+        string path = Written("MARKER-FILE-CONTENT" + new string('x', ToolCallGuards.MaxToolResultChars + 1),
+            out string relative, "MARKER-FILE-NAME");
         try
         {
-            var client = new FakeChatClient(_ => Read(relative, "call_1"), _ => Say("a summary"), _ => Say("MARKER-REPLY"));
+            var client = new FakeChatClient(_ => Read(relative, "call_1"), _ => Say("a summary"),
+                _ => Say("MARKER-REPLY"));
 
-            var (_, spans) = await Trace(Engine(client, new ListUsageSink()), "MARKER-USER-WORDS: what is in the file?", streamed: false);
+            var (_, spans) = await Trace(Engine(client, new ListUsageSink()), "MARKER-USER-WORDS: what is in the file?",
+                streamed: false);
 
             Assert.That(WithOperation(spans, "chat"), Is.Not.Empty);
             Assert.That(WithOperation(spans, "execute_tool"), Is.Not.Empty);
-            Assert.That(spans.SelectMany(a => a.TagObjects).Select(t => t.Key), Does.Not.Contain(ContentTags[0]).And.Not.Contain(ContentTags[1])
+            Assert.That(spans.SelectMany(a => a.TagObjects).Select(t => t.Key), Does.Not.Contain(ContentTags[0]).And.Not
+                .Contain(ContentTags[1])
                 .And.Not.Contain(ContentTags[2]).And.Not.Contain(ContentTags[3]).And.Not.Contain(ContentTags[4]));
             var values = spans.SelectMany(a => a.TagObjects.Select(t => t.Value)
                 .Concat(a.Events.SelectMany(e => e.Tags.Select(t => t.Value)))).Select(v => v?.ToString() ?? "");

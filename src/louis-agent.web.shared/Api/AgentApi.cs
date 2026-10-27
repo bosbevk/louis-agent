@@ -6,12 +6,11 @@ using System.Text.Json;
 using LouisAgent.SessionStream;
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
-namespace LouisAgent.Web.Shared.Api;
-
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Usage;
 using LouisAgent.Web.Shared.Storage;
 
+namespace LouisAgent.Web.Shared.Api;
 /// <summary>Client for louis-agent.api, which serves the web app from the same origin.</summary>
 public sealed class AgentApi(HttpClient http, ChatSettings settings)
 {
@@ -111,12 +110,14 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     /// <summary>A POST returning JSON, for an app's own endpoints (the admin portal's runs, F27).</summary>
     public async Task<JsonElement> PostAsync(string url, object body)
     {
-        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, url) { Content = JsonContent.Create(body) });
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, url)
+        { Content = JsonContent.Create(body) });
         return await response.Content.ReadFromJsonAsync<JsonElement>();
     }
 
     /// <summary>A GET of server-sent events whose data is plain text (the admin portal's run lines, F27): each event's type and data.</summary>
-    public async IAsyncEnumerable<(string Type, string Data)> StreamLinesAsync(string url, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public async IAsyncEnumerable<(string Type, string Data)> StreamLinesAsync(string url,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.SetBrowserResponseStreamingEnabled(true);
@@ -133,7 +134,8 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         CancellationToken cancellationToken = default)
     {
         // The admin portal's requests carry its own key, the chat's carry the chat's (F31).
-        if (settings.KeyFor(request.RequestUri) is { } key && !string.IsNullOrWhiteSpace(key)) request.Headers.Add("x-api-key", key);
+        if (settings.KeyFor(request.RequestUri) is { } key && !string.IsNullOrWhiteSpace(key))
+            request.Headers.Add("x-api-key", key);
         var response = await http.SendAsync(request, completion, cancellationToken);
         if (response.IsSuccessStatusCode) return response;
 

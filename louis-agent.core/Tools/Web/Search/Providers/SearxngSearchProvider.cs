@@ -1,5 +1,4 @@
 using LouisAgent.Choices;
-namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
@@ -11,6 +10,7 @@ using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Messages;
 
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 /// <summary>
 /// SearXNG as the search engine (F32 step 1): the metasearch we run ourselves in a compose stack, for development,
 /// tests and benchmarks; the sold endpoint keeps a licensed API, since the engines SearXNG asks don't license their
@@ -28,7 +28,8 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
 
     public string Name => "SearXNG";
 
-    public async Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
+        CancellationToken cancellationToken = default)
     {
         var uri = RequestUri(baseUrl, query);
         using var response = await _http.GetAsync(uri, cancellationToken);
@@ -37,11 +38,13 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
         if (response.StatusCode == HttpStatusCode.Forbidden)
             throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngJsonOff, new { Url = baseUrl }));
         if (!response.IsSuccessStatusCode)
-            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngFailed, new { Status = (int)response.StatusCode, Detail = response.ReasonPhrase ?? "" }));
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngFailed,
+                new { Status = (int)response.StatusCode, Detail = response.ReasonPhrase ?? "" }));
 
         var answer = Parse(json, query.MaxResults);
         if (answer.SilentEngines.Count > 0)
-            Log.Log(LogLevel.Warning, WebLogMessage.SearxngEnginesSilent, new { Engines = string.Join("; ", answer.SilentEngines) });
+            Log.Log(LogLevel.Warning, WebLogMessage.SearxngEnginesSilent,
+                new { Engines = string.Join("; ", answer.SilentEngines) });
         return answer.Results;
     }
 
@@ -73,15 +76,18 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
             : [];
 
         // Each silent engine is [name, reason].
-        var silent = root.TryGetProperty("unresponsive_engines", out var engines) && engines.ValueKind == JsonValueKind.Array
+        var silent = root.TryGetProperty("unresponsive_engines", out var engines) &&
+                     engines.ValueKind == JsonValueKind.Array
             ? engines.EnumerateArray()
                 .Where(e => e.ValueKind == JsonValueKind.Array && e.GetArrayLength() > 0)
-                .Select(e => e.GetArrayLength() > 1 ? $"{e[0].GetString()}: {e[1].GetString()}" : e[0].GetString() ?? "?")
+                .Select(e =>
+                    e.GetArrayLength() > 1 ? $"{e[0].GetString()}: {e[1].GetString()}" : e[0].GetString() ?? "?")
                 .ToList()
             : [];
 
         if (results.Count == 0 && silent.Count > 0)
-            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngNoEngineAnswered, new { Reasons = string.Join("; ", silent) }));
+            throw new WebSearchException(MessageText.Format(WebToolMessage.SearxngNoEngineAnswered,
+                new { Reasons = string.Join("; ", silent) }));
         return new SearxngAnswer(results, silent);
     }
 }

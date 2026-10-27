@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Skills;
 
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
@@ -6,6 +5,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Messages;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Skills;
 /// <summary>
 /// Where skill files come from (S, CL15, from AgentHost): a built-in one from the assembly only, the agent's own
 /// function files from the skills folder.
@@ -31,8 +31,9 @@ public static class SkillFolder
     /// <summary>Every function skill file the agent wrote, by name.</summary>
     internal static IEnumerable<string> Discover(AgentOptions agent) =>
         Find(agent) is { } dir
-            && Directory.Exists(Path.Combine(dir, SkillFiles.FunctionsFolder))
-            ? Directory.EnumerateFiles(Path.Combine(dir, SkillFiles.FunctionsFolder), "*.md").Order(StringComparer.OrdinalIgnoreCase)
+        && Directory.Exists(Path.Combine(dir, SkillFiles.FunctionsFolder))
+            ? Directory.EnumerateFiles(Path.Combine(dir, SkillFiles.FunctionsFolder), "*.md")
+                .Order(StringComparer.OrdinalIgnoreCase)
             : [];
 
     /// <summary>
@@ -42,12 +43,16 @@ public static class SkillFolder
     /// </summary>
     internal static (string Text, bool FromDisk)? Read(AgentOptions agent, string fileName)
     {
-        string? onDisk = Find(agent) is { } dir ? Path.Combine(dir, fileName.Replace('/', Path.DirectorySeparatorChar)) : null;
+        string? onDisk = Find(agent) is { } dir
+            ? Path.Combine(dir, fileName.Replace('/', Path.DirectorySeparatorChar))
+            : null;
         if (SkillFileSource.ReadEmbedded(fileName) is { } builtIn)
         {
-            if (onDisk is not null && File.Exists(onDisk)) Log.Log(LogLevel.Warning, SkillLogMessage.BuiltInCopyIgnored, new { File = onDisk });
+            if (onDisk is not null && File.Exists(onDisk))
+                Log.Log(LogLevel.Warning, SkillLogMessage.BuiltInCopyIgnored, new { File = onDisk });
             return (builtIn, false);
         }
+
         // Only the agent's own files are read from disk: a role or a guide is built in, or it isn't one.
         bool agentWritten = fileName.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal);
         return agentWritten && onDisk is not null && File.Exists(onDisk) ? (File.ReadAllText(onDisk), true) : null;

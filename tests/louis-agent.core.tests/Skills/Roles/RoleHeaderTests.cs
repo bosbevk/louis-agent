@@ -27,7 +27,8 @@ public class RoleHeaderTests
 
     [Test]
     public void AHeaderWithWindowsLineEndings_IsReadTheSame() =>
-        Assert.That(RoleHeader.Split("---\r\ntoolsets: shops?\r\n---\r\n# Cook\r\n"), Is.EqualTo((new[] { "shops?" }, "# Cook\r\n")).Using(new HeaderComparer()));
+        Assert.That(RoleHeader.Split("---\r\ntoolsets: shops?\r\n---\r\n# Cook\r\n"),
+            Is.EqualTo((new[] { "shops?" }, "# Cook\r\n")).Using(new HeaderComparer()));
 
     [TestCase("# Puls specialist: Local cook\n\nYou are …")]
     [TestCase("")]
@@ -68,7 +69,9 @@ public class RoleHeaderTests
 
     private sealed class HeaderComparer : IEqualityComparer<(IReadOnlyList<string>, string)>
     {
-        public bool Equals((IReadOnlyList<string>, string) x, (IReadOnlyList<string>, string) y) => x.Item1.SequenceEqual(y.Item1) && x.Item2 == y.Item2;
+        public bool Equals((IReadOnlyList<string>, string) x, (IReadOnlyList<string>, string) y) =>
+            x.Item1.SequenceEqual(y.Item1) && x.Item2 == y.Item2;
+
         public int GetHashCode((IReadOnlyList<string>, string) obj) => obj.Item2.GetHashCode();
     }
 }

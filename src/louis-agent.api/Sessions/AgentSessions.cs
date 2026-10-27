@@ -57,7 +57,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// one of <see cref="MinionTools.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the
     /// tool. Every other depth refuses a tool, and only depth 1 loads <see cref="MinionsToolset"/>.
     /// </summary>
-    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? role = null,
+    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
+        string? role = null,
         UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude,
         SessionReplay? replay = null)
     {
@@ -66,19 +67,26 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         if (depth == MinionDepth) CheckMinion(tags, tool);
         else if (tool is not null)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions, new { MinionDepth, Depth = depth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions,
+                new { MinionDepth, Depth = depth }));
         // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
-        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null ? [engines.Catalog.ToolsetOf(tool!)
-                ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool, new { Tool = tool }))]
+        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null
+            ?
+            [
+                engines.Catalog.ToolsetOf(tool!)
+                ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool, new { Tool = tool }))
+            ]
             : toolsets ?? DefaultToolsets);
         // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
         // passed; then every name, optional or not, is held to the same rules.
         names = ToolsetCatalog.Normalise(names.Concat(RoleCatalog.ToolsetsOf(role, (RoleLevel)depth)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (depth > 0 && plain.Contains(SpecialistsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
+                new { Toolset = SpecialistsToolset }));
         if (depth == MinionDepth && plain.Contains(MinionsToolset))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate, new { Toolset = MinionsToolset }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
+                new { Toolset = MinionsToolset }));
         if (depth == 0 && plain.Contains(MinionsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionsOnlyForSpecialists));
         if (string.IsNullOrEmpty(role)) role = null;
@@ -90,7 +98,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
         DropIdle(DateTimeOffset.UtcNow);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role, place, llm, tool, format, replay);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role,
+            place, llm, tool, format, replay);
         _sessions[session.Id] = session;
         return session;
     }
@@ -104,12 +113,15 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     private void CheckMinion(UsageTags? tags, string? tool)
     {
         if (tool is null)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsTool, new { Depth = MinionDepth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsTool,
+                new { Depth = MinionDepth }));
         if (string.IsNullOrWhiteSpace(tags?.Parent))
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsParent, new { Example = "sess_…#3" }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsParent,
+                new { Example = "sess_…#3" }));
         string parentId = tags.Parent.Split('#')[0];
         if (Get(parentId) is not { } parent)
-            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionParentUnknown, new { Session = parentId }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionParentUnknown,
+                new { Session = parentId }));
         if (MinionTools.NeverHandedDown.Contains(tool))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
@@ -135,6 +147,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
             Forget(session);
             dropped++;
         }
+
         return dropped;
     }
 

@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Logging.Messages;
 
 using System.ComponentModel;
 
+namespace LouisAgent.Core.Logging.Messages;
 // The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
 // [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger).
 

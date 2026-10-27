@@ -12,7 +12,8 @@ public class ReviewTextTests
     public void TheQuestion_IsTheGradersOwn_OrAFallbackNamingTheJudge()
     {
         Assert.That(ReviewText.Question("Is this a meal?", "meal-for-people"), Is.EqualTo("Is this a meal?"));
-        Assert.That(ReviewText.Question(null, "meal-for-people"), Is.EqualTo("Is this answer good enough for meal-for-people?"));
+        Assert.That(ReviewText.Question(null, "meal-for-people"),
+            Is.EqualTo("Is this answer good enough for meal-for-people?"));
     }
 
     [TestCase("pass", GradeOutcome.Pass, "You agreed with the judge.")]
@@ -34,7 +35,8 @@ public class ReviewTextTests
     [TestCase(GradeOutcome.Fail, "The judge said fail.")]
     [TestCase(GradeOutcome.Unknown, "The judge could not tell.")]
     [TestCase(null, "The judge could not tell.")]
-    public void TheJudgesWords(GradeOutcome? outcome, string expected) => Assert.That(ReviewText.Judge(outcome), Is.EqualTo(expected));
+    public void TheJudgesWords(GradeOutcome? outcome, string expected) =>
+        Assert.That(ReviewText.Judge(outcome), Is.EqualTo(expected));
 
     [Test]
     public void TheHover_GivesTheCountsBehindABar()

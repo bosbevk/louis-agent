@@ -9,7 +9,10 @@ using Microsoft.Extensions.AI;
 namespace LouisAgent.Api.Sessions.Streaming.Claude;
 
 /// <summary>Turns streamed agent updates into Claude-style SSE events with JSON data: the API's first stream format (F18 step 1f).</summary>
-internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>? toolsets = null, string? sessionRole = null) : ITurnStreamFormat
+internal sealed class ClaudeStreamFormat(
+    string sessionId,
+    IReadOnlyList<string>? toolsets = null,
+    string? sessionRole = null) : ITurnStreamFormat
 {
     // Relaxed escaping keeps quotes and backticks readable instead of '-style escapes; the data is JSON, never embedded in HTML.
     private static readonly JsonSerializerOptions Json = new()
@@ -32,7 +35,11 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
         using var data = JsonDocument.Parse(sub.Data);
         return Event("sub_session", new
         {
-            type = "sub_session", tool_use_id = sub.ToolUseId, agent = sub.Agent, @event = sub.Type, data = data.RootElement.Clone(),
+            type = "sub_session",
+            tool_use_id = sub.ToolUseId,
+            agent = sub.Agent,
+            @event = sub.Type,
+            data = data.RootElement.Clone(),
         });
     }
 
@@ -41,13 +48,31 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
     /// (FX17: a follow-up's card names the specialist while it works); <c>session_role</c>, since <c>role</c> is Claude's speaker.
     /// </summary>
     public SseItem<string> Start() =>
-        Event("message_start", new { type = "message_start", message = new { session_id = sessionId, role = "assistant", toolsets = toolsets ?? [], session_role = sessionRole } });
+        Event("message_start",
+            new
+            {
+                type = "message_start",
+                message = new
+                {
+                    session_id = sessionId,
+                    role = "assistant",
+                    toolsets = toolsets ?? [],
+                    session_role = sessionRole
+                }
+            });
 
     public IEnumerable<SseItem<string>> Content(AIContent content) => content switch
     {
-        TextReasoningContent { Text.Length: > 0 } thinking => Delta("thinking", new { type = "thinking_delta", thinking = thinking.Text }),
+        TextReasoningContent { Text.Length: > 0 } thinking => Delta("thinking",
+            new { type = "thinking_delta", thinking = thinking.Text }),
         TextContent { Text.Length: > 0 } text => Text(text.Text),
-        FunctionCallContent call => Block(new { type = "tool_use", id = call.CallId, name = call.Name, input = call.Arguments ?? new Dictionary<string, object?>() }),
+        FunctionCallContent call => Block(new
+        {
+            type = "tool_use",
+            id = call.CallId,
+            name = call.Name,
+            input = call.Arguments ?? new Dictionary<string, object?>()
+        }),
         FunctionResultContent result => Block(new
         {
             type = "tool_result",
@@ -99,7 +124,8 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
         DisplayCurrency? display = usage.Display;
         // F14: the cost in the display currency too, beside what was charged; the same as the charged cost when not
         // converting, so a client can always show display_* and never needs the rates itself.
-        bool converts = display is { Converts: true } && string.Equals(currency, display.Base, StringComparison.OrdinalIgnoreCase);
+        bool converts = display is { Converts: true } &&
+                        string.Equals(currency, display.Base, StringComparison.OrdinalIgnoreCase);
         return new
         {
             input_tokens = total.Input,
@@ -110,7 +136,9 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
             cost = total.Cost,
             currency,
             unpriced = total.Unpriced,
-            display_cost = converts ? Math.Round(total.Cost!.Value * display!.Rate, 6, MidpointRounding.AwayFromZero) : total.Cost,
+            display_cost = converts
+                ? Math.Round(total.Cost!.Value * display!.Rate, 6, MidpointRounding.AwayFromZero)
+                : total.Cost,
             display_currency = converts ? display!.Code : currency,
             display_symbol = converts ? display!.Symbol : currency is null ? null : DisplayCurrency.SymbolFor(currency),
             rate_as_of = converts ? display!.RateAsOf : null,
@@ -131,8 +159,11 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
         {
             foreach (var item in CloseBlock()) yield return item;
             _openBlock = blockType;
-            object block = blockType == "thinking" ? new { type = "thinking", thinking = "" } : new { type = "text", text = "" };
-            yield return Event("content_block_start", new { type = "content_block_start", index = ++_index, content_block = block });
+            object block = blockType == "thinking"
+                ? new { type = "thinking", thinking = "" }
+                : new { type = "text", text = "" };
+            yield return Event("content_block_start",
+                new { type = "content_block_start", index = ++_index, content_block = block });
         }
 
         yield return Event("content_block_delta", new { type = "content_block_delta", index = _index, delta });
@@ -142,7 +173,8 @@ internal sealed class ClaudeStreamFormat(string sessionId, IReadOnlyList<string>
     private IEnumerable<SseItem<string>> Block(object block)
     {
         foreach (var item in CloseBlock()) yield return item;
-        yield return Event("content_block_start", new { type = "content_block_start", index = ++_index, content_block = block });
+        yield return Event("content_block_start",
+            new { type = "content_block_start", index = ++_index, content_block = block });
         yield return Event("content_block_stop", new { type = "content_block_stop", index = _index });
     }
 }

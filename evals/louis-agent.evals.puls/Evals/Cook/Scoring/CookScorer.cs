@@ -14,11 +14,13 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 public static class CookScorer
 {
     /// <summary>The shops' sites, sorted and without repeats (the Python's SHOPS).</summary>
-    private static readonly string[] SiteHosts = Shops.Hosts.Select(h => h.Host).Distinct().OrderBy(h => h, StringComparer.Ordinal).ToArray();
+    private static readonly string[] SiteHosts =
+        Shops.Hosts.Select(h => h.Host).Distinct().OrderBy(h => h, StringComparer.Ordinal).ToArray();
 
     /// <summary>One trial as the cook's scores: the grader's one helper, so every cook grader scores a trial the same way.</summary>
     public static CookScores ScoreTrial(Trial trial) =>
-        Score(CookExpectations.Of(trial.Scenario), trial.Transcript.Turns.Select(TurnView.From).ToList(), PulsModes.CanDelegate(trial.Mode));
+        Score(CookExpectations.Of(trial.Scenario), trial.Transcript.Turns.Select(TurnView.From).ToList(),
+            PulsModes.CanDelegate(trial.Mode));
 
     /// <summary>
     /// One conversation as the Python's keys. What it should have done is the scenario's <paramref name="expected"/> (F18 step 5.4): the route
@@ -30,7 +32,11 @@ public static class CookScorer
         var follow = turns.Count > 1 ? turns[1] : null;
 
         var price = Prices.Priced(first.Answer);
-        int? items = price?.Listed, priced = price?.Priced, guessed = price?.Guessed, perKg = price?.PerKg, estimated = price?.Estimated;
+        int? items = price?.Listed,
+            priced = price?.Priced,
+            guessed = price?.Guessed,
+            perKg = price?.PerKg,
+            estimated = price?.Estimated;
         int noShopRows = 0, wrongStore = 0;
         if (expected.Shop is ShopExpectation.Any or ShopExpectation.NoBranch && items is > 0)
         {
@@ -45,7 +51,8 @@ public static class CookScorer
 
         var allCalls = turns.SelectMany(t => t.Calls.Concat(t.SpecialistCalls)).ToList();
         var fetched = ToolHosts.Of(allCalls);
-        var sources = fetched.Where(h => !Shops.MapHosts.Any(map => h.EndsWith(map, StringComparison.Ordinal))).ToList();
+        var sources = fetched.Where(h => !Shops.MapHosts.Any(map => h.EndsWith(map, StringComparison.Ordinal)))
+            .ToList();
         var local = sources.Where(h => h.EndsWith(".za", StringComparison.Ordinal)).ToList();
         var shops = fetched.Where(h => SiteHosts.Any(site => h.EndsWith(site, StringComparison.Ordinal))).ToList();
         string? expectedRole = cookOn ? expected.RoutesTo : null;
@@ -83,7 +90,10 @@ public static class CookScorer
             NoShopRows: noShopRows,
             WrongStore: wrongStore,
             // Right rows over the list's: priced with their source, estimated (the cook's answer while the stores' prices are awaited, FX24), or rightly without a price where there's no shop.
-            PricedRatio: items is > 0 ? Math.Round((double)(priced!.Value + estimated!.Value + noShopRows) / items.Value, 2, MidpointRounding.ToEven) : null,
+            PricedRatio: items is > 0
+                ? Math.Round((double)(priced!.Value + estimated!.Value + noShopRows) / items.Value, 2,
+                    MidpointRounding.ToEven)
+                : null,
             RandAmounts: turns.Sum(t => Prices.RandAmounts(t.Answer)),
             UnconfirmedMarks: turns.Sum(t => Prices.UnconfirmedMarks(t.Answer)),
             Errors: turns.Count(t => t.Error is not null),

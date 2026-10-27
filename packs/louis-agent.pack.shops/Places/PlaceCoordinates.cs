@@ -1,4 +1,3 @@
-namespace LouisAgent.Packs.Shops.Places;
 
 using LouisAgent.Packs.Shops.Catalogues;
 using System.Globalization;
@@ -9,6 +8,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Packs.Shops.Messages;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Packs.Shops.Places;
 /// <summary>
 /// A town's centre (F34 step 1b), for a shop that serves by area: OpenStreetMap's Nominatim, as the cook already asks it
 /// for the town's shops. Only the town the user shared is sent, never their address; South Africa only; one result.
@@ -27,7 +27,8 @@ public static class PlaceCoordinates
     }
 
     internal static Uri Url(string place) =>
-        new("https://nominatim.openstreetmap.org/search?q=" + Uri.EscapeDataString(place.Trim()) + "&format=json&limit=1&countrycodes=za");
+        new("https://nominatim.openstreetmap.org/search?q=" + Uri.EscapeDataString(place.Trim()) +
+            "&format=json&limit=1&countrycodes=za");
 
     /// <summary>The first result's latitude and longitude; none when the answer has no result with both.</summary>
     internal static (double Latitude, double Longitude)? Parse(string json)
@@ -38,8 +39,10 @@ public static class PlaceCoordinates
             if (doc.RootElement.ValueKind != JsonValueKind.Array || doc.RootElement.GetArrayLength() == 0) return null;
             var first = doc.RootElement[0];
             return first.TryGetProperty("lat", out var lat) && first.TryGetProperty("lon", out var lon)
-                && double.TryParse(lat.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out double latitude)
-                && double.TryParse(lon.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out double longitude)
+                                                            && double.TryParse(lat.GetString(), NumberStyles.Float,
+                                                                CultureInfo.InvariantCulture, out double latitude)
+                                                            && double.TryParse(lon.GetString(), NumberStyles.Float,
+                                                                CultureInfo.InvariantCulture, out double longitude)
                 ? (latitude, longitude)
                 : null;
         }
@@ -54,10 +57,12 @@ public static class PlaceCoordinates
     /// 503, a timeout, a reply that isn't its JSON) is no answer about the town: <see cref="PlaceUnavailableException"/>,
     /// said in a log line, so a caller never keeps it as "no town" (review of PR #61).
     /// </summary>
-    public static Task<(double Latitude, double Longitude)?> OfAsync(string place, CancellationToken cancellationToken) =>
+    public static Task<(double Latitude, double Longitude)?>
+        OfAsync(string place, CancellationToken cancellationToken) =>
         OfAsync(place, Http, cancellationToken);
 
-    internal static async Task<(double Latitude, double Longitude)?> OfAsync(string place, HttpClient http, CancellationToken cancellationToken)
+    internal static async Task<(double Latitude, double Longitude)?> OfAsync(string place, HttpClient http,
+        CancellationToken cancellationToken)
     {
         string answer;
         try
@@ -65,11 +70,14 @@ public static class PlaceCoordinates
             answer = await http.GetStringAsync(Url(place), cancellationToken);
             using var _ = JsonDocument.Parse(answer);
         }
-        catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException && !cancellationToken.IsCancellationRequested)
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or TaskCanceledException &&
+                                   !cancellationToken.IsCancellationRequested)
         {
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable, new { Shop = "OpenStreetMap", Place = LogContent.Of(place), Reason = LogContent.Of(ex.Message) });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable,
+                new { Shop = "OpenStreetMap", Place = LogContent.Of(place), Reason = LogContent.Of(ex.Message) });
             throw new PlaceUnavailableException(ex.Message);
         }
+
         return Parse(answer);
     }
 }

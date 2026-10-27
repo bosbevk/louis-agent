@@ -10,13 +10,16 @@ public class RunEstimateTests
 {
     private static readonly DateTimeOffset At = new(2026, 10, 26, 8, 0, 0, TimeSpan.Zero);
 
-    private static RunSummary Run(string id, string check, int repeat, decimal? cost, int hoursAgo, string status = "done", string? rescoreOf = null) =>
-        new(id, check, repeat, status, At.AddHours(-hoursAgo), cost is null ? null : new TotalSummary(cost, 10), null, null, rescoreOf);
+    private static RunSummary Run(string id, string check, int repeat, decimal? cost, int hoursAgo,
+        string status = "done", string? rescoreOf = null) =>
+        new(id, check, repeat, status, At.AddHours(-hoursAgo), cost is null ? null : new TotalSummary(cost, 10), null,
+            null, rescoreOf);
 
     [Test]
     public void TheEstimate_IsTheLastMeasuredRunsCostPerRepeat_TimesTheRepeatsChosen()
     {
-        var runs = new[] { Run("new", SampleEval.Beta, 3, 0.24m, hoursAgo: 1), Run("old", SampleEval.Beta, 1, 0.10m, hoursAgo: 5) };
+        var runs = new[]
+            { Run("new", SampleEval.Beta, 3, 0.24m, hoursAgo: 1), Run("old", SampleEval.Beta, 1, 0.10m, hoursAgo: 5) };
 
         Assert.That(RunEstimate.For(SampleEval.Beta, runs, repeats: 2), Is.EqualTo(0.16m));
     }
@@ -39,14 +42,17 @@ public class RunEstimateTests
     public void NoMeasuredRun_OrAnUnknownCost_GivesNoEstimate()
     {
         Assert.That(RunEstimate.For(SampleEval.Beta, [], repeats: 1), Is.Null);
-        Assert.That(RunEstimate.For(SampleEval.Beta, [Run("unpriced", SampleEval.Beta, 1, null, hoursAgo: 1)], repeats: 1), Is.Null);
+        Assert.That(
+            RunEstimate.For(SampleEval.Beta, [Run("unpriced", SampleEval.Beta, 1, null, hoursAgo: 1)], repeats: 1),
+            Is.Null);
     }
 
     [Test]
     public void TheDefaultCheck_IsTheOneWithTheNewestRun_ElseTheFirstCheck()
     {
         var checks = new[] { "stub", SampleEval.Beta, SampleEval.Gamma };
-        var runs = new[] { Run("a", SampleEval.Gamma, 1, 1m, hoursAgo: 3), Run("b", SampleEval.Beta, 1, 1m, hoursAgo: 1) };
+        var runs = new[]
+            { Run("a", SampleEval.Gamma, 1, 1m, hoursAgo: 3), Run("b", SampleEval.Beta, 1, 1m, hoursAgo: 1) };
 
         Assert.That(RunEstimate.DefaultCheck(checks, runs), Is.EqualTo(SampleEval.Beta));
         Assert.That(RunEstimate.DefaultCheck(checks, []), Is.EqualTo("stub"));
@@ -54,7 +60,8 @@ public class RunEstimateTests
     }
 
     // 6.0b (the 30ab27f..6533d8d review): the text beside the Run button left the razor page for this class. Written first: only the page had it.
-    private static string Dollars(decimal cost) => "$" + cost.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+    private static string Dollars(decimal cost) =>
+        "$" + cost.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
     [Test]
     public void TheStub_IsFree_WhateverItsRuns()
@@ -68,13 +75,16 @@ public class RunEstimateTests
         var runs = new[] { Run("new", SampleEval.Beta, 3, 0.24m, hoursAgo: 1) };
 
         Assert.That(RunEstimate.Text(SampleEval.Beta, runs, 2, Dollars), Is.EqualTo("≈ $0.16 for 2 repeats"));
-        Assert.That(RunEstimate.Text(SampleEval.Beta, runs, 1, Dollars), Is.EqualTo("≈ $0.08 for 1 repeat"), "one repeat is singular");
+        Assert.That(RunEstimate.Text(SampleEval.Beta, runs, 1, Dollars), Is.EqualTo("≈ $0.08 for 1 repeat"),
+            "one repeat is singular");
     }
 
     [Test]
     public void AnUnknownCost_GivesNoText_NotAZero()
     {
         Assert.That(RunEstimate.Text(SampleEval.Beta, [], 2, Dollars), Is.Empty);
-        Assert.That(RunEstimate.Text(SampleEval.Beta, [Run("unpriced", SampleEval.Beta, 1, null, hoursAgo: 1)], 2, Dollars), Is.Empty);
+        Assert.That(
+            RunEstimate.Text(SampleEval.Beta, [Run("unpriced", SampleEval.Beta, 1, null, hoursAgo: 1)], 2, Dollars),
+            Is.Empty);
     }
 }

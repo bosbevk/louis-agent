@@ -20,8 +20,15 @@ public class RoutingScorerTests
     public void TheScoresDocumentKeys_AreThePythonsKeys()
     {
         // A renamed property would rename the key in the scores document: this holds the Python's 9 names.
-        var element = System.Text.Json.JsonSerializer.SerializeToElement<object>(RoutingScorer.Score(Dev.Route("cook"), Turn(), delegating: true), EvalScores.Json);
-        Assert.That(element.EnumerateObject().Select(p => p.Name), Is.EquivalentTo(new[] { "role", "expected_role", "routed_right", "answered_itself", "delegations", "puls_calls", "specialist_calls", "hosts", "errors" }));
+        var element =
+            System.Text.Json.JsonSerializer.SerializeToElement<object>(
+                RoutingScorer.Score(Dev.Route("cook"), Turn(), delegating: true), EvalScores.Json);
+        Assert.That(element.EnumerateObject().Select(p => p.Name),
+            Is.EquivalentTo(new[]
+            {
+                "role", "expected_role", "routed_right", "answered_itself", "delegations", "puls_calls",
+                "specialist_calls", "hosts", "errors"
+            }));
     }
 
     [Test]
@@ -36,7 +43,8 @@ public class RoutingScorerTests
     [Test]
     public void AMealHandedToTheCook_IsRight()
     {
-        var scores = RoutingScorer.Score(Dev.Route("cook"), Turn(role: PulsEvalRole.Cook.Wire(), calls: [Start]), delegating: true);
+        var scores = RoutingScorer.Score(Dev.Route("cook"), Turn(role: PulsEvalRole.Cook.Wire(), calls: [Start]),
+            delegating: true);
 
         Assert.That(scores.RoutedRight, Is.True);
         Assert.That(scores.Delegations, Is.EqualTo(1));
@@ -52,7 +60,9 @@ public class RoutingScorerTests
 
     [Test]
     public void AWebQuestionHandedAway_IsWrong() =>
-        Assert.That(RoutingScorer.Score(Dev.Route("web-2"), Turn(role: PulsEvalRole.Cook.Wire()), delegating: true).RoutedRight, Is.False);
+        Assert.That(
+            RoutingScorer.Score(Dev.Route("web-2"), Turn(role: PulsEvalRole.Cook.Wire()), delegating: true).RoutedRight,
+            Is.False);
 
     [Test]
     public void WithoutDelegation_AnsweringItselfIsAlwaysRight() =>
@@ -60,8 +70,15 @@ public class RoutingScorerTests
 
     [Test]
     public void TheBaseline_IsEveryAvailableToolsetButTheDelegatingOnes() =>
-        Assert.That(RoutingScorer.Baseline([PulsToolset.Files.Wire(), PulsToolset.Git.Wire(), PulsToolset.Web.Wire(), PulsToolset.Specialists.Wire(), PulsToolset.Minions.Wire(), PulsToolset.Skills.Wire()]),
-            Is.EqualTo(new[] { PulsToolset.Files.Wire(), PulsToolset.Git.Wire(), PulsToolset.Web.Wire(), PulsToolset.Skills.Wire() }));
+        Assert.That(
+            RoutingScorer.Baseline([
+                PulsToolset.Files.Wire(), PulsToolset.Git.Wire(), PulsToolset.Web.Wire(),
+                PulsToolset.Specialists.Wire(), PulsToolset.Minions.Wire(), PulsToolset.Skills.Wire()
+            ]),
+            Is.EqualTo(new[]
+            {
+                PulsToolset.Files.Wire(), PulsToolset.Git.Wire(), PulsToolset.Web.Wire(), PulsToolset.Skills.Wire()
+            }));
 
     [Test]
     public void AnError_IsNeverRight()
@@ -76,16 +93,22 @@ public class RoutingScorerTests
     public void Delegating_IsTheSpecialistsToolset_NotMinions()
     {
         // The Python's rule is "specialists" in the mode's toolsets (routing/run_check.py); a minions-only mode can't hand on.
-        Assert.That(PulsModes.CanDelegate(new EvalMode("minions-only", PulsEvalRole.Cook.Wire(), [PulsToolset.Minions.Wire(), PulsToolset.Web.Wire()])), Is.False);
-        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-as-built", PulsEvalRole.Cook.Wire(), [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()])), Is.True);
+        Assert.That(
+            PulsModes.CanDelegate(new EvalMode("minions-only", PulsEvalRole.Cook.Wire(),
+                [PulsToolset.Minions.Wire(), PulsToolset.Web.Wire()])), Is.False);
+        Assert.That(
+            PulsModes.CanDelegate(new EvalMode("puls-as-built", PulsEvalRole.Cook.Wire(),
+                [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()])), Is.True);
     }
 
     [Test]
     public void TheDelegatedMode_IsPulsAsBuilt() =>
-        Assert.That(RoutingSetup.Delegated, Is.EqualTo(new[] { PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire() }));
+        Assert.That(RoutingSetup.Delegated,
+            Is.EqualTo(new[] { PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire() }));
 
     private static TurnView Turn(string? role = null, ToolCall[]? calls = null, string? error = null) =>
         new("Antwoord.", calls ?? [], [], role, null, error, [], []);
 
-    private static System.Text.Json.JsonElement Json(string text) => System.Text.Json.JsonDocument.Parse(text).RootElement.Clone();
+    private static System.Text.Json.JsonElement Json(string text) =>
+        System.Text.Json.JsonDocument.Parse(text).RootElement.Clone();
 }

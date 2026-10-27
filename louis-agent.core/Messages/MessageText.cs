@@ -1,10 +1,10 @@
-namespace LouisAgent.Core.Messages;
 
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
+namespace LouisAgent.Core.Messages;
 /// <summary>
 /// The text of every message, kept in message enums: the shared <see cref="ErrorMessage"/>, <see cref="ToolMessage"/> and
 /// <see cref="UserText"/>, and an area's <c>{Area}ToolMessage</c>, <c>{Area}LogMessage</c> or <c>{Area}ErrorMessage</c>. Each member's
@@ -31,7 +31,8 @@ public static partial class MessageText
             string name = match.Groups[1].Value;
             PropertyInfo? property = values?.GetType().GetProperty(name);
             if (property is null)
-                throw new ArgumentException(Format(ErrorMessage.MessageNeedsValue, new { Message = Name(message), Hole = $"{{{name}}}" }),
+                throw new ArgumentException(
+                    Format(ErrorMessage.MessageNeedsValue, new { Message = Name(message), Hole = $"{{{name}}}" }),
                     nameof(values));
             return Convert.ToString(property.GetValue(values), System.Globalization.CultureInfo.InvariantCulture) ?? "";
         });
@@ -43,7 +44,8 @@ public static partial class MessageText
 
     private static string Read(Enum message) =>
         message.GetType().GetField(message.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description
-        ?? throw new InvalidOperationException(Format(ErrorMessage.MessageHasNoTemplate, new { Message = Name(message) }));
+        ?? throw new InvalidOperationException(Format(ErrorMessage.MessageHasNoTemplate,
+            new { Message = Name(message) }));
 
     private static string Name(Enum message) => $"{message.GetType().Name}.{message}";
 

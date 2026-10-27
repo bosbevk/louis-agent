@@ -20,7 +20,8 @@ public static class GradesText
     public static string PendingChip(string grader) => $"{grader} · {WaitingForReview}";
 
     /// <summary>A review's chip once this reviewer graded (6a.4e): the grader, their verdict and their name.</summary>
-    public static string ReviewedChip(string grader, string verdict, string reviewer) => $"{grader} · {verdict} ({reviewer})";
+    public static string ReviewedChip(string grader, string verdict, string reviewer) =>
+        $"{grader} · {verdict} ({reviewer})";
 
     /// <summary>A grader's line in the run's list: its name, version and kind ("no-error v1 · FixedRule"); no version when the run recorded none.</summary>
     public static string Grader(GraderRow grader) =>

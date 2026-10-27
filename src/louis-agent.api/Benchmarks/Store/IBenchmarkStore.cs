@@ -19,7 +19,8 @@ public interface IBenchmarkStore
     Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default);
 
     /// <summary>The newest runs first, up to a limit, and only one check's if you ask.</summary>
-    Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
+        CancellationToken cancellationToken = default);
 
     /// <summary>Saves one conversation of a run, replacing the one under its key.</summary>
     Task SaveConversationAsync(string run, Conversation conversation, CancellationToken cancellationToken = default);
@@ -28,13 +29,16 @@ public interface IBenchmarkStore
     Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken cancellationToken = default);
 
     /// <summary>Saves a turn together with its stream events, replacing the ones under its key.</summary>
-    Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events, CancellationToken cancellationToken = default);
+    Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
+        CancellationToken cancellationToken = default);
 
     /// <summary>A conversation's turns in order, without their stream events, which are heavy.</summary>
-    Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
+        CancellationToken cancellationToken = default);
 
     /// <summary>One turn's stream events in the order they came, for replaying it. Nothing for a turn we don't know.</summary>
-    Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn,
+        CancellationToken cancellationToken = default);
 
     /// <summary>Adds the model requests the ledger has for this run.</summary>
     Task AddRequestsAsync(string run, IReadOnlyList<Request> requests, CancellationToken cancellationToken = default);
@@ -46,7 +50,8 @@ public interface IBenchmarkStore
     Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default);
 
     /// <summary>Adds a person's note to a run, or to one of its conversations. Notes are only ever added, and saving the run again never touches them. You find out whether it was kept, the run isn't there, or the text was turned down.</summary>
-    Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at, ConversationKey? conversation = null, CancellationToken cancellationToken = default);
+    Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at, ConversationKey? conversation = null,
+        CancellationToken cancellationToken = default);
 
     /// <summary>A run's notes, from the run and its conversations, in the order they were written.</summary>
     Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken cancellationToken = default);

@@ -28,7 +28,8 @@ public class ChromeWebBrowserIntegrationTests
         string url = Outside.Stack("BROWSER_URL", "browser to visit with");
         var browser = new ChromeWebBrowser(new Uri(url!), userAgent: Named);
 
-        var echoed = await browser.VisitAsync(new Uri("https://httpbin.org/user-agent"), script: "document.body.textContent");
+        var echoed = await browser.VisitAsync(new Uri("https://httpbin.org/user-agent"),
+            script: "document.body.textContent");
         var marker = await browser.VisitAsync(Page("<body>x</body>"), script: "String(navigator.webdriver)");
 
         Assert.That(echoed.ScriptResult, Does.Contain(Named));
@@ -49,7 +50,8 @@ public class ChromeWebBrowserIntegrationTests
     {
         // The page fetches two JSON documents; the caller asks for one of them, as a catalogue asks for its search answer.
         var visit = await Live().VisitAsync(
-            Page("<body>page</body><script>fetch('https://httpbin.org/json'); fetch('https://httpbin.org/uuid');</script>"),
+            Page(
+                "<body>page</body><script>fetch('https://httpbin.org/json'); fetch('https://httpbin.org/uuid');</script>"),
             capture: url => url.AbsolutePath == "/json");
 
         Assert.That(visit.Captured, Has.Count.EqualTo(1));
@@ -63,7 +65,8 @@ public class ChromeWebBrowserIntegrationTests
         // F32 step 4: request interception doesn't see WebSockets, and the browser shares a network with puls, so a page
         // could open one to an internal address. A public echo server stands in for any address, so the test tells
         // "blocked" from "couldn't connect anyway"; a slow request keeps the page open until the socket's outcome lands.
-        var visit = await Live().VisitAsync(Page("<body>waiting</body><script>try { const w = new WebSocket('wss://echo.websocket.org');" +
+        var visit = await Live().VisitAsync(Page(
+            "<body>waiting</body><script>try { const w = new WebSocket('wss://echo.websocket.org');" +
             "w.onopen = () => document.body.textContent = 'socket-open'; w.onerror = () => document.body.textContent = 'socket-blocked'; }" +
             "catch { document.body.textContent = 'socket-blocked'; } fetch('https://httpbin.org/delay/3');</script>"));
 
@@ -74,7 +77,8 @@ public class ChromeWebBrowserIntegrationTests
     public async Task AWebSocketFromAScriptMadeFrame_IsBlocked()
     {
         // Review of PR #56: a frame a script makes starts as about:blank; its window has a WebSocket of its own.
-        var visit = await Live().VisitAsync(Page("<body>waiting</body><script>const f = document.createElement('iframe'); document.body.appendChild(f);" +
+        var visit = await Live().VisitAsync(Page(
+            "<body>waiting</body><script>const f = document.createElement('iframe'); document.body.appendChild(f);" +
             "try { const w = new f.contentWindow.WebSocket('wss://echo.websocket.org');" +
             "w.onopen = () => document.body.textContent = 'socket-open'; w.onerror = () => document.body.textContent = 'socket-blocked'; }" +
             "catch { document.body.textContent = 'socket-blocked'; } fetch('https://httpbin.org/delay/3');</script>"));
@@ -98,7 +102,8 @@ public class ChromeWebBrowserIntegrationTests
     // F34 step 1a: a shop serves by area (Checkers keeps the area's store in cookies), so a visit can start in a session,
     // run one script of ours, and hand back the cookies the site set. Such a visit has a browser context of its own,
     // dropped after, so one user's area never reaches another's search.
-    private static readonly BrowserSession Malmesbury = new([new BrowserCookie("f34area", "malmesbury", "httpbin.org")]);
+    private static readonly BrowserSession
+        Malmesbury = new([new BrowserCookie("f34area", "malmesbury", "httpbin.org")]);
 
     [Test, Category("Live")]
     public async Task AVisitInASession_StartsWithItsCookies()
@@ -125,7 +130,8 @@ public class ChromeWebBrowserIntegrationTests
     [Test, Category("Live")]
     public async Task TheCookiesASiteSets_AreReturned_FromASessionsVisit()
     {
-        var visit = await Live().VisitAsync(new Uri("https://httpbin.org/cookies/set?f34store=655b0c8f"), session: new([]));
+        var visit = await Live().VisitAsync(new Uri("https://httpbin.org/cookies/set?f34store=655b0c8f"),
+            session: new([]));
 
         Assert.That(visit.Cookies, Has.Some.Matches<BrowserCookie>(c => c.Name == "f34store" && c.Value == "655b0c8f"));
     }
@@ -133,7 +139,8 @@ public class ChromeWebBrowserIntegrationTests
     [Test, Category("Live")]
     public async Task AScript_RunsAfterTheLoad_AndItsResultIsReturned()
     {
-        var visit = await Live().VisitAsync(Page("<body>loaded</body>"), script: "document.body.textContent + ' and scripted'");
+        var visit = await Live().VisitAsync(Page("<body>loaded</body>"),
+            script: "document.body.textContent + ' and scripted'");
 
         Assert.That(visit.ScriptResult, Is.EqualTo("loaded and scripted"));
     }
@@ -152,14 +159,16 @@ public class ChromeWebBrowserIntegrationTests
     {
         var browser = Live();
 
-        Assert.That(() => browser.VisitAsync(Page("<body>x</body>"), script: "(() => { throw new Error('no store here'); })()"),
+        Assert.That(
+            () => browser.VisitAsync(Page("<body>x</body>"), script: "(() => { throw new Error('no store here'); })()"),
             Throws.TypeOf<WebBrowserException>().With.Message.Contains("no store here"));
     }
 
     // F34, Louis on a slow cook ("what causes this long delay?"): Checkers' page never goes quiet (analytics), so every
     // search waited the full 10 s for silence after its answer had come. A visit that captures is done when it has its
     // answer and, when asked, the element that shows it is drawn: the page below polls forever, as Checkers' does.
-    private static Uri NeverQuiet(string thenDraw) => Page("<body>loading</body><script>setInterval(() => fetch('https://httpbin.org/uuid'), 300);" +
+    private static Uri NeverQuiet(string thenDraw) => Page(
+        "<body>loading</body><script>setInterval(() => fetch('https://httpbin.org/uuid'), 300);" +
         "fetch('https://httpbin.org/json'); setTimeout(() => { const d = document.createElement('div'); d.className = 'card'; " +
         "d.textContent = '" + thenDraw + "'; document.body.appendChild(d); }, 1500);</script>");
 
@@ -168,11 +177,13 @@ public class ChromeWebBrowserIntegrationTests
     {
         var watch = System.Diagnostics.Stopwatch.StartNew();
 
-        var visit = await Live().VisitAsync(NeverQuiet("drawn"), capture: url => url.AbsolutePath == "/json", readySelector: ".card");
+        var visit = await Live().VisitAsync(NeverQuiet("drawn"), capture: url => url.AbsolutePath == "/json",
+            readySelector: ".card");
 
         Assert.That(visit.Captured, Has.Count.EqualTo(1));
         Assert.That(visit.Html, Does.Contain("drawn"), "it waited for the card it was told shows the answer");
-        Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(6)), "not the 10 s a page that never goes quiet costs");
+        Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(6)),
+            "not the 10 s a page that never goes quiet costs");
     }
 
     // The cook, 2026-10-21: of six renders fired at once, one never came back, and the cook waited on it for good (the
@@ -194,8 +205,10 @@ public class ChromeWebBrowserIntegrationTests
     public void ARedirectToAnInternalAddress_IsRefusedInsideTheBrowser()
     {
         var browser = Live();
-        var redirect = new Uri("https://httpbin.org/redirect-to?url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F");
+        var redirect =
+            new Uri("https://httpbin.org/redirect-to?url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F");
 
-        Assert.That(() => browser.VisitAsync(redirect), Throws.TypeOf<WebBrowserException>().With.Message.Contains("169.254.169.254"));
+        Assert.That(() => browser.VisitAsync(redirect),
+            Throws.TypeOf<WebBrowserException>().With.Message.Contains("169.254.169.254"));
     }
 }

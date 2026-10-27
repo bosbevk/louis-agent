@@ -38,11 +38,15 @@ public abstract class BenchmarkStoreContract
 
     private static JsonElement Json(string json) => JsonDocument.Parse(json).RootElement.Clone();
 
-    private static Conversation NewConversation(string task, int order, string? role = SampleRole.Alpha, string mode = SampleMode.Beta, int repeat = 1) =>
-        new(new ConversationKey(mode, repeat, task), order, role, Json("""{"routed_right":true,"priced_ratio":0.75}"""), 0, 12.5);
+    private static Conversation NewConversation(string task, int order, string? role = SampleRole.Alpha,
+        string mode = SampleMode.Beta, int repeat = 1) =>
+        new(new ConversationKey(mode, repeat, task), order, role, Json("""{"routed_right":true,"priced_ratio":0.75}"""),
+            0, 12.5);
 
-    private static Turn NewTurn(string task, int n, string? answer = "Hier is…", string mode = SampleMode.Beta, int repeat = 1) =>
-        new(new TurnKey(mode, repeat, task, n), "sess_" + n, "Vraag " + n, answer, SampleRole.Alpha, null, 1, 7, ["www.checkers.co.za"], 41.3, null);
+    private static Turn NewTurn(string task, int n, string? answer = "Hier is…", string mode = SampleMode.Beta,
+        int repeat = 1) =>
+        new(new TurnKey(mode, repeat, task, n), "sess_" + n, "Vraag " + n, answer, SampleRole.Alpha, null, 1, 7,
+            ["www.checkers.co.za"], 41.3, null);
 
     private static StreamEvent Event(string type, string text) =>
         new(type, Json(JsonSerializer.Serialize(new { delta = new { text } })), T0.AddSeconds(text.Length));
@@ -65,7 +69,8 @@ public abstract class BenchmarkStoreContract
         await _store.SaveRunAsync(run);
 
         var read = (await _store.GetRunAsync(id))!.Modes!;
-        Assert.That(read.Select(m => m.Rates), Is.EqualTo(new ModeRates?[] { new(1.0, 0.5, 2, 1, 1), new(null, null, 1, 3, 0), null }));
+        Assert.That(read.Select(m => m.Rates),
+            Is.EqualTo(new ModeRates?[] { new(1.0, 0.5, 2, 1, 1), new(null, null, 1, 3, 0), null }));
     }
 
     [Test]
@@ -88,8 +93,10 @@ public abstract class BenchmarkStoreContract
         var read = await _store.GetRunAsync(id);
 
         Assert.That(read, Is.Not.Null);
-        Assert.That((read!.Id, read.Check, read.Repeat, read.Status), Is.EqualTo((id, _check, 2, BenchmarkRunStatus.Done)));
-        Assert.That((read.StartedAt, read.EndedAt, read.ExitCode), Is.EqualTo((T0, (DateTimeOffset?)T0.AddMinutes(9), (int?)0)));
+        Assert.That((read!.Id, read.Check, read.Repeat, read.Status),
+            Is.EqualTo((id, _check, 2, BenchmarkRunStatus.Done)));
+        Assert.That((read.StartedAt, read.EndedAt, read.ExitCode),
+            Is.EqualTo((T0, (DateTimeOffset?)T0.AddMinutes(9), (int?)0)));
         Assert.That(read.Settings, Is.EquivalentTo(run.Settings));
         Assert.That(read.Modes!.Single() is { Name: SampleMode.Beta, Repeat: 1, Role: "puls/voice-af", Llm: null });
         Assert.That(read.Modes!.Single().Toolsets, Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
@@ -117,11 +124,17 @@ public abstract class BenchmarkStoreContract
     {
         string id = NewId();
         await _store.SaveRunAsync(NewRun(id, T0));
-        await _store.SaveRunAsync(NewRun(id, T0, BenchmarkRunStatus.Failed) with { EndedAt = T0.AddMinutes(1), ExitCode = 2, StoreError = "store down" });
+        await _store.SaveRunAsync(NewRun(id, T0, BenchmarkRunStatus.Failed) with
+        {
+            EndedAt = T0.AddMinutes(1),
+            ExitCode = 2,
+            StoreError = "store down"
+        });
 
         var read = await _store.GetRunAsync(id);
 
-        Assert.That((read!.Status, read.ExitCode, read.StoreError), Is.EqualTo((BenchmarkRunStatus.Failed, (int?)2, "store down")));
+        Assert.That((read!.Status, read.ExitCode, read.StoreError),
+            Is.EqualTo((BenchmarkRunStatus.Failed, (int?)2, "store down")));
         Assert.That((await _store.ListRunsAsync(_check)).Count, Is.EqualTo(1));
     }
 
@@ -183,8 +196,10 @@ public abstract class BenchmarkStoreContract
     public async Task AConversation_CarriesItsGradesAndOutcome()
     {
         string run = NewId();
-        var grades = new[] { new Grade("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source") };
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades, Outcome = BenchmarkOutcome.Pass });
+        var grades = new[]
+            { new Grade("priced-with-source", 1, 1, BenchmarkOutcome.Pass, "2 of 2 priced with a source") };
+        await _store.SaveConversationAsync(run,
+            NewConversation("bobotie", 1) with { Grades = grades, Outcome = BenchmarkOutcome.Pass });
 
         var read = (await _store.ConversationsAsync(run)).Single();
 
@@ -198,7 +213,8 @@ public abstract class BenchmarkStoreContract
     {
         string run = NewId();
         var grades = new[] { new Grade("meal-for-people.human", 1, 0, BenchmarkOutcome.Pending, "waits for a person") };
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades, Outcome = BenchmarkOutcome.Pass });
+        await _store.SaveConversationAsync(run,
+            NewConversation("bobotie", 1) with { Grades = grades, Outcome = BenchmarkOutcome.Pass });
 
         var read = (await _store.ConversationsAsync(run)).Single();
 
@@ -210,7 +226,11 @@ public abstract class BenchmarkStoreContract
     public async Task AGrade_KeepsTheJudgeThatGaveIt()
     {
         string run = NewId();
-        var grades = new[] { new Grade("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456"), new Grade("no-error", 1, 1, BenchmarkOutcome.Pass, "ok") };
+        var grades = new[]
+        {
+            new Grade("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456"),
+            new Grade("no-error", 1, 1, BenchmarkOutcome.Pass, "ok")
+        };
         await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades });
 
         var read = (await _store.ConversationsAsync(run)).Single();
@@ -249,7 +269,8 @@ public abstract class BenchmarkStoreContract
 
         Assert.That(read.Select(c => c.Key), Is.EqualTo(new[]
         {
-            new ConversationKey(SampleMode.Alpha, 1, "bobotie"), new ConversationKey(SampleMode.Beta, 1, "bobotie"), new ConversationKey(SampleMode.Beta, 2, "bobotie"),
+            new ConversationKey(SampleMode.Alpha, 1, "bobotie"), new ConversationKey(SampleMode.Beta, 1, "bobotie"),
+            new ConversationKey(SampleMode.Beta, 2, "bobotie"),
         }));
     }
 
@@ -266,8 +287,10 @@ public abstract class BenchmarkStoreContract
 
         Assert.That(read.Select(t => t.Key.Turn), Is.EqualTo(new[] { 1, 2 }));
         var first = read[0];
-        Assert.That((first.Session, first.Question, first.Answer, first.Role, first.Continued), Is.EqualTo(("sess_1", "Vraag 1", "Hier is…", SampleRole.Alpha, (string?)null)));
-        Assert.That((first.PulsCalls, first.SpecialistCalls, first.Seconds, first.Error), Is.EqualTo((1, 7, 41.3, (string?)null)));
+        Assert.That((first.Session, first.Question, first.Answer, first.Role, first.Continued),
+            Is.EqualTo(("sess_1", "Vraag 1", "Hier is…", SampleRole.Alpha, (string?)null)));
+        Assert.That((first.PulsCalls, first.SpecialistCalls, first.Seconds, first.Error),
+            Is.EqualTo((1, 7, 41.3, (string?)null)));
         Assert.That(first.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
     }
 
@@ -280,7 +303,8 @@ public abstract class BenchmarkStoreContract
 
         var read = await _store.TurnsAsync(run, new ConversationKey(SampleMode.Beta, 1, "bobotie"));
 
-        Assert.That(read.Select(t => t.Failure), Is.EqualTo(new BenchmarkTurnFailure?[] { BenchmarkTurnFailure.ReplayMiss, null }));
+        Assert.That(read.Select(t => t.Failure),
+            Is.EqualTo(new BenchmarkTurnFailure?[] { BenchmarkTurnFailure.ReplayMiss, null }));
     }
 
     [Test]
@@ -288,11 +312,13 @@ public abstract class BenchmarkStoreContract
     {
         string run = NewId();
         var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1), [Event("message_start", "a"), Event("content_block_delta", "Hallo"), Event("message_stop", "")]);
+        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1),
+            [Event("message_start", "a"), Event("content_block_delta", "Hallo"), Event("message_stop", "")]);
 
         var events = await _store.TurnEventsAsync(run, key);
 
-        Assert.That(events.Select(e => e.Type), Is.EqualTo(new[] { "message_start", "content_block_delta", "message_stop" }));
+        Assert.That(events.Select(e => e.Type),
+            Is.EqualTo(new[] { "message_start", "content_block_delta", "message_stop" }));
         Assert.That(events[1].Data.GetProperty("delta").GetProperty("text").GetString(), Is.EqualTo("Hallo"));
         Assert.That(events[1].At, Is.EqualTo(T0.AddSeconds(5)));
     }
@@ -303,7 +329,8 @@ public abstract class BenchmarkStoreContract
         string run = NewId();
         var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 1, answer: null), [Event("message_start", "a")]);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1), [Event("message_start", "a"), Event("message_stop", "")]);
+        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1),
+            [Event("message_start", "a"), Event("message_stop", "")]);
 
         Assert.That((await _store.TurnEventsAsync(run, key)).Count, Is.EqualTo(2));
         Assert.That((await _store.TurnsAsync(run, key.Conversation)).Single().Answer, Is.EqualTo("Hier is…"));
@@ -316,7 +343,8 @@ public abstract class BenchmarkStoreContract
         string run = NewId();
         var counted = NewTurn("bobotie", 1) with
         {
-            Tools = new BenchmarkTools.Summary(3, 1, [new BenchmarkTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)]),
+            Tools = new BenchmarkTools.Summary(3, 1,
+                [new BenchmarkTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)]),
         };
         await _store.SaveTurnAsync(run, counted, []);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
@@ -325,7 +353,8 @@ public abstract class BenchmarkStoreContract
 
         var tools = turns[0].Tools!;
         Assert.That((tools.Calls, tools.Failed), Is.EqualTo((3, 1)));
-        Assert.That(tools.Reasons.Single(), Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)));
+        Assert.That(tools.Reasons.Single(),
+            Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)));
         Assert.That(turns[1].Tools, Is.Null, "a turn recorded before the counts were kept: unknown, not 0 calls");
     }
 
@@ -338,8 +367,10 @@ public abstract class BenchmarkStoreContract
     {
         string run = NewId();
         var turn = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
+
         Request At(int seconds, TurnKey? key = null, decimal? cost = 0.01m, long? input = 1200) =>
-            new(run, key, T0.AddSeconds(seconds), "agent_turn", "sess_1", null, "claude-haiku-5-5", input, 300, 50_000, 0, cost, 2100);
+            new(run, key, T0.AddSeconds(seconds), "agent_turn", "sess_1", null, "claude-haiku-5-5", input, 300, 50_000,
+                0, cost, 2100);
 
         await _store.AddRequestsAsync(run, [At(30, turn), At(10, turn)]);
         await _store.AddRequestsAsync(run, [At(20, key: null, cost: null, input: null)]);
@@ -347,9 +378,11 @@ public abstract class BenchmarkStoreContract
 
         var read = await _store.RequestsAsync(run);
 
-        Assert.That(read.Select(r => r.At), Is.EqualTo(new[] { T0.AddSeconds(10), T0.AddSeconds(20), T0.AddSeconds(30) }));
+        Assert.That(read.Select(r => r.At),
+            Is.EqualTo(new[] { T0.AddSeconds(10), T0.AddSeconds(20), T0.AddSeconds(30) }));
         Assert.That(read[0], Is.EqualTo(At(10, turn)));
-        Assert.That((read[1].Turn, read[1].Cost, read[1].InputTokens), Is.EqualTo(((TurnKey?)null, (decimal?)null, (long?)null)),
+        Assert.That((read[1].Turn, read[1].Cost, read[1].InputTokens),
+            Is.EqualTo(((TurnKey?)null, (decimal?)null, (long?)null)),
             "an unknown price or count stays unknown, never 0");
     }
 
@@ -358,15 +391,21 @@ public abstract class BenchmarkStoreContract
     {
         string running = NewId(), done = NewId();
         await _store.SaveRunAsync(NewRun(running, T0));
-        await _store.SaveRunAsync(NewRun(done, T0, BenchmarkRunStatus.Done) with { EndedAt = T0.AddMinutes(5), ExitCode = 0 });
+        await _store.SaveRunAsync(NewRun(done, T0, BenchmarkRunStatus.Done) with
+        {
+            EndedAt = T0.AddMinutes(5),
+            ExitCode = 0
+        });
 
         int closed = await _store.CloseOrphansAsync(T0.AddHours(1));
 
         Assert.That(closed, Is.GreaterThanOrEqualTo(1));
         var orphan = await _store.GetRunAsync(running);
-        Assert.That((orphan!.Status, orphan.EndedAt), Is.EqualTo((BenchmarkRunStatus.Failed, (DateTimeOffset?)T0.AddHours(1))));
+        Assert.That((orphan!.Status, orphan.EndedAt),
+            Is.EqualTo((BenchmarkRunStatus.Failed, (DateTimeOffset?)T0.AddHours(1))));
         var finished = await _store.GetRunAsync(done);
-        Assert.That((finished!.Status, finished.EndedAt), Is.EqualTo((BenchmarkRunStatus.Done, (DateTimeOffset?)T0.AddMinutes(5))));
+        Assert.That((finished!.Status, finished.EndedAt),
+            Is.EqualTo((BenchmarkRunStatus.Done, (DateTimeOffset?)T0.AddMinutes(5))));
     }
 
     [Test]
@@ -379,7 +418,8 @@ public abstract class BenchmarkStoreContract
             await _store.SaveRunAsync(NewRun(id, T0, BenchmarkRunStatus.Done));
             await _store.SaveConversationAsync(id, NewConversation("bobotie", 1));
             await _store.SaveTurnAsync(id, NewTurn("bobotie", 1), [Event("message_start", "a")]);
-            await _store.AddRequestsAsync(id, [new Request(id, turn, T0, "agent_turn", "sess_1", null, "m", 1, 1, 0, 0, 0.01m, 10)]);
+            await _store.AddRequestsAsync(id,
+                [new Request(id, turn, T0, "agent_turn", "sess_1", null, "m", 1, 1, 0, 0, 0.01m, 10)]);
         }
 
         Assert.That(await _store.DeleteRunAsync(run), Is.True);

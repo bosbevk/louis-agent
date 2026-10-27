@@ -21,8 +21,10 @@ public partial class NotesPanel
 
     /// <summary>What's typed in the box.</summary>
     private string _text = "";
+
     /// <summary>Why the last post failed, if it did.</summary>
     private string? _error;
+
     /// <summary>Whether a post is on its way.</summary>
     private bool _busy;
 
@@ -46,10 +48,16 @@ public partial class NotesPanel
         try
         {
             // The text, and the conversation's key when this is a conversation's panel (null for a note on the run).
-            var body = new { text = _text, conversation = Conversation is { } c ? new { mode = c.Mode, repeat = c.Repeat, task = c.Task } : null };
+            var body = new
+            {
+                text = _text,
+                conversation = Conversation is { } c ? new { mode = c.Mode, repeat = c.Repeat, task = c.Task } : null
+            };
 
             // Post it to this run's notes. The run id is escaped because it goes into the web address.
-            using var request = new HttpRequestMessage(HttpMethod.Post, $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/notes") { Content = JsonContent.Create(body) };
+            using var request =
+                new HttpRequestMessage(HttpMethod.Post, $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/notes")
+                { Content = JsonContent.Create(body) };
             // We only need to know it worked. If the API says no, it throws, and the catch below shows why.
             using var _ = await Api.SendAsync(request);
 

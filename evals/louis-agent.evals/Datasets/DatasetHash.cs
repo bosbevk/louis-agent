@@ -23,6 +23,7 @@ public static class DatasetHash
             hash.AppendData(Encoding.UTF8.GetBytes(File.ReadAllText(full).Replace("\r\n", "\n")));
             hash.AppendData(Nul);
         }
+
         return Convert.ToHexString(hash.GetHashAndReset()).ToLowerInvariant();
     }
 

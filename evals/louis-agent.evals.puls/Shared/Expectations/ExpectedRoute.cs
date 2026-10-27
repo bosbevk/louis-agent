@@ -16,7 +16,8 @@ public static class ExpectedRoute
     /// <summary>The scenario's route; a scenario with none stated, or one that is neither a role's name nor null, is refused.</summary>
     public static string? Of(EvalScenario scenario)
     {
-        if (scenario.Expected.ValueKind != JsonValueKind.Object || !scenario.Expected.TryGetProperty(Key, out var route))
+        if (scenario.Expected.ValueKind != JsonValueKind.Object ||
+            !scenario.Expected.TryGetProperty(Key, out var route))
             throw new InvalidDataException(MessageText.Format(ExpectationMessage.NoRoute, new { scenario.Id }));
         return route.ValueKind switch
         {

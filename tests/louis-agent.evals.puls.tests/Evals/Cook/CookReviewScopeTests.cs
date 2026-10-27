@@ -15,7 +15,10 @@ public class CookReviewScopeTests
 
     private static bool Applies(string scenario) =>
         Eval.Graders.OfType<HumanReviewGrader>().Single().AppliesTo(
-            new Trial("run_1", new EvalMode(CookMode.Cook.Wire(), "puls/voice-af", [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), 1, Eval.Scenarios.Single(s => s.Id == scenario), new Transcript([])));
+            new Trial("run_1",
+                new EvalMode(CookMode.Cook.Wire(), "puls/voice-af",
+                    [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), 1,
+                Eval.Scenarios.Single(s => s.Id == scenario), new Transcript([])));
 
     [TestCase("control-web", false)]
     [TestCase("cook-asks-first", false)]

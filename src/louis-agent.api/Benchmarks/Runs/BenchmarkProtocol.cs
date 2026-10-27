@@ -25,9 +25,16 @@ public static class BenchmarkProtocol
     /// The run's first line: the protocol's version, and (F18 step 2a) the eval it runs, its version, the commit it was
     /// built from, its graders and the model each level ran on. A line from a harness without them reads them as null.
     /// </summary>
-    public sealed record ProtocolStarted(int Version, DateTimeOffset? At = null, string? Eval = null, int? EvalVersion = null,
-        string? Commit = null, IReadOnlyList<GraderInfo>? Graders = null, IReadOnlyList<ModelInfo>? Models = null,
-        BenchmarkRunSplit? Split = null, string? RescoreOf = null) : Event;
+    public sealed record ProtocolStarted(
+        int Version,
+        DateTimeOffset? At = null,
+        string? Eval = null,
+        int? EvalVersion = null,
+        string? Commit = null,
+        IReadOnlyList<GraderInfo>? Graders = null,
+        IReadOnlyList<ModelInfo>? Models = null,
+        BenchmarkRunSplit? Split = null,
+        string? RescoreOf = null) : Event;
 
     /// <summary>One of the eval's graders: its name, its version and its kind ("FixedRule", "Model", "Human").</summary>
     public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind, string? Question = null);
@@ -36,24 +43,55 @@ public static class BenchmarkProtocol
     public sealed record ModelInfo(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
     /// <summary>One grader's verdict on a conversation: its score, its outcome ("Pass", "Fail", "Unknown") and the reason.</summary>
-    public sealed record GradeInfo(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason, string? JudgeModel = null, string? JudgePromptHash = null);
+    public sealed record GradeInfo(
+        string Grader,
+        int Version,
+        double Score,
+        BenchmarkOutcome Outcome,
+        string Reason,
+        string? JudgeModel = null,
+        string? JudgePromptHash = null);
 
     /// <summary>A mode begins one repeat: what its sessions open with.</summary>
-    public sealed record ModeStarted(string Mode, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm,
-        int? Conversations, DateTimeOffset? At = null) : Event;
+    public sealed record ModeStarted(
+        string Mode,
+        int Repeat,
+        IReadOnlyList<string> Toolsets,
+        string? Role,
+        string? Llm,
+        int? Conversations,
+        DateTimeOffset? At = null) : Event;
 
     public sealed record QuestionAsked(TurnKey Key, string Session, string Text, DateTimeOffset? At = null) : Event;
 
     /// <summary>One event of the turn's stream, as the session sent it; <see cref="Data"/> outlives the line.</summary>
     public sealed record SseEvent(TurnKey Key, string Type, JsonElement Data, DateTimeOffset? At = null) : Event;
 
-    public sealed record TurnEnded(TurnKey Key, string Session, string Question, string? Answer, string? Role, string? Continued,
-        int PulsCalls, int SpecialistCalls, IReadOnlyList<string> Hosts, double Seconds, string? Error, DateTimeOffset? At = null,
+    public sealed record TurnEnded(
+        TurnKey Key,
+        string Session,
+        string Question,
+        string? Answer,
+        string? Role,
+        string? Continued,
+        int PulsCalls,
+        int SpecialistCalls,
+        IReadOnlyList<string> Hosts,
+        double Seconds,
+        string? Error,
+        DateTimeOffset? At = null,
         BenchmarkTurnFailure? Failure = null) : Event;
 
     /// <summary>A conversation's result; <see cref="Scores"/> is the check's own document (each check scores its own way).</summary>
-    public sealed record ConversationEnded(ConversationKey Key, string? Role, JsonElement Scores, int Errors, double Seconds,
-        DateTimeOffset? At = null, IReadOnlyList<GradeInfo>? Grades = null, BenchmarkOutcome? Outcome = null) : Event;
+    public sealed record ConversationEnded(
+        ConversationKey Key,
+        string? Role,
+        JsonElement Scores,
+        int Errors,
+        double Seconds,
+        DateTimeOffset? At = null,
+        IReadOnlyList<GradeInfo>? Grades = null,
+        BenchmarkOutcome? Outcome = null) : Event;
 
     /// <summary>A mode's repeat is done; its rates when the runner wrote them (F18 step 5a), null on a line from before.</summary>
     public sealed record ModeEnded(string Mode, int Repeat, DateTimeOffset? At = null, RatesInfo? Rates = null) : Event;
@@ -80,18 +118,22 @@ public static class BenchmarkProtocol
             var at = Time(e);
             return Text(e, "event") switch
             {
-                "protocol" => new ProtocolStarted(Int(e, "version"), at, Text(e, "eval"), OptionalInt(e, "eval_version"), Text(e, "commit"),
+                "protocol" => new ProtocolStarted(Int(e, "version"), at, Text(e, "eval"),
+                    OptionalInt(e, "eval_version"), Text(e, "commit"),
                     Graders(e), Models(e), Split(e), Text(e, "rescore_of")),
                 "mode" => new ModeStarted(Required(e, "mode"), Int(e, "repeat"), Strings(e, "toolsets"),
-                    Text(e, "role") ?? Text(e, "personality"),   // CL14: a harness before CL14 said personality
+                    Text(e, "role") ?? Text(e, "personality"), // CL14: a harness before CL14 said personality
                     Text(e, "llm"), OptionalInt(e, "conversations"), at),
                 "question" => new QuestionAsked(Turn(e), Required(e, "session"), Required(e, "text"), at),
                 "sse" => new SseEvent(Turn(e), Required(e, "type"), Json(e, "data"), at),
-                "turn" => new TurnEnded(Turn(e), Required(e, "session"), Required(e, "question"), Text(e, "answer"), Text(e, "role"),
+                "turn" => new TurnEnded(Turn(e), Required(e, "session"), Required(e, "question"), Text(e, "answer"),
+                    Text(e, "role"),
                     Text(e, "continued"), OptionalInt(e, "puls_calls") ?? 0, OptionalInt(e, "specialist_calls") ?? 0,
                     Strings(e, "hosts"), OptionalNumber(e, "seconds") ?? 0, Text(e, "error"), at, Failure(e)),
-                "conversation" => new ConversationEnded(new ConversationKey(Required(e, "mode"), Int(e, "repeat"), Required(e, "task")),
-                    Text(e, "role"), Json(e, "scores"), OptionalInt(e, "errors") ?? 0, OptionalNumber(e, "seconds") ?? 0, at,
+                "conversation" => new ConversationEnded(
+                    new ConversationKey(Required(e, "mode"), Int(e, "repeat"), Required(e, "task")),
+                    Text(e, "role"), Json(e, "scores"), OptionalInt(e, "errors") ?? 0,
+                    OptionalNumber(e, "seconds") ?? 0, at,
                     Grades(e), Outcome(e, "outcome")),
                 "mode_done" => new ModeEnded(Required(e, "mode"), Int(e, "repeat"), at, Rates(e)),
                 "summary" => SummaryLineReader.Of(e, at) is { } summary ? summary : new LogLine(line),
@@ -114,20 +156,23 @@ public static class BenchmarkProtocol
     /// <summary>The eval's graders, from the protocol line's <c>graders</c>; null when the line doesn't name any.</summary>
     private static IReadOnlyList<GraderInfo>? Graders(JsonElement e) =>
         e.TryGetProperty("graders", out var value) && value.ValueKind == JsonValueKind.Array
-            ? value.EnumerateArray().Select(g => new GraderInfo(Required(g, "name"), Int(g, "version"), Choice<BenchmarkGraderKind>(g, "kind"), Text(g, "question"))).ToArray()
+            ? value.EnumerateArray().Select(g => new GraderInfo(Required(g, "name"), Int(g, "version"),
+                Choice<BenchmarkGraderKind>(g, "kind"), Text(g, "question"))).ToArray()
             : null;
 
     /// <summary>The model each level ran on, from the protocol line's <c>models</c>; null when the line doesn't name any.</summary>
     private static IReadOnlyList<ModelInfo>? Models(JsonElement e) =>
         e.TryGetProperty("models", out var value) && value.ValueKind == JsonValueKind.Array
-            ? value.EnumerateArray().Select(m => new ModelInfo(Required(m, "mode"), Choice<BenchmarkModelLevel>(m, "level"), Text(m, "role"), Text(m, "model"))).ToArray()
+            ? value.EnumerateArray().Select(m => new ModelInfo(Required(m, "mode"),
+                Choice<BenchmarkModelLevel>(m, "level"), Text(m, "role"), Text(m, "model"))).ToArray()
             : null;
 
     /// <summary>The grades of a conversation, from its <c>grades</c>; null when the line doesn't carry any.</summary>
     private static IReadOnlyList<GradeInfo>? Grades(JsonElement e) =>
         e.TryGetProperty("grades", out var value) && value.ValueKind == JsonValueKind.Array
             ? value.EnumerateArray().Select(g => new GradeInfo(Required(g, "grader"), Int(g, "version"),
-                OptionalNumber(g, "score") ?? throw new MissingField(), Choice<BenchmarkOutcome>(g, "outcome"), Text(g, "reason") ?? "",
+                OptionalNumber(g, "score") ?? throw new MissingField(), Choice<BenchmarkOutcome>(g, "outcome"),
+                Text(g, "reason") ?? "",
                 Text(g, "judge_model"), Text(g, "judge_prompt_hash"))).ToArray()
             : null;
 
@@ -143,7 +188,8 @@ public static class BenchmarkProtocol
     private static BenchmarkTurnFailure? Failure(JsonElement e) =>
         Text(e, "failure") is null ? null : Choice<BenchmarkTurnFailure>(e, "failure");
 
-    private static TurnKey Turn(JsonElement e) => new(Required(e, "mode"), Int(e, "repeat"), Required(e, "task"), Int(e, "turn"));
+    private static TurnKey Turn(JsonElement e) =>
+        new(Required(e, "mode"), Int(e, "repeat"), Required(e, "task"), Int(e, "turn"));
 
     /// <summary>A field the event can't be read without is missing or of the wrong type.</summary>
     private sealed class MissingField : Exception;
@@ -156,20 +202,24 @@ public static class BenchmarkProtocol
     /// <summary>The rates on a mode_done line (F18 step 5a): there when it names its k, null on a line from before; a rate left out is null, never 0.</summary>
     private static RatesInfo? Rates(JsonElement e) =>
         OptionalInt(e, "k") is { } k
-            ? new RatesInfo(OptionalNumber(e, "pass_at_k"), OptionalNumber(e, "pass_hat_k"), k, OptionalInt(e, "infrastructure") ?? 0, OptionalInt(e, "retried") ?? 0)
+            ? new RatesInfo(OptionalNumber(e, "pass_at_k"), OptionalNumber(e, "pass_hat_k"), k,
+                OptionalInt(e, "infrastructure") ?? 0, OptionalInt(e, "retried") ?? 0)
             : null;
 
     private static int Int(JsonElement e, string name) => OptionalInt(e, name) ?? throw new MissingField();
 
     private static int? OptionalInt(JsonElement e, string name) =>
-        e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int n) ? n : null;
+        e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int n)
+            ? n
+            : null;
 
     private static double? OptionalNumber(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetDouble() : null;
 
     private static IReadOnlyList<string> Strings(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Array
-            ? value.EnumerateArray().Where(v => v.ValueKind == JsonValueKind.String).Select(v => v.GetString()!).ToArray()
+            ? value.EnumerateArray().Where(v => v.ValueKind == JsonValueKind.String).Select(v => v.GetString()!)
+                .ToArray()
             : [];
 
     /// <summary>A copy of the field that outlives the line's document; an empty object when it's missing.</summary>
@@ -180,5 +230,7 @@ public static class BenchmarkProtocol
 
     /// <summary>The script's <c>t</c>: Unix seconds, to the millisecond.</summary>
     private static DateTimeOffset? Time(JsonElement e) =>
-        OptionalNumber(e, "t") is { } seconds ? DateTimeOffset.FromUnixTimeMilliseconds((long)Math.Round(seconds * 1000)) : null;
+        OptionalNumber(e, "t") is { } seconds
+            ? DateTimeOffset.FromUnixTimeMilliseconds((long)Math.Round(seconds * 1000))
+            : null;
 }

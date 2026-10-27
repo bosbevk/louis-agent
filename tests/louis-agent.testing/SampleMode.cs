@@ -11,5 +11,6 @@ public static class SampleMode
     public const string Gamma = "mode-gamma";
 
     /// <summary>A test's JSON or text with <c>&lt;ModeAlpha&gt;</c>, <c>&lt;ModeBeta&gt;</c>, <c>&lt;ModeGamma&gt;</c> where it names a mode: filled with the sample names, so the input and what the test expects are one constant.</summary>
-    public static string Fill(string text) => text.Replace("<ModeAlpha>", Alpha).Replace("<ModeBeta>", Beta).Replace("<ModeGamma>", Gamma);
+    public static string Fill(string text) =>
+        text.Replace("<ModeAlpha>", Alpha).Replace("<ModeBeta>", Beta).Replace("<ModeGamma>", Gamma);
 }

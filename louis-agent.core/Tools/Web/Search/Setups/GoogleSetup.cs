@@ -19,7 +19,8 @@ internal sealed class GoogleSetup : ISearchProviderSetup
 
     /// <summary>We need both the key and the engine ID.</summary>
     public bool IsReady(AgentOptions options) =>
-        !string.IsNullOrWhiteSpace(options.GoogleSearchApiKey) && !string.IsNullOrWhiteSpace(options.GoogleSearchEngineId);
+        !string.IsNullOrWhiteSpace(options.GoogleSearchApiKey) &&
+        !string.IsNullOrWhiteSpace(options.GoogleSearchEngineId);
 
     /// <summary>Builds the Google provider, or the one that says what is missing.</summary>
     public IWebSearchProvider Create(AgentOptions options, HttpClient? http) =>

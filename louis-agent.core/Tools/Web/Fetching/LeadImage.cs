@@ -1,9 +1,9 @@
-namespace LouisAgent.Core.Tools.Web.Fetching;
 
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+namespace LouisAgent.Core.Tools.Web.Fetching;
 /// <summary>
 /// A page's lead image as <c>![title](url)</c> (FX24): the page's own declared photo, found where a page declares it, not where its body shows it. A page's
 /// photo is often a lazy-loaded image outside <c>main</c>, or one with no alt text, which the page text keeps none of; the page's JSON-LD (the <c>image</c> of its
@@ -17,7 +17,8 @@ internal static partial class LeadImage
     {
         string? file = MainEntityImage(html) ?? OpenGraphImage(html);
         if (file is null || !Uri.TryCreate(baseUri, file.Trim(), out var target)
-            || target.Scheme is not ("http" or "https") || target.AbsolutePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+                         || target.Scheme is not ("http" or "https") ||
+                         target.AbsolutePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
             return null;
         string alt = (title ?? "").Replace('[', '(').Replace(']', ')');
         return $"![{(alt.Length > 0 ? alt : "image")}]({target})";
@@ -41,6 +42,7 @@ internal static partial class LeadImage
                 // A script the page left malformed says nothing; the next block, or the og:image, may.
             }
         }
+
         return null;
     }
 
@@ -59,7 +61,8 @@ internal static partial class LeadImage
     }
 
     /// <summary>The types of entity that describe the site or the page's furniture, never its subject: their image is a logo, an author's face or the page's own.</summary>
-    private static readonly HashSet<string> SiteEntities = new(["Organization", "WebSite", "WebPage", "Person", "ImageObject", "BreadcrumbList"], StringComparer.Ordinal);
+    private static readonly HashSet<string> SiteEntities =
+        new(["Organization", "WebSite", "WebPage", "Person", "ImageObject", "BreadcrumbList"], StringComparer.Ordinal);
 
     /// <summary>Whether an entity is a page's subject: it has a type, and not only site types (<c>["Article","WebPage"]</c> is an article).</summary>
     private static bool IsSubject(JsonElement node)
@@ -68,7 +71,8 @@ internal static partial class LeadImage
         var types = type.ValueKind switch
         {
             JsonValueKind.String => [type.GetString()!],
-            JsonValueKind.Array => type.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String).Select(t => t.GetString()!).ToList(),
+            JsonValueKind.Array => type.EnumerateArray().Where(t => t.ValueKind == JsonValueKind.String)
+                .Select(t => t.GetString()!).ToList(),
             _ => new List<string>(),
         };
         return types.Any(t => !SiteEntities.Contains(t));
@@ -91,13 +95,16 @@ internal static partial class LeadImage
             var attributes = Attribute().Matches(tag.Value).ToDictionary(a => a.Groups["name"].Value.ToLowerInvariant(),
                 a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
             string? name = attributes.GetValueOrDefault("property") ?? attributes.GetValueOrDefault("name");
-            if (name is "og:image" or "og:image:secure_url" or "twitter:image" && attributes.GetValueOrDefault("content") is { Length: > 0 } content)
+            if (name is "og:image" or "og:image:secure_url" or "twitter:image" &&
+                attributes.GetValueOrDefault("content") is { Length: > 0 } content)
                 return content;
         }
+
         return null;
     }
 
-    [GeneratedRegex(@"<script\b[^>]*type\s*=\s*[""']application/ld\+json[""'][^>]*>(.*?)</script>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    [GeneratedRegex(@"<script\b[^>]*type\s*=\s*[""']application/ld\+json[""'][^>]*>(.*?)</script>",
+        RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex JsonLd();
 
     [GeneratedRegex(@"<meta\b[^>]*>", RegexOptions.IgnoreCase)]

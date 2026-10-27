@@ -15,40 +15,57 @@ public class EstimatesAtShopTests
     private const string Woolworths = """{"town":"Stellenbosch","shop":"woolworths"}""";
     private const string Checkers = """{"town":"Malmesbury","shop":"checkers"}""";
 
-    private const string Estimates = "| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Uie | 2 | onions 1 kg | ± R25 |\n";
+    private const string Estimates =
+        "| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Uie | 2 | onions 1 kg | ± R25 |\n";
+
     private const string EstimatesLine = "*Prices are estimates, not checked at a shop.*\n";
     private const string PnpBranch = "\n### Where to buy\n\nPick n Pay Malmesbury, Voortrekker Street\n";
     private const string WoolworthsBranch = "\n### Waar om te koop\n\nWoolworths Eikestad Mall, Stellenbosch\n";
-    private const string Priced = "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
 
-    private static readonly SessionEvent ReadsPnp = SpecialistCall("ReadRenderedPage", """{"url":"https://www.pnp.co.za/search/uie","maxChars":3000}""");
-    private static readonly SessionEvent FetchesPnp = SpecialistCall("FetchUrl", """{"url":"https://www.pnp.co.za/search/uie"}""");
-    private static readonly SessionEvent ReadsRecipe = SpecialistCall("FetchUrl", """{"url":"https://marindakook.co.za/bobotie/"}""");
+    private const string Priced =
+        "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
+
+    private static readonly SessionEvent ReadsPnp = SpecialistCall("ReadRenderedPage",
+        """{"url":"https://www.pnp.co.za/search/uie","maxChars":3000}""");
+
+    private static readonly SessionEvent FetchesPnp =
+        SpecialistCall("FetchUrl", """{"url":"https://www.pnp.co.za/search/uie"}""");
+
+    private static readonly SessionEvent ReadsRecipe =
+        SpecialistCall("FetchUrl", """{"url":"https://marindakook.co.za/bobotie/"}""");
 
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new EstimatesAtShop().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None).AsTask();
+        new EstimatesAtShop()
+            .GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None)
+            .AsTask();
 
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheShopAndTheTownKeys()
     {
         var grader = new EstimatesAtShop();
 
-        Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required), Is.EqualTo(("estimates-at-shop", 2, GraderKind.FixedRule, true)));
+        Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required),
+            Is.EqualTo(("estimates-at-shop", 2, GraderKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "shop", "town" }));
     }
 
     [Test]
     public async Task PnP_Passes_WhenNoShopPageWasReadNoPriceIsLinkedTheEstimatesAreSaidAndTheBranchIsNamed() =>
-        Assert.That((await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine + PnpBranch))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine + PnpBranch))).Outcome,
+            Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task Woolworths_Passes_WithTheAfrikaansLinesAndHeading() =>
-        Assert.That((await Grade(Woolworths, Text(Estimates + "*Pryse is skattings, nie by 'n winkel nagegaan nie.*\n" + WoolworthsBranch))).Outcome,
+        Assert.That(
+            (await Grade(Woolworths,
+                Text(Estimates + "*Pryse is skattings, nie by 'n winkel nagegaan nie.*\n" + WoolworthsBranch))).Outcome,
             Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task Checkers_Passes_TheSameWay_BecauseNoShopIsPricedNow() =>
-        Assert.That((await Grade(Checkers, Text(Estimates + EstimatesLine + "\n### Where to buy\n\nCheckers Malmesbury\n"))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That(
+            (await Grade(Checkers, Text(Estimates + EstimatesLine + "\n### Where to buy\n\nCheckers Malmesbury\n")))
+            .Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task ItFails_WhenAShopPageWasReadWithReadRenderedPage()
@@ -61,11 +78,13 @@ public class EstimatesAtShopTests
 
     [Test]
     public async Task ItFails_WhenAShopPageWasFetchedWithFetchUrl() =>
-        Assert.That((await Grade(Pnp, FetchesPnp, Text(Estimates + EstimatesLine + PnpBranch))).Outcome, Is.EqualTo(GradeOutcome.Fail));
+        Assert.That((await Grade(Pnp, FetchesPnp, Text(Estimates + EstimatesLine + PnpBranch))).Outcome,
+            Is.EqualTo(GradeOutcome.Fail));
 
     [Test]
     public async Task ItFails_WhenAShopToolWasCalled() =>
-        Assert.That((await Grade(Pnp, SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"uie"}"""),
+        Assert.That((await Grade(Pnp,
+            SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"uie"}"""),
             Text(Estimates + EstimatesLine + PnpBranch))).Outcome, Is.EqualTo(GradeOutcome.Fail));
 
     [Test]
@@ -89,7 +108,8 @@ public class EstimatesAtShopTests
     [Test]
     public async Task ItFails_WhenNoBranchIsNamed()
     {
-        var grade = await Grade(Pnp, Text(Estimates + EstimatesLine + "\n### Where to buy\n\nAny supermarket near you.\n"));
+        var grade = await Grade(Pnp,
+            Text(Estimates + EstimatesLine + "\n### Where to buy\n\nAny supermarket near you.\n"));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("branch"));
@@ -98,16 +118,19 @@ public class EstimatesAtShopTests
     [Test]
     public async Task ItIsUnknown_ForAnInfrastructureFailure()
     {
-        var failed = Trial(CookEvalMode, "cook-x", Pnp, null, Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TrialFailure.Timeout));
+        var failed = Trial(CookEvalMode, "cook-x", Pnp, null,
+            Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TrialFailure.Timeout));
 
-        Assert.That((await new EstimatesAtShop().GradeAsync(failed, CancellationToken.None)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
+        Assert.That((await new EstimatesAtShop().GradeAsync(failed, CancellationToken.None)).Outcome,
+            Is.EqualTo(GradeOutcome.Unknown));
     }
 
     // Version 2 (review of 0ea184ef1953): a fail says which case it is, so it can be told apart without the answer, and the branch is read the way a person reads it.
     [Test]
     public async Task ItFails_SayingThereIsNoWhereToBuySection_WhenThereIsNone()
     {
-        var grade = await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine + "\n### Recipe\n\nPick n Pay Malmesbury\n"));
+        var grade = await Grade(Pnp, ReadsRecipe,
+            Text(Estimates + EstimatesLine + "\n### Recipe\n\nPick n Pay Malmesbury\n"));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("no Where to buy section"));
@@ -116,7 +139,8 @@ public class EstimatesAtShopTests
     [Test]
     public async Task ItFails_SayingNoBranchOfTheShopWithAPlace_WhenTheSectionNamesNone()
     {
-        var grade = await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine + "\n### Where to buy\n\nAny supermarket near you.\n"));
+        var grade = await Grade(Pnp, ReadsRecipe,
+            Text(Estimates + EstimatesLine + "\n### Where to buy\n\nAny supermarket near you.\n"));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("no pnp branch with a place"));
@@ -126,7 +150,7 @@ public class EstimatesAtShopTests
     public async Task ItFails_SayingOnlyANearestBranch_WhenThatIsAllItGives()
     {
         var grade = await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine
-            + "\n### Where to buy\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| Pick n Pay | nearest Pick n Pay | |\n"));
+                                                                 + "\n### Where to buy\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| Pick n Pay | nearest Pick n Pay | |\n"));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("only a nearest pnp branch"));
@@ -135,5 +159,6 @@ public class EstimatesAtShopTests
     [Test]
     public async Task ItPasses_WhenTheTableOfAPlainBoldHeadingNamesTheBranch() =>
         Assert.That((await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine
-            + "\n**Where to buy**\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| PnP | Pick n Pay Menlyn | Menlyn Park |\n"))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+                                                                  + "\n**Where to buy**\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| PnP | Pick n Pay Menlyn | Menlyn Park |\n")))
+            .Outcome, Is.EqualTo(GradeOutcome.Pass));
 }

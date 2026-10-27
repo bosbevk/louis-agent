@@ -8,10 +8,12 @@ public partial class Ring
     [Parameter, EditorRequired] public IReadOnlyList<double> Parts { get; set; } = [];
 
     /// <summary>One colour per part, so a part of 0 keeps its own colour.</summary>
-    [Parameter, EditorRequired] public IReadOnlyList<string> Colours { get; set; } = [];
+    [Parameter, EditorRequired]
+    public IReadOnlyList<string> Colours { get; set; } = [];
 
     /// <summary>One title per part: the arc's hover and the ring's label for a screen reader.</summary>
-    [Parameter, EditorRequired] public IReadOnlyList<string> Titles { get; set; } = [];
+    [Parameter, EditorRequired]
+    public IReadOnlyList<string> Titles { get; set; } = [];
 
     [Parameter, EditorRequired] public string Centre { get; set; } = "";
 

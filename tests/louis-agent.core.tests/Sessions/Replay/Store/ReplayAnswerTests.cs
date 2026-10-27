@@ -11,7 +11,8 @@ public class ReplayAnswerTests
     [Test]
     public void AnAnsweredRecording_GivesItsValue()
     {
-        var page = new ReplayPage("https://example.com/after", "<html>é</html>", ["{}"], "r", [new BrowserCookie("a", "b", ".example.com")]);
+        var page = new ReplayPage("https://example.com/after", "<html>é</html>", ["{}"], "r",
+            [new BrowserCookie("a", "b", ".example.com")]);
 
         var value = new ReplayAnswer<ReplayPage>.Answered(page).OrThrow(error => new InvalidOperationException(error));
 
@@ -25,7 +26,11 @@ public class ReplayAnswerTests
         var built = new WebBrowserException("built");
 
         var thrown = Assert.Throws<WebBrowserException>(() =>
-            new ReplayAnswer<ReplayPage>.Failed("The page at https://x refused it.").OrThrow(error => { seen = error; return built; }))!;
+            new ReplayAnswer<ReplayPage>.Failed("The page at https://x refused it.").OrThrow(error =>
+            {
+                seen = error;
+                return built;
+            }))!;
 
         Assert.That(thrown, Is.SameAs(built));
         Assert.That(seen, Is.EqualTo("The page at https://x refused it."));

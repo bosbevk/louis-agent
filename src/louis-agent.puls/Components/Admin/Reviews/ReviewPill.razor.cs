@@ -13,7 +13,8 @@ public partial class ReviewPill : IDisposable
     [Parameter] public IReadOnlyList<GraderRow>? Order { get; set; }
     [Parameter, EditorRequired] public ConversationRef Conversation { get; set; } = null!;
 
-    private ReviewState State => ReviewStatus.Of(Grades, Order, Reviewer.Name, judge => Reviewer.Graded(Conversation, judge));
+    private ReviewState State =>
+        ReviewStatus.Of(Grades, Order, Reviewer.Name, judge => Reviewer.Graded(Conversation, judge));
 
     protected override async Task OnInitializedAsync()
     {

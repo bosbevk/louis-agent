@@ -9,5 +9,10 @@ namespace LouisAgent.Evals.Running;
 /// recorded run's <em>id</em> (not a trial's key: the runner builds each trial's key from it), set only for a replay.
 /// <paramref name="Split"/> (F18 step 5.4, <c>--split</c>) picks the scenarios: the dev ones by default.
 /// </summary>
-public sealed record EvalRun(string RunId, int Repeats, WebReplayMode? Web = null, string? Of = null, bool Model = false,
+public sealed record EvalRun(
+    string RunId,
+    int Repeats,
+    WebReplayMode? Web = null,
+    string? Of = null,
+    bool Model = false,
     SplitSelection Split = SplitSelection.Dev);

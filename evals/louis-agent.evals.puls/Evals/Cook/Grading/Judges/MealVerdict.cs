@@ -4,7 +4,9 @@ using System.Text.Json.Serialization;
 namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
 
 /// <summary>The judge's reply (ADR 0041: a known shape is a record the serializer reads): <c>meal</c> true, false or null for "can't tell", and the reason in a sentence.</summary>
-public sealed record MealVerdict([property: JsonPropertyName("meal")] bool? Meal, [property: JsonPropertyName("reason")] string? Reason)
+public sealed record MealVerdict(
+    [property: JsonPropertyName("meal")] bool? Meal,
+    [property: JsonPropertyName("reason")] string? Reason)
 {
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
 

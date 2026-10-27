@@ -8,5 +8,6 @@ public static class TokenKinds
     public static IReadOnlyList<string> Colours { get; } = [.. Names.Select((_, i) => ChartPalette.Series(i))];
 
     /// <summary>"input 1,200" for each kind, from the four counts.</summary>
-    public static IReadOnlyList<string> Titles(IReadOnlyList<long> parts) => [.. Names.Select((name, i) => $"{name} {parts[i]:N0}")];
+    public static IReadOnlyList<string> Titles(IReadOnlyList<long> parts) =>
+        [.. Names.Select((name, i) => $"{name} {parts[i]:N0}")];
 }

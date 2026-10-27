@@ -19,7 +19,14 @@ public class DotNetToolsTests
     [TearDown]
     public void TearDown()
     {
-        try { Directory.Delete(_root, recursive: true); } catch (IOException) { /* build servers may hold files briefly */ }
+        try
+        {
+            Directory.Delete(_root, recursive: true);
+        }
+        catch (IOException)
+        {
+            /* build servers may hold files briefly */
+        }
     }
 
     [Test]
@@ -47,10 +54,10 @@ public class DotNetToolsTests
     public void SummarizeBuild_ExtractsDistinctErrorsAndWarnings()
     {
         const string output = """
-            C:\src\Foo.cs(12,5): error CS1002: ; expected [C:\src\Foo.csproj]
-            C:\src\Foo.cs(12,5): error CS1002: ; expected [C:\src\Foo.csproj]
-            C:\src\Bar.cs(3,1): warning CS0168: The variable 'x' is declared but never used [C:\src\Foo.csproj]
-            """;
+                              C:\src\Foo.cs(12,5): error CS1002: ; expected [C:\src\Foo.csproj]
+                              C:\src\Foo.cs(12,5): error CS1002: ; expected [C:\src\Foo.csproj]
+                              C:\src\Bar.cs(3,1): warning CS0168: The variable 'x' is declared but never used [C:\src\Foo.csproj]
+                              """;
         var summary = DotNetTools.SummarizeBuild(new ProcessRunner.Result(1, output, false), includeWarnings: true);
 
         Assert.That(summary, Does.StartWith("FAILED"));
@@ -63,16 +70,16 @@ public class DotNetToolsTests
     public void SummarizeTests_ReturnsSummaryAndFailureDetails()
     {
         const string output = """
-              Passed MyTests.Adds [1 ms]
-              Failed MyTests.Divides [3 ms]
-              Error Message:
-                 Expected: 2  But was: 3
-              Stack Trace:
-                 at MyTests.Divides() in C:\src\MyTests.cs:line 20
-              Passed MyTests.Subtracts [1 ms]
+                                Passed MyTests.Adds [1 ms]
+                                Failed MyTests.Divides [3 ms]
+                                Error Message:
+                                   Expected: 2  But was: 3
+                                Stack Trace:
+                                   at MyTests.Divides() in C:\src\MyTests.cs:line 20
+                                Passed MyTests.Subtracts [1 ms]
 
-            Failed!  - Failed:     1, Passed:     2, Skipped:     0, Total:     3, Duration: 10 ms - MyTests.dll (net10.0)
-            """;
+                              Failed!  - Failed:     1, Passed:     2, Skipped:     0, Total:     3, Duration: 10 ms - MyTests.dll (net10.0)
+                              """;
         var summary = DotNetTools.SummarizeTests(new ProcessRunner.Result(1, output, false));
 
         Assert.That(summary, Does.Contain("Failed!  - Failed:     1"));

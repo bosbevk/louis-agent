@@ -15,7 +15,8 @@ namespace LouisAgent.Web.Shared.Tests.Chats;
 // never belonged, and added a case per event the stream folds.
 public class TurnStreamTests
 {
-    private static string[] Strings(JsonElement e, string name) => e.GetProperty(name).EnumerateArray().Select(v => v.GetString()!).ToArray();
+    private static string[] Strings(JsonElement e, string name) =>
+        e.GetProperty(name).EnumerateArray().Select(v => v.GetString()!).ToArray();
 
     [Test]
     public async Task TurnStream_ReadsPulssCallsAndTheSpecialistsAsTheHarnessDoes()
@@ -46,7 +47,8 @@ public class TurnStreamTests
 
     // ---- One case per event the stream folds. ----
 
-    private static SessionEvent Event(string type, string json) => SessionEvent.From(type, JsonDocument.Parse(json).RootElement);
+    private static SessionEvent Event(string type, string json) =>
+        SessionEvent.From(type, JsonDocument.Parse(json).RootElement);
 
     private static Turn Apply(params (string Type, string Json)[] events)
     {
@@ -58,7 +60,9 @@ public class TurnStreamTests
     [Test]
     public void MessageStart_SetsTheToolsetsAndTheRole()
     {
-        var turn = Apply(("message_start", SampleToolset.Fill(SampleRole.Fill("""{"type":"message_start","message":{"session_id":"s","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}"""))));
+        var turn = Apply(("message_start",
+            SampleToolset.Fill(SampleRole.Fill(
+                """{"type":"message_start","message":{"session_id":"s","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}"""))));
 
         Assert.That(turn.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
         Assert.That(turn.Role, Is.EqualTo(SampleRole.Alpha));
@@ -68,9 +72,12 @@ public class TurnStreamTests
     public void Text_OpensABlock_AndEveryDeltaAppendsToIt()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}"""),
-            ("content_block_delta", """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""),
-            ("content_block_delta", """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" daar"}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}"""),
+            ("content_block_delta",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""),
+            ("content_block_delta",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" daar"}}"""),
             ("content_block_stop", """{"type":"content_block_stop","index":0}"""));
 
         Assert.That(turn.Blocks, Has.Count.EqualTo(1));
@@ -82,8 +89,10 @@ public class TurnStreamTests
     public void Thinking_OpensABlock_AndItsStopRecordsHowLongItTook()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}"""),
-            ("content_block_delta", """{"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Eers die winkel"}}"""));
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}"""),
+            ("content_block_delta",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Eers die winkel"}}"""));
         Assert.That(turn.Blocks[0].Kind, Is.EqualTo(BlockKind.Thinking));
         Assert.That(turn.Blocks[0].Text, Is.EqualTo("Eers die winkel"));
         Assert.That(turn.Blocks[0].ThinkingSeconds, Is.Null, "still thinking");
@@ -96,9 +105,11 @@ public class TurnStreamTests
     public void AToolCall_AndItsResult_ShareOneBlock()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"WebSearch","input":{"query":"resep"}}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"WebSearch","input":{"query":"resep"}}}"""),
             ("content_block_stop", """{"type":"content_block_stop","index":0}"""),
-            ("content_block_start", """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"3 results","is_error":false}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"3 results","is_error":false}}"""),
             ("content_block_stop", """{"type":"content_block_stop","index":1}"""));
 
         Assert.That(turn.Blocks, Has.Count.EqualTo(1), "the result lands on the call's block");
@@ -114,8 +125,10 @@ public class TurnStreamTests
     public void AFailedToolResult_MarksItsCall()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"FetchUrl","input":{}}}"""),
-            ("content_block_start", """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"Error: 404","is_error":true}}"""));
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"FetchUrl","input":{}}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"Error: 404","is_error":true}}"""));
 
         Assert.That(turn.Blocks[0].ToolInput, Is.Null, "no arguments: nothing to show");
         Assert.That(turn.Blocks[0].ToolFailed, Is.True);
@@ -126,10 +139,18 @@ public class TurnStreamTests
     public void ASubSessionEvent_FoldsIntoTheDelegationCallsOwnTurn()
     {
         var turn = Apply(
-            ("content_block_start", SampleRole.Fill("""{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"StartSubSession","input":{"toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}}}""")),
-            ("sub_session", SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}}""")))),
-            ("sub_session", SampleIdentity.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}""")),
-            ("sub_session", SampleIdentity.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}}""")));
+            ("content_block_start",
+                SampleRole.Fill(
+                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"StartSubSession","input":{"toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}}}""")),
+            ("sub_session",
+                SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill(
+                    """{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}}""")))),
+            ("sub_session",
+                SampleIdentity.Fill(
+                    """{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}""")),
+            ("sub_session",
+                SampleIdentity.Fill(
+                    """{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}}""")));
 
         var call = turn.Blocks.Single();
         Assert.That(call.SubAgent, Is.EqualTo(SampleIdentity.Alpha));
@@ -142,7 +163,8 @@ public class TurnStreamTests
     [Test]
     public void MessageDelta_SetsTheStopReason_AndTheUsage()
     {
-        var turn = Apply(("message_delta", """{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":4,"cache_creation_input_tokens":100,"cache_read_input_tokens":2000,"output_tokens":50,"requests":2,"cost":0.0031,"currency":"USD","unpriced":0}}"""));
+        var turn = Apply(("message_delta",
+            """{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":4,"cache_creation_input_tokens":100,"cache_read_input_tokens":2000,"output_tokens":50,"requests":2,"cost":0.0031,"currency":"USD","unpriced":0}}"""));
 
         Assert.That(turn.StopReason, Is.EqualTo("end_turn"));
         Assert.That(turn.Usage, Is.EqualTo(new TurnUsage(4, 100, 2000, 50, 2, 0.0031m, "USD", 0)));
@@ -160,10 +182,12 @@ public class TurnStreamTests
     [Test]
     public void AnError_SetsTheMessage_AndKeepsWhatTheTurnUsed()
     {
-        var turn = Apply(("error", """{"type":"error","error":{"type":"api_error","message":"TimeoutException: too slow"},"usage":{"input_tokens":4,"output_tokens":0,"requests":1,"cost":null,"currency":null,"unpriced":1}}"""));
+        var turn = Apply(("error",
+            """{"type":"error","error":{"type":"api_error","message":"TimeoutException: too slow"},"usage":{"input_tokens":4,"output_tokens":0,"requests":1,"cost":null,"currency":null,"unpriced":1}}"""));
 
         Assert.That(turn.Error, Is.EqualTo("TimeoutException: too slow"));
-        Assert.That(turn.Usage, Is.EqualTo(new TurnUsage(4, 0, 0, 0, 1, null, null, 1)), "FX6: the failed turn's requests still count");
+        Assert.That(turn.Usage, Is.EqualTo(new TurnUsage(4, 0, 0, 0, 1, null, null, 1)),
+            "FX6: the failed turn's requests still count");
     }
 
     [Test]

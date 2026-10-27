@@ -40,7 +40,11 @@ public sealed record SessionReplay(WebReplayMode Web, string? Of, bool Model)
     {
         if (!SettingChoice.TryParse(setting, out WebReplayMode? mode))
             throw new ArgumentException(MessageText.Format(SessionErrorMessage.UnknownWebReplay,
-                new { Value = setting?.Trim(), Supported = string.Join(" or ", SettingChoice.Names<WebReplayMode>()) }));
+                new
+                {
+                    Value = setting?.Trim(),
+                    Supported = string.Join(" or ", SettingChoice.Names<WebReplayMode>())
+                }));
         return mode ?? WebReplayMode.Off;
     }
 

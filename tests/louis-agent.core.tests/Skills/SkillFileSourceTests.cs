@@ -34,8 +34,10 @@ public class SkillFileSourceTests
     public void AFolder_ListsItsFiles()
     {
         // CL15: the roles here are the tests' own (Prompts/), registered as an identity's are; Puls's live in its identity.
-        Assert.That(SkillFileSource.Files(CoreToolset.Specialists.Wire()), Is.EqualTo(new[] { "testprod-specialist.md" }));
-        Assert.That(SkillFileSource.Files(CoreToolset.Minions.Wire()), Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
+        Assert.That(SkillFileSource.Files(CoreToolset.Specialists.Wire()),
+            Is.EqualTo(new[] { "testprod-specialist.md" }));
+        Assert.That(SkillFileSource.Files(CoreToolset.Minions.Wire()),
+            Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
     }
 
     [Test]
@@ -78,7 +80,8 @@ public class SkillFileSourceTests
         Directory.CreateDirectory(Path.Combine(_dir, CoreToolset.Specialists.Wire()));
         File.WriteAllText(Path.Combine(_dir, CoreToolset.Specialists.Wire(), "puls-baker.md"), "# Baker");
 
-        Assert.That(SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"), Is.Null);
+        Assert.That(SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"),
+            Is.Null);
     }
 
     [Test]

@@ -48,11 +48,16 @@ public class RepeatedNameTests
     /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
-        ("src/louis-agent.puls/Components/Landing/", "", "the landing page's display content: a mock of a chat, with the toolsets it pretends to use"),
-        ("tests/louis-agent.evals.tests/Protocol/ProtocolWriterTests.cs", "", "the writer's lines are compared with the Python-recorded fixture, which holds these names: recorded data stays as recorded"),
-        ("tests/louis-agent.web.testing/SessionStreamFixture.cs", "CookRole", "the role of the recorded turn, named once: the goldens and the replay tests read it"),
-        ("tests/louis-agent.api.tests/Benchmarks/Reports/BenchmarkManualTests.cs", "", "each real eval beside its manual: the names the real runner offers"),
-        ("tests/louis-agent.api.tests/Sessions/StreamGoldenTests.cs", "call_sub", "the sub-session event is written into the recorded stream golden, which holds the peer's name: recorded data stays as recorded"),
+        ("src/louis-agent.puls/Components/Landing/", "",
+            "the landing page's display content: a mock of a chat, with the toolsets it pretends to use"),
+        ("tests/louis-agent.evals.tests/Protocol/ProtocolWriterTests.cs", "",
+            "the writer's lines are compared with the Python-recorded fixture, which holds these names: recorded data stays as recorded"),
+        ("tests/louis-agent.web.testing/SessionStreamFixture.cs", "CookRole",
+            "the role of the recorded turn, named once: the goldens and the replay tests read it"),
+        ("tests/louis-agent.api.tests/Benchmarks/Reports/BenchmarkManualTests.cs", "",
+            "each real eval beside its manual: the names the real runner offers"),
+        ("tests/louis-agent.api.tests/Sessions/StreamGoldenTests.cs", "call_sub",
+            "the sub-session event is written into the recorded stream golden, which holds the peer's name: recorded data stays as recorded"),
     ];
 
     private static IEnumerable<string> SourceFiles() => SourceTree.Files();
@@ -61,7 +66,9 @@ public class RepeatedNameTests
 
     /// <summary>The wire names an enum file declares: a member's <c>[WireName]</c> (or .NET's <c>[JsonStringEnumMemberName]</c> under it), or its name in lower case.</summary>
     private static IEnumerable<string> WireNames(string file) =>
-        Regex.Matches(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file)), @"^\s*(?:\[(?:WireName|JsonStringEnumMemberName)\(""(?<wire>[^""]+)""\)\]\s*)?(?<name>[A-Z]\w*),\s*$", RegexOptions.Multiline)
+        Regex.Matches(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file)),
+                @"^\s*(?:\[(?:WireName|JsonStringEnumMemberName)\(""(?<wire>[^""]+)""\)\]\s*)?(?<name>[A-Z]\w*),\s*$",
+                RegexOptions.Multiline)
             .Select(m => m.Groups["wire"].Success ? m.Groups["wire"].Value : m.Groups["name"].Value.ToLowerInvariant());
 
     private sealed record Site(string File, int Line, string Name, string Text);
@@ -76,36 +83,46 @@ public class RepeatedNameTests
             // An enum file is scanned like any other: only an enum's own body is skipped (DeclarationBodies). The same holds for the one class of an ids file.
             if (rel.StartsWith("tests/louis-agent.core.tests/RepeatedNames/")) continue;
             var idsClasses = IdsFiles.Where(ids => ids.File == rel).Select(ids => ids.Class).ToList();
-            foreach (var hit in NameScan.Flagged(File.ReadAllText(path), names, idsClasses)) sites.Add(new Site(rel, hit.Line, hit.Value, hit.Text));
+            foreach (var hit in NameScan.Flagged(File.ReadAllText(path), names, idsClasses))
+                sites.Add(new Site(rel, hit.Line, hit.Value, hit.Text));
         }
+
         return sites;
     }
 
-    private static bool InFile(string file, string exempt) => exempt.EndsWith('/') ? file.StartsWith(exempt, StringComparison.Ordinal) : file == exempt;
+    private static bool InFile(string file, string exempt) =>
+        exempt.EndsWith('/') ? file.StartsWith(exempt, StringComparison.Ordinal) : file == exempt;
 
-    private static bool IsExempt(Site site) => Exemptions.Any(e => InFile(site.File, e.File) && site.Text.Contains(e.Line, StringComparison.Ordinal));
+    private static bool IsExempt(Site site) => Exemptions.Any(e =>
+        InFile(site.File, e.File) && site.Text.Contains(e.Line, StringComparison.Ordinal));
 
     [Test]
     public void TheEnumFilesDeclareTheirNames()
     {
         foreach (string file in EnumFiles)
             Assert.That(WireNames(file).ToList(), Is.Not.Empty, file);
-        Assert.That(EnumFiles.SelectMany(WireNames), Does.Contain("web").And.Contain("shops").And.Contain("powershell"), "the scan guards the toolsets and the languages");
+        Assert.That(EnumFiles.SelectMany(WireNames), Does.Contain("web").And.Contain("shops").And.Contain("powershell"),
+            "the scan guards the toolsets and the languages");
     }
 
     [Test]
     public void NoWireNameIsWrittenAsAString_OutsideItsEnum()
     {
-        var offending = Sites().Where(s => !IsExempt(s)).Select(s => $"{s.File}:{s.Line}  \"{s.Name}\"  {s.Text}").ToList();
+        var offending = Sites().Where(s => !IsExempt(s)).Select(s => $"{s.File}:{s.Line}  \"{s.Name}\"  {s.Text}")
+            .ToList();
 
-        Assert.That(offending, Is.Empty, "a name that repeats is an enum member (ADR 0043):\n" + string.Join("\n", offending.Take(150)) + $"\n({offending.Count} in all)");
+        Assert.That(offending, Is.Empty,
+            "a name that repeats is an enum member (ADR 0043):\n" + string.Join("\n", offending.Take(150)) +
+            $"\n({offending.Count} in all)");
     }
 
     [Test]
     public void EveryExemption_StillMatchesALiteral_SoTheListCannotGoStale()
     {
         var sites = Sites();
-        var stale = Exemptions.Where(e => !sites.Any(s => InFile(s.File, e.File) && s.Text.Contains(e.Line, StringComparison.Ordinal))).Select(e => $"{e.File}: {e.Line}").ToList();
+        var stale = Exemptions
+            .Where(e => !sites.Any(s => InFile(s.File, e.File) && s.Text.Contains(e.Line, StringComparison.Ordinal)))
+            .Select(e => $"{e.File}: {e.Line}").ToList();
 
         Assert.That(stale, Is.Empty);
     }
