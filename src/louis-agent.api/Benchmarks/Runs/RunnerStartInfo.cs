@@ -8,7 +8,8 @@ internal sealed record RunnerPaths(string WorkspaceRoot, string PulsApi, string 
 /// <summary>
 /// The start of one run's process (F18 step 4.3; taken out of <see cref="BenchmarkRunner"/> in 6a.5b, which was at its size): an eval's
 /// <c>dotnet {EVAL_RUNNER} run {name} --repeat N [--web record | --replay {runId}]</c>, a re-score's <c>run {name} --rescore {runId}</c>, a judge check's
-/// <c>--calibrate {name} {grader} --labels -</c> (6a.5b), or a script's interpreter with its arguments. Either way an argument list (ADR 0004), and the same environment.
+/// <c>--calibrate {name} {grader} --labels -</c> (6a.5b), or a script's interpreter with its arguments. Either way an argument list (ADR 0004), and the same environment:
+/// the allowlisted part of the API's (<see cref="RunnerEnvironment"/>, FX25) plus what the run is told.
 /// </summary>
 internal static class RunnerStartInfo
 {
@@ -27,6 +28,11 @@ internal static class RunnerStartInfo
         // Arguments as data (ADR 0004): the runner's or the script's path and its arguments are a list, never a command string.
         if (check.Kind == BenchmarkCheckKind.Eval) EvalArguments(check, run, paths, start.ArgumentList);
         else ScriptArguments(check, run, start.ArgumentList);
+        // FX25: the process sees only what it reads and what it needs to start, never the API's secrets; the parent's copy is replaced by the selection.
+        var allowed = RunnerEnvironment.Select(Environment.GetEnvironmentVariables().Cast<System.Collections.DictionaryEntry>()
+            .ToDictionary(e => (string)e.Key, e => e.Value as string ?? ""));
+        start.Environment.Clear();
+        foreach (var (name, value) in allowed) start.Environment[name] = value;
         start.Environment["PULS_API"] = paths.PulsApi;
         // F31: the script (and the runner) tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find their run.
         start.Environment["BENCHMARK_RUN"] = run.Id;

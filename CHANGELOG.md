@@ -3,6 +3,9 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-27 — **FX25 The eval runner sees only what it reads**: a run's process got the API's whole environment; `RunnerEnvironment`
+  keeps an allowlist (the runtime's, the runner's settings, and an Anthropic judge's key under the judge's name only), so the Mongo
+  login, the admin key and the provider keys never reach an eval or a script ([fix](docs/fixes/FX25-runner-environment.md))
 - 2026-10-25 — **FX22 The recipe's image renders**: an image in an answer renders when its exact URL came back in a tool
   result of the same turn, the cook's sub-session included (`ImageSources`, `Block.Images`, `Markdown.ToHtml(markdown, shown)`),
   not only from a shop's host; a delegation call's own result proves nothing; per turn ([fix](docs/fixes/FX22-images-from-tool-results.md))

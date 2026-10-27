@@ -44,7 +44,11 @@ The admin portal lists the evals the runner lists and starts them with `POST /v1
 ```
 
 `web` is `record` or `off`; `replay` is a recorded run's id, with the model's answers (the runner's `--replay`). Send one of them,
-not both, and only for an eval: a Python check answers 400. A portal run is always the `dev` scenarios. The run is stored as it
+not both, and only for an eval: a Python check answers 400. **The run's process sees only what it reads** (FX25): `EVALS`, `CI`, the
+`EVAL_JUDGE_*` settings, `AGENT_API_KEY`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `PRICES_FILE` and `PRICES_URL`, plus what it needs to start
+(`PATH`, a home, a temp folder, `DOTNET_*`) and what the API sets (`PULS_API`, `BENCHMARK_RUN`); an Anthropic judge with no
+`EVAL_JUDGE_API_KEY` gets the Anthropic key under that name. The Mongo login, the admin key and the other provider keys never reach it. A
+setting the runner starts reading must be added to `RunnerEnvironment.Names` in the API, or it never arrives. A portal run is always the `dev` scenarios. The run is stored as it
 runs, with how its web was handled (`web`, `replay_of` in its settings), and a replay never joins a check's trend: it is the recorded
 run again, at no cost.
 
