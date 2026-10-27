@@ -53,14 +53,14 @@ jobs:
       - name: Unit tests
         # The unit tests start no process and need no tool (F18 step 7.6): every integration test carries the Integration mark and lives in a `.integration-tests` project, so the filter leaves them out.
         # One .trx per test project, named by the logger, so they don't overwrite each other.
-        run: dotnet test louis-agent-solution.sln --no-build --filter "Category!=Integration" --logger trx --results-directory TestResults
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category!=Integration" --logger trx --results-directory TestResults/unit
 
       - name: Integration tests
         # The tests that leave their process: real git, bash, interpreters, dotnet child processes and Mongo. A tool this image has that a test cannot find fails the test here, not skips it
         # (INTEGRATION_REQUIRED); only the Puls stack's browser and SearXNG tests still skip, since this image has no such stack.
         env:
           INTEGRATION_REQUIRED: 1
-        run: dotnet test louis-agent-solution.sln --no-build --filter "Category=Integration" --logger trx --results-directory TestResults
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category=Integration" --logger trx --results-directory TestResults/integration
 
       - name: Keep the test results
         if: always()
