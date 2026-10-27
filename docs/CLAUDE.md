@@ -270,6 +270,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   checks come first as **guard clauses**, each stopping early with its error, and the happy path last: never a chain
   of `is { } x && … is { } y ? … : …` that declares variables for a ternary. One condition tests one thing.
   Louis, 2026-10-27, on the manual endpoint's one-line chain: "no human will do that".
+  **It returns `TypedResults`**, its answers declared (`Results<JsonHttpResult<TrendReply>, JsonHttpResult<ApiError>>`,
+  named once with a `using` alias), errors as the `ApiError` record; the records and each wire's options object live
+  in `louis-agent.api.contracts`, which the API and its clients reference, so a client reads `TrendReply`, never a
+  `JsonElement` picked apart by name. Why: [ADR 0045](adr/0045-typed-answers-and-a-shared-contract.md).
 - **Formatting** (Louis, 2026-10-27) — the layout rules live in the root `.editorconfig`: four spaces, a 120-character
   line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces,
   and an initializer (`new { … }`, `new Foo { … }`) with two or more properties puts each on its own line, never

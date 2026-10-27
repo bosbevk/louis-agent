@@ -50,6 +50,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0042](0042-the-web-shows-the-live-results.md) | The web shows the live results: a page renders what it last fetched, fetches again after any write it makes, and never keeps a count the API keeps | Accepted |
 | [0043](0043-repeated-names-are-enums.md) | Repeated names are enums, one per pluggable project: a name written in more than one place (a toolset, a role, a mode) is an enum even in an open set; a pack, an identity or an eval set keeps its own copy and never references another's, the rest share one; wire names stay text, carried as `[WireName]` and parsed once by `SettingChoice` |
 | [0044](0044-the-size-limit-counts-code.md) | The size limit counts code: 200 lines (tests 400) without blank and comment lines, so the comments the rules ask for never force a split | Accepted |
+| [0045](0045-typed-answers-and-a-shared-contract.md) | Typed answers and a shared contract: endpoints return `TypedResults` with `Results<…>` unions, errors are the `ApiError` record, and the records live in `louis-agent.api.contracts` for the API and its clients | Accepted |
 
 ## When to write one
 
