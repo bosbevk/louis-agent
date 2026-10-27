@@ -1,0 +1,190 @@
+{
+  "run": {
+    "id": "run_1",
+    "check": "eval-beta",
+    "repeat": 1,
+    "status": "done",
+    "exit_code": 0,
+    "started_at": "2026-10-25T09:00:00\u002B00:00",
+    "ended_at": "2026-10-25T09:05:00\u002B00:00",
+    "total": {
+      "cost": 1.25,
+      "currency": "USD",
+      "tokens": 1200,
+      "requests": 4
+    },
+    "store_error": null,
+    "models": null,
+    "eval": "eval-beta",
+    "eval_version": 3,
+    "commit": "abc1234",
+    "rescore_of": null,
+    "graders": [
+      {
+        "name": "meal",
+        "version": 1,
+        "kind": "Model",
+        "question": null
+      },
+      {
+        "name": "meal.human",
+        "version": 1,
+        "kind": "Human",
+        "question": "Is this a meal?"
+      }
+    ]
+  },
+  "settings": {
+    "WEB": "record"
+  },
+  "modes": [
+    {
+      "name": "mode-beta",
+      "repeat": 1,
+      "toolsets": [
+        "web"
+      ],
+      "role": "role-alpha",
+      "llm": "haiku",
+      "pass_at_k": 0.5,
+      "pass_hat_k": 0.25,
+      "k": 2,
+      "infrastructure": 0,
+      "retried": 1
+    }
+  ],
+  "log": [
+    "started"
+  ],
+  "notes": [
+    {
+      "text": "Slow.",
+      "at": "2026-10-25T09:00:00\u002B00:00",
+      "conversation": null
+    }
+  ],
+  "summaries": [
+    {
+      "mode": "mode-beta",
+      "slice": "overall",
+      "n": 8,
+      "passed": 6,
+      "failed": 2,
+      "unknown": 0,
+      "infrastructure": 0,
+      "tasks": [
+        "a"
+      ],
+      "too_few": false,
+      "pass_rate": 0.75,
+      "pass_at_k": 0.75,
+      "pass_hat_k": 0.75,
+      "graders": [],
+      "kinds": [],
+      "scores": [],
+      "cost_per_trial": 0,
+      "cost_per_pass": 0
+    }
+  ],
+  "conversations": [
+    {
+      "mode": "mode-beta",
+      "repeat": 1,
+      "task": "bobotie",
+      "order": 1,
+      "role": "role-alpha",
+      "scores": {
+        "routed_right": true
+      },
+      "errors": 0,
+      "seconds": 12.5,
+      "grades": [
+        {
+          "grader": "meal",
+          "version": 1,
+          "score": 1,
+          "outcome": "Pass",
+          "reason": "Good.",
+          "judge_model": "haiku",
+          "judge_prompt_hash": "abc"
+        }
+      ],
+      "outcome": "Pass",
+      "human_grades": [
+        {
+          "mode": "mode-beta",
+          "repeat": 1,
+          "task": "bobotie",
+          "grader": "meal.human",
+          "model_grader": "meal",
+          "verdict": "pass",
+          "note": "Fine.",
+          "reviewer": "louis",
+          "at": "2026-10-25T09:00:00\u002B00:00",
+          "latest": true
+        }
+      ]
+    }
+  ],
+  "agreement": [
+    {
+      "grader": "meal",
+      "person_pass": {
+        "judge_pass": 1,
+        "judge_fail": 0,
+        "judge_unknown": 0
+      },
+      "person_fail": {
+        "judge_pass": 0,
+        "judge_fail": 0,
+        "judge_unknown": 0
+      }
+    }
+  ],
+  "turns": [
+    {
+      "tools": {
+        "calls": 0,
+        "failed": 0,
+        "reasons": []
+      },
+      "mode": "mode-beta",
+      "repeat": 1,
+      "task": "bobotie",
+      "turn": 1,
+      "session": "sess_1",
+      "question": "Bobotie?",
+      "answer": "Here.",
+      "role": "role-alpha",
+      "continued": null,
+      "puls_calls": 1,
+      "specialist_calls": 2,
+      "hosts": [
+        "www.checkers.co.za"
+      ],
+      "seconds": 10.5,
+      "error": null
+    }
+  ],
+  "requests": [
+    {
+      "turn": {
+        "mode": "mode-beta",
+        "repeat": 1,
+        "task": "bobotie",
+        "turn": 1
+      },
+      "at": "2026-10-25T09:00:00\u002B00:00",
+      "purpose": "turn",
+      "session": "sess_1",
+      "parent": null,
+      "model": "haiku",
+      "input_tokens": 10,
+      "output_tokens": 5,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0,
+      "cost": 0.01,
+      "duration_ms": 100
+    }
+  ]
+}

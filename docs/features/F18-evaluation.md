@@ -1149,6 +1149,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the run's log). The note's request and row, and a conversation's key, are contract records. `StoredRunEndpoints`
   read the old note row; it takes `NoteRow.Of` in one line here (the names are one word each, so its bytes don't
   change) and is swept next.
+- **Sweep: `StoredRunEndpoints`.** `StoredRunHandlers` holds the four stored-run routes. The explorer's read is the
+  contract's `StoredRunReply`, built from records for each part (modes, conversations and their grades, the people's
+  grades, agreement, turns, requests, the roll-up's `SummaryRow`, now in the contract without its attributes);
+  `AdminRows` keeps only the live run's row, for the re-score. `StoredRunReplyJsonTests` pinned the read first as a
+  golden file (`StoredRunReply.json`, written from the old code with `LOUIS_UPDATE_GOLDEN=1`), and the new code writes
+  it byte for byte. `StoredRunHandlersTests` and `CreatedJsonTests` were written after their code, so neither was seen
+  failing first.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

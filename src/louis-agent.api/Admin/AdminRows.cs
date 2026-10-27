@@ -1,153 +1,22 @@
 using LouisAgent.Choices;
-using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 
 namespace LouisAgent.Api.Admin;
 
 /// <summary>
-/// The JSON rows the admin endpoints not yet swept still send (F27, F31): a stored run, a conversation, a turn with
-/// what its tools did, a ledger request, and a live run. Each is an anonymous object with the portal's snake_case
-/// names. The standard records (F18 step 4.5b) ride on the run (its eval, version, commit and graders) and on each
-/// conversation (its grades and outcome), with their enums spelt as the protocol and the store spell them
-/// (<c>FixedRule</c>, <c>Pass</c>), so one spelling runs from the runner to the portal. A run from before step 2a
-/// sends null for them, never <c>[]</c> or 0 (ADR 0007).
+/// The last anonymous row an admin endpoint still sends: a live run, for the re-score's 201, until that file is swept.
+/// Its record twin is <c>LiveRunRow</c>.
 /// </summary>
 /// <remarks>
 /// On its way out: the endpoint sweep turns each row into a contract record built by its <c>Of</c>
 /// (<c>Admin/Replies</c>), and a row goes from here when its last caller is swept.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class AdminRows
 {
-    /// <summary>A stored run, as the run page reads it; the list's record twin is <c>StoredRunRow</c>.</summary>
-    public static object RunRow(BenchmarkDocuments.Run r) => new
-    {
-        id = r.Id,
-        check = r.Check,
-        repeat = r.Repeat,
-        status = r.Status.Wire(),
-        exit_code = r.ExitCode,
-        started_at = r.StartedAt,
-        ended_at = r.EndedAt,
-        total = r.Total is null
-            ? null
-            : new
-            {
-                cost = r.Total.Cost,
-                currency = r.Total.Currency,
-                tokens = r.Total.Tokens,
-                requests = r.Total.Requests
-            },
-        store_error = r.StoreError,
-        models = r.Models?.Select(m => new
-        {
-            m.Mode,
-            level = m.Level.Wire(),
-            m.Role,
-            m.Model
-        }),
-        eval = r.Eval,
-        eval_version = r.EvalVersion,
-        commit = r.Commit,
-        rescore_of = r.RescoreOf,
-        graders = r.Graders?.Select(g => new
-        {
-            name = g.Name,
-            version = g.Version,
-            kind = g.Kind.Wire(),
-            question = g.Question
-        }),
-    };
-
-    /// <summary>One conversation of a stored run, with its grades and the people's grades beside them.</summary>
-    public static object ConversationRow(BenchmarkDocuments.Conversation c,
-        IReadOnlyList<Benchmarks.Reviews.HumanGrade>? human = null) => new
-        {
-            mode = c.Key.Mode,
-            repeat = c.Key.Repeat,
-            task = c.Key.Task,
-            order = c.Order,
-            role = c.Role,
-            scores = c.Scores,
-            errors = c.Errors,
-            seconds = c.Seconds,
-            grades = c.Grades?.Select(g => new
-            {
-                grader = g.Grader,
-                version = g.Version,
-                score = g.Score,
-                outcome = g.Outcome.Wire(),
-                reason = g.Reason,
-                judge_model = g.JudgeModel,
-                judge_prompt_hash = g.JudgePromptHash
-            }),
-            outcome = c.Outcome?.Wire(),
-            // People's grades of this conversation (F18 step 6a.2): each reviewer's latest, beside the grades above;
-            // empty when nobody has graded it.
-            human_grades = (human ?? []).Select(g => Endpoints.ReviewEndpoints.Row(g, latest: true)),
-        };
-
     /// <summary>
-    /// A turn, with what its tools did, read from its stored events (step 11c's first half): every run has it.
-    /// </summary>
-    public static object TurnRow(BenchmarkDocuments.Turn t, BenchmarkTools.Summary tools) => new
-    {
-        tools = new
-        {
-            calls = tools.Calls,
-            failed = tools.Failed,
-            reasons = tools.Reasons.Select(r => new
-            {
-                tool = r.Tool,
-                reason = r.Reason,
-                count = r.Count
-            })
-        },
-        mode = t.Key.Mode,
-        repeat = t.Key.Repeat,
-        task = t.Key.Task,
-        turn = t.Key.Turn,
-        session = t.Session,
-        question = t.Question,
-        answer = t.Answer,
-        role = t.Role,
-        continued = t.Continued,
-        puls_calls = t.PulsCalls,
-        specialist_calls = t.SpecialistCalls,
-        hosts = t.Hosts,
-        seconds = t.Seconds,
-        error = t.Error,
-    };
-
-    /// <summary>One model request from the ledger: which turn asked, the model, its tokens, cost and time.</summary>
-    public static object RequestRow(BenchmarkDocuments.Request r) => new
-    {
-        turn = r.Turn is null
-            ? null
-            : new
-            {
-                mode = r.Turn.Mode,
-                repeat = r.Turn.Repeat,
-                task = r.Turn.Task,
-                turn = r.Turn.Turn
-            },
-        at = r.At,
-        purpose = r.Purpose,
-        session = r.Session,
-        parent = r.Parent,
-        model = r.Model,
-        input_tokens = r.InputTokens,
-        output_tokens = r.OutputTokens,
-        cache_read_tokens = r.CacheReadTokens,
-        cache_write_tokens = r.CacheWriteTokens,
-        cost = r.Cost,
-        duration_ms = r.DurationMs,
-    };
-
-    /// <summary>
-    /// A live run: the runner's view, and whether its recording kept everything once it is done. Its record twin is
-    /// <c>LiveRunRow</c>; this one stays for the re-score's 201 until that file is swept.
+    /// A live run: the runner's view, and whether its recording kept everything once it is done. A judge check says
+    /// which run and judge it checks, and its last line, since its lines are not streamed to a page.
     /// </summary>
     public static object Row(BenchmarkRun run, BenchmarkRecorder.Result? stored = null) => new
     {

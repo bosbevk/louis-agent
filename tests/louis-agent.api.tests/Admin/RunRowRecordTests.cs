@@ -9,45 +9,13 @@ using LouisAgent.Testing;
 namespace LouisAgent.Api.Tests.Admin;
 
 /// <summary>
-/// The run rows became contract records: each writes the same bytes the anonymous row it replaces wrote, so the pages
-/// read them as before. The old rows are written as Results.Json wrote them (the web defaults), the records with the
-/// admin options.
+/// The live run's row became a contract record: it writes the same bytes the anonymous row it replaces wrote, so the
+/// pages read it as before. The old row is written as Results.Json wrote it (the web defaults), the record with the
+/// admin options. The stored run's row is pinned by the stored run's golden and <c>AdminRowsTests</c>.
 /// </summary>
 public class RunRowRecordTests
 {
     private static readonly JsonSerializerOptions Web = new(JsonSerializerDefaults.Web);
-    private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
-
-    /// <summary>
-    /// A stored run with everything a run can carry, one from before step 2a, and one that cost nothing known.
-    /// </summary>
-    private static IEnumerable<BenchmarkDocuments.Run> StoredRuns()
-    {
-        yield return new BenchmarkDocuments.Run("run_1", SampleEval.Beta, 2, BenchmarkRunStatus.Done, At,
-            At.AddMinutes(5), 0, Total: new BenchmarkDocuments.Total(1.25m, "USD", 1200, 4), StoreError: "late",
-            Eval: SampleEval.Beta, EvalVersion: 3, Commit: "abc1234",
-            Graders:
-            [
-                new("no-error", 1, BenchmarkGraderKind.FixedRule),
-                new("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")
-            ],
-            Models: [new(SampleMode.Beta, BenchmarkModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")],
-            RescoreOf: "run_0");
-        yield return new BenchmarkDocuments.Run("run_2", SampleEval.Beta, 1, BenchmarkRunStatus.Running, At);
-        yield return new BenchmarkDocuments.Run("run_3", SampleEval.Beta, 1, BenchmarkRunStatus.Failed, At,
-            Total: new BenchmarkDocuments.Total(null, "USD", 0, 0));
-    }
-
-    /// <summary>A stored run's record writes what the anonymous row wrote.</summary>
-    [TestCaseSource(nameof(StoredRuns))]
-    public void AStoredRunsRecord_WritesWhatTheOldRowWrote(BenchmarkDocuments.Run run)
-    {
-        string old = JsonSerializer.Serialize(AdminRows.RunRow(run), Web);
-
-        string now = JsonSerializer.Serialize(StoredRunRow.Of(run), AdminJson.SnakeCase);
-
-        Assert.That(now, Is.EqualTo(old));
-    }
 
     /// <summary>A live run, and a judge check, with and without what its recording kept.</summary>
     private static IEnumerable<TestCaseData> LiveRuns()
