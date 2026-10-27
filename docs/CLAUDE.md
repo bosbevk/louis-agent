@@ -222,7 +222,7 @@ Where things are. What's inside each project (files, key types, settings, tests,
 
 ```
 louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/: the built-in prompts (no product)
-louis-agent.choices/     # SettingChoice: the one parser for a name that is an enum member (a wire name is .NET's [JsonStringEnumMemberName]); references nothing, so every project, ours or anyone's, can use it (ADR 0043)
+louis-agent.choices/     # SettingChoice: the one parser for a name that is an enum member (a wire name is `[WireName]`, built on .NET's `JsonStringEnumMemberName`); references nothing, so every project, ours or anyone's, can use it (ADR 0043)
 identities/              # Who an agent is (CL15): louis-agent.identity.puls (its voice, modes, roles and the packs it names)
 packs/                   # What an agent can do (CL15): louis-agent.pack.shops (the shops toolset, its guide and settings)
 src/

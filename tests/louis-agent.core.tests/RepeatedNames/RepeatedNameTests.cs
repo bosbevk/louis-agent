@@ -43,9 +43,9 @@ public class RepeatedNameTests
 
     private static string Relative(string path) => Path.GetRelativePath(TestPaths.RepoRoot, path).Replace('\\', '/');
 
-    /// <summary>The wire names an enum file declares: a member's <c>[JsonStringEnumMemberName]</c>, or its name in lower case.</summary>
+    /// <summary>The wire names an enum file declares: a member's <c>[WireName]</c> (or .NET's <c>[JsonStringEnumMemberName]</c> under it), or its name in lower case.</summary>
     private static IEnumerable<string> WireNames(string file) =>
-        Regex.Matches(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file)), @"^\s*(?:\[JsonStringEnumMemberName\(""(?<wire>[^""]+)""\)\]\s*)?(?<name>[A-Z]\w*),\s*$", RegexOptions.Multiline)
+        Regex.Matches(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file)), @"^\s*(?:\[(?:WireName|JsonStringEnumMemberName)\(""(?<wire>[^""]+)""\)\]\s*)?(?<name>[A-Z]\w*),\s*$", RegexOptions.Multiline)
             .Select(m => m.Groups["wire"].Success ? m.Groups["wire"].Value : m.Groups["name"].Value.ToLowerInvariant());
 
     private sealed record Site(string File, int Line, string Name, string Text);

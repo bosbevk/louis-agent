@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Datasets;
@@ -11,7 +10,7 @@ namespace LouisAgent.Evals.Datasets;
 public enum SplitSelection
 {
     Dev,
-    [JsonStringEnumMemberName("held_out")] HeldOut,
+    [WireName("held_out")] HeldOut,
     All,
 }
 

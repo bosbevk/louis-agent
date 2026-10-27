@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
 
@@ -10,6 +10,6 @@ public enum BenchmarkTurnFailure
 {
     Timeout,
     Transport,
-    [JsonStringEnumMemberName("api_error")] ApiError,
-    [JsonStringEnumMemberName("replay_miss")] ReplayMiss,
+    [WireName("api_error")] ApiError,
+    [WireName("replay_miss")] ReplayMiss,
 }

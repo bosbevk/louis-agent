@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Trials;
 
@@ -10,6 +10,6 @@ public enum TrialFailure
 {
     Timeout,
     Transport,
-    [JsonStringEnumMemberName("api_error")] ApiError,
-    [JsonStringEnumMemberName("replay_miss")] ReplayMiss,
+    [WireName("api_error")] ApiError,
+    [WireName("replay_miss")] ReplayMiss,
 }

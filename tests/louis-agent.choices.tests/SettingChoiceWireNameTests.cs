@@ -5,14 +5,14 @@ using LouisAgent.Choices;
 namespace LouisAgent.Choices.Tests;
 
 // F18 step 7.5.0, on .NET's own attribute since 7.5.2 (Louis: "Use .NET's JsonStringEnumMemberName"): a name that repeats is an enum, but where it travels it stays the text it always was (`puls-only`, `puls/voice-af`).
-// A member carries that text as [JsonStringEnumMemberName], which .NET's JSON writer reads too, so the parser and the writer cannot disagree. SettingChoice parses it once where it enters (as well as the member's own
+// A member carries that text as [WireName] (our attribute, .NET's JsonStringEnumMemberName underneath), which .NET's JSON writer reads too, so the parser and the writer cannot disagree. SettingChoice parses it once where it enters (as well as the member's own
 // name, case ignored), writes it back with Wire, and lists it in Names. A member with none travels as its name in lower case.
 public class SettingChoiceWireNameTests
 {
     public enum Mode
     {
-        [JsonStringEnumMemberName("puls-only")] PulsOnly,
-        [JsonStringEnumMemberName("puls/voice-af")] VoiceAf,
+        [WireName("puls-only")] PulsOnly,
+        [WireName("puls/voice-af")] VoiceAf,
         Plain,
     }
 
@@ -20,8 +20,8 @@ public class SettingChoiceWireNameTests
     public enum Written
     {
         Plain,
-        [JsonStringEnumMemberName("two_words")] TwoWords,
-        [JsonStringEnumMemberName("held_out")] HeldOut,
+        [WireName("two_words")] TwoWords,
+        [WireName("held_out")] HeldOut,
     }
 
     [TestCase("puls-only", Mode.PulsOnly)]
@@ -33,6 +33,20 @@ public class SettingChoiceWireNameTests
     {
         Assert.That(SettingChoice.TryParse(text, out Mode? choice), Is.True);
         Assert.That(choice, Is.EqualTo(expected));
+    }
+
+    public enum DotNetMarked
+    {
+        [JsonStringEnumMemberName("by-dotnet")] ByDotNet,
+    }
+
+    // SettingChoice reads .NET's attribute (WireName is built on it), so a member someone marks with .NET's own name works too.
+    [Test]
+    public void AMemberMarkedWithDotNetsOwnAttribute_ParsesAndWritesBackToo()
+    {
+        Assert.That(SettingChoice.TryParse("by-dotnet", out DotNetMarked? parsed), Is.True);
+        Assert.That(parsed, Is.EqualTo(DotNetMarked.ByDotNet));
+        Assert.That(SettingChoice.Wire(DotNetMarked.ByDotNet), Is.EqualTo("by-dotnet"));
     }
 
     [TestCase("1")]
