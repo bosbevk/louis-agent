@@ -213,6 +213,21 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
   internal sealed class ChromeSetup : IPageRendererSetup
   ```
+
+  **Inside a method, explain the steps** (Louis, 2026-10-27): a step a reader can't follow at a glance (building a
+  request, a `try` that hides a failure path, a trick such as `using var _`, a rule the code enforces) gets one plain
+  `//` line above it: what it does and why, written like a person. Obvious lines (`_busy = true;`) stay bare, so the
+  comments never drown the code. The same commit-files scope applies. From `NotesPanel.AddAsync`:
+
+  ```csharp
+  // Post it to this run's notes. The run id is escaped because it goes into the web address.
+  using var request = new HttpRequestMessage(HttpMethod.Post, $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}/notes") { Content = JsonContent.Create(body) };
+  // We only need to know it worked. If the API says no, it throws, and the catch below shows why.
+  using var _ = await Api.SendAsync(request);
+  // Saved: empty the box, and tell the run page to fetch the notes again (we never add it to the list ourselves).
+  _text = "";
+  State.Written();
+  ```
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
