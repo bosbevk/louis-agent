@@ -65,7 +65,7 @@ public static class ProtocolTranscripts
             {
                 sessions[turn] = (element.GetProperty("session").GetString()!, element.GetProperty("question").GetString()!,
                     element.GetProperty("seconds").GetDouble(),
-                    element.TryGetProperty("failure", out var failure) ? SettingChoice.TryParse(failure.GetString(), out TrialFailure? f) ? f : null : null);
+                    Failure(element));
             }
         }
 
@@ -77,4 +77,8 @@ public static class ProtocolTranscripts
         element.TryGetProperty("mode", out var m) && m.GetString() == mode
         && element.TryGetProperty("repeat", out var r) && r.GetInt32() == repeat
         && element.TryGetProperty("task", out var t) && t.GetString() == task;
+
+    /// <summary>The infrastructure failure a turn's line names; none when it names none, or one this build doesn't know (a run written by a newer harness).</summary>
+    private static TrialFailure? Failure(JsonElement element) =>
+        element.TryGetProperty("failure", out var name) && SettingChoice.TryParse(name.GetString(), out TrialFailure? failure) ? failure : null;
 }

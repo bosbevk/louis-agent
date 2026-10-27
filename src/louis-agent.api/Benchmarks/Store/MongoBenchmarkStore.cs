@@ -227,9 +227,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d.GetValue("eval_version", BsonNull.Value).IsBsonNull ? null : d["eval_version"].AsInt32,
         StringOf(d.GetValue("commit", BsonNull.Value)),
         d.GetValue("graders", BsonNull.Value).IsBsonNull ? null : d["graders"].AsBsonArray.Select(g => g.AsBsonDocument)
-            .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, ChoiceOf<BenchmarkGraderKind>(g["kind"], "grader kind"), StringOf(g.GetValue("question", BsonNull.Value)))).ToArray(),
+            .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32, ChoiceOf<BenchmarkGraderKind>(g["kind"], "kind"), StringOf(g.GetValue("question", BsonNull.Value)))).ToArray(),
         d.GetValue("models", BsonNull.Value).IsBsonNull ? null : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
-            .Select(m => new ModelUse(m["mode"].AsString, ChoiceOf<BenchmarkModelLevel>(m["level"], "model level"), StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value)))).ToArray(),
+            .Select(m => new ModelUse(m["mode"].AsString, ChoiceOf<BenchmarkModelLevel>(m["level"], "level"), StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value)))).ToArray(),
         SplitOf(d.GetValue("split", BsonNull.Value)),
         StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)));
 
