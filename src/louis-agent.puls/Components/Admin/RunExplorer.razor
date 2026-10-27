@@ -898,28 +898,19 @@
     }
 
     /// <summary>The labels for a conversation: whether it routed right, how many ingredients were priced and from where, deals, wrong or missing shops, and errors.</summary>
+    /// <remarks>
+    /// The ingredient labels are in their own method, so no <c>if</c> sits inside another here: each label is a plain <c>if</c> at the same level.
+    /// </remarks>
     private static IEnumerable<Chip> Chips(ConversationNode c)
     {
         if (c.Scores.ValueKind != JsonValueKind.Object) yield break;
         if (c.Scores.TryGetProperty("routed_right", out var right))
             yield return new Chip($"{c.Role ?? "Puls itself"} {(right.ValueKind == JsonValueKind.True ? "✓" : "✗")}", right.ValueKind == JsonValueKind.True ? "ok" : "bad");
         if (S(c.Scores, "follow_up") is { } follow) yield return new Chip(follow, follow == "continued" ? "ok" : "");
+        // Only a check that lists ingredients has the priced, image and guess labels.
         if (c.Scores.TryGetProperty("ingredients", out var items) && items.ValueKind == JsonValueKind.Number)
-        {
-            decimal ratio = D(c.Scores, "priced_ratio") ?? 0;
-            // FX24: an estimate counts as priced (the cook's answer while the stores' prices are awaited), said apart.
-            int? estimated = c.Scores.TryGetProperty("estimated", out var estimates) && estimates.ValueKind == JsonValueKind.Number ? estimates.GetInt32() : null;
-            int priced = c.Scores.TryGetProperty("priced", out var shopPrices) && shopPrices.ValueKind == JsonValueKind.Number ? shopPrices.GetInt32() : 0;
-            foreach (var chip in PricedChips.Of(priced, estimated, items.GetInt32(), ratio)) yield return new Chip(chip.Text, chip.Kind);
-            int? images = c.Scores.TryGetProperty("images", out var shown) && shown.ValueKind == JsonValueKind.Number ? shown.GetInt32() : null;
-            if (ImageChip.Of(images) is { } image) yield return new Chip(image.Text, image.Kind);
-            // A price without its source is a guess (Louis): orange, never counted as priced.
-            if (c.Scores.TryGetProperty("unsourced", out var guessed) && guessed.ValueKind == JsonValueKind.Number && guessed.GetInt32() > 0)
-                yield return new Chip($"guessed {guessed.GetInt32()}", "warn");
-            // A price per kg given as a pack's (review of PR #58): sourced, but not what the pack costs.
-            if (c.Scores.TryGetProperty("per_kg", out var perKg) && perKg.ValueKind == JsonValueKind.Number && perKg.GetInt32() > 0)
-                yield return new Chip($"per kg {perKg.GetInt32()}", "warn");
-        }
+            foreach (var chip in IngredientChips(c, items.GetInt32())) yield return chip;
+
         // F34: deals named beside a price; a shop priced with no tool for it (Louis: only shops with a tool) is wrong.
         if (c.Scores.TryGetProperty("deals_named", out var deals) && deals.ValueKind == JsonValueKind.Number && deals.GetInt32() > 0)
             yield return new Chip($"deals {deals.GetInt32()}", "ok");
@@ -938,6 +929,32 @@
         if (c.Scores.TryGetProperty("store_default", out var fallback) && fallback.ValueKind == JsonValueKind.Number && fallback.GetInt32() > 0)
             yield return new Chip($"default store {fallback.GetInt32()}", "warn");
         if (c.Errors > 0) yield return new Chip($"errors {c.Errors}", "bad");
+    }
+
+    /// <summary>The labels for a check that lists ingredients: how many were priced and from where, whether images showed, and the prices that were only guessed or given per kilo.</summary>
+    /// <remarks>
+    /// Extract Method. These checks used to sit inside the ingredients <c>if</c> in <c>Chips</c>, an <c>if</c> nested inside an <c>if</c>.
+    /// Here they sit side by side, each one a plain <c>if</c> that adds its label or doesn't, so you can read them one at a time.
+    /// </remarks>
+    private static IEnumerable<Chip> IngredientChips(ConversationNode c, int ingredients)
+    {
+        decimal ratio = D(c.Scores, "priced_ratio") ?? 0;
+
+        // An estimate counts as priced (the cook's answer while the stores' prices are awaited), said apart.
+        int? estimated = c.Scores.TryGetProperty("estimated", out var estimates) && estimates.ValueKind == JsonValueKind.Number ? estimates.GetInt32() : null;
+        int priced = c.Scores.TryGetProperty("priced", out var shopPrices) && shopPrices.ValueKind == JsonValueKind.Number ? shopPrices.GetInt32() : 0;
+        foreach (var chip in PricedChips.Of(priced, estimated, ingredients, ratio)) yield return new Chip(chip.Text, chip.Kind);
+
+        int? images = c.Scores.TryGetProperty("images", out var shown) && shown.ValueKind == JsonValueKind.Number ? shown.GetInt32() : null;
+        if (ImageChip.Of(images) is { } image) yield return new Chip(image.Text, image.Kind);
+
+        // A price without its source is a guess (Louis): orange, never counted as priced.
+        if (c.Scores.TryGetProperty("unsourced", out var guessed) && guessed.ValueKind == JsonValueKind.Number && guessed.GetInt32() > 0)
+            yield return new Chip($"guessed {guessed.GetInt32()}", "warn");
+
+        // A price per kg given as a pack's (review of PR #58): sourced, but not what the pack costs.
+        if (c.Scores.TryGetProperty("per_kg", out var perKg) && perKg.ValueKind == JsonValueKind.Number && perKg.GetInt32() > 0)
+            yield return new Chip($"per kg {perKg.GetInt32()}", "warn");
     }
 
     /// <summary>Who a mode is: Puls with the roles it handed work to, or Puls alone if it handed none.</summary>
@@ -1007,7 +1024,15 @@
         _modes.SelectMany(m => m.Conversations).Where(c => c.Task == task).SelectMany(c => c.Turns).Select(t => t.Question).FirstOrDefault(q => q.Length > 0);
 
     /// <summary>A question cut short to fit a heading.</summary>
-    private static string Blurb(string? question) => string.IsNullOrEmpty(question) ? "" : question.Length <= 56 ? question : question[..55].TrimEnd() + "…";
+    /// <remarks>
+    /// A switch on the shape of the question instead of a ternary inside a ternary: one arm for each case (nothing, short enough, too long), read like a table.
+    /// </remarks>
+    private static string Blurb(string? question) => question switch
+    {
+        null or "" => "",
+        { Length: <= 56 } => question,
+        _ => question[..55].TrimEnd() + "…",
+    };
 
     /// <summary>
     /// Draws a turn's requests on a timeline: Puls's lane and the specialist's, each request a bar from its start to its end.
