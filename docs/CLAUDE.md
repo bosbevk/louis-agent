@@ -172,9 +172,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   class (other than a code-behind, or one the `[GeneratedRegex]` generator requires), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
   splitting it. `FileSizeTests` and `RazorHasNoCodeTests` hold it.
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0034](adr/0034-code-a-person-can-maintain.md).
-- **Every class and method has a summary** (Louis, 2026-10-27) — private and test ones included. Existing code gets
-  them as a change touches it: a step adds them to the classes and methods it changes, never as a big refactor of its
-  own. A class (record, interface) has up to three parts, a method its `<summary>` (and a `<remarks>` when it carries
+- **Every class and method has a summary** (Louis, 2026-10-27) — private and test ones included. Existing code is
+  brought up to this rule file by file: when a step touches a file, every class and method in that file gets its
+  parts, the ones the step didn't change too, and any that don't follow the rule are rewritten. Untouched files wait;
+  never a big refactor of its own. A class (record, interface) has up to three parts, a method its `<summary>` (and a `<remarks>` when it carries
   a pattern of its own):
   - `<summary>`: what it does, written like a person (below).
   - `<remarks>`: when it carries a pattern, which one and **why it was chosen here**: the problem it solves for this
