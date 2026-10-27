@@ -6,7 +6,7 @@ using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// F31 step 6a: a run keeps what it ran with, so a later run is compared with an earlier one knowing what changed.
+/// <summary>A run keeps what it ran with, so a later run can be compared with it knowing what changed.</summary>
 public class BenchmarkSettingsTests
 {
     /// <summary>The runner path these tests use.</summary>

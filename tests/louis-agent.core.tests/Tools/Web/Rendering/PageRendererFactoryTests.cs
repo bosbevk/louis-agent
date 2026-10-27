@@ -5,9 +5,7 @@ using LouisAgent.Core.Tools.Web.Rendering.Providers;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Rendering;
 
-// F32 step 2 (Louis: "ReadRenderedPage we need this for all pages from all providers"): the headless Chrome we run
-// renders whatever the search found; Tavily's Extract stays selectable. PAGE_RENDERER is an enum (ADR 0024); unset, a
-// browser we run comes first, then Tavily's key; a renderer that can't work says what to set on its first call.
+/// <summary>Which page renderer the settings pick: the one named, or else our own Chrome if we know where it runs, or else Tavily's. One that can't work tells the model what to set the first time it's used.</summary>
 public class PageRendererFactoryTests
 {
     /// <summary>The address of the browser these tests pretend to have.</summary>

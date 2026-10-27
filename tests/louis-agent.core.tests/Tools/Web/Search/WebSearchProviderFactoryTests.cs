@@ -4,8 +4,7 @@ using LouisAgent.Core.Tools.Web.Search.Providers;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Search;
 
-// F18 step 7a.1: a run records which engine the instance searched with, so Resolve is the one place that says which. Unset, the
-// first whose settings are set wins (Tavily, Google, SearXNG), else keyless DuckDuckGo.
+/// <summary>Which search engine the settings pick: the one named, or else the first that's set up, ending at keyless DuckDuckGo.</summary>
 public class WebSearchProviderFactoryTests
 {
     /// <summary>The engine follows the settings: the one named, otherwise the first that's set up.</summary>
