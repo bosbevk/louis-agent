@@ -177,15 +177,21 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["settings"] = run.Settings is null ? BsonNull.Value : new BsonDocument(run.Settings.ToDictionary(s => s.Key, s => (object)s.Value)),
         ["modes"] = new BsonArray((run.Modes ?? []).Select(m => new BsonDocument
         {
-            ["name"] = m.Name, ["repeat"] = m.Repeat, ["toolsets"] = new BsonArray(m.Toolsets),
-            ["role"] = Nullable(m.Role), ["llm"] = Nullable(m.Llm),
+            ["name"] = m.Name,
+            ["repeat"] = m.Repeat,
+            ["toolsets"] = new BsonArray(m.Toolsets),
+            ["role"] = Nullable(m.Role),
+            ["llm"] = Nullable(m.Llm),
             ["rates"] = m.Rates is { } r
                 ? new BsonDocument { ["pass_at_k"] = Nullable(r.PassAtK), ["pass_hat_k"] = Nullable(r.PassHatK), ["k"] = r.K, ["infrastructure"] = r.Infrastructure, ["retried"] = r.Retried }
                 : BsonNull.Value,
         })),
         ["total"] = run.Total is null ? BsonNull.Value : new BsonDocument
         {
-            ["cost"] = Nullable(run.Total.Cost), ["currency"] = run.Total.Currency, ["tokens"] = run.Total.Tokens, ["requests"] = run.Total.Requests,
+            ["cost"] = Nullable(run.Total.Cost),
+            ["currency"] = run.Total.Currency,
+            ["tokens"] = run.Total.Tokens,
+            ["requests"] = run.Total.Requests,
         },
         ["log"] = run.Log is null ? BsonNull.Value : new BsonArray(run.Log),
         ["store_error"] = Nullable(run.StoreError),
@@ -195,15 +201,22 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["commit"] = Nullable(run.Commit),
         ["graders"] = run.Graders is null ? BsonNull.Value : new BsonArray(run.Graders.Select(g => new BsonDocument
         {
-            ["name"] = g.Name, ["version"] = g.Version, ["kind"] = g.Kind.Wire(), ["question"] = Nullable(g.Question),
+            ["name"] = g.Name,
+            ["version"] = g.Version,
+            ["kind"] = g.Kind.Wire(),
+            ["question"] = Nullable(g.Question),
         })),
         ["models"] = run.Models is null ? BsonNull.Value : new BsonArray(run.Models.Select(m => new BsonDocument
         {
-            ["mode"] = m.Mode, ["level"] = m.Level.Wire(), ["role"] = Nullable(m.Role), ["model"] = Nullable(m.Model),
+            ["mode"] = m.Mode,
+            ["level"] = m.Level.Wire(),
+            ["role"] = Nullable(m.Role),
+            ["model"] = Nullable(m.Model),
         })),
         // Absent in a run stored before each; read as null: the scenarios the run asked for (F18 step 5.4), the run it re-scored (5b.2) and its roll-up (5c.2).
         ["split"] = Nullable(run.Split is { } split ? split.Wire() : null),
-        ["rescore_of"] = Nullable(run.RescoreOf), ["slices"] = SliceDocuments.ToBson(run.Slices),
+        ["rescore_of"] = Nullable(run.RescoreOf),
+        ["slices"] = SliceDocuments.ToBson(run.Slices),
     };
 
     /// <summary>A run as stored; a mode recorded before CL14 keeps "personality", read as its role (never rewritten).</summary>
@@ -246,12 +259,24 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     private static BsonDocument ToBson(string run, Conversation c) => new()
     {
         ["_id"] = ConversationId(run, c.Key),
-        ["run"] = run, ["mode"] = c.Key.Mode, ["repeat"] = c.Key.Repeat, ["task"] = c.Key.Task,
-        ["order"] = c.Order, ["role"] = Nullable(c.Role), ["scores"] = Bson(c.Scores), ["errors"] = c.Errors, ["seconds"] = c.Seconds,
+        ["run"] = run,
+        ["mode"] = c.Key.Mode,
+        ["repeat"] = c.Key.Repeat,
+        ["task"] = c.Key.Task,
+        ["order"] = c.Order,
+        ["role"] = Nullable(c.Role),
+        ["scores"] = Bson(c.Scores),
+        ["errors"] = c.Errors,
+        ["seconds"] = c.Seconds,
         ["grades"] = c.Grades is null ? BsonNull.Value : new BsonArray(c.Grades.Select(g => new BsonDocument
         {
-            ["grader"] = g.Grader, ["version"] = g.Version, ["score"] = g.Score, ["outcome"] = g.Outcome.Wire(), ["reason"] = g.Reason,
-            ["judge_model"] = Nullable(g.JudgeModel), ["judge_prompt_hash"] = Nullable(g.JudgePromptHash),
+            ["grader"] = g.Grader,
+            ["version"] = g.Version,
+            ["score"] = g.Score,
+            ["outcome"] = g.Outcome.Wire(),
+            ["reason"] = g.Reason,
+            ["judge_model"] = Nullable(g.JudgeModel),
+            ["judge_prompt_hash"] = Nullable(g.JudgePromptHash),
         })),
         ["outcome"] = Nullable(c.Outcome?.Wire()),
     };
@@ -267,15 +292,27 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     private static BsonDocument ToBson(string run, Turn t, IReadOnlyList<StreamEvent> events) => new()
     {
         ["_id"] = TurnId(run, t.Key),
-        ["run"] = run, ["mode"] = t.Key.Mode, ["repeat"] = t.Key.Repeat, ["task"] = t.Key.Task, ["turn"] = t.Key.Turn,
-        ["session"] = t.Session, ["question"] = t.Question, ["answer"] = Nullable(t.Answer), ["role"] = Nullable(t.Role),
-        ["continued"] = Nullable(t.Continued), ["puls_calls"] = t.PulsCalls, ["specialist_calls"] = t.SpecialistCalls,
-        ["hosts"] = new BsonArray(t.Hosts), ["seconds"] = t.Seconds, ["error"] = Nullable(t.Error),
+        ["run"] = run,
+        ["mode"] = t.Key.Mode,
+        ["repeat"] = t.Key.Repeat,
+        ["task"] = t.Key.Task,
+        ["turn"] = t.Key.Turn,
+        ["session"] = t.Session,
+        ["question"] = t.Question,
+        ["answer"] = Nullable(t.Answer),
+        ["role"] = Nullable(t.Role),
+        ["continued"] = Nullable(t.Continued),
+        ["puls_calls"] = t.PulsCalls,
+        ["specialist_calls"] = t.SpecialistCalls,
+        ["hosts"] = new BsonArray(t.Hosts),
+        ["seconds"] = t.Seconds,
+        ["error"] = Nullable(t.Error),
         ["failure"] = Nullable(t.Failure is { } failure ? failure.Wire() : null),
         ["tools"] = t.Tools is { } tools
             ? new BsonDocument
             {
-                ["calls"] = tools.Calls, ["failed"] = tools.Failed,
+                ["calls"] = tools.Calls,
+                ["failed"] = tools.Failed,
                 ["reasons"] = new BsonArray(tools.Reasons.Select(r => new BsonDocument { ["tool"] = r.Tool, ["reason"] = r.Reason, ["count"] = r.Count })),
             }
             : BsonNull.Value,
@@ -305,10 +342,17 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     {
         ["run"] = r.Run,
         ["turn"] = r.Turn is null ? BsonNull.Value : new BsonDocument { ["mode"] = r.Turn.Mode, ["repeat"] = r.Turn.Repeat, ["task"] = r.Turn.Task, ["turn"] = r.Turn.Turn },
-        ["at"] = Date(r.At), ["purpose"] = r.Purpose, ["session"] = Nullable(r.Session), ["parent"] = Nullable(r.Parent),
-        ["model"] = Nullable(r.Model), ["input_tokens"] = Nullable(r.InputTokens), ["output_tokens"] = Nullable(r.OutputTokens),
-        ["cache_read_tokens"] = Nullable(r.CacheReadTokens), ["cache_write_tokens"] = Nullable(r.CacheWriteTokens),
-        ["cost"] = Nullable(r.Cost), ["duration_ms"] = r.DurationMs,
+        ["at"] = Date(r.At),
+        ["purpose"] = r.Purpose,
+        ["session"] = Nullable(r.Session),
+        ["parent"] = Nullable(r.Parent),
+        ["model"] = Nullable(r.Model),
+        ["input_tokens"] = Nullable(r.InputTokens),
+        ["output_tokens"] = Nullable(r.OutputTokens),
+        ["cache_read_tokens"] = Nullable(r.CacheReadTokens),
+        ["cache_write_tokens"] = Nullable(r.CacheWriteTokens),
+        ["cost"] = Nullable(r.Cost),
+        ["duration_ms"] = r.DurationMs,
     };
 
     private static Request RequestOf(BsonDocument d) => new(

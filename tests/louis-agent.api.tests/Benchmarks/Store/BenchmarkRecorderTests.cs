@@ -44,8 +44,19 @@ public class BenchmarkRecorderTests
     private static string TurnDone(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new
         {
-            @event = "turn", mode, repeat, task, turn, session = $"sess_{task}", question = $"{task}?", answer = "Hier is…",
-            role = SampleRole.Alpha, puls_calls = 1, specialist_calls = 6, hosts = new[] { "www.checkers.co.za" }, seconds = 30.5,
+            @event = "turn",
+            mode,
+            repeat,
+            task,
+            turn,
+            session = $"sess_{task}",
+            question = $"{task}?",
+            answer = "Hier is…",
+            role = SampleRole.Alpha,
+            puls_calls = 1,
+            specialist_calls = 6,
+            hosts = new[] { "www.checkers.co.za" },
+            seconds = 30.5,
         });
 
     private static string ConversationDone(string task, string mode = SampleMode.Beta, int repeat = 1) =>
@@ -108,8 +119,20 @@ public class BenchmarkRecorderTests
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"),
-            At(new { @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_bobotie", question = "bobotie?",
-                answer = "", role = (string?)null, seconds = 600.0, failure = "api_error" }),
+            At(new
+            {
+                @event = "turn",
+                mode = SampleMode.Beta,
+                repeat = 1,
+                task = "bobotie",
+                turn = 1,
+                session = "sess_bobotie",
+                question = "bobotie?",
+                answer = "",
+                role = (string?)null,
+                seconds = 600.0,
+                failure = "api_error"
+            }),
             ConversationDone("bobotie"), ModeDone());
         _run.Complete(0);
         await recording;

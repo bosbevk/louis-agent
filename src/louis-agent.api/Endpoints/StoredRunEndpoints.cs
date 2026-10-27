@@ -41,9 +41,17 @@ internal static class StoredRunEndpoints
                 settings = run.Settings,
                 modes = (run.Modes ?? []).Select(m => new
                 {
-                    name = m.Name, repeat = m.Repeat, toolsets = m.Toolsets, role = m.Role, llm = m.Llm,
+                    name = m.Name,
+                    repeat = m.Repeat,
+                    toolsets = m.Toolsets,
+                    role = m.Role,
+                    llm = m.Llm,
                     // The runner's rates for the repeats up to this one (F18 step 5a): null on a mode from before them, never 0.
-                    pass_at_k = m.Rates?.PassAtK, pass_hat_k = m.Rates?.PassHatK, k = m.Rates?.K, infrastructure = m.Rates?.Infrastructure, retried = m.Rates?.Retried,
+                    pass_at_k = m.Rates?.PassAtK,
+                    pass_hat_k = m.Rates?.PassHatK,
+                    k = m.Rates?.K,
+                    infrastructure = m.Rates?.Infrastructure,
+                    retried = m.Rates?.Retried,
                 }),
                 log = run.Log,
                 // F18 step 5c.2: each mode's roll-up as the runner wrote it, priced from the ledger; null for a run from before it.
