@@ -33,6 +33,14 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
     own**, with **three options**, each with what it changes and what it costs, and the one you recommend and why.
     Wait for his pick before writing the code it decides. A mechanical call (a local variable's name, a test's
     wording) is not a finding.
+11. **Look up the pattern, then give three options** (Louis, 2026-10-27). A design choice (how to shape a class, pick an
+    implementation, hold a rule) is never "your call" and never the first pattern that comes to mind: look up the
+    software patterns that fit what we are trying to achieve (a catalogue such as Refactoring.Guru, the Gang of Four,
+    Fowler's refactorings and *Patterns of Enterprise Application Architecture*, Microsoft's .NET guidance), then put
+    **three options** to Louis as rule 10 says, each naming its pattern in plain words, what it changes and what it
+    costs, with the sources and the one you recommend for this goal. The pick is named in the commit, the
+    explanation and the summary of each class that carries it (*Every class and method has a summary*). A brief that
+    leaves a design choice open says so as a finding instead.
 
 ## Steps, branches and commits
 
@@ -164,6 +172,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   class (other than a code-behind, or one the `[GeneratedRegex]` generator requires), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
   splitting it. `FileSizeTests` and `RazorHasNoCodeTests` hold it.
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0034](adr/0034-code-a-person-can-maintain.md).
+- **Every class and method has a summary** (Louis, 2026-10-27) — every class, record, interface and method, private
+  and test ones included, has a `/// <summary>` that says in plain words what it does; one that carries a pattern
+  names it there (`Strategy: …`, `Null Object: …`, rule 11). Existing code gets its summaries as a change touches it:
+  a step adds them to the classes and methods it changes, never as a big refactor of its own.
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).
