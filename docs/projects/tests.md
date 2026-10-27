@@ -71,7 +71,7 @@ internals to none; `ArchitectureTests` holds both.
 ## louis-agent.web.shared.tests, louis-agent.puls.tests, louis-agent.web.tests
 
 The web apps' first tests (T1, CL15: the proof the web sort changes nothing, written before it). The shared library's
-logic with plain NUnit, in folders that mirror it: `TurnStream` (the recorded turn read as the Python harness reads it,
+logic with plain NUnit, in folders that mirror it: `TurnStream` (the recorded turn, which lives in `louis-agent.session-stream.tests/Fixtures/` since F18 step 7.2,
 moved here from the API's tests, and a case per event it folds), `Delegation` and `WorkStatus` (the states a card goes
 through), `UsageFormat` (priced, unpriced, the display currency) and `Markdown` (a table, links, images, raw HTML). Its
 components with bUnit, each rendered from the recorded turn and pinned to the `.html` golden beside its test. Puls's

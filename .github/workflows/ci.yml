@@ -55,10 +55,6 @@ jobs:
         # One .trx per test project, named by the logger, so the four don't overwrite each other.
         run: dotnet test louis-agent-solution.sln --no-build --logger trx --results-directory TestResults
 
-      - name: Test the benchmark harness
-        # F31: the checks' Python (benchmarks/), standard library only, held to the same recorded stream as TurnStream.
-        run: python3 -m unittest discover -s benchmarks -t . -v
-
       - name: Keep the test results
         if: always()
         uses: actions/upload-artifact@v4

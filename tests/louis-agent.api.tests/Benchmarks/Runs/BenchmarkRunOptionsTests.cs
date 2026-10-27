@@ -114,10 +114,11 @@ public class BenchmarkRunOptionsTests
     [Test]
     public async Task APythonCheckStartedWithTheWeb_Is400_BeforeAnythingElseIsAsked()
     {
-        await using var app = ApiTestHost.Build(adminKey: "admin-secret", store: new InMemoryBenchmarkStore());
+        // The one script check the tests give the catalogue (the default has none since F18 step 7.3; step 7.4 removes the script path altogether).
+        await using var app = ApiTestHost.Build(adminKey: "admin-secret", store: new InMemoryBenchmarkStore(), catalog: new BenchmarkCatalog([Script]));
         await app.StartAsync();
         var client = app.GetTestClient();
-        var request = new HttpRequestMessage(HttpMethod.Post, "/v1/admin/benchmarks/stub/runs")
+        var request = new HttpRequestMessage(HttpMethod.Post, "/v1/admin/benchmarks/cook/runs")
         {
             Content = JsonContent.Create(new { repeat = 1, web = "record" }),
         };

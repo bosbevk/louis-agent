@@ -1,7 +1,7 @@
 # F31 · Benchmarks in the admin portal: the checks run from the portal, their results kept in a store
 
 > **Status:** done (2026-10-17), on `feature/F31-benchmarks-portal`; step 11c's rest (a person's notes on a run) is a
-> TODO line ·
+> TODO line · **Since F18 step 7.3 (2026-10-27) the Python checks and `benchmarks/` are deleted:** every check is a C# eval the runner lists, its manual is beside it, and the recorded stream lives with the session-stream tests; this doc records what was built then ·
 > **Milestone:** — · **Depends on:** F27 (the portal, its runner and SSE), F1–F3 (the ledger the costs come from),
 > F25 and F29 (the cook and the role gate the checks measure), F30's build steps (the minions the first measured run
 > compares)

@@ -4,7 +4,7 @@ using LouisAgent.Api.Benchmarks.Runs;
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
 // FX25: the runner's process got the API's whole environment (.NET hands a child the parent's by default), so a run could read the Mongo login, the admin key and every
-// provider key, of which it reads none. Now it gets an allowlist: what the runtime needs to start, what the runner and the Python checks read, and what the API sets for the
+// provider key, of which it reads none. Now it gets an allowlist: what the runtime needs to start, what the runner reads, and what the API sets for the
 // run. An Anthropic judge with no key of its own gets the Anthropic key as the judge's key, under that name only. Written first: the start info copied everything.
 public class RunnerEnvironmentTests
 {
@@ -103,9 +103,6 @@ public class RunnerEnvironmentTests
         foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "evals"), "*.cs", SearchOption.AllDirectories)
                      .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")))
             foreach (Match m in Regex.Matches(File.ReadAllText(file), @"(?:GetEnvironmentVariable|getVariable|\bGet)\(""([A-Z][A-Z0-9_]+)""\)"))
-                read.Add(m.Groups[1].Value);
-        foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "benchmarks"), "*.py", SearchOption.AllDirectories))
-            foreach (Match m in Regex.Matches(File.ReadAllText(file), @"environ(?:\.get)?[\[(]\s*['""]([A-Z][A-Z0-9_]+)['""]"))
                 read.Add(m.Groups[1].Value);
 
         Assert.That(read, Has.Count.GreaterThanOrEqualTo(8), "the scan found the settings the runner reads: " + string.Join(", ", read.Order()));

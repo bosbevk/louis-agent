@@ -125,7 +125,8 @@ public class CalibrationCardTests
         var cut = ctx.Render<CalibrationCard>(p => p.Add(x => x.RunId, "run1").Add(x => x.Grader, "meal-for-people").Add(x => x.HasLabels, true).Add(x => x.Poll, TimeSpan.FromMilliseconds(10)));
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".calibration-check"), Has.Count.EqualTo(1)));
         cut.Find(".calibration-check").Click();
-        await Task.Delay(300);
+        // A plain wait for the condition, not a fixed time: under the whole suite's load the card's loop runs later (WaitForAssertion would hold the renderer the loop needs).
+        for (int waited = 0; waited < 5000 && handler.Requests.Count(r => r.Url.EndsWith("/runs/current")) <= 3; waited += 20) await Task.Delay(20);
         Assert.That(handler.Requests.Count(r => r.Url.EndsWith("/runs/current")), Is.GreaterThan(3), "the card keeps looking while the check runs");
 
         ctx.Dispose();
