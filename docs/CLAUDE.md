@@ -33,6 +33,13 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
     own**, with **three options**, each with what it changes and what it costs, and the one you recommend and why.
     Wait for his pick before writing the code it decides. A mechanical call (a local variable's name, a test's
     wording) is not a finding.
+11. **Look up the pattern, then give three options** (Louis, 2026-10-27). A design choice (how to shape a class, pick an
+    implementation, hold a rule) is never "your call" and never the first pattern that comes to mind: look up the
+    software patterns that fit what we are trying to achieve (a catalogue such as Refactoring.Guru, the Gang of Four,
+    Fowler's refactorings and *Patterns of Enterprise Application Architecture*, Microsoft's .NET guidance), then put
+    **three options** to Louis as rule 10 says, each naming its pattern in plain words, what it changes and what it
+    costs, with the sources and the one you recommend for this goal. The pick is named in the commit and the
+    explanation. A brief that leaves a design choice open says so as a finding instead.
 
 ## Steps, branches and commits
 
