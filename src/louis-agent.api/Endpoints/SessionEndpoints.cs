@@ -7,12 +7,12 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Messages;
 using LouisAgent.Api.Sessions.Streaming;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Endpoints;
 

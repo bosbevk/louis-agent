@@ -31,8 +31,10 @@ an eval, a grader, a pack, an identity) written as a literal in more than one pl
 
 **Text stays text where it travels.** Environment variables, role files (`toolsets: shops?`), request bodies, the protocol and
 stored runs keep their exact wire names (`puls-only`, `puls/voice-af`). A name is parsed once where it enters a project and
-written back by the same table. `Config/SettingChoice` does it: a member carries its wire name as `[WireName("puls-only")]`
-(`WireNameAttribute`, in core), `TryParse` matches the wire name or the member's name with the case ignored, `Wire(member)` writes
+written back by the same table. `SettingChoice` does it, in its own project, `louis-agent.choices`, which references nothing: a member carries
+its wire name as .NET's own `[JsonStringEnumMemberName("puls-only")]`, the attribute the JSON writer reads too, so parsing and JSON cannot disagree, and a
+stranger's pack needs nothing of ours to mark a name (Louis: "say some other guy want to build his own packs or eval or anything pluggable, they must use
+wirename, so shared for all"). `TryParse` matches the wire name or the member's name with the case ignored, `Wire(member)` writes
 it back (the member's name in lower case when it has none), and `Names<T>()` lists wire names. The golden files and the stored runs
 do not change: they are what proves the wire is untouched.
 
@@ -52,7 +54,7 @@ do not change: they are what proves the wire is untouched.
 - **A ratchet per set** (`RepeatedNameTests`) scans a project's sources and tests for each wire name as a string literal and fails
   on one outside the enum's own file, except test data the step listed as wire data (an expected JSON, a role file's header),
   which stays text.
-- **Wire names have one source.** Adding a member is a member and its `[WireName]` in one place; the compiler points at each
+- **Wire names have one source.** Adding a member is a member and its `[JsonStringEnumMemberName]` in one place; the compiler points at each
   `switch` it must handle.
 - **Done one set at a time**, toolsets first (they cross the most projects), each in its own commit.
 

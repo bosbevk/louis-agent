@@ -2,7 +2,6 @@ namespace LouisAgent.Core.Tools.Web;
 
 using System.ComponentModel;
 using System.Text;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Guardrails.Network;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Documents;
@@ -12,6 +11,7 @@ using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Search.Providers;
+using LouisAgent.Choices;
 
 /// <summary>
 /// The web toolset's finding and reading (S: one of its three classes, with <c>QuoteTools</c> and <c>CurrencyTools</c>):

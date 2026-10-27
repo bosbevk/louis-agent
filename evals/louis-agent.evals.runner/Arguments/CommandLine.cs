@@ -1,9 +1,9 @@
 using System.Globalization;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Runner.Messages;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Runner.Arguments;
 

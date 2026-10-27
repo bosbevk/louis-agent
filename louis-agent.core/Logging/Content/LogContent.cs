@@ -3,9 +3,9 @@ namespace LouisAgent.Core.Logging.Content;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
+using LouisAgent.Choices;
 
 /// <summary>
 /// What a log line shows of a value it was given (F18 step 4f; GOAL skill 17, with skill 15's practice). A user's words reach a log

@@ -3,11 +3,11 @@ namespace LouisAgent.Composition;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Shops;
+using LouisAgent.Choices;
 
 /// <summary>
 /// The composition root (CL15, ADR 0027): the one place that knows every identity and pack. A host calls

@@ -1,6 +1,6 @@
 using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Core.Config;
 using MongoDB.Bson;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Benchmarks.Store;
 

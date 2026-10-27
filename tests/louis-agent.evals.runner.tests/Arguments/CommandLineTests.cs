@@ -173,7 +173,7 @@ public class CommandLineTests
     [TestCase("2")]
     public void RefusesAnUnknownSplit_AndANumber(string value) =>
         Assert.That(() => CommandLine.Parse(["run", "stub", "--split", value]),
-            Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{value}'").And.Message.Contains("dev, heldout, all"));
+            Throws.InstanceOf<RunnerException>().With.Message.Contains($"'{value}'").And.Message.Contains("dev, held_out, all"));
 
     [Test]
     public void ASplitComesWithAnyOtherFlag() =>

@@ -4,10 +4,10 @@ using LouisAgent.Packs.Shops.Catalogues;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.Shops.Messages;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Choices;
 
 /// <summary>
 /// The shops toolset (F33 step 3): a shop's products and their prices from the shop's own catalogue, as a short table

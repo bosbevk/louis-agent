@@ -2,6 +2,7 @@ using LouisAgent.Api.Messages;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Sessions.Requests;
 

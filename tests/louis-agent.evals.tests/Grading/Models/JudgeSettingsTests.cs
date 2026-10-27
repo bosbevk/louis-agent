@@ -3,6 +3,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Evals.Grading.Models;
 using Microsoft.Extensions.AI;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Tests.Grading.Models;
 

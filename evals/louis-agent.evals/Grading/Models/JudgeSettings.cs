@@ -1,6 +1,6 @@
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Grading.Models;
 

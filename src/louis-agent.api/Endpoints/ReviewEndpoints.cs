@@ -3,9 +3,9 @@ using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Messages;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Endpoints;
 

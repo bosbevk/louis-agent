@@ -1,5 +1,6 @@
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Tests.Sessions.Requests;
 

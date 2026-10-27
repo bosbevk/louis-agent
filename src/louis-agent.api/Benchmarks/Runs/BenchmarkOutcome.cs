@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>

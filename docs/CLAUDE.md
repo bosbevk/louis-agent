@@ -141,7 +141,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
 - **Choices are enums, not strings** — a value that names one of a fixed set (a provider, a renderer, a freshness, a
-  mode) is an enum, parsed once where it enters with `Config/SettingChoice` (case ignored, aliases, never a number);
+  mode) is an enum, parsed once where it enters with `SettingChoice` (in `louis-agent.choices`; case ignored, aliases, never a number);
   code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point. A name that
   repeats (a toolset, a role, a mode) is an enum too, even in an open set: each pluggable project (pack, identity, eval
   set) keeps its own copy, the rest share one; wire names stay as they are (Louis, 2026-10-27).
@@ -222,6 +222,7 @@ Where things are. What's inside each project (files, key types, settings, tests,
 
 ```
 louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/: the built-in prompts (no product)
+louis-agent.choices/     # SettingChoice: the one parser for a name that is an enum member (a wire name is .NET's [JsonStringEnumMemberName]); references nothing, so every project, ours or anyone's, can use it (ADR 0043)
 identities/              # Who an agent is (CL15): louis-agent.identity.puls (its voice, modes, roles and the packs it names)
 packs/                   # What an agent can do (CL15): louis-agent.pack.shops (the shops toolset, its guide and settings)
 src/

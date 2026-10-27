@@ -1,9 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Datasets;
 

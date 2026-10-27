@@ -1,5 +1,5 @@
 using System.Text.Json;
-using LouisAgent.Core.Config;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
 

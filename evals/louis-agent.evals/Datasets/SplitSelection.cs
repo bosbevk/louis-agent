@@ -1,3 +1,6 @@
+using System.Text.Json.Serialization;
+using LouisAgent.Choices;
+
 namespace LouisAgent.Evals.Datasets;
 
 /// <summary>
@@ -8,18 +11,18 @@ namespace LouisAgent.Evals.Datasets;
 public enum SplitSelection
 {
     Dev,
-    HeldOut,
+    [JsonStringEnumMemberName("held_out")] HeldOut,
     All,
 }
 
 public static class SplitSelections
 {
-    /// <summary>The selection as the protocol's first line names it: the enum's name in snake case (<c>held_out</c>).</summary>
-    public static string WireName(SplitSelection selection) => System.Text.Json.JsonNamingPolicy.SnakeCaseLower.ConvertName(selection.ToString());
+    /// <summary>The selection as the protocol's first line names it (<c>held_out</c>): the member's own wire name, read by <see cref="SettingChoice"/> and by the JSON writer alike (F18 step 7.5.2).</summary>
+    public static string WireName(SplitSelection selection) => SettingChoice.Wire(selection);
 
     /// <summary>The selection a first line names (<see cref="WireName"/>); the default when it names none this build knows, as a run that predates the split did.</summary>
     public static SplitSelection FromWireName(string? name) =>
-        Enum.GetValues<SplitSelection>().FirstOrDefault(selection => WireName(selection) == name);
+        SettingChoice.TryParse(name, out SplitSelection? selection) && selection is { } known ? known : SplitSelection.Dev;
 
     /// <summary>Whether a run with this selection runs a scenario of the split.</summary>
     public static bool Includes(this SplitSelection selection, DatasetSplit split) => selection switch

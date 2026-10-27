@@ -5,6 +5,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Search.Providers;
+using LouisAgent.Choices;
 
 /// <summary>
 /// Picks the search engine from configuration: WEB_SEARCH_PROVIDER = tavily | google | searxng | duckduckgo. When unset,

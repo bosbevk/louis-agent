@@ -1,7 +1,7 @@
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Runner.Arguments;
 

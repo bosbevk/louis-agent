@@ -1,5 +1,4 @@
 using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Core.Config;
 using LouisAgent.Api.Benchmarks.Reports;
 using System.Text.Json;
 using MongoDB.Bson;
@@ -7,6 +6,7 @@ using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Benchmarks.Store;
 

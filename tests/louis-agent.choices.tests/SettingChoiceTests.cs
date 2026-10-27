@@ -1,6 +1,6 @@
-using LouisAgent.Core.Config;
+using LouisAgent.Choices;
 
-namespace LouisAgent.Core.Tests.Config;
+namespace LouisAgent.Choices.Tests;
 
 // F32 step 1b (Louis: "can we make this enums … This must also be a rule"): a setting's allowed values are an enum,
 // parsed once where the setting is read. SettingChoice is the one parser: a name with its case ignored, or an alias;

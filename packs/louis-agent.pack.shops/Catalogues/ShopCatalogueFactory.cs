@@ -1,9 +1,9 @@
 namespace LouisAgent.Packs.Shops.Catalogues;
 
 using LouisAgent.Packs.Shops.Places;
-using LouisAgent.Core.Config;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Choices;
 
 /// <summary>
 /// A catalogue per shop a deployment enables (F33), each reading its shop through the guarded browser. Which shops are

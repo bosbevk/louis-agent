@@ -1,6 +1,6 @@
 using LouisAgent.Api.Sessions.Streaming;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Sessions.Requests;
 

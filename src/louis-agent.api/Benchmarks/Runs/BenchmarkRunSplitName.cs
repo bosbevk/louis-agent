@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
 

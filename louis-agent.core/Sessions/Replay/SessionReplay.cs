@@ -1,6 +1,6 @@
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Messages;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Core.Sessions.Replay;
 

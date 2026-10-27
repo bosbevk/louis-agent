@@ -1,9 +1,9 @@
 using System.Text.Json;
-using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Puls.Shared.Expectations;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Evals.Puls.Evals.Cook.Expectations;
 

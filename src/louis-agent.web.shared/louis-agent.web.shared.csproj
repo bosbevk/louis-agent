@@ -23,6 +23,8 @@
   <ItemGroup>
     <!-- F18 step 1b: the web apps read the session stream through the one reader (CL11). -->
     <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+    <!-- F18 step 7.5.2: the browser parses and writes wire names too, through the same parser as the server. -->
+    <ProjectReference Include="..\..\louis-agent.choices\louis-agent.choices.csproj" />
 
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->

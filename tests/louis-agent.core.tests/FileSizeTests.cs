@@ -9,7 +9,7 @@ public class FileSizeTests
     private const int SourceLimit = 200;
     private const int TestLimit = 400;
 
-    private static readonly string[] SourceRoots = ["louis-agent.core", "identities", "packs", "src", "tools", "evals"];
+    private static readonly string[] SourceRoots = ["louis-agent.core", "louis-agent.choices", "identities", "packs", "src", "tools", "evals"];
 
     /// <summary>Repo-relative, forward slashes, generated from the tree on 2026-10-20; remove a file's line in the commit that splits it.</summary>
     private static readonly HashSet<string> Oversized =

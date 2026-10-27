@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+
 namespace LouisAgent.Core.Logging.Content;
 
 /// <summary>What a log line shows of the values it was given (F18 step 4f, <c>LOG_CONTENT</c>): parsed once with <c>SettingChoice</c> (ADR 0024).</summary>

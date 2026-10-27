@@ -1,0 +1,76 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using LouisAgent.Choices;
+
+namespace LouisAgent.Choices.Tests;
+
+// F18 step 7.5.0, on .NET's own attribute since 7.5.2 (Louis: "Use .NET's JsonStringEnumMemberName"): a name that repeats is an enum, but where it travels it stays the text it always was (`puls-only`, `puls/voice-af`).
+// A member carries that text as [JsonStringEnumMemberName], which .NET's JSON writer reads too, so the parser and the writer cannot disagree. SettingChoice parses it once where it enters (as well as the member's own
+// name, case ignored), writes it back with Wire, and lists it in Names. A member with none travels as its name in lower case.
+public class SettingChoiceWireNameTests
+{
+    public enum Mode
+    {
+        [JsonStringEnumMemberName("puls-only")] PulsOnly,
+        [JsonStringEnumMemberName("puls/voice-af")] VoiceAf,
+        Plain,
+    }
+
+    /// <summary>The snake_case options the harness writes its enums with (EvalJson.SnakeCaseNoNulls): a two-word member without the attribute would be written `two_words` here, but `twowords` by SettingChoice, so such a member carries the attribute.</summary>
+    public enum Written
+    {
+        Plain,
+        [JsonStringEnumMemberName("two_words")] TwoWords,
+        [JsonStringEnumMemberName("held_out")] HeldOut,
+    }
+
+    [TestCase("puls-only", Mode.PulsOnly)]
+    [TestCase("PULS-ONLY", Mode.PulsOnly)]
+    [TestCase(" puls/voice-af ", Mode.VoiceAf)]
+    [TestCase("PulsOnly", Mode.PulsOnly, TestName = "TheMembersOwnNameStillParses")]
+    [TestCase("plain", Mode.Plain)]
+    public void AWireName_OrTheMembersName_ParsesIgnoringCase(string text, Mode expected)
+    {
+        Assert.That(SettingChoice.TryParse(text, out Mode? choice), Is.True);
+        Assert.That(choice, Is.EqualTo(expected));
+    }
+
+    [TestCase("1")]
+    [TestCase("puls_only")]
+    [TestCase("puls")]
+    public void ANumberOrAnythingElse_IsUnknown(string text) => Assert.That(SettingChoice.TryParse(text, out Mode? _), Is.False);
+
+    [Test]
+    public void WireWritesTheTextBack_TheMembersLowerCaseNameWhenItHasNone()
+    {
+        Assert.That(SettingChoice.Wire(Mode.PulsOnly), Is.EqualTo("puls-only"));
+        Assert.That(SettingChoice.Wire(Mode.VoiceAf), Is.EqualTo("puls/voice-af"));
+        Assert.That(SettingChoice.Wire(Mode.Plain), Is.EqualTo("plain"));
+    }
+
+    [Test]
+    public void ParsingWhatWasWritten_GivesTheMemberBack()
+    {
+        foreach (var member in Enum.GetValues<Mode>())
+        {
+            Assert.That(SettingChoice.TryParse(SettingChoice.Wire(member), out Mode? back), Is.True, member.ToString());
+            Assert.That(back, Is.EqualTo(member));
+        }
+    }
+
+    [Test]
+    public void TheNamesAMessageLists_AreTheWireNames_InTheEnumsOrder() =>
+        Assert.That(SettingChoice.Names<Mode>(), Is.EqualTo(new[] { "puls-only", "puls/voice-af", "plain" }));
+
+    // The agreement test: what SettingChoice writes is what the JSON writer writes, for every member, with the options the harness uses. If they ever differ, a stored run and a setting would name one member two ways.
+    [Test]
+    public void WhatSettingChoiceWrites_IsWhatTheJsonWriterWrites_ForEveryMember()
+    {
+        var options = new JsonSerializerOptions { Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) } };
+
+        foreach (var member in Enum.GetValues<Written>())
+            Assert.That(SettingChoice.Wire(member), Is.EqualTo(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(member, options))), member.ToString());
+        foreach (var member in Enum.GetValues<Mode>())
+            Assert.That(SettingChoice.Wire(member), Is.EqualTo(JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(member, options))), member.ToString());
+    }
+}
