@@ -1,6 +1,6 @@
 # 0034. Code a person can maintain: one concern per file, at most 200 lines, no code in razor
 
-**Status:** Accepted · **Date:** 2026-10-20 (Louis, during CL15's layout reviews) · **Recorded:** 2026-10-20
+**Status:** Amended by [0044](0044-the-size-limit-counts-code.md) · **Date:** 2026-10-20 (Louis, during CL15's layout reviews) · **Recorded:** 2026-10-20
 
 ## Context
 

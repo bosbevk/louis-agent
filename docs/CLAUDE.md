@@ -172,12 +172,14 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
   `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that
   needs no component (text, search, formatting) goes in a plain class with NUnit tests. A file holds at most 200
-  lines (a test file 400). Split a bigger class by responsibility: group its methods by the fields they use and the
+  lines of code (a test file 400); blank lines and comment lines (`//`, `///`) don't count, so a summary or a blank
+  line between groups never forces a split (Louis, 2026-10-27, [ADR 0044](adr/0044-the-size-limit-counts-code.md)). Split a bigger class by responsibility: group its methods by the fields they use and the
   reason they would change, and give each group its own class named for what it does (`PaymoClient`, `DiffFormatter`);
   the original keeps only the flow and calls them, pure logic gets its own tests, I/O stays at the edge. A `partial`
   class (other than a code-behind, or one the `[GeneratedRegex]` generator requires), `#region`, or a `Helpers`/`Utils`/`Manager` grab-bag hides the size instead of
   splitting it. `FileSizeTests` and `RazorHasNoCodeTests` hold it.
-  Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0034](adr/0034-code-a-person-can-maintain.md).
+  Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0034](adr/0034-code-a-person-can-maintain.md),
+  [ADR 0044](adr/0044-the-size-limit-counts-code.md).
 - **Every class and method has a summary** (Louis, 2026-10-27) — private and test ones included. Existing code is
   brought up to this rule file by file, and only the files in the step's own commit (`git diff --name-only` of the
   commit): every class and method in those files gets its parts, the ones the step didn't change too, and any that
