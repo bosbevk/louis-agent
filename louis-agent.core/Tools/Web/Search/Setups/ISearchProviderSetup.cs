@@ -3,18 +3,21 @@ using LouisAgent.Core.Config;
 namespace LouisAgent.Core.Tools.Web.Search.Setups;
 
 /// <summary>
-/// Strategy: one small class per search engine that knows whether the engine's settings are there (<see cref="IsReady"/>) and how to build its provider
-/// (<see cref="Create"/>), so "ready" and "build" live together and cannot drift. <see cref="Create"/> always returns a working provider, or the setup's own
-/// Null Object (an <c>UnavailableSearchProvider</c> that says what to set) when the settings are missing; the factory never checks readiness itself.
+/// One of these per search engine. It knows whether the engine is set up and how to build it. If it isn't set up you get a provider that tells the model what to set, not an error.
 /// </summary>
+/// <remarks>
+/// Strategy, with a Null Object. "Is it ready?" and "build it" live in the same class, so they can't drift apart, and a new engine is one new class instead of another case in two switches.
+/// A setup that isn't ready hands back a provider that explains what's missing, so nothing has to check for null and the model still gets a useful answer.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public interface ISearchProviderSetup
 {
-    /// <summary>Which engine this setup is for.</summary>
+    /// <summary>Which engine this is.</summary>
     WebSearchProviderKind Kind { get; }
 
-    /// <summary>Whether the settings this engine needs are present in <paramref name="options"/>.</summary>
+    /// <summary>We can only use the engine if its settings are there.</summary>
     bool IsReady(AgentOptions options);
 
-    /// <summary>The engine's provider when it is ready; otherwise its Null Object, an unavailable provider whose every search says what is missing.</summary>
+    /// <summary>Builds the provider. If the engine isn't set up, you get one that tells the model what to set.</summary>
     IWebSearchProvider Create(AgentOptions options, HttpClient? http);
 }

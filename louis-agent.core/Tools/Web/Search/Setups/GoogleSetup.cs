@@ -5,16 +5,23 @@ using LouisAgent.Core.Tools.Web.Search.Providers;
 
 namespace LouisAgent.Core.Tools.Web.Search.Setups;
 
-/// <summary>Strategy: Google's setup. Ready with both the API key and the search engine ID; otherwise <see cref="Create"/> returns its Null Object, an unavailable provider that says what to set.</summary>
+/// <summary>
+/// Searches through Google's custom search. It needs both the API key and the search engine ID; one without the other is no use.
+/// </summary>
+/// <remarks>
+/// Strategy, with a Null Object. Google only works with both settings, so only this class can say whether it's ready, and when one is missing the search says which.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 internal sealed class GoogleSetup : ISearchProviderSetup
 {
-    /// <summary>Google.</summary>
+    /// <summary>This is the Google one.</summary>
     public WebSearchProviderKind Kind => WebSearchProviderKind.Google;
 
-    /// <summary>True when both the Google API key and the search engine ID are set and not blank.</summary>
-    public bool IsReady(AgentOptions options) => !string.IsNullOrWhiteSpace(options.GoogleSearchApiKey) && !string.IsNullOrWhiteSpace(options.GoogleSearchEngineId);
+    /// <summary>We need both the key and the engine ID.</summary>
+    public bool IsReady(AgentOptions options) =>
+        !string.IsNullOrWhiteSpace(options.GoogleSearchApiKey) && !string.IsNullOrWhiteSpace(options.GoogleSearchEngineId);
 
-    /// <summary>The Google provider when ready; otherwise the Null Object that says what is missing.</summary>
+    /// <summary>Builds the Google provider, or the one that says what is missing.</summary>
     public IWebSearchProvider Create(AgentOptions options, HttpClient? http) =>
         IsReady(options)
             ? new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http)

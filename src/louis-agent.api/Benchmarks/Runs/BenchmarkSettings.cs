@@ -4,17 +4,16 @@ using LouisAgent.Core.Tools.Web.Search;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
-/// What a run ran with (F31), kept on the run so a later one is compared with it knowing what changed: the instance's provider and model, the
-/// roles it allows, and what the check ran: the eval's name and the runner it started from (F18 step
-/// 4.3; a script and its arguments until step 7.4). Not yet the commit: the container has the workspace but no reason to run git for it until a run asks (the feature doc's open point).
+/// Writes down what a run ran with, so a later run can be compared with it knowing what changed: the model and roles, the eval and its runner, the search engine and page renderer, how the web was handled, and which prompts were used. There's no commit yet: the container has the workspace but no reason to run git for it.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class BenchmarkSettings
 {
-    /// <summary>What a run ran with: the instance's provider and model, the roles it allows, the eval and its runner, and (F18 step 7a.1) the search engine and page renderer, each with whether its settings were there.</summary>
-    /// <param name="searchProvider">The engine the instance searches with (<c>WebSearchProviderFactory.Resolve</c>, so unset is what it falls back to); null when its name is unknown.</param>
-    /// <param name="pageRenderer">The renderer it reads pages with (<c>PageRendererFactory.Resolve</c>); null when none is set up, and the run then records no renderer.</param>
-    /// <param name="searchProviderReady">Whether the engine's settings were there (<c>WebSearchProviderFactory.IsReady</c>); recorded only when an engine is.</param>
-    /// <param name="pageRendererReady">Whether the renderer's settings were there (<c>PageRendererFactory.IsReady</c>); recorded only when a renderer is.</param>
+    /// <summary>Collects what a run ran with: the model, the roles, the eval and its runner, and which search engine and page renderer it used and whether each was set up.</summary>
+    /// <param name="searchProvider">The search engine this instance uses; left out if its name is unknown.</param>
+    /// <param name="pageRenderer">The page renderer it uses; left out if none is set up.</param>
+    /// <param name="searchProviderReady">Whether the search engine was set up. Only written when there is an engine.</param>
+    /// <param name="pageRendererReady">Whether the page renderer was set up. Only written when there is a renderer.</param>
     /// <param name="evalRunner">The runner's path the API starts an eval check from. Required, so a caller can't leave it out.</param>
     public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model, IReadOnlyList<string> roles, string evalRunner,
         WebSearchProviderKind? searchProvider, PageRendererKind? pageRenderer, bool searchProviderReady, bool pageRendererReady)
@@ -23,13 +22,15 @@ public static class BenchmarkSettings
         {
             ["provider"] = provider,
             ["model"] = model,
-            // An empty list turns every role on (F29); runs before CL14 kept this as personalities_enabled.
+            // An empty list means every role is on, so it is written as "(all)". Runs from before roles were called roles kept this as personalities_enabled.
             ["roles_enabled"] = roles.Count == 0 ? "(all)" : string.Join(",", roles),
         };
         settings["eval"] = check.Id;
         settings["eval_runner"] = evalRunner;
-        // What the instance resolved to, so a run on SearXNG and one on Tavily can be told apart (F18 step 7a.1); a renderer that is none leaves its key out.
-        // Beside each name, whether its settings were there: a named tool without them was an Unavailable one (Null Object), and the run says so.
+
+        // The search engine and renderer the instance resolved to, so a run on SearXNG and one on Tavily can be told apart.
+        // Beside each name goes whether it was set up: a named tool without its settings was only a stand-in, and the run should say so.
+        // With no engine or renderer there is nothing to write, so the keys are left out rather than written empty.
         if (searchProvider is { } search)
         {
             settings["web_search_provider"] = search.Wire();
@@ -43,26 +44,20 @@ public static class BenchmarkSettings
         return settings;
     }
 
-    /// <summary>
-    /// The settings plus how the run's web was handled (F18 step 5.5): <c>web</c> when it asked for one, <c>replay_of</c> when it replayed another run, which the
-    /// trend uses to leave a replay out (it is the recorded run again, at no cost). As given when it asked for nothing.
-    /// </summary>
+    /// <summary>Adds how the run's web was handled: whether it asked for one, and whether it replays an earlier run. The trend leaves replays out, since a replay costs nothing and measures nothing new.</summary>
     public static IReadOnlyDictionary<string, string> WithOptions(IReadOnlyDictionary<string, string> settings, BenchmarkRunOptions options)
     {
+        // Nothing asked for: the settings stay exactly as they were.
         if (options.Web is null && options.Replay is null) return settings;
+
+        // Copy them, then add how the web was handled.
         var withOptions = new Dictionary<string, string>(settings);
         if (options.Web is { } web) withOptions["web"] = web.Wire();
         if (options.Replay is { } replayOf) withOptions["replay_of"] = replayOf;
         return withOptions;
     }
 
-    /// <summary>
-    /// The settings plus <c>prompt_hashes</c>, the run's hashes joined with commas (F18 step 4c); as given, with no key, when there are
-    /// none (absent, never empty). <b>It is the set of prompts the run used, not what it has.</b> A run that never called the cook, or
-    /// never summarised, lacks those agents' hashes, so two runs with different lists prove nothing by themselves: the difference may be
-    /// a changed prompt or only a different path through the same eval. Equal lists show the same prompts; to compare a prompt change,
-    /// compare per agent (step 7a), from the ledger's rows.
-    /// </summary>
+    /// <summary>Adds the hashes of the prompts the run used. It's the set the run used, not all it has, so a shorter list may only mean a different path through the eval and not a changed prompt.</summary>
     public static IReadOnlyDictionary<string, string>? WithPromptHashes(IReadOnlyDictionary<string, string>? settings, IReadOnlyList<string> hashes) =>
         hashes.Count == 0 ? settings : new Dictionary<string, string>(settings ?? new Dictionary<string, string>()) { ["prompt_hashes"] = string.Join(",", hashes) };
 }

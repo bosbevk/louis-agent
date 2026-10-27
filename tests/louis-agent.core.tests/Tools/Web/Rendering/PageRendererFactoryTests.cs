@@ -10,8 +10,10 @@ namespace LouisAgent.Core.Tests.Tools.Web.Rendering;
 // browser we run comes first, then Tavily's key; a renderer that can't work says what to set on its first call.
 public class PageRendererFactoryTests
 {
+    /// <summary>The address of the browser these tests pretend to have.</summary>
     private const string Browser = "http://puls-browser:9222";
 
+    /// <summary>The renderer follows the settings: the one named, otherwise Chrome if we know where it runs, otherwise Tavily. One that can't work is the "not set up" renderer.</summary>
     [TestCase(null, Browser, null, typeof(ChromePageRenderer))]
     [TestCase(null, Browser, "tvly-key", typeof(ChromePageRenderer))]
     [TestCase(null, null, "tvly-key", typeof(TavilyPageRenderer))]
@@ -28,6 +30,7 @@ public class PageRendererFactoryTests
         Assert.That(PageRendererFactory.Create(options), Is.TypeOf(expected));
     }
 
+    /// <summary>Names the renderer `Create` would build, or nothing for an unknown name or when none is set up.</summary>
     [TestCase(null, Browser, "tvly-key", PageRendererKind.Chrome)]
     [TestCase(null, null, "tvly-key", PageRendererKind.Tavily)]
     [TestCase(null, null, null, null)]
@@ -35,16 +38,13 @@ public class PageRendererFactoryTests
     [TestCase("playwright", Browser, "tvly-key", null)]
     public void Resolve_NamesTheRendererThatCreateWouldPick(string? renderer, string? browserUrl, string? tavilyKey, PageRendererKind? expected)
     {
-        // F18 step 7a.1: a run records which renderer the instance read pages with; null is none (unset and nothing configured, or a name we don't know).
+        // Nothing comes back for a name we don't know, or when nothing is set up.
         var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
 
         Assert.That(PageRendererFactory.Resolve(options), Is.EqualTo(expected));
     }
 
-    /// <summary>
-    /// F18 step 7a.1 follow-up: <c>IsReady</c> says whether the renderer the options select can work. Named and set up is ready; named without its setting is not; unset is the
-    /// fallback's answer, and nothing set is not ready; an unknown name is not. And <c>Create</c> hands back the Null Object (the unavailable renderer) exactly when it is not ready.
-    /// </summary>
+    /// <summary>Says whether the renderer you'd get is set up, and `Create` agrees: you get the "not set up" renderer exactly when this says no.</summary>
     [TestCase("chrome", Browser, null, true)]
     [TestCase("chrome", null, "tvly-key", false)]
     [TestCase("tavily", null, "tvly-key", true)]
@@ -58,14 +58,17 @@ public class PageRendererFactoryTests
         var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
 
         Assert.That(PageRendererFactory.IsReady(options), Is.EqualTo(expected));
+
+        // Create agrees: the "not set up" renderer comes back exactly when it isn't ready.
         Assert.That(PageRendererFactory.Create(options) is UnavailablePageRenderer, Is.EqualTo(!expected));
     }
 
+    /// <summary>Chrome reads through the browser it is handed, so a recorded run holds every page.</summary>
     [TestCase(null)]
     [TestCase("chrome")]
     public async Task TheBrowserGiven_IsTheOneTheChromeRendererReadsThrough(string? renderer)
     {
-        // F18 step 4a: the process builds one browser and hands it in, so the renderer's reads are recorded with the shops'.
+        // The process builds one browser and hands it in, so Chrome's reads are recorded along with the shops'.
         var browser = new CountingBrowser();
 
         var made = PageRendererFactory.Create(new AgentOptions { PageRenderer = renderer, BrowserUrl = Browser }, browser: browser);
@@ -75,33 +78,44 @@ public class PageRendererFactoryTests
         Assert.That(browser.Calls, Is.EqualTo(1));
     }
 
+    /// <summary>Handing over a browser doesn't make Chrome available when we don't know where Chrome runs.</summary>
     [Test]
     public void ABrowserGiven_NeverMakesChromeAvailableWhereBrowserUrlIsNotSet() =>
         Assert.That(PageRendererFactory.Create(new AgentOptions { PageRenderer = "chrome" }, browser: new CountingBrowser()),
             Is.TypeOf<UnavailablePageRenderer>());
 
+    /// <summary>A fake browser that counts how often it is asked to visit a page.</summary>
     private sealed class CountingBrowser : IWebBrowser
     {
+        /// <summary>How many pages it has been asked to visit.</summary>
         public int Calls { get; private set; }
 
+        /// <summary>Pretends to visit the page, and counts the visit.</summary>
         public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
             string? readySelector = null, CancellationToken cancellationToken = default)
         {
             Calls++;
+
+            // A page that renders to a little HTML, so the renderer has something to read.
             return Task.FromResult(new BrowserVisit(url.ToString(), "<html><body>hello</body></html>", []));
         }
     }
 
+    /// <summary>Chrome with no browser address gives a renderer that says to set `BROWSER_URL`.</summary>
     [Test]
     public void ChromeWithoutABrowser_SaysToSetBrowserUrl() =>
         Assert.That(() => PageRendererFactory.Create(new AgentOptions { PageRenderer = "chrome" }).RenderAsync(new Uri("https://www.pnp.co.za/")),
             Throws.TypeOf<PageRenderException>().With.Message.Contains("BROWSER_URL"));
 
+    /// <summary>A renderer name we do not know gives one that lists the names we do.</summary>
     [Test]
     public void AnUnknownRenderer_SaysWhichAreSupported()
     {
+        // The error names what we were given and the names we do support.
         Assert.That(() => PageRendererFactory.Create(new AgentOptions { PageRenderer = "playwright" }).RenderAsync(new Uri("https://www.pnp.co.za/")),
             Throws.TypeOf<PageRenderException>().With.Message.Contains("playwright").And.Message.Contains("chrome, tavily"));
+
+        // And that list of names is the enum's, in order.
         Assert.That(PageRendererFactory.SupportedRenderers, Is.EqualTo(new[] { "chrome", "tavily" }));
     }
 }

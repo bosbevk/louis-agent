@@ -6,16 +6,23 @@ using LouisAgent.Core.Tools.Web.Rendering.Providers;
 
 namespace LouisAgent.Core.Tools.Web.Rendering.Setups;
 
-/// <summary>Strategy: Tavily's Extract as a renderer. Ready with <c>TAVILY_API_KEY</c> (the same key as its search); otherwise <see cref="Create"/> returns its Null Object, an unavailable renderer that says what to set.</summary>
+/// <summary>
+/// Reads pages through Tavily's Extract, the paid fallback. It uses the same key as Tavily search, so one key covers both.
+/// </summary>
+/// <remarks>
+/// Strategy, with a Null Object. The key that covers search covers rendering too, so the sold endpoint needs no extra setting; without it a call says what to set.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
 internal sealed class TavilyRenderSetup : IPageRendererSetup
 {
-    /// <summary>Tavily.</summary>
+    /// <summary>This is the Tavily one.</summary>
     public PageRendererKind Kind => PageRendererKind.Tavily;
 
-    /// <summary>True when the Tavily API key is set and not blank.</summary>
+    /// <summary>We need the Tavily key.</summary>
     public bool IsReady(AgentOptions options) => !string.IsNullOrWhiteSpace(options.TavilyApiKey);
 
-    /// <summary>The Tavily renderer when ready; otherwise the Null Object that says what is missing.</summary>
+    /// <summary>Builds the Tavily renderer, or the one that says what to set.</summary>
     public IPageRenderer Create(AgentOptions options, HttpClient? http, IWebBrowser? browser) =>
         IsReady(options)
             ? new TavilyPageRenderer(options.TavilyApiKey!, http)

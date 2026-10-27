@@ -9,9 +9,10 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // F31 step 6a: a run keeps what it ran with, so a later run is compared with an earlier one knowing what changed.
 public class BenchmarkSettingsTests
 {
+    /// <summary>The runner path these tests use.</summary>
     private const string Runner = "/app/evals/louis-agent.evals.runner.dll";
 
-    /// <summary>A run keeps its model, its roles, its eval with the runner, and (F18 step 7a.1) the search engine and renderer with whether each was ready.</summary>
+    /// <summary>A run keeps its model, roles and eval, and the search engine and page renderer with whether each was set up.</summary>
     [Test]
     public void ARun_KeepsTheModelTheRolesAndTheEvalWithItsRunner()
     {
@@ -34,7 +35,7 @@ public class BenchmarkSettingsTests
         }));
     }
 
-    /// <summary>The engine and the renderer are written with their wire names, not <c>ToString()</c>.</summary>
+    /// <summary>The engine and renderer are written with their wire names, not `ToString()`.</summary>
     [Test]
     public void TheSearchProviderAndTheRenderer_AreWrittenWithWire_NotToString()
     {
@@ -45,7 +46,7 @@ public class BenchmarkSettingsTests
             Is.EqualTo((WebSearchProviderKind.DuckDuckGo.Wire(), PageRendererKind.Tavily.Wire())));
     }
 
-    /// <summary>F18 step 7a.1 follow-up: a named tool whose settings were missing is recorded as not ready beside its name, and a ready one as ready.</summary>
+    /// <summary>A tool that was named but not set up is recorded as not ready beside its name, and a ready one as ready.</summary>
     [TestCase(true, true, "true", "true")]
     [TestCase(false, false, "false", "false")]
     [TestCase(true, false, "true", "false")]
@@ -58,7 +59,7 @@ public class BenchmarkSettingsTests
             Is.EqualTo(("tavily", searchText, "chrome", rendererText)));
     }
 
-    /// <summary>A renderer that is none leaves its keys out (absent, never empty), and the search engine still shows.</summary>
+    /// <summary>If there is no renderer its keys are left out, and the search engine still shows.</summary>
     [Test]
     public void ARendererThatIsNone_LeavesItsKeyOut_AndTheSearchProviderStillShows()
     {
@@ -69,8 +70,10 @@ public class BenchmarkSettingsTests
         Assert.That(settings["web_search_provider"], Is.EqualTo(WebSearchProviderKind.DuckDuckGo.Wire()));
     }
 
+    /// <summary>The settings of a run that has just started, to add to.</summary>
     private static readonly IReadOnlyDictionary<string, string> Started = new Dictionary<string, string> { ["provider"] = "anthropic", ["model"] = "m" };
 
+    /// <summary>The hashes are written joined with commas, in the order given.</summary>
     [Test]
     public void WithPromptHashes_AddsThemJoinedWithCommas_InTheOrderGiven()
     {
@@ -79,6 +82,7 @@ public class BenchmarkSettingsTests
         Assert.That(settings, Is.EquivalentTo(new Dictionary<string, string> { ["provider"] = "anthropic", ["model"] = "m", ["prompt_hashes"] = "a,b" }));
     }
 
+    /// <summary>With no hashes the settings come back as they were, with no key at all.</summary>
     [Test]
     public void WithPromptHashes_WithNone_ReturnsTheSettingsUnchanged_WithNoKey()
     {
@@ -86,9 +90,12 @@ public class BenchmarkSettingsTests
 
         Assert.That(settings, Is.SameAs(Started));
         Assert.That(settings!.ContainsKey("prompt_hashes"), Is.False, "absent, never empty");
+
+        // And with no settings at all, there is still nothing to write.
         Assert.That(BenchmarkSettings.WithPromptHashes(null, []), Is.Null);
     }
 
+    /// <summary>With no settings yet, the hashes are the only thing written.</summary>
     [Test]
     public void WithPromptHashes_OnNullSettings_ReturnsOnlyThatKey() =>
         Assert.That(BenchmarkSettings.WithPromptHashes(null, ["a"]), Is.EquivalentTo(new Dictionary<string, string> { ["prompt_hashes"] = "a" }));

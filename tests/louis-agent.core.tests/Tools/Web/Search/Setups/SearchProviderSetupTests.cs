@@ -5,22 +5,22 @@ using LouisAgent.Core.Tools.Web.Search.Setups;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Search.Setups;
 
-/// <summary>
-/// F18 step 7a.1 follow-up (rule 11): Strategy, one setup per search engine that knows whether its settings are there and how to build its provider, and Null Object, the
-/// unavailable provider a setup hands back when they are not. These tests hold each setup to that, and the factory's list to one setup per engine in fallback order.
-/// </summary>
+/// <summary>Checks each search setup on its own, and that the factory lists one per engine in fallback order.</summary>
 public class SearchProviderSetupTests
 {
-    /// <summary>The setup for an engine, taken from the factory's list.</summary>
+    /// <summary>The setup for one engine.</summary>
     private static ISearchProviderSetup SetupFor(WebSearchProviderKind kind) => WebSearchProviderFactory.Setups.Single(s => s.Kind == kind);
 
-    /// <summary>Every setting an engine could need, so all the engines are ready.</summary>
+    /// <summary>Settings for every engine, so they're all ready.</summary>
     private static AgentOptions Everything() => new()
     {
-        TavilyApiKey = "tvly", GoogleSearchApiKey = "g", GoogleSearchEngineId = "cx", SearxngUrl = "http://searxng:8080",
+        TavilyApiKey = "tvly",
+        GoogleSearchApiKey = "g",
+        GoogleSearchEngineId = "cx",
+        SearxngUrl = "http://searxng:8080",
     };
 
-    /// <summary>Each engine is ready with its own settings and not without them (a blank key, half of Google's pair and an address that is no URL all count as missing).</summary>
+    /// <summary>Each engine is ready with its own settings and not without them. A blank key, half of Google's pair or a bad address counts as missing.</summary>
     [TestCase(WebSearchProviderKind.Tavily, "tvly", null, null, null, true)]
     [TestCase(WebSearchProviderKind.Tavily, "  ", null, null, null, false)]
     [TestCase(WebSearchProviderKind.Tavily, null, null, null, null, false)]
@@ -37,26 +37,27 @@ public class SearchProviderSetupTests
         Assert.That(SetupFor(kind).IsReady(options), Is.EqualTo(expected));
     }
 
-    /// <summary>DuckDuckGo needs nothing, so it is ready with no settings at all.</summary>
+    /// <summary>DuckDuckGo needs nothing, so it's ready with no settings at all.</summary>
     [Test]
     public void DuckDuckGo_IsAlwaysReady() =>
         Assert.That(SetupFor(WebSearchProviderKind.DuckDuckGo).IsReady(new AgentOptions()), Is.True);
 
-    /// <summary>Null Object: whichever settings are given, a setup's provider is the unavailable one exactly when the setup is not ready.</summary>
+    /// <summary>If an engine isn't set up you get the "not set up" provider, and only then.</summary>
     [Test]
     public void Create_GivesTheUnavailableProvider_ExactlyWhenTheSetupIsNotReady()
     {
+        // Every setup, once with nothing set and once with everything set.
         foreach (var setup in WebSearchProviderFactory.Setups)
             foreach (var options in new[] { new AgentOptions(), Everything() })
                 Assert.That(setup.Create(options, null) is UnavailableSearchProvider, Is.EqualTo(!setup.IsReady(options)), $"{setup.Kind}, ready: {setup.IsReady(options)}");
     }
 
-    /// <summary>The list holds exactly one setup per engine the enum names, so a new engine cannot be added without its setup.</summary>
+    /// <summary>Each engine has exactly one setup, so you can't add an engine and forget its setup.</summary>
     [Test]
     public void EveryEngine_HasExactlyOneSetup() =>
         Assert.That(Enum.GetValues<WebSearchProviderKind>().Select(kind => WebSearchProviderFactory.Setups.Count(s => s.Kind == kind)), Is.All.EqualTo(1));
 
-    /// <summary>The list is in fallback order: with no engine named, the first ready one wins, so Tavily comes before Google before SearXNG before DuckDuckGo.</summary>
+    /// <summary>The order is the fallback order: Tavily, Google, SearXNG, then DuckDuckGo.</summary>
     [Test]
     public void TheSetups_AreInFallbackOrder() =>
         Assert.That(WebSearchProviderFactory.Setups.Select(s => s.Kind),
