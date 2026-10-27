@@ -74,6 +74,27 @@ public class RunnerEnvironmentTests
         }
     }
 
+    // The review's note on FX25: a setting the runner starts reading must not quietly go missing. This scans the runner's sources (the harness, the runner, Puls's evals) and the Python
+    // checks for the names they read, and each must be on the allowlist, except the three the API handles another way: it sets PULS_API and BENCHMARK_RUN per run, and hands the
+    // Anthropic key over as EVAL_JUDGE_API_KEY.
+    [Test]
+    public void EverySettingTheRunnerAndTheChecksRead_IsOnTheAllowlist_OrHandledOnPurpose()
+    {
+        var handledAnotherWay = new[] { "PULS_API", "BENCHMARK_RUN", "ANTHROPIC_API_KEY" };
+        var read = new HashSet<string>();
+        foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "evals"), "*.cs", SearchOption.AllDirectories)
+                     .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")))
+            foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(file), @"(?:GetEnvironmentVariable|getVariable|\bGet)\(""([A-Z][A-Z0-9_]+)""\)"))
+                read.Add(m.Groups[1].Value);
+        foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "benchmarks"), "*.py", SearchOption.AllDirectories))
+            foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(file), @"environ(?:\.get)?[\[(]\s*['""]([A-Z][A-Z0-9_]+)['""]"))
+                read.Add(m.Groups[1].Value);
+
+        Assert.That(read, Has.Count.GreaterThanOrEqualTo(8), "the scan found the settings the runner reads: " + string.Join(", ", read.Order()));
+        Assert.That(read.Except(handledAnotherWay).Where(name => !RunnerEnvironment.Names.Contains(name)), Is.Empty,
+            "a setting the runner reads that the allowlist doesn't carry would silently never arrive: add it to RunnerEnvironment.Names");
+    }
+
     /// <summary>The real thing: a Python check started by the runner sees no secret, and still starts (its interpreter found on the path).</summary>
     [Test]
     public async Task AScriptStartedByTheRunner_SeesNoSecret_AndStillStarts()

@@ -97,9 +97,6 @@ public partial class CalibrationCard : IDisposable
     /// <summary>The check's time as the page shows times: the viewer's clock.</summary>
     private static string When(CalibrationReportView r) => r.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm");
 
-    public void Dispose()
-    {
-        _gone.Cancel();
-        _gone.Dispose();
-    }
+    /// <summary>Cancels the wait. The source is not disposed: it has no timer, so there is nothing to free, and a disposed one makes the loop's next token throw an error instead of stopping quietly.</summary>
+    public void Dispose() => _gone.Cancel();
 }
