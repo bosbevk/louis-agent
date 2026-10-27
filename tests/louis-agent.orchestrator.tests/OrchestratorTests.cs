@@ -7,6 +7,7 @@ using LouisAgent.Orchestrator.Tools;
 
 namespace LouisAgent.Orchestrator.Tests;
 
+[Category("Integration")]
 public class OrchestratorTests
 {
     private string _dir = null!;

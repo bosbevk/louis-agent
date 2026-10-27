@@ -7,6 +7,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // F18 step 6a.5b: a judge check is started like a re-score: the eval runner as a child process with an argument list (ADR 0004), `--calibrate {eval} {grader} --labels -`, and the label
 // lines on its stdin. It is the runner's one run at a time (the judge is shared), and its row says what it is, so the Benchmarks page can leave it alone. Written first: StartCalibration
 // did not exist.
+[Category("Integration")]
 public class BenchmarkCalibrationStartTests
 {
     private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");

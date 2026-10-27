@@ -49,4 +49,36 @@ public class IntegrationScanTests
 
         Assert.That(IntegrationTestsAreMarkedTests.Scan("a.cs", text), Is.Empty);
     }
+
+    // The second signal (Louis's pick, "both signals"): a class that uses a real process, Mongo or the stand-in build leaves the test process, whether or not it checks first.
+    private static string TestClass(string body, string attributes = "") =>
+        $"{attributes}\npublic class Sample\n{{\n    [Test]\n    public void Runs()\n    {{\n        {body}\n    }}\n}}";
+
+    [TestCase("var info = new ProcessStartInfo(\"git\");")]
+    [TestCase("var process = Process.Start(\"git\");")]
+    [TestCase("var client = new MongoClient(url);")]
+    [TestCase("var dll = StandInBuild.Dll;")]
+    [TestCase("var dll = RunnerBuild.Dll;")]
+    public void AClassThatUsesTheOutside_WithNoMark_IsReported(string body)
+    {
+        var unmarked = IntegrationTestsAreMarkedTests.ScanUses("a.cs", TestClass(body), []);
+
+        Assert.That(unmarked, Has.Count.EqualTo(1));
+    }
+
+    [Test]
+    public void TheSameClassMarkedIntegration_IsNotReported() =>
+        Assert.That(IntegrationTestsAreMarkedTests.ScanUses("a.cs", TestClass("var dll = StandInBuild.Dll;", "[Category(\"Integration\")]"), []), Is.Empty);
+
+    [Test]
+    public void AMentionInAStringOrAComment_IsNotAUse() =>
+        Assert.That(IntegrationTestsAreMarkedTests.ScanUses("a.cs", TestClass("var text = \"ProcessStartInfo(\"; // Process.Start( and StandInBuild"), []), Is.Empty);
+
+    [Test]
+    public void AClassThatCallsAHelperThatStartsAProcess_IsReported() =>
+        Assert.That(IntegrationTestsAreMarkedTests.ScanUses("a.cs", TestClass("var run = GitRunner.Run();"), ["GitRunner"]), Has.Count.EqualTo(1));
+
+    [Test]
+    public void AClassWithNoTest_IsNotReported() =>
+        Assert.That(IntegrationTestsAreMarkedTests.ScanUses("a.cs", "public static class Build\n{\n    public static string Dll => StandInBuild.Dll;\n}", []), Is.Empty);
 }

@@ -5,6 +5,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
 // F18 step 4.3: the catalogue's evals come from the runner's own --list, read once, as an argument list with a timeout. Written first:
 // the listing threw NotImplementedException on the red run. The runner's real output is the pin: the API's line record must read it.
+[Category("Integration")]
 public class EvalListingTests
 {
     [Test]

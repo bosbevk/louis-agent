@@ -6,6 +6,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // FX25: the runner's process got the API's whole environment (.NET hands a child the parent's by default), so a run could read the Mongo login, the admin key and every
 // provider key, of which it reads none. Now it gets an allowlist: what the runtime needs to start, what the runner reads, and what the API sets for the
 // run. An Anthropic judge with no key of its own gets the Anthropic key as the judge's key, under that name only. Written first: the start info copied everything.
+[Category("Integration")]
 public class RunnerEnvironmentTests
 {
     private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");

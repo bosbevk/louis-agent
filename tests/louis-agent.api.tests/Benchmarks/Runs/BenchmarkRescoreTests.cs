@@ -10,6 +10,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // F18 step 5b.2: a stored run is re-scored by the eval runner, which gets the run's export on stdin and `--rescore {id}` as an argument list (ADR 0004). The API
 // reads, stores, starts and shows; it grades nothing. The end-to-end test runs the real runner on the C# stub, which opens no session and costs nothing.
 // Written first: BenchmarkRunner had no StartRescore and the protocol's first line no rescore_of.
+[Category("Integration")]
 public class BenchmarkRescoreTests
 {
     private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");

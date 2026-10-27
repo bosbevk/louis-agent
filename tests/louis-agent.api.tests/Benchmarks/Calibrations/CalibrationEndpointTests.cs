@@ -19,6 +19,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Calibrations;
 // run: it writes the decided grades as label lines to the eval runner's stdin and starts it with --calibrate; 202 with the run started (calibration_of, grader); 404 for a run the store
 // doesn't hold or one nobody has graded for that judge; 400 for a grader without a human review on that run, or a run of a script; 409 while a run runs; 503 without a store. GET
 // .../calibrations lists the reports kept, newest first. The runner judges; the API only starts it, keeps its report and shows it. Written first: the routes did not exist.
+[Category("Integration")]
 public class CalibrationEndpointTests
 {
     private const string AdminKey = "admin-secret";

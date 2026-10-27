@@ -74,6 +74,42 @@ public class IntegrationTestsAreMarkedTests
         return found;
     }
 
+    /// <summary>What takes a test out of its process in the code itself: a real process, Mongo, the stand-in build or the runner's built dll.</summary>
+    private const string UseMarkers = @"\bnew\s+ProcessStartInfo\(|\bProcessStartInfo\(|\bProcess\.Start\(|\bMongoClient\b|\bStandInBuild\b|\bRunnerBuild\b";
+
+    private static readonly Regex TopLevelClass = new(@"^(public|internal)\s+(sealed\s+|abstract\s+|static\s+)*class\s", RegexOptions.Compiled);
+
+    /// <summary>
+    /// The second signal (Louis, 2026-10-27: "both signals"): a test class that uses a real process, Mongo, the stand-in build or the runner's built dll, or calls a helper type that does
+    /// (<paramref name="helperTypes"/>), leaves the test process whether or not it checks first, so the class itself carries the mark. Comments and string literals are blanked first: a word in one is not a use.
+    /// </summary>
+    public static IReadOnlyList<Unmarked> ScanUses(string file, string text, IReadOnlyCollection<string> helperTypes)
+    {
+        string[] lines = text.Split('\n');
+        string[] code = CodeOnly.Of(text).Split('\n');
+        string pattern = helperTypes.Count == 0 ? UseMarkers : UseMarkers + @"|\b(" + string.Join("|", helperTypes.Select(Regex.Escape)) + @")\b";
+        var uses = new Regex(pattern);
+        var starts = Enumerable.Range(0, lines.Length).Where(i => TopLevelClass.IsMatch(lines[i])).ToList();
+        var found = new List<Unmarked>();
+        for (int k = 0; k < starts.Count; k++)
+        {
+            int end = k + 1 < starts.Count ? starts[k + 1] : lines.Length;
+            var body = Enumerable.Range(starts[k], end - starts[k]).ToList();
+            bool hasTest = body.Any(l => TestAttribute.IsMatch(lines[l]));
+            bool marked = Has(AttributesAbove(lines, starts[k]), Marked);
+            if (hasTest && !marked && body.Any(l => uses.IsMatch(code[l]))) found.Add(new Unmarked(file, starts[k] + 1, "a test class that uses a process, Mongo or the runner: mark the class"));
+        }
+        return found;
+    }
+
+    /// <summary>The helper types of louis-agent.testing that start a process themselves: a class that calls one leaves the test process too.</summary>
+    public static IReadOnlyCollection<string> HelperTypes(IEnumerable<(string Rel, string Text)> files)
+    {
+        var uses = new Regex(UseMarkers);
+        return [.. files.Where(f => f.Rel.StartsWith("tests/louis-agent.testing/", StringComparison.Ordinal) && uses.IsMatch(CodeOnly.Of(f.Text)))
+            .SelectMany(f => Regex.Matches(f.Text, @"\b(?:class|record|struct)\s+(\w+)").Select(m => m.Groups[1].Value)).Distinct()];
+    }
+
     /// <summary>The tests, in the same file, that call the helper at <paramref name="helper"/> and are not marked.</summary>
     private static IEnumerable<int> UnmarkedCallers(string file, string[] lines, List<int> headers, int helper)
     {
@@ -101,6 +137,20 @@ public class IntegrationTestsAreMarkedTests
             .ToList();
 
         Assert.That(unmarked, Is.Empty, "a test that skips itself when git, a browser, a database or an interpreter is missing is an integration test (F18 step 7.6):\n" + string.Join("\n", unmarked));
+    }
+
+    [Test]
+    public void ATestClassThatLeavesItsProcess_IsMarkedIntegration()
+    {
+        var files = SourceTree.Files()
+            .Select(path => (Rel: SourceTree.Relative(path), Text: File.ReadAllText(path)))
+            .Where(file => file.Rel.StartsWith("tests/", StringComparison.Ordinal) && !file.Rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal))
+            .ToList();
+        var helpers = HelperTypes(files);
+
+        var unmarked = files.SelectMany(file => ScanUses(file.Rel, file.Text, helpers)).Select(u => $"{u.File}:{u.Line}  {u.Where}").ToList();
+
+        Assert.That(unmarked, Is.Empty, "a test class that starts a process, opens Mongo or runs the stand-in or the runner is an integration test (F18 step 7.6):\n" + string.Join("\n", unmarked));
     }
 
     [Test]

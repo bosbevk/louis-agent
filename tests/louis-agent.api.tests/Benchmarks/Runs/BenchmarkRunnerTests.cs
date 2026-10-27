@@ -5,6 +5,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // F27 step 3 (F27-S2), on a stand-in since F18 step 7.4: a check runs as a child process (an argument list, never a shell), one at a time, its lines streamed to whoever listens (CL10: no run
 // folder any more). The child is the stand-in for the eval runner (tests/louis-agent.api.standin: a real process on every platform, no Python): the check's id picks what it does, so each test names
 // the behaviour it wants by the check it starts. The API starts only evals now, so there is no script and no interpreter to give.
+[Category("Integration")]
 public class BenchmarkRunnerTests
 {
     private string _workspace = "";

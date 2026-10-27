@@ -14,6 +14,7 @@ namespace LouisAgent.Api.Tests.Benchmarks;
 // F18 step 5b.2 (ADR 0039, POST /{resource}/{verb}): POST /v1/admin/benchmarks/runs/{id}/rescore starts a re-score of a stored run: 201 with the new run's
 // Location, 404 for a run it doesn't hold, 409 while another run runs (as a start answers), 400 for a run of a check the runner does not list (only an eval's transcripts can be graded
 // again). The new run is recorded with rescore_of, and costs 0 requests and $0: known, because nothing was asked. Written first: the route did not exist.
+[Category("Integration")]
 public class RescoreEndpointTests
 {
     private const string AdminKey = "admin-secret";
