@@ -1164,6 +1164,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   run's read) and `ReviewsReply`, the body `ReviewRequest`. The two helpers others used (`HumanReviewsOf`,
   `DecidedLabelsAsync`) are review logic, not routing, so they moved to `Benchmarks/Reviews/ReviewQueries`. Two Puls
   comments still name `ReviewEndpoints.MaxNoteLength`; Part 3 rebuilds those admin pages and fixes them there.
+- **Sweep: `SessionEndpoints`.** `SessionHandlers` holds the host, its default web replay and its recordings, and the
+  five session routes, in `Endpoints/Sessions/`. The replies are contract records written with `SessionJson.SnakeCase`;
+  the sessions API's JSON is unchanged (`SessionReplyJsonTests` pinned it first; the stream's golden still passes).
+  Opening a session answers `CreatedJson` (finding 2). `SessionView` became two factories: a static extension member
+  compiles to a plain static method on its class, so two `Of(AgentSession)` (one per record) need a class each. The
+  request bodies stay in the API for now (finding 3, a TODO line). `SessionHandlersTests` was written after the code.
+  The 409 for a busy session still says `{id}` literally, as it did; fixing it changes the sessions API's text, so it
+  is left for Louis.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

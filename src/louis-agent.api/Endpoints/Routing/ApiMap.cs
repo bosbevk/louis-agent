@@ -3,6 +3,7 @@ using LouisAgent.Api.Endpoints.Git.Branches;
 using LouisAgent.Api.Endpoints.Git.Changes;
 using LouisAgent.Api.Endpoints.Git.Commits;
 using LouisAgent.Api.Endpoints.Info;
+using LouisAgent.Api.Endpoints.Sessions;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Core.Guardrails.Workspace;

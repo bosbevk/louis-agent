@@ -62,3 +62,25 @@ snake_case (`AdminJson.SnakeCase`). For a note every name is one word, so the by
 point). Sources: learn.microsoft.com/aspnet/core/fundamentals/minimal-apis/responses (custom `IResult`,
 `IStatusCodeHttpResult`, `IValueHttpResult<T>`, `IEndpointMetadataProvider`); ADR 0041; ADR 0045. **Commit:** the
 notes file of the sweep.
+
+### 3. The session request bodies: move them now, or when a change touches them (Part 2, sessions)
+
+**What came up.** The brief puts "replies and bodies" in the contract. The session bodies
+(`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`, `ReplayRequest`) carry the API's own parsing
+(`RoleOrNull`, `StreamFormatOrNull`, `Place`, `InvalidTag`, which use core's types), and five test files and the
+replay rules use them. Their clients (the eval runner's `HttpSessionClient`, the orchestrator) keep their own copies.
+
+1. **Move them now**, the parsing as C# 14 extension members in the API (as finding 1). Changes: four records, a
+   rules class, `ReplayResolution`, `TurnStream` and five test files brought up whole. Costs: the largest commit of
+   the sweep for no change on the wire and no client that reads the contract yet.
+2. **Move the replies now, the bodies when a change touches them (picked).** ADR 0045's consequences already say
+   other clients move "when a change touches them". Changes: the session file only. Costs: the brief's "bodies" is not
+   met for the sessions API in this run; the session bodies stay internal records in the API for now.
+3. **Move only the plain records**, leaving thin API wrappers that parse. Changes: four records and four wrappers.
+   Costs: two types per body, the worst of both.
+
+**Why 2.** The bodies' JSON is the sessions API's, which must not change, and no client reads the contract for it yet;
+moving them is churn with no reader. A TODO line names the move, so the first change to a session body (or the eval
+runner switching to the contract) does it. Sources: ADR 0045 *Consequences*; Fowler, *Refactoring* 2nd ed., "the
+Rule of Three" (refactor when the need is there). **Commit:** the sessions file of the sweep. Louis may prefer 1;
+it is a mechanical redo.

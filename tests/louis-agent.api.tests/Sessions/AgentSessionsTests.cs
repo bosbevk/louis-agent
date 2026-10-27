@@ -1,6 +1,7 @@
 using LouisAgent.Identities.Puls;
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Info;
+using LouisAgent.Api.Contracts.Sessions;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Endpoints.Info;
 using LouisAgent.Api.Sessions;
@@ -350,7 +351,7 @@ public class AgentSessionsTests
     /// <summary>
     /// Writes a view as the JSON the API would send, so a test can check the words callers see.
     /// </summary>
-    private static string Json(object view) => System.Text.Json.JsonSerializer.Serialize(view);
+    private static string Json(object view) => System.Text.Json.JsonSerializer.Serialize(view, SessionJson.SnakeCase);
 
     /// <summary>
     /// What the API sends for a session says "role", never the old "personality".
@@ -360,9 +361,9 @@ public class AgentSessionsTests
     {
         var cook = Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
-        Assert.That(Json(LouisAgent.Api.Sessions.SessionView.Created(cook)),
+        Assert.That(Json(SessionCreatedReply.Of(cook)),
             Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
-        Assert.That(Json(LouisAgent.Api.Sessions.SessionView.Of(cook)),
+        Assert.That(Json(SessionReply.Of(cook)),
             Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
     }
 
@@ -375,7 +376,7 @@ public class AgentSessionsTests
         var session = Sessions().Create([CoreToolset.Files.Wire()]);
         await session.SubSessions.AddAsync(Kept("sess_cook", []));
 
-        Assert.That(Json(LouisAgent.Api.Sessions.SessionView.Of(session)),
+        Assert.That(Json(SessionReply.Of(session)),
             Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
     }
 
