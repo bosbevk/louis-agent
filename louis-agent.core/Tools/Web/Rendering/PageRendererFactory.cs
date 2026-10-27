@@ -17,11 +17,24 @@ public static class PageRendererFactory
     /// <summary>The names <c>PAGE_RENDERER</c> takes, from <see cref="PageRendererKind"/>.</summary>
     public static IReadOnlyList<string> SupportedRenderers { get; } = SettingChoice.Names<PageRendererKind>();
 
+    /// <summary>The renderer <paramref name="options"/> select: the one named, else the first whose settings are set; null when the name is unknown or nothing is set.</summary>
+    public static PageRendererKind? Resolve(AgentOptions options)
+    {
+        if (!SettingChoice.TryParse(options.PageRenderer, out PageRendererKind? choice)) return null;
+        if (choice is not null) return choice;
+        if (BrowserOf(options) is not null) return PageRendererKind.Chrome;
+        return HasTavily(options) ? PageRendererKind.Tavily : null;
+    }
+
+    private static bool HasTavily(AgentOptions options) => !string.IsNullOrWhiteSpace(options.TavilyApiKey);
+
+    private static Uri? BrowserOf(AgentOptions options) => Uri.TryCreate(options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
+
     /// <param name="browser">The process's one guarded browser (F18 step 4a: the shops read through it too, so a recorded run holds every page); the Chrome renderer builds its own only when none is given.</param>
     public static IPageRenderer Create(AgentOptions options, HttpClient? http = null, IWebBrowser? browser = null)
     {
-        bool hasTavily = !string.IsNullOrWhiteSpace(options.TavilyApiKey);
-        Uri? browserUrl = Uri.TryCreate(options.BrowserUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
+        bool hasTavily = HasTavily(options);
+        Uri? browserUrl = BrowserOf(options);
         if (!SettingChoice.TryParse(options.PageRenderer, out PageRendererKind? choice))
         {
             string named = options.PageRenderer!.Trim();
@@ -29,10 +42,8 @@ public static class PageRendererFactory
                 new { Renderer = named, Supported = string.Join(", ", SupportedRenderers) }));
         }
 
-        return choice switch
+        return Resolve(options) switch
         {
-            null when browserUrl is not null => new ChromePageRenderer(browser ?? new ChromeWebBrowser(browserUrl, userAgent: options.BrowserUserAgent)),
-            null when hasTavily => new TavilyPageRenderer(options.TavilyApiKey!, http),
             null => new UnavailablePageRenderer(MessageText.Format(WebToolMessage.RenderNotConfigured)),
             PageRendererKind.Chrome => browserUrl is not null
                 ? new ChromePageRenderer(browser ?? new ChromeWebBrowser(browserUrl, userAgent: options.BrowserUserAgent))

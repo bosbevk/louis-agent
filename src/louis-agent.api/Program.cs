@@ -13,6 +13,8 @@ using LouisAgent.Core.Guardrails.Auth;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Web.Rendering;
+using LouisAgent.Core.Tools.Web.Search;
 using Microsoft.Extensions.Logging;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
@@ -79,7 +81,8 @@ if (benchmarkStore is not null)
 // The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait for it).
 _ = Task.Run(benchmarks.Warm);
 api.MapAdmin(benchmarks, new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner), admin.AdminKey, benchmarkStore, recorder,
-    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner), host.Engine.WorkspaceRoot, reviewStore,
+    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner,
+        WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent)), host.Engine.WorkspaceRoot, reviewStore,
     calibrationStore, calibrationRecorder);
 
 app.Run();

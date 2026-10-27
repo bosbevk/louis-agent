@@ -1,4 +1,6 @@
 using LouisAgent.Choices;
+using LouisAgent.Core.Tools.Web.Rendering;
+using LouisAgent.Core.Tools.Web.Search;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
@@ -8,8 +10,11 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// </summary>
 public static class BenchmarkSettings
 {
+    /// <param name="searchProvider">The engine the instance searches with (<c>WebSearchProviderFactory.Resolve</c>, so unset is what it falls back to); null when its name is unknown.</param>
+    /// <param name="pageRenderer">The renderer it reads pages with (<c>PageRendererFactory.Resolve</c>); null when none is set up, and the run then records no renderer.</param>
     /// <param name="evalRunner">The runner's path the API starts an eval check from. Required, so a caller can't leave it out.</param>
-    public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model, IReadOnlyList<string> roles, string evalRunner)
+    public static IReadOnlyDictionary<string, string> Of(BenchmarkCheck check, string provider, string model, IReadOnlyList<string> roles, string evalRunner,
+        WebSearchProviderKind? searchProvider, PageRendererKind? pageRenderer)
     {
         var settings = new Dictionary<string, string>
         {
@@ -20,6 +25,9 @@ public static class BenchmarkSettings
         };
         settings["eval"] = check.Id;
         settings["eval_runner"] = evalRunner;
+        // What the instance resolved to, so a run on SearXNG and one on Tavily can be told apart (F18 step 7a.1); a renderer that is none leaves its key out.
+        if (searchProvider is { } search) settings["web_search_provider"] = search.Wire();
+        if (pageRenderer is { } renderer) settings["page_renderer"] = renderer.Wire();
         return settings;
     }
 

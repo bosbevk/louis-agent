@@ -28,6 +28,19 @@ public class PageRendererFactoryTests
         Assert.That(PageRendererFactory.Create(options), Is.TypeOf(expected));
     }
 
+    [TestCase(null, Browser, "tvly-key", PageRendererKind.Chrome)]
+    [TestCase(null, null, "tvly-key", PageRendererKind.Tavily)]
+    [TestCase(null, null, null, null)]
+    [TestCase("TAVILY", Browser, null, PageRendererKind.Tavily)]
+    [TestCase("playwright", Browser, "tvly-key", null)]
+    public void Resolve_NamesTheRendererThatCreateWouldPick(string? renderer, string? browserUrl, string? tavilyKey, PageRendererKind? expected)
+    {
+        // F18 step 7a.1: a run records which renderer the instance read pages with; null is none (unset and nothing configured, or a name we don't know).
+        var options = new AgentOptions { PageRenderer = renderer, BrowserUrl = browserUrl, TavilyApiKey = tavilyKey };
+
+        Assert.That(PageRendererFactory.Resolve(options), Is.EqualTo(expected));
+    }
+
     [TestCase(null)]
     [TestCase("chrome")]
     public async Task TheBrowserGiven_IsTheOneTheChromeRendererReadsThrough(string? renderer)

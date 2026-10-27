@@ -1,3 +1,6 @@
+using LouisAgent.Choices;
+using LouisAgent.Core.Tools.Web.Rendering;
+using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Runs;
 
@@ -13,7 +16,8 @@ public class BenchmarkSettingsTests
     {
         var check = new BenchmarkCheck(SampleEval.Beta, "Cook");
 
-        var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", SampleRole.Alpha], Runner);
+        var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", SampleRole.Alpha], Runner,
+            WebSearchProviderKind.Searxng, PageRendererKind.Chrome);
 
         Assert.That(settings, Is.EquivalentTo(new Dictionary<string, string>
         {
@@ -22,7 +26,28 @@ public class BenchmarkSettingsTests
             ["roles_enabled"] = SampleRole.Fill("puls/voice-af,<RoleAlpha>"),
             ["eval"] = SampleEval.Beta,
             ["eval_runner"] = Runner,
+            ["web_search_provider"] = "searxng",
+            ["page_renderer"] = "chrome",
         }));
+    }
+
+    [Test]
+    public void TheSearchProviderAndTheRenderer_AreWrittenWithWire_NotToString()
+    {
+        // DuckDuckGo's wire text is its name in lower case, which ToString() ("DuckDuckGo") would not give.
+        var settings = BenchmarkSettings.Of(new BenchmarkCheck("c", "C"), "anthropic", "m", [], Runner, WebSearchProviderKind.DuckDuckGo, PageRendererKind.Tavily);
+
+        Assert.That((settings["web_search_provider"], settings["page_renderer"]),
+            Is.EqualTo((WebSearchProviderKind.DuckDuckGo.Wire(), PageRendererKind.Tavily.Wire())));
+    }
+
+    [Test]
+    public void ARendererThatIsNone_LeavesItsKeyOut_AndTheSearchProviderStillShows()
+    {
+        var settings = BenchmarkSettings.Of(new BenchmarkCheck("c", "C"), "anthropic", "m", [], Runner, WebSearchProviderKind.DuckDuckGo, null);
+
+        Assert.That(settings.ContainsKey("page_renderer"), Is.False, "absent, never empty");
+        Assert.That(settings["web_search_provider"], Is.EqualTo(WebSearchProviderKind.DuckDuckGo.Wire()));
     }
 
     private static readonly IReadOnlyDictionary<string, string> Started = new Dictionary<string, string> { ["provider"] = "anthropic", ["model"] = "m" };
@@ -51,12 +76,12 @@ public class BenchmarkSettingsTests
 
     [Test]
     public void EveryRole_IsOn_WhenNoneAreListed() =>
-        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C"), "anthropic", "m", [], Runner)["roles_enabled"], Is.EqualTo("(all)"));
+        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C"), "anthropic", "m", [], Runner, null, null)["roles_enabled"], Is.EqualTo("(all)"));
 
     [Test]
     public void AnEvalCheckRecordsItsEvalAndItsRunner()
     {
-        var settings = BenchmarkSettings.Of(new BenchmarkCheck("stub", "Stub"), "anthropic", "m", [], "/app/evals/x.dll");
+        var settings = BenchmarkSettings.Of(new BenchmarkCheck("stub", "Stub"), "anthropic", "m", [], "/app/evals/x.dll", null, null);
 
         Assert.That((settings["eval"], settings["eval_runner"]), Is.EqualTo(("stub", "/app/evals/x.dll")));
         Assert.That(settings.ContainsKey("script"), Is.False, "no script path any more (F18 step 7.4)");

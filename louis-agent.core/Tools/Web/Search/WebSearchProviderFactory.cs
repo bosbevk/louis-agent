@@ -22,12 +22,29 @@ public static class WebSearchProviderFactory
     private static readonly IReadOnlyDictionary<string, WebSearchProviderKind> Aliases =
         new Dictionary<string, WebSearchProviderKind> { ["ddg"] = WebSearchProviderKind.DuckDuckGo };
 
+    /// <summary>The engine <paramref name="options"/> select: the one named, else the first whose settings are set; null when the name is unknown.</summary>
+    public static WebSearchProviderKind? Resolve(AgentOptions options)
+    {
+        if (!SettingChoice.TryParse(options.WebSearchProvider, out WebSearchProviderKind? choice, Aliases)) return null;
+        if (choice is not null) return choice;
+        if (HasTavily(options)) return WebSearchProviderKind.Tavily;
+        if (HasGoogle(options)) return WebSearchProviderKind.Google;
+        return SearxngOf(options) is not null ? WebSearchProviderKind.Searxng : WebSearchProviderKind.DuckDuckGo;
+    }
+
+    private static bool HasTavily(AgentOptions options) => !string.IsNullOrWhiteSpace(options.TavilyApiKey);
+
+    private static bool HasGoogle(AgentOptions options) =>
+        !string.IsNullOrWhiteSpace(options.GoogleSearchApiKey) && !string.IsNullOrWhiteSpace(options.GoogleSearchEngineId);
+
+    private static Uri? SearxngOf(AgentOptions options) => Uri.TryCreate(options.SearxngUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
+
     public static IWebSearchProvider Create(AgentOptions options, HttpClient? http = null)
     {
-        bool hasTavily = !string.IsNullOrWhiteSpace(options.TavilyApiKey);
-        bool hasGoogle = !string.IsNullOrWhiteSpace(options.GoogleSearchApiKey) && !string.IsNullOrWhiteSpace(options.GoogleSearchEngineId);
-        Uri? searxng = Uri.TryCreate(options.SearxngUrl?.Trim(), UriKind.Absolute, out var url) ? url : null;
-        if (!SettingChoice.TryParse(options.WebSearchProvider, out WebSearchProviderKind? choice, Aliases))
+        bool hasTavily = HasTavily(options);
+        bool hasGoogle = HasGoogle(options);
+        Uri? searxng = SearxngOf(options);
+        if (Resolve(options) is not { } choice)
         {
             string named = options.WebSearchProvider!.Trim();
             return new UnavailableSearchProvider(named, MessageText.Format(WebToolMessage.UnknownSearchProvider,
@@ -36,10 +53,6 @@ public static class WebSearchProviderFactory
 
         return choice switch
         {
-            null when hasTavily => new TavilySearchProvider(options.TavilyApiKey!, http),
-            null when hasGoogle => new GoogleSearchProvider(options.GoogleSearchApiKey!, options.GoogleSearchEngineId!, http),
-            null when searxng is not null => new SearxngSearchProvider(searxng, http),
-            null => new DuckDuckGoSearchProvider(http),
             WebSearchProviderKind.Tavily => hasTavily
                 ? new TavilySearchProvider(options.TavilyApiKey!, http)
                 : new UnavailableSearchProvider("Tavily", MessageText.Format(WebToolMessage.TavilyNotConfigured)),
