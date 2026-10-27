@@ -6,7 +6,7 @@ using LouisAgent.Web.Shared.Usage;
 
 namespace LouisAgent.Web.Shared.Tests.Chats;
 
-// F31 step 7a: one recorded Puls turn (benchmarks/fixtures/session-stream.sse) is the contract between the session
+// F31 step 7a: one recorded Puls turn (tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse) is the contract between the session
 // stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in
 // session-stream.expected.json by its unittest; this holds the web app's TurnStream to the same ones, read the way the
 // app reads them (SseParser, then TurnStream.Apply). A change to the stream re-records the fixture, and both fail

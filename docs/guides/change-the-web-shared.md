@@ -58,7 +58,7 @@ dotnet test tests/louis-agent.web.tests tests/louis-agent.puls.tests  # both app
 
 The tests mirror the folders: `Chats/` (the stream, the runner, delegations, a specialist's status and answer),
 `Components/` (bUnit, each pinned to an `.html` golden beside its test, from the recorded Puls turn in
-`benchmarks/fixtures/session-stream.sse`), `Text/` and `Usage/`. `tests/louis-agent.web.testing` holds what the three
+`tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse`), `Text/` and `Usage/`. `tests/louis-agent.web.testing` holds what the three
 web test projects share: `FixtureApi`, `SessionStreamFixture`, `Snapshots`, `FakeClock` and `RecordingJSRuntime`.
 
 `Usage/UsageFormat` repeats core's `UsageText` number rules (the app doesn't reference core), so a change to one must

@@ -7,7 +7,7 @@ using LouisAgent.Web.Shared.Chats;
 namespace LouisAgent.Web.Testing;
 
 /// <summary>
-/// One recorded Puls turn (benchmarks/fixtures/session-stream.sse, F31 step 7a: a pancake recipe for two, priced near
+/// One recorded Puls turn (tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse, F31 step 7a, moved there in F18 step 7.2: a pancake recipe for two, priced near
 /// Stellenbosch, handed to the cook), replayed through <see cref="TurnStream"/> the way the chat page replays the live
 /// stream. Every component snapshot renders the turn it gives, so the goldens show a real answer, not a made-up one.
 /// </summary>
@@ -16,7 +16,8 @@ public static class SessionStreamFixture
     /// <summary>The question the recording answered.</summary>
     public const string Question = "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
 
-    public static string Folder => Path.Combine(TestPaths.RepoRoot, "benchmarks", "fixtures");
+    /// <summary>Where the recording lives: the session-stream tests' fixtures, read from the source tree (the same on Windows and Linux).</summary>
+    public static string Folder => Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.session-stream.tests", "Fixtures");
 
     public static string StreamFile => Path.Combine(Folder, "session-stream.sse");
 

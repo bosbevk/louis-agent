@@ -58,7 +58,7 @@ nothing: only its line endings changed, and `git checkout -- <file>` puts it bac
 
 **The web apps' components are pinned the same way** (T1, CL15): `tests/louis-agent.web.shared.tests` renders
 `TurnView`, `BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
-(`benchmarks/fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
+(`tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
 (`Components/TurnView.html`); `tests/louis-agent.puls.tests` does the same for `WorkPanel`, `PulsTile`, `TemplateCard`,
 the landing page and the chat page, empty and with the turn (`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), and
 `tests/louis-agent.web.tests` for the code-review app's chat page, each against the stub API (`FixtureApi` in

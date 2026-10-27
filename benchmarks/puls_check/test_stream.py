@@ -6,7 +6,7 @@ import unittest
 
 from benchmarks.puls_check import stream
 
-FIXTURES = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "fixtures")
+FIXTURES = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "tests", "louis-agent.session-stream.tests", "Fixtures")
 
 
 def recorded():

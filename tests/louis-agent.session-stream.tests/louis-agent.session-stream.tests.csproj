@@ -22,9 +22,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The recorded Puls turn and its expected counts, read where they are until step 7 moves them here. -->
-    <None Include="..\..\benchmarks\fixtures\session-stream.sse" Link="Fixtures\session-stream.sse" CopyToOutputDirectory="PreserveNewest" />
-    <None Include="..\..\benchmarks\fixtures\session-stream.expected.json" Link="Fixtures\session-stream.expected.json" CopyToOutputDirectory="PreserveNewest" />
+    <!-- The recorded Puls turn and its expected counts (F18 step 7.2: they live here, with the tests that read them); the web tests read them from this folder too. -->
+    <None Update="Fixtures\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
