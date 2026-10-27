@@ -247,6 +247,12 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 
   return new Host(app, app.GetTestClient(), store);
   ```
+- **No nested conditionals** (Louis, 2026-10-27) — a choice between more than two outcomes is never a ternary inside a
+  ternary (`a ? x : b ? y : z`) or `if`s nested inside `if`s. It is a **switch expression on the shape**, one arm per
+  case read like a table (`c switch { { Total: 1, Agreed: 1 } => …, { Agreed: 0 } => …, _ => … }`, C#'s property
+  patterns), or **guard clauses**, one `if (…) return …;` per case from the top (Fowler's *Replace Nested Conditional
+  with Guard Clauses*). One plain `a ? x : y` stays. The pattern goes in the method's `<remarks>`. Same scope as the
+  summaries: a file in a step's commit is fixed whole, untouched files wait.
 - **Formatting** (Louis, 2026-10-27) — the layout rules live in the root `.editorconfig`: four spaces, a 120-character
   line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces.
   A line that is long only because of a web address (an ADR's `<seealso href>`) may run past 120: an address can't be
