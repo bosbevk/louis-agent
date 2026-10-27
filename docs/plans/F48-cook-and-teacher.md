@@ -202,7 +202,7 @@ potjie") or leaves out. No line means *home cook*. Until there's memory, nothing
   known pitfall; no calorie or health claim.
 - **A model grader with a rubric** (the F18 judge, calibrated against Louis's labels like 6a): explains the pitfall
   step, fits the level, no lecture for a confident cook, ends with one lesson.
-- **Should-not cases** (6b's pattern): a confident cook asking for a quick dinner gets no basics; a "what's 200 g in
+- **Should-not cases** (the pattern F18's 6b set, now step 7 here): a confident cook asking for a quick dinner gets no basics; a "what's 200 g in
   cups" question gets an answer, not a lesson.
 - **Before and after:** the same scenarios, today's cook vs the teaching cook, quality and cost, in the write-up.
 
@@ -226,6 +226,19 @@ ingredient lines, steps, photo, link) is the data; a C# scaler and shopping list
 reused, neither code nor text nor sample recipes (Louis, 18:13: "we will rewrite their ideas"). We take the ideas and
 write them ourselves: *what scaling doesn't cover*, *choosing well*, the import rules, the search tactics, "never state
 nutrition from memory", the excuse tables; our test recipes are our own SA dishes. D2 below is settled by this.
+
+### Decided · The cook's 20 scenarios move here from F18 (Louis, 2026-10-26)
+
+Louis, 19:02: "scrap step 6b, F48 will handle that". F18's step 6b was to grow the cook's dataset from 8 scenarios to
+about 20, the start Anthropic's *Demystifying evals for AI agents* gives ("20-50 simple tasks drawn from real failures
+is a great start"). It moves into step 7 here, unchanged in what it asks: **drawn from real failures**, each new
+scenario naming the run that showed it (the budget misses of `8f7802b9a72e` and `c4296ef62205`, the "nearest" branch
+with no place, the page with no photo, Puls answering a follow-up while the cook was still busy, a blocked shop
+offered); **balanced**, with should-not cases (a question that isn't about cooking is not routed to the cook, no branch
+named in a town with no shop, an estimate never shown as a shop's price, a blocked site never read, no image when the
+page had none) beside this plan's own (no basics for a confident cook, no lesson for a conversion question); about a
+third in `held-out/`; each with its categories, and the dataset's version and hash go up. The before-and-after run in
+step 8 uses all of them.
 
 ### Decided · Function skills follow Agent Skills (Louis, 2026-10-26)
 
@@ -335,7 +348,7 @@ Each step is one commit with its test, about ten minutes to review. Number taken
 | 4 | Estimates table in the where-to-buy pack: Stats SA's average prices (the user's province, else national; credited, `as_of` its month) plus our own rows for the gaps; totals in code, `null` shown as "?" | A missing row never makes R0; a Western Cape row wins over national |
 | 5 | `WriteRecipe` tool, prints the *Recipe* and *Shopping list* sections; golden files | Tool result for a known recipe |
 | 6 | `puls-cook.md`: use `WriteRecipe`, cues and whys, the level line, the excuse table, all in our own words; golden files | Role golden file |
-| 7 | Graders: scales right, list matches, total adds up; the teaching rubric and should-not cases | Each grader on recorded transcripts |
+| 7 | Graders: scales right, list matches, total adds up; the teaching rubric and should-not cases; the cook's dataset grows from 8 to about 20 scenarios (F18's 6b, moved here) | Each grader on recorded transcripts |
 | 8 | Paid before/after run (your go), the write-up in `docs/learning/` | Numbers in the feature doc |
 
 **Order:** after F18 closes, F35's steps 1 to 4 first (the `Recipe` record and recorded pages), then F48: every step
@@ -349,7 +362,7 @@ specialists want first anyway.
   600 output ($0.0003): **about $0.0006 per answer**, against roughly 1 cent a trial today. Cues and whys add about 200
   output tokens ($0.0001). So about **+5% a trial**.
 - **Building it:** 9 steps (0 to 8), about three days at your three-a-day pace.
-- **The eval run:** a `--repeat 3` on 20 scenarios is about $0.60 (6b's figure), twice for before and after: about
+- **The eval run:** a `--repeat 3` on 20 scenarios is about $0.60 (the figure F18's 6b worked out), twice for before and after: about
   **$1.20**, on your go.
 - **Upkeep:** the estimates table, monthly.
 
@@ -385,7 +398,7 @@ specialists want first anyway.
 - [Expertise reversal effect](https://en.wikipedia.org/wiki/Expertise_reversal_effect)
 - [Cup (unit)](https://Www.Wikipedia.org/wiki/Cup_(unit))
 - [How does the Wonderbag work (IOL)](https://iol.co.za/lifestyle/food-drink/2025-08-07-how-does-the-wonderbag-work)
-- In the repo: `puls-cook.md`, the F18 cook graders (`ServesAsAsked`, `Servings`), `docs/plans/F18-evals.md` 6b,
+- In the repo: `puls-cook.md`, the F18 cook graders (`ServesAsAsked`, `Servings`), `docs/plans/F18-evals.md` 6b (moved here),
   `plans/F35-recipe-sources.md` in the Claude project, `plans/puls-ten-specialists-brainstorm.md` in the Claude project
 
 ---
