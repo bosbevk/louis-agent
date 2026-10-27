@@ -1,42 +1,64 @@
-using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
 /// <summary>
-/// The scan of the repeated-names ratchet on one source text (F18 step 7.5.3): the standalone string literals that are one of the wire names, minus the ones that are
-/// not a toolset or a language by what they are. Apart from <see cref="RepeatedNameTests"/> so a test can feed it a line and see whether it is flagged.
+/// Finds the strings in a C# source that spell one of our wire names, so a name that repeats is an enum member and not
+/// text. It reads the code as C#, so where the formatter breaks a line makes no difference. A name inside an enum, or in a
+/// class asked for by name, is where it is written once, and a string that is really a program or a key is let through
+/// (<see cref="NotAToolset"/>).
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class NameScan
 {
+    /// <summary>A string that spells a name: what it says, the line it is on, and that line's text.</summary>
     public sealed record Hit(int Line, string Value, string Text);
 
-    /// <summary>What comes right before the literal when it is not a name of ours: the executable a process starts, a key read from JSON or a dictionary.</summary>
-    private static readonly Regex NotAToolsetBefore =
-        new(@"(ProcessStartInfo|Process\.Start|ProcessRunner\.Run|GetProperty|TryGetProperty)\($|[\w\)]\[$",
-            RegexOptions.Compiled);
-
-    /// <summary>The code before the literal, when it makes the literal an executable (the dotnet host, python in its venv, the shell) or a role level's folder.</summary>
-    private static readonly Regex NotAToolsetCode = new(
-        @"\.FileName\b|candidates\.|CommonCommands|ResolveShell|_venvDirectory|\b(evalHost|DotNetHost)\s*=\s*$|\b(Specialists|Minions)Folder\s*=\s*$|Enum\.GetValues<\w+>\(\)\.Select\(\w+ => \w+\.Wire\(\)\)|@\*|\[""EVALS""\]\s*=\s*$|Has\.None\.(StartsWith|Contains)\($|Does\.Not\.Contain\($",
-        RegexOptions.Compiled);
-
-    private static readonly Regex BlockComment = new(@"/\*.*?\*/", RegexOptions.Compiled);
-
+    /// <summary>The plain string literals of the source that spell one of the names and are not excused, with their lines.</summary>
     public static IReadOnlyList<Hit> Flagged(string text, ISet<string> names,
         IReadOnlyCollection<string>? skippedClasses = null)
     {
-        string[] lines = text.Split('\n');
-        var hits = new List<Hit>();
-        var bodies = DeclarationBodies.Spans(text, skippedClasses);
-        foreach (var literal in StringLiterals.Regular(text)
-                     .Where(l => names.Contains(l.Value) && !DeclarationBodies.Contains(bodies, l.Index)))
-        {
-            string line = lines[literal.Line - 1];
-            string before = BlockComment.Replace(line[..literal.Column], "");
-            if (!NotAToolsetCode.IsMatch(before) && !NotAToolsetBefore.IsMatch(before))
-                hits.Add(new Hit(literal.Line, literal.Value, line.Trim()));
-        }
+        var tree = CSharpSyntaxTree.ParseText(text);
+        var lines = tree.GetText().Lines;
 
-        return hits;
+        // Only plain strings count: a name inside a raw, verbatim or interpolated string is wire data (an expected JSON, a message).
+        return
+        [
+            .. tree.GetRoot().DescendantNodes().OfType<LiteralExpressionSyntax>()
+                .Where(literal => IsPlainString(literal) && names.Contains(literal.Token.ValueText))
+                .Where(literal => !InsideAnInterpolatedString(literal) &&
+                                  !InsideASkippedBody(literal, skippedClasses ?? []) && !NotAToolset.Excuses(literal))
+                .Select(literal =>
+                {
+                    int line = tree.GetLineSpan(literal.Span).StartLinePosition.Line;
+                    return new Hit(line + 1, literal.Token.ValueText, lines[line].ToString().Trim());
+                })
+        ];
     }
+
+    /// <summary>A string written with plain quotes: not a raw one (three quotes or more), and not a verbatim one.</summary>
+    private static bool IsPlainString(LiteralExpressionSyntax literal) =>
+        literal.IsKind(SyntaxKind.StringLiteralExpression) && literal.Token.Text.StartsWith('"') &&
+        !literal.Token.Text.StartsWith("\"\"\"", StringComparison.Ordinal);
+
+    /// <summary>A string typed inside the braces of an interpolated one, which is text with a hole in it.</summary>
+    private static bool InsideAnInterpolatedString(SyntaxNode literal) =>
+        literal.Ancestors().Any(ancestor => ancestor is InterpolatedStringExpressionSyntax);
+
+    /// <summary>Inside the braces of an enum, or of a class asked for by name: where a name is written once.</summary>
+    private static bool InsideASkippedBody(SyntaxNode literal, IReadOnlyCollection<string> skippedClasses) =>
+        literal.Ancestors().Any(ancestor => ancestor switch
+        {
+            EnumDeclarationSyntax declaration =>
+                InBraces(literal, declaration.OpenBraceToken, declaration.CloseBraceToken),
+            ClassDeclarationSyntax declaration when skippedClasses.Contains(declaration.Identifier.Text) =>
+                InBraces(literal, declaration.OpenBraceToken, declaration.CloseBraceToken),
+            _ => false,
+        });
+
+    /// <summary>Whether the string sits between the two braces.</summary>
+    private static bool InBraces(SyntaxNode literal, SyntaxToken open, SyntaxToken close) =>
+        literal.SpanStart > open.SpanStart && literal.Span.End <= close.SpanStart;
 }

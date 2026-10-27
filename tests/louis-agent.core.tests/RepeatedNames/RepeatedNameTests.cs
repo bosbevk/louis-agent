@@ -1,5 +1,6 @@
 using LouisAgent.Core.Tests.RepeatedNames.Scanning;
-using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LouisAgent.Core.Tests.RepeatedNames;
 
@@ -7,6 +8,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames;
 // them written as a plain string literal anywhere else in the sources and tests, so a typo cannot compile and a rename is a rename. It scans standalone regular literals only: a name inside a raw, verbatim
 // or interpolated string is wire data (an expected JSON, a message) and stays text. Two things are not a toolset or a language and are skipped by what they are: an executable's name (`git`, `dotnet`, `python`)
 // and a key read from JSON or a dictionary (`GetProperty("web")`). Anything else is listed in Exemptions with its reason; if that list passes a dozen, the scan is too eager and gets narrowed instead.
+/// <summary>Fails when a name that is an enum member is typed as a plain string anywhere else in the sources.</summary>
 public class RepeatedNameTests
 {
     /// <summary>The enums whose wire names the scan guards (each the owner of its names); added to as each set of names becomes an enum.</summary>
@@ -60,19 +62,31 @@ public class RepeatedNameTests
             "the sub-session event is written into the recorded stream golden, which holds the peer's name: recorded data stays as recorded"),
     ];
 
+    /// <summary>Every source file the scan looks at.</summary>
     private static IEnumerable<string> SourceFiles() => SourceTree.Files();
 
+    /// <summary>A file's path from the repo's root, with forward slashes.</summary>
     private static string Relative(string path) => SourceTree.Relative(path);
 
     /// <summary>The wire names an enum file declares: a member's <c>[WireName]</c> (or .NET's <c>[JsonStringEnumMemberName]</c> under it), or its name in lower case.</summary>
     private static IEnumerable<string> WireNames(string file) =>
-        Regex.Matches(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file)),
-                @"^\s*(?:\[(?:WireName|JsonStringEnumMemberName)\(""(?<wire>[^""]+)""\)\]\s*)?(?<name>[A-Z]\w*),\s*$",
-                RegexOptions.Multiline)
-            .Select(m => m.Groups["wire"].Success ? m.Groups["wire"].Value : m.Groups["name"].Value.ToLowerInvariant());
+        CSharpSyntaxTree.ParseText(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file))).GetRoot()
+            .DescendantNodes().OfType<EnumMemberDeclarationSyntax>()
+            .Select(member => WireNameOf(member) ?? member.Identifier.ValueText.ToLowerInvariant());
 
+    /// <summary>The text in a member's <c>[WireName]</c> (or <c>[JsonStringEnumMemberName]</c>), or null when it has neither.</summary>
+    private static string? WireNameOf(EnumMemberDeclarationSyntax member) =>
+        member.AttributeLists.SelectMany(list => list.Attributes)
+            .Where(attribute => attribute.Name.ToString() is "WireName" or "JsonStringEnumMemberName")
+            .Select(attribute =>
+                (attribute.ArgumentList?.Arguments.FirstOrDefault()?.Expression as LiteralExpressionSyntax)?.Token
+                .ValueText)
+            .FirstOrDefault();
+
+    /// <summary>A name spelt as a string in a file: where, which name, and the line's text.</summary>
     private sealed record Site(string File, int Line, string Name, string Text);
 
+    /// <summary>Every place in the sources that spells one of the names as a string.</summary>
     private static List<Site> Sites()
     {
         var names = EnumFiles.SelectMany(WireNames).ToHashSet(StringComparer.Ordinal);
@@ -80,22 +94,28 @@ public class RepeatedNameTests
         foreach (string path in SourceFiles())
         {
             string rel = Relative(path);
-            // An enum file is scanned like any other: only an enum's own body is skipped (DeclarationBodies). The same holds for the one class of an ids file.
+            // An enum file is scanned like any other: only an enum's own body is skipped. The same holds for the one class of an ids file.
             if (rel.StartsWith("tests/louis-agent.core.tests/RepeatedNames/")) continue;
             var idsClasses = IdsFiles.Where(ids => ids.File == rel).Select(ids => ids.Class).ToList();
-            foreach (var hit in NameScan.Flagged(File.ReadAllText(path), names, idsClasses))
-                sites.Add(new Site(rel, hit.Line, hit.Value, hit.Text));
+            // A razor file is markup around C#, so it can't be parsed as C#: it has its own scan.
+            var hits = rel.EndsWith(".razor", StringComparison.Ordinal)
+                ? RazorNameScan.Flagged(File.ReadAllText(path), names)
+                : NameScan.Flagged(File.ReadAllText(path), names, idsClasses);
+            sites.AddRange(hits.Select(hit => new Site(rel, hit.Line, hit.Value, hit.Text)));
         }
 
         return sites;
     }
 
+    /// <summary>Whether a file is the exempt file, or inside the exempt folder.</summary>
     private static bool InFile(string file, string exempt) =>
         exempt.EndsWith('/') ? file.StartsWith(exempt, StringComparison.Ordinal) : file == exempt;
 
+    /// <summary>Whether the string is one of the few the list lets through, with its reason.</summary>
     private static bool IsExempt(Site site) => Exemptions.Any(e =>
         InFile(site.File, e.File) && site.Text.Contains(e.Line, StringComparison.Ordinal));
 
+    /// <summary>Every enum file gives some names, and the toolsets and the languages are among them.</summary>
     [Test]
     public void TheEnumFilesDeclareTheirNames()
     {
@@ -105,6 +125,7 @@ public class RepeatedNameTests
             "the scan guards the toolsets and the languages");
     }
 
+    /// <summary>A name that is an enum member is never typed as a string outside its enum.</summary>
     [Test]
     public void NoWireNameIsWrittenAsAString_OutsideItsEnum()
     {
@@ -116,6 +137,7 @@ public class RepeatedNameTests
             $"\n({offending.Count} in all)");
     }
 
+    /// <summary>A string on the exemption list still exists, so the list can't hold names that are gone.</summary>
     [Test]
     public void EveryExemption_StillMatchesALiteral_SoTheListCannotGoStale()
     {
@@ -127,6 +149,7 @@ public class RepeatedNameTests
         Assert.That(stale, Is.Empty);
     }
 
+    /// <summary>The list stays short, because a long one means the scan is too eager.</summary>
     [Test]
     public void TheExemptions_StayUnderADozen_OtherwiseTheScanIsTooEager()
     {
