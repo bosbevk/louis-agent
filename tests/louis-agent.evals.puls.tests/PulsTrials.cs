@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Puls.Shared;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Trials;
@@ -9,8 +10,8 @@ namespace LouisAgent.Evals.Puls.Tests;
 internal static class PulsTrials
 {
     public const string Role = "puls/voice-af";
-    public static readonly EvalMode CookMode = new("puls-cook", Role, ["specialists", "web"]);
-    public static readonly EvalMode ToolsMode = new("puls-tools", Role, ["web", "shops"]);
+    public static readonly EvalMode CookMode = new("puls-cook", Role, [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()]);
+    public static readonly EvalMode ToolsMode = new("puls-tools", Role, [PulsToolset.Web.Name(), PulsToolset.Shops.Name()]);
 
     /// <summary>A trial of a scenario with the given <c>expected</c> JSON and place (none by default).</summary>
     public static Trial Trial(EvalMode mode, string task, string expected, string? place, params TurnTranscript[] turns) =>

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
@@ -28,7 +29,7 @@ public class ChatRunnerTests
         {
             var api = FixtureApi.Client(Settings, out Handler, sessionGone);
             Store = new ChatStore(Js, Settings);
-            Runner = new ChatRunner(api, Store, text ?? new ChatText(), () => api.CreateSessionAsync(["web"]), Clock);
+            Runner = new ChatRunner(api, Store, text ?? new ChatText(), () => api.CreateSessionAsync([SampleToolset.Alpha]), Clock);
             Runner.SessionOpened += id => Opened.Add(id);
             Runner.Changed += () => Changed++;
             Runner.TurnEnded += () => Ended++;

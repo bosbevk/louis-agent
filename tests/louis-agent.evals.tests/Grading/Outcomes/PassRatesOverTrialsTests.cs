@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
@@ -20,7 +21,7 @@ public class PassRatesOverTrialsTests
         new(number, "sess", "Vraag", [], TimeSpan.FromSeconds(1), failure);
 
     private static Trial TrialOf(params TurnTranscript[] turns) =>
-        new("run_1", new EvalMode("cook", "puls-cook", ["web"]), 1,
+        new("run_1", new EvalMode("cook", "puls-cook", [SampleToolset.Alpha]), 1,
             new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Vraag"]), default, [], DatasetSplit.Dev), new Transcript(turns));
 
     private static readonly IGrader[] Required = [new RequiredGrader()];

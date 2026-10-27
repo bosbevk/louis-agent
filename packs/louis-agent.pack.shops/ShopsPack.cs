@@ -1,3 +1,5 @@
+using LouisAgent.Packs.Shops;
+using LouisAgent.Choices;
 namespace LouisAgent.Packs.Shops;
 
 using LouisAgent.Core.Agent.Toolsets;
@@ -25,8 +27,8 @@ public sealed class ShopsPack : IAgentPack
         [
             // F33: a shop's products from its own catalogue, through the guarded browser; off unless SHOP_CATALOGUES names a
             // shop (development and benchmarks first, ADR 0023).
-            new("shops", "A shop's products and prices from its own catalogue (Checkers)",
-                GuideFile: SkillFiles.Guide("shops"),
+            new(SettingChoice.Wire(ShopsToolset.Shops), "A shop's products and prices from its own catalogue (Checkers)",
+                GuideFile: SkillFiles.Guide(SettingChoice.Wire(ShopsToolset.Shops)),
                 MissingSettings: ctx => new[]
                 {
                     ShopCatalogueFactory.Enabled(options.ShopCatalogues).Count > 0 ? null : "SHOP_CATALOGUES",
@@ -39,7 +41,7 @@ public sealed class ShopsPack : IAgentPack
         ];
     }
 
-    public string Name => "shops";
+    public string Name => SettingChoice.Wire(ShopsToolset.Shops);
 
     public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
 

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
 using ClaudeStreamFormat = LouisAgent.Api.Sessions.Streaming.Claude.ClaudeStreamFormat;
@@ -14,17 +15,17 @@ public class DelegationToolsetsTests
     [Test]
     public void ASessionsStream_StartsWithTheToolsetsItLoaded()
     {
-        var start = new ClaudeStreamFormat("sess_1", ["web", "shops"]).Start();
+        var start = new ClaudeStreamFormat("sess_1", [SampleToolset.Alpha, SampleToolset.Beta]).Start();
 
         using var data = JsonDocument.Parse(start.Data);
         Assert.That(data.RootElement.GetProperty("message").GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
-            Is.EqualTo(new[] { "web", "shops" }));
+            Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
     private static Block Cook(string? footer = null) => new()
     {
         Kind = BlockKind.Tool, ToolName = Delegation.ToolName, ToolUseId = "toolu_1",
-        ToolInput = """{"toolsets":["web"],"message":"**Vir:** kok","role":"puls-cook"}""",
+        ToolInput = SampleToolset.Fill("""{"toolsets":["<Alpha>"],"message":"**Vir:** kok","role":"puls-cook"}"""),
         ToolResult = footer is null ? null : "Die resep.\n\n" + footer,
     };
 
@@ -32,20 +33,20 @@ public class DelegationToolsetsTests
     public void TheCard_ShowsWhatTheSpecialistLoaded_WhileItWorks()
     {
         var turn = new Turn { Blocks = [Cook()] };
-        var inner = JsonDocument.Parse("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"]}}""").RootElement;
+        var inner = JsonDocument.Parse(SampleToolset.Fill("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["<Alpha>","<Beta>"]}}""")).RootElement;
         var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_1", agent = "puls", @event = "message_start", data = inner });
 
         TurnStream.Apply(turn, SessionEvent.From("sub_session", outer));
 
-        Assert.That(Delegation.From(turn.Blocks[0])!.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(Delegation.From(turn.Blocks[0])!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
     [Test]
     public void TheCard_ShowsTheFootersToolsets_OnceItsDone() =>
-        Assert.That(Delegation.From(Cook("[Sub-session sub-1 on puls (web, shops; puls-cook): 3 requests, 1 USD]"))!.Toolsets,
-            Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(Delegation.From(Cook(SampleToolset.Fill("[Sub-session sub-1 on puls (<Alpha>, <Beta>; puls-cook): 3 requests, 1 USD]")))!.Toolsets,
+            Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
 
     [Test]
     public void AnOlderChat_ShowsTheToolsetsSent() =>
-        Assert.That(Delegation.From(Cook())!.Toolsets, Is.EqualTo(new[] { "web" }));
+        Assert.That(Delegation.From(Cook())!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha }));
 }

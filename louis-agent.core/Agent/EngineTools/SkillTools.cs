@@ -122,8 +122,8 @@ internal sealed partial class SkillTools
                 string variable = name is "PAYMO_API_KEY" or "PAYMO_API_KEY_BASE64" ? name : $"SKILL_ARG_{name}";
                 return skill.Language switch
                 {
-                    "powershell" => $"$env:{variable}",
-                    "python" => $"__import__('os').environ.get('{variable}', '')",
+                    ScriptLanguage.PowerShell => $"$env:{variable}",
+                    ScriptLanguage.Python => $"__import__('os').environ.get('{variable}', '')",
                     _ => $"${{{variable}}}",
                 };
             }).Trim();
@@ -135,9 +135,9 @@ internal sealed partial class SkillTools
 
             return skill.Language switch
             {
-                "powershell" => FormatSkillResult(_powerShell.RunScript(resolvedCommand, null, [], null,
+                ScriptLanguage.PowerShell => FormatSkillResult(_powerShell.RunScript(resolvedCommand, null, [], null,
                     TimeSpan.FromMilliseconds(ShellTimeoutMs), out var noPowerShell, env), noPowerShell),
-                "python" => FormatSkillResult(_python.RunScript(resolvedCommand, null, [], null,
+                ScriptLanguage.Python => FormatSkillResult(_python.RunScript(resolvedCommand, null, [], null,
                     TimeSpan.FromMilliseconds(ShellTimeoutMs), out var noPython, env), noPython),
                 _ => RunShellCommand(resolvedCommand, env, _workspaceRoot),
             };

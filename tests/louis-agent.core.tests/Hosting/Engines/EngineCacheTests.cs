@@ -23,7 +23,7 @@ public class EngineCacheTests
         int builds = 0;
 
         var engines = Enumerable.Range(0, 20).AsParallel().WithDegreeOfParallelism(20)
-            .Select(_ => cache.GetOrAdd(Key("files"), () => { Interlocked.Increment(ref builds); Thread.Sleep(20); return Engine(); })).ToList();
+            .Select(_ => cache.GetOrAdd(Key(CoreToolset.Files.Name()), () => { Interlocked.Increment(ref builds); Thread.Sleep(20); return Engine(); })).ToList();
 
         Assert.That(builds, Is.EqualTo(1));
         Assert.That(engines.Distinct().Count(), Is.EqualTo(1), "every caller got the one engine");
@@ -33,33 +33,33 @@ public class EngineCacheTests
     public void PastTheCapacity_TheLeastRecentlyUsedGoes_NotTheOldest()
     {
         var cache = new EngineCache(2);
-        var files = cache.GetOrAdd(Key("files"), Engine);
-        cache.GetOrAdd(Key("git"), Engine);
-        cache.GetOrAdd(Key("files"), Engine);   // files is now the more recent
+        var files = cache.GetOrAdd(Key(CoreToolset.Files.Name()), Engine);
+        cache.GetOrAdd(Key(CoreToolset.Git.Name()), Engine);
+        cache.GetOrAdd(Key(CoreToolset.Files.Name()), Engine);   // files is now the more recent
 
-        cache.GetOrAdd(Key("dotnet"), Engine);
+        cache.GetOrAdd(Key(CoreToolset.DotNet.Name()), Engine);
 
-        Assert.That(cache.Keys, Is.EquivalentTo(new[] { "files", "dotnet" }), "git, the least recently used, went");
-        Assert.That(cache.GetOrAdd(Key("files"), () => throw new InvalidOperationException("kept, so not built again")), Is.SameAs(files));
+        Assert.That(cache.Keys, Is.EquivalentTo(new[] { CoreToolset.Files.Name(), CoreToolset.DotNet.Name() }), "git, the least recently used, went");
+        Assert.That(cache.GetOrAdd(Key(CoreToolset.Files.Name()), () => throw new InvalidOperationException("kept, so not built again")), Is.SameAs(files));
     }
 
     [Test]
     public void TheKeyBeingAdded_IsNeverTheOneDropped()
     {
         var cache = new EngineCache(1);
-        cache.GetOrAdd(Key("files"), Engine);
+        cache.GetOrAdd(Key(CoreToolset.Files.Name()), Engine);
 
-        var git = cache.GetOrAdd(Key("git"), Engine);
+        var git = cache.GetOrAdd(Key(CoreToolset.Git.Name()), Engine);
 
-        Assert.That(cache.Keys, Is.EqualTo(new[] { "git" }));
-        Assert.That(cache.GetOrAdd(Key("git"), () => throw new InvalidOperationException("kept")), Is.SameAs(git));
+        Assert.That(cache.Keys, Is.EqualTo(new[] { CoreToolset.Git.Name() }));
+        Assert.That(cache.GetOrAdd(Key(CoreToolset.Git.Name()), () => throw new InvalidOperationException("kept")), Is.SameAs(git));
     }
 
     [Test]
     public void Keys_ListTheKeysText()
     {
         var cache = new EngineCache(16);
-        var web = ProfileKey.Of([new ToolsetDefinition("web", "a toolset", GuideFile: null, MissingSettings: _ => [], CreateTools: _ => [])], "cook", RoleLevel.Specialist, "ollama-puls", null);
+        var web = ProfileKey.Of([new ToolsetDefinition(CoreToolset.Web.Name(), "a toolset", GuideFile: null, MissingSettings: _ => [], CreateTools: _ => [])], "cook", RoleLevel.Specialist, "ollama-puls", null);
 
         cache.GetOrAdd(web, Engine);
 

@@ -1,3 +1,5 @@
+using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Chats;
 
 namespace LouisAgent.Web.Shared.Tests.Chats;
@@ -12,11 +14,11 @@ public class DelegationTests
     [Test]
     public void AStart_StillRunning_ReadsTheCall()
     {
-        var delegation = Delegation.From(Call("StartSubSession", """{"agent":"puls","toolsets":["web"],"message":"Kook iets","role":"puls-cook"}"""))!;
+        var delegation = Delegation.From(Call("StartSubSession", SampleToolset.Fill("""{"agent":"puls","toolsets":["<Alpha>"],"message":"Kook iets","role":"puls-cook"}""")))!;
 
         Assert.That(delegation.Agent, Is.EqualTo("puls"));
         Assert.That(delegation.Role, Is.EqualTo("puls-cook"));
-        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "web" }));
+        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha }));
         Assert.That(delegation.Task, Is.EqualTo("Kook iets"));
         Assert.That(delegation.Answer, Is.Null);
         Assert.That(delegation.Failed, Is.False);
@@ -26,8 +28,8 @@ public class DelegationTests
     [Test]
     public void AStart_ThatReturned_ReadsTheAnswerAndTheFooter()
     {
-        var block = Call("StartSubSession", """{"agent":"","toolsets":["web"],"message":"Kook iets","role":"puls-cook"}""",
-            "Bobotie vir vier.\n\n[Sub-session sub-1 on puls (web, shops; puls-cook): 3 requests, $0.01. It stays open: ContinueSubSession]");
+        var block = Call("StartSubSession", SampleToolset.Fill("""{"agent":"","toolsets":["<Alpha>"],"message":"Kook iets","role":"puls-cook"}"""),
+            SampleToolset.Fill("Bobotie vir vier.\n\n[Sub-session sub-1 on puls (<Alpha>, <Beta>; puls-cook): 3 requests, $0.01. It stays open: ContinueSubSession]"));
 
         var delegation = Delegation.From(block)!;
 
@@ -35,7 +37,7 @@ public class DelegationTests
         Assert.That(delegation.UsageLine, Is.EqualTo("3 requests, $0.01"));
         Assert.That(delegation.ResultAgent, Is.EqualTo("puls"), "the peer actually used, since the call named none");
         Assert.That(delegation.Handle, Is.EqualTo("sub-1"));
-        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "web", "shops" }), "F34: what the specialist loaded wins over what was sent");
+        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }), "F34: what the specialist loaded wins over what was sent");
         Assert.That(delegation.Failed, Is.False);
     }
 
@@ -54,12 +56,12 @@ public class DelegationTests
     public void AContinue_LearnsItsRole_FromItsStreamsStart()
     {
         var block = Call("ContinueSubSession", """{"handle":"sub-1","message":"Meer"}""");
-        block.SubTurn = new Turn { Role = "puls-cook", Toolsets = ["web", "shops"] };
+        block.SubTurn = new Turn { Role = "puls-cook", Toolsets = [SampleToolset.Alpha, SampleToolset.Beta] };
 
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Role, Is.EqualTo("puls-cook"), "FX17");
-        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(delegation.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
     [Test]
@@ -117,7 +119,7 @@ public class DelegationTests
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Role, Is.EqualTo("puls-cook"));
-        Assert.That(delegation.Toolsets, Does.Contain("web"));
+        Assert.That(delegation.Toolsets, Does.Contain(CoreToolset.Web.Name()), "the recorded turn is Puls's own");
         Assert.That(delegation.Answer, Is.Not.Null.And.Not.Empty);
         Assert.That(delegation.UsageLine, Does.Contain("request"));
         Assert.That(delegation.Failed, Is.False);

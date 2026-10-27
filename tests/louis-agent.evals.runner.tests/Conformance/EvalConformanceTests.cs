@@ -60,7 +60,7 @@ public class EvalConformanceTests
         public string Proves => "A fake eval, to test the conformance check on a set that isn't Puls's.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("puls-cook", StubEval.Role, ["specialists", "web"])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("puls-cook", StubEval.Role, [StubToolset.Specialists.Name(), StubToolset.Web.Name()])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
         [

@@ -10,9 +10,13 @@ namespace LouisAgent.Puls.Tests.Components.Admin;
 // F18 step 5c.3: a category's line links to its tasks (`?task=`), and the run explorer opens that task's conversation at once. Written first: the explorer opened at the run.
 public class RunExplorerOpenTaskTests
 {
+    private static string ModeJson(int repeat) => $$"""{"name":"puls-cook","repeat":{{repeat}},"toolsets":["{{SampleToolset.Alpha}}"]}""";
+
+    private static string ConversationJson(int repeat, string task) => $$"""{"mode":"puls-cook","repeat":{{repeat}},"task":"{{task}}","role":null,"scores":{},"errors":0}""";
+
     private static string Run(int repeats) => $$"""
-        {"run":{"id":"run123456789","check":"puls-cook","repeat":{{repeats}}},"modes":[{{string.Join(",", Enumerable.Range(1, repeats).Select(r => $$$"""{"name":"puls-cook","repeat":{{{r}}},"toolsets":["web"]}"""))}}],
-         "conversations":[{{string.Join(",", Enumerable.Range(1, repeats).SelectMany(r => new[] { "cook-af", "cook-en" }.Select(t => $$$"""{"mode":"puls-cook","repeat":{{{r}}},"task":"{{{t}}}","role":null,"scores":{},"errors":0}""")))}}],
+        {"run":{"id":"run123456789","check":"puls-cook","repeat":{{repeats}}},"modes":[{{string.Join(",", Enumerable.Range(1, repeats).Select(ModeJson))}}],
+         "conversations":[{{string.Join(",", Enumerable.Range(1, repeats).SelectMany(r => new[] { "cook-af", "cook-en" }.Select(t => ConversationJson(r, t))))}}],
          "turns":[],"requests":[]}
         """;
 

@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
@@ -32,7 +33,7 @@ public class SpecialistToolsRollUpTests
         UsageTotal total;
         using (var scope = UsageScope.Begin(host: "api", session: "sess_parent", turn: 2))
         {
-            await ToolsOn(handler, sink: sink).StartSubSession(["files", "git"], "Fix order 1006.", agent: "coder");
+            await ToolsOn(handler, sink: sink).StartSubSession([CoreToolset.Files.Name(), CoreToolset.Git.Name()], "Fix order 1006.", agent: "coder");
             total = scope.Total();
         }
 
@@ -53,7 +54,7 @@ public class SpecialistToolsRollUpTests
         UsageTotal total;
         using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            await ToolsOn(Peer(Replies(EmptyStream, AnswerStream)), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+            await ToolsOn(Peer(Replies(EmptyStream, AnswerStream)), sink: sink).StartSubSession([CoreToolset.Files.Name()], "x", agent: "coder");
             total = scope.Total();
         }
 
@@ -68,7 +69,7 @@ public class SpecialistToolsRollUpTests
 
         string result;
         using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
-            result = await ToolsOn(Peer(Replies(FailedStream)), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+            result = await ToolsOn(Peer(Replies(FailedStream)), sink: sink).StartSubSession([CoreToolset.Files.Name()], "x", agent: "coder");
 
         Assert.That(result, Does.StartWith("Error").And.Contain("the model refused"));
         Assert.That((sink.Records.Single().Requests, sink.Records.Single().Cost?.Amount), Is.EqualTo(((int?)2, (decimal?)0.002m)));
@@ -82,7 +83,7 @@ public class SpecialistToolsRollUpTests
 
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
             await new SpecialistTools(Peers, null, new HttpClient(new SlowPeer()), TimeSpan.FromMilliseconds(200), usageSink: sink)
-                .StartSubSession(["files"], "x", agent: "coder");
+                .StartSubSession([CoreToolset.Files.Name()], "x", agent: "coder");
 
         Assert.That(sink.Records, Is.Empty);
     }
@@ -102,7 +103,7 @@ public class SpecialistToolsRollUpTests
             new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")),
             new FakeChatClient(
                 _ => Reply(new FunctionCallContent("call_1", "StartSubSession",
-                    new Dictionary<string, object?> { ["toolsets"] = new[] { "files" }, ["message"] = "Fix order 1006.", ["agent"] = "coder" })),
+                    new Dictionary<string, object?> { ["toolsets"] = new[] { CoreToolset.Files.Name() }, ["message"] = "Fix order 1006.", ["agent"] = "coder" })),
                 _ => Reply(new TextContent("Done."))),
             TestPaths.Agent(), toolsets: [tools], usageSink: sink);
 
@@ -124,7 +125,7 @@ public class SpecialistToolsRollUpTests
         // As a model request outside a scope is (FX5): the ledger records it with no host or session.
         var sink = new ListUsageSink();
 
-        string result = await ToolsOn(Peer(), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+        string result = await ToolsOn(Peer(), sink: sink).StartSubSession([CoreToolset.Files.Name()], "x", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check"));
         Assert.That((sink.Records.Single().Session, sink.Records.Single().Requests), Is.EqualTo(((string?)null, (int?)3)));
@@ -137,7 +138,7 @@ public class SpecialistToolsRollUpTests
         var handler = Peer();
 
         using (UsageScope.Begin(session: "sess_parent", turn: 4, tags: new UsageTags(null, "run-1", "order-service")))
-            await ToolsOn(handler).StartSubSession(["files"], "x", agent: "coder");
+            await ToolsOn(handler).StartSubSession([CoreToolset.Files.Name()], "x", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("parent").GetString(), Is.EqualTo("sess_parent#4"));

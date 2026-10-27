@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Evals.Api;
@@ -266,7 +267,7 @@ public class EvalRunnerTests
         public string Proves => "A canned trial, to see the runner's lines.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", ["web"])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
             [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)];

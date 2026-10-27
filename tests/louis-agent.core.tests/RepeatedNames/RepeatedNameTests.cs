@@ -1,0 +1,114 @@
+using System.Text.RegularExpressions;
+
+namespace LouisAgent.Core.Tests.RepeatedNames;
+
+// F18 step 7.5.3, ADR 0043: a name that repeats is an enum. This ratchet reads the wire names out of the enums of the toolsets and the script languages (the files listed below) and fails on any of
+// them written as a plain string literal anywhere else in the sources and tests, so a typo cannot compile and a rename is a rename. It scans standalone regular literals only: a name inside a raw, verbatim
+// or interpolated string is wire data (an expected JSON, a message) and stays text. Two things are not a toolset or a language and are skipped by what they are: an executable's name (`git`, `dotnet`, `python`)
+// and a key read from JSON or a dictionary (`GetProperty("web")`). Anything else is listed in Exemptions with its reason; if that list passes a dozen, the scan is too eager and gets narrowed instead.
+public class RepeatedNameTests
+{
+    /// <summary>The enums whose wire names the scan guards (each the owner of its names); added to as each set of names becomes an enum.</summary>
+    private static readonly string[] EnumFiles =
+    [
+        "louis-agent.core/Agent/Toolsets/CoreToolset.cs",
+        "louis-agent.core/Skills/ScriptLanguage.cs",
+        "packs/louis-agent.pack.shops/ShopsToolset.cs",
+        "evals/louis-agent.evals.puls/Shared/PulsToolset.cs",
+        "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
+        "src/louis-agent.web.shared/Api/AskedToolset.cs",
+        "src/louis-agent.web.shared/Api/ScriptLanguage.cs",
+    ];
+
+    private static readonly string[] Roots = ["louis-agent.core", "louis-agent.choices", "louis-agent.session-stream", "identities", "packs", "src", "tools", "evals", "tests"];
+
+    /// <summary>What comes right before the literal when it is not a toolset: the executable a process starts, a key read from JSON or a dictionary.</summary>
+    private static readonly Regex NotAToolsetBefore = new(@"(ProcessStartInfo|Process\.Start|ProcessRunner\.Run|GetProperty|TryGetProperty)\($|[\w\)]\[$", RegexOptions.Compiled);
+
+    /// <summary>A line that names an executable (the dotnet host, python in its venv, the shell) or a role level's folder: what the literal on it is is not a toolset.</summary>
+    private static readonly Regex NotAToolsetLine = new(@"\.FileName\b|candidates\.|CommonCommands|ResolveShell|Folder\b|evalHost|_venvDirectory|\(""dotnet"", \[", RegexOptions.Compiled);
+
+    /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
+    private static readonly (string File, string Line, string Reason)[] Exemptions =
+    [
+        ("src/louis-agent.puls/Components/Landing/", "", "the landing page's display content: a mock of a chat, with the toolsets it pretends to use"),
+        ("tests/louis-agent.evals.tests/Protocol/ProtocolWriterTests.cs", "writer.Mode(\"cook\", 1, [\"web\", \"shops\"]", "a mode's toolsets as the recorded fixture the writer's lines are compared with has them: recorded data stays as recorded"),
+        ("identities/louis-agent.identity.puls/PulsIdentity.cs", "Packs =>", "a pack's name, not a toolset's: the packs set makes it an enum"),
+        ("tests/louis-agent.identity.puls.tests/PulsIdentityTests.cs", "puls.Packs", "a pack's name, not a toolset's: the packs set makes it an enum"),
+        ("tests/louis-agent.evals.puls.tests/PulsDatasetsTests.cs", "\"numbers\"", "the routing tasks' ids, which the eval-names set makes an enum"),
+        ("tests/louis-agent.evals.puls.tests/Evals/Routing/RoutingEvalTests.cs", "\"numbers\"", "the routing tasks' ids, which the eval-names set makes an enum"),
+        ("tests/louis-agent.evals.puls.tests/Evals/Routing/Scoring/RoutingScorerTests.cs", "\"numbers\"", "the routing tasks' ids, which the eval-names set makes an enum"),
+        ("tests/louis-agent.evals.puls.tests/Evals/Routing/Scoring/RoutingScorerTests.cs", "Dev.Route(\"web\")", "a routing task's id, which the eval-names set makes an enum"),
+    ];
+
+    private static IEnumerable<string> SourceFiles() =>
+        Roots.Select(r => Path.Combine(TestPaths.RepoRoot, r)).Where(Directory.Exists)
+            .SelectMany(dir => Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
+            .Where(f => f.EndsWith(".cs") || f.EndsWith(".razor"))
+            .Where(f => !f.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Any(p => p is "bin" or "obj" or "node_modules" or "wwwroot"));
+
+    private static string Relative(string path) => Path.GetRelativePath(TestPaths.RepoRoot, path).Replace('\\', '/');
+
+    /// <summary>The wire names an enum file declares: a member's <c>[JsonStringEnumMemberName]</c>, or its name in lower case.</summary>
+    private static IEnumerable<string> WireNames(string file) =>
+        Regex.Matches(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, file)), @"^\s*(?:\[JsonStringEnumMemberName\(""(?<wire>[^""]+)""\)\]\s*)?(?<name>[A-Z]\w*),\s*$", RegexOptions.Multiline)
+            .Select(m => m.Groups["wire"].Success ? m.Groups["wire"].Value : m.Groups["name"].Value.ToLowerInvariant());
+
+    private sealed record Site(string File, int Line, string Name, string Text);
+
+    private static List<Site> Sites()
+    {
+        var names = EnumFiles.SelectMany(WireNames).ToHashSet(StringComparer.Ordinal);
+        var enumFiles = EnumFiles.ToHashSet();
+        var sites = new List<Site>();
+        foreach (string path in SourceFiles())
+        {
+            string rel = Relative(path);
+            if (enumFiles.Contains(rel) || rel.StartsWith("tests/louis-agent.core.tests/RepeatedNames/")) continue;
+            string text = File.ReadAllText(path);
+            string[] lines = text.Split('\n');
+            foreach (var literal in StringLiterals.Regular(text).Where(l => names.Contains(l.Value)))
+            {
+                string line = lines[literal.Line - 1].Trim();
+                if (!NotAToolsetLine.IsMatch(line) && !NotAToolsetBefore.IsMatch(lines[literal.Line - 1][..literal.Column])) sites.Add(new Site(rel, literal.Line, literal.Value, line));
+            }
+        }
+        return sites;
+    }
+
+    private static bool InFile(string file, string exempt) => exempt.EndsWith('/') ? file.StartsWith(exempt, StringComparison.Ordinal) : file == exempt;
+
+    private static bool IsExempt(Site site) => Exemptions.Any(e => InFile(site.File, e.File) && site.Text.Contains(e.Line, StringComparison.Ordinal));
+
+    [Test]
+    public void TheEnumFilesDeclareTheirNames()
+    {
+        foreach (string file in EnumFiles)
+            Assert.That(WireNames(file).ToList(), Is.Not.Empty, file);
+        Assert.That(EnumFiles.SelectMany(WireNames), Does.Contain("web").And.Contain("shops").And.Contain("powershell"), "the scan guards the toolsets and the languages");
+    }
+
+    [Test]
+    public void NoWireNameIsWrittenAsAString_OutsideItsEnum()
+    {
+        var offending = Sites().Where(s => !IsExempt(s)).Select(s => $"{s.File}:{s.Line}  \"{s.Name}\"  {s.Text}").ToList();
+
+        Assert.That(offending, Is.Empty, "a name that repeats is an enum member (ADR 0043):\n" + string.Join("\n", offending.Take(150)) + $"\n({offending.Count} in all)");
+    }
+
+    [Test]
+    public void EveryExemption_StillMatchesALiteral_SoTheListCannotGoStale()
+    {
+        var sites = Sites();
+        var stale = Exemptions.Where(e => !sites.Any(s => InFile(s.File, e.File) && s.Text.Contains(e.Line, StringComparison.Ordinal))).Select(e => $"{e.File}: {e.Line}").ToList();
+
+        Assert.That(stale, Is.Empty);
+    }
+
+    [Test]
+    public void TheExemptions_StayUnderADozen_OtherwiseTheScanIsTooEager()
+    {
+        Assert.That(Exemptions.Length, Is.LessThanOrEqualTo(12), "narrow the scan instead of listing more");
+        Assert.That(Exemptions.Select(e => e.Reason), Has.All.Not.Empty);
+    }
+}

@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -213,11 +214,15 @@ public class SkillAuthoringTests
         Assert.That(File.Exists(Path.Combine(_skillsDir, "agent", "functions", "broken.md")), Is.False);
     }
 
-    [TestCase("dotnet")]
-    [TestCase("python")]
-    [TestCase("paymo")]
+    [TestCase(CoreToolset.DotNet)]
+    [TestCase(CoreToolset.Python)]
+    [TestCase(CoreToolset.Paymo)]
+    public void CreateSkillFile_RefusesBuiltInNames(CoreToolset toolset) => RefusesAsBuiltIn(toolset.Name());
+
     [TestCase("self-extension")]
-    public void CreateSkillFile_RefusesBuiltInNames(string name)
+    public void CreateSkillFile_RefusesBuiltInNames_ThatAreAGuidesOwnFile(string name) => RefusesAsBuiltIn(name);
+
+    private void RefusesAsBuiltIn(string name)
     {
         Assert.That(Engine().CreateSkillFile(name, EchoSkill), Does.Contain("built-in"));
     }
@@ -277,17 +282,17 @@ public class SkillAuthoringTests
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"));
     }
 
-    [TestCase("powershell", "\"hello $env:SKILL_ARG_who\"")]
-    [TestCase("powershell", "\"hello {{who}}\"")]
-    [TestCase("python", "import os\nprint('hello', os.environ['SKILL_ARG_who'])")]
-    [TestCase("python", "print('hello', {{who}})")]
+    [TestCase(ScriptLanguage.PowerShell, "\"hello $env:SKILL_ARG_who\"")]
+    [TestCase(ScriptLanguage.PowerShell, "\"hello {{who}}\"")]
+    [TestCase(ScriptLanguage.Python, "import os\nprint('hello', os.environ['SKILL_ARG_who'])")]
+    [TestCase(ScriptLanguage.Python, "print('hello', {{who}})")]
     [Category("Integration")]
-    public void ExecuteSkill_RunsSkillInItsFenceLanguage(string language, string code)
+    public void ExecuteSkill_RunsSkillInItsFenceLanguage(ScriptLanguage language, string code)
     {
-        if (language == "python") Assume.That(new PythonTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
-        if (language == "powershell") Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
+        if (language == ScriptLanguage.Python) Assume.That(new PythonTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
+        if (language == ScriptLanguage.PowerShell) Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
         var engine = Engine();
-        string markdown = $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language}\n{code}\n```\n";
+        string markdown = $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language.Name()}\n{code}\n```\n";
 
         Assert.That(engine.CreateSkillFile("greeting", markdown), Does.Contain("Saved"));
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis; rm -rf /"}"""), Is.EqualTo("hello Louis; rm -rf /"),

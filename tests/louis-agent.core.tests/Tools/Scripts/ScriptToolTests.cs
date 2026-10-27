@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting.Prompts;
 using System.Text.Json;
 using LouisAgent.Core.Config;
@@ -62,7 +63,7 @@ public class ScriptToolTests
 
         Assert.That(errors, Is.Empty);
         Assert.That(definition!.Name, Is.EqualTo("AddNumbers"));
-        Assert.That(definition.Language, Is.EqualTo("python"));
+        Assert.That(definition.Language, Is.EqualTo(ScriptLanguage.Python));
         Assert.That(definition.TimeoutSeconds, Is.EqualTo(30));
         Assert.That(definition.Parameters.Select(p => (p.Name, p.Type, p.Required)),
             Is.EqualTo(new[] { ("a", "integer", true), ("b", "integer", false) }));
@@ -171,14 +172,14 @@ public class ScriptToolTests
         Assert.That(result?.ToString(), Is.EqualTo("""{"sum": 42}"""));
     }
 
-    [TestCase("powershell", "$a = [Console]::In.ReadToEnd() | ConvertFrom-Json; \"echo:$($a.text)\"")]
-    [TestCase("bash", "echo \"echo:$TOOL_ARG_text\"")]
+    [TestCase(ScriptLanguage.PowerShell, "$a = [Console]::In.ReadToEnd() | ConvertFrom-Json; \"echo:$($a.text)\"")]
+    [TestCase(ScriptLanguage.Bash, "echo \"echo:$TOOL_ARG_text\"")]
     [Category("Integration")]
-    public async Task CreatedTool_SupportsPowerShellAndBash(string language, string code)
+    public async Task CreatedTool_SupportsPowerShellAndBash(ScriptLanguage language, string code)
     {
-        if (language == "powershell") Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
+        if (language == ScriptLanguage.PowerShell) Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
         var engine = Engine();
-        string definition = $"# Tool: EchoText\n- Description: Echo\n- Parameters:\n  - `text` (string, required): text\n- Implementation:\n\n```{language}\n{code}\n```\n";
+        string definition = $"# Tool: EchoText\n- Description: Echo\n- Parameters:\n  - `text` (string, required): text\n- Implementation:\n\n```{language.Name()}\n{code}\n```\n";
         Assert.That(engine.CreateTool(definition), Does.Contain("Created"));
 
         var result = await Tool(engine, "EchoText").InvokeAsync(new AIFunctionArguments { ["text"] = "a\"; rm -rf / #" });
@@ -245,7 +246,7 @@ public class ScriptToolTests
 
         engine.CreateSkillFile("greeting", "## Skill: Greet\n\n- Description: hi\n- Execution:\n\n```bash\necho hi\n```\n");
 
-        Assert.That(engine.Skills.Single(s => s.Name == "Greet").Language, Is.EqualTo("bash"));
+        Assert.That(engine.Skills.Single(s => s.Name == "Greet").Language, Is.EqualTo(ScriptLanguage.Bash));
     }
 
     [Test]

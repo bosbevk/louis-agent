@@ -1,3 +1,4 @@
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Guardrails.Auth;
 using System.ComponentModel;
 using LouisAgent.Composition;
@@ -182,7 +183,7 @@ public class SkillsToolProvider
     [Description("List all available skills (run one with ExecuteSkill)")]
     public string ListSkills()
     {
-        var skillList = string.Join("\n", _engine.Skills.OrderBy(s => s.Name).Select(s => $"- {s.Name} ({s.Language}): {s.Description}"));
+        var skillList = string.Join("\n", _engine.Skills.OrderBy(s => s.Name).Select(s => $"- {s.Name} ({s.Language.Name()}): {s.Description}"));
         return $"Available skills:\n{skillList}";
     }
 
@@ -199,7 +200,7 @@ public class SkillsToolProvider
             return MessageText.Format(McpServerText.UnknownSkill, new { Name = skillName });
         }
 
-        return $"Skill: {skill.Name}\nDescription: {skill.Description}\nLanguage: {skill.Language}\nCommand: {skill.Command}";
+        return $"Skill: {skill.Name}\nDescription: {skill.Description}\nLanguage: {skill.Language.Name()}\nCommand: {skill.Command}";
     }
 
     [McpServerTool]

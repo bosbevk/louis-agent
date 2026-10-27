@@ -22,7 +22,7 @@ public class SkillLoaderTests
     [Test]
     public void FilesAndGit_HaveTheirGuides_AndNoOthers()
     {
-        string docs = SkillLoader.Load(Options(), Toolsets("files", "git")).Documentation;
+        string docs = SkillLoader.Load(Options(), Toolsets(CoreToolset.Files.Name(), CoreToolset.Git.Name())).Documentation;
 
         Assert.That(docs, Does.Contain("# Files Skills").And.Contain("# Git Skills"));
         foreach (string guide in OtherGuides)
@@ -50,7 +50,7 @@ public class SkillLoaderTests
     public void TheToolsetThatHandsWorkOn_IsCalledSpecialists()
     {
         // CL9 step 5 (Louis: "this should say specialists since we call them that now"); F30's minions get their own.
-        var specialists = ToolsetCatalog.Find("specialists");
+        var specialists = ToolsetCatalog.Find(CoreToolset.Specialists.Name());
 
         Assert.That(specialists?.GuideFile, Is.EqualTo("toolsets/specialists.md"));
         Assert.That(ToolsetCatalog.Find("agents"), Is.Null, "the old name is gone");
@@ -103,8 +103,8 @@ public class SkillLoaderTests
             File.WriteAllText(Path.Combine(skills, "agent", "functions", "greeting.md"), "# Greeting Skills\n\nGreets people.");
             var options = new AgentOptions { SkillsDirectory = skills };
 
-            Assert.That(SkillLoader.Load(options, Toolsets("files", "skills")).Documentation, Does.Contain("# Greeting Skills"));
-            Assert.That(SkillLoader.Load(options, Toolsets("specialists", "web")).Documentation, Does.Not.Contain("# Greeting Skills"));
+            Assert.That(SkillLoader.Load(options, Toolsets(CoreToolset.Files.Name(), CoreToolset.Skills.Name())).Documentation, Does.Contain("# Greeting Skills"));
+            Assert.That(SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Name(), CoreToolset.Web.Name())).Documentation, Does.Not.Contain("# Greeting Skills"));
         }
         finally
         {
@@ -116,7 +116,7 @@ public class SkillLoaderTests
     public void ThePromptShrinks_WithTheToolset()
     {
         int all = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation.Length;
-        int coding = SkillLoader.Load(Options(), Toolsets("files", "git", "dotnet", "skills")).Documentation.Length;
+        int coding = SkillLoader.Load(Options(), Toolsets(CoreToolset.Files.Name(), CoreToolset.Git.Name(), CoreToolset.DotNet.Name(), CoreToolset.Skills.Name())).Documentation.Length;
 
         Assert.That(coding, Is.LessThan(all));
     }

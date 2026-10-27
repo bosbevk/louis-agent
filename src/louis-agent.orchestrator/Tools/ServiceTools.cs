@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using System.ComponentModel;
@@ -30,7 +31,7 @@ internal sealed partial class ServiceTools(
     /// The coding profile a fix session loads on louis-agent (F5-S4): files, git, dotnet and skills, nothing else, so
     /// every fix sends a smaller prefix and every fix session shares one cached engine.
     /// </summary>
-    internal static readonly IReadOnlyList<string> FixToolsets = ["dotnet", "files", "git", "skills"];
+    internal static readonly IReadOnlyList<string> FixToolsets = [CoreToolset.DotNet.Name(), CoreToolset.Files.Name(), CoreToolset.Git.Name(), CoreToolset.Skills.Name()];
 
     private readonly HashSet<string> _fixRequested = [];
 

@@ -51,9 +51,13 @@ do not change: they are what proves the wire is untouched.
 - **Duplicate enums between pluggable projects, on purpose.** Two projects may list `shops`; each owns its copy.
 - **The cross-boundary names are checked by a test.** Where an identity names a pack, or a role lists a toolset, the name crosses
   a boundary as text. `composition.tests` checks that each such name is one the catalogue knows, so a typo there fails a test too.
-- **A ratchet per set** (`RepeatedNameTests`) scans a project's sources and tests for each wire name as a string literal and fails
-  on one outside the enum's own file, except test data the step listed as wire data (an expected JSON, a role file's header),
-  which stays text.
+- **A ratchet** (`RepeatedNameTests`) reads the wire names out of the enum files it lists and fails on one written as a standalone string
+  literal anywhere else in the sources and tests. A name inside a larger string (an expected JSON, a role file's header) is wire data and
+  stays text. A literal is skipped by what it is (an executable's name, a key read from JSON, a role level's folder) or by an entry in a short
+  list of exemptions, each with its reason; a test fails when an entry goes stale, and when the list passes twelve, the scan is narrowed
+  instead of the list lengthened. A set joins by adding its enum file to the ratchet's list (toolsets and script languages first, F18 step 7.5.3).
+- **Tests choose between a sample and a member.** A test that only stores, shows or parses a name uses a neutral sample (`SampleToolset`);
+  one that needs a real toolset to work uses the owner's enum member, never a sample and never a string.
 - **Wire names have one source.** Adding a member is a member and its `[JsonStringEnumMemberName]` in one place; the compiler points at each
   `switch` it must handle.
 - **Done one set at a time**, toolsets first (they cross the most projects), each in its own commit.

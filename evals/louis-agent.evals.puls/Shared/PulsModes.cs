@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Puls.Shared;
 namespace LouisAgent.Evals.Puls.Shared;
 
 /// <summary>
@@ -6,5 +7,5 @@ namespace LouisAgent.Evals.Puls.Shared;
 /// </summary>
 public static class PulsModes
 {
-    public static bool CanDelegate(EvalMode mode) => mode.Toolsets.Contains("specialists", StringComparer.Ordinal);
+    public static bool CanDelegate(EvalMode mode) => mode.Toolsets.Contains(PulsToolset.Specialists.Name(), StringComparer.Ordinal);
 }

@@ -16,7 +16,7 @@ public static class SkillLoader
     private static readonly ILogger Log = AgentLogging.For<CompositeSkillProvider>();
 
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
-    private const string SkillsToolset = "skills";
+    private static readonly string SkillsToolset = CoreToolset.Skills.Name();
 
     /// <summary>The system prompt with every toolset's guide (hosts that load every toolset, and tests).</summary>
     public static ISkillProvider Load(AgentOptions agent) => Load(agent, ToolsetCatalog.All);

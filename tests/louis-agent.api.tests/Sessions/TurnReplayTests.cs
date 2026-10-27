@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions.Replay;
@@ -23,7 +24,7 @@ public class TurnReplayTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("call_1", "WhichTrial", new Dictionary<string, object?>())])),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("done")]))),
             TestPaths.Agent(), toolsets: [new WhichTrialTools()], usageSink: new ListUsageSink());
-        var session = new AgentSession("sess_replay", engine, ["web"], 0, UsageTags.None, replay: replay);
+        var session = new AgentSession("sess_replay", engine, [CoreToolset.Web.Name()], 0, UsageTags.None, replay: replay);
         Assert.That(session.TryStartTurn(CancellationToken.None, out var turn), Is.True);
 
         var written = new List<string>();

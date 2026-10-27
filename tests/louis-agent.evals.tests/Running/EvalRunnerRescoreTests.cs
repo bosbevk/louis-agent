@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
@@ -246,7 +247,7 @@ public class EvalRunnerRescoreTests
         public DatasetManifest? Dataset => dataset;
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", ["web"])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = (scenarios ?? ["pannekoek", "koeksister"])
             .Select(id => new EvalScenario(id, new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [], DatasetSplit.Dev)).ToList();

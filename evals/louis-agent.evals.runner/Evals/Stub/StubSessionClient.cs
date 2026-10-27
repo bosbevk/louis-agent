@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Runner.Evals.Stub;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
@@ -30,7 +31,7 @@ public sealed class StubSessionClient : ISessionClient
     {
         var (mode, repeat, task, turns) = _sessions[session];
         _sessions[session] = (mode, repeat, task, turns + 1);
-        bool cook = mode.Toolsets.Contains("specialists", StringComparer.Ordinal);
+        bool cook = mode.Toolsets.Contains(StubToolset.Specialists.Name(), StringComparer.Ordinal);
         foreach (var (type, data) in StubStream.Turn(task, turns + 1, cook))
         {
             cancellationToken.ThrowIfCancellationRequested();

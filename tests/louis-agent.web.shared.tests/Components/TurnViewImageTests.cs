@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Components;
@@ -21,7 +22,7 @@ public class TurnViewImageTests
         var turn = new Turn();
         foreach (var streamEvent in new[]
                  {
-                     ToolUse("d1", "StartSubSession", new { toolsets = new[] { "web" }, message = "Kook", role = "puls-cook" }),
+                     ToolUse("d1", "StartSubSession", new { toolsets = new[] { SampleToolset.Alpha }, message = "Kook", role = "puls-cook" }),
                      InSubSession("d1", ToolUse("c1", "FetchUrl", new { url = "https://example.co.za/bobotie" })),
                      InSubSession("d1", ToolResult("c1", page)),
                      InSubSession("d1", TextStart()),

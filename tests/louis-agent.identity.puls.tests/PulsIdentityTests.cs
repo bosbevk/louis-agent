@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Shops;
@@ -22,6 +24,6 @@ public class PulsIdentityTests
         Assert.Throws<AgentCatalogException>(() => new AgentCatalog([puls], []), "shops named, none registered");
         var catalog = new AgentCatalog([puls], [new ShopsPack(new ShopsOptions())]);
         Assert.That(catalog.Identities, Is.EqualTo(new[] { puls }));
-        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain("shops"));
+        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain(SettingChoice.Wire(ShopsToolset.Shops)));
     }
 }

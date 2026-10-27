@@ -18,7 +18,7 @@ public class AgentEngineTests
     private static AgentEngine Engine(IChatClient client, bool supportsTools = true, string? paymoKey = null)
     {
         var options = TestPaths.Agent(paymoKey);
-        string[] toolsets = paymoKey is null ? ["files"] : ["files", "paymo"];
+        string[] toolsets = paymoKey is null ? [CoreToolset.Files.Name()] : [CoreToolset.Files.Name(), CoreToolset.Paymo.Name()];
         return new(HelloSkills(), client, options, supportsTools, toolsets: TestPaths.Toolsets(options, toolsets), selfExtension: true);
     }
 

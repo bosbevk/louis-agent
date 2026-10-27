@@ -33,8 +33,8 @@ public class SkillFileSourceTests
     public void AFolder_ListsItsFiles()
     {
         // CL15: the roles here are the tests' own (Prompts/), registered as an identity's are; Puls's live in its identity.
-        Assert.That(SkillFileSource.Files("specialists"), Is.EqualTo(new[] { "testprod-specialist.md" }));
-        Assert.That(SkillFileSource.Files("minions"), Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
+        Assert.That(SkillFileSource.Files(CoreToolset.Specialists.Name()), Is.EqualTo(new[] { "testprod-specialist.md" }));
+        Assert.That(SkillFileSource.Files(CoreToolset.Minions.Name()), Is.EqualTo(new[] { "testprod-minion-lookup.md", "testprod-minion.md" }), "F30 step 4: a role and the base");
     }
 
     [Test]
@@ -74,8 +74,8 @@ public class SkillFileSourceTests
     public void ARoleOnDisk_IsNotRead()
     {
         // Only the agent's own files come from disk: a role or a voice is built in, or it isn't one.
-        Directory.CreateDirectory(Path.Combine(_dir, "specialists"));
-        File.WriteAllText(Path.Combine(_dir, "specialists", "puls-baker.md"), "# Baker");
+        Directory.CreateDirectory(Path.Combine(_dir, CoreToolset.Specialists.Name()));
+        File.WriteAllText(Path.Combine(_dir, CoreToolset.Specialists.Name(), "puls-baker.md"), "# Baker");
 
         Assert.That(SkillFolder.Read(new AgentOptions { SkillsDirectory = _dir }, "specialists/puls-baker.md"), Is.Null);
     }

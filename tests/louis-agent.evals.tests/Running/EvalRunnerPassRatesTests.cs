@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
@@ -171,7 +172,7 @@ public class EvalRunnerPassRatesTests
         public string Proves => "pass@k and pass^k.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", ["web"])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
             [new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Vraag"]), default, [], DatasetSplit.Dev)];

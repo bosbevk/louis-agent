@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
@@ -147,7 +148,7 @@ public class EvalRunnerFailureTests
         public string Proves => "A turn that fails for the infrastructure.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", ["web"])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("cook", "puls-cook", [SampleToolset.Alpha])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [new EvalScenario("pannekoek",
             new EvalInput(null, "Africa/Johannesburg", Enumerable.Range(1, messages).Select(n => $"Vraag {n}").ToList()), default, [], DatasetSplit.Dev)];

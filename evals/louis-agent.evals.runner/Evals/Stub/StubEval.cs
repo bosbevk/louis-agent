@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Runner.Evals.Stub;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
@@ -31,8 +32,8 @@ public sealed class StubEval : IEval
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(
         [
-            new EvalMode("puls-only", Role, ["web"]),
-            new EvalMode("puls-cook", Role, ["specialists", "web"]),
+            new EvalMode("puls-only", Role, [StubToolset.Web.Name()]),
+            new EvalMode("puls-cook", Role, [StubToolset.Specialists.Name(), StubToolset.Web.Name()]),
         ]);
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } =
@@ -53,7 +54,7 @@ public sealed class StubEval : IEval
     /// <summary>The canned facts the Python stub writes: the cook answers with one call and three specialist events, and a follow-up continues it.</summary>
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode)
     {
-        bool cook = mode.Toolsets.Contains("specialists", StringComparer.Ordinal);
+        bool cook = mode.Toolsets.Contains(StubToolset.Specialists.Name(), StringComparer.Ordinal);
         return new TurnFacts(
             Role: cook ? "puls-cook" : null,
             Continued: cook && turn.Turn > 1 ? "sub-1" : null,

@@ -1,3 +1,5 @@
+using LouisAgent.Packs.Shops;
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Composition;
@@ -17,7 +19,7 @@ public class PluginsTests
     {
         AgentCatalog puls = Plugins.FromSettings("puls", null);
         Assert.That(puls.Identities.Select(i => i.Name), Is.EqualTo(new[] { "puls" }));
-        Assert.That(puls.Packs.Select(p => p.Name), Is.EqualTo(new[] { "shops" }), "Puls names the shops pack (step 4)");
+        Assert.That(puls.Packs.Select(p => p.Name), Is.EqualTo(new[] { SettingChoice.Wire(ShopsToolset.Shops) }), "Puls names the shops pack (step 4)");
 
         Assert.That(Plugins.FromSettings("puls, PULS", null).Identities, Has.Count.EqualTo(1), "a name twice, any case, is one identity");
         Assert.That(Plugins.FromSettings(null, null).Identities, Is.Empty);
@@ -49,16 +51,16 @@ public class PluginsTests
         Environment.SetEnvironmentVariable("SHOP_CATALOGUES", "checkers");
         try
         {
-            AgentCatalog catalog = Plugins.FromSettings(null, "shops");
+            AgentCatalog catalog = Plugins.FromSettings(null, SettingChoice.Wire(ShopsToolset.Shops));
             Assert.That(catalog.Identities, Is.Empty);
-            Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { "shops" }));
+            Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { SettingChoice.Wire(ShopsToolset.Shops) }));
 
             var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch());
-            Assert.That(catalog.Resolve(["shops"], withBrowser).Select(t => t.Name), Is.EqualTo(new[] { "shops" }));
+            Assert.That(catalog.Resolve([SettingChoice.Wire(ShopsToolset.Shops)], withBrowser).Select(t => t.Name), Is.EqualTo(new[] { SettingChoice.Wire(ShopsToolset.Shops) }));
 
             var withoutBrowser = new ToolsetContext(new AgentOptions(), new NoSearch());
-            var refused = Assert.Throws<ToolsetException>(() => catalog.Resolve(["shops"], withoutBrowser))!;
-            Assert.That(refused.Message, Does.Contain("shops").And.Contain("BROWSER_URL"));
+            var refused = Assert.Throws<ToolsetException>(() => catalog.Resolve([SettingChoice.Wire(ShopsToolset.Shops)], withoutBrowser))!;
+            Assert.That(refused.Message, Does.Contain(SettingChoice.Wire(ShopsToolset.Shops)).And.Contain("BROWSER_URL"));
         }
         finally
         {

@@ -239,17 +239,17 @@ public class CookScorerTests
     {
         // The Python's rule: "specialists" in the mode's toolsets. A mode named for the cook with no cook is not on; a
         // differently named mode with the cook is.
-        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-cook-sonnet", "puls-cook", ["specialists", "web"])), Is.True);
-        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-cook", "puls-cook", ["web", "shops"])), Is.False);
-        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-tools", "puls-cook", ["web", "shops"])), Is.False);
+        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-cook-sonnet", "puls-cook", [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()])), Is.True);
+        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-cook", "puls-cook", [PulsToolset.Web.Name(), PulsToolset.Shops.Name()])), Is.False);
+        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-tools", "puls-cook", [PulsToolset.Web.Name(), PulsToolset.Shops.Name()])), Is.False);
     }
 
     [Test]
     public void TheModes_ArePulsWithTheCooksToolsAndPulsWithItsCook() =>
         Assert.That(CookSetup.Modes, Is.EqualTo(new Dictionary<string, IReadOnlyList<string>>
         {
-            ["puls-tools"] = ["web", "shops"],
-            ["puls-cook"] = ["specialists", "web"],
+            ["puls-tools"] = [PulsToolset.Web.Name(), PulsToolset.Shops.Name()],
+            ["puls-cook"] = [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()],
         }));
 
     private static TurnView Turn(string answer = "", ToolCall[]? calls = null, ToolCall[]? specialistCalls = null, string? role = null,

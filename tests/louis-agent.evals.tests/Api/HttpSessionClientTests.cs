@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -11,7 +12,7 @@ namespace LouisAgent.Evals.Tests.Api;
 // NotImplementedException on the red run. The API is a stub handler, so no network and no model.
 public class HttpSessionClientTests
 {
-    private static readonly EvalMode Mode = new("puls-cook", "puls/voice-af", ["specialists", "web"]);
+    private static readonly EvalMode Mode = new("puls-cook", "puls/voice-af", [SampleToolset.Gamma, SampleToolset.Alpha]);
 
     private static SessionRequest Request(string? place = "Malmesbury, Wes-Kaap, Suid-Afrika", WebReplayRequest? replay = null) =>
         new(Mode, place, "Africa/Johannesburg", "cook-malmesbury", 2, "run_7:puls-cook:2", replay ?? new WebReplayRequest(WebReplayMode.Record, null));
@@ -43,7 +44,7 @@ public class HttpSessionClientTests
         var (method, url, text) = handler.Requests.Single();
         Assert.That((method, url), Is.EqualTo((HttpMethod.Post, "http://127.0.0.1:5070/v1/sessions")));
         var body = JsonDocument.Parse(text!).RootElement;
-        Assert.That(body.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { "specialists", "web" }));
+        Assert.That(body.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()), Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
         Assert.That(body.GetProperty("role").GetString(), Is.EqualTo("puls/voice-af"));
         Assert.That(body.GetProperty("time_zone").GetString(), Is.EqualTo("Africa/Johannesburg"));
         Assert.That(body.GetProperty("location").GetString(), Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
@@ -115,14 +116,14 @@ public class HttpSessionClientTests
     [Test]
     public async Task ToolsetsAreOnlyTheAvailableOnes()
     {
-        var (client, handler) = ClientOver(_ => Json("""
+        var (client, handler) = ClientOver(_ => Json(SampleToolset.Fill("""
             {"default":["skills"],"toolsets":[
-              {"name":"web","available":true},{"name":"shops","available":false,"missing_settings":["SHOP_CATALOGUES"]},{"name":"specialists","available":true}]}
-            """));
+              {"name":"<Alpha>","available":true},{"name":"<Beta>","available":false,"missing_settings":["SHOP_CATALOGUES"]},{"name":"<Gamma>","available":true}]}
+            """)));
 
         var toolsets = await client.ToolsetsAsync(CancellationToken.None);
 
-        Assert.That(toolsets, Is.EqualTo(new[] { "web", "specialists" }));
+        Assert.That(toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Gamma }));
         Assert.That((handler.Requests.Single().Method, handler.Requests.Single().Url), Is.EqualTo((HttpMethod.Get, "http://127.0.0.1:5070/v1/toolsets")));
     }
 

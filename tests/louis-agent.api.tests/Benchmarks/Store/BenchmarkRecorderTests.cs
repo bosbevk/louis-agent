@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
@@ -32,7 +33,7 @@ public class BenchmarkRecorderTests
     private static string Protocol(int version = 1) => At(new { @event = "protocol", version });
 
     private static string Mode(string mode = "puls-cook", int repeat = 1) =>
-        At(new { @event = "mode", mode, repeat, toolsets = new[] { "specialists", "web" }, role = "puls/voice-af", conversations = 2 });
+        At(new { @event = "mode", mode, repeat, toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha }, role = "puls/voice-af", conversations = 2 });
 
     private static string Question(string task, int turn = 1, string mode = "puls-cook", int repeat = 1) =>
         At(new { @event = "question", mode, repeat, task, turn, session = $"sess_{task}", text = $"{task}?" });

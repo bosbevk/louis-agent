@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Trials;
@@ -8,7 +9,7 @@ namespace LouisAgent.Evals.Tests.Trials;
 /// <summary>Builds the trials the common graders are scored on: canned events, and turns with their durations and failures.</summary>
 internal static class TrialBuilder
 {
-    public static readonly EvalMode Mode = new("puls-cook", "puls/voice-af", ["specialists", "web"]);
+    public static readonly EvalMode Mode = new("puls-cook", "puls/voice-af", [SampleToolset.Gamma, SampleToolset.Alpha]);
 
     public static Trial Trial(params TurnTranscript[] turns) =>
         new("run_1", Mode, 1, new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Hallo"]), default, [], DatasetSplit.Dev),

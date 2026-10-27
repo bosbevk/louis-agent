@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Collections;
 using System.Globalization;
 using System.Text.Json;
@@ -141,7 +142,7 @@ public class ProtocolWriterTests
     {
         var sink = new StringWriter();
 
-        new ProtocolWriter(sink, new FixedClock(At)).Mode("puls-only", 1, ["web"], "puls/voice-af", null, conversations: 2);
+        new ProtocolWriter(sink, new FixedClock(At)).Mode("puls-only", 1, [SampleToolset.Alpha], "puls/voice-af", null, conversations: 2);
 
         Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[] { "event", "t", "mode", "repeat", "toolsets", "role", "llm", "conversations" }));
     }

@@ -1,19 +1,27 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using LouisAgent.Choices;
 
 namespace LouisAgent.Core.Skills;
 
 public class MarkdownSkillLoader
 {
     /// <param name="Language">Code-fence language of the execution block: bash (default), powershell or python.</param>
-    public record SkillDef(string Name, string Description, string Command, string Language = "bash");
+    public record SkillDef(string Name, string Description, string Command, ScriptLanguage Language = ScriptLanguage.Bash);
 
     /// <summary>Maps a code-fence tag to a supported skill language; unknown or empty tags run as bash.</summary>
-    public static string NormalizeLanguage(string? fenceTag) => (fenceTag ?? "").Trim().ToLowerInvariant() switch
+    public static ScriptLanguage NormalizeLanguage(string? fenceTag) =>
+        SettingChoice.TryParse(fenceTag, out ScriptLanguage? language, FenceAliases) && language is { } known ? known : ScriptLanguage.Bash;
+
+    /// <summary>Whether a fence tag names a language (or is the shell's own `sh` / `shell`); any other tag runs as bash, but a tool definition refuses it.</summary>
+    public static bool IsKnownFence(string? fenceTag) =>
+        (fenceTag ?? "").Trim().ToLowerInvariant() is "sh" or "shell" || SettingChoice.TryParse(fenceTag, out ScriptLanguage? _, FenceAliases);
+
+    /// <summary>The other tags a fence is written with (the language's own name and wire name already match).</summary>
+    private static readonly Dictionary<string, ScriptLanguage> FenceAliases = new()
     {
-        "powershell" or "pwsh" or "ps1" or "ps" => "powershell",
-        "python" or "py" or "python3" => "python",
-        _ => "bash",
+        ["pwsh"] = ScriptLanguage.PowerShell, ["ps1"] = ScriptLanguage.PowerShell, ["ps"] = ScriptLanguage.PowerShell,
+        ["py"] = ScriptLanguage.Python, ["python3"] = ScriptLanguage.Python,
     };
 
     public static List<SkillDef> Load(string filePath) => File.Exists(filePath) ? Parse(File.ReadAllLines(filePath)) : [];
@@ -27,7 +35,7 @@ public class MarkdownSkillLoader
         string? name = null;
         string? description = null;
         StringBuilder? commandBuilder = null;
-        string language = "bash";
+        var language = ScriptLanguage.Bash;
 
         for (var i = 0; i < lines.Length; i++)
         {
@@ -44,7 +52,7 @@ public class MarkdownSkillLoader
                 name = skillHeader.Groups["name"].Value.Trim();
                 description = null;
                 commandBuilder = null;
-                language = "bash";
+                language = ScriptLanguage.Bash;
                 continue;
             }
 
@@ -66,7 +74,7 @@ public class MarkdownSkillLoader
                     if (executionText.StartsWith("`") && executionText.EndsWith("`"))
                     {
                         commandBuilder = new StringBuilder(executionText.Trim('`'));
-                        language = "bash";
+                        language = ScriptLanguage.Bash;
                         continue;
                     }
                 }

@@ -1,3 +1,5 @@
+using LouisAgent.Web.Shared.Api;
+
 namespace LouisAgent.Web.Workspace;
 
 /// <summary>The highlight.js language for a workspace file (W2b, from FileViewer).</summary>
@@ -15,9 +17,9 @@ public static class CodeLanguage
             ".json" => "json",
             ".yml" or ".yaml" => "yaml",
             ".md" => "markdown",
-            ".ps1" or ".psm1" or ".psd1" => "powershell",
-            ".sh" or ".bash" => "bash",
-            ".py" => "python",
+            ".ps1" or ".psm1" or ".psd1" => ScriptLanguage.PowerShell.Name(),
+            ".sh" or ".bash" => ScriptLanguage.Bash.Name(),
+            ".py" => ScriptLanguage.Python.Name(),
             ".js" or ".mjs" => "javascript",
             ".ts" => "typescript",
             ".css" => "css",

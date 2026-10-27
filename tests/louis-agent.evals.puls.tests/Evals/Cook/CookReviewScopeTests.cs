@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Puls.Evals.Cook;
@@ -13,7 +14,7 @@ public class CookReviewScopeTests
 
     private static bool Applies(string scenario) =>
         Eval.Graders.OfType<HumanReviewGrader>().Single().AppliesTo(
-            new Trial("run_1", new EvalMode("puls-cook", "puls/voice-af", ["specialists", "web"]), 1, Eval.Scenarios.Single(s => s.Id == scenario), new Transcript([])));
+            new Trial("run_1", new EvalMode("puls-cook", "puls/voice-af", [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()]), 1, Eval.Scenarios.Single(s => s.Id == scenario), new Transcript([])));
 
     [TestCase("control-web", false)]
     [TestCase("cook-asks-first", false)]

@@ -2,6 +2,7 @@ namespace LouisAgent.Core.Agent.EngineTools;
 
 using System.ComponentModel;
 using LouisAgent.Core.Tools;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Scripts;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Logging;
@@ -82,7 +83,7 @@ internal sealed class AgentBuiltTools(
         string parameters = parsed.Parameters.Count == 0
             ? MessageText.Format(AgentToolMessage.NoParameters)
             : string.Join(", ", parsed.Parameters.Select(p => $"{p.Name}: {p.Type}{(p.Required ? "" : "?")}"));
-        return MessageText.Format(AgentToolMessage.ToolCreated, new { parsed.Name, parsed.Language, Parameters = parameters });
+        return MessageText.Format(AgentToolMessage.ToolCreated, new { parsed.Name, Language = parsed.Language.Name(), Parameters = parameters });
     }
 
     [Description("Lists every agent-built tool known right now: approved ones that load in every session, ones " +
@@ -206,8 +207,8 @@ internal sealed class AgentBuiltTools(
         string? notInstalled = null;
         ProcessRunner.Result? result = definition.Language switch
         {
-            "python" => python.RunScript(definition.Code, null, [], inputJson, timeout, out notInstalled, env),
-            "powershell" => powerShell.RunScript(definition.Code, null, [], inputJson, timeout, out notInstalled, env),
+            ScriptLanguage.Python => python.RunScript(definition.Code, null, [], inputJson, timeout, out notInstalled, env),
+            ScriptLanguage.PowerShell => powerShell.RunScript(definition.Code, null, [], inputJson, timeout, out notInstalled, env),
             _ => ProcessRunner.Run(BashTools.ResolveShell(), ["-c", definition.Code], workspaceRoot, timeout, inputJson, env),
         };
 

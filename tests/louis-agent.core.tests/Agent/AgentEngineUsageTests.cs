@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Usage.Records;
@@ -16,7 +17,7 @@ public class AgentEngineUsageTests
 {
     private static AgentEngine Engine(IChatClient client, IUsageSink sink, IUsageMapper? mapper = null) =>
         new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), ["files"]), usageSink: sink, usageMapper: mapper);
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Name()]), usageSink: sink, usageMapper: mapper);
 
     private static ChatResponse CallSayHello(string callId) =>
         new(new ChatMessage(ChatRole.Assistant,

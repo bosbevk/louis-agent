@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Toolsets;
 using System.Net.ServerSentEvents;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Streaming;
@@ -95,7 +96,7 @@ public class StreamGoldenTests
             "Read the recipe note.", toolsets: [new NoteTools()]));
 
         // A sub-session's event, as the specialist's stream reached the chat while its call ran.
-        events.Add(StreamFormats.Create(StreamFormat.Claude, "sess_golden", ["web"], null).SubSession(new SubSessionEvent("call_sub", "puls", "message_start",
+        events.Add(StreamFormats.Create(StreamFormat.Claude, "sess_golden", [CoreToolset.Web.Name()], null).SubSession(new SubSessionEvent("call_sub", "puls", "message_start",
             """{"type":"message_start","message":{"session_id":"sess_peer","role":"assistant","toolsets":["web"]}}""")));
 
         // A command is answered without the model.
@@ -131,7 +132,7 @@ public class StreamGoldenTests
         CancellationTokenSource? active = null;
         var engine = new AgentEngine(new CompositeSkillProvider(), model(() => active!.Cancel()), TestPaths.Agent(),
             toolsets: toolsets?.ToList() ?? [], usageSink: new ListUsageSink());
-        var session = new AgentSession("sess_golden", engine, ["web"], 0, UsageTags.None);
+        var session = new AgentSession("sess_golden", engine, [CoreToolset.Web.Name()], 0, UsageTags.None);
         Assert.That(session.TryStartTurn(CancellationToken.None, out active), Is.True);
 
         var events = new List<SseItem<string>>();

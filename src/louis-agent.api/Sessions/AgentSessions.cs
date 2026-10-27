@@ -24,7 +24,7 @@ namespace LouisAgent.Api.Sessions;
 internal sealed class AgentSessions(AgentEngineFactory engines)
 {
     /// <summary>What a session created without <c>toolsets</c> loads (F5 decision: self-extension only).</summary>
-    public static readonly IReadOnlyList<string> DefaultToolsets = ["skills"];
+    public static readonly IReadOnlyList<string> DefaultToolsets = [CoreToolset.Skills.Name()];
 
     /// <summary>The deepest session: a specialist (1) a level-0 session delegates to, a minion (2) a specialist hands one task to (F30).</summary>
     public const int MaxDepth = 2;
@@ -33,10 +33,10 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public const int MinionDepth = 2;
 
     /// <summary>The toolset a specialist hands minions with (F30): a specialist's only, never the chat's nor a minion's.</summary>
-    public const string MinionsToolset = "minions";
+    public static readonly string MinionsToolset = CoreToolset.Minions.Name();
 
     /// <summary>The toolset that opens sub-sessions (F5; named specialists in CL9); refused at <see cref="MaxDepth"/>.</summary>
-    public const string SpecialistsToolset = "specialists";
+    public static readonly string SpecialistsToolset = CoreToolset.Specialists.Name();
 
     /// <summary>A session nobody has used for this long is dropped at the next create, with the sub-sessions it kept.</summary>
     public static readonly TimeSpan IdleTimeout = TimeSpan.FromHours(4);

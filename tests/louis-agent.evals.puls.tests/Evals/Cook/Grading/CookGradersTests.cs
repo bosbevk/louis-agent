@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
@@ -10,7 +11,7 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
 // The cook's no-error grader (F31): the errors, read from a trial's turns. Its route cases are PulsRouteTests now (F18 step 5.4).
 public class CookGradersTests
 {
-    private static readonly EvalMode Cook = new("puls-cook", "puls-cook", ["specialists", "web"]);
+    private static readonly EvalMode Cook = new("puls-cook", "puls-cook", [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()]);
 
     [Test]
     public async Task NoError_FailsOnAnErroredTurn()

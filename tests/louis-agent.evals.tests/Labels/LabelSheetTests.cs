@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
@@ -21,7 +22,7 @@ public class LabelSheetTests
         foreach (string mode in modes)
             for (int repeat = 1; repeat <= repeats; repeat++)
             {
-                lines.Add(At(new { @event = "mode", mode, repeat, toolsets = new[] { "web" }, role = "r", llm = (string?)null, conversations = tasks.Count() }));
+                lines.Add(At(new { @event = "mode", mode, repeat, toolsets = new[] { SampleToolset.Alpha }, role = "r", llm = (string?)null, conversations = tasks.Count() }));
                 foreach (string task in tasks)
                 {
                     string answer = $"answer of {task}/{mode}/{repeat}";

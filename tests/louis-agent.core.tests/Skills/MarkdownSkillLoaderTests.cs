@@ -21,14 +21,16 @@ public class MarkdownSkillLoaderTests
         Assert.That(skills, Is.InstanceOf<List<MarkdownSkillLoader.SkillDef>>());
     }
 
-    [TestCase("bash", "bash")]
-    [TestCase("", "bash")]
-    [TestCase("sh", "bash")]
-    [TestCase("powershell", "powershell")]
-    [TestCase("pwsh", "powershell")]
-    [TestCase("python", "python")]
-    [TestCase("py", "python")]
-    public void Load_RecordsExecutionBlockLanguage(string fence, string expected)
+    [TestCase("", ScriptLanguage.Bash)]
+    [TestCase("sh", ScriptLanguage.Bash)]
+    [TestCase("pwsh", ScriptLanguage.PowerShell)]
+    [TestCase("py", ScriptLanguage.Python)]
+    public void Load_RecordsExecutionBlockLanguage_ForNoTagOrAnAlias(string fence, ScriptLanguage expected) => LoadsAs(fence, expected);
+
+    [Test]
+    public void Load_RecordsExecutionBlockLanguage_ForEachLanguagesOwnTag([Values] ScriptLanguage language) => LoadsAs(language.Name(), language);
+
+    private static void LoadsAs(string fence, ScriptLanguage expected)
     {
         var file = Path.Combine(Path.GetTempPath(), $"lang-{Guid.NewGuid():N}.md");
         File.WriteAllText(file, $"## Skill: Demo\n\n- Description: demo\n- Execution:\n\n```{fence}\necho hi\n```\n");

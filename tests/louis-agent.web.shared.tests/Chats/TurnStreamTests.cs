@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared.Api;
@@ -57,9 +58,9 @@ public class TurnStreamTests
     [Test]
     public void MessageStart_SetsTheToolsetsAndTheRole()
     {
-        var turn = Apply(("message_start", """{"type":"message_start","message":{"session_id":"s","role":"assistant","toolsets":["web","shops"],"session_role":"puls-cook"}}"""));
+        var turn = Apply(("message_start", SampleToolset.Fill("""{"type":"message_start","message":{"session_id":"s","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"puls-cook"}}""")));
 
-        Assert.That(turn.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(turn.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
         Assert.That(turn.Role, Is.EqualTo("puls-cook"));
     }
 
@@ -126,14 +127,14 @@ public class TurnStreamTests
     {
         var turn = Apply(
             ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"StartSubSession","input":{"toolsets":["web"],"message":"Kook","role":"puls-cook"}}}"""),
-            ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["web","shops"],"session_role":"puls-cook"}}}"""),
+            ("sub_session", SampleToolset.Fill("""{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"puls-cook"}}}""")),
             ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}"""),
             ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}}"""));
 
         var call = turn.Blocks.Single();
         Assert.That(call.SubAgent, Is.EqualTo("puls"));
         Assert.That(call.SubTurn, Is.Not.Null);
-        Assert.That(call.SubTurn!.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
+        Assert.That(call.SubTurn!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
         Assert.That(call.SubTurn.Role, Is.EqualTo("puls-cook"));
         Assert.That(call.SubTurn.Blocks.Single().Text, Is.EqualTo("Bobotie"));
     }

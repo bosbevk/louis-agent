@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Export;
@@ -42,7 +43,7 @@ public class SummaryStoredTests
     private static readonly string[] Run =
     [
         At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 7, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-        At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+        At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
         At(new { @event = "conversation", t = 1700000002.0, mode = "puls-cook", repeat = 1, task = "a", role = "puls-cook", scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass" }),
         At(new { @event = "mode_done", t = 1700000003.0, mode = "puls-cook", repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
         SummaryLine(),

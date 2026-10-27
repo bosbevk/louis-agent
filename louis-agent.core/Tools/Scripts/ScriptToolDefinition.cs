@@ -14,7 +14,7 @@ public sealed partial record ScriptToolDefinition(
     string Name,
     string Description,
     IReadOnlyList<ScriptToolParameter> Parameters,
-    string Language,
+    ScriptLanguage Language,
     string Code,
     int TimeoutSeconds)
 {
@@ -27,7 +27,8 @@ public sealed partial record ScriptToolDefinition(
         var errors = new List<string>();
         var lines = (markdown ?? "").Replace("\r\n", "\n").Split('\n');
 
-        string? name = null, description = null, language = null, code = null;
+        string? name = null, description = null, code = null;
+        ScriptLanguage? language = null;
         int timeout = DefaultTimeoutSeconds;
         var parameters = new List<ScriptToolParameter>();
         bool inParameters = false;
@@ -94,10 +95,10 @@ public sealed partial record ScriptToolDefinition(
 
         return errors.Count > 0
             ? (null, errors)
-            : (new ScriptToolDefinition(name!, description!, parameters, language!, code!, timeout), errors);
+            : (new ScriptToolDefinition(name!, description!, parameters, language!.Value, code!, timeout), errors);
     }
 
-    private static (string? Language, string? Code, int LastLine) ReadCodeBlock(string[] lines, int start, List<string> errors)
+    private static (ScriptLanguage? Language, string? Code, int LastLine) ReadCodeBlock(string[] lines, int start, List<string> errors)
     {
         int i = start;
         while (i < lines.Length && string.IsNullOrWhiteSpace(lines[i])) i++;
@@ -108,8 +109,8 @@ public sealed partial record ScriptToolDefinition(
         }
 
         string fence = lines[i].Trim()[3..].Trim().ToLowerInvariant();
-        string language = MarkdownSkillLoader.NormalizeLanguage(fence);
-        if (fence.Length > 0 && language == "bash" && fence is not ("bash" or "sh" or "shell"))
+        var language = MarkdownSkillLoader.NormalizeLanguage(fence);
+        if (fence.Length > 0 && !MarkdownSkillLoader.IsKnownFence(fence))
             errors.Add(MessageText.Format(ScriptToolMessage.ScriptLanguageUnsupported, new { Language = fence }));
 
         var body = new List<string>();

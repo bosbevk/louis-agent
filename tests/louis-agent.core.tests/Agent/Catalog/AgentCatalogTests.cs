@@ -29,9 +29,9 @@ public class AgentCatalogTests
     {
         var catalog = Catalog([new FakeIdentity(packs: ["fakeshop"])], [new FakePack()]);
 
-        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain("fakeshop").And.Contain("web"), "core's and the pack's");
+        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain("fakeshop").And.Contain(CoreToolset.Web.Name()), "core's and the pack's");
         Assert.That(catalog.Toolsets.Take(ToolsetCatalog.All.Count).Select(t => t.Name), Is.EqualTo(ToolsetCatalog.All.Select(t => t.Name)), "core's first, in order");
-        Assert.That(catalog.Resolve(["fakeshop", "web"], Context()).Select(t => t.Name), Is.EqualTo(new[] { "web", "fakeshop" }), "resolved in catalogue order");
+        Assert.That(catalog.Resolve(["fakeshop", CoreToolset.Web.Name()], Context()).Select(t => t.Name), Is.EqualTo(new[] { CoreToolset.Web.Name(), "fakeshop" }), "resolved in catalogue order");
         Assert.That(catalog.Identities.Single().Name, Is.EqualTo("fakeid"));
         Assert.That(catalog.Packs.Single().Name, Is.EqualTo("fakeshop"));
         Assert.That(catalog.Prompts, Has.Count.EqualTo(2), "the identity's and the pack's, for the prompt reader");
@@ -58,11 +58,11 @@ public class AgentCatalogTests
     [Test]
     public void AToolsetNamedLikeCores_IsRefused()
     {
-        var pack = new FakePack("mine", [FakePack.Toolset("web", typeof(FakeShopTools), _ => [new FakeShopTools()])]);
+        var pack = new FakePack("mine", [FakePack.Toolset(CoreToolset.Web.Name(), typeof(FakeShopTools), _ => [new FakeShopTools()])]);
 
         var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs: [pack]))!;
 
-        Assert.That(error.Message, Does.Contain("web").And.Contain("toolset"));
+        Assert.That(error.Message, Does.Contain(CoreToolset.Web.Name()).And.Contain("toolset"));
     }
 
     [Test]
@@ -103,7 +103,7 @@ public class AgentCatalogTests
     {
         var clashing = new FakePack("mine", [FakePack.Toolset("mine", typeof(FakeClashingTools), _ => [new FakeClashingTools()])]);
         var twice = Assert.Throws<AgentCatalogException>(() => Catalog(packs: [clashing]))!;
-        Assert.That(twice.Message, Does.Contain("FetchUrl").And.Contain("web").And.Contain("mine"), "both toolsets named");
+        Assert.That(twice.Message, Does.Contain("FetchUrl").And.Contain(CoreToolset.Web.Name()).And.Contain("mine"), "both toolsets named");
 
         var engines = new FakePack("clock", [FakePack.Toolset("clock", typeof(FakeEngineNameTools), _ => [new FakeEngineNameTools()])]);
         var taken = Assert.Throws<AgentCatalogException>(() => Catalog(packs: [engines]))!;
@@ -117,7 +117,7 @@ public class AgentCatalogTests
 
         Assert.That(catalog.ToolNames, Does.Contain("FindFakeProducts").And.Contain("FetchUrl"));
         Assert.That(catalog.ToolsetOf("FindFakeProducts"), Is.EqualTo("fakeshop"));
-        Assert.That(catalog.ToolsetOf("FetchUrl"), Is.EqualTo("web"));
+        Assert.That(catalog.ToolsetOf("FetchUrl"), Is.EqualTo(CoreToolset.Web.Name()));
         Assert.That(catalog.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
         Assert.That(catalog.ToolNamesOf(catalog.Resolve(["fakeshop"], Context())), Is.EqualTo(new[] { "FindFakeProducts" }), "a minion may be handed it");
 
@@ -156,7 +156,7 @@ public class AgentCatalogTests
         Assert.That(core.Packs, Is.Empty);
         Assert.That(core.Toolsets, Is.EqualTo(ToolsetCatalog.All));
         Assert.That(core.ToolNames, Does.Contain("FetchUrl").And.Contain("ReadWorkspaceFile").And.Not.Contain("CreateTool"));
-        Assert.That(core.Resolve(["files", "git"], Context()).Select(t => t.Name), Is.EqualTo(new[] { "files", "git" }));
+        Assert.That(core.Resolve([CoreToolset.Files.Name(), CoreToolset.Git.Name()], Context()).Select(t => t.Name), Is.EqualTo(new[] { CoreToolset.Files.Name(), CoreToolset.Git.Name() }));
     }
 
     [Test]

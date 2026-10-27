@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
@@ -78,12 +79,12 @@ public class BenchmarkProtocolTests
     [Test]
     public void AMode_CarriesItsRepeatToolsetsAndTheSessionFieldsItOpensWith()
     {
-        var parsed = Parse("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["specialists","web"],"role":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}""");
+        var parsed = Parse(SampleToolset.Fill("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["<Gamma>","<Alpha>"],"role":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}"""));
 
         var mode = (ModeStarted)parsed;
         Assert.That(mode.Mode, Is.EqualTo("puls-cook"));
         Assert.That(mode.Repeat, Is.EqualTo(2));
-        Assert.That(mode.Toolsets, Is.EqualTo(new[] { "specialists", "web" }));
+        Assert.That(mode.Toolsets, Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
         Assert.That(mode.Role, Is.EqualTo("puls/voice-af"));
         Assert.That(mode.Llm, Is.Null);
         Assert.That(mode.Conversations, Is.EqualTo(4));

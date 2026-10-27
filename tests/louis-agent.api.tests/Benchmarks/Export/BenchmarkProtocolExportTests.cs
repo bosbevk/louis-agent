@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -64,7 +65,7 @@ public class BenchmarkProtocolExportTests
         var lines = new[]
         {
             At(new { @event = "protocol", version = 1, eval = "puls-cook", eval_version = 9, commit = "abc", graders = new object[] { new { name = "meal-for-people.human", version = 1, kind = "Human", question = "Is this a meal?" } }, models = Array.Empty<object>() }),
-            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
             At(new { @event = "mode_done", mode = "puls-cook", repeat = 1 }),
         };
         var store = await Recorded(lines);
@@ -82,7 +83,7 @@ public class BenchmarkProtocolExportTests
         var lines = new[]
         {
             At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 3, commit = "abc123", split = "held_out", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-            At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+            At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
             At(new { @event = "mode_done", t = 1700000005.0, mode = "puls-cook", repeat = 1 }),
         };
         var store = await Recorded(lines);
@@ -106,7 +107,7 @@ public class BenchmarkProtocolExportTests
                 graders = new[] { new { name = "cook-no-error", version = 1, kind = "FixedRule" } },
                 models = new[] { new { mode = "puls-cook", level = "Agent", role = "puls/voice-af", model = "claude-haiku-5-5" } },
             }),
-            At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { "specialists", "web" }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
+            At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
             At(new { @event = "question", t = 1700000001.0, mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
             At(new { @event = "sse", t = 1700000002.25, mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, type = "content_block_delta", data = new { delta = new { text = "Hé" } } }),
             At(new
@@ -139,7 +140,7 @@ public class BenchmarkProtocolExportTests
         var lines = new[]
         {
             At(new { @event = "protocol", version = 1 }),
-            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
+            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
             At(new { @event = "question", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
             At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie", answer = "", role = (string?)null, seconds = 3.0 }),
             At(new { @event = "conversation", mode = "puls-cook", repeat = 1, task = "bobotie", role = (string?)null, scores = new { }, errors = 0, seconds = 3.0,
@@ -161,7 +162,7 @@ public class BenchmarkProtocolExportTests
         var lines = new[]
         {
             At(new { @event = "protocol", version = 1 }),
-            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { "web" }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
+            At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = "puls/voice-af", llm = (string?)null, conversations = 1 }),
             At(new { @event = "question", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }),
             At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", question = "Maak bobotie", answer = "", role = (string?)null,
                 seconds = 600.0, failure = "replay_miss" }),

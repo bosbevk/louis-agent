@@ -47,7 +47,7 @@ public class SkillFilesTests
         string doc = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!).Routing;
 
         // Every toolset but minions (F30): a specialist's toolset, never a chat's, and the coding product has no minion roles.
-        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name).Where(name => name != "minions"))
+        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name).Where(name => name != CoreToolset.Minions.Name()))
             Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
         Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds minions");
 

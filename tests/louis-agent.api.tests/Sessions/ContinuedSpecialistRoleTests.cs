@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
@@ -16,7 +17,7 @@ public class ContinuedSpecialistRoleTests
     [Test]
     public void ASessionsStream_StartsWithItsRole()
     {
-        var start = new ClaudeStreamFormat("sess_1", ["web", "shops"], "puls-cook").Start();
+        var start = new ClaudeStreamFormat("sess_1", [SampleToolset.Alpha, SampleToolset.Beta], "puls-cook").Start();
 
         using var data = JsonDocument.Parse(start.Data);
         var message = data.RootElement.GetProperty("message");

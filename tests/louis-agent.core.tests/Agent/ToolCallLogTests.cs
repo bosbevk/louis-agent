@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Logging.Content;
@@ -77,7 +78,7 @@ public class ToolCallLogTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "a file full of x")),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
             var skills = new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md"));
-            var engine = new AgentEngine(skills, client, TestPaths.Agent(), toolsets: TestPaths.Toolsets(TestPaths.Agent(), ["files"]));
+            var engine = new AgentEngine(skills, client, TestPaths.Agent(), toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Name()]));
 
             await engine.ProcessPromptAsync(engine.NewHistory(), "Ek is in Malmesbury, wat kan ek kook?");
         }

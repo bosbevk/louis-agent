@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Toolsets;
 using System.Diagnostics;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns;
@@ -24,7 +25,7 @@ public class ChatPipelineTests
 
     private static AgentEngine Engine(IChatClient client, IUsageSink sink) =>
         new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), ["files"]), usageSink: sink);
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Name()]), usageSink: sink);
 
     private static ChatResponse Read(string relative, string callId) =>
         new(new ChatMessage(ChatRole.Assistant,
