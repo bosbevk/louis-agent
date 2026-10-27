@@ -14,9 +14,11 @@ public static class AgreementText
         string answers = c.Total == 1 ? "1 answer" : $"{c.Total} answers";
         string did = c.Total == 1
             ? c.Agreed == 1 ? $"The judge {judge} it too." : "The judge did not."
-            : c.Agreed == c.Total ? $"The judge {judge} all {c.Total}."
-            : c.Agreed == 0 ? $"The judge {judge} none of them."
-            : $"The judge {judge} {c.Agreed} of them.";
+            : c.Agreed == c.Total
+                ? $"The judge {judge} all {c.Total}."
+                : c.Agreed == 0
+                    ? $"The judge {judge} none of them."
+                    : $"The judge {judge} {c.Agreed} of them.";
         return $"You {you} {answers}. {did}";
     }
 

@@ -9,7 +9,8 @@ public static class RatesText
 
     public static string PassHat(int? k) => $"pass^{(k is { } n ? n.ToString(CultureInfo.InvariantCulture) : "k")}";
 
-    public static string Share(double? rate) => rate is { } value ? value.ToString("0%", CultureInfo.InvariantCulture) : "–";
+    public static string Share(double? rate) =>
+        rate is { } value ? value.ToString("0%", CultureInfo.InvariantCulture) : "–";
 
     public static string LeftOut(int count) => $"{count} left out (infrastructure)";
 

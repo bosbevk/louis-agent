@@ -9,9 +9,12 @@ public static class NoteText
     public const int MaxLength = 2000;
 
     /// <summary>When a note was written, in the reader's own time.</summary>
-    public static string When(DateTimeOffset at) => at.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+    public static string When(DateTimeOffset at) =>
+        at.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 
     /// <summary>The hint in the empty box.</summary>
     public static string Placeholder(bool onAConversation) =>
-        onAConversation ? "A note on this conversation: what you saw, what you think happened" : "A note on this run: what changed, what you think explains it";
+        onAConversation
+            ? "A note on this conversation: what you saw, what you think happened"
+            : "A note on this run: what changed, what you think explains it";
 }

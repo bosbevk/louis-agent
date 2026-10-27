@@ -10,6 +10,7 @@ public sealed record AccuracyRing(int Right, int Estimated, int Guessed, int NoP
     {
         int right = priced + noShop, estimates = estimated ?? 0;
         int noPrice = Math.Max(0, items - right - estimates - guessed);
-        return new AccuracyRing(right, estimates, guessed, noPrice, $"{(double)(right + estimates) / items:0%}", $"{right + estimates} / {items}");
+        return new AccuracyRing(right, estimates, guessed, noPrice, $"{(double)(right + estimates) / items:0%}",
+            $"{right + estimates} / {items}");
     }
 }

@@ -13,7 +13,8 @@ public static class PricedChips
     public static IReadOnlyList<PricedChip> Of(int priced, int? estimated, int items, decimal ratio)
     {
         int estimates = estimated ?? 0;
-        var chips = new List<PricedChip> { new($"priced {priced + estimates} / {items}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "") };
+        var chips = new List<PricedChip>
+            { new($"priced {priced + estimates} / {items}", ratio >= 0.8m ? "ok" : ratio < 0.5m ? "bad" : "") };
         if (estimates > 0) chips.Add(new PricedChip($"estimated {estimates}", ""));
         return chips;
     }

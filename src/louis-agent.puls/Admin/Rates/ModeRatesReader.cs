@@ -15,15 +15,20 @@ public static class ModeRatesReader
         var rates = new List<ModeRate>();
         foreach (var mode in modes.EnumerateArray().GroupBy(m => m.GetProperty("name").GetString()!))
         {
-            var last = mode.Where(m => Int(m, "k") is not null).OrderBy(m => m.GetProperty("repeat").GetInt32()).LastOrDefault();
+            var last = mode.Where(m => Int(m, "k") is not null).OrderBy(m => m.GetProperty("repeat").GetInt32())
+                .LastOrDefault();
             rates.Add(last.ValueKind == JsonValueKind.Undefined
                 ? new ModeRate(mode.Key, null, null, null, 0, 0)
-                : new ModeRate(mode.Key, Int(last, "k"), Number(last, "pass_at_k"), Number(last, "pass_hat_k"), Int(last, "infrastructure") ?? 0, Int(last, "retried") ?? 0));
+                : new ModeRate(mode.Key, Int(last, "k"), Number(last, "pass_at_k"), Number(last, "pass_hat_k"),
+                    Int(last, "infrastructure") ?? 0, Int(last, "retried") ?? 0));
         }
+
         return rates;
     }
 
-    private static int? Int(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : null;
+    private static int? Int(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : null;
 
-    private static double? Number(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDouble() : null;
+    private static double? Number(JsonElement e, string name) =>
+        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDouble() : null;
 }

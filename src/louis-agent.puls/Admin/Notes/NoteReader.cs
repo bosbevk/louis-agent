@@ -21,6 +21,7 @@ public static class NoteReader
     private static RunNoteEntry Entry(string runId, JsonElement note) =>
         new(note.GetProperty("text").GetString()!, note.GetProperty("at").GetDateTimeOffset(),
             note.GetProperty("conversation") is { ValueKind: JsonValueKind.Object } key
-                ? new ConversationRef(runId, key.GetProperty("mode").GetString()!, key.GetProperty("repeat").GetInt32(), key.GetProperty("task").GetString()!)
+                ? new ConversationRef(runId, key.GetProperty("mode").GetString()!, key.GetProperty("repeat").GetInt32(),
+                    key.GetProperty("task").GetString()!)
                 : null);
 }
