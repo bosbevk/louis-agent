@@ -68,7 +68,14 @@ louis-agent.evals.acme/
       Transcripts/             {scenario}.reference.txt, {scenario}.bad.{label}.txt
   Shared/                      used by two evals or more: Grading/, Scoring/, Turns/, and the set's constants
   Messages/                    the set's message enums (ADR 0009)
+  Manuals/                     one markdown manual per eval (F18 step 7.1): what it measures, its modes, its graders, what it costs
 ```
+
+**A manual per eval.** An eval's `Manual` (an `IEval` property, a path from the repository root with forward slashes, for example
+`evals/louis-agent.evals.acme/Manuals/quotes.md`) names its manual; the runner's `--list` hands the path to the API, and the portal opens it from the
+eval's card. It is English, opens with a `# ` title, and names the eval, its modes and **every grader the eval declares, each in backticks**: a test per
+project (`PulsManualTests`, `StubManualTests`) fails when a grader is missing, so a new grader can't ship unexplained. The API reads only files under
+`evals/`.
 
 `EvalLayoutTests` (the runner's tests) holds it for every set and for the stub: an eval's file, namespace, dataset and transcripts;
 where each grader is; that every file of `Shared/` is used by two evals or more (directly, or through another `Shared/` file),

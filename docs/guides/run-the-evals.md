@@ -30,6 +30,12 @@ BENCHMARK_RUN=cook-1 PULS_API=http://127.0.0.1:5070/ \
 The run's id is `BENCHMARK_RUN`, else `local-` and the time it started: set it yourself, so you know what to replay. The runner
 writes the protocol on stdout and its logs on stderr, and needs `AGENT_API_KEY` when the API wants one.
 
+## An eval's manual
+
+Each eval has a manual beside it (`evals/{project}/Manuals/{name}.md`: `cook.md` and `routing.md` for Puls's, `stub.md` for the stub): what it measures, its
+modes, every grader it declares, the scores, what it costs and how to run it by hand. The portal opens it from the eval's card; the runner's `--list` gives
+its path (`manual`). A test holds each one to its eval: it opens with a title and names every grader in backticks.
+
 ## From the portal
 
 A run records the commit the runner was built from. The container build takes it as `EVAL_COMMIT`:

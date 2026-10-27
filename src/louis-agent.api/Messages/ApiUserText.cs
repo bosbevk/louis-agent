@@ -149,7 +149,7 @@ public enum ApiUserText
     [Description("The benchmark store didn't answer: {Reason}")]
     BenchmarkStoreUnavailable,
 
-    [Description("The check '{Check}' has no manual (benchmarks/{Check}/HANDLEIDING.md).")]
+    [Description("The check '{Check}' has no manual: its eval lists none, or the file it names isn't under evals/.")]
     NoManual,
 
     [Description("Unknown stream format '{Format}'. Use one of: {Supported}.")]

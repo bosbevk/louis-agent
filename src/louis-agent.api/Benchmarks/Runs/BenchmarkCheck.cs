@@ -9,18 +9,11 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// <param name="Script">The script, relative to the workspace root; run with an argument list, never a shell. Empty for an eval.</param>
 /// <param name="Arguments">The script's own arguments after the repeat, so one script can be two checks.</param>
 /// <param name="Kind">What it runs.</param>
-public sealed record BenchmarkCheck(string Id, string Title, string Script, IReadOnlyList<string> Arguments, BenchmarkCheckKind Kind = BenchmarkCheckKind.Script)
+/// <param name="ManualPath">Where its manual is (F18 step 7.1): the path the runner's listing gave, from the repository root with forward slashes, beside the eval; null for a check with none.</param>
+public sealed record BenchmarkCheck(string Id, string Title, string Script, IReadOnlyList<string> Arguments, BenchmarkCheckKind Kind = BenchmarkCheckKind.Script, string? ManualPath = null)
 {
     public BenchmarkCheck(string id, string title, string script) : this(id, title, script, []) { }
 
-    /// <summary>An eval the runner lists (F18 step 4.3): its name is its id, and it has no script.</summary>
-    public static BenchmarkCheck ForEval(string name, string title) => new(name, title, "", [], BenchmarkCheckKind.Eval);
-
-    /// <summary>
-    /// Its manual (F31): <c>HANDLEIDING.md</c> beside its script, so the two change together. An eval's manual is <c>benchmarks/{id}/</c>
-    /// until step 7 moves the manuals beside the evals.
-    /// </summary>
-    public string ManualPath => Kind == BenchmarkCheckKind.Eval
-        ? $"benchmarks/{Id}/HANDLEIDING.md"
-        : (Path.GetDirectoryName(Script) is { Length: > 0 } folder ? folder + "/" : "").Replace('\\', '/') + "HANDLEIDING.md";
+    /// <summary>An eval the runner lists (F18 step 4.3): its name is its id, it has no script, and it brings the manual its listing named (7.1).</summary>
+    public static BenchmarkCheck ForEval(string name, string title, string? manual = null) => new(name, title, "", [], BenchmarkCheckKind.Eval, manual);
 }

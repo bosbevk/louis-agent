@@ -23,6 +23,12 @@ public interface IEval
     /// <summary>One sentence, shown in the portal.</summary>
     string Proves { get; }
 
+    /// <summary>
+    /// Where the eval's manual is (F18 step 7.1): a markdown file beside the eval, as a path from the repository root with forward slashes ("evals/louis-agent.evals.puls/Manuals/cook.md"); the
+    /// portal opens it from the eval's card. Null for an eval with none.
+    /// </summary>
+    string? Manual => null;
+
     /// <summary>The modes the task runs in (the agent alone, or with a helper). Some evals read them from the instance.</summary>
     ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken);
 

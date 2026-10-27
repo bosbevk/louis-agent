@@ -112,8 +112,8 @@ title. The eval's name is its check's id; a Python check with the same id is hid
    prints one line for it (build the runner first).
 3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
    `docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`.
-4. Open the admin portal: the check is listed with its `proves` as its title. Its manual is
-   `benchmarks/{id}/HANDLEIDING.md` until step 7 moves the manuals beside the evals.
+4. Open the admin portal: the check is listed with its `proves` as its title. Its manual is the file the eval's `Manual`
+   names (`evals/{project}/Manuals/{name}.md`, F18 step 7.1), which the runner's listing hands to the API.
 
 A run starts with `POST /v1/admin/benchmarks/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
 `replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both; a Python check answers 400 to either.

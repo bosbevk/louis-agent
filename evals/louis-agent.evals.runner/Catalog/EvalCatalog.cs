@@ -24,7 +24,7 @@ public sealed class EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
 
     /// <summary>One line per eval, in the catalogue's order: what the API's catalogue reads (F18 step 4.3).</summary>
     public IReadOnlyList<ListedEval> Listing() =>
-        _evals.Select(eval => new ListedEval(eval.Name, eval.Identity, eval.Version, eval.Proves)).ToList();
+        _evals.Select(eval => new ListedEval(eval.Name, eval.Identity, eval.Version, eval.Proves, eval.Manual)).ToList();
 
     private static IReadOnlyList<IEval> Check(IReadOnlyList<IEval> evals)
     {

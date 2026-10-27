@@ -29,8 +29,16 @@ public class BenchmarkCatalogTests
     }
 
     [Test]
-    public void AnEvalCheckHasItsEvalsManual() =>
-        Assert.That(BenchmarkCheck.ForEval("stub", "Stub").ManualPath, Is.EqualTo("benchmarks/stub/HANDLEIDING.md"));
+    public void AnEvalCheckHasTheManualItsEvalListed() =>
+        Assert.That(BenchmarkCheck.ForEval("stub", "Stub", "evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
+
+    [Test]
+    public void TheCatalogue_KeepsTheManualPathTheRunnerListed()
+    {
+        var merged = BenchmarkCatalog.Merge([new EvalLine("puls-cook", 9, "A meal", "puls", "evals/louis-agent.evals.puls/Manuals/cook.md"), new EvalLine("quiet", 1, "No manual")], []);
+
+        Assert.That(merged.Select(c => c.ManualPath), Is.EqualTo(new string?[] { "evals/louis-agent.evals.puls/Manuals/cook.md", null }));
+    }
 
     [Test]
     public void AListedEvalHidesThePythonCheckWithItsId()

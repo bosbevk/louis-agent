@@ -23,6 +23,7 @@ public sealed class RoutingEval : IEval
     private static readonly IReadOnlyList<IGrader> GraderList = [PulsRoute.Grader()];
 
     public string Name => "puls-routing";
+    public string? Manual => "evals/louis-agent.evals.puls/Manuals/routing.md";
     public string? Identity => "puls";
     public int Version => 2;
     public string Proves => MessageText.Format(PulsEvalMessage.RoutingProves);

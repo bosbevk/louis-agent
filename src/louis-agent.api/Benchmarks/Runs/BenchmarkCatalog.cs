@@ -51,7 +51,7 @@ public sealed class BenchmarkCatalog
 
     /// <summary>The listed evals, then the Python checks whose id no listed eval has.</summary>
     public static IReadOnlyList<BenchmarkCheck> Merge(IReadOnlyList<EvalLine> evals, IReadOnlyList<BenchmarkCheck> python) =>
-        evals.Select(eval => BenchmarkCheck.ForEval(eval.Name, eval.Proves))
+        evals.Select(eval => BenchmarkCheck.ForEval(eval.Name, eval.Proves, eval.Manual))
             .Concat(python.Where(check => evals.All(eval => eval.Name != check.Id)))
             .ToList();
 }

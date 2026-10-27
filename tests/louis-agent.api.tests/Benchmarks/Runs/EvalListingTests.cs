@@ -82,6 +82,16 @@ public class EvalListingTests
     }
 
     [Test]
+    public void AListedEvalsManualPathIsRead_AndIsNullWhenTheLineLeavesItOut()
+    {
+        var with = EvalListing.Parse("""{"name":"stub","identity":null,"version":1,"proves":"A canned run","manual":"evals/louis-agent.evals.runner/Manuals/stub.md"}""");
+        var without = EvalListing.Parse("""{"name":"stub","version":1,"proves":"A canned run"}""");
+
+        Assert.That(with.Evals.Single().Manual, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
+        Assert.That(without.Evals.Single().Manual, Is.Null);
+    }
+
+    [Test]
     public void AListedEvalWithoutAnIdentityIsRead()
     {
         // The runner writes identity: null today; a runner that leaves a null out must not have its whole listing refused.

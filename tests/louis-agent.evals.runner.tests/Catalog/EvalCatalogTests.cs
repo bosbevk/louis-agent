@@ -101,7 +101,8 @@ public class EvalCatalogTests
         var listing = new EvalCatalog([], Stub).Listing();
         var line = JsonDocument.Parse(JsonSerializer.Serialize(listing.Single(), EvalJson.SnakeCase)).RootElement;
 
-        Assert.That(line.EnumerateObject().Select(p => p.Name), Is.EqualTo(new[] { "name", "identity", "version", "proves" }));
+        Assert.That(line.EnumerateObject().Select(p => p.Name), Is.EqualTo(new[] { "name", "identity", "version", "proves", "manual" }));
+        Assert.That(line.GetProperty("manual").GetString(), Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"), "the manual's path from the repo root, forward slashes (7.1)");
         Assert.That(line.GetProperty("name").GetString(), Is.EqualTo("stub"));
         Assert.That(line.GetProperty("identity").ValueKind, Is.EqualTo(JsonValueKind.Null));
         Assert.That(line.GetProperty("version").GetInt32(), Is.EqualTo(1));

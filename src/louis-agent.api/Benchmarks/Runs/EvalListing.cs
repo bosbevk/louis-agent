@@ -6,8 +6,8 @@ using LouisAgent.Core.Messages;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>One line of the runner's <c>--list</c>: an eval as the API reads it (the runner's own record, snake_case JSON).</summary>
-/// <remarks>Identity is the one optional field: the runner writes it as null, and a line that leaves it out still reads.</remarks>
-public sealed record EvalLine(string Name, int Version, string Proves, string? Identity = null);
+/// <remarks>Identity and the manual's path are optional: the runner writes them as null for an eval with none, and a line that leaves them out still reads (F18 step 7.1).</remarks>
+public sealed record EvalLine(string Name, int Version, string Proves, string? Identity = null, string? Manual = null);
 
 /// <summary>What reading the runner's listing gave: its evals, or why it couldn't be read (a text a person reads).</summary>
 public sealed record EvalListingResult(IReadOnlyList<EvalLine> Evals, string? Failure);
