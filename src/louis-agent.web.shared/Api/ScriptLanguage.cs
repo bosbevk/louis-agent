@@ -1,5 +1,3 @@
-using LouisAgent.Choices;
-
 namespace LouisAgent.Web.Shared.Api;
 
 /// <summary>
@@ -11,10 +9,4 @@ public enum ScriptLanguage
     Bash,
     PowerShell,
     Python,
-}
-
-public static class ScriptLanguages
-{
-    /// <summary>The name core writes the language as, and highlight.js knows it by.</summary>
-    public static string Name(this ScriptLanguage language) => SettingChoice.Wire(language);
 }

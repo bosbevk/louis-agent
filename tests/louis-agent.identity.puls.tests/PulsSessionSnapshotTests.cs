@@ -67,8 +67,8 @@ public class PulsSessionSnapshotTests
         var factory = Factory();
         var snapshot = new
         {
-            Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Name(), CoreToolset.Web.Name()], "puls/voice-af", RoleLevel.Agent)),
-            Cook = View(factory.GetOrCreate([CoreToolset.Web.Name(), SettingChoice.Wire(ShopsToolset.Shops)], "puls-cook", RoleLevel.Specialist)),
+            Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()], "puls/voice-af", RoleLevel.Agent)),
+            Cook = View(factory.GetOrCreate([CoreToolset.Web.Wire(), ShopsToolset.Shops.Wire()], "puls-cook", RoleLevel.Specialist)),
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")

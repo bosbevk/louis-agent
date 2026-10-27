@@ -202,7 +202,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
             ["mode"] = m.Mode, ["level"] = m.Level.ToString(), ["role"] = Nullable(m.Role), ["model"] = Nullable(m.Model),
         })),
         // Absent in a run stored before each; read as null: the scenarios the run asked for (F18 step 5.4), the run it re-scored (5b.2) and its roll-up (5c.2).
-        ["split"] = Nullable(run.Split is { } split ? SettingChoice.Wire(split) : null),
+        ["split"] = Nullable(run.Split is { } split ? split.Wire() : null),
         ["rescore_of"] = Nullable(run.RescoreOf), ["slices"] = SliceDocuments.ToBson(run.Slices),
     };
 
@@ -271,7 +271,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["session"] = t.Session, ["question"] = t.Question, ["answer"] = Nullable(t.Answer), ["role"] = Nullable(t.Role),
         ["continued"] = Nullable(t.Continued), ["puls_calls"] = t.PulsCalls, ["specialist_calls"] = t.SpecialistCalls,
         ["hosts"] = new BsonArray(t.Hosts), ["seconds"] = t.Seconds, ["error"] = Nullable(t.Error),
-        ["failure"] = Nullable(t.Failure is { } failure ? SettingChoice.Wire(failure) : null),
+        ["failure"] = Nullable(t.Failure is { } failure ? failure.Wire() : null),
         ["tools"] = t.Tools is { } tools
             ? new BsonDocument
             {
@@ -320,7 +320,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
 
     // The values.
 
-    private static string Status(BenchmarkRunStatus status) => status.ToString().ToLowerInvariant();
+    private static string Status(BenchmarkRunStatus status) => status.Wire();
 
     private static BsonValue Date(DateTimeOffset? at) => at is { } value ? new BsonDateTime(value.UtcDateTime) : BsonNull.Value;
 

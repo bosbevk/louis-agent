@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Hosting.Engines;
 
 using LouisAgent.Core.Agent.Toolsets;
@@ -24,5 +25,5 @@ public sealed record ProfileKey(string Toolsets, string? Role, RoleLevel Level, 
     public string Text => Toolsets + (Role is null ? "" : "|" + Role) + LevelSuffix(Level) + (Llm is null ? "" : "|llm:" + Llm) + (Tool is null ? "" : "|tool:" + Tool);
 
     /// <summary>Level 0 adds nothing to the key, so its profiles keep the names they had before CL8.</summary>
-    private static string LevelSuffix(RoleLevel level) => level == RoleLevel.Agent ? "" : "|" + level.ToString().ToLowerInvariant();
+    private static string LevelSuffix(RoleLevel level) => level == RoleLevel.Agent ? "" : "|" + level.Wire();
 }

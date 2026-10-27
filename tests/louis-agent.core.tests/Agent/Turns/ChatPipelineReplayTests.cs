@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Turns;
@@ -27,7 +28,7 @@ public class ChatPipelineReplayTests
 
     private AgentEngine Engine(IChatClient client, ListUsageSink ledger) =>
         new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Name()]),
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]),
             // Priced the way the ledger is, from a table that knows no model: a hit must still be a known 0, and a live request unknown.
             usageSink: new PricingUsageSink(ledger, new PriceTable { AsOf = "2026-10-25", Currency = "USD" }), replay: _folder.Store);
 

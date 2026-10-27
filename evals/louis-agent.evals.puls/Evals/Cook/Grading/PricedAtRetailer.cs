@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Collections.Frozen;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
@@ -45,7 +46,7 @@ public sealed class PricedAtRetailer : IGrader
         var calls = all.Where(call => Shops.ShopTools.Contains(call.Name)).ToList();
         return shop == ShopExpectation.Checkers
             ? ForShop("checkers", CookExpectations.TownOf(trial.Scenario)!, calls, views[0].Answer)
-            : ForPage(shop.ToString().ToLowerInvariant(), all, views[0].Answer);
+            : ForPage(shop.Wire(), all, views[0].Answer);
     }
 
     /// <summary>A shop with no catalogue (PnP, Woolworths): a page of its site was read with ReadRenderedPage, and the prices link to its site. No area: a page has none.</summary>

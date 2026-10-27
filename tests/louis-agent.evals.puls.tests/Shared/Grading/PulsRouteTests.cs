@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
@@ -32,7 +33,7 @@ public class PulsRouteTests
 
     [Test]
     public async Task AModeIsOnTheCookBecauseOfItsToolsets_NotItsName() =>
-        Assert.That((await Grade(new EvalMode("puls-cook-sonnet", "puls-cook", [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()]), CookRoute,
+        Assert.That((await Grade(new EvalMode("puls-cook-sonnet", "puls-cook", [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), CookRoute,
             Turn(1, [Start("puls-cook"), Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
@@ -50,7 +51,7 @@ public class PulsRouteTests
 
     [Test]
     public async Task TheBaselineIsRightToAnswerAMealItself() =>
-        Assert.That((await Grade(new EvalMode("baseline", Role, [PulsToolset.Web.Name(), PulsToolset.Files.Name()]), CookRoute, Turn(1, [Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That((await Grade(new EvalMode("baseline", Role, [PulsToolset.Web.Wire(), PulsToolset.Files.Wire()]), CookRoute, Turn(1, [Text("Resep.")]))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     [Test]
     public async Task AWebQuestionHandedToTheCookIsWrong()

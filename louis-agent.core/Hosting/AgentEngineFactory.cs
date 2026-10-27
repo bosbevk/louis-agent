@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Hosting.Engines;
@@ -162,7 +163,7 @@ public sealed class AgentEngineFactory
         Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileBuilt, new
         {
             Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
-                + (role is null ? "" : $" · role {role}") + (level == RoleLevel.Agent ? "" : $" · {level.ToString().ToLowerInvariant()}")
+                + (role is null ? "" : $" · role {role}") + (level == RoleLevel.Agent ? "" : $" · {level.Wire()}")
                 + (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}"),
             Tools = engine.Tools.Count,
             PromptChars = engine.SkillDocumentation.Length,

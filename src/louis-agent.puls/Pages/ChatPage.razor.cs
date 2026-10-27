@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Puls.Content;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
@@ -94,9 +95,9 @@ public partial class ChatPage : IDisposable
     private async Task<string> OpenSessionAsync()
     {
         string[] available = await Api.AvailableToolsetsAsync();
-        string[] own = [AskedToolset.Specialists.Name(), AskedToolset.Web.Name()];
+        string[] own = [AskedToolset.Specialists.Wire(), AskedToolset.Web.Wire()];
         string? timeZone = await JS.InvokeAsync<string?>("pulsUi.timeZone");
-        return await Api.CreateSessionAsync(available.Contains(AskedToolset.Specialists.Name()) ? own.Where(available.Contains).ToArray() : available, Role, _location, timeZone);
+        return await Api.CreateSessionAsync(available.Contains(AskedToolset.Specialists.Wire()) ? own.Where(available.Contains).ToArray() : available, Role, _location, timeZone);
     }
 
     /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /v1/roles, so the menu and the API agree.</summary>

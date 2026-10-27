@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Hosting.SessionLlms;
 
 using dotenv.net;
@@ -43,7 +44,7 @@ public static class SessionLlmLoader
                 llm.ResolveThinking());
             Log.Log(LogLevel.Information, HostingLogMessage.SessionLlmLoaded, new
             {
-                Name = name, Llm = llm, Tools = model.SupportsTools ? "on" : "off", Thinking = model.Thinking?.ToString().ToLowerInvariant() ?? "off",
+                Name = name, Llm = llm, Tools = model.SupportsTools ? "on" : "off", Thinking = model.Thinking?.Wire() ?? "off",
             });
             llms.Add(model);
         }

@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 namespace LouisAgent.Core.Agent.Toolsets;
 
@@ -32,8 +33,8 @@ public static class ToolsetCatalog
     /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
-        new(CoreToolset.Files.Name(), "Read, write, search, copy, rename and delete files in the workspace",
-            GuideFile: SkillFiles.Guide(CoreToolset.Files.Name()),
+        new(CoreToolset.Files.Wire(), "Read, write, search, copy, rename and delete files in the workspace",
+            GuideFile: SkillFiles.Guide(CoreToolset.Files.Wire()),
             MissingSettings: _ => [],
             // S (CL15): five classes, one concern each (a file's content, the tree's shape, browsing, searching, documents).
             ToolTypes: [typeof(WorkspaceFileTools), typeof(WorkspaceOrganiseTools), typeof(WorkspaceBrowseTools), typeof(WorkspaceSearchTools), typeof(DocumentTools)],
@@ -43,8 +44,8 @@ public static class ToolsetCatalog
                 new WorkspaceSearchTools(Root(ctx)), new DocumentTools(Root(ctx)),
             ]),
 
-        new(CoreToolset.Git.Name(), "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
-            GuideFile: SkillFiles.Guide(CoreToolset.Git.Name()),
+        new(CoreToolset.Git.Wire(), "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
+            GuideFile: SkillFiles.Guide(CoreToolset.Git.Wire()),
             MissingSettings: _ => [],
             // S (CL15): five classes (changes, branches, remotes, history, config) on one runner.
             ToolTypes: [typeof(GitChangeTools), typeof(GitBranchTools), typeof(GitRemoteTools), typeof(GitHistoryTools), typeof(GitConfigTools)],
@@ -54,32 +55,32 @@ public static class ToolsetCatalog
                 return [new GitChangeTools(git), new GitBranchTools(git), new GitRemoteTools(git), new GitHistoryTools(git), new GitConfigTools(git)];
             }),
 
-        new(CoreToolset.DotNet.Name(), "Build, test, run and restore .NET projects; list packages; SDK information",
-            GuideFile: SkillFiles.Guide(CoreToolset.DotNet.Name()),
+        new(CoreToolset.DotNet.Wire(), "Build, test, run and restore .NET projects; list packages; SDK information",
+            GuideFile: SkillFiles.Guide(CoreToolset.DotNet.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(DotNetTools)],
             CreateTools: ctx => [new DotNetTools(Root(ctx))]),
 
-        new(CoreToolset.Python.Name(), "Run Python code or scripts and manage packages in the agent's own virtual environment",
-            GuideFile: SkillFiles.Guide(CoreToolset.Python.Name()),
+        new(CoreToolset.Python.Wire(), "Run Python code or scripts and manage packages in the agent's own virtual environment",
+            GuideFile: SkillFiles.Guide(CoreToolset.Python.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(PythonTools)],
             CreateTools: ctx => [new PythonTools(Root(ctx))]),
 
-        new(CoreToolset.PowerShell.Name(), "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
-            GuideFile: SkillFiles.Guide(CoreToolset.PowerShell.Name()),
+        new(CoreToolset.PowerShell.Wire(), "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
+            GuideFile: SkillFiles.Guide(CoreToolset.PowerShell.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(PowerShellTools)],
             CreateTools: ctx => [new PowerShellTools(Root(ctx))]),
 
-        new(CoreToolset.Bash.Name(), "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
-            GuideFile: SkillFiles.Guide(CoreToolset.Bash.Name()),
+        new(CoreToolset.Bash.Wire(), "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
+            GuideFile: SkillFiles.Guide(CoreToolset.Bash.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(BashTools)],
             CreateTools: ctx => [new BashTools(Root(ctx))]),
 
-        new(CoreToolset.Web.Name(), "Search the web and fetch web pages",
-            GuideFile: SkillFiles.Guide(CoreToolset.Web.Name()),
+        new(CoreToolset.Web.Wire(), "Search the web and fetch web pages",
+            GuideFile: SkillFiles.Guide(CoreToolset.Web.Wire()),
             MissingSettings: _ => [],
             // S (CL15): three classes (finding and reading, a quote's provenance, currency); one guarded fetcher for the two that fetch.
             ToolTypes: [typeof(WebTools), typeof(QuoteTools), typeof(CurrencyTools)],
@@ -92,14 +93,14 @@ public static class ToolsetCatalog
 
         // CL15: the shops (F33, F34) are a pack, packs/louis-agent.pack.shops; a host loads it with PACKS=shops or an identity that names it.
 
-        new(CoreToolset.Paymo.Name(), "Paymo time tracking: time entries, tasks, projects and summaries",
-            GuideFile: SkillFiles.Guide(CoreToolset.Paymo.Name()),
+        new(CoreToolset.Paymo.Wire(), "Paymo time tracking: time entries, tasks, projects and summaries",
+            GuideFile: SkillFiles.Guide(CoreToolset.Paymo.Wire()),
             MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),
             ToolTypes: [typeof(PaymoTools)],
             CreateTools: ctx => [new PaymoTools(ctx.Options)]),
 
-        new(CoreToolset.DevOps.Name(), "Azure DevOps work items, sprints and team queries",
-            GuideFile: SkillFiles.Guide(CoreToolset.DevOps.Name()),
+        new(CoreToolset.DevOps.Wire(), "Azure DevOps work items, sprints and team queries",
+            GuideFile: SkillFiles.Guide(CoreToolset.DevOps.Wire()),
             MissingSettings: ctx => Missing(ctx,
                 ("DEVOPS_API_KEY", ctx.Options.DevopsApiKey),
                 ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
@@ -108,14 +109,14 @@ public static class ToolsetCatalog
             CreateTools: ctx => [new DevOpsTools(
                 ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!, ctx.Options.DevopsTeam)]),
 
-        new(CoreToolset.Specialists.Name(), "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
-            GuideFile: SkillFiles.Guide(CoreToolset.Specialists.Name()),
+        new(CoreToolset.Specialists.Wire(), "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
+            GuideFile: SkillFiles.Guide(CoreToolset.Specialists.Wire()),
             MissingSettings: ctx => ctx.Options.AgentPeers.Count == 0 ? ["AGENT_PEERS"] : [],
             ToolTypes: [typeof(SpecialistTools)],
             CreateTools: ctx => [new SpecialistTools(ctx.Options, ctx.UsageSink)]),
 
-        new(CoreToolset.Minions.Name(), "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
-            GuideFile: SkillFiles.Guide(CoreToolset.Minions.Name()),
+        new(CoreToolset.Minions.Wire(), "Hand one task and one of your own tools to a minion on a cheap model (a specialist's toolset, F30)",
+            GuideFile: SkillFiles.Guide(CoreToolset.Minions.Wire()),
             MissingSettings: ctx => new[] { ctx.Options.AgentPeers.Count == 0 ? "AGENT_PEERS" : null, ctx.Options.MinionLlms.Count == 0 ? "MINION_LLMS" : null }
                 .OfType<string>().ToList(),
             ToolTypes: [typeof(MinionTools)],
@@ -123,7 +124,7 @@ public static class ToolsetCatalog
 
         // Engine-provided: CreateSkillFile, ReloadSkills, CreateTool and ListAgentTools are registered by AgentEngine
         // when this name is in the resolved list (step 3), because they need the engine's own registry and skill set.
-        new(CoreToolset.Skills.Name(), "Create and reload skills, and build and list agent-built tools",
+        new(CoreToolset.Skills.Wire(), "Create and reload skills, and build and list agent-built tools",
             GuideFile: SkillFiles.Guide("self-extension"),
             MissingSettings: _ => [],
             CreateTools: null),

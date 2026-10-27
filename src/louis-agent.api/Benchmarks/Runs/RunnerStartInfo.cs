@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Diagnostics;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
@@ -67,7 +68,7 @@ internal static class RunnerStartInfo
         else if (run.Options.Web is { } web)
         {
             arguments.Add("--web");
-            arguments.Add(web.ToString().ToLowerInvariant());
+            arguments.Add(web.Wire());
         }
     }
 }

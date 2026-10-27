@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 namespace LouisAgent.Core.Agent.EngineTools;
 
@@ -84,7 +85,7 @@ internal sealed class AgentBuiltTools(
         string parameters = parsed.Parameters.Count == 0
             ? MessageText.Format(AgentToolMessage.NoParameters)
             : string.Join(", ", parsed.Parameters.Select(p => $"{p.Name}: {p.Type}{(p.Required ? "" : "?")}"));
-        return MessageText.Format(AgentToolMessage.ToolCreated, new { parsed.Name, Language = parsed.Language.Name(), Parameters = parameters });
+        return MessageText.Format(AgentToolMessage.ToolCreated, new { parsed.Name, Language = parsed.Language.Wire(), Parameters = parameters });
     }
 
     [Description("Lists every agent-built tool known right now: approved ones that load in every session, ones " +

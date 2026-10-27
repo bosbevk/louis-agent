@@ -15,13 +15,13 @@ public class BrowserSideNamesTests
     {
         foreach (var asked in Enum.GetValues<AskedToolset>())
         {
-            Assert.That(SettingChoice.TryParse(asked.Name(), out CoreToolset? core), Is.True, $"{asked}: core has no toolset of that name");
-            Assert.That(core!.Value.Name(), Is.EqualTo(asked.Name()), asked.ToString());
+            Assert.That(SettingChoice.TryParse(asked.Wire(), out CoreToolset? core), Is.True, $"{asked}: core has no toolset of that name");
+            Assert.That(core!.Value.Wire(), Is.EqualTo(asked.Wire()), asked.ToString());
         }
     }
 
     [Test]
     public void TheBrowsersScriptLanguages_AreCoresScriptLanguages_NameForName() =>
-        Assert.That(Enum.GetValues<WebScriptLanguage>().Select(SettingChoice.Wire).Order(),
-            Is.EqualTo(Enum.GetValues<CoreScriptLanguage>().Select(SettingChoice.Wire).Order()));
+        Assert.That(Enum.GetValues<WebScriptLanguage>().Select(m => m.Wire()).Order(),
+            Is.EqualTo(Enum.GetValues<CoreScriptLanguage>().Select(m => m.Wire()).Order()));
 }

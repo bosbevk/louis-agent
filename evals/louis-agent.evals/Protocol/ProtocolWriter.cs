@@ -76,7 +76,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             if (facts is not null) WriteFacts(json, facts);
             json.WriteNumber("seconds", seconds);
             if (facts is not null) WriteText(json, "error", facts.Error);
-            if (failure is not null) json.WriteString("failure", SettingChoice.Wire(failure.Value));
+            if (failure is not null) json.WriteString("failure", failure.Value.Wire());
         });
 
     /// <summary>A conversation's result: the eval's scores, written as the JSON they are.</summary>

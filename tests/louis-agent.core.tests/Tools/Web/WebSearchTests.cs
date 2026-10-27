@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Pricing.Rates;
 using System.Net;
@@ -57,7 +58,7 @@ public class WebSearchTests
     {
         var fake = new FakeSearch(new WebSearchResult("Injected", "https://injected.example", ""));
         var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Web.Name()], fake));
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Web.Wire()], fake));
         var webSearch = engine.Tools.OfType<AIFunction>().Single(t => t.Name == "WebSearch");
 
         var result = await webSearch.InvokeAsync(new AIFunctionArguments { ["query"] = "anything" });

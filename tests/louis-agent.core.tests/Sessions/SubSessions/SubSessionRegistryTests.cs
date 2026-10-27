@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Tools.Agents;
@@ -9,7 +10,7 @@ namespace LouisAgent.Core.Tests.Sessions.SubSessions;
 public class SubSessionRegistryTests
 {
     private static OpenSubSession Entry(string sessionId, List<string> closed) =>
-        new(new Uri("http://coder.test/"), sessionId, "coder", [CoreToolset.Web.Name()], "puls-cook", () => { closed.Add(sessionId); return Task.CompletedTask; });
+        new(new Uri("http://coder.test/"), sessionId, "coder", [CoreToolset.Web.Wire()], "puls-cook", () => { closed.Add(sessionId); return Task.CompletedTask; });
 
     [Test]
     public async Task Handles_CountUpPerChat_AndFindTheirEntry()

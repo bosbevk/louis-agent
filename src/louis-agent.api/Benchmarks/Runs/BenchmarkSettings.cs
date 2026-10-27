@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
@@ -30,7 +31,7 @@ public static class BenchmarkSettings
     {
         if (options.Web is null && options.Replay is null) return settings;
         var withOptions = new Dictionary<string, string>(settings);
-        if (options.Web is { } web) withOptions["web"] = web.ToString().ToLowerInvariant();
+        if (options.Web is { } web) withOptions["web"] = web.Wire();
         if (options.Replay is { } replayOf) withOptions["replay_of"] = replayOf;
         return withOptions;
     }

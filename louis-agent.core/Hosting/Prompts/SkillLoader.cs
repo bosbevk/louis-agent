@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Hosting.Prompts;
 
 using LouisAgent.Core.Agent.Toolsets;
@@ -16,7 +17,7 @@ public static class SkillLoader
     private static readonly ILogger Log = AgentLogging.For<CompositeSkillProvider>();
 
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
-    private static readonly string SkillsToolset = CoreToolset.Skills.Name();
+    private static readonly string SkillsToolset = CoreToolset.Skills.Wire();
 
     /// <summary>The system prompt with every toolset's guide (hosts that load every toolset, and tests).</summary>
     public static ISkillProvider Load(AgentOptions agent) => Load(agent, ToolsetCatalog.All);

@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting.Prompts;
@@ -180,7 +181,7 @@ public class ScriptToolTests
     {
         if (language == ScriptLanguage.PowerShell) Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
         var engine = Engine();
-        string definition = $"# Tool: EchoText\n- Description: Echo\n- Parameters:\n  - `text` (string, required): text\n- Implementation:\n\n```{language.Name()}\n{code}\n```\n";
+        string definition = $"# Tool: EchoText\n- Description: Echo\n- Parameters:\n  - `text` (string, required): text\n- Implementation:\n\n```{language.Wire()}\n{code}\n```\n";
         Assert.That(engine.CreateTool(definition), Does.Contain("Created"));
 
         var result = await Tool(engine, "EchoText").InvokeAsync(new AIFunctionArguments { ["text"] = "a\"; rm -rf / #" });

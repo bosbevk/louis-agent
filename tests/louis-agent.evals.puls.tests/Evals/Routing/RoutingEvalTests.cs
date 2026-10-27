@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -28,7 +29,7 @@ public class RoutingEvalTests
     [Test]
     public async Task TheBaselineIsEveryToolsetTheInstanceHasButTheDelegatingOnes_AndTheDelegatedIsPulsAsBuilt()
     {
-        var modes = await Eval.ModesAsync(new ToolsetsClient(PulsToolset.Web.Name(), PulsToolset.Files.Name(), PulsToolset.Specialists.Name(), PulsToolset.Git.Name(), PulsToolset.Minions.Name()), CancellationToken.None);
+        var modes = await Eval.ModesAsync(new ToolsetsClient(PulsToolset.Web.Wire(), PulsToolset.Files.Wire(), PulsToolset.Specialists.Wire(), PulsToolset.Git.Wire(), PulsToolset.Minions.Wire()), CancellationToken.None);
 
         Assert.That(modes.Select(m => (m.Name, m.Role, string.Join(",", m.Toolsets))), Is.EqualTo(new[]
         {
@@ -70,7 +71,7 @@ public class RoutingEvalTests
     [Test]
     public void ABaselineQuestionIsScoredWithoutDelegation()
     {
-        var trial = Trial(new EvalMode("baseline", Role, [PulsToolset.Web.Name()]), "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Text("Ek kan nie.")]));
+        var trial = Trial(new EvalMode("baseline", Role, [PulsToolset.Web.Wire()]), "cook", """{"routes_to":"puls-cook"}""", null, Turn(1, [Text("Ek kan nie.")]));
 
         Assert.That(Json(Eval.ScoresOf(trial, [])), Does.Contain("\"expected_role\":null").And.Contain("\"routed_right\":true"));
     }

@@ -150,7 +150,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
     }
 
     private string Enabled() =>
-        catalogues.Count == 0 ? "none" : string.Join(", ", catalogues.Keys.Order().Select(k => k.ToString().ToLowerInvariant()));
+        catalogues.Count == 0 ? "none" : string.Join(", ", catalogues.Keys.Order().Select(k => k.Wire()));
 
     /// <summary>A cell's text, kept to one cell: no pipes or line breaks from the shop's names.</summary>
     private static string Cell(string? text) =>

@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using LouisAgent.Core.Tools.Web.Fetching;
@@ -33,7 +34,7 @@ public sealed partial class DuckDuckGoSearchProvider(HttpClient? http = null) : 
     }
 
     /// <summary>A recency's first letter, as DuckDuckGo's <c>df</c> and Google's <c>dateRestrict</c> write it: d, w, m or y.</summary>
-    internal static string Letter(SearchRecency recency) => recency.ToString()[..1].ToLowerInvariant();
+    internal static string Letter(SearchRecency recency) => recency.Wire()[..1];
 
     internal static List<WebSearchResult> ParseResults(string html, int count)
     {

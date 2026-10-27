@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
@@ -43,11 +44,11 @@ public class AgentEngineFactoryTests
         Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "testprod/voice-af" }), "louis-agent/voice is built in but off");
         Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Is.EqualTo(new[] { "testprod-specialist" }), "another role is refused");
 
-        var refused = Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate([CoreToolset.Web.Name()], "testprod-other", RoleLevel.Specialist))!;
+        var refused = Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-other", RoleLevel.Specialist))!;
         Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod-specialist."), "named as unknown, with what's on");
         Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
 
-        Assert.That(factory.GetOrCreate([CoreToolset.Web.Name()], "testprod-specialist", RoleLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a fact"));
+        Assert.That(factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-specialist", RoleLevel.Specialist).SkillDocumentation, Does.Contain("Never invent a fact"));
     }
 
 
@@ -90,7 +91,7 @@ public class AgentEngineFactoryTests
                 WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = folder, HostTimeZone = "Africa/Johannesburg",
             });
             async Task<string> TodayAsync() =>
-                (await Factory().GetOrCreate([CoreToolset.Files.Name()]).Tools.OfType<Microsoft.Extensions.AI.AIFunction>().Single(t => t.Name == "GetToday")
+                (await Factory().GetOrCreate([CoreToolset.Files.Wire()]).Tools.OfType<Microsoft.Extensions.AI.AIFunction>().Single(t => t.Name == "GetToday")
                     .InvokeAsync(new Microsoft.Extensions.AI.AIFunctionArguments()))!.ToString()!;
 
             string recorded, replayed;
@@ -203,8 +204,8 @@ public class AgentEngineFactoryTests
     {
         var factory = Factory();
 
-        var first = factory.GetOrCreate([CoreToolset.Git.Name(), CoreToolset.Files.Name()]);
-        var second = factory.GetOrCreate(["Files", " git ", CoreToolset.Files.Name()]);
+        var first = factory.GetOrCreate([CoreToolset.Git.Wire(), CoreToolset.Files.Wire()]);
+        var second = factory.GetOrCreate(["Files", " git ", CoreToolset.Files.Wire()]);
 
         Assert.That(second, Is.SameAs(first));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "files,git" }));
@@ -216,16 +217,16 @@ public class AgentEngineFactoryTests
         // F21: the same toolsets with another role, or at another level (CL8: no router below level 0), is another engine.
         var factory = Factory();
 
-        var plain = factory.GetOrCreate([CoreToolset.Files.Name()]);
-        var voiced = factory.GetOrCreate([CoreToolset.Files.Name()], "testprod/voice-af");
-        var noRouter = factory.GetOrCreate([CoreToolset.Files.Name()], level: RoleLevel.Specialist);
+        var plain = factory.GetOrCreate([CoreToolset.Files.Wire()]);
+        var voiced = factory.GetOrCreate([CoreToolset.Files.Wire()], "testprod/voice-af");
+        var noRouter = factory.GetOrCreate([CoreToolset.Files.Wire()], level: RoleLevel.Specialist);
 
         Assert.That(voiced, Is.Not.SameAs(plain));
-        Assert.That(factory.GetOrCreate([CoreToolset.Files.Name()], "testprod/voice-af"), Is.SameAs(voiced));
+        Assert.That(factory.GetOrCreate([CoreToolset.Files.Wire()], "testprod/voice-af"), Is.SameAs(voiced));
         Assert.That(voiced.SkillDocumentation, Does.Contain("# Testprod - Stem").And.Not.Contain("Louis's Minion"));
         Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(plain.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
-        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { CoreToolset.Files.Name(), "files|testprod/voice-af", "files|specialist" }));
+        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), "files|testprod/voice-af", "files|specialist" }));
     }
 
     [Test]
@@ -233,7 +234,7 @@ public class AgentEngineFactoryTests
     {
         var factory = Factory();
 
-        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate([CoreToolset.Files.Name()], "nobody-here"));
+        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() => factory.GetOrCreate([CoreToolset.Files.Wire()], "nobody-here"));
         Assert.That(factory.Profiles, Is.Empty);
     }
 
@@ -242,8 +243,8 @@ public class AgentEngineFactoryTests
     {
         var factory = Factory();
 
-        var files = factory.GetOrCreate([CoreToolset.Files.Name()]);
-        var git = factory.GetOrCreate([CoreToolset.Git.Name()]);
+        var files = factory.GetOrCreate([CoreToolset.Files.Wire()]);
+        var git = factory.GetOrCreate([CoreToolset.Git.Wire()]);
 
         Assert.That(Names(files), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
         Assert.That(Names(git), Does.Contain("GetStatus").And.Not.Contain("ReadWorkspaceFile"));
@@ -253,13 +254,13 @@ public class AgentEngineFactoryTests
     [Test]
     public void TheSkillsToolset_AddsTheSelfExtensionTools()
     {
-        Assert.That(Names(Factory().GetOrCreate([CoreToolset.Files.Name(), CoreToolset.Skills.Name()])), Does.Contain("CreateTool").And.Contain("CreateSkillFile"));
+        Assert.That(Names(Factory().GetOrCreate([CoreToolset.Files.Wire(), CoreToolset.Skills.Wire()])), Does.Contain("CreateTool").And.Contain("CreateSkillFile"));
     }
 
     [Test]
     public void AnEngine_HasOnlyItsToolsetsGuides_AndReloadingKeepsThem()
     {
-        var engine = Factory().GetOrCreate([CoreToolset.Files.Name(), CoreToolset.Skills.Name()]);
+        var engine = Factory().GetOrCreate([CoreToolset.Files.Wire(), CoreToolset.Skills.Wire()]);
 
         Assert.That(engine.SkillDocumentation, Does.Contain("# Files Skills").And.Not.Contain("# Python Skills"));
         engine.ReloadSkills();
@@ -271,8 +272,8 @@ public class AgentEngineFactoryTests
     {
         var factory = Factory();
 
-        Assert.That(() => factory.GetOrCreate([CoreToolset.Files.Name(), "nope"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("Valid names"));
-        Assert.That(() => factory.GetOrCreate([CoreToolset.Paymo.Name()]), Throws.TypeOf<ToolsetException>().With.Message.Contain("PAYMO_API_KEY"));
+        Assert.That(() => factory.GetOrCreate([CoreToolset.Files.Wire(), "nope"]), Throws.TypeOf<ToolsetException>().With.Message.Contain("Valid names"));
+        Assert.That(() => factory.GetOrCreate([CoreToolset.Paymo.Wire()]), Throws.TypeOf<ToolsetException>().With.Message.Contain("PAYMO_API_KEY"));
         Assert.That(factory.Profiles, Is.Empty);
     }
 
@@ -281,23 +282,23 @@ public class AgentEngineFactoryTests
     {
         // PR #27 review: on a specialist the model chooses the lists; refusing the 17th would stop it until a restart.
         var factory = Factory(capacity: 2);
-        var files = factory.GetOrCreate([CoreToolset.Files.Name()]);
-        factory.GetOrCreate([CoreToolset.Git.Name()]);
-        factory.GetOrCreate([CoreToolset.Files.Name()]);   // files is now the more recent
+        var files = factory.GetOrCreate([CoreToolset.Files.Wire()]);
+        factory.GetOrCreate([CoreToolset.Git.Wire()]);
+        factory.GetOrCreate([CoreToolset.Files.Wire()]);   // files is now the more recent
 
-        var dotnet = factory.GetOrCreate([CoreToolset.DotNet.Name()]);
+        var dotnet = factory.GetOrCreate([CoreToolset.DotNet.Wire()]);
 
         Assert.That(dotnet, Is.Not.Null);
-        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { CoreToolset.Files.Name(), CoreToolset.DotNet.Name() }), "git, the least recently used, went");
-        Assert.That(factory.GetOrCreate([CoreToolset.Files.Name()]), Is.SameAs(files), "a kept profile is the same engine");
-        Assert.That(factory.GetOrCreate([CoreToolset.Git.Name()]), Is.Not.Null, "a dropped one is built again");
+        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), CoreToolset.DotNet.Wire() }), "git, the least recently used, went");
+        Assert.That(factory.GetOrCreate([CoreToolset.Files.Wire()]), Is.SameAs(files), "a kept profile is the same engine");
+        Assert.That(factory.GetOrCreate([CoreToolset.Git.Wire()]), Is.Not.Null, "a dropped one is built again");
     }
 
     [Test]
     public void Available_ListsOnlyToolsetsWhoseSettingsAreSet()
     {
-        Assert.That(Factory().Available, Does.Contain(CoreToolset.Files.Name()).And.Not.Contain(CoreToolset.Paymo.Name()));
-        Assert.That(Factory(paymoKey: "key").Available, Does.Contain(CoreToolset.Paymo.Name()));
+        Assert.That(Factory().Available, Does.Contain(CoreToolset.Files.Wire()).And.Not.Contain(CoreToolset.Paymo.Wire()));
+        Assert.That(Factory(paymoKey: "key").Available, Does.Contain(CoreToolset.Paymo.Wire()));
     }
 
     [Test]
@@ -313,14 +314,14 @@ public class AgentEngineFactoryTests
         // the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can follow.
         var factory = Factory();
 
-        var minion = factory.GetOrCreate([CoreToolset.Web.Name()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl");
+        var minion = factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl");
 
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }), "one tool: no clock, no ExecuteSkill, no WebSearch");
         Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod minion: Lookup").And.Contain("You are a **minion**")
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod-minion-lookup|minion|tool:FetchUrl" }));
-        Assert.That(factory.GetOrCreate([CoreToolset.Web.Name()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
-        Assert.That(factory.GetOrCreate([CoreToolset.Web.Name()], "testprod-minion-lookup", RoleLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
+        Assert.That(factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl"), Is.SameAs(minion));
+        Assert.That(factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
             "the tool is part of the key");
     }
 
@@ -330,9 +331,9 @@ public class AgentEngineFactoryTests
         var factory = Factory();
 
         var ex = Assert.Throws<ToolsetException>(() =>
-            factory.GetOrCreate([CoreToolset.Web.Name()], "testprod-minion-lookup", RoleLevel.Minion, tool: "ReadWorkspaceFile"))!;
+            factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "ReadWorkspaceFile"))!;
 
-        Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain(CoreToolset.Web.Name()));
+        Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain(CoreToolset.Web.Wire()));
         Assert.That(factory.Profiles, Is.Empty);
     }
 }

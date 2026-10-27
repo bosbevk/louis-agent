@@ -236,7 +236,7 @@ public class ShopToolsTests
 
     // CL15 step 4: the toolset is the pack's, not core's catalogue's; the shops setting is the pack's own.
     private static ToolsetDefinition ShopsToolset(string? shops) =>
-        new ShopsPack(new ShopsOptions { ShopCatalogues = shops }).Toolsets.Single(t => t.Name == SettingChoice.Wire(Packs.Shops.ShopsToolset.Shops));
+        new ShopsPack(new ShopsOptions { ShopCatalogues = shops }).Toolsets.Single(t => t.Name == Packs.Shops.ShopsToolset.Shops.Wire());
 
     private static IReadOnlyList<string> Missing(string? shops, string? browser) =>
         ShopsToolset(shops).MissingSettings(new ToolsetContext(new AgentOptions { BrowserUrl = browser }, new NoSearch()));

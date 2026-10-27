@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
@@ -266,15 +267,15 @@ public class MinionToolsTests
     [Test]
     public void TheMinionsToolset_NeedsPeersAndModels_AndATool_NamesItsToolset()
     {
-        var minions = ToolsetCatalog.Find(CoreToolset.Minions.Name())!;
+        var minions = ToolsetCatalog.Find(CoreToolset.Minions.Wire())!;
         var without = new ToolsetContext(new AgentOptions { RatesUrl = null }, new NoSearch());
         var with = new ToolsetContext(new AgentOptions { RatesUrl = null, AgentPeers = Self, MinionLlms = Cascade }, new NoSearch());
 
         Assert.That(minions.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS", "MINION_LLMS" }));
         Assert.That(minions.IsAvailable(with), Is.True);
         Assert.That(minions.GuideFile, Is.EqualTo("toolsets/minions.md"));
-        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("FetchUrl"), Is.EqualTo(CoreToolset.Web.Name()));
-        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(CoreToolset.Files.Name()));
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("FetchUrl"), Is.EqualTo(CoreToolset.Web.Wire()));
+        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(CoreToolset.Files.Wire()));
         Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
     }
 

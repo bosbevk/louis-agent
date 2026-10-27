@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Evals.Runner.Evals.Stub;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
@@ -116,7 +117,7 @@ public class CalibrationCommandsTests
             string[] stored =
             [
                 At(new { @event = "protocol", version = 1, eval = "fake", eval_version = 1, graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-                At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { StubToolset.Web.Name() }, role = "r", llm = (string?)null }),
+                At(new { @event = "mode", mode = "puls-cook", repeat = 1, toolsets = new[] { StubToolset.Web.Wire() }, role = "r", llm = (string?)null }),
                 At(new { @event = "question", mode = "puls-cook", repeat = 1, task = "cook-en", turn = 1, session = "s", text = "For two" }),
                 At(new { @event = "sse", mode = "puls-cook", repeat = 1, task = "cook-en", turn = 1, type = "content_block_delta", data = new { type = "content_block_delta", index = 0, delta = new { type = "text_delta", text = "Bobotie" } } }),
                 At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "cook-en", turn = 1, session = "s", question = "For two", answer = "Bobotie", seconds = 1.0 }),

@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Composition;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
@@ -36,11 +37,11 @@ public class CrossBoundaryNamesTests
     [Test]
     public void ARoleHeader_ThatListsATypo_IsReported_AndOneThatListsAKnownNameIsNot()
     {
-        var known = new HashSet<string> { CoreToolset.Web.Name(), CoreToolset.Files.Name() };
+        var known = new HashSet<string> { CoreToolset.Web.Wire(), CoreToolset.Files.Wire() };
         var roles = new[]
         {
-            ("specialists/good.md", $"---\ntoolsets: {CoreToolset.Web.Name()}, {CoreToolset.Files.Name()}?\n---\nA role."),
-            ("specialists/typo.md", $"---\ntoolsets: {CoreToolset.Web.Name()}, fils?\n---\nA role."),
+            ("specialists/good.md", $"---\ntoolsets: {CoreToolset.Web.Wire()}, {CoreToolset.Files.Wire()}?\n---\nA role."),
+            ("specialists/typo.md", $"---\ntoolsets: {CoreToolset.Web.Wire()}, fils?\n---\nA role."),
             ("specialists/none.md", "A role with no header."),
         };
 

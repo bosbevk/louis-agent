@@ -33,7 +33,7 @@ public sealed record SessionReplay(WebReplayMode Web, string? Of, bool Model)
     /// never works out a key of its own; null when this flow has none.
     /// </summary>
     public static object? ForSubSession() =>
-        Current is { } replay ? new { web = replay.Web.ToString().ToLowerInvariant(), of = replay.Of, model = replay.Model } : null;
+        Current is { } replay ? new { web = replay.Web.Wire(), of = replay.Of, model = replay.Model } : null;
 
     /// <summary>WEB_REPLAY, parsed once where it enters: unset is <see cref="WebReplayMode.Off"/>; anything unknown throws.</summary>
     public static WebReplayMode DefaultMode(string? setting)

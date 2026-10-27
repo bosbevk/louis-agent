@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Testing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -16,7 +17,7 @@ public class ToolsetCatalogTests
     public void CoresCatalogue_IsExactlyTheCoreToolsetEnum_TheShopsAreAPack()
     {
         // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) are packs/louis-agent.pack.shops; core names no shop. The enum is core's whole list (ADR 0043).
-        Assert.That(ToolsetCatalog.All.Select(t => t.Name), Is.EquivalentTo(Enum.GetValues<CoreToolset>().Select(t => t.Name())));
+        Assert.That(ToolsetCatalog.All.Select(t => t.Name), Is.EquivalentTo(Enum.GetValues<CoreToolset>().Select(t => t.Wire())));
         Assert.That(AgentCatalog.CoreOnly.ToolNames, Has.None.EqualTo("FindProducts"));
     }
 
@@ -26,10 +27,10 @@ public class ToolsetCatalogTests
     public void OnlyTheWebAndTheShops_RunInParallel()
     {
         var shops = new ToolsetDefinition(SampleToolset.Beta, "a pack's", GuideFile: null, MissingSettings: _ => [], CreateTools: _ => [], ParallelSafe: true);
-        Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe).Select(t => t.Name), Is.EquivalentTo(new[] { CoreToolset.Web.Name() }));
-        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find(CoreToolset.Web.Name())!, shops]), Is.True, "the cook");
-        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find(CoreToolset.Specialists.Name())!, ToolsetCatalog.Find(CoreToolset.Web.Name())!]), Is.False, "Puls");
-        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find(CoreToolset.Files.Name())!, ToolsetCatalog.Find(CoreToolset.Web.Name())!]), Is.False);
+        Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe).Select(t => t.Name), Is.EquivalentTo(new[] { CoreToolset.Web.Wire() }));
+        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find(CoreToolset.Web.Wire())!, shops]), Is.True, "the cook");
+        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find(CoreToolset.Specialists.Wire())!, ToolsetCatalog.Find(CoreToolset.Web.Wire())!]), Is.False, "Puls");
+        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find(CoreToolset.Files.Wire())!, ToolsetCatalog.Find(CoreToolset.Web.Wire())!]), Is.False);
         Assert.That(ToolsetCatalog.RunsInParallel([]), Is.False, "no toolsets: the coding agent's default tools");
     }
 
@@ -66,7 +67,7 @@ public class ToolsetCatalogTests
         // cannot resolve is a recorded-run miss, not a lookup that fails.
         string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
         var context = new ToolsetContext(new AgentOptions(), new NoSearch(), Replay: new LouisAgent.Core.Sessions.Replay.Store.ReplayStore(folder));
-        var web = (LouisAgent.Core.Tools.Web.WebTools)ToolsetCatalog.BuildTools([ToolsetCatalog.Find(CoreToolset.Web.Name())!], context).Single(t => t is LouisAgent.Core.Tools.Web.WebTools);
+        var web = (LouisAgent.Core.Tools.Web.WebTools)ToolsetCatalog.BuildTools([ToolsetCatalog.Find(CoreToolset.Web.Wire())!], context).Single(t => t is LouisAgent.Core.Tools.Web.WebTools);
 
         using (LouisAgent.Core.Sessions.Replay.SessionReplay.Use(new LouisAgent.Core.Sessions.Replay.SessionReplay(LouisAgent.Core.Sessions.Replay.WebReplayMode.Replay, "t", Model: false)))
             Assert.That(await web.FetchUrl("https://no-such-host.invalid/page"), Does.Contain("was not read in the recorded run"));
@@ -88,20 +89,20 @@ public class ToolsetCatalogTests
 
     [Test]
     public void AnOptionalToolsetThisInstanceHas_Loads() =>
-        Assert.That(Resolved([CoreToolset.Web.Name(), "paymo?"], WithPaymo), Is.EqualTo(new[] { CoreToolset.Web.Name(), CoreToolset.Paymo.Name() }));
+        Assert.That(Resolved([CoreToolset.Web.Wire(), "paymo?"], WithPaymo), Is.EqualTo(new[] { CoreToolset.Web.Wire(), CoreToolset.Paymo.Wire() }));
 
     [Test]
     public void AnOptionalToolsetThisInstanceLacks_IsSkipped() =>
-        Assert.That(Resolved([CoreToolset.Web.Name(), "paymo?"], WithoutPaymo), Is.EqualTo(new[] { CoreToolset.Web.Name() }));
+        Assert.That(Resolved([CoreToolset.Web.Wire(), "paymo?"], WithoutPaymo), Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
 
     [Test]
     public void ARequiredToolsetThisInstanceLacks_IsStillRefused() =>
-        Assert.That(() => Resolved([CoreToolset.Web.Name(), CoreToolset.Paymo.Name()], WithoutPaymo),
+        Assert.That(() => Resolved([CoreToolset.Web.Wire(), CoreToolset.Paymo.Wire()], WithoutPaymo),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("PAYMO_API_KEY"));
 
     [Test]
     public void AnUnknownName_IsRefused_EvenOptional() =>
-        Assert.That(() => Resolved([CoreToolset.Web.Name(), "shop?"], WithPaymo),
+        Assert.That(() => Resolved([CoreToolset.Web.Wire(), "shop?"], WithPaymo),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("shop").And.Message.Contain("Valid names"));
 
     [TestCase(new[] { SampleToolset.Beta + "?", " " + SampleToolset.Beta + "? " }, new[] { SampleToolset.Beta + "?" })]

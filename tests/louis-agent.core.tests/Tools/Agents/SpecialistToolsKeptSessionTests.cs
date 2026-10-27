@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
@@ -32,7 +33,7 @@ public class SpecialistToolsKeptSessionTests
 
         string result;
         using (SubSessionRegistry.Use(registry))
-            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Name()], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
+            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result, Does.Contain("[Sub-session sub-1 on coder (web; puls-cook): 3 requests, 10,200 tokens, 0.0123 USD")
@@ -40,7 +41,7 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages" }), "no DELETE");
         OpenSubSession open = registry.Open.Single();
         Assert.That((open.Handle, open.SessionId, open.Agent, open.Role), Is.EqualTo(("sub-1", "sess_child", "coder", "puls-cook")));
-        Assert.That(open.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Name() }));
+        Assert.That(open.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
     }
 
     [Test]
@@ -50,7 +51,7 @@ public class SpecialistToolsKeptSessionTests
         var registry = new SubSessionRegistry();
 
         using (SubSessionRegistry.Use(registry))
-            await ToolsOn(handler).StartSubSession([CoreToolset.Files.Name()], "x", agent: "coder");
+            await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(handler.Requests.Last().Method, Is.EqualTo(HttpMethod.Delete));
         Assert.That(registry.Open, Is.Empty);
@@ -68,7 +69,7 @@ public class SpecialistToolsKeptSessionTests
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
             for (int i = 0; i < 3; i++)
-                Assert.That(await tools.StartSubSession([CoreToolset.Files.Name()], "x", agent: "coder"), Does.Not.StartWith("Error"));
+                Assert.That(await tools.StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder"), Does.Not.StartWith("Error"));
         }
 
         Assert.That(Calls(handler).Where(c => c.StartsWith("DELETE")), Is.EqualTo(new[] { "DELETE /v1/sessions/sess_1" }));
@@ -89,7 +90,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            await tools.StartSubSession([CoreToolset.Web.Name()], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
+            await tools.StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder", role: "puls-cook");
             result = await tools.ContinueSubSession("sub-1", "Maak dit vir ses mense.");
         }
 
@@ -116,7 +117,7 @@ public class SpecialistToolsKeptSessionTests
         var registry = new SubSessionRegistry();
 
         using (SubSessionRegistry.Use(registry))
-            await ToolsOn(handler).StartSubSession([CoreToolset.Web.Name()], "x", agent: "coder", role: "puls-cook");
+            await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: "puls-cook");
 
         Assert.That(registry.Open.Single().Role, Is.EqualTo("puls-cook"));
     }
@@ -131,7 +132,7 @@ public class SpecialistToolsKeptSessionTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession([CoreToolset.Web.Name()], "x", agent: "coder", role: "puls-cook");
+            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: "puls-cook");
             int before = handler.Requests.Count;
             result = await tools.ContinueSubSession("sub-7", "y");
             Assert.That(handler.Requests, Has.Count.EqualTo(before));
@@ -169,7 +170,7 @@ public class SpecialistToolsKeptSessionTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession([CoreToolset.Web.Name()], "x", agent: "coder");
+            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder");
             result = await tools.ContinueSubSession("sub-1", "y");
         }
 
@@ -189,7 +190,7 @@ public class SpecialistToolsKeptSessionTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession([CoreToolset.Web.Name()], "x", agent: "coder");
+            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder");
             result = await tools.ContinueSubSession("sub-1", "y");
         }
 
@@ -208,7 +209,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            Assert.That(await tools.StartSubSession([CoreToolset.Web.Name()], "x", agent: "coder"), Does.Not.StartWith("Error"));
+            Assert.That(await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder"), Does.Not.StartWith("Error"));
             Assert.That(await tools.ContinueSubSession("sub-1", "y"), Does.Not.StartWith("Error"));
             Assert.That(await tools.ContinueSubSession("sub-1", "z"), Does.Not.StartWith("Error"));
             Assert.That(await tools.ContinueSubSession("sub-1", "w"), Does.StartWith("Error").And.Contain("already made 3 sub-session calls"));
@@ -226,7 +227,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
         using (SessionAttachments.Use(attached))
         {
-            await tools.StartSubSession([CoreToolset.Web.Name()], "x", agent: "coder");
+            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder");
             await tools.ContinueSubSession("sub-1", "Hier is my lys.", attachments: ["lys.txt"]);
         }
 

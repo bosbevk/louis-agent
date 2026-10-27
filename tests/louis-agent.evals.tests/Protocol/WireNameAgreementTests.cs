@@ -19,19 +19,19 @@ public class WireNameAgreementTests
     [Test]
     public void WhatSettingChoiceWrites_IsWhatTheJsonWriterWrites_ForEveryProtocolEnum()
     {
-        foreach (var m in Enum.GetValues<TrialFailure>()) Assert.That(SettingChoice.Wire(m), Is.EqualTo(Written(m)), $"TrialFailure.{m}");
-        foreach (var m in Enum.GetValues<SplitSelection>()) Assert.That(SettingChoice.Wire(m), Is.EqualTo(Written(m)), $"SplitSelection.{m}");
-        foreach (var m in Enum.GetValues<BenchmarkTurnFailure>()) Assert.That(SettingChoice.Wire(m), Is.EqualTo(Written(m)), $"BenchmarkTurnFailure.{m}");
-        foreach (var m in Enum.GetValues<BenchmarkRunSplit>()) Assert.That(SettingChoice.Wire(m), Is.EqualTo(Written(m)), $"BenchmarkRunSplit.{m}");
+        foreach (var m in Enum.GetValues<TrialFailure>()) Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"TrialFailure.{m}");
+        foreach (var m in Enum.GetValues<SplitSelection>()) Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"SplitSelection.{m}");
+        foreach (var m in Enum.GetValues<BenchmarkTurnFailure>()) Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"BenchmarkTurnFailure.{m}");
+        foreach (var m in Enum.GetValues<BenchmarkRunSplit>()) Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"BenchmarkRunSplit.{m}");
     }
 
     // The harness writes a turn's failure and a run's split, the API reads and stores them (F18 steps 5.2 and 5.4 reviews): the two sides name the same set in the same words,
     // so a member added to one side only fails here and not in a stored run.
     [Test]
     public void TheHarnessAndTheApiNameTheSameFailures_InTheSameWords() =>
-        Assert.That(Enum.GetValues<BenchmarkTurnFailure>().Select(SettingChoice.Wire).Order(), Is.EqualTo(Enum.GetValues<TrialFailure>().Select(SettingChoice.Wire).Order()));
+        Assert.That(Enum.GetValues<BenchmarkTurnFailure>().Select(m => m.Wire()).Order(), Is.EqualTo(Enum.GetValues<TrialFailure>().Select(m => m.Wire()).Order()));
 
     [Test]
     public void TheHarnessAndTheApiNameTheSameSplits_InTheSameWords() =>
-        Assert.That(Enum.GetValues<BenchmarkRunSplit>().Select(SettingChoice.Wire).Order(), Is.EqualTo(Enum.GetValues<SplitSelection>().Select(SettingChoice.Wire).Order()));
+        Assert.That(Enum.GetValues<BenchmarkRunSplit>().Select(m => m.Wire()).Order(), Is.EqualTo(Enum.GetValues<SplitSelection>().Select(m => m.Wire()).Order()));
 }

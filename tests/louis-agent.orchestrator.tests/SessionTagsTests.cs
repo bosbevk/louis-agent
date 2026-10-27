@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Usage.Records;
 using System.Net;
@@ -47,7 +48,7 @@ public class SessionTagsTests
 
         using var body = JsonDocument.Parse(handler.Body!);
         Assert.That(body.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
-            Is.EqualTo(new[] { CoreToolset.DotNet.Name(), CoreToolset.Files.Name(), CoreToolset.Git.Name(), CoreToolset.Skills.Name() }), "F5-S4: a fix loads the coding profile only");
+            Is.EqualTo(new[] { CoreToolset.DotNet.Wire(), CoreToolset.Files.Wire(), CoreToolset.Git.Wire(), CoreToolset.Skills.Wire() }), "F5-S4: a fix loads the coding profile only");
     }
 
     [Test]

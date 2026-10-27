@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
@@ -59,8 +60,8 @@ public class RoutingScorerTests
 
     [Test]
     public void TheBaseline_IsEveryAvailableToolsetButTheDelegatingOnes() =>
-        Assert.That(RoutingScorer.Baseline([PulsToolset.Files.Name(), PulsToolset.Git.Name(), PulsToolset.Web.Name(), PulsToolset.Specialists.Name(), PulsToolset.Minions.Name(), PulsToolset.Skills.Name()]),
-            Is.EqualTo(new[] { PulsToolset.Files.Name(), PulsToolset.Git.Name(), PulsToolset.Web.Name(), PulsToolset.Skills.Name() }));
+        Assert.That(RoutingScorer.Baseline([PulsToolset.Files.Wire(), PulsToolset.Git.Wire(), PulsToolset.Web.Wire(), PulsToolset.Specialists.Wire(), PulsToolset.Minions.Wire(), PulsToolset.Skills.Wire()]),
+            Is.EqualTo(new[] { PulsToolset.Files.Wire(), PulsToolset.Git.Wire(), PulsToolset.Web.Wire(), PulsToolset.Skills.Wire() }));
 
     [Test]
     public void AnError_IsNeverRight()
@@ -75,13 +76,13 @@ public class RoutingScorerTests
     public void Delegating_IsTheSpecialistsToolset_NotMinions()
     {
         // The Python's rule is "specialists" in the mode's toolsets (routing/run_check.py); a minions-only mode can't hand on.
-        Assert.That(PulsModes.CanDelegate(new EvalMode("minions-only", "puls-cook", [PulsToolset.Minions.Name(), PulsToolset.Web.Name()])), Is.False);
-        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-as-built", "puls-cook", [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()])), Is.True);
+        Assert.That(PulsModes.CanDelegate(new EvalMode("minions-only", "puls-cook", [PulsToolset.Minions.Wire(), PulsToolset.Web.Wire()])), Is.False);
+        Assert.That(PulsModes.CanDelegate(new EvalMode("puls-as-built", "puls-cook", [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()])), Is.True);
     }
 
     [Test]
     public void TheDelegatedMode_IsPulsAsBuilt() =>
-        Assert.That(RoutingSetup.Delegated, Is.EqualTo(new[] { PulsToolset.Specialists.Name(), PulsToolset.Web.Name() }));
+        Assert.That(RoutingSetup.Delegated, Is.EqualTo(new[] { PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire() }));
 
     private static TurnView Turn(string? role = null, ToolCall[]? calls = null, string? error = null) =>
         new("Antwoord.", calls ?? [], [], role, null, error, [], []);

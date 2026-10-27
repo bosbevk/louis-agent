@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Api.Benchmarks.Calibrations;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -16,7 +17,7 @@ internal static class AdminRows
 {
     public static object RunRow(BenchmarkDocuments.Run r) => new
     {
-        id = r.Id, check = r.Check, repeat = r.Repeat, status = r.Status.ToString().ToLowerInvariant(), exit_code = r.ExitCode,
+        id = r.Id, check = r.Check, repeat = r.Repeat, status = r.Status.Wire(), exit_code = r.ExitCode,
         started_at = r.StartedAt, ended_at = r.EndedAt,
         total = r.Total is null ? null : new { cost = r.Total.Cost, currency = r.Total.Currency, tokens = r.Total.Tokens, requests = r.Total.Requests },
         store_error = r.StoreError,
@@ -58,7 +59,7 @@ internal static class AdminRows
     /// </summary>
     public static object Row(BenchmarkRun run, BenchmarkRecorder.Result? stored = null) => new
     {
-        id = run.Id, check = run.Check, repeat = run.Repeat, status = run.Status.ToString().ToLowerInvariant(),
+        id = run.Id, check = run.Check, repeat = run.Repeat, status = run.Status.Wire(),
         exit_code = run.ExitCode, started_at = run.StartedAt, ended_at = run.EndedAt, lines = run.Lines.Count,
         stored = stored?.Stored, store_error = stored?.StoreError,
         calibration_of = run.Calibration?.Of, grader = run.Calibration?.Grader,

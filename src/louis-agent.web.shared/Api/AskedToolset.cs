@@ -1,5 +1,3 @@
-using LouisAgent.Choices;
-
 namespace LouisAgent.Web.Shared.Api;
 
 /// <summary>
@@ -10,9 +8,4 @@ public enum AskedToolset
 {
     Specialists,
     Web,
-}
-
-public static class AskedToolsets
-{
-    public static string Name(this AskedToolset toolset) => SettingChoice.Wire(toolset);
 }

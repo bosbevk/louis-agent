@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Llm.UsageMapping;
@@ -183,7 +184,7 @@ public class UsageScopeTotalsTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Yes.")));
             var engine = new AgentEngine(
                 new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, TestPaths.Agent(),
-                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Name()]), usageSink: new ListUsageSink());
+                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: new ListUsageSink());
             var history = engine.NewHistory();
 
             IReadOnlyList<UsageRecord> first, second;

@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting.Prompts;
@@ -218,7 +219,7 @@ public class SkillAuthoringTests
     [TestCase(CoreToolset.DotNet)]
     [TestCase(CoreToolset.Python)]
     [TestCase(CoreToolset.Paymo)]
-    public void CreateSkillFile_RefusesBuiltInNames(CoreToolset toolset) => RefusesAsBuiltIn(toolset.Name());
+    public void CreateSkillFile_RefusesBuiltInNames(CoreToolset toolset) => RefusesAsBuiltIn(toolset.Wire());
 
     [TestCase("self-extension")]
     public void CreateSkillFile_RefusesBuiltInNames_ThatAreAGuidesOwnFile(string name) => RefusesAsBuiltIn(name);
@@ -293,7 +294,7 @@ public class SkillAuthoringTests
         if (language == ScriptLanguage.Python) Assume.That(new PythonTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
         if (language == ScriptLanguage.PowerShell) Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
         var engine = Engine();
-        string markdown = $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language.Name()}\n{code}\n```\n";
+        string markdown = $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language.Wire()}\n{code}\n```\n";
 
         Assert.That(engine.CreateSkillFile("greeting", markdown), Does.Contain("Saved"));
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis; rm -rf /"}"""), Is.EqualTo("hello Louis; rm -rf /"),

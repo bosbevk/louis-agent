@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Web.Shared.Api;
 
 namespace LouisAgent.Web.Workspace;
@@ -17,9 +18,9 @@ public static class CodeLanguage
             ".json" => "json",
             ".yml" or ".yaml" => "yaml",
             ".md" => "markdown",
-            ".ps1" or ".psm1" or ".psd1" => ScriptLanguage.PowerShell.Name(),
-            ".sh" or ".bash" => ScriptLanguage.Bash.Name(),
-            ".py" => ScriptLanguage.Python.Name(),
+            ".ps1" or ".psm1" or ".psd1" => ScriptLanguage.PowerShell.Wire(),
+            ".sh" or ".bash" => ScriptLanguage.Bash.Wire(),
+            ".py" => ScriptLanguage.Python.Wire(),
             ".js" or ".mjs" => "javascript",
             ".ts" => "typescript",
             ".css" => "css",

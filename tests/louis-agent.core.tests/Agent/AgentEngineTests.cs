@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Text.Json;
@@ -18,7 +19,7 @@ public class AgentEngineTests
     private static AgentEngine Engine(IChatClient client, bool supportsTools = true, string? paymoKey = null)
     {
         var options = TestPaths.Agent(paymoKey);
-        string[] toolsets = paymoKey is null ? [CoreToolset.Files.Name()] : [CoreToolset.Files.Name(), CoreToolset.Paymo.Name()];
+        string[] toolsets = paymoKey is null ? [CoreToolset.Files.Wire()] : [CoreToolset.Files.Wire(), CoreToolset.Paymo.Wire()];
         return new(HelloSkills(), client, options, supportsTools, toolsets: TestPaths.Toolsets(options, toolsets), selfExtension: true);
     }
 

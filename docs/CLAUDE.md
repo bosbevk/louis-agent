@@ -141,7 +141,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)).
   Why: [ADR 0009](adr/0009-message-text-as-enum-templates.md).
 - **Choices are enums, not strings** — a value that names one of a fixed set (a provider, a renderer, a freshness, a
-  mode) is an enum, parsed once where it enters with `SettingChoice` (in `louis-agent.choices`; case ignored, aliases, never a number);
+  mode) is an enum, parsed once where it enters with `SettingChoice.TryParse` (in `louis-agent.choices`; case ignored, aliases, never a number) and written with `.Wire()`, the text on `[WireName]`, never `ToString()`;
   code switches on the enum, and the "supported" list comes from it. Text stays text only up to that point. A name that
   repeats (a toolset, a role, a mode) is an enum too, even in an open set: each pluggable project (pack, identity, eval
   set) keeps its own copy, the rest share one; wire names stay as they are (Louis, 2026-10-27).

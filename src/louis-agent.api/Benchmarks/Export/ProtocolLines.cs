@@ -25,7 +25,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteString("eval", run.Eval);
         if (run.EvalVersion is { } version) json.WriteNumber("eval_version", version);
         if (run.Commit is { } commit) json.WriteString("commit", commit);
-        if (run.Split is { } split) json.WriteString("split", SettingChoice.Wire(split));
+        if (run.Split is { } split) json.WriteString("split", split.Wire());
         if (run.RescoreOf is { } rescoreOf) json.WriteString("rescore_of", rescoreOf);
         json.WriteStartArray("graders");
         foreach (var grader in run.Graders ?? [])
@@ -97,7 +97,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteEndArray();
         json.WriteNumber("seconds", turn.Seconds);
         Text(json, "error", turn.Error);
-        if (turn.Failure is { } failure) json.WriteString("failure", SettingChoice.Wire(failure));
+        if (turn.Failure is { } failure) json.WriteString("failure", failure.Wire());
     });
 
     public void Conversation(Conversation conversation) => Emit("conversation", json =>

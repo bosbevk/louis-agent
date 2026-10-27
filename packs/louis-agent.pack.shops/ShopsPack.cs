@@ -27,8 +27,8 @@ public sealed class ShopsPack : IAgentPack
         [
             // F33: a shop's products from its own catalogue, through the guarded browser; off unless SHOP_CATALOGUES names a
             // shop (development and benchmarks first, ADR 0023).
-            new(SettingChoice.Wire(ShopsToolset.Shops), "A shop's products and prices from its own catalogue (Checkers)",
-                GuideFile: SkillFiles.Guide(SettingChoice.Wire(ShopsToolset.Shops)),
+            new(ShopsToolset.Shops.Wire(), "A shop's products and prices from its own catalogue (Checkers)",
+                GuideFile: SkillFiles.Guide(ShopsToolset.Shops.Wire()),
                 MissingSettings: ctx => new[]
                 {
                     ShopCatalogueFactory.Enabled(options.ShopCatalogues).Count > 0 ? null : "SHOP_CATALOGUES",
@@ -41,7 +41,7 @@ public sealed class ShopsPack : IAgentPack
         ];
     }
 
-    public string Name => SettingChoice.Wire(ShopsToolset.Shops);
+    public string Name => ShopsToolset.Shops.Wire();
 
     public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
 

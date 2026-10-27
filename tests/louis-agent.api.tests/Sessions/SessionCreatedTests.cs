@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Net;
 using System.Net.Http.Json;
@@ -17,7 +18,7 @@ public class SessionCreatedTests
         await app.StartAsync();
         var client = app.GetTestClient();
 
-        using var response = await client.PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { CoreToolset.Files.Name() } });
+        using var response = await client.PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { CoreToolset.Files.Wire() } });
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         string id = body.RootElement.GetProperty("session_id").GetString()!;
 

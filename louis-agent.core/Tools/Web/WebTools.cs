@@ -28,7 +28,7 @@ public sealed class WebTools
 
     /// <summary>A freshness's first letter is its alias: d, w, m, y.</summary>
     private static readonly IReadOnlyDictionary<string, SearchRecency> RecencyLetters =
-        Enum.GetValues<SearchRecency>().ToDictionary(r => r.ToString()[..1].ToLowerInvariant());
+        Enum.GetValues<SearchRecency>().ToDictionary(r => r.Wire()[..1]);
 
     /// <param name="search">Search engine; defaults to keyless DuckDuckGo.</param>
     /// <param name="fetcher">The guarded client, shared with the quote tools; defaults to its own.</param>

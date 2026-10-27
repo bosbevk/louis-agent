@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
 namespace LouisAgent.Evals.Puls.Evals.Routing;
 
@@ -8,8 +9,8 @@ namespace LouisAgent.Evals.Puls.Evals.Routing;
 public static class RoutingSetup
 {
     /// <summary>Puls as built (F29): the delegated mode's toolsets.</summary>
-    public static readonly IReadOnlyList<string> Delegated = [PulsToolset.Specialists.Name(), PulsToolset.Web.Name()];
+    public static readonly IReadOnlyList<string> Delegated = [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()];
 
     /// <summary>The toolsets that let an agent hand a question on.</summary>
-    public static readonly IReadOnlyList<string> DelegatingToolsets = [PulsToolset.Specialists.Name(), PulsToolset.Minions.Name()];
+    public static readonly IReadOnlyList<string> DelegatingToolsets = [PulsToolset.Specialists.Wire(), PulsToolset.Minions.Wire()];
 }

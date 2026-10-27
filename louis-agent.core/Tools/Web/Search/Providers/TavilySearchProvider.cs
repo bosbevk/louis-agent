@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using LouisAgent.Core.Tools.Web.Fetching;
@@ -35,7 +36,7 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
             ["search_depth"] = "basic",
         };
         if (!string.IsNullOrWhiteSpace(query.Site)) body["include_domains"] = new[] { query.Site.Trim() };
-        if (query.Recency is { } recency) body["time_range"] = recency.ToString().ToLowerInvariant();
+        if (query.Recency is { } recency) body["time_range"] = recency.Wire();
 
         using var request = new HttpRequestMessage(HttpMethod.Post, Endpoint) { Content = JsonContent.Create(body) };
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);

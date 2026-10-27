@@ -1,5 +1,3 @@
-using LouisAgent.Choices;
-
 namespace LouisAgent.Evals.Puls.Shared;
 
 /// <summary>
@@ -15,11 +13,4 @@ public enum PulsToolset
     Specialists,
     Minions,
     Skills,
-}
-
-public static class PulsToolsets
-{
-    public static string Name(this PulsToolset toolset) => SettingChoice.Wire(toolset);
-
-    public static string[] Names(params PulsToolset[] toolsets) => [.. toolsets.Select(Name)];
 }

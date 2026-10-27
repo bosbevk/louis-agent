@@ -20,8 +20,6 @@ public class RepeatedNameTests
         "src/louis-agent.web.shared/Api/ScriptLanguage.cs",
     ];
 
-    private static readonly string[] Roots = ["louis-agent.core", "louis-agent.choices", "louis-agent.session-stream", "identities", "packs", "src", "tools", "evals", "tests"];
-
     /// <summary>A literal that is a name of something else, with the file (or the folder, ending in /) it is in, a text on its line, and why. Few on purpose (Louis, 2026-10-27: a dozen is too many).</summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
@@ -35,13 +33,9 @@ public class RepeatedNameTests
         ("tests/louis-agent.evals.puls.tests/Evals/Routing/Scoring/RoutingScorerTests.cs", "Dev.Route(\"web\")", "a routing task's id, which the eval-names set makes an enum"),
     ];
 
-    private static IEnumerable<string> SourceFiles() =>
-        Roots.Select(r => Path.Combine(TestPaths.RepoRoot, r)).Where(Directory.Exists)
-            .SelectMany(dir => Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
-            .Where(f => f.EndsWith(".cs") || f.EndsWith(".razor"))
-            .Where(f => !f.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Any(p => p is "bin" or "obj" or "node_modules" or "wwwroot"));
+    private static IEnumerable<string> SourceFiles() => SourceTree.Files();
 
-    private static string Relative(string path) => Path.GetRelativePath(TestPaths.RepoRoot, path).Replace('\\', '/');
+    private static string Relative(string path) => SourceTree.Relative(path);
 
     /// <summary>The wire names an enum file declares: a member's <c>[WireName]</c> (or .NET's <c>[JsonStringEnumMemberName]</c> under it), or its name in lower case.</summary>
     private static IEnumerable<string> WireNames(string file) =>

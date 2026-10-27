@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Chats;
@@ -119,7 +120,7 @@ public class DelegationTests
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Role, Is.EqualTo("puls-cook"));
-        Assert.That(delegation.Toolsets, Does.Contain(CoreToolset.Web.Name()), "the recorded turn is Puls's own");
+        Assert.That(delegation.Toolsets, Does.Contain(CoreToolset.Web.Wire()), "the recorded turn is Puls's own");
         Assert.That(delegation.Answer, Is.Not.Null.And.Not.Empty);
         Assert.That(delegation.UsageLine, Does.Contain("request"));
         Assert.That(delegation.Failed, Is.False);

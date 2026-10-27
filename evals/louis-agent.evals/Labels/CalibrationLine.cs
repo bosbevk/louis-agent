@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
 
@@ -30,5 +31,5 @@ public sealed record CalibrationLine(string Event, string Eval, string Grader, s
 
     private static CalibrationClassLine Class(ClassReport c) => new(c.Passed, c.Failed, c.CantTell);
 
-    private static string Word(GradeOutcome outcome) => outcome.ToString().ToLowerInvariant();
+    private static string Word(GradeOutcome outcome) => outcome.Wire();
 }

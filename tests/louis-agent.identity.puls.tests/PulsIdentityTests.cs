@@ -24,6 +24,6 @@ public class PulsIdentityTests
         Assert.Throws<AgentCatalogException>(() => new AgentCatalog([puls], []), "shops named, none registered");
         var catalog = new AgentCatalog([puls], [new ShopsPack(new ShopsOptions())]);
         Assert.That(catalog.Identities, Is.EqualTo(new[] { puls }));
-        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain(SettingChoice.Wire(ShopsToolset.Shops)));
+        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain(ShopsToolset.Shops.Wire()));
     }
 }

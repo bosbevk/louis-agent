@@ -17,7 +17,7 @@ public enum SplitSelection
 public static class SplitSelections
 {
     /// <summary>The selection as the protocol's first line names it (<c>held_out</c>): the member's own wire name, read by <see cref="SettingChoice"/> and by the JSON writer alike (F18 step 7.5.2).</summary>
-    public static string WireName(SplitSelection selection) => SettingChoice.Wire(selection);
+    public static string WireName(SplitSelection selection) => selection.Wire();
 
     /// <summary>The selection a first line names (<see cref="WireName"/>); the default when it names none this build knows, as a run that predates the split did.</summary>
     public static SplitSelection FromWireName(string? name) =>

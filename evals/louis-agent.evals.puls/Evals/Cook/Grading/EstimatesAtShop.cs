@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Collections.Frozen;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
@@ -57,7 +58,7 @@ public sealed class EstimatesAtShop : IGrader
             ShopExpectation.NoBranch => Shops.NoBranchLine(answer)
                 ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.ShopAnyRight))
                 : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopNoBranchNotSaid)),
-            _ => BranchVerdict(answer, shop.ToString().ToLowerInvariant()),
+            _ => BranchVerdict(answer, shop.Wire()),
         };
     }
 

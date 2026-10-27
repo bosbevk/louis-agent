@@ -34,8 +34,9 @@ stored runs keep their exact wire names (`puls-only`, `puls/voice-af`). A name i
 written back by the same table. `SettingChoice` does it, in its own project, `louis-agent.choices`, which references nothing: a member carries
 its wire name as `[WireName("puls-only")]`, our attribute built on .NET's own `JsonStringEnumMemberName` (it reads as what it means, and the JSON writer reads the same thing, so parsing and JSON cannot disagree), and a
 stranger's pack needs nothing of ours to mark a name (Louis: "say some other guy want to build his own packs or eval or anything pluggable, they must use
-wirename, so shared for all"). `TryParse` matches the wire name or the member's name with the case ignored, `Wire(member)` writes
-it back (the member's name in lower case when it has none), and `Names<T>()` lists wire names. The golden files and the stored runs
+wirename, so shared for all"). `TryParse` matches the wire name or the member's name with the case ignored, `.Wire()` writes
+it back (the member's name in lower case when it has none), and `Names<T>()` lists wire names. **In with `SettingChoice.TryParse`, out with `.Wire()`, the text on `[WireName]`:**
+outside `louis-agent.choices` no code calls `SettingChoice.Wire` itself, and no enum is turned into text with `ToString()`, `ToLowerInvariant()` or a naming policy (Louis, 2026-10-27: "the system should work like this everywhere"); `WireTextTests` holds it. The golden files and the stored runs
 do not change: they are what proves the wire is untouched.
 
 ## Considered and rejected

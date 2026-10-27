@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Agent;
@@ -85,7 +86,7 @@ public static class AgentHost
             clientFactory.CreateUsageMapper(llm), display, llm.ResolveThinking(), rates: rates, sessionLlms: sessionLlms, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         Log.Log(LogLevel.Information, HostingLogMessage.LlmChosen,
-            new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.ToString().ToLowerInvariant() ?? "off" });
+            new { Llm = llm, Tools = engine.SupportsTools ? "on" : "off", Thinking = engine.Thinking?.Wire() ?? "off" });
 
         RiderMcpToolDiscovery.StartInBackground(engine, agent);
 

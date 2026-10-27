@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Usage.Records;
@@ -19,7 +20,7 @@ public class SubSessionPromptBudgetTests
         AgentOptions options = TestPaths.Agent();
         options.SubSessionPromptBudget = budget;
         return new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client, options,
-            toolsets: TestPaths.Toolsets(options, [CoreToolset.Files.Name()]), usageSink: sink);
+            toolsets: TestPaths.Toolsets(options, [CoreToolset.Files.Wire()]), usageSink: sink);
     }
 
     /// <summary>Rounds 1–4 call a tool, each prompt 300 tokens bigger than the last; round 5 answers.</summary>

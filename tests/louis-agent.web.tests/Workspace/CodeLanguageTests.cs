@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Workspace;
 
@@ -20,5 +21,5 @@ public class CodeLanguageTests
     [TestCase("run.sh", ScriptLanguage.Bash)]
     [TestCase("build.ps1", ScriptLanguage.PowerShell)]
     public void AScriptFileName_PicksTheScriptLanguage(string fileName, ScriptLanguage language) =>
-        Assert.That(CodeLanguage.For(fileName), Is.EqualTo(language.Name()));
+        Assert.That(CodeLanguage.For(fileName), Is.EqualTo(language.Wire()));
 }

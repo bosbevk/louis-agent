@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 ﻿using LouisAgent.Core.Skills;
 
@@ -29,7 +30,7 @@ public class MarkdownSkillLoaderTests
     public void Load_RecordsExecutionBlockLanguage_ForNoTagOrAnAlias(string fence, ScriptLanguage expected) => LoadsAs(fence, expected);
 
     [Test]
-    public void Load_RecordsExecutionBlockLanguage_ForEachLanguagesOwnTag([Values] ScriptLanguage language) => LoadsAs(language.Name(), language);
+    public void Load_RecordsExecutionBlockLanguage_ForEachLanguagesOwnTag([Values] ScriptLanguage language) => LoadsAs(language.Wire(), language);
 
     private static void LoadsAs(string fence, ScriptLanguage expected)
     {

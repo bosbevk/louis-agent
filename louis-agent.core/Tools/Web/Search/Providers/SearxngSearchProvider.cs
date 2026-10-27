@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using LouisAgent.Core.Tools.Web.Fetching;
@@ -49,7 +50,7 @@ public sealed class SearxngSearchProvider(Uri baseUrl, HttpClient? http = null) 
     {
         string text = string.IsNullOrWhiteSpace(query.Site) ? query.Text : $"{query.Text} site:{query.Site.Trim()}";
         var parameters = new List<string> { "q=" + Uri.EscapeDataString(text), "format=json" };
-        if (query.Recency is { } recency) parameters.Add("time_range=" + recency.ToString().ToLowerInvariant());
+        if (query.Recency is { } recency) parameters.Add("time_range=" + recency.Wire());
         string root = baseUrl.ToString().TrimEnd('/');
         return new Uri($"{root}/search?{string.Join("&", parameters)}");
     }
