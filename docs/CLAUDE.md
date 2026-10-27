@@ -251,6 +251,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces.
   A line that is long only because of a web address (an ADR's `<seealso href>`) may run past 120: an address can't be
   wrapped without breaking it (Louis, 2026-10-27; the exception Google's style guides make).
+  **Code and comments change only by editing the file** (an editor, Rider, Claude Code's own edit tool), and layout
+  only through `dotnet format` or Rider's **Reformat Code**: never a home-made script (Python, sed, awk, PowerShell)
+  that rewrites source files. Louis, 2026-10-27, after a script that added comments walked a sentence letter by letter
+  and left 478 one-character comment lines in a test file.
   Rider applies them with **Reformat Code**; `dotnet format` applies them from the command line. Same scope as the
   summaries: the files in a step's commit are formatted whole, untouched files keep their old layout, never a big
   reformat of its own. CI's *Formatting* step checks the C# files of the commits each push brings (merges left out).
