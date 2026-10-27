@@ -1124,6 +1124,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   three request bodies) are shared by the three git endpoint files, so they move to the contract (`Contracts/Git/`) in a
   commit of their own; it touches the three endpoint files only in their `using` lines, and each is brought up whole in
   its own commit straight after. `GitReplyJsonTests` (integration, over a `TempGitRepo`) pins the names first.
+- **Sweep: `GitBranchesEndpoints`.** `GitBranchesHandlers` holds the four branch routes; they share no state, only
+  the engine the framework hands each call, so the class holds nothing. Reading the branches is `GitBranchList`, its
+  ahead/behind count a guard-claused method where two `if`s nested. The replies are `BranchesReply` and
+  `BranchDiffReply`, written with `WorkspaceJson.Web`, the code-review app's wire (ASP.NET's defaults, now named);
+  `GitProcess.GitError` answers the typed `ApiError`.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
