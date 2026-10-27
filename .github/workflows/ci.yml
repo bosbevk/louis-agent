@@ -42,6 +42,9 @@ jobs:
       BENCHMARKS_MONGO_URL: mongodb://ci:ci@localhost:27017/?authSource=admin
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The formatting check compares a push with the commit before it, so it needs the history.
+          fetch-depth: 0
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -49,6 +52,19 @@ jobs:
 
       - name: Build
         run: dotnet build louis-agent-solution.sln
+
+      - name: Formatting
+        # docs/CLAUDE.md "Formatting": the .editorconfig's rules, checked only on the C# files the pushed commits changed
+        # (merges left out, so files that came in from main aren't counted); untouched files keep their old layout until
+        # a step changes them. A new branch's first push, and a force push, have no earlier commit to compare with.
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then echo "No earlier commit to compare with; skipped."; exit 0; fi
+          files=$(git log --no-merges --name-only --format= --diff-filter=AMR "$BEFORE..HEAD" -- '*.cs' | sort -u)
+          if [ -z "$files" ]; then echo "No C# files changed."; exit 0; fi
+          dotnet format louis-agent-solution.sln --verify-no-changes --no-restore --include $files
 
       - name: Unit tests
         # The unit tests start no process and need no tool (F18 step 7.6): every integration test carries the Integration mark and lives in a `.integration-tests` project, so the filter leaves them out.

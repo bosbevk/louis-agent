@@ -61,7 +61,9 @@ Docs-only and configuration-only steps have no test to write first.
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
    doc of its type (*Rules that always apply*: one type per doc).
-4. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
+4. Format the commit's C# files: `dotnet format louis-agent-solution.sln --include <its .cs files>`, or Rider's
+   **Reformat Code** on each (*Formatting*); CI fails a push whose commits' files aren't formatted.
+5. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
    before the code and passing after, and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
@@ -245,6 +247,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 
   return new Host(app, app.GetTestClient(), store);
   ```
+- **Formatting** (Louis, 2026-10-27) — the layout rules live in the root `.editorconfig`: four spaces, a 120-character
+  line, one file-scoped namespace line with the usings above it, each brace on its own line, no trailing spaces.
+  Rider applies them with **Reformat Code**; `dotnet format` applies them from the command line. Same scope as the
+  summaries: the files in a step's commit are formatted whole, untouched files keep their old layout, never a big
+  reformat of its own. CI's *Formatting* step checks the C# files of the commits each push brings (merges left out).
 - **Namespace = folder path, dependencies one way, prompts in markdown, hosts stay thin** — `ArchitectureTests`
   holds the first two ([Project layout](../louis-agent.core/CLAUDE.md#project-layout)).
   Why: [ADR 0010](adr/0010-folders-by-concern.md), [ADR 0011](adr/0011-prompts-are-content.md).

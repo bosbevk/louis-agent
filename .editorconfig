@@ -1,0 +1,40 @@
+# The formatting rules (Louis, 2026-10-27; docs/CLAUDE.md "Formatting"). Rider reads this file and applies it on
+# Reformat; CI checks the C# files a pull request changes with `dotnet format --verify-no-changes`. Files nobody
+# touches keep their old layout until a step changes them, never a big reformat of its own.
+root = true
+
+# Every file: UTF-8, spaces, one newline at the end, no spaces left at the end of a line. Line endings are left to
+# git (the repo stores LF; .gitattributes keeps scripts LF on Windows).
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C# and Razor: four spaces, and a line of at most 120 characters (the docs' width), which Rider wraps to.
+[*.{cs,razor}]
+indent_size = 4
+max_line_length = 120
+
+# Project files, JSON and YAML: two spaces, as they are today.
+[*.{csproj,props,targets,json,yml,yaml}]
+indent_size = 2
+
+# Markdown: two spaces at the end of a line are a line break there, so they stay.
+[*.md]
+trim_trailing_whitespace = false
+
+[*.cs]
+# One namespace line per file (file-scoped), with the usings above it.
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_using_directive_placement = outside_namespace:warning
+
+# Each brace on its own line, and else, catch and finally start a new line.
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+
+# A switch's labels and their contents are indented.
+csharp_indent_switch_labels = true
+csharp_indent_case_contents = true
