@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Contracts.Admin;
+namespace LouisAgent.Api.Contracts.Admin.Trends;
 
 /// <summary>One point of a category's line: a run, and the runner's rates for the slice.</summary>
 public sealed record CategoryPointRow(

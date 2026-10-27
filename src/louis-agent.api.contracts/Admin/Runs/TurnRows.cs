@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Contracts.Admin;
+namespace LouisAgent.Api.Contracts.Admin.Runs;
 
 /// <summary>
 /// One turn of a stored conversation: what its tools did, which turn it is, the question and the answer, the calls it

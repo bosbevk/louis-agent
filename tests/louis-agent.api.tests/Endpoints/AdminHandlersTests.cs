@@ -1,7 +1,9 @@
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
-using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Checks;
+using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Http;

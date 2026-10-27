@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Api.Admin.Replies;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 

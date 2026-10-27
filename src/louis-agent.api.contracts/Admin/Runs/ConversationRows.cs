@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace LouisAgent.Api.Contracts.Admin;
+namespace LouisAgent.Api.Contracts.Admin.Runs;
 
 /// <summary>
 /// One conversation of a stored run: which one, the eval's scores, its errors and time, each grader's grade and the

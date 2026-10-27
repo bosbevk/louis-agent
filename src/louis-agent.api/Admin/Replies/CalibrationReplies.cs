@@ -1,5 +1,5 @@
 using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Reviews;
 
 namespace LouisAgent.Api.Admin.Replies;
 

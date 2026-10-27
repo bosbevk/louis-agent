@@ -1,5 +1,5 @@
 using LouisAgent.Api.Contracts;
-using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Endpoints.Answers;
 using Microsoft.AspNetCore.Http.HttpResults;

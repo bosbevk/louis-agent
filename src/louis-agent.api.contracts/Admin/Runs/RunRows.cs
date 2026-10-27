@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Contracts.Admin;
+namespace LouisAgent.Api.Contracts.Admin.Runs;
 
 /// <summary>
 /// A stored run as the admin pages list it: what ran, how it ended, what it cost, which models it ran on, and the

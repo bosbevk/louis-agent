@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace LouisAgent.Api.Contracts.Admin;
+namespace LouisAgent.Api.Contracts.Admin.Runs;
 
 /// <summary>
 /// One slice of a mode's roll-up (F18 step 5c.2): the runner's counts and rates as it wrote them, and what a trial and

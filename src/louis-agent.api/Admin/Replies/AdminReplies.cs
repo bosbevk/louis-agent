@@ -1,6 +1,8 @@
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Checks;
+using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Contracts.Admin.Trends;
 
 namespace LouisAgent.Api.Admin.Replies;
 

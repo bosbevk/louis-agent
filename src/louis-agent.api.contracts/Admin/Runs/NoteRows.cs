@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Contracts.Admin;
+namespace LouisAgent.Api.Contracts.Admin.Runs;
 
 /// <summary>A note on a run or on one of its conversations: what it says, and when the server kept it.</summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>

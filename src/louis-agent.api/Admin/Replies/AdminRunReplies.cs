@@ -1,7 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
-using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Runs;
 
 namespace LouisAgent.Api.Admin.Replies;
 

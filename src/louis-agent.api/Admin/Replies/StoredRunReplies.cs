@@ -1,6 +1,7 @@
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Reviews;
+using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Choices;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
