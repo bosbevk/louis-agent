@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Calibrations;
 using LouisAgent.Api.Benchmarks.Calibrations.Store;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -9,9 +10,9 @@ namespace LouisAgent.Api.Tests.Benchmarks.Calibrations;
 // says why, so a half-run never looks like a verdict. Written first: none of it existed.
 public class CalibrationRecorderTests
 {
-    private const string Line = """
-        @{"event":"calibration","eval":"puls-cook","grader":"meal-for-people","judge_model":"qwen3:4b","agreed":2,"total":3,"bar":90,"passes":false,"person_pass":{"judge_pass":1,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":1,"judge_fail":1,"judge_unknown":0},"disagreements":[{"scenario":"cook-en","mode":"puls-cook","repeat":3,"run":"76667d39dcdb","label":"fail","judge":"pass","reason":"a meal"}]}
-        """;
+    private static readonly string Line = SampleMode.Fill("""
+        @{"event":"calibration","eval":"puls-cook","grader":"meal-for-people","judge_model":"qwen3:4b","agreed":2,"total":3,"bar":90,"passes":false,"person_pass":{"judge_pass":1,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":1,"judge_fail":1,"judge_unknown":0},"disagreements":[{"scenario":"cook-en","mode":"<ModeBeta>","repeat":3,"run":"76667d39dcdb","label":"fail","judge":"pass","reason":"a meal"}]}
+        """);
 
     private static BenchmarkRun Calibration(string id = "cal123456789") =>
         new(id, "puls-cook", 1, calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
@@ -35,7 +36,7 @@ public class CalibrationRecorderTests
         Assert.That((report.Run, report.Grader, report.JudgeModel, report.Agreed, report.Total, report.Bar, report.Passes), Is.EqualTo(("76667d39dcdb", "meal-for-people", "qwen3:4b", 2, 3, 90, false)));
         Assert.That(report.PersonPass, Is.EqualTo(new CalibrationClassCounts(1, 0, 0)));
         Assert.That(report.PersonFail, Is.EqualTo(new CalibrationClassCounts(1, 1, 0)));
-        Assert.That(report.Disagreements, Is.EqualTo(new[] { new CalibrationDisagreement("cook-en", "puls-cook", 3, "fail", "pass", "a meal") }));
+        Assert.That(report.Disagreements, Is.EqualTo(new[] { new CalibrationDisagreement("cook-en", SampleMode.Beta, 3, "fail", "pass", "a meal") }));
         Assert.That(report.At, Is.EqualTo(run.EndedAt));
     }
 
@@ -95,7 +96,7 @@ public class CalibrationRecorderTests
         var at = new DateTimeOffset(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
         Assert.That(CalibrationLineReader.Read(Line, "76667d39dcdb", at)?.Agreed, Is.EqualTo(2));
-        Assert.That(CalibrationLineReader.Read("""@{"event":"mode","mode":"puls-cook","repeat":1}""", "76667d39dcdb", at), Is.Null);
+        Assert.That(CalibrationLineReader.Read(SampleMode.Fill("""@{"event":"mode","mode":"<ModeBeta>","repeat":1}"""), "76667d39dcdb", at), Is.Null);
         Assert.That(CalibrationLineReader.Read("Agreement: 2 of 3", "76667d39dcdb", at), Is.Null);
         Assert.That(CalibrationLineReader.Read("@{not json", "76667d39dcdb", at), Is.Null);
     }

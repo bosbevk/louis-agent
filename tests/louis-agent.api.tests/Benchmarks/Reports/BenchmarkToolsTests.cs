@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
 using System.Text.Json;
@@ -60,7 +61,7 @@ public class BenchmarkToolsTests
     // the counts on the turn; a turn recorded before that is counted from its events once, and the counts written back.
 
     private static Turn ATurn(BenchmarkTools.Summary? tools = null) =>
-        new(new TurnKey("puls-cook", 1, "bobotie", 1), "s", "?", "!", "puls-cook", null, 1, 2, [], 10, null, tools);
+        new(new TurnKey(SampleMode.Beta, 1, "bobotie", 1), "s", "?", "!", "puls-cook", null, 1, 2, [], 10, null, tools);
 
     [Test]
     public async Task KeptCounts_AreUsedAsTheyAre()
@@ -83,7 +84,7 @@ public class BenchmarkToolsTests
         var tools = await BenchmarkTools.OfTurnAsync(store, "r", ATurn());
 
         Assert.That((tools.Calls, tools.Failed), Is.EqualTo((1, 1)));
-        var stored = (await store.TurnsAsync("r", new ConversationKey("puls-cook", 1, "bobotie"))).Single();
+        var stored = (await store.TurnsAsync("r", new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single();
         Assert.That(stored.Tools?.Failed, Is.EqualTo(1), "written back, so the next read needs no events");
         Assert.That(await store.TurnEventsAsync("r", stored.Key), Has.Count.EqualTo(2), "its events kept for the replay");
     }

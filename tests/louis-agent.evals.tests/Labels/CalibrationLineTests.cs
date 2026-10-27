@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Labels;
@@ -9,7 +10,7 @@ namespace LouisAgent.Evals.Tests.Labels;
 public class CalibrationLineTests
 {
     private static LabeledAnswer Label(string scenario, bool pass, int repeat = 1) =>
-        new($"{scenario}.{repeat}.json", "meal-for-people", scenario, "puls-cook", "76667d39dcdb", repeat, [new LabelTurn("q", "a")], pass, "");
+        new($"{scenario}.{repeat}.json", "meal-for-people", scenario, SampleMode.Beta, "76667d39dcdb", repeat, [new LabelTurn("q", "a")], pass, "");
 
     private static readonly CalibrationReport Report = new(Agreed: 3, Total: 4,
         [new Disagreement(Label("cook-af", pass: false, repeat: 2), GradeOutcome.Unknown, "too little to decide")],

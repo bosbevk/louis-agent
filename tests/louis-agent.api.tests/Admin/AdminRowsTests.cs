@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -22,7 +23,7 @@ public class AdminRowsTests
             Graders: graders);
 
     private static BenchmarkDocuments.Conversation Conversation(IReadOnlyList<BenchmarkDocuments.Grade>? grades, BenchmarkOutcome? outcome) =>
-        new(new ConversationKey("puls-cook", 1, "bobotie"), 0, "puls-cook", JsonDocument.Parse("{}").RootElement, 0, 1.5, grades, outcome);
+        new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 0, "puls-cook", JsonDocument.Parse("{}").RootElement, 0, 1.5, grades, outcome);
 
     [Test]
     public void ARunWithAnEvalAndTwoGraders_GivesThemInOrder()

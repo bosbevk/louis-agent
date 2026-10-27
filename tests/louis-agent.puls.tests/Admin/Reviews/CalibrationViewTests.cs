@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Puls.Admin.Reviews;
 
@@ -7,15 +8,15 @@ namespace LouisAgent.Puls.Tests.Admin.Reviews;
 // sentences read; the list is as the API orders it, newest first. Written first: the reader did not exist.
 public class CalibrationViewTests
 {
-    private const string Two = """
+    private static readonly string Two = SampleMode.Fill("""
         {"calibrations":[
           {"run":"76667d39dcdb","grader":"meal-for-people","judge_model":"qwen3:4b","at":"2026-10-26T14:02:00+00:00","agreed":36,"total":36,"bar":90,"passes":true,
            "person_pass":{"judge_pass":27,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":9,"judge_unknown":0},"disagreements":[]},
           {"run":"76667d39dcdb","grader":"meal-for-people","judge_model":null,"at":"2026-10-26T13:00:00+00:00","agreed":35,"total":36,"bar":90,"passes":false,
            "person_pass":{"judge_pass":27,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":1,"judge_fail":8,"judge_unknown":0},
-           "disagreements":[{"scenario":"cook-shops","mode":"puls-cook","repeat":2,"label":"fail","judge":"pass","reason":"a dish with steps"}]}
+           "disagreements":[{"scenario":"cook-shops","mode":"<ModeBeta>","repeat":2,"label":"fail","judge":"pass","reason":"a dish with steps"}]}
         ]}
-        """;
+        """);
 
     [Test]
     public void TheReports_ComeAsTheAPIOrdersThem_WithTheirClassesAsAgreement()
@@ -31,7 +32,7 @@ public class CalibrationViewTests
         Assert.That(latest.Disagreements, Is.Empty);
         var older = reports[1];
         Assert.That(older.JudgeModel, Is.Null);
-        Assert.That(older.Disagreements, Is.EqualTo(new[] { new CalibrationDisagreementView("cook-shops", "puls-cook", 2, "fail", "pass", "a dish with steps") }));
+        Assert.That(older.Disagreements, Is.EqualTo(new[] { new CalibrationDisagreementView("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish with steps") }));
     }
 
     [Test]

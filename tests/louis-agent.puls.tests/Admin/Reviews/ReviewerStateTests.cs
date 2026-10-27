@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Puls.Admin.Reviews;
 using Microsoft.JSInterop;
 
@@ -8,7 +9,7 @@ namespace LouisAgent.Puls.Tests.Admin.Reviews;
 // Written first: ReviewerState and ReviewerName did not exist.
 public class ReviewerStateTests
 {
-    private static readonly ConversationRef Bobotie = new("run1", "puls-cook", 1, "bobotie");
+    private static readonly ConversationRef Bobotie = new("run1", SampleMode.Beta, 1, "bobotie");
 
     private sealed class BlockedStorage : IJSRuntime
     {

@@ -12,7 +12,7 @@ namespace LouisAgent.Evals.Tests.Api;
 // NotImplementedException on the red run. The API is a stub handler, so no network and no model.
 public class HttpSessionClientTests
 {
-    private static readonly EvalMode Mode = new("puls-cook", "puls/voice-af", [SampleToolset.Gamma, SampleToolset.Alpha]);
+    private static readonly EvalMode Mode = new(SampleMode.Beta, "puls/voice-af", [SampleToolset.Gamma, SampleToolset.Alpha]);
 
     private static SessionRequest Request(string? place = "Malmesbury, Wes-Kaap, Suid-Afrika", WebReplayRequest? replay = null) =>
         new(Mode, place, "Africa/Johannesburg", "cook-malmesbury", 2, "run_7:puls-cook:2", replay ?? new WebReplayRequest(WebReplayMode.Record, null));

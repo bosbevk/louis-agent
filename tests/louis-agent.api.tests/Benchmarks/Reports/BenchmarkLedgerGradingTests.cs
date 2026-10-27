@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Core.Usage.Records;
@@ -14,7 +15,7 @@ public class BenchmarkLedgerGradingTests
     private const string Run = "run123456789";
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
     private static readonly IReadOnlyDictionary<string, ConversationKey> Sessions =
-        new Dictionary<string, ConversationKey> { ["sess_puls"] = new("puls-cook", 1, "bobotie") };
+        new Dictionary<string, ConversationKey> { ["sess_puls"] = new(SampleMode.Beta, 1, "bobotie") };
 
     private static UsageRecord Row(int second, string purpose, string? session, int? turn, string? run, decimal? cost, string? task = null) =>
         new(T0.AddSeconds(second), 1, purpose, "api", session, turn, task, run, null, "qwen3:8b", new UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
@@ -25,7 +26,7 @@ public class BenchmarkLedgerGradingTests
     private static UsageRecord Judge(decimal? cost) => Row(2, UsagePurpose.Grading, "sess_puls", 1, Run + ":puls-cook:1", cost, task: "bobotie");
 
     private static BenchmarkSlice Slice(int n = 1, int passed = 1) =>
-        new("puls-cook", "overall", n, passed, n - passed, 0, 0, ["bobotie"], TooFew: true, null, null, null, [], [], []);
+        new(SampleMode.Beta, "overall", n, passed, n - passed, 0, 0, ["bobotie"], TooFew: true, null, null, null, [], [], []);
 
     [Test]
     public void AGradingRow_LandsOnItsConversationsTurn_AndItsCostIsInTheRunsTotal()
@@ -35,7 +36,7 @@ public class BenchmarkLedgerGradingTests
         var requests = BenchmarkLedger.Join(Run, ofRun, Sessions);
 
         Assert.That(requests.Select(r => r.Turn!.Task), Is.EqualTo(new[] { "bobotie", "bobotie" }), "both on the conversation");
-        Assert.That(requests.Single(r => r.Purpose == UsagePurpose.Grading).Turn, Is.EqualTo(new TurnKey("puls-cook", 1, "bobotie", 1)));
+        Assert.That(requests.Single(r => r.Purpose == UsagePurpose.Grading).Turn, Is.EqualTo(new TurnKey(SampleMode.Beta, 1, "bobotie", 1)));
         Assert.That(BenchmarkLedger.TotalOf(ofRun).Cost, Is.EqualTo(0.012m));
         Assert.That(BenchmarkLedger.TotalOf(ofRun).Requests, Is.EqualTo(2));
     }

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -12,7 +13,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Reviews.Store;
 public abstract class HumanReviewStoreContract
 {
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
-    private static readonly BenchmarkProtocol.ConversationKey Bobotie = new("puls-cook", 1, "bobotie");
+    private static readonly BenchmarkProtocol.ConversationKey Bobotie = new(SampleMode.Beta, 1, "bobotie");
 
     private IHumanReviewStore _store = null!;
 
@@ -56,7 +57,7 @@ public abstract class HumanReviewStoreContract
     {
         string run = NewRun();
         var one = Grade(run, 3, reviewer: "Anna");
-        var two = Grade(run, 1, key: new("puls-tools", 2, "cook-af"));
+        var two = Grade(run, 1, key: new(SampleMode.Gamma, 2, "cook-af"));
         var three = Grade(run, 2, HumanVerdict.Unsure);
 
         foreach (var grade in new[] { one, two, three }) await _store.AddAsync(grade);

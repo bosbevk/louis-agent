@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Labels;
@@ -15,7 +16,7 @@ public class LabelLoadingTests
 
     // 6a.4f (Louis): a label carries the conversation's turns, every question and answer, so a judge can see what a follow-up relies on; the last turn's answer is the one labelled.
     private static string Label(string scenario = "sample-dev", string label = "{\"pass\": true, \"note\": \"feeds four\"}", int turn = 1, string extra = "", string grader = "reads-keys") =>
-        "{\"grader\": \"" + grader + "\", \"scenario\": \"" + scenario + "\", \"mode\": \"puls-cook\", \"run\": \"8f7802b9a72e\", \"repeat\": 2, \"turns\": ["
+        "{\"grader\": \"" + grader + "\", \"scenario\": \"" + scenario + SampleMode.Fill("\", \"mode\": \"<ModeBeta>\", \"run\": \"8f7802b9a72e\", \"repeat\": 2, \"turns\": [")
         + string.Join(", ", Enumerable.Range(1, turn).Select(n => n == turn ? "{\"question\": \"Vir vier\", \"answer\": \"Bobotie vir vier\"}" : "{\"question\": \"Hallo\", \"answer\": \"Hallo!\"}"))
         + "], \"label\": " + label + extra + "}";
 
@@ -32,8 +33,8 @@ public class LabelLoadingTests
         Assert.That(labels[0].Turns, Is.EqualTo(new[] { new LabelTurn("Vir vier", "Bobotie vir vier") }));
         Assert.That(labels.Select(l => (l.File, l.Grader, l.Scenario, l.Mode, l.Run, l.Repeat, l.Turn, l.Answer, l.Pass, l.Note)), Is.EqualTo(new[]
         {
-            ("a.json", "reads-keys", "sample-dev", "puls-cook", "8f7802b9a72e", 2, 1, "Bobotie vir vier", true, "feeds four"),
-            ("b.json", "reads-keys", "sample-dev", "puls-cook", "8f7802b9a72e", 2, 1, "Bobotie vir vier", false, "a side"),
+            ("a.json", "reads-keys", "sample-dev", SampleMode.Beta, "8f7802b9a72e", 2, 1, "Bobotie vir vier", true, "feeds four"),
+            ("b.json", "reads-keys", "sample-dev", SampleMode.Beta, "8f7802b9a72e", 2, 1, "Bobotie vir vier", false, "a side"),
         }));
     }
 
@@ -77,7 +78,7 @@ public class LabelLoadingTests
     public void ALabelStillInTheOldShape_IsRefused_NotQuietlyReadAsUnlabelled()
     {
         using var folder = Folder().Write("labels/a.json", Label(label: "{\"meal\": true, \"note\": \"old\"}"))
-            .Write("labels/b.json", """{"grader": "reads-keys", "scenario": "sample-dev", "mode": "puls-cook", "run": "r", "repeat": 1, "turn": 1, "answer": "Bobotie", "label": {"pass": true, "note": ""}}""");
+            .Write("labels/b.json", SampleMode.Fill("""{"grader": "reads-keys", "scenario": "sample-dev", "mode": "<ModeBeta>", "run": "r", "repeat": 1, "turn": 1, "answer": "Bobotie", "label": {"pass": true, "note": ""}}"""));
 
         var error = Assert.Throws<InvalidDataException>(() => DatasetLoader.Load(folder.Root, Graders))!;
 

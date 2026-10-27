@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Evals.Grading;
@@ -187,7 +188,7 @@ public class EvaluatorGraderTests
         Assert.That(UsagePurpose.Grading, Is.EqualTo("grading"));
         // F18 step 6.1b (the review): tagged as the turns are, {run}:{mode}:{repeat}, with the conversation's session and its last turn, so the API's join places the row on
         // its conversation and the slice's cost counts the judging; a row with no turn made every slice's cost unknown.
-        Assert.That(row.Run, Is.EqualTo("run_1:puls-cook:1"));
+        Assert.That(row.Run, Is.EqualTo($"run_1:{SampleMode.Beta}:1"));
         Assert.That(row.Task, Is.EqualTo("bobotie"));
         Assert.That((row.Session, row.Turn), Is.EqualTo(("sess_1", 1)));
         Assert.That(UsageScope.Current, Is.Null, "the scope closed with the grade");

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Puls.Admin.Reviews;
 
 namespace LouisAgent.Puls.Tests.Admin.Reviews;
@@ -32,8 +33,8 @@ public class CalibrationTextTests
     [Test]
     public void ADisagreement_SaysWhichConversation_AndWhoSaidWhat()
     {
-        Assert.That(CalibrationText.Where(new CalibrationDisagreementView("cook-shops", "puls-cook", 2, "fail", "pass", "a dish")), Is.EqualTo("cook-shops · puls-cook · repeat 2: you said fail, the judge said pass."));
-        Assert.That(CalibrationText.Where(new CalibrationDisagreementView("cook-af", "puls-tools", 1, "pass", "unknown", "too little")), Is.EqualTo("cook-af · puls-tools · repeat 1: you said pass, the judge couldn't tell."));
+        Assert.That(CalibrationText.Where(new CalibrationDisagreementView("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish")), Is.EqualTo($"cook-shops · {SampleMode.Beta} · repeat 2: you said fail, the judge said pass."));
+        Assert.That(CalibrationText.Where(new CalibrationDisagreementView("cook-af", SampleMode.Gamma, 1, "pass", "unknown", "too little")), Is.EqualTo($"cook-af · {SampleMode.Gamma} · repeat 1: you said pass, the judge couldn't tell."));
     }
 
     [Test]

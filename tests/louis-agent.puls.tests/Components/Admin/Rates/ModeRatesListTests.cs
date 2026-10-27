@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Puls.Components.Admin.Rates;
 
@@ -17,12 +18,12 @@ public class ModeRatesListTests
     [Test]
     public void EachMode_ShowsItsRates_LabelledWithK()
     {
-        var cut = Render("""
-            {"modes":[{"name":"puls-cook","repeat":3,"pass_at_k":1,"pass_hat_k":0.5,"k":3,"infrastructure":1,"retried":2}]}
-            """);
+        var cut = Render(SampleMode.Fill("""
+            {"modes":[{"name":"<ModeBeta>","repeat":3,"pass_at_k":1,"pass_hat_k":0.5,"k":3,"infrastructure":1,"retried":2}]}
+            """));
 
         var item = cut.Find(".mode-rate");
-        Assert.That(item.QuerySelector(".mode-rate-name")!.TextContent, Is.EqualTo("puls-cook"));
+        Assert.That(item.QuerySelector(".mode-rate-name")!.TextContent, Is.EqualTo(SampleMode.Beta));
         Assert.That(item.QuerySelector(".pass-at")!.TextContent, Is.EqualTo("pass@3 100%"));
         Assert.That(item.QuerySelector(".pass-hat")!.TextContent, Is.EqualTo("pass^3 50%"));
         Assert.That(item.QuerySelector(".left-out")!.TextContent, Is.EqualTo("1 left out (infrastructure)"));
@@ -32,7 +33,7 @@ public class ModeRatesListTests
     [Test]
     public void ARateNoTrialMade_IsADash_AndNothingLeftOutShowsNoChip()
     {
-        var cut = Render("""{"modes":[{"name":"puls-cook","repeat":1,"pass_at_k":null,"pass_hat_k":null,"k":1,"infrastructure":0,"retried":0}]}""");
+        var cut = Render(SampleMode.Fill("""{"modes":[{"name":"<ModeBeta>","repeat":1,"pass_at_k":null,"pass_hat_k":null,"k":1,"infrastructure":0,"retried":0}]}"""));
 
         Assert.That(cut.Find(".pass-at").TextContent, Is.EqualTo("pass@1 –"));
         Assert.That(cut.Find(".pass-hat").TextContent, Is.EqualTo("pass^1 –"));
@@ -43,7 +44,7 @@ public class ModeRatesListTests
     [Test]
     public void ARunFromBeforeTheRates_SaysSoInsteadOfShowingZeroes()
     {
-        var cut = Render("""{"modes":[{"name":"puls-cook","repeat":1,"toolsets":["web"]}]}""");
+        var cut = Render(SampleMode.Fill("""{"modes":[{"name":"<ModeBeta>","repeat":1,"toolsets":["web"]}]}"""));
 
         Assert.That(cut.FindAll(".mode-rate"), Is.Empty);
         Assert.That(cut.Find(".mode-rates-none").TextContent, Does.Contain("no pass rates"));

@@ -32,26 +32,26 @@ public class BenchmarkRecorderTests
 
     private static string Protocol(int version = 1) => At(new { @event = "protocol", version });
 
-    private static string Mode(string mode = "puls-cook", int repeat = 1) =>
+    private static string Mode(string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "mode", mode, repeat, toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha }, role = "puls/voice-af", conversations = 2 });
 
-    private static string Question(string task, int turn = 1, string mode = "puls-cook", int repeat = 1) =>
+    private static string Question(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "question", mode, repeat, task, turn, session = $"sess_{task}", text = $"{task}?" });
 
-    private static string Sse(string task, string text, int turn = 1, string mode = "puls-cook", int repeat = 1) =>
+    private static string Sse(string task, string text, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "sse", mode, repeat, task, turn, type = "content_block_delta", data = new { delta = new { text } } });
 
-    private static string TurnDone(string task, int turn = 1, string mode = "puls-cook", int repeat = 1) =>
+    private static string TurnDone(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new
         {
             @event = "turn", mode, repeat, task, turn, session = $"sess_{task}", question = $"{task}?", answer = "Hier is…",
             role = "puls-cook", puls_calls = 1, specialist_calls = 6, hosts = new[] { "www.checkers.co.za" }, seconds = 30.5,
         });
 
-    private static string ConversationDone(string task, string mode = "puls-cook", int repeat = 1) =>
+    private static string ConversationDone(string task, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "conversation", mode, repeat, task, role = "puls-cook", scores = new { routed_right = true }, errors = 0, seconds = 30.5 });
 
-    private static string ModeDone(string mode = "puls-cook", int repeat = 1) => At(new { @event = "mode_done", mode, repeat });
+    private static string ModeDone(string mode = SampleMode.Beta, int repeat = 1) => At(new { @event = "mode_done", mode, repeat });
 
     private static async Task Eventually(Func<Task<bool>> condition)
     {
@@ -78,14 +78,14 @@ public class BenchmarkRecorderTests
         Assert.That((run!.Check, run.Repeat, run.Status, run.ExitCode), Is.EqualTo(("cook", 1, BenchmarkRunStatus.Done, (int?)0)));
         Assert.That(run.EndedAt, Is.Not.Null);
         Assert.That(run.Settings!["model"], Is.EqualTo("claude-haiku-5-5"));
-        Assert.That(run.Modes!.Single() is { Name: "puls-cook", Repeat: 1, Role: "puls/voice-af" });
+        Assert.That(run.Modes!.Single() is { Name: SampleMode.Beta, Repeat: 1, Role: "puls/voice-af" });
         Assert.That(run.Log, Is.EqualTo(new[] { "Puls cook check, 1 repeat", "puls-cook bobotie role=puls-cook" }), "the plain lines, not the events");
 
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
-        Assert.That((conversation.Key, conversation.Order, conversation.Role), Is.EqualTo((new ConversationKey("puls-cook", 1, "bobotie"), 1, "puls-cook")));
+        Assert.That((conversation.Key, conversation.Order, conversation.Role), Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, "puls-cook")));
         Assert.That(conversation.Scores.GetProperty("routed_right").GetBoolean(), Is.True);
 
-        var key = new TurnKey("puls-cook", 1, "bobotie", 1);
+        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         var turn = (await _store.TurnsAsync(_run.Id, key.Conversation)).Single();
         Assert.That((turn.Session, turn.Answer, turn.SpecialistCalls, turn.Error), Is.EqualTo(("sess_bobotie", "Hier is…", 6, (string?)null)));
         var events = await _store.TurnEventsAsync(_run.Id, key);
@@ -108,13 +108,13 @@ public class BenchmarkRecorderTests
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"),
-            At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_bobotie", question = "bobotie?",
+            At(new { @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_bobotie", question = "bobotie?",
                 answer = "", role = (string?)null, seconds = 600.0, failure = "api_error" }),
             ConversationDone("bobotie"), ModeDone());
         _run.Complete(0);
         await recording;
 
-        var turn = (await _store.TurnsAsync(_run.Id, new ConversationKey("puls-cook", 1, "bobotie"))).Single();
+        var turn = (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single();
 
         Assert.That(turn.Failure, Is.EqualTo(BenchmarkTurnFailure.ApiError));
     }
@@ -123,7 +123,7 @@ public class BenchmarkRecorderTests
     public async Task ATurnsToolCounts_AreKept_WhenItEnds()
     {
         // Review of PR #55: counted once when the turn is recorded, so reading a run never needs its events for them.
-        string Block(object block) => At(new { @event = "sse", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, type = "content_block_start", data = new { content_block = block } });
+        string Block(object block) => At(new { @event = "sse", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, type = "content_block_start", data = new { content_block = block } });
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"),
             Block(new { type = "tool_use", id = "u1", name = "WebSearch", input = new { } }),
@@ -133,7 +133,7 @@ public class BenchmarkRecorderTests
         _run.Complete(0);
         await recording;
 
-        var tools = (await _store.TurnsAsync(_run.Id, new ConversationKey("puls-cook", 1, "bobotie"))).Single().Tools!;
+        var tools = (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single().Tools!;
 
         Assert.That((tools.Calls, tools.Failed), Is.EqualTo((2, 1)));
         Assert.That(tools.Reasons.Single(), Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: limit reached", 1)));
@@ -145,7 +145,7 @@ public class BenchmarkRecorderTests
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"), Sse("bobotie", "a"), TurnDone("bobotie"), Question("bobotie", turn: 2), Sse("bobotie", "b", turn: 2));
 
-        await Eventually(async () => (await _store.TurnsAsync(_run.Id, new ConversationKey("puls-cook", 1, "bobotie"))).Count == 1);
+        await Eventually(async () => (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count == 1);
 
         var run = await _store.GetRunAsync(_run.Id);
         Assert.That(run!.Status, Is.EqualTo(BenchmarkRunStatus.Running));
@@ -181,7 +181,7 @@ public class BenchmarkRecorderTests
         _run.Complete(1);
         await recording;
 
-        var key = new TurnKey("puls-cook", 1, "bobotie", 1);
+        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         var turn = (await _store.TurnsAsync(_run.Id, key.Conversation)).Single();
         Assert.That((turn.Session, turn.Question, turn.Answer), Is.EqualTo(("sess_bobotie", "bobotie?", (string?)null)));
         Assert.That(turn.Error, Does.Contain("ended before this turn"));
@@ -214,7 +214,7 @@ public class BenchmarkRecorderTests
 
         var run = await _store.GetRunAsync(_run.Id);
         Assert.That(run!.Log!.First(), Does.Contain("protocol 2").And.Contain("reads 1"));
-        Assert.That((await _store.TurnsAsync(_run.Id, new ConversationKey("puls-cook", 1, "bobotie"))).Count, Is.EqualTo(1));
+        Assert.That((await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count, Is.EqualTo(1));
     }
 
     /// <summary>A store whose turns can't be written: the first failure stops the recording's writes.</summary>

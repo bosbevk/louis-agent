@@ -12,9 +12,9 @@ public class ConformanceCasesTests
 {
     private static readonly string[] Conversation =
     [
-        "@{\"event\": \"mode\", \"t\": 1.0, \"mode\": \"puls-cook\", \"repeat\": 1, \"toolsets\": [\"" + SampleToolset.Gamma + "\", \"" + SampleToolset.Alpha + "\"], \"role\": \"puls/voice-af\", \"llm\": null, \"conversations\": 1}",
-        "@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"puls-cook\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"type\": \"content_block_delta\", \"data\": {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \"Hallo\"}}}",
-        "@{\"event\": \"turn\", \"t\": 1.0, \"mode\": \"puls-cook\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"session\": \"sess_1\", \"question\": \"Hallo\", \"answer\": \"Hallo\", \"role\": null, \"seconds\": 0.5, \"error\": null}",
+        SampleMode.Fill("@{\"event\": \"mode\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"toolsets\": [\"") + SampleToolset.Gamma + "\", \"" + SampleToolset.Alpha + "\"], \"role\": \"puls/voice-af\", \"llm\": null, \"conversations\": 1}",
+        SampleMode.Fill("@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"type\": \"content_block_delta\", \"data\": {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \"Hallo\"}}}"),
+        SampleMode.Fill("@{\"event\": \"turn\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"session\": \"sess_1\", \"question\": \"Hallo\", \"answer\": \"Hallo\", \"role\": null, \"seconds\": 0.5, \"error\": null}"),
     ];
 
     [Test]
@@ -28,7 +28,7 @@ public class ConformanceCasesTests
         var only = ConformanceCases.Load(folder.Root, [Scenario("s")]).Single();
 
         Assert.That(only.Scenario, Is.EqualTo("s"));
-        Assert.That((only.Mode.Name, only.Mode.Role), Is.EqualTo(("puls-cook", "puls/voice-af")));
+        Assert.That((only.Mode.Name, only.Mode.Role), Is.EqualTo((SampleMode.Beta, "puls/voice-af")));
         Assert.That(only.Mode.Toolsets, Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
         Assert.That(only.Reference.Turns.Single().Question, Is.EqualTo("Hallo"));
         Assert.That(only.KnownBad.Select(k => k.Label), Is.EqualTo(new[] { "error", "slow" }));

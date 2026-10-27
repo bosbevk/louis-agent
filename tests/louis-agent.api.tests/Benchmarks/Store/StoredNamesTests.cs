@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Messages;
@@ -16,7 +17,7 @@ public class StoredNamesTests
     private static BsonDocument Stored() => MongoBenchmarkStore.ToBson(new Run("run123456789", "check-x", 1, BenchmarkRunStatus.Done, T0)
     {
         Graders = [new Grader("no-error", 1, BenchmarkGraderKind.FixedRule)],
-        Models = [new ModelUse("puls-only", BenchmarkModelLevel.Agent, null, "model-x")],
+        Models = [new ModelUse(SampleMode.Alpha, BenchmarkModelLevel.Agent, null, "model-x")],
     });
 
     [Test]

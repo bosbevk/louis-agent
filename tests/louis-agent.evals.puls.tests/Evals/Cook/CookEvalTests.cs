@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
@@ -30,8 +31,8 @@ public class CookEvalTests
 
         Assert.That(modes.Select(m => (m.Name, m.Role, string.Join(",", m.Toolsets))), Is.EqualTo(new[]
         {
-            ("puls-tools", Role, "web,shops"),
-            ("puls-cook", Role, "specialists,web"),
+            (PulsMode.Tools.Wire(), Role, "web,shops"),
+            (PulsMode.Cook.Wire(), Role, "specialists,web"),
         }));
     }
 

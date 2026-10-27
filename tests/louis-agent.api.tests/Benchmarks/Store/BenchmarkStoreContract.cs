@@ -38,10 +38,10 @@ public abstract class BenchmarkStoreContract
 
     private static JsonElement Json(string json) => JsonDocument.Parse(json).RootElement.Clone();
 
-    private static Conversation NewConversation(string task, int order, string? role = "puls-cook", string mode = "puls-cook", int repeat = 1) =>
+    private static Conversation NewConversation(string task, int order, string? role = "puls-cook", string mode = SampleMode.Beta, int repeat = 1) =>
         new(new ConversationKey(mode, repeat, task), order, role, Json("""{"routed_right":true,"priced_ratio":0.75}"""), 0, 12.5);
 
-    private static Turn NewTurn(string task, int n, string? answer = "Hier is…", string mode = "puls-cook", int repeat = 1) =>
+    private static Turn NewTurn(string task, int n, string? answer = "Hier is…", string mode = SampleMode.Beta, int repeat = 1) =>
         new(new TurnKey(mode, repeat, task, n), "sess_" + n, "Vraag " + n, answer, "puls-cook", null, 1, 7, ["www.checkers.co.za"], 41.3, null);
 
     private static StreamEvent Event(string type, string text) =>
@@ -56,9 +56,9 @@ public abstract class BenchmarkStoreContract
         {
             Modes =
             [
-                new Mode("puls-cook", 1, [SampleToolset.Alpha], null, null, new ModeRates(1.0, 0.5, 2, 1, 1)),
-                new Mode("puls-cook", 2, [SampleToolset.Alpha], null, null, new ModeRates(null, null, 1, 3, 0)),
-                new Mode("puls-only", 1, [SampleToolset.Alpha], null, null),
+                new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], null, null, new ModeRates(1.0, 0.5, 2, 1, 1)),
+                new Mode(SampleMode.Beta, 2, [SampleToolset.Alpha], null, null, new ModeRates(null, null, 1, 3, 0)),
+                new Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], null, null),
             ],
         };
 
@@ -78,7 +78,7 @@ public abstract class BenchmarkStoreContract
             EndedAt = T0.AddMinutes(9),
             ExitCode = 0,
             Settings = new Dictionary<string, string> { ["model"] = "claude-haiku-5-5", ["commit"] = "45a98b3" },
-            Modes = [new Mode("puls-cook", 1, [SampleToolset.Gamma, SampleToolset.Alpha], "puls/voice-af", null)],
+            Modes = [new Mode(SampleMode.Beta, 1, [SampleToolset.Gamma, SampleToolset.Alpha], "puls/voice-af", null)],
             Total = new Total(0.4217m, "USD", 812_345, 61),
             Log = ["puls-cook bobotie role=puls-cook", "done"],
             StoreError = null,
@@ -91,7 +91,7 @@ public abstract class BenchmarkStoreContract
         Assert.That((read!.Id, read.Check, read.Repeat, read.Status), Is.EqualTo((id, _check, 2, BenchmarkRunStatus.Done)));
         Assert.That((read.StartedAt, read.EndedAt, read.ExitCode), Is.EqualTo((T0, (DateTimeOffset?)T0.AddMinutes(9), (int?)0)));
         Assert.That(read.Settings, Is.EquivalentTo(run.Settings));
-        Assert.That(read.Modes!.Single() is { Name: "puls-cook", Repeat: 1, Role: "puls/voice-af", Llm: null });
+        Assert.That(read.Modes!.Single() is { Name: SampleMode.Beta, Repeat: 1, Role: "puls/voice-af", Llm: null });
         Assert.That(read.Modes!.Single().Toolsets, Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
         Assert.That(read.Total, Is.EqualTo(new Total(0.4217m, "USD", 812_345, 61)));
         Assert.That(read.Log, Is.EqualTo(run.Log));
@@ -103,7 +103,7 @@ public abstract class BenchmarkStoreContract
     {
         // CL14: runs recorded before CL14 keep "personality" on their modes in MongoDB; they're never rewritten, so read both.
         var run = new Run("r_old", _check, 1, BenchmarkRunStatus.Done, T0, T0, 0, null,
-            [new Mode("puls-cook", 1, [SampleToolset.Alpha], "puls/voice-af", null)], null, null, null);
+            [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], "puls/voice-af", null)], null, null, null);
         var stored = MongoBenchmarkStore.ToBson(run);
         var mode = stored["modes"][0].AsBsonDocument;
         mode.Remove("role");
@@ -241,15 +241,15 @@ public abstract class BenchmarkStoreContract
     public async Task AConversationsKey_IsItsModeRepeatAndTask()
     {
         string run = NewId();
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, mode: "puls-only"));
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 2, mode: "puls-cook"));
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 3, mode: "puls-cook", repeat: 2));
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, mode: SampleMode.Alpha));
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 2, mode: SampleMode.Beta));
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 3, mode: SampleMode.Beta, repeat: 2));
 
         var read = await _store.ConversationsAsync(run);
 
         Assert.That(read.Select(c => c.Key), Is.EqualTo(new[]
         {
-            new ConversationKey("puls-only", 1, "bobotie"), new ConversationKey("puls-cook", 1, "bobotie"), new ConversationKey("puls-cook", 2, "bobotie"),
+            new ConversationKey(SampleMode.Alpha, 1, "bobotie"), new ConversationKey(SampleMode.Beta, 1, "bobotie"), new ConversationKey(SampleMode.Beta, 2, "bobotie"),
         }));
     }
 
@@ -262,7 +262,7 @@ public abstract class BenchmarkStoreContract
         await _store.SaveTurnAsync(run, NewTurn("cottage-pie", 1), []);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 1, repeat: 2), []);
 
-        var read = await _store.TurnsAsync(run, new ConversationKey("puls-cook", 1, "bobotie"));
+        var read = await _store.TurnsAsync(run, new ConversationKey(SampleMode.Beta, 1, "bobotie"));
 
         Assert.That(read.Select(t => t.Key.Turn), Is.EqualTo(new[] { 1, 2 }));
         var first = read[0];
@@ -278,7 +278,7 @@ public abstract class BenchmarkStoreContract
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 1) with { Failure = BenchmarkTurnFailure.ReplayMiss }, []);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
 
-        var read = await _store.TurnsAsync(run, new ConversationKey("puls-cook", 1, "bobotie"));
+        var read = await _store.TurnsAsync(run, new ConversationKey(SampleMode.Beta, 1, "bobotie"));
 
         Assert.That(read.Select(t => t.Failure), Is.EqualTo(new BenchmarkTurnFailure?[] { BenchmarkTurnFailure.ReplayMiss, null }));
     }
@@ -287,7 +287,7 @@ public abstract class BenchmarkStoreContract
     public async Task ATurnsEvents_ReadBackApart_InTheOrderTheyCame()
     {
         string run = NewId();
-        var key = new TurnKey("puls-cook", 1, "bobotie", 1);
+        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 1), [Event("message_start", "a"), Event("content_block_delta", "Hallo"), Event("message_stop", "")]);
 
         var events = await _store.TurnEventsAsync(run, key);
@@ -301,7 +301,7 @@ public abstract class BenchmarkStoreContract
     public async Task ATurnSavedAgain_ReplacesItsEvents()
     {
         string run = NewId();
-        var key = new TurnKey("puls-cook", 1, "bobotie", 1);
+        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 1, answer: null), [Event("message_start", "a")]);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 1), [Event("message_start", "a"), Event("message_stop", "")]);
 
@@ -337,7 +337,7 @@ public abstract class BenchmarkStoreContract
     public async Task Requests_ReadBackByTime_WithUnknownsKeptUnknown()
     {
         string run = NewId();
-        var turn = new TurnKey("puls-cook", 1, "bobotie", 1);
+        var turn = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         Request At(int seconds, TurnKey? key = null, decimal? cost = 0.01m, long? input = 1200) =>
             new(run, key, T0.AddSeconds(seconds), "agent_turn", "sess_1", null, "claude-haiku-5-5", input, 300, 50_000, 0, cost, 2100);
 
@@ -373,7 +373,7 @@ public abstract class BenchmarkStoreContract
     public async Task DeletingARun_DeletesEverythingItKept()
     {
         string run = NewId(), other = NewId();
-        var turn = new TurnKey("puls-cook", 1, "bobotie", 1);
+        var turn = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         foreach (string id in new[] { run, other })
         {
             await _store.SaveRunAsync(NewRun(id, T0, BenchmarkRunStatus.Done));

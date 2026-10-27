@@ -79,10 +79,10 @@ public class BenchmarkProtocolTests
     [Test]
     public void AMode_CarriesItsRepeatToolsetsAndTheSessionFieldsItOpensWith()
     {
-        var parsed = Parse(SampleToolset.Fill("""@{"event":"mode","mode":"puls-cook","repeat":2,"toolsets":["<Gamma>","<Alpha>"],"role":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}"""));
+        var parsed = Parse(SampleToolset.Fill(SampleMode.Fill("""@{"event":"mode","mode":"<ModeBeta>","repeat":2,"toolsets":["<Gamma>","<Alpha>"],"role":"puls/voice-af","llm":null,"conversations":4,"t":1760700000.5}""")));
 
         var mode = (ModeStarted)parsed;
-        Assert.That(mode.Mode, Is.EqualTo("puls-cook"));
+        Assert.That(mode.Mode, Is.EqualTo(SampleMode.Beta));
         Assert.That(mode.Repeat, Is.EqualTo(2));
         Assert.That(mode.Toolsets, Is.EqualTo(new[] { SampleToolset.Gamma, SampleToolset.Alpha }));
         Assert.That(mode.Role, Is.EqualTo("puls/voice-af"));
@@ -93,23 +93,23 @@ public class BenchmarkProtocolTests
 
     [Test]
     public void AModeFromAHarnessBeforeCL14_SaysPersonality_ReadAsItsRole() =>
-        Assert.That(((ModeStarted)Parse("""@{"event":"mode","mode":"puls-cook","repeat":1,"toolsets":["web"],"personality":"puls/voice-af"}""")).Role,
+        Assert.That(((ModeStarted)Parse(SampleMode.Fill("""@{"event":"mode","mode":"<ModeBeta>","repeat":1,"toolsets":["web"],"personality":"puls/voice-af"}"""))).Role,
             Is.EqualTo("puls/voice-af"));
 
     [Test]
     public void AQuestion_CarriesItsSession()
     {
-        var parsed = Parse("""@{"event":"question","mode":"puls-cook","repeat":1,"task":"bobotie","turn":2,"session":"sess_abc","text":"En vir 6?"}""");
+        var parsed = Parse(SampleMode.Fill("""@{"event":"question","mode":"<ModeBeta>","repeat":1,"task":"bobotie","turn":2,"session":"sess_abc","text":"En vir 6?"}"""));
 
-        Assert.That(parsed, Is.EqualTo(new QuestionAsked(new TurnKey("puls-cook", 1, "bobotie", 2), "sess_abc", "En vir 6?", null)));
+        Assert.That(parsed, Is.EqualTo(new QuestionAsked(new TurnKey(SampleMode.Beta, 1, "bobotie", 2), "sess_abc", "En vir 6?", null)));
     }
 
     [Test]
     public void AnSseEvent_KeepsItsDataAsJson()
     {
-        var parsed = (SseEvent)Parse("""@{"event":"sse","mode":"puls-only","repeat":1,"task":"bobotie","turn":1,"type":"content_block_delta","data":{"delta":{"type":"text_delta","text":"Hallo"}}}""");
+        var parsed = (SseEvent)Parse(SampleMode.Fill("""@{"event":"sse","mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1,"type":"content_block_delta","data":{"delta":{"type":"text_delta","text":"Hallo"}}}"""));
 
-        Assert.That(parsed.Key, Is.EqualTo(new TurnKey("puls-only", 1, "bobotie", 1)));
+        Assert.That(parsed.Key, Is.EqualTo(new TurnKey(SampleMode.Alpha, 1, "bobotie", 1)));
         Assert.That(parsed.Type, Is.EqualTo("content_block_delta"));
         Assert.That(parsed.Data.GetProperty("delta").GetProperty("text").GetString(), Is.EqualTo("Hallo"));
     }
@@ -117,9 +117,9 @@ public class BenchmarkProtocolTests
     [Test]
     public void ATurn_CarriesItsSessionCallsHostsAndAnswer()
     {
-        var turn = (TurnEnded)Parse("""@{"event":"turn","mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"sess_abc","question":"Bobotie vir 4","answer":"Hier is…","role":"puls-cook","continued":null,"puls_calls":1,"specialist_calls":7,"hosts":["www.checkers.co.za"],"seconds":41.3,"error":null}""");
+        var turn = (TurnEnded)Parse(SampleMode.Fill("""@{"event":"turn","mode":"<ModeBeta>","repeat":1,"task":"bobotie","turn":1,"session":"sess_abc","question":"Bobotie vir 4","answer":"Hier is…","role":"puls-cook","continued":null,"puls_calls":1,"specialist_calls":7,"hosts":["www.checkers.co.za"],"seconds":41.3,"error":null}"""));
 
-        Assert.That(turn.Key, Is.EqualTo(new TurnKey("puls-cook", 1, "bobotie", 1)));
+        Assert.That(turn.Key, Is.EqualTo(new TurnKey(SampleMode.Beta, 1, "bobotie", 1)));
         Assert.That(turn.Session, Is.EqualTo("sess_abc"));
         Assert.That((turn.Question, turn.Answer, turn.Role, turn.Continued), Is.EqualTo(("Bobotie vir 4", "Hier is…", "puls-cook", (string?)null)));
         Assert.That((turn.PulsCalls, turn.SpecialistCalls, turn.Seconds), Is.EqualTo((1, 7, 41.3)));
@@ -134,7 +134,7 @@ public class BenchmarkProtocolTests
     public void ATurnsFailure_IsTheInfrastructuresNotTheAgents_ReadByItsSnakeCaseName(string name, BenchmarkTurnFailure expected)
     {
         // F18 step 5.1 wrote it on the turn line; the store must keep it, or a stored run reads infrastructure failures as the agent's.
-        var line = """@{"event":"turn","mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"q","answer":"","role":null,"seconds":1.5,"failure":"NAME"}""".Replace("NAME", name);
+        var line = SampleMode.Fill("""@{"event":"turn","mode":"<ModeBeta>","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"q","answer":"","role":null,"seconds":1.5,"failure":"NAME"}""").Replace("NAME", name);
 
         Assert.That(((TurnEnded)Parse(line)).Failure, Is.EqualTo(expected));
     }
@@ -164,9 +164,9 @@ public class BenchmarkProtocolTests
     public void AConversation_KeepsTheChecksScoresAsTheyCame()
     {
         // The scores are the check's own document: the cook check's are not the routing check's.
-        var conversation = (ConversationEnded)Parse("""@{"event":"conversation","mode":"puls-cook","repeat":1,"task":"bobotie","role":"puls-cook","scores":{"routed_right":true,"priced_ratio":0.75},"errors":0,"seconds":88.1}""");
+        var conversation = (ConversationEnded)Parse(SampleMode.Fill("""@{"event":"conversation","mode":"<ModeBeta>","repeat":1,"task":"bobotie","role":"puls-cook","scores":{"routed_right":true,"priced_ratio":0.75},"errors":0,"seconds":88.1}"""));
 
-        Assert.That(conversation.Key, Is.EqualTo(new ConversationKey("puls-cook", 1, "bobotie")));
+        Assert.That(conversation.Key, Is.EqualTo(new ConversationKey(SampleMode.Beta, 1, "bobotie")));
         Assert.That(conversation.Role, Is.EqualTo("puls-cook"));
         Assert.That(conversation.Scores.GetProperty("priced_ratio").GetDouble(), Is.EqualTo(0.75));
         Assert.That((conversation.Errors, conversation.Seconds), Is.EqualTo((0, 88.1)));
@@ -176,7 +176,7 @@ public class BenchmarkProtocolTests
     public void AModesEnd_IsAMarkerWithNoCost()
     {
         // Costs come from the ledger in C# (step 4), never from the script.
-        Assert.That(Parse("""@{"event":"mode_done","mode":"puls-cook","repeat":2,"cost":0.42}"""), Is.EqualTo(new ModeEnded("puls-cook", 2)));
+        Assert.That(Parse(SampleMode.Fill("""@{"event":"mode_done","mode":"<ModeBeta>","repeat":2,"cost":0.42}""")), Is.EqualTo(new ModeEnded(SampleMode.Beta, 2)));
     }
 
     [TestCase("puls-cook  bobotie  role=puls-cook routed=True")]
@@ -185,10 +185,10 @@ public class BenchmarkProtocolTests
     [TestCase("@not json")]
     [TestCase("@[1,2]")]
     [TestCase("""@{"event":"mystery","mode":"x"}""")]
-    [TestCase("""@{"mode":"puls-cook"}""")]
-    [TestCase("""@{"event":"question","mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"text":"no session"}""")]
-    [TestCase("""@{"event":"turn","mode":"puls-cook","task":"bobotie","turn":1,"session":"s","question":"no repeat"}""")]
-    [TestCase("""@{"event":"mode","mode":"puls-cook","repeat":"two","toolsets":[]}""")]
+    [TestCase("""@{"mode":"mode-beta"}""")]
+    [TestCase("""@{"event":"question","mode":"mode-beta","repeat":1,"task":"bobotie","turn":1,"text":"no session"}""")]
+    [TestCase("""@{"event":"turn","mode":"mode-beta","task":"bobotie","turn":1,"session":"s","question":"no repeat"}""")]
+    [TestCase("""@{"event":"mode","mode":"mode-beta","repeat":"two","toolsets":[]}""")]
     [TestCase("""@{"event":"protocol"}""")]
     public void AnythingElse_IsALogLine_NeverAnError(string line)
     {

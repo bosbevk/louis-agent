@@ -21,7 +21,7 @@ public class SummaryStoredTests
 
     private static string At(object e) => "@" + JsonSerializer.Serialize(e);
 
-    private static string SummaryLine(string mode = "puls-cook", string slice = "overall", bool tooFew = false, double? passRate = 0.75, string[]? tasks = null)
+    private static string SummaryLine(string mode = SampleMode.Beta, string slice = "overall", bool tooFew = false, double? passRate = 0.75, string[]? tasks = null)
     {
         var fields = new Dictionary<string, object?>
         {
@@ -43,9 +43,9 @@ public class SummaryStoredTests
     private static readonly string[] Run =
     [
         At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 7, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-        At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
-        At(new { @event = "conversation", t = 1700000002.0, mode = "puls-cook", repeat = 1, task = "a", role = "puls-cook", scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass" }),
-        At(new { @event = "mode_done", t = 1700000003.0, mode = "puls-cook", repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
+        At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+        At(new { @event = "conversation", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, task = "a", role = "puls-cook", scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass" }),
+        At(new { @event = "mode_done", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
         SummaryLine(),
         SummaryLine(slice: "language:af", tooFew: true, passRate: null, tasks: ["a"]),
     ];
@@ -69,7 +69,7 @@ public class SummaryStoredTests
         var slice = ((SummaryReported)Parse(SummaryLine())).Slice;
 
         Assert.That((slice.Mode, slice.Slice, slice.N, slice.Passed, slice.Failed, slice.Unknown, slice.Infrastructure),
-            Is.EqualTo(("puls-cook", "overall", 8, 6, 1, 1, 0)));
+            Is.EqualTo((SampleMode.Beta, "overall", 8, 6, 1, 1, 0)));
         Assert.That(slice.Tasks, Is.EqualTo(new[] { "a", "b" }));
         Assert.That((slice.TooFew, slice.PassRate, slice.PassAtK, slice.PassHatK), Is.EqualTo((false, (double?)0.75, (double?)1.0, (double?)0.5)));
         Assert.That(slice.Graders, Is.EqualTo(new[] { new SliceGrader("routed-to", BenchmarkGraderKind.FixedRule, 7, 1, 0) }));
@@ -87,7 +87,7 @@ public class SummaryStoredTests
 
     [Test]
     public void ASummaryLineThatCannotBeRead_IsALogLine_NeverAnException() =>
-        Assert.That(Parse("""@{"event":"summary","mode":"puls-cook"}"""), Is.InstanceOf<LogLine>());
+        Assert.That(Parse(SampleMode.Fill("""@{"event":"summary","mode":"<ModeBeta>"}""")), Is.InstanceOf<LogLine>());
 
     // --- kept on the run
 
@@ -97,7 +97,7 @@ public class SummaryStoredTests
         var store = await Recorded(Run);
 
         var slices = (await store.GetRunAsync(Id))!.Slices!;
-        Assert.That(slices.Select(s => (s.Mode, s.Slice, s.TooFew)), Is.EqualTo(new[] { ("puls-cook", "overall", false), ("puls-cook", "language:af", true) }));
+        Assert.That(slices.Select(s => (s.Mode, s.Slice, s.TooFew)), Is.EqualTo(new[] { (SampleMode.Beta, "overall", false), (SampleMode.Beta, "language:af", true) }));
     }
 
     [Test]
@@ -164,7 +164,7 @@ public class SummaryStoredTests
 
         var summaries = json.RootElement.GetProperty("summaries").EnumerateArray().ToList();
         var overall = summaries.Single(s => s.GetProperty("slice").GetString() == "overall");
-        Assert.That(overall.GetProperty("mode").GetString(), Is.EqualTo("puls-cook"));
+        Assert.That(overall.GetProperty("mode").GetString(), Is.EqualTo(SampleMode.Beta));
         Assert.That(overall.GetProperty("cost_per_trial").GetDecimal(), Is.EqualTo(0.8m / 8));
         Assert.That(overall.GetProperty("cost_per_pass").GetDecimal(), Is.EqualTo(0.8m / 6));
         var few = summaries.Single(s => s.GetProperty("slice").GetString() == "language:af");
@@ -174,7 +174,7 @@ public class SummaryStoredTests
     }
 
     private static Request Request(string task, decimal cost) =>
-        new(Id, new TurnKey("puls-cook", 1, task, 1), DateTimeOffset.UnixEpoch, "turn", "sess_" + task, null, "claude-haiku-5-5", 100, 10, 0, 0, cost, 100);
+        new(Id, new TurnKey(SampleMode.Beta, 1, task, 1), DateTimeOffset.UnixEpoch, "turn", "sess_" + task, null, "claude-haiku-5-5", 100, 10, 0, 0, cost, 100);
 
     private static async Task<JsonDocument> Get(HttpClient client, string path)
     {

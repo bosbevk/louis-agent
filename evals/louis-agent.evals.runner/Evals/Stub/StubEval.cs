@@ -33,8 +33,8 @@ public sealed class StubEval : IEval
     public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
         ValueTask.FromResult<IReadOnlyList<EvalMode>>(
         [
-            new EvalMode("puls-only", Role, [StubToolset.Web.Wire()]),
-            new EvalMode("puls-cook", Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()]),
+            new EvalMode(StubMode.Only.Wire(), Role, [StubToolset.Web.Wire()]),
+            new EvalMode(StubMode.Cook.Wire(), Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()]),
         ]);
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } =

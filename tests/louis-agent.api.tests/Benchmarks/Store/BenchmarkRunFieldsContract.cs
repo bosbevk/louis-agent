@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
@@ -68,9 +69,9 @@ public abstract class BenchmarkRunFieldsContract
         string rolled = NewId(), older = NewId();
         var slices = new[]
         {
-            new BenchmarkSlice("puls-cook", "overall", 8, 6, 1, 1, 0, ["a", "b"], false, 0.75, 1.0, 0.5,
+            new BenchmarkSlice(SampleMode.Beta, "overall", 8, 6, 1, 1, 0, ["a", "b"], false, 0.75, 1.0, 0.5,
                 [new SliceGrader("routed-to", BenchmarkGraderKind.FixedRule, 7, 1, 0)], [new SliceKind(BenchmarkGraderKind.FixedRule, 7, 1, 0)], [new SliceScore("priced_ratio", 0.5, 8)]),
-            new BenchmarkSlice("puls-cook", "language:af", 3, 3, 0, 0, 0, ["a"], true, null, null, null, [], [], []),
+            new BenchmarkSlice(SampleMode.Beta, "language:af", 3, 3, 0, 0, 0, ["a"], true, null, null, null, [], [], []),
         };
 
         await _store.SaveRunAsync(NewRun(rolled) with { Slices = slices });

@@ -40,7 +40,7 @@ public class EvalConformanceTests
         var cases = ConformanceCases.Load(EvalFiles.TranscriptsOf(new StubEval()), new StubEval().Scenarios);
 
         var bobotie = cases.Single(c => c.Scenario == "bobotie");
-        Assert.That(bobotie.Mode.Name, Is.EqualTo("puls-cook"));
+        Assert.That(bobotie.Mode.Name, Is.EqualTo(StubMode.Cook.Wire()));
         Assert.That(bobotie.Reference.Turns.Select(turn => turn.Question),
             Is.EqualTo(new[] { "Maak vir my bobotie vir 4 mense.", "En as ek dit vir 6 wil maak?" }));
         Assert.That(bobotie.KnownBad.Select(k => k.Label), Is.EqualTo(new[] { "error", "slow" }));
@@ -61,7 +61,7 @@ public class EvalConformanceTests
         public string Proves => "A fake eval, to test the conformance check on a set that isn't Puls's.";
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken) =>
-            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode("puls-cook", StubEval.Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()])]);
+            ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode(StubMode.Cook.Wire(), StubEval.Role, [StubToolset.Specialists.Wire(), StubToolset.Web.Wire()])]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
         [

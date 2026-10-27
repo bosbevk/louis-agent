@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Calibrations;
@@ -44,13 +45,13 @@ public class CalibrationEndpointTests
             Graders: [new Grader("meal-for-people", 1, BenchmarkGraderKind.Model), new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
         foreach (var (task, answer) in new[] { ("cook-en", "Bobotie for four"), ("cook-af", "Net 'n sousie") })
         {
-            var key = new BenchmarkProtocol.ConversationKey("puls-cook", 1, task);
+            var key = new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, task);
             await store.SaveConversationAsync(RunId, new Conversation(key, 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
                 [new Grade("meal-for-people", 1, 1, BenchmarkOutcome.Pass, "the judge's reason")]));
-            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey("puls-cook", 1, task, 1), "sess_1", "For four", answer, "puls-cook", null, 1, 1, [], 1.0, null), []);
+            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer, "puls-cook", null, 1, 1, [], 1.0, null), []);
         }
         if (graded)
-            await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey("puls-cook", 1, "cook-en"), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));
+            await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "cook-en"), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));
         var catalog = new BenchmarkCatalog([new BenchmarkCheck("puls-cook", "Cook")]);
         var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews, catalog: catalog, runner: runner,
@@ -150,7 +151,7 @@ public class CalibrationEndpointTests
     {
         await using var host = await StartAsync();
         await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", "qwen3:4b", T0, 35, 36, 90, false, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(1, 8, 0),
-            [new CalibrationDisagreement("cook-shops", "puls-cook", 2, "fail", "pass", "a dish with steps")]));
+            [new CalibrationDisagreement("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish with steps")]));
         await host.Calibrations.AddAsync(new CalibrationRecord(RunId, "meal-for-people", "qwen3:4b", T0.AddMinutes(10), 36, 36, 90, true, new CalibrationClassCounts(27, 0, 0), new CalibrationClassCounts(0, 9, 0), []));
 
         var response = await Send(host.Client, HttpMethod.Get, Path());
@@ -165,7 +166,7 @@ public class CalibrationEndpointTests
         Assert.That(older.GetProperty("person_fail").GetProperty("judge_pass").GetInt32(), Is.EqualTo(1));
         var d = older.GetProperty("disagreements").EnumerateArray().Single();
         Assert.That((d.GetProperty("scenario").GetString(), d.GetProperty("mode").GetString(), d.GetProperty("repeat").GetInt32(), d.GetProperty("label").GetString(), d.GetProperty("judge").GetString(), d.GetProperty("reason").GetString()),
-            Is.EqualTo(("cook-shops", "puls-cook", 2, "fail", "pass", "a dish with steps")));
+            Is.EqualTo(("cook-shops", SampleMode.Beta, 2, "fail", "pass", "a dish with steps")));
     }
 
     [Test]

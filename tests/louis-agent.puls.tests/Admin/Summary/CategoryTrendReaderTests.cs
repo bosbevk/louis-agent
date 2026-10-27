@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Puls.Admin.Summary;
 
@@ -9,14 +10,14 @@ public class CategoryTrendReaderTests
 {
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    private const string Category = """
+    private static readonly string Category = SampleMode.Fill("""
         {"category":"budget","modes":[
-          {"name":"puls-cook (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
+          {"name":"<ModeBeta> (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
             {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,"n":6},
             {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0.67,"pass_at_k":1.0,"pass_hat_k":0.5,"n":6}]},
-          {"name":"puls-tools","model":null,"points":[
+          {"name":"<ModeGamma>","model":null,"points":[
             {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0,"pass_at_k":0,"pass_hat_k":0,"n":6}]}]}
-        """;
+        """);
 
     [Test]
     public void EachLine_HasItsLatestPoint_AndItsRunCount()
@@ -26,8 +27,8 @@ public class CategoryTrendReaderTests
         Assert.That(card.Name, Is.EqualTo("budget"));
         Assert.That(card.Lines.Select(l => (l.Name, l.Runs, l.PassAtK, l.PassHatK, l.N)), Is.EqualTo(new[]
         {
-            ("puls-cook (claude-haiku-5-5)", 2, (double?)1.0, (double?)0.5, 6),
-            ("puls-tools", 1, (double?)0.0, (double?)0.0, 6),
+            ($"{SampleMode.Beta} (claude-haiku-5-5)", 2, (double?)1.0, (double?)0.5, 6),
+            (SampleMode.Gamma, 1, (double?)0.0, (double?)0.0, 6),
         }));
     }
 

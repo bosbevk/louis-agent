@@ -1,7 +1,7 @@
 {
   "grader": "meal-for-people",
   "scenario": "sample-dev",
-  "mode": "puls-cook",
+  "mode": "mode-beta",
   "run": "8f7802b9a72e",
   "repeat": 1,
   "turns": [

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
@@ -12,10 +13,10 @@ public class SlicePricerTests
 {
     private static readonly Total Known = new(1m, "USD", 1000, 5);
 
-    private static BenchmarkSlice Slice(string[] tasks, int n = 4, int passed = 2, string mode = "puls-cook") =>
+    private static BenchmarkSlice Slice(string[] tasks, int n = 4, int passed = 2, string mode = SampleMode.Beta) =>
         new(mode, "overall", n, passed, n - passed, 0, 0, tasks, TooFew: true, null, null, null, [], [], []);
 
-    private static Request Row(string task, decimal? cost, int repeat = 1, string mode = "puls-cook") =>
+    private static Request Row(string task, decimal? cost, int repeat = 1, string mode = SampleMode.Beta) =>
         new("run1", new TurnKey(mode, repeat, task, 1), DateTimeOffset.UnixEpoch, "turn", "s", null, "claude-haiku-5-5", 10, 10, 0, 0, cost, 1);
 
     [Test]
@@ -30,7 +31,7 @@ public class SlicePricerTests
     [Test]
     public void AnotherModesConversationOfTheSameTask_IsNotInTheSlice()
     {
-        var cost = SlicePricer.Of(Slice(["a"], n: 1, passed: 1), Known, [Row("a", 0.2m), Row("a", 7m, mode: "puls-tools")]);
+        var cost = SlicePricer.Of(Slice(["a"], n: 1, passed: 1), Known, [Row("a", 0.2m), Row("a", 7m, mode: SampleMode.Gamma)]);
 
         Assert.That(cost.PerTrial, Is.EqualTo(0.2m));
     }

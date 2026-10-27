@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
@@ -13,7 +14,7 @@ public class ReviewRulesTests
 {
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
-    private static BenchmarkProtocol.ConversationKey Key(string task) => new("puls-cook", 1, task);
+    private static BenchmarkProtocol.ConversationKey Key(string task) => new(SampleMode.Beta, 1, task);
 
     private static HumanGrade Grade(string task, int seconds, HumanVerdict verdict, string reviewer = "Louis", string grader = "meal-for-people") =>
         new("run1", Key(task), grader, verdict, "", reviewer, T0.AddSeconds(seconds));

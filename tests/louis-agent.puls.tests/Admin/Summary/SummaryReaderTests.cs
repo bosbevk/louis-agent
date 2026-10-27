@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Puls.Admin.Summary;
 
@@ -9,19 +10,19 @@ public class SummaryReaderTests
 {
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    private const string Run = """
+    private static readonly string Run = SampleMode.Fill("""
         {"summaries":[
-          {"mode":"puls-cook","slice":"overall","n":8,"passed":6,"failed":1,"unknown":1,"infrastructure":0,"tasks":["a","b"],"too_few":false,"pass_rate":0.75,"pass_at_k":1,"pass_hat_k":0.5,"cost_per_trial":0.1,"cost_per_pass":0.13},
-          {"mode":"puls-cook","slice":"language:af","n":3,"passed":2,"failed":1,"unknown":0,"infrastructure":0,"tasks":["a"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":null,"cost_per_pass":0.2},
-          {"mode":"puls-tools","slice":"overall","n":8,"passed":0,"failed":8,"unknown":0,"infrastructure":0,"tasks":["a"],"too_few":false,"pass_rate":0,"pass_at_k":0,"pass_hat_k":0,"cost_per_trial":0}]}
-        """;
+          {"mode":"<ModeBeta>","slice":"overall","n":8,"passed":6,"failed":1,"unknown":1,"infrastructure":0,"tasks":["a","b"],"too_few":false,"pass_rate":0.75,"pass_at_k":1,"pass_hat_k":0.5,"cost_per_trial":0.1,"cost_per_pass":0.13},
+          {"mode":"<ModeBeta>","slice":"language:af","n":3,"passed":2,"failed":1,"unknown":0,"infrastructure":0,"tasks":["a"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":null,"cost_per_pass":0.2},
+          {"mode":"<ModeGamma>","slice":"overall","n":8,"passed":0,"failed":8,"unknown":0,"infrastructure":0,"tasks":["a"],"too_few":false,"pass_rate":0,"pass_at_k":0,"pass_hat_k":0,"cost_per_trial":0}]}
+        """);
 
     [Test]
     public void EachModeKeepsItsSlicesInOrder_TheOverallLineFirst()
     {
         var modes = SummaryReader.Read(Json(Run))!;
 
-        Assert.That(modes.Select(m => m.Mode), Is.EqualTo(new[] { "puls-cook", "puls-tools" }));
+        Assert.That(modes.Select(m => m.Mode), Is.EqualTo(new[] { SampleMode.Beta, SampleMode.Gamma }));
         Assert.That(modes[0].Slices.Select(s => s.Slice), Is.EqualTo(new[] { "overall", "language:af" }));
     }
 

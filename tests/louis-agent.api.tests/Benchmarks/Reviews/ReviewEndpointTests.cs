@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Json;
@@ -38,9 +39,9 @@ public class ReviewEndpointTests
                       new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
         foreach (var (task, outcome, answer) in new[] { ("bobotie", BenchmarkOutcome.Pass, "Bobotie vir vier"), ("sosaties", BenchmarkOutcome.Fail, "Net 'n sousie") })
         {
-            await store.SaveConversationAsync(RunId, new Conversation(new BenchmarkProtocol.ConversationKey("puls-cook", 1, task), 1, null,
+            await store.SaveConversationAsync(RunId, new Conversation(new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, task), 1, null,
                 JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0, [new Grade("meal-for-people", 1, outcome == BenchmarkOutcome.Pass ? 1 : 0, outcome, "the judge's reason")]));
-            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey("puls-cook", 1, task, 1), "sess_1", "Vraag", answer, "puls-cook", null, 1, 1, [], 1.0, null), []);
+            await store.SaveTurnAsync(RunId, new Turn(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "Vraag", answer, "puls-cook", null, 1, 1, [], 1.0, null), []);
         }
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews);
         await app.StartAsync();
@@ -66,7 +67,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body("fail", "a side", "Louis"));
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body("fail", "a side", "Louis"));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         var row = await JsonOf(response);
@@ -80,9 +81,9 @@ public class ReviewEndpointTests
     public async Task ASecondPut_KeepsTheFirst_AndTheListMarksTheLatest()
     {
         await using var host = await StartAsync();
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body("fail"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body("fail"));
         await Task.Delay(20);
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body("pass"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body("pass"));
 
         var listed = await JsonOf(await Send(host.Client, HttpMethod.Get, Path()));
 
@@ -99,7 +100,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(verdict));
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body(verdict));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That(await host.Reviews.OfRunAsync(RunId), Is.Empty);
@@ -112,7 +113,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path($"/puls-cook/1/bobotie/{grader}"), Body());
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/{grader}"), Body());
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That(await host.Reviews.OfRunAsync(RunId), Is.Empty);
@@ -124,7 +125,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(note: new string('x', 2001)));
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body(note: new string('x', 2001)));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That((await response.Content.ReadAsStringAsync()), Does.Contain("2000"));
@@ -136,7 +137,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(reviewer: new string('L', 101)));
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body(reviewer: new string('L', 101)));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That((await response.Content.ReadAsStringAsync()), Does.Contain("100"));
@@ -148,7 +149,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(note: new string('x', 2000), reviewer: new string('L', 100)));
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body(note: new string('x', 2000), reviewer: new string('L', 100)));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
     }
@@ -159,7 +160,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(reviewer: reviewer));
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body(reviewer: reviewer));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
@@ -169,8 +170,8 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var noRun = await Send(host.Client, HttpMethod.Put, "/v1/admin/benchmarks/runs/nope/reviews/puls-cook/1/bobotie/meal-for-people.human", Body());
-        var noConversation = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/zzz/meal-for-people.human"), Body());
+        var noRun = await Send(host.Client, HttpMethod.Put, $"/v1/admin/benchmarks/runs/nope/reviews/{SampleMode.Beta}/1/bobotie/meal-for-people.human", Body());
+        var noConversation = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/zzz/meal-for-people.human"), Body());
         var noRunList = await Send(host.Client, HttpMethod.Get, "/v1/admin/benchmarks/runs/nope/reviews");
 
         Assert.That((noRun.StatusCode, noConversation.StatusCode, noRunList.StatusCode), Is.EqualTo((HttpStatusCode.NotFound, HttpStatusCode.NotFound, HttpStatusCode.NotFound)));
@@ -181,7 +182,7 @@ public class ReviewEndpointTests
     {
         await using var host = await StartAsync();
 
-        var response = await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body(), withKey: false);
+        var response = await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body(), withKey: false);
 
         Assert.That(response.StatusCode, Is.AnyOf(HttpStatusCode.Forbidden, HttpStatusCode.Unauthorized));
         Assert.That(await host.Reviews.OfRunAsync(RunId), Is.Empty);
@@ -191,8 +192,8 @@ public class ReviewEndpointTests
     public async Task TheRunsOwnRead_PutsTheHumanGradesBesideTheOthers_AndCountsTheAgreement()
     {
         await using var host = await StartAsync();
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body("pass"));
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/sosaties/meal-for-people.human"), Body("pass"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body("pass"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/sosaties/meal-for-people.human"), Body("pass"));
 
         var run = await JsonOf(await Send(host.Client, HttpMethod.Get, $"/v1/admin/benchmarks/runs/{RunId}"));
 
@@ -222,15 +223,15 @@ public class ReviewEndpointTests
     public async Task TheLabels_AreAZipOfOneFilePerPassOrFail_NamedForTheirAnswer_AndNeverAnUnsure()
     {
         await using var host = await StartAsync();
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body("pass", "a main dish"));
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/sosaties/meal-for-people.human"), Body("unsure", "cannot tell"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body("pass", "a main dish"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/sosaties/meal-for-people.human"), Body("unsure", "cannot tell"));
 
         var response = await Send(host.Client, HttpMethod.Get, $"/v1/admin/benchmarks/runs/{RunId}/labels?grader=meal-for-people");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(response.Content.Headers.ContentType?.MediaType, Is.EqualTo("application/zip"));
         using var zip = new ZipArchive(await response.Content.ReadAsStreamAsync());
-        Assert.That(zip.Entries.Select(e => e.FullName), Is.EqualTo(new[] { $"meal-for-people.bobotie.puls-cook.{RunId}.1.json" }), "the unsure is not a label");
+        Assert.That(zip.Entries.Select(e => e.FullName), Is.EqualTo(new[] { $"meal-for-people.bobotie.{SampleMode.Beta}.{RunId}.1.json" }), "the unsure is not a label");
         var label = JsonDocument.Parse(new StreamReader(zip.Entries.Single().Open()).ReadToEnd()).RootElement;
         Assert.That(label.GetProperty("grader").GetString(), Is.EqualTo("meal-for-people"));
         var turns = label.GetProperty("turns").EnumerateArray().Select(t => (t.GetProperty("question").GetString(), t.GetProperty("answer").GetString())).ToList();
@@ -242,9 +243,9 @@ public class ReviewEndpointTests
     public async Task TheLabelsOfAPersonsLatestGrade_AreWhatIsExported_NotTheEarlierOne()
     {
         await using var host = await StartAsync();
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body("pass"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body("pass"));
         await Task.Delay(20);
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body("fail", "changed my mind"));
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body("fail", "changed my mind"));
 
         var response = await Send(host.Client, HttpMethod.Get, $"/v1/admin/benchmarks/runs/{RunId}/labels?grader=meal-for-people");
 
@@ -271,7 +272,7 @@ public class ReviewEndpointTests
     public async Task DeletingTheRun_DeletesItsReviewsToo()
     {
         await using var host = await StartAsync();
-        await Send(host.Client, HttpMethod.Put, Path("/puls-cook/1/bobotie/meal-for-people.human"), Body());
+        await Send(host.Client, HttpMethod.Put, Path($"/{SampleMode.Beta}/1/bobotie/meal-for-people.human"), Body());
 
         var deleted = await Send(host.Client, HttpMethod.Delete, $"/v1/admin/benchmarks/runs/{RunId}");
 

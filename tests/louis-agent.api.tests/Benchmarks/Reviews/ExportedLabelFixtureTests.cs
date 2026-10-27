@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
@@ -14,13 +15,13 @@ public class ExportedLabelFixtureTests
     private static readonly string Fixture = System.IO.Path.Combine(ApiTestHost.RepoRoot, "tests", "louis-agent.evals.tests", "Labels", "Fixtures", "exported-label.json");
 
     private static readonly HumanGrade Grade =
-        new("8f7802b9a72e", new BenchmarkProtocol.ConversationKey("puls-cook", 1, "sample-dev"), "meal-for-people", HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
+        new("8f7802b9a72e", new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "sample-dev"), "meal-for-people", HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
 
     // 6a.4f: a label carries every turn of its conversation, so the fixture pins a two-turn one.
     private static readonly Turn[] Turns =
     [
-        new(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", "puls-cook", null, 1, 1, [], 1.0, null),
-        new(new BenchmarkProtocol.TurnKey("puls-cook", 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", "puls-cook", null, 1, 1, [], 1.0, null),
+        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier", "puls-cook", null, 1, 1, [], 1.0, null),
+        new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 2), "sess_1", "Make it six", "Bobotie vir ses", "puls-cook", null, 1, 1, [], 1.0, null),
     ];
 
     private static string Written() => ReviewLabels.Content(Grade, Turns);
@@ -53,8 +54,8 @@ public class ExportedLabelFixtureTests
     [Test]
     public void TheFileNameIsGraderScenarioModeRunRepeat_ThatTheHarnessUsesForItsOwnSheets()
     {
-        var key = new BenchmarkProtocol.ConversationKey("puls-tools", 2, "cook-af");
+        var key = new BenchmarkProtocol.ConversationKey(SampleMode.Gamma, 2, "cook-af");
 
-        Assert.That(ReviewLabels.FileName("meal-for-people", key, "8f7802b9a72e"), Is.EqualTo("meal-for-people.cook-af.puls-tools.8f7802b9a72e.2.json"));
+        Assert.That(ReviewLabels.FileName("meal-for-people", key, "8f7802b9a72e"), Is.EqualTo($"meal-for-people.cook-af.{SampleMode.Gamma}.8f7802b9a72e.2.json"));
     }
 }

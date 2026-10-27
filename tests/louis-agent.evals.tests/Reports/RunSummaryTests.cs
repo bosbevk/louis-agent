@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
@@ -32,7 +33,7 @@ public class RunSummaryTests
 
     private static SummaryLine Line(IEnumerable<SummaryLine> lines, string slice) => lines.Single(line => line.Slice == slice);
 
-    private static IReadOnlyList<SummaryLine> Of(params TrialResult[] trials) => RunSummary.Of("puls-cook", trials, Graders);
+    private static IReadOnlyList<SummaryLine> Of(params TrialResult[] trials) => RunSummary.Of(SampleMode.Beta, trials, Graders);
 
     [Test]
     public void TheOverallLineComesFirst_ThenEachCategoryByName_AllForTheMode()
@@ -40,7 +41,7 @@ public class RunSummaryTests
         var lines = Of(Pass("a", "shop:pnp", "language:af"), Pass("b", "budget"));
 
         Assert.That(lines.Select(l => l.Slice), Is.EqualTo(new[] { "overall", "budget", "language:af", "shop:pnp" }));
-        Assert.That(lines.Select(l => l.Mode).Distinct(), Is.EqualTo(new[] { "puls-cook" }));
+        Assert.That(lines.Select(l => l.Mode).Distinct(), Is.EqualTo(new[] { SampleMode.Beta }));
     }
 
     [Test]

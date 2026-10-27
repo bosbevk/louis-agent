@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
@@ -17,13 +18,13 @@ public class CategoryTrendTests
     [SetUp]
     public void SetUp() => _store = new InMemoryBenchmarkStore();
 
-    private static BenchmarkSlice Slice(string slice, double? rate, string mode = "puls-cook", bool tooFew = false, int n = 8) =>
+    private static BenchmarkSlice Slice(string slice, double? rate, string mode = SampleMode.Beta, bool tooFew = false, int n = 8) =>
         new(mode, slice, n, 6, 2, 0, 0, ["a"], tooFew, tooFew ? null : rate, tooFew ? null : rate, tooFew ? null : rate / 2, [], [], []);
 
     private async Task Run(string id, int hour, IReadOnlyList<BenchmarkSlice>? slices, string? model = "claude-haiku-5-5", BenchmarkRunStatus status = BenchmarkRunStatus.Done,
         BenchmarkRunSplit? split = null, string? rescoreOf = null, IReadOnlyDictionary<string, string>? settings = null) =>
         await _store.SaveRunAsync(new Run(id, "puls-cook", 1, status, T0.AddHours(hour), Settings: settings, Split: split, RescoreOf: rescoreOf, Slices: slices,
-            Models: model is null ? null : [new ModelUse("puls-cook", BenchmarkModelLevel.Agent, null, model)]));
+            Models: model is null ? null : [new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, null, model)]));
 
     private async Task<IReadOnlyList<CategoryTrends.Category>> Compute() => await CategoryTrends.ComputeAsync(_store, "puls-cook");
 
@@ -37,7 +38,7 @@ public class CategoryTrendTests
 
         Assert.That(categories.Select(c => c.Name), Is.EqualTo(new[] { "language:af", "overall" }), "sorted by name");
         var line = categories.Single(c => c.Name == "language:af").Lines.Single();
-        Assert.That(line.Name, Is.EqualTo("puls-cook (claude-haiku-5-5)"));
+        Assert.That(line.Name, Is.EqualTo($"{SampleMode.Beta} (claude-haiku-5-5)"));
         Assert.That(line.Points.Select(p => (p.Run, p.PassRate, p.PassAtK, p.PassHatK, p.N)), Is.EqualTo(new[]
         {
             ("r1", (double?)0.4, (double?)0.4, (double?)0.2, 8),
@@ -74,18 +75,18 @@ public class CategoryTrendTests
 
         var lines = (await Compute()).Single().Lines;
 
-        Assert.That(lines.Select(l => l.Name), Is.EquivalentTo(new[] { "puls-cook (claude-haiku-5-5)", "puls-cook (claude-opus-5-5)" }));
+        Assert.That(lines.Select(l => l.Name), Is.EquivalentTo(new[] { $"{SampleMode.Beta} (claude-haiku-5-5)", $"{SampleMode.Beta} (claude-opus-5-5)" }));
         Assert.That(lines.All(l => l.Points.Count == 1), Is.True);
     }
 
     [Test]
     public async Task EachMode_IsItsOwnLine_InTheSameCategory()
     {
-        await Run("r1", 1, [Slice("overall", 0.5), Slice("overall", 0.1, mode: "puls-tools")]);
+        await Run("r1", 1, [Slice("overall", 0.5), Slice("overall", 0.1, mode: SampleMode.Gamma)]);
 
         var lines = (await Compute()).Single().Lines;
 
-        Assert.That(lines.Select(l => (l.Name, l.Points.Single().PassRate)), Is.EquivalentTo(new[] { ("puls-cook (claude-haiku-5-5)", (double?)0.5), ("puls-tools", (double?)0.1) }), "a mode the run names no model for is named by itself");
+        Assert.That(lines.Select(l => (l.Name, l.Points.Single().PassRate)), Is.EquivalentTo(new[] { ($"{SampleMode.Beta} (claude-haiku-5-5)", (double?)0.5), (SampleMode.Gamma, (double?)0.1) }), "a mode the run names no model for is named by itself");
     }
 
     [Test]

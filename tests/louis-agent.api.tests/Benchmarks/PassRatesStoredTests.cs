@@ -26,10 +26,10 @@ public class PassRatesStoredTests
     private static readonly string[] EvalRun =
     [
         At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 3, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
-        At(new { @event = "mode", t = 1700000001.0, mode = "puls-cook", repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
-        At(new { @event = "mode_done", t = 1700000002.0, mode = "puls-cook", repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
-        At(new { @event = "mode", t = 1700000003.0, mode = "puls-cook", repeat = 2, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
-        At(new { @event = "mode_done", t = 1700000004.0, mode = "puls-cook", repeat = 2, pass_at_k = 1.0, pass_hat_k = 0.5, k = 2, infrastructure = 1, retried = 1 }),
+        At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+        At(new { @event = "mode_done", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
+        At(new { @event = "mode", t = 1700000003.0, mode = SampleMode.Beta, repeat = 2, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
+        At(new { @event = "mode_done", t = 1700000004.0, mode = SampleMode.Beta, repeat = 2, pass_at_k = 1.0, pass_hat_k = 0.5, k = 2, infrastructure = 1, retried = 1 }),
     ];
 
     private static async Task<InMemoryBenchmarkStore> Recorded(IEnumerable<string> lines, string id = Id)
@@ -56,7 +56,7 @@ public class PassRatesStoredTests
     [Test]
     public void AModeDoneFromBeforeTheRates_ReadsAsNull_NeverZero()
     {
-        var ended = (ModeEnded)Parse("""@{"event":"mode_done","mode":"puls-cook","repeat":1}""");
+        var ended = (ModeEnded)Parse(SampleMode.Fill("""@{"event":"mode_done","mode":"<ModeBeta>","repeat":1}"""));
 
         Assert.That(ended.Rates, Is.Null);
     }
@@ -64,7 +64,7 @@ public class PassRatesStoredTests
     [Test]
     public void ARateLeftOut_BecauseNoTrialCounted_ReadsAsNull_WithItsCounts()
     {
-        var ended = (ModeEnded)Parse("""@{"event":"mode_done","mode":"puls-cook","repeat":1,"k":1,"infrastructure":3,"retried":2}""");
+        var ended = (ModeEnded)Parse(SampleMode.Fill("""@{"event":"mode_done","mode":"<ModeBeta>","repeat":1,"k":1,"infrastructure":3,"retried":2}"""));
 
         Assert.That(ended.Rates, Is.EqualTo(new RatesInfo(null, null, 1, 3, 2)));
     }
@@ -112,7 +112,7 @@ public class PassRatesStoredTests
     public async Task ATrendPoint_CarriesTheRatesOfItsRunsLastRepeatOfTheMode()
     {
         var store = await Recorded(EvalRun);
-        await store.SaveConversationAsync(Id, new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
+        await store.SaveConversationAsync(Id, new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
         var point = (await BenchmarkTrends.ComputeAsync(store, "puls-cook")).Modes.Single().Points.Single();
 
@@ -123,8 +123,8 @@ public class PassRatesStoredTests
     public async Task ATrendPointOfARunFromBefore_HasNullRates()
     {
         var store = new InMemoryBenchmarkStore();
-        await store.SaveRunAsync(new Run("old", "puls-cook", 1, BenchmarkRunStatus.Done, T0, Modes: [new Mode("puls-cook", 1, [SampleToolset.Alpha], null, null)]));
-        await store.SaveConversationAsync("old", new Conversation(new ConversationKey("puls-cook", 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
+        await store.SaveRunAsync(new Run("old", "puls-cook", 1, BenchmarkRunStatus.Done, T0, Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], null, null)]));
+        await store.SaveConversationAsync("old", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
         var point = (await BenchmarkTrends.ComputeAsync(store, "puls-cook")).Modes.Single().Points.Single();
 
@@ -137,7 +137,7 @@ public class PassRatesStoredTests
     public async Task TheRunsJson_NamesEachModesRates_AndNullWhereThereAreNone()
     {
         var store = await Recorded(EvalRun);
-        await store.SaveRunAsync((await store.GetRunAsync(Id))! with { Modes = [.. (await store.GetRunAsync(Id))!.Modes!, new Mode("puls-only", 1, [SampleToolset.Alpha], null, null)] });
+        await store.SaveRunAsync((await store.GetRunAsync(Id))! with { Modes = [.. (await store.GetRunAsync(Id))!.Modes!, new Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], null, null)] });
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
         var client = app.GetTestClient();

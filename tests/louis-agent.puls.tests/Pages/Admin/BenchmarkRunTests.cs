@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text;
 using LouisAgent.Puls.Admin.Reviews;
@@ -15,17 +16,17 @@ namespace LouisAgent.Puls.Tests.Pages.Admin;
 // review panel and the Judge-against-people card show what the store holds, not the copy the page opened with. Written first: the page fetched the run once.
 public class BenchmarkRunTests
 {
-    private const string Run = """
+    private static readonly string Run = SampleMode.Fill("""
         {"run":{"id":"run1","check":"puls-cook","repeat":1,"status":"done","started_at":"2026-10-26T19:00:00+00:00",
                 "graders":[{"name":"no-error","version":1,"kind":"FixedRule"},{"name":"meal-for-people","version":1,"kind":"Model"},{"name":"meal-for-people.human","version":2,"kind":"Human","question":"Is this a meal?"}]},
          "modes":[{"name":"puls-cook","repeat":1,"toolsets":["web"]}],
-         "conversations":[{"mode":"puls-cook","repeat":1,"task":"bobotie","role":null,"scores":{},"errors":0,"outcome":"Pass",
+         "conversations":[{"mode":"<ModeBeta>","repeat":1,"task":"bobotie","role":null,"scores":{},"errors":0,"outcome":"Pass",
             "grades":[{"grader":"no-error","version":1,"score":1,"outcome":"Pass","reason":"fine"},{"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"feeds four"},
                       {"grader":"meal-for-people.human","version":2,"score":0,"outcome":"Pending","reason":"waits"}],"human_grades":[]}],
-         "turns":[{"mode":"puls-cook","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"Wat kook ek?","answer":"Bobotie.","role":"puls-cook","seconds":3.0,"hosts":[],"error":null,"tools":{"calls":0,"failed":0,"reasons":[]}}],
+         "turns":[{"mode":"<ModeBeta>","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"Wat kook ek?","answer":"Bobotie.","role":"puls-cook","seconds":3.0,"hosts":[],"error":null,"tools":{"calls":0,"failed":0,"reasons":[]}}],
          "requests":[],
          "agreement":[{"grader":"meal-for-people","person_pass":{"judge_pass":0,"judge_fail":0,"judge_unknown":0},"person_fail":{"judge_pass":0,"judge_fail":0,"judge_unknown":0}}]}
-        """;
+        """);
 
     private const string Checks = """{"checks":[{"id":"puls-cook","title":"Puls cooks."}]}""";
 
@@ -56,7 +57,7 @@ public class BenchmarkRunTests
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".review-panel"), Has.Count.EqualTo(1)));
         Assert.That(runReads, Is.EqualTo(1));
 
-        state.Record(new ConversationRef("run1", "puls-cook", 1, "bobotie"), "meal-for-people");
+        state.Record(new ConversationRef("run1", SampleMode.Beta, 1, "bobotie"), "meal-for-people");
 
         cut.WaitForAssertion(() => Assert.That(runReads, Is.EqualTo(2), "the run is fetched again after a grade"));
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".review-panel"), Has.Count.EqualTo(1), "and the open conversation stays open"));

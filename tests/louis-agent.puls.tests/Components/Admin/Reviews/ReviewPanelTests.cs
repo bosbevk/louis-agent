@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -19,7 +20,7 @@ public class ReviewPanelTests
     private const string JudgeReason = "feeds four with portions that add up";
 
     private static readonly GraderRow Review = new("meal-for-people.human", 1, "Human", Question);
-    private static readonly ConversationRef Bobotie = new("run1", "puls-cook", 1, "bobotie");
+    private static readonly ConversationRef Bobotie = new("run1", SampleMode.Beta, 1, "bobotie");
 
     private static ConversationGrades Grades(GradeOutcome judge = GradeOutcome.Pass, params HumanGradeRow[] humans) =>
         new([new GradeRow("no-error", 1, 1, GradeOutcome.Pass, "fine"), new GradeRow("meal-for-people", 1, judge == GradeOutcome.Pass ? 1 : 0, judge, JudgeReason),
@@ -103,7 +104,7 @@ public class ReviewPanelTests
         cut.WaitForAssertion(() => Assert.That(handler.Requests, Has.Count.EqualTo(1)));
         var (method, url, body) = handler.Requests.Single();
         Assert.That(method, Is.EqualTo(HttpMethod.Put));
-        Assert.That(url, Does.EndWith("v1/admin/benchmarks/runs/run1/reviews/puls-cook/1/bobotie/meal-for-people.human"));
+        Assert.That(url, Does.EndWith($"v1/admin/benchmarks/runs/run1/reviews/{SampleMode.Beta}/1/bobotie/meal-for-people.human"));
         var sent = JsonDocument.Parse(body!).RootElement;
         Assert.That((sent.GetProperty("verdict").GetString(), sent.GetProperty("note").GetString(), sent.GetProperty("reviewer").GetString()),
             Is.EqualTo(("pass", "a main dish, feeds six", "Louis")));

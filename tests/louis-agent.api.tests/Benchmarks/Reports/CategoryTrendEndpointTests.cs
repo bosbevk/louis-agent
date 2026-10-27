@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -20,7 +21,7 @@ public class CategoryTrendEndpointTests
         var store = new InMemoryBenchmarkStore();
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
         BenchmarkSlice Slice(string name, double? rate, bool tooFew = false) =>
-            new("puls-cook", name, 8, 6, 2, 0, 0, ["a"], tooFew, rate, rate, rate, [], [], []);
+            new(SampleMode.Beta, name, 8, 6, 2, 0, 0, ["a"], tooFew, rate, rate, rate, [], [], []);
         await store.SaveRunAsync(new Run("r1", "puls-cook", 1, BenchmarkRunStatus.Done, at, Slices: [Slice("overall", 0.75), Slice("budget", null, tooFew: true)]));
         await store.SaveRunAsync(new Run("r2", "puls-cook", 1, BenchmarkRunStatus.Done, at.AddHours(1), Slices: [Slice("overall", 0.875)]));
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
@@ -35,7 +36,7 @@ public class CategoryTrendEndpointTests
         var categories = json.RootElement.GetProperty("categories").EnumerateArray().ToList();
         Assert.That(categories.Select(c => c.GetProperty("category").GetString()), Is.EqualTo(new[] { "overall" }), "budget had too few trials in its only run: no chart");
         var line = categories[0].GetProperty("modes")[0];
-        Assert.That(line.GetProperty("name").GetString(), Is.EqualTo("puls-cook"));
+        Assert.That(line.GetProperty("name").GetString(), Is.EqualTo(SampleMode.Beta));
         var points = line.GetProperty("points").EnumerateArray().ToList();
         Assert.That(points.Select(p => p.GetProperty("run").GetString()), Is.EqualTo(new[] { "r1", "r2" }));
         Assert.That(points.Select(p => p.GetProperty("pass_at_k").GetDouble()), Is.EqualTo(new[] { 0.75, 0.875 }));

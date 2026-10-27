@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
@@ -18,8 +19,8 @@ public class BenchmarkLedgerTests
 {
     private const string Run = "run123456789";
     private static readonly DateTimeOffset T0 = new(2026, 10, 17, 9, 0, 0, TimeSpan.Zero);
-    private static readonly ConversationKey Bobotie = new("puls-cook", 1, "bobotie");
-    private static readonly ConversationKey CottagePie = new("puls-cook", 1, "cottage-pie");
+    private static readonly ConversationKey Bobotie = new(SampleMode.Beta, 1, "bobotie");
+    private static readonly ConversationKey CottagePie = new(SampleMode.Beta, 1, "cottage-pie");
 
     private static UsageRecord Row(int second, string? session, int? turn, string? run = Run + ":puls-cook:1", string? parent = null,
         string purpose = UsagePurpose.Turn, decimal? cost = 0.01m, int? requests = null, long input = 1000) =>
@@ -62,11 +63,11 @@ public class BenchmarkLedgerTests
 
         Assert.That(requests.Select(r => (r.At.Second, r.Turn)), Is.EqualTo(new (int, TurnKey?)[]
         {
-            (1, new TurnKey("puls-cook", 1, "bobotie", 1)),
-            (2, new TurnKey("puls-cook", 1, "bobotie", 1)),      // the cook's, by its parent
-            (3, new TurnKey("puls-cook", 1, "bobotie", 1)),      // the minion's, through the cook
-            (5, new TurnKey("puls-cook", 1, "bobotie", 2)),
-            (6, new TurnKey("puls-cook", 1, "cottage-pie", 1)),
+            (1, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)),
+            (2, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)),      // the cook's, by its parent
+            (3, new TurnKey(SampleMode.Beta, 1, "bobotie", 1)),      // the minion's, through the cook
+            (5, new TurnKey(SampleMode.Beta, 1, "bobotie", 2)),
+            (6, new TurnKey(SampleMode.Beta, 1, "cottage-pie", 1)),
             (10, null),                                           // kept and counted, but no turn to show it under
         }));
         var cook = requests[1];
@@ -193,13 +194,13 @@ public class BenchmarkLedgerTests
             var recording = new BenchmarkRecorder(store, ledgerDirectory: directory).RecordAsync(run);
             string At(object e) => "@" + JsonSerializer.Serialize(e);
             run.Add(At(new { @event = "protocol", version = 1 }));
-            run.Add(At(new { @event = "question", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_puls_bobotie", text = "?" }));
-            run.Add(At(new { @event = "turn", mode = "puls-cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_puls_bobotie", question = "?" }));
+            run.Add(At(new { @event = "question", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_puls_bobotie", text = "?" }));
+            run.Add(At(new { @event = "turn", mode = SampleMode.Beta, repeat = 1, task = "bobotie", turn = 1, session = "sess_puls_bobotie", question = "?" }));
             run.Complete(0);
             await recording;
 
             var requests = await store.RequestsAsync(Run);
-            Assert.That(requests.Select(r => r.Turn), Is.All.EqualTo(new TurnKey("puls-cook", 1, "bobotie", 1)));
+            Assert.That(requests.Select(r => r.Turn), Is.All.EqualTo(new TurnKey(SampleMode.Beta, 1, "bobotie", 1)));
             Assert.That(requests.Count, Is.EqualTo(2), "the roll-up isn't a request of its own");
             Assert.That((await store.GetRunAsync(Run))!.Total, Is.EqualTo(new Total(0.02m, "USD", 2 * 5200, 2)));
         }

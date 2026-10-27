@@ -4,14 +4,14 @@ using LouisAgent.Choices;
 
 namespace LouisAgent.Choices.Tests;
 
-// F18 step 7.5.0, on .NET's own attribute since 7.5.2 (Louis: "Use .NET's JsonStringEnumMemberName"): a name that repeats is an enum, but where it travels it stays the text it always was (`puls-only`, `puls/voice-af`).
+// F18 step 7.5.0, on .NET's own attribute since 7.5.2 (Louis: "Use .NET's JsonStringEnumMemberName"): a name that repeats is an enum, but where it travels it stays the text it always was (`fast-mode`, `puls/voice-af`).
 // A member carries that text as [WireName] (our attribute, .NET's JsonStringEnumMemberName underneath), which .NET's JSON writer reads too, so the parser and the writer cannot disagree. SettingChoice parses it once where it enters (as well as the member's own
 // name, case ignored), writes it back with Wire, and lists it in Names. A member with none travels as its name in lower case.
 public class SettingChoiceWireNameTests
 {
     public enum Mode
     {
-        [WireName("puls-only")] PulsOnly,
+        [WireName("fast-mode")] FastMode,
         [WireName("puls/voice-af")] VoiceAf,
         Plain,
     }
@@ -24,10 +24,10 @@ public class SettingChoiceWireNameTests
         [WireName("held_out")] HeldOut,
     }
 
-    [TestCase("puls-only", Mode.PulsOnly)]
-    [TestCase("PULS-ONLY", Mode.PulsOnly)]
+    [TestCase("fast-mode", Mode.FastMode)]
+    [TestCase("FAST-MODE", Mode.FastMode)]
     [TestCase(" puls/voice-af ", Mode.VoiceAf)]
-    [TestCase("PulsOnly", Mode.PulsOnly, TestName = "TheMembersOwnNameStillParses")]
+    [TestCase("FastMode", Mode.FastMode, TestName = "TheMembersOwnNameStillParses")]
     [TestCase("plain", Mode.Plain)]
     public void AWireName_OrTheMembersName_ParsesIgnoringCase(string text, Mode expected)
     {
@@ -57,7 +57,7 @@ public class SettingChoiceWireNameTests
     [Test]
     public void WireWritesTheTextBack_TheMembersLowerCaseNameWhenItHasNone()
     {
-        Assert.That(SettingChoice.Wire(Mode.PulsOnly), Is.EqualTo("puls-only"));
+        Assert.That(SettingChoice.Wire(Mode.FastMode), Is.EqualTo("fast-mode"));
         Assert.That(SettingChoice.Wire(Mode.VoiceAf), Is.EqualTo("puls/voice-af"));
         Assert.That(SettingChoice.Wire(Mode.Plain), Is.EqualTo("plain"));
     }
@@ -74,7 +74,7 @@ public class SettingChoiceWireNameTests
 
     [Test]
     public void TheNamesAMessageLists_AreTheWireNames_InTheEnumsOrder() =>
-        Assert.That(SettingChoice.Names<Mode>(), Is.EqualTo(new[] { "puls-only", "puls/voice-af", "plain" }));
+        Assert.That(SettingChoice.Names<Mode>(), Is.EqualTo(new[] { "fast-mode", "puls/voice-af", "plain" }));
 
     // The agreement test: what SettingChoice writes is what the JSON writer writes, for every member, with the options the harness uses. If they ever differ, a stored run and a setting would name one member two ways.
     [Test]

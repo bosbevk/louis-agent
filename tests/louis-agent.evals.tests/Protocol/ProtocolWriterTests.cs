@@ -142,7 +142,7 @@ public class ProtocolWriterTests
     {
         var sink = new StringWriter();
 
-        new ProtocolWriter(sink, new FixedClock(At)).Mode("puls-only", 1, [SampleToolset.Alpha], "puls/voice-af", null, conversations: 2);
+        new ProtocolWriter(sink, new FixedClock(At)).Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], "puls/voice-af", null, conversations: 2);
 
         Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[] { "event", "t", "mode", "repeat", "toolsets", "role", "llm", "conversations" }));
     }
@@ -153,7 +153,7 @@ public class ProtocolWriterTests
         var sink = new StringWriter();
         var facts = new TurnFacts("puls-cook", "sub-1", 1, 3, ["www.checkers.co.za"], null);
 
-        new ProtocolWriter(sink, new FixedClock(At)).Turn("puls-cook", 1, "bobotie", 2, "sess_1", "En as ek dit vir 6 wil maak?",
+        new ProtocolWriter(sink, new FixedClock(At)).Turn(SampleMode.Beta, 1, "bobotie", 2, "sess_1", "En as ek dit vir 6 wil maak?",
             "Hier is bobotie.", "puls-cook", 0.1, facts);
 
         Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[]
@@ -168,7 +168,7 @@ public class ProtocolWriterTests
     {
         var sink = new StringWriter();
 
-        new ProtocolWriter(sink, new FixedClock(At)).Conversation("puls-cook", 1, "bobotie", "puls-cook", Json("""{"routed_right":true,"turns":2}"""),
+        new ProtocolWriter(sink, new FixedClock(At)).Conversation(SampleMode.Beta, 1, "bobotie", "puls-cook", Json("""{"routed_right":true,"turns":2}"""),
             3.25, errors: 1);
 
         Assert.That(Keys(Lines(sink)[0]), Is.EqualTo(new[] { "event", "t", "mode", "repeat", "task", "role", "scores", "errors", "seconds" }));

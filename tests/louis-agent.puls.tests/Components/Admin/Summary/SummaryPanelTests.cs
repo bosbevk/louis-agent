@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -15,13 +16,13 @@ public class SummaryPanelTests
 {
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    private const string Run = """
+    private static readonly string Run = SampleMode.Fill("""
         {"run":{"id":"run123456789","check":"puls-cook"},"summaries":[
-          {"mode":"puls-cook","slice":"overall","n":8,"passed":6,"failed":1,"unknown":1,"infrastructure":0,"tasks":["cook-af","cook-en"],"too_few":false,"pass_rate":0.75,"pass_at_k":1,"pass_hat_k":0.5,"cost_per_trial":0.01,"cost_per_pass":0.0133},
-          {"mode":"puls-cook","slice":"language:af","n":3,"passed":2,"failed":1,"unknown":0,"infrastructure":0,"tasks":["cook-af"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":null,"cost_per_pass":0.2},
-          {"mode":"puls-cook","slice":"budget","n":2,"passed":0,"failed":2,"unknown":0,"infrastructure":0,"tasks":["cook-malmesbury"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":0},
-          {"mode":"puls-tools","slice":"overall","n":8,"passed":2,"failed":5,"unknown":0,"infrastructure":1,"tasks":["cook-af"],"too_few":false,"pass_rate":0.2857,"pass_at_k":0.25,"pass_hat_k":0.25,"cost_per_trial":0.02}]}
-        """;
+          {"mode":"<ModeBeta>","slice":"overall","n":8,"passed":6,"failed":1,"unknown":1,"infrastructure":0,"tasks":["cook-af","cook-en"],"too_few":false,"pass_rate":0.75,"pass_at_k":1,"pass_hat_k":0.5,"cost_per_trial":0.01,"cost_per_pass":0.0133},
+          {"mode":"<ModeBeta>","slice":"language:af","n":3,"passed":2,"failed":1,"unknown":0,"infrastructure":0,"tasks":["cook-af"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":null,"cost_per_pass":0.2},
+          {"mode":"<ModeBeta>","slice":"budget","n":2,"passed":0,"failed":2,"unknown":0,"infrastructure":0,"tasks":["cook-malmesbury"],"too_few":true,"pass_rate":null,"pass_at_k":null,"pass_hat_k":null,"cost_per_trial":0},
+          {"mode":"<ModeGamma>","slice":"overall","n":8,"passed":2,"failed":5,"unknown":0,"infrastructure":1,"tasks":["cook-af"],"too_few":false,"pass_rate":0.2857,"pass_at_k":0.25,"pass_hat_k":0.25,"cost_per_trial":0.02}]}
+        """);
 
     private static (IRenderedComponent<SummaryPanel> Cut, StubHandler Handler) Render(string run)
     {
@@ -40,7 +41,7 @@ public class SummaryPanelTests
         var (cut, _) = Render(Run);
 
         var modes = cut.FindAll(".summary-mode");
-        Assert.That(modes.Select(m => m.QuerySelector("h3")!.TextContent), Is.EqualTo(new[] { "puls-cook", "puls-tools" }));
+        Assert.That(modes.Select(m => m.QuerySelector("h3")!.TextContent), Is.EqualTo(new[] { SampleMode.Beta, SampleMode.Gamma }));
         Assert.That(modes[0].QuerySelectorAll(".s-slice").Select(c => c.TextContent), Is.EqualTo(new[] { "overall", "language:af", "budget" }));
     }
 

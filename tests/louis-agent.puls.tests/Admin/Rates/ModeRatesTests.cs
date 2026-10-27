@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Puls.Admin.Rates;
 
@@ -13,34 +14,34 @@ public class ModeRatesTests
     [Test]
     public void AModesRates_AreTheLastRepeatsThatHasThem()
     {
-        var read = ModeRatesReader.Read(Json("""
+        var read = ModeRatesReader.Read(Json(SampleMode.Fill("""
             {"modes":[
-              {"name":"puls-cook","repeat":1,"pass_at_k":1,"pass_hat_k":1,"k":1,"infrastructure":0,"retried":0},
-              {"name":"puls-cook","repeat":2,"pass_at_k":1,"pass_hat_k":0.5,"k":2,"infrastructure":1,"retried":1},
-              {"name":"puls-only","repeat":1,"pass_at_k":0,"pass_hat_k":0,"k":1,"infrastructure":0,"retried":0}]}
-            """));
+              {"name":"<ModeBeta>","repeat":1,"pass_at_k":1,"pass_hat_k":1,"k":1,"infrastructure":0,"retried":0},
+              {"name":"<ModeBeta>","repeat":2,"pass_at_k":1,"pass_hat_k":0.5,"k":2,"infrastructure":1,"retried":1},
+              {"name":"<ModeAlpha>","repeat":1,"pass_at_k":0,"pass_hat_k":0,"k":1,"infrastructure":0,"retried":0}]}
+            """)));
 
         Assert.That(read, Is.EqualTo(new[]
         {
-            new ModeRate("puls-cook", 2, 1.0, 0.5, 1, 1),
-            new ModeRate("puls-only", 1, 0.0, 0.0, 0, 0),
+            new ModeRate(SampleMode.Beta, 2, 1.0, 0.5, 1, 1),
+            new ModeRate(SampleMode.Alpha, 1, 0.0, 0.0, 0, 0),
         }));
     }
 
     [Test]
     public void ARateNoTrialMade_StaysNull_NeverZero()
     {
-        var read = ModeRatesReader.Read(Json("""{"modes":[{"name":"puls-cook","repeat":1,"pass_at_k":null,"pass_hat_k":null,"k":1,"infrastructure":3,"retried":0}]}"""));
+        var read = ModeRatesReader.Read(Json(SampleMode.Fill("""{"modes":[{"name":"<ModeBeta>","repeat":1,"pass_at_k":null,"pass_hat_k":null,"k":1,"infrastructure":3,"retried":0}]}""")));
 
-        Assert.That(read.Single(), Is.EqualTo(new ModeRate("puls-cook", 1, null, null, 3, 0)));
+        Assert.That(read.Single(), Is.EqualTo(new ModeRate(SampleMode.Beta, 1, null, null, 3, 0)));
     }
 
     [Test]
     public void AModeFromBeforeTheRates_HasNoK_AndNoRates()
     {
-        var read = ModeRatesReader.Read(Json("""{"modes":[{"name":"puls-cook","repeat":1,"toolsets":["web"],"role":null,"llm":null}]}"""));
+        var read = ModeRatesReader.Read(Json(SampleMode.Fill("""{"modes":[{"name":"<ModeBeta>","repeat":1,"toolsets":["web"],"role":null,"llm":null}]}""")));
 
-        Assert.That(read.Single(), Is.EqualTo(new ModeRate("puls-cook", null, null, null, 0, 0)));
+        Assert.That(read.Single(), Is.EqualTo(new ModeRate(SampleMode.Beta, null, null, null, 0, 0)));
     }
 
     [Test]

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Puls.Admin.Summary;
 
 namespace LouisAgent.Puls.Tests.Admin.Summary;
@@ -7,7 +8,7 @@ namespace LouisAgent.Puls.Tests.Admin.Summary;
 public class SummaryTextTests
 {
     private static SliceView Slice(int n = 8, int passed = 6, int infrastructure = 0, bool tooFew = false, double? rate = 0.75, bool hasPass = true, decimal? perPass = 0.13m) =>
-        new("puls-cook", "overall", n, passed, n - passed - infrastructure, 0, infrastructure, ["a"], tooFew, rate, 1, 0.5, 0.1m, hasPass, perPass);
+        new(SampleMode.Beta, "overall", n, passed, n - passed - infrastructure, 0, infrastructure, ["a"], tooFew, rate, 1, 0.5, 0.1m, hasPass, perPass);
 
     [Test]
     public void Passed_IsOfTheCountedTrials_NotOfAllOfThem() =>
