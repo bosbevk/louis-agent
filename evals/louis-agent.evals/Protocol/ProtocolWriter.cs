@@ -101,7 +101,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
                     json.WriteString("grader", grade.Grader);
                     json.WriteNumber("version", grade.Version);
                     json.WriteNumber("score", grade.Score);
-                    json.WriteString("outcome", grade.Outcome.ToString());
+                    json.WriteString("outcome", grade.Outcome.Wire());
                     json.WriteString("reason", grade.Reason);
                     if (grade.Judge is { } judge)
                     {
@@ -112,7 +112,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
                 }
                 json.WriteEndArray();
             }
-            if (outcome is not null) json.WriteString("outcome", outcome.Value.ToString());
+            if (outcome is not null) json.WriteString("outcome", outcome.Value.Wire());
         });
 
     /// <summary>The run's first line (F18 step 2a): the eval, its version, the commit, the scenarios it asked for (its split, step 5.4), its graders and the model each mode ran on.</summary>

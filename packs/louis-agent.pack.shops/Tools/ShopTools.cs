@@ -81,7 +81,7 @@ public sealed class ShopTools(IReadOnlyDictionary<ShopKind, IShopCatalogue> cata
             return MessageText.Format(ToolMessage.ErrorWithReason, new { Reason = ex.Message });
         }
 
-        string name = kind.Value.ToString();
+        string name = ShopKinds.DisplayName(kind.Value);
         string store = StoreOf(found, place);
         var products = deal is { } dealKind ? [.. found.Products.Where(p => p.Deal?.Kind == dealKind).Take(wanted)] : found.Products;
         if (products.Count == 0)

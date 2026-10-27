@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Text.Json.Serialization;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -37,7 +38,7 @@ internal sealed record SummaryRow(
 
     private static SummaryRow Row(BenchmarkSlice s, SlicePricer.SliceCost cost) =>
         new(s.Mode, s.Slice, s.N, s.Passed, s.Failed, s.Unknown, s.Infrastructure, s.Tasks, s.TooFew, s.PassRate, s.PassAtK, s.PassHatK,
-            [.. s.Graders.Select(g => new GraderRow(g.Grader, g.Kind.ToString(), g.Passed, g.Failed, g.Unknown))],
-            [.. s.Kinds.Select(k => new KindRow(k.Kind.ToString(), k.Passed, k.Failed, k.Unknown))],
+            [.. s.Graders.Select(g => new GraderRow(g.Grader, g.Kind.Wire(), g.Passed, g.Failed, g.Unknown))],
+            [.. s.Kinds.Select(k => new KindRow(k.Kind.Wire(), k.Passed, k.Failed, k.Unknown))],
             [.. s.Scores.Select(c => new ScoreRow(c.Key, c.Mean, c.N))], cost.PerTrial, cost.PerPass);
 }

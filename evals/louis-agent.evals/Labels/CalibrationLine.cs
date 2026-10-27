@@ -31,5 +31,12 @@ public sealed record CalibrationLine(string Event, string Eval, string Grader, s
 
     private static CalibrationClassLine Class(ClassReport c) => new(c.Passed, c.Failed, c.CantTell);
 
-    private static string Word(GradeOutcome outcome) => outcome.Wire();
+    /// <summary>The outcome as the calibration line words it, in lower case; the protocol's own text for it is <c>outcome.Wire()</c> (PascalCase, kept as stored runs have it).</summary>
+    private static string Word(GradeOutcome outcome) => outcome switch
+    {
+        GradeOutcome.Pass => "pass",
+        GradeOutcome.Fail => "fail",
+        GradeOutcome.Unknown => "unknown",
+        _ => "pending",
+    };
 }

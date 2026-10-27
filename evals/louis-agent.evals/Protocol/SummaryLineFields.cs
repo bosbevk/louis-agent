@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Text.Json;
 using LouisAgent.Evals.Reports;
 
@@ -32,7 +33,7 @@ internal static class SummaryLineFields
         {
             json.WriteStartObject();
             json.WriteString("grader", grader.Grader);
-            json.WriteString("kind", grader.Kind.ToString());
+            json.WriteString("kind", grader.Kind.Wire());
             Counts(json, grader.Passed, grader.Failed, grader.Unknown);
             json.WriteEndObject();
         }
@@ -42,7 +43,7 @@ internal static class SummaryLineFields
         foreach (var kind in line.Kinds)
         {
             json.WriteStartObject();
-            json.WriteString("kind", kind.Kind.ToString());
+            json.WriteString("kind", kind.Kind.Wire());
             Counts(json, kind.Passed, kind.Failed, kind.Unknown);
             json.WriteEndObject();
         }

@@ -91,7 +91,7 @@ internal static class ReviewEndpoints
     internal static object Row(HumanGrade g, bool latest) => new
     {
         mode = g.Conversation.Mode, repeat = g.Conversation.Repeat, task = g.Conversation.Task, grader = g.Grader + HumanReview.Suffix, model_grader = g.Grader,
-        verdict = g.Verdict.Wire(), note = g.Note, reviewer = g.Reviewer, at = g.At, latest,
+        verdict = HumanVerdicts.Word(g.Verdict), note = g.Note, reviewer = g.Reviewer, at = g.At, latest,
     };
 
     private static async Task<IResult> Guarded(IBenchmarkStore? store, IHumanReviewStore? reviews, Func<IBenchmarkStore, IHumanReviewStore, Task<IResult>> work)

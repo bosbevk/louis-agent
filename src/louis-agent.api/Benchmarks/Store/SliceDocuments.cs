@@ -16,8 +16,8 @@ internal static class SliceDocuments
             ["mode"] = s.Mode, ["slice"] = s.Slice, ["n"] = s.N, ["passed"] = s.Passed, ["failed"] = s.Failed, ["unknown"] = s.Unknown, ["infrastructure"] = s.Infrastructure,
             ["tasks"] = new BsonArray(s.Tasks), ["too_few"] = s.TooFew,
             ["pass_rate"] = Nullable(s.PassRate), ["pass_at_k"] = Nullable(s.PassAtK), ["pass_hat_k"] = Nullable(s.PassHatK),
-            ["graders"] = new BsonArray(s.Graders.Select(g => new BsonDocument { ["grader"] = g.Grader, ["kind"] = g.Kind.ToString(), ["passed"] = g.Passed, ["failed"] = g.Failed, ["unknown"] = g.Unknown })),
-            ["kinds"] = new BsonArray(s.Kinds.Select(k => new BsonDocument { ["kind"] = k.Kind.ToString(), ["passed"] = k.Passed, ["failed"] = k.Failed, ["unknown"] = k.Unknown })),
+            ["graders"] = new BsonArray(s.Graders.Select(g => new BsonDocument { ["grader"] = g.Grader, ["kind"] = g.Kind.Wire(), ["passed"] = g.Passed, ["failed"] = g.Failed, ["unknown"] = g.Unknown })),
+            ["kinds"] = new BsonArray(s.Kinds.Select(k => new BsonDocument { ["kind"] = k.Kind.Wire(), ["passed"] = k.Passed, ["failed"] = k.Failed, ["unknown"] = k.Unknown })),
             ["scores"] = new BsonArray(s.Scores.Select(c => new BsonDocument { ["key"] = c.Key, ["mean"] = c.Mean, ["n"] = c.N })),
         }));
 

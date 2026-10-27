@@ -33,7 +33,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
             json.WriteStartObject();
             json.WriteString("name", grader.Name);
             json.WriteNumber("version", grader.Version);
-            json.WriteString("kind", grader.Kind.ToString());
+            json.WriteString("kind", grader.Kind.Wire());
             if (grader.Question is { } question) json.WriteString("question", question);
             json.WriteEndObject();
         }
@@ -43,7 +43,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         {
             json.WriteStartObject();
             json.WriteString("mode", use.Mode);
-            json.WriteString("level", use.Level.ToString());
+            json.WriteString("level", use.Level.Wire());
             Text(json, "role", use.Role);
             Text(json, "model", use.Model);
             json.WriteEndObject();
@@ -119,7 +119,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
                 json.WriteString("grader", grade.Grader);
                 json.WriteNumber("version", grade.Version);
                 json.WriteNumber("score", grade.Score);
-                json.WriteString("outcome", grade.Outcome.ToString());
+                json.WriteString("outcome", grade.Outcome.Wire());
                 json.WriteString("reason", grade.Reason);
                 if (grade.JudgeModel is not null) json.WriteString("judge_model", grade.JudgeModel);
                 if (grade.JudgePromptHash is not null) json.WriteString("judge_prompt_hash", grade.JudgePromptHash);
@@ -127,7 +127,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
             }
             json.WriteEndArray();
         }
-        if (conversation.Outcome is { } outcome) json.WriteString("outcome", outcome.ToString());
+        if (conversation.Outcome is { } outcome) json.WriteString("outcome", outcome.Wire());
     });
 
     /// <summary>A line of the runner's own shape, written by <see cref="SummaryExport"/>.</summary>

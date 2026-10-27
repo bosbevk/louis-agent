@@ -8,8 +8,9 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// </summary>
 public enum BenchmarkModelLevel
 {
-    Agent,
-    Specialist,
-    Minion,
-    Grader,
+    // PascalCase on purpose (Louis, 2026-10-27): stored runs and the protocol carry the text as written today; one lower-case style waits for protocol v2 (7c), which starts stored runs fresh.
+    [WireName("Agent")] Agent,
+    [WireName("Specialist")] Specialist,
+    [WireName("Minion")] Minion,
+    [WireName("Grader")] Grader,
 }

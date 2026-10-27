@@ -195,11 +195,11 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["commit"] = Nullable(run.Commit),
         ["graders"] = run.Graders is null ? BsonNull.Value : new BsonArray(run.Graders.Select(g => new BsonDocument
         {
-            ["name"] = g.Name, ["version"] = g.Version, ["kind"] = g.Kind.ToString(), ["question"] = Nullable(g.Question),
+            ["name"] = g.Name, ["version"] = g.Version, ["kind"] = g.Kind.Wire(), ["question"] = Nullable(g.Question),
         })),
         ["models"] = run.Models is null ? BsonNull.Value : new BsonArray(run.Models.Select(m => new BsonDocument
         {
-            ["mode"] = m.Mode, ["level"] = m.Level.ToString(), ["role"] = Nullable(m.Role), ["model"] = Nullable(m.Model),
+            ["mode"] = m.Mode, ["level"] = m.Level.Wire(), ["role"] = Nullable(m.Role), ["model"] = Nullable(m.Model),
         })),
         // Absent in a run stored before each; read as null: the scenarios the run asked for (F18 step 5.4), the run it re-scored (5b.2) and its roll-up (5c.2).
         ["split"] = Nullable(run.Split is { } split ? split.Wire() : null),
@@ -250,10 +250,10 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["order"] = c.Order, ["role"] = Nullable(c.Role), ["scores"] = Bson(c.Scores), ["errors"] = c.Errors, ["seconds"] = c.Seconds,
         ["grades"] = c.Grades is null ? BsonNull.Value : new BsonArray(c.Grades.Select(g => new BsonDocument
         {
-            ["grader"] = g.Grader, ["version"] = g.Version, ["score"] = g.Score, ["outcome"] = g.Outcome.ToString(), ["reason"] = g.Reason,
+            ["grader"] = g.Grader, ["version"] = g.Version, ["score"] = g.Score, ["outcome"] = g.Outcome.Wire(), ["reason"] = g.Reason,
             ["judge_model"] = Nullable(g.JudgeModel), ["judge_prompt_hash"] = Nullable(g.JudgePromptHash),
         })),
-        ["outcome"] = Nullable(c.Outcome?.ToString()),
+        ["outcome"] = Nullable(c.Outcome?.Wire()),
     };
 
     private static Conversation ConversationOf(BsonDocument d) => new(

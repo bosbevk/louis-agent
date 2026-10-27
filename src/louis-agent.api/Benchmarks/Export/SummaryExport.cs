@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Runs;
 
@@ -25,8 +26,8 @@ internal static class SummaryExport
         if (slice.PassRate is { } passRate) json.WriteNumber("pass_rate", passRate);
         if (slice.PassAtK is { } passAtK) json.WriteNumber("pass_at_k", passAtK);
         if (slice.PassHatK is { } passHatK) json.WriteNumber("pass_hat_k", passHatK);
-        Array(json, "graders", slice.Graders, (g, o) => { o.WriteString("grader", g.Grader); o.WriteString("kind", g.Kind.ToString()); Counts(o, g.Passed, g.Failed, g.Unknown); });
-        Array(json, "kinds", slice.Kinds, (k, o) => { o.WriteString("kind", k.Kind.ToString()); Counts(o, k.Passed, k.Failed, k.Unknown); });
+        Array(json, "graders", slice.Graders, (g, o) => { o.WriteString("grader", g.Grader); o.WriteString("kind", g.Kind.Wire()); Counts(o, g.Passed, g.Failed, g.Unknown); });
+        Array(json, "kinds", slice.Kinds, (k, o) => { o.WriteString("kind", k.Kind.Wire()); Counts(o, k.Passed, k.Failed, k.Unknown); });
         Array(json, "scores", slice.Scores, (s, o) => { o.WriteString("key", s.Key); o.WriteNumber("mean", s.Mean); o.WriteNumber("n", s.N); });
     });
 

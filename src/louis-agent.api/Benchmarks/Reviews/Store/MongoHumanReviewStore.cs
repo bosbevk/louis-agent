@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Api.Benchmarks.Store;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -35,7 +36,7 @@ public sealed class MongoHumanReviewStore : IHumanReviewStore
         await _grades.InsertOneAsync(new BsonDocument
         {
             ["run"] = grade.Run, ["mode"] = grade.Conversation.Mode, ["repeat"] = grade.Conversation.Repeat, ["task"] = grade.Conversation.Task,
-            ["grader"] = grade.Grader, ["verdict"] = grade.Verdict.ToString(), ["note"] = grade.Note, ["reviewer"] = grade.Reviewer,
+            ["grader"] = grade.Grader, ["verdict"] = grade.Verdict.Wire(), ["note"] = grade.Note, ["reviewer"] = grade.Reviewer,
             ["at"] = new BsonDateTime(grade.At.UtcDateTime),
         }, cancellationToken: cancellationToken);
     }

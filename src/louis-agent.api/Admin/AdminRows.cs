@@ -21,17 +21,17 @@ internal static class AdminRows
         started_at = r.StartedAt, ended_at = r.EndedAt,
         total = r.Total is null ? null : new { cost = r.Total.Cost, currency = r.Total.Currency, tokens = r.Total.Tokens, requests = r.Total.Requests },
         store_error = r.StoreError,
-        models = r.Models?.Select(m => new { m.Mode, level = m.Level.ToString(), m.Role, m.Model }),
+        models = r.Models?.Select(m => new { m.Mode, level = m.Level.Wire(), m.Role, m.Model }),
         eval = r.Eval, eval_version = r.EvalVersion, commit = r.Commit, rescore_of = r.RescoreOf,
-        graders = r.Graders?.Select(g => new { name = g.Name, version = g.Version, kind = g.Kind.ToString(), question = g.Question }),
+        graders = r.Graders?.Select(g => new { name = g.Name, version = g.Version, kind = g.Kind.Wire(), question = g.Question }),
     };
 
     public static object ConversationRow(BenchmarkDocuments.Conversation c, IReadOnlyList<Benchmarks.Reviews.HumanGrade>? human = null) => new
     {
         mode = c.Key.Mode, repeat = c.Key.Repeat, task = c.Key.Task, order = c.Order, role = c.Role, scores = c.Scores,
         errors = c.Errors, seconds = c.Seconds,
-        grades = c.Grades?.Select(g => new { grader = g.Grader, version = g.Version, score = g.Score, outcome = g.Outcome.ToString(), reason = g.Reason, judge_model = g.JudgeModel, judge_prompt_hash = g.JudgePromptHash }),
-        outcome = c.Outcome?.ToString(),
+        grades = c.Grades?.Select(g => new { grader = g.Grader, version = g.Version, score = g.Score, outcome = g.Outcome.Wire(), reason = g.Reason, judge_model = g.JudgeModel, judge_prompt_hash = g.JudgePromptHash }),
+        outcome = c.Outcome?.Wire(),
         // People's grades of this conversation (F18 step 6a.2): each reviewer's latest, beside the grades above; empty when nobody has graded it.
         human_grades = (human ?? []).Select(g => Endpoints.ReviewEndpoints.Row(g, latest: true)),
     };

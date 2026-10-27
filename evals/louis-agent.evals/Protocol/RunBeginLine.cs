@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
@@ -31,7 +32,7 @@ internal static class RunBeginLine
             json.WriteStartObject();
             json.WriteString("name", grader.Name);
             json.WriteNumber("version", grader.Version);
-            json.WriteString("kind", grader.Kind.ToString());
+            json.WriteString("kind", grader.Kind.Wire());
             // A human review carries the question a person is asked (F18 step 6a.3), so the portal shows what that run was asked.
             if (grader is Grading.Human.HumanReviewGrader review) json.WriteString("question", review.Question);
             json.WriteEndObject();
@@ -42,7 +43,7 @@ internal static class RunBeginLine
         {
             json.WriteStartObject();
             json.WriteString("mode", use.Mode);
-            json.WriteString("level", use.Level.ToString());
+            json.WriteString("level", use.Level.Wire());
             WriteText(json, "role", use.Role);
             WriteText(json, "model", use.Model);
             json.WriteEndObject();
