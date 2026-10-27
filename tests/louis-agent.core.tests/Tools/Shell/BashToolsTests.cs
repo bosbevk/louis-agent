@@ -29,6 +29,7 @@ public class BashToolsTests
     public void BashRun_RejectsPathsOutsideWorkspace() =>
         Assert.That(_tools.BashRun(scriptPath: "../outside.sh"), Does.Contain("outside the workspace"));
 
+    [Category("Integration")]
     [Test]
     public void FindBash_NeverReturnsTheWslStub()
     {

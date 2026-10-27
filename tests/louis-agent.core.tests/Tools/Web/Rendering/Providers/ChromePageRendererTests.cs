@@ -19,6 +19,7 @@ public class ChromePageRendererTests
             Throws.TypeOf<PageRenderException>().With.Message.Contains("127.0.0.1:1"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task APage_IsReadAsTheBrowserShowsIt()
     {

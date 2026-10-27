@@ -24,6 +24,7 @@ public class ChromeWebBrowserTests
 
     private const string Named = "Agent/1.0 (+https://example.test; reads a page on a user's behalf)";
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AVisit_SaysWhatItIs_WhenTheBrowserIsGivenAName()
     {
@@ -40,6 +41,7 @@ public class ChromeWebBrowserTests
         Assert.That(marker.ScriptResult, Is.EqualTo("true"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AVisit_WithoutAName_SendsChromesOwn()
     {
@@ -49,6 +51,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.ScriptResult, Does.Contain("Chrome/").And.Not.Contain("Agent/").And.Not.Contain("behalf"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AVisit_KeepsTheResponsesAskedFor_AndOnlyThose()
     {
@@ -62,6 +65,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.Html, Does.Contain("page"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task APagesWebSocket_IsBlocked()
     {
@@ -75,6 +79,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.Html, Does.Contain("socket-blocked").And.Not.Contain("socket-open"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AWebSocketFromAScriptMadeFrame_IsBlocked()
     {
@@ -87,6 +92,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.Html, Does.Contain("socket-blocked").And.Not.Contain("socket-open"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public void ACancelledVisit_GivesUpAtOnce_NotAfterItsTimeouts()
     {
@@ -105,6 +111,7 @@ public class ChromeWebBrowserTests
     // dropped after, so one user's area never reaches another's search.
     private static readonly BrowserSession Malmesbury = new([new BrowserCookie("f34area", "malmesbury", "httpbin.org")]);
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AVisitInASession_StartsWithItsCookies()
     {
@@ -113,6 +120,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.Html, Does.Contain("malmesbury"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task ASessionsCookies_StayInItsVisit()
     {
@@ -127,6 +135,7 @@ public class ChromeWebBrowserTests
         Assert.That(another.Html, Does.Contain("stellenbosch").And.Not.Contain("malmesbury"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task TheCookiesASiteSets_AreReturned_FromASessionsVisit()
     {
@@ -135,6 +144,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.Cookies, Has.Some.Matches<BrowserCookie>(c => c.Name == "f34store" && c.Value == "655b0c8f"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AScript_RunsAfterTheLoad_AndItsResultIsReturned()
     {
@@ -143,6 +153,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.ScriptResult, Is.EqualTo("loaded and scripted"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AScriptsRequests_AreHeldToTheAddressRule()
     {
@@ -152,6 +163,7 @@ public class ChromeWebBrowserTests
         Assert.That(visit.ScriptResult, Is.EqualTo("refused"));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public void AScriptThatFails_IsAWebBrowserException_WithItsReason()
     {
@@ -168,6 +180,7 @@ public class ChromeWebBrowserTests
         "fetch('https://httpbin.org/json'); setTimeout(() => { const d = document.createElement('div'); d.className = 'card'; " +
         "d.textContent = '" + thenDraw + "'; document.body.appendChild(d); }, 1500);</script>");
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task AVisitThatCaptures_EndsWhenItHasItsAnswer_NotWhenThePageGoesQuiet()
     {
@@ -183,6 +196,7 @@ public class ChromeWebBrowserTests
     // The cook, 2026-10-21: of six renders fired at once, one never came back, and the cook waited on it for good (the
     // load and the settle have timeouts; connecting, opening the page and reading it have none). A visit has a budget
     // for the whole of it: past it, the page is closed and the visit fails with its reason, never hangs.
+    [Category("Integration")]
     [Test, Category("Live")]
     public void AVisitThatOutlivesItsBudget_IsAWebBrowserException_NotAHang()
     {
@@ -196,6 +210,7 @@ public class ChromeWebBrowserTests
         Assert.That(watch.Elapsed, Is.LessThan(TimeSpan.FromSeconds(6)));
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public void ARedirectToAnInternalAddress_IsRefusedInsideTheBrowser()
     {

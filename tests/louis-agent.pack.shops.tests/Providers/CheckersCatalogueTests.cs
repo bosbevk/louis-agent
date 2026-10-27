@@ -276,6 +276,7 @@ public class CheckersCatalogueTests
         Assert.That(() => new CheckersCatalogue(new DownBrowser()).SearchAsync("chicken pieces", 5),
             Throws.TypeOf<ShopCatalogueException>().With.Message.Contains("didn't answer"));
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task FromMalmesbury_TheSearchIsMalmesburysStore()
     {
@@ -290,6 +291,7 @@ public class CheckersCatalogueTests
         Assert.That(found.Products, Is.Not.Empty);
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task Checkers_ShowsItsDeals_WithTheirWording()
     {
@@ -301,6 +303,7 @@ public class CheckersCatalogueTests
         Assert.That(products, Has.Some.Matches<ShopProduct>(p => p.Deal is { Text.Length: > 0 }), "deals come and go; chicken has had one all week");
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task Checkers_FindsItsProducts_WithPricesAndLinks()
     {

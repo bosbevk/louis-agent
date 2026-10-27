@@ -61,6 +61,7 @@ public class BenchmarkRescoreTests
         Assert.That(ordinary, Does.Not.Contain("rescore_of"));
     }
 
+    [Category("Integration")]
     [Test]
     public async Task TheStoredRunsExportReachesTheRunnersStdin_SoTheRescoreGradesTheSameTranscripts()
     {

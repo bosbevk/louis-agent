@@ -5,6 +5,7 @@ using LouisAgent.Core.Tools.Git.Running;
 namespace LouisAgent.Core.Tests.Tools.Git;
 
 // F22 step 4: the historian's tools on a small repository made for the test. Skipped when git isn't installed.
+[Category("Integration")]
 public class GitHistoryTests
 {
     private string _repo = null!;

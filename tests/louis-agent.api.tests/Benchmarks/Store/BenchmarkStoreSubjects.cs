@@ -20,6 +20,7 @@ public class InMemoryBenchmarkStoreTests : BenchmarkStoreContract
 /// service. Without it the fixture says it's inconclusive rather than passing. Its database is
 /// <c>puls_benchmarks_test</c> (or <c>BENCHMARKS_MONGO_DATABASE</c>), dropped when the fixture ends.
 /// </summary>
+[Category("Integration")]
 public class MongoBenchmarkStoreTests : BenchmarkStoreContract
 {
     private static string? Url => Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
@@ -49,6 +50,7 @@ public class InMemoryRunFieldsTests : BenchmarkRunFieldsContract
 }
 
 /// <summary>The same against MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set; its own database, dropped when the fixture ends.</summary>
+[Category("Integration")]
 public class MongoRunFieldsTests : BenchmarkRunFieldsContract
 {
     private static string? Url => Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");

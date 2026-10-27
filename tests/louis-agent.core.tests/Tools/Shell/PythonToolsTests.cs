@@ -110,6 +110,7 @@ public class PythonToolsTests
         Assert.That(result, Does.Contain("was killed"));
     }
 
+    [Category("Integration")]
     [Test]
     [Explicit("Creates a virtual environment and downloads a package from PyPI")]
     public void PythonInstallPackages_InstallsIntoVenvAndRunUsesIt()

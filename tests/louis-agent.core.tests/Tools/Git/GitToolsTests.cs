@@ -9,6 +9,7 @@ namespace LouisAgent.Core.Tests.Tools.Git;
 // repository made for each test, with a bare repository beside it as origin; skipped when git isn't installed. The
 // happy paths pin each command's exact form: --end-of-options needs git 2.24, and a command that refuses it would
 // show here, not in a chat.
+[Category("Integration")]
 public class GitToolsTests
 {
     private string _root = null!;

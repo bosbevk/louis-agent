@@ -195,6 +195,7 @@ public class CheckersStoreTests
         }
     }
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task Malmesbury_IsServedByAStoreOtherThanTheDefault()
     {

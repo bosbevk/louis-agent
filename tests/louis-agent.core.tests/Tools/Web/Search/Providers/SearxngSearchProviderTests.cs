@@ -129,6 +129,7 @@ public class SearxngSearchProviderTests
 
     // --- Against the SearXNG we run (F32 step 4): SEARXNG_URL set, as the Puls stack's puls-searxng on 127.0.0.1:8888 ---
 
+    [Category("Integration")]
     [Test, Category("Live")]
     public async Task TheSearxngWeRun_FindsAShopsProduct()
     {

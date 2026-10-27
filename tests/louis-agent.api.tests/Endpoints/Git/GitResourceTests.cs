@@ -12,6 +12,7 @@ namespace LouisAgent.Api.Tests.Endpoints.Git;
 // CL20 step 5 (ADR 0039, rules 2 to 4): the git routes name resources (commits and branches), a create answers 201 with its
 // Location, and a delete is a DELETE. On a small repository made for the test, through the API in memory. Skipped when git isn't
 // installed.
+[Category("Integration")]
 public class GitResourceTests
 {
     private string _repo = null!;

@@ -64,6 +64,7 @@ public class RescoreEndpointTests
         return client.SendAsync(request);
     }
 
+    [Category("Integration")]
     [Test]
     public async Task ARescore_Is201WithTheNewRunsLocation_AndIsRecordedAsARescoreCostingNothing()
     {
@@ -96,6 +97,7 @@ public class RescoreEndpointTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
+    [Category("Integration")]
     [Test]
     public async Task WhileAnotherRunRuns_Is409_AsAStartIs()
     {

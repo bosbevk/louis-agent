@@ -108,6 +108,7 @@ public class InMemoryHumanReviewStoreTests : HumanReviewStoreContract
 }
 
 /// <summary>The contract against MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set (as the benchmark store's own contract is): its own database, dropped when the fixture ends.</summary>
+[Category("Integration")]
 public class MongoHumanReviewStoreTests : HumanReviewStoreContract
 {
     private static string? Url => Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");

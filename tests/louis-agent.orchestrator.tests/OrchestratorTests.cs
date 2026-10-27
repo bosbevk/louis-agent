@@ -179,6 +179,7 @@ public class OrchestratorTests
         Assert.That(File.ReadAllText(Path.Combine(_dir, "state", "escalations.jsonl")), Does.Contain("card ref missing"));
     }
 
+    [Category("Integration")]
     [Test]
     public void VerifyFixCommit_PassesForACommitOnTheFixBranch_AndFailsForOneOnMain()
     {
@@ -197,6 +198,7 @@ public class OrchestratorTests
         Assert.That(tools.VerifyFixCommit("--all", "fix/x"), Does.StartWith("Error"));
     }
 
+    [Category("Integration")]
     [Test]
     public void ReturnToMain_StashesLeftoversAndChecksOutMain()
     {
