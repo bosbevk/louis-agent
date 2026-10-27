@@ -1,0 +1,22 @@
+@using System.Text.Json
+@* What the run ran with: the eval and its graders, the settings and the modes, and the lines the runner printed. *@
+<section class="card-p">
+    <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>What it ran with<span class="fold-note">the eval, its graders, the settings, the modes</span></summary>
+        <GraderList Run="Run" />
+        <dl class="explorer-fields">
+            @if (Run.TryGetProperty("settings", out var settings) && settings.ValueKind == JsonValueKind.Object)
+            {
+                foreach (var p in settings.EnumerateObject()) { <dt>@p.Name</dt><dd><code>@p.Value.GetString()</code></dd> }
+            }
+            @foreach (var m in Run.GetProperty("modes").EnumerateArray())
+            {
+                <dt>@m.GetProperty("name").GetString() · @m.GetProperty("repeat").GetInt32()</dt>
+                <dd><code>@string.Join(", ", m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()))</code>@(S(m, "role") is { } p ? $" · {p}" : "")@(S(m, "llm") is { } l ? $" · {l}" : "")</dd>
+            }
+        </dl>
+    </details>
+    @if (Run.TryGetProperty("log", out var log) && log.ValueKind == JsonValueKind.Array)
+    {
+        <details class="admin-details"><summary>The script's own lines (@log.GetArrayLength())</summary><pre class="admin-pre run-log">@string.Join("\n", log.EnumerateArray().Select(l => l.GetString()))</pre></details>
+    }
+</section>

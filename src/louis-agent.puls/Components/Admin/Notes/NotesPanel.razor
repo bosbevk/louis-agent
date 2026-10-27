@@ -1,0 +1,22 @@
+@* F18 step 7a.2: a run's notes, or one conversation's. It draws the notes it was given, newest first, and a small form; after a note is posted it only says so (RunNotesState), and the page's new copy of the run brings the note back (ADR 0042). *@
+<section class="notes-panel">
+    @if (Shown.Count == 0)
+    {
+        <p class="notes-empty muted">No notes yet.</p>
+    }
+    else
+    {
+        <ol class="notes">
+            @foreach (var note in Shown)
+            {
+                <li class="note"><span class="note-when muted">@NoteText.When(note.At)</span><span class="note-body">@note.Text</span></li>
+            }
+        </ol>
+    }
+    <textarea class="note-text" placeholder="@Placeholder" maxlength="@NoteText.MaxLength" @bind="_text" @bind:event="oninput"></textarea>
+    @if (_error is not null)
+    {
+        <p class="note-error">@_error</p>
+    }
+    <button type="button" class="note-add header-button" disabled="@(Blank || _busy)" @onclick="AddAsync">Add note</button>
+</section>

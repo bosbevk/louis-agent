@@ -15,22 +15,22 @@ using static LouisAgent.Api.Admin.AdminRows;
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
-/// The admin portal's endpoints (F27), all under <c>/admin</c> and all behind <see cref="AdminGate"/>: with no admin
-/// key configured every call is 403 and says what to set; with one, a call must present it. The checks and a run of
-/// one, recorded into the benchmark store as it runs (F31); without a store no run starts. The rows they send are
-/// <see cref="AdminRows"/>.
+/// The admin portal's routes: the checks, starting a run, and reading what it recorded. Everything is behind the admin key: with none configured every call is a 403 that says what to set, with one a call has to present it. Without a store no run starts.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class AdminEndpoints
 {
-    /// <summary>How long a run's "done" waits for its recording to finish (the ledger join and the last writes).</summary>
+    /// <summary>How long a run's "done" waits for its recording to finish.</summary>
     private static readonly TimeSpan RecordingWait = TimeSpan.FromSeconds(30);
 
     /// <summary>How many runs the Benchmarks page lists.</summary>
     private const int ListedRuns = 50;
 
+    /// <summary>Adds the admin portal's routes, all behind the admin key. The clock is for the notes' times, and a test can fix it.</summary>
     public static void MapAdmin(this IEndpointRouteBuilder routes, BenchmarkCatalog catalog, BenchmarkRunner runner, string? adminKey,
         IBenchmarkStore? store, BenchmarkRecorder? recorder, Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
-        string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null)
+        string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
+        TimeProvider? time = null)
     {
         var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(async (context, next) =>
         {
@@ -103,6 +103,7 @@ internal static class AdminEndpoints
 
         admin.MapStoredRuns(store, runner, reviews, calibrations);
         admin.MapReviews(store, reviews);
+        admin.MapNotes(store, time ?? TimeProvider.System);
         admin.MapRescore(catalog, runner, store, recorder, settingsOf);
         admin.MapCalibrations(catalog, runner, store, reviews, calibrations, calibrationRecorder);
 
@@ -138,6 +139,7 @@ internal static class AdminEndpoints
                 : ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoBenchmarkRun)));
     }
 
+    /// <summary>Streams a run's lines to the page as they come, then one last "done" with whether the recording kept everything.</summary>
     private static async IAsyncEnumerable<SseItem<string>> Events(BenchmarkRunner runner, BenchmarkRecorder? recorder, BenchmarkRun run,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
     {
@@ -147,7 +149,7 @@ internal static class AdminEndpoints
         yield return new SseItem<string>(System.Text.Json.JsonSerializer.Serialize(Row(run, stored)), "done");
     }
 
-    /// <summary>A read of the store: 503 without one, or when it doesn't answer, saying why.</summary>
+    /// <summary>Runs a read of the store: a 503 without a store, or when it doesn't answer, saying why.</summary>
     internal static async Task<IResult> FromStore(IBenchmarkStore? store, Func<IBenchmarkStore, Task<IResult>> read)
     {
         if (store is null)
@@ -162,9 +164,10 @@ internal static class AdminEndpoints
         }
     }
 
+    /// <summary>The words for a store that didn't answer.</summary>
     internal static string Unavailable(Exception ex) => MessageText.Format(ApiUserText.BenchmarkStoreUnavailable, new { Reason = ex.Message });
 
-    /// <summary>Whether the run's recording kept everything; false when it failed, took too long or never started.</summary>
+    /// <summary>Waits, up to a limit, for the run's recording to finish and says whether it kept everything. It says no if the recording failed, took too long or never started.</summary>
     private static async Task<BenchmarkRecorder.Result> StoredAsync(BenchmarkRecorder? recorder, string id, CancellationToken cancellationToken)
     {
         if (recorder?.RecordingOf(id) is not { } recording) return new BenchmarkRecorder.Result(false, null);
@@ -179,8 +182,5 @@ internal static class AdminEndpoints
     }
 }
 
-/// <summary>
-/// The body of <c>POST /v1/admin/benchmarks/{check}/runs</c>: how many repeats (1 to the runner's cap), and for an eval how it handles the web
-/// (F18 step 5.5): <c>web</c> (<c>record</c> or <c>off</c>) or <c>replay</c> (a recorded run's id, with the model's answers), not both.
-/// </summary>
+/// <summary>What starts a run: how many repeats, and for an eval how it handles the web. Either record it (or turn it off), or replay an earlier run's answers, not both.</summary>
 internal sealed record StartRunRequest(int? Repeat, string? Web = null, string? Replay = null);

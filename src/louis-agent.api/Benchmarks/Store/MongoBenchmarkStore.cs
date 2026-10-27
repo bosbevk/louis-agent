@@ -13,22 +13,32 @@ using LouisAgent.Core.Messages;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// The benchmark store in MongoDB (F31): <c>puls-mongo</c>'s <c>puls_benchmarks</c>, one collection per record
-/// (<c>runs</c>, <c>conversations</c>, <c>turns</c> with their events, <c>requests</c>). The documents are mapped by
-/// hand, field by field in snake case, so what <c>mongosh</c> shows is what the portal reads, and a check's own
-/// scores and a turn's stream events are kept as the JSON they came as. The indexes are made on first use. A server
-/// that doesn't answer fails a call within <see cref="Timeout"/>, so the recorder gives up quickly and the run goes on.
+/// The store in MongoDB: `puls_benchmarks` on `puls-mongo`, one collection per kind of record. Documents are mapped by hand, field by field in snake case, so what `mongosh` shows is what the portal reads. A server that doesn't answer fails a call within five seconds, so the recorder gives up quickly and the run carries on.
 /// </summary>
+/// <remarks>
+/// Repository, with the mapping written by hand. A check's own scores and a turn's stream events are kept as the JSON they came as, and the indexes are made the first time they are needed.
+/// Writing each mapper costs more than a generic one, but nothing the portal reads is hidden behind a convention.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoBenchmarkStore : IBenchmarkStore
 {
+    /// <summary>How long a call waits for the server before giving up.</summary>
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
 
+    /// <summary>The runs.</summary>
     private readonly IMongoCollection<BsonDocument> _runs;
+    /// <summary>The conversations.</summary>
     private readonly IMongoCollection<BsonDocument> _conversations;
+    /// <summary>The turns, with their stream events inside.</summary>
     private readonly IMongoCollection<BsonDocument> _turns;
+    /// <summary>The ledger's requests.</summary>
     private readonly IMongoCollection<BsonDocument> _requests;
+    /// <summary>The notes, which live in a collection of their own.</summary>
+    private readonly MongoRunNotes _notes;
+    /// <summary>Makes the indexes the first time anything needs them, and tries again if that failed.</summary>
     private readonly OnceItWorks _indexes;
 
+    /// <summary>Connects to `database` on the server at `url`, with short timeouts. Nothing is created until the first call.</summary>
     public MongoBenchmarkStore(string url, string database)
     {
         var settings = MongoClientSettings.FromConnectionString(url);
@@ -39,12 +49,14 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         _conversations = db.GetCollection<BsonDocument>("conversations");
         _turns = db.GetCollection<BsonDocument>("turns");
         _requests = db.GetCollection<BsonDocument>("requests");
+        _notes = new MongoRunNotes(db.GetCollection<BsonDocument>("run_notes"), (id, cancellationToken) => _runs.Find(ById(id)).AnyAsync(cancellationToken));
         _indexes = new OnceItWorks(CreateIndexesAsync);
     }
 
-    /// <summary>The database itself, for the tests to drop theirs.</summary>
+    /// <summary>The database itself, so a test can drop its own.</summary>
     internal IMongoDatabase Database => _runs.Database;
 
+    /// <summary>Makes the indexes the reads rely on.</summary>
     private async Task CreateIndexesAsync()
     {
         await _runs.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
@@ -55,22 +67,29 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
             Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("mode").Ascending("repeat").Ascending("task").Ascending("turn")));
         await _requests.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
             Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at")));
+        await _notes.CreateIndexAsync();
     }
 
+    /// <summary>Waits until the indexes exist, making them if this is the first call.</summary>
     private Task Ready() => _indexes.RunAsync();
 
+    /// <summary>Replace the document if there is one, otherwise insert it.</summary>
     private static readonly ReplaceOptions Upsert = new() { IsUpsert = true };
 
+    /// <summary>Finds the document with this id.</summary>
     private static FilterDefinition<BsonDocument> ById(BsonValue id) => Builders<BsonDocument>.Filter.Eq("_id", id);
 
+    /// <summary>Finds everything that belongs to this run.</summary>
     private static FilterDefinition<BsonDocument> OfRun(string run) => Builders<BsonDocument>.Filter.Eq("run", run);
 
+    /// <summary>Saves the run, replacing the one under its id.</summary>
     public async Task SaveRunAsync(Run run, CancellationToken cancellationToken = default)
     {
         await Ready();
         await _runs.ReplaceOneAsync(ById(run.Id), ToBson(run), Upsert, cancellationToken);
     }
 
+    /// <summary>The run, or nothing if there is none.</summary>
     public async Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -78,6 +97,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         return found is null ? null : RunOf(found);
     }
 
+    /// <summary>The newest runs first, up to the limit, and one check's only if asked.</summary>
     public async Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -87,12 +107,14 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         return found.Select(RunOf).ToArray();
     }
 
+    /// <summary>Saves a conversation, replacing the one under its key.</summary>
     public async Task SaveConversationAsync(string run, Conversation conversation, CancellationToken cancellationToken = default)
     {
         await Ready();
         await _conversations.ReplaceOneAsync(ById(ConversationId(run, conversation.Key)), ToBson(run, conversation), Upsert, cancellationToken);
     }
 
+    /// <summary>The run's conversations in the order they started.</summary>
     public async Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -100,12 +122,14 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         return found.Select(ConversationOf).ToArray();
     }
 
+    /// <summary>Saves a turn with its stream events, replacing the ones under its key.</summary>
     public async Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events, CancellationToken cancellationToken = default)
     {
         await Ready();
         await _turns.ReplaceOneAsync(ById(TurnId(run, turn.Key)), ToBson(run, turn, events), Upsert, cancellationToken);
     }
 
+    /// <summary>A conversation's turns in order, leaving the heavy stream events out.</summary>
     public async Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -116,6 +140,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         return found.Select(TurnOf).ToArray();
     }
 
+    /// <summary>A turn's stream events in the order they came; none for an unknown turn.</summary>
     public async Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -124,6 +149,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         return found?["events"].AsBsonArray.Select(e => EventOf(e.AsBsonDocument)).ToArray() ?? [];
     }
 
+    /// <summary>Adds the requests, tagged with their run. Nothing to do for an empty list.</summary>
     public async Task AddRequestsAsync(string run, IReadOnlyList<Request> requests, CancellationToken cancellationToken = default)
     {
         if (requests.Count == 0) return;
@@ -131,6 +157,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         await _requests.InsertManyAsync(requests.Select(r => ToBson(r with { Run = run })), cancellationToken: cancellationToken);
     }
 
+    /// <summary>The run's requests, by time.</summary>
     public async Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -138,6 +165,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         return found.Select(RequestOf).ToArray();
     }
 
+    /// <summary>Marks every run still 'running' as failed and ended now, and says how many.</summary>
     public async Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -147,6 +175,21 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         return (int)result.ModifiedCount;
     }
 
+    /// <summary>Adds a note. The notes live in `MongoRunNotes`, apart from the run.</summary>
+    public async Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at, ConversationKey? conversation = null, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        return await _notes.AddAsync(run, text, at, conversation, cancellationToken);
+    }
+
+    /// <summary>The run's notes, in the order written.</summary>
+    public async Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        return await _notes.OfRunAsync(run, cancellationToken);
+    }
+
+    /// <summary>Deletes the run and everything under it, notes included. Says whether there was anything.</summary>
     public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
     {
         await Ready();
@@ -154,17 +197,21 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         deleted += (await _conversations.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += (await _turns.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
+        deleted += await _notes.DeleteRunAsync(id, cancellationToken);
         return deleted > 0;
     }
 
     // The documents, field by field.
 
+    /// <summary>The id of a conversation's document: its run and its key.</summary>
     private static BsonDocument ConversationId(string run, ConversationKey key) =>
         new() { ["run"] = run, ["mode"] = key.Mode, ["repeat"] = key.Repeat, ["task"] = key.Task };
 
+    /// <summary>The id of a turn's document: its run, its conversation's key and its number.</summary>
     private static BsonDocument TurnId(string run, TurnKey key) =>
         new() { ["run"] = run, ["mode"] = key.Mode, ["repeat"] = key.Repeat, ["task"] = key.Task, ["turn"] = key.Turn };
 
+    /// <summary>A run as a Mongo document.</summary>
     internal static BsonDocument ToBson(Run run) => new()
     {
         ["_id"] = run.Id,
@@ -219,7 +266,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["slices"] = SliceDocuments.ToBson(run.Slices),
     };
 
-    /// <summary>A run as stored; a mode recorded before CL14 keeps "personality", read as its role (never rewritten).</summary>
+    /// <summary>A run read back from its document. A mode saved when roles were still called personalities keeps that field, read as its role and never rewritten.</summary>
     internal static Run RunOf(BsonDocument d) => new(
         d["_id"].AsString,
         d["check"].AsString,
@@ -246,16 +293,17 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         SplitOf(d.GetValue("split", BsonNull.Value)),
         StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)));
 
-    /// <summary>A mode's kept rates (F18 step 5a); a mode stored before them has none.</summary>
+    /// <summary>A mode's pass rates; a mode saved before they existed has none.</summary>
     private static ModeRates? RatesOf(BsonValue v) =>
         v is not { IsBsonDocument: true } ? null
             : new ModeRates(v["pass_at_k"].IsBsonNull ? null : v["pass_at_k"].ToDouble(), v["pass_hat_k"].IsBsonNull ? null : v["pass_hat_k"].ToDouble(),
                 v["k"].AsInt32, v["infrastructure"].AsInt32, v["retried"].AsInt32);
 
-    /// <summary>A run's kept split; a run stored before it was kept has none.</summary>
+    /// <summary>A run's split; a run saved before it was kept has none.</summary>
     private static BenchmarkRunSplit? SplitOf(BsonValue v) =>
         v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkRunSplit? split) ? split : null;
 
+    /// <summary>A conversation as a document, tagged with its run.</summary>
     private static BsonDocument ToBson(string run, Conversation c) => new()
     {
         ["_id"] = ConversationId(run, c.Key),
@@ -281,6 +329,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["outcome"] = Nullable(c.Outcome?.Wire()),
     };
 
+    /// <summary>A document turned back into the conversation it was.</summary>
     private static Conversation ConversationOf(BsonDocument d) => new(
         new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString),
         d["order"].AsInt32, StringOf(d["role"]), Json(d["scores"]), d["errors"].AsInt32, d["seconds"].ToDouble(),
@@ -289,6 +338,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
                 StringOf(g.GetValue("judge_model", BsonNull.Value)), StringOf(g.GetValue("judge_prompt_hash", BsonNull.Value)))).ToArray(),
         d.GetValue("outcome", BsonNull.Value).IsBsonNull ? null : Enum.Parse<BenchmarkOutcome>(d["outcome"].AsString, ignoreCase: true));
 
+    /// <summary>A turn as a document, with its stream events inside.</summary>
     private static BsonDocument ToBson(string run, Turn t, IReadOnlyList<StreamEvent> events) => new()
     {
         ["_id"] = TurnId(run, t.Key),
@@ -319,6 +369,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["events"] = new BsonArray(events.Select(e => new BsonDocument { ["type"] = e.Type, ["data"] = Bson(e.Data), ["at"] = Date(e.At) })),
     };
 
+    /// <summary>A document turned back into the turn it was, without its events.</summary>
     private static Turn TurnOf(BsonDocument d) => new(
         new TurnKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString, d["turn"].AsInt32),
         d["session"].AsString, d["question"].AsString, StringOf(d["answer"]), StringOf(d["role"]), StringOf(d["continued"]),
@@ -326,18 +377,20 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         d["seconds"].ToDouble(), StringOf(d["error"]), ToolsOf(d.GetValue("tools", BsonNull.Value)),
         FailureOf(d.GetValue("failure", BsonNull.Value)));
 
-    /// <summary>A turn's kept failure; a turn recorded before it was kept has none.</summary>
+    /// <summary>A turn's failure; a turn saved before failures were kept has none.</summary>
     private static BenchmarkTurnFailure? FailureOf(BsonValue v) =>
         v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkTurnFailure? failure) ? failure : null;
 
-    /// <summary>A turn's kept tool counts; a turn recorded before they were kept has none (null, never 0 calls).</summary>
+    /// <summary>A turn's tool counts; a turn saved before they were kept has none, which is not the same as zero calls.</summary>
     private static BenchmarkTools.Summary? ToolsOf(BsonValue v) => v is BsonDocument t
         ? new BenchmarkTools.Summary(t["calls"].AsInt32, t["failed"].AsInt32,
             t["reasons"].AsBsonArray.Select(r => new BenchmarkTools.Failure(r["tool"].AsString, r["reason"].AsString, r["count"].AsInt32)).ToArray())
         : null;
 
+    /// <summary>A stored event turned back into a stream event.</summary>
     private static StreamEvent EventOf(BsonDocument e) => new(e["type"].AsString, Json(e["data"]), DateOf(e["at"]));
 
+    /// <summary>A request as a document.</summary>
     private static BsonDocument ToBson(Request r) => new()
     {
         ["run"] = r.Run,
@@ -355,6 +408,7 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["duration_ms"] = r.DurationMs,
     };
 
+    /// <summary>A document turned back into the request it was.</summary>
     private static Request RequestOf(BsonDocument d) => new(
         d["run"].AsString,
         d["turn"].IsBsonNull ? null : new TurnKey(d["turn"]["mode"].AsString, d["turn"]["repeat"].AsInt32, d["turn"]["task"].AsString, d["turn"]["turn"].AsInt32),
@@ -364,33 +418,46 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
 
     // The values.
 
+    /// <summary>A run's status as the text we store.</summary>
     private static string Status(BenchmarkRunStatus status) => status.Wire();
 
+    /// <summary>A time as a Mongo date in UTC, or null when there is none.</summary>
     private static BsonValue Date(DateTimeOffset? at) => at is { } value ? new BsonDateTime(value.UtcDateTime) : BsonNull.Value;
 
+    /// <summary>A Mongo date turned back into a time, or nothing for null.</summary>
     private static DateTimeOffset? DateOf(BsonValue value) =>
         value.IsBsonNull ? null : new DateTimeOffset(value.ToUniversalTime(), TimeSpan.Zero);
 
+    /// <summary>A value, or Mongo's null when there is none. The same for numbers below.</summary>
     private static BsonValue Nullable(string? value) => value is null ? BsonNull.Value : new BsonString(value);
+    /// <summary>A whole number, or Mongo's null.</summary>
     private static BsonValue Nullable(int? value) => value is null ? BsonNull.Value : new BsonInt32(value.Value);
+    /// <summary>A decimal number, or Mongo's null.</summary>
     private static BsonValue Nullable(double? value) => value is null ? BsonNull.Value : new BsonDouble(value.Value);
+    /// <summary>A big whole number, or Mongo's null.</summary>
     private static BsonValue Nullable(long? value) => value is null ? BsonNull.Value : new BsonInt64(value.Value);
+    /// <summary>A money-sized number, or Mongo's null.</summary>
     private static BsonValue Nullable(decimal? value) => value is null ? BsonNull.Value : new BsonDecimal128(value.Value);
 
-    /// <summary>A stored name read back into its enum (ADR 0024: parsed once, never a number); one the build doesn't know is a document it can't read.</summary>
+    /// <summary>A stored name turned back into its enum, the way it was parsed on the way in. A name this build does not know means a document it cannot read.</summary>
     private static T ChoiceOf<T>(BsonValue value, string field) where T : struct, Enum =>
         SettingChoice.TryParse(value.AsString, out T? choice) && choice is { } known ? known
             : throw new InvalidDataException(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = field, Value = value.AsString }));
 
+    /// <summary>The text, or nothing when the stored value is null.</summary>
     private static string? StringOf(BsonValue value) => value.IsBsonNull ? null : value.AsString;
+    /// <summary>The number, or nothing when the stored value is null.</summary>
     private static long? LongOf(BsonValue value) => value.IsBsonNull ? null : value.ToInt64();
+    /// <summary>The number, or nothing when the stored value is null.</summary>
     private static decimal? DecimalOf(BsonValue value) => value.IsBsonNull ? null : value.ToDecimal();
 
-    /// <summary>JSON as BSON, any JSON value (an object, a list, a number), wrapped and unwrapped since BSON's root is a document.</summary>
+    /// <summary>Any JSON value as BSON. It is wrapped in an object and unwrapped again because BSON's root must be a document.</summary>
     private static BsonValue Bson(JsonElement json) => BsonDocument.Parse($$"""{"v":{{json.GetRawText()}}}""")["v"];
 
+    /// <summary>How BSON is written back out as JSON.</summary>
     private static readonly JsonWriterSettings RelaxedJson = new() { OutputMode = JsonOutputMode.RelaxedExtendedJson };
 
+    /// <summary>A BSON value turned back into the JSON it came as.</summary>
     private static JsonElement Json(BsonValue bson)
     {
         using var document = JsonDocument.Parse(new BsonDocument("v", bson).ToJson(RelaxedJson));

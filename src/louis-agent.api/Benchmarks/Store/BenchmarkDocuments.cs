@@ -6,13 +6,13 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// What a benchmark run keeps (F31), one record per collection of the store: the run, its conversations, their turns
-/// (with the turn's stream events apart, read only for a replay) and the ledger's requests. The same records in memory
-/// and in MongoDB, so a contract test holds both to one behaviour.
+/// What a benchmark run keeps, one record per collection of the store: the run, its conversations, their turns, and the ledger's requests. A turn's stream events are kept apart because they are heavy and only a replay reads them. Memory and MongoDB keep the same records, so one contract test holds both.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public static class BenchmarkDocuments
 {
-    /// <summary>A run of a check: what started it, how it ended, what it cost (step 4), and the plain lines (its log).</summary>
+    /// <summary>One run of a check: what started it, how it ended, what it cost and the lines it printed.</summary>
     public sealed record Run(
         string Id,
         string Check,
@@ -35,39 +35,32 @@ public static class BenchmarkDocuments
         string? RescoreOf = null,
         IReadOnlyList<BenchmarkSlice>? Slices = null);
 
-    /// <summary>One of the eval's graders, as the run started (F18 step 2a).</summary>
+    /// <summary>A person's note on a run, or on one of its conversations. It's kept apart from the run itself, so the recorder rewriting the run can't wipe it, and it's never edited: a correction is a new note.</summary>
+    public sealed record RunNote(string Text, DateTimeOffset At, ConversationKey? Conversation = null);
+
+    /// <summary>One of the eval's graders, as the run started.</summary>
     public sealed record Grader(string Name, int Version, BenchmarkGraderKind Kind, string? Question = null);
 
-    /// <summary>The model one level of the run ran on (F18 step 2a): its mode, its level and the model ("unknown" when not known).</summary>
+    /// <summary>Which model one level of a mode ran on, so runs on different models can be told apart.</summary>
     public sealed record ModelUse(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
-    /// <summary>
-    /// A mode's repeat as it opened its sessions, and (F18 step 5a) the pass@k and pass^k the runner wrote when it was done, over the repeats up to
-    /// this one; null for a run from before the rates, or a repeat still going.
-    /// </summary>
+    /// <summary>One repeat of a mode: the toolsets and role it opened its sessions with and, once the repeat is done, its pass rates.</summary>
     public sealed record Mode(string Name, int Repeat, IReadOnlyList<string> Toolsets, string? Role, string? Llm, ModeRates? Rates = null);
 
-    /// <summary>
-    /// What the runner wrote on a mode's <c>mode_done</c> line (F18 step 5a): its pass@k and pass^k (null when no trial counted: never 0), the k they are
-    /// over, and how many trials were left out for the infrastructure or run a second time. The API only keeps them; the formula is the harness's.
-    /// </summary>
+    /// <summary>The pass rates the runner wrote when a repeat finished: pass@k and pass^k, over how many trials, and how many were left out or run again. We only keep them; the maths is the runner's.</summary>
     public sealed record ModeRates(double? PassAtK, double? PassHatK, int K, int Infrastructure, int Retried);
 
-    /// <summary>The run's cost, from the ledger with <c>UsageReport.Total</c>; <see cref="Cost"/> null when a price was unknown.</summary>
+    /// <summary>What a run cost, worked out from the ledger. The cost is empty when a price was unknown, never zero.</summary>
     public sealed record Total(decimal? Cost, string Currency, long Tokens, int Requests);
 
-    /// <summary>A conversation's result; <see cref="Order"/> is when it started in its run, so the check's order holds.</summary>
+    /// <summary>How one conversation went: its scores, errors, time and each grader's verdict. `Order` is when it started, so the eval's own order holds.</summary>
     public sealed record Conversation(ConversationKey Key, int Order, string? Role, JsonElement Scores, int Errors, double Seconds,
         IReadOnlyList<Grade>? Grades = null, BenchmarkOutcome? Outcome = null);
 
-    /// <summary>One grader's verdict on a conversation (F18 step 2a).</summary>
+    /// <summary>One grader's verdict on a conversation, with its reason and, for a model judge, which model and prompt gave it.</summary>
     public sealed record Grade(string Grader, int Version, double Score, BenchmarkOutcome Outcome, string Reason, string? JudgeModel = null, string? JudgePromptHash = null);
 
-    /// <summary>
-    /// One turn, without its stream events (<see cref="IBenchmarkStore.TurnEventsAsync"/>). <see cref="Tools"/> is what
-    /// its tools did, counted when it was recorded; null for a turn recorded before the counts were kept. <see cref="Failure"/> is
-    /// the infrastructure's failure that ended it (F18 step 5.1), null when it ended on its own.
-    /// </summary>
+    /// <summary>One turn of a conversation, without its stream events: what was asked and answered, what the tools did, how long it took, and how it failed if it did.</summary>
     public sealed record Turn(
         TurnKey Key,
         string Session,
@@ -83,13 +76,10 @@ public static class BenchmarkDocuments
         BenchmarkTools.Summary? Tools = null,
         BenchmarkTurnFailure? Failure = null);
 
-    /// <summary>One stream event of a turn, kept for its replay.</summary>
+    /// <summary>One event from a turn's stream, kept so the turn can be replayed.</summary>
     public sealed record StreamEvent(string Type, JsonElement Data, DateTimeOffset? At);
 
-    /// <summary>
-    /// One model request from the ledger (step 4), with the turn it belongs to when the join found one. Tokens and cost
-    /// are null when the ledger doesn't know them (a cancelled request, FX9; a model without a price), never 0.
-    /// </summary>
+    /// <summary>One model request from the ledger, tied to its turn when we could find it. Tokens and cost are empty when the ledger did not know them, never zero.</summary>
     public sealed record Request(
         string Run,
         TurnKey? Turn,

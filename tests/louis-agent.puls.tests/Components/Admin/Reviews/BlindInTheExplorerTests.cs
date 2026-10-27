@@ -1,5 +1,6 @@
 using LouisAgent.Testing;
 using System.Text.Json;
+using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
 using LouisAgent.Web.Shared.Api;
@@ -8,12 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Reviews;
 
-// F18 step 6a.3 (Louis's pick: "hide the judge's chip too"): in the run explorer, a conversation of a run with a human review shows the review panel, and the judge's verdict is in NO
-// markup of the page until the reviewer has graded: not in the panel, not in the conversation lists' chips (colour or hover). Written first: the explorer knew nothing of reviews.
+/// <summary>
+/// In the run explorer, a conversation of a run with a human review shows the review panel, and the judge's verdict is in no markup of the page until the reviewer has graded: not in the panel, and not in the conversation lists' chips, neither colour nor hover.
+/// </summary>
 public class BlindInTheExplorerTests
 {
+    /// <summary>The judge's reason, which must stay out of the page until the reviewer has graded.</summary>
     private const string JudgeReason = "feeds four with portions that add up";
 
+    /// <summary>A run with a human review and one conversation.</summary>
     private static readonly string Run = SampleRole.Fill("""
         {"run":{"id":"run1","check":"puls-cook","repeat":1,
                 "graders":[{"name":"no-error","version":1,"kind":"FixedRule","question":null},{"name":"meal-for-people","version":1,"kind":"Model","question":null},
@@ -29,20 +33,31 @@ public class BlindInTheExplorerTests
          "requests":[]}
         """).Replace("__REASON__", JudgeReason);
 
+    /// <summary>Renders the explorer as this reviewer (or nobody), opened at a task if one is given.</summary>
     private static IRenderedComponent<RunExplorer> Render(string? reviewer, string? openTask)
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+
+        // The reviewer's name is kept in the browser's storage; pretend this reviewer already typed theirs.
         if (reviewer is not null) ctx.JSInterop.Setup<string?>("localStorage.getItem", ReviewerState.StorageKey).SetResult(reviewer);
+
+        // What the explorer needs: an API that answers nothing, who the reviewer is, and the notes state.
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         var state = new ReviewerState(ctx.JSInterop.JSRuntime);
         ctx.Services.AddSingleton(state);
+        ctx.Services.AddSingleton(new RunNotesState());
+
+        // Render it on the run. With no task to open we are at the run's tiles, so click through to the list of conversations.
         var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(Run).RootElement.Clone()).Add(x => x.OpenTask, openTask));
-        if (openTask is null) cut.Find(".tile").Click(); // the list of conversations is the level below the run's tiles
+        if (openTask is null) cut.Find(".tile").Click();
+
+        // Wait until the reviewer's name has loaded, so the blind rules know who is looking.
         cut.WaitForState(() => state.Name == reviewer || reviewer is null);
         return cut;
     }
 
+    /// <summary>A conversation of a run with a human review shows the review panel, with its question, what was asked and the answer.</summary>
     [Test]
     public void AConversationOfARunWithAHumanReview_ShowsTheReviewPanel_WithItsQuestionAskAndAnswer()
     {
@@ -53,6 +68,7 @@ public class BlindInTheExplorerTests
         Assert.That(cut.Find(".review-answer").TextContent, Does.Contain("Bobotie vir vier."));
     }
 
+    /// <summary>Before the reviewer grades, the judge's reason is nowhere in the page: not in the conversation, not in the list, not with no name set.</summary>
     [Test]
     public void BeforeTheReviewerGrades_TheJudgesReasonIsInNoMarkupOfThePage_AtTheConversationListEither()
     {
@@ -61,6 +77,7 @@ public class BlindInTheExplorerTests
         Assert.That(Render(null, null).Markup, Does.Not.Contain(JudgeReason), "with no name set");
     }
 
+    /// <summary>In the list, a hidden judge's chip has no colour, while the fixed rule's chip keeps its own.</summary>
     [Test]
     public void TheListsChipOfAHiddenJudge_HasNoColour_AndTheFixedRulesChipKeepsIt()
     {
@@ -71,6 +88,7 @@ public class BlindInTheExplorerTests
         Assert.That(chips.Single(c => c.TextContent == "no-error").ClassList, Does.Contain("ok"));
     }
 
+    /// <summary>A conversation the review had nothing to ask about shows no panel, even though the run has a review.</summary>
     [Test]
     public void AConversationWithNoPendingReviewGrade_ShowsNoPanel_ThoughTheRunHasAReview()
     {
@@ -80,12 +98,14 @@ public class BlindInTheExplorerTests
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
+        ctx.Services.AddSingleton(new RunNotesState());
 
         var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(run).RootElement.Clone()).Add(x => x.OpenTask, "bobotie"));
 
         Assert.That(cut.FindAll(".review-panel"), Is.Empty);
     }
 
+    /// <summary>A run with no human review shows no panel, and the judge's chip as before.</summary>
     [Test]
     public void ARunWithNoHumanReview_ShowsNoPanel_AndTheJudgesChipAsItWas()
     {
@@ -94,6 +114,7 @@ public class BlindInTheExplorerTests
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ => new HttpResponseMessage())) { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
+        ctx.Services.AddSingleton(new RunNotesState());
 
         var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, JsonDocument.Parse(run).RootElement.Clone()).Add(x => x.OpenTask, null));
         cut.Find(".tile").Click();

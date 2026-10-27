@@ -11,11 +11,22 @@ namespace LouisAgent.Api.Tests.Benchmarks.Store;
 /// <summary>The contract against the in-memory store: always, on every machine and on CI.</summary>
 public class InMemoryBenchmarkStoreTests : BenchmarkStoreContract
 {
+    /// <summary>A fresh in-memory store for each test.</summary>
     protected override IBenchmarkStore CreateStore() => new InMemoryBenchmarkStore();
 }
 
-/// <summary>The run-fields contract (F18 steps 5b.2, 5c.2) against the in-memory store.</summary>
+/// <summary>
+/// The run-fields rules, run against the in-memory store.
+/// </summary>
 public class InMemoryRunFieldsTests : BenchmarkRunFieldsContract
 {
+    /// <summary>A fresh in-memory store for each test.</summary>
+    protected override IBenchmarkStore CreateStore() => new InMemoryBenchmarkStore();
+}
+
+/// <summary>The notes rules, run against the in-memory store.</summary>
+public class InMemoryNotesTests : BenchmarkNotesContract
+{
+    /// <summary>A fresh in-memory store for each test.</summary>
     protected override IBenchmarkStore CreateStore() => new InMemoryBenchmarkStore();
 }

@@ -17,6 +17,7 @@ builder.Services.AddSingleton<ChatStore>();
 builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<CurrencyState>();
 builder.Services.AddScoped<LouisAgent.Puls.Admin.Reviews.ReviewerState>();
+builder.Services.AddScoped<LouisAgent.Puls.Admin.Notes.RunNotesState>();
 builder.Services.AddSingleton(PulsText.Afrikaans);   // Puls speaks Afrikaans
 
 await builder.Build().RunAsync();

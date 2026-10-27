@@ -20,25 +20,22 @@ using Microsoft.Extensions.AI;
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
-/// The API as <c>Program.cs</c> builds it, in memory (CL20 step 1, ADR 0039): the same <c>AddApi</c>, the same key gate and the same
-/// <c>MapApi</c> and <c>MapAdmin</c>, on a test server with no port. The agent behind it needs no network and no model call: its
-/// engine is built on a client that is never called, as <c>AgentSessionsTests</c> builds its sessions. The admin parts are built as
-/// <c>Program.cs</c> builds them, with no store and no admin key unless the test gives them: the default checks, no recorder.
+/// The API as `Program.cs` builds it, but in memory on a test server with no port: the same key gate, routes and admin parts. The agent behind it never calls a model, and the admin parts have no store and no admin key unless the test gives them.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class ApiTestHost
 {
+    /// <summary>The repository's folder, found from where the tests run.</summary>
     public static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
     /// <summary>
-    /// The API with every route mapped; <paramref name="apiKey"/> adds the key gate, as a key set in the environment does, and
-    /// <paramref name="adminKey"/> and <paramref name="store"/> open the admin portal and its benchmark store (none: closed, no store; F18 step 5.2), and a test of the runs gives its own <paramref name="catalog"/>, <paramref name="runner"/> and <paramref name="recorder"/> (F18 step 5b.2),
-    /// and <paramref name="workspaceRoot"/> is the folder the agent works in (this repository when none: a test that writes or commits
-    /// names a folder of its own).
+    /// Starts the API in memory the way Program.cs builds it, on a test server with no port. Give it an admin key and a store to open the admin portal, and a clock to fix
+    /// the time notes are stamped with. A test that writes or commits gives its own workspace folder.
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null, IBenchmarkStore? store = null,
         BenchmarkRunner? runner = null, BenchmarkRecorder? recorder = null, BenchmarkCatalog? catalog = null, IHumanReviewStore? reviews = null,
-        ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null)
+        ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null, TimeProvider? time = null)
     {
         var host = HostContext(workspaceRoot ?? RepoRoot);
         var builder = WebApplication.CreateBuilder();
@@ -51,7 +48,7 @@ internal static class ApiTestHost
 
         var benchmarks = catalog ?? new BenchmarkCatalog();
         api.MapAdmin(benchmarks, runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey, store, recorder,
-            _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations, calibrationRecorder);
+            _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations, calibrationRecorder, time);
         return app;
     }
 
@@ -78,6 +75,7 @@ internal static class ApiTestHost
     /// <summary>Who may call the route, as the key gate reads it.</summary>
     public static RouteAccess Access(RouteEndpoint endpoint) => AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
 
+    /// <summary>What the API runs on: an engine over a model that is never called, with the Puls identity and the shops pack.</summary>
     private static AgentHostContext HostContext(string workspaceRoot)
     {
         var options = new AgentOptions { WorkspaceRoot = workspaceRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null };
@@ -91,13 +89,17 @@ internal static class ApiTestHost
     /// <summary>A chat client that is never called: no route test sends a message.</summary>
     private sealed class NoModel : IChatClient
     {
+        /// <summary>Never called: no route test sends a message.</summary>
         public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
             CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
+        /// <summary>Never called: no route test streams a message.</summary>
         public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
             ChatOptions? options = null, CancellationToken cancellationToken = default) => throw new NotSupportedException();
 
+        /// <summary>Has no services to offer.</summary>
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
+        /// <summary>Nothing to clean up.</summary>
         public void Dispose() { }
     }
 }

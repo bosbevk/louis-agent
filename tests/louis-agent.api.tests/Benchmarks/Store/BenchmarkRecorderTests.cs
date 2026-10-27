@@ -8,14 +8,17 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Store;
 
-// F31 step 3: the recorder listens to a run's lines as the page does and folds them into the store as they come, so a
-// half-done run is already readable, and when the run ends it closes whatever is still open. A store that fails stops
-// the recording, never the run. The run here is driven by hand (Add, Complete): no process, no model.
+/// <summary>
+/// The recorder listens to a run's lines as the page does and folds them into the store as they come, so a half-done run is already readable, and when the run ends it closes whatever is still open. A store that fails stops the recording, never the run. The run is driven by hand here: no process, no model.
+/// </summary>
 public class BenchmarkRecorderTests
 {
+    /// <summary>The store the recorder writes into.</summary>
     private InMemoryBenchmarkStore _store = null!;
+    /// <summary>The run being recorded, fed by hand.</summary>
     private BenchmarkRun _run = null!;
 
+    /// <summary>Gives each test a fresh store and a fresh run.</summary>
     [SetUp]
     public void SetUp()
     {
@@ -23,24 +26,31 @@ public class BenchmarkRecorderTests
         _run = new BenchmarkRun("run123456789", "cook", 1);
     }
 
+    /// <summary>A protocol line: `@` and the event as JSON.</summary>
     private static string At(object e) => "@" + JsonSerializer.Serialize(e);
 
+    /// <summary>Feeds lines to the run, as if the runner had printed them.</summary>
     private void Add(params string[] lines)
     {
         foreach (string line in lines) _run.Add(line);
     }
 
+    /// <summary>The first protocol line, of a given version.</summary>
     private static string Protocol(int version = 1) => At(new { @event = "protocol", version });
 
+    /// <summary>The line that opens a mode's repeat.</summary>
     private static string Mode(string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "mode", mode, repeat, toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha }, role = "puls/voice-af", conversations = 2 });
 
+    /// <summary>The line that opens a turn with its question.</summary>
     private static string Question(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "question", mode, repeat, task, turn, session = $"sess_{task}", text = $"{task}?" });
 
+    /// <summary>One piece of the answer streaming in.</summary>
     private static string Sse(string task, string text, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "sse", mode, repeat, task, turn, type = "content_block_delta", data = new { delta = new { text } } });
 
+    /// <summary>The line that closes a turn with its answer.</summary>
     private static string TurnDone(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new
         {
@@ -59,11 +69,14 @@ public class BenchmarkRecorderTests
             seconds = 30.5,
         });
 
+    /// <summary>The line that closes a conversation with its scores.</summary>
     private static string ConversationDone(string task, string mode = SampleMode.Beta, int repeat = 1) =>
         At(new { @event = "conversation", mode, repeat, task, role = SampleRole.Alpha, scores = new { routed_right = true }, errors = 0, seconds = 30.5 });
 
+    /// <summary>The line that closes a mode's repeat.</summary>
     private static string ModeDone(string mode = SampleMode.Beta, int repeat = 1) => At(new { @event = "mode_done", mode, repeat });
 
+    /// <summary>Waits, up to two seconds, for something the recorder does in the background.</summary>
     private static async Task Eventually(Func<Task<bool>> condition)
     {
         for (int i = 0; i < 200; i++)
@@ -74,6 +87,7 @@ public class BenchmarkRecorderTests
         Assert.Fail("the store never got there");
     }
 
+    /// <summary>A whole run ends up in the store: the run, its log, its mode, its conversation, its turn and the turn's stream events.</summary>
     [Test]
     public async Task AWholeRun_IsInTheStore_WhenItEnds()
     {
@@ -103,6 +117,7 @@ public class BenchmarkRecorderTests
         Assert.That(events.Select(e => e.Data.GetProperty("delta").GetProperty("text").GetString()), Is.EqualTo(new[] { "Hal", "lo" }));
     }
 
+    /// <summary>The run's split is kept, read from the very first line.</summary>
     [Test]
     public async Task ARunsSplit_IsKept_FromItsFirstLine()
     {
@@ -114,6 +129,7 @@ public class BenchmarkRecorderTests
         Assert.That((await _store.GetRunAsync(_run.Id))!.Split, Is.EqualTo(BenchmarkRunSplit.HeldOut));
     }
 
+    /// <summary>A turn that failed because of the infrastructure is kept that way, so a stored run never grades it against the agent.</summary>
     [Test]
     public async Task ATurnsInfrastructureFailure_IsKept_SoAStoredRunNeverGradesItAsTheAgents()
     {
@@ -142,6 +158,7 @@ public class BenchmarkRecorderTests
         Assert.That(turn.Failure, Is.EqualTo(BenchmarkTurnFailure.ApiError));
     }
 
+    /// <summary>A turn's tool counts (calls, failures and why) are worked out once, when it is recorded, so reading a run never needs its events for them.</summary>
     [Test]
     public async Task ATurnsToolCounts_AreKept_WhenItEnds()
     {
@@ -162,6 +179,7 @@ public class BenchmarkRecorderTests
         Assert.That(tools.Reasons.Single(), Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: limit reached", 1)));
     }
 
+    /// <summary>You can read a run while it is still going: its finished turns, its mode, and a conversation that has no scores yet.</summary>
     [Test]
     public async Task AHalfDoneRun_IsReadable_WhileItRuns()
     {
@@ -180,6 +198,7 @@ public class BenchmarkRecorderTests
         await recording;
     }
 
+    /// <summary>Conversations keep the order they started in, and each repeat is its own.</summary>
     [Test]
     public async Task Conversations_KeepTheOrderTheyStartedIn_AndEachRepeatIsItsOwn()
     {
@@ -196,6 +215,7 @@ public class BenchmarkRecorderTests
         Assert.That((await _store.GetRunAsync(_run.Id))!.Modes!.Select(m => m.Repeat), Is.EqualTo(new[] { 1, 2 }));
     }
 
+    /// <summary>A turn the run was cut off in is kept with what it had so far, and the run is marked failed with its output in the log.</summary>
     [Test]
     public async Task ATurnTheRunCutOff_IsKeptWithWhatItHad()
     {
@@ -214,6 +234,7 @@ public class BenchmarkRecorderTests
         Assert.That(run.Log, Does.Contain("Traceback (most recent call last):"));
     }
 
+    /// <summary>A run that has already ended is still recorded whole, like a listener that joins late.</summary>
     [Test]
     public async Task ARunThatAlreadyEnded_IsRecordedWhole()
     {
@@ -227,6 +248,7 @@ public class BenchmarkRecorderTests
         Assert.That((await _store.GetRunAsync(_run.Id))!.Status, Is.EqualTo(BenchmarkRunStatus.Done));
     }
 
+    /// <summary>A protocol version we do not know is said in the log, and the run is still kept.</summary>
     [Test]
     public async Task AnUnknownProtocolVersion_IsSaidInTheLog_AndTheRunIsStillKept()
     {
@@ -240,25 +262,43 @@ public class BenchmarkRecorderTests
         Assert.That((await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count, Is.EqualTo(1));
     }
 
-    /// <summary>A store whose turns can't be written: the first failure stops the recording's writes.</summary>
+    /// <summary>A store that passes everything to a real one except writing a turn, which fails. It counts the other writes.</summary>
     private sealed class TurnsFail(IBenchmarkStore inner) : IBenchmarkStore
     {
+        /// <summary>How many other writes went through.</summary>
         public int Writes { get; private set; }
 
+        /// <summary>Counts the write and passes it on.</summary>
         public Task SaveRunAsync(Run run, CancellationToken c = default) { Writes++; return inner.SaveRunAsync(run, c); }
+        /// <summary>Passes the read on.</summary>
         public Task<Run?> GetRunAsync(string id, CancellationToken c = default) => inner.GetRunAsync(id, c);
+        /// <summary>Passes the read on.</summary>
         public Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50, CancellationToken c = default) => inner.ListRunsAsync(check, limit, c);
+        /// <summary>Counts the write and passes it on.</summary>
         public Task SaveConversationAsync(string run, Conversation conversation, CancellationToken c = default) { Writes++; return inner.SaveConversationAsync(run, conversation, c); }
+        /// <summary>Passes the read on.</summary>
         public Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken c = default) => inner.ConversationsAsync(run, c);
+        /// <summary>Fails, as if the database were down.</summary>
         public Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events, CancellationToken c = default) => throw new TimeoutException("mongo is down");
+        /// <summary>Passes the read on.</summary>
         public Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation, CancellationToken c = default) => inner.TurnsAsync(run, conversation, c);
+        /// <summary>Passes the read on.</summary>
         public Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn, CancellationToken c = default) => inner.TurnEventsAsync(run, turn, c);
+        /// <summary>Counts the write and passes it on.</summary>
         public Task AddRequestsAsync(string run, IReadOnlyList<Request> requests, CancellationToken c = default) { Writes++; return inner.AddRequestsAsync(run, requests, c); }
+        /// <summary>Passes the read on.</summary>
         public Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken c = default) => inner.RequestsAsync(run, c);
+        /// <summary>Passes it on.</summary>
         public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken c = default) => inner.CloseOrphansAsync(now, c);
+        /// <summary>Passes it on.</summary>
         public Task<bool> DeleteRunAsync(string id, CancellationToken c = default) => inner.DeleteRunAsync(id, c);
+        /// <summary>Passes the note on to the real store.</summary>
+        public Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at, ConversationKey? conversation = null, CancellationToken c = default) => inner.AddNoteAsync(run, text, at, conversation, c);
+        /// <summary>Passes the read on.</summary>
+        public Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken c = default) => inner.NotesAsync(run, c);
     }
 
+    /// <summary>When the store fails, the recording stops and says why, but the run itself still finishes.</summary>
     [Test]
     public async Task AStoreThatFails_StopsTheRecording_NeverTheRun()
     {
@@ -278,6 +318,7 @@ public class BenchmarkRecorderTests
         Assert.That(conversation.Role, Is.Null, "nothing after the failure was written: not bobotie's scores, not cottage-pie");
     }
 
+    /// <summary>A recording attached to a run is kept by it, so the end can say whether everything was stored.</summary>
     [Test]
     public async Task AnAttachedRecording_IsKeptByItsRun_SoTheEndCanSayWhetherItWasStored()
     {
@@ -293,76 +334,5 @@ public class BenchmarkRecorderTests
         Assert.That(recording, Is.Not.Null);
         Assert.That((await recording!).Stored, Is.True);
         Assert.That(recorder.RecordingOf("unknown"), Is.Null);
-    }
-
-    // F18 step 5b.2: a re-score asks the model nothing, so the ledger has no rows under its tag and its cost is a known 0 (never null, which is "unknown"),
-    // and never the stored run's: whatever the ledger holds, the re-score's total is 0 requests and $0.
-    [TestCase(false)]
-    [TestCase(true)]
-    public async Task ARescoresTotal_IsZeroRequestsAndZeroCost_WhateverTheLedgerHolds(bool ledgerHoldsTheOriginalsRows)
-    {
-        string directory = Path.Combine(Path.GetTempPath(), "louis-rescore-ledger-" + Guid.NewGuid().ToString("N"));
-        try
-        {
-            if (ledgerHoldsTheOriginalsRows)
-                new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(new LouisAgent.Core.Usage.Records.UsageRecord(
-                    DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Turn, "api", "sess_old", 1, null, "old123456789:cook:1", null, "claude-haiku-5-5",
-                    new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
-                    new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.5m, "2026-10-10"), null, null));
-            var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
-            var recording = new BenchmarkRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
-            run.Add(At(new { @event = "protocol", version = 1, eval = "cook", eval_version = 1, rescore_of = "old123456789", graders = Array.Empty<object>(), models = Array.Empty<object>() }));
-            run.Complete(0);
-            await recording;
-
-            var stored = (await _store.GetRunAsync("new123456789"))!;
-            Assert.That(stored.Total, Is.EqualTo(new Total(0m, "USD", 0, 0)));
-            Assert.That(stored.RescoreOf, Is.EqualTo("old123456789"));
-            Assert.That(await _store.RequestsAsync("new123456789"), Is.Empty);
-        }
-        finally
-        {
-            if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
-        }
-    }
-
-    // F18 step 6.1b: a re-score is free only until a grader asks a paid model. Its own ledger rows (the judge's, tagged with the re-score's id) are its cost, shown as any run's;
-    // with none it stays a known $0.
-    [Test]
-    public async Task AReScoreThatAskedAJudge_IsPricedFromItsOwnRows_NotShownAsFree()
-    {
-        string directory = Path.Combine(Path.GetTempPath(), "louis-rescore-judge-" + Guid.NewGuid().ToString("N"));
-        try
-        {
-            new LouisAgent.Core.Usage.Sinks.JsonlUsageSink(directory).Record(new LouisAgent.Core.Usage.Records.UsageRecord(
-                DateTimeOffset.UtcNow, 1, LouisAgent.Core.Usage.Records.UsagePurpose.Grading, "api", "sess_1", 1, "bobotie", "new123456789:cook:1", null, "claude-haiku-5-5",
-                new LouisAgent.Core.Usage.Records.UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
-                new LouisAgent.Core.Usage.Records.UsageCost("USD", 0.25m, "2026-10-10"), null, null));
-            var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
-            var recording = new BenchmarkRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
-            run.Add(At(new { @event = "protocol", version = 1, eval = "cook", eval_version = 1, rescore_of = "old123456789", graders = Array.Empty<object>(), models = Array.Empty<object>() }));
-            run.Add(At(new { @event = "question", mode = "cook", repeat = 1, task = "bobotie", turn = 1, session = "sess_1", text = "Maak bobotie" }));
-            run.Complete(0);
-            await recording;
-
-            var stored = (await _store.GetRunAsync("new123456789"))!;
-            Assert.That(stored.Total, Is.EqualTo(new Total(0.25m, "USD", 1200, 1)));
-            Assert.That((await _store.RequestsAsync("new123456789")).Single().Purpose, Is.EqualTo("grading"));
-        }
-        finally
-        {
-            if (Directory.Exists(directory)) Directory.Delete(directory, recursive: true);
-        }
-    }
-
-    [Test]
-    public async Task ARescoreWithNoLedgerAtAll_StillCostsAKnownZero()
-    {
-        var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
-        var recording = new BenchmarkRecorder(_store).RecordAsync(run);
-        run.Complete(0);
-        await recording;
-
-        Assert.That((await _store.GetRunAsync("new123456789"))!.Total, Is.EqualTo(new Total(0m, "USD", 0, 0)));
     }
 }

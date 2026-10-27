@@ -1746,6 +1746,19 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 @media (max-width: 991.98px) { .xbar-row { grid-template-columns: 1fr; gap: 4px; } .xbar .xbar-value { position: static; } .lane { grid-template-columns: 70px 1fr; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) .explorer * { animation: none !important; transition: none !important; } }
 
+/* F18 step 7a.2: a run's notes and a conversation's, in the portal's own parts (card-p, header-button, muted). */
+.notes-panel { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.notes-empty { margin: 0; font-size: 13px; }
+.notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.note { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; font-size: 13.5px; }
+.note-when { white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 12.5px; }
+.note-body { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
+.note-text { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; width: 100%; min-height: 56px; resize: vertical; }
+.note-text:focus { outline: none; border-color: rgba(245, 130, 32, .55); }
+.note-add { align-self: flex-start; }
+.note-add:disabled { opacity: .45; cursor: not-allowed; }
+.note-error { color: var(--danger); margin: 0; font-size: 13px; }
+
 /* F18 step 6a.3: the blind review panel and the judge-against-people card, in the portal's own parts (card-p, segmented, admin-table, header-button). */
 .review-panel { margin-top: 12px; gap: 8px; }
 .review-question { margin: 0; font-size: 15px; color: var(--ink); }

@@ -421,6 +421,8 @@
                         {
                             <ReviewPanel Conversation="new ConversationRef(_runId, m.Name, _repeat, c.Task)" Review="review" Asked="c.Turns.Select(t => t.Question).ToList()" Answer="@c.Turns[^1].Answer" Grades="c.Grades" />
                         }
+                        @* F18 step 7a.2: a person's notes on this conversation, from the run as the page last fetched it. *@
+                        <NotesPanel RunId="@_runId" Notes="NoteReader.Of(Run)" Conversation="new ConversationRef(_runId, m.Name, _repeat, c.Task)" />
                     }
                 </section>
             }
@@ -474,98 +476,141 @@
 </div>
 
 @code {
-    /// <summary>The run as GET /v1/admin/benchmarks/runs/{id} answers it.</summary>
+    /// <summary>The currency to show money in.</summary>
     [Parameter, EditorRequired] public JsonElement Run { get; set; }
     [Parameter] public CurrencyChoice? Currency { get; set; }
 
-    /// <summary>A task to open at once, from a category's line (F18 step 5c.3).</summary>
+    /// <summary>A task to open at once, when a category's line sends you here.</summary>
     [Parameter] public string? OpenTask { get; set; }
 
+    /// <summary>The task we last opened for `OpenTask`, so a redraw doesn't open it again.</summary>
     private string? _opened;
 
     // The series colours are Admin/Charts/ChartPalette. Puls's own and the specialist's requests: slot 1 and Puls's orange.
+    /// <summary>The two series colours: Puls's own requests, and the specialist's.</summary>
     private const string Own = "#3987e5", Spec = "#f58220";
     // Right and wrong: Puls's own green and danger red, which read on its dark surface.
+    /// <summary>The colours for right, estimated, wrong, guessed, and everything else.</summary>
     private const string Right = "#38b449", Estimate = "#9ad6a2", Wrong = "#f26b4f", Guess = "#f58220", Other = "#8a8f98";
 
-    /// <summary>The shops the cook prices at (its role's list, F25).</summary>
+    /// <summary>The shops the cook prices at.</summary>
     private static readonly string[] Shops = ["checkers.co.za", "pnp.co.za", "woolworths.co.za", "spar.co.za", "shoprite.co.za", "usave.co.za"];
 
+    /// <summary>Whether a host is one of those shops, or a subdomain of one.</summary>
     private static bool IsShop(string host) => Shops.Any(s => host == s || host.EndsWith("." + s));
 
-    /// <summary>Where a branch is looked up (F34: the cook's OpenStreetMap search): a map, not a source.</summary>
+    /// <summary>Whether a host is the map the cook looks branches up on: a map, not a place prices come from.</summary>
     private static bool IsMap(string host) => host == "openstreetmap.org" || host.EndsWith(".openstreetmap.org");
 
+    /// <summary>One model request from the ledger, the way the explorer draws it.</summary>
     private sealed record Request(DateTimeOffset At, string Purpose, string? Session, string? Parent, string? Model,
         long? Input, long? CacheWrite, long? CacheRead, long? Output, decimal? Cost, long DurationMs)
     {
+        /// <summary>Whether a specialist made it, which means it has a parent session.</summary>
         public bool Specialist => Parent is not null;
+        /// <summary>All its tokens added up.</summary>
         public long Tokens => (Input ?? 0) + (CacheWrite ?? 0) + (CacheRead ?? 0) + (Output ?? 0);
+        /// <summary>When it started, worked back from when it ended.</summary>
         public DateTimeOffset Start => At - TimeSpan.FromMilliseconds(DurationMs);
     }
 
+    /// <summary>One turn as the explorer holds it: what was asked and answered, how long it took, which hosts it read, and its requests.</summary>
     private sealed class TurnNode
     {
+        /// <summary>The turn's number, its question and answer, who answered it, and how it ended.</summary>
         public int N; public string Question = ""; public string? Answer, Role, Continued, Error; public double Seconds;
+        /// <summary>The hosts it read from, and the requests it made.</summary>
         public List<string> Hosts = []; public List<Request> Rows = [];
-        /// <summary>What its tools did (calls, failed, the reasons grouped), as the API read it from the stored events.</summary>
+        /// <summary>What its tools did: how many calls, how many failed, and the reasons grouped. The API counted them from the stored events.</summary>
         public int ToolCalls, ToolsFailed; public List<(string Tool, string Reason, int Count)> ToolReasons = [];
         /// <summary>The transcript before a replay: the question and the answer.</summary>
         public Turn Shown = new();
+        /// <summary>What its requests cost, or nothing if none had a known price.</summary>
         public decimal? Cost => UsageFormat.KnownSum(Rows.Select(r => r.Cost));
     }
 
+    /// <summary>One conversation as the explorer holds it: its task, role, scores and turns.</summary>
     private sealed class ConversationNode
     {
+        /// <summary>Which task it is, who handled it, how the check scored it, and its turns.</summary>
         public string Task = ""; public string? Role; public JsonElement Scores; public int Errors; public List<TurnNode> Turns = [];
-        /// <summary>The standard records (F18 step 4.5c): its grades and outcome, shown the same for every eval.</summary>
+        /// <summary>Its grades and outcome, shown the same for every eval.</summary>
         public ConversationGrades Grades = ConversationGrades.None;
+        /// <summary>All its turns' requests.</summary>
         public List<Request> Rows => Turns.SelectMany(t => t.Rows).ToList();
+        /// <summary>What its requests cost, or nothing if none had a known price.</summary>
         public decimal? Cost => UsageFormat.KnownSum(Rows.Select(r => r.Cost));
+        /// <summary>Whether the check scored it as routed right.</summary>
         public bool Right => Scores.ValueKind == JsonValueKind.Object && Scores.TryGetProperty("routed_right", out var v) && v.ValueKind == JsonValueKind.True;
     }
 
+    /// <summary>One mode of the run: its toolsets and conversations, with the totals the explorer shows.</summary>
     private sealed class ModeNode
     {
+        /// <summary>The mode's name, its toolsets, and its conversations.</summary>
         public string Name = ""; public List<string> Toolsets = []; public List<ConversationNode> Conversations = [];
+        /// <summary>All its conversations' requests.</summary>
         public List<Request> Rows => Conversations.SelectMany(c => c.Rows).ToList();
+        /// <summary>What its requests cost, or nothing if none had a known price.</summary>
         public decimal? Cost => UsageFormat.KnownSum(Rows.Select(r => r.Cost));
+        /// <summary>All its requests' tokens added up.</summary>
         public long Tokens => Rows.Sum(r => r.Tokens);
+        /// <summary>All its turns' time added up.</summary>
         public double Seconds => Conversations.SelectMany(c => c.Turns).Sum(t => t.Seconds);
+        /// <summary>How many of its conversations were routed right.</summary>
         public int Right => Conversations.Count(c => c.Right);
+        /// <summary>How many errors its conversations had in all.</summary>
         public int Errors => Conversations.Sum(c => c.Errors);
     }
 
+    /// <summary>A small label on a conversation, coloured for good, bad or a warning.</summary>
     private sealed record Chip(string Text, string Kind = "");
 
+    /// <summary>The run's tree for the repeat shown.</summary>
     private List<ModeNode> _modes = [];
-    /// <summary>The run's graders, for the grade chips' order; null for a run from before F18 step 2a.</summary>
+    /// <summary>The run's graders, for the order of the grade chips. None for a run from before graders were kept.</summary>
     private IReadOnlyList<GraderRow>? _graders;
+    /// <summary>The id of the run being shown.</summary>
     private string _runId = "";
+    /// <summary>How many repeats the run has, and which one is shown.</summary>
     private int _repeats = 1, _repeat = 1;
 
+    /// <summary>How deep we've drilled in: 0 the modes, 1 the conversations, 2 one conversation, 3 one turn, 4 one request.</summary>
     private int _level;
+    /// <summary>What we've drilled into: the task, the turn, and the request with its mode.</summary>
     private string? _task; private int? _turn; private Request? _request; private ModeNode? _requestMode;
+    /// <summary>Which way the next level slides in: "in" going deeper, "out" going back.</summary>
     private string _dir = "in";
+    /// <summary>A key for the current level and whatever is open in it.</summary>
     private string LevelKey => $"{_repeat}|{_level}|{_task}|{_turn}|{_request?.At:O}";
 
+    /// <summary>The modes side by side, each with its colour number.</summary>
     private IEnumerable<(ModeNode Mode, int I)> Columns => _modes.Select((m, i) => (m, i));
+    /// <summary>The open task's conversation in this mode, if it has one.</summary>
     private ConversationNode? ConversationIn(ModeNode m) => _task is null ? null : m.Conversations.FirstOrDefault(c => c.Task == _task);
+    /// <summary>The open turn in this mode, if it has one.</summary>
     private TurnNode? TurnIn(ModeNode m) => _turn is null ? null : ConversationIn(m)?.Turns.FirstOrDefault(t => t.N == _turn);
 
+    /// <summary>The turns being replayed, one per mode, filling in as their events play.</summary>
     private readonly Dictionary<string, Turn> _replays = [];
+    /// <summary>Whether a replay is running.</summary>
     private bool _replaying;
+    /// <summary>Stops the running replay.</summary>
     private CancellationTokenSource? _replayStop;
 
+    /// <summary>Reads which run we were given, keeps the repeat in range, rebuilds the tree, and opens `OpenTask` once if there is one.</summary>
     protected override void OnParametersSet()
     {
         _runId = Run.GetProperty("run").GetProperty("id").GetString()!;
         _repeats = Math.Max(1, Run.GetProperty("run").GetProperty("repeat").GetInt32());
+        // Keep the shown repeat inside what this run has.
         _repeat = Math.Clamp(_repeat, 1, _repeats);
         Build();
+        // Open the task we were sent to, once (a redraw must not open it again).
         if (OpenTask is not null && OpenTask != _opened) OpenConversation(_opened = OpenTask);
     }
 
+    /// <summary>After each draw: focuses the chats dialog if it has just opened, and makes the cost numbers count up.</summary>
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (_focusChats && _chatOpen)
@@ -577,24 +622,29 @@
         try { await Js.InvokeVoidAsync("pulsUi.countCosts"); } catch (JSException) { }
     }
 
+    /// <summary>Stops any replay or chats that are still playing.</summary>
     public void Dispose() { _replayStop?.Cancel(); _chatStop?.Cancel(); }
 
+    /// <summary>Switches to another repeat and rebuilds, staying at the same depth if that conversation or turn exists there.</summary>
     private void ShowRepeat(int repeat)
     {
         _repeat = repeat;
         Build();
+
+        // Stay at the same depth if this conversation or turn exists in the other repeat; otherwise fall back to the overview.
         int to = RepeatSwitch.LevelAfter(_level, _task, _turn, _modes.SelectMany(m => m.Conversations).Select(c => (c.Task, c.Turns.Select(t => t.N))));
         Go(to, stay: to > 0);
     }
 
+    /// <summary>Goes one level deeper: stops any replay, then does what `set` says.</summary>
     private void Open(Action set) { _dir = "in"; ResetReplay(); set(); }
 
+    /// <summary>Opens a conversation by its task.</summary>
     private void OpenConversation(string task) => Open(() => { _level = 2; _task = task; });
 
     /// <summary>
-    /// A conversation's or a turn's two ways on (Louis: "the button is enough, why not just open the modal"; "this must be
-    /// just another button"): *Replay* opens the chats side by side on its conversation; *Turns* (a conversation's
-    /// turns) or *Requests* (a turn's requests) goes into what the modal doesn't show.
+    /// The buttons on a conversation or a turn. Replay opens the chats side by side on this conversation;
+    /// Turns (on a conversation) or Requests (on a turn) goes deeper.
     /// </summary>
     private RenderFragment Actions(string task, int? turn) => __builder =>
     {
@@ -611,6 +661,7 @@
         </span>
     };
 
+    /// <summary>Goes back to a level, or stays at it, and forgets anything deeper.</summary>
     private void Go(int level, bool stay = false)
     {
         _dir = stay ? "in" : "out"; ResetReplay();
@@ -620,16 +671,21 @@
         if (level < 4) { _request = null; _requestMode = null; }
     }
 
+    /// <summary>Stops any replay and forgets what it had played.</summary>
     private void ResetReplay() { _replayStop?.Cancel(); _replayStop = null; _replays.Clear(); _replaying = false; }
 
-    /// <summary>The run's tree for the shown repeat: modes in the run's order, their conversations, turns and requests.</summary>
+    /// <summary>Builds the tree for the repeat shown: the modes in the run's order, then their conversations, turns and requests.</summary>
     private void Build()
     {
+        // The run's graders first, for the order of the grade chips.
         _graders = RunGradersReader.Read(Run).Graders;
         var modes = new List<ModeNode>();
+
+        // One node per mode of this repeat, in the run's order.
         foreach (var m in Run.GetProperty("modes").EnumerateArray().Where(m => m.GetProperty("repeat").GetInt32() == _repeat))
             modes.Add(new ModeNode { Name = m.GetProperty("name").GetString()!, Toolsets = m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()!).ToList() });
 
+        // Finds a mode by name, making one if a conversation or turn names a mode the run's list did not.
         ModeNode ModeOf(string name)
         {
             var mode = modes.FirstOrDefault(x => x.Name == name);
@@ -637,6 +693,7 @@
             return mode;
         }
 
+        // Hang each conversation on its mode, with its scores and grades.
         foreach (var c in Run.GetProperty("conversations").EnumerateArray().Where(c => c.GetProperty("repeat").GetInt32() == _repeat))
             ModeOf(c.GetProperty("mode").GetString()!).Conversations.Add(new ConversationNode
             {
@@ -645,6 +702,7 @@
                 Grades = ConversationGradesReader.Read(c),
             });
 
+        // Then each turn on its conversation (making the conversation if its line has not come yet), with the tool counts the API worked out.
         foreach (var t in Run.GetProperty("turns").EnumerateArray().Where(t => t.GetProperty("repeat").GetInt32() == _repeat))
         {
             var mode = ModeOf(t.GetProperty("mode").GetString()!);
@@ -670,6 +728,7 @@
             conversation.Turns.Add(turn);
         }
 
+        // Then each ledger request on the turn it belongs to; one with no turn is left out.
         foreach (var r in Run.GetProperty("requests").EnumerateArray())
         {
             if (!r.TryGetProperty("turn", out var key) || key.ValueKind != JsonValueKind.Object || key.GetProperty("repeat").GetInt32() != _repeat) continue;
@@ -680,14 +739,18 @@
                 L(r, "duration_ms") ?? 0));
         }
 
+        // Turns in the order they happened.
         foreach (var c in modes.SelectMany(m => m.Conversations)) c.Turns.Sort((a, b) => a.N.CompareTo(b.N));
         _modes = modes;
     }
 
-    /// <summary>Replays the turn as it was typed, in every mode at once: the stored events, at their own pace (capped), through the chat's TurnStream.</summary>
+    /// <summary>Replays the open turn in every mode at once, from the stored events at their own pace, through the chat's stream.</summary>
     private async Task ReplayAsync()
     {
+        // Nothing is open to replay.
         if (_task is null || _turn is null) return;
+
+        // Fetch the open turn's stored events for every mode that has it.
         var plays = new List<(string Mode, string Question, List<(DateTimeOffset? At, string Type, JsonElement Data)> Events)>();
         foreach (var m in _modes)
         {
@@ -702,10 +765,12 @@
                     .ToList();
                 if (events.Count > 0) plays.Add((m.Name, tu.Question, events));
             }
+            // A mode whose events can't be fetched just doesn't play.
             catch (AgentApiException) { }
         }
         if (plays.Count == 0) return;
 
+        // Start every mode at once, each into its own turn, and wait until they have all finished or someone stops them.
         var stop = _replayStop = new CancellationTokenSource();
         _replays.Clear();
         foreach (var (mode, question, _) in plays) _replays[mode] = new Turn { UserText = question };
@@ -717,6 +782,7 @@
         StateHasChanged();
     }
 
+    /// <summary>Plays one turn's events into a turn at their own rhythm, three times faster, never pausing longer than a quarter second.</summary>
     private async Task PlayAsync(Turn turn, List<(DateTimeOffset? At, string Type, JsonElement Data)> events, CancellationToken stop)
     {
         DateTimeOffset? last = events[0].At;
@@ -732,24 +798,34 @@
         }
     }
 
+    /// <summary>Stops the replay.</summary>
     private void StopReplay() { _replayStop?.Cancel(); _replaying = false; }
 
     // The chats side by side (Louis): one conversation of every mode, each turn after the other, the modes at once.
+    /// <summary>The side-by-side chats: whether they are open, whether they are playing, and whether to focus the dialog.</summary>
     private bool _chatOpen, _chatPlaying, _focusChats;
+    /// <summary>Which task the chats show.</summary>
     private string? _chatTask;
+    /// <summary>Each mode's turns as they play in.</summary>
     private readonly Dictionary<string, List<Turn>> _chats = [];
+    /// <summary>Stops the chats that are playing.</summary>
     private CancellationTokenSource? _chatStop;
 
+    /// <summary>Every task in the run, once each.</summary>
     private List<string> Tasks() => _modes.SelectMany(m => m.Conversations.Select(c => c.Task)).Distinct().ToList();
 
     // 6a.4d: the list's filter and each card's review state (ReviewStatus, a plain class; the pill redraws itself, the card's attribute on the page's next fetch).
+    /// <summary>Whether the list shows only the conversations still waiting for this reviewer.</summary>
     private bool _onlyToReview;
 
+    /// <summary>Where a conversation stands for this reviewer: waiting for a grade, or graded.</summary>
     private ReviewState Status(ConversationNode c, ModeNode m) =>
         ReviewStatus.Of(c.Grades, _graders, Reviewer.Name, judge => Reviewer.Graded(new ConversationRef(_runId, m.Name, _repeat, c.Task), judge));
 
+    /// <summary>Opens the chats side by side on a conversation (the first one if none is given): fetches every turn's stored events for every mode, then plays all the modes at once.</summary>
     private async Task OpenChatsAsync(string? task)
     {
+        // Starting again: stop whatever was playing.
         _chatStop?.Cancel();
         var stop = _chatStop = new CancellationTokenSource();
         _chatTask = task ?? Tasks().FirstOrDefault();
@@ -781,8 +857,11 @@
             }
             plays.Add((m.Name, turns));
         }
+
+        // The chats were closed or reopened while we were fetching, so this run of them is over.
         if (stop.IsCancellationRequested) return;
 
+        // Every mode starts empty and plays its turns one after the other, all the modes at once.
         foreach (var (mode, _) in plays) _chats[mode] = [];
         _chatPlaying = true;
         StateHasChanged();
@@ -803,6 +882,7 @@
         if (!stop.IsCancellationRequested) { _chatPlaying = false; StateHasChanged(); }
     }
 
+    /// <summary>Closes the chats and stops them.</summary>
     private void CloseChats()
     {
         _chatStop?.Cancel();
@@ -811,11 +891,13 @@
         _chats.Clear();
     }
 
+    /// <summary>Closes the chats when you press Escape.</summary>
     private void ChatsKey(KeyboardEventArgs e)
     {
         if (e.Key == "Escape") CloseChats();
     }
 
+    /// <summary>The labels for a conversation: whether it routed right, how many ingredients were priced and from where, deals, wrong or missing shops, and errors.</summary>
     private static IEnumerable<Chip> Chips(ConversationNode c)
     {
         if (c.Scores.ValueKind != JsonValueKind.Object) yield break;
@@ -858,17 +940,15 @@
         if (c.Errors > 0) yield return new Chip($"errors {c.Errors}", "bad");
     }
 
-    /// <summary>
-    /// Who a mode is (Louis: "be more specific, say Puls with puls-cook"): Puls with the roles it handed to, from the
-    /// run's own turns, or Puls alone when it handed nothing on.
-    /// </summary>
+    /// <summary>Who a mode is: Puls with the roles it handed work to, or Puls alone if it handed none.</summary>
     private static string Who(ModeNode m) =>
         RolesOf(m) is { Count: > 0 } roles ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone";
 
+    /// <summary>The roles a mode handed work to, from its own turns.</summary>
     private static List<string> RolesOf(ModeNode m) =>
         m.Conversations.SelectMany(c => c.Turns).Select(t => t.Role).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList()!;
 
-    /// <summary>The specialists' name for a legend: the roles in the mode (or the run), "specialist" only when there's none.</summary>
+    /// <summary>The specialists' name for a legend: the roles in the mode (or the run), or just "specialist" if there are none.</summary>
     private string Roles(ModeNode? m = null)
     {
         var roles = (m is null ? _modes.SelectMany(RolesOf) : RolesOf(m)).Distinct().ToList();
@@ -876,9 +956,8 @@
     }
 
     /// <summary>
-    /// A mode's right ingredients over ingredients listed, summed over its conversations; null where the check counts none.
-    /// Right is priced with its source, or rightly without a price in a town with no shop (F34: <c>no_shop_rows</c>; a
-    /// price there, <c>wrong_store</c>, is red with the rest).
+    /// A mode's ingredients priced right, out of the ingredients listed, added up over its conversations. Right means priced with its source, or rightly left unpriced in a town with no shop.
+    /// Nothing where the check counts none.
     /// </summary>
     private static AccuracyRing? Priced(ModeNode m)
     {
@@ -895,17 +974,18 @@
         return items == 0 ? null : AccuracyRing.Of(priced, noShop, guessed, estimated, items);
     }
 
+    /// <summary>A whole number from the scores, or zero if it is not there.</summary>
     private static int Count(JsonElement scores, string name) =>
         scores.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt32() : 0;
 
-    /// <summary>A meal the check expected a list for that came without one (its ingredients unknown, not counted).</summary>
+    /// <summary>How many meals the check expected an ingredient list for that came back without one.</summary>
     private static int Unlisted(ModeNode m) =>
         m.Conversations.Count(c => c.Task.StartsWith("cook") && c.Scores.ValueKind == JsonValueKind.Object
                                    && c.Scores.TryGetProperty("ingredients", out var n) && n.ValueKind == JsonValueKind.Null);
 
     /// <summary>
-    /// A real answer (Louis: "the idea is to get an actual answer"): routed right, and where the check lists ingredients,
-    /// at least 80 % of them priced with their source. A meal that came without a list is no answer.
+    /// Whether a conversation got a real answer: routed right and, where the check lists ingredients, at least 80% of them priced with their source.
+    /// A meal that came without a list is no answer.
     /// </summary>
     private static bool Answered(ConversationNode c)
     {
@@ -915,21 +995,28 @@
         return c.Scores.TryGetProperty("priced_ratio", out var r) && r.ValueKind == JsonValueKind.Number && r.GetDouble() >= 0.8;
     }
 
-    /// <summary>Puls's own part of some requests' cost, or the specialists': unknown when none of them was priced, never 0.</summary>
+    /// <summary>Puls's own part of some requests' cost, or the specialists': empty if none was priced, never zero.</summary>
     private static decimal? Part(IEnumerable<Request> rows, bool specialist) =>
         UsageFormat.KnownSum(rows.Where(r => r.Specialist == specialist).Select(r => r.Cost));
 
+    /// <summary>A cost in the chosen currency, or a dash when it is unknown.</summary>
     private string Money(decimal? usd) => usd is { } c ? UsageFormat.Money(c, "USD", Currency) : "—";
 
+    /// <summary>The first question asked for a task, from whichever mode has it.</summary>
     private string? Question(string task) =>
         _modes.SelectMany(m => m.Conversations).Where(c => c.Task == task).SelectMany(c => c.Turns).Select(t => t.Question).FirstOrDefault(q => q.Length > 0);
 
+    /// <summary>A question cut short to fit a heading.</summary>
     private static string Blurb(string? question) => string.IsNullOrEmpty(question) ? "" : question.Length <= 56 ? question : question[..55].TrimEnd() + "…";
 
-    /// <summary>The turn's requests on a timeline: Puls's lane and the specialist's, each a bar from its start to its end; a click opens one when <paramref name="open"/> is given.</summary>
+    /// <summary>
+    /// Draws a turn's requests on a timeline: Puls's lane and the specialist's, each request a bar from its start to its end.
+    /// Click a bar to open it, if you passed what to do.
+    /// </summary>
     private RenderFragment Timeline(TurnNode turn, Action<Request>? open) => __builder =>
     {
         if (turn.Rows.Count == 0) { <p class="muted">No requests in the ledger.</p> return; }
+        // Bars sit on a time axis from the first request's start to the last one's end.
         var start = turn.Rows.Min(r => r.Start); double span = Math.Max(1, (turn.Rows.Max(r => r.At) - start).TotalMilliseconds);
         <div class="timeline">
             @foreach (var (label, specialist) in new[] { ("Puls", false), (turn.Role ?? "specialist", true) })
@@ -951,15 +1038,21 @@
         </div>
     };
 
+    /// <summary>The four kinds of tokens added up over some requests: input, cache write, cache read and output.</summary>
     private static long[] Parts(IEnumerable<Request> rows)
     {
         var list = rows.ToList();
         return [list.Sum(r => r.Input ?? 0), list.Sum(r => r.CacheWrite ?? 0), list.Sum(r => r.CacheRead ?? 0), list.Sum(r => r.Output ?? 0)];
     }
 
+    /// <summary>A text from the JSON, or nothing if it is not there.</summary>
     private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    /// <summary>A whole number from the JSON, or nothing if it is not there.</summary>
     private static long? L(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : null;
+    /// <summary>A decimal number from the JSON, or nothing if it is not there.</summary>
     private static decimal? D(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetDecimal() : null;
+    /// <summary>A count with thousands separators, or a dash.</summary>
     private static string Count(long? n) => n is { } v ? v.ToString("N0") : "—";
+    /// <summary>Seconds with one decimal.</summary>
     private static string Secs(double s) => s.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
 }

@@ -13,12 +13,12 @@ using static LouisAgent.Api.Admin.AdminRows;
 namespace LouisAgent.Api.Endpoints;
 
 /// <summary>
-/// The admin portal's reads and deletes of a stored benchmark run (F31, F18 step 5.2): the run with its conversations, turns and requests,
-/// one turn's stream events, the run as the protocol's own lines, and its deletion. They belong to the same <c>/admin</c> group as the rest,
-/// so <see cref="AdminEndpoints"/> maps them and the group's key gate covers them.
+/// The portal's reads of a stored run, and its delete: the run with its conversations, turns, requests and notes, one turn's stream events, and the run as the protocol's own lines. They are in the same admin group as the rest, so the admin key covers them.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class StoredRunEndpoints
 {
+    /// <summary>Adds the reads and the delete of a stored run. The run's read includes its notes.</summary>
     public static void MapStoredRuns(this RouteGroupBuilder admin, IBenchmarkStore? store, BenchmarkRunner runner, IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null)
     {
@@ -32,6 +32,7 @@ internal static class StoredRunEndpoints
                 foreach (var turn in await s.TurnsAsync(id, conversation.Key, cancellationToken))
                     turns.Add(TurnRow(turn, await BenchmarkTools.OfTurnAsync(s, id, turn, cancellationToken)));
             var requests = await s.RequestsAsync(id, cancellationToken);
+            var notes = await s.NotesAsync(id, cancellationToken);
             var people = reviews is null ? [] : await reviews.OfRunAsync(id, cancellationToken);
             var latest = HumanGrades.Latest(people);
             var decided = HumanGrades.Decided(people);
@@ -54,6 +55,8 @@ internal static class StoredRunEndpoints
                     retried = m.Rates?.Retried,
                 }),
                 log = run.Log,
+                // A person's notes on the run and on its conversations, in the order written; an empty list for a run with none.
+                notes = notes.Select(NoteEndpoints.Row),
                 // F18 step 5c.2: each mode's roll-up as the runner wrote it, priced from the ledger; null for a run from before it.
                 summaries = SummaryRow.Of(run.Slices, run.Total, requests),
                 conversations = conversations.Select(c => ConversationRow(c, [.. latest.Where(g => g.Conversation == c.Key)])),
@@ -98,6 +101,7 @@ internal static class StoredRunEndpoints
         }));
     }
 
+    /// <summary>The 404 for a run that isn't stored.</summary>
     private static IResult NoRun(string id) =>
         ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
 }

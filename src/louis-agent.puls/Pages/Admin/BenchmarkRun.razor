@@ -9,6 +9,7 @@
 @inject ChatStore Store
 @inject CurrencyState Currency
 @inject ReviewerState Reviewer
+@inject RunNotesState NoteState
 @implements IDisposable
 
 @* F31 step 10: one stored run: what it ran with, and its explorer (RunExplorer), read from the benchmark store. *@
@@ -53,6 +54,12 @@ else
     }
     @* The sections in reading order (the rework of 2026-10-26): the roll-up first, the explorer to drill into a conversation, then the rates and the trends folded,
        since they are long, and last what the run ran with. *@
+    @* F18 step 7a.2: why this run behaved as it did, in people's words; the notes are the store's, fetched with the run. *@
+    <section class="card-p">
+        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Notes<span class="fold-note">what changed, what you think explains it</span></summary>
+            <NotesPanel RunId="@RunId" Notes="NoteReader.Of(run)" />
+        </details>
+    </section>
     <section class="card-p">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Results by category<span class="fold-note">per mode: overall, then each category</span></summary>
             <SummaryPanel Run="run" Currency="Currency.Current" />
@@ -84,45 +91,31 @@ else
             </details>
         </section>
     }
-    <section class="card-p">
-        <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>What it ran with<span class="fold-note">the eval, its graders, the settings, the modes</span></summary>
-            <GraderList Run="run" />
-            <dl class="explorer-fields">
-                @if (run.TryGetProperty("settings", out var settings) && settings.ValueKind == JsonValueKind.Object)
-                {
-                    foreach (var p in settings.EnumerateObject()) { <dt>@p.Name</dt><dd><code>@p.Value.GetString()</code></dd> }
-                }
-                @foreach (var m in run.GetProperty("modes").EnumerateArray())
-                {
-                    <dt>@m.GetProperty("name").GetString() · @m.GetProperty("repeat").GetInt32()</dt>
-                    <dd><code>@string.Join(", ", m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()))</code>@(S(m, "role") is { } p ? $" · {p}" : "")@(S(m, "llm") is { } l ? $" · {l}" : "")</dd>
-                }
-            </dl>
-        </details>
-        @if (run.TryGetProperty("log", out var log) && log.ValueKind == JsonValueKind.Array)
-        {
-            <details class="admin-details"><summary>The script's own lines (@log.GetArrayLength())</summary><pre class="admin-pre run-log">@string.Join("\n", log.EnumerateArray().Select(l => l.GetString()))</pre></details>
-        }
-    </section>
+    <RunSettings Run="run" />
 }
 
 @code {
+    /// <summary>The run to show.</summary>
     [Parameter] public string RunId { get; set; } = "";
 
-    /// <summary>A task a category's line linked to (<c>?task=</c>): its conversation opens in the explorer.</summary>
+    /// <summary>A task a category's line linked to (`?task=`): its conversation opens in the explorer.</summary>
     [SupplyParameterFromQuery(Name = "task")] public string? FocusTask { get; set; }
 
+    /// <summary>The run and its check's trend, as last fetched.</summary>
     private JsonElement? _run, _trend;
+    /// <summary>Who each mode is, by name.</summary>
     private Dictionary<string, string> _labels = [];
 
-    /// <summary>Who each mode is, as the explorer names it: Puls with the roles it handed to, or Puls alone.</summary>
+    /// <summary>Who each mode is: Puls with the roles it handed work to, or Puls alone.</summary>
     private static Dictionary<string, string> Labels(JsonElement run) =>
         run.GetProperty("turns").EnumerateArray()
             .GroupBy(t => t.GetProperty("mode").GetString()!)
             .ToDictionary(g => g.Key, g => g.Select(t => S(t, "role")).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList() is { Count: > 0 } roles
                 ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone");
+    /// <summary>The check's title and name, and what to show if the run can't be read.</summary>
     private string? _title, _check, _error;
 
+    /// <summary>Fetches the run, its check's title and its trend, and shows an error if the run isn't there.</summary>
     protected override async Task OnParametersSetAsync()
     {
         if (!Store.Loaded) await Store.LoadAsync();
@@ -149,8 +142,15 @@ else
     }
 
     // ADR 0042: after a grade the page fetches the run again, so every panel shows what the store holds; the explorer keeps its open conversation.
-    protected override void OnInitialized() => Reviewer.Changed += Refetch;
+    // The same for a note: the panel only says one was written, and the notes shown are the ones the new read carries.
+    /// <summary>Starts listening for a grade or a note being saved, so the run is fetched again when one is.</summary>
+    protected override void OnInitialized()
+    {
+        Reviewer.Changed += Refetch;
+        NoteState.Changed += Refetch;
+    }
 
+    /// <summary>Fetches the run again and redraws, keeping whatever the explorer has open.</summary>
     private void Refetch() => _ = InvokeAsync(async () =>
     {
         try { _run = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}"); }
@@ -158,20 +158,27 @@ else
         StateHasChanged();
     });
 
+    /// <summary>Stops listening.</summary>
     public void Dispose()
     {
         Currency.Changed -= StateHasChanged;
         Reviewer.Changed -= Refetch;
+        NoteState.Changed -= Refetch;
     }
 
+    /// <summary>A text from the JSON, or nothing if it is not there.</summary>
     private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
 
+    /// <summary>When the run started, in the reader's own time.</summary>
     private static string Started(JsonElement run) => run.GetProperty("run").GetProperty("started_at").GetDateTimeOffset().ToLocalTime().ToString("yyyy-MM-dd HH:mm");
 
+    /// <summary>The run's status as running, done or failed.</summary>
     private static string Status(JsonElement run) => S(run.GetProperty("run"), "status") switch { "running" => "running", "done" => "done", _ => "failed" };
 
+    /// <summary>How many repeats, as words: "1 repeat" or "3 repeats".</summary>
     private static string Repeat(JsonElement run) => run.GetProperty("run").GetProperty("repeat").GetInt32() is var n && n == 1 ? "1 repeat" : $"{n} repeats";
 
+    /// <summary>The run's cost and how many requests it made, if it has a total.</summary>
     private string? Total(JsonElement run) =>
         run.GetProperty("run").TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object
             ? $"{(t.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? UsageFormat.Money(c.GetDecimal(), "USD", Currency.Current) : "—")}, {t.GetProperty("requests").GetInt32()} requests"
