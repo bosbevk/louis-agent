@@ -163,7 +163,10 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **JSON through records** — a known shape (a body, a reply, a file) is a record the serializer writes and reads, with
   one options object per wire, never changed for one caller; `JsonObject` only for a shape decided at run time,
   `JsonElement` for input we don't own (a string with `GetString()`, never `GetRawText()`), `Utf8JsonWriter` only when
-  the bytes are the contract (the protocol's lines, a hash's input).
+  the bytes are the contract (the protocol's lines, a hash's input). **Never an anonymous object** for anything serialized
+  (`Results.Json(new { check = known.Id, … })`, Louis, 2026-10-27): a reply, a body or a stored document is a named
+  record, so a client can share it and a test can name it. A message's holes keep theirs (`new { Check = check }`,
+  ADR 0009 fills them by name). Review holds it; a file in a step's commit loses its anonymous replies whole.
   Why: [ADR 0041](adr/0041-json-through-records-by-hand-only-for-bytes.md).
 - **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
