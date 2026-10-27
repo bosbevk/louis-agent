@@ -15,7 +15,9 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class ApiErrorJsonTests
 {
-    /// <summary>An unknown route's 404 is written as it always was: the outer type, then the error's type and words.</summary>
+    /// <summary>
+    /// An unknown route's 404 is written as it always was: the outer type, then the error's type and words.
+    /// </summary>
     [Test]
     public async Task AnError_IsWrittenInItsShape_ByteForByte()
     {
