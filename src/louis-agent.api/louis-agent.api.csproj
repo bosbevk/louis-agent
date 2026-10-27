@@ -8,6 +8,7 @@
          Same API either way; only the static files differ. -->
     <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" Condition="'$(WebApp)' != 'puls'" />
     <ProjectReference Include="..\louis-agent.puls\louis-agent.puls.csproj" Condition="'$(WebApp)' == 'puls'" />
+    <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

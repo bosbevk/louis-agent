@@ -5,6 +5,7 @@ using LouisAgent.Api.Admin;
 using LouisAgent.Api.Benchmarks.Reports;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using static LouisAgent.Api.Admin.AdminRows;
@@ -147,10 +148,7 @@ internal sealed class AdminHandlers(
     /// <summary>The 404 for a check with no manual.</summary>
     private static IResult NoManual(string check) =>
         ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoManual, new
-            {
-                Check = check
-            }));
+            MessageText.Format(ApiUserText.NoManual, new { Check = check }));
 
     /// <summary>The 404 for a run that isn't the current one.</summary>
     private static IResult NoRun() =>
@@ -160,10 +158,7 @@ internal sealed class AdminHandlers(
     /// <summary>The 409 for a start while another run is still going.</summary>
     private IResult Running() =>
         ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-            MessageText.Format(ApiUserText.BenchmarkRunning, new
-            {
-                runner.Current!.Check
-            }));
+            MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
 
     /// <summary>
     /// Streams a run's lines to the page as they come, then one last "done" with whether the recording kept

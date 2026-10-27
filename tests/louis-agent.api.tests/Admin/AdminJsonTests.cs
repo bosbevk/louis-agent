@@ -1,5 +1,5 @@
 using System.Text.Json;
-using LouisAgent.Api.Admin;
+using LouisAgent.Api.Contracts.Admin;
 
 namespace LouisAgent.Api.Tests.Admin;
 
