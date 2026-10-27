@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using static LouisAgent.Api.Endpoints.Git.GitProcess;
 using static LouisAgent.Api.Endpoints.Git.Output.GitOutputParser;
 
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Changes;
 
 /// <summary>
 /// The working tree as the Changes tab shows it: the checked-out branch and every changed file; or the error git gave.

@@ -16,7 +16,7 @@ using DiffAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Git.Replies.DiffReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Changes;
 
 /// <summary>
 /// The Changes tab's routes as named methods: see what changed, read a file's diff, then stage, unstage or discard.

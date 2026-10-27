@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Changes;
 
 /// <summary>
 /// A small git interface for the web app: see what changed, read each diff, then stage, unstage or discard. git runs

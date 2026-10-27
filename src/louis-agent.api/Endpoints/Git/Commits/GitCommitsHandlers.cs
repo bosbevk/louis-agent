@@ -2,6 +2,7 @@ using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Git.Replies;
 using LouisAgent.Api.Contracts.Git.Requests;
 using LouisAgent.Api.Contracts.Workspace;
+using LouisAgent.Api.Endpoints.Git.Changes;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Agent;
@@ -19,7 +20,7 @@ using CommitAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Git.Replies.CommitReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Commits;
 
 /// <summary>
 /// The commit routes as named methods: commit what's staged, read the log across all branches, and read one commit

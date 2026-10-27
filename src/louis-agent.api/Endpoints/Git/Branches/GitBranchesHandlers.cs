@@ -16,7 +16,7 @@ using BranchAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Git.Replies.BranchDiffReply>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Branches;
 
 /// <summary>
 /// The Branches tab's routes as named methods: list the branches, show one branch's diff, merge one into the

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using static LouisAgent.Api.Endpoints.Git.GitProcess;
 using static LouisAgent.Api.Endpoints.Git.Output.GitOutputParser;
 
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Branches;
 
 /// <summary>
 /// The repository's local branches, newest commit first, each with how far it is ahead of and behind the checked-out

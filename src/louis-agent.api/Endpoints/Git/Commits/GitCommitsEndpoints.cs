@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Commits;
 
 /// <summary>
 /// The commit routes: create a commit, read the commit log across all branches and one commit's diff. The work is

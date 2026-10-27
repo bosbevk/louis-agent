@@ -1136,6 +1136,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **Sweep: `GitCommitsEndpoints`.** `GitCommitsHandlers` holds the three commit routes; a new commit answers
   `Created<StatusReply>`, which writes with the app's default options, the same as `WorkspaceJson.Web` on this wire. The
   log's "no commits yet" case is a guard of its own, where a ternary sat inside the error check. The bridge is gone.
+- **Sweep: the git folder by tab.** With a handler class per file, `Endpoints/Git/` held nine files, so each tab has
+  its folder (`Branches/`, `Changes/`, `Commits/`) and `GitProcess` and `Output/` stay shared. `ApiMap` took the new
+  `using` lines, so it is brought up whole: its `/v1` fallback is a named method (`UnknownRoute`).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

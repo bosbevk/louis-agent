@@ -1,4 +1,4 @@
-namespace LouisAgent.Api.Endpoints.Git;
+namespace LouisAgent.Api.Endpoints.Git.Branches;
 
 /// <summary>
 /// The Branches tab's routes: every branch with how far it is ahead of the checked-out branch, a branch's diff,

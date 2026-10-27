@@ -1,5 +1,6 @@
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Git.Replies;
+using LouisAgent.Api.Endpoints;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LouisAgent.Api.Tests.Endpoints;
@@ -9,8 +10,6 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// </summary>
 public class GitHandlersTests
 {
-    private const string Api = "louis-agent.api";
-
     /// <summary>Each git handler and what it says it answers.</summary>
     private static IEnumerable<TestCaseData> Declared()
     {
@@ -41,7 +40,7 @@ public class GitHandlersTests
     [TestCaseSource(nameof(Declared))]
     public void AHandler_DeclaresItsAnswers(string handlers, string handler, Type answers)
     {
-        var type = Type.GetType($"LouisAgent.Api.Endpoints.Git.{handlers}, {Api}");
+        var type = typeof(ApiErrors).Assembly.GetTypes().SingleOrDefault(t => t.Name == handlers);
 
         Assert.That(type?.GetMethod(handler)?.ReturnType, Is.EqualTo(answers), $"{handlers}.{handler}");
     }
