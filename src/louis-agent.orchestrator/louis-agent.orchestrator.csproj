@@ -10,6 +10,7 @@
 
     <ItemGroup>
       <InternalsVisibleTo Include="louis-agent.orchestrator.tests" />
+      <InternalsVisibleTo Include="louis-agent.orchestrator.integration-tests" />
       <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
       <!-- F18 step 1d: the orchestrator reads a session's stream through the reader itself, so it references it directly. -->
       <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />

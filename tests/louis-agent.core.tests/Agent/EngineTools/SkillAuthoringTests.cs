@@ -71,6 +71,7 @@ public class SkillAuthoringTests
     }
 
     private string PendingFile(string name) => Path.Combine(_skillsDir, "agent", "functions", "pending", $"{name}.md");
+
     private string ApprovedFile(string name) => Path.Combine(_skillsDir, "agent", "functions", $"{name}.md");
 
     // ---- FX20: a skill file the agent writes waits in pending/ for the user's /approve, as agent-built tools do ----
@@ -283,23 +284,6 @@ public class SkillAuthoringTests
         Assert.That(engine.CreateSkillFile("greeting", EchoSkill), Does.Contain("already exists"));
         Assert.That(engine.CreateSkillFile("greeting", EchoSkill.Replace("hello", "hi"), overwrite: true), Does.Contain("Saved"));
         Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis"}"""), Is.EqualTo("hi Louis"));
-    }
-
-    [TestCase(ScriptLanguage.PowerShell, "\"hello $env:SKILL_ARG_who\"")]
-    [TestCase(ScriptLanguage.PowerShell, "\"hello {{who}}\"")]
-    [TestCase(ScriptLanguage.Python, "import os\nprint('hello', os.environ['SKILL_ARG_who'])")]
-    [TestCase(ScriptLanguage.Python, "print('hello', {{who}})")]
-    [Category("Integration")]
-    public void ExecuteSkill_RunsSkillInItsFenceLanguage(ScriptLanguage language, string code)
-    {
-        if (language == ScriptLanguage.Python) Outside.Tool(new PythonTools(_skillsDir).ResolveInterpreter() is not null, "Python 3 is not installed");
-        if (language == ScriptLanguage.PowerShell) Outside.Tool(new PowerShellTools(_skillsDir).ResolveInterpreter() is not null, "PowerShell is not installed");
-        var engine = Engine();
-        string markdown = $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language.Wire()}\n{code}\n```\n";
-
-        Assert.That(engine.CreateSkillFile("greeting", markdown), Does.Contain("Saved"));
-        Assert.That(engine.ExecuteSkill("Greet", """{"who":"Louis; rm -rf /"}"""), Is.EqualTo("hello Louis; rm -rf /"),
-            "arguments must arrive as data, never as code");
     }
 
     [Test]

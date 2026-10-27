@@ -6,7 +6,7 @@ using System.Text.Json;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
-namespace LouisAgent.Api.Tests.Benchmarks.Store;
+namespace LouisAgent.Api.Testing;
 
 /// <summary>
 /// F31 step 2: what every benchmark store does, in memory and in MongoDB (step 5c) alike. Writes are upserts by key and

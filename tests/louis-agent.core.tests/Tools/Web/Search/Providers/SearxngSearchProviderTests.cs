@@ -128,20 +128,6 @@ public class SearxngSearchProviderTests
             Throws.TypeOf<WebSearchException>().With.Message.Contains("502"));
     }
 
-    // --- Against the SearXNG we run (F32 step 4): SEARXNG_URL set, as the Puls stack's puls-searxng on 127.0.0.1:8888 ---
-
-    [Category("Integration")]
-    [Test, Category("Live")]
-    public async Task TheSearxngWeRun_FindsAShopsProduct()
-    {
-        string url = Outside.Stack("SEARXNG_URL", "SearXNG to search");
-
-        var results = await new SearxngSearchProvider(new Uri(url!)).SearchAsync(new WebSearchQuery("beef mince price", 5, "pnp.co.za"));
-
-        Assert.That(results, Is.Not.Empty, "settings.yml lists json, and at least one engine answered");
-        Assert.That(results.Select(r => r.Url), Has.Some.Contains("pnp.co.za"));
-    }
-
     // --- Chosen by configuration ---
 
     [TestCase("searxng", "http://puls-searxng:8080", null, typeof(SearxngSearchProvider))]

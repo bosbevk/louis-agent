@@ -40,7 +40,6 @@ public class FileSizeTests
         "tests/louis-agent.api.tests/Sessions/AgentSessionsTests.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/DevOps/DevOpsToolsTests.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/Paymo/PaymoToolsTests.cs",
-        "tests/louis-agent.orchestrator.tests/OrchestratorTests.cs",
         "tools/louis-agent.usage-probe/Program.cs",
     ];
 

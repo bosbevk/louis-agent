@@ -18,11 +18,13 @@
 
   <ItemGroup>
       <InternalsVisibleTo Include="louis-agent.core.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.integration-tests" />
       <!-- The API's file browser applies the same workspace and secret-file rules as the agent's tools. -->
       <InternalsVisibleTo Include="louis-agent.api" />
       <!-- The orchestrator runs git and dotnet against the service it watches without a shell, like the tools do. -->
       <InternalsVisibleTo Include="louis-agent.orchestrator" />
       <InternalsVisibleTo Include="louis-agent.orchestrator.tests" />
+      <InternalsVisibleTo Include="louis-agent.orchestrator.integration-tests" />
       <PackageReference Include="Anthropic" Version="12.53.0" />
       <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
       <PackageReference Include="dotenv.net" Version="4.2.0" />

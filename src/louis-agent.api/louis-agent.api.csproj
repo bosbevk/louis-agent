@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="louis-agent.api.tests" />
+    <InternalsVisibleTo Include="louis-agent.api.integration-tests" />
+    <InternalsVisibleTo Include="louis-agent.api.testing" />
   </ItemGroup>
 
   <PropertyGroup>

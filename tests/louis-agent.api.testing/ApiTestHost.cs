@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.AI;
 
-namespace LouisAgent.Api.Tests.Endpoints.Routing;
+namespace LouisAgent.Api.Testing;
 
 /// <summary>
 /// The API as <c>Program.cs</c> builds it, in memory (CL20 step 1, ADR 0039): the same <c>AddApi</c>, the same key gate and the same

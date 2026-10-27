@@ -238,7 +238,8 @@ src/
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
 tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests,
                          #   identity.puls.tests, pack.shops.tests, composition.tests, web.shared.tests, puls.tests and web.tests (bUnit);
-                         #   louis-agent.testing and louis-agent.web.testing hold the fakes they share
+                         #   louis-agent.testing, web.testing and api.testing hold what they share; the tests that leave their process (git, bash, a browser, Mongo,
+                         #   the eval runner) are apart in core., api., orchestrator. and pack.shops.integration-tests (F18 step 7.6)
 docker/                  # This PC: images/ (the Dockerfiles; ollama/ for the local model), the compose stacks (main, puls) and searxng/
 deploy/azure/            # The cloud: Puls on Azure Container Apps (the app yamls, the Tailscale sidecar, deploy.ps1, the how-to)
 config/                  # What the app reads at run time: .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json; rider/ for the IDE client templates

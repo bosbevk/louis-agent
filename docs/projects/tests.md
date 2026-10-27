@@ -3,9 +3,13 @@
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.shops.tests/`,
 > `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
-> `tests/louis-agent.web.tests/`; the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
+> `tests/louis-agent.web.tests/`; the tests that leave their process in `tests/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shops.integration-tests/` (F18 step 7.6); the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
 > `tests/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
+
+## Unit and integration, apart (F18 step 7.6)
+
+A test that starts a real process, opens Mongo or needs the Puls stack is an integration test: its class is `[Category("Integration")]` and it lives in `{name}.integration-tests`, so a unit project never starts a process. Solution folders `unit`, `integration` and `shared` hold the projects; CI runs `--filter "Category!=Integration"` and then `--filter "Category=Integration"` with `INTEGRATION_REQUIRED=1`. `louis-agent.api.testing` (shared) holds the in-memory API host, the built runner and stand-in dlls and the store contracts, so each is written once and run against memory (unit) and Mongo (integration). Two ratchets in `core.tests/Categories/` hold it: `IntegrationTestsAreMarkedTests` (a test that asks for the outside or uses a process, Mongo or the runner is marked; no raw skip) and `IntegrationPlacementTests` (the mark and the project agree).
 
 ## Purpose
 

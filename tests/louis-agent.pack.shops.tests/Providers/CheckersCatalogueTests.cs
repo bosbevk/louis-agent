@@ -13,8 +13,11 @@ namespace LouisAgent.Packs.Shops.Tests.Providers;
 public class CheckersCatalogueTests
 {
     private static readonly string Fixtures = Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.pack.shops.tests", "Providers", "Fixtures");
+
     private static string Json => File.ReadAllText(Path.Combine(Fixtures, "checkers-search.json"));
+
     private static string Html => File.ReadAllText(Path.Combine(Fixtures, "checkers-search.html"));
+
     private static readonly Uri Search = CheckersCatalogue.SearchUri("chicken pieces");
 
     [Test]
@@ -108,7 +111,9 @@ public class CheckersCatalogueTests
     // badge ("BUY 2 FOR R199", "SAVE"). The fixtures are a real answer and page, recorded 2026-10-17 and trimmed; the
     // last product's card is left out, as a deal whose wording the page didn't show.
     private static string DealsJson => File.ReadAllText(Path.Combine(Fixtures, "checkers-deals.json"));
+
     private static string DealsHtml => File.ReadAllText(Path.Combine(Fixtures, "checkers-deals.html"));
+
     private static IReadOnlyList<ShopProduct> Deals => CheckersCatalogue.Parse(DealsJson, DealsHtml, Search, 10);
 
     [Test]
@@ -276,41 +281,4 @@ public class CheckersCatalogueTests
     public void TheBrowsersError_IsTheCataloguesOwn() =>
         Assert.That(() => new CheckersCatalogue(new DownBrowser()).SearchAsync("chicken pieces", 5),
             Throws.TypeOf<ShopCatalogueException>().With.Message.Contains("didn't answer"));
-
-    [Category("Integration")]
-    [Test, Category("Live")]
-    public async Task FromMalmesbury_TheSearchIsMalmesburysStore()
-    {
-        string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
-        var browser = new ChromeWebBrowser(new Uri(url!));
-
-        var found = await new CheckersCatalogue(browser, new CheckersStore(browser, LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync)).SearchAsync("chicken", 5, "Malmesbury");
-
-        Assert.That(found.Area, Is.EqualTo("Malmesbury"));
-        Assert.That(found.Store, Does.Not.StartWith("5ece6935"), "the default store's id: the town's store answered");
-        Assert.That(found.Products, Is.Not.Empty);
-    }
-
-    [Category("Integration")]
-    [Test, Category("Live")]
-    public async Task Checkers_ShowsItsDeals_WithTheirWording()
-    {
-        string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
-
-        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chicken", 16)).Products;
-
-        Assert.That(products, Has.Some.Matches<ShopProduct>(p => p.Deal is { Text.Length: > 0 }), "deals come and go; chicken has had one all week");
-    }
-
-    [Category("Integration")]
-    [Test, Category("Live")]
-    public async Task Checkers_FindsItsProducts_WithPricesAndLinks()
-    {
-        string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
-
-        var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chakalaka", 5)).Products;
-
-        Assert.That(products, Is.Not.Empty);
-        Assert.That(products, Has.All.Matches<ShopProduct>(p => (p.Price > 0 || p.UnitPrice > 0) && p.Url.Host == "www.checkers.co.za"));
-    }
 }

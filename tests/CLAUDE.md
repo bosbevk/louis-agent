@@ -15,10 +15,14 @@ dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
 dotnet test tests/louis-agent.acp-server.tests     # the ACP transcript (LOUIS_UPDATE_GOLDEN=1 regenerates AcpTranscript.json)
 dotnet test louis-agent-solution.sln          # everything
+dotnet test louis-agent-solution.sln --filter "Category!=Integration"   # the unit tests: no process, no tool, no Mongo
+dotnet test louis-agent-solution.sln --filter "Category=Integration"    # the integration tests (tests/*.integration-tests); a missing tool skips, or fails with INTEGRATION_REQUIRED=1
 ```
 
-GitHub Actions runs the last two commands (build, then the whole solution's tests) on Ubuntu on every push and pull
-request (`.github/workflows/ci.yml`); a red check on a PR is the same failure you'd see locally with that command.
+GitHub Actions runs the build, then the unit tests, then the integration tests (the two filters above, the second with
+`INTEGRATION_REQUIRED=1`) on Ubuntu on every push and pull request (`.github/workflows/ci.yml`); a red check on a PR is
+the same failure you'd see locally with that step's command. A test that starts a process, opens Mongo or needs a tool
+is an integration test: it lives in a `{name}.integration-tests` project, and the [guide](../docs/guides/write-tests.md#where-a-test-goes) says how.
 
 ## Test first
 

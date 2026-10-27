@@ -26,16 +26,14 @@
     <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
     <!-- F18 step 1e: the scripted turns of the stream golden run on the shared fake model. -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
-    <!-- F18 step 4.3: the eval runner, built with these tests so its dll is there to list and to run. The API itself references no
-         evals project; this reference carries no assembly into the test's output. -->
-    <ProjectReference Include="..\..\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" ReferenceOutputAssembly="false" />
-    <!-- F18 step 7.4: the stand-in for the runner, built with these tests (no assembly referenced), so a test can start a real child process that behaves as the check's id says. -->
-    <ProjectReference Include="..\louis-agent.api.standin\louis-agent.api.standin.csproj" ReferenceOutputAssembly="false" />
+    <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts both the unit and the integration tests use. -->
+    <ProjectReference Include="..\louis-agent.api.testing\louis-agent.api.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
     <Using Include="LouisAgent.Testing" />
+    <Using Include="LouisAgent.Api.Testing" />
   </ItemGroup>
 
   <ItemGroup>

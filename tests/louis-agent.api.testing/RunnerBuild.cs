@@ -1,7 +1,7 @@
-namespace LouisAgent.Api.Tests.Benchmarks.Runs;
+namespace LouisAgent.Api.Testing;
 
 /// <summary>The eval runner's built dll, beside this test's configuration: the project reference builds it with these tests (F18 step 4.3).</summary>
-internal static class RunnerBuild
+public static class RunnerBuild
 {
     public static string Dll
     {

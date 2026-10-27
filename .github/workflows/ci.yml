@@ -1,6 +1,5 @@
 # Build and test on every push and pull request, so a regression is caught before a review, not only locally.
-# The same two commands as the development guide's "Finishing a step": dotnet build, then dotnet test on the whole
-# solution (core, API, orchestrator and the order-service sample's tests). Tests are platform-neutral and the agent
+# The development guide's "Finishing a step", in two steps: dotnet build, then the unit tests, then (F18 step 7.6) the integration tests, which leave their process and live in their own projects.
 # already runs them on Linux in its containers, so the runner is Ubuntu. No model, no network, no secrets: the tests
 # use FakeChatClient and StubHandler, and skip themselves when git, pip or the network is missing. One service: a
 # throwaway MongoDB, so the benchmark store's contract runs against the real store too (F31), not only in memory.
@@ -41,8 +40,6 @@ jobs:
       GIT_COMMITTER_EMAIL: ci@localhost
       # The Mongo store's contract tests (F31); a throwaway server with a throwaway user, so no secret.
       BENCHMARKS_MONGO_URL: mongodb://ci:ci@localhost:27017/?authSource=admin
-      # A tool this image has (git, bash, an interpreter, dotnet, Mongo) that a test cannot find fails the test, not skips it (F18 step 7.6); only the Puls stack's browser and SearXNG tests still skip.
-      INTEGRATION_REQUIRED: 1
     steps:
       - uses: actions/checkout@v4
 
@@ -53,9 +50,17 @@ jobs:
       - name: Build
         run: dotnet build louis-agent-solution.sln
 
-      - name: Test
-        # One .trx per test project, named by the logger, so the four don't overwrite each other.
-        run: dotnet test louis-agent-solution.sln --no-build --logger trx --results-directory TestResults
+      - name: Unit tests
+        # The unit tests start no process and need no tool (F18 step 7.6): every integration test carries the Integration mark and lives in a `.integration-tests` project, so the filter leaves them out.
+        # One .trx per test project, named by the logger, so they don't overwrite each other.
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category!=Integration" --logger trx --results-directory TestResults
+
+      - name: Integration tests
+        # The tests that leave their process: real git, bash, interpreters, dotnet child processes and Mongo. A tool this image has that a test cannot find fails the test here, not skips it
+        # (INTEGRATION_REQUIRED); only the Puls stack's browser and SearXNG tests still skip, since this image has no such stack.
+        env:
+          INTEGRATION_REQUIRED: 1
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category=Integration" --logger trx --results-directory TestResults
 
       - name: Keep the test results
         if: always()

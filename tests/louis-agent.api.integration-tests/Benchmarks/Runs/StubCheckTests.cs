@@ -3,7 +3,7 @@ using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
-namespace LouisAgent.Api.Tests.Benchmarks.Runs;
+namespace LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 
 // F31 step 6c, on the C# stub since F18 step 7.3 (the Python stub is gone): the stub eval is the free run every hand check uses (steps 6c, 9, 10): it writes a canned run in the protocol and opens no
 // session, so it costs nothing. Run here through the real runner and recorder: every '@' line must be a known event (one that fell back to a log line would be a protocol drift between the runner and

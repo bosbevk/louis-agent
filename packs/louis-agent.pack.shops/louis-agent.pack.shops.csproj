@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="louis-agent.pack.shops.tests" />
+    <InternalsVisibleTo Include="louis-agent.pack.shops.integration-tests" />
   </ItemGroup>
 
   <ItemGroup>

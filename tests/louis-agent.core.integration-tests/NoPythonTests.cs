@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace LouisAgent.Core.Tests;
+namespace LouisAgent.Core.IntegrationTests;
 
 // F18 step 7 (the plan, line 33): the repo is C#. Python lives in the images because skills run it (their `Execution:` fences), and the agent writes some under Skills/, but no `.py` file
 // is tracked anywhere else: the harness's Python checks, their tests and CI's Python step are gone, and this keeps them gone. Read from git, not the folder, so an ignored scratch file is

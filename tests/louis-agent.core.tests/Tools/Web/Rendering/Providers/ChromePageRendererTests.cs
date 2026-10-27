@@ -19,16 +19,4 @@ public class ChromePageRendererTests
         Assert.That(() => renderer.RenderAsync(new Uri("https://example.com/")),
             Throws.TypeOf<PageRenderException>().With.Message.Contains("127.0.0.1:1"));
     }
-
-    [Category("Integration")]
-    [Test, Category("Live")]
-    public async Task APage_IsReadAsTheBrowserShowsIt()
-    {
-        string url = Outside.Stack("BROWSER_URL", "browser to render with");
-
-        var page = await new ChromePageRenderer(new ChromeWebBrowser(new Uri(url!))).RenderAsync(new Uri("https://example.com/"));
-
-        Assert.That(page.Text, Does.Contain("Example Domain"));
-        Assert.That(page.Url, Does.StartWith("https://example.com"));
-    }
 }

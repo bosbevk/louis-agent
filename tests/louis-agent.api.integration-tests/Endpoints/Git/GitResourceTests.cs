@@ -4,11 +4,10 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Api.Messages;
-using LouisAgent.Api.Tests.Endpoints.Routing;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.TestHost;
 
-namespace LouisAgent.Api.Tests.Endpoints.Git;
+namespace LouisAgent.Api.IntegrationTests.Endpoints.Git;
 
 // CL20 step 5 (ADR 0039, rules 2 to 4): the git routes name resources (commits and branches), a create answers 201 with its
 // Location, and a delete is a DELETE. On a small repository made for the test, through the API in memory. Skipped when git isn't

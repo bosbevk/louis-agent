@@ -7,13 +7,12 @@ using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
-using LouisAgent.Api.Tests.Benchmarks.Runs;
-using LouisAgent.Api.Tests.Endpoints.Routing;
+using LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
-namespace LouisAgent.Api.Tests.Benchmarks.Calibrations;
+namespace LouisAgent.Api.IntegrationTests.Benchmarks.Calibrations;
 
 // F18 step 6a.5b (ADR 0039: a resource, `calibrations`, under the run): POST /v1/admin/benchmarks/runs/{id}/calibrations/{grader} checks the judge against the people's grades of that
 // run: it writes the decided grades as label lines to the eval runner's stdin and starts it with --calibrate; 202 with the run started (calibration_of, grader); 404 for a run the store
@@ -23,7 +22,9 @@ namespace LouisAgent.Api.Tests.Benchmarks.Calibrations;
 public class CalibrationEndpointTests
 {
     private const string AdminKey = "admin-secret";
+
     private const string RunId = "76667d39dcdb";
+
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
     private sealed record Host(WebApplication App, HttpClient Client, InMemoryBenchmarkStore Store, InMemoryHumanReviewStore Reviews, InMemoryCalibrationStore Calibrations,

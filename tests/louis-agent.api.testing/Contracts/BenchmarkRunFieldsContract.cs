@@ -4,7 +4,7 @@ using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
-namespace LouisAgent.Api.Tests.Benchmarks.Store;
+namespace LouisAgent.Api.Testing;
 
 /// <summary>
 /// What every benchmark store keeps on a run beyond the first fields, in memory and in MongoDB alike (F18 steps 5b.2 and 5c.2): the run it re-scored, a total of a known zero, and the

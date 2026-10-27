@@ -4,12 +4,11 @@ using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
-using LouisAgent.Api.Tests.Benchmarks.Runs;
-using LouisAgent.Api.Tests.Endpoints.Routing;
+using LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 
-namespace LouisAgent.Api.Tests.Benchmarks;
+namespace LouisAgent.Api.IntegrationTests.Benchmarks;
 
 // F18 step 5b.2 (ADR 0039, POST /{resource}/{verb}): POST /v1/admin/benchmarks/runs/{id}/rescore starts a re-score of a stored run: 201 with the new run's
 // Location, 404 for a run it doesn't hold, 409 while another run runs (as a start answers), 400 for a run of a check the runner does not list (only an eval's transcripts can be graded
@@ -66,7 +65,6 @@ public class RescoreEndpointTests
         return client.SendAsync(request);
     }
 
-    [Category("Integration")]
     [Test]
     public async Task ARescore_Is201WithTheNewRunsLocation_AndIsRecordedAsARescoreCostingNothing()
     {
@@ -99,7 +97,6 @@ public class RescoreEndpointTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
-    [Category("Integration")]
     [Test]
     public async Task WhileAnotherRunRuns_Is409_AsAStartIs()
     {

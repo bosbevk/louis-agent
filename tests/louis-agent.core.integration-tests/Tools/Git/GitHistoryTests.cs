@@ -3,7 +3,7 @@ using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Git.Running;
 
-namespace LouisAgent.Core.Tests.Tools.Git;
+namespace LouisAgent.Core.IntegrationTests.Tools.Git;
 
 // F22 step 4: the historian's tools on a small repository made for the test. Skipped when git isn't installed.
 [Category("Integration")]

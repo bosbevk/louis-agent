@@ -1345,5 +1345,7 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   | `CalibrationView`, `CalibrationText` | `src/louis-agent.puls/Admin/Reviews/` | `LouisAgent.Puls.Admin.Reviews` | 6a.5c |
   | `CalibrationCard` (`.razor` + `.razor.cs`), `AgreementPanel` (changed) | `src/louis-agent.puls/Components/Admin/Reviews/` | `LouisAgent.Puls.Components.Admin.Reviews` | 6a.5c |
 
+- **Step 7.6: unit and integration tests apart** (Louis, 2026-10-27, step 7.6's brief and cards). A test that starts a real process, opens Mongo or needs a tool or the Puls stack is an integration test: `[Category("Integration")]` on its class, in a sibling project `{name}.integration-tests` (core, api, orchestrator, pack.shops), asking for the outside through `Outside.Tool` (skip locally, fail on CI) or `Outside.Stack` (always skips). What a unit and an integration project share lives in a library (`louis-agent.api.testing`). Solution folders `unit`, `integration`, `shared`; CI runs the unit tests and then the integration tests. Two ratchets hold it (`IntegrationTestsAreMarkedTests`, `IntegrationPlacementTests`). Done in steps 7.6.1 to 7.6.3 ([the feature doc](../features/F18-evaluation.md)).
+
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)
