@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
@@ -22,7 +23,7 @@ public sealed class RoutingEval : IEval
     // One required route, the harness's RoutedToGrader reading `routes_to`. A no-error grader would add nothing: a one-turn question is routed right only without an error (RoutingScorer).
     private static readonly IReadOnlyList<IGrader> GraderList = [PulsRoute.Grader()];
 
-    public string Name => "puls-routing";
+    public string Name => PulsEvalName.Routing.Wire();
     public string? Manual => "evals/louis-agent.evals.puls/Manuals/routing.md";
     public string? Identity => "puls";
     public int Version => 2;

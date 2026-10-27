@@ -22,11 +22,11 @@ public class CategoryTrendEndpointTests
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
         BenchmarkSlice Slice(string name, double? rate, bool tooFew = false) =>
             new(SampleMode.Beta, name, 8, 6, 2, 0, 0, ["a"], tooFew, rate, rate, rate, [], [], []);
-        await store.SaveRunAsync(new Run("r1", "puls-cook", 1, BenchmarkRunStatus.Done, at, Slices: [Slice("overall", 0.75), Slice("budget", null, tooFew: true)]));
-        await store.SaveRunAsync(new Run("r2", "puls-cook", 1, BenchmarkRunStatus.Done, at.AddHours(1), Slices: [Slice("overall", 0.875)]));
+        await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at, Slices: [Slice("overall", 0.75), Slice("budget", null, tooFew: true)]));
+        await store.SaveRunAsync(new Run("r2", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at.AddHours(1), Slices: [Slice("overall", 0.875)]));
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
-        using var request = new HttpRequestMessage(HttpMethod.Get, "/v1/admin/benchmarks/checks/puls-cook/trend");
+        using var request = new HttpRequestMessage(HttpMethod.Get, $"/v1/admin/benchmarks/checks/{SampleEval.Beta}/trend");
         request.Headers.Add("x-api-key", AdminKey);
 
         using var response = await app.GetTestClient().SendAsync(request);

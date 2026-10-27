@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Evals.Puls.Shared;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
@@ -18,7 +20,7 @@ public class ExpectationsTests
         var expected = CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"checkers"}"""));
 
         Assert.That((expected.RoutesTo, expected.Town, expected.Budget, expected.Shop),
-            Is.EqualTo(("puls-cook", "Stellenbosch", (decimal?)250m, (ShopExpectation?)ShopExpectation.Checkers)));
+            Is.EqualTo((PulsEvalName.Cook.Wire(), "Stellenbosch", (decimal?)250m, (ShopExpectation?)ShopExpectation.Checkers)));
         Assert.That(expected.Serves, Is.EqualTo(new[] { 4, 6 }));
     }
 

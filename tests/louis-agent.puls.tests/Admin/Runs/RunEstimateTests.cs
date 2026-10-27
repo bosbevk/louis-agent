@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Puls.Admin.Runs;
 
 namespace LouisAgent.Puls.Tests.Admin.Runs;
@@ -15,9 +16,9 @@ public class RunEstimateTests
     [Test]
     public void TheEstimate_IsTheLastMeasuredRunsCostPerRepeat_TimesTheRepeatsChosen()
     {
-        var runs = new[] { Run("new", "puls-cook", 3, 0.24m, hoursAgo: 1), Run("old", "puls-cook", 1, 0.10m, hoursAgo: 5) };
+        var runs = new[] { Run("new", SampleEval.Beta, 3, 0.24m, hoursAgo: 1), Run("old", SampleEval.Beta, 1, 0.10m, hoursAgo: 5) };
 
-        Assert.That(RunEstimate.For("puls-cook", runs, repeats: 2), Is.EqualTo(0.16m));
+        Assert.That(RunEstimate.For(SampleEval.Beta, runs, repeats: 2), Is.EqualTo(0.16m));
     }
 
     [Test]
@@ -25,29 +26,29 @@ public class RunEstimateTests
     {
         var runs = new[]
         {
-            Run("rescore", "puls-cook", 1, 0m, hoursAgo: 1, rescoreOf: "old"),
-            Run("broken", "puls-cook", 1, 0.5m, hoursAgo: 2, status: "failed"),
-            Run("other", "puls-routing", 1, 9m, hoursAgo: 3),
-            Run("old", "puls-cook", 1, 0.10m, hoursAgo: 4),
+            Run("rescore", SampleEval.Beta, 1, 0m, hoursAgo: 1, rescoreOf: "old"),
+            Run("broken", SampleEval.Beta, 1, 0.5m, hoursAgo: 2, status: "failed"),
+            Run("other", SampleEval.Gamma, 1, 9m, hoursAgo: 3),
+            Run("old", SampleEval.Beta, 1, 0.10m, hoursAgo: 4),
         };
 
-        Assert.That(RunEstimate.For("puls-cook", runs, repeats: 1), Is.EqualTo(0.10m));
+        Assert.That(RunEstimate.For(SampleEval.Beta, runs, repeats: 1), Is.EqualTo(0.10m));
     }
 
     [Test]
     public void NoMeasuredRun_OrAnUnknownCost_GivesNoEstimate()
     {
-        Assert.That(RunEstimate.For("puls-cook", [], repeats: 1), Is.Null);
-        Assert.That(RunEstimate.For("puls-cook", [Run("unpriced", "puls-cook", 1, null, hoursAgo: 1)], repeats: 1), Is.Null);
+        Assert.That(RunEstimate.For(SampleEval.Beta, [], repeats: 1), Is.Null);
+        Assert.That(RunEstimate.For(SampleEval.Beta, [Run("unpriced", SampleEval.Beta, 1, null, hoursAgo: 1)], repeats: 1), Is.Null);
     }
 
     [Test]
     public void TheDefaultCheck_IsTheOneWithTheNewestRun_ElseTheFirstCheck()
     {
-        var checks = new[] { "stub", "puls-cook", "puls-routing" };
-        var runs = new[] { Run("a", "puls-routing", 1, 1m, hoursAgo: 3), Run("b", "puls-cook", 1, 1m, hoursAgo: 1) };
+        var checks = new[] { "stub", SampleEval.Beta, SampleEval.Gamma };
+        var runs = new[] { Run("a", SampleEval.Gamma, 1, 1m, hoursAgo: 3), Run("b", SampleEval.Beta, 1, 1m, hoursAgo: 1) };
 
-        Assert.That(RunEstimate.DefaultCheck(checks, runs), Is.EqualTo("puls-cook"));
+        Assert.That(RunEstimate.DefaultCheck(checks, runs), Is.EqualTo(SampleEval.Beta));
         Assert.That(RunEstimate.DefaultCheck(checks, []), Is.EqualTo("stub"));
         Assert.That(RunEstimate.DefaultCheck([], []), Is.Null);
     }
@@ -64,16 +65,16 @@ public class RunEstimateTests
     [Test]
     public void TheText_SaysTheCostAndTheRepeats_InThePagesMoney()
     {
-        var runs = new[] { Run("new", "puls-cook", 3, 0.24m, hoursAgo: 1) };
+        var runs = new[] { Run("new", SampleEval.Beta, 3, 0.24m, hoursAgo: 1) };
 
-        Assert.That(RunEstimate.Text("puls-cook", runs, 2, Dollars), Is.EqualTo("≈ $0.16 for 2 repeats"));
-        Assert.That(RunEstimate.Text("puls-cook", runs, 1, Dollars), Is.EqualTo("≈ $0.08 for 1 repeat"), "one repeat is singular");
+        Assert.That(RunEstimate.Text(SampleEval.Beta, runs, 2, Dollars), Is.EqualTo("≈ $0.16 for 2 repeats"));
+        Assert.That(RunEstimate.Text(SampleEval.Beta, runs, 1, Dollars), Is.EqualTo("≈ $0.08 for 1 repeat"), "one repeat is singular");
     }
 
     [Test]
     public void AnUnknownCost_GivesNoText_NotAZero()
     {
-        Assert.That(RunEstimate.Text("puls-cook", [], 2, Dollars), Is.Empty);
-        Assert.That(RunEstimate.Text("puls-cook", [Run("unpriced", "puls-cook", 1, null, hoursAgo: 1)], 2, Dollars), Is.Empty);
+        Assert.That(RunEstimate.Text(SampleEval.Beta, [], 2, Dollars), Is.Empty);
+        Assert.That(RunEstimate.Text(SampleEval.Beta, [Run("unpriced", SampleEval.Beta, 1, null, hoursAgo: 1)], 2, Dollars), Is.Empty);
     }
 }

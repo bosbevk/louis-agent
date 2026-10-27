@@ -20,12 +20,12 @@ public class CalibrationLineTests
     [Test]
     public void TheLine_CarriesTheReport_InTheAgreementCardsShape()
     {
-        string text = CalibrationLine.Of("puls-cook", "meal-for-people", "qwen3:4b", Report).ToLine();
+        string text = CalibrationLine.Of(SampleEval.Beta, "meal-for-people", "qwen3:4b", Report).ToLine();
 
         Assert.That(text, Does.StartWith("@{").And.Not.Contain("\n"));
         var line = JsonDocument.Parse(text[1..]).RootElement;
         Assert.That(line.GetProperty("event").GetString(), Is.EqualTo("calibration"));
-        Assert.That((line.GetProperty("eval").GetString(), line.GetProperty("grader").GetString(), line.GetProperty("judge_model").GetString()), Is.EqualTo(("puls-cook", "meal-for-people", "qwen3:4b")));
+        Assert.That((line.GetProperty("eval").GetString(), line.GetProperty("grader").GetString(), line.GetProperty("judge_model").GetString()), Is.EqualTo((SampleEval.Beta, "meal-for-people", "qwen3:4b")));
         Assert.That((line.GetProperty("agreed").GetInt32(), line.GetProperty("total").GetInt32(), line.GetProperty("bar").GetInt32(), line.GetProperty("passes").GetBoolean()), Is.EqualTo((3, 4, 90, false)));
         Assert.That(line.GetProperty("person_pass").GetProperty("judge_pass").GetInt32(), Is.EqualTo(2));
         Assert.That(line.GetProperty("person_fail").GetProperty("judge_fail").GetInt32(), Is.EqualTo(1));

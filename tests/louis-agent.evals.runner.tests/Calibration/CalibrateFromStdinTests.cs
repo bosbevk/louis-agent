@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Runner.Evals.Stub;
 using System.Text.Json;
@@ -41,9 +42,9 @@ public class CalibrateFromStdinTests
     [Test]
     public void TheCommandLine_TakesLabelsOnStdin_AndNothingElseForLabels()
     {
-        Assert.That(CommandLine.Parse(["--calibrate", "puls-cook", "meal-for-people", "--labels", "-"]), Is.EqualTo(new CalibrateRequest("puls-cook", "meal-for-people", LabelsOnStdin: true)));
-        Assert.That(CommandLine.Parse(["--calibrate", "puls-cook", "meal-for-people"]), Is.EqualTo(new CalibrateRequest("puls-cook", "meal-for-people")));
-        Assert.That(() => CommandLine.Parse(["--calibrate", "puls-cook", "meal-for-people", "--labels", "some/folder"]),
+        Assert.That(CommandLine.Parse(["--calibrate", SampleEval.Beta, "meal-for-people", "--labels", "-"]), Is.EqualTo(new CalibrateRequest(SampleEval.Beta, "meal-for-people", LabelsOnStdin: true)));
+        Assert.That(CommandLine.Parse(["--calibrate", SampleEval.Beta, "meal-for-people"]), Is.EqualTo(new CalibrateRequest(SampleEval.Beta, "meal-for-people")));
+        Assert.That(() => CommandLine.Parse(["--calibrate", SampleEval.Beta, "meal-for-people", "--labels", "some/folder"]),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("--labels").And.Message.Contains("-"));
     }
 

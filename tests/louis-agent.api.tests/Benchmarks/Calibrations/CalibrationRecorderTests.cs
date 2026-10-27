@@ -48,7 +48,7 @@ public class CalibrationRecorderTests
         var run = Calibration();
         recorder.Attach(run);
 
-        run.Add("Eval 'puls-cook' has no grader 'meal-for-people'. Its graders are no-error.");
+        run.Add("Eval '" + SampleEval.Beta + "' has no grader 'meal-for-people'. Its graders are no-error.");
         run.Complete(1);
         var result = await recorder.RecordingOf(run.Id)!;
 
@@ -79,7 +79,7 @@ public class CalibrationRecorderTests
     {
         var store = new InMemoryCalibrationStore();
         var recorder = new CalibrationRecorder(store);
-        var run = new BenchmarkRun("run123456789", "puls-cook", 1);
+        var run = new BenchmarkRun("run123456789", SampleEval.Beta, 1);
         recorder.Attach(run);
 
         run.Add(Line);

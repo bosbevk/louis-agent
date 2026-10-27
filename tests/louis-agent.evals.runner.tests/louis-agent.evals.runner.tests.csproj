@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" />
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- F18 step 5.4c: the template is never registered with the runner; the layout test reads it, and only that. -->
     <ProjectReference Include="..\..\evals\louis-agent.evals.template\louis-agent.evals.template.csproj" />
   </ItemGroup>

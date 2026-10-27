@@ -25,7 +25,7 @@ public class PassRatesStoredTests
 
     private static readonly string[] EvalRun =
     [
-        At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 3, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
+        At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 3, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
         At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
         At(new { @event = "mode_done", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
         At(new { @event = "mode", t = 1700000003.0, mode = SampleMode.Beta, repeat = 2, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
@@ -35,7 +35,7 @@ public class PassRatesStoredTests
     private static async Task<InMemoryBenchmarkStore> Recorded(IEnumerable<string> lines, string id = Id)
     {
         var store = new InMemoryBenchmarkStore();
-        var run = new BenchmarkRun(id, "puls-cook", 2);
+        var run = new BenchmarkRun(id, SampleEval.Beta, 2);
         var recording = new BenchmarkRecorder(store).RecordAsync(run);
         foreach (string line in lines) run.Add(line);
         run.Complete(0);
@@ -114,7 +114,7 @@ public class PassRatesStoredTests
         var store = await Recorded(EvalRun);
         await store.SaveConversationAsync(Id, new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
-        var point = (await BenchmarkTrends.ComputeAsync(store, "puls-cook")).Modes.Single().Points.Single();
+        var point = (await BenchmarkTrends.ComputeAsync(store, SampleEval.Beta)).Modes.Single().Points.Single();
 
         Assert.That((point.PassAtK, point.PassHatK, point.K), Is.EqualTo(((double?)1.0, (double?)0.5, (int?)2)));
     }
@@ -123,10 +123,10 @@ public class PassRatesStoredTests
     public async Task ATrendPointOfARunFromBefore_HasNullRates()
     {
         var store = new InMemoryBenchmarkStore();
-        await store.SaveRunAsync(new Run("old", "puls-cook", 1, BenchmarkRunStatus.Done, T0, Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], null, null)]));
+        await store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], null, null)]));
         await store.SaveConversationAsync("old", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1));
 
-        var point = (await BenchmarkTrends.ComputeAsync(store, "puls-cook")).Modes.Single().Points.Single();
+        var point = (await BenchmarkTrends.ComputeAsync(store, SampleEval.Beta)).Modes.Single().Points.Single();
 
         Assert.That((point.PassAtK, point.PassHatK, point.K), Is.EqualTo(((double?)null, (double?)null, (int?)null)));
     }

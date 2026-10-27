@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Evals.Puls.Shared;
 namespace LouisAgent.Evals.Puls.Tests.Manuals;
 
 // F18 step 7.1: each Puls eval's manual lives beside the eval (evals/louis-agent.evals.puls/Manuals/{cook,routing}.md), in English, opens with a title, and names the eval and every grader it declares,
@@ -15,15 +17,15 @@ public class PulsManualTests
 
     private static string Manual(IEval eval) => File.ReadAllText(Path.Combine(RepoRoot, eval.Manual!.Replace('/', Path.DirectorySeparatorChar)));
 
-    private static IEval Eval(string name) => new PulsEvalSet().Evals.Single(e => e.Name == name);
+    private static IEval Eval(PulsEvalName name) => new PulsEvalSet().Evals.Single(e => e.Name == name.Wire());
 
-    [TestCase("puls-cook", "evals/louis-agent.evals.puls/Manuals/cook.md")]
-    [TestCase("puls-routing", "evals/louis-agent.evals.puls/Manuals/routing.md")]
-    public void AnEvalListsItsManual_BesideItself(string eval, string path) => Assert.That(Eval(eval).Manual, Is.EqualTo(path));
+    [TestCase(PulsEvalName.Cook, "evals/louis-agent.evals.puls/Manuals/cook.md")]
+    [TestCase(PulsEvalName.Routing, "evals/louis-agent.evals.puls/Manuals/routing.md")]
+    public void AnEvalListsItsManual_BesideItself(PulsEvalName eval, string path) => Assert.That(Eval(eval).Manual, Is.EqualTo(path));
 
-    [TestCase("puls-cook")]
-    [TestCase("puls-routing")]
-    public void TheManual_OpensWithATitle_AndNamesTheEvalAndEveryGrader(string name)
+    [TestCase(PulsEvalName.Cook)]
+    [TestCase(PulsEvalName.Routing)]
+    public void TheManual_OpensWithATitle_AndNamesTheEvalAndEveryGrader(PulsEvalName name)
     {
         var eval = Eval(name);
         string text = Manual(eval);
@@ -36,7 +38,7 @@ public class PulsManualTests
     [Test]
     public async Task TheCooksManual_NamesItsModes()
     {
-        var eval = Eval("puls-cook");
+        var eval = Eval(PulsEvalName.Cook);
         string text = Manual(eval);
 
         Assert.That((await eval.ModesAsync(null!, CancellationToken.None)).Select(m => m.Name), Has.All.Matches<string>(mode => text.Contains($"`{mode}`")));

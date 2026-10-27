@@ -64,7 +64,7 @@ public class BenchmarkProtocolExportTests
         string At(object e) => "@" + JsonSerializer.Serialize(e);
         var lines = new[]
         {
-            At(new { @event = "protocol", version = 1, eval = "puls-cook", eval_version = 9, commit = "abc", graders = new object[] { new { name = "meal-for-people.human", version = 1, kind = "Human", question = "Is this a meal?" } }, models = Array.Empty<object>() }),
+            At(new { @event = "protocol", version = 1, eval = SampleEval.Beta, eval_version = 9, commit = "abc", graders = new object[] { new { name = "meal-for-people.human", version = 1, kind = "Human", question = "Is this a meal?" } }, models = Array.Empty<object>() }),
             At(new { @event = "mode", mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
             At(new { @event = "mode_done", mode = SampleMode.Beta, repeat = 1 }),
         };
@@ -82,7 +82,7 @@ public class BenchmarkProtocolExportTests
         string At(object e) => "@" + JsonSerializer.Serialize(e);
         var lines = new[]
         {
-            At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 3, commit = "abc123", split = "held_out", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
+            At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 3, commit = "abc123", split = "held_out", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
             At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
             At(new { @event = "mode_done", t = 1700000005.0, mode = SampleMode.Beta, repeat = 1 }),
         };
@@ -103,7 +103,7 @@ public class BenchmarkProtocolExportTests
         {
             At(new
             {
-                @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 2, commit = "abc123",
+                @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 2, commit = "abc123",
                 graders = new[] { new { name = "cook-no-error", version = 1, kind = "FixedRule" } },
                 models = new[] { new { mode = SampleMode.Beta, level = "Agent", role = "puls/voice-af", model = "claude-haiku-5-5" } },
             }),

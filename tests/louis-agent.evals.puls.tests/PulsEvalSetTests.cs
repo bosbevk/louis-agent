@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
@@ -14,7 +16,7 @@ public class PulsEvalSetTests
         var set = new PulsEvalSet();
 
         Assert.That(set.Identity, Is.EqualTo("puls"));
-        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { "puls-cook", "puls-routing" }));
+        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { PulsEvalName.Cook.Wire(), PulsEvalName.Routing.Wire() }));
     }
 
     [TestCase("cook-no-error")]

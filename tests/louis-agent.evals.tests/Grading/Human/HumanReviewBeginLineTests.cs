@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
@@ -37,7 +38,7 @@ public class HumanReviewBeginLineTests
     private static JsonElement[] Graders(params IGrader[] graders)
     {
         var sink = new StringWriter();
-        new ProtocolWriter(sink, new FixedClock(DateTimeOffset.UnixEpoch)).Begin("puls-cook", 9, "abc", graders, []);
+        new ProtocolWriter(sink, new FixedClock(DateTimeOffset.UnixEpoch)).Begin(SampleEval.Beta, 9, "abc", graders, []);
         using var line = JsonDocument.Parse(sink.ToString().Trim().TrimStart('@'));
         return [.. line.RootElement.GetProperty("graders").EnumerateArray().Select(g => g.Clone())];
     }

@@ -23,10 +23,10 @@ public class CategoryTrendTests
 
     private async Task Run(string id, int hour, IReadOnlyList<BenchmarkSlice>? slices, string? model = "claude-haiku-5-5", BenchmarkRunStatus status = BenchmarkRunStatus.Done,
         BenchmarkRunSplit? split = null, string? rescoreOf = null, IReadOnlyDictionary<string, string>? settings = null) =>
-        await _store.SaveRunAsync(new Run(id, "puls-cook", 1, status, T0.AddHours(hour), Settings: settings, Split: split, RescoreOf: rescoreOf, Slices: slices,
+        await _store.SaveRunAsync(new Run(id, SampleEval.Beta, 1, status, T0.AddHours(hour), Settings: settings, Split: split, RescoreOf: rescoreOf, Slices: slices,
             Models: model is null ? null : [new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, null, model)]));
 
-    private async Task<IReadOnlyList<CategoryTrends.Category>> Compute() => await CategoryTrends.ComputeAsync(_store, "puls-cook");
+    private async Task<IReadOnlyList<CategoryTrends.Category>> Compute() => await CategoryTrends.ComputeAsync(_store, SampleEval.Beta);
 
     [Test]
     public async Task EachCategory_HasALinePerModeOnItsModel_AndAPointPerRunWithARate()

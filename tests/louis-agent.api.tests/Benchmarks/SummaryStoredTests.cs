@@ -42,7 +42,7 @@ public class SummaryStoredTests
 
     private static readonly string[] Run =
     [
-        At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = "puls-cook", eval_version = 7, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
+        At(new { @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 7, commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>() }),
         At(new { @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1, toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0 }),
         At(new { @event = "conversation", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, task = "a", role = "puls-cook", scores = new { }, errors = 0, seconds = 1.0, outcome = "Pass" }),
         At(new { @event = "mode_done", t = 1700000003.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0, pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0 }),
@@ -53,7 +53,7 @@ public class SummaryStoredTests
     private static async Task<InMemoryBenchmarkStore> Recorded(IEnumerable<string> lines, string? rescoreOf = null)
     {
         var store = new InMemoryBenchmarkStore();
-        var run = new BenchmarkRun(Id, "puls-cook", 1, rescoreOf: rescoreOf);
+        var run = new BenchmarkRun(Id, SampleEval.Beta, 1, rescoreOf: rescoreOf);
         var recording = new BenchmarkRecorder(store).RecordAsync(run);
         foreach (string line in lines) run.Add(line);
         run.Complete(0);
@@ -154,7 +154,7 @@ public class SummaryStoredTests
         var run = (await store.GetRunAsync(Id))!;
         await store.SaveRunAsync(run with { Total = new Total(0.8m, "USD", 1000, 2) });
         await store.AddRequestsAsync(Id, [Request("a", 0.5m), Request("b", 0.3m)]);
-        await store.SaveRunAsync(new Run("old", "puls-cook", 1, BenchmarkRunStatus.Done, DateTimeOffset.UnixEpoch));
+        await store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, BenchmarkRunStatus.Done, DateTimeOffset.UnixEpoch));
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
         var client = app.GetTestClient();

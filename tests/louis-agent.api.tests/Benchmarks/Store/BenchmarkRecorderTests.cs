@@ -96,7 +96,7 @@ public class BenchmarkRecorderTests
     public async Task ARunsSplit_IsKept_FromItsFirstLine()
     {
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
-        Add(At(new { @event = "protocol", version = 1, eval = "puls-cook", eval_version = 2, commit = "abc", split = "held_out" }), Mode(), ModeDone());
+        Add(At(new { @event = "protocol", version = 1, eval = SampleEval.Beta, eval_version = 2, commit = "abc", split = "held_out" }), Mode(), ModeDone());
         _run.Complete(0);
         await recording;
 

@@ -34,7 +34,7 @@ public class ReviewEndpointTests
     {
         var store = new InMemoryBenchmarkStore();
         var reviews = new InMemoryHumanReviewStore();
-        await store.SaveRunAsync(new Run(RunId, "puls-cook", 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0,
+        await store.SaveRunAsync(new Run(RunId, SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0,
             Graders: [new Grader("cook-no-error", 1, BenchmarkGraderKind.FixedRule), new Grader("meal-for-people", 1, BenchmarkGraderKind.Model),
                       new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
         foreach (var (task, outcome, answer) in new[] { ("bobotie", BenchmarkOutcome.Pass, "Bobotie vir vier"), ("sosaties", BenchmarkOutcome.Fail, "Net 'n sousie") })

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Core.Sessions.Replay;
 
@@ -8,7 +9,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // NotImplementedException on the red run.
 public class BenchmarkRunOptionsTests
 {
-    private static readonly BenchmarkCheck Eval = new BenchmarkCheck("puls-cook", "Cook");
+    private static readonly BenchmarkCheck Eval = new BenchmarkCheck(SampleEval.Beta, "Cook");
 
     private static BenchmarkRunOptions Ok(string? web, string? replay)
     {
@@ -64,25 +65,25 @@ public class BenchmarkRunOptionsTests
     [Test]
     public void ARecordingEvalStartsWithWebRecord()
     {
-        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_1", "puls-cook", 1, new BenchmarkRunOptions(WebReplayMode.Record, null)));
+        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_1", SampleEval.Beta, 1, new BenchmarkRunOptions(WebReplayMode.Record, null)));
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", "puls-cook", "--repeat", "1", "--web", "record" }));
+        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "1", "--web", "record" }));
     }
 
     [Test]
     public void AReplayingEvalStartsWithReplayAndTheRunsId()
     {
-        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_2", "puls-cook", 1, new BenchmarkRunOptions(null, "run_1")));
+        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_2", SampleEval.Beta, 1, new BenchmarkRunOptions(null, "run_1")));
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", "puls-cook", "--repeat", "1", "--replay", "run_1" }));
+        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "1", "--replay", "run_1" }));
     }
 
     [Test]
     public void AnEvalWithNoOptions_StartsAsBefore()
     {
-        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_3", "puls-cook", 2));
+        var start = RunnerWith(Eval).StartInfoFor(Eval, new BenchmarkRun("run_3", SampleEval.Beta, 2));
 
-        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", "puls-cook", "--repeat", "2" }));
+        Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", SampleEval.Beta, "--repeat", "2" }));
     }
 
     // --- what a stored run keeps

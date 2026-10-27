@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
@@ -35,7 +36,7 @@ public sealed class CookEval : IEval
             HumanReviewGrader.For(judge, MealForPeoplePrompt.Question)];
     }
 
-    public string Name => "puls-cook";
+    public string Name => PulsEvalName.Cook.Wire();
     public string? Manual => "evals/louis-agent.evals.puls/Manuals/cook.md";
     public string? Identity => "puls";
     public int Version => 9;

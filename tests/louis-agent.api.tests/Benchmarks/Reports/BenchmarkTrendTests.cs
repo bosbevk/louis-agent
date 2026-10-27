@@ -42,14 +42,14 @@ public class BenchmarkTrendTests
     {
         // F18 step 5.4 review: a held-out run is stored like a dev one, and would join the same trend. A run that names no split (one before they were
         // kept) is a dev run, as it always was; a run of all of them has held-out conversations among its own.
-        await _store.SaveRunAsync(new Run("dev", "puls-cook", 1, BenchmarkRunStatus.Done, T0, Split: BenchmarkRunSplit.Dev));
-        await _store.SaveRunAsync(new Run("old", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(1)));
-        await _store.SaveRunAsync(new Run("held", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(2), Split: BenchmarkRunSplit.HeldOut));
-        await _store.SaveRunAsync(new Run("all", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(3), Split: BenchmarkRunSplit.All));
+        await _store.SaveRunAsync(new Run("dev", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0, Split: BenchmarkRunSplit.Dev));
+        await _store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddHours(1)));
+        await _store.SaveRunAsync(new Run("held", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddHours(2), Split: BenchmarkRunSplit.HeldOut));
+        await _store.SaveRunAsync(new Run("all", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddHours(3), Split: BenchmarkRunSplit.All));
         foreach (string id in new[] { "dev", "old", "held", "all" })
             await _store.SaveConversationAsync(id, new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(true), 0, 1));
 
-        var trend = await BenchmarkTrends.ComputeAsync(_store, "puls-cook");
+        var trend = await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta);
 
         Assert.That(trend.Modes.Single().Points.Select(p => p.Run), Is.EqualTo(new[] { "dev", "old" }));
     }
@@ -59,13 +59,13 @@ public class BenchmarkTrendTests
     {
         // F18 step 5.5: a run started with replay is the recorded run again (its scores equal it, its cost is 0): drawn on the trend it would be a second
         // point of the same run, with a cost of 0.
-        await _store.SaveRunAsync(new Run("live", "puls-cook", 1, BenchmarkRunStatus.Done, T0));
-        await _store.SaveRunAsync(new Run("again", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddHours(1),
+        await _store.SaveRunAsync(new Run("live", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0));
+        await _store.SaveRunAsync(new Run("again", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddHours(1),
             Settings: new Dictionary<string, string> { ["replay_of"] = "live" }));
         foreach (string id in new[] { "live", "again" })
             await _store.SaveConversationAsync(id, new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(true), 0, 1));
 
-        var trend = await BenchmarkTrends.ComputeAsync(_store, "puls-cook");
+        var trend = await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta);
 
         Assert.That(trend.Modes.Single().Points.Select(p => p.Run), Is.EqualTo(new[] { "live" }));
     }
@@ -74,13 +74,13 @@ public class BenchmarkTrendTests
     public async Task AReScore_IsNeverAPoint_AndTheOriginalRunsPointIsUnchanged()
     {
         // F18 step 5b: a trend point means "the agent was measured here". A re-score grades transcripts recorded on another day, so it adds no point.
-        await _store.SaveRunAsync(new Run("live", "puls-cook", 1, BenchmarkRunStatus.Done, T0));
+        await _store.SaveRunAsync(new Run("live", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0));
         await _store.SaveConversationAsync("live", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(true), 0, 1));
-        var before = (await BenchmarkTrends.ComputeAsync(_store, "puls-cook")).Modes.Single().Points.Single();
-        await _store.SaveRunAsync(new Run("graded-again", "puls-cook", 1, BenchmarkRunStatus.Done, T0.AddDays(3), Total: new Total(0m, "USD", 0, 0), RescoreOf: "live"));
+        var before = (await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta)).Modes.Single().Points.Single();
+        await _store.SaveRunAsync(new Run("graded-again", SampleEval.Beta, 1, BenchmarkRunStatus.Done, T0.AddDays(3), Total: new Total(0m, "USD", 0, 0), RescoreOf: "live"));
         await _store.SaveConversationAsync("graded-again", new Conversation(new ConversationKey(SampleMode.Beta, 1, "cook-af"), 1, null, Scores(false), 0, 1));
 
-        var points = (await BenchmarkTrends.ComputeAsync(_store, "puls-cook")).Modes.Single().Points;
+        var points = (await BenchmarkTrends.ComputeAsync(_store, SampleEval.Beta)).Modes.Single().Points;
 
         Assert.That(points.Select(p => p.Run), Is.EqualTo(new[] { "live" }));
         Assert.That(points.Single(), Is.EqualTo(before));
