@@ -1,14 +1,12 @@
-
 using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// F27 step 3 (F27-S2): a check runs as a child process (an argument list, never a shell), one at a time, its lines
-// streamed to whoever listens (CL10: no run folder any more). The script here is a stand-in: a few lines
-// of Python that print what they got, so the test needs no containers, model or network.
+// F27 step 3 (F27-S2), on a stand-in since F18 step 7.4: a check runs as a child process (an argument list, never a shell), one at a time, its lines streamed to whoever listens (CL10: no run
+// folder any more). The child is the stand-in for the eval runner (tests/louis-agent.api.standin: a real process on every platform, no Python): the check's id picks what it does, so each test names
+// the behaviour it wants by the check it starts. The API starts only evals now, so there is no script and no interpreter to give.
 public class BenchmarkRunnerTests
 {
-    private static readonly string Python = OperatingSystem.IsWindows() ? "python" : "python3";
     private string _workspace = "";
     private BenchmarkRunner? _runner;
 
@@ -22,62 +20,45 @@ public class BenchmarkRunnerTests
     [TearDown]
     public async Task TearDown()
     {
-        // A test may leave its script running; the folder can't go while it does.
+        // A test may leave its child running; the folder can't go while it does.
         if (_runner?.Current is { Status: BenchmarkRunStatus.Running } run)
             await foreach (string _ in _runner.EventsAsync(run.Id)) { }
         Directory.Delete(_workspace, recursive: true);
     }
 
-    /// <summary>A runner whose "cook" check is <paramref name="python"/> under benchmarks/, with <paramref name="arguments"/> of its own.</summary>
-    private BenchmarkRunner Runner(string python, string pulsApi = "http://x/", IReadOnlyList<string>? arguments = null)
+    /// <summary>A runner whose checks are the stand-in's behaviours, each an eval of that name.</summary>
+    private BenchmarkRunner Runner(string pulsApi = "http://x/")
     {
-        string script = Path.Combine("benchmarks", "fake-check", "run_check.py");
-        Directory.CreateDirectory(Path.Combine(_workspace, "benchmarks", "fake-check"));
-        File.WriteAllText(Path.Combine(_workspace, script), python);
-        var catalog = new BenchmarkCatalog([new BenchmarkCheck("cook", "Die kokkontrole", script.Replace('\\', '/'), arguments ?? [])]);
-        return _runner = new BenchmarkRunner(catalog, _workspace, pulsApi, Python);
+        string[] behaviours = ["args", "echo", "run-id", "slow", "late", "fail"];
+        var catalog = new BenchmarkCatalog([.. behaviours.Select(id => BenchmarkCheck.ForEval(id, id))]);
+        return _runner = new BenchmarkRunner(catalog, _workspace, pulsApi, StandInBuild.Dll);
     }
 
-    [Test]
-    public async Task ACheckArguments_FollowTheRepeat_EachItsOwn()
+    private static async Task<List<string>> LinesOf(BenchmarkRunner runner, BenchmarkRun run)
     {
-        // One script, two checks (the cook's, and Puls alone against Puls with its cook): the check's own arguments.
-        var runner = Runner("import sys\nprint(sys.argv[3:])", arguments: ["--personalities", "two words"]);
-
-        BenchmarkRun run = runner.Start("cook", repeat: 1)!;
         var lines = new List<string>();
         await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
-
-        Assert.That(lines, Is.EqualTo(new[] { "['--personalities', 'two words']" }), "an argument list, never a shell string");
+        return lines;
     }
 
-    private const string Echo = """
-        import os, sys
-        print("repeat", sys.argv[2])
-        print("api", os.environ.get("PULS_API"))
-        """;
-
     [Test]
-    public async Task TheScript_GetsItsRepeatAndArguments_NoOutputFolder()
+    public async Task TheRunner_GetsItsRunAndRepeat_AsAnArgumentList_NoOutputFolder()
     {
         // CL10: a run writes no folder under samples/; where its results go (puls_benchmarks) is the later feature's.
-        var runner = Runner("import sys\nprint(sys.argv[1:])", arguments: ["--x"]);
+        var runner = Runner();
 
-        BenchmarkRun run = runner.Start("cook", repeat: 2)!;
-        var lines = new List<string>();
-        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+        BenchmarkRun run = runner.Start("args", repeat: 2)!;
 
-        Assert.That(lines, Is.EqualTo(new[] { "['--repeat', '2', '--x']" }));
+        Assert.That(await LinesOf(runner, run), Is.EqualTo(new[] { "run", "args", "--repeat", "2" }), "an argument list, never a shell string");
     }
 
     [Test]
-    public async Task ARun_StreamsTheScriptsLines_ThenEndsDone()
+    public async Task ARun_StreamsTheChildsLines_ThenEndsDone()
     {
-        var runner = Runner(Echo, "http://127.0.0.1:8080/");
+        var runner = Runner("http://127.0.0.1:8080/");
 
-        BenchmarkRun run = runner.Start("cook", repeat: 2)!;
-        var lines = new List<string>();
-        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+        BenchmarkRun run = runner.Start("echo", repeat: 2)!;
+        var lines = await LinesOf(runner, run);
 
         Assert.That(lines, Is.EqualTo(new[] { "repeat 2", "api http://127.0.0.1:8080/" }));
         Assert.That((run.Status, run.ExitCode), Is.EqualTo((BenchmarkRunStatus.Done, (int?)0)));
@@ -88,32 +69,31 @@ public class BenchmarkRunnerTests
     public async Task OnlyOneRun_AtATime()
     {
         // The containers are shared: a second run would skew the first's ledger and its timings.
-        var runner = Runner("import time\nprint('start', flush=True)\ntime.sleep(2)\n");
+        var runner = Runner();
 
-        BenchmarkRun first = runner.Start("cook", 1)!;
-        Assert.That(runner.Start("cook", 1), Is.Null, "refused while one runs");
+        BenchmarkRun first = runner.Start("slow", 1)!;
+        Assert.That(runner.Start("slow", 1), Is.Null, "refused while one runs");
 
         await foreach (string _ in runner.EventsAsync(first.Id)) { }
-        Assert.That(runner.Start("cook", 1), Is.Not.Null, "free again when it ends");
+        Assert.That(runner.Start("args", 1), Is.Not.Null, "free again when it ends");
     }
 
     [Test]
     public void AnUnknownCheck_IsRefused_WithoutAProcess()
     {
-        var runner = Runner(Echo);
+        var runner = Runner();
 
         Assert.That(runner.Start("nope", 1), Is.Null);
         Assert.That(runner.Current, Is.Null);
     }
 
     [Test]
-    public async Task AScriptThatFails_EndsFailed_WithItsExitCode_AndItsStderr()
+    public async Task AChildThatFails_EndsFailed_WithItsExitCode_AndItsStderr()
     {
-        var runner = Runner("import sys\nprint('boom', file=sys.stderr)\nsys.exit(3)\n");
+        var runner = Runner();
 
-        BenchmarkRun run = runner.Start("cook", 1)!;
-        var lines = new List<string>();
-        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+        BenchmarkRun run = runner.Start("fail", 1)!;
+        var lines = await LinesOf(runner, run);
 
         Assert.That(lines, Does.Contain("boom"));
         Assert.That((run.Status, run.ExitCode), Is.EqualTo((BenchmarkRunStatus.Failed, (int?)3)));
@@ -122,36 +102,32 @@ public class BenchmarkRunnerTests
     [Test]
     public void Repeats_AreClampedToTheCap()
     {
-        var runner = Runner(Echo);
+        var runner = Runner();
 
-        Assert.That(runner.Start("cook", 50)!.Repeat, Is.EqualTo(BenchmarkRunner.MaxRepeat));
+        Assert.That(runner.Start("args", 50)!.Repeat, Is.EqualTo(BenchmarkRunner.MaxRepeat));
     }
 
     [Test]
     public async Task ALateListener_GetsTheLinesSoFar_ThenTheRest()
     {
         // The page may open after the run started (a reload): it replays what was printed, then follows live.
-        var runner = Runner("import time\nprint('one', flush=True)\ntime.sleep(1)\nprint('two', flush=True)\n");
+        var runner = Runner();
 
-        BenchmarkRun run = runner.Start("cook", 1)!;
+        BenchmarkRun run = runner.Start("late", 1)!;
         await Task.Delay(400);
-        var lines = new List<string>();
-        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
 
-        Assert.That(lines, Is.EqualTo(new[] { "one", "two" }));
+        Assert.That(await LinesOf(runner, run), Is.EqualTo(new[] { "one", "two" }));
     }
 
     [Test]
-    public async Task TheScript_GetsItsRunId_ToTagItsSessions()
+    public async Task TheRunner_GetsItsRunId_ToTagItsSessions()
     {
-        // F31 step 6a: the script tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find the run.
-        var runner = Runner("import os\nprint(os.environ.get('BENCHMARK_RUN'))");
+        // F31 step 6a: the runner tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find the run.
+        var runner = Runner();
 
-        BenchmarkRun run = runner.Start("cook", repeat: 1)!;
-        var lines = new List<string>();
-        await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
+        BenchmarkRun run = runner.Start("run-id", repeat: 1)!;
 
-        Assert.That(lines, Is.EqualTo(new[] { run.Id }));
+        Assert.That(await LinesOf(runner, run), Is.EqualTo(new[] { run.Id }));
     }
 
     [Test]
@@ -159,12 +135,26 @@ public class BenchmarkRunnerTests
     {
         // The argument list and the environment, from the start info, so nothing has to run: dotnet, the runner, its run and repeat.
         var eval = BenchmarkCheck.ForEval("stub", "Stub");
-        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", Python, "/app/evals/x.dll");
+        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", "/app/evals/x.dll");
 
         var start = runner.StartInfoFor(eval, new BenchmarkRun("run_1", "stub", 2));
 
         Assert.That(start.FileName, Is.EqualTo("dotnet"));
         Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", "stub", "--repeat", "2" }));
         Assert.That((start.Environment["BENCHMARK_RUN"], start.Environment["PULS_API"]), Is.EqualTo(("run_1", "http://127.0.0.1:1/")));
+    }
+
+    [Test]
+    public void NoRunStartsAnInterpreter_OnlyTheEvalHost()
+    {
+        // F18 step 7.4: the API runs evals and nothing else, so no start names Python or sets its flags.
+        var eval = BenchmarkCheck.ForEval("stub", "Stub");
+        var runner = new BenchmarkRunner(new BenchmarkCatalog([eval]), _workspace, "http://127.0.0.1:1/", "/app/evals/x.dll");
+
+        var start = runner.StartInfoFor(eval, new BenchmarkRun("run_1", "stub", 1));
+
+        Assert.That(start.FileName, Is.EqualTo("dotnet"));
+        Assert.That(start.Environment.Keys, Has.None.StartsWith("PYTHON"), "no Python flags");
+        Assert.That(start.ArgumentList, Has.None.EndsWith(".py"));
     }
 }

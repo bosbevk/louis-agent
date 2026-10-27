@@ -267,7 +267,7 @@ today:
 ```csharp
 public sealed class QuotesEval : IEval
 {
-    public string Name => "quotes";                       // MCP-safe; also the portal's check id (a Python check with the same id is hidden)
+    public string Name => "quotes";                       // MCP-safe; also the portal's check id
     public string? Identity => "acme";
     public int Version => 1;                              // bumped by any change to a scenario, a mode or a grader
     public string Proves => MessageText.Format(AcmeEvalMessage.QuotesProves);   // the portal's title: a message enum member (ADR 0009)

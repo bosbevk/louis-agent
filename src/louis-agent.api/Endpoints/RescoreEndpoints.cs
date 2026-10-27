@@ -24,7 +24,7 @@ internal static class RescoreEndpoints
                 return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", MessageText.Format(ApiUserText.NoBenchmarkStore));
             if (await s.GetRunAsync(id, cancellationToken) is not { } stored)
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
-            if (catalog.Checks.FirstOrDefault(c => c.Id == stored.Check) is not { Kind: BenchmarkCheckKind.Eval } check)
+            if (catalog.Checks.FirstOrDefault(c => c.Id == stored.Check) is not { } check)
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
                     MessageText.Format(ApiUserText.RescoreNeedsEval, new { Id = id, Check = stored.Check }));
             if (runner.IsRunning)

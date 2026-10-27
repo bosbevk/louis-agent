@@ -49,7 +49,7 @@ internal static class ApiTestHost
         if (apiKey is not null) app.UseAgentKey(apiKey);
         var api = app.MapApi(host);
 
-        var benchmarks = catalog ?? new BenchmarkCatalog(BenchmarkCatalog.Default);
+        var benchmarks = catalog ?? new BenchmarkCatalog();
         api.MapAdmin(benchmarks, runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey, store, recorder,
             _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations, calibrationRecorder);
         return app;

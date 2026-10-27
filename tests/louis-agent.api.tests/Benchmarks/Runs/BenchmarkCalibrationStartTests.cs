@@ -9,12 +9,10 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // did not exist.
 public class BenchmarkCalibrationStartTests
 {
-    private static readonly string Python = OperatingSystem.IsWindows() ? "python" : "python3";
     private static readonly BenchmarkCheck Stub = BenchmarkCheck.ForEval("stub", "Stub");
-    private static readonly BenchmarkCheck Script = new("slow", "Slow", "benchmarks/slow/run_check.py", []);
 
     private static BenchmarkRunner Runner() =>
-        new(new BenchmarkCatalog([Stub, Script]), TestPaths.RepoRoot, "http://127.0.0.1:1/", Python, RunnerBuild.Dll);
+        new(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
 
     [Test]
     public void ACalibrationStartsTheRunnerWithAnArgumentList_AndPipesTheLabels()
@@ -29,10 +27,9 @@ public class BenchmarkCalibrationStartTests
     }
 
     [Test]
-    public void ACalibrationOfAScriptCheck_IsRefused()
+    public void ACalibrationOfACheckTheRunnerDoesNotList_IsRefused()
     {
-        Assert.That(Runner().StartCalibration("slow", "76667d39dcdb", "meal-for-people", "{}\n"), Is.Null, "only an eval has a judge");
-        Assert.That(Runner().StartCalibration("unknown", "76667d39dcdb", "meal-for-people", "{}\n"), Is.Null);
+        Assert.That(Runner().StartCalibration("unknown", "76667d39dcdb", "meal-for-people", "{}\n"), Is.Null, "no eval of that name, so no judge to check");
     }
 
     [Test]

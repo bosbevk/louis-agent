@@ -8,9 +8,9 @@ public class BenchmarkSettingsTests
     private const string Runner = "/app/evals/louis-agent.evals.runner.dll";
 
     [Test]
-    public void ARun_KeepsTheModelThePersonalitiesAndTheChecksScriptAndArguments()
+    public void ARun_KeepsTheModelTheRolesAndTheEvalWithItsRunner()
     {
-        var check = new BenchmarkCheck("cook", "Die kokkontrole", "benchmarks/cook/run_check.py", ["--personalities", "puls-cook"]);
+        var check = BenchmarkCheck.ForEval("puls-cook", "Cook");
 
         var settings = BenchmarkSettings.Of(check, "anthropic", "claude-haiku-5-5", ["puls/voice-af", "puls-cook"], Runner);
 
@@ -19,8 +19,8 @@ public class BenchmarkSettingsTests
             ["provider"] = "anthropic",
             ["model"] = "claude-haiku-5-5",
             ["roles_enabled"] = "puls/voice-af,puls-cook",
-            ["script"] = "benchmarks/cook/run_check.py",
-            ["arguments"] = """["--personalities","puls-cook"]""",
+            ["eval"] = "puls-cook",
+            ["eval_runner"] = Runner,
         }));
     }
 
@@ -50,7 +50,7 @@ public class BenchmarkSettingsTests
 
     [Test]
     public void EveryRole_IsOn_WhenNoneAreListed() =>
-        Assert.That(BenchmarkSettings.Of(new BenchmarkCheck("c", "C", "s.py", []), "anthropic", "m", [], Runner)["roles_enabled"], Is.EqualTo("(all)"));
+        Assert.That(BenchmarkSettings.Of(BenchmarkCheck.ForEval("c", "C"), "anthropic", "m", [], Runner)["roles_enabled"], Is.EqualTo("(all)"));
 
     [Test]
     public void AnEvalCheckRecordsItsEvalAndItsRunner()
@@ -58,6 +58,6 @@ public class BenchmarkSettingsTests
         var settings = BenchmarkSettings.Of(BenchmarkCheck.ForEval("stub", "Stub"), "anthropic", "m", [], "/app/evals/x.dll");
 
         Assert.That((settings["eval"], settings["eval_runner"]), Is.EqualTo(("stub", "/app/evals/x.dll")));
-        Assert.That(settings.ContainsKey("script"), Is.False);
+        Assert.That(settings.ContainsKey("script"), Is.False, "no script path any more (F18 step 7.4)");
     }
 }

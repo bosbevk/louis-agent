@@ -41,6 +41,8 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 
 ## louis-agent.api.tests
 
+`tests/louis-agent.api.standin` (F18 step 7.4) is a small console app, not a test project, that stands in for the eval runner where a test starts a real child process: the check's id picks what it does (print its arguments, dump the environment's names, stream lines, fail, sleep, never read its stdin). It is built with these tests through a project reference that brings no assembly, like the runner itself, and replaces the Python scripts the runner tests used to start.
+
 `AgentSessionsTests` (F5): a session's toolsets and tools, the `skills` default, an empty list, unknown names, depth and
 the `specialists` rule, sessions sharing an engine but not a history. No web host, network or model: the sessions are built on
 an `AgentEngineFactory` with a client that throws if called.

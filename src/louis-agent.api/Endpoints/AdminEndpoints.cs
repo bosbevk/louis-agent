@@ -55,7 +55,7 @@ internal static class AdminEndpoints
                 catch (Exception ex) when (ex is not OperationCanceledException) { error = Unavailable(ex); }
             return Results.Json(new
             {
-                checks = catalog.Checks.Select(c => new { id = c.Id, title = c.Title, script = c.Script, manual = BenchmarkManuals.Has(workspaceRoot, c) }),
+                checks = catalog.Checks.Select(c => new { id = c.Id, title = c.Title, manual = BenchmarkManuals.Has(workspaceRoot, c) }),
                 store = new { configured = store is not null, error },
                 runs = runs.Select(RunRow),
             });
@@ -103,7 +103,7 @@ internal static class AdminEndpoints
                 return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
                     MessageText.Format(ApiUserText.NoCheck, new { Check = check, Checks = string.Join(", ", catalog.Checks.Select(c => c.Id)) }));
             // The web (F18 step 5.5), checked before anything that costs: a request that can't be what a run does is a 400 on its own.
-            var (options, refusal) = BenchmarkRunOptions.Parse(request?.Web, request?.Replay, known);
+            var (options, refusal) = BenchmarkRunOptions.Parse(request?.Web, request?.Replay);
             if (refusal is not null)
                 return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", refusal);
             if (recorder is null)

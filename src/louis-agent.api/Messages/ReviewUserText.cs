@@ -32,6 +32,6 @@ public enum ReviewUserText
     [Description("'{Grader}' is not a judge with a human review in run {Id}, so there is nothing to check it against. The judges with one: {Graders}.")]
     CalibrationNeedsAJudge,
 
-    [Description("Run {Id} is of '{Check}', which is not an eval: only an eval's judge is checked against the people.")]
+    [Description("Run {Id} is of '{Check}', which the eval runner does not list: only a listed eval's judge is checked against the people.")]
     CalibrationNeedsEval,
 }

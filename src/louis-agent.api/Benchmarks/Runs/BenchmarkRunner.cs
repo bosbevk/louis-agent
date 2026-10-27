@@ -5,21 +5,19 @@ using LouisAgent.Api.Config;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
-/// Runs a check's script as a child process (F27): the interpreter with an argument list, never a shell string, in the
+/// Runs a check as a child process (F27): the eval runner with an argument list, never a shell string, in the
 /// workspace, with <c>PULS_API</c> pointing at this API and <c>BENCHMARK_RUN</c> its id (<see cref="RunnerStartInfo"/> builds it); a run's results go to the
-/// benchmark store through <c>BenchmarkRecorder</c> (F31). One run at a time: the containers are shared, and a second run would skew the first's
+/// benchmark store through <c>BenchmarkRecorder</c> (F31). Every check is an eval since F18 step 7.4: no script, no interpreter. One run at a time: the containers are shared, and a second run would skew the first's
 /// ledger and timings. Its lines (stdout and stderr) are kept on the run and streamed to listeners.
 /// </summary>
-/// <param name="interpreter">The Python to run; <c>python3</c> in the containers.</param>
 /// <param name="evalHost">What runs the eval runner's dll: <c>dotnet</c>; a test gives a stand-in.</param>
-public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRoot, string pulsApi, string interpreter = "python3",
-    string evalRunner = AdminOptions.DefaultEvalRunner, string evalHost = "dotnet")
+public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRoot, string pulsApi, string evalRunner = AdminOptions.DefaultEvalRunner, string evalHost = "dotnet")
 {
     /// <summary>Repeats one run may ask for.</summary>
     public const int MaxRepeat = 5;
 
     private readonly Lock _lock = new();
-    private readonly RunnerPaths _paths = new(workspaceRoot, pulsApi, interpreter, evalRunner, evalHost);
+    private readonly RunnerPaths _paths = new(workspaceRoot, pulsApi, evalRunner, evalHost);
 
     /// <summary>The run in progress, or the last one; null before the first.</summary>
     public BenchmarkRun? Current { get; private set; }
@@ -82,7 +80,7 @@ public sealed class BenchmarkRunner(BenchmarkCatalog catalog, string workspaceRo
 
     private static string NewId() => Guid.NewGuid().ToString("N")[..12];
 
-    private BenchmarkCheck? EvalCheck(string checkId) => catalog.Checks.FirstOrDefault(c => c.Id == checkId) is { Kind: BenchmarkCheckKind.Eval } check ? check : null;
+    private BenchmarkCheck? EvalCheck(string checkId) => catalog.Checks.FirstOrDefault(c => c.Id == checkId);
 
     private BenchmarkRun? StartLocked(BenchmarkCheck check, BenchmarkRun run)
     {

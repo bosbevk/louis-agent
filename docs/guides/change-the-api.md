@@ -104,7 +104,7 @@ curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/your-endpoint   
 
 The portal lists the C# evals the runner lists, so a new eval needs no change in the API or the portal. The runner's
 `--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
-title. The eval's name is its check's id; a Python check with the same id is hidden.
+title. The eval's name is its check's id.
 
 1. Write the eval in its eval set's project (`evals/louis-agent.evals.{identity}/`), with its scenarios, graders and
    reference transcripts; [Add an eval set](add-an-eval-set.md) walks through it.
@@ -116,7 +116,7 @@ title. The eval's name is its check's id; a Python check with the same id is hid
    names (`evals/{project}/Manuals/{name}.md`, F18 step 7.1), which the runner's listing hands to the API.
 
 A run starts with `POST /v1/admin/benchmarks/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
-`replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both; a Python check answers 400 to either.
+`replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both.
 `BenchmarkRunOptions` parses it once, `BenchmarkRunner.StartInfoFor` turns it into the runner's arguments, and the run's settings keep
 `web` or `replay_of`. A portal run is always the dev scenarios, and a replay is no point of the check's trend. [Run the evals](run-the-evals.md)
 says when to record and when to replay.

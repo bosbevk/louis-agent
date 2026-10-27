@@ -30,7 +30,7 @@ internal static class CalibrationEndpoints
                 var humans = ReviewEndpoints.HumanReviewsOf(run);
                 if (!humans.Contains(grader + HumanReview.Suffix))
                     return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsAJudge, new { Grader = grader, Id = id, Graders = string.Join(", ", humans.Select(h => h[..^HumanReview.Suffix.Length]).Order(StringComparer.Ordinal)) }));
-                if (catalog.Checks.FirstOrDefault(k => k.Id == run.Check) is not { Kind: BenchmarkCheckKind.Eval } check)
+                if (catalog.Checks.FirstOrDefault(k => k.Id == run.Check) is not { } check)
                     return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsEval, new { Id = id, Check = run.Check }));
                 var labels = await ReviewEndpoints.DecidedLabelsAsync(s, r, id, grader, cancellationToken);
                 if (labels.Count == 0)

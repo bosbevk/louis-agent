@@ -56,7 +56,7 @@ var api = app.MapApi(host);
 var admin = AdminOptions.FromEnvironment();
 var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Benchmarks");
 // The checks: the C# evals the runner lists (read on first use), and the Python checks it doesn't list yet.
-var benchmarks = BenchmarkCatalog.From(EvalListing.ForRunner(admin.EvalRunner), BenchmarkCatalog.Default, benchmarkLog);
+var benchmarks = BenchmarkCatalog.From(EvalListing.ForRunner(admin.EvalRunner), benchmarkLog);
 IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase) : null;
 IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase) : null;
 // F18 step 6a.5b: the judge checks, beside the grades; a check's report is kept by its own recorder, never by the benchmark store.

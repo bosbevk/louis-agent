@@ -4,26 +4,17 @@ using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// F27 step 1 (F27-S3): the checks the portal can run; F31 brings them back, each with its script under benchmarks/.
+// F27 step 1 (F27-S3): the checks the portal can run. Since F18 step 7.4 every check is an eval the runner lists: no script, no Python fallback.
 public class BenchmarkCatalogTests
 {
-    private static readonly BenchmarkCheck[] ScriptChecks = [new BenchmarkCheck("cook", "Kook", "scripts/cook/run_check.py")];
-
     [Test]
     public void AnEmptyCatalog_HasNoChecks() =>
         Assert.That(new BenchmarkCatalog().Checks, Is.Empty);
 
     [Test]
-    public void ThePortalHasNoPythonChecks_EveryCheckIsAnEvalTheRunnerLists()
-    {
-        // F18 step 7.3: benchmarks/ is deleted; the stub, the cook and the routing are the runner's evals (stub, puls-cook, puls-routing).
-        Assert.That(BenchmarkCatalog.Default, Is.Empty);
-    }
-
-    [Test]
     public void ACatalog_OffersTheChecksItIsGiven()
     {
-        var check = new BenchmarkCheck("cook", "Die kokkontrole", "benchmarks/cook/run_check.py", ["--x"]);
+        var check = BenchmarkCheck.ForEval("puls-cook", "Die kokkontrole");
 
         Assert.That(new BenchmarkCatalog([check]).Checks, Is.EqualTo(new[] { check }));
     }
@@ -35,34 +26,31 @@ public class BenchmarkCatalogTests
     [Test]
     public void TheCatalogue_KeepsTheManualPathTheRunnerListed()
     {
-        var merged = BenchmarkCatalog.Merge([new EvalLine("puls-cook", 9, "A meal", "puls", "evals/louis-agent.evals.puls/Manuals/cook.md"), new EvalLine("quiet", 1, "No manual")], []);
+        var merged = BenchmarkCatalog.Merge([new EvalLine("puls-cook", 9, "A meal", "puls", "evals/louis-agent.evals.puls/Manuals/cook.md"), new EvalLine("quiet", 1, "No manual")]);
 
         Assert.That(merged.Select(c => c.ManualPath), Is.EqualTo(new string?[] { "evals/louis-agent.evals.puls/Manuals/cook.md", null }));
     }
 
     [Test]
-    public void AListedEvalHidesThePythonCheckWithItsId()
+    public void EachListedEval_IsACheck_WithItsProvesAsItsTitle()
     {
-        var python = new[] { new BenchmarkCheck("stub", "Stub", "scripts/stub/run_check.py"), new BenchmarkCheck("cook", "Kook", "scripts/cook/run_check.py"), new BenchmarkCheck("routing", "Roetes", "scripts/routing/run_check.py") };
-        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", "puls")], python);
+        var merged = BenchmarkCatalog.Merge([new EvalLine("stub", 1, "A canned run", "puls"), new EvalLine("puls-cook", 9, "A meal", "puls")]);
 
-        Assert.That(merged.Select(c => c.Id), Is.EqualTo(new[] { "stub", "cook", "routing" }));
-        Assert.That((merged[0].Kind, merged[0].Title), Is.EqualTo((BenchmarkCheckKind.Eval, "A canned run")));
-        Assert.That(merged.Skip(1).All(c => c.Kind == BenchmarkCheckKind.Script), Is.True);
+        Assert.That(merged.Select(c => (c.Id, c.Title)), Is.EqualTo(new[] { ("stub", "A canned run"), ("puls-cook", "A meal") }));
     }
 
     [Test]
-    public void WithNoListedEvals_TheScriptChecksGivenStay() =>
-        Assert.That(BenchmarkCatalog.Merge([], [new BenchmarkCheck("cook", "Kook", "scripts/cook/run_check.py")]).Select(c => c.Id), Is.EqualTo(new[] { "cook" }));
+    public void WithNoListedEvals_ThereAreNoChecks() =>
+        Assert.That(BenchmarkCatalog.Merge([]), Is.Empty);
 
     [Test]
-    public void AListingThatFails_KeepsTheScriptChecksGivenAndSaysWhy()
+    public void AListingThatFails_LeavesNoChecks_AndSaysWhy()
     {
         var log = new CapturingLogger();
 
-        var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), ScriptChecks, log);
+        var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), log);
 
-        Assert.That(catalog.Checks.Select(c => c.Id), Is.EqualTo(new[] { "cook" }));
+        Assert.That(catalog.Checks, Is.Empty, "no Python to fall back on (F18 step 7.4)");
         Assert.That(log.Messages, Has.Some.Contains("isn't at /nope/louis-agent.evals.runner.dll"));
     }
 
@@ -71,7 +59,7 @@ public class BenchmarkCatalogTests
     {
         var log = new CapturingLogger();
 
-        var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), BenchmarkCatalog.Default, log);
+        var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), log);
         Assert.That(log.Messages, Is.Empty, "nothing runs until the checks are asked for");
 
         _ = catalog.Checks;
@@ -82,7 +70,7 @@ public class BenchmarkCatalogTests
     public void WarmReadsTheListingNow()
     {
         var log = new CapturingLogger();
-        var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), BenchmarkCatalog.Default, log);
+        var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), log);
 
         catalog.Warm();
 

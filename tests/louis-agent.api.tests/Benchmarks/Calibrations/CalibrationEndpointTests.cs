@@ -22,7 +22,6 @@ public class CalibrationEndpointTests
 {
     private const string AdminKey = "admin-secret";
     private const string RunId = "76667d39dcdb";
-    private static readonly string Python = OperatingSystem.IsWindows() ? "python" : "python3";
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
     private sealed record Host(WebApplication App, HttpClient Client, InMemoryBenchmarkStore Store, InMemoryHumanReviewStore Reviews, InMemoryCalibrationStore Calibrations,
@@ -41,7 +40,7 @@ public class CalibrationEndpointTests
         await store.SaveRunAsync(new Run(RunId, "puls-cook", 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0, Eval: "puls-cook",
             Graders: [new Grader("cook-no-error", 1, BenchmarkGraderKind.FixedRule), new Grader("meal-for-people", 1, BenchmarkGraderKind.Model),
                       new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
-        await store.SaveRunAsync(new Run("script123456", "slow", 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0,
+        await store.SaveRunAsync(new Run("gone1234567", "gone-check", 1, BenchmarkRunStatus.Done, T0, T0.AddMinutes(5), 0,
             Graders: [new Grader("meal-for-people", 1, BenchmarkGraderKind.Model), new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human)]));
         foreach (var (task, answer) in new[] { ("cook-en", "Bobotie for four"), ("cook-af", "Net 'n sousie") })
         {
@@ -52,8 +51,8 @@ public class CalibrationEndpointTests
         }
         if (graded)
             await reviews.AddAsync(new HumanGrade(RunId, new BenchmarkProtocol.ConversationKey("puls-cook", 1, "cook-en"), "meal-for-people", HumanVerdict.Pass, "a meal", "Louis", T0));
-        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("puls-cook", "Cook"), new BenchmarkCheck("slow", "Slow", "benchmarks/slow/run_check.py", [])]);
-        var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", Python, RunnerBuild.Dll);
+        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("puls-cook", "Cook")]);
+        var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews, catalog: catalog, runner: runner,
             calibrations: withCalibrations ? calibrations : null, calibrationRecorder: withCalibrations ? recorder : null);
         await app.StartAsync();
@@ -128,11 +127,11 @@ public class CalibrationEndpointTests
     }
 
     [Test]
-    public async Task ARunOfAScript_Is400_AndAnUnknownRun_Is404()
+    public async Task ARunOfACheckTheRunnerDoesNotList_Is400_AndAnUnknownRun_Is404()
     {
         await using var host = await StartAsync();
 
-        Assert.That((await Send(host.Client, HttpMethod.Post, Path("script123456", "/meal-for-people"))).StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        Assert.That((await Send(host.Client, HttpMethod.Post, Path("gone1234567", "/meal-for-people"))).StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That((await Send(host.Client, HttpMethod.Post, Path("nope00000000", "/meal-for-people"))).StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         Assert.That((await Send(host.Client, HttpMethod.Get, Path("nope00000000"))).StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }

@@ -8,7 +8,6 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // run. An Anthropic judge with no key of its own gets the Anthropic key as the judge's key, under that name only. Written first: the start info copied everything.
 public class RunnerEnvironmentTests
 {
-    private static readonly string Python = OperatingSystem.IsWindows() ? "python" : "python3";
     private static readonly BenchmarkCheck Stub = BenchmarkCheck.ForEval("stub", "Stub");
 
     /// <summary>The API's environment as the containers have it: the runner's settings among the API's secrets.</summary>
@@ -78,7 +77,7 @@ public class RunnerEnvironmentTests
         Environment.SetEnvironmentVariable("BENCHMARKS_MONGO_URL", "mongodb://user:secret@mongo/puls");
         try
         {
-            var start = new BenchmarkRunner(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", Python, RunnerBuild.Dll)
+            var start = new BenchmarkRunner(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll)
                 .StartInfoFor(Stub, new BenchmarkRun("run123456789", "stub", 1));
 
             Assert.That(start.Environment.ContainsKey("BENCHMARKS_MONGO_URL"), Is.False);
@@ -110,34 +109,34 @@ public class RunnerEnvironmentTests
             "a setting the runner reads that the allowlist doesn't carry would silently never arrive: add it to RunnerEnvironment.Names");
     }
 
-    /// <summary>The real thing: a Python check started by the runner sees no secret, and still starts (its interpreter found on the path).</summary>
+    /// <summary>The real thing, on a real child process (the stand-in for the runner, F18 step 7.4): what the API starts sees none of the API's secrets, still has the path it needs, and gets what the run is told.</summary>
     [Test]
-    public async Task AScriptStartedByTheRunner_SeesNoSecret_AndStillStarts()
+    public async Task AChildStartedByTheRunner_SeesNoSecret_AndStillStarts()
     {
-        string workspace = Path.Combine(Path.GetTempPath(), "louis-env-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(Path.Combine(workspace, "benchmarks", "env"));
-        File.WriteAllText(Path.Combine(workspace, "benchmarks", "env", "run_check.py"),
-            "import os\nprint(sorted(k for k in os.environ if 'MONGO' in k.upper() or k.upper().endswith('_API_KEY')))\n");
         string? mongo = Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
         string? admin = Environment.GetEnvironmentVariable("ADMIN_API_KEY");
+        string? anthropic = Environment.GetEnvironmentVariable("ANTHROPIC_API_KEY");
         Environment.SetEnvironmentVariable("BENCHMARKS_MONGO_URL", "mongodb://user:secret@mongo/puls");
         Environment.SetEnvironmentVariable("ADMIN_API_KEY", "admin-secret");
+        Environment.SetEnvironmentVariable("ANTHROPIC_API_KEY", "sk-ant-secret");
         try
         {
-            var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("env", "Env", "benchmarks/env/run_check.py", [])]), workspace, "http://x/", Python);
+            var runner = new BenchmarkRunner(new BenchmarkCatalog([BenchmarkCheck.ForEval("env", "Env")]), Path.GetTempPath(), "http://x/", StandInBuild.Dll);
             var run = runner.Start("env", 1)!;
             var lines = new List<string>();
             await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
 
-            Assume.That(run.ExitCode, Is.EqualTo(0), "python isn't here: " + string.Join(" | ", lines));
-            Assert.That(lines, Has.Count.EqualTo(1));
-            Assert.That(lines[0], Does.Not.Contain("MONGO").And.Not.Contain("ADMIN_API_KEY").And.Not.Contain("ANTHROPIC"));
+            Assert.That(run.ExitCode, Is.EqualTo(0), string.Join(" | ", lines));
+            var names = lines.Where(l => l.StartsWith("env:")).Select(l => l[4..]).ToList();
+            Assert.That(names, Has.None.EqualTo("BENCHMARKS_MONGO_URL").And.None.EqualTo("ADMIN_API_KEY").And.None.EqualTo("ANTHROPIC_API_KEY"), "the API's secrets never reach the child");
+            Assert.That(names.Any(n => n.Equals("PATH", StringComparison.OrdinalIgnoreCase)), Is.True, "the path the runtime needs comes through");
+            Assert.That(lines, Does.Contain("api=http://x/").And.Contain($"run={run.Id}"), "what the API tells the run arrives");
         }
         finally
         {
             Environment.SetEnvironmentVariable("BENCHMARKS_MONGO_URL", mongo);
             Environment.SetEnvironmentVariable("ADMIN_API_KEY", admin);
-            Directory.Delete(workspace, recursive: true);
+            Environment.SetEnvironmentVariable("ANTHROPIC_API_KEY", anthropic);
         }
     }
 }

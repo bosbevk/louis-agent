@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// <summary>
 /// How a run handles the web (F18 step 5.5), as the portal's start request says it: <c>{"repeat": 1, "web": "record"}</c> records every page, search and
 /// fetch the run reads, and <c>{"repeat": 1, "replay": "{runId}"}</c> replays a recorded run, the model's answers too, so it costs nothing (the runner's
-/// <c>--web record</c> and <c>--replay {runId}</c>). Parsed once where it enters (ADR 0024). Only an eval records or replays: a Python check refuses both.
+/// <c>--web record</c> and <c>--replay {runId}</c>). Parsed once where it enters (ADR 0024). (Every check is an eval since F18 step 7.4.)
 /// </summary>
 public sealed record BenchmarkRunOptions(WebReplayMode? Web = null, string? Replay = null)
 {
@@ -16,12 +16,11 @@ public sealed record BenchmarkRunOptions(WebReplayMode? Web = null, string? Repl
     public static readonly BenchmarkRunOptions None = new();
 
     /// <summary>The options a request asks for, or the refusal's text (a 400's message) when it can't be what a run does.</summary>
-    public static (BenchmarkRunOptions? Options, string? Refusal) Parse(string? web, string? replay, BenchmarkCheck check)
+    public static (BenchmarkRunOptions? Options, string? Refusal) Parse(string? web, string? replay)
     {
         web = web?.Trim();
         replay = replay?.Trim();
         if (string.IsNullOrEmpty(web) && string.IsNullOrEmpty(replay)) return (None, null);
-        if (check.Kind != BenchmarkCheckKind.Eval) return (null, MessageText.Format(ApiUserText.RunScriptNoWeb, new { Check = check.Id }));
         if (!string.IsNullOrEmpty(web) && !string.IsNullOrEmpty(replay)) return (null, MessageText.Format(ApiUserText.RunWebAndReplay));
 
         if (!string.IsNullOrEmpty(replay))

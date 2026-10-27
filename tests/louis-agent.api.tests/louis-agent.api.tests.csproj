@@ -29,6 +29,8 @@
     <!-- F18 step 4.3: the eval runner, built with these tests so its dll is there to list and to run. The API itself references no
          evals project; this reference carries no assembly into the test's output. -->
     <ProjectReference Include="..\..\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" ReferenceOutputAssembly="false" />
+    <!-- F18 step 7.4: the stand-in for the runner, built with these tests (no assembly referenced), so a test can start a real child process that behaves as the check's id says. -->
+    <ProjectReference Include="..\louis-agent.api.standin\louis-agent.api.standin.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

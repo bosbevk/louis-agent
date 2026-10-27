@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Config;
 /// blank value is no value, every value trimmed.
 /// </summary>
 /// <param name="AdminKey">The portal's key: <c>ADMIN_API_KEY</c>, else <c>AGENT_API_KEY</c>; neither keeps it closed.</param>
-/// <param name="BenchmarkApiUrl">Where a check's script calls this API back (<c>BENCHMARK_API_URL</c>; the container's own port).</param>
+/// <param name="BenchmarkApiUrl">Where the eval runner calls this API back (<c>BENCHMARK_API_URL</c>; the container's own port).</param>
 /// <param name="BenchmarksMongoUrl">The benchmark store (<c>BENCHMARKS_MONGO_URL</c>, in <c>.env.secrets</c>); none: runs aren't started.</param>
 /// <param name="BenchmarksDatabase">Its database (<c>BENCHMARKS_MONGO_DATABASE</c>; <c>puls_benchmarks</c>, the tests' <c>puls_benchmarks_test</c>).</param>
 /// <param name="EvalRunner">The eval runner's dll (<c>EVAL_RUNNER</c>), absolute: a relative path is resolved here, once, so a run from another folder finds it.</param>

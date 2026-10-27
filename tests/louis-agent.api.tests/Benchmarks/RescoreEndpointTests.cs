@@ -11,12 +11,11 @@ using Microsoft.AspNetCore.TestHost;
 namespace LouisAgent.Api.Tests.Benchmarks;
 
 // F18 step 5b.2 (ADR 0039, POST /{resource}/{verb}): POST /v1/admin/benchmarks/runs/{id}/rescore starts a re-score of a stored run: 201 with the new run's
-// Location, 404 for a run it doesn't hold, 409 while another run runs (as a start answers), 400 for a run of a Python check (only an eval's transcripts can be graded
+// Location, 404 for a run it doesn't hold, 409 while another run runs (as a start answers), 400 for a run of a check the runner does not list (only an eval's transcripts can be graded
 // again). The new run is recorded with rescore_of, and costs 0 requests and $0: known, because nothing was asked. Written first: the route did not exist.
 public class RescoreEndpointTests
 {
     private const string AdminKey = "admin-secret";
-    private static readonly string Python = OperatingSystem.IsWindows() ? "python" : "python3";
 
     private string _workspace = "";
 
@@ -24,8 +23,7 @@ public class RescoreEndpointTests
     public void SetUp()
     {
         _workspace = Path.Combine(Path.GetTempPath(), "louis-rescore-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(Path.Combine(_workspace, "benchmarks", "slow"));
-        File.WriteAllText(Path.Combine(_workspace, "benchmarks", "slow", "run_check.py"), "import time\nprint('start', flush=True)\ntime.sleep(2)\n");
+        Directory.CreateDirectory(_workspace);
     }
 
     [TearDown]
@@ -36,13 +34,13 @@ public class RescoreEndpointTests
         public async ValueTask DisposeAsync() => await App.DisposeAsync();
     }
 
-    /// <summary>The API over the real runner: an eval check "stub", a script check "slow", an in-memory store with a recorder, and one stored run of each.</summary>
+    /// <summary>The API over the real runner: the eval check "stub", an in-memory store with a recorder.</summary>
     private async Task<Host> StartAsync()
     {
         var store = new InMemoryBenchmarkStore();
         var recorder = new BenchmarkRecorder(store);
-        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("stub", "Stub"), new BenchmarkCheck("slow", "Slow", "benchmarks/slow/run_check.py", [])]);
-        var runner = new BenchmarkRunner(catalog, _workspace, "http://127.0.0.1:1/", Python, RunnerBuild.Dll);
+        var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("stub", "Stub")]);
+        var runner = new BenchmarkRunner(catalog, _workspace, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, runner: runner, recorder: recorder, catalog: catalog);
         await app.StartAsync();
         return new Host(app, app.GetTestClient(), store, runner, recorder);
@@ -103,7 +101,8 @@ public class RescoreEndpointTests
     {
         await using var host = await StartAsync();
         string stored = await StoredStubRunAsync(host);
-        var busy = host.Runner.Start("slow", 1)!;
+        // A run of the stub with every repeat: the runner takes longer to start and finish than this request takes to arrive.
+        var busy = host.Runner.Start("stub", BenchmarkRunner.MaxRepeat)!;
 
         using var response = await Post(host.Client, stored);
 
@@ -112,12 +111,12 @@ public class RescoreEndpointTests
     }
 
     [Test]
-    public async Task ARunOfAPythonCheck_Is400_BecauseThereIsNoEvalToGradeItAgain()
+    public async Task ARunOfACheckTheRunnerDoesNotList_Is400_BecauseThereIsNoEvalToGradeItAgain()
     {
         await using var host = await StartAsync();
-        await host.Store.SaveRunAsync(new BenchmarkDocuments.Run("script-run", "slow", 1, BenchmarkRunStatus.Done, DateTimeOffset.UnixEpoch));
+        await host.Store.SaveRunAsync(new BenchmarkDocuments.Run("gone-run", "gone-check", 1, BenchmarkRunStatus.Done, DateTimeOffset.UnixEpoch));
 
-        using var response = await Post(host.Client, "script-run");
+        using var response = await Post(host.Client, "gone-run");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }

@@ -9,13 +9,11 @@ namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 // the parser), and the store must hold the whole run.
 public class StubCheckTests
 {
-    private static readonly string Python = OperatingSystem.IsWindows() ? "python" : "python3";
-
     /// <summary>The C# stub through the runner's own listing, the real runner, and the recorder.</summary>
     private static async Task<(BenchmarkRun Run, List<string> Lines)> RunEvalStub(InMemoryBenchmarkStore store, int repeat = 1)
     {
         var catalog = new BenchmarkCatalog([BenchmarkCheck.ForEval("stub", "Stub")]);
-        var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", Python, RunnerBuild.Dll);
+        var runner = new BenchmarkRunner(catalog, TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
         var run = runner.Start("stub", repeat)!;
         var recording = new BenchmarkRecorder(store).RecordAsync(run);
         var lines = new List<string>();

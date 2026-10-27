@@ -140,7 +140,7 @@ public enum ApiUserText
     [Description("No stored run '{Id}'.")]
     NoStoredRun,
 
-    [Description("Run {Id} is a run of '{Check}', which is not an eval, so there are no transcripts to grade again.")]
+    [Description("Run {Id} is a run of '{Check}', which the eval runner does not list, so there are no transcripts to grade again.")]
     RescoreNeedsEval,
 
     [Description("Run {Id} is still running: delete it once it has ended.")]
@@ -172,9 +172,6 @@ public enum ApiUserText
 
     [Description("The ledger's rows name model '{Model}', which the run's modes don't list, so a trend may mix models.")]
     BenchmarkModelUnlisted,
-
-    [Description("The check '{Check}' is a script: only an eval records or replays the web, so web and replay are for an eval's run.")]
-    RunScriptNoWeb,
 
     [Description("Send web or replay, not both: a replay is a recorded run's web again, and a record is a new one.")]
     RunWebAndReplay,

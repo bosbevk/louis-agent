@@ -103,7 +103,6 @@ else if (_data is { } data)
                 <p class="check-proves" title="@check.Title">@check.Title</p>
                 @if (_checksOpen)
                 {
-                @if (check.Script.Length > 0) { <p class="muted check-script"><code>@check.Script</code></p> }
                 @if (last is null)
                 {
                     <p class="muted">No run in the store yet.</p>
@@ -262,7 +261,7 @@ else if (_data is { } data)
 }
 
 @code {
-    private sealed record Check(string Id, string Title, string Script, bool Manual);
+    private sealed record Check(string Id, string Title, bool Manual);
     private sealed record Manual(string Title, string Markdown);
     private sealed record StoreState(bool Configured, string? Error);
     private sealed record Page(List<Check> Checks, StoreState Store, List<RunSummary> Runs);
@@ -342,7 +341,7 @@ else if (_data is { } data)
             var json = await Api.GetAsync<JsonElement>("v1/admin/benchmarks");
             var store = json.GetProperty("store");
             _data = new Page(
-                json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!, c.GetProperty("script").GetString()!,
+                json.GetProperty("checks").EnumerateArray().Select(c => new Check(c.GetProperty("id").GetString()!, c.GetProperty("title").GetString()!,
                     c.TryGetProperty("manual", out var m) && m.ValueKind == JsonValueKind.True)).ToList(),
                 new StoreState(store.GetProperty("configured").GetBoolean(), Str(store, "error")),
                 json.GetProperty("runs").EnumerateArray().Select(ReadRun).ToList());
