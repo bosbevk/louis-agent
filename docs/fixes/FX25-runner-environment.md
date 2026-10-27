@@ -28,6 +28,8 @@ case, since Windows keeps `Path`. An Anthropic judge (`EVAL_JUDGE_PROVIDER=anthr
 never the API's. The three options were an allowlist, a denylist of secret-looking names (weaker: a secret under another name leaks), and an empty
 environment (breaks `dotnet`, which needs its path); Louis picked the allowlist.
 
+**The proxy and certificate settings stay** (Louis's pick, 2026-10-27, on the review card): `HTTPS_PROXY`, `HTTP_PROXY`, `NO_PROXY`, `SSL_CERT_FILE` and `SSL_CERT_DIR`, in either case, are on the runtime list, since the first allowlist dropped them and behind a company proxy or CA an Anthropic judge started by the runner could not reach Anthropic; none is a secret.
+
 **Set `ADMIN_API_KEY` on its own.** The portal's key is `ADMIN_API_KEY`, else `AGENT_API_KEY` (`AdminOptions`). With only `AGENT_API_KEY` set, the admin key and the key the runner sends to the API are one key, and the runner gets it: the allowlist hides the other secrets, not that one. A separate `ADMIN_API_KEY` keeps the portal's key out of the runner's reach (found in the review of FX25).
 
 **What it costs:** a setting the runner starts reading must be added to `RunnerEnvironment.Names`, or it silently never arrives; the guide says so,

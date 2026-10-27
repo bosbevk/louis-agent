@@ -1,4 +1,5 @@
 using System.Globalization;
+using LouisAgent.Puls.Admin.Charts;
 using LouisAgent.Web.Shared.Usage;
 
 namespace LouisAgent.Puls.Admin.Summary;
@@ -17,7 +18,7 @@ public static class SummaryText
         slice.TooFew || rate is not { } value ? "–" : value.ToString("0%", CultureInfo.InvariantCulture);
 
     /// <summary>A rate bar's width: the rate as a percentage to one decimal (6a.3c, out of the table's code-behind).</summary>
-    public static string BarWidth(double rate) => $"{LouisAgent.Puls.Admin.Charts.ChartNumbers.Format(Math.Round(rate * 100, 1))}%";
+    public static string BarWidth(double rate) => $"{ChartNumbers.Format(Math.Round(rate * 100, 1))}%";
 
     public static string Cost(decimal? cost, CurrencyChoice? currency) =>
         cost is { } amount ? UsageFormat.Money(amount, "USD", currency) : "unknown";

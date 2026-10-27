@@ -8,9 +8,13 @@ namespace LouisAgent.Api.Benchmarks.Runs;
 /// </summary>
 internal static class RunnerEnvironment
 {
-    /// <summary>What the process needs to start at all: the path, a home, a temp folder, the locale, and Windows's own.</summary>
+    /// <summary>
+    /// What the process needs to start at all: the path, a home, a temp folder, the locale, and Windows's own; and what it needs to reach the network (Louis, 2026-10-27): the proxy and
+    /// certificate settings, so an Anthropic judge works behind a company proxy or CA. None is a secret. The names match whatever their case, so <c>https_proxy</c> is covered too.
+    /// </summary>
     private static readonly string[] Runtime =
-        ["PATH", "PATHEXT", "HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA", "TEMP", "TMP", "TMPDIR", "SystemRoot", "SystemDrive", "ComSpec", "LANG", "LC_ALL", "TZ"];
+        ["PATH", "PATHEXT", "HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA", "TEMP", "TMP", "TMPDIR", "SystemRoot", "SystemDrive", "ComSpec", "LANG", "LC_ALL", "TZ",
+         "HTTPS_PROXY", "HTTP_PROXY", "NO_PROXY", "SSL_CERT_FILE", "SSL_CERT_DIR"];
 
     /// <summary>What the eval runner reads itself, and through core for the judge's ledger rows; a Python check reads <c>AGENT_API_KEY</c> of these.</summary>
     private static readonly string[] Runner =
@@ -27,12 +31,13 @@ internal static class RunnerEnvironment
     /// <summary>The allowed part of <paramref name="parent"/>, with the judge's key worked out; the names keep the parent's spelling.</summary>
     public static Dictionary<string, string> Select(IReadOnlyDictionary<string, string> parent)
     {
-        var selected = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        // Ordinal: on Linux HTTPS_PROXY and https_proxy are two variables and both must arrive; the allowlist's own match ignores the case.
+        var selected = new Dictionary<string, string>();
         foreach (var (name, value) in parent)
             if (Names.Contains(name) || Prefixes.Any(p => name.StartsWith(p, StringComparison.OrdinalIgnoreCase))) selected[name] = value;
 
         // An Anthropic judge with no key of its own uses the API's Anthropic key (as the harness's JudgeSettings falls back): hand it over under the judge's name only.
-        if (!selected.ContainsKey(JudgeKey) && Get(parent, AnthropicKey) is { Length: > 0 } key && JudgeIsAnthropic(parent)) selected[JudgeKey] = key;
+        if (!selected.Keys.Any(k => k.Equals(JudgeKey, StringComparison.OrdinalIgnoreCase)) && Get(parent, AnthropicKey) is { Length: > 0 } key && JudgeIsAnthropic(parent)) selected[JudgeKey] = key;
         return selected;
     }
 

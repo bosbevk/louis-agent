@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
@@ -29,6 +30,23 @@ public class RunnerEnvironmentTests
         Assert.That(env.Keys, Is.SupersetOf(new[] { "PATH", "HOME", "DOTNET_ROOT", "DOTNET_CLI_TELEMETRY_OPTOUT", "LANG" }), "what the runtime needs");
         Assert.That(env.Keys, Has.None.AnyOf("BENCHMARKS_MONGO_URL", "ADMIN_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_SEARCH_API_KEY", "PAYMO_API_KEY", "LLM_API_KEY", "WORKSPACE_ROOT"), "the API's secrets, and what the runner doesn't read");
         Assert.That(env.ContainsKey("EVAL_JUDGE_API_KEY"), Is.False, "a local judge needs no key");
+    }
+
+    // Louis, 2026-10-27 (review card): behind a company proxy or a company CA, an Anthropic judge started by the runner can't reach Anthropic if the proxy and certificate settings are dropped.
+    // None of them is a secret; they are what the process needs to reach the network, like the path. Names match whatever their case, so one spelling covers the lower-case ones Linux tools use.
+    [Test]
+    public void TheProxyAndCertificateSettings_ComeThrough_InEitherCase()
+    {
+        var parent = new Dictionary<string, string>
+        {
+            ["HTTPS_PROXY"] = "http://proxy:3128", ["HTTP_PROXY"] = "http://proxy:3128", ["NO_PROXY"] = "localhost,ollama", ["SSL_CERT_FILE"] = "/etc/ssl/company.pem", ["SSL_CERT_DIR"] = "/etc/ssl/certs",
+            ["https_proxy"] = "http://proxy:3128", ["http_proxy"] = "http://proxy:3128", ["no_proxy"] = "localhost,ollama",
+            ["ANTHROPIC_API_KEY"] = "sk-ant-secret",
+        };
+
+        var env = RunnerEnvironment.Select(parent);
+
+        Assert.That(env.Keys, Is.EquivalentTo(new[] { "HTTPS_PROXY", "HTTP_PROXY", "NO_PROXY", "SSL_CERT_FILE", "SSL_CERT_DIR", "https_proxy", "http_proxy", "no_proxy" }));
     }
 
     [Test]
@@ -84,10 +102,10 @@ public class RunnerEnvironmentTests
         var read = new HashSet<string>();
         foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "evals"), "*.cs", SearchOption.AllDirectories)
                      .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")))
-            foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(file), @"(?:GetEnvironmentVariable|getVariable|\bGet)\(""([A-Z][A-Z0-9_]+)""\)"))
+            foreach (Match m in Regex.Matches(File.ReadAllText(file), @"(?:GetEnvironmentVariable|getVariable|\bGet)\(""([A-Z][A-Z0-9_]+)""\)"))
                 read.Add(m.Groups[1].Value);
         foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "benchmarks"), "*.py", SearchOption.AllDirectories))
-            foreach (System.Text.RegularExpressions.Match m in System.Text.RegularExpressions.Regex.Matches(File.ReadAllText(file), @"environ(?:\.get)?[\[(]\s*['""]([A-Z][A-Z0-9_]+)['""]"))
+            foreach (Match m in Regex.Matches(File.ReadAllText(file), @"environ(?:\.get)?[\[(]\s*['""]([A-Z][A-Z0-9_]+)['""]"))
                 read.Add(m.Groups[1].Value);
 
         Assert.That(read, Has.Count.GreaterThanOrEqualTo(8), "the scan found the settings the runner reads: " + string.Join(", ", read.Order()));
