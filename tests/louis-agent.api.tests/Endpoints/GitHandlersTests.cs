@@ -28,6 +28,13 @@ public class GitHandlersTests
         yield return new TestCaseData("GitChangesHandlers", "Stage", status);
         yield return new TestCaseData("GitChangesHandlers", "Unstage", status);
         yield return new TestCaseData("GitChangesHandlers", "Discard", status);
+
+        yield return new TestCaseData("GitCommitsHandlers", "Commit",
+            typeof(Task<Results<Created<StatusReply>, JsonHttpResult<ApiError>>>));
+        yield return new TestCaseData("GitCommitsHandlers", "GetCommits",
+            typeof(Task<Results<JsonHttpResult<CommitsReply>, JsonHttpResult<ApiError>>>));
+        yield return new TestCaseData("GitCommitsHandlers", "GetCommit",
+            typeof(Task<Results<JsonHttpResult<CommitReply>, JsonHttpResult<ApiError>>>));
     }
 
     /// <summary>A handler's signature names every answer it can give.</summary>

@@ -117,6 +117,48 @@ public class GitReplyJsonTests
         Assert.That(json.RootElement.GetProperty("files")[0].GetProperty("staged").GetBoolean(), Is.True);
     }
 
+    /// <summary>The log is a list of commits, each with its sha, author, date, subject, refs and parents.</summary>
+    [Test]
+    public async Task TheLog_KeepsItsNames()
+    {
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/commits");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("commits"));
+        Assert.That(Names(json.RootElement.GetProperty("commits")[0]), Is.EqualTo(CommitNames));
+    }
+
+    /// <summary>One commit: the commit, its whole message, and its diff.</summary>
+    [Test]
+    public async Task ACommit_KeepsItsNames()
+    {
+        string sha = _repo.Git("rev-parse", "HEAD").Trim();
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, $"/v1/git/commits/{sha}");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("commit,body,diff,truncated"));
+        Assert.That(Names(json.RootElement.GetProperty("commit")), Is.EqualTo(CommitNames));
+    }
+
+    /// <summary>A new commit answers 201 with the status after it, naming what was committed.</summary>
+    [Test]
+    public async Task ANewCommit_AnswersTheStatus()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        _repo.Git("add", "readme.md");
+        await using var app = await StartAsync();
+
+        using var response =
+            await app.GetTestClient().PostAsJsonAsync("/v1/git/commits", new { message = "Greet the world" });
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+        Assert.That(Names(json.RootElement), Is.EqualTo("branch,files,committed"));
+        Assert.That(json.RootElement.GetProperty("committed").GetString(), Does.EndWith("Greet the world"));
+    }
+
     /// <summary>Starts the API over the repository.</summary>
     private async Task<WebApplication> StartAsync()
     {

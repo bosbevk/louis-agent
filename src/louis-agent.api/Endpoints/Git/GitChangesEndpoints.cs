@@ -1,5 +1,3 @@
-using LouisAgent.Core.Agent;
-
 namespace LouisAgent.Api.Endpoints.Git;
 
 /// <summary>
@@ -20,18 +18,5 @@ internal static class GitChangesEndpoints
         routes.MapPost("/git/stage", handlers.Stage);
         routes.MapPost("/git/unstage", handlers.Unstage);
         routes.MapPost("/git/discard", handlers.Discard);
-    }
-
-    /// <summary>
-    /// The status after a commit, as the commit route still answers it until that file is swept: a 201 naming the
-    /// commit in Location (ADR 0039, rule 3).
-    /// </summary>
-    internal static async Task<IResult> StatusResultAsync(AgentEngine engine, string? committed = null,
-        string? created = null)
-    {
-        var read = await GitStatusRead.ReadAsync(engine, committed);
-        if (read.Error is { } error) return error;
-        if (created is null) return GitChangesHandlers.Answer(read);
-        return TypedResults.Created(created, read.Reply);
     }
 }
