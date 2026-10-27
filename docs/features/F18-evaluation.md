@@ -1104,6 +1104,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   API as C# 14 static extension members (`AdminReplies`), so a call still reads `CheckRow.Of(…)` and the contract never
   sees a check or a trend; the choice and its two alternatives are finding 1 in
   [the run's log](../plans/F18-unattended-decisions.md). The JSON is unchanged byte for byte.
+- **Unattended run, Part 1.2 (`ApiError`).** Every error is the contract's `ApiError` record (`type`, and
+  `error { type, message }`), and `ApiErrors.Result` answers `JsonHttpResult<ApiError>`; the anonymous object is gone.
+  `ApiErrorJsonTests` pinned the JSON first and it is unchanged, the sessions stream's error line included.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
