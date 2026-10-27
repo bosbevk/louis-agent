@@ -16,6 +16,7 @@ public class GitReplyJsonTests
 {
     private const string BranchNames = "name,commit,subject,author,date,current,ahead,behind,merged";
     private const string CommitNames = "sha,shortSha,author,date,subject,refs,parents";
+    private const string FileNames = "path,oldPath,index,workTree,untracked,staged,unstaged";
 
     private TempGitRepo _repo = null!;
 
@@ -73,6 +74,47 @@ public class GitReplyJsonTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(Names(json.RootElement), Is.EqualTo("current,branches,message"));
         Assert.That(json.RootElement.GetProperty("message").GetString(), Is.Not.Empty);
+    }
+
+    /// <summary>The status names the branch, every changed file, and after a commit what was committed.</summary>
+    [Test]
+    public async Task TheStatus_KeepsItsNames()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/status");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("branch,files,committed"));
+        Assert.That(Names(json.RootElement.GetProperty("files")[0]), Is.EqualTo(FileNames));
+    }
+
+    /// <summary>A file's diff says which file, whether it's the staged one, whether it's new, and the diff.</summary>
+    [Test]
+    public async Task AFilesDiff_KeepsItsNames()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/diff?path=readme.md");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("path,staged,untracked,diff,truncated"));
+    }
+
+    /// <summary>Staging answers with the status again, so the app refreshes in one call.</summary>
+    [Test]
+    public async Task Staging_AnswersTheStatus()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        await using var app = await StartAsync();
+
+        using var response =
+            await app.GetTestClient().PostAsJsonAsync("/v1/git/stage", new { paths = new[] { "readme.md" } });
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(Names(json.RootElement), Is.EqualTo("branch,files,committed"));
+        Assert.That(json.RootElement.GetProperty("files")[0].GetProperty("staged").GetBoolean(), Is.True);
     }
 
     /// <summary>Starts the API over the repository.</summary>

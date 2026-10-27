@@ -1129,6 +1129,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   ahead/behind count a guard-claused method where two `if`s nested. The replies are `BranchesReply` and
   `BranchDiffReply`, written with `WorkspaceJson.Web`, the code-review app's wire (ASP.NET's defaults, now named);
   `GitProcess.GitError` answers the typed `ApiError`.
+- **Sweep: `GitChangesEndpoints`.** `GitChangesHandlers` holds the five changes routes; reading the status is
+  `GitStatusRead`, and the diff's choice of three git commands is guard clauses where a ternary nested. The replies are
+  `StatusReply` and `DiffReply`. `StatusResultAsync` stays in the endpoints file as a bridge for the commit route,
+  which goes with it in the next commit.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

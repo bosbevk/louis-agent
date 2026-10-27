@@ -20,6 +20,14 @@ public class GitHandlersTests
             typeof(Task<Results<JsonHttpResult<BranchDiffReply>, JsonHttpResult<ApiError>>>));
         yield return new TestCaseData("GitBranchesHandlers", "Merge", branches);
         yield return new TestCaseData("GitBranchesHandlers", "DeleteBranch", branches);
+
+        var status = typeof(Task<Results<JsonHttpResult<StatusReply>, JsonHttpResult<ApiError>>>);
+        yield return new TestCaseData("GitChangesHandlers", "GetStatus", status);
+        yield return new TestCaseData("GitChangesHandlers", "GetDiff",
+            typeof(Task<Results<JsonHttpResult<DiffReply>, JsonHttpResult<ApiError>>>));
+        yield return new TestCaseData("GitChangesHandlers", "Stage", status);
+        yield return new TestCaseData("GitChangesHandlers", "Unstage", status);
+        yield return new TestCaseData("GitChangesHandlers", "Discard", status);
     }
 
     /// <summary>A handler's signature names every answer it can give.</summary>
