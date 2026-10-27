@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text;
 using LouisAgent.Core.Config;
@@ -133,8 +134,7 @@ public class SearxngSearchProviderTests
     [Test, Category("Live")]
     public async Task TheSearxngWeRun_FindsAShopsProduct()
     {
-        string? url = Environment.GetEnvironmentVariable("SEARXNG_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "SEARXNG_URL isn't set: no SearXNG to search (the Puls stack's puls-searxng).");
+        string url = Outside.Stack("SEARXNG_URL", "SearXNG to search");
 
         var results = await new SearxngSearchProvider(new Uri(url!)).SearchAsync(new WebSearchQuery("beef mince price", 5, "pnp.co.za"));
 

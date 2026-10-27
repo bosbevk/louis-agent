@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Tools.Shell;
 
 namespace LouisAgent.Core.Tests.Tools.Shell;
@@ -96,5 +97,5 @@ public class PowerShellToolsTests
     }
 
     private void RequirePowerShell() =>
-        Assume.That(_tools.ResolveInterpreter(), Is.Not.Null, "PowerShell is not installed on this machine");
+        Outside.Tool(_tools.ResolveInterpreter() is not null, "PowerShell is not installed on this machine");
 }

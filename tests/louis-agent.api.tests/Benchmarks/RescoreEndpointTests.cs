@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Export;
@@ -53,7 +54,7 @@ public class RescoreEndpointTests
         var recording = host.Recorder.RecordAsync(run);
         await foreach (string _ in host.Runner.EventsAsync(run.Id)) { }
         await recording;
-        Assume.That(run.ExitCode, Is.EqualTo(0), "dotnet isn't here to run the eval runner");
+        Outside.Tool(run.ExitCode == 0, "dotnet isn't here to run the eval runner");
         return run.Id;
     }
 

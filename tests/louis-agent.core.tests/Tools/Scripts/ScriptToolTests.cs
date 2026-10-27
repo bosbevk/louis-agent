@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 using LouisAgent.Core.Skills;
@@ -54,7 +55,7 @@ public class ScriptToolTests
     }
 
     private static void RequirePython() =>
-        Assume.That(new PythonTools(Path.GetTempPath()).ResolveInterpreter(), Is.Not.Null, "Python 3 is not installed");
+        Outside.Tool(new PythonTools(Path.GetTempPath()).ResolveInterpreter() is not null, "Python 3 is not installed");
 
     private static AIFunction Tool(AgentEngine engine, string name) => engine.Tools.OfType<AIFunction>().Single(t => t.Name == name);
 
@@ -179,7 +180,7 @@ public class ScriptToolTests
     [Category("Integration")]
     public async Task CreatedTool_SupportsPowerShellAndBash(ScriptLanguage language, string code)
     {
-        if (language == ScriptLanguage.PowerShell) Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
+        if (language == ScriptLanguage.PowerShell) Outside.Tool(new PowerShellTools(_skillsDir).ResolveInterpreter() is not null, "PowerShell is not installed");
         var engine = Engine();
         string definition = $"# Tool: EchoText\n- Description: Echo\n- Parameters:\n  - `text` (string, required): text\n- Implementation:\n\n```{language.Wire()}\n{code}\n```\n";
         Assert.That(engine.CreateTool(definition), Does.Contain("Created"));

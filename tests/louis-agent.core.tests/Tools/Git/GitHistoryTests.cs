@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Git.Running;
@@ -16,7 +17,7 @@ public class GitHistoryTests
     {
         _repo = Path.Combine(Path.GetTempPath(), "git-history-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_repo);
-        if (Git("init", "-q").ExitCode != 0) Assert.Ignore("git isn't installed");
+        Outside.Tool(Git("init", "-q").ExitCode == 0, "git isn't installed");
         Git("config", "user.email", "test@example.com");
         Git("config", "user.name", "Test");
         Git("config", "commit.gpgsign", "false");

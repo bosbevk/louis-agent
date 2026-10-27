@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Tools;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Git.Running;
@@ -29,7 +30,7 @@ public class GitToolsTests
         _origin = Path.Combine(_root, "origin.git");
         Directory.CreateDirectory(_repo);
         Directory.CreateDirectory(_origin);
-        if (Git(_repo, "init", "-q", "-b", "main").ExitCode != 0) Assert.Ignore("git isn't installed");
+        LouisAgent.Testing.Outside.Tool(Git(_repo, "init", "-q", "-b", "main").ExitCode == 0, "git isn't installed");
         Git(_repo, "config", "user.email", "test@example.com");
         Git(_repo, "config", "user.name", "Test");
         Git(_repo, "config", "commit.gpgsign", "false");

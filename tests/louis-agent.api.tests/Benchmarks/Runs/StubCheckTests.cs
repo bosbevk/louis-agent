@@ -20,7 +20,7 @@ public class StubCheckTests
         var lines = new List<string>();
         await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
         await recording;
-        Assume.That(run.ExitCode, Is.Not.EqualTo(-1), "dotnet isn't here to run the eval runner");
+        Outside.Tool(run.ExitCode != -1, "dotnet isn't here to run the eval runner");
         return (run, lines);
     }
 

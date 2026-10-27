@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Packs.Shops.Catalogues;
 using LouisAgent.Packs.Shops.Places;
 using LouisAgent.Packs.Shops.Providers;
@@ -280,8 +281,7 @@ public class CheckersCatalogueTests
     [Test, Category("Live")]
     public async Task FromMalmesbury_TheSearchIsMalmesburysStore()
     {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to search Checkers with (the Puls stack's puls-browser).");
+        string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
         var browser = new ChromeWebBrowser(new Uri(url!));
 
         var found = await new CheckersCatalogue(browser, new CheckersStore(browser, LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync)).SearchAsync("chicken", 5, "Malmesbury");
@@ -295,8 +295,7 @@ public class CheckersCatalogueTests
     [Test, Category("Live")]
     public async Task Checkers_ShowsItsDeals_WithTheirWording()
     {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to search Checkers with (the Puls stack's puls-browser).");
+        string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
 
         var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chicken", 16)).Products;
 
@@ -307,8 +306,7 @@ public class CheckersCatalogueTests
     [Test, Category("Live")]
     public async Task Checkers_FindsItsProducts_WithPricesAndLinks()
     {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to search Checkers with (the Puls stack's puls-browser).");
+        string url = Outside.Stack("BROWSER_URL", "browser to search Checkers with");
 
         var products = (await new CheckersCatalogue(new ChromeWebBrowser(new Uri(url!))).SearchAsync("chakalaka", 5)).Products;
 

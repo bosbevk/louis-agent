@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Skills.Languages;
 using LouisAgent.Core.Skills;
@@ -291,8 +292,8 @@ public class SkillAuthoringTests
     [Category("Integration")]
     public void ExecuteSkill_RunsSkillInItsFenceLanguage(ScriptLanguage language, string code)
     {
-        if (language == ScriptLanguage.Python) Assume.That(new PythonTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
-        if (language == ScriptLanguage.PowerShell) Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
+        if (language == ScriptLanguage.Python) Outside.Tool(new PythonTools(_skillsDir).ResolveInterpreter() is not null, "Python 3 is not installed");
+        if (language == ScriptLanguage.PowerShell) Outside.Tool(new PowerShellTools(_skillsDir).ResolveInterpreter() is not null, "PowerShell is not installed");
         var engine = Engine();
         string markdown = $"## Skill: Greet\n\n- Description: Print a greeting\n- Execution:\n\n```{language.Wire()}\n{code}\n```\n";
 

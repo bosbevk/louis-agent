@@ -41,6 +41,8 @@ jobs:
       GIT_COMMITTER_EMAIL: ci@localhost
       # The Mongo store's contract tests (F31); a throwaway server with a throwaway user, so no secret.
       BENCHMARKS_MONGO_URL: mongodb://ci:ci@localhost:27017/?authSource=admin
+      # A tool this image has (git, bash, an interpreter, dotnet, Mongo) that a test cannot find fails the test, not skips it (F18 step 7.6); only the Puls stack's browser and SearXNG tests still skip.
+      INTEGRATION_REQUIRED: 1
     steps:
       - uses: actions/checkout@v4
 

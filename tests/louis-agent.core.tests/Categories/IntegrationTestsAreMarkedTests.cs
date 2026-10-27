@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Tests.RepeatedNames.Scanning;
+using LouisAgent.Testing;
 
 namespace LouisAgent.Core.Tests.Categories;
 
@@ -11,8 +12,11 @@ public class IntegrationTestsAreMarkedTests
 {
     private const string Marked = "Category(\"Integration\")";
 
-    private static readonly Regex Guard = new(
+    /// <summary>The old way to ask for the outside: a raw skip. It is banned in the tests now (<see cref="Outside"/> is the one way), but still read as a guard so a stray one is also seen as unmarked.</summary>
+    public static readonly Regex RawGuard = new(
         @"Assert\.Ignore\(|Assume\.That\(.*(isn't set|not installed|isn't installed|isn't here|ResolveInterpreter\(\)|FindBash\(\))", RegexOptions.Compiled);
+
+    private static readonly Regex Guard = new(@"Outside\.(Tool|Stack)\(|" + RawGuard, RegexOptions.Compiled);
 
     private static readonly Regex MethodHeader = new(@"^\s*(public|private|protected|internal)\b[^=;]*\)\s*(=>.*)?$", RegexOptions.Compiled);
 
@@ -97,5 +101,19 @@ public class IntegrationTestsAreMarkedTests
             .ToList();
 
         Assert.That(unmarked, Is.Empty, "a test that skips itself when git, a browser, a database or an interpreter is missing is an integration test (F18 step 7.6):\n" + string.Join("\n", unmarked));
+    }
+
+    [Test]
+    public void TheOutsideIsAskedForThroughOutside_NeverWithARawSkip()
+    {
+        var raw = SourceTree.Files()
+            .Select(path => (path, rel: SourceTree.Relative(path)))
+            .Where(file => file.rel.StartsWith("tests/", StringComparison.Ordinal) && !file.rel.StartsWith("tests/louis-agent.core.tests/Categories/", StringComparison.Ordinal) && !file.rel.EndsWith("/Outside.cs", StringComparison.Ordinal))
+            .SelectMany(file => File.ReadAllLines(file.path).Select((line, i) => (file.rel, line, number: i + 1)))
+            .Where(l => RawGuard.IsMatch(l.line) && !l.line.TrimStart().StartsWith("//"))
+            .Select(l => $"{l.rel}:{l.number}  {l.line.Trim()}")
+            .ToList();
+
+        Assert.That(raw, Is.Empty, "a test asks for git, a tool or an address with Outside.Tool or Outside.Stack, so that a missing tool fails where INTEGRATION_REQUIRED is set (F18 step 7.6):\n" + string.Join("\n", raw));
     }
 }

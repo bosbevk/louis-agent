@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Tools.Shell;
 
 namespace LouisAgent.Core.Tests.Tools.Shell;
@@ -122,5 +123,5 @@ public class PythonToolsTests
     }
 
     private void RequirePython() =>
-        Assume.That(_tools.ResolveInterpreter(), Is.Not.Null, "Python 3 is not installed on this machine");
+        Outside.Tool(_tools.ResolveInterpreter() is not null, "Python 3 is not installed on this machine");
 }

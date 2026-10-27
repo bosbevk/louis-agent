@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Tools.Web.Browsing;
 
 namespace LouisAgent.Core.Tests.Tools.Web.Browsing;
@@ -15,8 +16,7 @@ public class ChromeWebBrowserTests
 
     private static ChromeWebBrowser Live()
     {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to visit with (the Puls stack's puls-browser).");
+        string url = Outside.Stack("BROWSER_URL", "browser to visit with");
         return new ChromeWebBrowser(new Uri(url!));
     }
 
@@ -30,8 +30,7 @@ public class ChromeWebBrowserTests
     {
         // FX21: the header a server receives (httpbin echoes it: a real request, not a page's script), and the automation
         // marker left as Chrome reports it.
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to visit with.");
+        string url = Outside.Stack("BROWSER_URL", "browser to visit with");
         var browser = new ChromeWebBrowser(new Uri(url!), userAgent: Named);
 
         var echoed = await browser.VisitAsync(new Uri("https://httpbin.org/user-agent"), script: "document.body.textContent");
@@ -200,8 +199,7 @@ public class ChromeWebBrowserTests
     [Test, Category("Live")]
     public void AVisitThatOutlivesItsBudget_IsAWebBrowserException_NotAHang()
     {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to visit with (the Puls stack's puls-browser).");
+        string url = Outside.Stack("BROWSER_URL", "browser to visit with");
         var browser = new ChromeWebBrowser(new Uri(url!), budget: TimeSpan.FromSeconds(2));
         var watch = System.Diagnostics.Stopwatch.StartNew();
 

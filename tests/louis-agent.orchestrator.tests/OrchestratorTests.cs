@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
@@ -183,7 +184,7 @@ public class OrchestratorTests
     [Test]
     public void VerifyFixCommit_PassesForACommitOnTheFixBranch_AndFailsForOneOnMain()
     {
-        if (!GitAvailable()) Assert.Ignore("git is not installed");
+        Outside.Tool(GitAvailable(), "git is not installed");
         InitRepo();
         string mainCommit = Git("rev-parse", "HEAD");
         Git("switch", "-c", "fix/order-total-abc123");
@@ -202,7 +203,7 @@ public class OrchestratorTests
     [Test]
     public void ReturnToMain_StashesLeftoversAndChecksOutMain()
     {
-        if (!GitAvailable()) Assert.Ignore("git is not installed");
+        Outside.Tool(GitAvailable(), "git is not installed");
         InitRepo();
         Git("switch", "-c", "fix/half-done");
         File.WriteAllText(Path.Combine(_dir, "a.txt"), "unfinished");

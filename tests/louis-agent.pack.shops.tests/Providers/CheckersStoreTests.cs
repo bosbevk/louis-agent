@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Packs.Shops.Places;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
@@ -199,8 +200,7 @@ public class CheckersStoreTests
     [Test, Category("Live")]
     public async Task Malmesbury_IsServedByAStoreOtherThanTheDefault()
     {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to ask Checkers with (the Puls stack's puls-browser).");
+        string url = Outside.Stack("BROWSER_URL", "browser to ask Checkers with");
 
         var session = await new CheckersStore(new ChromeWebBrowser(new Uri(url!)), LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync).ForAsync("Malmesbury");
 

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Benchmarks.Export;
 using LouisAgent.Api.Benchmarks.Runs;
@@ -71,7 +72,7 @@ public class BenchmarkRescoreTests
         var firstRecording = new BenchmarkRecorder(store).RecordAsync(first);
         await foreach (string _ in runner.EventsAsync(first.Id)) { }
         await firstRecording;
-        Assume.That(first.ExitCode, Is.EqualTo(0), "dotnet isn't here to run the eval runner");
+        Outside.Tool(first.ExitCode == 0, "dotnet isn't here to run the eval runner");
         string export = await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(first.Id))!, CancellationToken.None);
 
         var second = runner.StartRescore("stub", first.Id, export, repeat: 2)!;

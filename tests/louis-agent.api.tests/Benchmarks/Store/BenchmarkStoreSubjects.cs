@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Benchmarks.Reports;
@@ -30,7 +31,7 @@ public class MongoBenchmarkStoreTests : BenchmarkStoreContract
 
     [OneTimeSetUp]
     public void NeedsMongo() =>
-        Assume.That(Url, Is.Not.Null.And.Not.Empty, "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
+        Outside.Tool(!string.IsNullOrEmpty(Url), "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
 
     [OneTimeTearDown]
     public async Task DropTheTestDatabase()
@@ -59,7 +60,7 @@ public class MongoRunFieldsTests : BenchmarkRunFieldsContract
 
     [OneTimeSetUp]
     public void NeedsMongo() =>
-        Assume.That(Url, Is.Not.Null.And.Not.Empty, "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
+        Outside.Tool(!string.IsNullOrEmpty(Url), "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
 
     [OneTimeTearDown]
     public async Task DropTheTestDatabase()

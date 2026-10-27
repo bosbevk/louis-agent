@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http.Json;
@@ -28,7 +29,7 @@ public class GitResourceTests
         }
         catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
         {
-            Assert.Ignore("git isn't installed");
+            Outside.Tool(false, "git isn't installed");
         }
 
         Git("config", "user.email", "test@example.com");

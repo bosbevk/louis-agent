@@ -104,7 +104,7 @@ public class MongoCalibrationStoreTests : CalibrationStoreContract
 
     [OneTimeSetUp]
     public void NeedsMongo() =>
-        Assume.That(Url, Is.Not.Null.And.Not.Empty, "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
+        Outside.Tool(!string.IsNullOrEmpty(Url), "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
 
     [OneTimeTearDown]
     public async Task DropTheTestDatabase()
