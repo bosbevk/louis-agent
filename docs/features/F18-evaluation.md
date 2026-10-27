@@ -1170,8 +1170,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Opening a session answers `CreatedJson` (finding 2). `SessionView` became two factories: a static extension member
   compiles to a plain static method on its class, so two `Of(AgentSession)` (one per record) need a class each. The
   request bodies stay in the API for now (finding 3, a TODO line). `SessionHandlersTests` was written after the code.
-  The 409 for a busy session still says `{id}` literally, as it did; fixing it changes the sessions API's text, so it
-  is left for Louis.
+- **Sweep: `WorkspaceEndpoints`.** `WorkspaceHandlers` holds the two workspace routes, in `Endpoints/Workspace/`; the
+  replies are `EntriesReply` and `FileReply`, written with `WorkspaceJson.Web`. Its two messages written inline (a file
+  too big, a binary file) are `ApiUserText` members now, with the same words (`WorkspaceReplyJsonTests` pinned them
+  first). `ApiUserText` was brought up whole: its eight descriptions over 120 are split with `+`, so
+  `HostMessageEnumTests` now reads a description joined that way (it failed on the eight first). A correction to the
+  session line above: the busy-session 409's `{id}` is the cancel route's own placeholder, on purpose.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

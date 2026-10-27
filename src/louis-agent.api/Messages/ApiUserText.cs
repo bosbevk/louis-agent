@@ -1,10 +1,17 @@
-
 using System.ComponentModel;
 
 namespace LouisAgent.Api.Messages;
+
 /// <summary>What the API answers its clients and the web app: error messages, merge and delete results.</summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ApiUserText
 {
+    [Description("{Name} is larger than 1 MB.")]
+    FileTooLarge,
+
+    [Description("{Name} is a binary file.")]
+    BinaryFile,
+
     [Description("'{Tag}' must be at most {Max} printable characters.")]
     InvalidTag,
 
@@ -75,7 +82,8 @@ public enum ApiUserText
     MergeCommitMessage,
 
     [Description(
-        "git has no author identity: set GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL and restart the api.")]
+        "git has no author identity: set GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME and "
+        + "GIT_COMMITTER_EMAIL and restart the api.")]
     MergeNoIdentity,
 
     [Description("Merging '{Branch}' conflicts in {Files}; the merge was aborted, nothing changed.")]
@@ -93,7 +101,8 @@ public enum ApiUserText
     SecretDiffBinary,
 
     [Description(
-        "git has no author identity in the container: set GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME and GIT_COMMITTER_EMAIL in config/.env.secrets and restart the api container.")]
+        "git has no author identity in the container: set GIT_AUTHOR_NAME, GIT_AUTHOR_EMAIL, GIT_COMMITTER_NAME "
+        + "and GIT_COMMITTER_EMAIL in config/.env.secrets and restart the api container.")]
     CommitNoIdentity,
 
     [Description("git exited with code {ExitCode}.")]
@@ -109,7 +118,8 @@ public enum ApiUserText
     BranchNotMerged,
 
     [Description(
-        "The admin portal is closed: set ADMIN_API_KEY (or AGENT_API_KEY) in config/.env.secrets and recreate the container.")]
+        "The admin portal is closed: set ADMIN_API_KEY (or AGENT_API_KEY) in config/.env.secrets and recreate the "
+        + "container.")]
     AdminClosed,
 
     [Description("No check named '{Check}'. The checks: {Checks}.")]
@@ -128,20 +138,23 @@ public enum ApiUserText
     BenchmarkStoreFailed,
 
     [Description(
-        "The check speaks protocol {Version} and this API reads {Supported}: lines it doesn't know are kept as the log.")]
+        "The check speaks protocol {Version} and this API reads {Supported}: lines it doesn't know are kept as the "
+        + "log.")]
     BenchmarkProtocolUnknown,
 
     [Description("The usage ledger couldn't be read ({Reason}), so the run's cost is unknown.")]
     BenchmarkLedgerUnreadable,
 
     [Description(
-        "The benchmark store isn't set, so a run's results would be lost: set BENCHMARKS_MONGO_URL in config/.env.secrets and recreate the container.")]
+        "The benchmark store isn't set, so a run's results would be lost: set BENCHMARKS_MONGO_URL in "
+        + "config/.env.secrets and recreate the container.")]
     NoBenchmarkStore,
 
     [Description("No stored run '{Id}'.")] NoStoredRun,
 
     [Description(
-        "Run {Id} is a run of '{Check}', which the eval runner does not list, so there are no transcripts to grade again.")]
+        "Run {Id} is a run of '{Check}', which the eval runner does not list, so there are no transcripts to grade "
+        + "again.")]
     RescoreNeedsEval,
 
     [Description("Run {Id} is still running: delete it once it has ended.")]
@@ -164,11 +177,13 @@ public enum ApiUserText
     UnknownReplayWeb,
 
     [Description(
-        "replay.model is only for web 'replay': the model's answers are replayed from a recording, so send replay.web 'replay' with it (and 'of').")]
+        "replay.model is only for web 'replay': the model's answers are replayed from a recording, so send "
+        + "replay.web 'replay' with it (and 'of').")]
     ReplayModelNeedsReplay,
 
     [Description(
-        "This instance keeps no recordings, so it can't record or replay web pages: its replay folder isn't set (config/.env.example says how).")]
+        "This instance keeps no recordings, so it can't record or replay web pages: its replay folder isn't set "
+        + "(config/.env.example says how).")]
     ReplayNoRecordings,
 
     [Description("replay.web 'replay' needs 'of': the recorded trial to read its pages from.")]

@@ -5,14 +5,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LouisAgent.Core.Tests.Messages;
 
-// docs/CLAUDE.md, "Messages and logging": the hosts keep their own message enums (core can't know their texts), in each
-// project's Messages/ folder. Most hosts have no test project, so their enums are checked here from the source, like
-// ArchitectureTests: every member has a [Description] template, and its braces are well-formed named holes.
-/// <summary>Checks the message enums the hosts keep outside core, by reading their source as C#.</summary>
+/// <summary>
+/// Checks the message enums the hosts keep outside core, by reading their source as C#. The hosts keep their own
+/// message enums (core can't know their texts), in each project's Messages/ folder; most have no test project, so
+/// their enums are checked here, like ArchitectureTests: every member has a [Description] template, and its braces are
+/// well-formed named holes.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public partial class HostMessageEnumTests
 {
-    // CL15 step 4: a pack's and an identity's enums leave core too (packs/, identities/, a Messages/ folder at any depth).
-    /// <summary>Every Messages/ folder's .cs files in the hosts, packs, identities and evals, outside bin and obj.</summary>
+    /// <summary>
+    /// Every Messages/ folder's .cs files in the hosts, packs, identities and evals, outside bin and obj (a pack's and
+    /// an identity's enums left core in CL15).
+    /// </summary>
     private static IEnumerable<string> HostMessageFiles() =>
         new[] { "src", "tools", "packs", "identities", "evals" }
             .Select(root => Path.Combine(TestPaths.RepoRoot, root))
@@ -30,13 +35,11 @@ public partial class HostMessageEnumTests
         Assert.That(HostMessageFiles().Select(Path.GetFileNameWithoutExtension),
             Is.SupersetOf(new[]
             {
-                "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage", "CliUserText",
-                "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage",
+                "AcpLogMessage", "AcpUserText", "AcpModelText", "ApiLogMessage", "McpServerLogMessage",
+                "CliUserText", "OrchestratorToolMessage", "OrchestratorErrorMessage", "OrchestratorLogMessage",
                 "ApiModelText", "ApiUserText", "McpServerText", "CompositionErrorMessage", "ShopToolMessage",
-                "ShopLogMessage",
-                "EvalLogMessage", "GradeMessage", "EvalErrorMessage", "RunnerMessage", "StubMessage",
-                "CommonGradeMessage", "ConformanceMessage",
-                "ApiErrorMessage"
+                "ShopLogMessage", "EvalLogMessage", "GradeMessage", "EvalErrorMessage", "RunnerMessage",
+                "StubMessage", "CommonGradeMessage", "ConformanceMessage", "ApiErrorMessage"
             }));
     }
 
@@ -59,10 +62,13 @@ public partial class HostMessageEnumTests
             foreach (EnumMemberDeclarationSyntax member in enums.SelectMany(e => e.Members))
             {
                 string name = $"{Path.GetFileNameWithoutExtension(file)}.{member.Identifier.ValueText}";
-                string? template = Template(member);
-                if (template is null) problems.Add($"{name} has no [Description]");
-                else if (Hole().Replace(template, "").IndexOfAny(['{', '}']) >= 0)
-                    problems.Add($"{name}: \"{template}\"");
+                if (Template(member) is not { } template)
+                {
+                    problems.Add($"{name} has no [Description]");
+                    continue;
+                }
+
+                if (Hole().Replace(template, "").IndexOfAny(['{', '}']) >= 0) problems.Add($"{name}: \"{template}\"");
             }
         }
 
@@ -72,13 +78,27 @@ public partial class HostMessageEnumTests
     /// <summary>The text of a member's [Description], or null when it has none.</summary>
     private static string? Template(EnumMemberDeclarationSyntax member)
     {
-        // Take the first argument of the Description attribute. Its text is the template, with escapes already undone.
-        return member.AttributeLists.SelectMany(list => list.Attributes)
+        // Take the first argument of the Description attribute; its text is the template.
+        var argument = member.AttributeLists.SelectMany(list => list.Attributes)
             .Where(attribute => attribute.Name.ToString() is "Description" or "DescriptionAttribute")
-            .Select(attribute =>
-                attribute.ArgumentList?.Arguments.FirstOrDefault()?.Expression as LiteralExpressionSyntax)
-            .FirstOrDefault()?.Token.ValueText;
+            .Select(attribute => attribute.ArgumentList?.Arguments.FirstOrDefault()?.Expression)
+            .FirstOrDefault();
+        return argument is null ? null : Text(argument);
     }
+
+    /// <summary>
+    /// A string written as one literal, or as literals joined with <c>+</c> to keep a line under 120, with its escapes
+    /// undone; nothing for anything else.
+    /// </summary>
+    /// <remarks>A switch expression on the syntax's shape, one arm per case (*No nested conditionals*).</remarks>
+    private static string? Text(ExpressionSyntax expression) => expression switch
+    {
+        LiteralExpressionSyntax literal => literal.Token.ValueText,
+        BinaryExpressionSyntax sum when sum.IsKind(SyntaxKind.AddExpression)
+                                        && Text(sum.Left) is { } left
+                                        && Text(sum.Right) is { } right => left + right,
+        _ => null,
+    };
 
     /// <summary>A named hole in a template: an opening brace, a name, and a closing brace.</summary>
     [GeneratedRegex(@"\{[A-Za-z][A-Za-z0-9]*\}")]
