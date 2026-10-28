@@ -15,16 +15,9 @@ public static class ExplorerLegends
     public static IReadOnlyList<LegendEntry> Parts(string roles) =>
         [new(ExplorerColours.Own, "Puls itself"), new(ExplorerColours.Spec, roles)];
 
-    /// <summary>Routed right against wrong.</summary>
-    public static readonly IReadOnlyList<LegendEntry> Routing =
-        [new(ExplorerColours.Right, "routed right"), new(ExplorerColours.Wrong, "wrong")];
-
-    /// <summary>Ingredients priced right, estimated, guessed, and with no price.</summary>
-    public static readonly IReadOnlyList<LegendEntry> Accuracy =
-    [
-        new(ExplorerColours.Right, "right"), new(ExplorerColours.Estimate, "estimated"),
-        new(ExplorerColours.Guess, "guessed"), new(ExplorerColours.Wrong, "no price")
-    ];
+    /// <summary>The conversations that passed against those that didn't.</summary>
+    public static readonly IReadOnlyList<LegendEntry> Passed =
+        [new(ExplorerColours.Right, "passed"), new(ExplorerColours.Wrong, "not passed")];
 
     /// <summary>Input read from the prompt cache against input sent fresh.</summary>
     public static readonly IReadOnlyList<LegendEntry> Cache =
@@ -41,7 +34,7 @@ public static class ExplorerLegends
         new(ChartPalette.Series(1), "maps"), new(ExplorerColours.Other, "elsewhere")
     ];
 
-    /// <summary>The cost of conversations with a real answer against those without.</summary>
+    /// <summary>The cost of the conversations that passed (a real answer) against those that didn't.</summary>
     public static readonly IReadOnlyList<LegendEntry> Value =
         [new(ExplorerColours.Right, "with an answer"), new(ExplorerColours.Wrong, "without")];
 }

@@ -10,8 +10,6 @@ public enum ChartTopic
     Cost,
     Tokens,
     Time,
-    Routing,
-    Accuracy,
     Cache,
     Tools,
     Sources,

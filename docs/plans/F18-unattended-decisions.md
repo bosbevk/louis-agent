@@ -713,3 +713,25 @@ Infrastructure left out), but the chart still draws it as "Routing (routed as ex
 
 Sources: Fowler, *Refactoring*, "Rename Field" (a name that says what the value is) and "Remove Dead Code"; ADR 0007
 (an unknown value is never shown as a measure). **Pick: A.** Commit: step 5 (10).
+
+### R2-4. The explorer's rings, tiles and chips that read the score bag (Part A, `ExplorerScores`)
+
+**What came up.** `ExplorerScores` read only `ConversationRow.Scores`, always `{}` since 3a: the routing ring and
+the overview tile's "routed right" are always 0, the accuracy ring never draws, "answered" (the value ring, the use
+chart's count) is always false, and the conversation's score chips are empty (only its errors chip ever shows).
+The goldens show values only because the fixtures inject v1 scores.
+
+- **A. Build them from the contract's grades and outcome.** The routing ring becomes "Passed per mode" (the
+  conversations whose outcome is pass); a "real answer" is a conversation that passed, so the value ring is the
+  cost per passed conversation, the same definition the API's trend uses for `CostPerAnswer` since 3a; the tile
+  counts passed; the accuracy ring, `AccuracyRing` and its legend go (no grader measures it); the card keeps its
+  errors chip, its grade chips already show the rest. `ExplorerScores`, `ScoreChips` and `ConversationNode.Scores`
+  are deleted, with the `routing` and `accuracy` chart topics and guides. Changes: the rings, the overview, the
+  card, the RunExplorer and ChartInfo goldens. Costs: what the routing ring meant (the route, not the answer) is
+  now the routed-to grader's grade, shown on each conversation, not a ring of its own.
+- **B. Drop the rings, the tile's score and the chips that read it.** Costs: the explorer loses its at-a-glance
+  pass share and the value ring.
+- **C. Keep them.** Costs: zeros and empty rings that look like measurements (ADR 0007).
+
+Sources: Fowler, *Refactoring*, "Remove Dead Code"; ADR 0007; 3a's trend definitions (`Score` the passed share,
+`CostPerAnswer` per passed conversation). **Pick: A.** Commit: step 5 (13).

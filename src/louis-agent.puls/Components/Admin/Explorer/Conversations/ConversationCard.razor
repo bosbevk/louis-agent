@@ -8,7 +8,7 @@
     </div>
     <div class="conv-chips">
         <ReviewPill Grades="Conversation.Grades" Order="Graders" Conversation="Where" />
-        <span class="tree-chips">@foreach (var chip in ExplorerScores.Chips(Conversation)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
+        @if (Conversation.Errors > 0) { <span class="tree-chips"><span class="chip bad">errors @Conversation.Errors</span></span> }
         <GradeChips Grades="Conversation.Grades" Order="Graders" Conversation="Where" />
     </div>
     @if ((Conversation.Cost ?? 0) > 0)

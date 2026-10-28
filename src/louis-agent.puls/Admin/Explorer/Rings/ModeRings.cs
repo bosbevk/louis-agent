@@ -2,7 +2,6 @@ using LouisAgent.Puls.Admin.Charts;
 using LouisAgent.Puls.Admin.Explorer.Legends;
 using LouisAgent.Puls.Admin.Explorer.Text;
 using LouisAgent.Puls.Admin.Explorer.Tree;
-using LouisAgent.Puls.Admin.Scoring;
 using LouisAgent.Web.Shared.Usage;
 using static LouisAgent.Puls.Admin.Explorer.Legends.ExplorerColours;
 
@@ -10,8 +9,8 @@ namespace LouisAgent.Puls.Admin.Explorer.Rings;
 
 /// <summary>
 /// The donut each "per mode" chart draws for one mode: what it cost and how long it took (Puls's part against the
-/// specialist's), its tokens, its routing and accuracy, the cache, its tools, the sites it read, and what a real
-/// answer cost.
+/// specialist's), its tokens, the conversations that passed, the cache, its tools, the sites it read, and what a
+/// passed conversation cost.
 /// </summary>
 /// <remarks>
 /// A figure per chart, so the charts are one component that draws whichever it is handed, and the sums live where a
@@ -53,30 +52,13 @@ public static class ModeRings
             "per turn");
     }
 
-    /// <summary>Conversations routed right against wrong, the share right in the middle.</summary>
-    public static RingFigure Routing(ModeNode m)
+    /// <summary>Conversations that passed against those that didn't, the share passed in the middle.</summary>
+    public static RingFigure Passed(ModeNode m)
     {
-        int total = m.Conversations.Count, right = ExplorerScores.RoutedRight(m);
-        return new RingFigure([right, total - right], [Right, Wrong],
-            [$"routed right {right}", $"wrong {total - right}"],
-            total == 0 ? "—" : $"{(double)right / total:0%}", $"{right} / {total}");
-    }
-
-    /// <summary>
-    /// Ingredients priced right, estimated, guessed and with no price, the share priced in the middle; an empty ring
-    /// for a mode whose check listed none.
-    /// </summary>
-    public static RingFigure Accuracy(ModeNode m)
-    {
-        if (ExplorerScores.Accuracy(m) is not { } priced)
-            return new RingFigure([0], [Wrong], ["no list"], "—", "no list");
-
-        return new RingFigure([priced.Right, priced.Estimated, priced.Guessed, priced.NoPrice],
-            [Right, Estimate, Guess, Wrong],
-            [
-                $"right {priced.Right}", $"estimated {priced.Estimated}", $"guessed {priced.Guessed}",
-                $"no price {priced.NoPrice}"
-            ], priced.Share, priced.Over);
+        int total = m.Conversations.Count, passed = m.Conversations.Count(c => c.Passed);
+        return new RingFigure([passed, total - passed], [Right, Wrong],
+            [$"passed {passed}", $"not passed {total - passed}"],
+            total == 0 ? "—" : $"{(double)passed / total:0%}", $"{passed} / {total}");
     }
 
     /// <summary>Input read from the cache against input sent fresh, the hit share in the middle.</summary>
@@ -108,11 +90,12 @@ public static class ModeRings
             sites.Hosts.Count.ToString(), sites.Hosts.Count == 1 ? "site" : "sites");
 
     /// <summary>
-    /// The cost of conversations with a real answer against those without, what one answer cost in the middle.
+    /// The cost of the conversations that passed (a real answer) against those that didn't, what one passed
+    /// conversation cost in the middle: the API's cost per answer.
     /// </summary>
     public static RingFigure Value(ModeNode m, CurrencyChoice? currency)
     {
-        var answered = m.Conversations.Where(ExplorerScores.Answered).ToList();
+        var answered = m.Conversations.Where(c => c.Passed).ToList();
         // Unknown stays unknown (ADR 0007): no priced request, no amount; the ring draws what is known.
         decimal? good = UsageFormat.KnownSum(answered.Select(c => c.Cost)), bad = m.Cost - (good ?? 0);
         if (answered.Count == 0)

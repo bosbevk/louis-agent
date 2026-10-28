@@ -9,7 +9,7 @@
             <span class="tile-label"><span class="sw" style="background: @ChartPalette.Series(i)"></span>@ModeNames.Who(m)<span class="muted">· <code>@m.Name</code> · @string.Join(", ", m.Toolsets)</span></span>
             <strong class="tile-value" data-count="@Money(m.Cost)">@Money(m.Cost)</strong>
             <span class="tile-meta">@m.Rows.Count requests · @UsageFormat.Tokens(m.Tokens) tokens · @ExplorerText.Secs(m.Seconds) s</span>
-            <span class="tile-meta">score: <strong>@ExplorerScores.RoutedRight(m) / @m.Conversations.Count</strong> routed right@(Errors(m))</span>
+            <span class="tile-meta">score: <strong>@m.Conversations.Count(c => c.Passed) / @m.Conversations.Count</strong> passed@(Errors(m))</span>
             <span class="tile-split"><span class="sw" style="background: @ExplorerColours.Own"></span>Puls @Money(RequestSums.Cost(m.Rows, specialist: false)) <span class="sw" style="background: @ExplorerColours.Spec"></span>@(ModeNames.Roles([m])) @Money(RequestSums.Cost(m.Rows, specialist: true))</span>
         </button>
     }

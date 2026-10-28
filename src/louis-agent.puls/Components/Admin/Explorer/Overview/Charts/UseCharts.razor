@@ -33,14 +33,13 @@
     }
 </RingChart>
 
-@* The value: the cost of conversations that got a real answer (routed right, and where the check lists ingredients,
-   at least 80 % of them priced with a source) against the cost of those that didn't, what one real answer cost in
-   its middle. *@
+@* The value: the cost of the conversations that passed (a real answer: their required graders all passed) against
+   the cost of those that didn't, what one passed conversation cost in its middle (R2-4). *@
 <RingChart Topic="value" Title="Value per mode" Legend="ExplorerLegends.Value">
     @foreach (var (m, i) in Tree.Columns)
     {
         <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Value(m, Currency)">
-            <small class="muted">@m.Conversations.Count(ExplorerScores.Answered) / @m.Conversations.Count with an answer</small>
+            <small class="muted">@m.Conversations.Count(c => c.Passed) / @m.Conversations.Count passed</small>
         </ModeDonut>
     }
 </RingChart>

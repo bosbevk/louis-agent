@@ -1810,6 +1810,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   typed (the card's chart draws `trend.Modes`; its temporary adapter gone); the page's fields got their summaries.
   `CheckCardTests` (new: a trend draws the small chart, no trend draws none) went red on the build; `Benchmarks.html`
   stayed byte-equal.
+  Commit 13 (R2-4, pick A): the explorer builds its parts from a conversation's grades and outcome, never its scores.
+  `ConversationNode` lost `Scores` and gained `Passed`; the routing ring became the passed ring, the accuracy ring went,
+  and the value ring counts a passed conversation as a real answer. `ExplorerScores`, `ScoreChips`, `AccuracyRing` and
+  the chips only they used (`PricedChips`, `ImageChip`) were deleted with their tests, and a card shows only its errors
+  chip. `PortalReadsNoScoreKeyTests`' list is empty now (it had still listed `LiveTurns`, which stopped reading scores
+  in commit 3). Red: the build (`ModeRingsTests` asks for `ModeRings.Passed`); then the RunExplorer goldens (overview,
+  chats, conversations, to-review, repeat 2) and `ChartInfo.html` were regenerated and read: "routed right" became
+  "passed", the score chips went, and the value ring's share moved with the passed count. Puls tests: 358.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

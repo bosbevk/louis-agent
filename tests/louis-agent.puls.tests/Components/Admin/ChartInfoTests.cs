@@ -11,10 +11,10 @@ namespace LouisAgent.Puls.Tests.Components.Admin;
 /// </summary>
 public partial class ChartInfoTests
 {
+    /// <summary>Every measure the notes know by its word, and one they don't.</summary>
     private static readonly string[] Topics =
     [
-        "cost", "tokens", "time", "routing", "accuracy", "cache", "tools", "sources", "passed", "passat", "passhat",
-        "value",
+        "cost", "tokens", "time", "cache", "tools", "sources", "passed", "passat", "passhat", "value",
         "nothing-known"
     ];
 

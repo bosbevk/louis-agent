@@ -10,11 +10,11 @@ namespace LouisAgent.Puls.Components.Admin;
 /// </summary>
 public partial class ChartInfo
 {
-    // A fresh id ties the title to its note for a screen reader.
+    /// <summary>A fresh id that ties the title to its note for a screen reader.</summary>
     private readonly string _id = "tip-" + Guid.NewGuid().ToString("N")[..8];
 
     /// <summary>
-    /// Which measure, by its word: cost, tokens, time, routing, accuracy, cache, tools, sources or value.
+    /// Which measure, by its word: cost, tokens, time, cache, tools, sources, passed, passat, passhat or value.
     /// </summary>
     [Parameter, EditorRequired]
     public string Topic { get; set; } = "";
@@ -26,5 +26,6 @@ public partial class ChartInfo
     /// <summary>
     /// The note for the measure named; none for a word the notes don't know, which shows the title alone.
     /// </summary>
-    private ChartGuide? Guide => SettingChoice.TryParse(Topic, out ChartTopic? topic) ? ChartGuides.For(topic!.Value) : null;
+    private ChartGuide? Guide =>
+        SettingChoice.TryParse(Topic, out ChartTopic? topic) ? ChartGuides.For(topic!.Value) : null;
 }

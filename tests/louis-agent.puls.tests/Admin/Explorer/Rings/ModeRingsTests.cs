@@ -1,6 +1,6 @@
-using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Charts;
+using LouisAgent.Puls.Admin.Grades;
 using LouisAgent.Puls.Admin.Explorer.Legends;
 using LouisAgent.Puls.Admin.Explorer.Rings;
 using LouisAgent.Puls.Admin.Explorer.Tree;
@@ -10,18 +10,19 @@ namespace LouisAgent.Puls.Tests.Admin.Explorer.Rings;
 /// <summary>The donut each "per mode" chart draws for one mode.</summary>
 public class ModeRingsTests
 {
+    /// <summary>When every request in the mode was made.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 10, 0, 0, TimeSpan.Zero);
 
     /// <summary>
-    /// A mode with two conversations: a cook routed right and priced (Puls's request and a specialist's, two turns),
-    /// and a chat routed wrong whose only request has no price.
+    /// A mode with two conversations: a cook that passed (Puls's request and a specialist's, two turns), and a chat
+    /// that failed, whose only request has no price.
     /// </summary>
     private static ModeNode Mode()
     {
         var cook = new ConversationNode
         {
             Task = "cook-a",
-            Scores = Json("""{"routed_right":true,"ingredients":4,"priced":4,"priced_ratio":1.0}""")
+            Grades = new ConversationGrades([], GradeOutcome.Pass)
         };
         var first = new TurnNode
         {
@@ -44,7 +45,7 @@ public class ModeRingsTests
         var chat = new ConversationNode
         {
             Task = "chat",
-            Scores = Json("""{"routed_right":false}""")
+            Grades = new ConversationGrades([], GradeOutcome.Fail)
         };
         var only = new TurnNode
         {
@@ -80,23 +81,13 @@ public class ModeRingsTests
         Assert.That(ModeRings.ModelSeconds(Mode()), Is.EqualTo(4.5));
     }
 
-    /// <summary>Routed right against wrong, the share in the middle; with no conversations, a dash.</summary>
+    /// <summary>Passed against not passed, the share in the middle; with no conversations, a dash.</summary>
     [Test]
-    public void TheRouting_IsTheShareRoutedRight()
+    public void ThePassed_IsTheShareOfConversationsThatPassed()
     {
-        AssertRing(ModeRings.Routing(Mode()), [1, 1], [ExplorerColours.Right, ExplorerColours.Wrong],
-            ["routed right 1", "wrong 1"], "50%", "1 / 2");
-        Assert.That(ModeRings.Routing(new ModeNode()).Centre, Is.EqualTo("—"));
-    }
-
-    /// <summary>The ingredients priced right; a mode whose check listed none gets the empty ring.</summary>
-    [Test]
-    public void TheAccuracy_IsTheIngredientsPriced()
-    {
-        AssertRing(ModeRings.Accuracy(Mode()), [4, 0, 0, 0],
-            [ExplorerColours.Right, ExplorerColours.Estimate, ExplorerColours.Guess, ExplorerColours.Wrong],
-            ["right 4", "estimated 0", "guessed 0", "no price 0"], "100%", "4 / 4");
-        AssertRing(ModeRings.Accuracy(new ModeNode()), [0], [ExplorerColours.Wrong], ["no list"], "—", "no list");
+        AssertRing(ModeRings.Passed(Mode()), [1, 1], [ExplorerColours.Right, ExplorerColours.Wrong],
+            ["passed 1", "not passed 1"], "50%", "1 / 2");
+        Assert.That(ModeRings.Passed(new ModeNode()).Centre, Is.EqualTo("—"));
     }
 
     /// <summary>Input from the cache against input sent fresh, the hit share in the middle.</summary>
@@ -121,7 +112,9 @@ public class ModeRingsTests
             [ExplorerColours.Right, ChartPalette.Series(0), ChartPalette.Series(1), ExplorerColours.Other],
             ["SA shops 0", "other SA 1", "maps 0", "elsewhere 0"], "1", "site");
 
-    /// <summary>What answered conversations cost against the rest, one answer's cost in the middle.</summary>
+    /// <summary>
+    /// What the conversations that passed cost against the rest, one passed conversation's cost in the middle.
+    /// </summary>
     [Test]
     public void TheValue_IsWhatAnAnswerCost()
     {
@@ -143,7 +136,4 @@ public class ModeRingsTests
             Assert.That(ring.Unit, Is.EqualTo(unit));
         });
     }
-
-    /// <summary>Scores from their JSON.</summary>
-    private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 }

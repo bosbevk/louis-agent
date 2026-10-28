@@ -8,9 +8,9 @@ namespace LouisAgent.Web.Shared.Tests;
 /// can become a package by a folder move.
 /// </summary>
 /// <remarks>
-/// A ratchet, as <see cref="RazorHasNoCodeTests"/> is: the files that still read scores today are listed in
-/// <see cref="ReadsScores"/>, a new one fails the test, and a listed file that no longer does fails too, so the list
-/// only shrinks; step 7c empties it when the scores split into grades and tracked metrics.
+/// A ratchet, as <see cref="RazorHasNoCodeTests"/> is: a file that reads scores fails the test unless it is listed in
+/// <see cref="ReadsScores"/>, and a listed file that no longer does fails too, so the list only shrinks. Step 7c
+/// emptied it when the scores split into grades and tracked metrics; the test stays to guard the folders.
 /// </remarks>
 [TestFixture]
 public class PortalReadsNoScoreKeyTests
@@ -42,15 +42,7 @@ public class PortalReadsNoScoreKeyTests
     /// <summary>
     /// Repo-relative, forward slashes; remove a file's line in the commit that stops it reading scores.
     /// </summary>
-    private static readonly HashSet<string> ReadsScores =
-    [
-        // The run explorer's score reads, moved out of the explorer with its rebuild (step 7b (ii)): the scores kept on
-        // each conversation, and the one class that reads their keys.
-        "src/louis-agent.puls/Admin/Explorer/Tree/ConversationNode.cs",
-        "src/louis-agent.puls/Admin/Scoring/ExplorerScores.cs",
-        // The Benchmarks page's score chips, moved out of the page with the live run's table (step 7b (ii)).
-        "src/louis-agent.puls/Admin/LiveRuns/LiveTurns.cs",
-    ];
+    private static readonly HashSet<string> ReadsScores = [];
 
     /// <summary>
     /// No admin view reads an eval's own score keys unless it is still listed, and the list only shrinks.

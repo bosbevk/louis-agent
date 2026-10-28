@@ -30,24 +30,6 @@ public static class ChartGuides
             "Long turns waiting on a specialist or on tools.",
             "The user waits every second; a specialist adds a whole model round.",
             "Lower is better."),
-        ChartTopic.Routing => new("How many conversations went where this mode should send them: the cook for a meal "
-                                  + "where the mode has a cook, Puls itself where it has none, and for the rest. It "
-                                  + "measures the route, not whether the answer was any good: a mode with no cook "
-                                  + "routes every meal to itself and scores 100% here while failing the meal.",
-            "100%, all green.",
-            "Any red: a question with the wrong role.",
-            "Routed wrong costs money and gives a weaker answer, even when the text reads well. This measures the "
-            + "route, not the answer.",
-            "Higher is better."),
-        ChartTopic.Accuracy => new("The shopping list's rows that are right: priced with a link to where the price "
-                                   + "was found, estimated (the cook gives estimates while no shop's prices are "
-                                   + "read), or rightly without a price where the user's town has no shop.",
-            "Green: every price with a source; in a town with no such shop, every row without a price. Light green: "
-            + "an estimate (no shop's prices are looked up, so the cook gives estimates), counted as priced.",
-            "Orange (guessed, no source) or red (no price, or a price from a store that isn't the town's).",
-            "A guessed price looks like an answer, but nobody can check it; only a price with a source is a real "
-            + "answer.",
-            "Higher is better."),
         ChartTopic.Cache => new("The share of the input read from the cache instead of sent fresh.",
             "High, 80% or more.",
             "Low: the start of the prompt changes between requests.",

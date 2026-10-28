@@ -26,9 +26,6 @@ public class PortalReadsJsonTests
     /// </summary>
     private static readonly HashSet<string> ReadsJson =
     [
-        "src/louis-agent.puls/Admin/Explorer/Tree/ConversationNode.cs",
-        "src/louis-agent.puls/Admin/Scoring/ExplorerScores.cs",
-        "src/louis-agent.puls/Admin/Scoring/ScoreChips.cs",
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor.cs",
         "src/louis-agent.puls/Pages/Admin/BenchmarkRun.razor.cs",
     ];
