@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Toolsets;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 
@@ -24,8 +26,7 @@ public class SessionReplyJsonTests
     {
         await using var app = await StartAsync();
 
-        using var response =
-            await app.GetTestClient().PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { "skills" } });
+        using var response = await OpenSessionAsync(app);
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
@@ -71,11 +72,14 @@ public class SessionReplyJsonTests
     /// <summary>Opens a session and hands back its id.</summary>
     private static async Task<string> OpenAsync(WebApplication app)
     {
-        using var response =
-            await app.GetTestClient().PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { "skills" } });
+        using var response = await OpenSessionAsync(app);
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         return json.RootElement.GetProperty("session_id").GetString()!;
     }
+
+    /// <summary>Asks the API to open a session with the skills toolset.</summary>
+    private static Task<HttpResponseMessage> OpenSessionAsync(WebApplication app) =>
+        app.GetTestClient().PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { CoreToolset.Skills.Wire() } });
 
     /// <summary>The object's names in the order they were written.</summary>
     private static string Names(JsonElement element) =>
