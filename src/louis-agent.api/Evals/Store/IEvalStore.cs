@@ -1,6 +1,7 @@
 using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Runs;
+using LouisAgent.Api.Evals.Store.Turns;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
@@ -17,22 +18,8 @@ namespace LouisAgent.Api.Evals.Store;
 /// (Interface Segregation). Without the facade every handler and test would have to be handed four stores.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
-public interface IEvalStore : IRunStore, IConversationStore
+public interface IEvalStore : IRunStore, IConversationStore, ITurnStore
 {
-    /// <summary>Saves a turn together with its stream events, replacing the ones under its key.</summary>
-    Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>A conversation's turns in order, without their stream events, which are heavy.</summary>
-    Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// One turn's stream events in the order they came, for replaying it. Nothing for a turn we don't know.
-    /// </summary>
-    Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn,
-        CancellationToken cancellationToken = default);
-
     /// <summary>Adds the model requests the ledger has for this run.</summary>
     Task AddRequestsAsync(string run, IReadOnlyList<Request> requests, CancellationToken cancellationToken = default);
 

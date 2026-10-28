@@ -1,6 +1,7 @@
 using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Runs;
+using LouisAgent.Api.Evals.Store.Turns;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
@@ -23,11 +24,11 @@ public sealed class InMemoryEvalStore : IEvalStore
     /// <summary>The conversations.</summary>
     private readonly InMemoryConversationStore _conversations = new();
 
+    /// <summary>The turns, with their stream events.</summary>
+    private readonly InMemoryTurnStore _turns = new();
+
     /// <summary>The one lock over the records still kept here.</summary>
     private readonly Lock _lock = new();
-
-    /// <summary>Turns with their stream events, by run and key.</summary>
-    private readonly Dictionary<(string Run, TurnKey Key), (Turn Turn, StreamEvent[] Events)> _turns = [];
 
     /// <summary>Every run's requests, in one list.</summary>
     private readonly List<Request> _requests = [];
@@ -70,33 +71,21 @@ public sealed class InMemoryEvalStore : IEvalStore
     public Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default) =>
         _conversations.DeleteConversationsAsync(run, cancellationToken);
 
-    /// <summary>Saves a turn with its stream events, replacing the ones under its key.</summary>
+    /// <summary>Hands the turn and its events to the turn store.</summary>
     public Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
-        CancellationToken cancellationToken = default)
-    {
-        lock (_lock) _turns[(run, turn.Key)] = (turn, events.ToArray());
-        return Task.CompletedTask;
-    }
+        CancellationToken cancellationToken = default) => _turns.SaveTurnAsync(run, turn, events, cancellationToken);
 
-    /// <summary>A conversation's turns in order.</summary>
+    /// <summary>Asks the turn store for a conversation's turns.</summary>
     public Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
-        CancellationToken cancellationToken = default)
-    {
-        lock (_lock)
-            return Task.FromResult<IReadOnlyList<Turn>>(_turns
-                .Where(t => t.Key.Run == run && t.Key.Key.Conversation == conversation)
-                .Select(t => t.Value.Turn).OrderBy(t => t.Key.Turn).ToArray());
-    }
+        CancellationToken cancellationToken = default) => _turns.TurnsAsync(run, conversation, cancellationToken);
 
-    /// <summary>A turn's stream events in the order they came; none for an unknown turn.</summary>
+    /// <summary>Asks the turn store for a turn's stream events.</summary>
     public Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn,
-        CancellationToken cancellationToken = default)
-    {
-        lock (_lock)
-            return Task.FromResult<IReadOnlyList<StreamEvent>>(_turns.TryGetValue((run, turn), out var kept)
-                ? kept.Events
-                : []);
-    }
+        CancellationToken cancellationToken = default) => _turns.TurnEventsAsync(run, turn, cancellationToken);
+
+    /// <summary>Deletes only the run's turns.</summary>
+    public Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default) =>
+        _turns.DeleteTurnsAsync(run, cancellationToken);
 
     /// <summary>Adds requests to the list, tagged with the run they belong to.</summary>
     public Task AddRequestsAsync(string run, IReadOnlyList<Request> requests,
@@ -149,9 +138,9 @@ public sealed class InMemoryEvalStore : IEvalStore
         // Anything found under the id counts as a run having been there, even a leftover with no run record.
         bool had = await _runs.DeleteAsync(id, cancellationToken);
         had |= await _conversations.DeleteConversationsAsync(id, cancellationToken);
+        had |= await _turns.DeleteTurnsAsync(id, cancellationToken);
         lock (_lock)
         {
-            foreach (var key in _turns.Keys.Where(k => k.Run == id).ToArray()) had |= _turns.Remove(key);
             had |= _requests.RemoveAll(r => r.Run == id) > 0;
             had |= _notes.Remove(id);
         }

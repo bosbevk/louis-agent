@@ -2,6 +2,7 @@ using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Runs;
+using LouisAgent.Api.Evals.Store.Turns;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
@@ -31,7 +32,7 @@ public sealed class MongoEvalStore : IEvalStore
     private readonly MongoConversationStore _conversations;
 
     /// <summary>The turns, with their stream events inside.</summary>
-    private readonly IMongoCollection<BsonDocument> _turns;
+    private readonly MongoTurnStore _turns;
 
     /// <summary>The ledger's requests.</summary>
     private readonly IMongoCollection<BsonDocument> _requests;
@@ -51,7 +52,7 @@ public sealed class MongoEvalStore : IEvalStore
         Database = MongoEvalDatabase.Open(url, database);
         _runs = new MongoRunStore(Database);
         _conversations = new MongoConversationStore(Database);
-        _turns = Database.GetCollection<BsonDocument>("turns");
+        _turns = new MongoTurnStore(Database);
         _requests = Database.GetCollection<BsonDocument>("requests");
         // A note may only go on a run that exists, so the notes ask the runs.
         _notes = new MongoRunNotes(Database.GetCollection<BsonDocument>("run_notes"),
@@ -95,39 +96,21 @@ public sealed class MongoEvalStore : IEvalStore
     public Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default) =>
         _conversations.DeleteConversationsAsync(run, cancellationToken);
 
-    /// <summary>Saves a turn with its stream events, replacing the ones under its key.</summary>
-    public async Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        await _turns.ReplaceOneAsync(ById(TurnDocuments.Id(run, turn.Key)), TurnDocuments.ToBson(run, turn, events),
-            Upsert, cancellationToken);
-    }
+    /// <summary>Hands the turn and its events to the turn store.</summary>
+    public Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
+        CancellationToken cancellationToken = default) => _turns.SaveTurnAsync(run, turn, events, cancellationToken);
 
-    /// <summary>A conversation's turns in order, leaving the heavy stream events out.</summary>
-    public async Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var filter = Builders<BsonDocument>.Filter.And(OfRun(run),
-            Builders<BsonDocument>.Filter.Eq("mode", conversation.Mode),
-            Builders<BsonDocument>.Filter.Eq("repeat", conversation.Repeat),
-            Builders<BsonDocument>.Filter.Eq("task", conversation.Task));
-        var found = await _turns.Find(filter).Project<BsonDocument>(Builders<BsonDocument>.Projection.Exclude("events"))
-            .Sort(Builders<BsonDocument>.Sort.Ascending("turn")).ToListAsync(cancellationToken);
-        return found.Select(TurnDocuments.TurnOf).ToArray();
-    }
+    /// <summary>Asks the turn store for a conversation's turns.</summary>
+    public Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
+        CancellationToken cancellationToken = default) => _turns.TurnsAsync(run, conversation, cancellationToken);
 
-    /// <summary>A turn's stream events in the order they came; none for a turn it doesn't know.</summary>
-    public async Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _turns.Find(ById(TurnDocuments.Id(run, turn)))
-            .Project<BsonDocument>(Builders<BsonDocument>.Projection.Include("events"))
-            .FirstOrDefaultAsync(cancellationToken);
-        return found?["events"].AsBsonArray.Select(e => TurnDocuments.EventOf(e.AsBsonDocument)).ToArray() ?? [];
-    }
+    /// <summary>Asks the turn store for a turn's stream events.</summary>
+    public Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn,
+        CancellationToken cancellationToken = default) => _turns.TurnEventsAsync(run, turn, cancellationToken);
+
+    /// <summary>Deletes only the run's turns.</summary>
+    public Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default) =>
+        _turns.DeleteTurnsAsync(run, cancellationToken);
 
     /// <summary>Adds the ledger's requests, tagged with their run.</summary>
     public async Task AddRequestsAsync(string run, IReadOnlyList<Request> requests,
@@ -171,8 +154,8 @@ public sealed class MongoEvalStore : IEvalStore
         await Ready();
         bool had = await _runs.DeleteAsync(id, cancellationToken);
         had |= await _conversations.DeleteConversationsAsync(id, cancellationToken);
-        long deleted = (await _turns.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
-        deleted += (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
+        had |= await _turns.DeleteTurnsAsync(id, cancellationToken);
+        long deleted = (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += await _notes.DeleteRunAsync(id, cancellationToken);
         return had || deleted > 0;
     }
@@ -180,9 +163,6 @@ public sealed class MongoEvalStore : IEvalStore
     /// <summary>Makes the indexes the reads of the records still kept here rely on.</summary>
     private async Task CreateIndexesAsync()
     {
-        await _turns.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
-            Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("mode").Ascending("repeat").Ascending("task")
-                .Ascending("turn")));
         await _requests.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
             Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at")));
         await _notes.CreateIndexAsync();

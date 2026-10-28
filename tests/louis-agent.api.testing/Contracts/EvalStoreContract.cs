@@ -1,6 +1,5 @@
 using LouisAgent.Testing;
 using System.Text.Json;
-using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -13,7 +12,8 @@ namespace LouisAgent.Api.Testing;
 /// reads come back in the run's order, so the recorder can write a document again as it grows and the page can read
 /// the run while it goes. Every test makes its own run ids and check name, so the tests can share a real database
 /// without seeing each other's runs. Times are whole milliseconds in UTC, as MongoDB keeps them. The runs' own tests
-/// are in <see cref="RunStoreContract"/>, the conversations' in <see cref="ConversationStoreContract"/>.
+/// are in <see cref="RunStoreContract"/>, the conversations' in <see cref="ConversationStoreContract"/>, the turns'
+/// in <see cref="TurnStoreContract"/>.
 /// </summary>
 /// <remarks>
 /// Abstract test (a contract test): the tests are written once, and each store gets a small subclass that only says
@@ -69,104 +69,6 @@ public abstract class EvalStoreContract
     /// </summary>
     private static StreamEvent Event(string type, string text) =>
         new(type, Json(JsonSerializer.Serialize(new { delta = new { text } })), T0.AddSeconds(text.Length));
-
-    /// <summary>A conversation's turns come back by number with every field, and only that conversation's.</summary>
-    [Test]
-    public async Task Turns_ReadBackByNumber_ForTheirConversationOnly()
-    {
-        // Two turns of bobotie out of order, plus turns of another task and another repeat.
-        string run = NewId();
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1), []);
-        await _store.SaveTurnAsync(run, NewTurn("cottage-pie", 1), []);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1, repeat: 2), []);
-
-        var read = await _store.TurnsAsync(run, new ConversationKey(SampleMode.Beta, 1, "bobotie"));
-
-        Assert.That(read.Select(t => t.Key.Turn), Is.EqualTo(new[] { 1, 2 }));
-        var first = read[0];
-        Assert.That((first.Session, first.Question, first.Answer, first.Role, first.Continued),
-            Is.EqualTo(("sess_1", "Vraag 1", "Hier is…", SampleRole.Alpha, (string?)null)));
-        Assert.That((first.AgentCalls, first.SpecialistCalls, first.Seconds, first.Error),
-            Is.EqualTo((1, 7, 41.3, (string?)null)));
-        Assert.That(first.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
-    }
-
-    /// <summary>A turn's failure comes back as written, and a turn that didn't fail has none.</summary>
-    [Test]
-    public async Task ATurnsFailure_ReadsBackAsItWasWritten_AndATurnWithNoneHasNone()
-    {
-        string run = NewId();
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1) with { Failure = EvalTurnFailure.ReplayMiss }, []);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
-
-        var read = await _store.TurnsAsync(run, new ConversationKey(SampleMode.Beta, 1, "bobotie"));
-
-        Assert.That(read.Select(t => t.Failure),
-            Is.EqualTo(new EvalTurnFailure?[] { EvalTurnFailure.ReplayMiss, null }));
-    }
-
-    /// <summary>A turn's stream events are read on their own, in the order they came, with data and time.</summary>
-    [Test]
-    public async Task ATurnsEvents_ReadBackApart_InTheOrderTheyCame()
-    {
-        string run = NewId();
-        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1),
-            [Event("message_start", "a"), Event("content_block_delta", "Hallo"), Event("message_stop", "")]);
-
-        var events = await _store.TurnEventsAsync(run, key);
-
-        Assert.That(events.Select(e => e.Type),
-            Is.EqualTo(new[] { "message_start", "content_block_delta", "message_stop" }));
-        Assert.That(events[1].Data.GetProperty("delta").GetProperty("text").GetString(), Is.EqualTo("Hallo"));
-        Assert.That(events[1].At, Is.EqualTo(T0.AddSeconds(5)));
-    }
-
-    /// <summary>Saving a turn again replaces its events and answer, as the recorder does while it streams.</summary>
-    [Test]
-    public async Task ATurnSavedAgain_ReplacesItsEvents()
-    {
-        // First half-done with one event, then finished with two.
-        string run = NewId();
-        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1, answer: null), [Event("message_start", "a")]);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1),
-            [Event("message_start", "a"), Event("message_stop", "")]);
-
-        Assert.That((await _store.TurnEventsAsync(run, key)).Count, Is.EqualTo(2));
-        Assert.That((await _store.TurnsAsync(run, key.Conversation)).Single().Answer, Is.EqualTo("Hier is…"));
-    }
-
-    /// <summary>
-    /// A turn's tool counts are kept on the turn, so opening a run never reads every event to count them. A turn
-    /// recorded before the counts were kept has none.
-    /// </summary>
-    [Test]
-    public async Task ATurnsToolCounts_ReadBackWithIt_AndNoneStayNone()
-    {
-        string run = NewId();
-        var counted = NewTurn("bobotie", 1) with
-        {
-            Tools = new EvalTools.Summary(3, 1,
-                [new EvalTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)]),
-        };
-        await _store.SaveTurnAsync(run, counted, []);
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
-
-        var turns = await _store.TurnsAsync(run, counted.Key.Conversation);
-
-        var tools = turns[0].Tools!;
-        Assert.That((tools.Calls, tools.Failed), Is.EqualTo((3, 1)));
-        Assert.That(tools.Reasons.Single(),
-            Is.EqualTo(new EvalTools.Failure("WebSearch", "Error: Tavily's limit was reached", 1)));
-        Assert.That(turns[1].Tools, Is.Null, "a turn recorded before the counts were kept: unknown, not 0 calls");
-    }
-
-    /// <summary>A turn we have nothing for has no events, rather than an error.</summary>
-    [Test]
-    public async Task TheEventsOfAnUnknownTurn_AreEmpty() =>
-        Assert.That(await _store.TurnEventsAsync(NewId(), new TurnKey("m", 1, "t", 1)), Is.Empty);
 
     /// <summary>
     /// A run's model requests come back by time, only that run's, and a price or count we didn't know stays unknown.

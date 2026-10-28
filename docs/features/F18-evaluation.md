@@ -1351,6 +1351,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   and `ConversationDocuments`), held to `ConversationStoreContract` (the five conversation tests from
   `EvalStoreContract`, plus deleting a run's conversations). `IEvalStore` now inherits it too, and the facades hand
   the conversation calls on. Red first: the contract against a stub that threw (6 of 6 failing).
+- **Step 7b, the store splits by record: turns.** `ITurnStore` in `Evals/Store/Turns/`, with `InMemoryTurnStore` and
+  `MongoTurnStore` (the `turns` collection with each turn's events inside, its conversation-and-turn index and
+  `TurnDocuments`; reading a conversation's turns still leaves the events out), held to `TurnStoreContract` (the six
+  turn tests from `EvalStoreContract`, plus deleting a run's turns with their events). `IEvalStore` inherits it too.
+  Red first: the contract against a stub that threw (7 of 7 failing).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
