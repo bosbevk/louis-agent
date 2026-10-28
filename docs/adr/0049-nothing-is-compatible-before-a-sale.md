@@ -1,8 +1,9 @@
 # 0049. Nothing is backward compatible until something is sold in production: delete and re-run
 
-**Status:** Proposed · **Date:** 2026-10-28 (Louis, watching 7c step 3a keep an old field name alive: "at this
-point why do we care about the data, this is not a production env"; "we should make it a rule until some sort of
-release"; "we are a startup"; "we do not care until something is sold in prod") · **Recorded:** 2026-10-28
+**Status:** Accepted (Louis, 2026-10-28, after the review of 3a) · **Date:** 2026-10-28 (Louis, watching 7c step
+3a keep an old field name alive: "at this point why do we care about the data, this is not a production env"; "we
+should make it a rule until some sort of release"; "we are a startup"; "we do not care until something is sold in
+prod") · **Recorded:** 2026-10-28
 
 ## Context
 
