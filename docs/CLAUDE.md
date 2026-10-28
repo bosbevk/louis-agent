@@ -69,8 +69,10 @@ Docs-only and configuration-only steps have no test to write first.
    `dotnet format louis-agent-solution.sln --include <its .cs files>` once, which moves usings and is what CI checks,
    so it goes last. Never a whole-solution `dotnet format` in a loop. CI fails a push whose commits' files aren't
    formatted.
-5. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
-   before the code and passing after, and stop.
+5. Before committing, show the step (Louis, 2026-10-28): the files it changes, the commit message (what changed and
+   why) and the explanation (rules 4 and 6, with the test failing before the code and passing after), and wait for
+   Louis's ok. He reviews the step while it can still change; a commit is harder to reshape than a diff.
+6. Commit the step on its own, test and code together, and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
 `refactor/CL3-messages-and-logging`; `docs/{name}` for docs-only work. The Claude project's `claude/*` branches keep
@@ -176,6 +178,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   a reply reads as a few calls and never builds its rows inline in a lambda (Louis, 2026-10-27). Review holds it; a
   file in a step's commit loses its anonymous replies whole.
   Why: [ADR 0041](adr/0041-json-through-records-by-hand-only-for-bytes.md).
+- **Dates are UTC** (Louis, 2026-10-28) — every date or time stored, logged or sent on a wire is UTC in ISO 8601
+  (`2026-10-28T13:02:21Z`); "now" is `TimeProvider.GetUtcNow()`, never `DateTime.Now`; a screen converts it for the
+  reader (F46), never the code that writes it; a golden file holds UTC. A future local event (an appointment) keeps
+  its local time and zone id as the source. Existing uses change as a step touches their file.
+  Why: [ADR 0046](adr/0046-dates-are-utc.md).
 - **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
   `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that

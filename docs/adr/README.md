@@ -52,6 +52,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0043](0043-repeated-names-are-enums.md) | Repeated names are enums, one per pluggable project: a name written in more than one place (a toolset, a role, a mode) is an enum even in an open set; a pack, an identity or an eval set keeps its own copy and never references another's, the rest share one; wire names stay text, carried as `[WireName]` and parsed once by `SettingChoice` |
 | [0044](0044-the-size-limit-counts-code.md) | The size limit counts code: 200 lines (tests 400) without blank and comment lines, so the comments the rules ask for never force a split | Accepted |
 | [0045](0045-typed-answers-and-a-shared-contract.md) | Typed answers and a shared contract: endpoints return `TypedResults` with `Results<…>` unions, errors are the `ApiError` record, and the records live in `louis-agent.api.contracts` for the API and its clients | Accepted |
+| [0046](0046-dates-are-utc.md) | Dates are UTC: stored, logged and sent as ISO 8601 UTC; a screen converts them for the reader; a future local event keeps its local time and zone | Accepted |
 
 ## When to write one
 
