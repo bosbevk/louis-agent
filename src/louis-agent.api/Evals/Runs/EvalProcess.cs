@@ -12,16 +12,16 @@ namespace LouisAgent.Api.Evals.Runs;
 /// runs at a time: the containers are shared, and a second run would skew the first one's ledger and timings.
 /// </summary>
 /// <remarks>
-/// The process gets an argument list, never a shell string, with <c>PULS_API</c> pointing at this API and
+/// The process gets an argument list, never a shell string, with <c>AGENT_API</c> pointing at this API and
 /// <c>BENCHMARK_RUN</c> set to the run's id (<see cref="RunnerStartInfo"/> builds it). Saving the results to the store
-/// is someone else's job (<c>BenchmarkRecorder</c>); this class only starts the run and keeps its lines.
+/// is someone else's job (<c>EvalRecorder</c>); this class only starts the run and keeps its lines.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 /// <param name="evalHost">What runs the eval runner's dll: <c>dotnet</c>; a test gives a stand-in.</param>
 public sealed class EvalProcess(
     EvalList catalog,
     string workspaceRoot,
-    string pulsApi,
+    string agentApi,
     string evalRunner = AdminOptions.DefaultEvalRunner,
     string evalHost = "dotnet")
 {
@@ -29,7 +29,7 @@ public sealed class EvalProcess(
     public const int MaxRepeat = 5;
 
     private readonly Lock _lock = new();
-    private readonly RunnerPaths _paths = new(workspaceRoot, pulsApi, evalRunner, evalHost);
+    private readonly RunnerPaths _paths = new(workspaceRoot, agentApi, evalRunner, evalHost);
 
     /// <summary>The run in progress, or the last one; null before the first.</summary>
     public RunningEval? Current { get; private set; }

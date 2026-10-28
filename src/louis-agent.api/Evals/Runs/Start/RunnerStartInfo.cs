@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Evals.Runs.Start;
 /// Where the runner finds things: the workspace it runs in, this API's address to call back, the eval runner's dll
 /// and what runs it (<c>dotnet</c>).
 /// </summary>
-internal sealed record RunnerPaths(string WorkspaceRoot, string PulsApi, string EvalRunner, string EvalHost);
+internal sealed record RunnerPaths(string WorkspaceRoot, string AgentApi, string EvalRunner, string EvalHost);
 
 /// <summary>
 /// Builds how one run's process starts. An eval run is <c>dotnet {EVAL_RUNNER} run {name} --repeat N</c>, with
@@ -48,7 +48,8 @@ internal static class RunnerStartInfo
         start.Environment.Clear();
         foreach (var (name, value) in allowed) start.Environment[name] = value;
 
-        start.Environment["PULS_API"] = paths.PulsApi;
+        // Where the runner calls this API back; it reads the old name too, but the API names no product (ADR 0037).
+        start.Environment["AGENT_API"] = paths.AgentApi;
         // The runner tags its sessions {BENCHMARK_RUN}:{mode}:{repeat}, so the ledger's rows find their run.
         start.Environment["BENCHMARK_RUN"] = run.Id;
         return start;

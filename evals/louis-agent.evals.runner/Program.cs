@@ -12,8 +12,8 @@ using LouisAgent.Evals.Runner.Refusal;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
-// The runner's bootstrap (F18 step 4.1): the command line and EVALS= choose the evals, the catalogue checks them, and the runner
-// runs the one named. stdout is the protocol and the --list lines, and nothing else: refusals and logs go to stderr.
+// The runner starts here: the command line and EVALS= pick the evals, the catalogue checks them, and the runner runs
+// the one you named. stdout carries only the protocol and the --list lines; refusals and logs go to stderr.
 try
 {
     var request = CommandLine.Parse(args);
@@ -27,7 +27,8 @@ try
                 Console.Out.WriteLine(JsonSerializer.Serialize(listed, EvalJson.SnakeCase));
             return 0;
 
-        // F18 step 6.3: the two commands that check a model grader against a person. Neither opens a session; --calibrate asks the judge, so it refuses in CI.
+        // The two commands that check a model grader against a person. Neither opens a session; --calibrate asks the
+        // judge, so it refuses in CI.
         case CalibrateRequest calibrate:
             return await CalibrateCommand.RunAsync(calibrate, catalog.Get(calibrate.Eval),
                 Environment.GetEnvironmentVariable, Console.In, Console.Out, CancellationToken.None);
@@ -40,7 +41,8 @@ try
 
         case RunRequest run:
             var eval = catalog.Get(run.Name);
-            // A re-score (F18 step 5b) grades the stored run's lines, which the API pipes to stdin, and opens no session: it has no client to call.
+            // A re-score grades the stored run's lines, which the API pipes to stdin. It opens no session, so it has
+            // no client to call.
             if (run.RescoreOf is { } source)
             {
                 var rescorer = new EvalRunner(new NoSessionClient(),
@@ -55,16 +57,18 @@ try
                 return 0;
             }
 
-            // The stub answers from canned turns; every other eval talks to the API (F18 step 5.1): PULS_API, and AGENT_API_KEY when set.
+            // The stub answers from canned turns; every other eval talks to the API at AGENT_API (or PULS_API, its old
+            // name), with AGENT_API_KEY when it is set.
             ISessionClient session = eval is StubEval
                 ? new StubSessionClient()
-                : new HttpSessionClient(HttpSessionClient.CreateHttp(Environment.GetEnvironmentVariable("PULS_API"),
+                : new HttpSessionClient(HttpSessionClient.CreateHttp(
+                    HttpSessionClient.ApiFrom(Environment.GetEnvironmentVariable),
                     Environment.GetEnvironmentVariable("AGENT_API_KEY")));
             var runner = new EvalRunner(session, new ProtocolWriter(Console.Out, TimeProvider.System),
                 TimeProvider.System,
                 AgentLogging.For<EvalRunner>());
-            // The run's name is the ledger's tag: BENCHMARK_RUN, as the Python checks read it.
-            // --web, --of and --replay pass on as the run asked; a run with neither leaves the web to the instance's WEB_REPLAY (the API decides).
+            // The run's name is the ledger's tag: BENCHMARK_RUN, as the Python checks read it. --web, --of and
+            // --replay pass on as asked; a run with none of them leaves the web to the instance's WEB_REPLAY.
             var recorded = new EvalRun(
                 BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), run.Repeat,
                 run.Web, run.Of, run.Model, run.Split);

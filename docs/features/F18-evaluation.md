@@ -1321,6 +1321,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Azure app and the API's `puls` Rider profile name `puls_benchmarks`; no data is touched. `AdminOptions`'s members
   are `EvalsMongoUrl` and `EvalsDatabase`; the "no store" texts (the API's and the Puls banner's) name the new
   setting. Red first in `AdminOptionsTests`: the default was `puls_benchmarks`, and `EVALS_*` weren't read.
+- **Step 7b (iii), `PULS_API` becomes `AGENT_API`**: the API starts the runner with `AGENT_API` (and no `PULS_API`);
+  the runner finds the API through `HttpSessionClient.ApiFrom`, `AGENT_API` else `PULS_API` (a blank one counts as
+  unset), until a TODO line removes the old name. `RunnerPaths.AgentApi` and `EvalProcess`'s `agentApi` follow; the
+  stand-in runner, the guides and the Puls manuals' commands use the new name. Red first: `ApiAddressTests`
+  (`NotImplementedException`) and `EvalProcessTests` (no `AGENT_API` in the start info).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

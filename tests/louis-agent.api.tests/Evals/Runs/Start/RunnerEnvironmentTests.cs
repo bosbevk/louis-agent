@@ -133,13 +133,13 @@ public class RunnerEnvironmentTests
 
     /// <summary>
     /// A setting the runner starts reading must not quietly go missing. Every name the eval sources read must be on
-    /// the allowlist, except the three the API handles itself: it sets the API address and the run id per run, and
-    /// hands the Anthropic key over as the judge's key.
+    /// the allowlist, except the ones the API handles itself: it sets the API address and the run id per run (the
+    /// runner reads the address under its old name too), and hands the Anthropic key over as the judge's key.
     /// </summary>
     [Test]
     public void EverySettingTheRunnerAndTheChecksRead_IsOnTheAllowlist_OrHandledOnPurpose()
     {
-        var handledAnotherWay = new[] { "PULS_API", "BENCHMARK_RUN", "ANTHROPIC_API_KEY" };
+        var handledAnotherWay = new[] { "AGENT_API", "PULS_API", "BENCHMARK_RUN", "ANTHROPIC_API_KEY" };
 
         // Scan every C# file under evals/ (skipping build output) for the settings it reads by name.
         var read = new HashSet<string>();

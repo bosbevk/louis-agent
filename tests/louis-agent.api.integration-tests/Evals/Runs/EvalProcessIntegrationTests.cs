@@ -41,11 +41,11 @@ public class EvalProcessIntegrationTests
     }
 
     /// <summary>A runner whose evals are the stand-in's behaviours, each under its own name.</summary>
-    private EvalProcess Runner(string pulsApi = "http://x/")
+    private EvalProcess Runner(string agentApi = "http://x/")
     {
         string[] behaviours = ["args", "echo", "run-id", "slow", "late", "fail"];
         var catalog = new EvalList([.. behaviours.Select(id => new EvalEntry(id, id))]);
-        return _runner = new EvalProcess(catalog, _workspace, pulsApi, StandInBuild.Dll);
+        return _runner = new EvalProcess(catalog, _workspace, agentApi, StandInBuild.Dll);
     }
 
     /// <summary>Every line the run prints, once it has ended.</summary>

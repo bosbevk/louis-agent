@@ -136,7 +136,7 @@ cost is in the ledger and on its page.
 With the Puls containers up, from the repo's root:
 
 ```
-EVALS=puls BENCHMARK_RUN=local PULS_API=http://127.0.0.1:5070/ dotnet run --project evals/louis-agent.evals.runner -- run puls-cook --repeat 1
+EVALS=puls BENCHMARK_RUN=local AGENT_API=http://127.0.0.1:5070/ dotnet run --project evals/louis-agent.evals.runner -- run puls-cook --repeat 1
 ```
 
 Without the portal the run isn't stored; the ledger still has its cost under the tag `local`.

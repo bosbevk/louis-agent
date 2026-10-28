@@ -427,7 +427,7 @@ PowerShell: `$env:EVALS = 'acme'`, then the same command. Each line is one eval'
 `proves`.
 
 Running it is not free. `run {name} --repeat N [--split dev|held-out|all]` gives every eval but the stub the HTTP session client (F18 step 5.1): the API
-at `PULS_API` (default `http://127.0.0.1:5070/`), with `AGENT_API_KEY` as `x-api-key` when it is set. A run against the real
+at `AGENT_API` (`PULS_API`, its old name, is still read; default `http://127.0.0.1:5070/`), with `AGENT_API_KEY` as `x-api-key` when it is set. A run against the real
 API spends money, so ask before starting one. A turn that fails for the infrastructure (a timeout, a refused connection, a
 broken stream, a non-2xx answer) is recorded in its `turn` line as `failure` and the run goes on.
 

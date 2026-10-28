@@ -51,8 +51,9 @@ public class EvalProcessTests
 
         Assert.That(start.FileName, Is.EqualTo("dotnet"));
         Assert.That(start.ArgumentList, Is.EqualTo(new[] { "/app/evals/x.dll", "run", "stub", "--repeat", "2" }));
-        Assert.That((start.Environment["BENCHMARK_RUN"], start.Environment["PULS_API"]),
+        Assert.That((start.Environment["BENCHMARK_RUN"], start.Environment["AGENT_API"]),
             Is.EqualTo(("run_1", "http://127.0.0.1:1/")));
+        Assert.That(start.Environment.ContainsKey("PULS_API"), Is.False, "the API names no product (ADR 0037)");
     }
 
     /// <summary>No run starts Python or sets its flags: only the eval host runs.</summary>

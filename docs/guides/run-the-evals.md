@@ -13,7 +13,7 @@ read the cost in the ledger afterwards, never from a grader. Listing the evals i
 
 ```bash
 EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --list     # free: the evals the runner knows
-BENCHMARK_RUN=cook-1 PULS_API=http://127.0.0.1:5070/ \
+BENCHMARK_RUN=cook-1 AGENT_API=http://127.0.0.1:5070/ \
   dotnet run --project evals/louis-agent.evals.runner -- run puls-cook --repeat 1 --web record
 ```
 
@@ -52,7 +52,7 @@ The admin portal lists the evals the runner lists and starts them with `POST /v1
 `web` is `record` or `off`; `replay` is a recorded run's id, with the model's answers (the runner's `--replay`). Send one of them,
 not both, (every check is an eval). **The run's process sees only what it reads** (FX25): `EVALS`, `CI`, the
 `EVAL_JUDGE_*` settings, `AGENT_API_KEY`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `PRICES_FILE` and `PRICES_URL`, plus what it needs to start
-(`PATH`, a home, a temp folder, `DOTNET_*`) and what the API sets (`PULS_API`, `BENCHMARK_RUN`); an Anthropic judge with no
+(`PATH`, a home, a temp folder, `DOTNET_*`) and what the API sets (`AGENT_API`, `BENCHMARK_RUN`); an Anthropic judge with no
 `EVAL_JUDGE_API_KEY` gets the Anthropic key under that name. The Mongo login, the admin key and the other provider keys never reach it (set `ADMIN_API_KEY` on its own: without it the portal's key is `AGENT_API_KEY`, which the runner does get). A
 setting the runner starts reading must be added to `RunnerEnvironment.Names` in the API, or it never arrives. A portal run is always the `dev` scenarios. The run is stored as it
 runs, with how its web was handled (`web`, `replay_of` in its settings), and a replay never joins a check's trend: it is the recorded

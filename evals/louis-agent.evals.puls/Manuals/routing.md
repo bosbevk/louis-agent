@@ -74,5 +74,5 @@ each question costs more there. The run's own cost is in the ledger and on its p
 With the Puls containers up, from the repo's root:
 
 ```
-EVALS=puls BENCHMARK_RUN=local PULS_API=http://127.0.0.1:5070/ dotnet run --project evals/louis-agent.evals.runner -- run puls-routing --repeat 1
+EVALS=puls BENCHMARK_RUN=local AGENT_API=http://127.0.0.1:5070/ dotnet run --project evals/louis-agent.evals.runner -- run puls-routing --repeat 1
 ```

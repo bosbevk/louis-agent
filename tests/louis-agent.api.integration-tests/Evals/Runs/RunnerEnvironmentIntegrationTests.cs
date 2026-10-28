@@ -28,7 +28,7 @@ public class RunnerEnvironmentIntegrationTests
                 .StartInfoFor(Stub, new RunningEval("run123456789", "stub", 1));
 
             Assert.That(start.Environment.ContainsKey("BENCHMARKS_MONGO_URL"), Is.False);
-            Assert.That(start.Environment["PULS_API"], Is.EqualTo("http://127.0.0.1:1/"));
+            Assert.That(start.Environment["AGENT_API"], Is.EqualTo("http://127.0.0.1:1/"));
             Assert.That(start.Environment["BENCHMARK_RUN"], Is.EqualTo("run123456789"));
             Assert.That(start.Environment.ContainsKey("PATH") || start.Environment.ContainsKey("Path"), Is.True,
                 "the runtime's path comes through");
