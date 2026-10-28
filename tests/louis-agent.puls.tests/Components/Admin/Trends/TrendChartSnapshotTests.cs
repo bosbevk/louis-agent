@@ -46,8 +46,16 @@ public partial class TrendChartSnapshotTests
         Snapshots.Match("louis-agent.puls.tests", "Components/Admin/Trends/TrendChart.small.html", Stable(cut.Markup));
     }
 
-    /// <summary>The markup with each chart title's note id, fresh on every render, made the same.</summary>
-    private static string Stable(string markup) => TipId().Replace(markup, "tip-ID");
+    /// <summary>
+    /// The markup made the same on any machine: each chart title's note id (fresh on every render), and a run's time
+    /// of day, which the chart writes in the reader's own time zone (CI runs in UTC).
+    /// </summary>
+    private static string Stable(string markup) =>
+        LocalTime().Replace(TipId().Replace(markup, "tip-ID"), "$1 HH:mm");
+
+    /// <summary>A date and a time of day as the chart writes them, "2026-10-24 11:00".</summary>
+    [GeneratedRegex(@"(\d{4}-\d{2}-\d{2}) \d{2}:\d{2}")]
+    private static partial Regex LocalTime();
 
     /// <summary>A note's id: "tip-" and eight hex digits.</summary>
     [GeneratedRegex("tip-[0-9a-f]{8}")]
