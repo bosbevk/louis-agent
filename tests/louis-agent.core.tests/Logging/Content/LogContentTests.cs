@@ -4,30 +4,52 @@ using LouisAgent.Core.Logging.Content;
 
 namespace LouisAgent.Core.Tests.Logging.Content;
 
-// F18 step 4f.1: what a log line shows of a value. Hashed by default: a keyed hash and the length, so equal values in one process
-// still match but nobody can reverse a hash by hashing a list of towns (the key is random per process and never written down).
-// The mode is process-wide, so these run one at a time and put it back to the default.
+/// <summary>
+/// What a log line shows of a value. By default it's a keyed hash and the length, so the same value matches itself in
+/// one process, but nobody can undo a hash by hashing a list of towns (the key is random per process and never written
+/// down). The mode is process-wide, so these run one at a time and put it back to the default.
+/// </summary>
 [NonParallelizable]
 public class LogContentTests
 {
     private static readonly Dictionary<string, object?> Args = new()
-    { ["area"] = "Malmesbury", ["limit"] = 5, ["near"] = new { lat = -33.46, lon = 18.73 }, ["note"] = null };
+    {
+        ["area"] = "Malmesbury",
+        ["limit"] = 5,
+        ["near"] = new
+        {
+            lat = -33.46,
+            lon = 18.73
+        },
+        ["note"] = null
+    };
 
+    /// <summary>
+    /// Puts the logging back to its default after each test, so the next one starts clean.
+    /// </summary>
     [TearDown]
     public void TearDown() => AgentLogging.Configure(null);
 
+    /// <summary>
+    /// The same value hashes the same twice in one process, and a different key gives a different hash.
+    /// </summary>
     [Test]
     public void OneValue_HashesTheSameTwiceInAProcess_AndAnotherKeyHashesItDifferently()
     {
+        // F18 step 4f.1.
         AgentLogging.Configure(null, LogContentMode.Hashed);
 
-        Assert.That(LogContent.Of("Malmesbury"), Is.EqualTo(LogContent.Of("Malmesbury")));
+        string first = LogContent.Of("Malmesbury"), second = LogContent.Of("Malmesbury");
+        Assert.That(second, Is.EqualTo(first));
         Assert.That(LogContent.Of("Malmesbury"), Is.Not.EqualTo(LogContent.Of("Paarl")));
         byte[] one = new byte[32], other = [.. Enumerable.Repeat((byte)7, 32)];
         Assert.That(LogContent.Hash("Malmesbury", one), Is.Not.EqualTo(LogContent.Hash("Malmesbury", other)),
             "a plain SHA-256 would be the same everywhere");
     }
 
+    /// <summary>
+    /// A hashed value reads as "#" with twelve hex digits and its length; a missing one just says null.
+    /// </summary>
     [Test]
     public void TheShape_IsHashTwelveHexDigitsAndTheLength_AndNullIsNull()
     {
@@ -40,6 +62,9 @@ public class LogContentTests
             "the cut is for the full text; the hash is of the whole value");
     }
 
+    /// <summary>
+    /// The log never holds a plain SHA-256, which anyone could look up.
+    /// </summary>
     [Test]
     public void ThePlainSha256_IsNotWhatItWrites()
     {
@@ -49,6 +74,9 @@ public class LogContentTests
         Assert.That(LogContent.Of("Malmesbury"), Does.Not.Contain(plain));
     }
 
+    /// <summary>
+    /// In full mode you see the value itself, cut short with three dots where the caller asks.
+    /// </summary>
     [Test]
     public void Full_ReturnsTheValue_CutWithThreeDotsWhereAsked()
     {
@@ -60,6 +88,9 @@ public class LogContentTests
         Assert.That(LogContent.Of(null), Is.EqualTo("null"));
     }
 
+    /// <summary>
+    /// In full mode a tool's arguments log exactly as the JSON they always did.
+    /// </summary>
     [Test]
     public void Full_Arguments_AreByteEqualToTheJsonOfToday()
     {
@@ -71,6 +102,9 @@ public class LogContentTests
         Assert.That(LogContent.OfArguments(null), Is.EqualTo("null"));
     }
 
+    /// <summary>
+    /// Hashed arguments keep their names in order, so you can see what was passed, but never a value.
+    /// </summary>
     [Test]
     public void Hashed_Arguments_KeepTheNamesInOrder_AndShowNoValue()
     {
@@ -86,25 +120,37 @@ public class LogContentTests
         Assert.That(LogContent.OfArguments(null), Is.EqualTo("null"));
     }
 
+    /// <summary>
+    /// A text argument hashes as the text itself; a number or an object hashes as its JSON.
+    /// </summary>
     [Test]
     public void Hashed_Arguments_HashAStringAsItsText_AndAnythingElseAsItsJson()
     {
         AgentLogging.Configure(null, LogContentMode.Hashed);
 
         string text = LogContent.OfArguments(new Dictionary<string, object?>
-        { ["area"] = "Malmesbury", ["limit"] = 5, ["near"] = new { lat = 1 } });
+        {
+            ["area"] = "Malmesbury",
+            ["limit"] = 5,
+            ["near"] = new { lat = 1 }
+        });
 
         Assert.That(text,
             Does.Contain($"area={LogContent.Of("Malmesbury")}").And.Contain($"limit={LogContent.Of("5")}").And
                 .Contain($"near={LogContent.Of("{\"lat\":1}")}"));
     }
 
+    /// <summary>
+    /// The model's arguments arrive as JSON, and a town in them hashes the same as that town logged by the shops, so
+    /// you can follow one through the log.
+    /// </summary>
     [Test]
     public void Hashed_Arguments_FromTheModel_AreJsonElements_AndAStringHashesAsItsText()
     {
-        // The model's arguments arrive as JsonElement, not string. Hashed as JSON, "Malmesbury" kept its quotes (length 12) and hashed
-        // differently from the same town logged by the shops as a plain string, so one town had two hashes in one log. The live check of
-        // 4f found it (#138099225789 (12)): a string element hashes as its text, so the tool call and the shop's lines can be followed.
+        // The model's arguments arrive as JsonElement, not string. Hashed as JSON, "Malmesbury" kept its quotes
+        // (length 12) and hashed differently from the same town logged by the shops as a plain string, so one town
+        // had two hashes in one log. The live check of 4f found it (#138099225789 (12)): a string element hashes as
+        // its text, so the tool call and the shop's lines can be followed.
         AgentLogging.Configure(null, LogContentMode.Hashed);
         using var document =
             JsonDocument.Parse("""{"area":"Malmesbury","q":"café","limit":5,"near":{"lat":1},"on":true,"none":null}""");
@@ -122,6 +168,9 @@ public class LogContentTests
         Assert.That(text, Does.Contain("none=null"), "a JSON null logs as null, as a missing argument does");
     }
 
+    /// <summary>
+    /// "Malmesbury" as JSON and "Malmesbury" as plain text log as the same hash.
+    /// </summary>
     [Test]
     public void Hashed_Arguments_AJsonStringAndAPlainStringOfTheSameText_HashAlike()
     {
@@ -132,6 +181,9 @@ public class LogContentTests
             Is.EqualTo(LogContent.OfArguments(new Dictionary<string, object?> { ["area"] = "Malmesbury" })));
     }
 
+    /// <summary>
+    /// LOG_CONTENT is read once, case and spaces ignored; left empty, it hashes.
+    /// </summary>
     [TestCase(null, LogContentMode.Hashed)]
     [TestCase("", LogContentMode.Hashed)]
     [TestCase("  ", LogContentMode.Hashed)]
@@ -141,6 +193,9 @@ public class LogContentTests
     public void ModeOf_ParsesTheSettingOnce_UnsetIsHashed(string? setting, LogContentMode expected) =>
         Assert.That(LogContent.ModeOf(setting), Is.EqualTo(expected));
 
+    /// <summary>
+    /// Any other LOG_CONTENT is refused, with a message that names the two values it takes.
+    /// </summary>
     [TestCase("1")]
     [TestCase("secret")]
     public void ModeOf_RefusesAnythingElse_NamingTheSupportedValues(string setting)
@@ -151,6 +206,9 @@ public class LogContentTests
             Does.Contain($"'{setting}'").And.Contain("LOG_CONTENT").And.Contain("hashed or full"));
     }
 
+    /// <summary>
+    /// Setting the logging up a second time keeps the key, so a value hashes the same before and after.
+    /// </summary>
     [Test]
     public void TheKey_SurvivesAnotherConfigure_SoLinesBeforeAndAfterHashAlike()
     {
