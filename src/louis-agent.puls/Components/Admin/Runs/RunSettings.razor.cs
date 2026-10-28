@@ -1,5 +1,3 @@
-using System.Text.Json;
-using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using Microsoft.AspNetCore.Components;
 
@@ -14,19 +12,14 @@ namespace LouisAgent.Puls.Components.Admin.Runs;
 /// it can sit on its own.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class RunSettings
 {
-    /// <summary>The run as the API sent it.</summary>
+    /// <summary>The run as the contract's stored run reply carries it.</summary>
     [Parameter, EditorRequired]
-    public JsonElement Run { get; set; }
+    public StoredRunReply Run { get; set; } = null!;
 
-    /// <summary>
-    /// The run's own row, read from the JSON for the grader list. It goes when this component takes the contract's
-    /// reply (step 5, commit 3).
-    /// </summary>
-    private StoredRunRow RunRow => Run.GetProperty("run").Deserialize<StoredRunRow>(AdminJson.SnakeCase)!;
-
-    /// <summary>A text from the JSON, or nothing if it is not there.</summary>
-    private static string? S(JsonElement e, string name) =>
-        e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
+    /// <summary>A mode's toolsets, then its role and its model when it named them.</summary>
+    private static string Extra(ModeRow mode) =>
+        (mode.Role is { } role ? $" · {role}" : "") + (mode.Llm is { } llm ? $" · {llm}" : "");
 }

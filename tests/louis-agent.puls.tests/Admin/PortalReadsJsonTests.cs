@@ -41,7 +41,6 @@ public class PortalReadsJsonTests
         "src/louis-agent.puls/Components/Admin/Reviews/AgreementPanel.razor.cs",
         "src/louis-agent.puls/Components/Admin/Reviews/CalibrationCard.razor.cs",
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor.cs",
-        "src/louis-agent.puls/Components/Admin/Runs/RunSettings.razor.cs",
         "src/louis-agent.puls/Components/Admin/Summary/CategoryTrends.razor.cs",
         "src/louis-agent.puls/Components/Admin/Summary/SummaryPanel.razor.cs",
         "src/louis-agent.puls/Components/Admin/Trends/TrendChart.razor.cs",

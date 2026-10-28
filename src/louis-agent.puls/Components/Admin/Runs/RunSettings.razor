@@ -1,22 +1,21 @@
-@using System.Text.Json
 @* What the run ran with: the eval and its graders, the settings and the modes, and the lines the runner printed. *@
 <section class="card-p">
     <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>What it ran with<span class="fold-note">the eval, its graders, the settings, the modes</span></summary>
-        <GraderList Run="RunRow" />
+        <GraderList Run="Run.Run" />
         <dl class="explorer-fields">
-            @if (Run.TryGetProperty("settings", out var settings) && settings.ValueKind == JsonValueKind.Object)
+            @foreach (var (name, value) in Run.Settings ?? new Dictionary<string, string>())
             {
-                foreach (var p in settings.EnumerateObject()) { <dt>@p.Name</dt><dd><code>@p.Value.GetString()</code></dd> }
+                <dt>@name</dt><dd><code>@value</code></dd>
             }
-            @foreach (var m in Run.GetProperty("modes").EnumerateArray())
+            @foreach (var m in Run.Modes)
             {
-                <dt>@m.GetProperty("name").GetString() · @m.GetProperty("repeat").GetInt32()</dt>
-                <dd><code>@string.Join(", ", m.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()))</code>@(S(m, "role") is { } p ? $" · {p}" : "")@(S(m, "llm") is { } l ? $" · {l}" : "")</dd>
+                <dt>@m.Name · @m.Repeat</dt>
+                <dd><code>@string.Join(", ", m.Toolsets)</code>@Extra(m)</dd>
             }
         </dl>
     </details>
-    @if (Run.TryGetProperty("log", out var log) && log.ValueKind == JsonValueKind.Array)
+    @if (Run.Log is { } log)
     {
-        <details class="admin-details"><summary>The script's own lines (@log.GetArrayLength())</summary><pre class="admin-pre run-log">@string.Join("\n", log.EnumerateArray().Select(l => l.GetString()))</pre></details>
+        <details class="admin-details"><summary>The script's own lines (@log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", log)</pre></details>
     }
 </section>

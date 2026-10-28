@@ -1775,6 +1775,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   by hand; `RunEventTests` went with the class. `Benchmarks.html` loses its chip row and shows the broken line
   without `@`. Red first: the build (the tests named the contract's records, which the code didn't take yet), then
   the ratchet and the golden.
+  Commit 4: `RunSettings` takes the `StoredRunReply` (the page passes `_run`), its temporary `RunRow` adapter gone and
+  its markup reading the records. `RunSettingsTests` (new) first pinned today's view from JSON
+  (`RunSettings.full.html`, `RunSettings.bare.html`), then took the typed reply: red was the build, and both goldens
+  stayed byte-equal after the move.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
