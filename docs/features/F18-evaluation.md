@@ -1624,6 +1624,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   words, empty scores, the metrics). Red first: the recorder against the two goldens (2 tests: every v2 line was a log
   line, so no eval and no modes), then the build once the copies were deleted. The Mongo contract tests run in CI:
   the local Mongo is Puls's own and needs its credentials. The frozen `stub-run.v1.txt` went.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 1: the registration.** `MongoEvalDatabase.RegisterMappings`
+  hands the driver, once (a `Lazy`, and the driver's register-if-not-already, so a second call can't throw), a
+  `WireNameSerializer<TEnum>` for each enum a document holds (`EvalRunStatus`, `RunSplit`, `GraderKind`,
+  `ModelLevel`, `GradeOutcome`, `TrialOutcome`, `TurnFailure`, `HumanVerdict`) and the driver's
+  `DateTimeOffsetSerializer` as a BSON date. `Open` calls it before the first collection. The serializer writes
+  `.Wire()` and reads with `SettingChoice.TryParse`; a stored value that names no member, a number too, is refused
+  with `StoredNameUnknown`. No store uses it yet: each collection's own commit switches to its typed record.
+  `MongoMappingsTests` round-trips a small record through the driver in memory. Red first: 3 of 5 (the kind and the
+  failure stored as `0` and `2`, a number read back without complaint, the time in the driver's own form); the
+  other two (a round trip, a word that's no member) passed on the driver's defaults and stay as guards.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
