@@ -564,6 +564,26 @@ image already takes the commit as `EVAL_COMMIT` (step 7a: `Dockerfile.puls`, `do
 rename it then. Sources: Docker, *Build variables* (`ARG`, `--build-arg`); Compose, *build.args*; Azure,
 `az acr build --build-arg`. **Commit:** step 7b, the images stamp their commit.
 
+### 26. The Claude stream format's events were anonymous objects (2026-10-28, card A step 2)
+
+**What came up.** Step 2 (error kinds as an enum) has to change the stream's last line in `ClaudeStreamFormat`, so
+the file is in that commit and is brought up whole. The guide's *JSON through records* rules out an anonymous object
+for anything serialized, and every event the file wrote (`message_start`, the blocks, the deltas, the usage, the
+error) was one. Louis had already picked step 2's cards, so this was decided here, not asked.
+
+1. **Bring the file up first, in a commit of its own, then do step 2 (picked).** Each event becomes a record
+   (`ClaudeEvents`, `ClaudeBlocks`, `ClaudeUsage`), its `type` first through `[JsonPropertyOrder(-1)]`, so the bytes
+   are Claude's as before; the nested ternary for the display symbol becomes guard clauses. Pattern: PoEAA's *Data
+   Transfer Object*, as finding 20's bring-up before a move. Changes: three record files and the format. Costs: one
+   more commit before step 2; the stream golden (`StreamGoldenTests`) is the proof the bytes held.
+2. **Everything in step 2's commit.** Costs: the error-kind change hides among twenty event records.
+3. **Change only the error line, leave the other events anonymous.** Costs: breaks the rule that a file in a commit is
+   brought up whole.
+
+**Why 1.** Each commit stays reviewable for one thing, as finding 20. Sources: Fowler, *PoEAA*, *Data Transfer
+Object*; Microsoft, *How to customize property names and order with System.Text.Json* (`JsonPropertyOrder`).
+**Commit:** the bring-up commit before step 2.
+
 ## Report: where the run stopped
 
 Louis stopped the run at Part 6 (2026-10-28: "stop at part 6, leave unattended mode when you hit part 6"), so Part 6

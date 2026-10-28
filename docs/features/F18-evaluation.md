@@ -1374,6 +1374,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   one (a build argument set to nothing) is `unknown`, as a missing one is, never an empty commit. Red first:
   `EvalBuildTests` against a stub that threw (6 of 6 failing). The Docker builds themselves can't be tested here: no
   image was built in this step, so the stamp inside an image is checked by the next rebuild (`commit` on a run page).
+- **The Claude stream format writes records** (before the review's card A step 2; finding 26 of the decisions log).
+  Every event `ClaudeStreamFormat` writes was an anonymous object; each is now a record (`ClaudeEvents.cs`,
+  `ClaudeBlocks.cs`, `ClaudeUsage.cs` beside it), `type` first through `[JsonPropertyOrder(-1)]`, and the display
+  symbol's nested ternary is guard clauses. A refactor with no new test: `StreamGoldenTests` pins the bytes and stayed
+  green (api.tests 603 of 603 on the commit's own tree).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
