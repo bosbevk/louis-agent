@@ -54,16 +54,21 @@ Docs-only and configuration-only steps have no test to write first.
 
 **Finishing a step** (before rule 5's stop):
 
-1. `dotnet build louis-agent-solution.sln`, and `dotnet test` on the projects the step touches ([Tests](../tests/CLAUDE.md)); the whole
-   solution before a PR.
+1. Build the projects the step touches (in Rider, `build_project` through its MCP server; elsewhere
+   `dotnet build <project>`), and `dotnet test` on them ([Tests](../tests/CLAUDE.md)); the whole solution
+   (`dotnet build louis-agent-solution.sln`) before a PR.
 2. If tools, their descriptions, the tool texts (the `*ToolMessage` enums) or the prompts in `louis-agent.core/Prompts/` changed, regenerate the golden files and review
    their diff ([golden files](../tests/CLAUDE.md#golden-files)).
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
    doc of its type (*Rules that always apply*: one type per doc).
-4. Format every C# file in the commit (*Formatting*): first Rider's own formatter on each, through Rider's MCP server
-   (`reformat_file`), which wraps long lines; then `dotnet format louis-agent-solution.sln --include <its .cs files>`,
-   which moves usings and is what CI checks, so it goes last. CI fails a push whose commits' files aren't formatted.
+4. Format every C# file in the commit (*Formatting*), in this order and once: `git_status` (or `git diff --name-only`)
+   for the commit's files; Rider's own formatter on each, through Rider's MCP server (`reformat_file`), which wraps
+   long lines; `get_file_problems` on each (or `lint_files` on all of them) to see what Rider's inspections still
+   flag, instead of re-reading the file; the `//` and `///` lines over 120 wrapped by hand; then
+   `dotnet format louis-agent-solution.sln --include <its .cs files>` once, which moves usings and is what CI checks,
+   so it goes last. Never a whole-solution `dotnet format` in a loop. CI fails a push whose commits' files aren't
+   formatted.
 5. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
    before the code and passing after, and stop.
 
@@ -283,10 +288,19 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   **Code and comments change only by editing the file** (an editor, Rider, Claude Code's own edit tool), and layout
   only through `dotnet format` or Rider's **Reformat Code**: never a home-made script (Python, sed, awk, PowerShell)
   that rewrites source files. Louis, 2026-10-27, after a script that added comments walked a sentence letter by letter
-  and left 478 one-character comment lines in a test file.
+  and left 478 one-character comment lines in a test file. **A rename goes through Rider's `rename_refactoring`**,
+  which follows every reference, never search and replace (Louis, 2026-10-28).
   Rider applies them with **Reformat Code**, and Claude Code in Rider calls the same formatter through Rider's MCP
   server (`reformat_file`; Settings → Tools → MCP Server, with Claude Code auto-configured): it is the one that wraps
-  lines to 120, which `dotnet format` never does. `dotnet format` runs after it and has the last word, since CI checks
+  lines to 120, which `dotnet format` never does. The server's other tools are the fast road for the rest of a step
+  (Louis, 2026-10-28: "rider has mcp and we already call it, why don't we just let the agent call those?"):
+  `get_file_problems` and `lint_files` for Rider's inspections, `build_project` for the compile errors,
+  `rename_refactoring` for a rename, `get_symbol_info` and `analyze_calls` before a signature change, `git_status`
+  for the commit's files. The tool names differ by Rider version (2025.2 has twenty tools with older search and file
+  names; 2026.x adds `build_project`, `lint_files` and `analyze_calls`), so a session starts with `/mcp` to see what
+  it has, and runs Rider's *Auto-Configure* if the server is missing. *Brave mode* (terminal commands without a
+  confirmation) stays off: rule 7 in another coat. The research is `research/rider-mcp-tools.md` in the Claude
+  project. `dotnet format` runs after it and has the last word, since CI checks
   with it. Rider's formatter never wraps a comment (JetBrains issue RSRP-225809), so a `///` or `//` line over 120 is
   wrapped by hand, as is every long line where no Rider runs (a cloud session). Same scope as the
   summaries: the files in a step's commit are formatted whole, untouched files keep their old layout, never a big
