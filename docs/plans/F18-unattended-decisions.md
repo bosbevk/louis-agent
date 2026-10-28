@@ -18,6 +18,9 @@ integration summaries, and the shops catalogue tests), as they are written to.
   `EachEventRestartsTheIdleClock_SoALongTurnOfLiveEventsIsNotCutOff` (louis-agent.evals.tests) once; that project
   alone passed three times straight after (322 of 322), and the run changed nothing under `evals/`. It looks like the
   idle clock losing to a busy machine with every test project running at once; worth a look, not fixed here.
+- **`aria-checked` is written as a bare attribute.** The explorer's repeat and chat-task buttons, and the Benchmarks
+  page's, write `aria-checked="@(bool)"`, which Blazor renders as a bare `aria-checked` when true and leaves out when
+  false; ARIA wants `"true"`/`"false"`. Kept as it was through Part 3 (the goldens pin it); a small fix for later.
 
 ## Findings
 
