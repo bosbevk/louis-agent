@@ -1,7 +1,8 @@
 # 0048. MongoDB goes through records: a typed collection for a shape we know, `BsonDocument` only for one we don't
 
-**Status:** Proposed · **Date:** 2026-10-28 (Louis, reading `RunDocuments.ToBson` in 7c step 3a: "must use
-mongocollection"; "make it an adr, i do not know when to not use a mongocollection") · **Recorded:** 2026-10-28
+**Status:** Accepted (Louis, 2026-10-28, once every collection went through it) · **Date:** 2026-10-28 (Louis,
+reading `RunDocuments.ToBson` in 7c step 3a: "must use mongocollection"; "make it an adr, i do not know when to not
+use a mongocollection") · **Recorded:** 2026-10-28
 
 ## Context
 
