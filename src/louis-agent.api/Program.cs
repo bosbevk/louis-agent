@@ -98,7 +98,7 @@ if (evalStore is not null)
             var deletion = new RunDeletion(evalStore, reviewStore, calibrationStore);
             await new OldRunsCleanup(evalStore, deletion, evalLog).RunAsync();
 
-            int closed = await evalStore.CloseOrphansAsync(DateTimeOffset.UtcNow);
+            int closed = await evalStore.CloseOrphansAsync(TimeProvider.System.GetUtcNow());
             if (closed > 0)
                 evalLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed },
                     tag: "API");
