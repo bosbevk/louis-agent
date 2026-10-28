@@ -1055,6 +1055,17 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   folder of their own, `Evals/Store/Deletion/`. 3c.1 is the counts and `RunDeletion` (the button uses it); 3c.2 is
   finding the runs without `protocol_version: 2` and the start-up job.
 
+- **Step 5: bottom-up, one reader per commit, in this order** (Louis, 2026-10-29, card and "go"). Strangler Fig at
+  the component edge: a caller still holding JSON deserializes just the moved part, until the page fetches the record.
+  (1) delete the dead `ConversationGradesReader`; (2) `RunGradersReader` + `GraderList`; (3) `RunSettings`;
+  (4) `ModeRatesReader` + `ModeRatesList`; (5) `NoteReader`'s JSON overload goes; (6) `SummaryReader` + `SummaryPanel`;
+  (7) `CalibrationView` + `CalibrationCard`; (8) `AgreementView` + `AgreementPanel`; (9) `TrendChart`;
+  (10) `CategoryTrendReader` + `CategoryTrends`; (11) `CheckCard`, `ChecksList`, `Benchmarks`; (12) delete
+  `ExplorerScores` and `ConversationNode.Scores`; (13) the live view to v2 events, `ScoreChips` deleted, `TurnFacts`'
+  comment fixed; (14) `RunExplorer`; (15) `BenchmarkRun` fetches the records, the replies' empty `Scores` go, and the
+  list is empty. Open, for Louis at their commits: the trend's "routing" and "accuracy" panels (9), the explorer's
+  score rings, tiles and chips (12), the live view's chips (13).
+
 - **Step 7c.3's design** (Louis, 2026-10-28, cards before 3a).
   - **The keys go into the contract**: `ConversationKey` beside `TurnKey` in `Parts/Conversations`, and `TurnKey`
     and `ConversationEvent` get a `[JsonIgnore]` property that gives the conversation's key. The API and the harness

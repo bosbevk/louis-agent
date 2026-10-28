@@ -1752,6 +1752,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `OldRunsCleanupTests` (the old run goes with its grade and judge check, counted, the current one keeps all of its
   own; a second clean-up finds nothing). Red first: 3 of 3 against stubs. `ApiLogMessage`'s two long texts are
   joined constants now, under the 120-character line.
+- **Step 7c.5: the portal reads the contract, one reader per commit** (Louis's pick: bottom-up, Strangler Fig at the
+  component edge). Each commit moves one reader, and the component that shows it, from `JsonElement` to its contract
+  record; a caller that still holds JSON deserializes just that part, and the adapter climbs a level per commit until
+  the page fetches the record and `PortalReadsJsonTests`' list is empty. Commit 1 deletes `ConversationGradesReader`:
+  nothing in production called it since `ConversationGrades.Of(ConversationRow)` replaced it. Its four conversation
+  cases went from `GradesReadersTests`, which keeps the run's graders (its mixed no-version case kept its run half)
+  and gained its summaries; the Puls project doc's folder line no longer names it. No test first: only dead code went.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
