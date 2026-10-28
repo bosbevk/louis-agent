@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LouisAgent.Api.Contracts.Git.Requests;
+using LouisAgent.Api.Contracts.Workspace;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 
@@ -9,8 +11,9 @@ namespace LouisAgent.Api.IntegrationTests.Endpoints.Git;
 /// <summary>
 /// Pins the JSON the git routes send the code-review app: every object's names, in order, so the app reads them
 /// however the endpoints are shaped. Shas, dates and diffs change from run to run, so the names are pinned and the
-/// values only where they are fixed.
+/// values only where they are fixed. What the tests send is the contract's request records, as the app sends them.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 [Category("Integration")]
 public class GitReplyJsonTests
 {
@@ -68,7 +71,8 @@ public class GitReplyJsonTests
     {
         await using var app = await StartAsync();
 
-        using var response = await app.GetTestClient().PostAsJsonAsync("/v1/git/merge", new { branch = "feature" });
+        using var response = await app.GetTestClient()
+            .PostAsJsonAsync("/v1/git/merge", new GitBranchRequest("feature"), WorkspaceJson.Web);
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -109,7 +113,8 @@ public class GitReplyJsonTests
         await using var app = await StartAsync();
 
         using var response =
-            await app.GetTestClient().PostAsJsonAsync("/v1/git/stage", new { paths = new[] { "readme.md" } });
+            await app.GetTestClient()
+                .PostAsJsonAsync("/v1/git/stage", new GitPathsRequest(["readme.md"]), WorkspaceJson.Web);
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -151,7 +156,8 @@ public class GitReplyJsonTests
         await using var app = await StartAsync();
 
         using var response =
-            await app.GetTestClient().PostAsJsonAsync("/v1/git/commits", new { message = "Greet the world" });
+            await app.GetTestClient()
+                .PostAsJsonAsync("/v1/git/commits", new GitCommitRequest("Greet the world"), WorkspaceJson.Web);
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));

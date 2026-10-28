@@ -1020,6 +1020,11 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Tests post records, not anonymous objects** (card A). `GitReplyJsonTests` (3) posts the contract's git request
+  records and `SessionReplyJsonTests` (1) the session's own request record, which finding 3 keeps in the API for
+  now; `TurnStoreContract`'s event data is a `JsonObject`, a shape decided at run time. The pinned bytes don't
+  change (Louis, 2026-10-28, review of the unattended run).
+
 - **Error kinds are an enum, one method per kind** (card A). Pattern: Fowler's *Replace Primitive with Object* and
   *Remove Flag Argument*, the way `TypedResults.NotFound(…)` works. `ApiErrorKind` in the API holds today's texts as
   its `[WireName]`s (the contract's `ApiError` keeps the text, so the wire doesn't change); `ApiErrors` has one method

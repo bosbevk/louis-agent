@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LouisAgent.Api.Contracts.Sessions;
+using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using Microsoft.AspNetCore.Builder;
@@ -77,9 +79,13 @@ public class SessionReplyJsonTests
         return json.RootElement.GetProperty("session_id").GetString()!;
     }
 
-    /// <summary>Asks the API to open a session with the skills toolset.</summary>
+    /// <summary>
+    /// Asks the API to open a session with the skills toolset, sending the API's own request record (it stays in the
+    /// API until a change moves it to the contract).
+    /// </summary>
     private static Task<HttpResponseMessage> OpenSessionAsync(WebApplication app) =>
-        app.GetTestClient().PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { CoreToolset.Skills.Wire() } });
+        app.GetTestClient().PostAsJsonAsync("/v1/sessions",
+            new CreateSessionRequest(null, null, null, [CoreToolset.Skills.Wire()]), SessionJson.SnakeCase);
 
     /// <summary>The object's names in the order they were written.</summary>
     private static string Names(JsonElement element) =>

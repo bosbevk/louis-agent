@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Turns;
@@ -47,10 +48,11 @@ public abstract class TurnStoreContract
 
     /// <summary>
     /// One streamed event carrying some text. Its time is the text's length in seconds, so events have different
-    /// times.
+    /// times. The data is a <c>JsonObject</c>: a stored event's shape is whatever the stream sent, decided at run time.
     /// </summary>
     private static StreamEvent Event(string type, string text) =>
-        new(type, Json(JsonSerializer.Serialize(new { delta = new { text } })), T0.AddSeconds(text.Length));
+        new(type, Json(new JsonObject { ["delta"] = new JsonObject { ["text"] = text } }.ToJsonString()),
+            T0.AddSeconds(text.Length));
 
     /// <summary>A conversation's turns come back by number with every field, and only that conversation's.</summary>
     [Test]

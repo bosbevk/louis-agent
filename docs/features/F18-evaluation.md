@@ -1389,6 +1389,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   today's code: the error JSON byte for byte of one route per kind (`ApiErrorRouteTests`, seven in api.tests; the git
   failure and the conflict, which need a process, in api.integration-tests). Red first: the ratchet listed 70 typed
   error texts, and `ApiErrorJsonTests` against stubs that threw (11 of 12 failing).
+- **Tests post records, not anonymous objects** (card A, step 3). `GitReplyJsonTests` posts `GitBranchRequest`,
+  `GitPathsRequest` and `GitCommitRequest` with `WorkspaceJson.Web`; `SessionReplyJsonTests` posts the API's
+  `CreateSessionRequest` with `SessionJson.SnakeCase` (its nulls now go on the wire, which the endpoint reads as
+  before); `TurnStoreContract` builds an event's data as a `JsonObject`. A change to tests only, so no red: the
+  replies they pin are byte for byte the same, and the tests pass as before.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
