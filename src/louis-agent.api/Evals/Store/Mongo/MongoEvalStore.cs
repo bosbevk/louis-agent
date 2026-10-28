@@ -1,3 +1,4 @@
+using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Runs;
@@ -27,7 +28,7 @@ public sealed class MongoEvalStore : IEvalStore
     private readonly MongoRunStore _runs;
 
     /// <summary>The conversations.</summary>
-    private readonly IMongoCollection<BsonDocument> _conversations;
+    private readonly MongoConversationStore _conversations;
 
     /// <summary>The turns, with their stream events inside.</summary>
     private readonly IMongoCollection<BsonDocument> _turns;
@@ -49,7 +50,7 @@ public sealed class MongoEvalStore : IEvalStore
     {
         Database = MongoEvalDatabase.Open(url, database);
         _runs = new MongoRunStore(Database);
-        _conversations = Database.GetCollection<BsonDocument>("conversations");
+        _conversations = new MongoConversationStore(Database);
         _turns = Database.GetCollection<BsonDocument>("turns");
         _requests = Database.GetCollection<BsonDocument>("requests");
         // A note may only go on a run that exists, so the notes ask the runs.
@@ -81,24 +82,18 @@ public sealed class MongoEvalStore : IEvalStore
     public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default) =>
         _runs.DeleteAsync(id, cancellationToken);
 
-    /// <summary>Saves a conversation, replacing the one under its key.</summary>
-    public async Task SaveConversationAsync(string run, Conversation conversation,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        await _conversations.ReplaceOneAsync(ById(ConversationDocuments.Id(run, conversation.Key)),
-            ConversationDocuments.ToBson(run, conversation), Upsert, cancellationToken);
-    }
+    /// <summary>Hands the conversation to the conversation store.</summary>
+    public Task SaveConversationAsync(string run, Conversation conversation,
+        CancellationToken cancellationToken = default) =>
+        _conversations.SaveConversationAsync(run, conversation, cancellationToken);
 
-    /// <summary>The run's conversations in the order they started.</summary>
-    public async Task<IReadOnlyList<Conversation>> ConversationsAsync(string run,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _conversations.Find(OfRun(run)).Sort(Builders<BsonDocument>.Sort.Ascending("order"))
-            .ToListAsync(cancellationToken);
-        return found.Select(ConversationDocuments.ConversationOf).ToArray();
-    }
+    /// <summary>Asks the conversation store for the run's conversations.</summary>
+    public Task<IReadOnlyList<Conversation>> ConversationsAsync(string run,
+        CancellationToken cancellationToken = default) => _conversations.ConversationsAsync(run, cancellationToken);
+
+    /// <summary>Deletes only the run's conversations.</summary>
+    public Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default) =>
+        _conversations.DeleteConversationsAsync(run, cancellationToken);
 
     /// <summary>Saves a turn with its stream events, replacing the ones under its key.</summary>
     public async Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
@@ -175,8 +170,8 @@ public sealed class MongoEvalStore : IEvalStore
     {
         await Ready();
         bool had = await _runs.DeleteAsync(id, cancellationToken);
-        long deleted = (await _conversations.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
-        deleted += (await _turns.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
+        had |= await _conversations.DeleteConversationsAsync(id, cancellationToken);
+        long deleted = (await _turns.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += await _notes.DeleteRunAsync(id, cancellationToken);
         return had || deleted > 0;
@@ -185,8 +180,6 @@ public sealed class MongoEvalStore : IEvalStore
     /// <summary>Makes the indexes the reads of the records still kept here rely on.</summary>
     private async Task CreateIndexesAsync()
     {
-        await _conversations.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
-            Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("order")));
         await _turns.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
             Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("mode").Ascending("repeat").Ascending("task")
                 .Ascending("turn")));

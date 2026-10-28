@@ -1,3 +1,4 @@
+using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Runs;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -19,11 +20,11 @@ public sealed class InMemoryEvalStore : IEvalStore
     /// <summary>The runs themselves.</summary>
     private readonly InMemoryRunStore _runs = new();
 
+    /// <summary>The conversations.</summary>
+    private readonly InMemoryConversationStore _conversations = new();
+
     /// <summary>The one lock over the records still kept here.</summary>
     private readonly Lock _lock = new();
-
-    /// <summary>Conversations by run and key.</summary>
-    private readonly Dictionary<(string Run, ConversationKey Key), Conversation> _conversations = [];
 
     /// <summary>Turns with their stream events, by run and key.</summary>
     private readonly Dictionary<(string Run, TurnKey Key), (Turn Turn, StreamEvent[] Events)> _turns = [];
@@ -56,23 +57,18 @@ public sealed class InMemoryEvalStore : IEvalStore
     public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default) =>
         _runs.DeleteAsync(id, cancellationToken);
 
-    /// <summary>Saves a conversation, replacing the one under its key.</summary>
+    /// <summary>Hands the conversation to the conversation store.</summary>
     public Task SaveConversationAsync(string run, Conversation conversation,
-        CancellationToken cancellationToken = default)
-    {
-        lock (_lock) _conversations[(run, conversation.Key)] = conversation;
-        return Task.CompletedTask;
-    }
+        CancellationToken cancellationToken = default) =>
+        _conversations.SaveConversationAsync(run, conversation, cancellationToken);
 
-    /// <summary>The run's conversations in the order they started.</summary>
+    /// <summary>Asks the conversation store for the run's conversations.</summary>
     public Task<IReadOnlyList<Conversation>> ConversationsAsync(string run,
-        CancellationToken cancellationToken = default)
-    {
-        lock (_lock)
-            return Task.FromResult<IReadOnlyList<Conversation>>(_conversations.Where(c => c.Key.Run == run)
-                .Select(c => c.Value)
-                .OrderBy(c => c.Order).ToArray());
-    }
+        CancellationToken cancellationToken = default) => _conversations.ConversationsAsync(run, cancellationToken);
+
+    /// <summary>Deletes only the run's conversations.</summary>
+    public Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default) =>
+        _conversations.DeleteConversationsAsync(run, cancellationToken);
 
     /// <summary>Saves a turn with its stream events, replacing the ones under its key.</summary>
     public Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
@@ -152,10 +148,9 @@ public sealed class InMemoryEvalStore : IEvalStore
     {
         // Anything found under the id counts as a run having been there, even a leftover with no run record.
         bool had = await _runs.DeleteAsync(id, cancellationToken);
+        had |= await _conversations.DeleteConversationsAsync(id, cancellationToken);
         lock (_lock)
         {
-            foreach (var key in _conversations.Keys.Where(k => k.Run == id).ToArray())
-                had |= _conversations.Remove(key);
             foreach (var key in _turns.Keys.Where(k => k.Run == id).ToArray()) had |= _turns.Remove(key);
             had |= _requests.RemoveAll(r => r.Run == id) > 0;
             had |= _notes.Remove(id);

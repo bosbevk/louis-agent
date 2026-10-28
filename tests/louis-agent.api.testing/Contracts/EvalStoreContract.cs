@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Testing;
 /// reads come back in the run's order, so the recorder can write a document again as it grows and the page can read
 /// the run while it goes. Every test makes its own run ids and check name, so the tests can share a real database
 /// without seeing each other's runs. Times are whole milliseconds in UTC, as MongoDB keeps them. The runs' own tests
-/// are in <see cref="RunStoreContract"/>.
+/// are in <see cref="RunStoreContract"/>, the conversations' in <see cref="ConversationStoreContract"/>.
 /// </summary>
 /// <remarks>
 /// Abstract test (a contract test): the tests are written once, and each store gets a small subclass that only says
@@ -69,104 +69,6 @@ public abstract class EvalStoreContract
     /// </summary>
     private static StreamEvent Event(string type, string text) =>
         new(type, Json(JsonSerializer.Serialize(new { delta = new { text } })), T0.AddSeconds(text.Length));
-
-    /// <summary>A conversation keeps its grades and its overall outcome.</summary>
-    [Test]
-    public async Task AConversation_CarriesItsGradesAndOutcome()
-    {
-        string run = NewId();
-        var grades = new[] { new Grade("priced-with-source", 1, 1, EvalOutcome.Pass, "2 of 2 priced with a source") };
-        await _store.SaveConversationAsync(run,
-            NewConversation("bobotie", 1) with
-            {
-                Grades = grades,
-                Outcome = EvalOutcome.Pass
-            });
-
-        var read = (await _store.ConversationsAsync(run)).Single();
-
-        Assert.That(read.Outcome, Is.EqualTo(EvalOutcome.Pass));
-        Assert.That(read.Grades, Is.EqualTo(grades));
-    }
-
-    /// <summary>A grade still waiting for a person comes back as pending.</summary>
-    [Test]
-    public async Task APendingGrade_ReadsBackPending_InBothStores()
-    {
-        string run = NewId();
-        var grades = new[] { new Grade("meal-for-people.human", 1, 0, EvalOutcome.Pending, "waits for a person") };
-        await _store.SaveConversationAsync(run,
-            NewConversation("bobotie", 1) with
-            {
-                Grades = grades,
-                Outcome = EvalOutcome.Pass
-            });
-
-        var read = (await _store.ConversationsAsync(run)).Single();
-
-        Assert.That(read.Grades, Is.EqualTo(grades));
-        Assert.That(read.Outcome, Is.EqualTo(EvalOutcome.Pass));
-    }
-
-    /// <summary>A judge's grade keeps the judge that gave it; a code grader's grade has no judge model.</summary>
-    [Test]
-    public async Task AGrade_KeepsTheJudgeThatGaveIt()
-    {
-        string run = NewId();
-        var grades = new[]
-        {
-            new Grade("meal-for-people", 1, 1, EvalOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456"),
-            new Grade("no-error", 1, 1, EvalOutcome.Pass, "ok")
-        };
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades });
-
-        var read = (await _store.ConversationsAsync(run)).Single();
-
-        Assert.That(read.Grades, Is.EqualTo(grades));
-        Assert.That(read.Grades![1].JudgeModel, Is.Null);
-    }
-
-    /// <summary>
-    /// A run's conversations come back in their order with their scores, and saving one again replaces it.
-    /// </summary>
-    [Test]
-    public async Task Conversations_ReadBackInTheirOrder_AndASecondSaveReplacesOne()
-    {
-        // Saved out of order, bobotie twice, and one conversation of another run.
-        string run = NewId();
-        await _store.SaveConversationAsync(run, NewConversation("cottage-pie", 2));
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, role: null));
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, role: SampleRole.Alpha));
-        await _store.SaveConversationAsync(NewId(), NewConversation("another-runs", 1));
-
-        var read = await _store.ConversationsAsync(run);
-
-        Assert.That(read.Select(c => c.Key.Task), Is.EqualTo(new[] { "bobotie", "cottage-pie" }));
-        Assert.That(read[0].Role, Is.EqualTo(SampleRole.Alpha));
-        Assert.That(read[0].Scores.GetProperty("priced_ratio").GetDouble(), Is.EqualTo(0.75));
-        Assert.That(read[0].Scores.GetProperty("routed_right").GetBoolean(), Is.True);
-        Assert.That((read[0].Errors, read[0].Seconds), Is.EqualTo((0, 12.5)));
-    }
-
-    /// <summary>The same task in another mode or repeat is another conversation.</summary>
-    [Test]
-    public async Task AConversationsKey_IsItsModeRepeatAndTask()
-    {
-        string run = NewId();
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1, mode: SampleMode.Alpha));
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 2, mode: SampleMode.Beta));
-        await _store.SaveConversationAsync(run, NewConversation("bobotie", 3, mode: SampleMode.Beta, repeat: 2));
-
-        var read = await _store.ConversationsAsync(run);
-
-        Assert.That(read.Select(c => c.Key),
-            Is.EqualTo(new[]
-            {
-                new ConversationKey(SampleMode.Alpha, 1, "bobotie"),
-                new ConversationKey(SampleMode.Beta, 1, "bobotie"),
-                new ConversationKey(SampleMode.Beta, 2, "bobotie"),
-            }));
-    }
 
     /// <summary>A conversation's turns come back by number with every field, and only that conversation's.</summary>
     [Test]

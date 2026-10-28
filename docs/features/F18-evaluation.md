@@ -1346,6 +1346,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   everything under it, the run's own record through the new `IRunStore.DeleteAsync`. `MongoEvalDatabase` opens the
   database with the five-second timeouts every record store shares. Field and collection names are unchanged. Red
   first: the run contract against a stub that threw (12 of 13 failing).
+- **Step 7b, the store splits by record: conversations.** `IConversationStore` in `Evals/Store/Conversations/`, with
+  `InMemoryConversationStore` and `MongoConversationStore` (the `conversations` collection, its run-and-order index
+  and `ConversationDocuments`), held to `ConversationStoreContract` (the five conversation tests from
+  `EvalStoreContract`, plus deleting a run's conversations). `IEvalStore` now inherits it too, and the facades hand
+  the conversation calls on. Red first: the contract against a stub that threw (6 of 6 failing).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

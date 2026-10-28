@@ -1,3 +1,4 @@
+using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Runs;
 
 namespace LouisAgent.Api.Tests.Evals.Store;
@@ -14,4 +15,11 @@ public class InMemoryRunFieldsTests : RunFieldsContract
 {
     /// <summary>A fresh, empty store of runs for each test.</summary>
     protected override IRunStore CreateStore() => new InMemoryRunStore();
+}
+
+/// <summary>Runs the conversation store's shared tests against the conversations in memory.</summary>
+public class InMemoryConversationStoreTests : ConversationStoreContract
+{
+    /// <summary>A fresh, empty store of conversations for each test.</summary>
+    protected override IConversationStore CreateStore() => new InMemoryConversationStore();
 }

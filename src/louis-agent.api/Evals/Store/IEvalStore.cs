@@ -1,3 +1,4 @@
+using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Runs;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -16,14 +17,8 @@ namespace LouisAgent.Api.Evals.Store;
 /// (Interface Segregation). Without the facade every handler and test would have to be handed four stores.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
-public interface IEvalStore : IRunStore
+public interface IEvalStore : IRunStore, IConversationStore
 {
-    /// <summary>Saves one conversation of a run, replacing the one under its key.</summary>
-    Task SaveConversationAsync(string run, Conversation conversation, CancellationToken cancellationToken = default);
-
-    /// <summary>A run's conversations, in the order they started.</summary>
-    Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken cancellationToken = default);
-
     /// <summary>Saves a turn together with its stream events, replacing the ones under its key.</summary>
     Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
         CancellationToken cancellationToken = default);
