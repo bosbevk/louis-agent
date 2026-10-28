@@ -7,20 +7,28 @@ using LouisAgent.Web.Shared.Usage;
 
 namespace LouisAgent.Web.Shared.Tests.Chats;
 
-// F31 step 7a: one recorded Puls turn (tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse) is the contract between the session
-// stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in
-// session-stream.expected.json by its unittest; this holds the web app's TurnStream to the same ones, read the way the
-// app reads them (SseParser, then TurnStream.Apply). A change to the stream re-records the fixture, and both fail
-// until both readers follow (CL11: one C# reader under the three). T1 moved it here from the API's tests, where it
-// never belonged, and added a case per event the stream folds.
+/// <summary>
+/// One recorded Puls turn (tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse) is the contract between
+/// the session stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in
+/// session-stream.expected.json by its unittest; this holds the web app's TurnStream to the same ones, read the way
+/// the app reads them (SseParser, then TurnStream.Apply). A change to the stream re-records the fixture, and both fail
+/// until both readers follow. Below that, one case per event the stream folds.
+/// </summary>
 public class TurnStreamTests
 {
+    /// <summary>
+    /// The list of names the fixture's expectations keep under one key.
+    /// </summary>
     private static string[] Strings(JsonElement e, string name) =>
         e.GetProperty(name).EnumerateArray().Select(v => v.GetString()!).ToArray();
 
+    /// <summary>
+    /// The web app sees the same tool calls as the harness, Puls's own and the specialist's under its delegation.
+    /// </summary>
     [Test]
     public async Task TurnStream_ReadsPulssCallsAndTheSpecialistsAsTheHarnessDoes()
     {
+        // F31 step 7a; CL11 put one C# reader under the three, and T1 moved this here from the API's tests.
         var turn = await SessionStreamFixture.ReplayAsync();
         var expected = SessionStreamFixture.Expected();
 
@@ -32,6 +40,9 @@ public class TurnStreamTests
         Assert.That(specialist, Is.EqualTo(Strings(expected, "specialist_tools")));
     }
 
+    /// <summary>
+    /// The web app reads the same answer as the harness: same start, same length, no error, and a stop reason.
+    /// </summary>
     [Test]
     public async Task TurnStream_ReadsTheAnswerAsTheHarnessDoes()
     {
@@ -39,7 +50,9 @@ public class TurnStreamTests
         var expected = SessionStreamFixture.Expected();
 
         string answer = string.Concat(turn.Blocks.Where(b => b.Kind == BlockKind.Text).Select(b => b.Text)).Trim();
-        Assert.That(answer, Does.StartWith(expected.GetProperty("answer_starts").GetString()));
+        string starts = expected.GetProperty("answer_starts").GetString() ?? "";
+        Assert.That(starts, Is.Not.Empty, "the fixture names how the answer starts");
+        Assert.That(answer, Does.StartWith(starts));
         Assert.That(answer.Length, Is.EqualTo(expected.GetProperty("answer_length").GetInt32()));
         Assert.That(turn.Error, Is.Null);
         Assert.That(turn.StopReason, Is.Not.Null);
@@ -47,9 +60,15 @@ public class TurnStreamTests
 
     // ---- One case per event the stream folds. ----
 
+    /// <summary>
+    /// One stream event, made from its type and its JSON as the API would send it.
+    /// </summary>
     private static SessionEvent Event(string type, string json) =>
         SessionEvent.From(type, JsonDocument.Parse(json).RootElement);
 
+    /// <summary>
+    /// Feeds the events one by one into a fresh turn, the way the app does, and hands back what it became.
+    /// </summary>
     private static Turn Apply(params (string Type, string Json)[] events)
     {
         var turn = new Turn();
@@ -57,6 +76,9 @@ public class TurnStreamTests
         return turn;
     }
 
+    /// <summary>
+    /// The turn's first event tells it which toolsets and which role the session has.
+    /// </summary>
     [Test]
     public void MessageStart_SetsTheToolsetsAndTheRole()
     {
@@ -68,6 +90,9 @@ public class TurnStreamTests
         Assert.That(turn.Role, Is.EqualTo(SampleRole.Alpha));
     }
 
+    /// <summary>
+    /// Text starts one block, and every piece that streams in is added to the end of it.
+    /// </summary>
     [Test]
     public void Text_OpensABlock_AndEveryDeltaAppendsToIt()
     {
@@ -85,6 +110,9 @@ public class TurnStreamTests
         Assert.That(turn.Blocks[0].Text, Is.EqualTo("Hallo daar"));
     }
 
+    /// <summary>
+    /// Thinking gets its own block, and only when it stops do we know how long it took.
+    /// </summary>
     [Test]
     public void Thinking_OpensABlock_AndItsStopRecordsHowLongItTook()
     {
@@ -101,6 +129,9 @@ public class TurnStreamTests
         Assert.That(turn.Blocks[0].ThinkingSeconds, Is.Not.Null.And.GreaterThanOrEqualTo(0));
     }
 
+    /// <summary>
+    /// A tool call and its result end up in one block, with the input pretty-printed.
+    /// </summary>
     [Test]
     public void AToolCall_AndItsResult_ShareOneBlock()
     {
@@ -121,6 +152,9 @@ public class TurnStreamTests
         Assert.That(call.ToolFailed, Is.False);
     }
 
+    /// <summary>
+    /// A result that comes back as an error marks its call as failed.
+    /// </summary>
     [Test]
     public void AFailedToolResult_MarksItsCall()
     {
@@ -135,6 +169,9 @@ public class TurnStreamTests
         Assert.That(turn.Blocks[0].ToolResult, Is.EqualTo("Error: 404"));
     }
 
+    /// <summary>
+    /// What a specialist streams lands inside the call that started it, as a turn of its own.
+    /// </summary>
     [Test]
     public void ASubSessionEvent_FoldsIntoTheDelegationCallsOwnTurn()
     {
@@ -160,6 +197,9 @@ public class TurnStreamTests
         Assert.That(call.SubTurn.Blocks.Single().Text, Is.EqualTo("Bobotie"));
     }
 
+    /// <summary>
+    /// The turn's closing event says why it stopped and what it used.
+    /// </summary>
     [Test]
     public void MessageDelta_SetsTheStopReason_AndTheUsage()
     {
@@ -170,6 +210,9 @@ public class TurnStreamTests
         Assert.That(turn.Usage, Is.EqualTo(new TurnUsage(4, 100, 2000, 50, 2, 0.0031m, "USD", 0)));
     }
 
+    /// <summary>
+    /// A closing event with no usage leaves the usage empty instead of showing zeros.
+    /// </summary>
     [Test]
     public void MessageDelta_WithoutUsage_LeavesItNull()
     {
@@ -179,6 +222,9 @@ public class TurnStreamTests
         Assert.That(turn.Usage, Is.Null, "a command's turn, or an API without a ledger");
     }
 
+    /// <summary>
+    /// A failed turn shows its error, and what it spent before failing still counts.
+    /// </summary>
     [Test]
     public void AnError_SetsTheMessage_AndKeepsWhatTheTurnUsed()
     {
@@ -190,6 +236,9 @@ public class TurnStreamTests
             "FX6: the failed turn's requests still count");
     }
 
+    /// <summary>
+    /// An event the app doesn't know is skipped quietly; it never breaks the turn.
+    /// </summary>
     [Test]
     public void AnUnknownEvent_IsIgnored_NeverThrown()
     {
