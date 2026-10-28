@@ -2,7 +2,11 @@
 
 <section class="card-p runs-list">
     <div class="card-head">
-        <strong>Runs@if (chosen is not null) { <span> · </span><code>@Check?.Id</code> }</strong>
+        @* "Runs" is written as an expression: Razor reads Runs@if as an e-mail address and prints the code. *@
+        <strong>@("Runs")@if (Check is { } chosen)
+            {
+                <span> · </span><code>@chosen.Id</code>
+            }</strong>
         @if (_list.Models.Count > 0)
         {
             <select class="model-filter" @bind="Model" aria-label="Model">

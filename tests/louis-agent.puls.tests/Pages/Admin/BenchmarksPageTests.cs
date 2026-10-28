@@ -117,6 +117,20 @@ public partial class BenchmarksPageTests
         Snapshots.Match("louis-agent.puls.tests", "Pages/Admin/Benchmarks.html", Stable(cut.Markup));
     }
 
+    /// <summary>The runs list's heading names the chosen check, never the page's own code.</summary>
+    [Test]
+    public void TheRunsHeading_NamesTheChosenCheck()
+    {
+        using var ctx = new BunitContext();
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
+        var served = Serve(ctx);
+
+        var cut = ctx.Render<Benchmarks>();
+        cut.WaitForAssertion(() => Assert.That(served.Lists, Is.EqualTo(2)), TimeSpan.FromSeconds(10));
+
+        Assert.That(cut.Find(".runs-list strong").TextContent, Is.EqualTo($"Runs · {SampleEval.Beta}"));
+    }
+
     /// <summary>A check's manual, opened from its card.</summary>
     [Test]
     public void TheManual_IsShownAsBefore()
