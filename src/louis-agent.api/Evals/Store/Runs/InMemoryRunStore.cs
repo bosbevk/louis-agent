@@ -57,9 +57,9 @@ public sealed class InMemoryRunStore : IRunStore
         }
     }
 
-    /// <summary>Forgets the run, and says whether it was there.</summary>
-    public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
+    /// <summary>Forgets the run, and says how many went: one, or none if it wasn't there.</summary>
+    public Task<int> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
-        lock (_lock) return Task.FromResult(_runs.Remove(id));
+        lock (_lock) return Task.FromResult(_runs.Remove(id) ? 1 : 0);
     }
 }

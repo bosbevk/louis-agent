@@ -161,10 +161,10 @@ public abstract class ConversationStoreContract
         await _store.SaveConversationAsync(run, NewConversation("cottage-pie", 2));
         await _store.SaveConversationAsync(other, NewConversation("bobotie", 1));
 
-        Assert.That(await _store.DeleteConversationsAsync(run), Is.True);
+        Assert.That(await _store.DeleteConversationsAsync(run), Is.EqualTo(2));
 
         Assert.That(await _store.ConversationsAsync(run), Is.Empty);
-        Assert.That(await _store.DeleteConversationsAsync(run), Is.False, "nothing left to delete");
+        Assert.That(await _store.DeleteConversationsAsync(run), Is.Zero, "nothing left to delete");
         Assert.That((await _store.ConversationsAsync(other)).Count, Is.EqualTo(1), "another run keeps its own");
     }
 }

@@ -54,10 +54,10 @@ public sealed class MongoRequestStore : IRequestStore
         return [.. found.Select(d => d.ToRequest())];
     }
 
-    /// <summary>Deletes the run's requests, and says whether there were any.</summary>
-    public async Task<bool> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default)
+    /// <summary>Deletes the run's requests, and says how many went.</summary>
+    public async Task<int> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        return (await _requests.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount > 0;
+        return (int)(await _requests.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount;
     }
 }

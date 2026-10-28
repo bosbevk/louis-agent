@@ -70,11 +70,11 @@ public sealed class MongoTurnStore : ITurnStore
         return found?.ToEvents() ?? [];
     }
 
-    /// <summary>Deletes the run's turns, events and all, and says whether there were any.</summary>
-    public async Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default)
+    /// <summary>Deletes the run's turns, events and all, and says how many turns went.</summary>
+    public async Task<int> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        return (await _turns.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount > 0;
+        return (int)(await _turns.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount;
     }
 
     /// <summary>Finds the turn under this id.</summary>

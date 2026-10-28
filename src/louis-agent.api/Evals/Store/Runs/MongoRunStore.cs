@@ -73,10 +73,10 @@ public sealed class MongoRunStore : IRunStore
         return (int)result.ModifiedCount;
     }
 
-    /// <summary>Deletes the run's document, and says whether there was one.</summary>
-    public async Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
+    /// <summary>Deletes the run's document, and says how many went: one, or none.</summary>
+    public async Task<int> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        return (await _runs.DeleteOneAsync(d => d.Id == id, cancellationToken)).DeletedCount > 0;
+        return (int)(await _runs.DeleteOneAsync(d => d.Id == id, cancellationToken)).DeletedCount;
     }
 }

@@ -1048,6 +1048,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   `HumanVerdict`'s wire names become `pass`, `fail` and `unsure` in a commit of their own, with no alias for the old
   casing: 7c's pick C (every wire value kebab or lower case), and ADR 0049 deletes old stored grades.
 
+- **3c: old runs go through the delete button's path, in two commits** (Louis, 2026-10-28, two cards). The start-up
+  clean-up reuses the one-run delete (Fowler's Extract Function into `RunDeletion`, and Replace Primitive with Object:
+  deleting a run returns `DeletedRun`, its counts per collection, instead of a bool), so the log says how many runs,
+  conversations, turns, requests, notes, grades and judge checks went. The deletion's classes live in a concern
+  folder of their own, `Evals/Store/Deletion/`. 3c.1 is the counts and `RunDeletion` (the button uses it); 3c.2 is
+  finding the runs without `protocol_version: 2` and the start-up job.
+
 - **Step 7c.3's design** (Louis, 2026-10-28, cards before 3a).
   - **The keys go into the contract**: `ConversationKey` beside `TurnKey` in `Parts/Conversations`, and `TurnKey`
     and `ConversationEvent` get a `[JsonIgnore]` property that gives the conversation's key. The API and the harness

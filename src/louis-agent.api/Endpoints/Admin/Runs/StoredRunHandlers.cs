@@ -10,6 +10,7 @@ using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
@@ -112,12 +113,9 @@ internal sealed class StoredRunHandlers(
             return ApiErrors.Conflict(MessageText.Format(ApiUserText.StoredRunStillRunning, new { Id = id }));
         try
         {
-            if (!await store.DeleteRunAsync(id, cancellationToken)) return NoRun(id);
-
-            // The run is gone, so what was said about it goes too.
-            if (reviews is not null) await reviews.DeleteRunAsync(id, cancellationToken);
-            if (calibrations is not null) await calibrations.DeleteRunAsync(id, cancellationToken);
-            return TypedResults.NoContent();
+            // The run, everything it kept, and what people said about it, as the start-up clean-up deletes them.
+            var deleted = await new RunDeletion(store, reviews, calibrations).DeleteAsync(id, cancellationToken);
+            return deleted.Any ? TypedResults.NoContent() : NoRun(id);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {

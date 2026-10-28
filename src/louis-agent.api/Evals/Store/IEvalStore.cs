@@ -1,4 +1,5 @@
 using LouisAgent.Api.Evals.Store.Conversations;
+using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Requests;
 using LouisAgent.Api.Evals.Store.Runs;
@@ -32,8 +33,9 @@ public interface IEvalStore : IRunStore, IConversationStore, ITurnStore, IReques
     Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes a run and everything under it: conversations, turns, requests and notes. Tells you whether there was a
-    /// run.
+    /// Deletes a run and everything under it: conversations, turns, requests and notes. Tells you how many of each
+    /// went; people's grades and the judge's checks live in their own stores (<see cref="RunDeletion"/> takes those
+    /// too).
     /// </summary>
-    Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default);
+    Task<DeletedRun> DeleteRunAsync(string id, CancellationToken cancellationToken = default);
 }

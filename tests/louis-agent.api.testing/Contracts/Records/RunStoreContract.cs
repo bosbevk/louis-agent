@@ -219,10 +219,10 @@ public abstract class RunStoreContract
         await _store.SaveRunAsync(NewRun(run, T0));
         await _store.SaveRunAsync(NewRun(other, T0));
 
-        Assert.That(await _store.DeleteAsync(run), Is.True);
+        Assert.That(await _store.DeleteAsync(run), Is.EqualTo(1));
 
         Assert.That(await _store.GetRunAsync(run), Is.Null);
-        Assert.That(await _store.DeleteAsync(run), Is.False, "nothing left to delete");
+        Assert.That(await _store.DeleteAsync(run), Is.Zero, "nothing left to delete");
         Assert.That(await _store.GetRunAsync(other), Is.Not.Null, "another run stays");
     }
 }

@@ -29,8 +29,8 @@ public interface ITurnStore
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes every turn of a run, events and all, and tells you whether there were any. Deleting a whole run is
+    /// Deletes every turn of a run, events and all, and tells you how many turns went. Deleting a whole run is
     /// <see cref="IEvalStore.DeleteRunAsync"/>.
     /// </summary>
-    Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default);
+    Task<int> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default);
 }

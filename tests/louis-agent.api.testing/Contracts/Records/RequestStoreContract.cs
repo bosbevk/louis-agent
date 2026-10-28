@@ -82,10 +82,10 @@ public abstract class RequestStoreContract
             await _store.AddRequestsAsync(id, [request]);
         }
 
-        Assert.That(await _store.DeleteRequestsAsync(run), Is.True);
+        Assert.That(await _store.DeleteRequestsAsync(run), Is.EqualTo(1));
 
         Assert.That(await _store.RequestsAsync(run), Is.Empty);
-        Assert.That(await _store.DeleteRequestsAsync(run), Is.False, "nothing left to delete");
+        Assert.That(await _store.DeleteRequestsAsync(run), Is.Zero, "nothing left to delete");
         Assert.That((await _store.RequestsAsync(other)).Count, Is.EqualTo(1), "another run keeps its own");
     }
 }

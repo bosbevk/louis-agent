@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Testing;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
@@ -52,11 +53,11 @@ public abstract class EvalStoreContract
     private static StreamEvent Event() => new("message_start", Json("""{"delta":{"text":"a"}}"""), T0);
 
     /// <summary>
-    /// Deleting a run takes everything it kept with it (conversations, turns, events, requests) and leaves other runs
-    /// alone; deleting it twice finds nothing the second time.
+    /// Deleting a run takes everything it kept with it (conversations, turns, events, requests, notes), says how many
+    /// of each went, and leaves other runs alone; deleting it twice finds nothing the second time.
     /// </summary>
     [Test]
-    public async Task DeletingARun_DeletesEverythingItKept()
+    public async Task DeletingARun_DeletesEverythingItKept_AndCountsEachPart()
     {
         // Two runs with one of everything each.
         string run = NewId(), other = NewId();
@@ -68,16 +69,17 @@ public abstract class EvalStoreContract
             await _store.SaveTurnAsync(id, NewTurn(), [Event()]);
             await _store.AddRequestsAsync(id,
                 [new Request(id, turn, T0, "agent_turn", "sess_1", null, "m", 1, 1, 0, 0, 0.01m, 10)]);
+            await _store.AddNoteAsync(id, "a note", T0);
         }
 
-        Assert.That(await _store.DeleteRunAsync(run), Is.True);
+        Assert.That(await _store.DeleteRunAsync(run), Is.EqualTo(new DeletedRun(1, 1, 1, 1, 1)));
 
         Assert.That(await _store.GetRunAsync(run), Is.Null);
         Assert.That(await _store.ConversationsAsync(run), Is.Empty);
         Assert.That(await _store.TurnsAsync(run, turn.Conversation), Is.Empty);
         Assert.That(await _store.TurnEventsAsync(run, turn), Is.Empty);
         Assert.That(await _store.RequestsAsync(run), Is.Empty);
-        Assert.That(await _store.DeleteRunAsync(run), Is.False, "nothing left to delete");
+        Assert.That((await _store.DeleteRunAsync(run)).Any, Is.False, "nothing left to delete");
         Assert.That((await _store.ConversationsAsync(other)).Count, Is.EqualTo(1), "another run keeps its own");
     }
 
@@ -91,8 +93,9 @@ public abstract class EvalStoreContract
         string run = NewId();
         await _store.SaveConversationAsync(run, NewConversation());
 
-        Assert.That(await _store.DeleteRunAsync(run), Is.True);
+        var deleted = await _store.DeleteRunAsync(run);
 
+        Assert.That((deleted, deleted.Any), Is.EqualTo((new DeletedRun(0, 1, 0, 0, 0), true)));
         Assert.That(await _store.ConversationsAsync(run), Is.Empty);
     }
 }

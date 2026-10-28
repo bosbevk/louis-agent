@@ -3,6 +3,7 @@ using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Evals.Protocol;
@@ -360,20 +361,21 @@ public class EvalRecorderTests
             inner.CloseOrphansAsync(now, c);
 
         /// <summary>Passes it on.</summary>
-        public Task<bool> DeleteRunAsync(string id, CancellationToken c = default) => inner.DeleteRunAsync(id, c);
+        public Task<DeletedRun> DeleteRunAsync(string id, CancellationToken c = default) =>
+            inner.DeleteRunAsync(id, c);
 
         /// <summary>Passes it on.</summary>
-        public Task<bool> DeleteAsync(string id, CancellationToken c = default) => inner.DeleteAsync(id, c);
+        public Task<int> DeleteAsync(string id, CancellationToken c = default) => inner.DeleteAsync(id, c);
 
         /// <summary>Passes it on.</summary>
-        public Task<bool> DeleteConversationsAsync(string run, CancellationToken c = default) =>
+        public Task<int> DeleteConversationsAsync(string run, CancellationToken c = default) =>
             inner.DeleteConversationsAsync(run, c);
 
         /// <summary>Passes it on.</summary>
-        public Task<bool> DeleteTurnsAsync(string run, CancellationToken c = default) => inner.DeleteTurnsAsync(run, c);
+        public Task<int> DeleteTurnsAsync(string run, CancellationToken c = default) => inner.DeleteTurnsAsync(run, c);
 
         /// <summary>Passes it on.</summary>
-        public Task<bool> DeleteRequestsAsync(string run, CancellationToken c = default) =>
+        public Task<int> DeleteRequestsAsync(string run, CancellationToken c = default) =>
             inner.DeleteRequestsAsync(run, c);
 
         /// <summary>Passes the note on to the real store.</summary>

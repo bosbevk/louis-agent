@@ -20,8 +20,8 @@ public interface IConversationStore
     Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes every conversation of a run, and tells you whether there were any. Deleting a whole run is
+    /// Deletes every conversation of a run, and tells you how many went. Deleting a whole run is
     /// <see cref="IEvalStore.DeleteRunAsync"/>.
     /// </summary>
-    Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default);
+    Task<int> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default);
 }

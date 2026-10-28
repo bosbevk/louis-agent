@@ -1,4 +1,5 @@
 using LouisAgent.Api.Evals.Store.Conversations;
+using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Requests;
 using LouisAgent.Api.Evals.Store.Runs;
@@ -56,7 +57,7 @@ public sealed class InMemoryEvalStore : IEvalStore
         _runs.CloseOrphansAsync(now, cancellationToken);
 
     /// <summary>Deletes only the run's own record.</summary>
-    public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default) =>
+    public Task<int> DeleteAsync(string id, CancellationToken cancellationToken = default) =>
         _runs.DeleteAsync(id, cancellationToken);
 
     /// <summary>Hands the conversation to the conversation store.</summary>
@@ -69,7 +70,7 @@ public sealed class InMemoryEvalStore : IEvalStore
         CancellationToken cancellationToken = default) => _conversations.ConversationsAsync(run, cancellationToken);
 
     /// <summary>Deletes only the run's conversations.</summary>
-    public Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default) =>
+    public Task<int> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default) =>
         _conversations.DeleteConversationsAsync(run, cancellationToken);
 
     /// <summary>Hands the turn and its events to the turn store.</summary>
@@ -85,7 +86,7 @@ public sealed class InMemoryEvalStore : IEvalStore
         CancellationToken cancellationToken = default) => _turns.TurnEventsAsync(run, turn, cancellationToken);
 
     /// <summary>Deletes only the run's turns.</summary>
-    public Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default) =>
+    public Task<int> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default) =>
         _turns.DeleteTurnsAsync(run, cancellationToken);
 
     /// <summary>Hands the ledger's requests to the request store.</summary>
@@ -97,7 +98,7 @@ public sealed class InMemoryEvalStore : IEvalStore
         _requests.RequestsAsync(run, cancellationToken);
 
     /// <summary>Deletes only the run's requests.</summary>
-    public Task<bool> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default) =>
+    public Task<int> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default) =>
         _requests.DeleteRequestsAsync(run, cancellationToken);
 
     /// <summary>Adds a note beside the run, once the shared rule says the text is fine and the run is there.</summary>
@@ -129,16 +130,19 @@ public sealed class InMemoryEvalStore : IEvalStore
             return Task.FromResult<IReadOnlyList<RunNote>>(_notes.TryGetValue(run, out var kept) ? kept.ToArray() : []);
     }
 
-    /// <summary>Deletes the run and everything under it, notes included. Says whether there was a run.</summary>
-    public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
+    /// <summary>Deletes the run and everything under it, notes included, and says how many of each went.</summary>
+    public async Task<DeletedRun> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
     {
-        // Each store deletes its own part. Anything found counts as a run having been there, even a leftover with no
-        // run record.
-        bool had = await _runs.DeleteAsync(id, cancellationToken);
-        had |= await _conversations.DeleteConversationsAsync(id, cancellationToken);
-        had |= await _turns.DeleteTurnsAsync(id, cancellationToken);
-        had |= await _requests.DeleteRequestsAsync(id, cancellationToken);
-        lock (_lock) had |= _notes.Remove(id);
-        return had;
+        // Each store deletes its own part and counts it.
+        int runs = await _runs.DeleteAsync(id, cancellationToken);
+        int conversations = await _conversations.DeleteConversationsAsync(id, cancellationToken);
+        int turns = await _turns.DeleteTurnsAsync(id, cancellationToken);
+        int requests = await _requests.DeleteRequestsAsync(id, cancellationToken);
+
+        // The notes sit here, in one list per run.
+        int notes;
+        lock (_lock) notes = _notes.Remove(id, out var gone) ? gone.Count : 0;
+
+        return new DeletedRun(runs, conversations, turns, requests, notes);
     }
 }

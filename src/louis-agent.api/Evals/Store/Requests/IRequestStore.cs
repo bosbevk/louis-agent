@@ -21,8 +21,8 @@ public interface IRequestStore
     Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes every request of a run, and tells you whether there were any. Deleting a whole run is
+    /// Deletes every request of a run, and tells you how many went. Deleting a whole run is
     /// <see cref="IEvalStore.DeleteRunAsync"/>.
     /// </summary>
-    Task<bool> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default);
+    Task<int> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default);
 }

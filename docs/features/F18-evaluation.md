@@ -1728,6 +1728,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the PascalCase stored one, went: the run reply says `.Wire()`. `PascalCaseWireTests` became `VerdictWireTests`
   (renamed in Rider), and the review fixture pins `fail`. Red first: 2 (the wire names, the stored fixture). The
   shared parser still ignores case (ADR 0024), so the stored word is read as it reads every enum.
+- **Step 7c.3c.1: deleting a run counts what went, through one `RunDeletion`.** Each record store's delete returns
+  how many went instead of whether any did (the run store one or none, the conversation, turn and request stores
+  their counts; the notes already counted), and `IEvalStore.DeleteRunAsync` returns `DeletedRun`, the counts per
+  collection, with `Any` for the delete button's 404. `RunDeletion` (in `Evals/Store/Deletion/`) holds the button's
+  three calls: the eval store's part, then people's grades and the judge's checks, which it adds to the counts; a run
+  that isn't there leaves the grades alone, as before. The endpoint calls it, so 3c.2's start-up clean-up deletes
+  exactly what the button does. Tests: the record stores' contracts expect the counts, the eval store's contract
+  expects `DeletedRun(1, 1, 1, 1, 1)` with a note added, and `RunDeletionTests` (grades and checks go and are
+  counted, an unknown run deletes nothing, no review or calibration store). Red first: 8 (the three new tests, the
+  eval store's two deletes, the notes' delete, two endpoint deletes) against stubs; the record stores' count changes
+  were one-liners written straight away, so their contract tests passed without going red first.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

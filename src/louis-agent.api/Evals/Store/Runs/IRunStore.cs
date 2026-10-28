@@ -31,8 +31,8 @@ public interface IRunStore
     Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Deletes the run's own record, nothing under it, and tells you whether there was one. Deleting a whole run is
-    /// <see cref="IEvalStore.DeleteRunAsync"/>.
+    /// Deletes the run's own record, nothing under it, and tells you how many went: one, or none. Deleting a whole run
+    /// is <see cref="IEvalStore.DeleteRunAsync"/>.
     /// </summary>
-    Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default);
+    Task<int> DeleteAsync(string id, CancellationToken cancellationToken = default);
 }

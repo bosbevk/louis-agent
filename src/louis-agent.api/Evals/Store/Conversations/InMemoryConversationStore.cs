@@ -38,14 +38,14 @@ public sealed class InMemoryConversationStore : IConversationStore
                 .OrderBy(c => c.Order).ToArray());
     }
 
-    /// <summary>Forgets the run's conversations, and says whether there were any.</summary>
-    public Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default)
+    /// <summary>Forgets the run's conversations, and says how many went.</summary>
+    public Task<int> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default)
     {
         lock (_lock)
         {
             var keys = _conversations.Keys.Where(k => k.Run == run).ToArray();
             foreach (var key in keys) _conversations.Remove(key);
-            return Task.FromResult(keys.Length > 0);
+            return Task.FromResult(keys.Length);
         }
     }
 }

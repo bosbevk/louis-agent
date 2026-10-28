@@ -48,14 +48,14 @@ public sealed class InMemoryTurnStore : ITurnStore
                 : []);
     }
 
-    /// <summary>Forgets the run's turns and their events, and says whether there were any.</summary>
-    public Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default)
+    /// <summary>Forgets the run's turns and their events, and says how many turns went.</summary>
+    public Task<int> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default)
     {
         lock (_lock)
         {
             var keys = _turns.Keys.Where(k => k.Run == run).ToArray();
             foreach (var key in keys) _turns.Remove(key);
-            return Task.FromResult(keys.Length > 0);
+            return Task.FromResult(keys.Length);
         }
     }
 }

@@ -164,11 +164,11 @@ public abstract class TurnStoreContract
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 1), [Event("message_start", "a")]);
         await _store.SaveTurnAsync(other, NewTurn("bobotie", 1), [Event("message_start", "a")]);
 
-        Assert.That(await _store.DeleteTurnsAsync(run), Is.True);
+        Assert.That(await _store.DeleteTurnsAsync(run), Is.EqualTo(1));
 
         Assert.That(await _store.TurnsAsync(run, key.Conversation), Is.Empty);
         Assert.That(await _store.TurnEventsAsync(run, key), Is.Empty);
-        Assert.That(await _store.DeleteTurnsAsync(run), Is.False, "nothing left to delete");
+        Assert.That(await _store.DeleteTurnsAsync(run), Is.Zero, "nothing left to delete");
         Assert.That((await _store.TurnEventsAsync(other, key)).Count, Is.EqualTo(1), "another run keeps its own");
     }
 }

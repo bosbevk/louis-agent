@@ -53,10 +53,10 @@ public sealed class MongoConversationStore : IConversationStore
         return [.. found.Select(d => d.ToConversation())];
     }
 
-    /// <summary>Deletes the run's conversations, and says whether there were any.</summary>
-    public async Task<bool> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default)
+    /// <summary>Deletes the run's conversations, and says how many went.</summary>
+    public async Task<int> DeleteConversationsAsync(string run, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        return (await _conversations.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount > 0;
+        return (int)(await _conversations.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount;
     }
 }

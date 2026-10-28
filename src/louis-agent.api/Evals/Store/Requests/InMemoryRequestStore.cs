@@ -35,9 +35,9 @@ public sealed class InMemoryRequestStore : IRequestStore
                 .ToArray());
     }
 
-    /// <summary>Forgets the run's requests, and says whether there were any.</summary>
-    public Task<bool> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default)
+    /// <summary>Forgets the run's requests, and says how many went.</summary>
+    public Task<int> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default)
     {
-        lock (_lock) return Task.FromResult(_requests.RemoveAll(r => r.Run == run) > 0);
+        lock (_lock) return Task.FromResult(_requests.RemoveAll(r => r.Run == run));
     }
 }
