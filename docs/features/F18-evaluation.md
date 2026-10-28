@@ -1337,6 +1337,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   second test fails if an allowed name is gone.
 - **Step 7b (iii), ADR 0037** (*One agent API; products get a front door*): the rule the ratchet holds, written in
   the number the platform plan kept for it, and added to the ADR index (0038's row no longer reserves it).
+- **Step 7b, the store splits by record: runs** (the plan's *Step 7b splits the store by record*; the shape is
+  finding 24 of the [unattended log](../plans/F18-unattended-decisions.md)). `IRunStore` in `Evals/Store/Runs/`,
+  with `InMemoryRunStore` and `MongoRunStore` (the `runs` collection, its index and `RunDocuments`), held to
+  `RunStoreContract` and `RunFieldsContract` (was `EvalRunFieldsContract`) in `Contracts/Records/`; the Mongo half
+  skips without `BENCHMARKS_MONGO_URL`, as before, through one `TestMongo` helper. `IEvalStore` stays as the Facade:
+  it inherits `IRunStore`, and both stores hand the run calls to their run store; deleting a run still takes
+  everything under it, the run's own record through the new `IRunStore.DeleteAsync`. `MongoEvalDatabase` opens the
+  database with the five-second timeouts every record store shares. Field and collection names are unchanged. Red
+  first: the run contract against a stub that threw (12 of 13 failing).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

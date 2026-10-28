@@ -1,26 +1,26 @@
-using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Notes;
+using LouisAgent.Api.Evals.Store.Runs;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
 namespace LouisAgent.Api.Evals.Store;
 
 /// <summary>
-/// The store in memory: what the tests run on, and the reference the Mongo store is held to. One lock covers
-/// everything, because a handful of writes a second is all it ever sees.
+/// The whole store in memory: what the tests run on, and the reference the Mongo store is held to. Each record lives
+/// in its own in-memory store; this class adds the notes and deleting a run with everything under it.
 /// </summary>
 /// <remarks>
-/// Repository, the in-memory side. It keeps the same records as Mongo behind the same interface, so tests and an API
-/// with no database work without knowing the difference, and one contract test holds both stores.
+/// Facade, the in-memory side: it hands each record to its own store, so tests and an API with no database see one
+/// store, and each record store is held to its own contract test.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class InMemoryEvalStore : IEvalStore
 {
-    /// <summary>The one lock over everything below.</summary>
-    private readonly Lock _lock = new();
+    /// <summary>The runs themselves.</summary>
+    private readonly InMemoryRunStore _runs = new();
 
-    /// <summary>Runs by id.</summary>
-    private readonly Dictionary<string, Run> _runs = [];
+    /// <summary>The one lock over the records still kept here.</summary>
+    private readonly Lock _lock = new();
 
     /// <summary>Conversations by run and key.</summary>
     private readonly Dictionary<(string Run, ConversationKey Key), Conversation> _conversations = [];
@@ -36,27 +36,25 @@ public sealed class InMemoryEvalStore : IEvalStore
     /// </summary>
     private readonly Dictionary<string, List<RunNote>> _notes = [];
 
-    /// <summary>Saves the run, replacing the one under its id. Notes are not part of it, so they stay.</summary>
-    public Task SaveRunAsync(Run run, CancellationToken cancellationToken = default)
-    {
-        lock (_lock) _runs[run.Id] = run;
-        return Task.CompletedTask;
-    }
+    /// <summary>Hands the run to the run store.</summary>
+    public Task SaveRunAsync(Run run, CancellationToken cancellationToken = default) =>
+        _runs.SaveRunAsync(run, cancellationToken);
 
-    /// <summary>Finds the run, or nothing if there is none.</summary>
-    public Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default)
-    {
-        lock (_lock) return Task.FromResult(_runs.GetValueOrDefault(id));
-    }
+    /// <summary>Asks the run store for the run.</summary>
+    public Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default) =>
+        _runs.GetRunAsync(id, cancellationToken);
 
-    /// <summary>Lists the newest runs first, up to the limit, and only one check's if asked.</summary>
+    /// <summary>Asks the run store for the newest runs.</summary>
     public Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
-        CancellationToken cancellationToken = default)
-    {
-        lock (_lock)
-            return Task.FromResult<IReadOnlyList<Run>>(_runs.Values.Where(r => check is null || r.Check == check)
-                .OrderByDescending(r => r.StartedAt).Take(limit).ToArray());
-    }
+        CancellationToken cancellationToken = default) => _runs.ListRunsAsync(check, limit, cancellationToken);
+
+    /// <summary>Has the run store close the runs a restart cut off.</summary>
+    public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default) =>
+        _runs.CloseOrphansAsync(now, cancellationToken);
+
+    /// <summary>Deletes only the run's own record.</summary>
+    public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default) =>
+        _runs.DeleteAsync(id, cancellationToken);
 
     /// <summary>Saves a conversation, replacing the one under its key.</summary>
     public Task SaveConversationAsync(string run, Conversation conversation,
@@ -120,39 +118,26 @@ public sealed class InMemoryEvalStore : IEvalStore
                 .ToArray());
     }
 
-    /// <summary>Marks every run still 'running' as failed and ended now, and says how many.</summary>
-    public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default)
-    {
-        lock (_lock)
-        {
-            var orphans = _runs.Values.Where(r => r.Status == EvalRunStatus.Running).ToArray();
-            foreach (var run in orphans)
-                _runs[run.Id] = run with
-                {
-                    Status = EvalRunStatus.Failed,
-                    EndedAt = now
-                };
-            return Task.FromResult(orphans.Length);
-        }
-    }
-
-    /// <summary>Adds a note once the shared rule says the text is fine, and keeps it beside the run.</summary>
-    public Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
+    /// <summary>Adds a note beside the run, once the shared rule says the text is fine and the run is there.</summary>
+    /// <remarks>Guard clauses: each reason not to keep the note returns first, so keeping it comes last.</remarks>
+    public async Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
         ConversationKey? conversation = null, CancellationToken cancellationToken = default)
     {
-        // Turn a bad text down before taking the lock.
+        // Turn a bad text down before asking about the run.
         var made = RunNotes.Make(text, at, conversation);
-        if (made is not NoteResult.Added added) return Task.FromResult(made);
+        if (made is not NoteResult.Added added) return made;
 
-        // Under the lock: the run must be there, then the note goes on its list (made the first time).
+        // A note needs a run to belong to.
+        if (await _runs.GetRunAsync(run, cancellationToken) is null) return new NoteResult.NoRun();
+
+        // The note goes on the run's list, made the first time.
         lock (_lock)
         {
-            if (!_runs.ContainsKey(run)) return Task.FromResult<NoteResult>(new NoteResult.NoRun());
             if (!_notes.TryGetValue(run, out var kept)) _notes[run] = kept = [];
             kept.Add(added.Note);
         }
 
-        return Task.FromResult(made);
+        return made;
     }
 
     /// <summary>The run's notes, in the order written.</summary>
@@ -163,18 +148,19 @@ public sealed class InMemoryEvalStore : IEvalStore
     }
 
     /// <summary>Deletes the run and everything under it, notes included. Says whether there was a run.</summary>
-    public Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
     {
+        // Anything found under the id counts as a run having been there, even a leftover with no run record.
+        bool had = await _runs.DeleteAsync(id, cancellationToken);
         lock (_lock)
         {
-            // Anything found under the id counts as a run having been there, even a leftover with no run record.
-            bool had = _runs.Remove(id);
             foreach (var key in _conversations.Keys.Where(k => k.Run == id).ToArray())
                 had |= _conversations.Remove(key);
             foreach (var key in _turns.Keys.Where(k => k.Run == id).ToArray()) had |= _turns.Remove(key);
             had |= _requests.RemoveAll(r => r.Run == id) > 0;
             had |= _notes.Remove(id);
-            return Task.FromResult(had);
         }
+
+        return had;
     }
 }

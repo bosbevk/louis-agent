@@ -514,3 +514,35 @@ stored one.
 **Why 1.** It does what the row says for the stored key, keeps the reply honest, and leaves the protocol to the one
 change that versions it. Sources: Fowler, *ParallelChange*, *TolerantReader* (martinfowler.com/bliki). **Commit:**
 step 7b (iii), the `AgentCalls` commit.
+
+### 24. How callers get the four record stores (step 7b, the store split)
+
+**What came up.** The plan's *Step 7b splits the store by record* names the four stores (`IRunStore`,
+`IConversationStore`, `ITurnStore`, `IRequestStore`) and says `IEvalStore` "goes, or stays only as the four together
+for the recorder". About forty places take an `IEvalStore` today (the recorder, every admin handler, the trends, the
+export, `ApiTestHost` and some thirty tests), and two things reach across the records: deleting a run with everything
+under it, and a note, which may only go on a run that exists. The entry says nothing about notes, reviews,
+calibrations or slices.
+
+1. **`IEvalStore` stays as a Facade over the four: it inherits each record's interface, adds the notes and the
+   cascading delete, and `InMemoryEvalStore` and `MongoEvalStore` hand each call to the record's own store (picked).**
+   Pattern: *Facade* (Gang of Four) over one *Repository* per record (Fowler, PoEAA), with *Interface Segregation*
+   (Martin): since `IEvalStore` *is* each record interface, a caller that needs only runs can take `IRunStore`
+   later. Changes: four interfaces with a MongoDB and an in-memory class and a contract test each; the two facades
+   shrink to one-line hand-offs, the notes and the delete. Costs: a hand-off line per method in each facade, and a
+   record-level delete per store (`IRunStore.DeleteAsync`, the conversations', turns' and requests' of a run) that the
+   facade's `DeleteRunAsync` calls; the test decorator in `EvalRecorderTests` gains a line per new member.
+2. **Callers take the stores they need** (constructor injection, Interface Segregation all the way): `IEvalStore` goes;
+   each handler, report and the recorder names its record stores; the delete and the notes get a small service of
+   their own. Costs: every handler's constructor, `Program.cs`, `ApiTestHost` and about thirty tests change in the
+   same commits, the four commits stop being one record each, and every test has to build up to four stores.
+3. **`IEvalStore` as a Facade with the four as properties** (`store.Runs.GetRunAsync(…)`). Costs: every call site
+   changes (about a hundred and forty lines), for a name at each call that the type already says.
+
+**Why 1.** It is what the plan allows ("stays only as the four together for the recorder"), it keeps each commit to
+one record and green, and it leaves option 2 open caller by caller. Notes, reviews, calibrations and slices stay where
+they are: notes in the facade (they reach across to the runs, and the plan's entry doesn't move them), reviews and
+calibrations already have their own stores (`IHumanReviewStore`, `ICalibrationStore`), and slices are part of the run
+document (`SliceDocuments` maps them inside it). Sources: Gamma et al., *Design Patterns*, Facade; Fowler, *Patterns
+of Enterprise Application Architecture*, Repository and Data Mapper; Martin, *Agile Software Development*, the
+Interface Segregation Principle. **Commits:** step 7b, the four "store splits by record" commits.

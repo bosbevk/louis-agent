@@ -2,28 +2,30 @@ using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Runs.Protocol;
-using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Runs;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
-/// What every store keeps on a run beyond its first fields, in memory and in MongoDB alike: a review's question, the
-/// run it re-scored, a cost of a known zero, the roll-up's slices and each agent's prompts. A run stored before a field
-/// existed reads it as null. It sits apart from <see cref="EvalStoreContract"/>, which is at its size limit.
+/// What every store of runs keeps on a run beyond its first fields, in memory and in MongoDB alike: a review's
+/// question, the run it re-scored, a cost of a known zero, the roll-up's slices and each agent's prompts. A run stored
+/// before a field existed reads it as null. It sits apart from <see cref="RunStoreContract"/> to keep both short.
 /// </summary>
 /// <remarks>
 /// Abstract test (a contract test): the tests are written once, and each store gets a small subclass that only says
 /// how to make one, so the in-memory store and the Mongo store are held to the same rules.
 /// </remarks>
-public abstract class EvalRunFieldsContract
+public abstract class RunFieldsContract
 {
+    /// <summary>The moment the tests start from.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 17, 9, 0, 0, TimeSpan.Zero);
 
-    private IEvalStore _store = null!;
+    /// <summary>The store under test.</summary>
+    private IRunStore _store = null!;
 
     /// <summary>A store to test; each test gets a fresh one.</summary>
-    protected abstract IEvalStore CreateStore();
+    protected abstract IRunStore CreateStore();
 
     /// <summary>A fresh store before every test.</summary>
     [SetUp]

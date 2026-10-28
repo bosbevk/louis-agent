@@ -1,36 +1,30 @@
-using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Api.Evals.Store.Notes;
+using LouisAgent.Api.Evals.Store.Runs;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Store.Mongo.BsonValues;
+using static LouisAgent.Api.Evals.Store.Mongo.MongoEvalDatabase;
 
 namespace LouisAgent.Api.Evals.Store.Mongo;
 
 /// <summary>
 /// Keeps eval runs in MongoDB, one collection per kind of record: runs, conversations, turns, the ledger's requests
-/// and the notes. A server that doesn't answer fails a call within five seconds, so the recorder gives up quickly and
-/// the run carries on.
+/// and the notes. Each record has its own store; this class adds the notes and deleting a run with everything under
+/// it.
 /// </summary>
 /// <remarks>
-/// Repository, with a Data Mapper per document (<see cref="RunDocuments"/>, <see cref="ConversationDocuments"/>,
-/// <see cref="TurnDocuments"/>, <see cref="RequestDocuments"/>), written by hand so what <c>mongosh</c> shows is what
-/// the portal reads. This class keeps only the collections and the queries; the indexes are made the first time
-/// anything needs them, so starting the API never waits on Mongo.
+/// Facade over one Repository per record, each with its hand-written Data Mapper (<see cref="RunDocuments"/>,
+/// <see cref="ConversationDocuments"/>, <see cref="TurnDocuments"/>, <see cref="RequestDocuments"/>), so what
+/// <c>mongosh</c> shows is what the portal reads. The indexes are made the first time anything needs them, so
+/// starting the API never waits on Mongo.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoEvalStore : IEvalStore
 {
-    /// <summary>How long a call waits for the server before giving up.</summary>
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
-
-    /// <summary>Replace the document if there is one, otherwise insert it.</summary>
-    private static readonly ReplaceOptions Upsert = new() { IsUpsert = true };
-
-    /// <summary>The runs.</summary>
-    private readonly IMongoCollection<BsonDocument> _runs;
+    /// <summary>The runs themselves.</summary>
+    private readonly MongoRunStore _runs;
 
     /// <summary>The conversations.</summary>
     private readonly IMongoCollection<BsonDocument> _conversations;
@@ -53,51 +47,39 @@ public sealed class MongoEvalStore : IEvalStore
     /// </summary>
     public MongoEvalStore(string url, string database)
     {
-        var settings = MongoClientSettings.FromConnectionString(url);
-        settings.ServerSelectionTimeout = Timeout;
-        settings.ConnectTimeout = Timeout;
-
-        var db = new MongoClient(settings).GetDatabase(database);
-        _runs = db.GetCollection<BsonDocument>("runs");
-        _conversations = db.GetCollection<BsonDocument>("conversations");
-        _turns = db.GetCollection<BsonDocument>("turns");
-        _requests = db.GetCollection<BsonDocument>("requests");
+        Database = MongoEvalDatabase.Open(url, database);
+        _runs = new MongoRunStore(Database);
+        _conversations = Database.GetCollection<BsonDocument>("conversations");
+        _turns = Database.GetCollection<BsonDocument>("turns");
+        _requests = Database.GetCollection<BsonDocument>("requests");
         // A note may only go on a run that exists, so the notes ask the runs.
-        _notes = new MongoRunNotes(db.GetCollection<BsonDocument>("run_notes"),
-            (id, cancellationToken) => _runs.Find(ById(id)).AnyAsync(cancellationToken));
+        _notes = new MongoRunNotes(Database.GetCollection<BsonDocument>("run_notes"),
+            async (id, cancellationToken) => await _runs.GetRunAsync(id, cancellationToken) is not null);
         _indexes = new OnceItWorks(CreateIndexesAsync);
     }
 
     /// <summary>The database itself, so a test can drop its own.</summary>
-    internal IMongoDatabase Database => _runs.Database;
+    internal IMongoDatabase Database { get; }
 
-    /// <summary>Saves the run, replacing the one under its id.</summary>
-    public async Task SaveRunAsync(Run run, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        await _runs.ReplaceOneAsync(ById(run.Id), RunDocuments.ToBson(run), Upsert, cancellationToken);
-    }
+    /// <summary>Hands the run to the run store.</summary>
+    public Task SaveRunAsync(Run run, CancellationToken cancellationToken = default) =>
+        _runs.SaveRunAsync(run, cancellationToken);
 
-    /// <summary>Finds a run by its id.</summary>
-    public async Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _runs.Find(ById(id)).FirstOrDefaultAsync(cancellationToken);
-        return found is null ? null : RunDocuments.RunOf(found);
-    }
+    /// <summary>Asks the run store for the run.</summary>
+    public Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default) =>
+        _runs.GetRunAsync(id, cancellationToken);
 
-    /// <summary>The newest runs first, up to the limit, and one eval's only if asked.</summary>
-    public async Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var filter = check is null
-            ? Builders<BsonDocument>.Filter.Empty
-            : Builders<BsonDocument>.Filter.Eq("check", check);
-        var found = await _runs.Find(filter).Sort(Builders<BsonDocument>.Sort.Descending("started_at")).Limit(limit)
-            .ToListAsync(cancellationToken);
-        return found.Select(RunDocuments.RunOf).ToArray();
-    }
+    /// <summary>Asks the run store for the newest runs.</summary>
+    public Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
+        CancellationToken cancellationToken = default) => _runs.ListRunsAsync(check, limit, cancellationToken);
+
+    /// <summary>Has the run store close the runs a restart cut off.</summary>
+    public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default) =>
+        _runs.CloseOrphansAsync(now, cancellationToken);
+
+    /// <summary>Deletes only the run's own document.</summary>
+    public Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default) =>
+        _runs.DeleteAsync(id, cancellationToken);
 
     /// <summary>Saves a conversation, replacing the one under its key.</summary>
     public async Task SaveConversationAsync(string run, Conversation conversation,
@@ -173,18 +155,6 @@ public sealed class MongoEvalStore : IEvalStore
         return found.Select(RequestDocuments.RequestOf).ToArray();
     }
 
-    /// <summary>Marks every run still running as failed and ended now, and says how many there were.</summary>
-    public async Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var result = await _runs.UpdateManyAsync(
-            Builders<BsonDocument>.Filter.Eq("status", RunDocuments.Status(EvalRunStatus.Running)),
-            Builders<BsonDocument>.Update.Set("status", RunDocuments.Status(EvalRunStatus.Failed))
-                .Set("ended_at", Date(now)),
-            cancellationToken: cancellationToken);
-        return (int)result.ModifiedCount;
-    }
-
     /// <summary>Adds a person's note to a run, or to one of its conversations.</summary>
     public async Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
         ConversationKey? conversation = null, CancellationToken cancellationToken = default)
@@ -204,19 +174,17 @@ public sealed class MongoEvalStore : IEvalStore
     public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
     {
         await Ready();
-        long deleted = (await _runs.DeleteOneAsync(ById(id), cancellationToken)).DeletedCount;
-        deleted += (await _conversations.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
+        bool had = await _runs.DeleteAsync(id, cancellationToken);
+        long deleted = (await _conversations.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += (await _turns.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
         deleted += await _notes.DeleteRunAsync(id, cancellationToken);
-        return deleted > 0;
+        return had || deleted > 0;
     }
 
-    /// <summary>Makes the indexes the reads rely on.</summary>
+    /// <summary>Makes the indexes the reads of the records still kept here rely on.</summary>
     private async Task CreateIndexesAsync()
     {
-        await _runs.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
-            Builders<BsonDocument>.IndexKeys.Ascending("check").Descending("started_at")));
         await _conversations.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
             Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("order")));
         await _turns.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
@@ -229,10 +197,4 @@ public sealed class MongoEvalStore : IEvalStore
 
     /// <summary>Waits until the indexes exist, making them if this is the first call.</summary>
     private Task Ready() => _indexes.RunAsync();
-
-    /// <summary>Finds the document with this id.</summary>
-    private static FilterDefinition<BsonDocument> ById(BsonValue id) => Builders<BsonDocument>.Filter.Eq("_id", id);
-
-    /// <summary>Finds everything that belongs to this run.</summary>
-    private static FilterDefinition<BsonDocument> OfRun(string run) => Builders<BsonDocument>.Filter.Eq("run", run);
 }

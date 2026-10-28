@@ -1,31 +1,23 @@
 using LouisAgent.Api.Evals.Store.Notes;
+using LouisAgent.Api.Evals.Store.Runs;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
 namespace LouisAgent.Api.Evals.Store;
 
 /// <summary>
-/// Where eval runs are kept: in memory for the tests and an API with no database, in MongoDB for the real runs.
-/// Saving a document twice replaces it, so the recorder can write it again as it grows, and reads come back in the
-/// run's order.
+/// Everything an eval run keeps, in one place: the record stores together, plus the notes and deleting a whole run,
+/// which reach across them. In memory for the tests and an API with no database, in MongoDB for the real runs.
 /// </summary>
 /// <remarks>
-/// Repository. The rest of the API talks to this and never to Mongo, so tests run on the in-memory store and both
-/// stores are held to one contract test. Without it every endpoint would need to know which database it was on.
+/// Facade (Gang of Four) over one Repository per record (Fowler, PoEAA). The recorder, the endpoints and the reports
+/// keep asking one store as they always did, while each record's store is its own small class with its own contract
+/// test. A caller that needs only one record can take that record's interface instead, since this one is all of them
+/// (Interface Segregation). Without the facade every handler and test would have to be handed four stores.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
-public interface IEvalStore
+public interface IEvalStore : IRunStore
 {
-    /// <summary>Saves the run, replacing whatever was kept under its id.</summary>
-    Task SaveRunAsync(Run run, CancellationToken cancellationToken = default);
-
-    /// <summary>Finds the run with this id, or nothing if there is none.</summary>
-    Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default);
-
-    /// <summary>Lists the newest runs first, up to a limit, and only one check's if you ask.</summary>
-    Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
-        CancellationToken cancellationToken = default);
-
     /// <summary>Saves one conversation of a run, replacing the one under its key.</summary>
     Task SaveConversationAsync(string run, Conversation conversation, CancellationToken cancellationToken = default);
 
@@ -51,12 +43,6 @@ public interface IEvalStore
 
     /// <summary>A run's model requests, by time.</summary>
     Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Marks every run still 'running' as failed. At start-up nothing is running, so those were cut off by a restart.
-    /// Tells you how many.
-    /// </summary>
-    Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Adds a person's note to a run, or to one of its conversations. Notes are only ever added, and saving the run
