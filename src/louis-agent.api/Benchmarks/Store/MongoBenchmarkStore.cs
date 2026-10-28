@@ -13,11 +13,14 @@ using LouisAgent.Core.Messages;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// The store in MongoDB: `puls_benchmarks` on `puls-mongo`, one collection per kind of record. Documents are mapped by hand, field by field in snake case, so what `mongosh` shows is what the portal reads. A server that doesn't answer fails a call within five seconds, so the recorder gives up quickly and the run carries on.
+/// The store in MongoDB: `puls_benchmarks` on `puls-mongo`, one collection per kind of record. Documents are mapped
+/// by hand, field by field in snake case, so what `mongosh` shows is what the portal reads. A server that doesn't
+/// answer fails a call within five seconds, so the recorder gives up quickly and the run carries on.
 /// </summary>
 /// <remarks>
-/// Repository, with the mapping written by hand. A check's own scores and a turn's stream events are kept as the JSON they came as, and the indexes are made the first time they are needed.
-/// Writing each mapper costs more than a generic one, but nothing the portal reads is hidden behind a convention.
+/// Repository, with the mapping written by hand. A check's own scores and a turn's stream events are kept as the JSON
+/// they came as, and the indexes are made the first time they are needed. Writing each mapper costs more than a
+/// generic one, but nothing the portal reads is hidden behind a convention.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoBenchmarkStore : IBenchmarkStore
@@ -43,7 +46,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     /// <summary>Makes the indexes the first time anything needs them, and tries again if that failed.</summary>
     private readonly OnceItWorks _indexes;
 
-    /// <summary>Connects to `database` on the server at `url`, with short timeouts. Nothing is created until the first call.</summary>
+    /// <summary>
+    /// Connects to `database` on the server at `url`, with short timeouts. Nothing is created until the first call.
+    /// </summary>
     public MongoBenchmarkStore(string url, string database)
     {
         var settings = MongoClientSettings.FromConnectionString(url);
@@ -230,11 +235,24 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
 
     /// <summary>The id of a conversation's document: its run and its key.</summary>
     private static BsonDocument ConversationId(string run, ConversationKey key) =>
-        new() { ["run"] = run, ["mode"] = key.Mode, ["repeat"] = key.Repeat, ["task"] = key.Task };
+        new()
+        {
+            ["run"] = run,
+            ["mode"] = key.Mode,
+            ["repeat"] = key.Repeat,
+            ["task"] = key.Task
+        };
 
     /// <summary>The id of a turn's document: its run, its conversation's key and its number.</summary>
     private static BsonDocument TurnId(string run, TurnKey key) =>
-        new() { ["run"] = run, ["mode"] = key.Mode, ["repeat"] = key.Repeat, ["task"] = key.Task, ["turn"] = key.Turn };
+        new()
+        {
+            ["run"] = run,
+            ["mode"] = key.Mode,
+            ["repeat"] = key.Repeat,
+            ["task"] = key.Task,
+            ["turn"] = key.Turn
+        };
 
     /// <summary>A run as a Mongo document.</summary>
     internal static BsonDocument ToBson(Run run) => new()
@@ -300,13 +318,19 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
                 ["role"] = Nullable(m.Role),
                 ["model"] = Nullable(m.Model),
             })),
-        // Absent in a run stored before each; read as null: the scenarios the run asked for (F18 step 5.4), the run it re-scored (5b.2) and its roll-up (5c.2).
+        // Absent in a run stored before each, and read as null: the scenarios the run asked for, the run it re-scored
+        // and its roll-up.
         ["split"] = Nullable(run.Split is { } split ? split.Wire() : null),
         ["rescore_of"] = Nullable(run.RescoreOf),
         ["slices"] = SliceDocuments.ToBson(run.Slices),
+        // Each agent's prompts per mode; absent in a run stored before them, read as null.
+        ["prompts"] = PromptDocuments.ToBson(run.Prompts),
     };
 
-    /// <summary>A run read back from its document. A mode saved when roles were still called personalities keeps that field, read as its role and never rewritten.</summary>
+    /// <summary>
+    /// A run read back from its document. A mode saved when roles were still called personalities keeps that field,
+    /// read as its role and never rewritten.
+    /// </summary>
     internal static Run RunOf(BsonDocument d) => new(
         d["_id"].AsString,
         d["check"].AsString,
@@ -343,7 +367,8 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
                     StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value))))
                 .ToArray(),
         SplitOf(d.GetValue("split", BsonNull.Value)),
-        StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)));
+        StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)),
+        PromptDocuments.Of(d.GetValue("prompts", BsonNull.Value)));
 
     /// <summary>A mode's pass rates; a mode saved before they existed has none.</summary>
     private static ModeRates? RatesOf(BsonValue v) =>
@@ -426,11 +451,19 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
                 ["calls"] = tools.Calls,
                 ["failed"] = tools.Failed,
                 ["reasons"] = new BsonArray(tools.Reasons.Select(r => new BsonDocument
-                { ["tool"] = r.Tool, ["reason"] = r.Reason, ["count"] = r.Count })),
+                {
+                    ["tool"] = r.Tool,
+                    ["reason"] = r.Reason,
+                    ["count"] = r.Count
+                })),
             }
             : BsonNull.Value,
         ["events"] = new BsonArray(events.Select(e => new BsonDocument
-        { ["type"] = e.Type, ["data"] = Bson(e.Data), ["at"] = Date(e.At) })),
+        {
+            ["type"] = e.Type,
+            ["data"] = Bson(e.Data),
+            ["at"] = Date(e.At)
+        })),
     };
 
     /// <summary>A document turned back into the turn it was, without its events.</summary>
@@ -449,7 +482,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
             ? failure
             : null;
 
-    /// <summary>A turn's tool counts; a turn saved before they were kept has none, which is not the same as zero calls.</summary>
+    /// <summary>
+    /// A turn's tool counts; a turn saved before they were kept has none, which is not the same as zero calls.
+    /// </summary>
     private static BenchmarkTools.Summary? ToolsOf(BsonValue v) => v is BsonDocument t
         ? new BenchmarkTools.Summary(t["calls"].AsInt32, t["failed"].AsInt32,
             t["reasons"].AsBsonArray.Select(r =>
@@ -466,7 +501,12 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
         ["turn"] = r.Turn is null
             ? BsonNull.Value
             : new BsonDocument
-            { ["mode"] = r.Turn.Mode, ["repeat"] = r.Turn.Repeat, ["task"] = r.Turn.Task, ["turn"] = r.Turn.Turn },
+            {
+                ["mode"] = r.Turn.Mode,
+                ["repeat"] = r.Turn.Repeat,
+                ["task"] = r.Turn.Task,
+                ["turn"] = r.Turn.Turn
+            },
         ["at"] = Date(r.At),
         ["purpose"] = r.Purpose,
         ["session"] = Nullable(r.Session),
@@ -522,12 +562,19 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     private static BsonValue Nullable(decimal? value) =>
         value is null ? BsonNull.Value : new BsonDecimal128(value.Value);
 
-    /// <summary>A stored name turned back into its enum, the way it was parsed on the way in. A name this build does not know means a document it cannot read.</summary>
+    /// <summary>
+    /// A stored name turned back into its enum, the way it was parsed on the way in. A name this build does not know
+    /// means a document it cannot read.
+    /// </summary>
     private static T ChoiceOf<T>(BsonValue value, string field) where T : struct, Enum =>
         SettingChoice.TryParse(value.AsString, out T? choice) && choice is { } known
             ? known
             : throw new InvalidDataException(MessageText.Format(ApiUserText.StoredNameUnknown,
-                new { Field = field, Value = value.AsString }));
+                new
+                {
+                    Field = field,
+                    Value = value.AsString
+                }));
 
     /// <summary>The text, or nothing when the stored value is null.</summary>
     private static string? StringOf(BsonValue value) => value.IsBsonNull ? null : value.AsString;
@@ -538,7 +585,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     /// <summary>The number, or nothing when the stored value is null.</summary>
     private static decimal? DecimalOf(BsonValue value) => value.IsBsonNull ? null : value.ToDecimal();
 
-    /// <summary>Any JSON value as BSON. It is wrapped in an object and unwrapped again because BSON's root must be a document.</summary>
+    /// <summary>
+    /// Any JSON value as BSON. It is wrapped in an object and unwrapped again because BSON's root must be a document.
+    /// </summary>
     private static BsonValue Bson(JsonElement json) => BsonDocument.Parse($$"""{"v":{{json.GetRawText()}}}""")["v"];
 
     /// <summary>How BSON is written back out as JSON.</summary>

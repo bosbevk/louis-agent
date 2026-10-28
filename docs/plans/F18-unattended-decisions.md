@@ -273,3 +273,85 @@ are stopped only by closing them or playing another conversation.
 **Why 1.** It keeps the old rule (any move stops the replay) without a trick, and gives the dialog, which no move
 touches, its own life. Sources: Microsoft Learn, *ASP.NET Core Razor components* ("Component parameters",
 "EventCallback"); finding 8. **Commit:** the `RunExplorer` commit of Part 3.
+
+### 13. Where a run keeps its prompt hashes per agent (step 7a.3)
+
+**What came up.** A run keeps its prompt hashes as one joined setting (`prompt_hashes`, `a,b,c`): the set of prompts
+it *used*. A run where the cook wasn't called has fewer hashes without any prompt changing, so the trend can't compare
+two of those strings. It needs each agent's hashes, per mode (a trend line is a mode), kept somewhere the trend reads.
+
+1. **A typed field on the run, `Prompts`: a list of `AgentPrompt(mode, agent, hashes)` (picked).** Pattern: PoEAA's
+   *Embedded Value* (a small value object kept inside its owner's record; in MongoDB an embedded array on the run's
+   document, as the run's slices already are). Changes: one record in `BenchmarkDocuments`, the ledger join fills it,
+   `PromptDocuments` maps it for MongoDB (as `SliceDocuments` does), a contract test holds both stores. Costs: one
+   more run field to carry through both stores; a run stored before it reads `null`, so it never gets a marker.
+2. **More keys in the run's settings** (`prompt_hash:{mode}:{agent}` = the hashes). Pattern: Entity-Attribute-Value
+   (a string bag of name and value). Changes: the ledger join only; no store change. Costs: meaning hidden in key
+   names that the trend has to parse back; the run page lists every setting, so it would show dozens of 64-character
+   hashes under *What it ran with*.
+3. **The hash and the agent on every stored request**, and the trend works out each agent's hashes when it reads.
+   Pattern: Fowler's *Replace Derived Variable with Query* (keep the facts, compute the summary on read). Changes: two
+   fields on `Request` in both stores and in its exports. Costs: the same 64 characters on every request of a run (a
+   run has hundreds), and a field on a record many readers and the protocol export share, for one reader.
+
+**Why 1.** It keeps the per-agent hashes as what they are, a small typed summary of the run, read back the same in
+both stores, with `null` for "not known" (ADR 0007), and it follows the run's slices, the nearest precedent. The joined
+`prompt_hashes` setting stays as it is. Sources: Fowler, *PoEAA*, *Embedded Value*; MongoDB, *Embedded Data Models*
+(mongodb.com/docs/manual/data-modeling/embedding); Fowler, *Refactoring* 2nd ed., *Replace Derived Variable with
+Query*. **Commit:** step 7a.3 (a).
+
+### 14. Which agent a ledger row belongs to (step 7a.3)
+
+**What came up.** The brief groups a run's rows by the task tag: the main session, `sub-session:{peer}`,
+`minion:{role}`. Two kinds of row would blur that. A model judge's row carries the scenario as its task, like the main
+session's, but its own prompt; and a summary or compaction request inside a session uses its own prompt only when it
+happens. Mixed into the agent's hashes, either would make two runs on the same prompts look different. And the main
+session's prompt differs per mode, so the hashes must be per mode as well.
+
+1. **The agent is the task tag (any other task is the main session), with the purpose added when the row is not a
+   turn or its continuation, per mode from the row's run tag (picked).** A judge is `main (grading)`, a summary in the
+   cook `sub-session:puls-cook (summary)`. Pattern: a *composite key* (PoEAA's *Identity Field* with several columns):
+   what the prompt belongs to is mode, agent and purpose together. Changes: one small rule in `AgentPrompts`. Costs:
+   names a bit longer in the tooltip.
+2. **Only turn and continue rows count.** Changes: the same rule, dropping the rest. Costs: a change to the judge's
+   prompt never shows on the trend, and it does change what a run measures.
+3. **The task tag alone, as the brief says.** Costs: a run where a result was summarised gets a false marker, which
+   the brief rules out ("never a false one").
+
+**Why 1.** It keeps the brief's grouping and its rule (mark only an agent present in both runs whose hash differs),
+and gives a judge or a summary its own name, so it is compared only with itself. Sources: Fowler, *PoEAA*, *Identity
+Field* (compound keys). **Commit:** step 7a.3 (a).
+
+### 15. Which notes a trend point carries (step 7a.3)
+
+**What came up.** A point is one run in one mode. A run's notes are on the run or on one of its conversations, and a
+conversation belongs to a mode.
+
+1. **The notes on the run, plus the notes on this mode's conversations (picked).** Changes: the point filters the
+   run's notes by the conversation's mode. Costs: a note on another mode's conversation shows only on that mode's line.
+2. **Every note of the run on every point.** Costs: a note about the cook's conversation shows on Puls's line too.
+3. **Only the notes on the run itself.** Costs: a note on a conversation never reaches the trend.
+
+**Why 1.** Each point shows what was said about what it measured. No pattern catalogue covers this; it follows the
+trend's own rule that a point is a run in a mode (*Specification*-style filtering, Evans and Fowler). **Commit:** step
+7a.3 (b).
+
+### 16. Where the chart draws its markers (step 7a.3)
+
+**What came up.** A run can carry notes and a prompt change on several lines at once, and the full chart has eleven
+panels side by side.
+
+1. **In every panel, once per run: a dashed upright line where a prompt changed and a small dot at the top for notes,
+   each with its tooltip (picked).** Pattern: *annotations* on a time series (Grafana's annotations, a marker at a
+   time drawn on every panel; Tufte's *small multiples* keep the same marks in every panel). Changes: the markers come
+   from a plain class (`TrendMarks`) with tests, and each panel draws them; the legend names both. Costs: the same
+   marker repeats across eleven panels.
+2. **One strip of markers above the panels.** Costs: the panels sit in a grid, so a strip's x positions don't line up
+   with any panel's runs.
+3. **On the points themselves** (a ring around a point with a note). Costs: a point is per line, and a note on the run
+   would ring every line's point; a prompt change has no point of its own to mark.
+
+**Why 1.** The reader sees a change right where the line moved, in whichever panel they are reading. Sources: Grafana
+docs, *Annotate visualizations* (grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations);
+Tufte, *The Visual Display of Quantitative Information*, small multiples. The card's small chart draws no markers (it
+is the cost at a glance). **Commit:** step 7a.3 (c).

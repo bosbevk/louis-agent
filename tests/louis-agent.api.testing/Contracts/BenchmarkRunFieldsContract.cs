@@ -7,8 +7,9 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
-/// What every benchmark store keeps on a run beyond the first fields, in memory and in MongoDB alike (F18 steps 5b.2 and 5c.2): the run it re-scored, a total of a known zero, and the
-/// roll-up's slices as the runner wrote them. Apart from <see cref="BenchmarkStoreContract"/> because that file is at its size limit; the same rules (a run before a field reads null).
+/// What every store keeps on a run beyond its first fields, in memory and in MongoDB alike: a review's question, the
+/// run it re-scored, a cost of a known zero, the roll-up's slices and each agent's prompts. A run stored before a field
+/// existed reads it as null. It sits apart from <see cref="BenchmarkStoreContract"/>, which is at its size limit.
 /// </summary>
 public abstract class BenchmarkRunFieldsContract
 {
@@ -19,22 +20,25 @@ public abstract class BenchmarkRunFieldsContract
     /// <summary>A store to test; each test gets a fresh one.</summary>
     protected abstract IBenchmarkStore CreateStore();
 
+    /// <summary>A fresh store before every test.</summary>
     [SetUp]
     public void SetUpStore() => _store = CreateStore();
 
+    /// <summary>A run id no other test uses, so tests sharing a database never meet.</summary>
     private static string NewId() => Guid.NewGuid().ToString("N")[..12];
 
+    /// <summary>A run with only its first fields, still going.</summary>
     private static Run NewRun(string id) => new(id, "check-" + id[..6], 2, BenchmarkRunStatus.Running, T0);
 
-    // F18 step 6a.3: the question of a human review is kept with the run's graders, in both stores.
+    /// <summary>The question of a human review is kept with the run's graders, in both stores.</summary>
     [Test]
     public async Task AHumanReviewsQuestion_ReadsBackWithTheRunsGraders()
     {
         string id = NewId();
         var graders = new[]
         {
-            new Grader("routed-to", 1, BenchmarkGraderKind.FixedRule),
-            new Grader("meal-for-people.human", 1, BenchmarkGraderKind.Human,
+            new Grader("routed-to", 1, BenchmarkGraderKind.FixedRule), new Grader("meal-for-people.human", 1,
+                BenchmarkGraderKind.Human,
                 "Is this a meal for the people asked for?")
         };
         await _store.SaveRunAsync(NewRun(id) with { Graders = graders });
@@ -45,6 +49,7 @@ public abstract class BenchmarkRunFieldsContract
         Assert.That(read.Graders![0].Question, Is.Null);
     }
 
+    /// <summary>A re-score names the run it graded again; an ordinary run names none.</summary>
     [Test]
     public async Task ARunsRescoreOf_ReadsBackAsItWasWritten_AndARunBeforeItHasNone()
     {
@@ -57,10 +62,10 @@ public abstract class BenchmarkRunFieldsContract
         Assert.That((await _store.GetRunAsync(ordinary))!.RescoreOf, Is.Null);
     }
 
+    /// <summary>A re-score asked nothing, so its cost is known to be 0; null would mean "unknown" (ADR 0007).</summary>
     [Test]
     public async Task ATotalOfZero_ReadsBackAsZero_NotAsUnknown()
     {
-        // A re-score asked nothing, so its cost is known to be 0; null is "unknown" (ADR 0007).
         string id = NewId();
 
         await _store.SaveRunAsync(NewRun(id) with { Total = new Total(0m, "USD", 0, 0) });
@@ -68,6 +73,7 @@ public abstract class BenchmarkRunFieldsContract
         Assert.That((await _store.GetRunAsync(id))!.Total, Is.EqualTo(new Total(0m, "USD", 0, 0)));
     }
 
+    /// <summary>The roll-up's slices read back field by field; a run stored before them has none.</summary>
     [Test]
     public async Task ARunsSlices_ReadBackAsTheRunnerWroteThem_AndARunBeforeThemHasNone()
     {
@@ -88,5 +94,29 @@ public abstract class BenchmarkRunFieldsContract
         Assert.That(JsonSerializer.Serialize((await _store.GetRunAsync(rolled))!.Slices),
             Is.EqualTo(JsonSerializer.Serialize(slices)), "every field, a rate left out still null");
         Assert.That((await _store.GetRunAsync(older))!.Slices, Is.Null, "never an empty list, never zeros");
+    }
+
+    /// <summary>
+    /// Each agent's prompts read back as the recorder wrote them, a mode left out still none; a run stored before they
+    /// were kept has none, so the trend never marks it.
+    /// </summary>
+    [Test]
+    public async Task ARunsAgentPrompts_ReadBackAsWritten_AndARunBeforeThemHasNone()
+    {
+        string hashed = NewId(), older = NewId();
+        var prompts = new[]
+        {
+            new AgentPrompt(SampleMode.Beta, "main", ["a", "b"]),
+            new AgentPrompt(SampleMode.Beta, "sub-session:puls-cook", ["c"]),
+            new AgentPrompt(null, "main (grading)", ["j"]),
+        };
+
+        await _store.SaveRunAsync(NewRun(hashed) with { Prompts = prompts });
+        await _store.SaveRunAsync(NewRun(older));
+
+        // A record holds its lists by reference, so the prompts are compared by what they say.
+        Assert.That(JsonSerializer.Serialize((await _store.GetRunAsync(hashed))!.Prompts),
+            Is.EqualTo(JsonSerializer.Serialize(prompts)));
+        Assert.That((await _store.GetRunAsync(older))!.Prompts, Is.Null, "unknown, never an empty list");
     }
 }

@@ -1225,6 +1225,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   matches. `PortalReadsNoScoreKeyTests` lists `ConversationNode.cs` and `ExplorerScores.cs` where it listed the
   explorer; `RazorHasNoCodeTests`' list is now empty. The review pill, grade chips, review and notes panels keep the
   shapes they were written for, so no child of the explorer reads the run's JSON any more.
+- **Step 7a.3 (a): a run keeps each agent's prompts.** What it means: a run now remembers which prompts each of its
+  agents used, mode by mode, so the trend can compare the cook with the cook instead of one run's whole list with
+  another's (a run where the cook wasn't called has fewer hashes, and that isn't a change). `AgentPrompts.Of`
+  (`Benchmarks/Reports/Prompts/`) groups the run's ledger rows by mode (from the run tag) and agent (the task tag:
+  `sub-session:{peer}`, `minion:{role}`, else `main`; a judge or a summary gets its purpose after the name, finding
+  14), each with its distinct hashes sorted; a ledger with no hashes gives null, never an empty list. The ledger join
+  hands it to the recorder, which keeps it as the run's new `Prompts` field (finding 13: an embedded value on the
+  run, as its slices are); MongoDB maps it in `PromptDocuments`, and a run stored before it reads null, so it can
+  never get a false marker. The joined `prompt_hashes` setting stays. Red before the code: 5 `AgentPrompts` cases
+  (`NotImplementedException`) and the recorder case (`Prompts` null); the store contract case passes on memory and is
+  the guard for MongoDB (skipped here, no Mongo).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

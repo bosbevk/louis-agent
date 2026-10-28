@@ -12,27 +12,31 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// Keeps a benchmark run in the store as it happens (F31): it listens to the run's lines as the page does
+/// Keeps a benchmark run in the store as it happens: it listens to the run's lines as the page does
 /// (<see cref="BenchmarkRun.Listen"/>: the lines so far, then each new one), parses each with
-/// <see cref="BenchmarkProtocol"/> and writes as it goes: the run and its modes when they start, a conversation when its
-/// first question comes (its scores when it ends), a turn with its stream events when it ends. So a half-done run is
-/// already readable. When the run ends it closes whatever is still open, a turn with what it had, joins the run's rows
-/// of the usage ledger in <paramref name="ledgerDirectory"/> to its turns (<see cref="BenchmarkLedger"/>), and writes
-/// the run's end, its total and its plain lines. A store that fails stops the writes, never the run: the result and
-/// the run say so.
+/// <see cref="BenchmarkProtocol"/> and writes as it goes: the run and its modes when they start, a conversation when
+/// its first question comes (its scores when it ends), a turn with its stream events when it ends. So a half-done run
+/// is already readable. When the run ends it closes whatever is still open, a turn with what it had, joins the run's
+/// rows of the usage ledger in <paramref name="ledgerDirectory"/> to its turns (<see cref="BenchmarkLedger"/>), and
+/// writes the run's end, its total, each agent's prompts and its plain lines. A store that fails stops the writes,
+/// never the run: the result and the run say so.
 /// </summary>
 public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = null, string? ledgerDirectory = null)
 {
     /// <summary>Whether everything was kept; <see cref="StoreError"/> says why not.</summary>
     public sealed record Result(bool Stored, string? StoreError);
 
-    /// <summary>How many runs' recordings are kept for <see cref="RecordingOf"/>: the last few are all a page asks about.</summary>
+    /// <summary>
+    /// How many runs' recordings are kept for <see cref="RecordingOf"/>: the last few are all a page asks about.
+    /// </summary>
     private const int KeptRecordings = 8;
 
     private readonly Lock _lock = new();
     private readonly List<(string Run, Task<Result> Recording)> _recordings = [];
 
-    /// <summary>Starts recording <paramref name="run"/> in the background (the endpoint that started it doesn't wait).</summary>
+    /// <summary>
+    /// Starts recording <paramref name="run"/> in the background (the endpoint that started it doesn't wait).
+    /// </summary>
     public void Attach(BenchmarkRun run, IReadOnlyDictionary<string, string>? settings = null)
     {
         var recording = RecordAsync(run, settings);
@@ -43,7 +47,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         }
     }
 
-    /// <summary>The recording of a run <see cref="Attach"/> started; null for one it didn't (or no longer keeps).</summary>
+    /// <summary>The recording of a run <see cref="Attach"/> started, if it still keeps it.</summary>
     public Task<Result>? RecordingOf(string id)
     {
         lock (_lock) return _recordings.LastOrDefault(r => r.Run == id).Recording;
@@ -51,7 +55,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
 
     private static readonly JsonElement NoScores = JsonDocument.Parse("{}").RootElement.Clone();
 
-    /// <summary>Records <paramref name="run"/> until it ends; <paramref name="settings"/> are what it ran with.</summary>
+    /// <summary>Records the run until it ends; the settings are what it ran with.</summary>
     public async Task<Result> RecordAsync(BenchmarkRun run, IReadOnlyDictionary<string, string>? settings = null,
         CancellationToken cancellationToken = default)
     {
@@ -81,9 +85,11 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
         private readonly Dictionary<string, ConversationKey> _sessions = [];
         private Total? _total;
         private IReadOnlyDictionary<string, string>? _settings = settings;
+        private IReadOnlyList<AgentPrompt>? _prompts;
         private ProtocolStarted? _protocol;
         private string? _storeError;
 
+        /// <summary>A turn that was asked and hasn't ended yet: its session, question and events so far.</summary>
         private sealed class OpenTurn(string session, string question)
         {
             public string Session { get; set; } = session;
@@ -91,8 +97,10 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             public List<StreamEvent> Events { get; } = [];
         }
 
+        /// <summary>Writes the run as it stands now, so a half-done run can already be read.</summary>
         public Task SaveRunAsync() => WriteAsync(() => store.SaveRunAsync(Document(), cancellationToken));
 
+        /// <summary>Takes one line of the script into the run: a mode, a question, a turn, a verdict.</summary>
         public async Task FoldAsync(Event e)
         {
             switch (e)
@@ -102,10 +110,14 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     break;
                 case ProtocolStarted started when started.Version != BenchmarkProtocol.Version:
                     _log.Add(MessageText.Format(ApiUserText.BenchmarkProtocolUnknown,
-                        new { started.Version, Supported = BenchmarkProtocol.Version }));
+                        new
+                        {
+                            started.Version,
+                            Supported = BenchmarkProtocol.Version
+                        }));
                     break;
                 case ProtocolStarted started:
-                    // F18 step 2a: what the run ran (its eval, graders and models), kept on the run once the line says so.
+                    // What the run ran (its eval, graders and models), kept on the run once the line says so.
                     if (started.Eval is not null)
                     {
                         _protocol = started;
@@ -118,7 +130,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                     await SaveRunAsync();
                     break;
                 case ModeEnded { Rates: { } rates } ended:
-                    // The rates the runner wrote for the repeats up to this one (F18 step 5a); the API keeps them, it computes none.
+                    // The rates the runner wrote for the repeats up to this one; the API keeps them, it computes none.
                     int at = _modes.FindLastIndex(m => m.Name == ended.Mode && m.Repeat == ended.Repeat);
                     if (at >= 0)
                     {
@@ -165,7 +177,9 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             }
         }
 
-        /// <summary>Closes what the run left open, then writes its end; the run is kept with its store error when it can be.</summary>
+        /// <summary>
+        /// Closes what the run left open, then writes its end; the run is kept with its store error when it can be.
+        /// </summary>
         public async Task<Result> CloseAsync()
         {
             string cutOff = MessageText.Format(ApiUserText.BenchmarkTurnCutOff);
@@ -191,29 +205,36 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             return new Result(stored, _storeError);
         }
 
-        /// <summary>The run's requests and total from the ledger (<see cref="LedgerJoin"/>), once the script has ended.</summary>
+        /// <summary>
+        /// The run's requests, total and prompts from the ledger (<see cref="LedgerJoin"/>), once the script has ended.
+        /// </summary>
         private async Task JoinLedgerAsync()
         {
             var joined = LedgerJoin.Of(run, RescoreOf, ledgerDirectory, _settings, _protocol?.Models, _sessions);
-            (_total, _settings) = (joined.Total, joined.Settings);
+            (_total, _settings, _prompts) = (joined.Total, joined.Settings, joined.Prompts);
             _log.AddRange(joined.Log);
             if (joined.Requests.Count > 0)
                 await WriteAsync(() => store.AddRequestsAsync(run.Id, joined.Requests, cancellationToken));
         }
 
+        /// <summary>Where a conversation sits in the run: the order its first question came in.</summary>
         private int OrderOf(ConversationKey key)
         {
             if (!_order.TryGetValue(key, out int order)) _order[key] = order = _order.Count + 1;
             return order;
         }
 
-        /// <summary>The turn an event belongs to; one the script never asked (an event before its question) opens with what's known.</summary>
+        /// <summary>
+        /// The turn an event belongs to; one the script never asked (an event before its question) opens with what's
+        /// known.
+        /// </summary>
         private OpenTurn OpenOf(TurnKey key)
         {
             if (!_open.TryGetValue(key, out var open)) _open[key] = open = new OpenTurn("", "");
             return open;
         }
 
+        /// <summary>The run as the store keeps it, from everything heard so far.</summary>
         private Run Document() =>
             new(run.Id, run.Check, run.Repeat, run.Status, run.StartedAt, run.EndedAt, run.ExitCode, _settings,
                 _modes.ToArray(),
@@ -222,12 +243,14 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
                 Graders: _protocol?.Graders?.Select(g => new Grader(g.Name, g.Version, g.Kind, g.Question)).ToArray(),
                 Models: _protocol?.Models?.Select(m => new ModelUse(m.Mode, m.Level, m.Role, m.Model)).ToArray(),
                 Split: _protocol?.Split,
-                RescoreOf: RescoreOf, Slices: _slices.Count == 0 ? null : _slices.ToArray());
+                RescoreOf: RescoreOf, Slices: _slices.Count == 0 ? null : _slices.ToArray(), Prompts: _prompts);
 
-        /// <summary>The run this one re-scored (F18 step 5b.2): what it was started with, else what its first line says.</summary>
+        /// <summary>The run this one re-scored: what it was started with, else what its first line says.</summary>
         private string? RescoreOf => run.RescoreOf ?? _protocol?.RescoreOf;
 
-        /// <summary>One write; after the first failure none are tried, so a store that is down doesn't slow the run.</summary>
+        /// <summary>
+        /// One write; after the first failure none are tried, so a store that is down doesn't slow the run.
+        /// </summary>
         private async Task WriteAsync(Func<Task> write)
         {
             if (_storeError is not null) return;
@@ -241,6 +264,7 @@ public sealed class BenchmarkRecorder(IBenchmarkStore store, ILogger? logger = n
             }
         }
 
+        /// <summary>Remembers the first failure, for the run and the log; later ones add nothing new.</summary>
         private void Failed(Exception ex)
         {
             if (_storeError is not null) return;
