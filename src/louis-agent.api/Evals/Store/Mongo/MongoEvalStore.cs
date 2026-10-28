@@ -17,11 +17,11 @@ namespace LouisAgent.Api.Evals.Store.Mongo;
 /// it.
 /// </summary>
 /// <remarks>
-/// Facade over one Repository per record. The runs, conversations and turns are typed collections of a document
-/// record (<see cref="RunDocument"/>, <see cref="ConversationDocument"/>, <see cref="TurnDocument"/>, ADR 0048); the
-/// requests still have their hand-written Data Mapper (<see cref="RequestDocuments"/>) until their own commit. The
-/// callers keep one store, and each record store stays one collection with its own contract test. Every store makes
-/// its index the first time it is needed, so starting the API never waits on Mongo.
+/// Facade over one Repository per record. The runs, conversations, turns and requests are typed collections of a
+/// document record (<see cref="RunDocument"/>, <see cref="ConversationDocument"/>, <see cref="TurnDocument"/>,
+/// <see cref="RequestDocument"/>, ADR 0048); the notes move to theirs in their own commit. The callers keep one store,
+/// and each record store stays one collection with its own contract test. Every store makes its index the first time
+/// it is needed, so starting the API never waits on Mongo.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoEvalStore : IEvalStore

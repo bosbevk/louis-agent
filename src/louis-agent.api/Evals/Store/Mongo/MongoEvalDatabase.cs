@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Evals.Store.Mongo;
 /// <summary>
 /// Opens the eval database with short timeouts: a server that doesn't answer fails a call within five seconds, so the
 /// recorder gives up quickly and the run carries on. It also registers how enums and times are stored, and holds the
-/// few bits the record stores ask Mongo the same way: replace-or-insert, find a run's documents.
+/// replace-or-insert option every record store saves with.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
@@ -64,7 +64,4 @@ public static class MongoEvalDatabase
         settings.ConnectTimeout = Timeout;
         return new MongoClient(settings).GetDatabase(database);
     }
-
-    /// <summary>Finds everything that belongs to this run.</summary>
-    internal static FilterDefinition<BsonDocument> OfRun(string run) => Builders<BsonDocument>.Filter.Eq("run", run);
 }

@@ -1680,6 +1680,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Red first: 5 of 5 against a stub; the two projection cases were added after and passed first time. Left for step
   5: the portal's live view (`LiveTurn`, `RunEvent`) still reads the runner's old `puls_calls`, and the harness's
   `TurnFacts` summary still names it.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 5: the requests.** `MongoRequestStore` holds an
+  `IMongoCollection<RequestDocument>`, its turn a nested `TurnKeyDocument`, the cost a `Decimal128`. A request has no
+  id of its own, as before: Mongo adds one on insert and the record reads past it. That was the last hand-written
+  mapper, so `RequestDocuments`, `BsonValues` and `MongoEvalDatabase.OfRun` went; `MongoEvalDatabase` keeps the
+  mappings and the upsert option. `RequestDocumentTests`: the byte-equal write against two fixtures the old mapper
+  wrote (`request-full.json`, priced and tied to its turn; `request-bare.json`, nothing known), the round trip, and a
+  document carrying Mongo's own `_id`. Red first: 5 of 5 against a stub.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

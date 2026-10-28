@@ -1,6 +1,4 @@
-using LouisAgent.Api.Evals.Store.Mongo;
 using LouisAgent.Api.Evals.Store.Mongo.Documents;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using static LouisAgent.Api.Evals.Store.Mongo.MongoEvalDatabase;
@@ -12,16 +10,17 @@ namespace LouisAgent.Api.Evals.Store.Requests;
 /// Its index (by run, by time) is made the first time anything needs it, so starting the API never waits on Mongo.
 /// </summary>
 /// <remarks>
-/// Repository, with a Data Mapper (<see cref="RequestDocuments"/>) written by hand, so what <c>mongosh</c> shows is
-/// what the portal reads and an unknown count or price is stored as null. This class keeps only the collection and
-/// its queries.
+/// Repository over a typed collection (ADR 0048): the driver maps each request's <see cref="RequestDocument"/>, and
+/// every filter, sort and index names its field through the record, so a renamed field fails the build. This class
+/// keeps only the collection and its queries.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public sealed class MongoRequestStore : IRequestStore
 {
     /// <summary>The ledger's requests.</summary>
-    private readonly IMongoCollection<BsonDocument> _requests;
+    private readonly IMongoCollection<RequestDocument> _requests;
 
     /// <summary>Makes the index the first time anything needs it, and tries again if that failed.</summary>
     private readonly OnceItWorks _index;
@@ -29,9 +28,11 @@ public sealed class MongoRequestStore : IRequestStore
     /// <summary>Uses the database's requests collection. Nothing is created until the first call.</summary>
     public MongoRequestStore(IMongoDatabase database)
     {
-        _requests = database.GetCollection<BsonDocument>("requests");
-        _index = new OnceItWorks(() => _requests.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
-            Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at"))));
+        // The driver must know how enums and times are stored before it maps its first document.
+        RegisterMappings();
+        _requests = database.GetCollection<RequestDocument>("requests");
+        _index = new OnceItWorks(() => _requests.Indexes.CreateOneAsync(new CreateIndexModel<RequestDocument>(
+            Builders<RequestDocument>.IndexKeys.Ascending(d => d.Run).Ascending(d => d.At))));
     }
 
     /// <summary>Adds the ledger's requests, tagged with their run.</summary>
@@ -42,7 +43,7 @@ public sealed class MongoRequestStore : IRequestStore
         if (requests.Count == 0) return;
 
         await _index.RunAsync();
-        await _requests.InsertManyAsync(requests.Select(r => RequestDocuments.ToBson(r with { Run = run })),
+        await _requests.InsertManyAsync(requests.Select(r => RequestDocument.Of(r with { Run = run })),
             cancellationToken: cancellationToken);
     }
 
@@ -50,15 +51,14 @@ public sealed class MongoRequestStore : IRequestStore
     public async Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        var found = await _requests.Find(OfRun(run)).Sort(Builders<BsonDocument>.Sort.Ascending("at"))
-            .ToListAsync(cancellationToken);
-        return found.Select(RequestDocuments.RequestOf).ToArray();
+        var found = await _requests.Find(d => d.Run == run).SortBy(d => d.At).ToListAsync(cancellationToken);
+        return [.. found.Select(d => d.ToRequest())];
     }
 
     /// <summary>Deletes the run's requests, and says whether there were any.</summary>
     public async Task<bool> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        return (await _requests.DeleteManyAsync(OfRun(run), cancellationToken)).DeletedCount > 0;
+        return (await _requests.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount > 0;
     }
 }
