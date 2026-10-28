@@ -153,6 +153,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **Records for values, classes for things** — a request, an answer, a key or a line of a file is a record; what owns a
   lock, a client or a file, or changes over time, is a class; a record holds no resource; both are sealed by default.
   Why: [ADR 0040](adr/0040-records-for-values-classes-for-things.md).
+- **Dates are UTC** (Louis, 2026-10-28) — every date or time stored, logged or sent on a wire is UTC in ISO 8601
+  (`2026-10-28T13:02:21Z`); "now" is `TimeProvider.GetUtcNow()`, never `DateTime.Now`; a screen converts it for the
+  reader (F46), never the code that writes it; a golden file holds UTC. A future local event (an appointment) keeps
+  its local time and zone id as the source. Existing uses change as a step touches their file.
+  Why: [ADR 0046](adr/0046-dates-are-utc.md).
 - **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
   `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that

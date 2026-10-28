@@ -85,8 +85,7 @@ These were considered:
 - **Existing code isn't swept.** The eight uses of `DateTime.Now` and `DateTimeOffset.Now` (the chat views in
   `web.shared` and Puls, the orchestrator's comms log, the web app's relative-time text) change when a step touches
   their file, as the summaries rule does; a display-only use becomes a conversion of a UTC value for the reader.
-- **This record is the rule; docs/CLAUDE.md carries no line for it** (Louis, 2026-10-28). Review holds it until a
-  test does: a `DateTime.Now`, a `DateTimeOffset.Now`, a local time in a golden or
+- **Review holds the rule** (docs/CLAUDE.md, *Dates are UTC*) until a test does: a `DateTime.Now`, a `DateTimeOffset.Now`, a local time in a golden or
   a stored document, or an offset-less time on a wire is a finding. A ratchet test over the sources (as
   `RepeatedNameTests` reads them) can hold the `Now` part when the first new offender appears.
 - **What gets harder:** reading a stored time by hand means converting in your head (or `date -d`), and a view has to
@@ -94,6 +93,7 @@ These were considered:
 
 ## Links
 
+- [docs/CLAUDE.md](../CLAUDE.md), *Rules that always apply*: *Dates are UTC*.
 - [F18 Evaluation](../features/F18-evaluation.md): the time-zone golden (b71e6eaf) and protocol v2's `t`.
 - F46 Localisation (TODO): the view that renders a UTC instant in the reader's language and zone.
 - [0022](0022-benchmarks-recorded-from-the-protocol.md): the protocol this rule's `t` travels on.
