@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.SessionStream;
@@ -26,8 +25,9 @@ public static class TurnReplays
         string turnUrl = $"{Uri.EscapeDataString(mode)}/{repeat}/{Uri.EscapeDataString(task)}/{turn}";
         try
         {
-            var json = await api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{runId}/turns/{turnUrl}/events");
-            return json.Deserialize<TurnEventsReply>(AdminJson.SnakeCase)?.Events ?? [];
+            var reply = await api.GetAsync<TurnEventsReply?>(
+                $"v1/admin/benchmarks/runs/{runId}/turns/{turnUrl}/events", AdminJson.SnakeCase);
+            return reply?.Events ?? [];
         }
         // A turn whose events can't be fetched plays nothing.
         catch (AgentApiException)

@@ -1407,6 +1407,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `ApiError`, so `louis-agent.web.shared` references `louis-agent.api.contracts`. Every method has its summary.
   `SessionBodiesJsonTests` pins both bodies' bytes as the anonymous objects wrote them (written after the change, as a
   pin; the chat pages' goldens in puls.tests and web.tests, which open sessions and stream turns, stayed green).
+- **Small fixes** (card A, step 5). `AdminEndpoints.FromStore` is gone: nothing called it, and it answered an untyped
+  `IResult`. `TrendPanelHead.razor.cs` has its summary (and its parameters theirs). `AgentApi.GetAsync<T>(url,
+  options)` reads a reply straight into its record with the wire's options, and the portal uses it wherever it read a
+  `JsonElement` only to turn it into a record (`TurnReplays`, `LiveRunPanel` twice, `BenchmarkRun`'s list,
+  `Benchmarks` three times, `Evals`). Three of those files no longer read `JsonElement` at all and left
+  `PortalReadsJsonTests`' list (25 now). `BenchmarkRun` now shows the API's own words when a run isn't stored ("No
+  stored run '…'.") instead of a sentence typed in the page, which the message rule ruled out. Red first:
+  `AgentApiGetTests` against a stub that threw (2 of 2 failing).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

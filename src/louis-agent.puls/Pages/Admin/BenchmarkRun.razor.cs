@@ -1,4 +1,3 @@
-using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
@@ -67,16 +66,16 @@ public partial class BenchmarkRun : IDisposable
         try
         {
             Read(await Api.GetAsync<JsonElement>(RunUrl));
-            var list = (await Api.GetAsync<JsonElement>("v1/admin/benchmarks"))
-                .Deserialize<BenchmarkListReply>(AdminJson.SnakeCase);
+            var list = await Api.GetAsync<BenchmarkListReply?>("v1/admin/benchmarks", AdminJson.SnakeCase);
             _check = _run!.Run.Check;
             _title = list?.Checks.FirstOrDefault(c => c.Id == _check)?.Title;
             _labels = ModeLabels.Of(_run.Turns);
             _trend = await TrendAsync(_check);
         }
+        // The API's own words, which name the run when the store doesn't hold it ("No stored run '…'.").
         catch (AgentApiException ex)
         {
-            _error = ex.Status == HttpStatusCode.NotFound ? $"No run {RunId} in the store." : ex.Message;
+            _error = ex.Message;
         }
     }
 

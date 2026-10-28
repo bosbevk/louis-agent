@@ -82,6 +82,15 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
         return (await response.Content.ReadFromJsonAsync<T>())!;
     }
 
+    /// <summary>
+    /// Reads a route's reply as its record, with the options of the wire it's on (the admin portal's snake_case).
+    /// </summary>
+    public async Task<T> GetAsync<T>(string url, JsonSerializerOptions options)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));
+        return (await response.Content.ReadFromJsonAsync<T>(options))!;
+    }
+
     /// <summary>Sends a message and hands back the answer's events as they arrive.</summary>
     public async IAsyncEnumerable<SessionEvent> StreamMessageAsync(
         string sessionId, string message, IReadOnlyList<Attachment> attachments,

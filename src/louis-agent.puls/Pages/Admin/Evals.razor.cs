@@ -1,5 +1,4 @@
 using System.Net;
-using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Web.Shared.Api;
@@ -48,8 +47,7 @@ public partial class Evals : IDisposable
         _error = null;
         try
         {
-            _data = (await Api.GetAsync<JsonElement>("v1/admin/evals"))
-                .Deserialize<EvalListReply>(AdminJson.SnakeCase)!;
+            _data = await Api.GetAsync<EvalListReply>("v1/admin/evals", AdminJson.SnakeCase);
         }
         catch (AgentApiException ex)
         {

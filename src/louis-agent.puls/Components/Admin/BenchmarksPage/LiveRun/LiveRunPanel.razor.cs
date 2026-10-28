@@ -146,7 +146,7 @@ public partial class LiveRunPanel
     {
         try
         {
-            return (await Api.GetAsync<JsonElement>(RunUrl)).Deserialize<StoredRunReply>(AdminJson.SnakeCase);
+            return await Api.GetAsync<StoredRunReply?>(RunUrl, AdminJson.SnakeCase);
         }
         catch (AgentApiException)
         {
@@ -164,7 +164,7 @@ public partial class LiveRunPanel
         {
             string url = $"{RunUrl}/turns/{Uri.EscapeDataString(key.Mode)}/{key.Repeat}/" +
                          $"{Uri.EscapeDataString(key.Task)}/{key.N}/events";
-            var reply = (await Api.GetAsync<JsonElement>(url)).Deserialize<TurnEventsReply>(AdminJson.SnakeCase);
+            var reply = await Api.GetAsync<TurnEventsReply?>(url, AdminJson.SnakeCase);
             row.Replay(reply?.Events ?? []);
         }
         catch (AgentApiException ex)

@@ -66,24 +66,6 @@ internal static class AdminEndpoints
         admin.MapGet("/benchmarks/checks/{check}/trend", handlers.GetTrend);
     }
 
-    /// <summary>
-    /// Reads from the store for a route. If there's no store, or it doesn't answer, you get a 503 that says why.
-    /// </summary>
-    internal static async Task<IResult> FromStore(IEvalStore? store, Func<IEvalStore, Task<IResult>> read)
-    {
-        if (store is null) return ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
-
-        // Any failure but a cancel is the store not answering: the caller gets its reason, not a 500.
-        try
-        {
-            return await read(store);
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            return ApiErrors.Unavailable(Unavailable(ex));
-        }
-    }
-
     /// <summary>What we tell the person when the store didn't answer, with its reason.</summary>
     internal static string Unavailable(Exception ex) =>
         MessageText.Format(ApiUserText.BenchmarkStoreUnavailable, new { Reason = ex.Message });

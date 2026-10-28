@@ -26,7 +26,6 @@ public class PortalReadsJsonTests
     /// </summary>
     private static readonly HashSet<string> ReadsJson =
     [
-        "src/louis-agent.puls/Admin/Explorer/Replay/TurnReplays.cs",
         "src/louis-agent.puls/Admin/Explorer/Tree/ConversationNode.cs",
         "src/louis-agent.puls/Admin/Grades/Reading/ConversationGradesReader.cs",
         "src/louis-agent.puls/Admin/Grades/Reading/RunGradersReader.cs",
@@ -41,7 +40,6 @@ public class PortalReadsJsonTests
         "src/louis-agent.puls/Admin/Summary/SummaryReader.cs",
         "src/louis-agent.puls/Components/Admin/BenchmarksPage/Checks/CheckCard.razor.cs",
         "src/louis-agent.puls/Components/Admin/BenchmarksPage/Checks/ChecksList.razor.cs",
-        "src/louis-agent.puls/Components/Admin/BenchmarksPage/LiveRun/LiveRunPanel.razor.cs",
         "src/louis-agent.puls/Components/Admin/Grades/GraderList.razor.cs",
         "src/louis-agent.puls/Components/Admin/Rates/ModeRatesList.razor.cs",
         "src/louis-agent.puls/Components/Admin/Reviews/AgreementPanel.razor.cs",
@@ -53,7 +51,6 @@ public class PortalReadsJsonTests
         "src/louis-agent.puls/Components/Admin/Trends/TrendChart.razor.cs",
         "src/louis-agent.puls/Pages/Admin/BenchmarkRun.razor.cs",
         "src/louis-agent.puls/Pages/Admin/Benchmarks.razor.cs",
-        "src/louis-agent.puls/Pages/Admin/Evals.razor.cs",
     ];
 
     /// <summary>

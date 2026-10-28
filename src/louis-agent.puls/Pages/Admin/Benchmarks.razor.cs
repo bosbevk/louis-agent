@@ -66,8 +66,7 @@ public partial class Benchmarks : IDisposable
         _error = null;
         try
         {
-            _data = (await Api.GetAsync<JsonElement>("v1/admin/benchmarks"))
-                .Deserialize<BenchmarkListReply>(AdminJson.SnakeCase)!;
+            _data = await Api.GetAsync<BenchmarkListReply>("v1/admin/benchmarks", AdminJson.SnakeCase);
             _runs = _data.Runs.Select(RunSummary.Of).ToList();
             _selected ??= RunEstimate.DefaultCheck(_data.Checks.Select(c => c.Id).ToList(), _runs);
         }
@@ -157,8 +156,7 @@ public partial class Benchmarks : IDisposable
     }
 
     /// <summary>The run the runner holds now.</summary>
-    private async Task<LiveRunRow?> LiveAsync() =>
-        (await Api.GetAsync<JsonElement>(CurrentRunUrl)).Deserialize<LiveRunRow>(AdminJson.SnakeCase);
+    private Task<LiveRunRow?> LiveAsync() => Api.GetAsync<LiveRunRow?>(CurrentRunUrl, AdminJson.SnakeCase);
 
     /// <summary>Hands a run to the panel, which follows it.</summary>
     private void Follow(LiveRunRow run, bool fromStore)
@@ -190,8 +188,8 @@ public partial class Benchmarks : IDisposable
     {
         try
         {
-            _manual = (await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/{Uri.EscapeDataString(check)}/manual"))
-                .Deserialize<ManualReply>(AdminJson.SnakeCase);
+            _manual = await Api.GetAsync<ManualReply?>(
+                $"v1/admin/benchmarks/{Uri.EscapeDataString(check)}/manual", AdminJson.SnakeCase);
         }
         catch (AgentApiException ex)
         {
