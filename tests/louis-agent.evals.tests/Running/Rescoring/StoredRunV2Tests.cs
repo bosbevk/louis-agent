@@ -18,8 +18,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace LouisAgent.Evals.Tests.Running.Rescoring;
 
 /// <summary>
-/// A stored run written as protocol version 2 is re-scored as a version 1 run is: its first line gives the split and
-/// the models, its turns are graded again, and its mode's end gives the retries it recorded.
+/// A stored run written as protocol version 2 is re-scored: its first line gives the split and the models, its turns
+/// are graded again, and its mode's end gives the retries it recorded. A version 1 run is no longer read at all.
 /// </summary>
 public class StoredRunV2Tests
 {
@@ -82,13 +82,28 @@ public class StoredRunV2Tests
         Assert.That((begin.Split, begin.Models[0].Model), Is.EqualTo((RunSplit.HeldOut, "claude-haiku-5-5")));
     }
 
-    /// <summary>The retries its mode's end recorded carry over, as a v1 run's do.</summary>
+    /// <summary>The retries its mode's end recorded carry over.</summary>
     [Test]
     public async Task ItsModesRetries_CarryOver()
     {
         var events = await RescoreAsync(StoredV2Run());
 
         Assert.That(events.OfType<ModeDoneEvent>().Single().Rates!.Retried, Is.EqualTo(1));
+    }
+
+    /// <summary>
+    /// A version 1 run's <c>@</c> lines are a person's lines now, so the run has no first line and can't be re-scored.
+    /// </summary>
+    [Test]
+    public void AVersion1Run_HasNoFirstLine_AndIsRefused()
+    {
+        string[] v1 =
+        [
+            """@{"event": "protocol", "t": 1.0, "version": 1, "eval": "v2-cook", "models": []}""",
+            """@{"event": "mode", "t": 1.0, "mode": "cook", "repeat": 1, "toolsets": [], "role": null, "llm": null}""",
+        ];
+
+        Assert.That(async () => await RescoreAsync(v1), Throws.TypeOf<InvalidDataException>());
     }
 
     /// <summary>A grader that passes when every answer says "Hallo".</summary>

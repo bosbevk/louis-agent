@@ -366,14 +366,17 @@ An eval proves its checks work with transcripts in its own `Transcripts/` folder
 - `{scenario}.reference.txt`: one per scenario, a conversation that passes every required grader;
 - `{scenario}.bad.{label}.txt`: a conversation wrong in one way, one per way (`error`, `wrong-area`).
 
-Each file is the protocol's own lines, each starting with `@`: the `mode` line first, then that conversation's `sse` and
-`turn` lines. The reader keeps those three kinds and ignores the rest. The reference of `quote-tiles` looks like this,
+Each file is the protocol's own lines, version 2: one JSON event per line, as the runner prints them (the records in
+`evals/louis-agent.evals.protocol`). The `mode` line comes first, then that conversation's `question`, `sse` and
+`turn` lines. The reader keeps those kinds and ignores the rest; a line that isn't one of the contract's events, an
+old `@` line too, is a line for people and reads as nothing. The reference of `quote-tiles` looks like this,
 shortened:
 
 ```
-@{"event": "mode", "t": 1792877067.683, "mode": "acme-only", "repeat": 1, "toolsets": ["web"], "role": "acme/voice", "llm": null, "conversations": 1}
-@{"event": "sse", "t": 1792877067.7, "mode": "acme-only", "repeat": 1, "task": "quote-tiles", "turn": 1, "type": "content_block_delta", "data": {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "You need 4.32 square metres: 2.4 by 1.8."}}}
-@{"event": "turn", "t": 1792877071.9, "mode": "acme-only", "repeat": 1, "task": "quote-tiles", "turn": 1, "session": "sess_acme-only_1_quote-tiles", "question": "How many square metres of tile does a bathroom 2.4 by 1.8 metres need?", "seconds": 4.2}
+{"event":"mode","t":"2026-10-24T21:24:27.683Z","mode":"acme-only","repeat":1,"toolsets":["web"],"role":"acme/voice","llm":null,"conversations":1}
+{"event":"question","t":"2026-10-24T21:24:27.683Z","mode":"acme-only","repeat":1,"task":"quote-tiles","turn":1,"session":"sess_acme-only_1_quote-tiles","text":"How many square metres of tile does a bathroom 2.4 by 1.8 metres need?"}
+{"event":"sse","t":"2026-10-24T21:24:27.700Z","mode":"acme-only","repeat":1,"task":"quote-tiles","turn":1,"type":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"You need 4.32 square metres: 2.4 by 1.8."}}}
+{"event":"turn","t":"2026-10-24T21:24:31.900Z","mode":"acme-only","repeat":1,"task":"quote-tiles","turn":1,"session":"sess_acme-only_1_quote-tiles","question":"How many square metres of tile does a bathroom 2.4 by 1.8 metres need?","answer":"You need 4.32 square metres: 2.4 by 1.8.","role":null,"continued":null,"agent_calls":0,"specialist_calls":0,"hosts":[],"seconds":4.2,"error":null,"failure":null}
 ```
 
 The rules the conformance check holds:
@@ -384,7 +387,8 @@ The rules the conformance check holds:
   deleted scenario's files.
 
 Where the files come from: cut from a stored run where one passed (`GET /v1/admin/benchmarks/runs/{id}/protocol` returns a stored
-run as these lines, with the admin key in `x-api-key`; take one conversation's lines), or built by hand from a reference, as the stub's are
+run as these lines, with the admin key in `x-api-key`; take one conversation's lines; until F18 step 7c.3 the API still
+exports version 1, so take them from the runner's own output instead), or built by hand from a reference, as the stub's are
 (`evals/louis-agent.evals.runner/Evals/Stub/Transcripts/`) and as Puls's first ones are: no run was recorded yet, so each is a short conversation
 written to pass the required graders. A script that writes them is fine; the files are what is committed.
 

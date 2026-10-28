@@ -6,7 +6,11 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Evals.Labels;
 using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Calibration;
@@ -14,20 +18,30 @@ using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Runner.Tests.Calibration;
 
-// F18 step 6.3: the commands that check a model grader against a person's labels. `--calibrate` runs the judge on every labelled answer and prints how often it agrees, then each
-// disagreement; it is never run in CI, because it asks a model. `--label-sheet` writes the files to label. Written first: the commands did not exist.
+/// <summary>
+/// The commands that check a model grader against a person's labels (F18 step 6.3). <c>--calibrate</c> runs the
+/// judge on every labelled answer and prints how often it agrees, then each disagreement; it never runs in CI, since
+/// it asks a model. <c>--label-sheet</c> writes the files to label.
+/// </summary>
 public class CalibrationCommandsTests
 {
+    /// <summary>The one scenario: a meal for two.</summary>
     private static readonly EvalScenario Scenario =
         new(SampleScenario.Beta, new EvalInput(null, "Africa/Johannesburg", ["For two"]),
             JsonDocument.Parse("""{"serves":2}""").RootElement.Clone(), [], DatasetSplit.Dev);
 
+    /// <summary>The time every stored line carries.</summary>
+    private static readonly DateTimeOffset At = new(2026, 10, 28, 8, 0, 0, TimeSpan.Zero);
+
+    /// <summary>A person's label of one answer, for a grader.</summary>
     private static LabeledAnswer Answer(string text, bool pass, int repeat = 1, string grader = "meal-for-people") =>
         new(SampleScenario.Fill($"<ScenarioBeta>.{repeat}.json"), grader, SampleScenario.Beta,
             StubMode.Delegating.Wire(), "8f7802b9a72e", repeat, [new LabelTurn("For two", text)], pass, "");
 
+    /// <summary>No setting is set: not in CI.</summary>
     private static string? NoCi(string name) => null;
 
+    /// <summary>Runs <c>--calibrate</c> on the eval and hands back its exit code and what it printed.</summary>
     private static async Task<(int Code, string Out)> CalibrateAsync(FakeEval eval, Func<string, string?> env,
         string grader = "meal-for-people")
     {
@@ -37,6 +51,7 @@ public class CalibrationCommandsTests
         return (code, output.ToString().ReplaceLineEndings("\n"));
     }
 
+    /// <summary>The agreement comes first, by class too, then each answer the judge and person disagree on.</summary>
     [Test]
     public async Task ItPrintsTheAgreement_ThenEachDisagreement()
     {
@@ -55,7 +70,10 @@ public class CalibrationCommandsTests
                 .Contain("judge: pass"));
     }
 
-    // Louis: "Never in CI". It asks a model, so it costs or needs a local one that CI does not have; the guard is the first thing it does.
+    /// <summary>
+    /// Never in CI (Louis): it asks a model, so it costs money or needs a local one CI doesn't have. The guard is the
+    /// first thing it does.
+    /// </summary>
     [TestCase("true")]
     [TestCase("1")]
     [TestCase("anything")]
@@ -68,6 +86,7 @@ public class CalibrationCommandsTests
         Assert.That(eval.Grader.Asked, Is.Zero, "no judge was asked");
     }
 
+    /// <summary>A CI setting that's empty or blank isn't CI.</summary>
     [TestCase("")]
     [TestCase("  ")]
     public async Task AnEmptyCiIsNotCi(string ci)
@@ -78,6 +97,7 @@ public class CalibrationCommandsTests
         Assert.That(code, Is.Zero);
     }
 
+    /// <summary>A grader the eval doesn't have is refused, naming the ones it has.</summary>
     [Test]
     public void AGraderTheEvalHasNot_IsRefusedWithTheOnesItHas()
     {
@@ -86,6 +106,7 @@ public class CalibrationCommandsTests
                 .Contains("meal-for-people"));
     }
 
+    /// <summary>A fixed rule asks no model, so there's nothing to calibrate.</summary>
     [Test]
     public void AFixedRuleNeedsNoCalibration()
     {
@@ -93,7 +114,10 @@ public class CalibrationCommandsTests
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'no-error'").And.Message.Contains("model"));
     }
 
-    // F18 step 6a.0: the labels folder may hold labels of more than one grader; a calibration reads those of the grader it is asked about, and says if it has none.
+    /// <summary>
+    /// The labels folder may hold more than one grader's labels; a calibration reads only those of the grader it's
+    /// asked about (F18 step 6a.0).
+    /// </summary>
     [Test]
     public async Task OnlyTheLabelsOfTheGraderAskedAbout_AreUsed()
     {
@@ -106,6 +130,7 @@ public class CalibrationCommandsTests
         Assert.That(output, Does.StartWith("Agreement: 1 of 1"));
     }
 
+    /// <summary>Labels only of another grader are no labels for this one, and it says how to make some.</summary>
     [Test]
     public void LabelsOnlyOfAnotherGrader_ArePerhapsNoLabelsForThisOne()
     {
@@ -115,6 +140,7 @@ public class CalibrationCommandsTests
                 .Contains("--label-sheet"));
     }
 
+    /// <summary>With no labels there's nothing to calibrate against, and it says how to make them.</summary>
     [Test]
     public void WithNoLabels_ThereIsNothingToCalibrateAgainst_AndItSaysHowToMakeThem()
     {
@@ -122,90 +148,18 @@ public class CalibrationCommandsTests
             Throws.InstanceOf<RunnerException>().With.Message.Contains("--label-sheet"));
     }
 
+    /// <summary>The label sheet is written from the stored run read on stdin, for the grader's scenarios.</summary>
     [Test]
-    public async Task TheLabelSheet_IsWrittenFromTheStoredRunOnStdin_ForTheGradersScenarios()
+    public void TheLabelSheet_IsWrittenFromTheStoredRunOnStdin_ForTheGradersScenarios()
     {
         string folder = Path.Combine(Path.GetTempPath(), "sheet-" + Guid.NewGuid().ToString("N"));
         try
         {
-            string At(object e) => "@" + JsonSerializer.Serialize(e);
-            string[] stored =
-            [
-                At(new
-                {
-                    @event = "protocol",
-                    version = 1,
-                    eval = "fake",
-                    eval_version = 1,
-                    graders = Array.Empty<object>(),
-                    models = Array.Empty<object>()
-                }),
-                At(new
-                {
-                    @event = "mode",
-                    mode = StubMode.Delegating.Wire(),
-                    repeat = 1,
-                    toolsets = new[] { StubToolset.Web.Wire() },
-                    role = "r",
-                    llm = (string?)null
-                }),
-                At(new
-                {
-                    @event = "question",
-                    mode = StubMode.Delegating.Wire(),
-                    repeat = 1,
-                    task = SampleScenario.Beta,
-                    turn = 1,
-                    session = "s",
-                    text = "For two"
-                }),
-                At(new
-                {
-                    @event = "sse",
-                    mode = StubMode.Delegating.Wire(),
-                    repeat = 1,
-                    task = SampleScenario.Beta,
-                    turn = 1,
-                    type = "content_block_delta",
-                    data = new
-                    {
-                        type = "content_block_delta",
-                        index = 0,
-                        delta = new
-                        {
-                            type = "text_delta",
-                            text = "Bobotie"
-                        }
-                    }
-                }),
-                At(new
-                {
-                    @event = "turn",
-                    mode = StubMode.Delegating.Wire(),
-                    repeat = 1,
-                    task = SampleScenario.Beta,
-                    turn = 1,
-                    session = "s",
-                    question = "For two",
-                    answer = "Bobotie",
-                    seconds = 1.0
-                }),
-                At(new
-                {
-                    @event = "conversation",
-                    mode = StubMode.Delegating.Wire(),
-                    repeat = 1,
-                    task = SampleScenario.Beta,
-                    scores = new { },
-                    errors = 0,
-                    seconds = 1.0
-                }),
-            ];
             var output = new StringWriter();
 
             int code = LabelSheetCommand.Run(
-                new LabelSheetRequest("fake", "meal-for-people", "8f7802b9a72e", folder, 10), new FakeEval([]), stored,
-                output);
+                new LabelSheetRequest("fake", "meal-for-people", "8f7802b9a72e", folder, 10), new FakeEval([]),
+                StoredRun(), output);
 
             Assert.That(code, Is.Zero);
             Assert.That(Directory.GetFiles(folder).Select(Path.GetFileName),
@@ -222,16 +176,48 @@ public class CalibrationCommandsTests
         }
     }
 
-    /// <summary>A model grader that says yes to "yes" and no to anything else, and counts how often it was asked.</summary>
+    /// <summary>A stored run of one conversation: a meal for two, answered "Bobotie".</summary>
+    private static string[] StoredRun()
+    {
+        string mode = StubMode.Delegating.Wire(), task = SampleScenario.Beta;
+        var delta = JsonDocument.Parse(
+                """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}""")
+            .RootElement.Clone();
+        EvalEvent[] events =
+        [
+            new ProtocolEvent(At, ProtocolEvent.CurrentVersion, "fake", 1, "abc123", RunSplit.Dev, null, null, [], []),
+            new ModeEvent(At, mode, 1, [StubToolset.Web.Wire()], "r", null, 1),
+            new QuestionEvent(At, mode, 1, task, 1, "s", "For two"),
+            new SseEvent(At, mode, 1, task, 1, "content_block_delta", delta),
+            new TurnEvent(At, mode, 1, task, 1, "s", "For two", "Bobotie", null, null, 0, 0, [], 1.0, null, null),
+            new ConversationEvent(At, mode, 1, task, null, 0, 1.0, [], TrialOutcome.Pass,
+                new Metrics(0, 0, [], 1, null, null, 1.0, null)),
+        ];
+        return [.. events.Select(EvalProtocolJson.Line)];
+    }
+
+    /// <summary>A model grader that says yes to "yes" and no to anything else, and counts its asks.</summary>
     private sealed class FakeGrader : IGrader
     {
+        /// <summary>How many answers it was asked about.</summary>
         public int Asked { get; private set; }
+
+        /// <inheritdoc />
         public string Name => "meal-for-people";
+
+        /// <inheritdoc />
         public int Version => 1;
+
+        /// <inheritdoc />
         public GraderKind Kind => GraderKind.Model;
+
+        /// <inheritdoc />
         public bool Required => false;
+
+        /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "serves" };
 
+        /// <summary>Passes an answer of "yes", fails anything else, and counts the ask.</summary>
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
         {
             Asked++;
@@ -241,31 +227,58 @@ public class CalibrationCommandsTests
         }
     }
 
+    /// <summary>A fixed rule that always passes: one a calibration refuses.</summary>
     private sealed class NoErrorRule : IGrader
     {
+        /// <inheritdoc />
         public string Name => "no-error";
+
+        /// <inheritdoc />
         public int Version => 1;
+
+        /// <inheritdoc />
         public GraderKind Kind => GraderKind.FixedRule;
+
+        /// <inheritdoc />
         public bool Required => true;
+
+        /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
 
+        /// <summary>Always passes.</summary>
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
             ValueTask.FromResult(Verdict.Pass(Name, Version, "fine"));
     }
 
+    /// <summary>An eval with the two graders, the one scenario and the labels a test hands it.</summary>
     private sealed class FakeEval(IReadOnlyList<LabeledAnswer> labels) : IEval
     {
+        /// <summary>The model grader, so a test can count its asks.</summary>
         public FakeGrader Grader { get; } = new();
+
+        /// <inheritdoc />
         public string Name => "fake";
+
+        /// <inheritdoc />
         public int Version => 1;
+
+        /// <inheritdoc />
         public string Proves => "A fake eval for the calibration commands.";
+
+        /// <inheritdoc />
         public IReadOnlyList<LabeledAnswer> Labels => labels;
+
+        /// <inheritdoc />
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [Scenario];
+
+        /// <inheritdoc />
         public IReadOnlyList<IGrader> Graders => [new NoErrorRule(), Grader];
 
+        /// <summary>Never called: the calibration commands run no mode.</summary>
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
             CancellationToken cancellationToken) => throw new NotSupportedException();
 
+        /// <summary>Never called: the calibration commands read no turn's facts.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
     }
 }

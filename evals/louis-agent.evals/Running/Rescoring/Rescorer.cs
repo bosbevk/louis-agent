@@ -6,6 +6,8 @@ using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Grading.Outcomes;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;
@@ -21,7 +23,10 @@ namespace LouisAgent.Evals.Running.Rescoring;
 internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
 {
     /// <summary>Walks the stored run's lines in order and writes the new run's lines as it goes.</summary>
-    /// <remarks>A switch on the line's kind, one case per kind of line, read like a table.</remarks>
+    /// <remarks>
+    /// A switch on the event's type, one case per kind of line, read like a table. The first line and the summaries
+    /// fall through: the new run writes its own.
+    /// </remarks>
     public async Task RunAsync(IEval eval, string runId, string rescoreOf, IEnumerable<string> storedLines,
         CancellationToken cancellationToken)
     {
@@ -31,7 +36,7 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
             {
                 Source = rescoreOf,
                 Run = runId,
-                Conversations = stored.Lines.Count(line => line.Kind == "conversation")
+                Conversations = stored.Lines.Count(line => line.Event is ConversationEvent)
             });
         protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders, stored.Models, stored.Split, rescoreOf,
             eval.Dataset);
@@ -39,34 +44,34 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         string? current = null;
         var modes = new Dictionary<string, EvalMode>(StringComparer.Ordinal);
         var tallies = new Dictionary<string, ModeTally>(StringComparer.Ordinal);
-        var turns = new Dictionary<(string Mode, int Repeat, string Task), List<string>>();
+        var turns = new Dictionary<(string Mode, int Repeat, string Task), List<EvalEvent>>();
         foreach (var line in stored.Lines)
         {
-            switch (line.Kind)
+            switch (line.Event)
             {
-                case "mode":
+                case ModeEvent mode:
                     // A mode's repeats are consecutive: when the next mode begins, the last one is done (F18 step 5c).
-                    if (current is not null && current != line.Mode) WriteSummary(eval, current, tallies[current]);
-                    current = line.Mode;
-                    modes[line.Mode] = StoredRun.ModeOf(line);
-                    tallies.TryAdd(line.Mode, new ModeTally());
+                    if (current is not null && current != mode.Mode) WriteSummary(eval, current, tallies[current]);
+                    current = mode.Mode;
+                    modes[mode.Mode] = StoredRun.ModeOf(mode);
+                    tallies.TryAdd(mode.Mode, new ModeTally());
                     protocol.Copy(line.Raw);
                     break;
-                case "question" or "sse" or "turn":
+                case QuestionEvent or SseEvent or TurnEvent:
                     protocol.Copy(line.Raw);
-                    if (!turns.TryGetValue(line.Key, out var lines)) turns[line.Key] = lines = [];
-                    lines.Add(line.Raw);
+                    var key = StoredRun.ConversationOf(line.Event)!.Value;
+                    if (!turns.TryGetValue(key, out var events)) turns[key] = events = [];
+                    events.Add(line.Event);
                     break;
-                case "conversation":
-                    turns.TryGetValue(line.Key, out var own);
-                    await RescoreConversationAsync(eval, runId, modes[line.Mode], line, own ?? [], tallies[line.Mode],
-                        cancellationToken);
+                case ConversationEvent conversation:
+                    turns.TryGetValue((conversation.Mode, conversation.Repeat, conversation.Task), out var own);
+                    await RescoreConversationAsync(eval, runId, modes[conversation.Mode], conversation, own ?? [],
+                        tallies[conversation.Mode], cancellationToken);
                     break;
-                // A mode's end, in version 1's word or version 2's, until step 7c.2e reads the records.
-                case "mode_done" or "mode-done":
-                    var tally = tallies[line.Mode];
-                    tally.CarryRetried(line.Retried);
-                    protocol.ModeDone(line.Mode, line.Repeat, tally.Share, line.Repeat, tally.Infrastructure,
+                case ModeDoneEvent done:
+                    var tally = tallies[done.Mode];
+                    tally.CarryRetried(done.Rates?.Retried ?? 0);
+                    protocol.ModeDone(done.Mode, done.Repeat, tally.Share, done.Repeat, tally.Infrastructure,
                         tally.Retried);
                     break;
             }
@@ -87,11 +92,11 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
     /// <summary>
     /// Grades one stored conversation again from its own turn lines, and writes its new conversation line.
     /// </summary>
-    private async Task RescoreConversationAsync(IEval eval, string runId, EvalMode mode, StoredLine stored,
-        List<string> turnLines, ModeTally tally,
+    private async Task RescoreConversationAsync(IEval eval, string runId, EvalMode mode, ConversationEvent stored,
+        List<EvalEvent> turnEvents, ModeTally tally,
         CancellationToken cancellationToken)
     {
-        var transcript = ProtocolTranscripts.Read(turnLines, stored.Mode, stored.Repeat, stored.Task);
+        var transcript = ProtocolTranscripts.Of(turnEvents);
         var scenario = eval.Scenarios.FirstOrDefault(s => s.Id == stored.Task);
         // A scenario renamed or removed since the run is Unknown, never a Fail: the agent didn't do worse, the
         // question is gone.
@@ -116,9 +121,8 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         tally.Add(new TrialResult(stored.Task, gone ? [] : scenario.Categories, outcome, grades));
 
         // Measured again from the stored turns, the way the run measured them, so the metrics are the run's.
-        double seconds = stored.Decimal("seconds") ?? 0;
         var facts = transcript.Turns.Select(turn => eval.TurnFactsOf(turn, mode)).ToList();
-        protocol.Conversation(stored.Mode, stored.Repeat, stored.Task, stored.Text("role"),
-            ConversationMetrics.Of(facts, seconds), seconds, grades, outcome, stored.Number("errors") ?? 0);
+        protocol.Conversation(stored.Mode, stored.Repeat, stored.Task, stored.Role,
+            ConversationMetrics.Of(facts, stored.Seconds), stored.Seconds, grades, outcome, stored.Errors);
     }
 }

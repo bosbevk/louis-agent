@@ -1,112 +1,86 @@
 using LouisAgent.Testing;
 using System.Text.Json;
-using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
-using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Labels;
-using LouisAgent.Evals.Trials;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Evals.Tests.Labels;
 
-// F18 step 6.3: `--label-sheet` turns a stored run's protocol export (the lines `--rescore` reads) into label files for a person to fill in: one per conversation, the answer
-// in it, the label null. Only a scenario that sets what the grader reads can be labelled for it (a meal for four needs the four), and the sheet is a spread: one conversation of
-// each scenario first, then a second of each, up to the count, so ten labels are not ten repeats of one dish. Written first: LabelSheet did not exist.
+/// <summary>
+/// <c>--label-sheet</c> turns a stored run's protocol export (the lines <c>--rescore</c> reads) into label files for a
+/// person to fill in (F18 step 6.3): one per conversation, the answer in it, the label empty. Only a scenario that
+/// sets what the grader reads can be labelled for it (a meal for four needs the four), and the sheet is a spread: one
+/// conversation of each scenario first, then a second of each, up to the count.
+/// </summary>
 public class LabelSheetTests
 {
-    private static string At(object e) => "@" + JsonSerializer.Serialize(e);
+    /// <summary>The time every line carries.</summary>
+    private static readonly DateTimeOffset At = new(2026, 10, 28, 8, 0, 0, TimeSpan.Zero);
 
-    /// <summary>The stored lines of a run: a conversation per (task, mode, repeat), each with one turn that answered "answer of {task}/{mode}/{repeat}".</summary>
-    private static string[] Stored(IEnumerable<string> tasks, string[] modes, int repeats)
-    {
-        var lines = new List<string>
-        {
-            At(new
-            {
-                @event = "protocol", version = 1, eval = "sample", eval_version = 1, graders = Array.Empty<object>(),
-                models = Array.Empty<object>()
-            })
-        };
-        foreach (string mode in modes)
-            for (int repeat = 1; repeat <= repeats; repeat++)
-            {
-                lines.Add(At(new
-                {
-                    @event = "mode",
-                    mode,
-                    repeat,
-                    toolsets = new[] { SampleToolset.Alpha },
-                    role = "r",
-                    llm = (string?)null,
-                    conversations = tasks.Count()
-                }));
-                foreach (string task in tasks)
-                {
-                    string answer = $"answer of {task}/{mode}/{repeat}";
-                    lines.Add(At(new
-                    { @event = "question", mode, repeat, task, turn = 1, session = "sess_1", text = "q" }));
-                    lines.Add(At(new
-                    {
-                        @event = "sse",
-                        mode,
-                        repeat,
-                        task,
-                        turn = 1,
-                        type = "content_block_delta",
-                        data = new
-                        {
-                            type = "content_block_delta",
-                            index = 0,
-                            delta = new { type = "text_delta", text = answer }
-                        }
-                    }));
-                    lines.Add(At(new
-                    {
-                        @event = "turn",
-                        mode,
-                        repeat,
-                        task,
-                        turn = 1,
-                        session = "sess_1",
-                        question = "q",
-                        answer,
-                        role = (string?)null,
-                        seconds = 1.0
-                    }));
-                    lines.Add(At(new
-                    {
-                        @event = "conversation",
-                        mode,
-                        repeat,
-                        task,
-                        role = (string?)null,
-                        scores = new { },
-                        errors = 0,
-                        seconds = 1.0
-                    }));
-                }
-
-                lines.Add(At(new { @event = "mode_done", mode, repeat }));
-            }
-
-        return [.. lines];
-    }
-
-    private static EvalScenario Scenario(string id, string expected) =>
-        new(id, new EvalInput(null, "Africa/Johannesburg", ["q"]), JsonDocument.Parse(expected).RootElement.Clone(), [],
-            DatasetSplit.Dev);
-
+    /// <summary>The scenarios the sheets are made for: three ask for a number of people, the control doesn't.</summary>
     private static readonly IReadOnlyList<EvalScenario> Scenarios =
     [
         Scenario(SampleScenario.Alpha, """{"serves":4}"""), Scenario(SampleScenario.Beta, """{"serves":2}"""),
         Scenario("cook-shops", """{"serves":4}"""), Scenario("control-web", """{"routes_to":"puls"}"""),
     ];
 
+    /// <summary>
+    /// A stored run: a conversation per task, mode and repeat, each with one turn that answered
+    /// "answer of {task}/{mode}/{repeat}".
+    /// </summary>
+    private static string[] Stored(IEnumerable<string> tasks, string[] modes, int repeats)
+    {
+        var events = new List<EvalEvent>
+        {
+            new ProtocolEvent(At, ProtocolEvent.CurrentVersion, "sample", 1, "abc123", RunSplit.Dev, null, null, [],
+                []),
+        };
+        foreach (string mode in modes)
+            for (int repeat = 1; repeat <= repeats; repeat++)
+            {
+                events.Add(new ModeEvent(At, mode, repeat, [SampleToolset.Alpha], "r", null, tasks.Count()));
+                foreach (string task in tasks) events.AddRange(Conversation(mode, repeat, task));
+                events.Add(new ModeDoneEvent(At, mode, repeat, null));
+            }
+
+        return [.. events.Select(EvalProtocolJson.Line)];
+    }
+
+    /// <summary>One conversation's lines: the question, the answer streamed, the turn and the result.</summary>
+    private static EvalEvent[] Conversation(string mode, int repeat, string task)
+    {
+        string answer = $"answer of {task}/{mode}/{repeat}";
+        var delta = JsonDocument.Parse(
+                $$$"""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"{{{answer}}}"}}""")
+            .RootElement.Clone();
+        return
+        [
+            new QuestionEvent(At, mode, repeat, task, 1, "sess_1", "q"),
+            new SseEvent(At, mode, repeat, task, 1, "content_block_delta", delta),
+            new TurnEvent(At, mode, repeat, task, 1, "sess_1", "q", answer, null, null, 0, 0, [], 1.0, null, null),
+            new ConversationEvent(At, mode, repeat, task, null, 0, 1.0, [], TrialOutcome.Pass,
+                new Metrics(0, 0, [], 1, null, null, 1.0, null)),
+        ];
+    }
+
+    /// <summary>A scenario with what it expects.</summary>
+    private static EvalScenario Scenario(string id, string expected) =>
+        new(id, new EvalInput(null, "Africa/Johannesburg", ["q"]), JsonDocument.Parse(expected).RootElement.Clone(), [],
+            DatasetSplit.Dev);
+
+    /// <summary>A new folder under the temp folder, for one test's sheet.</summary>
     private static string TempFolder() => Path.Combine(Path.GetTempPath(), "labels-" + Guid.NewGuid().ToString("N"));
 
+    /// <summary>The label files in a folder, read back, in name order.</summary>
     private static List<LabelFile> Written(string folder) =>
         Directory.GetFiles(folder).Order()
             .Select(f => JsonSerializer.Deserialize<LabelFile>(File.ReadAllText(f), LabelJson.Options)!).ToList();
 
+    /// <summary>A conversation's file holds every turn and the answer to label, and no label yet.</summary>
     [Test]
     public void OneFilePerConversation_WithTheAnswerInIt_AndNoLabelYet()
     {
@@ -118,14 +92,18 @@ public class LabelSheetTests
 
             Assert.That(names,
                 Is.EqualTo(new[]
-                    { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.8f7802b9a72e.1.json") }));
+                {
+                    SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.8f7802b9a72e.1.json")
+                }));
             var file = Written(folder).Single();
             Assert.That((file.Scenario, file.Mode, file.Run, file.Repeat, file.Turn, file.Answer),
                 Is.EqualTo((SampleScenario.Alpha, SampleMode.Beta, "8f7802b9a72e", 1, 1,
                     SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1"))));
             Assert.That(file.Turns,
                 Is.EqualTo(new[]
-                    { new LabelTurn("q", SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1")) }),
+                {
+                    new LabelTurn("q", SampleScenario.Fill($"answer of <ScenarioAlpha>/{SampleMode.Beta}/1"))
+                }),
                 "6a.4f: every turn, question and answer");
             Assert.That(file.Label, Is.Null, "the person's part");
             Assert.That(file.Grader, Is.EqualTo("meal-for-people"), "the grader it is a label for");
@@ -136,6 +114,7 @@ public class LabelSheetTests
         }
     }
 
+    /// <summary>A scenario that doesn't set what the grader reads has nothing to label.</summary>
     [Test]
     public void OnlyScenariosThatSetWhatTheGraderReads_AreInTheSheet()
     {
@@ -154,6 +133,7 @@ public class LabelSheetTests
         }
     }
 
+    /// <summary>Every scenario once before any twice, and never more than the count.</summary>
     [Test]
     public void TheSheetIsASpread_EachScenarioOnceBeforeAnyTwice_AndNoMoreThanTheCount()
     {
@@ -179,6 +159,7 @@ public class LabelSheetTests
         }
     }
 
+    /// <summary>Asking twice gives the same sheet.</summary>
     [Test]
     public void TheSameSheetTwice_IsTheSameFiles()
     {
@@ -200,8 +181,10 @@ public class LabelSheetTests
         }
     }
 
-    // A second sheet for the same run (fresh answers to check a tuned judge on) goes into the folder the first one was labelled in: it must never write over a person's labels,
-    // and it takes the next conversations instead, so the count is of new files.
+    /// <summary>
+    /// A second sheet for the same run goes into the folder the first was labelled in: it never writes over a person's
+    /// labels, and takes the next conversations instead, so the count is of new files.
+    /// </summary>
     [Test]
     public void AFileThatExists_IsNeverOverwritten_AndTheNextConversationIsTakenInstead()
     {
@@ -233,8 +216,11 @@ public class LabelSheetTests
         }
     }
 
-    // F18 step 6a.0b (the review): the grader is in the file's name, so two graders labelling the same answer have two files. Without it the second sheet would find the first grader's file
-    // already there and, because a sheet never overwrites, silently write nothing for the second grader.
+    /// <summary>
+    /// The grader is in the file's name, so two graders labelling the same answer get a file each (F18 step 6a.0b).
+    /// Without it the second sheet would find the first grader's file and, since a sheet never overwrites, write
+    /// nothing.
+    /// </summary>
     [Test]
     public void TwoGradersLabellingTheSameAnswers_HaveTwoFilesEach_NoneSkipped()
     {
@@ -248,10 +234,14 @@ public class LabelSheetTests
 
             Assert.That(first,
                 Is.EqualTo(new[]
-                    { SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }));
+                {
+                    SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json")
+                }));
             Assert.That(second,
                 Is.EqualTo(new[]
-                    { SampleScenario.Fill($"another-judge.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json") }),
+                {
+                    SampleScenario.Fill($"another-judge.<ScenarioAlpha>.{SampleMode.Beta}.run.1.json")
+                }),
                 "not skipped for the first grader's file");
             Assert.That(Written(folder).Select(f => f.Grader),
                 Is.EquivalentTo(new[] { "meal-for-people", "another-judge" }));
@@ -262,14 +252,14 @@ public class LabelSheetTests
         }
     }
 
+    /// <summary>Lines with no first line naming an eval aren't an eval's run, and are refused.</summary>
     [Test]
     public void ARunThatIsNotAnEvalsRun_IsRefused()
     {
         string folder = TempFolder();
+        string[] lines = [EvalProtocolJson.Line(new ModeEvent(At, SampleMode.Beta, 1, [], "r", null, 1))];
 
-        Assert.That(
-            () => LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run",
-                [At(new { @event = "protocol", version = 1 })], folder, count: 10),
+        Assert.That(() => LabelSheet.Write(Scenarios, "meal-for-people", ["serves"], "run", lines, folder, count: 10),
             Throws.TypeOf<InvalidDataException>());
     }
 }

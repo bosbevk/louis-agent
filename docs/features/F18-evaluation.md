@@ -1562,6 +1562,25 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   their metrics. Red before the code: the build (the runner, the re-scorer and the writer took scores), and then 7
   Puls tests (the grader's five, the cook's version and grader list); the three metrics tests were written beside the
   writer change and passed with it.
+- **Step 7c.2e (the harness reads the records; the v1 path goes).** `ProtocolTranscripts` and `StoredRun` read each
+  line with `EvalProtocolJson.Read` and switch on the event's type, so no field is looked up by name: `LineJson`, the
+  `@` branch, `StoredLine`'s JSON helpers (`Text`, `Decimal`, `Number`, `Retried`), the model-level parse and
+  `EvalErrorMessage.UnknownModelLevel` went, and `V1Words` keeps only `Kind` (the runner's `--list`, until step 3)
+  now that `FailureAliases` is gone (with `RepeatedNameTests`' exemption for it). A `StoredLine` is the raw text (a
+  re-score still copies lines as they were) and its `EvalEvent`; `StoredRun.ConversationOf` says which conversation
+  an event belongs to, and `ProtocolTranscripts.Of(events)` builds a transcript from events already grouped, which
+  the re-scorer and `LabelSheet` use. A version 1 `@` line is now a line for people, so a stored v1 run has no first
+  line and is refused (`NoBeginLine`). **The 55 conformance transcripts were rewritten as v2** (Puls's cook and
+  routing, the stub's, and the runner tests' fake ones; the API's frozen `stub-run.v1.txt` stays until step 3) by a
+  one-off converter in the session's scratchpad that mapped each v1 line to the contract's record and wrote it with
+  `EvalProtocolJson.Line` (`puls_calls` became `agent_calls`, `t` an ISO time). The stub's and the fake transcripts'
+  v1 `conversation` lines, which held only the old scores, were dropped: a transcript's grades come from grading it.
+  The converted files passed every test on the old two-version readers before the readers changed, so they grade as
+  before. (The Malmesbury reference already held mis-encoded text, `Â±` for `±`, from when it was written; the
+  converter kept it byte for byte.) The tests that fed v1 lines (`ProtocolTranscriptsTests`, `ConformanceCasesTests`,
+  `LabelSheetTests`, the runner's `CalibrationCommandsTests`) build the contract's records now, each brought up to the
+  rules whole; the guide's transcript example is v2. Red before the code: a v1 line still read as a turn, and a v1
+  run was re-scored instead of refused.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

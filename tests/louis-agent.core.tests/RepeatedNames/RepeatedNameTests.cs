@@ -82,9 +82,6 @@ public class RepeatedNameTests
         ("tests/louis-agent.api.tests/Evals/Runs/Protocol/EvalProtocolTests.cs", "api_error",
             "a turn's failure (EvalTurnFailure), not the API's error kind that shares its text: "
             + "the line read as the runner writes it"),
-        ("evals/louis-agent.evals/Protocol/V1Words.cs", "api_error",
-            "a turn's failure (TurnFailure) in version 1's words, not the API's error kind that shares its text; "
-            + "goes with step 7c.3"),
         ("tests/louis-agent.api.tests/Evals/Store/Recording/EvalRecorderTests.cs", "api_error",
             "a turn's failure (EvalTurnFailure), not the API's error kind that shares its text: "
             + "the runner's line as recorded"),

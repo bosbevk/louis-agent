@@ -1,88 +1,31 @@
-using System.Text.Json;
 using LouisAgent.Core.Messages;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Messages;
-using LouisAgent.Choices;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Protocol.Parts.Run;
 
 namespace LouisAgent.Evals.Running.Rescoring;
 
 /// <summary>
-/// One line of a stored run as it was written, with its JSON. A line that isn't an <c>@</c> line is no part of the
-/// protocol.
+/// One line of a stored run: the text as it was written, so a re-score can copy it untouched, and the event it holds.
 /// </summary>
-internal sealed record StoredLine(string Raw, string Kind, JsonElement Json)
-{
-    /// <summary>Reads one stored line of either version, or nothing when it is a person's line.</summary>
-    public static StoredLine? Parse(string raw) =>
-        ProtocolTranscripts.LineJson(raw) is { } json
-            ? new StoredLine(raw, json.GetProperty("event").GetString() ?? string.Empty, json)
-            : null;
-
-    /// <summary>
-    /// The trials a mode's end says were run twice: at the top of a version 1 line, under its rates in version 2.
-    /// </summary>
-    /// <remarks>Guard clauses (Fowler): one place the count can be, per line, from the top.</remarks>
-    public int Retried
-    {
-        get
-        {
-            if (Number("retried") is { } top) return top;
-            // Version 2 keeps it under the mode's rates, which a line written with no k leaves out.
-            if (Json.TryGetProperty("rates", out var rates) && rates.ValueKind == JsonValueKind.Object &&
-                rates.TryGetProperty("retried", out var retried)) return retried.GetInt32();
-            return 0;
-        }
-    }
-
-    /// <summary>The mode the line is about.</summary>
-    public string Mode => Json.GetProperty("mode").GetString()!;
-
-    /// <summary>Which repeat of the mode.</summary>
-    public int Repeat => Json.GetProperty("repeat").GetInt32();
-
-    /// <summary>The scenario the line is about.</summary>
-    public string Task => Json.GetProperty("task").GetString()!;
-
-    /// <summary>
-    /// What the same turn or conversation is called in the lines of a run: its mode, repeat and task.
-    /// </summary>
-    public (string Mode, int Repeat, string Task) Key => (Mode, Repeat, Task);
-
-    /// <summary>A text field, if the line has it.</summary>
-    public string? Text(string name) =>
-        Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
-
-    /// <summary>A number with a fraction, if the line has it.</summary>
-    public double? Decimal(string name) =>
-        Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetDouble() : null;
-
-    /// <summary>A whole number, if the line has it.</summary>
-    public int? Number(string name) =>
-        Json.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetInt32() : null;
-}
+internal sealed record StoredLine(string Raw, EvalEvent Event);
 
 /// <summary>
-/// A stored run's protocol lines, read for a re-score: what its first line says it ran (the split and the model of
-/// each mode), and the mode each <c>mode</c> line named, which is the mode the graders see. The lines are only read,
-/// never changed.
+/// A stored run's protocol lines, read for a re-score or a label sheet: the split and the models its first line
+/// names, and every event in order. The lines are only read, never changed.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed class StoredRun
 {
     /// <summary>Keeps the lines, and reads the split and the models off the first line.</summary>
-    private StoredRun(IReadOnlyList<StoredLine> lines, StoredLine begin)
+    private StoredRun(IReadOnlyList<StoredLine> lines, ProtocolEvent begin)
     {
         Lines = lines;
-        // The split the first line names, its old held_out spelling too; a run from before splits were kept is dev.
-        Split = SettingChoice.TryParse(begin.Text("split"), out RunSplit? split, RunSplits.Aliases) &&
-                split is { } known
-            ? known
-            : RunSplit.Dev;
-        Models = begin.Json.TryGetProperty("models", out var models) && models.ValueKind == JsonValueKind.Array
-            ? [.. models.EnumerateArray().Select(ModelOf)]
-            : [];
+        Split = begin.Split;
+        Models = begin.Models;
     }
 
     /// <summary>Every protocol line of the run, in the order it was written.</summary>
@@ -95,34 +38,32 @@ internal sealed class StoredRun
     public IReadOnlyList<ModelInfo> Models { get; }
 
     /// <summary>
-    /// Reads a stored run's lines; a run without a first line that names its eval can't be re-scored.
+    /// Reads a stored run's lines. A run with no first line can't be re-scored: a version 1 run is one, since its
+    /// <c>@</c> lines are no events.
     /// </summary>
     public static StoredRun Read(IEnumerable<string> raw)
     {
-        var lines = raw.Select(StoredLine.Parse).OfType<StoredLine>().ToList();
-        // The old first line was the version alone; a run that can be re-scored names its eval.
-        var begin = lines.FirstOrDefault(line => line.Kind == "protocol" && line.Json.TryGetProperty("eval", out _))
+        var lines = raw.Select(line => EvalProtocolJson.Read(line) is { } e ? new StoredLine(line, e) : null)
+            .OfType<StoredLine>().ToList();
+        var begin = lines.Select(line => line.Event).OfType<ProtocolEvent>().FirstOrDefault()
                     ?? throw new InvalidDataException(MessageText.Format(EvalErrorMessage.NoBeginLine));
         return new StoredRun(lines, begin);
     }
 
-    /// <summary>The mode a <c>mode</c> line named, as the run opened it.</summary>
-    public static EvalMode ModeOf(StoredLine line) =>
-        new(line.Mode, line.Text("role") ?? string.Empty,
-        [
-            .. line.Json.GetProperty("toolsets").EnumerateArray().Select(toolset => toolset.GetString() ?? string.Empty)
-        ], Llm: line.Text("llm"));
+    /// <summary>The mode a <c>mode</c> line opened, as the graders see it.</summary>
+    public static EvalMode ModeOf(ModeEvent mode) =>
+        new(mode.Mode, mode.Role ?? string.Empty, mode.Toolsets, Llm: mode.Llm);
 
     /// <summary>
-    /// One model of the first line: its mode, level, role and name; the level in version 1's words (<c>Agent</c>) or
-    /// the contract's (<c>agent</c>).
+    /// Which conversation an event belongs to (its mode, repeat and task), for the events a conversation is made of.
     /// </summary>
-    private static ModelInfo ModelOf(JsonElement model) =>
-        new(model.GetProperty("mode").GetString()!,
-            SettingChoice.TryParse(model.GetProperty("level").GetString(), out ModelLevel? level) && level is { } known
-                ? known
-                : throw new InvalidDataException(MessageText.Format(EvalErrorMessage.UnknownModelLevel,
-                    new { Level = model.GetProperty("level").GetString() })),
-            model.TryGetProperty("role", out var role) ? role.GetString() : null,
-            model.TryGetProperty("model", out var name) ? name.GetString() : null);
+    /// <remarks>A switch expression on the event's type, one arm per kind, read like a table.</remarks>
+    public static (string Mode, int Repeat, string Task)? ConversationOf(EvalEvent e) => e switch
+    {
+        QuestionEvent q => (q.Mode, q.Repeat, q.Task),
+        SseEvent s => (s.Mode, s.Repeat, s.Task),
+        TurnEvent t => (t.Mode, t.Repeat, t.Task),
+        ConversationEvent c => (c.Mode, c.Repeat, c.Task),
+        _ => null,
+    };
 }

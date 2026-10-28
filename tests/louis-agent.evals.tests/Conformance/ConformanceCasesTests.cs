@@ -2,33 +2,41 @@ using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Tests.Datasets;
 
 namespace LouisAgent.Evals.Tests.Conformance;
 
-// The conformance cases kept beside an eval (F18 step 4.2b review): read from its files, by scenario. Written first: the loader threw
-// NotImplementedException on the red run.
+/// <summary>
+/// The conformance cases kept beside an eval (F18 step 4.2b), read from its files by scenario: the reference and each
+/// known-bad beside it. A stray file (a misspelling, a deleted scenario's files, a known-bad with no reference) is
+/// refused by name.
+/// </summary>
 public class ConformanceCasesTests
 {
-    private static readonly string[] Conversation =
-    [
-        SampleMode.Fill(
-            "@{\"event\": \"mode\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"toolsets\": [\"") +
-        SampleToolset.Gamma + "\", \"" + SampleToolset.Alpha +
-        "\"], \"role\": \"puls/voice-af\", \"llm\": null, \"conversations\": 1}",
-        SampleMode.Fill(
-            "@{\"event\": \"sse\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"type\": \"content_block_delta\", \"data\": {\"type\": \"content_block_delta\", \"index\": 0, \"delta\": {\"type\": \"text_delta\", \"text\": \"Hallo\"}}}"),
-        SampleMode.Fill(
-            "@{\"event\": \"turn\", \"t\": 1.0, \"mode\": \"<ModeBeta>\", \"repeat\": 1, \"task\": \"s\", \"turn\": 1, \"session\": \"sess_1\", \"question\": \"Hallo\", \"answer\": \"Hallo\", \"role\": null, \"seconds\": 0.5, \"error\": null}"),
-    ];
+    /// <summary>The time every line carries.</summary>
+    private static readonly DateTimeOffset At = new(2026, 10, 28, 8, 0, 0, TimeSpan.Zero);
 
+    /// <summary>One conversation's file: its mode, one answer of "Hallo", and the turn.</summary>
+    private static readonly string Conversation = string.Join("\n", new EvalEvent[]
+    {
+        new ModeEvent(At, SampleMode.Beta, 1, [SampleToolset.Gamma, SampleToolset.Alpha], "puls/voice-af", null, 1),
+        new SseEvent(At, SampleMode.Beta, 1, "s", 1, "content_block_delta",
+            Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}""")),
+        new TurnEvent(At, SampleMode.Beta, 1, "s", 1, "sess_1", "Hallo", "Hallo", null, null, 0, 0, [], 0.5, null,
+            null),
+    }.Select(EvalProtocolJson.Line));
+
+    /// <summary>The reference gives the mode and the turns, and each known-bad is found by its label.</summary>
     [Test]
     public void LoadsTheReferenceAndEachKnownBadBeside()
     {
         using var folder = new DatasetFolder()
-            .Write("s.reference.txt", string.Join("\n", Conversation))
-            .Write("s.bad.slow.txt", string.Join("\n", Conversation))
-            .Write("s.bad.error.txt", string.Join("\n", Conversation));
+            .Write("s.reference.txt", Conversation)
+            .Write("s.bad.slow.txt", Conversation)
+            .Write("s.bad.error.txt", Conversation);
 
         var only = ConformanceCases.Load(folder.Root, [Scenario("s")]).Single();
 
@@ -39,39 +47,44 @@ public class ConformanceCasesTests
         Assert.That(only.KnownBad.Select(k => k.Label), Is.EqualTo(new[] { "error", "slow" }));
     }
 
+    /// <summary>A known-bad with no reference beside it is refused, by name.</summary>
     [Test]
     public void RefusesAKnownBadWithNoReference()
     {
-        using var folder = new DatasetFolder().Write("s.bad.error.txt", string.Join("\n", Conversation));
+        using var folder = new DatasetFolder().Write("s.bad.error.txt", Conversation);
 
         Assert.That(() => ConformanceCases.Load(folder.Root, [Scenario("s")]),
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("s.bad.error.txt"));
     }
 
+    /// <summary>A deleted scenario's files are stray, and the loader says which.</summary>
     [Test]
     public void RefusesAFileOfAScenarioThatIsNotInTheEval()
     {
-        // The scenario was deleted from the eval, and its files were not: they are stray, and the loader says which.
         using var folder = new DatasetFolder()
-            .Write("s.reference.txt", string.Join("\n", Conversation))
-            .Write("t.bad.error.txt", string.Join("\n", Conversation));
+            .Write("s.reference.txt", Conversation)
+            .Write("t.bad.error.txt", Conversation);
 
         Assert.That(() => ConformanceCases.Load(folder.Root, [Scenario("s")]),
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("t.bad.error.txt"));
     }
 
+    /// <summary>A misspelled reference is stray too.</summary>
     [Test]
     public void RefusesAMisspelledReference()
     {
         using var folder = new DatasetFolder()
-            .Write("s.reference.txt", string.Join("\n", Conversation))
-            .Write("s.refrence.txt", string.Join("\n", Conversation));
+            .Write("s.reference.txt", Conversation)
+            .Write("s.refrence.txt", Conversation);
 
         Assert.That(() => ConformanceCases.Load(folder.Root, [Scenario("s")]),
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("s.refrence.txt"));
     }
 
+    /// <summary>A scenario with nothing expected of it.</summary>
     private static EvalScenario Scenario(string id) =>
-        new(id, new EvalInput(null, "Etc/UTC", ["Hallo"]), JsonDocument.Parse("{}").RootElement.Clone(), [],
-            DatasetSplit.Dev);
+        new(id, new EvalInput(null, "Etc/UTC", ["Hallo"]), Json("{}"), [], DatasetSplit.Dev);
+
+    /// <summary>A bit of JSON text as an element that outlives its document.</summary>
+    private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 }

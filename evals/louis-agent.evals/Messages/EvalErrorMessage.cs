@@ -61,9 +61,6 @@ public enum EvalErrorMessage
     [Description("The stored run has no first line naming its eval, so there is nothing to re-score.")]
     NoBeginLine,
 
-    [Description("The stored run names a model level '{Level}' this build doesn't know.")]
-    UnknownModelLevel,
-
     [Description("A re-score opens no session and calls no model, so '{Call}' was never meant to be reached.")]
     NoSessionInARescore,
 
