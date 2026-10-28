@@ -1433,6 +1433,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   **`puls-routing`: no v1 baseline** (Louis, 2026-10-28). The store's one routing run, `bc4b25269a30` (2026-10-25),
   ran before steps 5.6 and 5.7 changed the prompts and before 5a's pass rates; step 5.6 already keeps it only as
   history. The routing's trend starts with its first v2 run.
+- **Leftovers of the 2026-10-28 review.** The MCP server's skill texts (`GetSkillInfo`'s skill card, and `ListSkills`'
+  header and lines, by Louis's pick) are `McpServerText` members, and `GetSkillDocumentation`'s description is wrapped
+  at 120; what the client reads is byte for byte the same. A note for the record: `f6e6e1a1`, a warnings commit,
+  also changed behaviour: the MCP server's key check now matches only with the key in hand, and an auth decision the
+  switch doesn't know refuses to start.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
