@@ -1394,6 +1394,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `CreateSessionRequest` with `SessionJson.SnakeCase` (its nulls now go on the wire, which the endpoint reads as
   before); `TurnStoreContract` builds an event's data as a `JsonObject`. A change to tests only, so no red: the
   replies they pin are byte for byte the same, and the tests pass as before.
+- **Two ratchets: folder size and the portal's JSON readers** (cards A and A, step 4). `FolderSizeTests` (core.tests,
+  beside `FileSizeTests`, over its roots with `tests/` included at the same limit) allows six source files a folder,
+  a `.razor` and its `.razor.cs` counting once; 29 folders are on its `Oversized` list today. `PortalReadsJsonTests`
+  (puls.tests) lists the 28 portal files under `Admin/`, `Components/Admin/` and `Pages/Admin/` that use
+  `JsonElement`; the plan's 7c entry now says each moves to its record when 7c rewrites it, and 7c is done when the
+  list is empty. Both work like `FileSizeTests`: a new offender fails, and a listed one that's no longer an offender
+  fails too. Red first: each without its list (29 folders named; 28 files named).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

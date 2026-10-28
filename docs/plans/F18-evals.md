@@ -1020,6 +1020,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Two ratchets: folder size, and the portal's JSON readers** (cards A and A). `FolderSizeTests`, beside
+  `FileSizeTests` and over the same roots: a folder holds at most six source files (a `.razor` and its `.razor.cs`
+  count as one); today's oversized folders are on a list that may only shrink, and a folder is split by concern when
+  a step next touches it. `PortalReadsJsonTests` in `puls.tests`: the files under the portal's `Admin/`,
+  `Components/Admin/` and `Pages/Admin/` that use `JsonElement` are listed, and the list may only shrink; the 7c
+  entry below says when it empties (Louis, 2026-10-28, review of the unattended run).
+
 - **Tests post records, not anonymous objects** (card A). `GitReplyJsonTests` (3) posts the contract's git request
   records and `SessionReplyJsonTests` (1) the session's own request record, which finding 3 keeps in the API for
   now; `TurnStoreContract`'s event data is a `JsonObject`, a shape decided at run time. The pinned bytes don't
@@ -1125,7 +1132,10 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   stream), with no `@` prefix or ASCII-only rule beyond what stdout mixed with log lines needs. **v1 runs are
   discarded** (Louis: "v1 runs can be discarded"): no migration and no v1 parser kept; `python-protocol.txt` and the
   v1 parse tests go with it, and the trends start again at v2. Before the discard, the last Python cook and routing
-  scores are written into the feature doc as numbers, so the baseline stays on record.
+  scores are written into the feature doc as numbers, so the baseline stays on record. The admin portal's readers
+  move with it (Louis, 2026-10-28, review of the unattended run): each file on `PortalReadsJsonTests`' list (the
+  portal's code that still reads a reply as `JsonElement`) moves to its contract record when 7c rewrites it, and
+  7c is done only when that list is empty.
 - **Step 7b splits the store by record** (Louis, 2026-10-24). `IBenchmarkStore` is already the repository (one
   interface, an in-memory and a MongoDB implementation, one contract test), but `MongoBenchmarkStore` holds four
   records in one class (runs, conversations, turns with their events, requests: each its own collection, mapping and
