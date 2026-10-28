@@ -4,6 +4,7 @@ using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Answers;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
@@ -12,7 +13,7 @@ using NoteAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     LouisAgent.Api.Endpoints.Answers.CreatedJson<LouisAgent.Api.Contracts.Admin.Runs.NoteRow>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
 /// <summary>
 /// Adds a note to a run or to one of its conversations. The time is always the server's own, never what the request

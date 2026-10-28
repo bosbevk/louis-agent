@@ -27,7 +27,7 @@ using EventsAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.ServerSentEventsResult<string>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
 /// The admin portal's own routes as named methods: the checks, a check's manual and trend, and starting and following

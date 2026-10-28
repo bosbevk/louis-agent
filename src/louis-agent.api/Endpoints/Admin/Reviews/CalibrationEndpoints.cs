@@ -4,7 +4,7 @@ using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
 /// <summary>
 /// The judge checks of a stored run (F18 step 6a.5b, ADR 0039: a resource, <c>calibrations</c>, under the run): start

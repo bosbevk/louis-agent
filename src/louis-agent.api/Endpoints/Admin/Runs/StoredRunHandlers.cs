@@ -25,7 +25,7 @@ using DeleteAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.NoContent,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
 /// The portal's reads of a stored run, and its delete, as named methods: the run with everything it kept, one turn's

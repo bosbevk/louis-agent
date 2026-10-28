@@ -3,11 +3,12 @@ using LouisAgent.Api.Benchmarks.Calibrations.Store;
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Endpoints.Admin.Reviews;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
 /// The admin portal's routes: the checks, starting a run, and reading what it recorded. Everything is behind the admin

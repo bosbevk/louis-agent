@@ -113,7 +113,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] Choices still made by string, the LLM provider first; the web app's `GitChangeAsync("stage" | "unstage" | "discard")` too (CL20 review)
 - [ ] The session request bodies (`CreateSessionRequest`, `SendMessageRequest`, `AttachmentRequest`, `ReplayRequest`) into `louis-agent.api.contracts`, their parsing as extension members in the API, when a change touches them or a client (the eval runner's `HttpSessionClient`, the orchestrator) switches to the contract ([the F18 run's finding 3](docs/plans/F18-unattended-decisions.md))
 - [ ] An OpenAPI document for the agent API (`Microsoft.AspNetCore.OpenApi`, the handlers on `TypedResults` so it knows each answer), for the engine package's `Hosts.Api` (CL20, [ADR 0039](docs/adr/0039-api-routes-under-v1.md))
-- [ ] The rest of `Endpoints/` by concern (CL20): `InfoEndpoints`, `SessionEndpoints` and `AdminEndpoints` split by resource as `Endpoints/Git/` is, and a long handler a named method
+- [x] The rest of `Endpoints/` by concern (CL20): `InfoEndpoints`, `SessionEndpoints` and `AdminEndpoints` split by resource as `Endpoints/Git/` is, and a long handler a named method
 - [ ] SearXNG on only on purpose
 - [ ] SearXNG's results filtered to the site asked for
 - [ ] F31's review follow-ups

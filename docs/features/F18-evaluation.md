@@ -1176,6 +1176,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   first). `ApiUserText` was brought up whole: its eight descriptions over 120 are split with `+`, so
   `HostMessageEnumTests` now reads a description joined that way (it failed on the eight first). A correction to the
   session line above: the busy-session 409's `{id}` is the cancel route's own placeholder, on purpose.
+- **Sweep: the folders.** The contract's `Admin/` (eleven files) has `Checks/`, `Trends/`, `Runs/` and `Reviews/`, and
+  `Endpoints/`'s twelve admin files have `Admin/Runs/` and `Admin/Reviews/`; only namespaces and usings change. Every
+  endpoint is now a named method on a handler class with declared answers, which ticks the TODO's CL20 line.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

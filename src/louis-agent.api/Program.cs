@@ -5,7 +5,7 @@ using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Config;
-using LouisAgent.Api.Endpoints;
+using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Composition;
@@ -17,8 +17,9 @@ using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Search;
 using Microsoft.Extensions.Logging;
 
-// HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer streams as Server-Sent Events shaped
-// like Claude's (message_start, content_block_start/delta/stop for thinking, text, tool_use and tool_result, message_stop).
+// HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer
+// streams as Server-Sent Events shaped like Claude's (message_start, content_block_start/delta/stop for thinking,
+// text, tool_use and tool_result, message_stop).
 // Start-up only: the routes are in Endpoints/, a turn's stream in Sessions/.
 var host = AgentHost.Build(Plugins.FromEnvironment());
 
@@ -26,9 +27,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApi(host);
 var app = builder.Build();
 
-// The agent can run shell commands and write files, so its calls must present AGENT_API_KEY; which calls is AgentKeyGate's
-// rule. FX18: without one the API refuses to start, here, before it listens, unless AGENT_AUTH=off says it is
-// open on purpose (HostAuth, core's one rule for both this and the MCP server over HTTP).
+// The agent can run shell commands and write files, so its calls must present AGENT_API_KEY; which calls is
+// AgentKeyGate's rule. FX18: without one the API refuses to start, here, before it listens, unless AGENT_AUTH=off
+// says it is open on purpose (HostAuth, core's one rule for both this and the MCP server over HTTP).
 string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("AGENT_API_KEY"));
 switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
 {
@@ -48,8 +49,8 @@ switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGE
 app.MapStaticAssets();
 app.MapFallbackToFile("index.html");
 
-// Every route of the agent's API is mapped by ApiMap (CL20), so the route tests build what runs; the admin portal's parts, which
-// F18 changes, are built below and mapped on what it returns.
+// Every route of the agent's API is mapped by ApiMap (CL20), so the route tests build what runs; the admin portal's
+// parts, which F18 changes, are built below and mapped on what it returns.
 var api = app.MapApi(host);
 
 // F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings in
@@ -66,7 +67,8 @@ IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl
 IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl
     ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase)
     : null;
-// F18 step 6a.5b: the judge checks, beside the grades; a check's report is kept by its own recorder, never by the benchmark store.
+// F18 step 6a.5b: the judge checks, beside the grades; a check's report is kept by its own recorder, never by the
+// benchmark store.
 ICalibrationStore? calibrationStore = admin.BenchmarksMongoUrl is { } calibrationsUrl
     ? new MongoCalibrationStore(calibrationsUrl, admin.BenchmarksDatabase)
     : null;
@@ -90,7 +92,8 @@ if (benchmarkStore is not null)
             benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
         }
     });
-// The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait for it).
+// The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait
+// for it).
 _ = Task.Run(benchmarks.Warm);
 api.MapAdmin(benchmarks,
     new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner),

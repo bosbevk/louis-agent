@@ -13,7 +13,7 @@ using RescoreAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     LouisAgent.Api.Endpoints.Answers.CreatedJson<LouisAgent.Api.Contracts.Admin.Runs.LiveRunRow>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
 /// Grades a stored run's transcripts again with today's graders (F18 step 5b.2): the eval runner reads the run's

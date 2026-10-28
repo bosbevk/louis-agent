@@ -4,7 +4,7 @@ using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Trends;
-using LouisAgent.Api.Endpoints;
+using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;

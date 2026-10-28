@@ -2,6 +2,7 @@ using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints;
+using LouisAgent.Api.Endpoints.Admin.Reviews;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LouisAgent.Api.Tests.Endpoints;

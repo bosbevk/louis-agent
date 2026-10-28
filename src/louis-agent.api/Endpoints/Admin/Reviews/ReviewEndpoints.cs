@@ -1,7 +1,7 @@
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Store;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
 /// <summary>
 /// People's grades of a stored run (F18 step 6a.2, ADR 0039: a resource, <c>reviews</c>, under the run): add one, list

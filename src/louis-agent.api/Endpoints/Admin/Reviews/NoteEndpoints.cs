@@ -1,6 +1,6 @@
 using LouisAgent.Api.Benchmarks.Store;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
 /// <summary>
 /// The route for adding a note to a run or to one of its conversations; the work is <c>NoteHandlers</c>'.

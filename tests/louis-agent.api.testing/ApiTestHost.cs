@@ -4,7 +4,7 @@ using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
-using LouisAgent.Api.Endpoints;
+using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
@@ -20,7 +20,9 @@ using Microsoft.Extensions.AI;
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
-/// The API as `Program.cs` builds it, but in memory on a test server with no port: the same key gate, routes and admin parts. The agent behind it never calls a model, and the admin parts have no store and no admin key unless the test gives them.
+/// The API as `Program.cs` builds it, but in memory on a test server with no port: the same key gate, routes and
+/// admin parts. The agent behind it never calls a model, and the admin parts have no store and no admin key unless the
+/// test gives them.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class ApiTestHost
@@ -30,8 +32,9 @@ internal static class ApiTestHost
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
     /// <summary>
-    /// Starts the API in memory the way Program.cs builds it, on a test server with no port. Give it an admin key and a store to open the admin portal, and a clock to fix
-    /// the time notes are stamped with. A test that writes or commits gives its own workspace folder.
+    /// Starts the API in memory the way Program.cs builds it, on a test server with no port. Give it an admin key and a
+    /// store to open the admin portal, and a clock to fix the time notes are stamped with. A test that writes or
+    /// commits gives its own workspace folder.
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null,
         IBenchmarkStore? store = null,
@@ -63,7 +66,10 @@ internal static class ApiTestHost
         ((IEndpointRouteBuilder)app).DataSources.SelectMany(source => source.Endpoints).OfType<RouteEndpoint>()
         .ToList();
 
-    /// <summary>The route's pattern with its group prefix and constraints (<c>/v1/admin/benchmarks/runs/{id}</c>); every route's starts with a slash.</summary>
+    /// <summary>
+    /// The route's pattern with its group prefix and constraints (<c>/v1/admin/benchmarks/runs/{id}</c>); every route's
+    /// starts with a slash.
+    /// </summary>
     public static string Pattern(RouteEndpoint endpoint)
     {
         string text = endpoint.RoutePattern.RawText ?? "";
@@ -71,7 +77,10 @@ internal static class ApiTestHost
         return text;
     }
 
-    /// <summary>The route as <c>METHOD /pattern</c>: its methods joined with commas, or <c>ANY</c> for a route that takes every method.</summary>
+    /// <summary>
+    /// The route as <c>METHOD /pattern</c>: its methods joined with commas, or <c>ANY</c> for a route that takes every
+    /// method.
+    /// </summary>
     public static string Line(RouteEndpoint endpoint)
     {
         var methods = endpoint.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods;
@@ -83,7 +92,9 @@ internal static class ApiTestHost
     public static RouteAccess Access(RouteEndpoint endpoint) =>
         AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
 
-    /// <summary>What the API runs on: an engine over a model that is never called, with the Puls identity and the shops pack.</summary>
+    /// <summary>
+    /// What the API runs on: an engine over a model that is never called, with the Puls identity and the shops pack.
+    /// </summary>
     private static AgentHostContext HostContext(string workspaceRoot)
     {
         var options = new AgentOptions

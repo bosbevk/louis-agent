@@ -1,7 +1,7 @@
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
 /// <c>POST /v1/admin/benchmarks/runs/{id}/rescore</c> (F18 step 5b.2, ADR 0039: a verb on a resource): grades a stored

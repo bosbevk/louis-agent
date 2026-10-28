@@ -7,6 +7,7 @@ using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
@@ -21,7 +22,7 @@ using LabelsAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.FileContentHttpResult,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
-namespace LouisAgent.Api.Endpoints;
+namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
 /// <summary>
 /// People's grades of a stored run (F18 step 6a.2), as named methods: add one for a human review of the run (an
