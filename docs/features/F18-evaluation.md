@@ -1695,6 +1695,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   went with the run's. Moves only: each file's namespace line, the `using` lines that named the old folder, three
   crefs to `RunDocument` that now name its namespace, the fixture paths, and ADR 0048's and the API's project doc's
   folder line. No behaviour changed and no test was written first.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 6: the notes.** `MongoRunNotes` holds an
+  `IMongoCollection<NoteDocument>`. Notes come back in the order written by sorting on their id, so the record
+  carries one (Louis's pick of three): `Of` takes `ObjectId.GenerateNewId()`, which is what the driver did for us at
+  insert, so the stored document is the same and the sort is typed (`SortBy(d => d.Id)`). A note has a conversation
+  only when its mode, repeat and task are all there (a property pattern; no made-up defaults, ADR 0049).
+  `NoteDocumentTests`: the write against two fixtures the old mapper wrote (`note-conversation.json`,
+  `note-run.json`), equal once the `_id` the old mapper never wrote is taken off, with that `_id` an ObjectId in
+  first place; the round trip; and each new id later than the one before. Red first: 5 of 5 against a stub (before
+  the move, then carried over). The fixtures came from the old mapper made `internal` for one generator run, put
+  back before the move.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

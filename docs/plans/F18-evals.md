@@ -1038,6 +1038,12 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   doesn't know is refused, as every stored enum is (Louis's pick). The rule behind it is ADR 0049, nothing is
   backward compatible until something is sold in production, now in *Rules that always apply*.
 
+- **3a: each document record beside its store, and the notes' id on the record** (Louis, 2026-10-28, two cards
+  before the notes commit). The document records leave `Mongo/Documents/` for their concern's folder, next to the
+  Mongo store that uses them (`Runs/`, `Conversations/`, `Turns/`, `Requests/`, `Notes/`, and the reviews' and
+  calibrations' beside theirs), in a refactor commit of its own before the notes. A note's document carries its id,
+  a new `ObjectId` per note, so the order written stays a typed sort.
+
 - **Step 7c.3's design** (Louis, 2026-10-28, cards before 3a).
   - **The keys go into the contract**: `ConversationKey` beside `TurnKey` in `Parts/Conversations`, and `TurnKey`
     and `ConversationEvent` get a `[JsonIgnore]` property that gives the conversation's key. The API and the harness

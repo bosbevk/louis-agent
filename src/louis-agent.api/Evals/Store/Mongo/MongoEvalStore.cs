@@ -3,7 +3,6 @@ using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Requests;
 using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Api.Evals.Store.Turns;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -16,11 +15,11 @@ namespace LouisAgent.Api.Evals.Store.Mongo;
 /// it.
 /// </summary>
 /// <remarks>
-/// Facade over one Repository per record. The runs, conversations, turns and requests are typed collections of a
-/// document record (<see cref="RunDocument"/>, <see cref="ConversationDocument"/>, <see cref="TurnDocument"/>,
-/// <see cref="RequestDocument"/>, ADR 0048); the notes move to theirs in their own commit. The callers keep one store,
-/// and each record store stays one collection with its own contract test. Every store makes its index the first time
-/// it is needed, so starting the API never waits on Mongo.
+/// Facade over one Repository per record. Each is a typed collection of a document record beside its store
+/// (<see cref="RunDocument"/>, <see cref="ConversationDocument"/>, <see cref="TurnDocument"/>,
+/// <see cref="RequestDocument"/>, <see cref="NoteDocument"/>, ADR 0048). The callers keep one store, and each record
+/// store stays one collection with its own contract test. Every store makes its index the first time it is needed, so
+/// starting the API never waits on Mongo.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoEvalStore : IEvalStore
@@ -56,7 +55,7 @@ public sealed class MongoEvalStore : IEvalStore
         _requests = new MongoRequestStore(Database);
 
         // A note may only go on a run that exists, so the notes ask the runs.
-        _notes = new MongoRunNotes(Database.GetCollection<BsonDocument>("run_notes"),
+        _notes = new MongoRunNotes(Database.GetCollection<NoteDocument>("run_notes"),
             async (id, cancellationToken) => await _runs.GetRunAsync(id, cancellationToken) is not null);
         _notesIndex = new OnceItWorks(_notes.CreateIndexAsync);
     }
