@@ -3,6 +3,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Choices;
+using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Protocol.Parts.Run;
 
@@ -14,13 +15,26 @@ namespace LouisAgent.Evals.Running.Rescoring;
 /// </summary>
 internal sealed record StoredLine(string Raw, string Kind, JsonElement Json)
 {
-    /// <summary>Reads one stored line, or nothing when it is a person's line.</summary>
-    public static StoredLine? Parse(string raw)
+    /// <summary>Reads one stored line of either version, or nothing when it is a person's line.</summary>
+    public static StoredLine? Parse(string raw) =>
+        ProtocolTranscripts.LineJson(raw) is { } json
+            ? new StoredLine(raw, json.GetProperty("event").GetString() ?? string.Empty, json)
+            : null;
+
+    /// <summary>
+    /// The trials a mode's end says were run twice: at the top of a version 1 line, under its rates in version 2.
+    /// </summary>
+    /// <remarks>Guard clauses (Fowler): one place the count can be, per line, from the top.</remarks>
+    public int Retried
     {
-        if (!raw.StartsWith('@')) return null;
-        using var document = JsonDocument.Parse(raw[1..]);
-        var json = document.RootElement.Clone();
-        return new StoredLine(raw, json.GetProperty("event").GetString() ?? string.Empty, json);
+        get
+        {
+            if (Number("retried") is { } top) return top;
+            // Version 2 keeps it under the mode's rates, which a line written with no k leaves out.
+            if (Json.TryGetProperty("rates", out var rates) && rates.ValueKind == JsonValueKind.Object &&
+                rates.TryGetProperty("retried", out var retried)) return retried.GetInt32();
+            return 0;
+        }
     }
 
     /// <summary>The mode the line is about.</summary>
@@ -99,9 +113,16 @@ internal sealed class StoredRun
             .. line.Json.GetProperty("toolsets").EnumerateArray().Select(toolset => toolset.GetString() ?? string.Empty)
         ], Llm: line.Text("llm"));
 
-    /// <summary>One model of the first line: its mode, level, role and name.</summary>
+    /// <summary>
+    /// One model of the first line: its mode, level, role and name; the level in version 1's words (<c>Agent</c>) or
+    /// the contract's (<c>agent</c>).
+    /// </summary>
     private static ModelInfo ModelOf(JsonElement model) =>
-        new(model.GetProperty("mode").GetString()!, Enum.Parse<ModelLevel>(model.GetProperty("level").GetString()!),
+        new(model.GetProperty("mode").GetString()!,
+            SettingChoice.TryParse(model.GetProperty("level").GetString(), out ModelLevel? level) && level is { } known
+                ? known
+                : throw new InvalidDataException(MessageText.Format(EvalErrorMessage.UnknownModelLevel,
+                    new { Level = model.GetProperty("level").GetString() })),
             model.TryGetProperty("role", out var role) ? role.GetString() : null,
             model.TryGetProperty("model", out var name) ? name.GetString() : null);
 }

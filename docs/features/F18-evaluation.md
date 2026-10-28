@@ -1502,6 +1502,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   gained a `using` or the rename wait to be brought up to the rules; the ten with a real change are whole
   (`ProtocolTranscripts`' three-way `if` became a switch). Red before `V1Words`: 15 tests (14 in the harness: the
   grader kinds, outcomes and failure names in v1's lines; 1 in the runner: the listing's kind).
+- **Step 7c.2c.0 (the harness's readers read v2 beside v1).** The re-score tests feed a run's own output back as the
+  stored run, so the readers learn v2 before the writer switches (Louis's pick). `ProtocolTranscripts.LineJson` gives
+  a line's JSON whichever version wrote it: a v1 `@` line as before, a v2 line only when the contract reads it as an
+  event (anything else is a person's line); `ProtocolTranscripts` and `StoredLine` read through it. The two places
+  where v2 differs from what the readers expected: a mode's end is `mode-done` (the `Rescorer` takes either name) and
+  its `retried` sits under `rates` (`StoredLine.Retried` reads either place); a model's level is read with
+  `SettingChoice`, so `Agent` and `agent` both read, and a level it doesn't know is refused with its own message
+  (`EvalErrorMessage.UnknownModelLevel`). A v2 line with v1's `api_error` is no event: v1's spellings only come in v1
+  lines, where the aliases read them. 7c.2e reads the records and drops the v1 path. Tests:
+  `ProtocolTranscriptsTests` reads the same conversation as v2 lines (its turn, events, time and mode) and a turn's
+  failure in each version's spelling; `StoredRunV2Tests` re-scores a stored v2 run (graded again, its split and
+  models carried, its retries kept). Red before the code: 7 tests (the readers skipped every v2 line, and a re-score of
+  one found no first line). The files with a real change are whole (`Rescorer`, `EvalErrorMessage`'s long texts,
+  `ProtocolTranscriptsTests`' v1 sample lines wrapped).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

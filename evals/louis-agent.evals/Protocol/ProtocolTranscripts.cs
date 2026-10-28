@@ -28,10 +28,7 @@ public static class ProtocolTranscripts
     {
         foreach (string line in lines)
         {
-            if (!line.StartsWith('@')) continue;
-            using var document = JsonDocument.Parse(line[1..]);
-            var element = document.RootElement;
-            if (element.GetProperty("event").GetString() != "mode") continue;
+            if (LineJson(line) is not { } element || element.GetProperty("event").GetString() != "mode") continue;
 
             var toolsets = element.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString() ?? string.Empty)
                 .ToList();
@@ -51,9 +48,7 @@ public static class ProtocolTranscripts
             new SortedDictionary<int, (string Session, string Question, double Seconds, TurnFailure? Failure)>();
         foreach (string line in lines)
         {
-            if (!line.StartsWith('@')) continue;
-            using var document = JsonDocument.Parse(line[1..]);
-            var element = document.RootElement;
+            if (LineJson(line) is not { } element) continue;
             string? kind = element.GetProperty("event").GetString();
             if (kind is not ("question" or "sse" or "turn") || !keep(element)) continue;
 
@@ -87,6 +82,21 @@ public static class ProtocolTranscripts
         return new Transcript(sessions.Select(s => new TurnTranscript(s.Key, s.Value.Session, s.Value.Question,
             events.TryGetValue(s.Key, out var list) ? list : [], TimeSpan.FromSeconds(s.Value.Seconds),
             s.Value.Failure)).ToList());
+    }
+
+    /// <summary>
+    /// A protocol line's JSON, whichever version wrote it: version 1's <c>@</c> line, or one of version 2's events.
+    /// Anything else is a person's line, and is nothing here.
+    /// </summary>
+    /// <remarks>
+    /// The bridge while both versions are read (step 7c.2c.0): the conformance references and the stored v1 runs are
+    /// version 1, the runner's own output is version 2 once 7c.2c lands. Step 7c.2e reads the records instead, and
+    /// this goes.
+    /// </remarks>
+    internal static JsonElement? LineJson(string line)
+    {
+        if (line.StartsWith('@')) return JsonDocument.Parse(line.AsMemory(1)).RootElement.Clone();
+        return EvalProtocolJson.Read(line) is null ? null : JsonDocument.Parse(line).RootElement.Clone();
     }
 
     /// <summary>Whether a line is about this mode, repeat and task.</summary>

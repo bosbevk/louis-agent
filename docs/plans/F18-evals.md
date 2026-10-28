@@ -1044,6 +1044,13 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
     brought up whole (Louis, 2026-10-28, card).
   - **`SummaryLine.Scores` and `ScoreMeans` go in 2c** (Louis, 2026-10-28, card): the per-grader `score_mean` carries
     the partial credit the score-bag means did.
+  - **The harness's readers learn v2 before the writer switches (2c.0)** (Louis, 2026-10-28, card): the re-score
+    tests run an eval and feed its own output back, so `StoredRun` and `ProtocolTranscripts` read a v2 line through
+    the contract and a v1 line (it starts with `@`: the conformance references, stored v1 runs) the old way; 2e drops
+    the v1 path once the references are regenerated.
+  - **`stub-run.txt` regenerates in 2c**, not 2f, so 2c is green (Louis, 2026-10-28, card).
+  - **Nothing is pushed from 2c until step 3 lands** (Louis, 2026-10-28, card): `StubCheckTests` (api integration)
+    reads the real runner through the API's v1 reader, which can't read v2 until step 3; no test is switched off.
 
 - **Step 7c.1: the contract's shape** (Louis, 2026-10-28, six cards while it was built). (1) **`t` is an ISO 8601
   UTC time** (`"2026-10-26T06:05:26.768+00:00"`, a `DateTimeOffset` on the base record), not today's Unix seconds,
