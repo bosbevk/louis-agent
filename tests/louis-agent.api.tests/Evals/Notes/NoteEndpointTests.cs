@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Messages;
@@ -134,7 +134,7 @@ public class NoteEndpointTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         var kept = (await host.Store.NotesAsync(RunId)).Single();
         Assert.That(kept.Conversation,
-            Is.EqualTo(new EvalProtocol.ConversationKey(SampleMode.Beta, 2, "bobotie")));
+            Is.EqualTo(new ConversationKey(SampleMode.Beta, 2, "bobotie")));
         var echoed = (await JsonOf(response)).GetProperty("conversation");
         Assert.That(
             (echoed.GetProperty("mode").GetString(), echoed.GetProperty("repeat").GetInt32(),
@@ -149,7 +149,7 @@ public class NoteEndpointTests
         await using var host = await StartAsync();
         await host.Store.AddNoteAsync(RunId, "first", T0.AddMinutes(1));
         await host.Store.AddNoteAsync(RunId, "second", T0.AddMinutes(2),
-            new EvalProtocol.ConversationKey(SampleMode.Beta, 1, "bobotie"));
+            new ConversationKey(SampleMode.Beta, 1, "bobotie"));
 
         var notes = (await ReadRun(host.Client)).GetProperty("notes").EnumerateArray().ToList();
 

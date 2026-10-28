@@ -5,18 +5,25 @@ using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
 namespace LouisAgent.Api.Tests.Evals.Store.Recording;
 
 /// <summary>
 /// The recorder listens to a run's lines as the page does and writes them to the store as they come, so a half-done
 /// run can already be read, and when the run ends it closes whatever is still open. A store that fails stops the
-/// recording, never the run. Here the run is fed by hand: no process, no model.
+/// recording, never the run. Here the run is fed by hand, as the contract's events: no process, no model.
 /// </summary>
 public class EvalRecorderTests
 {
+    /// <summary>The time every line carries.</summary>
+    private static readonly DateTimeOffset T0 = new(2026, 10, 28, 8, 0, 0, TimeSpan.Zero);
+
     /// <summary>The store the recorder writes into.</summary>
     private InMemoryEvalStore _store = null!;
 
@@ -31,102 +38,47 @@ public class EvalRecorderTests
         _run = new RunningEval("run123456789", "cook", 1);
     }
 
-    /// <summary>Turns an event into one of the runner's protocol lines: an <c>@</c> and the event as JSON.</summary>
-    private static string At(object e) => "@" + JsonSerializer.Serialize(e);
-
     /// <summary>Feeds lines to the run, as if the runner had printed them.</summary>
     private void Add(params string[] lines)
     {
         foreach (string line in lines) _run.Add(line);
     }
 
-    /// <summary>The first protocol line, of a given version.</summary>
-    private static string Protocol(int version = 1) =>
-        At(new
-        {
-            @event = "protocol",
-            version
-        });
+    /// <summary>The first line, of a given protocol version and split.</summary>
+    private static string Protocol(int version = ProtocolEvent.CurrentVersion, RunSplit split = RunSplit.Dev) =>
+        EvalProtocolJson.Line(new ProtocolEvent(T0, version, SampleEval.Beta, 2, "abc", split, null, null, [], []));
 
     /// <summary>The line that opens a mode's repeat.</summary>
-    private static string Mode(string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new
-        {
-            @event = "mode",
-            mode,
-            repeat,
-            toolsets = new[] { SampleToolset.Gamma, SampleToolset.Alpha },
-            role = "puls/voice-af",
-            conversations = 2
-        });
+    private static string Mode(int repeat = 1) =>
+        EvalProtocolJson.Line(new ModeEvent(T0, SampleMode.Beta, repeat, [SampleToolset.Gamma, SampleToolset.Alpha],
+            "puls/voice-af", null, 2));
 
     /// <summary>The line that opens a turn with its question.</summary>
-    private static string Question(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new
-        {
-            @event = "question",
-            mode,
-            repeat,
-            task,
-            turn,
-            session = $"sess_{task}",
-            text = $"{task}?"
-        });
+    private static string Question(string task, int turn = 1, int repeat = 1) =>
+        EvalProtocolJson.Line(new QuestionEvent(T0, SampleMode.Beta, repeat, task, turn, $"sess_{task}", $"{task}?"));
 
     /// <summary>One piece of the answer streaming in.</summary>
-    private static string Sse(string task, string text, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new
-        {
-            @event = "sse",
-            mode,
-            repeat,
-            task,
-            turn,
-            type = "content_block_delta",
-            data = new { delta = new { text } }
-        });
+    private static string Sse(string task, string text, int turn = 1) =>
+        Stream(task, turn, "content_block_delta", $$$"""{"delta":{"text":"{{{text}}}"}}""");
 
-    /// <summary>The line that closes a turn with its answer.</summary>
-    private static string TurnDone(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new
-        {
-            @event = "turn",
-            mode,
-            repeat,
-            task,
-            turn,
-            session = $"sess_{task}",
-            question = $"{task}?",
-            answer = "Hier is…",
-            role = SampleRole.Alpha,
-            puls_calls = 1,
-            specialist_calls = 6,
-            hosts = new[] { "www.checkers.co.za" },
-            seconds = 30.5,
-        });
+    /// <summary>One event of a turn's stream, with its data.</summary>
+    private static string Stream(string task, int turn, string type, string data) =>
+        EvalProtocolJson.Line(new SseEvent(T0, SampleMode.Beta, 1, task, turn, type,
+            JsonDocument.Parse(data).RootElement.Clone()));
 
-    /// <summary>The line that closes a conversation with its scores.</summary>
-    private static string ConversationDone(string task, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new
-        {
-            @event = "conversation",
-            mode,
-            repeat,
-            task,
-            role = SampleRole.Alpha,
-            scores = new { routed_right = true },
-            errors = 0,
-            seconds = 30.5
-        });
+    /// <summary>The line that closes a turn with its answer, failed for the infrastructure if one is given.</summary>
+    private static string TurnDone(string task, int turn = 1, int repeat = 1, TurnFailure? failure = null) =>
+        EvalProtocolJson.Line(new TurnEvent(T0, SampleMode.Beta, repeat, task, turn, $"sess_{task}", $"{task}?",
+            "Hier is…", SampleRole.Alpha, null, 1, 6, ["www.checkers.co.za"], 30.5, null, failure));
+
+    /// <summary>The line that closes a conversation: it passed, and measured one turn.</summary>
+    private static string ConversationDone(string task, int repeat = 1) =>
+        EvalProtocolJson.Line(new ConversationEvent(T0, SampleMode.Beta, repeat, task, SampleRole.Alpha, 0, 30.5,
+            [new GradeInfo("routed-to", 1, 1, GradeOutcome.Pass, "routed", null, null)], TrialOutcome.Pass,
+            new Metrics(1, 6, ["www.checkers.co.za"], 1, null, null, 30.5, null)));
 
     /// <summary>The line that closes a mode's repeat.</summary>
-    private static string ModeDone(string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new
-        {
-            @event = "mode_done",
-            mode,
-            repeat
-        });
+    private static string ModeDone() => EvalProtocolJson.Line(new ModeDoneEvent(T0, SampleMode.Beta, 1, null));
 
     /// <summary>Waits, up to two seconds, for something the recorder does in the background.</summary>
     private static async Task Eventually(Func<Task<bool>> condition)
@@ -170,9 +122,10 @@ public class EvalRecorderTests
             "the plain lines, not the events");
 
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
-        Assert.That((conversation.Key, conversation.Order, conversation.Role),
-            Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha)));
-        Assert.That(conversation.Scores.GetProperty("routed_right").GetBoolean(), Is.True);
+        Assert.That((conversation.Key, conversation.Order, conversation.Role, conversation.Outcome),
+            Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha,
+                (TrialOutcome?)TrialOutcome.Pass)));
+        Assert.That(conversation.Metrics!.SpecialistCalls, Is.EqualTo(6));
 
         var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
         var turn = (await _store.TurnsAsync(_run.Id, key.Conversation)).Single();
@@ -188,20 +141,11 @@ public class EvalRecorderTests
     public async Task ARunsSplit_IsKept_FromItsFirstLine()
     {
         var recording = new EvalRecorder(_store).RecordAsync(_run);
-        Add(
-            At(new
-            {
-                @event = "protocol",
-                version = 1,
-                eval = SampleEval.Beta,
-                eval_version = 2,
-                commit = "abc",
-                split = "held_out"
-            }), Mode(), ModeDone());
+        Add(Protocol(split: RunSplit.HeldOut), Mode(), ModeDone());
         _run.Complete(0);
         await recording;
 
-        Assert.That((await _store.GetRunAsync(_run.Id))!.Split, Is.EqualTo(EvalRunSplit.HeldOut));
+        Assert.That((await _store.GetRunAsync(_run.Id))!.Split, Is.EqualTo(RunSplit.HeldOut));
     }
 
     /// <summary>
@@ -212,28 +156,14 @@ public class EvalRecorderTests
     public async Task ATurnsInfrastructureFailure_IsKept_SoAStoredRunNeverGradesItAsTheAgents()
     {
         var recording = new EvalRecorder(_store).RecordAsync(_run);
-        Add(Protocol(), Mode(), Question("bobotie"),
-            At(new
-            {
-                @event = "turn",
-                mode = SampleMode.Beta,
-                repeat = 1,
-                task = "bobotie",
-                turn = 1,
-                session = "sess_bobotie",
-                question = "bobotie?",
-                answer = "",
-                role = (string?)null,
-                seconds = 600.0,
-                failure = "api_error"
-            }),
+        Add(Protocol(), Mode(), Question("bobotie"), TurnDone("bobotie", failure: TurnFailure.ApiError),
             ConversationDone("bobotie"), ModeDone());
         _run.Complete(0);
         await recording;
 
         var turn = (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single();
 
-        Assert.That(turn.Failure, Is.EqualTo(EvalTurnFailure.ApiError));
+        Assert.That(turn.Failure, Is.EqualTo(TurnFailure.ApiError));
     }
 
     /// <summary>
@@ -243,42 +173,12 @@ public class EvalRecorderTests
     [Test]
     public async Task ATurnsToolCounts_AreKept_WhenItEnds()
     {
-        // A content block streaming into bobotie's first turn.
-        string Block(object block) => At(new
-        {
-            @event = "sse",
-            mode = SampleMode.Beta,
-            repeat = 1,
-            task = "bobotie",
-            turn = 1,
-            type = "content_block_start",
-            data = new { content_block = block }
-        });
-
         // Two tool calls, the first of which fails.
         var recording = new EvalRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"),
-            Block(new
-            {
-                type = "tool_use",
-                id = "u1",
-                name = "WebSearch",
-                input = new { }
-            }),
-            Block(new
-            {
-                type = "tool_result",
-                tool_use_id = "u1",
-                content = "Error: limit reached",
-                is_error = true
-            }),
-            Block(new
-            {
-                type = "tool_use",
-                id = "u2",
-                name = "FetchUrl",
-                input = new { }
-            }),
+            Block("""{"type":"tool_use","id":"u1","name":"WebSearch","input":{}}"""),
+            Block("""{"type":"tool_result","tool_use_id":"u1","content":"Error: limit reached","is_error":true}"""),
+            Block("""{"type":"tool_use","id":"u2","name":"FetchUrl","input":{}}"""),
             TurnDone("bobotie"), ConversationDone("bobotie"), ModeDone());
         _run.Complete(0);
         await recording;
@@ -291,9 +191,13 @@ public class EvalRecorderTests
             Is.EqualTo(new EvalTools.Failure("WebSearch", "Error: limit reached", 1)));
     }
 
+    /// <summary>A content block starting in bobotie's first turn.</summary>
+    private static string Block(string block) =>
+        Stream("bobotie", 1, "content_block_start", $$$"""{"content_block":{{{block}}}}""");
+
     /// <summary>
-    /// You can read a run while it is still going: its finished turns, its mode, and a conversation that has no
-    /// scores yet.
+    /// You can read a run while it is still going: its finished turns, its mode, and a conversation that hasn't
+    /// ended yet.
     /// </summary>
     [Test]
     public async Task AHalfDoneRun_IsReadable_WhileItRuns()
@@ -311,8 +215,8 @@ public class EvalRecorderTests
         Assert.That(run!.Status, Is.EqualTo(EvalRunStatus.Running));
         Assert.That(run.Modes!.Count, Is.EqualTo(1), "the mode is written when it starts");
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
-        Assert.That((conversation.Order, conversation.Role), Is.EqualTo((1, (string?)null)),
-            "the conversation is there before its scores");
+        Assert.That((conversation.Order, conversation.Role, conversation.Metrics), Is.EqualTo((1, (string?)null,
+            (Metrics?)null)), "the conversation is there before it ends");
 
         // Let the run end, so the recording doesn't outlive the test.
         _run.Complete(0);
@@ -380,12 +284,12 @@ public class EvalRecorderTests
     public async Task AnUnknownProtocolVersion_IsSaidInTheLog_AndTheRunIsStillKept()
     {
         var recording = new EvalRecorder(_store).RecordAsync(_run);
-        Add(Protocol(version: 2), Mode(), Question("bobotie"), TurnDone("bobotie"));
+        Add(Protocol(version: 3), Mode(), Question("bobotie"), TurnDone("bobotie"));
         _run.Complete(0);
         await recording;
 
         var run = await _store.GetRunAsync(_run.Id);
-        Assert.That(run!.Log!.First(), Does.Contain("protocol 2").And.Contain("reads 1"));
+        Assert.That(run!.Log!.First(), Does.Contain("protocol 3").And.Contain("reads 2"));
         Assert.That((await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count,
             Is.EqualTo(1));
     }
@@ -502,7 +406,7 @@ public class EvalRecorderTests
         Assert.That(run.Status, Is.EqualTo(EvalRunStatus.Done), "the run itself finished");
         var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
         Assert.That(conversation.Role, Is.Null,
-            "nothing after the failure was written: not bobotie's scores, not cottage-pie");
+            "nothing after the failure was written: not bobotie's result, not cottage-pie");
     }
 
     /// <summary>

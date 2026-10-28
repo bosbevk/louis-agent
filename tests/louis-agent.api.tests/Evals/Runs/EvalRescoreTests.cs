@@ -2,7 +2,8 @@ using LouisAgent.Api.Evals.Export;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Run;
 
 namespace LouisAgent.Api.Tests.Evals.Runs;
 
@@ -13,24 +14,9 @@ namespace LouisAgent.Api.Tests.Evals.Runs;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public class EvalRescoreTests
 {
-    /// <summary>A re-score's first line names the run it re-scored; an ordinary run's names none.</summary>
+    /// <summary>The export writes back which run a re-score came from, and none for an ordinary run.</summary>
     [Test]
-    public void TheBeginLineNamesTheRunItRescored_AndAnOldRunNamesNone()
-    {
-        var rescored =
-            (ProtocolStarted)Parse(
-                """@{"event":"protocol","version":1,"eval":"stub","eval_version":1,"rescore_of":"old123456789","graders":[],"models":[]}""");
-        var ordinary =
-            (ProtocolStarted)Parse(
-                """@{"event":"protocol","version":1,"eval":"stub","eval_version":1,"graders":[],"models":[]}""");
-
-        Assert.That(rescored.RescoreOf, Is.EqualTo("old123456789"));
-        Assert.That(ordinary.RescoreOf, Is.Null);
-    }
-
-    /// <summary>The export writes back which run a re-score came from, and nothing of it for an ordinary run.</summary>
-    [Test]
-    public async Task TheExportWritesRescoreOfBack_AndAnOrdinaryRunWritesNone()
+    public async Task TheExportWritesRescoreOfBack_AndAnOrdinaryRunNamesNone()
     {
         var store = new InMemoryEvalStore();
         await store.SaveRunAsync(new EvalDocuments.Run("a", "stub", 1, EvalRunStatus.Done,
@@ -43,8 +29,8 @@ public class EvalRescoreTests
         string ordinary =
             await EvalProtocolExport.BuildAsync(store, (await store.GetRunAsync("b"))!, CancellationToken.None);
 
-        Assert.That(((ProtocolStarted)Parse(rescored.Split('\n')[0])).RescoreOf, Is.EqualTo("old123456789"));
-        Assert.That(ordinary, Does.Not.Contain("rescore_of"));
+        Assert.That(FirstLine(rescored).RescoreOf, Is.EqualTo("old123456789"));
+        Assert.That(FirstLine(ordinary).RescoreOf, Is.Null);
     }
 
     /// <summary>
@@ -55,12 +41,16 @@ public class EvalRescoreTests
     public async Task ThePump_WritesEverythingAndCloses_AndToleratesARunnerThatHasGone()
     {
         var writer = new RecordingWriter();
-        await EvalProcess.PumpAsync(writer, "@{}\n");
-        Assert.That((writer.Text, writer.Closed), Is.EqualTo(("@{}\n", true)));
+        await EvalProcess.PumpAsync(writer, "{}\n");
+        Assert.That((writer.Text, writer.Closed), Is.EqualTo(("{}\n", true)));
 
-        Assert.That(async () => await EvalProcess.PumpAsync(new RecordingWriter(throwOnWrite: true), "@{}\n"),
+        Assert.That(async () => await EvalProcess.PumpAsync(new RecordingWriter(throwOnWrite: true), "{}\n"),
             Throws.Nothing, "a runner that ended without reading is not an error here");
     }
+
+    /// <summary>The first line of an export, read with the contract's reader.</summary>
+    private static ProtocolEvent FirstLine(string export) =>
+        (ProtocolEvent)EvalProtocolJson.Read(export.Split('\n')[0])!;
 
     /// <summary>
     /// Stands in for the runner's stdin: keeps what was written and whether it was closed, or acts like a runner that

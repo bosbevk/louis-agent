@@ -8,6 +8,7 @@ using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;
@@ -44,7 +45,7 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         string? current = null;
         var modes = new Dictionary<string, EvalMode>(StringComparer.Ordinal);
         var tallies = new Dictionary<string, ModeTally>(StringComparer.Ordinal);
-        var turns = new Dictionary<(string Mode, int Repeat, string Task), List<EvalEvent>>();
+        var turns = new Dictionary<ConversationKey, List<EvalEvent>>();
         foreach (var line in stored.Lines)
         {
             switch (line.Event)
@@ -59,12 +60,12 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
                     break;
                 case QuestionEvent or SseEvent or TurnEvent:
                     protocol.Copy(line.Raw);
-                    var key = StoredRun.ConversationOf(line.Event)!.Value;
+                    var key = StoredRun.ConversationOf(line.Event)!;
                     if (!turns.TryGetValue(key, out var events)) turns[key] = events = [];
                     events.Add(line.Event);
                     break;
                 case ConversationEvent conversation:
-                    turns.TryGetValue((conversation.Mode, conversation.Repeat, conversation.Task), out var own);
+                    turns.TryGetValue(conversation.Key, out var own);
                     await RescoreConversationAsync(eval, runId, modes[conversation.Mode], conversation, own ?? [],
                         tallies[conversation.Mode], cancellationToken);
                     break;

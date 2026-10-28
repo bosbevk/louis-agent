@@ -5,8 +5,9 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Reviews;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -49,27 +50,26 @@ public class ReviewEndpointTests
         await store.SaveRunAsync(new Run(RunId, SampleEval.Beta, 1, EvalRunStatus.Done, T0, T0.AddMinutes(5), 0,
             Graders:
             [
-                new Grader("cook-no-error", 1, EvalGraderKind.FixedRule),
-                new Grader("meal-for-people", 1, EvalGraderKind.Model),
-                new Grader("meal-for-people.human", 1, EvalGraderKind.Human)
+                new Grader("cook-no-error", 1, GraderKind.FixedRule),
+                new Grader("meal-for-people", 1, GraderKind.Model),
+                new Grader("meal-for-people.human", 1, GraderKind.Human)
             ]));
 
         // Each conversation with the judge's grade and its one turn.
         foreach (var (task, outcome, answer) in new[]
                  {
-                     ("bobotie", EvalOutcome.Pass, "Bobotie vir vier"),
-                     ("sosaties", EvalOutcome.Fail, "Net 'n sousie")
+                     ("bobotie", GradeOutcome.Pass, "Bobotie vir vier"),
+                     ("sosaties", GradeOutcome.Fail, "Net 'n sousie")
                  })
         {
             await store.SaveConversationAsync(RunId, new Conversation(
-                new EvalProtocol.ConversationKey(SampleMode.Beta, 1, task), 1, null,
-                JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
+                new ConversationKey(SampleMode.Beta, 1, task), 1, null, null, 0, 1.0,
                 [
-                    new Grade("meal-for-people", 1, outcome == EvalOutcome.Pass ? 1 : 0, outcome,
+                    new Grade("meal-for-people", 1, outcome == GradeOutcome.Pass ? 1 : 0, outcome,
                         "the judge's reason")
                 ]));
             await store.SaveTurnAsync(RunId,
-                new Turn(new EvalProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "Vraag", answer,
+                new Turn(new TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "Vraag", answer,
                     SampleRole.Alpha, null, 1, 1, [], 1.0, null), []);
         }
 

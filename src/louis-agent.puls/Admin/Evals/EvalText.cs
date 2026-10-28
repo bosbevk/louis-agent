@@ -1,5 +1,7 @@
 using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Choices;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Puls.Admin.Rates;
 
 namespace LouisAgent.Puls.Admin.Evals;
@@ -45,11 +47,12 @@ public static class EvalText
         + $"{RatesText.PassHat(mode.K)} {RatesText.Share(mode.PassHatK)}";
 
     /// <summary>What a grader judges with, in words; a kind we don't know is shown as it came.</summary>
-    private static string Kind(string kind) => kind switch
-    {
-        "FixedRule" => "fixed rule",
-        "Model" => "model",
-        "Human" => "a person",
-        _ => kind
-    };
+    private static string Kind(string kind) =>
+        (SettingChoice.TryParse(kind, out GraderKind? known) ? known : null) switch
+        {
+            GraderKind.FixedRule => "fixed rule",
+            GraderKind.Model => "model",
+            GraderKind.Human => "a person",
+            _ => kind
+        };
 }

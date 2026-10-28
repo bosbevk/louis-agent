@@ -5,7 +5,8 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Tests.Admin;
 
@@ -32,16 +33,15 @@ public class AdminRowsTests
 
     /// <summary>A stored conversation with these grades and this outcome.</summary>
     private static EvalDocuments.Conversation Conversation(IReadOnlyList<EvalDocuments.Grade>? grades,
-        EvalOutcome? outcome) =>
-        new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 0, SampleRole.Alpha,
-            JsonDocument.Parse("{}").RootElement, 0, 1.5, grades, outcome);
+        TrialOutcome? outcome) =>
+        new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 0, SampleRole.Alpha, null, 0, 1.5, grades, outcome);
 
     /// <summary>A run's eval, version, commit and graders come through, the graders in their order.</summary>
     [Test]
     public void ARunWithAnEvalAndTwoGraders_GivesThemInOrder()
     {
         var row = Json(StoredRunRow.Of(Run("stub",
-            [new("no-error", 1, EvalGraderKind.FixedRule), new("meal", 2, EvalGraderKind.Model)])));
+            [new("no-error", 1, GraderKind.FixedRule), new("meal", 2, GraderKind.Model)])));
 
         Assert.That(row.GetProperty("eval").GetString(), Is.EqualTo("stub"));
         Assert.That(row.GetProperty("eval_version").GetInt32(), Is.EqualTo(3));
@@ -49,7 +49,7 @@ public class AdminRowsTests
         var graders = row.GetProperty("graders").EnumerateArray()
             .Select(g => (g.GetProperty("name").GetString(), g.GetProperty("version").GetInt32(),
                 g.GetProperty("kind").GetString())).ToList();
-        Assert.That(graders, Is.EqualTo(new[] { ("no-error", 1, "FixedRule"), ("meal", 2, "Model") }));
+        Assert.That(graders, Is.EqualTo(new[] { ("no-error", 1, "fixed-rule"), ("meal", 2, "model") }));
     }
 
     /// <summary>A human review's question rides on its grader's row; another grader has none.</summary>
@@ -58,8 +58,8 @@ public class AdminRowsTests
     {
         var row = Json(StoredRunRow.Of(Run("stub",
         [
-            new("no-error", 1, EvalGraderKind.FixedRule),
-            new("meal.human", 1, EvalGraderKind.Human, "Is this a meal?")
+            new("no-error", 1, GraderKind.FixedRule),
+            new("meal.human", 1, GraderKind.Human, "Is this a meal?")
         ])));
 
         var graders = row.GetProperty("graders").EnumerateArray().ToList();
@@ -85,10 +85,10 @@ public class AdminRowsTests
     {
         var grades = new EvalDocuments.Grade[]
         {
-            new("within-time", 1, 1, EvalOutcome.Pass, "every turn was answered within 60 s"),
-            new("no-error", 1, 0, EvalOutcome.Fail, "turn 2 raised an error"),
+            new("within-time", 1, 1, GradeOutcome.Pass, "every turn was answered within 60 s"),
+            new("no-error", 1, 0, GradeOutcome.Fail, "turn 2 raised an error"),
         };
-        var row = Json(ConversationRow.Of(Conversation(grades, EvalOutcome.Fail), []));
+        var row = Json(ConversationRow.Of(Conversation(grades, TrialOutcome.Fail), []));
 
         // Each grade as the five fields the page shows.
         var sent = row.GetProperty("grades").EnumerateArray()
@@ -99,10 +99,10 @@ public class AdminRowsTests
         Assert.That(sent,
             Is.EqualTo(new[]
             {
-                ("within-time", 1, 1.0, "Pass", "every turn was answered within 60 s"),
-                ("no-error", 1, 0.0, "Fail", "turn 2 raised an error"),
+                ("within-time", 1, 1.0, "pass", "every turn was answered within 60 s"),
+                ("no-error", 1, 0.0, "fail", "turn 2 raised an error"),
             }));
-        Assert.That(row.GetProperty("outcome").GetString(), Is.EqualTo("Fail"));
+        Assert.That(row.GetProperty("outcome").GetString(), Is.EqualTo("fail"));
     }
 
     /// <summary>An old conversation that was never graded sends null for its grades and its outcome.</summary>

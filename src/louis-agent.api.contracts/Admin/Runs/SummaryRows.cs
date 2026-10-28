@@ -29,11 +29,22 @@ public sealed record SummaryRow(
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     decimal? CostPerPass);
 
-/// <summary>One grader's counts in a slice.</summary>
-public sealed record SliceGraderRow(string Grader, string Kind, int Passed, int Failed, int Unknown);
+/// <summary>
+/// One grader's counts in a slice, and its mean score over the slice's counted trials (null when it gave none).
+/// </summary>
+public sealed record SliceGraderRow(
+    string Grader,
+    string Kind,
+    int Passed,
+    int Failed,
+    int Unknown,
+    double? ScoreMean = null);
 
 /// <summary>One kind of grader's counts in a slice.</summary>
 public sealed record SliceKindRow(string Kind, int Passed, int Failed, int Unknown);
 
-/// <summary>One score's mean in a slice, over how many trials.</summary>
+/// <summary>
+/// One score's mean in a slice, over how many trials. No slice has any since protocol version 2; it goes in F18 step
+/// 7c.5 with the portal code that reads it.
+/// </summary>
 public sealed record SliceScoreRow(string Key, double Mean, int N);

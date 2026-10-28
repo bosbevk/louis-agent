@@ -1,6 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Admin.Replies;
 
@@ -24,11 +24,11 @@ internal static class NoteReplies
     extension(ConversationKeyRow)
     {
         /// <summary>The row for a stored conversation's key.</summary>
-        public static ConversationKeyRow Of(EvalProtocol.ConversationKey key) =>
+        public static ConversationKeyRow Of(ConversationKey key) =>
             new(key.Mode, key.Repeat, key.Task);
     }
 
     /// <summary>The store's key for a conversation the portal named.</summary>
-    public static EvalProtocol.ConversationKey ToKey(this ConversationKeyRow row) =>
+    public static ConversationKey ToKey(this ConversationKeyRow row) =>
         new(row.Mode, row.Repeat, row.Task);
 }

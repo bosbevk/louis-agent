@@ -1,8 +1,8 @@
 using LouisAgent.Api.Evals.Reports;
-using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Choices;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using MongoDB.Bson;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using static LouisAgent.Api.Evals.Store.Mongo.BsonValues;
 
@@ -50,6 +50,8 @@ internal static class TurnDocuments
         ["error"] = Nullable(t.Error),
         ["failure"] = Nullable(t.Failure is { } failure ? failure.Wire() : null),
         ["tools"] = t.Tools is { } tools ? ToBson(tools) : BsonNull.Value,
+        ["asked_at"] = Date(t.AskedAt),
+        ["ended_at"] = Date(t.EndedAt),
         ["events"] = new BsonArray(events.Select(e => new BsonDocument
         {
             ["type"] = e.Type,
@@ -66,7 +68,8 @@ internal static class TurnDocuments
         AgentCallsOf(d), d["specialist_calls"].AsInt32,
         d["hosts"].AsBsonArray.Select(h => h.AsString).ToArray(),
         d["seconds"].ToDouble(), StringOf(d["error"]), ToolsOf(d.GetValue("tools", BsonNull.Value)),
-        FailureOf(d.GetValue("failure", BsonNull.Value)));
+        FailureOf(d.GetValue("failure", BsonNull.Value)), DateOf(d.GetValue("asked_at", BsonNull.Value)),
+        DateOf(d.GetValue("ended_at", BsonNull.Value)));
 
     /// <summary>
     /// How many calls the agent itself made. A turn stored before the rename keeps the count under
@@ -92,8 +95,8 @@ internal static class TurnDocuments
     };
 
     /// <summary>A turn's failure; a turn saved before failures were kept has none.</summary>
-    private static EvalTurnFailure? FailureOf(BsonValue v) =>
-        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out EvalTurnFailure? failure)
+    private static TurnFailure? FailureOf(BsonValue v) =>
+        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out TurnFailure? failure)
             ? failure
             : null;
 

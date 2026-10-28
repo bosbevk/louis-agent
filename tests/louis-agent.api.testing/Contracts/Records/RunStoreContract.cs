@@ -1,5 +1,6 @@
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Mongo.Documents;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Testing;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -178,8 +179,8 @@ public abstract class RunStoreContract
             Eval = "cook",
             EvalVersion = 2,
             Commit = "abc123",
-            Graders = [new Grader("priced-with-source", 1, EvalGraderKind.FixedRule)],
-            Models = [new ModelUse("cook", EvalModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")],
+            Graders = [new Grader("priced-with-source", 1, GraderKind.FixedRule)],
+            Models = [new ModelUse("cook", ModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")],
         };
 
         await _store.SaveRunAsync(run);
@@ -191,11 +192,11 @@ public abstract class RunStoreContract
     }
 
     /// <summary>A run's split comes back as written, and a run from before splits has none.</summary>
-    [TestCase(EvalRunSplit.Dev)]
-    [TestCase(EvalRunSplit.HeldOut)]
-    [TestCase(EvalRunSplit.All)]
+    [TestCase(RunSplit.Dev)]
+    [TestCase(RunSplit.HeldOut)]
+    [TestCase(RunSplit.All)]
     [TestCase(null)]
-    public async Task ARunsSplit_ReadsBackAsItWasWritten_AndARunBeforeItHasNone(EvalRunSplit? split)
+    public async Task ARunsSplit_ReadsBackAsItWasWritten_AndARunBeforeItHasNone(RunSplit? split)
     {
         string id = NewId();
 

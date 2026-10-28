@@ -8,6 +8,7 @@ using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Storage;
 using LouisAgent.Web.Shared.Usage;
 using LouisAgent.Web.Testing;
+using EvalsPage = LouisAgent.Puls.Pages.Admin.Evals;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Pages.Admin;
@@ -54,7 +55,7 @@ public partial class EvalsPageTests
     }
 
     /// <summary>The page over an API that serves this list; it waits for nothing else.</summary>
-    private static IRenderedComponent<Evals> Render(BunitContext ctx, string list)
+    private static IRenderedComponent<EvalsPage> Render(BunitContext ctx, string list)
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/v1/admin/evals")
@@ -71,7 +72,7 @@ public partial class EvalsPageTests
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
 
-        return ctx.Render<Evals>();
+        return ctx.Render<EvalsPage>();
     }
 
     /// <summary>The sample names filled into a test's JSON.</summary>

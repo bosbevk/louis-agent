@@ -1,7 +1,7 @@
 using LouisAgent.Api.Evals.Store.Requests;
 using LouisAgent.Testing;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Testing;
 

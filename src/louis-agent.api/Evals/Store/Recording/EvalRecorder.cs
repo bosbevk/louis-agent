@@ -1,5 +1,4 @@
 using LouisAgent.Api.Evals.Runs;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
 namespace LouisAgent.Api.Evals.Store.Recording;
 
@@ -54,8 +53,8 @@ public sealed class EvalRecorder(IEvalStore store, ILogger? logger = null, strin
         var recording = new RunRecording(run, settings, store, logger, ledgerDirectory, cancellationToken);
         await recording.SaveRunAsync();
 
-        foreach (string line in soFar) await recording.FoldAsync(Parse(line));
-        await foreach (string line in live.ReadAllAsync(cancellationToken)) await recording.FoldAsync(Parse(line));
+        foreach (string line in soFar) await recording.FoldAsync(line);
+        await foreach (string line in live.ReadAllAsync(cancellationToken)) await recording.FoldAsync(line);
 
         return await recording.CloseAsync();
     }

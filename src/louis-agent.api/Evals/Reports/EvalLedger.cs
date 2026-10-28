@@ -2,7 +2,7 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Core.Usage.Sinks;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Evals.Reports;
 

@@ -5,7 +5,8 @@ using LouisAgent.Api.Evals.Runs.Start;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Usage.Records;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
+using LouisAgent.Evals.Protocol.Parts.Run;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Evals.Store.Recording;

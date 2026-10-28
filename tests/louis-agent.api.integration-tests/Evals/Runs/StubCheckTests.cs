@@ -1,18 +1,19 @@
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.IntegrationTests.Evals.Runs;
 
 /// <summary>
 /// Runs the C# stub eval through the real runner and recorder. The stub is the free run every hand check uses: it
-/// writes a canned run and opens no session, so it costs nothing. Every <c>@</c> line must be an event the API knows
-/// (one read as a plain log line means the runner and the parser have drifted apart), and the store must hold the
-/// whole run.
+/// writes a canned run and opens no session, so it costs nothing. Every JSON line must be an event of the contract's
+/// (one that reads as nothing means the runner and the API have drifted apart), and the store must hold the whole run.
 /// </summary>
 [Category("Integration")]
 public class StubCheckTests
@@ -37,18 +38,21 @@ public class StubCheckTests
         return (run, lines);
     }
 
-    /// <summary>Every event line the stub writes is one the parser knows, and the protocol line comes first.</summary>
+    /// <summary>
+    /// Every JSON line the stub writes is an event of the contract's, and the first line, of protocol version 2,
+    /// comes first.
+    /// </summary>
     [Test]
     public async Task EveryEventLine_IsAKnownEvent()
     {
         var (run, lines) = await RunEvalStub(new InMemoryEvalStore());
 
         Assert.That(run.Status, Is.EqualTo(EvalRunStatus.Done), string.Join("\n", lines));
-        var unread = lines.Where(l => l.StartsWith('@') && Parse(l) is LogLine).ToList();
-        Assert.That(unread, Is.Empty, "a line the parser doesn't know");
-        Assert.That(
-            Parse(lines.First(l => l.StartsWith('@'))) is ProtocolStarted { Version: EvalProtocol.Version },
-            "the protocol first");
+        var unread = lines.Where(l => l.StartsWith('{') && EvalProtocolJson.Read(l) is null).ToList();
+        Assert.That(unread, Is.Empty, "a line the contract doesn't read");
+        Assert.That(EvalProtocolJson.Read(lines.First(l => l.StartsWith('{'))),
+            Is.InstanceOf<ProtocolEvent>().With.Property(nameof(ProtocolEvent.Version))
+                .EqualTo(ProtocolEvent.CurrentVersion), "the first line first");
     }
 
     /// <summary>
@@ -72,8 +76,7 @@ public class StubCheckTests
 
         var conversations = await store.ConversationsAsync(run.Id);
         Assert.That(conversations.Count, Is.EqualTo(8), "two modes × two conversations × two repeats");
-        Assert.That(conversations.All(c => c.Scores.TryGetProperty("routed_right", out _)), Is.True,
-            "every conversation scored");
+        Assert.That(conversations.All(c => c.Metrics is not null), Is.True, "every conversation measured");
 
         // One conversation of the delegating mode, down to its turns and the events of its first.
         var bobotie = new ConversationKey(names[1], 1, "bobotie");
@@ -101,7 +104,7 @@ public class StubCheckTests
         {
             Assert.That(conversation.Grades?.Select(g => g.Grader), Is.EqualTo(new[] { "no-error", "within-time" }),
                 conversation.Key.ToString());
-            Assert.That(conversation.Outcome, Is.EqualTo(EvalOutcome.Pass), conversation.Key.ToString());
+            Assert.That(conversation.Outcome, Is.EqualTo(TrialOutcome.Pass), conversation.Key.ToString());
         }
     }
 }

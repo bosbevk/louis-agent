@@ -1,4 +1,4 @@
-using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Api.Evals.Store;
 
 namespace LouisAgent.Api.Evals.Reports.Trends;
@@ -45,7 +45,7 @@ public static class CategoryTrends
             {
                 if (slice.TooFew || slice.PassRate is null) continue;
                 string? model = run.Models
-                    ?.FirstOrDefault(m => m.Mode == slice.Mode && m.Level == EvalModelLevel.Agent)?.Model;
+                    ?.FirstOrDefault(m => m.Mode == slice.Mode && m.Level == ModelLevel.Agent)?.Model;
                 if (!lines.TryGetValue((slice.Slice, slice.Mode, model), out var points))
                     lines[(slice.Slice, slice.Mode, model)] = points = [];
                 points.Add(new Point(run.Id, run.StartedAt, slice.PassRate, slice.PassAtK, slice.PassHatK, slice.N));

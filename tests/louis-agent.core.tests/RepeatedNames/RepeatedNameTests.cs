@@ -79,12 +79,6 @@ public class RepeatedNameTests
         ("tests/louis-agent.api.tests/Sessions/StreamGoldenTests.cs", "call_sub",
             "the sub-session event is written into the recorded stream golden, which holds the peer's name: "
             + "recorded data stays as recorded"),
-        ("tests/louis-agent.api.tests/Evals/Runs/Protocol/EvalProtocolTests.cs", "api_error",
-            "a turn's failure (EvalTurnFailure), not the API's error kind that shares its text: "
-            + "the line read as the runner writes it"),
-        ("tests/louis-agent.api.tests/Evals/Store/Recording/EvalRecorderTests.cs", "api_error",
-            "a turn's failure (EvalTurnFailure), not the API's error kind that shares its text: "
-            + "the runner's line as recorded"),
     ];
 
     /// <summary>Every source file the scan looks at.</summary>

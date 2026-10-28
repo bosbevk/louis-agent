@@ -1,5 +1,5 @@
 using LouisAgent.Api.Evals.Reviews;
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Evals.Reviews;
@@ -23,15 +23,15 @@ public class ExportedLabelFixtureTests
 
     /// <summary>A person's pass on one conversation, the grade the label is written from.</summary>
     private static readonly HumanGrade Grade =
-        new("8f7802b9a72e", new EvalProtocol.ConversationKey(SampleMode.Beta, 1, "sample-dev"), "meal-for-people",
+        new("8f7802b9a72e", new ConversationKey(SampleMode.Beta, 1, "sample-dev"), "meal-for-people",
             HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
 
     /// <summary>A two-turn conversation, since a label carries every turn of its conversation.</summary>
     private static readonly Turn[] Turns =
     [
-        new(new EvalProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier",
+        new(new TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier",
             SampleRole.Alpha, null, 1, 1, [], 1.0, null),
-        new(new EvalProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 2), "sess_1", "Make it six",
+        new(new TurnKey(SampleMode.Beta, 1, "sample-dev", 2), "sess_1", "Make it six",
             "Bobotie vir ses", SampleRole.Alpha, null, 1, 1, [], 1.0, null),
     ];
 
@@ -75,7 +75,7 @@ public class ExportedLabelFixtureTests
     [Test]
     public void TheFileNameIsGraderScenarioModeRunRepeat_ThatTheHarnessUsesForItsOwnSheets()
     {
-        var key = new EvalProtocol.ConversationKey(SampleMode.Gamma, 2, SampleScenario.Alpha);
+        var key = new ConversationKey(SampleMode.Gamma, 2, SampleScenario.Alpha);
 
         Assert.That(ReviewLabels.FileName("meal-for-people", key, "8f7802b9a72e"),
             Is.EqualTo(SampleScenario.Fill($"meal-for-people.<ScenarioAlpha>.{SampleMode.Gamma}.8f7802b9a72e.2.json")));

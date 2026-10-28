@@ -6,7 +6,7 @@ using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Api.Evals.Store.Turns;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Evals.Store.Mongo;

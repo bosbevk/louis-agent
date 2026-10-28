@@ -1,4 +1,4 @@
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Evals.Protocol.Parts.Run;
 
 namespace LouisAgent.Api.Evals.Reports;
 
@@ -11,7 +11,7 @@ public static class RunModels
     /// <summary>
     /// The models the ledger used that the run never declared. A run that declared none has nothing to check against.
     /// </summary>
-    public static IReadOnlyList<string> Unlisted(IReadOnlyList<EvalProtocol.ModelInfo>? declared,
+    public static IReadOnlyList<string> Unlisted(IReadOnlyList<ModelInfo>? declared,
         IEnumerable<string?> rowModels)
     {
         // A model that is null is unknown: it declares nothing to check the rows against.

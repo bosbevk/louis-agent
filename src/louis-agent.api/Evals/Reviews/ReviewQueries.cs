@@ -1,5 +1,5 @@
 using LouisAgent.Api.Evals.Reviews.Store;
-using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Api.Evals.Store;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
@@ -14,7 +14,7 @@ internal static class ReviewQueries
     /// <summary>The names of the human reviews a run has.</summary>
     public static HashSet<string> HumanReviewsOf(Run run) =>
         (run.Graders ?? [])
-        .Where(g => g.Kind == EvalGraderKind.Human &&
+        .Where(g => g.Kind == GraderKind.Human &&
                     g.Name.EndsWith(HumanReview.Suffix, StringComparison.Ordinal))
         .Select(g => g.Name)
         .ToHashSet();

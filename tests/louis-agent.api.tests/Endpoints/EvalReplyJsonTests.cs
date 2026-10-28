@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Builder;
@@ -38,7 +39,7 @@ public class EvalReplyJsonTests
                                                    "dataset": { "name": "meals", "version": 2 },
                                                    "categories": ["town"],
                                                    "graders": [
-                                                     { "name": "priced", "version": 1, "kind": "FixedRule" }
+                                                     { "name": "priced", "version": 1, "kind": "fixed-rule" }
                                                    ],
                                                    "modes": [], "models": [], "never_run": true, "runs": []
                                                  }
@@ -77,7 +78,7 @@ public class EvalReplyJsonTests
     private static EvalList Catalog() => new(EvalList.Merge(
     [
         new EvalLine(SampleEval.Beta, 3, "A meal", SampleIdentity.Alpha, null, new EvalDatasetLine("meals", 2),
-            ["town"], [new EvalGraderLine("priced", 1, EvalGraderKind.FixedRule)])
+            ["town"], [new EvalGraderLine("priced", 1, GraderKind.FixedRule)])
     ]));
 
     /// <summary>Asks the admin route and hands back the body; the call must have been a 200.</summary>

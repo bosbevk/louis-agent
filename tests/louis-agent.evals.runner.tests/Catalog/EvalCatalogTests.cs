@@ -125,8 +125,8 @@ public class EvalCatalogTests
                 "name", "identity", "version", "proves", "manual", "dataset", "categories", "graders"
             }));
         Assert.That(line.GetProperty("graders").GetRawText(),
-            Is.EqualTo("""[{"name":"no-error","version":1,"kind":"FixedRule"},"""
-                       + """{"name":"within-time","version":1,"kind":"FixedRule"}]"""),
+            Is.EqualTo("""[{"name":"no-error","version":1,"kind":"fixed-rule"},"""
+                       + """{"name":"within-time","version":1,"kind":"fixed-rule"}]"""),
             "each grader by name, version and kind, the kind as the protocol writes it");
         Assert.That(line.GetProperty("dataset").ValueKind, Is.EqualTo(JsonValueKind.Null), "the stub has no dataset");
         Assert.That(line.GetProperty("categories").GetRawText(), Is.EqualTo("[]"));

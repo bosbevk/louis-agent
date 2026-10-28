@@ -1,8 +1,9 @@
 using System.Text.Json;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
+using LouisAgent.Evals.Protocol.Parts.Run;
 
 namespace LouisAgent.Api.Evals.Store;
 
@@ -15,7 +16,11 @@ namespace LouisAgent.Api.Evals.Store;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public static class EvalDocuments
 {
-    /// <summary>One run of a check: what started it, how it ended, what it cost and the lines it printed.</summary>
+    /// <summary>
+    /// One run of a check: what started it, how it ended, what it cost and the lines it printed. The protocol version
+    /// it was recorded from is kept, so a store can tell a run of an older version and drop it, and so are its
+    /// dataset and the time of its first line, so an export gives the first line back as it came.
+    /// </summary>
     public sealed record Run(
         string Id,
         string Check,
@@ -34,10 +39,13 @@ public static class EvalDocuments
         string? Commit = null,
         IReadOnlyList<Grader>? Graders = null,
         IReadOnlyList<ModelUse>? Models = null,
-        EvalRunSplit? Split = null,
+        RunSplit? Split = null,
         string? RescoreOf = null,
         IReadOnlyList<EvalSlice>? Slices = null,
-        IReadOnlyList<AgentPrompt>? Prompts = null);
+        IReadOnlyList<AgentPrompt>? Prompts = null,
+        int? ProtocolVersion = null,
+        DatasetInfo? Dataset = null,
+        DateTimeOffset? BegunAt = null);
 
     /// <summary>
     /// Which prompts one agent used in one mode of a run, as their hashes. The trend compares these agent by agent, so
@@ -52,14 +60,14 @@ public static class EvalDocuments
     public sealed record RunNote(string Text, DateTimeOffset At, ConversationKey? Conversation = null);
 
     /// <summary>One of the eval's graders, as the run started.</summary>
-    public sealed record Grader(string Name, int Version, EvalGraderKind Kind, string? Question = null);
+    public sealed record Grader(string Name, int Version, GraderKind Kind, string? Question = null);
 
     /// <summary>Which model one level of a mode ran on, so runs on different models can be told apart.</summary>
-    public sealed record ModelUse(string Mode, EvalModelLevel Level, string? Role, string? Model);
+    public sealed record ModelUse(string Mode, ModelLevel Level, string? Role, string? Model);
 
     /// <summary>
-    /// One repeat of a mode: the toolsets and role it opened its sessions with and, once the repeat is done, its pass
-    /// rates.
+    /// One repeat of a mode: the toolsets and role it opened its sessions with, how many conversations it planned and
+    /// when it started, and, once the repeat is done, when that was and its pass rates.
     /// </summary>
     public sealed record Mode(
         string Name,
@@ -67,7 +75,10 @@ public static class EvalDocuments
         IReadOnlyList<string> Toolsets,
         string? Role,
         string? Llm,
-        ModeRates? Rates = null);
+        ModeRates? Rates = null,
+        int? Conversations = null,
+        DateTimeOffset? At = null,
+        DateTimeOffset? DoneAt = null);
 
     /// <summary>
     /// The pass rates the runner wrote when a repeat finished: pass@k and pass^k, over how many trials, and how many
@@ -81,18 +92,19 @@ public static class EvalDocuments
     public sealed record Total(decimal? Cost, string Currency, long Tokens, int Requests);
 
     /// <summary>
-    /// How one conversation went: its scores, errors, time and each grader's verdict. `Order` is when it started, so
-    /// the eval's own order holds.
+    /// How one conversation went: what it measured, its errors, time and each grader's verdict, and when it ended.
+    /// `Order` is when it started, so the eval's own order holds. Its metrics are empty until it ends.
     /// </summary>
     public sealed record Conversation(
         ConversationKey Key,
         int Order,
         string? Role,
-        JsonElement Scores,
+        Metrics? Metrics,
         int Errors,
         double Seconds,
         IReadOnlyList<Grade>? Grades = null,
-        EvalOutcome? Outcome = null);
+        TrialOutcome? Outcome = null,
+        DateTimeOffset? At = null);
 
     /// <summary>
     /// One grader's verdict on a conversation, with its reason and, for a model judge, which model and prompt gave it.
@@ -101,14 +113,14 @@ public static class EvalDocuments
         string Grader,
         int Version,
         double Score,
-        EvalOutcome Outcome,
+        GradeOutcome Outcome,
         string Reason,
         string? JudgeModel = null,
         string? JudgePromptHash = null);
 
     /// <summary>
     /// One turn of a conversation, without its stream events: what was asked and answered, what the tools did, how
-    /// long it took, and how it failed if it did.
+    /// long it took, how it failed if it did, and when its question was asked and its answer ended.
     /// </summary>
     public sealed record Turn(
         TurnKey Key,
@@ -123,7 +135,9 @@ public static class EvalDocuments
         double Seconds,
         string? Error,
         EvalTools.Summary? Tools = null,
-        EvalTurnFailure? Failure = null);
+        TurnFailure? Failure = null,
+        DateTimeOffset? AskedAt = null,
+        DateTimeOffset? EndedAt = null);
 
     /// <summary>One event from a turn's stream, kept so the turn can be replayed.</summary>
     public sealed record StreamEvent(string Type, JsonElement Data, DateTimeOffset? At);

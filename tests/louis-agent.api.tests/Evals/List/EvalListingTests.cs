@@ -1,5 +1,5 @@
 using LouisAgent.Api.Evals.List;
-using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Api.Tests.Evals.List;
 
@@ -63,7 +63,8 @@ public class EvalListingTests
     public void AListedEvalsManualPathIsRead_AndIsNullWhenTheLineLeavesItOut()
     {
         var with = EvalListing.Parse(
-            """{"name":"stub","identity":null,"version":1,"proves":"A canned run","manual":"evals/louis-agent.evals.runner/Manuals/stub.md"}""");
+            """{"name":"stub","identity":null,"version":1,"proves":"A canned run","manual":"evals/"""
+            + """louis-agent.evals.runner/Manuals/stub.md"}""");
         var without = EvalListing.Parse("""{"name":"stub","version":1,"proves":"A canned run"}""");
 
         Assert.That(with.Evals.Single().Manual, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
@@ -79,8 +80,8 @@ public class EvalListingTests
     {
         var result = EvalListing.Parse(
             """{"name":"cook","version":3,"proves":"Meals","dataset":{"name":"cook-set","version":2}, """
-            + """ "categories":["town","city"],"graders":[{"name":"priced","version":1,"kind":"FixedRule"}, """
-            + """ {"name":"judge","version":2,"kind":"Model"}]}""");
+            + """ "categories":["town","city"],"graders":[{"name":"priced","version":1,"kind":"fixed-rule"}, """
+            + """ {"name":"judge","version":2,"kind":"model"}]}""");
 
         var cook = result.Evals.Single();
         Assert.That(cook.Dataset, Is.EqualTo(new EvalDatasetLine("cook-set", 2)));
@@ -88,8 +89,8 @@ public class EvalListingTests
         Assert.That(cook.Graders,
             Is.EqualTo(new[]
             {
-                new EvalGraderLine("priced", 1, EvalGraderKind.FixedRule),
-                new EvalGraderLine("judge", 2, EvalGraderKind.Model)
+                new EvalGraderLine("priced", 1, GraderKind.FixedRule),
+                new EvalGraderLine("judge", 2, GraderKind.Model)
             }));
     }
 

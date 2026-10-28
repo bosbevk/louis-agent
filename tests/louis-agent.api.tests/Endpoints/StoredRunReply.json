@@ -23,13 +23,13 @@
       {
         "name": "meal",
         "version": 1,
-        "kind": "Model",
+        "kind": "model",
         "question": null
       },
       {
         "name": "meal.human",
         "version": 1,
-        "kind": "Human",
+        "kind": "human",
         "question": "Is this a meal?"
       }
     ]
@@ -93,9 +93,7 @@
       "task": "bobotie",
       "order": 1,
       "role": "role-alpha",
-      "scores": {
-        "routed_right": true
-      },
+      "scores": {},
       "errors": 0,
       "seconds": 12.5,
       "grades": [
@@ -103,13 +101,13 @@
           "grader": "meal",
           "version": 1,
           "score": 1,
-          "outcome": "Pass",
+          "outcome": "pass",
           "reason": "Good.",
           "judge_model": "haiku",
           "judge_prompt_hash": "abc"
         }
       ],
-      "outcome": "Pass",
+      "outcome": "pass",
       "human_grades": [
         {
           "mode": "mode-beta",
@@ -123,7 +121,19 @@
           "at": "2026-10-25T09:00:00\u002B00:00",
           "latest": true
         }
-      ]
+      ],
+      "metrics": {
+        "agent_calls": 1,
+        "specialist_calls": 2,
+        "hosts": [
+          "www.checkers.co.za"
+        ],
+        "turns": 1,
+        "tokens_in": 15,
+        "tokens_out": 5,
+        "seconds": 12.5,
+        "cost": 0.01
+      }
     }
   ],
   "agreement": [

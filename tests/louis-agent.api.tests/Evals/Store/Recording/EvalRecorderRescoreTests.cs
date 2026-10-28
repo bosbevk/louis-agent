@@ -1,7 +1,10 @@
-using System.Text.Json;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Kinds;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Evals.Store.Recording;
@@ -23,8 +26,10 @@ public class EvalRecorderRescoreTests
         _store = new InMemoryEvalStore();
     }
 
-    /// <summary>Turns an event into one of the runner's protocol lines: an <c>@</c> and the event as JSON.</summary>
-    private static string At(object e) => "@" + JsonSerializer.Serialize(e);
+    /// <summary>The first line of a re-score of the old run.</summary>
+    private static string RescoreBegins() =>
+        EvalProtocolJson.Line(new ProtocolEvent(DateTimeOffset.UtcNow, ProtocolEvent.CurrentVersion, "cook", 1,
+            "abc", RunSplit.Dev, "old123456789", null, [], []));
 
     /// <summary>
     /// A re-score asks the model nothing, so its cost is a known zero (not "unknown"), whatever the ledger holds for
@@ -52,16 +57,7 @@ public class EvalRecorderRescoreTests
             var recording = new EvalRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
 
             // Its first line says it re-scores the old run, then the run ends.
-            run.Add(At(new
-            {
-                @event = "protocol",
-                version = 1,
-                eval = "cook",
-                eval_version = 1,
-                rescore_of = "old123456789",
-                graders = Array.Empty<object>(),
-                models = Array.Empty<object>()
-            }));
+            run.Add(RescoreBegins());
             run.Complete(0);
             await recording;
 
@@ -100,26 +96,9 @@ public class EvalRecorderRescoreTests
             var recording = new EvalRecorder(_store, ledgerDirectory: directory).RecordAsync(run);
 
             // Its first line says it re-scores the old run; then the question; then the run ends.
-            run.Add(At(new
-            {
-                @event = "protocol",
-                version = 1,
-                eval = "cook",
-                eval_version = 1,
-                rescore_of = "old123456789",
-                graders = Array.Empty<object>(),
-                models = Array.Empty<object>()
-            }));
-            run.Add(At(new
-            {
-                @event = "question",
-                mode = "cook",
-                repeat = 1,
-                task = "bobotie",
-                turn = 1,
-                session = "sess_1",
-                text = "Maak bobotie"
-            }));
+            run.Add(RescoreBegins());
+            run.Add(EvalProtocolJson.Line(
+                new QuestionEvent(DateTimeOffset.UtcNow, "cook", 1, "bobotie", 1, "sess_1", "Maak bobotie")));
             run.Complete(0);
             await recording;
 

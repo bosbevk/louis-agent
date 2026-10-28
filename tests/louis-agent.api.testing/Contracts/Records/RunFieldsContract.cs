@@ -1,16 +1,19 @@
 using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Runs;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Run;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
 /// What every store of runs keeps on a run beyond its first fields, in memory and in MongoDB alike: a review's
-/// question, the run it re-scored, a cost of a known zero, the roll-up's slices and each agent's prompts. A run stored
-/// before a field existed reads it as null. It sits apart from <see cref="RunStoreContract"/> to keep both short.
+/// question, the run it re-scored, a cost of a known zero, the roll-up's slices, each agent's prompts and the protocol
+/// version it was recorded from. A run stored before a field existed reads it as null. It sits apart from
+/// <see cref="RunStoreContract"/> to keep both short.
 /// </summary>
 /// <remarks>
 /// Abstract test (a contract test): the tests are written once, and each store gets a small subclass that only says
@@ -44,9 +47,8 @@ public abstract class RunFieldsContract
         string id = NewId();
         var graders = new[]
         {
-            new Grader("routed-to", 1, EvalGraderKind.FixedRule), new Grader("meal-for-people.human", 1,
-                EvalGraderKind.Human,
-                "Is this a meal for the people asked for?")
+            new Grader("routed-to", 1, GraderKind.FixedRule),
+            new Grader("meal-for-people.human", 1, GraderKind.Human, "Is this a meal for the people asked for?")
         };
         await _store.SaveRunAsync(NewRun(id) with { Graders = graders });
 
@@ -80,7 +82,10 @@ public abstract class RunFieldsContract
         Assert.That((await _store.GetRunAsync(id))!.Total, Is.EqualTo(new Total(0m, "USD", 0, 0)));
     }
 
-    /// <summary>The roll-up's slices read back field by field; a run stored before them has none.</summary>
+    /// <summary>
+    /// The roll-up's slices read back field by field, a grader's mean score too (null when it gave none); a run stored
+    /// before them has none.
+    /// </summary>
     [Test]
     public async Task ARunsSlices_ReadBackAsTheRunnerWroteThem_AndARunBeforeThemHasNone()
     {
@@ -88,10 +93,12 @@ public abstract class RunFieldsContract
         var slices = new[]
         {
             new EvalSlice(SampleMode.Beta, "overall", 8, 6, 1, 1, 0, ["a", "b"], false, 0.75, 1.0, 0.5,
-                [new SliceGrader("routed-to", EvalGraderKind.FixedRule, 7, 1, 0)],
-                [new SliceKind(EvalGraderKind.FixedRule, 7, 1, 0)], [new SliceScore("priced_ratio", 0.5, 8)]),
-            new EvalSlice(SampleMode.Beta, "language:af", 3, 3, 0, 0, 0, ["a"], true, null, null, null, [], [],
-                []),
+                [
+                    new GraderCount("routed-to", GraderKind.FixedRule, 7, 1, 0, 0.875),
+                    new GraderCount("meal-for-people.human", GraderKind.Human, 0, 0, 0, null)
+                ],
+                [new KindCount(GraderKind.FixedRule, 7, 1, 0)]),
+            new EvalSlice(SampleMode.Beta, "language:af", 3, 3, 0, 0, 0, ["a"], true, null, null, null, [], []),
         };
 
         await _store.SaveRunAsync(NewRun(rolled) with { Slices = slices });
@@ -125,5 +132,21 @@ public abstract class RunFieldsContract
         Assert.That(JsonSerializer.Serialize((await _store.GetRunAsync(hashed))!.Prompts),
             Is.EqualTo(JsonSerializer.Serialize(prompts)));
         Assert.That((await _store.GetRunAsync(older))!.Prompts, Is.Null, "unknown, never an empty list");
+    }
+
+    /// <summary>
+    /// The protocol version a run was recorded from reads back as written; a run stored before it was kept has none,
+    /// which is how a store tells an older run (F18 step 7c.3).
+    /// </summary>
+    [Test]
+    public async Task ARunsProtocolVersion_ReadsBackAsWritten_AndARunBeforeItHasNone()
+    {
+        string tagged = NewId(), older = NewId();
+
+        await _store.SaveRunAsync(NewRun(tagged) with { ProtocolVersion = 2 });
+        await _store.SaveRunAsync(NewRun(older));
+
+        Assert.That((await _store.GetRunAsync(tagged))!.ProtocolVersion, Is.EqualTo(2));
+        Assert.That((await _store.GetRunAsync(older))!.ProtocolVersion, Is.Null);
     }
 }

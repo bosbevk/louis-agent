@@ -1,16 +1,15 @@
-using System.Text.Json;
-using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Conversations;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Testing;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
 /// What every store of conversations does, in memory and in MongoDB alike. Saving one again replaces it, a run's come
-/// back in the order they started, and each keeps its scores and grades as they were written. Every test makes its
-/// own run ids, so the tests can share a real database.
+/// back in the order they started, and each keeps what it measured and its grades as they were written. Every test
+/// makes its own run ids, so the tests can share a real database.
 /// </summary>
 /// <remarks>
 /// Abstract test (a contract test): the tests are written once, and each store gets a small subclass that only says
@@ -31,31 +30,30 @@ public abstract class ConversationStoreContract
     /// <summary>A run id no other test uses, so tests sharing a database never meet.</summary>
     private static string NewId() => Guid.NewGuid().ToString("N")[..12];
 
-    /// <summary>Parses a bit of JSON into a value we can keep.</summary>
-    private static JsonElement Json(string json) => JsonDocument.Parse(json).RootElement.Clone();
+    /// <summary>What a conversation of two turns measured; its tokens are known, its cost isn't.</summary>
+    private static readonly Metrics Measured = new(2, 6, ["www.checkers.co.za"], 2, 1200, 340, 12.5, null);
 
-    /// <summary>A scored conversation of one task, by default the beta mode's first repeat.</summary>
+    /// <summary>An ended conversation of one task, by default the beta mode's first repeat.</summary>
     private static Conversation NewConversation(string task, int order, string? role = SampleRole.Alpha,
         string mode = SampleMode.Beta, int repeat = 1) =>
-        new(new ConversationKey(mode, repeat, task), order, role, Json("""{"routed_right":true,"priced_ratio":0.75}"""),
-            0, 12.5);
+        new(new ConversationKey(mode, repeat, task), order, role, Measured, 0, 12.5);
 
     /// <summary>A conversation keeps its grades and its overall outcome.</summary>
     [Test]
     public async Task AConversation_CarriesItsGradesAndOutcome()
     {
         string run = NewId();
-        var grades = new[] { new Grade("priced-with-source", 1, 1, EvalOutcome.Pass, "2 of 2 priced with a source") };
+        var grades = new[] { new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source") };
         await _store.SaveConversationAsync(run,
             NewConversation("bobotie", 1) with
             {
                 Grades = grades,
-                Outcome = EvalOutcome.Pass
+                Outcome = TrialOutcome.Pass
             });
 
         var read = (await _store.ConversationsAsync(run)).Single();
 
-        Assert.That(read.Outcome, Is.EqualTo(EvalOutcome.Pass));
+        Assert.That(read.Outcome, Is.EqualTo(TrialOutcome.Pass));
         Assert.That(read.Grades, Is.EqualTo(grades));
     }
 
@@ -64,18 +62,18 @@ public abstract class ConversationStoreContract
     public async Task APendingGrade_ReadsBackPending_InBothStores()
     {
         string run = NewId();
-        var grades = new[] { new Grade("meal-for-people.human", 1, 0, EvalOutcome.Pending, "waits for a person") };
+        var grades = new[] { new Grade("meal-for-people.human", 1, 0, GradeOutcome.Pending, "waits for a person") };
         await _store.SaveConversationAsync(run,
             NewConversation("bobotie", 1) with
             {
                 Grades = grades,
-                Outcome = EvalOutcome.Pass
+                Outcome = TrialOutcome.Pass
             });
 
         var read = (await _store.ConversationsAsync(run)).Single();
 
         Assert.That(read.Grades, Is.EqualTo(grades));
-        Assert.That(read.Outcome, Is.EqualTo(EvalOutcome.Pass));
+        Assert.That(read.Outcome, Is.EqualTo(TrialOutcome.Pass));
     }
 
     /// <summary>A judge's grade keeps the judge that gave it; a code grader's grade has no judge model.</summary>
@@ -85,8 +83,8 @@ public abstract class ConversationStoreContract
         string run = NewId();
         var grades = new[]
         {
-            new Grade("meal-for-people", 1, 1, EvalOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456"),
-            new Grade("no-error", 1, 1, EvalOutcome.Pass, "ok")
+            new Grade("meal-for-people", 1, 1, GradeOutcome.Pass, "feeds four", "qwen3:8b", "abc123def456"),
+            new Grade("no-error", 1, 1, GradeOutcome.Pass, "ok")
         };
         await _store.SaveConversationAsync(run, NewConversation("bobotie", 1) with { Grades = grades });
 
@@ -97,8 +95,26 @@ public abstract class ConversationStoreContract
     }
 
     /// <summary>
-    /// A run's conversations come back in their order with their scores, and saving one again replaces it.
+    /// What a conversation measured reads back field by field, an unknown cost still null; a conversation that hasn't
+    /// ended has no metrics.
     /// </summary>
+    [Test]
+    public async Task WhatAConversationMeasured_ReadsBack_AndOneNotEndedHasNone()
+    {
+        string run = NewId();
+        await _store.SaveConversationAsync(run, NewConversation("bobotie", 1));
+        await _store.SaveConversationAsync(run, NewConversation("cottage-pie", 2) with { Metrics = null });
+
+        var read = await _store.ConversationsAsync(run);
+
+        var m = read[0].Metrics!;
+        Assert.That((m.AgentCalls, m.SpecialistCalls, m.Turns, m.TokensIn, m.TokensOut, m.Seconds, m.Cost),
+            Is.EqualTo(((int?)2, (int?)6, (int?)2, (long?)1200, (long?)340, (double?)12.5, (decimal?)null)));
+        Assert.That(m.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
+        Assert.That(read[1].Metrics, Is.Null);
+    }
+
+    /// <summary>A run's conversations come back in their order, and saving one again replaces it.</summary>
     [Test]
     public async Task Conversations_ReadBackInTheirOrder_AndASecondSaveReplacesOne()
     {
@@ -113,8 +129,6 @@ public abstract class ConversationStoreContract
 
         Assert.That(read.Select(c => c.Key.Task), Is.EqualTo(new[] { "bobotie", "cottage-pie" }));
         Assert.That(read[0].Role, Is.EqualTo(SampleRole.Alpha));
-        Assert.That(read[0].Scores.GetProperty("priced_ratio").GetDouble(), Is.EqualTo(0.75));
-        Assert.That(read[0].Scores.GetProperty("routed_right").GetBoolean(), Is.True);
         Assert.That((read[0].Errors, read[0].Seconds), Is.EqualTo((0, 12.5)));
     }
 

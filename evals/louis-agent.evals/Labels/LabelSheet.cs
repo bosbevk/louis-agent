@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Evals.Running.Rescoring;
 using LouisAgent.Evals.Trials;
 
@@ -33,7 +34,7 @@ public static class LabelSheet
             .Select(s => s.Id).ToHashSet();
 
         // Each conversation's turn events, and the conversations of the scenarios the grader can label.
-        var turnEvents = new Dictionary<(string Mode, int Repeat, string Task), List<EvalEvent>>();
+        var turnEvents = new Dictionary<ConversationKey, List<EvalEvent>>();
         var conversations = new List<ConversationEvent>();
         foreach (var e in stored.Lines.Select(line => line.Event))
         {
@@ -51,7 +52,7 @@ public static class LabelSheet
         var files = new List<LabelFile>();
         foreach (var c in conversations)
         {
-            var turns = ProtocolTranscripts.Of(turnEvents.GetValueOrDefault((c.Mode, c.Repeat, c.Task)) ?? []).Turns;
+            var turns = ProtocolTranscripts.Of(turnEvents.GetValueOrDefault(c.Key) ?? []).Turns;
             if (turns.Count == 0 || turns[^1].Failure is not null) continue;
             string answer = EngineEvents.AnswerOf(turns[^1]);
             // Every turn, question and answer, so the judge sees what a follow-up relies on (F18 step 6a.4f).

@@ -27,6 +27,8 @@
     <ProjectReference Include="..\..\louis-agent.choices\louis-agent.choices.csproj" />
     <!-- The API's replies as records (ADR 0045): the client reads what the API writes, never a JSON picked apart. -->
     <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
+    <!-- F18 step 7c.3 (decision A): the eval protocol's kinds, so the portal reads a grader's kind by its wire name. -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
 
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->

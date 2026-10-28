@@ -2,12 +2,12 @@ using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
@@ -85,13 +85,13 @@ public class AdminReplyJsonTests
         var store = new InMemoryEvalStore();
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
         var slice = new EvalSlice(SampleMode.Beta, "overall", 8, 6, 2, 0, 0, ["a"], false, 0.75, 0.75, 0.75, [],
-            [], []);
+            []);
         await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, EvalRunStatus.Done, at, Slices: [slice]));
 
-        // One conversation, so the overall trend has a line with a point on it.
-        var scores = JsonDocument.Parse("""{"routed_right":true}""").RootElement.Clone();
+        // One passed conversation, so the overall trend has a line with a point on it.
         await store.SaveConversationAsync("r1",
-            new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, scores, 0, 1));
+            new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, null, 0, 1,
+                Outcome: TrialOutcome.Pass));
 
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();

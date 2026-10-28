@@ -8,7 +8,8 @@ using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
@@ -43,7 +44,9 @@ public class ReviewReplyJsonTests
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
         Assert.That(await response.Content.ReadAsStringAsync(), Is.EqualTo(
-            """{"reviews":[{"mode":"mode-beta","repeat":1,"task":"bobotie","grader":"meal.human","model_grader":"meal","verdict":"pass","note":"Fine.","reviewer":"louis","at":"2026-10-25T09:00:00+00:00","latest":true}]}"""));
+            """{"reviews":[{"mode":"mode-beta","repeat":1,"task":"bobotie","grader":"meal."""
+            + """human","model_grader":"meal","verdict":"pass","note":"Fine.","reviewer":"lou"""
+            + """is","at":"2026-10-25T09:00:00+00:00","latest":true}]}"""));
     }
 
     /// <summary>A new grade comes back as the grade kept, with the same names.</summary>
@@ -72,9 +75,8 @@ public class ReviewReplyJsonTests
     {
         var store = new InMemoryEvalStore();
         await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At,
-            Graders: [new Grader("meal.human", 1, EvalGraderKind.Human, "Is this a meal?")]));
-        var scores = JsonDocument.Parse("{}").RootElement.Clone();
-        await store.SaveConversationAsync("run_1", new Conversation(Key, 1, null, scores, 0, 1));
+            Graders: [new Grader("meal.human", 1, GraderKind.Human, "Is this a meal?")]));
+        await store.SaveConversationAsync("run_1", new Conversation(Key, 1, null, null, 0, 1));
 
         return (store, new InMemoryHumanReviewStore());
     }

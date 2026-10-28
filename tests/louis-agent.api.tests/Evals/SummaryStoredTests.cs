@@ -3,19 +3,23 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Export;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
+using LouisAgent.Evals.Protocol.Parts.Run;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Evals;
 
 /// <summary>
-/// The runner's summary lines (one per slice of a mode: overall, then each category) are read into a typed slice,
-/// kept on the run, written back by the export just as the runner wrote them, and served with the run with each
-/// slice's cost from the ledger. The API works out no rate, and a run with no summary has none, never zeros.
+/// The runner's summary lines (one per slice of a mode: overall, then each category) are kept on the run as slices,
+/// written back by the export just as the runner wrote them, and served with the run with each slice's cost from the
+/// ledger. The API works out no rate, and a run with no summary has none, never zeros.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class SummaryStoredTests
@@ -26,128 +30,35 @@ public class SummaryStoredTests
     /// <summary>The admin key the test API is built with.</summary>
     private const string AdminKey = "admin-secret";
 
-    /// <summary>Writes an event as the runner does: an @ and then its JSON.</summary>
-    private static string At(object e) => "@" + JsonSerializer.Serialize(e);
+    /// <summary>When the run's lines start; each line is a second later than the one before.</summary>
+    private static readonly DateTimeOffset T0 = new(2026, 10, 28, 8, 0, 0, TimeSpan.Zero);
 
     /// <summary>
-    /// A summary line for one slice, with six of eight trials passed. A slice with too few trials leaves its rates
-    /// out, as the runner does.
+    /// The summary of one slice, with six of eight trials passed. A slice with too few trials has no rates, as the
+    /// runner writes it.
     /// </summary>
-    private static string SummaryLine(string mode = SampleMode.Beta, string slice = "overall", bool tooFew = false,
-        double? passRate = 0.75, string[]? tasks = null)
-    {
-        var fields = new Dictionary<string, object?>
-        {
-            ["event"] = "summary",
-            ["t"] = 1700000009.0,
-            ["mode"] = mode,
-            ["slice"] = slice,
-            ["n"] = 8,
-            ["passed"] = 6,
-            ["failed"] = 1,
-            ["unknown"] = 1,
-            ["infrastructure"] = 0,
-            ["tasks"] = tasks ?? ["a", "b"],
-            ["too_few"] = tooFew,
-            ["graders"] = new[]
-            {
-                new
-                {
-                    grader = "routed-to",
-                    kind = "FixedRule",
-                    passed = 7,
-                    failed = 1,
-                    unknown = 0
-                }
-            },
-            ["kinds"] = new[]
-            {
-                new
-                {
-                    kind = "FixedRule",
-                    passed = 7,
-                    failed = 1,
-                    unknown = 0
-                }
-            },
-            ["scores"] = new[]
-            {
-                new
-                {
-                    key = "priced_ratio",
-                    mean = 0.5,
-                    n = 8
-                }
-            },
-        };
-
-        // Only a slice with enough trials has rates.
-        if (passRate is { } rate)
-        {
-            fields["pass_rate"] = rate;
-            fields["pass_at_k"] = 1.0;
-            fields["pass_hat_k"] = 0.5;
-        }
-
-        return At(fields);
-    }
+    private static SummaryEvent Summary(string slice, bool tooFew, string[] tasks, int second) =>
+        new(T0.AddSeconds(second), SampleMode.Beta, slice, 8, 6, 1, 1, 0, tasks, tooFew, tooFew ? null : 0.75,
+            tooFew ? null : 1.0, tooFew ? null : 0.5,
+            [new GraderCount("routed-to", GraderKind.FixedRule, 7, 1, 0, 0.875)],
+            [new KindCount(GraderKind.FixedRule, 7, 1, 0)]);
 
     /// <summary>
-    /// One run as the runner writes it: a mode with one conversation, its done line, then two summaries (overall,
-    /// and a category with too few trials).
+    /// One run as the runner writes it: a mode with one conversation, its end, then two summaries (overall, and a
+    /// category with too few trials).
     /// </summary>
     private static readonly string[] Run =
     [
-        At(new
+        .. new EvalEvent[]
         {
-            @event = "protocol",
-            t = 1700000000.5,
-            version = 1,
-            eval = SampleEval.Beta,
-            eval_version = 7,
-            commit = "abc",
-            split = "dev",
-            graders = Array.Empty<object>(),
-            models = Array.Empty<object>()
-        }),
-        At(new
-        {
-            @event = "mode",
-            t = 1700000001.0,
-            mode = SampleMode.Beta,
-            repeat = 1,
-            toolsets = new[] { SampleToolset.Alpha },
-            role = (string?)null,
-            llm = (string?)null,
-            conversations = 0
-        }),
-        At(new
-        {
-            @event = "conversation",
-            t = 1700000002.0,
-            mode = SampleMode.Beta,
-            repeat = 1,
-            task = "a",
-            role = SampleRole.Alpha,
-            scores = new { },
-            errors = 0,
-            seconds = 1.0,
-            outcome = "Pass"
-        }),
-        At(new
-        {
-            @event = "mode_done",
-            t = 1700000003.0,
-            mode = SampleMode.Beta,
-            repeat = 1,
-            pass_at_k = 1.0,
-            pass_hat_k = 1.0,
-            k = 1,
-            infrastructure = 0,
-            retried = 0
-        }),
-        SummaryLine(),
-        SummaryLine(slice: "language:af", tooFew: true, passRate: null, tasks: ["a"]),
+            new ProtocolEvent(T0, ProtocolEvent.CurrentVersion, SampleEval.Beta, 7, "abc", RunSplit.Dev, null, null, [],
+                []),
+            new ModeEvent(T0.AddSeconds(1), SampleMode.Beta, 1, [SampleToolset.Alpha], null, null, 1),
+            new ConversationEvent(T0.AddSeconds(2), SampleMode.Beta, 1, "a", SampleRole.Alpha, 0, 1.0, [],
+                TrialOutcome.Pass, new Metrics(0, 0, [], 0, null, null, 1.0, null)),
+            new ModeDoneEvent(T0.AddSeconds(3), SampleMode.Beta, 1, new RatesInfo(1.0, 1.0, 1, 0, 0)),
+            Summary("overall", false, ["a", "b"], 4), Summary("language:af", true, ["a"], 5),
+        }.Select(EvalProtocolJson.Line)
     ];
 
     /// <summary>Feeds the lines through the recorder into a fresh store, as a finished run would leave it.</summary>
@@ -165,41 +76,17 @@ public class SummaryStoredTests
         return store;
     }
 
-    // --- reading the line
-
-    /// <summary>A summary line reads into a slice with every field just as the runner wrote it.</summary>
+    /// <summary>A slice keeps every field of its summary as the runner wrote it, and when it came.</summary>
     [Test]
-    public void ASummaryLine_IsReadIntoATypedSlice_WithItsFieldsAsTheRunnerWroteThem()
+    public void ASlice_KeepsItsSummarysFields_AsTheRunnerWroteThem()
     {
-        var slice = ((SummaryReported)Parse(SummaryLine())).Slice;
+        var summary = Summary("overall", false, ["a", "b"], 4);
 
-        Assert.That((slice.Mode, slice.Slice, slice.N, slice.Passed, slice.Failed, slice.Unknown, slice.Infrastructure),
-            Is.EqualTo((SampleMode.Beta, "overall", 8, 6, 1, 1, 0)));
-        Assert.That(slice.Tasks, Is.EqualTo(new[] { "a", "b" }));
-        Assert.That((slice.TooFew, slice.PassRate, slice.PassAtK, slice.PassHatK),
-            Is.EqualTo((false, (double?)0.75, (double?)1.0, (double?)0.5)));
-        Assert.That(slice.Graders,
-            Is.EqualTo(new[] { new SliceGrader("routed-to", EvalGraderKind.FixedRule, 7, 1, 0) }));
-        Assert.That(slice.Kinds, Is.EqualTo(new[] { new SliceKind(EvalGraderKind.FixedRule, 7, 1, 0) }));
-        Assert.That(slice.Scores, Is.EqualTo(new[] { new SliceScore("priced_ratio", 0.5, 8) }));
+        var slice = EvalSlice.Of(summary);
+
+        Assert.That(slice.ToEvent(T0), Is.EqualTo(summary).Using<SummaryEvent>((a, b) =>
+            EvalProtocolJson.Line(a) == EvalProtocolJson.Line(b)));
     }
-
-    /// <summary>A slice with too few trials has no rates at all, not zeros.</summary>
-    [Test]
-    public void ASliceWithTooFewTrials_HasNoRates_NullNeverZero()
-    {
-        var slice = ((SummaryReported)Parse(SummaryLine(tooFew: true, passRate: null))).Slice;
-
-        Assert.That((slice.TooFew, slice.PassRate, slice.PassAtK, slice.PassHatK),
-            Is.EqualTo((true, (double?)null, (double?)null, (double?)null)));
-    }
-
-    /// <summary>A summary line we can't read is kept as a plain log line instead of throwing.</summary>
-    [Test]
-    public void ASummaryLineThatCannotBeRead_IsALogLine_NeverAnException() =>
-        Assert.That(Parse(SampleMode.Fill("""@{"event":"summary","mode":"<ModeBeta>"}""")), Is.InstanceOf<LogLine>());
-
-    // --- kept on the run
 
     /// <summary>The run keeps every slice, in the order the runner sent them.</summary>
     [Test]
@@ -210,6 +97,17 @@ public class SummaryStoredTests
         var slices = (await store.GetRunAsync(Id))!.Slices!;
         Assert.That(slices.Select(s => (s.Mode, s.Slice, s.TooFew)),
             Is.EqualTo(new[] { (SampleMode.Beta, "overall", false), (SampleMode.Beta, "language:af", true) }));
+    }
+
+    /// <summary>A slice with too few trials has no rates at all, not zeros.</summary>
+    [Test]
+    public async Task ASliceWithTooFewTrials_HasNoRates_NullNeverZero()
+    {
+        var store = await Recorded(Run);
+
+        var few = (await store.GetRunAsync(Id))!.Slices![1];
+        Assert.That((few.TooFew, few.PassRate, few.PassAtK, few.PassHatK),
+            Is.EqualTo((true, (double?)null, (double?)null, (double?)null)));
     }
 
     /// <summary>A run that sent no summary keeps no slices, not empty ones.</summary>
@@ -230,32 +128,21 @@ public class SummaryStoredTests
         Assert.That((await store.GetRunAsync(Id))!.Slices, Has.Count.EqualTo(2));
     }
 
-    // --- written back
-
     /// <summary>
-    /// The export writes the summaries back as the runner wrote them, after the mode's last done line, and adds no
-    /// cost.
+    /// The export writes the summaries back as the runner wrote them, after the mode's last end, and adds no cost.
     /// </summary>
     [Test]
     public async Task TheExport_WritesTheSlicesBack_AsTheRunnerWroteThem_WithNoCost()
     {
         var store = await Recorded(Run);
-        var run = (await store.GetRunAsync(Id))!;
 
-        string text = await EvalProtocolExport.BuildAsync(store, run, CancellationToken.None);
+        string text =
+            await EvalProtocolExport.BuildAsync(store, (await store.GetRunAsync(Id))!, CancellationToken.None);
 
-        var lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
-        var exported = lines.Where(l => l.Contains("\"event\":\"summary\""))
-            .Select(l => ((SummaryReported)Parse(l)).Slice).ToList();
-        // A record holds its lists by reference, so the slices are compared by what they say.
-        Assert.That(JsonSerializer.Serialize(exported), Is.EqualTo(JsonSerializer.Serialize(run.Slices)));
+        string[] lines = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        Assert.That(lines.TakeLast(3), Is.EqualTo(Run.TakeLast(3)), "the mode's end, then its two summaries");
         Assert.That(lines.Where(l => l.Contains("\"event\":\"summary\"")).All(l => !l.Contains("cost")), Is.True,
             "the ledger prices a slice, never the export");
-        // Each line's event name, read past the leading @.
-        string[] events = lines.Select(l => JsonDocument.Parse(l[1..]).RootElement.GetProperty("event").GetString()!)
-            .ToArray();
-        Assert.That(events.TakeLast(3), Is.EqualTo(new[] { "mode_done", "summary", "summary" }),
-            "after the mode's last mode_done");
     }
 
     /// <summary>A run with no slices exports no summary line.</summary>
@@ -269,8 +156,6 @@ public class SummaryStoredTests
 
         Assert.That(text, Does.Not.Contain("\"summary\""));
     }
-
-    // --- served with the run, each slice priced from the ledger
 
     /// <summary>
     /// The run's JSON serves each slice with its cost per trial and per pass from the ledger. A slice with too few
@@ -286,6 +171,7 @@ public class SummaryStoredTests
         await store.AddRequestsAsync(Id, [Request("a", 0.5m), Request("b", 0.3m)]);
         await store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, EvalRunStatus.Done, DateTimeOffset.UnixEpoch));
 
+        // The API over that store.
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
         var client = app.GetTestClient();
@@ -298,6 +184,7 @@ public class SummaryStoredTests
         Assert.That(overall.GetProperty("mode").GetString(), Is.EqualTo(SampleMode.Beta));
         Assert.That(overall.GetProperty("cost_per_trial").GetDecimal(), Is.EqualTo(0.8m / 8));
         Assert.That(overall.GetProperty("cost_per_pass").GetDecimal(), Is.EqualTo(0.8m / 6));
+        Assert.That(overall.GetProperty("graders")[0].GetProperty("score_mean").GetDouble(), Is.EqualTo(0.875));
         var few = summaries.Single(s => s.GetProperty("slice").GetString() == "language:af");
         Assert.That(few.GetProperty("too_few").GetBoolean(), Is.True);
         Assert.That(few.TryGetProperty("pass_rate", out var rate) && rate.ValueKind != JsonValueKind.Null, Is.False,

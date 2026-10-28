@@ -6,8 +6,8 @@ using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Evals.Reviews;
 using LouisAgent.Api.Evals.Reviews.Store;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Api.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
@@ -63,7 +63,7 @@ internal sealed class ReviewHandlers(IEvalStore? store, IHumanReviewStore? revie
             var humans = ReviewQueries.HumanReviewsOf(run);
             if (!humans.Contains(grader)) return NotHuman(id, grader, humans);
 
-            var key = new EvalProtocol.ConversationKey(mode, repeat, task);
+            var key = new ConversationKey(mode, repeat, task);
             if ((await store.ConversationsAsync(id, cancellationToken)).All(c => c.Key != key))
                 return NoConversation(id, key);
 
@@ -189,7 +189,7 @@ internal sealed class ReviewHandlers(IEvalStore? store, IHumanReviewStore? revie
             }));
 
     /// <summary>The 404 for a conversation the run didn't store.</summary>
-    private static JsonHttpResult<ApiError> NoConversation(string id, EvalProtocol.ConversationKey key) =>
+    private static JsonHttpResult<ApiError> NoConversation(string id, ConversationKey key) =>
         ApiErrors.NotFound(MessageText.Format(ReviewUserText.NoStoredConversation,
             new
             {

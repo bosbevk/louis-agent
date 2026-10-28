@@ -1589,6 +1589,41 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   first: with only `Is.Not.Empty` added, the mode ends were empty. What still holds an `@` line on purpose: the
   contract's test that a v1 line is no event, the readers' tests that a v1 line and a v1 run are refused, and the
   calibration report's own line (`CalibrationLine`, which keeps its shape).
+- **Step 7c.3a (the API reads and exports the contract; 3b folded in).** `louis-agent.api` references the protocol
+  project, and its own copies went: `Runs/Protocol/EvalProtocol` (its records, `Parse`, `Version`),
+  `SummaryLineReader`, `EvalSlice`'s grader, kind and score rows, and the five kinds in `Runs/Kinds/` (only
+  `EvalRunStatus` stays); `EvalOutcome` split by use into the contract's `GradeOutcome` (a grade) and `TrialOutcome`
+  (a conversation). **Reading:** `RunRecording.FoldAsync` takes a line, reads it with `EvalProtocolJson.Read` and
+  switches on the record; a null is a line for people and goes to the run's log, so no `LogLine` record is left.
+  **The keys are the contract's** (Louis's pick): `ConversationKey` beside `TurnKey`, and `TurnKey.Conversation` and
+  `ConversationEvent.Key` hand it out; the harness's `StoredRun.ConversationOf` returns it. **The store:** a run
+  carries `protocol_version: 2`; a conversation keeps the contract's `Metrics` in place of its scores, its outcome a
+  `TrialOutcome`, its grades `GradeOutcome`s; `EvalSlice` (now in `Store/`) holds the contract's `GraderCount` and
+  `KindCount` with each grader's `score_mean`, built `Of(SummaryEvent)`. So that an export gives back exactly what
+  came in (Louis's pick), the store also keeps each event's time (a mode's start and end, a turn's question and end,
+  a conversation's end, a slice's summary, the first line's), the run's dataset and a mode's planned conversation
+  count. A conversation's tokens and cost come from the ledger (Louis's pick): after the join at the run's end,
+  `ConversationUsage` sums its own requests (grading left out; an unknown number leaves the total null) and the
+  conversation is written once more. **The trend** (Louis's pick): a point's score is the share of conversations
+  that passed, an infrastructure failure and an ungraded one left out as pass@k leaves them; its cost per answer is
+  per passed conversation; `Sourced` is null. **The export** (3b folded in, Louis's pick: its tests read it back with
+  the v1 reader 3a deleted): `ProtocolLines` and `SummaryExport` went, and `EvalProtocolExport` writes the stored
+  records as the contract's events with `EvalProtocolJson.Line`, a missing time taking the last one known. **The
+  replies** expand, then contract (Louis's pick): `ConversationRow` gains a `MetricsRow` and `SliceGraderRow` its
+  `ScoreMean`, and the old `Scores` fields stay, always empty, until step 5; every kind, outcome, split and failure
+  travels as its contract word (`fixed-rule`, `pass`, `held-out`, `api-error`). **The portal's two old spellings**
+  were fixed (Louis's pick): `BlindReview` finds a human review by `GraderKind.Human` and `EvalText` words the
+  contract's kinds, through `louis-agent.web.shared`'s new reference to the protocol project (decision A). **The
+  runner:** `V1Words` and `V1KindConverter` went; the listing writes a kind with .NET's string enum converter, so
+  `fixed-rule`. **Tests:** `EvalProtocolTests` went (the contract's tests read the lines); `RecordedV2RunTests`
+  records the runner's `stub-run.txt` and the contract's `eval-protocol.jsonl` (both linked into the API's tests, not
+  copied) and checks the documents; `EvalProtocolExportTests` is the round trip, the export equal to each golden line
+  for line, time included (on the in-memory store; Mongo keeps a time to the millisecond); `ConversationUsageTests`
+  is new; the tests that fed v1 lines build the contract's records. `PortalReadsNoScoreKeyTests` and
+  `RepeatedNameTests` each lost an entry that no longer applies; `StoredRunReply.json` regenerated (the contract's
+  words, empty scores, the metrics). Red first: the recorder against the two goldens (2 tests: every v2 line was a log
+  line, so no eval and no modes), then the build once the copies were deleted. The Mongo contract tests run in CI:
+  the local Mongo is Puls's own and needs its credentials. The frozen `stub-run.v1.txt` went.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

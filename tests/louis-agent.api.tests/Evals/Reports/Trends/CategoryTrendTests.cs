@@ -1,7 +1,7 @@
 using LouisAgent.Api.Evals.Reports.Trends;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Kinds;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Evals.Reports.Trends;
@@ -32,16 +32,16 @@ public class CategoryTrendTests
     private static EvalSlice Slice(string slice, double? rate, string mode = SampleMode.Beta, bool tooFew = false,
         int n = 8) =>
         new(mode, slice, n, 6, 2, 0, 0, ["a"], tooFew, tooFew ? null : rate, tooFew ? null : rate,
-            tooFew ? null : rate / 2, [], [], []);
+            tooFew ? null : rate / 2, [], []);
 
     /// <summary>Saves a run of the eval with these slices, by default a finished one on Haiku.</summary>
     private async Task Run(string id, int hour, IReadOnlyList<EvalSlice>? slices,
         string? model = "claude-haiku-5-5", EvalRunStatus status = EvalRunStatus.Done,
-        EvalRunSplit? split = null, string? rescoreOf = null,
+        RunSplit? split = null, string? rescoreOf = null,
         IReadOnlyDictionary<string, string>? settings = null) =>
         await _store.SaveRunAsync(new Run(id, SampleEval.Beta, 1, status, T0.AddHours(hour), Settings: settings,
             Split: split, RescoreOf: rescoreOf, Slices: slices,
-            Models: model is null ? null : [new ModelUse(SampleMode.Beta, EvalModelLevel.Agent, null, model)]));
+            Models: model is null ? null : [new ModelUse(SampleMode.Beta, ModelLevel.Agent, null, model)]));
 
     /// <summary>Works out the eval's category trends from the store.</summary>
     private async Task<IReadOnlyList<CategoryTrends.Category>> Compute() =>
@@ -130,7 +130,7 @@ public class CategoryTrendTests
         await Run("replay", 2, [Slice("overall", 0.5)],
             settings: new Dictionary<string, string> { ["replay_of"] = "kept" });
         await Run("rescore", 3, [Slice("overall", 0.9)], rescoreOf: "kept");
-        await Run("held", 4, [Slice("overall", 0.5)], split: EvalRunSplit.HeldOut);
+        await Run("held", 4, [Slice("overall", 0.5)], split: RunSplit.HeldOut);
         await Run("going", 5, [Slice("overall", 0.5)], status: EvalRunStatus.Running);
 
         var line = (await Compute()).Single().Lines.Single();

@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text.Json;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
 using Microsoft.AspNetCore.TestHost;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -30,7 +29,7 @@ public class CategoryTrendEndpointTests
 
         // A slice of six passes in eight, with the same number for each of its rates.
         EvalSlice Slice(string name, double? rate, bool tooFew = false) =>
-            new(SampleMode.Beta, name, 8, 6, 2, 0, 0, ["a"], tooFew, rate, rate, rate, [], [], []);
+            new(SampleMode.Beta, name, 8, 6, 2, 0, 0, ["a"], tooFew, rate, rate, rate, [], []);
 
         // Two runs an hour apart; the budget category had too few trials in the first and isn't in the second.
         await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, EvalRunStatus.Done, at,

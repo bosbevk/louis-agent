@@ -5,7 +5,8 @@ using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Turns;
 using LouisAgent.Testing;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Testing;
 
@@ -81,13 +82,13 @@ public abstract class TurnStoreContract
     public async Task ATurnsFailure_ReadsBackAsItWasWritten_AndATurnWithNoneHasNone()
     {
         string run = NewId();
-        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1) with { Failure = EvalTurnFailure.ReplayMiss }, []);
+        await _store.SaveTurnAsync(run, NewTurn("bobotie", 1) with { Failure = TurnFailure.ReplayMiss }, []);
         await _store.SaveTurnAsync(run, NewTurn("bobotie", 2), []);
 
         var read = await _store.TurnsAsync(run, new ConversationKey(SampleMode.Beta, 1, "bobotie"));
 
         Assert.That(read.Select(t => t.Failure),
-            Is.EqualTo(new EvalTurnFailure?[] { EvalTurnFailure.ReplayMiss, null }));
+            Is.EqualTo(new TurnFailure?[] { TurnFailure.ReplayMiss, null }));
     }
 
     /// <summary>A turn's stream events are read on their own, in the order they came, with data and time.</summary>

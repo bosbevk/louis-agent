@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Store;
@@ -7,7 +6,12 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Core.Usage.Sinks;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
+using LouisAgent.Evals.Protocol.Parts.Run;
 
 namespace LouisAgent.Api.Tests.Evals.Reports;
 
@@ -31,6 +35,11 @@ public class EvalLedgerTests
 
     /// <summary>The cottage pie conversation.</summary>
     private static readonly ConversationKey CottagePie = new(SampleMode.Beta, 1, "cottage-pie");
+
+    /// <summary>The run's first line, as the runner writes it.</summary>
+    private static string Begins() =>
+        EvalProtocolJson.Line(new ProtocolEvent(T0, ProtocolEvent.CurrentVersion, "cook", 1, "abc", RunSplit.Dev,
+            null, null, [], []));
 
     /// <summary>A ledger row for one request of this run, a cent by default.</summary>
     private static UsageRecord Row(int second, string? session, int? turn, string? run = Run + ":puls-cook:1",
@@ -199,11 +208,7 @@ public class EvalLedgerTests
 
             // A run of only its begin line; when it ends, the recorder reads the ledger.
             var recording = new EvalRecorder(store, ledgerDirectory: directory).RecordAsync(run, settings);
-            run.Add("@" + JsonSerializer.Serialize(new
-            {
-                @event = "protocol",
-                version = 1
-            }));
+            run.Add(Begins());
             run.Complete(0);
             await recording;
 
@@ -264,33 +269,11 @@ public class EvalLedgerTests
             // A run of one question and its turn on that session; when it ends, the recorder reads the ledger.
             var recording = new EvalRecorder(store, ledgerDirectory: directory).RecordAsync(run);
 
-            // Writes an event as the runner does: an @ and then its JSON.
-            string At(object e) => "@" + JsonSerializer.Serialize(e);
-            run.Add(At(new
-            {
-                @event = "protocol",
-                version = 1
-            }));
-            run.Add(At(new
-            {
-                @event = "question",
-                mode = SampleMode.Beta,
-                repeat = 1,
-                task = "bobotie",
-                turn = 1,
-                session = "sess_puls_bobotie",
-                text = "?"
-            }));
-            run.Add(At(new
-            {
-                @event = "turn",
-                mode = SampleMode.Beta,
-                repeat = 1,
-                task = "bobotie",
-                turn = 1,
-                session = "sess_puls_bobotie",
-                question = "?"
-            }));
+            run.Add(Begins());
+            run.Add(EvalProtocolJson.Line(new QuestionEvent(now, SampleMode.Beta, 1, "bobotie", 1, "sess_puls_bobotie",
+                "?")));
+            run.Add(EvalProtocolJson.Line(new TurnEvent(now, SampleMode.Beta, 1, "bobotie", 1, "sess_puls_bobotie", "?",
+                null, null, null, 0, 0, [], 0, null, null)));
             run.Complete(0);
             await recording;
 

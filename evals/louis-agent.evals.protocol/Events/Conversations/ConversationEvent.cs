@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 
@@ -17,4 +18,9 @@ public sealed record ConversationEvent(
     double Seconds,
     IReadOnlyList<GradeInfo> Grades,
     TrialOutcome Outcome,
-    Metrics Metrics) : EvalEvent(T);
+    Metrics Metrics) : EvalEvent(T)
+{
+    /// <summary>Which conversation finished, for grouping it with its turns.</summary>
+    [JsonIgnore]
+    public ConversationKey Key => new(Mode, Repeat, Task);
+}

@@ -1,7 +1,7 @@
 using LouisAgent.Api.Evals.Reports;
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Core.Usage.Records;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Tests.Evals.Reports;
 
@@ -41,7 +41,7 @@ public class EvalLedgerGradingTests
     /// <summary>The run's overall slice, with one trial by default.</summary>
     private static EvalSlice Slice(int n = 1, int passed = 1) =>
         new(SampleMode.Beta, "overall", n, passed, n - passed, 0, 0, ["bobotie"], TooFew: true, null, null, null, [],
-            [], []);
+            []);
 
     /// <summary>The judge's row sits on the conversation's turn, and its cost is part of the run's total.</summary>
     [Test]

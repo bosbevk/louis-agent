@@ -1,7 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Api.Evals.Reviews;
-using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Evals.Reviews;
@@ -17,7 +17,7 @@ public class ReviewRulesTests
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>One conversation of the sample run, by its task.</summary>
-    private static EvalProtocol.ConversationKey Key(string task) => new(SampleMode.Beta, 1, task);
+    private static ConversationKey Key(string task) => new(SampleMode.Beta, 1, task);
 
     /// <summary>A person's grade of one conversation, some seconds after the start, so grades have an order.</summary>
     private static HumanGrade Grade(string task, int seconds, HumanVerdict verdict, string reviewer = "Louis",
@@ -109,10 +109,10 @@ public class ReviewRulesTests
     }
 
     /// <summary>A stored conversation with the judges' grades we give it.</summary>
-    private static Conversation Conversation(string task, params (string Grader, EvalOutcome Outcome)[] grades) =>
-        new(Key(task), 1, null, JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
+    private static Conversation Conversation(string task, params (string Grader, GradeOutcome Outcome)[] grades) =>
+        new(Key(task), 1, null, null, 0, 1.0,
         [
-            .. grades.Select(g => new Grade(g.Grader, 1, g.Outcome == EvalOutcome.Pass ? 1 : 0, g.Outcome, "r"))
+            .. grades.Select(g => new Grade(g.Grader, 1, g.Outcome == GradeOutcome.Pass ? 1 : 0, g.Outcome, "r"))
         ]);
 
     /// <summary>
@@ -125,11 +125,11 @@ public class ReviewRulesTests
         // What the judge said on each conversation (f it never graded).
         var conversations = new[]
         {
-            Conversation("a", ("meal-for-people", EvalOutcome.Pass)),
-            Conversation("b", ("meal-for-people", EvalOutcome.Pass)),
-            Conversation("c", ("meal-for-people", EvalOutcome.Fail)),
-            Conversation("d", ("meal-for-people", EvalOutcome.Unknown)),
-            Conversation("e", ("meal-for-people", EvalOutcome.Pass)), Conversation("f"),
+            Conversation("a", ("meal-for-people", GradeOutcome.Pass)),
+            Conversation("b", ("meal-for-people", GradeOutcome.Pass)),
+            Conversation("c", ("meal-for-people", GradeOutcome.Fail)),
+            Conversation("d", ("meal-for-people", GradeOutcome.Unknown)),
+            Conversation("e", ("meal-for-people", GradeOutcome.Pass)), Conversation("f"),
         };
         // What the people decided (e for another judge).
         var decided = new[]
@@ -144,14 +144,15 @@ public class ReviewRulesTests
         Assert.That(tally, Is.EqualTo(new AgreementTally(
                 PersonPassJudgePass: 1, PersonPassJudgeFail: 0, PersonPassJudgeUnknown: 1,
                 PersonFailJudgePass: 1, PersonFailJudgeFail: 1, PersonFailJudgeUnknown: 1)),
-            "a: pass/pass; d: pass/unknown; b: fail/pass; c: fail/fail; f: fail, no grade from the judge is unknown; e is another judge's");
+            "a: pass/pass; d: pass/unknown; b: fail/pass; c: fail/fail; f: fail, no grade from the judge is unknown; "
+            + "e is another judge's");
     }
 
     /// <summary>With nobody's grades yet, the agreement is all zeros rather than missing.</summary>
     [Test]
     public void WithNoPeopleGrades_TheAgreementIsAllZeros_NotMissing()
     {
-        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", EvalOutcome.Pass))], [],
+        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", GradeOutcome.Pass))], [],
             "meal-for-people");
 
         Assert.That(tally, Is.EqualTo(new AgreementTally(0, 0, 0, 0, 0, 0)));
@@ -161,7 +162,7 @@ public class ReviewRulesTests
     [Test]
     public void AGradeOfAConversationTheRunDoesNotHave_IsLeftOut()
     {
-        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", EvalOutcome.Pass))],
+        var tally = ReviewAgreement.Of([Conversation("a", ("meal-for-people", GradeOutcome.Pass))],
             [Grade("zzz", 1, HumanVerdict.Pass)], "meal-for-people");
 
         Assert.That(tally, Is.EqualTo(new AgreementTally(0, 0, 0, 0, 0, 0)));

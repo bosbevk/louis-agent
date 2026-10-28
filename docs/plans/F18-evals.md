@@ -1020,6 +1020,28 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 7c.3's design** (Louis, 2026-10-28, cards before 3a).
+  - **The keys go into the contract**: `ConversationKey` beside `TurnKey` in `Parts/Conversations`, and `TurnKey`
+    and `ConversationEvent` get a `[JsonIgnore]` property that gives the conversation's key. The API and the harness
+    share one pair (a shared Data Transfer Object contract, Fowler, PoEAA); the harness's `StoredRun.ConversationOf`
+    returns it.
+  - **The trend comes from the outcomes**: a point's score is the share of conversations that passed (Infrastructure
+    left out, as pass@k does), its cost per answer is the cost per passed conversation, and `Sourced` is null (no
+    grader measures it). It holds for every eval, not only Puls's.
+  - **A conversation's tokens and cost are written again at the end**: after the ledger join, each conversation's
+    agent requests (grading left out) are summed into its metrics and the conversation is saved once more; an
+    unknown price keeps the cost null.
+  - **3a is one commit, with 3b folded in**, then the push. Louis first picked 3a, then 3b; the export's tests read
+    it back with the API's v1 reader, which 3a deletes, so the export moves to the contract's events in 3a too.
+  - **The store keeps what an export needs to give back exactly what came in**: each event's time (a mode's start
+    and end, a turn's question and end, a conversation's end, a slice's summary, the first line's), the run's dataset,
+    and a mode's planned conversation count. The export's round trip is then equal event for event, `t` included.
+  - **The replies expand, then contract** (Fowler's parallel change): `ConversationRow` gains its metrics and
+    `SliceGraderRow` its `ScoreMean`; the old `Scores` fields stay, always empty, until step 5 deletes them with the
+    portal's readers.
+  - **The portal's two old kind spellings are fixed in 3a** (`BlindReview`'s human review and `EvalText`'s kind
+    words), through `GraderKind` and `.Wire()`, so human reviews keep working before step 5.
+
 - **Step 7c.2's design** (Louis, 2026-10-28, two cards from the review of steps 0 and 1, and one on the cook's
   scores).
   - **The harness takes the contract's `RunSplit`; `SplitSelection` goes.** ADR 0043: a pack, identity or eval set

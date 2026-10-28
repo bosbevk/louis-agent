@@ -3,13 +3,13 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Reviews;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
@@ -73,7 +73,7 @@ public class StoredRunReplyJsonTests
         // The run itself: its settings, one mode, its total, a log line, its eval and graders, and a slice.
         var store = new InMemoryEvalStore();
         var slice = new EvalSlice(SampleMode.Beta, "overall", 8, 6, 2, 0, 0, ["a"], false, 0.75, 0.75, 0.75, [],
-            [], []);
+            []);
         await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At, At.AddMinutes(5),
             0, new Dictionary<string, string> { ["WEB"] = "record" },
             [
@@ -83,15 +83,15 @@ public class StoredRunReplyJsonTests
             new Total(1.25m, "USD", 1200, 4), ["started"], Eval: SampleEval.Beta, EvalVersion: 3, Commit: "abc1234",
             Graders:
             [
-                new Grader("meal", 1, EvalGraderKind.Model),
-                new Grader("meal.human", 1, EvalGraderKind.Human, "Is this a meal?")
+                new Grader("meal", 1, GraderKind.Model),
+                new Grader("meal.human", 1, GraderKind.Human, "Is this a meal?")
             ],
             Slices: [slice]));
 
         // One graded conversation, its turn with one event, a model request and a note.
-        var scores = JsonDocument.Parse("""{"routed_right":true}""").RootElement.Clone();
-        await store.SaveConversationAsync("run_1", new Conversation(Key, 1, SampleRole.Alpha, scores, 0, 12.5,
-            [new Grade("meal", 1, 1.0, EvalOutcome.Pass, "Good.", "haiku", "abc")], EvalOutcome.Pass));
+        var metrics = new Metrics(1, 2, ["www.checkers.co.za"], 1, 15, 5, 12.5, 0.01m);
+        await store.SaveConversationAsync("run_1", new Conversation(Key, 1, SampleRole.Alpha, metrics, 0, 12.5,
+            [new Grade("meal", 1, 1.0, GradeOutcome.Pass, "Good.", "haiku", "abc")], TrialOutcome.Pass));
         var data = JsonDocument.Parse("""{"role":"assistant"}""").RootElement.Clone();
         await store.SaveTurnAsync("run_1",
             new Turn(TurnOne, "sess_1", "Bobotie?", "Here.", SampleRole.Alpha, null, 1, 2, ["www.checkers.co.za"],

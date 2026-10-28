@@ -1,5 +1,7 @@
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Choices;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Run;
 using MongoDB.Bson;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using static LouisAgent.Api.Evals.Store.Mongo.BsonValues;
@@ -7,8 +9,8 @@ using static LouisAgent.Api.Evals.Store.Mongo.BsonValues;
 namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
 
 /// <summary>
-/// A run as MongoDB keeps it, field by field in snake case, and back. A field added later is absent in a run stored
-/// before it and reads as null, so old runs keep opening.
+/// A run as MongoDB keeps it, field by field in snake case, and back, with the protocol version it was recorded from.
+/// A field added later is absent in a run stored before it and reads as null.
 /// </summary>
 /// <remarks>
 /// Data Mapper, written by hand: what <c>mongosh</c> shows is exactly what the portal reads, with no convention in
@@ -69,6 +71,18 @@ internal static class RunDocuments
         ["rescore_of"] = Nullable(run.RescoreOf),
         ["slices"] = SliceDocuments.ToBson(run.Slices),
         ["prompts"] = PromptDocuments.ToBson(run.Prompts),
+        // The protocol version the run was recorded from: a store drops the runs of an older one when it opens.
+        ["protocol_version"] = Nullable(run.ProtocolVersion),
+        // The dataset and the first line's time, so an export gives the first line back as it came.
+        ["dataset"] = run.Dataset is { } dataset
+            ? new BsonDocument
+            {
+                ["name"] = dataset.Name,
+                ["version"] = dataset.Version,
+                ["hash"] = dataset.Hash
+            }
+            : BsonNull.Value,
+        ["begun_at"] = Date(run.BegunAt),
     };
 
     /// <summary>
@@ -79,11 +93,13 @@ internal static class RunDocuments
         d["_id"].AsString,
         d["check"].AsString,
         d["repeat"].AsInt32,
-        Enum.Parse<EvalRunStatus>(d["status"].AsString, ignoreCase: true),
+        ChoiceOf<EvalRunStatus>(d["status"], "status"),
         DateOf(d["started_at"])!.Value,
         DateOf(d["ended_at"]),
         d["exit_code"].IsBsonNull ? null : d["exit_code"].AsInt32,
-        d["settings"].IsBsonNull ? null : d["settings"].AsBsonDocument.ToDictionary(e => e.Name, e => e.Value.AsString),
+        d["settings"].IsBsonNull
+            ? null
+            : d["settings"].AsBsonDocument.ToDictionary(e => e.Name, e => e.Value.AsString),
         d["modes"].AsBsonArray.Select(m => ModeOf(m.AsBsonDocument)).ToArray(),
         d["total"].IsBsonNull
             ? null
@@ -98,22 +114,28 @@ internal static class RunDocuments
             ? null
             : d["graders"].AsBsonArray.Select(g => g.AsBsonDocument)
                 .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32,
-                    ChoiceOf<EvalGraderKind>(g["kind"], "kind"), StringOf(g.GetValue("question", BsonNull.Value))))
+                    ChoiceOf<GraderKind>(g["kind"], "kind"), StringOf(g.GetValue("question", BsonNull.Value))))
                 .ToArray(),
         d.GetValue("models", BsonNull.Value).IsBsonNull
             ? null
             : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
-                .Select(m => new ModelUse(m["mode"].AsString, ChoiceOf<EvalModelLevel>(m["level"], "level"),
+                .Select(m => new ModelUse(m["mode"].AsString, ChoiceOf<ModelLevel>(m["level"], "level"),
                     StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value))))
                 .ToArray(),
         SplitOf(d.GetValue("split", BsonNull.Value)),
         StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)),
-        PromptDocuments.Of(d.GetValue("prompts", BsonNull.Value)));
+        PromptDocuments.Of(d.GetValue("prompts", BsonNull.Value)),
+        d.GetValue("protocol_version", BsonNull.Value).IsBsonNull ? null : d["protocol_version"].AsInt32,
+        DatasetOf(d.GetValue("dataset", BsonNull.Value)),
+        DateOf(d.GetValue("begun_at", BsonNull.Value)));
 
     /// <summary>A run's status as the text we store.</summary>
     public static string Status(EvalRunStatus status) => status.Wire();
 
-    /// <summary>One mode of the run, with its pass rates when it has them.</summary>
+    /// <summary>
+    /// One mode of the run, with how many conversations it planned, when it started and ended, and its pass rates
+    /// when it has them.
+    /// </summary>
     private static BsonDocument ToBson(Mode m) => new()
     {
         ["name"] = m.Name,
@@ -121,6 +143,9 @@ internal static class RunDocuments
         ["toolsets"] = new BsonArray(m.Toolsets),
         ["role"] = Nullable(m.Role),
         ["llm"] = Nullable(m.Llm),
+        ["conversations"] = Nullable(m.Conversations),
+        ["at"] = Date(m.At),
+        ["done_at"] = Date(m.DoneAt),
         ["rates"] = m.Rates is { } r
             ? new BsonDocument
             {
@@ -138,7 +163,9 @@ internal static class RunDocuments
         m["repeat"].AsInt32,
         m["toolsets"].AsBsonArray.Select(t => t.AsString).ToArray(),
         StringOf(m.GetValue("role", null) ?? m.GetValue("personality", BsonNull.Value)), StringOf(m["llm"]),
-        RatesOf(m.GetValue("rates", BsonNull.Value)));
+        RatesOf(m.GetValue("rates", BsonNull.Value)),
+        m.GetValue("conversations", BsonNull.Value).IsBsonNull ? null : m["conversations"].AsInt32,
+        DateOf(m.GetValue("at", BsonNull.Value)), DateOf(m.GetValue("done_at", BsonNull.Value)));
 
     /// <summary>A mode's pass rates; a mode saved before they existed has none.</summary>
     private static ModeRates? RatesOf(BsonValue v)
@@ -148,7 +175,11 @@ internal static class RunDocuments
             rates["infrastructure"].AsInt32, rates["retried"].AsInt32);
     }
 
+    /// <summary>The dataset the run's scenarios came from; a run without one has none.</summary>
+    private static DatasetInfo? DatasetOf(BsonValue v) =>
+        v is BsonDocument d ? new DatasetInfo(d["name"].AsString, d["version"].AsInt32, d["hash"].AsString) : null;
+
     /// <summary>A run's split; a run saved before it was kept has none.</summary>
-    private static EvalRunSplit? SplitOf(BsonValue v) =>
-        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out EvalRunSplit? split) ? split : null;
+    private static RunSplit? SplitOf(BsonValue v) =>
+        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out RunSplit? split) ? split : null;
 }

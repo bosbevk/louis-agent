@@ -1,21 +1,22 @@
-using System.Text.Json;
 using LouisAgent.Api.Evals.Reports.Prompts;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Kinds;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Evals.Reports.Trends;
 
 /// <summary>
-/// A check's trend over its runs, per mode, a point per finished run, oldest first: the nine rings of the explorer over
-/// time. What one repeat cost and its tokens, seconds per turn, the share routed right, the share of ingredients priced
-/// with a source, the share of input from the cache, the share of tool calls refused, what one real answer cost, and
-/// how many sites were read. Each point also carries the notes written on its run and the agents whose prompts changed
-/// since the point before, so you can see why a line moved. A run still going isn't a point: its cost isn't complete.
-/// A value nobody measured is null, never 0.
+/// A check's trend over its runs, per mode, a point per finished run, oldest first. What one repeat cost and its
+/// tokens, seconds per turn, the share of conversations that passed, the share of input from the cache, the share of
+/// tool calls refused, what one passed conversation cost, and how many sites were read. Each point also carries the
+/// notes written on its run and the agents whose prompts changed since the point before, so you can see why a line
+/// moved. A run still going isn't a point: its cost isn't complete. A value nobody measured is null, never 0; the
+/// share of ingredients priced with a source is always null now, since no grader measures it.
 /// </summary>
 /// <remarks>
-/// Computed in C# over the store, so it's the same on the in-memory store as on MongoDB.
+/// Computed in C# over the store, so it's the same on the in-memory store as on MongoDB. The score comes from each
+/// conversation's outcome, not an eval's own keys, so the trend works for every eval (Louis's pick, F18 step 7c.3).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class EvalTrends
@@ -51,12 +52,6 @@ public static class EvalTrends
     /// <summary>A check's trend: a line per mode and model.</summary>
     public sealed record Trend(string Check, IReadOnlyList<Series> Modes);
 
-    /// <summary>
-    /// A meal's real answer: at least this share of its ingredients priced with a source (as the explorer's Waarde
-    /// ring).
-    /// </summary>
-    private const double AnsweredShare = 0.8;
-
     /// <summary>The line's name: the mode, and its model in brackets when we know it.</summary>
     private static string SeriesName(string mode, string? model) => model is null ? mode : $"{mode} ({model})";
 
@@ -79,7 +74,7 @@ public static class EvalTrends
             foreach (var mode in conversations.GroupBy(c => c.Key.Mode))
             {
                 string? model = run.Models
-                    ?.FirstOrDefault(m => m.Mode == mode.Key && m.Level == EvalModelLevel.Agent)?.Model;
+                    ?.FirstOrDefault(m => m.Mode == mode.Key && m.Level == ModelLevel.Agent)?.Model;
                 var line = (mode.Key, model);
                 if (!points.ContainsKey(line))
                 {
@@ -89,7 +84,10 @@ public static class EvalTrends
 
                 var mine = requests.Where(r => r.Turn?.Mode == mode.Key).ToList();
                 var costs = mine.Where(r => r.Cost is not null).Select(r => r.Cost!.Value).ToList();
-                int right = mode.Count(Right);
+                // The conversations that count, as pass@k counts them: an infrastructure failure is neither a pass
+                // nor a fail, and one still without an outcome isn't graded yet.
+                var counted = mode.Where(c => c.Outcome is not (null or TrialOutcome.Infrastructure)).ToList();
+                var passed = counted.Where(c => c.Outcome == TrialOutcome.Pass).Select(c => c.Key).ToHashSet();
 
                 var turns = new List<Turn>();
                 int calls = 0, failed = 0;
@@ -104,15 +102,9 @@ public static class EvalTrends
 
                 long cached = mine.Sum(r => r.CacheReadTokens ?? 0),
                     input = cached + mine.Sum(r => (r.InputTokens ?? 0) + (r.CacheWriteTokens ?? 0));
-                // Accurate rows (FX24, as the explorer's AccuracyRing counts them): priced with a source, estimated
-                // (the cook's answer while no shop's prices are read), or rightly without a price in a town with no
-                // shop. A guess and a row with no price are not.
-                var (priced, listed) = mode.Aggregate((0, 0),
-                    (sum, c) => (sum.Item1 + Number(c, "priced") + Number(c, "estimated") + Number(c, "no_shop_rows"),
-                        sum.Item2 + Number(c, "ingredients")));
-                var answered = mode.Where(Answered).Select(c => c.Key).ToHashSet();
-                var answeredCosts =
-                    mine.Where(r => r.Turn is not null && answered.Contains(r.Turn.Conversation) && r.Cost is not null)
+                // What the passed conversations cost: an answer is a conversation that passed.
+                var passedCosts =
+                    mine.Where(r => r.Turn is not null && passed.Contains(r.Turn.Conversation) && r.Cost is not null)
                         .Sum(r => r.Cost!.Value);
 
                 // The runner's rates for this mode, from its last repeat: they are cumulative over the repeats, so the
@@ -123,7 +115,7 @@ public static class EvalTrends
                 var before = points[line].LastOrDefault() is { } last ? byId[last.Run] : null;
                 points[line].Add(new Point(run.Id, run.StartedAt,
                     costs.Count == 0 ? null : costs.Sum() / repeats,
-                    mode.Any() ? (double)right / mode.Count() : null,
+                    counted.Count == 0 ? null : (double)passed.Count / counted.Count,
                     mode.Count(),
                     Tokens: mine.Count == 0
                         ? null
@@ -132,9 +124,8 @@ public static class EvalTrends
                             (r.CacheWriteTokens ?? 0)) / repeats,
                     SecondsPerTurn: turns.Count == 0 ? null : turns.Average(t => t.Seconds),
                     CacheShare: input == 0 ? null : (double)cached / input,
-                    Sourced: listed == 0 ? null : (double)priced / listed,
                     ToolsFailed: calls == 0 ? null : (double)failed / calls,
-                    CostPerAnswer: answered.Count == 0 || costs.Count == 0 ? null : answeredCosts / answered.Count,
+                    CostPerAnswer: passed.Count == 0 || costs.Count == 0 ? null : passedCosts / passed.Count,
                     Sites: turns.SelectMany(t => t.Hosts).Distinct().Count(),
                     PassAtK: rates?.PassAtK, PassHatK: rates?.PassHatK, K: rates?.K,
                     Notes: NotesOf(notes, mode.Key),
@@ -163,7 +154,7 @@ public static class EvalTrends
             // The trend is the dev scenarios: a held-out run, or one of all of them, is a different set of
             // conversations, and a run before splits were kept (no split) was a dev run. Joining them would draw a
             // line through two different things.
-            .Where(r => r.Split is null or EvalRunSplit.Dev)
+            .Where(r => r.Split is null or RunSplit.Dev)
             // A replay is the recorded run again: its scores are that run's and it costs nothing, so it is no point.
             .Where(r => r.Settings is null || !r.Settings.ContainsKey("replay_of"))
             // A re-score measures nothing new: it grades transcripts recorded on another day, so a point would put
@@ -182,31 +173,5 @@ public static class EvalTrends
             .ToArray();
         // The same empty list every time, so two points without notes are equal records.
         return texts.Length == 0 ? [] : texts;
-    }
-
-    /// <summary>Whether a conversation went where it should.</summary>
-    private static bool Right(Conversation c) =>
-        c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty("routed_right", out var v) &&
-        v.ValueKind == JsonValueKind.True;
-
-    /// <summary>A whole-number score of a conversation, or nought when it has none.</summary>
-    private static int Number(Conversation c, string name) =>
-        c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty(name, out var v) &&
-        v.ValueKind == JsonValueKind.Number
-            ? v.GetInt32()
-            : 0;
-
-    /// <summary>
-    /// A real answer: routed right, and a meal at least <see cref="AnsweredShare"/> priced with sources (a meal
-    /// without a list isn't one).
-    /// </summary>
-    /// <remarks>Guard clauses, one case per line from the top.</remarks>
-    private static bool Answered(Conversation c)
-    {
-        if (!Right(c)) return false;
-        if (!c.Scores.TryGetProperty("ingredients", out var n)) return true;
-        if (n.ValueKind != JsonValueKind.Number) return !c.Key.Task.StartsWith("cook", StringComparison.Ordinal);
-        return c.Scores.TryGetProperty("priced_ratio", out var r) && r.ValueKind == JsonValueKind.Number &&
-               r.GetDouble() >= AnsweredShare;
     }
 }

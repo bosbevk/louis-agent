@@ -4,6 +4,7 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Evals.Protocol.Parts.Run;
 
 namespace LouisAgent.Evals.Running.Rescoring;
@@ -58,12 +59,12 @@ internal sealed class StoredRun
     /// Which conversation an event belongs to (its mode, repeat and task), for the events a conversation is made of.
     /// </summary>
     /// <remarks>A switch expression on the event's type, one arm per kind, read like a table.</remarks>
-    public static (string Mode, int Repeat, string Task)? ConversationOf(EvalEvent e) => e switch
+    public static ConversationKey? ConversationOf(EvalEvent e) => e switch
     {
-        QuestionEvent q => (q.Mode, q.Repeat, q.Task),
-        SseEvent s => (s.Mode, s.Repeat, s.Task),
-        TurnEvent t => (t.Mode, t.Repeat, t.Task),
-        ConversationEvent c => (c.Mode, c.Repeat, c.Task),
+        QuestionEvent q => q.Key.Conversation,
+        SseEvent s => s.Key.Conversation,
+        TurnEvent t => t.Key.Conversation,
+        ConversationEvent c => c.Key,
         _ => null,
     };
 }

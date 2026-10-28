@@ -2,6 +2,7 @@ using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
+using LouisAgent.Evals.Protocol.Kinds;
 using MongoDB.Bson;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
@@ -21,8 +22,8 @@ public class StoredNamesTests
     private static BsonDocument Stored() => RunDocuments.ToBson(
         new Run("run123456789", "check-x", 1, EvalRunStatus.Done, T0)
         {
-            Graders = [new Grader("no-error", 1, EvalGraderKind.FixedRule)],
-            Models = [new ModelUse(SampleMode.Alpha, EvalModelLevel.Agent, null, "model-x")],
+            Graders = [new Grader("no-error", 1, GraderKind.FixedRule)],
+            Models = [new ModelUse(SampleMode.Alpha, ModelLevel.Agent, null, "model-x")],
         });
 
     /// <summary>The names the store writes come back as the same kind and level.</summary>
@@ -31,8 +32,8 @@ public class StoredNamesTests
     {
         var run = RunDocuments.RunOf(Stored());
 
-        Assert.That(run.Graders![0].Kind, Is.EqualTo(EvalGraderKind.FixedRule));
-        Assert.That(run.Models![0].Level, Is.EqualTo(EvalModelLevel.Agent));
+        Assert.That(run.Graders![0].Kind, Is.EqualTo(GraderKind.FixedRule));
+        Assert.That(run.Models![0].Level, Is.EqualTo(ModelLevel.Agent));
     }
 
     /// <summary>A grader kind stored as a number or an unknown word is refused, naming the field.</summary>

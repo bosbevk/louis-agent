@@ -7,8 +7,9 @@ using LouisAgent.Api.Evals.Reviews;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -66,16 +67,16 @@ public class CalibrationEndpointTests
             Eval: SampleEval.Beta,
             Graders:
             [
-                new Grader("cook-no-error", 1, EvalGraderKind.FixedRule),
-                new Grader("meal-for-people", 1, EvalGraderKind.Model),
-                new Grader("meal-for-people.human", 1, EvalGraderKind.Human)
+                new Grader("cook-no-error", 1, GraderKind.FixedRule),
+                new Grader("meal-for-people", 1, GraderKind.Model),
+                new Grader("meal-for-people.human", 1, GraderKind.Human)
             ]));
         await store.SaveRunAsync(new Run("gone1234567", "gone-check", 1, EvalRunStatus.Done, T0, T0.AddMinutes(5),
             0,
             Graders:
             [
-                new Grader("meal-for-people", 1, EvalGraderKind.Model),
-                new Grader("meal-for-people.human", 1, EvalGraderKind.Human)
+                new Grader("meal-for-people", 1, GraderKind.Model),
+                new Grader("meal-for-people.human", 1, GraderKind.Human)
             ]));
 
         // Two conversations in the cook run, each passed by the judge, with one turn each.
@@ -84,19 +85,18 @@ public class CalibrationEndpointTests
                      (SampleScenario.Beta, "Bobotie for four"), (SampleScenario.Alpha, "Net 'n sousie")
                  })
         {
-            var key = new EvalProtocol.ConversationKey(SampleMode.Beta, 1, task);
-            await store.SaveConversationAsync(RunId, new Conversation(key, 1, null,
-                JsonDocument.Parse("{}").RootElement.Clone(), 0, 1.0,
-                [new Grade("meal-for-people", 1, 1, EvalOutcome.Pass, "the judge's reason")]));
+            var key = new ConversationKey(SampleMode.Beta, 1, task);
+            await store.SaveConversationAsync(RunId, new Conversation(key, 1, null, null, 0, 1.0,
+                [new Grade("meal-for-people", 1, 1, GradeOutcome.Pass, "the judge's reason")]));
             await store.SaveTurnAsync(RunId,
-                new Turn(new EvalProtocol.TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer,
+                new Turn(new TurnKey(SampleMode.Beta, 1, task, 1), "sess_1", "For four", answer,
                     SampleRole.Alpha, null, 1, 1, [], 1.0, null), []);
         }
 
         // Louis's grade of the first conversation, for the judge to be checked against.
         if (graded)
             await reviews.AddAsync(new HumanGrade(RunId,
-                new EvalProtocol.ConversationKey(SampleMode.Beta, 1, SampleScenario.Beta), "meal-for-people",
+                new ConversationKey(SampleMode.Beta, 1, SampleScenario.Beta), "meal-for-people",
                 HumanVerdict.Pass, "a meal", "Louis", T0));
 
         // The real runner, knowing only the cook eval, and the API over it all.

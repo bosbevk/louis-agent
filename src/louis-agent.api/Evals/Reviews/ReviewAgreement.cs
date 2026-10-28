@@ -1,4 +1,4 @@
-using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Evals.Protocol.Kinds;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Evals.Reviews;
@@ -36,7 +36,7 @@ public static class ReviewAgreement
 
             // The six counts are a 2 by 3 table: the person's verdict picks the row, the judge's answer the column.
             var judge = conversation.Grades?.FirstOrDefault(g => g.Grader == modelGrader)?.Outcome;
-            int column = judge switch { EvalOutcome.Pass => 0, EvalOutcome.Fail => 1, _ => 2 };
+            int column = judge switch { GradeOutcome.Pass => 0, GradeOutcome.Fail => 1, _ => 2 };
             counts[(grade.Verdict == HumanVerdict.Pass ? 0 : 3) + column]++;
         }
 

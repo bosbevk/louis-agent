@@ -9,8 +9,8 @@ using LouisAgent.Api.Evals.Reviews;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -73,7 +73,7 @@ internal sealed class StoredRunHandlers(
         if (store is null) return NoStore();
         try
         {
-            var events = await store.TurnEventsAsync(id, new EvalProtocol.TurnKey(mode, repeat, task, turn),
+            var events = await store.TurnEventsAsync(id, new TurnKey(mode, repeat, task, turn),
                 cancellationToken);
             return TypedResults.Json(new TurnEventsReply([.. events.Select(TurnEventRow.Of)]), AdminJson.SnakeCase);
         }

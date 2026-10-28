@@ -50,7 +50,6 @@ public class PortalReadsNoScoreKeyTests
         "src/louis-agent.puls/Admin/Scoring/ExplorerScores.cs",
         // The Benchmarks page's score chips, moved out of the page with the live run's table (step 7b (ii)).
         "src/louis-agent.puls/Admin/LiveRuns/LiveTurns.cs",
-        "src/louis-agent.api/Evals/Reports/Trends/EvalTrends.cs",
     ];
 
     /// <summary>
@@ -68,7 +67,8 @@ public class PortalReadsNoScoreKeyTests
         Assert.Multiple(() =>
         {
             Assert.That(newOffenders, Is.Empty,
-                "A view reads only the standard records (the run's graders, a conversation's grades and outcome), never an eval's score key:\n  "
+                "A view reads only the standard records (the run's graders, a conversation's grades and outcome), "
+                + "never an eval's score key:\n  "
                 + string.Join("\n  ", newOffenders));
             Assert.That(done, Is.Empty,
                 "Reads no scores any more: remove it, so the list only shrinks:\n  " + string.Join("\n  ", done));
@@ -83,7 +83,8 @@ public class PortalReadsNoScoreKeyTests
             .Order().ToList();
 
         Assert.That(naming, Is.Empty,
-            "The admin's grades code names nothing of Puls (no PulsText, no Components.Brand), so the admin can move out as a folder:\n  "
+            "The admin's grades code names nothing of Puls (no PulsText, no Components.Brand), so the admin can move "
+            + "out as a folder:\n  "
             + string.Join("\n  ", naming));
     }
 

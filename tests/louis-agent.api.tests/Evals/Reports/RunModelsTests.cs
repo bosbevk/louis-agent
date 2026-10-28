@@ -1,6 +1,6 @@
 using LouisAgent.Api.Evals.Reports;
-using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Run;
 
 namespace LouisAgent.Api.Tests.Evals.Reports;
 
@@ -14,10 +14,7 @@ public class RunModelsTests
     [Test]
     public void AModelTheRunDidNotDeclare_IsFlagged_ThoseItDid_AreNot()
     {
-        var declared = new[]
-        {
-            new EvalProtocol.ModelInfo(SampleMode.Beta, EvalModelLevel.Agent, null, "claude-haiku-5-5")
-        };
+        var declared = new[] { new ModelInfo(SampleMode.Beta, ModelLevel.Agent, null, "claude-haiku-5-5") };
 
         Assert.That(RunModels.Unlisted(declared, ["claude-haiku-5-5", "claude-sonnet-5-5", null, "claude-sonnet-5-5"]),
             Is.EqualTo(new[] { "claude-sonnet-5-5" }));
@@ -33,6 +30,6 @@ public class RunModelsTests
     public void ARunThatDeclaredOnlyUnknown_FlagsNothing() =>
         Assert.That(
             RunModels.Unlisted(
-                [new EvalProtocol.ModelInfo(SampleMode.Beta, EvalModelLevel.Agent, null, null)],
+                [new ModelInfo(SampleMode.Beta, ModelLevel.Agent, null, null)],
                 ["claude-haiku-5-5"]), Is.Empty);
 }

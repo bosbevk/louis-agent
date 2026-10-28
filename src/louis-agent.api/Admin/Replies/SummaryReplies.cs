@@ -1,6 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Evals.Reports;
-using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Choices;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
@@ -40,9 +40,13 @@ internal static class SummaryReplies
         s.PassRate,
         s.PassAtK,
         s.PassHatK,
-        [.. s.Graders.Select(g => new SliceGraderRow(g.Grader, g.Kind.Wire(), g.Passed, g.Failed, g.Unknown))],
+        [
+            .. s.Graders.Select(g =>
+                new SliceGraderRow(g.Grader, g.Kind.Wire(), g.Passed, g.Failed, g.Unknown, g.ScoreMean))
+        ],
         [.. s.Kinds.Select(k => new SliceKindRow(k.Kind.Wire(), k.Passed, k.Failed, k.Unknown))],
-        [.. s.Scores.Select(c => new SliceScoreRow(c.Key, c.Mean, c.N))],
+        // No slice carries the eval's own score means since protocol version 2; the field goes in step 7c.5.
+        [],
         cost.PerTrial,
         cost.PerPass);
 }

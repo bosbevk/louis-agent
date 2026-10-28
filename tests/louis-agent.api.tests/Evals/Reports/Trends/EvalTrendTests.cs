@@ -2,14 +2,15 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Reports.Trends;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
 namespace LouisAgent.Api.Tests.Evals.Reports.Trends;
 
 /// <summary>
-/// An eval's trend over its runs, per mode: what one repeat cost and how many conversations went where they should.
-/// It's worked out in C# over the store, so it comes out the same on the in-memory store as on MongoDB.
+/// An eval's trend over its runs, per mode: what one repeat cost and how many conversations passed. It's worked out in
+/// C# over the store, so it comes out the same on the in-memory store as on MongoDB.
 /// </summary>
 public class EvalTrendTests
 {
@@ -25,17 +26,16 @@ public class EvalTrendTests
     [SetUp]
     public void SetUp() => _store = new InMemoryEvalStore();
 
-    /// <summary>A conversation's scores, routed right or not.</summary>
-    private static JsonElement Scores(bool right) =>
-        JsonDocument.Parse($$"""{"routed_right":{{(right ? "true" : "false")}}}""").RootElement.Clone();
+    /// <summary>A conversation of one task, numbered in its run, with how it came out.</summary>
+    private static Conversation Graded(string mode, int repeat, string task, int order, TrialOutcome outcome) =>
+        new(new ConversationKey(mode, repeat, task), order, SampleRole.Alpha, null, 0, 10, Outcome: outcome);
 
     /// <summary>
     /// Saves a run of the eval: two modes, two tasks each, per repeat. The cook mode's conversations cost
-    /// <paramref name="cookCost"/> each (the other a cent), and the first <paramref name="right"/> are routed right.
+    /// <paramref name="cookCost"/> each (the other a cent), and the first <paramref name="passed"/> pass.
     /// </summary>
     private async Task Run(string id, string check, int hour, int repeat, EvalRunStatus status, decimal? cookCost,
-        int right,
-        IReadOnlyList<ModelUse>? models = null)
+        int passed, IReadOnlyList<ModelUse>? models = null)
     {
         await _store.SaveRunAsync(new Run(id, check, repeat, status, T0.AddHours(hour), Models: models));
 
@@ -45,11 +45,13 @@ public class EvalTrendTests
             foreach (string mode in new[] { SampleMode.Alpha, SampleMode.Beta })
                 foreach (string task in new[] { SampleScenario.Alpha, "control-web" })
                 {
-                    await _store.SaveConversationAsync(id,
-                        new Conversation(new ConversationKey(mode, r, task), ++order, null, Scores(order <= right), 0, 1));
+                    order++;
+                    var outcome = order <= passed ? TrialOutcome.Pass : TrialOutcome.Fail;
+                    await _store.SaveConversationAsync(id, Graded(mode, r, task, order, outcome));
                     decimal? cost = mode == SampleMode.Beta ? cookCost : 0.01m;
+                    var key = new TurnKey(mode, r, task, 1);
                     await _store.AddRequestsAsync(id,
-                        [new Request(id, new TurnKey(mode, r, task, 1), T0, "turn", "s", null, "m", 1, 1, 0, 0, cost, 10)]);
+                        [new Request(id, key, T0, "turn", "s", null, "m", 1, 1, 0, 0, cost, 10)]);
                 }
     }
 
@@ -61,41 +63,19 @@ public class EvalTrendTests
     public async Task AHeldOutRun_IsNeverAPointOfTheDevTrend_AndARunBeforeSplitsIs()
     {
         // A dev run, one with no split, a held-out run and a run of all splits, each with one conversation.
-        await _store.SaveRunAsync(new Run("dev", SampleEval.Beta, 1, EvalRunStatus.Done, T0,
-            Split: EvalRunSplit.Dev));
+        await _store.SaveRunAsync(new Run("dev", SampleEval.Beta, 1, EvalRunStatus.Done, T0, Split: RunSplit.Dev));
         await _store.SaveRunAsync(new Run("old", SampleEval.Beta, 1, EvalRunStatus.Done, T0.AddHours(1)));
         await _store.SaveRunAsync(new Run("held", SampleEval.Beta, 1, EvalRunStatus.Done, T0.AddHours(2),
-            Split: EvalRunSplit.HeldOut));
+            Split: RunSplit.HeldOut));
         await _store.SaveRunAsync(new Run("all", SampleEval.Beta, 1, EvalRunStatus.Done, T0.AddHours(3),
-            Split: EvalRunSplit.All));
+            Split: RunSplit.All));
         foreach (string id in new[] { "dev", "old", "held", "all" })
             await _store.SaveConversationAsync(id,
-                new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(true),
-                    0, 1));
+                Graded(SampleMode.Beta, 1, SampleScenario.Alpha, 1, TrialOutcome.Pass));
 
         var trend = await EvalTrends.ComputeAsync(_store, SampleEval.Beta);
 
         Assert.That(trend.Modes.Single().Points.Select(p => p.Run), Is.EqualTo(new[] { "dev", "old" }));
-    }
-
-    /// <summary>
-    /// A replay is the recorded run again, with the same scores and no cost, so it's never a second point for that
-    /// run.
-    /// </summary>
-    [Test]
-    public async Task AReplayOfAnotherRun_IsNeverAPoint_BecauseItsScoresAreThatRunsAndItCostsNothing()
-    {
-        await _store.SaveRunAsync(new Run("live", SampleEval.Beta, 1, EvalRunStatus.Done, T0));
-        await _store.SaveRunAsync(new Run("again", SampleEval.Beta, 1, EvalRunStatus.Done, T0.AddHours(1),
-            Settings: new Dictionary<string, string> { ["replay_of"] = "live" }));
-        foreach (string id in new[] { "live", "again" })
-            await _store.SaveConversationAsync(id,
-                new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(true),
-                    0, 1));
-
-        var trend = await EvalTrends.ComputeAsync(_store, SampleEval.Beta);
-
-        Assert.That(trend.Modes.Single().Points.Select(p => p.Run), Is.EqualTo(new[] { "live" }));
     }
 
     /// <summary>
@@ -108,16 +88,14 @@ public class EvalTrendTests
         // The live run and its point before any re-score.
         await _store.SaveRunAsync(new Run("live", SampleEval.Beta, 1, EvalRunStatus.Done, T0));
         await _store.SaveConversationAsync("live",
-            new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(true), 0,
-                1));
+            Graded(SampleMode.Beta, 1, SampleScenario.Alpha, 1, TrialOutcome.Pass));
         var before = (await EvalTrends.ComputeAsync(_store, SampleEval.Beta)).Modes.Single().Points.Single();
 
-        // Three days later the same transcripts are graded again, with another score.
+        // Three days later the same transcripts are graded again, with another outcome.
         await _store.SaveRunAsync(new Run("graded-again", SampleEval.Beta, 1, EvalRunStatus.Done, T0.AddDays(3),
             Total: new Total(0m, "USD", 0, 0), RescoreOf: "live"));
         await _store.SaveConversationAsync("graded-again",
-            new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, Scores(false), 0,
-                1));
+            Graded(SampleMode.Beta, 1, SampleScenario.Alpha, 1, TrialOutcome.Fail));
 
         var points = (await EvalTrends.ComputeAsync(_store, SampleEval.Beta)).Modes.Single().Points;
 
@@ -132,10 +110,10 @@ public class EvalTrendTests
     [Test]
     public async Task EachFinishedRun_IsAPointPerMode_OldestFirst()
     {
-        await Run("b", "cook", hour: 2, repeat: 1, EvalRunStatus.Done, cookCost: 0.05m, right: 4);
-        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, right: 3);
-        await Run("live", "cook", hour: 3, repeat: 1, EvalRunStatus.Running, cookCost: 0.09m, right: 4);
-        await Run("other", "routing", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 1m, right: 4);
+        await Run("b", "cook", hour: 2, repeat: 1, EvalRunStatus.Done, cookCost: 0.05m, passed: 4);
+        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, passed: 3);
+        await Run("live", "cook", hour: 3, repeat: 1, EvalRunStatus.Running, cookCost: 0.09m, passed: 4);
+        await Run("other", "routing", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 1m, passed: 4);
 
         var trend = await EvalTrends.ComputeAsync(_store, "cook");
 
@@ -155,10 +133,10 @@ public class EvalTrendTests
     [Test]
     public async Task ARunOnAnotherModel_IsAnotherLine_AndAModeWithoutOneKeepsItsName()
     {
-        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, right: 3,
-            models: [new ModelUse(SampleMode.Beta, EvalModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")]);
-        await Run("b", "cook", hour: 2, repeat: 1, EvalRunStatus.Done, cookCost: 0.05m, right: 3,
-            models: [new ModelUse(SampleMode.Beta, EvalModelLevel.Agent, SampleRole.Alpha, "claude-sonnet-5-5")]);
+        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, passed: 3,
+            models: [new ModelUse(SampleMode.Beta, ModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")]);
+        await Run("b", "cook", hour: 2, repeat: 1, EvalRunStatus.Done, cookCost: 0.05m, passed: 3,
+            models: [new ModelUse(SampleMode.Beta, ModelLevel.Agent, SampleRole.Alpha, "claude-sonnet-5-5")]);
 
         var trend = await EvalTrends.ComputeAsync(_store, "cook");
 
@@ -174,12 +152,12 @@ public class EvalTrendTests
             Is.EqualTo(new[] { "a", "b" }));
     }
 
-    /// <summary>A point's score is the share of the mode's conversations routed right.</summary>
+    /// <summary>A point's score is the share of the mode's conversations that passed.</summary>
     [Test]
-    public async Task TheScore_IsTheShareRoutedRight_PerMode()
+    public async Task TheScore_IsTheSharePassed_PerMode()
     {
-        // Order: puls-only cook-af (1), puls-only control-web (2), puls-cook cook-af (3), puls-cook control-web (4).
-        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, right: 3);
+        // Order: the alpha mode's two conversations (1, 2), then the beta mode's (3, 4); the first three pass.
+        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, passed: 3);
 
         var trend = await EvalTrends.ComputeAsync(_store, "cook");
 
@@ -188,11 +166,29 @@ public class EvalTrendTests
         Assert.That(trend.Modes.Single(m => m.Name == SampleMode.Beta).Points.Single().Conversations, Is.EqualTo(2));
     }
 
+    /// <summary>
+    /// A conversation our side broke, and one not graded yet, stay out of the score, as pass@k leaves them out: they
+    /// are neither a pass nor a fail.
+    /// </summary>
+    [Test]
+    public async Task AnInfrastructureFailure_AndAnUngradedConversation_StayOutOfTheScore()
+    {
+        await _store.SaveRunAsync(new Run("a", "cook", 1, EvalRunStatus.Done, T0));
+        await _store.SaveConversationAsync("a", Graded(SampleMode.Beta, 1, "pass", 1, TrialOutcome.Pass));
+        await _store.SaveConversationAsync("a", Graded(SampleMode.Beta, 1, "broke", 2, TrialOutcome.Infrastructure));
+        await _store.SaveConversationAsync("a",
+            new Conversation(new ConversationKey(SampleMode.Beta, 1, "open"), 3, null, null, 0, 0));
+
+        var point = (await EvalTrends.ComputeAsync(_store, "cook")).Modes.Single().Points.Single();
+
+        Assert.That((point.Score, point.Conversations), Is.EqualTo(((double?)1.0, 3)));
+    }
+
     /// <summary>A run of several repeats shows what one repeat cost.</summary>
     [Test]
     public async Task ARunOfSeveralRepeats_IsWhatOneRepeatCost()
     {
-        await Run("a", "cook", hour: 1, repeat: 2, EvalRunStatus.Done, cookCost: 0.04m, right: 8);
+        await Run("a", "cook", hour: 1, repeat: 2, EvalRunStatus.Done, cookCost: 0.04m, passed: 8);
 
         var point = (await EvalTrends.ComputeAsync(_store, "cook")).Modes.Single(m => m.Name == SampleMode.Beta)
             .Points.Single();
@@ -205,7 +201,7 @@ public class EvalTrendTests
     [Test]
     public async Task ARunWithNoPricedRequest_HasAnUnknownCost_NotZero()
     {
-        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: null, right: 4);
+        await Run("a", "cook", hour: 1, repeat: 1, EvalRunStatus.Done, cookCost: null, passed: 4);
 
         var point = (await EvalTrends.ComputeAsync(_store, "cook")).Modes.Single(m => m.Name == SampleMode.Beta)
             .Points.Single();
@@ -214,73 +210,16 @@ public class EvalTrendTests
     }
 
     /// <summary>
-    /// An estimated row, and a row rightly without a price in a town with no shop, count as accurate in the trend,
-    /// as they do in the run explorer's accuracy ring; only a guess does not. The trend's accuracy fell to 0 the day
-    /// the cook began giving estimates.
+    /// The trend has a line for every measure: tokens, time, cache, tools, value and sites. The share priced with a
+    /// source is unknown now, since no grader measures it.
     /// </summary>
     [Test]
-    public async Task AnEstimatedRow_AndARowRightlyWithoutAPrice_CountAsAccurate_InTheTrend()
+    public async Task EveryMeasureHasItsLine_TheTokensTimeCacheToolsValueAndSites()
     {
-        // One meal with four estimates and one guess, one in a town with no shop.
+        // One run, one mode, two conversations: one passed, one failed.
         await _store.SaveRunAsync(new Run("a", "cook", 1, EvalRunStatus.Done, T0));
-        JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
-        await _store.SaveConversationAsync("a", new Conversation(
-            new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, SampleRole.Alpha,
-            S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":4,"unsourced":1,"priced_ratio":0.8}"""), 0,
-            10));
-        await _store.SaveConversationAsync("a", new Conversation(
-            new ConversationKey(SampleMode.Beta, 1, "cook-recipe-only"), 2, SampleRole.Alpha,
-            S("""{"routed_right":true,"ingredients":5,"priced":0,"estimated":0,"no_shop_rows":5,"priced_ratio":1}"""),
-            0, 10));
-
-        var point = (await EvalTrends.ComputeAsync(_store, "cook")).Modes.Single().Points.Single();
-
-        Assert.That(point.Sourced, Is.EqualTo(0.9), "4 estimated and 5 rightly unpriced of 10; the one guess is not");
-    }
-
-    /// <summary>
-    /// The trend has a line for every ring of the run explorer: tokens, time, cache, accuracy, tools, value and
-    /// sites.
-    /// </summary>
-    [Test]
-    public async Task EveryRingHasItsLine_TheTokensTimeCacheAccuracyToolsValueAndSites()
-    {
-        // One run, one mode, two meal conversations: one priced 4 of 5 with sources (a real answer), one guessed.
-        await _store.SaveRunAsync(new Run("a", "cook", 1, EvalRunStatus.Done, T0));
-        JsonElement S(string json) => JsonDocument.Parse(json).RootElement.Clone();
-        await _store.SaveConversationAsync("a", new Conversation(
-            new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, SampleRole.Alpha,
-            S("""{"routed_right":true,"ingredients":5,"priced":4,"unsourced":0,"priced_ratio":0.8}"""), 0, 10));
-        await _store.SaveConversationAsync("a", new Conversation(
-            new ConversationKey(SampleMode.Beta, 1, SampleScenario.Beta), 2, SampleRole.Alpha,
-            S("""{"routed_right":true,"ingredients":5,"priced":0,"unsourced":5,"priced_ratio":0}"""), 0, 10));
-
-        // A stored stream event, a web search starting, and a search refused by its limit.
-        StreamEvent E(string type, object data) => new(type, JsonSerializer.SerializeToElement(data), null);
-
-        StreamEvent Use(string id) => E("content_block_start",
-            new
-            {
-                content_block = new
-                {
-                    type = "tool_use",
-                    id,
-                    name = "WebSearch",
-                    input = new { }
-                }
-            });
-
-        StreamEvent Refused(string id) => E("content_block_start",
-            new
-            {
-                content_block = new
-                {
-                    type = "tool_result",
-                    tool_use_id = id,
-                    content = "Error: limit",
-                    is_error = true
-                }
-            });
+        await _store.SaveConversationAsync("a", Graded(SampleMode.Beta, 1, SampleScenario.Alpha, 1, TrialOutcome.Pass));
+        await _store.SaveConversationAsync("a", Graded(SampleMode.Beta, 1, SampleScenario.Beta, 2, TrialOutcome.Fail));
 
         // Each conversation has one turn reading two sites (one a shop); the first turn's search is refused once of
         // two calls.
@@ -292,22 +231,18 @@ public class EvalTrendTests
             ["checkers.co.za"], 20, null), []);
 
         // One request per conversation, with its cost and its cached input.
-        Request R(string task, decimal cost, long input, long cached) =>
-            new("a", new TurnKey(SampleMode.Beta, 1, task, 1), T0, "turn", "s", null, "m", input, 100, cached, 0, cost,
-                1000);
-
         await _store.AddRequestsAsync("a",
-            [R(SampleScenario.Alpha, 0.06m, 200, 700), R(SampleScenario.Beta, 0.02m, 100, 0)]);
+            [Priced(SampleScenario.Alpha, 0.06m, 200, 700), Priced(SampleScenario.Beta, 0.02m, 100, 0)]);
 
         var point = (await EvalTrends.ComputeAsync(_store, "cook")).Modes.Single().Points.Single();
 
         Assert.That(point.Tokens, Is.EqualTo(1200L), "input, output and cache, per repeat");
         Assert.That(point.SecondsPerTurn, Is.EqualTo(15.0));
         Assert.That(point.CacheShare, Is.EqualTo(0.7).Within(1e-9), "700 of the 1,000 input tokens from the cache");
-        Assert.That(point.Sourced, Is.EqualTo(0.4), "4 of 10 ingredients priced with a source");
+        Assert.That(point.Sourced, Is.Null, "no grader measures it");
         Assert.That(point.ToolsFailed, Is.EqualTo(0.5), "one of two tool calls refused");
         Assert.That(point.CostPerAnswer, Is.EqualTo(0.06m),
-            SampleScenario.Fill("one real answer, <ScenarioAlpha>'s cost"));
+            SampleScenario.Fill("one passed conversation, <ScenarioAlpha>'s cost"));
         Assert.That(point.Sites, Is.EqualTo(2));
     }
 
@@ -316,7 +251,7 @@ public class EvalTrendTests
     public async Task OnlyTheLastRuns_UpToTheLimit()
     {
         for (int h = 1; h <= 5; h++)
-            await Run($"r{h}", "cook", hour: h, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, right: 4);
+            await Run($"r{h}", "cook", hour: h, repeat: 1, EvalRunStatus.Done, cookCost: 0.04m, passed: 4);
 
         var trend = await EvalTrends.ComputeAsync(_store, "cook", limit: 3);
 
@@ -327,4 +262,22 @@ public class EvalTrendTests
     [Test]
     public async Task ACheckWithoutRuns_HasNoModes() =>
         Assert.That((await EvalTrends.ComputeAsync(_store, "cook")).Modes, Is.Empty);
+
+    /// <summary>A stored stream event: a web search starting.</summary>
+    private static StreamEvent Use(string id) =>
+        Event($$"""{"content_block":{"type":"tool_use","id":"{{id}}",""" + """ "name":"WebSearch","input":{}}}""");
+
+    /// <summary>A stored stream event: a web search refused by its limit.</summary>
+    private static StreamEvent Refused(string id) =>
+        Event($$"""{"content_block":{"type":"tool_result","tool_use_id":"{{id}}",""" +
+              """ "content":"Error: limit","is_error":true}}""");
+
+    /// <summary>A stored stream event of a block starting, with its data.</summary>
+    private static StreamEvent Event(string data) =>
+        new("content_block_start", JsonDocument.Parse(data).RootElement.Clone(), null);
+
+    /// <summary>One request of a task's first turn, with its cost and its cached input.</summary>
+    private static Request Priced(string task, decimal cost, long input, long cached) =>
+        new("a", new TurnKey(SampleMode.Beta, 1, task, 1), T0, "turn", "s", null, "m", input, 100, cached, 0, cost,
+            1000);
 }

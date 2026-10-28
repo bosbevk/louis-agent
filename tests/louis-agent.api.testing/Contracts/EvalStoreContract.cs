@@ -3,7 +3,7 @@ using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Testing;
 
@@ -38,10 +38,10 @@ public abstract class EvalStoreContract
     /// <summary>Parses a bit of JSON into a value we can keep.</summary>
     private static JsonElement Json(string json) => JsonDocument.Parse(json).RootElement.Clone();
 
-    /// <summary>A scored conversation of bobotie, the beta mode's first repeat.</summary>
+    /// <summary>An ended conversation of bobotie, the beta mode's first repeat.</summary>
     private static Conversation NewConversation() =>
-        new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha, Json("""{"routed_right":true}"""),
-            0, 12.5);
+        new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha,
+            new Metrics(1, 0, [], 1, null, null, 12.5, null), 0, 12.5);
 
     /// <summary>The first turn of bobotie's conversation.</summary>
     private static Turn NewTurn() =>

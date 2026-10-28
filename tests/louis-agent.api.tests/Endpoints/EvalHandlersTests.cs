@@ -3,6 +3,7 @@ using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Evals;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -38,7 +39,7 @@ public class EvalHandlersTests
         Assert.That((eval.Name, eval.Identity, eval.Version, eval.Proves, eval.Manual),
             Is.EqualTo((SampleEval.Beta, (string?)SampleIdentity.Alpha, (int?)3, "A meal", false)));
         Assert.That(eval.Graders,
-            Is.EqualTo(new[] { new EvalGraderRow("priced", 1, "FixedRule"), new EvalGraderRow("judge", 2, "Model") }));
+            Is.EqualTo(new[] { new EvalGraderRow("priced", 1, "fixed-rule"), new EvalGraderRow("judge", 2, "model") }));
         Assert.That(eval.Dataset, Is.EqualTo(new EvalDatasetRow("meals", 2)));
         Assert.That(eval.Categories, Is.EqualTo(new[] { "town" }));
         Assert.That(eval.NeverRun, Is.True);
@@ -57,7 +58,7 @@ public class EvalHandlersTests
         var store = new InMemoryEvalStore();
         var mode = new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], SampleRole.Beta, null,
             new ModeRates(0.5, 0.25, 2, 0, 0));
-        var model = new ModelUse(SampleMode.Beta, EvalModelLevel.Agent, SampleRole.Beta, "model-a");
+        var model = new ModelUse(SampleMode.Beta, ModelLevel.Agent, SampleRole.Beta, "model-a");
         await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 2, EvalRunStatus.Done, At, At.AddMinutes(5), 0,
             Modes: [mode], Total: new Total(1.25m, "USD", 900, 4), Models: [model]));
 
@@ -88,8 +89,8 @@ public class EvalHandlersTests
         var line = new EvalLine(SampleEval.Beta, 3, "A meal", SampleIdentity.Alpha, null,
             new EvalDatasetLine("meals", 2), ["town"],
             [
-                new EvalGraderLine("priced", 1, EvalGraderKind.FixedRule),
-                new EvalGraderLine("judge", 2, EvalGraderKind.Model)
+                new EvalGraderLine("priced", 1, GraderKind.FixedRule),
+                new EvalGraderLine("judge", 2, GraderKind.Model)
             ]);
         var catalog = new EvalList(EvalList.Merge([line]));
         var handlers = new EvalHandlers(catalog, store, ApiTestHost.RepoRoot);

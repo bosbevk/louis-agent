@@ -1,8 +1,8 @@
-using System.Text.Json;
 using LouisAgent.Api.Evals.Reports.Trends;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Evals.Reports.Trends;
@@ -34,10 +34,10 @@ public class EvalTrendMarksTests
         await _store.SaveRunAsync(new Run(id, "cook", 1, EvalRunStatus.Done, T0.AddHours(hour),
             Prompts: prompts));
 
-        var scores = JsonDocument.Parse("""{"routed_right":true}""").RootElement.Clone();
         foreach (string mode in new[] { SampleMode.Alpha, SampleMode.Beta })
             await _store.SaveConversationAsync(id,
-                new Conversation(new ConversationKey(mode, 1, SampleScenario.Alpha), 1, null, scores, 0, 1));
+                new Conversation(new ConversationKey(mode, 1, SampleScenario.Alpha), 1, null, null, 0, 1,
+                    Outcome: TrialOutcome.Pass));
     }
 
     /// <summary>One agent's prompts on the cook's line.</summary>

@@ -1,6 +1,6 @@
 using LouisAgent.Api.Evals.Reports;
-using LouisAgent.Api.Evals.Runs.Protocol;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Evals.Reports;
@@ -18,7 +18,7 @@ public class SlicePricerTests
 
     /// <summary>The overall slice over these tasks, four trials with two passed by default.</summary>
     private static EvalSlice Slice(string[] tasks, int n = 4, int passed = 2, string mode = SampleMode.Beta) =>
-        new(mode, "overall", n, passed, n - passed, 0, 0, tasks, TooFew: true, null, null, null, [], [], []);
+        new(mode, "overall", n, passed, n - passed, 0, 0, tasks, TooFew: true, null, null, null, [], []);
 
     /// <summary>A ledger row placed on a task's first turn, priced or not.</summary>
     private static Request Row(string task, decimal? cost, int repeat = 1, string mode = SampleMode.Beta) =>

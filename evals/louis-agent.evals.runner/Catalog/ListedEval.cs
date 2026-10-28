@@ -26,10 +26,11 @@ public sealed record ListedEval(
 public sealed record ListedDataset(string Name, int Version);
 
 /// <summary>
-/// One of an eval's graders: its name, version and what it judges with, the kind written as the protocol writes it.
+/// One of an eval's graders: its name, version and what it judges with, the kind in the contract's word
+/// (<c>fixed-rule</c>), as the protocol writes it.
 /// </summary>
 public sealed record ListedGrader(
     string Name,
     int Version,
-    [property: JsonConverter(typeof(V1KindConverter))]
+    [property: JsonConverter(typeof(JsonStringEnumConverter<GraderKind>))]
     GraderKind Kind);

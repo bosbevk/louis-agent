@@ -1,5 +1,5 @@
 using LouisAgent.Choices;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Evals.Reviews;
 

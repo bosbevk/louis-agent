@@ -2,7 +2,7 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Store;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Tests.Evals.Reports;
 

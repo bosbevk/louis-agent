@@ -3,7 +3,7 @@ using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using static LouisAgent.Api.Evals.Store.Mongo.MongoEvalDatabase;
 
 namespace LouisAgent.Api.Evals.Store.Turns;

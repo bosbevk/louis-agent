@@ -1,5 +1,5 @@
 using LouisAgent.Api.Evals.List;
-using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Api.IntegrationTests.Evals.List;
 
@@ -29,7 +29,7 @@ public class EvalListingIntegrationTests
         Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Identity).Distinct().ToList(),
             Has.Count.EqualTo(1).And.None.Null);
         // Every eval lists its graders, a fixed rule among them, and the Puls evals their datasets; the stub has none.
-        Assert.That(result.Evals.Select(e => e.Graders?.Any(g => g.Kind == EvalGraderKind.FixedRule)),
+        Assert.That(result.Evals.Select(e => e.Graders?.Any(g => g.Kind == GraderKind.FixedRule)),
             Has.All.True);
         Assert.That(stub.Dataset, Is.Null);
         Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Dataset), Has.None.Null);
