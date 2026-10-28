@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -11,19 +12,34 @@ namespace LouisAgent.Evals.Protocol.Tests;
 /// </summary>
 public class EvalProtocolJsonTests
 {
-    /// <summary>The golden file: one hand-written line per event, from today's fields.</summary>
+    /// <summary>The golden file: one line per event, first written by hand from today's fields.</summary>
     private static string[] GoldenLines() =>
         File.ReadAllLines(Path.Combine(TestContext.CurrentContext.TestDirectory, "Fixtures", "eval-protocol.jsonl"))
             .Where(line => line.Length > 0)
             .ToArray();
 
-    /// <summary>Every golden line reads into its record and writes back byte for byte.</summary>
+    /// <summary>The golden file in the source tree, which the update switch writes.</summary>
+    private static string SourceGoldenFile([CallerFilePath] string here = "") =>
+        Path.Combine(Path.GetDirectoryName(here)!, "Fixtures", "eval-protocol.jsonl");
+
+    /// <summary>
+    /// Every golden line reads into its record and writes back byte for byte. With <c>LOUIS_UPDATE_GOLDEN=1</c> the
+    /// file is written again from what the records write, for its diff to be reviewed.
+    /// </summary>
     [Test]
     public void TheGoldenLines_ReadIntoTheirRecords_AndWriteBackTheSame()
     {
         string[] lines = GoldenLines();
 
-        var written = lines.Select(line => EvalProtocolJson.Read(line) is { } e ? EvalProtocolJson.Line(e) : null);
+        var written = lines.Select(line => EvalProtocolJson.Read(line) is { } e ? EvalProtocolJson.Line(e) : null)
+            .ToList();
+
+        // The switch every golden in the repo has: write the file again, then say so instead of comparing.
+        if (Environment.GetEnvironmentVariable("LOUIS_UPDATE_GOLDEN") == "1")
+        {
+            File.WriteAllLines(SourceGoldenFile(), written.Select(line => line ?? ""));
+            Assert.Pass($"Wrote {SourceGoldenFile()}; review its diff before committing.");
+        }
 
         Assert.That(written, Is.EqualTo(lines));
     }
@@ -57,7 +73,7 @@ public class EvalProtocolJsonTests
     {
         string line = EvalProtocolJson.Line(sample);
 
-        Assert.That(line, Does.Match("""^\{"event":"[a-z-]+","t":"2026-10-28T09:30:15\.25\+00:00","""));
+        Assert.That(line, Does.Match("""^\{"event":"[a-z-]+","t":"2026-10-28T09:30:15\.25Z","""));
     }
 
     /// <summary>A line is one line: a newline inside a text is escaped, never written.</summary>

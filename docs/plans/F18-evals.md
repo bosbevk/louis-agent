@@ -1020,6 +1020,23 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 7c.2's design** (Louis, 2026-10-28, two cards from the review of steps 0 and 1, and one on the cook's
+  scores).
+  - **The harness takes the contract's `RunSplit`; `SplitSelection` goes.** ADR 0043: a pack, identity or eval set
+    keeps its own enum, the rest share one, and the harness is none of those. `held_out` (the old wire spelling)
+    stays readable as an alias on the command line. Fowler, *Refactoring*: consolidate the duplicate. The same holds
+    for every kind the contract now carries: the harness's `Protocol/ModelLevel` goes for `Kinds/ModelLevel`,
+    `ModelUse` for `Parts/Run/ModelInfo` (same four fields). The API's own copies (`EvalRunSplit` and the rest) wait
+    for step 3.
+  - **`t` is written as `Z`, read as both.** System.Text.Json writes a UTC `DateTimeOffset` as `+00:00`; we write
+    `2026-10-28T08:00:00Z` like the rule's example (ADR 0046), Mongo, JavaScript and Python. One converter in the
+    contract, registered on `EvalProtocolJson.Options`; reading keeps System.Text.Json's own parse, which takes `Z`
+    and any offset. The golden regenerates.
+  - **The cook's `deals_named` goes; `untooled_shops` becomes a grader.** `UntooledShops`, beside
+    `PricedAtRetailer` (fixed-rule, required): it passes when the answer prices at no shop the cook has no tool for,
+    and fails with the shops it named when it does, built on `Shops.UntooledShops`; its tests take the scorer's cases
+    for that count (step 2d).
+
 - **Step 7c.1: the contract's shape** (Louis, 2026-10-28, six cards while it was built). (1) **`t` is an ISO 8601
   UTC time** (`"2026-10-26T06:05:26.768+00:00"`, a `DateTimeOffset` on the base record), not today's Unix seconds,
   which the brief had called ISO by mistake; the serializer needs no converter and a person can read it. (2) **The
@@ -1051,7 +1068,7 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   - **E. Version 1 runs are deleted when the store opens**, guarded: only documents without `protocol_version: 2`,
     only the store's own collections, the counts logged, a contract test on both stores. One database, no
     configuration change (Puls keeps `puls_benchmarks`).
-  - **F. The field names are our own.** OpenTelemetry's GenAI names (`gen_ai.*`) are not borrowed; ADR 0046 says so.
+  - **F. The field names are our own.** OpenTelemetry's GenAI names (`gen_ai.*`) are not borrowed; ADR 0047 says so.
   - **G. The datasets take Inspect's `Sample` shape** (`id`, `input`, `target`, `metadata`, ours under `metadata`) as
     a new row, **7d, after 7c**; nothing in 7c. Louis: "our datasets should also comply."
   - **H. Function skills become Agent Skills `SKILL.md` folders, and every role, mode and guide gets the same `name` +

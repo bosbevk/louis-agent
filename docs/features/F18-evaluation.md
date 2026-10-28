@@ -1465,6 +1465,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `louis-agent.evals`). Red before the code: 32 of 38 on the stubs' `NotImplementedException`; the 6 kind tests passed
   at once, the wire names being declarations. Two of the options were probed by turning them off: the out-of-order
   test and two missing-field tests then failed.
+- **Step 7c.2a (the contract writes `Z`).** `UtcZTimeConverter` (beside `EvalProtocolJson`, registered on its options)
+  writes a line's `t` as the moment in UTC ending in `Z` (`2026-10-28T08:00:00Z`, a fraction kept without its trailing
+  zeros: `09:30:15.25Z`), so a `+02:00` time goes out as its UTC time; reading is still the serializer's own parse, so
+  `Z`, `+00:00` and any other offset all read. The golden test gained the repo's `LOUIS_UPDATE_GOLDEN=1` switch, and
+  the regenerated `eval-protocol.jsonl` differs only in its eight `t` values. Red before the code: 11 of 44 (the time
+  pattern on each of the eight events, the `Z`, the fraction and the offset); with the converter, the golden alone,
+  until regenerated.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

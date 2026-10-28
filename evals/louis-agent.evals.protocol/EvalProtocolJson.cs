@@ -56,7 +56,11 @@ public static class EvalProtocolJson
             AllowOutOfOrderMetadataProperties = true,
             RespectNullableAnnotations = true,
             RespectRequiredConstructorParameters = true,
-            Converters = { new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false) },
+            Converters =
+            {
+                new JsonStringEnumConverter(namingPolicy: null, allowIntegerValues: false),
+                new UtcZTimeConverter(),
+            },
         };
         options.MakeReadOnly(populateMissingResolver: true);
         return options;
