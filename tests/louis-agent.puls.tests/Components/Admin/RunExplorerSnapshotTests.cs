@@ -242,10 +242,11 @@ public partial class RunExplorerSnapshotTests
 
     /// <summary>
     /// The markup without what changes between renders and machines: each chart title's note id (fresh on every
-    /// render), and the request times, which the explorer writes in the reader's own time zone (CI runs in UTC).
+    /// render), and the request and note times, which the explorer writes in the reader's own time zone (CI runs in
+    /// UTC).
     /// </summary>
     private static string Stable(string markup) =>
-        ClockTime().Replace(TipId().Replace(markup, "tip-ID"), "HH:mm:ss");
+        NoteTime().Replace(ClockTime().Replace(TipId().Replace(markup, "tip-ID"), "HH:mm:ss"), "$1 HH:mm");
 
     /// <summary>A chart title's note id.</summary>
     [GeneratedRegex("tip-[0-9a-f]{8}")]
@@ -254,4 +255,8 @@ public partial class RunExplorerSnapshotTests
     /// <summary>A time of day, with or without its milliseconds.</summary>
     [GeneratedRegex(@"\b\d{2}:\d{2}:\d{2}(\.\d{3})?\b")]
     private static partial Regex ClockTime();
+
+    /// <summary>A date and a time of day with no seconds, as a note's time is written ("2026-10-27 13:05").</summary>
+    [GeneratedRegex(@"(\d{4}-\d{2}-\d{2}) \d{2}:\d{2}(?!:)")]
+    private static partial Regex NoteTime();
 }
