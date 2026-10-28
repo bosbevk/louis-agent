@@ -133,37 +133,72 @@ public class CalibrationCommandsTests
             [
                 At(new
                 {
-                    @event = "protocol", version = 1, eval = "fake", eval_version = 1, graders = Array.Empty<object>(),
+                    @event = "protocol",
+                    version = 1,
+                    eval = "fake",
+                    eval_version = 1,
+                    graders = Array.Empty<object>(),
                     models = Array.Empty<object>()
                 }),
                 At(new
                 {
-                    @event = "mode", mode = StubMode.Delegating.Wire(), repeat = 1,
-                    toolsets = new[] { StubToolset.Web.Wire() }, role = "r", llm = (string?)null
+                    @event = "mode",
+                    mode = StubMode.Delegating.Wire(),
+                    repeat = 1,
+                    toolsets = new[] { StubToolset.Web.Wire() },
+                    role = "r",
+                    llm = (string?)null
                 }),
                 At(new
                 {
-                    @event = "question", mode = StubMode.Delegating.Wire(), repeat = 1, task = SampleScenario.Beta,
-                    turn = 1, session = "s", text = "For two"
+                    @event = "question",
+                    mode = StubMode.Delegating.Wire(),
+                    repeat = 1,
+                    task = SampleScenario.Beta,
+                    turn = 1,
+                    session = "s",
+                    text = "For two"
                 }),
                 At(new
                 {
-                    @event = "sse", mode = StubMode.Delegating.Wire(), repeat = 1, task = SampleScenario.Beta, turn = 1,
+                    @event = "sse",
+                    mode = StubMode.Delegating.Wire(),
+                    repeat = 1,
+                    task = SampleScenario.Beta,
+                    turn = 1,
                     type = "content_block_delta",
                     data = new
                     {
-                        type = "content_block_delta", index = 0, delta = new { type = "text_delta", text = "Bobotie" }
+                        type = "content_block_delta",
+                        index = 0,
+                        delta = new
+                        {
+                            type = "text_delta",
+                            text = "Bobotie"
+                        }
                     }
                 }),
                 At(new
                 {
-                    @event = "turn", mode = StubMode.Delegating.Wire(), repeat = 1, task = SampleScenario.Beta,
-                    turn = 1, session = "s", question = "For two", answer = "Bobotie", seconds = 1.0
+                    @event = "turn",
+                    mode = StubMode.Delegating.Wire(),
+                    repeat = 1,
+                    task = SampleScenario.Beta,
+                    turn = 1,
+                    session = "s",
+                    question = "For two",
+                    answer = "Bobotie",
+                    seconds = 1.0
                 }),
                 At(new
                 {
-                    @event = "conversation", mode = StubMode.Delegating.Wire(), repeat = 1, task = SampleScenario.Beta,
-                    scores = new { }, errors = 0, seconds = 1.0
+                    @event = "conversation",
+                    mode = StubMode.Delegating.Wire(),
+                    repeat = 1,
+                    task = SampleScenario.Beta,
+                    scores = new { },
+                    errors = 0,
+                    seconds = 1.0
                 }),
             ];
             var output = new StringWriter();
@@ -231,7 +266,6 @@ public class CalibrationCommandsTests
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
             CancellationToken cancellationToken) => throw new NotSupportedException();
 
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotSupportedException();
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
     }
 }

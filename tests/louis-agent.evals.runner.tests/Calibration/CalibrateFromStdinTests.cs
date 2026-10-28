@@ -35,8 +35,15 @@ public class CalibrateFromStdinTests
             run = "76667d39dcdb",
             repeat,
             turns = Enumerable.Range(1, turns).Select(n => new
-            { question = n == 1 ? "For two" : "Make it four", answer = n == turns ? answer : "earlier" }).ToArray(),
-            label = new { pass, note = "" },
+            {
+                question = n == 1 ? "For two" : "Make it four",
+                answer = n == turns ? answer : "earlier"
+            }).ToArray(),
+            label = new
+            {
+                pass,
+                note = ""
+            },
         });
 
     private static async Task<(int Code, string[] Lines)> CalibrateAsync(FakeEval eval, string stdin,
@@ -195,7 +202,6 @@ public class CalibrateFromStdinTests
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
             CancellationToken cancellationToken) => throw new NotSupportedException();
 
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotSupportedException();
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
     }
 }

@@ -1,35 +1,12 @@
-using LouisAgent.Evals.Puls.Evals.Routing;
-using LouisAgent.Evals.Puls.Shared.Turns;
-
 namespace LouisAgent.Evals.Puls.Evals.Routing.Scoring;
 
 /// <summary>
-/// The routing check's score (the Python's <c>routing/run_check.py</c> <c>score</c>): one question as numbers. Without delegation
-/// (the baseline) answering itself is all it can do, so it's right unless it failed; with it, the role must be the kind's.
+/// The routing check's baseline: Puls with everything this instance has, except the toolsets it could hand a question
+/// on with.
 /// </summary>
 public static class RoutingScorer
 {
-    /// <summary>The calls that hand a question on (the Python's stream.DELEGATIONS).</summary>
-    private static readonly IReadOnlySet<string> Delegations = new HashSet<string>
-        { "StartSubSession", "ContinueSubSession" };
-
     /// <summary>One agent with every toolset this instance has, but none it could delegate with.</summary>
     public static IReadOnlyList<string> Baseline(IEnumerable<string> available) =>
         available.Where(t => !RoutingSetup.DelegatingToolsets.Contains(t)).ToList();
-
-    /// <summary>One question as numbers; <paramref name="routesTo"/> is the scenario's `routes_to` (F18 step 5.4), where a mode that delegates should send it.</summary>
-    public static RoutingScores Score(string? routesTo, TurnView turn, bool delegating)
-    {
-        string? expected = delegating ? routesTo : null;
-        return new RoutingScores(
-            Role: turn.Role,
-            ExpectedRole: expected,
-            RoutedRight: turn.Error is null && turn.Role == expected,
-            AnsweredItself: turn.Role is null && turn.Error is null,
-            Delegations: turn.Calls.Count(c => Delegations.Contains(c.Name)),
-            PulsCalls: turn.Calls.Count,
-            SpecialistCalls: turn.SpecialistCalls.Count,
-            Hosts: ToolHosts.Of(turn.Calls.Concat(turn.SpecialistCalls)),
-            Errors: turn.Error is null ? 0 : 1);
-    }
 }

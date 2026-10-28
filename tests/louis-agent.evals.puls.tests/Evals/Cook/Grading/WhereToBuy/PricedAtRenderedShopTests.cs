@@ -2,10 +2,10 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading;
+using LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
-namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
+namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.WhereToBuy;
 
 // A shop with no catalogue tool (PnP, Woolworths) is priced by reading its search page with ReadRenderedPage, as the cook's prompt says ("a rendered
 // page"): the page read is on the shop's site and the prices link to it. There is no `area` to name, so the town is not asked for. Checkers' own rules

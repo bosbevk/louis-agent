@@ -52,6 +52,7 @@ A trial passes only when every **required** grader passes; an Unknown never coun
 | `routed-to` | fixed rule | yes | The first turn went where the scenario expects (`routes_to`): a meal to `puls-cook`, a control to Puls itself |
 | `within-budget` | fixed rule | yes | The first turn's basket costs no more than the scenario's `budget`; a scenario that sets none passes; an answer with no amount it can read is Unknown |
 | `estimates-at-shop` | fixed rule | yes | The conversation gives estimates and says where to buy, and looks up no shop's prices: no shop tool called, no shop page read, no price given as fact, and the answer names the shop's branch under *Where to buy* (or says there is none) |
+| `untooled-shops` | fixed rule | yes | No turn's list has a price column for a shop the cook can't read (it reads Checkers through its tools, and PnP and Woolworths as a rendered page); a fail names the shops' sites |
 | `recipe-image` | fixed rule | yes | The answer shows an image the recipe page gave, never one the model made up; when no page the cook read had an image the grade is Unknown, never a Fail |
 | `serves-as-asked` | fixed rule | no | Each turn's answer names the number of people the scenario asks for |
 | `meal-for-people` | model | no | Is the last answer a meal for the number of people asked for? See below |
@@ -77,43 +78,19 @@ steps to cook the dish. It is **not told the budget**: it judges the meal, and `
 - Set the judge with `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL` and `EVAL_JUDGE_ENDPOINT` (see `config/.env.example`);
   the local Ollama model is free.
 
-## The scores
+## What it measures
 
-Each conversation also gets these scores, under its turns in the run's table and in the explorer. They are the keys the
-Python check wrote, kept until step 7c empties the list; the grades above are what a trial passes on. Some belong to
-the time the cook priced at shops (F34) and read zero now.
+Each conversation also records what it did. These are measured, never graded, so none of them fails a run; the
+grades above are what a trial passes on. (The scores the Python check wrote went in F18 step 7c.)
 
-| Score | Means | ✓ when |
-|---|---|---|
-| `role` | The role Puls handed the first turn to, or empty if Puls answered itself | — |
-| `routed_right` | Whether the first turn was routed right | a meal to `puls-cook` when the cook is on; otherwise, and for the control question, Puls itself; never when the turn failed |
-| `answered_itself` | Puls answered itself, without an error | — |
-| `hosts` | The sites pages were read from (Puls's and the cook's), in order | — |
-| `local_hosts` | Of those, the South African ones (`.za`) | — |
-| `shop_hosts` | Of those, the shops (Checkers, Pick n Pay, Woolworths, Spar, Shoprite, Usave) | — |
-| `sources_local` | Every site read is South African; a map (OpenStreetMap, where the cook looks up a branch) is no source | yes |
-| `priced_at_shops` | At least one shop's page was read, or its catalogue asked with a shop tool (F34) | no longer asked |
-| `shop_tool_calls` | How many times the cook used a shop tool (F34) | 0 now |
-| `deal_tool_calls` | Of those, searches for specials | 0 now |
-| `deals_named` | How many rows on the list name a special beside the price | — |
-| `untooled_shops` | How many shops the list prices that the cook has no tool for. The portal shows it red | 0 |
-| `store_for_area` | How many of the cook's shop searches were answered by the store that serves the user's town | — |
-| `store_default` | How many were answered by the shop's default store | 0 |
-| `no_catalogue_line` | The answer says no shop near the user has a catalogue here | — |
-| `ingredients` | How many ingredients are on the list: the table's rows | — |
-| `priced` | How many of them have a price with the link it came from | — |
-| `estimated` | How many rows are marked as estimates (`± R55`): what the cook gives now | — |
-| `images` | How many images the answer shows | — |
-| `no_shop_rows` | In a town with no shop the cook has a tool for: how many rows are rightly without a price | — |
-| `wrong_store` | In that town: how many rows have a price anyway | 0 |
-| `priced_ratio` | The right rows over the list's | green from 0.8, red below 0.5 |
-| `unsourced` | In a town with a shop: how many prices were given without a link | — |
-| `per_kg` | How many prices are a price per kg instead of a pack's | — |
-| `rand_amounts` | How many rand amounts the answers give | — |
-| `unconfirmed_marks` | How often the answers say *unknown*, *estimated* or *search index* (*onbekend*, *geskat*, *soekindeks*): honesty about what isn't confirmed | — |
-| `errors` | How many turns failed | 0 |
-| `follow_up` | What happened with the follow-up: *continued* (the same cook), *new sub-session* (a new cook) or *answered itself* | *continued* |
-| `follow_up_handle` | The cook's handle that continued the follow-up | — |
+| Metric | Means |
+|---|---|
+| `agent_calls` | Puls's own tool calls, over every turn |
+| `specialist_calls` | The cook's calls, over every turn |
+| `hosts` | The sites pages were read from (Puls's and the cook's), each once, in order |
+| `turns` | How many turns the conversation had |
+| `seconds` | How long the conversation took |
+| `tokens_in`, `tokens_out`, `cost` | Empty for now: the ledger has them, per request |
 
 ## What it costs
 

@@ -12,7 +12,7 @@ using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 using LouisAgent.Evals.Puls.Shared.Scoring;
 using LouisAgent.Evals.Puls.Shared.Turns;
 
-namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
+namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 
 /// <summary>
 /// The conversation gives estimates and says where to buy, and looks up no shop's prices (F18 step 5.7; Louis, 2026-10-25: "keep cook but just rework it to not
@@ -27,7 +27,12 @@ public sealed class EstimatesAtShop : IGrader
     public int Version => 2;
     public GraderKind Kind => GraderKind.FixedRule;
     public bool Required => true;
-    public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "shop", "town" }.ToFrozenSet();
+
+    public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>
+    {
+        "shop",
+        "town"
+    }.ToFrozenSet();
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
         ValueTask.FromResult(Grade(trial));

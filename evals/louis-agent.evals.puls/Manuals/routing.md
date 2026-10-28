@@ -40,23 +40,21 @@ One fixed rule, required:
 
 There is no `no-error` grader: a one-turn question is routed right only without an error.
 
-## The scores
+The `baseline` can't hand over, so it is right unless it failed: it measures what the same questions cost without
+Puls's hand-over.
 
-| Score | Means | ✓ when |
-|---|---|---|
-| `role` | The role Puls handed over to, or empty if Puls answered itself | — |
-| `expected_role` | The role that would be right: `puls-cook` for food in `delegated`, otherwise empty | — |
-| `routed_right` | `role` is `expected_role`, and the turn didn't fail | yes |
-| `answered_itself` | Puls answered itself, without an error | — |
-| `delegations` | How many times Puls handed over (`StartSubSession` or `ContinueSubSession`) | 0 or 1 |
-| `puls_calls` | Puls's own tool calls | — |
-| `specialist_calls` | The specialist's calls | — |
-| `hosts` | The sites pages were read from | — |
-| `errors` | 1 if the turn failed | 0 |
+## What it measures
 
-The scores are the keys the Python check wrote, kept until step 7c empties the list; the grade above is what a trial
-passes on. The `baseline` can't hand over, so it is right unless it failed: it measures what the same questions cost
-without Puls's hand-over.
+Each conversation also records what it did. These are measured, never graded, so none of them fails a run:
+
+| Metric | Means |
+|---|---|
+| `agent_calls` | Puls's own tool calls |
+| `specialist_calls` | The specialist's calls |
+| `hosts` | The sites pages were read from, each once |
+| `turns` | How many turns the conversation had |
+| `seconds` | How long the conversation took |
+| `tokens_in`, `tokens_out`, `cost` | Empty for now: the ledger has them, per request |
 
 ## What it costs
 

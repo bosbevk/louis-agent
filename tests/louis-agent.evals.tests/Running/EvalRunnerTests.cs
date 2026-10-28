@@ -140,6 +140,31 @@ public class EvalRunnerTests
         Assert.That(events.OfType<ConversationEvent>().Single().Errors, Is.EqualTo(0));
     }
 
+    /// <summary>
+    /// A conversation's metrics are its turns' facts added up: the calls summed, each host once, the turns counted;
+    /// the tokens and the cost are the ledger's, so the harness leaves them unknown.
+    /// </summary>
+    [Test]
+    public async Task AConversationsMetrics_AreItsTurnsFacts_AddedUp()
+    {
+        var facts = new TurnFacts(SampleRole.Alpha, null, 1, 3, ["www.checkers.co.za"], null);
+        SessionEvent[] answer = [.. OneAnswer];
+        var sink = new StringWriter();
+        var runner = new EvalRunner(new CannedSessionClient(answer, answer),
+            new ProtocolWriter(sink, new FixedClock(At)),
+            new FixedClock(At),
+            NullLogger<EvalRunner>.Instance);
+
+        await runner.RunAsync(new CannedEval(facts, messages: 2), new EvalRun("run_1", 1), CancellationToken.None);
+
+        var metrics = Written.Events(sink).OfType<ConversationEvent>().Single().Metrics;
+        Assert.That((metrics.AgentCalls, metrics.SpecialistCalls, metrics.Turns, metrics.Seconds),
+            Is.EqualTo(((int?)2, (int?)6, (int?)2, (double?)0)));
+        Assert.That(metrics.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
+        Assert.That((metrics.TokensIn, metrics.TokensOut, metrics.Cost),
+            Is.EqualTo(((long?)null, (long?)null, (decimal?)null)));
+    }
+
     /// <summary>Each of the eval's graders grades the trial, in order, and the outcome is written.</summary>
     [Test]
     public async Task TheConversationLineCarriesOneGradePerGraderInOrder_AndTheOutcome()
@@ -152,17 +177,6 @@ public class EvalRunnerTests
         Assert.That(conversation.Grades.Select(g => (g.Grader, g.Outcome)),
             Is.EqualTo(new[] { ("within-time", GradeOutcome.Pass), ("no-error", GradeOutcome.Pass) }));
         Assert.That(conversation.Outcome, Is.EqualTo(TrialOutcome.Pass));
-    }
-
-    /// <summary>The eval's scores get to see the grades the trial was given.</summary>
-    [Test]
-    public async Task ScoresOfReceivesTheGrades()
-    {
-        var eval = new CannedEval(graders: [new NoErrorGrader()]);
-
-        await RunAsync(OneAnswer.ToArray(), eval);
-
-        Assert.That(eval.GradesScored.Select(g => g.Grader), Is.EqualTo(new[] { "no-error" }));
     }
 
     /// <summary>
@@ -314,15 +328,10 @@ public class EvalRunnerTests
     /// <summary>A bit of JSON text as an element that outlives its document.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    /// <summary>
-    /// The stub eval: one mode, one scenario with one message, and scores that say the route was right. It keeps the
-    /// grades it was scored with, so a test can look at them.
-    /// </summary>
-    private sealed class CannedEval(TurnFacts? facts = null, IReadOnlyList<IGrader>? graders = null) : IEval
+    /// <summary>The stub eval: one mode, and one scenario of as many messages as asked.</summary>
+    private sealed class CannedEval(TurnFacts? facts = null, IReadOnlyList<IGrader>? graders = null, int messages = 1)
+        : IEval
     {
-        /// <summary>The grades the eval was last scored with.</summary>
-        public IReadOnlyList<Grade> GradesScored { get; private set; } = [];
-
         /// <inheritdoc />
         public string Name => "stub-cook";
 
@@ -342,25 +351,16 @@ public class EvalRunnerTests
         /// <inheritdoc />
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
         [
-            new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Gee my resep"]), default, [],
-                DatasetSplit.Dev)
+            new EvalScenario("pannekoek",
+                new EvalInput(null, "Africa/Johannesburg", [.. Enumerable.Repeat("Gee my resep", messages)]), default,
+                [], DatasetSplit.Dev)
         ];
 
         /// <inheritdoc />
         public IReadOnlyList<IGrader> Graders { get; } = graders ?? [];
 
-        /// <summary>Keeps the grades it was given, and says the route was right.</summary>
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades)
-        {
-            GradesScored = grades;
-            return new CannedScores(RoutedRight: true);
-        }
-
         /// <summary>The facts the test handed in, or none at all.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>
             facts ?? new TurnFacts(null, null, 0, 0, [], null);
     }
-
-    /// <summary>The stub eval's only score: whether the route was right.</summary>
-    private sealed record CannedScores(bool RoutedRight) : EvalScores;
 }

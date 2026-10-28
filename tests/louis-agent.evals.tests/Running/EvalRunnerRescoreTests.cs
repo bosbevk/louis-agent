@@ -204,6 +204,24 @@ public class EvalRunnerRescoreTests
         Assert.That(Of<ModeDoneEvent>(rescored).Single().Rates!.Retried, Is.EqualTo(1));
     }
 
+    /// <summary>
+    /// A re-score measures the stored turns again the way the run did, so its metrics are the run's.
+    /// </summary>
+    [Test]
+    public async Task TheMetrics_AreMeasuredAgain_FromTheStoredTurns()
+    {
+        string[] stored = await StoredRunAsync(new RescoreEval(scenarios: ["pannekoek"]));
+
+        string[] rescored = await RescoreAsync(new RescoreEval(scenarios: ["pannekoek"]), stored);
+
+        var before = Of<ConversationEvent>(stored).Single().Metrics;
+        var after = Of<ConversationEvent>(rescored).Single().Metrics;
+        Assert.That((after.AgentCalls, after.SpecialistCalls, after.Turns, after.Seconds),
+            Is.EqualTo((before.AgentCalls, before.SpecialistCalls, before.Turns, before.Seconds)));
+        Assert.That(after.Hosts, Is.EqualTo(before.Hosts));
+        Assert.That((after.AgentCalls, after.SpecialistCalls, after.Turns), Is.EqualTo(((int?)1, (int?)2, (int?)1)));
+    }
+
     /// <summary>A bit of JSON text as an element that outlives its document.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
@@ -329,14 +347,8 @@ public class EvalRunnerRescoreTests
         /// <inheritdoc />
         public IReadOnlyList<IGrader> Graders { get; } = [new WantsText(graderVersion, wanted)];
 
-        /// <summary>How many turns the trial had.</summary>
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
-            new Scores(trial.Transcript.Turns.Count);
-
-        /// <summary>No facts about a turn.</summary>
-        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
+        /// <summary>One call of the agent's and two of a specialist's, reading one site, on every turn.</summary>
+        public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>
+            new(null, null, 1, 2, ["example.org"], null);
     }
-
-    /// <summary>The eval's one score: how many turns.</summary>
-    private sealed record Scores(int Turns) : EvalScores;
 }

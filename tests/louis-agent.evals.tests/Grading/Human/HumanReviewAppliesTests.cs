@@ -87,9 +87,6 @@ public class HumanReviewAppliesTests
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
         public IReadOnlyList<IGrader> Graders { get; } = graders;
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new Scores();
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
     }
-
-    private sealed record Scores : EvalScores;
 }

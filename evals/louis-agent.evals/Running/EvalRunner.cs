@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Grading;
@@ -19,8 +18,8 @@ namespace LouisAgent.Evals.Running;
 /// <summary>
 /// Runs an eval (F18 step 2): each mode, each repeat, each scenario the run's split asks for (step 5.4); each message
 /// is sent to the API and the session's events are written as they arrive, then the turn, and the conversation with its
-/// grades (every grader of the eval, <see cref="TrialGrading"/>), its outcome (<see cref="PassRates.Of"/>) and its
-/// scores, then the mode's end (F18 step 4.5a).
+/// grades (every grader of the eval, <see cref="TrialGrading"/>), its outcome (<see cref="PassRates.Of"/>) and what it
+/// measured, then the mode's end (F18 step 4.5a).
 /// </summary>
 public sealed class EvalRunner(
     ISessionClient sessions,
@@ -80,8 +79,8 @@ public sealed class EvalRunner(
         new Rescorer(protocol, logger).RunAsync(eval, runId, rescoreOf, storedLines, cancellationToken);
 
     /// <summary>
-    /// One scenario of a mode's repeat: the attempt, one retry for a transport failure, then the grades, the scores and
-    /// the conversation's line.
+    /// One scenario of a mode's repeat: the attempt, one retry for a transport failure, then the grades and the
+    /// conversation's line.
     /// </summary>
     private async Task RunScenarioAsync(IEval eval, EvalRun run, EvalMode mode, int repeat, EvalScenario scenario,
         ModeTally tally,
@@ -113,12 +112,12 @@ public sealed class EvalRunner(
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
         var grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
         var outcome = PassRates.Of(trial, grades, eval.Graders);
-        // The eval's own record, serialized as its runtime type: as EvalScores, which has no properties, it would be
-        // {}.
-        var scores = JsonSerializer.SerializeToElement<object>(eval.ScoresOf(trial, grades), EvalScores.Json);
-        tally.Add(new TrialResult(scenario.Id, scenario.Categories, outcome, grades, scores));
-        // The conversation's role is the one that answered its first turn; its errors are the turns that failed.
-        protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, scores,
-            (clock.GetUtcNow() - started).TotalSeconds, grades, outcome, errors: facts.Count(f => f.Error is not null));
+        tally.Add(new TrialResult(scenario.Id, scenario.Categories, outcome, grades));
+
+        // The conversation's role is the one that answered its first turn; its errors are the turns that failed, and
+        // its metrics its turns' facts added up.
+        double seconds = (clock.GetUtcNow() - started).TotalSeconds;
+        protocol.Conversation(mode.Name, repeat, scenario.Id, facts[0].Role, ConversationMetrics.Of(facts, seconds),
+            seconds, grades, outcome, errors: facts.Count(f => f.Error is not null));
     }
 }

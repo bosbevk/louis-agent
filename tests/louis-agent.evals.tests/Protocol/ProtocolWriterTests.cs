@@ -162,11 +162,11 @@ public class ProtocolWriterTests
     }
 
     /// <summary>
-    /// A conversation carries its grades (with what judged a model's), its outcome and its errors. The eval's own
-    /// scores are no part of version 2, and nothing is measured yet, so every metric is unknown.
+    /// A conversation carries its grades (with what judged a model's), its outcome, its errors and what it measured,
+    /// and no score bag: those are no part of version 2.
     /// </summary>
     [Test]
-    public void AConversation_CarriesItsGradesOutcomeAndErrors_AndNoScores()
+    public void AConversation_CarriesItsGradesOutcomeErrorsAndMetrics_AndNoScores()
     {
         var (writer, sink) = NewWriter();
         Grade[] grades =
@@ -175,9 +175,9 @@ public class ProtocolWriterTests
                 new GradeJudge("qwen3:8b", "abc123def456")),
             new Grade("priced-with-source", 1, 0.5, GradeOutcome.Fail, "1 of 2 priced with a source"),
         ];
+        var metrics = new Metrics(2, 6, ["example.org"], 2, null, null, 3.25, null);
 
-        writer.Conversation("cook", 1, "pannekoek", "puls-cook", Json("""{"priced":2}"""), 3.25, grades,
-            TrialOutcome.Fail, errors: 1);
+        writer.Conversation("cook", 1, "pannekoek", "puls-cook", metrics, 3.25, grades, TrialOutcome.Fail, errors: 1);
 
         var conversation = Single<ConversationEvent>(sink);
         Assert.That((conversation.Role, conversation.Errors, conversation.Seconds, conversation.Outcome),
@@ -188,7 +188,8 @@ public class ProtocolWriterTests
             new GradeInfo("priced-with-source", 1, 0.5, GradeOutcome.Fail, "1 of 2 priced with a source", null,
                 null),
         }));
-        Assert.That(conversation.Metrics, Is.EqualTo(new Metrics(null, null, null, null, null, null, null, null)));
+        Assert.That(conversation.Metrics with { Hosts = null }, Is.EqualTo(metrics with { Hosts = null }));
+        Assert.That(conversation.Metrics.Hosts, Is.EqualTo(new[] { "example.org" }));
         Assert.That(Lines(sink).Single(), Does.Not.Contain("\"scores\""));
     }
 

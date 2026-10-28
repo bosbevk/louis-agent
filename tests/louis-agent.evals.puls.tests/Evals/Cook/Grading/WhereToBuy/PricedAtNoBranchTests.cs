@@ -2,10 +2,10 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading;
+using LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
-namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
+namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.WhereToBuy;
 
 // The user's shop has no branch in their town (cook-no-branch: PnP in Prince Albert): the cook prices nothing, reads no shop page, writes estimates under the
 // line that says so, and says there is no branch. Louis, 2026-10-25: "make it estimates, no prices, and say there's no branch". Written first: the scenario expected

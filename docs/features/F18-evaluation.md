@@ -1542,6 +1542,26 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (the copied line passed, `Copy` being unchanged); the three score-mean tests were written with the new
   `SummaryLine` shape and passed at once. Nothing is pushed until step 3 (Louis's pick): `StubCheckTests` reads the
   runner through the API's v1 reader.
+- **Step 7c.2d (the score bags go; a conversation is measured).** `IEval.ScoresOf` went (Rider's safe delete took
+  every implementation), and with it `EvalScores`, `CookScores`, `CookScorer`, `RoutingScores`, `StubScores`, the
+  template's `ExampleScores` and `ExampleScorer`, and `TrialResult.Scores`; `RoutingScorer` keeps only `Baseline`.
+  **The metrics:** `Trials/ConversationMetrics.Of` adds a conversation's turn facts up (the calls summed, each site
+  once in the order first read, one turn per fact, the conversation's seconds; tokens and cost stay unknown, the
+  ledger has them), and the runner and the re-scorer both use it, the re-scorer on facts measured again from the
+  stored turns, so a re-score's metrics are the run's. `ProtocolWriter.Conversation` takes the `Metrics`.
+  **The cook:** `untooled_shops` is the required fixed rule `untooled-shops` (`UntooledShops`, every turn's list, a
+  fail naming the shops' sites; `Shops.UntooledShops` now returns the sites), with a known-bad,
+  `cook-malmesbury.bad.untooled-shop.txt` (the reference with a Shoprite column); the cook eval is version 10. The
+  keys no grader covers went (Louis's pick; a `local-sources` grader waits for F35), and so did `Shops`' helpers that
+  only fed them (`DealsNamed`, `StoreForArea`, `StoreDefault`, `NoCatalogueLine`, `DealTools`, `MapHosts`).
+  `Grading/WhereToBuy/` now holds `EstimatesAtShop`, `PricedAtRetailer` and `UntooledShops` (Louis's pick), and the
+  cook's `Grading` test folder left `FolderSizeTests`' list. The tests the scorers held for other code moved:
+  `CanDelegate` to `Shared/PulsModesTests`, the cook's modes to `CookModeTests`, the routing's expected role,
+  baseline and delegated mode stay in `RoutingScorerTests`. Both manuals swap their scores table for *What it
+  measures*, and the guide's example eval has no `ScoresOf`. `stub-run.txt` regenerated: its conversations now carry
+  their metrics. Red before the code: the build (the runner, the re-scorer and the writer took scores), and then 7
+  Puls tests (the grader's five, the cook's version and grader list); the three metrics tests were written beside the
+  writer change and passed with it.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

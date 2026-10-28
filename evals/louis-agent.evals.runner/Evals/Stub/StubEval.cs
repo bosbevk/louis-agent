@@ -8,7 +8,6 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Trials;
-using LouisAgent.Evals.Runner.Evals.Stub.Scoring;
 
 namespace LouisAgent.Evals.Runner.Evals.Stub;
 
@@ -50,10 +49,6 @@ public sealed class StubEval : IEval
     /// <summary>The stub's graders: no turn errored, and each turn was answered within a minute (a stuck run, the only slow one).</summary>
     public IReadOnlyList<IGrader> Graders { get; } =
         [new NoErrorGrader(), new WithinTimeGrader(TimeSpan.FromMinutes(1))];
-
-    /// <summary>The stub's run is fixed, so its route is always right, and the score counts the turns (the Python's scores).</summary>
-    public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
-        new StubScores(RoutedRight: true, Turns: trial.Transcript.Turns.Count);
 
     /// <summary>The canned facts the Python stub writes: the cook answers with one call and three specialist events, and a follow-up continues it.</summary>
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode)

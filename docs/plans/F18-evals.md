@@ -1051,6 +1051,12 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   - **`stub-run.txt` regenerates in 2c**, not 2f, so 2c is green (Louis, 2026-10-28, card).
   - **Nothing is pushed from 2c until step 3 lands** (Louis, 2026-10-28, card): `StubCheckTests` (api integration)
     reads the real runner through the API's v1 reader, which can't read v2 until step 3; no test is switched off.
+  - **2d drops the score keys no grader covers** (Louis, 2026-10-28, card): the cook's sources, prices, follow-up and
+    the rest go with `CookScores`, and no grader is written for them now; a `local-sources` grader comes once F35's
+    recipe sources land (the TODO's F35 line).
+  - **2d splits the cook's `Grading/` folder: `Grading/WhereToBuy/`** (Louis, 2026-10-28, card) holds
+    `EstimatesAtShop`, `PricedAtRetailer` and `UntooledShops`, the rules about where the cook sends you to buy; the
+    folder had more than six files, and `Shops/` would have clashed with the `Shops` class it uses.
 
 - **Step 7c.1: the contract's shape** (Louis, 2026-10-28, six cards while it was built). (1) **`t` is an ISO 8601
   UTC time** (`"2026-10-26T06:05:26.768+00:00"`, a `DateTimeOffset` on the base record), not today's Unix seconds,

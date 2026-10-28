@@ -12,7 +12,7 @@ using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 using LouisAgent.Evals.Puls.Shared.Scoring;
 using LouisAgent.Evals.Puls.Shared.Turns;
 
-namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
+namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 
 /// <summary>
 /// The shop the user chose priced the conversation, as the cook's prompt worked until F18 step 5.7 (Checkers: its shop tool was called, with the user's town as
@@ -27,7 +27,12 @@ public sealed class PricedAtRetailer : IGrader
     public int Version => 1;
     public GraderKind Kind => GraderKind.FixedRule;
     public bool Required => true;
-    public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "shop", "town" }.ToFrozenSet();
+
+    public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>
+    {
+        "shop",
+        "town"
+    }.ToFrozenSet();
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
         ValueTask.FromResult(Grade(trial));
@@ -73,7 +78,11 @@ public sealed class PricedAtRetailer : IGrader
         // The cook's prompt: area is the user's town in every call, so the shop's store there is the one searched.
         if (calls.Any(call => !InTown(Text(call.Input, "area"), town)))
             return Verdict.Fail(Name, Version,
-                MessageText.Format(GradeMessage.ShopWrongArea, new { Shop = shop, Town = town }));
+                MessageText.Format(GradeMessage.ShopWrongArea, new
+                {
+                    Shop = shop,
+                    Town = town
+                }));
 
         string host = Shops.Hosts.First(known => known.Name == shop).Host;
         return Prices.PriceLinkHosts(answer).Contains(host)

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
@@ -102,23 +101,24 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         var trial = new Trial(runId, mode, stored.Repeat, scenario, transcript);
 
         IReadOnlyList<Grade> grades;
-        JsonElement scores;
         if (gone)
         {
             logger.Log(LogLevel.Warning, EvalLogMessage.ScenarioGone, new { Scenario = stored.Task });
             string reason = MessageText.Format(CommonGradeMessage.ScenarioGone, new { Scenario = stored.Task });
             grades = [.. eval.Graders.Select(grader => Verdict.Unknown(grader.Name, grader.Version, reason))];
-            scores = JsonSerializer.SerializeToElement(new { });
         }
         else
         {
             grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
-            scores = JsonSerializer.SerializeToElement<object>(eval.ScoresOf(trial, grades), EvalScores.Json);
         }
 
         var outcome = PassRates.Of(trial, grades, eval.Graders);
-        tally.Add(new TrialResult(stored.Task, gone ? [] : scenario.Categories, outcome, grades, scores));
-        protocol.Conversation(stored.Mode, stored.Repeat, stored.Task, stored.Text("role"), scores,
-            stored.Decimal("seconds") ?? 0, grades, outcome, stored.Number("errors") ?? 0);
+        tally.Add(new TrialResult(stored.Task, gone ? [] : scenario.Categories, outcome, grades));
+
+        // Measured again from the stored turns, the way the run measured them, so the metrics are the run's.
+        double seconds = stored.Decimal("seconds") ?? 0;
+        var facts = transcript.Turns.Select(turn => eval.TurnFactsOf(turn, mode)).ToList();
+        protocol.Conversation(stored.Mode, stored.Repeat, stored.Task, stored.Text("role"),
+            ConversationMetrics.Of(facts, seconds), seconds, grades, outcome, stored.Number("errors") ?? 0);
     }
 }

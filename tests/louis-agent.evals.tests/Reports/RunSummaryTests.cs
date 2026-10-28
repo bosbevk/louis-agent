@@ -1,5 +1,4 @@
 using LouisAgent.Testing;
-using System.Text.Json;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -29,9 +28,6 @@ public class RunSummaryTests
     /// <summary>The eval's graders.</summary>
     private static readonly IReadOnlyList<IGrader> Graders = [Route, Judge, Optional];
 
-    /// <summary>A bit of JSON text as an element that outlives its document.</summary>
-    private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
-
     /// <summary>A grade from the grader with that outcome, scoring 1 for a pass and 0 otherwise.</summary>
     private static Grade G(IGrader grader, GradeOutcome outcome) => new(grader.Name, grader.Version,
         outcome == GradeOutcome.Pass ? 1 : 0, outcome, "because");
@@ -39,7 +35,7 @@ public class RunSummaryTests
     /// <summary>A trial of the scenario, with its outcome, categories and the two required grades.</summary>
     private static TrialResult T(string scenario, TrialOutcome outcome, string[]? categories = null,
         GradeOutcome route = GradeOutcome.Pass, GradeOutcome judge = GradeOutcome.Pass) =>
-        new(scenario, categories ?? [], outcome, [G(Route, route), G(Judge, judge)], Json("{}"));
+        new(scenario, categories ?? [], outcome, [G(Route, route), G(Judge, judge)]);
 
     /// <summary>A trial that passed.</summary>
     private static TrialResult Pass(string scenario, params string[] categories) =>
@@ -210,7 +206,7 @@ public class RunSummaryTests
     [Test]
     public void ATrialWithNoGradeFromARequiredGrader_CountsAsUnknownForIt()
     {
-        var bare = new TrialResult("a", [], TrialOutcome.Unknown, [G(Route, GradeOutcome.Pass)], Json("{}"));
+        var bare = new TrialResult("a", [], TrialOutcome.Unknown, [G(Route, GradeOutcome.Pass)]);
 
         var overall = Line(RunSummary.Of("m", [bare], Graders), "overall");
 
@@ -226,7 +222,7 @@ public class RunSummaryTests
     {
         // The judge gives partial credit: 1, 0.5 and 0.
         TrialResult Scored(string scenario, double score) => new(scenario, [], TrialOutcome.Pass,
-            [G(Route, GradeOutcome.Pass), new Grade(Judge.Name, 1, score, GradeOutcome.Pass, "because")], Json("{}"));
+            [G(Route, GradeOutcome.Pass), new Grade(Judge.Name, 1, score, GradeOutcome.Pass, "because")]);
 
         var overall = Line(Of(Scored("a", 1), Scored("b", 0.5), Scored("c", 0)), "overall");
 
@@ -247,7 +243,7 @@ public class RunSummaryTests
     [Test]
     public void AGraderThatGaveNoGrade_HasNoMean()
     {
-        var bare = new TrialResult("a", [], TrialOutcome.Unknown, [G(Route, GradeOutcome.Pass)], Json("{}"));
+        var bare = new TrialResult("a", [], TrialOutcome.Unknown, [G(Route, GradeOutcome.Pass)]);
 
         var overall = Line(RunSummary.Of("m", [bare], Graders), "overall");
 

@@ -60,14 +60,12 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             facts.AgentCalls, facts.SpecialistCalls, facts.Hosts, seconds, facts.Error, failure));
 
     /// <summary>
-    /// A conversation's result: its grades and outcome. The eval's own <paramref name="scores"/> are no part of
-    /// version 2 and are written nowhere; step 7c.2d takes them out, and measures the conversation instead, so every
-    /// metric is unknown until then.
+    /// A conversation's result: its grades, its outcome and what it measured.
     /// </summary>
-    public void Conversation(string mode, int repeat, string task, string? role, JsonElement scores, double seconds,
+    public void Conversation(string mode, int repeat, string task, string? role, Metrics metrics, double seconds,
         IReadOnlyList<Grade> grades, TrialOutcome outcome, int errors) =>
         Emit(new ConversationEvent(Now, mode, repeat, task, role, errors, seconds, [.. grades.Select(GradeOf)],
-            outcome, new Metrics(null, null, null, null, null, null, null, null)));
+            outcome, metrics));
 
     /// <summary>
     /// A mode's repeat is done. With <paramref name="k"/> the line also carries the mode's pass@k and pass^k over the

@@ -63,7 +63,7 @@ louis-agent.evals.acme/
       QuotesEval.cs            the IEval
       QuotesSetup.cs           its modes, if it has any setup (optional)
       Grading/                 the graders only this eval uses
-      Scoring/                 its scorer and its scores record
+      Scoring/                 the rules its graders share for reading an answer (prices, servings), if any
       Dataset/                 dataset.json, scenarios/dev/, scenarios/held-out/
       Transcripts/             {scenario}.reference.txt, {scenario}.bad.{label}.txt
   Shared/                      used by two evals or more: Grading/, Scoring/, Turns/, and the set's constants
@@ -283,15 +283,11 @@ public sealed class QuotesEval : IEval
     public IReadOnlyList<EvalScenario> Scenarios { get; } =
         DatasetLoader.Load(EvalFiles.DatasetOf(typeof(QuotesEval)), GraderList).Scenarios;
 
-    public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
-        new QuotesScores(AreaRight: grades.All(grade => grade.Outcome == GradeOutcome.Pass));
-
+    // What a turn did: the runner adds the turns up into the conversation's metrics (calls, sites, turns, seconds).
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>
         new(Role: EngineEvents.RoutedRole(turn), Continued: null, AgentCalls: 0, SpecialistCalls: 0, Hosts: [],
             Error: EngineEvents.ErrorMessageOf(turn));
 }
-
-public sealed record QuotesScores(bool AreaRight) : EvalScores;
 
 public enum AcmeEvalMessage
 {

@@ -198,7 +198,7 @@ public class EvalCatalogTests
     }
 
     /// <summary>
-    /// An eval that only describes itself: the catalogue never runs it, so its modes and scores aren't there.
+    /// An eval that only describes itself: the catalogue never runs it, so its modes and a turn's facts aren't there.
     /// </summary>
     private sealed class FakeEval(
         string name,
@@ -219,9 +219,6 @@ public class EvalCatalogTests
 
         public IReadOnlyList<IGrader> Graders { get; } =
             graders ?? [new FakeGrader(GraderKind.FixedRule, required: true)];
-
-        /// <summary>Never asked: the catalogue doesn't score.</summary>
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotImplementedException();
 
         /// <summary>Never asked: the catalogue doesn't record turns.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();

@@ -2,7 +2,8 @@ using System.ComponentModel;
 
 namespace LouisAgent.Evals.Puls.Messages;
 
-/// <summary>The graders' reasons, in words a person reads (ADR 0009: a text is a message enum member with its template).</summary>
+/// <summary>Why a grader passed or failed a conversation, in words a person reads in the portal.</summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum GradeMessage
 {
     [Description("no turn failed")] NoTurnFailed,
@@ -99,9 +100,15 @@ public enum GradeMessage
     [Description("the Where to buy section gives only a nearest {Shop} branch, with no place")]
     ShopOnlyNearestBranch,
 
-    [Description(
-        "no shop page was read, no price is linked, the answer says the prices are estimates and names a {Shop} branch")]
+    [Description("no shop page was read, no price is linked, the answer says the prices are estimates and names a "
+                 + "{Shop} branch")]
     ShopEstimatesRight,
+
+    [Description("the list has a column for a shop the cook can't read: {Shops}")]
+    UntooledShopColumn,
+
+    [Description("every shop the list has a column for is one the cook can read")]
+    UntooledShopsNone,
 
     [Description("the scenario asks for no image of the recipe")]
     RecipeImageNotSet,

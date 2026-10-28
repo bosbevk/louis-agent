@@ -19,6 +19,5 @@ internal sealed class GradedEval(params IGrader[] graders) : IEval
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
     public IReadOnlyList<IGrader> Graders { get; } = graders;
-    public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotSupportedException();
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
 }

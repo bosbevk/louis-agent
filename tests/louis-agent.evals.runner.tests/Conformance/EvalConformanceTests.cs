@@ -77,8 +77,6 @@ public class EvalConformanceTests
 
         public IReadOnlyList<IGrader> Graders { get; } = [new NoErrorGrader()];
 
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => throw new NotImplementedException();
-
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
     }
 }

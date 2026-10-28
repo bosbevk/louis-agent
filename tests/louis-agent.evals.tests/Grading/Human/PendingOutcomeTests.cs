@@ -192,13 +192,7 @@ public class PendingOutcomeTests
         /// <inheritdoc />
         public IReadOnlyList<IGrader> Graders { get; } = graders;
 
-        /// <summary>No scores to keep.</summary>
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new Scores();
-
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
     }
-
-    /// <summary>An empty score document.</summary>
-    private sealed record Scores : EvalScores;
 }

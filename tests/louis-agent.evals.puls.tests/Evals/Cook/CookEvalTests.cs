@@ -1,44 +1,47 @@
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Choices;
-using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
-using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Messages;
-using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Evals.Cook;
-using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook;
 
-// F18 step 5.3: the cook check as an eval of the harness. Written first: the eval threw NotImplementedException on the red run.
+/// <summary>
+/// The cook check as an eval of the harness: its name, its two modes, its scenarios, its graders and what it says of
+/// a turn. Written first, in F18 step 5.3, when the eval still threw.
+/// </summary>
 public class CookEvalTests
 {
+    /// <summary>The eval under test.</summary>
     private static readonly CookEval Eval = new();
 
+    /// <summary>It runs under its dataset's name, and its portal title is a message.</summary>
     [Test]
     public void ItIsPulsCooksEval_UnderTheNameItsDatasetCarries()
     {
-        Assert.That((Eval.Name, Eval.Version), Is.EqualTo((PulsEvalName.Cook.Wire(), 9)));
+        Assert.That((Eval.Name, Eval.Version), Is.EqualTo((PulsEvalName.Cook.Wire(), 10)));
         Assert.That(Eval.Proves, Is.EqualTo(MessageText.Format(PulsEvalMessage.CookProves)),
             "the portal's title is a message enum member (ADR 0009)");
     }
 
+    /// <summary>One mode gives Puls the cook's tools itself, the other lets it hand off to the cook.</summary>
     [Test]
     public async Task ItsModesArePulsWithTheCooksToolsAndPulsWithItsCook_BothOnPulsVoice()
     {
         var modes = await Eval.ModesAsync(new CannedSessionClient(), CancellationToken.None);
 
-        Assert.That(modes.Select(m => (m.Name, m.Role, string.Join(",", m.Toolsets))), Is.EqualTo(new[]
-        {
-            (CookMode.Tools.Wire(), Role, "web,shops"),
-            (CookMode.Cook.Wire(), Role, "specialists,web"),
-        }));
+        Assert.That(modes.Select(m => (m.Name, m.Role, string.Join(",", m.Toolsets))),
+            Is.EqualTo(new[]
+            {
+                (CookMode.Tools.Wire(), Role, "web,shops"), (CookMode.Cook.Wire(), Role, "specialists,web"),
+            }));
     }
 
+    /// <summary>Its scenarios are the cook dataset's, dev and held out, with their places.</summary>
     [Test]
     public void ItsScenariosAreTheCookDatasets()
     {
@@ -56,33 +59,23 @@ public class CookEvalTests
             Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
     }
 
+    /// <summary>
+    /// The fixed rules that must hold come first, the untooled shops among them; the serving rule, the meal judge and
+    /// its human review are measured but never fail a run.
+    /// </summary>
     [Test]
-    public void
-        ItsGradersAreTheRouteTheErrorsTheBudgetTheEstimatesAndTheRecipeImage_AndTheServesRuleAndTheMealJudgeAndItsHumanReviewThatAreNotRequired() =>
-        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)), Is.EqualTo(new[]
-        {
-            ("cook-no-error", true, GraderKind.FixedRule),
-            ("routed-to", true, GraderKind.FixedRule),
-            ("within-budget", true, GraderKind.FixedRule),
-            ("estimates-at-shop", true, GraderKind.FixedRule),
-            ("recipe-image", true, GraderKind.FixedRule),
-            ("serves-as-asked", false, GraderKind.FixedRule),
-            ("meal-for-people", false, GraderKind.Model),
-            ("meal-for-people.human", false, GraderKind.Human),
-        }));
+    public void ItsGraders_AreTheRequiredRulesFirst_ThenTheOnesThatAreNot() =>
+        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)),
+            Is.EqualTo(new[]
+            {
+                ("cook-no-error", true, GraderKind.FixedRule), ("routed-to", true, GraderKind.FixedRule),
+                ("within-budget", true, GraderKind.FixedRule), ("estimates-at-shop", true, GraderKind.FixedRule),
+                ("untooled-shops", true, GraderKind.FixedRule), ("recipe-image", true, GraderKind.FixedRule),
+                ("serves-as-asked", false, GraderKind.FixedRule), ("meal-for-people", false, GraderKind.Model),
+                ("meal-for-people.human", false, GraderKind.Human),
+            }));
 
-    [Test]
-    public void ItsScoresAreTheCookScorers_KeyForKey()
-    {
-        var trial = Trial(CookEvalMode, PulsCookScenarioIds.CookAf, """{"routes_to":"puls-cook","serves":4}""", null,
-            Turn(1, [Start(PulsEvalRole.Cook.Wire()), Fetch("https://www.checkers.co.za/x"), Text("Resep.")]));
-
-        var scores = Eval.ScoresOf(trial, []);
-
-        Assert.That(Json(scores), Is.EqualTo(Json(CookScorer.ScoreTrial(trial))));
-        Assert.That(Json(scores), Does.Contain("\"routed_right\":true"));
-    }
-
+    /// <summary>What it says of a turn is what Puls's turn view reads: who answered, the calls, the sites.</summary>
     [Test]
     public void ATurnsFacts_AreWhatTheTurnViewReads()
     {
@@ -95,6 +88,4 @@ public class CookEvalTests
         Assert.That(facts.Hosts, Is.EqualTo(new[] { "checkers.co.za" }));
         Assert.That(facts.Error, Is.EqualTo("overloaded"));
     }
-
-    private static string Json(object scores) => JsonSerializer.Serialize(scores, scores.GetType(), EvalJson.SnakeCase);
 }

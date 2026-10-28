@@ -148,13 +148,7 @@ public class StoredRunV2Tests
         /// <inheritdoc />
         public IReadOnlyList<IGrader> Graders { get; } = [new WantsHallo()];
 
-        /// <summary>No scores to keep.</summary>
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => new NoScores();
-
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
     }
-
-    /// <summary>An empty score document.</summary>
-    private sealed record NoScores : EvalScores;
 }

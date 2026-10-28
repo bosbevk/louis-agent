@@ -55,9 +55,5 @@ public sealed class RoutingEval : IEval
 
     public IReadOnlyList<IGrader> Graders => GraderList;
 
-    public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
-        RoutingScorer.Score(ExpectedRoute.Of(trial.Scenario), TurnView.From(trial.Transcript.Turns[0]),
-            PulsModes.CanDelegate(trial.Mode));
-
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => PulsTurnFacts.Of(turn);
 }

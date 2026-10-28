@@ -4,7 +4,6 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Template.Evals.Example.Grading;
-using LouisAgent.Evals.Template.Evals.Example.Scoring;
 using LouisAgent.Evals.Template.Messages;
 using LouisAgent.Evals.Trials;
 
@@ -45,9 +44,6 @@ public sealed class ExampleEval : IEval
 
     // The graders, in the order the portal shows them; at least one required fixed rule (section 3).
     public IReadOnlyList<IGrader> Graders => GraderList;
-
-    // The eval's own scores for one trial: keys that stay put once a baseline exists (section 4). Write ExampleScorer.
-    public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) => ExampleScorer.Score(trial);
 
     // What the protocol records about one turn: who answered, its calls, the hosts it read and its error (section 4). Write it.
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();

@@ -197,10 +197,6 @@ public class EvalRunnerSummaryTests
         /// <inheritdoc />
         public IReadOnlyList<IGrader> Graders { get; } = [new WantsText(wanted)];
 
-        /// <summary>How many turns the trial had.</summary>
-        public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades) =>
-            new Scores(trial.Transcript.Turns.Count);
-
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
     }
@@ -232,7 +228,4 @@ public class EvalRunnerSummaryTests
                 held ? GradeOutcome.Pass : GradeOutcome.Fail, held ? "held" : "missing"));
         }
     }
-
-    /// <summary>The eval's one score: how many turns.</summary>
-    private sealed record Scores(int Turns) : EvalScores;
 }

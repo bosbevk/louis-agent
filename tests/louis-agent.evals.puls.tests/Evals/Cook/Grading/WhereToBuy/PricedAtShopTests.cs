@@ -2,11 +2,11 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading;
+using LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
-namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
+namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.WhereToBuy;
 
 // F18 step 5.4: the shop the user chose, as a fixed rule over the calls and the answer. The cook's prompt: a user's shop (Checkers) is priced with its
 // tool and `area` = the user's town in every call, and the prices link to its site; when the user chose none (`any`), the cook prices nothing, reads no

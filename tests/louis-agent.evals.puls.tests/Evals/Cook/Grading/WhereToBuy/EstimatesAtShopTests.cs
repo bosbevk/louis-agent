@@ -2,10 +2,10 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading;
+using LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
-namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
+namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.WhereToBuy;
 
 // F18 step 5.7 (Louis, 2026-10-25: "keep cook but just rework it to not lookup prices but just focus on local recipes and where to shop"): a scenario that names
 // a shop passes when the answer reads no shop page and calls no shop tool, links no price, says the prices are estimates, and names the shop's branch under
