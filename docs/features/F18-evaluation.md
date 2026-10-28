@@ -1401,6 +1401,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `JsonElement`; the plan's 7c entry now says each moves to its record when 7c rewrites it, and 7c is done when the
   list is empty. Both work like `FileSizeTests`: a new offender fails, and a listed one that's no longer an offender
   fails too. Red first: each without its list (29 folders named; 28 files named).
+- **The web apps' API client sends and reads records** (before card A step 5; finding 27 of the decisions log).
+  `AgentApi` sent two anonymous bodies and read the API's replies by name; the bodies are now `CreateSessionBody` and
+  `MessageBody` (`Api/SessionBodies.cs`), the replies the contract's `SessionCreatedReply`, `ToolsetsReply` and
+  `ApiError`, so `louis-agent.web.shared` references `louis-agent.api.contracts`. Every method has its summary.
+  `SessionBodiesJsonTests` pins both bodies' bytes as the anonymous objects wrote them (written after the change, as a
+  pin; the chat pages' goldens in puls.tests and web.tests, which open sessions and stream turns, stayed green).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

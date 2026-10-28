@@ -584,6 +584,26 @@ error) was one. Louis had already picked step 2's cards, so this was decided her
 Object*; Microsoft, *How to customize property names and order with System.Text.Json* (`JsonPropertyOrder`).
 **Commit:** the bring-up commit before step 2.
 
+### 27. The web apps' API client sent anonymous bodies and picked replies apart (2026-10-28, card A step 5)
+
+**What came up.** Step 5 adds `AgentApi.GetAsync<T>(url, options)`, which puts `AgentApi` in that commit whole. It
+sent two anonymous objects (opening a session, sending a message), read the API's own replies as `JsonElement` by
+name (the new session's id, the toolsets, an error's words), and several methods had no summary.
+
+1. **Bring it up first, in a commit of its own (picked).** The two bodies become records in the browser app
+   (`CreateSessionBody`, `MessageBody`), as finding 9's `StartRunBody`; the replies are read as the contract's records
+   (`SessionCreatedReply`, `ToolsetsReply`, `ApiError`), so `louis-agent.web.shared` now references
+   `louis-agent.api.contracts`, as ADR 0045 says a client does. Pattern: PoEAA's *Gateway* (the class) and *Data
+   Transfer Object* (what it sends and reads). Changes: one record file, the client, a project reference, a test that
+   pins both bodies' bytes. Costs: one more commit before step 5. `PostAsync` still hands its callers a `JsonElement`:
+   those are the portal's pages, which 7c moves to records (`PortalReadsJsonTests`).
+2. **Everything in step 5's commit.** Costs: the small fixes hide among the client's rewrite.
+3. **Only add the overload.** Costs: breaks the rule that a file in a commit is brought up whole.
+
+**Why 1.** As findings 20 and 26: one thing per commit. Sources: Fowler, *PoEAA*, *Gateway*, *Data Transfer Object*;
+Microsoft, *Make HTTP requests using IHttpClientFactory*, `ReadFromJsonAsync<T>`. **Commit:** the bring-up commit
+before step 5.
+
 ## Report: where the run stopped
 
 Louis stopped the run at Part 6 (2026-10-28: "stop at part 6, leave unattended mode when you hit part 6"), so Part 6

@@ -25,6 +25,8 @@
     <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
     <!-- F18 step 7.5.2: the browser parses and writes wire names too, through the same parser as the server. -->
     <ProjectReference Include="..\..\louis-agent.choices\louis-agent.choices.csproj" />
+    <!-- The API's replies as records (ADR 0045): the client reads what the API writes, never a JSON picked apart. -->
+    <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
 
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
