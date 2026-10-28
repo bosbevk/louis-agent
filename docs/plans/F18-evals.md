@@ -1020,6 +1020,19 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 7c.1: the contract's shape** (Louis, 2026-10-28, six cards while it was built). (1) **`t` is an ISO 8601
+  UTC time** (`"2026-10-26T06:05:26.768+00:00"`, a `DateTimeOffset` on the base record), not today's Unix seconds,
+  which the brief had called ISO by mistake; the serializer needs no converter and a person can read it. (2) **The
+  summary keeps partial credit as a mean score per grader**: each grader's count gains `score_mean`, in place of the
+  old `scores` means of the score bags. (3) **`Metrics` counts calls as two fields**, `agent_calls` and
+  `specialist_calls`, the turn's own names, so delegation stays measurable. (4) **The summary's counts are two
+  records, `GraderCount` and `KindCount`**; the brief's `SliceInfo` was a placeholder name, and one record with a null
+  grader for a kinds line would hide a flag in a null, where null means unknown. (5) **The folders split by what the
+  line is about**: `Events/Run/` and `Events/Conversations/`, `Parts/Run/` and `Parts/Conversations/`, since flat
+  `Events/` and `Parts/` would hold 8 and 9 files against the six-file rule. (6) **The two reference checks are
+  `EvalProtocolProjectTests`** in core.tests beside `ChoicesProjectTests`, not in `ArchitectureTests`, which waits for
+  a step with a reason to touch it (bringing it up to the rules would double this review).
+
 - **Step 7c's design, and what the Python world taught us** (Louis, 2026-10-28, cards). Seven picks; the full plan,
   with the pros, cons and sources behind each, is in the Claude project ("Protocol v2 Plan").
   - **A. The contract lives in a shared project**, `evals/louis-agent.evals.protocol`: records and enums only,

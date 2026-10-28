@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals.Protocol</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- F18 step 7c (card A): the eval protocol's records, the one contract the runner writes and the API and the
+       portal read, so a mismatch between them is a compile error. Records and enums only; it references
+       louis-agent.choices (for [WireName]) and nothing else, so each side takes it without the others. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\louis-agent.choices\louis-agent.choices.csproj" />
+  </ItemGroup>
+
+</Project>

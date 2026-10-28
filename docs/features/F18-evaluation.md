@@ -1438,6 +1438,33 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   at 120; what the client reads is byte for byte the same. A note for the record: `f6e6e1a1`, a warnings commit,
   also changed behaviour: the MCP server's key check now matches only with the key in hand, and an auth decision the
   switch doesn't know refuses to start.
+- **Step 7c.1 (the eval protocol contract project).** `evals/louis-agent.evals.protocol` (`LouisAgent.Evals.Protocol`)
+  holds protocol v2 as records, referencing only `louis-agent.choices`; nothing writes or reads it yet. `EvalEvent` is
+  an abstract record with System.Text.Json's discriminator `event` (one `[JsonDerivedType]` per event, kebab names:
+  `protocol`, `mode`, `question`, `sse`, `turn`, `conversation`, `mode-done`, `summary`) and the time `t` on the base,
+  written right after it; its constructor is `private protected`, so the set is closed. The events are in `Events/Run/`
+  and `Events/Conversations/`, their parts in `Parts/Run/` (`GraderInfo`, `ModelInfo`, `DatasetInfo`: the dataset's
+  name, version and hash from the first line, `RatesInfo`, `GraderCount`, `KindCount`) and `Parts/Conversations/`
+  (`TurnKey`, `GradeInfo`, `Metrics`); the kinds in `Kinds/` (`GraderKind`, `GradeOutcome`, `TrialOutcome`,
+  `ModelLevel`, `TurnFailure`, and `RunSplit` for the first line's split), every member with a kebab-case
+  `[WireName]` (`fixed-rule`, `held-out`, `api-error`). The fields are today's, with `puls_calls` now `agent_calls`,
+  `scores` replaced by `metrics` on the conversation and by `score_mean` per grader on the summary, and a mode's rates
+  nested under `rates` on `mode-done`. The question, stream and turn events keep their four key fields flat and hand
+  out a `TurnKey` as `Key`. **`EvalProtocolJson`** is the one options object (snake_case names, enums by wire name and
+  never by number, UTF-8 left as it is with only quotes, backslashes and control characters escaped, read-only once
+  built), `Line(event)` and `Read(line)`. Every field is written, a null as `null`. **Reading is strict about our
+  events and tolerant about the rest:** a missing field or a null where the record has none is a log line
+  (`RespectRequiredConstructorParameters`, `RespectNullableAnnotations`), an unknown member is skipped, and
+  **`AllowOutOfOrderMetadataProperties` is on**, so a line written by hand or by another tool with `event` not first
+  still reads; our writer always puts it first, and buffering a one-line object costs nothing. Tests:
+  `tests/louis-agent.evals.protocol.tests` (the golden `Fixtures/eval-protocol.jsonl`, one hand-written line per
+  event, reads into its records and writes back byte-equal; each event round-trips with its nulls and empty lists;
+  a name we don't know, a v1 `@` line, a person's line, broken JSON and a kind by its PascalCase name or a number read
+  as nothing; every kind's wire names are kebab-case and parse back with `SettingChoice`), and
+  `EvalProtocolProjectTests` in core.tests (the contract references only the choices; the API never references
+  `louis-agent.evals`). Red before the code: 32 of 38 on the stubs' `NotImplementedException`; the 6 kind tests passed
+  at once, the wire names being declarations. Two of the options were probed by turning them off: the out-of-order
+  test and two missing-field tests then failed.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
