@@ -17,7 +17,6 @@ public class RazorHasNoCodeTests
     private static readonly HashSet<string> PendingCode =
     [
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
-        "src/louis-agent.puls/Pages/Admin/BenchmarkRun.razor",
         "src/louis-agent.puls/Pages/Admin/Benchmarks.razor",
     ];
 

@@ -2,58 +2,30 @@
 @* The Afrikaans address the portal had first, so links already shared still open. *@
 @page "/admin/maatstawwe/{RunId}"
 @layout AdminLayout
-@using System.Net
-@using System.Text.Json
-@using LouisAgent.Web.Shared
-@inject AgentApi Api
-@inject ChatStore Store
-@inject CurrencyState Currency
-@inject ReviewerState Reviewer
-@inject RunNotesState NoteState
 @implements IDisposable
 
-@* F31 step 10: one stored run: what it ran with, and its explorer (RunExplorer), read from the benchmark store. *@
+@* F31 step 10: one stored run: what it ran with, and its explorer (RunExplorer), read from the benchmark store. The
+   sections in reading order: the roll-up first, the explorer to drill into a conversation, then the rates and the
+   trends folded, since they are long, and last what the run ran with. *@
 
 <PageTitle>Run @RunId · Puls Admin</PageTitle>
 
-@* The head (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, then the run's facts in one line with a status pill. *@
-<div class="page-head run-head">
-    <div>
-        <h1><code>@(_check ?? "run")</code></h1>
-        @if (_title is { } title) { <p class="run-proves">@title</p> }
-        <p class="run-facts">
-            <code>@RunId</code>
-            @if (_run is { } head)
-            {
-                <span class="status-pill @S(head.GetProperty("run"), "status")">@Status(head)</span>
-                <span>@Started(head)</span><span class="muted">·</span><span>@Repeat(head)</span>
-                @if (Total(head) is { } total) { <span class="muted">·</span><span>@total</span> }
-                @if (S(head.GetProperty("run"), "rescore_of") is { } source) { <RescoredFrom Id="@source" /> }
-            }
-        </p>
-    </div>
-    <div class="page-actions">
-        <a class="header-button" href="admin/benchmarks"><span class="ic i-chart" aria-hidden="true"></span>All benchmarks</a>
-    </div>
-</div>
+<RunHead RunId="@RunId" Run="_run?.Run" Check="@_check" Title="@_title" Currency="Currency.Current" />
 
 @if (_error is { } error)
 {
     <section class="card-p admin-gate"><strong>@error</strong></section>
 }
-else if (_run is null)
+else if (_json is not { } run || _run is null)
 {
     <section class="card-p"><span class="muted">Loading…</span></section>
 }
 else
 {
-    var run = _run.Value;
-    @if (S(run.GetProperty("run"), "store_error") is { } storeError)
+    @if (_run.Run.StoreError is { } storeError)
     {
         <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
     }
-    @* The sections in reading order (the rework of 2026-10-26): the roll-up first, the explorer to drill into a conversation, then the rates and the trends folded,
-       since they are long, and last what the run ran with. *@
     @* F18 step 7a.2: why this run behaved as it did, in people's words; the notes are the store's, fetched with the run. *@
     <section class="card-p">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Notes<span class="fold-note">what changed, what you think explains it</span></summary>
@@ -92,95 +64,4 @@ else
         </section>
     }
     <RunSettings Run="run" />
-}
-
-@code {
-    /// <summary>The run to show.</summary>
-    [Parameter] public string RunId { get; set; } = "";
-
-    /// <summary>A task a category's line linked to (`?task=`): its conversation opens in the explorer.</summary>
-    [SupplyParameterFromQuery(Name = "task")] public string? FocusTask { get; set; }
-
-    /// <summary>The run and its check's trend, as last fetched.</summary>
-    private JsonElement? _run, _trend;
-    /// <summary>Who each mode is, by name.</summary>
-    private Dictionary<string, string> _labels = [];
-
-    /// <summary>Who each mode is: Puls with the roles it handed work to, or Puls alone.</summary>
-    private static Dictionary<string, string> Labels(JsonElement run) =>
-        run.GetProperty("turns").EnumerateArray()
-            .GroupBy(t => t.GetProperty("mode").GetString()!)
-            .ToDictionary(g => g.Key, g => g.Select(t => S(t, "role")).Where(r => !string.IsNullOrEmpty(r)).Distinct().ToList() is { Count: > 0 } roles
-                ? $"Puls with {string.Join(" and ", roles)}" : "Puls alone");
-    /// <summary>The check's title and name, and what to show if the run can't be read.</summary>
-    private string? _title, _check, _error;
-
-    /// <summary>Fetches the run, its check's title and its trend, and shows an error if the run isn't there.</summary>
-    protected override async Task OnParametersSetAsync()
-    {
-        if (!Store.Loaded) await Store.LoadAsync();
-        Currency.Changed += StateHasChanged;
-        await Currency.LoadAsync();
-        _run = null;
-        _error = null;
-        try
-        {
-            var run = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}");
-            var list = await Api.GetAsync<JsonElement>("v1/admin/benchmarks");
-            string check = _check = run.GetProperty("run").GetProperty("check").GetString()!;
-            _title = list.GetProperty("checks").EnumerateArray().Where(c => c.GetProperty("id").GetString() == check)
-                .Select(c => c.GetProperty("title").GetString()).FirstOrDefault();
-            _run = run;
-            _labels = Labels(run);
-            try { _trend = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend"); }
-            catch (AgentApiException) { _trend = null; }
-        }
-        catch (AgentApiException ex)
-        {
-            _error = ex.Status == HttpStatusCode.NotFound ? $"No run {RunId} in the store." : ex.Message;
-        }
-    }
-
-    // ADR 0042: after a grade the page fetches the run again, so every panel shows what the store holds; the explorer keeps its open conversation.
-    // The same for a note: the panel only says one was written, and the notes shown are the ones the new read carries.
-    /// <summary>Starts listening for a grade or a note being saved, so the run is fetched again when one is.</summary>
-    protected override void OnInitialized()
-    {
-        Reviewer.Changed += Refetch;
-        NoteState.Changed += Refetch;
-    }
-
-    /// <summary>Fetches the run again and redraws, keeping whatever the explorer has open.</summary>
-    private void Refetch() => _ = InvokeAsync(async () =>
-    {
-        try { _run = await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}"); }
-        catch (AgentApiException ex) { _error = ex.Message; }
-        StateHasChanged();
-    });
-
-    /// <summary>Stops listening.</summary>
-    public void Dispose()
-    {
-        Currency.Changed -= StateHasChanged;
-        Reviewer.Changed -= Refetch;
-        NoteState.Changed -= Refetch;
-    }
-
-    /// <summary>A text from the JSON, or nothing if it is not there.</summary>
-    private static string? S(JsonElement e, string name) => e.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString() : null;
-
-    /// <summary>When the run started, in the reader's own time.</summary>
-    private static string Started(JsonElement run) => run.GetProperty("run").GetProperty("started_at").GetDateTimeOffset().ToLocalTime().ToString("yyyy-MM-dd HH:mm");
-
-    /// <summary>The run's status as running, done or failed.</summary>
-    private static string Status(JsonElement run) => S(run.GetProperty("run"), "status") switch { "running" => "running", "done" => "done", _ => "failed" };
-
-    /// <summary>How many repeats, as words: "1 repeat" or "3 repeats".</summary>
-    private static string Repeat(JsonElement run) => run.GetProperty("run").GetProperty("repeat").GetInt32() is var n && n == 1 ? "1 repeat" : $"{n} repeats";
-
-    /// <summary>The run's cost and how many requests it made, if it has a total.</summary>
-    private string? Total(JsonElement run) =>
-        run.GetProperty("run").TryGetProperty("total", out var t) && t.ValueKind == JsonValueKind.Object
-            ? $"{(t.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? UsageFormat.Money(c.GetDecimal(), "USD", Currency.Current) : "—")}, {t.GetProperty("requests").GetInt32()} requests"
-            : null;
 }

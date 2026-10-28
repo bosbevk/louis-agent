@@ -129,3 +129,22 @@ value was unknown) sat under a straight segment with nothing to show it was miss
 **Why 1.** The rule since F31 is "a value nobody measured is null, never 0", and the honest drawing of null is no
 line. Sources: d3-shape `line.defined` (d3js.org/d3-shape/line#line_defined); Microsoft Excel, *Display empty cells,
 null values* ("Gaps"). **Commit:** the `TrendChart` commit of Part 3.
+
+### 6. The run page's child components still read the run as JSON (Part 3, `BenchmarkRun`)
+
+**What came up.** The brief names five files; the run page hands the run, as a `JsonElement`, to six more components
+(`NotesPanel` through `NoteReader`, `SummaryPanel`, `AgreementPanel`, `ModeRatesList`, `RunSettings`, `GraderList`)
+and about twenty readers that pick it apart by name. ADR 0045 wants the whole portal on the records.
+
+1. **The five pages first, each reading the record for its own code, and the run handed on as JSON until each child
+   switches in a commit of its own (picked).** Changes: a page reads the reply once as its record and still passes
+   the same JSON down. Costs: for a while a page holds the run twice (the record and the JSON), and the children keep
+   their name-by-name reads until they are switched.
+2. **Switch every child in the page's commit.** Changes: a page commit becomes twenty-odd files. Costs: commits nobody
+   can review in ten minutes, against the guide's step size.
+3. **Leave the children on JSON for good**, the record only at the page. Costs: ADR 0045's point (a renamed field
+   fails the build) is lost exactly where the fields are read.
+
+**Why 1.** It keeps each commit reviewable and moves every reader to the record in the end. **Commit:** the
+`BenchmarkRun` commit of Part 3; the children follow one by one as far as this run gets (the final report says how
+far).

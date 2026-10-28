@@ -1191,7 +1191,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   NUnit tests; the trend components have their folder, `Components/Admin/Trends/`. The open review note is settled by
   finding 5: a line breaks at a run where its mode has no value instead of joining across it, which changes one
   expectation in `CategoryTrendsTests` (its cook line no longer strokes from r1 to r3 across r2). The goldens
-  (`TrendChart.full.html`, `TrendChart.small.html`) were written from the old chart first and still match.
+  (`TrendChart.full.html`, `TrendChart.small.html`) were written from the old chart first and still match. They held
+  South African times at first, which CI (UTC) would have failed; a follow-up masks the time of day.
+- **Part 3: `BenchmarkRun`.** The page is markup plus a code-behind; its head is a `RunHead` component
+  (`Components/Admin/RunPage/`) reading the contract's `StoredRunRow`, and the legend's names come from `ModeLabels`
+  (NUnit tests). The page reads the run once as `StoredRunReply` and the list as `BenchmarkListReply`; its panels still
+  take the same JSON (finding 6). `BenchmarkRunHeadTests` pinned the head first (`BenchmarkRun.head.html`), and the
+  page's refetch tests (ADR 0042) still pass.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
