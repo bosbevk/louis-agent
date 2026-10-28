@@ -1,8 +1,9 @@
-using LouisAgent.Api.Benchmarks.Reports;
-using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Trends;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reports;
+using LouisAgent.Api.Evals.Reports.Trends;
 
 namespace LouisAgent.Api.Admin.Replies;
 
@@ -24,7 +25,7 @@ internal static class AdminReplies
     extension(CheckRow)
     {
         /// <summary>The row for a check, saying whether it has a manual.</summary>
-        public static CheckRow Of(BenchmarkCheck check, bool hasManual) => new(check.Id, check.Title, hasManual);
+        public static CheckRow Of(EvalEntry check, bool hasManual) => new(check.Id, check.Title, hasManual);
     }
 
     /// <summary>
@@ -44,23 +45,23 @@ internal static class AdminReplies
         /// <summary>
         /// Every check with its manual flag, the store's state, and the runs as the page shows them.
         /// </summary>
-        public static BenchmarkListReply Of(BenchmarkCatalog catalog, string workspaceRoot, StoreRow store,
+        public static BenchmarkListReply Of(EvalList catalog, string workspaceRoot, StoreRow store,
             IReadOnlyList<StoredRunRow> runs) =>
-            new([.. catalog.Checks.Select(c => CheckRow.Of(c, BenchmarkManuals.Has(workspaceRoot, c)))], store, runs);
+            new([.. catalog.Checks.Select(c => CheckRow.Of(c, EvalManuals.Has(workspaceRoot, c)))], store, runs);
     }
 
     /// <summary>A manual's title comes from its check.</summary>
     extension(ManualReply)
     {
         /// <summary>The reply for a check and its manual's text.</summary>
-        public static ManualReply Of(BenchmarkCheck check, string markdown) => new(check.Id, check.Title, markdown);
+        public static ManualReply Of(EvalEntry check, string markdown) => new(check.Id, check.Title, markdown);
     }
 
     /// <summary>A trend point copies the trend's own point across, in one place.</summary>
     extension(TrendPointRow)
     {
         /// <summary>The row for one point of the trend.</summary>
-        public static TrendPointRow Of(BenchmarkTrends.Point p) => new(p.Run, p.At, p.Cost, p.Score,
+        public static TrendPointRow Of(EvalTrends.Point p) => new(p.Run, p.At, p.Cost, p.Score,
             p.Conversations, p.Tokens, p.SecondsPerTurn, p.CacheShare, p.Sourced, p.ToolsFailed, p.CostPerAnswer,
             p.Sites, p.PassAtK, p.PassHatK, p.K, p.Notes, p.PromptChanged);
     }
@@ -69,7 +70,7 @@ internal static class AdminReplies
     extension(TrendLineRow)
     {
         /// <summary>The row for one line of the trend.</summary>
-        public static TrendLineRow Of(BenchmarkTrends.Series line) =>
+        public static TrendLineRow Of(EvalTrends.Series line) =>
             new(line.Name, [.. line.Points.Select(TrendPointRow.Of)]);
     }
 
@@ -79,7 +80,7 @@ internal static class AdminReplies
     extension(TrendReply)
     {
         /// <summary>The reply for a check's overall trend and its categories' charts.</summary>
-        public static TrendReply Of(BenchmarkTrends.Trend trend, IReadOnlyList<CategoryTrendRow> categories) =>
+        public static TrendReply Of(EvalTrends.Trend trend, IReadOnlyList<CategoryTrendRow> categories) =>
             new(trend.Check, categories, [.. trend.Modes.Select(TrendLineRow.Of)]);
     }
 

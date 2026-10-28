@@ -1,15 +1,16 @@
 using System.Net;
 using System.Text.Json;
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.Reviews;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
 
@@ -67,13 +68,13 @@ public class StoredRunReplyJsonTests
     }
 
     /// <summary>A store and a review store holding one run with every part a run can carry.</summary>
-    private static async Task<(InMemoryBenchmarkStore Store, InMemoryHumanReviewStore Reviews)> StoredAsync()
+    private static async Task<(InMemoryEvalStore Store, InMemoryHumanReviewStore Reviews)> StoredAsync()
     {
         // The run itself: its settings, one mode, its total, a log line, its eval and graders, and a slice.
-        var store = new InMemoryBenchmarkStore();
-        var slice = new BenchmarkSlice(SampleMode.Beta, "overall", 8, 6, 2, 0, 0, ["a"], false, 0.75, 0.75, 0.75, [],
+        var store = new InMemoryEvalStore();
+        var slice = new EvalSlice(SampleMode.Beta, "overall", 8, 6, 2, 0, 0, ["a"], false, 0.75, 0.75, 0.75, [],
             [], []);
-        await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, At, At.AddMinutes(5),
+        await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At, At.AddMinutes(5),
             0, new Dictionary<string, string> { ["WEB"] = "record" },
             [
                 new Mode(SampleMode.Beta, 1, [CoreToolset.Web.Wire()], SampleRole.Alpha, "haiku",
@@ -82,15 +83,15 @@ public class StoredRunReplyJsonTests
             new Total(1.25m, "USD", 1200, 4), ["started"], Eval: SampleEval.Beta, EvalVersion: 3, Commit: "abc1234",
             Graders:
             [
-                new Grader("meal", 1, BenchmarkGraderKind.Model),
-                new Grader("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")
+                new Grader("meal", 1, EvalGraderKind.Model),
+                new Grader("meal.human", 1, EvalGraderKind.Human, "Is this a meal?")
             ],
             Slices: [slice]));
 
         // One graded conversation, its turn with one event, a model request and a note.
         var scores = JsonDocument.Parse("""{"routed_right":true}""").RootElement.Clone();
         await store.SaveConversationAsync("run_1", new Conversation(Key, 1, SampleRole.Alpha, scores, 0, 12.5,
-            [new Grade("meal", 1, 1.0, BenchmarkOutcome.Pass, "Good.", "haiku", "abc")], BenchmarkOutcome.Pass));
+            [new Grade("meal", 1, 1.0, EvalOutcome.Pass, "Good.", "haiku", "abc")], EvalOutcome.Pass));
         var data = JsonDocument.Parse("""{"role":"assistant"}""").RootElement.Clone();
         await store.SaveTurnAsync("run_1",
             new Turn(TurnOne, "sess_1", "Bobotie?", "Here.", SampleRole.Alpha, null, 1, 2, ["www.checkers.co.za"],
@@ -108,7 +109,7 @@ public class StoredRunReplyJsonTests
     }
 
     /// <summary>Asks the admin route over the stores and hands back the body of its 200.</summary>
-    private static async Task<string> GetAsync((InMemoryBenchmarkStore Store, InMemoryHumanReviewStore Reviews) stored,
+    private static async Task<string> GetAsync((InMemoryEvalStore Store, InMemoryHumanReviewStore Reviews) stored,
         string path)
     {
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: stored.Store, reviews: stored.Reviews);

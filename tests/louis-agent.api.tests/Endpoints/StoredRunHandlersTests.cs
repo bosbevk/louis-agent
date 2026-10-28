@@ -1,8 +1,9 @@
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints.Admin.Runs;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -37,7 +38,7 @@ public class StoredRunHandlersTests
     public async Task ARunNobodyKept_IsAnError()
     {
         var none = Handlers(null);
-        var empty = Handlers(new InMemoryBenchmarkStore());
+        var empty = Handlers(new InMemoryEvalStore());
 
         Assert.That(Status((await none.GetRun("run_1", CancellationToken.None)).Result),
             Is.EqualTo(StatusCodes.Status503ServiceUnavailable));
@@ -48,8 +49,8 @@ public class StoredRunHandlersTests
     }
 
     /// <summary>The handlers over this store, with no review or judge-check store.</summary>
-    private static StoredRunHandlers Handlers(IBenchmarkStore? store) =>
-        new(store, new BenchmarkRunner(new BenchmarkCatalog(), ApiTestHost.RepoRoot, "http://127.0.0.1:1/"), null,
+    private static StoredRunHandlers Handlers(IEvalStore? store) =>
+        new(store, new EvalProcess(new EvalList(), ApiTestHost.RepoRoot, "http://127.0.0.1:1/"), null,
             null);
 
     /// <summary>The status an error answer carries.</summary>

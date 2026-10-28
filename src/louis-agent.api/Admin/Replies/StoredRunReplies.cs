@@ -1,9 +1,9 @@
-using LouisAgent.Api.Benchmarks.Reports;
-using LouisAgent.Api.Benchmarks.Reviews;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Evals.Reports;
+using LouisAgent.Api.Evals.Reviews;
 using LouisAgent.Choices;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Admin.Replies;
 
@@ -68,7 +68,7 @@ internal static class StoredRunReplies
     extension(TurnRow)
     {
         /// <summary>The row for one turn and its tools.</summary>
-        public static TurnRow Of(Turn t, BenchmarkTools.Summary tools) => new(
+        public static TurnRow Of(Turn t, EvalTools.Summary tools) => new(
             new TurnToolsRow(tools.Calls, tools.Failed,
                 [.. tools.Reasons.Select(r => new ToolReasonRow(r.Tool, r.Reason, r.Count))]),
             t.Key.Mode,

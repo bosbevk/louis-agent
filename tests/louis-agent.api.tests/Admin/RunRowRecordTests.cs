@@ -1,9 +1,9 @@
 using System.Text.Json;
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Testing;
 
 namespace LouisAgent.Api.Tests.Admin;
@@ -22,7 +22,7 @@ public class RunRowRecordTests
     [Test]
     public void ALiveRun_KeepsItsNames_AndSaysWhatItIs()
     {
-        var row = Json(LiveRunRow.Of(new BenchmarkRun("live_1", SampleEval.Beta, 2)));
+        var row = Json(LiveRunRow.Of(new RunningEval("live_1", SampleEval.Beta, 2)));
 
         Assert.That(string.Join(",", row.EnumerateObject().Select(p => p.Name)), Is.EqualTo(Names));
         Assert.That(row.GetProperty("status").GetString(), Is.EqualTo("running"));
@@ -35,10 +35,10 @@ public class RunRowRecordTests
     [Test]
     public void AJudgeCheck_NamesItsRunAndJudge()
     {
-        var run = new BenchmarkRun("live_3", SampleEval.Beta, 1,
-            calibration: new BenchmarkCalibration("run_1", "meal"));
+        var run = new RunningEval("live_3", SampleEval.Beta, 1,
+            calibration: new EvalCalibration("run_1", "meal"));
 
-        var row = Json(LiveRunRow.Of(run, new BenchmarkRecorder.Result(false, "the store said no")));
+        var row = Json(LiveRunRow.Of(run, new EvalRecorder.Result(false, "the store said no")));
 
         Assert.That(row.GetProperty("calibration_of").GetString(), Is.EqualTo("run_1"));
         Assert.That(row.GetProperty("grader").GetString(), Is.EqualTo("meal"));

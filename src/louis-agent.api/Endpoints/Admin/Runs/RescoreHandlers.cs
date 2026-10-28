@@ -1,11 +1,13 @@
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Export;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints.Answers;
+using LouisAgent.Api.Evals.Export;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,11 +30,11 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class RescoreHandlers(
-    BenchmarkCatalog catalog,
-    BenchmarkRunner runner,
-    IBenchmarkStore? store,
-    BenchmarkRecorder? recorder,
-    Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf)
+    EvalList catalog,
+    EvalProcess runner,
+    IEvalStore? store,
+    EvalRecorder? recorder,
+    Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf)
 {
     /// <summary>
     /// Starts the re-score and points you at the new run. Only a stored run of an eval can be re-scored, and not while
@@ -60,7 +62,7 @@ internal sealed class RescoreHandlers(
             if (runner.IsRunning) return Busy();
 
             // The runner grades the run's own transcript, so hand it the export; a start that loses a race is a 409.
-            string export = await BenchmarkProtocolExport.BuildAsync(store, stored, cancellationToken);
+            string export = await EvalProtocolExport.BuildAsync(store, stored, cancellationToken);
             if (runner.StartRescore(check.Id, id, export, stored.Repeat) is not { } run) return Busy();
 
             recorder.Attach(run, settingsOf(check));

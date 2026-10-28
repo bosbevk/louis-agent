@@ -1,9 +1,9 @@
-using LouisAgent.Api.Benchmarks.Reports;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reports;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Admin.Replies;
@@ -28,10 +28,10 @@ internal static class EvalReplies
         /// Every eval in the catalogue, with its runs where the store gave them, and the store's state. With no runs
         /// to hand (no store, or it didn't answer) nobody knows whether an eval ran.
         /// </summary>
-        public static EvalListReply Of(BenchmarkCatalog catalog, string workspaceRoot,
-            IReadOnlyDictionary<string, IReadOnlyList<BenchmarkDocuments.Run>>? runs, StoreRow store) =>
+        public static EvalListReply Of(EvalList catalog, string workspaceRoot,
+            IReadOnlyDictionary<string, IReadOnlyList<EvalDocuments.Run>>? runs, StoreRow store) =>
             new([
-                .. catalog.Checks.Select(check => EvalRow.Of(check, BenchmarkManuals.Has(workspaceRoot, check),
+                .. catalog.Checks.Select(check => EvalRow.Of(check, EvalManuals.Has(workspaceRoot, check),
                     runs?.GetValueOrDefault(check.Id)))
             ], store);
     }
@@ -45,7 +45,7 @@ internal static class EvalReplies
         /// The row for one eval: what it is from the runner's line, and its runs, newest first. It never ran when the
         /// store has none of its runs.
         /// </summary>
-        public static EvalRow Of(BenchmarkCheck check, bool manual, IReadOnlyList<BenchmarkDocuments.Run>? runs)
+        public static EvalRow Of(EvalEntry check, bool manual, IReadOnlyList<EvalDocuments.Run>? runs)
         {
             // No runs to hand means we don't know; the modes and models below then come out empty.
             var known = runs ?? [];
@@ -79,7 +79,7 @@ internal static class EvalReplies
     extension(EvalRunRow)
     {
         /// <summary>The row for one stored run, with each mode and its rates.</summary>
-        public static EvalRunRow Of(BenchmarkDocuments.Run run) =>
+        public static EvalRunRow Of(EvalDocuments.Run run) =>
             new(StoredRunRow.Of(run), [.. (run.Modes ?? []).Select(ModeRow.Of)]);
     }
 }

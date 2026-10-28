@@ -1,8 +1,8 @@
-using LouisAgent.Api.Benchmarks.Reports;
-using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Evals.Reports;
+using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Choices;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Admin.Replies;
 
@@ -21,13 +21,13 @@ internal static class SummaryReplies
         /// A stored run's roll-up, each slice priced from the ledger. A run recorded before the runner wrote slices
         /// has none, and we say so instead of showing an empty list or zeros.
         /// </summary>
-        public static IReadOnlyList<SummaryRow>? Of(IReadOnlyList<BenchmarkSlice>? slices, Total? total,
+        public static IReadOnlyList<SummaryRow>? Of(IReadOnlyList<EvalSlice>? slices, Total? total,
             IReadOnlyList<Request> requests) =>
             slices?.Select(slice => Row(slice, SlicePricer.Of(slice, total, requests))).ToList();
     }
 
     /// <summary>One slice's row: the runner's fields as it wrote them, and its cost.</summary>
-    private static SummaryRow Row(BenchmarkSlice s, SlicePricer.SliceCost cost) => new(
+    private static SummaryRow Row(EvalSlice s, SlicePricer.SliceCost cost) => new(
         s.Mode,
         s.Slice,
         s.N,

@@ -1,12 +1,13 @@
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -61,12 +62,12 @@ public class CalibrationHandlersTests
     /// <summary>The handlers over empty stores, or none.</summary>
     private static CalibrationHandlers Handlers(bool withStores)
     {
-        var catalog = new BenchmarkCatalog();
-        var runner = new BenchmarkRunner(catalog, ApiTestHost.RepoRoot, "http://127.0.0.1:1/");
+        var catalog = new EvalList();
+        var runner = new EvalProcess(catalog, ApiTestHost.RepoRoot, "http://127.0.0.1:1/");
         var calibrations = new InMemoryCalibrationStore();
 
         return withStores
-            ? new CalibrationHandlers(catalog, runner, new InMemoryBenchmarkStore(), new InMemoryHumanReviewStore(),
+            ? new CalibrationHandlers(catalog, runner, new InMemoryEvalStore(), new InMemoryHumanReviewStore(),
                 calibrations, new CalibrationRecorder(calibrations))
             : new CalibrationHandlers(catalog, runner, null, null, null, null);
     }

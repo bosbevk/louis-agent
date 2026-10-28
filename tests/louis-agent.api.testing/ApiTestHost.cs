@@ -1,11 +1,12 @@
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -37,8 +38,8 @@ internal static class ApiTestHost
     /// commits gives its own workspace folder.
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null,
-        IBenchmarkStore? store = null,
-        BenchmarkRunner? runner = null, BenchmarkRecorder? recorder = null, BenchmarkCatalog? catalog = null,
+        IEvalStore? store = null,
+        EvalProcess? runner = null, EvalRecorder? recorder = null, EvalList? catalog = null,
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
         TimeProvider? time = null)
@@ -55,9 +56,9 @@ internal static class ApiTestHost
 
         // The admin parts, with whatever the test handed in. The runner points at a port nothing listens on, so a
         // test that forgets to give its own can't reach a real agent.
-        var benchmarks = catalog ?? new BenchmarkCatalog();
+        var benchmarks = catalog ?? new EvalList();
         api.MapAdmin(benchmarks,
-            runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey,
+            runner ?? new EvalProcess(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey,
             store, recorder,
             _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations,
             calibrationRecorder, time);

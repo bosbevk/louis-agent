@@ -1,14 +1,16 @@
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Export;
-using LouisAgent.Api.Benchmarks.Reports;
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.Export;
+using LouisAgent.Api.Evals.Reports;
+using LouisAgent.Api.Evals.Reviews;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -39,8 +41,8 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class StoredRunHandlers(
-    IBenchmarkStore? store,
-    BenchmarkRunner runner,
+    IEvalStore? store,
+    EvalProcess runner,
     IHumanReviewStore? reviews,
     ICalibrationStore? calibrations)
 {
@@ -71,7 +73,7 @@ internal sealed class StoredRunHandlers(
         if (store is null) return NoStore();
         try
         {
-            var events = await store.TurnEventsAsync(id, new BenchmarkProtocol.TurnKey(mode, repeat, task, turn),
+            var events = await store.TurnEventsAsync(id, new EvalProtocol.TurnKey(mode, repeat, task, turn),
                 cancellationToken);
             return TypedResults.Json(new TurnEventsReply([.. events.Select(TurnEventRow.Of)]), AdminJson.SnakeCase);
         }
@@ -90,7 +92,7 @@ internal sealed class StoredRunHandlers(
         try
         {
             if (await store.GetRunAsync(id, cancellationToken) is not { } run) return NoRun(id);
-            string lines = await BenchmarkProtocolExport.BuildAsync(store, run, cancellationToken);
+            string lines = await EvalProtocolExport.BuildAsync(store, run, cancellationToken);
             return TypedResults.Text(lines, "text/plain; charset=utf-8");
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -106,7 +108,7 @@ internal sealed class StoredRunHandlers(
     public async Task<DeleteAnswer> DeleteRun(string id, CancellationToken cancellationToken)
     {
         if (store is null) return NoStore();
-        if (runner.Current is { Status: BenchmarkRunStatus.Running } live && live.Id == id)
+        if (runner.Current is { Status: EvalRunStatus.Running } live && live.Id == id)
             return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
                 MessageText.Format(ApiUserText.StoredRunStillRunning, new { Id = id }));
         try
@@ -125,7 +127,7 @@ internal sealed class StoredRunHandlers(
     }
 
     /// <summary>Gathers everything the run kept, and people's grades of it, into the explorer's reply.</summary>
-    private async Task<StoredRunReply> ReadAsync(IBenchmarkStore s, BenchmarkDocuments.Run run,
+    private async Task<StoredRunReply> ReadAsync(IEvalStore s, EvalDocuments.Run run,
         CancellationToken cancellationToken)
     {
         // Every conversation's turns, each with the tools it called.
@@ -133,7 +135,7 @@ internal sealed class StoredRunHandlers(
         var turns = new List<TurnRow>();
         foreach (var conversation in conversations)
             foreach (var turn in await s.TurnsAsync(run.Id, conversation.Key, cancellationToken))
-                turns.Add(TurnRow.Of(turn, await BenchmarkTools.OfTurnAsync(s, run.Id, turn, cancellationToken)));
+                turns.Add(TurnRow.Of(turn, await EvalTools.OfTurnAsync(s, run.Id, turn, cancellationToken)));
 
         var requests = await s.RequestsAsync(run.Id, cancellationToken);
         var notes = await s.NotesAsync(run.Id, cancellationToken);

@@ -3,14 +3,18 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Api.Admin;
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Reports;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Trends;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reports;
+using LouisAgent.Api.Evals.Reports.Trends;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Runs.Start;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -43,12 +47,12 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class AdminHandlers(
-    BenchmarkCatalog catalog,
-    BenchmarkRunner runner,
+    EvalList catalog,
+    EvalProcess runner,
     string? adminKey,
-    IBenchmarkStore? store,
-    BenchmarkRecorder? recorder,
-    Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
+    IEvalStore? store,
+    EvalRecorder? recorder,
+    Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
     string workspaceRoot)
 {
     /// <summary>How long a run's "done" waits for its recording to finish.</summary>
@@ -98,7 +102,7 @@ internal sealed class AdminHandlers(
     public ManualAnswer GetManual(string check)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == check) is not { } known) return NoManual(check);
-        if (BenchmarkManuals.Read(workspaceRoot, known) is not { } markdown) return NoManual(check);
+        if (EvalManuals.Read(workspaceRoot, known) is not { } markdown) return NoManual(check);
         return TypedResults.Json(ManualReply.Of(known, markdown), AdminJson.SnakeCase);
     }
 
@@ -111,7 +115,7 @@ internal sealed class AdminHandlers(
         if (store is null) return NoStore();
         try
         {
-            var trend = await BenchmarkTrends.ComputeAsync(store, check, cancellationToken: cancellationToken);
+            var trend = await EvalTrends.ComputeAsync(store, check, cancellationToken: cancellationToken);
             // The same trend per category, a chart of lines each, shaped like the overall trend's modes.
             var categories = CategoryTrendRow.Of(
                 await CategoryTrends.ComputeAsync(store, check, cancellationToken: cancellationToken));
@@ -141,7 +145,7 @@ internal sealed class AdminHandlers(
                     }));
 
         // What to do with the web, checked before anything that costs: a request no run can do is a 400 on its own.
-        var (options, refusal) = BenchmarkRunOptions.Parse(request?.Web, request?.Replay);
+        var (options, refusal) = EvalRunOptions.Parse(request?.Web, request?.Replay);
         if (refusal is not null)
             return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", refusal);
         if (recorder is null) return NoStore();
@@ -150,7 +154,7 @@ internal sealed class AdminHandlers(
         if (runner.Start(check, request?.Repeat ?? 1, options) is not { } run) return Running();
 
         // Record it with the settings it ran under, the web options included.
-        recorder.Attach(run, BenchmarkSettings.WithOptions(settingsOf(known), run.Options));
+        recorder.Attach(run, EvalSettings.WithOptions(settingsOf(known), run.Options));
         return TypedResults.Json(LiveRunRow.Of(run), AdminJson.SnakeCase, statusCode: StatusCodes.Status202Accepted);
     }
 
@@ -169,7 +173,7 @@ internal sealed class AdminHandlers(
     }
 
     /// <summary>Builds the page's list from these runs, with whether the store is there and why not.</summary>
-    private JsonHttpResult<BenchmarkListReply> ListOf(IReadOnlyList<BenchmarkDocuments.Run> runs, string? error) =>
+    private JsonHttpResult<BenchmarkListReply> ListOf(IReadOnlyList<EvalDocuments.Run> runs, string? error) =>
         TypedResults.Json(BenchmarkListReply.Of(catalog, workspaceRoot, StoreRow.Of(store is not null, error),
             [.. runs.Select(StoredRunRow.Of)]), AdminJson.SnakeCase);
 
@@ -197,7 +201,7 @@ internal sealed class AdminHandlers(
     /// Streams a run's lines to the page as they come, then one last "done" with whether the recording kept
     /// everything.
     /// </summary>
-    private async IAsyncEnumerable<SseItem<string>> Events(BenchmarkRun run,
+    private async IAsyncEnumerable<SseItem<string>> Events(RunningEval run,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         await foreach (string line in runner.EventsAsync(run.Id, cancellationToken))
@@ -213,9 +217,9 @@ internal sealed class AdminHandlers(
     /// Waits, up to a limit, for the run's recording to finish and says whether it kept everything. It says no if the
     /// recording failed, took too long or never started.
     /// </summary>
-    private async Task<BenchmarkRecorder.Result> StoredAsync(string id, CancellationToken cancellationToken)
+    private async Task<EvalRecorder.Result> StoredAsync(string id, CancellationToken cancellationToken)
     {
-        if (recorder?.RecordingOf(id) is not { } recording) return new BenchmarkRecorder.Result(false, null);
+        if (recorder?.RecordingOf(id) is not { } recording) return new EvalRecorder.Result(false, null);
 
         // A recording that takes longer than the wait counts as not stored; the page shouldn't hang on it.
         try
@@ -224,7 +228,7 @@ internal sealed class AdminHandlers(
         }
         catch (TimeoutException)
         {
-            return new BenchmarkRecorder.Result(false, null);
+            return new EvalRecorder.Result(false, null);
         }
     }
 }

@@ -1,10 +1,10 @@
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
 using LouisAgent.Api.Endpoints.Answers;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -32,8 +32,8 @@ public class NoteHandlersTests
     [Test]
     public async Task AKeptNote_Is201_WithTheServersTime()
     {
-        var store = new InMemoryBenchmarkStore();
-        await store.SaveRunAsync(new BenchmarkDocuments.Run("run_1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, At));
+        var store = new InMemoryEvalStore();
+        await store.SaveRunAsync(new EvalDocuments.Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At));
         var handlers = new NoteHandlers(store, new FixedClock(At));
 
         var answer = await handlers.AddNote("run_1", new NoteRequest("Too slow.", null), CancellationToken.None);
@@ -49,7 +49,7 @@ public class NoteHandlersTests
     {
         var request = new NoteRequest("Too slow.", null);
 
-        var noRun = await new NoteHandlers(new InMemoryBenchmarkStore(), new FixedClock(At))
+        var noRun = await new NoteHandlers(new InMemoryEvalStore(), new FixedClock(At))
             .AddNote("ghost", request, CancellationToken.None);
         var noStore =
             await new NoteHandlers(null, new FixedClock(At)).AddNote("run_1", request, CancellationToken.None);

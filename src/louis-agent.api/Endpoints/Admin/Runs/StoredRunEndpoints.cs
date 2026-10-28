@@ -1,7 +1,7 @@
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
 
 namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 internal static class StoredRunEndpoints
 {
     /// <summary>Adds the reads and the delete of a stored run.</summary>
-    public static void MapStoredRuns(this RouteGroupBuilder admin, IBenchmarkStore? store, BenchmarkRunner runner,
+    public static void MapStoredRuns(this RouteGroupBuilder admin, IEvalStore? store, EvalProcess runner,
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null)
     {

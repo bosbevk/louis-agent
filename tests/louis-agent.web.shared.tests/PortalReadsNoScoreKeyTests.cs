@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Web.Shared.Tests;
 
 /// <summary>
-/// The portal shows every eval the same way, from the standard records (F18 step 4.5): no view reads a conversation's
+/// The portal shows every eval the same way, from the standard records: no view reads a conversation's
 /// scores (an eval's own keys) or tests a task's name. And the admin's grades code names nothing of Puls, so the admin
 /// can become a package by a folder move.
 /// </summary>
@@ -23,14 +23,16 @@ public class PortalReadsNoScoreKeyTests
     private static readonly Regex NamesPuls = new("PulsText|LouisAgent\\.Puls\\.Text|Components\\.Brand",
         RegexOptions.CultureInvariant);
 
+    /// <summary>The folders checked: the admin pages, and what the API reports to them.</summary>
     private static readonly string[] Scanned =
     [
         "src/louis-agent.puls/Pages/Admin",
         "src/louis-agent.puls/Components/Admin",
         "src/louis-agent.puls/Admin",
-        "src/louis-agent.api/Benchmarks/Reports",
+        "src/louis-agent.api/Evals/Reports",
     ];
 
+    /// <summary>The admin's grades folders, which must be able to move out as they are.</summary>
     private static readonly string[] BuiltToMove =
     [
         "src/louis-agent.puls/Admin/Grades",
@@ -48,7 +50,7 @@ public class PortalReadsNoScoreKeyTests
         "src/louis-agent.puls/Admin/Scoring/ExplorerScores.cs",
         // The Benchmarks page's score chips, moved out of the page with the live run's table (step 7b (ii)).
         "src/louis-agent.puls/Admin/LiveRuns/LiveTurns.cs",
-        "src/louis-agent.api/Benchmarks/Reports/BenchmarkTrends.cs",
+        "src/louis-agent.api/Evals/Reports/Trends/EvalTrends.cs",
     ];
 
     /// <summary>
@@ -86,8 +88,8 @@ public class PortalReadsNoScoreKeyTests
     }
 
     /// <summary>
-    /// The C# and Razor files in a folder. A folder that isn't there fails, never scans as empty: step 7b renames the
-    /// API's <c>Benchmarks/</c>, and this list must follow it.
+    /// The C# and Razor files in a folder. A folder that isn't there fails, never scans as empty, so a renamed folder
+    /// can't quietly drop out of the check.
     /// </summary>
     private static IEnumerable<string> Files(string folder)
     {

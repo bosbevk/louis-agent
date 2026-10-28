@@ -2,7 +2,8 @@ using LouisAgent.Testing;
 using System.Collections;
 using System.Globalization;
 using System.Text.Json;
-using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
@@ -32,7 +33,7 @@ public class ProtocolWriterTests
 
         new ProtocolWriter(sink, new FixedClock(At)).Started();
 
-        Assert.That(Describe(BenchmarkProtocol.Parse(Lines(sink)[0])), Does.StartWith("ProtocolStarted{Version=1"));
+        Assert.That(Describe(EvalProtocol.Parse(Lines(sink)[0])), Does.StartWith("ProtocolStarted{Version=1"));
     }
 
     /// <summary>Accents and dashes in a question are escaped, so every byte written is plain ASCII.</summary>
@@ -70,8 +71,8 @@ public class ProtocolWriterTests
         // Compare what each pair of lines means, not how it is spaced.
         Assert.That(mine, Has.Length.EqualTo(python.Length));
         for (int i = 0; i < python.Length; i++)
-            Assert.That(Describe(BenchmarkProtocol.Parse(mine[i])),
-                Is.EqualTo(Describe(BenchmarkProtocol.Parse(python[i]))),
+            Assert.That(Describe(EvalProtocol.Parse(mine[i])),
+                Is.EqualTo(Describe(EvalProtocol.Parse(python[i]))),
                 $"line {i + 1}: {mine[i]}");
     }
 
@@ -85,13 +86,13 @@ public class ProtocolWriterTests
             [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)],
             [new ModelUse("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
 
-        var started = (BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0]);
+        var started = (EvalProtocol.ProtocolStarted)EvalProtocol.Parse(Lines(sink)[0]);
         Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit),
             Is.EqualTo((1, "cook", (int?)2, "abc123")));
         Assert.That(started.Graders!.Single(),
-            Is.EqualTo(new BenchmarkProtocol.GraderInfo("priced-with-source", 1, BenchmarkGraderKind.FixedRule)));
+            Is.EqualTo(new EvalProtocol.GraderInfo("priced-with-source", 1, EvalGraderKind.FixedRule)));
         Assert.That(started.Models!.Single(),
-            Is.EqualTo(new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, "puls-cook",
+            Is.EqualTo(new EvalProtocol.ModelInfo("cook", EvalModelLevel.Agent, "puls-cook",
                 "claude-haiku-5-5")));
     }
 
@@ -99,10 +100,10 @@ public class ProtocolWriterTests
     /// The first line says which scenarios the run asked for. Without it a held-out run would be stored like a dev
     /// one, and would join the dev trend.
     /// </summary>
-    [TestCase(SplitSelection.Dev, BenchmarkRunSplit.Dev, "dev")]
-    [TestCase(SplitSelection.HeldOut, BenchmarkRunSplit.HeldOut, "held_out")]
-    [TestCase(SplitSelection.All, BenchmarkRunSplit.All, "all")]
-    public void TheFirstLine_SaysWhichScenariosTheRunAskedFor(SplitSelection split, BenchmarkRunSplit expected,
+    [TestCase(SplitSelection.Dev, EvalRunSplit.Dev, "dev")]
+    [TestCase(SplitSelection.HeldOut, EvalRunSplit.HeldOut, "held_out")]
+    [TestCase(SplitSelection.All, EvalRunSplit.All, "all")]
+    public void TheFirstLine_SaysWhichScenariosTheRunAskedFor(SplitSelection split, EvalRunSplit expected,
         string wire)
     {
         var sink = new StringWriter();
@@ -110,7 +111,7 @@ public class ProtocolWriterTests
         new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123", [], [], split);
 
         Assert.That(Lines(sink)[0], Does.Contain($"\"split\":\"{wire}\""));
-        Assert.That(((BenchmarkProtocol.ProtocolStarted)BenchmarkProtocol.Parse(Lines(sink)[0])).Split,
+        Assert.That(((EvalProtocol.ProtocolStarted)EvalProtocol.Parse(Lines(sink)[0])).Split,
             Is.EqualTo(expected));
     }
 
@@ -124,10 +125,10 @@ public class ProtocolWriterTests
             [new Grade("priced-with-source", 1, 1, GradeOutcome.Pass, "2 of 2 priced with a source")],
             TrialOutcome.Pass);
 
-        var ended = (BenchmarkProtocol.ConversationEnded)BenchmarkProtocol.Parse(Lines(sink)[0]);
-        Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
+        var ended = (EvalProtocol.ConversationEnded)EvalProtocol.Parse(Lines(sink)[0]);
+        Assert.That(ended.Outcome, Is.EqualTo(EvalOutcome.Pass));
         Assert.That(ended.Grades!.Single(),
-            Is.EqualTo(new BenchmarkProtocol.GradeInfo("priced-with-source", 1, 1, BenchmarkOutcome.Pass,
+            Is.EqualTo(new EvalProtocol.GradeInfo("priced-with-source", 1, 1, EvalOutcome.Pass,
                 "2 of 2 priced with a source")));
     }
 
@@ -158,7 +159,7 @@ public class ProtocolWriterTests
         Assert.That(written[1].TryGetProperty("judge_prompt_hash", out _), Is.False);
 
         // And the API's reader still reads both grades.
-        var ended = (BenchmarkProtocol.ConversationEnded)BenchmarkProtocol.Parse(Lines(sink)[0]);
+        var ended = (EvalProtocol.ConversationEnded)EvalProtocol.Parse(Lines(sink)[0]);
         Assert.That(ended.Grades!.Select(g => g.Grader), Is.EqualTo(new[] { "meal-for-people", "priced-with-source" }));
     }
 
@@ -240,7 +241,7 @@ public class ProtocolWriterTests
     /// A record as its type and its fields, with JSON compared by its content: what the two lines mean, not how they
     /// are spaced.
     /// </summary>
-    private static string Describe(BenchmarkProtocol.Event e) =>
+    private static string Describe(EvalProtocol.Event e) =>
         e.GetType().Name + "{" + string.Join(", ", e.GetType().GetProperties().Where(p => p.CanRead)
             .Select(p => $"{p.Name}={Show(p.GetValue(e))}")) + "}";
 

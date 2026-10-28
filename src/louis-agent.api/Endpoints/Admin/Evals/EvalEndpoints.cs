@@ -1,5 +1,5 @@
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Store;
 
 namespace LouisAgent.Api.Endpoints.Admin.Evals;
 
@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Evals;
 internal static class EvalEndpoints
 {
     /// <summary>Adds the eval list to the admin group.</summary>
-    public static void MapEvals(this RouteGroupBuilder admin, BenchmarkCatalog catalog, IBenchmarkStore? store,
+    public static void MapEvals(this RouteGroupBuilder admin, EvalList catalog, IEvalStore? store,
         string workspaceRoot)
     {
         var handlers = new EvalHandlers(catalog, store, workspaceRoot);

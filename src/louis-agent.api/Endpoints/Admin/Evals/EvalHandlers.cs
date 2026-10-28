@@ -1,10 +1,10 @@
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Runs;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Store;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace LouisAgent.Api.Endpoints.Admin.Evals;
@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Evals;
 /// <c>TypedResults</c> with its answer declared.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-internal sealed class EvalHandlers(BenchmarkCatalog catalog, IBenchmarkStore? store, string workspaceRoot)
+internal sealed class EvalHandlers(EvalList catalog, IEvalStore? store, string workspaceRoot)
 {
     /// <summary>How many of an eval's newest runs the list carries.</summary>
     private const int RunsPerEval = 50;
@@ -45,11 +45,11 @@ internal sealed class EvalHandlers(BenchmarkCatalog catalog, IBenchmarkStore? st
     }
 
     /// <summary>Each eval's newest runs, by the eval's name.</summary>
-    private async Task<IReadOnlyDictionary<string, IReadOnlyList<BenchmarkDocuments.Run>>> RunsAsync(
-        IBenchmarkStore runs, CancellationToken cancellationToken)
+    private async Task<IReadOnlyDictionary<string, IReadOnlyList<EvalDocuments.Run>>> RunsAsync(
+        IEvalStore runs, CancellationToken cancellationToken)
     {
         // One read of the store per eval in the catalogue, each capped at its newest runs.
-        var byEval = new Dictionary<string, IReadOnlyList<BenchmarkDocuments.Run>>(StringComparer.Ordinal);
+        var byEval = new Dictionary<string, IReadOnlyList<EvalDocuments.Run>>(StringComparer.Ordinal);
         foreach (var check in catalog.Checks)
             byEval[check.Id] = await runs.ListRunsAsync(check.Id, RunsPerEval, cancellationToken);
         return byEval;
@@ -57,7 +57,7 @@ internal sealed class EvalHandlers(BenchmarkCatalog catalog, IBenchmarkStore? st
 
     /// <summary>The reply for these runs, with the store's state beside them.</summary>
     private JsonHttpResult<EvalListReply> ListOf(
-        IReadOnlyDictionary<string, IReadOnlyList<BenchmarkDocuments.Run>>? runs, string? error) =>
+        IReadOnlyDictionary<string, IReadOnlyList<EvalDocuments.Run>>? runs, string? error) =>
         TypedResults.Json(EvalListReply.Of(catalog, workspaceRoot, runs, StoreRow.Of(store is not null, error)),
             AdminJson.SnakeCase);
 }

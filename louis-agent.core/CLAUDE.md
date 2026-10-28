@@ -102,7 +102,7 @@ The rules:
    only from the assembly; C# only loads them. `SkillsLayoutTests` fails on a misplaced file.
 4. **Hosts stay thin:** a host project maps the agent's stream to its protocol and holds no agent behaviour. Its
    `Program.cs` is start-up only; its routes are in `Endpoints/`, one file per group, and the rest sits in a folder per
-   concern (the API: `Sessions/`, `Admin/`, `Benchmarks/`, `Config/`, `Messages/`), never a `Services/` folder, which
+   concern (the API: `Sessions/`, `Admin/`, `Evals/`, `Config/`, `Messages/`), never a `Services/` folder, which
    names a kind of thing, not a concern; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
 5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/Providers/AnthropicProvider/…` tests `Llm/Providers/AnthropicProvider/…`.
 6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.

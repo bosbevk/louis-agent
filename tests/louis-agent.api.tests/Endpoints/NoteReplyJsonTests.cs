@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.TestHost;
 
@@ -23,8 +23,8 @@ public class NoteReplyJsonTests
     public async Task ANewNote_IsWrittenAsBefore()
     {
         // A finished run, and the API over it with a clock that never moves.
-        var store = new InMemoryBenchmarkStore();
-        await store.SaveRunAsync(new BenchmarkDocuments.Run("run_1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, At));
+        var store = new InMemoryEvalStore();
+        await store.SaveRunAsync(new EvalDocuments.Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At));
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store, time: new FixedClock(At));
         await app.StartAsync();
 

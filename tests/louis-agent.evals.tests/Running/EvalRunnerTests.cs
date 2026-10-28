@@ -1,6 +1,7 @@
 using LouisAgent.Testing;
 using System.Text.Json;
-using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
@@ -45,7 +46,7 @@ public class EvalRunnerTests
         await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
 
         // The lines come in order, ending with the mode's summary.
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(EvalProtocol.Parse)
             .ToList();
         Assert.That(lines.Select(l => l.GetType().Name),
             Is.EqualTo(new[]
@@ -56,13 +57,13 @@ public class EvalRunnerTests
             "the mode's summary line (F18 step 5c), read since 5c.2");
 
         // The first line names the eval and its model; the turn and the conversation carry what happened.
-        var first = (BenchmarkProtocol.ProtocolStarted)lines[0];
+        var first = (EvalProtocol.ProtocolStarted)lines[0];
         Assert.That((first.Eval, first.Commit, first.Models!.Single()),
             Is.EqualTo(("stub-cook", EvalBuild.Commit,
-                new BenchmarkProtocol.ModelInfo("cook", BenchmarkModelLevel.Agent, SampleRole.Alpha, null))));
-        Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo("Hallo"));
+                new EvalProtocol.ModelInfo("cook", EvalModelLevel.Agent, SampleRole.Alpha, null))));
+        Assert.That(lines.OfType<EvalProtocol.TurnEnded>().Single().Answer, Is.EqualTo("Hallo"));
         Assert.That(
-            lines.OfType<BenchmarkProtocol.ConversationEnded>().Single().Scores.GetProperty("routed_right")
+            lines.OfType<EvalProtocol.ConversationEnded>().Single().Scores.GetProperty("routed_right")
                 .GetBoolean(), Is.True);
     }
 
@@ -113,9 +114,9 @@ public class EvalRunnerTests
 
         await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
 
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(EvalProtocol.Parse)
             .ToList();
-        Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo(""));
+        Assert.That(lines.OfType<EvalProtocol.TurnEnded>().Single().Answer, Is.EqualTo(""));
     }
 
     /// <summary>
@@ -174,12 +175,12 @@ public class EvalRunnerTests
             new EvalRun("run_1", 1),
             CancellationToken.None);
 
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(EvalProtocol.Parse)
             .ToList();
-        var conversation = lines.OfType<BenchmarkProtocol.ConversationEnded>().Single();
+        var conversation = lines.OfType<EvalProtocol.ConversationEnded>().Single();
         Assert.That(conversation.Grades!.Select(g => (g.Grader, g.Outcome)),
-            Is.EqualTo(new[] { ("within-time", BenchmarkOutcome.Pass), ("no-error", BenchmarkOutcome.Pass) }));
-        Assert.That(conversation.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
+            Is.EqualTo(new[] { ("within-time", EvalOutcome.Pass), ("no-error", EvalOutcome.Pass) }));
+        Assert.That(conversation.Outcome, Is.EqualTo(EvalOutcome.Pass));
     }
 
     /// <summary>The eval's scores get to see the grades the trial was given.</summary>
@@ -222,9 +223,9 @@ public class EvalRunnerTests
 
         await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
 
-        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
+        var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(EvalProtocol.Parse)
             .ToList();
-        var turnLine = lines.OfType<BenchmarkProtocol.TurnEnded>().Single();
+        var turnLine = lines.OfType<EvalProtocol.TurnEnded>().Single();
         Assert.That(turnLine.Answer,
             Is.EqualTo(EngineEvents.AnswerOf(new TurnTranscript(1, "sess_canned", "Gee my resep", turn, TimeSpan.Zero,
                 null))));

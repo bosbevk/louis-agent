@@ -1,12 +1,14 @@
 using System.Net;
 using System.Text.Json;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
 
@@ -27,8 +29,8 @@ public class AdminReplyJsonTests
     [Test]
     public async Task TheListReply_NamesTheChecks_AndTheStore()
     {
-        var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "A stub", ManualPath)]);
-        await using var app = ApiTestHost.Build(adminKey: AdminKey, store: new InMemoryBenchmarkStore(),
+        var catalog = new EvalList([new EvalEntry("stub", "A stub", ManualPath)]);
+        await using var app = ApiTestHost.Build(adminKey: AdminKey, store: new InMemoryEvalStore(),
             catalog: catalog);
         await app.StartAsync();
 
@@ -60,7 +62,7 @@ public class AdminReplyJsonTests
     [Test]
     public async Task TheManualReply_CarriesTheCheck_TheTitle_AndTheMarkdown()
     {
-        var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "A stub", ManualPath)]);
+        var catalog = new EvalList([new EvalEntry("stub", "A stub", ManualPath)]);
         await using var app = ApiTestHost.Build(adminKey: AdminKey, catalog: catalog);
         await app.StartAsync();
 
@@ -80,11 +82,11 @@ public class AdminReplyJsonTests
     public async Task TheTrendReply_NamesEveryPointNumber()
     {
         // One finished run with an overall slice.
-        var store = new InMemoryBenchmarkStore();
+        var store = new InMemoryEvalStore();
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
-        var slice = new BenchmarkSlice(SampleMode.Beta, "overall", 8, 6, 2, 0, 0, ["a"], false, 0.75, 0.75, 0.75, [],
+        var slice = new EvalSlice(SampleMode.Beta, "overall", 8, 6, 2, 0, 0, ["a"], false, 0.75, 0.75, 0.75, [],
             [], []);
-        await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at, Slices: [slice]));
+        await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, EvalRunStatus.Done, at, Slices: [slice]));
 
         // One conversation, so the overall trend has a line with a point on it.
         var scores = JsonDocument.Parse("""{"routed_right":true}""").RootElement.Clone();

@@ -4,17 +4,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace LouisAgent.Core.Tests.RepeatedNames;
 
-// F18 step 7.5.3, ADR 0043: a name that repeats is an enum. This ratchet reads the wire names out of the enums of the
-// toolsets and the script languages (the files listed below) and fails on any of them written as a plain string
-// literal anywhere else in the sources and tests, so a typo cannot compile and a rename is a rename. It scans
-// standalone regular literals only: a name inside a raw, verbatim or interpolated string is wire data (an expected
-// JSON, a message) and stays text. Two things are not a toolset or a language and are skipped by what they are: an
-// executable's name (`git`, `dotnet`, `python`) and a key read from JSON or a dictionary (`GetProperty("web")`).
-// Anything else is listed in Exemptions with its reason; if that list passes a dozen, the scan is too eager and gets
-// narrowed instead.
 /// <summary>
-/// Fails when a name that is an enum member is typed as a plain string anywhere else in the sources.
+/// Fails when a name that is an enum member is typed as a plain string anywhere else in the sources, so a typo can't
+/// compile and a rename is a rename.
 /// </summary>
+/// <remarks>
+/// A ratchet. It reads the wire names out of the enums listed below (the toolsets, the script languages, the eval
+/// sets' names) and scans standalone regular literals only: a name inside a raw, verbatim or interpolated string is
+/// wire data (an expected JSON, a message) and stays text. Two things aren't a name of the set and are skipped by what
+/// they are: an executable's name (<c>git</c>, <c>dotnet</c>, <c>python</c>) and a key read from JSON or a dictionary
+/// (<c>GetProperty("web")</c>). Anything else is listed in Exemptions with its reason; if that list passes a dozen,
+/// the scan is too eager and gets narrowed instead.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public class RepeatedNameTests
 {
     /// <summary>
@@ -70,7 +72,7 @@ public class RepeatedNameTests
             "the writer's lines are compared with the Python-recorded fixture, which holds these names: recorded data stays as recorded"),
         ("tests/louis-agent.web.testing/SessionStreamFixture.cs", "CookRole",
             "the role of the recorded turn, named once: the goldens and the replay tests read it"),
-        ("tests/louis-agent.api.tests/Benchmarks/Reports/BenchmarkManualTests.cs", "",
+        ("tests/louis-agent.api.tests/Evals/Reports/EvalManualTests.cs", "",
             "each real eval beside its manual: the names the real runner offers"),
         ("tests/louis-agent.api.tests/Sessions/StreamGoldenTests.cs", "call_sub",
             "the sub-session event is written into the recorded stream golden, which holds the peer's name: recorded data stays as recorded"),

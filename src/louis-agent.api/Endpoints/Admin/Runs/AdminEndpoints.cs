@@ -1,11 +1,13 @@
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Endpoints.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
 using LouisAgent.Api.Endpoints.Routing;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 
@@ -21,10 +23,10 @@ internal static class AdminEndpoints
     /// <summary>
     /// Adds the admin routes under <c>/admin</c>, behind the key. The clock stamps the notes, so a test can fix it.
     /// </summary>
-    public static void MapAdmin(this IEndpointRouteBuilder routes, BenchmarkCatalog catalog, BenchmarkRunner runner,
+    public static void MapAdmin(this IEndpointRouteBuilder routes, EvalList catalog, EvalProcess runner,
         string? adminKey,
-        IBenchmarkStore? store, BenchmarkRecorder? recorder,
-        Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf,
+        IEvalStore? store, EvalRecorder? recorder,
+        Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
         string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null,
         CalibrationRecorder? calibrationRecorder = null,
         TimeProvider? time = null)
@@ -52,7 +54,7 @@ internal static class AdminEndpoints
     /// <summary>
     /// Reads from the store for a route. If there's no store, or it doesn't answer, you get a 503 that says why.
     /// </summary>
-    internal static async Task<IResult> FromStore(IBenchmarkStore? store, Func<IBenchmarkStore, Task<IResult>> read)
+    internal static async Task<IResult> FromStore(IEvalStore? store, Func<IEvalStore, Task<IResult>> read)
     {
         if (store is null)
             return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",

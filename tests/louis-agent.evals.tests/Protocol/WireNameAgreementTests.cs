@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Trials;
@@ -33,9 +33,9 @@ public class WireNameAgreementTests
             Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"TrialFailure.{m}");
         foreach (var m in Enum.GetValues<SplitSelection>())
             Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"SplitSelection.{m}");
-        foreach (var m in Enum.GetValues<BenchmarkTurnFailure>())
+        foreach (var m in Enum.GetValues<EvalTurnFailure>())
             Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"BenchmarkTurnFailure.{m}");
-        foreach (var m in Enum.GetValues<BenchmarkRunSplit>())
+        foreach (var m in Enum.GetValues<EvalRunSplit>())
             Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"BenchmarkRunSplit.{m}");
     }
 
@@ -45,12 +45,12 @@ public class WireNameAgreementTests
     /// </summary>
     [Test]
     public void TheHarnessAndTheApiNameTheSameFailures_InTheSameWords() =>
-        Assert.That(Enum.GetValues<BenchmarkTurnFailure>().Select(m => m.Wire()).Order(),
+        Assert.That(Enum.GetValues<EvalTurnFailure>().Select(m => m.Wire()).Order(),
             Is.EqualTo(Enum.GetValues<TrialFailure>().Select(m => m.Wire()).Order()));
 
     /// <summary>The same for a run's split: what the harness writes, the API knows by the same words.</summary>
     [Test]
     public void TheHarnessAndTheApiNameTheSameSplits_InTheSameWords() =>
-        Assert.That(Enum.GetValues<BenchmarkRunSplit>().Select(m => m.Wire()).Order(),
+        Assert.That(Enum.GetValues<EvalRunSplit>().Select(m => m.Wire()).Order(),
             Is.EqualTo(Enum.GetValues<SplitSelection>().Select(m => m.Wire()).Order()));
 }

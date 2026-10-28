@@ -1,7 +1,7 @@
 using LouisAgent.Testing;
 using System.Text.Json;
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
 
 namespace LouisAgent.Api.Testing;
 

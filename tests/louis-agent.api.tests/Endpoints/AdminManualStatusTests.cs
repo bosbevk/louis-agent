@@ -1,5 +1,5 @@
 using System.Net;
-using LouisAgent.Api.Benchmarks.Runs;
+using LouisAgent.Api.Evals.List;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 
@@ -18,7 +18,7 @@ public class AdminManualStatusTests
     [Test]
     public async Task AKnownCheck_WhoseManualFileIsMissing_Is404()
     {
-        var catalog = new BenchmarkCatalog([new BenchmarkCheck("ghost", "Ghost", "evals/ghost/Manuals/ghost.md")]);
+        var catalog = new EvalList([new EvalEntry("ghost", "Ghost", "evals/ghost/Manuals/ghost.md")]);
         await using var app = ApiTestHost.Build(adminKey: AdminKey, catalog: catalog);
         await app.StartAsync();
 

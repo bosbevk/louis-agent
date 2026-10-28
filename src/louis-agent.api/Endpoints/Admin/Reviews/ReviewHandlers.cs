@@ -1,13 +1,13 @@
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints.Admin.Runs;
+using LouisAgent.Api.Evals.Reviews;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
@@ -37,7 +37,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-internal sealed class ReviewHandlers(IBenchmarkStore? store, IHumanReviewStore? reviews)
+internal sealed class ReviewHandlers(IEvalStore? store, IHumanReviewStore? reviews)
 {
     /// <summary>
     /// The longest note and reviewer name a grade may carry, so one request can't fill the store.
@@ -63,7 +63,7 @@ internal sealed class ReviewHandlers(IBenchmarkStore? store, IHumanReviewStore? 
             var humans = ReviewQueries.HumanReviewsOf(run);
             if (!humans.Contains(grader)) return NotHuman(id, grader, humans);
 
-            var key = new BenchmarkProtocol.ConversationKey(mode, repeat, task);
+            var key = new EvalProtocol.ConversationKey(mode, repeat, task);
             if ((await store.ConversationsAsync(id, cancellationToken)).All(c => c.Key != key))
                 return NoConversation(id, key);
 
@@ -190,7 +190,7 @@ internal sealed class ReviewHandlers(IBenchmarkStore? store, IHumanReviewStore? 
             }));
 
     /// <summary>The 404 for a conversation the run didn't store.</summary>
-    private static JsonHttpResult<ApiError> NoConversation(string id, BenchmarkProtocol.ConversationKey key) =>
+    private static JsonHttpResult<ApiError> NoConversation(string id, EvalProtocol.ConversationKey key) =>
         ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
             MessageText.Format(ReviewUserText.NoStoredConversation,
                 new

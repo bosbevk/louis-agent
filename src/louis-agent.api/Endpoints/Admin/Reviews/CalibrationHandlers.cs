@@ -1,15 +1,16 @@
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints.Admin.Runs;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reviews;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -35,9 +36,9 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class CalibrationHandlers(
-    BenchmarkCatalog catalog,
-    BenchmarkRunner runner,
-    IBenchmarkStore? store,
+    EvalList catalog,
+    EvalProcess runner,
+    IEvalStore? store,
     IHumanReviewStore? reviews,
     ICalibrationStore? calibrations,
     CalibrationRecorder? recorder)

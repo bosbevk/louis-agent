@@ -1,5 +1,5 @@
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Store;
 
 namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 internal static class ReviewEndpoints
 {
     /// <summary>Adds the review routes to the admin group.</summary>
-    public static void MapReviews(this RouteGroupBuilder admin, IBenchmarkStore? store, IHumanReviewStore? reviews)
+    public static void MapReviews(this RouteGroupBuilder admin, IEvalStore? store, IHumanReviewStore? reviews)
     {
         var handlers = new ReviewHandlers(store, reviews);
 

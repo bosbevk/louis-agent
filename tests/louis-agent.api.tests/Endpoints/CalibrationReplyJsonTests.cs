@@ -1,9 +1,9 @@
 using System.Net;
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.TestHost;
 
@@ -26,8 +26,8 @@ public class CalibrationReplyJsonTests
     public async Task TheReportsReply_IsWrittenAsBefore()
     {
         // A finished run, and one judge check of it with one disagreement.
-        var store = new InMemoryBenchmarkStore();
-        await store.SaveRunAsync(new BenchmarkDocuments.Run("run_1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, At));
+        var store = new InMemoryEvalStore();
+        await store.SaveRunAsync(new EvalDocuments.Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At));
         var calibrations = new InMemoryCalibrationStore();
         await calibrations.AddAsync(new CalibrationRecord("run_1", "meal", "claude-haiku-5-5", At, 7, 8, 6, true,
             new CalibrationClassCounts(5, 1, 0), new CalibrationClassCounts(0, 2, 0),

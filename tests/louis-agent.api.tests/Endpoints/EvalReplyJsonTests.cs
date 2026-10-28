@@ -1,11 +1,12 @@
 using System.Net;
 using System.Text.Json;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
 
@@ -22,7 +23,7 @@ public class EvalReplyJsonTests
     [Test]
     public async Task AnEvalThatNeverRan_IsWrittenWhole()
     {
-        await using var app = ApiTestHost.Build(adminKey: AdminKey, store: new InMemoryBenchmarkStore(),
+        await using var app = ApiTestHost.Build(adminKey: AdminKey, store: new InMemoryEvalStore(),
             catalog: Catalog());
         await app.StartAsync();
 
@@ -52,11 +53,11 @@ public class EvalReplyJsonTests
     public async Task ARecordedRun_IsTheStoredRunsRow_WithItsModes()
     {
         // One finished run of the eval, on one mode.
-        var store = new InMemoryBenchmarkStore();
+        var store = new InMemoryEvalStore();
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
         var mode = new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], SampleRole.Beta, null,
             new ModeRates(0.5, 0.25, 2, 0, 0));
-        await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at, Modes: [mode]));
+        await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, EvalRunStatus.Done, at, Modes: [mode]));
 
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store, catalog: Catalog());
         await app.StartAsync();
@@ -73,10 +74,10 @@ public class EvalReplyJsonTests
     }
 
     /// <summary>A catalogue of one eval with one grader, a dataset and a category, as the runner lists it.</summary>
-    private static BenchmarkCatalog Catalog() => new(BenchmarkCatalog.Merge(
+    private static EvalList Catalog() => new(EvalList.Merge(
     [
         new EvalLine(SampleEval.Beta, 3, "A meal", SampleIdentity.Alpha, null, new EvalDatasetLine("meals", 2),
-            ["town"], [new EvalGraderLine("priced", 1, BenchmarkGraderKind.FixedRule)])
+            ["town"], [new EvalGraderLine("priced", 1, EvalGraderKind.FixedRule)])
     ]));
 
     /// <summary>Asks the admin route and hands back the body; the call must have been a 200.</summary>

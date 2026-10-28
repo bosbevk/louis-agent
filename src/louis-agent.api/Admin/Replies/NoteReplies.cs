@@ -1,6 +1,6 @@
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Evals.Runs.Protocol;
+using LouisAgent.Api.Evals.Store;
 
 namespace LouisAgent.Api.Admin.Replies;
 
@@ -16,7 +16,7 @@ internal static class NoteReplies
     extension(NoteRow)
     {
         /// <summary>The row for one stored note.</summary>
-        public static NoteRow Of(BenchmarkDocuments.RunNote note) =>
+        public static NoteRow Of(EvalDocuments.RunNote note) =>
             new(note.Text, note.At, note.Conversation is { } key ? ConversationKeyRow.Of(key) : null);
     }
 
@@ -24,11 +24,11 @@ internal static class NoteReplies
     extension(ConversationKeyRow)
     {
         /// <summary>The row for a stored conversation's key.</summary>
-        public static ConversationKeyRow Of(BenchmarkProtocol.ConversationKey key) =>
+        public static ConversationKeyRow Of(EvalProtocol.ConversationKey key) =>
             new(key.Mode, key.Repeat, key.Task);
     }
 
     /// <summary>The store's key for a conversation the portal named.</summary>
-    public static BenchmarkProtocol.ConversationKey ToKey(this ConversationKeyRow row) =>
+    public static EvalProtocol.ConversationKey ToKey(this ConversationKeyRow row) =>
         new(row.Mode, row.Repeat, row.Task);
 }

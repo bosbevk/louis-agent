@@ -1,5 +1,7 @@
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Recording;
 
 namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
@@ -11,9 +13,9 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 internal static class RescoreEndpoints
 {
     /// <summary>Adds the re-score route to the admin group.</summary>
-    public static void MapRescore(this RouteGroupBuilder admin, BenchmarkCatalog catalog, BenchmarkRunner runner,
-        IBenchmarkStore? store, BenchmarkRecorder? recorder,
-        Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf)
+    public static void MapRescore(this RouteGroupBuilder admin, EvalList catalog, EvalProcess runner,
+        IEvalStore? store, EvalRecorder? recorder,
+        Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf)
     {
         var handlers = new RescoreHandlers(catalog, runner, store, recorder, settingsOf);
 

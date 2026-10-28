@@ -1,11 +1,11 @@
 using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
-using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
+using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 
 namespace LouisAgent.Api.Tests.Admin;
 
@@ -25,14 +25,14 @@ public class AdminRowsTests
     private static JsonElement Json(object row) => JsonSerializer.SerializeToElement(row, AdminJson.SnakeCase);
 
     /// <summary>A stored run with an eval and its graders, or, for an old run, neither.</summary>
-    private static BenchmarkDocuments.Run Run(string? eval, IReadOnlyList<BenchmarkDocuments.Grader>? graders) =>
-        new("run_1", "stub", 1, BenchmarkRunStatus.Done, At, Eval: eval, EvalVersion: eval is null ? null : 3,
+    private static EvalDocuments.Run Run(string? eval, IReadOnlyList<EvalDocuments.Grader>? graders) =>
+        new("run_1", "stub", 1, EvalRunStatus.Done, At, Eval: eval, EvalVersion: eval is null ? null : 3,
             Commit: eval is null ? null : "abc1234",
             Graders: graders);
 
     /// <summary>A stored conversation with these grades and this outcome.</summary>
-    private static BenchmarkDocuments.Conversation Conversation(IReadOnlyList<BenchmarkDocuments.Grade>? grades,
-        BenchmarkOutcome? outcome) =>
+    private static EvalDocuments.Conversation Conversation(IReadOnlyList<EvalDocuments.Grade>? grades,
+        EvalOutcome? outcome) =>
         new(new ConversationKey(SampleMode.Beta, 1, "bobotie"), 0, SampleRole.Alpha,
             JsonDocument.Parse("{}").RootElement, 0, 1.5, grades, outcome);
 
@@ -41,7 +41,7 @@ public class AdminRowsTests
     public void ARunWithAnEvalAndTwoGraders_GivesThemInOrder()
     {
         var row = Json(StoredRunRow.Of(Run("stub",
-            [new("no-error", 1, BenchmarkGraderKind.FixedRule), new("meal", 2, BenchmarkGraderKind.Model)])));
+            [new("no-error", 1, EvalGraderKind.FixedRule), new("meal", 2, EvalGraderKind.Model)])));
 
         Assert.That(row.GetProperty("eval").GetString(), Is.EqualTo("stub"));
         Assert.That(row.GetProperty("eval_version").GetInt32(), Is.EqualTo(3));
@@ -58,8 +58,8 @@ public class AdminRowsTests
     {
         var row = Json(StoredRunRow.Of(Run("stub",
         [
-            new("no-error", 1, BenchmarkGraderKind.FixedRule),
-            new("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")
+            new("no-error", 1, EvalGraderKind.FixedRule),
+            new("meal.human", 1, EvalGraderKind.Human, "Is this a meal?")
         ])));
 
         var graders = row.GetProperty("graders").EnumerateArray().ToList();
@@ -83,12 +83,12 @@ public class AdminRowsTests
     [Test]
     public void AConversationWithTwoGrades_GivesThemInOrder_WithTheirOutcomes()
     {
-        var grades = new BenchmarkDocuments.Grade[]
+        var grades = new EvalDocuments.Grade[]
         {
-            new("within-time", 1, 1, BenchmarkOutcome.Pass, "every turn was answered within 60 s"),
-            new("no-error", 1, 0, BenchmarkOutcome.Fail, "turn 2 raised an error"),
+            new("within-time", 1, 1, EvalOutcome.Pass, "every turn was answered within 60 s"),
+            new("no-error", 1, 0, EvalOutcome.Fail, "turn 2 raised an error"),
         };
-        var row = Json(ConversationRow.Of(Conversation(grades, BenchmarkOutcome.Fail), []));
+        var row = Json(ConversationRow.Of(Conversation(grades, EvalOutcome.Fail), []));
 
         // Each grade as the five fields the page shows.
         var sent = row.GetProperty("grades").EnumerateArray()

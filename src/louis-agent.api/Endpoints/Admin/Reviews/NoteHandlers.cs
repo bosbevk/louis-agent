@@ -1,11 +1,11 @@
 using LouisAgent.Api.Admin.Replies;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Answers;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Notes;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -26,7 +26,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-internal sealed class NoteHandlers(IBenchmarkStore? store, TimeProvider time)
+internal sealed class NoteHandlers(IEvalStore? store, TimeProvider time)
 {
     /// <summary>
     /// Keeps the note and hands it back. A run the store doesn't hold, or a blank or too long note, is turned away

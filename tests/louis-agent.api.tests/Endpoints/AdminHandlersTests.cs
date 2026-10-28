@@ -1,10 +1,11 @@
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Api.Endpoints.Admin.Runs;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -72,7 +73,7 @@ public class AdminHandlersTests
             Is.EqualTo(StatusCodes.Status503ServiceUnavailable));
 
         var answer =
-            Inner(await Handlers(new InMemoryBenchmarkStore()).GetTrend(SampleEval.Beta, CancellationToken.None));
+            Inner(await Handlers(new InMemoryEvalStore()).GetTrend(SampleEval.Beta, CancellationToken.None));
 
         Assert.That(answer, Is.InstanceOf<JsonHttpResult<TrendReply>>());
     }
@@ -99,10 +100,10 @@ public class AdminHandlersTests
     }
 
     /// <summary>The handlers over a catalogue of one check with a manual, and the store given, if any.</summary>
-    private static AdminHandlers Handlers(IBenchmarkStore? store = null)
+    private static AdminHandlers Handlers(IEvalStore? store = null)
     {
-        var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "A stub", ManualPath)]);
-        var runner = new BenchmarkRunner(catalog, ApiTestHost.RepoRoot, "http://127.0.0.1:1/");
+        var catalog = new EvalList([new EvalEntry("stub", "A stub", ManualPath)]);
+        var runner = new EvalProcess(catalog, ApiTestHost.RepoRoot, "http://127.0.0.1:1/");
 
         return new AdminHandlers(catalog, runner, "admin-secret", store, null,
             _ => new Dictionary<string, string>(), ApiTestHost.RepoRoot);

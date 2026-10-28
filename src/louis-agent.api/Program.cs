@@ -1,12 +1,15 @@
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Runs.Start;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Mongo;
+using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Messages;
 using LouisAgent.Composition;
 using LouisAgent.Core.Guardrails.Auth;
@@ -59,14 +62,14 @@ var api = app.MapApi(host);
 // Each run is recorded into the store (BENCHMARKS_MONGO_URL), its cost joined from this instance's ledger; without a
 // store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
 var admin = AdminOptions.FromEnvironment();
-var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Benchmarks");
+var evalLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Evals");
 
-// The evals: the C# ones the runner lists (read on first use), and the Python checks it doesn't list yet.
-var benchmarks = BenchmarkCatalog.From(EvalListing.ForRunner(admin.EvalRunner), benchmarkLog);
+// The evals the runner lists, read on first use.
+var evals = EvalList.From(EvalListing.ForRunner(admin.EvalRunner), evalLog);
 
 // The stores for runs and for the people's grades share one Mongo; with no address there are none.
-IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl
-    ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase)
+IEvalStore? evalStore = admin.BenchmarksMongoUrl is { } mongoUrl
+    ? new MongoEvalStore(mongoUrl, admin.BenchmarksDatabase)
     : null;
 IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl
     ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase)
@@ -77,40 +80,40 @@ ICalibrationStore? calibrationStore = admin.BenchmarksMongoUrl is { } calibratio
     ? new MongoCalibrationStore(calibrationsUrl, admin.BenchmarksDatabase)
     : null;
 CalibrationRecorder? calibrationRecorder =
-    calibrationStore is null ? null : new CalibrationRecorder(calibrationStore, benchmarkLog);
+    calibrationStore is null ? null : new CalibrationRecorder(calibrationStore, evalLog);
 
 // A run's recorder writes it into the store, its cost read from this instance's ledger.
-BenchmarkRecorder? recorder = benchmarkStore is null
+EvalRecorder? recorder = evalStore is null
     ? null
-    : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);
+    : new EvalRecorder(evalStore, evalLog, host.Agent.LogDirectory);
 
 // Close the runs a restart cut off, in the background so start-up doesn't wait on Mongo; a store that doesn't
 // answer is only a warning.
-if (benchmarkStore is not null)
+if (evalStore is not null)
     _ = Task.Run(async () =>
     {
         try
         {
-            int closed = await benchmarkStore.CloseOrphansAsync(DateTimeOffset.UtcNow);
+            int closed = await evalStore.CloseOrphansAsync(DateTimeOffset.UtcNow);
             if (closed > 0)
-                benchmarkLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed },
+                evalLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed },
                     tag: "API");
         }
         catch (Exception ex)
         {
-            benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
+            evalLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
         }
     });
 
 // The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait
 // for it).
-_ = Task.Run(benchmarks.Warm);
+_ = Task.Run(evals.Warm);
 
 // Map the admin routes: the runner, the stores and the settings each run reports.
-api.MapAdmin(benchmarks,
-    new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner),
-    admin.AdminKey, benchmarkStore, recorder,
-    check => BenchmarkSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner,
+api.MapAdmin(evals,
+    new EvalProcess(evals, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner),
+    admin.AdminKey, evalStore, recorder,
+    check => EvalSettings.Of(check, host.Llm.Provider, host.Llm.Model, host.Agent.RolesEnabled, admin.EvalRunner,
         WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
         WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
     host.Engine.WorkspaceRoot, reviewStore,

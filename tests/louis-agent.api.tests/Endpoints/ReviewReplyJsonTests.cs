@@ -1,15 +1,15 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.Reviews;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
-using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
 
@@ -68,11 +68,11 @@ public class ReviewReplyJsonTests
     }
 
     /// <summary>A run with a human review of the meal judge, and one conversation to grade.</summary>
-    private static async Task<(InMemoryBenchmarkStore Store, InMemoryHumanReviewStore Reviews)> StoredAsync()
+    private static async Task<(InMemoryEvalStore Store, InMemoryHumanReviewStore Reviews)> StoredAsync()
     {
-        var store = new InMemoryBenchmarkStore();
-        await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, At,
-            Graders: [new Grader("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")]));
+        var store = new InMemoryEvalStore();
+        await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At,
+            Graders: [new Grader("meal.human", 1, EvalGraderKind.Human, "Is this a meal?")]));
         var scores = JsonDocument.Parse("{}").RootElement.Clone();
         await store.SaveConversationAsync("run_1", new Conversation(Key, 1, null, scores, 0, 1));
 
@@ -80,7 +80,7 @@ public class ReviewReplyJsonTests
     }
 
     /// <summary>Starts the API with the admin key over the stores.</summary>
-    private static async Task<WebApplication> StartAsync(IBenchmarkStore store, IHumanReviewStore reviews)
+    private static async Task<WebApplication> StartAsync(IEvalStore store, IHumanReviewStore reviews)
     {
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews);
         await app.StartAsync();

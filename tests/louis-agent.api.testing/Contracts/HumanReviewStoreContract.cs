@@ -1,7 +1,7 @@
+using LouisAgent.Api.Evals.Reviews;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs.Protocol;
 using LouisAgent.Testing;
-using LouisAgent.Api.Benchmarks.Reviews;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Testing;
 
@@ -20,7 +20,7 @@ public abstract class HumanReviewStoreContract
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>The conversation a grade is about unless the test names another.</summary>
-    private static readonly BenchmarkProtocol.ConversationKey Bobotie = new(SampleMode.Beta, 1, "bobotie");
+    private static readonly EvalProtocol.ConversationKey Bobotie = new(SampleMode.Beta, 1, "bobotie");
 
     private IHumanReviewStore _store = null!;
 
@@ -39,7 +39,7 @@ public abstract class HumanReviewStoreContract
     /// meal-for-people judge.
     /// </summary>
     private static HumanGrade Grade(string run, int seconds, HumanVerdict verdict = HumanVerdict.Pass,
-        string reviewer = "Louis", string note = "", BenchmarkProtocol.ConversationKey? key = null,
+        string reviewer = "Louis", string note = "", EvalProtocol.ConversationKey? key = null,
         string grader = "meal-for-people") =>
         new(run, key ?? Bobotie, grader, verdict, note, reviewer, T0.AddSeconds(seconds));
 

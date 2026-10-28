@@ -1,11 +1,12 @@
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Evals;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Http.HttpResults;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Tests.Endpoints;
 
@@ -31,7 +32,7 @@ public class EvalHandlersTests
     [Test]
     public async Task AnEvalWithNoRun_IsListed_WithItsGraders_AndNeverRun()
     {
-        var list = await ListAsync(new InMemoryBenchmarkStore());
+        var list = await ListAsync(new InMemoryEvalStore());
 
         var eval = list.Evals.Single();
         Assert.That((eval.Name, eval.Identity, eval.Version, eval.Proves, eval.Manual),
@@ -53,11 +54,11 @@ public class EvalHandlersTests
     public async Task OnceARunIsRecorded_TheEvalListsIt()
     {
         // One finished run of the eval, on one mode and one model, with its cost.
-        var store = new InMemoryBenchmarkStore();
+        var store = new InMemoryEvalStore();
         var mode = new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], SampleRole.Beta, null,
             new ModeRates(0.5, 0.25, 2, 0, 0));
-        var model = new ModelUse(SampleMode.Beta, BenchmarkModelLevel.Agent, SampleRole.Beta, "model-a");
-        await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 2, BenchmarkRunStatus.Done, At, At.AddMinutes(5), 0,
+        var model = new ModelUse(SampleMode.Beta, EvalModelLevel.Agent, SampleRole.Beta, "model-a");
+        await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 2, EvalRunStatus.Done, At, At.AddMinutes(5), 0,
             Modes: [mode], Total: new Total(1.25m, "USD", 900, 4), Models: [model]));
 
         var eval = (await ListAsync(store)).Evals.Single();
@@ -81,16 +82,16 @@ public class EvalHandlersTests
     }
 
     /// <summary>The list from handlers over a catalogue of one fake eval, as the runner would have listed it.</summary>
-    private static async Task<EvalListReply> ListAsync(IBenchmarkStore? store)
+    private static async Task<EvalListReply> ListAsync(IEvalStore? store)
     {
         // The eval as the runner's listing line describes it: a dataset, a category and two graders.
         var line = new EvalLine(SampleEval.Beta, 3, "A meal", SampleIdentity.Alpha, null,
             new EvalDatasetLine("meals", 2), ["town"],
             [
-                new EvalGraderLine("priced", 1, BenchmarkGraderKind.FixedRule),
-                new EvalGraderLine("judge", 2, BenchmarkGraderKind.Model)
+                new EvalGraderLine("priced", 1, EvalGraderKind.FixedRule),
+                new EvalGraderLine("judge", 2, EvalGraderKind.Model)
             ]);
-        var catalog = new BenchmarkCatalog(BenchmarkCatalog.Merge([line]));
+        var catalog = new EvalList(EvalList.Merge([line]));
         var handlers = new EvalHandlers(catalog, store, ApiTestHost.RepoRoot);
 
         var answer = await handlers.GetList(CancellationToken.None);

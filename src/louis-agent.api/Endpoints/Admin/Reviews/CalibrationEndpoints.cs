@@ -1,8 +1,9 @@
-using LouisAgent.Api.Benchmarks.Calibrations;
-using LouisAgent.Api.Benchmarks.Calibrations.Store;
-using LouisAgent.Api.Benchmarks.Reviews.Store;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Evals.Calibrations;
+using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Reviews.Store;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
 
 namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
@@ -15,8 +16,8 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 internal static class CalibrationEndpoints
 {
     /// <summary>Adds the judge-check routes to the admin group.</summary>
-    public static void MapCalibrations(this RouteGroupBuilder admin, BenchmarkCatalog catalog, BenchmarkRunner runner,
-        IBenchmarkStore? store, IHumanReviewStore? reviews,
+    public static void MapCalibrations(this RouteGroupBuilder admin, EvalList catalog, EvalProcess runner,
+        IEvalStore? store, IHumanReviewStore? reviews,
         ICalibrationStore? calibrations, CalibrationRecorder? recorder)
     {
         var handlers = new CalibrationHandlers(catalog, runner, store, reviews, calibrations, recorder);

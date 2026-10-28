@@ -1,7 +1,8 @@
 using LouisAgent.Choices;
-using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Store;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Recording;
 
 namespace LouisAgent.Api.Admin.Replies;
 
@@ -19,7 +20,7 @@ internal static class AdminRunReplies
     extension(StoredRunRow)
     {
         /// <summary>The row for a run the store kept.</summary>
-        public static StoredRunRow Of(BenchmarkDocuments.Run r) => new(
+        public static StoredRunRow Of(EvalDocuments.Run r) => new(
             r.Id,
             r.Check,
             r.Repeat,
@@ -43,7 +44,7 @@ internal static class AdminRunReplies
         /// <summary>
         /// The row for the run the runner holds, with whether its recording kept everything once done.
         /// </summary>
-        public static LiveRunRow Of(BenchmarkRun run, BenchmarkRecorder.Result? stored = null) => new(
+        public static LiveRunRow Of(RunningEval run, EvalRecorder.Result? stored = null) => new(
             run.Id,
             run.Check,
             run.Repeat,

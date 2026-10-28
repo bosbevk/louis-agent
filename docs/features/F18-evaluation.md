@@ -1296,6 +1296,17 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **Step 7b (iii), the eval tests brought up before their move**: the same for the unit, integration and contract
   tests, and the evals tests that read the API's protocol. `BenchmarkProtocolExportTests` builds its lines from one
   helper, to stay under 400 lines with one property per line.
+- **Step 7b (iii), `Benchmarks/` becomes `Evals/`**: the API's eval code moves to `src/louis-agent.api/Evals/`
+  (`LouisAgent.Api.Evals.*`) in folders of six or fewer: `List/` (`EvalList`, was `BenchmarkCatalog`; `EvalEntry`,
+  was `BenchmarkCheck`; `EvalListing`), `Runs/` (`EvalProcess`, was `BenchmarkRunner`; `RunningEval`, was
+  `BenchmarkRun`; `EvalCalibration`) with `Start/`, `Protocol/` and `Kinds/` (the six enums), `Store/` (`IEvalStore`,
+  `InMemoryEvalStore`, `EvalDocuments`) with `Recording/` (`EvalRecorder`), `Mongo/` (`MongoEvalStore`, with
+  `Documents/`) and `Notes/`, `Reports/` with `Trends/`, and `Reviews/`, `Calibrations/`, `Export/` as they were. Every
+  other `Benchmark…` type is `Eval…`; the tests follow in `tests/louis-agent.api.tests/Evals/` and
+  `tests/louis-agent.api.integration-tests/Evals/`, the shared contracts as `EvalStoreContract`,
+  `EvalRunFieldsContract`, `EvalNotesContract`. Done with Rider's own refactorings (move, Adjust Namespaces, rename)
+  and `git mv`. Only C# names changed: routes, wire names, Mongo collections and fields are as they were. The
+  ratchets that name paths (`ApiNamesNoProductTests`, `PortalReadsNoScoreKeyTests`, `RepeatedNameTests`) follow.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
