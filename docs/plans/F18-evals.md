@@ -1020,6 +1020,15 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **3a (2026-10-28): the Mongo stores use typed collections over document records (ADR 0048); 7b's hand-written
+  mappers go** (Louis, reading `RunDocuments.ToBson`: "must use mongocollection"). One commit per collection, each
+  test first: the registration (`WireNameSerializer<TEnum>` and the UTC date handling) first, then runs,
+  conversations, turns, requests and notes, then the human-review and calibration stores. Prompts and slices are no
+  collections of their own: they live inside a run's document, so they become nested records of `RunDocument`. The
+  commits come after 3a's own (Louis's pick: 3a was already committed with the v2 shape), each byte-equal to what 3a
+  writes, so a diff shows the mapping and never a shape change. ADR 0046 came from `main` (PR #94), merged into the
+  branch, so 0048 links it.
+
 - **Step 7c.3's design** (Louis, 2026-10-28, cards before 3a).
   - **The keys go into the contract**: `ConversationKey` beside `TurnKey` in `Parts/Conversations`, and `TurnKey`
     and `ConversationEvent` get a `[JsonIgnore]` property that gives the conversation's key. The API and the harness
