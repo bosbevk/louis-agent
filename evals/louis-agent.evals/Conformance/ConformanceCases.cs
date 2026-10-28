@@ -1,5 +1,6 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
 

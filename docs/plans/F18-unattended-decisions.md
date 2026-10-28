@@ -740,3 +740,20 @@ Sources: Fowler, *Refactoring*, "Remove Dead Code"; ADR 0007; 3a's trend definit
 guide's rule for ADR 0048, the TODO (CL22 folded into F18, the `puls_calls` alias line gone), `run-the-evals.md` for
 v2, and the plan's 7c row. The plan's table had no 7c row (7c lived under *Approved during the build*), so the row
 was added and marked done, as Part C adds its 7d row; nothing new went under *Approved during the build*.
+
+### R2-5. 7d touches `Datasets/`, a folder on `FolderSizeTests`' waiting list (Part C)
+
+**What came up.** `evals/louis-agent.evals/Datasets` held nine files and is on the oversized list, whose rule (plan,
+*Approved during the build*, "Two ratchets") is that a listed folder is split by concern when a step next touches
+it. 7d changes its loader and adds the scenario file's records.
+
+- **A. Split it first, moves only.** `Datasets/Manifest/` (`DatasetManifest`, `DatasetHash`), `Datasets/Scenarios/`
+  (`EvalScenario`, `EvalInput`, `DatasetSplit`); the loader, `Dataset`, `EvalFiles` and `RunSplits` stay; the new
+  file records go in `Datasets/Samples/`; the folder leaves the list. Costs: a commit that moves five types (Rider's
+  move-to-namespace, about 60 files' usings).
+- **B. New records in a subfolder, the rest left.** Costs: the touched folder stays at nine, against the rule.
+- **C. Fold the new records into `DatasetLoader.cs`.** Costs: no new files, but the loader grows by the file shape and
+  the folder still isn't split.
+
+Sources: the plan's ratchet entry; ADR 0010 (folders by concern); Fowler, *Refactoring*, "Move Function". **Pick: A**:
+the rule says so, and the move is mechanical (Rider follows every reference). Commit: step 7d (1).

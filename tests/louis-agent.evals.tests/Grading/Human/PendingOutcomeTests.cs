@@ -3,6 +3,7 @@ using System.Text.Json;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Grading.Outcomes;

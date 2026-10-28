@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;

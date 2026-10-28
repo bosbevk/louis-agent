@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;

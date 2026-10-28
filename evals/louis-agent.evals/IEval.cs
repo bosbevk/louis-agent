@@ -2,6 +2,8 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Manifest;
+using LouisAgent.Evals.Datasets.Scenarios;
 
 namespace LouisAgent.Evals;
 

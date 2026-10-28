@@ -2,6 +2,8 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Manifest;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;

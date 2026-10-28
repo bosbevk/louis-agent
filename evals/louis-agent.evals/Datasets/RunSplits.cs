@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Datasets;

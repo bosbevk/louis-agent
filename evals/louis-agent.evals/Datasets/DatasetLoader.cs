@@ -4,6 +4,8 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Choices;
+using LouisAgent.Evals.Datasets.Manifest;
+using LouisAgent.Evals.Datasets.Scenarios;
 
 namespace LouisAgent.Evals.Datasets;
 

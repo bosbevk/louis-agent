@@ -6,6 +6,7 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;
 using LouisAgent.Evals.Puls.Tests.Shared.Grading;
 

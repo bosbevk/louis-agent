@@ -29,7 +29,6 @@ public class FolderSizeTests
     private static readonly HashSet<string> Oversized =
     [
         "evals/louis-agent.evals/Api",
-        "evals/louis-agent.evals/Datasets",
         "evals/louis-agent.evals/Running",
         "louis-agent.core/Pricing/Prices",
         "louis-agent.core/Tools/Agents/SubSessions",

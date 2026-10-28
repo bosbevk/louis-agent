@@ -6,6 +6,7 @@ using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading.Outcomes;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Reports;

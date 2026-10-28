@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Manifest;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Outcomes;

@@ -15,6 +15,7 @@ using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 
 namespace LouisAgent.Evals.Tests.Running;
 

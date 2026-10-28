@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Datasets;
+namespace LouisAgent.Evals.Datasets.Manifest;
 
 /// <summary>
 /// A dataset's <c>dataset.json</c>: its name and version, what it covers, the hash of its scenarios, and a dated line per

@@ -9,6 +9,8 @@ using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Core.Messages;
+using LouisAgent.Evals.Datasets.Manifest;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
 namespace LouisAgent.Evals.Runner.Tests.Catalog;

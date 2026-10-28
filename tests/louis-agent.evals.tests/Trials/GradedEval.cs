@@ -1,5 +1,6 @@
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;

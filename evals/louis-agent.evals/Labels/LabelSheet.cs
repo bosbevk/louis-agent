@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Evals.Protocol.Parts.Conversations;

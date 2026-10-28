@@ -1,6 +1,7 @@
 using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Manifest;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
 using LouisAgent.Evals.Protocol;

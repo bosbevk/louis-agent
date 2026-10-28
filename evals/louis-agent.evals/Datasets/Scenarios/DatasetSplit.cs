@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Datasets;
+namespace LouisAgent.Evals.Datasets.Scenarios;
 
 /// <summary>
 /// Which folder a scenario is in: <c>Dev</c> is tuned against, <c>HeldOut</c> runs only before a release, so a prompt is never

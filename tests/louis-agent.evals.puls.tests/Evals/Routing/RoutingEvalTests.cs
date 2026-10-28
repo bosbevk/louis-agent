@@ -4,6 +4,7 @@ using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.SessionStream;
 using LouisAgent.Evals.Puls.Evals.Routing;

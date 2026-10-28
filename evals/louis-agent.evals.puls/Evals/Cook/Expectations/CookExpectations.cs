@@ -4,6 +4,7 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Puls.Shared.Expectations;
 using LouisAgent.Choices;
+using LouisAgent.Evals.Datasets.Scenarios;
 
 namespace LouisAgent.Evals.Puls.Evals.Cook.Expectations;
 

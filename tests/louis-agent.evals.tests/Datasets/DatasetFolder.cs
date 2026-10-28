@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Manifest;
 
 namespace LouisAgent.Evals.Tests.Datasets;
 

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Puls.Messages;
 
 namespace LouisAgent.Evals.Puls.Shared.Expectations;

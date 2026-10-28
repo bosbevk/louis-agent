@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace LouisAgent.Evals.Datasets;
+namespace LouisAgent.Evals.Datasets.Manifest;
 
 /// <summary>
 /// The hash of a dataset's scenarios (F18 step 3a): SHA-256 over every file under <c>scenarios/</c>, in ordinal order of their

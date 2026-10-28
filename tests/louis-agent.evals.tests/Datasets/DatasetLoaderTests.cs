@@ -1,4 +1,6 @@
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Manifest;
+using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
