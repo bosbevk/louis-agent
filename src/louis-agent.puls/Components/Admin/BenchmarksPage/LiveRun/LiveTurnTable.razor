@@ -1,0 +1,37 @@
+@* A row per turn, grouped by conversation, with the conversation's score chips under its turns; a click opens the
+   turn below the table. *@
+
+<div class="table-wrap">
+    <table class="run-table">
+        <thead>
+            <tr><th>Mode</th><th>Conversation</th><th>Turn</th><th>Role</th><th>Calls</th><th>Sec</th><th>Cost</th></tr>
+        </thead>
+        <tbody>
+            @foreach (var group in Turns.Conversations())
+            {
+                foreach (var row in group)
+                {
+                    var rowKey = row.Key;
+                    <tr class="@(row == Turns.Open ? "selected" : "") @(row.Error is not null ? "failed" : "")" @onclick="() => OnOpen.InvokeAsync(rowKey)" style="cursor: pointer">
+                        <td>@row.Mode@(Run.Repeat > 1 ? $" ·{row.Repeat}" : "")</td>
+                        @* Louis: what was asked, beside the conversation's name; turn 2's row shows its follow-up. *@
+                        <td class="conv-cell"><code>@row.Task</code><small title="@row.Turn.UserText">@RunText.Blurb(row.Turn.UserText)</small></td>
+                        <td>@row.N</td>
+                        <td>@row.RoleText</td>
+                        <td>@(row.Done ? $"{row.PulsCalls} · {row.SpecialistCalls}" : "")</td>
+                        <td>@row.SecondsText</td>
+                        <td>@(row.Done ? RunText.Money(Turns.CostOf(rowKey), Currency) : "")</td>
+                    </tr>
+                    @if (!row.Done && Run.Status == "running")
+                    {
+                        <tr><td colspan="7"><span class="chip busy">typing…</span></td></tr>
+                    }
+                }
+                if (Turns.ChipsOf(group.Key.Mode, group.Key.Repeat, group.Key.Task) is { } chips)
+                {
+                    <tr class="summary"><td colspan="7"><span class="tree-chips">@foreach (var chip in chips) { <span class="chip @chip.Kind">@chip.Text</span> }</span></td></tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

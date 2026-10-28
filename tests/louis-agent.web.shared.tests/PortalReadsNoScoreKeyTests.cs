@@ -3,12 +3,15 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Web.Shared.Tests;
 
 /// <summary>
-/// The portal shows every eval the same way, from the standard records (F18 step 4.5): no view reads a conversation's scores
-/// (an eval's own keys) or tests a task's name. A ratchet, as <see cref="RazorHasNoCodeTests"/> is: the files that still do today are
-/// listed in <see cref="ReadsScores"/>, a new one fails the test, and a listed file that no longer does fails too, so the list only
-/// shrinks; step 7c empties it when the scores split into grades and tracked metrics. The second test holds the new admin code to
-/// naming nothing of Puls (built to move: the admin becomes a package by a folder move).
+/// The portal shows every eval the same way, from the standard records (F18 step 4.5): no view reads a conversation's
+/// scores (an eval's own keys) or tests a task's name. And the admin's grades code names nothing of Puls, so the admin
+/// can become a package by a folder move.
 /// </summary>
+/// <remarks>
+/// A ratchet, as <see cref="RazorHasNoCodeTests"/> is: the files that still read scores today are listed in
+/// <see cref="ReadsScores"/>, a new one fails the test, and a listed file that no longer does fails too, so the list
+/// only shrinks; step 7c empties it when the scores split into grades and tracked metrics.
+/// </remarks>
 [TestFixture]
 public class PortalReadsNoScoreKeyTests
 {
@@ -34,14 +37,20 @@ public class PortalReadsNoScoreKeyTests
         "src/louis-agent.puls/Components/Admin/Grades",
     ];
 
-    /// <summary>Repo-relative, forward slashes; remove a file's line in the commit that stops it reading scores.</summary>
+    /// <summary>
+    /// Repo-relative, forward slashes; remove a file's line in the commit that stops it reading scores.
+    /// </summary>
     private static readonly HashSet<string> ReadsScores =
     [
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
-        "src/louis-agent.puls/Pages/Admin/Benchmarks.razor",
+        // The Benchmarks page's score chips, moved out of the page with the live run's table (step 7b (ii)).
+        "src/louis-agent.puls/Admin/LiveRuns/LiveTurns.cs",
         "src/louis-agent.api/Benchmarks/Reports/BenchmarkTrends.cs",
     ];
 
+    /// <summary>
+    /// No admin view reads an eval's own score keys unless it is still listed, and the list only shrinks.
+    /// </summary>
     [Test]
     public void AnAdminView_ReadsNoScoreKey_UnlessStillListed()
     {
@@ -61,6 +70,7 @@ public class PortalReadsNoScoreKeyTests
         });
     }
 
+    /// <summary>The admin's grades code names nothing of Puls, so it can move out as a folder.</summary>
     [Test]
     public void TheGradesFolders_NameNothingOfPuls()
     {
@@ -72,7 +82,10 @@ public class PortalReadsNoScoreKeyTests
             + string.Join("\n  ", naming));
     }
 
-    /// <summary>A folder that isn't there fails, never scans as empty: step 7b renames the API's <c>Benchmarks/</c>, and this list must follow it.</summary>
+    /// <summary>
+    /// The C# and Razor files in a folder. A folder that isn't there fails, never scans as empty: step 7b renames the
+    /// API's <c>Benchmarks/</c>, and this list must follow it.
+    /// </summary>
     private static IEnumerable<string> Files(string folder)
     {
         string dir = Path.Combine(TestPaths.RepoRoot, folder.Replace('/', Path.DirectorySeparatorChar));
@@ -84,5 +97,6 @@ public class PortalReadsNoScoreKeyTests
                         && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"));
     }
 
+    /// <summary>A file's path from the repo's root, with forward slashes, as the lists write it.</summary>
     private static string Relative(string file) => Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('\\', '/');
 }

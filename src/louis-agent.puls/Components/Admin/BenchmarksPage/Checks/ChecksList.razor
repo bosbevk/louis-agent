@@ -1,0 +1,18 @@
+@* One fold for all the checks (Louis: "do not roll up 3 times, have one that rolls up them all"): folded, each card
+   keeps its head (name, status, manual) and loses its body. *@
+
+<div class="checks-head">
+    <span class="sidebar-label">Checks · @Checks.Count</span>
+    <button type="button" class="checks-toggle @(_open ? "open" : "")" aria-expanded="@_open" title="@(_open ? "Fold the checks" : "Unfold the checks")" @onclick="Toggle">
+        <span class="chevron" aria-hidden="true"></span>
+    </button>
+    <span class="muted checks-hint">Click a check to see its runs below.</span>
+</div>
+<div class="cards">
+    @foreach (var check in Checks)
+    {
+        <CheckCard @key="check.Id" Check="check" Runs="Runs" Trend="TrendOf(check.Id)" Open="_open"
+                   Selected="@(Selected == check.Id)" Running="Running" CanRun="CanRun" Currency="Currency"
+                   OnSelect="OnSelect" OnManual="OnManual" OnRun="OnRun" />
+    }
+</div>

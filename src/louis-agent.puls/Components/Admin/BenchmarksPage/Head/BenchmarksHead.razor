@@ -1,0 +1,17 @@
+@* The page's head: its name and what it is for, the store's pill, and the Reload button. *@
+
+<div class="page-head">
+    <div>
+        <h1>Benchmarks</h1>
+        <p>The checks that measure Puls. Every run is kept in the store and priced from the ledger.</p>
+    </div>
+    <div class="page-actions">
+        @if (Store is { } store)
+        {
+            <span class="store-pill @(StoreStatus.Up(store) ? "up" : "down")" title="@StoreStatus.Title(store)">
+                <span class="dot" aria-hidden="true"></span>@StoreStatus.Label(store)
+            </span>
+        }
+        <button class="header-button" type="button" @onclick="OnReload" disabled="@Loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>

@@ -1,10 +1,15 @@
 namespace LouisAgent.Core.Tests;
 
-// docs/CLAUDE.md, "Separate by concern": a file holds at most 200 lines of code, a test file 400 (blank and comment
-// lines don't count, ADR 0044); a bigger class is split by
-// responsibility. A ratchet (S, CL15): the files over their limit today are listed in Oversized, a new one fails the
-// test, and a listed file that has come under its limit fails too, so the list can only shrink until it is deleted and
-// the test is a plain rule. Counted from the source files, bin/ and obj/ skipped.
+/// <summary>
+/// Keeps files small enough to read: at most 200 lines of code, a test file 400 (blank and comment lines don't count).
+/// A bigger class is split by what it does (docs/CLAUDE.md, *Separate by concern*).
+/// </summary>
+/// <remarks>
+/// A ratchet (S, CL15): the files over their limit today are listed in Oversized, a new one fails the test, and a
+/// listed file that has come under its limit fails too, so the list can only shrink until it is deleted and the test
+/// is a plain rule. Counted from the source files, bin/ and obj/ skipped.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0044-the-size-limit-counts-code.md">ADR 0044: the size limit counts code</seealso>
 public class FileSizeTests
 {
     private const int SourceLimit = 200;
@@ -35,7 +40,6 @@ public class FileSizeTests
         "src/louis-agent.orchestrator/Program.cs",
         "src/louis-agent.orchestrator/Tools/ServiceTools.cs",
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
-        "src/louis-agent.puls/Pages/Admin/Benchmarks.razor",
         "src/louis-agent.puls/Pages/ChatPage.razor.cs",
         "src/louis-agent.web/Pages/ChatPage.razor.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/DevOps/DevOpsToolsTests.cs",
@@ -43,6 +47,9 @@ public class FileSizeTests
         "tools/louis-agent.usage-probe/Program.cs",
     ];
 
+    /// <summary>
+    /// No file is over its limit unless it is still listed, and a listed file that has come under it is taken off.
+    /// </summary>
     [Test]
     public void AFile_HoldsAtMost200Lines_ATestFile400_UnlessStillOversized()
     {
@@ -77,6 +84,7 @@ public class FileSizeTests
     internal static int CountCodeLines(IEnumerable<string> lines) =>
         lines.Select(line => line.TrimStart()).Count(line => line.Length > 0 && !line.StartsWith("//"));
 
+    /// <summary>What the build wrote (bin/, obj/) isn't ours to size.</summary>
     private static bool InBuildOutput(string path) =>
         path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}");

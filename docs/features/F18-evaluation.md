@@ -1198,6 +1198,18 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (NUnit tests). The page reads the run once as `StoredRunReply` and the list as `BenchmarkListReply`; its panels still
   take the same JSON (finding 6). `BenchmarkRunHeadTests` pinned the head first (`BenchmarkRun.head.html`), and the
   page's refetch tests (ADR 0042) still pass.
+- **Part 3: `Benchmarks`.** The page is markup plus a code-behind that keeps only the list: it reads
+  `BenchmarkListReply`, `LiveRunRow` and `ManualReply`, and hands each card's trend to the chart as the same JSON
+  (finding 6). Its parts are components in `Components/Admin/BenchmarksPage/` (`Head/`: the head, the key gate, the
+  store banner; `Checks/`: the cards, a card, the manual; `LiveRun/`: the run in progress and its table; `Runs/`: the
+  chosen check's runs). The run in progress follows itself and tells the page when it ends (finding 8); its table is
+  a plain `LiveTurns` class reading the script's events as a `RunEvent` record with a `RunEventKind`, the score chips
+  are `ScoreChips`, and the rows of the runs list are built with `RunSummary.Of` (finding 7). The text and choices
+  moved to `RunText`, `CheckRuns` and `StoreStatus`, and the start-run body is `StartRunBody` (finding 9), all with
+  NUnit tests. `BenchmarksPageTests` pinned the page first over a stub API (a live run picked up and followed to its
+  end, two checks, a trend, a store that doesn't answer, the manual: `Benchmarks.html`, `Benchmarks.manual.html`) and
+  still matches. The old heading's Razor-as-text bug is kept for that commit and fixed in the next (finding 10).
+  `PortalReadsNoScoreKeyTests` lists `LiveTurns.cs` where it listed the page: the same score reads, moved.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

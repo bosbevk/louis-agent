@@ -1,0 +1,33 @@
+@* The selected check's runs, newest first; nothing until a check is chosen (Louis). *@
+
+<section class="card-p runs-list">
+    <div class="card-head">
+        <strong>Runs@if (chosen is not null) { <span> · </span><code>@Check?.Id</code> }</strong>
+        @if (_list.Models.Count > 0)
+        {
+            <select class="model-filter" @bind="Model" aria-label="Model">
+                <option value="">All models</option>
+                @foreach (var model in _list.Models) { <option value="@model">@model</option> }
+            </select>
+        }
+        @if (Check is not null) { <span class="muted">@_list.Runs.Count @(_list.Runs.Count == 1 ? "run" : "runs")@(_list.Cost is { } cost ? $" · {RunText.Money(cost, Currency)} together" : "")</span> }
+    </div>
+    @if (Check is null)
+    {
+        <p class="muted">Click a check above to see its runs.</p>
+    }
+    else if (_list.Runs.Count == 0)
+    {
+        <p class="muted">No runs for this check yet.</p>
+    }
+    else
+    {
+        <div class="runs-head" aria-hidden="true"><span>Run</span><span>Started</span><span>Repeats</span><span>Status</span><span class="num">Requests</span><span></span><span class="num">Cost</span></div>
+        <ol class="runs">
+            @foreach (var run in _list.Shown)
+            {
+                <RunListItem Run="run" Currency="Currency" Disabled="Running" OnRescored="OnRescored" />
+            }
+        </ol>
+    }
+</section>

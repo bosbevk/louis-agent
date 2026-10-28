@@ -148,3 +148,82 @@ and about twenty readers that pick it apart by name. ADR 0045 wants the whole po
 **Why 1.** It keeps each commit reviewable and moves every reader to the record in the end. **Commit:** the
 `BenchmarkRun` commit of Part 3; the children follow one by one as far as this run gets (the final report says how
 far).
+
+### 7. The runs list's rows: switch them to the contract's record, or build them from it (Part 3, `Benchmarks`)
+
+**What came up.** The page now reads the list as `BenchmarkListReply`, whose runs are `StoredRunRow`s. But the run's
+row (`RunListItem`), the cost estimate (`RunEstimate`) and the model filter were written and tested for the page's
+own small `RunSummary` (id, check, repeats, status, start, total, store error, model names, re-scored from).
+
+1. **A factory on the small record, `RunSummary.Of(StoredRunRow)` (picked).** Pattern: Fowler's *Replace Constructor
+   with Factory Function*, the `Record.Of` the guide names. Changes: one method with its tests; the page maps the
+   list once when it reads it. Costs: two shapes of a stored run in the browser app until the children move.
+2. **Switch `RunListItem`, `RunEstimate` and their tests to `StoredRunRow`.** Changes: three classes and three test
+   files in this commit. Costs: a page commit that rewrites children, against finding 6's rule of one child per
+   commit; the tests build fifteen-field rows where they need five.
+3. **Let the page keep `RunSummary` and read it from the JSON by name, as before.** Costs: the page picks a
+   `JsonElement` apart, which the brief rules out.
+
+**Why 1.** It keeps the page on the contract and the children untouched, and the mapping is one tested place to
+delete when the children move. Sources: Fowler, *Refactoring* 2nd ed., *Replace Constructor with Factory Function*;
+ADR 0045. **Commit:** the `Benchmarks` commit of Part 3.
+
+### 8. Where the run in progress lives once the page splits (Part 3, `Benchmarks`)
+
+**What came up.** Following a run (its event stream, the table of turns, the open turn, the costs at the end) was
+about half the page's code. The page starts a run (a card's button), resumes one (a reload) and follows a re-score
+(a run's row); the panel shows it.
+
+1. **The panel follows the run; the page only hands it over and hears when it ends (picked).** The page sets the run
+   (and whether to read the store first); `LiveRunPanel` streams it, keeps its table in a plain `LiveTurns` class,
+   and raises `OnEnded` with the finished run, after which the page reads the list again. Pattern: Blazor's
+   parameters down, `EventCallback` up (Microsoft, *ASP.NET Core Razor components*, "EventCallback"), with the state as
+   a plain class (Fowler's *Extract Class*). Changes: a component that owns its stream, and a tested class. Costs:
+   the following runs in the panel's `OnParametersSetAsync`, keyed on the run's id, so handing it the same run again
+   doesn't follow it twice.
+2. **The page follows, the panel only draws.** The page keeps the stream and passes `LiveTurns` down. Changes: the
+   page's code-behind stays the owner. Costs: the page's code-behind goes back over 200 lines, holding two concerns
+   (the list and the live run).
+3. **A scoped service for the live run**, injected into both, with a `Changed` event (as `RunNotesState`). Changes:
+   a new service registered in `Program.cs`. Costs: a run's state outlives the page (a second tab, a navigation away),
+   which nothing asks for; more moving parts for one page.
+
+**Why 1.** It gives each part one concern (the page the list, the panel the run) and keeps the rule that a component
+never reaches into its page. Sources: Microsoft Learn, *ASP.NET Core Razor components* ("Component parameters",
+"EventCallback"); Fowler, *Refactoring* 2nd ed., *Extract Class*. **Commit:** the `Benchmarks` commit of Part 3.
+
+### 9. The page's start-run body: a record of its own, or the API's moved to the contract (Part 3, `Benchmarks`)
+
+**What came up.** The page posted `new { repeat = … }`, which the guide now rules out (*never an anonymous object*).
+The API reads it as its own internal `StartRunRequest(Repeat, Web, Replay)`, which parses the eval's web settings.
+
+1. **A named body in the browser app, `StartRunBody(Repeat)` (picked).** Changes: one record and a test of its wire
+   shape. Costs: the API and the page each name the body; a rename on one side is caught by the test only for the
+   page's side.
+2. **Move `StartRunRequest` to the contract now.** Changes: the API's endpoint file and its parsing, in a page
+   commit. Costs: finding 3 already put the bodies' move "when a change touches them" on the API's side; this
+   commit doesn't touch the API.
+3. **Send a `StartRequest` (check and repeats) as it is.** Costs: a stray `check` and a field named `repeats` that
+   the API doesn't read; the run would start with one repeat.
+
+**Why 1.** It meets the rule in this commit without reaching into the API, and finding 3's move takes it over when the
+API's body changes. Sources: the guide's *JSON through records*; finding 3. **Commit:** the `Benchmarks` commit of
+Part 3.
+
+### 10. The runs list's heading printed Razor code as text (Part 3, `Benchmarks`)
+
+**What came up.** The old page's `<strong>Runs@if (chosen is not null) { … }</strong>`: Razor reads `Runs@if` as an
+e-mail address, so the heading shows "Runs@if (chosen is not null) { · eval-beta }", and with no check chosen
+`@chosen.Id` would throw. The pin (`Benchmarks.html`) was written from the old page, so it holds the bug.
+
+1. **Keep it through the rebuild, then fix it in the next commit with the golden's one-line diff (picked).** Changes:
+   the rebuild proves itself against the untouched golden; the fix is its own commit. Costs: the rebuild carries the
+   bug's text on purpose for one commit.
+2. **Fix it in the rebuild's commit.** Costs: the golden changes in the same commit as the split, so the pin no
+   longer proves the split kept the page.
+3. **Fix it first, before the pin.** Costs: the golden is no longer the old page's markup, and the fix has no pin
+   before it.
+
+**Why 1.** Each commit proves one thing: the split changes nothing, then the fix changes one line. Sources: Fowler,
+*Refactoring* 2nd ed. ("the two hats": refactor or add behaviour, never both at once). **Commit:** the `Benchmarks`
+commit of Part 3, and the fix after it.
