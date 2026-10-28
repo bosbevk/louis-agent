@@ -1666,6 +1666,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   is there only so a field added later never breaks a read. The rule is ADR 0049 (nothing is backward compatible
   until something is sold in production), written and added to the guide's rules in the same commit. No test to
   write first: only cases go.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 4: the turns.** `MongoTurnStore` holds an
+  `IMongoCollection<TurnDocument>`; the id (run, mode, repeat, task, turn) is `TurnIdDocument`, the tools'
+  summary `ToolsDocument` with its `ToolFailureDocument`s, and each stream event an `EventDocument` whose data is a
+  `BsonValue` (the stream decides its shape, which ADR 0048 allows); the two JSON converters only the turns used
+  moved out of `BsonValues` into it. The conversation's turns are read with the events projected out, and a turn's
+  events with only them projected in, both typed. Only `agent_calls` is read: the `puls_calls` alias went with its
+  test (`StoredTurnTests`) and its exemption in `ApiNamesNoProductTests` (ADR 0049), and a failure the build doesn't
+  know is refused, as every stored enum is (Louis's pick; the old reader read it as none). `MongoEvalDatabase.ById`
+  went, the turns being its last user. `TurnDocumentTests`: the byte-equal write against two fixtures the old mapper
+  wrote (`turn-full.json`, its events holding every kind of JSON value; `turn-bare.json`), the round trip of the
+  turn and of its events, and the two projections' shapes read locally, since the Mongo contract tests run in CI.
+  Red first: 5 of 5 against a stub; the two projection cases were added after and passed first time. Left for step
+  5: the portal's live view (`LiveTurn`, `RunEvent`) still reads the runner's old `puls_calls`, and the harness's
+  `TurnFacts` summary still names it.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

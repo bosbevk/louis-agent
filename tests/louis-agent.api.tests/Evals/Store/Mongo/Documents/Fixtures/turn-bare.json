@@ -1,0 +1,29 @@
+{
+  "_id" : {
+    "run" : "run123456789",
+    "mode" : "mode-beta",
+    "repeat" : { "$numberInt" : "1" },
+    "task" : "cook-en",
+    "turn" : { "$numberInt" : "1" }
+  },
+  "run" : "run123456789",
+  "mode" : "mode-beta",
+  "repeat" : { "$numberInt" : "1" },
+  "task" : "cook-en",
+  "turn" : { "$numberInt" : "1" },
+  "session" : "sess_1",
+  "question" : "Bobotie?",
+  "answer" : null,
+  "role" : null,
+  "continued" : null,
+  "agent_calls" : { "$numberInt" : "0" },
+  "specialist_calls" : { "$numberInt" : "0" },
+  "hosts" : [],
+  "seconds" : { "$numberDouble" : "0.0" },
+  "error" : null,
+  "failure" : null,
+  "tools" : null,
+  "asked_at" : null,
+  "ended_at" : null,
+  "events" : []
+}

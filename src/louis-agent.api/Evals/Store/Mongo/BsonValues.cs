@@ -1,20 +1,15 @@
-using System.Text.Json;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 
 namespace LouisAgent.Api.Evals.Store.Mongo;
 
 /// <summary>
-/// Turns our single values into Mongo's and back for the hand-written mappers still left (the turns' and the
-/// requests'): times, numbers that may be missing, and raw JSON, so a missing value is written and read the same way
-/// in each. It shrinks as each collection moves to its document record.
+/// Turns our single values into Mongo's and back for the last hand-written mapper, the requests': times and numbers
+/// that may be missing, so a missing value is written and read the same way. It goes when the requests move to their
+/// document record.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 internal static class BsonValues
 {
-    /// <summary>How BSON is written back out as JSON.</summary>
-    private static readonly JsonWriterSettings RelaxedJson = new() { OutputMode = JsonOutputMode.RelaxedExtendedJson };
-
     /// <summary>A time as a Mongo date in UTC; nothing stays nothing.</summary>
     public static BsonValue Date(DateTimeOffset? at) =>
         at is { } value ? new BsonDateTime(value.UtcDateTime) : BsonNull.Value;
@@ -41,17 +36,4 @@ internal static class BsonValues
 
     /// <summary>The stored money-sized number, if there is one.</summary>
     public static decimal? DecimalOf(BsonValue value) => value.IsBsonNull ? null : value.ToDecimal();
-
-    /// <summary>
-    /// Any JSON value as BSON. It's wrapped in an object and unwrapped again, because BSON's root must be a document.
-    /// </summary>
-    public static BsonValue Bson(JsonElement json) => BsonDocument.Parse($$"""{"v":{{json.GetRawText()}}}""")["v"];
-
-    /// <summary>A BSON value turned back into the JSON it came as.</summary>
-    public static JsonElement Json(BsonValue bson)
-    {
-        // Wrapped the same way as on the way in, then the wrapper is read off again.
-        using var document = JsonDocument.Parse(new BsonDocument("v", bson).ToJson(RelaxedJson));
-        return document.RootElement.GetProperty("v").Clone();
-    }
 }

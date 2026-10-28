@@ -8,10 +8,10 @@ namespace LouisAgent.Api.Tests;
 /// </summary>
 /// <remarks>
 /// It was a ratchet while the rename ran (a waiting list that could only shrink, as FileSizeTests has); the list is
-/// empty now, so it's a plain rule. Two exceptions stay on purpose, in Allowed: the project file picks Puls's web app
-/// until Phase 9 moves the web apps out, and the key <c>puls_calls</c> is still read (a stored turn's alias, and the
-/// eval protocol's own field until CL22 versions it), so old runs keep their counts. The product names come from the
-/// identities folder, so a new identity is checked with no change here.
+/// empty now, so it's a plain rule. One exception stays on purpose, in Allowed: the project file picks Puls's web app
+/// until Phase 9 moves the web apps out. The stored turn's old <c>puls_calls</c> key went with ADR 0049: nothing reads
+/// an older shape before a sale. The product names come from the identities folder, so a new identity is checked with
+/// no change here.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0037-one-agent-api-products-get-a-front-door.md">ADR 0037: one agent API; products get a front door</seealso>
 public class ApiNamesNoProductTests
@@ -26,13 +26,11 @@ public class ApiNamesNoProductTests
     [
         // The API serves Puls's web app when built with -p:WebApp=puls, until Phase 9 gives each product its own host.
         ("src/louis-agent.api/louis-agent.api.csproj", null),
-        // Turns stored before the rename, and the eval protocol's lines, say puls_calls; read until a TODO line.
-        (null, "puls_calls"),
     ];
 
-    /// <summary>Nothing in the API names a product, except the two allowed on purpose.</summary>
+    /// <summary>Nothing in the API names a product, except what is allowed on purpose.</summary>
     [Test]
-    public void TheApi_NamesNoProduct_ExceptItsTwoAllowedNames()
+    public void TheApi_NamesNoProduct_ExceptWhatIsAllowed()
     {
         var found = ProductWords().Where(hit => !IsAllowed(hit)).Select(hit => $"{hit.File}: {hit.Word}").Distinct()
             .Order().ToList();
@@ -62,7 +60,7 @@ public class ApiNamesNoProductTests
     /// <summary>Every word in the API's code and project files that has a product's name in it.</summary>
     private static IEnumerable<(string File, string Word)> ProductWords()
     {
-        // One pattern per product: the whole word around the name, so PulsCalls and puls_calls are told apart.
+        // One pattern per product: the whole word around the name, so a hit names the word that holds it.
         var patterns = Products().Select(p => new Regex($"[A-Za-z0-9_']*{Regex.Escape(p)}[A-Za-z0-9_']*",
             RegexOptions.IgnoreCase)).ToList();
 
