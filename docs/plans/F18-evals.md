@@ -1051,6 +1051,8 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   - **`stub-run.txt` regenerates in 2c**, not 2f, so 2c is green (Louis, 2026-10-28, card).
   - **Nothing is pushed from 2c until step 3 lands** (Louis, 2026-10-28, card): `StubCheckTests` (api integration)
     reads the real runner through the API's v1 reader, which can't read v2 until step 3; no test is switched off.
+    **Lifted after 2f for review** (Louis, 2026-10-28, card): 2a to 2f are pushed so they can be reviewed, with CI's
+    integration step red (`StubCheckTests`, 3 tests) until step 3 lands; the unit tests and formatting stay green.
   - **2d drops the score keys no grader covers** (Louis, 2026-10-28, card): the cook's sources, prices, follow-up and
     the rest go with `CookScores`, and no grader is written for them now; a `local-sources` grader comes once F35's
     recipe sources land (the TODO's F35 line).
