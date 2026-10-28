@@ -1,0 +1,45 @@
+{
+  "_id" : {
+    "run" : "run123456789",
+    "mode" : "mode-alpha",
+    "repeat" : { "$numberInt" : "2" },
+    "task" : "cook-af"
+  },
+  "run" : "run123456789",
+  "mode" : "mode-alpha",
+  "repeat" : { "$numberInt" : "2" },
+  "task" : "cook-af",
+  "order" : { "$numberInt" : "3" },
+  "role" : "role-alpha",
+  "metrics" : {
+    "agent_calls" : { "$numberInt" : "2" },
+    "specialist_calls" : { "$numberInt" : "6" },
+    "hosts" : ["www.checkers.co.za", "www.pnp.co.za"],
+    "turns" : { "$numberInt" : "2" },
+    "tokens_in" : { "$numberLong" : "1200" },
+    "tokens_out" : { "$numberLong" : "340" },
+    "seconds" : { "$numberDouble" : "12.5" },
+    "cost" : { "$numberDecimal" : "0.0421" }
+  },
+  "errors" : { "$numberInt" : "1" },
+  "seconds" : { "$numberDouble" : "14.25" },
+  "grades" : [{
+      "grader" : "meal-for-people",
+      "version" : { "$numberInt" : "1" },
+      "score" : { "$numberDouble" : "0.5" },
+      "outcome" : "fail",
+      "reason" : "feeds two",
+      "judge_model" : "qwen3:8b",
+      "judge_prompt_hash" : "abc123def456"
+    }, {
+      "grader" : "no-error",
+      "version" : { "$numberInt" : "2" },
+      "score" : { "$numberDouble" : "1.0" },
+      "outcome" : "pass",
+      "reason" : "ok",
+      "judge_model" : null,
+      "judge_prompt_hash" : null
+    }],
+  "outcome" : "fail",
+  "at" : { "$date" : { "$numberLong" : "1793174400125" } }
+}

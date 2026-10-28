@@ -1,17 +1,15 @@
 using System.Text.Json;
-using LouisAgent.Api.Messages;
-using LouisAgent.Choices;
-using LouisAgent.Core.Messages;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 
 namespace LouisAgent.Api.Evals.Store.Mongo;
 
 /// <summary>
-/// Turns our single values into Mongo's and back: times, numbers that may be missing, stored names and raw JSON. Each
-/// document mapper uses them, so a missing value is written and read the same way in every collection.
+/// Turns our single values into Mongo's and back for the hand-written mappers still left (the turns' and the
+/// requests'): times, numbers that may be missing, and raw JSON, so a missing value is written and read the same way
+/// in each. It shrinks as each collection moves to its document record.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 internal static class BsonValues
 {
     /// <summary>How BSON is written back out as JSON.</summary>
@@ -28,12 +26,6 @@ internal static class BsonValues
     /// <summary>A text, or Mongo's null when there is none. The same for the numbers below.</summary>
     public static BsonValue Nullable(string? value) => value is null ? BsonNull.Value : new BsonString(value);
 
-    /// <summary>A whole number, or Mongo's null.</summary>
-    public static BsonValue Nullable(int? value) => value is null ? BsonNull.Value : new BsonInt32(value.Value);
-
-    /// <summary>A decimal number, or Mongo's null.</summary>
-    public static BsonValue Nullable(double? value) => value is null ? BsonNull.Value : new BsonDouble(value.Value);
-
     /// <summary>A big whole number, or Mongo's null.</summary>
     public static BsonValue Nullable(long? value) => value is null ? BsonNull.Value : new BsonInt64(value.Value);
 
@@ -41,28 +33,11 @@ internal static class BsonValues
     public static BsonValue Nullable(decimal? value) =>
         value is null ? BsonNull.Value : new BsonDecimal128(value.Value);
 
-    /// <summary>
-    /// A stored name turned back into its enum, the way it was parsed on the way in. A name this build doesn't know
-    /// means a document it can't read, so it says which field and which name.
-    /// </summary>
-    public static T ChoiceOf<T>(BsonValue value, string field) where T : struct, Enum =>
-        SettingChoice.TryParse(value.AsString, out T? choice) && choice is { } known
-            ? known
-            : throw new InvalidDataException(MessageText.Format(ApiUserText.StoredNameUnknown,
-                new
-                {
-                    Field = field,
-                    Value = value.AsString
-                }));
-
     /// <summary>The stored text, if there is one.</summary>
     public static string? StringOf(BsonValue value) => value.IsBsonNull ? null : value.AsString;
 
     /// <summary>The stored whole number, if there is one.</summary>
     public static long? LongOf(BsonValue value) => value.IsBsonNull ? null : value.ToInt64();
-
-    /// <summary>The stored decimal number, if there is one.</summary>
-    public static double? DoubleOf(BsonValue value) => value.IsBsonNull ? null : value.ToDouble();
 
     /// <summary>The stored money-sized number, if there is one.</summary>
     public static decimal? DecimalOf(BsonValue value) => value.IsBsonNull ? null : value.ToDecimal();

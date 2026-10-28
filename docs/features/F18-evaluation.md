@@ -1648,6 +1648,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   field; `run-bare.json`, a run just started) that the old mapper wrote in canonical extended JSON, the names in
   them then swapped for the shared sample names (ADR 0043's scan): both ways, a stored run reads back as it was and
   a run is written as the old mapper wrote it. Red first: 4 of 4 against a stub. The Mongo contract tests run in CI.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 3: the conversations.** `MongoConversationStore` holds an
+  `IMongoCollection<ConversationDocument>`; the id (run, mode, repeat, task) is its own record,
+  `ConversationIdDocument`, so a save replaces by the whole id as before, and the index, filter and sort name their
+  fields through the record. `MetricsDocument` keeps the cost as a `Decimal128`; `GradeDocument` keeps the judge's
+  model and prompt hash. The hand-written `ConversationDocuments` went, and with it the parts of `BsonValues` only it
+  used (`ChoiceOf`, `DoubleOf`, `Nullable` of an `int?` and a `double?`); no call left passes those types, so none
+  binds to another overload. `MongoEvalStore`'s remarks no longer name the deleted mappers. `ConversationDocumentTests`
+  pins byte-equality with two fixtures the old mapper wrote (`conversation-full.json`, `conversation-bare.json`),
+  and a third written by hand (`conversation-older.json`): a document from before a conversation kept its outcome,
+  its time and its judges, which the old reader tolerated, reads with those empty. Red first: 5 of 5 against a stub.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
