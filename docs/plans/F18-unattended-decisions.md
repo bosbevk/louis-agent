@@ -563,3 +563,48 @@ image already takes the commit as `EVAL_COMMIT` (step 7a: `Dockerfile.puls`, `do
 **Why 1.** One name for one value, already documented; a later reader of the commit (a version endpoint, say) can
 rename it then. Sources: Docker, *Build variables* (`ARG`, `--build-arg`); Compose, *build.args*; Azure,
 `az acr build --build-arg`. **Commit:** step 7b, the images stamp their commit.
+
+## Report: where the run stopped
+
+Louis stopped the run at Part 6 (2026-10-28: "stop at part 6, leave unattended mode when you hit part 6"), so Part 6
+(step 7c, protocol v2) is not started; the paid runs and step 8 were never in scope. Every Part below was pushed
+after the whole solution built and every unit and integration test passed. Nothing is stashed.
+
+**Tests.** At the start (`a86b96e5`): 3,692 passed, 0 failed. At the end (`a79ce036`): **3,980 passed, 0 failed,
+78 skipped** (the integration tests that need MongoDB, Chrome, SearXNG or the network skip on this machine, as
+written; so the new MongoDB record stores of the store split were never run against a real MongoDB).
+
+| Part | Done | Commits (first … last) | Pushed |
+|---|---|---|---|
+| 1 · ADR 0045 on the admin endpoints | yes: the contract project, `ApiError`, typed answers on `AdminHandlers` | `8e18ffeb` … `3b86e7f7` | `a86b96e5..3b86e7f7` |
+| 2 · The endpoint sweep | yes: every endpoint file a handler class with declared answers, replies in the contract, JSON pinned first; folders by concern; CL20 ticked | `82b44beb` … `fa651dee` | `3b86e7f7..fa651dee` |
+| 3 · 7b (ii) the admin pages | yes: `ChartInfo`, `TrendChart`, `BenchmarkRun`, `Benchmarks`, `RunExplorer` markup with code-behind, under 200 lines, off both lists; review note settled (finding 5) | `3885b038` … `88830ac1` | `fa651dee..88830ac1` |
+| 4 · 7a.3 notes and prompt changes on the trend | yes: per-agent prompt hashes on the run, the markers in the API and the chart | `2934550a` … `9ba3b144` | `88830ac1..9ba3b144` |
+| 5 · 7b (i) and (iii), the store split, the build arg | yes: `GET /admin/evals` and its page; `Benchmarks/` to `Evals/`, ADR 0037, the ratchet, route aliases, `EVALS_MONGO_*`, `AGENT_API`, `agent_calls`; four record stores behind the `IEvalStore` facade; `EVAL_COMMIT` build arg | `3422478b` … `a79ce036` | `9ba3b144..a79ce036` |
+| 6 · 7c protocol v2 | **not started** (stopped by Louis) | | |
+
+**Findings** (each above with its three options, sources, pick and commit): 1 `Of` as C# 14 extension members;
+2 `CreatedJson` for a 201 on a snake_case wire; 3 the session request bodies stay in the API for now (a TODO line);
+4 Puls keeps its words in plain classes; 5 a trend line breaks at a gap; 6 the run page's children still take the run
+as JSON; 7–10 the Benchmarks page (rows from the record, the live run's panel, a named start body, the heading bug kept
+then fixed); 11–12 the explorer (shared chips, the replay's home); 13–16 the trend markers (a typed `Run.Prompts`, the
+agent from the task tag, which notes, where marks draw); 17–18 the eval list (a richer listing line; runs on the list,
+charts on the trend route); 19–23 the rename (the ratchet, bring-up before the move, route aliases, store settings,
+`puls_calls`); 24 the record stores behind an `IEvalStore` facade; 25 the build arg keeps the name `EVAL_COMMIT`.
+
+**Worth Louis's eye.**
+- Five commits fixed earlier ones in this run (never by rewriting history): long comment lines (`f838872d`), a missing
+  feature-doc line (`be5b3e6f`), strings that should have been enums (`54267013`), trend goldens that held South
+  African times and would have failed on CI (`632f4410`), and the Benchmarks heading bug (`49ab6a23`).
+- Tests written after their code, so never seen failing: `CreatedJsonTests`, `StoredRunHandlersTests`,
+  `SessionHandlersTests`; and some guard cases in 7a.3 that held before the code (the agent's report says which).
+- `CategoryTrendsTests` changed one expectation on purpose (finding 5: no stroke across a gap).
+- Still on JSON: the run page's child panels (finding 6); the Puls pages still call the old `/admin/benchmarks/…`
+  routes and read `BenchmarkListReply`; the Mongo contract tests and CI read only `BENCHMARKS_MONGO_URL` (TODO lines).
+- Folders still over about six files that the run added to rather than restructured: `tests/louis-agent.api.tests/
+  Endpoints` (24), `api.tests` root, `evals/…/Running`, `Admin/Replies`, the evals `Store/`.
+- Small things noted, not fixed: the bare `aria-checked`; the trend markers can't be reached by keyboard; a timing test
+  that flaked once under the full run; the namespace `Evals.Store.Runs` beside `Evals.Runs`; the contracts in
+  `Contracts/Records/` keep the namespace `LouisAgent.Api.Testing`.
+- Much of Parts 3 to 5 was done by subagents under the same rules and the same commit gate; every Part was checked here
+  with a whole-solution build and test run before it was pushed, but not every summary they wrote was read here.
