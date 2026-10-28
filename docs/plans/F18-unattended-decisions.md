@@ -12,6 +12,13 @@
 tests that need MongoDB, Chrome, SearXNG or the network skip themselves on this machine (71 in the api and core
 integration summaries, and the shops catalogue tests), as they are written to.
 
+## Observed along the way
+
+- **A timing test flaked once.** Before pushing Part 2, the whole-solution run failed
+  `EachEventRestartsTheIdleClock_SoALongTurnOfLiveEventsIsNotCutOff` (louis-agent.evals.tests) once; that project
+  alone passed three times straight after (322 of 322), and the run changed nothing under `evals/`. It looks like the
+  idle clock losing to a busy machine with every test project running at once; worth a look, not fixed here.
+
 ## Findings
 
 Each finding: what came up, three options (the pattern, what it changes, what it costs, the sources), the pick and
