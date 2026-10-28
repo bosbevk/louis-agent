@@ -2,6 +2,7 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Tests.Grading.Outcomes;
 

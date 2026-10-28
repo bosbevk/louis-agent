@@ -1,4 +1,5 @@
 using LouisAgent.Testing;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
@@ -50,9 +51,9 @@ public class EngineEventsTests
     public void AnInfrastructureFailureIsReportedApart()
     {
         // A timeout is the infrastructure's, not the agent's: it is reported as its own failure, and no error event.
-        Assert.That(EngineEvents.InfrastructureFailure(Turn(1, failure: TrialFailure.Timeout)),
-            Is.EqualTo(TrialFailure.Timeout));
-        Assert.That(EngineEvents.StreamedError(Turn(1, failure: TrialFailure.Timeout)), Is.False);
+        Assert.That(EngineEvents.InfrastructureFailure(Turn(1, failure: TurnFailure.Timeout)),
+            Is.EqualTo(TurnFailure.Timeout));
+        Assert.That(EngineEvents.StreamedError(Turn(1, failure: TurnFailure.Timeout)), Is.False);
         Assert.That(EngineEvents.InfrastructureFailure(Turn(1, [Text("Hallo")])), Is.Null);
     }
 

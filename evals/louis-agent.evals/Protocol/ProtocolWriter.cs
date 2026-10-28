@@ -7,9 +7,9 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Protocol.Parts.Run;
-using RunSplit = LouisAgent.Evals.Protocol.Kinds.RunSplit;
 
 namespace LouisAgent.Evals.Protocol;
 
@@ -77,7 +77,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// </summary>
     public void Turn(string mode, int repeat, string task, int turn, string session, string question, string? answer,
         string? role,
-        double seconds, TurnFacts? facts = null, TrialFailure? failure = null) =>
+        double seconds, TurnFacts? facts = null, TurnFailure? failure = null) =>
         Emit("turn", json =>
         {
             WriteTurnKey(json, mode, repeat, task, turn);
@@ -88,7 +88,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
             if (facts is not null) WriteFacts(json, facts);
             json.WriteNumber("seconds", seconds);
             if (facts is not null) WriteText(json, "error", facts.Error);
-            if (failure is not null) json.WriteString("failure", failure.Value.Wire());
+            if (failure is not null) json.WriteString("failure", V1Words.Failure(failure.Value));
         });
 
     /// <summary>A conversation's result: the eval's scores, written as the JSON they are.</summary>

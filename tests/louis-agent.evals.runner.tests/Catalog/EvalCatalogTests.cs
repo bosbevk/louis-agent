@@ -3,6 +3,7 @@ using LouisAgent.Testing;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;

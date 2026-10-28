@@ -4,6 +4,7 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Labels;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Tests.Labels;

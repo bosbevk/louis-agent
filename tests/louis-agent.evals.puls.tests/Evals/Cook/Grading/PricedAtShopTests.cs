@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;
@@ -161,7 +162,7 @@ public class PricedAtShopTests
     {
         // The failed turn is a whole, right answer (the tool ran for the town, the prices link to the shop): without the infrastructure check it would pass.
         var failed = Trial(CookEvalMode, "cook-x", Checkers, null,
-            Turn(1, [FindsInMalmesbury, Text(CheckersList)], TrialFailure.Timeout));
+            Turn(1, [FindsInMalmesbury, Text(CheckersList)], TurnFailure.Timeout));
         var erred = Trial(CookEvalMode, "cook-x", Checkers, null, Turn(1, [Error()]));
 
         var failedGrade = await new PricedAtRetailer().GradeAsync(failed, CancellationToken.None);

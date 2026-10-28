@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Reports;
 

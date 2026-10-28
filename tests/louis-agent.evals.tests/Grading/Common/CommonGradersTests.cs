@@ -1,6 +1,7 @@
 using LouisAgent.Testing;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
@@ -42,7 +43,7 @@ public class CommonGradersTests
     public async Task NoError_IsUnknownForAnInfrastructureFailure()
     {
         // A timeout is reported apart and is Unknown: it is not the agent's error.
-        var grade = await GradeAsync(new NoErrorGrader(), Trial(Turn(1, failure: TrialFailure.Timeout)));
+        var grade = await GradeAsync(new NoErrorGrader(), Trial(Turn(1, failure: TurnFailure.Timeout)));
 
         Assert.That((grade.Outcome, grade.Score), Is.EqualTo((GradeOutcome.Unknown, 0.0)));
         Assert.That(grade.Reason, Does.Contain("Timeout"));
@@ -87,7 +88,7 @@ public class CommonGradersTests
     {
         // A timed-out turn's duration is the timeout, not the agent's time: the grader can't tell.
         var grade = await GradeAsync(new WithinTimeGrader(TimeSpan.FromSeconds(10)),
-            Trial(Turn(1, seconds: 60, failure: TrialFailure.Timeout)));
+            Trial(Turn(1, seconds: 60, failure: TurnFailure.Timeout)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
@@ -96,7 +97,7 @@ public class CommonGradersTests
     public async Task CostUnder_IsUnknownForAnInfrastructureFailure()
     {
         var grade = await GradeAsync(new CostUnderGrader(1m),
-            Trial(Turn(1, [Usage("0.25")], failure: TrialFailure.Timeout)));
+            Trial(Turn(1, [Usage("0.25")], failure: TurnFailure.Timeout)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
@@ -263,7 +264,7 @@ public class CommonGradersTests
     public async Task RoutedTo_IsUnknownForAnInfrastructureFailure()
     {
         var grade = await GradeAsync(new RoutedToGrader(_ => SampleRole.Alpha),
-            Trial(Turn(1, [Call(SampleRole.Alpha)], failure: TrialFailure.Timeout)));
+            Trial(Turn(1, [Call(SampleRole.Alpha)], failure: TurnFailure.Timeout)));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }

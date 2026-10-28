@@ -2,6 +2,7 @@ using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Labels;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Tests.Labels;
 

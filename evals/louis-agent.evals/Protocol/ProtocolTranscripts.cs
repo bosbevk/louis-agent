@@ -2,15 +2,17 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 
 namespace LouisAgent.Evals.Protocol;
 
 /// <summary>
-/// A conversation's transcript, read back from the protocol's own lines (F18 step 4.2b): each turn's events from its sse lines, and its
-/// session, question and duration from its turn line; a turn written twice (a retried trial) reads as its last attempt. The stream's error is the sse line's error event, as the API sent it; the turn
-/// line's own error field is the same error, and is not read twice.
+/// A conversation's transcript, read back from the protocol's own lines: each turn's events from its sse lines, and
+/// its session, question and duration from its turn line; a turn written twice (a retried trial) reads as its last
+/// attempt. The stream's error is the sse line's error event, as the API sent it; the turn line's own error field is
+/// the same error, and is not read twice.
 /// </summary>
 public static class ProtocolTranscripts
 {
@@ -40,11 +42,13 @@ public static class ProtocolTranscripts
         throw new InvalidDataException(MessageText.Format(EvalErrorMessage.NoModeLine));
     }
 
+    /// <summary>Gathers each kept turn's stream events and its turn line into a transcript, in turn order.</summary>
+    /// <remarks>A switch on the line's kind, one case per kind of turn line, read like a table.</remarks>
     private static Transcript Collect(IEnumerable<string> lines, Func<JsonElement, bool> keep)
     {
         var events = new Dictionary<int, List<SessionEvent>>();
         var sessions =
-            new SortedDictionary<int, (string Session, string Question, double Seconds, TrialFailure? Failure)>();
+            new SortedDictionary<int, (string Session, string Question, double Seconds, TurnFailure? Failure)>();
         foreach (string line in lines)
         {
             if (!line.StartsWith('@')) continue;
@@ -54,25 +58,29 @@ public static class ProtocolTranscripts
             if (kind is not ("question" or "sse" or "turn") || !keep(element)) continue;
 
             int turn = element.GetProperty("turn").GetInt32();
-            // A turn's question opens it afresh: a trial run twice after a transport failure (step 5a) writes the same turn twice, and the last attempt is the turn.
-            if (kind == "question") events.Remove(turn);
-            else if (kind == "sse")
+            switch (kind)
             {
-                if (!events.TryGetValue(turn, out var list))
-                {
-                    list = [];
-                    events[turn] = list;
-                }
+                // A turn's question opens it afresh: a trial run twice after a transport failure writes the same turn
+                // twice, and the last attempt is the turn.
+                case "question":
+                    events.Remove(turn);
+                    break;
+                case "sse":
+                    if (!events.TryGetValue(turn, out var list))
+                    {
+                        list = [];
+                        events[turn] = list;
+                    }
 
-                list.Add(SessionEvent.From(element.GetProperty("type").GetString()!,
-                    element.GetProperty("data").Clone()));
-            }
-            else
-            {
-                sessions[turn] = (element.GetProperty("session").GetString()!,
-                    element.GetProperty("question").GetString()!,
-                    element.GetProperty("seconds").GetDouble(),
-                    Failure(element));
+                    list.Add(SessionEvent.From(element.GetProperty("type").GetString()!,
+                        element.GetProperty("data").Clone()));
+                    break;
+                default:
+                    sessions[turn] = (element.GetProperty("session").GetString()!,
+                        element.GetProperty("question").GetString()!,
+                        element.GetProperty("seconds").GetDouble(),
+                        Failure(element));
+                    break;
             }
         }
 
@@ -81,16 +89,20 @@ public static class ProtocolTranscripts
             s.Value.Failure)).ToList());
     }
 
+    /// <summary>Whether a line is about this mode, repeat and task.</summary>
     private static bool IsOf(JsonElement element, string mode, int repeat, string task) =>
         element.TryGetProperty("mode", out var m) && m.GetString() == mode
                                                   && element.TryGetProperty("repeat", out var r) &&
                                                   r.GetInt32() == repeat
                                                   && element.TryGetProperty("task", out var t) && t.GetString() == task;
 
-    /// <summary>The infrastructure failure a turn's line names; none when it names none, or one this build doesn't know (a run written by a newer harness).</summary>
-    private static TrialFailure? Failure(JsonElement element) =>
+    /// <summary>
+    /// The infrastructure failure a turn's line names, in v1's spelling too; none when it names none, or one this build
+    /// doesn't know (a run written by a newer harness).
+    /// </summary>
+    private static TurnFailure? Failure(JsonElement element) =>
         element.TryGetProperty("failure", out var name) &&
-        SettingChoice.TryParse(name.GetString(), out TrialFailure? failure)
+        SettingChoice.TryParse(name.GetString(), out TurnFailure? failure, V1Words.FailureAliases)
             ? failure
             : null;
 }

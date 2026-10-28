@@ -2,6 +2,7 @@ using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;

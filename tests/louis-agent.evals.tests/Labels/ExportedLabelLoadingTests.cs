@@ -2,6 +2,7 @@ using LouisAgent.Testing;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Labels;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Tests.Datasets;
 using LouisAgent.Evals.Trials;
 

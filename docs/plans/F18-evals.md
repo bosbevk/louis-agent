@@ -1036,6 +1036,14 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
     `PricedAtRetailer` (fixed-rule, required): it passes when the answer prices at no shop the cook has no tool for,
     and fails with the shops it named when it does, built on `Shops.UntooledShops`; its tests take the scorer's cases
     for that count (step 2d).
+  - **The harness's other four kinds go too, in a commit of their own before 2c (2b.2)** (Louis, 2026-10-28, card):
+    `GraderKind`, `GradeOutcome`, `TrialOutcome` and `TrialFailure` (the contract's `TurnFailure`) are the contract's
+    now, by the same rule; until 2c the v1 writer and the runner's listing keep v1's words in one place
+    (`Protocol/V1Words`). Files that only gain a `using` or Rider's rename in that commit wait to be brought up to the
+    rules (summaries, line length) until a step has a real reason to touch them; every file with a real change is
+    brought up whole (Louis, 2026-10-28, card).
+  - **`SummaryLine.Scores` and `ScoreMeans` go in 2c** (Louis, 2026-10-28, card): the per-grader `score_mean` carries
+    the partial credit the score-bag means did.
 
 - **Step 7c.1: the contract's shape** (Louis, 2026-10-28, six cards while it was built). (1) **`t` is an ISO 8601
   UTC time** (`"2026-10-26T06:05:26.768+00:00"`, a `DateTimeOffset` on the base record), not today's Unix seconds,

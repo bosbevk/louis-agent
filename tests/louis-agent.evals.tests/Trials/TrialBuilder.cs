@@ -1,6 +1,7 @@
 using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 
@@ -19,7 +20,7 @@ internal static class TrialBuilder
             new Transcript(turns));
 
     public static TurnTranscript Turn(int number, IReadOnlyList<SessionEvent>? events = null, double seconds = 1,
-        TrialFailure? failure = null) =>
+        TurnFailure? failure = null) =>
         new(number, "sess_1", "Hallo", events ?? [], TimeSpan.FromSeconds(seconds), failure);
 
     /// <summary>The usage a turn's message_delta carries; <paramref name="cost"/> is JSON text: a number, or null.</summary>

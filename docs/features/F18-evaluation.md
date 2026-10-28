@@ -1485,6 +1485,23 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   left `FolderSizeTests`' list. The files of the commit were brought up to the rules: every class and method in
   `CommandLineTests`, `EvalRunnerSplitTests`, `PascalCaseWireTests` and `StoredRun` has its summary. Red before the
   code: the build, once the tests named `RunSplit`.
+- **Step 7c.2b.2 (the harness's other four kinds are the contract's).** `Grading/GraderKind`, `Grading/GradeOutcome`,
+  `Grading/Outcomes/TrialOutcome` and `Trials/TrialFailure` are deleted; the contract's `GraderKind`, `GradeOutcome`,
+  `TrialOutcome` and `TurnFailure` take their places everywhere (the graders, `PassRates`, the reports, the Puls and
+  template evals, the tests). Done with Rider's refactorings, not a script: a rename (`TrialFailure` to `TurnFailure`,
+  47 places in 25 files), a move of the four into the contract's namespace, then the four files deleted so every use
+  binds to the contract's type; Rider's move updated the harness but not the Puls evals, the template or the tests, so
+  their `using` lines were added by hand. **No output changes:** version 1 spelt these as the member's name
+  (`FixedRule`, `Pass`) or with an underscore (`api_error`, `held_out`), so `Protocol/V1Words` (one switch table per
+  kind, and the failure aliases) gives the v1 writers (`ProtocolWriter`, `ConversationLineFields`, `SummaryLineFields`,
+  `RunBeginLine`, whose 2b tables moved there) their words, `ProtocolTranscripts` reads `api_error` and `replay_miss`
+  back through its aliases, and the runner's listing writes a grader's kind through `V1KindConverter`. Both go when the
+  API reads the contract's words (step 3). `PascalCaseWireTests` went (its enums are gone); `WireNameAgreementTests`
+  now holds the API's failure words against `V1Words`; `RepeatedNameTests` gained one exemption (`V1Words`'
+  `api_error` is a turn's failure, not the API's error kind; nine of about twelve). By Louis's pick, files that only
+  gained a `using` or the rename wait to be brought up to the rules; the ten with a real change are whole
+  (`ProtocolTranscripts`' three-way `if` became a switch). Red before `V1Words`: 15 tests (14 in the harness: the
+  grader kinds, outcomes and failure names in v1's lines; 1 in the runner: the listing's kind).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

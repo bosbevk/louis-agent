@@ -4,6 +4,7 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging;
@@ -36,7 +37,7 @@ public sealed class ScenarioAttempt(
         // A session that can't open fails every turn of its scenario the same way, and there is nothing to close
         // (F18 step 5.1).
         string? session = null;
-        TrialFailure? openFailure = null;
+        TurnFailure? openFailure = null;
         try
         {
             session = await sessions.OpenAsync(
@@ -113,12 +114,12 @@ public sealed class ScenarioAttempt(
 
     /// <summary>
     /// One turn. A failure of the infrastructure (<see cref="TurnFailures"/>) ends it with its
-    /// <see cref="TrialFailure"/>, keeping the events read before it; a turn whose session never opened
+    /// <see cref="TurnFailure"/>, keeping the events read before it; a turn whose session never opened
     /// (<paramref name="session"/> null) is that failure from the start. A cancelled run throws.
     /// </summary>
     private async Task<(TurnTranscript Transcript, TurnFacts Facts)> RunTurnAsync(IEval eval, EvalMode mode, int repeat,
         string task, int number,
-        string? session, TrialFailure? openFailure, string message,
+        string? session, TurnFailure? openFailure, string message,
         CancellationToken cancellationToken)
     {
         protocol.Question(mode.Name, repeat, task, number, session ?? string.Empty, message);

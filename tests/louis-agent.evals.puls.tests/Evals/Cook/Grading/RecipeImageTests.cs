@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;
@@ -81,7 +82,7 @@ public class RecipeImageTests
     public async Task ItIsUnknown_ForAnInfrastructureFailure()
     {
         var failed = Trial(CookEvalMode, "cook-x", Expected, null,
-            Turn(1, [Reads, SpecialistResult(Page), Text(Shown)], TrialFailure.Timeout));
+            Turn(1, [Reads, SpecialistResult(Page), Text(Shown)], TurnFailure.Timeout));
 
         Assert.That((await new RecipeImage().GradeAsync(failed, CancellationToken.None)).Outcome,
             Is.EqualTo(GradeOutcome.Unknown));

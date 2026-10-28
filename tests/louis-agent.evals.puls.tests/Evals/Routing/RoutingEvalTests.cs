@@ -1,5 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
+using LouisAgent.Evals.Protocol.Kinds;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Core.Messages;

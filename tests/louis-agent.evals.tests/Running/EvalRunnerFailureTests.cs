@@ -5,6 +5,7 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
@@ -123,7 +124,7 @@ public class EvalRunnerFailureTests
 
         var read = ProtocolTranscripts.ReadConversation(Lines.Select(l => "@" + l.GetRawText()));
 
-        Assert.That(read.Turns.Single().Failure, Is.EqualTo(TrialFailure.Transport));
+        Assert.That(read.Turns.Single().Failure, Is.EqualTo(TurnFailure.Transport));
         Assert.That(read.Turns.Single().Events.Count, Is.EqualTo(1),
             "the retried turn reads as its last attempt, not both attempts' events together");
     }

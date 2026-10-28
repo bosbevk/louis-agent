@@ -2,6 +2,7 @@ using System.Collections.Frozen;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 

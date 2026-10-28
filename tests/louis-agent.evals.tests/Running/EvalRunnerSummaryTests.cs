@@ -4,6 +4,7 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;

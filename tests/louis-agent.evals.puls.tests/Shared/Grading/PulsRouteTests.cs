@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Shared.Grading;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using LouisAgent.Evals.Api;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
@@ -62,7 +63,7 @@ public class StalledStreamTests
         });
 
         Assert.That(events, Has.Count.EqualTo(1), "the event read before the silence is kept");
-        Assert.That(TurnFailures.Of(stalled!, Run), Is.EqualTo(TrialFailure.Timeout));
+        Assert.That(TurnFailures.Of(stalled!, Run), Is.EqualTo(TurnFailure.Timeout));
     }
 
     [Test, CancelAfter(15_000)]
@@ -83,7 +84,7 @@ public class StalledStreamTests
 
         Assert.That(seen, Is.EqualTo(6));
         Assert.That(clock.Elapsed, Is.GreaterThan(TimeSpan.FromMilliseconds(1500)));
-        Assert.That(TurnFailures.Of(ended!, Run), Is.EqualTo(TrialFailure.Timeout));
+        Assert.That(TurnFailures.Of(ended!, Run), Is.EqualTo(TurnFailure.Timeout));
     }
 
     [Test, CancelAfter(15_000)]

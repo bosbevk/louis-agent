@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Reports;
 
 namespace LouisAgent.Evals.Running;

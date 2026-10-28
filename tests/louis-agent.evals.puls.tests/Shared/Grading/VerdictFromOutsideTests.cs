@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Grading.Common;
 
 namespace LouisAgent.Evals.Puls.Tests.Shared.Grading;

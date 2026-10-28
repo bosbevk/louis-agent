@@ -9,9 +9,8 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 using ModelInfo = LouisAgent.Evals.Protocol.Parts.Run.ModelInfo;
-using ModelLevel = LouisAgent.Evals.Protocol.Kinds.ModelLevel;
-using RunSplit = LouisAgent.Evals.Protocol.Kinds.RunSplit;
 
 namespace LouisAgent.Evals.Tests.Protocol;
 

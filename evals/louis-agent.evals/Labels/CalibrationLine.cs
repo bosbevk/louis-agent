@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using System.Text.Json;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Labels;
 

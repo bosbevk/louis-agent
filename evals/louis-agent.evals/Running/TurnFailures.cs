@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Api;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Running;
@@ -9,13 +10,13 @@ namespace LouisAgent.Evals.Running;
 /// </summary>
 public static class TurnFailures
 {
-    public static TrialFailure? Of(Exception error, CancellationToken run) => error switch
+    public static TurnFailure? Of(Exception error, CancellationToken run) => error switch
     {
         OperationCanceledException when run.IsCancellationRequested => null,
         // HttpClient's own timeout surfaces as a TaskCanceledException while the run's token is still live.
-        OperationCanceledException or TimeoutException => TrialFailure.Timeout,
-        EvalApiException => TrialFailure.ApiError,
-        HttpRequestException or IOException => TrialFailure.Transport,
+        OperationCanceledException or TimeoutException => TurnFailure.Timeout,
+        EvalApiException => TurnFailure.ApiError,
+        HttpRequestException or IOException => TurnFailure.Transport,
         _ => null,
     };
 }

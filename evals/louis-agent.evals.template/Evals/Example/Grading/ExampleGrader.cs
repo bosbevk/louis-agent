@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Template.Evals.Example.Grading;

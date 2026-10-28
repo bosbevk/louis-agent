@@ -3,6 +3,7 @@ using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Shared;
 using System.Text.Json;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 
@@ -30,7 +31,7 @@ internal static class PulsTrials
     public static Trial Trial(EvalMode mode, string task, params TurnTranscript[] turns) =>
         Trial(mode, task, "{}", null, turns);
 
-    public static TurnTranscript Turn(int number, IReadOnlyList<SessionEvent> events, TrialFailure? failure = null) =>
+    public static TurnTranscript Turn(int number, IReadOnlyList<SessionEvent> events, TurnFailure? failure = null) =>
         new(number, "sess_1", "q", events, TimeSpan.FromSeconds(1), failure);
 
     public static SessionEvent Start(string role) =>

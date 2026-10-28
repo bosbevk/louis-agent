@@ -1,5 +1,7 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
+using TrialOutcome = LouisAgent.Evals.Protocol.Kinds.TrialOutcome;
 
 namespace LouisAgent.Evals.Reports;
 

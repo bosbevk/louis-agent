@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Template.Evals.Example;
 using LouisAgent.Evals.Template.Evals.Example.Scoring;
 using LouisAgent.Evals.Template.Messages;

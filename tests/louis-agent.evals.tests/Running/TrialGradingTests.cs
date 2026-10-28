@@ -2,6 +2,7 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;

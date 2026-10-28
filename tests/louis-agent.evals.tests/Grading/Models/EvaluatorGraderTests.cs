@@ -3,6 +3,7 @@ using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Models;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Tests.Running;
 using LouisAgent.Evals.Tests.Trials;
@@ -162,7 +163,7 @@ public class EvaluatorGraderTests
         var evaluator = new FakeEvaluator(Metric(true));
 
         var grade = await Grader(evaluator)
-            .GradeAsync(Trial(Turn(1, failure: TrialFailure.Transport)), CancellationToken.None);
+            .GradeAsync(Trial(Turn(1, failure: TurnFailure.Transport)), CancellationToken.None);
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(evaluator.Calls, Is.Zero, "a flake is not paid for");

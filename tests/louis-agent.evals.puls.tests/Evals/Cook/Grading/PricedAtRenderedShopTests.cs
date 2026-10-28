@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;

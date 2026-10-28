@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;
@@ -119,7 +120,7 @@ public class EstimatesAtShopTests
     public async Task ItIsUnknown_ForAnInfrastructureFailure()
     {
         var failed = Trial(CookEvalMode, "cook-x", Pnp, null,
-            Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TrialFailure.Timeout));
+            Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TurnFailure.Timeout));
 
         Assert.That((await new EstimatesAtShop().GradeAsync(failed, CancellationToken.None)).Outcome,
             Is.EqualTo(GradeOutcome.Unknown));

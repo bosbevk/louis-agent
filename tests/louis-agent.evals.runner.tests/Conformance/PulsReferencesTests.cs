@@ -1,6 +1,7 @@
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Puls;
 using LouisAgent.Evals.Trials;
 

@@ -1,5 +1,6 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Labels;
 using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Messages;

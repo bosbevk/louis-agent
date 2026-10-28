@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Grading.Human;

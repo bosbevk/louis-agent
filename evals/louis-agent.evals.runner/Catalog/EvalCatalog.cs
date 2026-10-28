@@ -1,5 +1,6 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Runner.Messages;
 
 namespace LouisAgent.Evals.Runner.Catalog;

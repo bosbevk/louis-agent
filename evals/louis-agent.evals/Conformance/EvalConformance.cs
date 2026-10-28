@@ -5,8 +5,10 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Trials;
+using GradeOutcome = LouisAgent.Evals.Protocol.Kinds.GradeOutcome;
 
 namespace LouisAgent.Evals.Conformance;
 

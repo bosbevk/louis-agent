@@ -2,6 +2,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;

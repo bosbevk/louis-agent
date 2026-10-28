@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Shared;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
@@ -44,7 +45,7 @@ public class CookGradersTests
         trial = trial with
         {
             Transcript = new Transcript([
-                trial.Transcript.Turns[0], trial.Transcript.Turns[1] with { Failure = TrialFailure.Timeout }
+                trial.Transcript.Turns[0], trial.Transcript.Turns[1] with { Failure = TurnFailure.Timeout }
             ])
         };
 

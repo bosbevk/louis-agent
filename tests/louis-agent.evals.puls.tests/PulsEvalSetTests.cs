@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
@@ -54,7 +55,7 @@ public class PulsEvalSetTests
                     SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"hoender"}"""),
                     Text(answer)
                 ],
-                failure: LouisAgent.Evals.Trials.TrialFailure.Timeout));
+                failure: TurnFailure.Timeout));
 
         var grade = await grader.GradeAsync(trial, CancellationToken.None);
 

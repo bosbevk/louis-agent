@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Grading.Outcomes;

@@ -4,6 +4,7 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Tests.Grading.Outcomes;
 
@@ -17,7 +18,7 @@ public class PassRatesOverTrialsTests
     private const TrialOutcome U = TrialOutcome.Unknown;
     private const TrialOutcome I = TrialOutcome.Infrastructure;
 
-    private static TurnTranscript Turn(int number, TrialFailure? failure = null) =>
+    private static TurnTranscript Turn(int number, TurnFailure? failure = null) =>
         new(number, "sess", "Vraag", [], TimeSpan.FromSeconds(1), failure);
 
     private static Trial TrialOf(params TurnTranscript[] turns) =>
@@ -34,10 +35,10 @@ public class PassRatesOverTrialsTests
     {
         var grades = new[] { Verdict.Pass("always", 1, "fine") };
 
-        Assert.That(PassRates.Of(TrialOf(Turn(1), Turn(2, TrialFailure.Timeout)), grades, Required),
+        Assert.That(PassRates.Of(TrialOf(Turn(1), Turn(2, TurnFailure.Timeout)), grades, Required),
             Is.EqualTo(TrialOutcome.Infrastructure));
         Assert.That(
-            PassRates.Of(TrialOf(Turn(1, TrialFailure.ReplayMiss)), [Verdict.Fail("always", 1, "wrong")], Required),
+            PassRates.Of(TrialOf(Turn(1, TurnFailure.ReplayMiss)), [Verdict.Fail("always", 1, "wrong")], Required),
             Is.EqualTo(TrialOutcome.Infrastructure));
     }
 

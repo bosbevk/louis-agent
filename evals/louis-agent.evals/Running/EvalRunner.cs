@@ -8,6 +8,7 @@ using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Running.Rescoring;
 using LouisAgent.Evals.Protocol.Parts.Run;
@@ -97,7 +98,7 @@ public sealed class EvalRunner(
         // One retry, for a transport failure only: a timeout, an API error or a replay miss would not change on a
         // second try (F18 step 5a). The second attempt is a new session and the trial's; the failed one stays in the
         // protocol, and the same turn keys written again replace it in the store.
-        if (turns.FirstOrDefault(turn => turn.Failure is not null) is { Failure: TrialFailure.Transport } failed)
+        if (turns.FirstOrDefault(turn => turn.Failure is not null) is { Failure: TurnFailure.Transport } failed)
         {
             logger.Log(LogLevel.Warning, EvalLogMessage.TrialRetried,
                 new

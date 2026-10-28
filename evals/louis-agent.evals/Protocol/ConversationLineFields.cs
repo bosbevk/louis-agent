@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Protocol;
 
@@ -34,7 +35,7 @@ internal static class ConversationLineFields
         if (errors is not null) json.WriteNumber("errors", errors.Value);
         json.WriteNumber("seconds", seconds);
         if (grades is not null) WriteGrades(json, grades);
-        if (outcome is not null) json.WriteString("outcome", outcome.Value.Wire());
+        if (outcome is not null) json.WriteString("outcome", V1Words.Trial(outcome.Value));
     }
 
     /// <summary>
@@ -49,7 +50,7 @@ internal static class ConversationLineFields
             json.WriteString("grader", grade.Grader);
             json.WriteNumber("version", grade.Version);
             json.WriteNumber("score", grade.Score);
-            json.WriteString("outcome", grade.Outcome.Wire());
+            json.WriteString("outcome", V1Words.Outcome(grade.Outcome));
             json.WriteString("reason", grade.Reason);
             if (grade.Judge is { } judge)
             {

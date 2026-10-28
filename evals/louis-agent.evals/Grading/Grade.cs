@@ -1,3 +1,5 @@
+using LouisAgent.Evals.Protocol.Kinds;
+
 namespace LouisAgent.Evals.Grading;
 
 /// <summary>

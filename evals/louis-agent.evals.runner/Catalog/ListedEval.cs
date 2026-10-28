@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Runner.Catalog;
 
@@ -31,5 +31,5 @@ public sealed record ListedDataset(string Name, int Version);
 public sealed record ListedGrader(
     string Name,
     int Version,
-    [property: JsonConverter(typeof(JsonStringEnumConverter<GraderKind>))]
+    [property: JsonConverter(typeof(V1KindConverter))]
     GraderKind Kind);

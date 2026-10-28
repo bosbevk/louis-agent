@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.SessionStream;
 
 namespace LouisAgent.Evals.Trials;
@@ -19,7 +20,7 @@ public static class EngineEvents
     public static bool StreamedError(TurnTranscript turn) => turn.Events.Any(e => e is ErrorReported);
 
     /// <summary>The infrastructure's failure of the turn (a timeout, a dropped connection), reported apart from the agent's errors.</summary>
-    public static TrialFailure? InfrastructureFailure(TurnTranscript turn) => turn.Failure;
+    public static TurnFailure? InfrastructureFailure(TurnTranscript turn) => turn.Failure;
 
     /// <summary>True when the turn reported usage at all.</summary>
     public static bool HasUsage(TurnTranscript turn) => Usage(turn) is not null;

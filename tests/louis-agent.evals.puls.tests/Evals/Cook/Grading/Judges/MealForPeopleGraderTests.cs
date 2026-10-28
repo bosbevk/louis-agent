@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Grading.Models;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;

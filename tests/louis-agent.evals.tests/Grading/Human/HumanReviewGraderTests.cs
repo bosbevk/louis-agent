@@ -1,5 +1,6 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Human;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
@@ -68,7 +69,7 @@ public class HumanReviewGraderTests
     {
         var grader = HumanReviewGrader.For("meal-for-people", Question);
 
-        var grade = await grader.GradeAsync(Trial(Turn(1, failure: TrialFailure.Transport)), CancellationToken.None);
+        var grade = await grader.GradeAsync(Trial(Turn(1, failure: TurnFailure.Transport)), CancellationToken.None);
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pending));
     }

@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
@@ -85,7 +86,7 @@ public class ServesAndBudgetGradersTests
     {
         // The turn has a good answer: without the infrastructure check this would pass, so the reason shows the check ran.
         var failed = Trial(CookEvalMode, "cook-x", """{"serves":4}""", null,
-            Turn(1, [Text("Hier is bobotie vir 4 mense.")], TrialFailure.Timeout));
+            Turn(1, [Text("Hier is bobotie vir 4 mense.")], TurnFailure.Timeout));
 
         var grade = await Serves(failed);
 
@@ -158,7 +159,7 @@ public class ServesAndBudgetGradersTests
 
         // A turn that failed but whose answer is within the budget: without the infrastructure check this would pass.
         var failed = await Budget(Trial(CookEvalMode, "cook-x", """{"budget":150}""", null,
-            Turn(1, [Text("Totaal: R100,00")], TrialFailure.Transport)));
+            Turn(1, [Text("Totaal: R100,00")], TurnFailure.Transport)));
 
         Assert.That(failed.Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(failed.Reason, Does.Contain("infrastructure"));
