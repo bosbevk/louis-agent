@@ -1581,6 +1581,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `LabelSheetTests`, the runner's `CalibrationCommandsTests`) build the contract's records now, each brought up to the
   rules whole; the guide's transcript example is v2. Red before the code: a v1 line still read as a turn, and a v1
   run was re-scored instead of refused.
+- **Step 7c.2f (the recorded runs under `tests/`).** Nothing was left to convert: `stub-run.txt` went in 2c and the
+  transcripts in 2e, and the API's `stub-run.v1.txt` and the API tests' inline v1 lines are step 3's. The search found
+  one hole instead: `StubRescoreTests` picked the runner's lines by v1's word, `mode_done`, so since 2c both sides of
+  "the re-score keeps each mode's rates" were empty and the check passed without checking. It now reads the contract's
+  events (the conversations and the mode ends, each written again with `t` cleared) and asserts there are some. Red
+  first: with only `Is.Not.Empty` added, the mode ends were empty. What still holds an `@` line on purpose: the
+  contract's test that a v1 line is no event, the readers' tests that a v1 line and a v1 run are refused, and the
+  calibration report's own line (`CalibrationLine`, which keeps its shape).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
