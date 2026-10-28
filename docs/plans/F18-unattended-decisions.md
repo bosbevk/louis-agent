@@ -111,3 +111,21 @@ browser app can't reference; Puls keeps its own words in plain static text class
 enums can't reach. Sources: ADR 0009; `src/louis-agent.puls/Text/PulsText.cs` (precedent); Fowler, *Refactoring*
 2nd ed., *Replace Conditional with Polymorphism*'s simpler cousin, a switch on a closed set. **Commit:** the
 `ChartInfo` commit of Part 3.
+
+### 5. A trend line across a run where the mode has no value (Part 3, `TrendChart`; the open review note)
+
+**What came up.** The chart joined a mode's known points in one path, so a run where the mode wasn't run (or its
+value was unknown) sat under a straight segment with nothing to show it was missing.
+
+1. **Break the line at the missing run (picked).** The path starts a new segment after each gap (`M … L …`, then `M`
+   again); a point alone between gaps is still drawn as its dot. Pattern: d3's `line.defined()` and Excel's "show
+   empty cells as gaps", the usual reading of a missing value. Changes: the path is built by a plain class
+   (`TrendGeometry`) with NUnit tests. Costs: a mode run every other time shows as dots, not a line.
+2. **Dash the segment across the gap.** Keeps the eye on the trend and still marks the gap. Changes: two paths per
+   line (solid and dashed). Costs: a dashed line still reads as a value between the runs, which nobody measured.
+3. **Draw through, mark the missing run on the axis.** Changes: an axis tick. Costs: the line still claims a value
+   where there is none; the mark is easy to miss.
+
+**Why 1.** The rule since F31 is "a value nobody measured is null, never 0", and the honest drawing of null is no
+line. Sources: d3-shape `line.defined` (d3js.org/d3-shape/line#line_defined); Microsoft Excel, *Display empty cells,
+null values* ("Gaps"). **Commit:** the `TrendChart` commit of Part 3.

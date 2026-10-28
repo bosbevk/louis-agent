@@ -1,0 +1,33 @@
+@* F31 step 11a: a check's trend over its runs, a line per mode in the explorer's palette, drawn in from the left; a
+   point opens its run. Small on the check card (cost only), full in the explorer: the nine rings as lines, the open run
+   marked. One run is read at a time, the marked one, else the last, and each panel's head gives its value per mode with
+   the change since the run before; hovering a point reads that run in that panel only. *@
+
+@if (Draws)
+{
+    <div class="trend @(Small ? "small" : "") @(Compact ? "compact" : "")">
+        @if (!Small)
+        {
+            <div class="chart-head">@if (ShowTitle) { <strong>Trend</strong> }<span class="muted">@_runs.Count runs</span>
+                <span class="trend-shown muted">reading run <a href="admin/benchmarks/@Reading.Shown.Run"><code>@Reading.Shown.Run</code></a> · @Reading.Shown.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm")<span class="trend-hint"> · hover a point to read that run in its panel, click it to open the run</span></span>
+                <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @ChartPalette.Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }</span></div>
+        }
+        @if (Small)
+        {
+            <TrendPanel Measure="TrendMeasures.Cost(Money)" Series="_series" Runs="_runs" Reading="Reading" Highlight="@Highlight" Small="Small" Compact="Compact" ChartId="@_id" />
+        }
+        else
+        {
+            <div class="trend-grid">
+                @foreach (var measure in Shown)
+                {
+                    <TrendPanel Measure="measure" Series="_series" Runs="_runs" Reading="Reading" Highlight="@Highlight" Small="Small" Compact="Compact" ChartId="@_id" />
+                }
+            </div>
+        }
+    </div>
+}
+else if (!Small)
+{
+    <p class="muted">No finished runs for a trend yet.</p>
+}

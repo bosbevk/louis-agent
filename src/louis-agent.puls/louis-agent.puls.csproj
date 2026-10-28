@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\louis-agent.web.shared\louis-agent.web.shared.csproj" />
+    <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

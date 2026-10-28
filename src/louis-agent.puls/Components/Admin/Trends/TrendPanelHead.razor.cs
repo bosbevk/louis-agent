@@ -1,7 +1,7 @@
 using LouisAgent.Puls.Admin.Trends;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Admin;
+namespace LouisAgent.Puls.Components.Admin.Trends;
 
 public partial class TrendPanelHead
 {

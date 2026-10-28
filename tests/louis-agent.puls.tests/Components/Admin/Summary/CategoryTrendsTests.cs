@@ -1,15 +1,16 @@
 using System.Text.Json;
-using LouisAgent.Puls.Components.Admin;
 using LouisAgent.Puls.Components.Admin.Summary;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Summary;
 
-// F18 step 5c.4: the trend per category per model: a chart for each category, a line per mode on its model, a point per run that had a rate, drawn with the trend chart showing only pass@k
-// and pass^k. A slice with too few trials has no rate, so it is a gap in the line (the API sends no point), never a 0. Written first: the panels filter and the component did not exist.
+/// <summary>
+/// The trend per category per model (F18 step 5c.4): a card for each category with the latest run's pass@k and pass^k
+/// per mode, and its chart, drawn with the trend chart showing only pass@k and pass^k. A slice with too few trials has
+/// no rate, so it is a gap (the API sends no point), never a 0.
+/// </summary>
 public class CategoryTrendsTests
 {
-    private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
-
+    // Two categories: one with three runs over two lines (r2 only on the tools line), one with a single run.
     private const string Trend = """
                                  {"check":"puls-cook","modes":[],"categories":[
                                    {"category":"language:af","modes":[
@@ -23,6 +24,10 @@ public class CategoryTrendsTests
                                        {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,"n":16}]}]}]}
                                  """;
 
+    /// <summary>The trend as the API sends it.</summary>
+    private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
+
+    /// <summary>The category cards over this trend.</summary>
     private static IRenderedComponent<CategoryTrends> Render(string trend)
     {
         var ctx = new BunitContext();
@@ -30,8 +35,10 @@ public class CategoryTrendsTests
         return ctx.Render<CategoryTrends>(p => p.Add(x => x.Trend, Json(trend)));
     }
 
-    // Reworked 2026-10-26 (Louis: "I need to know what it tells me"): a card per category, with the latest run's pass@k and pass^k per mode as bars and numbers; the trend lines only once
-    // a line has two runs, else the card says there is no trend yet instead of drawing a lone dot.
+    /// <summary>
+    /// Each category is a card with the latest run's pass@k and pass^k per mode, as bars and numbers (Louis,
+    /// 2026-10-26: "I need to know what it tells me").
+    /// </summary>
     [Test]
     public void EachCategory_IsACard_WithTheLatestRatesPerMode_AsNumbers()
     {
@@ -51,6 +58,10 @@ public class CategoryTrendsTests
             Is.EqualTo(new[] { "10%", "10%" }));
     }
 
+    /// <summary>
+    /// A category whose runs make a trend draws only the pass-rate panels, every run's point, and no stroke across a
+    /// run a line has no value for.
+    /// </summary>
     [Test]
     public void ACategoryWithTwoRunsOnALine_DrawsTheTrend_WithOnlyThePassRatePanels()
     {
@@ -63,10 +74,12 @@ public class CategoryTrendsTests
             Has.All.Matches<string>(t => t.Contains("pass@k") || t.Contains("pass^k")));
         Assert.That(af.QuerySelectorAll("line.trend-point"), Has.Count.GreaterThanOrEqualTo(3),
             "r1 and r3 on the cook line, r2 on the tools line; r2 is a gap on the cook line, never a 0");
-        Assert.That(af.QuerySelectorAll("path.trend-line"), Has.Count.GreaterThanOrEqualTo(1),
-            "only the cook line has two points to join");
+        // The unattended run's finding 5: the cook line breaks at r2 instead of joining r1 to r3 across it.
+        Assert.That(af.QuerySelectorAll("path.trend-line"), Is.Empty,
+            "the cook line's two points have r2 between them, and no line has two runs in a row");
     }
 
+    /// <summary>A category with one run says there is no trend yet, instead of drawing a lone dot.</summary>
     [Test]
     public void ACategoryWithOneRun_SaysThereIsNoTrendYet_InsteadOfALoneDot()
     {
@@ -78,6 +91,7 @@ public class CategoryTrendsTests
             Is.EqualTo(new[] { "50%", "25%" }), "the numbers are still there to read");
     }
 
+    /// <summary>With no category rated, the page says so and draws nothing.</summary>
     [Test]
     public void NoCategoryWithARate_SaysSo_AndDrawsNothing()
     {
@@ -87,6 +101,7 @@ public class CategoryTrendsTests
         Assert.That(cut.Find(".category-trend-none").TextContent, Does.Contain("No category has five counted trials"));
     }
 
+    /// <summary>A trend from before categories draws nothing and says the same.</summary>
     [Test]
     public void ATrendFromBeforeCategories_DrawsNothing_AndSaysTheSame()
     {

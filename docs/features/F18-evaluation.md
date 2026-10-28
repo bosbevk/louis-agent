@@ -1184,6 +1184,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   record and the `ChartGuides` table (finding 4: Puls keeps its words in plain classes, as `PulsText`). The component
   is markup plus a code-behind and leaves `RazorHasNoCodeTests`' list. `ChartInfoTests` pinned every note's markup
   first (`ChartInfo.html`), and it is unchanged.
+- **Part 3: `TrendChart`.** The chart reads its trend once as the contract's `TrendReply` (Puls references
+  `louis-agent.api.contracts` now) instead of picking the JSON apart by name; its parameter stays a `JsonElement`
+  until the pages that fetch it are rebuilt. Each panel is a `TrendPanel` component (a `RenderFragment` of markup
+  can't live in a code-behind), the measures are a table (`TrendMeasures`), and the geometry is `TrendGeometry` with
+  NUnit tests; the trend components have their folder, `Components/Admin/Trends/`. The open review note is settled by
+  finding 5: a line breaks at a run where its mode has no value instead of joining across it, which changes one
+  expectation in `CategoryTrendsTests` (its cook line no longer strokes from r1 to r3 across r2). The goldens
+  (`TrendChart.full.html`, `TrendChart.small.html`) were written from the old chart first and still match.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
