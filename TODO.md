@@ -124,6 +124,12 @@ changes instead of relying on training; **a configured agent**, an identity and 
   Puls admin pages call only the new names and a deploy has passed, drop `"/benchmarks"` from `Prefixes`, the old
   trend line and `GET /admin/benchmarks` (with the page that reads it), and regenerate `ApiRoutesSnapshot.json`;
   `EvalRouteAliasTests` goes with them
+- [ ] Remove the eval store's old setting names (F18 step 7b (iii)): `AdminOptions` reads `BENCHMARKS_MONGO_URL` and
+  `BENCHMARKS_MONGO_DATABASE` after `EVALS_MONGO_URL` and `EVALS_MONGO_DATABASE`. First move what still sets the old
+  ones: `config/.env.secrets` on each machine, the CI workflow's `BENCHMARKS_MONGO_URL`, the Mongo contract tests
+  (`EvalStoreSubjects`, `HumanReviewStoreMongo`, `CalibrationStoreMongo`, which read only the old name) and the
+  Azure secret's name (`benchmarks-mongo-url`); then drop the two fallbacks, the compose's
+  `${BENCHMARKS_MONGO_DATABASE-…}` and the alias test in `AdminOptionsTests`
 - [ ] Paymo, DevOps and Rider out of core (core layout review, 2026-10-19): `Tools/Integrations/Paymo` and `Tools/Integrations/DevOps` are packs in waiting (CL17); `Hosting/RiderMcpToolDiscovery` and `Protocols/Mcp/RiderMcpClient` serve only the ACP host and name a product, so they move to `src/louis-agent.acp-server`
 - [ ] The rest of the size list (CL15, 2026-10-20): 33 files over 200 lines (400 for tests), held by `FileSizeTests`' `Oversized`; split by responsibility a group at a time, on its own branch
 - [ ] A price format per country (CL15 review, 2026-10-20): `Tools/Web/Quotes/QuoteMatch` knows the rand sign, yet core names no country; an `IPriceFormat` seam in core, the South African one from Puls or the shops pack (with CL17)

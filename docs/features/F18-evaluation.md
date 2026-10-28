@@ -1314,6 +1314,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   a saved `/admin/benchmarks/…` link keeps opening; a TODO line removes the alias. `EvalRouteAliasTests` holds that
   each read answers the same under both names and a note written under the new one is read under the old; red
   first: every new route answered "This API has no route". The route golden gains the 16 new routes, none removed.
+- **Step 7b (iii), the store's settings** (decisions log, finding 22): the store is `EVALS_MONGO_URL` and
+  `EVALS_MONGO_DATABASE`, its default database `evals`; `BENCHMARKS_MONGO_URL` and `BENCHMARKS_MONGO_DATABASE` are
+  read after them as aliases, so no machine's config has to change today. Puls keeps its runs where they are: its
+  compose sets `EVALS_MONGO_DATABASE: ${EVALS_MONGO_DATABASE-${BENCHMARKS_MONGO_DATABASE-puls_benchmarks}}`, and its
+  Azure app and the API's `puls` Rider profile name `puls_benchmarks`; no data is touched. `AdminOptions`'s members
+  are `EvalsMongoUrl` and `EvalsDatabase`; the "no store" texts (the API's and the Puls banner's) name the new
+  setting. Red first in `AdminOptionsTests`: the default was `puls_benchmarks`, and `EVALS_*` weren't read.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

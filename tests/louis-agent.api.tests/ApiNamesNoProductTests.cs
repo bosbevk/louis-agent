@@ -48,8 +48,6 @@ public class ApiNamesNoProductTests
         "src/louis-agent.api/Evals/Store/EvalDocuments.cs: PulsCalls",
         "src/louis-agent.api/Evals/Store/Mongo/Documents/TurnDocuments.cs: PulsCalls",
         "src/louis-agent.api/Evals/Store/Recording/RunRecording.cs: PulsCalls",
-        "src/louis-agent.api/Config/AdminOptions.cs: puls_benchmarks",
-        "src/louis-agent.api/Config/AdminOptions.cs: puls_benchmarks_test",
     ];
 
     /// <summary>

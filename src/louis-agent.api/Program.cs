@@ -59,7 +59,7 @@ var api = app.MapApi(host);
 
 // The admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings are in
 // AdminOptions. A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
-// Each run is recorded into the store (BENCHMARKS_MONGO_URL), its cost joined from this instance's ledger; without a
+// Each run is recorded into the store (EVALS_MONGO_URL), its cost joined from this instance's ledger; without a
 // store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
 var admin = AdminOptions.FromEnvironment();
 var evalLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Evals");
@@ -68,16 +68,16 @@ var evalLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Evals");
 var evals = EvalList.From(EvalListing.ForRunner(admin.EvalRunner), evalLog);
 
 // The stores for runs and for the people's grades share one Mongo; with no address there are none.
-IEvalStore? evalStore = admin.BenchmarksMongoUrl is { } mongoUrl
-    ? new MongoEvalStore(mongoUrl, admin.BenchmarksDatabase)
+IEvalStore? evalStore = admin.EvalsMongoUrl is { } mongoUrl
+    ? new MongoEvalStore(mongoUrl, admin.EvalsDatabase)
     : null;
-IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl
-    ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase)
+IHumanReviewStore? reviewStore = admin.EvalsMongoUrl is { } reviewsUrl
+    ? new MongoHumanReviewStore(reviewsUrl, admin.EvalsDatabase)
     : null;
 
 // The judge checks sit beside the grades; a check's report is kept by its own recorder, never by the runs' store.
-ICalibrationStore? calibrationStore = admin.BenchmarksMongoUrl is { } calibrationsUrl
-    ? new MongoCalibrationStore(calibrationsUrl, admin.BenchmarksDatabase)
+ICalibrationStore? calibrationStore = admin.EvalsMongoUrl is { } calibrationsUrl
+    ? new MongoCalibrationStore(calibrationsUrl, admin.EvalsDatabase)
     : null;
 CalibrationRecorder? calibrationRecorder =
     calibrationStore is null ? null : new CalibrationRecorder(calibrationStore, evalLog);

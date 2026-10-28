@@ -38,7 +38,8 @@
         "BROWSER_URL": "http://127.0.0.1:9222",
         "BROWSER_USER_AGENT": "Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)",
         "SHOP_CATALOGUES": "checkers",
-        "SHOP_STORE_CACHE": "../../data/puls/shop-stores.json"
+        "SHOP_STORE_CACHE": "../../data/puls/shop-stores.json",
+        "EVALS_MONGO_DATABASE": "puls_benchmarks"
       }
     }
   }

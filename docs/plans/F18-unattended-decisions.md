@@ -467,3 +467,26 @@ TODO line removes them, and a saved link must keep opening. It doesn't say how t
 contract step is a one-word change the TODO line names. Sources: Fowler, *ParallelChange*; Microsoft, *Route groups*
 (learn.microsoft.com/aspnet/core/fundamentals/minimal-apis/route-handlers#route-groups). **Commit:** step 7b (iii),
 the routes commit.
+
+### 22. Which store settings the rename covers, and how Puls keeps its database (step 7b (iii))
+
+**What came up.** The row names the database (`puls_benchmarks` gives way to `evals`, `BENCHMARKS_MONGO_DATABASE`
+read as an alias, Puls's compose sets `EVALS_MONGO_DATABASE: puls_benchmarks`). It doesn't say whether the store's
+address, `BENCHMARKS_MONGO_URL`, moves too, and the Azure app and the Rider profile also reach Puls's store without
+going through the compose file.
+
+1. **Both settings get `EVALS_` names, the old ones read after them; every Puls entry point names
+   `puls_benchmarks`: the compose (`${EVALS_MONGO_DATABASE-${BENCHMARKS_MONGO_DATABASE-puls_benchmarks}}`, so a value
+   set in `config/.env` under either name still wins), the Azure app and the `puls` Rider profile (picked).**
+   Pattern: *Parallel Change* on configuration (expand now, contract by a TODO line). Changes: `AdminOptions`, the
+   two "no store" texts, the examples and the setup doc. Costs: the CI workflow and the Mongo contract tests still
+   use the old address name until the TODO line moves them (they read the environment themselves).
+2. **Only the database renamed, as the row says.** Costs: one store with an `EVALS_` database and a `BENCHMARKS_`
+   address, and a second rename later.
+3. **Rename both and move CI and the contract tests now.** Costs: touches the CI workflow and three more test files
+   in this commit; on the machines where `config/.env.secrets` holds the old name nothing breaks either way.
+
+**Why 1.** One consistent name for the store, nothing anywhere has to change today, and Puls's Azure app (which the
+compose file doesn't reach) doesn't silently start writing to an empty `evals` database. Sources: Fowler,
+*ParallelChange*; Microsoft, *Configuration in ASP.NET Core* (environment variables). **Commit:** step 7b (iii), the
+store settings commit.
