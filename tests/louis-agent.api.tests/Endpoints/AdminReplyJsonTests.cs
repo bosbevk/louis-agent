@@ -72,7 +72,8 @@ public class AdminReplyJsonTests
     }
 
     /// <summary>
-    /// The trend sends the check, a chart per category, and the overall lines with every point's numbers.
+    /// The trend sends the check, a chart per category, and the overall lines with every point's numbers, its notes
+    /// and the agents whose prompts changed.
     /// </summary>
     [Test]
     public async Task TheTrendReply_NamesEveryPointNumber()
@@ -96,7 +97,7 @@ public class AdminReplyJsonTests
         Assert.That(Names(mode), Is.EqualTo("name,points"));
         Assert.That(Names(mode.GetProperty("points")[0]), Is.EqualTo(
             "run,at,cost,score,conversations,tokens,seconds_per_turn,cache_share,sourced,tools_failed,"
-            + "cost_per_answer,sites,pass_at_k,pass_hat_k,k"));
+            + "cost_per_answer,sites,pass_at_k,pass_hat_k,k,notes,prompt_changed"));
     }
 
     /// <summary>Asks the admin route and parses what comes back; the call must have been a 200.</summary>

@@ -1,3 +1,4 @@
+using LouisAgent.Api.Benchmarks.Reports.Prompts;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
 using System.Text.Json;
@@ -6,16 +7,22 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 namespace LouisAgent.Api.Benchmarks.Reports;
 
 /// <summary>
-/// A check's trend over its runs (F31 step 11a), per mode, a point per finished run, oldest first: the nine rings of the
-/// explorer over time (Louis). What one repeat cost and its tokens, seconds per turn, the share routed right, the share
-/// of ingredients priced with a source, the share of input from the cache, the share of tool calls refused, what one
-/// real answer cost, and how many sites were read. Computed in C# over the store, so it's the same on the in-memory
-/// store as on MongoDB. A run still going isn't a point: its cost isn't complete. A value nobody measured is null,
-/// never 0.
+/// A check's trend over its runs, per mode, a point per finished run, oldest first: the nine rings of the explorer over
+/// time. What one repeat cost and its tokens, seconds per turn, the share routed right, the share of ingredients priced
+/// with a source, the share of input from the cache, the share of tool calls refused, what one real answer cost, and
+/// how many sites were read. Each point also carries the notes written on its run and the agents whose prompts changed
+/// since the point before, so you can see why a line moved. A run still going isn't a point: its cost isn't complete.
+/// A value nobody measured is null, never 0.
 /// </summary>
+/// <remarks>
+/// Computed in C# over the store, so it's the same on the in-memory store as on MongoDB.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class BenchmarkTrends
 {
-    /// <summary>One run in one mode.</summary>
+    /// <summary>
+    /// One run in one mode, with the notes on it and the agents whose prompts changed since the point before.
+    /// </summary>
     public sealed record Point(
         string Run,
         DateTimeOffset At,
@@ -31,22 +38,34 @@ public static class BenchmarkTrends
         int? Sites = null,
         double? PassAtK = null,
         double? PassHatK = null,
-        int? K = null);
+        int? K = null,
+        IReadOnlyList<string>? Notes = null,
+        IReadOnlyList<string>? PromptChanged = null);
 
-    /// <summary>One line of the trend: a mode on one model. Its name is the mode, with its model in brackets when the model is named (F18 step 2a).</summary>
+    /// <summary>
+    /// One line of the trend: a mode on one model. Its name is the mode, with its model in brackets when the model is
+    /// named.
+    /// </summary>
     public sealed record Series(string Name, IReadOnlyList<Point> Points, string? Model = null);
 
+    /// <summary>A check's trend: a line per mode and model.</summary>
     public sealed record Trend(string Check, IReadOnlyList<Series> Modes);
 
-    /// <summary>A meal's real answer: at least this share of its ingredients priced with a source (as the explorer's Waarde ring).</summary>
+    /// <summary>
+    /// A meal's real answer: at least this share of its ingredients priced with a source (as the explorer's Waarde
+    /// ring).
+    /// </summary>
     private const double AnsweredShare = 0.8;
 
+    /// <summary>The line's name: the mode, and its model in brackets when we know it.</summary>
     private static string SeriesName(string mode, string? model) => model is null ? mode : $"{mode} ({model})";
 
+    /// <summary>The trend over the check's last runs, a line per mode and model.</summary>
     public static async Task<Trend> ComputeAsync(IBenchmarkStore store, string check, int limit = 20,
         CancellationToken cancellationToken = default)
     {
         var runs = await FinishedRunsAsync(store, check, limit, cancellationToken);
+        var byId = runs.ToDictionary(r => r.Id);
 
         // A line is a mode on one model: runs on two models of one mode are two lines, never one line joining them.
         var lines = new List<(string Mode, string? Model)>();
@@ -55,6 +74,7 @@ public static class BenchmarkTrends
         {
             var conversations = await store.ConversationsAsync(run.Id, cancellationToken);
             var requests = await store.RequestsAsync(run.Id, cancellationToken);
+            var notes = await store.NotesAsync(run.Id, cancellationToken);
             int repeats = Math.Max(1, run.Repeat);
             foreach (var mode in conversations.GroupBy(c => c.Key.Mode))
             {
@@ -84,8 +104,9 @@ public static class BenchmarkTrends
 
                 long cached = mine.Sum(r => r.CacheReadTokens ?? 0),
                     input = cached + mine.Sum(r => (r.InputTokens ?? 0) + (r.CacheWriteTokens ?? 0));
-                // Accurate rows (FX24, as the explorer's AccuracyRing counts them): priced with a source, estimated (the cook's answer while no shop's prices are read), or
-                // rightly without a price in a town with no shop. A guess and a row with no price are not.
+                // Accurate rows (FX24, as the explorer's AccuracyRing counts them): priced with a source, estimated
+                // (the cook's answer while no shop's prices are read), or rightly without a price in a town with no
+                // shop. A guess and a row with no price are not.
                 var (priced, listed) = mode.Aggregate((0, 0),
                     (sum, c) => (sum.Item1 + Number(c, "priced") + Number(c, "estimated") + Number(c, "no_shop_rows"),
                         sum.Item2 + Number(c, "ingredients")));
@@ -94,9 +115,12 @@ public static class BenchmarkTrends
                     mine.Where(r => r.Turn is not null && answered.Contains(r.Turn.Conversation) && r.Cost is not null)
                         .Sum(r => r.Cost!.Value);
 
-                // The runner's rates for this mode, from its last repeat (F18 step 5a): they are cumulative over the repeats, so the last is the mode's.
+                // The runner's rates for this mode, from its last repeat: they are cumulative over the repeats, so the
+                // last is the mode's.
                 var rates = run.Modes?.Where(m => m.Name == mode.Key && m.Rates is not null).OrderBy(m => m.Repeat)
                     .LastOrDefault()?.Rates;
+                // The point before on this line, whose prompts this run's are compared with, agent by agent.
+                var before = points[line].LastOrDefault() is { } last ? byId[last.Run] : null;
                 points[line].Add(new Point(run.Id, run.StartedAt,
                     costs.Count == 0 ? null : costs.Sum() / repeats,
                     mode.Any() ? (double)right / mode.Count() : null,
@@ -112,7 +136,11 @@ public static class BenchmarkTrends
                     ToolsFailed: calls == 0 ? null : (double)failed / calls,
                     CostPerAnswer: answered.Count == 0 || costs.Count == 0 ? null : answeredCosts / answered.Count,
                     Sites: turns.SelectMany(t => t.Hosts).Distinct().Count(),
-                    PassAtK: rates?.PassAtK, PassHatK: rates?.PassHatK, K: rates?.K));
+                    PassAtK: rates?.PassAtK, PassHatK: rates?.PassHatK, K: rates?.K,
+                    Notes: NotesOf(notes, mode.Key),
+                    PromptChanged: before is null
+                        ? null
+                        : AgentPrompts.Changed(before.Prompts, run.Prompts, mode.Key)));
             }
         }
 
@@ -121,9 +149,10 @@ public static class BenchmarkTrends
     }
 
     /// <summary>
-    /// The runs that are points of a check's trends, oldest first (the overall trend's and the categories', F18 step 5c.4): the finished dev runs that measured the agent. A replay and a
-    /// re-score are left out (the recorded run again, and old transcripts graded again), a held-out run or one of all of them is a different set of conversations, and a run still going
-    /// has an incomplete cost.
+    /// The runs that are points of a check's trends, oldest first (the overall trend's and the categories'): the
+    /// finished dev runs that measured the agent. A replay and a re-score are left out (the recorded run again, and old
+    /// transcripts graded again), a held-out run or one of all of them is a different set of conversations, and a run
+    /// still going has an incomplete cost.
     /// </summary>
     internal static async Task<List<Run>> FinishedRunsAsync(IBenchmarkStore store, string check, int limit,
         CancellationToken cancellationToken)
@@ -131,27 +160,47 @@ public static class BenchmarkTrends
         // One run at a time (the runner's rule), so one more than the limit covers a run still going.
         return (await store.ListRunsAsync(check, limit + 1, cancellationToken))
             .Where(r => r.Status != BenchmarkRunStatus.Running)
-            // The trend is the dev scenarios (F18 step 5.4 review): a held-out run, or one of all of them, is a different set of conversations, and a run
-            // before splits were kept (no split) was a dev run. Joining them would draw a line through two different things.
+            // The trend is the dev scenarios: a held-out run, or one of all of them, is a different set of
+            // conversations, and a run before splits were kept (no split) was a dev run. Joining them would draw a
+            // line through two different things.
             .Where(r => r.Split is null or BenchmarkRunSplit.Dev)
-            // A replay (F18 step 5.5) is the recorded run again: its scores are that run's and it costs nothing, so it is no point of its own.
+            // A replay is the recorded run again: its scores are that run's and it costs nothing, so it is no point.
             .Where(r => r.Settings is null || !r.Settings.ContainsKey("replay_of"))
-            // A re-score (F18 step 5b) measures nothing new: it grades transcripts recorded on another day, so a point would put their quality at its date and its $0 on the cost line.
+            // A re-score measures nothing new: it grades transcripts recorded on another day, so a point would put
+            // their quality at its date and its $0 on the cost line.
             .Where(r => r.RescoreOf is null)
             .Take(limit).Reverse().ToList();
     }
 
+    /// <summary>
+    /// What was written about a run in one mode: the notes on the run itself and on this mode's conversations, in the
+    /// order they were written (the unattended run's finding 15).
+    /// </summary>
+    private static IReadOnlyList<string> NotesOf(IReadOnlyList<RunNote> notes, string mode)
+    {
+        var texts = notes.Where(n => n.Conversation is null || n.Conversation.Mode == mode).Select(n => n.Text)
+            .ToArray();
+        // The same empty list every time, so two points without notes are equal records.
+        return texts.Length == 0 ? [] : texts;
+    }
+
+    /// <summary>Whether a conversation went where it should.</summary>
     private static bool Right(Conversation c) =>
         c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty("routed_right", out var v) &&
         v.ValueKind == JsonValueKind.True;
 
+    /// <summary>A whole-number score of a conversation, or nought when it has none.</summary>
     private static int Number(Conversation c, string name) =>
         c.Scores.ValueKind == JsonValueKind.Object && c.Scores.TryGetProperty(name, out var v) &&
         v.ValueKind == JsonValueKind.Number
             ? v.GetInt32()
             : 0;
 
-    /// <summary>A real answer: routed right, and a meal at least <see cref="AnsweredShare"/> priced with sources (a meal without a list isn't one).</summary>
+    /// <summary>
+    /// A real answer: routed right, and a meal at least <see cref="AnsweredShare"/> priced with sources (a meal
+    /// without a list isn't one).
+    /// </summary>
+    /// <remarks>Guard clauses, one case per line from the top.</remarks>
     private static bool Answered(Conversation c)
     {
         if (!Right(c)) return false;

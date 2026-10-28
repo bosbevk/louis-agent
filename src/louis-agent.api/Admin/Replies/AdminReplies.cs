@@ -63,7 +63,7 @@ internal static class AdminReplies
         /// <summary>The row for one point of the trend.</summary>
         public static TrendPointRow Of(BenchmarkTrends.Point p) => new(p.Run, p.At, p.Cost, p.Score,
             p.Conversations, p.Tokens, p.SecondsPerTurn, p.CacheShare, p.Sourced, p.ToolsFailed, p.CostPerAnswer,
-            p.Sites, p.PassAtK, p.PassHatK, p.K);
+            p.Sites, p.PassAtK, p.PassHatK, p.K, p.Notes, p.PromptChanged);
     }
 
     /// <summary>A trend line is a series and its points.</summary>

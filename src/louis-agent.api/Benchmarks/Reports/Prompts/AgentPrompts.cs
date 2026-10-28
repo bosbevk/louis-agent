@@ -41,6 +41,24 @@ public static class AgentPrompts
     }
 
     /// <summary>
+    /// The agents in a mode whose prompts changed between two runs. Only an agent both runs called counts: one a run
+    /// never called simply wasn't there. If either run didn't keep its agents' prompts, we can't tell.
+    /// </summary>
+    public static IReadOnlyList<string>? Changed(IReadOnlyList<AgentPrompt>? before, IReadOnlyList<AgentPrompt>? now,
+        string mode)
+    {
+        if (before is null || now is null) return null;
+
+        // The hashes are kept sorted, so two lists in the same order are the same set of prompts.
+        var earlier = before.Where(p => p.Mode == mode).DistinctBy(p => p.Agent)
+            .ToDictionary(p => p.Agent, p => p.Hashes);
+        return now
+            .Where(p => p.Mode == mode && earlier.TryGetValue(p.Agent, out var was) && !was.SequenceEqual(p.Hashes))
+            .Select(p => p.Agent)
+            .ToArray();
+    }
+
+    /// <summary>
     /// Who asked: the specialist or minion named in the task, else the main session; a request that isn't a turn (a
     /// judge, a summary) adds why it asked.
     /// </summary>

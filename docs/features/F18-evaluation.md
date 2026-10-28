@@ -1236,6 +1236,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   never get a false marker. The joined `prompt_hashes` setting stays. Red before the code: 5 `AgentPrompts` cases
   (`NotImplementedException`) and the recorder case (`Prompts` null); the store contract case passes on memory and is
   the guard for MongoDB (skipped here, no Mongo).
+- **Step 7a.3 (b): a trend point carries its notes and where a prompt changed.** What it means: each point now says
+  what people wrote about that run and which agents' prompts changed since the point before it on the same line, so a
+  jump in the trend can be explained. `BenchmarkTrends.Point` (and the contract's `TrendPointRow`) gain `Notes` (the
+  run's own notes plus those on this mode's conversations, in the order written, finding 15) and `PromptChanged`.
+  `AgentPrompts.Changed` compares the two runs' prompts in this mode agent by agent: only an agent both runs called,
+  whose hashes differ, is named; the list is empty when nothing changed, and null when it can't be told (the first
+  point, or a run stored before 7a.3 (a)), so an older run never gets a false marker. The trend's JSON pin
+  (`AdminReplyJsonTests`) now names `notes` and `prompt_changed` after `k`, an intended change. Red before the code:
+  5 of the 6 `BenchmarkTrendMarksTests` (null where a list was expected; the first-point case passes as the guard it
+  is) and the JSON pin (the two names missing).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
