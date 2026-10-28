@@ -1779,6 +1779,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   its markup reading the records. `RunSettingsTests` (new) first pinned today's view from JSON
   (`RunSettings.full.html`, `RunSettings.bare.html`), then took the typed reply: red was the build, and both goldens
   stayed byte-equal after the move.
+  Commit 5: `ModeRatesReader` reads `ModeRow`s and `ModeRatesList` takes `Modes` (the page passes `_run.Modes`); both
+  tests build rows instead of JSON. Red: the build. `RunSettingsTests`' fixtures start their raw strings on a line of
+  their own, so Rider's formatter keeps them under 120 (commit 4 left them aligned past it).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

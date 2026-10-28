@@ -47,7 +47,7 @@ else
     <AgreementPanel Run="run" RunId="@RunId" />
     <section class="card-p">
         <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates per mode<span class="fold-note">as the runner wrote them on the last repeat</span></summary>
-            <ModeRatesList Run="run" />
+            <ModeRatesList Modes="_run.Modes" />
         </details>
     </section>
     @if (_trend is { } trend)

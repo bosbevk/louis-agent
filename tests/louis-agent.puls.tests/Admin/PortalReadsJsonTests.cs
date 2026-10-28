@@ -28,7 +28,6 @@ public class PortalReadsJsonTests
     [
         "src/louis-agent.puls/Admin/Explorer/Tree/ConversationNode.cs",
         "src/louis-agent.puls/Admin/Notes/NoteReader.cs",
-        "src/louis-agent.puls/Admin/Rates/ModeRatesReader.cs",
         "src/louis-agent.puls/Admin/Reviews/AgreementView.cs",
         "src/louis-agent.puls/Admin/Reviews/CalibrationView.cs",
         "src/louis-agent.puls/Admin/Scoring/ExplorerScores.cs",
@@ -37,7 +36,6 @@ public class PortalReadsJsonTests
         "src/louis-agent.puls/Admin/Summary/SummaryReader.cs",
         "src/louis-agent.puls/Components/Admin/BenchmarksPage/Checks/CheckCard.razor.cs",
         "src/louis-agent.puls/Components/Admin/BenchmarksPage/Checks/ChecksList.razor.cs",
-        "src/louis-agent.puls/Components/Admin/Rates/ModeRatesList.razor.cs",
         "src/louis-agent.puls/Components/Admin/Reviews/AgreementPanel.razor.cs",
         "src/louis-agent.puls/Components/Admin/Reviews/CalibrationCard.razor.cs",
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor.cs",
