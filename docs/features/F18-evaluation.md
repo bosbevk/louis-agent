@@ -1281,6 +1281,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Red before the code: `EvalTextTests` (`NotImplementedException`) and both snapshots (the page drew nothing).
   **Not done in (i):** the charts on the card itself, and the manual opened from the card (both on the Benchmarks
   page); the pages' rebuild is (ii), the rename (iii).
+- **Step 7b (iii), the ratchet** (`tests/louis-agent.api.tests/ApiNamesNoProductTests`): the API's code, project files
+  and contract name no product, the products read from `identities/louis-agent.identity.*`. Two exceptions stay on
+  purpose (the project file's web app reference until Phase 9, and the stored key `puls_calls`, read as an alias);
+  the 20 names the rename hasn't reached yet are listed in `NotYetRenamed`, which may only shrink. Red with the list
+  empty: 20 names, among them `PULS_API`, `PulsCalls` and `puls_benchmarks`.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
