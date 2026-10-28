@@ -1,5 +1,3 @@
-using System.Text.Json;
-using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Trends;
 using LouisAgent.Web.Shared.Usage;
@@ -15,18 +13,23 @@ namespace LouisAgent.Puls.Components.Admin.Trends;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class TrendChart
 {
-    // One id per chart, so its panels' clipping rectangles don't collide with another chart's on the page.
+    /// <summary>
+    /// One id per chart, so its panels' clipping rectangles don't collide with another chart's on the page.
+    /// </summary>
     private readonly string _id = Guid.NewGuid().ToString("N")[..8];
+
+    /// <summary>The lines drawn, one per mode.</summary>
     private IReadOnlyList<TrendLineRow> _series = [];
+
+    /// <summary>Every run on one axis, in time.</summary>
     private List<TrendRun> _runs = [];
+
+    /// <summary>The runs marked for a note or a changed prompt.</summary>
     private IReadOnlyList<TrendMark> _marks = [];
 
-    /// <summary>
-    /// The trend as GET /v1/admin/benchmarks/checks/{check}/trend answers it, or a category's chart in its shape. It
-    /// becomes a <c>TrendReply</c> parameter when the pages that fetch it are rebuilt.
-    /// </summary>
+    /// <summary>The lines to draw, one per mode: the contract's trend lines, or a category's in their shape.</summary>
     [Parameter, EditorRequired]
-    public JsonElement Trend { get; set; }
+    public IReadOnlyList<TrendLineRow> Series { get; set; } = [];
 
     /// <summary>The currency the page shows money in.</summary>
     [Parameter]
@@ -79,9 +82,8 @@ public partial class TrendChart
     /// <summary>Reads the trend and lays every run on one axis, in time.</summary>
     protected override void OnParametersSet()
     {
-        _series = Trend.ValueKind == JsonValueKind.Object
-            ? Trend.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Modes ?? []
-            : [];
+        _series = Series;
+
         // Every run on one x axis, in time: a mode missing from a run leaves a gap, not a shifted line.
         _runs = _series.SelectMany(s => s.Points)
             .Select(p => new TrendRun(p.Run, p.At))

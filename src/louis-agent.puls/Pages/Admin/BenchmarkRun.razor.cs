@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Runs;
@@ -14,8 +15,8 @@ namespace LouisAgent.Puls.Pages.Admin;
 
 /// <summary>
 /// One stored run: its head, notes, roll-up, explorer, agreement, rates, trends and settings, read from the store. The
-/// page reads the run as the contract's <c>StoredRunReply</c>; its panels still take the same JSON until each moves to
-/// the records (the unattended run's finding 6).
+/// page reads the run as the contract's <c>StoredRunReply</c>; the panels still on JSON get it until each moves to the
+/// records (step 5).
 /// </summary>
 /// <remarks>
 /// ADR 0042: after a grade or a note the page fetches the run again, so every panel shows what the store holds; the
@@ -25,16 +26,46 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class BenchmarkRun : IDisposable
 {
-    private JsonElement? _json, _trend;
-    private StoredRunReply? _run;
-    private Dictionary<string, string> _labels = [];
-    private string? _title, _check, _error;
+    /// <summary>The run as JSON, for the panels still on it.</summary>
+    private JsonElement? _json;
 
-    [Inject] private AgentApi Api { get; set; } = null!;
-    [Inject] private ChatStore Store { get; set; } = null!;
-    [Inject] private CurrencyState Currency { get; set; } = null!;
-    [Inject] private ReviewerState Reviewer { get; set; } = null!;
-    [Inject] private RunNotesState NoteState { get; set; } = null!;
+    /// <summary>The check's trend as JSON; none when it can't be read.</summary>
+    private JsonElement? _trend;
+
+    /// <summary>The run as the contract's record.</summary>
+    private StoredRunReply? _run;
+
+    /// <summary>A name per mode for the trend's legend.</summary>
+    private Dictionary<string, string> _labels = [];
+
+    /// <summary>What the run's check proves, when the list names it.</summary>
+    private string? _title;
+
+    /// <summary>The run's check.</summary>
+    private string? _check;
+
+    /// <summary>Why the run can't be shown.</summary>
+    private string? _error;
+
+    /// <summary>The API the page reads.</summary>
+    [Inject]
+    private AgentApi Api { get; set; } = null!;
+
+    /// <summary>The browser's store, loaded before the first read.</summary>
+    [Inject]
+    private ChatStore Store { get; set; } = null!;
+
+    /// <summary>The currency the page shows money in.</summary>
+    [Inject]
+    private CurrencyState Currency { get; set; } = null!;
+
+    /// <summary>Says when a grade was saved.</summary>
+    [Inject]
+    private ReviewerState Reviewer { get; set; } = null!;
+
+    /// <summary>Says when a note was saved.</summary>
+    [Inject]
+    private RunNotesState NoteState { get; set; } = null!;
 
     /// <summary>The run to show.</summary>
     [Parameter]
@@ -46,6 +77,13 @@ public partial class BenchmarkRun : IDisposable
 
     /// <summary>The run's address in the API.</summary>
     private string RunUrl => $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}";
+
+    /// <summary>
+    /// The trend's lines for the chart, read from the JSON the page still holds. It goes when the page fetches the
+    /// contract's trend (step 5, commit 15).
+    /// </summary>
+    private IReadOnlyList<TrendLineRow> TrendLines =>
+        _trend?.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Modes ?? [];
 
     /// <summary>Starts listening for a grade or a note being saved, so the run is fetched again when one is.</summary>
     protected override void OnInitialized()

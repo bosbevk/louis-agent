@@ -65,6 +65,13 @@ public static class ChartGuides
             "Grey: foreign sites for an SA price.",
             "A price from an SA shop is the answer; a site from elsewhere is background at best.",
             "More SA shops is better; more sites on their own is not."),
+        ChartTopic.Passed => new("The share of the run's conversations whose required graders all passed. A "
+                                 + "conversation that failed for the infrastructure is left out, not counted as a "
+                                 + "fail.",
+            "High, run after run.",
+            "Falling: a change made the agent worse at what the graders check.",
+            "It is the run's own result before the repeats are folded into pass@k and pass^k.",
+            "Higher is better."),
         ChartTopic.PassAt => new("pass@k: the share of scenarios that passed at least once in their k trials. Can "
                                  + "the agent do this at all?",
             "High, with most scenarios passing at least once.",

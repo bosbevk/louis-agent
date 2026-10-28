@@ -1794,6 +1794,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Commit 9: `AgreementView` reads the run's `AgreementRow`s and `AgreementPanel` takes `Agreement` (the page passes
   `_run.Agreement`); `ClassOf(JsonElement)` gives way to `ClassAgreement.Of(CalibrationClassRow, …)`, which the judge
   checks use too. Both tests build rows, with summaries now, and a new case pins `ClassAgreement.Of`. Red: the build.
+  Commit 10: `TrendChart` takes `Series`, the contract's `TrendLineRow`s; its three callers deserialize the lines
+  from the JSON they still hold (`CheckCard`, `CategoryTrends`, `BenchmarkRun`, each adapter named for the commit
+  that removes it). The run's score panel says what the score has been since 3a, "Passed (conversations that
+  passed)", with a guide of its own (`ChartTopic.Passed`), and the always-empty accuracy panel went (R2-3). Red: the
+  build, then two panel counts (11 where 10 were expected) and the ratchet; the full chart's golden held byte-equal on
+  typed lines before R2-3, then `TrendChart.full.html`, `TrendChart.marks.html` (ten panels) and `ChartInfo.html`
+  (the passed note) were regenerated and their diffs read.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

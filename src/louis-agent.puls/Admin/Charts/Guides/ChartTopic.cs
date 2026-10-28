@@ -15,6 +15,7 @@ public enum ChartTopic
     Cache,
     Tools,
     Sources,
+    Passed,
     PassAt,
     PassHat,
     Value

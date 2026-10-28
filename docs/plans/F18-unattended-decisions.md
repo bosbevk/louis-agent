@@ -695,3 +695,21 @@ an outcome and metrics, and no score bag; the store's `Scores` is always `{}`. S
 Sources: Fowler, *Refactoring*, "Remove Dead Code"; the brief's Part A ("the live stream reads the contract's
 events"). **Pick: A**, the smallest change that leaves nothing dead; B is a feature to ask for, noted for Louis.
 `ScoreChips` itself stays until `ExplorerScores` goes (step 5 (12)), its last reader. Commit: step 5 (3).
+
+### R2-3. The trend's "routing" and "accuracy" panels (Part A, `TrendChart`)
+
+**What came up.** Since 3a the trend's `Score` is the share of a run's conversations that passed (outcome-based,
+Infrastructure left out), but the chart still draws it as "Routing (routed as expected)" with the routing guide.
+`Sourced` is never set (no grader measures it, 3a), so the "Accuracy (priced or estimated)" panel is always empty.
+
+- **A. Name the score for what it is, drop the empty panel.** A `passed` measure ("Passed (conversations that
+  passed)") with its own guide replaces `routing` in the trend; `accuracy` leaves the trend. Changes:
+  `TrendMeasures`, a `ChartTopic.Passed` with its guide in `ChartGuides`, the chart goldens (ten panels),
+  `ChartInfo.html`. Costs: the contract's `Sourced` stays, always null, until a grader measures it again (a TODO
+  candidate); the explorer's routing and accuracy rings are a separate finding (step 5 (13)).
+- **B. Drop both panels.** pass@k and pass^k already show passing. Costs: the share of conversations that passed in
+  a run (not the same as pass@k when k > 1) disappears from the trend.
+- **C. Keep both.** Costs: a panel that says "routing" for a pass rate, and one that is always empty.
+
+Sources: Fowler, *Refactoring*, "Rename Field" (a name that says what the value is) and "Remove Dead Code"; ADR 0007
+(an unknown value is never shown as a measure). **Pick: A.** Commit: step 5 (10).

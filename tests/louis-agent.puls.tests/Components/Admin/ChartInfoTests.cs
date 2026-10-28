@@ -13,7 +13,8 @@ public partial class ChartInfoTests
 {
     private static readonly string[] Topics =
     [
-        "cost", "tokens", "time", "routing", "accuracy", "cache", "tools", "sources", "passat", "passhat", "value",
+        "cost", "tokens", "time", "routing", "accuracy", "cache", "tools", "sources", "passed", "passat", "passhat",
+        "value",
         "nothing-known"
     ];
 

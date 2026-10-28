@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Components.Admin.Trends;
 using LouisAgent.Web.Testing;
 
@@ -11,14 +13,26 @@ namespace LouisAgent.Puls.Tests.Components.Admin.Trends;
 /// </summary>
 public partial class TrendChartSnapshotTests
 {
-    private const string Trend = """
-                                 {"check":"puls-cook","categories":[],"modes":[
-                                  {"name":"puls-cook","points":[
-                                   {"run":"run_1","at":"2026-10-24T09:00:00+00:00","cost":0.1,"score":1,"conversations":8,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":1,"pass_hat_k":0.5,"k":2},
-                                   {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.2,"score":0.5,"conversations":8,"tokens":2000,"seconds_per_turn":12,"cache_share":0.7,"sourced":0.6,"tools_failed":0.1,"cost_per_answer":0.05,"sites":5,"pass_at_k":1,"pass_hat_k":1,"k":2}]},
-                                  {"name":"puls","points":[
-                                   {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.05,"score":1,"conversations":8,"tokens":500,"seconds_per_turn":4,"cache_share":0.9,"sourced":null,"tools_failed":0,"cost_per_answer":null,"sites":0,"pass_at_k":0.5,"pass_hat_k":0.5,"k":2}]}]}
-                                 """;
+    /// <summary>Two modes over two runs, the second mode in the second run only.</summary>
+    private const string Trend =
+        """
+        {"check":"puls-cook","categories":[],"modes":[
+         {"name":"puls-cook","points":[
+          {"run":"run_1","at":"2026-10-24T09:00:00+00:00","cost":0.1,"score":1,"conversations":8,"tokens":1000,
+           "seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,
+           "pass_at_k":1,"pass_hat_k":0.5,"k":2},
+          {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.2,"score":0.5,"conversations":8,"tokens":2000,
+           "seconds_per_turn":12,"cache_share":0.7,"sourced":0.6,"tools_failed":0.1,"cost_per_answer":0.05,"sites":5,
+           "pass_at_k":1,"pass_hat_k":1,"k":2}]},
+         {"name":"puls","points":[
+          {"run":"run_2","at":"2026-10-25T09:00:00+00:00","cost":0.05,"score":1,"conversations":8,"tokens":500,
+           "seconds_per_turn":4,"cache_share":0.9,"sourced":null,"tools_failed":0,"cost_per_answer":null,"sites":0,
+           "pass_at_k":0.5,"pass_hat_k":0.5,"k":2}]}]}
+        """;
+
+    /// <summary>The first mode's second run with a note and a changed prompt.</summary>
+    private static readonly string Marked = Trend.Replace("\"pass_hat_k\":1,\"k\":2}]}",
+        "\"pass_hat_k\":1,\"k\":2,\"notes\":[\"judge changed\"],\"prompt_changed\":[\"sub-session:puls-cook\"]}]}");
 
     /// <summary>The full chart: every panel, a line per mode, the reading run, the dates.</summary>
     [Test]
@@ -27,7 +41,7 @@ public partial class TrendChartSnapshotTests
         using var ctx = new BunitContext();
 
         var cut = ctx.Render<TrendChart>(p => p
-            .Add(x => x.Trend, Json(Trend))
+            .Add(x => x.Series, Lines(Trend))
             .Add(x => x.Highlight, "run_1"));
 
         Snapshots.Match("louis-agent.puls.tests", "Components/Admin/Trends/TrendChart.full.html", Stable(cut.Markup));
@@ -40,7 +54,7 @@ public partial class TrendChartSnapshotTests
         using var ctx = new BunitContext();
 
         var cut = ctx.Render<TrendChart>(p => p
-            .Add(x => x.Trend, Json(Trend))
+            .Add(x => x.Series, Lines(Trend))
             .Add(x => x.Small, true));
 
         Snapshots.Match("louis-agent.puls.tests", "Components/Admin/Trends/TrendChart.small.html", Stable(cut.Markup));
@@ -54,13 +68,11 @@ public partial class TrendChartSnapshotTests
     public void ANoteAndAPromptChange_AreMarkedInEveryPanel()
     {
         using var ctx = new BunitContext();
-        string marked = Trend.Replace("\"pass_hat_k\":1,\"k\":2}]}",
-            "\"pass_hat_k\":1,\"k\":2,\"notes\":[\"judge changed\"],\"prompt_changed\":[\"sub-session:puls-cook\"]}]}");
 
-        var cut = ctx.Render<TrendChart>(p => p.Add(x => x.Trend, Json(marked)));
+        var cut = ctx.Render<TrendChart>(p => p.Add(x => x.Series, Lines(Marked)));
 
-        Assert.That(cut.FindAll(".trend-panel .trend-note"), Has.Count.EqualTo(11), "one per panel");
-        Assert.That(cut.FindAll(".trend-panel .trend-prompt"), Has.Count.EqualTo(11), "one per panel");
+        Assert.That(cut.FindAll(".trend-panel .trend-note"), Has.Count.EqualTo(10), "one per panel");
+        Assert.That(cut.FindAll(".trend-panel .trend-prompt"), Has.Count.EqualTo(10), "one per panel");
         Snapshots.Match("louis-agent.puls.tests", "Components/Admin/Trends/TrendChart.marks.html", Stable(cut.Markup));
     }
 
@@ -69,11 +81,9 @@ public partial class TrendChartSnapshotTests
     public void TheSmallChart_DrawsNoMarks()
     {
         using var ctx = new BunitContext();
-        string marked = Trend.Replace("\"pass_hat_k\":1,\"k\":2}]}",
-            "\"pass_hat_k\":1,\"k\":2,\"notes\":[\"judge changed\"],\"prompt_changed\":[\"sub-session:puls-cook\"]}]}");
 
         var cut = ctx.Render<TrendChart>(p => p
-            .Add(x => x.Trend, Json(marked))
+            .Add(x => x.Series, Lines(Marked))
             .Add(x => x.Small, true));
 
         Assert.That(cut.FindAll(".trend-note, .trend-prompt"), Is.Empty);
@@ -94,6 +104,7 @@ public partial class TrendChartSnapshotTests
     [GeneratedRegex("tip-[0-9a-f]{8}")]
     private static partial Regex TipId();
 
-    /// <summary>The trend as the API sends it.</summary>
-    private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
+    /// <summary>The trend's lines, read into the contract's reply as the API sends it.</summary>
+    private static IReadOnlyList<TrendLineRow> Lines(string text) =>
+        JsonSerializer.Deserialize<TrendReply>(text, AdminJson.SnakeCase)!.Modes;
 }

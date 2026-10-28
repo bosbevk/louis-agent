@@ -26,7 +26,7 @@ else
                 </div>
                 @if (card.HasTrend)
                 {
-                    <TrendChart Trend="card.Chart" Currency="Currency" Panels="Panels" ShowTitle="false" Highlight="@Highlight" Compact="true" />
+                    <TrendChart Series="LinesOf(card.Chart)" Currency="Currency" Panels="Panels" ShowTitle="false" Highlight="@Highlight" Compact="true" />
                 }
                 else
                 {
