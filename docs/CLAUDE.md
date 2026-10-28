@@ -147,7 +147,8 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **Evals in C#** (F18) — every check, regression and demo is a C# eval of a real task on one harness
   (`evals/louis-agent.evals/`), each eval beside the identity or pack it proves; cost comes from the
   ledger, never from a grader; CI runs the graders on recorded transcripts, and a live run waits for Louis's go.
-  Why: [ADR 0029](adr/0029-simulations-in-csharp.md).
+  The runner and the API share one event contract, `evals/louis-agent.evals.protocol` (JSON Lines, our own names).
+  Why: [ADR 0029](adr/0029-simulations-in-csharp.md), [ADR 0047](adr/0047-protocol-v2-one-event-contract.md).
 - **Orchestration is an engine function** (F39) — one delegation function: agents as tools, typed results checked in
   code, one policy per turn tree, credentials per peer; the orchestrator (voorman) is an identity on core.
   Why: [ADR 0031](adr/0031-orchestration-is-an-engine-function.md).
@@ -184,6 +185,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   means delete and re-run. The ledger's past rows and what third parties read keep their shape. Expand-and-contract
   only for code two of our parts share in one build, finished in the same step list.
   Why: [ADR 0049](adr/0049-nothing-is-compatible-before-a-sale.md).
+- **MongoDB goes through records** (Louis, 2026-10-28) — a collection of a known shape is a typed
+  `IMongoCollection<T>` over a document record beside its store, its stored names as `[BsonElement]`, enums by their
+  wire names, dates as UTC BSON dates, and filters, sorts and indexes typed; `BsonDocument` only for a shape decided
+  at run time.
+  Why: [ADR 0048](adr/0048-mongo-through-records.md).
 - **Dates are UTC** (Louis, 2026-10-28) — every date or time stored, logged or sent on a wire is UTC in ISO 8601
   (`2026-10-28T13:02:21Z`); "now" is `TimeProvider.GetUtcNow()`, never `DateTime.Now`; a screen converts it for the
   reader (F46), never the code that writes it; a golden file holds UTC. A future local event (an appointment) keeps

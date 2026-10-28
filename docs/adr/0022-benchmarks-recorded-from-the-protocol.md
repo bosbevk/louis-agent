@@ -1,6 +1,7 @@
 # 0022. Benchmark results in MongoDB, recorded by the API from the harness's stdout protocol
 
-**Status:** Amended by [0029](0029-simulations-in-csharp.md) · **Date:** 2026-10-17 (decided in the F31 plan, built in its steps 1–6)
+**Status:** Amended by [0029](0029-simulations-in-csharp.md) and [0047](0047-protocol-v2-one-event-contract.md)
+(protocol v2: the events are one shared contract project, not the harness) · **Date:** 2026-10-17 (decided in the F31 plan, built in its steps 1–6)
 
 ## Context
 

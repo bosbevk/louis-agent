@@ -25,15 +25,17 @@ BENCHMARK_RUN=cook-1 AGENT_API=http://127.0.0.1:5070/ \
 | `--rescore {runId}` | Grades a stored run's transcripts again with today's graders, for $0, and records the result as a new run (`rescore_of`). It reads the stored run's protocol lines from stdin and takes no other flag. |
 | `--label-sheet {eval} {grader} {runId} {folder} [{count}]` | Writes the files a person labels, from a stored run on stdin; free. See *Checking the judge*. |
 | `--calibrate {eval} {grader} [--labels -]` | Asks a model grader about every labelled answer and prints how often it agrees with the person, then the report as one `@` line of data; never in CI. With `--labels -` the labels are read from stdin, one per line (what the portal's *Check the judge now* does). See *Checking the judge*. |
-| `--replay {runId}` | A replay of that run **with the model's answers too**: every model request is a cache hit, the run costs $0, and its scores equal the recorded run's. It tests everything around the model (the graders, the harness, the engine's code), not a prompt: a changed prompt is a different request, so it misses. |
+| `--replay {runId}` | A replay of that run **with the model's answers too**: every model request is a cache hit, the run costs $0, and its grades equal the recorded run's. It tests everything around the model (the graders, the harness, the engine's code), not a prompt: a changed prompt is a different request, so it misses. |
 
 The run's id is `BENCHMARK_RUN`, else `local-` and the time it started: set it yourself, so you know what to replay. The runner
-writes the protocol on stdout and its logs on stderr, and needs `AGENT_API_KEY` when the API wants one.
+writes the protocol on stdout and its logs on stderr, and needs `AGENT_API_KEY` when the API wants one. The protocol is
+version 2: one JSON object per line with its `event` first, the records in `evals/louis-agent.evals.protocol` that the
+API reads too ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); any other line is a line for people.
 
 ## An eval's manual
 
 Each eval has a manual beside it (`evals/{project}/Manuals/{name}.md`: `cook.md` and `routing.md` for Puls's, `stub.md` for the stub): what it measures, its
-modes, every grader it declares, the scores, what it costs and how to run it by hand. The portal opens it from the eval's card; the runner's `--list` gives
+modes, every grader it declares, what it measures, what it costs and how to run it by hand. The portal opens it from the eval's card; the runner's `--list` gives
 its path (`manual`). A test holds each one to its eval: it opens with a title and names every grader in backticks.
 
 ## From the portal
@@ -44,7 +46,8 @@ for Puls, and the same with `docker/docker-compose.yml … up -d --build api` fo
 `$env:EVAL_COMMIT = git rev-parse --short HEAD` first). Without it, or set to nothing, the run says `unknown`. The cloud
 image gets it from `deploy\azure\deploy.ps1 build`, which passes the checkout's commit.
 
-The admin portal lists the evals the runner lists and starts them with `POST /v1/admin/benchmarks/{check}/runs`:
+The admin portal lists the evals the runner lists and starts them with `POST /v1/admin/evals/{check}/runs` (every eval
+route also still answers under its old `/v1/admin/benchmarks/…` name, until a TODO line removes it):
 
 ```json
 { "repeat": 1, "web": "record" }
@@ -60,6 +63,15 @@ setting the runner starts reading must be added to `RunnerEnvironment.Names` in 
 runs, with how its web was handled (`web`, `replay_of` in its settings), and a replay never joins a check's trend: it is the recorded
 run again, at no cost.
 
+While a run goes, the *Benchmarks* page follows it: a row per turn as the runner's events come in, its role, its calls
+(the agent's own `agent_calls` · the specialists' `specialist_calls`), its seconds and, once the run has ended, its
+cost; a click opens the turn as it streams. A conversation's grades show on the run's page once it is stored.
+
+**When the API starts, it deletes what an older build stored**: every run without `protocol_version: 2`, with its
+conversations, turns, requests, notes, people's grades and judge checks, and logs one line with the counts
+([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md): stored eval data is disposable until a sale; a
+changed shape means delete and re-run).
+
 ## The three ways to run one
 
 Pick by what you changed:
@@ -72,11 +84,11 @@ Pick by what you changed:
 
 ### Re-scoring a run
 
-A grader change shouldn't cost a paid run. `run {name} --rescore {runId} < run.txt` (the file is `GET /v1/admin/benchmarks/runs/{id}/protocol`) grades the
+A grader change shouldn't cost a paid run. `run {name} --rescore {runId} < run.txt` (the file is `GET /v1/admin/evals/runs/{id}/protocol`) grades the
 stored run's conversations again with the graders as they are today and records a new run that names the old one. No session opens and no model is
 called, so it costs nothing, and the old run stays as it was. A scenario the dataset no longer has is graded `Unknown`, never `Fail`.
 
-In the portal, a finished run's row has a *Re-score* button (`POST /v1/admin/benchmarks/runs/{id}/rescore`). The new run says "re-scored from" the original, with a link, and costs $0.
+In the portal, a finished run's row has a *Re-score* button (`POST /v1/admin/evals/runs/{id}/rescore`). The new run says "re-scored from" the original, with a link, and costs $0.
 
 A replay that misses says where the request changed (the model, the system prompt, a tool, the settings, or message *n*); what
 the recording never read comes back to the model as a short text it treats as unknown.
@@ -88,6 +100,11 @@ A run's conversations carry their grades and an outcome (a trial passes only whe
 non-2xx answer) is recorded with its failure and left out of the pass rates, and counted apart. A run page shows each mode's pass@k (the share of scenarios that passed at least once in their k trials) and pass^k (the share that passed every time), labelled with k, and the trend draws both; a rate no trial made is a dash, never 0. A grader that does not apply to a scenario (no budget
 set, no shop named) passes: read it as "not asked". The cost is the usage ledger's (`{LOG_DIRECTORY}/usage-YYYY-MM.jsonl`), per
 request, priced from a dated table.
+
+Beside its grades, each conversation carries what it **measured** (`metrics`): the agent's and the specialists' calls,
+the hosts it read, its turns, its tokens in and out, its seconds and its cost (the tokens and cost from the ledger,
+once the run has ended). A metric is never a verdict: it never fails a run, and an unknown one is empty, never 0. The
+trend draws the pass rate ("passed"), pass@k and pass^k, the cost, tokens, time and the sites read.
 
 Records of a run are private: the recordings are in the API's `REPLAY_DIRECTORY` (git-ignored), and nothing serves them.
 
@@ -110,7 +127,7 @@ The check costs nothing on a local model (Ollama), and it **never runs in CI**: 
 **1. Make a sheet.** From a stored run (the export is the same text a re-score reads), write ten files to label:
 
 ```bash
-# run.txt is GET /v1/admin/benchmarks/runs/8f7802b9a72e/protocol (the same file a re-score reads)
+# run.txt is GET /v1/admin/evals/runs/8f7802b9a72e/protocol (the same file a re-score reads)
 EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels 10 < run.txt
 ```
 
@@ -157,7 +174,7 @@ The judge is only worth trusting if people agree with it, so the portal lets you
 
 **How often the judge agreed.** The run's page has a *Judge against people* table per reviewed judge: of the answers you passed, how many the judge passed too; of the ones you failed, how many it failed. Under ten labels in a class it says *few labels*, because a share of four is just four answers.
 
-**Checking the judge against your grades: from the portal.** In the same card, press **Check the judge now**. The API writes your decided grades (pass or fail, each with its whole conversation) to the eval runner's stdin and runs `--calibrate … --labels -` with the judge the API's instance is set to (`EVAL_JUDGE_*`), so a prompt change needs the image rebuilt first; nothing else can run meanwhile (one run at a time: the judge is shared). A minute or two on a local judge; the card says it is asking. When it ends, the card shows the report: when and with which judge, how often it agreed with you, whether it clears the bar (90% in each class) or which class fell short, your passes and your fails with what the judge said to each, *Where the judge differed* with the judge's reason for each, and *Earlier checks* folded under it, so you can see a prompt change move the number. A check that ended without a report says the runner's last line, which is the reason. The reports are kept in the store (`calibrations`), beside your grades, and go when the run is deleted. The API's routes: `POST /v1/admin/benchmarks/runs/{id}/calibrations/{grader}` and `GET /v1/admin/benchmarks/runs/{id}/calibrations`.
+**Checking the judge against your grades: from the portal.** In the same card, press **Check the judge now**. The API writes your decided grades (pass or fail, each with its whole conversation) to the eval runner's stdin and runs `--calibrate … --labels -` with the judge the API's instance is set to (`EVAL_JUDGE_*`), so a prompt change needs the image rebuilt first; nothing else can run meanwhile (one run at a time: the judge is shared). A minute or two on a local judge; the card says it is asking. When it ends, the card shows the report: when and with which judge, how often it agreed with you, whether it clears the bar (90% in each class) or which class fell short, your passes and your fails with what the judge said to each, *Where the judge differed* with the judge's reason for each, and *Earlier checks* folded under it, so you can see a prompt change move the number. A check that ended without a report says the runner's last line, which is the reason. The reports are kept in the store (`calibrations`), beside your grades, and go when the run is deleted. The API's routes: `POST /v1/admin/evals/runs/{id}/calibrations/{grader}` and `GET /v1/admin/evals/runs/{id}/calibrations`.
 
 **Using your grades as labels in the dataset.** Press *Download the labels (zip)*, unzip the files into `evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels/` and run the check from *Checking the judge* (`--calibrate`). The dataset's labels are the ones a developer runs against without a store; the portal's check reads the store.
 

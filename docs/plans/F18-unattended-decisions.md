@@ -735,3 +735,8 @@ The goldens show values only because the fixtures inject v1 scores.
 
 Sources: Fowler, *Refactoring*, "Remove Dead Code"; ADR 0007; 3a's trend definitions (`Score` the passed share,
 `CostPerAnswer` per passed conversation). **Pick: A.** Commit: step 5 (13).
+
+**Part A** done and pushed (`f3f05146` to `0c6af69f`). **Part B** done in one docs commit (step 6): ADR 0047, the
+guide's rule for ADR 0048, the TODO (CL22 folded into F18, the `puls_calls` alias line gone), `run-the-evals.md` for
+v2, and the plan's 7c row. The plan's table had no 7c row (7c lived under *Approved during the build*), so the row
+was added and marked done, as Part C adds its 7d row; nothing new went under *Approved during the build*.
