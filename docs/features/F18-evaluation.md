@@ -1255,6 +1255,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   points. Red before the code: 4 `TrendMarksTests` (`NotImplementedException`) and the new snapshot (no markers
   drawn); the small-chart case passes as its guard. Goldens: `TrendChart.full.html` changes by the legend's two
   entries only, `TrendChart.marks.html` is new (a line whose second run has one of each, eleven of each marker).
+- **Step 7a is done** (7a.1 to 7a.3): a run records its search engine and renderer, a person can note why a run
+  behaved as it did, and the trend shows those notes and where a prompt changed, agent by agent. The plan's 7a row
+  says so. **Not done:** the marks have no keyboard focus (a tooltip on an SVG `<title>` is for the mouse), and a run
+  recorded before 7a.3 never gets a prompt marker, by design.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
