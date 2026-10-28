@@ -1739,6 +1739,19 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   counted, an unknown run deletes nothing, no review or calibration store). Red first: 8 (the three new tests, the
   eval store's two deletes, the notes' delete, two endpoint deletes) against stubs; the record stores' count changes
   were one-liners written straight away, so their contract tests passed without going red first.
+- **Step 7c.3c.2: what an older build stored is deleted when the store opens** (7c's pick E, ADR 0049). The run
+  store lists `RunsBeforeAsync(version)`, the ids of runs under any other protocol version or none (Mongo's
+  not-equal matches a missing field too; only the ids are read, so an old document never has to fit the record).
+  `OldRunsCleanup` (in `Store/Deletion/`) deletes each through `RunDeletion`, the delete button's path, adds the
+  counts up, and logs one line (`ApiLogMessage.EvalOldRunsDeleted`: runs, conversations, turns, requests, notes,
+  grades and judge checks) when anything went. `Program.cs` runs it in the start-up background task, before closing
+  the orphans, so start-up never waits on Mongo and a store that doesn't answer stays a warning. Every run this build
+  writes carries version 2 from its first save (`RunRecording`), so only an older build's runs match. MongoDB's
+  Schema Versioning pattern, the old versions deleted instead of migrated, is named in its remarks. Tests:
+  `RunStoreContract` (a version-1 run and one with none listed, a version-2 run not; both stores, Mongo in CI) and
+  `OldRunsCleanupTests` (the old run goes with its grade and judge check, counted, the current one keeps all of its
+  own; a second clean-up finds nothing). Red first: 3 of 3 against stubs. `ApiLogMessage`'s two long texts are
+  joined constants now, under the 120-character line.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

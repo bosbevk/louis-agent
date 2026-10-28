@@ -8,6 +8,7 @@ using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Start;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Api.Evals.Store.Mongo;
 using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Messages;
@@ -87,13 +88,16 @@ EvalRecorder? recorder = evalStore is null
     ? null
     : new EvalRecorder(evalStore, evalLog, host.Agent.LogDirectory);
 
-// Close the runs a restart cut off, in the background so start-up doesn't wait on Mongo; a store that doesn't
-// answer is only a warning.
+// Delete what an older build stored (ADR 0049), then close the runs a restart cut off, in the background so start-up
+// doesn't wait on Mongo; a store that doesn't answer is only a warning.
 if (evalStore is not null)
     _ = Task.Run(async () =>
     {
         try
         {
+            var deletion = new RunDeletion(evalStore, reviewStore, calibrationStore);
+            await new OldRunsCleanup(evalStore, deletion, evalLog).RunAsync();
+
             int closed = await evalStore.CloseOrphansAsync(DateTimeOffset.UtcNow);
             if (closed > 0)
                 evalLog.Log(LogLevel.Information, ApiLogMessage.BenchmarkOrphansClosed, new { Count = closed },

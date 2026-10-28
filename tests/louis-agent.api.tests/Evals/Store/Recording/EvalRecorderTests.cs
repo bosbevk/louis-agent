@@ -365,6 +365,10 @@ public class EvalRecorderTests
             inner.DeleteRunAsync(id, c);
 
         /// <summary>Passes it on.</summary>
+        public Task<IReadOnlyList<string>> RunsBeforeAsync(int version, CancellationToken c = default) =>
+            inner.RunsBeforeAsync(version, c);
+
+        /// <summary>Passes it on.</summary>
         public Task<int> DeleteAsync(string id, CancellationToken c = default) => inner.DeleteAsync(id, c);
 
         /// <summary>Passes it on.</summary>

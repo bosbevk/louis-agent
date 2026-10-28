@@ -31,6 +31,12 @@ public interface IRunStore
     Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// The ids of the runs another build wrote: under any other protocol version than this one, or with none at all.
+    /// Only their ids, so a run of another shape never has to be read.
+    /// </summary>
+    Task<IReadOnlyList<string>> RunsBeforeAsync(int version, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Deletes the run's own record, nothing under it, and tells you how many went: one, or none. Deleting a whole run
     /// is <see cref="IEvalStore.DeleteRunAsync"/>.
     /// </summary>

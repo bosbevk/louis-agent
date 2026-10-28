@@ -57,6 +57,14 @@ public sealed class InMemoryRunStore : IRunStore
         }
     }
 
+    /// <summary>The ids of the runs written under another protocol version than this one, or none.</summary>
+    public Task<IReadOnlyList<string>> RunsBeforeAsync(int version, CancellationToken cancellationToken = default)
+    {
+        lock (_lock)
+            return Task.FromResult<IReadOnlyList<string>>(_runs.Values.Where(r => r.ProtocolVersion != version)
+                .Select(r => r.Id).ToArray());
+    }
+
     /// <summary>Forgets the run, and says how many went: one, or none if it wasn't there.</summary>
     public Task<int> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {

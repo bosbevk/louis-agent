@@ -73,6 +73,18 @@ public sealed class MongoRunStore : IRunStore
         return (int)result.ModifiedCount;
     }
 
+    /// <summary>
+    /// The ids of the runs written under another protocol version than this one, or with none (Mongo's not-equal
+    /// matches a missing field too). Only the ids come back, so an old document never has to fit the record.
+    /// </summary>
+    public async Task<IReadOnlyList<string>> RunsBeforeAsync(int version,
+        CancellationToken cancellationToken = default)
+    {
+        await _index.RunAsync();
+        return await _runs.Find(d => d.ProtocolVersion != version).Project(d => d.Id)
+            .ToListAsync(cancellationToken);
+    }
+
     /// <summary>Deletes the run's document, and says how many went: one, or none.</summary>
     public async Task<int> DeleteAsync(string id, CancellationToken cancellationToken = default)
     {

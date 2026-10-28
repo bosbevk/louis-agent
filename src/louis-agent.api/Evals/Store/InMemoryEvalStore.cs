@@ -56,6 +56,10 @@ public sealed class InMemoryEvalStore : IEvalStore
     public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default) =>
         _runs.CloseOrphansAsync(now, cancellationToken);
 
+    /// <summary>Asks the run store for the runs an older build wrote.</summary>
+    public Task<IReadOnlyList<string>> RunsBeforeAsync(int version, CancellationToken cancellationToken = default) =>
+        _runs.RunsBeforeAsync(version, cancellationToken);
+
     /// <summary>Deletes only the run's own record.</summary>
     public Task<int> DeleteAsync(string id, CancellationToken cancellationToken = default) =>
         _runs.DeleteAsync(id, cancellationToken);

@@ -211,6 +211,24 @@ public abstract class RunStoreContract
             Is.EqualTo((EvalRunStatus.Done, (DateTimeOffset?)T0.AddMinutes(5))));
     }
 
+    /// <summary>
+    /// The runs written under an older protocol version, or none, are listed; a run of this version is not. Other
+    /// tests' runs may share the store, so it checks only this test's.
+    /// </summary>
+    [Test]
+    public async Task TheRunsBeforeAVersion_AreListed_AndRunsOfThatVersionAreNot()
+    {
+        string current = NewId(), older = NewId(), none = NewId();
+        await _store.SaveRunAsync(NewRun(current, T0) with { ProtocolVersion = 2 });
+        await _store.SaveRunAsync(NewRun(older, T0) with { ProtocolVersion = 1 });
+        await _store.SaveRunAsync(NewRun(none, T0));
+
+        var listed = await _store.RunsBeforeAsync(2);
+
+        Assert.That(listed, Does.Contain(older).And.Contain(none));
+        Assert.That(listed, Does.Not.Contain(current));
+    }
+
     /// <summary>Deleting a run takes only that run, and a second delete finds nothing.</summary>
     [Test]
     public async Task DeletingARun_TakesOnlyThatRun_AndSaysWhetherItWasThere()
