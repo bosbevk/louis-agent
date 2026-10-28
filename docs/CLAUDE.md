@@ -61,8 +61,10 @@ Docs-only and configuration-only steps have no test to write first.
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
    doc of its type (*Rules that always apply*: one type per doc).
-4. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
-   before the code and passing after, and stop.
+4. Before committing, show the step (Louis, 2026-10-28): the files it changes, the commit message (what changed and
+   why) and the explanation (rules 4 and 6, with the test failing before the code and passing after), and wait for
+   Louis's ok. He reviews the step while it can still change; a commit is harder to reshape than a diff.
+5. Commit the step on its own, test and code together, and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
 `refactor/CL3-messages-and-logging`; `docs/{name}` for docs-only work. The Claude project's `claude/*` branches keep
@@ -151,6 +153,11 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 - **Records for values, classes for things** — a request, an answer, a key or a line of a file is a record; what owns a
   lock, a client or a file, or changes over time, is a class; a record holds no resource; both are sealed by default.
   Why: [ADR 0040](adr/0040-records-for-values-classes-for-things.md).
+- **Dates are UTC** (Louis, 2026-10-28) — every date or time stored, logged or sent on a wire is UTC in ISO 8601
+  (`2026-10-28T13:02:21Z`); "now" is `TimeProvider.GetUtcNow()`, never `DateTime.Now`; a screen converts it for the
+  reader (F46), never the code that writes it; a golden file holds UTC. A future local event (an appointment) keeps
+  its local time and zone id as the source. Existing uses change as a step touches their file.
+  Why: [ADR 0046](adr/0046-dates-are-utc.md).
 - **Separate by concern** — a folder, class or component holds one concern; a folder with two kinds of thing or more
   than about six files gets subfolders by concern, and a page over about a hundred lines splits into components. A
   `.razor` holds markup only, no `@code` block: a component's C# goes in its `.razor.cs` code-behind, and logic that
