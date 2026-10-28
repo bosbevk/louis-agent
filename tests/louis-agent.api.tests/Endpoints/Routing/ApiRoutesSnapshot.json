@@ -15,6 +15,7 @@
   "GET /v1/admin/benchmarks/runs/{id}/reviews (AdminKey)",
   "GET /v1/admin/benchmarks/runs/{id}/turns/{mode}/{repeat:int}/{task}/{turn:int}/events (AdminKey)",
   "GET /v1/admin/benchmarks/{check}/manual (AdminKey)",
+  "GET /v1/admin/evals (AdminKey)",
   "GET /v1/git/branches (Key)",
   "GET /v1/git/branches/{**name} (Key)",
   "GET /v1/git/commits (Key)",

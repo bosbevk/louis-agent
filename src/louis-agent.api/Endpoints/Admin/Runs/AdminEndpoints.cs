@@ -3,6 +3,7 @@ using LouisAgent.Api.Benchmarks.Calibrations.Store;
 using LouisAgent.Api.Benchmarks.Reviews.Store;
 using LouisAgent.Api.Benchmarks.Runs;
 using LouisAgent.Api.Benchmarks.Store;
+using LouisAgent.Api.Endpoints.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
@@ -36,6 +37,7 @@ internal static class AdminEndpoints
         admin.MapGet("/benchmarks", handlers.GetList);
         admin.MapGet("/benchmarks/{check}/manual", handlers.GetManual);
         admin.MapGet("/benchmarks/checks/{check}/trend", handlers.GetTrend);
+        admin.MapEvals(catalog, store, workspaceRoot);
 
         admin.MapStoredRuns(store, runner, reviews, calibrations);
         admin.MapReviews(store, reviews);
@@ -66,10 +68,7 @@ internal static class AdminEndpoints
 
     /// <summary>The words for a store that didn't answer.</summary>
     internal static string Unavailable(Exception ex) =>
-        MessageText.Format(ApiUserText.BenchmarkStoreUnavailable, new
-        {
-            Reason = ex.Message
-        });
+        MessageText.Format(ApiUserText.BenchmarkStoreUnavailable, new { Reason = ex.Message });
 }
 
 /// <summary>

@@ -378,3 +378,28 @@ routing reads its baseline from the instance (`GET /toolsets`), so listing them 
 **Why 1.** The catalogue is already the one place that knows every eval, and the plan wants the portal's list to come
 from it (`run --list`), never from a list kept by hand; one wider line keeps that, at start-up cost only. Sources:
 Fowler, *PoEAA*, *Data Transfer Object*, *Lazy Load*. **Commit:** step 7b (i), the listing commit.
+
+### 18. How much of each eval's runs and trend the eval list carries (step 7b (i))
+
+**What came up.** The row asks each eval to show every run with its outcome and cost, its overall and category lines
+(5c) and its pass@k and pass^k trend (5a). The trend and the category charts already have their own route
+(`GET /admin/benchmarks/checks/{check}/trend`), which joins every finished run's conversations and slices; the list
+is one call for every eval.
+
+1. **The list carries each eval's newest runs (up to 50), each as the stored run's own row (`StoredRunRow`: outcome,
+   cost from the ledger, models, graders) beside its modes' rates (`ModeRow`: pass@k, pass^k, k), plus the modes and
+   models the eval ran on; the charts stay on the trend route, which the page opens per eval (picked).** Pattern:
+   *Remote Facade* with coarse-grained *Data Transfer Objects* for the list (Fowler, *PoEAA*), the heavy detail behind
+   its own call (*Lazy Load*). Changes: `EvalListReply`, `EvalRow`, `EvalRunRow` in the contract (reusing
+   `StoredRunRow` and `ModeRow`), one store read per eval. Costs: the page needs a second call to draw an eval's
+   charts.
+2. **The whole `TrendReply` inside every eval's row.** Changes: the list computes every eval's trend and categories.
+   Costs: the slowest read the portal has, once per eval on every list load, for charts most visits never open.
+3. **Only the last run per eval**, the rest fetched when an eval is opened. Costs: "every run with its outcome and
+   cost" needs another call per eval, and the list can't say which models an eval ran on.
+
+**Why 1.** One call answers the row's list-level questions (what each eval is, whether and when it ran, what it cost,
+how each mode passed), reusing the records the runs page already reads, and the trend keeps its one route.
+`never_run` is `true` only when the store answered with no runs; without a store it is `null`, not known (ADR 0007's
+rule: unknown is null, never a guessed value). Sources: Fowler, *PoEAA*, *Remote Facade*, *Data Transfer Object*, *Lazy
+Load*. **Commit:** step 7b (i), the `GET /admin/evals` commit.

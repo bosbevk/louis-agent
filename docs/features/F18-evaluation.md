@@ -1266,6 +1266,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   reads its baseline from the instance, so a listing can't know them. Red before the code: the runner's listing test
   (no `graders`), `AnEvalsDatasetCategoriesAndGraders_AreListed`, `AListedEvalsDatasetCategoriesAndGradersAreRead`,
   `EachCheck_KeepsTheLineItsEvalListed`, and the integration test on the real runner's listing (no graders).
+- **Step 7b (i), `GET /v1/admin/evals`** (unattended finding 18): behind the admin gate, `EvalHandlers.GetList`
+  answers `EvalListReply` (contract, `Admin/Evals/`, snake_case): every eval of the catalogue with its identity,
+  version, what it proves, manual flag, dataset, categories and graders, the modes and models it ran on, `never_run`
+  (`null` without a store) and its 50 newest runs, each the stored run's own `StoredRunRow` beside its modes' rates
+  (`ModeRow`). The charts stay on the trend route. Red before the code: `EvalHandlersTests` and `EvalReplyJsonTests`
+  (`NotImplementedException` in `EvalListReply.Of`) and the route golden (the new line).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
