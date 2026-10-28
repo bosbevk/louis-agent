@@ -648,3 +648,30 @@ charts on the trend route); 19–23 the rename (the ratchet, bring-up before the
   `Contracts/Records/` keep the namespace `LouisAgent.Api.Testing`.
 - Much of Parts 3 to 5 was done by subagents under the same rules and the same commit gate; every Part was checked here
   with a whole-solution build and test run before it was pushed, but not every summary they wrote was read here.
+
+## Run 2, 2026-10-28
+
+The brief is Louis's of 2026-10-28, 22:14, started on 2026-10-29 in the session that had just begun step 5 by hand.
+Where the session had already moved, the run picks up from there instead of doing it twice: the `TimeProvider` nit
+was committed (`bd589f67`) and step 5's first two commits were in (`f3f05146`, `0ead8fd5`, in the bottom-up order
+Louis approved on the 29th); see finding R2-1.
+
+**At the start** (`0ead8fd5`, `dotnet build` clean, `dotnet test louis-agent-solution.sln`): core 1589, api 626,
+puls 394, evals 336, evals.puls 321, evals.runner 181, web.shared 113, pack.shops 100, evals.protocol 44,
+identity.puls 46, orchestrator 41, web 38, choices 34, acp-server 33, session-stream 18, composition 12,
+evals.template 6; integration: api 48 (63 skipped: Mongo, CI only), core 49 (17 skipped), orchestrator 2. None
+failed.
+
+### R2-1. Part A's order against the order already approved and begun (Part A)
+
+**What came up.** The brief puts `RunEvent` first and then "every other file"; the session had begun the bottom-up
+order Louis approved on the 29th (plan, *Approved during the build*, step 5), whose commits 1 and 2 were in.
+
+- **A. `RunEvent` next, then the approved order goes on** (the brief's first item, then its "every other file" in
+  the order already approved). Changes: the live view moves from 13th to 3rd. Costs: nothing; the two orders agree
+  on every other point.
+- **B. Start again in the brief's order.** Costs: the two commits in are already that order's first two files;
+  nothing to redo, so this is A.
+- **C. Keep the approved order, `RunEvent` at 13.** Costs: against the brief's explicit "first".
+
+**Pick: A.** Both instructions hold. Commit: the next one, step 5 (3).
