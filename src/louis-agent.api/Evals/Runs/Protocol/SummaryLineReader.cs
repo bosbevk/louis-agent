@@ -69,7 +69,8 @@ internal static class SummaryLineReader
         if (!e.TryGetProperty(name, out var array) || array.ValueKind != JsonValueKind.Array) return null;
 
         var items = array.EnumerateArray().Select(read).ToList();
-        return items.Any(item => item is null) ? null : items!;
+        if (items.Any(item => item is null)) return null;
+        return items.OfType<T>().ToList();
     }
 
     /// <summary>The grader kind, if it's one we know.</summary>
