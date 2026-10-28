@@ -1335,6 +1335,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   With the two contract comments reworded, `ApiNamesNoProductTests`' waiting list is empty, so it is a plain rule
   now: the API names no product but its two allowed names (the project file's web app reference, `puls_calls`), and a
   second test fails if an allowed name is gone.
+- **Step 7b (iii), ADR 0037** (*One agent API; products get a front door*): the rule the ratchet holds, written in
+  the number the platform plan kept for it, and added to the ADR index (0038's row no longer reserves it).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
