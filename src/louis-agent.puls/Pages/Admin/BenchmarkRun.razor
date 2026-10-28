@@ -44,7 +44,7 @@ else
             <RunExplorer Run="run" Currency="Currency.Current" OpenTask="@FocusTask" />
         </details>
     </section>
-    <AgreementPanel Run="run" RunId="@RunId" />
+    <AgreementPanel Agreement="_run.Agreement" RunId="@RunId" />
     <section class="card-p">
         <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates per mode<span class="fold-note">as the runner wrote them on the last repeat</span></summary>
             <ModeRatesList Modes="_run.Modes" />

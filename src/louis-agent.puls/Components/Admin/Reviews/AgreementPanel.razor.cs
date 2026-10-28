@@ -1,4 +1,4 @@
-using System.Text.Json;
+using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Web.Shared.Api;
 using Microsoft.AspNetCore.Components;
@@ -6,19 +6,34 @@ using Microsoft.JSInterop;
 
 namespace LouisAgent.Puls.Components.Admin.Reviews;
 
-/// <summary>How often each reviewed judge agreed with the people, and the download of their labels (F18 step 6a.3).</summary>
+/// <summary>
+/// How often each reviewed judge agreed with the people, and the download of their labels (F18 step 6a.3).
+/// </summary>
 public partial class AgreementPanel
 {
-    [Inject] private AgentApi Api { get; set; } = null!;
-    [Inject] private IJSRuntime Js { get; set; } = null!;
+    /// <summary>The API the labels come from.</summary>
+    [Inject]
+    private AgentApi Api { get; set; } = null!;
 
-    [Parameter, EditorRequired] public JsonElement Run { get; set; }
-    [Parameter, EditorRequired] public string RunId { get; set; } = "";
+    /// <summary>The browser, which saves the labels zip.</summary>
+    [Inject]
+    private IJSRuntime Js { get; set; } = null!;
 
+    /// <summary>The run's agreement rows as the contract's stored run reply carries them.</summary>
+    [Parameter, EditorRequired]
+    public IReadOnlyList<AgreementRow> Agreement { get; set; } = [];
+
+    /// <summary>The run they belong to.</summary>
+    [Parameter, EditorRequired]
+    public string RunId { get; set; } = "";
+
+    /// <summary>What went wrong with a download, for the panel to say.</summary>
     private string? _error;
 
-    private IReadOnlyList<JudgeAgreement> Judges => AgreementView.Of(Run);
+    /// <summary>Each judge and how often it agreed.</summary>
+    private IReadOnlyList<JudgeAgreement> Judges => AgreementView.Of(Agreement);
 
+    /// <summary>Fetches a judge's labels as a zip and hands it to the browser to save.</summary>
     private async Task DownloadAsync(string grader)
     {
         _error = null;

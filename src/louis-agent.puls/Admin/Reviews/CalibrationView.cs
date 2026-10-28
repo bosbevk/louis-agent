@@ -42,14 +42,11 @@ public static class CalibrationView
     public static IReadOnlyList<CalibrationReportView> Of(CalibrationsReply reply) =>
     [
         .. reply.Calibrations.Select(c => new CalibrationReportView(c.Grader, c.JudgeModel, c.At, c.Agreed, c.Total,
-            c.Bar, c.Passes, Class(c.PersonPass, personPassed: true), Class(c.PersonFail, personPassed: false),
+            c.Bar, c.Passes, ClassAgreement.Of(c.PersonPass, personPassed: true),
+            ClassAgreement.Of(c.PersonFail, personPassed: false),
             [
                 .. c.Disagreements.Select(d => new CalibrationDisagreementView(d.Scenario, d.Mode, d.Repeat, d.Label,
                     d.Judge, d.Reason))
             ]))
     ];
-
-    /// <summary>One class of your grades as the agreement card reads it.</summary>
-    private static ClassAgreement Class(CalibrationClassRow counts, bool personPassed) =>
-        new(counts.JudgePass, counts.JudgeFail, counts.JudgeUnknown, personPassed);
 }

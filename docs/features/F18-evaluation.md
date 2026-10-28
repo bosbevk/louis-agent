@@ -1791,6 +1791,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   reads the started check and the polled `runs/current` as `LiveRunRow`, and posts `NoBody` (new, `{}`) instead of
   an anonymous `new { }`; the card's members got their summaries. `CalibrationViewTests` reads its fixtures into the
   reply (red: the build); `CalibrationCardTests` stays as it was, its stubbed API answers unchanged, and passes.
+  Commit 9: `AgreementView` reads the run's `AgreementRow`s and `AgreementPanel` takes `Agreement` (the page passes
+  `_run.Agreement`); `ClassOf(JsonElement)` gives way to `ClassAgreement.Of(CalibrationClassRow, …)`, which the judge
+  checks use too. Both tests build rows, with summaries now, and a new case pins `ClassAgreement.Of`. Red: the build.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
