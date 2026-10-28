@@ -61,8 +61,10 @@ Docs-only and configuration-only steps have no test to write first.
 3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
    *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
    doc of its type (*Rules that always apply*: one type per doc).
-4. Commit the step on its own, test and code together, then explain it (rules 4 and 6), showing the test failing
-   before the code and passing after, and stop.
+4. Before committing, show the step (Louis, 2026-10-28): the files it changes, the commit message (what changed and
+   why) and the explanation (rules 4 and 6, with the test failing before the code and passing after), and wait for
+   Louis's ok. He reviews the step while it can still change; a commit is harder to reshape than a diff.
+5. Commit the step on its own, test and code together, and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
 `refactor/CL3-messages-and-logging`; `docs/{name}` for docs-only work. The Claude project's `claude/*` branches keep
