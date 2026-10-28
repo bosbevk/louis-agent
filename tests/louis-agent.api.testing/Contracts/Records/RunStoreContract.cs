@@ -1,5 +1,4 @@
 using LouisAgent.Api.Evals.Runs.Kinds;
-using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Testing;
@@ -106,24 +105,6 @@ public abstract class RunStoreContract
         Assert.That(read.Total, Is.EqualTo(new Total(0.4217m, "USD", 812_345, 61)));
         Assert.That(read.Log, Is.EqualTo(run.Log));
         Assert.That(read.StoreError, Is.Null);
-    }
-
-    /// <summary>
-    /// An old run whose modes still say "personality" (the word before "role") reads it as the role. Old runs are
-    /// never rewritten, so the store reads both.
-    /// </summary>
-    [Test]
-    public void ARunStoredBeforeCL14_ReadsItsModesPersonalityAsTheRole()
-    {
-        // Write a run as Mongo would, then swap its mode's "role" for the old "personality".
-        var run = new Run("r_old", _check, 1, EvalRunStatus.Done, T0, T0, 0, null,
-            [new Mode(SampleMode.Beta, 1, [SampleToolset.Alpha], "puls/voice-af", null)], null, null, null);
-        var stored = RunDocuments.ToBson(run);
-        var mode = stored["modes"][0].AsBsonDocument;
-        mode.Remove("role");
-        mode["personality"] = "puls/voice-af";
-
-        Assert.That(RunDocuments.RunOf(stored).Modes!.Single().Role, Is.EqualTo("puls/voice-af"));
     }
 
     /// <summary>Saving a run again replaces it rather than adding a second one.</summary>

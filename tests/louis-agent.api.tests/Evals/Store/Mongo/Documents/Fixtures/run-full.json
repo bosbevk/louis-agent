@@ -1,0 +1,122 @@
+{
+  "_id" : "run123456789",
+  "check" : "mode-alpha",
+  "repeat" : { "$numberInt" : "2" },
+  "status" : "done",
+  "started_at" : { "$date" : { "$numberLong" : "1793174400125" } },
+  "ended_at" : { "$date" : { "$numberLong" : "1793174700125" } },
+  "exit_code" : { "$numberInt" : "0" },
+  "settings" : {
+    "model" : "claude-haiku-5-5",
+    "fixtures" : "record"
+  },
+  "modes" : [{
+      "name" : "mode-alpha",
+      "repeat" : { "$numberInt" : "1" },
+      "toolsets" : ["alpha", "beta"],
+      "role" : "puls/voice-af",
+      "llm" : "haiku",
+      "conversations" : { "$numberInt" : "4" },
+      "at" : { "$date" : { "$numberLong" : "1793174401125" } },
+      "done_at" : { "$date" : { "$numberLong" : "1793174520125" } },
+      "rates" : {
+        "pass_at_k" : { "$numberDouble" : "1.0" },
+        "pass_hat_k" : { "$numberDouble" : "0.5" },
+        "k" : { "$numberInt" : "2" },
+        "infrastructure" : { "$numberInt" : "1" },
+        "retried" : { "$numberInt" : "0" }
+      }
+    }, {
+      "name" : "mode-beta",
+      "repeat" : { "$numberInt" : "1" },
+      "toolsets" : ["beta", "gamma"],
+      "role" : "puls/voice-af",
+      "llm" : null,
+      "conversations" : { "$numberInt" : "4" },
+      "at" : { "$date" : { "$numberLong" : "1793174520125" } },
+      "done_at" : null,
+      "rates" : null
+    }],
+  "total" : {
+    "cost" : { "$numberDecimal" : "0.4217" },
+    "currency" : "USD",
+    "tokens" : { "$numberLong" : "812345" },
+    "requests" : { "$numberInt" : "61" }
+  },
+  "log" : ["started", "done"],
+  "store_error" : "a store error",
+  "eval" : "mode-alpha",
+  "eval_version" : { "$numberInt" : "10" },
+  "commit" : "abc1234",
+  "graders" : [{
+      "name" : "routed-to",
+      "version" : { "$numberInt" : "1" },
+      "kind" : "fixed-rule",
+      "question" : null
+    }, {
+      "name" : "meal-for-people.human",
+      "version" : { "$numberInt" : "2" },
+      "kind" : "human",
+      "question" : "Is this a meal?"
+    }],
+  "models" : [{
+      "mode" : "mode-alpha",
+      "level" : "agent",
+      "role" : "puls/voice-af",
+      "model" : "claude-haiku-5-5"
+    }],
+  "split" : "held-out",
+  "rescore_of" : "old123456789",
+  "slices" : [{
+      "mode" : "mode-alpha",
+      "slice" : "overall",
+      "n" : { "$numberInt" : "8" },
+      "passed" : { "$numberInt" : "6" },
+      "failed" : { "$numberInt" : "1" },
+      "unknown" : { "$numberInt" : "1" },
+      "infrastructure" : { "$numberInt" : "0" },
+      "tasks" : ["cook-af", "cook-en"],
+      "too_few" : false,
+      "pass_rate" : { "$numberDouble" : "0.75" },
+      "pass_at_k" : { "$numberDouble" : "1.0" },
+      "pass_hat_k" : { "$numberDouble" : "0.5" },
+      "graders" : [{
+          "grader" : "routed-to",
+          "kind" : "fixed-rule",
+          "passed" : { "$numberInt" : "7" },
+          "failed" : { "$numberInt" : "1" },
+          "unknown" : { "$numberInt" : "0" },
+          "score_mean" : { "$numberDouble" : "0.875" }
+        }, {
+          "grader" : "meal-for-people.human",
+          "kind" : "human",
+          "passed" : { "$numberInt" : "0" },
+          "failed" : { "$numberInt" : "0" },
+          "unknown" : { "$numberInt" : "0" },
+          "score_mean" : null
+        }],
+      "kinds" : [{
+          "kind" : "fixed-rule",
+          "passed" : { "$numberInt" : "7" },
+          "failed" : { "$numberInt" : "1" },
+          "unknown" : { "$numberInt" : "0" }
+        }],
+      "at" : { "$date" : { "$numberLong" : "1793174640125" } }
+    }],
+  "prompts" : [{
+      "mode" : "mode-alpha",
+      "agent" : "main",
+      "hashes" : ["a1", "b2"]
+    }, {
+      "mode" : null,
+      "agent" : "main (grading)",
+      "hashes" : ["j"]
+    }],
+  "protocol_version" : { "$numberInt" : "2" },
+  "dataset" : {
+    "name" : "mode-alpha",
+    "version" : { "$numberInt" : "6" },
+    "hash" : "3f9c0a1b2d4e"
+  },
+  "begun_at" : { "$date" : { "$numberLong" : "1793174400625" } }
+}

@@ -1634,6 +1634,20 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `MongoMappingsTests` round-trips a small record through the driver in memory. Red first: 3 of 5 (the kind and the
   failure stored as `0` and `2`, a number read back without complaint, the time in the driver's own form); the
   other two (a round trip, a word that's no member) passed on the driver's defaults and stay as guards.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 2: the runs.** `MongoRunStore` holds an
+  `IMongoCollection<RunDocument>`: its index, filters, sort and `CloseOrphans` update name their fields through the
+  record, so a renamed field fails the build. `RunDocument` keeps the old field names and order; its parts
+  (`ModeDocument`, `RatesDocument`, `TotalDocument` with the cost as a `Decimal128`, `GraderDocument`,
+  `ModelDocument`, `PromptDocument`, `DatasetDocument`) and the slices (`SliceDocument` with its grader and kind
+  counts) are nested records, prompts and slices inside the run as before. The hand-written `RunDocuments`,
+  `PromptDocuments` and `SliceDocuments` went; `BsonValues` stays whole, since the conversations, turns and requests
+  still use every part of it. Each record ignores fields it doesn't know, so CL14's `personality` alias for `role`
+  is dropped (Louis's pick) and its contract test with it. A stored name that's no member is still refused, now
+  inside the driver's `FormatException`, which adds the property it was reading; `StoredNamesTests` checks the
+  enum, the value and the property. `RunDocumentTests` pins byte-equality with two fixtures (`run-full.json`, every
+  field; `run-bare.json`, a run just started) that the old mapper wrote in canonical extended JSON, the names in
+  them then swapped for the shared sample names (ADR 0043's scan): both ways, a stored run reads back as it was and
+  a run is written as the old mapper wrote it. Red first: 4 of 4 against a stub. The Mongo contract tests run in CI.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
