@@ -1,0 +1,21 @@
+{
+  "run" : "run123456789",
+  "grader" : "meal-for-people",
+  "judge_model" : null,
+  "at" : { "$date" : { "$numberLong" : "1793174400125" } },
+  "agreed" : { "$numberInt" : "0" },
+  "total" : { "$numberInt" : "0" },
+  "bar" : { "$numberInt" : "0" },
+  "passes" : false,
+  "person_pass" : {
+    "judge_pass" : { "$numberInt" : "0" },
+    "judge_fail" : { "$numberInt" : "0" },
+    "judge_unknown" : { "$numberInt" : "0" }
+  },
+  "person_fail" : {
+    "judge_pass" : { "$numberInt" : "0" },
+    "judge_fail" : { "$numberInt" : "0" },
+    "judge_unknown" : { "$numberInt" : "0" }
+  },
+  "disagreements" : []
+}

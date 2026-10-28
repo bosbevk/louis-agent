@@ -1714,6 +1714,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   was inline in `AddAsync`, with no method a generator could call), the round trip for every verdict, and a document
   carrying Mongo's own `_id`. Red first: 5 of 5 against a stub. `HumanVerdict`'s wire names stay PascalCase
   (`Pass`, `Fail`, `Unsure`), as stored today.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 8: the calibrations.** `MongoCalibrationStore` holds an
+  `IMongoCollection<CalibrationDocument>`, the record beside it in `Calibrations/Store/` with its two nested records
+  (`ClassCountsDocument`, `DisagreementDocument`) and no id of its own (reports are added, never updated). It opens
+  its database with `MongoEvalDatabase.Open`, as the review store now does. `CalibrationDocumentTests`: the write
+  against two fixtures written by hand from the old inline mapping (`calibration-full.json`, a failed check with its
+  judge model and two disagreements; `calibration-bare.json`, no model and none), the round trip, and a document
+  carrying Mongo's own `_id`. Red first: 5 of 5 against a stub. With it every Mongo collection the API writes is a
+  typed collection of a record; the one `BsonDocument` left is the stream event's JSON, which ADR 0048 allows.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

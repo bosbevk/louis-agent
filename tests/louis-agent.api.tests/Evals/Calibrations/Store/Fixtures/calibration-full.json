@@ -1,0 +1,35 @@
+{
+  "run" : "run123456789",
+  "grader" : "meal-for-people",
+  "judge_model" : "qwen3:8b",
+  "at" : { "$date" : { "$numberLong" : "1793174400125" } },
+  "agreed" : { "$numberInt" : "16" },
+  "total" : { "$numberInt" : "18" },
+  "bar" : { "$numberInt" : "13" },
+  "passes" : false,
+  "person_pass" : {
+    "judge_pass" : { "$numberInt" : "13" },
+    "judge_fail" : { "$numberInt" : "1" },
+    "judge_unknown" : { "$numberInt" : "0" }
+  },
+  "person_fail" : {
+    "judge_pass" : { "$numberInt" : "1" },
+    "judge_fail" : { "$numberInt" : "3" },
+    "judge_unknown" : { "$numberInt" : "0" }
+  },
+  "disagreements" : [{
+      "scenario" : "cook-af",
+      "mode" : "mode-alpha",
+      "repeat" : { "$numberInt" : "1" },
+      "label" : "pass",
+      "judge" : "fail",
+      "reason" : "said it feeds two"
+    }, {
+      "scenario" : "cook-en",
+      "mode" : "mode-alpha",
+      "repeat" : { "$numberInt" : "2" },
+      "label" : "fail",
+      "judge" : "pass",
+      "reason" : "a full meal for six"
+    }]
+}
