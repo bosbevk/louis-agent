@@ -45,8 +45,6 @@ internal static class SummaryReplies
                 new SliceGraderRow(g.Grader, g.Kind.Wire(), g.Passed, g.Failed, g.Unknown, g.ScoreMean))
         ],
         [.. s.Kinds.Select(k => new SliceKindRow(k.Kind.Wire(), k.Passed, k.Failed, k.Unknown))],
-        // No slice carries the eval's own score means since protocol version 2; the field goes in step 7c.5.
-        [],
         cost.PerTrial,
         cost.PerPass);
 }

@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Evals.Reports;
@@ -39,7 +38,6 @@ internal static class StoredRunReplies
             c.Key.Task,
             c.Order,
             c.Role,
-            NoScores,
             c.Errors,
             c.Seconds,
             c.Grades?.Select(g => new GradeRow(g.Grader, g.Version, g.Score, g.Outcome.Wire(), g.Reason,
@@ -51,12 +49,6 @@ internal static class StoredRunReplies
                     m.Seconds, m.Cost)
                 : null);
     }
-
-    /// <summary>
-    /// The scores a conversation's row still carries, always empty: the eval's own scores went with protocol version
-    /// 2, and the field goes in F18 step 7c.5.
-    /// </summary>
-    private static readonly JsonElement NoScores = JsonDocument.Parse("{}").RootElement.Clone();
 
     /// <summary>A person's grade names the judge it grades both ways: with its human suffix, and plain.</summary>
     extension(HumanGradeRow)

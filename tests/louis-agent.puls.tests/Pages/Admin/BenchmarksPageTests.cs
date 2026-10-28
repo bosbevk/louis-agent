@@ -30,7 +30,8 @@ public partial class BenchmarksPageTests
     /// <summary>
     /// Two checks, the second with a manual; a store that doesn't answer; two stored runs of the second.
     /// </summary>
-    private static readonly string List = Fill("""
+    private static readonly string List = Fill(
+        """
         {"checks":[{"id":"<EvalAlpha>","title":"Puls answers.","manual":false},
                    {"id":"<EvalBeta>","title":"Puls cooks.","manual":true}],
          "store":{"configured":true,"error":"timed out"},
@@ -47,7 +48,8 @@ public partial class BenchmarksPageTests
         """);
 
     /// <summary>The second check's trend: one mode, two runs.</summary>
-    private static readonly string Trend = Fill("""
+    private static readonly string Trend = Fill(
+        """
         {"check":"<EvalBeta>","categories":[],"modes":[{"name":"<ModeAlpha>","points":[
          {"run":"run1","at":"2026-10-25T09:00:00+00:00","cost":0.1,"score":1,"conversations":2,"tokens":1000,
           "seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,
@@ -58,7 +60,8 @@ public partial class BenchmarksPageTests
         """);
 
     /// <summary>The run in progress when the page opens.</summary>
-    private static readonly string Current = Fill("""
+    private static readonly string Current = Fill(
+        """
         {"id":"live1","check":"<EvalBeta>","repeat":1,"status":"running","exit_code":null,
          "started_at":"2026-10-27T10:00:00+00:00","ended_at":null,"lines":0,"stored":null,"store_error":null,
          "calibration_of":null,"grader":null,"last_line":null}
@@ -67,7 +70,8 @@ public partial class BenchmarksPageTests
     /// <summary>
     /// What the store holds of the live run: its first turn, its conversation, and the requests' costs.
     /// </summary>
-    private static readonly string Stored = Fill("""
+    private static readonly string Stored = Fill(
+        """
         {"run":{"id":"live1","check":"<EvalBeta>","repeat":1,"status":"running",
                 "started_at":"2026-10-27T10:00:00+00:00"},
          "modes":[],"notes":[],"agreement":[],
@@ -76,7 +80,7 @@ public partial class BenchmarksPageTests
                    "role":"<RoleAlpha>","continued":null,"agent_calls":1,"specialist_calls":2,"hosts":[],
                    "seconds":3.5,"error":null}],
          "conversations":[{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","order":0,"role":"<RoleAlpha>",
-                           "scores":{},"errors":1,"seconds":7.5,"human_grades":[]}],
+                           "errors":1,"seconds":7.5,"human_grades":[]}],
          "requests":[
           {"turn":{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1},"at":"2026-10-27T10:00:01+00:00",
            "purpose":"turn","cost":0.01,"duration_ms":10},

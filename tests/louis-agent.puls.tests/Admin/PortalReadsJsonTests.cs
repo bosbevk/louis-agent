@@ -2,12 +2,12 @@ namespace LouisAgent.Puls.Tests.Admin;
 
 /// <summary>
 /// Counts the admin portal's code that still picks the API's replies apart by name as <c>JsonElement</c>, so the list
-/// can only shrink until every reader takes the contract's record. Step 7c is done only when the list is empty.
+/// can only shrink until every reader takes the contract's record. Step 7c emptied it; the test stays so no file starts
+/// again.
 /// </summary>
 /// <remarks>
-/// A ratchet, as <c>FileSizeTests</c>: the files that read <c>JsonElement</c> today are listed, a new one fails, and a
-/// listed one that no longer reads it fails too, so the list can only shrink. A reader moves to its contract record
-/// when 7c rewrites it.
+/// A ratchet, as <c>FileSizeTests</c>: a file that reads <c>JsonElement</c> fails unless it is listed, and a listed one
+/// that no longer reads it fails too, so the list can only shrink.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class PortalReadsJsonTests
@@ -21,13 +21,9 @@ public class PortalReadsJsonTests
     ];
 
     /// <summary>
-    /// The files that read <c>JsonElement</c> today, repo-relative with forward slashes, generated from the tree on
-    /// 2026-10-28; remove a file's line in the commit that moves it to its record.
+    /// The files still allowed to read <c>JsonElement</c>, repo-relative with forward slashes; none since step 7c.
     /// </summary>
-    private static readonly HashSet<string> ReadsJson =
-    [
-        "src/louis-agent.puls/Pages/Admin/BenchmarkRun.razor.cs",
-    ];
+    private static readonly HashSet<string> ReadsJson = [];
 
     /// <summary>
     /// No portal file reads the API's replies as <c>JsonElement</c> unless it is still listed, and a listed one that

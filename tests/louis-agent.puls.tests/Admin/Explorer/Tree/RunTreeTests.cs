@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Explorer.Tree;
 
@@ -115,9 +114,9 @@ public class RunTreeTests
     private static ModeRow Mode(string name, int repeat) =>
         new(name, repeat, [SampleToolset.Alpha], null, null, null, null, null, null, null);
 
-    /// <summary>A conversation of the first repeat with empty scores.</summary>
+    /// <summary>A conversation of the first repeat, with no grades yet.</summary>
     private static ConversationRow Conversation(string mode, string task) =>
-        new(mode, 1, task, 0, null, JsonDocument.Parse("{}").RootElement, 0, 1, null, null, []);
+        new(mode, 1, task, 0, null, 0, 1, null, null, []);
 
     /// <summary>A turn of the first repeat.</summary>
     private static TurnRow Turn(string mode, string task, int n, string question = "What now?") =>

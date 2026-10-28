@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
@@ -15,8 +14,8 @@ namespace LouisAgent.Puls.Pages.Admin;
 
 /// <summary>
 /// One stored run: its head, notes, roll-up, explorer, agreement, rates, trends and settings, read from the store. The
-/// page reads the run as the contract's <c>StoredRunReply</c>; the panels still on JSON get it until each moves to the
-/// records (step 5).
+/// page reads the run as the contract's <c>StoredRunReply</c> and its check's trend as <c>TrendReply</c>, and hands
+/// each panel the records it was written for.
 /// </summary>
 /// <remarks>
 /// ADR 0042: after a grade or a note the page fetches the run again, so every panel shows what the store holds; the
@@ -26,13 +25,10 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class BenchmarkRun : IDisposable
 {
-    /// <summary>The run as JSON, for the panels still on it.</summary>
-    private JsonElement? _json;
+    /// <summary>The check's trend; none when it can't be read.</summary>
+    private TrendReply? _trend;
 
-    /// <summary>The check's trend as JSON; none when it can't be read.</summary>
-    private JsonElement? _trend;
-
-    /// <summary>The run as the contract's record.</summary>
+    /// <summary>The run.</summary>
     private StoredRunReply? _run;
 
     /// <summary>A name per mode for the trend's legend.</summary>
@@ -78,20 +74,6 @@ public partial class BenchmarkRun : IDisposable
     /// <summary>The run's address in the API.</summary>
     private string RunUrl => $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}";
 
-    /// <summary>
-    /// The trend's lines for the chart, read from the JSON the page still holds. It goes when the page fetches the
-    /// contract's trend (step 5, commit 15).
-    /// </summary>
-    private IReadOnlyList<TrendLineRow> TrendLines =>
-        _trend?.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Modes ?? [];
-
-    /// <summary>
-    /// The trend's categories for the cards, read from the same JSON. It goes with <see cref="TrendLines"/>
-    /// (step 5, commit 15).
-    /// </summary>
-    private IReadOnlyList<CategoryTrendRow>? TrendCategories =>
-        _trend?.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Categories;
-
     /// <summary>Starts listening for a grade or a note being saved, so the run is fetched again when one is.</summary>
     protected override void OnInitialized()
     {
@@ -105,14 +87,13 @@ public partial class BenchmarkRun : IDisposable
         if (!Store.Loaded) await Store.LoadAsync();
         Currency.Changed += StateHasChanged;
         await Currency.LoadAsync();
-        _json = null;
         _run = null;
         _error = null;
         try
         {
-            Read(await Api.GetAsync<JsonElement>(RunUrl));
+            _run = await ReadRunAsync();
             var list = await Api.GetAsync<BenchmarkListReply?>("v1/admin/benchmarks", AdminJson.SnakeCase);
-            _check = _run!.Run.Check;
+            _check = _run.Run.Check;
             _title = list?.Checks.FirstOrDefault(c => c.Id == _check)?.Title;
             _labels = ModeLabels.Of(_run.Turns);
             _trend = await TrendAsync(_check);
@@ -132,19 +113,16 @@ public partial class BenchmarkRun : IDisposable
         NoteState.Changed -= Refetch;
     }
 
-    /// <summary>Keeps the run as the record the page reads and as the JSON its panels still take.</summary>
-    private void Read(JsonElement json)
-    {
-        _json = json;
-        _run = json.Deserialize<StoredRunReply>(AdminJson.SnakeCase);
-    }
+    /// <summary>Fetches the run from the store.</summary>
+    private Task<StoredRunReply> ReadRunAsync() => Api.GetAsync<StoredRunReply>(RunUrl, AdminJson.SnakeCase);
 
     /// <summary>The check's trend; none when it can't be read, and the page shows no trend.</summary>
-    private async Task<JsonElement?> TrendAsync(string check)
+    private async Task<TrendReply?> TrendAsync(string check)
     {
         try
         {
-            return await Api.GetAsync<JsonElement>($"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend");
+            return await Api.GetAsync<TrendReply>($"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check)}/trend",
+                AdminJson.SnakeCase);
         }
         catch (AgentApiException)
         {
@@ -157,7 +135,7 @@ public partial class BenchmarkRun : IDisposable
     {
         try
         {
-            Read(await Api.GetAsync<JsonElement>(RunUrl));
+            _run = await ReadRunAsync();
         }
         catch (AgentApiException ex)
         {

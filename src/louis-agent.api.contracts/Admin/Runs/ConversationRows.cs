@@ -1,24 +1,22 @@
-using System.Text.Json;
-
 namespace LouisAgent.Api.Contracts.Admin.Runs;
 
 /// <summary>
 /// One conversation of a stored run: which one, its errors and time, each grader's grade and the outcome, the people's
-/// latest grades beside them, and what it measured. <see cref="Scores"/> is always an empty object now: the eval's own
-/// scores went with protocol version 2, and the field goes in F18 step 7c.5 with the portal code that reads it.
+/// latest grades beside them, and what it measured.
 /// </summary>
 /// <remarks>
-/// Expand and Contract (Fowler's parallel change): <see cref="Metrics"/> is added while <see cref="Scores"/> stays, so
-/// the portal builds unchanged until it reads the metrics.
+/// Expand and Contract (Fowler's parallel change), finished: <see cref="Metrics"/> was added while the eval's own
+/// scores stayed, so the portal built unchanged until it read the grades and metrics; the scores went in F18 step 7c.5
+/// once nothing read them.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
 public sealed record ConversationRow(
     string Mode,
     int Repeat,
     string Task,
     int Order,
     string? Role,
-    JsonElement Scores,
     int Errors,
     double Seconds,
     IReadOnlyList<GradeRow>? Grades,

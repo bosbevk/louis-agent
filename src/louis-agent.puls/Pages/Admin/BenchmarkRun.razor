@@ -16,7 +16,7 @@
 {
     <section class="card-p admin-gate"><strong>@error</strong></section>
 }
-else if (_json is null || _run is null)
+else if (_run is null)
 {
     <section class="card-p"><span class="muted">Loading…</span></section>
 }
@@ -54,12 +54,12 @@ else
     {
         <section class="card-p">
             <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend<span class="fold-note">this check over its runs, this run marked</span></summary>
-                <TrendChart Series="TrendLines" Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
+                <TrendChart Series="trend.Modes"Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
             </details>
         </section>
         <section class="card-p">
             <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend by category<span class="fold-note">pass@k and pass^k per category, per model</span></summary>
-                <CategoryTrends Categories="TrendCategories" Highlight="@RunId" Currency="Currency.Current" />
+                <CategoryTrends Categories="trend.Categories"Highlight="@RunId" Currency="Currency.Current" />
             </details>
         </section>
     }

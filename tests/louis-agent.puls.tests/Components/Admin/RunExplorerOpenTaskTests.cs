@@ -22,7 +22,7 @@ public class RunExplorerOpenTaskTests
 
     /// <summary>One conversation's JSON for a repeat and a task.</summary>
     private static string ConversationJson(int repeat, string task) =>
-        $$"""{"mode":"puls-cook","repeat":{{repeat}},"task":"{{task}}","role":null,"scores":{},"errors":0}""";
+        $$"""{"mode":"puls-cook","repeat":{{repeat}},"task":"{{task}}","role":null,"errors":0}""";
 
     /// <summary>A run with this many repeats, each with two conversations.</summary>
     private static string Run(int repeats) => SampleScenario.Fill($$"""

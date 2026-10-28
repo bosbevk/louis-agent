@@ -27,7 +27,7 @@ public class BlindInTheExplorerTests
                                                                  "graders":[{"name":"no-error","version":1,"kind":"FixedRule","question":null},{"name":"meal-for-people","version":1,"kind":"Model","question":null},
                                                                             {"name":"meal-for-people.human","version":1,"kind":"Human","question":"Is this a meal for the people asked for?"}]},
                                                           "modes":[{"name":"puls-cook","repeat":1,"toolsets":["web"]}],
-                                                          "conversations":[{"mode":"puls-cook","repeat":1,"task":"bobotie","role":null,"scores":{},"errors":0,"outcome":"Pass",
+                                                          "conversations":[{"mode":"puls-cook","repeat":1,"task":"bobotie","role":null,"errors":0,"outcome":"Pass",
                                                              "grades":[{"grader":"no-error","version":1,"score":1,"outcome":"Pass","reason":"fine"},
                                                                        {"grader":"meal-for-people","version":1,"score":1,"outcome":"Pass","reason":"__REASON__"},
                                                                        {"grader":"meal-for-people.human","version":1,"score":0,"outcome":"Pending","reason":"waits for a person"}],

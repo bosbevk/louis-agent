@@ -1,4 +1,3 @@
-using System.Text.Json;
 using LouisAgent.Puls.Admin.Grades;
 using Contract = LouisAgent.Api.Contracts.Admin.Runs;
 
@@ -54,6 +53,5 @@ public class ConversationGradesTests
     /// <summary>A conversation row with these grades, outcome and people's grades.</summary>
     private static Contract.ConversationRow Row(IReadOnlyList<Contract.GradeRow>? grades, string? outcome,
         IReadOnlyList<Contract.HumanGradeRow> human) =>
-        new(SampleMode.Alpha, 1, "bobotie", 0, null, JsonDocument.Parse("{}").RootElement, 0, 1, grades, outcome,
-            human);
+        new(SampleMode.Alpha, 1, "bobotie", 0, null, 0, 1, grades, outcome, human);
 }

@@ -81,7 +81,6 @@
       "pass_hat_k": 0.75,
       "graders": [],
       "kinds": [],
-      "scores": [],
       "cost_per_trial": 0,
       "cost_per_pass": 0
     }
@@ -93,7 +92,6 @@
       "task": "bobotie",
       "order": 1,
       "role": "role-alpha",
-      "scores": {},
       "errors": 0,
       "seconds": 12.5,
       "grades": [

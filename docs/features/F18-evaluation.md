@@ -1822,6 +1822,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   it deserialized again itself. Its four test files read their fixtures into the reply, so they went red on the build
   (a `JsonElement` handed to a `StoredRunReply` parameter); then green with every RunExplorer golden byte-equal. Its
   fields and the review tests got their summaries.
+  Commit 15: the run page fetches the run as `StoredRunReply` and the trend as `TrendReply` straight from the API, so
+  its JSON copies and the two adapters (`TrendLines`, `TrendCategories`) are gone, and the JSON ratchet's list is
+  empty (the test stays). With nothing reading them, the always-empty scores left the contract (ADR 0049: a changed
+  shape is just changed): `ConversationRow.Scores`, `SummaryRow.Scores` and `SliceScoreRow`, the API's `NoScores`, and
+  the `scores` keys in the Puls fixtures. Red twice: the ratchet named `BenchmarkRun.razor.cs`, then
+  `StoredRunReply.json` with its two `scores` keys taken out failed against the API's reply ("scores": [] at index
+  1661); both green after. That golden is the only one that changed.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
