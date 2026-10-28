@@ -546,3 +546,20 @@ calibrations already have their own stores (`IHumanReviewStore`, `ICalibrationSt
 document (`SliceDocuments` maps them inside it). Sources: Gamma et al., *Design Patterns*, Facade; Fowler, *Patterns
 of Enterprise Application Architecture*, Repository and Data Mapper; Martin, *Agile Software Development*, the
 Interface Segregation Principle. **Commits:** step 7b, the four "store splits by record" commits.
+
+### 25. What the commit's build argument is called (step 7b, the images stamp their commit)
+
+**What came up.** The brief suggests `ARG GIT_COMMIT` with `GIT_COMMIT=$(git rev-parse --short HEAD)`, but Puls's
+image already takes the commit as `EVAL_COMMIT` (step 7a: `Dockerfile.puls`, `docker-compose.puls.yml`, the
+*Run the evals* guide), and only the code-review API's image and the cloud build lacked it.
+
+1. **Keep `EVAL_COMMIT` and add it where it was missing: `Dockerfile.api`, the main compose file, `deploy.ps1 build`
+   (picked).** Changes: three files and the guides. Costs: the name says what reads it (the eval runner) rather than
+   where it comes from.
+2. **Rename to `GIT_COMMIT` everywhere, reading `EVAL_COMMIT` as an alias** (Fowler, *Parallel Change*). Costs: two
+   names in the compose files until a TODO line removes one, for a variable nothing else reads yet.
+3. **`GIT_COMMIT` for the API's image only.** Costs: two names for one thing, one per image.
+
+**Why 1.** One name for one value, already documented; a later reader of the commit (a version endpoint, say) can
+rename it then. Sources: Docker, *Build variables* (`ARG`, `--build-arg`); Compose, *build.args*; Azure,
+`az acr build --build-arg`. **Commit:** step 7b, the images stamp their commit.

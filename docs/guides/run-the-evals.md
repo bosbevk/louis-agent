@@ -38,9 +38,11 @@ its path (`manual`). A test holds each one to its eval: it opens with a title an
 
 ## From the portal
 
-A run records the commit the runner was built from. The container build takes it as `EVAL_COMMIT`:
-`EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`;
-without it the run says `unknown`.
+A run records the commit the runner was built from. Both images' builds take it as `EVAL_COMMIT`:
+`EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`
+for Puls, and the same with `docker/docker-compose.yml … up -d --build api` for the code-review API (in PowerShell,
+`$env:EVAL_COMMIT = git rev-parse --short HEAD` first). Without it, or set to nothing, the run says `unknown`. The cloud
+image gets it from `deploy\azure\deploy.ps1 build`, which passes the checkout's commit.
 
 The admin portal lists the evals the runner lists and starts them with `POST /v1/admin/benchmarks/{check}/runs`:
 

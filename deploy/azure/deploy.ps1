@@ -61,8 +61,15 @@ function Invoke-Az {
 
 switch ($Verb) {
     'build' {
-        Write-Host "Building louis-agent-puls:$Tag from the repo root (docker/images/Dockerfile.puls)..."
-        Invoke-Az acr build -r $Registry -t "louis-agent-puls:$Tag" -f (Join-Path $Repo 'docker\images\Dockerfile.puls') $Repo
+        # The commit the eval runner stamps on a run (F18): this checkout's, or "unknown" where git can't say.
+        # git's stderr would stop the script under 'Stop' (as az's would, see Invoke-Az), and a PC without git throws.
+        $ErrorActionPreference = 'Continue'
+        try { $commit = git -C $Repo rev-parse --short HEAD 2>$null } catch { $commit = $null }
+        $ErrorActionPreference = 'Stop'
+        if ($LASTEXITCODE -ne 0 -or -not $commit) { $commit = 'unknown' }
+        Write-Host "Building louis-agent-puls:$Tag (commit $commit) from the repo root (docker/images/Dockerfile.puls)..."
+        Invoke-Az acr build -r $Registry -t "louis-agent-puls:$Tag" --build-arg "EVAL_COMMIT=$commit" `
+            -f (Join-Path $Repo 'docker\images\Dockerfile.puls') $Repo
         Write-Host "Building ts-forwarder:$Tag from deploy/azure/ts-forwarder..."
         Invoke-Az acr build -r $Registry -t "ts-forwarder:$Tag" (Join-Path $Here 'ts-forwarder')
     }

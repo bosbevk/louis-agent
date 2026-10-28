@@ -529,7 +529,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   reads `eval stub · version 1`, `commit unknown`, and the two graders as chips (`no-error v1 · FixedRule`, `within-time v1 ·
   FixedRule`); on the Conversations level each of the four rows shows, under its Puls chip (`Puls itself ✓` or `puls-cook ✓`), a
   green `Pass` outcome chip and then `no-error` and `within-time`, both green, in the grader order. `commit` is `unknown` in the image: the Docker build has no git, so
-  `EvalBuild.Commit` falls back (step 2a's "unknown when absent"); a build argument would carry it, left for step 7b.
+  `EvalBuild.Commit` falls back (step 2a's "unknown when absent"); a build argument would carry it, left for step 7b
+  (done there: both images take `EVAL_COMMIT`).
 - **Step 4a.1** (`louis-agent.core/Sessions/Replay/`, `Tools/Web/Replay/`): `WebReplayMode { Off, Record, Replay }` and `SessionReplay(Web, Of,
   Model)`, held in an `AsyncLocal` as `UserPlace` is, with `DefaultMode` parsing `WEB_REPLAY` once with `SettingChoice`; `WebReplayStore`
   (a page once per SHA-256 of its JSON bytes in `pages/`, one index line per visit in `trials/{safe name}.jsonl`, appended under one lock);
@@ -1365,6 +1366,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Notes stay in the facade (they need the runs, and the plan's entry doesn't move them); reviews and calibrations
   already had their own stores; slices live inside the run document. `MongoEvalStore` was already off
   `FileSizeTests`' list (since `dfdd6c87`). Red first: the contract against a stub that threw (3 of 3 failing).
+- **Step 7b, the images stamp their commit** (the open note under step 4.5c: `commit` was `unknown` in Docker). Puls's
+  image already took `EVAL_COMMIT` (step 7a); now the code-review API's does too: `Dockerfile.api` has
+  `ARG EVAL_COMMIT=unknown` and publishes the runner with `-p:EvalCommit=$EVAL_COMMIT`, `docker-compose.yml` passes
+  `${EVAL_COMMIT:-unknown}`, and `deploy.ps1 build` passes the checkout's short commit to the cloud image. The name
+  stays `EVAL_COMMIT` rather than a new `GIT_COMMIT` (finding 25). `EvalBuild.CommitOf` reads the stamp, and an empty
+  one (a build argument set to nothing) is `unknown`, as a missing one is, never an empty commit. Red first:
+  `EvalBuildTests` against a stub that threw (6 of 6 failing). The Docker builds themselves can't be tested here: no
+  image was built in this step, so the stamp inside an image is checked by the next rebuild (`commit` on a run page).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
