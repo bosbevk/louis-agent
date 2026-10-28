@@ -1787,6 +1787,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Commit 7: `SummaryReader` reads `SummaryRow`s through a new `SliceView.Of`, and `SummaryPanel` takes `Summaries`
   and `RunId` (the page passes them from `_run`). The tests read their same fixtures into the contract's rows. Red:
   the build.
+  Commit 8: `CalibrationView.Of` reads the contract's `CalibrationsReply`, and `CalibrationCard` fetches it typed,
+  reads the started check and the polled `runs/current` as `LiveRunRow`, and posts `NoBody` (new, `{}`) instead of
+  an anonymous `new { }`; the card's members got their summaries. `CalibrationViewTests` reads its fixtures into the
+  reply (red: the build); `CalibrationCardTests` stays as it was, its stubbed API answers unchanged, and passes.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
