@@ -1475,6 +1475,15 @@ html:has(.landing) { scroll-behavior: smooth; }
 .check-name code { font-size: 15px; font-weight: 700; color: var(--ink); background: none; padding: 0; }
 .check-proves { margin: 0; color: var(--text); font-size: 13.5px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .check-card:not(.open) .check-proves { -webkit-line-clamp: 1; }
+/* F18 step 7b (i): the Evals page's cards. The facts as two columns, a name and its value; a never-run pill is grey. */
+.eval-card { display: grid; gap: 10px; margin-bottom: 14px; }
+.eval-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 13px; }
+.eval-facts dt { color: var(--muted); font-weight: 600; }
+.eval-facts dd { margin: 0; }
+.eval-graders { margin: 0; padding-left: 0; list-style: none; }
+.status-pill.never-run { background: var(--bg); color: var(--muted); }
+.eval-rate { display: block; white-space: nowrap; }
+.eval-trend { font-size: 13px; }
 .check-script { margin: 0; font-size: 12px; }
 .check-last { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--text); text-decoration: none; padding: 6px 10px; margin: 0 -10px; border-radius: 9px; transition: background .15s, color .15s; }
 .check-last:hover { background: rgba(255, 255, 255, .05); color: var(--ink); }

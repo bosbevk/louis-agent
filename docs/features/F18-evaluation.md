@@ -1272,6 +1272,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (`null` without a store) and its 50 newest runs, each the stored run's own `StoredRunRow` beside its modes' rates
   (`ModeRow`). The charts stay on the trend route. Red before the code: `EvalHandlersTests` and `EvalReplyJsonTests`
   (`NotImplementedException` in `EvalListReply.Of`) and the route golden (the new line).
+- **Step 7b (i), the Evals page** (`/admin/evals`, linked under *Measure* in the admin's side menu): reads the list as
+  `EvalListReply` and shows a card per eval (`Components/Admin/EvalsPage/EvalCard`): its version, run count or
+  "never run" (or "runs not known: no store"), what it proves, whose it is, dataset, categories, graders, modes,
+  models and manual, and its runs (`EvalRunTable`: when, outcome, repeats, cost, each mode's pass@k and pass^k), each
+  linking to its run page; the charts stay on the Benchmarks page, which the card links to. The words are
+  `Admin/Evals/EvalText` (NUnit). Goldens `Evals.empty.html` and `Evals.two.html` (the list in `Evals.two.json`).
+  Red before the code: `EvalTextTests` (`NotImplementedException`) and both snapshots (the page drew nothing).
+  **Not done in (i):** the charts on the card itself, and the manual opened from the card (both on the Benchmarks
+  page); the pages' rebuild is (ii), the rename (iii).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
