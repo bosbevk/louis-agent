@@ -2,7 +2,7 @@ using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Protocol.Parts.Run;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
+namespace LouisAgent.Api.Evals.Store.Runs;
 
 /// <summary>
 /// One slice of a mode's roll-up inside a run's document, with the runner's fields as it wrote them. A rate a slice

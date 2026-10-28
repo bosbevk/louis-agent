@@ -1,10 +1,9 @@
-using LouisAgent.Api.Evals.Store.Notes;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 
-namespace LouisAgent.Api.Evals.Store.Mongo;
+namespace LouisAgent.Api.Evals.Store.Notes;
 
 /// <summary>
 /// Keeps the notes in Mongo, one document per note, in a collection of their own.

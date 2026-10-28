@@ -7,7 +7,7 @@ using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization.Attributes;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
-namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
+namespace LouisAgent.Api.Evals.Store.Turns;
 
 /// <summary>
 /// A turn as MongoDB keeps it in the <c>turns</c> collection, its stream events inside. Its id is its run and its key,
@@ -16,7 +16,7 @@ namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
 /// </summary>
 /// <remarks>
 /// Metadata Mapping on a Data Transfer Object (Fowler, PoEAA): the record says how each field is stored and the
-/// driver does the copying, as <see cref="RunDocument"/> explains. The properties keep the order the hand mapper
+/// driver does the copying, as <see cref="Runs.RunDocument"/> explains. The properties keep the order the hand mapper
 /// wrote, so a document is the same field for field. The events may be missing when a query leaves them out.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>

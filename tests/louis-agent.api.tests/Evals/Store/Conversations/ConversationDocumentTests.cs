@@ -1,6 +1,6 @@
 using System.Text.Json;
+using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Mongo;
-using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 using MongoDB.Bson;
@@ -8,7 +8,7 @@ using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
-namespace LouisAgent.Api.Tests.Evals.Store.Mongo.Documents;
+namespace LouisAgent.Api.Tests.Evals.Store.Conversations;
 
 /// <summary>
 /// A conversation's Mongo document is a record the driver maps (ADR 0048). It writes exactly what the hand-written
@@ -41,7 +41,7 @@ public class ConversationDocumentTests
 
     /// <summary>A fixture beside this test in the repo, so a regenerated one lands in git.</summary>
     private static string FixturePath(string name) =>
-        Path.Combine(ApiTestHost.RepoRoot, "tests", "louis-agent.api.tests", "Evals", "Store", "Mongo", "Documents",
+        Path.Combine(ApiTestHost.RepoRoot, "tests", "louis-agent.api.tests", "Evals", "Store", "Conversations",
             "Fixtures", name);
 
     /// <summary>A fixture as the document it holds, every BSON type kept.</summary>

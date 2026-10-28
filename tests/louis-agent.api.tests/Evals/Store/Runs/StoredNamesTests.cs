@@ -1,6 +1,6 @@
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Mongo;
-using LouisAgent.Api.Evals.Store.Mongo.Documents;
+using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -8,7 +8,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
-namespace LouisAgent.Api.Tests.Evals.Store.Mongo.Documents;
+namespace LouisAgent.Api.Tests.Evals.Store.Runs;
 
 /// <summary>
 /// The Mongo store reads a grader's kind and a model's level back by name, never by number. A stored name it doesn't

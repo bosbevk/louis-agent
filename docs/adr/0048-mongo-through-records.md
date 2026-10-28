@@ -35,7 +35,8 @@ field unseen). Keeping the hand mappers was rejected by Louis.
 ## Decision
 
 - **A shape we know is a record in a typed collection.** Each collection is `IMongoCollection<TDocument>` over a
-  sealed record of its own (`RunDocument`, `ConversationDocument`, …) in `Evals/Store/Mongo/Documents/`, with the
+  sealed record of its own (`RunDocument`, `ConversationDocument`, …) beside the store that uses it
+  (`Evals/Store/Runs/`, `Evals/Store/Conversations/`, …; Louis, 2026-10-28), with the
   stored field name on each property as `[BsonElement("started_at")]`, the key as `[BsonId]`, and
   `[BsonIgnoreExtraElements]` so a field added later never breaks a read. The record has a static `Of(run)`
   and a `ToRun()` (ADR 0041's *Replace Constructor with Factory Function*), and nothing else: no logic, no resource

@@ -1687,6 +1687,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   mappings and the upsert option. `RequestDocumentTests`: the byte-equal write against two fixtures the old mapper
   wrote (`request-full.json`, priced and tied to its turn; `request-bare.json`, nothing known), the round trip, and a
   document carrying Mongo's own `_id`. Red first: 5 of 5 against a stub.
+- **Step 7c.3a: each document record beside its store** (Louis's pick, before the notes commit). `Mongo/Documents/`
+  would have held seven files with the notes' record, over the six-file rule, with the reviews' and calibrations'
+  still to come; so each record moved to its concern's folder, next to the Mongo store that uses it (ADR 0010's
+  folders by concern): `Runs/` (`RunDocument`, `RunPartDocuments`, `SliceDocument`), `Conversations/`, `Turns/`,
+  `Requests/`, and `MongoRunNotes` to `Notes/`. The tests and fixtures moved to mirror them, and `StoredNamesTests`
+  went with the run's. Moves only: each file's namespace line, the `using` lines that named the old folder, three
+  crefs to `RunDocument` that now name its namespace, the fixture paths, and ADR 0048's and the API's project doc's
+  folder line. No behaviour changed and no test was written first.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

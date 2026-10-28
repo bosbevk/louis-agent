@@ -4,7 +4,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
-namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
+namespace LouisAgent.Api.Evals.Store.Runs;
 
 /// <summary>
 /// One repeat of a mode inside a run's document: what its sessions opened with, how many conversations it planned,

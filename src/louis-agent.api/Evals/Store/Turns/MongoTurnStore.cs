@@ -1,4 +1,3 @@
-using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 using MongoDB.Driver;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;

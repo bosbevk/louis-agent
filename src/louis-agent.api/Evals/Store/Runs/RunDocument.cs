@@ -3,7 +3,7 @@ using LouisAgent.Evals.Protocol.Kinds;
 using MongoDB.Bson.Serialization.Attributes;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
-namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
+namespace LouisAgent.Api.Evals.Store.Runs;
 
 /// <summary>
 /// A run as MongoDB keeps it in the <c>runs</c> collection: one document per run, its modes, total, graders, models,
