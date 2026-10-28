@@ -37,7 +37,7 @@ field unseen). Keeping the hand mappers was rejected by Louis.
 - **A shape we know is a record in a typed collection.** Each collection is `IMongoCollection<TDocument>` over a
   sealed record of its own (`RunDocument`, `ConversationDocument`, …) in `Evals/Store/Mongo/Documents/`, with the
   stored field name on each property as `[BsonElement("started_at")]`, the key as `[BsonId]`, and
-  `[BsonIgnoreExtraElements]` so a field added later leaves old documents readable. The record has a static `Of(run)`
+  `[BsonIgnoreExtraElements]` so a field added later never breaks a read. The record has a static `Of(run)`
   and a `ToRun()` (ADR 0041's *Replace Constructor with Factory Function*), and nothing else: no logic, no resource
   ([ADR 0040](0040-records-for-values-classes-for-things.md)).
 - **Enums are stored as their wire names.** One `WireNameSerializer<TEnum>`, registered once at start-up beside the
@@ -60,8 +60,9 @@ field unseen). Keeping the hand mappers was rejected by Louis.
 - Two records per collection (the contract's and the document's), kept in step by `Of` and `ToRun()`; the store
   contract tests (one per store, run on both implementations) hold the round trip.
 - Class maps and serializers must be registered before the first connection; `MongoEvalDatabase` does it once.
-- Documents written before this ADR keep opening: the field names don't change, and extra or missing fields are
-  tolerated; 7c's rule that v1 runs are deleted at store open stands apart from this.
+- Stored eval data is disposable until hosting (Phase 9): no migration, no alias; `[BsonIgnoreExtraElements]` stays
+  only so a field added later never breaks a read (Louis, 2026-10-28;
+  [ADR 0049](0049-nothing-is-compatible-before-a-sale.md)).
 
 ## Links
 

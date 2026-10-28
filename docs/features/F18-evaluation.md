@@ -1658,6 +1658,14 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   pins byte-equality with two fixtures the old mapper wrote (`conversation-full.json`, `conversation-bare.json`),
   and a third written by hand (`conversation-older.json`): a document from before a conversation kept its outcome,
   its time and its judges, which the old reader tolerated, reads with those empty. Red first: 5 of 5 against a stub.
+- **Step 7c.3a: stored eval data is disposable until Phase 9** (Louis, before the turns commit). No backward
+  compatibility anywhere in 3a: no migration, no alias. The runs' and conversations' tests drop their case that read
+  what the old mapper wrote (`conversation-older.json` went with it) for a round trip of each record's own document;
+  the byte-equal write stays, since it is what shows the change moved the code and not the data. ADR 0048's
+  consequence says so, and `RunDocument`'s and `ConversationDocument`'s summaries now say `[BsonIgnoreExtraElements]`
+  is there only so a field added later never breaks a read. The rule is ADR 0049 (nothing is backward compatible
+  until something is sold in production), written and added to the guide's rules in the same commit. No test to
+  write first: only cases go.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

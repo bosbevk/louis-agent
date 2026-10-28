@@ -13,9 +13,10 @@ using static LouisAgent.Api.Evals.Store.EvalDocuments;
 namespace LouisAgent.Api.Tests.Evals.Store.Mongo.Documents;
 
 /// <summary>
-/// A run's Mongo document is a record the driver maps (ADR 0048), and it writes exactly what the hand-written mapper
-/// before it wrote, field for field and type for type, so a run stored before the change opens as it did. The two
-/// fixtures are what that mapper wrote for a run with every field set and for a bare one.
+/// A run's Mongo document is a record the driver maps (ADR 0048). It writes exactly what the hand-written mapper before
+/// it wrote, field for field and type for type, so the change moved the code and not the data, and it reads its own
+/// document back as the run it was. The two fixtures are what that mapper wrote for a run with every field set and for
+/// a bare one. Stored eval data is disposable until Phase 9, so no document from before is read.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class RunDocumentTests
@@ -81,18 +82,18 @@ public class RunDocumentTests
     public void Register() => MongoEvalDatabase.RegisterMappings();
 
     /// <summary>
-    /// A run stored by the old mapper reads back as the run it was; a bare run's modes come back as an empty list, as
-    /// they always did.
+    /// A run reads back from its own document as the run it was; a bare run's modes come back as an empty list.
     /// </summary>
     [TestCase("run-full.json")]
     [TestCase("run-bare.json")]
-    public void ARunStoredBeforeTheRecord_ReadsBackAsItWas(string fixture)
+    public void ARun_ReadsBackFromItsOwnDocument(string fixture)
     {
-        var expected = fixture == "run-full.json" ? Full : Bare with { Modes = [] };
+        var run = fixture == "run-full.json" ? Full : Bare;
+        var written = RunDocument.Of(run).ToBsonDocument();
 
-        var read = BsonSerializer.Deserialize<RunDocument>(Fixture(fixture)).ToRun();
+        var read = BsonSerializer.Deserialize<RunDocument>(written).ToRun();
 
-        Assert.That(Fields(read), Is.EqualTo(Fields(expected)));
+        Assert.That(Fields(read), Is.EqualTo(Fields(run.Modes is null ? run with { Modes = [] } : run)));
     }
 
     /// <summary>

@@ -1029,6 +1029,15 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
   writes, so a diff shows the mapping and never a shape change. ADR 0046 came from `main` (PR #94), merged into the
   branch, so 0048 links it.
 
+- **3a: stored eval data is disposable until Phase 9** (Louis, 2026-10-28, before the turns commit). No backward
+  compatibility anywhere in 3a: no migration and no alias (the turns read only `agent_calls`; `puls_calls` and every
+  other old name go), and the typed-collection commits drop their "reads a document written by the old mapper" case.
+  The runs' and conversations' tests, committed with it, lose it in a commit of their own (no history rewrite); each
+  keeps a round trip of its own document and the byte-equal write. ADR 0048's consequence says so;
+  `[BsonIgnoreExtraElements]` stays only so a field added later never breaks a read. A turn's failure the build
+  doesn't know is refused, as every stored enum is (Louis's pick). The rule behind it is ADR 0049, nothing is
+  backward compatible until something is sold in production, now in *Rules that always apply*.
+
 - **Step 7c.3's design** (Louis, 2026-10-28, cards before 3a).
   - **The keys go into the contract**: `ConversationKey` beside `TurnKey` in `Parts/Conversations`, and `TurnKey`
     and `ConversationEvent` get a `[JsonIgnore]` property that gives the conversation's key. The API and the harness

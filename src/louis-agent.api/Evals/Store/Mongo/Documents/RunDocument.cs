@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
 /// <summary>
 /// A run as MongoDB keeps it in the <c>runs</c> collection: one document per run, its modes, total, graders, models,
 /// slices, prompts and dataset inside it. The stored field names read off the properties, and a field added later
-/// leaves older documents readable.
+/// never breaks a read.
 /// </summary>
 /// <remarks>
 /// Metadata Mapping on a Data Transfer Object (Fowler, PoEAA): the record says how each field is stored, and the

@@ -11,10 +11,10 @@ using static LouisAgent.Api.Evals.Store.EvalDocuments;
 namespace LouisAgent.Api.Tests.Evals.Store.Mongo.Documents;
 
 /// <summary>
-/// A conversation's Mongo document is a record the driver maps (ADR 0048), and it writes exactly what the hand-written
-/// mapper before it wrote, so a conversation stored before the change opens as it did. The fixtures are what that
-/// mapper wrote for a conversation with every field set and for one that hasn't ended, and an older one stored before
-/// a conversation kept its metrics, outcome, time and judges.
+/// A conversation's Mongo document is a record the driver maps (ADR 0048). It writes exactly what the hand-written
+/// mapper before it wrote, so the change moved the code and not the data, and it reads its own document back as the
+/// conversation it was. The fixtures are what that mapper wrote for a conversation with every field set and for one
+/// that hasn't ended. Stored eval data is disposable until Phase 9, so no document from before is read.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class ConversationDocumentTests
@@ -39,21 +39,6 @@ public class ConversationDocumentTests
     private static readonly Conversation Bare = new(new ConversationKey(SampleMode.Beta, 1, "cook-en"), 1, null, null,
         0, 0);
 
-    /// <summary>
-    /// The full conversation as it reads from a document stored before a conversation kept its outcome, its time and
-    /// its judges: those come back empty.
-    /// </summary>
-    private static readonly Conversation Older = Full with
-    {
-        Grades =
-        [
-            new Grade("meal-for-people", 1, 0.5, GradeOutcome.Fail, "feeds two"),
-            new Grade("no-error", 2, 1, GradeOutcome.Pass, "ok"),
-        ],
-        Outcome = null,
-        At = null
-    };
-
     /// <summary>A fixture beside this test in the repo, so a regenerated one lands in git.</summary>
     private static string FixturePath(string name) =>
         Path.Combine(ApiTestHost.RepoRoot, "tests", "louis-agent.api.tests", "Evals", "Store", "Mongo", "Documents",
@@ -70,22 +55,19 @@ public class ConversationDocumentTests
     public void Register() => MongoEvalDatabase.RegisterMappings();
 
     /// <summary>The conversation a fixture holds.</summary>
-    private static Conversation Expected(string fixture) => fixture switch
-    {
-        "conversation-full.json" => Full,
-        "conversation-bare.json" => Bare,
-        _ => Older,
-    };
+    private static Conversation Expected(string fixture) => fixture == "conversation-full.json" ? Full : Bare;
 
-    /// <summary>A conversation stored by the old mapper reads back as the conversation it was.</summary>
+    /// <summary>A conversation reads back from its own document as the conversation it was.</summary>
     [TestCase("conversation-full.json")]
     [TestCase("conversation-bare.json")]
-    [TestCase("conversation-older.json")]
-    public void AConversationStoredBeforeTheRecord_ReadsBackAsItWas(string fixture)
+    public void AConversation_ReadsBackFromItsOwnDocument(string fixture)
     {
-        var read = BsonSerializer.Deserialize<ConversationDocument>(Fixture(fixture)).ToConversation();
+        var conversation = Expected(fixture);
+        var written = ConversationDocument.Of(Run, conversation).ToBsonDocument();
 
-        Assert.That(Fields(read), Is.EqualTo(Fields(Expected(fixture))));
+        var read = BsonSerializer.Deserialize<ConversationDocument>(written).ToConversation();
+
+        Assert.That(Fields(read), Is.EqualTo(Fields(conversation)));
     }
 
     /// <summary>

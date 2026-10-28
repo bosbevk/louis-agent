@@ -178,6 +178,12 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   a reply reads as a few calls and never builds its rows inline in a lambda (Louis, 2026-10-27). Review holds it; a
   file in a step's commit loses its anonymous replies whole.
   Why: [ADR 0041](adr/0041-json-through-records-by-hand-only-for-bytes.md).
+- **Nothing is backward compatible until something is sold in production** (Louis, 2026-10-28) — no migration, no
+  alias for an old field name, no lenient reader, no second parser for what we store or send between our own parts
+  (the eval store, replay files, the protocol, the API's contracts, golden files, settings names): a changed shape
+  means delete and re-run. The ledger's past rows and what third parties read keep their shape. Expand-and-contract
+  only for code two of our parts share in one build, finished in the same step list.
+  Why: [ADR 0049](adr/0049-nothing-is-compatible-before-a-sale.md).
 - **Dates are UTC** (Louis, 2026-10-28) — every date or time stored, logged or sent on a wire is UTC in ISO 8601
   (`2026-10-28T13:02:21Z`); "now" is `TimeProvider.GetUtcNow()`, never `DateTime.Now`; a screen converts it for the
   reader (F46), never the code that writes it; a golden file holds UTC. A future local event (an appointment) keeps

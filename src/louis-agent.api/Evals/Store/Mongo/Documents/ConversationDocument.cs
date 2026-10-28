@@ -8,8 +8,7 @@ namespace LouisAgent.Api.Evals.Store.Mongo.Documents;
 
 /// <summary>
 /// A conversation as MongoDB keeps it in the <c>conversations</c> collection, with its grades and what it measured.
-/// Its id is its run and its key, so saving it again replaces it. A field added later leaves older documents
-/// readable: what they never stored comes back empty.
+/// Its id is its run and its key, so saving it again replaces it. A field added later never breaks a read.
 /// </summary>
 /// <remarks>
 /// Metadata Mapping on a Data Transfer Object (Fowler, PoEAA): the record says how each field is stored and the
