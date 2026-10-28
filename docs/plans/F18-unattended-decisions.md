@@ -91,3 +91,23 @@ moving them is churn with no reader. A TODO line names the move, so the first ch
 runner switching to the contract) does it. Sources: ADR 0045 *Consequences*; Fowler, *Refactoring* 2nd ed., "the
 Rule of Three" (refactor when the need is there). **Commit:** the sessions file of the sweep. Louis may prefer 1;
 it is a mechanical redo.
+
+### 4. Where a page's own words go once its `@code` leaves (Part 3, `ChartInfo`)
+
+**What came up.** `ChartInfo`'s `@code` held the chart notes, about 55 sentences of user text. The guide's rule says
+user text in C# is a message enum member (ADR 0009), but those enums are read through core's `MessageText`, which the
+browser app can't reference; Puls keeps its own words in plain static text classes (`PulsText`).
+
+1. **A plain table class, as `PulsText` (picked).** `ChartGuides.For(ChartTopic)`, a switch expression with one arm per
+   measure. Changes: three small files in `Admin/Charts/Guides/` and their NUnit tests. Costs: the words are C#
+   strings, as Puls's others are, not message enum templates.
+2. **A message enum per note part** (`ChartGuideText.CostWhat`, 55 members with `[Description]`). Changes: an enum
+   and a template formatter in the browser app. Costs: a second `MessageText` in Puls for plain sentences with no
+   holes, and 55 members where 11 records do.
+3. **Keep the words in markup**, a component per measure. Changes: eleven components. Costs: eleven files for one
+   table, and the explorer and the trend still have to pick the right one.
+
+**Why 1.** It follows the browser app's own precedent and keeps one place for the notes, which ADR 0009's message
+enums can't reach. Sources: ADR 0009; `src/louis-agent.puls/Text/PulsText.cs` (precedent); Fowler, *Refactoring*
+2nd ed., *Replace Conditional with Polymorphism*'s simpler cousin, a switch on a closed set. **Commit:** the
+`ChartInfo` commit of Part 3.

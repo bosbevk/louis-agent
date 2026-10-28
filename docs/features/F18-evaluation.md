@@ -1179,6 +1179,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **Sweep: the folders.** The contract's `Admin/` (eleven files) has `Checks/`, `Trends/`, `Runs/` and `Reviews/`, and
   `Endpoints/`'s twelve admin files have `Admin/Runs/` and `Admin/Reviews/`; only namespaces and usings change. Every
   endpoint is now a named method on a handler class with declared answers, which ticks the TODO's CL20 line.
+- **Unattended run, Part 3 (7b ii): `ChartInfo`.** The chart notes leave the component for `Admin/Charts/Guides/`: a
+  `ChartTopic` enum (its members' own names read the pages' words, so `Topic="cost"` keeps working), the `ChartGuide`
+  record and the `ChartGuides` table (finding 4: Puls keeps its words in plain classes, as `PulsText`). The component
+  is markup plus a code-behind and leaves `RazorHasNoCodeTests`' list. `ChartInfoTests` pinned every note's markup
+  first (`ChartInfo.html`), and it is unchanged.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

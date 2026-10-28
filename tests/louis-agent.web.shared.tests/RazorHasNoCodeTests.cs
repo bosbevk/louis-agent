@@ -16,20 +16,22 @@ public class RazorHasNoCodeTests
     /// <summary>Repo-relative, forward slashes; remove a file's line in the commit that moves its code out.</summary>
     private static readonly HashSet<string> PendingCode =
     [
-        "src/louis-agent.puls/Components/Admin/ChartInfo.razor",
         "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
         "src/louis-agent.puls/Components/Admin/TrendChart.razor",
         "src/louis-agent.puls/Pages/Admin/BenchmarkRun.razor",
         "src/louis-agent.puls/Pages/Admin/Benchmarks.razor",
     ];
 
+    /// <summary>
+    /// A .razor holds markup only; the ones still pending are listed, and the list only shrinks.
+    /// </summary>
     [Test]
     public void ARazorFile_HoldsNoCodeBlock_UnlessStillPending()
     {
         string src = Path.Combine(TestPaths.RepoRoot, "src");
         var withCode = Directory.EnumerateFiles(src, "*.razor", SearchOption.AllDirectories)
             .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
-                     && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
+                        && !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
             .Where(f => CodeBlock.IsMatch(File.ReadAllText(f)))
             .Select(f => Path.GetRelativePath(TestPaths.RepoRoot, f).Replace('\\', '/'))
             .ToHashSet();
@@ -40,9 +42,11 @@ public class RazorHasNoCodeTests
         Assert.Multiple(() =>
         {
             Assert.That(newOffenders, Is.Empty,
-                "A .razor holds markup only: move the @code block to a .razor.cs code-behind:\n  " + string.Join("\n  ", newOffenders));
+                "A .razor holds markup only: move the @code block to a .razor.cs code-behind:\n  " +
+                string.Join("\n  ", newOffenders));
             Assert.That(done, Is.Empty,
-                "No @code block any more: remove from PendingCode so the list only shrinks:\n  " + string.Join("\n  ", done));
+                "No @code block any more: remove from PendingCode so the list only shrinks:\n  " +
+                string.Join("\n  ", done));
         });
     }
 }
