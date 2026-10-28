@@ -36,6 +36,9 @@ else
     await RunStdioAsync(args, engine);
 }
 
+/// <summary>
+/// Serves the tools over stdin and stdout, for a client on this machine that starts us as its own child process.
+/// </summary>
 static async Task RunStdioAsync(string[] args, AgentEngine engine)
 {
     var builder = Host.CreateApplicationBuilder(args);
@@ -61,6 +64,9 @@ static async Task RunStdioAsync(string[] args, AgentEngine engine)
     await host.RunAsync();
 }
 
+/// <summary>
+/// Serves the tools over the network, behind an API key, for a client somewhere else.
+/// </summary>
 static async Task RunHttpAsync(string[] args, AgentEngine engine)
 {
     var builder = WebApplication.CreateBuilder(args);
@@ -93,18 +99,21 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
         Environment.GetEnvironmentVariable("AGENT_API_KEY"));
     switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
     {
+        // Anything this switch doesn't know refuses to start too: the server fails closed, never open by accident.
         case HostAuthDecision.Refuse:
+        default:
             throw new InvalidOperationException(MessageText.Format(ErrorMessage.ApiKeyRequired,
                 new { Setting = "MCP_API_KEY (or AGENT_API_KEY)" }));
         case HostAuthDecision.StartOpen:
             AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer")
                 .Log(LogLevel.Warning, McpServerLogMessage.NoApiKey);
             break;
-        case HostAuthDecision.Start:
+        // Start comes with a key: the decision says so, and the pattern lets the compiler see it.
+        case HostAuthDecision.Start when apiKey is { } key:
             app.Use(async (context, next) =>
             {
                 if (HostAuth.HasKey(context.Request.Headers["x-api-key"].FirstOrDefault(),
-                        context.Request.Headers.Authorization.FirstOrDefault(), apiKey))
+                        context.Request.Headers.Authorization.FirstOrDefault(), key))
                 {
                     await next(context);
                     return;
@@ -126,6 +135,9 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
 /// </summary>
 internal static class EngineToolSync
 {
+    /// <summary>
+    /// Publishes the engine's tools now, and again every time the engine's tool list changes.
+    /// </summary>
     public static void Attach(AgentEngine engine, McpServerPrimitiveCollection<McpServerTool> collection)
     {
         // Name -> (engine function, its published MCP tool, description at publish time).
@@ -134,6 +146,9 @@ internal static class EngineToolSync
                 StringComparer.Ordinal);
         object gate = new();
 
+        /// <summary>
+        /// Takes down the tools that are gone or changed, and puts up the ones the client doesn't have yet.
+        /// </summary>
         void Sync()
         {
             lock (gate)
@@ -179,11 +194,17 @@ public class SkillsToolProvider
 {
     private readonly AgentEngine _engine;
 
+    /// <summary>
+    /// Reads the skills from the engine the server already built.
+    /// </summary>
     public SkillsToolProvider(AgentEngine engine)
     {
         _engine = engine;
     }
 
+    /// <summary>
+    /// Lists every skill by name, with its language and what it does.
+    /// </summary>
     [McpServerTool]
     [Description("List all available skills (run one with ExecuteSkill)")]
     public string ListSkills()
@@ -193,6 +214,9 @@ public class SkillsToolProvider
         return $"Available skills:\n{skillList}";
     }
 
+    /// <summary>
+    /// Shows one skill in full, its command included, so the client can see what it would run.
+    /// </summary>
     [McpServerTool]
     [Description("Get detailed information about a specific skill, including its command")]
     public string GetSkillInfo(
@@ -211,6 +235,9 @@ public class SkillsToolProvider
             $"Skill: {skill.Name}\nDescription: {skill.Description}\nLanguage: {skill.Language.Wire()}\nCommand: {skill.Command}";
     }
 
+    /// <summary>
+    /// Hands over all the guidance the agent itself reads, so the client's model can use the tools the same way.
+    /// </summary>
     [McpServerTool]
     [Description(
         "Get the agent's full guidance: default instructions plus the .NET, Python, PowerShell, Bash, self-extension and skill documentation")]
