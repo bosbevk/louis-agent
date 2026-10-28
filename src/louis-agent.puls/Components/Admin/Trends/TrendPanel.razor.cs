@@ -46,6 +46,10 @@ public partial class TrendPanel
     [Parameter, EditorRequired]
     public string ChartId { get; set; } = "";
 
+    /// <summary>The runs with notes or a changed prompt; none on the card's small chart.</summary>
+    [Parameter]
+    public IReadOnlyList<TrendMark> Marks { get; set; } = [];
+
     /// <summary>Whether any run has a value here: a measure nobody measured draws no empty line.</summary>
     private bool HasValues => Series.SelectMany(s => s.Points).Any(p => Measure.Value(p) is not null);
 

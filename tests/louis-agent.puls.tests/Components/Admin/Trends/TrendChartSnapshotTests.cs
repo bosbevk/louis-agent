@@ -47,6 +47,39 @@ public partial class TrendChartSnapshotTests
     }
 
     /// <summary>
+    /// A line whose second run has a note and a changed prompt: every panel marks that run once of each kind, with
+    /// its tooltip, and the legend explains both marks.
+    /// </summary>
+    [Test]
+    public void ANoteAndAPromptChange_AreMarkedInEveryPanel()
+    {
+        using var ctx = new BunitContext();
+        string marked = Trend.Replace("\"pass_hat_k\":1,\"k\":2}]}",
+            "\"pass_hat_k\":1,\"k\":2,\"notes\":[\"judge changed\"],\"prompt_changed\":[\"sub-session:puls-cook\"]}]}");
+
+        var cut = ctx.Render<TrendChart>(p => p.Add(x => x.Trend, Json(marked)));
+
+        Assert.That(cut.FindAll(".trend-panel .trend-note"), Has.Count.EqualTo(11), "one per panel");
+        Assert.That(cut.FindAll(".trend-panel .trend-prompt"), Has.Count.EqualTo(11), "one per panel");
+        Snapshots.Match("louis-agent.puls.tests", "Components/Admin/Trends/TrendChart.marks.html", Stable(cut.Markup));
+    }
+
+    /// <summary>The card's small chart is the cost at a glance: it draws no marks.</summary>
+    [Test]
+    public void TheSmallChart_DrawsNoMarks()
+    {
+        using var ctx = new BunitContext();
+        string marked = Trend.Replace("\"pass_hat_k\":1,\"k\":2}]}",
+            "\"pass_hat_k\":1,\"k\":2,\"notes\":[\"judge changed\"],\"prompt_changed\":[\"sub-session:puls-cook\"]}]}");
+
+        var cut = ctx.Render<TrendChart>(p => p
+            .Add(x => x.Trend, Json(marked))
+            .Add(x => x.Small, true));
+
+        Assert.That(cut.FindAll(".trend-note, .trend-prompt"), Is.Empty);
+    }
+
+    /// <summary>
     /// The markup made the same on any machine: each chart title's note id (fresh on every render), and a run's time
     /// of day, which the chart writes in the reader's own time zone (CI runs in UTC).
     /// </summary>

@@ -1,7 +1,8 @@
-@* F31 step 11a: a check's trend over its runs, a line per mode in the explorer's palette, drawn in from the left; a
-   point opens its run. Small on the check card (cost only), full in the explorer: the nine rings as lines, the open run
-   marked. One run is read at a time, the marked one, else the last, and each panel's head gives its value per mode with
-   the change since the run before; hovering a point reads that run in that panel only. *@
+@* A check's trend over its runs, a line per mode in the explorer's palette, drawn in from the left; a point opens its
+   run. Small on the check card (cost only), full in the explorer: the nine rings as lines, the open run marked, and in
+   every panel a dot where a run has notes and a dashed line where a prompt changed, explained in the legend. One run is
+   read at a time, the marked one, else the last, and each panel's head gives its value per mode with the change since
+   the run before; hovering a point reads that run in that panel only. *@
 
 @if (Draws)
 {
@@ -10,7 +11,7 @@
         {
             <div class="chart-head">@if (ShowTitle) { <strong>Trend</strong> }<span class="muted">@_runs.Count runs</span>
                 <span class="trend-shown muted">reading run <a href="admin/benchmarks/@Reading.Shown.Run"><code>@Reading.Shown.Run</code></a> · @Reading.Shown.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm")<span class="trend-hint"> · hover a point to read that run in its panel, click it to open the run</span></span>
-                <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @ChartPalette.Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }</span></div>
+                <span class="legend">@foreach (var (s, i) in _series.Select((s, i) => (s, i))) { <span><span class="sw" style="background: @ChartPalette.Series(i)"></span>@(Labels?.GetValueOrDefault(s.Name) ?? s.Name)</span> }<span title="Hover the dot in a panel to read the notes"><span class="key-note"></span>a note on the run</span><span title="Hover the dashed line in a panel to see which agents changed"><span class="key-prompt"></span>a prompt changed</span></span></div>
         }
         @if (Small)
         {
@@ -21,7 +22,7 @@
             <div class="trend-grid">
                 @foreach (var measure in Shown)
                 {
-                    <TrendPanel Measure="measure" Series="_series" Runs="_runs" Reading="Reading" Highlight="@Highlight" Small="Small" Compact="Compact" ChartId="@_id" />
+                    <TrendPanel Measure="measure" Series="_series" Runs="_runs" Reading="Reading" Highlight="@Highlight" Small="Small" Compact="Compact" ChartId="@_id" Marks="_marks" />
                 }
             </div>
         }

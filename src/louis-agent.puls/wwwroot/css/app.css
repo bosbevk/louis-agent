@@ -1408,6 +1408,13 @@ html:has(.landing) { scroll-behavior: smooth; }
 .trend-point.here { stroke-width: 11; }
 .trend.small .trend-point { stroke-width: 5; }
 .trend-point:hover, .trend-point.hovered { filter: brightness(1.25); stroke-width: 10; }
+/* Step 7a.3: a dashed line where a prompt changed, a dot at the top where a run has notes; each reads out on hover. */
+.trend-prompt { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 3; vector-effect: non-scaling-stroke; cursor: help; }
+.trend-prompt:hover { stroke: var(--text); stroke-width: 3; }
+.trend-note { stroke: var(--text); stroke-width: 8; stroke-linecap: round; vector-effect: non-scaling-stroke; cursor: help; }
+.trend-note:hover { stroke-width: 11; }
+.legend .key-note { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--text); }
+.legend .key-prompt { display: inline-block; width: 0; height: 12px; border-left: 1.5px dashed var(--muted); }
 /* The trend reworked (2026-10-26): the run being read, its value per mode in each panel's head with the change since the run before, a guide line under the mouse, dates under the axis. */
 .trend-shown { font-size: 12.5px; }
 .trend-shown a { color: var(--orange-text); text-decoration: none; }

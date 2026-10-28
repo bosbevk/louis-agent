@@ -1246,6 +1246,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   (`AdminReplyJsonTests`) now names `notes` and `prompt_changed` after `k`, an intended change. Red before the code:
   5 of the 6 `BenchmarkTrendMarksTests` (null where a list was expected; the first-point case passes as the guard it
   is) and the JSON pin (the two names missing).
+- **Step 7a.3 (c): the chart marks notes and prompt changes.** What it means: in the full trend, every panel now has a
+  dot at the top of a run with notes and a dashed upright line where a prompt changed; hovering reads out the notes,
+  or each line with the agents that changed on it, and the legend names both marks (finding 16: annotations in every
+  panel, as Grafana draws them). The card's small chart, the cost at a glance, draws none. `TrendMarks.Of` (a plain
+  class in `Admin/Trends/`, with `TrendMark` and its two tooltips) finds the runs to mark once each in the axis's
+  order, a note on the run listed once though every line's point carries it, and `TrendPanel` draws them under the
+  points. Red before the code: 4 `TrendMarksTests` (`NotImplementedException`) and the new snapshot (no markers
+  drawn); the small-chart case passes as its guard. Goldens: `TrendChart.full.html` changes by the legend's two
+  entries only, `TrendChart.marks.html` is new (a line whose second run has one of each, eleven of each marker).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

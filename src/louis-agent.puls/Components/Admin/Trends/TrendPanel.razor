@@ -1,5 +1,6 @@
 @* One panel of the trend: a line per mode of one measure over the runs; its head reads the shown run per mode with its
-   change; its title explains it on hover. A zero-length line with a round cap draws a point: a circle at any width,
+   change; its title explains it on hover. A dashed upright line marks a run where a prompt changed, a dot at the top a
+   run with notes, each with its tooltip. A zero-length line with a round cap draws a point: a circle at any width,
    where a stretched circle would be an oval. *@
 
 @if (!HasValues)
@@ -15,6 +16,11 @@ else
             <line class="trend-axis" x1="0" y1="@F(TrendGeometry.Height - TrendGeometry.Pad)" x2="@F(TrendGeometry.Width)" y2="@F(TrendGeometry.Height - TrendGeometry.Pad)" />
             @if (Marked is { } h) { <line class="trend-mark" x1="@F(Geometry.X(h))" y1="0" x2="@F(Geometry.X(h))" y2="@F(TrendGeometry.Height)" /> }
             @if (HoveredRun is { } hv) { <line class="trend-hover" x1="@F(Geometry.X(hv))" y1="0" x2="@F(Geometry.X(hv))" y2="@F(TrendGeometry.Height)" /> }
+            @foreach (var m in Marks)
+            {
+                @if (m.ChangeTip is { } change) { <line class="trend-prompt" x1="@F(Geometry.X(m.Run))" y1="0" x2="@F(Geometry.X(m.Run))" y2="@F(TrendGeometry.Height)"><title>@change</title></line> }
+                @if (m.NoteTip is { } note) { <line class="trend-note" x1="@F(Geometry.X(m.Run))" y1="@F(TrendGeometry.Pad / 2)" x2="@F(Geometry.X(m.Run))" y2="@F(TrendGeometry.Pad / 2)"><title>@note</title></line> }
+            }
             @foreach (var (s, i) in Series.Select((s, i) => (s, i)))
             {
                 string path = Path(s);

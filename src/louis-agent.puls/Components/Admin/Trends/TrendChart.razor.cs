@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Puls.Components.Admin.Trends;
 
 /// <summary>
-/// A check's trend over its runs: a line per mode, a panel per measure, the reading run in the head. The trend is read
-/// once as the contract's <c>TrendReply</c>, never picked apart by name; each panel is a <c>TrendPanel</c>.
+/// A check's trend over its runs: a line per mode, a panel per measure, the reading run in the head, and a mark where a
+/// run has notes or a changed prompt. The trend is read once as the contract's <c>TrendReply</c>, never picked apart by
+/// name; each panel is a <c>TrendPanel</c>.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class TrendChart
@@ -18,6 +19,7 @@ public partial class TrendChart
     private readonly string _id = Guid.NewGuid().ToString("N")[..8];
     private IReadOnlyList<TrendLineRow> _series = [];
     private List<TrendRun> _runs = [];
+    private IReadOnlyList<TrendMark> _marks = [];
 
     /// <summary>
     /// The trend as GET /v1/admin/benchmarks/checks/{check}/trend answers it, or a category's chart in its shape. It
@@ -86,6 +88,8 @@ public partial class TrendChart
             .Distinct()
             .OrderBy(r => r.At)
             .ToList();
+        // The runs with notes or a changed prompt, marked once each in every full panel.
+        _marks = TrendMarks.Of(_series, _runs);
     }
 
     /// <summary>Money in the page's currency.</summary>
