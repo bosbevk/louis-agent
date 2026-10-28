@@ -14,9 +14,6 @@ public class EvalProcessTests
     /// <summary>The test's own working folder.</summary>
     private string _workspace = "";
 
-    /// <summary>The runner a test started, if any, so tear-down can wait for its child.</summary>
-    private EvalProcess? _runner;
-
     /// <summary>Gives each test an empty folder of its own.</summary>
     [SetUp]
     public void SetUp()
@@ -25,18 +22,9 @@ public class EvalProcessTests
         Directory.CreateDirectory(_workspace);
     }
 
-    /// <summary>Waits for any child still running, then removes the folder.</summary>
+    /// <summary>Removes the folder. These tests only build a start, so no child is ever left running.</summary>
     [TearDown]
-    public async Task TearDown()
-    {
-        // A test may leave its child running; the folder can't go while it does, so read its lines to the end.
-        if (_runner?.Current is { Status: EvalRunStatus.Running } run)
-            await foreach (string _ in _runner.EventsAsync(run.Id))
-            {
-            }
-
-        Directory.Delete(_workspace, recursive: true);
-    }
+    public void TearDown() => Directory.Delete(_workspace, recursive: true);
 
     /// <summary>An eval starts the runner through dotnet, with its run id and repeat count.</summary>
     [Test]
