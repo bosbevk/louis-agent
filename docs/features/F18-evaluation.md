@@ -120,6 +120,7 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 - **7a** Why a run behaved as it did
 - **7b** Every eval visible in the admin portal, and the API names no product; the store split by record (approved during the build)
 - **7c** Protocol v2: one event model for the runner and the API; v1 runs discarded (approved during the build)
+- **7d** The datasets in Inspect's `Sample` shape: `id`, `input`, `target`, `metadata`, ours under `metadata` (approved during the build)
 - **8** Docs and the write-ups
 
 ## Done when
@@ -1415,6 +1416,23 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `PortalReadsJsonTests`' list (25 now). `BenchmarkRun` now shows the API's own words when a run isn't stored ("No
   stored run '…'.") instead of a sentence typed in the page, which the message rule ruled out. Red first:
   `AgentApiGetTests` against a stub that threw (2 of 2 failing).
+- **Step 7c.0 (the v1 baseline on record, before 7c deletes the v1 runs).** The Python runs were deleted before they
+  could be exported (step 5.2), so the first C# runs are the baseline, and these are their last numbers on protocol
+  version 1. They were read from the store on 2026-10-28 (`GET /v1/admin/benchmarks/runs/{id}`, the Puls container).
+  **`puls-cook`, run `8f7802b9a72e`** (2026-10-26, `--repeat 3`, Claude Haiku 5.5, web recorded; $0.256119, 249
+  requests, 4,677,508 tokens):
+
+  | Mode | Passed | Overall | pass@k | pass^k | `budget` |
+  |---|---|---|---|---|---|
+  | `puls-cook` (Puls with its cook) | 21 of 24 | 88% | 100% | 75% | 67% (4 of 6), pass@k 100%, pass^k 50% |
+  | `puls-tools` (Puls with the cook's tools) | 6 of 24 | 25% | 25% | 25% | 0% (0 of 6) |
+
+  In the `puls-cook` mode, `follow-up` passed 6 of 6; `language:af` passed 18 of 21 (86%, pass^k 71%). The remaining
+  slices had too few trials for a rate (`asks-first`, `control`, `language:en`, `shop:any` and `shop:no-branch` 3 of
+  3, `shops:two` 2 of 3).
+  **`puls-routing`: no v1 baseline** (Louis, 2026-10-28). The store's one routing run, `bc4b25269a30` (2026-10-25),
+  ran before steps 5.6 and 5.7 changed the prompts and before 5a's pass rates; step 5.6 already keeps it only as
+  history. The routing's trend starts with its first v2 run.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

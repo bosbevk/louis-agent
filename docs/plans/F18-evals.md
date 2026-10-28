@@ -1020,6 +1020,42 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Step 7c's design, and what the Python world taught us** (Louis, 2026-10-28, cards). Seven picks; the full plan,
+  with the pros, cons and sources behind each, is in the Claude project ("Protocol v2 Plan").
+  - **A. The contract lives in a shared project**, `evals/louis-agent.evals.protocol`: records and enums only,
+    referencing `louis-agent.choices` and nothing else; the harness, the API and `louis-agent.web.shared` reference
+    it. Pattern: a shared *Data Transfer Object* contract (Fowler, PoEAA), as `louis-agent.api.contracts` is (ADR
+    0045). CL22 closes inside 7c. ADR 0022 gets one line: the contract is not the harness.
+  - **B. JSON Lines on stdout, `"event"` first.** No `@` prefix, UTF-8, one object per line (jsonlines.org).
+    `"event"` is System.Text.Json's type discriminator (`[JsonPolymorphic(TypeDiscriminatorPropertyName = "event")]`,
+    one `[JsonDerivedType]` per event). A line that isn't an object with an `event` member is a log line.
+  - **C. kebab-case for every word on the wire** (`fixed-rule`, `pass`, `sub-session`), the style modes and roles
+    already use; field names stay `snake_case`. The PascalCase `[WireName("FixedRule")]` exceptions go with v2.
+  - **D. `grades` plus one `Metrics` record** on the conversation event. Grades decide a pass with partial credit;
+    metrics (calls, hosts, turns, tokens, seconds, cost) are measured and never fail a run. The per-eval score bags
+    (`CookScores`, `RoutingScores`, `ExampleScores`, `IEval.ScoresOf`) go; the cook's `deals_named` and
+    `untooled_shops` go unless Louis says he still reads them (asked once, in step 2).
+  - **E. Version 1 runs are deleted when the store opens**, guarded: only documents without `protocol_version: 2`,
+    only the store's own collections, the counts logged, a contract test on both stores. One database, no
+    configuration change (Puls keeps `puls_benchmarks`).
+  - **F. The field names are our own.** OpenTelemetry's GenAI names (`gen_ai.*`) are not borrowed; ADR 0046 says so.
+  - **G. The datasets take Inspect's `Sample` shape** (`id`, `input`, `target`, `metadata`, ours under `metadata`) as
+    a new row, **7d, after 7c**; nothing in 7c. Louis: "our datasets should also comply."
+  - **H. Function skills become Agent Skills `SKILL.md` folders, and every role, mode and guide gets the same `name` +
+    `description` header; prompts stay embedded** (Louis: "for safety we embed"; ADR 0018 holds). The header is YAML
+    front matter: the spec's `name` and `description`, ours (`level`, `toolsets`) under `metadata` (Louis approved
+    the shape, 2026-10-28). It grows the TODO's Phase 7 line; nothing in 7c.
+
+- **The session stream's events are records in the contracts project, and `AgentApi` works on records** (Louis,
+  2026-10-28, review of the fixes: findings 26 and 27, both kept). Finding 26: the session stream's events become
+  records in the contracts project. Finding 27: `AgentApi` sends and reads records, and `louis-agent.web.shared`
+  references `louis-agent.api.contracts`.
+
+- **Step 7c.0: there is no v1 routing baseline** (Louis, 2026-10-28, card). The store's one `puls-routing` run,
+  `bc4b25269a30`, ran before steps 5.6 and 5.7 changed the prompts and before 5a's pass rates, and the feature doc
+  already keeps it only as history; its numbers are not written down as a baseline. The routing's trend starts with
+  its first v2 run.
+
 - **Two ratchets: folder size, and the portal's JSON readers** (cards A and A). `FolderSizeTests`, beside
   `FileSizeTests` and over the same roots: a folder holds at most six source files (a `.razor` and its `.razor.cs`
   count as one); today's oversized folders are on a list that may only shrink, and a folder is split by concern when
