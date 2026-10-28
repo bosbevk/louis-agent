@@ -68,7 +68,7 @@ internal static class StoredRunReplies
             g.Conversation.Task,
             g.Grader + HumanReview.Suffix,
             g.Grader,
-            HumanVerdicts.Word(g.Verdict),
+            g.Verdict.Wire(),
             g.Note,
             g.Reviewer,
             g.At,

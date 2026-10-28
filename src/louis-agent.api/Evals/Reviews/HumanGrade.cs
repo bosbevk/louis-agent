@@ -4,16 +4,16 @@ using LouisAgent.Evals.Protocol.Parts.Conversations;
 namespace LouisAgent.Api.Evals.Reviews;
 
 /// <summary>
-/// What a person says of an answer: pass, fail, or unsure. An unsure is kept and shown, but it's never a label.
+/// What a person says of an answer: pass, fail, or unsure. An unsure is kept and shown, but it's never a label. The
+/// store keeps the same lower-case word the portal's API sends.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
 public enum HumanVerdict
 {
-    // PascalCase on purpose (Louis, 2026-10-27): stored runs and the protocol carry the text as written today; one
-    // lower-case style waits for protocol v2 (7c), which starts stored runs fresh.
-    [WireName("Pass")] Pass,
-    [WireName("Fail")] Fail,
-    [WireName("Unsure")] Unsure,
+    [WireName("pass")] Pass,
+    [WireName("fail")] Fail,
+    [WireName("unsure")] Unsure,
 }
 
 /// <summary>
@@ -32,19 +32,3 @@ public sealed record HumanGrade(
     string Note,
     string Reviewer,
     DateTimeOffset At);
-
-/// <summary>How the portal's API words a verdict.</summary>
-public static class HumanVerdicts
-{
-    /// <summary>
-    /// The verdict in lower case, as the portal's API says it. The store keeps the wire name instead (PascalCase, as
-    /// stored reviews have it), so this is spelled out and never derived from it.
-    /// </summary>
-    public static string Word(HumanVerdict verdict) => verdict switch
-    {
-        HumanVerdict.Pass => "pass",
-        HumanVerdict.Fail => "fail",
-        HumanVerdict.Unsure => "unsure",
-        _ => throw new ArgumentOutOfRangeException(nameof(verdict), verdict, null),
-    };
-}

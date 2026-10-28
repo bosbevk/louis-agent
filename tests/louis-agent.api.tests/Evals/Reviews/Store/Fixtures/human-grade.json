@@ -4,7 +4,7 @@
   "repeat" : { "$numberInt" : "2" },
   "task" : "cook-af",
   "grader" : "meal-for-people.human",
-  "verdict" : "Fail",
+  "verdict" : "fail",
   "note" : "feeds two, not six",
   "reviewer" : "reviewer-a",
   "at" : { "$date" : { "$numberLong" : "1793174400125" } }

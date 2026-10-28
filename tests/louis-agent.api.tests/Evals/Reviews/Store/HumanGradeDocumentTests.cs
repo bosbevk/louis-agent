@@ -10,10 +10,10 @@ using MongoDB.Bson.Serialization;
 namespace LouisAgent.Api.Tests.Evals.Reviews.Store;
 
 /// <summary>
-/// A person's grade's Mongo document is a record the driver maps (ADR 0048). It writes exactly what the hand-written
-/// mapping before it wrote, so the change moved the code and not the data, and it reads its own document back as the
-/// grade it was, whatever the verdict. The fixture was written by hand from that mapping (it had no method of its own
-/// to call). Stored eval data is disposable until Phase 9 (ADR 0049), so no document from before is read.
+/// A person's grade's Mongo document is a record the driver maps (ADR 0048). It writes the shape the fixture pins
+/// (the hand-written mapping's fields and types, written out by hand from it, with the verdict now lower case), and
+/// it reads its own document back as the grade it was, whatever the verdict. Stored eval data is disposable until
+/// Phase 9 (ADR 0049), so no document from before is read.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class HumanGradeDocumentTests
@@ -66,11 +66,11 @@ public class HumanGradeDocumentTests
     }
 
     /// <summary>
-    /// A grade is written as the old mapping wrote it: the same fields, in the same order, of the same types, the
-    /// verdict by its wire name.
+    /// A grade is written in its stored shape: the fixture's fields, in its order, of its types, the verdict by its
+    /// lower-case wire name.
     /// </summary>
     [Test]
-    public void AGrade_IsWrittenAsTheOldMappingWroteIt()
+    public void AGrade_IsWrittenInItsStoredShape()
     {
         var written = HumanGradeDocument.Of(Failed).ToBsonDocument();
 

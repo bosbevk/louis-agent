@@ -1722,6 +1722,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   judge model and two disagreements; `calibration-bare.json`, no model and none), the round trip, and a document
   carrying Mongo's own `_id`. Red first: 5 of 5 against a stub. With it every Mongo collection the API writes is a
   typed collection of a record; the one `BsonDocument` left is the stream event's JSON, which ADR 0048 allows.
+- **Step 7c.3a: a person's verdict is lower case** (Louis's pick, 7c's pick C). `HumanVerdict`'s wire names are
+  `pass`, `fail` and `unsure`, the word the store keeps and the API sends; with no alias for the old casing (ADR
+  0049: old stored grades are deleted, not read). `HumanVerdicts.Word`, which spelled the API's word out apart from
+  the PascalCase stored one, went: the run reply says `.Wire()`. `PascalCaseWireTests` became `VerdictWireTests`
+  (renamed in Rider), and the review fixture pins `fail`. Red first: 2 (the wire names, the stored fixture). The
+  shared parser still ignores case (ADR 0024), so the stored word is read as it reads every enum.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
