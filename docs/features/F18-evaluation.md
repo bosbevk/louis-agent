@@ -1759,6 +1759,12 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   nothing in production called it since `ConversationGrades.Of(ConversationRow)` replaced it. Its four conversation
   cases went from `GradesReadersTests`, which keeps the run's graders (its mixed no-version case kept its run half)
   and gained its summaries; the Puls project doc's folder line no longer names it. No test first: only dead code went.
+  Commit 2: `RunGradersReader` goes; `RunGraders.Of(StoredRunRow)` builds the eval and graders from the contract's
+  run row (with the existing `GraderRow.Of`), and `GraderList` takes that row. `RunSettings`, still on JSON until
+  commit 3, deserializes just the `run` part for it. `RunGradersTests` replaces `GradesReadersTests` (the no-version
+  case went: the contract's grader version is never null); `GraderListTests` renders from a row and both goldens stay
+  byte-equal. Red first: 9 (the three new tests, the two goldens, three run-page tests through the stub, and the
+  ratchet asking for the two files off its list).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

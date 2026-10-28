@@ -2,7 +2,7 @@
 @* What the run ran with: the eval and its graders, the settings and the modes, and the lines the runner printed. *@
 <section class="card-p">
     <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>What it ran with<span class="fold-note">the eval, its graders, the settings, the modes</span></summary>
-        <GraderList Run="Run" />
+        <GraderList Run="RunRow" />
         <dl class="explorer-fields">
             @if (Run.TryGetProperty("settings", out var settings) && settings.ValueKind == JsonValueKind.Object)
             {
