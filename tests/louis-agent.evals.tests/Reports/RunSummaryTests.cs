@@ -9,38 +9,55 @@ using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Tests.Reports;
 
-// F18 step 5c: a mode's trials rolled up into one overall line and one line per category (aggregate and slice: an overall number hides where an agent fails). On made-up
-// trials: the overall line is the sum of its parts, a trial in two categories counts in both and once overall, an Unknown and an infrastructure trial are not passed (the latter is
-// left out of the rates and counted), a slice of fewer than five counted trials says "too few" and has no rates, never 0. Written first: RunSummary.Of threw NotImplementedException.
+/// <summary>
+/// A mode's trials rolled up into one overall line and one line per category, on made-up trials: the overall line is
+/// the sum of its parts, a trial in two categories counts in both and once overall, an Unknown and an infrastructure
+/// trial are not passed (the latter is left out of the rates and counted), and a slice of fewer than five counted
+/// trials says "too few" and has no rates, never 0.
+/// </summary>
 public class RunSummaryTests
 {
+    /// <summary>A required fixed rule.</summary>
     private static readonly IGrader Route = new FakeGrader("routed-to", GraderKind.FixedRule);
+
+    /// <summary>A required model grader.</summary>
     private static readonly IGrader Judge = new FakeGrader("judge", GraderKind.Model);
+
+    /// <summary>A grader that is not required, so the roll-up leaves it out.</summary>
     private static readonly IGrader Optional = new FakeGrader("nice-to-have", GraderKind.FixedRule, required: false);
+
+    /// <summary>The eval's graders.</summary>
     private static readonly IReadOnlyList<IGrader> Graders = [Route, Judge, Optional];
 
+    /// <summary>A bit of JSON text as an element that outlives its document.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
+    /// <summary>A grade from the grader with that outcome, scoring 1 for a pass and 0 otherwise.</summary>
     private static Grade G(IGrader grader, GradeOutcome outcome) => new(grader.Name, grader.Version,
         outcome == GradeOutcome.Pass ? 1 : 0, outcome, "because");
 
+    /// <summary>A trial of the scenario, with its outcome, categories and the two required grades.</summary>
     private static TrialResult T(string scenario, TrialOutcome outcome, string[]? categories = null,
-        string scores = "{}", GradeOutcome route = GradeOutcome.Pass,
-        GradeOutcome judge = GradeOutcome.Pass) =>
-        new(scenario, categories ?? [], outcome, [G(Route, route), G(Judge, judge)], Json(scores));
+        GradeOutcome route = GradeOutcome.Pass, GradeOutcome judge = GradeOutcome.Pass) =>
+        new(scenario, categories ?? [], outcome, [G(Route, route), G(Judge, judge)], Json("{}"));
 
+    /// <summary>A trial that passed.</summary>
     private static TrialResult Pass(string scenario, params string[] categories) =>
         T(scenario, TrialOutcome.Pass, categories);
 
+    /// <summary>A trial that failed its route.</summary>
     private static TrialResult Fail(string scenario, params string[] categories) =>
         T(scenario, TrialOutcome.Fail, categories, route: GradeOutcome.Fail);
 
+    /// <summary>The line of one slice.</summary>
     private static SummaryLine Line(IEnumerable<SummaryLine> lines, string slice) =>
         lines.Single(line => line.Slice == slice);
 
+    /// <summary>The roll-up of the trials, for one mode.</summary>
     private static IReadOnlyList<SummaryLine> Of(params TrialResult[] trials) =>
         RunSummary.Of(SampleMode.Beta, trials, Graders);
 
+    /// <summary>The overall line comes first, then each category by name, all for the mode.</summary>
     [Test]
     public void TheOverallLineComesFirst_ThenEachCategoryByName_AllForTheMode()
     {
@@ -50,6 +67,7 @@ public class RunSummaryTests
         Assert.That(lines.Select(l => l.Mode).Distinct(), Is.EqualTo(new[] { SampleMode.Beta }));
     }
 
+    /// <summary>The overall counts are the sum of the trials, and each category's the sum of its own.</summary>
     [Test]
     public void TheOverallCountsAreTheSumOfTheTrials_AndEachCategorysAreTheSumOfItsOwn()
     {
@@ -68,6 +86,7 @@ public class RunSummaryTests
             "no trial is in two of these categories, so they sum to the overall line");
     }
 
+    /// <summary>A trial in two categories counts in both and once overall; one with none only overall.</summary>
     [Test]
     public void ATrialInTwoCategories_CountsInBoth_AndOnceInTheOverall_AndOneWithNoneOnlyInTheOverall()
     {
@@ -80,6 +99,9 @@ public class RunSummaryTests
             "a trial with no category makes no line of its own");
     }
 
+    /// <summary>
+    /// An Unknown trial is not passed, and an infrastructure one is counted but left out of the rates.
+    /// </summary>
     [Test]
     public void AnUnknownTrialIsNotPassed_AndAnInfrastructureOneIsCountedButLeftOutOfTheRates()
     {
@@ -96,6 +118,9 @@ public class RunSummaryTests
             "passed over the five that counted: the infrastructure trial is not one of them");
     }
 
+    /// <summary>
+    /// A slice of three trials is too few: it keeps its counts and has no rates; one of five has them.
+    /// </summary>
     [Test]
     public void ASliceOfThreeTrialsIsTooFew_WithItsCountsAndNoRates_AndOneOfFiveHasThem()
     {
@@ -111,10 +136,12 @@ public class RunSummaryTests
             "five scenarios, one trial each: pass@1 and pass^1 are the pass rate");
     }
 
+    /// <summary>Exactly four counted trials are too few, and exactly five have rates.</summary>
     [Test]
     public void ExactlyFourCountedTrials_AreTooFew_AndExactlyFiveHaveRates()
     {
-        // The threshold is five: one short of it has no rates, and the fifth trial gives them (a change of the constant fails here).
+        // The threshold is five: one short of it has no rates, and the fifth trial gives them (a change of the
+        // constant fails here).
         var four = Line(Of(Pass("a"), Pass("b"), Pass("c"), Fail("d")), "overall");
         var five = Line(Of(Pass("a"), Pass("b"), Pass("c"), Fail("d"), Pass("e")), "overall");
 
@@ -123,6 +150,7 @@ public class RunSummaryTests
         Assert.That((five.TooFew, five.PassRate), Is.EqualTo((false, (double?)0.8)));
     }
 
+    /// <summary>Five trials of which only three count are too few: the rates come from the counted ones.</summary>
     [Test]
     public void FiveTrialsOfWhichOnlyThreeCount_AreTooFew()
     {
@@ -132,15 +160,15 @@ public class RunSummaryTests
         Assert.That(Line(lines, "overall").TooFew, Is.True, "the rates are from the counted trials");
     }
 
+    /// <summary>The overall line's pass@k and pass^k are the mode's, the same as its mode's end gives.</summary>
     [Test]
     public void PassAtKAndPassHatK_AreThoseOfModeTally_ForTheOverallLine()
     {
-        // --repeat 3 over three scenarios: a always passes, b sometimes, c never; one infrastructure trial. The same numbers `mode_done` writes.
+        // --repeat 3 over three scenarios: a always passes, b sometimes, c never; one infrastructure trial.
         var trials = new[]
         {
-            Pass("a"), Pass("a"), Pass("a"),
-            Pass("b"), Fail("b"), Pass("b"),
-            Fail("c"), Fail("c"), T("c", TrialOutcome.Infrastructure),
+            Pass("a"), Pass("a"), Pass("a"), Pass("b"), Fail("b"), Pass("b"), Fail("c"), Fail("c"),
+            T("c", TrialOutcome.Infrastructure),
         };
         var tally = new ModeTally();
         foreach (var trial in trials) tally.Add(trial);
@@ -153,6 +181,7 @@ public class RunSummaryTests
         Assert.That((overall.PassAtK, overall.PassHatK), Is.EqualTo((2.0 / 3, 1.0 / 3)));
     }
 
+    /// <summary>A slice's tasks are its scenario ids, once each, in order.</summary>
     [Test]
     public void TheSlicesTasks_AreItsScenarioIds_OnceEach_InOrder()
     {
@@ -162,6 +191,7 @@ public class RunSummaryTests
         Assert.That(Line(lines, "overall").Tasks, Is.EqualTo(new[] { "a", "b", "c" }));
     }
 
+    /// <summary>The grader counts are of the required graders only, by name and by kind.</summary>
     [Test]
     public void TheGraderCounts_AreOfTheRequiredGradersOnly_ByNameAndByKind()
     {
@@ -169,18 +199,14 @@ public class RunSummaryTests
             T("d", TrialOutcome.Infrastructure));
 
         var overall = Line(lines, "overall");
-        Assert.That(overall.Graders.Select(g => (g.Grader, g.Kind, g.Passed, g.Failed, g.Unknown)), Is.EqualTo(new[]
-        {
-            ("routed-to", GraderKind.FixedRule, 2, 1, 0),
-            ("judge", GraderKind.Model, 2, 0, 1),
-        }), "the optional grader is not listed; the infrastructure trial is not counted for any grader");
-        Assert.That(overall.Kinds.Select(k => (k.Kind, k.Passed, k.Failed, k.Unknown)), Is.EqualTo(new[]
-        {
-            (GraderKind.FixedRule, 2, 1, 0),
-            (GraderKind.Model, 2, 0, 1),
-        }));
+        Assert.That(overall.Graders.Select(g => (g.Grader, g.Kind, g.Passed, g.Failed, g.Unknown)),
+            Is.EqualTo(new[] { ("routed-to", GraderKind.FixedRule, 2, 1, 0), ("judge", GraderKind.Model, 2, 0, 1), }),
+            "the optional grader is not listed; the infrastructure trial is not counted for any grader");
+        Assert.That(overall.Kinds.Select(k => (k.Kind, k.Passed, k.Failed, k.Unknown)),
+            Is.EqualTo(new[] { (GraderKind.FixedRule, 2, 1, 0), (GraderKind.Model, 2, 0, 1), }));
     }
 
+    /// <summary>A trial with no grade from a required grader counts as Unknown for it.</summary>
     [Test]
     public void ATrialWithNoGradeFromARequiredGrader_CountsAsUnknownForIt()
     {
@@ -191,44 +217,69 @@ public class RunSummaryTests
         Assert.That(overall.Graders.Single(g => g.Grader == "judge").Unknown, Is.EqualTo(1));
     }
 
+    /// <summary>
+    /// A grader's mean score is the mean of the scores it gave over the counted trials, so partial credit shows where
+    /// a pass or a fail hides it.
+    /// </summary>
     [Test]
-    public void TheScoreMeans_AreOfTheNumericKeys_WithTheirOwnN_AStringOrABooleanSkipped_AMissingKeyNotCounted()
+    public void AGradersMeanScore_IsTheMeanOfTheScoresItGave()
     {
-        var lines = Of(
-            T("a", TrialOutcome.Pass,
-                scores: SampleRole.Fill("""{"priced_ratio":1,"routed_right":true,"role":"<RoleAlpha>","errors":0}""")),
-            T("b", TrialOutcome.Pass, scores: """{"priced_ratio":0.5,"routed_right":false,"role":null}"""),
-            T("c", TrialOutcome.Pass, scores: """{"errors":2}"""));
+        // The judge gives partial credit: 1, 0.5 and 0.
+        TrialResult Scored(string scenario, double score) => new(scenario, [], TrialOutcome.Pass,
+            [G(Route, GradeOutcome.Pass), new Grade(Judge.Name, 1, score, GradeOutcome.Pass, "because")], Json("{}"));
 
-        var means = Line(lines, "overall").Scores.ToDictionary(s => s.Key);
-        Assert.That(means.Keys, Is.EquivalentTo(new[] { "priced_ratio", "errors" }),
-            "role (a string) and routed_right (a boolean) are skipped");
-        Assert.That(means["priced_ratio"], Is.EqualTo(new ScoreMean("priced_ratio", 0.75, 2)));
-        Assert.That(means["errors"], Is.EqualTo(new ScoreMean("errors", 1.0, 2)));
+        var overall = Line(Of(Scored("a", 1), Scored("b", 0.5), Scored("c", 0)), "overall");
+
+        Assert.That(overall.Graders.Single(g => g.Grader == "judge").ScoreMean, Is.EqualTo(0.5));
+        Assert.That(overall.Graders.Single(g => g.Grader == "routed-to").ScoreMean, Is.EqualTo(1));
     }
 
+    /// <summary>An infrastructure trial's grades are not the agent's, so they stay out of the mean.</summary>
     [Test]
-    public void AnInfrastructureTrialsScores_AreNotInTheMeans()
+    public void AnInfrastructureTrialsGrades_AreNotInTheMean()
     {
-        var lines = Of(T("a", TrialOutcome.Pass, scores: """{"errors":0}"""),
-            T("b", TrialOutcome.Infrastructure, scores: """{"errors":9}"""));
+        var lines = Of(T("a", TrialOutcome.Pass), T("b", TrialOutcome.Infrastructure, route: GradeOutcome.Fail));
 
-        Assert.That(Line(lines, "overall").Scores.Single(), Is.EqualTo(new ScoreMean("errors", 0, 1)));
+        Assert.That(Line(lines, "overall").Graders.Single(g => g.Grader == "routed-to").ScoreMean, Is.EqualTo(1));
     }
 
+    /// <summary>A grader that graded none of the counted trials has no mean, never 0.</summary>
+    [Test]
+    public void AGraderThatGaveNoGrade_HasNoMean()
+    {
+        var bare = new TrialResult("a", [], TrialOutcome.Unknown, [G(Route, GradeOutcome.Pass)], Json("{}"));
+
+        var overall = Line(RunSummary.Of("m", [bare], Graders), "overall");
+
+        Assert.That(overall.Graders.Single(g => g.Grader == "judge").ScoreMean, Is.Null);
+    }
+
+    /// <summary>No trials make no lines.</summary>
     [Test]
     public void NoTrials_AreNoLines() =>
         Assert.That(RunSummary.Of("m", [], Graders), Is.Empty);
 
-    /// <summary>A grader that grades nothing here: the roll-up reads only its name, kind and whether it is required.</summary>
+    /// <summary>
+    /// A grader that grades nothing here: the roll-up reads only its name, kind and whether it is required.
+    /// </summary>
     private sealed class FakeGrader(string name, GraderKind kind, bool required = true) : IGrader
     {
+        /// <inheritdoc />
         public string Name => name;
+
+        /// <inheritdoc />
         public int Version => 1;
+
+        /// <inheritdoc />
         public GraderKind Kind => kind;
+
+        /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
+
+        /// <inheritdoc />
         public bool Required => required;
 
+        /// <summary>Never called: the roll-up reads the grades it is given.</summary>
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
             throw new NotSupportedException();
     }

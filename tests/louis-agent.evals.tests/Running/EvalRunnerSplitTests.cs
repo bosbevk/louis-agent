@@ -4,8 +4,11 @@ using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Running;
+using LouisAgent.Evals.Tests.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -21,8 +24,8 @@ public class EvalRunnerSplitTests
     /// <summary>The time every line is written at.</summary>
     private static readonly DateTimeOffset At = DateTimeOffset.FromUnixTimeMilliseconds(1700000000123);
 
-    /// <summary>Runs the two-scenario eval once with the split given, and hands back every line it wrote.</summary>
-    private static async Task<List<JsonElement>> Run(RunSplit split)
+    /// <summary>Runs the two-scenario eval once with the split given, and hands back every event it wrote.</summary>
+    private static async Task<IReadOnlyList<EvalEvent>> Run(RunSplit split)
     {
         // One canned answer per session, so each scenario's one turn has something to read.
         var turn = new[]
@@ -39,37 +42,33 @@ public class EvalRunnerSplitTests
 
         await runner.RunAsync(new TwoSplitsEval(), new EvalRun("run_1", 1, Split: split), CancellationToken.None);
 
-        return sink.ToString().Split((char)10, StringSplitOptions.RemoveEmptyEntries)
-            .Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement.Clone()).ToList();
+        return Written.Events(sink);
     }
 
-    /// <summary>The scenarios that ran, by the conversation lines.</summary>
-    private static IEnumerable<string> Tasks(IEnumerable<JsonElement> lines) =>
-        lines.Where(l => l.GetProperty("event").GetString() == "conversation")
-            .Select(l => l.GetProperty("task").GetString()!);
+    /// <summary>The scenarios that ran, by the conversation events.</summary>
+    private static IEnumerable<string> Tasks(IEnumerable<EvalEvent> events) =>
+        events.OfType<ConversationEvent>().Select(c => c.Task);
 
-    /// <summary>The first line names the split, in version 1's words until step 7c.2c.</summary>
-    [TestCase(RunSplit.Dev, "dev")]
-    [TestCase(RunSplit.HeldOut, "held_out")]
-    [TestCase(RunSplit.All, "all")]
-    public async Task TheRunsFirstLine_CarriesItsSplit(RunSplit split, string wire)
+    /// <summary>The first line names the split.</summary>
+    [TestCase(RunSplit.Dev)]
+    [TestCase(RunSplit.HeldOut)]
+    [TestCase(RunSplit.All)]
+    public async Task TheRunsFirstLine_CarriesItsSplit(RunSplit split)
     {
-        var lines = await Run(split);
+        var events = await Run(split);
 
-        Assert.That(lines[0].GetProperty("event").GetString(), Is.EqualTo("protocol"));
-        Assert.That(lines[0].GetProperty("split").GetString(), Is.EqualTo(wire));
+        Assert.That(events[0], Is.TypeOf<ProtocolEvent>());
+        Assert.That(((ProtocolEvent)events[0]).Split, Is.EqualTo(split));
     }
 
     /// <summary>With no split, only the dev scenario runs, and the mode says it will run one conversation.</summary>
     [Test]
     public async Task ARunAsksForTheDevScenariosByDefault()
     {
-        var lines = await Run(RunSplit.Dev);
+        var events = await Run(RunSplit.Dev);
 
-        Assert.That(Tasks(lines), Is.EqualTo(new[] { "tune" }));
-        Assert.That(
-            lines.Single(l => l.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(),
-            Is.EqualTo(1));
+        Assert.That(Tasks(events), Is.EqualTo(new[] { "tune" }));
+        Assert.That(events.OfType<ModeEvent>().Single().Conversations, Is.EqualTo(1));
     }
 
     /// <summary>A held-out run runs only the held-out scenario.</summary>
@@ -81,12 +80,10 @@ public class EvalRunnerSplitTests
     [Test]
     public async Task AllRunsBoth()
     {
-        var lines = await Run(RunSplit.All);
+        var events = await Run(RunSplit.All);
 
-        Assert.That(Tasks(lines), Is.EqualTo(new[] { "tune", "release" }));
-        Assert.That(
-            lines.Single(l => l.GetProperty("event").GetString() == "mode").GetProperty("conversations").GetInt32(),
-            Is.EqualTo(2));
+        Assert.That(Tasks(events), Is.EqualTo(new[] { "tune", "release" }));
+        Assert.That(events.OfType<ModeEvent>().Single().Conversations, Is.EqualTo(2));
     }
 
     /// <summary>Which scenarios each split asks for, as a table.</summary>

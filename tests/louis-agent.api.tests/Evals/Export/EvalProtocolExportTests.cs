@@ -23,9 +23,12 @@ public class EvalProtocolExportTests
     /// <summary>The admin key the test API is built with.</summary>
     private const string AdminKey = "admin-secret";
 
-    /// <summary>The event lines of the stub run, from the fixture the runner is held to.</summary>
+    /// <summary>
+    /// The event lines of the stub run as protocol version 1, frozen until step 7c.3, when the API reads the runner's
+    /// own golden (now version 2).
+    /// </summary>
     private static string[] StubLines() =>
-        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt"))
+        File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.v1.txt"))
             .Where(l => l.StartsWith('@')).ToArray();
 
     /// <summary>Writes an event as the runner does: an @ and then its JSON.</summary>

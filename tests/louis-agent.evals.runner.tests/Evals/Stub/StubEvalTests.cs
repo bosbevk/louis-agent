@@ -1,6 +1,8 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Evals.Running;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -8,49 +10,63 @@ using LouisAgent.Evals.Runner.Evals.Stub;
 
 namespace LouisAgent.Evals.Runner.Tests.Evals.Stub;
 
-// The stub (F18 step 4.1), the C# port of benchmarks/stub/run_check.py: its protocol lines are the stub's expected lines (first saved from the Python stub), line for line, with
-// the clock readings masked (t, and the seconds, which both write as measured time), the conversation's grades and outcome left
-// out (step 4.5a: the runner grades every trial, and the expected lines never have them) and the header left out: the expected first
-// line is the version alone, and the runner's carries the eval, its graders and its models, which the store reads. Written first:
-// the stub threw NotImplementedException on the red run.
+/// <summary>
+/// The stub eval's run is its golden file, line for line: every event of protocol version 2, with only the clock's
+/// readings (the time and the seconds) and the build's commit masked, since those change from run to run.
+/// </summary>
 public class StubEvalTests
 {
+    /// <summary>The golden file, as the build copied it.</summary>
     private static string[] ExpectedLines =>
         File.ReadAllLines(Path.Combine(AppContext.BaseDirectory, "Fixtures", "stub-run.txt"))
-            .Where(l => l.StartsWith('@')).ToArray();
+            .Where(line => line.Length > 0).ToArray();
 
+    /// <summary>The golden file in the source tree, which the update switch writes.</summary>
+    private static string SourceGoldenFile([CallerFilePath] string here = "") =>
+        Path.Combine(Path.GetDirectoryName(here)!, "..", "..", "Fixtures", "stub-run.txt");
+
+    /// <summary>
+    /// A run is the golden file's lines, line for line. With <c>LOUIS_UPDATE_GOLDEN=1</c> the file is written again
+    /// from the run, for its diff to be reviewed.
+    /// </summary>
     [Test]
     public async Task ARunIsTheStubsExpectedLinesLineForLine()
     {
-        // The mode's roll-up (F18 step 5c) is the harness's, like the grades: the stub's expected lines have none.
-        string[] mine = (await RunAsync(repeat: 1)).Skip(1)
-            .Where(line => !line.StartsWith("@{\"event\":\"summary\"", StringComparison.Ordinal)).ToArray();
-        string[] expected = ExpectedLines.Skip(1).ToArray();
+        string[] mine = await RunAsync(repeat: 1);
 
+        // The switch every golden in the repo has: write the file again, then say so instead of comparing.
+        if (Environment.GetEnvironmentVariable("LOUIS_UPDATE_GOLDEN") == "1")
+        {
+            File.WriteAllLines(SourceGoldenFile(), mine);
+            Assert.Pass($"Wrote {SourceGoldenFile()}; review its diff before committing.");
+        }
+
+        string[] expected = ExpectedLines;
         Assert.That(mine, Has.Length.EqualTo(expected.Length));
         for (int i = 0; i < expected.Length; i++)
-            Assert.That(Canonical(mine[i]), Is.EqualTo(Canonical(expected[i])), $"line {i + 2}");
+            Assert.That(Canonical(mine[i]), Is.EqualTo(Canonical(expected[i])), $"line {i + 1}");
     }
 
+    /// <summary>Two modes, two repeats, two conversations: eight sessions, the repeat in each id.</summary>
     [Test]
     public async Task EachRepeatOpensItsOwnSessions()
     {
-        // Two modes, two repeats, two conversations: eight sessions, the repeat in each id as the expected lines have it.
         string[] lines = await RunAsync(repeat: 2);
 
-        var sessions = lines.Select(Parse)
-            .Where(e => e.GetProperty("event").GetString() == "question")
-            .Select(e => e.GetProperty("session").GetString())
+        var sessions = lines.Select(EvalProtocolJson.Read).OfType<QuestionEvent>()
+            .Select(question => question.Session)
             .Distinct()
             .ToList();
         Assert.That(sessions, Has.Count.EqualTo(8));
         Assert.That(sessions, Does.Contain("sess_stub_stub-direct_2_bobotie"));
     }
 
+    /// <summary>
+    /// Every session is tagged with the run's name, so the ledger's rows find their run: {run}:{mode}:{repeat}.
+    /// </summary>
     [Test]
     public async Task EverySessionIsTaggedWithTheRunsName()
     {
-        // The ledger's rows find their run by this tag (F18 step 4.1 review): {run}:{mode}:{repeat}, the run being BENCHMARK_RUN.
         var client = new RecordingClient(new StubSessionClient());
         var runner = new EvalRunner(client, new ProtocolWriter(new StringWriter(), TimeProvider.System),
             TimeProvider.System,
@@ -66,25 +82,31 @@ public class StubEvalTests
     /// <summary>A session client that records each open's tag and passes everything through.</summary>
     private sealed class RecordingClient(ISessionClient inner) : ISessionClient
     {
+        /// <summary>The tags the sessions were opened with, in order.</summary>
         public List<string> Tags { get; } = [];
 
+        /// <summary>The inner client's toolsets.</summary>
         public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
             inner.ToolsetsAsync(cancellationToken);
 
+        /// <summary>Notes the tag, and opens through the inner client.</summary>
         public async Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken)
         {
             Tags.Add(request.RunTag);
             return await inner.OpenAsync(request, cancellationToken);
         }
 
+        /// <summary>Sends through the inner client.</summary>
         public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
             CancellationToken cancellationToken) =>
             inner.SendAsync(session, message, cancellationToken);
 
+        /// <summary>Closes through the inner client.</summary>
         public Task CloseAsync(string session, CancellationToken cancellationToken) =>
             inner.CloseAsync(session, cancellationToken);
     }
 
+    /// <summary>Runs the stub eval with that many repeats, and hands back the lines it wrote.</summary>
     private static async Task<string[]> RunAsync(int repeat)
     {
         var sink = new StringWriter();
@@ -97,20 +119,17 @@ public class StubEvalTests
         return sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries);
     }
 
-    private static JsonElement Parse(string line) => JsonDocument.Parse(line.TrimStart('@')).RootElement;
+    /// <summary>One line as its keys in order and its values, the clock's readings and the commit masked.</summary>
+    private static string Canonical(string line) => Canonical(JsonDocument.Parse(line).RootElement, null);
 
-    /// <summary>One line as its keys, in order, and its values: the clock readings masked, the grades and the pass rates (the harness adds them; the expected lines have none) left out, everything else compared as written.</summary>
-    private static string Canonical(string line) => Canonical(Parse(line), null);
-
+    /// <summary>A value as text: an object's members in order, the masked ones as a mark.</summary>
+    /// <remarks>A switch expression on the value's kind, one arm per case, read like a table.</remarks>
     private static string Canonical(JsonElement element, string? name) => element.ValueKind switch
     {
-        JsonValueKind.Object => "{" + string.Join(",",
-            element.EnumerateObject().Where(p =>
-                    p.Name is not ("grades" or "outcome" or "pass_at_k" or "pass_hat_k" or "k" or "infrastructure"
-                        or "retried"))
-                .Select(p => JsonSerializer.Serialize(p.Name) + ":" + Canonical(p.Value, p.Name))) + "}",
+        JsonValueKind.Object => "{" + string.Join(",", element.EnumerateObject()
+            .Select(p => JsonSerializer.Serialize(p.Name) + ":" + Canonical(p.Value, p.Name))) + "}",
         JsonValueKind.Array => "[" + string.Join(",", element.EnumerateArray().Select(v => Canonical(v, null))) + "]",
-        _ when name is "t" or "seconds" => "<clock>",
+        _ when name is "t" or "seconds" or "commit" => "<masked>",
         JsonValueKind.String => JsonSerializer.Serialize(element.GetString()),
         _ => element.GetRawText(),
     };

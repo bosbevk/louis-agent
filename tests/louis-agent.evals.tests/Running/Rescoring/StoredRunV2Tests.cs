@@ -10,6 +10,7 @@ using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Evals.Protocol.Parts.Run;
 using LouisAgent.Evals.Running;
+using LouisAgent.Evals.Tests.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -47,7 +48,7 @@ public class StoredRunV2Tests
     }
 
     /// <summary>Re-scores the stored lines with today's eval and hands back the lines it wrote.</summary>
-    private static async Task<List<JsonElement>> RescoreAsync(string[] stored)
+    private static async Task<IReadOnlyList<EvalEvent>> RescoreAsync(string[] stored)
     {
         var sink = new StringWriter();
         var runner = new EvalRunner(new CannedSessionClient(), new ProtocolWriter(sink, new FixedClock(At)),
@@ -55,17 +56,8 @@ public class StoredRunV2Tests
 
         await runner.RescoreAsync(new HalloEval(), "run_new", "run_old", stored, CancellationToken.None);
 
-        // The re-score writes version 1 until step 7c.2c, and copies the stored v2 lines as they were.
-        return
-        [
-            .. sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
-                .Select(line => JsonDocument.Parse(line.TrimStart('@')).RootElement.Clone())
-        ];
+        return Written.Events(sink);
     }
-
-    /// <summary>The lines of one event.</summary>
-    private static IEnumerable<JsonElement> Of(IEnumerable<JsonElement> lines, string kind) =>
-        lines.Where(line => line.GetProperty("event").GetString() == kind);
 
     /// <summary>A bit of JSON text as an element that outlives its document.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
@@ -74,31 +66,29 @@ public class StoredRunV2Tests
     [Test]
     public async Task ItsConversation_IsGradedAgain()
     {
-        var lines = await RescoreAsync(StoredV2Run());
+        var events = await RescoreAsync(StoredV2Run());
 
-        var grade = Of(lines, "conversation").Single().GetProperty("grades")[0];
-        Assert.That((grade.GetProperty("grader").GetString(), grade.GetProperty("score").GetDouble()),
-            Is.EqualTo(("wants-hallo", 1.0)));
+        var grade = events.OfType<ConversationEvent>().Single().Grades[0];
+        Assert.That((grade.Grader, grade.Score), Is.EqualTo(("wants-hallo", 1.0)));
     }
 
     /// <summary>Its first line gives the split and the models the new run names.</summary>
     [Test]
     public async Task ItsFirstLine_GivesTheSplitAndTheModels()
     {
-        var lines = await RescoreAsync(StoredV2Run());
+        var events = await RescoreAsync(StoredV2Run());
 
-        var begin = Of(lines, "protocol").Single();
-        Assert.That(begin.GetProperty("split").GetString(), Is.EqualTo("held_out"));
-        Assert.That(begin.GetProperty("models")[0].GetProperty("model").GetString(), Is.EqualTo("claude-haiku-5-5"));
+        var begin = events.OfType<ProtocolEvent>().Single();
+        Assert.That((begin.Split, begin.Models[0].Model), Is.EqualTo((RunSplit.HeldOut, "claude-haiku-5-5")));
     }
 
     /// <summary>The retries its mode's end recorded carry over, as a v1 run's do.</summary>
     [Test]
     public async Task ItsModesRetries_CarryOver()
     {
-        var lines = await RescoreAsync(StoredV2Run());
+        var events = await RescoreAsync(StoredV2Run());
 
-        Assert.That(Of(lines, "mode_done").Single().GetProperty("retried").GetInt32(), Is.EqualTo(1));
+        Assert.That(events.OfType<ModeDoneEvent>().Single().Rates!.Retried, Is.EqualTo(1));
     }
 
     /// <summary>A grader that passes when every answer says "Hallo".</summary>

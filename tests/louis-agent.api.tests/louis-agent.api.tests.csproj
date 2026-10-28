@@ -38,7 +38,9 @@
 
   <ItemGroup>
     <!-- F18 step 5.2: the stub's expected protocol lines (the runner's own fixture), which the export is read back against. -->
-    <None Include="..\louis-agent.evals.runner.tests\Fixtures\stub-run.txt" Link="Fixtures\stub-run.txt" CopyToOutputDirectory="PreserveNewest" />
+    <!-- F18 step 7c.2c: the stub's run as protocol version 1, frozen, since the API reads v1 until step 7c.3, which
+         points these tests back at the runner's own golden (now v2). -->
+    <None Include="Fixtures\stub-run.v1.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1516,6 +1516,32 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   models carried, its retries kept). Red before the code: 7 tests (the readers skipped every v2 line, and a re-score of
   one found no first line). The files with a real change are whole (`Rescorer`, `EvalErrorMessage`'s long texts,
   `ProtocolTranscriptsTests`' v1 sample lines wrapped).
+- **Step 7c.2c (`ProtocolWriter` writes v2).** The writer builds the contract's event for each line and writes
+  `EvalProtocolJson.Line(event)`, `t` from its clock: `Begin` is one `ProtocolEvent` (the old `Started`, the version
+  alone, went with the parity test that used it), and `Mode`, `Question`, `Sse`, `Turn`, `Conversation`, `ModeDone`
+  and `Summary` are their events; `Copy` stays. `RunBeginLine`, `ConversationLineFields`, `SummaryLineFields` and the
+  writer's own JSON are gone, with no `@` prefix and no ASCII-only rule: a line is UTF-8. A turn needs its facts and a
+  conversation its grades, outcome and errors (every caller has them); the eval's `scores` are still handed in and
+  written nowhere until 7c.2d, so a conversation's `metrics` are all unknown for now. A mode's end carries its rates
+  only when it has a k. **The roll-up uses the contract's records:** `SummaryLine` holds the contract's `GraderCount`
+  and `KindCount` (the harness's own copies went, by the same consolidation rule), and `RunSummary` gives each grader
+  its `score_mean`, the mean of the scores it gave over the counted trials (null when it gave none; an Unknown grade's
+  score counts too, as the brief words it); `SummaryLine.Scores` and `ScoreMeans` went (Louis's pick). `V1Words` keeps
+  only what is still read: a grader's kind for the runner's listing, and the failure aliases for v1 lines.
+  **Tests:** `ProtocolWriterTests` reads every line back with the contract's reader and asserts on the records; the
+  tests that read the runner's output by v1 field names now read events through a small helper (`Protocol/Written`),
+  and each such file was brought up to the rules whole (summaries; `EvalRunnerPassRatesTests` lost its anonymous
+  object). `WireNameAgreementTests` and the harness's copy of `python-protocol.txt` went; `RepeatedNameTests` lost the
+  exemption of `EvalRunnerFailureTests`, which no longer types `api_error`. One test went without a v2 twin: a stored
+  conversation with no `seconds` (in v2 that line is no event, since the contract requires the field; the `?? 0` it
+  guarded matters only for v1 lines until 7c.2e). **`stub-run.txt` was regenerated from the stub eval as v2** (Louis's
+  pick: here, not in 2f), and `StubEvalTests` now compares the whole run, its first line, grades, rates and summaries
+  included, with only `t`, `seconds` and the commit masked; it has the `LOUIS_UPDATE_GOLDEN` switch. The API's export
+  tests had linked that file as a v1 recording, so they now read a frozen v1 copy,
+  `tests/louis-agent.api.tests/Fixtures/stub-run.v1.txt`, until step 3. Red before the writer: 12 of 13 writer tests
+  (the copied line passed, `Copy` being unchanged); the three score-mean tests were written with the new
+  `SummaryLine` shape and passed at once. Nothing is pushed until step 3 (Louis's pick): `StubCheckTests` reads the
+  runner through the API's v1 reader.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
