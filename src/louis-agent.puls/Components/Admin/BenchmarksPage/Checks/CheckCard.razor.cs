@@ -1,5 +1,3 @@
-using System.Text.Json;
-using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Starting;
@@ -30,9 +28,9 @@ public partial class CheckCard
     [Parameter, EditorRequired]
     public IReadOnlyList<RunSummary> Runs { get; set; } = [];
 
-    /// <summary>The check's trend, when it has one.</summary>
+    /// <summary>The check's trend as the contract's reply, when it has one.</summary>
     [Parameter]
-    public JsonElement? Trend { get; set; }
+    public TrendReply? Trend { get; set; }
 
     /// <summary>The cards are unfolded, so the body shows.</summary>
     [Parameter]
@@ -86,11 +84,4 @@ public partial class CheckCard
 
     /// <summary>Asks the page to run the check at the repeats chosen.</summary>
     private Task RunAsync() => OnRun.InvokeAsync(new StartRequest(Check.Id, _repeats));
-
-    /// <summary>
-    /// The trend's lines, read from the JSON the page still hands the card. It goes when the card takes the
-    /// contract's trend (step 5, commit 12).
-    /// </summary>
-    private static IReadOnlyList<TrendLineRow> LinesOf(JsonElement trend) =>
-        trend.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Modes ?? [];
 }

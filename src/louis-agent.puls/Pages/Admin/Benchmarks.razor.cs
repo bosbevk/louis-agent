@@ -3,6 +3,7 @@ using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Web.Shared.Api;
@@ -14,8 +15,8 @@ namespace LouisAgent.Puls.Pages.Admin;
 
 /// <summary>
 /// The Benchmarks page: the store's state, a card per check, the run in progress and the chosen check's stored runs.
-/// It reads the list as the contract's <c>BenchmarkListReply</c> and a run as <c>LiveRunRow</c>; the cards' trends
-/// still go to the chart as the API's JSON (the unattended run's finding 6).
+/// It reads the list as the contract's <c>BenchmarkListReply</c>, a run as <c>LiveRunRow</c> and each check's trend
+/// as <c>TrendReply</c>.
 /// </summary>
 /// <remarks>
 /// ADR 0042: after a run ends the page fetches the list again, so the cards and the runs show what the store holds.
@@ -24,20 +25,50 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class Benchmarks : IDisposable
 {
+    /// <summary>The run in progress, as the API names it.</summary>
     private const string CurrentRunUrl = "v1/admin/benchmarks/runs/current";
 
-    private readonly Dictionary<string, JsonElement> _trends = [];
-    private BenchmarkListReply? _data;
-    private IReadOnlyList<RunSummary> _runs = [];
-    private LiveRunRow? _run;
-    private bool _fromStore;
-    private ManualReply? _manual;
-    private string? _error, _selected;
-    private bool _needsKey, _loading;
+    /// <summary>Each check's trend; a check without one draws no chart.</summary>
+    private readonly Dictionary<string, TrendReply> _trends = [];
 
-    [Inject] private AgentApi Api { get; set; } = null!;
-    [Inject] private ChatStore Store { get; set; } = null!;
-    [Inject] private CurrencyState Currency { get; set; } = null!;
+    /// <summary>The list: the checks, the store's state and the stored runs.</summary>
+    private BenchmarkListReply? _data;
+
+    /// <summary>The stored runs, newest first.</summary>
+    private IReadOnlyList<RunSummary> _runs = [];
+
+    /// <summary>The run being followed, if any.</summary>
+    private LiveRunRow? _run;
+
+    /// <summary>The run was going before the page opened, so its turns come from the store first.</summary>
+    private bool _fromStore;
+
+    /// <summary>The manual open in the modal, if any.</summary>
+    private ManualReply? _manual;
+
+    /// <summary>What went wrong, for the page to say.</summary>
+    private string? _error;
+
+    /// <summary>The check whose runs are listed below.</summary>
+    private string? _selected;
+
+    /// <summary>The API wants the admin key.</summary>
+    private bool _needsKey;
+
+    /// <summary>The list is being fetched.</summary>
+    private bool _loading;
+
+    /// <summary>The API the page reads.</summary>
+    [Inject]
+    private AgentApi Api { get; set; } = null!;
+
+    /// <summary>The browser's store, loaded before the first read.</summary>
+    [Inject]
+    private ChatStore Store { get; set; } = null!;
+
+    /// <summary>The currency the page shows money in.</summary>
+    [Inject]
+    private CurrencyState Currency { get; set; } = null!;
 
     /// <summary>A run is going, so no other starts.</summary>
     private bool Running => _run?.Status == "running";
@@ -93,8 +124,10 @@ public partial class Benchmarks : IDisposable
         {
             try
             {
-                _trends[check.Id] = await Api.GetAsync<JsonElement>(
-                    $"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check.Id)}/trend");
+                var trend = await Api.GetAsync<TrendReply?>(
+                    $"v1/admin/benchmarks/checks/{Uri.EscapeDataString(check.Id)}/trend", AdminJson.SnakeCase);
+                if (trend is null) _trends.Remove(check.Id);
+                else _trends[check.Id] = trend;
             }
             catch (AgentApiException)
             {

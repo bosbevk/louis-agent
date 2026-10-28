@@ -33,7 +33,7 @@
         }
         @if (Trend is { } trend)
         {
-            <TrendChart Series="LinesOf(trend)" Small="true" Currency="Currency" />
+            <TrendChart Series="trend.Modes" Small="true" Currency="Currency" />
         }
         <div class="run-controls">
             <span class="muted">Repeats</span>

@@ -1806,6 +1806,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   shape; `CategoryTrends` takes `Categories` (the run page hands them from its JSON until commit 15). The reader's
   tests read their fixtures into rows, with a new case for the chart's lines; the cards' tests read the reply. Red:
   the build, then the ratchet.
+  Commit 12: the checks page fetches each check's trend as `TrendReply`, and `ChecksList` and `CheckCard` pass it on
+  typed (the card's chart draws `trend.Modes`; its temporary adapter gone); the page's fields got their summaries.
+  `CheckCardTests` (new: a trend draws the small chart, no trend draws none) went red on the build; `Benchmarks.html`
+  stayed byte-equal.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
