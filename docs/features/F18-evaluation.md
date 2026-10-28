@@ -1210,6 +1210,21 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   end, two checks, a trend, a store that doesn't answer, the manual: `Benchmarks.html`, `Benchmarks.manual.html`) and
   still matches. The old heading's Razor-as-text bug is kept for that commit and fixed in the next (finding 10).
   `PortalReadsNoScoreKeyTests` lists `LiveTurns.cs` where it listed the page: the same score reads, moved.
+- **Part 3: `RunExplorer`.** The explorer is markup plus a code-behind that keeps where you are and a turn's replay
+  (finding 12); it reads the run once as `StoredRunReply` and builds a `RunTree` per repeat (`Admin/Explorer/Tree/`:
+  the mode, conversation, turn and request nodes, built from the contract's rows with `Of`). Each level is a component
+  in `Components/Admin/Explorer/` (`Head/`: the repeat and the crumbs; `Chats/`: the chats side by side, which own
+  their playing; `Overview/`: the tiles, the cost bars and the charts per mode, each chart a `RingChart` of
+  `ModeDonut`s; `Conversations/`: the cards and the tokens; `Turns/`: a conversation's turns, a turn, a request;
+  `Parts/`: the row buttons, the timeline, a legend). The sums, rings, legends, texts, timeline and replay pace are
+  plain classes in `Admin/Explorer/` with NUnit tests; a turn's events are read as `TurnEventsReply`; the grades,
+  graders and notes come from the records (`ConversationGrades.Of`, `GraderRow.Of`, `NoteReader.Of(runId, notes)`).
+  The scores stay the eval's JSON, read only in `ExplorerScores` (beside `ScoreChips`, whose shared chips it reuses,
+  finding 11). `RunExplorerSnapshotTests` pinned the old explorer first at every depth (the overview, the second
+  repeat, the conversations and those to review, a conversation, a turn, a request, a replay, the chats) and still
+  matches. `PortalReadsNoScoreKeyTests` lists `ConversationNode.cs` and `ExplorerScores.cs` where it listed the
+  explorer; `RazorHasNoCodeTests`' list is now empty. The review pill, grade chips, review and notes panels keep the
+  shapes they were written for, so no child of the explorer reads the run's JSON any more.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

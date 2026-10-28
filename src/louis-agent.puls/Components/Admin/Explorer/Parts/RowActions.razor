@@ -1,0 +1,13 @@
+@* The buttons on a conversation or a turn: Replay opens the chats side by side on the conversation; Turns (on a
+   conversation) or Requests (on a turn) goes deeper. *@
+<span class="row-actions">
+    <button type="button" class="turn-open" @onclick="() => OnReplay.InvokeAsync(TaskId)"><span class="ic i-chat" aria-hidden="true"></span>Replay</button>
+    @if (Turn is { } n)
+    {
+        <button type="button" class="turn-open quiet" @onclick="() => OnRequests.InvokeAsync(n)">Requests <span aria-hidden="true">›</span></button>
+    }
+    else
+    {
+        <button type="button" class="turn-open quiet" @onclick="() => OnTurns.InvokeAsync(TaskId)">Turns <span aria-hidden="true">›</span></button>
+    }
+</span>

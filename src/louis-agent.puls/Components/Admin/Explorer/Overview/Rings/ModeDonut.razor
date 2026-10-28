@@ -1,0 +1,6 @@
+@* One mode's donut: the ring, the mode's name under it in its colour, and any note the chart adds. *@
+<figure class="donut-fig" style="--i: @I">
+    <Ring Parts="Figure.Parts" Colours="Figure.Colours" Titles="Figure.Titles" Centre="@Figure.Centre" Unit="@Figure.Unit" />
+    <figcaption><span class="sw" style="background: @ChartPalette.Series(I)"></span>@Who</figcaption>
+    @ChildContent
+</figure>

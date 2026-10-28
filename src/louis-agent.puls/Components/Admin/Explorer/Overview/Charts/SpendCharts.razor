@@ -1,0 +1,25 @@
+@* What each mode spent: its cost and its tokens, and (Louis: a performance graph) the model's time, Puls's own
+   requests and the specialist's, with the seconds a turn took on average in its middle (the turns' wall time, as the
+   run table shows). *@
+<RingChart Topic="cost" Title="Cost per mode" Legend="ExplorerLegends.Parts(ModeNames.Roles(Tree.Modes))">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Cost(m, Currency)" />
+    }
+</RingChart>
+
+<RingChart Topic="tokens" Title="Tokens per mode">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Tokens(m)" />
+    }
+</RingChart>
+
+<RingChart Topic="time" Title="Performance per mode" Legend="ExplorerLegends.Parts(ModeNames.Roles(Tree.Modes))">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Time(m)">
+            <small class="muted">model @ExplorerText.Secs(ModeRings.ModelSeconds(m)) s · @m.Turns.Count turns</small>
+        </ModeDonut>
+    }
+</RingChart>

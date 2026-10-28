@@ -1,0 +1,24 @@
+@* Louis: routing, the ring that was "accuracy" first, kept under its own name: the conversations Puls sent where they
+   should go (green) and where they shouldn't (red), the share in its middle. *@
+<RingChart Topic="routing" Title="Routing per mode" Legend="ExplorerLegends.Routing">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Routing(m)" />
+    }
+</RingChart>
+
+@* Louis: accuracy is the answer, not the routing ("this is not true" of a 100 % ring over a run that priced nothing).
+   Where the check lists ingredients (the cook check): each priced with its source (green), guessed without one
+   (orange) or unknown (red), the share sourced in its middle, and the meals that came without a list under it. A
+   check without ingredients has routing as its accuracy, so no second ring. *@
+@if (Tree.Modes.Any(m => ExplorerScores.Accuracy(m) is not null))
+{
+    <RingChart Topic="accuracy" Title="Accuracy per mode" Legend="ExplorerLegends.Accuracy">
+        @foreach (var (m, i) in Tree.Columns)
+        {
+            <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Accuracy(m)">
+                @if (ExplorerScores.Unlisted(m) is > 0 and var none) { <small class="muted">@none @(none == 1 ? "meal" : "meals") without a list</small> }
+            </ModeDonut>
+        }
+    </RingChart>
+}

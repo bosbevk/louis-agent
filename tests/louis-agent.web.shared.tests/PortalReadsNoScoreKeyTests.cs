@@ -42,7 +42,6 @@ public class PortalReadsNoScoreKeyTests
     /// </summary>
     private static readonly HashSet<string> ReadsScores =
     [
-        "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
         // The run explorer's score reads, moved out of the explorer with its rebuild (step 7b (ii)): the scores kept on
         // each conversation, and the one class that reads their keys.
         "src/louis-agent.puls/Admin/Explorer/Tree/ConversationNode.cs",

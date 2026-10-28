@@ -1,0 +1,17 @@
+@* One "per mode" chart: its title with the measure's note, its legend, and a donut per mode. *@
+<section class="chart">
+    <div class="chart-head">
+        <ChartInfo Topic="@Topic" Title="@Title" />
+        @if (Legend is null)
+        {
+            <TokenLegend />
+        }
+        else
+        {
+            <LegendList Entries="Legend" />
+        }
+    </div>
+    <div class="donuts">
+        @ChildContent
+    </div>
+</section>

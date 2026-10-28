@@ -1,0 +1,2 @@
+@* A chart's legend: a dot in each entry's colour, and what it stands for. *@
+<span class="legend">@foreach (var e in Entries) { <span><span class="sw" style="background: @e.Colour"></span>@e.Label</span> }</span>

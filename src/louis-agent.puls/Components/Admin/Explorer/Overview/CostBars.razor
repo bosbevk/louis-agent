@@ -1,0 +1,33 @@
+@* The cost per conversation, a bar per mode on one scale, so a longer bar is a dearer conversation in either mode. *@
+<details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Cost per conversation</summary>
+<section class="chart">
+    <div class="chart-head"><LegendList Entries="ExplorerLegends.Modes(Tree)" /></div>
+    <div class="xbars">
+        @foreach (var (task, row) in Tree.Tasks.Select((t, r) => (t, r)))
+        {
+            @* Louis: the row's buttons say what they do (play the chats, or go into its turns), and the cost pops: a
+               figure of its own per mode, with the mode's dot as in the legend, not a grey label at the bar's end. *@
+            <div class="xbar-row drill" style="--i: @row" title="@Tree.Question(task)">
+                <span class="xbar-label"><code>@task</code><small>@ExplorerText.Blurb(Tree.Question(task))</small></span>
+                <span class="xbar-group">
+                    @foreach (var (m, i) in Tree.Columns)
+                    {
+                        decimal? cost = m.Conversation(task)?.Cost;
+                        <span class="xbar" title="@($"{ModeNames.Who(m)} · {task}: {Money(cost)}")">
+                            <span class="xbar-fill" style="width: @ChartNumbers.Percent(cost ?? 0, Tree.TopCost)%; background: @ChartPalette.Series(i)"></span>
+                        </span>
+                    }
+                </span>
+                <span class="row-costs">
+                    @foreach (var (m, i) in Tree.Columns)
+                    {
+                        decimal? cost = m.Conversation(task)?.Cost;
+                        <span class="row-cost small" title="@ModeNames.Who(m)"><span class="sw" style="background: @ChartPalette.Series(i)"></span><span data-count="@Money(cost)">@Money(cost)</span></span>
+                    }
+                </span>
+                <RowActions TaskId="@task" OnReplay="OnReplay" OnTurns="OnOpenConversation" />
+            </div>
+        }
+    </div>
+</section>
+</details>

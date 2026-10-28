@@ -227,3 +227,46 @@ e-mail address, so the heading shows "Runs@if (chosen is not null) { · eval-bet
 **Why 1.** Each commit proves one thing: the split changes nothing, then the fix changes one line. Sources: Fowler,
 *Refactoring* 2nd ed. ("the two hats": refactor or add behaviour, never both at once). **Commit:** the `Benchmarks`
 commit of Part 3, and the fix after it.
+
+### 11. The explorer's conversation chips: reuse the live table's `ScoreChips`, or keep a copy (Part 3, `RunExplorer`)
+
+**What came up.** The explorer's `Chips` and `IngredientChips` read the same score keys, in the same order and
+colours, as `ScoreChips` (made for the live run's table in the `Benchmarks` commit). The two differ only at the end:
+the live table adds "shops N" and "foute N" from the scores, the explorer adds "errors N" from the conversation's own
+error count. The copies also differ at the edges: `ScoreChips` shows a numeric `follow_up` and skips a count that
+isn't a whole number, where the explorer's copy skipped the first and would have thrown on the second.
+
+1. **Split `ScoreChips` into the chips every view shares and the live table's own two, and build the explorer's chips
+   from the shared ones plus its errors (picked).** Pattern: Fowler's *Extract Function* and *Remove Duplicated
+   Code* ("Once and Only Once"). Changes: `ScoreChips.Common` (with a test), `ExplorerScores.Chips` on top of it.
+   Costs: the two edge cases above now behave as the live table does, which no stored run has hit; the pins show
+   the same markup.
+2. **Keep the explorer's own copy, moved to a plain class.** Changes: one more class of score reads. Costs: two
+   lists of the same score keys to keep in step, in the files step 7c has to empty.
+3. **Pass the live table's extra chips through a flag** (`ScoreChips.Of(role, scores, live: true)`). Changes: one
+   method. Costs: a boolean argument that switches behaviour (Fowler's *Remove Flag Argument* warns against it).
+
+**Why 1.** One place reads the shared chips' keys, so step 7c has one fewer reader to move, and the explorer's chips
+can't drift from the live table's. Sources: Fowler, *Refactoring* 2nd ed., *Extract Function*, *Remove Flag
+Argument*; Hunt and Thomas, *The Pragmatic Programmer* (DRY). **Commit:** the `RunExplorer` commit of Part 3.
+
+### 12. Where a turn's replay and the chats side by side live once the explorer splits (Part 3, `RunExplorer`)
+
+**What came up.** The explorer replays a turn as typed (level 3) and plays the chats side by side (a dialog over any
+level). Every move in the explorer (deeper, back, another repeat) stops the turn's replay and forgets it; the chats
+are stopped only by closing them or playing another conversation.
+
+1. **The turn's replay stays in the explorer's code-behind, the chats dialog owns its playing (picked).** The level-3
+   component only shows the replay and raises "replay" and "stop"; the dialog plays on its own and the explorer bumps
+   a counter to ask it to play again. Pattern: Blazor's parameters down, `EventCallback` up, as finding 8, with the
+   fetching and the pace in a plain `TurnReplays` class. Changes: one stateful dialog and a stateless level. Costs:
+   the explorer's code-behind keeps the replay's fields (it stays under 200 lines).
+2. **The level-3 component owns the replay too.** Changes: the explorer drops the replay. Costs: going back to the
+   same level (the crumb you are on) keeps the component, so the replay wouldn't stop as it does now, unless the
+   level's key changes on every move, which replays the slide-in animation.
+3. **A scoped replay service** shared by the explorer and its levels. Changes: a service in `Program.cs`. Costs: a
+   replay that outlives the page, which nothing asks for (finding 8's option 3).
+
+**Why 1.** It keeps the old rule (any move stops the replay) without a trick, and gives the dialog, which no move
+touches, its own life. Sources: Microsoft Learn, *ASP.NET Core Razor components* ("Component parameters",
+"EventCallback"); finding 8. **Commit:** the `RunExplorer` commit of Part 3.

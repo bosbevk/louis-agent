@@ -16,7 +16,6 @@ public class RazorHasNoCodeTests
     /// <summary>Repo-relative, forward slashes; remove a file's line in the commit that moves its code out.</summary>
     private static readonly HashSet<string> PendingCode =
     [
-        "src/louis-agent.puls/Components/Admin/RunExplorer.razor",
     ];
 
     /// <summary>

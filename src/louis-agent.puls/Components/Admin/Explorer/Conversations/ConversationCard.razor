@@ -1,0 +1,20 @@
+@* 6a.4d (Louis: "a lot of unused space"): a card per conversation, the chips in one line across its width, the review
+   pill in front, the cost strip only when the run cost something. *@
+<div class="conv-card" data-review="@ReviewStatus.Slug(Status)">
+    <div class="conv-head" title="@Question">
+        <code>@Conversation.Task</code><small class="conv-q">@ExplorerText.Blurb(Question)</small>
+        <span class="row-cost small">@Money(Conversation.Cost)</span>
+        <RowActions TaskId="@Conversation.Task" OnReplay="OnReplay" OnTurns="OnOpenConversation" />
+    </div>
+    <div class="conv-chips">
+        <ReviewPill Grades="Conversation.Grades" Order="Graders" Conversation="Where" />
+        <span class="tree-chips">@foreach (var chip in ExplorerScores.Chips(Conversation)) { <span class="chip @chip.Kind">@chip.Text</span> }</span>
+        <GradeChips Grades="Conversation.Grades" Order="Graders" Conversation="Where" />
+    </div>
+    @if ((Conversation.Cost ?? 0) > 0)
+    {
+        <span class="conv-strip xbar stacked" title="@StripTitle">
+            <span class="xbar-fill" style="width: @ChartNumbers.Percent(Own ?? 0, TopCost)%; background: @ExplorerColours.Own"></span><span class="xbar-fill" style="width: @ChartNumbers.Percent(Spec ?? 0, TopCost)%; background: @ExplorerColours.Spec"></span>
+        </span>
+    }
+</div>

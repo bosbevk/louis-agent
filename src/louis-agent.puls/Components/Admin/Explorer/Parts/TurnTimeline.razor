@@ -1,0 +1,27 @@
+@* A turn's requests on a timeline: Puls's lane and the specialist's, each request a bar from its start to its end.
+   A bar opens its request when the explorer says what to do with it. *@
+@if (Layout is not { } layout)
+{
+    <p class="muted">No requests in the ledger.</p>
+}
+else
+{
+    <div class="timeline">
+        @foreach (var lane in layout.Lanes)
+        {
+            <div class="lane">
+                <span class="lane-label"><span class="sw" style="background: @Colour(lane)"></span>@lane.Label</span>
+                <div class="lane-track">
+                    @foreach (var bar in lane.Bars)
+                    {
+                        var r = bar.Request;
+                        <button type="button" class="tl-bar" style="--i: @bar.I; left: @bar.Left%; width: @bar.Width%; background: @Colour(lane)" title="@($"{Money(r.Cost)} · {UsageFormat.Tokens(r.Tokens)} tokens · {r.DurationMs} ms")" disabled="@(!OnOpen.HasDelegate)" @onclick="() => OnOpen.InvokeAsync(r)">
+                            <span class="tl-tip"><strong>@Money(r.Cost)</strong> · @UsageFormat.Tokens(r.Tokens) tokens · @r.DurationMs ms</span>
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+        <div class="lane axis"><span class="lane-label"></span><div class="lane-track"><span class="axis-l">0 s</span><span class="axis-r">@ExplorerText.Secs(layout.SpanMs / 1000) s</span></div></div>
+    </div>
+}

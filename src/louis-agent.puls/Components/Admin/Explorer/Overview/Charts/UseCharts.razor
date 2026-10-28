@@ -1,0 +1,46 @@
+@* Louis: three more, to fill the rows. The cache: the input each mode read from the prompt cache against what it
+   sent fresh (F4: the biggest cost lever), the hit share in its middle. *@
+<RingChart Topic="cache" Title="Cache per mode" Legend="ExplorerLegends.Cache">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Cache(m)" />
+    }
+</RingChart>
+
+@* The tools: calls that worked against those refused or failed (Puls's and the specialist's), the failures in its
+   middle and the commonest reason under it, so a run like 11b's (every search refused) shows at a glance. *@
+<RingChart Topic="tools" Title="Tools per mode" Legend="ExplorerLegends.Tools">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Tools(m)">
+            @if (ToolFailure.Commonest(m.Turns) is { } top)
+            {
+                <small class="ring-note" title="@top.Reason"><strong>@top.Tool × @top.Count</strong><span class="clamp">@top.Reason</span></small>
+            }
+        </ModeDonut>
+    }
+</RingChart>
+
+@* Louis: a ninth, to fill the rows. The sources: the sites each mode read pages from (Puls's and the specialist's),
+   South African shops, other South African sites and the rest, how many different ones in its middle. *@
+<RingChart Topic="sources" Title="Sources per mode" Legend="ExplorerLegends.Sources">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        var sites = Sites(m);
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Sources(sites)">
+            @if (sites.Hosts.Count > 0) { <small class="muted" title="@string.Join(", ", sites.Hosts)">@ExplorerText.Blurb(string.Join(", ", sites.Hosts))</small> }
+        </ModeDonut>
+    }
+</RingChart>
+
+@* The value: the cost of conversations that got a real answer (routed right, and where the check lists ingredients,
+   at least 80 % of them priced with a source) against the cost of those that didn't, what one real answer cost in
+   its middle. *@
+<RingChart Topic="value" Title="Value per mode" Legend="ExplorerLegends.Value">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Value(m, Currency)">
+            <small class="muted">@m.Conversations.Count(ExplorerScores.Answered) / @m.Conversations.Count with an answer</small>
+        </ModeDonut>
+    }
+</RingChart>
