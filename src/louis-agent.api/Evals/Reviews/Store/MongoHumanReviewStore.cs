@@ -1,9 +1,6 @@
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Mongo;
-using LouisAgent.Choices;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Evals.Reviews.Store;
 
@@ -12,72 +9,49 @@ namespace LouisAgent.Api.Evals.Reviews.Store;
 /// per grade. Grades are added, never updated.
 /// </summary>
 /// <remarks>
-/// Mapped by hand in snake case like the run store (<see cref="MongoEvalStore"/>). That class is already over its
-/// size, so this is a class beside it rather than more of it. The index is made on first use, and a server that
-/// doesn't answer fails a call within the timeout, as the run store's does.
+/// Repository over a typed collection (ADR 0048): the driver maps each grade's <see cref="HumanGradeDocument"/>, its
+/// verdict by its wire name, and the filter, sort and index name their fields through the record. It opens the
+/// database as the eval store does (<see cref="MongoEvalDatabase.Open"/>), with the same short timeouts and the same
+/// mappings. The index is made on first use.
 /// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public sealed class MongoHumanReviewStore : IHumanReviewStore
 {
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
+    /// <summary>The grades.</summary>
+    private readonly IMongoCollection<HumanGradeDocument> _grades;
 
-    private readonly IMongoCollection<BsonDocument> _grades;
+    /// <summary>Makes the index the first time anything needs it, and tries again if that failed.</summary>
     private readonly OnceItWorks _index;
 
     /// <summary>Connects to the database, with short timeouts so a missing server fails fast.</summary>
     public MongoHumanReviewStore(string url, string database)
     {
-        var settings = MongoClientSettings.FromConnectionString(url);
-        settings.ServerSelectionTimeout = Timeout;
-        settings.ConnectTimeout = Timeout;
-        _grades = new MongoClient(settings).GetDatabase(database).GetCollection<BsonDocument>("human_grades");
+        _grades = MongoEvalDatabase.Open(url, database).GetCollection<HumanGradeDocument>("human_grades");
 
         // A run's grades, oldest first, is the one query; the index is made the first time a call works.
-        _index = new OnceItWorks(() =>
-            _grades.Indexes.CreateOneAsync(
-                new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at"))));
+        _index = new OnceItWorks(() => _grades.Indexes.CreateOneAsync(new CreateIndexModel<HumanGradeDocument>(
+            Builders<HumanGradeDocument>.IndexKeys.Ascending(d => d.Run).Ascending(d => d.At))));
     }
 
     /// <summary>The database itself, for the tests to drop theirs.</summary>
     internal IMongoDatabase Database => _grades.Database;
 
-    /// <summary>Writes the grade as a new document, its verdict by its wire name.</summary>
+    /// <summary>Writes the grade as a new document.</summary>
     public async Task AddAsync(HumanGrade grade, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        await _grades.InsertOneAsync(new BsonDocument
-        {
-            ["run"] = grade.Run,
-            ["mode"] = grade.Conversation.Mode,
-            ["repeat"] = grade.Conversation.Repeat,
-            ["task"] = grade.Conversation.Task,
-            ["grader"] = grade.Grader,
-            ["verdict"] = grade.Verdict.Wire(),
-            ["note"] = grade.Note,
-            ["reviewer"] = grade.Reviewer,
-            ["at"] = new BsonDateTime(grade.At.UtcDateTime),
-        }, cancellationToken: cancellationToken);
+        await _grades.InsertOneAsync(HumanGradeDocument.Of(grade), cancellationToken: cancellationToken);
     }
 
     /// <summary>Reads the run's grades back, oldest first.</summary>
     public async Task<IReadOnlyList<HumanGrade>> OfRunAsync(string run, CancellationToken cancellationToken = default)
     {
         await _index.RunAsync();
-        var documents = await _grades.Find(Builders<BsonDocument>.Filter.Eq("run", run))
-            .Sort(Builders<BsonDocument>.Sort.Ascending("at")).ToListAsync(cancellationToken);
-
-        // Each document back into a grade, field by field; the verdict is read whatever its case.
-        return
-        [
-            .. documents.Select(d => new HumanGrade(d["run"].AsString,
-                new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString), d["grader"].AsString,
-                Enum.Parse<HumanVerdict>(d["verdict"].AsString, ignoreCase: true), d["note"].AsString,
-                d["reviewer"].AsString,
-                new DateTimeOffset(d["at"].ToUniversalTime(), TimeSpan.Zero)))
-        ];
+        var found = await _grades.Find(d => d.Run == run).SortBy(d => d.At).ToListAsync(cancellationToken);
+        return [.. found.Select(d => d.ToGrade())];
     }
 
     /// <summary>Deletes the run's grades and says how many went.</summary>
     public async Task<int> DeleteRunAsync(string run, CancellationToken cancellationToken = default) =>
-        (int)(await _grades.DeleteManyAsync(Builders<BsonDocument>.Filter.Eq("run", run), cancellationToken))
-        .DeletedCount;
+        (int)(await _grades.DeleteManyAsync(d => d.Run == run, cancellationToken)).DeletedCount;
 }

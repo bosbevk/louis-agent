@@ -1705,6 +1705,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   first place; the round trip; and each new id later than the one before. Red first: 5 of 5 against a stub (before
   the move, then carried over). The fixtures came from the old mapper made `internal` for one generator run, put
   back before the move.
+- **Step 7c.3a, Mongo through records (ADR 0048), commit 7: the human reviews.** `MongoHumanReviewStore` holds an
+  `IMongoCollection<HumanGradeDocument>`, the record beside it in `Reviews/Store/`, with no id of its own (grades are
+  added, never updated; Mongo adds one on insert). Its verdict goes through the registered `WireNameSerializer`, so
+  `Enum.Parse(…, ignoreCase: true)` is gone and an unknown verdict is refused like every stored enum. The store opens
+  its database with `MongoEvalDatabase.Open` instead of its own copy of the timeouts, which also registers the
+  mappings. `HumanGradeDocumentTests`: the write against `human-grade.json`, written by hand from the old mapping (it
+  was inline in `AddAsync`, with no method a generator could call), the round trip for every verdict, and a document
+  carrying Mongo's own `_id`. Red first: 5 of 5 against a stub. `HumanVerdict`'s wire names stay PascalCase
+  (`Pass`, `Fail`, `Unsure`), as stored today.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
