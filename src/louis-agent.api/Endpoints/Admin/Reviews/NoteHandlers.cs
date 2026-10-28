@@ -34,9 +34,7 @@ internal sealed class NoteHandlers(IEvalStore? store, TimeProvider time)
     /// </summary>
     public async Task<NoteAnswer> AddNote(string id, NoteRequest? request, CancellationToken cancellationToken)
     {
-        if (store is null)
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-                MessageText.Format(ApiUserText.NoBenchmarkStore));
+        if (store is null) return ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
         try
         {
             // The time comes from our own clock, never from the request.
@@ -46,8 +44,7 @@ internal sealed class NoteHandlers(IEvalStore? store, TimeProvider time)
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-                AdminEndpoints.Unavailable(ex));
+            return ApiErrors.Unavailable(AdminEndpoints.Unavailable(ex));
         }
     }
 
@@ -57,10 +54,8 @@ internal sealed class NoteHandlers(IEvalStore? store, TimeProvider time)
     {
         NoteResult.Added added => new CreatedJson<NoteRow>(
             $"/v1/admin/benchmarks/runs/{Uri.EscapeDataString(id)}/notes", NoteRow.Of(added.Note), AdminJson.SnakeCase),
-        NoteResult.NoRun => ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoStoredRun, new { Id = id })),
-        NoteResult.Refused refused => ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
-            Reason(refused)),
+        NoteResult.NoRun => ApiErrors.NotFound(MessageText.Format(ApiUserText.NoStoredRun, new { Id = id })),
+        NoteResult.Refused refused => ApiErrors.BadRequest(Reason(refused)),
         var other => throw new InvalidOperationException(other.GetType().Name),
     };
 

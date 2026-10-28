@@ -71,9 +71,7 @@ internal static class AdminEndpoints
     /// </summary>
     internal static async Task<IResult> FromStore(IEvalStore? store, Func<IEvalStore, Task<IResult>> read)
     {
-        if (store is null)
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-                MessageText.Format(ApiUserText.NoBenchmarkStore));
+        if (store is null) return ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
 
         // Any failure but a cancel is the store not answering: the caller gets its reason, not a 500.
         try
@@ -82,7 +80,7 @@ internal static class AdminEndpoints
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", Unavailable(ex));
+            return ApiErrors.Unavailable(Unavailable(ex));
         }
     }
 

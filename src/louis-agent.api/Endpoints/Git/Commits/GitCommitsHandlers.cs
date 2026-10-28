@@ -46,8 +46,7 @@ internal sealed class GitCommitsHandlers
             return Bad(MessageText.Format(ApiUserText.CommitMessageRequired));
 
         var commit = await RunAsync(engine, ["commit", "-m", request.Message.Trim()]);
-        if (commit.ExitCode != 0)
-            return ApiErrors.Result(StatusCodes.Status400BadRequest, "git_error", CommitRefused(commit));
+        if (commit.ExitCode != 0) return ApiErrors.GitFailed(CommitRefused(commit));
 
         var head = await RunAsync(engine, ["log", "-1", "--format=%h %s"]);
         var sha = await RunAsync(engine, ["rev-parse", "HEAD"]);
@@ -103,6 +102,5 @@ internal sealed class GitCommitsHandlers
     }
 
     /// <summary>A 400 with its reason.</summary>
-    private static JsonHttpResult<ApiError> Bad(string message) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
+    private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
 }

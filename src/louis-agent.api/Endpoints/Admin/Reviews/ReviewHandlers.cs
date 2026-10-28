@@ -114,12 +114,11 @@ internal sealed class ReviewHandlers(IEvalStore? store, IHumanReviewStore? revie
 
             var labels = await ReviewQueries.DecidedLabelsAsync(store, reviews, id, grader, cancellationToken);
             if (labels.Count == 0)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-                    MessageText.Format(ReviewUserText.NoLabelsYet, new
-                    {
-                        Grader = grader,
-                        Id = id
-                    }));
+                return ApiErrors.NotFound(MessageText.Format(ReviewUserText.NoLabelsYet, new
+                {
+                    Grader = grader,
+                    Id = id
+                }));
             return TypedResults.File(ReviewLabels.Zip(labels), "application/zip", $"{grader}-labels-{id}.zip");
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
@@ -191,31 +190,27 @@ internal sealed class ReviewHandlers(IEvalStore? store, IHumanReviewStore? revie
 
     /// <summary>The 404 for a conversation the run didn't store.</summary>
     private static JsonHttpResult<ApiError> NoConversation(string id, EvalProtocol.ConversationKey key) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ReviewUserText.NoStoredConversation,
-                new
-                {
-                    Id = id,
-                    key.Mode,
-                    key.Repeat,
-                    key.Task
-                }));
+        ApiErrors.NotFound(MessageText.Format(ReviewUserText.NoStoredConversation,
+            new
+            {
+                Id = id,
+                key.Mode,
+                key.Repeat,
+                key.Task
+            }));
 
     /// <summary>A 400 that says what was wrong.</summary>
-    private static JsonHttpResult<ApiError> Bad(string message) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
+    private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
 
     /// <summary>The 503 when there's no store at all.</summary>
     private static JsonHttpResult<ApiError> NoStore() =>
-        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-            MessageText.Format(ApiUserText.NoBenchmarkStore));
+        ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
 
     /// <summary>The 503 when the store didn't answer, with its reason.</summary>
     private static JsonHttpResult<ApiError> Unavailable(Exception ex) =>
-        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", AdminEndpoints.Unavailable(ex));
+        ApiErrors.Unavailable(AdminEndpoints.Unavailable(ex));
 
     /// <summary>The 404 for a run the store doesn't hold.</summary>
     private static JsonHttpResult<ApiError> NoRun(string id) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
 }

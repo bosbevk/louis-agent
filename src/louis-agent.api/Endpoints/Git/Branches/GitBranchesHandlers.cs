@@ -75,8 +75,8 @@ internal sealed class GitBranchesHandlers
         // A merge on top of uncommitted work would mix the two; untracked files are fine.
         var dirty = await RunAsync(engine, ["status", "--porcelain", "--untracked-files=no"]);
         if (dirty.Output.Trim().Length > 0)
-            return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-                MessageText.Format(ApiUserText.MergeUncommittedChanges, new { branches.Current }));
+            return ApiErrors.Conflict(MessageText.Format(ApiUserText.MergeUncommittedChanges,
+                new { branches.Current }));
 
         string message = MessageText.Format(ApiUserText.MergeCommitMessage,
             new
@@ -133,7 +133,7 @@ internal sealed class GitBranchesHandlers
         await RunAsync(engine, ["merge", "--abort"]);
 
         if (conflicts.Length > 0)
-            return Conflict(MessageText.Format(ApiUserText.MergeConflicts,
+            return ApiErrors.Conflict(MessageText.Format(ApiUserText.MergeConflicts,
                 new
                 {
                     Branch = branch.Name,
@@ -141,7 +141,7 @@ internal sealed class GitBranchesHandlers
                 }));
         string detail = (merge.Error + merge.Output).Trim();
         if (NoIdentity(detail)) detail = MessageText.Format(ApiUserText.MergeNoIdentity);
-        return Conflict(MessageText.Format(ApiUserText.MergeFailed,
+        return ApiErrors.Conflict(MessageText.Format(ApiUserText.MergeFailed,
             new
             {
                 Branch = branch.Name,
@@ -156,14 +156,8 @@ internal sealed class GitBranchesHandlers
 
     /// <summary>The 404 for a branch that doesn't exist.</summary>
     private static JsonHttpResult<ApiError> NoBranch(string? name) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoBranch, new { Name = name }));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.NoBranch, new { Name = name }));
 
     /// <summary>A 400 with its reason.</summary>
-    private static JsonHttpResult<ApiError> Bad(string message) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
-
-    /// <summary>A 409 with its reason.</summary>
-    private static JsonHttpResult<ApiError> Conflict(string message) =>
-        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error", message);
+    private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
 }

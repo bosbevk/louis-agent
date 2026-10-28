@@ -64,6 +64,5 @@ internal static class ApiMap
 
     /// <summary>The 404 for a <c>/v1</c> path no route matches, naming the path.</summary>
     private static JsonHttpResult<ApiError> UnknownRoute(string path) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.UnknownRoute, new { Path = path }));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownRoute, new { Path = path }));
 }

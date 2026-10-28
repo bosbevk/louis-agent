@@ -42,8 +42,7 @@ internal sealed class GitChangesHandlers
         if (string.IsNullOrWhiteSpace(path)) return Bad(MessageText.Format(ApiUserText.PathRequired));
         if (CheckPaths(workspace, [path]) is { } invalid) return invalid;
         if (SensitiveFiles.IsSensitive(path))
-            return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error",
-                MessageText.Format(ApiUserText.SecretDiffHidden));
+            return ApiErrors.Forbidden(MessageText.Format(ApiUserText.SecretDiffHidden));
 
         var status = await RunAsync(engine, ["status", "--porcelain=v1", "-z", "--untracked-files=all", "--", path]);
         bool untracked = status.Output.StartsWith("??", StringComparison.Ordinal);
@@ -146,6 +145,5 @@ internal sealed class GitChangesHandlers
     }
 
     /// <summary>A 400 with its reason.</summary>
-    private static JsonHttpResult<ApiError> Bad(string message) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
+    private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
 }

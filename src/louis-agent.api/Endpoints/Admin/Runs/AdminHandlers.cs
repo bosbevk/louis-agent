@@ -70,11 +70,9 @@ internal sealed class AdminHandlers(
     {
         var access = AdminGate.Check(adminKey, AdminGate.Presented(context.HttpContext.Request));
         if (access == AdminAccess.Closed)
-            return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error",
-                MessageText.Format(ApiUserText.AdminClosed));
+            return ApiErrors.Forbidden(MessageText.Format(ApiUserText.AdminClosed));
         if (access == AdminAccess.Unauthorized)
-            return ApiErrors.Result(StatusCodes.Status401Unauthorized, "authentication_error",
-                MessageText.Format(ApiUserText.InvalidApiKey));
+            return ApiErrors.Unauthorized(MessageText.Format(ApiUserText.InvalidApiKey));
         return await next(context);
     }
 
@@ -123,8 +121,7 @@ internal sealed class AdminHandlers(
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-                AdminEndpoints.Unavailable(ex));
+            return ApiErrors.Unavailable(AdminEndpoints.Unavailable(ex));
         }
     }
 
@@ -136,18 +133,16 @@ internal sealed class AdminHandlers(
     public RunAnswer StartRun(string check, StartRunRequest? request)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == check) is not { } known)
-            return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-                MessageText.Format(ApiUserText.NoCheck,
-                    new
-                    {
-                        Check = check,
-                        Checks = string.Join(", ", catalog.Checks.Select(c => c.Id))
-                    }));
+            return ApiErrors.NotFound(MessageText.Format(ApiUserText.NoCheck,
+                new
+                {
+                    Check = check,
+                    Checks = string.Join(", ", catalog.Checks.Select(c => c.Id))
+                }));
 
         // What to do with the web, checked before anything that costs: a request no run can do is a 400 on its own.
         var (options, refusal) = EvalRunOptions.Parse(request?.Web, request?.Replay);
-        if (refusal is not null)
-            return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", refusal);
+        if (refusal is not null) return ApiErrors.BadRequest(refusal);
         if (recorder is null) return NoStore();
         if (runner.IsRunning) return Running();
         // Another start can win the race between the check above and this one, so a refused start is a 409 too.
@@ -179,23 +174,19 @@ internal sealed class AdminHandlers(
 
     /// <summary>The 404 for a check we have no manual for.</summary>
     private static JsonHttpResult<ApiError> NoManual(string check) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoManual, new { Check = check }));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.NoManual, new { Check = check }));
 
     /// <summary>The 503 for a call that needs the store when there is none.</summary>
     private static JsonHttpResult<ApiError> NoStore() =>
-        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-            MessageText.Format(ApiUserText.NoBenchmarkStore));
+        ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
 
     /// <summary>The 404 for a run that isn't the current one.</summary>
     private static JsonHttpResult<ApiError> NoRun() =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoBenchmarkRun));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.NoBenchmarkRun));
 
     /// <summary>The 409 for a start while another run is still going.</summary>
     private JsonHttpResult<ApiError> Running() =>
-        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-            MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
+        ApiErrors.Conflict(MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
 
     /// <summary>
     /// Streams a run's lines to the page as they come, then one last "done" with whether the recording kept

@@ -44,21 +44,18 @@ internal sealed class RescoreHandlers(
     public async Task<RescoreAnswer> Rescore(string id, CancellationToken cancellationToken)
     {
         if (store is null || recorder is null)
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-                MessageText.Format(ApiUserText.NoBenchmarkStore));
+            return ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
         try
         {
             if (await store.GetRunAsync(id, cancellationToken) is not { } stored)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-                    MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
+                return ApiErrors.NotFound(MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
             if (catalog.Checks.FirstOrDefault(c => c.Id == stored.Check) is not { } check)
-                return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
-                    MessageText.Format(ApiUserText.RescoreNeedsEval,
-                        new
-                        {
-                            Id = id,
-                            Check = stored.Check
-                        }));
+                return ApiErrors.BadRequest(MessageText.Format(ApiUserText.RescoreNeedsEval,
+                    new
+                    {
+                        Id = id,
+                        Check = stored.Check
+                    }));
             if (runner.IsRunning) return Busy();
 
             // The runner grades the run's own transcript, so hand it the export; a start that loses a race is a 409.
@@ -71,13 +68,11 @@ internal sealed class RescoreHandlers(
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-                AdminEndpoints.Unavailable(ex));
+            return ApiErrors.Unavailable(AdminEndpoints.Unavailable(ex));
         }
     }
 
     /// <summary>The 409 while another run is going, naming its check.</summary>
     private JsonHttpResult<ApiError> Busy() =>
-        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-            MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
+        ApiErrors.Conflict(MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
 }

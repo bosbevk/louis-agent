@@ -1020,6 +1020,14 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
+- **Error kinds are an enum, one method per kind** (card A). Pattern: Fowler's *Replace Primitive with Object* and
+  *Remove Flag Argument*, the way `TypedResults.NotFound(…)` works. `ApiErrorKind` in the API holds today's texts as
+  its `[WireName]`s (the contract's `ApiError` keeps the text, so the wire doesn't change); `ApiErrors` has one method
+  per kind with its status (`BadRequest`, `GitFailed`, `Unauthorized`, `Forbidden`, `NotFound`, `Conflict`,
+  `TooLarge`, `UnsupportedMediaType`, `Unavailable`), and `Body(kind, message)` stays for the key gate and the
+  stream's last line. No `"…_error"` literal is left outside the enum; one route per kind has its error JSON pinned
+  first (Louis, 2026-10-28, review of the unattended run).
+
 - **7b (ii) runs right after the endpoint sweep, ahead of 7a.3** (Louis, 2026-10-27). The admin pages are rebuilt
   (part ii of 7b's row) before 7a.3's trend markers, so 7a.3 draws on the rebuilt `TrendChart`.
 

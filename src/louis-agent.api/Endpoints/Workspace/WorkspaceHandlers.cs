@@ -37,8 +37,7 @@ internal sealed class WorkspaceHandlers
     {
         if (Resolve(workspace, path ?? "", out string? fullPath) is { } invalid) return invalid;
         if (!Directory.Exists(fullPath))
-            return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-                MessageText.Format(ApiUserText.NoFolder, new { Path = path }));
+            return ApiErrors.NotFound(MessageText.Format(ApiUserText.NoFolder, new { Path = path }));
 
         var directory = new DirectoryInfo(fullPath!);
         var folders = directory.EnumerateDirectories()
@@ -62,25 +61,20 @@ internal sealed class WorkspaceHandlers
     public FileAnswer GetFile(string? path, WorkspaceBoundary workspace, AgentEngine engine)
     {
         if (string.IsNullOrWhiteSpace(path))
-            return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error",
-                MessageText.Format(ApiUserText.PathRequired));
+            return ApiErrors.BadRequest(MessageText.Format(ApiUserText.PathRequired));
         if (Resolve(workspace, path, out string? fullPath) is { } invalid) return invalid;
 
         var file = new FileInfo(fullPath!);
         if (!file.Exists)
-            return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-                MessageText.Format(ApiUserText.NoFile, new { Path = path }));
+            return ApiErrors.NotFound(MessageText.Format(ApiUserText.NoFile, new { Path = path }));
         if (SensitiveFiles.IsSensitive(file.FullName))
-            return ApiErrors.Result(StatusCodes.Status403Forbidden, "permission_error",
-                MessageText.Format(ApiUserText.SecretFileHidden));
+            return ApiErrors.Forbidden(MessageText.Format(ApiUserText.SecretFileHidden));
         if (file.Length > MaxFileBytes)
-            return ApiErrors.Result(StatusCodes.Status413PayloadTooLarge, "request_too_large",
-                MessageText.Format(ApiUserText.FileTooLarge, new { file.Name }));
+            return ApiErrors.TooLarge(MessageText.Format(ApiUserText.FileTooLarge, new { file.Name }));
 
         byte[] bytes = File.ReadAllBytes(file.FullName);
         if (bytes.AsSpan(0, Math.Min(bytes.Length, 8_000)).Contains((byte)0))
-            return ApiErrors.Result(StatusCodes.Status415UnsupportedMediaType, "invalid_request_error",
-                MessageText.Format(ApiUserText.BinaryFile, new { file.Name }));
+            return ApiErrors.UnsupportedMediaType(MessageText.Format(ApiUserText.BinaryFile, new { file.Name }));
 
         // The text without a byte-order mark, which a browser would show as a stray character.
         string content = new UTF8Encoding(false).GetString(bytes).TrimStart('﻿');
@@ -105,7 +99,7 @@ internal sealed class WorkspaceHandlers
             string message = ex.ParamName is null
                 ? ex.Message
                 : ex.Message.Replace($" (Parameter '{ex.ParamName}')", "");
-            return ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
+            return ApiErrors.BadRequest(message);
         }
     }
 

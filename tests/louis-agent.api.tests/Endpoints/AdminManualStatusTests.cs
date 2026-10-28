@@ -1,5 +1,7 @@
 using System.Net;
+using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Evals.List;
+using LouisAgent.Choices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 
@@ -25,7 +27,7 @@ public class AdminManualStatusTests
         using var response = await GetAsync(app, "/v1/admin/benchmarks/ghost/manual");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
-        Assert.That(await response.Content.ReadAsStringAsync(), Does.Contain("not_found_error"));
+        Assert.That(await response.Content.ReadAsStringAsync(), Does.Contain(ApiErrorKind.NotFound.Wire()));
     }
 
     /// <summary>A check we don't know is a 404 too, and never reads a file named by the caller.</summary>

@@ -109,8 +109,7 @@ internal sealed class StoredRunHandlers(
     {
         if (store is null) return NoStore();
         if (runner.Current is { Status: EvalRunStatus.Running } live && live.Id == id)
-            return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-                MessageText.Format(ApiUserText.StoredRunStillRunning, new { Id = id }));
+            return ApiErrors.Conflict(MessageText.Format(ApiUserText.StoredRunStillRunning, new { Id = id }));
         try
         {
             if (!await store.DeleteRunAsync(id, cancellationToken)) return NoRun(id);
@@ -166,15 +165,13 @@ internal sealed class StoredRunHandlers(
 
     /// <summary>The 503 when there's no store at all.</summary>
     private static JsonHttpResult<ApiError> NoStore() =>
-        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-            MessageText.Format(ApiUserText.NoBenchmarkStore));
+        ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
 
     /// <summary>The 503 when the store didn't answer, with its reason.</summary>
     private static JsonHttpResult<ApiError> Unavailable(Exception ex) =>
-        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", AdminEndpoints.Unavailable(ex));
+        ApiErrors.Unavailable(AdminEndpoints.Unavailable(ex));
 
     /// <summary>The 404 for a run the store doesn't hold.</summary>
     private static JsonHttpResult<ApiError> NoRun(string id) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
 }

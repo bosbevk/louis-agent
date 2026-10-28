@@ -2,6 +2,7 @@ using System.Net.ServerSentEvents;
 using System.Text.Json;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Endpoints;
+using LouisAgent.Choices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Reports;
@@ -94,8 +95,8 @@ internal sealed class ClaudeStreamFormat(
         foreach (var item in CloseBlock()) yield return item;
         object? rendered = RenderUsage(usage);
         yield return Event("error", rendered is null
-            ? ApiErrors.Body("api_error", error)
-            : new StreamErrorEvent(new ApiErrorDetail("api_error", error), rendered));
+            ? ApiErrors.Body(ApiErrorKind.Api, error)
+            : new StreamErrorEvent(new ApiErrorDetail(ApiErrorKind.Api.Wire(), error), rendered));
     }
 
     /// <summary>

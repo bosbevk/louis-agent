@@ -128,8 +128,7 @@ internal sealed class SessionHandlers(AgentHostContext host)
         string prompt = TurnStream.BuildPrompt(request);
         if (string.IsNullOrWhiteSpace(prompt)) return Bad(MessageText.Format(ApiUserText.EmptyMessage));
         if (!session.TryStartTurn(http.RequestAborted, out var turn))
-            return ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-                MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" }));
+            return ApiErrors.Conflict(MessageText.Format(ApiUserText.SessionBusy, new { Id = "{id}" }));
 
         // The session keeps its attachments, so a later turn can still hand them to a specialist (F22).
         foreach (var attachment in request.Attachments ?? [])
@@ -164,10 +163,8 @@ internal sealed class SessionHandlers(AgentHostContext host)
 
     /// <summary>The 404 for a session this instance doesn't have.</summary>
     private static JsonHttpResult<ApiError> UnknownSession(string id) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.UnknownSession, new { Id = id }));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownSession, new { Id = id }));
 
     /// <summary>A 400 with its reason.</summary>
-    private static JsonHttpResult<ApiError> Bad(string message) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
+    private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
 }

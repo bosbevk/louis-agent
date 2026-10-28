@@ -42,7 +42,7 @@ internal sealed class InfoHandlers(AgentHostContext host)
     /// </summary>
     public PricesAnswer GetPrices()
     {
-        if (host.Prices.IsEmpty) return NotFound(MessageText.Format(ApiUserText.NoPriceTable));
+        if (host.Prices.IsEmpty) return ApiErrors.NotFound(MessageText.Format(ApiUserText.NoPriceTable));
         return TypedResults.Json(host.Prices, PriceTable.Json);
     }
 
@@ -52,7 +52,7 @@ internal sealed class InfoHandlers(AgentHostContext host)
     /// </summary>
     public RatesAnswer GetRates()
     {
-        if (host.Rates.IsEmpty) return NotFound(MessageText.Format(ApiUserText.NoRates));
+        if (host.Rates.IsEmpty) return ApiErrors.NotFound(MessageText.Format(ApiUserText.NoRates));
         return TypedResults.Text(host.Rates.ToJson(), "application/json");
     }
 
@@ -96,8 +96,4 @@ internal sealed class InfoHandlers(AgentHostContext host)
             .Order(StringComparer.Ordinal)
             .ToDictionary(code => code,
                 code => DisplayCurrency.DistinctSymbol(code, DisplayCurrency.SymbolFor(code), host.Prices.Currency));
-
-    /// <summary>A 404 with its reason.</summary>
-    private static JsonHttpResult<ApiError> NotFound(string message) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error", message);
 }

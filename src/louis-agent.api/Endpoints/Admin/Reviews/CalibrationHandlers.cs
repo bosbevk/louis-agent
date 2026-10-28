@@ -65,12 +65,11 @@ internal sealed class CalibrationHandlers(
 
             var labels = await ReviewQueries.DecidedLabelsAsync(store, reviews, id, grader, cancellationToken);
             if (labels.Count == 0)
-                return ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-                    MessageText.Format(ReviewUserText.NoLabelsYet, new
-                    {
-                        Grader = grader,
-                        Id = id
-                    }));
+                return ApiErrors.NotFound(MessageText.Format(ReviewUserText.NoLabelsYet, new
+                {
+                    Grader = grader,
+                    Id = id
+                }));
             if (runner.IsRunning) return Busy();
 
             // One label per line, as the zip's files hold them: the runner reads them with the same loader.
@@ -122,24 +121,20 @@ internal sealed class CalibrationHandlers(
 
     /// <summary>The 503 when one of the stores isn't there.</summary>
     private static JsonHttpResult<ApiError> NoStore() =>
-        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
-            MessageText.Format(ApiUserText.NoBenchmarkStore));
+        ApiErrors.Unavailable(MessageText.Format(ApiUserText.NoBenchmarkStore));
 
     /// <summary>The 503 when the store didn't answer, with its reason.</summary>
     private static JsonHttpResult<ApiError> Unavailable(Exception ex) =>
-        ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", AdminEndpoints.Unavailable(ex));
+        ApiErrors.Unavailable(AdminEndpoints.Unavailable(ex));
 
     /// <summary>A 400 that says what was wrong.</summary>
-    private static JsonHttpResult<ApiError> Bad(string message) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
+    private static JsonHttpResult<ApiError> Bad(string message) => ApiErrors.BadRequest(message);
 
     /// <summary>The 404 for a run the store doesn't hold.</summary>
     private static JsonHttpResult<ApiError> NoRun(string id) =>
-        ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
-            MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
+        ApiErrors.NotFound(MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
 
     /// <summary>The 409 while another run is going, naming its check.</summary>
     private JsonHttpResult<ApiError> Busy() =>
-        ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
-            MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
+        ApiErrors.Conflict(MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));
 }

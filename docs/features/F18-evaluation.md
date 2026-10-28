@@ -1379,6 +1379,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `ClaudeBlocks.cs`, `ClaudeUsage.cs` beside it), `type` first through `[JsonPropertyOrder(-1)]`, and the display
   symbol's nested ternary is guard clauses. A refactor with no new test: `StreamGoldenTests` pins the bytes and stayed
   green (api.tests 603 of 603 on the commit's own tree).
+- **Error kinds are an enum, one method per kind** (card A, step 2). `ApiErrorKind` (in `Endpoints/`, beside
+  `ApiErrors`) names the eight error texts on the wire; `ApiErrors` lost `Result(status, type, message)` for nine
+  methods, each with its status (a 400 and a 415 share `invalid_request_error`, so the enum has eight members and the
+  methods say the status). Every handler, the key gate and the stream's last line call them; a few handlers' private
+  `Bad`/`Conflict`/`NotFound` wrappers went. `RepeatedNameTests` now guards the enum's names, so a typed
+  `"not_found_error"` fails the build's tests; three eval tests keep `"api_error"` as an exemption, because there it
+  is a turn's failure (`EvalTurnFailure`, `TrialFailure`), a different name that shares the text. Pinned first, on
+  today's code: the error JSON byte for byte of one route per kind (`ApiErrorRouteTests`, seven in api.tests; the git
+  failure and the conflict, which need a process, in api.integration-tests). Red first: the ratchet listed 70 typed
+  error texts, and `ApiErrorJsonTests` against stubs that threw (11 of 12 failing).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

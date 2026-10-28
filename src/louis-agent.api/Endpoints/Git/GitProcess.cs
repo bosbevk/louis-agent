@@ -19,10 +19,9 @@ internal static class GitProcess
 
     /// <summary>A failed git run as the API's error: what git said, or its exit code when it said nothing.</summary>
     internal static JsonHttpResult<ApiError> GitError(GitResult result) =>
-        ApiErrors.Result(StatusCodes.Status400BadRequest, "git_error",
-            string.IsNullOrWhiteSpace(result.Error)
-                ? MessageText.Format(ApiUserText.GitExited, new { result.ExitCode })
-                : result.Error.Trim());
+        ApiErrors.GitFailed(string.IsNullOrWhiteSpace(result.Error)
+            ? MessageText.Format(ApiUserText.GitExited, new { result.ExitCode })
+            : result.Error.Trim());
 
     /// <summary>
     /// Runs git in the workspace and hands back its exit code and what it printed; a run that takes too long is
