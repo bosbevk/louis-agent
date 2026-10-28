@@ -8,6 +8,8 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Grading.Outcomes;
 using LouisAgent.Evals.Reports;
+using LouisAgent.Evals.Protocol.Parts.Run;
+using RunSplit = LouisAgent.Evals.Protocol.Kinds.RunSplit;
 
 namespace LouisAgent.Evals.Protocol;
 
@@ -101,8 +103,8 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// step 5.4), its graders and the model each mode ran on.
     /// </summary>
     public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders,
-        IReadOnlyList<ModelUse> models,
-        SplitSelection split = SplitSelection.Dev, string? rescoreOf = null, DatasetManifest? dataset = null) =>
+        IReadOnlyList<ModelInfo> models,
+        RunSplit split = RunSplit.Dev, string? rescoreOf = null, DatasetManifest? dataset = null) =>
         Emit("protocol",
             json => RunBeginLine.Write(json, eval, evalVersion, commit, graders, models, split, rescoreOf, dataset));
 

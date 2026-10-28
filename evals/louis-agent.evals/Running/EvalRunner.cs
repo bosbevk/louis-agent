@@ -10,6 +10,8 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading.Outcomes;
 using LouisAgent.Evals.Reports;
 using LouisAgent.Evals.Running.Rescoring;
+using LouisAgent.Evals.Protocol.Parts.Run;
+using ModelLevel = LouisAgent.Evals.Protocol.Kinds.ModelLevel;
 
 namespace LouisAgent.Evals.Running;
 
@@ -45,7 +47,7 @@ public sealed class EvalRunner(
             });
         // The model isn't reported yet: the session client that could read it is the HTTP client, which is step 5.
         protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders,
-            modes.Select(m => new ModelUse(m.Name, ModelLevel.Agent, m.Role, null)).ToList(), run.Split);
+            modes.Select(m => new ModelInfo(m.Name, ModelLevel.Agent, m.Role, null)).ToList(), run.Split);
 
         foreach (var mode in modes)
         {
@@ -86,10 +88,7 @@ public sealed class EvalRunner(
     {
         if (scenario.Input.Messages.Count == 0)
         {
-            logger.Log(LogLevel.Warning, EvalLogMessage.NoMessages, new
-            {
-                Scenario = scenario.Id
-            });
+            logger.Log(LogLevel.Warning, EvalLogMessage.NoMessages, new { Scenario = scenario.Id });
             return;
         }
 

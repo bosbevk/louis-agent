@@ -1,14 +1,16 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Outcomes;
-using LouisAgent.Evals.Protocol;
 
 namespace LouisAgent.Evals.Tests.Protocol;
 
-// F18 step 7.5.2 follow-up (Louis, 2026-10-27, finding 1 A): these enums travel as PascalCase in stored runs and the protocol, so each member's [WireName] is its own name, and `.Wire()` writes
-// exactly what `ToString()` wrote. The move to one lower-case style waits for protocol v2 (7c), which starts stored runs fresh.
+/// <summary>
+/// The harness's grade and trial words travel as PascalCase in version 1's stored runs and lines, so each member's
+/// wire name is its own name. Step 7c.2c moves them to the contract's lower-case words and this test goes.
+/// </summary>
 public class PascalCaseWireTests
 {
+    /// <summary><c>.Wire()</c> writes exactly the member's name for every enum version 1 still carries.</summary>
     [Test]
     public void TheHarnessEnumsStoredRunsCarry_WriteTheirMemberName()
     {
@@ -18,7 +20,5 @@ public class PascalCaseWireTests
             Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"TrialOutcome.{m}");
         foreach (var m in Enum.GetValues<GraderKind>())
             Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"GraderKind.{m}");
-        foreach (var m in Enum.GetValues<ModelLevel>())
-            Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"ModelLevel.{m}");
     }
 }

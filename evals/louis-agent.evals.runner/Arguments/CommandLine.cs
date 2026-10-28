@@ -2,6 +2,7 @@ using System.Globalization;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Choices;
 
@@ -27,7 +28,7 @@ public sealed record RunRequest(
     WebReplayMode? Web = null,
     string? Of = null,
     bool Model = false,
-    SplitSelection Split = SplitSelection.Dev,
+    RunSplit Split = RunSplit.Dev,
     string? RescoreOf = null) : CommandLineRequest;
 
 /// <summary>
@@ -93,7 +94,7 @@ public static class CommandLine
         int repeat = 1;
         WebReplayMode? web = null;
         string? of = null, replay = null, rescore = null;
-        var split = SplitSelection.Dev;
+        var split = RunSplit.Dev;
         // Whether any flag that shapes a session or a run was given, whatever its value: a re-score takes none of them.
         bool shapesARun = false;
 
@@ -181,23 +182,19 @@ public static class CommandLine
     }
 
     /// <summary>
-    /// Which scenarios to run: <c>dev</c>, <c>held-out</c> (or <c>heldout</c>) or <c>all</c>, never a number.
+    /// Which scenarios to run: <c>dev</c>, <c>held-out</c> (or the old <c>held_out</c>) or <c>all</c>, never a number.
     /// </summary>
-    private static SplitSelection ParseSplit(string value)
+    private static RunSplit ParseSplit(string value)
     {
-        if (!SettingChoice.TryParse(value, out SplitSelection? split, SplitAliases) || split is null)
+        if (!SettingChoice.TryParse(value, out RunSplit? split, RunSplits.Aliases) || split is null)
             throw Refuse(RunnerMessage.UnknownSplit,
                 new
                 {
                     Value = value,
-                    Supported = string.Join(", ", SettingChoice.Names<SplitSelection>())
+                    Supported = string.Join(", ", SettingChoice.Names<RunSplit>())
                 });
         return split.Value;
     }
-
-    /// <summary>The other way of writing a split we accept: <c>held-out</c>, with its dash.</summary>
-    private static readonly IReadOnlyDictionary<string, SplitSelection> SplitAliases =
-        new Dictionary<string, SplitSelection> { ["held-out"] = SplitSelection.HeldOut };
 
     /// <summary>
     /// A run id holds only letters, digits, <c>_</c> and <c>-</c>: the API builds a trial's key from it, so it must

@@ -23,6 +23,8 @@
     <!-- F18 step 2: the harness, sold with the engine (ADR 0029): the engine's message helpers and the session stream's reader. -->
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
     <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+    <!-- F18 step 7c: the eval protocol's records and kinds, the contract the API reads too. -->
+    <ProjectReference Include="..\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
   </ItemGroup>
 
   <ItemGroup>

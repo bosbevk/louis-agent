@@ -9,6 +9,9 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Grading.Outcomes;
+using ModelInfo = LouisAgent.Evals.Protocol.Parts.Run.ModelInfo;
+using ModelLevel = LouisAgent.Evals.Protocol.Kinds.ModelLevel;
+using RunSplit = LouisAgent.Evals.Protocol.Kinds.RunSplit;
 
 namespace LouisAgent.Evals.Tests.Protocol;
 
@@ -59,7 +62,8 @@ public class ProtocolWriterTests
         writer.Mode("cook", 1, ["web", "shops"], "puls-cook", null);
         writer.Question("cook", 1, "pannekoek", 1, "sess_1", "Gee my 'n resep vir pannekoek – rand");
         writer.Sse("cook", 1, "pannekoek", 1, "content_block_delta",
-            Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo – wêreld"}}"""));
+            Json("""{"type":"content_block_delta","index":0,"delta":"""
+                 + """{"type":"text_delta","text":"Hallo – wêreld"}}"""));
         writer.Turn("cook", 1, "pannekoek", 1, "sess_1", "Gee my 'n resep vir pannekoek – rand", "Hallo – wêreld",
             "puls-cook", 1.5);
         writer.Conversation("cook", 1, "pannekoek", "puls-cook", Json("""{"routed_right":true,"priced":2}"""), 3.25);
@@ -84,7 +88,7 @@ public class ProtocolWriterTests
 
         new ProtocolWriter(sink, new FixedClock(At)).Begin("cook", 2, "abc123",
             [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)],
-            [new ModelUse("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
+            [new ModelInfo("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
 
         var started = (EvalProtocol.ProtocolStarted)EvalProtocol.Parse(Lines(sink)[0]);
         Assert.That((started.Version, started.Eval, started.EvalVersion, started.Commit),
@@ -100,10 +104,10 @@ public class ProtocolWriterTests
     /// The first line says which scenarios the run asked for. Without it a held-out run would be stored like a dev
     /// one, and would join the dev trend.
     /// </summary>
-    [TestCase(SplitSelection.Dev, EvalRunSplit.Dev, "dev")]
-    [TestCase(SplitSelection.HeldOut, EvalRunSplit.HeldOut, "held_out")]
-    [TestCase(SplitSelection.All, EvalRunSplit.All, "all")]
-    public void TheFirstLine_SaysWhichScenariosTheRunAskedFor(SplitSelection split, EvalRunSplit expected,
+    [TestCase(RunSplit.Dev, EvalRunSplit.Dev, "dev")]
+    [TestCase(RunSplit.HeldOut, EvalRunSplit.HeldOut, "held_out")]
+    [TestCase(RunSplit.All, EvalRunSplit.All, "all")]
+    public void TheFirstLine_SaysWhichScenariosTheRunAskedFor(RunSplit split, EvalRunSplit expected,
         string wire)
     {
         var sink = new StringWriter();

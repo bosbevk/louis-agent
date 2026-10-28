@@ -1472,6 +1472,19 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the regenerated `eval-protocol.jsonl` differs only in its eight `t` values. Red before the code: 11 of 44 (the time
   pattern on each of the eight events, the `Z`, the fraction and the offset); with the converter, the golden alone,
   until regenerated.
+- **Step 7c.2b (the harness references the contract, and its duplicates go).** `louis-agent.evals` references
+  `louis-agent.evals.protocol`; `Datasets/SplitSelection`, `Protocol/ModelLevel` and `Protocol/ModelUse` are deleted,
+  and `RunSplit`, `ModelLevel` and `ModelInfo` from the contract take their places (`EvalRun`, `RunRequest`,
+  `ProtocolWriter.Begin`, `StoredRun`, `EvalRunner`). `Datasets/RunSplits` keeps what the contract can't know: which
+  scenarios a split asks for (`Includes`), and the old `held_out` spelling as an alias, which the command line and a
+  stored run's first line still read. **No output changes:** until 7c.2c the v1 writer keeps its words by hand
+  (`RunBeginLine`'s `V1Split` writes `held_out`, `V1Level` the member's name, `Agent`). The command line's
+  "supported" message now lists the contract's wire names, `dev, held-out, all`. `WireNameAgreementTests` lost its
+  `SplitSelection` case and the test that the harness's and the API's splits agree (the API's `EvalRunSplit` waits for
+  step 3); `PascalCaseWireTests` lost its `ModelLevel` line. The harness's `Protocol/` folder came under six files and
+  left `FolderSizeTests`' list. The files of the commit were brought up to the rules: every class and method in
+  `CommandLineTests`, `EvalRunnerSplitTests`, `PascalCaseWireTests` and `StoredRun` has its summary. Red before the
+  code: the build, once the tests named `RunSplit`.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

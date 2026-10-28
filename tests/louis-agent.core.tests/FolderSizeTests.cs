@@ -30,7 +30,6 @@ public class FolderSizeTests
     [
         "evals/louis-agent.evals/Api",
         "evals/louis-agent.evals/Datasets",
-        "evals/louis-agent.evals/Protocol",
         "evals/louis-agent.evals/Running",
         "louis-agent.core/Pricing/Prices",
         "louis-agent.core/Tools/Agents/SubSessions",
