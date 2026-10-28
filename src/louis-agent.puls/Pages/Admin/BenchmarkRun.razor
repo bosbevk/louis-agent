@@ -29,7 +29,7 @@ else
     @* F18 step 7a.2: why this run behaved as it did, in people's words; the notes are the store's, fetched with the run. *@
     <section class="card-p">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Notes<span class="fold-note">what changed, what you think explains it</span></summary>
-            <NotesPanel RunId="@RunId" Notes="NoteReader.Of(run)" />
+            <NotesPanel RunId="@RunId" Notes="NoteReader.Of(_run.Run.Id, _run.Notes)" />
         </details>
     </section>
     <section class="card-p">

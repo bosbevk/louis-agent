@@ -1782,6 +1782,8 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   Commit 5: `ModeRatesReader` reads `ModeRow`s and `ModeRatesList` takes `Modes` (the page passes `_run.Modes`); both
   tests build rows instead of JSON. Red: the build. `RunSettingsTests`' fixtures start their raw strings on a line of
   their own, so Rider's formatter keeps them under 120 (commit 4 left them aligned past it).
+  Commit 6: `NoteReader`'s JSON overload goes; the page calls the typed one with `_run.Notes`. Its JSON tests went,
+  the typed cases stay; no test first, since only a duplicate path went, and `BenchmarkRunTests` still pins the notes.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
