@@ -6,9 +6,9 @@ using LouisAgent.Api.Benchmarks.Store;
 namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
-/// The portal's reads of a stored run, and its delete: the run with its conversations, turns, requests and notes, one
-/// turn's stream events, and the run as the protocol's own lines. They are in the same admin group as the rest, so the
-/// admin key covers them; the work is <c>StoredRunHandlers</c>'.
+/// Hangs the routes that read a stored run, and delete it: the run with everything it kept, one turn's stream events,
+/// and the run as the protocol's own lines. They sit in the admin group, so the key covers them; the work is in
+/// <c>StoredRunHandlers</c>.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class StoredRunEndpoints

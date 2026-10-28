@@ -16,9 +16,8 @@ using RescoreAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
 namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
-/// Grades a stored run's transcripts again with today's graders (F18 step 5b.2): the eval runner reads the run's
-/// export and records a new run that names this one. It asks no model, so it costs nothing; the grading is the
-/// runner's.
+/// Grades a stored run's transcripts again with today's graders. The eval runner reads the run's export and records a
+/// new run that points back at this one. No model is asked, so it costs nothing.
 /// </summary>
 /// <remarks>
 /// Introduce Parameter Object (Fowler), with the object owning the behaviour, as <c>AdminHandlers</c>: the route needs
@@ -36,9 +35,10 @@ internal sealed class RescoreHandlers(
     Func<BenchmarkCheck, IReadOnlyDictionary<string, string>> settingsOf)
 {
     /// <summary>
-    /// Starts the re-score: 201 with the new run at its <c>Location</c>; 404 for a run the store doesn't hold; 400 for
-    /// a run of a check that isn't an eval; 409 while a run runs; 503 without a store.
+    /// Starts the re-score and points you at the new run. Only a stored run of an eval can be re-scored, and not while
+    /// another run is going.
     /// </summary>
+    /// <remarks>Guard clauses (Fowler), one per refusal, before the start.</remarks>
     public async Task<RescoreAnswer> Rescore(string id, CancellationToken cancellationToken)
     {
         if (store is null || recorder is null)
@@ -59,8 +59,10 @@ internal sealed class RescoreHandlers(
                         }));
             if (runner.IsRunning) return Busy();
 
+            // The runner grades the run's own transcript, so hand it the export; a start that loses a race is a 409.
             string export = await BenchmarkProtocolExport.BuildAsync(store, stored, cancellationToken);
             if (runner.StartRescore(check.Id, id, export, stored.Repeat) is not { } run) return Busy();
+
             recorder.Attach(run, settingsOf(check));
             return new CreatedJson<LiveRunRow>($"/v1/admin/benchmarks/runs/{run.Id}", LiveRunRow.Of(run),
                 AdminJson.SnakeCase);
@@ -72,7 +74,7 @@ internal sealed class RescoreHandlers(
         }
     }
 
-    /// <summary>The 409 while another run is going.</summary>
+    /// <summary>The 409 while another run is going, naming its check.</summary>
     private JsonHttpResult<ApiError> Busy() =>
         ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
             MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));

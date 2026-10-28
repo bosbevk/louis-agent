@@ -13,9 +13,8 @@ namespace LouisAgent.Api.Admin.Replies;
 /// <remarks>
 /// Replace Constructor with Factory Function (Fowler), written as C# 14 static extension members. The records live in
 /// louis-agent.api.contracts, which references nothing, so they can't see a check, a trend or a category; the factory
-/// sits here beside those types and still reads as <c>Record.Of</c> where it's called (the unattended run's finding 1).
-/// Without it, either the contract would drag the server into every client or every call site would build the record
-/// by hand.
+/// sits here beside those types and still reads as <c>Record.Of</c> where it's called. Without it, either the
+/// contract would drag the server into every client or every call site would build the record by hand.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>

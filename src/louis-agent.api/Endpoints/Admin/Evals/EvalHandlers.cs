@@ -30,7 +30,9 @@ internal sealed class EvalHandlers(BenchmarkCatalog catalog, IBenchmarkStore? st
     /// </summary>
     public async Task<JsonHttpResult<EvalListReply>> GetList(CancellationToken cancellationToken)
     {
+        // No store: list the evals anyway, with no runs and no error to show.
         if (store is null) return ListOf(null, null);
+
         try
         {
             return ListOf(await RunsAsync(store, cancellationToken), null);
@@ -46,6 +48,7 @@ internal sealed class EvalHandlers(BenchmarkCatalog catalog, IBenchmarkStore? st
     private async Task<IReadOnlyDictionary<string, IReadOnlyList<BenchmarkDocuments.Run>>> RunsAsync(
         IBenchmarkStore runs, CancellationToken cancellationToken)
     {
+        // One read of the store per eval in the catalogue, each capped at its newest runs.
         var byEval = new Dictionary<string, IReadOnlyList<BenchmarkDocuments.Run>>(StringComparer.Ordinal);
         foreach (var check in catalog.Checks)
             byEval[check.Id] = await runs.ListRunsAsync(check.Id, RunsPerEval, cancellationToken);

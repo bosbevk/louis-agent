@@ -5,11 +5,17 @@ using LouisAgent.Api.Benchmarks.Runs;
 namespace LouisAgent.Api.Benchmarks.Export;
 
 /// <summary>
-/// A stored slice as the runner's <c>summary</c> line (F18 step 5c.2): its fields as the runner wrote them, in its order, and nothing else. No cost is in it: the ledger prices a slice
-/// when it is read, so an export never carries a cost, and re-scoring an export can't carry one into a new run (ADR 0007). A rate the slice had too few trials for is left out.
+/// Writes a stored slice back as the runner's <c>summary</c> line: its fields as the runner wrote them, in its order,
+/// and nothing else. A rate the slice had too few trials for is left out.
 /// </summary>
+/// <remarks>
+/// There's no cost in it on purpose: the ledger prices a slice when it is read, so an export never carries a cost, and
+/// scoring an export again can't carry an old one into a new run.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class SummaryExport
 {
+    /// <summary>Writes the slice's summary line: its counts, rates, and its grader, kind and score lists.</summary>
     public static void Write(ProtocolLines lines, BenchmarkSlice slice) => lines.Line("summary", json =>
     {
         json.WriteString("mode", slice.Mode);
@@ -45,6 +51,7 @@ internal static class SummaryExport
         });
     });
 
+    /// <summary>A named list with one JSON object per item, each filled in by the given writer.</summary>
     private static void Array<T>(Utf8JsonWriter json, string name, IReadOnlyList<T> items,
         Action<T, Utf8JsonWriter> write)
     {
@@ -59,6 +66,7 @@ internal static class SummaryExport
         json.WriteEndArray();
     }
 
+    /// <summary>How many passed, failed and couldn't be told.</summary>
     private static void Counts(Utf8JsonWriter json, int passed, int failed, int unknown)
     {
         json.WriteNumber("passed", passed);

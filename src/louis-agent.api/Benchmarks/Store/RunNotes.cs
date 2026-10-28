@@ -12,6 +12,7 @@ public static class RunNotes
     public const int MaxLength = 2000;
 
     /// <summary>Turns typed text into a note, or says why it can't be one.</summary>
+    /// <remarks>Guard clauses: each way the text is turned down returns first, so the note is the last line.</remarks>
     public static NoteResult Make(string? text, DateTimeOffset at, ConversationKey? conversation)
     {
         // Spaces around a note count for nothing, neither for being blank nor for being too long.

@@ -23,8 +23,8 @@ using ReportsAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
 namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
 /// <summary>
-/// The judge checks of a stored run (F18 step 6a.5b): start one, which checks the judge against the people's grades
-/// of the run, and list the reports kept, newest first. The runner judges; these only start it and show its report.
+/// Starts a judge check of a stored run, which measures the judge against people's grades of the run, and lists the
+/// reports kept, newest first. The runner does the judging; this only starts it and shows what it found.
 /// </summary>
 /// <remarks>
 /// Introduce Parameter Object (Fowler), with the object owning the behaviour, as <c>AdminHandlers</c>: both routes
@@ -43,10 +43,10 @@ internal sealed class CalibrationHandlers(
     CalibrationRecorder? recorder)
 {
     /// <summary>
-    /// Starts a judge check of a run against the people's grades: 202 with the run started; 400 for a grader nobody
-    /// reviewed on that run, or a run of a script; 404 for a run the store doesn't hold, or one with no decided grades
-    /// for that judge; 409 while a run runs; 503 without a store.
+    /// Starts checking a judge against people's grades of a run. It needs a stored run of an eval, a judge people
+    /// reviewed on it with at least one decided grade, and no other run going.
     /// </summary>
+    /// <remarks>Guard clauses (Fowler), one per refusal, before the start.</remarks>
     public async Task<StartAnswer> StartCalibration(string id, string grader, CancellationToken cancellationToken)
     {
         if (store is null || reviews is null || calibrations is null || recorder is null) return NoStore();
@@ -74,7 +74,9 @@ internal sealed class CalibrationHandlers(
 
             // One label per line, as the zip's files hold them: the runner reads them with the same loader.
             string lines = string.Concat(labels.Select(l => ReviewLabels.Line(l.Grade, l.Turns) + "\n"));
+            // A start that loses the race to another run is a 409 too.
             if (runner.StartCalibration(check.Id, id, grader, lines) is not { } started) return Busy();
+
             recorder.Attach(started);
             return TypedResults.Json(LiveRunRow.Of(started), AdminJson.SnakeCase,
                 statusCode: StatusCodes.Status202Accepted);
@@ -85,7 +87,7 @@ internal sealed class CalibrationHandlers(
         }
     }
 
-    /// <summary>The run's judge-check reports, newest first; 404 for a run the store doesn't hold.</summary>
+    /// <summary>Lists the judge-check reports kept for a run, newest first.</summary>
     public async Task<ReportsAnswer> GetCalibrations(string id, CancellationToken cancellationToken)
     {
         if (store is null || reviews is null || calibrations is null) return NoStore();
@@ -102,9 +104,10 @@ internal sealed class CalibrationHandlers(
         }
     }
 
-    /// <summary>The 400 for a grader nobody reviewed on that run, naming the ones that were.</summary>
+    /// <summary>The 400 for a judge nobody reviewed on that run, listing the ones people did review.</summary>
     private static JsonHttpResult<ApiError> NeedsAJudge(string id, string grader, IReadOnlyCollection<string> humans)
     {
+        // The judges' own names: each human review without its suffix, in a fixed order.
         string graders = string.Join(", ",
             humans.Select(h => h[..^HumanReview.Suffix.Length]).Order(StringComparer.Ordinal));
         return Bad(MessageText.Format(ReviewUserText.CalibrationNeedsAJudge,
@@ -116,16 +119,16 @@ internal sealed class CalibrationHandlers(
             }));
     }
 
-    /// <summary>The 503 for a store that isn't there.</summary>
+    /// <summary>The 503 when one of the stores isn't there.</summary>
     private static JsonHttpResult<ApiError> NoStore() =>
         ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
             MessageText.Format(ApiUserText.NoBenchmarkStore));
 
-    /// <summary>The 503 for a store that didn't answer, saying why.</summary>
+    /// <summary>The 503 when the store didn't answer, with its reason.</summary>
     private static JsonHttpResult<ApiError> Unavailable(Exception ex) =>
         ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error", AdminEndpoints.Unavailable(ex));
 
-    /// <summary>A 400 with its reason.</summary>
+    /// <summary>A 400 that says what was wrong.</summary>
     private static JsonHttpResult<ApiError> Bad(string message) =>
         ApiErrors.Result(StatusCodes.Status400BadRequest, "invalid_request_error", message);
 
@@ -134,7 +137,7 @@ internal sealed class CalibrationHandlers(
         ApiErrors.Result(StatusCodes.Status404NotFound, "not_found_error",
             MessageText.Format(ApiUserText.NoStoredRun, new { Id = id }));
 
-    /// <summary>The 409 while another run is going.</summary>
+    /// <summary>The 409 while another run is going, naming its check.</summary>
     private JsonHttpResult<ApiError> Busy() =>
         ApiErrors.Result(StatusCodes.Status409Conflict, "conflict_error",
             MessageText.Format(ApiUserText.BenchmarkRunning, new { runner.Current!.Check }));

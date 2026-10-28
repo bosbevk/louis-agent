@@ -5,11 +5,16 @@ using LouisAgent.Choices;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// A run's slices as MongoDB keeps them (F18 step 5c.2), taken out of <see cref="MongoBenchmarkStore"/>, which was past 200 lines. The runner's fields as it wrote them: a rate a slice
-/// had too few trials for is null, never 0, and a run stored before 5c has no <c>slices</c> and reads as none.
+/// A run's slices as MongoDB keeps them, with the runner's fields as it wrote them. A rate a slice had too few trials
+/// for stays empty, never 0, and a run stored before slices existed reads as having none.
 /// </summary>
+/// <remarks>
+/// Embedded Value (PoEAA): the slices are a small summary of the run, so they live inside its document. Taken out of
+/// the Mongo store (Fowler's Extract Class), which was past 200 lines.
+/// </remarks>
 internal static class SliceDocuments
 {
+    /// <summary>Writes the slices as an array of documents; none known is a null, never an empty array.</summary>
     public static BsonValue ToBson(IReadOnlyList<BenchmarkSlice>? slices) =>
         slices is null
             ? BsonNull.Value
@@ -43,9 +48,14 @@ internal static class SliceDocuments
                     ["unknown"] = k.Unknown
                 })),
                 ["scores"] = new BsonArray(s.Scores.Select(c => new BsonDocument
-                { ["key"] = c.Key, ["mean"] = c.Mean, ["n"] = c.N })),
+                {
+                    ["key"] = c.Key,
+                    ["mean"] = c.Mean,
+                    ["n"] = c.N
+                })),
             }));
 
+    /// <summary>Reads the slices back; a run from before them, or a null, has none.</summary>
     public static IReadOnlyList<BenchmarkSlice>? Of(BsonValue value) =>
         value is not { IsBsonArray: true }
             ? null
@@ -62,11 +72,13 @@ internal static class SliceDocuments
                 d["scores"].AsBsonArray.Select(c => c.AsBsonDocument).Select(c =>
                     new SliceScore(c["key"].AsString, c["mean"].ToDouble(), c["n"].AsInt32)).ToArray())).ToArray();
 
+    /// <summary>Keeps a rate we don't know as a null in Mongo, so it never turns into a 0.</summary>
     private static BsonValue Nullable(double? value) => value is null ? BsonNull.Value : new BsonDouble(value.Value);
 
+    /// <summary>Reads a rate back, with a null staying unknown.</summary>
     private static double? Number(BsonValue value) => value.IsBsonNull ? null : value.ToDouble();
 
-    /// <summary>A kind from the fixed set its enum names, parsed once where it enters (ADR 0024).</summary>
+    /// <summary>Reads a grader's kind back as its enum, and stops on a name we don't know (ADR 0024).</summary>
     private static BenchmarkGraderKind Kind(BsonValue value) =>
         SettingChoice.TryParse(value.AsString, out BenchmarkGraderKind? kind) && kind is { } known
             ? known

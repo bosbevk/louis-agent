@@ -8,28 +8,35 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Store;
 
-// F18 step 7.5.3: the Mongo store reads a grader's kind and a model's level back with SettingChoice (ADR 0024: a name or its member's name, never a number).
-// An unknown stored name is a document the build can't read, and says so with StoredNameUnknown, naming the field. Reads the document the store writes, spoiled by hand, so it needs no Mongo.
+/// <summary>
+/// The Mongo store reads a grader's kind and a model's level back by name, never by number. A stored name it doesn't
+/// know is a document this build can't read, and the error names the field. We spoil the store's own document by
+/// hand, so no Mongo is needed.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public class StoredNamesTests
 {
     private static readonly DateTimeOffset T0 = new(2026, 10, 27, 9, 0, 0, TimeSpan.Zero);
 
-    private static BsonDocument Stored() => MongoBenchmarkStore.ToBson(
+    /// <summary>A finished run with one grader and one model, as the store writes it to Mongo.</summary>
+    private static BsonDocument Stored() => RunDocuments.ToBson(
         new Run("run123456789", "check-x", 1, BenchmarkRunStatus.Done, T0)
         {
             Graders = [new Grader("no-error", 1, BenchmarkGraderKind.FixedRule)],
             Models = [new ModelUse(SampleMode.Alpha, BenchmarkModelLevel.Agent, null, "model-x")],
         });
 
+    /// <summary>The names the store writes come back as the same kind and level.</summary>
     [Test]
     public void TheNamesTheStoreWrites_ReadBack()
     {
-        var run = MongoBenchmarkStore.RunOf(Stored());
+        var run = RunDocuments.RunOf(Stored());
 
         Assert.That(run.Graders![0].Kind, Is.EqualTo(BenchmarkGraderKind.FixedRule));
         Assert.That(run.Models![0].Level, Is.EqualTo(BenchmarkModelLevel.Agent));
     }
 
+    /// <summary>A grader kind stored as a number or an unknown word is refused, naming the field.</summary>
     [TestCase("1")]
     [TestCase("nonsense")]
     public void AStoredGraderKind_ThatNamesNoMember_IsRefused_ANumberToo(string stored)
@@ -37,12 +44,17 @@ public class StoredNamesTests
         var document = Stored();
         document["graders"][0]["kind"] = stored;
 
-        var error = Assert.Throws<InvalidDataException>(() => MongoBenchmarkStore.RunOf(document))!;
+        var error = Assert.Throws<InvalidDataException>(() => RunDocuments.RunOf(document))!;
 
         Assert.That(error.Message,
-            Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = "kind", Value = stored })));
+            Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new
+            {
+                Field = "kind",
+                Value = stored
+            })));
     }
 
+    /// <summary>A model level stored as a number or an unknown word is refused, naming the field.</summary>
     [TestCase("1")]
     [TestCase("nonsense")]
     public void AStoredModelLevel_ThatNamesNoMember_IsRefused_ANumberToo(string stored)
@@ -50,9 +62,13 @@ public class StoredNamesTests
         var document = Stored();
         document["models"][0]["level"] = stored;
 
-        var error = Assert.Throws<InvalidDataException>(() => MongoBenchmarkStore.RunOf(document))!;
+        var error = Assert.Throws<InvalidDataException>(() => RunDocuments.RunOf(document))!;
 
         Assert.That(error.Message,
-            Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new { Field = "level", Value = stored })));
+            Is.EqualTo(MessageText.Format(ApiUserText.StoredNameUnknown, new
+            {
+                Field = "level",
+                Value = stored
+            })));
     }
 }

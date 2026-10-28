@@ -7,9 +7,9 @@ using LouisAgent.Api.Benchmarks.Store;
 namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 
 /// <summary>
-/// The judge checks of a stored run (F18 step 6a.5b, ADR 0039: a resource, <c>calibrations</c>, under the run): start
-/// one, and list the reports kept. They belong to the same <c>/admin</c> group as the rest, so the key gate covers
-/// them; the work is <c>CalibrationHandlers</c>'.
+/// Hangs the routes for a stored run's judge checks, a <c>calibrations</c> resource under the run (ADR 0039): start
+/// one, and list the reports kept. They sit in the admin group, so the key covers them; the work is in
+/// <c>CalibrationHandlers</c>.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class CalibrationEndpoints

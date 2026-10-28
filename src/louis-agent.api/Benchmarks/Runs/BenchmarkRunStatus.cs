@@ -1,5 +1,6 @@
 namespace LouisAgent.Api.Benchmarks.Runs;
 
+/// <summary>Where a run is: still going, finished fine, or failed.</summary>
 public enum BenchmarkRunStatus
 {
     Running,

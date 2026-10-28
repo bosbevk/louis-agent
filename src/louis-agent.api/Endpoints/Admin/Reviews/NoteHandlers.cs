@@ -29,8 +29,8 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 internal sealed class NoteHandlers(IBenchmarkStore? store, TimeProvider time)
 {
     /// <summary>
-    /// Keeps the note: 201 with it at the run's notes; 404 for a run the store doesn't hold; 400 for a blank or too
-    /// long note, saying which; 503 without a store, or one that didn't answer.
+    /// Keeps the note and hands it back. A run the store doesn't hold, or a blank or too long note, is turned away
+    /// with the reason.
     /// </summary>
     public async Task<NoteAnswer> AddNote(string id, NoteRequest? request, CancellationToken cancellationToken)
     {
@@ -51,7 +51,7 @@ internal sealed class NoteHandlers(IBenchmarkStore? store, TimeProvider time)
         }
     }
 
-    /// <summary>Each answer of the store becomes one status: 201, 404 or 400.</summary>
+    /// <summary>Turns what the store said into the matching answer: created, no such run, or refused.</summary>
     /// <remarks>A switch expression on the store's answer, one arm per case (*No nested conditionals*).</remarks>
     private static NoteAnswer Answer(string id, NoteResult result) => result switch
     {
@@ -64,7 +64,8 @@ internal sealed class NoteHandlers(IBenchmarkStore? store, TimeProvider time)
         var other => throw new InvalidOperationException(other.GetType().Name),
     };
 
-    /// <summary>The words for a refusal: a blank note, or one past the limit with its length.</summary>
+    /// <summary>Says why a note was refused: it was blank, or too long (with its length and the limit).</summary>
+    /// <remarks>A switch expression on the reason, one arm per case (*No nested conditionals*).</remarks>
     private static string Reason(NoteResult.Refused refused) => refused.Reason switch
     {
         NoteRefusal.Blank => MessageText.Format(NoteUserText.NoteBlank),

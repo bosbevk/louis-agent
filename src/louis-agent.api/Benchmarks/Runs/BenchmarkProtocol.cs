@@ -4,26 +4,30 @@ using LouisAgent.Choices;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
-/// The line protocol between a check's script and the API (F31): the script prints plain lines for people and, for the
-/// portal, <c>@</c> followed by one JSON object with an <c>event</c> (<c>protocol</c>, <c>mode</c>, <c>question</c>,
-/// <c>sse</c>, <c>turn</c>, <c>conversation</c>, <c>mode_done</c>). Every event but <c>protocol</c> carries its mode's
-/// <c>repeat</c>; a question and a turn carry their <c>session</c>, so the ledger's rows join to them (step 4). Costs are
-/// never in it: they come from the ledger. Anything that isn't a whole, known event is a <see cref="LogLine"/>, never an
-/// exception, so a run never fails on its own output.
+/// Reads what an eval's script prints while it runs. Plain lines are for people; a line that starts with <c>@</c>
+/// carries one JSON event for the portal (<c>protocol</c>, <c>mode</c>, <c>question</c>, <c>sse</c>, <c>turn</c>,
+/// <c>conversation</c>, <c>mode_done</c>, <c>summary</c>). Costs are never in it: they come from the ledger, which
+/// joins on each question's and turn's <c>session</c>.
 /// </summary>
+/// <remarks>
+/// Tolerant Reader. Anything that isn't a whole, known event becomes a <see cref="LogLine"/> instead of an exception,
+/// so a run never fails because of its own output, and a newer script's extra fields don't break an older API.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class BenchmarkProtocol
 {
     /// <summary>The version this API reads; the script says its own in its first line.</summary>
     public const int Version = 1;
 
+    /// <summary>One line of the script's output, once we've read it.</summary>
     public abstract record Event;
 
-    /// <summary>A line for people, or one the protocol couldn't read: kept for the run's log.</summary>
+    /// <summary>A line for people, or one we couldn't read. It's kept for the run's log.</summary>
     public sealed record LogLine(string Text) : Event;
 
     /// <summary>
-    /// The run's first line: the protocol's version, and (F18 step 2a) the eval it runs, its version, the commit it was
-    /// built from, its graders and the model each level ran on. A line from a harness without them reads them as null.
+    /// The run's first line: which protocol version, which eval and its version, the commit it was built from, its
+    /// graders and the model each level ran on. An older script leaves most of these out, so they read as null.
     /// </summary>
     public sealed record ProtocolStarted(
         int Version,
@@ -36,13 +40,13 @@ public static class BenchmarkProtocol
         BenchmarkRunSplit? Split = null,
         string? RescoreOf = null) : Event;
 
-    /// <summary>One of the eval's graders: its name, its version and its kind ("FixedRule", "Model", "Human").</summary>
+    /// <summary>One of the eval's graders: its name, its version and how it decides.</summary>
     public sealed record GraderInfo(string Name, int Version, BenchmarkGraderKind Kind, string? Question = null);
 
-    /// <summary>The model one level of the run ran on: its mode, its level (agent, specialist, minion, grader) and the model.</summary>
+    /// <summary>Which model one level of the run used, in which mode.</summary>
     public sealed record ModelInfo(string Mode, BenchmarkModelLevel Level, string? Role, string? Model);
 
-    /// <summary>One grader's verdict on a conversation: its score, its outcome ("Pass", "Fail", "Unknown") and the reason.</summary>
+    /// <summary>What one grader thought of a conversation: its score, pass or fail, and why.</summary>
     public sealed record GradeInfo(
         string Grader,
         int Version,
@@ -52,7 +56,7 @@ public static class BenchmarkProtocol
         string? JudgeModel = null,
         string? JudgePromptHash = null);
 
-    /// <summary>A mode begins one repeat: what its sessions open with.</summary>
+    /// <summary>A mode starts one repeat, with what its sessions open with.</summary>
     public sealed record ModeStarted(
         string Mode,
         int Repeat,
@@ -62,11 +66,13 @@ public static class BenchmarkProtocol
         int? Conversations,
         DateTimeOffset? At = null) : Event;
 
+    /// <summary>The script asked the agent a question in a session.</summary>
     public sealed record QuestionAsked(TurnKey Key, string Session, string Text, DateTimeOffset? At = null) : Event;
 
     /// <summary>One event of the turn's stream, as the session sent it; <see cref="Data"/> outlives the line.</summary>
     public sealed record SseEvent(TurnKey Key, string Type, JsonElement Data, DateTimeOffset? At = null) : Event;
 
+    /// <summary>A turn finished: the question, the answer, who answered, how long it took, what broke.</summary>
     public sealed record TurnEnded(
         TurnKey Key,
         string Session,
@@ -82,7 +88,10 @@ public static class BenchmarkProtocol
         DateTimeOffset? At = null,
         BenchmarkTurnFailure? Failure = null) : Event;
 
-    /// <summary>A conversation's result; <see cref="Scores"/> is the check's own document (each check scores its own way).</summary>
+    /// <summary>
+    /// A conversation finished, with its grades. <see cref="Scores"/> is the eval's own document, since each eval
+    /// scores in its own way.
+    /// </summary>
     public sealed record ConversationEnded(
         ConversationKey Key,
         string? Role,
@@ -93,20 +102,29 @@ public static class BenchmarkProtocol
         IReadOnlyList<GradeInfo>? Grades = null,
         BenchmarkOutcome? Outcome = null) : Event;
 
-    /// <summary>A mode's repeat is done; its rates when the runner wrote them (F18 step 5a), null on a line from before.</summary>
+    /// <summary>A mode's repeat is done, with its rates when the runner wrote them (an older line has none).</summary>
     public sealed record ModeEnded(string Mode, int Repeat, DateTimeOffset? At = null, RatesInfo? Rates = null) : Event;
 
-    /// <summary>The rates on a <c>mode_done</c> line: pass@k and pass^k (left out when no trial counted), k, and the trials left out or retried.</summary>
+    /// <summary>
+    /// A mode's rates: pass@k and pass^k (left out when no trial counted), k, and how many trials were left out for
+    /// infrastructure or retried.
+    /// </summary>
     public sealed record RatesInfo(double? PassAtK, double? PassHatK, int K, int Infrastructure, int Retried);
 
+    /// <summary>Which conversation: the mode, the repeat and the task.</summary>
     public sealed record ConversationKey(string Mode, int Repeat, string Task);
 
+    /// <summary>Which turn: the conversation it's in, and its number.</summary>
     public sealed record TurnKey(string Mode, int Repeat, string Task, int Turn)
     {
+        /// <summary>The conversation this turn belongs to.</summary>
         public ConversationKey Conversation => new(Mode, Repeat, Task);
     }
 
-    /// <summary>One line of the script's output as an event; a <see cref="LogLine"/> for anything else.</summary>
+    /// <summary>Reads one line of the script's output. Anything we can't read comes back as a log line.</summary>
+    /// <remarks>
+    /// A switch expression on the event's name, one arm per event, read like a table; anything else is a log line.
+    /// </remarks>
     public static Event Parse(string line)
     {
         if (!line.StartsWith('@')) return new LogLine(line);
@@ -116,6 +134,7 @@ public static class BenchmarkProtocol
             var e = document.RootElement;
             if (e.ValueKind != JsonValueKind.Object) return new LogLine(line);
             var at = Time(e);
+
             return Text(e, "event") switch
             {
                 "protocol" => new ProtocolStarted(Int(e, "version"), at, Text(e, "eval"),
@@ -140,34 +159,37 @@ public static class BenchmarkProtocol
                 _ => new LogLine(line),
             };
         }
+        // A broken or half-written event is kept as text, so the run carries on.
         catch (Exception ex) when (ex is JsonException or MissingField or InvalidOperationException or FormatException)
         {
             return new LogLine(line);
         }
     }
 
-    /// <summary>The scenarios the run asked for (F18 step 5.4), by their snake-case name; absent is none, an unknown name an unreadable line.</summary>
+    /// <summary>
+    /// Which scenarios the run asked for. Left out means all of them; a name we don't know makes the line unreadable.
+    /// </summary>
     private static BenchmarkRunSplit? Split(JsonElement e) =>
         Text(e, "split") is null ? null : Choice<BenchmarkRunSplit>(e, "split");
 
-    /// <summary>One slice of a mode's roll-up (F18 step 5c), written after the mode's last mode_done.</summary>
+    /// <summary>One slice of a mode's roll-up, written after the mode's last <c>mode_done</c>.</summary>
     public sealed record SummaryReported(BenchmarkSlice Slice, DateTimeOffset? At = null) : Event;
 
-    /// <summary>The eval's graders, from the protocol line's <c>graders</c>; null when the line doesn't name any.</summary>
+    /// <summary>The eval's graders from the first line, if it names any.</summary>
     private static IReadOnlyList<GraderInfo>? Graders(JsonElement e) =>
         e.TryGetProperty("graders", out var value) && value.ValueKind == JsonValueKind.Array
             ? value.EnumerateArray().Select(g => new GraderInfo(Required(g, "name"), Int(g, "version"),
                 Choice<BenchmarkGraderKind>(g, "kind"), Text(g, "question"))).ToArray()
             : null;
 
-    /// <summary>The model each level ran on, from the protocol line's <c>models</c>; null when the line doesn't name any.</summary>
+    /// <summary>The model each level ran on, from the first line, if it names any.</summary>
     private static IReadOnlyList<ModelInfo>? Models(JsonElement e) =>
         e.TryGetProperty("models", out var value) && value.ValueKind == JsonValueKind.Array
             ? value.EnumerateArray().Select(m => new ModelInfo(Required(m, "mode"),
                 Choice<BenchmarkModelLevel>(m, "level"), Text(m, "role"), Text(m, "model"))).ToArray()
             : null;
 
-    /// <summary>The grades of a conversation, from its <c>grades</c>; null when the line doesn't carry any.</summary>
+    /// <summary>A conversation's grades, if the line carries any.</summary>
     private static IReadOnlyList<GradeInfo>? Grades(JsonElement e) =>
         e.TryGetProperty("grades", out var value) && value.ValueKind == JsonValueKind.Array
             ? value.EnumerateArray().Select(g => new GradeInfo(Required(g, "grader"), Int(g, "version"),
@@ -176,46 +198,60 @@ public static class BenchmarkProtocol
                 Text(g, "judge_model"), Text(g, "judge_prompt_hash"))).ToArray()
             : null;
 
-    /// <summary>An outcome that is absent is null; one that names no outcome is a line the protocol can't read.</summary>
+    /// <summary>An outcome, if there is one. A word that isn't an outcome makes the line unreadable.</summary>
     private static BenchmarkOutcome? Outcome(JsonElement e, string name) =>
         Text(e, name) is null ? null : Choice<BenchmarkOutcome>(e, name);
 
-    /// <summary>A choice from the fixed set its enum names, parsed once where the line enters (ADR 0024); a name that isn't one is a line the protocol can't read.</summary>
+    /// <summary>
+    /// Reads a word that must be one of an enum's names, once, as the line comes in. Anything else makes the line
+    /// unreadable.
+    /// </summary>
     private static T Choice<T>(JsonElement e, string name) where T : struct, Enum =>
         SettingChoice.TryParse(Text(e, name), out T? choice) && choice is { } value ? value : throw new MissingField();
 
-    /// <summary>The infrastructure failure that ended a turn (F18 step 5.1), by its snake-case name; absent is none, an unknown name an unreadable line.</summary>
+    /// <summary>
+    /// What on our side broke and ended the turn, if anything. A name we don't know makes the line unreadable.
+    /// </summary>
     private static BenchmarkTurnFailure? Failure(JsonElement e) =>
         Text(e, "failure") is null ? null : Choice<BenchmarkTurnFailure>(e, "failure");
 
+    /// <summary>Which turn a line is about.</summary>
     private static TurnKey Turn(JsonElement e) =>
         new(Required(e, "mode"), Int(e, "repeat"), Required(e, "task"), Int(e, "turn"));
 
-    /// <summary>A field the event can't be read without is missing or of the wrong type.</summary>
+    /// <summary>Thrown when a field the event can't do without is missing or the wrong type.</summary>
     private sealed class MissingField : Exception;
 
+    /// <summary>A text field, if it's there and is text.</summary>
     private static string? Text(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
+    /// <summary>A text field the event can't do without.</summary>
     private static string Required(JsonElement e, string name) => Text(e, name) ?? throw new MissingField();
 
-    /// <summary>The rates on a mode_done line (F18 step 5a): there when it names its k, null on a line from before; a rate left out is null, never 0.</summary>
+    /// <summary>
+    /// A mode's rates, when the line names its k (an older line doesn't). A rate that's left out stays null, never 0.
+    /// </summary>
     private static RatesInfo? Rates(JsonElement e) =>
         OptionalInt(e, "k") is { } k
             ? new RatesInfo(OptionalNumber(e, "pass_at_k"), OptionalNumber(e, "pass_hat_k"), k,
                 OptionalInt(e, "infrastructure") ?? 0, OptionalInt(e, "retried") ?? 0)
             : null;
 
+    /// <summary>A whole number the event can't do without.</summary>
     private static int Int(JsonElement e, string name) => OptionalInt(e, name) ?? throw new MissingField();
 
+    /// <summary>A whole number, if it's there and fits.</summary>
     private static int? OptionalInt(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetInt32(out int n)
             ? n
             : null;
 
+    /// <summary>A number, if it's there.</summary>
     private static double? OptionalNumber(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Number ? value.GetDouble() : null;
 
+    /// <summary>A list of texts, skipping anything that isn't text; empty when it's missing.</summary>
     private static IReadOnlyList<string> Strings(JsonElement e, string name) =>
         e.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.Array
             ? value.EnumerateArray().Where(v => v.ValueKind == JsonValueKind.String).Select(v => v.GetString()!)
@@ -228,7 +264,7 @@ public static class BenchmarkProtocol
 
     private static readonly JsonElement EmptyObject = JsonDocument.Parse("{}").RootElement.Clone();
 
-    /// <summary>The script's <c>t</c>: Unix seconds, to the millisecond.</summary>
+    /// <summary>When the line was written: the script's <c>t</c>, in Unix seconds to the millisecond.</summary>
     private static DateTimeOffset? Time(JsonElement e) =>
         OptionalNumber(e, "t") is { } seconds
             ? DateTimeOffset.FromUnixTimeMilliseconds((long)Math.Round(seconds * 1000))

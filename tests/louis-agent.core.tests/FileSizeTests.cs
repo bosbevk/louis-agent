@@ -34,8 +34,6 @@ public class FileSizeTests
         "louis-agent.core/Tools/Integrations/Paymo/PaymoTools.cs",
         "louis-agent.core/Tools/Shell/PythonTools.cs",
         "louis-agent.core/Tools/Web/Browsing/ChromeWebBrowser.cs",
-        "src/louis-agent.api/Benchmarks/Store/BenchmarkRecorder.cs",
-        "src/louis-agent.api/Benchmarks/Store/MongoBenchmarkStore.cs",
         "src/louis-agent.orchestrator/CommsLog.cs",
         "src/louis-agent.orchestrator/Program.cs",
         "src/louis-agent.orchestrator/Tools/ServiceTools.cs",

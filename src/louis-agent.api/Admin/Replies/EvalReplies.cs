@@ -15,7 +15,7 @@ namespace LouisAgent.Api.Admin.Replies;
 /// <remarks>
 /// Replace Constructor with Factory Function (Fowler), as C# 14 static extension members, as <c>AdminReplies</c>: the
 /// records sit in the contract, which can't see a check or a stored run, so their factories sit here beside those
-/// types (the unattended run's finding 1).
+/// types.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
@@ -47,16 +47,20 @@ internal static class EvalReplies
         /// </summary>
         public static EvalRow Of(BenchmarkCheck check, bool manual, IReadOnlyList<BenchmarkDocuments.Run>? runs)
         {
+            // No runs to hand means we don't know; the modes and models below then come out empty.
             var known = runs ?? [];
+
             return new EvalRow(
                 check.Id,
                 check.Eval?.Identity,
                 check.Eval?.Version,
                 check.Title,
                 manual,
+                // What the eval is comes from the runner's line; a Python check has none of it.
                 check.Eval?.Dataset is { } dataset ? new EvalDatasetRow(dataset.Name, dataset.Version) : null,
                 check.Eval?.Categories ?? [],
                 [.. (check.Eval?.Graders ?? []).Select(g => new EvalGraderRow(g.Name, g.Version, g.Kind.Wire()))],
+                // The modes and models it ran on, each named once, from its runs.
                 [
                     .. known.SelectMany(run => run.Modes ?? []).Select(mode => mode.Name)
                         .Distinct(StringComparer.Ordinal)
@@ -65,6 +69,7 @@ internal static class EvalReplies
                     .. known.SelectMany(run => run.Models ?? []).Select(use => use.Model).OfType<string>()
                         .Distinct(StringComparer.Ordinal)
                 ],
+                // "Never ran" is only said when the store answered; without its runs it stays unknown.
                 runs is null ? null : runs.Count == 0,
                 [.. known.Select(EvalRunRow.Of)]);
         }

@@ -21,15 +21,16 @@ using Microsoft.Extensions.Logging;
 // streams as Server-Sent Events shaped like Claude's (message_start, content_block_start/delta/stop for thinking,
 // text, tool_use and tool_result, message_stop).
 // Start-up only: the routes are in Endpoints/, a turn's stream in Sessions/.
-var host = AgentHost.Build(Plugins.FromEnvironment());
 
+// Build the agent from the identities and packs the environment picks, and the web app around it.
+var host = AgentHost.Build(Plugins.FromEnvironment());
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddApi(host);
 var app = builder.Build();
 
 // The agent can run shell commands and write files, so its calls must present AGENT_API_KEY; which calls is
-// AgentKeyGate's rule. FX18: without one the API refuses to start, here, before it listens, unless AGENT_AUTH=off
-// says it is open on purpose (HostAuth, core's one rule for both this and the MCP server over HTTP).
+// AgentKeyGate's rule. Without a key the API refuses to start, here, before it listens, unless AGENT_AUTH=off says
+// it is open on purpose (HostAuth is core's one rule for this and for the MCP server over HTTP).
 string? apiKey = HostAuth.Key(Environment.GetEnvironmentVariable("AGENT_API_KEY"));
 switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGENT_AUTH")), apiKey))
 {
@@ -49,34 +50,42 @@ switch (HostAuth.AtStartup(HostAuth.Mode(Environment.GetEnvironmentVariable("AGE
 app.MapStaticAssets();
 app.MapFallbackToFile("index.html");
 
-// Every route of the agent's API is mapped by ApiMap (CL20), so the route tests build what runs; the admin portal's
-// parts, which F18 changes, are built below and mapped on what it returns.
+// Every route of the agent's API is mapped by ApiMap, so the route tests build what runs; the admin portal's parts
+// are built below and mapped on what it returns.
 var api = app.MapApi(host);
 
-// F27: the admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings in
-// AdminOptions (F31). A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
-// F31: each run is recorded into the benchmark store (BENCHMARKS_MONGO_URL), its cost joined from this instance's
-// ledger; without a store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
+// The admin portal, behind its own key (ADMIN_API_KEY, else AGENT_API_KEY; neither: closed); its settings are in
+// AdminOptions. A run's script calls this API back at BENCHMARK_API_URL (the container's own port, by default).
+// Each run is recorded into the store (BENCHMARKS_MONGO_URL), its cost joined from this instance's ledger; without a
+// store no run starts. At start-up nothing runs, so a run still "running" was cut off by a restart.
 var admin = AdminOptions.FromEnvironment();
 var benchmarkLog = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api.Benchmarks");
-// The checks: the C# evals the runner lists (read on first use), and the Python checks it doesn't list yet.
+
+// The evals: the C# ones the runner lists (read on first use), and the Python checks it doesn't list yet.
 var benchmarks = BenchmarkCatalog.From(EvalListing.ForRunner(admin.EvalRunner), benchmarkLog);
+
+// The stores for runs and for the people's grades share one Mongo; with no address there are none.
 IBenchmarkStore? benchmarkStore = admin.BenchmarksMongoUrl is { } mongoUrl
     ? new MongoBenchmarkStore(mongoUrl, admin.BenchmarksDatabase)
     : null;
 IHumanReviewStore? reviewStore = admin.BenchmarksMongoUrl is { } reviewsUrl
     ? new MongoHumanReviewStore(reviewsUrl, admin.BenchmarksDatabase)
     : null;
-// F18 step 6a.5b: the judge checks, beside the grades; a check's report is kept by its own recorder, never by the
-// benchmark store.
+
+// The judge checks sit beside the grades; a check's report is kept by its own recorder, never by the runs' store.
 ICalibrationStore? calibrationStore = admin.BenchmarksMongoUrl is { } calibrationsUrl
     ? new MongoCalibrationStore(calibrationsUrl, admin.BenchmarksDatabase)
     : null;
 CalibrationRecorder? calibrationRecorder =
     calibrationStore is null ? null : new CalibrationRecorder(calibrationStore, benchmarkLog);
+
+// A run's recorder writes it into the store, its cost read from this instance's ledger.
 BenchmarkRecorder? recorder = benchmarkStore is null
     ? null
     : new BenchmarkRecorder(benchmarkStore, benchmarkLog, host.Agent.LogDirectory);
+
+// Close the runs a restart cut off, in the background so start-up doesn't wait on Mongo; a store that doesn't
+// answer is only a warning.
 if (benchmarkStore is not null)
     _ = Task.Run(async () =>
     {
@@ -92,9 +101,12 @@ if (benchmarkStore is not null)
             benchmarkLog.Log(LogLevel.Warning, ApiLogMessage.BenchmarkStoreUnreachable, exception: ex, tag: "API");
         }
     });
+
 // The listing is read off the start-up path, so a warning lands in the start-up log (the first request would wait
 // for it).
 _ = Task.Run(benchmarks.Warm);
+
+// Map the admin routes: the runner, the stores and the settings each run reports.
 api.MapAdmin(benchmarks,
     new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, admin.BenchmarkApiUrl, evalRunner: admin.EvalRunner),
     admin.AdminKey, benchmarkStore, recorder,
@@ -104,4 +116,5 @@ api.MapAdmin(benchmarks,
     host.Engine.WorkspaceRoot, reviewStore,
     calibrationStore, calibrationRecorder);
 
+// Listen until the host is stopped.
 app.Run();

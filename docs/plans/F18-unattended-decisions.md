@@ -403,3 +403,45 @@ how each mode passed), reusing the records the runs page already reads, and the 
 `never_run` is `true` only when the store answered with no runs; without a store it is `null`, not known (ADR 0007's
 rule: unknown is null, never a guessed value). Sources: Fowler, *PoEAA*, *Remote Facade*, *Data Transfer Object*, *Lazy
 Load*. **Commit:** step 7b (i), the `GET /admin/evals` commit.
+
+### 19. What `ApiNamesNoProductTests` reads, and how its two exceptions are held (step 7b (iii))
+
+**What came up.** The row asks for a ratchet that holds "the API names no product", with two exceptions (the web app
+reference, the stored `puls_calls` key). It doesn't say which files are "the API", where the product names come from,
+or whether comments count.
+
+1. **The C# and project files of `src/louis-agent.api` and `src/louis-agent.api.contracts`, comments included; the
+   products read from `identities/louis-agent.identity.*`; the exceptions held apart from the ratchet (a whole file,
+   or a word anywhere), and the rest a "not yet renamed" list that may only shrink (picked).** Pattern: a ratchet, as
+   `FileSizeTests` and `RazorHasNoCodeTests` (Fowler, *Strangler Fig*: the old names die one commit at a time).
+   Changes: one test file. Costs: `Properties/launchSettings.json` is left out (its `puls` profile is how a person
+   starts the host as Puls, the host's choice of identity, not the API's code); a comment that names Puls counts.
+2. **Identifiers only (a Roslyn walk), comments left out.** Costs: a summary saying "Puls's turn" stays, and the
+   API's prose keeps naming a product; Roslyn's syntax package is already referenced only by the analyzers.
+3. **A fixed list of words (`PULS_API`, `PulsCalls`, `puls_benchmarks`).** Costs: a new identity, or a new word
+   naming Puls, passes unseen.
+
+**Why 1.** It finds a product named anywhere a reader of the API would see it, and grows with the identities. The
+exceptions are two lines a reader can check, and the waiting list says exactly what the rename still has to do.
+Sources: Fowler, *StranglerFigApplication* (martinfowler.com/bliki/StranglerFigApplication.html); the repo's own
+`FileSizeTests`. **Commit:** step 7b (iii), the ratchet commit.
+
+### 20. The files the rename moves were past their limits: bring them up first, or in the move (step 7b (iii))
+
+**What came up.** A moved file counts as in the commit, so every file under `Benchmarks/` and its tests had to meet
+the rules whole: about 490 classes and methods had no summary, `MongoBenchmarkStore` held 454 lines of code and
+`BenchmarkRecorder` 208 (both on `FileSizeTests`' list), and `Runs/` and `Store/` held 19 and 13 files.
+
+1. **Bring the files up in place first, in their own commits, then move them in one mechanical commit (picked).**
+   The Mongo store becomes a Repository with a Data Mapper per document (`RunDocuments`, `ConversationDocuments`,
+   `TurnDocuments`, `RequestDocuments`, the shared `BsonValues`); the recorder keeps the subscription, the run's state
+   goes to `RunRecording` (its switch arms named methods with guard clauses) and the stop-after-the-first-failure
+   rule to `GuardedWrites`. Pattern: Fowler's *Extract Class*; PoEAA's *Repository* and *Data Mapper*. Changes: the
+   bring-up commits touch the same files the move does. Costs: more commits; the move's diff is the namespace map
+   only, which is what the plan's Risks note says its review should be.
+2. **Everything in the move's commit.** Costs: one commit of about 150 files where the summaries hide the renames.
+3. **Move now, bring up later.** Costs: breaks the rule that a file in a commit is brought up whole.
+
+**Why 1.** Each commit stays reviewable for one thing: what a file says, or where it lives. Sources: Fowler,
+*Refactoring* 2nd ed., *Extract Class*; Fowler, *PoEAA*, *Repository*, *Data Mapper*. **Commit:** step 7b (iii), the
+bring-up commits before the move.

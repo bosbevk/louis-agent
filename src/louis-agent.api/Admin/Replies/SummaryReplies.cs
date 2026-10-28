@@ -18,8 +18,8 @@ internal static class SummaryReplies
     extension(SummaryRow)
     {
         /// <summary>
-        /// A stored run's roll-up, each slice priced from the ledger; null for a run from before 5c (never an empty
-        /// list or zeros).
+        /// A stored run's roll-up, each slice priced from the ledger. A run recorded before the runner wrote slices
+        /// has none, and we say so instead of showing an empty list or zeros.
         /// </summary>
         public static IReadOnlyList<SummaryRow>? Of(IReadOnlyList<BenchmarkSlice>? slices, Total? total,
             IReadOnlyList<Request> requests) =>

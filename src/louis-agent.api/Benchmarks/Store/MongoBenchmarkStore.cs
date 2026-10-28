@@ -1,32 +1,31 @@
 using LouisAgent.Api.Benchmarks.Runs;
-using LouisAgent.Api.Benchmarks.Reports;
-using System.Text.Json;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using MongoDB.Driver;
-using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
-using LouisAgent.Choices;
-using LouisAgent.Api.Messages;
-using LouisAgent.Core.Messages;
+using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
+using static LouisAgent.Api.Benchmarks.Store.BsonValues;
 
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// The store in MongoDB: `puls_benchmarks` on `puls-mongo`, one collection per kind of record. Documents are mapped
-/// by hand, field by field in snake case, so what `mongosh` shows is what the portal reads. A server that doesn't
-/// answer fails a call within five seconds, so the recorder gives up quickly and the run carries on.
+/// Keeps eval runs in MongoDB, one collection per kind of record: runs, conversations, turns, the ledger's requests
+/// and the notes. A server that doesn't answer fails a call within five seconds, so the recorder gives up quickly and
+/// the run carries on.
 /// </summary>
 /// <remarks>
-/// Repository, with the mapping written by hand. A check's own scores and a turn's stream events are kept as the JSON
-/// they came as, and the indexes are made the first time they are needed. Writing each mapper costs more than a
-/// generic one, but nothing the portal reads is hidden behind a convention.
+/// Repository, with a Data Mapper per document (<see cref="RunDocuments"/>, <see cref="ConversationDocuments"/>,
+/// <see cref="TurnDocuments"/>, <see cref="RequestDocuments"/>), written by hand so what <c>mongosh</c> shows is what
+/// the portal reads. This class keeps only the collections and the queries; the indexes are made the first time
+/// anything needs them, so starting the API never waits on Mongo.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoBenchmarkStore : IBenchmarkStore
 {
     /// <summary>How long a call waits for the server before giving up.</summary>
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
+
+    /// <summary>Replace the document if there is one, otherwise insert it.</summary>
+    private static readonly ReplaceOptions Upsert = new() { IsUpsert = true };
 
     /// <summary>The runs.</summary>
     private readonly IMongoCollection<BsonDocument> _runs;
@@ -47,18 +46,21 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     private readonly OnceItWorks _indexes;
 
     /// <summary>
-    /// Connects to `database` on the server at `url`, with short timeouts. Nothing is created until the first call.
+    /// Connects to the database on the server at the address, with short timeouts. Nothing is created until the first
+    /// call.
     /// </summary>
     public MongoBenchmarkStore(string url, string database)
     {
         var settings = MongoClientSettings.FromConnectionString(url);
         settings.ServerSelectionTimeout = Timeout;
         settings.ConnectTimeout = Timeout;
+
         var db = new MongoClient(settings).GetDatabase(database);
         _runs = db.GetCollection<BsonDocument>("runs");
         _conversations = db.GetCollection<BsonDocument>("conversations");
         _turns = db.GetCollection<BsonDocument>("turns");
         _requests = db.GetCollection<BsonDocument>("requests");
+        // A note may only go on a run that exists, so the notes ask the runs.
         _notes = new MongoRunNotes(db.GetCollection<BsonDocument>("run_notes"),
             (id, cancellationToken) => _runs.Find(ById(id)).AnyAsync(cancellationToken));
         _indexes = new OnceItWorks(CreateIndexesAsync);
@@ -66,6 +68,147 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
 
     /// <summary>The database itself, so a test can drop its own.</summary>
     internal IMongoDatabase Database => _runs.Database;
+
+    /// <summary>Saves the run, replacing the one under its id.</summary>
+    public async Task SaveRunAsync(Run run, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        await _runs.ReplaceOneAsync(ById(run.Id), RunDocuments.ToBson(run), Upsert, cancellationToken);
+    }
+
+    /// <summary>Finds a run by its id.</summary>
+    public async Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        var found = await _runs.Find(ById(id)).FirstOrDefaultAsync(cancellationToken);
+        return found is null ? null : RunDocuments.RunOf(found);
+    }
+
+    /// <summary>The newest runs first, up to the limit, and one eval's only if asked.</summary>
+    public async Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
+        CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        var filter = check is null
+            ? Builders<BsonDocument>.Filter.Empty
+            : Builders<BsonDocument>.Filter.Eq("check", check);
+        var found = await _runs.Find(filter).Sort(Builders<BsonDocument>.Sort.Descending("started_at")).Limit(limit)
+            .ToListAsync(cancellationToken);
+        return found.Select(RunDocuments.RunOf).ToArray();
+    }
+
+    /// <summary>Saves a conversation, replacing the one under its key.</summary>
+    public async Task SaveConversationAsync(string run, Conversation conversation,
+        CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        await _conversations.ReplaceOneAsync(ById(ConversationDocuments.Id(run, conversation.Key)),
+            ConversationDocuments.ToBson(run, conversation), Upsert, cancellationToken);
+    }
+
+    /// <summary>The run's conversations in the order they started.</summary>
+    public async Task<IReadOnlyList<Conversation>> ConversationsAsync(string run,
+        CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        var found = await _conversations.Find(OfRun(run)).Sort(Builders<BsonDocument>.Sort.Ascending("order"))
+            .ToListAsync(cancellationToken);
+        return found.Select(ConversationDocuments.ConversationOf).ToArray();
+    }
+
+    /// <summary>Saves a turn with its stream events, replacing the ones under its key.</summary>
+    public async Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
+        CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        await _turns.ReplaceOneAsync(ById(TurnDocuments.Id(run, turn.Key)), TurnDocuments.ToBson(run, turn, events),
+            Upsert, cancellationToken);
+    }
+
+    /// <summary>A conversation's turns in order, leaving the heavy stream events out.</summary>
+    public async Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
+        CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        var filter = Builders<BsonDocument>.Filter.And(OfRun(run),
+            Builders<BsonDocument>.Filter.Eq("mode", conversation.Mode),
+            Builders<BsonDocument>.Filter.Eq("repeat", conversation.Repeat),
+            Builders<BsonDocument>.Filter.Eq("task", conversation.Task));
+        var found = await _turns.Find(filter).Project<BsonDocument>(Builders<BsonDocument>.Projection.Exclude("events"))
+            .Sort(Builders<BsonDocument>.Sort.Ascending("turn")).ToListAsync(cancellationToken);
+        return found.Select(TurnDocuments.TurnOf).ToArray();
+    }
+
+    /// <summary>A turn's stream events in the order they came; none for a turn it doesn't know.</summary>
+    public async Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn,
+        CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        var found = await _turns.Find(ById(TurnDocuments.Id(run, turn)))
+            .Project<BsonDocument>(Builders<BsonDocument>.Projection.Include("events"))
+            .FirstOrDefaultAsync(cancellationToken);
+        return found?["events"].AsBsonArray.Select(e => TurnDocuments.EventOf(e.AsBsonDocument)).ToArray() ?? [];
+    }
+
+    /// <summary>Adds the ledger's requests, tagged with their run.</summary>
+    public async Task AddRequestsAsync(string run, IReadOnlyList<Request> requests,
+        CancellationToken cancellationToken = default)
+    {
+        // Mongo refuses an empty insert, and there's nothing to add anyway.
+        if (requests.Count == 0) return;
+
+        await Ready();
+        await _requests.InsertManyAsync(requests.Select(r => RequestDocuments.ToBson(r with { Run = run })),
+            cancellationToken: cancellationToken);
+    }
+
+    /// <summary>The run's requests, by time.</summary>
+    public async Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        var found = await _requests.Find(OfRun(run)).Sort(Builders<BsonDocument>.Sort.Ascending("at"))
+            .ToListAsync(cancellationToken);
+        return found.Select(RequestDocuments.RequestOf).ToArray();
+    }
+
+    /// <summary>Marks every run still running as failed and ended now, and says how many there were.</summary>
+    public async Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        var result = await _runs.UpdateManyAsync(
+            Builders<BsonDocument>.Filter.Eq("status", RunDocuments.Status(BenchmarkRunStatus.Running)),
+            Builders<BsonDocument>.Update.Set("status", RunDocuments.Status(BenchmarkRunStatus.Failed))
+                .Set("ended_at", Date(now)),
+            cancellationToken: cancellationToken);
+        return (int)result.ModifiedCount;
+    }
+
+    /// <summary>Adds a person's note to a run, or to one of its conversations.</summary>
+    public async Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
+        ConversationKey? conversation = null, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        return await _notes.AddAsync(run, text, at, conversation, cancellationToken);
+    }
+
+    /// <summary>The run's notes, in the order they were written.</summary>
+    public async Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        return await _notes.OfRunAsync(run, cancellationToken);
+    }
+
+    /// <summary>Deletes the run and everything under it, notes included, and says whether there was anything.</summary>
+    public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
+    {
+        await Ready();
+        long deleted = (await _runs.DeleteOneAsync(ById(id), cancellationToken)).DeletedCount;
+        deleted += (await _conversations.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
+        deleted += (await _turns.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
+        deleted += (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
+        deleted += await _notes.DeleteRunAsync(id, cancellationToken);
+        return deleted > 0;
+    }
 
     /// <summary>Makes the indexes the reads rely on.</summary>
     private async Task CreateIndexesAsync()
@@ -85,518 +228,9 @@ public sealed class MongoBenchmarkStore : IBenchmarkStore
     /// <summary>Waits until the indexes exist, making them if this is the first call.</summary>
     private Task Ready() => _indexes.RunAsync();
 
-    /// <summary>Replace the document if there is one, otherwise insert it.</summary>
-    private static readonly ReplaceOptions Upsert = new() { IsUpsert = true };
-
     /// <summary>Finds the document with this id.</summary>
     private static FilterDefinition<BsonDocument> ById(BsonValue id) => Builders<BsonDocument>.Filter.Eq("_id", id);
 
     /// <summary>Finds everything that belongs to this run.</summary>
     private static FilterDefinition<BsonDocument> OfRun(string run) => Builders<BsonDocument>.Filter.Eq("run", run);
-
-    /// <summary>Saves the run, replacing the one under its id.</summary>
-    public async Task SaveRunAsync(Run run, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        await _runs.ReplaceOneAsync(ById(run.Id), ToBson(run), Upsert, cancellationToken);
-    }
-
-    /// <summary>The run, or nothing if there is none.</summary>
-    public async Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _runs.Find(ById(id)).FirstOrDefaultAsync(cancellationToken);
-        return found is null ? null : RunOf(found);
-    }
-
-    /// <summary>The newest runs first, up to the limit, and one check's only if asked.</summary>
-    public async Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var filter = check is null
-            ? Builders<BsonDocument>.Filter.Empty
-            : Builders<BsonDocument>.Filter.Eq("check", check);
-        var found = await _runs.Find(filter).Sort(Builders<BsonDocument>.Sort.Descending("started_at")).Limit(limit)
-            .ToListAsync(cancellationToken);
-        return found.Select(RunOf).ToArray();
-    }
-
-    /// <summary>Saves a conversation, replacing the one under its key.</summary>
-    public async Task SaveConversationAsync(string run, Conversation conversation,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        await _conversations.ReplaceOneAsync(ById(ConversationId(run, conversation.Key)), ToBson(run, conversation),
-            Upsert, cancellationToken);
-    }
-
-    /// <summary>The run's conversations in the order they started.</summary>
-    public async Task<IReadOnlyList<Conversation>> ConversationsAsync(string run,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _conversations.Find(OfRun(run)).Sort(Builders<BsonDocument>.Sort.Ascending("order"))
-            .ToListAsync(cancellationToken);
-        return found.Select(ConversationOf).ToArray();
-    }
-
-    /// <summary>Saves a turn with its stream events, replacing the ones under its key.</summary>
-    public async Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        await _turns.ReplaceOneAsync(ById(TurnId(run, turn.Key)), ToBson(run, turn, events), Upsert, cancellationToken);
-    }
-
-    /// <summary>A conversation's turns in order, leaving the heavy stream events out.</summary>
-    public async Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var filter = Builders<BsonDocument>.Filter.And(OfRun(run),
-            Builders<BsonDocument>.Filter.Eq("mode", conversation.Mode),
-            Builders<BsonDocument>.Filter.Eq("repeat", conversation.Repeat),
-            Builders<BsonDocument>.Filter.Eq("task", conversation.Task));
-        var found = await _turns.Find(filter).Project<BsonDocument>(Builders<BsonDocument>.Projection.Exclude("events"))
-            .Sort(Builders<BsonDocument>.Sort.Ascending("turn")).ToListAsync(cancellationToken);
-        return found.Select(TurnOf).ToArray();
-    }
-
-    /// <summary>A turn's stream events in the order they came; none for an unknown turn.</summary>
-    public async Task<IReadOnlyList<StreamEvent>> TurnEventsAsync(string run, TurnKey turn,
-        CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _turns.Find(ById(TurnId(run, turn)))
-            .Project<BsonDocument>(Builders<BsonDocument>.Projection.Include("events"))
-            .FirstOrDefaultAsync(cancellationToken);
-        return found?["events"].AsBsonArray.Select(e => EventOf(e.AsBsonDocument)).ToArray() ?? [];
-    }
-
-    /// <summary>Adds the requests, tagged with their run. Nothing to do for an empty list.</summary>
-    public async Task AddRequestsAsync(string run, IReadOnlyList<Request> requests,
-        CancellationToken cancellationToken = default)
-    {
-        if (requests.Count == 0) return;
-        await Ready();
-        await _requests.InsertManyAsync(requests.Select(r => ToBson(r with { Run = run })),
-            cancellationToken: cancellationToken);
-    }
-
-    /// <summary>The run's requests, by time.</summary>
-    public async Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _requests.Find(OfRun(run)).Sort(Builders<BsonDocument>.Sort.Ascending("at"))
-            .ToListAsync(cancellationToken);
-        return found.Select(RequestOf).ToArray();
-    }
-
-    /// <summary>Marks every run still 'running' as failed and ended now, and says how many.</summary>
-    public async Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var result = await _runs.UpdateManyAsync(
-            Builders<BsonDocument>.Filter.Eq("status", Status(BenchmarkRunStatus.Running)),
-            Builders<BsonDocument>.Update.Set("status", Status(BenchmarkRunStatus.Failed)).Set("ended_at", Date(now)),
-            cancellationToken: cancellationToken);
-        return (int)result.ModifiedCount;
-    }
-
-    /// <summary>Adds a note. The notes live in `MongoRunNotes`, apart from the run.</summary>
-    public async Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
-        ConversationKey? conversation = null, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        return await _notes.AddAsync(run, text, at, conversation, cancellationToken);
-    }
-
-    /// <summary>The run's notes, in the order written.</summary>
-    public async Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        return await _notes.OfRunAsync(run, cancellationToken);
-    }
-
-    /// <summary>Deletes the run and everything under it, notes included. Says whether there was anything.</summary>
-    public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        long deleted = (await _runs.DeleteOneAsync(ById(id), cancellationToken)).DeletedCount;
-        deleted += (await _conversations.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
-        deleted += (await _turns.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
-        deleted += (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
-        deleted += await _notes.DeleteRunAsync(id, cancellationToken);
-        return deleted > 0;
-    }
-
-    // The documents, field by field.
-
-    /// <summary>The id of a conversation's document: its run and its key.</summary>
-    private static BsonDocument ConversationId(string run, ConversationKey key) =>
-        new()
-        {
-            ["run"] = run,
-            ["mode"] = key.Mode,
-            ["repeat"] = key.Repeat,
-            ["task"] = key.Task
-        };
-
-    /// <summary>The id of a turn's document: its run, its conversation's key and its number.</summary>
-    private static BsonDocument TurnId(string run, TurnKey key) =>
-        new()
-        {
-            ["run"] = run,
-            ["mode"] = key.Mode,
-            ["repeat"] = key.Repeat,
-            ["task"] = key.Task,
-            ["turn"] = key.Turn
-        };
-
-    /// <summary>A run as a Mongo document.</summary>
-    internal static BsonDocument ToBson(Run run) => new()
-    {
-        ["_id"] = run.Id,
-        ["check"] = run.Check,
-        ["repeat"] = run.Repeat,
-        ["status"] = Status(run.Status),
-        ["started_at"] = Date(run.StartedAt),
-        ["ended_at"] = Date(run.EndedAt),
-        ["exit_code"] = Nullable(run.ExitCode),
-        ["settings"] = run.Settings is null
-            ? BsonNull.Value
-            : new BsonDocument(run.Settings.ToDictionary(s => s.Key, s => (object)s.Value)),
-        ["modes"] = new BsonArray((run.Modes ?? []).Select(m => new BsonDocument
-        {
-            ["name"] = m.Name,
-            ["repeat"] = m.Repeat,
-            ["toolsets"] = new BsonArray(m.Toolsets),
-            ["role"] = Nullable(m.Role),
-            ["llm"] = Nullable(m.Llm),
-            ["rates"] = m.Rates is { } r
-                ? new BsonDocument
-                {
-                    ["pass_at_k"] = Nullable(r.PassAtK),
-                    ["pass_hat_k"] = Nullable(r.PassHatK),
-                    ["k"] = r.K,
-                    ["infrastructure"] = r.Infrastructure,
-                    ["retried"] = r.Retried
-                }
-                : BsonNull.Value,
-        })),
-        ["total"] = run.Total is null
-            ? BsonNull.Value
-            : new BsonDocument
-            {
-                ["cost"] = Nullable(run.Total.Cost),
-                ["currency"] = run.Total.Currency,
-                ["tokens"] = run.Total.Tokens,
-                ["requests"] = run.Total.Requests,
-            },
-        ["log"] = run.Log is null ? BsonNull.Value : new BsonArray(run.Log),
-        ["store_error"] = Nullable(run.StoreError),
-        // F18 step 2a: what the run ran. Absent in a run stored before it; read as null.
-        ["eval"] = Nullable(run.Eval),
-        ["eval_version"] = Nullable(run.EvalVersion),
-        ["commit"] = Nullable(run.Commit),
-        ["graders"] = run.Graders is null
-            ? BsonNull.Value
-            : new BsonArray(run.Graders.Select(g => new BsonDocument
-            {
-                ["name"] = g.Name,
-                ["version"] = g.Version,
-                ["kind"] = g.Kind.Wire(),
-                ["question"] = Nullable(g.Question),
-            })),
-        ["models"] = run.Models is null
-            ? BsonNull.Value
-            : new BsonArray(run.Models.Select(m => new BsonDocument
-            {
-                ["mode"] = m.Mode,
-                ["level"] = m.Level.Wire(),
-                ["role"] = Nullable(m.Role),
-                ["model"] = Nullable(m.Model),
-            })),
-        // Absent in a run stored before each, and read as null: the scenarios the run asked for, the run it re-scored
-        // and its roll-up.
-        ["split"] = Nullable(run.Split is { } split ? split.Wire() : null),
-        ["rescore_of"] = Nullable(run.RescoreOf),
-        ["slices"] = SliceDocuments.ToBson(run.Slices),
-        // Each agent's prompts per mode; absent in a run stored before them, read as null.
-        ["prompts"] = PromptDocuments.ToBson(run.Prompts),
-    };
-
-    /// <summary>
-    /// A run read back from its document. A mode saved when roles were still called personalities keeps that field,
-    /// read as its role and never rewritten.
-    /// </summary>
-    internal static Run RunOf(BsonDocument d) => new(
-        d["_id"].AsString,
-        d["check"].AsString,
-        d["repeat"].AsInt32,
-        Enum.Parse<BenchmarkRunStatus>(d["status"].AsString, ignoreCase: true),
-        DateOf(d["started_at"])!.Value,
-        DateOf(d["ended_at"]),
-        d["exit_code"].IsBsonNull ? null : d["exit_code"].AsInt32,
-        d["settings"].IsBsonNull ? null : d["settings"].AsBsonDocument.ToDictionary(e => e.Name, e => e.Value.AsString),
-        d["modes"].AsBsonArray.Select(m => m.AsBsonDocument).Select(m => new Mode(m["name"].AsString,
-            m["repeat"].AsInt32,
-            m["toolsets"].AsBsonArray.Select(t => t.AsString).ToArray(),
-            StringOf(m.GetValue("role", null) ?? m.GetValue("personality", BsonNull.Value)), StringOf(m["llm"]),
-            RatesOf(m.GetValue("rates", BsonNull.Value)))).ToArray(),
-        d["total"].IsBsonNull
-            ? null
-            : new Total(DecimalOf(d["total"]["cost"]), d["total"]["currency"].AsString,
-                d["total"]["tokens"].ToInt64(), d["total"]["requests"].AsInt32),
-        d["log"].IsBsonNull ? null : d["log"].AsBsonArray.Select(l => l.AsString).ToArray(),
-        StringOf(d["store_error"]),
-        StringOf(d.GetValue("eval", BsonNull.Value)),
-        d.GetValue("eval_version", BsonNull.Value).IsBsonNull ? null : d["eval_version"].AsInt32,
-        StringOf(d.GetValue("commit", BsonNull.Value)),
-        d.GetValue("graders", BsonNull.Value).IsBsonNull
-            ? null
-            : d["graders"].AsBsonArray.Select(g => g.AsBsonDocument)
-                .Select(g => new Grader(g["name"].AsString, g["version"].AsInt32,
-                    ChoiceOf<BenchmarkGraderKind>(g["kind"], "kind"), StringOf(g.GetValue("question", BsonNull.Value))))
-                .ToArray(),
-        d.GetValue("models", BsonNull.Value).IsBsonNull
-            ? null
-            : d["models"].AsBsonArray.Select(m => m.AsBsonDocument)
-                .Select(m => new ModelUse(m["mode"].AsString, ChoiceOf<BenchmarkModelLevel>(m["level"], "level"),
-                    StringOf(m.GetValue("role", BsonNull.Value)), StringOf(m.GetValue("model", BsonNull.Value))))
-                .ToArray(),
-        SplitOf(d.GetValue("split", BsonNull.Value)),
-        StringOf(d.GetValue("rescore_of", BsonNull.Value)), SliceDocuments.Of(d.GetValue("slices", BsonNull.Value)),
-        PromptDocuments.Of(d.GetValue("prompts", BsonNull.Value)));
-
-    /// <summary>A mode's pass rates; a mode saved before they existed has none.</summary>
-    private static ModeRates? RatesOf(BsonValue v) =>
-        v is not { IsBsonDocument: true }
-            ? null
-            : new ModeRates(v["pass_at_k"].IsBsonNull ? null : v["pass_at_k"].ToDouble(),
-                v["pass_hat_k"].IsBsonNull ? null : v["pass_hat_k"].ToDouble(),
-                v["k"].AsInt32, v["infrastructure"].AsInt32, v["retried"].AsInt32);
-
-    /// <summary>A run's split; a run saved before it was kept has none.</summary>
-    private static BenchmarkRunSplit? SplitOf(BsonValue v) =>
-        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkRunSplit? split) ? split : null;
-
-    /// <summary>A conversation as a document, tagged with its run.</summary>
-    private static BsonDocument ToBson(string run, Conversation c) => new()
-    {
-        ["_id"] = ConversationId(run, c.Key),
-        ["run"] = run,
-        ["mode"] = c.Key.Mode,
-        ["repeat"] = c.Key.Repeat,
-        ["task"] = c.Key.Task,
-        ["order"] = c.Order,
-        ["role"] = Nullable(c.Role),
-        ["scores"] = Bson(c.Scores),
-        ["errors"] = c.Errors,
-        ["seconds"] = c.Seconds,
-        ["grades"] = c.Grades is null
-            ? BsonNull.Value
-            : new BsonArray(c.Grades.Select(g => new BsonDocument
-            {
-                ["grader"] = g.Grader,
-                ["version"] = g.Version,
-                ["score"] = g.Score,
-                ["outcome"] = g.Outcome.Wire(),
-                ["reason"] = g.Reason,
-                ["judge_model"] = Nullable(g.JudgeModel),
-                ["judge_prompt_hash"] = Nullable(g.JudgePromptHash),
-            })),
-        ["outcome"] = Nullable(c.Outcome?.Wire()),
-    };
-
-    /// <summary>A document turned back into the conversation it was.</summary>
-    private static Conversation ConversationOf(BsonDocument d) => new(
-        new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString),
-        d["order"].AsInt32, StringOf(d["role"]), Json(d["scores"]), d["errors"].AsInt32, d["seconds"].ToDouble(),
-        d.GetValue("grades", BsonNull.Value).IsBsonNull
-            ? null
-            : d["grades"].AsBsonArray.Select(g => g.AsBsonDocument)
-                .Select(g => new Grade(g["grader"].AsString, g["version"].AsInt32, g["score"].ToDouble(),
-                    Enum.Parse<BenchmarkOutcome>(g["outcome"].AsString, ignoreCase: true), g["reason"].AsString,
-                    StringOf(g.GetValue("judge_model", BsonNull.Value)),
-                    StringOf(g.GetValue("judge_prompt_hash", BsonNull.Value)))).ToArray(),
-        d.GetValue("outcome", BsonNull.Value).IsBsonNull
-            ? null
-            : Enum.Parse<BenchmarkOutcome>(d["outcome"].AsString, ignoreCase: true));
-
-    /// <summary>A turn as a document, with its stream events inside.</summary>
-    private static BsonDocument ToBson(string run, Turn t, IReadOnlyList<StreamEvent> events) => new()
-    {
-        ["_id"] = TurnId(run, t.Key),
-        ["run"] = run,
-        ["mode"] = t.Key.Mode,
-        ["repeat"] = t.Key.Repeat,
-        ["task"] = t.Key.Task,
-        ["turn"] = t.Key.Turn,
-        ["session"] = t.Session,
-        ["question"] = t.Question,
-        ["answer"] = Nullable(t.Answer),
-        ["role"] = Nullable(t.Role),
-        ["continued"] = Nullable(t.Continued),
-        ["puls_calls"] = t.PulsCalls,
-        ["specialist_calls"] = t.SpecialistCalls,
-        ["hosts"] = new BsonArray(t.Hosts),
-        ["seconds"] = t.Seconds,
-        ["error"] = Nullable(t.Error),
-        ["failure"] = Nullable(t.Failure is { } failure ? failure.Wire() : null),
-        ["tools"] = t.Tools is { } tools
-            ? new BsonDocument
-            {
-                ["calls"] = tools.Calls,
-                ["failed"] = tools.Failed,
-                ["reasons"] = new BsonArray(tools.Reasons.Select(r => new BsonDocument
-                {
-                    ["tool"] = r.Tool,
-                    ["reason"] = r.Reason,
-                    ["count"] = r.Count
-                })),
-            }
-            : BsonNull.Value,
-        ["events"] = new BsonArray(events.Select(e => new BsonDocument
-        {
-            ["type"] = e.Type,
-            ["data"] = Bson(e.Data),
-            ["at"] = Date(e.At)
-        })),
-    };
-
-    /// <summary>A document turned back into the turn it was, without its events.</summary>
-    private static Turn TurnOf(BsonDocument d) => new(
-        new TurnKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString, d["turn"].AsInt32),
-        d["session"].AsString, d["question"].AsString, StringOf(d["answer"]), StringOf(d["role"]),
-        StringOf(d["continued"]),
-        d["puls_calls"].AsInt32, d["specialist_calls"].AsInt32,
-        d["hosts"].AsBsonArray.Select(h => h.AsString).ToArray(),
-        d["seconds"].ToDouble(), StringOf(d["error"]), ToolsOf(d.GetValue("tools", BsonNull.Value)),
-        FailureOf(d.GetValue("failure", BsonNull.Value)));
-
-    /// <summary>A turn's failure; a turn saved before failures were kept has none.</summary>
-    private static BenchmarkTurnFailure? FailureOf(BsonValue v) =>
-        v is { IsString: true } && SettingChoice.TryParse(v.AsString, out BenchmarkTurnFailure? failure)
-            ? failure
-            : null;
-
-    /// <summary>
-    /// A turn's tool counts; a turn saved before they were kept has none, which is not the same as zero calls.
-    /// </summary>
-    private static BenchmarkTools.Summary? ToolsOf(BsonValue v) => v is BsonDocument t
-        ? new BenchmarkTools.Summary(t["calls"].AsInt32, t["failed"].AsInt32,
-            t["reasons"].AsBsonArray.Select(r =>
-                new BenchmarkTools.Failure(r["tool"].AsString, r["reason"].AsString, r["count"].AsInt32)).ToArray())
-        : null;
-
-    /// <summary>A stored event turned back into a stream event.</summary>
-    private static StreamEvent EventOf(BsonDocument e) => new(e["type"].AsString, Json(e["data"]), DateOf(e["at"]));
-
-    /// <summary>A request as a document.</summary>
-    private static BsonDocument ToBson(Request r) => new()
-    {
-        ["run"] = r.Run,
-        ["turn"] = r.Turn is null
-            ? BsonNull.Value
-            : new BsonDocument
-            {
-                ["mode"] = r.Turn.Mode,
-                ["repeat"] = r.Turn.Repeat,
-                ["task"] = r.Turn.Task,
-                ["turn"] = r.Turn.Turn
-            },
-        ["at"] = Date(r.At),
-        ["purpose"] = r.Purpose,
-        ["session"] = Nullable(r.Session),
-        ["parent"] = Nullable(r.Parent),
-        ["model"] = Nullable(r.Model),
-        ["input_tokens"] = Nullable(r.InputTokens),
-        ["output_tokens"] = Nullable(r.OutputTokens),
-        ["cache_read_tokens"] = Nullable(r.CacheReadTokens),
-        ["cache_write_tokens"] = Nullable(r.CacheWriteTokens),
-        ["cost"] = Nullable(r.Cost),
-        ["duration_ms"] = r.DurationMs,
-    };
-
-    /// <summary>A document turned back into the request it was.</summary>
-    private static Request RequestOf(BsonDocument d) => new(
-        d["run"].AsString,
-        d["turn"].IsBsonNull
-            ? null
-            : new TurnKey(d["turn"]["mode"].AsString, d["turn"]["repeat"].AsInt32, d["turn"]["task"].AsString,
-                d["turn"]["turn"].AsInt32),
-        DateOf(d["at"])!.Value, d["purpose"].AsString, StringOf(d["session"]), StringOf(d["parent"]),
-        StringOf(d["model"]),
-        LongOf(d["input_tokens"]), LongOf(d["output_tokens"]), LongOf(d["cache_read_tokens"]),
-        LongOf(d["cache_write_tokens"]),
-        DecimalOf(d["cost"]), d["duration_ms"].ToInt64());
-
-    // The values.
-
-    /// <summary>A run's status as the text we store.</summary>
-    private static string Status(BenchmarkRunStatus status) => status.Wire();
-
-    /// <summary>A time as a Mongo date in UTC, or null when there is none.</summary>
-    private static BsonValue Date(DateTimeOffset? at) =>
-        at is { } value ? new BsonDateTime(value.UtcDateTime) : BsonNull.Value;
-
-    /// <summary>A Mongo date turned back into a time, or nothing for null.</summary>
-    private static DateTimeOffset? DateOf(BsonValue value) =>
-        value.IsBsonNull ? null : new DateTimeOffset(value.ToUniversalTime(), TimeSpan.Zero);
-
-    /// <summary>A value, or Mongo's null when there is none. The same for numbers below.</summary>
-    private static BsonValue Nullable(string? value) => value is null ? BsonNull.Value : new BsonString(value);
-
-    /// <summary>A whole number, or Mongo's null.</summary>
-    private static BsonValue Nullable(int? value) => value is null ? BsonNull.Value : new BsonInt32(value.Value);
-
-    /// <summary>A decimal number, or Mongo's null.</summary>
-    private static BsonValue Nullable(double? value) => value is null ? BsonNull.Value : new BsonDouble(value.Value);
-
-    /// <summary>A big whole number, or Mongo's null.</summary>
-    private static BsonValue Nullable(long? value) => value is null ? BsonNull.Value : new BsonInt64(value.Value);
-
-    /// <summary>A money-sized number, or Mongo's null.</summary>
-    private static BsonValue Nullable(decimal? value) =>
-        value is null ? BsonNull.Value : new BsonDecimal128(value.Value);
-
-    /// <summary>
-    /// A stored name turned back into its enum, the way it was parsed on the way in. A name this build does not know
-    /// means a document it cannot read.
-    /// </summary>
-    private static T ChoiceOf<T>(BsonValue value, string field) where T : struct, Enum =>
-        SettingChoice.TryParse(value.AsString, out T? choice) && choice is { } known
-            ? known
-            : throw new InvalidDataException(MessageText.Format(ApiUserText.StoredNameUnknown,
-                new
-                {
-                    Field = field,
-                    Value = value.AsString
-                }));
-
-    /// <summary>The text, or nothing when the stored value is null.</summary>
-    private static string? StringOf(BsonValue value) => value.IsBsonNull ? null : value.AsString;
-
-    /// <summary>The number, or nothing when the stored value is null.</summary>
-    private static long? LongOf(BsonValue value) => value.IsBsonNull ? null : value.ToInt64();
-
-    /// <summary>The number, or nothing when the stored value is null.</summary>
-    private static decimal? DecimalOf(BsonValue value) => value.IsBsonNull ? null : value.ToDecimal();
-
-    /// <summary>
-    /// Any JSON value as BSON. It is wrapped in an object and unwrapped again because BSON's root must be a document.
-    /// </summary>
-    private static BsonValue Bson(JsonElement json) => BsonDocument.Parse($$"""{"v":{{json.GetRawText()}}}""")["v"];
-
-    /// <summary>How BSON is written back out as JSON.</summary>
-    private static readonly JsonWriterSettings RelaxedJson = new() { OutputMode = JsonOutputMode.RelaxedExtendedJson };
-
-    /// <summary>A BSON value turned back into the JSON it came as.</summary>
-    private static JsonElement Json(BsonValue bson)
-    {
-        using var document = JsonDocument.Parse(new BsonDocument("v", bson).ToJson(RelaxedJson));
-        return document.RootElement.GetProperty("v").Clone();
-    }
 }

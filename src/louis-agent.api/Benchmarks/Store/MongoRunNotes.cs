@@ -9,7 +9,9 @@ namespace LouisAgent.Api.Benchmarks.Store;
 /// Keeps the notes in Mongo, one document per note, in a collection of their own.
 /// </summary>
 /// <remarks>
-/// Notes can't live in the run's document: the recorder replaces that whole document as the run grows and would wipe them. It is also a class of its own so `MongoBenchmarkStore`, already over the size limit, stays about the run.
+/// Extract Class (Fowler), for one concern. Notes can't live in the run's document: the recorder replaces that whole
+/// document as the run grows and would wipe them. It is also a class of its own so the Mongo store, already over the
+/// size limit, stays about the run.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
@@ -17,7 +19,11 @@ internal sealed class MongoRunNotes(
     IMongoCollection<BsonDocument> notes,
     Func<string, CancellationToken, Task<bool>> runExists)
 {
-    /// <summary>Saves a note if the text is fine and the run exists, otherwise says why not. Mongo's ids rise with each insert, which is how notes come back in the order written.</summary>
+    /// <summary>
+    /// Saves a note if the text is fine and the run exists, otherwise says why not. Mongo's ids rise with each insert,
+    /// which is how notes come back in the order written.
+    /// </summary>
+    /// <remarks>Guard clauses: each reason not to save returns first, so the insert is the last step.</remarks>
     public async Task<NoteResult> AddAsync(string run, string? text, DateTimeOffset at, ConversationKey? conversation,
         CancellationToken cancellationToken)
     {
@@ -51,7 +57,7 @@ internal sealed class MongoRunNotes(
         notes.Indexes.CreateOneAsync(
             new CreateIndexModel<BsonDocument>(Builders<BsonDocument>.IndexKeys.Ascending("run")));
 
-    /// <summary>A note as a Mongo document.</summary>
+    /// <summary>Writes a note as a Mongo document; a note on the whole run leaves the conversation empty.</summary>
     private static BsonDocument ToBson(string run, RunNote note) => new()
     {
         ["run"] = run,
@@ -62,7 +68,7 @@ internal sealed class MongoRunNotes(
         ["task"] = note.Conversation is { } t ? t.Task : BsonNull.Value,
     };
 
-    /// <summary>A document turned back into the note it was.</summary>
+    /// <summary>Turns a document back into the note it was.</summary>
     private static RunNote NoteOf(BsonDocument d) => new(d["text"].AsString,
         new DateTimeOffset(d["at"].ToUniversalTime(), TimeSpan.Zero),
         d["mode"].IsBsonNull ? null : new ConversationKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString));

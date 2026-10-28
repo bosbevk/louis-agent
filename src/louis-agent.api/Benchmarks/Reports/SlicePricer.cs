@@ -4,21 +4,28 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 namespace LouisAgent.Api.Benchmarks.Reports;
 
 /// <summary>
-/// What a slice of a mode's roll-up cost, from the ledger and never from the runner (F18 step 5c.2, ADR 0007). The cost is that of the conversations of the slice's tasks in its mode, all
-/// repeats; <c>BenchmarkLedger.Join</c> has already placed each ledger row on its conversation, specialists' and minions' rows included. Per trial is over every trial of the slice
-/// (<see cref="BenchmarkSlice.N"/>), per pass over the passed ones, and absent (null) when nothing passed. An unknown price in any of those conversations makes the slice's cost
-/// unknown, null, never 0 and never a sum of the rest; so does a ledger row that could not be placed on any conversation (it is in the run's total, in no slice), and a run whose own total is unknown. A re-score asked nothing, so its total is a known 0 and so are its slices'.
+/// Works out what a slice of a run cost, per trial and per pass, from the ledger and never from the runner. The cost is
+/// that of the slice's tasks in its mode, over all repeats, specialists' and minions' requests included.
 /// </summary>
+/// <remarks>
+/// If any part of the price is unknown, the slice's cost is unknown too, never 0 and never the sum of the rest: an
+/// unpriced request, a request that couldn't be placed on a conversation, or a run whose own total is unknown. A
+/// re-score asked nothing, so its total is a known 0, and so are its slices'.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class SlicePricer
 {
     /// <summary>A slice's cost per trial and per passed trial; null where unknown or undefined.</summary>
     public sealed record SliceCost(decimal? PerTrial, decimal? PerPass);
 
+    /// <summary>Prices one slice from the run's placed requests; per pass is left out when nothing passed.</summary>
+    /// <remarks>Guard clauses: each reason the cost can't be known returns early, from the top.</remarks>
     public static SliceCost Of(BenchmarkSlice slice, Total? runTotal, IReadOnlyList<Request> requests)
     {
         if (runTotal is null || slice.N == 0) return new SliceCost(null, null);
 
-        // A row nobody could place on a conversation still counts in the run's total: pricing a slice from the rows that were placed would be a sum of the rest (ADR 0007).
+        // A row nobody could place on a conversation still counts in the run's total: pricing a slice from the rows
+        // that were placed would be a sum of the rest (ADR 0007).
         if (requests.Any(r => r.Turn is null)) return new SliceCost(null, null);
 
         var rows = requests.Where(r => r.Turn is { } turn && turn.Mode == slice.Mode && slice.Tasks.Contains(turn.Task))

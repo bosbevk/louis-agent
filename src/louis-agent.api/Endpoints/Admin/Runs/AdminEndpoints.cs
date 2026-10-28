@@ -12,16 +12,14 @@ using LouisAgent.Core.Messages;
 namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
 /// <summary>
-/// The admin portal's routes: the checks, starting a run, and reading what it recorded. Everything is behind the admin
-/// key: with none configured every call is a 403 that says what to set, with one a call has to present it. Without a
-/// store no run starts.
+/// Hangs every admin portal route on the API: the checks, starting a run, and reading back what it recorded. All of
+/// them sit behind the admin key, and without a store no run starts.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class AdminEndpoints
 {
     /// <summary>
-    /// Adds the admin portal's routes, all behind the admin key. The clock is for the notes' times, and a test can fix
-    /// it.
+    /// Adds the admin routes under <c>/admin</c>, behind the key. The clock stamps the notes, so a test can fix it.
     /// </summary>
     public static void MapAdmin(this IEndpointRouteBuilder routes, BenchmarkCatalog catalog, BenchmarkRunner runner,
         string? adminKey,
@@ -32,6 +30,7 @@ internal static class AdminEndpoints
         TimeProvider? time = null)
     {
         var handlers = new AdminHandlers(catalog, runner, adminKey, store, recorder, settingsOf, workspaceRoot);
+        // One group for all of them, so the key check runs before any route's own work.
         var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(handlers.Gate);
 
         admin.MapGet("/benchmarks", handlers.GetList);
@@ -50,12 +49,16 @@ internal static class AdminEndpoints
         admin.MapGet("/benchmarks/runs/{id}/events", handlers.GetEvents);
     }
 
-    /// <summary>Runs a read of the store: a 503 without a store, or when it doesn't answer, saying why.</summary>
+    /// <summary>
+    /// Reads from the store for a route. If there's no store, or it doesn't answer, you get a 503 that says why.
+    /// </summary>
     internal static async Task<IResult> FromStore(IBenchmarkStore? store, Func<IBenchmarkStore, Task<IResult>> read)
     {
         if (store is null)
             return ApiErrors.Result(StatusCodes.Status503ServiceUnavailable, "api_error",
                 MessageText.Format(ApiUserText.NoBenchmarkStore));
+
+        // Any failure but a cancel is the store not answering: the caller gets its reason, not a 500.
         try
         {
             return await read(store);
@@ -66,13 +69,13 @@ internal static class AdminEndpoints
         }
     }
 
-    /// <summary>The words for a store that didn't answer.</summary>
+    /// <summary>What we tell the person when the store didn't answer, with its reason.</summary>
     internal static string Unavailable(Exception ex) =>
         MessageText.Format(ApiUserText.BenchmarkStoreUnavailable, new { Reason = ex.Message });
 }
 
 /// <summary>
-/// What starts a run: how many repeats, and for an eval how it handles the web. Either record it (or turn it off), or
-/// replay an earlier run's answers, not both.
+/// What the page sends to start a run: how many repeats, and for an eval what it does with the web. It can record the
+/// web (or turn it off), or replay an earlier run's answers, but not both.
 /// </summary>
 internal sealed record StartRunRequest(int? Repeat, string? Web = null, string? Replay = null);

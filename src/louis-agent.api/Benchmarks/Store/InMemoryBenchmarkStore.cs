@@ -5,8 +5,13 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// The store in memory: what the tests run on, and the reference the Mongo store is held to. One lock covers everything, because a handful of writes a second is all it ever sees.
+/// The store in memory: what the tests run on, and the reference the Mongo store is held to. One lock covers
+/// everything, because a handful of writes a second is all it ever sees.
 /// </summary>
+/// <remarks>
+/// Repository, the in-memory side. It keeps the same records as Mongo behind the same interface, so tests and an API
+/// with no database work without knowing the difference, and one contract test holds both stores.
+/// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class InMemoryBenchmarkStore : IBenchmarkStore
 {
@@ -25,7 +30,9 @@ public sealed class InMemoryBenchmarkStore : IBenchmarkStore
     /// <summary>Every run's requests, in one list.</summary>
     private readonly List<Request> _requests = [];
 
-    /// <summary>Notes by run, in the order written. They live apart from the run, so saving it again keeps them.</summary>
+    /// <summary>
+    /// Notes by run, in the order written. They live apart from the run, so saving it again keeps them.
+    /// </summary>
     private readonly Dictionary<string, List<RunNote>> _notes = [];
 
     /// <summary>Saves the run, replacing the one under its id. Notes are not part of it, so they stay.</summary>
@@ -35,13 +42,13 @@ public sealed class InMemoryBenchmarkStore : IBenchmarkStore
         return Task.CompletedTask;
     }
 
-    /// <summary>The run, or nothing if there is none.</summary>
+    /// <summary>Finds the run, or nothing if there is none.</summary>
     public Task<Run?> GetRunAsync(string id, CancellationToken cancellationToken = default)
     {
         lock (_lock) return Task.FromResult(_runs.GetValueOrDefault(id));
     }
 
-    /// <summary>The newest runs first, up to the limit, and one check's only if asked.</summary>
+    /// <summary>Lists the newest runs first, up to the limit, and only one check's if asked.</summary>
     public Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
         CancellationToken cancellationToken = default)
     {
@@ -118,7 +125,12 @@ public sealed class InMemoryBenchmarkStore : IBenchmarkStore
         lock (_lock)
         {
             var orphans = _runs.Values.Where(r => r.Status == BenchmarkRunStatus.Running).ToArray();
-            foreach (var run in orphans) _runs[run.Id] = run with { Status = BenchmarkRunStatus.Failed, EndedAt = now };
+            foreach (var run in orphans)
+                _runs[run.Id] = run with
+                {
+                    Status = BenchmarkRunStatus.Failed,
+                    EndedAt = now
+                };
             return Task.FromResult(orphans.Length);
         }
     }
@@ -154,6 +166,7 @@ public sealed class InMemoryBenchmarkStore : IBenchmarkStore
     {
         lock (_lock)
         {
+            // Anything found under the id counts as a run having been there, even a leftover with no run record.
             bool had = _runs.Remove(id);
             foreach (var key in _conversations.Keys.Where(k => k.Run == id).ToArray())
                 had |= _conversations.Remove(key);

@@ -3,12 +3,14 @@ using LouisAgent.Api.Benchmarks.Runs;
 namespace LouisAgent.Api.Benchmarks.Reports;
 
 /// <summary>
-/// The models a run declared for its modes and the models its ledger rows name (F18 step 2a): a row on a model the run
-/// doesn't list is flagged, so a trend never silently mixes what the run didn't say it ran.
+/// Compares the models a run said it used with the models its ledger rows name. A row on a model the run didn't list
+/// gets flagged, so a trend never quietly mixes in a model nobody declared.
 /// </summary>
 public static class RunModels
 {
-    /// <summary>The models the ledger's rows name that the run's declared models don't list; none when the run declared none.</summary>
+    /// <summary>
+    /// The models the ledger used that the run never declared. A run that declared none has nothing to check against.
+    /// </summary>
     public static IReadOnlyList<string> Unlisted(IReadOnlyList<BenchmarkProtocol.ModelInfo>? declared,
         IEnumerable<string?> rowModels)
     {

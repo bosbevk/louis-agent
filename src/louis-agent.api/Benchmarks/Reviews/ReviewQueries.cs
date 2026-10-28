@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Benchmarks.Reviews;
 /// </summary>
 internal static class ReviewQueries
 {
-    /// <summary>The human reviews a run has, by name: its Human graders.</summary>
+    /// <summary>The names of the human reviews a run has.</summary>
     public static HashSet<string> HumanReviewsOf(Run run) =>
         (run.Graders ?? [])
         .Where(g => g.Kind == BenchmarkGraderKind.Human &&
@@ -20,8 +20,8 @@ internal static class ReviewQueries
         .ToHashSet();
 
     /// <summary>
-    /// A judge's labels in a run: each decided grade of it with its conversation's turns in order (6a.4f); a
-    /// conversation with no turns stored labels nothing.
+    /// A judge's labels in a run: each decided grade of it with its conversation's turns in order. A conversation with
+    /// no turns stored labels nothing.
     /// </summary>
     public static async Task<List<(HumanGrade Grade, IReadOnlyList<Turn> Turns)>> DecidedLabelsAsync(
         IBenchmarkStore store, IHumanReviewStore reviews, string id, string grader,

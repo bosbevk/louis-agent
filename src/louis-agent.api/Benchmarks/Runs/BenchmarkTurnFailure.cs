@@ -3,9 +3,10 @@ using LouisAgent.Choices;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
-/// Why a turn failed for the infrastructure, not the agent (F18 step 5.1's <c>TrialFailure</c>, as the protocol's <c>turn</c> line names it;
-/// ADR 0024: parsed once where it enters). Kept with the turn, so a stored run never grades such a turn as the agent's.
+/// Why a turn failed on our side rather than the agent's: it timed out, the connection broke, the API errored, or a
+/// replay had no recording for it. It stays with the turn, so a stored run never blames the agent for it.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum BenchmarkTurnFailure
 {
     Timeout,

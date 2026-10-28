@@ -9,14 +9,21 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 namespace LouisAgent.Api.Benchmarks.Export;
 
 /// <summary>
-/// A stored run as the protocol's own lines (F18 step 5.2): <c>@</c> and one JSON object per event, in the order
-/// <see cref="BenchmarkProtocol"/> reads them (the protocol line, then for each mode's repeat its mode line, each conversation's
-/// question, stream and turn lines, its conversation line, and the mode's end). The API references no evals project, so the writer is its
-/// own, with the field names the reader takes; the bytes are the contract here (ADR 0041), ASCII only as the harness writes them. The
-/// store keeps no clock but each stream event's, so a line's <c>t</c> is the last time known.
+/// Turns a stored run back into the lines the harness wrote, so you can download it and score it again. The lines come
+/// out in the order the protocol reader expects them.
 /// </summary>
+/// <remarks>
+/// The API doesn't reference the evals project, so it has its own writer that uses the same field names the reader
+/// takes. Here the bytes are the contract, so it writes them by hand, ASCII only, as the harness does. The store keeps
+/// no clock except each stream event's, so a line's time is the last one known.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class BenchmarkProtocolExport
 {
+    /// <summary>
+    /// Walks the run in the store: the protocol line, then per mode its conversations, their turns and stream events,
+    /// and the mode's end.
+    /// </summary>
     public static async Task<string> BuildAsync(IBenchmarkStore store, Run run, CancellationToken cancellationToken)
     {
         var lines = new ProtocolLines(run.StartedAt);
@@ -25,6 +32,7 @@ public static class BenchmarkProtocolExport
 
         foreach (var mode in run.Modes ?? [])
         {
+            // One repeat of a mode: its line, then each conversation's turns with the stream events between them.
             var ofMode = conversations.Where(c => c.Key.Mode == mode.Name && c.Key.Repeat == mode.Repeat).ToList();
             lines.Mode(mode, ofMode.Count);
             foreach (var conversation in ofMode)
@@ -41,7 +49,8 @@ public static class BenchmarkProtocolExport
             }
 
             lines.ModeDone(mode);
-            // After the mode's last mode_done, its roll-up as the runner wrote it (F18 step 5c.2): none for a run from before it.
+
+            // After the mode's last repeat, its roll-up as the runner wrote it. An older run has none.
             if (run.Modes!.Last(m => m.Name == mode.Name) == mode)
                 foreach (var slice in (run.Slices ?? []).Where(s => s.Mode == mode.Name))
                     SummaryExport.Write(lines, slice);

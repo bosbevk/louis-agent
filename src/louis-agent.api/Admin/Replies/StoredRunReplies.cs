@@ -113,7 +113,9 @@ internal static class StoredRunReplies
         public static AgreementRow Of(string grader, IReadOnlyList<Conversation> conversations,
             IReadOnlyList<HumanGrade> decided)
         {
+            // Count how the judge's grades line up with the people's, then split them by what the people said.
             var t = ReviewAgreement.Of(conversations, decided, grader);
+
             return new AgreementRow(grader,
                 new CalibrationClassRow(t.PersonPassJudgePass, t.PersonPassJudgeFail, t.PersonPassJudgeUnknown),
                 new CalibrationClassRow(t.PersonFailJudgePass, t.PersonFailJudgeFail, t.PersonFailJudgeUnknown));

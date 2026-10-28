@@ -21,10 +21,9 @@ internal sealed record LedgerJoinResult(
     IReadOnlyList<AgentPrompt>? Prompts = null);
 
 /// <summary>
-/// Reads a run's requests and total from the ledger once the script has ended; a request's row is written when it
-/// finishes, so the last turn's rows are there by then. A re-score that asked nothing cost a known 0 (not the null of
-/// an unknown price, ADR 0007); one that asked a judge is priced from its own rows. A run with no ledger directory has
-/// no total, and one whose ledger can't be read says so in its log.
+/// Reads a run's requests and what it cost from the ledger once the script has ended. A request's row is written when
+/// it finishes, so the last turn's rows are there by then. A re-score that asked nothing cost a known 0, never the
+/// unknown of a missing price.
 /// </summary>
 /// <remarks>
 /// Taken out of <see cref="BenchmarkRecorder"/> (Fowler's Extract Class), which was past 200 lines: the recorder keeps
@@ -33,14 +32,21 @@ internal sealed record LedgerJoinResult(
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class LedgerJoin
 {
-    /// <summary>Everything the ledger knows about the run, joined to its turns through its sessions.</summary>
+    /// <summary>
+    /// Everything the ledger knows about the run, joined to its turns through its sessions. With no ledger directory
+    /// there's no total, and a ledger that can't be read says so in the run's log.
+    /// </summary>
+    /// <remarks>Guard clauses: each early answer (no ledger, an unreadable one, a free re-score) goes first.</remarks>
     public static LedgerJoinResult Of(BenchmarkRun run, string? rescoreOf, string? ledgerDirectory,
         IReadOnlyDictionary<string, string>? settings,
         IReadOnlyList<ModelInfo>? declared, IReadOnlyDictionary<string, ConversationKey> sessions)
     {
+        // A re-score that asked no model cost a known 0, not an unknown.
         var free = new LedgerJoinResult(new Total(0m, "USD", 0, 0), settings, [], []);
+        // Without a ledger a run's cost is unknown, but a re-score's is still that known 0.
         if (ledgerDirectory is null) return rescoreOf is null ? new LedgerJoinResult(null, settings, [], []) : free;
 
+        // The ledger's rows for this run only, from the files covering the time it ran.
         IReadOnlyList<UsageRecord> ofRun;
         try
         {

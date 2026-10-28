@@ -8,17 +8,24 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
 namespace LouisAgent.Api.Benchmarks.Export;
 
-/// <summary>The lines of an exported run, written one event at a time (F18 step 5.2): <c>@</c> and one JSON object each, ASCII only, as the harness writes them. <see cref="BenchmarkProtocolExport"/> walks the store and calls it.</summary>
+/// <summary>
+/// Writes an exported run one event at a time, each line an <c>@</c> and one JSON object in ASCII, just as the harness
+/// writes them. The export walks the store and calls it.
+/// </summary>
 internal sealed class ProtocolLines(DateTimeOffset start)
 {
     private static readonly JsonWriterOptions Options = new()
-    { Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin) };
+    {
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.BasicLatin)
+    };
 
     private readonly StringBuilder _text = new();
     private double _t = Seconds(start);
 
+    /// <summary>Everything written so far, as one text.</summary>
     public override string ToString() => _text.ToString();
 
+    /// <summary>The opening line: the protocol version, the eval, its graders and each mode's model.</summary>
     public void Protocol(Run run) => Emit("protocol", json =>
     {
         json.WriteNumber("version", BenchmarkProtocol.Version);
@@ -54,6 +61,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteEndArray();
     });
 
+    /// <summary>The start of a mode's repeat: its toolsets, role, model and how many conversations follow.</summary>
     public void Mode(Mode mode, int conversations) => Emit("mode", json =>
     {
         json.WriteString("mode", mode.Name);
@@ -66,6 +74,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteNumber("conversations", conversations);
     });
 
+    /// <summary>The question a turn asked, before its stream events.</summary>
     public void Question(Turn turn) => Emit("question", json =>
     {
         Key(json, turn.Key);
@@ -73,6 +82,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteString("text", turn.Question);
     });
 
+    /// <summary>One stream event of a turn. Its time moves the clock on for the lines after it.</summary>
     public void Sse(BenchmarkProtocol.TurnKey key, StreamEvent streamEvent)
     {
         if (streamEvent.At is { } at) _t = Seconds(at);
@@ -85,6 +95,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         });
     }
 
+    /// <summary>A finished turn: the answer, who answered, the calls it made, its time and any error.</summary>
     public void Turn(Turn turn) => Emit("turn", json =>
     {
         Key(json, turn.Key);
@@ -103,6 +114,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         if (turn.Failure is { } failure) json.WriteString("failure", failure.Wire());
     });
 
+    /// <summary>A finished conversation with its scores, each grader's grade and the outcome.</summary>
     public void Conversation(Conversation conversation) => Emit("conversation", json =>
     {
         json.WriteString("mode", conversation.Key.Mode);
@@ -135,15 +147,16 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         if (conversation.Outcome is { } outcome) json.WriteString("outcome", outcome.Wire());
     });
 
-    /// <summary>A line of the runner's own shape, written by <see cref="SummaryExport"/>.</summary>
+    /// <summary>A line in the runner's own shape, for the summary export to fill in.</summary>
     internal void Line(string name, Action<Utf8JsonWriter> fields) => Emit(name, fields);
 
+    /// <summary>The end of one repeat of a mode, with its pass rates when the runner worked them out.</summary>
     public void ModeDone(Mode mode) => Emit("mode_done", json =>
     {
         json.WriteString("mode", mode.Name);
         json.WriteNumber("repeat", mode.Repeat);
         if (mode.Rates is not { } rates) return;
-        // The rates as the runner wrote them (F18 step 5a): a rate no trial made is left out, never 0.
+        // The rates as the runner wrote them: a rate no trial made is left out, never written as 0.
         if (rates.PassAtK is { } passAtK) json.WriteNumber("pass_at_k", passAtK);
         if (rates.PassHatK is { } passHatK) json.WriteNumber("pass_hat_k", passHatK);
         json.WriteNumber("k", rates.K);
@@ -151,6 +164,7 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteNumber("retried", rates.Retried);
     });
 
+    /// <summary>Which turn a line is about: its mode, repeat, task and turn number.</summary>
     private static void Key(Utf8JsonWriter json, BenchmarkProtocol.TurnKey key)
     {
         json.WriteString("mode", key.Mode);
@@ -159,14 +173,17 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         json.WriteNumber("turn", key.Turn);
     }
 
+    /// <summary>A text field that is written as null when it's missing, as the harness does.</summary>
     private static void Text(Utf8JsonWriter json, string name, string? value)
     {
         if (value is null) json.WriteNull(name);
         else json.WriteString(name, value);
     }
 
+    /// <summary>A moment as Unix seconds with milliseconds, the way the harness stamps its lines.</summary>
     private static double Seconds(DateTimeOffset at) => at.ToUnixTimeMilliseconds() / 1000.0;
 
+    /// <summary>Writes one line: <c>@</c>, then the event's name, time and fields as one JSON object.</summary>
     private void Emit(string name, Action<Utf8JsonWriter> fields)
     {
         using var buffer = new MemoryStream();

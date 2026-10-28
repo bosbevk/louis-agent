@@ -6,7 +6,7 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Benchmarks.Store;
 
 /// <summary>
-/// What a benchmark run keeps, one record per collection of the store: the run, its conversations, their turns, and
+/// What an eval run keeps, one record per collection of the store: the run, its conversations, their turns, and
 /// the ledger's requests. A turn's stream events are kept apart because they are heavy and only a replay reads them.
 /// Memory and MongoDB keep the same records, so one contract test holds both.
 /// </summary>

@@ -3,9 +3,10 @@ using LouisAgent.Choices;
 namespace LouisAgent.Api.Benchmarks.Runs;
 
 /// <summary>
-/// Which scenarios a run asked for (F18 step 5.4 review; ADR 0024: parsed once where it enters): the <c>dev</c> ones it tunes against, the
-/// <c>held-out</c> ones before a release, or <c>all</c>. Kept on the run, so a held-out run is never read as a dev one.
+/// Which scenarios a run asked for: the <c>dev</c> ones we tune against, the <c>held-out</c> ones we keep for before a
+/// release, or <c>all</c>. It stays with the run, so a held-out run is never mistaken for a dev one.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum BenchmarkRunSplit
 {
     Dev,
