@@ -1,5 +1,6 @@
 using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Notes;
+using LouisAgent.Api.Evals.Store.Requests;
 using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Api.Evals.Store.Turns;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -27,11 +28,11 @@ public sealed class InMemoryEvalStore : IEvalStore
     /// <summary>The turns, with their stream events.</summary>
     private readonly InMemoryTurnStore _turns = new();
 
-    /// <summary>The one lock over the records still kept here.</summary>
-    private readonly Lock _lock = new();
+    /// <summary>The ledger's requests.</summary>
+    private readonly InMemoryRequestStore _requests = new();
 
-    /// <summary>Every run's requests, in one list.</summary>
-    private readonly List<Request> _requests = [];
+    /// <summary>The lock over the notes.</summary>
+    private readonly Lock _lock = new();
 
     /// <summary>
     /// Notes by run, in the order written. They live apart from the run, so saving it again keeps them.
@@ -87,21 +88,17 @@ public sealed class InMemoryEvalStore : IEvalStore
     public Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default) =>
         _turns.DeleteTurnsAsync(run, cancellationToken);
 
-    /// <summary>Adds requests to the list, tagged with the run they belong to.</summary>
+    /// <summary>Hands the ledger's requests to the request store.</summary>
     public Task AddRequestsAsync(string run, IReadOnlyList<Request> requests,
-        CancellationToken cancellationToken = default)
-    {
-        lock (_lock) _requests.AddRange(requests.Select(r => r with { Run = run }));
-        return Task.CompletedTask;
-    }
+        CancellationToken cancellationToken = default) => _requests.AddRequestsAsync(run, requests, cancellationToken);
 
-    /// <summary>The run's requests, by time.</summary>
-    public Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default)
-    {
-        lock (_lock)
-            return Task.FromResult<IReadOnlyList<Request>>(_requests.Where(r => r.Run == run).OrderBy(r => r.At)
-                .ToArray());
-    }
+    /// <summary>Asks the request store for the run's requests.</summary>
+    public Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default) =>
+        _requests.RequestsAsync(run, cancellationToken);
+
+    /// <summary>Deletes only the run's requests.</summary>
+    public Task<bool> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default) =>
+        _requests.DeleteRequestsAsync(run, cancellationToken);
 
     /// <summary>Adds a note beside the run, once the shared rule says the text is fine and the run is there.</summary>
     /// <remarks>Guard clauses: each reason not to keep the note returns first, so keeping it comes last.</remarks>
@@ -135,16 +132,13 @@ public sealed class InMemoryEvalStore : IEvalStore
     /// <summary>Deletes the run and everything under it, notes included. Says whether there was a run.</summary>
     public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
     {
-        // Anything found under the id counts as a run having been there, even a leftover with no run record.
+        // Each store deletes its own part. Anything found counts as a run having been there, even a leftover with no
+        // run record.
         bool had = await _runs.DeleteAsync(id, cancellationToken);
         had |= await _conversations.DeleteConversationsAsync(id, cancellationToken);
         had |= await _turns.DeleteTurnsAsync(id, cancellationToken);
-        lock (_lock)
-        {
-            had |= _requests.RemoveAll(r => r.Run == id) > 0;
-            had |= _notes.Remove(id);
-        }
-
+        had |= await _requests.DeleteRequestsAsync(id, cancellationToken);
+        lock (_lock) had |= _notes.Remove(id);
         return had;
     }
 }

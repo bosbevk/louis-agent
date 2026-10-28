@@ -1,13 +1,13 @@
 using LouisAgent.Api.Evals.Store.Conversations;
 using LouisAgent.Api.Evals.Store.Mongo.Documents;
 using LouisAgent.Api.Evals.Store.Notes;
+using LouisAgent.Api.Evals.Store.Requests;
 using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Api.Evals.Store.Turns;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using static LouisAgent.Api.Evals.Runs.Protocol.EvalProtocol;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
-using static LouisAgent.Api.Evals.Store.Mongo.MongoEvalDatabase;
 
 namespace LouisAgent.Api.Evals.Store.Mongo;
 
@@ -19,8 +19,9 @@ namespace LouisAgent.Api.Evals.Store.Mongo;
 /// <remarks>
 /// Facade over one Repository per record, each with its hand-written Data Mapper (<see cref="RunDocuments"/>,
 /// <see cref="ConversationDocuments"/>, <see cref="TurnDocuments"/>, <see cref="RequestDocuments"/>), so what
-/// <c>mongosh</c> shows is what the portal reads. The indexes are made the first time anything needs them, so
-/// starting the API never waits on Mongo.
+/// <c>mongosh</c> shows is what the portal reads. The callers keep one store, and each record store stays one
+/// collection with its own contract test. Every store makes its index the first time it is needed, so starting the
+/// API never waits on Mongo.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoEvalStore : IEvalStore
@@ -35,13 +36,13 @@ public sealed class MongoEvalStore : IEvalStore
     private readonly MongoTurnStore _turns;
 
     /// <summary>The ledger's requests.</summary>
-    private readonly IMongoCollection<BsonDocument> _requests;
+    private readonly MongoRequestStore _requests;
 
     /// <summary>The notes, which live in a collection of their own.</summary>
     private readonly MongoRunNotes _notes;
 
-    /// <summary>Makes the indexes the first time anything needs them, and tries again if that failed.</summary>
-    private readonly OnceItWorks _indexes;
+    /// <summary>Makes the notes' index the first time anything needs it, and tries again if that failed.</summary>
+    private readonly OnceItWorks _notesIndex;
 
     /// <summary>
     /// Connects to the database on the server at the address, with short timeouts. Nothing is created until the first
@@ -53,11 +54,12 @@ public sealed class MongoEvalStore : IEvalStore
         _runs = new MongoRunStore(Database);
         _conversations = new MongoConversationStore(Database);
         _turns = new MongoTurnStore(Database);
-        _requests = Database.GetCollection<BsonDocument>("requests");
+        _requests = new MongoRequestStore(Database);
+
         // A note may only go on a run that exists, so the notes ask the runs.
         _notes = new MongoRunNotes(Database.GetCollection<BsonDocument>("run_notes"),
             async (id, cancellationToken) => await _runs.GetRunAsync(id, cancellationToken) is not null);
-        _indexes = new OnceItWorks(CreateIndexesAsync);
+        _notesIndex = new OnceItWorks(_notes.CreateIndexAsync);
     }
 
     /// <summary>The database itself, so a test can drop its own.</summary>
@@ -112,62 +114,44 @@ public sealed class MongoEvalStore : IEvalStore
     public Task<bool> DeleteTurnsAsync(string run, CancellationToken cancellationToken = default) =>
         _turns.DeleteTurnsAsync(run, cancellationToken);
 
-    /// <summary>Adds the ledger's requests, tagged with their run.</summary>
-    public async Task AddRequestsAsync(string run, IReadOnlyList<Request> requests,
-        CancellationToken cancellationToken = default)
-    {
-        // Mongo refuses an empty insert, and there's nothing to add anyway.
-        if (requests.Count == 0) return;
+    /// <summary>Hands the ledger's requests to the request store.</summary>
+    public Task AddRequestsAsync(string run, IReadOnlyList<Request> requests,
+        CancellationToken cancellationToken = default) => _requests.AddRequestsAsync(run, requests, cancellationToken);
 
-        await Ready();
-        await _requests.InsertManyAsync(requests.Select(r => RequestDocuments.ToBson(r with { Run = run })),
-            cancellationToken: cancellationToken);
-    }
+    /// <summary>Asks the request store for the run's requests.</summary>
+    public Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default) =>
+        _requests.RequestsAsync(run, cancellationToken);
 
-    /// <summary>The run's requests, by time.</summary>
-    public async Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken cancellationToken = default)
-    {
-        await Ready();
-        var found = await _requests.Find(OfRun(run)).Sort(Builders<BsonDocument>.Sort.Ascending("at"))
-            .ToListAsync(cancellationToken);
-        return found.Select(RequestDocuments.RequestOf).ToArray();
-    }
+    /// <summary>Deletes only the run's requests.</summary>
+    public Task<bool> DeleteRequestsAsync(string run, CancellationToken cancellationToken = default) =>
+        _requests.DeleteRequestsAsync(run, cancellationToken);
 
     /// <summary>Adds a person's note to a run, or to one of its conversations.</summary>
     public async Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
         ConversationKey? conversation = null, CancellationToken cancellationToken = default)
     {
-        await Ready();
+        await _notesIndex.RunAsync();
         return await _notes.AddAsync(run, text, at, conversation, cancellationToken);
     }
 
     /// <summary>The run's notes, in the order they were written.</summary>
     public async Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken cancellationToken = default)
     {
-        await Ready();
+        await _notesIndex.RunAsync();
         return await _notes.OfRunAsync(run, cancellationToken);
     }
 
     /// <summary>Deletes the run and everything under it, notes included, and says whether there was anything.</summary>
     public async Task<bool> DeleteRunAsync(string id, CancellationToken cancellationToken = default)
     {
-        await Ready();
+        // Each store deletes its own part; anything found counts as a run having been there.
         bool had = await _runs.DeleteAsync(id, cancellationToken);
         had |= await _conversations.DeleteConversationsAsync(id, cancellationToken);
         had |= await _turns.DeleteTurnsAsync(id, cancellationToken);
-        long deleted = (await _requests.DeleteManyAsync(OfRun(id), cancellationToken)).DeletedCount;
-        deleted += await _notes.DeleteRunAsync(id, cancellationToken);
-        return had || deleted > 0;
-    }
+        had |= await _requests.DeleteRequestsAsync(id, cancellationToken);
 
-    /// <summary>Makes the indexes the reads of the records still kept here rely on.</summary>
-    private async Task CreateIndexesAsync()
-    {
-        await _requests.Indexes.CreateOneAsync(new CreateIndexModel<BsonDocument>(
-            Builders<BsonDocument>.IndexKeys.Ascending("run").Ascending("at")));
-        await _notes.CreateIndexAsync();
+        await _notesIndex.RunAsync();
+        long notes = await _notes.DeleteRunAsync(id, cancellationToken);
+        return had || notes > 0;
     }
-
-    /// <summary>Waits until the indexes exist, making them if this is the first call.</summary>
-    private Task Ready() => _indexes.RunAsync();
 }

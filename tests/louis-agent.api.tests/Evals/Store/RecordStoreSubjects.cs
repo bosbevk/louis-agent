@@ -1,4 +1,5 @@
 using LouisAgent.Api.Evals.Store.Conversations;
+using LouisAgent.Api.Evals.Store.Requests;
 using LouisAgent.Api.Evals.Store.Runs;
 using LouisAgent.Api.Evals.Store.Turns;
 
@@ -30,4 +31,11 @@ public class InMemoryTurnStoreTests : TurnStoreContract
 {
     /// <summary>A fresh, empty store of turns for each test.</summary>
     protected override ITurnStore CreateStore() => new InMemoryTurnStore();
+}
+
+/// <summary>Runs the request store's shared tests against the requests in memory.</summary>
+public class InMemoryRequestStoreTests : RequestStoreContract
+{
+    /// <summary>A fresh, empty store of requests for each test.</summary>
+    protected override IRequestStore CreateStore() => new InMemoryRequestStore();
 }

@@ -1356,6 +1356,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `TurnDocuments`; reading a conversation's turns still leaves the events out), held to `TurnStoreContract` (the six
   turn tests from `EvalStoreContract`, plus deleting a run's turns with their events). `IEvalStore` inherits it too.
   Red first: the contract against a stub that threw (7 of 7 failing).
+- **Step 7b, the store splits by record: requests.** `IRequestStore` in `Evals/Store/Requests/`, with
+  `InMemoryRequestStore` and `MongoRequestStore` (the `requests` collection, its run-and-time index and
+  `RequestDocuments`; an unknown count or price still reads back null), held to `RequestStoreContract` (the request
+  test from `EvalStoreContract`, plus adding an empty list and deleting a run's requests). `IEvalStore` is now the four record
+  interfaces plus the notes and `DeleteRunAsync`; both facades are hand-offs, the notes and the cascading delete, and
+  `EvalStoreContract` keeps only what reaches across the records (deleting a run, and a leftover with no run record).
+  Notes stay in the facade (they need the runs, and the plan's entry doesn't move them); reviews and calibrations
+  already had their own stores; slices live inside the run document. `MongoEvalStore` was already off
+  `FileSizeTests`' list (since `dfdd6c87`). Red first: the contract against a stub that threw (3 of 3 failing).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

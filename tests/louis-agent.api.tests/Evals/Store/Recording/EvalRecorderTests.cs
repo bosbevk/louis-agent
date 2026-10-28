@@ -468,6 +468,10 @@ public class EvalRecorderTests
         /// <summary>Passes it on.</summary>
         public Task<bool> DeleteTurnsAsync(string run, CancellationToken c = default) => inner.DeleteTurnsAsync(run, c);
 
+        /// <summary>Passes it on.</summary>
+        public Task<bool> DeleteRequestsAsync(string run, CancellationToken c = default) =>
+            inner.DeleteRequestsAsync(run, c);
+
         /// <summary>Passes the note on to the real store.</summary>
         public Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
             ConversationKey? conversation = null, CancellationToken c = default) =>
