@@ -53,6 +53,17 @@ public class ScoreChipsTests
         Assert.That(chips, Is.Empty);
     }
 
+    /// <summary>The chips every view shares leave out the live table's shops and errors.</summary>
+    [Test]
+    public void TheCommonChips_LeaveOutTheShopsAndTheErrors()
+    {
+        var chips = ScoreChips.Common(null,
+            Scores("""{"routed_right":true,"wrong_store":1,"shop_hosts":["a"],"errors":2}"""));
+
+        Assert.That(chips,
+            Is.EqualTo(new[] { new PricedChip("Puls itself ✓", "ok"), new PricedChip("wrong store 1", "bad") }));
+    }
+
     /// <summary>The scores as the store or the script sends them.</summary>
     private static JsonElement Scores(string json) => JsonDocument.Parse(json).RootElement.Clone();
 }

@@ -16,10 +16,25 @@ namespace LouisAgent.Puls.Admin.Scoring;
 public static class ScoreChips
 {
     /// <summary>The chips for one conversation, in the order the table shows them.</summary>
-    public static IReadOnlyList<PricedChip> Of(string? role, JsonElement scores) => [.. Chips(role, scores)];
+    public static IReadOnlyList<PricedChip> Of(string? role, JsonElement scores) =>
+        [.. Shared(role, scores), .. LiveOnly(scores)];
 
-    /// <summary>Each chip the scores have, one after the other.</summary>
-    private static IEnumerable<PricedChip> Chips(string? role, JsonElement s)
+    /// <summary>
+    /// The chips every view shares, without the live table's own last two (the shops read and the errors counted in
+    /// the scores): the run explorer adds its conversation's errors instead.
+    /// </summary>
+    public static IReadOnlyList<PricedChip> Common(string? role, JsonElement scores) => [.. Shared(role, scores)];
+
+    /// <summary>The live table's own chips: how many shops were read, and the errors the scores counted.</summary>
+    private static IEnumerable<PricedChip> LiveOnly(JsonElement s)
+    {
+        if (s.TryGetProperty("shop_hosts", out var shops) && shops.ValueKind == JsonValueKind.Array)
+            yield return new PricedChip($"shops {shops.GetArrayLength()}", "");
+        if (Int(s, "errors") is > 0 and var errors) yield return new PricedChip($"foute {errors}", "bad");
+    }
+
+    /// <summary>Each chip every view shows, one after the other.</summary>
+    private static IEnumerable<PricedChip> Shared(string? role, JsonElement s)
     {
         if (s.TryGetProperty("routed_right", out var right))
         {
@@ -48,9 +63,6 @@ public static class ScoreChips
         if (Int(s, "store_for_area") is > 0 and var local) yield return new PricedChip($"town's store {local}", "ok");
         if (Int(s, "store_default") is > 0 and var fallback)
             yield return new PricedChip($"default store {fallback}", "warn");
-        if (s.TryGetProperty("shop_hosts", out var shops) && shops.ValueKind == JsonValueKind.Array)
-            yield return new PricedChip($"shops {shops.GetArrayLength()}", "");
-        if (Int(s, "errors") is > 0 and var errors) yield return new PricedChip($"foute {errors}", "bad");
     }
 
     /// <summary>
