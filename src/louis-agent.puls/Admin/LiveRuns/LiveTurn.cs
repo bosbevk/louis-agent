@@ -78,7 +78,7 @@ public sealed class LiveTurn(TurnKey key)
         ended.SpecialistCalls ?? 0, ended.Seconds ?? 0);
 
     /// <summary>Takes the figures the store kept of the turn.</summary>
-    public void Finish(TurnRow stored) => Finish(stored.Role, stored.Continued, stored.Error, stored.PulsCalls,
+    public void Finish(TurnRow stored) => Finish(stored.Role, stored.Continued, stored.Error, stored.AgentCalls,
         stored.SpecialistCalls, stored.Seconds);
 
     /// <summary>
@@ -87,6 +87,7 @@ public sealed class LiveTurn(TurnKey key)
     /// </summary>
     public void Replay(IEnumerable<TurnEventRow> events)
     {
+        // Start from the question alone, then let each stored event build the answer as the live stream would.
         var turn = new Turn { UserText = Turn.UserText };
         foreach (var e in events) TurnStream.Apply(turn, SessionEvent.From(e.Type, e.Data));
         Turn = turn;

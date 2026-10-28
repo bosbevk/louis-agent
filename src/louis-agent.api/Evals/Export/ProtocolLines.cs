@@ -104,7 +104,8 @@ internal sealed class ProtocolLines(DateTimeOffset start)
         Text(json, "answer", turn.Answer);
         Text(json, "role", turn.Role);
         Text(json, "continued", turn.Continued);
-        json.WriteNumber("puls_calls", turn.PulsCalls);
+        // The protocol's own name for the agent's calls, as the runner writes it, until CL22 versions the protocol.
+        json.WriteNumber("puls_calls", turn.AgentCalls);
         json.WriteNumber("specialist_calls", turn.SpecialistCalls);
         json.WriteStartArray("hosts");
         foreach (string host in turn.Hosts) json.WriteStringValue(host);

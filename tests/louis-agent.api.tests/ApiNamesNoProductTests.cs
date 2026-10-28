@@ -7,15 +7,16 @@ namespace LouisAgent.Api.Tests;
 /// Puls). A product gets its own front door (its web app, its compose file), and the API stays the one agent API.
 /// </summary>
 /// <remarks>
-/// A ratchet, as FileSizeTests and RazorHasNoCodeTests are. The names the rename hasn't reached yet are listed in
-/// NotYetRenamed: a new one fails the test, and a listed one that's gone fails too, so the list can only shrink until
-/// it is empty. Two exceptions stay on purpose, in Allowed: the project file picks Puls's web app until Phase 9 moves
-/// the web apps out, and the stored key <c>puls_calls</c> is still read as an alias so old runs keep their counts.
-/// The product names come from the identities folder, so a new identity is checked with no change here.
+/// It was a ratchet while the rename ran (a waiting list that could only shrink, as FileSizeTests has); the list is
+/// empty now, so it's a plain rule. Two exceptions stay on purpose, in Allowed: the project file picks Puls's web app
+/// until Phase 9 moves the web apps out, and the key <c>puls_calls</c> is still read (a stored turn's alias, and the
+/// eval protocol's own field until CL22 versions it), so old runs keep their counts. The product names come from the
+/// identities folder, so a new identity is checked with no change here.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0037-one-agent-api-products-get-a-front-door.md">ADR 0037: one agent API; products get a front door</seealso>
 public class ApiNamesNoProductTests
 {
+    /// <summary>The API's own projects: its host, and the contract its clients read.</summary>
     private static readonly string[] Projects = ["src/louis-agent.api", "src/louis-agent.api.contracts"];
 
     /// <summary>
@@ -25,47 +26,30 @@ public class ApiNamesNoProductTests
     [
         // The API serves Puls's web app when built with -p:WebApp=puls, until Phase 9 gives each product its own host.
         ("src/louis-agent.api/louis-agent.api.csproj", null),
-        // Runs stored and recorded before the rename say puls_calls; it is read as an alias until a TODO line.
+        // Turns stored before the rename, and the eval protocol's lines, say puls_calls; read until a TODO line.
         (null, "puls_calls"),
     ];
 
-    /// <summary>
-    /// The names step 7b (iii) hasn't renamed yet, as "file: word", repo-relative with forward slashes. Remove a line
-    /// in the commit that renames it.
-    /// </summary>
-    private static readonly HashSet<string> NotYetRenamed =
-    [
-        "src/louis-agent.api.contracts/Admin/Runs/TurnRows.cs: PulsCalls",
-        "src/louis-agent.api.contracts/Info/InfoReplies.cs: Puls's",
-        "src/louis-agent.api.contracts/louis-agent.api.contracts.csproj: Puls",
-        "src/louis-agent.api/Admin/Replies/StoredRunReplies.cs: PulsCalls",
-        "src/louis-agent.api/Evals/Export/ProtocolLines.cs: PulsCalls",
-        "src/louis-agent.api/Evals/Runs/Protocol/EvalProtocol.cs: PulsCalls",
-        "src/louis-agent.api/Evals/Store/EvalDocuments.cs: PulsCalls",
-        "src/louis-agent.api/Evals/Store/Mongo/Documents/TurnDocuments.cs: PulsCalls",
-        "src/louis-agent.api/Evals/Store/Recording/RunRecording.cs: PulsCalls",
-    ];
-
-    /// <summary>
-    /// Nothing in the API names a product except what is allowed or still waiting for its rename, and a name that's
-    /// been renamed is taken off the waiting list.
-    /// </summary>
+    /// <summary>Nothing in the API names a product, except the two allowed on purpose.</summary>
     [Test]
-    public void TheApi_NamesNoProduct_ExceptItsAllowedAndWaitingNames()
+    public void TheApi_NamesNoProduct_ExceptItsTwoAllowedNames()
     {
-        var found = ProductWords().Where(hit => !IsAllowed(hit)).Select(hit => $"{hit.File}: {hit.Word}").ToHashSet();
+        var found = ProductWords().Where(hit => !IsAllowed(hit)).Select(hit => $"{hit.File}: {hit.Word}").Distinct()
+            .Order().ToList();
 
-        var newOffenders = found.Except(NotYetRenamed).Order().ToList();
-        var renamed = NotYetRenamed.Except(found).Order().ToList();
+        Assert.That(found, Is.Empty,
+            "The API names no product (ADR 0037): say what it is for every agent instead:\n  "
+            + string.Join("\n  ", found));
+    }
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(newOffenders, Is.Empty,
-                "The API names no product (ADR 0037): say what it is for every agent instead:\n  "
-                + string.Join("\n  ", newOffenders));
-            Assert.That(renamed, Is.Empty,
-                "Renamed now: remove from NotYetRenamed so the list only shrinks:\n  " + string.Join("\n  ", renamed));
-        });
+    /// <summary>Each allowed name is still there, so the list can't go stale after its TODO line is done.</summary>
+    [Test]
+    public void EveryAllowedName_IsStillThere()
+    {
+        var hits = ProductWords().ToList();
+
+        Assert.That(Allowed.Where(a => !hits.Any(hit => a.File == hit.File || a.Word == hit.Word)), Is.Empty,
+            "an allowed name is gone: take it off Allowed");
     }
 
     /// <summary>The products are the identities, one folder each, named louis-agent.identity.{product}.</summary>

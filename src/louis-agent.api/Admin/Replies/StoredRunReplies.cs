@@ -80,7 +80,7 @@ internal static class StoredRunReplies
             t.Answer,
             t.Role,
             t.Continued,
-            t.PulsCalls,
+            t.AgentCalls,
             t.SpecialistCalls,
             t.Hosts,
             t.Seconds,

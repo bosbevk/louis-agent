@@ -4,7 +4,7 @@ namespace LouisAgent.Api.Contracts.Info;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record HealthReply(string Status);
 
-/// <summary>The model this instance answers with, and its provider (Puls's model picker shows it).</summary>
+/// <summary>The model this instance answers with, and its provider (a web app's model picker shows it).</summary>
 public sealed record ModelReply(string Provider, string Model);
 
 /// <summary>

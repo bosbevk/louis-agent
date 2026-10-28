@@ -56,7 +56,7 @@ public partial class BenchmarksPageTests
                                                   "modes":[],"notes":[],"agreement":[],
                                                   "turns":[{"tools":{"calls":0,"failed":0,"reasons":[]},"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1,"session":"s1",
                                                             "question":"Maak vir my bobotie.","answer":"Hier is bobotie.","role":"<RoleAlpha>","continued":null,
-                                                            "puls_calls":1,"specialist_calls":2,"hosts":[],"seconds":3.5,"error":null}],
+                                                            "agent_calls":1,"specialist_calls":2,"hosts":[],"seconds":3.5,"error":null}],
                                                   "conversations":[{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","order":0,"role":"<RoleAlpha>",
                                                             "scores":{"routed_right":true,"follow_up":"continued","ingredients":5,"priced":4,"estimated":1,"priced_ratio":0.8,"images":2,"unsourced":1,"shop_hosts":["a","b"],"errors":1},
                                                             "errors":1,"seconds":7.5,"human_grades":[]}],

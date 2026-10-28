@@ -43,7 +43,7 @@ internal static class TurnDocuments
         ["answer"] = Nullable(t.Answer),
         ["role"] = Nullable(t.Role),
         ["continued"] = Nullable(t.Continued),
-        ["puls_calls"] = t.PulsCalls,
+        ["agent_calls"] = t.AgentCalls,
         ["specialist_calls"] = t.SpecialistCalls,
         ["hosts"] = new BsonArray(t.Hosts),
         ["seconds"] = t.Seconds,
@@ -63,10 +63,17 @@ internal static class TurnDocuments
         new TurnKey(d["mode"].AsString, d["repeat"].AsInt32, d["task"].AsString, d["turn"].AsInt32),
         d["session"].AsString, d["question"].AsString, StringOf(d["answer"]), StringOf(d["role"]),
         StringOf(d["continued"]),
-        d["puls_calls"].AsInt32, d["specialist_calls"].AsInt32,
+        AgentCallsOf(d), d["specialist_calls"].AsInt32,
         d["hosts"].AsBsonArray.Select(h => h.AsString).ToArray(),
         d["seconds"].ToDouble(), StringOf(d["error"]), ToolsOf(d.GetValue("tools", BsonNull.Value)),
         FailureOf(d.GetValue("failure", BsonNull.Value)));
+
+    /// <summary>
+    /// How many calls the agent itself made. A turn stored before the rename keeps the count under
+    /// <c>puls_calls</c>, read as an alias until a TODO line removes it, so old runs never show zero.
+    /// </summary>
+    private static int AgentCallsOf(BsonDocument d) =>
+        (d.GetValue("agent_calls", null) ?? d["puls_calls"]).AsInt32;
 
     /// <summary>A stored event turned back into a stream event.</summary>
     public static StreamEvent EventOf(BsonDocument e) => new(e["type"].AsString, Json(e["data"]), DateOf(e["at"]));

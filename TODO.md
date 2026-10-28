@@ -134,6 +134,12 @@ changes instead of relying on training; **a configured agent**, an identity and 
   `AGENT_API` now, and `HttpSessionClient.ApiFrom` reads `PULS_API` after it so a shell or a script that still sets
   the old name keeps working; once none does, drop it there, from `RunnerEnvironmentTests`' handled list and from
   `ApiAddressTests`
+- [ ] Remove the stored `puls_calls` alias (F18 step 7b (iii)): a turn is stored as `agent_calls` now, and
+  `TurnDocuments.AgentCallsOf` falls back to `puls_calls` for turns stored before. Once the stored runs worth keeping
+  are re-saved (or a one-off migration, with Louis, renames the field in Mongo), drop the fallback and its test in
+  `StoredTurnTests`. The eval protocol's own `puls_calls` field (the runner's `ProtocolWriter`, the API's
+  `EvalProtocol` and its export, Puls's `RunEvent`) moves with CL22's protocol version 2; then `puls_calls` leaves
+  `ApiNamesNoProductTests`' `Allowed`
 - [ ] Paymo, DevOps and Rider out of core (core layout review, 2026-10-19): `Tools/Integrations/Paymo` and `Tools/Integrations/DevOps` are packs in waiting (CL17); `Hosting/RiderMcpToolDiscovery` and `Protocols/Mcp/RiderMcpClient` serve only the ACP host and name a product, so they move to `src/louis-agent.acp-server`
 - [ ] The rest of the size list (CL15, 2026-10-20): 33 files over 200 lines (400 for tests), held by `FileSizeTests`' `Oversized`; split by responsibility a group at a time, on its own branch
 - [ ] A price format per country (CL15 review, 2026-10-20): `Tools/Web/Quotes/QuoteMatch` knows the rand sign, yet core names no country; an `IPriceFormat` seam in core, the South African one from Puls or the shops pack (with CL17)

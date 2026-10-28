@@ -161,7 +161,7 @@ public class EvalProtocolTests
         Assert.That(turn.Session, Is.EqualTo("sess_abc"));
         Assert.That((turn.Question, turn.Answer, turn.Role, turn.Continued),
             Is.EqualTo(("Bobotie vir 4", "Hier is…", SampleRole.Alpha, (string?)null)));
-        Assert.That((turn.PulsCalls, turn.SpecialistCalls, turn.Seconds), Is.EqualTo((1, 7, 41.3)));
+        Assert.That((turn.AgentCalls, turn.SpecialistCalls, turn.Seconds), Is.EqualTo((1, 7, 41.3)));
         Assert.That(turn.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
         Assert.That(turn.Error, Is.Null);
     }

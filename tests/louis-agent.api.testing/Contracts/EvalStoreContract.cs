@@ -342,7 +342,7 @@ public abstract class EvalStoreContract
         var first = read[0];
         Assert.That((first.Session, first.Question, first.Answer, first.Role, first.Continued),
             Is.EqualTo(("sess_1", "Vraag 1", "Hier is…", SampleRole.Alpha, (string?)null)));
-        Assert.That((first.PulsCalls, first.SpecialistCalls, first.Seconds, first.Error),
+        Assert.That((first.AgentCalls, first.SpecialistCalls, first.Seconds, first.Error),
             Is.EqualTo((1, 7, 41.3, (string?)null)));
         Assert.That(first.Hosts, Is.EqualTo(new[] { "www.checkers.co.za" }));
     }

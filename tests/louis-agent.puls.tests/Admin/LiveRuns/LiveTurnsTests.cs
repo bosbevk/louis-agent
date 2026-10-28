@@ -19,7 +19,7 @@ public class LiveTurnsTests
         {"run":{"id":"r","check":"c","repeat":1,"status":"running","started_at":"2026-10-27T10:00:00+00:00"},
          "modes":[],"notes":[],"agreement":[],
          "turns":[{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1,"question":"Bobotie?","role":"r",
-                   "continued":null,"puls_calls":1,"specialist_calls":2,"seconds":3.5,"error":null}],
+                   "continued":null,"agent_calls":1,"specialist_calls":2,"seconds":3.5,"error":null}],
          "conversations":[{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","role":"r","scores":{"routed_right":true}},
                           {"mode":"<ModeAlpha>","repeat":1,"task":"chat","role":null,"scores":{}}],
          "requests":[

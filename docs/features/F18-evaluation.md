@@ -1326,6 +1326,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   unset), until a TODO line removes the old name. `RunnerPaths.AgentApi` and `EvalProcess`'s `agentApi` follow; the
   stand-in runner, the guides and the Puls manuals' commands use the new name. Red first: `ApiAddressTests`
   (`NotImplementedException`) and `EvalProcessTests` (no `AGENT_API` in the start info).
+- **Step 7b (iii), `PulsCalls` becomes `AgentCalls`** (decisions log, finding 23): the API's records (`EvalDocuments.Turn`,
+  `EvalProtocol.TurnEnded`) and the contract's `TurnRow` say `AgentCalls`; the store writes a turn's count as
+  `agent_calls` and reads `puls_calls` for a turn stored before (a TODO line removes the alias); the reply's wire name
+  is `agent_calls` (`StoredRunReply.json` and the Puls fixtures that hold a stored run follow). The eval protocol keeps
+  its `puls_calls` field (the runner writes it, the API reads and exports it) until CL22 versions the protocol, and
+  Puls's own live-run classes keep their names. Red first: `StoredTurnTests` (no `agent_calls` in a written turn).
+  With the two contract comments reworded, `ApiNamesNoProductTests`' waiting list is empty, so it is a plain rule
+  now: the API names no product but its two allowed names (the project file's web app reference, `puls_calls`), and a
+  second test fails if an allowed name is gone.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

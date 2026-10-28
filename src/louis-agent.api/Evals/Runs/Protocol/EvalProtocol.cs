@@ -81,7 +81,7 @@ public static class EvalProtocol
         string? Answer,
         string? Role,
         string? Continued,
-        int PulsCalls,
+        int AgentCalls,
         int SpecialistCalls,
         IReadOnlyList<string> Hosts,
         double Seconds,
@@ -146,6 +146,7 @@ public static class EvalProtocol
                     Text(e, "llm"), OptionalInt(e, "conversations"), at),
                 "question" => new QuestionAsked(Turn(e), Required(e, "session"), Required(e, "text"), at),
                 "sse" => new SseEvent(Turn(e), Required(e, "type"), Json(e, "data"), at),
+                // The agent's own calls are puls_calls on the protocol's version 1 wire, which CL22 versions.
                 "turn" => new TurnEnded(Turn(e), Required(e, "session"), Required(e, "question"), Text(e, "answer"),
                     Text(e, "role"),
                     Text(e, "continued"), OptionalInt(e, "puls_calls") ?? 0, OptionalInt(e, "specialist_calls") ?? 0,

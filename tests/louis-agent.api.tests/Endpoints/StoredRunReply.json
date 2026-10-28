@@ -157,7 +157,7 @@
       "answer": "Here.",
       "role": "role-alpha",
       "continued": null,
-      "puls_calls": 1,
+      "agent_calls": 1,
       "specialist_calls": 2,
       "hosts": [
         "www.checkers.co.za"

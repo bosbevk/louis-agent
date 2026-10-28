@@ -175,7 +175,7 @@ internal sealed class RunRecording(
         var events = _open.Remove(turn.Key, out var open) ? open.Events : [];
 
         var stored = new Turn(turn.Key, turn.Session, turn.Question, turn.Answer, turn.Role, turn.Continued,
-            turn.PulsCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error, EvalTools.Of(events),
+            turn.AgentCalls, turn.SpecialistCalls, turn.Hosts, turn.Seconds, turn.Error, EvalTools.Of(events),
             turn.Failure);
         await _writes.WriteAsync(() => store.SaveTurnAsync(run.Id, stored, events, cancellationToken));
     }

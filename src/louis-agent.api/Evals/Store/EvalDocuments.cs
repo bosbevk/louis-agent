@@ -117,7 +117,7 @@ public static class EvalDocuments
         string? Answer,
         string? Role,
         string? Continued,
-        int PulsCalls,
+        int AgentCalls,
         int SpecialistCalls,
         IReadOnlyList<string> Hosts,
         double Seconds,

@@ -490,3 +490,27 @@ going through the compose file.
 compose file doesn't reach) doesn't silently start writing to an empty `evals` database. Sources: Fowler,
 *ParallelChange*; Microsoft, *Configuration in ASP.NET Core* (environment variables). **Commit:** step 7b (iii), the
 store settings commit.
+
+### 23. Where `puls_calls` becomes `agent_calls`, and where it stays (step 7b (iii))
+
+**What came up.** The row renames `PulsCalls` to `AgentCalls` and allows "the stored `puls_calls` key, read as an
+alias until a TODO line removes it". The same key is on three wires: the Mongo document of a turn, the API's stored
+run reply (the contract's `TurnRow`, which the Puls pages read), and the eval protocol's `turn` line (written by the
+runner, read by the API and by the Puls page live, and written back by the API's export). The row names only the
+stored one.
+
+1. **C# names `AgentCalls` everywhere in the API and the contract; the store writes `agent_calls` and reads
+   `puls_calls` as the alias; the reply's wire name follows the record (`agent_calls`, the Puls page reads it in the
+   same deploy); the protocol keeps `puls_calls` until CL22's version 2 (picked).** Pattern: *Parallel Change* for the
+   store (Fowler), *Tolerant Reader* for its old documents. Changes: `TurnDocuments`, the records, the reply golden
+   and three Puls fixtures. Costs: `puls_calls` stays in the API in two places, the alias read and the protocol, both
+   under the ratchet's one allowed word.
+2. **Rename the protocol's key too** (the runner writes `agent_calls`, readers accept both). Costs: the runner's
+   recorded Python fixtures and transcripts hold `puls_calls` ("recorded data stays as recorded"), so the writer's
+   comparison with them breaks; it is CL22's protocol change, done early and halfway.
+3. **Keep every wire name, rename only C#** (`[JsonPropertyName("puls_calls")]` on the contract). Costs: the API's
+   reply keeps a product's name on its wire for good, which ADR 0037 is about.
+
+**Why 1.** It does what the row says for the stored key, keeps the reply honest, and leaves the protocol to the one
+change that versions it. Sources: Fowler, *ParallelChange*, *TolerantReader* (martinfowler.com/bliki). **Commit:**
+step 7b (iii), the `AgentCalls` commit.

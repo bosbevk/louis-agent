@@ -7,8 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- ADR 0045: the records the API sends and reads, and each wire's options object, so the API and any client (Puls,
-       the code-review app, the orchestrator, someone else's app) read the same shapes. It references no project and no
+  <!-- ADR 0045: the records the API sends and reads, and each wire's options object, so the API and any client (a
+       product's web app, the orchestrator, someone else's app) read the same shapes. It references no project and no
        package, like louis-agent.choices, so a client takes it without the rest of the solution. -->
 
 </Project>
