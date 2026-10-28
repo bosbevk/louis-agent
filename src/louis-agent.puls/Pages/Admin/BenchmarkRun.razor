@@ -16,7 +16,7 @@
 {
     <section class="card-p admin-gate"><strong>@error</strong></section>
 }
-else if (_json is not { } run || _run is null)
+else if (_json is null || _run is null)
 {
     <section class="card-p"><span class="muted">Loading…</span></section>
 }
@@ -41,7 +41,7 @@ else
        explorer's chats modal would be clipped to the card and painted under the cards after it. *@
     <section class="card-p holds-modal">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Explore the run<span class="fold-note">the modes side by side: conversations, turns, requests</span></summary>
-            <RunExplorer Run="run" Currency="Currency.Current" OpenTask="@FocusTask" />
+            <RunExplorer Run="_run" Currency="Currency.Current" OpenTask="@FocusTask" />
         </details>
     </section>
     <AgreementPanel Agreement="_run.Agreement" RunId="@RunId" />

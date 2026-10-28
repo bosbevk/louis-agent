@@ -1818,6 +1818,10 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   in commit 3). Red: the build (`ModeRingsTests` asks for `ModeRings.Passed`); then the RunExplorer goldens (overview,
   chats, conversations, to-review, repeat 2) and `ChartInfo.html` were regenerated and read: "routed right" became
   "passed", the score chips went, and the value ring's share moved with the passed count. Puls tests: 358.
+  Commit 14: `RunExplorer` takes the run as `StoredRunReply`, the one the run page already reads, instead of the JSON
+  it deserialized again itself. Its four test files read their fixtures into the reply, so they went red on the build
+  (a `JsonElement` handed to a `StoredRunReply` parameter); then green with every RunExplorer golden byte-equal. Its
+  fields and the review tests got their summaries.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

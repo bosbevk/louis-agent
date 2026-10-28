@@ -1,5 +1,3 @@
-using System.Text.Json;
-using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Explorer.Replay;
 using LouisAgent.Puls.Admin.Explorer.Tree;
@@ -20,46 +18,87 @@ namespace LouisAgent.Puls.Components.Admin;
 /// component of its own.
 /// </summary>
 /// <remarks>
-/// The run is read once into the contract's <c>StoredRunReply</c> and built into a <c>RunTree</c> per repeat, so no
-/// part of the explorer picks the JSON apart by name; the review panels and the notes get the records they were
-/// written for. State flows down as parameters and up as callbacks (the unattended run's finding 8); the replay of a
-/// turn stays here, because any move stops it (finding 12).
+/// The run arrives as the contract's <c>StoredRunReply</c>, the page's one read of the API, and is built into a
+/// <c>RunTree</c> per repeat, so no part of the explorer picks JSON apart by name; the review panels and the notes
+/// get the records they were written for. State flows down as parameters and up as callbacks (the unattended run's
+/// finding 8); the replay of a turn stays here, because any move stops it (finding 12).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class RunExplorer : IDisposable
 {
+    /// <summary>The run we were handed last.</summary>
     private StoredRunReply? _run;
+
+    /// <summary>The shown repeat, built into modes, conversations, turns and requests.</summary>
     private RunTree _tree = RunTree.Empty;
+
+    /// <summary>The graders the run used, for the review panels.</summary>
     private IReadOnlyList<GraderRow>? _graders;
+
+    /// <summary>The run's notes, for the notes panel.</summary>
     private IReadOnlyList<RunNoteEntry> _notes = [];
+
+    /// <summary>The run's id, for the replays and the notes.</summary>
     private string _runId = "";
+
+    /// <summary>How many repeats the run has, and which one is shown.</summary>
     private int _repeats = 1, _repeat = 1;
+
+    /// <summary>The task we last opened from <c>OpenTask</c>, so a redraw doesn't open it again.</summary>
     private string? _opened;
 
-    // Where you are: 0 the modes, 1 the conversations, 2 one conversation, 3 one turn, 4 one request; and which way
-    // the next level slides in.
+    /// <summary>
+    /// Where you are: 0 the modes, 1 the conversations, 2 one conversation, 3 one turn, 4 one request.
+    /// </summary>
     private int _level;
+
+    /// <summary>The open conversation's task.</summary>
     private string? _task;
+
+    /// <summary>The open turn's number.</summary>
     private int? _turn;
+
+    /// <summary>The open request.</summary>
     private RequestNode? _request;
+
+    /// <summary>The mode the open request was made in.</summary>
     private ModeNode? _requestMode;
+
+    /// <summary>Which way the next level slides: in going deeper, out going back.</summary>
     private string _dir = "in";
+
+    /// <summary>The list shows only the conversations still to review.</summary>
     private bool _onlyToReview;
 
-    // The open turn replayed in every mode, and the chats side by side.
+    /// <summary>The open turn replayed, one per mode.</summary>
     private readonly Dictionary<string, Turn> _replays = [];
+
+    /// <summary>A replay is playing.</summary>
     private bool _replaying;
+
+    /// <summary>Stops the replay that is playing.</summary>
     private CancellationTokenSource? _replayStop;
+
+    /// <summary>The chats side by side are open.</summary>
     private bool _chatOpen;
+
+    /// <summary>The conversation the chats opened on.</summary>
     private string? _chatTask;
+
+    /// <summary>Counts each opening of the chats, so they play again from the start.</summary>
     private int _chatPlay;
 
-    [Inject] private AgentApi Api { get; set; } = null!;
-    [Inject] private IJSRuntime Js { get; set; } = null!;
+    /// <summary>The API, to fetch a turn's stored events.</summary>
+    [Inject]
+    private AgentApi Api { get; set; } = null!;
+
+    /// <summary>The page's scripts, which make the cost numbers count up.</summary>
+    [Inject]
+    private IJSRuntime Js { get; set; } = null!;
 
     /// <summary>The stored run, as the API sent it.</summary>
     [Parameter, EditorRequired]
-    public JsonElement Run { get; set; }
+    public StoredRunReply Run { get; set; } = null!;
 
     /// <summary>The currency to show money in.</summary>
     [Parameter]
@@ -72,10 +111,10 @@ public partial class RunExplorer : IDisposable
     /// <summary>A key for the level and whatever is open in it, so a new level slides in.</summary>
     private string LevelKey => $"{_repeat}|{_level}|{_task}|{_turn}|{_request?.At:O}";
 
-    /// <summary>Reads the run, keeps the repeat in range, builds the tree, and opens <c>OpenTask</c> once.</summary>
+    /// <summary>Takes the run, keeps the repeat in range, builds the tree, and opens <c>OpenTask</c> once.</summary>
     protected override void OnParametersSet()
     {
-        _run = Run.Deserialize<StoredRunReply>(AdminJson.SnakeCase)!;
+        _run = Run;
         _runId = _run.Run.Id;
         _repeats = Math.Max(1, _run.Run.Repeat);
         _graders = _run.Run.Graders?.Select(GraderRow.Of).ToList();

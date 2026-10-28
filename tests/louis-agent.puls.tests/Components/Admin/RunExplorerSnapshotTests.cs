@@ -2,6 +2,8 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -204,8 +206,9 @@ public partial class RunExplorerSnapshotTests
         ctx.Services.AddSingleton(new RunNotesState());
         ctx.Services.AddSingleton(PulsText.Afrikaans);
 
-        return ctx.Render<RunExplorer>(p =>
-            p.Add(x => x.Run, JsonDocument.Parse(Run).RootElement.Clone()).Add(x => x.OpenTask, openTask));
+        // The run as the page reads it from the API: the contract's stored run reply.
+        var run = JsonSerializer.Deserialize<StoredRunReply>(Run, AdminJson.SnakeCase)!;
+        return ctx.Render<RunExplorer>(p => p.Add(x => x.Run, run).Add(x => x.OpenTask, openTask));
     }
 
     /// <summary>

@@ -1,5 +1,7 @@
 using LouisAgent.Testing;
 using System.Text.Json;
+using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -38,12 +40,15 @@ public class RunExplorerOpenTaskTests
         // What the explorer needs: an API that answers nothing, a reviewer, and the notes state.
         ctx.Services.AddSingleton(new AgentApi(
             new HttpClient(new StubHandler(_ => new HttpResponseMessage()))
-            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+            {
+                BaseAddress = new Uri("http://localhost/")
+            }, new ChatSettings()));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
 
-        return ctx.Render<RunExplorer>(p =>
-            p.Add(x => x.Run, JsonDocument.Parse(Run(repeats)).RootElement.Clone()).Add(x => x.OpenTask, openTask));
+        // The run as the page reads it from the API: the contract's stored run reply.
+        var run = JsonSerializer.Deserialize<StoredRunReply>(Run(repeats), AdminJson.SnakeCase)!;
+        return ctx.Render<RunExplorer>(p => p.Add(x => x.Run, run).Add(x => x.OpenTask, openTask));
     }
 
     /// <summary>A task to open takes you straight to its conversation.</summary>
@@ -51,7 +56,10 @@ public class RunExplorerOpenTaskTests
     public void ATaskToOpen_OpensItsConversation_AtOnce() =>
         Assert.That(Render(SampleScenario.Beta).Find(".crumb.here").TextContent, Is.EqualTo(SampleScenario.Beta));
 
-    /// <summary>Changing the repeat keeps the conversation you are in when the other repeat has it too, and falls back to the overview only when it doesn't.</summary>
+    /// <summary>
+    /// Changing the repeat keeps the conversation you are in when the other repeat has it too, and falls back to the
+    /// overview only when it doesn't.
+    /// </summary>
     [Test]
     public void ChangingTheRepeat_KeepsTheOpenConversation()
     {
