@@ -1,4 +1,6 @@
 using System.Text.Json;
+using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Components.Admin.Summary;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Summary;
@@ -10,29 +12,31 @@ namespace LouisAgent.Puls.Tests.Components.Admin.Summary;
 /// </summary>
 public class CategoryTrendsTests
 {
-    // Two categories: one with three runs over two lines (r2 only on the tools line), one with a single run.
-    private const string Trend = """
-                                 {"check":"puls-cook","modes":[],"categories":[
-                                   {"category":"language:af","modes":[
-                                     {"name":"puls-cook (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
-                                       {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,"n":8},
-                                       {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0.75,"pass_at_k":0.75,"pass_hat_k":0.5,"n":8}]},
-                                     {"name":"puls-tools","model":null,"points":[
-                                       {"run":"r2","at":"2026-10-25T09:00:00+00:00","pass_rate":0.1,"pass_at_k":0.1,"pass_hat_k":0.1,"n":8}]}]},
-                                   {"category":"overall","modes":[
-                                     {"name":"puls-cook (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
-                                       {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,"n":16}]}]}]}
-                                 """;
+    /// <summary>
+    /// Two categories: one with three runs over two lines (r2 only on the tools line), one with a single run.
+    /// </summary>
+    private const string Trend =
+        """
+        {"check":"puls-cook","modes":[],"categories":[
+          {"category":"language:af","modes":[
+            {"name":"puls-cook (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
+              {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,"n":8},
+              {"run":"r3","at":"2026-10-26T09:00:00+00:00","pass_rate":0.75,"pass_at_k":0.75,"pass_hat_k":0.5,"n":8}]},
+            {"name":"puls-tools","model":null,"points":[
+              {"run":"r2","at":"2026-10-25T09:00:00+00:00","pass_rate":0.1,"pass_at_k":0.1,"pass_hat_k":0.1,"n":8}]}]},
+          {"category":"overall","modes":[
+            {"name":"puls-cook (claude-haiku-5-5)","model":"claude-haiku-5-5","points":[
+              {"run":"r1","at":"2026-10-24T09:00:00+00:00","pass_rate":0.5,"pass_at_k":0.5,"pass_hat_k":0.25,
+               "n":16}]}]}]}
+        """;
 
-    /// <summary>The trend as the API sends it.</summary>
-    private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
-
-    /// <summary>The category cards over this trend.</summary>
+    /// <summary>The category cards over this trend, read into the contract's reply as the API sends it.</summary>
     private static IRenderedComponent<CategoryTrends> Render(string trend)
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        return ctx.Render<CategoryTrends>(p => p.Add(x => x.Trend, Json(trend)));
+        var reply = JsonSerializer.Deserialize<TrendReply>(trend, AdminJson.SnakeCase)!;
+        return ctx.Render<CategoryTrends>(p => p.Add(x => x.Categories, reply.Categories));
     }
 
     /// <summary>

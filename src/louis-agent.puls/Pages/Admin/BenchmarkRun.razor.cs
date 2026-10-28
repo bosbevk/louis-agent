@@ -85,6 +85,13 @@ public partial class BenchmarkRun : IDisposable
     private IReadOnlyList<TrendLineRow> TrendLines =>
         _trend?.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Modes ?? [];
 
+    /// <summary>
+    /// The trend's categories for the cards, read from the same JSON. It goes with <see cref="TrendLines"/>
+    /// (step 5, commit 15).
+    /// </summary>
+    private IReadOnlyList<CategoryTrendRow>? TrendCategories =>
+        _trend?.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Categories;
+
     /// <summary>Starts listening for a grade or a note being saved, so the run is fetched again when one is.</summary>
     protected override void OnInitialized()
     {

@@ -1,6 +1,4 @@
 using System.Globalization;
-using System.Text.Json;
-using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Summary;
 using LouisAgent.Web.Shared.Usage;
@@ -23,12 +21,9 @@ public partial class CategoryTrends
     /// <summary>The trend chart's palette, so a mode's bar is the colour of its line.</summary>
     private static readonly string[] Palette = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300"];
 
-    /// <summary>
-    /// The trend as <c>GET /v1/admin/benchmarks/checks/{check}/trend</c> answers it: its <c>categories</c>, each with
-    /// its lines under <c>modes</c>.
-    /// </summary>
-    [Parameter, EditorRequired]
-    public JsonElement Trend { get; set; }
+    /// <summary>The trend's category rows as the contract's trend reply carries them; none before categories.</summary>
+    [Parameter]
+    public IReadOnlyList<CategoryTrendRow>? Categories { get; set; }
 
     /// <summary>The currency the page shows money in.</summary>
     [Parameter]
@@ -39,10 +34,7 @@ public partial class CategoryTrends
     public string? Highlight { get; set; }
 
     /// <summary>A card per category, in the trend's order.</summary>
-    private IReadOnlyList<CategoryCard> Cards =>
-        Trend.TryGetProperty("categories", out var categories) && categories.ValueKind == JsonValueKind.Array
-            ? [.. categories.EnumerateArray().Select(CategoryTrendReader.Read)]
-            : [];
+    private IReadOnlyList<CategoryCard> Cards => [.. (Categories ?? []).Select(CategoryTrendReader.Read)];
 
     /// <summary>The colour of the mode at this place, the same as its line's.</summary>
     private static string Colour(int i) => Palette[i % Palette.Length];
@@ -55,11 +47,4 @@ public partial class CategoryTrends
     private static string Width(double? rate) => rate is { } value
         ? Math.Round(value * 100, 1).ToString(CultureInfo.InvariantCulture) + "%"
         : "0";
-
-    /// <summary>
-    /// A category's lines for the chart, read from its JSON (only the pass rates survive, which is all its chart
-    /// draws). It goes when the cards read the contract's category rows (step 5, commit 11).
-    /// </summary>
-    private static IReadOnlyList<TrendLineRow> LinesOf(JsonElement chart) =>
-        chart.Deserialize<TrendReply>(AdminJson.SnakeCase)?.Modes ?? [];
 }

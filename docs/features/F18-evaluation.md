@@ -1801,6 +1801,11 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   build, then two panel counts (11 where 10 were expected) and the ratchet; the full chart's golden held byte-equal on
   typed lines before R2-3, then `TrendChart.full.html`, `TrendChart.marks.html` (ten panels) and `ChartInfo.html`
   (the passed note) were regenerated and their diffs read.
+  Commit 11: `CategoryTrendReader` reads the contract's `CategoryTrendRow`, and its card's chart is typed lines (the
+  category's pass rates in `TrendPointRow`s) instead of the category's JSON, which the chart only read by accident of
+  shape; `CategoryTrends` takes `Categories` (the run page hands them from its JSON until commit 15). The reader's
+  tests read their fixtures into rows, with a new case for the chart's lines; the cards' tests read the reply. Red:
+  the build, then the ratchet.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
