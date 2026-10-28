@@ -1784,6 +1784,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   their own, so Rider's formatter keeps them under 120 (commit 4 left them aligned past it).
   Commit 6: `NoteReader`'s JSON overload goes; the page calls the typed one with `_run.Notes`. Its JSON tests went,
   the typed cases stay; no test first, since only a duplicate path went, and `BenchmarkRunTests` still pins the notes.
+  Commit 7: `SummaryReader` reads `SummaryRow`s through a new `SliceView.Of`, and `SummaryPanel` takes `Summaries`
+  and `RunId` (the page passes them from `_run`). The tests read their same fixtures into the contract's rows. Red:
+  the build.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

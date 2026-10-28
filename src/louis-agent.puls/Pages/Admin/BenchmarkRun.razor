@@ -34,7 +34,7 @@ else
     </section>
     <section class="card-p">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Results by category<span class="fold-note">per mode: overall, then each category</span></summary>
-            <SummaryPanel Run="run" Currency="Currency.Current" />
+            <SummaryPanel Summaries="_run.Summaries" RunId="@_run.Run.Id" Currency="Currency.Current" />
         </details>
     </section>
     @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
