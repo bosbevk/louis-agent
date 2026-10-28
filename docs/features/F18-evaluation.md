@@ -1307,6 +1307,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   `EvalRunFieldsContract`, `EvalNotesContract`. Done with Rider's own refactorings (move, Adjust Namespaces, rename)
   and `git mv`. Only C# names changed: routes, wire names, Mongo collections and fields are as they were. The
   ratchets that name paths (`ApiNamesNoProductTests`, `PortalReadsNoScoreKeyTests`, `RepeatedNameTests`) follow.
+- **Step 7b (iii), the `/admin/evals/…` routes** (decisions log, finding 21): every eval route hangs on a route group
+  per name, `/evals` and `/benchmarks` (`AdminEndpoints.Prefixes`), so each answers under both; the trend is
+  `/evals/{check}/trend` beside its old `/benchmarks/checks/{check}/trend`. `GET /admin/benchmarks` (the checks list
+  the Benchmarks page reads) stays as it is beside `GET /admin/evals`. The Puls pages keep calling the old names, and
+  a saved `/admin/benchmarks/…` link keeps opening; a TODO line removes the alias. `EvalRouteAliasTests` holds that
+  each read answers the same under both names and a note written under the new one is read under the old; red
+  first: every new route answered "This API has no route". The route golden gains the 16 new routes, none removed.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

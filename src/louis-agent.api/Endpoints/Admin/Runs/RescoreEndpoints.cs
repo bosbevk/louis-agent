@@ -12,13 +12,13 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class RescoreEndpoints
 {
-    /// <summary>Adds the re-score route to the admin group.</summary>
-    public static void MapRescore(this RouteGroupBuilder admin, EvalList catalog, EvalProcess runner,
+    /// <summary>Adds the re-score route to the group the eval routes hang on.</summary>
+    public static void MapRescore(this RouteGroupBuilder evals, EvalList catalog, EvalProcess runner,
         IEvalStore? store, EvalRecorder? recorder,
         Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf)
     {
         var handlers = new RescoreHandlers(catalog, runner, store, recorder, settingsOf);
 
-        admin.MapPost("/benchmarks/runs/{id}/rescore", handlers.Rescore);
+        evals.MapPost("/runs/{id}/rescore", handlers.Rescore);
     }
 }

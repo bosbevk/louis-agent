@@ -14,16 +14,15 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 internal static class StoredRunEndpoints
 {
     /// <summary>Adds the reads and the delete of a stored run.</summary>
-    public static void MapStoredRuns(this RouteGroupBuilder admin, IEvalStore? store, EvalProcess runner,
+    public static void MapStoredRuns(this RouteGroupBuilder evals, IEvalStore? store, EvalProcess runner,
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null)
     {
         var handlers = new StoredRunHandlers(store, runner, reviews, calibrations);
 
-        admin.MapGet("/benchmarks/runs/{id}", handlers.GetRun);
-        admin.MapGet("/benchmarks/runs/{id}/turns/{mode}/{repeat:int}/{task}/{turn:int}/events",
-            handlers.GetTurnEvents);
-        admin.MapGet("/benchmarks/runs/{id}/protocol", handlers.GetProtocol);
-        admin.MapDelete("/benchmarks/runs/{id}", handlers.DeleteRun);
+        evals.MapGet("/runs/{id}", handlers.GetRun);
+        evals.MapGet("/runs/{id}/turns/{mode}/{repeat:int}/{task}/{turn:int}/events", handlers.GetTurnEvents);
+        evals.MapGet("/runs/{id}/protocol", handlers.GetProtocol);
+        evals.MapDelete("/runs/{id}", handlers.DeleteRun);
     }
 }

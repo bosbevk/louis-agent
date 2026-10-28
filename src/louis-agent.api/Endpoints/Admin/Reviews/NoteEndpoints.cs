@@ -9,10 +9,10 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 internal static class NoteEndpoints
 {
     /// <summary>Adds the notes route. The clock comes in from outside so a test can fix the time.</summary>
-    public static void MapNotes(this RouteGroupBuilder admin, IEvalStore? store, TimeProvider time)
+    public static void MapNotes(this RouteGroupBuilder evals, IEvalStore? store, TimeProvider time)
     {
         var handlers = new NoteHandlers(store, time);
 
-        admin.MapPost("/benchmarks/runs/{id}/notes", handlers.AddNote);
+        evals.MapPost("/runs/{id}/notes", handlers.AddNote);
     }
 }

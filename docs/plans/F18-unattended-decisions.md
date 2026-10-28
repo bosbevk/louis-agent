@@ -445,3 +445,25 @@ the rules whole: about 490 classes and methods had no summary, `MongoBenchmarkSt
 **Why 1.** Each commit stays reviewable for one thing: what a file says, or where it lives. Sources: Fowler,
 *Refactoring* 2nd ed., *Extract Class*; Fowler, *PoEAA*, *Repository*, *Data Mapper*. **Commit:** step 7b (iii), the
 bring-up commits before the move.
+
+### 21. How the old `/admin/benchmarks/…` routes keep answering beside `/admin/evals/…` (step 7b (iii))
+
+**What came up.** The row asks for `/admin/evals/{name}/…` routes with the old `/admin/benchmarks/…` kept until a
+TODO line removes them, and a saved link must keep opening. It doesn't say how the two names are served.
+
+1. **A route group per name: each endpoint file maps its routes relative to the group it's given, and
+   `AdminEndpoints` calls them once for `/evals` and once for `/benchmarks` (picked).** Pattern: *Parallel Change*
+   (expand, migrate, contract; Fowler, martinfowler.com/bliki/ParallelChange.html), with ASP.NET Core's route
+   groups. Changes: the endpoint files drop the `/benchmarks` prefix; one `Prefixes` list; the trend gets its new
+   address beside its old one by hand (the old one had a `checks/` in it). Costs: the route golden lists every route
+   twice until the alias goes; removing it is one word and two lines.
+2. **URL rewriting** (`Microsoft.AspNetCore.Rewrite`, in the framework): one rule maps `/admin/benchmarks/…` to
+   `/admin/evals/…`. Costs: the rewriter has to run before routing, which the minimal host and the test host would
+   each have to order by hand; the old routes vanish from the golden, so the access rule on them isn't pinned.
+3. **Each route mapped twice, line by line.** Costs: twenty duplicated lines across five files, and removing the
+   alias is a hunt.
+
+**Why 1.** Both names are real routes with the same handler, gate and access rule, pinned by the golden, and the
+contract step is a one-word change the TODO line names. Sources: Fowler, *ParallelChange*; Microsoft, *Route groups*
+(learn.microsoft.com/aspnet/core/fundamentals/minimal-apis/route-handlers#route-groups). **Commit:** step 7b (iii),
+the routes commit.

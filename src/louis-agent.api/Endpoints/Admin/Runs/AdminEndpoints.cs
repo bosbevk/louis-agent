@@ -21,6 +21,12 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 internal static class AdminEndpoints
 {
     /// <summary>
+    /// Where the eval routes hang: <c>/evals</c>, and <c>/benchmarks</c>, their old name, kept as an alias until the
+    /// TODO line that removes it.
+    /// </summary>
+    private static readonly string[] Prefixes = ["/evals", "/benchmarks"];
+
+    /// <summary>
     /// Adds the admin routes under <c>/admin</c>, behind the key. The clock stamps the notes, so a test can fix it.
     /// </summary>
     public static void MapAdmin(this IEndpointRouteBuilder routes, EvalList catalog, EvalProcess runner,
@@ -35,20 +41,29 @@ internal static class AdminEndpoints
         // One group for all of them, so the key check runs before any route's own work.
         var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(handlers.Gate);
 
-        admin.MapGet("/benchmarks", handlers.GetList);
-        admin.MapGet("/benchmarks/{check}/manual", handlers.GetManual);
-        admin.MapGet("/benchmarks/checks/{check}/trend", handlers.GetTrend);
+        // The two lists: every eval (GET /evals), and the checks with their latest runs the Benchmarks page reads.
         admin.MapEvals(catalog, store, workspaceRoot);
+        admin.MapGet("/benchmarks", handlers.GetList);
 
-        admin.MapStoredRuns(store, runner, reviews, calibrations);
-        admin.MapReviews(store, reviews);
-        admin.MapNotes(store, time ?? TimeProvider.System);
-        admin.MapRescore(catalog, runner, store, recorder, settingsOf);
-        admin.MapCalibrations(catalog, runner, store, reviews, calibrations, calibrationRecorder);
+        // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
+        // working until a TODO line removes the old name.
+        foreach (string prefix in Prefixes)
+        {
+            var evals = admin.MapGroup(prefix);
+            evals.MapGet("/{check}/manual", handlers.GetManual);
+            evals.MapStoredRuns(store, runner, reviews, calibrations);
+            evals.MapReviews(store, reviews);
+            evals.MapNotes(store, time ?? TimeProvider.System);
+            evals.MapRescore(catalog, runner, store, recorder, settingsOf);
+            evals.MapCalibrations(catalog, runner, store, reviews, calibrations, calibrationRecorder);
+            evals.MapPost("/{check}/runs", handlers.StartRun);
+            evals.MapGet("/runs/current", handlers.GetCurrent);
+            evals.MapGet("/runs/{id}/events", handlers.GetEvents);
+        }
 
-        admin.MapPost("/benchmarks/{check}/runs", handlers.StartRun);
-        admin.MapGet("/benchmarks/runs/current", handlers.GetCurrent);
-        admin.MapGet("/benchmarks/runs/{id}/events", handlers.GetEvents);
+        // An eval's trend: its new address, and the old one that had a "checks" in it.
+        admin.MapGet("/evals/{check}/trend", handlers.GetTrend);
+        admin.MapGet("/benchmarks/checks/{check}/trend", handlers.GetTrend);
     }
 
     /// <summary>

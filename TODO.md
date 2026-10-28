@@ -119,6 +119,11 @@ changes instead of relying on training; **a configured agent**, an identity and 
 - [ ] F31's review follow-ups
 - [ ] Web tests: the Branches queue, on Phase 4's bUnit project
 - [ ] The portal's old benchmark routes and words removed, after Phase 3
+- [ ] Remove the `/v1/admin/benchmarks/…` route aliases (F18 step 7b (iii)): every eval route also answers under
+  `/v1/admin/evals/…` (`AdminEndpoints.Prefixes`, and the trend's old `/benchmarks/checks/{check}/trend`), so once the
+  Puls admin pages call only the new names and a deploy has passed, drop `"/benchmarks"` from `Prefixes`, the old
+  trend line and `GET /admin/benchmarks` (with the page that reads it), and regenerate `ApiRoutesSnapshot.json`;
+  `EvalRouteAliasTests` goes with them
 - [ ] Paymo, DevOps and Rider out of core (core layout review, 2026-10-19): `Tools/Integrations/Paymo` and `Tools/Integrations/DevOps` are packs in waiting (CL17); `Hosting/RiderMcpToolDiscovery` and `Protocols/Mcp/RiderMcpClient` serve only the ACP host and name a product, so they move to `src/louis-agent.acp-server`
 - [ ] The rest of the size list (CL15, 2026-10-20): 33 files over 200 lines (400 for tests), held by `FileSizeTests`' `Oversized`; split by responsibility a group at a time, on its own branch
 - [ ] A price format per country (CL15 review, 2026-10-20): `Tools/Web/Quotes/QuoteMatch` knows the rand sign, yet core names no country; an `IPriceFormat` seam in core, the South African one from Puls or the shops pack (with CL17)

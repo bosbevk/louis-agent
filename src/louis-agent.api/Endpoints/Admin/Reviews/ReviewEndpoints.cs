@@ -11,13 +11,13 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class ReviewEndpoints
 {
-    /// <summary>Adds the review routes to the admin group.</summary>
-    public static void MapReviews(this RouteGroupBuilder admin, IEvalStore? store, IHumanReviewStore? reviews)
+    /// <summary>Adds the review routes to the group the eval routes hang on.</summary>
+    public static void MapReviews(this RouteGroupBuilder evals, IEvalStore? store, IHumanReviewStore? reviews)
     {
         var handlers = new ReviewHandlers(store, reviews);
 
-        admin.MapPut("/benchmarks/runs/{id}/reviews/{mode}/{repeat:int}/{task}/{grader}", handlers.PutReview);
-        admin.MapGet("/benchmarks/runs/{id}/reviews", handlers.GetReviews);
-        admin.MapGet("/benchmarks/runs/{id}/labels", handlers.GetLabels);
+        evals.MapPut("/runs/{id}/reviews/{mode}/{repeat:int}/{task}/{grader}", handlers.PutReview);
+        evals.MapGet("/runs/{id}/reviews", handlers.GetReviews);
+        evals.MapGet("/runs/{id}/labels", handlers.GetLabels);
     }
 }

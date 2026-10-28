@@ -15,14 +15,14 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class CalibrationEndpoints
 {
-    /// <summary>Adds the judge-check routes to the admin group.</summary>
-    public static void MapCalibrations(this RouteGroupBuilder admin, EvalList catalog, EvalProcess runner,
+    /// <summary>Adds the judge-check routes to the group the eval routes hang on.</summary>
+    public static void MapCalibrations(this RouteGroupBuilder evals, EvalList catalog, EvalProcess runner,
         IEvalStore? store, IHumanReviewStore? reviews,
         ICalibrationStore? calibrations, CalibrationRecorder? recorder)
     {
         var handlers = new CalibrationHandlers(catalog, runner, store, reviews, calibrations, recorder);
 
-        admin.MapPost("/benchmarks/runs/{id}/calibrations/{grader}", handlers.StartCalibration);
-        admin.MapGet("/benchmarks/runs/{id}/calibrations", handlers.GetCalibrations);
+        evals.MapPost("/runs/{id}/calibrations/{grader}", handlers.StartCalibration);
+        evals.MapGet("/runs/{id}/calibrations", handlers.GetCalibrations);
     }
 }
