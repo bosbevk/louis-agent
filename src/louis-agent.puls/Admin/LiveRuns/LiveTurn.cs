@@ -1,5 +1,6 @@
 using System.Globalization;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared.Chats;
 
@@ -49,8 +50,8 @@ public sealed class LiveTurn(TurnKey key)
     /// <summary>Why the turn failed, if it did.</summary>
     public string? Error { get; set; }
 
-    /// <summary>How many tools Puls called.</summary>
-    public int PulsCalls { get; set; }
+    /// <summary>How many tools the mode's agent (Puls) called itself.</summary>
+    public int AgentCalls { get; set; }
 
     /// <summary>How many tools the specialist called.</summary>
     public int SpecialistCalls { get; set; }
@@ -73,9 +74,9 @@ public sealed class LiveTurn(TurnKey key)
     /// <summary>How long it took, with one decimal and a point on any machine. Blank until it's done.</summary>
     public string SecondsText => Done ? Seconds.ToString("0.0", CultureInfo.InvariantCulture) : "";
 
-    /// <summary>Takes the figures the script sent when the turn ended.</summary>
-    public void Finish(RunEvent ended) => Finish(ended.Role, ended.Continued, ended.Error, ended.PulsCalls ?? 0,
-        ended.SpecialistCalls ?? 0, ended.Seconds ?? 0);
+    /// <summary>Takes the figures the runner sent when the turn ended.</summary>
+    public void Finish(TurnEvent ended) => Finish(ended.Role, ended.Continued, ended.Error, ended.AgentCalls,
+        ended.SpecialistCalls, ended.Seconds);
 
     /// <summary>Takes the figures the store kept of the turn.</summary>
     public void Finish(TurnRow stored) => Finish(stored.Role, stored.Continued, stored.Error, stored.AgentCalls,
@@ -95,14 +96,14 @@ public sealed class LiveTurn(TurnKey key)
     }
 
     /// <summary>Marks the turn done with its figures.</summary>
-    private void Finish(string? role, string? continued, string? error, int pulsCalls, int specialistCalls,
+    private void Finish(string? role, string? continued, string? error, int agentCalls, int specialistCalls,
         double seconds)
     {
         Done = true;
         Role = role;
         Continued = continued;
         Error = error;
-        PulsCalls = pulsCalls;
+        AgentCalls = agentCalls;
         SpecialistCalls = specialistCalls;
         Seconds = seconds;
     }

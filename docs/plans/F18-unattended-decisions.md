@@ -675,3 +675,23 @@ order Louis approved on the 29th (plan, *Approved during the build*, step 5), wh
 - **C. Keep the approved order, `RunEvent` at 13.** Costs: against the brief's explicit "first".
 
 **Pick: A.** Both instructions hold. Commit: the next one, step 5 (3).
+
+### R2-2. The live table's score chips have nothing to show in v2 (Part A, `RunEvent`)
+
+**What came up.** The live table showed each conversation's v1 score bag as chips (`ScoreChips.Of`, from the
+`conversation` event's `scores` and the store's `ConversationRow.Scores`). A v2 `ConversationEvent` carries grades,
+an outcome and metrics, and no score bag; the store's `Scores` is always `{}`. So the chips never show anything.
+
+- **A. Drop the live chips.** `LiveTurns` keeps no chips, the table no chip row; a conversation's end changes
+  nothing in the table, and its grades show on the run's page once it is stored. Changes: `LiveTurns`,
+  `LiveTurnTable`, the page golden loses its chip row. Costs: while a run goes on, the table no longer says how a
+  conversation went.
+- **B. Grade chips instead.** The `ConversationEvent`'s grades and outcome become chips (the explorer's
+  `GradeChip`). Changes: a new mapping from `GradeInfo` to the table's chips, its tests. Costs: new UI during a
+  rebuild whose brief is "read the contract", and a second place that words grades.
+- **C. Keep `ScoreChips` for the store's rows.** Costs: it reads a field that is always empty, so it is dead code
+  kept alive.
+
+Sources: Fowler, *Refactoring*, "Remove Dead Code"; the brief's Part A ("the live stream reads the contract's
+events"). **Pick: A**, the smallest change that leaves nothing dead; B is a feature to ask for, noted for Louis.
+`ScoreChips` itself stays until `ExplorerScores` goes (step 5 (12)), its last reader. Commit: step 5 (3).

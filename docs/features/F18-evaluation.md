@@ -1765,6 +1765,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   case went: the contract's grader version is never null); `GraderListTests` renders from a row and both goldens stay
   byte-equal. Red first: 9 (the three new tests, the two goldens, three run-page tests through the stub, and the
   ratchet asking for the two files off its list).
+  Commit 3 (the unattended run 2's first, its order R2-1): the live view reads the contract's events. `RunEvent` and
+  `RunEventKind` go; `LiveRunPanel` reads each line with `EvalProtocolJson.Read` (an object with an `event` is an
+  event, anything else a plain line; no `@` any more, so v2 runs show in the table again, which they hadn't since
+  2c), `LiveTurns.Apply` switches on the event's type (question, sse, turn; the rest change nothing), and
+  `LiveTurn.PulsCalls` is `AgentCalls` (Rider's rename). The live chips went (R2-2): v2 has no score bag. The three
+  fixtures that held `puls_calls` are the contract's own records now: `LiveTurnsTests` applies them, and
+  `BenchmarksPageTests`' stream writes them with `EvalProtocolJson.Line` (its `done` line from `LiveRunRow`), never
+  by hand; `RunEventTests` went with the class. `Benchmarks.html` loses its chip row and shows the broken line
+  without `@`. Red first: the build (the tests named the contract's records, which the code didn't take yet), then
+  the ratchet and the golden.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Evals.Protocol;
 using LouisAgent.Puls.Admin.LiveRuns;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Usage;
@@ -21,12 +22,21 @@ namespace LouisAgent.Puls.Components.Admin.BenchmarksPage.LiveRun;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class LiveRunPanel
 {
+    /// <summary>The table of turns as the events come in.</summary>
     private readonly LiveTurns _turns = new();
+
+    /// <summary>The runner's plain lines, the ones that are no event.</summary>
     private readonly List<string> _log = [];
+
+    /// <summary>The run being followed, so the same run handed back isn't followed twice.</summary>
     private string? _followed;
+
+    /// <summary>A render is already waiting, so the next event doesn't ask for another.</summary>
     private bool _renderPending;
 
-    [Inject] private AgentApi Api { get; set; } = null!;
+    /// <summary>The API the page talks to.</summary>
+    [Inject]
+    private AgentApi Api { get; set; } = null!;
 
     /// <summary>The run to follow, and later the same run as it ended.</summary>
     [Parameter, EditorRequired]
@@ -104,10 +114,13 @@ public partial class LiveRunPanel
         await OnEnded.InvokeAsync(ended);
     }
 
-    /// <summary>One line of the script: an event into the table, anything else into the plain lines.</summary>
+    /// <summary>
+    /// One line of the runner: an event into the table, anything else into the plain lines. The contract's reader
+    /// decides which: a line that is a JSON object with an <c>event</c> is an event (7c's pick B).
+    /// </summary>
     private void Take(string line)
     {
-        if (!line.StartsWith('@') || RunEvent.TryRead(line[1..]) is not { } e)
+        if (EvalProtocolJson.Read(line) is not { } e)
         {
             _log.Add(line);
             return;

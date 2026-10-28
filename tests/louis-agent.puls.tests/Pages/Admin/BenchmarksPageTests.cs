@@ -1,6 +1,13 @@
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
+using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Puls.Pages.Admin;
 using LouisAgent.Puls.Text;
 using LouisAgent.Testing;
@@ -24,75 +31,94 @@ public partial class BenchmarksPageTests
     /// Two checks, the second with a manual; a store that doesn't answer; two stored runs of the second.
     /// </summary>
     private static readonly string List = Fill("""
-                                               {"checks":[{"id":"<EvalAlpha>","title":"Puls answers.","manual":false},{"id":"<EvalBeta>","title":"Puls cooks.","manual":true}],
-                                                "store":{"configured":true,"error":"timed out"},
-                                                "runs":[
-                                                 {"id":"run2","check":"<EvalBeta>","repeat":2,"status":"done","exit_code":0,"started_at":"2026-10-26T09:00:00+00:00","ended_at":null,
-                                                  "total":{"cost":0.5,"currency":"USD","tokens":1000,"requests":4},"store_error":null,
-                                                  "models":[{"mode":"<ModeAlpha>","level":"agent","role":null,"model":"claude-haiku"}],
-                                                  "eval":null,"eval_version":null,"commit":null,"rescore_of":null,"graders":null},
-                                                 {"id":"run1","check":"<EvalBeta>","repeat":1,"status":"failed","exit_code":1,"started_at":"2026-10-25T09:00:00+00:00","ended_at":null,
-                                                  "total":null,"store_error":"late","models":null,"eval":null,"eval_version":null,"commit":null,"rescore_of":"run0","graders":null}]}
-                                               """);
+        {"checks":[{"id":"<EvalAlpha>","title":"Puls answers.","manual":false},
+                   {"id":"<EvalBeta>","title":"Puls cooks.","manual":true}],
+         "store":{"configured":true,"error":"timed out"},
+         "runs":[
+          {"id":"run2","check":"<EvalBeta>","repeat":2,"status":"done","exit_code":0,
+           "started_at":"2026-10-26T09:00:00+00:00","ended_at":null,
+           "total":{"cost":0.5,"currency":"USD","tokens":1000,"requests":4},"store_error":null,
+           "models":[{"mode":"<ModeAlpha>","level":"agent","role":null,"model":"claude-haiku"}],
+           "eval":null,"eval_version":null,"commit":null,"rescore_of":null,"graders":null},
+          {"id":"run1","check":"<EvalBeta>","repeat":1,"status":"failed","exit_code":1,
+           "started_at":"2026-10-25T09:00:00+00:00","ended_at":null,
+           "total":null,"store_error":"late","models":null,"eval":null,"eval_version":null,"commit":null,
+           "rescore_of":"run0","graders":null}]}
+        """);
 
     /// <summary>The second check's trend: one mode, two runs.</summary>
     private static readonly string Trend = Fill("""
-                                                {"check":"<EvalBeta>","categories":[],"modes":[{"name":"<ModeAlpha>","points":[
-                                                 {"run":"run1","at":"2026-10-25T09:00:00+00:00","cost":0.1,"score":1,"conversations":2,"tokens":1000,"seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,"sites":3,"pass_at_k":1,"pass_hat_k":0.5,"k":2},
-                                                 {"run":"run2","at":"2026-10-26T09:00:00+00:00","cost":0.5,"score":0.5,"conversations":2,"tokens":2000,"seconds_per_turn":12,"cache_share":0.7,"sourced":0.6,"tools_failed":0.1,"cost_per_answer":0.05,"sites":5,"pass_at_k":1,"pass_hat_k":1,"k":2}]}]}
-                                                """);
+        {"check":"<EvalBeta>","categories":[],"modes":[{"name":"<ModeAlpha>","points":[
+         {"run":"run1","at":"2026-10-25T09:00:00+00:00","cost":0.1,"score":1,"conversations":2,"tokens":1000,
+          "seconds_per_turn":9.5,"cache_share":0.5,"sourced":0.8,"tools_failed":0,"cost_per_answer":0.02,
+          "sites":3,"pass_at_k":1,"pass_hat_k":0.5,"k":2},
+         {"run":"run2","at":"2026-10-26T09:00:00+00:00","cost":0.5,"score":0.5,"conversations":2,"tokens":2000,
+          "seconds_per_turn":12,"cache_share":0.7,"sourced":0.6,"tools_failed":0.1,"cost_per_answer":0.05,
+          "sites":5,"pass_at_k":1,"pass_hat_k":1,"k":2}]}]}
+        """);
 
     /// <summary>The run in progress when the page opens.</summary>
     private static readonly string Current = Fill("""
-                                                  {"id":"live1","check":"<EvalBeta>","repeat":1,"status":"running","exit_code":null,"started_at":"2026-10-27T10:00:00+00:00",
-                                                   "ended_at":null,"lines":0,"stored":null,"store_error":null,"calibration_of":null,"grader":null,"last_line":null}
-                                                  """);
+        {"id":"live1","check":"<EvalBeta>","repeat":1,"status":"running","exit_code":null,
+         "started_at":"2026-10-27T10:00:00+00:00","ended_at":null,"lines":0,"stored":null,"store_error":null,
+         "calibration_of":null,"grader":null,"last_line":null}
+        """);
 
     /// <summary>
-    /// What the store holds of the live run: its first turn, a scored conversation, and the requests' costs.
+    /// What the store holds of the live run: its first turn, its conversation, and the requests' costs.
     /// </summary>
     private static readonly string Stored = Fill("""
-                                                 {"run":{"id":"live1","check":"<EvalBeta>","repeat":1,"status":"running","started_at":"2026-10-27T10:00:00+00:00"},
-                                                  "modes":[],"notes":[],"agreement":[],
-                                                  "turns":[{"tools":{"calls":0,"failed":0,"reasons":[]},"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1,"session":"s1",
-                                                            "question":"Maak vir my bobotie.","answer":"Hier is bobotie.","role":"<RoleAlpha>","continued":null,
-                                                            "agent_calls":1,"specialist_calls":2,"hosts":[],"seconds":3.5,"error":null}],
-                                                  "conversations":[{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","order":0,"role":"<RoleAlpha>",
-                                                            "scores":{"routed_right":true,"follow_up":"continued","ingredients":5,"priced":4,"estimated":1,"priced_ratio":0.8,"images":2,"unsourced":1,"shop_hosts":["a","b"],"errors":1},
-                                                            "errors":1,"seconds":7.5,"human_grades":[]}],
-                                                  "requests":[
-                                                   {"turn":{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1},"at":"2026-10-27T10:00:01+00:00","purpose":"turn","cost":0.01,"duration_ms":10},
-                                                   {"turn":{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1},"at":"2026-10-27T10:00:02+00:00","purpose":"turn","cost":0.02,"duration_ms":10},
-                                                   {"turn":{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":2},"at":"2026-10-27T10:00:03+00:00","purpose":"turn","cost":0.03,"duration_ms":10},
-                                                   {"turn":null,"at":"2026-10-27T10:00:04+00:00","purpose":"judge","cost":0.04,"duration_ms":10}]}
-                                                 """);
+        {"run":{"id":"live1","check":"<EvalBeta>","repeat":1,"status":"running",
+                "started_at":"2026-10-27T10:00:00+00:00"},
+         "modes":[],"notes":[],"agreement":[],
+         "turns":[{"tools":{"calls":0,"failed":0,"reasons":[]},"mode":"<ModeAlpha>","repeat":1,"task":"bobotie",
+                   "turn":1,"session":"s1","question":"Maak vir my bobotie.","answer":"Hier is bobotie.",
+                   "role":"<RoleAlpha>","continued":null,"agent_calls":1,"specialist_calls":2,"hosts":[],
+                   "seconds":3.5,"error":null}],
+         "conversations":[{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","order":0,"role":"<RoleAlpha>",
+                           "scores":{},"errors":1,"seconds":7.5,"human_grades":[]}],
+         "requests":[
+          {"turn":{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1},"at":"2026-10-27T10:00:01+00:00",
+           "purpose":"turn","cost":0.01,"duration_ms":10},
+          {"turn":{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":1},"at":"2026-10-27T10:00:02+00:00",
+           "purpose":"turn","cost":0.02,"duration_ms":10},
+          {"turn":{"mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":2},"at":"2026-10-27T10:00:03+00:00",
+           "purpose":"turn","cost":0.03,"duration_ms":10},
+          {"turn":null,"at":"2026-10-27T10:00:04+00:00","purpose":"judge","cost":0.04,"duration_ms":10}]}
+        """);
+
+    /// <summary>When the live run's events happened; the page doesn't read it.</summary>
+    private static readonly DateTimeOffset T0 = new(2026, 10, 27, 10, 0, 0, TimeSpan.Zero);
 
     /// <summary>
-    /// The live run's events: a plain line, a question that is never answered, a turn that streams and ends, the
-    /// conversation's scores, a broken line, and the end.
+    /// The live run's events, written by the contract's own writer: a plain line, a question that is never answered,
+    /// a turn that streams and ends, the conversation's end, a broken line, and the end.
     /// </summary>
-    private static readonly string Events = Fill("""
-                                                 data: starting the run
+    private static readonly string Events = string.Join("\n\n",
+    [
+        "data: starting the run",
+        Data(new QuestionEvent(T0, SampleMode.Alpha, 1, "chat", 1, "s0", "Gee my drie name vir 'n hond.")),
+        Data(new QuestionEvent(T0, SampleMode.Alpha, 1, "bobotie", 2, "s1",
+            "En as ek dit vir ses mense wil maak, met genoeg rys en blatjang vir almal aan die tafel?")),
+        Data(new SseEvent(T0, SampleMode.Alpha, 1, "bobotie", 2, "content_block_start", Parsed(
+            """{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}"""))),
+        Data(new SseEvent(T0, SampleMode.Alpha, 1, "bobotie", 2, "content_block_delta", Parsed(
+            """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Verdubbel alles."}}"""))),
+        Data(new TurnEvent(T0, SampleMode.Alpha, 1, "bobotie", 2, "s1", "En vir ses?", "Verdubbel alles.",
+            SampleRole.Alpha, "sub-1", 1, 3, [], 4.25, null, null)),
+        Data(new ConversationEvent(T0, SampleMode.Alpha, 1, "bobotie", SampleRole.Alpha, 0, 7.75, [],
+            TrialOutcome.Fail, new Metrics(2, 5, [], 2, null, null, 7.75, null))),
+        "data: { not json",
+        "event: done\ndata: " + JsonSerializer.Serialize(
+            new LiveRunRow("live1", SampleEval.Beta, 1, "done", 0, T0, null, 9, true, null, null, null, null),
+            AdminJson.SnakeCase),
+    ]) + "\n\n\n";
 
-                                                 data: @{"event":"question","mode":"<ModeAlpha>","repeat":1,"task":"chat","turn":1,"text":"Gee my drie name vir 'n hond."}
+    /// <summary>One of the runner's events as the stream's data line, written by the contract's writer.</summary>
+    private static string Data(EvalEvent e) => "data: " + EvalProtocolJson.Line(e);
 
-                                                 data: @{"event":"question","mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":2,"text":"En as ek dit vir ses mense wil maak, met genoeg rys en blatjang vir almal aan die tafel?"}
-
-                                                 data: @{"event":"sse","mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":2,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}
-
-                                                 data: @{"event":"sse","mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":2,"type":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Verdubbel alles."}}}
-
-                                                 data: @{"event":"turn","mode":"<ModeAlpha>","repeat":1,"task":"bobotie","turn":2,"role":"<RoleAlpha>","continued":"sub-1","puls_calls":1,"specialist_calls":3,"seconds":4.25,"error":null}
-
-                                                 data: @{"event":"conversation","mode":"<ModeAlpha>","repeat":1,"task":"bobotie","role":"<RoleAlpha>","scores":{"routed_right":false,"deals_named":2,"wrong_store":1,"no_catalogue_line":true}}
-
-                                                 data: @{ not json
-
-                                                 event: done
-                                                 data: {"id":"live1","check":"<EvalBeta>","repeat":1,"status":"done","exit_code":0,"started_at":"2026-10-27T10:00:00+00:00","ended_at":null,"lines":9,"stored":true,"store_error":null,"calibration_of":null,"grader":null,"last_line":null}
-
-
-                                                 """);
+    /// <summary>Parses a bit of JSON into a value we can keep.</summary>
+    private static JsonElement Parsed(string json) => JsonDocument.Parse(json).RootElement.Clone();
 
     /// <summary>The second check's manual.</summary>
     private static readonly string Manual =
