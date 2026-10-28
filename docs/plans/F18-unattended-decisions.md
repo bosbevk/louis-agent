@@ -355,3 +355,26 @@ panels side by side.
 docs, *Annotate visualizations* (grafana.com/docs/grafana/latest/dashboards/build-dashboards/annotate-visualizations);
 Tufte, *The Visual Display of Quantitative Information*, small multiples. The card's small chart draws no markers (it
 is the cost at a glance). **Commit:** step 7a.3 (c).
+
+### 17. Where the eval list gets what an eval is before it ever ran (step 7b (i))
+
+**What came up.** The row asks each eval to show its graders (name, version, kind), its dataset and categories, and
+one never run is listed with its graders. The runner's `--list` line carried only the name, identity, version, what it
+proves and the manual, so the API had nothing else to show for an eval with no run. Modes can't come from the listing:
+routing reads its baseline from the instance (`GET /toolsets`), so listing them would mean calling the API.
+
+1. **The runner's listing line grows: `dataset` (name, version), `categories` (each once, in the order the scenarios
+   first name them) and `graders` (name, version, kind as the protocol writes it) (picked).** Pattern: a Data
+   Transfer Object widened in place (Fowler, *PoEAA*, *Data Transfer Object*): the one record the API reads from the
+   runner carries the whole description. Changes: `ListedEval` and `EvalCatalog.Listing` in the runner, the API's
+   `EvalLine` reads the three (optional, so an older line still reads; an unknown grader kind refuses the line), and
+   each `BenchmarkCheck` keeps its line. Costs: the listing line is longer; modes stay with the runs.
+2. **Read them from the eval's latest stored run** (its first line carries graders and dataset). Changes: the API
+   only. Costs: an eval never run shows no graders, which is what the row asks the list to show.
+3. **A second runner command, `--describe {eval}`, per eval.** Pattern: *Lazy Load* (PoEAA). Changes: a new command
+   and a process per eval on each list. Costs: N process starts per page load, for facts that never change between
+   builds.
+
+**Why 1.** The catalogue is already the one place that knows every eval, and the plan wants the portal's list to come
+from it (`run --list`), never from a list kept by hand; one wider line keeps that, at start-up cost only. Sources:
+Fowler, *PoEAA*, *Data Transfer Object*, *Lazy Load*. **Commit:** step 7b (i), the listing commit.

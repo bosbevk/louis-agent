@@ -4,13 +4,15 @@ using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// F27 step 1 (F27-S3): the checks the portal can run. Since F18 step 7.4 every check is an eval the runner lists: no script, no Python fallback.
+/// <summary>The checks the portal can run: every one an eval the runner lists, read once, when first wanted.</summary>
 public class BenchmarkCatalogTests
 {
+    /// <summary>A catalogue given nothing offers nothing.</summary>
     [Test]
     public void AnEmptyCatalog_HasNoChecks() =>
         Assert.That(new BenchmarkCatalog().Checks, Is.Empty);
 
+    /// <summary>A catalogue a test fills offers exactly those checks.</summary>
     [Test]
     public void ACatalog_OffersTheChecksItIsGiven()
     {
@@ -19,11 +21,13 @@ public class BenchmarkCatalogTests
         Assert.That(new BenchmarkCatalog([check]).Checks, Is.EqualTo(new[] { check }));
     }
 
+    /// <summary>A check keeps the manual path it was given.</summary>
     [Test]
     public void AnEvalCheckHasTheManualItsEvalListed() =>
         Assert.That(new BenchmarkCheck("stub", "Stub", "evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath,
             Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
 
+    /// <summary>The manual's path is the one the runner listed, or none.</summary>
     [Test]
     public void TheCatalogue_KeepsTheManualPathTheRunnerListed()
     {
@@ -37,6 +41,7 @@ public class BenchmarkCatalogTests
             Is.EqualTo(new string?[] { "evals/louis-agent.evals.puls/Manuals/cook.md", null }));
     }
 
+    /// <summary>Each listed eval is a check under its name, titled with what it proves.</summary>
     [Test]
     public void EachListedEval_IsACheck_WithItsProvesAsItsTitle()
     {
@@ -49,10 +54,26 @@ public class BenchmarkCatalogTests
             Is.EqualTo(new[] { ("stub", "A canned run"), (SampleEval.Beta, "A meal") }));
     }
 
+    /// <summary>
+    /// A check keeps the whole line the runner listed, so the eval list can show its graders and dataset without
+    /// asking the runner again.
+    /// </summary>
+    [Test]
+    public void EachCheck_KeepsTheLineItsEvalListed()
+    {
+        var line = new EvalLine("stub", 1, "A canned run", SampleIdentity.Alpha);
+
+        var merged = BenchmarkCatalog.Merge([line]);
+
+        Assert.That(merged.Single().Eval, Is.SameAs(line));
+    }
+
+    /// <summary>With nothing listed there is nothing to run.</summary>
     [Test]
     public void WithNoListedEvals_ThereAreNoChecks() =>
         Assert.That(BenchmarkCatalog.Merge([]), Is.Empty);
 
+    /// <summary>A listing that fails leaves no checks, and the log says why.</summary>
     [Test]
     public void AListingThatFails_LeavesNoChecks_AndSaysWhy()
     {
@@ -64,6 +85,7 @@ public class BenchmarkCatalogTests
         Assert.That(log.Messages, Has.Some.Contains("isn't at /nope/louis-agent.evals.runner.dll"));
     }
 
+    /// <summary>Nothing runs until somebody asks for the checks.</summary>
     [Test]
     public void TheListingIsReadOnFirstUse()
     {
@@ -76,6 +98,7 @@ public class BenchmarkCatalogTests
         Assert.That(log.Messages, Is.Not.Empty);
     }
 
+    /// <summary>Warm reads the listing straight away, so start-up's log carries the warning.</summary>
     [Test]
     public void WarmReadsTheListingNow()
     {
@@ -93,10 +116,13 @@ public class BenchmarkCatalogTests
     {
         public List<string> Messages { get; } = [];
 
+        /// <summary>No scopes: the test only reads the lines.</summary>
         public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
 
+        /// <summary>Every level is kept.</summary>
         public bool IsEnabled(LogLevel logLevel) => true;
 
+        /// <summary>Keeps the line as it would be written.</summary>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
             Func<TState, Exception?, string> formatter) =>
             Messages.Add(formatter(state, exception));

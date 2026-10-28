@@ -1,22 +1,49 @@
 using System.Diagnostics;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Api.Benchmarks.Runs;
 
-/// <summary>One line of the runner's <c>--list</c>: an eval as the API reads it (the runner's own record, snake_case JSON).</summary>
-/// <remarks>Identity and the manual's path are optional: the runner writes them as null for an eval with none, and a line that leaves them out still reads (F18 step 7.1).</remarks>
-public sealed record EvalLine(string Name, int Version, string Proves, string? Identity = null, string? Manual = null);
+/// <summary>
+/// One eval as the runner's <c>--list</c> describes it: its name, version and what it proves, whose it is, where its
+/// manual is, and what the portal shows before it ever ran (its dataset, categories and graders).
+/// </summary>
+/// <remarks>
+/// Data Transfer Object (Fowler, PoEAA): the API can't reference the runner, so it reads the runner's line into its own
+/// record. Everything after <c>Proves</c> is optional, so an older line that leaves a part out still reads.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+public sealed record EvalLine(
+    string Name,
+    int Version,
+    string Proves,
+    string? Identity = null,
+    string? Manual = null,
+    EvalDatasetLine? Dataset = null,
+    IReadOnlyList<string>? Categories = null,
+    IReadOnlyList<EvalGraderLine>? Graders = null);
 
-/// <summary>What reading the runner's listing gave: its evals, or why it couldn't be read (a text a person reads).</summary>
+/// <summary>The dataset an eval's scenarios came from, by name and version.</summary>
+public sealed record EvalDatasetLine(string Name, int Version);
+
+/// <summary>One of an eval's graders: its name, its version and what it judges with.</summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+public sealed record EvalGraderLine(string Name, int Version, BenchmarkGraderKind Kind);
+
+/// <summary>What reading the runner's listing gave: its evals, or why it couldn't be read, in words.</summary>
 public sealed record EvalListingResult(IReadOnlyList<EvalLine> Evals, string? Failure);
 
 /// <summary>
-/// The runner's listing (F18 step 4.3): <c>dotnet {EVAL_RUNNER} --list</c>, as an argument list (ADR 0004), with a timeout. The API can't
-/// reference the runner, so <see cref="EvalLine"/> is its own record. A listing that can't be read is a warning and no evals, never a failure
-/// of the portal.
+/// Asks the eval runner which evals it has (<c>dotnet {EVAL_RUNNER} --list</c>), with a timeout. If the listing can't
+/// be read you get a warning and no evals, never a portal that won't load.
 /// </summary>
+/// <remarks>
+/// The API can't reference the runner, so it reads the runner's lines into its own <see cref="EvalLine"/>. The runner
+/// is started with an argument list, never through a shell.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class EvalListing(
     string command,
     IReadOnlyList<string> arguments,
@@ -29,15 +56,18 @@ public sealed class EvalListing(
     public static EvalListing ForRunner(string runnerPath, TimeSpan? timeout = null) =>
         new(DotNetHost, [runnerPath, "--list"], timeout ?? TimeSpan.FromSeconds(30), runnerPath);
 
-    // The runner writes snake_case (EvalJson.SnakeCase in the runner): name, identity, version, proves. A missing or null required
-    // field refuses the line, not a default filled in (the review's fix: a {} line is no eval).
+    // The runner writes snake_case (EvalJson.SnakeCase in the runner). A missing or null required field refuses the
+    // line, not a default filled in (the review's fix: a {} line is no eval). A grader's kind travels by its wire
+    // name, never a number, and a kind we don't know refuses the line too.
     private static readonly JsonSerializerOptions RunnerJson = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
         RespectRequiredConstructorParameters = true,
         RespectNullableAnnotations = true,
+        Converters = { new JsonStringEnumConverter<BenchmarkGraderKind>(allowIntegerValues: false) },
     };
 
+    /// <summary>Runs the listing and reads what it wrote, or says why it couldn't.</summary>
     public EvalListingResult Read()
     {
         if (requiredFile is not null && !File.Exists(requiredFile))
@@ -51,6 +81,8 @@ public sealed class EvalListing(
             CreateNoWindow = true,
         };
         foreach (string argument in arguments) start.ArgumentList.Add(argument);
+
+        // A runner that can't start is the same warning as one that isn't there.
         try
         {
             using var process = Process.Start(start)!;
@@ -65,13 +97,18 @@ public sealed class EvalListing(
 
             if (process.ExitCode != 0)
             {
-                // The runner's refusal is the last line it writes to stderr: that line is the reason, when there is one.
+                // The runner's refusal is the last line it writes to stderr: that line is the reason, when there is
+                // one.
                 string? reason = errors.Result
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                     .LastOrDefault();
                 return reason is null
                     ? Failed(EvalListingMessage.ExitCode, new { Code = process.ExitCode })
-                    : Failed(EvalListingMessage.ExitCodeWithReason, new { Code = process.ExitCode, Reason = reason });
+                    : Failed(EvalListingMessage.ExitCodeWithReason, new
+                    {
+                        Code = process.ExitCode,
+                        Reason = reason
+                    });
             }
 
             return Parse(output.Result);
@@ -83,8 +120,8 @@ public sealed class EvalListing(
     }
 
     /// <summary>
-    /// Reads the runner's listing text: one JSON eval per line. A line that isn't an eval (not JSON, or JSON missing its name, version
-    /// or proof) refuses the whole listing, with the line in the reason.
+    /// Reads the runner's listing text, one eval per line. One line that isn't an eval refuses the whole listing, and
+    /// the reason quotes it.
     /// </summary>
     public static EvalListingResult Parse(string stdout)
     {
@@ -109,6 +146,7 @@ public sealed class EvalListing(
         return new EvalListingResult(evals, null);
     }
 
+    /// <summary>No evals, and the reason in words a person reads.</summary>
     private static EvalListingResult Failed(EvalListingMessage message, object values) =>
         new([], MessageText.Format(message, values));
 }

@@ -3,11 +3,14 @@ using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 
-// F18 step 4.3: the catalogue's evals come from the runner's own --list, read once, as an argument list with a timeout. Written first:
-// the listing threw NotImplementedException on the red run. The runner's real output is the pin: the API's line record must read it.
+/// <summary>
+/// The real runner's <c>--list</c> is the pin: whatever it writes, the API's line record must read. Listing asks no
+/// model; it only describes the evals.
+/// </summary>
 [Category("Integration")]
 public class EvalListingIntegrationTests
 {
+    /// <summary>The runner's own listing reads as the stub and Puls's two evals, each with its graders.</summary>
     [Test]
     public void TheRunnersOwnListingReadsAsEvalLines()
     {
@@ -21,11 +24,18 @@ public class EvalListingIntegrationTests
         Assert.That(stub.Identity, Is.Null);
         Assert.That(stub.Version, Is.EqualTo(1));
         Assert.That(stub.Proves, Is.Not.Empty);
-        // The Puls evals are listed under their set's identity (its name is held by the eval set's tests, which see the identity); here only that all of them have the one.
+        // The Puls evals are listed under their set's identity. Its name is held by the eval set's tests, which see the
+        // identity; here only that all of them have the one.
         Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Identity).Distinct().ToList(),
             Has.Count.EqualTo(1).And.None.Null);
+        // Every eval lists its graders, a fixed rule among them, and the Puls evals their datasets; the stub has none.
+        Assert.That(result.Evals.Select(e => e.Graders?.Any(g => g.Kind == BenchmarkGraderKind.FixedRule)),
+            Has.All.True);
+        Assert.That(stub.Dataset, Is.Null);
+        Assert.That(result.Evals.Where(e => e.Name != "stub").Select(e => e.Dataset), Has.None.Null);
     }
 
+    /// <summary>A listing that takes too long gives no evals and says so.</summary>
     [Test]
     public void ATimedOutListingIsAWarningAndNoEvals()
     {
@@ -35,6 +45,7 @@ public class EvalListingIntegrationTests
         Assert.That(result.Failure, Does.Contain("didn't finish within"));
     }
 
+    /// <summary>A runner that exits with an error gives no evals, and its reason.</summary>
     [Test]
     public void AFailingListingIsAWarningAndNoEvals()
     {

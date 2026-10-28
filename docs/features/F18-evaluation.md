@@ -1259,6 +1259,13 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   behaved as it did, and the trend shows those notes and where a prompt changed, agent by agent. The plan's 7a row
   says so. **Not done:** the marks have no keyboard focus (a tooltip on an SVG `<title>` is for the mouse), and a run
   recorded before 7a.3 never gets a prompt marker, by design.
+- **Step 7b (i), the listing says what an eval is** (unattended finding 17): the runner's `--list` line adds the
+  eval's `dataset` (name, version), its scenarios' `categories` (each once) and its `graders` (name, version, kind), so
+  the portal can show an eval that never ran. The API's `EvalLine` reads them (optional, so an older line still reads;
+  an unknown kind refuses the line) and each `BenchmarkCheck` keeps its whole line. Modes stay with the runs: routing
+  reads its baseline from the instance, so a listing can't know them. Red before the code: the runner's listing test
+  (no `graders`), `AnEvalsDatasetCategoriesAndGraders_AreListed`, `AListedEvalsDatasetCategoriesAndGradersAreRead`,
+  `EachCheck_KeepsTheLineItsEvalListed`, and the integration test on the real runner's listing (no graders).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
