@@ -7,9 +7,9 @@ using LouisAgent.Api.Contracts.Admin.Runs;
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
 /// <summary>
-/// A judge check is started like a re-score (F18 step 6a.5b): the eval runner as a child process with an argument list
-/// (ADR 0004), and the label lines on its stdin. It is the runner's one run at a time, and its row says what it is,
-/// so the Benchmarks page can leave it alone.
+/// A judge check starts like a re-score: the eval runner as a child process with an argument list, and the label
+/// lines on its stdin. It takes the runner's one run at a time, and its row says what it is, so the page listing
+/// the runs can leave it alone.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public class BenchmarkCalibrationStartTests
@@ -24,6 +24,7 @@ public class BenchmarkCalibrationStartTests
             calibration: new BenchmarkCalibration("76667d39dcdb", "meal-for-people"), input: "{}\n");
         run.Add("Agreement: 36 of 36");
 
+        // Both rows as the admin API writes them.
         var row = JsonSerializer.SerializeToElement(LiveRunRow.Of(run), AdminJson.SnakeCase);
         var ordinary = JsonSerializer.SerializeToElement(LiveRunRow.Of(new BenchmarkRun("run123456789", "stub", 1)),
             AdminJson.SnakeCase);

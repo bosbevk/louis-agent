@@ -8,25 +8,23 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Store;
 
-/// <summary>The contract against the in-memory store: always, on every machine and on CI.</summary>
+/// <summary>Runs the store's shared tests against the in-memory store, on every machine and on CI.</summary>
 public class InMemoryBenchmarkStoreTests : BenchmarkStoreContract
 {
-    /// <summary>A fresh in-memory store for each test.</summary>
+    /// <summary>A fresh, empty in-memory store for each test.</summary>
     protected override IBenchmarkStore CreateStore() => new InMemoryBenchmarkStore();
 }
 
-/// <summary>
-/// The run-fields rules, run against the in-memory store.
-/// </summary>
+/// <summary>Runs the shared tests for a run's own fields against the in-memory store.</summary>
 public class InMemoryRunFieldsTests : BenchmarkRunFieldsContract
 {
-    /// <summary>A fresh in-memory store for each test.</summary>
+    /// <summary>A fresh, empty in-memory store for each test.</summary>
     protected override IBenchmarkStore CreateStore() => new InMemoryBenchmarkStore();
 }
 
-/// <summary>The notes rules, run against the in-memory store.</summary>
+/// <summary>Runs the shared tests for a run's notes against the in-memory store.</summary>
 public class InMemoryNotesTests : BenchmarkNotesContract
 {
-    /// <summary>A fresh in-memory store for each test.</summary>
+    /// <summary>A fresh, empty in-memory store for each test.</summary>
     protected override IBenchmarkStore CreateStore() => new InMemoryBenchmarkStore();
 }

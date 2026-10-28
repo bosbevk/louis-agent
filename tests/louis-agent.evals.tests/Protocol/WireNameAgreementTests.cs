@@ -7,17 +7,25 @@ using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Tests.Protocol;
 
-// F18 step 7.5.3: the protocol's enums travel as snake_case text. SettingChoice parses and writes the wire name from [JsonStringEnumMemberName]; the JSON writer reads the same attribute.
-// (A grader kind and a model level travel as their member name, `FixedRule`, as they always have; SettingChoice reads that too.)
-// For every member of each enum that goes on the wire the two must write the same text, so a two-word member without the attribute (`apierror` against `api_error`) fails here and not in a stored run.
+/// <summary>
+/// The protocol's enums travel as snake_case text, and two things write it: SettingChoice and the JSON writer. Both
+/// must write the same word for every member, so a two-word member that forgot its wire name (`apierror` against
+/// `api_error`) fails here and not in a stored run. A grader kind and a model level travel as their member name
+/// (`FixedRule`), as they always have, and SettingChoice reads that too.
+/// </summary>
 public class WireNameAgreementTests
 {
+    /// <summary>The JSON writer the way the protocol uses it: enums as snake_case text.</summary>
     private static readonly JsonSerializerOptions Options = new()
-    { Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) } };
+    {
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) }
+    };
 
+    /// <summary>The word the JSON writer puts on the wire for this member.</summary>
     private static string Written<T>(T member) where T : struct, Enum =>
         JsonSerializer.Deserialize<string>(JsonSerializer.Serialize(member, Options))!;
 
+    /// <summary>For every enum on the wire, SettingChoice and the JSON writer spell each member the same.</summary>
     [Test]
     public void WhatSettingChoiceWrites_IsWhatTheJsonWriterWrites_ForEveryProtocolEnum()
     {
@@ -31,13 +39,16 @@ public class WireNameAgreementTests
             Assert.That(m.Wire(), Is.EqualTo(Written(m)), $"BenchmarkRunSplit.{m}");
     }
 
-    // The harness writes a turn's failure and a run's split, the API reads and stores them (F18 steps 5.2 and 5.4 reviews): the two sides name the same set in the same words,
-    // so a member added to one side only fails here and not in a stored run.
+    /// <summary>
+    /// The harness writes a turn's failure and the API reads and stores it, so both name the same failures in the
+    /// same words. A failure added to one side only fails here, not in a stored run.
+    /// </summary>
     [Test]
     public void TheHarnessAndTheApiNameTheSameFailures_InTheSameWords() =>
         Assert.That(Enum.GetValues<BenchmarkTurnFailure>().Select(m => m.Wire()).Order(),
             Is.EqualTo(Enum.GetValues<TrialFailure>().Select(m => m.Wire()).Order()));
 
+    /// <summary>The same for a run's split: what the harness writes, the API knows by the same words.</summary>
     [Test]
     public void TheHarnessAndTheApiNameTheSameSplits_InTheSameWords() =>
         Assert.That(Enum.GetValues<BenchmarkRunSplit>().Select(m => m.Wire()).Order(),

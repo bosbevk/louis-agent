@@ -15,6 +15,7 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// </summary>
 public class EvalReplyJsonTests
 {
+    /// <summary>The admin key the test host is built with, and that each request sends.</summary>
     private const string AdminKey = "admin-secret";
 
     /// <summary>An eval that never ran, written out whole: what it is, no runs, and "never run".</summary>
@@ -50,11 +51,13 @@ public class EvalReplyJsonTests
     [Test]
     public async Task ARecordedRun_IsTheStoredRunsRow_WithItsModes()
     {
+        // One finished run of the eval, on one mode.
         var store = new InMemoryBenchmarkStore();
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
         var mode = new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], SampleRole.Beta, null,
             new ModeRates(0.5, 0.25, 2, 0, 0));
         await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at, Modes: [mode]));
+
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store, catalog: Catalog());
         await app.StartAsync();
 

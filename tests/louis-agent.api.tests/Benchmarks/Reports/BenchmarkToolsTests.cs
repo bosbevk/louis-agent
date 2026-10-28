@@ -7,31 +7,61 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Reports;
 
-// F31 (Louis: a tools ring; step 11c's first half): what a turn's tools did, read from its stored stream events: the
-// calls Puls and its specialist made, the ones that failed, and why, grouped by tool and reason. 11b's run had every
-// WebSearch refused by Tavily's limit, and nothing on the screen said so.
+/// <summary>
+/// What a turn's tools did, read from its stored stream events: the calls Puls and its specialist made, which ones
+/// failed, and why, grouped by tool and reason. Once a run had every web search refused by the search provider's
+/// limit, and nothing on the screen said so.
+/// </summary>
 public class BenchmarkToolsTests
 {
+    /// <summary>A stored stream event of this type, with its data as JSON.</summary>
     private static StreamEvent E(string type, object data) => new(type, JsonSerializer.SerializeToElement(data), null);
 
+    /// <summary>The event where the model starts calling a tool.</summary>
     private static StreamEvent Use(string id, string name) =>
         E("content_block_start",
-            new { type = "content_block_start", content_block = new { type = "tool_use", id, name, input = new { } } });
+            new
+            {
+                type = "content_block_start",
+                content_block = new
+                {
+                    type = "tool_use",
+                    id,
+                    name,
+                    input = new { }
+                }
+            });
 
+    /// <summary>The event that brings a tool call's result, failed or not.</summary>
     private static StreamEvent Result(string id, bool error, string content) =>
         E("content_block_start",
             new
             {
                 type = "content_block_start",
-                content_block = new { type = "tool_result", tool_use_id = id, content, is_error = error }
+                content_block = new
+                {
+                    type = "tool_result",
+                    tool_use_id = id,
+                    content,
+                    is_error = error
+                }
             });
 
+    /// <summary>Wraps an event as one that happened inside the specialist's sub-session.</summary>
     private static StreamEvent Inner(StreamEvent e) => E("sub_session",
-        new { tool_use_id = "outer", agent = SampleIdentity.Alpha, @event = e.Type, data = e.Data });
+        new
+        {
+            tool_use_id = "outer",
+            agent = SampleIdentity.Alpha,
+            @event = e.Type,
+            data = e.Data
+        });
 
+    /// <summary>The refusal a search provider sends when its plan's limit is reached, over two lines.</summary>
     private const string Limit =
         "Error: Tavily's limit was reached (This request exceeds your plan's set usage limit.): the plan's searches.\nTry later.";
 
+    /// <summary>The calls Puls and the specialist made are counted together, with how many of them failed.</summary>
     [Test]
     public void PulssAndTheSpecialistsCalls_AreCounted_WithTheFailedOnes()
     {
@@ -47,6 +77,7 @@ public class BenchmarkToolsTests
         Assert.That((tools.Calls, tools.Failed), Is.EqualTo((4, 2)));
     }
 
+    /// <summary>Failures are grouped by tool and the first line of their reason.</summary>
     [Test]
     public void TheFailures_AreGroupedByToolAndTheFirstLineOfTheirReason()
     {
@@ -63,18 +94,21 @@ public class BenchmarkToolsTests
             Does.StartWith("Error: Tavily's limit was reached").And.Not.Contain("Try later"));
     }
 
+    /// <summary>A turn that called no tools has none to show.</summary>
     [Test]
     public void ATurnWithoutTools_HasNone() =>
         Assert.That(BenchmarkTools.Of([E("message_start", new { type = "message_start" })]),
             Is.EqualTo(BenchmarkTools.None));
 
-    // Review of PR #55: opening a run and every trend read each turn's whole stream to count its tools. The recorder keeps
-    // the counts on the turn; a turn recorded before that is counted from its events once, and the counts written back.
+    // Counting from the stream on every read was slow (a run page and every trend read each turn's whole stream), so
+    // the recorder keeps the counts on the turn. An older turn is counted from its events once, and the counts saved.
 
+    /// <summary>The cook's first turn, with or without tool counts already kept on it.</summary>
     private static Turn ATurn(BenchmarkTools.Summary? tools = null) =>
         new(new TurnKey(SampleMode.Beta, 1, "bobotie", 1), "s", "?", "!", SampleRole.Alpha, null, 1, 2, [], 10, null,
             tools);
 
+    /// <summary>Counts already kept on a turn are used as they are, not counted again from its events.</summary>
     [Test]
     public async Task KeptCounts_AreUsedAsTheyAre()
     {
@@ -87,6 +121,10 @@ public class BenchmarkToolsTests
         Assert.That((tools.Calls, tools.Failed), Is.EqualTo((4, 0)), "the kept counts, not the events");
     }
 
+    /// <summary>
+    /// An older turn is counted from its events once, and the counts are saved on it while its events stay for the
+    /// replay.
+    /// </summary>
     [Test]
     public async Task ATurnFromBefore_IsCountedOnce_AndItsCountsKept()
     {

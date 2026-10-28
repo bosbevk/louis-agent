@@ -14,6 +14,7 @@ namespace LouisAgent.Api.Tests.Admin;
 /// </summary>
 public class RunRowRecordTests
 {
+    /// <summary>The live row's field names, in the order the pages expect them.</summary>
     private const string Names =
         "id,check,repeat,status,exit_code,started_at,ended_at,lines,stored,store_error,calibration_of,grader,last_line";
 

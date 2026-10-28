@@ -7,17 +7,23 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 
-// F18 step 5b.2: a stored run is re-scored by the eval runner, which gets the run's export on stdin and `--rescore {id}` as an argument list (ADR 0004). The API
-// reads, stores, starts and shows; it grades nothing. The end-to-end test runs the real runner on the C# stub, which opens no session and costs nothing.
-// Written first: BenchmarkRunner had no StartRescore and the protocol's first line no rescore_of.
+/// <summary>
+/// A stored run is graded again by the eval runner: it gets the run's export on its input and the old run's id as an
+/// argument. The API reads, stores, starts and shows; it grades nothing. The end-to-end test runs the real runner on
+/// the C# stub, which opens no session and costs nothing.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 [Category("Integration")]
 public class BenchmarkRescoreIntegrationTests
 {
+    /// <summary>The one eval the real runner knows in these tests.</summary>
     private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");
 
+    /// <summary>A runner on the built eval runner, pointed at an API address nobody answers.</summary>
     private static BenchmarkRunner RealRunner() =>
         new(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
 
+    /// <summary>A re-score names the old run as a separate argument and reads the export from its input.</summary>
     [Test]
     public void ARescoreStartsTheRunnerWithAnArgumentList_AndPipesStdin()
     {
@@ -34,6 +40,7 @@ public class BenchmarkRescoreIntegrationTests
             "the new run's id, so the ledger would find any row it wrote (it writes none)");
     }
 
+    /// <summary>An ordinary run has nothing to pipe in and no re-score argument.</summary>
     [Test]
     public void AnOrdinaryRunPipesNothing()
     {
@@ -43,9 +50,14 @@ public class BenchmarkRescoreIntegrationTests
         Assert.That(start.ArgumentList, Does.Not.Contain("--rescore"));
     }
 
+    /// <summary>
+    /// Re-scoring a real stub run grades the very same transcripts, so the grades match, and keeps the old run's
+    /// repeats.
+    /// </summary>
     [Test]
     public async Task TheStoredRunsExportReachesTheRunnersStdin_SoTheRescoreGradesTheSameTranscripts()
     {
+        // Run the stub twice over and record it; skip if dotnet can't run the runner here.
         var store = new InMemoryBenchmarkStore();
         var runner = RealRunner();
         var first = runner.Start("stub", 2)!;
@@ -56,10 +68,11 @@ public class BenchmarkRescoreIntegrationTests
 
         await firstRecording;
         Outside.Tool(first.ExitCode == 0, "dotnet isn't here to run the eval runner");
+
+        // Export that run and re-score it, recording the second run too.
         string export =
             await BenchmarkProtocolExport.BuildAsync(store, (await store.GetRunAsync(first.Id))!,
                 CancellationToken.None);
-
         var second = runner.StartRescore("stub", first.Id, export, repeat: 2)!;
         var secondRecording = new BenchmarkRecorder(store).RecordAsync(second);
         var lines = new List<string>();
@@ -73,18 +86,21 @@ public class BenchmarkRescoreIntegrationTests
         Assert.That(rescored, Is.EqualTo(original),
             "the stub's graders are today's graders, so the grades are the same");
         Assert.That((await store.GetRunAsync(second.Id))!.RescoreOf, Is.EqualTo(first.Id));
-        // 6a.4c (Louis, on a re-score of a --repeat 3 run that said "1 repeat" and hid repeats 2 and 3 in the explorer): a re-score keeps the stored run's repeats.
+        // A re-score keeps the stored run's repeats (Louis saw one say "1 repeat" and hide repeats 2 and 3).
         Assert.That((await store.GetRunAsync(second.Id))!.Repeat, Is.EqualTo(2),
             "the re-score has the repeats of the run it grades again");
     }
 
+    /// <summary>A conversation's grades and outcome as one string, so two runs' grades compare in one go.</summary>
     private static string GradesOf(BenchmarkDocuments.Conversation conversation) =>
         JsonSerializer.Serialize(conversation.Grades?.Select(g => (g.Grader, g.Version, g.Outcome))) +
         conversation.Outcome;
 
-    // Review of 5b.2: the export was written to the runner's stdin inside the runner's lock, so a runner that is slow to read it (or never does) held every other start
-    // behind it. It is written on its own task now. The stand-in "runner" (F18 step 7.4: a real child process, no Python) sleeps and never reads its stdin; with a big export, a write
-    // inside StartRescore would not return until the process ended.
+    /// <summary>
+    /// Starting a re-score never waits for the runner to read its input. The export used to be written inside the
+    /// runner's lock, so a runner slow to read it held every other start behind it; now it's written on its own task.
+    /// The stand-in here sleeps and never reads its input, so with a big export a write inside the start would hang.
+    /// </summary>
     [Test]
     public async Task StartRescore_ReturnsAtOnce_EvenWhenTheRunnerNeverReadsItsStdin()
     {
@@ -96,6 +112,7 @@ public class BenchmarkRescoreIntegrationTests
         var run = runner.StartRescore("sleeper", "old123456789", export, repeat: 1)!;
 
         Assert.That(started.Elapsed, Is.LessThan(TimeSpan.FromSeconds(2)), "the write must not hold the start");
+        // Drain its events so the stand-in ends before the test does.
         await foreach (string _ in runner.EventsAsync(run.Id))
         {
         }

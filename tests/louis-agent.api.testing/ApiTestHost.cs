@@ -43,6 +43,7 @@ internal static class ApiTestHost
         ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
         TimeProvider? time = null)
     {
+        // The same services as Program.cs, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot);
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
@@ -52,6 +53,8 @@ internal static class ApiTestHost
         if (apiKey is not null) app.UseAgentKey(apiKey);
         var api = app.MapApi(host);
 
+        // The admin parts, with whatever the test handed in. The runner points at a port nothing listens on, so a
+        // test that forgets to give its own can't reach a real agent.
         var benchmarks = catalog ?? new BenchmarkCatalog();
         api.MapAdmin(benchmarks,
             runner ?? new BenchmarkRunner(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey,
@@ -98,7 +101,11 @@ internal static class ApiTestHost
     private static AgentHostContext HostContext(string workspaceRoot)
     {
         var options = new AgentOptions
-        { WorkspaceRoot = workspaceRoot, SkillsDirectory = Path.Combine(RepoRoot, "Skills"), RatesUrl = null };
+        {
+            WorkspaceRoot = workspaceRoot,
+            SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+            RatesUrl = null
+        };
         var catalog = new AgentCatalog([new LouisAgent.Identities.Puls.PulsIdentity()],
             [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions())]);
         var engines = new AgentEngineFactory(new NoModel(), options, catalog: catalog);

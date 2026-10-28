@@ -1286,6 +1286,16 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   purpose (the project file's web app reference until Phase 9, and the stored key `puls_calls`, read as an alias);
   the 20 names the rename hasn't reached yet are listed in `NotYetRenamed`, which may only shrink. Red with the list
   empty: 20 names, among them `PULS_API`, `PulsCalls` and `puls_benchmarks`.
+- **Step 7b (iii), the eval code brought up before its move** (decisions log, finding 20): every file the rename will
+  move, and every file that will change with it, now meets the rules whole (a summary on every class and method,
+  no nested conditionals, comment lines within 120). `MongoBenchmarkStore` (454 lines of code) keeps only its
+  collections and queries; each document has its own mapper (`RunDocuments`, `ConversationDocuments`,
+  `TurnDocuments`, `RequestDocuments`, the shared `BsonValues`). `BenchmarkRecorder` keeps the subscription; a run's
+  state is `RunRecording`, its switch arms named methods with guard clauses, and the stop-after-the-first-failure
+  rule is `GuardedWrites`. Both come off `FileSizeTests`' list. No behaviour changed; the tests are as they were.
+- **Step 7b (iii), the eval tests brought up before their move**: the same for the unit, integration and contract
+  tests, and the evals tests that read the API's protocol. `BenchmarkProtocolExportTests` builds its lines from one
+  helper, to stay under 400 lines with one property per line.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

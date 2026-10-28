@@ -12,7 +12,9 @@ public class BenchmarkSettingsTests
     /// <summary>The runner path these tests use.</summary>
     private const string Runner = "/app/evals/louis-agent.evals.runner.dll";
 
-    /// <summary>A run keeps its model, roles and eval, and the search engine and page renderer with whether each was set up.</summary>
+    /// <summary>
+    /// A run keeps its model, roles and eval, and the search engine and page renderer with whether each was set up.
+    /// </summary>
     [Test]
     public void ARun_KeepsTheModelTheRolesAndTheEvalWithItsRunner()
     {
@@ -48,7 +50,9 @@ public class BenchmarkSettingsTests
             Is.EqualTo((WebSearchProviderKind.DuckDuckGo.Wire(), PageRendererKind.Tavily.Wire())));
     }
 
-    /// <summary>A tool that was named but not set up is recorded as not ready beside its name, and a ready one as ready.</summary>
+    /// <summary>
+    /// A tool that was named but not set up is recorded as not ready beside its name, and a ready one as ready.
+    /// </summary>
     [TestCase(true, true, "true", "true")]
     [TestCase(false, false, "false", "false")]
     [TestCase(true, false, "true", "false")]
@@ -78,7 +82,10 @@ public class BenchmarkSettingsTests
 
     /// <summary>The settings of a run that has just started, to add to.</summary>
     private static readonly IReadOnlyDictionary<string, string> Started = new Dictionary<string, string>
-    { ["provider"] = "anthropic", ["model"] = "m" };
+    {
+        ["provider"] = "anthropic",
+        ["model"] = "m"
+    };
 
     /// <summary>The hashes are written joined with commas, in the order given.</summary>
     [Test]
@@ -88,7 +95,11 @@ public class BenchmarkSettingsTests
 
         Assert.That(settings,
             Is.EquivalentTo(new Dictionary<string, string>
-            { ["provider"] = "anthropic", ["model"] = "m", ["prompt_hashes"] = "a,b" }));
+            {
+                ["provider"] = "anthropic",
+                ["model"] = "m",
+                ["prompt_hashes"] = "a,b"
+            }));
     }
 
     /// <summary>With no hashes the settings come back as they were, with no key at all.</summary>
@@ -117,7 +128,7 @@ public class BenchmarkSettingsTests
             BenchmarkSettings.Of(new BenchmarkCheck("c", "C"), "anthropic", "m", [], Runner, null, null, false, false)[
                 "roles_enabled"], Is.EqualTo("(all)"));
 
-    /// <summary>An eval check records its eval and the runner it started from, and no script path any more.</summary>
+    /// <summary>An eval records its name and the runner it started from, and no script path any more.</summary>
     [Test]
     public void AnEvalCheckRecordsItsEvalAndItsRunner()
     {

@@ -5,8 +5,9 @@ using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Reviews.Store;
 
-/// <summary>The contract against the in-memory store: always, on every machine and on CI.</summary>
+/// <summary>Runs the review store's shared tests against the in-memory store, on every machine and on CI.</summary>
 public class InMemoryHumanReviewStoreTests : HumanReviewStoreContract
 {
+    /// <summary>A fresh, empty in-memory store for each test.</summary>
     protected override IHumanReviewStore CreateStore() => new InMemoryHumanReviewStore();
 }

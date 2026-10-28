@@ -3,17 +3,22 @@ using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 
-// FX25: the runner's process got the API's whole environment (.NET hands a child the parent's by default), so a run could read the Mongo login, the admin key and every
-// provider key, of which it reads none. Now it gets an allowlist: what the runtime needs to start, what the runner reads, and what the API sets for the
-// run. An Anthropic judge with no key of its own gets the Anthropic key as the judge's key, under that name only. Written first: the start info copied everything.
+/// <summary>
+/// The runner's child process gets only what it needs from the API's environment: what the runtime needs to start,
+/// what the runner reads, and what the API sets for the run. The Mongo login, the admin key and the provider keys
+/// stay behind (FX25).
+/// </summary>
 [Category("Integration")]
 public class RunnerEnvironmentIntegrationTests
 {
+    /// <summary>The one eval the runner knows in the first test.</summary>
     private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");
 
+    /// <summary>The start info drops the Mongo login but keeps the path and what the API tells the run.</summary>
     [Test]
     public void TheStartInfo_CarriesTheSelection_AndTheRunsOwnVariables()
     {
+        // Put a Mongo login in this process's environment, and put back whatever was there afterwards.
         string? mongo = Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
         Environment.SetEnvironmentVariable("BENCHMARKS_MONGO_URL", "mongodb://user:secret@mongo/puls");
         try
@@ -34,10 +39,14 @@ public class RunnerEnvironmentIntegrationTests
         }
     }
 
-    /// <summary>The real thing, on a real child process (the stand-in for the runner, F18 step 7.4): what the API starts sees none of the API's secrets, still has the path it needs, and gets what the run is told.</summary>
+    /// <summary>
+    /// The real thing, on a real child process (a stand-in for the runner that prints what it sees): it sees none of
+    /// the API's secrets, still has the path it needs, and gets what the run is told.
+    /// </summary>
     [Test]
     public async Task AChildStartedByTheRunner_SeesNoSecret_AndStillStarts()
     {
+        // Put three secrets in this process's environment, and put back whatever was there afterwards.
         string? mongo = Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
         string? admin = Environment.GetEnvironmentVariable("ADMIN_API_KEY");
         string? anthropic = Environment.GetEnvironmentVariable("ANTHROPIC_API_KEY");
@@ -46,12 +55,14 @@ public class RunnerEnvironmentIntegrationTests
         Environment.SetEnvironmentVariable("ANTHROPIC_API_KEY", "sk-ant-secret");
         try
         {
+            // Start the stand-in and collect every line it prints until it ends.
             var runner = new BenchmarkRunner(new BenchmarkCatalog([new BenchmarkCheck("env", "Env")]),
                 Path.GetTempPath(), "http://x/", StandInBuild.Dll);
             var run = runner.Start("env", 1)!;
             var lines = new List<string>();
             await foreach (string line in runner.EventsAsync(run.Id)) lines.Add(line);
 
+            // It prints each variable's name it sees as "env:NAME".
             Assert.That(run.ExitCode, Is.EqualTo(0), string.Join(" | ", lines));
             var names = lines.Where(l => l.StartsWith("env:")).Select(l => l[4..]).ToList();
             Assert.That(names,

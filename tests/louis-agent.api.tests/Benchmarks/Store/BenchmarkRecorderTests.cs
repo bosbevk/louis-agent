@@ -9,7 +9,9 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Tests.Benchmarks.Store;
 
 /// <summary>
-/// The recorder listens to a run's lines as the page does and folds them into the store as they come, so a half-done run is already readable, and when the run ends it closes whatever is still open. A store that fails stops the recording, never the run. The run is driven by hand here: no process, no model.
+/// The recorder listens to a run's lines as the page does and writes them to the store as they come, so a half-done
+/// run can already be read, and when the run ends it closes whatever is still open. A store that fails stops the
+/// recording, never the run. Here the run is fed by hand: no process, no model.
 /// </summary>
 public class BenchmarkRecorderTests
 {
@@ -27,7 +29,7 @@ public class BenchmarkRecorderTests
         _run = new BenchmarkRun("run123456789", "cook", 1);
     }
 
-    /// <summary>A protocol line: `@` and the event as JSON.</summary>
+    /// <summary>Turns an event into one of the runner's protocol lines: an <c>@</c> and the event as JSON.</summary>
     private static string At(object e) => "@" + JsonSerializer.Serialize(e);
 
     /// <summary>Feeds lines to the run, as if the runner had printed them.</summary>
@@ -37,7 +39,12 @@ public class BenchmarkRecorderTests
     }
 
     /// <summary>The first protocol line, of a given version.</summary>
-    private static string Protocol(int version = 1) => At(new { @event = "protocol", version });
+    private static string Protocol(int version = 1) =>
+        At(new
+        {
+            @event = "protocol",
+            version
+        });
 
     /// <summary>The line that opens a mode's repeat.</summary>
     private static string Mode(string mode = SampleMode.Beta, int repeat = 1) =>
@@ -53,7 +60,16 @@ public class BenchmarkRecorderTests
 
     /// <summary>The line that opens a turn with its question.</summary>
     private static string Question(string task, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new { @event = "question", mode, repeat, task, turn, session = $"sess_{task}", text = $"{task}?" });
+        At(new
+        {
+            @event = "question",
+            mode,
+            repeat,
+            task,
+            turn,
+            session = $"sess_{task}",
+            text = $"{task}?"
+        });
 
     /// <summary>One piece of the answer streaming in.</summary>
     private static string Sse(string task, string text, int turn = 1, string mode = SampleMode.Beta, int repeat = 1) =>
@@ -103,7 +119,12 @@ public class BenchmarkRecorderTests
 
     /// <summary>The line that closes a mode's repeat.</summary>
     private static string ModeDone(string mode = SampleMode.Beta, int repeat = 1) =>
-        At(new { @event = "mode_done", mode, repeat });
+        At(new
+        {
+            @event = "mode_done",
+            mode,
+            repeat
+        });
 
     /// <summary>Waits, up to two seconds, for something the recorder does in the background.</summary>
     private static async Task Eventually(Func<Task<bool>> condition)
@@ -117,10 +138,14 @@ public class BenchmarkRecorderTests
         Assert.Fail("the store never got there");
     }
 
-    /// <summary>A whole run ends up in the store: the run, its log, its mode, its conversation, its turn and the turn's stream events.</summary>
+    /// <summary>
+    /// A whole run ends up in the store: the run, its log, its mode, its conversation, its turn and the turn's stream
+    /// events.
+    /// </summary>
     [Test]
     public async Task AWholeRun_IsInTheStore_WhenItEnds()
     {
+        // One mode, one conversation of one turn whose answer streams in two pieces, with two plain log lines.
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run,
             new Dictionary<string, string> { ["model"] = "claude-haiku-5-5" });
         Add(Protocol(), "Puls cook check, 1 repeat", Mode(), Question("bobotie"), Sse("bobotie", "Hal"),
@@ -177,7 +202,10 @@ public class BenchmarkRecorderTests
         Assert.That((await _store.GetRunAsync(_run.Id))!.Split, Is.EqualTo(BenchmarkRunSplit.HeldOut));
     }
 
-    /// <summary>A turn that failed because of the infrastructure is kept that way, so a stored run never grades it against the agent.</summary>
+    /// <summary>
+    /// A turn that failed because of the infrastructure is kept that way, so a stored run never grades it against the
+    /// agent.
+    /// </summary>
     [Test]
     public async Task ATurnsInfrastructureFailure_IsKept_SoAStoredRunNeverGradesItAsTheAgents()
     {
@@ -206,11 +234,14 @@ public class BenchmarkRecorderTests
         Assert.That(turn.Failure, Is.EqualTo(BenchmarkTurnFailure.ApiError));
     }
 
-    /// <summary>A turn's tool counts (calls, failures and why) are worked out once, when it is recorded, so reading a run never needs its events for them.</summary>
+    /// <summary>
+    /// A turn's tool counts (calls, failures and why) are worked out once, when it is recorded, so reading a run never
+    /// needs its events for them.
+    /// </summary>
     [Test]
     public async Task ATurnsToolCounts_AreKept_WhenItEnds()
     {
-        // Review of PR #55: counted once when the turn is recorded, so reading a run never needs its events for them.
+        // A content block streaming into bobotie's first turn.
         string Block(object block) => At(new
         {
             @event = "sse",
@@ -222,11 +253,30 @@ public class BenchmarkRecorderTests
             data = new { content_block = block }
         });
 
+        // Two tool calls, the first of which fails.
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"),
-            Block(new { type = "tool_use", id = "u1", name = "WebSearch", input = new { } }),
-            Block(new { type = "tool_result", tool_use_id = "u1", content = "Error: limit reached", is_error = true }),
-            Block(new { type = "tool_use", id = "u2", name = "FetchUrl", input = new { } }),
+            Block(new
+            {
+                type = "tool_use",
+                id = "u1",
+                name = "WebSearch",
+                input = new { }
+            }),
+            Block(new
+            {
+                type = "tool_result",
+                tool_use_id = "u1",
+                content = "Error: limit reached",
+                is_error = true
+            }),
+            Block(new
+            {
+                type = "tool_use",
+                id = "u2",
+                name = "FetchUrl",
+                input = new { }
+            }),
             TurnDone("bobotie"), ConversationDone("bobotie"), ModeDone());
         _run.Complete(0);
         await recording;
@@ -239,14 +289,19 @@ public class BenchmarkRecorderTests
             Is.EqualTo(new BenchmarkTools.Failure("WebSearch", "Error: limit reached", 1)));
     }
 
-    /// <summary>You can read a run while it is still going: its finished turns, its mode, and a conversation that has no scores yet.</summary>
+    /// <summary>
+    /// You can read a run while it is still going: its finished turns, its mode, and a conversation that has no
+    /// scores yet.
+    /// </summary>
     [Test]
     public async Task AHalfDoneRun_IsReadable_WhileItRuns()
     {
+        // The first turn is done, the second is still streaming.
         var recording = new BenchmarkRecorder(_store).RecordAsync(_run);
         Add(Protocol(), Mode(), Question("bobotie"), Sse("bobotie", "a"), TurnDone("bobotie"),
             Question("bobotie", turn: 2), Sse("bobotie", "b", turn: 2));
 
+        // The recorder writes in the background, so wait for the finished turn to land.
         await Eventually(async () =>
             (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count == 1);
 
@@ -257,6 +312,7 @@ public class BenchmarkRecorderTests
         Assert.That((conversation.Order, conversation.Role), Is.EqualTo((1, (string?)null)),
             "the conversation is there before its scores");
 
+        // Let the run end, so the recording doesn't outlive the test.
         _run.Complete(0);
         await recording;
     }
@@ -280,7 +336,10 @@ public class BenchmarkRecorderTests
         Assert.That((await _store.GetRunAsync(_run.Id))!.Modes!.Select(m => m.Repeat), Is.EqualTo(new[] { 1, 2 }));
     }
 
-    /// <summary>A turn the run was cut off in is kept with what it had so far, and the run is marked failed with its output in the log.</summary>
+    /// <summary>
+    /// A turn the run was cut off in is kept with what it had so far, and the run is marked failed with its output in
+    /// the log.
+    /// </summary>
     [Test]
     public async Task ATurnTheRunCutOff_IsKeptWithWhatItHad()
     {
@@ -329,7 +388,13 @@ public class BenchmarkRecorderTests
             Is.EqualTo(1));
     }
 
-    /// <summary>A store that passes everything to a real one except writing a turn, which fails. It counts the other writes.</summary>
+    /// <summary>
+    /// A store that hands everything to a real one except writing a turn, which fails. It counts the other writes.
+    /// </summary>
+    /// <remarks>
+    /// Decorator: it wraps the in-memory store and changes one method, so the test can break exactly one write and
+    /// still read back everything else that was stored.
+    /// </remarks>
     private sealed class TurnsFail(IBenchmarkStore inner) : IBenchmarkStore
     {
         /// <summary>How many other writes went through.</summary>
@@ -424,12 +489,14 @@ public class BenchmarkRecorderTests
             "nothing after the failure was written: not bobotie's scores, not cottage-pie");
     }
 
-    /// <summary>A recording attached to a run is kept by it, so the end can say whether everything was stored.</summary>
+    /// <summary>
+    /// A recording attached to a run is kept by it, so the end can say whether everything was stored.
+    /// </summary>
     [Test]
     public async Task AnAttachedRecording_IsKeptByItsRun_SoTheEndCanSayWhetherItWasStored()
     {
-        // F31 step 6a: the endpoint attaches the recorder when it starts a run, and its "done" event awaits the
-        // recording to say stored: true or false.
+        // The endpoint attaches the recorder when it starts a run, and its "done" event waits for the recording to
+        // say stored: true or false.
         var recorder = new BenchmarkRecorder(_store);
 
         recorder.Attach(_run);

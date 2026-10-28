@@ -15,24 +15,28 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// </summary>
 public class CalibrationReplyJsonTests
 {
+    /// <summary>The admin key the test host is built with, and that each request sends.</summary>
     private const string AdminKey = "admin-secret";
+
+    /// <summary>When the run and its judge check happened.</summary>
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
-    /// <summary>
-    /// A report comes back with its counts per class and each disagreement, under <c>calibrations</c>.
-    /// </summary>
+    /// <summary>A report comes back with its counts per class and each disagreement, under "calibrations".</summary>
     [Test]
     public async Task TheReportsReply_IsWrittenAsBefore()
     {
+        // A finished run, and one judge check of it with one disagreement.
         var store = new InMemoryBenchmarkStore();
         await store.SaveRunAsync(new BenchmarkDocuments.Run("run_1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, At));
         var calibrations = new InMemoryCalibrationStore();
         await calibrations.AddAsync(new CalibrationRecord("run_1", "meal", "claude-haiku-5-5", At, 7, 8, 6, true,
             new CalibrationClassCounts(5, 1, 0), new CalibrationClassCounts(0, 2, 0),
             [new CalibrationDisagreement("bobotie", SampleMode.Beta, 1, "pass", "fail", "No ingredients.")]));
+
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store,
             reviews: new InMemoryHumanReviewStore(), calibrations: calibrations);
         await app.StartAsync();
+
         using var request = new HttpRequestMessage(HttpMethod.Get, "/v1/admin/benchmarks/runs/run_1/calibrations");
         request.Headers.Add("x-api-key", AdminKey);
 
@@ -50,8 +54,6 @@ public class CalibrationReplyJsonTests
             """)));
     }
 
-    /// <summary>
-    /// The expected JSON, written over several lines to stay readable, as the one line the API sends.
-    /// </summary>
+    /// <summary>The expected JSON, written over several lines to read easily, as the one line the API sends.</summary>
     private static string OneLine(string json) => json.ReplaceLineEndings("");
 }

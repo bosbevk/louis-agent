@@ -3,12 +3,15 @@ using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// FX25: the runner's process got the API's whole environment (.NET hands a child the parent's by default), so a run could read the Mongo login, the admin key and every
-// provider key, of which it reads none. Now it gets an allowlist: what the runtime needs to start, what the runner reads, and what the API sets for the
-// run. An Anthropic judge with no key of its own gets the Anthropic key as the judge's key, under that name only. Written first: the start info copied everything.
+/// <summary>
+/// The runner's process used to get the API's whole environment, so a run could read the Mongo login, the admin key
+/// and every provider key, none of which it needs. Now it gets an allowlist: what the runtime needs to start, what
+/// the runner reads, and what the API sets for the run. An Anthropic judge with no key of its own gets the Anthropic
+/// key, but only under the judge's name.
+/// </summary>
 public class RunnerEnvironmentTests
 {
-    /// <summary>The API's environment as the containers have it: the runner's settings among the API's secrets.</summary>
+    /// <summary>The API's environment as the containers have it: the runner's settings among its secrets.</summary>
     private static readonly Dictionary<string, string> Api = new()
     {
         ["BENCHMARKS_MONGO_URL"] = "mongodb://user:secret@mongo/puls",
@@ -33,6 +36,10 @@ public class RunnerEnvironmentTests
         ["LANG"] = "C.UTF-8",
     };
 
+    /// <summary>
+    /// The runner gets what it reads and what the runtime needs to start, and none of the API's secrets; a local
+    /// judge gets no key.
+    /// </summary>
     [Test]
     public void TheRunnerGetsWhatItReadsAndWhatItNeedsToStart_NotTheAPIsSecrets()
     {
@@ -54,8 +61,10 @@ public class RunnerEnvironmentTests
         Assert.That(env.ContainsKey("EVAL_JUDGE_API_KEY"), Is.False, "a local judge needs no key");
     }
 
-    // Louis, 2026-10-27 (review card): behind a company proxy or a company CA, an Anthropic judge started by the runner can't reach Anthropic if the proxy and certificate settings are dropped.
-    // None of them is a secret; they are what the process needs to reach the network, like the path. Names match whatever their case, so one spelling covers the lower-case ones Linux tools use.
+    /// <summary>
+    /// Proxy and certificate settings come through, in either case. Behind a company proxy or CA, a judge can't reach
+    /// Anthropic without them; none is a secret, they're what the process needs to reach the network, like the path.
+    /// </summary>
     [Test]
     public void TheProxyAndCertificateSettings_ComeThrough_InEitherCase()
     {
@@ -77,16 +86,24 @@ public class RunnerEnvironmentTests
         Assert.That(env.Keys,
             Is.EquivalentTo(new[]
             {
-                "HTTPS_PROXY", "HTTP_PROXY", "NO_PROXY", "SSL_CERT_FILE", "SSL_CERT_DIR", "https_proxy", "http_proxy",
-                "no_proxy"
+                "HTTPS_PROXY", "HTTP_PROXY", "NO_PROXY", "SSL_CERT_FILE", "SSL_CERT_DIR", "https_proxy",
+                "http_proxy", "no_proxy"
             }));
     }
 
+    /// <summary>
+    /// An Anthropic judge with no key of its own gets the Anthropic key, as the judge's key and never under its own
+    /// name; a judge with its own key keeps it.
+    /// </summary>
     [Test]
     public void AnAnthropicJudgeWithoutItsOwnKey_GetsTheAnthropicKey_AsTheJudgesKeyOnly()
     {
+        // A judge named as Anthropic's, one known only by its Claude model, and one with its own key.
         var named = new Dictionary<string, string>(Api)
-        { ["EVAL_JUDGE_PROVIDER"] = "anthropic", ["EVAL_JUDGE_MODEL"] = "claude-haiku-5-5" };
+        {
+            ["EVAL_JUDGE_PROVIDER"] = "anthropic",
+            ["EVAL_JUDGE_MODEL"] = "claude-haiku-5-5"
+        };
         var byModel = new Dictionary<string, string>(Api) { ["EVAL_JUDGE_MODEL"] = "claude-haiku-5-5" };
         byModel.Remove("EVAL_JUDGE_PROVIDER");
         var ownKey = new Dictionary<string, string>(named) { ["EVAL_JUDGE_API_KEY"] = "judge-key" };
@@ -100,22 +117,31 @@ public class RunnerEnvironmentTests
             "never under its own name");
     }
 
+    /// <summary>Names match whatever their case, the way Windows keeps them.</summary>
     [Test]
     public void NamesAreMatchedWhateverTheirCase_AsWindowsKeepsThem()
     {
         var env = RunnerEnvironment.Select(new Dictionary<string, string>
-        { ["Path"] = "C:\\Windows", ["SystemRoot"] = "C:\\Windows", ["anthropic_api_key"] = "x" });
+        {
+            ["Path"] = "C:\\Windows",
+            ["SystemRoot"] = "C:\\Windows",
+            ["anthropic_api_key"] = "x"
+        });
 
         Assert.That(env.Keys, Is.EquivalentTo(new[] { "Path", "SystemRoot" }));
     }
 
-    // The review's note on FX25: a setting the runner starts reading must not quietly go missing. This scans the runner's sources (the harness, the runner, Puls's evals) and the Python
-    // checks for the names they read, and each must be on the allowlist, except the three the API handles another way: it sets PULS_API and BENCHMARK_RUN per run, and hands the
-    // Anthropic key over as EVAL_JUDGE_API_KEY.
+    /// <summary>
+    /// A setting the runner starts reading must not quietly go missing. Every name the eval sources read must be on
+    /// the allowlist, except the three the API handles itself: it sets the API address and the run id per run, and
+    /// hands the Anthropic key over as the judge's key.
+    /// </summary>
     [Test]
     public void EverySettingTheRunnerAndTheChecksRead_IsOnTheAllowlist_OrHandledOnPurpose()
     {
         var handledAnotherWay = new[] { "PULS_API", "BENCHMARK_RUN", "ANTHROPIC_API_KEY" };
+
+        // Scan every C# file under evals/ (skipping build output) for the settings it reads by name.
         var read = new HashSet<string>();
         foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "evals"), "*.cs",
                          SearchOption.AllDirectories)

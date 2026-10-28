@@ -7,9 +7,14 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
-/// What every store has to do with notes, memory and Mongo alike: keep them in the order written with the time given, keep the run's apart from each conversation's,
-/// turn down bad ones, and never lose them when the run is rewritten. Times are whole milliseconds in UTC, as Mongo keeps them.
+/// What every store has to do with notes, in memory and in Mongo alike: keep them in the order written with the time
+/// given, keep the run's apart from each conversation's, turn down bad ones, and never lose them when the run is
+/// rewritten. Times are whole milliseconds in UTC, as Mongo keeps them.
 /// </summary>
+/// <remarks>
+/// Abstract test (a contract test): the tests are written once, and each store gets a small subclass that only says
+/// how to make one. That way the in-memory store the unit tests use and the Mongo store can't drift apart.
+/// </remarks>
 public abstract class BenchmarkNotesContract
 {
     /// <summary>The moment the tests start from.</summary>
@@ -50,12 +55,13 @@ public abstract class BenchmarkNotesContract
         await _store.AddNoteAsync(id, "this one hallucinated a price", T0.AddMinutes(2), bobotie);
         await _store.AddNoteAsync(id, "re-ran after the fix", T0.AddMinutes(3));
 
-        Assert.That(await _store.NotesAsync(id), Is.EqualTo(new[]
-        {
-            new RunNote("judge changed", T0.AddMinutes(1)),
-            new RunNote("this one hallucinated a price", T0.AddMinutes(2), bobotie),
-            new RunNote("re-ran after the fix", T0.AddMinutes(3)),
-        }));
+        Assert.That(await _store.NotesAsync(id),
+            Is.EqualTo(new[]
+            {
+                new RunNote("judge changed", T0.AddMinutes(1)),
+                new RunNote("this one hallucinated a price", T0.AddMinutes(2), bobotie),
+                new RunNote("re-ran after the fix", T0.AddMinutes(3)),
+            }));
     }
 
     /// <summary>The run's own notes and each conversation's stay apart.</summary>
@@ -163,7 +169,10 @@ public abstract class BenchmarkNotesContract
         Assert.That((await _store.NotesAsync(id)).Select(n => n.At), Is.EqualTo(new[] { T0, T0.AddMinutes(1) }));
     }
 
-    /// <summary>The recorder writes the run again as it grows and when it ends. That must never wipe a note someone wrote meanwhile.</summary>
+    /// <summary>
+    /// The recorder writes the run again as it grows and when it ends. That must never wipe a note someone wrote
+    /// meanwhile.
+    /// </summary>
     [Test]
     public async Task TheRecordersRewriteOfTheRun_DoesNotEraseTheNotes()
     {

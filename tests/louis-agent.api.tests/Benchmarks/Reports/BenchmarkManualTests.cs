@@ -3,13 +3,18 @@ using LouisAgent.Api.Benchmarks.Reports;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Reports;
 
-// F31 step 10b, moved in F18 step 7.1: each eval's manual lives beside the eval (evals/{project}/Manuals/{name}.md) and opens from its card. The runner's listing gives each eval's path
-// (relative to the repo root), the catalogue entry keeps it, and the API reads it from there, never from a path the caller names. Nothing outside evals/ can be read that way.
+/// <summary>
+/// Each eval's manual lives beside the eval (evals/{project}/Manuals/{name}.md) and opens from its card. The API
+/// reads it from the path the catalogue keeps, never from one the caller names, and nothing outside evals/ can be
+/// read that way.
+/// </summary>
 public class BenchmarkManualTests
 {
+    /// <summary>The repo's root, five folders up from where the tests run.</summary>
     private static string RepoRoot { get; } =
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
+    /// <summary>Each real eval's manual is found beside the eval and opens with a heading.</summary>
     [TestCase("stub", "evals/louis-agent.evals.runner/Manuals/stub.md")]
     [TestCase("puls-cook", "evals/louis-agent.evals.puls/Manuals/cook.md")]
     [TestCase("puls-routing", "evals/louis-agent.evals.puls/Manuals/routing.md")]
@@ -22,6 +27,7 @@ public class BenchmarkManualTests
         Assert.That(BenchmarkManuals.Has(RepoRoot, check), Is.True);
     }
 
+    /// <summary>An eval with no manual, or with a path to a file that isn't there, has none.</summary>
     [Test]
     public void AnEvalWithoutAManual_HasNone()
     {
@@ -32,6 +38,7 @@ public class BenchmarkManualTests
             Is.Null, "a path that names no file");
     }
 
+    /// <summary>A path that leads outside evals/, even by climbing out of it, is never read.</summary>
     [TestCase("evals/../config/prices.json")]
     [TestCase("../outside/manual.md")]
     [TestCase("docs/README.md")]

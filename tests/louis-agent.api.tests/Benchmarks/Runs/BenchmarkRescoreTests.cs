@@ -7,11 +7,14 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// F18 step 5b.2: a stored run is re-scored by the eval runner, which gets the run's export on stdin and `--rescore {id}` as an argument list (ADR 0004). The API
-// reads, stores, starts and shows; it grades nothing. The end-to-end test runs the real runner on the C# stub, which opens no session and costs nothing.
-// Written first: BenchmarkRunner had no StartRescore and the protocol's first line no rescore_of.
+/// <summary>
+/// A stored run is re-scored by the eval runner, which gets the run's export on its stdin and the run's id in an
+/// argument list. The API reads, stores, starts and shows; it grades nothing.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public class BenchmarkRescoreTests
 {
+    /// <summary>A re-score's first line names the run it re-scored; an ordinary run's names none.</summary>
     [Test]
     public void TheBeginLineNamesTheRunItRescored_AndAnOldRunNamesNone()
     {
@@ -26,6 +29,7 @@ public class BenchmarkRescoreTests
         Assert.That(ordinary.RescoreOf, Is.Null);
     }
 
+    /// <summary>The export writes back which run a re-score came from, and nothing of it for an ordinary run.</summary>
     [Test]
     public async Task TheExportWritesRescoreOfBack_AndAnOrdinaryRunWritesNone()
     {
@@ -44,6 +48,10 @@ public class BenchmarkRescoreTests
         Assert.That(ordinary, Does.Not.Contain("rescore_of"));
     }
 
+    /// <summary>
+    /// The pump writes the whole export to the runner and closes its input; a runner that's already gone is no
+    /// error.
+    /// </summary>
     [Test]
     public async Task ThePump_WritesEverythingAndCloses_AndToleratesARunnerThatHasGone()
     {
@@ -55,15 +63,23 @@ public class BenchmarkRescoreTests
             Throws.Nothing, "a runner that ended without reading is not an error here");
     }
 
+    /// <summary>
+    /// Stands in for the runner's stdin: keeps what was written and whether it was closed, or acts like a runner that
+    /// has gone.
+    /// </summary>
     private sealed class RecordingWriter(bool throwOnWrite = false) : StringWriter
     {
+        /// <summary>Whether the pump closed it.</summary>
         public bool Closed { get; private set; }
 
+        /// <summary>Everything written so far.</summary>
         public string Text => ToString();
 
+        /// <summary>Writes like any string writer, or fails as a broken pipe when the runner has gone.</summary>
         public override Task WriteAsync(string? value) =>
             throwOnWrite ? throw new IOException("Broken pipe") : base.WriteAsync(value);
 
+        /// <summary>Notes that it was closed, then closes.</summary>
         public override void Close()
         {
             Closed = true;

@@ -12,7 +12,10 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Notes;
 
-/// <summary>Adding a note to a stored run over HTTP: it answers 201, the time is the server's, bad notes are a 400 with a reason, an unknown run is a 404, and the run's own read carries the notes.</summary>
+/// <summary>
+/// Adding a note to a stored run over HTTP. It answers 201, the time is the server's, a bad note is a 400 with its
+/// reason, an unknown run is a 404, and reading the run brings its notes along.
+/// </summary>
 public class NoteEndpointTests
 {
     /// <summary>The admin key the test API is started with.</summary>
@@ -27,7 +30,9 @@ public class NoteEndpointTests
     /// <summary>The time the fixed clock always says.</summary>
     private static readonly DateTimeOffset Now = new(2026, 10, 27, 14, 30, 0, TimeSpan.Zero);
 
-    /// <summary>A clock that always says the same time, so a test can tell the server's time from one in the request.</summary>
+    /// <summary>
+    /// A clock that always says the same time, so a test can tell the server's time from one in the request.
+    /// </summary>
     private sealed class FixedClock(DateTimeOffset now) : TimeProvider
     {
         /// <summary>The time this clock was given.</summary>
@@ -80,14 +85,23 @@ public class NoteEndpointTests
         return await JsonOf(await client.SendAsync(request));
     }
 
-    /// <summary>A post keeps the note and answers 201 with it. The time is the server's, even if the request sends one.</summary>
+    /// <summary>
+    /// A post keeps the note, trimmed, and answers 201 with it. The time is the server's, even if the request sends
+    /// one.
+    /// </summary>
     [Test]
     public async Task APost_KeepsTheNote_Answers201WithIt_AndTheTimeIsTheServers()
     {
         await using var host = await StartAsync();
 
+        // The request tries to set its own time; the server should ignore it.
         var response = await Post(host.Client, NotesPath(),
-            new { text = "  the judge changed  ", conversation = (object?)null, at = "2001-01-01T00:00:00Z" });
+            new
+            {
+                text = "  the judge changed  ",
+                conversation = (object?)null,
+                at = "2001-01-01T00:00:00Z"
+            });
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
         Assert.That(response.Headers.Location?.ToString(), Is.EqualTo(NotesPath()));
@@ -108,7 +122,12 @@ public class NoteEndpointTests
             new
             {
                 text = "hallucinated a price",
-                conversation = new { mode = SampleMode.Beta, repeat = 2, task = "bobotie" }
+                conversation = new
+                {
+                    mode = SampleMode.Beta,
+                    repeat = 2,
+                    task = "bobotie"
+                }
             });
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
@@ -125,6 +144,7 @@ public class NoteEndpointTests
     [Test]
     public async Task TheRunsRead_CarriesItsNotes_InTheOrderWritten()
     {
+        // Two notes straight into the store: one on the run, one on a conversation.
         await using var host = await StartAsync();
         await host.Store.AddNoteAsync(RunId, "first", T0.AddMinutes(1));
         await host.Store.AddNoteAsync(RunId, "second", T0.AddMinutes(2),
@@ -174,7 +194,11 @@ public class NoteEndpointTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
         Assert.That(await response.Content.ReadAsStringAsync(),
             Does.Contain(MessageText.Format(NoteUserText.NoteTooLong,
-                new { Limit = RunNotes.MaxLength, Length = RunNotes.MaxLength + 1 })));
+                new
+                {
+                    Limit = RunNotes.MaxLength,
+                    Length = RunNotes.MaxLength + 1
+                })));
     }
 
     /// <summary>A note on a run that isn't stored is a 404.</summary>

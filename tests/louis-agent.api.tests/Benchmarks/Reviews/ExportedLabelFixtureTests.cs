@@ -7,19 +7,29 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Reviews;
 
-// F18 step 6a.2: the label the API exports and the label the harness's loader reads are two records on one wire (the API doesn't reference the harness; CL22 will make them one type). So a
-// drift on either side must fail a test: this one asserts the API still writes exactly the checked-in fixture, and louis-agent.evals.tests loads that same file with the harness's own
-// LabelLoader. Change the wire, and both fail until the fixture and the two records agree. LOUIS_UPDATE_GOLDEN=1 rewrites the fixture; review its diff before committing.
+/// <summary>
+/// Makes sure the label the API exports still matches the file the eval harness reads, so neither side can drift
+/// without a test failing.
+/// </summary>
+/// <remarks>
+/// Golden file. The API and the harness each have their own record for a label (the API doesn't reference the
+/// harness; CL22 will make them one type), so they meet only on the wire. This test checks the API still writes the
+/// checked-in fixture exactly, and louis-agent.evals.tests loads that same file with the harness's own loader: change
+/// the wire and both fail until the fixture and the two records agree. LOUIS_UPDATE_GOLDEN=1 rewrites the fixture;
+/// review its diff before committing.
+/// </remarks>
 public class ExportedLabelFixtureTests
 {
+    /// <summary>The checked-in label file both sides are held to.</summary>
     private static readonly string Fixture = System.IO.Path.Combine(ApiTestHost.RepoRoot, "tests",
         "louis-agent.evals.tests", "Labels", "Fixtures", "exported-label.json");
 
+    /// <summary>A person's pass on one conversation, the grade the label is written from.</summary>
     private static readonly HumanGrade Grade =
         new("8f7802b9a72e", new BenchmarkProtocol.ConversationKey(SampleMode.Beta, 1, "sample-dev"), "meal-for-people",
             HumanVerdict.Pass, "feeds four", "Louis", DateTimeOffset.UnixEpoch);
 
-    // 6a.4f: a label carries every turn of its conversation, so the fixture pins a two-turn one.
+    /// <summary>A two-turn conversation, since a label carries every turn of its conversation.</summary>
     private static readonly Turn[] Turns =
     [
         new(new BenchmarkProtocol.TurnKey(SampleMode.Beta, 1, "sample-dev", 1), "sess_1", "Hello", "Bobotie vir vier",
@@ -28,22 +38,28 @@ public class ExportedLabelFixtureTests
             "Bobotie vir ses", SampleRole.Alpha, null, 1, 1, [], 1.0, null),
     ];
 
+    /// <summary>The label as the API writes it to a file.</summary>
     private static string Written() => ReviewLabels.Content(Grade, Turns);
 
-    // 6a.5b: the same label on one line, for the runner's stdin: the file's JSON with no line breaks, nothing more or less.
+    /// <summary>
+    /// The one-line label we hand the runner on stdin is the file's JSON without line breaks, nothing more or less.
+    /// </summary>
     [Test]
     public void TheLine_IsTheFileOnOneLine()
     {
         string line = ReviewLabels.Line(Grade, Turns);
 
         Assert.That(line, Does.Not.Contain("\n").And.Not.Contain("\r"));
+        // Compare parsed JSON, so only the content counts, not the layout.
         Assert.That(System.Text.Json.Nodes.JsonNode.Parse(line)!.ToJsonString(),
             Is.EqualTo(System.Text.Json.Nodes.JsonNode.Parse(Written())!.ToJsonString()));
     }
 
+    /// <summary>The API still writes the fixture exactly (line endings aside), or rewrites it when asked to.</summary>
     [Test]
     public void TheAPIStillWritesExactlyTheFixtureTheHarnessLoads()
     {
+        // With LOUIS_UPDATE_GOLDEN=1 we write the fixture instead of checking it.
         if (Environment.GetEnvironmentVariable("LOUIS_UPDATE_GOLDEN") == "1")
         {
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(Fixture)!);
@@ -56,6 +72,9 @@ public class ExportedLabelFixtureTests
             "The API's label wire changed. The harness's LabelLoader reads this file too: change both, then rewrite the fixture with LOUIS_UPDATE_GOLDEN=1.");
     }
 
+    /// <summary>
+    /// A label's file is named the way the harness names its own sheets: grader, scenario, mode, run, repeat.
+    /// </summary>
     [Test]
     public void TheFileNameIsGraderScenarioModeRunRepeat_ThatTheHarnessUsesForItsOwnSheets()
     {

@@ -16,6 +16,7 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class EvalHandlersTests
 {
+    /// <summary>When the recorded run started.</summary>
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>The list says in its signature what it answers: always the list.</summary>
@@ -51,6 +52,7 @@ public class EvalHandlersTests
     [Test]
     public async Task OnceARunIsRecorded_TheEvalListsIt()
     {
+        // One finished run of the eval, on one mode and one model, with its cost.
         var store = new InMemoryBenchmarkStore();
         var mode = new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], SampleRole.Beta, null,
             new ModeRates(0.5, 0.25, 2, 0, 0));
@@ -81,6 +83,7 @@ public class EvalHandlersTests
     /// <summary>The list from handlers over a catalogue of one fake eval, as the runner would have listed it.</summary>
     private static async Task<EvalListReply> ListAsync(IBenchmarkStore? store)
     {
+        // The eval as the runner's listing line describes it: a dataset, a category and two graders.
         var line = new EvalLine(SampleEval.Beta, 3, "A meal", SampleIdentity.Alpha, null,
             new EvalDatasetLine("meals", 2), ["town"],
             [

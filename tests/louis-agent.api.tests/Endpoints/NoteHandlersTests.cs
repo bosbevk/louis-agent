@@ -14,12 +14,14 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// <summary>The note handler declares what it answers (ADR 0045), and answers it with no HTTP in between.</summary>
 public class NoteHandlersTests
 {
+    /// <summary>The time the run started and the clock always says.</summary>
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>Adding a note answers a 201 with the note, or an error.</summary>
     [Test]
     public void AddingANote_DeclaresItsAnswers()
     {
+        // Found by name, so this test still compiles while the handler is being moved.
         var type = typeof(ApiErrors).Assembly.GetTypes().SingleOrDefault(t => t.Name == "NoteHandlers");
 
         Assert.That(type?.GetMethod("AddNote")?.ReturnType,

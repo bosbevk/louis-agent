@@ -14,8 +14,13 @@ namespace LouisAgent.Api.Tests.Benchmarks.Reports;
 /// </summary>
 public class BenchmarkTrendMarksTests
 {
+    /// <summary>When the first run started; each run starts some hours after.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 17, 9, 0, 0, TimeSpan.Zero);
+
+    /// <summary>The cook specialist, as the ledger names its agent.</summary>
     private const string Cook = "sub-session:puls-cook";
+
+    /// <summary>A fresh store for each test.</summary>
     private InMemoryBenchmarkStore _store = null!;
 
     /// <summary>A store per test, so one test's runs aren't another's.</summary>
@@ -23,7 +28,7 @@ public class BenchmarkTrendMarksTests
     public void SetUp() => _store = new InMemoryBenchmarkStore();
 
     /// <summary>
-    /// A finished run of the cook check with one conversation in each of two modes, and the prompts its agents used.
+    /// A finished run of the cook eval with one conversation in each of two modes, and the prompts its agents used.
     /// </summary>
     private async Task Run(string id, int hour, IReadOnlyList<AgentPrompt>? prompts)
     {

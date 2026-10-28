@@ -6,8 +6,9 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 namespace LouisAgent.Api.Tests.Benchmarks.Store;
 
 /// <summary>
-/// What the recorder writes for a re-score, which asks the model nothing: a known zero cost unless a judge was asked, and then that judge's own rows.
-/// These tests moved out of <c>BenchmarkRecorderTests</c> to keep it under the test-file size limit.
+/// What the recorder writes for a re-score. A re-score asks the model nothing, so it costs a known zero, unless a
+/// judge was asked, and then it costs that judge's own rows. These tests moved out of <c>BenchmarkRecorderTests</c>
+/// to keep it under the test-file size limit.
 /// </summary>
 public class BenchmarkRecorderRescoreTests
 {
@@ -21,10 +22,13 @@ public class BenchmarkRecorderRescoreTests
         _store = new InMemoryBenchmarkStore();
     }
 
-    /// <summary>A protocol line: `@` and the event as JSON.</summary>
+    /// <summary>Turns an event into one of the runner's protocol lines: an <c>@</c> and the event as JSON.</summary>
     private static string At(object e) => "@" + JsonSerializer.Serialize(e);
 
-    /// <summary>A re-score asks the model nothing, so its cost is a known zero (not "unknown"), whatever the ledger holds for the original run.</summary>
+    /// <summary>
+    /// A re-score asks the model nothing, so its cost is a known zero (not "unknown"), whatever the ledger holds for
+    /// the original run.
+    /// </summary>
     [TestCase(false)]
     [TestCase(true)]
     public async Task ARescoresTotal_IsZeroRequestsAndZeroCost_WhateverTheLedgerHolds(bool ledgerHoldsTheOriginalsRows)
@@ -71,7 +75,10 @@ public class BenchmarkRecorderRescoreTests
         }
     }
 
-    /// <summary>A re-score is free only until a grader asks a paid model: the judge's own ledger rows are its cost, like any run's.</summary>
+    /// <summary>
+    /// A re-score is free only until a grader asks a paid model: then the judge's own ledger rows are its cost, like
+    /// any run's.
+    /// </summary>
     [Test]
     public async Task AReScoreThatAskedAJudge_IsPricedFromItsOwnRows_NotShownAsFree()
     {
@@ -132,6 +139,7 @@ public class BenchmarkRecorderRescoreTests
         // A re-score recorded with no ledger folder at all.
         var run = new BenchmarkRun("new123456789", "cook", 1, rescoreOf: "old123456789");
         var recording = new BenchmarkRecorder(_store).RecordAsync(run);
+
         run.Complete(0);
         await recording;
 

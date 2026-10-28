@@ -7,10 +7,11 @@ namespace LouisAgent.Api.Tests.Endpoints;
 
 /// <summary>
 /// Pins when the manual route says 404: for a check that isn't in the catalogue, and for one that is but whose manual
-/// file isn't there. The second case had no test.
+/// file isn't there.
 /// </summary>
 public class AdminManualStatusTests
 {
+    /// <summary>The admin key the test host is built with, and that each request sends.</summary>
     private const string AdminKey = "admin-secret";
 
     /// <summary>A check we know about but whose manual file is missing has nothing to show, so it's a 404.</summary>
@@ -44,6 +45,7 @@ public class AdminManualStatusTests
     {
         var request = new HttpRequestMessage(HttpMethod.Get, path);
         request.Headers.Add("x-api-key", AdminKey);
+
         return app.GetTestClient().SendAsync(request);
     }
 }

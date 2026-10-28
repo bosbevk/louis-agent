@@ -12,59 +12,107 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
 namespace LouisAgent.Api.Tests.Benchmarks;
 
-// F18 step 5a.2: the rates the runner wrote on a mode's mode_done line are read, kept per mode, written back by the export, carried by each trend point and
-// served with the run. The API computes none of it (the formula is the harness's); a line from before them reads as null, never as 0 (ADR 0007).
-// Written first: ModeEnded, Mode, the export, the trend point and the run's JSON had no rates.
+/// <summary>
+/// The pass rates the runner writes when a mode is done follow the run all the way: read from the line, kept per
+/// mode, written back by the export, carried by each trend point and served with the run. The API works none of them
+/// out itself, and a line from before them reads as no rate, never as 0.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class PassRatesStoredTests
 {
+    /// <summary>The id of the run every test records.</summary>
     private const string Id = "run123456789";
+
+    /// <summary>The admin key the test API is built with.</summary>
     private const string AdminKey = "admin-secret";
+
+    /// <summary>When the older run in the trend test started.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
+    /// <summary>Writes an event as the runner does: an @ and then its JSON.</summary>
     private static string At(object e) => "@" + JsonSerializer.Serialize(e);
 
+    /// <summary>One eval run as the runner writes it: one mode, repeated twice, each repeat with its rates.</summary>
     private static readonly string[] EvalRun =
     [
         At(new
         {
-            @event = "protocol", t = 1700000000.5, version = 1, eval = SampleEval.Beta, eval_version = 3,
-            commit = "abc", split = "dev", graders = Array.Empty<object>(), models = Array.Empty<object>()
+            @event = "protocol",
+            t = 1700000000.5,
+            version = 1,
+            eval = SampleEval.Beta,
+            eval_version = 3,
+            commit = "abc",
+            split = "dev",
+            graders = Array.Empty<object>(),
+            models = Array.Empty<object>()
         }),
         At(new
         {
-            @event = "mode", t = 1700000001.0, mode = SampleMode.Beta, repeat = 1,
-            toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0
+            @event = "mode",
+            t = 1700000001.0,
+            mode = SampleMode.Beta,
+            repeat = 1,
+            toolsets = new[] { SampleToolset.Alpha },
+            role = (string?)null,
+            llm = (string?)null,
+            conversations = 0
         }),
         At(new
         {
-            @event = "mode_done", t = 1700000002.0, mode = SampleMode.Beta, repeat = 1, pass_at_k = 1.0,
-            pass_hat_k = 1.0, k = 1, infrastructure = 0, retried = 0
+            @event = "mode_done",
+            t = 1700000002.0,
+            mode = SampleMode.Beta,
+            repeat = 1,
+            pass_at_k = 1.0,
+            pass_hat_k = 1.0,
+            k = 1,
+            infrastructure = 0,
+            retried = 0
         }),
         At(new
         {
-            @event = "mode", t = 1700000003.0, mode = SampleMode.Beta, repeat = 2,
-            toolsets = new[] { SampleToolset.Alpha }, role = (string?)null, llm = (string?)null, conversations = 0
+            @event = "mode",
+            t = 1700000003.0,
+            mode = SampleMode.Beta,
+            repeat = 2,
+            toolsets = new[] { SampleToolset.Alpha },
+            role = (string?)null,
+            llm = (string?)null,
+            conversations = 0
         }),
         At(new
         {
-            @event = "mode_done", t = 1700000004.0, mode = SampleMode.Beta, repeat = 2, pass_at_k = 1.0,
-            pass_hat_k = 0.5, k = 2, infrastructure = 1, retried = 1
+            @event = "mode_done",
+            t = 1700000004.0,
+            mode = SampleMode.Beta,
+            repeat = 2,
+            pass_at_k = 1.0,
+            pass_hat_k = 0.5,
+            k = 2,
+            infrastructure = 1,
+            retried = 1
         }),
     ];
 
+    /// <summary>Feeds the lines through the recorder into a fresh store, as a finished run would leave it.</summary>
     private static async Task<InMemoryBenchmarkStore> Recorded(IEnumerable<string> lines, string id = Id)
     {
         var store = new InMemoryBenchmarkStore();
         var run = new BenchmarkRun(id, SampleEval.Beta, 2);
+
+        // Start recording before the lines arrive, then end the run so the recorder finishes.
         var recording = new BenchmarkRecorder(store).RecordAsync(run);
         foreach (string line in lines) run.Add(line);
         run.Complete(0);
         await recording;
+
         return store;
     }
 
     // --- reading the line
 
+    /// <summary>A mode's done line brings its rates and counts along.</summary>
     [Test]
     public void AModeDone_CarriesItsRates()
     {
@@ -73,6 +121,7 @@ public class PassRatesStoredTests
         Assert.That(ended.Rates, Is.EqualTo(new RatesInfo(1.0, 0.5, 2, 1, 1)));
     }
 
+    /// <summary>A done line from before the rates existed has none, not zeros.</summary>
     [Test]
     public void AModeDoneFromBeforeTheRates_ReadsAsNull_NeverZero()
     {
@@ -81,6 +130,7 @@ public class PassRatesStoredTests
         Assert.That(ended.Rates, Is.Null);
     }
 
+    /// <summary>When no trial counted, the rates are missing but the counts still come through.</summary>
     [Test]
     public void ARateLeftOut_BecauseNoTrialCounted_ReadsAsNull_WithItsCounts()
     {
@@ -92,6 +142,7 @@ public class PassRatesStoredTests
 
     // --- keeping them
 
+    /// <summary>Each repeat of a mode keeps its own rates in the store.</summary>
     [Test]
     public async Task TheRecorder_KeepsEachRepeatsRatesOnItsMode()
     {
@@ -99,16 +150,18 @@ public class PassRatesStoredTests
 
         var modes = (await store.GetRunAsync(Id))!.Modes!;
 
-        Assert.That(modes.Select(m => (m.Repeat, m.Rates)), Is.EqualTo(new (int, ModeRates?)[]
-        {
-            (1, new ModeRates(1.0, 1.0, 1, 0, 0)),
-            (2, new ModeRates(1.0, 0.5, 2, 1, 1)),
-        }));
+        Assert.That(modes.Select(m => (m.Repeat, m.Rates)),
+            Is.EqualTo(new (int, ModeRates?)[]
+            {
+                (1, new ModeRates(1.0, 1.0, 1, 0, 0)), (2, new ModeRates(1.0, 0.5, 2, 1, 1)),
+            }));
     }
 
+    /// <summary>A run recorded from lines without rates keeps no rates on its modes.</summary>
     [Test]
     public async Task ARunFromBeforeTheRates_HasNoRatesOnItsModes()
     {
+        // Cut the rates off both done lines, so they look like lines from before the rates.
         var store = await Recorded(EvalRun.Select((line, i) =>
             i is 2 or 4 ? line[..line.IndexOf(",\"pass_at_k\"", StringComparison.Ordinal)] + "}" : line));
 
@@ -117,6 +170,7 @@ public class PassRatesStoredTests
 
     // --- writing them back
 
+    /// <summary>Exporting a run and reading it back gives the same rates.</summary>
     [Test]
     public async Task AnExportedRun_ReadsBackWithTheSameRates()
     {
@@ -132,6 +186,7 @@ public class PassRatesStoredTests
 
     // --- the trend
 
+    /// <summary>A trend point shows the rates of the last repeat of its mode in that run.</summary>
     [Test]
     public async Task ATrendPoint_CarriesTheRatesOfItsRunsLastRepeatOfTheMode()
     {
@@ -145,6 +200,7 @@ public class PassRatesStoredTests
         Assert.That((point.PassAtK, point.PassHatK, point.K), Is.EqualTo(((double?)1.0, (double?)0.5, (int?)2)));
     }
 
+    /// <summary>A trend point for a run from before the rates has none.</summary>
     [Test]
     public async Task ATrendPointOfARunFromBefore_HasNullRates()
     {
@@ -162,9 +218,11 @@ public class PassRatesStoredTests
 
     // --- served with the run
 
+    /// <summary>The run's JSON gives each mode its rates, and null for a mode that has none.</summary>
     [Test]
     public async Task TheRunsJson_NamesEachModesRates_AndNullWhereThereAreNone()
     {
+        // The recorded run, plus a mode with no rates on the end.
         var store = await Recorded(EvalRun);
         await store.SaveRunAsync((await store.GetRunAsync(Id))! with
         {
@@ -174,6 +232,7 @@ public class PassRatesStoredTests
                 new Mode(SampleMode.Alpha, 1, [SampleToolset.Alpha], null, null)
             ]
         });
+
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
         var client = app.GetTestClient();

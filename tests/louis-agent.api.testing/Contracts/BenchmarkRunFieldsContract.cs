@@ -11,6 +11,10 @@ namespace LouisAgent.Api.Testing;
 /// run it re-scored, a cost of a known zero, the roll-up's slices and each agent's prompts. A run stored before a field
 /// existed reads it as null. It sits apart from <see cref="BenchmarkStoreContract"/>, which is at its size limit.
 /// </summary>
+/// <remarks>
+/// Abstract test (a contract test): the tests are written once, and each store gets a small subclass that only says
+/// how to make one, so the in-memory store and the Mongo store are held to the same rules.
+/// </remarks>
 public abstract class BenchmarkRunFieldsContract
 {
     private static readonly DateTimeOffset T0 = new(2026, 10, 17, 9, 0, 0, TimeSpan.Zero);

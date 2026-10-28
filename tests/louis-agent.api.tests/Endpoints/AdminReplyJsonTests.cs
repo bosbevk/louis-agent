@@ -17,7 +17,10 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// </summary>
 public class AdminReplyJsonTests
 {
+    /// <summary>The admin key the test host is built with, and that each request sends.</summary>
     private const string AdminKey = "admin-secret";
+
+    /// <summary>A manual that is really in the repo, so the stub check has one to show.</summary>
     private const string ManualPath = "evals/louis-agent.evals.runner/Manuals/stub.md";
 
     /// <summary>The page's first read lists each check with its title and whether it has a manual.</summary>
@@ -39,9 +42,7 @@ public class AdminReplyJsonTests
         Assert.That(json.RootElement.GetProperty("runs").GetRawText(), Is.EqualTo("[]"));
     }
 
-    /// <summary>
-    /// Without a store the page's banner reads "not configured", and the reply still carries every part.
-    /// </summary>
+    /// <summary>Without a store the page's banner says "not configured", and the reply still has every part.</summary>
     [Test]
     public async Task TheListReply_WithoutAStore_SaysNotConfigured()
     {
@@ -78,20 +79,24 @@ public class AdminReplyJsonTests
     [Test]
     public async Task TheTrendReply_NamesEveryPointNumber()
     {
+        // One finished run with an overall slice.
         var store = new InMemoryBenchmarkStore();
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
         var slice = new BenchmarkSlice(SampleMode.Beta, "overall", 8, 6, 2, 0, 0, ["a"], false, 0.75, 0.75, 0.75, [],
             [], []);
         await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at, Slices: [slice]));
+
         // One conversation, so the overall trend has a line with a point on it.
         var scores = JsonDocument.Parse("""{"routed_right":true}""").RootElement.Clone();
         await store.SaveConversationAsync("r1",
             new Conversation(new ConversationKey(SampleMode.Beta, 1, SampleScenario.Alpha), 1, null, scores, 0, 1));
+
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
 
         using var json = await GetAsync(app, $"/v1/admin/benchmarks/checks/{SampleEval.Beta}/trend");
 
+        // The reply's parts, then the first mode's first point, field by field in order.
         Assert.That(Names(json.RootElement), Is.EqualTo("check,categories,modes"));
         var mode = json.RootElement.GetProperty("modes")[0];
         Assert.That(Names(mode), Is.EqualTo("name,points"));

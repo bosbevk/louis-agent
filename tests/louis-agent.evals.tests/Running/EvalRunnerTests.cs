@@ -14,15 +14,21 @@ using LouisAgent.Evals.Datasets;
 
 namespace LouisAgent.Evals.Tests.Running;
 
-// F18 step 2: one canned trial, written in order. The client answers from canned events and never calls the API, so the
-// lines are the runner's own: the mode, the question, each event the session sent, the turn, the conversation and the mode's end.
+/// <summary>
+/// The runner on a canned trial. The client answers from canned events and never calls the API, so every line written
+/// is the runner's own: the mode, the question, each event the session sent, the turn, the conversation and the
+/// mode's end.
+/// </summary>
 public class EvalRunnerTests
 {
+    /// <summary>The fixed moment every line is stamped with.</summary>
     private static readonly DateTimeOffset At = DateTimeOffset.FromUnixTimeMilliseconds(1700000000123);
 
+    /// <summary>One trial writes its lines in order: the eval and its model, the answer and the scores.</summary>
     [Test]
     public async Task ARunWritesOneCannedTrialInOrder()
     {
+        // A turn that opens a session and says "Hallo".
         var turn = new[]
         {
             SessionEvent.From("message_start",
@@ -38,6 +44,7 @@ public class EvalRunnerTests
 
         await runner.RunAsync(new CannedEval(), new EvalRun("run_1", 1), CancellationToken.None);
 
+        // The lines come in order, ending with the mode's summary.
         var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries).Select(BenchmarkProtocol.Parse)
             .ToList();
         Assert.That(lines.Select(l => l.GetType().Name),
@@ -47,6 +54,8 @@ public class EvalRunnerTests
                 "ConversationEnded", "ModeEnded", "SummaryReported"
             }),
             "the mode's summary line (F18 step 5c), read since 5c.2");
+
+        // The first line names the eval and its model; the turn and the conversation carry what happened.
         var first = (BenchmarkProtocol.ProtocolStarted)lines[0];
         Assert.That((first.Eval, first.Commit, first.Models!.Single()),
             Is.EqualTo(("stub-cook", EvalBuild.Commit,
@@ -57,6 +66,7 @@ public class EvalRunnerTests
                 .GetBoolean(), Is.True);
     }
 
+    /// <summary>When a turn blows up, the session is still closed, and the turn's error is what you see.</summary>
     [Test]
     public async Task ASessionIsClosedWhenItsTurnThrows()
     {
@@ -71,6 +81,7 @@ public class EvalRunnerTests
         Assert.That(client.Closed, Is.EqualTo(new[] { "sess_throws" }));
     }
 
+    /// <summary>If closing fails too, you still see why the turn failed, not why the close did.</summary>
     [Test]
     public void TheSendsErrorSurvivesAFailedClose()
     {
@@ -85,13 +96,15 @@ public class EvalRunnerTests
         Assert.That(client.Closed, Is.EqualTo(new[] { "sess_throws" }));
     }
 
+    /// <summary>A text event with no text, or a broken one, is skipped: the run goes on with an empty answer.</summary>
     [Test]
     public async Task ADeltaWithoutItsDeltaDoesNotStopTheRun()
     {
         var turn = new[]
         {
             SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0}""")),
-            SessionEvent.From("content_block_delta", Json("""{"type":"content_block_delta","index":0,"delta":7}""")),
+            SessionEvent.From("content_block_delta",
+                Json("""{"type":"content_block_delta","index":0,"delta":7}""")),
         };
         var sink = new StringWriter();
         var runner = new EvalRunner(new CannedSessionClient(turn), new ProtocolWriter(sink, new FixedClock(At)),
@@ -105,11 +118,13 @@ public class EvalRunnerTests
         Assert.That(lines.OfType<BenchmarkProtocol.TurnEnded>().Single().Answer, Is.EqualTo(""));
     }
 
+    /// <summary>
+    /// What the eval says about each turn (who answered, the calls, the hosts) is written on the turn, with the
+    /// mode's number of conversations and the conversation's errors.
+    /// </summary>
     [Test]
     public async Task ATurnsFactsAreWritten_BesideTheModeAndTheConversation()
     {
-        // F18 step 4.1: the runner writes what the eval says about each turn (who answered, the calls, the hosts), and the mode's
-        // number of conversations and the conversation's errors.
         var turn = new[]
         {
             SessionEvent.From("content_block_delta",
@@ -123,6 +138,7 @@ public class EvalRunnerTests
 
         await runner.RunAsync(new CannedEval(facts), new EvalRun("run_1", 1), CancellationToken.None);
 
+        // Read the raw lines, so we see the fields as written.
         var lines = sink.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)
             .Select(l => JsonDocument.Parse(l.TrimStart('@')).RootElement).ToList();
         var turnLine = lines.Single(e => e.GetProperty("event").GetString() == "turn");
@@ -139,10 +155,10 @@ public class EvalRunnerTests
             Is.EqualTo(0));
     }
 
+    /// <summary>Each of the eval's graders grades the trial, in order, and the outcome is written.</summary>
     [Test]
     public async Task TheConversationLineCarriesOneGradePerGraderInOrder_AndTheOutcome()
     {
-        // F18 step 4.5a: the runner grades the trial with the eval's graders and writes the grades and the outcome on the conversation.
         var turn = new[]
         {
             SessionEvent.From("content_block_delta",
@@ -166,6 +182,7 @@ public class EvalRunnerTests
         Assert.That(conversation.Outcome, Is.EqualTo(BenchmarkOutcome.Pass));
     }
 
+    /// <summary>The eval's scores get to see the grades the trial was given.</summary>
     [Test]
     public async Task ScoresOfReceivesTheGrades()
     {
@@ -184,10 +201,13 @@ public class EvalRunnerTests
         Assert.That(eval.GradesScored.Select(g => g.Grader), Is.EqualTo(new[] { "no-error" }));
     }
 
+    /// <summary>
+    /// A text event whose text is a number is skipped instead of stopping the run, and the answer is exactly what the
+    /// shared answer reader makes of the turn. The runner's own loop used to read the text as a string and throw.
+    /// </summary>
     [Test]
     public async Task ADeltaWhoseTextIsANumberDoesNotStopTheRun_AndTheAnswerIsWhatAnswerOfGives()
     {
-        // The runner's own loop called GetString() on the text, which throws on a number; EngineEvents.AnswerOf skips such a delta.
         var turn = new[]
         {
             SessionEvent.From("content_block_delta",
@@ -211,14 +231,20 @@ public class EvalRunnerTests
         Assert.That(turnLine.Answer, Is.EqualTo("Ja"));
     }
 
-    // F18 step 4a.3: every session the runner opens sends a replay (the eval's mark); its web and its trial follow the run's flags.
+    /// <summary>
+    /// One turn that says "Hallo", for the replay tests below. Every session the runner opens sends a replay request
+    /// (the eval's mark); its web and its trial follow the run's flags.
+    /// </summary>
     private static readonly IReadOnlyList<SessionEvent> OneAnswer =
     [
         SessionEvent.From("content_block_delta",
             Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""))
     ];
 
-    /// <summary>Runs one eval with its sessions answered from <paramref name="turns"/> canned turns; returns the client, with what it was asked to open.</summary>
+    /// <summary>
+    /// Runs the stub eval with its sessions answered from that many canned turns, and hands back the client, so you
+    /// can see what it was asked to open.
+    /// </summary>
     private static async Task<CannedSessionClient> RunAndOpened(EvalRun run, int turns = 1)
     {
         var client = new CannedSessionClient(Enumerable.Repeat(OneAnswer, turns).ToArray());
@@ -227,9 +253,11 @@ public class EvalRunnerTests
             NullLogger<EvalRunner>.Instance);
 
         await runner.RunAsync(new CannedEval(), run, CancellationToken.None);
+
         return client;
     }
 
+    /// <summary>A plain run still marks every session as the eval's, with no web replay and no trial named.</summary>
     [Test]
     public async Task WithNoWebFlags_EverySessionStillSendsTheMark_WithNeitherWebNorTrial()
     {
@@ -238,6 +266,7 @@ public class EvalRunnerTests
         Assert.That(client.Opened.Select(s => s.Replay), Is.EqualTo(new[] { new WebReplayRequest(null, null) }));
     }
 
+    /// <summary>A recording asks to record the web and names no trial: the API works out the key itself.</summary>
     [Test]
     public async Task ARecording_SendsWebRecord_AndNoTrial_SoTheApiResolvesIt()
     {
@@ -247,6 +276,7 @@ public class EvalRunnerTests
             Is.EqualTo(new[] { new WebReplayRequest(WebReplayMode.Record, null) }));
     }
 
+    /// <summary>A replay names the recorded trial for each session and each repeat.</summary>
     [Test]
     public async Task AReplay_NamesEachTrialTheRecordingWrote_OnePerSessionAndRepeat()
     {
@@ -257,52 +287,63 @@ public class EvalRunnerTests
         Assert.That(client.Opened.Select(s => s.Replay.Web).Distinct(), Is.EqualTo(new[] { WebReplayMode.Replay }));
     }
 
+    /// <summary>
+    /// A full replay is the web replay plus the model's recorded answers, so only it asks for the model; the API
+    /// decides whether to accept it. Every other kind of run asks for no model.
+    /// </summary>
     [Test]
     public async Task AReplayWithTheModel_SendsModelTrue_WithEachTrialsKey_AndEveryOtherRunSendsFalse()
     {
-        // F18 step 4e.4: --replay is the web replay plus the model's answers; the API decides whether it accepts it.
         var withModel = await RunAndOpened(new EvalRun("run_new", 2, WebReplayMode.Replay, "run_A", Model: true),
             turns: 2);
         var webOnly = await RunAndOpened(new EvalRun("run_new", 1, WebReplayMode.Replay, "run_A"));
         var recording = await RunAndOpened(new EvalRun("run_R", 1, WebReplayMode.Record));
         var noFlags = await RunAndOpened(new EvalRun("run_1", 1));
 
-        Assert.That(withModel.Opened.Select(s => s.Replay), Is.EqualTo(new[]
-        {
-            new WebReplayRequest(WebReplayMode.Replay, "run_A:cook:1/pannekoek", true),
-            new WebReplayRequest(WebReplayMode.Replay, "run_A:cook:2/pannekoek", true),
-        }));
+        Assert.That(withModel.Opened.Select(s => s.Replay),
+            Is.EqualTo(new[]
+            {
+                new WebReplayRequest(WebReplayMode.Replay, "run_A:cook:1/pannekoek", true),
+                new WebReplayRequest(WebReplayMode.Replay, "run_A:cook:2/pannekoek", true),
+            }));
         Assert.That(webOnly.Opened.Single().Replay.Model, Is.False);
         Assert.That(recording.Opened.Single().Replay.Model, Is.False);
         Assert.That(noFlags.Opened.Single().Replay.Model, Is.False);
     }
 
+    /// <summary>
+    /// The cross-check: a recording's sessions carry a run tag and a task, and the API keys the trial as
+    /// {run tag}/{task}. A replay must name exactly that key, so a later change to the run tag can't silently break
+    /// replays.
+    /// </summary>
     [Test]
     public async Task AReplayReadsTheKeyTheRecordingWrote()
     {
-        // The cross-check: a recording's sessions carry a run tag and a task, and the API writes {run tag}/{task} as the trial's key.
-        // A replay of that run must name exactly that key, so a later change to the run tag can't break replays silently.
         var recorded = (await RunAndOpened(new EvalRun("run_R", 1, WebReplayMode.Record))).Opened.Single();
         var replayed = (await RunAndOpened(new EvalRun("run_new", 1, WebReplayMode.Replay, "run_R"))).Opened.Single();
 
         Assert.That(replayed.Replay.Of, Is.EqualTo($"{recorded.RunTag}/{recorded.Task}"));
     }
 
-    /// <summary>A session whose send fails, as a timed-out connection does; it records which sessions were closed.</summary>
+    /// <summary>A session that fails to send, like a timed-out connection, and notes which ones were closed.</summary>
     private sealed class ThrowingSessionClient(bool closeFails = false) : ISessionClient
     {
         public List<string> Closed { get; } = [];
 
+        /// <summary>No toolsets: these tests never ask.</summary>
         public Task<IReadOnlyList<string>> ToolsetsAsync(CancellationToken cancellationToken) =>
             Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 
+        /// <summary>Every session opens as the same one.</summary>
         public Task<string> OpenAsync(SessionRequest request, CancellationToken cancellationToken) =>
             Task.FromResult("sess_throws");
 
+        /// <summary>Sending always fails, as a timed-out connection would.</summary>
         public IAsyncEnumerable<SessionEvent> SendAsync(string session, string message,
             CancellationToken cancellationToken) =>
             throw new InvalidOperationException("the connection timed out");
 
+        /// <summary>Notes the close, and fails it too when asked to.</summary>
         public Task CloseAsync(string session, CancellationToken cancellationToken)
         {
             Closed.Add(session);
@@ -311,9 +352,13 @@ public class EvalRunnerTests
         }
     }
 
+    /// <summary>A bit of JSON text as an element that outlives its document.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    /// <summary>The stub eval: one mode, one scenario with one message, scores that say the route was right; it keeps the grades it was scored with.</summary>
+    /// <summary>
+    /// The stub eval: one mode, one scenario with one message, and scores that say the route was right. It keeps the
+    /// grades it was scored with, so a test can look at them.
+    /// </summary>
     private sealed class CannedEval(TurnFacts? facts = null, IReadOnlyList<IGrader>? graders = null) : IEval
     {
         public IReadOnlyList<Grade> GradesScored { get; private set; } = [];
@@ -322,6 +367,7 @@ public class EvalRunnerTests
         public int Version => 1;
         public string Proves => "A canned trial, to see the runner's lines.";
 
+        /// <summary>The one mode, "cook".</summary>
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
             CancellationToken cancellationToken) =>
             ValueTask.FromResult<IReadOnlyList<EvalMode>>([
@@ -336,15 +382,18 @@ public class EvalRunnerTests
 
         public IReadOnlyList<IGrader> Graders { get; } = graders ?? [];
 
+        /// <summary>Keeps the grades it was given, and says the route was right.</summary>
         public EvalScores ScoresOf(Trial trial, IReadOnlyList<Grade> grades)
         {
             GradesScored = grades;
             return new CannedScores(RoutedRight: true);
         }
 
+        /// <summary>The facts the test handed in, or none at all.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>
             facts ?? new TurnFacts(null, null, 0, 0, [], null);
     }
 
+    /// <summary>The stub eval's only score: whether the route was right.</summary>
     private sealed record CannedScores(bool RoutedRight) : EvalScores;
 }

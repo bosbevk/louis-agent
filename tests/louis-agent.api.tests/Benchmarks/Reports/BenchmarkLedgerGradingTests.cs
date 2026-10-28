@@ -7,33 +7,45 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Reports;
 
-// F18 step 6.1b: a model grader's requests are ledger rows with the purpose `grading`, tagged as the turns are ({run}:{mode}:{repeat}, plus the scenario) and carrying the
-// conversation's session and last turn, so the join places each on its conversation, the run's total counts it, and a slice's cost includes the judging. Tagged with the run alone
-// (6.1) they had no turn, and a row no conversation holds made every slice's cost unknown. The ledger's rule for a total is unchanged: unpriced requests are counted apart.
+/// <summary>
+/// When a model grades a conversation, its requests land in the ledger tagged like the turns, with the
+/// conversation's session and last turn. So the join puts each on its conversation, the run's total counts it, and a
+/// slice's cost includes the judging. Unpriced requests are still counted apart, as for any total.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class BenchmarkLedgerGradingTests
 {
+    /// <summary>The id of the run the rows belong to.</summary>
     private const string Run = "run123456789";
+
+    /// <summary>When the first row was written.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 26, 9, 0, 0, TimeSpan.Zero);
 
+    /// <summary>The one conversation of the run, found by its session.</summary>
     private static readonly IReadOnlyDictionary<string, ConversationKey> Sessions =
         new Dictionary<string, ConversationKey> { ["sess_puls"] = new(SampleMode.Beta, 1, "bobotie") };
 
+    /// <summary>A ledger row for one request, with or without a price.</summary>
     private static UsageRecord Row(int second, string purpose, string? session, int? turn, string? run, decimal? cost,
         string? task = null) =>
         new(T0.AddSeconds(second), 1, purpose, "api", session, turn, task, run, null, "qwen3:8b",
             new UsageTokens(1000, 0, 0, 200, null), 1500, "stop",
             cost is null ? null : new UsageCost("USD", cost.Value, "2026-10-10"));
 
+    /// <summary>The conversation's one answering turn, at that price.</summary>
     private static UsageRecord Turn(decimal cost) =>
         Row(1, UsagePurpose.Turn, "sess_puls", 1, Run + ":puls-cook:1", cost);
 
+    /// <summary>The judge's request on the same conversation, priced or not.</summary>
     private static UsageRecord Judge(decimal? cost) => Row(2, UsagePurpose.Grading, "sess_puls", 1,
         Run + ":puls-cook:1", cost, task: "bobotie");
 
+    /// <summary>The run's overall slice, with one trial by default.</summary>
     private static BenchmarkSlice Slice(int n = 1, int passed = 1) =>
         new(SampleMode.Beta, "overall", n, passed, n - passed, 0, 0, ["bobotie"], TooFew: true, null, null, null, [],
             [], []);
 
+    /// <summary>The judge's row sits on the conversation's turn, and its cost is part of the run's total.</summary>
     [Test]
     public void AGradingRow_LandsOnItsConversationsTurn_AndItsCostIsInTheRunsTotal()
     {
@@ -49,6 +61,7 @@ public class BenchmarkLedgerGradingTests
         Assert.That(BenchmarkLedger.TotalOf(ofRun).Requests, Is.EqualTo(2));
     }
 
+    /// <summary>A slice's cost counts the judging too, and is still known.</summary>
     [Test]
     public void ASlicesCost_IncludesTheJudging_AndStaysKnown()
     {
@@ -59,6 +72,7 @@ public class BenchmarkLedgerGradingTests
         Assert.That(cost.PerTrial, Is.EqualTo(0.012m), "the answer and the judging");
     }
 
+    /// <summary>A judge's request with no price has an unknown cost, and so does its slice.</summary>
     [Test]
     public void AGradingRowWithNoPrice_IsAnUnknownCost_AndSoIsTheSlicesThatItBelongsTo()
     {
@@ -71,8 +85,10 @@ public class BenchmarkLedgerGradingTests
         Assert.That(SlicePricer.Of(Slice(), BenchmarkLedger.TotalOf(ofRun), requests).PerTrial, Is.Null);
     }
 
-    // The ledger's rule for every total (UsageReport.Total): the cost is the priced requests' sum and the unpriced ones are counted apart, so a run is unknown only when none of its
-    // requests is priced. A grading row follows it like any other.
+    /// <summary>
+    /// A judge's unpriced request follows the ledger's rule for every total: the cost is the sum of what's priced, so
+    /// a run's cost is unknown only when nothing in it is priced.
+    /// </summary>
     [Test]
     public void TheRunsTotal_FollowsTheLedgersRule_ForAGradingRowWithNoPrice()
     {

@@ -64,6 +64,7 @@ public class CalibrationHandlersTests
         var catalog = new BenchmarkCatalog();
         var runner = new BenchmarkRunner(catalog, ApiTestHost.RepoRoot, "http://127.0.0.1:1/");
         var calibrations = new InMemoryCalibrationStore();
+
         return withStores
             ? new CalibrationHandlers(catalog, runner, new InMemoryBenchmarkStore(), new InMemoryHumanReviewStore(),
                 calibrations, new CalibrationRecorder(calibrations))
@@ -71,8 +72,15 @@ public class CalibrationHandlersTests
     }
 
     /// <summary>The status an error answer carries.</summary>
-    private static int? Status(object answer) =>
-        (answer is INestedHttpResult nested ? nested.Result : answer) is JsonHttpResult<ApiError> error
-            ? error.StatusCode
-            : null;
+    /// <remarks>
+    /// Two plain steps instead of a ternary inside a ternary (Fowler's <i>Decompose Conditional</i>): first unwrap the
+    /// answer, then read its status, so each line tests one thing.
+    /// </remarks>
+    private static int? Status(object answer)
+    {
+        // A declared set of answers holds the real answer inside it.
+        var inner = answer is INestedHttpResult nested ? nested.Result : answer;
+
+        return inner is JsonHttpResult<ApiError> error ? error.StatusCode : null;
+    }
 }

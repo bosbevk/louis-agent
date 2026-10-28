@@ -15,6 +15,7 @@ namespace LouisAgent.Api.Tests.Benchmarks.Reports.Prompts;
 /// </summary>
 public class AgentPromptsTests
 {
+    /// <summary>The id of the run the rows belong to.</summary>
     private const string Run = "run123456789";
 
     /// <summary>One ledger row of the run: who asked (its task), in which mode, why, and with which prompt.</summary>
@@ -101,6 +102,7 @@ public class AgentPromptsTests
     public async Task ARecordedRun_KeepsItsAgentsPrompts()
     {
         string directory = Path.Combine(Path.GetTempPath(), "louis-ledger-" + Guid.NewGuid().ToString("N"));
+        // The folder is ours alone, and the finally removes it whatever the test does.
         try
         {
             // The ledger holds a main session's row and its cook's.
@@ -129,7 +131,7 @@ public class AgentPromptsTests
         }
     }
 
-    /// <summary>The script's first line, as the recorder reads it.</summary>
+    /// <summary>The runner's first line, as the recorder reads it.</summary>
     private sealed record ProtocolLine(
         [property: System.Text.Json.Serialization.JsonPropertyName("event")]
         string Event,

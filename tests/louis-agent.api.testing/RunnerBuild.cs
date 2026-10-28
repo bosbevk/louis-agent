@@ -1,8 +1,12 @@
 namespace LouisAgent.Api.Testing;
 
-/// <summary>The eval runner's built dll, beside this test's configuration: the project reference builds it with these tests (F18 step 4.3).</summary>
+/// <summary>
+/// Finds the eval runner we built alongside these tests, so a test can start it. The project reference builds it in
+/// the same configuration and framework as the tests.
+/// </summary>
 public static class RunnerBuild
 {
+    /// <summary>Where the runner's dll sits, in the same build folders as this test.</summary>
     public static string Dll
     {
         get

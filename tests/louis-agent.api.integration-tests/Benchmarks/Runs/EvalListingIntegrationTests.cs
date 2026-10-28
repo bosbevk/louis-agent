@@ -4,8 +4,8 @@ using LouisAgent.Api.Benchmarks.Runs;
 namespace LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 
 /// <summary>
-/// The real runner's <c>--list</c> is the pin: whatever it writes, the API's line record must read. Listing asks no
-/// model; it only describes the evals.
+/// Runs the real eval runner's <c>--list</c> and checks the API can read every line it writes. Listing asks no model;
+/// it only describes the evals.
 /// </summary>
 [Category("Integration")]
 public class EvalListingIntegrationTests
@@ -14,7 +14,7 @@ public class EvalListingIntegrationTests
     [Test]
     public void TheRunnersOwnListingReadsAsEvalLines()
     {
-        // F18 step 5.3: the stub, and Puls's two evals (the runner loads their datasets from its own output folder).
+        // The stub, and Puls's two evals (the runner loads their datasets from its own output folder).
         var result = EvalListing.ForRunner(RunnerBuild.Dll).Read();
 
         Assert.That(result.Failure, Is.Null);
@@ -39,6 +39,7 @@ public class EvalListingIntegrationTests
     [Test]
     public void ATimedOutListingIsAWarningAndNoEvals()
     {
+        // A millisecond is far too short for the runner to start.
         var result = EvalListing.ForRunner(RunnerBuild.Dll, TimeSpan.FromMilliseconds(1)).Read();
 
         Assert.That(result.Evals, Is.Empty);

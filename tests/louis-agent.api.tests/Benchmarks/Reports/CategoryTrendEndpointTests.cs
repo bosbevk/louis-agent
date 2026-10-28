@@ -9,25 +9,36 @@ using static LouisAgent.Api.Benchmarks.Store.BenchmarkDocuments;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Reports;
 
-// F18 step 5c.4: the trend endpoint sends, beside the overall trend, a chart per category (`categories`), each in the shape the overall trend's lines have (`modes[].points[]`), so the portal's
-// trend chart draws it. A slice with too few trials is not a point. The route table is unchanged. Written beside the endpoint: the trend itself is CategoryTrendTests.
+/// <summary>
+/// Beside the overall trend, the trend endpoint sends a chart per category, each shaped like the overall trend's
+/// lines, so the portal's trend chart can draw it. A slice with too few trials is not a point. The trend's own
+/// working-out is tested in CategoryTrendTests.
+/// </summary>
 public class CategoryTrendEndpointTests
 {
+    /// <summary>The admin key the test API is built with.</summary>
     private const string AdminKey = "admin-secret";
 
+    /// <summary>
+    /// The trend's JSON has a chart for each category with enough trials, laid out like the overall trend, which is
+    /// still there.
+    /// </summary>
     [Test]
     public async Task TheTrendJson_CarriesAChartPerCategory_InTheShapeOfTheOverallTrend()
     {
         var store = new InMemoryBenchmarkStore();
         var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
+        // A slice of six passes in eight, with the same number for each of its rates.
         BenchmarkSlice Slice(string name, double? rate, bool tooFew = false) =>
             new(SampleMode.Beta, name, 8, 6, 2, 0, 0, ["a"], tooFew, rate, rate, rate, [], [], []);
 
+        // Two runs an hour apart; the budget category had too few trials in the first and isn't in the second.
         await store.SaveRunAsync(new Run("r1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at,
             Slices: [Slice("overall", 0.75), Slice("budget", null, tooFew: true)]));
         await store.SaveRunAsync(new Run("r2", SampleEval.Beta, 1, BenchmarkRunStatus.Done, at.AddHours(1),
             Slices: [Slice("overall", 0.875)]));
+
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store);
         await app.StartAsync();
         using var request =

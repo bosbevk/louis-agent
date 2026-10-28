@@ -5,11 +5,14 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-// F31 step 1: a check prints plain lines for people and '@' + one JSON object for the portal. Parse turns one line into
-// a typed event, and anything it can't read (a plain line, bad JSON, an unknown event, a missing field) into a log
-// line, never an exception: a run never fails on its own output.
+/// <summary>
+/// An eval prints plain lines for people, and an @ followed by one JSON object for the portal. Each line is read into
+/// a typed event; anything that can't be read (a plain line, bad JSON, an unknown event, a missing field) becomes a
+/// log line, never an exception, so a run never fails on its own output.
+/// </summary>
 public class BenchmarkProtocolTests
 {
+    /// <summary>The first line names the protocol's version.</summary>
     [Test]
     public void TheFirstLine_NamesTheProtocolVersion()
     {
@@ -18,6 +21,7 @@ public class BenchmarkProtocolTests
         Assert.That(parsed, Is.EqualTo(new ProtocolStarted(1)));
     }
 
+    /// <summary>The first line names the eval, its version and commit, its graders and its models.</summary>
     [Test]
     public void TheFirstLine_CarriesTheEvalItRuns()
     {
@@ -31,6 +35,7 @@ public class BenchmarkProtocolTests
             Is.EqualTo(new ModelInfo("cook", BenchmarkModelLevel.Agent, null, "claude-haiku-5-5")));
     }
 
+    /// <summary>A conversation brings its grades and its outcome.</summary>
     [Test]
     public void AConversation_CarriesItsGradesAndOutcome()
     {
@@ -43,9 +48,9 @@ public class BenchmarkProtocolTests
                 "2 of 2 priced with a source")));
     }
 
-    // F18 step 6.1b: what judged a model grader's grade is read with the grade, and a code grader's grade has none.
-    // F18 step 6a.1: a human review's grade is Pending until a person gives one; the reader keeps it, and it is no Unknown.
-    // F18 step 6a.3: a human review's entry on the run's first line carries the question a person is asked; another grader's entry has none.
+    /// <summary>
+    /// A human review's entry on the first line carries the question a person is asked; another grader's has none.
+    /// </summary>
     [Test]
     public void AHumanReviewsEntryOnTheFirstLine_CarriesItsQuestion()
     {
@@ -56,6 +61,9 @@ public class BenchmarkProtocolTests
         Assert.That(started.Graders![1].Question, Is.EqualTo("Is this a meal for the people asked for?"));
     }
 
+    /// <summary>
+    /// A human review's grade waits as pending until a person gives one: it's kept, and it isn't read as unknown.
+    /// </summary>
     [Test]
     public void APendingGrade_IsReadAsPending_NotLostAndNotUnknown()
     {
@@ -66,6 +74,7 @@ public class BenchmarkProtocolTests
         Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Pass), "the trial's outcome is the fixed rules'");
     }
 
+    /// <summary>A model grader's grade names the judge that gave it; a code grader's names none.</summary>
     [Test]
     public void AModelGradersGrade_CarriesTheJudgeThatGaveIt()
     {
@@ -78,16 +87,20 @@ public class BenchmarkProtocolTests
         Assert.That(ended.Grades[1].JudgeModel, Is.Null);
     }
 
+    /// <summary>
+    /// A conversation that failed because of the infrastructure reads as such. A reader that didn't know the outcome
+    /// would drop the whole line.
+    /// </summary>
     [Test]
     public void AConversationThatFailedForTheInfrastructure_ReadsAsInfrastructure_NotAsALostLine()
     {
-        // F18 step 5a: the runner writes "Infrastructure" as such a trial's outcome; a reader that didn't know it would drop the whole conversation line.
         var ended = (ConversationEnded)Parse(
             """@{"event":"conversation","mode":"cook","repeat":1,"task":"pannekoek","role":null,"scores":{},"seconds":3,"errors":0,"outcome":"Infrastructure"}""");
 
         Assert.That(ended.Outcome, Is.EqualTo(BenchmarkOutcome.Infrastructure));
     }
 
+    /// <summary>A mode brings its repeat, its toolsets and what its sessions open with.</summary>
     [Test]
     public void AMode_CarriesItsRepeatToolsetsAndTheSessionFieldsItOpensWith()
     {
@@ -104,6 +117,7 @@ public class BenchmarkProtocolTests
         Assert.That(mode.At, Is.EqualTo(DateTimeOffset.FromUnixTimeMilliseconds(1_760_700_000_500)));
     }
 
+    /// <summary>An older harness said "personality" where it now says "role", and it still reads as the role.</summary>
     [Test]
     public void AModeFromAHarnessBeforeCL14_SaysPersonality_ReadAsItsRole() =>
         Assert.That(
@@ -112,6 +126,7 @@ public class BenchmarkProtocolTests
             .Role,
             Is.EqualTo("puls/voice-af"));
 
+    /// <summary>A question brings the session it was asked in.</summary>
     [Test]
     public void AQuestion_CarriesItsSession()
     {
@@ -124,6 +139,7 @@ public class BenchmarkProtocolTests
                 null)));
     }
 
+    /// <summary>A streamed event keeps its data as JSON.</summary>
     [Test]
     public void AnSseEvent_KeepsItsDataAsJson()
     {
@@ -135,6 +151,7 @@ public class BenchmarkProtocolTests
         Assert.That(parsed.Data.GetProperty("delta").GetProperty("text").GetString(), Is.EqualTo("Hallo"));
     }
 
+    /// <summary>A turn brings its session, its calls, the sites it read and its answer.</summary>
     [Test]
     public void ATurn_CarriesItsSessionCallsHostsAndAnswer()
     {
@@ -150,6 +167,10 @@ public class BenchmarkProtocolTests
         Assert.That(turn.Error, Is.Null);
     }
 
+    /// <summary>
+    /// A turn's failure is the infrastructure's, not the agent's, and is read by its snake-case name. Without it a
+    /// stored run would blame the agent.
+    /// </summary>
     [TestCase("timeout", BenchmarkTurnFailure.Timeout)]
     [TestCase("transport", BenchmarkTurnFailure.Transport)]
     [TestCase("api_error", BenchmarkTurnFailure.ApiError)]
@@ -157,7 +178,6 @@ public class BenchmarkProtocolTests
     public void ATurnsFailure_IsTheInfrastructuresNotTheAgents_ReadByItsSnakeCaseName(string name,
         BenchmarkTurnFailure expected)
     {
-        // F18 step 5.1 wrote it on the turn line; the store must keep it, or a stored run reads infrastructure failures as the agent's.
         var line = SampleMode
             .Fill(
                 """@{"event":"turn","mode":"<ModeBeta>","repeat":1,"task":"bobotie","turn":1,"session":"s","question":"q","answer":"","role":null,"seconds":1.5,"failure":"NAME"}""")
@@ -166,6 +186,7 @@ public class BenchmarkProtocolTests
         Assert.That(((TurnEnded)Parse(line)).Failure, Is.EqualTo(expected));
     }
 
+    /// <summary>The first line names the split the run asked for.</summary>
     [TestCase("dev", BenchmarkRunSplit.Dev)]
     [TestCase("held_out", BenchmarkRunSplit.HeldOut)]
     [TestCase("all", BenchmarkRunSplit.All)]
@@ -175,6 +196,7 @@ public class BenchmarkProtocolTests
                 .Fill("""@{"event":"protocol","version":1,"eval":"<EvalBeta>","split":"WIRE"}""")
                 .Replace("WIRE", wire))).Split, Is.EqualTo(expected));
 
+    /// <summary>A first line with no split has none; one naming a split we don't know can't be read.</summary>
     [Test]
     public void AFirstLineWithNoSplit_HasNone_AndOneThatNamesNoSplitIsAnUnreadableLine()
     {
@@ -185,6 +207,7 @@ public class BenchmarkProtocolTests
             Is.InstanceOf<LogLine>());
     }
 
+    /// <summary>A turn with no failure has none; one naming a failure we don't know can't be read.</summary>
     [Test]
     public void ATurnWithNoFailureField_HasNone_AndOneThatNamesNoFailureIsAnUnreadableLine()
     {
@@ -198,10 +221,12 @@ public class BenchmarkProtocolTests
             Is.InstanceOf<LogLine>());
     }
 
+    /// <summary>
+    /// A conversation keeps the eval's scores just as they came, since each eval scores its own way.
+    /// </summary>
     [Test]
     public void AConversation_KeepsTheChecksScoresAsTheyCame()
     {
-        // The scores are the check's own document: the cook check's are not the routing check's.
         var conversation = (ConversationEnded)Parse(SampleMode.Fill(SampleRole.Fill(
             """@{"event":"conversation","mode":"<ModeBeta>","repeat":1,"task":"bobotie","role":"<RoleAlpha>","scores":{"routed_right":true,"priced_ratio":0.75},"errors":0,"seconds":88.1}""")));
 
@@ -211,14 +236,15 @@ public class BenchmarkProtocolTests
         Assert.That((conversation.Errors, conversation.Seconds), Is.EqualTo((0, 88.1)));
     }
 
+    /// <summary>A mode's end only marks the end; any cost on it is ignored, since costs come from the ledger.</summary>
     [Test]
     public void AModesEnd_IsAMarkerWithNoCost()
     {
-        // Costs come from the ledger in C# (step 4), never from the script.
         Assert.That(Parse(SampleMode.Fill("""@{"event":"mode_done","mode":"<ModeBeta>","repeat":2,"cost":0.42}""")),
             Is.EqualTo(new ModeEnded(SampleMode.Beta, 2)));
     }
 
+    /// <summary>Any other line, broken or unknown, is a log line and never an error.</summary>
     [TestCase("puls-cook  bobotie  role=puls-cook routed=True")]
     [TestCase("")]
     [TestCase("@")]
@@ -236,21 +262,27 @@ public class BenchmarkProtocolTests
         Assert.That(Parse(line), Is.EqualTo(new LogLine(line)));
     }
 
+    /// <summary>
+    /// What the runner wrote to stderr is merged into its lines and stays as it came, a traceback included.
+    /// </summary>
     [Test]
     public void ALogLine_FromTheScriptsStderr_StaysAsItCame()
     {
-        // The runner merges stderr into the lines: a Python traceback is a log line too.
         const string traceback = "Traceback (most recent call last):";
 
         Assert.That(Parse(traceback), Is.EqualTo(new LogLine(traceback)));
     }
 
+    /// <summary>
+    /// A streamed event's data outlives its line: events are kept until the turn ends, long after the JSON they came
+    /// from would have been thrown away.
+    /// </summary>
     [Test]
     public void TheSseDataAndTheScores_OutliveTheLine()
     {
-        // The events are kept until the turn ends (step 3), long after their JSON document would have been disposed.
         var sse = (SseEvent)Parse(
             """@{"event":"sse","mode":"m","repeat":1,"task":"t","turn":1,"type":"message_start","data":{"id":"msg_1"}}""");
+        // Collect now, so data that leaned on a disposed document would show.
         GC.Collect();
 
         Assert.That(sse.Data.ValueKind, Is.EqualTo(JsonValueKind.Object));

@@ -103,6 +103,7 @@ public class AdminHandlersTests
     {
         var catalog = new BenchmarkCatalog([new BenchmarkCheck("stub", "A stub", ManualPath)]);
         var runner = new BenchmarkRunner(catalog, ApiTestHost.RepoRoot, "http://127.0.0.1:1/");
+
         return new AdminHandlers(catalog, runner, "admin-secret", store, null,
             _ => new Dictionary<string, string>(), ApiTestHost.RepoRoot);
     }

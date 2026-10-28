@@ -9,26 +9,32 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.IntegrationTests.Benchmarks.Store;
 
 /// <summary>
-/// The store rules, run against MongoDB when `BENCHMARKS_MONGO_URL` is set: Louis's Puls stack at 127.0.0.1 on his machine, the Mongo service on CI. Without it the tests skip. They use a test database of their own, dropped when they end.
+/// Runs the run store's shared tests against a real MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set: Louis's Puls
+/// stack on his machine, the Mongo service on CI. Without it they skip. They get a database of their own, dropped at
+/// the end.
 /// </summary>
+/// <remarks>
+/// Template Method: the contract base class holds the tests and asks this class only for a store, so the Mongo store
+/// passes exactly the tests the in-memory one does, and a new store is one small subclass.
+/// </remarks>
 [Category("Integration")]
 public class MongoBenchmarkStoreTests : BenchmarkStoreContract
 {
-    /// <summary>The Mongo address from the environment, if there is one.</summary>
+    /// <summary>Where Mongo runs, if this machine has one.</summary>
     private static string? Url => Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
 
-    /// <summary>The test database's name, from the environment or a default.</summary>
+    /// <summary>The database these tests use: the one the environment names, else their own default.</summary>
     private static string Database =>
         Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_DATABASE") is { Length: > 0 } name
             ? name
             : "puls_benchmarks_test";
 
-    /// <summary>Skips when there's no Mongo to test against, and fails on CI.</summary>
+    /// <summary>Skips the whole fixture when there's no Mongo to talk to (CI fails instead).</summary>
     [OneTimeSetUp]
     public void NeedsMongo() =>
         Outside.Tool(!string.IsNullOrEmpty(Url), "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
 
-    /// <summary>Drops the test database when the tests end.</summary>
+    /// <summary>Cleans up after the tests by dropping their database.</summary>
     [OneTimeTearDown]
     public async Task DropTheTestDatabase()
     {
@@ -37,28 +43,32 @@ public class MongoBenchmarkStoreTests : BenchmarkStoreContract
         await store.Database.Client.DropDatabaseAsync(Database);
     }
 
-    /// <summary>A store on the test database.</summary>
+    /// <summary>Hands the shared tests a Mongo store on the test database.</summary>
     protected override IBenchmarkStore CreateStore() => new MongoBenchmarkStore(Url!, Database);
 }
 
 /// <summary>
-/// The run-fields rules, run against MongoDB when `BENCHMARKS_MONGO_URL` is set, in a test database dropped afterwards.
+/// Runs the shared tests for a run's own fields against a real MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set, in a
+/// database of their own that is dropped at the end.
 /// </summary>
+/// <remarks>
+/// Template Method: the contract base class holds the tests and this class only supplies the store.
+/// </remarks>
 [Category("Integration")]
 public class MongoRunFieldsTests : BenchmarkRunFieldsContract
 {
-    /// <summary>The Mongo address from the environment, if there is one.</summary>
+    /// <summary>Where Mongo runs, if this machine has one.</summary>
     private static string? Url => Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
 
-    /// <summary>The test database these tests use.</summary>
+    /// <summary>A database only these tests use, so dropping it hurts nothing.</summary>
     private const string Database = "puls_benchmarks_test_fields";
 
-    /// <summary>Skips when there's no Mongo to test against, and fails on CI.</summary>
+    /// <summary>Skips the whole fixture when there's no Mongo to talk to (CI fails instead).</summary>
     [OneTimeSetUp]
     public void NeedsMongo() =>
         Outside.Tool(!string.IsNullOrEmpty(Url), "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
 
-    /// <summary>Drops the test database when the tests end.</summary>
+    /// <summary>Cleans up after the tests by dropping their database.</summary>
     [OneTimeTearDown]
     public async Task DropTheTestDatabase()
     {
@@ -66,26 +76,32 @@ public class MongoRunFieldsTests : BenchmarkRunFieldsContract
         await new MongoBenchmarkStore(Url, Database).Database.Client.DropDatabaseAsync(Database);
     }
 
-    /// <summary>A store on the test database.</summary>
+    /// <summary>Hands the shared tests a Mongo store on the test database.</summary>
     protected override IBenchmarkStore CreateStore() => new MongoBenchmarkStore(Url!, Database);
 }
 
-/// <summary>The notes rules, run against MongoDB when `BENCHMARKS_MONGO_URL` is set, in a test database that is dropped afterwards.</summary>
+/// <summary>
+/// Runs the shared notes tests against a real MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set, in a database of
+/// their own that is dropped at the end.
+/// </summary>
+/// <remarks>
+/// Template Method: the contract base class holds the tests and this class only supplies the store.
+/// </remarks>
 [Category("Integration")]
 public class MongoNotesTests : BenchmarkNotesContract
 {
-    /// <summary>The Mongo address from the environment, or null when there is none.</summary>
+    /// <summary>Where Mongo runs, if this machine has one.</summary>
     private static string? Url => Environment.GetEnvironmentVariable("BENCHMARKS_MONGO_URL");
 
-    /// <summary>The test database these tests use.</summary>
+    /// <summary>A database only these tests use, so dropping it hurts nothing.</summary>
     private const string Database = "puls_benchmarks_test_notes";
 
-    /// <summary>Skips locally (fails on CI) when there is no Mongo to test against.</summary>
+    /// <summary>Skips the whole fixture when there's no Mongo to talk to (CI fails instead).</summary>
     [OneTimeSetUp]
     public void NeedsMongo() =>
         Outside.Tool(!string.IsNullOrEmpty(Url), "BENCHMARKS_MONGO_URL isn't set: the Mongo store isn't tested here");
 
-    /// <summary>Drops the fixture's database when it ends.</summary>
+    /// <summary>Cleans up after the tests by dropping their database.</summary>
     [OneTimeTearDown]
     public async Task DropTheTestDatabase()
     {
@@ -93,6 +109,6 @@ public class MongoNotesTests : BenchmarkNotesContract
         await new MongoBenchmarkStore(Url, Database).Database.Client.DropDatabaseAsync(Database);
     }
 
-    /// <summary>A store on the fixture's database.</summary>
+    /// <summary>Hands the shared tests a Mongo store on the test database.</summary>
     protected override IBenchmarkStore CreateStore() => new MongoBenchmarkStore(Url!, Database);
 }

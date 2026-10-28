@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Runs;
 
-/// <summary>The checks the portal can run: every one an eval the runner lists, read once, when first wanted.</summary>
+/// <summary>
+/// What the portal can run: every eval the runner lists, read once, the first time somebody asks.
+/// </summary>
 public class BenchmarkCatalogTests
 {
     /// <summary>A catalogue given nothing offers nothing.</summary>
@@ -94,6 +96,7 @@ public class BenchmarkCatalogTests
         var catalog = BenchmarkCatalog.From(EvalListing.ForRunner("/nope/louis-agent.evals.runner.dll"), log);
         Assert.That(log.Messages, Is.Empty, "nothing runs until the checks are asked for");
 
+        // Asking for the list is what reads it.
         _ = catalog.Checks;
         Assert.That(log.Messages, Is.Not.Empty);
     }
@@ -114,6 +117,7 @@ public class BenchmarkCatalogTests
     /// <summary>Keeps what the catalogue logs, formatted, so a test can read the warning.</summary>
     private sealed class CapturingLogger : ILogger
     {
+        /// <summary>The lines logged so far, in order.</summary>
         public List<string> Messages { get; } = [];
 
         /// <summary>No scopes: the test only reads the lines.</summary>

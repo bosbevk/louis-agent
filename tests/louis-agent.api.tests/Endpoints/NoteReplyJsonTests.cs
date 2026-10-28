@@ -12,19 +12,23 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// </summary>
 public class NoteReplyJsonTests
 {
+    /// <summary>The admin key the test host is built with, and that each request sends.</summary>
     private const string AdminKey = "admin-secret";
+
+    /// <summary>The time the run started and the clock always says.</summary>
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
-    /// <summary>
-    /// A note on a conversation comes back as its text, the server's time, and the conversation's key.
-    /// </summary>
+    /// <summary>A note on a conversation comes back as its text, the server's time and its conversation.</summary>
     [Test]
     public async Task ANewNote_IsWrittenAsBefore()
     {
+        // A finished run, and the API over it with a clock that never moves.
         var store = new InMemoryBenchmarkStore();
         await store.SaveRunAsync(new BenchmarkDocuments.Run("run_1", SampleEval.Beta, 1, BenchmarkRunStatus.Done, At));
         await using var app = ApiTestHost.Build(adminKey: AdminKey, store: store, time: new FixedClock(At));
         await app.StartAsync();
+
+        // A note on one conversation of that run.
         using var request = new HttpRequestMessage(HttpMethod.Post, "/v1/admin/benchmarks/runs/run_1/notes")
         {
             Content = JsonContent.Create(new

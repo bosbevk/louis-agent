@@ -10,20 +10,21 @@ using static LouisAgent.Api.Benchmarks.Runs.BenchmarkProtocol;
 namespace LouisAgent.Api.Tests.Admin;
 
 /// <summary>
-/// The admin rows carry the standard records (F18 step 4.5b): the run's eval, version, commit and graders, and a
-/// conversation's grades and outcome, each in the stored order, with enums spelt as the protocol and the store spell
-/// them; a run from before step 2a sends null, never [] or 0 (ADR 0007). Written with the admin wire's options, as the
-/// endpoints write them.
+/// The admin rows show what a run was: its eval, version, commit and graders, and each conversation's grades and
+/// outcome, in the order they were stored, with enums spelt the way the protocol and the store spell them. An old run
+/// that never recorded these sends null, never [] or 0, so "unknown" can't pass for "none" (ADR 0007). Written with
+/// the admin wire's options, as the endpoints write them.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class AdminRowsTests
 {
+    /// <summary>When the stored run started; the rows only pass it through.</summary>
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>A row as the endpoint writes it.</summary>
     private static JsonElement Json(object row) => JsonSerializer.SerializeToElement(row, AdminJson.SnakeCase);
 
-    /// <summary>A stored run, with an eval and its graders or, for a run from before step 2a, neither.</summary>
+    /// <summary>A stored run with an eval and its graders, or, for an old run, neither.</summary>
     private static BenchmarkDocuments.Run Run(string? eval, IReadOnlyList<BenchmarkDocuments.Grader>? graders) =>
         new("run_1", "stub", 1, BenchmarkRunStatus.Done, At, Eval: eval, EvalVersion: eval is null ? null : 3,
             Commit: eval is null ? null : "abc1234",
@@ -66,7 +67,7 @@ public class AdminRowsTests
         Assert.That(graders[1].GetProperty("question").GetString(), Is.EqualTo("Is this a meal?"));
     }
 
-    /// <summary>A run from before step 2a sends null for its eval, version, commit and graders.</summary>
+    /// <summary>An old run that never recorded its eval sends null for the eval, version, commit and graders.</summary>
     [Test]
     public void ARunFromBeforeStep2a_GivesNulls()
     {
@@ -78,9 +79,7 @@ public class AdminRowsTests
         Assert.That(row.GetProperty("graders").ValueKind, Is.EqualTo(JsonValueKind.Null), "null, never []");
     }
 
-    /// <summary>
-    /// A conversation's grades come through in their order, each with its outcome, and the conversation's.
-    /// </summary>
+    /// <summary>A conversation's grades come through in order, each with its outcome, and so does its own.</summary>
     [Test]
     public void AConversationWithTwoGrades_GivesThemInOrder_WithTheirOutcomes()
     {
@@ -91,6 +90,7 @@ public class AdminRowsTests
         };
         var row = Json(ConversationRow.Of(Conversation(grades, BenchmarkOutcome.Fail), []));
 
+        // Each grade as the five fields the page shows.
         var sent = row.GetProperty("grades").EnumerateArray()
             .Select(g => (g.GetProperty("grader").GetString(), g.GetProperty("version").GetInt32(),
                 g.GetProperty("score").GetDouble(),
@@ -105,7 +105,7 @@ public class AdminRowsTests
         Assert.That(row.GetProperty("outcome").GetString(), Is.EqualTo("Fail"));
     }
 
-    /// <summary>A conversation from before step 2a sends null for its grades and its outcome.</summary>
+    /// <summary>An old conversation that was never graded sends null for its grades and its outcome.</summary>
     [Test]
     public void AConversationFromBeforeStep2a_GivesNulls()
     {

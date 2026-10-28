@@ -4,17 +4,22 @@ using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.IntegrationTests.Benchmarks.Runs;
 
-// F18 step 6a.5b: a judge check is started like a re-score: the eval runner as a child process with an argument list (ADR 0004), `--calibrate {eval} {grader} --labels -`, and the label
-// lines on its stdin. It is the runner's one run at a time (the judge is shared), and its row says what it is, so the Benchmarks page can leave it alone. Written first: StartCalibration
-// did not exist.
+/// <summary>
+/// A judge check starts like a re-score: the eval runner as a child process with an argument list, told to calibrate,
+/// with the labels piped in on its input. Only one runs at a time, since the judge is shared.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 [Category("Integration")]
 public class BenchmarkCalibrationStartIntegrationTests
 {
+    /// <summary>The one eval the runner knows in these tests.</summary>
     private static readonly BenchmarkCheck Stub = new BenchmarkCheck("stub", "Stub");
 
+    /// <summary>A runner on the built eval runner, pointed at an API address nobody answers.</summary>
     private static BenchmarkRunner Runner() =>
         new(new BenchmarkCatalog([Stub]), TestPaths.RepoRoot, "http://127.0.0.1:1/", RunnerBuild.Dll);
 
+    /// <summary>A judge check gets its eval and grader as separate arguments, and the labels on its input.</summary>
     [Test]
     public void ACalibrationStartsTheRunnerWithAnArgumentList_AndPipesTheLabels()
     {
@@ -31,6 +36,7 @@ public class BenchmarkCalibrationStartIntegrationTests
         Assert.That(start.Environment["BENCHMARK_RUN"], Is.EqualTo("cal123456789"));
     }
 
+    /// <summary>You can't check the judge of an eval the runner doesn't know.</summary>
     [Test]
     public void ACalibrationOfACheckTheRunnerDoesNotList_IsRefused()
     {

@@ -4,9 +4,13 @@ using LouisAgent.Choices;
 
 namespace LouisAgent.Api.Tests.Benchmarks;
 
-// F18 step 7.5.2 follow-up (Louis, 2026-10-27, finding 1 A): the stored text is PascalCase and `.Wire()` keeps it; the portal's API words a review's verdict in lower case, spelled out apart from the wire name.
+/// <summary>
+/// The store keeps these choices in PascalCase, exactly as they're named in the code. The portal's API words a
+/// review's verdict in lower case, spelled out on its own and not taken from the stored name.
+/// </summary>
 public class PascalCaseWireTests
 {
+    /// <summary>Every choice the store keeps is written the way its member is named.</summary>
     [Test]
     public void TheEnumsTheStoreKeeps_WriteTheirMemberName()
     {
@@ -20,6 +24,7 @@ public class PascalCaseWireTests
             Assert.That(m.Wire(), Is.EqualTo(m.ToString()), $"HumanVerdict.{m}");
     }
 
+    /// <summary>The API says pass, fail or unsure in lower case, whatever the store writes.</summary>
     [Test]
     public void TheApiWordsAVerdictInLowerCase_NotFromItsWireName() =>
         Assert.That(Enum.GetValues<HumanVerdict>().Select(HumanVerdicts.Word),

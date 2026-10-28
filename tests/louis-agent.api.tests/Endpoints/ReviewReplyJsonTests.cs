@@ -19,9 +19,16 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// </summary>
 public class ReviewReplyJsonTests
 {
+    /// <summary>The admin key the test host is built with, and that each request sends.</summary>
     private const string AdminKey = "admin-secret";
+
+    /// <summary>A grade's field names, in the order the review panel reads them.</summary>
     private const string GradeNames = "mode,repeat,task,grader,model_grader,verdict,note,reviewer,at,latest";
+
+    /// <summary>When the run started and the stored grade was given.</summary>
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
+
+    /// <summary>The one conversation the run holds.</summary>
     private static readonly ConversationKey Key = new(SampleMode.Beta, 1, "bobotie");
 
     /// <summary>The list carries each grade with whether it is its reviewer's latest.</summary>
@@ -68,6 +75,7 @@ public class ReviewReplyJsonTests
             Graders: [new Grader("meal.human", 1, BenchmarkGraderKind.Human, "Is this a meal?")]));
         var scores = JsonDocument.Parse("{}").RootElement.Clone();
         await store.SaveConversationAsync("run_1", new Conversation(Key, 1, null, scores, 0, 1));
+
         return (store, new InMemoryHumanReviewStore());
     }
 
@@ -76,6 +84,7 @@ public class ReviewReplyJsonTests
     {
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, reviews: reviews);
         await app.StartAsync();
+
         return app;
     }
 
@@ -86,6 +95,7 @@ public class ReviewReplyJsonTests
         var request = new HttpRequestMessage(method, path);
         if (body is not null) request.Content = JsonContent.Create(body);
         request.Headers.Add("x-api-key", AdminKey);
+
         return app.GetTestClient().SendAsync(request);
     }
 }

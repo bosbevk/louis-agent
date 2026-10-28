@@ -4,24 +4,31 @@ using LouisAgent.Api.Benchmarks.Runs;
 
 namespace LouisAgent.Api.Tests.Benchmarks.Reports;
 
-// F18 step 2a: a ledger row on a model the run didn't declare is flagged. A run that declared no model (or only "unknown",
-// a harness that doesn't know what a mode ran on) flags nothing, so a run from before 2a is never flagged on every row.
+/// <summary>
+/// A ledger row on a model the run didn't declare gets flagged. A run that declared no model, or only "unknown"
+/// (the harness didn't know what a mode ran on), flags nothing, so an older run isn't flagged on every row.
+/// </summary>
 public class RunModelsTests
 {
+    /// <summary>Only the models the run didn't declare are flagged, each once.</summary>
     [Test]
     public void AModelTheRunDidNotDeclare_IsFlagged_ThoseItDid_AreNot()
     {
         var declared = new[]
-            { new BenchmarkProtocol.ModelInfo(SampleMode.Beta, BenchmarkModelLevel.Agent, null, "claude-haiku-5-5") };
+        {
+            new BenchmarkProtocol.ModelInfo(SampleMode.Beta, BenchmarkModelLevel.Agent, null, "claude-haiku-5-5")
+        };
 
         Assert.That(RunModels.Unlisted(declared, ["claude-haiku-5-5", "claude-sonnet-5-5", null, "claude-sonnet-5-5"]),
             Is.EqualTo(new[] { "claude-sonnet-5-5" }));
     }
 
+    /// <summary>A run that declared no models flags nothing.</summary>
     [Test]
     public void ARunThatDeclaredNoModel_FlagsNothing() =>
         Assert.That(RunModels.Unlisted(null, ["claude-haiku-5-5"]), Is.Empty);
 
+    /// <summary>A run that only knew its model as unknown flags nothing.</summary>
     [Test]
     public void ARunThatDeclaredOnlyUnknown_FlagsNothing() =>
         Assert.That(
