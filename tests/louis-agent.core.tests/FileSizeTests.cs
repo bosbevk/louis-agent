@@ -39,8 +39,6 @@ public class FileSizeTests
         "src/louis-agent.orchestrator/Tools/ServiceTools.cs",
         "src/louis-agent.puls/Pages/ChatPage.razor.cs",
         "src/louis-agent.web/Pages/ChatPage.razor.cs",
-        // CL26 step 5 splits it, as step 4 split Puls's.
-        "src/louis-agent.web/wwwroot/css/app.css",
         "tests/louis-agent.core.tests/Tools/Integrations/DevOps/DevOpsToolsTests.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/Paymo/PaymoToolsTests.cs",
         "tools/louis-agent.usage-probe/Program.cs",

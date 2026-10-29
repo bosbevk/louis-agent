@@ -42,7 +42,7 @@ in `AgentApi` itself ([Change the shared web library](change-the-web-shared.md))
 
 ## Add a theme
 
-Copy `wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of `wwwroot/css/app.css`, and
+Copy `wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of `wwwroot/css/base/page.css`, and
 add `{ "id": "{id}", "name": "…" }` to `themes/themes.json`. Ids are lowercase letters, digits and dashes.
 
 ## Words

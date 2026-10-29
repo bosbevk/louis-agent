@@ -38,4 +38,4 @@ profile too, so a debug run sees what the container sees ([Setup](../docs/SETUP.
 ## Adding a web theme
 
 Copy `src/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of
-`css/app.css`, and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.
+`css/base/page.css`, and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.
