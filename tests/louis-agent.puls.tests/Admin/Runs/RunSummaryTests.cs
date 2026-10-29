@@ -23,6 +23,20 @@ public class RunSummaryTests
         Assert.That(row.Models, Is.EqualTo(new[] { "haiku" }));
     }
 
+    /// <summary>
+    /// The row keeps what a replay replayed and whether the run was recorded, so the page can mark one and offer to
+    /// replay the other (FX28).
+    /// </summary>
+    [Test]
+    public void ARecordedRun_AndAReplay_KeepWhatTheyAre()
+    {
+        var recorded = RunSummary.Of(Stored(null, null) with { Recorded = true });
+        var replay = RunSummary.Of(Stored(null, null) with { ReplayOf = "dc272b95eaeb" });
+
+        Assert.That((recorded.Recorded, recorded.ReplayOf), Is.EqualTo((true, (string?)null)));
+        Assert.That((replay.Recorded, replay.ReplayOf), Is.EqualTo((false, "dc272b95eaeb")));
+    }
+
     /// <summary>A run from before totals and models were kept has neither.</summary>
     [Test]
     public void AnOldRun_HasNoTotalAndNoModels()

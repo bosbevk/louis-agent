@@ -60,6 +60,9 @@
 .trend.compact > .chart-head { display: none; }
 .rescored-from { font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: color .15s, border-color .15s; }
 .rescored-from:hover { color: var(--orange-text); border-color: rgba(245, 130, 32, .45); }
+/* FX28: a replay's note, dashed orange like the Evals page's replay tag (.run-origin.is-replay). */
+.replayed-from { font-size: 12px; color: var(--orange-text); text-decoration: none; border: 1px dashed rgba(245, 130, 32, .45); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: background .15s; }
+.replayed-from:hover { background: rgba(255, 255, 255, .05); }
 .rescore-error { display: block; font-size: 12px; }
 .model-filter { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 5px 10px; font: inherit; font-size: 13px; }
 @media (max-width: 1199.98px) {

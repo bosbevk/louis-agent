@@ -15,8 +15,9 @@ public class RunListItemTests
 {
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
-    private static RunSummary Run(string status = "done", TotalSummary? total = null, string? rescoreOf = null) =>
-        new("abcdef123456", "stub", 1, status, At, total, null, null, rescoreOf);
+    private static RunSummary Run(string status = "done", TotalSummary? total = null, string? rescoreOf = null,
+        string? replayOf = null) =>
+        new("abcdef123456", "stub", 1, status, At, total, null, null, rescoreOf, replayOf);
 
     private static HttpResponseMessage Answer(HttpStatusCode code, string body) =>
         new(code) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
@@ -85,12 +86,28 @@ public class RunListItemTests
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("$0"));
     }
 
+    /// <summary>
+    /// A replay says which recording it played back, with a link to it, and its cost is a known $0 (FX28: the cook's
+    /// replay looked like any other run).
+    /// </summary>
+    [Test]
+    public void AReplay_SaysWhichRunItReplayed_WithALinkToIt_AndCostsDollarZero()
+    {
+        var (cut, _, _) = Render(Run(total: new TotalSummary(0m, 0), replayOf: "old123456789"));
+
+        var note = cut.Find("a.replayed-from");
+        Assert.That(note.TextContent, Is.EqualTo("replay of old12345"));
+        Assert.That(note.GetAttribute("href"), Is.EqualTo("admin/benchmarks/old123456789"));
+        Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("$0"));
+    }
+
     [Test]
     public void AnOrdinaryRun_HasNoReScoredNote_AndAnUnknownCostIsADash()
     {
         var (cut, _, _) = Render(Run(total: new TotalSummary(null, 3)));
 
         Assert.That(cut.FindAll(".rescored-from"), Is.Empty);
+        Assert.That(cut.FindAll(".replayed-from"), Is.Empty);
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("—"));
         Assert.That(cut.Find("a.run-row-main").GetAttribute("href"), Is.EqualTo("admin/benchmarks/abcdef123456"));
     }
