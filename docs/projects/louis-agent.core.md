@@ -86,7 +86,16 @@ flowchart LR
     drawn with JavaScript read through one headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP), every
     request it makes held to the address rule (`SsrfGuard`), no WebSockets, on a network apart from the database. The
     browser says what it is (`BROWSER_USER_AGENT`, [ADR 0038](../adr/0038-the-browser-says-what-it-is.md)). `WEB_REPLAY`
-    records the pages a session reads and replays them, so an eval reads the same web twice.
+    records the pages a session reads and replays them, so an eval reads the same web twice. What F32 to F34 learned:
+    the browser checks every request a page makes, not only the first address, since it follows redirects and loads
+    subresources by itself; request interception doesn't see WebSockets, so before a page's own scripts `WebSocket`
+    refuses to be made, in every frame; a failed name lookup is a refusal, and the request handler catches everything
+    (an exception escaping its `async void` would end the process and every chat); the turn's cancellation reaches the
+    browser, which closes the page; one guarded browser (`Tools/Web/Browsing`, `IWebBrowser`) serves the renderer and
+    every shop, with a visit that can carry its own cookies and one script of ours. SearXNG is AGPL-3.0, run unchanged
+    beside us over HTTP, and the sold endpoint uses a licensed search API instead, since the engines it queries don't
+    license their results for that ([ADR 0023](../adr/0023-copyleft-service-beside-us.md)); on the day it was measured,
+    only Bing answered from Louis's address.
 
 The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
 
@@ -214,6 +223,8 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 - 10 tool rounds per message → [F10](../features/F10-route-settings.md); history grows unbounded →
   [F9](../features/F09-context-management.md); estimates and budgets → [F7](../features/F07-budgets.md); each model's
   window and cache minimum → [F15](../features/F15-model-limits.md).
+- The browser's address check can be beaten by DNS rebinding (the check resolves a name, then Chrome resolves it again),
+  and a Web Worker's socket isn't blocked; one egress proxy that resolves once would close both → F42.
 - Totals convert at the one rate a host loaded at start-up; a report over months (F7) must convert each record at its
   own date's rate.
 - `tool_choice: none` on the round after the limit (FX1) didn't break the conversation's cache when measured, though

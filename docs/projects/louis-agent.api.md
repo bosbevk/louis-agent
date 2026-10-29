@@ -152,11 +152,12 @@ resources in a temporary repository (`GitResourceTests`). A streamed turn is sti
 ## Limits and plans
 
 - Sessions are in memory → [session architecture](../specs/SESSION_ARCHITECTURE.md).
-- A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) →
-  [F11](../features/F11-usage-tab-and-reconciliation.md); costs in another currency →
-  [F14](../features/F14-display-currency.md); budget and account-limit errors →
-  [F7](../features/F07-budgets.md), [F8](../features/F08-reliability.md); session tags and profiles →
-  [F1](../features/F01-usage-ledger.md), [F10](../features/F10-route-settings.md).
+- A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) and budget errors →
+  [F7](../features/F07-budgets.md) (taking in [F11](../features/F11-usage-tab-and-reconciliation.md)); account-limit
+  errors → [F8](../features/F08-reliability.md); settings per role and per session →
+  [F10](../features/F10-route-settings.md).
+- The eval routes still answer under their old `/v1/admin/benchmarks/…` names too, until a deploy has passed (TODO,
+  *Small cleanups*).
 
 ## Related docs
 

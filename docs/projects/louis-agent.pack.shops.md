@@ -10,8 +10,7 @@ What an agent can do with shops: find a shop's products, specials and promotions
 with the shop's exact prices and a link to each product. A model reading a shop's page guesses; this pack reads the
 catalogue in code and hands the model a short table. It is a pack ([ADR 0027](../adr/0027-engine-identities-and-packs.md)),
 so any identity can use it, and it could be served as an MCP server unchanged
-([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)). One shop today, Checkers
-([F33](../features/F33-shop-catalogues.md), [F34](../features/F34-shop-deals.md)).
+([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)). One shop today, Checkers.
 
 ## How it works
 
@@ -33,6 +32,41 @@ so any identity can use it, and it could be served as an MCP server unchanged
   refuses one; `StoreSessionCache` looks each town up once, keeps it a day, and can keep it in a file across restarts.
 - **Failures are text.** A shop's error, an unknown shop or an unreachable store comes back as a result with its reason
   (`ShopToolMessage`), never an exception the model can't read.
+
+## Design notes
+
+What F33 and F34 settled, and why (the measured story is [write-up 07](../learning/07-context-engineering.md): sourced
+prices 0 of 32 when the cook read pages, 19 of 23 with the catalogue, 31 of 31 with the user's store):
+
+- **Visit the page as a shopper does, call no API of theirs.** A search is the page Checkers' own search box opens; the
+  provider keeps the catalogue answer the page fetches (`get-products-filter`). Checkers' `dealsOnly` filter isn't
+  used, since it would change the page's own request. The one call of the site's own is the store lookup its address
+  picker makes (`fetch-store-contexts`), with the town's centre only, once per town a day, in a visit of its own whose
+  cookies never reach another visit. Reading a shop's site is governed by its terms, so this is for development and
+  evals ([ADR 0023](../adr/0023-copyleft-service-beside-us.md)), and a retailer's permission or feed comes first for
+  more shops.
+- **Back off, never get round.** Two searches at once per shop, a 20-second pause after a refusal (Checkers allowed
+  about 50 searches in seven minutes, then refused for four), and a refused or failed lookup is never kept as an answer.
+  Nothing changes who we look like or where we ask from.
+- **A pack's price, never its price per kg.** A pack sold by weight has `Price` and `PriceTo`, the lightest and the
+  heaviest pack (per kg times the pack's weight), shown as a range, both `null` without a weight; the cook totals the
+  upper end. A multi-buy's price stays one pack's, the deal named beside it.
+- **A deal is on the product,** from the same visit: `Special` when the answer links it to a bonus buy, else
+  `Promotion` when it's flagged, with the card's own wording (which can be missing when the page is slow; the kind
+  still says there is one).
+- **The table names the store that answered,** by Checkers' own id, and names the town only when that store is one of
+  the town's; a town Checkers answers with its fallback stores has no store of its own, and the header never claims
+  one. `area` keeps only the town: a part with a digit (a house number, a postcode) never goes to Nominatim, the log or
+  the cache file.
+- **Photos from the shop's image host only.** Each product's photo is the one its card shows; the web apps load an
+  image a model writes only over https from a host that came back in a tool result (FX22), any other becomes a link, so
+  injected text can't leak the chat through an image's address.
+- **Read-only, so its calls run at once** ([ADR 0026](../adr/0026-parallel-tool-calls-for-read-only-toolsets.md)): a
+  round's shop searches run in parallel, as `web`'s do.
+- **The cook prices only shops it has a tool for** (Louis's choice): a shop with a branch in the town and a tool; else
+  its rows say `-` and *No shop near you has a catalogue here yet*, with a polite note per shop it can't price. A branch
+  is looked up by name, since OpenStreetMap maps some outside their town's boundary (Malmesbury's Checkers is on the
+  N7).
 
 ## Structure
 
@@ -57,7 +91,7 @@ so any identity can use it, and it could be served as an MCP server unchanged
 | `BROWSER_URL` | Core's headless browser, which the catalogues read through (core's setting) |
 
 Details in [Setup](../SETUP.md). Reading a shop's site is governed by its terms, so the shops are for development and
-evals until those are checked ([F33](../features/F33-shop-catalogues.md)).
+evals until those are checked (*Design notes*).
 
 ## Extending it
 
@@ -88,7 +122,7 @@ in `Providers/Fixtures/`, recorded and trimmed, through a fake browser), `ShopTh
 ## Related docs
 
 [Build a pack](../guides/build-a-pack.md) · [louis-agent.identity.puls](louis-agent.identity.puls.md) ·
-[F33 Shop catalogues](../features/F33-shop-catalogues.md) · [F34 Shop deals](../features/F34-shop-deals.md) ·
+[Write-up 07](../learning/07-context-engineering.md) ·
 [For site owners](../SITE_OWNERS.md)
 
 ---

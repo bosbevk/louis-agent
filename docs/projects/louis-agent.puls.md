@@ -95,7 +95,13 @@ What the look (F20) and the motion (F24) settled, so a change keeps it:
   use a gradient); one page on three addresses with the same parameters doesn't redraw (listen to `LocationChanged`);
   a landing class must not collide with a Bootstrap grid class (`cost-row`, not `row`); a finished animation with
   `fill-mode: both` keeps overriding `transform` (reveals rise on `translate`, so the tilt applies); a `filter` on
-  `background-clip: text` makes Chrome drop the text (the gradient line rises without the blur).
+  `background-clip: text` makes Chrome drop the text (the gradient line rises without the blur); an element that
+  rises in with a filled `transform` animation becomes the frame of its fixed children, so a modal inside it is
+  clipped (the card that holds the explorer doesn't rise in, `.card-p.holds-modal`).
+- **The admin portal is in English** (Louis, 2026-10-17: "afrikaans is just the language puls can be configured for"):
+  it's the builders' screen; recorded questions and answers stay in the language they were recorded in. Its charts
+  are our own SVG and CSS on Puls's variables, no chart package, and each explains on hover what good and bad look like
+  (`ChartInfo`). A way into a row is a button named for where it goes, never a bare chevron or a bar.
 - **The Werk panel shows Puls's own cost and the specialists' side by side,** and the turn's usage line includes the
   specialists through the sub-session roll-up (core, *Showing usage*).
 
