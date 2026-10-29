@@ -1,6 +1,6 @@
 # FX27 · A sub-session's answer carries no usage, so a replay matches its recording
 
-> **Status:** open · **Area:** core: the sub-session tools' answers (`SpecialistTools`, `MinionTools`,
+> **Status:** done (`1d48a371`) · **Area:** core: the sub-session tools' answers (`SpecialistTools`, `MinionTools`,
 > `SubSessionMessenger`, `SubSessionToolMessage`) · **Found:** 2026-10-29, while finishing FX26: the cause behind its
 > replay misses · **Branch:** `fix/FX27-sub-session-footer-cost`, from FX26's tip (Louis's pick: FX26 is not on main
 > yet, so FX27 merges after it) · **Plan:** [FX27](../plans/FX27-sub-session-footer-cost.md)
@@ -90,10 +90,23 @@ only in the footers, the tool description and the reworded guide lines.
 
 ## Confirmed
 
-(To come. The old baseline can't confirm it: its recording holds the footer with the numbers, so after the fix a
-replay of it misses the other way. Step 1's test proves the parent's request is the same whatever the child used; then
-one fresh recorded cook run, a paid run that waits for Louis's go, and a free replay of it.)
+The old baseline can't confirm it: its recording holds the footer with the numbers, so after the fix a replay of it
+misses the other way. So, on Louis's go, Puls was rebuilt from `d4b60f0c` and recorded again:
+
+- **The recording, `dc272b95eaeb`** (`puls-cook`, `--repeat 1`, web recorded, 2026-10-29): $0.075092 from the
+  ledger, 90 requests, 1,329,343 tokens, 16 conversations and 20 turns, none lost to infrastructure. `puls-cook` 8 of
+  8 passed (both follow-ups too), `puls-tools` 2 of 8.
+- **Its free replay, `c0362ff73151`** (with the model's answers): $0, the same 90 requests, the 20,660 tokens all the
+  local judge's. **No turn missed**: all 20 have no failure, `cook-af` and `cook-en` at both their turns included,
+  where the baseline's replay missed at 8. Every outcome and score is the recording's; three of the local judge's
+  reasons are worded a little differently (`meal-for-people`, same verdict).
+
+A parent's request after a hand-off only finds its recording when it reads byte for byte as it did then, so the
+replayed sub-session reply, footer included, is now identical to the recorded one.
 
 ## Lesson
 
-(To come.)
+What the model reads is the key a replay (and a prompt cache) looks things up by, so anything in it that changes
+from run to run, a count, a cost, a time, breaks the lookup. Keep measurements out of the prompt: they belong to the
+ledger and the screens, and the model gains nothing from them. When a replay misses, read *which* message changed
+first; here it pointed straight at the one line that carried numbers.

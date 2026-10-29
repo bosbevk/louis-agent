@@ -3,6 +3,10 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-29 — **FX27 A sub-session's answer carries no usage**: the footer under a specialist's or minion's answer
+  names the child, never its tokens or cost, which are zero on a replay and made the parent's next request miss its
+  recording; the usage stays in the ledger and the parent's turn, and a fresh cook recording replays with no miss
+  ([fix](docs/fixes/FX27-sub-session-footer-cost.md))
 - 2026-10-29 — **FX26 A replay miss is marked `replay-miss`**: the replay client throws `ModelReplayMissException`, the
   API streams it as `error.type` `replay_miss_error` (`StreamErrorKind` in session-stream), and the runner sets the
   turn's failure, so a replayed trial with no recording counts as infrastructure, not as the agent's failed answer
