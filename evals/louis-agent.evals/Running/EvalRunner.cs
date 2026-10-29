@@ -46,9 +46,11 @@ public sealed class EvalRunner(
                 Repeats = run.Repeats,
                 Run = run.RunId
             });
-        // The model isn't reported yet: the session client that could read it is the HTTP client, which is step 5.
+        // The first line names the dataset the eval loaded, as a re-score's does. The model isn't reported yet: the
+        // session client that could read it is the HTTP client, which is step 5.
         protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders,
-            modes.Select(m => new ModelInfo(m.Name, ModelLevel.Agent, m.Role, null)).ToList(), run.Split);
+            modes.Select(m => new ModelInfo(m.Name, ModelLevel.Agent, m.Role, null)).ToList(), run.Split,
+            dataset: eval.Dataset);
 
         foreach (var mode in modes)
         {

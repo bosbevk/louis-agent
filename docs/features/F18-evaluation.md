@@ -1895,7 +1895,10 @@ fails some real meals. What stays open is listed in step 5.5's findings and the 
     while `estimates-at-shop` passed (`puls-cook` repeat 1 `cook-en`) says it in its *Unsure* table about where the
     branches came from, and its *Where to buy* names real branches (Menlyn, Pretoria Central).
   - **Also seen:** the runs' first protocol line carries `"dataset": null`: `EvalRunner` calls `Begin` without the
-    eval's dataset, so a run records no dataset name, version or hash (a finding for Louis).
+    eval's dataset, so a run records no dataset name, version or hash (a finding for Louis). **Fixed after the
+    run** (Louis's brief): `EvalRunner` passes `eval.Dataset` to `Begin`, as the re-scorer already did, so the first
+    line carries the loaded manifest's name, version and hash. `EvalRunnerTests.TheFirstLine_CarriesTheLoadedDataset`
+    (red first: the dataset was `null`). The stub eval has no dataset, so its golden didn't move.
   - **The conformance references were cut again** from conversations that passed every grader, repeat 1 of each
     run, in each reference's own mode: the cook's eight dev scenarios (`puls-cook`) and the routing's twelve
     (`delegated`); the nine held-out scenarios (`cook-follow-up`, `cook-paarl`, `cook-worcester-budget`, the routing's

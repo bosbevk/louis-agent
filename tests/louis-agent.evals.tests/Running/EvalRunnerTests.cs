@@ -15,6 +15,7 @@ using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Datasets;
+using LouisAgent.Evals.Datasets.Manifest;
 using LouisAgent.Evals.Datasets.Scenarios;
 
 namespace LouisAgent.Evals.Tests.Running;
@@ -75,6 +76,20 @@ public class EvalRunnerTests
             Is.EqualTo(("stub-cook", EvalBuild.Commit,
                 new ModelInfo("cook", ModelLevel.Agent, SampleRole.Alpha, null))));
         Assert.That(events.OfType<TurnEvent>().Single().Answer, Is.EqualTo("Hallo"));
+    }
+
+    /// <summary>
+    /// The run's first line carries the dataset the eval loaded: its name, version and hash, so a stored run can say
+    /// which scenarios it graded against.
+    /// </summary>
+    [Test]
+    public async Task TheFirstLine_CarriesTheLoadedDataset()
+    {
+        var dataset = new DatasetManifest("stub-cook", 3, "a canned scenario", "3f9c0a1b2d4e", ["2026-10-29: made"]);
+
+        var events = await RunAsync(OneAnswer.ToArray(), new CannedEval(dataset: dataset));
+
+        Assert.That(((ProtocolEvent)events[0]).Dataset, Is.EqualTo(new DatasetInfo("stub-cook", 3, "3f9c0a1b2d4e")));
     }
 
     /// <summary>When a turn blows up, the session is still closed, and the turn's error is what you see.</summary>
@@ -329,10 +344,18 @@ public class EvalRunnerTests
     /// <summary>A bit of JSON text as an element that outlives its document.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();
 
-    /// <summary>The stub eval: one mode, and one scenario of as many messages as asked.</summary>
-    private sealed class CannedEval(TurnFacts? facts = null, IReadOnlyList<IGrader>? graders = null, int messages = 1)
-        : IEval
+    /// <summary>
+    /// The stub eval: one mode, one scenario of as many messages as asked, and the dataset handed in.
+    /// </summary>
+    private sealed class CannedEval(
+        TurnFacts? facts = null,
+        IReadOnlyList<IGrader>? graders = null,
+        int messages = 1,
+        DatasetManifest? dataset = null) : IEval
     {
+        /// <inheritdoc />
+        public DatasetManifest? Dataset => dataset;
+
         /// <inheritdoc />
         public string Name => "stub-cook";
 
