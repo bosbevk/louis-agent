@@ -11,9 +11,9 @@ public class RunEstimateTests
     private static readonly DateTimeOffset At = new(2026, 10, 26, 8, 0, 0, TimeSpan.Zero);
 
     private static RunSummary Run(string id, string check, int repeat, decimal? cost, int hoursAgo,
-        string status = "done", string? rescoreOf = null) =>
+        string status = "done", string? rescoreOf = null, string? replayOf = null) =>
         new(id, check, repeat, status, At.AddHours(-hoursAgo), cost is null ? null : new TotalSummary(cost, 10), null,
-            null, rescoreOf);
+            null, rescoreOf, replayOf);
 
     [Test]
     public void TheEstimate_IsTheLastMeasuredRunsCostPerRepeat_TimesTheRepeatsChosen()
@@ -32,6 +32,22 @@ public class RunEstimateTests
             Run("rescore", SampleEval.Beta, 1, 0m, hoursAgo: 1, rescoreOf: "old"),
             Run("broken", SampleEval.Beta, 1, 0.5m, hoursAgo: 2, status: "failed"),
             Run("other", SampleEval.Gamma, 1, 9m, hoursAgo: 3),
+            Run("old", SampleEval.Beta, 1, 0.10m, hoursAgo: 4),
+        };
+
+        Assert.That(RunEstimate.For(SampleEval.Beta, runs, repeats: 1), Is.EqualTo(0.10m));
+    }
+
+    /// <summary>
+    /// A replay played a recording back and asked no model, so its R0 is no measure either (FX28: the cook's replay
+    /// made the estimate "≈ R0 for 1 repeat").
+    /// </summary>
+    [Test]
+    public void AReplay_IsNotAMeasure()
+    {
+        var runs = new[]
+        {
+            Run("replay", SampleEval.Beta, 1, 0m, hoursAgo: 1, replayOf: "old"),
             Run("old", SampleEval.Beta, 1, 0.10m, hoursAgo: 4),
         };
 

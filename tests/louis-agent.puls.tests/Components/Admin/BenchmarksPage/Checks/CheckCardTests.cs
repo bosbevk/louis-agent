@@ -1,5 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Trends;
+using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Components.Admin.BenchmarksPage.Checks;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.BenchmarksPage.Checks;
@@ -26,13 +27,32 @@ public class CheckCardTests
     private static TrendPointRow Point(string run, DateTimeOffset at, decimal cost) =>
         new(run, at, cost, null, 2, null, null, null, null, null, null, null, null, null, null);
 
-    /// <summary>The card for the check, with or without a trend.</summary>
-    private static IRenderedComponent<CheckCard> Render(TrendReply? trend)
+    /// <summary>The card for the check, with or without a trend, over these stored runs.</summary>
+    private static IRenderedComponent<CheckCard> Render(TrendReply? trend, IReadOnlyList<RunSummary>? runs = null)
     {
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        return ctx.Render<CheckCard>(p => p.Add(x => x.Check, Check).Add(x => x.Runs, []).Add(x => x.Trend, trend)
-            .Add(x => x.Open, true));
+        return ctx.Render<CheckCard>(p => p.Add(x => x.Check, Check).Add(x => x.Runs, runs ?? [])
+            .Add(x => x.Trend, trend).Add(x => x.Open, true));
+    }
+
+    /// <summary>A finished run of the check, replaying another run if it says so.</summary>
+    private static RunSummary Run(string id, int hoursAgo, string? replayOf = null) =>
+        new(id, SampleEval.Beta, 1, "done", new DateTimeOffset(2026, 10, 29, 12, 0, 0, TimeSpan.Zero).AddHours(-hoursAgo),
+            new TotalSummary(replayOf is null ? 0.5m : 0m, 0), null, null, null, replayOf);
+
+    /// <summary>
+    /// The last run's line says when it was a replay, so a R0 last run isn't taken for a measure (FX28); a recorded
+    /// last run says nothing.
+    /// </summary>
+    [Test]
+    public void TheLastRun_SaysWhenItWasAReplay()
+    {
+        var replayed = Render(null, [Run("new", 1, replayOf: "old"), Run("old", 5)]);
+        var recorded = Render(null, [Run("old", 5)]);
+
+        Assert.That(replayed.Find(".check-last .chip").TextContent, Is.EqualTo("replay"));
+        Assert.That(recorded.FindAll(".check-last .chip"), Is.Empty);
     }
 
     /// <summary>A trend draws the small chart: its cost panel, one line over the two runs.</summary>

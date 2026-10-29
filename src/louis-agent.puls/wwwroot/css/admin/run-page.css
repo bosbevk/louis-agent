@@ -20,7 +20,7 @@
 .run-row-main:hover code { text-decoration: underline; }
 .run-row-when, .run-row-repeat, .run-row-requests { font-size: 13px; color: var(--text); white-space: nowrap; }
 .run-row-notes { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
-.run-row-notes .rescore { height: 28px; padding: 0 10px; font-size: 12px; }
+.run-row-notes .rescore, .run-row-notes .replay-run { height: 28px; padding: 0 10px; font-size: 12px; }
 .run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13.5px; }
 @media (max-width: 1100px) { .runs-head { display: none; } .run-row { grid-template-columns: 1fr 1fr; } .run-row-notes { grid-column: 1 / -1; } }
 /* A run's page (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, the facts in one line; each fold says in a note what it holds. */
@@ -60,6 +60,9 @@
 .trend.compact > .chart-head { display: none; }
 .rescored-from { font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: color .15s, border-color .15s; }
 .rescored-from:hover { color: var(--orange-text); border-color: rgba(245, 130, 32, .45); }
+/* FX28: a replay's note, dashed orange like the Evals page's replay tag (.run-origin.is-replay). */
+.replayed-from { font-size: 12px; color: var(--orange-text); text-decoration: none; border: 1px dashed rgba(245, 130, 32, .45); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: background .15s; }
+.replayed-from:hover { background: rgba(255, 255, 255, .05); }
 .rescore-error { display: block; font-size: 12px; }
 .model-filter { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 5px 10px; font: inherit; font-size: 13px; }
 @media (max-width: 1199.98px) {

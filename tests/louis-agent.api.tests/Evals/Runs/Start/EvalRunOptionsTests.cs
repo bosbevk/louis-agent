@@ -141,4 +141,22 @@ public class EvalRunOptionsTests
         Assert.That(EvalSettings.ReplayOf(recording), Is.Null);
         Assert.That(EvalSettings.ReplayOf(null), Is.Null);
     }
+
+    /// <summary>
+    /// Whether a run recorded its web and model answers is read back from its settings by the class that wrote them;
+    /// a replay, a run with another web mode and a run with no settings weren't recordings (FX28).
+    /// </summary>
+    [Test]
+    public void ARecording_IsKnownFromTheSettings()
+    {
+        var plain = new Dictionary<string, string> { ["provider"] = "anthropic" };
+        var recording = EvalSettings.WithOptions(plain, new EvalRunOptions(WebReplayMode.Record, null));
+        var replay = EvalSettings.WithOptions(plain, new EvalRunOptions(null, "run_1"));
+        var off = EvalSettings.WithOptions(plain, new EvalRunOptions(WebReplayMode.Off, null));
+
+        Assert.That(EvalSettings.Recorded(recording), Is.True);
+        Assert.That(EvalSettings.Recorded(replay), Is.False);
+        Assert.That(EvalSettings.Recorded(off), Is.False);
+        Assert.That(EvalSettings.Recorded(null), Is.False);
+    }
 }

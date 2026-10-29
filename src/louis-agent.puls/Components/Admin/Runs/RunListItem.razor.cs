@@ -1,10 +1,14 @@
 using LouisAgent.Puls.Admin.Runs;
+using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Web.Shared.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Runs;
 
-/// <summary>One stored run's row in the Benchmarks page (F18 step 5b.2).</summary>
+/// <summary>
+/// One stored run's row in the Benchmarks page (F18 step 5b.2): a finished run can be re-scored, a recorded one
+/// replayed (FX28).
+/// </summary>
 public partial class RunListItem
 {
     [Parameter, EditorRequired] public RunSummary Run { get; set; } = null!;
@@ -18,6 +22,10 @@ public partial class RunListItem
     /// <summary>The id of the new run, once a re-score was started.</summary>
     [Parameter]
     public EventCallback<string> OnRescored { get; set; }
+
+    /// <summary>The Replay button was clicked: what the page should start (FX28).</summary>
+    [Parameter]
+    public EventCallback<StartRequest> OnReplay { get; set; }
 
     private string StatusText => Run.Status switch { "running" => "running", "done" => "done", _ => "failed" };
 

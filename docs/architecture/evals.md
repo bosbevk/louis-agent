@@ -226,7 +226,9 @@ The other three conversations use the same pieces:
   infrastructure, never as the agent's failed answer (FX26). A replay only matches when every request reads the same
   as when it was recorded, so nothing that changes between runs may enter a tool result: a specialist's or minion's
   footer names the child, never what it cost (FX27). The cook recording `dc272b95eaeb` replays as `c0362ff73151` with
-  no miss at any of its 20 turns.
+  no miss at any of its 20 turns. The portal marks a replay on both pages, leaves it out of the estimate and the
+  trend, and starts one from a recorded run's row (`StoredRunRow.ReplayOf` and `Recorded`, read from the run's
+  settings by `EvalSettings`; CL26, FX28).
 - **A calibration**: `--label-sheet` writes the answers a person labels; `--calibrate` asks the judge about each label
   and reports how often it agrees (the bar is 90% of each class, ADR 0029). From the portal, `POST
   .../runs/{id}/calibrations/{grader}` runs the same command and stores the report.

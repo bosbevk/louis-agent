@@ -1,6 +1,6 @@
-@* A card names its check and says what it proves under that; its last run is a link; the Run button says what a run
-   will roughly cost (the rework of 2026-10-26). A card selects its check (Louis): the runs below are its runs only.
-   Its own buttons don't also select it. *@
+@* A card names its check and says what it proves under that; its last run is a link, with a chip when it was a replay
+   (FX28); the Run button says what a run will roughly cost (the rework of 2026-10-26). A card selects its check
+   (Louis): the runs below are its runs only. Its own buttons don't also select it. *@
 
 <section class="card-p check-card @(Open ? "open" : "") @(Selected ? "selected" : "")" role="button" tabindex="0"
          aria-pressed="@Selected" @onclick="SelectAsync" @onkeydown="SelectKeyAsync">
@@ -27,6 +27,7 @@
                 <span class="muted">Last run</span>
                 <span>@last.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span>
                 <span class="muted">·</span><span>@RunText.Repeats(last.Repeat)</span>
+                @if (last.ReplayOf is not null) { <span class="chip warn" title="A recording's answers played back: no model was asked, so its cost is no measure (FX28).">replay</span> }
                 <span class="muted">·</span><strong>@RunText.Money(last.Total?.Cost, Currency)</strong>
                 <span class="check-last-go" aria-hidden="true">›</span>
             </a>

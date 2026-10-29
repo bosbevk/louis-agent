@@ -175,5 +175,15 @@ instead of hiding it from the key and was the smallest change; the price was a f
 ([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md)). When a replay misses, read *which* message changed
 first: here it pointed straight at the one line that carried numbers. Skill 12 (evaluation) and 13 (cost).
 
+## FX28 · A free run is marked as one, wherever a number is read as a measure
+
+A replay and a re-score both cost R0 for a reason (no model was asked), and a screen that shows the number without
+the reason turns it into a wrong measure: the cook's replay became the check's last run and its estimate. The rule
+is the one ADR 0007 already holds for an unknown price (`null`, never 0): a known 0 must say *why* it is 0 wherever
+it is shown or summed, and every reader of the runs (the estimate, the trend, the card) leaves such runs out by the
+same rule. The second lesson is where a fact like "this run was recorded" comes from: the class that writes the
+setting reads it back (Information Expert, as CL26 chose for `replay_of`), so the web app never spells the setting's
+name or the mode's word, and a test on that one class covers every page. Skill 12 (evaluation) and 13 (cost).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

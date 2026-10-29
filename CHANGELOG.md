@@ -4,6 +4,11 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-29 — **FX28 A replay is marked, and can be started, on the Benchmarks page**: a replay's row says *replay
+  of …*, the card's *Last run* line gets a *replay* chip, the Run button's estimate leaves replays out as it leaves
+  re-scores out (the cook's free replay `c0362ff73151` had become "≈ R0 for 1 repeat"), and a recorded run's row has
+  a *Replay* button; `StoredRunRow.Recorded` from the run's `web` setting (`EvalSettings.Recorded`), beside CL26's
+  `ReplayOf`
 - 2026-10-29 — **CL26 The eval card, reworked, and the stylesheets split**: the Evals page's card leads with its
   latest run as a ring per mode, the runs before it down a timeline with a bar per mode and a tag that says
   recorded, replay or re-score (a run row says what it replayed, `ReplayOf`), and what it checks in a fold

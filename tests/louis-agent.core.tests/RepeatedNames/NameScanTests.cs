@@ -30,6 +30,10 @@ public class NameScanTests
     [TestCase("string evalHost = \"dotnet\")")]
     [TestCase("var run = ProcessRunner.Run(\"dotnet\", [\"test\"]);")]
     [TestCase("var value = element.GetProperty(\"web\");")]
+    // FX28: a dictionary's key, read with the two other readers and written in a collection initializer.
+    [TestCase("var value = settings.GetValueOrDefault(\"web\");")]
+    [TestCase("if (settings.TryGetValue(\"web\", out var value)) { }")]
+    [TestCase("var settings = new Dictionary<string, string> { [\"web\"] = \"record\" };")]
     [TestCase("Assert.That(start.FileName, Is.EqualTo(\"dotnet\"));")]
     [TestCase("Assert.That(Enum.GetValues<Mode>().Select(m => m.Wire()), Is.EqualTo(new[] { \"web\", \"shops\" }));")]
     public void ANameThatIsAnExecutableAKeyOrARoleFolder_IsSkipped(string line) =>

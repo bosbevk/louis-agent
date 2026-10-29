@@ -30,7 +30,11 @@ as you go: every answer shows what it cost, specialists included.
   middle and pass^k under it; the runs before it down a timeline, a bar per mode; each run tagged *recorded*,
   *replay of …* or *re-scored from …* and linked to its source (`StoredRunRow.ReplayOf`); its graders, categories and
   modes in a fold. `EvalCardView` (a Presentation Model) works out what the card shows, and `EvalText` its words.
-  `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's runs; `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
+  `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's runs: a replay's row says
+  *replay of …* (`ReplayedFrom`), the card's *Last run* line gets a *replay* chip, the Run button's estimate comes from
+  the last run that asked the model (`RunEstimate`: not a re-score, not a replay), and a recorded run's row has a
+  *Replay* button that starts one through the page's one start path (`ReplayButton`, `StartRequest.Replay`; FX28);
+  `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
   request), the trend (`TrendChart`) and what the run ran with. Each chart explains itself on hover (`ChartInfo`).
   The old `/admin/maatstawwe` addresses still open. **The grades view** (F18 step 4.5c) shows every eval the same way, from
   the standard records alone: `GraderList` above the explorer (the run's eval, version, commit and graders, or one line saying

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Puls.Admin.Runs;
+using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Puls.Components.Admin.Runs;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Storage;
@@ -15,15 +16,16 @@ public class RunListItemTests
 {
     private static readonly DateTimeOffset At = new(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
 
-    private static RunSummary Run(string status = "done", TotalSummary? total = null, string? rescoreOf = null) =>
-        new("abcdef123456", "stub", 1, status, At, total, null, null, rescoreOf);
+    private static RunSummary Run(string status = "done", TotalSummary? total = null, string? rescoreOf = null,
+        string? replayOf = null, bool recorded = false) =>
+        new("abcdef123456", "stub", 2, status, At, total, null, null, rescoreOf, replayOf, recorded);
 
     private static HttpResponseMessage Answer(HttpStatusCode code, string body) =>
         new(code) { Content = new StringContent(body, Encoding.UTF8, "application/json") };
 
     private static (IRenderedComponent<RunListItem> Cut, StubHandler Handler, List<string> Started) Render(
         RunSummary run, Func<HttpRequestMessage, HttpResponseMessage>? respond = null,
-        bool disabled = false)
+        bool disabled = false, List<StartRequest>? replays = null)
     {
         var ctx = new BunitContext();
         var handler = new StubHandler(respond ?? (_ =>
@@ -36,8 +38,40 @@ public class RunListItemTests
             .Add(x => x.Disabled, disabled)
             .Add(x => x.OnRescored,
                 Microsoft.AspNetCore.Components.EventCallback.Factory.Create<string>(started,
-                    (Action<string>)(id => started.Add(id)))));
+                    (Action<string>)(id => started.Add(id))))
+            .Add(x => x.OnReplay,
+                Microsoft.AspNetCore.Components.EventCallback.Factory.Create<StartRequest>(started,
+                    (Action<StartRequest>)(request => replays?.Add(request)))));
         return (cut, handler, started);
+    }
+
+    /// <summary>
+    /// A recorded, finished run has a Replay button that asks the page to run its check again with its repeats,
+    /// playing its answers back (FX28); the page posts it, not the row.
+    /// </summary>
+    [Test]
+    public void ARecordedRun_HasAReplayButton_ThatAsksThePageToReplayIt()
+    {
+        var replays = new List<StartRequest>();
+        var (cut, handler, _) = Render(Run(recorded: true), replays: replays);
+
+        cut.Find("button.replay-run").Click();
+
+        Assert.That(replays, Is.EqualTo(new[] { new StartRequest("stub", 2, "abcdef123456") }));
+        Assert.That(handler.Requests, Is.Empty, "the page starts it");
+    }
+
+    /// <summary>A run that didn't record, a replay itself, and a run still running can't be replayed.</summary>
+    [Test]
+    public void ARunThatDidNotRecord_AReplay_OrARunStillRunning_HasNoReplayButton()
+    {
+        Assert.That(Render(Run()).Cut.FindAll("button.replay-run"), Is.Empty, "nothing recorded");
+        Assert.That(Render(Run(replayOf: "old123456789")).Cut.FindAll("button.replay-run"), Is.Empty,
+            "a replay didn't record");
+        Assert.That(Render(Run(status: "running", recorded: true)).Cut.FindAll("button.replay-run"), Is.Empty,
+            "not finished yet");
+        Assert.That(Render(Run(recorded: true), disabled: true).Cut.Find("button.replay-run").HasAttribute("disabled"),
+            Is.True, "one run at a time");
     }
 
     [Test]
@@ -85,12 +119,28 @@ public class RunListItemTests
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("$0"));
     }
 
+    /// <summary>
+    /// A replay says which recording it played back, with a link to it, and its cost is a known $0 (FX28: the cook's
+    /// replay looked like any other run).
+    /// </summary>
+    [Test]
+    public void AReplay_SaysWhichRunItReplayed_WithALinkToIt_AndCostsDollarZero()
+    {
+        var (cut, _, _) = Render(Run(total: new TotalSummary(0m, 0), replayOf: "old123456789"));
+
+        var note = cut.Find("a.replayed-from");
+        Assert.That(note.TextContent, Is.EqualTo("replay of old12345"));
+        Assert.That(note.GetAttribute("href"), Is.EqualTo("admin/benchmarks/old123456789"));
+        Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("$0"));
+    }
+
     [Test]
     public void AnOrdinaryRun_HasNoReScoredNote_AndAnUnknownCostIsADash()
     {
         var (cut, _, _) = Render(Run(total: new TotalSummary(null, 3)));
 
         Assert.That(cut.FindAll(".rescored-from"), Is.Empty);
+        Assert.That(cut.FindAll(".replayed-from"), Is.Empty);
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("—"));
         Assert.That(cut.Find("a.run-row-main").GetAttribute("href"), Is.EqualTo("admin/benchmarks/abcdef123456"));
     }

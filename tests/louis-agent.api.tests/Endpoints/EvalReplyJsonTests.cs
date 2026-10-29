@@ -69,7 +69,7 @@ public class EvalReplyJsonTests
         Assert.That(Names(run), Is.EqualTo("run,modes"));
         Assert.That(Names(run.GetProperty("run")), Is.EqualTo(
             "id,check,repeat,status,exit_code,started_at,ended_at,total,store_error,models,eval,eval_version,commit,"
-            + "rescore_of,graders,replay_of"));
+            + "rescore_of,graders,replay_of,recorded"));
         Assert.That(Names(run.GetProperty("modes")[0]), Is.EqualTo(
             "name,repeat,toolsets,role,llm,pass_at_k,pass_hat_k,k,infrastructure,retried"));
     }

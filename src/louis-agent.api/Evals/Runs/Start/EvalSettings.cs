@@ -1,5 +1,6 @@
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Choices;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Search;
 
@@ -12,7 +13,8 @@ namespace LouisAgent.Api.Evals.Runs.Start;
 /// </summary>
 /// <remarks>
 /// Information Expert (GRASP), chosen in CL26: the class that writes a setting also reads it back
-/// (<see cref="ReplayOf"/>), so its name lives in one place and the run row and the trend can't spell it differently.
+/// (<see cref="ReplayOf"/>, <see cref="Recorded"/>), so its name lives in one place and the run row and the trend
+/// can't spell it differently.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
@@ -91,6 +93,16 @@ public static class EvalSettings
     /// <summary>The run a replay replayed, read back from its settings; a run that wasn't a replay has none.</summary>
     public static string? ReplayOf(IReadOnlyDictionary<string, string>? settings) =>
         settings?.GetValueOrDefault(ReplayOfKey);
+
+    /// <summary>
+    /// Whether the run recorded its web and model answers, so it can be replayed (FX28). The mode is parsed once here
+    /// (ADR 0024); a run with another mode, or from before the setting, wasn't a recording. The key is the "web" that
+    /// <see cref="WithOptions"/> writes: a key, not the toolset of that name.
+    /// </summary>
+    public static bool Recorded(IReadOnlyDictionary<string, string>? settings) =>
+        settings?.GetValueOrDefault("web") is { } web
+        && SettingChoice.TryParse(web, out WebReplayMode? mode)
+        && mode == WebReplayMode.Record;
 
     /// <summary>
     /// Adds the hashes of the prompts the run used. It's the set the run used, not all it has, so a shorter list may

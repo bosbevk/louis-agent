@@ -155,7 +155,9 @@ public partial class Benchmarks : IDisposable
         }
     }
 
-    /// <summary>A card's Run button: start the run, list its check's runs, and follow it.</summary>
+    /// <summary>
+    /// A card's Run button, or a row's Replay button (FX28): start the run, list its check's runs, and follow it.
+    /// </summary>
     private async Task StartAsync(StartRequest request)
     {
         _error = null;
