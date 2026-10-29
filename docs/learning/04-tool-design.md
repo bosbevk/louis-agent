@@ -70,5 +70,5 @@ rule a test can hold is held by a test, and what it can't hold is written where 
   hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
 
 ---
-[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](../plans/CL15-engine-identities-packs.md) ·
+[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md) ·
 [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)

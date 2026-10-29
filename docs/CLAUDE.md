@@ -161,7 +161,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
   code, one policy per turn tree, credentials per peer; the orchestrator (voorman) is an identity on core.
   Why: [ADR 0031](adr/0031-orchestration-is-an-engine-function.md).
 - **History is append-only** — newer Claude models (Haiku 5.5 and later) bind thinking blocks to the system prompt,
-  tools and earlier messages, so nothing may edit them mid-conversation ([FX1](fixes/FX01-round-limit-tools.md);
+  tools and earlier messages, so nothing may edit them mid-conversation ([FX1](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX01-round-limit-tools.md);
   [FX4](fixes/FX04-append-only-history.md) is still open).
   Why: [ADR 0008](adr/0008-history-is-append-only.md).
 - **No message text inline in C#** — exceptions, log lines, tool results and user text are message enum members
@@ -532,7 +532,7 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 
 - **"ANTHROPIC_API_KEY (or LLM_API_KEY) is required for provider 'anthropic'"** — set it in `config/.env.secrets`.
 - **"AGENT_API_KEY is required: set it in config/.env.secrets, or set AGENT_AUTH=off …"** (or `MCP_API_KEY (or
-  AGENT_API_KEY)` from the MCP server over HTTP) — the host fails closed ([FX18](fixes/FX18-auth-fails-closed.md)):
+  AGENT_API_KEY)` from the MCP server over HTTP) — the host fails closed ([FX18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX18-auth-fails-closed.md)):
   set the key, or `AGENT_AUTH=off` in `config/.env` on a machine whose ports stay on `127.0.0.1`. Then recreate the
   containers (`up -d`): `restart` keeps the old environment.
 - **"prompt is too long"** — something put a huge result into the history; check `logs/oversized-tool-results.jsonl`.
@@ -552,7 +552,7 @@ afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
 ## Further reading
 
 [the architecture](architecture/README.md) for the design, `config/.env.example` for settings, and
-[the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) and [Puls's](../louis-agent.core/Prompts/agent/puls/voice-af.md) for how the agent is instructed to behave.
+[the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) and [Puls's](../identities/louis-agent.identity.puls/Prompts/agent/puls/voice-af.md) for how the agent is instructed to behave.
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](projects/orchestrator-runbooks.md)

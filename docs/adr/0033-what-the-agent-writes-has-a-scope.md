@@ -51,7 +51,7 @@ person widens).
 
 ## Links
 
-[FX20](../fixes/FX20-skill-files-wait-for-approval.md) · [Platform plan](../plans/platform.md) (Phases 1, 2 and 7) ·
+[FX20](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX20-skill-files-wait-for-approval.md) · [Platform plan](../plans/platform.md) (Phases 1, 2 and 7) ·
 [0006](0006-toolsets-per-session.md) · [0008](0008-history-is-append-only.md) ·
 [0027](0027-engine-identities-and-packs.md)
 

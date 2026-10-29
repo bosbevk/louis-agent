@@ -133,5 +133,5 @@ cloud. Four things carried the shipping lesson:
   assumed and absent. `sh -n` and a look at the base image cost seconds; a crash loop cost an afternoon.
 
 ---
-[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](../plans/CL15-engine-identities-packs.md), [CL19](../plans/CL19-config-by-place.md) · [Deploying to Azure](../../deploy/azure/README.md) ·
+[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../deploy/azure/README.md) ·
 [Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md)

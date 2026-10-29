@@ -48,5 +48,5 @@ is built in: the names the agent may not take are the embedded files' names, not
 
 ## Links
 
-[CL9 plan](../plans/CL9-modes-per-product.md) (*Approved during the build*) · [ADR 0017](0017-skills-by-level.md) ·
+[CL9 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL9-modes-per-product.md) (*Approved during the build*) · [ADR 0017](0017-skills-by-level.md) ·
 [ADR 0018](0018-built-in-prompts-embedded.md) · [ADR 0011](0011-prompts-are-content.md)

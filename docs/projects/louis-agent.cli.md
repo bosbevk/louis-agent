@@ -56,7 +56,7 @@ No CLI-specific tests; the loop and commands are covered through `AgentEngine` i
 ## Limits and plans
 
 - History is lost on exit → backlog *CLI: resume a previous session* ([TODO](../../TODO.md)).
-- Costs in another currency → [F14](../features/F14-display-currency.md).
+- Costs in another currency → [F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md).
 
 ## Related docs
 

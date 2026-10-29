@@ -27,5 +27,5 @@ no strategy.
 ## Links
 
 [Architecture: Provider strategies](../architecture/05-building-block-view.md#provider-strategies) ·
-[F4 Prompt caching](../features/F04-prompt-caching.md) ·
+[F4 Prompt caching](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F04-prompt-caching.md) ·
 [Changing the LLM](../../louis-agent.core/CLAUDE.md#changing-the-llm)

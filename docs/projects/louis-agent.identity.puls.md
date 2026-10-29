@@ -27,7 +27,39 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
   `puls/voice-en`, `puls-cook` and `puls-minion-web-price-lookup`, the ones that passed their check
-  ([F29](../features/F29-validated-specialists.md)). The other specialists are written but off.
+  (F29). The other specialists are written but off.
+
+## Design notes
+
+What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the measured story is
+[write-up 10](../learning/10-multi-agent-orchestration.md):
+
+- **A specialist is a role, one per kind of work,** and a sub-session gets no router: only its role and its toolsets'
+  guides, about 1,900 tokens of prefix against Puls's 2,200. A role Puls names is refused before an engine is built
+  when it is unknown or off (`ROLES_ENABLED`), with the same answer either way, so a role that's off comes back to
+  Puls as a tool error it must report. Turning a role on is one line in `config/.env` and `up -d`, once its eval passes.
+- **The prompts and the gate say the same:** the routing keeps the cook, makes the web Puls's own work, and marks the
+  rest *not yet*; the specialists guide lists those under *Waiting for validation*, with what each needs (a report
+  shape, a relay rule, an eval).
+- **Cooking is never answered from memory** (Louis, 2026-10-15, after Puls answered "ek wil bobotie maak" itself):
+  every cooking question goes to the cook, which takes the dish through the whole report and adds *Where to buy*, the
+  shops' branches in the user's town. Branches come from OpenStreetMap (Nominatim's search, as JSON), since the shops'
+  own store finders draw their content with JavaScript.
+- **The user's place travels with the session,** not through the model: Ligging in the web app (typed, or the
+  browser's position sent to Nominatim at two decimals, about a town), the time zone with every new chat, and the
+  specialists get it in their task. Attachments go by name: the model names the file, the session hands it over and
+  remembers it across turns.
+- **A follow-up goes to the same specialist** (F26): re-delegating cold would refetch every page, could drift to
+  another dish and rewrite the cached prefix. The chat's session keeps its open sub-sessions (core's
+  `SubSessionRegistry`, short handles per chat, `sub-1`); at most 3 stay open (the oldest closes); a continue that
+  fails or times out closes the sub-session; starts and continues count against the same per-turn limit.
+- **The local model reads English, not Afrikaans:** a role written for a small local model is in English, Puls briefs it
+  in English and writes the Afrikaans answer itself.
+- **Minions are built and not used** (F30): a specialist could hand one task and one of its own tools to a minion on
+  the model `MINION_LLMS` names (the minion role `puls-minion-web-price-lookup`), and the web app draws a minion's card
+  inside its specialist's. Four hand checks found a small local model unreliable at pricing (wrong products, invented
+  dates), and Haiku minions no better than the cook's own searches, so the prompts went back to their text before
+  minions; the code stays until the cook is measured with and without them (TODO).
 
 ## Structure
 
@@ -41,7 +73,7 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 | `Prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |
 | `Prompts/specialists/puls-researcher.md`, `puls-reader.md`, `puls-analyst.md`, `puls-historian.md` | The web researcher, file reader, numbers and history specialists (written, off until each passes a check) |
 | `Prompts/minions/puls-minion.md` | What every Puls minion is: one task, one tool, a short answer in its role's fields |
-| `Prompts/minions/puls-minion-web-price-lookup.md` | One ingredient's price at each named shop, with `WebSearch` ([F30](../features/F30-local-web-peer.md)); runs only where the instance sets `MINION_LLMS` |
+| `Prompts/minions/puls-minion-web-price-lookup.md` | One ingredient's price at each named shop, with `WebSearch` (F30); runs only where the instance sets `MINION_LLMS` |
 | `louis-agent.identity.puls.csproj` | References core only; the two embedding lines (`GenerateEmbeddedFilesManifest`, the `Prompts\**\*.md` glob) |
 
 ## Configuration
@@ -66,7 +98,7 @@ refusing Puls without its pack), `PulsPromptsTests` (the modes and roles listed,
 routing, the languages with the same sections, the cook's header) and `PulsSessionSnapshotTests` with
 `PulsSessionSnapshot.json`, the golden of exactly what the model is sent in Puls's chat and in its cook. `PulsPrompts`
 registers the identity's and the pack's prompts first, as a host does. Puls's behaviour is measured by its evals
-([F18](../features/F18-evaluation.md), in progress: the cook and the routing, in `evals/louis-agent.evals.puls`).
+([evals](louis-agent.evals.puls.md): the cook and the routing, in `evals/louis-agent.evals.puls`).
 
 ## Limits and plans
 

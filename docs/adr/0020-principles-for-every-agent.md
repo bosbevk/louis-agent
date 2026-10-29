@@ -30,5 +30,5 @@ agent. It comes first, before the mode or role, so nothing later in the prompt c
 
 ## Links
 
-[CL9 plan](../plans/CL9-modes-per-product.md) (*Approved during the build*, step 2) ·
+[CL9 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL9-modes-per-product.md) (*Approved during the build*, step 2) ·
 [ADR 0004](0004-arguments-as-data.md) · [ADR 0018](0018-built-in-prompts-embedded.md)

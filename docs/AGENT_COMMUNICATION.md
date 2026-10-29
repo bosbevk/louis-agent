@@ -186,7 +186,7 @@ data: {"type":"message_stop"}
 | `content_block_stop` | The block is complete |
 | `message_delta` | The stop reason (`end_turn` or `cancelled`) and the turn's `usage` (below) |
 | `message_stop` | The stream is complete |
-| `error` | The turn failed; the data is the error shape above (type `api_error`), plus the turn's `usage` when a model request had returned before the failure ([FX6](fixes/FX06-usage-on-failed-turns.md)) |
+| `error` | The turn failed; the data is the error shape above (type `api_error`), plus the turn's `usage` when a model request had returned before the failure ([FX6](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX06-usage-on-failed-turns.md)) |
 
 **In another currency** (F14): the usage object keeps `cost` and `currency` as charged and adds `display_cost`,
 `display_currency`, `display_symbol` and `rate_as_of`, the cost in the server's display currency (`HOST_CULTURE` /
@@ -362,7 +362,7 @@ FIX-RESULT: {"status":"failed","reason":"…"}
 
 The orchestrator reads the last such line. A model sometimes writes an unescaped quote inside `summary` or `reason`,
 which makes the line invalid JSON; it is then read field by field instead of being lost
-([FX8](fixes/FX08-fix-result-quotes.md)).
+([FX8](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX08-fix-result-quotes.md)).
 
 **4. The follow-up**, when a reply ends without a `FIX-RESULT` (louis-agent has 10 tool rounds per message, and a fix
 can need more): `Continue the fix from where you stopped. Finish with the FIX-RESULT line.` The session keeps the
@@ -426,7 +426,7 @@ under the session the orchestrator opened, tagged `task: fix:<error id>`, the ru
 cost can be totalled across both.
 
 A failed or timed-out request fails that error, not the run: the error stays unprocessed and is triaged again on the
-next poll ([FX7](fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
+next poll ([FX7](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX07-timeout-ends-run.md)). Only Ctrl+C ends a run early.
 
 ## Agent to agent: Puls and its specialists
 
@@ -460,7 +460,7 @@ Planned features change parts of this page; each one's doc lists updating it in 
 |---|---|
 | [F8 Reliability](features/F08-reliability.md) (S4) | Results become tool calls: louis-agent reports with a `ReportFixResult` tool and the orchestrator decides with `RecordDecision`, read from the `tool_use` block in the stream; the `FIX-RESULT` and `DECISION` lines stay as a fallback |
 | [F10 Route settings](features/F10-route-settings.md) | `POST /v1/sessions` takes a `profile` (`chat` or `task`, with its own tool rounds and thinking); the orchestrator asks for `task`, so most "continue" follow-ups go away |
-| [F5 Toolset profiles](features/F05-toolset-profiles.md) | The demo's louis-agent.api loads only the coding tools, so each fix session sends a smaller prefix |
+| [F5 Toolset profiles](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md) | The demo's louis-agent.api loads only the coding tools, so each fix session sends a smaller prefix |
 | [F7 Budgets](features/F07-budgets.md) | A turn can stop at a budget: a `budget` stop reason and a `budget_error` event, `POST /v1/sessions/{id}/budget` to raise the limit; the orchestrator defers a fix it can't afford |
 | [F11 Usage tab](features/F11-usage-tab-and-reconciliation.md) | New endpoints: `GET /v1/usage`, `GET /v1/usage/sessions/{id}`, `GET /v1/budgets`, `POST /v1/estimates` |
 | [F17 Orchestrator agent](features/F17-orchestrator-agent.md) | Triage becomes a routing workflow: a model classifies each error, the known paths (fix and verify, acknowledge, escalate) run as code, and an agent handles only the exceptions; the three checks become one `ConfirmFix` tool; the fix still goes to louis-agent.api the same way, and the comms log names the path |

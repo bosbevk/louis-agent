@@ -75,5 +75,5 @@ These were considered:
   says which kind of type that concern is.
 - [0024](0024-choices-are-enums.md): a choice is an enum, which is what a record's key holds.
 - [0007](0007-measure-every-request.md): unknown is null, never 0, so a value's missing field is null.
-- [F18 Evaluation](../features/F18-evaluation.md): the replay's asks are compared as values, and its answers are a
+- [F18 Evaluation](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md): the replay's asks are compared as values, and its answers are a
   closed set of cases.

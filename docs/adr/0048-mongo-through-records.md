@@ -70,7 +70,7 @@ field unseen). Keeping the hand mappers was rejected by Louis.
 
 [0022](0022-benchmarks-recorded-from-the-protocol.md) · [0024](0024-choices-are-enums.md) ·
 [0040](0040-records-for-values-classes-for-things.md) · [0041](0041-json-through-records-by-hand-only-for-bytes.md) ·
-[0046](0046-dates-are-utc.md) · [F18 plan](../plans/F18-evals.md), 7c step 3a · MongoDB .NET driver:
+[0046](0046-dates-are-utc.md) · [F18 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-evals.md), 7c step 3a · MongoDB .NET driver:
 [POCOs](https://www.mongodb.com/docs/drivers/csharp/current/serialization/poco/),
 [class mapping](https://www.mongodb.com/docs/drivers/csharp/current/serialization/class-mapping/)
 
