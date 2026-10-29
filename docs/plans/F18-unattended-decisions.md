@@ -792,3 +792,51 @@ the tests doc), `a0fa273e` (CHANGELOG), `df471fab` (TODO: F18's line out; CL14's
 still in the code, without its wait for a deploy), `916a17d7` (GOAL rows 3, 12, 13, 17), `205f77e4` (write-ups 12 and
 13), and the *Finishing a feature* commit (F18 *done* in its doc and the features table, its row in the usage spec's
 map; no known limitation is removed by F18). The plan file stays until the docs step after the merge.
+
+### R2-6. The whole-solution format check isn't clean, on files F18 never touched (Part F)
+
+**What came up.** Part F asks for `dotnet format louis-agent-solution.sln --verify-no-changes` clean. It flags 145
+files (usings inside namespaces and the like); none of them changed on `feature/F18-evals` (`git diff main...HEAD`).
+The guide says untouched files keep their old layout, never a big reformat of its own, and CI checks only the files
+of each push's commits, which are clean.
+
+- **A. Open the PR and say so.** Changes: nothing in code. Costs: the brief's "clean" isn't met to the letter.
+- **B. Format the 145 files in a commit of their own.** Costs: against the guide's rule; a large diff in a feature PR
+  that has nothing to do with it, for Louis to review.
+- **C. Hold the PR back.** Costs: the whole night's work waits on a rule the guide already settles.
+
+Sources: docs/CLAUDE.md *Formatting* ("never a big reformat of its own"; CI's per-commit check). **Pick: A.**
+
+### Run 2: the report
+
+**Parts.** A (step 5) done, pushed. B (step 6, docs) done, pushed. C (7d) done, pushed. D (the paid runs) done,
+pushed. E (step 8) done, pushed. F: build, every test and CI's per-commit format check are green, but **the PR isn't
+open**: `gh` isn't logged in on this machine and no token was looked for. Its text is ready in the session's
+scratchpad (`F18-pr-body.md`); once logged in, `gh pr create --base main --head feature/F18-evals --title "F18:
+evaluation, measured" --body-file <that file>`. Not merged, by the brief. Plus Louis's layout fix (`778daf62`).
+
+**Commits** (Run 2, on top of `0ead8fd5`): `1c656967` nits; step 5 `1032e12f`, `d97e6217`, `d3af61ec`, `27d07d2d`,
+`5b8c3a10`, `3f7e6774`, `15f03116`, `e2b9bcd5`, `eafa5991`, `6c3974e8`, `4c73e430`, `a3daaad2`, `0c6af69f`; step 6
+`905ad6a3`; 7d `7ff19cf5`, `70a84934`, `ba8b7884`; 5.5 `bea62f41`; step 8 `88c5b2bf`, `6d7bdd62`, `a0fa273e`,
+`df471fab`, `916a17d7`, `205f77e4`, `7f937e25`; the layout fix `778daf62`; this report.
+
+**Tests**, start → end: puls 394 → 359 (the deleted readers' tests went with them), evals 336 → 340; every other
+project unchanged (core 1589, api 626, evals.puls 321, evals.runner 181, web.shared 113, pack.shops 100,
+identity.puls 46, evals.protocol 44, orchestrator 41, web 38, choices 34, acp-server 33, session-stream 18,
+composition 12, evals.template 6; integration api 48 (63 skipped), core 49 (17), orchestrator 2). None failing.
+
+**Findings and picks.** R2-1 A (`RunEvent` first, then the approved order); R2-2 A (the live chips go); R2-3 A (the
+trend's routing panel shows "passed", accuracy goes); R2-4 A (the explorer from grades and outcome); R2-5 A
+(`Datasets/` split first); R2-6 A (the PR with the untouched files left alone). From Part D: the replay misses at a
+sub-session's tool result; a missed turn has no `replay-miss` kind; a run's first line has `"dataset": null`
+(`EvalRunner.cs:50`); the judge check doesn't clear the bar (31/36); FX24's two items don't show.
+
+**Paid runs.** `puls-cook` `5d1fd231c9b1` $0.216672; `puls-routing` `0d3b95e093a6` $0.156144; the replays and the
+judge check $0. **Night's total $0.372816** (limit $50). **Retries: none.** **Stashed: nothing.**
+
+**Worth Louis's eye.** Rule slips: one `sed` edit of `PortalReadsJsonTests` (step 5 (7)); one unpushed commit amended
+in Part E (`6d7bdd62`, two long lines). Tests not seen failing first: step 5 (6) (a deletion), `CalibrationCardTests`
+(8), and step 5 (3), (13), (14) red on the build only; the loader's tests in 7d were red 16 of 24. The judge-check
+labels were given by a blind labelling agent (`claude-run2-blind`), not by Louis. The conformance references are now
+real conversations, about 3.4 MB. Two background shells were stopped by Claude Code for low memory; neither run was
+affected.
