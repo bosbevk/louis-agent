@@ -147,6 +147,10 @@ drift apart:
    that line.
 9. **Write-up:** when a skill in the [goal](../GOAL.md#what-im-learning-the-whole-agent-architecture) has nothing left
    missing (usually at a milestone's last feature), add or update its write-up in [docs/learning/](../learning/).
+10. **Fold and delete** (Louis, 2026-10-28): move what lasts in the feature's doc (how it works, its settings, its
+    limits, its open items) into its project's design doc in [docs/projects/](../projects/README.md), its numbers and
+    lessons into the write-up, and any open item into the TODO; then delete the feature's doc and its plan, and leave
+    its row in the table above with its status and the PR. The docs folded on 2026-10-29 are at the tag `pre-cl24`.
 
 ---
 [Docs index](../README.md) · Specs: [Usage, estimates and budgets](../specs/USAGE_AND_BUDGETS.md) ·

@@ -7,12 +7,20 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 
 1. **Louis drives the code.** Implement only what Louis asks for, one step at a time; planning, reviews and learning
    write-ups happen in the Claude project, so don't start the next feature on your own.
-2. **Small steps.** Follow the steps in the feature doc. Each step is one commit (or PR) with its test, small enough to
-   review in about ten minutes.
+2. **Small steps, small features.** Follow the steps in the feature doc. Each step is one commit (or PR) with its
+   test, small enough to review in about ten minutes. **A feature holds at most about ten steps** (Louis, 2026-10-28,
+   after F18 ran to twenty-odd steps and ten days on one branch: "we also need to keep features smaller by making sub
+   features"): anything bigger is a parent with dotted children, `F49.1`, `F49.2`, each with its own plan, branch, pull
+   request to `main`, done-when and write-up, so `main` moves every few days. The parent keeps the goal, the order and
+   its children's done-whens; a child's plan is written when the child starts.
 3. **Plan first, and keep the plan.** Before the first step of a feature, or of a fix that takes more than one step,
    the plan Louis approved (made here or in the Claude project) is saved to [plans/](plans/README.md) as `Fnn-name.md`
    or `FXnn-name.md` and committed on its branch. Don't rewrite it afterwards: a change Louis approves during the build
-   is added under *Approved during the build*; anything else the build learns goes in the feature or fix doc.
+   is added under *Approved during the build*; anything else the build learns goes in the feature or fix doc. **When
+   the work is done, the plan goes** (Louis, 2026-10-28: "do we still need implemented feature plans? and feature
+   docs?", then "yes add it"): the plan file is deleted, the feature or fix doc's lasting parts move to the project's
+   design doc in [projects/](projects/README.md) and its write-up in [learning/](learning/), then that doc is deleted
+   too; its README keeps one line per id, and git keeps the rest (the files as they were are at the tag `pre-cl24`).
 4. **Explain every change:** what changed, why this design and not the alternatives, and what to look at closely.
    **In plain words** (Louis, 2026-10-26): the way a friend would explain it, casual but straight to the point, in
    short everyday sentences. Lead with what it means, then the detail; when a technical term is needed, say what it
@@ -75,8 +83,8 @@ Docs-only and configuration-only steps have no test to write first.
 6. Commit the step on its own, test and code together, and stop.
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
-`refactor/CL3-messages-and-logging`; `docs/{name}` for docs-only work. The Claude project's `claude/*` branches keep
-their names.
+`refactor/CL3-messages-and-logging`, a sub-feature `feature/F49.1-checks-contract`; `docs/{name}` for docs-only work.
+The Claude project's `claude/*` branches keep their names.
 
 **Commit messages** are `type(scope): step N - what changed`, and the body says why:
 
@@ -86,7 +94,7 @@ fix(fx14): the prompt budget counts cached tokens
 docs(f5): review of PR #27 - toolset guides
 ```
 
-`type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`), or the
+`type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`, `f49.1`), or the
 area when there is none (`ollama`, `samples`, `guide`); `step N -` only on a plan's steps. Never push without asking
 (rule 7).
 
