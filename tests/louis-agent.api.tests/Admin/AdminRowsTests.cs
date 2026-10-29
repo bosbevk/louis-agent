@@ -79,6 +79,27 @@ public class AdminRowsTests
         Assert.That(row.GetProperty("graders").ValueKind, Is.EqualTo(JsonValueKind.Null), "null, never []");
     }
 
+    /// <summary>
+    /// A replay says which recording it replayed, so the eval card can tag it and link there; a recorded run says
+    /// none (CL26).
+    /// </summary>
+    [Test]
+    public void AReplay_SaysWhatItReplayed_AndARecordingSaysNone()
+    {
+        // A replay's settings name the run it replayed; a recording's hold none.
+        var replay = Run("stub", null) with
+        {
+            Settings = new Dictionary<string, string> { ["replay_of"] = "dc272b95eaeb" }
+        };
+        var recording = Run("stub", null) with { Settings = new Dictionary<string, string> { ["model"] = "haiku" } };
+
+        var replayRow = Json(StoredRunRow.Of(replay));
+        var recordingRow = Json(StoredRunRow.Of(recording));
+
+        Assert.That(replayRow.GetProperty("replay_of").GetString(), Is.EqualTo("dc272b95eaeb"));
+        Assert.That(recordingRow.GetProperty("replay_of").ValueKind, Is.EqualTo(JsonValueKind.Null));
+    }
+
     /// <summary>A conversation's grades come through in order, each with its outcome, and so does its own.</summary>
     [Test]
     public void AConversationWithTwoGrades_GivesThemInOrder_WithTheirOutcomes()

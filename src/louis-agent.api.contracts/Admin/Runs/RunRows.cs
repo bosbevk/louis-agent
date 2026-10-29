@@ -2,7 +2,8 @@ namespace LouisAgent.Api.Contracts.Admin.Runs;
 
 /// <summary>
 /// A stored run as the admin pages list it: what ran, how it ended, what it cost, which models it ran on, and the
-/// eval and graders it was run with. A run from before a field was kept sends null for it, never <c>[]</c> or 0.
+/// eval and graders it was run with, and the run it re-scored or replayed, if any. A run from before a field was kept
+/// sends null for it, never <c>[]</c> or 0.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
@@ -21,7 +22,8 @@ public sealed record StoredRunRow(
     int? EvalVersion,
     string? Commit,
     string? RescoreOf,
-    IReadOnlyList<RunGraderRow>? Graders);
+    IReadOnlyList<RunGraderRow>? Graders,
+    string? ReplayOf = null);
 
 /// <summary>What a run cost, from the ledger; the cost is null when a price was unknown, never 0.</summary>
 public sealed record RunTotalRow(decimal? Cost, string Currency, long Tokens, int Requests);

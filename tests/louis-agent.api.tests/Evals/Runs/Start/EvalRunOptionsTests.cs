@@ -125,4 +125,20 @@ public class EvalRunOptionsTests
         Assert.That(EvalSettings.WithOptions(plain, new EvalRunOptions(null, "run_1"))["replay_of"],
             Is.EqualTo("run_1"));
     }
+
+    /// <summary>
+    /// What a replay's settings say it replayed is read back by the same class that wrote it; a recording, or a run
+    /// with no settings, replayed nothing (CL26).
+    /// </summary>
+    [Test]
+    public void TheReplayedRun_IsReadBackFromTheSettings()
+    {
+        var plain = new Dictionary<string, string> { ["provider"] = "anthropic" };
+        var replay = EvalSettings.WithOptions(plain, new EvalRunOptions(null, "run_1"));
+        var recording = EvalSettings.WithOptions(plain, new EvalRunOptions(WebReplayMode.Record, null));
+
+        Assert.That(EvalSettings.ReplayOf(replay), Is.EqualTo("run_1"));
+        Assert.That(EvalSettings.ReplayOf(recording), Is.Null);
+        Assert.That(EvalSettings.ReplayOf(null), Is.Null);
+    }
 }
