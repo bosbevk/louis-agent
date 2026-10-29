@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-29 — **FX23 A script that never reads its input keeps its exit code and output**: `ProcessRunner` guards the
+  stdin write and close, so a child that exits first ("Broken pipe") no longer reports as a failed run with its output
+  lost; `CreatedTool_SupportsPowerShellAndBash` is no longer flaky (ten green runs on the fix, eight of ten red before)
 - 2026-10-29 — **FX28 A replay is marked, and can be started, on the Benchmarks page**: a replay's row says *replay
   of …*, the card's *Last run* line gets a *replay* chip, the Run button's estimate leaves replays out as it leaves
   re-scores out (the cook's free replay `c0362ff73151` had become "≈ R0 for 1 repeat"), and a recorded run's row has

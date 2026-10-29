@@ -1,8 +1,9 @@
-namespace LouisAgent.Core.Tools;
 
 using System.Diagnostics;
 using System.Text;
 using LouisAgent.Core.Messages;
+
+namespace LouisAgent.Core.Tools;
 
 /// <summary>
 /// Runs an external process without a shell: arguments are passed verbatim, stdout/stderr are captured
@@ -47,8 +48,7 @@ internal static class ProcessRunner
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
-            if (!string.IsNullOrEmpty(standardInput)) process.StandardInput.Write(standardInput);
-            process.StandardInput.Close();
+            WriteInput(process, standardInput);
 
             if (!process.WaitForExit(timeout))
             {
@@ -63,6 +63,28 @@ internal static class ProcessRunner
         catch (Exception ex)
         {
             return new Result(-1, MessageText.Format(ToolMessage.ProcessStartFailed, new { Program = fileName, Reason = ex.Message }), TimedOut: false);
+        }
+    }
+
+    /// <summary>
+    /// Hands the child its input and closes the pipe. A child that exits before it reads the input closes its end
+    /// first, and the write or the close then throws an <see cref="IOException"/> ("Broken pipe"): that only means
+    /// the input wasn't wanted, so the run goes on to its exit code and output (FX23).
+    /// </summary>
+    /// <remarks>
+    /// Louis's pick of three (2026-10-29): a guard around the one call whose failure is expected and harmless, kept
+    /// flat (ADR 0051), over writing on a task of its own or having each tool declare whether it reads its input.
+    /// </remarks>
+    private static void WriteInput(Process process, string? standardInput)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(standardInput)) process.StandardInput.Write(standardInput);
+            process.StandardInput.Close();
+        }
+        catch (IOException)
+        {
+            // The child closed its input before reading it: nothing to hand over.
         }
     }
 
