@@ -1,8 +1,8 @@
 # 13 · Cost and token economics: what M1 and F4 taught
 
 > **Skill:** #13 in the [goal](../GOAL.md)'s map · **Stages:** M1 "See it" (F1–F3, 2026-10-10 to 2026-10-11), then
-> the first of M2 "Cheaper": F4 prompt caching (2026-10-11) · **Next:** F5 toolsets, then estimates, budgets and
-> reconciliation (F6, F7, F11)
+> the first of M2 "Cheaper": F4 prompt caching (2026-10-11); F18's replay cache (2026-10-29) · **Next:** estimates,
+> budgets and reconciliation (F6, F7, F11)
 
 ## Before and after
 
@@ -168,6 +168,25 @@ factory, as `IUsageMapper` is. The client that applies it doesn't know which pro
 - **Local models don't fit yet:** Ollama silently truncates to 2,048 tokens (the ledger showed `input: 2050`), and a
   CPU request can pass the 100-second timeout. The ledger is what made the truncation visible (F13).
 
+## F18: the replay cache, measured (2026-10-29)
+
+An eval run costs money every time, because it asks the model. So F18 can record a run's model answers and play them
+back. A hit is priced as a known $0 in the ledger, never left blank: "free" and "unknown" are different things.
+
+| | Live run | Replayed |
+|---|---|---|
+| `puls-cook`, 3 repeats | $0.2167, 259 requests | repeat 1 replayed: $0, 74 requests, every one a hit |
+| `puls-routing`, 3 repeats | $0.1561, 174 requests | repeat 1 replayed: $0, 62 requests, every one a hit |
+
+So the hit rate on what was asked was 100%, and the replays cost nothing. The cook replay's 13,068 tokens are the local
+judge grading the answers again, which costs nothing either. Both live runs together cost $0.37: an eval of this size
+is cheap enough to run often, and a replay is free enough to run on every change to the graders.
+
+One thing a replay can't do yet. When Puls hands a meal to its cook, the hand-off's tool result isn't exactly the same
+in the replay as in the recording, so the next request's key is different and the cache has no answer for it. Those
+turns fail instead of costing money, so the safety holds (a miss never calls the model), but a mode that delegates
+can't reproduce its grades from a replay. That's the next fix: make the sub-session's result replay-stable.
+
 ## Where skill 13 stands
 
 Against the goal's four criteria for a learned skill:
@@ -192,6 +211,7 @@ prompt, estimate before spending, stop at a budget, reconcile with the bill) ext
   a write costs more than a read.
 - Why a cache lifetime is chosen from the gaps between requests, not from how long a run takes, and how to measure it.
 - Why a cache key is bytes, so a stable tool order and an untouched history are what make the cache hit.
+- Why a replayed answer is a known $0 and not a blank, and why a replay miss must fail rather than call the model.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md)

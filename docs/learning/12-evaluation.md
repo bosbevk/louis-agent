@@ -1,9 +1,9 @@
 # 12 · Evaluation: a judge is only as good as its last check against a person
 
-> **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop) and a nod to #15 (least privilege) · **Stages:**
-> F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal (2026-10-26 to 27) · **Written by** Claude, for Louis
-> to read (2026-10-27) · **Next:** the rest of F18's write-up (graders by kind, rates, replay) extends this one; the first
-> calibration of the next feature is the button's second real use
+> **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop), a nod to #15 (least privilege) and side
+> lessons for #17, #4 and #3 · **Stages:** F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal
+> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29) · **Written by** Claude, for Louis to read
+> (2026-10-27, extended 2026-10-29)
 
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
 why the check is now a button in the admin portal instead of four commands in a terminal.
@@ -88,6 +88,73 @@ It cost one thing to learn. A first draft of the list dropped the proxy and cert
 the judge couldn't reach Anthropic. And the test for those found a real bug: the selection treated `HTTPS_PROXY` and
 `https_proxy` as one variable, when on Linux they are two. A test that scans the runner's code for the settings it reads
 now stops a setting going missing quietly.
+
+## The rest of F18, in the field's words
+
+The field has settled on a few words, and F18 uses them as they are, so a paper or a library reads the same way.
+
+- **A task** is one thing you want the agent to do, a scenario in a dataset. **A trial** is one go at it: one
+  conversation. **A transcript** is everything that happened in that trial. **A grader** looks at a transcript and
+  says pass, fail or unknown, with a reason. An **eval** is a task set plus its graders.
+- **Code graders first.** Most of what matters has a rule: did it route to the cook, is the total under the budget,
+  did a turn fail. Code is free, fast and says the same thing twice. Only what has no rule ("is this a meal?") goes to
+  a model, and every eval must have at least one code grader that's required, so no eval rests on a judge alone.
+- **A judge is checked, then a person stays in the loop.** The judge is calibrated against your labels (above), and
+  the human review sits beside it in the portal, blind: you grade before you see what the judge said.
+- **Grades and metrics are different things.** A grade decides a pass. A metric (calls, hosts, tokens, seconds, cost)
+  is measured and never fails a run. Mixing them was the old "scores" bag; splitting them is what made the v2 results
+  readable.
+
+## pass@k against pass^k
+
+Run each task k times. **pass@k** asks: did it work at least once? **pass^k** asks: did it work every time? For a tool
+someone tries once and walks away from, pass^k is the honest one. The first v2 cook run shows why both matter:
+Puls with its cook passed 23 of 24 trials, and the categories with six trials (budget, follow-up) passed all six, so
+both numbers agree there. Puls answering on its own with web tools passed 6 of 24: sometimes it gets there, mostly it
+doesn't, and pass^k says so loudly where pass@k would flatter it.
+
+## Datasets with a held-out split
+
+A dataset is files, versioned, with a hash, so a run says exactly what it asked. The scenarios sit in two folders,
+`dev` and `held-out`. You tune on `dev`. You never look at `held-out` while tuning; it's for the release check. If you
+tune on everything, a high score only proves the prompt fits those questions. Step 7d moved the files to Inspect's
+`Sample` shape (`id`, `input`, `target`, `metadata`), so another tool could read them.
+
+## Frozen input, and what a replay is for
+
+The web changes under you. So a run can record every page, search and fetch, and the model's answers too, and a replay
+plays them back. The first v2 replays cost $0, every request a cache hit. A replay doesn't test a prompt (a changed
+prompt is a new request, so it misses). It tests everything around the model: the graders, the harness, the engine.
+It also found a real problem: a mode that hands work to a sub-session doesn't replay, because the hand-off's tool
+result changes between runs. That's the kind of thing you only learn by running it.
+
+## Tonight's judge check, a real example of "check it on fresh labels"
+
+The limits below said to check the judge on fresh labels. The first v2 cook run did: 36 new answers, labelled blind by
+a separate reviewer who never saw the judge's verdicts. The judge agreed on 31 of 36: 87% on passes, 83% on fails. That
+is **below the bar**. Four of the five misses are the same old story: the judge fails a real meal because it wants
+cooking steps, when the answer gave a scaled list or a swap. So the 35 of 36 from the tuning rounds was the prompt
+fitting those answers, exactly as warned. The judge needs another round, on these labels and then on fresh ones again.
+
+## The limit that stays
+
+CI grades recorded transcripts. That proves the graders and the harness still work. It can't see the agent: a prompt
+or tool change only shows up in a real run, and a real run costs money and waits for your go. A gate that sees the
+agent is still missing (GOAL, skill 12).
+
+## Side lessons from F18
+
+- **Traces, and logs that don't leak (skill 17).** Every turn and tool call is traced, so a slow or failing step can be
+  found. And the logs no longer hold what you typed: the arguments, results and a failure's quoted reason show as keyed
+  hashes and lengths (`area=#3f9c0a1b2d4e (10)`), so a log says what ran and how it ended. The same text always gets
+  the same hash, so you can still match two lines. `LOG_CONTENT=full` shows the values, on your own machine only.
+- **The stream format is a seam (skill 4).** The agent's stream is read by one small library (`louis-agent.session-
+  stream`) that turns each server-sent event into a record. Every host, the harness and the portal read those records,
+  never the raw text. When the format changes, one reader changes. Protocol v2 is the same idea for evals: one
+  contract the runner writes and the API reads (ADR 0047).
+- **The prompt's hash (skill 3).** Each run keeps the hash of every prompt each agent used, and the trend chart puts a
+  marker where a hash changed. So when a pass rate jumps, you can see whether the prompt changed that night. Comparing
+  two prompt versions side by side, as a habit before a merge, is the next step and still missing.
 
 ## The limits, said plainly
 
