@@ -782,7 +782,10 @@ the rebuild of 3c; the judge is the local Ollama, `qwen3:4b-instruct-2507-q4_K_M
 **Open, from Louis during run 1** (a screenshot of the Benchmarks page while the cook run streamed): the bottom of the
 live run's panel and the "Runs · puls-cook" card under it look clipped or squeezed (the card shows a scrollbar of its
 own at the window's bottom). To reproduce in the browser and fix after the paid runs, test first; never during a run,
-since a rebuild kills it.
+since a rebuild kills it. **Fixed after Part E:** `.admin-main` is a scrolling flex column, and `.runs-list` scrolls
+itself, so the column shrank it to a sliver under the tall live panel; `.admin-main > * { flex-shrink: 0; }` keeps
+every section's height and the page scrolls instead. `AdminPageStyleTests` holds the rule (red first: "no rule for
+.admin-main > *"); the look itself is for Louis to confirm in the browser after the image is rebuilt.
 
 **Part E** done: `88c5b2bf` (the feature doc's results in short), `6d7bdd62` (the four eval projects' design docs and
 the tests doc), `a0fa273e` (CHANGELOG), `df471fab` (TODO: F18's line out; CL14's alias line kept, as those aliases are
