@@ -1,0 +1,24 @@
+@* The latest run (CL26): when it ran, how it ended, what it cost and where its results came from on one line; under
+   it a ring per mode, pass@k in the middle and pass^k beside it. A rate no trial made is a dash and an empty ring. *@
+
+<div class="eval-score">
+    <div class="eval-score-head">
+        <span class="eval-score-label">Latest run</span>
+        <a class="eval-run-id" href="admin/benchmarks/@Line.Run.Run.Id"><code>@RunText.Short(Line.Run.Run.Id)</code></a>
+        <span class="eval-when">@EvalText.When(Line.Run.Run.StartedAt)</span>
+        <span class="status-pill @RunText.Status(Line.Run.Run.Status)">@RunText.Status(Line.Run.Run.Status)</span>
+        <span class="chip">@RunText.Repeats(Line.Run.Run.Repeat)</span>
+        <EvalRunOrigin Line="Line" />
+        <span class="eval-cost">@RunText.Money(Line.Run.Run.Total?.Cost, Currency)</span>
+    </div>
+    <div class="eval-score-modes">
+        @foreach (var (mode, i) in Line.Modes.Select((m, i) => (m, i)))
+        {
+            <figure class="eval-mode" style="--i: @i">
+                <Ring Parts="EvalText.Ring(mode.PassAtK)" Colours="RingColours" Titles="@(["passed", "not passed"])" Centre="@RatesText.Share(mode.PassAtK)" Unit="@RatesText.PassAt(mode.K)" />
+                <figcaption><code>@mode.Mode</code></figcaption>
+                <small title="Passed every time in its k trials: can a customer rely on it?">@RatesText.PassHat(mode.K) <strong>@RatesText.Share(mode.PassHatK)</strong></small>
+            </figure>
+        }
+    </div>
+</div>

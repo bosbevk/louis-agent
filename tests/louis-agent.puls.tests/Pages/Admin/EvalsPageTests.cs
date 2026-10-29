@@ -82,9 +82,9 @@ public partial class EvalsPageTests
     /// The markup made the same on any machine: the times, which the page writes in the reader's own time zone (CI
     /// runs in UTC).
     /// </summary>
-    private static string Stable(string markup) => LocalTime().Replace(markup, "$1 HH:mm");
+    private static string Stable(string markup) => LocalTime().Replace(markup, "$1, HH:mm");
 
-    /// <summary>A date and a time of day, "2026-10-24 11:00".</summary>
-    [GeneratedRegex(@"(\d{4}-\d{2}-\d{2}) \d{2}:\d{2}")]
+    /// <summary>A day and a time, as the eval card writes them: "24 Oct 2026, 11:00".</summary>
+    [GeneratedRegex(@"(\d{1,2} [A-Z][a-z]{2} \d{4}), \d{2}:\d{2}")]
     private static partial Regex LocalTime();
 }

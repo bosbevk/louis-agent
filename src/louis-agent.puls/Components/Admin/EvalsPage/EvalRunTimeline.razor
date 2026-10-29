@@ -1,0 +1,32 @@
+@* The runs before the latest (CL26), newest first, down a line of dots: each run's id, when, how it ended, its
+   repeats, where its results came from and its cost, then a bar per mode, so runs compare by eye top to bottom. *@
+
+<div class="eval-timeline-wrap">
+    <h4 class="eval-section-label">Earlier runs</h4>
+    <ol class="eval-timeline">
+        @foreach (var (line, i) in Runs.Select((l, i) => (l, i)))
+        {
+            <li class="eval-tl-item @EvalText.OriginTone(line.Origin)" style="--i: @i">
+                <div class="eval-tl-head">
+                    <a class="eval-run-id" href="admin/benchmarks/@line.Run.Run.Id"><code>@RunText.Short(line.Run.Run.Id)</code></a>
+                    <span class="eval-when">@EvalText.When(line.Run.Run.StartedAt)</span>
+                    <span class="status-pill @RunText.Status(line.Run.Run.Status)">@RunText.Status(line.Run.Run.Status)</span>
+                    <span class="chip">@RunText.Repeats(line.Run.Run.Repeat)</span>
+                    <EvalRunOrigin Line="line" />
+                    <span class="eval-cost">@RunText.Money(line.Run.Run.Total?.Cost, Currency)</span>
+                </div>
+                <div class="eval-tl-modes">
+                    @foreach (var mode in line.Modes)
+                    {
+                        <span class="eval-tl-mode" title="@RatesText.PassAt(mode.K): passed at least once · @RatesText.PassHat(mode.K): passed every time">
+                            <code class="eval-tl-name">@mode.Mode</code>
+                            <RateBar Rate="mode.PassAtK" />
+                            <strong>@RatesText.Share(mode.PassAtK)</strong>
+                            <span class="muted">@RatesText.PassHat(mode.K) @RatesText.Share(mode.PassHatK)</span>
+                        </span>
+                    }
+                </div>
+            </li>
+        }
+    </ol>
+</div>

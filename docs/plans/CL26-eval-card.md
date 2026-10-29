@@ -158,3 +158,10 @@ sequenceDiagram
 
 - 2026-10-29, step 2: no `Scorecard` record (Louis's pick of three). The latest run is a `RunLine` like every run on
   the timeline: it holds the same run, rates and origin, and the scorecard needs the origin too.
+- 2026-10-29, during step 3: `main` merged in (FX26, FX27 and CL25 had landed).
+- 2026-10-29, during step 3 (Louis: "we need to split app.css, and make it a rule to also split the css"; his picks
+  of three each): **CSS files by area in ITCSS order** (settings, base, layout, components; Harry Roberts' Inverted
+  Triangle CSS), in folders by concern under `wwwroot/css/`, `app.css` left as the ordered `@import` list, a pure move
+  with no rule changed; **a `.css` file holds at most 200 lines**, blank and comment lines not counted, in both web
+  apps, held by `FileSizeTests`. Step 4 becomes the rule (test first) and Puls's split, step 5 the code-review app's
+  split, step 6 the finish with an ADR for the rule and its line in `.claude/rules/`.
