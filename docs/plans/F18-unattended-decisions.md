@@ -760,3 +760,26 @@ the rule says so, and the move is mechanical (Rider follows every reference). Co
 
 **Part C** done (`7ff19cf5`, `70a84934`, and the commit that deleted `convert-samples` with the plan's 7d row): the
 three datasets are in Inspect's Sample shape (puls-cook v7, puls-routing v4, the template's example v2).
+
+**Part D** (the stack rebuilt on `ba8b7884`; `GET /v1/admin/evals` lists `puls-cook` (v10, dataset v7) and
+`puls-routing`; `REPLAY_DIRECTORY=/data/replay`; no start-up clean-up line this time, since the 21 v1 runs went at
+the rebuild of 3c; the judge is the local Ollama, `qwen3:4b-instruct-2507-q4_K_M`, on the host).
+- `puls-cook` `5d1fd231c9b1`, 3 repeats, recorded: done, $0.2167 from the ledger, 259 requests, 48 conversations,
+  none failed for infrastructure. Running total $0.22.
+- `puls-routing` `0d3b95e093a6`, 3 repeats, recorded: done, $0.1561, 174 requests, 72 conversations, 72 of 72
+  passed. **Night's paid total $0.3728** of the $50 limit. **Retries: none.**
+- Replays, free: cook `6edc15cc1d1e` ($0, 74 requests all hits) and routing `c16bdbf5ff62` ($0, 62 requests all
+  hits). **Finding (miss):** a delegating mode's turn misses at the sub-session's tool result ("message 3 (tool)
+  changed"), so 6 of the cook replay's 8 `puls-cook` conversations and the routing replay's 2 `cook` delegations
+  don't equal the recording; the rest do. **Finding:** those turns carry the error but no `replay-miss` failure.
+- Judge check `75f0a3f6cbae`, local judge, labels by a blind labeller agent (`claude-run2-blind`, 30 pass, 6 fail):
+  agreed 31 of 36 (87% on passes, 83% on fails); **below the 90% bar**.
+- FX24: the cook-af over budget no longer shows; no `BranchReading` false pass found. **Finding:** runs record
+  `"dataset": null` (`EvalRunner` calls `Begin` without the dataset).
+- References cut again from passing conversations (8 cook, 12 routing; 9 held-out kept). Commit: step 5.5.
+- The portal-layout item below is still open (Louis's screenshot); Part D's writing didn't touch the portal.
+
+**Open, from Louis during run 1** (a screenshot of the Benchmarks page while the cook run streamed): the bottom of the
+live run's panel and the "Runs · puls-cook" card under it look clipped or squeezed (the card shows a scrollbar of its
+own at the window's bottom). To reproduce in the browser and fix after the paid runs, test first; never during a run,
+since a rebuild kills it.

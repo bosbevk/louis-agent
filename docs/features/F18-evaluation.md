@@ -1848,6 +1848,50 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   brought up whole (summaries, lines, one nested `if` split into a helper). Commit 3 deletes `convert-samples` now
   that it has run (`SampleConversion`, its tests, its request, its line in `Program` and its two messages) and adds
   the plan's 7d row, done.
+- **Step 5.5, results: the first v2 baseline** (the unattended run 2's Part D, 2026-10-29, Claude Haiku 5.5, the Puls
+  stack rebuilt on `ba8b7884`; every number below is from the run's own records and the ledger).
+  - **`puls-cook`, run `5d1fd231c9b1`** (`--repeat 3`, web recorded): $0.216672 from the ledger, 259 requests,
+    3,777,547 tokens, 48 conversations, none lost to infrastructure. Mode `puls-cook` (Puls hands the meal to its
+    cook): 23 of 24 passed (95.8%); budget 6 of 6, follow-up 6 of 6, language:af 20 of 21; the categories of three
+    trials (asks-first, control, language:en, shop:any, shop:no-branch, shops:two) say "too few"; its one fail is
+    repeat 2's `cook-shops` (`estimates-at-shop`). Mode `puls-tools` (Puls answers itself with web tools): 6 of 24
+    (25%); budget 0 of 6, follow-up 0 of 6, language:af 6 of 21; asks-first and control passed all three.
+    `within-budget`: unknown 5 times, all in `puls-tools` ("the answer gives no amount to read a basket total from");
+    `puls-cook` 24 of 24 within budget. No page of `pnp.co.za` or `woolworths.co.za` was read (the cook looks up no
+    prices since 5.7), so none came back empty or blocked; the tools failed three times in all (one SearXNG search,
+    its Brave engine suspended; two `FetchUrl` of resbank.co.za). Follow-ups: in `puls-cook` all six second turns
+    continued the cook's sub-session (answered after it, never before); in `puls-tools` Puls answered all six itself.
+  - **`puls-routing`, run `0d3b95e093a6`** (`--repeat 3`, web recorded): $0.156144, 174 requests, 72 conversations,
+    none lost to infrastructure; `baseline` 36 of 36 and `delegated` 36 of 36, every kind (chat, cook, files, git,
+    numbers, web) 6 of 6.
+  - **The night's paid total: $0.372816**, under the run's $50 limit; no retry was needed.
+  - **The free replays.** Cook `6edc15cc1d1e` (repeat 1 of the recording): $0, 74 requests, every one a hit (62 turn
+    requests at 0 tokens, 12 grading requests on the local judge, 13,068 tokens, free); `puls-tools`' 8 grades equal
+    the recording's; **6 of `puls-cook`'s 8 differ**: turn 1 missed, "No recorded model answer … message 3 (tool)
+    changed": the hand-off's tool result (`StartSubSession`) is not the same in the replay as in the recording, so the
+    next request's key differs, and turn 2 then misses because turn 1 failed ("message 2 (user) was added"). Routing
+    `c16bdbf5ff62`: $0, 62 requests all hits, 24 conversations, 2 differ: the two `cook` delegations, the same miss.
+    Findings, not fixed tonight: (1) a sub-session's tool result isn't replay-stable, so a replay of a mode that
+    delegates can't reproduce its grades; (2) those failed turns carry the error but no `failure` kind, although the
+    contract has `replay-miss` for exactly this.
+  - **The judge check** `75f0a3f6cbae` (`meal-for-people` on the local judge `qwen3:4b-instruct-2507-q4_K_M`): 36 of
+    the cook run's conversations labelled by a blind labeller (reviewer `claude-run2-blind`, which never saw the
+    judge's verdicts): 30 pass, 6 fail. The judge agreed on 31 of 36; on the person's passes 26 of 30 (87%), on the
+    fails 5 of 6 (83%, few labels); the bar is 90% of each class, so **it does not clear the bar**. Of the five
+    disagreements, four are the judge failing a real meal because it wanted cooking steps (a scaled list, a swap), and
+    one (`puls-tools` repeat 3 `cook-af`) is a reading of the question: the label failed the conversation because turn
+    1 gave no meal, the judge read the last turn.
+  - **FX24's two open items.** The cook-af over budget no longer shows: within budget every time in `puls-cook`
+    (R241, R228, R237 for R250). `BranchReading`: no false pass found; the one answer that says "not confirmed"
+    while `estimates-at-shop` passed (`puls-cook` repeat 1 `cook-en`) says it in its *Unsure* table about where the
+    branches came from, and its *Where to buy* names real branches (Menlyn, Pretoria Central).
+  - **Also seen:** the runs' first protocol line carries `"dataset": null`: `EvalRunner` calls `Begin` without the
+    eval's dataset, so a run records no dataset name, version or hash (a finding for Louis).
+  - **The conformance references were cut again** from conversations that passed every grader, repeat 1 of each
+    run, in each reference's own mode: the cook's eight dev scenarios (`puls-cook`) and the routing's twelve
+    (`delegated`); the nine held-out scenarios (`cook-follow-up`, `cook-paarl`, `cook-worcester-budget`, the routing's
+    `*-3`) keep their old references, as these runs asked only the dev split. The known-bad files stay; the eval
+    tests (conformance included) pass with the new references.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
