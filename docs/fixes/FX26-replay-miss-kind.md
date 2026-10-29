@@ -44,6 +44,10 @@ Step by step, in the plan's order:
    references `louis-agent.session-stream` itself (it reached it only through its web app). Red first: a turn whose
    model request throws the miss streamed `api_error`; the other case (any other failure still `api_error`) passed
    and stays as the guard. The stream golden is unchanged.
+4. **The runner reads the kind:** `ScenarioAttempt` sets a turn's failure to `ReplayMiss` when the API's stream ends
+   on an error of that kind and no failure of the runner's own is set; any other streamed error stays the agent's
+   answer, for the graders. Red first: a stream ending in `replay_miss_error` gave a turn with no failure; the
+   `api_error` case passed and stays as the guard.
 
 ## Tests
 
