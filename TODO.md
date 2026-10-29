@@ -114,6 +114,7 @@ Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a tim
 
 ## Small cleanups (each when its code is next touched)
 
+- [ ] Design docs for the four projects that have none: `louis-agent.choices`, `louis-agent.session-stream`, `louis-agent.api.contracts`, `louis-agent.evals.template` (CL24 found them; [projects](docs/projects/README.md))
 - [ ] F16-S1: the oversized-results report, and the worst offenders paged
 - [ ] `VerifyQuote`'s prices in the host's currency (`HOST_CULTURE`)
 - [ ] Remove CL14's last aliases now, with no deploy to wait for ([ADR 0049](docs/adr/0049-nothing-is-compatible-before-a-sale.md)): `PERSONALITIES_ENABLED` (core's `AgentOptions` and Puls's compose), and `personality` read from what was recorded before CL14 (a chat's delegation card, a stored run, the benchmark protocol and its fixture). CL20 removed the route and the session field

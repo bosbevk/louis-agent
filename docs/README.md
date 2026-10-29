@@ -53,7 +53,7 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, the Puls identity, the shops pack, the composition root, CLI, ACP server, API, web app, Puls, the shared web library, MCP server, orchestrator, usage probe, tests, and the demo service |
+| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, the Puls identity, the shops pack, the composition root, CLI, ACP server, API, web app, Puls, the shared web library, MCP server, orchestrator, usage probe, the eval harness, its protocol, runner and Puls's evals, and the tests |
 
 ## 7. What's next: plans and designs
 
