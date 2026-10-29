@@ -32,7 +32,7 @@ logic than before); count code lines only, as `cloc` counts code, comment and bl
 
 ## Links
 
-[0034](0034-code-a-person-can-maintain.md) · `docs/CLAUDE.md`, *Separate by concern* · [F18 plan](../plans/F18-evals.md)
+[0034](0034-code-a-person-can-maintain.md) · `docs/CLAUDE.md`, *Separate by concern* · [F18 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-evals.md)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

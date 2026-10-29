@@ -18,7 +18,7 @@ dotnet run --project src/louis-agent.api --launch-profile puls --property:WebApp
 
 Every route is under `/v1` but `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)), and every `/v1` call needs
 `AGENT_API_KEY` as `x-api-key` (or `Authorization: Bearer`) unless the route is marked open; without a key the API
-refuses to start unless `AGENT_AUTH=off` ([FX18](../fixes/FX18-auth-fails-closed.md)).
+refuses to start unless `AGENT_AUTH=off` ([FX18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX18-auth-fails-closed.md)).
 
 ## Add an endpoint
 

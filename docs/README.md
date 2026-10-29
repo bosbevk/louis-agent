@@ -53,7 +53,7 @@ you need otherwise.
 
 | Doc | Type | Read it to… |
 |---|---|---|
-| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, the Puls identity, the shops pack, the composition root, CLI, ACP server, API, web app, Puls, the shared web library, MCP server, orchestrator, usage probe, tests, and the demo service |
+| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, the Puls identity, the shops pack, the composition root, CLI, ACP server, API, web app, Puls, the shared web library, MCP server, orchestrator, usage probe, the eval harness, its protocol, runner and Puls's evals, and the tests |
 
 ## 7. What's next: plans and designs
 
@@ -65,10 +65,10 @@ planned, next and in the backlog, and links to the rest.
 | [Goal](GOAL.md) | Explanation | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
 | [TODO](../TODO.md) | Plan | See what's still open, one item per line: now and next (the platform plan's phases), Puls's track, later, small cleanups, and the known limitations |
 | [Changelog](../CHANGELOG.md) | Reference | See what was finished and when, newest first, each entry linking to its feature, fix or plan |
-| [Features](features/README.md) | Plan | Follow the step-by-step plan for the usage and optimisation specs and for Puls: each feature with user stories, design, tasks, and what to update when one is finished |
+| [Features](features/README.md) | Plan | Follow the features still to build: each with user stories, design and steps; a built feature keeps one row, its doc folded into its project's design doc (CL24) |
 | [Learning write-ups](learning/README.md) | Explanation | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |
-| [Plans](plans/README.md) | Plan | Read the plan approved before each feature or fix was built: what it changed from the doc, the steps and how they were checked |
-| [Fixes](fixes/README.md) | Explanation | See what broke, why and how it was fixed (symptom, cause, fix, how it was confirmed), and the fixes still open |
+| [Plans](plans/README.md) | Plan | Read the roadmap and the plans being built now: what each changes from its doc, the steps and how they're checked; a done plan is deleted (the old ones are at the tag `pre-cl24`) |
+| [Fixes](fixes/README.md) | Explanation | Look up an error: what broke and why, one row per fix with its symptom and cause, and the fixes still open; their lessons in [Lessons from the fixes](learning/fixes-lessons.md) |
 | [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Explanation | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
 | [Spec: response optimisation](specs/RESPONSE_OPTIMISATION.md) | Explanation | Read the design for cheaper, faster responses: prompt caching, smaller toolsets, clearing and summarising history, reliability |
 | [Design: session architecture](specs/SESSION_ARCHITECTURE.md) | Explanation | Read the longer-term idea for durable sessions, a context-building pipeline and memory (not planned yet) |

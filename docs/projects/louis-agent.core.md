@@ -38,7 +38,64 @@ flowchart LR
 4. **Usage** (F1): `UsageRecordingChatClient` sits inside the tool loop, so every model request (each tool round, each
    summary) writes one line to the usage ledger: token counts mapped by the provider's `IUsageMapper`, model, duration,
    stop reason, and the `UsageScope` the host opened for the turn (host, session, turn, purpose, task/run/service tags).
-   Counts and ids only, never prompt text.
+   Counts and ids only, never prompt text. A request cancelled before it ends is still written, with unknown tokens
+   rather than 0 (FX9).
+5. **Prices** (F2): `PricingUsageSink` wraps the ledger and prices each record as it is written, from the price table
+   `AgentHost` loads once: `PRICES_URL` if it answers (the API serves its own at `GET /v1/prices`), else `PRICES_FILE`,
+   else the tracked `config/prices.json`. `PriceTable.Find` matches the model by its longest prefix; `CostCalculator`
+   picks the tier from the whole prompt (input, cache reads and writes; a model with a `long_prompt` tier, such as
+   Haiku 5.5 above 100,000 tokens, costs more for the whole request), prices cache writes at their lifetime, and rounds
+   to 6 decimals. A record's `cost` names the table's `as_of`, so a later price change never rewrites it; no price is
+   `null`, never 0 ([ADR 0007](../adr/0007-measure-every-request.md)). Thinking is inside `output`, so it isn't added.
+6. **Showing usage** (F3): the turn's `UsageScope` collects its priced records (a summary request counts toward its
+   turn, a sub-session's toward the parent's as one `sub_session` record per reply), and every host shows the same
+   totals (`UsageReport.Total`): the API on `message_delta` and on the `error` event of a failed turn (FX6), the web
+   apps per answer and per chat, the CLI after each answer, Rider when `USAGE_IN_CHAT` is on, `/usage` per session. A
+   turn's line keeps the four kinds apart (in, cache write, cached, out), since each is priced differently, and says
+   how many requests went unpriced.
+7. **Display currency** (F14): the ledger stays in the bill's currency (USD); a host shows its totals in
+   `DISPLAY_CURRENCY`, or the currency of `HOST_CULTURE` (written once on the PC by `usage-probe --host-culture`,
+   since a container can't see the region and running it in that culture would change every tool's number format).
+   `ExchangeRates` come from `RATES_URL` (Frankfurter by default, mapped by an `IRatesMapper` into our own
+   `rates.json` shape), falling back to the tracked `config/rates.json`; a missing rate shows the charged figure,
+   never a guess. Amounts always use `.` (`R35.00`); a symbol that would clash with `$` is written as the code.
+8. **Prompt caching** (F4): `PromptCachingChatClient`, innermost around every provider's client, asks the provider's
+   `IPromptCachingStrategy` to mark the request (`AnthropicPromptCaching`; `NoPromptCaching` elsewhere). Two markers:
+   one on a copy of the system prompt's last block, which caches the tools and the system prompt with
+   `LLM_CACHE_TTL` (5 minutes by default, or an hour), and Anthropic's automatic marker for the conversation, always 5
+   minutes. The stored history is never marked. The prefix stays the same bytes because tools are sorted by name (a
+   duplicate name stops start-up), the system prompt holds nothing per request, and thinking is fixed per engine.
+   `LLM_CACHE=off` turns it off. `usage-probe --cache-gaps` reads a ledger's gaps between requests to pick the lifetime.
+9. **Toolsets per session** (F5, [ADR 0006](../adr/0006-toolsets-per-session.md)): nothing loads at start-up; a session
+   names its toolsets when it opens and keeps them, and `AgentEngineFactory` builds one engine per sorted toolset list
+   (up to 16 cached), sharing the chat client, the ledger and the settings; the system prompt carries only those
+   toolsets' guides (`ToolsetCatalog`). A session with no list gets `skills`. A sub-session (`StartSubSession` in the
+   `specialists` toolset) runs on a peer from `AGENT_PEERS` with its own toolsets, one level deep, at most 3 a turn, 5
+   minutes each, and stops using tools when its prompt nears 80,000 tokens (FX14); the chat's session keeps it open for
+   a follow-up by handle (`ContinueSubSession`, F26), and a role may declare its own toolsets (F33,
+   [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
+10. **Minions** (F30, built, not in use): a specialist can hand one task and one of its own tools to a minion on a cheap
+    model (`MINION_LLMS`, a session naming its LLM profile); no session is given `minions` until the cook is measured
+    with and without them (the TODO's *F30's minions tested*). A minion's engine is the principles, its product's
+    base, its role and the one tool, refused before any HTTP for a tool its specialist doesn't hold. An LLM profile
+    takes nothing from the instance but its API key, so a local model never inherits Claude's `LLM_THINKING`; the
+    profile goes to the peer as data and the peer refuses one it doesn't offer (`GET /v1/llm-profiles` lists them).
+    `VerifyQuote(url, quote, product)` checks a quoted price against the page in code, through the same guarded reader
+    as `FetchUrl` (FX16 made a price-only quote name its product).
+11. **The web** (F32 to F34): `WebSearch` behind `IWebSearchProvider` (SearXNG in Docker, or a licensed API), and pages
+    drawn with JavaScript read through one headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP), every
+    request it makes held to the address rule (`SsrfGuard`), no WebSockets, on a network apart from the database. The
+    browser says what it is (`BROWSER_USER_AGENT`, [ADR 0038](../adr/0038-the-browser-says-what-it-is.md)). `WEB_REPLAY`
+    records the pages a session reads and replays them, so an eval reads the same web twice. What F32 to F34 learned:
+    the browser checks every request a page makes, not only the first address, since it follows redirects and loads
+    subresources by itself; request interception doesn't see WebSockets, so before a page's own scripts `WebSocket`
+    refuses to be made, in every frame; a failed name lookup is a refusal, and the request handler catches everything
+    (an exception escaping its `async void` would end the process and every chat); the turn's cancellation reaches the
+    browser, which closes the page; one guarded browser (`Tools/Web/Browsing`, `IWebBrowser`) serves the renderer and
+    every shop, with a visit that can carry its own cookies and one script of ours. SearXNG is AGPL-3.0, run unchanged
+    beside us over HTTP, and the sold endpoint uses a licensed search API instead, since the engines it queries don't
+    license their results for that ([ADR 0023](../adr/0023-copyleft-service-beside-us.md)); on the day it was measured,
+    only Bing answered from Louis's address.
 
 The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
 
@@ -91,7 +148,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Tools/Shell/` | `PythonTools`, `PowerShellTools`, `BashTools`: run scripts with arguments as data (Python in its own venv; bash is Git Bash on Windows, never WSL) |
 | `Tools/Web/` | The web toolset as three classes (S, CL15): `WebTools` (`WebSearch`, `FetchUrl`, `ReadRenderedPage`), `Quotes/QuoteTools` (`VerifyQuote`, by `QuoteMatch`'s FX16 rules, tested alone) and `Tools/Currency/CurrencyTools` (`ConvertCurrency`). `Fetching/` is what reading a page needs: `PageFetcher` (the guarded client, one per toolset: `SsrfGuard` on every hop; given a store, its handler records and replays fetches, and a replay skips the per-hop DNS check), `HtmlText` (HTML as readable text, for the fetch, the renderer and the search providers) and `PageText` (a page framed as untrusted content). Two seams, each its contract at the top and its implementations in `Providers/` (F32): `Search/` (`IWebSearchProvider`; Tavily, Google, SearXNG, DuckDuckGo, picked by `WEB_SEARCH_PROVIDER`) and `Rendering/` (`IPageRenderer`; the headless Chrome, or Tavily Extract, picked by `PAGE_RENDERER`). `Browsing/` (F33) is the one guarded browser both Chrome users share: `IWebBrowser` and `ChromeWebBrowser` (every request a page makes put to `Policy/RenderPolicy`, no WebSockets, cancellation closes the page, 4 pages at once), which can keep the bodies of the responses a caller asks for; `WebBrowserFactory` builds the process's one browser (the shops and the renderer read through it). `Replay/` (F18 steps 4a and 4b): four seams recorded and replayed by the session's trial (`Sessions/Replay/ReplayTrial`): `RecordedWebBrowser` (visits), `RecordedSearchProvider` (searches), `RecordedFetchHandler` (a `DelegatingHandler` outside the SSRF guard: `FetchUrl` and `VerifyQuote`) and `ReplayClock` (the time, standing still within a trial); in `Record` each saves what it answered under the trial, in `Replay` each answers only from it and uses no browser, engine, network or clock. The store, which since step 4e.1 serves every kind of answer and lives in `Sessions/Replay/Store/`, is `ReplayStore` (one store for every kind of answer, once per SHA-256 in `answers/`, one index line per ask in `trials/`), `ReplayAsk` (a `ReplayKind` and a JSON key), `ReplayAnswer<T>` (an answer or a failure, never both) and `TrialFileName` (the one map from a key to a file name); `Replay/Answers/` holds what is saved by the web seams (`ReplayPage`, `ReplayResponse`, an allow list that keeps no cookie or header). Private: nothing serves it, and `ReplayFolderIsPrivateTests` holds it |
 | `Tools/Integrations/Paymo/`, `Integrations/DevOps/` | Paymo time tracking and Azure DevOps work items — only registered when their keys are set |
-| `Tools/Agents/` | `SpecialistTools.StartSubSession` (F5): a session on a peer with only the toolsets a task needs and a role, its answer and usage back, an empty answer asked for once more (FX11); at most 3 a turn, 5 minutes each; each reply's usage rolled up as one `sub_session` record into the parent turn and the ledger. `MinionTools.StartMinion` (F30): one task and one of the specialist's own tools to a minion at depth 2 on a cheap model, on the same child path; `AgentTools`: the agent's own tool names, set per turn, for what a minion may be handed; `CallSlots`: the calls a turn may make, with the clock injected. The path both share is `SubSessions/` (S, CL15): `PeerSession` (a sub-session's life on a peer: opened, kept or deleted), `SubSessionMessenger` (one message sent and read, asked again once when empty), `SubSessionStream` (the SSE stream read: the seam Phase 3 step 1c replaces), `SubSessionUsage` (what it reported, and the line), `UsageRollUp` (one ledger row in the parent's turn), `SubSessionKind` (a specialist's or a minion's labels), `PeerHttp` (the key on every request) |
+| `Tools/Agents/` | `SpecialistTools.StartSubSession` (F5): a session on a peer with only the toolsets a task needs and a role, its answer back under a footer that names the child and never what it used (FX27: a replay keys on what the model reads), an empty answer asked for once more (FX11); at most 3 a turn, 5 minutes each; each reply's usage rolled up as one `sub_session` record into the parent turn and the ledger. `MinionTools.StartMinion` (F30): one task and one of the specialist's own tools to a minion at depth 2 on a cheap model, on the same child path; `AgentTools`: the agent's own tool names, set per turn, for what a minion may be handed; `CallSlots`: the calls a turn may make, with the clock injected. The path both share is `SubSessions/` (S, CL15): `PeerSession` (a sub-session's life on a peer: opened, kept or deleted), `SubSessionMessenger` (one message sent and read, asked again once when empty), `SubSessionStream` (the SSE stream read: the seam Phase 3 step 1c replaces), `SubSessionUsage` (what it reported, and the line), `UsageRollUp` (one ledger row in the parent's turn), `SubSessionKind` (a specialist's or a minion's labels), `PeerHttp` (the key on every request) |
 | `Sessions/` | What a host sets for a session's turn: `UserPlace` (where the user is, F22), `SessionAttachments` (files forwarded by name), `SubSessionRegistry` and `OpenSubSession` (the children a chat keeps, F26), `SubSessionFeed` and `SubSessionEvent` (a child's stream, passed to the host live); `Replay/` (F18 step 4a): `SessionReplay` (what an eval session does with the web, its trial in `Of`, held per flow like `UserPlace`, and sent on to a sub-session) and `WebReplayMode` (`Off`, `Record`, `Replay`; `WEB_REPLAY` parsed once), `ReplayTrial` (the trial this flow records into or replays from) and `Store/` (F18 step 4e.1, moved from `Tools/Web/Replay/`): `ReplayStore`, `ReplayAsk`, `ReplayKind`, `ReplayAnswer<T>`, `ReplayIndexLine` and `TrialFileName`, the saved input of every seam |
 | `Tools/Clock/` | `ClockTools.GetToday` in every session (F22), in the user's time zone |
 | `Tools/Documents/DocumentText.cs` | PDF (PdfPig), Word (OpenXml), spreadsheets and CSV (ExcelDataReader) as text or tables, for `ReadDocument`, `ReadTable` and `FetchUrl` (F22) |
@@ -132,7 +189,7 @@ attributes (121 tools with every toolset, Paymo and DevOps included). Helpers mu
 
 `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`,
 `LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`,
-`LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
+`LLM_CACHE`, `LLM_CACHE_TTL`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `AGENT_PEERS`, `MINION_LLMS`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
 `HOST_CULTURE`, `DISPLAY_CURRENCY`,
 `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM`, `WEB_SEARCH_PROVIDER`,
 `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`, `SEARXNG_URL`, `BROWSER_URL`, `PAGE_RENDERER`, `WEB_REPLAY` (the default for eval
@@ -163,9 +220,16 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 
 ## Limits and plans
 
-- 10 tool rounds per message → [F10](../features/F10-route-settings.md); nothing cached → [F4](../features/F04-prompt-caching.md);
-  usage recorded but not priced → [F2](../features/F02-prices-and-cost.md); history grows unbounded → [F9](../features/F09-context-management.md);
-  sub-session usage not yet in the parent chat's totals → the F5 follow-up in the TODO.
+- 10 tool rounds per message → [F10](../features/F10-route-settings.md); history grows unbounded →
+  [F9](../features/F09-context-management.md); estimates and budgets → [F7](../features/F07-budgets.md); each model's
+  window and cache minimum → [F15](../features/F15-model-limits.md).
+- The browser's address check can be beaten by DNS rebinding (the check resolves a name, then Chrome resolves it again),
+  and a Web Worker's socket isn't blocked; one egress proxy that resolves once would close both → F42.
+- Totals convert at the one rate a host loaded at start-up; a report over months (F7) must convert each record at its
+  own date's rate.
+- `tool_choice: none` on the round after the limit (FX1) didn't break the conversation's cache when measured, though
+  Anthropic's docs say a change of `tool_choice` should; if the API starts enforcing it, each such request rewrites the
+  conversation's cache (about $0.006 more per round-limited message on Haiku 5.5).
 - Rider MCP discovery only logs; Ollama tool support is a name heuristic; Paymo task lookup takes the first match
   ([known limitations](../../TODO.md#known-limitations)).
 

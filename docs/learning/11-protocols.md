@@ -113,5 +113,5 @@ write-up [15](15-safety-and-security.md)) applied to routes: fail closed, and op
   not a call, and step 3 had to leave it alone.
 
 ---
-[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](../plans/CL20-api-standards.md) ·
+[Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md) ·
 [ADR 0039](../adr/0039-api-routes-under-v1.md)

@@ -84,7 +84,7 @@ reading, pricing and totals in `UsageReportTests`.
 
 ## Related docs
 
-[Optimisation spec §A](../specs/RESPONSE_OPTIMISATION.md) · [F1 Usage ledger](../features/F01-usage-ledger.md) ·
+[Optimisation spec §A](../specs/RESPONSE_OPTIMISATION.md) · [F1 Usage ledger](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F01-usage-ledger.md) ·
 [louis-agent.core](louis-agent.core.md)
 
 ---

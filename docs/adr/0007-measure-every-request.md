@@ -24,5 +24,5 @@ a later price change never rewrites history. Unknown counts and unknown prices a
 
 ## Links
 
-[F1 Usage ledger](../features/F01-usage-ledger.md) · [F2 Prices and cost](../features/F02-prices-and-cost.md) ·
-[F3 Show usage](../features/F03-usage-display.md)
+[F1 Usage ledger](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F01-usage-ledger.md) · [F2 Prices and cost](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F02-prices-and-cost.md) ·
+[F3 Show usage](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F03-usage-display.md)

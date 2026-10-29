@@ -54,6 +54,6 @@ with exactly one tool, for one task, and never delegates.
 
 ## Links
 
-[F30 plan](../plans/F30-local-web-peer.md) (*Approved during the build*: the minions design) ·
-[F30 feature](../features/F30-local-web-peer.md) · [ADR 0017](0017-skills-by-level.md) (the levels) ·
+[F30 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F30-local-web-peer.md) (*Approved during the build*: the minions design) ·
+[F30 feature](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F30-local-web-peer.md) · [ADR 0017](0017-skills-by-level.md) (the levels) ·
 [ADR 0020](0020-principles-for-every-agent.md) · [ADR 0004](0004-arguments-as-data.md)

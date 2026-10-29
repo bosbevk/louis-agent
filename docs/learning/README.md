@@ -14,6 +14,7 @@ changed, the trade-offs, and what didn't work. Name each file after the skill's 
 | 13 · Cost and token economics | [13-cost-and-token-economics.md](13-cost-and-token-economics.md) | M1 "See it" (F1–F3): the usage ledger, prices, showing cost, the $0.66 baseline; F4 prompt caching, measured: $0.66 → $0.13 a run with 10/10 fixes; F18's replay cache, measured: the first v2 runs $0.37 live, $0 replayed with every request a hit, and the sub-session miss. To be extended at M3 (estimates, budgets) |
 | 15 · Safety and security | [15-safety-and-security.md](15-safety-and-security.md) | Phase 1: hosts fail closed without a key (FX18), git arguments as data (FX19), skill files wait for a person's approval (FX20); why a security test must fail for the hole itself. By Claude, read by Louis |
 | 18 · Testing and shipping | [18-testing-and-shipping.md](18-testing-and-shipping.md) | CL15: three goldens as a refactor's proof, a composition root tested on its own, the catalogue's start-up checks, a ratchet that empties, a shared test library instead of test projects referencing each other, rules a person can maintain held by ratchets.; CL19: one folder per place, the sidecar pattern, secrets by reference, verifying the environment before the plan. By Claude, read by Louis |
+| — · Every skill | [fixes-lessons.md](fixes-lessons.md) | What each fix taught (FX1 to FX27, but the open FX4), kept when the fix docs were folded (CL24): one paragraph each, with its skill. By Claude, for Louis to read |
 
 ---
 [Docs index](../README.md) · [Goal](../GOAL.md)

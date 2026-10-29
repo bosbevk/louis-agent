@@ -111,7 +111,7 @@ The rules:
 namespace isn't its folder path, a file with two top-level types, a folder that isn't in the table, or a `using` against
 the arrow. A new concern is a new row here and in the test's layers. Every other project's namespace is PascalCase too
 (`LouisAgent.Api`, `LouisAgent.Orchestrator.Tools`); a type never shares its namespace's name (hence `MessageText` in
-`Messages/`). The move was CL1 ([plan](../docs/plans/CL1-project-layout.md)).
+`Messages/`). The move was CL1 ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL1-project-layout.md)).
 
 ## Messages and logging
 

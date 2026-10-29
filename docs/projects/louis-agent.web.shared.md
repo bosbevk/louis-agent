@@ -30,7 +30,7 @@ come from a `ChatText` each app fills in.
   `mailto`, images only from the shops' own image hosts, so a model-written image can't send the chat's data elsewhere.
 - **Usage and currency.** `TurnUsage` and `UsageFormat` show a turn's tokens and cost from the API's usage event;
   `CurrencyState` and `CurrencySwitcher` show it in the browser's chosen currency from the API's rates
-  ([F14](../features/F14-display-currency.md)).
+  ([F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md)).
 - **Kept in the browser.** `ChatStore` keeps chats in `localStorage`; `ChatSettings` keeps the API key and the admin key
   there too, never on the server.
 

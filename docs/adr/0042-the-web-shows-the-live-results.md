@@ -57,4 +57,4 @@ These were considered:
 - [0007](0007-measure-every-request.md): every host shows a turn's usage from the same records, so the views and the
   ledger agree; this is the same rule for every stored result.
 - [0010](0010-folders-by-concern.md): state flows down as parameters and up as events (W2).
-- [F18 Evaluation](../features/F18-evaluation.md): step 6a.4 (the stale agreement card).
+- [F18 Evaluation](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md): step 6a.4 (the stale agreement card).

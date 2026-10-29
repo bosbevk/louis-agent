@@ -25,5 +25,5 @@ guide cost ~15k tokens a session; the architecture lived in one long doc, and it
 
 ## Links
 
-[CL4 plan](../plans/CL4-doc-types.md) · [CL5 plan](../plans/CL5-guides-by-folder.md) · [CL6 plan](../plans/CL6-arc42.md) ·
+[CL4 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL4-doc-types.md) · [CL5 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL5-guides-by-folder.md) · [CL6 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL6-arc42.md) ·
 [Docs index: Writing docs](../README.md#writing-docs-one-type-per-doc)

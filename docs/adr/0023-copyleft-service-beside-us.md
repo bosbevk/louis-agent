@@ -46,5 +46,5 @@ We tell **linking** apart from **running beside**.
 
 ## Links
 
-[F32 plan](../plans/F32-self-hosted-web.md) · [F32 feature](../features/F32-self-hosted-web.md) ·
+[F32 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F32-self-hosted-web.md) · [F32 feature](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F32-self-hosted-web.md) ·
 [ADR 0016](0016-licence-all-rights-reserved.md) · [ADR 0022](0022-benchmarks-recorded-from-the-protocol.md)

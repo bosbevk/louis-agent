@@ -52,12 +52,12 @@ conformance of both evals against their references and known-bad transcripts.
 
 - The first v2 baseline (2026-10-29): `puls-cook` 23 of 24 in its cook mode, 6 of 24 when Puls answers itself;
   `puls-routing` 72 of 72; the local judge agrees 31 of 36 with a blind labeller, below the 90% bar
-  ([F18 step 5.5](../features/F18-evaluation.md)).
+  ([louis-agent.evals](louis-agent.evals.md#design-notes)).
 - The held-out scenarios still have their older, hand-cut references.
 
 ## Related docs
 
-[F18](../features/F18-evaluation.md) · [Run the evals](../guides/run-the-evals.md) ·
+[Run the evals](../guides/run-the-evals.md) ·
 [louis-agent.identity.puls](louis-agent.identity.puls.md) · [louis-agent.evals](louis-agent.evals.md)
 
 ---

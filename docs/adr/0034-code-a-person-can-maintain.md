@@ -40,7 +40,7 @@ files to split, but a class three screens long); 150 lines (47 files, more files
 
 ## Links
 
-[CL15 plan](../plans/CL15-engine-identities-packs.md) (*Approved during the build*) · [0010](0010-folders-by-concern.md)
+[CL15 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md) (*Approved during the build*) · [0010](0010-folders-by-concern.md)
 · [Write-up 18](../learning/18-testing-and-shipping.md)
 
 ---

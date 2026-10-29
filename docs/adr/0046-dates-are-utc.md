@@ -94,7 +94,7 @@ These were considered:
 ## Links
 
 - [docs/CLAUDE.md](../CLAUDE.md), *Rules that always apply*: *Dates are UTC*.
-- [F18 Evaluation](../features/F18-evaluation.md): the time-zone golden (b71e6eaf) and protocol v2's `t`.
+- [F18 Evaluation](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md): the time-zone golden (b71e6eaf) and protocol v2's `t`.
 - F46 Localisation (TODO): the view that renders a UTC instant in the reader's language and zone.
 - [0022](0022-benchmarks-recorded-from-the-protocol.md): the protocol this rule's `t` travels on.
 - Microsoft Learn, [Choosing between DateTime, DateTimeOffset, TimeZoneInfo, and TimeZone](https://learn.microsoft.com/en-us/dotnet/standard/datetime/choosing-between-datetime)

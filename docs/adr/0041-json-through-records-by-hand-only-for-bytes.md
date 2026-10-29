@@ -81,4 +81,4 @@ These were considered:
 - [0024](0024-choices-are-enums.md): a choice is an enum, parsed once; on the wire it's the enum's name.
 - [0009](0009-message-text-as-enum-templates.md): message text comes from enums, and a JSON key is not message text.
 - [0039](0039-api-routes-under-v1.md): the API's routes; their bodies and replies are the records this record names.
-- [F18 Evaluation](../features/F18-evaluation.md): step 4f.3 (the `GetRawText` bug) and step 5.1 (the session client).
+- [F18 Evaluation](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md): step 4f.3 (the `GetRawText` bug) and step 5.1 (the session client).
