@@ -783,3 +783,9 @@ the rebuild of 3c; the judge is the local Ollama, `qwen3:4b-instruct-2507-q4_K_M
 live run's panel and the "Runs · puls-cook" card under it look clipped or squeezed (the card shows a scrollbar of its
 own at the window's bottom). To reproduce in the browser and fix after the paid runs, test first; never during a run,
 since a rebuild kills it.
+
+**Part E** done: `88c5b2bf` (the feature doc's results in short), `6d7bdd62` (the four eval projects' design docs and
+the tests doc), `a0fa273e` (CHANGELOG), `df471fab` (TODO: F18's line out; CL14's alias line kept, as those aliases are
+still in the code, without its wait for a deploy), `916a17d7` (GOAL rows 3, 12, 13, 17), `205f77e4` (write-ups 12 and
+13), and the *Finishing a feature* commit (F18 *done* in its doc and the features table, its row in the usage spec's
+map; no known limitation is removed by F18). The plan file stays until the docs step after the merge.

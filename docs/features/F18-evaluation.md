@@ -1,6 +1,6 @@
 # F18 · Evals in C#: one harness for checks, regressions and demos
 
-> **Status:** planned (built on `feature/F18-evals`) · **Phase:** 3 of [the platform plan](../plans/platform.md) ·
+> **Status:** done (2026-10-29, on `feature/F18-evals`) · **Phase:** 3 of [the platform plan](../plans/platform.md) ·
 > **Plan:** [F18-evals.md](../plans/F18-evals.md) · **Depends on:** F1, F2 and Phase 2 (CL15)
 >
 > **In the TODO:** **F18 Evals in C#** under *Now*, which also takes in the CI gate · **Decided in:**
