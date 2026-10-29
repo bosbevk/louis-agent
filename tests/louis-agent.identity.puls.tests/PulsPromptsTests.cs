@@ -1,27 +1,28 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Identities.Puls;
 
 namespace LouisAgent.Identities.Puls.Tests;
 
-// CL15 step 3: Puls's content, tested with Puls. These tests came from core's RoleCatalogTests and MinionRolesTests
-// with the prompts they read (F21, F25, F26, F28, F29, F30, F33, F34, FX13, FX17): each still reads the same file,
-// now from the identity's own prompts, registered by PulsPrompts as the Puls stack registers them. Puls's briefing,
-// its roles table and its relay lines read from agent/puls/voice.md, where the cut moved them out of the shared guide.
+/// <summary>
+/// Puls's own prompts, read the way the Puls stack registers them: its modes, its specialists and minions, and the
+/// rules each prompt has to carry. They came from core's role tests when the identity moved out (CL15 step 3).
+/// </summary>
 public class PulsPromptsTests
 {
+    /// <summary>Every level-0 mode this test run offers, core's and Puls's.</summary>
     private const string Modes = "louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en";
 
+    /// <summary>One prompt, through the same reader the engine uses.</summary>
     private static string Read(string path) =>
         SkillFileSource.ReadEmbedded(path) ?? throw new FileNotFoundException(path);
 
     /// <summary>A prompt with its line breaks and indents as single spaces, for a phrase the file wraps.</summary>
     private static string Flat(string text) => System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ");
 
+    /// <summary>Puls's prompts live in its identity now; core holds none of them.</summary>
     [Test]
     public void PulsPrompts_ComeFromItsIdentity_NotFromCore()
     {
@@ -31,6 +32,7 @@ public class PulsPromptsTests
         Assert.That(Read("specialists/puls-cook.md"), Does.Contain("Local cook"), "read through the one reader");
     }
 
+    /// <summary>With Puls registered, its modes, specialists and minion are listed, and each one loads.</summary>
     [Test]
     public void PulsAndItsSpecialists_AreListed_WithPulsRegistered()
     {
@@ -51,6 +53,9 @@ public class PulsPromptsTests
             "F18 step 5.7: the cook has no header now, it looks up no prices (the shops pack stays, off for the cook)");
     }
 
+    /// <summary>
+    /// A language loads its own voice first, then Puls's shared routing, which is no mode of its own.
+    /// </summary>
     [TestCase("af", "# Puls - Stem")]
     [TestCase("en", "# Puls - Voice")]
     public void APulsLanguage_LoadsItsVoice_ThenPulsShared(string code, string voice)
@@ -65,6 +70,7 @@ public class PulsPromptsTests
             "the shared part is no mode of its own");
     }
 
+    /// <summary>The two languages say the same things: the same sections and the same number of points.</summary>
     [Test]
     public void ThePulsLanguages_HaveTheSameSections()
     {
@@ -76,11 +82,13 @@ public class PulsPromptsTests
             Is.EqualTo(af.Split('\n').Count(l => l.StartsWith("- "))), "the same points");
     }
 
+    /// <summary>Each voice opens with its heading, in its own language.</summary>
     [TestCase("agent/puls/voice-en.md", "# Puls - Voice")]
     [TestCase("agent/puls/voice-af.md", "# Puls - Stem")]
     public void AVoicesHeading_SaysVoice(string file, string heading) =>
         Assert.That(Read(file), Does.StartWith(heading));
 
+    /// <summary>Puls's routing names only what Puls does, and carries its own briefing and relay rules.</summary>
     [Test]
     public void Puls_RoutesOnlyWhatItDoes_AndCarriesItsOwnProtocol()
     {
@@ -89,16 +97,20 @@ public class PulsPromptsTests
 
         Assert.That(puls,
             Does.Contain("`web`").And.Contain("`specialists`").And.Contain("`puls-cook`").And.Contain("**Vir:**"));
-        // Its routing table (the rows) names no coding toolset; the analyst's counting rule, moved here, may name files and python.
+        // Its routing table (the rows) names no coding toolset; the analyst's counting rule, moved here, may name
+        // files and python.
         string rows = string.Join("\n", puls.Split('\n').Where(r => r.StartsWith('|')));
         foreach (string coding in new[]
-                     { "`files`", "`git`", "`dotnet`", "`python`", "`paymo`", "`devops`", "`skills`" })
+                 {
+                     "`files`", "`git`", "`dotnet`", "`python`", "`paymo`", "`devops`", "`skills`"
+                 })
             Assert.That(rows, Does.Not.Contain(coding), $"Puls doesn't route {coding}");
         Assert.That(puls, Does.Contain("isn't available here yet"), "and still says so in one line when asked");
         Assert.That(puls, Does.Contain("## Briefing the specialist").And.Contain("## Relaying a report"),
             "the protocol, moved from the shared guide");
     }
 
+    /// <summary>A minion's prompt is the principles, then what every minion is, then its own role.</summary>
     [Test]
     public void AMinionsPrompt_IsThePrinciples_TheBase_ThenItsRole()
     {
@@ -114,11 +126,15 @@ public class PulsPromptsTests
         Assert.That(RoleCatalog.MinionBaseOf(PulsRole.MinionWebPriceLookup.Wire()), Is.EqualTo("puls-minion"));
     }
 
+    /// <summary>
+    /// The cook no longer hands work to a price-lookup minion, though the minion role stays for later.
+    /// </summary>
     [Test]
     public void TheCook_NamesNoPriceLookupMinion_NowThatItLooksUpNoPrices()
     {
-        // F18 step 5.7: the cook's minion table (CL15 step 3) handed one ingredient to a price-lookup minion; with no prices looked up it is gone from the cook.
-        // The minion role stays, with its tests, for when a retailer says yes.
+        // F18 step 5.7: the cook's minion table (CL15 step 3) handed one ingredient to a price-lookup minion; with no
+        // prices looked up it is gone from the cook. The minion role stays, with its tests, for when a retailer says
+        // yes.
         string cook = Read("specialists/puls-cook.md");
 
         Assert.That(cook, Does.Not.Contain(PulsRole.MinionWebPriceLookup.Wire()).And.Not.Contain("## Minions"));
@@ -126,6 +142,9 @@ public class PulsPromptsTests
             Is.EqualTo(new[] { PulsRole.MinionWebPriceLookup.Wire() }));
     }
 
+    /// <summary>
+    /// Counting goes to the analyst, and the reader hands a counting task back instead of reading it all.
+    /// </summary>
     [Test]
     public void CountingGoesToTheAnalyst_AndTheReaderHandsItBack()
     {
@@ -137,6 +156,9 @@ public class PulsPromptsTests
         Assert.That(reader, Does.Contain("Don't count by reading").And.Contain("needs the analyst"));
     }
 
+    /// <summary>
+    /// Every specialist is told that each tool call costs money, and to match the tone of the note it got.
+    /// </summary>
     [TestCase(PulsRole.Researcher)]
     [TestCase(PulsRole.Reader)]
     [TestCase(PulsRole.Historian)]
@@ -151,6 +173,7 @@ public class PulsPromptsTests
         Assert.That(text, Does.Contain("how the user sounds").And.Contain("keep your report's shape"));
     }
 
+    /// <summary>The routing teaches the model the word "role" for a sub-session, never the old "personality".</summary>
     [Test]
     public void ThePromptsTeach_StartSubSessionsRole()
     {
@@ -161,6 +184,7 @@ public class PulsPromptsTests
         Assert.That(router, Does.Contain("Pass `role`").And.Contain("ROLES_ENABLED"));
     }
 
+    /// <summary>The cook answers for the user's own town and quotes no price as if it were checked.</summary>
     [Test]
     public void TheCook_AnswersForWhereTheUserIs_AndQuotesNoPrice()
     {
@@ -175,31 +199,41 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("| Chicken thighs ").And.Contain("| 600 g ").And.Contain("chicken thighs 1 kg"));
     }
 
+    /// <summary>
+    /// The cook shows one photo of the dish, taken whole from the recipe page it read, or none at all.
+    /// </summary>
     [Test]
     public void TheCook_ShowsOneImageOfTheDish_FromTheRecipePageItRead()
     {
-        // Louis, 2026-10-25: "i want at least one image to render from the recipe". FetchUrl and ReadRenderedPage both return images as `![alt](url)`.
+        // Louis, 2026-10-25: "i want at least one image to render from the recipe". FetchUrl and ReadRenderedPage both
+        // return images as `![alt](url)`.
         string cook = Read("specialists/puls-cook.md");
 
         Assert.That(cook, Does.Contain("one image of the dish").And.Contain("![Bobotie](https://…)"));
         Assert.That(cook, Does.Contain("take the image link itself, whole").And.Contain("never one from another site"));
         Assert.That(cook, Does.Contain("never a share button, a print or PDF icon, a logo or an avatar"));
         Assert.That(cook, Does.Contain("no image, and nothing said about it"));
-        // FX24 (Louis, 2026-10-26: "there might be some websites who do not have images, we should just exclude them"): a page with no photo is dropped for the next result.
+        // FX24 (Louis, 2026-10-26: "there might be some websites who do not have images, we should just exclude
+        // them"): a page with no photo is dropped for the next result.
         Assert.That(Flat(cook), Does.Contain("Stop at the first page that has the recipe, a photo of the dish"));
         Assert.That(Flat(cook), Does.Contain("use the best recipe page of them that fits and show no image"));
     }
 
+    /// <summary>
+    /// A follow-up goes back to the specialist that is still open, even when Puls could answer it itself.
+    /// </summary>
     [Test]
     public void AFollowUp_GoesToTheOpenSpecialist()
     {
-        // F26 step 4: the prompt says when to continue and when to start over; the cook check showed the rule had to be firm.
+        // F26 step 4: the prompt says when to continue and when to start over; the cook check showed the rule had to
+        // be firm.
         string router = Read("agent/puls/voice.md");
 
         Assert.That(router, Does.Contain("ContinueSubSession"));
         Assert.That(router, Does.Contain("even when you could answer it yourself"));
     }
 
+    /// <summary>Every cooking question goes to the cook, and the cook says which branch to buy at.</summary>
     [Test]
     public void EveryCookingQuestion_GoesToTheCook_WhichSaysWhereToBuy()
     {
@@ -214,6 +248,7 @@ public class PulsPromptsTests
             "a branch is named with its place");
     }
 
+    /// <summary>The cook's labels come in the task's language, both ways, never the other one.</summary>
     [Test]
     public void TheCooksLabels_AreInTheTasksLanguage()
     {
@@ -226,6 +261,7 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("in the task's language, never the other"));
     }
 
+    /// <summary>How many packs to buy is written after the pack, as <c>× 2</c>.</summary>
     [Test]
     public void ACountOfPacks_GoesAfterThePack()
     {
@@ -234,11 +270,13 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("a count after it, `× 2`"));
     }
 
+    /// <summary>The cook reads a real recipe first, for exactly as many people as Puls asked about.</summary>
     [Test]
     public void TheCook_ReadsTheRecipeFirst_ForAsManyPeopleAsPulsAsked()
     {
-        // 2026-10-24 (Louis): "deals first, for every meal" went; the recipe, from a real page, comes first. 2026-10-25 (step 5.7): no deals either, no
-        // shop is looked up; the shops pack's own guide is unchanged and waits for a retailer to say yes.
+        // 2026-10-24 (Louis): "deals first, for every meal" went; the recipe, from a real page, comes first.
+        // 2026-10-25 (step 5.7): no deals either, no shop is looked up; the shops pack's own guide is unchanged and
+        // waits for a retailer to say yes.
         string cook = Flat(Read("specialists/puls-cook.md"));
         string shops = Read("toolsets/shops.md");
         string router = Read("agent/puls/voice.md");
@@ -256,10 +294,15 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
     }
 
+    /// <summary>
+    /// The cook searches ten results, skips the blocked sites, reads them in order and stops at the first page with a
+    /// recipe and a photo.
+    /// </summary>
     [Test]
     public void TheCook_SearchesTen_SkipsTheBlockedSites_ReadsInOrder_AndStopsAtTheFirstPageWithAPhoto()
     {
-        // Louis, 2026-10-26: "search 10, skip the blocked sites, read the results in order, and stop at the first page with a recipe and a photo (at most three pages)".
+        // Louis, 2026-10-26: "search 10, skip the blocked sites, read the results in order, and stop at the first page
+        // with a recipe and a photo (at most three pages)".
         string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(cook, Does.Contain("`WebSearch` for one with `maxResults` 10"));
@@ -273,11 +316,16 @@ public class PulsPromptsTests
                 "If none of the three has a photo, use the best recipe page of them that fits and show no image"));
     }
 
+    /// <summary>
+    /// There's one rule for when to stop reading pages, and the budget counts for more than the photo.
+    /// </summary>
     [Test]
     public void TheCook_HasOneStopRule_TheBudgetWinsOverThePhoto()
     {
-        // FX24 round 3 (the ccecce0 review): the search said "stop at the first page with the recipe and a photo", the budget paragraph said "an over-budget recipe is dropped for the next page".
-        // One rule now, in the search section: the budget is required, the photo only breaks a tie between pages that fit; the budget paragraph points to it.
+        // FX24 round 3 (the ccecce0 review): the search said "stop at the first page with the recipe and a photo", the
+        // budget paragraph said "an over-budget recipe is dropped for the next page". One rule now, in the search
+        // section: the budget is required, the photo only breaks a tie between pages that fit; the budget paragraph
+        // points to it.
         string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(cook, Does.Not.Contain("Stop at the first page that has the recipe and a photo"),
@@ -292,10 +340,12 @@ public class PulsPromptsTests
             "said once, in the search section");
     }
 
+    /// <summary>With a budget, the cook picks a dish that fits it before writing the list, not after.</summary>
     [Test]
     public void TheCook_ChoosesTheDishToFitTheBudget_BeforeItWritesTheList()
     {
-        // Louis, 2026-10-26, after cook-malmesbury (R421 on a R150 budget): the budget picks the dish; it is not checked after the list is written.
+        // Louis, 2026-10-26, after cook-malmesbury (R421 on a R150 budget): the budget picks the dish; it is not
+        // checked after the list is written.
         string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(cook, Does.Contain("With a budget, the dish is chosen to fit it, before the list is written"));
@@ -306,36 +356,49 @@ public class PulsPromptsTests
                 "Only if no reasonable dish fits does the answer go over, and then *Unsure* says by how much and why"));
         Assert.That(cook,
             Does.Contain(
-                "pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the usual dried spices and herbs)"),
+                "pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the " +
+                "usual dried spices and herbs)"),
             "listed as in the pantry, with no price");
     }
 
+    /// <summary>
+    /// The cook keeps a meal within its budget by dropping a recipe that goes over, and doesn't price what's already
+    /// in the pantry.
+    /// </summary>
     [Test]
     public void TheCook_KeepsAMealWithinTheBudget_ByDroppingAnOverBudgetRecipe_AndNotPricingThePantry()
     {
-        // Louis, 2026-10-26, after the --repeat 3 run (cook-malmesbury: R258 and R289 on R150, and a pass at R129): the cook priced every spice, sauce and sweetener as a whole pack
-        // (R74 of spices in one answer, R163 of condiments in another), took the first recipe it read, and said so under the budget row. The budget rule picks the recipe, and the pantry is not bought.
+        // Louis, 2026-10-26, after the --repeat 3 run (cook-malmesbury: R258 and R289 on R150, and a pass at R129):
+        // the cook priced every spice, sauce and sweetener as a whole pack (R74 of spices in one answer, R163 of
+        // condiments in another), took the first recipe it read, and said so under the budget row. The budget rule
+        // picks the recipe, and the pantry is not bought.
         string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(cook, Does.Contain("a recipe over the budget is dropped for the next page"));
         Assert.That(cook, Does.Contain("use the cheapest of them"));
         Assert.That(cook,
             Does.Contain(
-                "A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small budget"));
+                "A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small " +
+                "budget"));
         Assert.That(cook, Does.Contain("one cheap main ingredient (mince, chicken portions, eggs, beans, a soup)"));
         Assert.That(cook,
             Does.Contain(
-                "pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the usual dried spices and herbs)"));
+                "pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the " +
+                "usual dried spices and herbs)"));
         Assert.That(cook, Does.Contain("*From the pantry: cooking oil, salt, pepper, sugar and spices.*"));
         Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*"));
     }
 
+    /// <summary>
+    /// The cook reads no shop's site and loads no shops toolset; every price it gives is an estimate.
+    /// </summary>
     [Test]
     public void TheCook_LooksUpNoPrices_AndEstimatesForEveryShop()
     {
-        // 2026-10-25 (Louis: "keep cook but just rework it to not lookup prices but just focus on local recipes and where to shop"): the task's Winkel / Shop
-        // line names the shop to name a branch of; no shop's site is read (Checkers refuses our browser, PnP's and Woolworths' robots.txt disallow their
-        // search pages, ADR 0038), and the cook loads no shops toolset: the header is gone, the pack stays for when a retailer says yes.
+        // 2026-10-25 (Louis: "keep cook but just rework it to not lookup prices but just focus on local recipes and
+        // where to shop"): the task's Winkel / Shop line names the shop to name a branch of; no shop's site is read
+        // (Checkers refuses our browser, PnP's and Woolworths' robots.txt disallow their search pages, ADR 0038), and
+        // the cook loads no shops toolset: the header is gone, the pack stays for when a retailer says yes.
         string cook = Read("specialists/puls-cook.md");
 
         Assert.That(cook, Does.StartWith("# Puls specialist: Local cook"),
@@ -343,7 +406,8 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("The user's shop, named").And.Contain("*Winkel* / *Shop*"));
         Assert.That(cook,
             Does.Contain(
-                "No shop's prices are looked up, for now: a shop's own site is read only with its permission (asked 2026-10-25)"));
+                "No shop's prices are looked up, for now: a shop's own site is read only with its permission " +
+                "(asked 2026-10-25)"));
         Assert.That(cook, Does.Contain("every answer is *Estimates*"));
         Assert.That(cook,
             Does.Not.Contain("`FindProducts`").And.Not.Contain("`SearchSpecials`").And.Not
@@ -361,10 +425,12 @@ public class PulsPromptsTests
             "no prices from the web");
     }
 
+    /// <summary>Whichever shop the user named, the cook gives estimates and says plainly that they are.</summary>
     [Test]
     public void EveryShop_GetsEstimates_ThatSaySo()
     {
-        // 2026-10-24: instead of explaining why a shop can't be priced, the cook estimates and says so, in the task's language. Step 5.7: for every shop.
+        // 2026-10-24: instead of explaining why a shop can't be priced, the cook estimates and says so, in the task's
+        // language. Step 5.7: for every shop.
         string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(cook, Does.Contain("whichever shop the user named"));
@@ -374,6 +440,7 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Not.Contain("public API"));
     }
 
+    /// <summary>The cook writes its report in one fixed shape, so Puls can hand it on exactly as it is.</summary>
     [Test]
     public void TheCook_WritesItsReportInOneShape_ThatPulsHandsOn()
     {
@@ -405,6 +472,10 @@ public class PulsPromptsTests
         Assert.That(buy, Is.LessThan(unsure));
     }
 
+    /// <summary>
+    /// Puls hands the cook's report on whole, says one line like a person before and after, and treats the footer as
+    /// its own, never the user's.
+    /// </summary>
     [Test]
     public void Puls_RelaysTheCooksReport_HandsOffLikeAPerson_AndIntroducesIt()
     {
@@ -414,16 +485,19 @@ public class PulsPromptsTests
         Assert.That(router, Does.Contain("as the cook wrote it"), "the one choosing is told to hand it on whole");
         Assert.That(router, Does.Contain("Ek gee dit gou vir my kok").And.Contain("My kok is terug"),
             "the relay lines, in Puls's words");
-        Assert.That(router, Does.Contain("puls-cook): 4 requests"), "the footer example names its own cook");
+        Assert.That(router, Does.Contain("puls-cook). It stays open"),
+            "the footer example names its own cook, and no cost (FX27)");
         Assert.That(voice, Does.Not.Contain("Moet nooit 'n spesialis se verslag net so aanstuur nie"));
         Assert.That(voice, Does.Contain("my kok").And.Contain("nou-nou terug"), "the hand-off line, in Puls's voice");
         Assert.That(router, Does.Contain("one line to the user first"));
     }
 
+    /// <summary>Puls briefs a specialist with a short note: what the user wants, and how they come across.</summary>
     [Test]
     public void Puls_BriefsTheSpecialist_WithWhatTheUserWants_AndHowTheySound()
     {
-        // F28 step 1: the task is a note in a fixed shape; the mood is a read of the typing. CL15: in Puls's own routing.
+        // F28 step 1: the task is a note in a fixed shape; the mood is a read of the typing. CL15: in Puls's own
+        // routing.
         string router = Read("agent/puls/voice.md");
 
         foreach (string label in new[]
@@ -439,10 +513,12 @@ public class PulsPromptsTests
             "the mood can be switched off for a turn");
     }
 
+    /// <summary>The cook is the only role Puls hands work to, until the other specialists pass their check.</summary>
     [Test]
     public void OnlyTheCook_IsARoleToDelegate_UntilTheOthersPassTheirCheck()
     {
-        // F29 step 3 (Louis: "disable all specialists, Puls boots with web, except the cook"): the prompts match the gate.
+        // F29 step 3 (Louis: "disable all specialists, Puls boots with web, except the cook"): the prompts match the
+        // gate.
         string router = Read("agent/puls/voice.md");
 
         string[] rows = router.Split('\n').Where(r => r.StartsWith('|')).ToArray();

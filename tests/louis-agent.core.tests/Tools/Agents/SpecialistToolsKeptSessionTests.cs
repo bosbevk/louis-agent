@@ -20,9 +20,15 @@ using static LouisAgent.Core.Tests.Tools.Agents.FakePeer;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
 
-// F26: a chat keeps a sub-session for a follow-up; ContinueSubSession finds it by its handle, and what the peer dropped is forgotten.
+/// <summary>
+/// A chat keeps a sub-session open for a follow-up (F26): ContinueSubSession finds it by its handle, and one the peer
+/// dropped is forgotten.
+/// </summary>
 public class SpecialistToolsKeptSessionTests
 {
+    /// <summary>
+    /// In a chat the specialist stays open, and the footer tells the model its handle and how to continue.
+    /// </summary>
     [Test]
     public async Task InAChat_TheSubSessionIsKept_AndTheAnswerNamesItsHandle()
     {
@@ -38,9 +44,7 @@ public class SpecialistToolsKeptSessionTests
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result,
-            Does.Contain(
-                    SampleRole.Fill(
-                        "[Sub-session sub-1 on coder (web; <RoleAlpha>): 3 requests, 10,200 tokens, 0.0123 USD"))
+            Does.Contain(SampleRole.Fill("[Sub-session sub-1 on coder (web; <RoleAlpha>). It stays open:"))
                 .And.Contain("ContinueSubSession(\"sub-1\""));
         Assert.That(Calls(handler), Is.EqualTo(new[] { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages" }),
             "no DELETE");
@@ -50,6 +54,7 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(open.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
     }
 
+    /// <summary>A start that failed isn't kept: it's deleted on the peer.</summary>
     [Test]
     public async Task AFailedStart_IsNotKept()
     {
@@ -63,6 +68,7 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(registry.Open, Is.Empty);
     }
 
+    /// <summary>When a chat keeps more than it may, the oldest one is closed on the peer.</summary>
     [Test]
     public async Task PastTheChatsCap_TheOldestKeptSubSession_IsDeletedOnThePeer()
     {
@@ -84,6 +90,10 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(registry.Open.Select(o => o.SessionId), Is.EqualTo(new[] { "sess_2", "sess_3" }));
     }
 
+    /// <summary>
+    /// A follow-up goes to the same session on the peer, which stays open, and what it used is rolled up like the
+    /// first answer.
+    /// </summary>
     [Test]
     public async Task AContinue_GoesToTheKeptSession_WhichStaysOpen_AndRollsUpLikeAFirstAnswer()
     {
@@ -105,12 +115,13 @@ public class SpecialistToolsKeptSessionTests
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result,
-            Does.Contain(SampleRole.Fill("[Sub-session sub-1 on coder (web; <RoleAlpha>): 3 requests")).And
+            Does.Contain(SampleRole.Fill("[Sub-session sub-1 on coder (web; <RoleAlpha>). It stays open:")).And
                 .Contain("ContinueSubSession(\"sub-1\""));
         Assert.That(Calls(handler),
             Is.EqualTo(new[]
             {
-                "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "POST /v1/sessions/sess_child/messages"
+                "POST /v1/sessions", "POST /v1/sessions/sess_child/messages",
+                "POST /v1/sessions/sess_child/messages"
             }));
         using var followUp = JsonDocument.Parse(handler.Requests[2].Body!);
         Assert.That(followUp.RootElement.GetProperty("message").GetString(), Is.EqualTo("Maak dit vir ses mense."));
@@ -119,16 +130,22 @@ public class SpecialistToolsKeptSessionTests
             "two roll-ups, one per reply");
     }
 
+    /// <summary>
+    /// A peer that still says "personality" isn't read; the kept sub-session keeps the role it was given.
+    /// </summary>
     [Test]
     public async Task APeerThatSaysPersonality_IsNotRead_TheRolePassedIsKept()
     {
-        // CL20 step 5: a peer that knows /v1 says "role"; the old word "personality" is not read, so the kept sub-session keeps the role passed.
+        // CL20 step 5: a peer that knows /v1 says "role"; the old word "personality" is not read, so the kept
+        // sub-session keeps the role passed.
         var handler = new StubHandler(request => request.Method.Method switch
         {
             "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created,
                 SampleRole.Fill("""{"session_id":"sess_child","personality":"<RoleEpsilon>"}""")),
             "POST" => new HttpResponseMessage(HttpStatusCode.OK)
-            { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
+            {
+                Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream")
+            },
             "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
         });
@@ -141,6 +158,7 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(registry.Open.Single().Role, Is.EqualTo(SampleRole.Alpha));
     }
 
+    /// <summary>A handle the chat doesn't keep is refused with the open ones listed, and nothing is sent.</summary>
     [Test]
     public async Task AnUnknownHandle_IsRefused_WithTheOpenOnes_WithoutANetworkCall()
     {
@@ -162,6 +180,7 @@ public class SpecialistToolsKeptSessionTests
                 .Contain(SampleRole.Fill("sub-1 (coder: web; <RoleAlpha>)")));
     }
 
+    /// <summary>Outside a chat nothing is kept, so a follow-up says so and sends nothing.</summary>
     [Test]
     public async Task WithoutAChat_AContinue_SaysNothingIsKept()
     {
@@ -173,17 +192,21 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(handler.Requests, Is.Empty);
     }
 
+    /// <summary>A follow-up the peer no longer knows is forgotten, and the model is told to start a new one.</summary>
     [Test]
     public async Task AContinueThePeerNoLongerKnows_IsForgotten_AndSaysToStartOver()
     {
-        // F26-S3: the peer dropped it as idle (404). Nothing to close; the model starts a new one with the whole context.
+        // F26-S3: the peer dropped it as idle (404). Nothing to close; the model starts a new one with the whole
+        // context.
         int messages = 0;
         var handler = new StubHandler(request => request.Method.Method switch
         {
             "POST" when request.RequestUri!.AbsolutePath == "/v1/sessions" => Json(HttpStatusCode.Created,
                 """{"session_id":"sess_child"}"""),
             "POST" when ++messages == 1 => new HttpResponseMessage(HttpStatusCode.OK)
-            { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
+            {
+                Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream")
+            },
             "POST" => Json(HttpStatusCode.NotFound,
                 """{"type":"error","error":{"type":"not_found_error","message":"No session 'sess_child'"}}"""),
             _ => new HttpResponseMessage(HttpStatusCode.OK),
@@ -204,10 +227,12 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(handler.Requests.Any(r => r.Method == HttpMethod.Delete), Is.False, "nothing left to close");
     }
 
+    /// <summary>A follow-up that fails closes the sub-session, so the next one starts clean.</summary>
     [Test]
     public async Task AContinueThatFails_ClosesTheSubSession_SoTheNextOneStartsClean()
     {
-        // A failed or timed-out follow-up leaves the peer's turn in an unknown state: close it rather than continue it.
+        // A failed or timed-out follow-up leaves the peer's turn in an unknown state: close it rather than continue
+        // it.
         var handler = Peer(Replies(AnswerStream, FailedStream));
         var registry = new SubSessionRegistry();
         var tools = ToolsOn(handler);
@@ -224,6 +249,7 @@ public class SpecialistToolsKeptSessionTests
         Assert.That(registry.Open, Is.Empty);
     }
 
+    /// <summary>Follow-ups count against the turn's three calls, the same as starts.</summary>
     [Test]
     public async Task ContinuesCount_AgainstTheTurnsCalls()
     {
@@ -243,6 +269,7 @@ public class SpecialistToolsKeptSessionTests
         }
     }
 
+    /// <summary>The attachments a follow-up names are sent with it, their contents taken from the session.</summary>
     [Test]
     public async Task AContinuesNamedAttachments_AreSent()
     {
@@ -250,7 +277,9 @@ public class SpecialistToolsKeptSessionTests
         var registry = new SubSessionRegistry();
         var tools = ToolsOn(handler);
         var attached = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        { ["lys.txt"] = "uie, wortels" };
+        {
+            ["lys.txt"] = "uie, wortels"
+        };
 
         using (SubSessionRegistry.Use(registry))
         using (SessionAttachments.Use(attached))

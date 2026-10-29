@@ -1,35 +1,35 @@
-
-using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Usage.Records;
-using LouisAgent.Core.Usage.Sinks;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Skills;
+using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Tools.Agents.SubSessions;
-using LouisAgent.Core.Tools.Clock;
-using Microsoft.Extensions.AI;
 using LouisAgent.Core.Tools.Agents.Messages;
+using LouisAgent.Core.Tools.Agents.SubSessions;
+using LouisAgent.Core.Usage.Records;
+using LouisAgent.Core.Usage.Sinks;
+using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tools.Agents;
+
 /// <summary>
-/// The <c>minions</c> toolset (F30): a specialist hands one task and one of its own tools to a minion, a session at
-/// depth 2 on this instance (<c>AGENT_PEERS</c> names itself) that runs the minion role on the cheap model
-/// <c>MINION_LLMS</c> maps the role to. The page the minion reads never enters the specialist's context: only the
-/// minion's short answer does. The child's path (open, ask, keep or delete, roll up) is <see cref="PeerSession"/>, as for the specialists.
+/// The <c>minions</c> toolset: a specialist hands one small task and one of its own tools to a minion on a cheap
+/// model, so the page the minion reads never enters the specialist's context. Only the minion's short answer comes
+/// back; what it used goes to the turn's totals and the ledger.
 /// </summary>
 /// <remarks>
-/// The limits are in code, not in the prompt (Louis's rule: a minion can never do more than the specialist that sent it):
-/// the tool must be one the specialist holds (<see cref="AgentTools"/>) and never one of <see cref="NeverHandedDown"/>;
-/// at most <see cref="MaxPerTurn"/> minions across the whole tree of one user turn (one GPU answers one request at a
-/// time); each stopped after <see cref="DefaultTimeout"/>, inside the specialist's own. The model is configuration: the
-/// role's list in <c>MINION_LLMS</c>, cheapest first; <c>stronger</c> asks for the next one (a cascade, FrugalGPT) and can
-/// never name a model.
+/// The limits are in code, not in the prompt (Louis's rule: a minion can never do more than the specialist that sent
+/// it): the tool must be one the specialist holds (<see cref="AgentTools"/>) and never one of
+/// <see cref="NeverHandedDown"/>; at most <see cref="MaxPerTurn"/> minions across the whole tree of one user turn (one
+/// GPU answers one request at a time); each stopped after <see cref="DefaultTimeout"/>, inside the specialist's own.
+/// The model is configuration: the role's list in <c>MINION_LLMS</c>, cheapest first; <c>stronger</c> asks for the
+/// next one (a cascade, FrugalGPT) and can never name a model. The child's path (open, ask, delete, roll up) is
+/// <see cref="PeerSession"/>, as for the specialists.
 /// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed class MinionTools
 {
     /// <summary>Minions one user turn may open, counted across every specialist of that turn.</summary>
@@ -41,7 +41,9 @@ public sealed class MinionTools
     /// <summary>A minion's kind on the registry (F26), beside <see cref="SpecialistTools.Kind"/>.</summary>
     public const string Kind = OpenSubSession.MinionKind;
 
-    /// <summary>The model name in <c>MINION_LLMS</c> that means this instance's own (Haiku, when a role needs a stronger model).</summary>
+    /// <summary>
+    /// The model name in <c>MINION_LLMS</c> that means this instance's own (Haiku, when a role needs a stronger model).
+    /// </summary>
     public const string InstanceLlm = "instance";
 
     /// <summary>The default role in <c>MINION_LLMS</c>.</summary>
@@ -53,8 +55,14 @@ public sealed class MinionTools
     /// </summary>
     public static readonly IReadOnlySet<string> NeverHandedDown = new HashSet<string>(StringComparer.Ordinal)
     {
-        nameof(SpecialistTools.StartSubSession), nameof(SpecialistTools.ContinueSubSession), nameof(StartMinion),
-        "ExecuteSkill", "CreateSkillFile", "ReloadSkills", "CreateTool", "ListAgentTools",
+        nameof(SpecialistTools.StartSubSession),
+        nameof(SpecialistTools.ContinueSubSession),
+        nameof(StartMinion),
+        "ExecuteSkill",
+        "CreateSkillFile",
+        "ReloadSkills",
+        "CreateTool",
+        "ListAgentTools",
     };
 
     private readonly IReadOnlyDictionary<string, Uri> _peers;
@@ -63,12 +71,17 @@ public sealed class MinionTools
     private readonly TimeSpan _timeout;
     private readonly ConcurrentDictionary<string, int> _perTree = new(StringComparer.Ordinal);
 
-    /// <param name="usageSink">The engine's ledger, for the roll-up of each minion's usage (F5); null writes none.</param>
+    /// <summary>The toolset as the engine builds it, from the instance's peers, minion models and key.</summary>
+    /// <param name="options">The instance's settings: its peers, its minion models and its key.</param>
+    /// <param name="usageSink">
+    /// The engine's ledger, for the roll-up of each minion's usage (F5); null writes none.
+    /// </param>
     public MinionTools(AgentOptions options, IUsageSink? usageSink = null)
         : this(options.AgentPeers, options.MinionLlms, options.AgentApiKey, usageSink: usageSink)
     {
     }
 
+    /// <summary>The toolset with everything handed in, so a test can give it a stub peer and a short timeout.</summary>
     public MinionTools(IReadOnlyDictionary<string, Uri> peers, IReadOnlyDictionary<string, IReadOnlyList<string>> llms,
         string? apiKey,
         HttpClient? http = null, TimeSpan? timeout = null, TimeProvider? time = null, IUsageSink? usageSink = null)
@@ -79,10 +92,15 @@ public sealed class MinionTools
         _session = PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System);
     }
 
+    /// <summary>
+    /// Hands one task and one of the specialist's tools to a minion, after the checks in code, and gives back its
+    /// answer under a footer that names the minion.
+    /// </summary>
     [Description(
-        "Hands one task and one of your own tools to a minion: a small worker on a cheap model that reads one page or " +
-        "does one lookup and answers in its role's fixed shape, so what it reads never enters your context. It answers once " +
-        "and closes. At most 16 minions per user turn across all specialists, 2 minutes each. See the minions guide.")]
+        "Hands one task and one of your own tools to a minion: a small worker on a cheap model that reads one page " +
+        "or does one lookup and answers in its role's fixed shape, so what it reads never enters your context. It " +
+        "answers once and closes. At most 16 minions per user turn across all specialists, 2 minutes each. See the " +
+        "minions guide.")]
     public async Task<string> StartMinion(
         [Description("The minion's role, <product>-minion-<function>, as your role file lists them.")]
         string role,
@@ -90,8 +108,8 @@ public sealed class MinionTools
             "The one tool the minion gets, one of your own, e.g. \"FetchUrl\" (never a delegation or skills tool).")]
         string tool,
         [Description(
-            "The task, self-contained and in English: the URL, the product with its size, the user's town. The minion " +
-            "sees nothing else.")]
+            "The task, self-contained and in English: the URL, the product with its size, the user's town. The " +
+            "minion sees nothing else.")]
         string task,
         [Description(
             "True to run the same task on the next, stronger model in the role's list, when this instance lists one " +
@@ -108,7 +126,11 @@ public sealed class MinionTools
         var mine = AgentTools.Current;
         if (!mine.Contains(tool))
             return MessageText.Format(SubSessionToolMessage.MinionToolNotMine,
-                new { Tool = tool, Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order()) });
+                new
+                {
+                    Tool = tool,
+                    Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order())
+                });
         if (ModelFor(role, stronger, out string? llm) is { } noModel) return noModel;
         if (SpecialistTools.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
 
@@ -132,21 +154,27 @@ public sealed class MinionTools
         };
         string model = llm ?? InstanceLlm;
 
+        // The footer names the minion, never what it used: those numbers differ on a replay (FX27).
         string Answer(SubSessionMessenger.SubSessionReply reply) =>
-            MessageText.Format(SubSessionToolMessage.MinionAnswer,
-                new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine });
+            MessageText.Format(SubSessionToolMessage.MinionAnswer, new
+            {
+                Answer = reply.Text,
+                Role = role,
+                Tool = tool,
+                Llm = model,
+            });
 
         var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
-        // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its specialists.
+        // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its
+        // specialists.
         return await _session.OpenAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId,
             scope, _timeout,
             cancellationToken, keep: false);
     }
 
     /// <summary>
-    /// The model for <paramref name="role"/> from <c>MINION_LLMS</c>: the role's own list, else <c>*</c>'s, cheapest first;
-    /// <paramref name="stronger"/> takes the next one. Null in <paramref name="llm"/> means the instance's own model.
-    /// Returns the refusal when the role has no list or no stronger model is left.
+    /// Picks the minion's model from <c>MINION_LLMS</c>: the role's own list, else the default one, cheapest first, and
+    /// the next one when the specialist asks for a stronger model. No model means the instance's own.
     /// </summary>
     private string? ModelFor(string role, bool stronger, out string? llm)
     {
@@ -156,14 +184,18 @@ public sealed class MinionTools
         int index = stronger ? 1 : 0;
         if (index >= cascade.Count)
             return MessageText.Format(SubSessionToolMessage.MinionNoStronger,
-                new { Role = role, Models = string.Join(" > ", cascade) });
+                new
+                {
+                    Role = role,
+                    Models = string.Join(" > ", cascade)
+                });
         llm = cascade[index] == InstanceLlm ? null : cascade[index];
         return null;
     }
 
     /// <summary>
-    /// Takes one of the user turn's minion slots: the specialist's turn carries the router's turn as its parent, so every
-    /// specialist under that turn counts against the same sixteen. Outside a turn: the specialist's own, then none.
+    /// Takes one of the user turn's minion slots. Every specialist under that turn counts against the same sixteen,
+    /// because each one's turn carries the router's turn as its parent.
     /// </summary>
     private string? TakeSlot(UsageScope? scope)
     {

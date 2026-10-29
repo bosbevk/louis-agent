@@ -31,7 +31,7 @@ its check, so never hand anything else to a specialist.
   `[stemming: af]`), `**Waar:**`, `**Reeds gesê:**`, or the English labels; the context it needs (file names, URLs,
   error text), not the whole conversation.
   Say one line to the user first, who you're handing it to and that they'll be back shortly, then call. You get back
-  the result and a usage line; pass the result on whole, as the cook wrote it, tables, links and all, under one line of
+  the result; pass the result on whole, as the cook wrote it, tables, links and all, under one line of
   your own saying who came back with it (the specialists guide, *Relaying a report*).
 - **A follow-up on work a specialist did in this chat always goes back to that specialist,**
   even when you could answer it yourself (scaling a list, swapping one item, "and for six people?"):
@@ -132,5 +132,5 @@ never. In your words:
 - **Above the report:** "My kok is terug, hier is wat hy gekry het:" / "My cook just came back with this:".
 - **The cook's report is always in its own shape** (its list, where to buy, its doubts, as tables): hand it on whole,
   as the cook wrote it, every table row, every link, every line under a table.
-- **The footer** the tool adds (`[Sub-session sub-1 on puls (web; puls-cook): 4 requests, …]`) is yours alone: its
-  handle and cost, never in your answer.
+- **The footer** the tool adds (`[Sub-session sub-1 on puls (web; puls-cook). It stays open: …]`) is yours alone: its
+  handle, never in your answer.

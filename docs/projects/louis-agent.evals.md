@@ -49,7 +49,9 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
   graders instead.
 - **The first v2 baseline** (2026-10-29): `puls-cook` 23 of 24 when Puls hands the meal to its cook (25% when it
   answers itself with web tools), `puls-routing` 72 of 72, $0.37 together; baseline runs `5d1fd231c9b1` (cook) and
-  `0d3b95e093a6` (routing). A replay costs $0, every request a cache hit.
+  `0d3b95e093a6` (routing). A replay costs $0, every request a cache hit. After FX27 the cook baseline is
+  `dc272b95eaeb` (`puls-cook` 8 of 8, `puls-tools` 2 of 8, $0.075): its free replay `c0362ff73151` hits at all 20
+  turns, the delegating ones included, where the first baseline's replay missed at 8.
 - **The judge isn't trusted yet.** The local judge agreed with a blind labeller on 31 of 36 meals, under the 90% bar
   ([ADR 0029](../adr/0029-simulations-in-csharp.md)), so its grades stay advisory until Louis's own 36 labels
   calibrate it (TODO, *Now*).
@@ -102,8 +104,7 @@ golden. The runner's tests run the stub end to end ([tests](tests.md)).
 ## Limits and plans
 
 - A gate on recorded transcripts can't see the agent; only a run can (the learning write-up, skill 12).
-- A replay of a mode that delegates misses at the sub-session's tool result (F18's step 5.5 finding), and a run's first
-  line carries no dataset yet.
+- A run's first line carries no dataset yet.
 
 ## Related docs
 

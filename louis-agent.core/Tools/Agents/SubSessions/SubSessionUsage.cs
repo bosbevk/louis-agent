@@ -1,15 +1,14 @@
-
-using System.Globalization;
 using System.Text.Json;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Agents.Messages;
 
 namespace LouisAgent.Core.Tools.Agents.SubSessions;
+
 /// <summary>
-/// What one reply of a sub-session reported it used: the API's usage object on <c>message_delta</c> (or on the
-/// <c>error</c> event, FX6), with the four token kinds, how many requests they came from, and the charged cost in the
-/// child's ledger currency (never <c>display_cost</c>, which is converted for showing).
+/// What one reply of a sub-session says it used: the four kinds of tokens, how many requests, and what it was charged
+/// in the child's own currency (never the converted <c>display_cost</c>). It goes to the parent's turn and the ledger,
+/// never into the text the model reads: on a replay it is zero, and the parent's next request must still match its
+/// recording (FX27).
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 /// <param name="Requests">Null when the peer didn't report a count (then the roll-up counts as one request).</param>
 internal sealed record SubSessionUsage(
     long Input,
@@ -20,6 +19,10 @@ internal sealed record SubSessionUsage(
     decimal? Cost,
     string? Currency)
 {
+    /// <summary>
+    /// Reads the API's usage object, from the end of a reply or from its error event (FX6). A field that's missing
+    /// counts as nothing.
+    /// </summary>
     public static SubSessionUsage From(JsonElement usage)
     {
         long Count(string name) => usage.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number
@@ -35,19 +38,5 @@ internal sealed record SubSessionUsage(
             usage.TryGetProperty("currency", out var cur) && cur.ValueKind == JsonValueKind.String
                 ? cur.GetString()
                 : null);
-    }
-
-    /// <summary>The usage line in the tool result: <c>3 requests, 10,200 tokens, 0.0123 USD</c>.</summary>
-    public string Line()
-    {
-        string cost = Cost is { } amount
-            ? $"{amount.ToString("0.####", CultureInfo.InvariantCulture)} {Currency ?? ""}".Trim()
-            : MessageText.Format(SubSessionToolMessage.SubSessionCostUnknown);
-        return MessageText.Format(SubSessionToolMessage.SubSessionUsage, new
-        {
-            Requests = Requests ?? 0,
-            Tokens = (Input + CacheWrite + CacheRead + Output).ToString("N0", CultureInfo.InvariantCulture),
-            Cost = cost,
-        });
     }
 }

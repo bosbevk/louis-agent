@@ -1,12 +1,17 @@
-
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Tools.Agents.Messages;
-// The message enums (docs/CLAUDE.md, *Messages and logging*). Each member is named for what happened, and its
-// [Description] is the text, with named holes filled by MessageText.Format (or by the structured logger). Members are added
-// as code is written or moved; the refactor after F4 moves the existing messages here.
 
-/// <summary>Strings for the sub-session and minion tools, returned to the model: what went wrong and what to do instead.</summary>
+/// <summary>
+/// What the sub-session and minion tools tell the model: what went wrong and what to do instead, and the footer under a
+/// child's answer that says which child it was and how to reach it again.
+/// </summary>
+/// <remarks>
+/// A footer names the child, never what it used: that goes to the ledger and the parent's turn. Numbers that change
+/// from run to run would make the parent's next request differ, and a replay could no longer match it (FX27).
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public enum SubSessionToolMessage
 {
     [Description("No attachment named '{Name}' in this conversation. Attached: {Attached}.")]
@@ -19,7 +24,8 @@ public enum SubSessionToolMessage
     PeerNameNeeded,
 
     [Description(
-        "Error: this turn has already made {Max} sub-session calls (starts and continues), the most one turn may. Finish with what you have, or ask the user.")]
+        "Error: this turn has already made {Max} sub-session calls (starts and continues), the most one turn may. " +
+        "Finish with what you have, or ask the user.")]
     SubSessionLimit,
 
     [Description(
@@ -27,17 +33,20 @@ public enum SubSessionToolMessage
     SubSessionNoneKept,
 
     [Description(
-        "Error: no open sub-session '{Handle}'. Open: {Open}. Continue one of those, or start a new one with StartSubSession.")]
+        "Error: no open sub-session '{Handle}'. Open: {Open}. Continue one of those, or start a new one with " +
+        "StartSubSession.")]
     SubSessionUnknownHandle,
 
     [Description("(none)")] SubSessionNoneOpen,
 
     [Description(
-        "Error: sub-session {Handle} on {Agent} is no longer open on the peer (dropped as idle, or the peer restarted). Start a new one with StartSubSession, with the whole context the follow-up needs.")]
+        "Error: sub-session {Handle} on {Agent} is no longer open on the peer (dropped as idle, or the peer " +
+        "restarted). Start a new one with StartSubSession, with the whole context the follow-up needs.")]
     SubSessionGone,
 
     [Description(
-        "Error: {Max} sub-sessions have started in the last minute outside a chat turn, the most allowed. Wait a minute and try again.")]
+        "Error: {Max} sub-sessions have started in the last minute outside a chat turn, the most allowed. Wait a " +
+        "minute and try again.")]
     SubSessionRateLimit,
 
     [Description("Error: {Agent}'s reply couldn't be read ({Reason}). Try again once, or do the task another way.")]
@@ -50,57 +59,58 @@ public enum SubSessionToolMessage
     SubSessionFailed,
 
     [Description(
-        "Error: the sub-session on {Agent} didn't finish within {Minutes} minutes and was stopped. Try a smaller task.")]
+        "Error: the sub-session on {Agent} didn't finish within {Minutes} minutes and was stopped. Try a smaller " +
+        "task.")]
     SubSessionTimedOut,
 
-    [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets}): {Usage}]")]
+    [Description("{Answer}\n\n[Sub-session on {Agent} ({Toolsets})]")]
     SubSessionAnswer,
 
     [Description(
-        "{Answer}\n\n[Sub-session {Handle} on {Agent} ({Toolsets}; {Role}): {Usage}. It stays open: a follow-up on this " +
+        "{Answer}\n\n[Sub-session {Handle} on {Agent} ({Toolsets}; {Role}). It stays open: a follow-up on this " +
         "work goes to ContinueSubSession(\"{Handle}\", message), not to a new sub-session.]")]
     SubSessionAnswerKept,
 
     [Description("default role")] SubSessionDefaultRole,
 
     [Description(
-        "Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>; your role file lists them).")]
+        "Error: '{Role}' isn't a minion role (a minion role is <product>-minion-<function>; your role file lists " +
+        "them).")]
     MinionRoleInvalid,
 
     [Description(
-        "Error: '{Tool}' is never handed to a minion: a minion gets one of your working tools, not delegation or skills.")]
+        "Error: '{Tool}' is never handed to a minion: a minion gets one of your working tools, not delegation or " +
+        "skills.")]
     MinionToolNeverHandedDown,
 
     [Description("Error: you don't hold a '{Tool}' tool, so you can't hand it to a minion. Your tools: {Tools}.")]
     MinionToolNotMine,
 
     [Description(
-        "Error: no model is configured for the '{Role}' minion (MINION_LLMS names neither it nor *). Do the task yourself.")]
+        "Error: no model is configured for the '{Role}' minion (MINION_LLMS names neither it nor *). Do the task " +
+        "yourself.")]
     MinionNoLlm,
 
     [Description(
-        "Error: no stronger model is left for the '{Role}' minion (its list: {Models}). Treat the answer as unconfirmed, or do the task yourself.")]
+        "Error: no stronger model is left for the '{Role}' minion (its list: {Models}). Treat the answer as " +
+        "unconfirmed, or do the task yourself.")]
     MinionNoStronger,
 
     [Description(
-        "Error: this user turn has already used {Max} minions, the most one turn may across every specialist. Finish with what you have.")]
+        "Error: this user turn has already used {Max} minions, the most one turn may across every specialist. " +
+        "Finish with what you have.")]
     MinionLimit,
 
-    [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}: {Usage}]")]
+    [Description("{Answer}\n\n[Minion {Role} on {Llm} with {Tool}]")]
     MinionAnswer,
 
     [Description(
-        "You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more tools: answer the task now from what you found, and say what you couldn't finish.")]
+        "You stopped without writing an answer (usually: all your tool rounds were used). Don't call any more " +
+        "tools: answer the task now from what you found, and say what you couldn't finish.")]
     SubSessionAskForAnswer,
 
     [Description(
-        "Error: the sub-session on {Agent} ended without an answer twice (usually: it used all its tool rounds). Don't send the same task again: split it into smaller tasks, or tell the user what couldn't be done. [{Usage}]")]
+        "Error: the sub-session on {Agent} ended without an answer twice (usually: it used all its tool rounds). " +
+        "Don't send the same task again: split it into smaller tasks, or tell the user what couldn't be done.")]
     SubSessionNoAnswer,
-
-    [Description("{Requests} requests, {Tokens} tokens, {Cost}")]
-    SubSessionUsage,
-
-    [Description("usage not reported")] SubSessionNoUsage,
-
-    [Description("cost unknown")] SubSessionCostUnknown,
 }

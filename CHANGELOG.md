@@ -4,6 +4,10 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-29 — **FX27 A sub-session's answer carries no usage**: the footer under a specialist's or minion's answer
+  names the child, never its tokens or cost, which are zero on a replay and made the parent's next request miss its
+  recording; the usage stays in the ledger and the parent's turn, and a fresh cook recording replays with no miss
+  ([fix doc as it was](https://github.com/bosbevk/louis-agent/blob/f54d0e7ed2c93bd177dd300f63b5d2df5fd98931/docs/fixes/FX27-sub-session-footer-cost.md))
 - 2026-10-29 — **FX26 A replay miss is marked `replay-miss`**: the replay client throws `ModelReplayMissException`, the
   API streams it as `error.type` `replay_miss_error` (`StreamErrorKind` in session-stream), and the runner sets the
   turn's failure, so a replayed trial with no recording counts as infrastructure, not as the agent's failed answer
