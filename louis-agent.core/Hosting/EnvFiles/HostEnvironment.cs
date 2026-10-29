@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Hosting.EnvFiles;
 
 using System.Text.RegularExpressions;
 using dotenv.net;
@@ -6,7 +5,9 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Hosting.Messages;
 
+namespace LouisAgent.Core.Hosting.EnvFiles;
 /// <summary>The .env files a host loads before it reads its options (S, CL15, from AgentHost), and the rule a profile's name follows.</summary>
 public static partial class HostEnvironment
 {
@@ -29,17 +30,21 @@ public static partial class HostEnvironment
             files.Add(Path.Combine(configDir, ".env.secrets"));
             files.Add(Path.Combine(configDir, ".env"));
         }
+
         files.Add(Path.Combine(startDirectory, ".env"));
         LoadFiles(files);
 
         // Read after .env is loaded, since that is where it is usually set.
-        if (System.Environment.GetEnvironmentVariable("LLM_PROFILE") is not { Length: > 0 } profile || configDir is null) return;
+        if (System.Environment.GetEnvironmentVariable("LLM_PROFILE") is not { Length: > 0 } profile ||
+            configDir is null) return;
         string profileFile = Path.Combine(configDir, $".env.{profile}");
         if (!IsProfileName(profile) || !File.Exists(profileFile))
         {
-            Log.Log(LogLevel.Warning, LogMessage.LlmProfileMissing, new { Profile = profile, File = $"config/.env.{profile}" });
+            Log.Log(LogLevel.Warning, HostingLogMessage.LlmProfileMissing,
+                new { Profile = profile, File = $"config/.env.{profile}" });
             return;
         }
+
         LoadFiles([profileFile]);
 
         static void LoadFiles(IEnumerable<string> paths) => DotEnv.Load(options: new DotEnvOptions(

@@ -1,0 +1,16 @@
+@* F18 step 4.5c: what the run recorded of its eval (the eval, its version, the commit) and its graders, or one line saying it recorded none. *@
+<div class="grader-list">
+    @if (Graders.Graders is { } graders)
+    {
+        <dl class="explorer-fields">
+            <dt>eval</dt><dd><code>@Graders.Eval</code>@(Graders.Version is { } v ? $" · version {v}" : "")</dd>
+            @if (Graders.Commit is { } commit) { <dt>commit</dt><dd><code>@commit</code></dd> }
+            <dt>graders</dt>
+            <dd><span class="tree-chips">@foreach (var grader in graders) { <span class="chip">@GradesText.Grader(grader)</span> }</span></dd>
+        </dl>
+    }
+    else
+    {
+        <p class="muted">@GradesText.NoGraders</p>
+    }
+</div>

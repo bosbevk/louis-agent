@@ -1,0 +1,89 @@
+# louis-agent.evals — design
+
+> **Kind:** class library (`net10.0`) · **Path:** `evals/louis-agent.evals/` · **References:** louis-agent.core,
+> louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals.runner, every eval set
+> (`louis-agent.evals.puls`, `louis-agent.evals.template`)
+
+## Purpose
+
+The eval harness (F18): the one place that knows how an eval runs, so an eval set only says what it asks and how it
+grades. It holds the contract an eval implements (`IEval`, `IEvalSet`), the datasets and their loader, the trials and
+their transcripts, the graders every identity can use, the runner loop, the conformance check, the label sheet and
+the judge's calibration. It names no identity and no product: Puls's evals live in their own project
+([ADR 0029](../adr/0029-simulations-in-csharp.md)).
+
+## How it works
+
+- **An eval is a C# class.** `IEval` names its modes (`EvalMode`: the toolsets and role a session opens with), its
+  dataset and its graders; `IEvalSet` groups an identity's evals for the runner's catalogue.
+- **A dataset is a folder.** `Datasets/` loads `dataset.json` (name, version, hash, `changes`) and the scenario files
+  under `scenarios/{dev,held-out}/`, in Inspect's Sample shape (`id`, `input`, `target`, `metadata`; step 7d). The
+  loader is strict: an unknown field, a stale hash or an expected key no grader reads is refused with a message that
+  says what to fix.
+- **A trial is one conversation.** `Running/` opens a session per mode, repeat and scenario through an
+  `ISessionClient` (`HttpSessionClient` against the API, `CannedSessionClient` for the stub), asks the questions and
+  follow-ups, and reads the stream into a `Transcript` (`Trials/`). A transport failure is tried once more; an
+  infrastructure failure is kept apart from a failing answer (`TurnFailures`).
+- **Graders grade, metrics measure.** `Grading/` holds `IGrader` and the common graders (no error, answered within a
+  time, cost under a limit, routed to a role), the model judge (`Models/`, `EvaluatorGrader` over Microsoft.Extensions.
+  AI.Evaluation) and the human review (`Human/`). A grade has a score from 0 to 1, an outcome and a reason; a
+  conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
+- **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
+  contract's `EvalProtocolJson` ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); `ProtocolTranscripts`
+  reads a stored run back for a re-score or a conformance case.
+- **The roll-up is pure.** `Reports/RunSummary` turns a run's trials into one overall line and one line per category,
+  per grader and per grader kind (pass rate, pass@k, pass^k, `n`, "too few" under five trials).
+- **Checks of the checks.** `Conformance/` runs every eval's reference transcripts (each must pass its required
+  graders) and known-bad ones (each required grader must fail one); `Labels/` writes the sheet a person labels and
+  calibrates a model judge against the labels (90% of each class, ADR 0029).
+
+## Structure
+
+| Folder | What's in it |
+|---|---|
+| `Api/` | The session clients and the session request the runner sends (with `replay`) |
+| `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
+| `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Scenarios/`, `Samples/` |
+| `Grading/` | `IGrader`, `Grade`, the common graders, the model and human graders, the outcomes |
+| `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
+| `Messages/` | The harness's texts (errors, logs, grade reasons, conformance, calibration) |
+| `Protocol/` | The writer and the stored-run reader |
+| `Reports/` | `RunSummary`, `SummaryLine`, `TrialResult` |
+| `Running/` | `EvalRunner`, a trial's attempt and grading, re-scoring, the tallies |
+| `Trials/` | `Trial`, `Transcript`, `TurnFacts`, the engine's events, the conversation's metrics |
+
+## Configuration
+
+| Setting | What it does |
+|---|---|
+| `AGENT_API`, `AGENT_API_KEY` | Where the runner's sessions open, and the key the API asks for |
+| `EVAL_JUDGE_PROVIDER`, `EVAL_JUDGE_MODEL`, `EVAL_JUDGE_ENDPOINT`, `EVAL_JUDGE_API_KEY` | The model judge (the Puls stack uses a local Ollama) |
+
+The runner's own settings (`EVALS`, `BENCHMARK_RUN`) are in [louis-agent.evals.runner](louis-agent.evals.runner.md).
+
+## Extending it
+
+A new identity's evals are a new project with one `IEvalSet`, its evals, datasets and graders; the steps are
+[Add an eval set](../guides/add-an-eval-set.md). A grader every identity could use goes in `Grading/Common/`; one
+that knows an identity's rules stays in its set.
+
+## Tests
+
+`tests/louis-agent.evals.tests`: the loader (both shapes refused or read, the hash, the expected keys), the common
+graders, the roll-up, the conformance cases, the label sheet and the calibration, the protocol writer against its
+golden. The runner's tests run the stub end to end ([tests](tests.md)).
+
+## Limits and plans
+
+- A gate on recorded transcripts can't see the agent; only a run can (the learning write-up, skill 12).
+- A replay of a mode that delegates misses at the sub-session's tool result (step 5.5's finding), and a run's first
+  line carries no dataset yet.
+
+## Related docs
+
+[ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md) ·
+[Add an eval set](../guides/add-an-eval-set.md) · [Run the evals](../guides/run-the-evals.md) ·
+[F18](../features/F18-evaluation.md)
+
+---
+[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [louis-agent.evals.protocol](louis-agent.evals.protocol.md)

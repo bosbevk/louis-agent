@@ -72,7 +72,7 @@ profile as a run configuration) that sets what compose sets for its container, a
 (`IDENTITIES=puls`, its peers, roles, SearXNG at `127.0.0.1:8888` and the browser at `127.0.0.1:9222` from the Puls
 compose stack). The ports sit beside the containers', so both can run at once: `puls` on 5071, `api` (the code-review
 app) on 5081, `mcp-http` on 5091. Secrets still come from
-`config/.env.secrets`, so `BENCHMARKS_MONGO_URL` there names `puls-mongo`, the compose service: for a local run set it
+`config/.env.secrets`, so `EVALS_MONGO_URL` there names `puls-mongo`, the compose service: for a local run set it
 to `127.0.0.1` in the shell. Which web app the API serves is the build's choice (`-p:WebApp=puls`), not the profile's.
 
 ## Settings
@@ -96,7 +96,7 @@ to `127.0.0.1` in the shell. Which web app the API serves is the build's choice 
 | `RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER` | Rider MCP discovery (off by default; it only logs Rider's tools for now) |
 | `API_PORT` | Host port for the API and web app (default `5080`, always bound to `127.0.0.1`) |
 | `PULS_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`, bound to `127.0.0.1`) and the folder mounted as its workspace (default the repo) |
-| `PULS_MONGO_PORT`, `BENCHMARKS_MONGO_DATABASE` | The benchmark store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (default `puls_benchmarks`; the Mongo contract tests use `puls_benchmarks_test`) |
+| `PULS_MONGO_PORT`, `EVALS_MONGO_DATABASE` | The eval store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (the API's default `evals`; Puls's compose, its Azure app and its Rider profile name `puls_benchmarks`, where its runs are; `BENCHMARKS_MONGO_DATABASE`, the old name, is still read; the Mongo contract tests use `puls_benchmarks_test`) |
 | `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
 | `AGENT_AUTH` | `required` (default) or `off` (FX18): whether the API, and the MCP server over HTTP, may start without a key. `off` is for a development machine whose ports stay on `127.0.0.1`; a key that is set is checked either way. Never set in a compose file |
 | `WEB_SEARCH_PROVIDER` | `tavily`, `google`, `searxng` or `duckduckgo` (default: Tavily when `TAVILY_API_KEY` is set, else Google when its key and engine id are, else SearXNG when `SEARXNG_URL` is, else DuckDuckGo). SearXNG is for development and benchmarks only (ADR 0023) |
@@ -145,7 +145,7 @@ environment by the tools themselves:
 | `DEVOPS_API_KEY` | Azure DevOps personal access token; enables the DevOps tools (with the settings below) |
 | `ADMIN_API_KEY` | The admin portal's key (`/v1/admin`, Puls's *Admin* menu); falls back to `AGENT_API_KEY`; with neither the portal is closed |
 | `MONGO_INITDB_ROOT_USERNAME`, `MONGO_INITDB_ROOT_PASSWORD` | In `config/.env.mongo`, not here: the benchmark store's root user (`puls-mongo`, F31), created the first time it starts with an empty `data/mongo`; changing them later needs the folder emptied. Their own file, so the database container never sees the other keys |
-| `BENCHMARKS_MONGO_URL` | How Puls reaches the benchmark store: `mongodb://{user}:{password}@puls-mongo:27017/?authSource=admin` (the service name). From the host, for the Mongo contract tests, the same with `127.0.0.1`, set in the shell. Without it the portal starts no runs |
+| `EVALS_MONGO_URL` (was `BENCHMARKS_MONGO_URL`, still read; the Mongo contract tests read only the old name) | How Puls reaches the eval store: `mongodb://{user}:{password}@puls-mongo:27017/?authSource=admin` (the service name). From the host, for the Mongo contract tests, the same with `127.0.0.1`, set in the shell. Without it the portal starts no runs |
 | `TAVILY_API_KEY` | Tavily web search (1,000 free credits a month; the default once set, and the sold endpoint's search) and, with `PAGE_RENDERER=tavily` or no `BROWSER_URL`, `ReadRenderedPage` through Tavily Extract (two credits per five pages) |
 | `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID` | Google web search (discontinued by Google on 2027-01-01; otherwise DuckDuckGo) |
 | `RIDER_MCP_PROJECT_PATH` | Host path of the project, sent to Rider's MCP server |

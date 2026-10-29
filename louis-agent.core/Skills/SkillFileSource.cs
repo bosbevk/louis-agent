@@ -1,8 +1,9 @@
-namespace LouisAgent.Core.Skills;
 
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Skills.Messages;
 using Microsoft.Extensions.FileProviders;
 
+namespace LouisAgent.Core.Skills;
 /// <summary>
 /// Reads a built-in prompt (CL8 step 4, ADR 0018): the files in core's <c>Prompts/</c>, embedded with a manifest so they
 /// keep their folder paths (<c>toolsets/web.md</c>), and from CL15 the identities' and packs' prompts the host registers
@@ -30,7 +31,7 @@ public static class SkillFileSource
             var fresh = prompts.Where(p => !ReferenceEquals(p, Core) && !Extra.Contains(p)).Distinct().ToList();
             if (fresh.Count == 0) return;
             if (_provider is not null)
-                throw new InvalidOperationException(MessageText.Format(ErrorMessage.PromptsAddedAfterRead));
+                throw new InvalidOperationException(MessageText.Format(SkillErrorMessage.PromptsAddedAfterRead));
             Extra.AddRange(fresh);
         }
     }
@@ -38,18 +39,27 @@ public static class SkillFileSource
     /// <summary>Every provider the reader reads: core's, then the ones <see cref="Use"/> registered.</summary>
     public static IReadOnlyList<IFileProvider> Providers
     {
-        get { lock (Gate) return [Core, .. Extra]; }
+        get
+        {
+            lock (Gate) return [Core, .. Extra];
+        }
     }
 
     private static IFileProvider Provider
     {
-        get { lock (Gate) return _provider ??= new CompositeFileProvider(Providers); }
+        get
+        {
+            lock (Gate) return _provider ??= new CompositeFileProvider(Providers);
+        }
     }
 
     /// <summary>Every built-in prompt's path under <c>Prompts/</c>, with forward slashes, sorted: core's and the registered ones'.</summary>
     public static IReadOnlyList<string> EmbeddedFiles
     {
-        get { lock (Gate) return _embeddedFiles ??= FilesOf(Provider).Order(StringComparer.Ordinal).ToList(); }
+        get
+        {
+            lock (Gate) return _embeddedFiles ??= FilesOf(Provider).Order(StringComparer.Ordinal).ToList();
+        }
     }
 
     /// <summary>Core's own prompts' paths, whatever was registered: what the catalogue checks a pack's paths against.</summary>
@@ -57,7 +67,8 @@ public static class SkillFileSource
 
     /// <summary>The file names directly in <paramref name="folder"/> (not its subfolders); none when it isn't there.</summary>
     public static IReadOnlyList<string> Files(string folder) =>
-        Provider.GetDirectoryContents(folder).Where(f => !f.IsDirectory).Select(f => f.Name).Order(StringComparer.Ordinal).ToList();
+        Provider.GetDirectoryContents(folder).Where(f => !f.IsDirectory).Select(f => f.Name)
+            .Order(StringComparer.Ordinal).ToList();
 
     /// <summary>The built-in prompt at <paramref name="path"/>, or null when there is none.</summary>
     public static string? ReadEmbedded(string path)

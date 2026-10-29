@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
@@ -17,17 +18,5 @@ public class ChromePageRendererTests
         Assert.That(renderer.Name, Is.EqualTo("Chrome"));
         Assert.That(() => renderer.RenderAsync(new Uri("https://example.com/")),
             Throws.TypeOf<PageRenderException>().With.Message.Contains("127.0.0.1:1"));
-    }
-
-    [Test, Category("Live")]
-    public async Task APage_IsReadAsTheBrowserShowsIt()
-    {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to render with (the Puls stack's puls-browser).");
-
-        var page = await new ChromePageRenderer(new ChromeWebBrowser(new Uri(url!))).RenderAsync(new Uri("https://example.com/"));
-
-        Assert.That(page.Text, Does.Contain("Example Domain"));
-        Assert.That(page.Url, Does.StartWith("https://example.com"));
     }
 }

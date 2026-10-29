@@ -1,12 +1,13 @@
-namespace LouisAgent.Core.Hosting;
 
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Hosting;
 /// <summary>Where a host's usage records go (ADR 0007; S, CL15, from AgentHost).</summary>
 public static class UsageLedger
 {
@@ -23,11 +24,12 @@ public static class UsageLedger
         if (!agent.UsageLedger) return null;
         if (agent.LogDirectory is null)
         {
-            Log.Log(LogLevel.Warning, LogMessage.LedgerOff);
+            Log.Log(LogLevel.Warning, HostingLogMessage.LedgerOff);
             return null;
         }
 
-        Log.Log(LogLevel.Information, LogMessage.LedgerAt, new { Path = Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl") });
+        Log.Log(LogLevel.Information, HostingLogMessage.LedgerAt,
+            new { Path = Path.Combine(agent.LogDirectory, "usage-YYYY-MM.jsonl") });
         return new PricingUsageSink(new JsonlUsageSink(agent.LogDirectory), prices ?? PriceTableLoader.Load(agent));
     }
 }

@@ -1,0 +1,38 @@
+@* F18 step 5c.4, reworked 2026-10-26 (Louis: "I need to know what it tells me"): a card per category. Each card reads, per mode, the latest run's pass@k (passed at least
+   once: can the agent do it?) and pass^k (passed every time: can a customer rely on it?) as bars with their numbers, and says how many runs stand behind them. The small
+   trend lines come only once two runs or more are on a line; with one run there is no trend yet, and the card says so instead of drawing a lone dot. A slice with too few
+   trials has no rate, so the API sends no point for it and the line has a gap there, never a 0. *@
+@if (Cards.Count == 0)
+{
+    <p class="muted category-trend-none">No category has five counted trials in a run yet: a category needs them for a rate (run with <code>--repeat 3</code> or more).</p>
+}
+else
+{
+    <p class="muted category-trend-lead">Per category, the latest run's <strong>pass@k</strong> (passed at least once) and <strong>pass^k</strong> (passed every time), per mode. The trend lines appear once two runs or more have a rate for the category.</p>
+    <div class="category-grid">
+        @foreach (var card in Cards)
+        {
+            <section class="category-card category-trend @(card.Name == "overall" ? "overall" : "")">
+                <h4><code>@card.Name</code><span class="muted">@card.Runs @(card.Runs == 1 ? "run" : "runs")</span></h4>
+                <div class="category-lines">
+                    @foreach (var (line, i) in card.Lines.Select((l, i) => (l, i)))
+                    {
+                        <div class="category-line">
+                            <span class="category-line-name"><span class="sw" style="background: @Colour(i)"></span>@line.Name<span class="muted">@line.N trials</span></span>
+                            <span class="cat-bar" title="pass@k: passed at least once in its trials"><span class="cat-bar-label">pass@k</span><span class="cat-bar-track"><span class="cat-bar-fill" style="width: @Width(line.PassAtK); background: @Colour(i)"></span></span><strong class="cat-bar-value">@Percent(line.PassAtK)</strong></span>
+                            <span class="cat-bar" title="pass^k: passed every time"><span class="cat-bar-label">pass^k</span><span class="cat-bar-track"><span class="cat-bar-fill hat" style="width: @Width(line.PassHatK); background: @Colour(i)"></span></span><strong class="cat-bar-value">@Percent(line.PassHatK)</strong></span>
+                        </div>
+                    }
+                </div>
+                @if (card.HasTrend)
+                {
+                    <TrendChart Series="card.Chart" Currency="Currency" Panels="Panels" ShowTitle="false" Highlight="@Highlight" Compact="true" />
+                }
+                else
+                {
+                    <p class="muted category-no-trend">One run so far: the trend starts with the next run of this check.</p>
+                }
+            </section>
+        }
+    </div>
+}

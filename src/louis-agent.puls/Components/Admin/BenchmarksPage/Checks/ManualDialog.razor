@@ -1,0 +1,11 @@
+@* A check's manual in a modal (step 10b): Esc, the × or a click outside closes it. *@
+
+<div class="search-backdrop" @onclick="OnClose"></div>
+<div class="search-dialog manual-dialog" id="manual-dialog" role="dialog" aria-modal="true" aria-label="@Manual.Title" tabindex="-1" @onkeydown="KeyAsync">
+    <div class="manual-head">
+        <strong>@Manual.Title</strong>
+        <kbd>Esc</kbd>
+        <button type="button" class="icon" aria-label="Close" @onclick="OnClose">×</button>
+    </div>
+    <div class="manual-body markdown admin-markdown">@Markdown.ToHtml(Manual.Markdown)</div>
+</div>

@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals.Runner.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" />
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
+    <!-- F18 step 5.4c: the template is never registered with the runner; the layout test reads it, and only that. -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.template\louis-agent.evals.template.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F18 step 4.1: the stub's expected protocol lines (the @ lines only), first saved from the Python stub, rewritten to the stub's own names in step 7.5.4. -->
+    <None Include="Fixtures\stub-run.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F18 step 5.4b: the stub's and Puls's transcripts reach this project through the project references (EvalFiles); the fake set's live here. -->
+    <None Update="Transcripts\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+  </ItemGroup>
+
+</Project>

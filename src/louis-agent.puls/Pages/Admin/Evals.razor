@@ -1,0 +1,41 @@
+@page "/admin/evals"
+@layout AdminLayout
+
+@* F18 step 7b (i): every eval the runner's catalogue has, from GET /v1/admin/evals; one that never ran is listed as
+   never run, not hidden. Its runs and the trend open on the Benchmarks page. *@
+
+<PageTitle>Evals · Puls Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Evals</h1>
+        <p>Every eval the runner has: what it proves, how it is graded, and every run the store kept.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync" />
+}
+
+@if (_loading && _data is null)
+{
+    <section class="card-p"><span class="muted">Loading…</span></section>
+}
+else if (_data is { } data)
+{
+    <StoreBanner Store="data.Store" />
+
+    @if (data.Evals.Count == 0)
+    {
+        <section class="card-p evals-empty"><span class="muted">The runner lists no evals.</span></section>
+    }
+
+    @foreach (var eval in data.Evals)
+    {
+        <EvalCard Eval="eval" Currency="Currency.Current" />
+    }
+}

@@ -1,0 +1,21 @@
+@* What the run ran with: the eval and its graders, the settings and the modes, and the lines the runner printed. *@
+<section class="card-p">
+    <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>What it ran with<span class="fold-note">the eval, its graders, the settings, the modes</span></summary>
+        <GraderList Run="Run.Run" />
+        <dl class="explorer-fields">
+            @foreach (var (name, value) in Run.Settings ?? new Dictionary<string, string>())
+            {
+                <dt>@name</dt><dd><code>@value</code></dd>
+            }
+            @foreach (var m in Run.Modes)
+            {
+                <dt>@m.Name · @m.Repeat</dt>
+                <dd><code>@string.Join(", ", m.Toolsets)</code>@Extra(m)</dd>
+            }
+        </dl>
+    </details>
+    @if (Run.Log is { } log)
+    {
+        <details class="admin-details"><summary>The script's own lines (@log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", log)</pre></details>
+    }
+</section>

@@ -1,5 +1,6 @@
-namespace LouisAgent.Core.Hosting;
+using LouisAgent.Choices;
 
+using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Hosting.SessionLlms;
 using LouisAgent.Core.Llm.UsageMapping;
@@ -7,7 +8,6 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
-using System.Collections.Concurrent;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
@@ -17,8 +17,13 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Core.Tools.Web.Replay;
+using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Hosting.Messages;
 
+namespace LouisAgent.Core.Hosting;
 /// <summary>
 /// One engine per toolset profile (F5): a session names its toolsets, and gets an engine with only those tools and
 /// only their guides in its system prompt. Engines are cached by their normalised list, its role, its level
@@ -46,12 +51,10 @@ public sealed class AgentEngineFactory
     private readonly IUsageMapper? _usageMapper;
     private readonly DisplayCurrency? _display;
     private readonly ReasoningEffort? _thinking;
-    private readonly int _capacity;
     private readonly Dictionary<string, SessionLlm> _sessionLlms;
-    private readonly ConcurrentDictionary<string, Lazy<AgentEngine>> _engines = new(StringComparer.Ordinal);
-    private readonly ConcurrentDictionary<string, long> _lastUsed = new(StringComparer.Ordinal);
-    private readonly Lock _evicting = new();
-    private long _clock;
+    private readonly EngineCache _engines;
+    private readonly TimeProvider? _clock;
+    private readonly ReplayStore? _replay;
 
     public AgentEngineFactory(IChatClient chatClient, AgentOptions agent, bool supportsTools = true,
         IUsageSink? usageSink = null, IUsageMapper? usageMapper = null, DisplayCurrency? display = null,
@@ -66,9 +69,18 @@ public sealed class AgentEngineFactory
         _usageMapper = usageMapper;
         _display = display;
         _thinking = thinking;
-        _capacity = capacity;
+        _engines = new EngineCache(capacity);
         _sessionLlms = (sessionLlms ?? []).ToDictionary(l => l.Name, StringComparer.Ordinal);
-        Context = new ToolsetContext(agent, webSearch ?? WebSearchProviderFactory.Create(agent), rates, usageSink);
+        // One store where recordings are kept, and one browser, for every engine of this process (F18 steps 4a and 4b): the shops and the page renderer read through them.
+        var replay = _replay = ReplayStore.From(agent);
+        _clock = replay is null
+            ? null
+            : new ReplayClock(
+                replay); // one clock per process, so a trial's frozen time is shared by every engine and sub-session
+        Context = new ToolsetContext(agent,
+            RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates,
+            usageSink,
+            WebBrowser: WebBrowserFactory.Create(agent, replay), Replay: replay);
     }
 
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>
@@ -78,7 +90,8 @@ public sealed class AgentEngineFactory
     public AgentCatalog Catalog { get; }
 
     /// <summary>Every toolset this instance can load: those whose settings are all set.</summary>
-    public IReadOnlyList<string> Available => Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
+    public IReadOnlyList<string> Available =>
+        Catalog.Toolsets.Where(t => t.IsAvailable(Context)).Select(t => t.Name).ToList();
 
     /// <summary>The LLM profiles a session can name besides the instance's own model (F30, <c>LLM_SESSION_PROFILES</c>).</summary>
     public IReadOnlyList<string> SessionLlms => _sessionLlms.Keys.ToList();
@@ -90,8 +103,8 @@ public sealed class AgentEngineFactory
     public string DefaultVoice => RoleCatalog.DefaultVoice;
 
     /// <summary>The profiles built so far: each its toolsets joined with commas, then |role, |level below level 0,
-    /// |llm:{profile} and |tool:{name} when set.</summary>
-    public IReadOnlyCollection<string> Profiles => _engines.Keys.ToList();
+    /// |llm:{profile} and |tool:{name} when set (<see cref="ProfileKey.Text"/>; the cache that holds them is <see cref="EngineCache"/>).</summary>
+    public IReadOnlyCollection<string> Profiles => _engines.Keys;
 
     /// <summary>
     /// The engine for <paramref name="toolsets"/> (any order or case; duplicates ignored), <paramref name="role"/>
@@ -105,56 +118,47 @@ public sealed class AgentEngineFactory
     /// <param name="tool">A minion's one tool (F30): the engine keeps only it, with no toolset guide and no router, so a
     /// small model reads a prompt it can follow. It must be a tool of <paramref name="toolsets"/>, else
     /// <see cref="ToolsetException"/>. Null: every tool of the toolsets.</param>
-    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? role = null, RoleLevel level = RoleLevel.Agent,
+    public AgentEngine GetOrCreate(IEnumerable<string>? toolsets, string? role = null,
+        RoleLevel level = RoleLevel.Agent,
         string? llm = null, string? tool = null)
     {
         var resolved = Catalog.Resolve(toolsets, Context);
-        if (string.IsNullOrEmpty(role)) role = null;
+        var key = ProfileKey.Of(resolved, role, level, llm, tool);
         // Checked here, not in Build: a Lazy that throws keeps the exception, and the key would stay broken.
-        RoleFiles.FileOf(_agent, role, level);
-        if (string.IsNullOrEmpty(llm)) llm = null;
-        SessionLlm? model = null;
-        if (llm is not null && !_sessionLlms.TryGetValue(llm, out model))
-            throw new SessionLlmException(MessageText.Format(ErrorMessage.UnknownSessionLlm,
-                new { Name = llm, Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys) }));
-        if (string.IsNullOrWhiteSpace(tool)) tool = null;
-        if (tool is not null && !Catalog.ToolNamesOf(resolved).Contains(tool))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNotInToolsets,
-                new { Tool = tool, Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)) }));
+        RoleFiles.FileOf(_agent, key.Role, key.Level);
+        var model = FindLlm(key.Llm);
+        if (key.Tool is not null && !Catalog.ToolNamesOf(resolved).Contains(key.Tool))
+            throw new ToolsetException(MessageText.Format(HostingErrorMessage.ToolNotInToolsets,
+                new
+                {
+                    Tool = key.Tool,
+                    Toolsets = resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name))
+                }));
 
-        string key = string.Join(",", resolved.Select(t => t.Name)) + (role is null ? "" : "|" + role) + LevelSuffix(level)
-            + (llm is null ? "" : "|llm:" + llm) + (tool is null ? "" : "|tool:" + tool);
-        _lastUsed[key] = Interlocked.Increment(ref _clock);
-        if (_engines.TryGetValue(key, out var existing)) return existing.Value;
-
-        Lazy<AgentEngine> engine;
-        lock (_evicting)
-        {
-            while (_engines.Count >= _capacity && !_engines.ContainsKey(key))
-            {
-                string oldest = _engines.Keys.Where(k => k != key).MinBy(k => _lastUsed.GetValueOrDefault(k))!;
-                _engines.TryRemove(oldest, out _);
-                _lastUsed.TryRemove(oldest, out _);
-                Log.Log(LogLevel.Information, LogMessage.ToolsetProfileDropped, new { Toolsets = oldest.Length == 0 ? "(none)" : oldest, Capacity = _capacity });
-            }
-            engine = _engines.GetOrAdd(key, _ => new Lazy<AgentEngine>(() => Build(resolved, role, level, model, tool)));
-        }
-        return engine.Value;   // built outside the lock: building one profile doesn't hold up another
+        return _engines.GetOrAdd(key, () => Build(resolved, key, model));
     }
 
-    /// <summary>Level 0 adds nothing to the key, so its profiles keep the names they had before CL8.</summary>
-    private static string LevelSuffix(RoleLevel level) => level == RoleLevel.Agent ? "" : "|" + level.ToString().ToLowerInvariant();
-
-    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, string? role, RoleLevel level, SessionLlm? model, string? tool)
+    private SessionLlm? FindLlm(string? llm)
     {
+        if (llm is null) return null;
+        if (_sessionLlms.TryGetValue(llm, out var model)) return model;
+        throw new SessionLlmException(MessageText.Format(HostingErrorMessage.UnknownSessionLlm,
+            new { Name = llm, Available = _sessionLlms.Count == 0 ? "none" : string.Join(", ", _sessionLlms.Keys) }));
+    }
+
+    private AgentEngine Build(IReadOnlyList<ToolsetDefinition> resolved, ProfileKey key, SessionLlm? model)
+    {
+        var (_, role, level, _, tool) = key;
         bool selfExtension = resolved.Any(t => t.IsEngineProvided);
         // A minion's prompt has no toolset guide (F30): its role says what to do with its one tool.
         var guided = tool is null ? resolved : [];
         // A session's own model (F30) brings its provider's client, usage mapping, tool support and thinking; the
         // ledger, prices and display currency are the instance's.
-        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient, _agent,
+        var engine = new AgentEngine(SkillLoader.Load(_agent, guided, role, level), model?.Client ?? _chatClient,
+            _agent,
             model?.SupportsTools ?? _supportsTools, toolsets: ToolsetCatalog.BuildTools(resolved, Context), _usageSink,
-            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved))
+            model is null ? _usageMapper : model.UsageMapper, selfExtension, ToolsetCatalog.RunsInParallel(resolved),
+            clock: _clock, replay: _replay)
         {
             SkillsDirectory = SkillFolder.Find(_agent),
             // An agent-built tool may take no name of the catalogue's, a pack's included (CL15).
@@ -168,12 +172,14 @@ public sealed class AgentEngineFactory
         if (selfExtension) engine.LoadApprovedTools();
         if (tool is not null) engine.KeepOnlyTool(tool);
 
-        string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>().Select(t => new { t.Name, t.Description, t.JsonSchema }));
-        Log.Log(LogLevel.Information, LogMessage.ToolsetProfileBuilt, new
+        string toolsJson = JsonSerializer.Serialize(engine.Tools.OfType<AIFunction>()
+            .Select(t => new { t.Name, t.Description, t.JsonSchema }));
+        Log.Log(LogLevel.Information, HostingLogMessage.ToolsetProfileBuilt, new
         {
             Toolsets = (resolved.Count == 0 ? "(none)" : string.Join(", ", resolved.Select(t => t.Name)))
-                + (role is null ? "" : $" · role {role}") + (level == RoleLevel.Agent ? "" : $" · {level.ToString().ToLowerInvariant()}")
-                + (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}"),
+                       + (role is null ? "" : $" · role {role}") +
+                       (level == RoleLevel.Agent ? "" : $" · {level.Wire()}")
+                       + (model is null ? "" : $" · llm {model.Name}") + (tool is null ? "" : $" · tool {tool}"),
             Tools = engine.Tools.Count,
             PromptChars = engine.SkillDocumentation.Length,
             // About four characters a token: an estimate of the fixed prefix every request of this profile sends.

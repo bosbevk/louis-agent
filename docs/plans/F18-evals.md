@@ -922,14 +922,17 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 | 5c | **Results rolled up: overall and by category** (Louis, 2026-10-20: "metrics rolled up as overall result and results by category"): each scenario carries `categories` in its file (step 3a; for cook: `language:af`, `shop:none`, `budget`, `follow-up`, `control`), and `RunSummary` (harness, pure) rolls a run's trials up into one overall line and one line per category, per grader and per grader kind: pass rate, pass@k and pass^k (step 5a), the mean of each score, cost per trial and per passed trial (from the ledger), and `n`, the trials behind each number; a line with fewer than five trials says so instead of a percentage; the portal shows the overall line first, the categories under it, and a trend per category per model (step 2a) | on made-up trials: the overall line equals the sum of its parts; a trial in two categories counts in both and once overall; a `TrialFailure` and an `Unknown` grade count as not passed and are listed; a category of three trials shows "too few"; a re-scored run (5b) rolls up from its new grades | Aggregate and slice: an overall number hides where it fails; slices show it (12, 17) |
 | 6 | **A model grader where code can't judge:** "a meal for the people asked for", our own `IEvaluator` (Microsoft.Extensions.AI.Evaluation) called through `EvaluatorGrader` (`IEvaluator.EvaluateAsync`, whose 10.10.0 signature takes the messages, the response, a `ChatConfiguration` and evaluation context); no stock Quality evaluator uncalibrated; its prompt a markdown file in `louis-agent.evals.puls/Prompts/` (ADR 0011); its `IChatClient` wrapped in `UsageRecordingChatClient` with a new `grading` purpose and the run's tag, so its cost is in the run's (ADR 0007); its model, prompt hash and version stored with each grade; `Unknown` when it can't tell | Louis labels ten stored answers first (into `labels/`); the judge matches at least 9 of the 10, the disagreements listed; the calibration runs free on a local model (Ollama, F15); if the local model can't reach 9 of 10, the step stops and Louis decides, because a paid judge is not among this phase's paid runs; it never runs in CI | LLM as a judge, calibrated (12) |
 | 6a | **Human review as a grader** (Louis, 2026-10-20: "separate graders by type, FixedRule, Model grader and human review"): `HumanReviewGrader` (`GraderKind.Human`) returns `Pending` until a person grades the conversation in the portal (pass, fail or unsure, with a note), kept in the store with who and when; a run's outcome shows its human grades apart and never waits on them; a human grade can be exported to the dataset's `labels/` (step 3a), so the people's grades are the model grader's calibration set; the portal shows, per model grader, how often it agreed with the people | a pending human grade leaves the trial's fixed-rule outcome unchanged; a stored human grade appears on the conversation and in the agreement count; an export writes one label file the dataset loader accepts | Human review keeps the model grader honest: people grade a sample, the judge is measured against them (12) |
+| 6b | **The cook's dataset grows to the field's starting size** (Louis, 2026-10-26: "Add step 6b: ~20 cook scenarios"): from 8 scenarios to about 20, each new one drawn from a real failure and naming the run that showed it, balanced with scenarios for what the cook must *not* do, about a third in `held-out/`, each with its categories; the dataset's version and hash go up | the dataset loader reads every scenario and each new one names its source run; the negative cases are present (not routed, no branch in a town with no shop, an estimate never a shop's price, a blocked site never read, no image when the page had none); the held-out share is about a third; the version and the hash changed | Evals drawn from real failures, and both sides of a behaviour (12) |
 
 ### Part E · Python leaves, every eval in the admin
 
 | # | Step | Test first | Concept (GOAL skill) |
 |---|---|---|---|
 | 7 | **Python leaves:** `benchmarks/` and CI's Python step (`ci.yml:59-60`) deleted; the three manuals move beside their evals (`evals/louis-agent.evals.puls/Manuals/cook.md` and `routing.md`, the stub's to `evals/louis-agent.evals.runner/Manuals/stub.md`), and `BenchmarkManuals` reads from `evals/` (its root at `BenchmarkManuals.cs:19`, the path `BenchmarkCheck.ManualPath` gives, now from `--list`); `test_manuals.py` becomes an NUnit test in `louis-agent.evals.puls.tests`; `session-stream.sse` and `session-stream.expected.json` both move to `tests/louis-agent.session-stream.tests/Fixtures/`, and `SessionStreamFixture` (`tests/louis-agent.web.testing/SessionStreamFixture.cs:19`) and 1a's tests read them there; **`NoPythonTests`**: no `.py` file in the repo outside `Skills/` (git's tracked files; Louis, 2026-10-20: 100% C#); CI's gate is the C# tests: they cover the harness, the graders on recorded transcripts and what the model reads (the golden files), and an agent regression is caught only by a run | `GET /admin/benchmarks/{check}/manual` answers for stub, cook and routing from their new places (red first: it reads `benchmarks/`); the manual test fails when a score key is missing from its manual; `NoPythonTests` red first while `benchmarks/` exists, green once it's gone, and red again for a `.py` added under `src/`; CI runs no Python and the C# tests pass | A regression gate, and what it can't see (12, 18) |
-| 7a | **Why a run behaved as it did** (F31 step 11c's rest, on F18's TODO line, `TODO.md:30`): a person's note on a run and on a conversation, kept in the store with when it was written, shown on the run's row and as a marker on its trend point, beside a marker where the prompt hash changed; the search provider and the page renderer (`WEB_SEARCH_PROVIDER`, `PAGE_RENDERER`, `AgentOptions.cs:212,215`) in the run's settings | the store contract test (both stores): a note on a run and on a conversation reads back with its time; a trend point carries its notes and its prompt-hash marker; `BenchmarkSettingsTests`: the provider and the renderer recorded | A run you can explain (12) |
+| 7a | **Why a run behaved as it did** (F31 step 11c's rest, on F18's TODO line, `TODO.md:30`): a person's note on a run and on a conversation, kept in the store with when it was written, shown on the run's row and as a marker on its trend point, beside a marker where the prompt hash changed; the search provider and the page renderer (`WEB_SEARCH_PROVIDER`, `PAGE_RENDERER`, `AgentOptions.cs:212,215`) in the run's settings. **Done** (2026-10-28, steps 7a.1 to 7a.3; what each built is in the feature doc's *What the build changed*) | the store contract test (both stores): a note on a run and on a conversation reads back with its time; a trend point carries its notes and its prompt-hash marker; `BenchmarkSettingsTests`: the provider and the renderer recorded | A run you can explain (12) |
 | 7b | **Every eval visible in the admin portal, and the API names no product** (Louis, 2026-10-20: "we need to make all evals visible through admin"; 2026-10-24, *One agent API*, `/mnt/project-files/plans/one-agent-api.md`): the portal's list comes from the runner's `EvalCatalog` (`run --list --json`, step 4), never from a list kept by hand in the API, so an eval added beside any identity or pack appears with no portal code; each one shows what it `Proves`, the identity or pack it proves, its version, dataset and categories, modes, its graders (name, version, kind), the models it was run on (step 2a), its manual, every run (from the portal or the command line, with a store configured) with its outcome and cost from the ledger, its overall and category lines (5c), and its pass@k and pass^k trend (5a); an eval with no run yet is listed as never run, not hidden; `GET /admin/evals` behind the admin gate; the admin pages are rebuilt here under the CL15 rules (no code in razor, 200 lines), which takes `RunExplorer`, `Benchmarks`, `BenchmarkRun`, `TrendChart` and `ChartInfo` off `RazorHasNoCodeTests`' and `FileSizeTests`' lists (W2b.6, deferred to here by Louis, 2026-10-20); the API's `Benchmarks/` becomes `Evals/` and its types `Eval…` (the namespace map), `puls_benchmarks` gives way to `evals` as the store's default database (Puls's compose sets `EVALS_MONGO_DATABASE: puls_benchmarks`, so its stored runs stay; `BENCHMARKS_MONGO_DATABASE` read as an alias), `PULS_API` to `AGENT_API` (the runner reads both until a TODO line), and `PulsCalls` to `AgentCalls`; `ApiNamesNoProductTests` holds it as a ratchet whose exceptions are the web app reference (until Phase 9) and the stored `puls_calls` key, read as an alias until a TODO line removes it; ADR 0037, *One agent API; products get a front door*, records the rule; the old `/admin/benchmarks/…` routes answer until a TODO line removes them. Split for review: (i) the list and `GET /admin/evals`; (ii) the pages rebuilt; (iii) the rename and the ratchet | `ApiNamesNoProductTests` first fails on those three names, then passes; a fake eval in a test catalogue is listed by `GET /admin/evals` with its graders and "never run", then with its run after one is recorded; the list page's bUnit snapshot, empty and with two evals; `RazorHasNoCodeTests` and `FileSizeTests` pass with the five admin files off their lists; the old routes still answer | Evals you can see are evals you run: one catalogue, read by every view (12, 17) |
+| 7c | **Protocol v2: one event contract both sides share** (Louis, 2026-10-24 and the 7c cards of 2026-10-28, picks A to H, under *Approved during the build*): `evals/louis-agent.evals.protocol`, the events as records the runner writes and the API and the portal read (JSON Lines, `"event"` first, kebab-case words, UTC `t`); grades and metrics apart; the Mongo stores through records (ADR 0048); v1 runs deleted when the store opens (ADR 0049); the portal reads the contract's records until `PortalReadsJsonTests`' list is empty; the docs ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md), the guide, the TODO; CL22 closed). **Done** (2026-10-29; steps 0 to 6 in the feature doc) | the contract's round trip with its goldens; each store's contract on both stores; each portal reader's bUnit snapshot before its move; the ratchet empty | One shape on both sides of a seam (4, 12) |
+| 7d | **The datasets take Inspect's Sample shape** (Louis's pick G, 2026-10-28: "our datasets should also comply"): a scenario file is `id`, `input` (the user's first question as `[{"role":"user","content":…}]`), an optional `target`, and ours under `metadata` (`place`, `time_zone`, `follow_ups`, `expected`, `categories`); the split stays the folder; the loader stays strict and reads `metadata` typed (`SampleFile` in `Datasets/Samples/`), mapping it onto the unchanged `EvalScenario`; the files move by a one-off runner command (`convert-samples`), deleted once run; each `dataset.json` goes one version on with a dated line. *Done when* every dataset is in the new shape, the command is gone, and the conformance tests and `PulsDatasetsTests` are green. **Done** (2026-10-29, run 2) | the loader on one file of each shape (the Sample shape loads with its follow-ups and target; the old shape and an input that isn't one user question are refused); the command converts an old dataset the loader then reads, its manifest one version on | A dataset others can read: a shared format for samples (3, 12) |
 | 8 | **Docs and the write-ups:** the feature doc's results (*What the build changed*); a design doc in `docs/projects/` for each of the four new projects, and the tests design doc; CHANGELOG; TODO (F18's line closed; the alias-removal lines added); GOAL.md's rows 3, 12, 13 and 17 (what is built now, and what stays missing: 12, a gate that sees the agent; 17, dashboards, with F44; 3, the comparison of two prompt versions as a habit); **the learning write-ups, written by Claude for Louis to read** (Louis, 2026-10-19): skill 12's, new (`docs/learning/12-evaluation.md`, with its row in `docs/learning/README.md`: the field's words, code graders first, a calibrated judge, human review, pass@k against pass^k, datasets with a held-out split, frozen input, and the limit: a gate on recorded transcripts can't see the agent, only a run can), and skill 13's (`docs/learning/13-cost-and-token-economics.md` gains the replay cache: the hit rate and cost of the replayed cook run against its live run), with a paragraph each on traces and the logs' keyed hashes (17), the stream format seam (4) and the prompt hash (3). The phase is done when Louis has read them; a step he can't explain afterwards goes back | links checked | Writing it up (12, 13, 17, 3) |
 
 ## Verification
@@ -1019,7 +1022,517 @@ review in about ten minutes; the bigger ones (2, 3, 4, 4e, 7b) say where they sp
 
 ## Approved during the build
 
-(Nothing yet.)
+- **3a (2026-10-28): the Mongo stores use typed collections over document records (ADR 0048); 7b's hand-written
+  mappers go** (Louis, reading `RunDocuments.ToBson`: "must use mongocollection"). One commit per collection, each
+  test first: the registration (`WireNameSerializer<TEnum>` and the UTC date handling) first, then runs,
+  conversations, turns, requests and notes, then the human-review and calibration stores. Prompts and slices are no
+  collections of their own: they live inside a run's document, so they become nested records of `RunDocument`. The
+  commits come after 3a's own (Louis's pick: 3a was already committed with the v2 shape), each byte-equal to what 3a
+  writes, so a diff shows the mapping and never a shape change. ADR 0046 came from `main` (PR #94), merged into the
+  branch, so 0048 links it.
+
+- **3a: stored eval data is disposable until Phase 9** (Louis, 2026-10-28, before the turns commit). No backward
+  compatibility anywhere in 3a: no migration and no alias (the turns read only `agent_calls`; `puls_calls` and every
+  other old name go), and the typed-collection commits drop their "reads a document written by the old mapper" case.
+  The runs' and conversations' tests, committed with it, lose it in a commit of their own (no history rewrite); each
+  keeps a round trip of its own document and the byte-equal write. ADR 0048's consequence says so;
+  `[BsonIgnoreExtraElements]` stays only so a field added later never breaks a read. A turn's failure the build
+  doesn't know is refused, as every stored enum is (Louis's pick). The rule behind it is ADR 0049, nothing is
+  backward compatible until something is sold in production, now in *Rules that always apply*.
+
+- **3a: each document record beside its store, and the notes' id on the record** (Louis, 2026-10-28, two cards
+  before the notes commit). The document records leave `Mongo/Documents/` for their concern's folder, next to the
+  Mongo store that uses them (`Runs/`, `Conversations/`, `Turns/`, `Requests/`, `Notes/`, and the reviews' and
+  calibrations' beside theirs), in a refactor commit of its own before the notes. A note's document carries its id,
+  a new `ObjectId` per note, so the order written stays a typed sort.
+
+- **3a: ADR 0048 is accepted, and a person's verdict is lower case** (Louis, 2026-10-28, after the calibrations).
+  `HumanVerdict`'s wire names become `pass`, `fail` and `unsure` in a commit of their own, with no alias for the old
+  casing: 7c's pick C (every wire value kebab or lower case), and ADR 0049 deletes old stored grades.
+
+- **3c: old runs go through the delete button's path, in two commits** (Louis, 2026-10-28, two cards). The start-up
+  clean-up reuses the one-run delete (Fowler's Extract Function into `RunDeletion`, and Replace Primitive with Object:
+  deleting a run returns `DeletedRun`, its counts per collection, instead of a bool), so the log says how many runs,
+  conversations, turns, requests, notes, grades and judge checks went. The deletion's classes live in a concern
+  folder of their own, `Evals/Store/Deletion/`. 3c.1 is the counts and `RunDeletion` (the button uses it); 3c.2 is
+  finding the runs without `protocol_version: 2` and the start-up job.
+
+- **Step 5: bottom-up, one reader per commit, in this order** (Louis, 2026-10-29, card and "go"). Strangler Fig at
+  the component edge: a caller still holding JSON deserializes just the moved part, until the page fetches the record.
+  (1) delete the dead `ConversationGradesReader`; (2) `RunGradersReader` + `GraderList`; (3) `RunSettings`;
+  (4) `ModeRatesReader` + `ModeRatesList`; (5) `NoteReader`'s JSON overload goes; (6) `SummaryReader` + `SummaryPanel`;
+  (7) `CalibrationView` + `CalibrationCard`; (8) `AgreementView` + `AgreementPanel`; (9) `TrendChart`;
+  (10) `CategoryTrendReader` + `CategoryTrends`; (11) `CheckCard`, `ChecksList`, `Benchmarks`; (12) delete
+  `ExplorerScores` and `ConversationNode.Scores`; (13) the live view to v2 events, `ScoreChips` deleted, `TurnFacts`'
+  comment fixed; (14) `RunExplorer`; (15) `BenchmarkRun` fetches the records, the replies' empty `Scores` go, and the
+  list is empty. Open, for Louis at their commits: the trend's "routing" and "accuracy" panels (9), the explorer's
+  score rings, tiles and chips (12), the live view's chips (13).
+
+- **Step 7c.3's design** (Louis, 2026-10-28, cards before 3a).
+  - **The keys go into the contract**: `ConversationKey` beside `TurnKey` in `Parts/Conversations`, and `TurnKey`
+    and `ConversationEvent` get a `[JsonIgnore]` property that gives the conversation's key. The API and the harness
+    share one pair (a shared Data Transfer Object contract, Fowler, PoEAA); the harness's `StoredRun.ConversationOf`
+    returns it.
+  - **The trend comes from the outcomes**: a point's score is the share of conversations that passed (Infrastructure
+    left out, as pass@k does), its cost per answer is the cost per passed conversation, and `Sourced` is null (no
+    grader measures it). It holds for every eval, not only Puls's.
+  - **A conversation's tokens and cost are written again at the end**: after the ledger join, each conversation's
+    agent requests (grading left out) are summed into its metrics and the conversation is saved once more; an
+    unknown price keeps the cost null.
+  - **3a is one commit, with 3b folded in**, then the push. Louis first picked 3a, then 3b; the export's tests read
+    it back with the API's v1 reader, which 3a deletes, so the export moves to the contract's events in 3a too.
+  - **The store keeps what an export needs to give back exactly what came in**: each event's time (a mode's start
+    and end, a turn's question and end, a conversation's end, a slice's summary, the first line's), the run's dataset,
+    and a mode's planned conversation count. The export's round trip is then equal event for event, `t` included.
+  - **The replies expand, then contract** (Fowler's parallel change): `ConversationRow` gains its metrics and
+    `SliceGraderRow` its `ScoreMean`; the old `Scores` fields stay, always empty, until step 5 deletes them with the
+    portal's readers.
+  - **The portal's two old kind spellings are fixed in 3a** (`BlindReview`'s human review and `EvalText`'s kind
+    words), through `GraderKind` and `.Wire()`, so human reviews keep working before step 5.
+
+- **Step 7c.2's design** (Louis, 2026-10-28, two cards from the review of steps 0 and 1, and one on the cook's
+  scores).
+  - **The harness takes the contract's `RunSplit`; `SplitSelection` goes.** ADR 0043: a pack, identity or eval set
+    keeps its own enum, the rest share one, and the harness is none of those. `held_out` (the old wire spelling)
+    stays readable as an alias on the command line. Fowler, *Refactoring*: consolidate the duplicate. The same holds
+    for every kind the contract now carries: the harness's `Protocol/ModelLevel` goes for `Kinds/ModelLevel`,
+    `ModelUse` for `Parts/Run/ModelInfo` (same four fields). The API's own copies (`EvalRunSplit` and the rest) wait
+    for step 3.
+  - **`t` is written as `Z`, read as both.** System.Text.Json writes a UTC `DateTimeOffset` as `+00:00`; we write
+    `2026-10-28T08:00:00Z` like the rule's example (ADR 0046), Mongo, JavaScript and Python. One converter in the
+    contract, registered on `EvalProtocolJson.Options`; reading keeps System.Text.Json's own parse, which takes `Z`
+    and any offset. The golden regenerates.
+  - **The cook's `deals_named` goes; `untooled_shops` becomes a grader.** `UntooledShops`, beside
+    `PricedAtRetailer` (fixed-rule, required): it passes when the answer prices at no shop the cook has no tool for,
+    and fails with the shops it named when it does, built on `Shops.UntooledShops`; its tests take the scorer's cases
+    for that count (step 2d).
+  - **The harness's other four kinds go too, in a commit of their own before 2c (2b.2)** (Louis, 2026-10-28, card):
+    `GraderKind`, `GradeOutcome`, `TrialOutcome` and `TrialFailure` (the contract's `TurnFailure`) are the contract's
+    now, by the same rule; until 2c the v1 writer and the runner's listing keep v1's words in one place
+    (`Protocol/V1Words`). Files that only gain a `using` or Rider's rename in that commit wait to be brought up to the
+    rules (summaries, line length) until a step has a real reason to touch them; every file with a real change is
+    brought up whole (Louis, 2026-10-28, card).
+  - **`SummaryLine.Scores` and `ScoreMeans` go in 2c** (Louis, 2026-10-28, card): the per-grader `score_mean` carries
+    the partial credit the score-bag means did.
+  - **The harness's readers learn v2 before the writer switches (2c.0)** (Louis, 2026-10-28, card): the re-score
+    tests run an eval and feed its own output back, so `StoredRun` and `ProtocolTranscripts` read a v2 line through
+    the contract and a v1 line (it starts with `@`: the conformance references, stored v1 runs) the old way; 2e drops
+    the v1 path once the references are regenerated.
+  - **`stub-run.txt` regenerates in 2c**, not 2f, so 2c is green (Louis, 2026-10-28, card).
+  - **Nothing is pushed from 2c until step 3 lands** (Louis, 2026-10-28, card): `StubCheckTests` (api integration)
+    reads the real runner through the API's v1 reader, which can't read v2 until step 3; no test is switched off.
+    **Lifted after 2f for review** (Louis, 2026-10-28, card): 2a to 2f are pushed so they can be reviewed, with CI's
+    integration step red (`StubCheckTests`, 3 tests) until step 3 lands; the unit tests and formatting stay green.
+  - **2d drops the score keys no grader covers** (Louis, 2026-10-28, card): the cook's sources, prices, follow-up and
+    the rest go with `CookScores`, and no grader is written for them now; a `local-sources` grader comes once F35's
+    recipe sources land (the TODO's F35 line).
+  - **2d splits the cook's `Grading/` folder: `Grading/WhereToBuy/`** (Louis, 2026-10-28, card) holds
+    `EstimatesAtShop`, `PricedAtRetailer` and `UntooledShops`, the rules about where the cook sends you to buy; the
+    folder had more than six files, and `Shops/` would have clashed with the `Shops` class it uses.
+
+- **Step 7c.1: the contract's shape** (Louis, 2026-10-28, six cards while it was built). (1) **`t` is an ISO 8601
+  UTC time** (`"2026-10-26T06:05:26.768+00:00"`, a `DateTimeOffset` on the base record), not today's Unix seconds,
+  which the brief had called ISO by mistake; the serializer needs no converter and a person can read it. (2) **The
+  summary keeps partial credit as a mean score per grader**: each grader's count gains `score_mean`, in place of the
+  old `scores` means of the score bags. (3) **`Metrics` counts calls as two fields**, `agent_calls` and
+  `specialist_calls`, the turn's own names, so delegation stays measurable. (4) **The summary's counts are two
+  records, `GraderCount` and `KindCount`**; the brief's `SliceInfo` was a placeholder name, and one record with a null
+  grader for a kinds line would hide a flag in a null, where null means unknown. (5) **The folders split by what the
+  line is about**: `Events/Run/` and `Events/Conversations/`, `Parts/Run/` and `Parts/Conversations/`, since flat
+  `Events/` and `Parts/` would hold 8 and 9 files against the six-file rule. (6) **The two reference checks are
+  `EvalProtocolProjectTests`** in core.tests beside `ChoicesProjectTests`, not in `ArchitectureTests`, which waits for
+  a step with a reason to touch it (bringing it up to the rules would double this review).
+
+- **Step 7c's design, and what the Python world taught us** (Louis, 2026-10-28, cards). Seven picks; the full plan,
+  with the pros, cons and sources behind each, is in the Claude project ("Protocol v2 Plan").
+  - **A. The contract lives in a shared project**, `evals/louis-agent.evals.protocol`: records and enums only,
+    referencing `louis-agent.choices` and nothing else; the harness, the API and `louis-agent.web.shared` reference
+    it. Pattern: a shared *Data Transfer Object* contract (Fowler, PoEAA), as `louis-agent.api.contracts` is (ADR
+    0045). CL22 closes inside 7c. ADR 0022 gets one line: the contract is not the harness.
+  - **B. JSON Lines on stdout, `"event"` first.** No `@` prefix, UTF-8, one object per line (jsonlines.org).
+    `"event"` is System.Text.Json's type discriminator (`[JsonPolymorphic(TypeDiscriminatorPropertyName = "event")]`,
+    one `[JsonDerivedType]` per event). A line that isn't an object with an `event` member is a log line.
+  - **C. kebab-case for every word on the wire** (`fixed-rule`, `pass`, `sub-session`), the style modes and roles
+    already use; field names stay `snake_case`. The PascalCase `[WireName("FixedRule")]` exceptions go with v2.
+  - **D. `grades` plus one `Metrics` record** on the conversation event. Grades decide a pass with partial credit;
+    metrics (calls, hosts, turns, tokens, seconds, cost) are measured and never fail a run. The per-eval score bags
+    (`CookScores`, `RoutingScores`, `ExampleScores`, `IEval.ScoresOf`) go; the cook's `deals_named` and
+    `untooled_shops` go unless Louis says he still reads them (asked once, in step 2).
+  - **E. Version 1 runs are deleted when the store opens**, guarded: only documents without `protocol_version: 2`,
+    only the store's own collections, the counts logged, a contract test on both stores. One database, no
+    configuration change (Puls keeps `puls_benchmarks`).
+  - **F. The field names are our own.** OpenTelemetry's GenAI names (`gen_ai.*`) are not borrowed; ADR 0047 says so.
+  - **G. The datasets take Inspect's `Sample` shape** (`id`, `input`, `target`, `metadata`, ours under `metadata`) as
+    a new row, **7d, after 7c**; nothing in 7c. Louis: "our datasets should also comply."
+  - **H. Function skills become Agent Skills `SKILL.md` folders, and every role, mode and guide gets the same `name` +
+    `description` header; prompts stay embedded** (Louis: "for safety we embed"; ADR 0018 holds). The header is YAML
+    front matter: the spec's `name` and `description`, ours (`level`, `toolsets`) under `metadata` (Louis approved
+    the shape, 2026-10-28). It grows the TODO's Phase 7 line; nothing in 7c.
+
+- **The session stream's events are records in the contracts project, and `AgentApi` works on records** (Louis,
+  2026-10-28, review of the fixes: findings 26 and 27, both kept). Finding 26: the session stream's events become
+  records in the contracts project. Finding 27: `AgentApi` sends and reads records, and `louis-agent.web.shared`
+  references `louis-agent.api.contracts`.
+
+- **Step 7c.0: there is no v1 routing baseline** (Louis, 2026-10-28, card). The store's one `puls-routing` run,
+  `bc4b25269a30`, ran before steps 5.6 and 5.7 changed the prompts and before 5a's pass rates, and the feature doc
+  already keeps it only as history; its numbers are not written down as a baseline. The routing's trend starts with
+  its first v2 run.
+
+- **Two ratchets: folder size, and the portal's JSON readers** (cards A and A). `FolderSizeTests`, beside
+  `FileSizeTests` and over the same roots: a folder holds at most six source files (a `.razor` and its `.razor.cs`
+  count as one); today's oversized folders are on a list that may only shrink, and a folder is split by concern when
+  a step next touches it. `PortalReadsJsonTests` in `puls.tests`: the files under the portal's `Admin/`,
+  `Components/Admin/` and `Pages/Admin/` that use `JsonElement` are listed, and the list may only shrink; the 7c
+  entry below says when it empties (Louis, 2026-10-28, review of the unattended run).
+
+- **Tests post records, not anonymous objects** (card A). `GitReplyJsonTests` (3) posts the contract's git request
+  records and `SessionReplyJsonTests` (1) the session's own request record, which finding 3 keeps in the API for
+  now; `TurnStoreContract`'s event data is a `JsonObject`, a shape decided at run time. The pinned bytes don't
+  change (Louis, 2026-10-28, review of the unattended run).
+
+- **Error kinds are an enum, one method per kind** (card A). Pattern: Fowler's *Replace Primitive with Object* and
+  *Remove Flag Argument*, the way `TypedResults.NotFound(…)` works. `ApiErrorKind` in the API holds today's texts as
+  its `[WireName]`s (the contract's `ApiError` keeps the text, so the wire doesn't change); `ApiErrors` has one method
+  per kind with its status (`BadRequest`, `GitFailed`, `Unauthorized`, `Forbidden`, `NotFound`, `Conflict`,
+  `TooLarge`, `UnsupportedMediaType`, `Unavailable`), and `Body(kind, message)` stays for the key gate and the
+  stream's last line. No `"…_error"` literal is left outside the enum; one route per kind has its error JSON pinned
+  first (Louis, 2026-10-28, review of the unattended run).
+
+- **7b (ii) runs right after the endpoint sweep, ahead of 7a.3** (Louis, 2026-10-27). The admin pages are rebuilt
+  (part ii of 7b's row) before 7a.3's trend markers, so 7a.3 draws on the rebuilt `TrendChart`.
+
+- **Step 7a.1: a run records which search engine and page renderer it used, and whether each was ready** (Louis, 2026-10-27, step 7a.1's prompts and the review of its follow-up). Louis's picks: (1) **the fallback rule lives in the factories**, as `Resolve` on `WebSearchProviderFactory` and `PageRendererFactory`, not copied into the API and not kept as the raw setting, so a run records what the instance resolved to and two runs can be compared. (2) **A run records ready or not ready beside each name** (`web_search_provider_ready`, `page_renderer_ready`), because a named tool whose settings are missing (`PAGE_RENDERER=chrome` with no `BROWSER_URL`, Tavily or Google with no key) got an Unavailable tool from `Create` while the run still recorded its name. (3) **Strategy + Null Object** (rule 11; refactoring.guru's Strategy, Fowler's *Replace Conditional with Polymorphism*): one setup class per engine and per renderer that knows whether its settings are there and how to build its tool, and, when they are not, hands back the Unavailable tool we already had; the factory keeps its setups in fallback order and only picks. (4) **No `Unavailable()` member on the setup interface** (DuckDuckGo is always ready and has no not-configured message): `Create` returns the Null Object itself, so every setup keeps every promise of the interface (Fowler's *Introduce Special Case*). The plan's step row is unchanged; the feature doc has the build record.
+
+- **Step 4f: the mode lives in `Logging/Content/`, and two additions to the list of what is hashed** (Louis, 2026-10-25, step 4f's
+  prompt, decisions 2 and 7). The plan puts `LogContentMode` in `Config/`, but `Config/` and `Logging/` both hold six files already and
+  ADR 0010 gives a seventh a subfolder; the mode belongs with the content it governs, so `LogContent` and `LogContentMode` go in
+  `Logging/Content/`. Added to the hashed values: the shops' **store ids** (`Stores` in `CheckersStore`, `Store` in `ShopStoreNotUsed`),
+  because a store's id names its town as surely as the coordinates do, the plan's own reason for hashing those. Left in clear for now, as a
+  known limit for F44's trace and log pass: the headless browser's two warnings (`RenderRequestRefused` and `RenderRequestUnhandled`) keep
+  their URLs, because they warn about a refused sub-request, testing them needs a live Chrome, and `ChromeWebBrowser.cs` is on the
+  oversized list.
+
+- **Step 4e: the model's answers go in the replay store under our own key, not in `DistributedCachingChatClient` and a disk cache**
+  (Louis, 2026-10-25, step 4e's prompt, decision 1; row 912 and the *A replay cache* line above name the other way). Checked with a
+  throwaway probe on Microsoft.Extensions.AI 10.10.0 (finding numbers are the prompt's): (2) MEAI's key hashes whole messages, and the
+  tool loop stamps each tool message with the time it ran and a random `MessageId`, so a whole-message key misses on every turn after a
+  tool call; the key must leave out `CreatedAt` and `MessageId`, and its docs say it is "not guaranteed to be stable across releases".
+  (3) A key without those two fields hit on all 3 requests of a two-turn recording, streamed or not, with the thinking signature
+  byte-equal. (4) `CachingChatClient` with coalescing on stores a streamed request as one `ChatResponse`; a hit tag on the response
+  reaches the usage recorder once per request and never the history, while a tag on each streamed update does reach the messages and
+  changes the next key. (5) The evaluation package's `DiskBasedResponseCacheProvider` expires entries after 14 days and its keys are
+  opaque, so a miss cannot say what changed. So: a `CachingChatClient` subclass (MEAI's streaming flow, reused) over the 4b store, one
+  folder and one index per trial, no new package; the rest of the row (a hit tagged, recorded as a known 0 with `cache_hit`, a miss that
+  names the first changed part, `--replay` on the runner) stands. The store is no longer web-only, so it moves to `Sessions/Replay/` as
+  `ReplayStore` (step 4e.1).
+
+- **Step 4d: the summaries are traced too** (Louis, 2026-10-25, step 4d's prompt, decision 3). A summary is a model request the ledger records (`UsagePurpose.Summary`), so `ChatPipeline.BuildSummaryClient` traces it as well, and the traces count the same requests as the ledger.
+
+- **The message enums split by area, before step 4b** (Louis, 2026-10-25: "these files is getting huge, should we not split them
+  also by it's purpose?", then "After 4a, before 4b"). Three commits, one per enum (`ToolMessage`, `LogMessage`, `ErrorMessage`), each
+  test first and each stopped after. Each area's texts go in its own `Messages/` folder, beside its code, named `{Area}ToolMessage`,
+  `{Area}LogMessage` or `{Area}ErrorMessage`; a text that two areas use stays in core's `Messages/`. No text changes: every
+  `[Description]` moves verbatim, `ToolMessageSnapshot.json` stays byte-equal, and the only deletions are five dead log members.
+  The split closes the TODO line *`ToolMessage` split per toolset*, and steps 4b and later add their texts to the small enums.
+
+- **Step 4a: a replay names the recorded trial, not only the run** (Louis, 2026-10-25, step 4a's prompt). `SessionReplay.Of` is the
+  recorded trial a session writes or reads, and the API resolves it when the session opens: a recording uses `{run tag}/{task}`, a replay
+  the `of` it is sent, and a sub-session is sent its parent's resolved `Of`. A sub-session's own task is `sub-session:{name}`, and one run
+  tag (`{runId}:{mode}:{repeat}`) holds every scenario of a mode and repeat, so a sub-session that worked out its own key would mix one
+  scenario's pages with another's.
+
+- **Step 4a: an eval marks itself by sending `replay`, and a run tag does not** (Louis, 2026-10-25, the review of 4a.2; the mistake was
+  in step 4a's prompt, which made a run tag the mark). The orchestrator sends a run tag on every fix session
+  (`LouisAgentClient.cs:49`), so `WEB_REPLAY=record` would have recorded its real work, and `WEB_REPLAY=replay` would have refused it.
+  And an explicit `web: off` was not passed on to a sub-session, which then fell back to the instance default. So: a session that sends
+  `replay`, even an empty `{}`, is an eval, and the instance default only fills in a `web` it left out; with no `replay` the session
+  is left alone. The runner (4a.3) sends `replay` on every session it opens. This replaces the plan's "a run tag, no `replay`: the
+  default"; the rest of the 4a row stands. The runner's records are `EvalRun(RunId, Repeats, Web?, Of?)` and `SessionRequest`'s
+  `WebReplayRequest(Web?, Of?)`, not the plan's `SessionReplay`, because the runner must be able to leave `web` out so the instance's
+  default applies, and `SessionReplay.Web` isn't nullable.
+
+- **Step 4.5: the portal shows every eval the same way, from one template** (Louis, 2026-10-25: "the front end should probably also
+  update to reflect the standard we now implement I mean all future evals will display the same, that's the point?" and, on the choice,
+  "A, so it will be generic, and work from a template"). Three commits: 4.5a, the runner grades each trial (today it writes
+  `grades: null, outcome: null`); 4.5b, the admin rows carry the standard records; 4.5c, every eval's grades in the portal, from one
+  template. The views read only the standard records: the run's eval, version, commit and graders; each conversation's grades and
+  outcome; the tracked metrics. No view names an eval's own score key. A ratchet test (`PortalReadsNoScoreKeyTests`) lists today's
+  readers of Puls's keys (`RunExplorer.razor`, `Benchmarks.razor`, `BenchmarkTrends.cs`), and 7c empties it when the scores split.
+  A run from before step 2a shows "no grades", never 0 (ADR 0007). `PassRates.Of` arrives here, because the runner needs a trial's
+  outcome; 5a adds `Over` and the `TrialFailure` case. **Built to move** (Louis, 2026-10-25: "split admin from puls, admin can be a
+  package in future"): F18 doesn't split the admin from Puls, but the new admin code names nothing of Puls (no `PulsText`, no
+  `Components.Brand`), so the split becomes a folder move; the engine package's plan notes the split, after 7b at the earliest.
+
+- **Step 4.3 split into 4.3a and 4.3b** (Louis, 2026-10-25). 4.3a is the API: it lists the C# evals from the runner's `--list`, starts
+  the runner for an eval check, and keeps the Python checks the portal offers until steps 5 and 7. 4.3b is the images: both Dockerfiles
+  publish the runner to `/app/evals`, the compose files keep its default path, and a by-hand Docker check follows. `EVAL_RUNNER` and its
+  docs come in 4.3a, with the code that reads it.
+
+- **Step 4 makes the eval sets pluggable** (Louis, 2026-10-24: "say we want to add evals for a new identity? is this
+  pluggable"). The harness gains `IEvalSet` (the identity it proves, and its `IEval`s), as CL15 gave identities and
+  packs their interfaces: each evals project (`louis-agent.evals.puls`, later `.demo`, `.voorman`) has one set, and the
+  runner's `EvalCatalog` lists the sets, not every eval, picked with `EVALS=` (all when unset) as a host picks with
+  `IDENTITIES`. A new identity's evals are then one project and one set, with no list of evals to edit in the runner.
+  The harness also gets the graders every identity needs, ready made as `IGrader`s in `Grading/Common/`: no `error`
+  event, answered within a time, cost under a limit (from the ledger, never from the grader's own sums, ADR 0029). A
+  set's evals keep the identity's own rules (Puls's `Scoring/`) behind its own graders.
+
+- **Step 3 split into 3.1, 3.2 and 3.3** (Louis, 2026-10-24). Step 3 is about 1,100 lines of C# and tests, too big for the
+  review a step gets. 3.1 is `scoring.py`'s rules with its 27 tests (`test_scoring.py`), and nothing else. 3.2 is the
+  turn's reader (the Python's `read_turn` and `hosts`), the cook's scores and its graders, with `test_cook.py` (18). 3.3
+  is the routing's scores and graders with `test_routing.py` (10), and the one-key rule as a red test, which Louis
+  confirms at 3.3's review, since the design says so. The plan's own 3a (datasets, step 3a) keeps its name.
+
+- **Step 7c, protocol v2** (Louis, 2026-10-24). Steps 2 to 7 keep F31's version-1 lines, so the API reads the C#
+  runner exactly as it reads the Python, and step 5's "scores equal the Python's" compares one change at a time. Once
+  step 7 has deleted the Python, the C# runner is the only writer, and step 7c replaces v1 with v2: one C# event model
+  that the runner writes and the API reads (one set of record types, as the session-stream reader is for the session
+  stream), with no `@` prefix or ASCII-only rule beyond what stdout mixed with log lines needs. **v1 runs are
+  discarded** (Louis: "v1 runs can be discarded"): no migration and no v1 parser kept; `python-protocol.txt` and the
+  v1 parse tests go with it, and the trends start again at v2. Before the discard, the last Python cook and routing
+  scores are written into the feature doc as numbers, so the baseline stays on record. The admin portal's readers
+  move with it (Louis, 2026-10-28, review of the unattended run): each file on `PortalReadsJsonTests`' list (the
+  portal's code that still reads a reply as `JsonElement`) moves to its contract record when 7c rewrites it, and
+  7c is done only when that list is empty.
+- **Step 7b splits the store by record** (Louis, 2026-10-24). `IBenchmarkStore` is already the repository (one
+  interface, an in-memory and a MongoDB implementation, one contract test), but `MongoBenchmarkStore` holds four
+  records in one class (runs, conversations, turns with their events, requests: each its own collection, mapping and
+  indexes; 320 lines, on `FileSizeTests`' list). With 7b's rename (`Benchmarks/` to `Evals/`, `IEvalStore`), it
+  becomes one store per record: `IRunStore`, `IConversationStore`, `ITurnStore`, `IRequestStore`, each with a MongoDB
+  and an in-memory class and its own contract test, and a hand-written mapper per record (the mapping stays by hand,
+  so what `mongosh` shows is what the portal reads, and scores and events stay the JSON they came as). `IEvalStore`
+  goes, or stays only as the four together for the recorder. No generic `Repository<T>`: the driver's
+  `IMongoCollection<T>` already is one, and a wrapper would leak its queries or hide each record's indexes and upserts.
+  `MongoBenchmarkStore.cs` leaves `FileSizeTests`' list. The old v1 fields are still read until 7c discards them.
+
+- **Review fixes before step 4** (Louis, 2026-10-24: one fix commit, before step 4). The graders' reasons move into a
+  message enum, `GradeMessage` (`evals/louis-agent.evals.puls/Messages/`), as ADR 0009 asks, with a test that fails until
+  it is in `TheHostsHaveMessageEnums`. The harness root is split for its namespaces: `IEval`, `EvalMode` and `EvalScores`
+  sit in the root (`LouisAgent.Evals`); `EvalScenario` and `EvalInput` in `Datasets/` with step 3a; `Running/` holds the
+  runner. `evals` joins `FileSizeTests.SourceRoots`. The grader tests move to
+  `tests/louis-agent.evals.puls.tests/Grading/FixedRules/` (`CookGradersTests`, and the routing grader in
+  `RoutingRoutedRightTests`). None of these changes behaviour; the tests stay green.
+- **Step 3a split into 3a.1 and 3a.2** (as step 3 was): 3a.1 is the loader and its hash, in the harness; 3a.2 is Puls's
+  dataset files. The decisions below are 3a.1's (Louis, 2026-10-24, in the step 3a.1 brief). The
+  loader reads each JSON file with System.Text.Json and `UnmappedMemberHandling.Disallow` (ADR 0030: reuse first). The split
+  comes from the folder's name (`dev`, `held-out`), parsed with `SettingChoice` (ADR 0024). `IGrader` gains a required
+  `ExpectedKeys`, so a grader names the keys it reads; today's graders read none. The hash is SHA-256 over `scenarios/` only:
+  files in ordinal path order, each path and then its content, each followed by a NUL byte, with CRLF read as LF, so the
+  Windows and Linux hashes agree. When it differs the refusal names the hash, so a person bumps the version, adds a dated
+  line to `changes` and pastes it. Every refusal text is an `EvalErrorMessage` member (ADR 0009).
+- **Step 4 writes the developer's how-to for an eval set** (Louis, 2026-10-24: "a guide for the project a developer to
+  read"). `docs/guides/add-an-eval-set.md`, a how-to for a person (one type per doc, ADR 0013), not a `CLAUDE.md`: what it
+  answers first, then the steps with the Puls evals as the worked example: a new `evals/louis-agent.evals.{name}` project
+  and its tests, one `IEvalSet`, an `IEval` with its modes, the dataset folder (`dataset.json`, `scenarios/{dev,held-out}/`,
+  the hash), graders with their `ExpectedKeys` and at least one required fixed rule, the catalogue line, and running it with
+  `EVALS=` and `run {name}`. It is written in step 4, once `IEvalSet` and the catalogue exist, listed in the docs index
+  under *Change it*; the `CLAUDE.md` guides link to it rather than repeat it. Step 5 checks it
+  still matches by following it for `CookEval` and `RoutingEval`.
+- **Step 3a.2's decisions** (Louis, 2026-10-24, on the review of `1f5b410`). Every scenario that came from the Python
+  checks is `dev`: each Python run asked all 18, so the prompts were tuned on every one, and moving some into `held-out/`
+  would set them aside without making them unseen. The held-out set is new scenarios, written in step 5 with the
+  `expected` keys and never read while tuning: about three for the cook (a second town with a shop, an English budget, a
+  follow-up) and one new question per kind for the routing. The categories are the cook's from step 5c (`language:af|en`,
+  `budget`, `follow-up`, `shop:none`, `control`) and `kind:{kind}` for the routing. `expected` is `{}` until step 5, since
+  the loader refuses a key no grader reads and no grader reads one yet; the plan's "a grader no scenario feeds fails" is
+  tested in step 5 with them. The loader orders scenarios by split and file name, so the tests compare sets.
+- **Step 4 split into 4.1 to 4.4** (Louis, 2026-10-24, on the step 4 brief: "too big for one review"). 4.1 is the eval sets
+  (`IEvalSet`, Puls's set empty until step 5), the runner project with its catalogue, arguments and the stub eval, and the
+  stub's parity with the Python stub's protocol lines. 4.2 is the common graders in `Grading/Common/` (no `error` event,
+  answered within a time, cost under a limit). 4.3 is the API and Docker: `BenchmarkCheck` names an eval, `BenchmarkRunner`
+  starts `dotnet {EVAL_RUNNER} run {name}`, `BenchmarkCatalog` comes from `run --list`, both Dockerfiles publish the runner,
+  and `StubCheckTests` runs the C# stub. 4.4 is the developer's how-to, `docs/guides/add-an-eval-set.md`.
+
+- **A verdict is a grade, and nothing else** (Louis, 2026-10-24, on "should these scorers not be more locked down to
+  interfaces?", after a comparison with Anthropic's *Demystifying evals for AI agents* and Microsoft.Extensions.AI.Evaluation,
+  both read 2026-10-24). Neither has a scorer contract beside the grader. Anthropic judges in graders and keeps
+  `tracked_metrics` (turns, tool calls, tokens, latency) apart. MEAI's `IEvaluator` returns named metrics, each with its
+  own interpretation. Puls's scorers both judge and measure, so a verdict is worked out twice, in `CookScorer` and again
+  in its graders. So:
+  1. **No `IScorer`; `IGrader` stays the one contract for a verdict.** MEAI's `IEvaluator` was considered for that
+     contract. It grades one `ChatResponse` from a list of `ChatMessage`s (`EvaluateAsync(messages, modelResponse,
+     chatConfiguration, additionalContext)`). A trial's turns, sub-sessions, timings and failures would then ride in an
+     `EvaluationContext` that every code grader casts. So `IGrader` takes the `Trial`, and `EvaluatorGrader` wraps an
+     `IEvaluator` for the model graders (step 6), as planned.
+  2. **Step 4.2's `Grading/Common/` gains the route as a kind**: "went to role X", Anthropic's `tool_calls` grader. It
+     sits beside no error, answered within a time, and cost under a limit. A new identity's author starts from these.
+  3. **Step 4.2 adds `EvalConformanceTests`**, which every eval of every set must pass, as every pack passes
+     `PackConvertibilityTests`. It checks the shape:
+     - names unique and MCP-safe, and versions of at least 1;
+     - at least one required `FixedRule` grader;
+     - every `expected` key read by a grader;
+     - every grade with a reason, a `Score` from 0 to 1, and an outcome that agrees with it.
+
+     It also checks Anthropic's reference solution: each scenario has a transcript that passes all its required
+     graders, taken from a stored run or built by hand as the graders' tests already are. Our own addition is a
+     known-bad transcript that fails them, so a grader that passes everything is caught. In 4.2 the test runs on the
+     stub eval and a fake set; Puls's evals meet it when they join `PulsEvalSet` in step 5.
+  4. **Step 7c splits the scores document.**
+     - Verdicts become grades, with partial credit in `Score` (Anthropic: "build in partial credit"), so `priced_ratio`
+       becomes the `priced-with-source` grade's score.
+     - The rest become tracked metrics: calls, hosts, turns, tokens, seconds, and cost from the ledger. They are
+       measured and never decide a pass.
+     - The scorers then shrink to the rules behind the graders plus a metrics reader. Until 7c, v1's keys stay as they
+       are.
+- **Step 4.1's decisions approved** (Louis, 2026-10-24, on the review of `6d26a1a`). The protocol gains the facts the API
+  reads (the mode's conversations, the turn's continued, agent calls, specialist calls, hosts and error, the conversation's
+  errors), and each eval says its turns' facts (`IEval.TurnFactsOf`); the conversation's `grades` is left out until the graders
+  join the runner; the stub brings its own session client, since the Python's session ids depend on mode, repeat and task;
+  `--list` escapes an apostrophe, which is valid JSON; a mode whose eval has no session client is refused until step 5. The
+  review's fixes (the run's name from `BENCHMARK_RUN`, the catalogue's refusal of an unknown name, the stub's cook reply in its
+  enum, `AgentCalls` for the harness's field) are recorded in the feature doc.
+- **Step 4.2a's decisions approved** (Louis, 2026-10-25, on the review of `d277378`). The cost is the stream's `usage.cost`, the
+  ledger's total per turn, summed over the turns, with no price worked out in the harness and an unpriced request making it
+  unknown; the route is the first turn's first `StartSubSession` role, not the stream's `session_role`; and each common grader
+  takes a `required` flag, default true. The review's fixes (the expected role per trial, the error that fails a route, the
+  infrastructure failure as Unknown, the specialist's events not counted) are recorded in the feature doc.
+- **Step 4.2 split into 4.2a and 4.2b** (Louis, 2026-10-25, on the review of the first 4.2 commits). 4.2a is the four common graders
+  (no error, within a time, cost under a limit, routed to a role) and the one reader of the engine's events they share. 4.2b is the
+  conformance check (`EvalConformance`), the reference transcripts beside each eval, and the runner's test of every eval.
+- **The conformance check's references** (Louis, 2026-10-25). Each eval keeps `Transcripts/{eval}/` with `{scenario}.reference.txt` (one
+  conversation's protocol lines, its mode line first) and `{scenario}.bad.{label}.txt` (the same, wrong in one way). Every required grader
+  fails at least one known-bad of its eval, and only `Fail` counts. Step 5's Puls evals bring theirs, cut from a stored run where one
+  passed, or built by hand.
+- **Step 4b: the engine factory's cache and profile key move to `Hosting/Engines/`, before 4b.4** (Louis, 2026-10-25, on
+  `AgentEngineFactory.GetOrCreate`: "can't we move this, when files get too big"). The factory was at 190 lines with 4b.4 still to add.
+  `GetOrCreate` did three jobs: it checked the request (it stays), it built the key (`ProfileKey`, a record: a value, ADR 0040), and it
+  kept the cache (`EngineCache`, a class: the only code that used the dictionary, the last-used map, the lock and the counter). ADR 0034
+  splits a class by the fields each part uses, never into a `Utils` class or extension methods, which could not reach the private state
+  anyway. No behaviour changed: `ProfileKey.Text` is byte-equal to the old key, and `AgentEngineFactoryTests` asserts what it did.
+- **Step 4b: one store for every kind of answer, the clock standing still, and the replay skipping the fetch's DNS check** (Louis,
+  2026-10-25, his approval of the step 4b prompt). It covers what the plan did not say. (1) One store keeps visits, searches, fetches and the
+  clock: an ask is a kind and a key, an answer is any JSON value, under `answers/` and not `pages/`. (2) Within a trial the clock stands
+  still: the first read is saved and every later read, recording or replaying, answers it, so a replay shows the model the same time as the
+  recording and step 4e's cache of model answers keeps hitting. (3) A replay skips `FetchUrl`'s per-hop DNS check, and only there, only
+  where the fetcher has a store and the flow is a replay: nothing leaves the process, and a site that no longer resolves must still replay.
+  `ReadRenderedPage`'s check stays, because with `PAGE_RENDERER=tavily` the page goes to a third party even in a replay.
+- **Step 5.2: the first C# run is the baseline, there is no Python run to match** (Louis, 2026-10-25: he had deleted the old runs, and said "this run will
+  become the baseline, our first run"). The by-hand export of the Python's last runs, and 5.3's parity test against them, are dropped; the
+  scorers stay held by step 3's tests and the hand-cut references of 5.3. The export route stays: it is how a stored run becomes a transcript.
+- **Step 5.4: a cook question names its town, its people and its shop, and the datasets follow the prompts** (Louis, 2026-10-25: "the cook requires town,
+  serving size and shop, or if specified just recipe then no prices", then "datasets are outdated, compare it with the prompts"). Puls's routing prompt asks
+  first when a meal doesn't say for how many or where the user shops, so a question that should reach the cook states both (the routing's two meals too);
+  `expected` repeats `town`, `serves` and `shop`, each read by a named grader; `shop` is `checkers` or `any` (the user said it doesn't matter, or asked for the recipe
+  only: the cook prices nothing and estimates). The old `none` ("no shop near you has a catalogue") is gone, because no prompt or tool produces that line any more.
+  The datasets' `expected` keys: `routes_to` (both), `town`, `serves`, `budget`, `shop` (the cook), and `--split dev|held-out|all`, dev by default, with the run's split
+  on its first line.
+- **Step 5.4b: one folder per eval** (Louis, 2026-10-25: "I'm still wondering how we can make this conform to a specific structure", then on the
+  proposal: "cool"). An eval project is cut per eval: `Evals/{Folder}/` holds the eval, its grading, scoring, dataset and transcripts; what two evals or
+  more use is in `Shared/`; `Messages/` is the set's enums. The harness's `EvalFiles` says where an eval's data is at run time, so no eval builds a path.
+  A layout test (`EvalLayoutTests`) holds it for every set and the stub.
+- **Step 5.4c: a template eval project** (Louis, 2026-10-25: "cool, but maybe also add a demo project with the template with empty interfaces"):
+  `evals/louis-agent.evals.template`, the layout with every member present and empty, to copy when starting a new eval set; never registered with the runner.
+- **Step 5: the decisions of its prompt** (Louis, 2026-10-25). (1) The Puls evals are `puls-cook` and `puls-routing`, the names their datasets carry; the portal's `BenchmarkCatalog.Default`
+  drops the Python `cook` and `routing` once the C# evals list, the Python runs stay readable under `cook` and `routing`, and the C# runs start new trends, because the harness changed
+  and step 3 changed one key. (4) A stored run as the protocol's own lines (`GET /v1/admin/benchmarks/runs/{id}/protocol`) is the export format, so a run goes back to the harness as a
+  transcript the way a reference does. (5) A scenario states its requirements in `expected`, each key read by a named grader and not by a rule on its id: `routes_to` (the harness's
+  `RoutedToGrader`, which takes its keys), and for the cook `town`, `serves` (`ServesAsAsked`, not required), `budget` (`WithinBudget`) and `shop` (`PricedAtShop`); the scorers keep their v1 keys until 7c.
+  The portal passes the web on (`web` `record` or `replay` {runId}), and a run asks for the `dev` scenarios unless `--split held-out` or `--split all`.
+- **Step 5a: the rates are the runner's** (Louis's prompt, 2026-10-25). The plan's row has `BenchmarkTrends` compute pass@k and pass^k over stored conversations; the runner computes them instead, from its
+  trials, and writes them on the `mode_done` line (`pass_at_k`, `pass_hat_k`, `k`, `infrastructure`, `retried`). The API doesn't reference the harness, so a formula there would be a second copy that drifts;
+  it reads what the runner wrote, and a re-score (5b) writes new `mode_done` lines with new rates. A transport failure is run once more, and a recorded trial starts afresh when it is recorded again.
+- **Step 5.6: PnP and Woolworths, and a town with no branch** (Louis, 2026-10-25). Checkers refuses the headless browser, so the cook scenarios name PnP and Woolworths, read with `ReadRenderedPage`
+  (`shop`: `pnp`, `woolworths`). A shop with no branch in the user's town (`cook-no-branch`, `shop`: `no-branch`) is priced nowhere: the cook answers with estimates, reads no shop page, links no
+  price, and says there is no branch; the cook's prompt says the same. A page of a shop read for `any` now fails too (the prompt says no shop page).
+- **Step 5.7: the cook gives estimates and where to buy** (Louis, 2026-10-25). Step 5.7 is now "the cook gives estimates and where to buy"; the shops pack stays, off for the cook, until a retailer gives
+  access. The earlier 5.7 (Checkers through its rendered page) was dropped after its probe. The cook looks up no prices (ADR 0038: Checkers refuses our browser, and PnP's and Woolworths' robots.txt disallow
+  their search pages); it names the shop's branch under *Where to buy*. Added the same day (Louis: "i want at least one image to render from the recipe"): the answer shows an image the recipe page gave.
+
+- **Step 5b: `RescoreAsync` takes the protocol's lines, not a `StoredRun`** (Louis, 2026-10-25, the 5b prompt and its review). The plan's signature was
+  `RescoreAsync(IEval eval, StoredRun stored, string runId, ct)`, with the API handing the runner a built record. It is `RescoreAsync(IEval eval, string runId,
+  string rescoreOf, IEnumerable<string> storedLines, ct)`: the API pipes its own export (`GET …/runs/{id}/protocol`) to the runner's stdin, and the runner reads the
+  lines with `ProtocolTranscripts`, the reader a run and the conformance check already use, so no second format exists to drift. The first line of every run with a
+  dataset now also carries the dataset's `name`, `version` and `hash`, which step 3a built and nothing wrote.
+
+- **Step 6b: the cook's dataset grows to the field's starting size** (Louis, 2026-10-26, on "after F18 will we be
+  standard": "Add step 6b: ~20 cook scenarios"). After 6a, the cook's dataset grows from 8 scenarios to about 20,
+  the start Anthropic's *Demystifying evals for AI agents* gives ("20-50 simple tasks drawn from real failures is a
+  great start"; checked 2026-10-26). **Drawn from real failures:** each new scenario names the run that showed it
+  (the budget misses of `8f7802b9a72e` and `c4296ef62205`, the "nearest" branch with no place, the page with no
+  photo, Puls answering a follow-up while the cook was still busy, a blocked shop offered). **Balanced:** the same
+  article's "test both the cases where a behavior *should* occur and where it *shouldn't*", so some scenarios check
+  what the cook must not do (a question that isn't about cooking is not routed to it, no branch is named in a town
+  with no shop, an estimate is never shown as a shop's price, a blocked site is never read, no image when the page
+  had none). About a third go to `held-out/`. Each carries its categories; the dataset's version goes up and its
+  hash with it. Cost: a `--repeat 3` run is about $0.60 instead of $0.26 (about 1 cent a trial). Inspect AI's log
+  format is not in F18: a TODO line, for when a run must be read by other tools.
+
+- **Step 6: the judge's bar is 90% (0.9) of each class of label, not 9 of 10 overall** (Louis, 2026-10-26, on the review of 6.3: "90% or .9"). Row 6 and the plan's *Design* point 2 said the judge must match at least 9 of 10 of the labelled answers. The labels are 14 pass and 4 fail, so a judge that always says pass scores 14 of 18 (78%) without judging anything; the bar is therefore held in each class: at least 90% of the labels of the class, in whole numbers (a class of four needs all four, ten of eleven passes), a class with no labels is untested and does not pass, and a class of fewer than ten is marked *few labels*. The labels are generic (`grader`, `pass`; one file per grader, the grader in its name), so 6a's human grades export to them.
+- **Step 6a: the human review is built on the model grader it reviews, blind, and the people's grades are stored by the API** (Louis, 2026-10-26, 6a's prompt). Row 6a stands, with these made precise: a human review belongs to one model grader and is named `{grader}.human`; `GradeOutcome` gains `Pending`; the API keeps each grade with who (a name the portal asks for once; the gate is one shared key) and when, the latest per reviewer winning and the earlier kept, and exports a person's pass or fail as a label file the harness's loader accepts; the portal's review screen hides the judge's verdict until the person has graded; their grades are shown beside the others and never hold a run up. Four commits (6a.1 the grader, 6a.2 the API, 6a.3 the portal, 6a.4 the calibration on labels given in the portal). **One change the build made:** a grader's name may hold a dot (an eval's still may not), so that `{grader}.human` passes the conformance check.
+- **Step 6a.1b** (Louis, 2026-10-26, review cards): the roll-up has no pending count; every human review is named for a model grader of the same eval, checked by conformance.
+- **Step 6a.2** (Louis, 2026-10-26: build pick and review cards): the label export is a zip of label files; a reviewer's later unsure takes back their earlier pass or fail (the judge is checked only against labels the person still stands by); the review store has its own folder.
+- **Step 6a.4** (Louis, 2026-10-26, while grading): a human review asks only where its judge has its expected keys (version 2); the web fetches again after a write (ADR 0042), the run page's re-fetch in its `@code` by Louis's pick; a re-score keeps the stored run's repeats; the meal judge sees the conversation and not the budget (version 2), tuned to 36 of 36 on Louis's labels.
+- **Steps 6a.3b to 6a.3d and FX25** (Louis, 2026-10-26/27, review cards): the explorer's token charts moved to their own components so the page shrinks; the chips stay until 7c empties the score list. Step 6b is dropped: the cook's scenarios move to F48's step 7 (PR #91). The runner's environment is an allowlist (FX25), with the proxy and certificate names kept so a judge works behind a company proxy.
+- **Step 7.5** (Louis, 2026-10-27, review): repeated names become enums, one per pluggable project, shared otherwise (ADR 0043); added after 7.4.
+- **Step 7.5.3** (Louis, 2026-10-27, three findings: 1 A, 2 A, 3 A): the ratchet keeps an explicit list of exemptions with reasons (narrow the scan if it passes about a dozen); `shops` is done as a toolset now and the pack-name literal waits for the packs set; neutral sample constants live in `louis-agent.testing`, used only where a test needs no real toolset, and a real one is core's enum member.
+- **Step 7.5.2, follow-up** (Louis, 2026-10-27, card): our own `WireName : JsonStringEnumMemberName` in `louis-agent.choices`, so a name reads as what it means and is .NET's attribute underneath; every `[JsonStringEnumMemberName]` in our code becomes `[WireName]`, and `SettingChoice` keeps reading the base type.
+- **Step 7.5.2, follow-up (2)** (Louis, 2026-10-27, "the system should work like this everywhere"): in with `SettingChoice.TryParse`, out with `.Wire()` (an extension in `louis-agent.choices`), the text on `[WireName]`; a ratchet holds that no code outside `louis-agent.choices` calls `SettingChoice.Wire`, case-folds an enum's `ToString()` or uses a naming policy's `ConvertName`, and no compiled code calls `ToString()` on an enum we declare; what writes PascalCase text today is a finding for Louis.
+- **Step 7.5.2, follow-up (3)** (Louis, 2026-10-27, findings 1 A and 2 B): text written as PascalCase today keeps it as `[WireName("FixedRule")]` (one lower-case style waits for protocol v2, 7c); a shop's display name is the pack's own table, never derived from the wire name.
+- **Step 7.5.2** (Louis, 2026-10-27, cards): a wire name is .NET's JsonStringEnumMemberName, so the parser and JSON agree; SettingChoice in its own project, shared by every project, ours and anyone else's; the names stay one enum per pluggable project (ADR 0043).
+- **Step 6a.5: the calibration from the portal** (Louis, 2026-10-26, after step 6a.4f: "we needed a gui for calibration in
+  admin"; of three options, his pick: "1. just build the GUI as best you can"). Today the loop is: grade in the portal, download
+  the labels as a zip, unzip them into the dataset, run `--calibrate` in a terminal; 6a.4f ran it four times by hand. The
+  options were (1) a *Check the judge* button on the run page that runs the calibration on the grades in the store and shows the
+  report in the agreement card; (2) the portal shows the last terminal report, which the command writes to the store; (3) the
+  button runs the calibration on the label files on disk, which the container would need mounted. Pick: 1.
+
+  **Design.** The API never references the harness (ADR 0022, step 5a): as a re-score does, it starts the eval runner as a child
+  process and writes to its stdin. The runner's `--calibrate {eval} {grader} --labels -` reads the label files on stdin, one
+  JSON object per line (the same shape as a file, checked by the same loader rules), instead of the dataset's `labels/`
+  folder; it prints the report's human lines as before and then **one `@` line**, `{"event":"calibration", …}`, with the eval,
+  the grader, the judge model, the agreement, whether it passes the bar, each class's counts (`person_pass`, `person_fail`:
+  `judge_pass`, `judge_fail`, `judge_unknown`, the agreement card's shape) and each disagreement with the judge's reason. The API
+  keeps the report in its own store, `calibrations`, beside the grades (`ICalibrationStore`, in memory and MongoDB): a
+  calibration is a check of the judge, not a benchmark run, so the benchmark store never sees it and the run list never shows
+  it. One run at a time still holds: a calibration is the runner's current run (the judge is shared), with `calibration_of` and
+  `grader` on its row, and the Benchmarks page leaves such a run alone.
+
+  ```mermaid
+  sequenceDiagram
+      participant P as Portal (AgreementPanel)
+      participant A as API (CalibrationEndpoints)
+      participant R as Eval runner (child process)
+      participant S as Calibration store
+      P->>A: POST /v1/admin/benchmarks/runs/{id}/calibrations/{grader}
+      A->>A: the decided grades as label lines (ReviewLabels.Line)
+      A->>R: dotnet runner --calibrate {eval} {grader} --labels -  (the lines on stdin)
+      A-->>P: 202, the run row (calibration_of, grader)
+      R->>R: the judge, every labelled conversation
+      R-->>A: the human lines, then @{"event":"calibration",…}
+      A->>S: CalibrationRecorder stores the report when the run ends well
+      P->>A: GET …/runs/current until it is not running
+      P->>A: GET …/runs/{id}/calibrations
+      A-->>P: the reports, newest first
+  ```
+
+  **Steps**, one commit each, test first: **6a.5a** the runner: `--labels -`, `LabelLoader.Parse` (one label from its text),
+  `CalibrationLine` (the `@` line, written with `EvalJson.SnakeCase`), the judge model on the report; **6a.5b** the API:
+  `Benchmarks/Calibrations/` (`CalibrationRecord`, `ICalibrationStore` with `InMemoryCalibrationStore` and
+  `MongoCalibrationStore`, `CalibrationLineReader`, `CalibrationRecorder`), `BenchmarkRunner.StartCalibration` (its argument
+  building moved to `RunnerStartInfo`, since the runner is near its size), `ReviewLabels.Line`, `POST …/calibrations/{grader}`
+  (202; 400 for a grader without a human review; 404 for no run or no labels yet; 409 while a run runs; 503 without a store),
+  `GET …/calibrations`, a deleted run's calibrations deleted with it, the route golden; **6a.5c** the portal: a *Check the
+  judge* button in the judge's agreement card, a waiting line while it runs, then the latest report in plain sentences
+  (`CalibrationText`, reusing `AgreementText` for the classes) with the disagreements and the earlier checks folded
+  (`CalibrationCard`, `CalibrationView`), the page fetching again when the run ends (ADR 0042); **6a.5d** the docs: the guide's
+  *Checking the judge* gains *From the portal*, the project docs, the feature doc's record. Louis: "we will not calibrate
+  again until next feature", so the live check of the button is the next feature's first calibration.
+
+  | Type | Folder | Namespace | Step |
+  |---|---|---|---|
+  | `CalibrateRequest.LabelsOnStdin` (changed), `CommandLine` (changed) | `evals/louis-agent.evals.runner/Arguments/` | `LouisAgent.Evals.Runner.Arguments` | 6a.5a |
+  | `CalibrateCommand` (changed: stdin labels, the `@` line) | `evals/louis-agent.evals.runner/Calibration/` | `LouisAgent.Evals.Runner.Calibration` | 6a.5a |
+  | `LabelLoader.Parse` (changed), `CalibrationLine`, `CalibrationReport.ClassReport` (new, the class made public) | `evals/louis-agent.evals/Labels/` | `LouisAgent.Evals.Labels` | 6a.5a |
+  | `CalibrationRecord`, `CalibrationLineReader`, `CalibrationRecorder` | `src/louis-agent.api/Benchmarks/Calibrations/` | `LouisAgent.Api.Benchmarks.Calibrations` | 6a.5b |
+  | `ICalibrationStore`, `InMemoryCalibrationStore`, `MongoCalibrationStore` | `src/louis-agent.api/Benchmarks/Calibrations/Store/` | `LouisAgent.Api.Benchmarks.Calibrations.Store` | 6a.5b |
+  | `BenchmarkRun` (changed: `Calibration`), `BenchmarkCalibration`, `RunnerStartInfo` (moved out of `BenchmarkRunner`) | `src/louis-agent.api/Benchmarks/Runs/` | `LouisAgent.Api.Benchmarks.Runs` | 6a.5b |
+  | `ReviewLabels.Line` (changed) | `src/louis-agent.api/Benchmarks/Reviews/` | `LouisAgent.Api.Benchmarks.Reviews` | 6a.5b |
+  | `CalibrationEndpoints` | `src/louis-agent.api/Endpoints/` | `LouisAgent.Api.Endpoints` | 6a.5b |
+  | `CalibrationView`, `CalibrationText` | `src/louis-agent.puls/Admin/Reviews/` | `LouisAgent.Puls.Admin.Reviews` | 6a.5c |
+  | `CalibrationCard` (`.razor` + `.razor.cs`), `AgreementPanel` (changed) | `src/louis-agent.puls/Components/Admin/Reviews/` | `LouisAgent.Puls.Components.Admin.Reviews` | 6a.5c |
+
+- **Step 7.6: unit and integration tests apart** (Louis, 2026-10-27, step 7.6's brief and cards). A test that starts a real process, opens Mongo or needs a tool or the Puls stack is an integration test: `[Category("Integration")]` on its class, in a sibling project `{name}.integration-tests` (core, api, orchestrator, pack.shops), asking for the outside through `Outside.Tool` (skip locally, fail on CI) or `Outside.Stack` (always skips). What a unit and an integration project share lives in a library (`louis-agent.api.testing`). Solution folders `unit`, `integration`, `shared`; CI runs the unit tests and then the integration tests. Two ratchets hold it (`IntegrationTestsAreMarkedTests`, `IntegrationPlacementTests`). Done in steps 7.6.1 to 7.6.3 ([the feature doc](../features/F18-evaluation.md)).
 
 ---
 [Docs index](../README.md) · [Plans](README.md) · [Platform plan](platform.md) · [Feature F18](../features/F18-evaluation.md)

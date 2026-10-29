@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Hosting.SessionLlms;
+using LouisAgent.Choices;
 
 using dotenv.net;
 using LouisAgent.Core.Config;
@@ -8,7 +8,9 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Agents;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Hosting.Messages;
 
+namespace LouisAgent.Core.Hosting.SessionLlms;
 /// <summary>The models a session may name besides the instance's own (F30; S, CL15, from AgentHost): their profiles read, the minions' choices checked.</summary>
 public static class SessionLlmLoader
 {
@@ -23,29 +25,37 @@ public static class SessionLlmLoader
     /// <paramref name="environment"/>; anything else a profile leaves out takes its default, not the instance's value. A
     /// listed profile without its file stops start-up.
     /// </summary>
-    internal static IReadOnlyList<SessionLlm> Load(AgentOptions agent, ILlmClientFactory clientFactory, string? configDirectory,
+    internal static IReadOnlyList<SessionLlm> Load(AgentOptions agent, ILlmClientFactory clientFactory,
+        string? configDirectory,
         Func<string, string?> environment)
     {
         var llms = new List<SessionLlm>();
         foreach (string name in agent.SessionLlmProfiles)
         {
             if (!HostEnvironment.IsProfileName(name))
-                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmNameInvalid, new { Name = name }));
+                throw new SessionLlmException(MessageText.Format(HostingErrorMessage.SessionLlmNameInvalid,
+                    new { Name = name }));
             string file = Path.Combine(configDirectory ?? "", $".env.{name}");
             if (configDirectory is null || !File.Exists(file))
-                throw new SessionLlmException(MessageText.Format(ErrorMessage.SessionLlmFileMissing, new { Name = name, File = $"config/.env.{name}" }));
+                throw new SessionLlmException(MessageText.Format(HostingErrorMessage.SessionLlmFileMissing,
+                    new { Name = name, File = $"config/.env.{name}" }));
 
             var settings = DotEnv.Read(new DotEnvOptions(ignoreExceptions: false, envFilePaths: [file]));
             var llm = LlmOptions.FromEnvironment(key => settings.TryGetValue(key, out string? value) ? value
                 : SecretLlmSettings.Contains(key) ? environment(key) : null);
-            var model = new SessionLlm(name, clientFactory.Create(llm), llm.ResolveSupportsTools(), clientFactory.CreateUsageMapper(llm),
+            var model = new SessionLlm(name, clientFactory.Create(llm), llm.ResolveSupportsTools(),
+                clientFactory.CreateUsageMapper(llm),
                 llm.ResolveThinking());
-            Log.Log(LogLevel.Information, LogMessage.SessionLlmLoaded, new
+            Log.Log(LogLevel.Information, HostingLogMessage.SessionLlmLoaded, new
             {
-                Name = name, Llm = llm, Tools = model.SupportsTools ? "on" : "off", Thinking = model.Thinking?.ToString().ToLowerInvariant() ?? "off",
+                Name = name,
+                Llm = llm,
+                Tools = model.SupportsTools ? "on" : "off",
+                Thinking = model.Thinking?.Wire() ?? "off",
             });
             llms.Add(model);
         }
+
         return llms;
     }
 
@@ -58,9 +68,13 @@ public static class SessionLlmLoader
         foreach (var (role, models) in agent.MinionLlms)
             foreach (string model in models)
                 if (model != MinionTools.InstanceLlm && !agent.SessionLlmProfiles.Contains(model, StringComparer.Ordinal))
-                    throw new SessionLlmException(MessageText.Format(ErrorMessage.MinionLlmUnknown, new
+                    throw new SessionLlmException(MessageText.Format(HostingErrorMessage.MinionLlmUnknown, new
                     {
-                        Name = model, Role = role, Available = agent.SessionLlmProfiles.Count == 0 ? "none" : string.Join(", ", agent.SessionLlmProfiles),
+                        Name = model,
+                        Role = role,
+                        Available = agent.SessionLlmProfiles.Count == 0
+                            ? "none"
+                            : string.Join(", ", agent.SessionLlmProfiles),
                     }));
     }
 }

@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Louis",
+  "classifications": [ "Library", "Evals" ],
+  "identity": "LouisAgent.Evals.Template",
+  "name": "A Louis agent eval set",
+  "description": "An eval project cut per eval, with every member present and empty: run it from evals/ with -n {Name} -o louis-agent.evals.{name}.",
+  "shortName": "louis-eval-set",
+  "sourceName": "Template",
+  "preferNameDirectory": false,
+  "tags": { "language": "C#", "type": "project" },
+  "sources": [
+    { "exclude": [ ".template.config/**", "**/bin/**", "**/obj/**" ] }
+  ],
+  "symbols": {
+    "lowerName": {
+      "type": "derived",
+      "valueSource": "name",
+      "valueTransform": "lowerCase",
+      "replaces": "template",
+      "fileRename": "template"
+    }
+  }
+}

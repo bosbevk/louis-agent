@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- F18 step 7.6.3: what the API's unit tests and its integration tests share (ADR 0043's rule for tests: no test project references another). The in-memory API host, the built runner and
+       stand-in dlls, and the store contracts that run once against memory and once against Mongo. A class library, not a test project. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Api.Testing</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.12" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\louis-agent.api\louis-agent.api.csproj" />
+    <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- ApiTestHost builds on internals of the API, so it stays internal and is shown to the two API test projects. -->
+    <InternalsVisibleTo Include="louis-agent.api.tests" />
+    <InternalsVisibleTo Include="louis-agent.api.integration-tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
+  </ItemGroup>
+
+</Project>

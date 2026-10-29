@@ -1,0 +1,27 @@
+{
+  "id": "cook-en",
+  "input": [
+    {
+      "role": "user",
+      "content": "What should I cook tonight in Pretoria for two? I have about an hour and I shop at PnP. Give me the recipe and what it'll cost."
+    }
+  ],
+  "metadata": {
+    "place": null,
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [
+      "Swap the meat for chicken. What does the shopping list look like now?"
+    ],
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Pretoria",
+      "serves": 2,
+      "shop": "pnp",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "follow-up"
+    ]
+  }
+}

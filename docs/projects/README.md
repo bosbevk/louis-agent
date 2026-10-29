@@ -21,6 +21,10 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `src/louis-agent.mcp-server` | Console / ASP.NET Core | Hands the agent's tools to any MCP client (no model of its own) | [mcp-server](louis-agent.mcp-server.md) |
 | `src/louis-agent.orchestrator` | Console app | A second agent that watches a service's errors and has louis-agent fix them (POC) | [orchestrator](louis-agent.orchestrator.md) |
 | `tools/louis-agent.usage-probe` | Console app (developer tool) | Prints what a provider reports as token usage and what the ledger makes of it | [usage-probe](louis-agent.usage-probe.md) |
+| `evals/louis-agent.evals` | Class library | The eval harness: `IEval` and `IEvalSet`, datasets, trials, the common graders, the judge and its calibration, the runner loop, conformance (F18) | [evals](louis-agent.evals.md) |
+| `evals/louis-agent.evals.protocol` | Class library | The eval protocol v2: the events the runner writes and the API and portal read, records and enums only (ADR 0047) | [evals.protocol](louis-agent.evals.protocol.md) |
+| `evals/louis-agent.evals.runner` | Console app | The command that lists and runs evals, re-scores a stored run and checks a judge; the API starts it as a child process | [evals.runner](louis-agent.evals.runner.md) |
+| `evals/louis-agent.evals.puls` | Class library | Puls's evals: `puls-cook` and `puls-routing`, their datasets, graders and reference transcripts | [evals.puls](louis-agent.evals.puls.md) |
 | `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [web.shared](louis-agent.web.shared.md) |
 | `tests/louis-agent.*.tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the shops pack, the composition root and the three web projects (bUnit); `tests/louis-agent.testing` and `tests/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 

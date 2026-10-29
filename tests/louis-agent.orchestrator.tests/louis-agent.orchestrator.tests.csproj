@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\louis-agent.orchestrator\louis-agent.orchestrator.csproj" />
+    <!-- F18 step 7.6: the git tests ask for git through Outside. -->
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

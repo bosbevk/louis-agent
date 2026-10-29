@@ -19,9 +19,29 @@ public class ToolsetContextTests
 
     private sealed class FakeBrowser : IWebBrowser
     {
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
-            string? readySelector = null, CancellationToken cancellationToken = default) =>
-            Task.FromResult(new BrowserVisit(url.ToString(), "", []));
+        public int Calls { get; private set; }
+
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
+            string? script = null,
+            string? readySelector = null, CancellationToken cancellationToken = default)
+        {
+            Calls++;
+            return Task.FromResult(new BrowserVisit(url.ToString(), "", []));
+        }
+    }
+
+    [Test]
+    public async Task TheRendererAndTheShops_ReadThroughTheSameBrowser()
+    {
+        // F18 step 4a: one browser per process, so a recorded run holds every page, whichever tool read it; the renderer had built its own.
+        var fake = new FakeBrowser();
+        var context = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch(),
+            WebBrowser: fake);
+
+        await context.Renderer.RenderAsync(new Uri("https://example.com/recipe"));
+
+        Assert.That(context.Browser, Is.SameAs(fake));
+        Assert.That(fake.Calls, Is.EqualTo(1), "the page the renderer read went through the browser the shops get");
     }
 
     [Test]
@@ -35,7 +55,10 @@ public class ToolsetContextTests
     public void TheChromeItNames_SaysWhatTheOptionsSay_ToEverySite()
     {
         // FX21: the user agent travels from the setting to the browser; unset, the browser keeps Chrome's own.
-        var named = new ToolsetContext(new AgentOptions { BrowserUrl = "http://browser:9222", BrowserUserAgent = "Puls/1.0 (+https://example.test)" }, new NoSearch());
+        var named = new ToolsetContext(
+            new AgentOptions
+            { BrowserUrl = "http://browser:9222", BrowserUserAgent = "Puls/1.0 (+https://example.test)" },
+            new NoSearch());
         var plain = new ToolsetContext(new AgentOptions { BrowserUrl = "http://browser:9222" }, new NoSearch());
 
         Assert.That(((ChromeWebBrowser)named.Browser!).UserAgent, Is.EqualTo("Puls/1.0 (+https://example.test)"));
@@ -44,7 +67,8 @@ public class ToolsetContextTests
 
     [Test]
     public void BrowserUrl_GivesTheChromeItNames() =>
-        Assert.That(new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch()).Browser,
+        Assert.That(
+            new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" }, new NoSearch()).Browser,
             Is.TypeOf<ChromeWebBrowser>());
 
     [TestCase(null)]

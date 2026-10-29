@@ -1,0 +1,20 @@
+{
+  "id": "cook-3",
+  "input": [
+    {
+      "role": "user",
+      "content": "Ek is in Stellenbosch. Wat kan ek vanaand vir ses mense kook as een van hulle vegetaries is? Ek koop by PnP. Gee die resep en 'n inkopielys met pryse."
+    }
+  ],
+  "metadata": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook"
+    },
+    "categories": [
+      "kind:cook"
+    ]
+  }
+}

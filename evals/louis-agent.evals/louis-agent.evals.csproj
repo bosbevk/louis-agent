@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- F18 step 2a: the commit a run was built from, stamped at build (dotnet build -p:EvalCommit=$(git rev-parse HEAD)); "unknown" when absent. -->
+    <EvalCommit Condition="'$(EvalCommit)' == ''">unknown</EvalCommit>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>Commit</_Parameter1>
+      <_Parameter2>$(EvalCommit)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F18 step 2: the harness, sold with the engine (ADR 0029): the engine's message helpers and the session stream's reader. -->
+    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+    <!-- F18 step 7c: the eval protocol's records and kinds, the contract the API reads too. -->
+    <ProjectReference Include="..\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.evals.md" Link="docs\louis-agent.evals.md" />
+    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.AI.Evaluation" Version="10.10.0" />
+  </ItemGroup>
+
+</Project>

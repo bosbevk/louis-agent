@@ -10,12 +10,21 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <!-- F18 step 1c: core reads a peer's stream through the one session-stream reader (CL11); the reader references nothing. -->
+      <ProjectReference Include="..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+      <!-- F18 step 7.5.2: the one parser for a name that is an enum member (SettingChoice); packs, identities and eval sets get it through core. -->
+      <ProjectReference Include="..\louis-agent.choices\louis-agent.choices.csproj" />
+    </ItemGroup>
+
+  <ItemGroup>
       <InternalsVisibleTo Include="louis-agent.core.tests" />
+      <InternalsVisibleTo Include="louis-agent.core.integration-tests" />
       <!-- The API's file browser applies the same workspace and secret-file rules as the agent's tools. -->
       <InternalsVisibleTo Include="louis-agent.api" />
       <!-- The orchestrator runs git and dotnet against the service it watches without a shell, like the tools do. -->
       <InternalsVisibleTo Include="louis-agent.orchestrator" />
       <InternalsVisibleTo Include="louis-agent.orchestrator.tests" />
+      <InternalsVisibleTo Include="louis-agent.orchestrator.integration-tests" />
       <PackageReference Include="Anthropic" Version="12.53.0" />
       <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
       <PackageReference Include="dotenv.net" Version="4.2.0" />

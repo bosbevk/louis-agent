@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
@@ -20,13 +21,14 @@ public class RoleHeaderTests
     {
         var (toolsets, body) = RoleHeader.Split("---\ntoolsets: web, shops?\n---\n# Puls specialist: Local cook\n");
 
-        Assert.That(toolsets, Is.EqualTo(new[] { "web", "shops?" }));
+        Assert.That(toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire(), "shops?" }));
         Assert.That(body, Is.EqualTo("# Puls specialist: Local cook\n"));
     }
 
     [Test]
     public void AHeaderWithWindowsLineEndings_IsReadTheSame() =>
-        Assert.That(RoleHeader.Split("---\r\ntoolsets: shops?\r\n---\r\n# Cook\r\n"), Is.EqualTo((new[] { "shops?" }, "# Cook\r\n")).Using(new HeaderComparer()));
+        Assert.That(RoleHeader.Split("---\r\ntoolsets: shops?\r\n---\r\n# Cook\r\n"),
+            Is.EqualTo((new[] { "shops?" }, "# Cook\r\n")).Using(new HeaderComparer()));
 
     [TestCase("# Puls specialist: Local cook\n\nYou are …")]
     [TestCase("")]
@@ -67,7 +69,9 @@ public class RoleHeaderTests
 
     private sealed class HeaderComparer : IEqualityComparer<(IReadOnlyList<string>, string)>
     {
-        public bool Equals((IReadOnlyList<string>, string) x, (IReadOnlyList<string>, string) y) => x.Item1.SequenceEqual(y.Item1) && x.Item2 == y.Item2;
+        public bool Equals((IReadOnlyList<string>, string) x, (IReadOnlyList<string>, string) y) =>
+            x.Item1.SequenceEqual(y.Item1) && x.Item2 == y.Item2;
+
         public int GetHashCode((IReadOnlyList<string>, string) obj) => obj.Item2.GetHashCode();
     }
 }

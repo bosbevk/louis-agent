@@ -1,0 +1,8 @@
+@* The conversations that passed (green) and those that didn't (red) per mode, the share in its middle: each
+   conversation's own outcome, its required graders all passing (R2-4). *@
+<RingChart Topic="passed" Title="Passed per mode" Legend="ExplorerLegends.Passed">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <ModeDonut I="i" Who="@ModeNames.Who(m)" Figure="ModeRings.Passed(m)" />
+    }
+</RingChart>

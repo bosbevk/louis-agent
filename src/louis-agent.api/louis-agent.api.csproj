@@ -8,15 +8,20 @@
          Same API either way; only the static files differ. -->
     <ProjectReference Include="..\louis-agent.web\louis-agent.web.csproj" Condition="'$(WebApp)' != 'puls'" />
     <ProjectReference Include="..\louis-agent.puls\louis-agent.puls.csproj" Condition="'$(WebApp)' == 'puls'" />
+    <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
+    <!-- F18 step 7c.3: the eval runner's protocol, read through the contract's own records (decision A). -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
     <PackageReference Include="MongoDB.Driver" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>
     <InternalsVisibleTo Include="louis-agent.api.tests" />
+    <InternalsVisibleTo Include="louis-agent.api.integration-tests" />
+    <InternalsVisibleTo Include="louis-agent.api.testing" />
   </ItemGroup>
 
   <PropertyGroup>

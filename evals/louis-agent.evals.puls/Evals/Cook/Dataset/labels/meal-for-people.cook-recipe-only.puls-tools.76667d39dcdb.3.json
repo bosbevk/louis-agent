@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek kan nie nou my kok hier bereik nie, so ek kan nie die koste of 'n winkel se naam vir jou nagaan nie. Hieronder is 'n klassieke bobotie-resep vir vier, uit my eie kennis. Dit is nie deur die kok nagegaan nie, so hou dit as 'n riglyn.\n\n**Bobotie vir 4**\n\n**Vleisvulsel**\n- 500 g beesmalie\n- 1 groot ui, fyn gekap\n- 1 slice witbrood, kors af, in 125 ml melk geweek (druk uit en hou die melk)\n- 1 eetlepel olie\n- 1 eetlepel gewone kerrie-poeier (pas aan na smaak)\n- 1 teelepel borrie of geelkurkuma\n- 1 eetlepel appelkooskonfyt\n- 1 eetlepel asyn\n- 1 eetlepel sitroensap\n- 1 teelepel sout en ½ teelepel varsgemaalde swartpeper\n- 50 g rosyne en 30 g amandelflappies (opsioneel)\n- 1 eier, geklits\n\n**Eierlaag (bo-op)**\n- 2 eiers\n- 250 ml melk (die melk waarin die brood geweek het, gebruik jy ook)\n- 4 varsgeplukte lourierblare of gedroogde blare\n\n**Metode**\n1. Verhit die olie en fruit die ui sag en goudbruin, sowat 8 minute.\n2. Voeg die kerrie en borrie by en roer 1 minuut tot dit ruik.\n3. Voeg die malie by en bruin dit goed, en breek klonte los.\n4. Roer die uitgedrukte brood, konfyt, asyn, sitroensap, sout, peper, rosyne en amandels in. Haal van die vuur af en roer die geklitste eier deur.\n5. Skep die vulsel in 'n gesmeerde ovenskottel (sowat 22 × 22 cm) en druk dit plat.\n6. Klits die 2 eiers met die melk en giet dit oor. Steek die lourierblare bo-op.\n7. Bak by 180 °C vir 40 tot 45 minute, tot die eierlaag stewig is en goudbruin.\n\nDien dit op met geelrys, blatjang en 'n bietjie sambal.\n\nWil jy hê ek moet die kok probeer kry vir die koste en die winkel se besonderhede later, as hy beskikbaar is?"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

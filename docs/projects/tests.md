@@ -3,9 +3,13 @@
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.shops.tests/`,
 > `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
-> `tests/louis-agent.web.tests/`; the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
+> `tests/louis-agent.web.tests/`; the tests that leave their process in `tests/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shops.integration-tests/` (F18 step 7.6); the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
 > `tests/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
+
+## Unit and integration, apart (F18 step 7.6)
+
+A test that starts a real process, opens Mongo or needs the Puls stack is an integration test: its class is `[Category("Integration")]` and it lives in `{name}.integration-tests`, so a unit project never starts a process. Solution folders `unit`, `integration` and `shared` hold the projects; CI runs `--filter "Category!=Integration"` and then `--filter "Category=Integration"` with `INTEGRATION_REQUIRED=1`. `louis-agent.api.testing` (shared) holds the in-memory API host, the built runner and stand-in dlls and the store contracts, so each is written once and run against memory (unit) and Mongo (integration). Two ratchets in `core.tests/Categories/` hold it: `IntegrationTestsAreMarkedTests` (a test that asks for the outside or uses a process, Mongo or the runner is marked; no raw skip) and `IntegrationPlacementTests` (the mark and the project agree).
 
 ## Purpose
 
@@ -27,6 +31,10 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `Pricing/` | The price table and the shipped `config/prices.json`, costs, the pricing sink, exchange rates, the display currency |
 | `Protocols/Mcp/` | The Rider MCP client with mocked HTTP |
 | `Skills/` | `MarkdownSkillLoader` (procedures, parameters, fence languages); `Providers/`: each skill provider and the composite (order, de-duplication, the role first); `Roles/`: the role catalogue, minions' roles, a role's header, and `RoleNamingTests` (nothing in core named "personality", CL13, CL14); the API has `ApiRoleNamingTests` |
+| `RepeatedNames/` | The ratchets of ADR 0043: a wire name written as a string outside its enum (`RepeatedNameTests`, with `Scanning/`: a C# lexer, the scan, the compiled-code reader), and `.Wire()` as the one way out (`WireTextTests`: no direct `SettingChoice.Wire`, no case-folded `ToString()`, no `ToString()` of an enum in the compiled code). Five exemptions, each with its reason, narrowed rather than lengthened (F18 step 7.5) |
+| `louis-agent.testing`'s samples | `SampleToolset`, `SampleMode`, `SampleEval`, `SampleRole`, `SampleIdentity`, `SampleScenario`: neutral names (with `Fill` for a test's JSON) for a test that only stores, shows or parses a name; a test that needs the real one uses its owner's enum member |
+| `Outside` (louis-agent.testing) | How an integration test asks for the outside: `Tool` skips a missing tool locally and fails it where `INTEGRATION_REQUIRED` is set (CI), `Stack` always skips a missing Puls-stack address (F18 step 7.6.2) |
+| `PulsTaskIds`, `PulsCookScenarioIds` (evals.puls.tests) | The routing tasks' and the cook scenarios' ids as test constants, because an id is data and not an enum (ADR 0043); `PulsIdsTests` holds each to its dataset, and `RepeatedNameTests` lists the files (`IdsFiles`) and skips only that class (F18 step 7.5.4f) |
 | `Tools/{Toolset}/` | Every toolset: workspace boundary and secret files, git, dotnet, Python, PowerShell, bash, web search and fetch, Paymo, DevOps, agent-built tools |
 | `Usage/` | Scopes and their totals, the ledger file, reports, the usage text and sessions, `CacheGaps` |
 | `ArchitectureTests.cs` | The layout rules on core's source: namespace = folder, one type per file, dependencies one way |
@@ -40,6 +48,8 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
   paths).
 
 ## louis-agent.api.tests
+
+`tests/louis-agent.api.standin` (F18 step 7.4) is a small console app, not a test project, that stands in for the eval runner where a test starts a real child process: the check's id picks what it does (print its arguments, dump the environment's names, stream lines, fail, sleep, never read its stdin). It is built with these tests through a project reference that brings no assembly, like the runner itself, and replaces the Python scripts the runner tests used to start.
 
 `AgentSessionsTests` (F5): a session's toolsets and tools, the `skills` default, an empty list, unknown names, depth and
 the `specialists` rule, sessions sharing an engine but not a history. No web host, network or model: the sessions are built on
@@ -71,7 +81,7 @@ internals to none; `ArchitectureTests` holds both.
 ## louis-agent.web.shared.tests, louis-agent.puls.tests, louis-agent.web.tests
 
 The web apps' first tests (T1, CL15: the proof the web sort changes nothing, written before it). The shared library's
-logic with plain NUnit, in folders that mirror it: `TurnStream` (the recorded turn read as the Python harness reads it,
+logic with plain NUnit, in folders that mirror it: `TurnStream` (the recorded turn, which lives in `louis-agent.session-stream.tests/Fixtures/` since F18 step 7.2,
 moved here from the API's tests, and a case per event it folds), `Delegation` and `WorkStatus` (the states a card goes
 through), `UsageFormat` (priced, unpriced, the display currency) and `Markdown` (a table, links, images, raw HTML). Its
 components with bUnit, each rendered from the recorded turn and pinned to the `.html` golden beside its test. Puls's
@@ -97,6 +107,22 @@ source: `ToolCards` (a card's kind, the preview cut), `PromptBuilder` (text, an 
 and capped, the open file left out, an unmounted one reported), `ContainerPaths` (a mapping, a root searched by the last
 path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
 
+## The eval projects' tests (F18)
+
+- **`louis-agent.evals.tests`** (the harness): the dataset loader (Inspect's Sample shape read strictly, the hash, an
+  expected key no grader reads), the common graders, the model grader over Microsoft.Extensions.AI.Evaluation, the
+  roll-up, the conformance cases, the label sheet and the calibration, and the protocol writer against its golden.
+- **`louis-agent.evals.protocol.tests`**: every event round-trips through `EvalProtocolJson`, `event` first, the time
+  with `Z`, and a person's line or an unknown event reads as none.
+- **`louis-agent.evals.runner.tests`**: the arguments, the catalogue, the stub eval's run against its golden, the
+  conformance of every eval of every set, the data files copied beside the assembly.
+- **`louis-agent.evals.puls.tests`**: each Puls grader on hand-cut answers, the datasets' versions and hashes, the
+  scenario ids as test constants, and both evals' conformance against their references.
+- **`louis-agent.evals.template.tests`**: the template project's layout and its empty members.
+
+The runner end to end through the API is `StubCheckTests` in `louis-agent.api.integration-tests`. A paid run is never
+a test: CI grades only recorded transcripts.
+
 ## What isn't covered yet
 
 - **The API's endpoints and the MCP server** have no automated tests (only the API's sessions do); they're checked by
@@ -118,4 +144,4 @@ doc in [docs/features/](../features/README.md) names the tests each step adds.
 [Tests guide](../../tests/CLAUDE.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) 
+[Projects](README.md) · Previous: [louis-agent.evals.puls](louis-agent.evals.puls.md)

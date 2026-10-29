@@ -1,0 +1,16 @@
+@* One request's record: its cost, tokens, time and model, its tokens by kind, and when and in which session. *@
+<div class="tiles small">
+    <div class="tile" style="--i: 0"><span class="tile-label">cost</span><strong class="tile-value" data-count="@Money">@Money</strong></div>
+    <div class="tile" style="--i: 1"><span class="tile-label">tokens</span><strong class="tile-value">@UsageFormat.Tokens(Request.Tokens)</strong></div>
+    <div class="tile" style="--i: 2"><span class="tile-label">time</span><strong class="tile-value">@ExplorerText.Secs(Request.DurationMs / 1000.0) s</strong></div>
+    <div class="tile" style="--i: 3"><span class="tile-label">model</span><strong class="tile-value model">@(Request.Model ?? "—")</strong><span class="tile-meta">@Mode.Name · @Request.Purpose</span></div>
+</div>
+<section class="chart">
+    <div class="chart-head"><strong>Tokens</strong><TokenLegend /></div>
+    <div class="xbars"><div class="xbar-row" style="--i: 0"><span class="xbar-label">@Lane</span><span class="xstack-wrap"><TokenStack Parts="RequestSums.Tokens([Request])" Top="Request.Tokens" /></span><span class="xbar-value">@UsageFormat.Tokens(Request.Tokens)</span></div></div>
+    <dl class="explorer-fields">
+        <dt>input</dt><dd>@ExplorerText.Count(Request.Input)</dd><dt>cache written</dt><dd>@ExplorerText.Count(Request.CacheWrite)</dd><dt>cache read</dt><dd>@ExplorerText.Count(Request.CacheRead)</dd><dt>output</dt><dd>@ExplorerText.Count(Request.Output)</dd>
+        <dt>when</dt><dd>@Request.At.ToLocalTime().ToString("HH:mm:ss.fff")</dd><dt>session</dt><dd><code>@Request.Session</code></dd>
+        @if (Request.Parent is { } p) { <dt>parent</dt><dd><code>@p</code></dd> }
+    </dl>
+</section>

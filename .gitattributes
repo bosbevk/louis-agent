@@ -3,3 +3,6 @@
 
 # A recorded stream is kept byte for byte (F31): the readers are tested against exactly what the API sent.
 benchmarks/fixtures/*.sse -text
+
+# The stream golden is written by the endpoint's SseFormatter and compared byte for byte (F18 step 1e).
+tests/louis-agent.api.tests/Sessions/StreamGolden.sse -text

@@ -41,6 +41,8 @@ deploy\azure\deploy.ps1 release                      # build both images (tagged
 deploy\azure\deploy.ps1 logs                         # the app; -Container ts-forwarder for the sidecar; -Follow to tail
 ```
 
+`build` passes this checkout's commit (`git rev-parse --short HEAD`, or `unknown` without git) to the Puls image as
+`EVAL_COMMIT`, so an eval run in the cloud says which commit it ran; commit before you build.
 `release` is `build` then `update` with the revision after the one Azure runs (`v018` becomes `v019`); the two verbs
 stay for a deploy of an image already built (`update -Tag 2026-10-22b -Revision v017`, as the first sidecar deploy was).
 

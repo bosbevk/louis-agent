@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Api.IntegrationTests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.12" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\louis-agent.api\louis-agent.api.csproj" />
+    <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+    <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
+    <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts the unit tests share. -->
+    <ProjectReference Include="..\louis-agent.api.testing\louis-agent.api.testing.csproj" />
+    <!-- The eval runner and its stand-in, built with these tests so their dlls are there to start as real child processes (no assembly referenced). -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\louis-agent.api.standin\louis-agent.api.standin.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
+    <Using Include="LouisAgent.Api.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+  </ItemGroup>
+
+</Project>

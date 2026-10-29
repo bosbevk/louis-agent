@@ -1,0 +1,187 @@
+using System.Net;
+using System.Net.Http.Json;
+using System.Text.Json;
+using LouisAgent.Api.Contracts.Git.Requests;
+using LouisAgent.Api.Contracts.Workspace;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.TestHost;
+
+namespace LouisAgent.Api.IntegrationTests.Endpoints.Git;
+
+/// <summary>
+/// Pins the JSON the git routes send the code-review app: every object's names, in order, so the app reads them
+/// however the endpoints are shaped. Shas, dates and diffs change from run to run, so the names are pinned and the
+/// values only where they are fixed. What the tests send is the contract's request records, as the app sends them.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+[Category("Integration")]
+public class GitReplyJsonTests
+{
+    private const string BranchNames = "name,commit,subject,author,date,current,ahead,behind,merged";
+    private const string CommitNames = "sha,shortSha,author,date,subject,refs,parents";
+    private const string FileNames = "path,oldPath,index,workTree,untracked,staged,unstaged";
+
+    private TempGitRepo _repo = null!;
+
+    /// <summary>A repository with <c>main</c> and a <c>feature</c> branch one commit ahead of it.</summary>
+    [SetUp]
+    public void SetUp()
+    {
+        _repo = new TempGitRepo();
+        _repo.Git("checkout", "-q", "-b", "feature");
+        _repo.Write("notes.md", "Notes\n");
+        _repo.Git("add", "notes.md");
+        _repo.Git("commit", "-q", "-m", "Add notes");
+        _repo.Git("checkout", "-q", "main");
+    }
+
+    /// <summary>The repository goes with the test.</summary>
+    [TearDown]
+    public void TearDown() => _repo.Dispose();
+
+    /// <summary>The branch list names the checked-out branch, every branch, and a message after a change.</summary>
+    [Test]
+    public async Task TheBranchList_KeepsItsNames()
+    {
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/branches");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("current,branches,message"));
+        Assert.That(json.RootElement.GetProperty("current").GetString(), Is.EqualTo("main"));
+        Assert.That(Names(json.RootElement.GetProperty("branches")[0]), Is.EqualTo(BranchNames));
+    }
+
+    /// <summary>A branch's page: the branch, what it merges into, its commits and its diff.</summary>
+    [Test]
+    public async Task ABranchsDiff_KeepsItsNames()
+    {
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/branches/feature");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("branch,into,commits,diff,truncated"));
+        Assert.That(Names(json.RootElement.GetProperty("branch")), Is.EqualTo(BranchNames));
+        Assert.That(Names(json.RootElement.GetProperty("commits")[0]), Is.EqualTo(CommitNames));
+    }
+
+    /// <summary>A merge answers with the branch list again, and a message saying what it did.</summary>
+    [Test]
+    public async Task AMerge_AnswersTheBranchList_WithAMessage()
+    {
+        await using var app = await StartAsync();
+
+        using var response = await app.GetTestClient()
+            .PostAsJsonAsync("/v1/git/merge", new GitBranchRequest("feature"), WorkspaceJson.Web);
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(Names(json.RootElement), Is.EqualTo("current,branches,message"));
+        Assert.That(json.RootElement.GetProperty("message").GetString(), Is.Not.Empty);
+    }
+
+    /// <summary>The status names the branch, every changed file, and after a commit what was committed.</summary>
+    [Test]
+    public async Task TheStatus_KeepsItsNames()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/status");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("branch,files,committed"));
+        Assert.That(Names(json.RootElement.GetProperty("files")[0]), Is.EqualTo(FileNames));
+    }
+
+    /// <summary>A file's diff says which file, whether it's the staged one, whether it's new, and the diff.</summary>
+    [Test]
+    public async Task AFilesDiff_KeepsItsNames()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/diff?path=readme.md");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("path,staged,untracked,diff,truncated"));
+    }
+
+    /// <summary>Staging answers with the status again, so the app refreshes in one call.</summary>
+    [Test]
+    public async Task Staging_AnswersTheStatus()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        await using var app = await StartAsync();
+
+        using var response =
+            await app.GetTestClient()
+                .PostAsJsonAsync("/v1/git/stage", new GitPathsRequest(["readme.md"]), WorkspaceJson.Web);
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+        Assert.That(Names(json.RootElement), Is.EqualTo("branch,files,committed"));
+        Assert.That(json.RootElement.GetProperty("files")[0].GetProperty("staged").GetBoolean(), Is.True);
+    }
+
+    /// <summary>The log is a list of commits, each with its sha, author, date, subject, refs and parents.</summary>
+    [Test]
+    public async Task TheLog_KeepsItsNames()
+    {
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, "/v1/git/commits");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("commits"));
+        Assert.That(Names(json.RootElement.GetProperty("commits")[0]), Is.EqualTo(CommitNames));
+    }
+
+    /// <summary>One commit: the commit, its whole message, and its diff.</summary>
+    [Test]
+    public async Task ACommit_KeepsItsNames()
+    {
+        string sha = _repo.Git("rev-parse", "HEAD").Trim();
+        await using var app = await StartAsync();
+
+        using var json = await GetAsync(app, $"/v1/git/commits/{sha}");
+
+        Assert.That(Names(json.RootElement), Is.EqualTo("commit,body,diff,truncated"));
+        Assert.That(Names(json.RootElement.GetProperty("commit")), Is.EqualTo(CommitNames));
+    }
+
+    /// <summary>A new commit answers 201 with the status after it, naming what was committed.</summary>
+    [Test]
+    public async Task ANewCommit_AnswersTheStatus()
+    {
+        _repo.Write("readme.md", "Hallo, wêreld\n");
+        _repo.Git("add", "readme.md");
+        await using var app = await StartAsync();
+
+        using var response =
+            await app.GetTestClient()
+                .PostAsJsonAsync("/v1/git/commits", new GitCommitRequest("Greet the world"), WorkspaceJson.Web);
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
+        Assert.That(Names(json.RootElement), Is.EqualTo("branch,files,committed"));
+        Assert.That(json.RootElement.GetProperty("committed").GetString(), Does.EndWith("Greet the world"));
+    }
+
+    /// <summary>Starts the API over the repository.</summary>
+    private async Task<WebApplication> StartAsync()
+    {
+        var app = ApiTestHost.Build(workspaceRoot: _repo.Path);
+        await app.StartAsync();
+        return app;
+    }
+
+    /// <summary>Reads a route that must answer 200.</summary>
+    private static async Task<JsonDocument> GetAsync(WebApplication app, string path)
+    {
+        using var response = await app.GetTestClient().GetAsync(path);
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), path);
+        return JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+    }
+
+    /// <summary>The object's names in the order they were written.</summary>
+    private static string Names(JsonElement element) =>
+        string.Join(",", element.EnumerateObject().Select(p => p.Name));
+}

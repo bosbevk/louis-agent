@@ -1,0 +1,14 @@
+@* F18 step 5c.3: a run's roll-up. Each mode has its own table (a mode is one configuration of the agent, so its trials never mix with another's): the overall line first, then its
+   categories. A run from before 5c has none, and says so, with the re-score that gives it one (for $0). *@
+@if (Modes is null)
+{
+    <p class="muted summary-none">This run has no categories: re-score this run to see them.</p>
+    <RescoreButton RunId="@RunId" OnStarted="OpenRescored" />
+}
+else
+{
+    @foreach (var mode in Modes)
+    {
+        <SummaryTable Mode="mode" RunId="@RunId" Currency="Currency" />
+    }
+}

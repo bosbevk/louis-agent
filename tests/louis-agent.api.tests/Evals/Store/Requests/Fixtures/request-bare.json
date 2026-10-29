@@ -1,0 +1,15 @@
+{
+  "run" : "run123456789",
+  "turn" : null,
+  "at" : { "$date" : { "$numberLong" : "1793174400125" } },
+  "purpose" : "summary",
+  "session" : null,
+  "parent" : null,
+  "model" : null,
+  "input_tokens" : null,
+  "output_tokens" : null,
+  "cache_read_tokens" : null,
+  "cache_write_tokens" : null,
+  "cost" : null,
+  "duration_ms" : { "$numberLong" : "0" }
+}

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
 using LouisAgent.Web.Shared;
@@ -12,7 +13,7 @@ public class WorkStatusTests
     private static readonly ChatText Text = new()
     {
         Processing = "BESIG",
-        RolePhases = new Dictionary<string, RolePhases> { ["puls-cook"] = new("Soek bestanddele", "Bou resep") },
+        RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") },
     };
 
     private static Turn Running(string role, params Block[] specialist) => new()
@@ -29,30 +30,44 @@ public class WorkStatusTests
         ],
     };
 
-    private static Block Tool(string name, string? result) => new() { Kind = BlockKind.Tool, ToolName = name, ToolResult = result };
+    private static Block Tool(string name, string? result) =>
+        new() { Kind = BlockKind.Tool, ToolName = name, ToolResult = result };
 
     [Test]
     public void TheCook_SearchingTheWeb_IsLookingForIngredients() =>
-        Assert.That(WorkStatus.Label(Running("puls-cook", new Block { Kind = BlockKind.Thinking }, Tool("WebSearch", "Search results …")), Text),
+        Assert.That(
+            WorkStatus.Label(
+                Running(SampleRole.Alpha, new Block { Kind = BlockKind.Thinking },
+                    Tool("WebSearch", "Search results …")), Text),
             Is.EqualTo("Soek bestanddele"), "Louis's screenshot: a WebSearch done, the cook still at it");
 
     [Test]
     public void TheCook_JustStarted_IsLookingForIngredients() =>
-        Assert.That(WorkStatus.Label(Running("puls-cook", new Block { Kind = BlockKind.Thinking }), Text), Is.EqualTo("Soek bestanddele"),
+        Assert.That(WorkStatus.Label(Running(SampleRole.Alpha, new Block { Kind = BlockKind.Thinking }), Text),
+            Is.EqualTo("Soek bestanddele"),
             "thinking before any tool: it hasn't found anything yet");
 
     [Test]
     public void TheCook_WritingAfterItsSearches_IsBuildingTheRecipe()
     {
-        Assert.That(WorkStatus.Label(Running("puls-cook", Tool("FindProducts", "Products at Checkers …"), new Block { Kind = BlockKind.Thinking }), Text),
+        Assert.That(
+            WorkStatus.Label(
+                Running(SampleRole.Alpha, Tool("FindProducts", "Products at Checkers …"),
+                    new Block { Kind = BlockKind.Thinking }), Text),
             Is.EqualTo("Bou resep"));
-        Assert.That(WorkStatus.Label(Running("puls-cook", Tool("FindProducts", "Products at Checkers …"), new Block { Kind = BlockKind.Text, Text = "## Die gereg" }), Text),
+        Assert.That(
+            WorkStatus.Label(
+                Running(SampleRole.Alpha, Tool("FindProducts", "Products at Checkers …"),
+                    new Block { Kind = BlockKind.Text, Text = "## Die gereg" }), Text),
             Is.EqualTo("Bou resep"));
     }
 
     [Test]
     public void TheCook_SearchingAgainAfterThinking_IsLookingForIngredientsAgain() =>
-        Assert.That(WorkStatus.Label(Running("puls-cook", Tool("FindProducts", "…"), new Block { Kind = BlockKind.Thinking }, Tool("FindProducts", null)), Text),
+        Assert.That(
+            WorkStatus.Label(
+                Running(SampleRole.Alpha, Tool("FindProducts", "…"), new Block { Kind = BlockKind.Thinking },
+                    Tool("FindProducts", null)), Text),
             Is.EqualTo("Soek bestanddele"));
 
     [Test]

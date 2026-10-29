@@ -9,6 +9,9 @@ public static class UsagePurpose
     public const string Compaction = "compaction";
     public const string Triage = "triage";
 
+    /// <summary>A model grader's request (F18 step 6): the judge's, tagged with the run alone, so the run's total includes it and no turn does.</summary>
+    public const string Grading = "grading";
+
     /// <summary>
     /// Not a model request: a roll-up of a sub-session's requests (F5), added to the parent turn so its totals include
     /// the specialist's work, and written to the parent's ledger. Its <see cref="UsageRecord.Requests"/> says how many.

@@ -1,0 +1,35 @@
+{
+  "evals": [
+    {
+      "name": "<EvalBeta>", "identity": "<IdentityAlpha>", "version": 3, "proves": "Puls cooks.", "manual": true,
+      "dataset": { "name": "meals", "version": 2 }, "categories": ["town", "city"],
+      "graders": [
+        { "name": "priced", "version": 1, "kind": "FixedRule" },
+        { "name": "judge", "version": 2, "kind": "Model" }
+      ],
+      "modes": ["<ModeAlpha>"], "models": ["claude-haiku"], "never_run": false,
+      "runs": [
+        {
+          "run": {
+            "id": "run2", "check": "<EvalBeta>", "repeat": 2, "status": "done", "exit_code": 0,
+            "started_at": "2026-10-26T09:00:00+00:00", "ended_at": null,
+            "total": { "cost": 0.5, "currency": "USD", "tokens": 1000, "requests": 4 }, "store_error": null,
+            "models": null, "eval": null, "eval_version": null, "commit": null, "rescore_of": null, "graders": null
+          },
+          "modes": [
+            {
+              "name": "<ModeAlpha>", "repeat": 2, "toolsets": [], "role": null, "llm": null,
+              "pass_at_k": 1, "pass_hat_k": 0.5, "k": 2, "infrastructure": 0, "retried": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "stub", "identity": null, "version": 1, "proves": "The portal works.", "manual": false,
+      "dataset": null, "categories": [], "graders": [{ "name": "no-error", "version": 1, "kind": "FixedRule" }],
+      "modes": [], "models": [], "never_run": true, "runs": []
+    }
+  ],
+  "store": { "configured": true, "error": null }
+}

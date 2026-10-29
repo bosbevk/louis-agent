@@ -1,15 +1,16 @@
-namespace LouisAgent.Packs.Shops.Providers;
 
 using LouisAgent.Packs.Shops.Places;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.Shops.Messages;
 using LouisAgent.Packs.Shops;
 using LouisAgent.Core.Tools.Web.Browsing;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Packs.Shops.Providers;
 /// <summary>
 /// The Checkers store that serves a place (F34 step 1b; Louis: "make sure we set the address in checkersprovider, to make
 /// sure we use the correct catalogue"). Checkers answers every search for a default store unless the visitor has chosen
@@ -22,12 +23,17 @@ using Microsoft.Extensions.Logging;
 /// a day in its file. A lookup goes through <paramref name="throttle"/> like a search (review of PR #61), and a refused
 /// one is a refusal.
 /// </summary>
-public sealed class CheckersStore(IWebBrowser browser, Func<string, CancellationToken, Task<(double Latitude, double Longitude)?>> locate,
-    StoreSessionCache? stores = null, ShopThrottle? throttle = null)
+public sealed class CheckersStore(
+    IWebBrowser browser,
+    Func<string, CancellationToken, Task<(double Latitude, double Longitude)?>> locate,
+    StoreSessionCache? stores = null,
+    ShopThrottle? throttle = null)
 {
     private static readonly ILogger Log = AgentLogging.For<CheckersStore>();
     private static readonly Uri Site = new("https://www.checkers.co.za/");
-    private static readonly HashSet<string> StoreCookies = new(["storeContexts", "storeids", "istio-storeIds"], StringComparer.Ordinal);
+
+    private static readonly HashSet<string> StoreCookies =
+        new(["storeContexts", "storeids", "istio-storeIds"], StringComparer.Ordinal);
 
     // The store Checkers answers a visitor with no address from (seen 2026-10-17 and 18). A place Checkers has no store
     // for gets its fallback set, this store first (Prince Albert, Sutherland, Calvinia, Loxton): no store for the town.
@@ -43,10 +49,12 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         if (string.IsNullOrWhiteSpace(place)) return Task.FromResult<BrowserSession?>(null);
         string town = place.Trim();
         // The lookup is shared by every search waiting for it, so a caller's cancellation ends its wait, not the lookup.
-        return _stores.GetOrLookUpAsync("checkers", town, () => LookUpAsync(town, CancellationToken.None), cancellationToken);
+        return _stores.GetOrLookUpAsync("checkers", town, () => LookUpAsync(town, CancellationToken.None),
+            cancellationToken);
     }
 
-    private async Task<(BrowserSession? Session, bool Keep)> LookUpAsync(string town, CancellationToken cancellationToken)
+    private async Task<(BrowserSession? Session, bool Keep)> LookUpAsync(string town,
+        CancellationToken cancellationToken)
     {
         (double Latitude, double Longitude)? found;
         try
@@ -55,19 +63,23 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         }
         catch (PlaceUnavailableException)
         {
-            return (null, false);   // Nominatim didn't answer: no answer about the town, so it isn't kept (review of PR #61)
+            return
+                (null, false); // Nominatim didn't answer: no answer about the town, so it isn't kept (review of PR #61)
         }
+
         if (found is not { } centre) return (null, true);
 
         BrowserVisit visit;
         try
         {
             visit = await _throttle.RunAsync(() => browser.VisitAsync(Site, session: new BrowserSession([]),
-                script: Lookup(centre.Latitude, centre.Longitude), cancellationToken: cancellationToken), cancellationToken);
+                    script: Lookup(centre.Latitude, centre.Longitude), cancellationToken: cancellationToken),
+                cancellationToken);
         }
         catch (WebBrowserException ex)
         {
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable, new { Shop = "Checkers", Place = town, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopAreaUnavailable,
+                new { Shop = "Checkers", Place = LogContent.Of(town), Reason = LogContent.Of(ex.Message) });
             return (null, false);
         }
 
@@ -75,19 +87,26 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         if (Serves(visit.ScriptResult) is not { } serves)
         {
             _throttle.Refused();
-            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreAnswerUnreadable, new { Shop = "Checkers", Place = town });
+            Log.Log(LogLevel.Warning, ShopLogMessage.ShopStoreAnswerUnreadable,
+                new { Shop = "Checkers", Place = LogContent.Of(town) });
             return (null, false);
         }
-        BrowserSession? session = serves && visit.Cookies?.Where(c => StoreCookies.Contains(c.Name)).ToList() is { Count: > 0 } cookies
+
+        BrowserSession? session = serves && visit.Cookies?.Where(c => StoreCookies.Contains(c.Name)).ToList() is
+        { Count: > 0 } cookies
             ? new BrowserSession(cookies)
             : null;
         // Louis: "see the logs, it did not set my address": the lookup says what it found, once per town.
-        Log.Log(LogLevel.Information, session is null ? ShopLogMessage.ShopNoStoreForPlace : ShopLogMessage.ShopStoreForPlace, new
-        {
-            Shop = "Checkers", Place = town, Latitude = centre.Latitude.ToString("0.####", CultureInfo.InvariantCulture),
-            Longitude = centre.Longitude.ToString("0.####", CultureInfo.InvariantCulture),
-            Stores = session?.Cookies.FirstOrDefault(c => c.Name == "storeids")?.Value ?? "",
-        });
+        Log.Log(LogLevel.Information,
+            session is null ? ShopLogMessage.ShopNoStoreForPlace : ShopLogMessage.ShopStoreForPlace, new
+            {
+                // The town, its centre and the store ids (an id names its town as surely as the coordinates) are hashes unless LOG_CONTENT=full (F18 step 4f).
+                Shop = "Checkers",
+                Place = LogContent.Of(town),
+                Latitude = LogContent.Of(centre.Latitude.ToString("0.####", CultureInfo.InvariantCulture)),
+                Longitude = LogContent.Of(centre.Longitude.ToString("0.####", CultureInfo.InvariantCulture)),
+                Stores = LogContent.Of(session?.Cookies.FirstOrDefault(c => c.Name == "storeids")?.Value ?? ""),
+            });
         return (session, true);
     }
 
@@ -105,11 +124,13 @@ public sealed class CheckersStore(IWebBrowser browser, Func<string, Cancellation
         try
         {
             using var doc = JsonDocument.Parse(answer);
-            if (doc.RootElement.ValueKind != JsonValueKind.Object || !doc.RootElement.TryGetProperty("storeContexts", out var stores)
-                || stores.ValueKind != JsonValueKind.Array)
+            if (doc.RootElement.ValueKind != JsonValueKind.Object || !doc.RootElement.TryGetProperty("storeContexts",
+                                                                      out var stores)
+                                                                  || stores.ValueKind != JsonValueKind.Array)
                 return null;
             return stores.GetArrayLength() > 0
-                && !stores.EnumerateArray().Any(store => store.TryGetProperty("storeId", out var id) && id.GetString() == DefaultStore);
+                   && !stores.EnumerateArray().Any(store =>
+                       store.TryGetProperty("storeId", out var id) && id.GetString() == DefaultStore);
         }
         catch (JsonException)
         {

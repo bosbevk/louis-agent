@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals.Puls</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- F18 step 5.4b: an eval's data is beside it (Evals/{Folder}/Dataset and Transcripts). One item, the same in every eval project, copies it to
+         EvalFiles/{assembly}/..., where EvalFiles (the harness) finds it for any eval. TargetPath, not Link: Link would show the files a second time
+         in the IDE under a folder named like the project. -->
+    <None Update="Evals\**\Dataset\**\*;Evals\**\Transcripts\**\*" TargetPath="EvalFiles\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F18 step 6.2: a judge's prompt is a markdown file beside the eval (ADR 0011), embedded, so its hash is of the bytes the judge was given. -->
+    <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F18 step 3: Puls's rules, which name Puls's shops and its cook; the harness (ADR 0029) names no identity. -->
+    <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.evals.puls.md" Link="docs\louis-agent.evals.puls.md" />
+    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+    <None Include="..\..\docs\guides\run-the-evals.md" Link="docs\run-the-evals.md" />
+  </ItemGroup>
+
+</Project>

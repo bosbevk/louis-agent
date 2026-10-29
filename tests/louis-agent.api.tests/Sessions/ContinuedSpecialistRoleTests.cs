@@ -1,8 +1,10 @@
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
-using ClaudeStyleStream = LouisAgent.Api.Sessions.ClaudeStyleStream;
+using ClaudeStreamFormat = LouisAgent.Api.Sessions.Streaming.Claude.ClaudeStreamFormat;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -15,11 +17,12 @@ public class ContinuedSpecialistRoleTests
     [Test]
     public void ASessionsStream_StartsWithItsRole()
     {
-        var start = new ClaudeStyleStream("sess_1", ["web", "shops"], "puls-cook").MessageStart();
+        var start =
+            new ClaudeStreamFormat("sess_1", [SampleToolset.Alpha, SampleToolset.Beta], SampleRole.Alpha).Start();
 
         using var data = JsonDocument.Parse(start.Data);
         var message = data.RootElement.GetProperty("message");
-        Assert.That(message.GetProperty("session_role").GetString(), Is.EqualTo("puls-cook"));
+        Assert.That(message.GetProperty("session_role").GetString(), Is.EqualTo(SampleRole.Alpha));
         Assert.That(message.GetProperty("role").GetString(), Is.EqualTo("assistant"), "Claude's speaker, unchanged");
     }
 
@@ -36,20 +39,35 @@ public class ContinuedSpecialistRoleTests
                 },
             ],
         };
-        var inner = JsonDocument.Parse("""{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"],"session_role":"puls-cook"}}""").RootElement;
-        var outer = JsonSerializer.SerializeToElement(new { type = "sub_session", tool_use_id = "toolu_9", agent = "puls", @event = "message_start", data = inner });
-        TurnStream.Apply(turn, new AgentStreamEvent("sub_session", outer));
+        var inner = JsonDocument
+            .Parse(SampleRole.Fill(
+                """{"type":"message_start","message":{"session_id":"sess_2","role":"assistant","toolsets":["web","shops"],"session_role":"<RoleAlpha>"}}"""))
+            .RootElement;
+        var outer = JsonSerializer.SerializeToElement(new
+        {
+            type = "sub_session",
+            tool_use_id = "toolu_9",
+            agent = SampleIdentity.Alpha,
+            @event = "message_start",
+            data = inner
+        });
+        TurnStream.Apply(turn, SessionEvent.From("sub_session", outer));
         return turn;
     }
 
     [Test]
     public void AFollowUpsCard_NamesTheRole_WhileItWorks() =>
-        Assert.That(Delegation.From(AFollowUpThatStarted().Blocks[0])!.Role, Is.EqualTo("puls-cook"));
+        Assert.That(Delegation.From(AFollowUpThatStarted().Blocks[0])!.Role, Is.EqualTo(SampleRole.Alpha));
 
     [Test]
     public void AFollowUpsLine_SaysWhatTheCookIsDoing()
     {
-        var text = new ChatText { Processing = "BESIG", RolePhases = new Dictionary<string, RolePhases> { ["puls-cook"] = new("Soek bestanddele", "Bou resep") } };
+        var text = new ChatText
+        {
+            Processing = "BESIG",
+            RolePhases = new Dictionary<string, RolePhases>
+            { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") }
+        };
 
         Assert.That(WorkStatus.Label(AFollowUpThatStarted(), text), Is.EqualTo("Soek bestanddele"));
     }

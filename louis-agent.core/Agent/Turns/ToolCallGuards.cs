@@ -1,16 +1,18 @@
-namespace LouisAgent.Core.Agent.Turns;
 
 using LouisAgent.Core.Usage.Records;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Tools;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
 using System.Globalization;
 using Microsoft.Extensions.Logging;
+using LouisAgent.Core.Agent.Messages;
 
+namespace LouisAgent.Core.Agent.Turns;
 /// <summary>
 /// The guards around each tool call in the loop: every call is logged; a call the model was still writing when it hit
 /// the output limit is never run; an oversized result is summarised (with a separate, tool-less model call) before it
@@ -18,7 +20,7 @@ using Microsoft.Extensions.Logging;
 /// client pipeline. The pure safety checks (paths, secret files, SSRF) are in <c>Guardrails/</c>.
 /// </summary>
 /// <param name="registry">The engine's tools, kept on the loop's final request.</param>
-/// <param name="summaryClient">The client for summaries: the provider's, outside the tool loop, with its own usage record.</param>
+/// <param name="summaryClient">The client for summaries: the provider's, outside the tool loop, with its own usage record and its own trace span.</param>
 /// <param name="subSessionPromptBudget">The most tokens a sub-session's prompt should reach (FX14); 0: no limit.</param>
 internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryClient, int subSessionPromptBudget = 0)
 {
@@ -27,23 +29,26 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
 
     // Tool results above this are summarised before reaching the model; normal source files stay verbatim.
     internal const int MaxToolResultChars = 50_000;
+
     // Keeps the summarisation request itself well inside a 200k-token context, even for token-dense diffs.
     private const int MaxSummaryInputChars = 200_000;
 
     // Set on tool calls from a response that hit the output limit: their arguments are incomplete.
     private const string TruncatedCallKey = "louis.truncated";
 
-    internal static string TruncatedCallMessage => MessageText.Format(ToolMessage.TruncatedCall);
+    internal static string TruncatedCallMessage => MessageText.Format(AgentToolMessage.TruncatedCall);
 
     public async ValueTask<object?> InvokeAsync(FunctionInvocationContext context, CancellationToken cancellationToken)
     {
         string arguments = JsonSerializer.Serialize(context.Arguments);
-        Log.Log(LogLevel.Information, LogMessage.ToolCall, new { Tool = context.Function.Name, Arguments = arguments }, tag: Tag);
+        Log.Log(LogLevel.Information, AgentLogMessage.ToolCall,
+            new { Tool = context.Function.Name, Arguments = LogContent.OfArguments(context.Arguments) }, tag: Tag);
 
         if (context.CallContent.AdditionalProperties?.ContainsKey(TruncatedCallKey) == true)
         {
             // Running it would act on partial input, e.g. half a script or a file missing its content.
-            Log.Log(LogLevel.Information, LogMessage.ToolCallSkipped, new { Tool = context.Function.Name, LlmClientFactory.MaxOutputTokens }, tag: Tag);
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolCallSkipped,
+                new { Tool = context.Function.Name, LlmClientFactory.MaxOutputTokens }, tag: Tag);
             ToolCallRecords.TruncatedToolCall(context.Function.Name, arguments, LlmClientFactory.MaxOutputTokens);
             return TruncatedCallMessage;
         }
@@ -55,13 +60,15 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.Log(LogLevel.Information, LogMessage.ToolCallFailed, new { Tool = context.Function.Name, ErrorType = ex.GetType().Name, Reason = ex.Message }, tag: Tag);
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolCallFailed,
+                new { Tool = context.Function.Name, ErrorType = ex.GetType().Name, Reason = LogContent.Of(ex.Message) },
+                tag: Tag);
             throw;
         }
 
         string text = result?.ToString() ?? string.Empty;
-        Log.Log(LogLevel.Information, LogMessage.ToolCallResult, new { Tool = context.Function.Name, Result = text.Length > 300 ? text[..300] + "..." : text }, tag: Tag);
-
+        Log.Log(LogLevel.Information, AgentLogMessage.ToolCallResult,
+            new { Tool = context.Function.Name, Result = LogContent.Of(text, cut: 300) }, tag: Tag);
         if (text.Length <= MaxToolResultChars) return result;
 
         // An oversized result (e.g. a huge diff) would blow the model's context window on the next request.
@@ -111,9 +118,10 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         long next = last + (prompts.Count > 1 ? Math.Max(0, last - prompts[^2]) : 0);
         if (next < subSessionPromptBudget) return options;
 
-        Log.Log(LogLevel.Information, LogMessage.SubSessionPromptBudgetReached, new
+        Log.Log(LogLevel.Information, AgentLogMessage.SubSessionPromptBudgetReached, new
         {
-            Last = last.ToString("N0", CultureInfo.InvariantCulture), Next = next.ToString("N0", CultureInfo.InvariantCulture),
+            Last = last.ToString("N0", CultureInfo.InvariantCulture),
+            Next = next.ToString("N0", CultureInfo.InvariantCulture),
             Budget = subSessionPromptBudget.ToString("N0", CultureInfo.InvariantCulture),
         }, tag: Tag);
         ChatOptions limited = options.Clone();
@@ -121,16 +129,20 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
         return limited;
     }
 
-    private static long Prompt(UsageTokens tokens) => (tokens.Input ?? 0) + (tokens.CacheRead ?? 0) + (tokens.CacheWrite ?? 0);
+    private static long Prompt(UsageTokens tokens) =>
+        (tokens.Input ?? 0) + (tokens.CacheRead ?? 0) + (tokens.CacheWrite ?? 0);
 
-    private ChatOptions? Shape(ChatOptions? options) => KeepWithinPromptBudget(KeepToolsOnFinalRequest(options), UsageScope.Current);
+    private ChatOptions? Shape(ChatOptions? options) =>
+        KeepWithinPromptBudget(KeepToolsOnFinalRequest(options), UsageScope.Current);
 
     public Task<ChatResponse> KeepToolsOnFinalRequestAsync(
-        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
+        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next,
+        CancellationToken cancellationToken) =>
         next.GetResponseAsync(messages, Shape(options), cancellationToken);
 
     public IAsyncEnumerable<ChatResponseUpdate> KeepToolsOnFinalRequestStreamingAsync(
-        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next, CancellationToken cancellationToken) =>
+        IEnumerable<ChatMessage> messages, ChatOptions? options, IChatClient next,
+        CancellationToken cancellationToken) =>
         next.GetStreamingResponseAsync(messages, Shape(options), cancellationToken);
 
     /// <summary>
@@ -168,42 +180,55 @@ internal sealed class ToolCallGuards(ToolRegistry registry, IChatClient summaryC
     /// Condenses an oversized tool result with a separate, tool-less model call; falls back to truncation if that fails.
     /// </summary>
     internal async Task<string> SummariseToolResultAsync(
-        string toolName, string arguments, string output, string? userRequest, CancellationToken cancellationToken = default)
+        string toolName, string arguments, string output, string? userRequest,
+        CancellationToken cancellationToken = default)
     {
-        string note = MessageText.Format(ToolMessage.OversizedResultNote, new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) });
+        string note = MessageText.Format(AgentToolMessage.OversizedResultNote,
+            new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) });
         string input = output.Length <= MaxSummaryInputChars
             ? output
-            : output[..MaxSummaryInputChars] + MessageText.Format(ToolMessage.SummaryInputCut, new { Chars = (output.Length - MaxSummaryInputChars).ToString("N0", CultureInfo.InvariantCulture) });
+            : output[..MaxSummaryInputChars] + MessageText.Format(AgentToolMessage.SummaryInputCut,
+                new { Chars = (output.Length - MaxSummaryInputChars).ToString("N0", CultureInfo.InvariantCulture) });
 
         try
         {
-            Log.Log(LogLevel.Information, LogMessage.ToolResultSummarising, new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) }, tag: Tag);
+            Log.Log(LogLevel.Information, AgentLogMessage.ToolResultSummarising,
+                new { Tool = toolName, Chars = output.Length.ToString("N0", CultureInfo.InvariantCulture) }, tag: Tag);
             var messages = new List<ChatMessage>
             {
                 new(ChatRole.System,
-                    MessageText.Format(ToolMessage.SummarySystemPrompt)),
+                    MessageText.Format(AgentToolMessage.SummarySystemPrompt)),
                 new(ChatRole.User,
-                    MessageText.Format(ToolMessage.SummaryRequest, new { Request = userRequest ?? "(unknown)", Tool = toolName, Arguments = arguments, Output = input })),
+                    MessageText.Format(AgentToolMessage.SummaryRequest,
+                        new
+                        {
+                            Request = userRequest ?? "(unknown)", Tool = toolName, Arguments = arguments, Output = input
+                        })),
             };
             ChatResponse response;
             // Its own scope: recorded as "summary", numbered apart from the turn's rounds.
             using (UsageScope.Begin(UsagePurpose.Summary))
                 response = await summaryClient.GetResponseAsync(
-                    messages, new ChatOptions { MaxOutputTokens = LlmClientFactory.MaxOutputTokens }, cancellationToken);
+                    messages, new ChatOptions { MaxOutputTokens = LlmClientFactory.MaxOutputTokens },
+                    cancellationToken);
             if (!string.IsNullOrWhiteSpace(response.Text))
             {
-                string summary = MessageText.Format(ToolMessage.SummarisedResult, new { Note = note, Summary = response.Text });
-                ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "summarised", summary.Length);
+                string summary = MessageText.Format(AgentToolMessage.SummarisedResult,
+                    new { Note = note, Summary = response.Text });
+                ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "summarised",
+                    summary.Length);
                 return summary;
             }
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            Log.Log(LogLevel.Warning, LogMessage.SummaryFailed, new { Tool = toolName, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, AgentLogMessage.SummaryFailed,
+                new { Tool = toolName, Reason = LogContent.Of(ex.Message) });
         }
 
         string truncated = $"{note}\n{ProcessRunner.Truncate(output, MaxToolResultChars)}";
-        ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "truncated", truncated.Length);
+        ToolCallRecords.OversizedToolResult(toolName, arguments, output.Length, userRequest, "truncated",
+            truncated.Length);
         return truncated;
     }
 }

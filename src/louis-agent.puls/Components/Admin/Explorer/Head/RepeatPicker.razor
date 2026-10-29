@@ -1,0 +1,11 @@
+@* The repeat to show, one button per repeat; the explorer shows one repeat at a time. *@
+<div class="run-controls">
+    <span class="muted">Repeat</span>
+    <div class="segmented" role="radiogroup" aria-label="Repeat">
+        @for (int n = 1; n <= Repeats; n++)
+        {
+            int r = n;
+            <button type="button" role="radio" aria-checked="@(Repeat == r)" class="@(Repeat == r ? "active" : "")" @onclick="() => OnPick.InvokeAsync(r)">@r</button>
+        }
+    </div>
+</div>

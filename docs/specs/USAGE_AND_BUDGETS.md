@@ -13,6 +13,7 @@ Built as features in [docs/features/](../features/README.md); each planned one i
 | §4.2 Prices | [F2 Prices and cost](../features/F02-prices-and-cost.md) | **done** (2026-10-10): `config/prices.json` is tracked; a `long_prompt` tier (Haiku 5.5); also served at the API's `GET /v1/prices` and read with `PRICES_URL` |
 | §7.2–7.4 Showing it (and the stream in §7.1) | [F3 Show usage](../features/F03-usage-display.md) | **done** (2026-10-11): the stream's `usage` is Claude's four token fields summed over the turn, plus `requests`, `cost`, `currency` and `unpriced`, also on `error` (FX6); every view totals with `UsageReport.Total`, and the short demo's comms log equals its ledger exactly ($0.252605); Rider's chat line is opt-in (`USAGE_IN_CHAT`); the web line shows cache writes on their own |
 | §4.2, §7 Costs in another currency | [F14 Display currency](../features/F14-display-currency.md) | **done** (2026-10-11): shown in the PC's region's currency (`HOST_CULTURE`) at a dated rate (Frankfurter, mapped into our `rates.json`; `config/rates.json` as the fallback; `GET /v1/rates`), with the rate and the USD charged beside converted totals; the ledger and the jsonl files stay in USD |
+| §4 Recording: the prompt's hash, a replayed answer | [F18 Evals in C#](../features/F18-evaluation.md) | **done** (2026-10-29): `prompt_hash` on every row; an eval's replayed answer is a row with `cache_hit` and a known cost of 0, never blank (the first v2 replays: $0, every request a hit) |
 | §5 Estimates | [F6 Estimates](../features/F06-estimates.md) | planned |
 | §6 Budgets | [F7 Budgets](../features/F07-budgets.md) (account-limit refusals: [F8](../features/F08-reliability.md)) | planned |
 | §7.1–7.2 Usage tab and API, §4.4 Reconciliation | [F11 Usage tab and reconciliation](../features/F11-usage-tab-and-reconciliation.md) | planned |
@@ -81,7 +82,9 @@ is off, with a warning.
   "tokens": { "input": 1840, "cache_write": 26110, "cache_read": 0, "output": 412, "reasoning": 210 },
   "cost": { "currency": "USD", "amount": 0.0365, "price_table": "2026-10-01" },  // 1,840×$1 + 26,110×$1.25 + 412×$5 per M
   "duration_ms": 3120,
-  "stop": "tool_use"
+  "stop": "tool_use",
+  "prompt_hash": "3f9c0a1b…",         // the system prompt and tools, F18 step 4c; 64 lowercase hex characters
+  "cache_hit": true                   // only on a replayed answer, F18 step 4e; absent otherwise
 }
 ```
 
@@ -92,6 +95,19 @@ is off, with a warning.
   reports*). Reasoning (thinking) tokens are part of the output count and billed as output; they are recorded
   separately only to show how much of the output was thinking. The Anthropic adapter doesn't report them, so
   `reasoning` is `null` there. Providers that report nothing (some Ollama models) record counts as `null`, never as 0.
+- **The prompt's hash** (F18 step 4c): `prompt_hash` is a SHA-256 over the leading system messages, `ChatOptions.Instructions`
+  and the tools in the order sent (each one's name, description and JSON schema), written as compact UTF-8 JSON. The
+  conversation after the prompt, the model and the settings (temperature, output limit, thinking) are not hashed, so two runs
+  whose rows differ only in `prompt_hash` are an A/B comparison of a prompt change. It is taken in
+  `UsageRecordingChatClient` when the request starts, before any provider strategy, so the same prompt hashes the same on
+  every provider, and every round of a turn carries the same one. A cancelled request has its hash too; a sub-session roll-up
+  has none (it is no request of its own) and its line is unchanged. Rows written before 2026-10-25 read back as null: unknown,
+  never `""`. The encoding is pinned by a test: changing it changes every hash.
+- **A replayed answer** (F18 step 4e): when an eval replays a recording's model answers, the request is still a row, with
+  `cache_hit: true` (written only then; every other line is unchanged). Its tokens are known zeros (`0`, never `null`, and never the
+  recorded counts) and its cost is a known `0` in the table's currency and `as_of`, even for a model the table doesn't price
+  (`CostCalculator`), so a replay's total is $0 and a ledger reading adds a hit up like any other row (ADR 0007). Rows written
+  before step 4e read back with `cache_hit` null.
 - The file is append-only and rotates monthly (`usage-2026-10.jsonl`, by UTC month); it is the source for every total
   below. Several processes can append to it at once (the API and the orchestrator share one in the demo).
 - Sessions are in memory, but the ledger is not: totals survive restarts.

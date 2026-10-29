@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -11,7 +12,8 @@ namespace LouisAgent.Core.Tests.Skills.Roles;
 // tested on the tests' own roles (Prompts/: testprod); Puls's content is tested with Puls, in its identity's tests.
 public class RoleCatalogTests
 {
-    private const string Modes = "louis-agent/voice, louis-agent/voice-orchestrator, testprod/voice-af, testprod/voice-en";
+    private const string Modes =
+        "louis-agent/voice, louis-agent/voice-orchestrator, testprod/voice-af, testprod/voice-en";
 
     private string _skills = null!;
 
@@ -20,7 +22,8 @@ public class RoleCatalogTests
     {
         _skills = Path.Combine(Path.GetTempPath(), "roles-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(Path.Combine(_skills, RoleCatalog.AgentFolder));
-        File.WriteAllText(Path.Combine(_skills, RoleCatalog.AgentFolder, "test-voice.md"), "# Test Voice\n\nKort en kragtig.\n");
+        File.WriteAllText(Path.Combine(_skills, RoleCatalog.AgentFolder, "test-voice.md"),
+            "# Test Voice\n\nKort en kragtig.\n");
     }
 
     [TearDown]
@@ -33,7 +36,8 @@ public class RoleCatalogTests
     {
         string docs = SkillLoader.Load(Options(), [], role: null).Documentation;
 
-        Assert.That(docs, Does.Contain("Louis's Minion"), "the default voice, louis-agent/voice (personality.md before CL9)");
+        Assert.That(docs, Does.Contain("Louis's Minion"),
+            "the default voice, louis-agent/voice (personality.md before CL9)");
         Assert.That(docs, Does.Not.Contain("# Testprod - Stem"));
         Assert.That(docs, Does.Contain("# Louis Agent - Default Instructions"), "and its router");
     }
@@ -47,7 +51,8 @@ public class RoleCatalogTests
         Assert.That(RoleCatalog.DefaultVoice, Is.EqualTo("louis-agent/voice"));
         Assert.That(docs.IndexOf("# Testprod - Stem", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)));
-        Assert.That(SkillFileSource.ReadEmbedded("agent/testprod/voice.md"), Does.StartWith("# Testprod - Routing"), "the product's shared part");
+        Assert.That(SkillFileSource.ReadEmbedded("agent/testprod/voice.md"), Does.StartWith("# Testprod - Routing"),
+            "the product's shared part");
     }
 
     [Test]
@@ -58,7 +63,8 @@ public class RoleCatalogTests
         Assert.That(docs, Does.Contain("# Testprod - Stem"));
         Assert.That(docs, Does.Not.Contain("Louis's Minion"));
         Assert.That(docs.IndexOf("# Testprod - Stem", StringComparison.Ordinal),
-            Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)), "who the agent is, before its routing");
+            Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)),
+            "who the agent is, before its routing");
     }
 
     [TestCase("../personality")]
@@ -104,7 +110,8 @@ public class RoleCatalogTests
         // CL9 step 3: a product's routing holds its own rows, so neither pays for the other's in every request.
         string louis = RoleCatalog.ModeParts(SkillFileSource.ReadEmbedded("agent/louis-agent/voice.md")!).Routing;
 
-        Assert.That(louis, Does.Not.Contain("puls-cook").And.Not.Contain("**Vir:**").And.Not.Contain("cook"), "no cook, no Afrikaans briefing");
+        Assert.That(louis, Does.Not.Contain(SampleRole.Alpha).And.Not.Contain("**Vir:**").And.Not.Contain("cook"),
+            "no cook, no Afrikaans briefing");
     }
 
     [TestCase("af", "# Testprod - Stem")]
@@ -115,7 +122,8 @@ public class RoleCatalogTests
         string docs = SkillLoader.Load(new AgentOptions(), [], $"testprod/voice-{code}").Documentation;
 
         Assert.That(docs.IndexOf(voice, StringComparison.Ordinal), Is.GreaterThan(0));
-        Assert.That(docs.IndexOf(voice, StringComparison.Ordinal), Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)));
+        Assert.That(docs.IndexOf(voice, StringComparison.Ordinal),
+            Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)));
         Assert.That(RoleCatalog.LanguageOf($"testprod/voice-{code}"), Is.EqualTo(code));
     }
 
@@ -150,15 +158,18 @@ public class RoleCatalogTests
     public void ASpecialistsRole_IsRefusedAtLevelZero_NamingTheVoicesThereAre()
     {
         // CL8: a role opens only at its own level, so a chat can't take a specialist's role as its voice.
-        var ex = Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions(), [], "testprod-specialist", RoleLevel.Agent));
+        var ex = Assert.Throws<RoleException>(() =>
+            SkillLoader.Load(new AgentOptions(), [], "testprod-specialist", RoleLevel.Agent));
 
-        Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod-specialist'").And.EndWith($"Available: {Modes}."));
+        Assert.That(ex!.Message,
+            Does.Contain("Unknown role 'testprod-specialist'").And.EndWith($"Available: {Modes}."));
     }
 
     [Test]
     public void TheAgentsVoice_IsRefusedAtLevelOne_NamingTheRolesThereAre()
     {
-        var ex = Assert.Throws<RoleException>(() => SkillLoader.Load(new AgentOptions(), [], "testprod/voice-af", RoleLevel.Specialist));
+        var ex = Assert.Throws<RoleException>(() =>
+            SkillLoader.Load(new AgentOptions(), [], "testprod/voice-af", RoleLevel.Specialist));
 
         Assert.That(ex!.Message, Does.Contain("Unknown role 'testprod/voice-af'").And.Contain("testprod-specialist"));
     }
@@ -181,13 +192,21 @@ public class RoleCatalogTests
         string guide = SkillFileSource.ReadEmbedded("toolsets/specialists.md")!;
 
         Assert.That(guide, Does.Contain("Every sub-session costs money"), "the one choosing is told the cost");
-        Assert.That(guide, Does.Contain("## Following up").And.Contain("`ContinueSubSession(handle, message, attachments)`"));
+        Assert.That(guide,
+            Does.Contain("## Following up").And.Contain("`ContinueSubSession(handle, message, attachments)`"));
         Assert.That(guide, Does.Contain("Continue, don't answer it yourself"));
-        Assert.That(guide, Does.Contain("## Relaying a report").And.Contain("as the specialist wrote it").And.Contain("every table row"));
-        Assert.That(guide, Does.Contain("The footer the tool adds under the report").And.Contain("never in your answer"));
-        Assert.That(guide, Does.Contain("Pass `role`").And.Not.Contain("personality").IgnoreCase, "CL14: the model's word is role");
-        Assert.That(guide, Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("Vir hoeveel").And.Not.Contain("stemming").And.Not.Contain("Counting is the analyst's"));
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Does.Not.Contain("roles.json"), "CL10: a role is named, never derived");
+        Assert.That(guide,
+            Does.Contain("## Relaying a report").And.Contain("as the specialist wrote it").And
+                .Contain("every table row"));
+        Assert.That(guide,
+            Does.Contain("The footer the tool adds under the report").And.Contain("never in your answer"));
+        Assert.That(guide, Does.Contain("Pass `role`").And.Not.Contain("personality").IgnoreCase,
+            "CL14: the model's word is role");
+        Assert.That(guide,
+            Does.Not.Contain("puls").IgnoreCase.And.Not.Contain("Vir hoeveel").And.Not.Contain("stemming").And.Not
+                .Contain("Counting is the analyst's"));
+        Assert.That(SkillFileSource.ReadEmbedded("toolsets/specialists.md"), Does.Not.Contain("roles.json"),
+            "CL10: a role is named, never derived");
         Assert.That(SkillFileSource.ReadEmbedded("specialists/roles.json"), Is.Null);
     }
 

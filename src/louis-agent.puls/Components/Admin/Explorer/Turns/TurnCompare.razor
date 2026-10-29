@@ -1,0 +1,25 @@
+@* One turn in every mode side by side: its requests on a timeline (a bar opens its request), and its transcript,
+   replayed from the stored events through the chat's TurnStream, every mode at once. *@
+<div class="chart-head lead"><strong>Turn @TurnNumber</strong><span class="muted"><code>@TaskId</code></span>
+    <LegendList Entries="ExplorerLegends.Parts(ModeNames.Roles(Tree.Modes))" /></div>
+<div class="replay-bar">
+    @if (Replaying) { <button type="button" class="header-button" @onclick="OnStop"><span class="ic i-pulse" aria-hidden="true"></span>Stop</button><span class="muted working">replaying as typed…</span> }
+    else { <button type="button" class="header-button" @onclick="OnReplay"><span class="ic i-pulse" aria-hidden="true"></span>Replay as typed</button> }
+</div>
+<div class="compare">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        var tu = TurnIn(m);
+        <section class="compare-col" style="--i: @i">
+            <h3 class="compare-head"><span class="sw" style="background: @ChartPalette.Series(i)"></span>@ModeNames.Who(m) <code class="mode-name">@m.Name</code><span class="muted">@Heading(tu)</span></h3>
+            @if (tu is not null)
+            {
+                <TurnTimeline Turn="tu" Currency="Currency" OnOpen="r => OnOpenRequest.InvokeAsync((r, m))" />
+                <div class="explorer-turn">
+                    <div class="xreplay"><TurnView Turn="@(Replays.GetValueOrDefault(m.Name) ?? tu.Shown)" Streaming="Replaying" Currency="Currency" /></div>
+                    @if (tu.Hosts.Count > 0) { <p class="muted">Read: @string.Join(", ", tu.Hosts)</p> }
+                </div>
+            }
+        </section>
+    }
+</div>

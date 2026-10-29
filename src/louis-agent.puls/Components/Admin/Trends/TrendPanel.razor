@@ -1,0 +1,44 @@
+@* One panel of the trend: a line per mode of one measure over the runs; its head reads the shown run per mode with its
+   change; its title explains it on hover. A dashed upright line marks a run where a prompt changed, a dot at the top a
+   run with notes, each with its tooltip. A zero-length line with a round cap draws a point: a circle at any width,
+   where a stretched circle would be an oval. *@
+
+@if (!HasValues)
+{
+    <section class="chart trend-panel"><TrendPanelHead Topic="@Measure.Topic" Title="@Measure.Title" Small="Small" Top="no known values yet" /></section>
+}
+else
+{
+    <section class="chart trend-panel">
+        <TrendPanelHead Topic="@Measure.Topic" Title="@Measure.Title" Small="Small" Values="Values" Hovered="Reading.Hovered(Measure.Topic, Hover)" Top="@($"0 – {Measure.Label(Top)}")" />
+        <svg class="trend-svg" viewBox="0 0 @F(TrendGeometry.Width) @F(TrendGeometry.Height)" preserveAspectRatio="none" role="img" aria-label="@Measure.Title" @onmouseleave="Leave">
+            <defs><clipPath id="@Clip"><rect class="trend-reveal" x="-10" y="-10" width="@F(TrendGeometry.Width + 20)" height="@F(TrendGeometry.Height + 20)" /></clipPath></defs>
+            <line class="trend-axis" x1="0" y1="@F(TrendGeometry.Height - TrendGeometry.Pad)" x2="@F(TrendGeometry.Width)" y2="@F(TrendGeometry.Height - TrendGeometry.Pad)" />
+            @if (Marked is { } h) { <line class="trend-mark" x1="@F(Geometry.X(h))" y1="0" x2="@F(Geometry.X(h))" y2="@F(TrendGeometry.Height)" /> }
+            @if (HoveredRun is { } hv) { <line class="trend-hover" x1="@F(Geometry.X(hv))" y1="0" x2="@F(Geometry.X(hv))" y2="@F(TrendGeometry.Height)" /> }
+            @foreach (var m in Marks)
+            {
+                @if (m.ChangeTip is { } change) { <line class="trend-prompt" x1="@F(Geometry.X(m.Run))" y1="0" x2="@F(Geometry.X(m.Run))" y2="@F(TrendGeometry.Height)"><title>@change</title></line> }
+                @if (m.NoteTip is { } note) { <line class="trend-note" x1="@F(Geometry.X(m.Run))" y1="@F(TrendGeometry.Pad / 2)" x2="@F(Geometry.X(m.Run))" y2="@F(TrendGeometry.Pad / 2)"><title>@note</title></line> }
+            }
+            @foreach (var (s, i) in Series.Select((s, i) => (s, i)))
+            {
+                string path = Path(s);
+                if (path.Length > 0)
+                {
+                    <path class="trend-line" clip-path="url(#@Clip)" style="--i: @i; stroke: @ChartPalette.Series(i)" d="@path" />
+                }
+                @foreach (var p in Known(s))
+                {
+                    double y = Geometry.Y(Measure.Value(p)!.Value);
+                    <a class="trend-run" href="admin/benchmarks/@p.Run" @onmouseenter="() => Enter(p.Run)">
+                        <line class="trend-point @(p.Run == Highlight ? "here" : "") @(p.Run == _hover ? "hovered" : "")" x1="@F(Geometry.X(p.Run))" y1="@F(y)" x2="@F(Geometry.X(p.Run))" y2="@F(y)" style="--i: @i; stroke: @ChartPalette.Series(i)">
+                            <title>@s.Name · @p.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @Measure.Label(Measure.Value(p)!.Value)</title>
+                        </line>
+                    </a>
+                }
+            }
+        </svg>
+        @if (!Small && !Compact) { <div class="trend-x muted"><span>@Runs[0].At.ToLocalTime().ToString("yyyy-MM-dd")</span>@if (Runs.Count > 1) { <span>@Runs[^1].At.ToLocalTime().ToString("yyyy-MM-dd")</span> }</div> }
+    </section>
+}

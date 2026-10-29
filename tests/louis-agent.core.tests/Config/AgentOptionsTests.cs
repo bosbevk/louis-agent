@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Config;
 
 namespace LouisAgent.Core.Tests.Config;
@@ -73,10 +74,26 @@ public class AgentOptionsTests
     public void BrowserUserAgent_IsRead_AndAnEmptyOneIsNone()
     {
         // FX21: an identity names itself to the sites its browser reads for a user; unset or blank, Chrome's own is sent.
-        Assert.That(With(("BROWSER_USER_AGENT", "Puls/1.0 (+https://example.test; reads a page on a user's behalf)")).BrowserUserAgent,
+        Assert.That(
+            With(("BROWSER_USER_AGENT", "Puls/1.0 (+https://example.test; reads a page on a user's behalf)"))
+                .BrowserUserAgent,
             Is.EqualTo("Puls/1.0 (+https://example.test; reads a page on a user's behalf)"));
         Assert.That(With(("BROWSER_USER_AGENT", "   ")).BrowserUserAgent, Is.Null);
         Assert.That(With().BrowserUserAgent, Is.Null);
+    }
+
+    [Test]
+    public void TheReplaySettings_AreRead_TrimmedAndNullWhenBlank()
+    {
+        // F18 step 4a: WEB_REPLAY is the text SessionReplay.DefaultMode parses; REPLAY_DIRECTORY decides whether recordings are kept.
+        var set = With(("WEB_REPLAY", " record "), ("REPLAY_DIRECTORY", " /data/replay "));
+        Assert.That((set.WebReplay, set.ReplayDirectory, set.KeepsRecordings),
+            Is.EqualTo(("record", "/data/replay", true)));
+
+        var blank = With(("WEB_REPLAY", "  "), ("REPLAY_DIRECTORY", "   "));
+        Assert.That((blank.WebReplay, blank.ReplayDirectory, blank.KeepsRecordings),
+            Is.EqualTo(((string?)null, (string?)null, false)));
+        Assert.That(With().KeepsRecordings, Is.False);
     }
 
     private static AgentOptions With(params (string Name, string Value)[] variables) =>
@@ -84,20 +101,23 @@ public class AgentOptionsTests
 
     [Test]
     public void RolesEnabled_ReadsRolesEnabled() =>
-        Assert.That(With(("ROLES_ENABLED", "puls-cook,puls/voice-af")).RolesEnabled, Is.EqualTo(new[] { "puls-cook", "puls/voice-af" }));
+        Assert.That(With(("ROLES_ENABLED", SampleRole.Fill("<RoleAlpha>,puls/voice-af"))).RolesEnabled,
+            Is.EqualTo(new[] { SampleRole.Alpha, "puls/voice-af" }));
 
     [Test]
     public void RolesEnabled_ReadsThePersonalitiesSetting_WhenItIsUnset() =>
-        Assert.That(With(("PERSONALITIES_ENABLED", "puls-cook")).RolesEnabled, Is.EqualTo(new[] { "puls-cook" }));
+        Assert.That(With(("PERSONALITIES_ENABLED", SampleRole.Alpha)).RolesEnabled,
+            Is.EqualTo(new[] { SampleRole.Alpha }));
 
     [Test]
     public void RolesEnabled_ReadsTheNewOne_WhenBothAreSet() =>
-        Assert.That(With(("ROLES_ENABLED", "puls-cook"), ("PERSONALITIES_ENABLED", "puls/voice-af")).RolesEnabled, Is.EqualTo(new[] { "puls-cook" }));
+        Assert.That(With(("ROLES_ENABLED", SampleRole.Alpha), ("PERSONALITIES_ENABLED", "puls/voice-af")).RolesEnabled,
+            Is.EqualTo(new[] { SampleRole.Alpha }));
 
     // Review of PR #60: ROLES_ENABLED= (empty: every role on) is set, not unset, so the old name never overrides it.
     [Test]
     public void AnEmptyRolesEnabled_TurnsEveryRoleOn_EvenWithTheOldNameSet() =>
-        Assert.That(With(("ROLES_ENABLED", ""), ("PERSONALITIES_ENABLED", "puls-cook")).RolesEnabled, Is.Empty);
+        Assert.That(With(("ROLES_ENABLED", ""), ("PERSONALITIES_ENABLED", SampleRole.Alpha)).RolesEnabled, Is.Empty);
 
     private static string Stderr(Action action)
     {
@@ -113,6 +133,7 @@ public class AgentOptionsTests
         {
             Console.SetError(original);
         }
+
         return stderr.ToString();
     }
 
@@ -120,7 +141,7 @@ public class AgentOptionsTests
     // warning must also show when both are set, saying the old one is ignored.
     [Test, NonParallelizable]
     public void TheOldSetting_BesideTheNewOne_IsSaidToBeIgnored() =>
-        Assert.That(Stderr(() => With(("ROLES_ENABLED", "puls-cook"), ("PERSONALITIES_ENABLED", "puls/voice-af"))),
+        Assert.That(Stderr(() => With(("ROLES_ENABLED", SampleRole.Alpha), ("PERSONALITIES_ENABLED", "puls/voice-af"))),
             Does.Contain("[WARN]").And.Contain("PERSONALITIES_ENABLED").And.Contain("ignored"));
 
     [Test, NonParallelizable]
@@ -132,13 +153,14 @@ public class AgentOptionsTests
         try
         {
             LouisAgent.Core.Logging.AgentLogging.Configure(null);
-            With(("PERSONALITIES_ENABLED", "puls-cook"));
+            With(("PERSONALITIES_ENABLED", SampleRole.Alpha));
         }
         finally
         {
             Console.SetError(original);
         }
 
-        Assert.That(stderr.ToString(), Does.Contain("[WARN]").And.Contain("PERSONALITIES_ENABLED").And.Contain("ROLES_ENABLED"));
+        Assert.That(stderr.ToString(),
+            Does.Contain("[WARN]").And.Contain("PERSONALITIES_ENABLED").And.Contain("ROLES_ENABLED"));
     }
 }

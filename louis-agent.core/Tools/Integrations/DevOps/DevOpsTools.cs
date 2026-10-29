@@ -1,11 +1,12 @@
-namespace LouisAgent.Core.Tools.Integrations.DevOps;
 
 using System.ComponentModel;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Integrations.DevOps.Messages;
 
+namespace LouisAgent.Core.Tools.Integrations.DevOps;
 /// <summary>
 /// Azure DevOps work items for one project (DEVOPS_ORGANIZATION / DEVOPS_PROJECT, optional DEVOPS_TEAM). Sprints are
 /// iterations under the project, or under the team when one is set; an empty sprint means the team's current sprint.
@@ -39,26 +40,31 @@ public sealed class DevOpsTools
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Basic {auth}");
     }
 
-    [Description("Run an arbitrary WIQL (Work Item Query Language) query against this project's work items and return the raw JSON result. Unlike the sprint-scoped convenience tools below (GetTasksBySprint, GetBugsBySprint, GetWorkItemsByState, etc.), this query is not automatically scoped to any sprint or team — write WHERE clauses for [System.IterationPath], [System.TeamProject], etc. yourself if you need that. Use this when the question doesn't fit any of the pre-built sprint tools (cross-sprint queries, custom fields, unusual filter combinations); for 'items of type X in sprint Y', prefer the matching convenience tool, since it already resolves the current sprint and handles the common filters correctly.")]
+    [Description(
+        "Run an arbitrary WIQL (Work Item Query Language) query against this project's work items and return the raw JSON result. Unlike the sprint-scoped convenience tools below (GetTasksBySprint, GetBugsBySprint, GetWorkItemsByState, etc.), this query is not automatically scoped to any sprint or team — write WHERE clauses for [System.IterationPath], [System.TeamProject], etc. yourself if you need that. Use this when the question doesn't fit any of the pre-built sprint tools (cross-sprint queries, custom fields, unusual filter combinations); for 'items of type X in sprint Y', prefer the matching convenience tool, since it already resolves the current sprint and handles the common filters correctly.")]
     public async Task<string> QueryWorkItems(
-        [Description("WIQL query string (e.g., SELECT [System.Id], [System.Title] FROM workitems WHERE...)")] string wiqlQuery)
+        [Description("WIQL query string (e.g., SELECT [System.Id], [System.Title] FROM workitems WHERE...)")]
+        string wiqlQuery)
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         return await ExecuteWiqlQuery(wiqlQuery);
     }
 
-    [Description("List every work item of any type in one sprint assigned to a specific person, or to the caller (the DEVOPS_API_KEY's owner, via the WIQL @Me macro) when assignee is left empty. Leave sprint empty to use the team's current sprint, resolved automatically; call GetAvailableSprints first if you need to target a specific named sprint instead. Not filtered by work item type or state — pair with GetWorkItemsByState or GetOpenIssuesBySprint if you only want a subset.")]
+    [Description(
+        "List every work item of any type in one sprint assigned to a specific person, or to the caller (the DEVOPS_API_KEY's owner, via the WIQL @Me macro) when assignee is left empty. Leave sprint empty to use the team's current sprint, resolved automatically; call GetAvailableSprints first if you need to target a specific named sprint instead. Not filtered by work item type or state — pair with GetWorkItemsByState or GetOpenIssuesBySprint if you only want a subset.")]
     public async Task<string> GetWorkItemsByAssignee(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "",
-        [Description("Assignee display name or email; leave empty for yourself (the API key's owner)")] string assignee = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "",
+        [Description("Assignee display name or email; leave empty for yourself (the API key's owner)")]
+        string assignee = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -68,19 +74,23 @@ public sealed class DevOpsTools
         }
 
         string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.IterationPath] Under '{iteration}' " +
-                      (string.IsNullOrWhiteSpace(assignee) ? "AND [System.AssignedTo] = @Me" : $"AND [System.AssignedTo]='{assignee}'");
+                       $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+                       $"AND [System.IterationPath] Under '{iteration}' " +
+                       (string.IsNullOrWhiteSpace(assignee)
+                           ? "AND [System.AssignedTo] = @Me"
+                           : $"AND [System.AssignedTo]='{assignee}'");
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List all work items with type 'User Story' in one sprint, across every state and assignee. Leave sprint empty to use the team's current sprint, resolved automatically; an explicit name must match an iteration returned by GetAvailableSprints. Use GetTasksBySprint or GetBugsBySprint instead for those other work item types, or QueryWorkItems for a custom type filter.")]
+    [Description(
+        "List all work items with type 'User Story' in one sprint, across every state and assignee. Leave sprint empty to use the team's current sprint, resolved automatically; an explicit name must match an iteration returned by GetAvailableSprints. Use GetTasksBySprint or GetBugsBySprint instead for those other work item types, or QueryWorkItems for a custom type filter.")]
     public async Task<string> GetUserStoriesBySprint(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -90,19 +100,21 @@ public sealed class DevOpsTools
         }
 
         string query = $"SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.WorkItemType]='User Story' " +
-                      $"AND [System.IterationPath] Under '{iteration}'";
+                       $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+                       $"AND [System.WorkItemType]='User Story' " +
+                       $"AND [System.IterationPath] Under '{iteration}'";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List all work items with type 'Task' in one sprint, across every state and assignee. Leave sprint empty to use the team's current sprint, resolved automatically; an explicit name must match an iteration returned by GetAvailableSprints. Use GetUserStoriesBySprint or GetBugsBySprint instead for those other work item types, or QueryWorkItems for a custom type filter.")]
+    [Description(
+        "List all work items with type 'Task' in one sprint, across every state and assignee. Leave sprint empty to use the team's current sprint, resolved automatically; an explicit name must match an iteration returned by GetAvailableSprints. Use GetUserStoriesBySprint or GetBugsBySprint instead for those other work item types, or QueryWorkItems for a custom type filter.")]
     public async Task<string> GetTasksBySprint(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -112,19 +124,21 @@ public sealed class DevOpsTools
         }
 
         string query = $"SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.WorkItemType]='Task' " +
-                      $"AND [System.IterationPath] Under '{iteration}'";
+                       $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+                       $"AND [System.WorkItemType]='Task' " +
+                       $"AND [System.IterationPath] Under '{iteration}'";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List all work items with type 'Bug' in one sprint, across every state and assignee. Leave sprint empty to use the team's current sprint, resolved automatically; an explicit name must match an iteration returned by GetAvailableSprints. Use GetUserStoriesBySprint or GetTasksBySprint instead for those other work item types, or QueryWorkItems for a custom type filter.")]
+    [Description(
+        "List all work items with type 'Bug' in one sprint, across every state and assignee. Leave sprint empty to use the team's current sprint, resolved automatically; an explicit name must match an iteration returned by GetAvailableSprints. Use GetUserStoriesBySprint or GetTasksBySprint instead for those other work item types, or QueryWorkItems for a custom type filter.")]
     public async Task<string> GetBugsBySprint(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -134,19 +148,20 @@ public sealed class DevOpsTools
         }
 
         string query = $"SELECT [System.Id], [System.Title], [System.State], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.WorkItemType]='Bug' " +
-                      $"AND [System.IterationPath] Under '{iteration}'";
+                       $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+                       $"AND [System.WorkItemType]='Bug' " +
+                       $"AND [System.IterationPath] Under '{iteration}'";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("Fetch the full field set for exactly one work item by its numeric ID, including fields the sprint-scoped list tools don't return (description, history links, relations) via Azure DevOps' $expand=all. Use this once you already have an ID from one of the list/search tools and need its complete detail, not to search for items — it doesn't accept partial IDs or names. Returns an error string if the ID doesn't exist or the request fails, rather than throwing.")]
+    [Description(
+        "Fetch the full field set for exactly one work item by its numeric ID, including fields the sprint-scoped list tools don't return (description, history links, relations) via Azure DevOps' $expand=all. Use this once you already have an ID from one of the list/search tools and need its complete detail, not to search for items — it doesn't accept partial IDs or names. Returns an error string if the ID doesn't exist or the request fails, rather than throwing.")]
     public async Task<string> GetWorkItemById(
         [Description("Work item ID")] string id)
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -157,7 +172,8 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError,
+                    new { Status = response.StatusCode, Content = content });
             }
 
             var json = JsonDocument.Parse(content);
@@ -165,18 +181,21 @@ public sealed class DevOpsTools
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsWorkItemFailed, new { Id = id, Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsWorkItemFailed, new { Id = id, Reason = ex.Message });
         }
     }
 
-    [Description("List all work items in one sprint whose System.State exactly matches the given string (e.g. 'Active', 'Resolved', 'Closed') — a case-sensitive match against whatever your project's workflow states are actually named. Leave sprint empty to use the team's current sprint, resolved automatically. For the common 'Active or New' case use GetOpenIssuesBySprint instead, which already combines both states.")]
+    [Description(
+        "List all work items in one sprint whose System.State exactly matches the given string (e.g. 'Active', 'Resolved', 'Closed') — a case-sensitive match against whatever your project's workflow states are actually named. Leave sprint empty to use the team's current sprint, resolved automatically. For the common 'Active or New' case use GetOpenIssuesBySprint instead, which already combines both states.")]
     public async Task<string> GetWorkItemsByState(
-        [Description("Work item state (e.g., 'Active', 'Resolved', 'Closed')")] string state,
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Work item state (e.g., 'Active', 'Resolved', 'Closed')")]
+        string state,
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -185,22 +204,27 @@ public sealed class DevOpsTools
             return sprintError;
         }
 
-        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.State]='{state}' " +
-                      $"AND [System.IterationPath] Under '{iteration}'";
+        string query =
+            $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
+            $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+            $"AND [System.State]='{state}' " +
+            $"AND [System.IterationPath] Under '{iteration}'";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("Search for work items in one sprint whose title contains the given keyword (a WIQL Contains match, not an exact or regex match), sorted by ID descending and capped at maxResults (1-100, default 20). Leave sprint empty to use the team's current sprint, resolved automatically. Use this for free-text title lookups; use GetWorkItemById instead once you already know the exact ID.")]
+    [Description(
+        "Search for work items in one sprint whose title contains the given keyword (a WIQL Contains match, not an exact or regex match), sorted by ID descending and capped at maxResults (1-100, default 20). Leave sprint empty to use the team's current sprint, resolved automatically. Use this for free-text title lookups; use GetWorkItemById instead once you already know the exact ID.")]
     public async Task<string> FindWorkItemsByTitle(
-        [Description("Keyword to search in titles")] string keyword,
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "",
-        [Description("Max results to return (1-100, default 20)")] int maxResults = 20)
+        [Description("Keyword to search in titles")]
+        string keyword,
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "",
+        [Description("Max results to return (1-100, default 20)")]
+        int maxResults = 20)
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -210,21 +234,24 @@ public sealed class DevOpsTools
         }
 
         maxResults = Math.Clamp(maxResults, 1, 100);
-        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.Title] Contains '{keyword}' " +
-                      $"AND [System.IterationPath] Under '{iteration}' " +
-                      $"ORDER BY [System.Id] DESC";
+        string query =
+            $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
+            $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+            $"AND [System.Title] Contains '{keyword}' " +
+            $"AND [System.IterationPath] Under '{iteration}' " +
+            $"ORDER BY [System.Id] DESC";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List work items in one sprint whose state is 'Active' or 'New', ordered by most recently changed first — the common 'what's still open' view. Leave sprint empty to use the team's current sprint, resolved automatically. For a different or single state use GetWorkItemsByState instead.")]
+    [Description(
+        "List work items in one sprint whose state is 'Active' or 'New', ordered by most recently changed first — the common 'what's still open' view. Leave sprint empty to use the team's current sprint, resolved automatically. For a different or single state use GetWorkItemsByState instead.")]
     public async Task<string> GetOpenIssuesBySprint(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -233,21 +260,24 @@ public sealed class DevOpsTools
             return sprintError;
         }
 
-        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND ([System.State]='Active' OR [System.State]='New') " +
-                      $"AND [System.IterationPath] Under '{iteration}' " +
-                      $"ORDER BY [System.ChangedDate] DESC";
+        string query =
+            $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
+            $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+            $"AND ([System.State]='Active' OR [System.State]='New') " +
+            $"AND [System.IterationPath] Under '{iteration}' " +
+            $"ORDER BY [System.ChangedDate] DESC";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List work items in one sprint whose System.AssignedTo field is empty — items nobody currently owns. Leave sprint empty to use the team's current sprint, resolved automatically. Use GetWorkItemsByAssignee instead to find items assigned to someone specific.")]
+    [Description(
+        "List work items in one sprint whose System.AssignedTo field is empty — items nobody currently owns. Leave sprint empty to use the team's current sprint, resolved automatically. Use GetWorkItemsByAssignee instead to find items assigned to someone specific.")]
     public async Task<string> GetUnassignedWorkItems(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -257,19 +287,21 @@ public sealed class DevOpsTools
         }
 
         string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.AssignedTo] = '' " +
-                      $"AND [System.IterationPath] Under '{iteration}'";
+                       $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+                       $"AND [System.AssignedTo] = '' " +
+                       $"AND [System.IterationPath] Under '{iteration}'";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List work items in one sprint tagged 'Blocker', regardless of work item type (Bug, Task, User Story, etc.). Matches on the System.Tags field containing 'Blocker', since most Azure DevOps process templates have no dedicated 'Blocker' work item type — tagging is the common convention for flagging a blocking item across types. If a project uses a different tag or field for this, use QueryWorkItems with a custom WIQL filter instead.")]
+    [Description(
+        "List work items in one sprint tagged 'Blocker', regardless of work item type (Bug, Task, User Story, etc.). Matches on the System.Tags field containing 'Blocker', since most Azure DevOps process templates have no dedicated 'Blocker' work item type — tagging is the common convention for flagging a blocking item across types. If a project uses a different tag or field for this, use QueryWorkItems with a custom WIQL filter instead.")]
     public async Task<string> GetBlockersBySprint(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -278,21 +310,25 @@ public sealed class DevOpsTools
             return sprintError;
         }
 
-        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.Tags] CONTAINS 'Blocker' " +
-                      $"AND [System.IterationPath] Under '{iteration}'";
+        string query =
+            $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
+            $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+            $"AND [System.Tags] CONTAINS 'Blocker' " +
+            $"AND [System.IterationPath] Under '{iteration}'";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List work items in one sprint whose System.ChangedDate falls within the last `days` days (default 7), ordered most-recently-changed first. Leave sprint empty to use the team's current sprint, resolved automatically. Not filtered by type or state — combine with GetWorkItemsByState if you only want recent changes to, say, open bugs.")]
+    [Description(
+        "List work items in one sprint whose System.ChangedDate falls within the last `days` days (default 7), ordered most-recently-changed first. Leave sprint empty to use the team's current sprint, resolved automatically. Not filtered by type or state — combine with GetWorkItemsByState if you only want recent changes to, say, open bugs.")]
     public async Task<string> GetRecentlyModifiedWorkItems(
-        [Description("Number of days to look back (default 7)")] int days = 7,
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Number of days to look back (default 7)")]
+        int days = 7,
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -302,21 +338,24 @@ public sealed class DevOpsTools
         }
 
         string cutoffDate = DateTime.Now.AddDays(-days).ToString("yyyy-MM-dd");
-        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.ChangedDate], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.ChangedDate] >= '{cutoffDate}' " +
-                      $"AND [System.IterationPath] Under '{iteration}' " +
-                      $"ORDER BY [System.ChangedDate] DESC";
+        string query =
+            $"SELECT [System.Id], [System.Title], [System.State], [System.ChangedDate], [System.AssignedTo] " +
+            $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+            $"AND [System.ChangedDate] >= '{cutoffDate}' " +
+            $"AND [System.IterationPath] Under '{iteration}' " +
+            $"ORDER BY [System.ChangedDate] DESC";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List every work item in one sprint, ordered by state then work item type, as a flat result — a quick 'what does this sprint contain' overview rather than a pre-aggregated count-by-state summary (grouping/counting is left to the caller). Leave sprint empty to use the team's current sprint, resolved automatically.")]
+    [Description(
+        "List every work item in one sprint, ordered by state then work item type, as a flat result — a quick 'what does this sprint contain' overview rather than a pre-aggregated count-by-state summary (grouping/counting is left to the caller). Leave sprint empty to use the team's current sprint, resolved automatically.")]
     public async Task<string> GetSprintSummary(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -325,19 +364,21 @@ public sealed class DevOpsTools
             return sprintError;
         }
 
-        string query = $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.IterationPath] Under '{iteration}' " +
-                      $"ORDER BY [System.State], [System.WorkItemType]";
+        string query =
+            $"SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] " +
+            $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+            $"AND [System.IterationPath] Under '{iteration}' " +
+            $"ORDER BY [System.State], [System.WorkItemType]";
         return await ExecuteWiqlQuery(query);
     }
 
-    [Description("List the names of every iteration (sprint) configured for the team, sorted alphabetically — not scoped to any single sprint itself. Call this first when you need a specific sprint name to pass to the other sprint-scoped tools, or when one of them reports it couldn't find a current sprint. Returns 'No sprints found.' rather than an error if the team has none configured.")]
+    [Description(
+        "List the names of every iteration (sprint) configured for the team, sorted alphabetically — not scoped to any single sprint itself. Call this first when you need a specific sprint name to pass to the other sprint-scoped tools, or when one of them reports it couldn't find a current sprint. Returns 'No sprints found.' rather than an error if the team has none configured.")]
     public async Task<string> GetAvailableSprints()
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -348,7 +389,8 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = content });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError,
+                    new { Status = response.StatusCode, Content = content });
             }
 
             var json = JsonDocument.Parse(content);
@@ -366,22 +408,24 @@ public sealed class DevOpsTools
             }
 
             return sprints.Count == 0
-                ? MessageText.Format(ToolMessage.NoSprints)
+                ? MessageText.Format(DevOpsToolMessage.NoSprints)
                 : "Available sprints:\n" + string.Join("\n", sprints.OrderBy(s => s));
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsSprintsFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsSprintsFailed, new { Reason = ex.Message });
         }
     }
 
-    [Description("List every work item in one sprint with just its ID, assignee, state and type — intended for tallying how work is distributed across the team, though the caller does the grouping/counting, not this tool. Leave sprint empty to use the team's current sprint, resolved automatically. Use GetWorkItemsByAssignee instead if you only care about one specific person.")]
+    [Description(
+        "List every work item in one sprint with just its ID, assignee, state and type — intended for tallying how work is distributed across the team, though the caller does the grouping/counting, not this tool. Leave sprint empty to use the team's current sprint, resolved automatically. Use GetWorkItemsByAssignee instead if you only care about one specific person.")]
     public async Task<string> GetTeamWorkloadBySprint(
-        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")] string sprint = "")
+        [Description("Sprint name (e.g., 'Sprint 42'); leave empty for the team's current sprint")]
+        string sprint = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         var (iteration, sprintError) = await ResolveIterationPathAsync(sprint);
@@ -391,8 +435,8 @@ public sealed class DevOpsTools
         }
 
         string query = $"SELECT [System.Id], [System.AssignedTo], [System.State], [System.WorkItemType] " +
-                      $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
-                      $"AND [System.IterationPath] Under '{iteration}'";
+                       $"FROM workitems WHERE [System.TeamProject]='{_project}' " +
+                       $"AND [System.IterationPath] Under '{iteration}'";
 
         return await ExecuteWiqlQuery(query);
     }
@@ -410,11 +454,15 @@ public sealed class DevOpsTools
 
         try
         {
-            using var response = await _httpClient.GetAsync($"{_teamBaseUrl}/work/teamsettings/iterations?$timeframe=current&api-version=7.0");
+            using var response =
+                await _httpClient.GetAsync(
+                    $"{_teamBaseUrl}/work/teamsettings/iterations?$timeframe=current&api-version=7.0");
             string content = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                return ("", MessageText.Format(ToolMessage.DevOpsCurrentSprintHttpError, new { Status = response.StatusCode, Content = content }));
+                return ("",
+                    MessageText.Format(DevOpsToolMessage.DevOpsCurrentSprintHttpError,
+                        new { Status = response.StatusCode, Content = content }));
             }
 
             using var json = JsonDocument.Parse(content);
@@ -424,11 +472,11 @@ public sealed class DevOpsTools
                 return (iterationPath.Replace("\\", "\\\\"), null);
             }
 
-            return ("", MessageText.Format(ToolMessage.DevOpsNoCurrentSprint));
+            return ("", MessageText.Format(DevOpsToolMessage.DevOpsNoCurrentSprint));
         }
         catch (Exception ex)
         {
-            return ("", MessageText.Format(ToolMessage.DevOpsCurrentSprintFailed, new { Reason = ex.Message }));
+            return ("", MessageText.Format(DevOpsToolMessage.DevOpsCurrentSprintFailed, new { Reason = ex.Message }));
         }
     }
 
@@ -446,7 +494,8 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError,
+                    new { Status = response.StatusCode, Content = responseContent });
             }
 
             var jsonDoc = JsonDocument.Parse(responseContent);
@@ -454,19 +503,23 @@ public sealed class DevOpsTools
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsQueryFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsQueryFailed, new { Reason = ex.Message });
         }
     }
 
-    [Description("Create a new work item of the given type (e.g. 'Task', 'Bug', 'User Story') with a title and optional description — this mutates the project by adding a real work item, not a dry run or preview. The type must be a valid work item type in this project or the request fails. Returns the created item's ID and title on success, or an error string on failure; use UpdateWorkItem afterward to set any other field (assignee, state, iteration, etc.) that this tool doesn't take.")]
+    [Description(
+        "Create a new work item of the given type (e.g. 'Task', 'Bug', 'User Story') with a title and optional description — this mutates the project by adding a real work item, not a dry run or preview. The type must be a valid work item type in this project or the request fails. Returns the created item's ID and title on success, or an error string on failure; use UpdateWorkItem afterward to set any other field (assignee, state, iteration, etc.) that this tool doesn't take.")]
     public async Task<string> CreateWorkItem(
-        [Description("Work item type (e.g., 'Task', 'Bug', 'User Story')")] string workItemType,
-        [Description("Title for the work item")] string title,
-        [Description("Description (optional)")] string description = "")
+        [Description("Work item type (e.g., 'Task', 'Bug', 'User Story')")]
+        string workItemType,
+        [Description("Title for the work item")]
+        string title,
+        [Description("Description (optional)")]
+        string description = "")
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -490,32 +543,36 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError,
+                    new { Status = response.StatusCode, Content = responseContent });
             }
 
             var jsonDoc = JsonDocument.Parse(responseContent);
             if (jsonDoc.RootElement.TryGetProperty("id", out var idElement))
             {
-                return MessageText.Format(ToolMessage.WorkItemCreated, new { Type = workItemType, Id = idElement.GetInt32(), Title = title });
+                return MessageText.Format(DevOpsToolMessage.WorkItemCreated,
+                    new { Type = workItemType, Id = idElement.GetInt32(), Title = title });
             }
 
-            return MessageText.Format(ToolMessage.WorkItemCreatedRaw, new { Response = responseContent });
+            return MessageText.Format(DevOpsToolMessage.WorkItemCreatedRaw, new { Response = responseContent });
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsCreateFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsCreateFailed, new { Reason = ex.Message });
         }
     }
 
-    [Description("Update exactly one field on an existing work item by ID using a JSON Patch 'add' operation, which also overwrites a field that already has a value. fieldName must be the Azure DevOps reference name (e.g. 'System.State', 'System.AssignedTo'), not the display label, and fieldValue is written as-is with no validation against the field's allowed values. This mutates the live work item with no preview or undo; call UpdateWorkItem again with the previous value to revert.")]
+    [Description(
+        "Update exactly one field on an existing work item by ID using a JSON Patch 'add' operation, which also overwrites a field that already has a value. fieldName must be the Azure DevOps reference name (e.g. 'System.State', 'System.AssignedTo'), not the display label, and fieldValue is written as-is with no validation against the field's allowed values. This mutates the live work item with no preview or undo; call UpdateWorkItem again with the previous value to revert.")]
     public async Task<string> UpdateWorkItem(
         [Description("Work item ID")] string id,
-        [Description("Field name (e.g., 'System.State', 'System.AssignedTo')")] string fieldName,
+        [Description("Field name (e.g., 'System.State', 'System.AssignedTo')")]
+        string fieldName,
         [Description("New field value")] string fieldValue)
     {
         if (string.IsNullOrWhiteSpace(_apiKey))
         {
-            return MessageText.Format(ToolMessage.DevOpsKeyNotSet);
+            return MessageText.Format(DevOpsToolMessage.DevOpsKeyNotSet);
         }
 
         try
@@ -534,14 +591,16 @@ public sealed class DevOpsTools
 
             if (!response.IsSuccessStatusCode)
             {
-                return MessageText.Format(ToolMessage.DevOpsHttpError, new { Status = response.StatusCode, Content = responseContent });
+                return MessageText.Format(DevOpsToolMessage.DevOpsHttpError,
+                    new { Status = response.StatusCode, Content = responseContent });
             }
 
-            return MessageText.Format(ToolMessage.WorkItemUpdated, new { Id = id, Field = fieldName, Value = fieldValue });
+            return MessageText.Format(DevOpsToolMessage.WorkItemUpdated,
+                new { Id = id, Field = fieldName, Value = fieldValue });
         }
         catch (Exception ex)
         {
-            return MessageText.Format(ToolMessage.DevOpsUpdateFailed, new { Reason = ex.Message });
+            return MessageText.Format(DevOpsToolMessage.DevOpsUpdateFailed, new { Reason = ex.Message });
         }
     }
 }

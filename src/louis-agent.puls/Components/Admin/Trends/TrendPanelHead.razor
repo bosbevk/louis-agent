@@ -1,0 +1,19 @@
+@* The head of one trend panel: its title (the explorer's panels explain themselves on hover, the small card's line needs no note), each mode's value at the run being read
+   with its change since the run before, the run a hover is reading, and the scale's ends. All of it was TrendChart's own markup before 6.0b. *@
+<div class="chart-head">
+    @if (Small) { <span class="muted">@Title</span> }
+    else { <ChartInfo Topic="@Topic" Title="@Title" /> }
+    @if (!Small && Values.Count > 0)
+    {
+        <span class="trend-values">
+            @foreach (var v in Values)
+            {
+                <span title="@v.Name"><span class="sw" style="background: @v.Color"></span><strong>@v.Text</strong>
+                    @if (v.Change is not null) { <span class="trend-delta @(v.Up ? "up" : "down")">@v.Change</span> }
+                </span>
+            }
+        </span>
+    }
+    @if (!Small && Hovered is { } run) { <span class="muted trend-reading">run <code>@run.Run</code> · @run.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span> }
+    <span class="muted trend-top">@Top</span>
+</div>

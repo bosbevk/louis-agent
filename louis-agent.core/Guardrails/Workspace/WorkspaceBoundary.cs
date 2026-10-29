@@ -1,7 +1,8 @@
-namespace LouisAgent.Core.Guardrails.Workspace;
 
+using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
 
+namespace LouisAgent.Core.Guardrails.Workspace;
 /// <summary>
 /// Keeps paths inside the workspace: relative only, never above the root, never through a symbolic link. The agent's
 /// file tools and the API's workspace and git endpoints resolve every path through it.
@@ -12,7 +13,7 @@ internal sealed class WorkspaceBoundary
     {
         if (string.IsNullOrWhiteSpace(root))
         {
-            throw new ArgumentException(MessageText.Format(ErrorMessage.WorkspaceRootEmpty), nameof(root));
+            throw new ArgumentException(MessageText.Format(GuardrailErrorMessage.WorkspaceRootEmpty), nameof(root));
         }
 
         Root = Path.GetFullPath(root);
@@ -26,7 +27,7 @@ internal sealed class WorkspaceBoundary
     {
         if (Path.IsPathRooted(relativePath))
         {
-            throw new ArgumentException(MessageText.Format(ToolMessage.PathNotRelative), nameof(relativePath));
+            throw new ArgumentException(MessageText.Format(GuardrailToolMessage.PathNotRelative), nameof(relativePath));
         }
 
         string fullPath = Path.GetFullPath(Path.Combine(Root, relativePath));
@@ -35,7 +36,8 @@ internal sealed class WorkspaceBoundary
             relativeToRoot.StartsWith($"..{Path.DirectorySeparatorChar}", StringComparison.Ordinal) ||
             Path.IsPathRooted(relativeToRoot))
         {
-            throw new ArgumentException(MessageText.Format(ToolMessage.PathOutsideWorkspace), nameof(relativePath));
+            throw new ArgumentException(MessageText.Format(GuardrailToolMessage.PathOutsideWorkspace),
+                nameof(relativePath));
         }
 
         string? current = fullPath;
@@ -44,7 +46,8 @@ internal sealed class WorkspaceBoundary
             if ((Directory.Exists(current) || File.Exists(current)) &&
                 (File.GetAttributes(current) & FileAttributes.ReparsePoint) != 0)
             {
-                throw new ArgumentException(MessageText.Format(ToolMessage.PathThroughSymbolicLink), nameof(relativePath));
+                throw new ArgumentException(MessageText.Format(GuardrailToolMessage.PathThroughSymbolicLink),
+                    nameof(relativePath));
             }
 
             current = Path.GetDirectoryName(current);

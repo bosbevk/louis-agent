@@ -1,3 +1,5 @@
+using LouisAgent.Packs.Shops;
+using LouisAgent.Choices;
 using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Packs.Shops.Tests;
@@ -12,12 +14,14 @@ public class ShopsPackTests
     {
         var pack = new ShopsPack(new ShopsOptions());
 
-        Assert.That(pack.Name, Is.EqualTo("shops"));
-        Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { "shops" }));
+        Assert.That(pack.Name, Is.EqualTo(ShopsToolset.Shops.Wire()));
+        Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }));
         Assert.That(pack.Toolsets[0].GuideFile, Is.EqualTo("toolsets/shops.md"));
-        Assert.That(pack.Prompts.GetFileInfo("toolsets/shops.md").Exists, Is.True, "the project's manifest lines embed it");
+        Assert.That(pack.Prompts.GetFileInfo("toolsets/shops.md").Exists, Is.True,
+            "the project's manifest lines embed it");
         Assert.That(SkillFileSource.CoreFiles, Has.None.EqualTo("toolsets/shops.md"), "and core's don't");
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/shops.md"), Does.Contain("Look for deals first"), "read through the one reader");
+        Assert.That(SkillFileSource.ReadEmbedded("toolsets/shops.md"), Does.Contain("Look for deals first"),
+            "read through the one reader");
     }
 
     [Test]

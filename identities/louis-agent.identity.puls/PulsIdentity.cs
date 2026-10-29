@@ -1,8 +1,9 @@
-namespace LouisAgent.Identities.Puls;
 
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
 
+namespace LouisAgent.Identities.Puls;
 /// <summary>
 /// Puls, the South African general assistant (CL15, ADR 0027): its modes (<c>agent/puls/</c>), its specialists
 /// (<c>specialists/puls-*</c>) and its minion roles (<c>minions/puls-*</c>), and the packs it uses by name. Loaded by a host
@@ -10,11 +11,17 @@ using Microsoft.Extensions.FileProviders;
 /// </summary>
 public sealed class PulsIdentity : IAgentIdentity
 {
-    public string Name => "puls";
+    public string Name => PulsIdentityName.Puls.Wire();
 
     /// <summary>Puls's prompts, embedded with their paths (<c>agent/puls/voice.md</c>, <c>specialists/puls-cook.md</c>), read only from this assembly.</summary>
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(PulsIdentity).Assembly, "Prompts");
 
     /// <summary>The shops (CL15); F35 adds <c>recipes</c>, CL16 <c>cooking</c>, later <c>places</c>.</summary>
-    public IReadOnlyList<string> Packs => ["shops"];
+    public IReadOnlyList<string> Packs => [PulsPack.Shops.Wire()];
+}
+
+/// <summary>The name this identity is loaded by (<c>IDENTITIES=puls</c>) and that the evals prove (ADR 0043). It is written once, here; the ratchet bans the literal everywhere outside an enum, so the one definition is a member too.</summary>
+public enum PulsIdentityName
+{
+    [WireName("puls")] Puls,
 }

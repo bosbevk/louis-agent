@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Search.Providers;
+using LouisAgent.Choices;
 
 using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
@@ -8,7 +8,9 @@ using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Messages;
 
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 /// <summary>
 /// Tavily's search API (F25 step 6; Louis's choice over Google, whose Custom Search API ends on 2027-01-01): a search
 /// built for agents, 1,000 free searches a month. <c>POST https://api.tavily.com/search</c> with the key as a bearer
@@ -25,7 +27,8 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
 
     public string Name => "Tavily";
 
-    public async Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
+        CancellationToken cancellationToken = default)
     {
         var body = new Dictionary<string, object>
         {
@@ -34,7 +37,7 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
             ["search_depth"] = "basic",
         };
         if (!string.IsNullOrWhiteSpace(query.Site)) body["include_domains"] = new[] { query.Site.Trim() };
-        if (query.Recency is { } recency) body["time_range"] = recency.ToString().ToLowerInvariant();
+        if (query.Recency is { } recency) body["time_range"] = recency.Wire();
 
         using var request = new HttpRequestMessage(HttpMethod.Post, Endpoint) { Content = JsonContent.Create(body) };
         request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
@@ -46,11 +49,13 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
             string detail = TryReadError(json) ?? response.ReasonPhrase ?? "";
             throw new WebSearchException(response.StatusCode switch
             {
-                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(ToolMessage.TavilyRejected, new { Detail = detail }),
+                HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden => MessageText.Format(
+                    WebToolMessage.TavilyRejected, new { Detail = detail }),
                 // 429 is the rate limit; 432 and 433 are Tavily's own codes for a plan's usage limit.
                 HttpStatusCode.TooManyRequests or (HttpStatusCode)432 or (HttpStatusCode)433 =>
-                    MessageText.Format(ToolMessage.TavilyLimit, new { Detail = detail }),
-                _ => MessageText.Format(ToolMessage.TavilyFailed, new { Status = (int)response.StatusCode, Detail = detail }),
+                    MessageText.Format(WebToolMessage.TavilyLimit, new { Detail = detail }),
+                _ => MessageText.Format(WebToolMessage.TavilyFailed,
+                    new { Status = (int)response.StatusCode, Detail = detail }),
             });
         }
 
@@ -60,7 +65,8 @@ public sealed class TavilySearchProvider(string apiKey, HttpClient? http = null)
     internal static List<WebSearchResult> ParseResults(string json, int count)
     {
         using var doc = JsonDocument.Parse(json);
-        if (!doc.RootElement.TryGetProperty("results", out var results) || results.ValueKind != JsonValueKind.Array) return [];
+        if (!doc.RootElement.TryGetProperty("results", out var results) ||
+            results.ValueKind != JsonValueKind.Array) return [];
 
         return results.EnumerateArray()
             .Select(r => new WebSearchResult(

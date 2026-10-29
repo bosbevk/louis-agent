@@ -25,7 +25,8 @@ public class JsonlUsageSinkTests
 
     private static UsageRecord Record(DateTimeOffset at, UsageTokens? tokens = null) => new(
         At: at, Round: 1, Purpose: UsagePurpose.Turn, Host: null, Session: null, Turn: null, Task: null, Run: null,
-        Service: null, Model: "claude-haiku-4-5-20251001", Tokens: tokens ?? new UsageTokens(39, null, 10_227, 206, null),
+        Service: null, Model: "claude-haiku-4-5-20251001",
+        Tokens: tokens ?? new UsageTokens(39, null, 10_227, 206, null),
         DurationMs: 1_234, Stop: "stop");
 
     private string[] Lines(string fileName) => File.ReadAllLines(Path.Combine(_directory, fileName));
@@ -73,12 +74,39 @@ public class JsonlUsageSinkTests
     public void Record_LineWrittenBeforeF2_ReadsBackWithNoCost()
     {
         // Ledgers written before prices existed have no "cost"; they must still read back, unpriced.
-        const string line = """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
+        const string line =
+            """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
 
         UsageRecord record = JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!;
 
         Assert.That(record.Cost, Is.Null);
         Assert.That(record.Tokens.Input, Is.EqualTo(47_605));
+    }
+
+    [Test]
+    public void Record_WithAPromptHash_IsTheSameLinePlusTheHashLast()
+    {
+        var at = new DateTimeOffset(2026, 10, 25, 9, 0, 0, TimeSpan.Zero);
+        string hash = new('a', 64);
+        var sink = new JsonlUsageSink(_directory);
+
+        sink.Record(Record(at));
+        sink.Record(Record(at) with { PromptHash = hash });
+
+        string[] lines = Lines("usage-2026-10.jsonl");
+        Assert.That(lines[1], Is.EqualTo(lines[0][..^1] + $",\"prompt_hash\":\"{hash}\"}}"));
+        Assert.That(lines[0], Does.Not.Contain("prompt_hash"));
+    }
+
+    [Test]
+    public void Record_LineWrittenBeforeStep4c_ReadsBackWithANullPromptHash()
+    {
+        const string line =
+            """{"at":"2026-10-10T17:43:20+00:00","round":1,"purpose":"turn","host":"api","session":"sess_1","turn":1,"task":null,"run":null,"service":null,"model":"claude-haiku-5-5","tokens":{"input":47605,"cache_write":null,"cache_read":0,"output":470,"reasoning":null},"duration_ms":3730,"stop":"tool_calls"}""";
+
+        UsageRecord record = JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!;
+
+        Assert.That(record.PromptHash, Is.Null, "unknown, never \"\"");
     }
 
     [Test]
@@ -105,11 +133,13 @@ public class JsonlUsageSinkTests
     [Test]
     public void Record_NullCountsWrittenAsNull()
     {
-        new JsonlUsageSink(_directory).Record(Record(DateTimeOffset.UtcNow, new UsageTokens(null, null, null, null, null)));
+        new JsonlUsageSink(_directory).Record(Record(DateTimeOffset.UtcNow,
+            new UsageTokens(null, null, null, null, null)));
 
         using var json = JsonDocument.Parse(Lines(JsonlUsageSink.FileNameFor(DateTimeOffset.UtcNow)).Single());
         JsonElement tokens = json.RootElement.GetProperty("tokens");
-        Assert.That(tokens.GetProperty("input").ValueKind, Is.EqualTo(JsonValueKind.Null), "null means not reported; never 0");
+        Assert.That(tokens.GetProperty("input").ValueKind, Is.EqualTo(JsonValueKind.Null),
+            "null means not reported; never 0");
         Assert.That(tokens.GetProperty("cache_write").ValueKind, Is.EqualTo(JsonValueKind.Null));
     }
 
@@ -190,5 +220,31 @@ public class JsonlUsageSinkTests
     {
         public IChatClient Create(LlmOptions options) => client;
         public IUsageMapper CreateUsageMapper(LlmOptions options) => mapper;
+    }
+
+    [Test]
+    public void ACacheHit_IsTheSameLineWithCacheHitBeforeTheClosingBrace()
+    {
+        // F18 step 4e.2: a replayed answer is flagged; every other line stays byte-equal.
+        var at = new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero);
+        var sink = new JsonlUsageSink(_directory);
+        sink.Record(Record(at));
+        sink.Record(Record(at) with { CacheHit = true });
+
+        string[] lines = Lines("usage-2026-10.jsonl");
+        Assert.That(lines[1], Is.EqualTo(lines[0][..^1] + ",\"cache_hit\":true}"));
+        Assert.That(lines[0], Does.Not.Contain("cache_hit"));
+    }
+
+    [Test]
+    public void ALineWithoutCacheHit_ReadsBackWithNull()
+    {
+        string line = JsonSerializer.Serialize(Record(new DateTimeOffset(2026, 10, 10, 9, 0, 0, TimeSpan.Zero)),
+            JsonlUsageSink.Json);
+
+        Assert.That(JsonSerializer.Deserialize<UsageRecord>(line, JsonlUsageSink.Json)!.CacheHit, Is.Null);
+        Assert.That(
+            JsonSerializer.Deserialize<UsageRecord>(line[..^1] + ",\"cache_hit\":true}", JsonlUsageSink.Json)!.CacheHit,
+            Is.True);
     }
 }

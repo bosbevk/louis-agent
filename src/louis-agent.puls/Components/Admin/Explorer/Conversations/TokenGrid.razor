@@ -1,0 +1,26 @@
+@* The tokens each conversation used, a stack of the four kinds per mode on one scale. *@
+<section class="chart">
+    <div class="chart-head"><strong>Tokens per conversation</strong><TokenLegend /></div>
+    <div class="compare-grid tokens" style="--cols: @Tree.Modes.Count">
+        @foreach (var (m, i) in Tree.Columns)
+        {
+            <span class="compare-sub"><span class="sw" style="background: @ChartPalette.Series(i)"></span>@ModeNames.Who(m)</span>
+        }
+        @foreach (var (task, row) in Tasks.Select((t, r) => (t, r)))
+        {
+            foreach (var (m, _) in Tree.Columns)
+            {
+                var c = m.Conversation(task);
+                <div class="token-row" style="--i: @row">
+                    <code>@task</code>
+                    @if (c is not null)
+                    {
+                        <span class="xstack-wrap"><TokenStack Parts="RequestSums.Tokens(c.Rows)" Top="Tree.TopTokens" /></span>
+                        <span class="token-total">@UsageFormat.Tokens(c.Rows.Sum(r => r.Tokens))</span>
+                    }
+                    else { <span class="muted">—</span><span></span> }
+                </div>
+            }
+        }
+    </div>
+</section>

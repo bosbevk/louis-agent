@@ -29,6 +29,14 @@ real world [task]".
 - The Python checks are retired once their C# simulations match their last runs.
 - Re-running a recorded simulation costs nothing; a live run still waits for Louis's go.
 
+## Amendment (2026-10-24): the word is *eval*
+
+Louis chose *eval* for the harness, its folders and the portal's pages (`evals/louis-agent.evals/`,
+`evals/louis-agent.evals.{puls,demo,voorman}/`, `/admin/evals`), on 2026-10-20 for the portal and on 2026-10-24 for the
+code. The decision above keeps its substance: one C# harness, each eval beside what it proves, cost from the ledger,
+and the stream and the store unchanged. A C# eval still *simulates a real task* in the field's sense. The title and the
+file name keep the first word, because the record of the decision keeps its name.
+
 ## Links
 
 [Platform plan](../plans/platform.md) (Phases 3 and 4) · [0022](0022-benchmarks-recorded-from-the-protocol.md) ·

@@ -1,6 +1,5 @@
 # Build and test on every push and pull request, so a regression is caught before a review, not only locally.
-# The same two commands as the development guide's "Finishing a step": dotnet build, then dotnet test on the whole
-# solution (core, API, orchestrator and the order-service sample's tests). Tests are platform-neutral and the agent
+# The development guide's "Finishing a step", in two steps: dotnet build, then the unit tests, then (F18 step 7.6) the integration tests, which leave their process and live in their own projects.
 # already runs them on Linux in its containers, so the runner is Ubuntu. No model, no network, no secrets: the tests
 # use FakeChatClient and StubHandler, and skip themselves when git, pip or the network is missing. One service: a
 # throwaway MongoDB, so the benchmark store's contract runs against the real store too (F31), not only in memory.
@@ -43,6 +42,9 @@ jobs:
       BENCHMARKS_MONGO_URL: mongodb://ci:ci@localhost:27017/?authSource=admin
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The formatting check compares a push with the commit before it, so it needs the history.
+          fetch-depth: 0
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -51,13 +53,30 @@ jobs:
       - name: Build
         run: dotnet build louis-agent-solution.sln
 
-      - name: Test
-        # One .trx per test project, named by the logger, so the four don't overwrite each other.
-        run: dotnet test louis-agent-solution.sln --no-build --logger trx --results-directory TestResults
+      - name: Formatting
+        # docs/CLAUDE.md "Formatting": the .editorconfig's rules, checked only on the C# files the pushed commits changed
+        # (merges left out, so files that came in from main aren't counted); untouched files keep their old layout until
+        # a step changes them. A new branch's first push, and a force push, have no earlier commit to compare with.
+        if: github.event_name == 'push'
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then echo "No earlier commit to compare with; skipped."; exit 0; fi
+          files=$(git log --no-merges --name-only --format= --diff-filter=AMR "$BEFORE..HEAD" -- '*.cs' | sort -u)
+          if [ -z "$files" ]; then echo "No C# files changed."; exit 0; fi
+          dotnet format louis-agent-solution.sln --verify-no-changes --no-restore --include $files
 
-      - name: Test the benchmark harness
-        # F31: the checks' Python (benchmarks/), standard library only, held to the same recorded stream as TurnStream.
-        run: python3 -m unittest discover -s benchmarks -t . -v
+      - name: Unit tests
+        # The unit tests start no process and need no tool (F18 step 7.6): every integration test carries the Integration mark and lives in a `.integration-tests` project, so the filter leaves them out.
+        # One .trx per test project, named by the logger, so they don't overwrite each other.
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category!=Integration" --logger trx --results-directory TestResults/unit
+
+      - name: Integration tests
+        # The tests that leave their process: real git, bash, interpreters, dotnet child processes and Mongo. A tool this image has that a test cannot find fails the test here, not skips it
+        # (INTEGRATION_REQUIRED); only the Puls stack's browser and SearXNG tests still skip, since this image has no such stack.
+        env:
+          INTEGRATION_REQUIRED: 1
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category=Integration" --logger trx --results-directory TestResults/integration
 
       - name: Keep the test results
         if: always()

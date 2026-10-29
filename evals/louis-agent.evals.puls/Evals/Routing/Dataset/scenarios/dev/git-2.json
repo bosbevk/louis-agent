@@ -1,0 +1,20 @@
+{
+  "id": "git-2",
+  "input": [
+    {
+      "role": "user",
+      "content": "Wie het die meeste aan louis-agent.core/Agent/AgentEngine.cs verander, en wanneer was die laaste verandering?"
+    }
+  ],
+  "metadata": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": null
+    },
+    "categories": [
+      "kind:git"
+    ]
+  }
+}

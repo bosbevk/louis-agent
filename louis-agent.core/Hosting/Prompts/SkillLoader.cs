@@ -1,7 +1,8 @@
-namespace LouisAgent.Core.Hosting.Prompts;
+using LouisAgent.Choices;
 
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
@@ -9,13 +10,14 @@ using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Hosting.Prompts;
 /// <summary>The system prompt assembled from skill files (S, CL15, from AgentHost): the principles, the role, the guides, the function skills.</summary>
 public static class SkillLoader
 {
     private static readonly ILogger Log = AgentLogging.For<CompositeSkillProvider>();
 
     /// <summary>The toolset the function skill files come with (ExecuteSkill runs their procedures).</summary>
-    private const string SkillsToolset = "skills";
+    private static readonly string SkillsToolset = CoreToolset.Skills.Wire();
 
     /// <summary>The system prompt with every toolset's guide (hosts that load every toolset, and tests).</summary>
     public static ISkillProvider Load(AgentOptions agent) => Load(agent, ToolsetCatalog.All);
@@ -63,10 +65,12 @@ public static class SkillLoader
         if (profile.All(t => t.Name != SkillsToolset)) return composite;
 
         // Every function skill the agent wrote (CL9: no setting picks one; none is built in any more)
-        foreach (string file in SkillFolder.Discover(agent).Where(f => !SkillFiles.IsBuiltIn(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
+        foreach (string file in SkillFolder.Discover(agent).Where(f =>
+                     !SkillFiles.IsBuiltIn(SkillFiles.Function(Path.GetFileNameWithoutExtension(f)))))
         {
             composite.AddProvider(new MarkdownSkillProvider(file));
-            Log.Log(LogLevel.Information, LogMessage.SkillsFileDiscovered, new { File = Path.GetFileName(file) });
+            Log.Log(LogLevel.Information, HostingLogMessage.SkillsFileDiscovered,
+                new { File = Path.GetFileName(file) });
         }
 
         return composite;
@@ -74,14 +78,17 @@ public static class SkillLoader
 
     /// <summary>A skill file as the model reads it: a built-in one without its role header (F33), which is for the loader.</summary>
     internal static (string Text, bool FromDisk)? Read(AgentOptions agent, string fileName) =>
-        SkillFolder.Read(agent, fileName) is { } file ? (file.FromDisk ? file.Text : RoleHeader.Split(file.Text).Body, file.FromDisk) : null;
+        SkillFolder.Read(agent, fileName) is { } file
+            ? (file.FromDisk ? file.Text : RoleHeader.Split(file.Text).Body, file.FromDisk)
+            : null;
 
     /// <summary>Adds a skill file to the prompt (<see cref="Read"/>); a missing one is skipped.</summary>
     private static void AddBuiltIn(AgentOptions agent, CompositeSkillProvider composite, string fileName)
     {
         if (Read(agent, fileName) is not { } file) return;
         composite.AddProvider(MarkdownSkillProvider.FromText(file.Text));
-        Log.Log(LogLevel.Information, file.FromDisk ? LogMessage.SkillProviderLoaded : LogMessage.SkillFileEmbedded,
+        Log.Log(LogLevel.Information,
+            file.FromDisk ? HostingLogMessage.SkillProviderLoaded : HostingLogMessage.SkillFileEmbedded,
             new { Provider = fileName });
     }
 }

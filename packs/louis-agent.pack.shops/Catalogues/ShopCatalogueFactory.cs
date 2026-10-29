@@ -1,10 +1,10 @@
-namespace LouisAgent.Packs.Shops.Catalogues;
 
 using LouisAgent.Packs.Shops.Places;
-using LouisAgent.Core.Config;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Choices;
 
+namespace LouisAgent.Packs.Shops.Catalogues;
 /// <summary>
 /// A catalogue per shop a deployment enables (F33), each reading its shop through the guarded browser. Which shops are
 /// enabled is configuration (<c>SHOP_CATALOGUES</c>, step 3): none enabled is none created, so a deployment that hasn't
@@ -21,21 +21,23 @@ public static class ShopCatalogueFactory
     /// </summary>
     public static IReadOnlyList<ShopKind> Enabled(string? setting) =>
         (setting ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(name => SettingChoice.TryParse(name, out ShopKind? shop) ? shop : null)
-            .OfType<ShopKind>()
-            .Distinct()
-            .ToList();
+        .Select(name => SettingChoice.TryParse(name, out ShopKind? shop) ? shop : null)
+        .OfType<ShopKind>()
+        .Distinct()
+        .ToList();
 
     // F34: one throttle per shop for the process, so every engine's searches count against the same limit.
     private static readonly ShopThrottle CheckersThrottle = new();
 
     /// <param name="stores">The process's store cache (F34), shared by every engine's catalogues; a new one when null.</param>
-    public static IReadOnlyDictionary<ShopKind, IShopCatalogue> Create(IReadOnlyList<ShopKind> enabled, IWebBrowser browser,
+    public static IReadOnlyDictionary<ShopKind, IShopCatalogue> Create(IReadOnlyList<ShopKind> enabled,
+        IWebBrowser browser,
         StoreSessionCache? stores = null) =>
         enabled.Distinct().ToDictionary(shop => shop, shop => shop switch
         {
             // F34: Checkers answers for the store that serves the user's town, found once per town.
-            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser, new CheckersStore(browser, PlaceCoordinates.OfAsync, stores, CheckersThrottle), CheckersThrottle),
+            ShopKind.Checkers => (IShopCatalogue)new CheckersCatalogue(browser,
+                new CheckersStore(browser, PlaceCoordinates.OfAsync, stores, CheckersThrottle), CheckersThrottle),
             _ => throw new ArgumentOutOfRangeException(nameof(enabled), shop, null),
         });
 }

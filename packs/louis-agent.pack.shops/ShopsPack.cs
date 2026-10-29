@@ -1,4 +1,5 @@
-namespace LouisAgent.Packs.Shops;
+using LouisAgent.Packs.Shops;
+using LouisAgent.Choices;
 
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -8,6 +9,7 @@ using LouisAgent.Packs.Shops.Tools;
 using LouisAgent.Core.Skills;
 using Microsoft.Extensions.FileProviders;
 
+namespace LouisAgent.Packs.Shops;
 /// <summary>
 /// The shops as a pack (CL15, ADR 0027): one toolset, <c>shops</c>, with its guide, its own settings and its own store
 /// cache (one per pack, so every engine this host builds shares it, F34). It loads only where <c>SHOP_CATALOGUES</c>
@@ -25,21 +27,25 @@ public sealed class ShopsPack : IAgentPack
         [
             // F33: a shop's products from its own catalogue, through the guarded browser; off unless SHOP_CATALOGUES names a
             // shop (development and benchmarks first, ADR 0023).
-            new("shops", "A shop's products and prices from its own catalogue (Checkers)",
-                GuideFile: SkillFiles.Guide("shops"),
+            new(ShopsToolset.Shops.Wire(), "A shop's products and prices from its own catalogue (Checkers)",
+                GuideFile: SkillFiles.Guide(ShopsToolset.Shops.Wire()),
                 MissingSettings: ctx => new[]
                 {
                     ShopCatalogueFactory.Enabled(options.ShopCatalogues).Count > 0 ? null : "SHOP_CATALOGUES",
                     ctx.Browser is null ? "BROWSER_URL" : null,
                 }.OfType<string>().ToList(),
                 ToolTypes: [typeof(ShopTools)],
-                CreateTools: ctx => [new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(options.ShopCatalogues), ctx.Browser!, _stores))],
+                CreateTools: ctx =>
+                [
+                    new ShopTools(ShopCatalogueFactory.Create(ShopCatalogueFactory.Enabled(options.ShopCatalogues),
+                        ctx.Browser!, _stores))
+                ],
                 // F34: searches read a catalogue and change nothing; the browser opens at most four pages at once.
                 ParallelSafe: true),
         ];
     }
 
-    public string Name => "shops";
+    public string Name => ShopsToolset.Shops.Wire();
 
     public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
 

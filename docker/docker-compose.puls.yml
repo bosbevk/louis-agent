@@ -19,6 +19,9 @@ services:
     build:
       context: ..
       dockerfile: docker/images/Dockerfile.puls
+      args:
+        # The commit the eval runner stamps on a run: EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose … up -d --build
+        EVAL_COMMIT: ${EVAL_COMMIT:-unknown}
     image: louis-agent-puls:latest
     container_name: puls
     <<: *puls-env
@@ -51,6 +54,11 @@ services:
       BROWSER_USER_AGENT: "${BROWSER_USER_AGENT-Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)}"
       # F34: each town's store at a shop, kept a day in a file both containers share, so a rebuild doesn't look it up again.
       SHOP_STORE_CACHE: ${SHOP_STORE_CACHE-/data/shop-stores.json}
+      # F18 step 4a: the pages an eval run saves (--web record) and replays; private, on the host's data/puls (git-ignored), never served.
+      REPLAY_DIRECTORY: ${REPLAY_DIRECTORY-/data/replay}
+      # The eval store's database (F18 step 7b (iii)): the API's default is `evals` now, so Puls names the one its runs
+      # have always been in. BENCHMARKS_MONGO_DATABASE, its name before, is still honoured when set in config/.env.
+      EVALS_MONGO_DATABASE: ${EVALS_MONGO_DATABASE-${BENCHMARKS_MONGO_DATABASE-puls_benchmarks}}
     # Localhost only. AGENT_API_KEY in config/.env.secrets is required (FX18): without it the container refuses to
     # start, unless AGENT_AUTH=off in config/.env says so on purpose. puls sends the same key to its peer, itself.
     ports:
@@ -70,7 +78,7 @@ services:
   # on the host (data/mongo, git-ignored), so it outlives the container and the image. Localhost only. The root user is
   # MONGO_INITDB_ROOT_USERNAME and _PASSWORD in config/.env.mongo, its own file: the database never sees the model's or
   # the search's keys in config/.env.secrets. Read when the data folder is first created; puls reaches it at
-  # BENCHMARKS_MONGO_URL (the service name, puls-mongo). The server is MongoDB Community (SSPL): used as
+  # EVALS_MONGO_URL (the service name, puls-mongo; BENCHMARKS_MONGO_URL, its old name, still works). The server is MongoDB Community (SSPL): used as
   # is, for Louis's own benchmark results, and part of no customer's instance.
   puls-mongo:
     image: mongo:8

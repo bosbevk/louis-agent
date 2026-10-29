@@ -1,0 +1,51 @@
+{
+  "_id" : {
+    "run" : "run123456789",
+    "mode" : "mode-alpha",
+    "repeat" : { "$numberInt" : "2" },
+    "task" : "cook-af",
+    "turn" : { "$numberInt" : "2" }
+  },
+  "run" : "run123456789",
+  "mode" : "mode-alpha",
+  "repeat" : { "$numberInt" : "2" },
+  "task" : "cook-af",
+  "turn" : { "$numberInt" : "2" },
+  "session" : "sess_2",
+  "question" : "En vir ses?",
+  "answer" : "Hier is bobotie vir ses.",
+  "role" : "role-alpha",
+  "continued" : "sub-1",
+  "agent_calls" : { "$numberInt" : "3" },
+  "specialist_calls" : { "$numberInt" : "2" },
+  "hosts" : ["www.checkers.co.za", "www.pnp.co.za"],
+  "seconds" : { "$numberDouble" : "7.75" },
+  "error" : "the model timed out",
+  "failure" : "timeout",
+  "tools" : {
+    "calls" : { "$numberInt" : "4" },
+    "failed" : { "$numberInt" : "1" },
+    "reasons" : [{
+        "tool" : "ReadRenderedPage",
+        "reason" : "refused",
+        "count" : { "$numberInt" : "1" }
+      }]
+  },
+  "asked_at" : { "$date" : { "$numberLong" : "1793174400125" } },
+  "ended_at" : { "$date" : { "$numberLong" : "1793174408125" } },
+  "events" : [{
+      "type" : "text",
+      "data" : {
+        "delta" : {
+          "text" : "Hier"
+        }
+      },
+      "at" : { "$date" : { "$numberLong" : "1793174401125" } }
+    }, {
+      "type" : "done",
+      "data" : {
+        "n" : [{ "$numberInt" : "1" }, { "$numberDouble" : "2.5" }, true, null, "x"]
+      },
+      "at" : null
+    }]
+}

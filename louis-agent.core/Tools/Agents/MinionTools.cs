@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.Agents;
 
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
@@ -8,12 +7,15 @@ using System.ComponentModel;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.Agents.SubSessions;
 using LouisAgent.Core.Tools.Clock;
 using Microsoft.Extensions.AI;
+using LouisAgent.Core.Tools.Agents.Messages;
 
+namespace LouisAgent.Core.Tools.Agents;
 /// <summary>
 /// The <c>minions</c> toolset (F30): a specialist hands one task and one of its own tools to a minion, a session at
 /// depth 2 on this instance (<c>AGENT_PEERS</c> names itself) that runs the minion role on the cheap model
@@ -67,7 +69,8 @@ public sealed class MinionTools
     {
     }
 
-    public MinionTools(IReadOnlyDictionary<string, Uri> peers, IReadOnlyDictionary<string, IReadOnlyList<string>> llms, string? apiKey,
+    public MinionTools(IReadOnlyDictionary<string, Uri> peers, IReadOnlyDictionary<string, IReadOnlyList<string>> llms,
+        string? apiKey,
         HttpClient? http = null, TimeSpan? timeout = null, TimeProvider? time = null, IUsageSink? usageSink = null)
     {
         _llms = llms;
@@ -76,25 +79,36 @@ public sealed class MinionTools
         _session = PeerSession.For(http ?? PeerHttp.Shared, apiKey, usageSink, time ?? TimeProvider.System);
     }
 
-    [Description("Hands one task and one of your own tools to a minion: a small worker on a cheap model that reads one page or " +
+    [Description(
+        "Hands one task and one of your own tools to a minion: a small worker on a cheap model that reads one page or " +
         "does one lookup and answers in its role's fixed shape, so what it reads never enters your context. It answers once " +
         "and closes. At most 16 minions per user turn across all specialists, 2 minutes each. See the minions guide.")]
     public async Task<string> StartMinion(
-        [Description("The minion's role, <product>-minion-<function>, as your role file lists them.")] string role,
-        [Description("The one tool the minion gets, one of your own, e.g. \"FetchUrl\" (never a delegation or skills tool).")] string tool,
-        [Description("The task, self-contained and in English: the URL, the product with its size, the user's town. The minion " +
-            "sees nothing else.")] string task,
-        [Description("True to run the same task on the next, stronger model in the role's list, when this instance lists one " +
-            "(MINION_LLMS) and the first answer failed your check. Once per task; false the first time.")] bool stronger = false,
+        [Description("The minion's role, <product>-minion-<function>, as your role file lists them.")]
+        string role,
+        [Description(
+            "The one tool the minion gets, one of your own, e.g. \"FetchUrl\" (never a delegation or skills tool).")]
+        string tool,
+        [Description(
+            "The task, self-contained and in English: the URL, the product with its size, the user's town. The minion " +
+            "sees nothing else.")]
+        string task,
+        [Description(
+            "True to run the same task on the next, stronger model in the role's list, when this instance lists one " +
+            "(MINION_LLMS) and the first answer failed your check. Once per task; false the first time.")]
+        bool stronger = false,
         CancellationToken cancellationToken = default)
     {
         role = role.Trim();
         tool = tool.Trim();
-        if (RoleCatalog.MinionBaseOf(role) is null) return MessageText.Format(ToolMessage.MinionRoleInvalid, new { Role = role });
-        if (NeverHandedDown.Contains(tool)) return MessageText.Format(ToolMessage.MinionToolNeverHandedDown, new { Tool = tool });
+        if (RoleCatalog.MinionBaseOf(role) is null)
+            return MessageText.Format(SubSessionToolMessage.MinionRoleInvalid, new { Role = role });
+        if (NeverHandedDown.Contains(tool))
+            return MessageText.Format(SubSessionToolMessage.MinionToolNeverHandedDown, new { Tool = tool });
         var mine = AgentTools.Current;
         if (!mine.Contains(tool))
-            return MessageText.Format(ToolMessage.MinionToolNotMine, new { Tool = tool, Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order()) });
+            return MessageText.Format(SubSessionToolMessage.MinionToolNotMine,
+                new { Tool = tool, Tools = mine.Count == 0 ? "(none)" : string.Join(", ", mine.Order()) });
         if (ModelFor(role, stronger, out string? llm) is { } noModel) return noModel;
         if (SpecialistTools.ResolvePeer(_peers, null, out Uri peer, out string agent) is { } noPeer) return noPeer;
 
@@ -104,16 +118,28 @@ public sealed class MinionTools
 
         var createBody = new
         {
-            depth = 2, role, tool, task = $"minion:{role}", run = scope?.Tags.Run, service = scope?.Tags.Service,
-            parent = CallSlots.ParentTag(scope), llm,
-            location = UserPlace.Current?.Location, time_zone = UserPlace.Current?.TimeZone,
+            depth = 2,
+            role,
+            tool,
+            task = $"minion:{role}",
+            run = scope?.Tags.Run,
+            service = scope?.Tags.Service,
+            parent = CallSlots.ParentTag(scope),
+            llm,
+            location = UserPlace.Current?.Location,
+            time_zone = UserPlace.Current?.TimeZone,
+            replay = SessionReplay.ForSubSession(),
         };
         string model = llm ?? InstanceLlm;
+
         string Answer(SubSessionMessenger.SubSessionReply reply) =>
-            MessageText.Format(ToolMessage.MinionAnswer, new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine });
+            MessageText.Format(SubSessionToolMessage.MinionAnswer,
+                new { Answer = reply.Text, Role = role, Tool = tool, Llm = model, Usage = reply.UsageLine });
+
         var kind = new SubSessionKind(Kind, role, $"minion:{role}", (_, reply) => Answer(reply), Answer, Llm: model);
         // Never kept (F30, the fourth hand check): a chat keeps three children, and kept minions evicted its specialists.
-        return await _session.OpenAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId, scope, _timeout,
+        return await _session.OpenAsync(peer, agent, createBody, new { message = task }, [tool], role, kind, toolUseId,
+            scope, _timeout,
             cancellationToken, keep: false);
     }
 
@@ -126,10 +152,11 @@ public sealed class MinionTools
     {
         llm = null;
         if (!_llms.TryGetValue(role, out var cascade) && !_llms.TryGetValue(AnyRole, out cascade))
-            return MessageText.Format(ToolMessage.MinionNoLlm, new { Role = role });
+            return MessageText.Format(SubSessionToolMessage.MinionNoLlm, new { Role = role });
         int index = stronger ? 1 : 0;
         if (index >= cascade.Count)
-            return MessageText.Format(ToolMessage.MinionNoStronger, new { Role = role, Models = string.Join(" > ", cascade) });
+            return MessageText.Format(SubSessionToolMessage.MinionNoStronger,
+                new { Role = role, Models = string.Join(" > ", cascade) });
         llm = cascade[index] == InstanceLlm ? null : cascade[index];
         return null;
     }
@@ -142,7 +169,8 @@ public sealed class MinionTools
     {
         string tree = scope?.Tags.Parent ?? CallSlots.ParentTag(scope) ?? "(no turn)";
         if (_perTree.Count > 1000) _perTree.Clear();
-        return _perTree.AddOrUpdate(tree, 1, (_, n) => n + 1) <= MaxPerTurn ? null
-            : MessageText.Format(ToolMessage.MinionLimit, new { Max = MaxPerTurn });
+        return _perTree.AddOrUpdate(tree, 1, (_, n) => n + 1) <= MaxPerTurn
+            ? null
+            : MessageText.Format(SubSessionToolMessage.MinionLimit, new { Max = MaxPerTurn });
     }
 }

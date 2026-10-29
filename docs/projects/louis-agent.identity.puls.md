@@ -34,6 +34,8 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 | Path | What's in it |
 |---|---|
 | `PulsIdentity.cs` | The identity: name, prompts, packs |
+| `PulsRole.cs` | The roles Puls offers a session as an enum (the cook, researcher, analyst, historian, reader and the price-lookup minion), each a file of the identity; written with `.Wire()` (F18 step 7.5.4) |
+| `PulsPack.cs` | The packs Puls names as an enum of its own (the shops pack), never the pack's enum; the composition root's `PackKind` is checked against the packs it builds (F18 step 7.5.4e) |
 | `Prompts/agent/puls/voice-af.md`, `voice-en.md` | The voice in each language (*Puls - Stem*, *Puls - Voice*): who Puls is and how it talks; the two have the same sections |
 | `Prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one, what isn't available yet; no mode of its own |
 | `Prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |

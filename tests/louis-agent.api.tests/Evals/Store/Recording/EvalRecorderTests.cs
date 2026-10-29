@@ -1,0 +1,437 @@
+using System.Text.Json;
+using LouisAgent.Api.Evals.Reports;
+using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Deletion;
+using LouisAgent.Api.Evals.Store.Notes;
+using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
+using LouisAgent.Evals.Protocol.Events.Run;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
+using static LouisAgent.Api.Evals.Store.EvalDocuments;
+
+namespace LouisAgent.Api.Tests.Evals.Store.Recording;
+
+/// <summary>
+/// The recorder listens to a run's lines as the page does and writes them to the store as they come, so a half-done
+/// run can already be read, and when the run ends it closes whatever is still open. A store that fails stops the
+/// recording, never the run. Here the run is fed by hand, as the contract's events: no process, no model.
+/// </summary>
+public class EvalRecorderTests
+{
+    /// <summary>The time every line carries.</summary>
+    private static readonly DateTimeOffset T0 = new(2026, 10, 28, 8, 0, 0, TimeSpan.Zero);
+
+    /// <summary>The store the recorder writes into.</summary>
+    private InMemoryEvalStore _store = null!;
+
+    /// <summary>The run being recorded, fed by hand.</summary>
+    private RunningEval _run = null!;
+
+    /// <summary>Gives each test a fresh store and a fresh run.</summary>
+    [SetUp]
+    public void SetUp()
+    {
+        _store = new InMemoryEvalStore();
+        _run = new RunningEval("run123456789", "cook", 1);
+    }
+
+    /// <summary>Feeds lines to the run, as if the runner had printed them.</summary>
+    private void Add(params string[] lines)
+    {
+        foreach (string line in lines) _run.Add(line);
+    }
+
+    /// <summary>The first line, of a given protocol version and split.</summary>
+    private static string Protocol(int version = ProtocolEvent.CurrentVersion, RunSplit split = RunSplit.Dev) =>
+        EvalProtocolJson.Line(new ProtocolEvent(T0, version, SampleEval.Beta, 2, "abc", split, null, null, [], []));
+
+    /// <summary>The line that opens a mode's repeat.</summary>
+    private static string Mode(int repeat = 1) =>
+        EvalProtocolJson.Line(new ModeEvent(T0, SampleMode.Beta, repeat, [SampleToolset.Gamma, SampleToolset.Alpha],
+            "puls/voice-af", null, 2));
+
+    /// <summary>The line that opens a turn with its question.</summary>
+    private static string Question(string task, int turn = 1, int repeat = 1) =>
+        EvalProtocolJson.Line(new QuestionEvent(T0, SampleMode.Beta, repeat, task, turn, $"sess_{task}", $"{task}?"));
+
+    /// <summary>One piece of the answer streaming in.</summary>
+    private static string Sse(string task, string text, int turn = 1) =>
+        Stream(task, turn, "content_block_delta", $$$"""{"delta":{"text":"{{{text}}}"}}""");
+
+    /// <summary>One event of a turn's stream, with its data.</summary>
+    private static string Stream(string task, int turn, string type, string data) =>
+        EvalProtocolJson.Line(new SseEvent(T0, SampleMode.Beta, 1, task, turn, type,
+            JsonDocument.Parse(data).RootElement.Clone()));
+
+    /// <summary>The line that closes a turn with its answer, failed for the infrastructure if one is given.</summary>
+    private static string TurnDone(string task, int turn = 1, int repeat = 1, TurnFailure? failure = null) =>
+        EvalProtocolJson.Line(new TurnEvent(T0, SampleMode.Beta, repeat, task, turn, $"sess_{task}", $"{task}?",
+            "Hier is…", SampleRole.Alpha, null, 1, 6, ["www.checkers.co.za"], 30.5, null, failure));
+
+    /// <summary>The line that closes a conversation: it passed, and measured one turn.</summary>
+    private static string ConversationDone(string task, int repeat = 1) =>
+        EvalProtocolJson.Line(new ConversationEvent(T0, SampleMode.Beta, repeat, task, SampleRole.Alpha, 0, 30.5,
+            [new GradeInfo("routed-to", 1, 1, GradeOutcome.Pass, "routed", null, null)], TrialOutcome.Pass,
+            new Metrics(1, 6, ["www.checkers.co.za"], 1, null, null, 30.5, null)));
+
+    /// <summary>The line that closes a mode's repeat.</summary>
+    private static string ModeDone() => EvalProtocolJson.Line(new ModeDoneEvent(T0, SampleMode.Beta, 1, null));
+
+    /// <summary>Waits, up to two seconds, for something the recorder does in the background.</summary>
+    private static async Task Eventually(Func<Task<bool>> condition)
+    {
+        for (int i = 0; i < 200; i++)
+        {
+            if (await condition()) return;
+            await Task.Delay(10);
+        }
+
+        Assert.Fail("the store never got there");
+    }
+
+    /// <summary>
+    /// A whole run ends up in the store: the run, its log, its mode, its conversation, its turn and the turn's stream
+    /// events.
+    /// </summary>
+    [Test]
+    public async Task AWholeRun_IsInTheStore_WhenItEnds()
+    {
+        // One mode, one conversation of one turn whose answer streams in two pieces, with two plain log lines.
+        var recording = new EvalRecorder(_store).RecordAsync(_run,
+            new Dictionary<string, string> { ["model"] = "claude-haiku-5-5" });
+        Add(Protocol(), "Puls cook check, 1 repeat", Mode(), Question("bobotie"), Sse("bobotie", "Hal"),
+            Sse("bobotie", "lo"),
+            TurnDone("bobotie"), ConversationDone("bobotie"), SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>"),
+            ModeDone());
+        _run.Complete(0);
+
+        var result = await recording;
+
+        Assert.That(result, Is.EqualTo(new EvalRecorder.Result(true, null)));
+        var run = await _store.GetRunAsync(_run.Id);
+        Assert.That((run!.Check, run.Repeat, run.Status, run.ExitCode),
+            Is.EqualTo(("cook", 1, EvalRunStatus.Done, (int?)0)));
+        Assert.That(run.EndedAt, Is.Not.Null);
+        Assert.That(run.Settings!["model"], Is.EqualTo("claude-haiku-5-5"));
+        Assert.That(run.Modes!.Single() is { Name: SampleMode.Beta, Repeat: 1, Role: "puls/voice-af" });
+        Assert.That(run.Log,
+            Is.EqualTo(new[] { "Puls cook check, 1 repeat", SampleRole.Fill("<RoleAlpha> bobotie role=<RoleAlpha>") }),
+            "the plain lines, not the events");
+
+        var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
+        Assert.That((conversation.Key, conversation.Order, conversation.Role, conversation.Outcome),
+            Is.EqualTo((new ConversationKey(SampleMode.Beta, 1, "bobotie"), 1, SampleRole.Alpha,
+                (TrialOutcome?)TrialOutcome.Pass)));
+        Assert.That(conversation.Metrics!.SpecialistCalls, Is.EqualTo(6));
+
+        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
+        var turn = (await _store.TurnsAsync(_run.Id, key.Conversation)).Single();
+        Assert.That((turn.Session, turn.Answer, turn.SpecialistCalls, turn.Error),
+            Is.EqualTo(("sess_bobotie", "Hier is…", 6, (string?)null)));
+        var events = await _store.TurnEventsAsync(_run.Id, key);
+        Assert.That(events.Select(e => e.Data.GetProperty("delta").GetProperty("text").GetString()),
+            Is.EqualTo(new[] { "Hal", "lo" }));
+    }
+
+    /// <summary>The run's split is kept, read from the very first line.</summary>
+    [Test]
+    public async Task ARunsSplit_IsKept_FromItsFirstLine()
+    {
+        var recording = new EvalRecorder(_store).RecordAsync(_run);
+        Add(Protocol(split: RunSplit.HeldOut), Mode(), ModeDone());
+        _run.Complete(0);
+        await recording;
+
+        Assert.That((await _store.GetRunAsync(_run.Id))!.Split, Is.EqualTo(RunSplit.HeldOut));
+    }
+
+    /// <summary>
+    /// A turn that failed because of the infrastructure is kept that way, so a stored run never grades it against the
+    /// agent.
+    /// </summary>
+    [Test]
+    public async Task ATurnsInfrastructureFailure_IsKept_SoAStoredRunNeverGradesItAsTheAgents()
+    {
+        var recording = new EvalRecorder(_store).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("bobotie"), TurnDone("bobotie", failure: TurnFailure.ApiError),
+            ConversationDone("bobotie"), ModeDone());
+        _run.Complete(0);
+        await recording;
+
+        var turn = (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single();
+
+        Assert.That(turn.Failure, Is.EqualTo(TurnFailure.ApiError));
+    }
+
+    /// <summary>
+    /// A turn's tool counts (calls, failures and why) are worked out once, when it is recorded, so reading a run never
+    /// needs its events for them.
+    /// </summary>
+    [Test]
+    public async Task ATurnsToolCounts_AreKept_WhenItEnds()
+    {
+        // Two tool calls, the first of which fails.
+        var recording = new EvalRecorder(_store).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("bobotie"),
+            Block("""{"type":"tool_use","id":"u1","name":"WebSearch","input":{}}"""),
+            Block("""{"type":"tool_result","tool_use_id":"u1","content":"Error: limit reached","is_error":true}"""),
+            Block("""{"type":"tool_use","id":"u2","name":"FetchUrl","input":{}}"""),
+            TurnDone("bobotie"), ConversationDone("bobotie"), ModeDone());
+        _run.Complete(0);
+        await recording;
+
+        var tools = (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Single()
+            .Tools!;
+
+        Assert.That((tools.Calls, tools.Failed), Is.EqualTo((2, 1)));
+        Assert.That(tools.Reasons.Single(),
+            Is.EqualTo(new EvalTools.Failure("WebSearch", "Error: limit reached", 1)));
+    }
+
+    /// <summary>A content block starting in bobotie's first turn.</summary>
+    private static string Block(string block) =>
+        Stream("bobotie", 1, "content_block_start", $$$"""{"content_block":{{{block}}}}""");
+
+    /// <summary>
+    /// You can read a run while it is still going: its finished turns, its mode, and a conversation that hasn't
+    /// ended yet.
+    /// </summary>
+    [Test]
+    public async Task AHalfDoneRun_IsReadable_WhileItRuns()
+    {
+        // The first turn is done, the second is still streaming.
+        var recording = new EvalRecorder(_store).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("bobotie"), Sse("bobotie", "a"), TurnDone("bobotie"),
+            Question("bobotie", turn: 2), Sse("bobotie", "b", turn: 2));
+
+        // The recorder writes in the background, so wait for the finished turn to land.
+        await Eventually(async () =>
+            (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count == 1);
+
+        var run = await _store.GetRunAsync(_run.Id);
+        Assert.That(run!.Status, Is.EqualTo(EvalRunStatus.Running));
+        Assert.That(run.Modes!.Count, Is.EqualTo(1), "the mode is written when it starts");
+        var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
+        Assert.That((conversation.Order, conversation.Role, conversation.Metrics), Is.EqualTo((1, (string?)null,
+            (Metrics?)null)), "the conversation is there before it ends");
+
+        // Let the run end, so the recording doesn't outlive the test.
+        _run.Complete(0);
+        await recording;
+    }
+
+    /// <summary>Conversations keep the order they started in, and each repeat is its own.</summary>
+    [Test]
+    public async Task Conversations_KeepTheOrderTheyStartedIn_AndEachRepeatIsItsOwn()
+    {
+        var recording = new EvalRecorder(_store).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("cottage-pie"), TurnDone("cottage-pie"), ConversationDone("cottage-pie"),
+            Question("bobotie"), TurnDone("bobotie"), ConversationDone("bobotie"), ModeDone(),
+            Mode(repeat: 2), Question("cottage-pie", repeat: 2), TurnDone("cottage-pie", repeat: 2),
+            ConversationDone("cottage-pie", repeat: 2));
+        _run.Complete(0);
+        await recording;
+
+        var conversations = await _store.ConversationsAsync(_run.Id);
+
+        Assert.That(conversations.Select(c => (c.Key.Task, c.Key.Repeat, c.Order)),
+            Is.EqualTo(new[] { ("cottage-pie", 1, 1), ("bobotie", 1, 2), ("cottage-pie", 2, 3) }));
+        Assert.That((await _store.GetRunAsync(_run.Id))!.Modes!.Select(m => m.Repeat), Is.EqualTo(new[] { 1, 2 }));
+    }
+
+    /// <summary>
+    /// A turn the run was cut off in is kept with what it had so far, and the run is marked failed with its output in
+    /// the log.
+    /// </summary>
+    [Test]
+    public async Task ATurnTheRunCutOff_IsKeptWithWhatItHad()
+    {
+        var recording = new EvalRecorder(_store).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("bobotie"), Sse("bobotie", "Hal"), "Traceback (most recent call last):");
+        _run.Complete(1);
+        await recording;
+
+        var key = new TurnKey(SampleMode.Beta, 1, "bobotie", 1);
+        var turn = (await _store.TurnsAsync(_run.Id, key.Conversation)).Single();
+        Assert.That((turn.Session, turn.Question, turn.Answer),
+            Is.EqualTo(("sess_bobotie", "bobotie?", (string?)null)));
+        Assert.That(turn.Error, Does.Contain("ended before this turn"));
+        Assert.That((await _store.TurnEventsAsync(_run.Id, key)).Count, Is.EqualTo(1));
+        var run = await _store.GetRunAsync(_run.Id);
+        Assert.That((run!.Status, run.ExitCode), Is.EqualTo((EvalRunStatus.Failed, (int?)1)));
+        Assert.That(run.Log, Does.Contain("Traceback (most recent call last):"));
+    }
+
+    /// <summary>A run that has already ended is still recorded whole, like a listener that joins late.</summary>
+    [Test]
+    public async Task ARunThatAlreadyEnded_IsRecordedWhole()
+    {
+        // The recorder attaches like a late listener: the lines so far, then the rest.
+        Add(Protocol(), Mode(), Question("bobotie"), TurnDone("bobotie"), ConversationDone("bobotie"), ModeDone());
+        _run.Complete(0);
+
+        await new EvalRecorder(_store).RecordAsync(_run);
+
+        Assert.That((await _store.ConversationsAsync(_run.Id)).Single().Role, Is.EqualTo(SampleRole.Alpha));
+        Assert.That((await _store.GetRunAsync(_run.Id))!.Status, Is.EqualTo(EvalRunStatus.Done));
+    }
+
+    /// <summary>A protocol version we do not know is said in the log, and the run is still kept.</summary>
+    [Test]
+    public async Task AnUnknownProtocolVersion_IsSaidInTheLog_AndTheRunIsStillKept()
+    {
+        var recording = new EvalRecorder(_store).RecordAsync(_run);
+        Add(Protocol(version: 3), Mode(), Question("bobotie"), TurnDone("bobotie"));
+        _run.Complete(0);
+        await recording;
+
+        var run = await _store.GetRunAsync(_run.Id);
+        Assert.That(run!.Log!.First(), Does.Contain("protocol 3").And.Contain("reads 2"));
+        Assert.That((await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count,
+            Is.EqualTo(1));
+    }
+
+    /// <summary>
+    /// A store that hands everything to a real one except writing a turn, which fails. It counts the other writes.
+    /// </summary>
+    /// <remarks>
+    /// Decorator: it wraps the in-memory store and changes one method, so the test can break exactly one write and
+    /// still read back everything else that was stored.
+    /// </remarks>
+    private sealed class TurnsFail(IEvalStore inner) : IEvalStore
+    {
+        /// <summary>How many other writes went through.</summary>
+        public int Writes { get; private set; }
+
+        /// <summary>Counts the write and passes it on.</summary>
+        public Task SaveRunAsync(Run run, CancellationToken c = default)
+        {
+            Writes++;
+            return inner.SaveRunAsync(run, c);
+        }
+
+        /// <summary>Passes the read on.</summary>
+        public Task<Run?> GetRunAsync(string id, CancellationToken c = default) => inner.GetRunAsync(id, c);
+
+        /// <summary>Passes the read on.</summary>
+        public Task<IReadOnlyList<Run>> ListRunsAsync(string? check = null, int limit = 50,
+            CancellationToken c = default) => inner.ListRunsAsync(check, limit, c);
+
+        /// <summary>Counts the write and passes it on.</summary>
+        public Task SaveConversationAsync(string run, Conversation conversation, CancellationToken c = default)
+        {
+            Writes++;
+            return inner.SaveConversationAsync(run, conversation, c);
+        }
+
+        /// <summary>Passes the read on.</summary>
+        public Task<IReadOnlyList<Conversation>> ConversationsAsync(string run, CancellationToken c = default) =>
+            inner.ConversationsAsync(run, c);
+
+        /// <summary>Fails, as if the database were down.</summary>
+        public Task SaveTurnAsync(string run, Turn turn, IReadOnlyList<StreamEvent> events,
+            CancellationToken c = default) => throw new TimeoutException("mongo is down");
+
+        /// <summary>Passes the read on.</summary>
+        public Task<IReadOnlyList<Turn>> TurnsAsync(string run, ConversationKey conversation,
+            CancellationToken c = default) => inner.TurnsAsync(run, conversation, c);
+
+        /// <summary>Passes the read on.</summary>
+        public Task<IReadOnlyList<StreamEvent>>
+            TurnEventsAsync(string run, TurnKey turn, CancellationToken c = default) =>
+            inner.TurnEventsAsync(run, turn, c);
+
+        /// <summary>Counts the write and passes it on.</summary>
+        public Task AddRequestsAsync(string run, IReadOnlyList<Request> requests, CancellationToken c = default)
+        {
+            Writes++;
+            return inner.AddRequestsAsync(run, requests, c);
+        }
+
+        /// <summary>Passes the read on.</summary>
+        public Task<IReadOnlyList<Request>> RequestsAsync(string run, CancellationToken c = default) =>
+            inner.RequestsAsync(run, c);
+
+        /// <summary>Passes it on.</summary>
+        public Task<int> CloseOrphansAsync(DateTimeOffset now, CancellationToken c = default) =>
+            inner.CloseOrphansAsync(now, c);
+
+        /// <summary>Passes it on.</summary>
+        public Task<DeletedRun> DeleteRunAsync(string id, CancellationToken c = default) =>
+            inner.DeleteRunAsync(id, c);
+
+        /// <summary>Passes it on.</summary>
+        public Task<IReadOnlyList<string>> RunsBeforeAsync(int version, CancellationToken c = default) =>
+            inner.RunsBeforeAsync(version, c);
+
+        /// <summary>Passes it on.</summary>
+        public Task<int> DeleteAsync(string id, CancellationToken c = default) => inner.DeleteAsync(id, c);
+
+        /// <summary>Passes it on.</summary>
+        public Task<int> DeleteConversationsAsync(string run, CancellationToken c = default) =>
+            inner.DeleteConversationsAsync(run, c);
+
+        /// <summary>Passes it on.</summary>
+        public Task<int> DeleteTurnsAsync(string run, CancellationToken c = default) => inner.DeleteTurnsAsync(run, c);
+
+        /// <summary>Passes it on.</summary>
+        public Task<int> DeleteRequestsAsync(string run, CancellationToken c = default) =>
+            inner.DeleteRequestsAsync(run, c);
+
+        /// <summary>Passes the note on to the real store.</summary>
+        public Task<NoteResult> AddNoteAsync(string run, string? text, DateTimeOffset at,
+            ConversationKey? conversation = null, CancellationToken c = default) =>
+            inner.AddNoteAsync(run, text, at, conversation, c);
+
+        /// <summary>Passes the read on.</summary>
+        public Task<IReadOnlyList<RunNote>> NotesAsync(string run, CancellationToken c = default) =>
+            inner.NotesAsync(run, c);
+    }
+
+    /// <summary>When the store fails, the recording stops and says why, but the run itself still finishes.</summary>
+    [Test]
+    public async Task AStoreThatFails_StopsTheRecording_NeverTheRun()
+    {
+        var failing = new TurnsFail(_store);
+        var recording = new EvalRecorder(failing).RecordAsync(_run);
+        Add(Protocol(), Mode(), Question("bobotie"), TurnDone("bobotie"), ConversationDone("bobotie"),
+            Question("cottage-pie"), ModeDone());
+        _run.Complete(0);
+
+        var result = await recording;
+
+        Assert.That(result.Stored, Is.False);
+        Assert.That(result.StoreError, Does.Contain("mongo is down"));
+        var run = await _store.GetRunAsync(_run.Id);
+        Assert.That(run!.StoreError, Does.Contain("mongo is down"),
+            "the run says what wasn't kept, when the store takes that much");
+        Assert.That(run.Status, Is.EqualTo(EvalRunStatus.Done), "the run itself finished");
+        var conversation = (await _store.ConversationsAsync(_run.Id)).Single();
+        Assert.That(conversation.Role, Is.Null,
+            "nothing after the failure was written: not bobotie's result, not cottage-pie");
+    }
+
+    /// <summary>
+    /// A recording attached to a run is kept by it, so the end can say whether everything was stored.
+    /// </summary>
+    [Test]
+    public async Task AnAttachedRecording_IsKeptByItsRun_SoTheEndCanSayWhetherItWasStored()
+    {
+        // The endpoint attaches the recorder when it starts a run, and its "done" event waits for the recording to
+        // say stored: true or false.
+        var recorder = new EvalRecorder(_store);
+
+        recorder.Attach(_run);
+        Add(Protocol(), Mode());
+        _run.Complete(0);
+
+        var recording = recorder.RecordingOf(_run.Id);
+        Assert.That(recording, Is.Not.Null);
+        Assert.That((await recording!).Stored, Is.True);
+        Assert.That(recorder.RecordingOf("unknown"), Is.Null);
+    }
+}

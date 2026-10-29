@@ -1,9 +1,10 @@
-namespace LouisAgent.Core.Pricing.Prices;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Messages;
 
+namespace LouisAgent.Core.Pricing.Prices;
 /// <summary>
 /// The operator's price table (<c>config/prices.json</c>, Usage spec §4.2): prices per million tokens, matched to a
 /// model id by longest prefix, so <c>claude-haiku-4-5</c> also prices <c>claude-haiku-4-5-20251001</c>.
@@ -29,8 +30,7 @@ public sealed class PriceTable
     /// <summary>A table with no prices: every record stays unpriced (<c>cost: null</c>).</summary>
     public static PriceTable Empty { get; } = new();
 
-    [JsonIgnore]
-    public bool IsEmpty => Models.Count == 0;
+    [JsonIgnore] public bool IsEmpty => Models.Count == 0;
 
     /// <summary>
     /// Loads the table at <paramref name="path"/>; a missing file gives <see cref="Empty"/>. A malformed file throws
@@ -43,7 +43,8 @@ public sealed class PriceTable
     /// <see cref="HttpRequestException"/> when it can't be fetched (unreachable, or not a success status), so the caller
     /// can fall back to the file; a body that isn't a valid table throws <see cref="InvalidDataException"/>.
     /// </summary>
-    public static async Task<PriceTable> LoadAsync(HttpClient http, Uri url, CancellationToken cancellationToken = default)
+    public static async Task<PriceTable> LoadAsync(HttpClient http, Uri url,
+        CancellationToken cancellationToken = default)
     {
         using HttpResponseMessage response = await http.GetAsync(url, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -60,18 +61,24 @@ public sealed class PriceTable
         }
         catch (JsonException ex)
         {
-            throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableNotValid, new { Source = source, Reason = ex.Message }), ex);
+            throw new InvalidDataException(
+                MessageText.Format(PricingErrorMessage.PriceTableNotValid,
+                    new { Source = source, Reason = ex.Message }), ex);
         }
 
-        if (table is null) throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableEmpty, new { Source = source }));
+        if (table is null)
+            throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PriceTableEmpty,
+                new { Source = source }));
         foreach (var (model, price) in table.Models)
         {
             IEnumerable<(string Name, decimal Value)> prices = price.All().Concat(
                 price.LongPrompt?.All().Select(p => (Name: $"long_prompt.{p.Name}", p.Value)) ?? []);
             if (prices.FirstOrDefault(p => p.Value < 0) is { Name: { } negative })
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableNegativePrice, new { Source = source, Model = model, Price = negative }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PriceTableNegativePrice,
+                    new { Source = source, Model = model, Price = negative }));
             if (price.LongPrompt is { AboveTokens: <= 0 })
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.PriceTableLongPromptNotPositive, new { Source = source, Model = model }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.PriceTableLongPromptNotPositive,
+                    new { Source = source, Model = model }));
         }
 
         return table;

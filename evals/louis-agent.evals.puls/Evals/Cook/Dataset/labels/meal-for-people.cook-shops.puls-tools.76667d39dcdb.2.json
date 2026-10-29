@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-shops",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Ek koop by PnP en Woolworths. Wat moet ek maak? Gee my die resep, ongeveer wat dit kos, en die takke se adresse.",
+      "answer": "Ek gee dit gou vir my kok, maar hy is nie op hierdie sessie nie. Ek kyk eers vir die takke en 'n maklike resep op die web.Ek het nie my kok hier nie, so hierdie antwoord is van my en 'n webresep, nie van 'n kok wat dit nagegaan het nie. Die pryse kan ek ook nie gee nie: ek soek nie winkels se pryse op nie, en my pryshulpmiddels dek nie PnP of Woolworths nie.\n\n**Die ete: one-pot hoender en rys (vir 4, sowat 45 minute)**\n\nBron: [FoodieMom, One-Pot Chicken and Rice](https://foodiemoms.com/one-pot-chicken-and-rice-the-ultimate-easy-weeknight-dinner/). Die resep is in Amerikaanse koppies (1 koppie ≈ 250 ml).\n\n**Bestanddele:**\n- 4 hoenderdyjies (met been en vel, of sonder been)\n- 1 tl sout, ½ tl swartpeper, ½ tl paprika\n- 1 eetl olie\n- 1 koppie langkorrel witrys (rou)\n- 1 ui, fyngesny\n- 1 koppie murg, in blokkies\n- 1 koppie ertjies (vars of gevries)\n- 2 koppies hoendersop (of 2 koppies water met 2 bouillonblokkies)\n- 2 knoffelhuisies, fyngedruk\n\n**Metode:**\n1. Vryf die hoender met sout, peper en paprika. Braai dit in die olie op medium-hoë hitte 4–5 minute per kant tot goudbruin. Haal uit.\n2. Gooi ui, murg en knoffel in dieselfde pot. Roer 3–4 minute tot sag.\n3. Roer die rys en laat dit 'n minuut saam bak. Gooi die sop by.\n4. Lê die hoender terug in die pot. Skroef die deksel op, draai die hitte laag en laat 20–25 minute sag stoom tot die rys gaar en die hoender deurgaar is.\n5. Gooi die ertjies by, deksel weer op, 2–3 minute.\n6. Laat 5 minute staan en eet warm.\n\nDit pas in jou uur. Hou die hitte laag by stap 4, en moenie die deksel gedurig oopmaak nie.\n\n**Waar om te koop:** Ek kon nie PnP of Woolworths se voorraad of pryse nagaan nie, so dis net die bestanddele. Dit is hoender, rys, ui, murg, ertjies, sop en knoffel: 'n gewone inkopie by enige van die twee.\n\n**Die takke** (van webgidse, nie die winkels se eie bladsye nie, so bel gerus om te bevestig):\n- **Pick n Pay Stellenbosch Square:** Shop 51, Stellenbosch Square, Strand Road, Jamestown. Tel 021 880 1670.\n- **Woolworths Stellenbosch Square:** R44, hoek Webersvallei Road en R44, Jamestown. Tel 021 880 7511.\n- Woolworths het ook 'n tak by Eikestad Mall, 43 Andringa Street, as dit nader is.\n\nWil jy hê ek moet 'n ander ete soek, of 'n ander resep vir die hoender?"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

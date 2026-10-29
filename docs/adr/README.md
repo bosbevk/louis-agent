@@ -38,15 +38,24 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0026](0026-parallel-tool-calls-for-read-only-toolsets.md) | A round's tool calls run at once only where every toolset is parallel-safe | Accepted |
 | [0027](0027-engine-identities-and-packs.md) | The engine, identities and packs: core names no product | Accepted |
 | [0028](0028-packs-stay-convertible-to-mcp.md) | Packs stay convertible to MCP; MCP plugs in at the toolset | Accepted |
-| [0029](0029-simulations-in-csharp.md) | Simulations in C#: one harness for checks, regressions and demos | Accepted |
+| [0029](0029-simulations-in-csharp.md) | Simulations in C#, called evals: one harness for checks, regressions and demos (amended 2026-10-24: the word is *eval*) | Accepted |
 | [0030](0030-build-or-adopt.md) | Build or adopt: the loop stays ours on Microsoft.Extensions.AI | Accepted |
 | [0031](0031-orchestration-is-an-engine-function.md) | Orchestration is an engine function, and the orchestrator stays on core | Accepted |
 | [0033](0033-what-the-agent-writes-has-a-scope.md) | What the agent writes has a scope: session, agent or shared (0032 is kept for *Sources as data*) | Accepted |
-| [0034](0034-code-a-person-can-maintain.md) | Code a person can maintain: one concern per file, at most 200 lines, no code in razor | Accepted |
-| [0038](0038-the-browser-says-what-it-is.md) | The browser says what it is: it never disguises itself to a site; an identity names itself with `BROWSER_USER_AGENT`, never a person (0035 to 0037 are kept for the engine package, CL17 and the one agent API) | Accepted |
+| [0034](0034-code-a-person-can-maintain.md) | Code a person can maintain: one concern per file, at most 200 lines, no code in razor | Amended by 0044 |
+| [0037](0037-one-agent-api-products-get-a-front-door.md) | One agent API; products get a front door: the API, its project files and its contract name no product, and what is only a product's (its web app, compose file, cloud app, database name) lives at its own door; renames keep what is stored and linked, and `ApiNamesNoProductTests` holds it (0035 and 0036 are kept for the engine package and CL17) | Accepted |
+| [0038](0038-the-browser-says-what-it-is.md) | The browser says what it is: it never disguises itself to a site; an identity names itself with `BROWSER_USER_AGENT`, never a person | Accepted |
 | [0039](0039-api-routes-under-v1.md) | The agent API's routes follow one rule, under `/v1`: nouns, 201 on a create, `DELETE`, `POST /{resource}/{verb}`, the key by default, the table pinned by a test | Accepted |
 | [0040](0040-records-for-values-classes-for-things.md) | Records for values, classes for things: a record holds no resource, both are sealed by default, and a closed set is an abstract record | Accepted |
-| [0046](0046-dates-are-utc.md) | Dates are UTC: stored, logged and sent as ISO 8601 UTC; a screen converts them for the reader; a future local event keeps its local time and zone (0041 to 0045 are on F18's branch) | Accepted |
+| [0041](0041-json-through-records-by-hand-only-for-bytes.md) | JSON goes through records and one options object per wire; the writable DOM only for a shape decided at run time, the read-only DOM for input we don't own, the writer only when the bytes are the contract | Accepted |
+| [0042](0042-the-web-shows-the-live-results.md) | The web shows the live results: a page renders what it last fetched, fetches again after any write it makes, and never keeps a count the API keeps | Accepted |
+| [0043](0043-repeated-names-are-enums.md) | Repeated names are enums, one per pluggable project: a name written in more than one place (a toolset, a role, a mode) is an enum even in an open set; a pack, an identity or an eval set keeps its own copy and never references another's, the rest share one; wire names stay text, carried as `[WireName]` and parsed once by `SettingChoice` |
+| [0044](0044-the-size-limit-counts-code.md) | The size limit counts code: 200 lines (tests 400) without blank and comment lines, so the comments the rules ask for never force a split | Accepted |
+| [0045](0045-typed-answers-and-a-shared-contract.md) | Typed answers and a shared contract: endpoints return `TypedResults` with `Results<…>` unions, errors are the `ApiError` record, and the records live in `louis-agent.api.contracts` for the API and its clients | Accepted |
+| [0046](0046-dates-are-utc.md) | Dates are UTC: stored, logged and sent as ISO 8601 UTC; a screen converts them for the reader; a future local event keeps its local time and zone | Accepted |
+| [0047](0047-protocol-v2-one-event-contract.md) | Protocol v2: one event contract both sides share: the runner and the API read and write the records in `louis-agent.evals.protocol`, JSON Lines with `"event"` first, kebab-case words, UTC `t`; our own field names, not OpenTelemetry's `gen_ai.*`; amends 0022 | Accepted |
+| [0048](0048-mongo-through-records.md) | MongoDB goes through records: each collection a typed `IMongoCollection<T>` over a document record with its stored names as attributes, enums as wire names, dates in UTC, typed filters; `BsonDocument` only for a shape decided at run time | Accepted |
+| [0049](0049-nothing-is-compatible-before-a-sale.md) | Nothing is backward compatible until something is sold in production: no migration, alias, lenient reader or second parser for what we store or send between our own parts; a changed shape means delete and re-run | Accepted |
 
 ## When to write one
 

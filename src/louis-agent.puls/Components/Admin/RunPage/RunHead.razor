@@ -1,0 +1,22 @@
+@* The run page's head: the check's name as the title, the sentence it proves under it, then the run's facts in one line
+   with a status pill. *@
+
+<div class="page-head run-head">
+    <div>
+        <h1><code>@(Check ?? "run")</code></h1>
+        @if (Title is { } title) { <p class="run-proves">@title</p> }
+        <p class="run-facts">
+            <code>@RunId</code>
+            @if (Run is { } run)
+            {
+                <span class="status-pill @run.Status">@Status</span>
+                <span>@Started</span><span class="muted">·</span><span>@Repeats</span>
+                @if (Total is { } total) { <span class="muted">·</span><span>@total</span> }
+                @if (run.RescoreOf is { } source) { <RescoredFrom Id="@source" /> }
+            }
+        </p>
+    </div>
+    <div class="page-actions">
+        <a class="header-button" href="admin/benchmarks"><span class="ic i-chart" aria-hidden="true"></span>All benchmarks</a>
+    </div>
+</div>

@@ -1,3 +1,4 @@
+using LouisAgent.SessionStream;
 using System.Text.Json;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Storage;
@@ -16,11 +17,13 @@ public class ChatStoreImageTests
 
         public ValueTask<TValue> InvokeAsync<TValue>(string identifier, object?[]? args)
         {
-            if (identifier == "localStorage.setItem" && args is [string key, string value] && key == "louis-agent.chats") Saved = value;
+            if (identifier == "localStorage.setItem" && args is [string key, string value] &&
+                key == "louis-agent.chats") Saved = value;
             return ValueTask.FromResult(default(TValue)!);
         }
 
-        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken, object?[]? args) => InvokeAsync<TValue>(identifier, args);
+        public ValueTask<TValue> InvokeAsync<TValue>(string identifier, CancellationToken cancellationToken,
+            object?[]? args) => InvokeAsync<TValue>(identifier, args);
     }
 
     [Test]
@@ -37,9 +40,11 @@ public class ChatStoreImageTests
 
         await store.SaveAsync();
 
-        Assert.That(turn.Blocks[0].ToolResult, Does.Contain("more chars not saved").And.Not.Contain(Url), "the text is cut");
+        Assert.That(turn.Blocks[0].ToolResult, Does.Contain("more chars not saved").And.Not.Contain(Url),
+            "the text is cut");
         Assert.That(ImageSources.Of(turn), Does.Contain(Url), "in memory, after the cut");
-        var loaded = JsonSerializer.Deserialize<List<Chat>>(js.Saved!, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
+        var loaded =
+            JsonSerializer.Deserialize<List<Chat>>(js.Saved!, new JsonSerializerOptions(JsonSerializerDefaults.Web))!;
         Assert.That(ImageSources.Of(loaded[0].Turns[0]), Does.Contain(Url), "after the store's JSON");
     }
 }

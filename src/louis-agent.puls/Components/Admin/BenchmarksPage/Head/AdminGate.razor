@@ -1,0 +1,13 @@
+@* What went wrong; when the portal's key is missing or wrong, a box to enter it. *@
+
+<section class="card-p admin-gate">
+    <strong>@Error</strong>
+    @if (NeedsKey)
+    {
+        <p>The portal's key is <code>ADMIN_API_KEY</code> (or <code>AGENT_API_KEY</code>) in <code>config/.env.secrets</code>. Enter it here; it's kept in this browser, apart from the chat's key.</p>
+        <form class="admin-key" @onsubmit="SaveKeyAsync">
+            <input type="password" placeholder="the key" @bind="_keyDraft" />
+            <button class="header-button" type="submit">Save and reload</button>
+        </form>
+    }
+</section>

@@ -227,6 +227,8 @@ a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2
 /* Louis: "a min padding around the pics", then bigger, three times: 104 px, a cell tall enough for 10 px above and below. */
 .markdown td:has(> img) { position: relative; padding-left: 128px; height: 124px; }
 .markdown img[data-original] { cursor: zoom-in; }
+/* The recipe's photo (FX24, Louis: "a fixed size to fit in our chat screen", "some rounded corners"): one fixed box, cropped to fit and never stretched, so a tall or a wide photo takes the same room; the product photos in a list's cells keep their own size above. */
+.markdown img:not(td img) { display: block; width: 100%; max-width: 480px; height: 320px; object-fit: cover; border-radius: 16px; margin: 10px 0; background: var(--border); }
 .photo-dialog { padding: 16px; border: 1px solid var(--border); border-radius: 18px; background: #fff; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); cursor: zoom-out; animation: fade .2s both; }
 .photo-dialog::backdrop { background: rgba(0, 0, 0, .7); }
 .photo-dialog img { display: block; width: min(560px, calc(100vw - 64px)); max-height: calc(100vh - 120px); object-fit: contain; }
@@ -1250,6 +1252,9 @@ html:has(.landing) { scroll-behavior: smooth; }
 /* The chat's sidebar-hidden state and saved width live on <html>; the portal's sidebar ignores both. */
 .admin-shell .sidebar { visibility: visible; padding: 20px 14px 16px; min-width: 0; }
 .admin-main { overflow: auto; padding: 28px 32px 48px; display: flex; flex-direction: column; gap: 18px; }
+/* The page scrolls as one: a section that scrolls itself (the runs list) would otherwise shrink to a sliver under a
+   tall live run (Louis, 2026-10-29). */
+.admin-main > * { flex-shrink: 0; }
 .admin-side-note { color: var(--dim); font-size: 12.5px; line-height: 1.5; padding: 0 12px; }
 .admin-side-back { padding: 10px 14px 14px; }
 .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
@@ -1298,6 +1303,27 @@ html:has(.landing) { scroll-behavior: smooth; }
 .run-table tr.mode td { color: var(--orange-text); padding-top: 12px; }
 .run-table tr.failed td { color: var(--danger); }
 .run-table tbody tr { cursor: default; }
+/* The by-category table (F18 step 5c, Louis: "look at how nice everything looks and then we see this"): cells with room between them, numbers on the right, the overall line standing out. */
+.summary-mode { margin: 18px 0 26px; }
+.summary-mode h3 { margin: 0 0 8px; font-size: 18px; font-weight: 600; color: var(--orange-text); }
+/* 6a.4 (Louis: "too flat"): each row is a rounded card like the pass-rates list (the table keeps its columns), the overall row edged orange, a bar behind each rate. */
+.summary-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+.summary-table th, .summary-table td { padding: 9px 14px; text-align: left; vertical-align: middle; white-space: nowrap; }
+.summary-table th { color: var(--muted); font-size: 12px; font-weight: 600; padding-top: 0; padding-bottom: 0; }
+.summary-table .summary-row td { background: var(--bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.summary-table .summary-row td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; }
+.summary-table .summary-row td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+.summary-table .summary-row:hover td { border-color: rgba(245, 130, 32, .35); }
+.summary-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.summary-table tr.overall td { font-weight: 600; color: var(--ink); }
+.summary-table .s-rate, .summary-table .s-at-k, .summary-table .s-hat-k { min-width: 7.5rem; }
+.summary-table .rate-track { display: inline-block; vertical-align: middle; width: 48px; height: 6px; margin-right: 8px; border-radius: 3px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.summary-table .rate-fill { display: block; height: 100%; border-radius: 3px; background: var(--green-light); animation: grow .7s var(--ease) both; }
+.summary-table .rate-fill.hat { background: var(--orange); }
+.summary-table .s-slice { font-family: var(--font-code); font-size: 12.5px; }
+.summary-table .s-passed { min-width: 17rem; white-space: normal; }
+.summary-table .s-tasks details > summary { cursor: pointer; color: var(--muted); }
+.summary-table a.s-task { display: block; padding: 2px 0; font-size: 12.5px; }
 .run-log { max-height: none; font-size: 12.5px; }
 /* F31: the store's state beside the page's actions, the banner when there is none, and the live table's open row. */
 .store-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; }
@@ -1331,8 +1357,26 @@ html:has(.landing) { scroll-behavior: smooth; }
 .compare-grid { display: grid; grid-template-columns: repeat(var(--cols, 2), minmax(0, 1fr)); column-gap: 20px; }
 .compare-grid > .compare-head { margin-bottom: 4px; }
 .compare-cell { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, .05); animation: rise .45s var(--ease) both; animation-delay: calc(var(--i, 0) * 45ms); }
-.conv-row { display: grid; grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) 84px auto; align-items: center; gap: 14px; width: 100%; }
-.conv-row .row-cost { text-align: right; }
+/* 6a.4d (Louis: "a lot of unused space", "which ones to check"): a card per conversation, the chips in one line across it, a review pill in front, the cost strip under it. */
+.conv-card { width: 100%; display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; transition: border-color .2s, box-shadow .2s, transform .25s var(--spring); }
+.conv-card:hover { border-color: rgba(245, 130, 32, .4); box-shadow: var(--shadow-glow); transform: translateY(-1px); }
+.conv-card[data-review="to-review"] { border-left: 3px solid var(--orange); }
+.conv-card[data-review="reviewed"] { border-left: 3px solid var(--green-light); }
+.conv-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.conv-head code { font-size: 12.5px; font-weight: 700; color: var(--ink); background: none; padding: 0; }
+.conv-head .conv-q { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--dim); font-size: 12px; }
+.conv-head .row-cost.small { margin-left: auto; }
+.conv-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.conv-chips .tree-chips { margin-left: 0; display: contents; }
+.conv-strip { height: 6px; border-radius: 3px; overflow: hidden; background: rgba(255, 255, 255, .05); cursor: default; }
+.conv-strip .xbar-fill { border-radius: 3px; }
+.review-pill { font-weight: 700; letter-spacing: .3px; text-transform: uppercase; font-size: 10.5px; }
+.review-pill.to-review { background: rgba(245, 130, 32, .18); color: var(--orange-text); box-shadow: 0 0 0 0 rgba(245, 130, 32, .55); animation: pill-pulse 2.2s ease-out infinite; }
+.review-pill.reviewed { background: var(--green-soft); color: var(--green-light); }
+.review-pill.no-review { color: var(--dim); }
+@keyframes pill-pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 130, 32, .55); } 70% { box-shadow: 0 0 0 6px rgba(245, 130, 32, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 130, 32, 0); } }
+@media (prefers-reduced-motion: reduce) { .review-pill.to-review { animation: none; } .conv-card:hover { transform: none; } }
+.conv-filter { margin-left: 8px; }
 .compare-sub { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); padding-bottom: 4px; }
 .compare-grid.tokens { row-gap: 6px; }
 .token-row { display: grid; grid-template-columns: 110px minmax(0, 1fr) 56px; align-items: center; gap: 12px; animation: rise .45s var(--ease) both; animation-delay: calc(var(--i, 0) * 45ms); }
@@ -1366,7 +1410,44 @@ html:has(.landing) { scroll-behavior: smooth; }
 .trend-point { stroke-width: 7; stroke-linecap: round; vector-effect: non-scaling-stroke; cursor: pointer; animation: fade .4s ease both; animation-delay: calc(var(--i, 0) * 120ms + 1s); }
 .trend-point.here { stroke-width: 11; }
 .trend.small .trend-point { stroke-width: 5; }
-.trend-point:hover { filter: brightness(1.25); }
+.trend-point:hover, .trend-point.hovered { filter: brightness(1.25); stroke-width: 10; }
+/* Step 7a.3: a dashed line where a prompt changed, a dot at the top where a run has notes; each reads out on hover. */
+.trend-prompt { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 3; vector-effect: non-scaling-stroke; cursor: help; }
+.trend-prompt:hover { stroke: var(--text); stroke-width: 3; }
+.trend-note { stroke: var(--text); stroke-width: 8; stroke-linecap: round; vector-effect: non-scaling-stroke; cursor: help; }
+.trend-note:hover { stroke-width: 11; }
+.legend .key-note { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--text); }
+.legend .key-prompt { display: inline-block; width: 0; height: 12px; border-left: 1.5px dashed var(--muted); }
+/* The trend reworked (2026-10-26): the run being read, its value per mode in each panel's head with the change since the run before, a guide line under the mouse, dates under the axis. */
+.trend-shown { font-size: 12.5px; }
+.trend-shown a { color: var(--orange-text); text-decoration: none; }
+.trend-shown a:hover code { text-decoration: underline; }
+.trend-hint { color: var(--dim); }
+/* Pass rates per mode (2026-10-26): a row per mode, the two rates as bars with their numbers, the notes beside them. */
+.mode-rates-lead { margin: 0 0 10px; font-size: 13px; max-width: 100ch; }
+.mode-rates-lead strong { color: var(--ink); }
+.mode-rates { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.mode-rate { display: grid; grid-template-columns: 150px minmax(180px, 1fr) minmax(180px, 1fr) auto; align-items: center; gap: 14px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; animation: rise .45s var(--ease) both; animation-delay: calc(var(--i, 0) * 60ms); }
+.mode-rate-name code { font-size: 14px; font-weight: 700; color: var(--ink); background: none; padding: 0; }
+.mode-rate .rate-bar { display: grid; grid-template-columns: 58px minmax(0, 1fr) 44px; align-items: center; gap: 8px; background: none; border: 0; padding: 0; font-size: 12.5px; border-radius: 0; }
+.mode-rate .rate-label { color: var(--muted); font-variant-numeric: tabular-nums; }
+.mode-rate .rate-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.mode-rate .rate-fill { display: block; height: 100%; border-radius: 4px; background: var(--green-light); transform-origin: 0 50%; animation: grow .7s var(--ease) both; }
+.mode-rate .rate-fill.hat { background: var(--orange); }
+.mode-rate .rate-bar strong { color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.mode-rate-notes { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+@media (max-width: 991.98px) { .mode-rate { grid-template-columns: 1fr; gap: 8px; } }
+.trend-reading { font-size: 11.5px; }
+.trend-reading code { color: var(--orange-text); }
+.trend-values { display: inline-flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--text); }
+.trend-values > span { display: inline-flex; align-items: center; gap: 5px; }
+.trend-values strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.trend-delta { font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.trend-delta.up { color: var(--green-light); background: var(--green-soft); }
+.trend-delta.down { color: var(--danger); background: rgba(242, 107, 79, .14); }
+.trend-hover { stroke: rgba(255, 255, 255, .35); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.trend-x { display: flex; justify-content: space-between; font-size: 11px; margin-top: -2px; font-variant-numeric: tabular-nums; }
+@media (max-width: 1200px) { .trend-hint { display: none; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) :is(.trend-reveal, .trend-point) { animation: none; } }
 .manual-body h2 { font-size: 16px; color: var(--orange-text); }
 .runs-list .run-row-main:hover code { color: var(--orange-text); }
@@ -1386,17 +1467,90 @@ html:has(.landing) { scroll-behavior: smooth; }
 .runs-list { max-height: calc(100vh - 150px); overflow: auto; }
 .runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
 /* F31: a check card selects its check (Louis); the selected one glows in Puls's orange. */
-.check-card { cursor: pointer; transition: border-color .2s, box-shadow .2s; }
-.check-card:hover { border-color: rgba(245, 130, 32, .3); }
+/* The Benchmarks page's cards and rows (the rework of 2026-10-26, Louis: "make it user friendly and readable"): a card lifts on hover and is marked by an orange edge when selected;
+   a status pill reads the same on a card and a row; the runs are a grid of fixed columns with a head row, so they read as a table. */
+.check-card { position: relative; cursor: pointer; transition: border-color .2s, box-shadow .2s, transform .2s var(--ease); }
+.check-card::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 0 3px 3px 0; background: var(--orange); opacity: 0; transition: opacity .2s; }
+.check-card:hover { border-color: rgba(245, 130, 32, .35); transform: translateY(-1px); }
 .check-card.selected { border-color: rgba(245, 130, 32, .65); box-shadow: var(--shadow-glow); }
+.check-card.selected::before { opacity: 1; }
 .check-card:focus-visible { outline: 2px solid rgba(245, 130, 32, .6); outline-offset: 2px; }
-.run-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 8px; border-radius: 10px; cursor: pointer; border-bottom: 1px solid rgba(255, 255, 255, .05); transition: background .15s; }
+.check-name code { font-size: 15px; font-weight: 700; color: var(--ink); background: none; padding: 0; }
+.check-proves { margin: 0; color: var(--text); font-size: 13.5px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.check-card:not(.open) .check-proves { -webkit-line-clamp: 1; }
+/* F18 step 7b (i): the Evals page's cards. The facts as two columns, a name and its value; a never-run pill is grey. */
+.eval-card { display: grid; gap: 10px; margin-bottom: 14px; }
+.eval-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 13px; }
+.eval-facts dt { color: var(--muted); font-weight: 600; }
+.eval-facts dd { margin: 0; }
+.eval-graders { margin: 0; padding-left: 0; list-style: none; }
+.status-pill.never-run { background: var(--bg); color: var(--muted); }
+.eval-rate { display: block; white-space: nowrap; }
+.eval-trend { font-size: 13px; }
+.check-script { margin: 0; font-size: 12px; }
+.check-last { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--text); text-decoration: none; padding: 6px 10px; margin: 0 -10px; border-radius: 9px; transition: background .15s, color .15s; }
+.check-last:hover { background: rgba(255, 255, 255, .05); color: var(--ink); }
+.check-last strong { color: var(--ink); }
+.check-last-go { color: var(--orange-text); margin-left: 2px; }
+.checks-hint { font-size: 12.5px; margin-left: 6px; }
+.run-estimate { font-size: 12.5px; }
+.status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--green-soft); color: var(--green-light); white-space: nowrap; }
+.status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.status-pill.running { background: var(--orange-soft); color: var(--orange-text); }
+.status-pill.failed { background: rgba(242, 107, 79, .14); color: var(--danger); }
+.runs-head, .run-row { display: grid; grid-template-columns: 130px 150px 70px 100px 80px minmax(0, 1fr) 90px; align-items: center; gap: 12px; padding: 8px 10px; }
+.runs-head { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); }
+.runs-head .num, .run-row .num { text-align: right; font-variant-numeric: tabular-nums; }
+.run-row { border-radius: 10px; border-bottom: 1px solid rgba(255, 255, 255, .05); transition: background .15s; }
 .run-row:hover { background: rgba(255, 255, 255, .04); }
 .run-row.selected { background: var(--orange-soft); }
-.run-row-main { display: flex; flex-direction: column; min-width: 0; }
-.run-row-main code { font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.run-row-main small { color: var(--muted); font-size: 11.5px; }
-.run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13px; }
+.run-row-main { min-width: 0; text-decoration: none; }
+.run-row-main code { font-size: 12.5px; color: var(--orange-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-row-main:hover code { text-decoration: underline; }
+.run-row-when, .run-row-repeat, .run-row-requests { font-size: 13px; color: var(--text); white-space: nowrap; }
+.run-row-notes { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.run-row-notes .rescore { height: 28px; padding: 0 10px; font-size: 12px; }
+.run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13.5px; }
+@media (max-width: 1100px) { .runs-head { display: none; } .run-row { grid-template-columns: 1fr 1fr; } .run-row-notes { grid-column: 1 / -1; } }
+/* A run's page (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, the facts in one line; each fold says in a note what it holds. */
+.run-head h1 code { font-size: 24px; font-weight: 800; color: var(--ink); background: none; padding: 0; letter-spacing: -.4px; }
+.run-proves { margin: 4px 0 0; color: var(--text); font-size: 14.5px; max-width: 90ch; }
+.run-facts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px !important; font-size: 13px; }
+.run-facts > code { color: var(--orange-text); }
+.fold-note { font-weight: 400; font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.fold:not([open]) > .fold-head .fold-note::before { content: "— "; }
+/* The trend-by-category cards (2026-10-26): a card per category, three to a row; per mode two labelled bars (pass@k, pass^k) with their numbers; the compact chart under them. */
+.category-trend-lead { margin: 0 0 12px; font-size: 13px; max-width: 100ch; }
+.category-trend-lead strong { color: var(--ink); }
+.category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; }
+.category-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
+.category-card:hover { border-color: rgba(245, 130, 32, .35); }
+.category-card.overall { border-color: rgba(245, 130, 32, .4); }
+.category-card h4 { display: flex; align-items: baseline; gap: 10px; margin: 0; font-size: 15px; font-weight: 700; color: var(--ink); }
+.category-card h4 code { background: none; padding: 0; color: var(--ink); font-size: 14px; }
+.category-card h4 .muted { font-weight: 400; font-size: 12px; margin-left: auto; }
+.category-lines { display: flex; flex-direction: column; gap: 10px; }
+.category-line { display: grid; grid-template-columns: 1fr; gap: 4px; }
+.category-line-name { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text); }
+.category-line-name .muted { font-size: 11.5px; margin-left: auto; }
+.cat-bar { display: grid; grid-template-columns: 52px minmax(0, 1fr) 44px; align-items: center; gap: 8px; }
+.cat-bar-label { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cat-bar-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.cat-bar-fill { display: block; height: 100%; border-radius: 4px; transform-origin: 0 50%; animation: grow .7s var(--ease) both; }
+.cat-bar-fill.hat { opacity: .6; }
+.cat-bar-value { font-size: 12.5px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.category-no-trend { margin: 2px 0 0; font-size: 12px; }
+.trend.compact .trend-grid { gap: 8px; }
+.trend.compact .trend-panel { padding: 8px 10px 10px; background: none; }
+.trend.compact .trend-svg { height: 64px; }
+.trend.compact .chart-head { gap: 6px; font-size: 12px; }
+.trend.compact .chart-title > strong { font-weight: 600; font-size: 12px; color: var(--muted); }
+.trend.compact .trend-top { display: none; }
+.trend.compact > .chart-head { display: none; }
+.rescored-from { font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: color .15s, border-color .15s; }
+.rescored-from:hover { color: var(--orange-text); border-color: rgba(245, 130, 32, .45); }
+.rescore-error { display: block; font-size: 12px; }
+.model-filter { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 5px 10px; font: inherit; font-size: 13px; }
 @media (max-width: 1199.98px) {
     .admin-cols { grid-template-columns: minmax(0, 1fr); }
     .admin-col-side { position: static; }
@@ -1435,6 +1589,10 @@ html:has(.landing) { scroll-behavior: smooth; }
 .tree-mode > summary strong { color: var(--orange-text); font-size: 15px; }
 .tree-meta { color: var(--dim); font-size: 12.5px; }
 .tree-chips { display: inline-flex; flex-wrap: wrap; gap: 5px; margin-left: auto; }
+/* F18 step 5a: a run's pass rates, one line per mode. */
+.mode-rates { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mode-rate { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.mode-rate-name { font-weight: 600; margin-right: 4px; }
 .chip { font-size: 11px; font-weight: 600; letter-spacing: .2px; padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--muted); white-space: nowrap; }
 .chip.ok { background: var(--green-soft); color: var(--green-light); }
 .chip.bad { background: rgba(242, 107, 79, .14); color: var(--danger); }
@@ -1606,3 +1764,55 @@ button.tile:hover { transform: translateY(-2px); border-color: rgba(245, 130, 32
 @keyframes sweep { from { stroke-dasharray: 0 100; } }
 @media (max-width: 991.98px) { .xbar-row { grid-template-columns: 1fr; gap: 4px; } .xbar .xbar-value { position: static; } .lane { grid-template-columns: 70px 1fr; } }
 @media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) .explorer * { animation: none !important; transition: none !important; } }
+
+/* F18 step 7a.2: a run's notes and a conversation's, in the portal's own parts (card-p, header-button, muted). */
+.notes-panel { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.notes-empty { margin: 0; font-size: 13px; }
+.notes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.note { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; font-size: 13.5px; }
+.note-when { white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 12.5px; }
+.note-body { white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
+.note-text { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; width: 100%; min-height: 56px; resize: vertical; }
+.note-text:focus { outline: none; border-color: rgba(245, 130, 32, .55); }
+.note-add { align-self: flex-start; }
+.note-add:disabled { opacity: .45; cursor: not-allowed; }
+.note-error { color: var(--danger); margin: 0; font-size: 13px; }
+
+/* F18 step 6a.3: the blind review panel and the judge-against-people card, in the portal's own parts (card-p, segmented, admin-table, header-button). */
+.review-panel { margin-top: 12px; gap: 8px; }
+.review-question { margin: 0; font-size: 15px; color: var(--ink); }
+.review-ask p { margin: 0; color: var(--muted); font-size: 13px; }
+.review-answer { font-size: 13.5px; }
+.review-name-row { display: flex; gap: 8px; }
+.review-name, .review-note { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
+.review-name { flex: 1; }
+.review-note { width: 100%; min-height: 56px; resize: vertical; }
+.review-name:focus, .review-note:focus { outline: none; border-color: rgba(245, 130, 32, .55); }
+.review-buttons { align-self: flex-start; }
+.review-buttons button:disabled { opacity: .45; cursor: not-allowed; }
+.review-error { color: var(--danger); margin: 0; }
+.review-result { font-weight: 700; color: var(--ink); margin: 0; }
+.review-judge { margin: 0; font-size: 13px; }
+.review-who { margin: 0; font-size: 13px; }
+.link-button { background: none; border: 0; padding: 0; font: inherit; color: var(--orange-text); cursor: pointer; text-decoration: underline; }
+.agreement-class { display: flex; flex-direction: column; gap: 6px; }
+.agreement-sentence { margin: 0; color: var(--ink); font-size: 13.5px; }
+.agreement-bar { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.agreement-bar .rate-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.agreement-bar .rate-fill { display: block; height: 100%; border-radius: 4px; background: var(--green-light); animation: grow .7s var(--ease) both; }
+.agreement-bar .rate-fill.hat { background: var(--orange); }
+.agreement-share { color: var(--muted); font-size: 12.5px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.agreement-download { align-self: flex-start; }
+.agreement-none { margin: 0; font-size: 13px; }
+/* F18 step 6a.5c: the judge check under a judge's agreement card. */
+.calibration { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--border); }
+.calibration-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.calibration-status { font-size: 12.5px; }
+.calibration-report { display: flex; flex-direction: column; gap: 8px; }
+.calibration-headline { margin: 0; color: var(--ink); font-size: 13.5px; font-weight: 600; }
+.calibration-verdict { margin: 0; font-size: 13px; font-weight: 700; color: var(--green-light); }
+.calibration-verdict.short { color: var(--orange-text); }
+.calibration-disagreements, .calibration-earlier { margin: 4px 0 0; padding-left: 18px; font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+.calibration-where { color: var(--ink); }
+.calibration-reason { display: block; font-size: 12.5px; }
+.calibration-none { margin: 0; font-size: 13px; }

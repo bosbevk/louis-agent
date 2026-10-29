@@ -1,3 +1,4 @@
+using LouisAgent.Choices;
 using LouisAgent.Puls.Content;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
@@ -81,7 +82,7 @@ public partial class ChatPage : IDisposable
         }
         catch (Exception)
         {
-            _model = null;   // An older API without /v1/model: the picker says "Model".
+            _model = null; // An older API without /v1/model: the picker says "Model".
         }
     }
 
@@ -94,9 +95,11 @@ public partial class ChatPage : IDisposable
     private async Task<string> OpenSessionAsync()
     {
         string[] available = await Api.AvailableToolsetsAsync();
-        string[] own = ["specialists", "web"];
+        string[] own = [AskedToolset.Specialists.Wire(), AskedToolset.Web.Wire()];
         string? timeZone = await JS.InvokeAsync<string?>("pulsUi.timeZone");
-        return await Api.CreateSessionAsync(available.Contains("specialists") ? own.Where(available.Contains).ToArray() : available, Role, _location, timeZone);
+        return await Api.CreateSessionAsync(
+            available.Contains(AskedToolset.Specialists.Wire()) ? own.Where(available.Contains).ToArray() : available,
+            Role, _location, timeZone);
     }
 
     /// <summary>The languages Puls can speak: a puls/voice-{code} for each in GET /v1/roles, so the menu and the API agree.</summary>
@@ -106,15 +109,18 @@ public partial class ChatPage : IDisposable
         {
             var roles = await Api.GetAsync<System.Text.Json.JsonElement>("v1/roles");
             var codes = roles.GetProperty("agent").EnumerateArray().Select(p => p.GetString() ?? "")
-                .Where(p => p.StartsWith("puls/voice-", StringComparison.Ordinal)).Select(p => p["puls/voice-".Length..]).ToList();
+                .Where(p => p.StartsWith("puls/voice-", StringComparison.Ordinal))
+                .Select(p => p["puls/voice-".Length..]).ToList();
             if (codes.Count > 0) _languages = codes;
         }
         catch (Exception)
         {
             // An API without /v1/roles or its levels: Afrikaans, as before CL9.
         }
+
         string? saved = await JS.InvokeAsync<string?>("pulsUi.loadLanguage");
-        _language = saved is not null && _languages.Contains(saved) ? saved : _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];
+        _language = saved is not null && _languages.Contains(saved) ? saved :
+            _languages.Contains(DefaultLanguage) ? DefaultLanguage : _languages[0];
     }
 
     protected override void OnParametersSet()
@@ -125,6 +131,7 @@ public partial class ChatPage : IDisposable
             Nav.NavigateTo($"gesels/{SessionId}", replace: true);
             return;
         }
+
         var chat = Store.Find(SessionId);
         Runner.Chat = chat;
         if (SessionId is not null && chat is null && !Runner.Streaming)
@@ -138,11 +145,13 @@ public partial class ChatPage : IDisposable
             _focusDraft = false;
             await JS.InvokeVoidAsync("pulsUi.focusEnd", "#composer-input");
         }
+
         if (_focusRename)
         {
             _focusRename = false;
             await JS.InvokeVoidAsync("pulsUi.focus", "#rename-input", true);
         }
+
         // A cost that changed since the last render counts up to its new value (F24; data-count elements, js/chat.js).
         await JS.InvokeVoidAsync("pulsUi.countCosts");
     }
@@ -207,13 +216,18 @@ public partial class ChatPage : IDisposable
 
     /// <summary>The chats used this calendar month, in this browser.</summary>
     private List<ChatModel> MonthChats =>
-        Store.Chats.Where(c => c.UpdatedAt.LocalDateTime.Year == DateTime.Now.Year && c.UpdatedAt.LocalDateTime.Month == DateTime.Now.Month).ToList();
+        Store.Chats.Where(c =>
+            c.UpdatedAt.LocalDateTime.Year == DateTime.Now.Year &&
+            c.UpdatedAt.LocalDateTime.Month == DateTime.Now.Month).ToList();
 
-    private string MonthCost => Money(MonthChats.Select(ChatTotal).OfType<TurnUsage>().Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u));
+    private string MonthCost => Money(MonthChats.Select(ChatTotal).OfType<TurnUsage>()
+        .Aggregate((TurnUsage?)null, (sum, u) => sum is null ? u : sum + u));
 
     private string ChatCost => Runner.Chat is null ? "—" : Money(ChatTotal(Runner.Chat));
 
-    private string Money(TurnUsage? usage) => usage is null ? UsageFormat.Money(0, null, Currency.Current) : UsageFormat.Cost(usage, Currency.Current);
+    private string Money(TurnUsage? usage) => usage is null
+        ? UsageFormat.Money(0, null, Currency.Current)
+        : UsageFormat.Cost(usage, Currency.Current);
 
     private static string? Pretty(string? id)
     {
@@ -267,7 +281,11 @@ public partial class ChatPage : IDisposable
         _toast = text;
         StateHasChanged();
         await Task.Delay(2800);
-        if (_toast == text) { _toast = null; StateHasChanged(); }
+        if (_toast == text)
+        {
+            _toast = null;
+            StateHasChanged();
+        }
     }
 
     /// <summary>A placeholder's answer: a toast that says what's coming, gone after a few seconds.</summary>

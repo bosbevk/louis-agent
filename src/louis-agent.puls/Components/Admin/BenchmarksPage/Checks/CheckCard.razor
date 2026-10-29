@@ -1,0 +1,54 @@
+@* A card names its check and says what it proves under that; its last run is a link; the Run button says what a run
+   will roughly cost (the rework of 2026-10-26). A card selects its check (Louis): the runs below are its runs only.
+   Its own buttons don't also select it. *@
+
+<section class="card-p check-card @(Open ? "open" : "") @(Selected ? "selected" : "")" role="button" tabindex="0"
+         aria-pressed="@Selected" @onclick="SelectAsync" @onkeydown="SelectKeyAsync">
+    <div class="card-head">
+        <strong class="check-name"><code>@Check.Id</code></strong>
+        <span class="check-card-meta">
+            @if (Last is { } head) { <span class="status-pill @head.Status">@RunText.Status(head.Status)</span> }
+            @if (Check.Manual)
+            {
+                <button type="button" class="manual-button" title="The manual" @onclick="ManualAsync" @onclick:stopPropagation>Manual</button>
+            }
+        </span>
+    </div>
+    <p class="check-proves" title="@Check.Title">@Check.Title</p>
+    @if (Open)
+    {
+        @if (Last is not { } last)
+        {
+            <p class="muted">No run in the store yet.</p>
+        }
+        else
+        {
+            <a class="check-last" href="admin/benchmarks/@last.Id" @onclick:stopPropagation>
+                <span class="muted">Last run</span>
+                <span>@last.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span>
+                <span class="muted">·</span><span>@RunText.Repeats(last.Repeat)</span>
+                <span class="muted">·</span><strong>@RunText.Money(last.Total?.Cost, Currency)</strong>
+                <span class="check-last-go" aria-hidden="true">›</span>
+            </a>
+        }
+        @if (Trend is { } trend)
+        {
+            <TrendChart Series="trend.Modes" Small="true" Currency="Currency" />
+        }
+        <div class="run-controls">
+            <span class="muted">Repeats</span>
+            @* A segmented control, not a native select: the browser's dropdown ignores the theme. *@
+            <div class="segmented" role="radiogroup" aria-label="Repeats">
+                @foreach (int count in RepeatChoices)
+                {
+                    <button type="button" role="radio" aria-checked="@(_repeats == count)" class="@(_repeats == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats = count" @onclick:stopPropagation>@count</button>
+                }
+            </div>
+            <button class="header-button run-button" type="button" disabled="@(Running || !CanRun)"
+                    title="@(Free ? "Free: no session, no model" : "Spends money: every run asks the model")" @onclick="RunAsync" @onclick:stopPropagation>
+                <span class="ic i-pulse" aria-hidden="true"></span>Run
+            </button>
+            <span class="muted run-estimate">@Estimate</span>
+        </div>
+    }
+</section>

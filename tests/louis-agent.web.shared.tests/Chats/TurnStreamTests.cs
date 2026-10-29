@@ -1,23 +1,34 @@
+using LouisAgent.Testing;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Usage;
 
 namespace LouisAgent.Web.Shared.Tests.Chats;
 
-// F31 step 7a: one recorded Puls turn (benchmarks/fixtures/session-stream.sse) is the contract between the session
-// stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in
-// session-stream.expected.json by its unittest; this holds the web app's TurnStream to the same ones, read the way the
-// app reads them (SseParser, then TurnStream.Apply). A change to the stream re-records the fixture, and both fail
-// until both readers follow (CL11: one C# reader under the three). T1 moved it here from the API's tests, where it
-// never belonged, and added a case per event the stream folds.
+/// <summary>
+/// One recorded Puls turn (tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse) is the contract between
+/// the session stream's readers. The Python harness (benchmarks/puls_check/stream.py) is held to the counts in
+/// session-stream.expected.json by its unittest; this holds the web app's TurnStream to the same ones, read the way
+/// the app reads them (SseParser, then TurnStream.Apply). A change to the stream re-records the fixture, and both fail
+/// until both readers follow. Below that, one case per event the stream folds.
+/// </summary>
 public class TurnStreamTests
 {
-    private static string[] Strings(JsonElement e, string name) => e.GetProperty(name).EnumerateArray().Select(v => v.GetString()!).ToArray();
+    /// <summary>
+    /// The list of names the fixture's expectations keep under one key.
+    /// </summary>
+    private static string[] Strings(JsonElement e, string name) =>
+        e.GetProperty(name).EnumerateArray().Select(v => v.GetString()!).ToArray();
 
+    /// <summary>
+    /// The web app sees the same tool calls as the harness, Puls's own and the specialist's under its delegation.
+    /// </summary>
     [Test]
     public async Task TurnStream_ReadsPulssCallsAndTheSpecialistsAsTheHarnessDoes()
     {
+        // F31 step 7a; CL11 put one C# reader under the three, and T1 moved this here from the API's tests.
         var turn = await SessionStreamFixture.ReplayAsync();
         var expected = SessionStreamFixture.Expected();
 
@@ -29,6 +40,9 @@ public class TurnStreamTests
         Assert.That(specialist, Is.EqualTo(Strings(expected, "specialist_tools")));
     }
 
+    /// <summary>
+    /// The web app reads the same answer as the harness: same start, same length, no error, and a stop reason.
+    /// </summary>
     [Test]
     public async Task TurnStream_ReadsTheAnswerAsTheHarnessDoes()
     {
@@ -36,7 +50,9 @@ public class TurnStreamTests
         var expected = SessionStreamFixture.Expected();
 
         string answer = string.Concat(turn.Blocks.Where(b => b.Kind == BlockKind.Text).Select(b => b.Text)).Trim();
-        Assert.That(answer, Does.StartWith(expected.GetProperty("answer_starts").GetString()));
+        string starts = expected.GetProperty("answer_starts").GetString() ?? "";
+        Assert.That(starts, Is.Not.Empty, "the fixture names how the answer starts");
+        Assert.That(answer, Does.StartWith(starts));
         Assert.That(answer.Length, Is.EqualTo(expected.GetProperty("answer_length").GetInt32()));
         Assert.That(turn.Error, Is.Null);
         Assert.That(turn.StopReason, Is.Not.Null);
@@ -44,8 +60,15 @@ public class TurnStreamTests
 
     // ---- One case per event the stream folds. ----
 
-    private static AgentStreamEvent Event(string type, string json) => new(type, JsonDocument.Parse(json).RootElement);
+    /// <summary>
+    /// One stream event, made from its type and its JSON as the API would send it.
+    /// </summary>
+    private static SessionEvent Event(string type, string json) =>
+        SessionEvent.From(type, JsonDocument.Parse(json).RootElement);
 
+    /// <summary>
+    /// Feeds the events one by one into a fresh turn, the way the app does, and hands back what it became.
+    /// </summary>
     private static Turn Apply(params (string Type, string Json)[] events)
     {
         var turn = new Turn();
@@ -53,22 +76,33 @@ public class TurnStreamTests
         return turn;
     }
 
+    /// <summary>
+    /// The turn's first event tells it which toolsets and which role the session has.
+    /// </summary>
     [Test]
     public void MessageStart_SetsTheToolsetsAndTheRole()
     {
-        var turn = Apply(("message_start", """{"type":"message_start","message":{"session_id":"s","role":"assistant","toolsets":["web","shops"],"session_role":"puls-cook"}}"""));
+        var turn = Apply(("message_start",
+            SampleToolset.Fill(SampleRole.Fill(
+                """{"type":"message_start","message":{"session_id":"s","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}"""))));
 
-        Assert.That(turn.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
-        Assert.That(turn.Role, Is.EqualTo("puls-cook"));
+        Assert.That(turn.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
+        Assert.That(turn.Role, Is.EqualTo(SampleRole.Alpha));
     }
 
+    /// <summary>
+    /// Text starts one block, and every piece that streams in is added to the end of it.
+    /// </summary>
     [Test]
     public void Text_OpensABlock_AndEveryDeltaAppendsToIt()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}"""),
-            ("content_block_delta", """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""),
-            ("content_block_delta", """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" daar"}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}"""),
+            ("content_block_delta",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Hallo"}}"""),
+            ("content_block_delta",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":" daar"}}"""),
             ("content_block_stop", """{"type":"content_block_stop","index":0}"""));
 
         Assert.That(turn.Blocks, Has.Count.EqualTo(1));
@@ -76,12 +110,17 @@ public class TurnStreamTests
         Assert.That(turn.Blocks[0].Text, Is.EqualTo("Hallo daar"));
     }
 
+    /// <summary>
+    /// Thinking gets its own block, and only when it stops do we know how long it took.
+    /// </summary>
     [Test]
     public void Thinking_OpensABlock_AndItsStopRecordsHowLongItTook()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}"""),
-            ("content_block_delta", """{"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Eers die winkel"}}"""));
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}"""),
+            ("content_block_delta",
+                """{"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"Eers die winkel"}}"""));
         Assert.That(turn.Blocks[0].Kind, Is.EqualTo(BlockKind.Thinking));
         Assert.That(turn.Blocks[0].Text, Is.EqualTo("Eers die winkel"));
         Assert.That(turn.Blocks[0].ThinkingSeconds, Is.Null, "still thinking");
@@ -90,13 +129,18 @@ public class TurnStreamTests
         Assert.That(turn.Blocks[0].ThinkingSeconds, Is.Not.Null.And.GreaterThanOrEqualTo(0));
     }
 
+    /// <summary>
+    /// A tool call and its result end up in one block, with the input pretty-printed.
+    /// </summary>
     [Test]
     public void AToolCall_AndItsResult_ShareOneBlock()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"WebSearch","input":{"query":"resep"}}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"WebSearch","input":{"query":"resep"}}}"""),
             ("content_block_stop", """{"type":"content_block_stop","index":0}"""),
-            ("content_block_start", """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"3 results","is_error":false}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"3 results","is_error":false}}"""),
             ("content_block_stop", """{"type":"content_block_stop","index":1}"""));
 
         Assert.That(turn.Blocks, Has.Count.EqualTo(1), "the result lands on the call's block");
@@ -108,44 +152,67 @@ public class TurnStreamTests
         Assert.That(call.ToolFailed, Is.False);
     }
 
+    /// <summary>
+    /// A result that comes back as an error marks its call as failed.
+    /// </summary>
     [Test]
     public void AFailedToolResult_MarksItsCall()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"FetchUrl","input":{}}}"""),
-            ("content_block_start", """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"Error: 404","is_error":true}}"""));
+            ("content_block_start",
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"FetchUrl","input":{}}}"""),
+            ("content_block_start",
+                """{"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"Error: 404","is_error":true}}"""));
 
         Assert.That(turn.Blocks[0].ToolInput, Is.Null, "no arguments: nothing to show");
         Assert.That(turn.Blocks[0].ToolFailed, Is.True);
         Assert.That(turn.Blocks[0].ToolResult, Is.EqualTo("Error: 404"));
     }
 
+    /// <summary>
+    /// What a specialist streams lands inside the call that started it, as a turn of its own.
+    /// </summary>
     [Test]
     public void ASubSessionEvent_FoldsIntoTheDelegationCallsOwnTurn()
     {
         var turn = Apply(
-            ("content_block_start", """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"StartSubSession","input":{"toolsets":["web"],"message":"Kook","role":"puls-cook"}}}"""),
-            ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["web","shops"],"session_role":"puls-cook"}}}"""),
-            ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}"""),
-            ("sub_session", """{"type":"sub_session","tool_use_id":"call_1","agent":"puls","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}}"""));
+            ("content_block_start",
+                SampleRole.Fill(
+                    """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_1","name":"StartSubSession","input":{"toolsets":["web"],"message":"Kook","role":"<RoleAlpha>"}}}""")),
+            ("sub_session",
+                SampleToolset.Fill(SampleRole.Fill(SampleIdentity.Fill(
+                    """{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"message_start","data":{"type":"message_start","message":{"session_id":"sub","role":"assistant","toolsets":["<Alpha>","<Beta>"],"session_role":"<RoleAlpha>"}}}""")))),
+            ("sub_session",
+                SampleIdentity.Fill(
+                    """{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}""")),
+            ("sub_session",
+                SampleIdentity.Fill(
+                    """{"type":"sub_session","tool_use_id":"call_1","agent":"<IdentityAlpha>","event":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Bobotie"}}}""")));
 
         var call = turn.Blocks.Single();
-        Assert.That(call.SubAgent, Is.EqualTo("puls"));
+        Assert.That(call.SubAgent, Is.EqualTo(SampleIdentity.Alpha));
         Assert.That(call.SubTurn, Is.Not.Null);
-        Assert.That(call.SubTurn!.Toolsets, Is.EqualTo(new[] { "web", "shops" }));
-        Assert.That(call.SubTurn.Role, Is.EqualTo("puls-cook"));
+        Assert.That(call.SubTurn!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
+        Assert.That(call.SubTurn.Role, Is.EqualTo(SampleRole.Alpha));
         Assert.That(call.SubTurn.Blocks.Single().Text, Is.EqualTo("Bobotie"));
     }
 
+    /// <summary>
+    /// The turn's closing event says why it stopped and what it used.
+    /// </summary>
     [Test]
     public void MessageDelta_SetsTheStopReason_AndTheUsage()
     {
-        var turn = Apply(("message_delta", """{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":4,"cache_creation_input_tokens":100,"cache_read_input_tokens":2000,"output_tokens":50,"requests":2,"cost":0.0031,"currency":"USD","unpriced":0}}"""));
+        var turn = Apply(("message_delta",
+            """{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":4,"cache_creation_input_tokens":100,"cache_read_input_tokens":2000,"output_tokens":50,"requests":2,"cost":0.0031,"currency":"USD","unpriced":0}}"""));
 
         Assert.That(turn.StopReason, Is.EqualTo("end_turn"));
         Assert.That(turn.Usage, Is.EqualTo(new TurnUsage(4, 100, 2000, 50, 2, 0.0031m, "USD", 0)));
     }
 
+    /// <summary>
+    /// A closing event with no usage leaves the usage empty instead of showing zeros.
+    /// </summary>
     [Test]
     public void MessageDelta_WithoutUsage_LeavesItNull()
     {
@@ -155,15 +222,23 @@ public class TurnStreamTests
         Assert.That(turn.Usage, Is.Null, "a command's turn, or an API without a ledger");
     }
 
+    /// <summary>
+    /// A failed turn shows its error, and what it spent before failing still counts.
+    /// </summary>
     [Test]
     public void AnError_SetsTheMessage_AndKeepsWhatTheTurnUsed()
     {
-        var turn = Apply(("error", """{"type":"error","error":{"type":"api_error","message":"TimeoutException: too slow"},"usage":{"input_tokens":4,"output_tokens":0,"requests":1,"cost":null,"currency":null,"unpriced":1}}"""));
+        var turn = Apply(("error",
+            """{"type":"error","error":{"type":"api_error","message":"TimeoutException: too slow"},"usage":{"input_tokens":4,"output_tokens":0,"requests":1,"cost":null,"currency":null,"unpriced":1}}"""));
 
         Assert.That(turn.Error, Is.EqualTo("TimeoutException: too slow"));
-        Assert.That(turn.Usage, Is.EqualTo(new TurnUsage(4, 0, 0, 0, 1, null, null, 1)), "FX6: the failed turn's requests still count");
+        Assert.That(turn.Usage, Is.EqualTo(new TurnUsage(4, 0, 0, 0, 1, null, null, 1)),
+            "FX6: the failed turn's requests still count");
     }
 
+    /// <summary>
+    /// An event the app doesn't know is skipped quietly; it never breaks the turn.
+    /// </summary>
     [Test]
     public void AnUnknownEvent_IsIgnored_NeverThrown()
     {

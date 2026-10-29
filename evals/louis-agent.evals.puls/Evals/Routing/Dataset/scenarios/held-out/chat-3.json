@@ -1,0 +1,20 @@
+{
+  "id": "chat-3",
+  "input": [
+    {
+      "role": "user",
+      "content": "Stel 'n lekker naam voor vir my nuwe kat; sy is swart en baie nuuskierig."
+    }
+  ],
+  "metadata": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": null
+    },
+    "categories": [
+      "kind:chat"
+    ]
+  }
+}

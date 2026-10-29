@@ -1,0 +1,20 @@
+{
+  "id": "git-3",
+  "input": [
+    {
+      "role": "user",
+      "content": "Watter lêers het die meeste verander in die laaste vyf commits?"
+    }
+  ],
+  "metadata": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": null
+    },
+    "categories": [
+      "kind:git"
+    ]
+  }
+}

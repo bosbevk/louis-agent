@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Api.Sessions.Requests;
 using System.Text.Json;
 
@@ -12,11 +13,13 @@ public class CreateSessionRequestTests
 
     [Test]
     public void TheRole_IsTheNewWord() =>
-        Assert.That(Request(role: "puls-cook").RoleOrNull(), Is.EqualTo("puls-cook"));
+        Assert.That(Request(role: SampleRole.Alpha).RoleOrNull(), Is.EqualTo(SampleRole.Alpha));
 
     [Test]
     public void APersonality_IsNotRead() =>
-        Assert.That(JsonSerializer.Deserialize<CreateSessionRequest>("""{"personality":"puls-cook"}""", JsonSerializerOptions.Web)!.RoleOrNull(),
+        Assert.That(
+            JsonSerializer.Deserialize<CreateSessionRequest>(SampleRole.Fill("""{"personality":"<RoleAlpha>"}"""),
+                JsonSerializerOptions.Web)!.RoleOrNull(),
             Is.Null);
 
     [Test]

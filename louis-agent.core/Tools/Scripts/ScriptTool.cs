@@ -1,11 +1,12 @@
-namespace LouisAgent.Core.Tools.Scripts;
 
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Scripts.Messages;
 
+namespace LouisAgent.Core.Tools.Scripts;
 /// <summary>
 /// Exposes a <see cref="ScriptToolDefinition"/> to the model as a real function with a JSON schema.
 /// Arguments are validated against the declared types, then passed to the script as JSON on stdin
@@ -31,12 +32,16 @@ public sealed class ScriptTool : AIFunction
     public bool Approved { get; set; }
 
     public override string Name => Definition.Name;
+
     public override string Description =>
-        MessageText.Format(Approved ? ToolMessage.ScriptToolDescription : ToolMessage.ScriptToolDescriptionPending,
+        MessageText.Format(
+            Approved ? ScriptToolMessage.ScriptToolDescription : ScriptToolMessage.ScriptToolDescriptionPending,
             new { Definition.Description });
+
     public override JsonElement JsonSchema => _schema;
 
-    protected override ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments, CancellationToken cancellationToken)
+    protected override ValueTask<object?> InvokeCoreAsync(AIFunctionArguments arguments,
+        CancellationToken cancellationToken)
     {
         if (!TryBuildInput(arguments, out var json, out var env, out var error))
             return ValueTask.FromResult<object?>(error);
@@ -44,7 +49,8 @@ public sealed class ScriptTool : AIFunction
         return new ValueTask<object?>(Task.Run(() => (object?)_run(Definition, json, env), cancellationToken));
     }
 
-    internal bool TryBuildInput(IDictionary<string, object?> arguments, out string json, out Dictionary<string, string> env, out string error)
+    internal bool TryBuildInput(IDictionary<string, object?> arguments, out string json,
+        out Dictionary<string, string> env, out string error)
     {
         var input = new JsonObject();
         env = new Dictionary<string, string>();
@@ -54,7 +60,8 @@ public sealed class ScriptTool : AIFunction
         var known = Definition.Parameters.ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
         if (arguments.Keys.FirstOrDefault(k => !known.ContainsKey(k)) is { } unknown)
         {
-            error = MessageText.Format(ToolMessage.ScriptToolUnknownParameter, new { Name = unknown, Known = string.Join(", ", known.Keys) });
+            error = MessageText.Format(ScriptToolMessage.ScriptToolUnknownParameter,
+                new { Name = unknown, Known = string.Join(", ", known.Keys) });
             return false;
         }
 
@@ -73,20 +80,24 @@ public sealed class ScriptTool : AIFunction
             {
                 if (parameter.Required)
                 {
-                    error = MessageText.Format(ToolMessage.ScriptToolMissingParameter, new { parameter.Name, parameter.Type });
+                    error = MessageText.Format(ScriptToolMessage.ScriptToolMissingParameter,
+                        new { parameter.Name, parameter.Type });
                     return false;
                 }
+
                 continue;
             }
 
             if (!TryConvert(value.Value, parameter.Type, out JsonNode? node))
             {
-                error = MessageText.Format(ToolMessage.ScriptToolWrongType, new { parameter.Name, parameter.Type, Value = value.Value.GetRawText() });
+                error = MessageText.Format(ScriptToolMessage.ScriptToolWrongType,
+                    new { parameter.Name, parameter.Type, Value = value.Value.GetRawText() });
                 return false;
             }
 
             input[parameter.Name] = node;
-            env[$"TOOL_ARG_{parameter.Name}"] = node is JsonValue v && v.TryGetValue(out string? s) ? s : node!.ToJsonString();
+            env[$"TOOL_ARG_{parameter.Name}"] =
+                node is JsonValue v && v.TryGetValue(out string? s) ? s : node!.ToJsonString();
         }
 
         json = input.ToJsonString();
@@ -104,16 +115,46 @@ public sealed class ScriptTool : AIFunction
                 node = JsonValue.Create(text ?? value.GetRawText());
                 return true;
             case "integer":
-                if (value.ValueKind == JsonValueKind.Number && value.TryGetInt64(out long l)) { node = JsonValue.Create(l); return true; }
-                if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out l)) { node = JsonValue.Create(l); return true; }
+                if (value.ValueKind == JsonValueKind.Number && value.TryGetInt64(out long l))
+                {
+                    node = JsonValue.Create(l);
+                    return true;
+                }
+
+                if (long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out l))
+                {
+                    node = JsonValue.Create(l);
+                    return true;
+                }
+
                 return false;
             case "number":
-                if (value.ValueKind == JsonValueKind.Number) { node = JsonValue.Create(value.GetDouble()); return true; }
-                if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double d)) { node = JsonValue.Create(d); return true; }
+                if (value.ValueKind == JsonValueKind.Number)
+                {
+                    node = JsonValue.Create(value.GetDouble());
+                    return true;
+                }
+
+                if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double d))
+                {
+                    node = JsonValue.Create(d);
+                    return true;
+                }
+
                 return false;
             case "boolean":
-                if (value.ValueKind is JsonValueKind.True or JsonValueKind.False) { node = JsonValue.Create(value.GetBoolean()); return true; }
-                if (bool.TryParse(text, out bool b)) { node = JsonValue.Create(b); return true; }
+                if (value.ValueKind is JsonValueKind.True or JsonValueKind.False)
+                {
+                    node = JsonValue.Create(value.GetBoolean());
+                    return true;
+                }
+
+                if (bool.TryParse(text, out bool b))
+                {
+                    node = JsonValue.Create(b);
+                    return true;
+                }
+
                 return false;
             default:
                 return false;
@@ -130,7 +171,8 @@ public sealed class ScriptTool : AIFunction
         {
             ["type"] = "object",
             ["properties"] = properties,
-            ["required"] = new JsonArray(definition.Parameters.Where(p => p.Required).Select(p => (JsonNode)JsonValue.Create(p.Name)).ToArray()),
+            ["required"] = new JsonArray(definition.Parameters.Where(p => p.Required)
+                .Select(p => (JsonNode)JsonValue.Create(p.Name)).ToArray()),
             ["additionalProperties"] = false,
         };
         return JsonSerializer.SerializeToElement(schema);

@@ -1,9 +1,13 @@
+using LouisAgent.Choices;
+using LouisAgent.Api.Messages;
+using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
@@ -21,7 +25,7 @@ namespace LouisAgent.Api.Sessions;
 internal sealed class AgentSessions(AgentEngineFactory engines)
 {
     /// <summary>What a session created without <c>toolsets</c> loads (F5 decision: self-extension only).</summary>
-    public static readonly IReadOnlyList<string> DefaultToolsets = ["skills"];
+    public static readonly IReadOnlyList<string> DefaultToolsets = [CoreToolset.Skills.Wire()];
 
     /// <summary>The deepest session: a specialist (1) a level-0 session delegates to, a minion (2) a specialist hands one task to (F30).</summary>
     public const int MaxDepth = 2;
@@ -30,10 +34,10 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     public const int MinionDepth = 2;
 
     /// <summary>The toolset a specialist hands minions with (F30): a specialist's only, never the chat's nor a minion's.</summary>
-    public const string MinionsToolset = "minions";
+    public static readonly string MinionsToolset = CoreToolset.Minions.Wire();
 
     /// <summary>The toolset that opens sub-sessions (F5; named specialists in CL9); refused at <see cref="MaxDepth"/>.</summary>
-    public const string SpecialistsToolset = "specialists";
+    public static readonly string SpecialistsToolset = CoreToolset.Specialists.Wire();
 
     /// <summary>A session nobody has used for this long is dropped at the next create, with the sub-sessions it kept.</summary>
     public static readonly TimeSpan IdleTimeout = TimeSpan.FromHours(4);
@@ -53,29 +57,38 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     /// one of <see cref="MinionTools.NeverHandedDown"/>; its toolsets, when none are sent, are the one that builds the
     /// tool. Every other depth refuses a tool, and only depth 1 loads <see cref="MinionsToolset"/>.
     /// </summary>
-    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0, string? role = null,
-        UserPlace? place = null, string? llm = null, string? tool = null)
+    public AgentSession Create(IEnumerable<string>? toolsets = null, UsageTags? tags = null, int depth = 0,
+        string? role = null,
+        UserPlace? place = null, string? llm = null, string? tool = null, StreamFormat format = StreamFormat.Claude,
+        SessionReplay? replay = null)
     {
         if (depth is < 0 or > MaxDepth)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SessionDepthInvalid, new { Max = MaxDepth }));
         if (string.IsNullOrWhiteSpace(tool)) tool = null;
         if (depth == MinionDepth) CheckMinion(tags, tool);
         else if (tool is not null)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ToolOnlyForMinions, new { MinionDepth, Depth = depth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolOnlyForMinions,
+                new { MinionDepth, Depth = depth }));
         // A minion names its tool; the toolset that builds it is implied (StartMinion sends none).
-        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null ? [engines.Catalog.ToolsetOf(tool!)
-                ?? throw new ToolsetException(MessageText.Format(ErrorMessage.NoToolsetForTool, new { Tool = tool }))]
+        var names = ToolsetCatalog.Normalise(depth == MinionDepth && toolsets is null
+            ?
+            [
+                engines.Catalog.ToolsetOf(tool!)
+                ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool, new { Tool = tool }))
+            ]
             : toolsets ?? DefaultToolsets);
         // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
         // passed; then every name, optional or not, is held to the same rules.
         names = ToolsetCatalog.Normalise(names.Concat(RoleCatalog.ToolsetsOf(role, (RoleLevel)depth)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (depth > 0 && plain.Contains(SpecialistsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = SpecialistsToolset }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
+                new { Toolset = SpecialistsToolset }));
         if (depth == MinionDepth && plain.Contains(MinionsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.SubSessionCannotDelegate, new { Toolset = MinionsToolset }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,
+                new { Toolset = MinionsToolset }));
         if (depth == 0 && plain.Contains(MinionsToolset))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionsOnlyForSpecialists));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionsOnlyForSpecialists));
         if (string.IsNullOrEmpty(role)) role = null;
         // A sub-session's role is named by its parent (CL10); with none it gets the default mode's voice, no routing.
         if (string.IsNullOrWhiteSpace(llm)) llm = null;
@@ -85,7 +98,8 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
 
         DropIdle(DateTimeOffset.UtcNow);
 
-        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role, place, llm, tool);
+        var session = new AgentSession($"sess_{Guid.NewGuid():N}", engine, names, depth, tags ?? UsageTags.None, role,
+            place, llm, tool, format, replay);
         _sessions[session.Id] = session;
         return session;
     }
@@ -99,16 +113,19 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
     private void CheckMinion(UsageTags? tags, string? tool)
     {
         if (tool is null)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionNeedsTool, new { Depth = MinionDepth }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsTool,
+                new { Depth = MinionDepth }));
         if (string.IsNullOrWhiteSpace(tags?.Parent))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionNeedsParent, new { Example = "sess_…#3" }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionNeedsParent,
+                new { Example = "sess_…#3" }));
         string parentId = tags.Parent.Split('#')[0];
         if (Get(parentId) is not { } parent)
-            throw new ToolsetException(MessageText.Format(ErrorMessage.MinionParentUnknown, new { Session = parentId }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.MinionParentUnknown,
+                new { Session = parentId }));
         if (MinionTools.NeverHandedDown.Contains(tool))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ToolNeverHandedDown, new { Tool = tool }));
         if (!parent.Engine.Tools.Any(t => string.Equals(t.Name, tool, StringComparison.Ordinal)))
-            throw new ToolsetException(MessageText.Format(ErrorMessage.ParentLacksTool, new { Tool = tool }));
+            throw new ToolsetException(MessageText.Format(ApiErrorMessage.ParentLacksTool, new { Tool = tool }));
     }
 
     public AgentSession? Get(string id) => _sessions.GetValueOrDefault(id);
@@ -130,6 +147,7 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
             Forget(session);
             dropped++;
         }
+
         return dropped;
     }
 

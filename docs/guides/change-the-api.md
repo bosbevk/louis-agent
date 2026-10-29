@@ -44,7 +44,7 @@ refuses to start unless `AGENT_AUTH=off` ([FX18](../fixes/FX18-auth-fails-closed
    `GitProcess.RunAsync`, with its arguments as a list, never a shell line
    ([ADR 0004](../adr/0004-arguments-as-data.md)).
 7. **Errors and texts.** An error is `ApiErrors.Body(type, message)`, the shape Claude's API uses; every text is a
-   member of `Messages/ApiUserText` (what a client sees) or `ApiLogMessage` (a log line)
+   member of `Messages/ApiUserText` (what a client sees), `ApiLogMessage` (a log line) or `ApiErrorMessage` (an exception's text)
    ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
 8. **Document it** in [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-http-api-louis-agentapi) and the
    API's design doc. A client names the whole route, version included (`"v1/git/branches"`).
@@ -66,10 +66,16 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
 
 ## Change the event stream
 
-`Sessions/TurnStream.cs` runs a turn and `Sessions/ClaudeStyleStream.cs` writes it as Claude-shaped events
-(`message_start`, `content_block_start`, `_delta` and `_stop` for thinking, text, `tool_use` and `tool_result`,
-`message_stop`). Three kinds of client read it: the web apps (`TurnStream` in web.shared), the orchestrator, and the benchmarks. Add a
-new event or field without changing an existing one, test it, and update the stream's section in
+`Sessions/TurnStream.cs` runs a turn, and `ITurnStreamFormat` (`Sessions/Streaming/`) writes it. Its one format is
+`Sessions/Streaming/Claude/ClaudeStreamFormat.cs`: Claude-shaped events (`message_start`, `content_block_start`, `_delta` and `_stop`
+for thinking, text, `tool_use` and `tool_result`, `message_delta` with the turn's usage, `message_stop`). A client picks the format
+with `"stream"` on `POST /v1/sessions` (`StreamFormat`; Claude by default), and the session keeps it. Three kinds of client read the
+stream: the web apps (through the session-stream reader, `louis-agent.session-stream`), the orchestrator, and the benchmarks.
+
+To add a new event or field to the Claude format, add it without changing an existing one, test it, and regenerate
+`tests/louis-agent.api.tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.api.tests --filter
+StreamGoldenTests`. Read the golden's diff before you commit it. A new format is a new `StreamFormat` member and its
+`ITurnStreamFormat` writer, tested beside `StreamGoldenTests`. Then update the stream's section in
 [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-event-stream).
 
 ## Serve the other web app
@@ -93,6 +99,27 @@ the model, so check one by hand, and check a new route on the running stack with
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:5080/v1/your-endpoint                     # 401
 curl -s -H "x-api-key: $AGENT_API_KEY" http://127.0.0.1:5080/v1/your-endpoint                        # its answer
 ```
+
+## Add an eval to the portal
+
+The portal lists the C# evals the runner lists, so a new eval needs no change in the API or the portal. The runner's
+`--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
+title. The eval's name is its check's id.
+
+1. Write the eval in its eval set's project (`evals/louis-agent.evals.{identity}/`), with its scenarios, graders and
+   reference transcripts; [Add an eval set](add-an-eval-set.md) walks through it.
+2. Check the runner lists it: `dotnet evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll --list`
+   prints one line for it (build the runner first).
+3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
+   `docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`.
+4. Open the admin portal: the check is listed with its `proves` as its title. Its manual is the file the eval's `Manual`
+   names (`evals/{project}/Manuals/{name}.md`, F18 step 7.1), which the runner's listing hands to the API.
+
+A run starts with `POST /v1/admin/benchmarks/{check}/runs`. Its body takes `repeat`, and for an eval `web` (`record` or `off`) or
+`replay` (a recorded run's id, with the model's answers: the runner's `--replay`), not both.
+`BenchmarkRunOptions` parses it once, `BenchmarkRunner.StartInfoFor` turns it into the runner's arguments, and the run's settings keep
+`web` or `replay_of`. A portal run is always the dev scenarios, and a replay is no point of the check's trend. [Run the evals](run-the-evals.md)
+says when to record and when to replay.
 
 ## Before you ask for a review
 

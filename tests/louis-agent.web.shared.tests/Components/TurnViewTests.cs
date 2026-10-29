@@ -1,3 +1,5 @@
+using LouisAgent.Web.Testing;
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Components;
 using LouisAgent.Web.Shared.Text;
@@ -20,7 +22,8 @@ public class TurnViewTests
 
         var cut = ctx.Render<TurnView>(p => p.Add(x => x.Turn, turn).Add(x => x.Streaming, false));
 
-        Assert.That(ctx.JSInterop.Invocations.Select(i => i.Identifier).Distinct(), Is.EqualTo(new[] { "louisChat.highlightBlocks" }));
+        Assert.That(ctx.JSInterop.Invocations.Select(i => i.Identifier).Distinct(),
+            Is.EqualTo(new[] { "louisChat.highlightBlocks" }));
         Snapshots.Match("louis-agent.web.shared.tests", "Components/TurnView.html", cut.Markup);
     }
 
@@ -37,7 +40,11 @@ public class TurnViewTests
         call.SubTurn!.Blocks.RemoveAll(b => b.Kind != BlockKind.Tool);
         using var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
-        ctx.Services.AddSingleton(new ChatText { RolePhases = new Dictionary<string, RolePhases> { ["puls-cook"] = new("Looking for ingredients", "Building the recipe") } });
+        ctx.Services.AddSingleton(new ChatText
+        {
+            RolePhases = new Dictionary<string, RolePhases>
+            { [SessionStreamFixture.CookRole] = new("Looking for ingredients", "Building the recipe") }
+        });
 
         var cut = ctx.Render<TurnView>(p => p.Add(x => x.Turn, turn).Add(x => x.Streaming, true));
 

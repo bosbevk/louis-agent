@@ -7,9 +7,8 @@
 ## What Puls is
 
 Puls is an assistant for people in South Africa, built in this repository. When a person asks it something that
-needs a web page, such as a recipe or what an ingredient costs at the shop they will buy from, it fetches that page on
-the person's behalf and reads it, the way the person's own browser would if they opened the page themselves. It does
-not crawl, index or republish sites.
+needs a web page, such as a recipe, it fetches that page on the person's behalf and reads it, the way the person's
+own browser would if they opened the page themselves. It does not crawl, index or republish sites.
 
 ## What it sends
 
@@ -21,9 +20,10 @@ person's name, address or anything else about them.
 
 ## What it reads, and how much
 
-- One page at a time, for one person's question: a recipe page, a shop's search page for an ingredient, a store
-  locator's answer. It is told to use the fewest requests that answer the question, to read one search page per
-  ingredient at one shop, and not to walk a site's categories or product pages.
+- One page at a time, for one person's question: a recipe page, a map service's answer (where a shop's branch is). It
+  is told to use the fewest requests that answer the question and not to walk a site's categories. It reads no
+  shop's search, category or product pages: until a retailer gives permission or a feed, Puls shows estimated prices
+  and names the shop's branch (asked of PnP, Woolworths and Checkers on 2026-10-25).
 - Pages a site serves to everyone. It does not log in, does not accept terms on a person's behalf, and does not make
   WebSocket connections.
 - Images are shown to the person from your own image host, as your page serves them.

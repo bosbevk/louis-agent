@@ -1,11 +1,12 @@
-namespace LouisAgent.Core.Tools.Shell;
 
 using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Tools.Shell.Messages;
 
+namespace LouisAgent.Core.Tools.Shell;
 /// <summary>
 /// Bash toolset: run inline scripts or workspace .sh files with Git Bash on Windows or /bin/bash elsewhere.
 /// Arguments become real positional parameters ($1, $2, ...) and scripts run in strict mode by default.
@@ -13,7 +14,9 @@ using LouisAgent.Core.Messages;
 public sealed class BashTools
 {
     private const int MaxOutputChars = 12_000;
-    private static readonly string[] CommonCommands = ["git", "curl", "jq", "grep", "find", "sed", "awk", "python3", "pwsh", "dotnet"];
+
+    private static readonly string[] CommonCommands =
+        ["git", "curl", "jq", "grep", "find", "sed", "awk", "python3", "pwsh", "dotnet"];
 
     private readonly string _workspaceRoot;
 
@@ -23,31 +26,39 @@ public sealed class BashTools
     }
 
     [Description("Runs a bash script, either inline via 'script' or an existing workspace-relative '.sh' file via " +
-        "'scriptPath' — pass exactly one of the two. On Windows this always runs Git Bash, never the WSL bash.exe in " +
-        "System32, which starts a separate Linux environment with its own filesystem; on Linux/macOS it runs /bin/bash. " +
-        "Script arguments arrive as $1, $2, ... and \"$@\", and the script runs under 'set -euo pipefail' by default so " +
-        "the first failing command stops it immediately (set strict to false to disable that). Output is capped at " +
-        "12,000 characters and the process is killed after timeoutSeconds (default 60, max 600). Use this for shell " +
-        "scripting, piping, and Unix-style text processing (grep/sed/awk/jq); for dotnet build/test/run use the " +
-        "dedicated DotNet tools instead, and for file reads/writes use the WorkspaceTools file tools rather than " +
-        "cat/echo through bash.")]
+                 "'scriptPath' — pass exactly one of the two. On Windows this always runs Git Bash, never the WSL bash.exe in " +
+                 "System32, which starts a separate Linux environment with its own filesystem; on Linux/macOS it runs /bin/bash. " +
+                 "Script arguments arrive as $1, $2, ... and \"$@\", and the script runs under 'set -euo pipefail' by default so " +
+                 "the first failing command stops it immediately (set strict to false to disable that). Output is capped at " +
+                 "12,000 characters and the process is killed after timeoutSeconds (default 60, max 600). Use this for shell " +
+                 "scripting, piping, and Unix-style text processing (grep/sed/awk/jq); for dotnet build/test/run use the " +
+                 "dedicated DotNet tools instead, and for file reads/writes use the WorkspaceTools file tools rather than " +
+                 "cat/echo through bash.")]
     public string BashRun(
-        [Description("Inline bash script to run (leave empty when using scriptPath)")] string script = "",
-        [Description("Workspace-relative path to a .sh file to run (leave empty when using script)")] string scriptPath = "",
-        [Description("Arguments passed as $1, $2, ...; space separated, wrap an argument in double quotes to keep spaces")] string arguments = "",
-        [Description("Text sent to standard input (stdin is closed afterwards)")] string standardInput = "",
-        [Description("Maximum seconds to run before the process is killed (default 60, max 600)")] int timeoutSeconds = 60,
-        [Description("Run with 'set -euo pipefail' so the first failing command stops the script (default true)")] bool strict = true)
+        [Description("Inline bash script to run (leave empty when using scriptPath)")]
+        string script = "",
+        [Description("Workspace-relative path to a .sh file to run (leave empty when using script)")]
+        string scriptPath = "",
+        [Description(
+            "Arguments passed as $1, $2, ...; space separated, wrap an argument in double quotes to keep spaces")]
+        string arguments = "",
+        [Description("Text sent to standard input (stdin is closed afterwards)")]
+        string standardInput = "",
+        [Description("Maximum seconds to run before the process is killed (default 60, max 600)")]
+        int timeoutSeconds = 60,
+        [Description("Run with 'set -euo pipefail' so the first failing command stops the script (default true)")]
+        bool strict = true)
     {
         bool hasScript = !string.IsNullOrWhiteSpace(script);
         bool hasPath = !string.IsNullOrWhiteSpace(scriptPath);
-        if (hasScript == hasPath) return MessageText.Format(ToolMessage.PassScriptOrScriptPath);
+        if (hasScript == hasPath) return MessageText.Format(ShellToolMessage.PassScriptOrScriptPath);
 
         string? file = null;
         if (hasPath)
         {
             if (!TryResolveWorkspacePath(scriptPath, out file, out var error)) return error;
-            if (!File.Exists(file)) return MessageText.Format(ToolMessage.ScriptNotFound, new { Path = scriptPath });
+            if (!File.Exists(file))
+                return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
         var result = RunScript(hasScript ? script : null, file, DotNetTools.SplitArguments(arguments), standardInput,
@@ -56,18 +67,19 @@ public sealed class BashTools
 
         var sb = new StringBuilder();
         sb.AppendLine(result!.TimedOut
-            ? MessageText.Format(ToolMessage.ScriptKilled, new { Seconds = timeoutSeconds })
+            ? MessageText.Format(ShellToolMessage.ScriptKilled, new { Seconds = timeoutSeconds })
             : MessageText.Format(ToolMessage.ProcessExitCode, new { result.ExitCode }));
         sb.AppendLine("--- output ---");
         sb.Append(result.Output.Trim());
         // Linux bash treats the \r of Windows line endings as part of each command ("$'\r': command not found",
         // "syntax error near unexpected token"); Git Bash tolerates it, so only hint when the script failed.
         if (file is not null && result.ExitCode != 0 && File.ReadAllText(file).Contains('\r'))
-            sb.Append(MessageText.Format(ToolMessage.BashCrlfHint));
+            sb.Append(MessageText.Format(ShellToolMessage.BashCrlfHint));
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
     }
 
-    [Description("Reports which bash executable BashRun will use — Git Bash on Windows (found via BASH_PATH/SKILL_SHELL, " +
+    [Description(
+        "Reports which bash executable BashRun will use — Git Bash on Windows (found via BASH_PATH/SKILL_SHELL, " +
         "the Program Files install, or next to git.exe on PATH) or /bin/bash on Linux/macOS — along with its version " +
         "string and whether common command-line tools (git, curl, jq, grep, find, sed, awk, python3, pwsh, dotnet) are " +
         "present on PATH. Use this to diagnose a BashRun failure caused by a missing interpreter or missing tool before " +
@@ -77,8 +89,9 @@ public sealed class BashTools
     {
         if (FindBash() is not { } bash) return NotInstalledMessage;
 
-        string probe = $"echo \"Version: $BASH_VERSION\"; echo Commands:; for c in {string.Join(' ', CommonCommands)}; do " +
-                       "if command -v \"$c\" >/dev/null 2>&1; then echo \"  $c: available\"; else echo \"  $c: missing\"; fi; done";
+        string probe =
+            $"echo \"Version: $BASH_VERSION\"; echo Commands:; for c in {string.Join(' ', CommonCommands)}; do " +
+            "if command -v \"$c\" >/dev/null 2>&1; then echo \"  $c: available\"; else echo \"  $c: missing\"; fi; done";
         var result = ProcessRunner.Run(bash, ["-c", probe], WorkingDirectory, TimeSpan.FromSeconds(20));
         return $"Executable: {bash}\n{result.Output.Trim()}";
     }
@@ -109,7 +122,8 @@ public sealed class BashTools
         {
             string tempDir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "louis-agent-bash")).FullName;
             tempFile = Path.Combine(tempDir, $"script_{Guid.NewGuid():N}.sh");
-            File.WriteAllText(tempFile, inlineScript.Replace("\r\n", "\n"), new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+            File.WriteAllText(tempFile, inlineScript.Replace("\r\n", "\n"),
+                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
         }
 
         try
@@ -127,14 +141,24 @@ public sealed class BashTools
             };
             for (int i = 0; i < arguments.Count; i++) env[$"LOUIS_AGENT_ARG_{i}"] = arguments[i];
 
-            var result = ProcessRunner.Run(bash, [.. options, "-c", Launcher, target], WorkingDirectory, timeout, standardInput, env);
+            var result = ProcessRunner.Run(bash, [.. options, "-c", Launcher, target], WorkingDirectory, timeout,
+                standardInput, env);
             return tempFile is null ? result : result with { Output = result.Output.Replace(target, "<script>") };
         }
         finally
         {
             if (tempFile is not null)
             {
-                try { File.Delete(tempFile); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+                try
+                {
+                    File.Delete(tempFile);
+                }
+                catch (IOException)
+                {
+                }
+                catch (UnauthorizedAccessException)
+                {
+                }
             }
         }
     }
@@ -144,7 +168,7 @@ public sealed class BashTools
         """__a=(); for ((__i = 0; __i < LOUIS_AGENT_ARGC; __i++)); do __v="LOUIS_AGENT_ARG_$__i"; __a+=("${!__v}"); done; """ +
         """unset __i __v; source "$0" "${__a[@]+"${__a[@]}"}" """;
 
-    private static string NotInstalledMessage => MessageText.Format(ToolMessage.BashNotInstalled);
+    private static string NotInstalledMessage => MessageText.Format(ShellToolMessage.BashNotInstalled);
 
     private static string? _bash;
     private static bool _searched;
@@ -170,7 +194,8 @@ public sealed class BashTools
         }
 
         if (!OperatingSystem.IsWindows())
-            return Remember(File.Exists("/bin/bash") ? "/bin/bash" : File.Exists("/usr/bin/bash") ? "/usr/bin/bash" : null);
+            return Remember(File.Exists("/bin/bash") ? "/bin/bash" :
+                File.Exists("/usr/bin/bash") ? "/usr/bin/bash" : null);
 
         string[] roots =
         [
@@ -178,7 +203,8 @@ public sealed class BashTools
             Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs"),
         ];
-        var gitBash = roots.Where(r => r.Length > 0).Select(r => Path.Combine(r, "Git", "bin", "bash.exe")).FirstOrDefault(File.Exists);
+        var gitBash = roots.Where(r => r.Length > 0).Select(r => Path.Combine(r, "Git", "bin", "bash.exe"))
+            .FirstOrDefault(File.Exists);
         return Remember(gitBash ?? FindGitBashNextToGitOnPath());
 
         static string? Remember(string? path)
@@ -192,10 +218,10 @@ public sealed class BashTools
     // git.exe lives in <Git>\cmd or <Git>\bin; bash.exe is in <Git>\bin.
     private static string? FindGitBashNextToGitOnPath() =>
         (Environment.GetEnvironmentVariable("PATH") ?? "")
-            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
-            .Where(dir => File.Exists(Path.Combine(dir, "git.exe")))
-            .Select(dir => Path.GetFullPath(Path.Combine(dir, "..", "bin", "bash.exe")))
-            .FirstOrDefault(File.Exists);
+        .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
+        .Where(dir => File.Exists(Path.Combine(dir, "git.exe")))
+        .Select(dir => Path.GetFullPath(Path.Combine(dir, "..", "bin", "bash.exe")))
+        .FirstOrDefault(File.Exists);
 
     private string WorkingDirectory =>
         Environment.GetEnvironmentVariable("AGENT_WORKING_DIRECTORY") is { Length: > 0 } dir ? dir : _workspaceRoot;
@@ -206,7 +232,8 @@ public sealed class BashTools
         fullPath = Path.GetFullPath(Path.Combine(root, relativePath));
         error = "";
 
-        string rootWithSeparator = root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
+        string rootWithSeparator =
+            root.EndsWith(Path.DirectorySeparatorChar) ? root : root + Path.DirectorySeparatorChar;
         if (fullPath.Equals(root, StringComparison.OrdinalIgnoreCase) ||
             fullPath.StartsWith(rootWithSeparator, StringComparison.OrdinalIgnoreCase))
             return true;

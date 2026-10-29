@@ -1,12 +1,13 @@
-namespace LouisAgent.Core.Tools.Web.Browsing;
 
 using System.Net;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Browsing.Policy;
+using LouisAgent.Core.Tools.Web.Messages;
 using Microsoft.Extensions.Logging;
 using PuppeteerSharp;
 
+namespace LouisAgent.Core.Tools.Web.Browsing;
 /// <summary>
 /// The headless Chrome we run (F32; a seam of its own since F33 step 1, so a shop's catalogue uses the same guards as the
 /// renderer), driven over the DevTools protocol by PuppeteerSharp, which connects and downloads no browser. Per visit:
@@ -19,7 +20,10 @@ using PuppeteerSharp;
 /// browser context of its own, dropped after, and hands back the cookies the site set (F34): one area's store never
 /// reaches another visit. A plain visit shares the browser's default context, as before.
 /// </summary>
-public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null, TimeSpan? budget = null,
+public sealed class ChromeWebBrowser(
+    Uri browserUrl,
+    Func<string, CancellationToken, Task<IPAddress[]>>? resolve = null,
+    TimeSpan? budget = null,
     string? userAgent = null) : IWebBrowser
 {
     /// <summary>What every page this browser opens tells the site it is (FX21); null leaves Chrome's own.</summary>
@@ -29,11 +33,13 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
     private static readonly SemaphoreSlim Pages = new(MaxPages, MaxPages);
     private static readonly TimeSpan Load = TimeSpan.FromSeconds(30);
     private static readonly TimeSpan Settle = TimeSpan.FromSeconds(10);
+
     /// <summary>
     /// The most a whole visit may take (the cook, 2026-10-21: one render of six never came back, and the cook waited on
     /// it for good; the load and the settle have timeouts, connecting, opening the page and reading it have none).
     /// </summary>
     private readonly TimeSpan _budget = budget ?? Load + Settle + TimeSpan.FromSeconds(20);
+
     private static readonly ILogger Log = AgentLogging.For<ChromeWebBrowser>();
 
     /// <summary>Runs before a page's scripts in every frame: a WebSocket can't be made.</summary>
@@ -41,9 +47,11 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         "Object.defineProperty(globalThis, 'WebSocket', { value: function () { throw new Error('WebSocket is blocked'); }, " +
         "writable: false, configurable: false });";
 
-    private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve = resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
+    private readonly Func<string, CancellationToken, Task<IPAddress[]>> _resolve =
+        resolve ?? ((host, ct) => Dns.GetHostAddressesAsync(host, ct));
 
-    public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+    public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
+        string? script = null,
         string? readySelector = null, CancellationToken cancellationToken = default)
     {
         // Past the budget the visit's token cancels, which closes its page (below) so what hangs on it can end and free
@@ -56,13 +64,15 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         if (visit.IsCompletedSuccessfully) return visit.Result;
         cancellationToken.ThrowIfCancellationRequested();
         _ = visit.ContinueWith(t => _ = t.Exception, TaskContinuationOptions.OnlyOnFaulted);
-        throw new WebBrowserException(MessageText.Format(ToolMessage.RenderFailed, new
+        throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed, new
         {
-            Url = url, Reason = MessageText.Format(ToolMessage.RenderTimedOut, new { Seconds = (int)_budget.TotalSeconds }),
+            Url = url,
+            Reason = MessageText.Format(WebToolMessage.RenderTimedOut, new { Seconds = (int)_budget.TotalSeconds }),
         }));
     }
 
-    private async Task<BrowserVisit> VisitWithinAsync(Uri url, Func<Uri, bool>? capture, BrowserSession? session, string? script,
+    private async Task<BrowserVisit> VisitWithinAsync(Uri url, Func<Uri, bool>? capture, BrowserSession? session,
+        string? script,
         string? readySelector, CancellationToken cancellationToken)
     {
         await Pages.WaitAsync(cancellationToken);
@@ -91,9 +101,10 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         try
         {
             var resolvedUri = await ByAddressAsync(cancellationToken);
-            
+
             // Chrome's own /json/version says where its DevTools WebSocket is.
-            var jsonString = await SharedHttpClient.GetStringAsync(new Uri(resolvedUri, "/json/version"), cancellationToken);
+            var jsonString =
+                await SharedHttpClient.GetStringAsync(new Uri(resolvedUri, "/json/version"), cancellationToken);
             using var doc = System.Text.Json.JsonDocument.Parse(jsonString);
             var rawWsUrl = doc.RootElement.GetProperty("webSocketDebuggerUrl").GetString();
 
@@ -109,22 +120,25 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
         catch (Exception ex) when (ex is not OperationCanceledException and not OutOfMemoryException)
         {
-            throw new WebBrowserException(MessageText.Format(ToolMessage.BrowserUnreachable, new { Url = browserUrl, Reason = ex.Message }));
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserUnreachable,
+                new { Url = browserUrl, Reason = ex.Message }));
         }
     }
 
     /// <summary>The browser's address with its host as an IP or resolvable endpoint.</summary>
     private async Task<Uri> ByAddressAsync(CancellationToken cancellationToken)
     {
-        if (browserUrl.IsLoopback || IPAddress.TryParse(browserUrl.Host.Trim('[', ']'), out _)) 
+        if (browserUrl.IsLoopback || IPAddress.TryParse(browserUrl.Host.Trim('[', ']'), out _))
             return browserUrl;
 
         try
         {
             // A service name (the compose network, or a pod) resolves to the browser's address.
             var addresses = await _resolve(browserUrl.DnsSafeHost, cancellationToken);
-            var address = addresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) ?? addresses.First();
-            
+            var address =
+                addresses.FirstOrDefault(a => a.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork) ??
+                addresses.First();
+
             return new UriBuilder(browserUrl) { Host = address.ToString() }.Uri;
         }
         catch
@@ -134,12 +148,15 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
     }
 
-    private async Task<BrowserVisit> VisitInAsync(IBrowser browser, Uri url, Func<Uri, bool>? capture, BrowserSession? session,
+    private async Task<BrowserVisit> VisitInAsync(IBrowser browser, Uri url, Func<Uri, bool>? capture,
+        BrowserSession? session,
         string? script, string? readySelector, CancellationToken cancellationToken)
     {
-        IBrowserContext? own = session is not null || script is not null ? await browser.CreateBrowserContextAsync() : null;
+        IBrowserContext? own = session is not null || script is not null
+            ? await browser.CreateBrowserContextAsync()
+            : null;
         var page = own is null ? await browser.NewPageAsync() : await own.NewPageAsync();
-        
+
         // What the site is told (FX21): the name the options give, which says who reads and on whose behalf, else
         // Chrome's own; the automation marker is left as Chrome reports it. A site that refuses automated readers
         // refuses this one (Louis, 2026-10-24). A normal screen size, so a page lays out as it would for a person.
@@ -147,7 +164,10 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         await page.SetViewportAsync(new ViewPortOptions { Width = 1920, Height = 1080 });
 
         if (session is { Cookies.Count: > 0 })
-            await page.SetCookieAsync([.. session.Cookies.Select(c => new CookieParam { Name = c.Name, Value = c.Value, Domain = c.Domain, Path = "/" })]);
+            await page.SetCookieAsync([
+                .. session.Cookies.Select(c => new CookieParam
+                    { Name = c.Name, Value = c.Value, Domain = c.Domain, Path = "/" })
+            ]);
         // A cancelled turn closes its page, which ends the load or the wait at once and frees its slot (review of PR #56:
         // PuppeteerSharp's waits take no token, so a cancelled render held a page for up to 40 s).
         using var closeOnCancel = cancellationToken.Register(() => _ = CloseQuietlyAsync(page));
@@ -186,8 +206,9 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             // Closed already, or the browser went away: either way the page is gone.
         }
     }
-    
-    private async Task<BrowserVisit> LoadAsync(IPage page, Uri url, Func<Uri, bool>? capture, string? script, string? readySelector, bool ownContext)
+
+    private async Task<BrowserVisit> LoadAsync(IPage page, Uri url, Func<Uri, bool>? capture, string? script,
+        string? readySelector, bool ownContext)
     {
         string? refusedPage = null;
         // Request interception doesn't see WebSockets (nor does Chrome's URL blocking), and the browser shares a network
@@ -212,17 +233,21 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
                     answered = true;
                     return;
                 }
+
                 if (verdict == RenderVerdict.Refuse)
                 {
                     if (request.IsNavigationRequest && request.Frame == page.MainFrame) refusedPage = request.Url;
-                    Log.Log(LogLevel.Warning, LogMessage.RenderRequestRefused, new { Request = request.Url, Page = url });
+                    Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestRefused,
+                        new { Request = request.Url, Page = url });
                 }
+
                 await request.AbortAsync(RequestAbortErrorCode.BlockedByClient);
                 answered = true;
             }
             catch (Exception ex) when (ex is not OutOfMemoryException)
             {
-                Log.Log(LogLevel.Warning, LogMessage.RenderRequestUnhandled, new { Request = request.Url, Page = url, Reason = ex.Message });
+                Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled,
+                    new { Request = request.Url, Page = url, Reason = ex.Message });
                 // Not answered yet: ended now, not left until the page's timeout (re-review of PR #56). Not made either.
                 if (!answered)
                     try
@@ -244,7 +269,8 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         if (capture is not null)
             page.Response += (_, e) =>
             {
-                if (!Uri.TryCreate(e.Response.Url, UriKind.Absolute, out var responseUrl) || !capture(responseUrl)) return;
+                if (!Uri.TryCreate(e.Response.Url, UriKind.Absolute, out var responseUrl) ||
+                    !capture(responseUrl)) return;
                 lock (reads) reads.Add(KeepAsync(e.Response, captured, answered));
             };
 
@@ -252,15 +278,17 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         {
             await page.GoToAsync(url.AbsoluteUri, new NavigationOptions
             {
-                Timeout = (int)Load.TotalMilliseconds, WaitUntil = [WaitUntilNavigation.DOMContentLoaded],
+                Timeout = (int)Load.TotalMilliseconds,
+                WaitUntil = [WaitUntilNavigation.DOMContentLoaded],
             });
         }
         catch (Exception ex) when (ex is NavigationException or TimeoutException)
         {
             string reason = refusedPage is { } address
-                ? MessageText.Format(ToolMessage.RenderBlockedAddress, new { Address = address })
+                ? MessageText.Format(WebToolMessage.RenderBlockedAddress, new { Address = address })
                 : ex.Message;
-            throw new WebBrowserException(MessageText.Format(ToolMessage.RenderFailed, new { Url = url, Reason = reason }));
+            throw new WebBrowserException(MessageText.Format(WebToolMessage.RenderFailed,
+                new { Url = url, Reason = reason }));
         }
 
         if (capture is not null)
@@ -268,7 +296,8 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         else
             try
             {
-                await page.WaitForNetworkIdleAsync(new WaitForNetworkIdleOptions { Timeout = (int)Settle.TotalMilliseconds, IdleTime = 500 });
+                await page.WaitForNetworkIdleAsync(new WaitForNetworkIdleOptions
+                { Timeout = (int)Settle.TotalMilliseconds, IdleTime = 500 });
             }
             catch (TimeoutException)
             {
@@ -285,7 +314,8 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
             }
             catch (EvaluationFailedException ex)
             {
-                throw new WebBrowserException(MessageText.Format(ToolMessage.BrowserScriptFailed, new { Url = url, Reason = ex.Message }));
+                throw new WebBrowserException(MessageText.Format(WebToolMessage.BrowserScriptFailed,
+                    new { Url = url, Reason = ex.Message }));
             }
 
         Task[] pending;
@@ -330,7 +360,8 @@ public sealed class ChromeWebBrowser(Uri browserUrl, Func<string, CancellationTo
         }
         catch (Exception ex) when (ex is not OutOfMemoryException)
         {
-            Log.Log(LogLevel.Warning, LogMessage.RenderRequestUnhandled, new { Request = response.Url, Page = response.Url, Reason = ex.Message });
+            Log.Log(LogLevel.Warning, WebLogMessage.RenderRequestUnhandled,
+                new { Request = response.Url, Page = response.Url, Reason = ex.Message });
         }
     }
 }

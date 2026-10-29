@@ -15,10 +15,14 @@ dotnet test tests/louis-agent.api.tests
 dotnet test tests/louis-agent.orchestrator.tests
 dotnet test tests/louis-agent.acp-server.tests     # the ACP transcript (LOUIS_UPDATE_GOLDEN=1 regenerates AcpTranscript.json)
 dotnet test louis-agent-solution.sln          # everything
+dotnet test louis-agent-solution.sln --filter "Category!=Integration"   # the unit tests: no process, no tool, no Mongo
+dotnet test louis-agent-solution.sln --filter "Category=Integration"    # the integration tests (tests/*.integration-tests); a missing tool skips, or fails with INTEGRATION_REQUIRED=1
 ```
 
-GitHub Actions runs the last two commands (build, then the whole solution's tests) on Ubuntu on every push and pull
-request (`.github/workflows/ci.yml`); a red check on a PR is the same failure you'd see locally with that command.
+GitHub Actions runs the build, then the unit tests, then the integration tests (the two filters above, the second with
+`INTEGRATION_REQUIRED=1`) on Ubuntu on every push and pull request (`.github/workflows/ci.yml`); a red check on a PR is
+the same failure you'd see locally with that step's command. A test that starts a process, opens Mongo or needs a tool
+is an integration test: it lives in a `{name}.integration-tests` project, and the [guide](../docs/guides/write-tests.md#where-a-test-goes) says how.
 
 ## Test first
 
@@ -38,7 +42,7 @@ app) says so in its explanation, with how it was checked instead.
 
 **What the model reads is pinned by two golden files:** `ModelRequestSnapshotTests` compares the tools, their
 descriptions, the system prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`;
-`ToolMessageSnapshotTests` compares every `ToolMessage` template with `Messages/ToolMessageSnapshot.json`. A deliberate
+`ToolMessageSnapshotTests` compares every `*ToolMessage` enum's template (the shared one and each area's) with `Messages/ToolMessageSnapshot.json`. A deliberate
 change (a new tool or text, an edited description or skill file) regenerates them, and you review their diff before
 committing:
 
@@ -58,7 +62,7 @@ nothing: only its line endings changed, and `git checkout -- <file>` puts it bac
 
 **The web apps' components are pinned the same way** (T1, CL15): `tests/louis-agent.web.shared.tests` renders
 `TurnView`, `BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
-(`benchmarks/fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
+(`tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
 (`Components/TurnView.html`); `tests/louis-agent.puls.tests` does the same for `WorkPanel`, `PulsTile`, `TemplateCard`,
 the landing page and the chat page, empty and with the turn (`Pages/ChatPage.empty.html`, `ChatPage.turn.html`), and
 `tests/louis-agent.web.tests` for the code-review app's chat page, each against the stub API (`FixtureApi` in

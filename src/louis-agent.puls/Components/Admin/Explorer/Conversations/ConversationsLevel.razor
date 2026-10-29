@@ -1,0 +1,35 @@
+@* One grid, a row per conversation with every mode's cell in it (Louis: "this must always align"): a row is as tall
+   as its tallest cell, so the same conversation sits level across the modes, and one scale for both modes' bars, so
+   a longer bar is a dearer conversation whichever side it is on. *@
+@* 6a.4d (Louis: "which ones to check"): a filter keeps only the conversations this reviewer still has to grade. *@
+<div class="chart-head lead"><strong>Conversations</strong>
+    <div class="segmented conv-filter" role="radiogroup" aria-label="Show">
+        <button type="button" role="radio" data-filter="all" aria-checked="@(!OnlyToReview ? "true" : "false")" class="@(!OnlyToReview ? "active" : "")" @onclick="() => OnFilter.InvokeAsync(false)">All</button>
+        <button type="button" role="radio" data-filter="to-review" aria-checked="@(OnlyToReview ? "true" : "false")" class="@(OnlyToReview ? "active" : "")" @onclick="() => OnFilter.InvokeAsync(true)">To review</button>
+    </div>
+    <LegendList Entries="ExplorerLegends.Parts(ModeNames.Roles(Tree.Modes))" /></div>
+<div class="compare-grid" style="--cols: @Tree.Modes.Count">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        <h3 class="compare-head" style="--i: @i"><span class="sw" style="background: @ChartPalette.Series(i)"></span>@ModeNames.Who(m) <code class="mode-name">@m.Name</code><span class="muted">@m.Conversations.Count conversations · @m.Rows.Count requests · @ExplorerText.Money(m.Cost, Currency)</span></h3>
+    }
+    @foreach (var (task, row) in Tasks.Select((t, r) => (t, r)))
+    {
+        foreach (var (m, _) in Tree.Columns)
+        {
+            var c = m.Conversation(task);
+            <div class="compare-cell" style="--i: @row">
+                @if (c is null)
+                {
+                    <span class="muted"><code>@task</code> · not in this mode</span>
+                }
+                else
+                {
+                    <ConversationCard Conversation="c" Mode="m" Where="Where(c, m)" Status="Status(c, m)" Question="@Tree.Question(task)" Graders="Graders" TopCost="Tree.TopCost" Currency="Currency" OnReplay="OnReplay" OnOpenConversation="OnOpenConversation" />
+                }
+            </div>
+        }
+    }
+</div>
+
+<TokenGrid Tree="Tree" Tasks="Tasks" />

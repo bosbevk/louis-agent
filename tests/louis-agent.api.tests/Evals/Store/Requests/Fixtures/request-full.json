@@ -1,0 +1,20 @@
+{
+  "run" : "run123456789",
+  "turn" : {
+    "mode" : "mode-alpha",
+    "repeat" : { "$numberInt" : "2" },
+    "task" : "cook-af",
+    "turn" : { "$numberInt" : "1" }
+  },
+  "at" : { "$date" : { "$numberLong" : "1793174400125" } },
+  "purpose" : "turn",
+  "session" : "sess_2",
+  "parent" : "sess_1",
+  "model" : "claude-haiku-5-5",
+  "input_tokens" : { "$numberLong" : "1200" },
+  "output_tokens" : { "$numberLong" : "340" },
+  "cache_read_tokens" : { "$numberLong" : "800" },
+  "cache_write_tokens" : { "$numberLong" : "64" },
+  "cost" : { "$numberDecimal" : "0.0042" },
+  "duration_ms" : { "$numberLong" : "2350" }
+}

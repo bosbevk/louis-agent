@@ -1,12 +1,13 @@
-namespace LouisAgent.Core.Pricing.Rates;
 
 using System.Globalization;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Messages;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.Core.Pricing.Rates;
 /// <summary>
 /// The currency costs are shown in (F14), with the rate from the price table's currency and that rate's date. Costs are
 /// only converted for display: the ledger keeps what was charged.
@@ -17,7 +18,13 @@ using Microsoft.Extensions.Logging;
 /// <param name="RateAsOf">The rate's date; null when not converting.</param>
 /// <param name="Base">The price table's currency, what costs are charged in.</param>
 /// <param name="Source">What chose the currency, for the start-up log: e.g. "HOST_CULTURE en-ZA".</param>
-public sealed partial record DisplayCurrency(string Code, string Symbol, decimal Rate, string? RateAsOf, string Base, string Source)
+public sealed partial record DisplayCurrency(
+    string Code,
+    string Symbol,
+    decimal Rate,
+    string? RateAsOf,
+    string Base,
+    string Source)
 {
     private static readonly ILogger Log = AgentLogging.For<DisplayCurrency>();
 
@@ -34,7 +41,8 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
     /// with no rate is shown in the price table's currency, with a warning, never at a guessed rate.
     /// </summary>
     /// <param name="processCulture">For tests: the process's culture (default: <see cref="CultureInfo.CurrentCulture"/>).</param>
-    public static DisplayCurrency Resolve(AgentOptions agent, string baseCurrency, ExchangeRates rates, CultureInfo? processCulture = null)
+    public static DisplayCurrency Resolve(AgentOptions agent, string baseCurrency, ExchangeRates rates,
+        CultureInfo? processCulture = null)
     {
         CultureInfo process = processCulture ?? CultureInfo.CurrentCulture;
         (string Code, string Symbol, string Source)? chosen =
@@ -47,11 +55,13 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
 
         if (rates.RateFor(choice.Code) is not { } rate)
         {
-            Log.Log(LogLevel.Warning, LogMessage.DisplayCurrencyHasNoRate, new { choice.Code, choice.Source, Base = baseCurrency });
+            Log.Log(LogLevel.Warning, PricingLogMessage.DisplayCurrencyHasNoRate,
+                new { choice.Code, choice.Source, Base = baseCurrency });
             return Charged(baseCurrency);
         }
 
-        return new DisplayCurrency(choice.Code, DistinctSymbol(choice.Code, choice.Symbol, baseCurrency), rate, rates.AsOf,
+        return new DisplayCurrency(choice.Code, DistinctSymbol(choice.Code, choice.Symbol, baseCurrency), rate,
+            rates.AsOf,
             baseCurrency, choice.Source);
     }
 
@@ -61,7 +71,9 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
     /// is used instead ("0.10 AUD").
     /// </summary>
     public static string DistinctSymbol(string code, string symbol, string baseCurrency) =>
-        !string.Equals(code, baseCurrency, StringComparison.OrdinalIgnoreCase) && symbol == SymbolFor(baseCurrency) ? code : symbol;
+        !string.Equals(code, baseCurrency, StringComparison.OrdinalIgnoreCase) && symbol == SymbolFor(baseCurrency)
+            ? code
+            : symbol;
 
     /// <summary>The start-up log line, e.g. "ZAR (R) from HOST_CULTURE en-ZA at 16.5331 ZAR/USD, as of 2026-10-09".</summary>
     public override string ToString() => Converts
@@ -74,7 +86,7 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
         string upper = code.Trim().ToUpperInvariant();
         if (CurrencyCode().IsMatch(upper)) return (upper, SymbolFor(upper), "DISPLAY_CURRENCY");
 
-        Log.Log(LogLevel.Warning, LogMessage.DisplayCurrencyNotACode, new { Code = code });
+        Log.Log(LogLevel.Warning, PricingLogMessage.DisplayCurrencyNotACode, new { Code = code });
         return null;
     }
 
@@ -84,14 +96,14 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
         try
         {
             return FromCulture(CultureInfo.GetCultureInfo(name.Trim()), $"{setting} {name.Trim()}")
-                   ?? Warn(LogMessage.CultureHasNoRegion);
+                   ?? Warn(PricingLogMessage.CultureHasNoRegion);
         }
         catch (CultureNotFoundException)
         {
-            return Warn(LogMessage.CultureUnknown);
+            return Warn(PricingLogMessage.CultureUnknown);
         }
 
-        (string, string, string)? Warn(LogMessage why)
+        (string, string, string)? Warn(PricingLogMessage why)
         {
             Log.Log(LogLevel.Warning, why, new { Setting = setting, Name = name });
             return null;
@@ -122,7 +134,17 @@ public sealed partial record DisplayCurrency(string Code, string Symbol, decimal
         if (code == "USD") return "$";
         return CultureInfo.GetCultures(CultureTypes.SpecificCultures)
             .OrderBy(c => c.Name, StringComparer.Ordinal)
-            .Select(c => { try { return new RegionInfo(c.Name); } catch (ArgumentException) { return null; } })
+            .Select(c =>
+            {
+                try
+                {
+                    return new RegionInfo(c.Name);
+                }
+                catch (ArgumentException)
+                {
+                    return null;
+                }
+            })
             .FirstOrDefault(r => r?.ISOCurrencySymbol == code)?.CurrencySymbol ?? code;
     }
 

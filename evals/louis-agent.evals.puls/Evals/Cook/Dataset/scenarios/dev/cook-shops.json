@@ -1,0 +1,25 @@
+{
+  "id": "cook-shops",
+  "input": [
+    {
+      "role": "user",
+      "content": "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Ek koop by PnP en Woolworths. Wat moet ek maak? Gee my die resep, ongeveer wat dit kos, en die takke se adresse."
+    }
+  ],
+  "metadata": {
+    "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Stellenbosch",
+      "serves": 4,
+      "shop": "pnp",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "shops:two"
+    ]
+  }
+}

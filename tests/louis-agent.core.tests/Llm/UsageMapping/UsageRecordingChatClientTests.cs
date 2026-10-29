@@ -21,7 +21,8 @@ public class UsageRecordingChatClientTests
     public async Task GetResponse_WritesOneRecordWithCountsAndScope()
     {
         var sink = new ListUsageSink();
-        var usage = new UsageDetails { InputTokenCount = 10_266, CachedInputTokenCount = 10_227, OutputTokenCount = 206 };
+        var usage = new UsageDetails
+        { InputTokenCount = 10_266, CachedInputTokenCount = 10_227, OutputTokenCount = 206 };
         using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("Hello.", usage)), sink);
 
         using (UsageScope.Begin(UsagePurpose.Summary))
@@ -41,17 +42,20 @@ public class UsageRecordingChatClientTests
     {
         // F5 step 9: a parent turn with one child writes both records, and both name the parent turn, so they add up.
         var sink = new ListUsageSink();
-        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("parent"), _ => Reply("child")), sink);
+        using var client =
+            new UsageRecordingChatClient(new FakeChatClient(_ => Reply("parent"), _ => Reply("child")), sink);
 
         using (UsageScope.Begin(host: "api", session: "sess_parent", turn: 4))
             await client.GetResponseAsync("delegate this");
-        using (UsageScope.Begin(host: "api", session: "sess_child", turn: 1, tags: new UsageTags("sub-session:coder", null, null, "sess_parent#4")))
+        using (UsageScope.Begin(host: "api", session: "sess_child", turn: 1,
+                   tags: new UsageTags("sub-session:coder", null, null, "sess_parent#4")))
             await client.GetResponseAsync("the task");
 
         var (parent, child) = (sink.Records[0], sink.Records[1]);
         Assert.That($"{parent.Session}#{parent.Turn}", Is.EqualTo("sess_parent#4"));
         Assert.That(child.Parent, Is.EqualTo("sess_parent#4"));
-        Assert.That(JsonSerializer.Serialize(child, JsonlUsageSink.Json), Does.Contain("\"parent\":\"sess_parent#4\""), "the ledger's field");
+        Assert.That(JsonSerializer.Serialize(child, JsonlUsageSink.Json), Does.Contain("\"parent\":\"sess_parent#4\""),
+            "the ledger's field");
     }
 
     [Test]
@@ -97,7 +101,8 @@ public class UsageRecordingChatClientTests
     {
         var sink = new ListUsageSink();
         var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, "hi"));
-        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => response), sink, defaultModel: "qwen2.5-coder");
+        using var client =
+            new UsageRecordingChatClient(new FakeChatClient(_ => response), sink, defaultModel: "qwen2.5-coder");
 
         await client.GetResponseAsync("hi");
 
@@ -110,9 +115,12 @@ public class UsageRecordingChatClientTests
         // FakeChatClient streams each content as an update and ends with the finish reason, so the UsageContent arrives
         // near the end, as Anthropic's does.
         var sink = new ListUsageSink();
-        var usage = new UsageDetails { InputTokenCount = 10_266, CachedInputTokenCount = 10_227, OutputTokenCount = 137 };
-        var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("Hello!"), new UsageContent(usage)]));
-        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => response), sink, defaultModel: "claude-haiku-4-5-20251001");
+        var usage = new UsageDetails
+        { InputTokenCount = 10_266, CachedInputTokenCount = 10_227, OutputTokenCount = 137 };
+        var response =
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("Hello!"), new UsageContent(usage)]));
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => response), sink,
+            defaultModel: "claude-haiku-4-5-20251001");
 
         int recordsWhileStreaming = 0;
         await foreach (var _ in client.GetStreamingResponseAsync("Say hello."))
@@ -128,7 +136,8 @@ public class UsageRecordingChatClientTests
     [Test]
     public async Task GetStreamingResponse_PassesEveryUpdateThroughUnchanged()
     {
-        var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("a"), new TextContent("b")]));
+        var response =
+            new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("a"), new TextContent("b")]));
         var inner = new FakeChatClient(_ => response, _ => response);
         using var client = new UsageRecordingChatClient(inner, new ListUsageSink());
 
@@ -160,11 +169,14 @@ public class UsageRecordingChatClientTests
         // A host that stops reading (the user pressed stop) disposes the stream before the provider finishes it.
         var sink = new ListUsageSink();
         var usage = new UsageDetails { InputTokenCount = 500, OutputTokenCount = 20 };
-        var response = new ChatResponse(new ChatMessage(ChatRole.Assistant, [new UsageContent(usage), new TextContent("partial")]));
+        var response =
+            new ChatResponse(new ChatMessage(ChatRole.Assistant,
+                [new UsageContent(usage), new TextContent("partial")]));
         using var client = new UsageRecordingChatClient(new FakeChatClient(_ => response), sink);
 
         await foreach (var update in client.GetStreamingResponseAsync("hi"))
-            if (update.Contents.OfType<UsageContent>().Any()) break;
+            if (update.Contents.OfType<UsageContent>().Any())
+                break;
 
         UsageRecord record = sink.Records.Single();
         Assert.That(record.Stop, Is.EqualTo(UsageRecordingChatClient.Cancelled));
@@ -175,9 +187,11 @@ public class UsageRecordingChatClientTests
     public void GetStreamingResponse_TokenCancelled_RecordsCancelled()
     {
         var sink = new ListUsageSink();
-        using var client = new UsageRecordingChatClient(new FailingStreamClient(new OperationCanceledException()), sink);
+        using var client =
+            new UsageRecordingChatClient(new FailingStreamClient(new OperationCanceledException()), sink);
 
-        Assert.ThrowsAsync<OperationCanceledException>(async () => await client.GetStreamingResponseAsync("hi").ToListAsync());
+        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            await client.GetStreamingResponseAsync("hi").ToListAsync());
 
         Assert.That(sink.Records.Single().Stop, Is.EqualTo(UsageRecordingChatClient.Cancelled));
     }
@@ -187,9 +201,11 @@ public class UsageRecordingChatClientTests
     {
         // Same as a failed non-streaming call: the exception propagates and no record is written.
         var sink = new ListUsageSink();
-        using var client = new UsageRecordingChatClient(new FailingStreamClient(new HttpRequestException("529 overloaded")), sink);
+        using var client =
+            new UsageRecordingChatClient(new FailingStreamClient(new HttpRequestException("529 overloaded")), sink);
 
-        Assert.ThrowsAsync<HttpRequestException>(async () => await client.GetStreamingResponseAsync("hi").ToListAsync());
+        Assert.ThrowsAsync<HttpRequestException>(async () =>
+            await client.GetStreamingResponseAsync("hi").ToListAsync());
 
         Assert.That(sink.Records, Is.Empty);
     }
@@ -218,7 +234,8 @@ public class UsageRecordingChatClientTests
     {
         // Unchanged by FX9: a provider error is not a request the ledger can count, streaming or not.
         var sink = new ListUsageSink();
-        using var client = new UsageRecordingChatClient(new FailingStreamClient(new HttpRequestException("529 overloaded")), sink);
+        using var client =
+            new UsageRecordingChatClient(new FailingStreamClient(new HttpRequestException("529 overloaded")), sink);
 
         Assert.ThrowsAsync<HttpRequestException>(async () => await client.GetResponseAsync("hi"));
 
@@ -244,11 +261,13 @@ public class UsageRecordingChatClientTests
         var sink = new ListUsageSink();
         using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("hi")), sink);
 
-        using (UsageScope.Begin(host: "api", tags: new UsageTags("fix:e8b0b572223d", "run-20261010-160000", "order-service")))
+        using (UsageScope.Begin(host: "api",
+                   tags: new UsageTags("fix:e8b0b572223d", "run-20261010-160000", "order-service")))
             await client.GetResponseAsync("hi");
 
         UsageRecord record = sink.Records.Single();
-        Assert.That((record.Task, record.Run, record.Service), Is.EqualTo(("fix:e8b0b572223d", "run-20261010-160000", "order-service")));
+        Assert.That((record.Task, record.Run, record.Service),
+            Is.EqualTo(("fix:e8b0b572223d", "run-20261010-160000", "order-service")));
     }
 
     [Test]
@@ -265,7 +284,8 @@ public class UsageRecordingChatClientTests
         await stream.DisposeAsync();
 
         UsageRecord record = sink.Records.Single();
-        Assert.That((record.Host, record.Session, record.Stop), Is.EqualTo(("api", "sess_9", UsageRecordingChatClient.Cancelled)));
+        Assert.That((record.Host, record.Session, record.Stop),
+            Is.EqualTo(("api", "sess_9", UsageRecordingChatClient.Cancelled)));
     }
 
     [Test]
@@ -278,5 +298,70 @@ public class UsageRecordingChatClientTests
         await client.GetResponseAsync($"Repeat {marker}");
 
         Assert.That(JsonSerializer.Serialize(sink.Records.Single()), Does.Not.Contain(marker));
+    }
+
+    private static List<ChatMessage> Prompted(params ChatMessage[] after) =>
+        [new(ChatRole.System, "Jy is Puls."), new(ChatRole.User, "hi"), .. after];
+
+    private static readonly ChatOptions Tooled = new()
+    {
+        Tools =
+        [
+            AIFunctionFactory.CreateDeclaration("GetToday", "Today's date.",
+                JsonDocument.Parse("""{"type":"object","properties":{}}""").RootElement)
+        ],
+    };
+
+    [Test]
+    public async Task GetResponse_RecordsThePromptHashOfWhatItWasSent()
+    {
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("hi")), sink);
+
+        await client.GetResponseAsync(Prompted(), Tooled);
+
+        Assert.That(sink.Records.Single().PromptHash, Is.EqualTo(PromptHash.Of(Prompted(), Tooled)));
+    }
+
+    [Test]
+    public async Task GetStreamingResponse_RecordsThePromptHashOfWhatItWasSent()
+    {
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("hi")), sink);
+
+        await client.GetStreamingResponseAsync(Prompted(), Tooled).ToListAsync();
+
+        Assert.That(sink.Records.Single().PromptHash, Is.EqualTo(PromptHash.Of(Prompted(), Tooled)));
+    }
+
+    [Test]
+    public async Task TwoRoundsOfOneTurn_RecordTheSameHash()
+    {
+        // The second round adds the first's reply and a tool result after the same prompt and tools.
+        var sink = new ListUsageSink();
+        using var client = new UsageRecordingChatClient(new FakeChatClient(_ => Reply("one"), _ => Reply("two")), sink);
+
+        using (UsageScope.Begin())
+        {
+            await client.GetResponseAsync(Prompted(), Tooled);
+            await client.GetResponseAsync(Prompted(
+                new ChatMessage(ChatRole.Assistant, [new FunctionCallContent("c1", "GetToday")]),
+                new ChatMessage(ChatRole.Tool, [new FunctionResultContent("c1", "2026-10-25")])), Tooled);
+        }
+
+        Assert.That(sink.Records[0].PromptHash, Is.Not.Null);
+        Assert.That(sink.Records[1].PromptHash, Is.EqualTo(sink.Records[0].PromptHash));
+    }
+
+    [Test]
+    public void ACancelledRequest_RecordsItsHashToo()
+    {
+        var sink = new ListUsageSink();
+        using var client =
+            new UsageRecordingChatClient(new FailingStreamClient(new TaskCanceledException("timeout")), sink);
+
+        Assert.ThrowsAsync<TaskCanceledException>(async () => await client.GetResponseAsync(Prompted(), Tooled));
+
+        Assert.That(sink.Records.Single().PromptHash, Is.EqualTo(PromptHash.Of(Prompted(), Tooled)));
     }
 }

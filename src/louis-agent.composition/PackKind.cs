@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+
 namespace LouisAgent.Composition;
 
 /// <summary>
@@ -7,5 +9,5 @@ namespace LouisAgent.Composition;
 /// </summary>
 public enum PackKind
 {
-    Shops,
+    [WireName("shops")] Shops,
 }

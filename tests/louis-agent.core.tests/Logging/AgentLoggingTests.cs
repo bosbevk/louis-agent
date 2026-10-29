@@ -1,6 +1,9 @@
 using System.Text.Json;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Protocols.Messages;
+using LouisAgent.Core.Usage.Messages;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Tests.Logging;
@@ -25,7 +28,7 @@ public class AgentLoggingTests
     [TearDown]
     public void TearDown()
     {
-        AgentLogging.Configure(null);   // flushes and closes the files
+        AgentLogging.Configure(null); // flushes and closes the files
         Console.SetOut(_out);
         Console.SetError(_error);
         Directory.Delete(_directory, recursive: true);
@@ -38,7 +41,8 @@ public class AgentLoggingTests
 
         AgentLogging.For<AgentLoggingTests>().LogWarning("Rates from {Url} unavailable", "https://example.com");
 
-        Assert.That(_stderr.ToString(), Does.Contain("[WARN] Rates from https://example.com unavailable"), "values read as plain text, as today");
+        Assert.That(_stderr.ToString(), Does.Contain("[WARN] Rates from https://example.com unavailable"),
+            "values read as plain text, as today");
         Assert.That(_stdout.ToString(), Is.Empty);
     }
 
@@ -47,7 +51,7 @@ public class AgentLoggingTests
     {
         AgentLogging.Configure(null);
 
-        AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LogMessage.TruncatedToolCall,
+        AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LoggingLogMessage.TruncatedToolCall,
             new { Arguments = "{}", MaxOutputTokens = 16000, Tool = "WriteWorkspaceFile" });
 
         Assert.That(_stderr.ToString(),
@@ -60,18 +64,23 @@ public class AgentLoggingTests
         AgentLogging.Configure(null);
         var logger = AgentLogging.For<AgentLoggingTests>();
 
-        logger.Log(LogLevel.Error, LogMessage.SkillFileLoadFailed, new { File = "devops-skills.md", Reason = "locked" });
-        logger.Log(LogLevel.Information, LogMessage.McpToolsDiscovered, new { Count = 3 }, tag: "MCP");
+        logger.Log(LogLevel.Error, UsageLogMessage.LedgerWriteFailed,
+            new { File = "devops-skills.md", Reason = "locked" });
+        logger.Log(LogLevel.Information, ProtocolLogMessage.McpToolsDiscovered, new { Count = 3 }, tag: "MCP");
 
-        Assert.That(_stderr.ToString(), Does.Contain("[ERROR] Failed to load devops-skills.md: locked"), "not Serilog's EROR");
+        Assert.That(_stderr.ToString(), Does.Contain("[ERROR] Could not write devops-skills.md: locked"),
+            "not Serilog's EROR");
         Assert.That(_stderr.ToString(), Does.Contain("[MCP] Discovered 3 tools from Rider"));
     }
 
     [Test]
     public void ALogMessage_MissingAValue_Throws()
     {
-        Assert.That(() => AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LogMessage.TruncatedToolCall, new { Tool = "x" }),
-            Throws.ArgumentException.With.Message.Contain("LogMessage.TruncatedToolCall needs a value for '{MaxOutputTokens}'"));
+        Assert.That(
+            () => AgentLogging.For<AgentLoggingTests>().Log(LogLevel.Information, LoggingLogMessage.TruncatedToolCall,
+                new { Tool = "x" }),
+            Throws.ArgumentException.With.Message.Contain(
+                "LoggingLogMessage.TruncatedToolCall needs a value for '{MaxOutputTokens}'"));
     }
 
     [Test]
@@ -80,7 +89,7 @@ public class AgentLoggingTests
         AgentLogging.Configure(_directory);
 
         ToolCallRecords.TruncatedToolCall("WriteWorkspaceFile", "{\"path\":\"a.cs\"}", 16000);
-        AgentLogging.Configure(null);   // flush
+        AgentLogging.Configure(null); // flush
 
         string[] lines = File.ReadAllLines(Path.Combine(_directory, "truncated-tool-calls.jsonl"));
         Assert.That(lines, Has.Length.EqualTo(1));
@@ -101,7 +110,7 @@ public class AgentLoggingTests
 
         ToolCallRecords.OversizedToolResult("GetDiff", "{}", 120_000, "review", "summarised", 900);
         ToolCallRecords.OversizedToolResult("ReadWorkspaceFile", "{}", 60_000, null, "truncated", 50_000);
-        AgentLogging.Configure(null);   // flush
+        AgentLogging.Configure(null); // flush
 
         string[] lines = File.ReadAllLines(Path.Combine(_directory, "oversized-tool-results.jsonl"));
         using var record = JsonDocument.Parse(lines[0]);
@@ -119,9 +128,11 @@ public class AgentLoggingTests
         ILogger early = AgentLogging.For<AgentLoggingTests>();
         AgentLogging.Configure(_directory);
 
-        using (early.BeginScope(new Dictionary<string, object> { [AgentLogging.RecordProperty] = "truncated-tool-call" }))
-            early.Log(LogLevel.Information, LogMessage.TruncatedToolCall, new { Tool = "Early", MaxOutputTokens = 1, Arguments = "{}" });
-        AgentLogging.Configure(null);   // flush
+        using (early.BeginScope(
+                   new Dictionary<string, object> { [AgentLogging.RecordProperty] = "truncated-tool-call" }))
+            early.Log(LogLevel.Information, LoggingLogMessage.TruncatedToolCall,
+                new { Tool = "Early", MaxOutputTokens = 1, Arguments = "{}" });
+        AgentLogging.Configure(null); // flush
 
         Assert.That(File.ReadAllLines(Path.Combine(_directory, "truncated-tool-calls.jsonl")), Has.Length.EqualTo(1));
     }
@@ -131,17 +142,19 @@ public class AgentLoggingTests
     {
         AgentLogging.Configure(_directory);
         string runFile = AgentLogging.RunFile!;
-        AgentLogging.For<AgentLoggingTests>().LogWarning("Rates from {Url} unavailable", new Uri("https://example.com/rates"));
+        AgentLogging.For<AgentLoggingTests>()
+            .LogWarning("Rates from {Url} unavailable", new Uri("https://example.com/rates"));
         ToolCallRecords.TruncatedToolCall("WriteWorkspaceFile", "{}", 16000);
-        AgentLogging.Configure(_directory);   // AgentHost may configure twice: same file, announced once
+        AgentLogging.Configure(_directory); // AgentHost may configure twice: same file, announced once
         AgentLogging.For<AgentLoggingTests>().LogInformation("Second configuration");
-        AgentLogging.Configure(null);   // flush
+        AgentLogging.Configure(null); // flush
 
         Assert.That(Path.GetFileName(runFile), Does.Match(@"^agent-.+-\d{8}-\d{6}-\d+\.log$"));
         string[] lines = File.ReadAllLines(runFile);
         Assert.That(lines, Has.Length.EqualTo(3), string.Join("\n", lines));
         Assert.That(lines[0], Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[INFO\] Logging to .+\.log$"));
-        Assert.That(lines[1], Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[WARN\] Rates from https://example.com/rates unavailable$"),
+        Assert.That(lines[1],
+            Does.Match(@"^\d\d:\d\d:\d\d\.\d{3} \[WARN\] Rates from https://example.com/rates unavailable$"),
             "values read as plain text, as on the console: no JSON quotes around a Uri");
         Assert.That(lines[2], Does.EndWith("[INFO] Second configuration"));
         Assert.That(_stderr.ToString(), Does.Contain("[INFO] Logging to " + runFile));

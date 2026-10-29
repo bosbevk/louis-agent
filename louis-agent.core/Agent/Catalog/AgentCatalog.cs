@@ -1,5 +1,5 @@
-namespace LouisAgent.Core.Agent.Catalog;
 
+using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using System.ComponentModel;
 using System.Reflection;
@@ -9,6 +9,7 @@ using LouisAgent.Core.Tools.Clock;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 
+namespace LouisAgent.Core.Agent.Catalog;
 /// <summary>
 /// The one catalogue of what this instance can load (CL15, ADR 0027): core's own toolsets (<see cref="ToolsetCatalog"/>)
 /// and the packs', with the identities that name them. Built once by the host from the identities and packs it was
@@ -24,7 +25,11 @@ public sealed class AgentCatalog
     /// and the self-extension tools. A pack's tool may not take one of their names.
     /// </summary>
     private static readonly IReadOnlySet<string> EngineToolNames = new HashSet<string>(
-        new[] { nameof(AgentEngine.ExecuteSkill), nameof(AgentEngine.CreateSkillFile), nameof(AgentEngine.ReloadSkills), nameof(AgentEngine.CreateTool), nameof(AgentEngine.ListAgentTools) }
+        new[]
+            {
+                nameof(AgentEngine.ExecuteSkill), nameof(AgentEngine.CreateSkillFile), nameof(AgentEngine.ReloadSkills),
+                nameof(AgentEngine.CreateTool), nameof(AgentEngine.ListAgentTools)
+            }
             .Concat(ToolMethodsOfType(typeof(ClockTools)).Select(m => m.Name)),
         StringComparer.OrdinalIgnoreCase);
 
@@ -55,11 +60,15 @@ public sealed class AgentCatalog
             foreach (string name in NamesOf(toolset))
             {
                 if (EngineToolNames.Contains(name))
-                    throw new AgentCatalogException(MessageText.Format(ErrorMessage.CatalogToolNameIsTheEngines, new { Tool = name, Toolset = toolset.Name }));
-                if (_toolsetOfTool.Keys.FirstOrDefault(k => string.Equals(k, name, StringComparison.OrdinalIgnoreCase)) is { } taken)
-                    throw new AgentCatalogException(MessageText.Format(ErrorMessage.CatalogToolNameTwice, new { Tool = name, First = _toolsetOfTool[taken].Name, Second = toolset.Name }));
+                    throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogToolNameIsTheEngines,
+                        new { Tool = name, Toolset = toolset.Name }));
+                if (_toolsetOfTool.Keys.FirstOrDefault(k => string.Equals(k, name, StringComparison.OrdinalIgnoreCase)) is
+                    { } taken)
+                    throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogToolNameTwice,
+                        new { Tool = name, First = _toolsetOfTool[taken].Name, Second = toolset.Name }));
                 _toolsetOfTool[name] = toolset;
             }
+
         ToolNames = _toolsetOfTool.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
     }
 
@@ -104,7 +113,9 @@ public sealed class AgentCatalog
     public static AIFunction FunctionOf(MethodInfo method, Func<AIFunctionArguments, object> createInstance) =>
         AIFunctionFactory.Create(method, createInstance, new AIFunctionFactoryOptions
         {
-            Description = method.GetCustomAttribute<DescriptionAttribute>() is { } description ? AgentEngine.Normalise(description.Description) : null,
+            Description = method.GetCustomAttribute<DescriptionAttribute>() is { } description
+                ? AgentEngine.Normalise(description.Description)
+                : null,
         });
 
     internal static IEnumerable<MethodInfo> ToolMethodsOfType(Type type) =>
@@ -118,15 +129,23 @@ public sealed class AgentCatalog
         var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (string name in names)
             if (!seen.Add(name))
-                throw new AgentCatalogException(MessageText.Format(ErrorMessage.CatalogNameTwice, new { Name = name, Kind = kind }));
+                throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogNameTwice,
+                    new { Name = name, Kind = kind }));
     }
 
     private static void CheckNamed(string owner, IEnumerable<string> named, IReadOnlySet<string> registered)
     {
         foreach (string name in named)
             if (!registered.Contains(name))
-                throw new AgentCatalogException(MessageText.Format(ErrorMessage.CatalogPackUnknown,
-                    new { Owner = owner, Name = name, Registered = registered.Count == 0 ? "none" : string.Join(", ", registered.Order(StringComparer.Ordinal)) }));
+                throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogPackUnknown,
+                    new
+                    {
+                        Owner = owner,
+                        Name = name,
+                        Registered = registered.Count == 0
+                            ? "none"
+                            : string.Join(", ", registered.Order(StringComparer.Ordinal))
+                    }));
     }
 
     private static void CheckNoCycle(IReadOnlyList<IAgentPack> packs)
@@ -140,7 +159,7 @@ public sealed class AgentCatalog
             if (done.Contains(pack.Name)) return;
             int at = path.FindIndex(p => string.Equals(p, pack.Name, StringComparison.OrdinalIgnoreCase));
             if (at >= 0)
-                throw new AgentCatalogException(MessageText.Format(ErrorMessage.CatalogRequiresCycle,
+                throw new AgentCatalogException(MessageText.Format(AgentErrorMessage.CatalogRequiresCycle,
                     new { Cycle = string.Join(" -> ", path.Skip(at).Append(pack.Name)) }));
             path.Add(pack.Name);
             foreach (string required in pack.Requires) Visit(byName[required], path);

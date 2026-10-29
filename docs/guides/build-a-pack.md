@@ -127,6 +127,7 @@ the pack needs becomes a tool. Its name is reserved once embedded: the agent can
 ```csharp
 namespace LouisAgent.Packs.Units;
 
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Skills;
@@ -136,12 +137,12 @@ using Microsoft.Extensions.FileProviders;
 /// <summary>Unit conversion as a pack: one toolset, units, with its guide; no settings.</summary>
 public sealed class UnitsPack : IAgentPack
 {
-    public string Name => "units";
+    public string Name => UnitsToolset.Units.Wire();
 
     public IReadOnlyList<ToolsetDefinition> Toolsets { get; } =
     [
-        new("units", "A value converted between units of one kind",
-            GuideFile: SkillFiles.Guide("units"),
+        new(UnitsToolset.Units.Wire(), "A value converted between units of one kind",
+            GuideFile: SkillFiles.Guide(UnitsToolset.Units.Wire()),
             MissingSettings: _ => [],
             ToolTypes: [typeof(UnitTools)],
             CreateTools: _ => [new UnitTools()],
@@ -169,6 +170,29 @@ What each part of a `ToolsetDefinition` is for:
 `Requires` names other packs this one needs, by name only (never their code). The catalogue refuses a name nobody
 registered and a cycle. The pack must be ready when built: anything slow (a connection, a listing) happens once at
 start-up, and its toolsets never change afterwards, so every chat keeps a cacheable prompt.
+
+### Your names are an enum
+
+A name that is written in more than one place is an enum ([ADR 0043](../adr/0043-repeated-names-are-enums.md)). The pack keeps **its own**
+enum of the toolsets it offers, in its project (`UnitsToolset.cs`), and never uses another pack's or an identity's: a stranger's pack
+needs nothing of ours but `louis-agent.choices`, which core brings along.
+
+```csharp
+public enum UnitsToolset
+{
+    Units,                        // travels as "units": a member's lower-case name is its wire name
+    // [WireName("unit-converter")] Converter,   // a name that differs from the member says so
+}
+```
+
+Write the name out with `.Wire()` (`using LouisAgent.Choices;`): `new(UnitsToolset.Units.Wire(), …)`, `public string Name => UnitsToolset.Units.Wire();`.
+Read one in with `SettingChoice.TryParse`. Never `ToString()`, `ToLowerInvariant()` or a naming policy. The text stays text where it travels
+(an environment variable, a role file's `toolsets: units?`, a request body); `CrossBoundaryNamesTests` in `tests/louis-agent.composition.tests`
+checks that every pack an identity names and every toolset a role's header lists is one the catalogue has.
+
+Add your enum's file to the list in `RepeatedNameTests` (`tests/louis-agent.core.tests/RepeatedNames/`): from then on a typed `"units"` anywhere in the sources and tests
+fails, so a typo cannot compile. A test that only stores or shows a toolset's name uses a sample (`SampleToolset` in `tests/louis-agent.testing`); a test
+that needs the real toolset uses your enum member, never a sample and never a string.
 
 ## 5. Give it settings (when it needs them)
 

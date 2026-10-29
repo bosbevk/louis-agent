@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek sou dit eintlik vir my kok gee, maar hy is nie in hierdie sessie nie. Die resep hieronder kom dus van 'n gepubliseerde bron, nie van my kok nie, en ek het dit self vir vier mense aangepas.\n\n**Bobotie vir 4** (aangepas van TASTE se resep vir 6 tot 8; voorbereiding 15 minute, kook sowat 1½ uur plus 30 minute vir die custard-bo)\n\n**Die mengsel**\n- 1½ uie, fyngekap\n- 1 eetlepel + 1 teelepel olierolie\n- 1 eetlepel + 1 teelepel medium kerriepoeier\n- ⅔ teelepel borrie (turmeric)\n- 1⅓ teelepel vars gemmer, fyngekap\n- 1 tot 2 knoffelhuisies, fyngekap\n- 1⅓ eetlepel appelazijn\n- ⅔ teelepel suiker\n- ⅔ teelepel sout\n- ⅔ teelepel varsgemaalde swartpeper\n- 650 tot 700 g beesmaalvleis\n- 1 snytjie wit brood\n- 170 ml melk (die brood word hierin geweek)\n- 2 eetlepels vrugte-blatjang\n- 35 g gesnyde amandels\n- 2 lourierblare vir bo-op\n\n**Die custard-bo**\n- Die oorblywende melk, plus 1 eier, klopgeel en deurgesif\n\n**Metode**\n1. Verhit die oond tot 180 °C en smeer 'n ovenskottel in.\n2. Fruit die ui in die olie tot sag. Meng die kerrie, borrie, gemmer, knoffel, asyn, suiker, sout en peper, roer by die ui en fruit nog 2 minute.\n3. Voeg die maalvleis by en roer goed. Gaar sowat 5 minute.\n4. Week die brood in die melk en haal dit uit. Hou die res van die melk oor. Vryf die brood fyn met 'n vurk en meng dit met die eier (1 eier, lig geklop), die blatjang en die amandels in die vleis.\n5. Skep die vleis in die skottel, gelyk die bokant af en bak 1 uur.\n6. Meng die res van die melk met die eier, sif dit en giet dit oor die gaar vleis. Lê die lourierblare bo-op en bak nog 30 minute, of tot die custard vas is.\n\n**Koste:** Ek het nie winkelpryse opgesoek nie (ek het die winkels se toestemming nog nie). Ek gee dus geen rand-skatting vir die resep nie.\n\n**Om mee te eet:** geel rys en 'n groen slaai of blatjang is die klassieke pasmaat.\n\n**Bron:** [Traditional bobotie recipe | TASTE](https://taste.co.za/recipes/bobotie/). Die hoeveelhede vir 4 mense is my eie omskakeling van die oorspronklike."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

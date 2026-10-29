@@ -1,0 +1,31 @@
+@* The run in progress (F31 step 9): a row per turn as the script reports it, the open turn typing out in the chat's
+   own TurnView, the script's plain lines folded. A reloaded page picks the live run up again: the finished turns from
+   the store, the rest from the run's events. *@
+
+<section class="card-p run-panel @(Run.Status)">
+    <div class="card-head">
+        <strong>@(Title ?? Run.Check) · <code>@Run.Id</code></strong>
+        <span class="work-status">@RunText.Status(Run.Status)</span>
+    </div>
+    <p class="muted">
+        @RunText.Repeats(Run.Repeat) · started @Run.StartedAt.ToLocalTime().ToString("HH:mm:ss")
+        @if (Run.ExitCode is { } exit && exit != 0) { <span> · the script ended with code @exit</span> }
+        @if (Run.Stored is false) { <span class="danger"> · not everything was stored@(Run.StoreError is { } se ? $": {se}" : "")</span> }
+        @if (Run.Stored is true) { <span> · in the store</span> }
+    </p>
+
+    @if (_turns.Rows.Count > 0)
+    {
+        <LiveTurnTable Turns="_turns" Run="Run" Currency="Currency" OnOpen="OpenTurnAsync" />
+    }
+
+    @if (_turns.Open is { } open)
+    {
+        <div class="tree-turn-body">
+            <p class="muted"><code>@open.Mode · @open.Task · turn @open.N</code></p>
+            <TurnView Turn="open.Turn" Streaming="@(Running && !open.Done)" Currency="Currency" />
+        </div>
+    }
+
+    <details class="admin-details" open="@(_turns.Rows.Count == 0)"><summary>The script's own lines (@_log.Count)</summary><pre class="admin-pre run-log">@string.Join("\n", _log)</pre></details>
+</section>

@@ -1,6 +1,6 @@
-namespace LouisAgent.Core.Llm;
 
 using LouisAgent.Core.Llm.Caching;
+using LouisAgent.Core.Llm.Messages;
 using LouisAgent.Core.Llm.UsageMapping;
 using System.ClientModel;
 using Anthropic;
@@ -13,6 +13,7 @@ using OpenAI;
 using LouisAgent.Core.Llm.Providers.AnthropicProvider;
 using LouisAgent.Core.Messages;
 
+namespace LouisAgent.Core.Llm;
 /// <summary>Maps <see cref="LlmOptions.Provider"/> to an <see cref="IChatClient"/>. Add a provider by adding one entry.</summary>
 public sealed class LlmClientFactory : ILlmClientFactory
 {
@@ -31,11 +32,12 @@ public sealed class LlmClientFactory : ILlmClientFactory
     public IChatClient Create(LlmOptions options)
     {
         if (string.IsNullOrWhiteSpace(options.Model))
-            throw new ArgumentException(MessageText.Format(ErrorMessage.LlmModelRequired), nameof(options));
+            throw new ArgumentException(MessageText.Format(LlmErrorMessage.LlmModelRequired), nameof(options));
 
         if (!_providers.TryGetValue(options.Provider ?? string.Empty, out var create))
             throw new ArgumentException(
-                MessageText.Format(ErrorMessage.UnknownProvider, new { options.Provider, Supported = string.Join(", ", _providers.Keys) }),
+                MessageText.Format(LlmErrorMessage.UnknownProvider,
+                    new { options.Provider, Supported = string.Join(", ", _providers.Keys) }),
                 nameof(options));
 
         // Innermost in the engine's pipeline, under the tool loop, so every round is marked.
@@ -64,7 +66,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     private static IChatClient CreateAnthropic(LlmOptions o)
     {
         if (string.IsNullOrWhiteSpace(o.ApiKey))
-            throw new InvalidOperationException(MessageText.Format(ErrorMessage.AnthropicKeyRequired));
+            throw new InvalidOperationException(MessageText.Format(LlmErrorMessage.AnthropicKeyRequired));
 
         var clientOptions = new ClientOptions { ApiKey = o.ApiKey };
         if (!string.IsNullOrWhiteSpace(o.Endpoint)) clientOptions.BaseUrl = o.Endpoint;
@@ -74,8 +76,10 @@ public sealed class LlmClientFactory : ILlmClientFactory
         IChatClient client = new AnthropicClient(clientOptions).AsIChatClient(o.Model, MaxOutputTokens);
         return UsesThinkingBudget(o.Model)
             ? new ChatClientBuilder(client).Use(
-                (messages, options, next, ct) => next.GetResponseAsync(messages, WithThinkingBudget(options, o.Model), ct),
-                (messages, options, next, ct) => next.GetStreamingResponseAsync(messages, WithThinkingBudget(options, o.Model), ct)).Build()
+                (messages, options, next, ct) =>
+                    next.GetResponseAsync(messages, WithThinkingBudget(options, o.Model), ct),
+                (messages, options, next, ct) =>
+                    next.GetStreamingResponseAsync(messages, WithThinkingBudget(options, o.Model), ct)).Build()
             : client;
     }
 
@@ -111,7 +115,9 @@ public sealed class LlmClientFactory : ILlmClientFactory
             // The adapter keeps model and max_tokens from this object, then adds the messages, tools and options.
             var raw = previousFactory?.Invoke(client) as MessageCreateParams ?? new MessageCreateParams
             {
-                Model = model, MaxTokens = options.MaxOutputTokens ?? MaxOutputTokens, Messages = [],
+                Model = model,
+                MaxTokens = options.MaxOutputTokens ?? MaxOutputTokens,
+                Messages = [],
             };
             return raw with { Thinking = new ThinkingConfigEnabled { BudgetTokens = ThinkingBudget(effort) } };
         };
@@ -134,7 +140,7 @@ public sealed class LlmClientFactory : ILlmClientFactory
     private static IChatClient CreateOpenAiCompatible(LlmOptions o)
     {
         if (string.IsNullOrWhiteSpace(o.Endpoint))
-            throw new InvalidOperationException(MessageText.Format(ErrorMessage.OpenAiEndpointRequired));
+            throw new InvalidOperationException(MessageText.Format(LlmErrorMessage.OpenAiEndpointRequired));
 
         // Local servers (LM Studio, vLLM, ...) often need no key, but the SDK requires a non-empty credential.
         var client = new OpenAIClient(

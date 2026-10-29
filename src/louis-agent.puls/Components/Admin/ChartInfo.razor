@@ -1,10 +1,9 @@
-@* F31 (Louis: "on hover can we explain what is good and bad and why?"): a chart's title with a note that opens on
-   hover or keyboard focus: what the chart shows, what good and bad look like, and why it matters. One text per measure,
-   shared by the explorer's rings and the trend's lines, so both say the same. *@
+@* A chart's title with a note that opens on hover or keyboard focus: what the chart shows, what good and bad look
+   like, and why it matters. *@
 
 <span class="chart-title" tabindex="0" aria-describedby="@_id">
     <strong>@Title</strong><span class="ic i-info info-icon" aria-hidden="true"></span>
-    @if (Guides.TryGetValue(Topic, out var g))
+    @if (Guide is { } g)
     {
         <span class="chart-tip" role="tooltip" id="@_id">
             <span class="tip-what">@g.What</span>
@@ -15,62 +14,3 @@
         </span>
     }
 </span>
-
-@code {
-    /// <summary>Which measure: cost, tokens, time, routing, accuracy, cache, tools, sources or value.</summary>
-    [Parameter, EditorRequired] public string Topic { get; set; } = "";
-    [Parameter, EditorRequired] public string Title { get; set; } = "";
-
-    private readonly string _id = "tip-" + Guid.NewGuid().ToString("N")[..8];
-
-    private sealed record Guide(string What, string Good, string Bad, string Why, string Better);
-
-    private static readonly Dictionary<string, Guide> Guides = new()
-    {
-        ["cost"] = new("What one repeat of the mode cost: Puls's own requests and the specialist's.",
-            "Lower, with the same or a better score.",
-            "A dearer mode that doesn't give better answers.",
-            "Delegating pays only when the specialist does something better or cheaper; otherwise it's just another model round.",
-            "Lower is better."),
-        ["tokens"] = new("Every token, by kind: fresh input, cache written, cache read and output.",
-            "Few tokens, most of them read from the cache.",
-            "Much fresh input or cache written: every request starts almost from scratch.",
-            "Tokens are the cost and the wait; a token from the cache costs a tenth of a fresh one.",
-            "Lower is better."),
-        ["time"] = new("Seconds per turn; the ring splits the model's time between Puls and the specialist.",
-            "Short turns.",
-            "Long turns waiting on a specialist or on tools.",
-            "The user waits every second; a specialist adds a whole model round.",
-            "Lower is better."),
-        ["routing"] = new("How many conversations went to the right place: the cook for a meal, Puls itself for the rest.",
-            "100%, all green.",
-            "Any red: a question with the wrong role.",
-            "Routed wrong costs money and gives a weaker answer, even when the text reads well. This measures the route, not the answer.",
-            "Higher is better."),
-        ["accuracy"] = new("The shopping list's ingredients with a price and a link to where the price was found, or rightly without one where the user's town has no shop with a catalogue.",
-            "Green: every price with a source; in a town with no such shop, every row without a price.",
-            "Orange (guessed, no source) or red (no price, or a price from a store that isn't the town's).",
-            "A guessed price looks like an answer, but nobody can check it; only a price with a source is a real answer.",
-            "Higher is better."),
-        ["cache"] = new("The share of the input read from the cache instead of sent fresh.",
-            "High, 80% or more.",
-            "Low: the start of the prompt changes between requests.",
-            "A cache hit costs a tenth and is faster; a low share means the system prompt or the tools change along the way.",
-            "Higher is better."),
-        ["tools"] = new("Tool calls that worked against those refused or failed, with the biggest reason.",
-            "All green.",
-            "Red: the model searched and got nothing back.",
-            "A failed call costs a round, and the answer then rests on guessing (as when Tavily's limit was reached).",
-            "Lower is better."),
-        ["sources"] = new("The websites read: South African shops (their catalogues searched, or their pages), other SA sites, maps (where a branch was looked up) and elsewhere.",
-            "Green: SA shops, where the price is one you can pay.",
-            "Grey: foreign sites for an SA price.",
-            "A price from an SA shop is the answer; a site from elsewhere is background at best.",
-            "More SA shops is better; more sites on their own is not."),
-        ["value"] = new("What one real answer cost: the cost of the conversations routed right and (for a meal) priced 80% or more with sources, divided by their number.",
-            "Low, with most of the ring green.",
-            "Red: money spent without an answer.",
-            "Cheap is worth nothing without an answer; this is the cost that matters.",
-            "Lower is better, as long as there are answers."),
-    };
-}

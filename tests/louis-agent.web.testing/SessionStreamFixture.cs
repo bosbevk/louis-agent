@@ -1,5 +1,5 @@
-using System.Net.ServerSentEvents;
 using System.Text.Json;
+using LouisAgent.SessionStream;
 using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
@@ -7,26 +7,32 @@ using LouisAgent.Web.Shared.Chats;
 namespace LouisAgent.Web.Testing;
 
 /// <summary>
-/// One recorded Puls turn (benchmarks/fixtures/session-stream.sse, F31 step 7a: a pancake recipe for two, priced near
+/// One recorded Puls turn (tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse, F31 step 7a, moved there in F18 step 7.2: a pancake recipe for two, priced near
 /// Stellenbosch, handed to the cook), replayed through <see cref="TurnStream"/> the way the chat page replays the live
 /// stream. Every component snapshot renders the turn it gives, so the goldens show a real answer, not a made-up one.
 /// </summary>
 public static class SessionStreamFixture
 {
-    /// <summary>The question the recording answered.</summary>
-    public const string Question = "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
+    /// <summary>The role the recording's cook ran as (recorded data stays as recorded): the goldens and the tests that replay the turn read it, so they name it here, once.</summary>
+    public const string CookRole = "puls-cook";
 
-    public static string Folder => Path.Combine(TestPaths.RepoRoot, "benchmarks", "fixtures");
+    /// <summary>The question the recording answered.</summary>
+    public const string Question =
+        "Gee my 'n eenvoudige resep vir pannekoek vir twee mense, en wat dit by 'n winkel naby Stellenbosch kos.";
+
+    /// <summary>Where the recording lives: the session-stream tests' fixtures, read from the source tree (the same on Windows and Linux).</summary>
+    public static string Folder =>
+        Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.session-stream.tests", "Fixtures");
 
     public static string StreamFile => Path.Combine(Folder, "session-stream.sse");
 
     /// <summary>The stream's events, in order, as the API client hands them to the page.</summary>
-    public static async Task<List<AgentStreamEvent>> EventsAsync()
+    public static async Task<List<SessionEvent>> EventsAsync()
     {
-        var events = new List<AgentStreamEvent>();
+        var events = new List<SessionEvent>();
         await using var stream = File.OpenRead(StreamFile);
-        await foreach (var item in SseParser.Create(stream).EnumerateAsync())
-            events.Add(new AgentStreamEvent(item.EventType, JsonDocument.Parse(item.Data).RootElement));
+        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, CancellationToken.None))
+            events.Add(streamEvent);
         return events;
     }
 

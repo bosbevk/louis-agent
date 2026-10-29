@@ -80,6 +80,9 @@ services:
     build:
       context: ..
       dockerfile: docker/images/Dockerfile.api
+      args:
+        # The commit the eval runner stamps on a run: EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose … up -d --build api
+        EVAL_COMMIT: ${EVAL_COMMIT:-unknown}
     image: louis-agent-api:latest
     container_name: louis_agent_api
     env_file:

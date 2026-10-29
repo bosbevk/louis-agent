@@ -1,8 +1,9 @@
-namespace LouisAgent.Core.Skills.Roles;
 
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Skills.Messages;
 
+namespace LouisAgent.Core.Skills.Roles;
 /// <summary>Which roles this instance offers, and the file of one (F29, CL8, CL15; S, from AgentHost).</summary>
 public static class RoleFiles
 {
@@ -17,18 +18,19 @@ public static class RoleFiles
         {
             // A minion with no role would be the coding agent's voice with one tool (F30): it always opens with a role.
             if (level == RoleLevel.Minion)
-                throw new RoleException(MessageText.Format(ErrorMessage.MinionNeedsRole,
+                throw new RoleException(MessageText.Format(SkillErrorMessage.MinionNeedsRole,
                     new { Available = string.Join(", ", Enabled(agent, level)) }));
             return RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent);
         }
+
         if (!RoleCatalog.IsValidName(role))
-            throw new RoleException(MessageText.Format(ErrorMessage.RoleNameInvalid, new { Name = role }));
+            throw new RoleException(MessageText.Format(SkillErrorMessage.RoleNameInvalid, new { Name = role }));
         string file = RoleCatalog.FileName(role, level);
         // A role that's off (F29) is refused as an unknown one: the list names what this instance may use. At level
         // 0 only a mode is a name (CL9); at level 2 a role on the base (F30), never the base itself.
         bool offered = level == RoleLevel.Specialist || RoleCatalog.Available(level).Contains(role);
         if (!offered || !IsEnabled(agent, role) || SkillFolder.Read(agent, file) is null)
-            throw new RoleException(MessageText.Format(ErrorMessage.UnknownRole,
+            throw new RoleException(MessageText.Format(SkillErrorMessage.UnknownRole,
                 new { Name = role, Available = string.Join(", ", Enabled(agent, level)) }));
         return file;
     }
@@ -41,15 +43,21 @@ public static class RoleFiles
     /// </summary>
     internal static void Check(AgentOptions agent, string defaultMode)
     {
-        var known = Enum.GetValues<RoleLevel>().SelectMany(RoleCatalog.Available).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var known = Enum.GetValues<RoleLevel>().SelectMany(RoleCatalog.Available)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
         var unknown = agent.RolesEnabled.Where(r => !known.Contains(r)).ToList();
         if (unknown.Count > 0)
-            throw new RoleException(MessageText.Format(ErrorMessage.UnknownRolesEnabled,
-                new { Names = string.Join(", ", unknown), Available = string.Join(", ", known.Order(StringComparer.Ordinal)) }));
+            throw new RoleException(MessageText.Format(SkillErrorMessage.UnknownRolesEnabled,
+                new
+                {
+                    Names = string.Join(", ", unknown),
+                    Available = string.Join(", ", known.Order(StringComparer.Ordinal))
+                }));
 
         string file = RoleCatalog.FileName(defaultMode, RoleLevel.Agent);
         if (SkillFolder.Read(agent, file) is null)
-            throw new RoleException(MessageText.Format(ErrorMessage.DefaultModeMissing, new { Mode = defaultMode, File = file }));
+            throw new RoleException(MessageText.Format(SkillErrorMessage.DefaultModeMissing,
+                new { Mode = defaultMode, File = file }));
     }
 
     /// <summary>

@@ -1,0 +1,105 @@
+event: message_start
+data: {"type":"message_start","message":{"session_id":"sess_golden","role":"assistant","toolsets":["web"],"session_role":null}}
+
+event: content_block_start
+data: {"type":"content_block_start","index":0,"content_block":{"type":"thinking","thinking":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"thinking_delta","thinking":"The user attached a note; the tool can read it."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":0}
+
+event: content_block_start
+data: {"type":"content_block_start","index":1,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":1,"delta":{"type":"text_delta","text":"Let me check the note."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":1}
+
+event: content_block_start
+data: {"type":"content_block_start","index":2,"content_block":{"type":"tool_use","id":"call_1","name":"ReadNote","input":{"name":"recipe"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":2}
+
+event: content_block_start
+data: {"type":"content_block_start","index":3,"content_block":{"type":"tool_result","tool_use_id":"call_1","content":"note recipe: melktert, Sunday","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":3}
+
+event: content_block_start
+data: {"type":"content_block_start","index":4,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":4,"delta":{"type":"text_delta","text":"The note says: melktert on Sunday."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":4}
+
+event: message_delta
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":270,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":32,"requests":2,"cost":null,"currency":null,"unpriced":2,"display_cost":null,"display_currency":null,"display_symbol":null,"rate_as_of":null}}
+
+event: message_stop
+data: {"type":"message_stop"}
+
+event: sub_session
+data: {"type":"sub_session","tool_use_id":"call_sub","agent":"puls","event":"message_start","data":{"type":"message_start","message":{"session_id":"sess_peer","role":"assistant","toolsets":["web"]}}}
+
+event: message_start
+data: {"type":"message_start","message":{"session_id":"sess_golden","role":"assistant","toolsets":["web"],"session_role":null}}
+
+event: content_block_start
+data: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"No agent-built tools yet.\n\nApprove with /approve <Name>, discard with /reject <Name>."}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":0}
+
+event: message_delta
+data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}
+
+event: message_stop
+data: {"type":"message_stop"}
+
+event: message_start
+data: {"type":"message_start","message":{"session_id":"sess_golden","role":"assistant","toolsets":["web"],"session_role":null}}
+
+event: message_delta
+data: {"type":"message_delta","delta":{"stop_reason":"cancelled"},"usage":{"input_tokens":0,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":0,"requests":1,"cost":null,"currency":null,"unpriced":1,"display_cost":null,"display_currency":null,"display_symbol":null,"rate_as_of":null}}
+
+event: message_stop
+data: {"type":"message_stop"}
+
+event: message_start
+data: {"type":"message_start","message":{"session_id":"sess_golden","role":"assistant","toolsets":["web"],"session_role":null}}
+
+event: content_block_start
+data: {"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"call_2","name":"ReadNote","input":{"name":"recipe"}}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":0}
+
+event: content_block_start
+data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_result","tool_use_id":"call_2","content":"note recipe: melktert, Sunday","is_error":false}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":1}
+
+event: content_block_start
+data: {"type":"content_block_start","index":2,"content_block":{"type":"text","text":""}}
+
+event: content_block_delta
+data: {"type":"content_block_delta","index":2,"delta":{"type":"text_delta","text":"Checking the second note"}}
+
+event: content_block_stop
+data: {"type":"content_block_stop","index":2}
+
+event: error
+data: {"type":"error","error":{"type":"api_error","message":"InvalidOperationException: the connection dropped"},"usage":{"input_tokens":80,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"output_tokens":5,"requests":1,"cost":null,"currency":null,"unpriced":1,"display_cost":null,"display_currency":null,"display_symbol":null,"rate_as_of":null}}
+

@@ -1,9 +1,11 @@
+using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Agent.Toolsets;
 using System.Collections.Concurrent;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
@@ -18,13 +20,26 @@ namespace LouisAgent.Api.Sessions;
 /// One conversation: its engine (the toolsets it chose, fixed for its lifetime, F5), its history and the turn in
 /// progress, if any.
 /// </summary>
-internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<string> toolsets, int depth, UsageTags tags,
-    string? role = null, UserPlace? place = null, string? llm = null, string? tool = null)
+internal sealed class AgentSession(
+    string id,
+    AgentEngine engine,
+    IReadOnlyList<string> toolsets,
+    int depth,
+    UsageTags tags,
+    string? role = null,
+    UserPlace? place = null,
+    string? llm = null,
+    string? tool = null,
+    StreamFormat format = StreamFormat.Claude,
+    SessionReplay? replay = null)
 {
     private readonly SemaphoreSlim _turnLock = new(1, 1);
     private CancellationTokenSource? _activeTurn;
 
     public string Id { get; } = id;
+
+    /// <summary>The format this session's events are written in, chosen when it opened and kept for its lifetime (F18 step 1f).</summary>
+    public StreamFormat StreamFormat { get; } = format;
 
     /// <summary>The engine of this session's toolset profile, shared with every session that chose the same toolsets.</summary>
     public AgentEngine Engine { get; } = engine;
@@ -40,6 +55,9 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>Where the user is, when they shared it (F22): set for every turn; the first message says it.</summary>
     public UserPlace? Place { get; } = place;
+
+    /// <summary>What the session does with the web (F18 step 4a), resolved when it opened; null for a live chat and for an eval that leaves the web live.</summary>
+    public SessionReplay? Replay { get; } = replay;
 
     /// <summary>The LLM profile the session runs on (F30), or null for the instance's own model.</summary>
     public string? Llm { get; } = llm;
@@ -72,6 +90,7 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
 
     /// <summary>What the caller said the session is for (e.g. the orchestrator's fix and run); on every usage record.</summary>
     public UsageTags Tags { get; } = tags;
+
     public DateTimeOffset CreatedAt { get; } = DateTimeOffset.UtcNow;
     public DateTimeOffset LastActivity { get; private set; } = DateTimeOffset.UtcNow;
     public bool IsBusy => _turnLock.CurrentCount == 0;
@@ -107,8 +126,15 @@ internal sealed class AgentSession(string id, AgentEngine engine, IReadOnlyList<
     public bool Cancel()
     {
         if (Volatile.Read(ref _activeTurn) is not { } turn) return false;
-        try { turn.Cancel(); }
-        catch (ObjectDisposedException) { return false; }
+        try
+        {
+            turn.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            return false;
+        }
+
         return true;
     }
 }

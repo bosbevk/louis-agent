@@ -1,0 +1,21 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-af",
+  "mode": "puls-tools",
+  "run": "76667d39dcdb",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Wat kan ek vanaand vir vier mense kook vir onder R250? Ek koop by PnP. Gee die resep en 'n inkopielys met pryse.",
+      "answer": "Ek gaan eers 'n resep op die web soek, want my kok is nie in hierdie sessie beskikbaar nie.Ek kan jou nie 'n presiese PnP-prys gee nie. My kok is nie in hierdie sessie beskikbaar nie, en ek kan nie PnP se pryse opsoek nie (ek het net Checkers se katalogus, en hulle s'n sal ek nie as PnP se pryse aanbied nie).\n\nWat ek wel gevind het, is 'n Discovery-artikel met vier eetgerechte vir vier mense, wat hulle \"R100\" noem:\n- **Mac and cheese** (heelwaarskynlik die maklikste)\n- **Pizza tortilla**\n- **English muffins met sampioene en gepoch-eerde eier**\n- **Romerige spinasie-aartappel**\n\nHulle is almal vegetaries en hulle R100 is Discovery se eie skatting, nie PnP s'n nie. Bron: https://www.discovery.co.za/vitality/meals-for-four-under-100-rand\n\nVir vanaand: sê vir my of julle vleis eet of vegetaries eet, en of jy 'n spesifieke gereg wil hê. Dan haal ek die volle resep en 'n lysie met die bestanddele, en dit sal 'n skatting wees, nie 'n PnP-prys nie. Gaan jy by PnP se webwerf of winkel self die pryse nagaan, dan kan jy dit maklik met my lysie vergelyk."
+    },
+    {
+      "question": "Maak dit eerder vir ses mense. Wat kos dit nou?",
+      "answer": "Ek kan vir ses mense nie 'n prys gee nie. Ek het geen betroubare PnP-pryse en kan dit nie vir jou soek nie, en ek gaan nie 'n getal uit my kop noem en dit as 'n prys aanbied nie. Die bedrag sal jy by PnP se webwerf of in die winkel moet nagaan.\n\nWat ek wel kan doen, is die Discovery-mac and cheese vir ses mense uitrek. Die oorspronklike resep is vir vier, dus vermenigvuldig ek met 1,5:\n\n**Mac and cheese vir 6** (vegetaries, 10 min voorbereiding, 10 min kook, 45 min in die oond)\n- 375 g heelkorrel-macaroni (anderhalf pakkie van 250 g; koop twee pakkies, 500 g)\n- 4½ eiers (koop 5)\n- 1½ koppie laevet melk\n- 180 g mediumvet cheddar, gerasper (driekwart daarvan in die pasta, die res bo-op)\n- Sout, peper, en eventueel 'n knippie soet paprika, mosterdpoeier of uiepoeier\n\n**Hoe dit werk:** Kook die pasta soos die pakkie sê, spoel dit koud af en meng driekwart van die kaas daardeur. Klop die eiers en melk saam met die kruie, giet oor die pasta, strooi die res van die kaas bo-op. Bak by 180 °C vir ongeveer 45 minute, tot dit gesit het en 'n bruin korsie het.\n\nDie bron is https://www.discovery.co.za/vitality/meals-for-four-under-100-rand. Die uitrekening is my eie rekenwerk.\n\nAs julle vleis wil eet, kan ek 'n ander gereg vir ses soek, maar dan sal ek ook geen prys kan gee nie."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

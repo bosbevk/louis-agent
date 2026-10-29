@@ -11,7 +11,9 @@ answers HTTP, so a run costs nothing and needs no keys.
 
 ```bash
 dotnet build louis-agent-solution.sln
-dotnet test louis-agent-solution.sln                                         # everything, as CI does
+dotnet test louis-agent-solution.sln                                         # everything
+dotnet test louis-agent-solution.sln --filter "Category!=Integration"        # the unit tests, as CI's first test step
+dotnet test louis-agent-solution.sln --filter "Category=Integration"         # the integration tests, as its second
 dotnet test tests/louis-agent.core.tests                                     # one project
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"   # one class
 ```
@@ -36,6 +38,7 @@ write first.
 
 - **The folder mirrors the source**, and the namespace is the folder: a test of `louis-agent.core/Tools/Git/GitTools.cs`
   is `tests/louis-agent.core.tests/Tools/Git/GitToolsTests.cs`, in `LouisAgent.Core.Tests.Tools.Git`.
+- **A test that leaves its process is an integration test** (F18 step 7.6): it starts a real process (git, bash, an interpreter, `dotnet`, the eval runner), opens Mongo or needs the Puls stack. It lives in a sibling project, `{name}.integration-tests` (`tests/louis-agent.core.integration-tests`, `.api.`, `.orchestrator.`, `.pack.shops.`), its class is `[Category("Integration")]`, and it asks for the tool through `Outside.Tool` (a missing tool skips the test on your machine and fails it on CI) or `Outside.Stack` (the Puls stack's browser or SearXNG: always skips when its address is not set). What a unit and an integration project share goes in a library beside them (`louis-agent.api.testing`: the in-memory API host, the built runner dlls, the store contracts that run against memory and Mongo). `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests` hold it. In the solution they sit in the folders `unit`, `integration` and `shared`.
 - **The project mirrors the project:** a pack's tests in `tests/louis-agent.pack.{name}.tests`, an identity's in
   `tests/louis-agent.identity.{name}.tests`. No test project references another.
 - A test file holds at most 400 lines; split a long one by what it tests.

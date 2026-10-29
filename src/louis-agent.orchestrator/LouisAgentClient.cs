@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.SessionStream;
 using LouisAgent.Orchestrator.Messages;
 
 namespace LouisAgent.Orchestrator;
@@ -26,11 +27,21 @@ internal sealed class AgentToolCall(string id, string name, string input)
 /// </param>
 /// <param name="Currency">The cost's currency; null when nothing was priced.</param>
 internal sealed record AgentReply(
-    string Text, IReadOnlyList<AgentToolCall> ToolCalls, string? StopReason, string? Error,
-    UsageTotal? Usage = null, string? Currency = null);
+    string Text,
+    IReadOnlyList<AgentToolCall> ToolCalls,
+    string? StopReason,
+    string? Error,
+    UsageTotal? Usage = null,
+    string? Currency = null);
 
 /// <summary>The machine-readable line louis-agent is asked to end a fix with.</summary>
-internal sealed record FixResult(string Status, string? Commit, string? Branch, string? Tests, string? Summary, string? Reason);
+internal sealed record FixResult(
+    string Status,
+    string? Commit,
+    string? Branch,
+    string? Tests,
+    string? Summary,
+    string? Reason);
 
 /// <summary>
 /// Talks to louis-agent.api: one session per fix, messages streamed back as Claude-style Server-Sent Events.
@@ -45,7 +56,8 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "v1/sessions");
         if (tags is not null || toolsets is not null)
-            request.Content = JsonContent.Create(new { task = tags?.Task, run = tags?.Run, service = tags?.Service, toolsets });
+            request.Content = JsonContent.Create(new
+            { task = tags?.Task, run = tags?.Run, service = tags?.Service, toolsets });
         AddKey(request);
         using var response = await http.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
@@ -56,28 +68,37 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     public async Task<AgentReply> SendAsync(string sessionId, string message, Action<string>? onProgress = null,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(sessionId)}/messages")
-        {
-            Content = JsonContent.Create(new { message }),
-        };
+        using var request =
+            new HttpRequestMessage(HttpMethod.Post, $"v1/sessions/{Uri.EscapeDataString(sessionId)}/messages")
+            {
+                Content = JsonContent.Create(new { message }),
+            };
         AddKey(request);
         using var response = await http.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         if (!response.IsSuccessStatusCode)
-            {
+        {
             string body = await response.Content.ReadAsStringAsync(cancellationToken);
-            return new AgentReply("", [], null, MessageText.Format(OrchestratorToolMessage.HttpFailed, new { Status = (int)response.StatusCode, Body = body }));
+            return new AgentReply("", [], null,
+                MessageText.Format(OrchestratorToolMessage.HttpFailed,
+                    new { Status = (int)response.StatusCode, Body = body }));
         }
 
-        using var reader = new StreamReader(await response.Content.ReadAsStreamAsync(cancellationToken));
-        return await ReadStreamAsync(reader, onProgress, cancellationToken);
+        return await ReadStreamAsync(await response.Content.ReadAsStreamAsync(cancellationToken), onProgress,
+            cancellationToken);
     }
 
     public async Task DeleteSessionAsync(string sessionId)
     {
         using var request = new HttpRequestMessage(HttpMethod.Delete, $"v1/sessions/{Uri.EscapeDataString(sessionId)}");
         AddKey(request);
-        try { using var _ = await http.SendAsync(request); }
-        catch (HttpRequestException) { /* the session times out on its own */ }
+        try
+        {
+            using var _ = await http.SendAsync(request);
+        }
+        catch (HttpRequestException)
+        {
+            /* the session times out on its own */
+        }
     }
 
     private void AddKey(HttpRequestMessage request)
@@ -86,37 +107,25 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     }
 
     /// <summary>Folds the event stream into a reply; <paramref name="onProgress"/> sees each tool call as it happens.</summary>
-    internal static async Task<AgentReply> ReadStreamAsync(TextReader reader, Action<string>? onProgress = null,
+    internal static async Task<AgentReply> ReadStreamAsync(Stream stream, Action<string>? onProgress = null,
         CancellationToken cancellationToken = default)
     {
         var text = new StringBuilder();
         var tools = new List<AgentToolCall>();
-        string? stopReason = null, error = null, eventName = null, currency = null;
+        string? stopReason = null, error = null, currency = null;
         UsageTotal? usage = null;
-        var data = new StringBuilder();
 
-        while (await reader.ReadLineAsync(cancellationToken) is { } line)
-        {
-            if (line.StartsWith("event:", StringComparison.Ordinal)) eventName = line[6..].Trim();
-            else if (line.StartsWith("data:", StringComparison.Ordinal)) data.Append(line[5..].TrimStart());
-            else if (line.Length == 0 && data.Length > 0)
-            {
-                Dispatch(eventName, data.ToString());
-                eventName = null;
-                data.Clear();
-            }
-        }
-        if (data.Length > 0) Dispatch(eventName, data.ToString());
+        await foreach (var streamEvent in SessionStreamReader.ReadAsync(stream, cancellationToken))
+            Dispatch(streamEvent);
 
         return new AgentReply(text.ToString(), tools, stopReason, error, usage, currency);
 
-        void Dispatch(string? name, string json)
+        void Dispatch(SessionEvent streamEvent)
         {
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-            switch (name)
+            switch (streamEvent)
             {
-                case "content_block_start" when root.GetProperty("content_block") is var block:
+                case ContentBlockStarted started:
+                    var block = started.Data.GetProperty("content_block");
                     string type = block.GetProperty("type").GetString() ?? "";
                     // Text blocks are separated by tool calls; keep them apart instead of running sentences together.
                     if (type == "text" && text.Length > 0 && !text.ToString().EndsWith('\n')) text.Append("\n\n");
@@ -127,7 +136,8 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                             block.GetProperty("name").GetString() ?? "?",
                             block.TryGetProperty("input", out var input) ? input.GetRawText() : "{}");
                         tools.Add(call);
-                        onProgress?.Invoke(MessageText.Format(OrchestratorLogMessage.LouisAgentToolCall, new { Tool = call.Name }));
+                        onProgress?.Invoke(MessageText.Format(OrchestratorLogMessage.LouisAgentToolCall,
+                            new { Tool = call.Name }));
                     }
                     else if (type == "tool_result")
                     {
@@ -138,22 +148,26 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
                             call.Result = block.TryGetProperty("content", out var content) ? content.GetString() : null;
                             call.IsError = failed;
                         }
+
                         if (failed) onProgress?.Invoke(MessageText.Format(OrchestratorLogMessage.LouisAgentToolFailed));
                     }
+
                     break;
-                case "content_block_delta" when root.GetProperty("delta") is var delta &&
-                                                delta.GetProperty("type").GetString() == "text_delta":
-                    text.Append(delta.GetProperty("text").GetString());
+                case ContentBlockDelta delta when delta.Data.GetProperty("delta") is var change
+                                                  && change.GetProperty("type").GetString() == "text_delta":
+                    text.Append(change.GetProperty("text").GetString());
                     break;
-                case "message_delta":
-                    stopReason = root.GetProperty("delta").GetProperty("stop_reason").GetString();
-                    if (root.TryGetProperty("usage", out var used) && used.ValueKind == JsonValueKind.Object)
+                case MessageDelta messageDelta:
+                    stopReason = messageDelta.Data.GetProperty("delta").GetProperty("stop_reason").GetString();
+                    if (messageDelta.Data.TryGetProperty("usage", out var used) &&
+                        used.ValueKind == JsonValueKind.Object)
                         (usage, currency) = ReadUsage(used);
                     break;
-                case "error":
-                    error = root.GetProperty("error").GetProperty("message").GetString();
+                case ErrorReported:
+                    error = streamEvent.Data.GetProperty("error").GetProperty("message").GetString();
                     // FX6: a failed reply still reports what it used, so the fix's cost isn't under-counted.
-                    if (root.TryGetProperty("usage", out var failedUsage) && failedUsage.ValueKind == JsonValueKind.Object)
+                    if (streamEvent.Data.TryGetProperty("usage", out var failedUsage) &&
+                        failedUsage.ValueKind == JsonValueKind.Object)
                         (usage, currency) = ReadUsage(failedUsage);
                     break;
             }
@@ -166,10 +180,18 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     /// </summary>
     internal static (UsageTotal Usage, string? Currency) ReadUsage(JsonElement usage)
     {
-        long Count(string name) => usage.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number ? v.GetInt64() : 0;
-        decimal? cost = usage.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number ? c.GetDecimal() : null;
-        string? currency = usage.TryGetProperty("currency", out var cur) && cur.ValueKind == JsonValueKind.String ? cur.GetString() : null;
-        return (new UsageTotal("louis-agent", (int)Count("requests"), Count("input_tokens"), Count("cache_creation_input_tokens"),
+        long Count(string name) => usage.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number
+            ? v.GetInt64()
+            : 0;
+
+        decimal? cost = usage.TryGetProperty("cost", out var c) && c.ValueKind == JsonValueKind.Number
+            ? c.GetDecimal()
+            : null;
+        string? currency = usage.TryGetProperty("currency", out var cur) && cur.ValueKind == JsonValueKind.String
+            ? cur.GetString()
+            : null;
+        return (new UsageTotal("louis-agent", (int)Count("requests"), Count("input_tokens"),
+            Count("cache_creation_input_tokens"),
             Count("cache_read_input_tokens"), Count("output_tokens"), cost, (int)Count("unpriced")), currency);
     }
 
@@ -183,8 +205,14 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
         {
             using var doc = JsonDocument.Parse(json);
             var root = doc.RootElement;
-            string? Get(string name) => root.TryGetProperty(name, out var v) && v.ValueKind != JsonValueKind.Null ? v.ToString() : null;
-            return Get("status") is { } status ? new FixResult(status, Get("commit"), Get("branch"), Get("tests"), Get("summary"), Get("reason")) : null;
+
+            string? Get(string name) => root.TryGetProperty(name, out var v) && v.ValueKind != JsonValueKind.Null
+                ? v.ToString()
+                : null;
+
+            return Get("status") is { } status
+                ? new FixResult(status, Get("commit"), Get("branch"), Get("tests"), Get("summary"), Get("reason"))
+                : null;
         }
         catch (JsonException)
         {
@@ -202,9 +230,13 @@ internal sealed partial class LouisAgentClient(HttpClient http, string? apiKey)
     {
         string? Short(string name) =>
             Regex.Match(json, $"\"{name}\"\\s*:\\s*\"([^\"\\\\]*)\"") is { Success: true } m ? m.Groups[1].Value : null;
+
         string? Free(string name) =>
-            Regex.Match(json, $"\"{name}\"\\s*:\\s*\"(.*?)\"\\s*(?=,\\s*\"(?:status|commit|branch|tests|summary|reason)\"\\s*:|\\}}\\s*$)",
-                RegexOptions.Singleline) is { Success: true } m ? m.Groups[1].Value : null;
+            Regex.Match(json,
+                $"\"{name}\"\\s*:\\s*\"(.*?)\"\\s*(?=,\\s*\"(?:status|commit|branch|tests|summary|reason)\"\\s*:|\\}}\\s*$)",
+                RegexOptions.Singleline) is { Success: true } m
+                ? m.Groups[1].Value
+                : null;
 
         return Short("status") is { } status
             ? new FixResult(status, Short("commit"), Short("branch"), Short("tests"), Free("summary"), Free("reason"))

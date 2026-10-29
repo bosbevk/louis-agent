@@ -1,0 +1,10 @@
+@* Where you are in the run, each step a way back; and the button that opens the chats side by side. *@
+<nav class="crumbs" aria-label="Where you are in the run">
+    <button type="button" class="crumb @(Level == 0 ? "here" : "")" @onclick="() => OnGo.InvokeAsync(0)">Run</button>
+    @if (Level >= 1) { <span class="crumb-sep">›</span><button type="button" class="crumb @(Level == 1 ? "here" : "")" @onclick="() => OnGo.InvokeAsync(1)">Conversations</button> }
+    @if (Level >= 2) { <span class="crumb-sep">›</span><button type="button" class="crumb @(Level == 2 ? "here" : "")" @onclick="() => OnGo.InvokeAsync(2)"><code>@OpenTask</code></button> }
+    @if (Level >= 3) { <span class="crumb-sep">›</span><button type="button" class="crumb @(Level == 3 ? "here" : "")" @onclick="() => OnGo.InvokeAsync(3)">Turn @Turn</button> }
+    @if (Level == 4 && Request is { } rq) { <span class="crumb-sep">›</span><span class="crumb here">@RequestMode · request at @rq.At.ToLocalTime().ToString("HH:mm:ss")</span> }
+    @* Louis: the chats side by side in a modal, Puls alone against Puls with its cook. *@
+    <button type="button" class="header-button chat-open" @onclick="() => OnChats.InvokeAsync(OpenTask)"><span class="ic i-chat" aria-hidden="true"></span>Replay conversations</button>
+</nav>

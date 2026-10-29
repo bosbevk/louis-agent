@@ -1,0 +1,10 @@
+@* The charts per mode, side by side in rows: what it spent, how well it answered, and what it used. *@
+<details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Per mode</summary>
+@* Louis: the cost per mode beside the tokens per mode. Each mode's bar is split between Puls's own requests and
+   the specialist's, against the dearest mode, so the bars compare. *@
+<div class="chart-pair">
+    <SpendCharts Tree="Tree" Currency="Currency" />
+    <AnswerCharts Tree="Tree" />
+    <UseCharts Tree="Tree" Currency="Currency" />
+</div>
+</details>

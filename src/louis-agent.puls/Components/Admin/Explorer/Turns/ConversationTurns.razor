@@ -1,0 +1,35 @@
+@* One conversation in every mode side by side: its turns, each with its requests on a timeline, then the review and a
+   person's notes on it. *@
+<div class="chart-head lead"><strong><code>@TaskId</code></strong><span class="muted">@ExplorerText.Blurb(Tree.Question(TaskId))</span><LegendList Entries="ExplorerLegends.Parts(ModeNames.Roles(Tree.Modes))" /></div>
+<div class="compare">
+    @foreach (var (m, i) in Tree.Columns)
+    {
+        var c = m.Conversation(TaskId);
+        <section class="compare-col" style="--i: @i">
+            <h3 class="compare-head"><span class="sw" style="background: @ChartPalette.Series(i)"></span>@ModeNames.Who(m) <code class="mode-name">@m.Name</code><span class="muted">@Heading(c)</span></h3>
+            @if (c is not null)
+            {
+                foreach (var (tu, j) in c.Turns.Select((x, j) => (x, j)))
+                {
+                    <section class="chart turn-chart" style="--i: @j">
+                        <div class="turn-head">
+                            <span class="tree-turn-n">Turn @tu.N</span><span class="tree-question">@tu.Question</span>
+                            <span class="chip">@ModeNames.Answerer(tu)</span>
+                            <span class="chip">@tu.Rows.Count requests</span><span class="chip">@ExplorerText.Secs(tu.Seconds) s</span>
+                            <span class="row-cost turn-cost" data-count="@Money(tu.Cost)">@Money(tu.Cost)</span>
+                            @if (tu.Error is not null) { <span class="chip bad" title="@tu.Error">error</span> }
+                            <RowActions TaskId="@TaskId" Turn="tu.N" OnReplay="OnReplay" OnRequests="OnOpenTurn" />
+                        </div>
+                        <TurnTimeline Turn="tu" Currency="Currency" />
+                    </section>
+                }
+                @if (c.Turns.Count > 0 && BlindReview.ReviewOf(Graders, c.Grades) is { } review)
+                {
+                    <ReviewPanel Conversation="Where(m)" Review="review" Asked="c.Turns.Select(t => t.Question).ToList()" Answer="@c.Turns[^1].Answer" Grades="c.Grades" />
+                }
+                @* F18 step 7a.2: a person's notes on this conversation, from the run as the page last fetched it. *@
+                <NotesPanel RunId="@RunId" Notes="Notes" Conversation="Where(m)" />
+            }
+        </section>
+    }
+</div>

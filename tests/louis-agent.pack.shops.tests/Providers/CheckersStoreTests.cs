@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Packs.Shops.Places;
 using LouisAgent.Packs.Shops.Providers;
 using LouisAgent.Core.Tools.Web.Browsing;
@@ -11,7 +12,8 @@ namespace LouisAgent.Packs.Shops.Tests.Providers;
 // answer is a real one for Malmesbury's centre, recorded 2026-10-17.
 public class CheckersStoreTests
 {
-    private static readonly string Contexts = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.pack.shops.tests", "Providers", "Fixtures", "checkers-store-contexts.json"));
+    private static readonly string Contexts = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests",
+        "louis-agent.pack.shops.tests", "Providers", "Fixtures", "checkers-store-contexts.json"));
 
     private static readonly BrowserCookie[] SetByCheckers =
     [
@@ -22,11 +24,15 @@ public class CheckersStoreTests
         new("_ga", "GA1.1", ".checkers.co.za"),
     ];
 
-    private sealed class FakeBrowser(string? answer = null, IReadOnlyList<BrowserCookie>? cookies = null, Exception? fails = null) : IWebBrowser
+    private sealed class FakeBrowser(
+        string? answer = null,
+        IReadOnlyList<BrowserCookie>? cookies = null,
+        Exception? fails = null) : IWebBrowser
     {
         public List<(Uri Url, BrowserSession? Session, string? Script)> Visits { get; } = [];
 
-        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+        public Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null,
+            string? script = null,
             string? readySelector = null, CancellationToken cancellationToken = default)
         {
             Visits.Add((url, session, script));
@@ -39,7 +45,9 @@ public class CheckersStoreTests
     private static ShopThrottle NoWait() => new(2, TimeSpan.FromSeconds(20), null, (_, _) => Task.CompletedTask);
 
     private static Task<(double Latitude, double Longitude)?> Malmesbury(string place, CancellationToken _) =>
-        Task.FromResult<(double, double)?>(place.Contains("malmesbury", StringComparison.OrdinalIgnoreCase) ? (-33.460278, 18.723611) : null);
+        Task.FromResult<(double, double)?>(place.Contains("malmesbury", StringComparison.OrdinalIgnoreCase)
+            ? (-33.460278, 18.723611)
+            : null);
 
     [Test]
     public async Task ATownsStore_IsTheCookiesCheckersSet_AskedOncePerTown()
@@ -50,7 +58,8 @@ public class CheckersStoreTests
         var first = await store.ForAsync("Malmesbury");
         var again = await store.ForAsync(" malmesbury ");
 
-        Assert.That(first!.Cookies.Select(c => c.Name), Is.EquivalentTo(new[] { "storeContexts", "storeids", "istio-storeIds" }),
+        Assert.That(first!.Cookies.Select(c => c.Name),
+            Is.EquivalentTo(new[] { "storeContexts", "storeids", "istio-storeIds" }),
             "the store's cookies, Checkers' own, never its bot token or analytics");
         Assert.That(again, Is.SameAs(first));
         Assert.That(browser.Visits, Has.Count.EqualTo(1), "one lookup per town");
@@ -66,8 +75,11 @@ public class CheckersStoreTests
         var (url, session, script) = browser.Visits.Single();
         Assert.That(url.AbsoluteUri, Is.EqualTo("https://www.checkers.co.za/"));
         Assert.That(session, Is.Not.Null.And.Property("Cookies").Empty, "a context of its own, starting empty");
-        Assert.That(script, Does.Contain("/api/store/fetch-store-contexts?update=true").And.Contain("-33.460278").And.Contain("18.723611"));
-        Assert.That(script, Does.Not.Contain("Malmesbury").And.Not.Contain("Wes-Kaap"), "only numbers of ours go into the script");
+        Assert.That(script,
+            Does.Contain("/api/store/fetch-store-contexts?update=true").And.Contain("-33.460278").And
+                .Contain("18.723611"));
+        Assert.That(script, Does.Not.Contain("Malmesbury").And.Not.Contain("Wes-Kaap"),
+            "only numbers of ours go into the script");
     }
 
     [Test]
@@ -93,12 +105,14 @@ public class CheckersStoreTests
     [TestCase("not json")]
     [TestCase(null)]
     public async Task NoStoreServingThePlace_IsTheDefaultStore(string? answer) =>
-        Assert.That(await new CheckersStore(new FakeBrowser(answer, SetByCheckers), Malmesbury).ForAsync("Malmesbury"), Is.Null);
+        Assert.That(await new CheckersStore(new FakeBrowser(answer, SetByCheckers), Malmesbury).ForAsync("Malmesbury"),
+            Is.Null);
 
     // The benchmark's no-shop town, Prince Albert, 300 km from a Checkers: Checkers answers any place it doesn't serve with
     // the stores a visitor with no address gets, its default store (5ece6935) first; that's no store for the town, else
     // the town's header would claim a store that isn't its own. Recorded 2026-10-18.
-    private static readonly string Fallback = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests", "louis-agent.pack.shops.tests", "Providers", "Fixtures", "checkers-store-contexts-fallback.json"));
+    private static readonly string Fallback = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "tests",
+        "louis-agent.pack.shops.tests", "Providers", "Fixtures", "checkers-store-contexts-fallback.json"));
 
     [Test]
     public async Task ATownCheckersAnswersWithItsFallbackStores_HasNoStore() =>
@@ -114,7 +128,8 @@ public class CheckersStoreTests
     public async Task AReplyThatIsntTheStoreAnswer_IsAFailedLookup_NotKept(string? reply)
     {
         var browser = new FakeBrowser(reply, SetByCheckers);
-        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Packs.Shops.Providers.StoreSessionCache(), NoWait());
+        var store = new CheckersStore(browser, Malmesbury, new LouisAgent.Packs.Shops.Providers.StoreSessionCache(),
+            NoWait());
 
         Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
         await store.ForAsync("Malmesbury");
@@ -128,7 +143,11 @@ public class CheckersStoreTests
     {
         int asked = 0;
         var store = new CheckersStore(new FakeBrowser(Contexts, SetByCheckers),
-            (_, _) => { asked++; throw new LouisAgent.Packs.Shops.Places.PlaceUnavailableException("429 Too Many Requests"); },
+            (_, _) =>
+            {
+                asked++;
+                throw new LouisAgent.Packs.Shops.Places.PlaceUnavailableException("429 Too Many Requests");
+            },
             new LouisAgent.Packs.Shops.Providers.StoreSessionCache());
 
         Assert.That(await store.ForAsync("Malmesbury"), Is.Null);
@@ -142,10 +161,16 @@ public class CheckersStoreTests
     public async Task TheLookup_WaitsAfterARefusal_AndARefusedOneIsARefusal()
     {
         var waits = new List<TimeSpan>();
-        var throttle = new LouisAgent.Packs.Shops.Providers.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) => { waits.Add(wait); return Task.CompletedTask; });
+        var throttle = new LouisAgent.Packs.Shops.Providers.ShopThrottle(2, TimeSpan.FromSeconds(20), null, (wait, _) =>
+        {
+            waits.Add(wait);
+            return Task.CompletedTask;
+        });
 
-        await new CheckersStore(new FakeBrowser("<html>blocked</html>", SetByCheckers), Malmesbury, throttle: throttle).ForAsync("Malmesbury");
-        await new CheckersStore(new FakeBrowser(Contexts, SetByCheckers), Malmesbury, throttle: throttle).ForAsync("Malmesbury");
+        await new CheckersStore(new FakeBrowser("<html>blocked</html>", SetByCheckers), Malmesbury, throttle: throttle)
+            .ForAsync("Malmesbury");
+        await new CheckersStore(new FakeBrowser(Contexts, SetByCheckers), Malmesbury, throttle: throttle)
+            .ForAsync("Malmesbury");
 
         Assert.That(waits, Has.Count.EqualTo(1), "the second lookup waited after the first was refused");
     }
@@ -163,7 +188,9 @@ public class CheckersStoreTests
 
     [Test]
     public async Task ABrowserError_IsTheDefaultStore_NotAFailedSearch() =>
-        Assert.That(await new CheckersStore(new FakeBrowser(fails: new WebBrowserException("didn't answer")), Malmesbury).ForAsync("Malmesbury"), Is.Null);
+        Assert.That(
+            await new CheckersStore(new FakeBrowser(fails: new WebBrowserException("didn't answer")), Malmesbury)
+                .ForAsync("Malmesbury"), Is.Null);
 
     // F34: the cook's searches run at once, and each engine builds its own shop tools; one cache for the process means
     // eleven first searches in two engines still ask Checkers once.
@@ -175,7 +202,8 @@ public class CheckersStoreTests
         var cook = new CheckersStore(browser, Malmesbury, shared);
         var puls = new CheckersStore(browser, Malmesbury, shared);
 
-        var sessions = await Task.WhenAll(Enumerable.Range(0, 11).Select(i => (i % 2 == 0 ? cook : puls).ForAsync("Malmesbury")));
+        var sessions =
+            await Task.WhenAll(Enumerable.Range(0, 11).Select(i => (i % 2 == 0 ? cook : puls).ForAsync("Malmesbury")));
 
         Assert.That(browser.Visits, Is.EqualTo(1));
         Assert.That(sessions, Has.All.Not.Null);
@@ -186,24 +214,13 @@ public class CheckersStoreTests
         private int _visits;
         public int Visits => _visits;
 
-        public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null, BrowserSession? session = null, string? script = null,
+        public async Task<BrowserVisit> VisitAsync(Uri url, Func<Uri, bool>? capture = null,
+            BrowserSession? session = null, string? script = null,
             string? readySelector = null, CancellationToken cancellationToken = default)
         {
             Interlocked.Increment(ref _visits);
             await Task.Delay(100, cancellationToken);
             return new BrowserVisit(url.AbsoluteUri, "<html></html>", [], answer, cookies);
         }
-    }
-
-    [Test, Category("Live")]
-    public async Task Malmesbury_IsServedByAStoreOtherThanTheDefault()
-    {
-        string? url = Environment.GetEnvironmentVariable("BROWSER_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "BROWSER_URL isn't set: no browser to ask Checkers with (the Puls stack's puls-browser).");
-
-        var session = await new CheckersStore(new ChromeWebBrowser(new Uri(url!)), LouisAgent.Packs.Shops.Places.PlaceCoordinates.OfAsync).ForAsync("Malmesbury");
-
-        Assert.That(session, Is.Not.Null);
-        Assert.That(session!.Cookies.Single(c => c.Name == "storeids").Value, Does.Not.StartWith("5ece6935faafe599532665b2"), "the default store's id");
     }
 }

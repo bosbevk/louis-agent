@@ -1,0 +1,8 @@
+{
+  "run" : "run123456789",
+  "text" : "this one hallucinated a price",
+  "at" : { "$date" : { "$numberLong" : "1793174400125" } },
+  "mode" : "mode-alpha",
+  "repeat" : { "$numberInt" : "2" },
+  "task" : "cook-af"
+}

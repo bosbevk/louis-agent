@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using System.Net;
 using System.Text;
 using LouisAgent.Core.Config;
@@ -14,15 +15,16 @@ public class SearxngSearchProviderTests
     private static readonly Uri Base = new("http://puls-searxng:8080");
 
     private const string AnswerJson = """
-        {"query":"beef mince","number_of_results":0,"results":[
-          {"url":"https://www.checkers.co.za/product/beef-mince-500g","title":"Beef Mince 500g | Checkers","content":"Beef Mince 500g <b>R64.99</b>","engine":"bing","engines":["bing","brave"]},
-          {"url":"https://www.pnp.co.za/beef-mince","title":"PnP Beef Mince","content":"","engine":"brave"},
-          {"title":"No url","content":"x"},
-          {"url":"https://example.org/third","title":"Third","content":"three"}
-        ],"answers":[],"suggestions":[],"unresponsive_engines":[["google","CAPTCHA"],["duckduckgo","timeout"]]}
-        """;
+                                      {"query":"beef mince","number_of_results":0,"results":[
+                                        {"url":"https://www.checkers.co.za/product/beef-mince-500g","title":"Beef Mince 500g | Checkers","content":"Beef Mince 500g <b>R64.99</b>","engine":"bing","engines":["bing","brave"]},
+                                        {"url":"https://www.pnp.co.za/beef-mince","title":"PnP Beef Mince","content":"","engine":"brave"},
+                                        {"title":"No url","content":"x"},
+                                        {"url":"https://example.org/third","title":"Third","content":"three"}
+                                      ],"answers":[],"suggestions":[],"unresponsive_engines":[["google","CAPTCHA"],["duckduckgo","timeout"]]}
+                                      """;
 
-    private static HttpClient Http(Func<HttpRequestMessage, HttpResponseMessage> respond) => new(new StubHandler(respond));
+    private static HttpClient Http(Func<HttpRequestMessage, HttpResponseMessage> respond) =>
+        new(new StubHandler(respond));
 
     private static HttpResponseMessage Json(string json, HttpStatusCode status = HttpStatusCode.OK) =>
         new(status) { Content = new StringContent(json, Encoding.UTF8, "application/json") };
@@ -32,7 +34,8 @@ public class SearxngSearchProviderTests
     [Test]
     public void TheRequest_IsOneGet_WithTheSiteInTheQuery_JsonAndTheTimeRange()
     {
-        var uri = SearxngSearchProvider.RequestUri(Base, new WebSearchQuery("beef mince", 5, "checkers.co.za", SearchRecency.Month));
+        var uri = SearxngSearchProvider.RequestUri(Base,
+            new WebSearchQuery("beef mince", 5, "checkers.co.za", SearchRecency.Month));
 
         Assert.That(uri.GetLeftPart(UriPartial.Path), Is.EqualTo("http://puls-searxng:8080/search"));
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
@@ -53,7 +56,9 @@ public class SearxngSearchProviderTests
 
     [Test]
     public void ASearxngUnderAPath_IsSearchedThere() =>
-        Assert.That(SearxngSearchProvider.RequestUri(new Uri("http://host:8888/searxng/"), new WebSearchQuery("x", 1)).GetLeftPart(UriPartial.Path),
+        Assert.That(
+            SearxngSearchProvider.RequestUri(new Uri("http://host:8888/searxng/"), new WebSearchQuery("x", 1))
+                .GetLeftPart(UriPartial.Path),
             Is.EqualTo("http://host:8888/searxng/search"));
 
     // --- The answer ---
@@ -73,12 +78,14 @@ public class SearxngSearchProviderTests
 
     [Test]
     public void TheEnginesThatDidntAnswer_AreNamed_WithTheirReason() =>
-        Assert.That(SearxngSearchProvider.Parse(AnswerJson, 5).SilentEngines, Is.EqualTo(new[] { "google: CAPTCHA", "duckduckgo: timeout" }));
+        Assert.That(SearxngSearchProvider.Parse(AnswerJson, 5).SilentEngines,
+            Is.EqualTo(new[] { "google: CAPTCHA", "duckduckgo: timeout" }));
 
     [Test]
     public void WhenNoEngineAnswered_TheSearchFails_NamingEachEngineAndWhy()
     {
-        const string none = """{"query":"x","results":[],"unresponsive_engines":[["google","CAPTCHA"],["bing","Suspended: too many requests"]]}""";
+        const string none =
+            """{"query":"x","results":[],"unresponsive_engines":[["google","CAPTCHA"],["bing","Suspended: too many requests"]]}""";
 
         Assert.That(() => SearxngSearchProvider.Parse(none, 5), Throws.TypeOf<WebSearchException>()
             .With.Message.Contains("google: CAPTCHA").And.Message.Contains("bing: Suspended: too many requests"));
@@ -89,7 +96,8 @@ public class SearxngSearchProviderTests
     {
         var answer = SearxngSearchProvider.Parse("""{"query":"x","results":[],"unresponsive_engines":[]}""", 5);
 
-        Assert.That((answer.Results, answer.SilentEngines), Is.EqualTo((Array.Empty<WebSearchResult>(), Array.Empty<string>())));
+        Assert.That((answer.Results, answer.SilentEngines),
+            Is.EqualTo((Array.Empty<WebSearchResult>(), Array.Empty<string>())));
     }
 
     // --- Over HTTP ---
@@ -121,24 +129,11 @@ public class SearxngSearchProviderTests
     [Test]
     public void AnotherHttpError_SaysItsStatus()
     {
-        var searxng = new SearxngSearchProvider(Base, Http(_ => new HttpResponseMessage(HttpStatusCode.BadGateway) { ReasonPhrase = "Bad Gateway" }));
+        var searxng = new SearxngSearchProvider(Base,
+            Http(_ => new HttpResponseMessage(HttpStatusCode.BadGateway) { ReasonPhrase = "Bad Gateway" }));
 
         Assert.That(() => searxng.SearchAsync(new WebSearchQuery("x", 1)),
             Throws.TypeOf<WebSearchException>().With.Message.Contains("502"));
-    }
-
-    // --- Against the SearXNG we run (F32 step 4): SEARXNG_URL set, as the Puls stack's puls-searxng on 127.0.0.1:8888 ---
-
-    [Test, Category("Live")]
-    public async Task TheSearxngWeRun_FindsAShopsProduct()
-    {
-        string? url = Environment.GetEnvironmentVariable("SEARXNG_URL");
-        Assume.That(url, Is.Not.Null.And.Not.Empty, "SEARXNG_URL isn't set: no SearXNG to search (the Puls stack's puls-searxng).");
-
-        var results = await new SearxngSearchProvider(new Uri(url!)).SearchAsync(new WebSearchQuery("beef mince price", 5, "pnp.co.za"));
-
-        Assert.That(results, Is.Not.Empty, "settings.yml lists json, and at least one engine answered");
-        Assert.That(results.Select(r => r.Url), Has.Some.Contains("pnp.co.za"));
     }
 
     // --- Chosen by configuration ---
@@ -149,7 +144,8 @@ public class SearxngSearchProviderTests
     [TestCase(null, "http://puls-searxng:8080", null, typeof(SearxngSearchProvider))]
     [TestCase(null, "http://puls-searxng:8080", "tvly-key", typeof(TavilySearchProvider))]
     [TestCase(null, null, null, typeof(DuckDuckGoSearchProvider))]
-    public void TheFactory_PicksSearxng_NamedOrWhenItsTheFirstConfigured(string? provider, string? url, string? tavilyKey, Type expected)
+    public void TheFactory_PicksSearxng_NamedOrWhenItsTheFirstConfigured(string? provider, string? url,
+        string? tavilyKey, Type expected)
     {
         // Unset: Tavily (key), then Google (key and cx), then SearXNG (its URL), then DuckDuckGo. A Tavily key keeps
         // the sold endpoint on the licensed API even where SearXNG runs too.
@@ -162,7 +158,9 @@ public class SearxngSearchProviderTests
     public void Google_StillComesBeforeSearxng_WhenItsKeysAreSet() =>
         Assert.That(WebSearchProviderFactory.Create(new AgentOptions
         {
-            SearxngUrl = "http://puls-searxng:8080", GoogleSearchApiKey = "key", GoogleSearchEngineId = "cx",
+            SearxngUrl = "http://puls-searxng:8080",
+            GoogleSearchApiKey = "key",
+            GoogleSearchEngineId = "cx",
         }), Is.TypeOf<GoogleSearchProvider>());
 
     [Test]

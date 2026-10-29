@@ -1,0 +1,79 @@
+namespace LouisAgent.Puls.Admin.Charts.Guides;
+
+/// <summary>
+/// The hover note for each measure (F31, Louis: "on hover can we explain what is good and bad and why?"): one text per
+/// measure, shared by the explorer's rings and the trend's lines, so both say the same.
+/// </summary>
+/// <remarks>
+/// A table of texts, the way Puls keeps its words (<c>PulsText</c>): the browser app can't reach core's message enums,
+/// so its words live in a plain class it owns (the unattended run's finding 4). A switch expression on the measure
+/// keeps one arm per measure and lets the build say when a new measure has no note.
+/// </remarks>
+public static class ChartGuides
+{
+    /// <summary>The note for one measure.</summary>
+    public static ChartGuide For(ChartTopic topic) => topic switch
+    {
+        ChartTopic.Cost => new("What one repeat of the mode cost: Puls's own requests and the specialist's.",
+            "Lower, with the same or a better score.",
+            "A dearer mode that doesn't give better answers.",
+            "Delegating pays only when the specialist does something better or cheaper; otherwise it's just another "
+            + "model round.",
+            "Lower is better."),
+        ChartTopic.Tokens => new("Every token, by kind: fresh input, cache written, cache read and output.",
+            "Few tokens, most of them read from the cache.",
+            "Much fresh input or cache written: every request starts almost from scratch.",
+            "Tokens are the cost and the wait; a token from the cache costs a tenth of a fresh one.",
+            "Lower is better."),
+        ChartTopic.Time => new("Seconds per turn; the ring splits the model's time between Puls and the specialist.",
+            "Short turns.",
+            "Long turns waiting on a specialist or on tools.",
+            "The user waits every second; a specialist adds a whole model round.",
+            "Lower is better."),
+        ChartTopic.Cache => new("The share of the input read from the cache instead of sent fresh.",
+            "High, 80% or more.",
+            "Low: the start of the prompt changes between requests.",
+            "A cache hit costs a tenth and is faster; a low share means the system prompt or the tools change along "
+            + "the way.",
+            "Higher is better."),
+        ChartTopic.Tools => new("Tool calls that worked against those refused or failed, with the biggest reason.",
+            "All green.",
+            "Red: the model searched and got nothing back.",
+            "A failed call costs a round, and the answer then rests on guessing (as when Tavily's limit was reached).",
+            "Lower is better."),
+        ChartTopic.Sources => new("The websites read: South African shops (their catalogues searched, or their "
+                                  + "pages), other SA sites, maps (where a branch was looked up) and elsewhere.",
+            "Green: SA shops, where the price is one you can pay.",
+            "Grey: foreign sites for an SA price.",
+            "A price from an SA shop is the answer; a site from elsewhere is background at best.",
+            "More SA shops is better; more sites on their own is not."),
+        ChartTopic.Passed => new("The share of the run's conversations whose required graders all passed. A "
+                                 + "conversation that failed for the infrastructure is left out, not counted as a "
+                                 + "fail.",
+            "High, run after run.",
+            "Falling: a change made the agent worse at what the graders check.",
+            "It is the run's own result before the repeats are folded into pass@k and pass^k.",
+            "Higher is better."),
+        ChartTopic.PassAt => new("pass@k: the share of scenarios that passed at least once in their k trials. Can "
+                                 + "the agent do this at all?",
+            "High, with most scenarios passing at least once.",
+            "Low: the agent cannot do these even with k tries.",
+            "It shows what the agent can reach; with one repeat it is the same number as pass^k. A trial that failed "
+            + "for the infrastructure is left out, not counted as a fail.",
+            "Higher is better."),
+        ChartTopic.PassHat => new("pass^k: the share of scenarios that passed every time in their k trials. Can a "
+                                  + "customer rely on it?",
+            "High, close to pass@k.",
+            "Far below pass@k: the agent can do it, but not every time.",
+            "A product that is sold must work every time, not once in k tries; the gap between the two lines is the "
+            + "unreliability.",
+            "Higher is better."),
+        ChartTopic.Value => new("What one real answer cost: the cost of the conversations routed right and (for a "
+                                + "meal) priced 80% or more with sources, divided by their number.",
+            "Low, with most of the ring green.",
+            "Red: money spent without an answer.",
+            "Cheap is worth nothing without an answer; this is the cost that matters.",
+            "Lower is better, as long as there are answers."),
+        _ => throw new ArgumentOutOfRangeException(nameof(topic), topic, null),
+    };
+}

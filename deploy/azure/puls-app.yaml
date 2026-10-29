@@ -80,8 +80,11 @@ properties:
           - name: SHOP_STORE_CACHE
             value: /data/shop-stores.json
           # The benchmark store: the home PC's puls-mongo, through the sidecar; the URL carries the password, so it is a secret.
-          - name: BENCHMARKS_MONGO_URL
+          - name: EVALS_MONGO_URL
             secretRef: benchmarks-mongo-url
+          # Its database: the API's default is `evals` now (F18 step 7b (iii)), so Puls names the one its runs are in.
+          - name: EVALS_MONGO_DATABASE
+            value: puls_benchmarks
         resources:
           cpu: 1
           memory: 2Gi

@@ -1,0 +1,20 @@
+{
+  "_id" : {
+    "run" : "run123456789",
+    "mode" : "mode-beta",
+    "repeat" : { "$numberInt" : "1" },
+    "task" : "cook-en"
+  },
+  "run" : "run123456789",
+  "mode" : "mode-beta",
+  "repeat" : { "$numberInt" : "1" },
+  "task" : "cook-en",
+  "order" : { "$numberInt" : "1" },
+  "role" : null,
+  "metrics" : null,
+  "errors" : { "$numberInt" : "0" },
+  "seconds" : { "$numberDouble" : "0.0" },
+  "grades" : null,
+  "outcome" : null,
+  "at" : null
+}

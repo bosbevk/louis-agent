@@ -1,11 +1,12 @@
-namespace LouisAgent.Core.Pricing.Rates;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Pricing.Messages;
 using LouisAgent.Core.Pricing.Rates.Mappers;
 
+namespace LouisAgent.Core.Pricing.Rates;
 /// <summary>
 /// Exchange rates for showing costs in another currency (F14), in louis-agent's own <c>rates.json</c> format, the only
 /// one read: <c>{"as_of", "base", "source", "rates": {"ZAR": 16.5331, …}}</c>, each rate the price of one
@@ -28,22 +29,24 @@ public sealed partial class ExchangeRates
     };
 
     /// <summary>The rates' date (the provider's, e.g. the ECB's working day); shown with every converted figure.</summary>
-    [JsonRequired] public string AsOf { get; init; } = "";
+    [JsonRequired]
+    public string AsOf { get; init; } = "";
 
     /// <summary>The currency the rates are from; must be the price table's currency.</summary>
-    [JsonRequired] public string Base { get; init; } = "";
+    [JsonRequired]
+    public string Base { get; init; } = "";
 
     /// <summary>Where the rates came from, e.g. "frankfurter (ECB reference rates)".</summary>
     public string? Source { get; init; }
 
     /// <summary>Currency code → how much of it one <see cref="Base"/> buys.</summary>
-    [JsonRequired] public Dictionary<string, decimal> Rates { get; init; } = [];
+    [JsonRequired]
+    public Dictionary<string, decimal> Rates { get; init; } = [];
 
     /// <summary>No rates: costs are shown in the price table's currency.</summary>
     public static ExchangeRates Empty { get; } = new();
 
-    [JsonIgnore]
-    public bool IsEmpty => Rates.Count == 0;
+    [JsonIgnore] public bool IsEmpty => Rates.Count == 0;
 
     /// <summary>The rate from <see cref="Base"/> to <paramref name="currency"/>: 1 for the base itself, null when unknown.</summary>
     public decimal? RateFor(string currency) =>
@@ -81,18 +84,24 @@ public sealed partial class ExchangeRates
         }
         catch (JsonException ex)
         {
-            throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesNotRatesJson, new { Source = source, Reason = ex.Message }), ex);
+            throw new InvalidDataException(
+                MessageText.Format(PricingErrorMessage.RatesNotRatesJson, new { Source = source, Reason = ex.Message }),
+                ex);
         }
 
-        if (rates is null) throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesEmpty, new { Source = source }));
+        if (rates is null)
+            throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesEmpty, new { Source = source }));
         if (!CurrencyCode().IsMatch(rates.Base))
-            throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesBaseNotACurrency, new { Source = source, rates.Base }));
+            throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesBaseNotACurrency,
+                new { Source = source, rates.Base }));
         foreach (var (code, rate) in rates.Rates)
         {
             if (!CurrencyCode().IsMatch(code))
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.RatesCodeNotACurrency, new { Source = source, Code = code }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RatesCodeNotACurrency,
+                    new { Source = source, Code = code }));
             if (rate <= 0)
-                throw new InvalidDataException(MessageText.Format(ErrorMessage.RateNotPositive, new { Source = source, Code = code }));
+                throw new InvalidDataException(MessageText.Format(PricingErrorMessage.RateNotPositive,
+                    new { Source = source, Code = code }));
         }
 
         return rates;

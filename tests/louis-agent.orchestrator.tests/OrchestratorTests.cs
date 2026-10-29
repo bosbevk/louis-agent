@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
@@ -21,7 +22,8 @@ public class OrchestratorTests
     public void TearDown()
     {
         // git marks objects read-only on Windows
-        foreach (var file in new DirectoryInfo(_dir).EnumerateFiles("*", SearchOption.AllDirectories)) file.Attributes = FileAttributes.Normal;
+        foreach (var file in new DirectoryInfo(_dir).EnumerateFiles("*", SearchOption.AllDirectories))
+            file.Attributes = FileAttributes.Normal;
         Directory.Delete(_dir, recursive: true);
     }
 
@@ -39,7 +41,8 @@ public class OrchestratorTests
         Assert.That(feed.Find("aaa111")!.Method, Is.EqualTo("order-total"));
 
         feed.MarkProcessed("aaa111");
-        Assert.That(new ErrorFeed(log, Path.Combine(_dir, "state")).ReadNew().Select(e => e.Id), Is.EqualTo(new[] { "bbb222" }),
+        Assert.That(new ErrorFeed(log, Path.Combine(_dir, "state")).ReadNew().Select(e => e.Id),
+            Is.EqualTo(new[] { "bbb222" }),
             "processed ids survive a restart");
     }
 
@@ -70,9 +73,12 @@ public class OrchestratorTests
         var used = new EventUsage(null, null, null);
 
         string json = System.Text.Json.JsonSerializer.Serialize(
-            Decision.Parse("DECISION: fixed - verified").ToRecord(error, used, "USD", new DateTimeOffset(2026, 10, 12, 8, 0, 0, TimeSpan.Zero)));
+            Decision.Parse("DECISION: fixed - verified").ToRecord(error, used, "USD",
+                new DateTimeOffset(2026, 10, 12, 8, 0, 0, TimeSpan.Zero)));
 
-        Assert.That(json, Does.StartWith("""{"error_id":"abc123","method":"order-total","outcome":"fixed","reason":"verified","at":"2026-10-12T08:00:00+00:00","""));
+        Assert.That(json,
+            Does.StartWith(
+                """{"error_id":"abc123","method":"order-total","outcome":"fixed","reason":"verified","at":"2026-10-12T08:00:00+00:00","""));
         Assert.That(json, Does.EndWith(""","usage":null,"triage_usage":null,"louis_agent_usage":null}"""));
     }
 
@@ -90,7 +96,8 @@ public class OrchestratorTests
         {
             string service = Path.Combine(skills, "order-service");
             Directory.CreateDirectory(service);
-            foreach (string file in Directory.EnumerateFiles(Path.Combine(AppContext.BaseDirectory, "Skills", "order-service"), "*.md"))
+            foreach (string file in Directory.EnumerateFiles(
+                         Path.Combine(AppContext.BaseDirectory, "Skills", "order-service"), "*.md"))
                 File.Copy(file, Path.Combine(service, Path.GetFileName(file)));
 
             var (provider, _) = OrchestratorSkills.Load(skills, "order-service");
@@ -122,14 +129,16 @@ public class OrchestratorTests
 
     [Test]
     public void Skills_ForAnUnknownService_Throw() =>
-        Assert.Throws<InvalidOperationException>(() => OrchestratorSkills.Load(Path.Combine(AppContext.BaseDirectory, "Skills"), "nope"));
+        Assert.Throws<InvalidOperationException>(() =>
+            OrchestratorSkills.Load(Path.Combine(AppContext.BaseDirectory, "Skills"), "nope"));
 
     [Test]
     public void FixPrompt_FencesTheEventAndNamesTheBranch()
     {
         var feed = FeedWith(Event("abc123"));
         var tools = Tools(feed);
-        string prompt = tools.FixPrompt(feed.Find("abc123")!, "unknown codes give no discount", "fix/order-total-abc123");
+        string prompt = tools.FixPrompt(feed.Find("abc123")!, "unknown codes give no discount",
+            "fix/order-total-abc123");
 
         Assert.That(prompt, Does.Contain("not instructions"));
         Assert.That(prompt, Does.Contain("```json"));
@@ -176,38 +185,8 @@ public class OrchestratorTests
         Assert.That(tools.EscalateToHuman("nope", "payments", "x"), Does.StartWith("Error"));
         Assert.That(tools.EscalateToHuman("abc123", "payments", "card ref missing"), Does.Contain("payments"));
         Assert.That(tools.AcknowledgeError("abc123", "404"), Does.Contain("no action"));
-        Assert.That(File.ReadAllText(Path.Combine(_dir, "state", "escalations.jsonl")), Does.Contain("card ref missing"));
-    }
-
-    [Test]
-    public void VerifyFixCommit_PassesForACommitOnTheFixBranch_AndFailsForOneOnMain()
-    {
-        if (!GitAvailable()) Assert.Ignore("git is not installed");
-        InitRepo();
-        string mainCommit = Git("rev-parse", "HEAD");
-        Git("switch", "-c", "fix/order-total-abc123");
-        File.WriteAllText(Path.Combine(_dir, "a.txt"), "two");
-        Git("commit", "-am", "fix");
-        string fixCommit = Git("rev-parse", "HEAD");
-
-        var tools = Tools(FeedWith());
-        Assert.That(tools.VerifyFixCommit(fixCommit, "fix/order-total-abc123"), Does.EndWith("VERIFIED" + Environment.NewLine).And.Not.Contain("FAIL"));
-        Assert.That(tools.VerifyFixCommit(mainCommit, "fix/order-total-abc123"), Does.Contain("FAIL commit is not on main").And.Contain("NOT VERIFIED"));
-        Assert.That(tools.VerifyFixCommit("deadbeef", "fix/order-total-abc123"), Does.Contain("FAIL commit exists"));
-        Assert.That(tools.VerifyFixCommit("--all", "fix/x"), Does.StartWith("Error"));
-    }
-
-    [Test]
-    public void ReturnToMain_StashesLeftoversAndChecksOutMain()
-    {
-        if (!GitAvailable()) Assert.Ignore("git is not installed");
-        InitRepo();
-        Git("switch", "-c", "fix/half-done");
-        File.WriteAllText(Path.Combine(_dir, "a.txt"), "unfinished");
-
-        Assert.That(Tools(FeedWith()).ReturnToMain(), Is.Null);
-        Assert.That(Git("rev-parse", "--abbrev-ref", "HEAD"), Is.EqualTo("main"));
-        Assert.That(Git("stash", "list"), Does.Contain("uncommitted changes left on fix/half-done"));
+        Assert.That(File.ReadAllText(Path.Combine(_dir, "state", "escalations.jsonl")),
+            Does.Contain("card ref missing"));
     }
 
     [Test]
@@ -216,8 +195,10 @@ public class OrchestratorTests
         var feed = FeedWith(Event("abc123"));
         string path = Path.Combine(_dir, "comms.md");
         var comms = new CommsLog(path);
-        var call = new AgentToolCall("t1", "CreateBranch", "{\"branchName\":\"fix/order-total-abc123\"}") { Result = "Success | done" };
-        var reply = new AgentReply("Fixed.\nFIX-RESULT: {\"status\":\"fixed\",\"commit\":\"abc1234\",\"branch\":\"fix/order-total-abc123\",\"tests\":\"5/5 passed\"}",
+        var call = new AgentToolCall("t1", "CreateBranch", "{\"branchName\":\"fix/order-total-abc123\"}")
+        { Result = "Success | done" };
+        var reply = new AgentReply(
+            "Fixed.\nFIX-RESULT: {\"status\":\"fixed\",\"commit\":\"abc1234\",\"branch\":\"fix/order-total-abc123\",\"tests\":\"5/5 passed\"}",
             [call], "end_turn", null);
 
         comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "claude-test");
@@ -231,14 +212,17 @@ public class OrchestratorTests
         string md = File.ReadAllText(path);
         Assert.That(md, Does.Contain("# Agent communications: order-service"));
         Assert.That(md, Does.Contain("### Orchestrator → louis-agent · message 1 · session `sess_1`"));
-        Assert.That(md, Does.Contain("````text\nPlease fix ```json {} ``` this\n````"), "a message with its own fences stays intact");
+        Assert.That(md, Does.Contain("````text\nPlease fix ```json {} ``` this\n````"),
+            "a message with its own fences stays intact");
         Assert.That(md, Does.Contain("| 1 | CreateBranch |"));
         Assert.That(md, Does.Contain("Success \\| done"), "pipes in a result don't break the table");
         Assert.That(md, Does.Contain("> Fixed."));
         Assert.That(md, Does.Contain("FIX-RESULT: status **fixed** · commit `abc1234`"));
         Assert.That(md, Does.Contain("- **ReplayRequest(order-total 1003)** → `200 order-total 1003: 35.00`"));
         Assert.That(md, Does.Contain("## Run summary"));
-        Assert.That(md, Does.Contain("| 1 | `order-total 1003` | KeyNotFoundException | **fixed** | fixed (1 msg, 1 tools) | `fix/order-total-abc123` | `abc1234` |"));
+        Assert.That(md,
+            Does.Contain(
+                "| 1 | `order-total 1003` | KeyNotFoundException | **fixed** | fixed (1 msg, 1 tools) | `fix/order-total-abc123` | `abc1234` |"));
         Assert.That(md, Does.Contain("Branches ready to review and merge (1)"));
         Assert.That(md, Does.Not.Contain("Run total"), "nothing measured: no usage in the log");
     }
@@ -251,11 +235,16 @@ public class OrchestratorTests
         var feed = FeedWith(Event("abc123"), Event("def456"));
         string path = Path.Combine(_dir, "comms.md");
         var comms = new CommsLog(path);
+
         static AgentReply Reply(int requests, long input, long cacheRead, long output, decimal cost) =>
-            new("Working.", [], "end_turn", null, new UsageTotal("louis-agent", requests, input, 0, cacheRead, output, cost, 0), "USD");
+            new("Working.", [], "end_turn", null,
+                new UsageTotal("louis-agent", requests, input, 0, cacheRead, output, cost, 0), "USD");
+
         static UsageRecord Triage(long input, long output, decimal cost) => new(
-            DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1", "order-service",
-            "claude-haiku-5-5", new UsageTokens(input, 0, 0, output, null), 1, "stop", new UsageCost("USD", cost, "2026-10-10"));
+            DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1",
+            "order-service",
+            "claude-haiku-5-5", new UsageTokens(input, 0, 0, output, null), 1, "stop",
+            new UsageCost("USD", cost, "2026-10-10"));
 
         comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "claude-test");
         comms.StartEvent(1, 2, feed.Find("abc123")!);
@@ -263,9 +252,11 @@ public class OrchestratorTests
         comms.Received(Reply(3, 1_000, 20_000, 300, 0.01m), null);
         comms.Sent("sess_1", "Continue");
         comms.Received(Reply(2, 500, 10_000, 200, 0.005m), null);
-        EventUsage first = comms.EndEvent("fixed", "verified", "DECISION: fixed - verified", [Triage(2_000, 100, 0.002m), Triage(2_000, 100, 0.002m)]);
+        EventUsage first = comms.EndEvent("fixed", "verified", "DECISION: fixed - verified",
+            [Triage(2_000, 100, 0.002m), Triage(2_000, 100, 0.002m)]);
         comms.StartEvent(2, 2, feed.Find("def456")!);
-        EventUsage second = comms.EndEvent("ignored", "expected", "DECISION: ignored - expected", [Triage(3_000, 50, 0.001m)]);
+        EventUsage second = comms.EndEvent("ignored", "expected", "DECISION: ignored - expected",
+            [Triage(3_000, 50, 0.001m)]);
         comms.EndRun();
 
         string md = File.ReadAllText(path);
@@ -277,9 +268,12 @@ public class OrchestratorTests
         Assert.That(md, Does.Contain("| Branch | Commit | Tokens | Cost |"));
         Assert.That(md, Does.Contain("| 36k | $0.019 |"));
         Assert.That(md, Does.Contain("| 3.1k | $0.001 |"));
-        Assert.That(md, Does.Contain("**Run total:** 8 requests · 39k tokens (30k cached) · $0.02 (triage $0.005, louis-agent $0.015)."));
+        Assert.That(md,
+            Does.Contain(
+                "**Run total:** 8 requests · 39k tokens (30k cached) · $0.02 (triage $0.005, louis-agent $0.015)."));
 
-        Assert.That((first.Total!.Requests, first.Total.Cost, first.LouisAgent!.Cost, first.Triage!.Cost), Is.EqualTo((7, 0.019m, 0.015m, 0.004m)));
+        Assert.That((first.Total!.Requests, first.Total.Cost, first.LouisAgent!.Cost, first.Triage!.Cost),
+            Is.EqualTo((7, 0.019m, 0.015m, 0.004m)));
         Assert.That((second.LouisAgent, second.Total!.Cost), Is.EqualTo(((UsageTotal?)null, 0.001m)));
     }
 
@@ -291,9 +285,12 @@ public class OrchestratorTests
         var feed = FeedWith(Event("abc123"));
         string path = Path.Combine(_dir, "comms.md");
         var comms = new CommsLog(path, rands);
-        var reply = new AgentReply("Working.", [], "end_turn", null, new UsageTotal("louis-agent", 3, 1_000, 0, 20_000, 300, 0.01m, 0), "USD");
-        var triage = new UsageRecord(DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1",
-            "order-service", "claude-haiku-5-5", new UsageTokens(2_000, 0, 0, 100, null), 1, "stop", new UsageCost("USD", 0.002m, "2026-10-10"));
+        var reply = new AgentReply("Working.", [], "end_turn", null,
+            new UsageTotal("louis-agent", 3, 1_000, 0, 20_000, 300, 0.01m, 0), "USD");
+        var triage = new UsageRecord(DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null,
+            "run-1",
+            "order-service", "claude-haiku-5-5", new UsageTokens(2_000, 0, 0, 100, null), 1, "stop",
+            new UsageCost("USD", 0.002m, "2026-10-10"));
 
         comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "claude-test");
         comms.StartEvent(1, 1, feed.Find("abc123")!);
@@ -306,9 +303,14 @@ public class OrchestratorTests
         Assert.That(md, Does.Contain("Usage: 3 requests · 21k tokens (20k cached) · R0.17"), "each reply");
         Assert.That(md, Does.Contain("| Usage: total | **4 requests · 23k tokens (20k cached) · R0.2** |"));
         Assert.That(md, Does.Contain("| 23k | R0.2 |"));
-        Assert.That(md, Does.Contain("**Run total:** 4 requests · 23k tokens (20k cached) · R0.2 (triage R0.033, louis-agent R0.17)."));
-        Assert.That(md, Does.Contain("Shown in ZAR at 16.5331 ZAR/USD on 2026-10-09; charged $0.012 (the ledger, fixes.jsonl and decisions.jsonl keep USD)."));
-        Assert.That((used.Total!.Cost, CommsLog.Json(used.Total, comms.Currency)!.ToString()), Is.EqualTo(((decimal?)0.012m, CommsLog.Json(used.Total, "USD")!.ToString())),
+        Assert.That(md,
+            Does.Contain(
+                "**Run total:** 4 requests · 23k tokens (20k cached) · R0.2 (triage R0.033, louis-agent R0.17)."));
+        Assert.That(md,
+            Does.Contain(
+                "Shown in ZAR at 16.5331 ZAR/USD on 2026-10-09; charged $0.012 (the ledger, fixes.jsonl and decisions.jsonl keep USD)."));
+        Assert.That((used.Total!.Cost, CommsLog.Json(used.Total, comms.Currency)!.ToString()),
+            Is.EqualTo(((decimal?)0.012m, CommsLog.Json(used.Total, "USD")!.ToString())),
             "decisions.jsonl gets the charged USD figures");
     }
 
@@ -319,8 +321,10 @@ public class OrchestratorTests
         var feed = FeedWith(Event("abc123"), Event("def456"));
         string path = Path.Combine(_dir, "comms.md");
         var comms = new CommsLog(path);
-        var local = new UsageRecord(DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null, "run-1",
-            "order-service", "llama3.1", new UsageTokens(2_050, 0, 0, 3, null), 1, "stop", new UsageCost("USD", 0m, "2026-10-10"));
+        var local = new UsageRecord(DateTimeOffset.UtcNow, 1, UsagePurpose.Triage, "orchestrator", "triage_x", 1, null,
+            "run-1",
+            "order-service", "llama3.1", new UsageTokens(2_050, 0, 0, 3, null), 1, "stop",
+            new UsageCost("USD", 0m, "2026-10-10"));
 
         comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "llama3.1");
         comms.StartEvent(1, 2, feed.Find("abc123")!);
@@ -341,7 +345,8 @@ public class OrchestratorTests
     {
         // FX7: a model request that times out throws TaskCanceledException, an OperationCanceledException; it must count
         // as that error's failure, not end the run as Ctrl+C does.
-        var timeout = new TaskCanceledException("The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
+        var timeout = new TaskCanceledException(
+            "The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
             new TimeoutException());
         using var stop = new CancellationTokenSource();
 
@@ -350,7 +355,8 @@ public class OrchestratorTests
 
         stop.Cancel();
         Assert.That(Stopping.ByUser(new OperationCanceledException(stop.Token), stop.Token), Is.True, "Ctrl+C");
-        Assert.That(Stopping.ByUser(new InvalidOperationException(), stop.Token), Is.False, "another error while stopping");
+        Assert.That(Stopping.ByUser(new InvalidOperationException(), stop.Token), Is.False,
+            "another error while stopping");
     }
 
     [Test]
@@ -360,20 +366,11 @@ public class OrchestratorTests
 
         string json = System.Text.Json.JsonSerializer.Serialize(CommsLog.Json(usage, "USD"));
 
-        Assert.That(json, Is.EqualTo("{\"requests\":7,\"input_tokens\":5500,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":30000," +
-                                     "\"output_tokens\":700,\"cost\":0.019,\"currency\":\"USD\",\"unpriced\":0}"));
+        Assert.That(json,
+            Is.EqualTo(
+                "{\"requests\":7,\"input_tokens\":5500,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":30000," +
+                "\"output_tokens\":700,\"cost\":0.019,\"currency\":\"USD\",\"unpriced\":0}"));
         Assert.That(CommsLog.Json(null, "USD"), Is.Null);
-    }
-
-    private void InitRepo()
-    {
-        Git("init", "-b", "main");
-        Git("config", "user.email", "test@localhost");
-        Git("config", "user.name", "test");
-        File.WriteAllText(Path.Combine(_dir, "a.txt"), "one");
-        File.WriteAllText(Path.Combine(_dir, ".gitignore"), "errors.jsonl\nstate/\n"); // like the service's ignored logs/
-        Git("add", ".");
-        Git("commit", "-m", "initial");
     }
 
     private ErrorFeed FeedWith(params string[] events)
@@ -396,29 +393,5 @@ public class OrchestratorTests
         var client = new LouisAgentClient(new HttpClient { BaseAddress = new Uri("http://127.0.0.1:1") }, null);
         return new ServiceTools(options, feed, client, new HashSet<string> { "get-order", "order-total", "refund" },
             new CommsLog(Path.Combine(_dir, "state", "agent-comms.md")));
-    }
-
-    private string Git(params string[] args)
-    {
-        var psi = new ProcessStartInfo("git") { WorkingDirectory = _dir, RedirectStandardOutput = true, RedirectStandardError = true };
-        foreach (string arg in args) psi.ArgumentList.Add(arg);
-        using var process = Process.Start(psi)!;
-        string output = process.StandardOutput.ReadToEnd();
-        process.WaitForExit();
-        return output.Trim();
-    }
-
-    private static bool GitAvailable()
-    {
-        try
-        {
-            using var process = Process.Start(new ProcessStartInfo("git", "--version") { RedirectStandardOutput = true })!;
-            process.WaitForExit();
-            return process.ExitCode == 0;
-        }
-        catch (System.ComponentModel.Win32Exception)
-        {
-            return false;
-        }
     }
 }

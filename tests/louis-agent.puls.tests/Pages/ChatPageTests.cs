@@ -1,3 +1,5 @@
+using LouisAgent.Web.Testing;
+using LouisAgent.Testing;
 using LouisAgent.Puls.Pages;
 using LouisAgent.Puls.Text;
 using LouisAgent.Web.Shared.Api;
@@ -41,7 +43,8 @@ public class ChatPageTests
         return ctx;
     }
 
-    private static string[] Calls(BunitContext ctx) => ctx.JSInterop.Invocations.Select(i => i.Identifier).Distinct().Order(StringComparer.Ordinal).ToArray();
+    private static string[] Calls(BunitContext ctx) => ctx.JSInterop.Invocations.Select(i => i.Identifier).Distinct()
+        .Order(StringComparer.Ordinal).ToArray();
 
     [Test]
     public void TheEmptyPage_MatchesTheGoldenFile_AndMakesTheseJsCalls()
@@ -68,11 +71,13 @@ public class ChatPageTests
         // The turn is over when the Stop button has given way to Send again and the chat was saved to localStorage: the
         // page redraws before the save finishes (a git refresh lands first in the code-review app), so both are awaited.
         cut.WaitForState(() => cut.FindAll(".turn").Count > 0 && cut.FindAll("button.stop").Count == 0
-            && ctx.JSInterop.Invocations.Any(i => i.Identifier == "localStorage.setItem"), TimeSpan.FromSeconds(30));
+                                                              && ctx.JSInterop.Invocations.Any(i =>
+                                                                  i.Identifier == "localStorage.setItem"),
+            TimeSpan.FromSeconds(30));
 
         Assert.That(cut.FindAll(".turn"), Has.Count.EqualTo(1));
         Assert.That(cut.Find(".user-text").TextContent, Is.EqualTo(SessionStreamFixture.Question));
-        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo("puls-cook"));
+        Assert.That(cut.Find(".delegation-agent strong").TextContent, Is.EqualTo(SessionStreamFixture.CookRole));
         Assert.That(cut.Find(".chat-usage").TextContent, Does.Contain("versoeke"));
         Assert.That(Calls(ctx), Is.EquivalentTo(StartUpCalls.Concat(TurnCalls)));
         Snapshots.Match("louis-agent.puls.tests", "Pages/ChatPage.turn.html", cut.Markup);

@@ -3,6 +3,19 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-29 — **F18 Evaluation**: every check is a C# eval on one harness (`evals/louis-agent.evals/`): `IEval` and
+  `IEvalSet`, datasets in Inspect's Sample shape with a held-out split and a hash, code graders first, a model judge
+  calibrated against people's labels (90% of each class), human review in the portal, pass@k and pass^k, a roll-up by
+  category, re-scores and replays for $0; the runner and the API share one event contract, protocol v2 (`evals/
+  louis-agent.evals.protocol`, [ADR 0047](docs/adr/0047-protocol-v2-one-event-contract.md)); the store goes through
+  typed records ([ADR 0048](docs/adr/0048-mongo-through-records.md)) and keeps nothing older than its build ([ADR
+  0049](docs/adr/0049-nothing-is-compatible-before-a-sale.md)); the portal reads only the contract's records. First
+  v2 baseline: `puls-cook` 23 of 24 in its cook mode, `puls-routing` 72 of 72, $0.37 together; the local judge 31 of
+  36, below the bar ([feature](docs/features/F18-evaluation.md), [plan](docs/plans/F18-evals.md), write-ups
+  [12](docs/learning/12-evaluation.md) and [13](docs/learning/13-cost-and-token-economics.md))
+- 2026-10-27 — **FX25 The eval runner sees only what it reads**: a run's process got the API's whole environment; `RunnerEnvironment`
+  keeps an allowlist (the runtime's, the runner's settings, and an Anthropic judge's key under the judge's name only), so the Mongo
+  login, the admin key and the provider keys never reach an eval or a script ([fix](docs/fixes/FX25-runner-environment.md))
 - 2026-10-25 — **FX22 The recipe's image renders**: an image in an answer renders when its exact URL came back in a tool
   result of the same turn, the cook's sub-session included (`ImageSources`, `Block.Images`, `Markdown.ToHtml(markdown, shown)`),
   not only from a shop's host; a delegation call's own result proves nothing; per turn ([fix](docs/fixes/FX22-images-from-tool-results.md))

@@ -1,0 +1,41 @@
+using LouisAgent.Api.Evals.Store.Conversations;
+using LouisAgent.Api.Evals.Store.Requests;
+using LouisAgent.Api.Evals.Store.Runs;
+using LouisAgent.Api.Evals.Store.Turns;
+
+namespace LouisAgent.Api.Tests.Evals.Store;
+
+/// <summary>Runs the run store's shared tests against the runs in memory, on every machine and on CI.</summary>
+public class InMemoryRunStoreTests : RunStoreContract
+{
+    /// <summary>A fresh, empty store of runs for each test.</summary>
+    protected override IRunStore CreateStore() => new InMemoryRunStore();
+}
+
+/// <summary>Runs the shared tests for a run's own fields against the runs in memory.</summary>
+public class InMemoryRunFieldsTests : RunFieldsContract
+{
+    /// <summary>A fresh, empty store of runs for each test.</summary>
+    protected override IRunStore CreateStore() => new InMemoryRunStore();
+}
+
+/// <summary>Runs the conversation store's shared tests against the conversations in memory.</summary>
+public class InMemoryConversationStoreTests : ConversationStoreContract
+{
+    /// <summary>A fresh, empty store of conversations for each test.</summary>
+    protected override IConversationStore CreateStore() => new InMemoryConversationStore();
+}
+
+/// <summary>Runs the turn store's shared tests against the turns in memory.</summary>
+public class InMemoryTurnStoreTests : TurnStoreContract
+{
+    /// <summary>A fresh, empty store of turns for each test.</summary>
+    protected override ITurnStore CreateStore() => new InMemoryTurnStore();
+}
+
+/// <summary>Runs the request store's shared tests against the requests in memory.</summary>
+public class InMemoryRequestStoreTests : RequestStoreContract
+{
+    /// <summary>A fresh, empty store of requests for each test.</summary>
+    protected override IRequestStore CreateStore() => new InMemoryRequestStore();
+}

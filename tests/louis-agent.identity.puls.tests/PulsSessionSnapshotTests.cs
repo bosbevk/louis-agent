@@ -1,3 +1,7 @@
+using LouisAgent.Testing;
+using LouisAgent.Identities.Puls;
+using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -43,19 +47,23 @@ public class PulsSessionSnapshotTests
         // shop with a browser for the shops toolset (F33; nothing is connected while an engine is built).
         var options = new AgentOptions
         {
-            WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null,
-            AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls-agent.test/") },
+            WorkspaceRoot = _skillsDir,
+            SkillsDirectory = _skillsDir,
+            RatesUrl = null,
+            AgentPeers = new Dictionary<string, Uri> { [SampleIdentity.Alpha] = new("http://puls-agent.test/") },
             BrowserUrl = "http://browser.test:9222",
         };
         // CL15 step 4: the shops are the pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.
-        var catalog = new AgentCatalog([new PulsIdentity()], [new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" })]);
+        var catalog = new AgentCatalog([new PulsIdentity()],
+            [new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" })]);
         return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);
     }
 
     private static object View(AgentEngine engine) => new
     {
         Tools = engine.Tools.OfType<AIFunction>()
-            .Select(t => new { t.Name, t.Description, Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement }),
+            .Select(t => new
+            { t.Name, t.Description, Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement }),
         SystemPrompt = engine.SkillDocumentation,
     };
 
@@ -65,8 +73,10 @@ public class PulsSessionSnapshotTests
         var factory = Factory();
         var snapshot = new
         {
-            Chat = View(factory.GetOrCreate(["specialists", "web"], "puls/voice-af", RoleLevel.Agent)),
-            Cook = View(factory.GetOrCreate(["web", "shops"], "puls-cook", RoleLevel.Specialist)),
+            Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()], "puls/voice-af",
+                RoleLevel.Agent)),
+            Cook = View(factory.GetOrCreate([CoreToolset.Web.Wire(), ShopsToolset.Shops.Wire()], PulsRole.Cook.Wire(),
+                RoleLevel.Specialist)),
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")

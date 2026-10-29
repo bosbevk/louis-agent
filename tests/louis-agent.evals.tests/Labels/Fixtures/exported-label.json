@@ -1,0 +1,21 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "sample-dev",
+  "mode": "mode-beta",
+  "run": "8f7802b9a72e",
+  "repeat": 1,
+  "turns": [
+    {
+      "question": "Hello",
+      "answer": "Bobotie vir vier"
+    },
+    {
+      "question": "Make it six",
+      "answer": "Bobotie vir ses"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": "feeds four"
+  }
+}

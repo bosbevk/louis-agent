@@ -23,6 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\louis-agent.puls\louis-agent.puls.csproj" />
+    <!-- Test-only (ADR 0043): the identity's PulsRole is the one the web app's copy is checked against. -->
+    <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <!-- The fixture replay, the stub API and the snapshot helper the web tests share; no test project references another. -->
     <ProjectReference Include="..\louis-agent.web.testing\louis-agent.web.testing.csproj" />
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />

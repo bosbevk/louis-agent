@@ -1,3 +1,5 @@
+using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
@@ -13,7 +15,6 @@ using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Clock;
 using Microsoft.Extensions.AI;
-
 using static LouisAgent.Core.Tests.Tools.Agents.FakePeer;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
@@ -32,15 +33,19 @@ public class SpecialistToolsRollUpTests
         UsageTotal total;
         using (var scope = UsageScope.Begin(host: "api", session: "sess_parent", turn: 2))
         {
-            await ToolsOn(handler, sink: sink).StartSubSession(["files", "git"], "Fix order 1006.", agent: "coder");
+            await ToolsOn(handler, sink: sink).StartSubSession([CoreToolset.Files.Wire(), CoreToolset.Git.Wire()],
+                "Fix order 1006.", agent: "coder");
             total = scope.Total();
         }
 
-        Assert.That((total.Requests, total.Input, total.CacheRead, total.Output, total.Cost), Is.EqualTo((3, 1000L, 9000L, 200L, (decimal?)0.0123m)));
+        Assert.That((total.Requests, total.Input, total.CacheRead, total.Output, total.Cost),
+            Is.EqualTo((3, 1000L, 9000L, 200L, (decimal?)0.0123m)));
         UsageRecord row = sink.Records.Single();
-        Assert.That((row.Purpose, row.Model, row.Stop, row.Round, row.Requests), Is.EqualTo(("sub_session", "sub-session:coder", "sub_session", 0, (int?)3)));
+        Assert.That((row.Purpose, row.Model, row.Stop, row.Round, row.Requests),
+            Is.EqualTo(("sub_session", "sub-session:coder", "sub_session", 0, (int?)3)));
         Assert.That((row.Host, row.Session, row.Turn), Is.EqualTo(("api", "sess_parent", (int?)2)));
-        Assert.That(row.Cost, Is.EqualTo(new UsageCost("USD", 0.0123m, null)), "what the child was charged, not a display amount");
+        Assert.That(row.Cost, Is.EqualTo(new UsageCost("USD", 0.0123m, null)),
+            "what the child was charged, not a display amount");
         Assert.That(row.Tokens, Is.EqualTo(new UsageTokens(1000, 0, 9000, 200, null)));
     }
 
@@ -53,7 +58,8 @@ public class SpecialistToolsRollUpTests
         UsageTotal total;
         using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            await ToolsOn(Peer(Replies(EmptyStream, AnswerStream)), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+            await ToolsOn(Peer(Replies(EmptyStream, AnswerStream)), sink: sink)
+                .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
             total = scope.Total();
         }
 
@@ -68,10 +74,12 @@ public class SpecialistToolsRollUpTests
 
         string result;
         using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
-            result = await ToolsOn(Peer(Replies(FailedStream)), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+            result = await ToolsOn(Peer(Replies(FailedStream)), sink: sink)
+                .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(result, Does.StartWith("Error").And.Contain("the model refused"));
-        Assert.That((sink.Records.Single().Requests, sink.Records.Single().Cost?.Amount), Is.EqualTo(((int?)2, (decimal?)0.002m)));
+        Assert.That((sink.Records.Single().Requests, sink.Records.Single().Cost?.Amount),
+            Is.EqualTo(((int?)2, (decimal?)0.002m)));
     }
 
     [Test]
@@ -81,8 +89,9 @@ public class SpecialistToolsRollUpTests
         var sink = new ListUsageSink();
 
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
-            await new SpecialistTools(Peers, null, new HttpClient(new SlowPeer()), TimeSpan.FromMilliseconds(200), usageSink: sink)
-                .StartSubSession(["files"], "x", agent: "coder");
+            await new SpecialistTools(Peers, null, new HttpClient(new SlowPeer()), TimeSpan.FromMilliseconds(200),
+                    usageSink: sink)
+                .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(sink.Records, Is.Empty);
     }
@@ -94,15 +103,22 @@ public class SpecialistToolsRollUpTests
         // specialist's own rows are written where it ran. The turn's total is own + child, with one adder.
         var sink = new ListUsageSink();
         var tools = new SpecialistTools(Peers, null, new HttpClient(Peer()), usageSink: sink);
+
         static ChatResponse Reply(params AIContent[] contents) => new(new ChatMessage(ChatRole.Assistant, contents))
         {
             Usage = new UsageDetails { InputTokenCount = 1_000, OutputTokenCount = 100 },
         };
+
         var engine = new AgentEngine(
             new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")),
             new FakeChatClient(
                 _ => Reply(new FunctionCallContent("call_1", "StartSubSession",
-                    new Dictionary<string, object?> { ["toolsets"] = new[] { "files" }, ["message"] = "Fix order 1006.", ["agent"] = "coder" })),
+                    new Dictionary<string, object?>
+                    {
+                        ["toolsets"] = new[] { CoreToolset.Files.Wire() },
+                        ["message"] = "Fix order 1006.",
+                        ["agent"] = "coder"
+                    })),
                 _ => Reply(new TextContent("Done."))),
             TestPaths.Agent(), toolsets: [tools], usageSink: sink);
 
@@ -115,7 +131,8 @@ public class SpecialistToolsRollUpTests
 
         Assert.That(sink.Records.Select(r => r.Purpose), Is.EqualTo(new[] { "turn", "sub_session", "turn" }));
         Assert.That(sink.Records.Select(r => r.Session), Is.All.EqualTo("sess_parent"));
-        Assert.That((total.Requests, total.Cost, total.Unpriced), Is.EqualTo((5, (decimal?)0.0123m, 2)), "1 + 3 + 1; the own rows are unpriced here");
+        Assert.That((total.Requests, total.Cost, total.Unpriced), Is.EqualTo((5, (decimal?)0.0123m, 2)),
+            "1 + 3 + 1; the own rows are unpriced here");
     }
 
     [Test]
@@ -124,10 +141,12 @@ public class SpecialistToolsRollUpTests
         // As a model request outside a scope is (FX5): the ledger records it with no host or session.
         var sink = new ListUsageSink();
 
-        string result = await ToolsOn(Peer(), sink: sink).StartSubSession(["files"], "x", agent: "coder");
+        string result = await ToolsOn(Peer(), sink: sink)
+            .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check"));
-        Assert.That((sink.Records.Single().Session, sink.Records.Single().Requests), Is.EqualTo(((string?)null, (int?)3)));
+        Assert.That((sink.Records.Single().Session, sink.Records.Single().Requests),
+            Is.EqualTo(((string?)null, (int?)3)));
     }
 
     [Test]
@@ -137,7 +156,7 @@ public class SpecialistToolsRollUpTests
         var handler = Peer();
 
         using (UsageScope.Begin(session: "sess_parent", turn: 4, tags: new UsageTags(null, "run-1", "order-service")))
-            await ToolsOn(handler).StartSubSession(["files"], "x", agent: "coder");
+            await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("parent").GetString(), Is.EqualTo("sess_parent#4"));

@@ -28,7 +28,12 @@ as you go: every answer shows what it cost, specialists included.
   layout (`AdminLayout`). `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's
   runs; `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
   request), the trend (`TrendChart`) and what the run ran with. Each chart explains itself on hover (`ChartInfo`).
-  The old `/admin/maatstawwe` addresses still open.
+  The old `/admin/maatstawwe` addresses still open. **The grades view** (F18 step 4.5c) shows every eval the same way, from
+  the standard records alone: `GraderList` above the explorer (the run's eval, version, commit and graders, or one line saying
+  it recorded none) and `GradeChips` on each conversation's row (its outcome and one chip per grade, in the run's grader order,
+  the reason on hover; "no grades" for a run from before F18 step 2a, never 0). The readers and the chip list are plain classes in
+  `Admin/Grades/`, the components in `Components/Admin/Grades/`; neither names anything of Puls (`PortalReadsNoScoreKeyTests`),
+  so the admin can move out as a folder.
 - **Placeholders** (share, edit, regenerate, feedback, voice, screenshots, image, deep research, other models, language,
   theme, profile, sign-out, buying credits) answer with a "kom binnekort" toast.
 - **Stored in the browser:** chats (with favourite and archived), the API key, the currency, the location, whether
@@ -48,8 +53,14 @@ as you go: every answer shows what it cost, specialists included.
 | `Components/Chat/Sidebar/` | `ChatSidebar` (the brand, a new chat, search, the views, the chats and the settings), `ChatListItem`, `ChatMenu`, `ProfileCard`, `LocationPicker`, `MotionToggle` |
 | `Components/Chat/Header/` | `ChatHeader` (the top bar), `CreditsMenu`, `LanguageMenu`, `ProfileMenu` |
 | `Layout/AdminLayout.razor` | The admin portal's sidebar and content column |
+| `Text/PulsWebRole.cs` | The roles the web app has words for (the cook's work phases), as an enum of its own (ADR 0043) |
 | `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run |
 | `Components/Admin/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level, a check's trend, a chart's explanation |
+| `Components/Admin/Grades/` | `GradeChips`, `GraderList`: a conversation's outcome and grades, the run's eval and graders, from the standard records (F18 step 4.5c) |
+| `Components/Admin/Charts/` | `Ring`, `TokenStack`, `TokenLegend`: the explorer's donut, stacked token bar and token legend, markup only (F18 step 6a.3b) |
+| `Components/Admin/Reviews/` | `ReviewPanel` (a conversation's blind review), `ReviewPill`, `AgreementPanel` (per judge, how often it agreed with the people), `CalibrationCard` (the judge check from the portal: the button, the latest report in sentences, the earlier ones folded; F18 step 6a.5c) |
+| `Components/Admin/Summary/` | `SummaryPanel`, `SummaryTable`, `RateBar`: a run's results by category, a rate as a bar (F18 step 5c.3, 6a.3c) |
+| `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the records both components use (`GradeOutcome`, `GraderRow`, `GradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Grades/Reading/`: the outcome parsed once (`GradeOutcomes`); the run's graders and a conversation's grades come from their typed rows (`RunGraders.Of`, `ConversationGrades.Of`); `Grades/Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`); `Charts/`: the charts' colours and maths, no markup (`ChartPalette`, the six series colours for the trend chart and the explorer, `RingArcs`, `TokenKinds`, `ChartNumbers`); `Reviews/`: the review's rules and words in plain classes: `BlindReview` (the one place that knows `.human`: `IsReview`, `JudgeOf`; who answered: `OwnGrades`, `Answered`; which review a conversation shows: `ReviewOf`; what hides the judge's verdict; whether the person agreed: `Compare`), `ReviewStatus` (to review, reviewed, no review, and the list's filter `Keeps`), `ReviewText` and `AgreementText` (the sentences), `CalibrationText` and `CalibrationView` (the judge check), `ReviewerName` and `ReviewNote` (their limits), `ReviewerState` |
 | `Text/PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
 | `Content/` | `Source` and `Sources` (a turn's sources: the answer's links and the pages its specialists read); `Template` and `Templates` (the starters on Verken and Studio) |
 | `wwwroot/css/app.css` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat) |

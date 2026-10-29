@@ -1,0 +1,37 @@
+@* The chats side by side (Louis): one conversation of every mode, each turn after the other, the modes at once. *@
+
+<div class="search-backdrop" @onclick="CloseAsync"></div>
+<div class="search-dialog chats-dialog" id="chats-dialog" role="dialog" aria-modal="true" aria-label="The conversations side by side" tabindex="-1" @onkeydown="KeyAsync">
+    <div class="manual-head">
+        <strong>The conversations side by side</strong>
+        <div class="segmented" role="radiogroup" aria-label="Conversation">
+            @foreach (string task in Tree.Tasks)
+            {
+                string t = task;
+                <button type="button" role="radio" aria-checked="@(_task == t)" class="@(_task == t ? "active" : "")" @onclick="() => StartAsync(t)">@t</button>
+            }
+        </div>
+        @if (_playing) { <span class="muted working">replaying…</span> }
+        else { <button type="button" class="header-button" @onclick="() => StartAsync(_task)"><span class="ic i-pulse" aria-hidden="true"></span>Replay again</button> }
+        <kbd>Esc</kbd>
+        <button type="button" class="icon" aria-label="Close" @onclick="CloseAsync">×</button>
+    </div>
+    <div class="chats-body compare">
+        @foreach (var (m, i) in Tree.Columns)
+        {
+            <section class="compare-col" style="--i: @i">
+                <h3 class="compare-head"><span class="sw" style="background: @ChartPalette.Series(i)"></span>@ModeNames.Who(m) <code class="mode-name">@m.Name</code>
+                    <span class="muted">@Heading(m)</span></h3>
+                @if (_chats.TryGetValue(m.Name, out var turns))
+                {
+                    <div class="xreplay">
+                        @foreach (var turn in turns)
+                        {
+                            <TurnView Turn="turn" Streaming="@(_playing && turn == turns[^1])" Currency="Currency" />
+                        }
+                    </div>
+                }
+            </section>
+        }
+    </div>
+</div>

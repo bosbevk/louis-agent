@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Choices</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.choices.tests" />
+  </ItemGroup>
+
+  <!-- F18 step 7.5.2 (Louis: "say some other guy want to build his own packs or eval or anything pluggable, they must use wirename, so shared for all"): the one parser for a name that is an
+       enum member, `SettingChoice`, and nothing else. It reads .NET's own [JsonStringEnumMemberName] as a member's wire text, so parsing and JSON agree. It references no project and no
+       package (the attribute is in the shared framework), so a pack, an identity, an eval set, a host or the browser can all use it, ours or anyone else's. -->
+
+</Project>

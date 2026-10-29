@@ -13,7 +13,6 @@ using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Rendering.Providers;
 using LouisAgent.Core.Tools.Web.Search.Providers;
-
 using static LouisAgent.Core.Tests.Tools.Web.FakeWeb;
 
 namespace LouisAgent.Core.Tests.Tools.Web;
@@ -38,15 +37,30 @@ public class FetchUrlTests
     }
 
     [Test]
+    public async Task APageOverTheLimit_WithNoStore_IsTooLarge()
+    {
+        // 58210fe: "too large" is decided by HttpRequestError.ConfigurationLimitExceeded. Its other tests go through the recorder or a stub's own
+        // error; this is the path every live chat takes, where the limit is HttpClient.MaxResponseContentBufferSize.
+        var tools = WebToolsOn(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        { Content = new ByteArrayContent(new byte[6 * 1024 * 1024]) });
+
+        string result = await tools.FetchUrl("https://example.com/big");
+
+        Assert.That(result, Does.Contain("larger than 5 MB"));
+    }
+
+    [Test]
     public async Task ADamagedPdf_IsAnAnswer_NotACrash()
     {
         // PR #28 review: only one of PdfPig's exception types was caught.
         var tools = WebToolsOn(_ => new HttpResponseMessage(HttpStatusCode.OK)
         {
-            Content = new ByteArrayContent("%PDF-1.7 not really"u8.ToArray()) { Headers = { ContentType = new("application/pdf") } },
+            Content = new ByteArrayContent("%PDF-1.7 not really"u8.ToArray())
+            { Headers = { ContentType = new("application/pdf") } },
         });
 
-        Assert.That(await tools.FetchUrl("https://example.com/stukkend.pdf"), Does.StartWith("Couldn't read https://example.com/stukkend.pdf as a document"));
+        Assert.That(await tools.FetchUrl("https://example.com/stukkend.pdf"),
+            Does.StartWith("Couldn't read https://example.com/stukkend.pdf as a document"));
     }
 
     [Test]
@@ -87,7 +101,11 @@ public class FetchUrlTests
     public async Task FetchUrl_BlocksLocalAndPrivateAddresses(string url)
     {
         bool requested = false;
-        var result = await WebToolsOn(_ => { requested = true; return Html("secret"); }).FetchUrl(url);
+        var result = await WebToolsOn(_ =>
+        {
+            requested = true;
+            return Html("secret");
+        }).FetchUrl(url);
 
         Assert.That(result, Does.Contain("refusing"));
         Assert.That(requested, Is.False, "no request may be sent to a blocked address");
@@ -96,7 +114,8 @@ public class FetchUrlTests
     [Test]
     public async Task FetchUrl_BlocksHostnamesResolvingToPrivateAddresses()
     {
-        var tools = WebToolsOn(_ => Html("secret"), dns: (_, _) => Task.FromResult(new[] { IPAddress.Parse("10.0.0.5") }));
+        var tools = WebToolsOn(_ => Html("secret"),
+            dns: (_, _) => Task.FromResult(new[] { IPAddress.Parse("10.0.0.5") }));
         Assert.That(await tools.FetchUrl("https://intranet.example.com/"), Does.Contain("private or local address"));
     }
 
@@ -122,7 +141,8 @@ public class FetchUrlTests
     public async Task FetchUrl_FollowsPublicRedirects()
     {
         var tools = WebToolsOn(request => request.RequestUri!.AbsolutePath == "/old"
-            ? new HttpResponseMessage(HttpStatusCode.MovedPermanently) { Headers = { Location = new Uri("/new", UriKind.Relative) } }
+            ? new HttpResponseMessage(HttpStatusCode.MovedPermanently)
+            { Headers = { Location = new Uri("/new", UriKind.Relative) } }
             : Html("<main><p>moved here</p></main>"));
 
         var result = await tools.FetchUrl("https://example.com/old");
@@ -133,7 +153,8 @@ public class FetchUrlTests
     [Test]
     public async Task FetchUrl_RejectsBinaryContent()
     {
-        var tools = WebToolsOn(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([1, 2, 3]) { Headers = { ContentType = new("image/png") } } });
+        var tools = WebToolsOn(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        { Content = new ByteArrayContent([1, 2, 3]) { Headers = { ContentType = new("image/png") } } });
         Assert.That(await tools.FetchUrl("https://example.com/a.png"), Does.Contain("cannot be read as text"));
     }
 
@@ -144,7 +165,8 @@ public class FetchUrlTests
         var tools = new WebTools(WebSearchProviderFactory.Create(AgentOptions.FromEnvironment()));
 
         var search = await tools.WebSearch("dotnet 10 what's new", maxResults: 3);
-        var page = await tools.FetchUrl("https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview", maxChars: 1500);
+        var page = await tools.FetchUrl("https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview",
+            maxChars: 1500);
 
         TestContext.Out.WriteLine(search);
         TestContext.Out.WriteLine(page);

@@ -1,3 +1,4 @@
+using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Text;
 
@@ -10,12 +11,14 @@ public class WorkStatusTests
     private static readonly ChatText Text = new()
     {
         Processing = "BESIG",
-        RolePhases = new Dictionary<string, RolePhases> { ["puls-cook"] = new("Soek bestanddele", "Bou resep") },
+        RolePhases = new Dictionary<string, RolePhases> { [SampleRole.Alpha] = new("Soek bestanddele", "Bou resep") },
     };
 
-    private static Block RunningCall(string role = "puls-cook") => new()
+    private static Block RunningCall(string role = SampleRole.Alpha) => new()
     {
-        Kind = BlockKind.Tool, ToolUseId = "call_1", ToolName = Delegation.ToolName,
+        Kind = BlockKind.Tool,
+        ToolUseId = "call_1",
+        ToolName = Delegation.ToolName,
         ToolInput = $$"""{"agent":"puls","toolsets":["web"],"message":"Kook","role":"{{role}}"}""",
         SubTurn = new Turn(),
     };
@@ -46,7 +49,8 @@ public class WorkStatusTests
     public void ASpecialistWritingAfterAResult_IsBuilding()
     {
         var call = RunningCall();
-        call.SubTurn!.Blocks.Add(new Block { Kind = BlockKind.Tool, ToolName = "FindProducts", ToolResult = "Products at Checkers…" });
+        call.SubTurn!.Blocks.Add(new Block
+        { Kind = BlockKind.Tool, ToolName = "FindProducts", ToolResult = "Products at Checkers…" });
         call.SubTurn.Blocks.Add(new Block { Kind = BlockKind.Text, Text = "### Die gereg" });
         var turn = new Turn { Blocks = [call] };
 
@@ -67,7 +71,7 @@ public class WorkStatusTests
     [Test]
     public void ARoleWithoutPhases_IsBusy()
     {
-        var turn = new Turn { Blocks = [RunningCall("puls-researcher")] };
+        var turn = new Turn { Blocks = [RunningCall(SampleRole.Beta)] };
 
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("BESIG"));
     }
@@ -76,7 +80,7 @@ public class WorkStatusTests
     public void AFinishedCall_IsBusy_ThePageWritesItsOwnAnswerNow()
     {
         var call = RunningCall();
-        call.ToolResult = "Bobotie.\n\n[Sub-session on puls (web; puls-cook): 3 requests, $0.01]";
+        call.ToolResult = SampleRole.Fill("Bobotie.\n\n[Sub-session on puls (web; <RoleAlpha>): 3 requests, $0.01]");
         var turn = new Turn { Blocks = [call] };
 
         Assert.That(WorkStatus.Label(turn, Text), Is.EqualTo("BESIG"));

@@ -1,12 +1,13 @@
-namespace LouisAgent.Core.Tools.Agents.SubSessions;
 
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.Core.Tools.Agents.Messages;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 
+namespace LouisAgent.Core.Tools.Agents.SubSessions;
 /// <summary>
 /// A sub-session's life on a peer (S, CL15, from SpecialistTools): opened with only the toolsets a task needs, sent the
 /// task, read to the end, kept for a follow-up (F26) or deleted. Every failure is an answer the model can act on, never
@@ -26,8 +27,10 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     /// and reads the answer to the end; in a chat the child is kept on the registry (F26) and the answer carries its
     /// handle, else (or with <paramref name="keep"/> false: a minion) it is deleted.
     /// </summary>
-    public async Task<string> OpenAsync(Uri peer, string agent, object createBody, object messageBody, IReadOnlyList<string> toolsets,
-        string? role, SubSessionKind kind, string? toolUseId, UsageScope? scope, TimeSpan timeout, CancellationToken cancellationToken, bool keep = true)
+    public async Task<string> OpenAsync(Uri peer, string agent, object createBody, object messageBody,
+        IReadOnlyList<string> toolsets,
+        string? role, SubSessionKind kind, string? toolUseId, UsageScope? scope, TimeSpan timeout,
+        CancellationToken cancellationToken, bool keep = true)
     {
         using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         timeoutSource.CancelAfter(timeout);
@@ -38,43 +41,66 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
             using var created = await http.SendAsync(create, timeoutSource.Token);
             string createdBody = await created.Content.ReadAsStringAsync(timeoutSource.Token);
             if (!created.IsSuccessStatusCode)
-                return MessageText.Format(ToolMessage.SubSessionRefused, new { Agent = kind.Label, Status = (int)created.StatusCode, Reason = PeerHttp.ErrorText(createdBody) });
+                return MessageText.Format(SubSessionToolMessage.SubSessionRefused,
+                    new
+                    {
+                        Agent = kind.Label,
+                        Status = (int)created.StatusCode,
+                        Reason = PeerHttp.ErrorText(createdBody)
+                    });
             using var createdJson = JsonDocument.Parse(createdBody);
-            sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ?? throw new JsonException("no session_id");
+            sessionId = createdJson.RootElement.GetProperty("session_id").GetString() ??
+                        throw new JsonException("no session_id");
             // The role it opened with, as the peer reports it (the one passed: CL10, a role is never derived).
-            string? reported = createdJson.RootElement.TryGetProperty("role", out var p) && p.ValueKind == JsonValueKind.String
-                ? p.GetString() : role;
+            string? reported = createdJson.RootElement.TryGetProperty("role", out var p) &&
+                               p.ValueKind == JsonValueKind.String
+                ? p.GetString()
+                : role;
             // F34: the toolsets it loaded, as the peer reports them: a role may add its own to the ones sent.
-            IReadOnlyList<string> loaded = createdJson.RootElement.TryGetProperty("toolsets", out var t) && t.ValueKind == JsonValueKind.Array
-                && t.EnumerateArray().Select(x => x.GetString()).OfType<string>().ToList() is { Count: > 0 } reportedToolsets
-                ? reportedToolsets : toolsets;
+            IReadOnlyList<string> loaded = createdJson.RootElement.TryGetProperty("toolsets", out var t) &&
+                                           t.ValueKind == JsonValueKind.Array
+                                           && t.EnumerateArray().Select(x => x.GetString()).OfType<string>().ToList() is
+                                           { Count: > 0 } reportedToolsets
+                ? reportedToolsets
+                : toolsets;
 
-            var reply = await messenger.AnswerAsync(peer, sessionId, messageBody, kind, toolUseId, scope, timeoutSource.Token);
+            var reply = await messenger.AnswerAsync(peer, sessionId, messageBody, kind, toolUseId, scope,
+                timeoutSource.Token);
             if (reply.Failure is not null) return reply.Failure;
             if (keep && SubSessionRegistry.Current is { } registry)
             {
                 // F26: the chat keeps the child, with its context and cached prefix, for a follow-up. The entry's closer
                 // is this tool's delete, so the registry never speaks HTTP; the finally below then leaves it alone.
                 string kept = sessionId;
-                var entry = new OpenSubSession(peer, kept, agent, loaded, reported, () => DeleteAsync(peer, kept)) { Kind = kind.Kind, Llm = kind.Llm };
+                var entry = new OpenSubSession(peer, kept, agent, loaded, reported, () => DeleteAsync(peer, kept))
+                { Kind = kind.Kind, Llm = kind.Llm };
                 string handle = await registry.AddAsync(entry);
                 sessionId = null;
                 return kind.KeptAnswer(entry with { Handle = handle }, reply);
             }
+
             return kind.Answer(reply);
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            return MessageText.Format(ToolMessage.SubSessionTimedOut, new { Agent = kind.Label, Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture) });
+            return MessageText.Format(SubSessionToolMessage.SubSessionTimedOut,
+                new
+                {
+                    Agent = kind.Label,
+                    Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture)
+                });
         }
         catch (HttpRequestException ex)
         {
-            return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionFailed,
+                new { Agent = kind.Label, Reason = ex.Message });
         }
-        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
+        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException
+                                       or FormatException)
         {
             // A peer that answers with something other than its API's JSON: an answer the model can act on, not a crash.
-            return MessageText.Format(ToolMessage.SubSessionUnreadable, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionUnreadable,
+                new { Agent = kind.Label, Reason = ex.Message });
         }
         finally
         {
@@ -85,7 +111,8 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     }
 
     /// <summary>Sends a follow-up to a kept child; one the peer no longer has is forgotten, one that fails is closed.</summary>
-    public async Task<string> ContinueAsync(SubSessionRegistry registry, OpenSubSession open, object messageBody, SubSessionKind kind,
+    public async Task<string> ContinueAsync(SubSessionRegistry registry, OpenSubSession open, object messageBody,
+        SubSessionKind kind,
         string? toolUseId, UsageScope? scope, TimeSpan timeout, CancellationToken cancellationToken)
     {
         using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -93,28 +120,39 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
         bool answered = false;
         try
         {
-            var reply = await messenger.AnswerAsync(open.Peer, open.SessionId, messageBody, kind, toolUseId, scope, timeoutSource.Token);
+            var reply = await messenger.AnswerAsync(open.Peer, open.SessionId, messageBody, kind, toolUseId, scope,
+                timeoutSource.Token);
             if (reply.RefusedStatus == 404)
             {
                 // The peer dropped it (idle, or restarted): nothing to close, and the model starts over with the whole context.
                 registry.Remove(open.Handle);
-                return MessageText.Format(ToolMessage.SubSessionGone, new { open.Handle, Agent = kind.Label });
+                return MessageText.Format(SubSessionToolMessage.SubSessionGone,
+                    new { open.Handle, Agent = kind.Label });
             }
+
             if (reply.Failure is not null) return reply.Failure;
             answered = true;
             return kind.KeptAnswer(open, reply);
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
         {
-            return MessageText.Format(ToolMessage.SubSessionTimedOut, new { Agent = kind.Label, Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture) });
+            return MessageText.Format(SubSessionToolMessage.SubSessionTimedOut,
+                new
+                {
+                    Agent = kind.Label,
+                    Minutes = timeout.TotalMinutes.ToString("0.##", CultureInfo.InvariantCulture)
+                });
         }
         catch (HttpRequestException ex)
         {
-            return MessageText.Format(ToolMessage.SubSessionFailed, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionFailed,
+                new { Agent = kind.Label, Reason = ex.Message });
         }
-        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
+        catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException
+                                       or FormatException)
         {
-            return MessageText.Format(ToolMessage.SubSessionUnreadable, new { Agent = kind.Label, Reason = ex.Message });
+            return MessageText.Format(SubSessionToolMessage.SubSessionUnreadable,
+                new { Agent = kind.Label, Reason = ex.Message });
         }
         finally
         {
@@ -129,9 +167,12 @@ internal sealed class PeerSession(PeerHttp http, SubSessionMessenger messenger)
     {
         try
         {
-            using var delete = http.Request(HttpMethod.Delete, new Uri(peer, $"v1/sessions/{Uri.EscapeDataString(sessionId)}"), null);
+            using var delete = http.Request(HttpMethod.Delete,
+                new Uri(peer, $"v1/sessions/{Uri.EscapeDataString(sessionId)}"), null);
             using var _ = await http.SendAsync(delete, CancellationToken.None);
         }
-        catch (HttpRequestException) { }
+        catch (HttpRequestException)
+        {
+        }
     }
 }

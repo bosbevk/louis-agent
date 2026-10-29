@@ -1,0 +1,12 @@
+{
+  "name": "puls-routing",
+  "version": 4,
+  "covers": "Puls's routing: eighteen questions, each in its own session in Stellenbosch: twelve for the dev split, two of each kind (web, files, git, numbers, chat, cook), and six held out, one of each kind.",
+  "content_hash": "b300c7c05686fd5814d9768e2d51498288391647d9b4f6756ff402cbe3fdb467",
+  "changes": [
+    "2026-10-24: first version, the questions of benchmarks/routing/run_check.py (QUESTIONS) as files",
+    "2026-10-25: step 5.4 - the two meal questions name their people and their shop, as Puls asks first without them; every scenario states where it should go (routes_to); six held-out questions, one new one of each kind, never used while tuning a prompt",
+    "2026-10-25: the shop named in each question is PnP (was Checkers), and Woolworths where Pick n Pay was, for a run while Checkers refuses the browser; the shop requirement keeps its value",
+    "2026-10-28: step 7d - the scenarios take Inspect's Sample shape: id, input (the user's first question as a chat message), target, and ours under metadata (place, time_zone, follow_ups, expected, categories); no scenario's content changed"
+  ]
+}

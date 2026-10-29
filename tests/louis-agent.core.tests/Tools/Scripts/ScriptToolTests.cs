@@ -1,3 +1,7 @@
+using LouisAgent.Testing;
+using LouisAgent.Choices;
+using LouisAgent.Core.Skills.Languages;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Hosting.Prompts;
 using System.Text.Json;
 using LouisAgent.Core.Config;
@@ -12,20 +16,20 @@ namespace LouisAgent.Core.Tests.Tools.Scripts;
 public class ScriptToolTests
 {
     private const string AddTool = """
-        # Tool: AddNumbers
-        - Description: Add two integers
-        - Timeout: 30
-        - Parameters:
-          - `a` (integer, required): first number
-          - `b` (integer, optional): second number, default 0
-        - Implementation:
+                                   # Tool: AddNumbers
+                                   - Description: Add two integers
+                                   - Timeout: 30
+                                   - Parameters:
+                                     - `a` (integer, required): first number
+                                     - `b` (integer, optional): second number, default 0
+                                   - Implementation:
 
-        ```python
-        import json, sys
-        args = json.load(sys.stdin)
-        print(json.dumps({"sum": args["a"] + args.get("b", 0)}))
-        ```
-        """;
+                                   ```python
+                                   import json, sys
+                                   args = json.load(sys.stdin)
+                                   print(json.dumps({"sum": args["a"] + args.get("b", 0)}))
+                                   ```
+                                   """;
 
     private string _skillsDir = null!;
 
@@ -50,11 +54,6 @@ public class ScriptToolTests
         return engine;
     }
 
-    private static void RequirePython() =>
-        Assume.That(new PythonTools(Path.GetTempPath()).ResolveInterpreter(), Is.Not.Null, "Python 3 is not installed");
-
-    private static AIFunction Tool(AgentEngine engine, string name) => engine.Tools.OfType<AIFunction>().Single(t => t.Name == name);
-
     [Test]
     public void Parse_ReadsNameParametersLanguageAndTimeout()
     {
@@ -62,7 +61,7 @@ public class ScriptToolTests
 
         Assert.That(errors, Is.Empty);
         Assert.That(definition!.Name, Is.EqualTo("AddNumbers"));
-        Assert.That(definition.Language, Is.EqualTo("python"));
+        Assert.That(definition.Language, Is.EqualTo(ScriptLanguage.Python));
         Assert.That(definition.TimeoutSeconds, Is.EqualTo(30));
         Assert.That(definition.Parameters.Select(p => (p.Name, p.Type, p.Required)),
             Is.EqualTo(new[] { ("a", "integer", true), ("b", "integer", false) }));
@@ -73,16 +72,16 @@ public class ScriptToolTests
     public void Parse_ReportsAllProblemsAtOnce()
     {
         const string broken = """
-            # Tool: bad name
-            - Parameters:
-              - `x` (date, required): unsupported type
-              - just text
-            - Implementation:
+                              # Tool: bad name
+                              - Parameters:
+                                - `x` (date, required): unsupported type
+                                - just text
+                              - Implementation:
 
-            ```ruby
-            puts 1
-            ```
-            """;
+                              ```ruby
+                              puts 1
+                              ```
+                              """;
 
         var (definition, errors) = ScriptToolDefinition.Parse(broken);
 
@@ -100,8 +99,10 @@ public class ScriptToolTests
         var tool = new ScriptTool(ScriptToolDefinition.Parse(AddTool).Definition!, approved: false, (_, _, _) => "");
         var schema = tool.JsonSchema;
 
-        Assert.That(schema.GetProperty("properties").GetProperty("a").GetProperty("type").GetString(), Is.EqualTo("integer"));
-        Assert.That(schema.GetProperty("required").EnumerateArray().Select(e => e.GetString()), Is.EqualTo(new[] { "a" }));
+        Assert.That(schema.GetProperty("properties").GetProperty("a").GetProperty("type").GetString(),
+            Is.EqualTo("integer"));
+        Assert.That(schema.GetProperty("required").EnumerateArray().Select(e => e.GetString()),
+            Is.EqualTo(new[] { "a" }));
         Assert.That(tool.Description, Does.Contain("pending user approval"));
     }
 
@@ -110,7 +111,9 @@ public class ScriptToolTests
     {
         var tool = new ScriptTool(ScriptToolDefinition.Parse(AddTool).Definition!, approved: true, (_, _, _) => "");
 
-        Assert.That(tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "5" }, out var json, out var env, out _), Is.True,
+        Assert.That(
+            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "5" }, out var json, out var env, out _),
+            Is.True,
             "numeric strings are accepted for integer parameters");
         Assert.That(json, Is.EqualTo("""{"a":5}"""));
         Assert.That(env["TOOL_ARG_a"], Is.EqualTo("5"));
@@ -118,10 +121,14 @@ public class ScriptToolTests
         Assert.That(tool.TryBuildInput(new Dictionary<string, object?>(), out _, out _, out var missing), Is.False);
         Assert.That(missing, Does.Contain("missing required parameter 'a'"));
 
-        Assert.That(tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "five" }, out _, out _, out var wrongType), Is.False);
+        Assert.That(
+            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = "five" }, out _, out _, out var wrongType),
+            Is.False);
         Assert.That(wrongType, Does.Contain("must be a integer"));
 
-        Assert.That(tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = 1, ["c"] = 2 }, out _, out _, out var unknown), Is.False);
+        Assert.That(
+            tool.TryBuildInput(new Dictionary<string, object?> { ["a"] = 1, ["c"] = 2 }, out _, out _, out var unknown),
+            Is.False);
         Assert.That(unknown, Does.Contain("unknown parameter 'c'"));
     }
 
@@ -154,36 +161,9 @@ public class ScriptToolTests
         engine.CreateTool(AddTool);
 
         Assert.That(engine.CreateTool(AddTool), Does.Contain("overwrite=true"));
-        Assert.That(engine.CreateTool(AddTool.Replace("Add two integers", "Sum"), overwrite: true), Does.Contain("Created"));
+        Assert.That(engine.CreateTool(AddTool.Replace("Add two integers", "Sum"), overwrite: true),
+            Does.Contain("Created"));
         Assert.That(engine.Tools.Count(t => t.Name == "AddNumbers"), Is.EqualTo(1));
-    }
-
-    [Test]
-    [Category("Integration")]
-    public async Task CreatedTool_RunsWithArgumentsAsJsonOnStdin()
-    {
-        RequirePython();
-        var engine = Engine();
-        engine.CreateTool(AddTool);
-
-        var result = await Tool(engine, "AddNumbers").InvokeAsync(new AIFunctionArguments { ["a"] = 2, ["b"] = 40 });
-
-        Assert.That(result?.ToString(), Is.EqualTo("""{"sum": 42}"""));
-    }
-
-    [TestCase("powershell", "$a = [Console]::In.ReadToEnd() | ConvertFrom-Json; \"echo:$($a.text)\"")]
-    [TestCase("bash", "echo \"echo:$TOOL_ARG_text\"")]
-    [Category("Integration")]
-    public async Task CreatedTool_SupportsPowerShellAndBash(string language, string code)
-    {
-        if (language == "powershell") Assume.That(new PowerShellTools(_skillsDir).ResolveInterpreter(), Is.Not.Null);
-        var engine = Engine();
-        string definition = $"# Tool: EchoText\n- Description: Echo\n- Parameters:\n  - `text` (string, required): text\n- Implementation:\n\n```{language}\n{code}\n```\n";
-        Assert.That(engine.CreateTool(definition), Does.Contain("Created"));
-
-        var result = await Tool(engine, "EchoText").InvokeAsync(new AIFunctionArguments { ["text"] = "a\"; rm -rf / #" });
-
-        Assert.That(result?.ToString(), Is.EqualTo("echo:a\"; rm -rf / #"), "arguments must arrive as data, never as code");
     }
 
     [Test]
@@ -243,9 +223,10 @@ public class ScriptToolTests
         var engine = Engine();
         Assert.That(engine.Skills.Select(s => s.Name), Does.Not.Contain("Greet"));
 
-        engine.CreateSkillFile("greeting", "## Skill: Greet\n\n- Description: hi\n- Execution:\n\n```bash\necho hi\n```\n");
+        engine.CreateSkillFile("greeting",
+            "## Skill: Greet\n\n- Description: hi\n- Execution:\n\n```bash\necho hi\n```\n");
 
-        Assert.That(engine.Skills.Single(s => s.Name == "Greet").Language, Is.EqualTo("bash"));
+        Assert.That(engine.Skills.Single(s => s.Name == "Greet").Language, Is.EqualTo(ScriptLanguage.Bash));
     }
 
     [Test]
@@ -264,29 +245,5 @@ public class ScriptToolTests
     {
         Assert.That(Engine().HandleUserCommand("please approve my PR"), Is.Null);
         Assert.That(Engine().HandleUserCommand("/unknown"), Is.Null);
-    }
-
-    [Test]
-    [Category("Integration")]
-    public async Task NewTool_IsCallableInTheSameTurnThatCreatedIt()
-    {
-        RequirePython();
-        string escapedDefinition = JsonSerializer.Serialize(AddTool);
-        var client = new FakeChatClient(
-            _ => ToolCall("c1", "CreateTool", $$"""{"definition":{{escapedDefinition}}}"""),
-            _ => ToolCall("c2", "AddNumbers", """{"a":20,"b":22}"""),
-            messages => new ChatResponse(new ChatMessage(ChatRole.Assistant,
-                "result: " + messages.Last().Contents.OfType<FunctionResultContent>().Single().Result)));
-        var engine = Engine(client);
-
-        string answer = await engine.ProcessPromptAsync(engine.NewHistory(), "add 20 and 22 with a new tool");
-
-        Assert.That(answer, Is.EqualTo("""result: {"sum": 42}"""));
-    }
-
-    private static ChatResponse ToolCall(string callId, string name, string argumentsJson)
-    {
-        var arguments = JsonSerializer.Deserialize<Dictionary<string, object?>>(argumentsJson);
-        return new ChatResponse(new ChatMessage(ChatRole.Assistant, [new FunctionCallContent(callId, name, arguments)]));
     }
 }

@@ -8,8 +8,10 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.Logging;
 
@@ -32,11 +34,13 @@ internal static class TurnStream
             string content = attachment.Content ?? string.Empty;
             string body = content.Length <= maxAttachmentChars ? content : content[..maxAttachmentChars];
             parts.Add(MessageText.Format(ApiModelText.Attachment, new { attachment.Name, Content = body }) +
-                      (content.Length <= maxAttachmentChars ? "" : MessageText.Format(ApiModelText.AttachmentTruncated, new
-                      {
-                          Shown = maxAttachmentChars.ToString("N0", CultureInfo.InvariantCulture),
-                          Length = content.Length.ToString("N0", CultureInfo.InvariantCulture),
-                      })));
+                      (content.Length <= maxAttachmentChars
+                          ? ""
+                          : MessageText.Format(ApiModelText.AttachmentTruncated, new
+                          {
+                              Shown = maxAttachmentChars.ToString("N0", CultureInfo.InvariantCulture),
+                              Length = content.Length.ToString("N0", CultureInfo.InvariantCulture),
+                          })));
         }
 
         return string.Join("\n\n", parts);
@@ -45,24 +49,26 @@ internal static class TurnStream
     public static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn)
     {
-        var stream = new ClaudeStyleStream(session.Id, session.Toolsets, session.Role);
+        var stream = StreamFormats.Create(session.StreamFormat, session.Id, session.Toolsets, session.Role);
         UsageScope? usage = null;
         try
         {
-            yield return stream.MessageStart();
+            yield return stream.Start();
 
             // /tools, /approve, /reject and /usage are answered directly, never by the model (so they have no usage).
-            if (engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is { } commandReply)
+            if (engine.HandleUserCommand(prompt, engine.RecordsUsage ? session.Usage.Records : null) is
+                { } commandReply)
             {
                 foreach (var item in stream.Text(commandReply)) yield return item;
-                foreach (var item in stream.Stop("end_turn")) yield return item;
+                foreach (var item in stream.Stop("end_turn", null)) yield return item;
                 yield break;
             }
 
             // This is an async iterator, so a scope it makes current is lost at its first yield: the scope is activated
             // around each step of the engine's stream instead, which is where the model requests run.
             usage = UsageScope.Begin(host: "api", session: session.Id, turn: session.Turns, tags: session.Tags);
-            await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token).GetAsyncEnumerator(turn.Token);
+            await using var updates = engine.StreamPromptAsync(session.History, prompt, turn.Token)
+                .GetAsyncEnumerator(turn.Token);
             string stopReason = "end_turn";
             string? error = null;
             // F5: a sub-session's events (StartSubSession) arrive while its tool call runs, so the next update is awaited
@@ -76,6 +82,7 @@ internal static class TurnStream
                 using (SessionAttachments.Use(session.Attachments))
                 using (AgentTools.Use(session.Engine.Tools.Select(t => t.Name)))
                 using (UserPlace.Use(session.Place))
+                using (SessionReplay.Use(session.Replay))
                 using (SubSessionRegistry.Use(session.SubSessions))
                 using (SubSessionFeed.Observe(e => subSessions.Writer.TryWrite(e)))
                     next = updates.MoveNextAsync().AsTask();
@@ -83,9 +90,10 @@ internal static class TurnStream
                 while (!next.IsCompleted)
                 {
                     await Task.WhenAny(next, subSessions.Reader.WaitToReadAsync().AsTask());
-                    while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+                    while (subSessions.Reader.TryRead(out var sub)) yield return stream.SubSession(sub);
                 }
-                while (subSessions.Reader.TryRead(out var sub)) yield return ClaudeStyleStream.SubSession(sub);
+
+                while (subSessions.Reader.TryRead(out var sub)) yield return stream.SubSession(sub);
 
                 try
                 {
@@ -98,28 +106,26 @@ internal static class TurnStream
                 }
                 catch (Exception ex)
                 {
-                    AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Error, ApiLogMessage.TurnFailed, new { Session = session.Id }, exception: ex, tag: "API");
+                    AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Error,
+                        ApiLogMessage.TurnFailed, new { Session = session.Id }, exception: ex, tag: "API");
                     error = $"{ex.GetType().Name}: {ex.Message}";
                     break;
                 }
 
                 foreach (var content in updates.Current.Contents)
-                foreach (var item in stream.Content(content))
-                    yield return item;
+                    foreach (var item in stream.Content(content))
+                        yield return item;
             }
 
             // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the scope.
             // None when no request returned (e.g. the first one failed): there is nothing to report.
             IReadOnlyList<UsageRecord> turnRecords = usage.Records;
-            object? turnUsage = engine.RecordsUsage && turnRecords.Count > 0 ? ClaudeStyleStream.Usage(turnRecords, engine.Display) : null;
+            TurnUsage? turnUsage = engine.RecordsUsage && turnRecords.Count > 0
+                ? TurnUsage.From(turnRecords, engine.Display)
+                : null;
             if (error is not null)
             {
-                foreach (var item in stream.CloseBlock()) yield return item;
-                // FX6: the requests made before the failure were charged, so the error carries the turn's usage too (an
-                // extra field: Claude's error event has none, and its clients ignore what they don't know).
-                yield return ClaudeStyleStream.Event("error", turnUsage is null
-                    ? ApiErrors.Body("api_error", error)
-                    : new { type = "error", error = new { type = "api_error", message = error }, usage = turnUsage });
+                foreach (var item in stream.Fail(error, turnUsage)) yield return item;
             }
             else
             {
@@ -135,6 +141,7 @@ internal static class TurnStream
                 session.Usage.EndTurn(usage.Records);
                 usage.Dispose();
             }
+
             session.EndTurn(turn);
         }
     }

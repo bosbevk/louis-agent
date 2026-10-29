@@ -35,7 +35,7 @@ where its work went and stays as its design.
 | [F15](F15-model-limits.md) | Model limits: each model's context window and cache minimum, `num_ctx` for local models, and F9's and F13's limits per model | planned | R §B–D | — | F2 | M2 |
 | [F16](F16-summariser.md) | Summariser: one measured component for oversized tool results and (later) compaction, with its own model, prompt and no caching | merged into F9 (F16-S1 a small cleanup) | R §D | F10-S3 (summary model) | F1, F4, F18 | M4 |
 | [F17](F17-orchestrator-agent.md) | Orchestrator agent: a routing workflow with an agent for the exceptions, its own settings and cache policy, measured against today's | merged into F39 | Orchestrator design | — | F4, F8, F10, F18 | M4 |
-| [F18](F18-evaluation.md) | Evaluation: a small shared eval harness (cases as data, scorers incl. an LLM judge, cost and baseline per run) | planned | — | Backlog *Evaluation* (first part) | F1, F2 | M4 |
+| [F18](F18-evaluation.md) | Evals in C#: one harness for checks, regressions and demos (tasks and trials, code and calibrated model graders, frozen web input, cost from the ledger) | **done** (2026-10-29) | — | Backlog *Evaluation* (first part) | F1, F2 | M4 |
 | [F20](F20-puls-look.md) | Puls look: a landing page and a three-panel dashboard, dark, in Puls's colours | done | — | — | F5 | — |
 | [F21](F21-personalities.md) | Personalities per session: each session (and sub-session) names its personality | done | — | — | F5 | — |
 | [F22](F22-role-tools.md) | Role tools: today's date, attachments to specialists, documents, git history, tables and currency | done | — | — | F21, F5 | — |
@@ -82,7 +82,7 @@ flowchart LR
     F1 --> F12[F12 Response speed]
     F5 --> F13[F13 Local models]
     F3 --> F14[F14 Display currency]
-    F1 --> F18[F18 Evaluation]
+    F1 --> F18[F18 Evals]
     F18 --> F16[F16 Summariser]
     F4 --> F16
     F16 --> F9

@@ -1,4 +1,3 @@
-namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
 using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
@@ -6,18 +5,22 @@ using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Tools.Web.Messages;
 
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 /// <summary>
 /// Google Programmable Search Engine via the Custom Search JSON API. Needs an API key and a search engine ID (cx)
 /// configured to search the entire web. See https://developers.google.com/custom-search/v1/overview.
 /// </summary>
-public sealed class GoogleSearchProvider(string apiKey, string searchEngineId, HttpClient? http = null) : IWebSearchProvider
+public sealed class GoogleSearchProvider(string apiKey, string searchEngineId, HttpClient? http = null)
+    : IWebSearchProvider
 {
     private readonly HttpClient _http = http ?? new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
 
     public string Name => "Google";
 
-    public async Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
+        CancellationToken cancellationToken = default)
     {
         var parameters = new List<string>
         {
@@ -26,10 +29,13 @@ public sealed class GoogleSearchProvider(string apiKey, string searchEngineId, H
             $"q={Uri.EscapeDataString(query.Text)}",
             $"num={Math.Clamp(query.MaxResults, 1, 10)}",
         };
-        if (!string.IsNullOrWhiteSpace(query.Site)) parameters.AddRange([$"siteSearch={Uri.EscapeDataString(query.Site)}", "siteSearchFilter=i"]);
+        if (!string.IsNullOrWhiteSpace(query.Site))
+            parameters.AddRange([$"siteSearch={Uri.EscapeDataString(query.Site)}", "siteSearchFilter=i"]);
         if (query.Recency is { } recency) parameters.Add($"dateRestrict={DuckDuckGoSearchProvider.Letter(recency)}1");
 
-        using var response = await _http.GetAsync("https://www.googleapis.com/customsearch/v1?" + string.Join('&', parameters), cancellationToken);
+        using var response =
+            await _http.GetAsync("https://www.googleapis.com/customsearch/v1?" + string.Join('&', parameters),
+                cancellationToken);
         string json = await response.Content.ReadAsStringAsync(cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -37,10 +43,12 @@ public sealed class GoogleSearchProvider(string apiKey, string searchEngineId, H
             string detail = TryReadError(json) ?? response.ReasonPhrase ?? "";
             throw new WebSearchException(response.StatusCode switch
             {
-                HttpStatusCode.TooManyRequests => MessageText.Format(ToolMessage.GoogleQuotaExceeded, new { Detail = detail }),
+                HttpStatusCode.TooManyRequests => MessageText.Format(WebToolMessage.GoogleQuotaExceeded,
+                    new { Detail = detail }),
                 HttpStatusCode.BadRequest or HttpStatusCode.Forbidden or HttpStatusCode.Unauthorized =>
-                    MessageText.Format(ToolMessage.GoogleRejected, new { Detail = detail }),
-                _ => MessageText.Format(ToolMessage.GoogleFailed, new { Status = (int)response.StatusCode, Detail = detail }),
+                    MessageText.Format(WebToolMessage.GoogleRejected, new { Detail = detail }),
+                _ => MessageText.Format(WebToolMessage.GoogleFailed,
+                    new { Status = (int)response.StatusCode, Detail = detail }),
             });
         }
 

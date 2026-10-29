@@ -1,0 +1,26 @@
+using System.Text.Json.Serialization;
+using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
+
+namespace LouisAgent.Evals.Protocol.Events.Conversations;
+
+/// <summary>
+/// A conversation finished: who answered, how many errors and seconds it took, every grade, how it came out, and what
+/// it measured. The grades decide the outcome; the metrics never do.
+/// </summary>
+public sealed record ConversationEvent(
+    DateTimeOffset T,
+    string Mode,
+    int Repeat,
+    string Task,
+    string? Role,
+    int Errors,
+    double Seconds,
+    IReadOnlyList<GradeInfo> Grades,
+    TrialOutcome Outcome,
+    Metrics Metrics) : EvalEvent(T)
+{
+    /// <summary>Which conversation finished, for grouping it with its turns.</summary>
+    [JsonIgnore]
+    public ConversationKey Key => new(Mode, Repeat, Task);
+}
