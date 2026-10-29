@@ -9,8 +9,6 @@ using LouisAgent.Evals.Runner.Calibration;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Runner.Refusal;
-using LouisAgent.Evals.Runner.Samples;
-using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
@@ -19,21 +17,6 @@ using LouisAgent.Evals.Runner.Evals.Stub;
 try
 {
     var request = CommandLine.Parse(args);
-
-    // The one-off move of a dataset to Inspect's Sample shape (F18 step 7d). It runs before the catalogue, which loads
-    // every dataset and would refuse the old shape; it opens no session.
-    if (request is ConvertSamplesRequest convert)
-    {
-        int converted = SampleConversion.Convert(convert.Folder,
-            DateOnly.FromDateTime(TimeProvider.System.GetUtcNow().UtcDateTime));
-        Console.Error.WriteLine(MessageText.Format(RunnerMessage.SamplesConverted,
-            new
-            {
-                Count = converted,
-                convert.Folder
-            }));
-        return 0;
-    }
 
     var sets = EvalSetSelection.Parse(Environment.GetEnvironmentVariable("EVALS")).Select(EvalSets.Create).ToList();
     var catalog = new EvalCatalog(sets, new StubEval());

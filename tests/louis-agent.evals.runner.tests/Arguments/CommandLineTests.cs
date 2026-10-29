@@ -16,12 +16,6 @@ public class CommandLineTests
     public void ListIsParsed() =>
         Assert.That(CommandLine.Parse(["--list"]), Is.EqualTo(new ListRequest()));
 
-    /// <summary>The one-off conversion of a dataset to the Sample shape names its folder (F18 step 7d).</summary>
-    [Test]
-    public void ConvertSamplesTakesItsFolder() =>
-        Assert.That(CommandLine.Parse(["convert-samples", "evals/x/Dataset"]),
-            Is.EqualTo(new ConvertSamplesRequest("evals/x/Dataset")));
-
     /// <summary>A run needs only its eval's name, and then runs each mode once.</summary>
     [Test]
     public void RunTakesItsNameAndOneRepeatByDefault() =>

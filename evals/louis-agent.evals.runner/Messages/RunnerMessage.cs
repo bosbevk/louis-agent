@@ -20,14 +20,6 @@ public enum RunnerMessage
     [Description("Two evals are named '{Name}'.")]
     DuplicateEval,
 
-    [Description("{Date}: step 7d - the scenarios take Inspect's Sample shape: id, input (the user's first question "
-                 + "as a chat message), target, and ours under metadata (place, time_zone, follow_ups, expected, "
-                 + "categories); no scenario's content changed")]
-    SamplesChanged,
-
-    [Description("{Count} scenario(s) in '{Folder}' are in the Sample shape now; its manifest moved one version on.")]
-    SamplesConverted,
-
     [Description("Eval '{Name}' has no graders, so it can't run.")]
     NoGraders,
 

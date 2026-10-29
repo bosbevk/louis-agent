@@ -46,12 +46,6 @@ public sealed record LabelSheetRequest(string Eval, string Grader, string RunId,
     : CommandLineRequest;
 
 /// <summary>
-/// <c>convert-samples {folder}</c>: rewrites the dataset in that folder into Inspect's Sample shape, once (F18 step
-/// 7d); the command goes once every dataset has moved.
-/// </summary>
-public sealed record ConvertSamplesRequest(string Folder) : CommandLineRequest;
-
-/// <summary>
 /// Reads the runner's command line into one request. Anything it can't make sense of is refused with a message that
 /// says why.
 /// </summary>
@@ -73,7 +67,6 @@ public static class CommandLine
     public static CommandLineRequest Parse(IReadOnlyList<string> args)
     {
         if (args is ["--list"]) return new ListRequest();
-        if (args is ["convert-samples", var dataset]) return new ConvertSamplesRequest(dataset);
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
         if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
         if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where])

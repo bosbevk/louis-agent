@@ -757,3 +757,6 @@ it. 7d changes its loader and adds the scenario file's records.
 
 Sources: the plan's ratchet entry; ADR 0010 (folders by concern); Fowler, *Refactoring*, "Move Function". **Pick: A**:
 the rule says so, and the move is mechanical (Rider follows every reference). Commit: step 7d (1).
+
+**Part C** done (`7ff19cf5`, `70a84934`, and the commit that deleted `convert-samples` with the plan's 7d row): the
+three datasets are in Inspect's Sample shape (puls-cook v7, puls-routing v4, the template's example v2).

@@ -1845,7 +1845,9 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   so its golden didn't move. Red first: `DatasetLoaderTests` 16 of 24 against the old loader, `SampleConversionTests`
   3 of 3 against a stub; `CommandLineTests.ConvertSamplesTakesItsFolder` was written with its code, never seen red.
   `PulsDatasetsTests` pins the new versions; it, `ExportedLabelLoadingTests`, `RunnerMessage` and the loader were
-  brought up whole (summaries, lines, one nested `if` split into a helper).
+  brought up whole (summaries, lines, one nested `if` split into a helper). Commit 3 deletes `convert-samples` now
+  that it has run (`SampleConversion`, its tests, its request, its line in `Program` and its two messages) and adds
+  the plan's 7d row, done.
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)
