@@ -49,8 +49,8 @@ in C# from role to toolsets (a prompt's needs kept apart from the prompt, agains
 
 ## Links
 
-[F33 plan](../plans/F33-shop-catalogues.md) (*Approved during the build*, step 4) ·
-[F33 Shop catalogues](../features/F33-shop-catalogues.md) · [0006](0006-toolsets-per-session.md) ·
+[F33 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F33-shop-catalogues.md) (*Approved during the build*, step 4) ·
+[F33 Shop catalogues](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F33-shop-catalogues.md) · [0006](0006-toolsets-per-session.md) ·
 [0017](0017-skills-by-level.md)
 
 ---

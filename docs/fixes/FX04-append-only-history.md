@@ -7,7 +7,7 @@
 
 ## Symptom (seen in a run on 2026-10-19: Puls, a `CreateTool` mid-message, the next request a 400 naming the `tools` list; expected from the code and Anthropic's docs before that)
 
-On Claude Haiku 5.5, the default model, a request fails with a 400 like [FX1](FX01-round-limit-tools.md)'s ("Invalid
+On Claude Haiku 5.5, the default model, a request fails with a 400 like [FX1](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX01-round-limit-tools.md)'s ("Invalid
 `signature` in `thinking` block … The `tools` list differs …") when the system prompt or the tool list changed since
 earlier thinking blocks in the conversation were written. Haiku 5.5 enforces this for accounts created on or after
 2026-08-31, 00:00 UTC; older accounts only when a request asks for the check.
@@ -89,4 +89,4 @@ list) leaks into every conversation's checked prefix. Skill map #2 (reasoning an
 and state).
 
 ---
-[Fixes](README.md) · Previous: [FX3](FX03-ollama-container.md) · Next: [FX5](FX05-null-conditional-ledger.md)
+[Fixes](README.md) · Previous: [FX3](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX03-ollama-container.md) · Next: [FX5](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX05-null-conditional-ledger.md)

@@ -2,7 +2,8 @@
 
 > **What this answers:** what Puls and louis-agent are, what is built, what we build next and how it makes money, in a
 > form to give someone outside the project (an investor or a partner). The full plan, with the learning goals and every
-> step, is [platform.md](platform.md). Copied from the shared summary on 2026-10-19.
+> step, is [platform.md](platform.md). Copied from the shared summary on 2026-10-19; what's built brought up to date on
+> 2026-10-29, after Phase 3.
 
 ## In one minute
 
@@ -30,15 +31,19 @@ in a ledger.
 | Reading shop data in code instead of letting the model read web pages | Sourced prices went from 0 of 32 to 19 of 23, then to 31 of 31 | Three runs, 2026-10-17 to 2026-10-18 |
 | Prompt caching | A demo run fell from $0.66 to $0.13, with all 10 fixes still correct | Engine benchmark |
 | Tool sets per conversation | The fixed part of each request fell from about 48,500 to 24,400 tokens | Engine benchmark |
+| Every agent tested by evals in C# | The cook 23 of 24 when Puls hands it the meal, the routing 72 of 72, for $0.37 together; a replay of a run costs $0 | First runs on the eval harness, 2026-10-29 |
 
 Also built: English and Afrikaans, costs shown in rand, a self-hosted web search and browser, and an admin portal that
-records every benchmark run. Puls is not yet open to the public. Today it reads one shop chain (Checkers), and a sale
-needs the hosting and accounts work in the last phase.
+runs every eval and shows its results, with human review beside the model judge. Phases 0 to 3 are done (the docs,
+security, the engine apart from Puls, and the evals). Puls is not yet open to the public. The shops refuse automated
+readers for now, so the cook gives estimates and says where to buy until a retailer says yes; a sale needs the hosting
+and accounts work in the last phase.
 
 ## What we build next
 
-The roadmap runs in ten phases, one at a time, and the first sale comes only after the last one. Puls, the public
-product, has its own track whose items fit between the phases.
+The roadmap runs in phases, one at a time, and the first sale comes only after Phase 9. Next are evals as content, the
+cook, localisation and Puls's local specialists (Phases 3b to 3e), then the sales playground; Phase 10 turns the engine
+into a package for developers.
 
 ```mermaid
 flowchart TB
@@ -110,7 +115,7 @@ safety controls they can see. Competitor facts come from our 2026-10 research an
 
 To be filled in by Louis: the ask (amount, partnership, or a pilot business), what it pays for, and contact details.
 
-The full technical plan (about 6,400 lines, with diagrams) is available on request.
+The full technical plan (about 3,900 lines, with diagrams) is available on request.
 
 ---
 [Plans index](README.md) · The full plan: [platform.md](platform.md)

@@ -26,4 +26,4 @@ it was made and linking the docs it was taken from.
 
 ## Links
 
-[CL6 plan](../plans/CL6-arc42.md) · [Nygard, *Documenting architecture decisions*](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+[CL6 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL6-arc42.md) · [Nygard, *Documenting architecture decisions*](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)

@@ -179,7 +179,7 @@ editing callers. Use one only when providers really differ; a concern every prov
 | Concern | Interface | Implementations | Status |
 |---|---|---|---|
 | How usage is reported | `IUsageMapper` | `StandardUsageMapper` (default), `AnthropicUsageMapper` (cache writes, and their split by lifetime from the raw response, F4) | Built (F1) |
-| Prompt caching | `IPromptCachingStrategy` | `AnthropicPromptCaching` (two markers), `NoPromptCaching` (default: OpenAI-compatible caches prefixes on its own, Ollama), applied by `PromptCachingChatClient` | Built ([F4](../features/F04-prompt-caching.md)) |
+| Prompt caching | `IPromptCachingStrategy` | `AnthropicPromptCaching` (two markers), `NoPromptCaching` (default: OpenAI-compatible caches prefixes on its own, Ollama), applied by `PromptCachingChatClient` | Built ([F4](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F04-prompt-caching.md)) |
 | Thinking settings | to be extracted | Anthropic's fixed budget for pre-4.6 models is an inline wrapper in `LlmClientFactory` today | Candidate ([F10](../features/F10-route-settings.md) S4) |
 | Context window | to be designed | Ollama needs `num_ctx` sent; Claude's window is fixed | Planned ([F15](../features/F15-model-limits.md)) |
 | Errors, retries and limits | to be designed | Each provider reports rate and account limits differently | Planned ([F8](../features/F08-reliability.md)) |

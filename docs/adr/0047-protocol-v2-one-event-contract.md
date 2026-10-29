@@ -60,7 +60,7 @@ calls), or names of our own.
 
 [0022](0022-benchmarks-recorded-from-the-protocol.md) · [0024](0024-choices-are-enums.md) ·
 [0045](0045-typed-answers-and-a-shared-contract.md) · [0046](0046-dates-are-utc.md) ·
-[0049](0049-nothing-is-compatible-before-a-sale.md) · [F18 plan](../plans/F18-evals.md), 7c ·
+[0049](0049-nothing-is-compatible-before-a-sale.md) · [F18 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-evals.md), 7c ·
 [OpenTelemetry GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/) ·
 [JSON Lines](https://jsonlines.org/)
 

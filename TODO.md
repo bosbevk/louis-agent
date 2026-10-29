@@ -72,11 +72,11 @@ Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a tim
 - [ ] Local lookups: scores, SARS dates, load-shedding, "the game" means the Springboks or Bafana, each a pack when a simulation shows demand
 - [ ] F23 Credits (takes in rand pricing and billing)
 - [ ] Puls with its own shop tools prices a town with no shop at the default store (`puls-tools` mode, every cook run, main included: `wrong_store` 5 in `14c0907fdff5`, 6 in `b4a6ea22b178`): Puls looks no town up as the cook does; a fix doc when it's taken up
-- [ ] The cook's unconfirmed prices: *geskat* or *unknown*, decided, then measured ([F25](docs/features/F25-local-cook.md)'s open item)
+- [ ] The cook's unconfirmed prices: *geskat* or *unknown*, decided, then measured ([F25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F25-local-cook.md)'s open item)
 - [ ] A shorter cook report
-- [ ] FX: binary attachments sent as files, not text ([F22](docs/features/F22-role-tools.md)'s open item)
-- [ ] FX: a continued specialist's ledger rows name the turn that continued it ([F26](docs/features/F26-specialist-follow-up.md)'s open item)
-- [ ] [F21](docs/features/F21-personalities.md): Louis's corrections to the Afrikaans
+- [ ] FX: binary attachments sent as files, not text ([F22](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F22-role-tools.md)'s open item)
+- [ ] FX: a continued specialist's ledger rows name the turn that continued it ([F26](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F26-specialist-follow-up.md)'s open item)
+- [ ] [F21](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md): Louis's corrections to the Afrikaans
 - [ ] [F28 Team talk](docs/features/F28-team-talk.md), the rest: the mood switch, off by default (question 4: switch), the card as a thread and the Werk chip, the briefing and the mood graded by Puls's simulations
 - [ ] Shop prices come back per retailer, with its permission or feed (emails to PnP, Woolworths and Checkers sent 2026-10-25), through *Sources as data* and *More shops*; until then the cook gives estimates and names the shop's branch (F18 step 5.7)
 - [ ] More shops: Shoprite, Pick n Pay and Woolworths, and a delivery area per shop, after Sources as data, each only with the retailer's permission or feed
@@ -108,7 +108,7 @@ Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a tim
 - [ ] CL21 Mutation testing with Stryker.NET (`dotnet-stryker` 5.0.0, Apache 2.0, a dotnet local tool in `.config/dotnet-tools.json`; Louis, 2026-10-25): it breaks the code one change at a time and runs the tests, so a line no test guards shows up as a mutant that survived; run by hand on the files a step changed (`dotnet stryker --mutate …`), its report kept out of the repo. It replaces the throwaway mutation probes in reviews; a library fact our code relies on (MEAI reads the content-capture variable once per process) stays a learning test beside that code, so CI runs it. Its own branch off `main`, with its plan
 - [ ] Function skills in the Agent Skills format (Louis, 2026-10-26; with Phase 7, its own ADR): `Skills/agent/functions/` become `SKILL.md` folders with `name` and `description` frontmatter; **every role, mode and guide gets the same header** (Louis, 2026-10-28, F18 step 7c's card H): YAML front matter with the spec's `name` and `description`, ours (`level`, `toolsets`) under `metadata`; the built-in prompts stay embedded ("for safety we embed", [ADR 0018](docs/adr/0018-built-in-prompts-embedded.md) holds) ([F48's plan](docs/plans/F48-cook-and-teacher.md))
 - [ ] CL23 Explore a Roslyn analyzer for the names rule (Louis, 2026-10-27: "add it as something to explore"; not planned): F18 step 7.5's `RepeatedNameTests` reads the sources as text with its own lexer and a growing list of skip rules (a key, a razor comment, an enum's body); an analyzer runs inside the compiler, knows what each literal is, underlines `"puls-cook"` in Rider as you type and can offer the fix (`PulsRole.Cook.Wire()`). Its own small project and tests; look at it if the ratchet starts getting in the way. [ADR 0043](docs/adr/0043-repeated-names-are-enums.md) (on F18)
-- [ ] [F30](docs/features/F30-local-web-peer.md)'s minions tested: the cook measured with and without minions, after this plan (Louis, 2026-10-19)
+- [ ] [F30](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F30-local-web-peer.md)'s minions tested: the cook measured with and without minions, after this plan (Louis, 2026-10-19)
 - [ ] Build mode, a side note: an idea to look into after this plan, not planned (question 5, Louis, 2026-10-19)
 - [ ] The Azure app behind a key: `puls-app` serves a public ingress with `AGENT_AUTH=off` (CL19 kept it, loudly commented, and locked the ingress to Louis's home IP with `deploy.ps1 lock`), so the Puls web app must send `AGENT_API_KEY` (or a sign-in) before the lock can come off
 

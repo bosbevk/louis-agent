@@ -30,7 +30,7 @@ names something (a ref, branch, remote, path, key) and starts with `-` is refuse
 that takes neither marker is covered too. Free text that is an option's own argument (a `-m` message) travels whole.
 Where a program's own settings can run commands, the keys it may set are an allow-list (`SetConfig`: `user.name`,
 `user.email`), since a deny-list ages. `ArchitectureTests` fails any core file that builds a process's command line as
-one string. Found by [FX19](../fixes/FX19-git-arguments-as-data.md).
+one string. Found by [FX19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX19-git-arguments-as-data.md).
 
 ## Links
 

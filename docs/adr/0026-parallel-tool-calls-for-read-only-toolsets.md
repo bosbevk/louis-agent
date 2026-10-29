@@ -42,8 +42,8 @@ answer and dependent ones in turns (a prompt can't guarantee it); a flag per too
 
 ## Links
 
-[F34 plan](../plans/F34-shop-deals.md) (*Approved during the build*, the cook's long pause) ·
-[F34 Shop deals](../features/F34-shop-deals.md) · [0006](0006-toolsets-per-session.md) ·
+[F34 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F34-shop-deals.md) (*Approved during the build*, the cook's long pause) ·
+[F34 Shop deals](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F34-shop-deals.md) · [0006](0006-toolsets-per-session.md) ·
 [0002](0002-messages-api-tier-with-our-own-loop.md)
 
 ---

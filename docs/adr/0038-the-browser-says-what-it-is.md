@@ -37,8 +37,8 @@ cheat ([0020](0020-principles-for-every-agent.md)); the code around the model is
 
 ## Links
 
-- [FX21 The browser says what it is](../fixes/FX21-the-browser-says-what-it-is.md): the setting, the tests, what was
+- [FX21 The browser says what it is](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX21-the-browser-says-what-it-is.md): the setting, the tests, what was
   confirmed.
-- [CL19](../plans/CL19-config-by-place.md), *Approved during the build*: the disguise taken out.
+- [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md), *Approved during the build*: the disguise taken out.
 - [0020](0020-principles-for-every-agent.md): the principles; [0023](0023-copyleft-service-beside-us.md): the sold
   endpoint keeps licensed sources.

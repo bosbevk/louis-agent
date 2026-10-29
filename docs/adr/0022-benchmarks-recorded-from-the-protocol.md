@@ -46,5 +46,5 @@ Server (Louis chose MongoDB: a run is a tree of documents, conversation to turn 
 
 ## Links
 
-[F31 plan](../plans/F31-benchmarks-portal.md) · [F31 feature](../features/F31-benchmarks-portal.md) ·
-[F27 feature](../features/F27-admin-portal.md) · [ADR 0007](0007-measure-every-request.md) (the ledger)
+[F31 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F31-benchmarks-portal.md) · [F31 feature](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F31-benchmarks-portal.md) ·
+[F27 feature](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F27-admin-portal.md) · [ADR 0007](0007-measure-every-request.md) (the ledger)

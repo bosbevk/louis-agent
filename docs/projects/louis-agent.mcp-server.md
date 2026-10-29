@@ -61,7 +61,7 @@ in `tests/louis-agent.core.tests`. Checked with an MCP client and, for HTTP, wit
 
 - `AGENT_AUTH=off` runs the HTTP transport unauthenticated, for local use only (FX18 closed the accidental case).
 - It publishes every toolset the instance can load; choosing some, as API sessions do
-  ([F5](../features/F05-toolset-profiles.md)), would need a setting or a per-client profile.
+  ([F5](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md)), would need a setting or a per-client profile.
 
 ## Related docs
 

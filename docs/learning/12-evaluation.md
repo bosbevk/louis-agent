@@ -169,4 +169,4 @@ agent is still missing (GOAL, skill 12).
   prompt we had already tuned.
 
 ---
-[Learning](README.md) · [Docs index](../README.md) · Related: [the evals design](../projects/louis-agent.evals.md#design-notes) · [FX25](../fixes/FX25-runner-environment.md)
+[Learning](README.md) · [Docs index](../README.md) · Related: [the evals design](../projects/louis-agent.evals.md#design-notes) · [FX25](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX25-runner-environment.md)

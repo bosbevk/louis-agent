@@ -87,4 +87,4 @@ so that it doesn't break or truncate on the fifth message.
 Choosing local models by measured quality (skill-map #1, later stage); speed (F12); raising `num_ctx` by default.
 
 ---
-[Features](README.md) · Previous: [F12 Response speed](F12-response-speed.md) · Next: [F14 Display currency](F14-display-currency.md)
+[Features](README.md) · Previous: [F12 Response speed](F12-response-speed.md) · Next: [F14 Display currency](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md)

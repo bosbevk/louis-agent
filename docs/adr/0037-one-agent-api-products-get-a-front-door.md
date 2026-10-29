@@ -52,8 +52,8 @@ two products to carry, not one).
 
 [0003](0003-provider-strategies.md) · [0022](0022-benchmarks-recorded-from-the-protocol.md) ·
 [0027](0027-engine-identities-and-packs.md) · [0039](0039-api-routes-under-v1.md) ·
-[0045](0045-typed-answers-and-a-shared-contract.md) · [F18 plan](../plans/F18-evals.md), step 7b ·
-[decisions log](../plans/F18-unattended-decisions.md), findings 19 to 23
+[0045](0045-typed-answers-and-a-shared-contract.md) · [F18 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-evals.md), step 7b ·
+[decisions log](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-unattended-decisions.md), findings 19 to 23
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)
