@@ -39,9 +39,8 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 ## Steps, branches and commits
 
 **Doing a step: test first** ([how](guides/write-tests.md#write-the-test-first)): write the test for the step's
-behaviour (a fix: one that reproduces the bug), run it and see it fail for the expected reason, keep the output for
-the explanation, then implement until it passes and tidy with the tests green. Docs-only and configuration-only steps
-have no test to write first.
+behaviour (a fix: one that reproduces the bug), see it fail for the expected reason and keep the output, then
+implement until it passes and tidy with the tests green. Docs-only and configuration-only steps have no test first.
 
 **Finishing a step** ([the how-to](guides/finish-a-step.md)), before rule 5's stop:
 
@@ -58,31 +57,22 @@ have no test to write first.
 **In Rider, Rider's tools come first** ([ADR 0052](adr/0052-edit-never-script.md)). A session starts with `/mcp` to see
 what Rider offers, and for any job a Rider tool covers (format, inspect, build, test, rename, find usages, symbol
 info, git status) it uses that tool, never a hand edit, a script (Python, sed, PowerShell) or a search-and-replace
-that does the same thing less well: a file is formatted with Rider's formatter, not re-typed; a symbol is renamed with
-Rider's rename, not replaced; a problem is found with Rider's inspections, not by re-reading the file. A shell command
-is for what no Rider tool does. *Brave mode* stays off. The tool-to-job table per Rider version is in
-[Finish a step](guides/finish-a-step.md#riders-tools-by-job).
+that does the same thing less well: formatted with Rider's formatter, not re-typed; renamed with Rider's rename, not
+replaced; problems from Rider's inspections, not from re-reading the file. A shell command is for what no Rider tool
+does; *Brave mode* stays off. The tool-to-job table per Rider version is in [Finish a step](guides/finish-a-step.md#riders-tools-by-job).
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
-`refactor/CL3-messages-and-logging`, a sub-feature `feature/F49.1-checks-contract`; `docs/{name}` for docs-only work.
-The Claude project's `claude/*` branches keep their names.
+`refactor/CL3-messages-and-logging`, `feature/F49.1-checks-contract`; `docs/{name}` for docs-only work.
 
-**Commit messages** are `type(scope): step N - what changed`, and the body says why:
-
-```
-feat(f22): step 3 - ReadTable for spreadsheets
-fix(fx14): the prompt budget counts cached tokens
-docs(f5): review of PR #27 - toolset guides
-```
-
-`type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`,
+**Commit messages** are `type(scope): step N - what changed` (`feat(f22): step 3 - ReadTable for spreadsheets`,
+`fix(fx14): the prompt budget counts cached tokens`, `docs(f5): review of PR #27 - toolset guides`), and the body says
+why. `type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`,
 `f49.1`), or the area when there is none (`ollama`, `guide`); `step N -` only on a plan's steps.
 
 ## Rules that always apply
 
-The design decisions every change keeps, one line each. The *why* of each is its ADR in [docs/adr/](adr/README.md);
-the *how* of the C#, Razor and docs rules loads with the file you edit, from `.claude/rules/` (`csharp.md`,
-`razor.md`, `docs.md`), so it costs a session nothing until it applies.
+The design decisions every change keeps, one line each: the *why* is its ADR in [docs/adr/](adr/README.md), the
+*how* of the C#, Razor and docs rules loads with the file you edit, from `.claude/rules/`.
 
 **The engine and its parts**
 
@@ -93,8 +83,9 @@ the *how* of the C#, Razor and docs rules loads with the file you edit, from `.c
 - **Engine, identities and packs** — core names no product or country; an identity is who an agent is, a pack what it
   can do; a pack never references another pack or an identity; only `src/louis-agent.composition` knows them all
   (`IDENTITIES`, `PACKS`). [ADR 0027](adr/0027-engine-identities-and-packs.md).
-- **Packs stay convertible to MCP** — a pack could be served as an MCP server and an MCP server stand in for a pack;
-  `PackConvertibilityTests` holds the shapes. [ADR 0028](adr/0028-packs-stay-convertible-to-mcp.md).
+- **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
+  model**: `louis-agent.mcp-server` hands an external client the raw tools; to have the agent do a whole task, call
+  the API's sessions. [ADR 0028](adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 - **Provider strategies** — where providers differ, one interface with an implementation per provider, picked in
   `LlmClientFactory`; never branch on the provider's name elsewhere. [ADR 0003](adr/0003-provider-strategies.md).
 - **Toolsets per session** — a session names its toolsets when it opens and keeps them; an engine per toolset list; a
@@ -106,15 +97,11 @@ the *how* of the C#, Razor and docs rules loads with the file you edit, from `.c
   [0019](adr/0019-modes-one-file-per-product.md), [0020](adr/0020-principles-for-every-agent.md).
 - **Orchestration is an engine function** — agents as tools, typed results checked in code, one policy per turn
   tree; the orchestrator is an identity on core. [ADR 0031](adr/0031-orchestration-is-an-engine-function.md).
-- **MCP exposes tools, not a model** — `louis-agent.mcp-server` hands an external client the raw tools; to have the
-  agent do a whole task, call the API's sessions ([AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md)).
 
 **Safety and measurement**
 
-- **Arguments as data** — skill and tool arguments travel as environment variables or argument lists, never through
-  a shell. [ADR 0004](adr/0004-arguments-as-data.md).
-- **Guard the context** — oversized results summarised, cut-off calls never run, failures carry their reason.
-  [ADR 0005](adr/0005-guard-the-context.md).
+- **Arguments as data** (never through a shell) and **guard the context** (oversized results summarised, cut-off
+  calls never run, failures carry their reason). [ADR 0004](adr/0004-arguments-as-data.md), [0005](adr/0005-guard-the-context.md).
 - **History is append-only** — nothing edits the system prompt, tools or earlier messages mid-conversation; the
   finished streamed turn is appended whole, thinking blocks included. [ADR 0008](adr/0008-history-is-append-only.md).
 - **The browser says what it is** — Chrome's own user agent or an honest name set by the identity, never a disguise.
@@ -133,11 +120,10 @@ the *how* of the C#, Razor and docs rules loads with the file you edit, from `.c
   [ADR 0009](adr/0009-message-text-as-enum-templates.md).
 - **Choices are enums, not strings**, parsed once with `SettingChoice.TryParse`, written with `.Wire()`; a repeated
   name is an enum too. [ADR 0024](adr/0024-choices-are-enums.md), [ADR 0043](adr/0043-repeated-names-are-enums.md).
-- **Records for values, classes for things.** [ADR 0040](adr/0040-records-for-values-classes-for-things.md).
-- **JSON through records**, never an anonymous object, a static `Of` to build one from another.
-  [ADR 0041](adr/0041-json-through-records-by-hand-only-for-bytes.md).
-- **MongoDB through records.** [ADR 0048](adr/0048-mongo-through-records.md).
-- **Dates are UTC.** [ADR 0046](adr/0046-dates-are-utc.md).
+- **Records for values, classes for things; JSON and MongoDB through records**, never an anonymous object, a static
+  `Of` to build one from another; **dates are UTC**. [ADR 0040](adr/0040-records-for-values-classes-for-things.md),
+  [0041](adr/0041-json-through-records-by-hand-only-for-bytes.md), [0048](adr/0048-mongo-through-records.md),
+  [0046](adr/0046-dates-are-utc.md).
 - **Separate by concern**: 200 lines of code per file (tests 400), one concern per folder, namespace = folder path,
   dependencies one way. [ADR 0010](adr/0010-folders-by-concern.md), [0034](adr/0034-code-a-person-can-maintain.md),
   [0044](adr/0044-the-size-limit-counts-code.md).
@@ -157,20 +143,16 @@ the *how* of the C#, Razor and docs rules loads with the file you edit, from `.c
 - **One type per doc**; plans, feature and fix docs have a lifecycle and a done plan is deleted.
   [ADR 0013](adr/0013-documentation-structure.md).
 
-## Quick start
-
-[Get started](guides/get-started.md): the settings files, the build, the tests, the CLI and the two Docker stacks.
-
 ## Project structure
 
-Where things are. What's inside each project (files, key types, settings, tests, limits) is in its design doc in
-[projects/](projects/README.md); core's folders are in [Project layout](../louis-agent.core/CLAUDE.md#project-layout).
+Where things are. What's inside each project is in its design doc in [projects/](projects/README.md); core's folders
+in [Project layout](../louis-agent.core/CLAUDE.md#project-layout).
 
 ```
-louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/: the built-in prompts (no product)
-louis-agent.choices/     # SettingChoice: the one parser for a name that is an enum member (a wire name is `[WireName]`, built on .NET's `JsonStringEnumMemberName`); references nothing, so every project, ours or anyone's, can use it (ADR 0043)
-identities/              # Who an agent is (CL15): louis-agent.identity.puls (its voice, modes, roles and the packs it names)
-packs/                   # What an agent can do (CL15): louis-agent.pack.shops (the shops toolset, its guide and settings)
+louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/ (no product)
+louis-agent.choices/     # SettingChoice and [WireName]: the one parser for a name that is an enum member; references nothing
+identities/              # Who an agent is: louis-agent.identity.puls (its voice, modes, roles and the packs it names)
+packs/                   # What an agent can do: louis-agent.pack.shops (the shops toolset, its guide and settings)
 src/
 ├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
@@ -181,41 +163,37 @@ src/
 ├── louis-agent.mcp-server/   # Publishes the tools over MCP (no model)
 ├── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
 └── louis-agent.composition/  # The one project that knows every identity and pack; a host picks with IDENTITIES and PACKS
-tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger (--ledger, --cache-gaps)
-tests/                   # NUnit: core.tests (mirrors core, plus ArchitectureTests, SkillsLayoutTests), api.tests, orchestrator.tests,
-                         #   identity.puls.tests, pack.shops.tests, composition.tests, web.shared.tests, puls.tests and web.tests (bUnit);
-                         #   louis-agent.testing, web.testing and api.testing hold what they share; the tests that leave their process (git, bash, a browser, Mongo,
-                         #   the eval runner) are apart in core., api., orchestrator. and pack.shops.integration-tests (F18 step 7.6)
-docker/                  # This PC: images/ (the Dockerfiles; ollama/ for the local model), the compose stacks (main, puls) and searxng/
-deploy/azure/            # The cloud: Puls on Azure Container Apps (the app yamls, the Tailscale sidecar, deploy.ps1, the how-to)
-config/                  # What the app reads at run time: .env + .env.secrets (ignored) and their examples, LLM profiles, prices.json, rates.json; rider/ for the IDE client templates
+evals/                   # The eval harness, its protocol, the runner, the template and Puls's evals; louis-agent.session-stream/ and src/louis-agent.api.contracts/ hold the records the API shares
+tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
+tests/                   # NUnit, one project per project ([tests](projects/tests.md)); the ones that leave their process are *.integration-tests
+docker/, deploy/azure/, config/ # This PC's images and compose stacks; the cloud (Puls on Azure); what the app reads at run time
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
-docs/                    # This guide, features/, plans/, fixes/, specs/, projects/, learning/
+docs/                    # This guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
+.claude/rules/           # The how of the C#, Razor and docs rules, loaded by file path
 ```
 
 ## Development workflow
 
-**The how-tos for one folder live in that folder's `CLAUDE.md`**, which Claude Code loads only when it works on files
-there, so a session pays for them only when they apply:
+Start with [Get started](guides/get-started.md). **The how-tos for one folder live in that folder's `CLAUDE.md`**, and
+the how of a kind of file in `.claude/rules/`; Claude Code loads each only when it works on such a file:
 
-| Guide | Holds |
-|---|---|
-| [tests/CLAUDE.md](../tests/CLAUDE.md) | Running the tests, the golden files (bash and PowerShell), fakes and platform-neutral tests |
-| [src/CLAUDE.md](../src/CLAUDE.md) | The hosts' own message enums, adding a web theme |
-| [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | Adding a C# tool or a toolset, the project layout, messages and logging, building an identity or a pack, another agent on core, changing the LLM |
+| Guide | Loads for | Holds |
+|---|---|---|
+| [tests/CLAUDE.md](../tests/CLAUDE.md) | `tests/` | Running the tests, the golden files, fakes and platform-neutral tests |
+| [src/CLAUDE.md](../src/CLAUDE.md) | `src/` | The hosts' own message enums, adding a web theme |
+| [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | `louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
+| `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: summaries, conditionals, records, enums, size, formatting |
+| `.claude/rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
+| `.claude/rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
 
-The rest of the how-tos are in [guides/](guides/README.md): [Finish a step](guides/finish-a-step.md),
-[Add a skill](guides/add-a-skill.md), modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
+Every `CLAUDE.md` and every rules file holds at most 200 lines (`ClaudeMdSizeTests`); the rest of the how-tos are
+in [guides/](guides/README.md): [Finish a step](guides/finish-a-step.md), [Add a skill](guides/add-a-skill.md),
+modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
-## Known limitations
-
-The list is the TODO's [Known limitations](../TODO.md#known-limitations); when work removes one, delete it there.
-
-## Further reading
-
-[the architecture](architecture/README.md) for the design, `config/.env.example` for settings, and
-[the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) and [Puls's](../identities/louis-agent.identity.puls/Prompts/agent/puls/voice-af.md) for how the agent is instructed to behave.
+**Known limitations** are the TODO's [list](../TODO.md#known-limitations); when work removes one, delete it there.
+**Further reading:** [the architecture](architecture/README.md), `config/.env.example` for settings, and
+[the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) for how the agent is instructed.
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](projects/orchestrator-runbooks.md)

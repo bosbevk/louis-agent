@@ -35,4 +35,4 @@ fails a file outside the known folders, a name in two level folders, or a toolse
 ## Links
 
 [CL8 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL8-skills-by-level.md) · F30 (minions, level 2) ·
-[ADR 0011](0011-prompts-are-content.md) · [Adding a personality](../CLAUDE.md#adding-a-personality)
+[ADR 0011](0011-prompts-are-content.md) · [Modes, roles and minions](../guides/build-an-identity.md#modes-roles-and-minions-the-rules)

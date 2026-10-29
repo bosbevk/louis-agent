@@ -110,6 +110,17 @@ are most of the gain, and the cook's rules (no store, no prices; deals first) ar
 - **Deals came last.** In Louis's own chats the cook searched specials once, after the list was priced, so a deal could
   never change the meal. Order matters in a prompt as in code: deals are searched first now.
 
+## Our own context: what every session pays for (CL25)
+
+The same discipline applied to the agent that builds the agent. Claude Code loads the root `CLAUDE.md` into every
+session, whole, and ours had grown to 558 lines and 45 KB, so a one-line docs fix paid for the summaries guide, the
+Docker disk tip and the Rider tool list before it read the request. CL25 split it by *when it is needed*: the why of
+a rule in its ADR (read when someone asks why), the how of a C#, Razor or docs rule in a `.claude/rules/` file with a
+`paths:` header (loaded the first time a matching file is touched), the how-tos in `docs/guides/` (read on demand),
+and the guide itself one line per rule with the links, under 200 lines. `ClaudeMdSizeTests` holds every `CLAUDE.md`
+and rules file to 200 so it can't grow back. The lesson is skill 7's: the prompt that is always there should hold
+only what is always needed, and everything else should be a pointer that costs nothing until it is followed.
+
 ## Where skill 7 stands
 
 GOAL.md's row lists the catalogue table under *Have today* (F33). Still to come: a JSON-LD reader so any page's structured

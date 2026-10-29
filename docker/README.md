@@ -1,7 +1,7 @@
 # docker/: the images, and the stacks that run on this PC
 
 > **Reference.** What each file here is. **Elsewhere:** the commands and settings in the
-> [development guide](../docs/CLAUDE.md#quick-start) and [Setup](../docs/SETUP.md); where each service runs in the
+> [development guide](../docs/guides/get-started.md) and [Setup](../docs/SETUP.md); where each service runs in the
 > [deployment view](../docs/architecture/07-deployment-view.md); the cloud in [deploy/](../deploy/README.md).
 
 | File | What it is |
