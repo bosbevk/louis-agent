@@ -76,7 +76,12 @@ flowchart LR
    [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
 10. **Minions** (F30, built, not in use): a specialist can hand one task and one of its own tools to a minion on a cheap
     model (`MINION_LLMS`, a session naming its LLM profile); no session is given `minions` until the cook is measured
-    with and without them (the TODO's *F30's minions tested*).
+    with and without them (the TODO's *F30's minions tested*). A minion's engine is the principles, its product's
+    base, its role and the one tool, refused before any HTTP for a tool its specialist doesn't hold. An LLM profile
+    takes nothing from the instance but its API key, so a local model never inherits Claude's `LLM_THINKING`; the
+    profile goes to the peer as data and the peer refuses one it doesn't offer (`GET /v1/llm-profiles` lists them).
+    `VerifyQuote(url, quote, product)` checks a quoted price against the page in code, through the same guarded reader
+    as `FetchUrl` (FX16 made a price-only quote name its product).
 11. **The web** (F32 to F34): `WebSearch` behind `IWebSearchProvider` (SearXNG in Docker, or a licensed API), and pages
     drawn with JavaScript read through one headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP), every
     request it makes held to the address rule (`SsrfGuard`), no WebSockets, on a network apart from the database. The

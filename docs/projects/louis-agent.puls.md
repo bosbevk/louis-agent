@@ -25,7 +25,8 @@ as you go: every answer shows what it cost, specialists included.
   specialist, toolsets, task, steps and cost, the chat's sources, Puls's and the specialists' cost). Below 1200px the
   Werk panel slides in; below 992px the sidebar does.
 - **The admin portal** (F27, F31; English, the builders' screen): *Admin* in the profile menu opens `/admin`, its own
-  layout (`AdminLayout`). `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's
+  layout (`AdminLayout`). `/admin/evals` lists every eval the runner has, with its runs, an eval that never ran
+  included (`Evals.razor`, F18); `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's
   runs; `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
   request), the trend (`TrendChart`) and what the run ran with. Each chart explains itself on hover (`ChartInfo`).
   The old `/admin/maatstawwe` addresses still open. **The grades view** (F18 step 4.5c) shows every eval the same way, from
@@ -69,6 +70,35 @@ as you go: every answer shows what it cost, specialists included.
 | `wwwroot/index.html` | The start screen with Blazor's real loading count; the saved layout and the motion choice applied before the first paint |
 | `wwwroot/brand/` | The logo set: mark, logo, stacked, icon tiles, colour versions |
 
+## Design notes
+
+What the look (F20) and the motion (F24) settled, so a change keeps it:
+
+- **The landing page's demo is the app's own markup.** `LandingDemo` builds its turns from the app's classes
+  (`user-message`, `delegation`, `work-item`, `work-step`, `work-cost`), so a change to the app's look changes the demo
+  with it; only the frame's layout is its own (`demo-*`). Its turns are example data in C#, serialised into
+  `data-turns`, and `landing.js` only plays them. The same goes for the page's copy: tiles, chips, chart heights and
+  marquee tags are C# arrays rendered by Razor, so no script builds markup from literals.
+- **Numbers on the page are measured ones,** each a line of data with what it is and how it was measured, so a new
+  measurement changes one line.
+- **The loading count is Blazor's own** (`--blazor-load-percentage-text` on `<html>`, shown in a `::after`); no script
+  counts files.
+- **One motion switch:** `data-motion="on"` on `<html>`, set by `index.html` before the first paint and changed by
+  `pulsUi.setMotion` (the sidebar's checkbox and the landing's pill both call it); `app.css` guards its reduced-motion
+  blocks with `:root:not([data-motion="on"])`. Text arriving in order is content, not motion, so a reader who asked
+  for less motion still sees the demo play at a reading pace; only the loop stops. Moving content that lasts over five
+  seconds has a *Stop* or *Pouse* button (WCAG 2.2.2), and a closed FAQ answer is `inert`.
+- **Costs count up without touching Blazor's node:** every `[data-count]` runs from the last number shown to the new
+  one after a render, writing the text node's value (not `textContent`, which would replace the node Blazor holds),
+  keeping the C# formatting the one source of the money text.
+- **Traps found by looking:** Bootstrap paints an offcanvas transparent at its breakpoint (the sidebar and Werk panel
+  use a gradient); one page on three addresses with the same parameters doesn't redraw (listen to `LocationChanged`);
+  a landing class must not collide with a Bootstrap grid class (`cost-row`, not `row`); a finished animation with
+  `fill-mode: both` keeps overriding `transform` (reveals rise on `translate`, so the tilt applies); a `filter` on
+  `background-clip: text` makes Chrome drop the text (the gradient line rises without the blur).
+- **The Werk panel shows Puls's own cost and the specialists' side by side,** and the turn's usage line includes the
+  specialists through the sub-session roll-up (core, *Showing usage*).
+
 ## Configuration
 
 None of its own: the API it's served by holds the settings (`AGENT_PEERS` names itself: the specialists, and the minions
@@ -99,9 +129,8 @@ the recorded Puls turn, lists the page's JavaScript calls and pins `ChatPage.emp
 
 ## Related docs
 
-[F20 Puls look](../features/F20-puls-look.md) · [F21 Personalities](../features/F21-personalities.md) ·
-[F22 Role tools](../features/F22-role-tools.md) · [F31 Benchmarks in the admin portal](../features/F31-benchmarks-portal.md) ·
-[louis-agent.web](louis-agent.web.md) · [api](louis-agent.api.md)
+[louis-agent.identity.puls](louis-agent.identity.puls.md) (who Puls is) · [louis-agent.web](louis-agent.web.md) ·
+[api](louis-agent.api.md) · [evals](louis-agent.evals.md) · [Multi-agent write-up](../learning/10-multi-agent-orchestration.md)
 
 ---
 [Projects](README.md)
