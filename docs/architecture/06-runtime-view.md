@@ -4,7 +4,7 @@
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
 > [a C# tool](../../louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../../louis-agent.core/CLAUDE.md#adding-a-toolset),
-> [a skill](../CLAUDE.md#adding-a-skill), [a mode or a role](../CLAUDE.md#adding-a-mode-or-a-role) or
+> [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
 > [another agent on core](../../louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 
 ## Two kinds of capability

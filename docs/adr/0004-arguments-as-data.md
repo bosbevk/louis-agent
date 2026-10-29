@@ -34,4 +34,4 @@ one string. Found by [FX19](https://github.com/bosbevk/louis-agent/blob/pre-cl24
 
 ## Links
 
-[Architecture: Security](../architecture/08-crosscutting-concepts.md#security) · [Adding a skill](../CLAUDE.md#adding-a-skill)
+[Architecture: Security](../architecture/08-crosscutting-concepts.md#security) · [Add a skill](../guides/add-a-skill.md)

@@ -237,6 +237,42 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 its mode: one that names none gets core's default, the coding agent's (`louis-agent/voice`). A web app of its own (as
 Puls has in `src/louis-agent.puls`) is a separate project and optional; any client that opens sessions this way works.
 
+## Modes, roles and minions: the rules
+
+A session names its role when it opens (`POST /v1/sessions` with `"role": "{name}"`; a sub-session through
+`StartSubSession(…, role)`), and keeps it, as it keeps its toolsets (F21). In the code a role is
+`Skills/Roles/RoleCatalog` and its level `RoleLevel` (CL13); CL14 made "role" the public word. Without one a session
+gets the default mode, `louis-agent/voice`. Prompts are embedded and read only from the assembly, so a wording change
+is a rebuild of the images that use the identity.
+
+1. **A mode** (level 0) is one file in a product's folder: its voice (the first `# ` section), then its routing (from
+   the second `# ` heading on), named `{product}/{mode}` (`louis-agent/voice`). A **language** is
+   `{product}/voice-{xx}.md` with only the voice; it loads the product's shared `voice.md` (the routing) after it, and
+   Puls's *Taal* menu offers it as soon as `GET /v1/roles` does. Each product routes only what it does
+   ([ADR 0019](../adr/0019-modes-one-file-per-product.md)).
+2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
+   it. A parent names it in `StartSubSession`; the specialists guide (`toolsets/specialists.md`) says which goes with
+   which toolsets. A role that always needs a toolset declares it in a header at the top of its file, which the
+   loader strips before the model sees it (F33, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)):
+
+   ```markdown
+   ---
+   toolsets: shops?
+   ---
+   ```
+
+   Those toolsets are added to what the parent passed; `?` loads one only where this instance has it (`shops` needs
+   `SHOP_CATALOGUES` and `BROWSER_URL`), and skips it with a log line elsewhere.
+
+   **A minion's function** (level 2, F30) is `minions/{product}-minion-{function}.md`, loaded after its product's base
+   (`minions/{product}-minion.md`: what every minion is, which is no role itself); the specialist hands the minion one
+   tool of its own, so no file lists tools per role.
+3. **Names** are lowercase letters, digits and dashes (a mode adds one `/`), used at one level only; a name from
+   another level is refused as unknown ([ADR 0017](../adr/0017-skills-by-level.md)). `ROLES_ENABLED` turns on only
+   the listed ones, so a test can run Puls and the one role under test.
+4. `GET /v1/roles` lists them by level, with the default; an unknown or invalid name is a 400 before any engine is
+   built.
+
 ## Before you ask for a review
 
 - [ ] References core only (a pack only for workflow code that uses its types); its packs are named in `Packs`.

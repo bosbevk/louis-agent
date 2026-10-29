@@ -3,7 +3,7 @@
 > **How-to.** Change `src/louis-agent.mcp-server`, which hands the agent's tools to any MCP client: publish a tool, add
 > an MCP-only tool, choose the transport, and check it with a client. **Elsewhere:** how it works in
 > [louis-agent.mcp-server](../projects/louis-agent.mcp-server.md); why it has no model in
-> [MCP exposes tools, not a model](../CLAUDE.md#mcp-exposes-tools-not-a-model).
+> [MCP exposes tools, not a model](../CLAUDE.md#rules-that-always-apply).
 
 The MCP server has no model of its own: an outside client's model calls the agent's tools, one call at a time. It
 builds the same engine the other hosts do (`AgentHost.BuildToolHost`) with a chat client that refuses to be called,
