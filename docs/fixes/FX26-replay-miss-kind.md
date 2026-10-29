@@ -1,6 +1,6 @@
 # FX26 · A replay miss is marked `replay-miss`, not taken for the agent's failure
 
-> **Status:** open · **Area:** core: the model replay client; `louis-agent.session-stream`: the error event; API: the
+> **Status:** done · **Area:** core: the model replay client; `louis-agent.session-stream`: the error event; API: the
 > failed turn's stream; the eval runner's turn failures · **Found:** 2026-10-29, the free replays of F18's first v2
 > baseline (step 5.5) · **Plan:** [FX26](../plans/FX26-replay-miss-kind.md), on `fix/FX26-replay-miss-kind`,
 > branched from the F18 branch (the code it touches exists only there)
@@ -51,12 +51,33 @@ Step by step, in the plan's order:
 
 ## Tests
 
-(To come.)
+Each written first and seen failing for the expected reason; the other case of each pair passed from the start and
+stays as the guard:
+
+- `ModelReplayChatClientTests` (core): a miss, streamed or not, throws `ModelReplayMissException`; red on the plain
+  `InvalidOperationException`.
+- `ErrorKindTests` (session-stream): `replay_miss_error` reads `ReplayMiss`, `api_error` reads `Api`; red on a stub
+  that read null. An unknown type, or an event without one, reads none.
+- `TurnFailureKindTests` (api): a turn whose model request throws the miss streams `replay_miss_error`; red on
+  `api_error`. Any other failure still streams `api_error`.
+- `EvalRunnerFailureTests.AStreamedReplayMissGetsReplayMiss` (evals): a stream ending in `replay_miss_error` writes a
+  turn with `failure: replay-miss`; red on no failure. An `api_error` leaves the failure empty.
 
 ## Confirmed
 
-(To come: a free replay of a delegating run after the fix.)
+Puls rebuilt from the fix branch, then the same free replay of the cook baseline (`176ad599149e`, of
+`5d1fd231c9b1`, $0). It still misses at the same 8 turns (the six delegating first turns, and the second turn of
+`cook-af` and `cook-en`), and each is now `failure: replay-miss`; the other 12 turns have no failure. The cook mode's
+overall slice went from 2 passed, 6 failed (`6edc15cc1d1e`, before) to 2 passed, 0 failed, 6 infrastructure;
+`puls-tools`, which never delegates, is unchanged.
+
+Why the replay misses at all is FX27, the next fix: the sub-session's answer carries its usage
+in the footer the parent reads, and a replay's usage is zero.
 
 ## Lesson
 
-(To come.)
+An error that crosses a process boundary as text loses its kind. The replay client knew exactly what had gone wrong,
+but the API flattened every failure to `api_error` and the runner only classified its own exceptions, so the label
+the contract already had (`TurnFailure.ReplayMiss`) was never reachable. Name a failure where it happens, carry the
+name on the wire as a typed value, and read it once at the other end. And a label is not a fix: the turn is now
+counted fairly, but it still has no answer until FX27 removes the cause.

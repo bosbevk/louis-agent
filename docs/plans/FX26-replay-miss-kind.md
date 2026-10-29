@@ -141,4 +141,7 @@ infrastructure, not as a failed answer; every other failed turn is unchanged.
 
 ## Approved during the build
 
-(nothing yet)
+- 2026-10-29: the fix moved to its own branch, `fix/FX26-replay-miss-kind`, from F18's tip after step 2 (Louis:
+  "branch from here"); the plan and steps 1 and 2 stay on F18 too.
+- 2026-10-29: the cause of the miss itself (the sub-session footer's usage) is a fix of its own, FX27, branched from
+  this fix's tip (Louis's pick).

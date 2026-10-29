@@ -3,6 +3,10 @@
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
 > open in the [TODO](TODO.md); how each was built in its feature, fix or plan doc (linked from its entry).
 
+- 2026-10-29 — **FX26 A replay miss is marked `replay-miss`**: the replay client throws `ModelReplayMissException`, the
+  API streams it as `error.type` `replay_miss_error` (`StreamErrorKind` in session-stream), and the runner sets the
+  turn's failure, so a replayed trial with no recording counts as infrastructure, not as the agent's failed answer
+  ([fix](docs/fixes/FX26-replay-miss-kind.md))
 - 2026-10-29 — **F18 Evaluation**: every check is a C# eval on one harness (`evals/louis-agent.evals/`): `IEval` and
   `IEvalSet`, datasets in Inspect's Sample shape with a held-out split and a hash, code graders first, a model judge
   calibrated against people's labels (90% of each class), human review in the portal, pass@k and pass^k, a roll-up by
