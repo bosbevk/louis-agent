@@ -133,6 +133,15 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
 
 ## What the build changed
 
+**In short, with the first v2 baseline's numbers** (step 5.5 below has them all). Every check is a C# eval on one
+harness; the runner and the API share one event contract (ADR 0047); the store goes through typed records (ADR
+0048) and keeps nothing older than this build (ADR 0049); the portal reads only the contract's records. The first
+paid runs on v2, 2026-10-29: `puls-cook` 23 of 24 when Puls hands the meal to its cook (25% when it answers itself
+with web tools), `puls-routing` 72 of 72, for **$0.37 together** (the cook $0.22, the routing $0.16). The replays
+cost $0, every request a cache hit, but a mode that delegates misses at the sub-session's tool result, so its grades
+can't be reproduced yet. The local judge agreed with a blind labeller on 31 of 36 meals, below the 90% bar: it still
+fails some real meals. What stays open is listed in step 5.5's findings and the TODO.
+
 - **Step 1a** (`louis-agent.session-stream/`, its tests in `tests/louis-agent.session-stream.tests/`): the reader frames
   with the BCL's `SseParser` and maps each item to a record. The plan's `UsageReported` is not in it: the recorded
   stream has no usage event (usage is in `message_delta`), so it waits for the step that needs it. The recorded
