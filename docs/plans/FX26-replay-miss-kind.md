@@ -1,7 +1,8 @@
 # FX26 · A replay miss is marked `replay-miss`: plan
 
-> Approved 2026-10-29 (Louis: "yes, commit the plan and start step 1") · Branch: `feature/F18-evals` (the code it touches, the replay and the eval runner's
-> failure kinds, exists only there, as FX25's did) · Fix: [FX26](../fixes/FX26-replay-miss-kind.md)
+> Approved 2026-10-29 (Louis: "yes, commit the plan and start step 1") · Branch: `feature/F18-evals` (the code it
+> touches, the replay and the eval runner's failure kinds, exists only there, as FX25's did) · Fix:
+> [FX26](../fixes/FX26-replay-miss-kind.md)
 
 ## Context
 

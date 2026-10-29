@@ -27,7 +27,12 @@ error never becomes a `TurnFailure`, and `TurnFailure.ReplayMiss`, which the con
 
 ## Fix
 
-(To come, step by step, in the plan's order.)
+Step by step, in the plan's order:
+
+1. **The engine names a replay miss:** `ModelReplayMissException` (core, `Llm/Replay/`), an
+   `InvalidOperationException` underneath, is what `ModelReplayChatClient` throws on a miss, its message unchanged.
+   Red first: the replay client's two miss tests (streamed and not, 4 cases) expected the named exception and got the
+   plain one.
 
 ## Tests
 
