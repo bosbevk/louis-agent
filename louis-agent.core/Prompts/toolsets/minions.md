@@ -2,7 +2,7 @@
 
 How to hand one small task to a minion with `StartMinion`. A minion is a worker on a cheap model (the instance's
 `MINION_LLMS` says which) that uses one of **your own** tools on one task and answers in its role's fixed shape. What
-it reads never enters your context: you get its lines back, and a usage line.
+it reads never enters your context: you get its lines back.
 
 ## Tools
 
@@ -39,4 +39,4 @@ A minion's answer is a claim on a cheap model. Use only what its lines say: a va
 - At most 16 minions per user turn, counted across every specialist working on that turn; each stops after 2 minutes.
   A refused, failed or timed-out minion returns an error: what it was looking for is unknown; don't look for it
   yourself and don't repeat the call.
-- The usage line is what the minion cost; it is already in the usage ledger, linked to this turn.
+- What the minion cost is in the usage ledger and the chat, linked to this turn; never put it in your answer.

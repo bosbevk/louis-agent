@@ -65,4 +65,10 @@ whatever the child used, and the usage is still in the ledger and the parent's t
 
 ## Approved during the build
 
-(nothing yet)
+- 2026-10-29, step 1: the chat's cards read their footer, usage included. Louis's pick of three: the card takes the
+  child's cost from its own events (`Block.SubTurn.Usage`), its footer patterns lose the usage, and the recorded
+  fixture's footer is edited to the new shape (ADR 0049: no reader for the old one).
+- 2026-10-29, step 1: the guides that promised "a usage line" are reworded (Louis's pick of three): the cost is in the
+  ledger and the chat, never in the answer; Puls's routing says the same in its two lines.
+- 2026-10-29, step 1: the sub-session tools' request bodies stay anonymous here; typed peer bodies are a TODO small
+  cleanup (Louis's pick of three).

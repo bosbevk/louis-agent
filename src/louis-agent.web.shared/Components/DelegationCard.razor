@@ -71,10 +71,6 @@
         {
             @* No live view (an older chat, or a host that doesn't stream sub-sessions): the answer the model got. *@
             <div class="delegation-answer markdown">@Markdown.ToHtml(Delegation.Answer ?? Block.ToolResult, Shown)</div>
-            @if (Delegation.UsageLine is { } line)
-            {
-                <div class="usage delegation-usage">@Agent · @line</div>
-            }
         }
         else if (Running)
         {

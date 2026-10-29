@@ -65,11 +65,28 @@ Option 1 because it fixes the cause rather than hiding it from the key, follows 
 
 ## Fix
 
-(To come.)
+1. **The usage leaves every tool result text.** The footers keep what the model needs to find the child again:
+   `[Sub-session on coder (files, git)]`, `[Sub-session sub-1 on puls (web; puls-cook). It stays open: …]`,
+   `[Minion {role} on {llm} with {tool}]`, and `SubSessionNoAnswer` without its usage. `SubSessionUsage.Line()` and
+   the `SubSessionUsage`, `SubSessionNoUsage` and `SubSessionCostUnknown` texts are gone, and
+   `SubSessionMessenger.SubSessionReply` carries no usage line; the usage still goes to the parent's turn and the
+   ledger (`UsageRollUp`). The `StartSubSession` description says "Returns the answer". The chat's cards already took
+   a child's cost from its own events (`Block.SubTurn.Usage`, from its `message_delta`); their fallback to the footer
+   is gone, and `Delegation`'s footer patterns lost their usage part (and the minion's handle part, which never
+   matched: minions are never kept). The guides (`specialists.md`, `minions.md`) and Puls's routing no longer
+   promise a usage line: the cost is in the ledger and the chat, never in the answer. The recorded stream fixture's
+   one footer was edited to the new shape. While the work panel's markup was in the step, its nested ternaries became
+   `StepMarks`.
 
 ## Tests
 
-(To come.)
+`SpecialistToolsTests.TheAnswer_ReadsTheSame_WhateverTheChildUsed` (kept and not) and
+`MinionToolsTests.TheAnswer_ReadsTheSame_WhateverTheMinionUsed`, written first: the same reply streamed with real
+usage and with zero usage (as a replay reports it) must give the same tool result text. Red on the footer, e.g.
+`Expected: "...(web): 3 requests, 10,200 tokens, 0.0123 USD]" But was: "...(web): 3 requests, 0 tokens, 0 USD]"`;
+green after. `DelegationTests` now reads the new footers, and the recorded turn's cost comes from the cook's own
+events. The goldens (`ToolMessageSnapshot.json`, `ModelRequestSnapshot.json`, `PulsSessionSnapshot.json`) changed
+only in the footers, the tool description and the reworded guide lines.
 
 ## Confirmed
 
