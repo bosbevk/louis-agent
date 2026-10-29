@@ -23,9 +23,6 @@ public static class EvalSettings
     /// <summary>Where a replay keeps the run it replayed.</summary>
     private const string ReplayOfKey = "replay_of";
 
-    /// <summary>Where a run keeps how its web was handled: recorded, replayed, or another mode.</summary>
-    private const string WebKey = "web";
-
     /// <summary>
     /// Collects what a run ran with: the model, the roles, the eval and its runner, and which search engine and page
     /// renderer it used and whether each was set up.
@@ -88,7 +85,7 @@ public static class EvalSettings
 
         // Copy them, then add how the web was handled.
         var withOptions = new Dictionary<string, string>(settings);
-        if (options.Web is { } web) withOptions[WebKey] = web.Wire();
+        if (options.Web is { } web) withOptions["web"] = web.Wire();
         if (options.Replay is { } replayOf) withOptions[ReplayOfKey] = replayOf;
         return withOptions;
     }
@@ -99,10 +96,11 @@ public static class EvalSettings
 
     /// <summary>
     /// Whether the run recorded its web and model answers, so it can be replayed (FX28). The mode is parsed once here
-    /// (ADR 0024); a run with another mode, or from before the setting, wasn't a recording.
+    /// (ADR 0024); a run with another mode, or from before the setting, wasn't a recording. The key is the "web" that
+    /// <see cref="WithOptions"/> writes: a key, not the toolset of that name.
     /// </summary>
     public static bool Recorded(IReadOnlyDictionary<string, string>? settings) =>
-        settings?.GetValueOrDefault(WebKey) is { } web
+        settings?.GetValueOrDefault("web") is { } web
         && SettingChoice.TryParse(web, out WebReplayMode? mode)
         && mode == WebReplayMode.Record;
 

@@ -20,6 +20,7 @@ public static class NotAToolset
     private static readonly string[] CallsTakingAProgramOrAKey =
     [
         "ProcessStartInfo", "Process.Start", "ProcessRunner.Run", "GetProperty", "TryGetProperty",
+        "GetValueOrDefault", "TryGetValue",
         "Has.None.StartsWith",
         "Has.None.Contains", "Does.Not.Contain"
     ];
@@ -57,11 +58,13 @@ public static class NotAToolset
             callee == name || callee.EndsWith($".{name}", StringComparison.Ordinal));
     }
 
-    /// <summary>It is a key in square brackets: <c>settings["web"]</c>.</summary>
+    /// <summary>
+    /// It is a key in square brackets: <c>settings["web"]</c>, or <c>["web"] = …</c> in a collection initializer (FX28).
+    /// </summary>
     private static bool IsAnIndex(LiteralExpressionSyntax literal) =>
         literal.Parent is ArgumentSyntax
         {
-            Parent: BracketedArgumentListSyntax { Parent: ElementAccessExpressionSyntax }
+            Parent: BracketedArgumentListSyntax { Parent: ElementAccessExpressionSyntax or ImplicitElementAccessSyntax }
         };
 
     /// <summary>It is what a program's or a folder's name is set to, or what the <c>EVALS</c> key is set to.</summary>
