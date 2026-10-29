@@ -156,4 +156,5 @@ sequenceDiagram
 
 ## Approved during the build
 
-(None yet.)
+- 2026-10-29, step 2: no `Scorecard` record (Louis's pick of three). The latest run is a `RunLine` like every run on
+  the timeline: it holds the same run, rates and origin, and the scorecard needs the origin too.
