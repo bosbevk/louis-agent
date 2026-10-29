@@ -361,27 +361,7 @@ decision's record (its context, and what it cost) in [docs/adr/](adr/README.md).
 
 ## Quick start
 
-```bash
-cp config/.env.example config/.env
-cp config/.env.secrets.example config/.env.secrets   # add ANTHROPIC_API_KEY and AGENT_API_KEY
-dotnet build louis-agent-solution.sln
-dotnet test tests/louis-agent.core.tests
-dotnet run --project src/louis-agent.cli               # interactive CLI
-```
-
-Docker (web app + API on http://127.0.0.1:5080):
-
-```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
-```
-
-Puls (its web app on http://127.0.0.1:5070):
-
-```bash
-docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
-```
-
-Always pass `--env-file config/.env`; compose needs it for `REPOSITORIES_PATH`. Requires the .NET 10 SDK.
+[Get started](guides/get-started.md): the settings files, the build, the tests, the CLI and the two Docker stacks.
 
 ## Project structure
 
@@ -426,86 +406,9 @@ there, so a session pays for them only when they apply:
 | [src/CLAUDE.md](../src/CLAUDE.md) | The hosts' own message enums, adding a web theme |
 | [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | Adding a C# tool or a toolset, the project layout, messages and logging, building an identity or a pack, another agent on core, changing the LLM |
 
-### Adding a skill
-
-A function skill is `Skills/agent/functions/{name}.md`, on disk: the agent writes one with `CreateSkillFile`, or you
-drop one in. What the agent writes waits in `Skills/agent/functions/pending/` (git-ignored), active only in the engine
-that wrote it, until you type `/approve {name}` in the chat, which moves it up; `/reject {name}` deletes it and `/tools`
-lists what is pending (FX20, as agent-built tools do). Every approved one loads with the **skills** toolset, no setting needed (CL9 retired `AGENT_FUNCTION`); a session
-without it (Puls's chats: `specialists` and `web`) gets its mode and its toolsets' guides, no skill file. A toolset's
-guide is [Adding a toolset](../louis-agent.core/CLAUDE.md#adding-a-toolset). A name that is a built-in prompt (a
-toolset's guide) is refused: what is embedded is built in (`SkillFiles.IsBuiltIn`). Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments
-arrive as `SKILL_ARG_*` environment variables, so quote them and never build commands from them:
-
-````markdown
-## Skill: MySkill
-
-- Description: What it does.
-- Parameters:
-  - `name` (string): What it is.
-- Execution:
-
-```bash
-echo "Hello, ${SKILL_ARG_name}"
-```
-````
-
-### Adding a mode or a role
-
-A session names its role when it opens (`POST /v1/sessions` with `"role": "{name}"`; a sub-session through
-`StartSubSession(…, role)`), and keeps it, as it keeps its toolsets (F21). In the code a role is
-`Skills/Roles/RoleCatalog` and its level `RoleLevel` (CL13); CL14 made "role" the public word. Without one it gets the
-default mode, `louis-agent/voice`. Everything here is under `louis-agent.core/Prompts/`, embedded and read only from the
-assembly, so rebuild the images that use core.
-
-1. **A mode** (level 0) is one file in a product's folder: its voice (the first `# ` section), then its routing (from
-   the second `# ` heading on), named `{product}/{mode}` (`louis-agent/voice`). A **language** is
-   `{product}/voice-{xx}.md` with only the voice; it loads the product's shared `voice.md` (the routing) after it, and
-   Puls's *Taal* menu offers it as soon as `GET /v1/roles` does. Each product routes only what it does.
-2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
-   it. A parent names it in `StartSubSession`; the specialists guide (`toolsets/specialists.md`) says which goes with
-   which toolsets. A role that always needs a toolset declares it in a header at the top of its file, which the
-   loader strips before the model sees it (F33, [ADR 0025](adr/0025-a-role-declares-its-toolsets.md)):
-
-   ```markdown
-   ---
-   toolsets: shops?
-   ---
-   ```
-
-   Those toolsets are added to what the parent passed; `?` loads one only where this instance has it (`shops` needs
-   `SHOP_CATALOGUES` and `BROWSER_URL`), and skips it with a log line elsewhere.
-
-   **A minion's function** (level 2, F30) is `minions/{product}-minion-{function}.md`, loaded after its product's base
-   (`minions/{product}-minion.md`: what every minion is, which is no role itself); the specialist hands the minion one
-   tool of its own, so no file lists tools per role.
-3. Names are lowercase letters, digits and dashes (a mode adds one `/`), used at one level only; a name from another
-   level is refused as unknown. `ROLES_ENABLED` turns on only the listed ones, so a test can run Puls and the
-   one role under test.
-4. `GET /v1/roles` lists them by level, with the default; an unknown or invalid name is a 400 before any engine is
-   built.
-
-### Running and debugging
-
-- Tool calls are logged to stderr: `[TOOL] -> Name(args)` and `[TOOL] <- Name: result` (or `failed: …`). By default the arguments, the result and a
-  failure's quoted reason show as hashes and lengths (`area=#3f9c0a1b2d4e (10)`), so a log shows what ran and how it ended, never what
-  the user typed; `LOG_CONTENT=full` shows the values, on your own machine only (F18 step 4f).
-- In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
-- With `LOG_DIRECTORY` set, each process's run file is there
-  ([Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging)); the orchestrator's lines are tagged
-  `[orchestrator]`, louis-agent's progress under it `[louis-agent]`.
-
-- Every model request is in the usage ledger, `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, host, session,
-  turn, fix and run; no prompt text). Total one with
-  `dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl`.
-- After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
-  chats keep their container until you start a **New Chat**.
-- After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`: `restart` keeps the old
-  environment, so the new key never arrives. A changed prompt (`louis-agent.core/Prompts/`) is a change to core:
-  rebuild the images that use it.
-- Every image rebuild leaves build cache behind; a day of rebuilds filled Docker Desktop's disk (120 GB of cache) and
-  stopped its engine (2026-10-15). `docker system df` shows it; `docker builder prune -af` clears it, safely, and
-  the next build re-caches. If the daemon stops answering, restart Docker Desktop first.
+The rest of the how-tos are in [guides/](guides/README.md): [Finish a step](guides/finish-a-step.md),
+[Add a skill](guides/add-a-skill.md), modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-and-minions-the-rules),
+[Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 ## Which Anthropic tier
 
@@ -524,30 +427,6 @@ flow are in [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).
 ## Known limitations
 
 The list is the TODO's [Known limitations](../TODO.md#known-limitations); when work removes one, delete it there.
-One matters whenever you test a change by hand: on Claude Haiku 5.5 (the default), changing the tools or skills during
-a chat (`CreateTool`, `/approve`, `/reject`, a skill reload) breaks that chat with a 400, so start a new chat
-afterwards (limitation 9, [FX4](fixes/FX04-append-only-history.md)).
-
-## Common errors
-
-- **"ANTHROPIC_API_KEY (or LLM_API_KEY) is required for provider 'anthropic'"** — set it in `config/.env.secrets`.
-- **"AGENT_API_KEY is required: set it in config/.env.secrets, or set AGENT_AUTH=off …"** (or `MCP_API_KEY (or
-  AGENT_API_KEY)` from the MCP server over HTTP) — the host fails closed ([FX18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX18-auth-fails-closed.md)):
-  set the key, or `AGENT_AUTH=off` in `config/.env` on a machine whose ports stay on `127.0.0.1`. Then recreate the
-  containers (`up -d`): `restart` keeps the old environment.
-- **"prompt is too long"** — something put a huge result into the history; check `logs/oversized-tool-results.jsonl`.
-- **"adaptive thinking is not supported on this model"** — a pre-4.6 Claude model not listed in
-  `LlmClientFactory.ThinkingBudgetModelPrefixes`; add its prefix.
-- **Skill not found** — the session doesn't have the `skills` toolset, the file isn't in `Skills/agent/functions/`, or
-  the name differs (case-sensitive).
-- **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
-- **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list
-  changed under earlier thinking ([known limitation 9](../TODO.md#known-limitations)); start a new chat. See
-  [FX4](fixes/FX04-append-only-history.md).
-- **"Price table …"** stopping start-up (not valid, empty, a negative price, or a bad `long_prompt.above_tokens`) — fix
-  `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table): every model needs all five prices, none negative.
-  **"[WARN] No price table"** means costs are recorded as unknown.
-- **"Model '…' isn't pulled into Ollama"** (usage probe) or a 404 from Ollama — `docker exec louis_ollama ollama pull <model>`.
 
 ## Further reading
 

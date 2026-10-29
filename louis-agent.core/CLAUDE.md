@@ -160,48 +160,12 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 ## Building an identity or a pack
 
-The steps, for a person, are in [Build a pack](../docs/guides/build-a-pack.md) and
-[Build an identity](../docs/guides/build-an-identity.md); this section keeps the rules they follow.
-
-Core is the engine and names no product, shop or country (CL15, [ADR 0027](../docs/adr/0027-engine-identities-and-packs.md));
-`ArchitectureTests` holds it in the model-visible text and in the comments. Who an agent is lives in an identity, what
-it can do in a pack, and only `src/louis-agent.composition` knows them all. The one identity in `identities/` and the
-one pack in `packs/` are the worked examples (this guide names neither: core's source, this file included, names no
-product, held by the same test); F40's demo takes over as the simpler one.
-
-**An identity** is a project `identities/louis-agent.identity.{name}` with one class implementing `IAgentIdentity`
-(`Agent/Catalog/`, as `IAgentPack` and `AgentCatalog` are):
-its `Name` (what `IDENTITIES` loads it by), its `Prompts` (a `ManifestEmbeddedFileProvider` over its `Prompts/` folder:
-its modes under `agent/{name}/`, its roles under `specialists/` and `minions/`, as *Adding a mode or a role* lays them
-out) and the `Packs` it names, by name, never by reference. Its csproj needs core's two embedding lines
-(`GenerateEmbeddedFilesManifest` and the `EmbeddedResource` glob), or its prompts silently vanish: its tests read one
-prompt through `SkillFileSource` to prove the manifest works, after a `[SetUpFixture]` registers the identity's prompts
-and its packs' with `SkillFileSource.Use`, as a host's `Build` does with the catalogue's.
-
-**A pack** is a project `packs/louis-agent.pack.{name}` with one class implementing `IAgentPack`: its `Name`, its
-`Toolsets` (one `ToolsetDefinition` each, *Adding a toolset*), its `Prompts` (its guides) and the packs it `Requires`,
-by name. It reads its own settings in its own options class (`ShopsOptions.FromEnvironment`), never through
-`AgentOptions`, and reaches core's shared services through `ToolsetContext` (the browser, the search provider, the
-rates). Its result texts are its own message enums in its `Messages/` folder (`ShopToolMessage`, `ShopLogMessage`), with
-their own golden; `HostMessageEnumTests` finds them.
-
-**Then the composition root:** a member in `IdentityKind` or `PackKind`, its `Create` arm in `Plugins`, a project
-reference in `louis-agent.composition.csproj`, and the test projects that need it. A host picks with `IDENTITIES` and
-`PACKS` at start-up; `AgentCatalog` refuses a name nothing provides, a name used twice, a tool name two toolsets share
-and a `Requires` cycle, before any engine is built.
-
-**The review checklist for a pack** ([ADR 0028](../docs/adr/0028-packs-stay-convertible-to-mcp.md)):
-`PackConvertibilityTests` holds the shapes (text returned, plain data taken, a `CancellationToken` when it waits, an
-MCP-safe name, no identity named in a description, guides as prose in the pack's prompts, the MCP SDK keeping name,
-schema and description). Review the rest by hand, because a test can't see it:
-
-- A failure is text with its reason, never a thrown exception: served over MCP, the SDK would replace the message.
-- Whatever a tool reads from the session (the user's place) also arrives as a parameter, so an MCP client can pass it.
-- Outside data it returns is framed as data (`--- untrusted … ---`), and its own output is bounded: a call served over
-  MCP skips the engine's guards.
-- It is ready when built: anything slow or async happens before the catalogue is built, once, and its toolsets and
-  tools never change afterwards.
-- It references no other pack and no identity (`ArchitectureTests` reads the csproj), and names the packs it needs.
+The steps are [Build a pack](../docs/guides/build-a-pack.md) and [Build an identity](../docs/guides/build-an-identity.md),
+each with its review checklist at the end; the rules they follow are
+[ADR 0027](../docs/adr/0027-engine-identities-and-packs.md) (core is the engine and names no product, shop or country;
+`ArchitectureTests` holds it in the model-visible text and in the comments, this file included) and
+[ADR 0028](../docs/adr/0028-packs-stay-convertible-to-mcp.md) (`PackConvertibilityTests` holds the shapes; the rest
+is reviewed by hand). Only `src/louis-agent.composition` knows every identity and pack.
 
 ## Building another agent on core
 
