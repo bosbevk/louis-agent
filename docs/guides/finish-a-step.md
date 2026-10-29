@@ -11,7 +11,7 @@
    <project>` and `dotnet test <project>`); the whole solution (`dotnet build louis-agent-solution.sln`) before a PR.
 2. **Goldens.** If tools, their descriptions, the tool texts (the `*ToolMessage` enums) or the prompts under
    `Prompts/` changed, regenerate the golden files (`LOUIS_UPDATE_GOLDEN=1`) and review their diff
-   ([golden files](write-tests.md#golden-files)).
+   ([golden files](write-tests.md#regenerate-a-golden-file)).
 3. **Docs.** Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature*
    or *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in
    the doc of its type.
