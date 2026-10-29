@@ -50,7 +50,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0041](0041-json-through-records-by-hand-only-for-bytes.md) | JSON goes through records and one options object per wire; the writable DOM only for a shape decided at run time, the read-only DOM for input we don't own, the writer only when the bytes are the contract | Accepted |
 | [0042](0042-the-web-shows-the-live-results.md) | The web shows the live results: a page renders what it last fetched, fetches again after any write it makes, and never keeps a count the API keeps | Accepted |
 | [0043](0043-repeated-names-are-enums.md) | Repeated names are enums, one per pluggable project: a name written in more than one place (a toolset, a role, a mode) is an enum even in an open set; a pack, an identity or an eval set keeps its own copy and never references another's, the rest share one; wire names stay text, carried as `[WireName]` and parsed once by `SettingChoice` |
-| [0044](0044-the-size-limit-counts-code.md) | The size limit counts code: 200 lines (tests 400) without blank and comment lines, so the comments the rules ask for never force a split | Accepted |
+| [0044](0044-the-size-limit-counts-code.md) | The size limit counts code: 200 lines (tests 400) without blank and comment lines, so the comments the rules ask for never force a split | Amended by [0053](0053-stylesheets-by-concern.md) |
 | [0045](0045-typed-answers-and-a-shared-contract.md) | Typed answers and a shared contract: endpoints return `TypedResults` with `Results<…>` unions, errors are the `ApiError` record, and the records live in `louis-agent.api.contracts` for the API and its clients | Accepted |
 | [0046](0046-dates-are-utc.md) | Dates are UTC: stored, logged and sent as ISO 8601 UTC; a screen converts them for the reader; a future local event keeps its local time and zone | Accepted |
 | [0047](0047-protocol-v2-one-event-contract.md) | Protocol v2: one event contract both sides share: the runner and the API read and write the records in `louis-agent.evals.protocol`, JSON Lines with `"event"` first, kebab-case words, UTC `t`; our own field names, not OpenTelemetry's `gen_ai.*`; amends 0022 | Accepted |
@@ -58,7 +58,9 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0049](0049-nothing-is-compatible-before-a-sale.md) | Nothing is backward compatible until something is sold in production: no migration, alias, lenient reader or second parser for what we store or send between our own parts; a changed shape means delete and re-run | Accepted |
 | [0050](0050-summaries-like-a-person.md) | Every class and method has a summary written like a person, a `<remarks>` for its pattern and why, a `<seealso>` per ADR that shaped it; a step inside a method gets one plain comment line, and steps sit in groups; fixed file by file, in the step's own commit | Accepted |
 | [0051](0051-flat-conditionals-and-named-endpoints.md) | No nested conditionals (a switch on the shape or guard clauses), and an endpoint is a named method on a handler class, its checks first as guard clauses | Accepted |
-| [0052](0052-edit-never-script.md) | Code changes only by editing, never a script; layout only through the formatter; a rename only through Rider; in Rider, Rider's tools come first for any job they cover | Accepted |
+| [0052](0052-edit-never-script.md) | Code changes only by editing, never a script; layout only through the formatter; a rename only through Rider; in Rider, Rider's tools come first for any job they cover | Amended by [0054](0054-a-move-may-copy-line-ranges.md) |
+| [0053](0053-stylesheets-by-concern.md) | A stylesheet is split by concern: at most 200 lines of rules a file, `app.css` the `@import` list in cascade order | Accepted |
+| [0054](0054-a-move-may-copy-line-ranges.md) | A pure move may copy whole line ranges with a command, when a byte check proves nothing changed | Accepted |
 
 ## When to write one
 

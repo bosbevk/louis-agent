@@ -10,9 +10,17 @@ namespace LouisAgent.Api.Evals.Runs.Start;
 /// the eval and its runner, the search engine and page renderer, how the web was handled, and which prompts were
 /// used. There's no commit yet: the container has the workspace but no reason to run git for it.
 /// </summary>
+/// <remarks>
+/// Information Expert (GRASP), chosen in CL26: the class that writes a setting also reads it back
+/// (<see cref="ReplayOf"/>), so its name lives in one place and the run row and the trend can't spell it differently.
+/// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class EvalSettings
 {
+    /// <summary>Where a replay keeps the run it replayed.</summary>
+    private const string ReplayOfKey = "replay_of";
+
     /// <summary>
     /// Collects what a run ran with: the model, the roles, the eval and its runner, and which search engine and page
     /// renderer it used and whether each was set up.
@@ -76,9 +84,13 @@ public static class EvalSettings
         // Copy them, then add how the web was handled.
         var withOptions = new Dictionary<string, string>(settings);
         if (options.Web is { } web) withOptions["web"] = web.Wire();
-        if (options.Replay is { } replayOf) withOptions["replay_of"] = replayOf;
+        if (options.Replay is { } replayOf) withOptions[ReplayOfKey] = replayOf;
         return withOptions;
     }
+
+    /// <summary>The run a replay replayed, read back from its settings; a run that wasn't a replay has none.</summary>
+    public static string? ReplayOf(IReadOnlyDictionary<string, string>? settings) =>
+        settings?.GetValueOrDefault(ReplayOfKey);
 
     /// <summary>
     /// Adds the hashes of the prompts the run used. It's the set the run used, not all it has, so a shorter list may

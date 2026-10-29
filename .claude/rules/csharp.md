@@ -139,8 +139,9 @@ way. `FileSizeTests`, `FolderSizeTests` and `ArchitectureTests` hold it.
   only because of a web address (a `<seealso href>`) may run past 120.
 - Code and comments change only by editing the file; layout only through Rider's *Reformat Code* and then
   `dotnet format louis-agent-solution.sln --include <the commit's .cs files>`, which has the last word (CI checks
-  with it); never a script that rewrites source files. A `//` or `///` line over 120 is wrapped by hand (Rider never
-  wraps a comment), as is every long line where no Rider runs. A rename goes through Rider's rename refactoring,
+  with it); never a script that rewrites source files (a pure move may copy whole line ranges, proved byte-identical:
+  ADR 0054). A `//` or `///` line over 120 is wrapped by hand (Rider never wraps a comment), as is every long line
+  where no Rider runs. A rename goes through Rider's rename refactoring,
   never search and replace. **In Rider, Rider's tools come first** for any job they cover; the order and the
   tool-to-job table are in [Finish a step](../../docs/guides/finish-a-step.md).
 - **Test first** (0014): a step that changes behaviour starts with its test, run and seen failing for the expected

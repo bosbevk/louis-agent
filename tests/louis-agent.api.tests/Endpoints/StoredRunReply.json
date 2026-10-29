@@ -32,7 +32,8 @@
         "kind": "human",
         "question": "Is this a meal?"
       }
-    ]
+    ],
+    "replay_of": null
   },
   "settings": {
     "WEB": "record"

@@ -1,0 +1,121 @@
+.check-script { margin: 0; font-size: 12px; }
+.check-last { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--text); text-decoration: none; padding: 6px 10px; margin: 0 -10px; border-radius: 9px; transition: background .15s, color .15s; }
+.check-last:hover { background: rgba(255, 255, 255, .05); color: var(--ink); }
+.check-last strong { color: var(--ink); }
+.check-last-go { color: var(--orange-text); margin-left: 2px; }
+.checks-hint { font-size: 12.5px; margin-left: 6px; }
+.run-estimate { font-size: 12.5px; }
+.status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--green-soft); color: var(--green-light); white-space: nowrap; }
+.status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.status-pill.running { background: var(--orange-soft); color: var(--orange-text); }
+.status-pill.failed { background: rgba(242, 107, 79, .14); color: var(--danger); }
+.runs-head, .run-row { display: grid; grid-template-columns: 130px 150px 70px 100px 80px minmax(0, 1fr) 90px; align-items: center; gap: 12px; padding: 8px 10px; }
+.runs-head { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); }
+.runs-head .num, .run-row .num { text-align: right; font-variant-numeric: tabular-nums; }
+.run-row { border-radius: 10px; border-bottom: 1px solid rgba(255, 255, 255, .05); transition: background .15s; }
+.run-row:hover { background: rgba(255, 255, 255, .04); }
+.run-row.selected { background: var(--orange-soft); }
+.run-row-main { min-width: 0; text-decoration: none; }
+.run-row-main code { font-size: 12.5px; color: var(--orange-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run-row-main:hover code { text-decoration: underline; }
+.run-row-when, .run-row-repeat, .run-row-requests { font-size: 13px; color: var(--text); white-space: nowrap; }
+.run-row-notes { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.run-row-notes .rescore { height: 28px; padding: 0 10px; font-size: 12px; }
+.run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13.5px; }
+@media (max-width: 1100px) { .runs-head { display: none; } .run-row { grid-template-columns: 1fr 1fr; } .run-row-notes { grid-column: 1 / -1; } }
+/* A run's page (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, the facts in one line; each fold says in a note what it holds. */
+.run-head h1 code { font-size: 24px; font-weight: 800; color: var(--ink); background: none; padding: 0; letter-spacing: -.4px; }
+.run-proves { margin: 4px 0 0; color: var(--text); font-size: 14.5px; max-width: 90ch; }
+.run-facts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px !important; font-size: 13px; }
+.run-facts > code { color: var(--orange-text); }
+.fold-note { font-weight: 400; font-size: 12.5px; color: var(--muted); margin-left: 4px; }
+.fold:not([open]) > .fold-head .fold-note::before { content: "— "; }
+/* The trend-by-category cards (2026-10-26): a card per category, three to a row; per mode two labelled bars (pass@k, pass^k) with their numbers; the compact chart under them. */
+.category-trend-lead { margin: 0 0 12px; font-size: 13px; max-width: 100ch; }
+.category-trend-lead strong { color: var(--ink); }
+.category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; }
+.category-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px 12px; display: flex; flex-direction: column; gap: 10px; transition: border-color .2s; }
+.category-card:hover { border-color: rgba(245, 130, 32, .35); }
+.category-card.overall { border-color: rgba(245, 130, 32, .4); }
+.category-card h4 { display: flex; align-items: baseline; gap: 10px; margin: 0; font-size: 15px; font-weight: 700; color: var(--ink); }
+.category-card h4 code { background: none; padding: 0; color: var(--ink); font-size: 14px; }
+.category-card h4 .muted { font-weight: 400; font-size: 12px; margin-left: auto; }
+.category-lines { display: flex; flex-direction: column; gap: 10px; }
+.category-line { display: grid; grid-template-columns: 1fr; gap: 4px; }
+.category-line-name { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text); }
+.category-line-name .muted { font-size: 11.5px; margin-left: auto; }
+.cat-bar { display: grid; grid-template-columns: 52px minmax(0, 1fr) 44px; align-items: center; gap: 8px; }
+.cat-bar-label { font-size: 11.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cat-bar-track { height: 8px; border-radius: 4px; background: rgba(255, 255, 255, .06); overflow: hidden; }
+.cat-bar-fill { display: block; height: 100%; border-radius: 4px; transform-origin: 0 50%; animation: grow .7s var(--ease) both; }
+.cat-bar-fill.hat { opacity: .6; }
+.cat-bar-value { font-size: 12.5px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.category-no-trend { margin: 2px 0 0; font-size: 12px; }
+.trend.compact .trend-grid { gap: 8px; }
+.trend.compact .trend-panel { padding: 8px 10px 10px; background: none; }
+.trend.compact .trend-svg { height: 64px; }
+.trend.compact .chart-head { gap: 6px; font-size: 12px; }
+.trend.compact .chart-title > strong { font-weight: 600; font-size: 12px; color: var(--muted); }
+.trend.compact .trend-top { display: none; }
+.trend.compact > .chart-head { display: none; }
+.rescored-from { font-size: 12px; color: var(--muted); text-decoration: none; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; white-space: nowrap; transition: color .15s, border-color .15s; }
+.rescored-from:hover { color: var(--orange-text); border-color: rgba(245, 130, 32, .45); }
+.rescore-error { display: block; font-size: 12px; }
+.model-filter { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 5px 10px; font: inherit; font-size: 13px; }
+@media (max-width: 1199.98px) {
+    .admin-cols { grid-template-columns: minmax(0, 1fr); }
+    .admin-col-side { position: static; }
+    .runs-list { max-height: none; }
+}
+/* A segmented control (the repeats): buttons in a pill, the chosen one lit; no native dropdown. */
+.segmented { display: inline-flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--bg); }
+.segmented button { background: transparent; border: 0; color: var(--muted); padding: 5px 11px; font-size: 13px; font-weight: 600; line-height: 1.4; transition: background .15s, color .15s; }
+.segmented button + button { border-left: 1px solid var(--border); }
+.segmented button:hover:not(:disabled) { color: var(--ink); background: rgba(255, 255, 255, .05); }
+.segmented button.active { background: var(--orange-soft); color: var(--orange-text); }
+/* A check's card rolls up and down: its header is the summary, with the chip and the last cost; a chevron turns. */
+/* F31: one fold for every check card (Louis), not a fold per card. */
+.checks-head { display: flex; align-items: center; gap: 8px; margin: 0 2px 6px; }
+.checks-head .sidebar-label { margin: 0; padding: 0; }
+.checks-toggle { background: none; border: 0; padding: 4px 6px; border-radius: 8px; line-height: 0; }
+.checks-toggle:hover { background: rgba(255, 255, 255, .06); }
+.checks-toggle .chevron { display: inline-block; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); margin-bottom: 3px; }
+.checks-toggle.open .chevron { transform: rotate(-135deg); margin-bottom: -3px; }
+.check-card-meta { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.check-card:not(.open) { gap: 0; }
+/* The live run's conversations, rendered by the chat's TurnView; while a run goes the page is one column. */
+.admin-cols.single { grid-template-columns: minmax(0, 1fr); }
+.live-chat { display: flex; flex-direction: column; gap: 14px; padding: 14px 0 6px; border-top: 1px solid var(--border); }
+.live-chat-head { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.live-chat .user-message { max-width: 70%; }
+/* The live run as a tree (F27): mode → conversation → turn, each a details node with its figures as chips. */
+.tree { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.tree-node { border-left: 2px solid var(--border); margin-left: 4px; padding-left: 10px; }
+.tree-node[open] { border-left-color: rgba(245, 130, 32, .45); }
+.tree-node > summary { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; list-style: none; padding: 7px 8px; border-radius: 10px; user-select: none; }
+.tree-node > summary::-webkit-details-marker { display: none; }
+.tree-node > summary:hover { background: rgba(255, 255, 255, .04); }
+.tree-node > summary .chevron { width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(-45deg); transition: transform .2s var(--ease); margin-right: 2px; }
+.tree-node[open] > summary .chevron { transform: rotate(45deg); }
+.tree-mode > summary strong { color: var(--orange-text); font-size: 15px; }
+.tree-meta { color: var(--dim); font-size: 12.5px; }
+.tree-chips { display: inline-flex; flex-wrap: wrap; gap: 5px; margin-left: auto; }
+/* F18 step 5a: a run's pass rates, one line per mode. */
+.mode-rates { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.mode-rate { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.mode-rate-name { font-weight: 600; margin-right: 4px; }
+.chip { font-size: 11px; font-weight: 600; letter-spacing: .2px; padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--muted); white-space: nowrap; }
+.chip.ok { background: var(--green-soft); color: var(--green-light); }
+.chip.bad { background: rgba(242, 107, 79, .14); color: var(--danger); }
+/* A guess: neither right nor wrong, but not an answer (F31: a price without its source). */
+.chip.warn { background: rgba(245, 130, 32, .14); color: var(--orange-text); }
+.chip.busy { background: var(--orange-soft); color: var(--orange-text); }
+.chip.hosts { white-space: normal; font-weight: 500; }
+.tree-turn-n { font-weight: 700; color: var(--ink); }
+.tree-question { color: var(--text); font-size: 13.5px; max-width: 46ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tree-turn-body { padding: 6px 0 10px 14px; display: flex; flex-direction: column; gap: 12px; }
+.tree-turn-body .user-message { max-width: 70%; }
+/* A check card's title stays on one line; the cost, chip and chevron sit at the right and never push it down. */
+.check-card > .card-head { flex-wrap: nowrap; }
+.check-card > .card-head > strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.check-card-meta { margin-left: auto; flex: 0 0 auto; }

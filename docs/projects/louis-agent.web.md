@@ -45,7 +45,7 @@ flowchart TB
   many commits it is ahead of the checked-out one.
 - **Nothing pushes.** Commits and merges stay local; the API's git endpoints never push, so pushing stays with you.
 - **Themes** are CSS files in `wwwroot/css/themes/` listed in `themes.json`; each sets the variables listed at the top of
-  `css/app.css`. Two today: *Retro terminal* and *Paper (soft light)*.
+  `css/base/page.css`. Two today: *Retro terminal* and *Paper (soft light)*.
 
 ## Structure
 
@@ -60,7 +60,7 @@ flowchart TB
 | `*.razor.cs` | Every component's C# (W2b): a `.razor` holds markup only |
 | `Workspace/` | The workspace records (`WorkspaceEntry`, `WorkspaceFolder`, `WorkspaceFile`, one per file) and `AgentApiWorkspace`, the workspace and git calls on the shared `AgentApi`; `CodeLanguage` (highlight.js language by file name) and `FileSize` (the header's size) |
 | `Git/` | The git records (`GitFile`, `GitStatus`, `GitDiff`, `GitBranch`, `GitBranches`, `GitCommit`, `GitLog`, `GitCommitDetail`, `GitBranchDetail`, one per file); `GitState` and `GitHistory`, shared git state with change events and the merge/delete queue; `UnifiedDiff` (a diff as rows with line numbers), `Patch` (a multi-file patch per file), `RelativeTime` (a commit's age) and `ReviewActions` (the prompts and chat titles of the reviews a viewer asks for), each with tests |
-| `wwwroot/` | `index.html`, `css/app.css`, themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
+| `wwwroot/` | `index.html`, `css/` (`app.css` the `@import` list, the rules in area files under `base/`, `layout/`, `workspace/`, `git/`, `chat/`, at most 200 lines each; CL26), themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
 
 **Shared with Puls:** the chat as data, the API client, a turn's life, the turn and delegation views, markdown, usage
 and currency are in `src/louis-agent.web.shared/`, a Razor class library both apps reference; its design is in

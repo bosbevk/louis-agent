@@ -1,7 +1,7 @@
 # 0044. The size limit counts code: blank and comment lines are free
 
-**Status:** Accepted · **Date:** 2026-10-27 (Louis, on F18's formatting commit: "we must maybe increase linecount to
-250?") · **Recorded:** 2026-10-27
+**Status:** Accepted, amended by [0053](0053-stylesheets-by-concern.md) · **Date:** 2026-10-27 (Louis, on F18's
+formatting commit: "we must maybe increase linecount to 250?") · **Recorded:** 2026-10-27
 
 ## Context
 

@@ -1,6 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Evals.Runs;
+using LouisAgent.Api.Evals.Runs.Start;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
 
@@ -35,7 +36,8 @@ internal static class AdminRunReplies
             r.EvalVersion,
             r.Commit,
             r.RescoreOf,
-            r.Graders?.Select(g => new RunGraderRow(g.Name, g.Version, g.Kind.Wire(), g.Question)).ToList());
+            r.Graders?.Select(g => new RunGraderRow(g.Name, g.Version, g.Kind.Wire(), g.Question)).ToList(),
+            EvalSettings.ReplayOf(r.Settings));
     }
 
     /// <summary>A live run's row.</summary>

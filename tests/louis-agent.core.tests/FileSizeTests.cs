@@ -57,9 +57,9 @@ public class FileSizeTests
             if (!Directory.Exists(dir)) continue;
             foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories))
             {
-                if (!(file.EndsWith(".cs") || file.EndsWith(".razor")) || InBuildOutput(file)) continue;
-                if (CountCodeLines(File.ReadAllLines(file)) > limit)
-                    over.Add(Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('\\', '/'));
+                // Only what we wrote and know how to size: C#, markup and stylesheets.
+                if (InBuildOutput(file) || Lines(file) is not { } lines) continue;
+                if (lines > limit) over.Add(Path.GetRelativePath(TestPaths.RepoRoot, file).Replace('\\', '/'));
             }
         }
 
@@ -69,7 +69,8 @@ public class FileSizeTests
         Assert.Multiple(() =>
         {
             Assert.That(newOffenders, Is.Empty,
-                $"A file holds at most {SourceLimit} lines (a test file {TestLimit}): split by responsibility (docs/CLAUDE.md, Separate by concern):\n  "
+                $"A file holds at most {SourceLimit} lines (a test file {TestLimit}): split by responsibility "
+                + "(docs/CLAUDE.md, Separate by concern):\n  "
                 + string.Join("\n  ", newOffenders));
             Assert.That(shrunk, Is.Empty,
                 "Within its limit now: remove from Oversized so the list only shrinks:\n  " +
@@ -77,9 +78,51 @@ public class FileSizeTests
         });
     }
 
+    /// <summary>
+    /// A file's size for the rule: C# and markup by their code lines, a stylesheet by the lines with a rule on them
+    /// (CL26); any other file isn't sized.
+    /// </summary>
+    /// <remarks>A switch on the file's type, one arm per kind, instead of a chain of ifs.</remarks>
+    private static int? Lines(string file) => Path.GetExtension(file) switch
+    {
+        ".cs" or ".razor" => CountCodeLines(File.ReadAllLines(file)),
+        ".css" => CountCssLines(File.ReadAllLines(file)),
+        _ => null
+    };
+
     /// <summary>How long a file is for the size rule: every line that isn't blank or a comment.</summary>
     internal static int CountCodeLines(IEnumerable<string> lines) =>
         lines.Select(line => line.TrimStart()).Count(line => line.Length > 0 && !line.StartsWith("//"));
+
+    /// <summary>
+    /// How long a stylesheet is for the size rule: every line with a rule on it, comments and blanks left out.
+    /// </summary>
+    internal static int CountCssLines(IEnumerable<string> lines)
+    {
+        int count = 0;
+        bool inComment = false;
+        foreach (string line in lines)
+        {
+            // Take the comments out of the line, one opening or closing mark at a time; a comment can start on an
+            // earlier line and end on this one.
+            var rest = new System.Text.StringBuilder();
+            int at = 0;
+            while (at < line.Length)
+            {
+                string mark = inComment ? "*/" : "/*";
+                int next = line.IndexOf(mark, at, StringComparison.Ordinal);
+                if (!inComment) rest.Append(next < 0 ? line[at..] : line[at..next]);
+                if (next < 0) break;
+                inComment = !inComment;
+                at = next + 2;
+            }
+
+            // What's left is a rule, or nothing.
+            if (!string.IsNullOrWhiteSpace(rest.ToString())) count++;
+        }
+
+        return count;
+    }
 
     /// <summary>What the build wrote (bin/, obj/) isn't ours to size.</summary>
     private static bool InBuildOutput(string path) =>

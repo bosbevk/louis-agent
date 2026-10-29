@@ -1,0 +1,68 @@
+/* Composer */
+.composer {
+    max-width: 820px;
+    width: calc(100% - 32px);
+    margin: 0 auto 16px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) * 2);
+    background: var(--panel);
+    transition: border-color .15s, box-shadow .15s;
+}
+.composer:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 14%, transparent); }
+
+.composer .attachments, .user-message .attachments { display: flex; flex-wrap: wrap; gap: 6px; }
+.composer .attachments { margin-bottom: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 2px; padding: 1px 4px 1px 8px; border: 1px solid var(--border); border-radius: 999px; font-size: 12px; background: var(--surface); }
+.user-message .chip { padding-right: 8px; }
+
+.input-row { display: flex; align-items: flex-end; gap: 8px; }
+/* The ">" prompt is a retro flourish; themes that want it show it. */
+.prompt { display: none; padding: 6px 0; color: var(--accent); font-weight: 600; }
+
+textarea {
+    flex: 1;
+    resize: none;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--bright);
+    font: inherit;
+    caret-color: var(--accent);
+    padding: 6px 4px;
+    field-sizing: content;
+    min-height: 2.2em;
+    max-height: 40vh;
+}
+textarea::placeholder { color: var(--dim); }
+
+.attach { position: relative; padding: 6px; cursor: pointer; font-size: 16px; line-height: 1; }
+.attach input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+/* Syntax colours (highlight.js) from the theme's palette. */
+.hljs-keyword, .hljs-selector-tag, .hljs-built_in, .hljs-meta .hljs-keyword { color: var(--amber); }
+.hljs-string, .hljs-regexp, .hljs-symbol, .hljs-template-variable { color: var(--cyan); }
+.hljs-number, .hljs-literal, .hljs-bullet { color: var(--syn-number); }
+.hljs-title, .hljs-title.class_, .hljs-title.function_, .hljs-type, .hljs-section { color: var(--bright); font-weight: 600; }
+.hljs-attr, .hljs-attribute, .hljs-name, .hljs-property, .hljs-variable, .hljs-params { color: var(--syn-attr); }
+.hljs-comment, .hljs-quote, .hljs-meta { color: var(--dim); font-style: italic; }
+.hljs-addition { color: var(--accent); }
+.hljs-deletion { color: var(--danger); }
+
+/* Startup and error UI */
+.loading { margin-top: 30vh; text-align: center; color: var(--muted); letter-spacing: .06em; }
+
+#blazor-error-ui {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 16px;
+    background: var(--danger);
+    color: var(--accent-text);
+    z-index: 1000;
+}
+#blazor-error-ui a { color: inherit; }
+#blazor-error-ui .dismiss { cursor: pointer; float: right; }
+

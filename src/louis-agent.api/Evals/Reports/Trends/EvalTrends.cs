@@ -1,5 +1,6 @@
 using LouisAgent.Api.Evals.Reports.Prompts;
 using LouisAgent.Api.Evals.Runs.Kinds;
+using LouisAgent.Api.Evals.Runs.Start;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Evals.Protocol.Kinds;
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
@@ -156,7 +157,7 @@ public static class EvalTrends
             // line through two different things.
             .Where(r => r.Split is null or RunSplit.Dev)
             // A replay is the recorded run again: its scores are that run's and it costs nothing, so it is no point.
-            .Where(r => r.Settings is null || !r.Settings.ContainsKey("replay_of"))
+            .Where(r => EvalSettings.ReplayOf(r.Settings) is null)
             // A re-score measures nothing new: it grades transcripts recorded on another day, so a point would put
             // their quality at its date and its $0 on the cost line.
             .Where(r => r.RescoreOf is null)

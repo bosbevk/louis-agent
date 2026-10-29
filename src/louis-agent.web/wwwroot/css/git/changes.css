@@ -1,0 +1,100 @@
+/* Changes (source control) */
+.changes-panel { display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+.changes-head { display: flex; justify-content: space-between; align-items: center; padding: 0 4px; }
+.branch { color: var(--bright); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.commit-box { display: flex; flex-direction: column; gap: 6px; }
+.commit-box textarea { resize: vertical; min-height: 3em; max-height: 30vh; }
+.committed { color: var(--accent); font-size: 12px; overflow-wrap: anywhere; animation: fade-in .3s both; }
+.committed::before { content: "✓ "; }
+.selection-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.selection-bar button { padding: 2px 8px; font-size: 12px; }
+.confirm { color: var(--amber); font-size: 12px; animation: blink-soft 1.6s infinite; }
+.change-group { display: flex; flex-direction: column; }
+.group-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+.count { padding: 0 5px; border: 1px solid var(--border); border-radius: var(--radius); font-weight: 400; }
+.change-row { display: flex; align-items: center; gap: 6px; padding: 1px 4px; border-radius: var(--radius); transition: background .12s; animation: fade-in .2s both; }
+.change-row:hover { background: var(--hover); }
+.change-row.selected { background: var(--surface); box-shadow: inset 2px 0 0 var(--accent); }
+.change-file {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 6px;
+    align-items: baseline;
+    padding: 3px 0;
+    border: none;
+    background: none;
+    text-align: left;
+}
+.change-name { white-space: nowrap; }
+.change-folder { color: var(--dim); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.letter { width: 1.2em; text-align: center; font-weight: 600; font-size: 12px; color: var(--muted); font-family: var(--font-code, var(--font)); }
+.letter-M { color: var(--amber); }
+.letter-A, .letter-U { color: var(--accent); }
+.letter-D { color: var(--danger); }
+.letter-R { color: var(--cyan); }
+
+/* Branches and history */
+.history-row { align-items: flex-start; }
+.history-item { flex-direction: column; gap: 0; min-width: 0; }
+.history-item .change-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.history-item .change-folder { max-width: 100%; }
+.change-name.merged { color: var(--muted); }
+.pending-label { align-self: center; padding: 0 6px; color: var(--amber); font-size: 11px; white-space: nowrap; }
+.changes-panel .tree-error { white-space: pre-line; }
+button.small { padding: 2px 8px; font-size: 12px; align-self: center; }
+.sha { color: var(--amber); font-family: var(--font-code, var(--font)); font-size: .92em; }
+.ref {
+    display: inline-block;
+    margin-left: 4px;
+    padding: 0 5px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--cyan);
+    font-size: 10px;
+    line-height: 1.5;
+}
+.history-commits { display: flex; flex-direction: column; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--panel); font-family: var(--font); }
+.history-commit {
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    padding: 3px 6px;
+    border: none;
+    border-radius: var(--radius);
+    background: none;
+    color: var(--text);
+    text-align: left;
+}
+.history-commit:hover { background: var(--hover); }
+.commit-body { margin: 0; padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--muted); white-space: pre-wrap; font: inherit; }
+.patch-file { border-bottom: 1px solid var(--border); }
+.patch-file-head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    align-items: baseline;
+    padding: 6px 12px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font);
+}
+.patch-file-head .change-name { color: var(--bright); font-weight: 600; overflow-wrap: anywhere; white-space: normal; }
+
+input[type=checkbox] { accent-color: var(--accent); }
+
+.hidden { display: none !important; }
+

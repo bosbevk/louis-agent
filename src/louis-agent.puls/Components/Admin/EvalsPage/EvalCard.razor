@@ -1,31 +1,31 @@
-@* One eval: its name and how many runs it has (or "never run"), what it proves, the facts about it, and its runs. *@
+@* One eval (CL26): its name, whose it is and what it proves; its latest run as a scorecard, the runs before it as a
+   timeline, and what it checks in a fold. An eval that never ran shows only what it checks. *@
 
 <section class="card-p eval-card">
-    <div class="card-head">
-        <strong><code>@Eval.Name</code> <span class="muted">@EvalText.Version(Eval.Version)</span></strong>
+    <header class="eval-head">
+        <div class="eval-title">
+            <code>@Eval.Name</code>
+            <span class="eval-version">@EvalText.Version(Eval.Version)</span>
+            <span class="eval-whose">for @EvalText.Whose(Eval.Identity)</span>
+        </div>
         <span class="status-pill @(Eval.NeverRun == true ? "never-run" : "")">@EvalText.Runs(Eval.NeverRun, Eval.Runs.Count)</span>
-    </div>
-    <p class="check-proves">@Eval.Proves</p>
-    <dl class="eval-facts">
-        <dt>Proves for</dt><dd>@EvalText.Whose(Eval.Identity)</dd>
-        <dt>Dataset</dt><dd>@EvalText.Dataset(Eval.Dataset)</dd>
-        <dt>Categories</dt><dd>@EvalText.Names(Eval.Categories)</dd>
-        <dt>Graders</dt>
-        <dd>
-            <ul class="eval-graders">
-                @foreach (var grader in Eval.Graders)
-                {
-                    <li>@EvalText.Grader(grader)</li>
-                }
-            </ul>
-        </dd>
-        <dt>Modes</dt><dd>@EvalText.Names(Eval.Modes)</dd>
-        <dt>Models</dt><dd>@EvalText.Names(Eval.Models)</dd>
-        <dt>Manual</dt><dd>@(Eval.Manual ? "on the Benchmarks page" : "none")</dd>
-    </dl>
+    </header>
+    <p class="eval-proves">@Eval.Proves</p>
+
+    @if (View.Latest is { } latest)
+    {
+        <EvalScorecard Line="latest" Currency="Currency" />
+    }
+
+    @if (View.Runs.Count > 0)
+    {
+        <EvalRunTimeline Runs="View.Runs" Currency="Currency" />
+    }
+
+    <EvalChecks Eval="Eval" Graders="View.Graders" />
+
     @if (Eval.Runs.Count > 0)
     {
-        <EvalRunTable Runs="Eval.Runs" Currency="Currency" />
         <a class="eval-trend" href="admin/benchmarks">The trend and the category lines are on the Benchmarks page ›</a>
     }
 </section>

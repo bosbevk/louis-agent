@@ -1,0 +1,11 @@
+@* Where a run's results came from (CL26): a replay or a re-score links to the run it came from; a recorded run is
+   only tagged. *@
+
+@if (Line.Source is { } source)
+{
+    <a class="run-origin @EvalText.OriginTone(Line.Origin)" href="admin/benchmarks/@source" title="@EvalText.OriginHint(Line.Origin)">@EvalText.Origin(Line.Origin, source)</a>
+}
+else
+{
+    <span class="run-origin @EvalText.OriginTone(Line.Origin)" title="@EvalText.OriginHint(Line.Origin)">@EvalText.Origin(Line.Origin, null)</span>
+}

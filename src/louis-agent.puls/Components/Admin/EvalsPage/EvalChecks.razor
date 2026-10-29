@@ -1,0 +1,41 @@
+@* What the eval checks (CL26), folded away: its graders as chips grouped by how they judge, its categories, modes,
+   models, dataset and manual. The fold's head counts them, so a closed fold still says how much is in it. *@
+
+<details class="fold eval-checks">
+    <summary class="fold-head">
+        <span class="fold-chevron" aria-hidden="true"></span>What it checks
+        <span class="fold-note">@EvalText.Checks(Eval.Graders.Count, Eval.Categories.Count, Eval.Modes.Count)</span>
+    </summary>
+    <dl class="eval-checks-body">
+        <dt>Graders</dt>
+        <dd class="eval-grader-groups">
+            @foreach (var group in Graders)
+            {
+                <div class="eval-grader-group">
+                    <span class="eval-kind @EvalText.Tone(group.Graders[0].Kind)">@group.Kind</span>
+                    @foreach (var grader in group.Graders)
+                    {
+                        <span class="chip eval-grader">@grader.Name v@(grader.Version)</span>
+                    }
+                </div>
+            }
+        </dd>
+        <dt>Categories</dt>
+        <dd class="eval-chips">
+            @foreach (var category in Eval.Categories)
+            {
+                <span class="chip">@category</span>
+            }
+        </dd>
+        <dt>Modes</dt>
+        <dd class="eval-chips">
+            @foreach (var mode in Eval.Modes)
+            {
+                <code class="chip">@mode</code>
+            }
+        </dd>
+        <dt>Models</dt><dd>@EvalText.Names(Eval.Models)</dd>
+        <dt>Dataset</dt><dd>@EvalText.Dataset(Eval.Dataset)</dd>
+        <dt>Manual</dt><dd>@(Eval.Manual ? "on the Benchmarks page" : "none")</dd>
+    </dl>
+</details>

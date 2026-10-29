@@ -72,7 +72,7 @@ why. `type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in
 ## Rules that always apply
 
 The design decisions every change keeps, one line each: the *why* is its ADR in [docs/adr/](adr/README.md), the
-*how* of the C#, Razor and docs rules loads with the file you edit, from `.claude/rules/`.
+*how* of the C#, Razor, CSS and docs rules loads with the file you edit, from `.claude/rules/`.
 
 **The engine and its parts**
 
@@ -169,7 +169,7 @@ tests/                   # NUnit, one project per project ([tests](projects/test
 docker/, deploy/azure/, config/ # This PC's images and compose stacks; the cloud (Puls on Azure); what the app reads at run time
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
 docs/                    # This guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
-.claude/rules/           # The how of the C#, Razor and docs rules, loaded by file path
+.claude/rules/           # The how of the C#, Razor, CSS and docs rules, loaded by file path
 ```
 
 ## Development workflow
@@ -184,6 +184,7 @@ the how of a kind of file in `.claude/rules/`; Claude Code loads each only when 
 | [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | `louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
 | `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: summaries, conditionals, records, enums, size, formatting |
 | `.claude/rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
+| `.claude/rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
 | `.claude/rules/docs.md` | `**/*.md` | One type per doc, the plan and fix-doc lifecycle, write-ups, English, plain words, the 200-line rule |
 
 Every `CLAUDE.md` and every rules file holds at most 200 lines (`ClaudeMdSizeTests`); the rest of the how-tos are

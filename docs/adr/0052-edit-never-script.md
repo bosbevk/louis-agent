@@ -1,6 +1,7 @@
 # 0052. Code changes only by editing; layout only through the formatter; a rename only through Rider
 
-**Status:** Accepted (Louis, 2026-10-27 and 2026-10-28) · **Date:** 2026-10-27 (Louis, after a script that added
+**Status:** Accepted (Louis, 2026-10-27 and 2026-10-28), amended by [0054](0054-a-move-may-copy-line-ranges.md) ·
+**Date:** 2026-10-27 (Louis, after a script that added
 comments walked a sentence letter by letter and left 478 one-character comment lines in a test file); 2026-10-28
 (renames: "a rename goes through Rider's rename refactoring"; Rider's tools: "rider has mcp and we already call it,
 why don't we just let the agent call those?"); 2026-10-29 ("make use of the Rider MCP fully without the need to list
