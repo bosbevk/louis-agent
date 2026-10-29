@@ -185,5 +185,16 @@ same rule. The second lesson is where a fact like "this run was recorded" comes 
 setting reads it back (Information Expert, as CL26 chose for `replay_of`), so the web app never spells the setting's
 name or the mode's word, and a test on that one class covers every page. Skill 12 (evaluation) and 13 (cost).
 
+## FX23 · A pipe the child never reads is not a failure
+
+When a parent writes to a child's standard input and the child exits first, the operating system answers the write
+with "Broken pipe". It means "nobody is listening", not "something went wrong", and a runner whose one catch-all
+turns every exception into a failed run reports a script that succeeded as a failure and throws its output away. The
+lesson is to know which exceptions a call can raise and what each one means before catching them: here the only
+exception that write can raise is the closed pipe, so a guard around that one call (Louis's pick over an async write
+or a declaration on each tool) fixes the cause in three lines. The second lesson is about flaky tests: "flaky" is a
+symptom with a cause, and the way to find it is to make it certain (a megabyte of input makes the child close the
+pipe every time), then write that as the red test. Skill 15 (safety: the tool loop's guards) and 11 (test first).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
