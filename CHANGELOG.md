@@ -4,6 +4,21 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-29 — **CL25 Every CLAUDE.md in 200 lines**: `docs/CLAUDE.md` from 558 lines to under 200 and every
+  `CLAUDE.md` and `.claude/rules/` file held to 200 by `ClaudeMdSizeTests`; the why of each rule in its ADR (new:
+  [0050](docs/adr/0050-summaries-like-a-person.md) summaries like a person, [0051](docs/adr/0051-flat-conditionals-and-named-endpoints.md)
+  flat conditionals and named endpoints, [0052](docs/adr/0052-edit-never-script.md) edit, never a script), the how in
+  path-scoped rules files (`csharp.md`, `razor.md`, `docs.md`), the how-tos in [guides](docs/guides/README.md)
+  (get started, finish a step, add a skill, debug and logs, common errors); one rule, *Rider's tools first*, in
+  place of the list of Rider's tools
+- 2026-10-29 — **FX27 A sub-session's answer carries no usage**: the footer under a specialist's or minion's answer
+  names the child, never its tokens or cost, which are zero on a replay and made the parent's next request miss its
+  recording; the usage stays in the ledger and the parent's turn, and a fresh cook recording replays with no miss
+  ([fix doc as it was](https://github.com/bosbevk/louis-agent/blob/f54d0e7ed2c93bd177dd300f63b5d2df5fd98931/docs/fixes/FX27-sub-session-footer-cost.md))
+- 2026-10-29 — **FX26 A replay miss is marked `replay-miss`**: the replay client throws `ModelReplayMissException`, the
+  API streams it as `error.type` `replay_miss_error` (`StreamErrorKind` in session-stream), and the runner sets the
+  turn's failure, so a replayed trial with no recording counts as infrastructure, not as the agent's failed answer
+  ([fix doc as it was](https://github.com/bosbevk/louis-agent/blob/deb14797f4be3e6b8fa0b66eab9900aedb5f87c9/docs/fixes/FX26-replay-miss-kind.md))
 - 2026-10-29 — **CL24 Done docs folded**: the docs of built features and done fixes folded into the project design docs
   and the write-ups, then deleted; the plans of built work deleted; every link to them at the tag `pre-cl24`. Each
   fix's row keeps its symptom and cause; the lessons are in [Lessons from the fixes](docs/learning/fixes-lessons.md);

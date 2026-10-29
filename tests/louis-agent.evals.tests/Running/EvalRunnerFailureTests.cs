@@ -1,8 +1,7 @@
-using LouisAgent.Testing;
+using LouisAgent.Choices;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol;
@@ -102,6 +101,24 @@ public class EvalRunnerFailureTests
         await Run(new FailingClient { SendFails = new EvalApiException(500, "The model is down.") });
 
         Assert.That(Of<TurnEvent>().Single().Failure, Is.EqualTo(TurnFailure.ApiError));
+    }
+
+    /// <summary>
+    /// A turn the API ends with a replay miss is the replay's failure, not the agent's; any other error the API streams
+    /// stays the agent's turn, with no failure (FX26).
+    /// </summary>
+    [TestCase(StreamErrorKind.ReplayMiss, TurnFailure.ReplayMiss)]
+    [TestCase(StreamErrorKind.Api, null)]
+    public async Task AStreamedReplayMissGetsReplayMiss(StreamErrorKind kind, TurnFailure? expected)
+    {
+        var error = SessionEvent.From("error",
+            JsonDocument.Parse(
+                    $$$"""{"type":"error","error":{"type":"{{{kind.Wire()}}}","message":"No recorded answer."}}""")
+                .RootElement.Clone());
+
+        await Run(new FailingClient { Events = [error] });
+
+        Assert.That(Of<TurnEvent>().Single().Failure, Is.EqualTo(expected));
     }
 
     /// <summary>A turn that ends on its own has no failure.</summary>

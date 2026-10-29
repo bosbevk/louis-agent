@@ -17,18 +17,28 @@ using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
 
-// F30 step 5: a specialist hands one task and one of its own tools to a minion on a cheap model (MinionS: small
-// single-step tasks for the local model, the cloud model coordinates). The peer is a stub: no network, no model.
+/// <summary>
+/// A specialist hands one task and one of its own tools to a minion on a cheap model (F30 step 5; MinionS: small
+/// single-step tasks for the local model, the cloud model coordinates). The peer is a stub: no network, no model.
+/// </summary>
 public class MinionToolsTests
 {
+    /// <summary>The minion role every test hands work to.</summary>
     private const string Role = SampleRole.Zeta;
 
+    /// <summary>This instance as its own peer, where a minion's session opens.</summary>
     private static readonly Dictionary<string, Uri> Self = new()
-    { [SampleIdentity.Alpha] = new Uri("http://puls-agent.test/") };
+    {
+        [SampleIdentity.Alpha] = new Uri("http://puls-agent.test/")
+    };
 
+    /// <summary>Every role's models, cheapest first: the local model, then the instance's own.</summary>
     private static readonly Dictionary<string, IReadOnlyList<string>> Cascade = new()
-    { ["*"] = ["ollama-puls", "instance"] };
+    {
+        ["*"] = ["ollama-puls", "instance"]
+    };
 
+    /// <summary>A minion's answer: one shop and its price, and what it used on the local model.</summary>
     private const string Stream = """
                                   event: content_block_delta
                                   data: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"shop: Checkers\nprice: R35.99"}}
@@ -38,10 +48,14 @@ public class MinionToolsTests
 
                                   """;
 
+    /// <summary>A JSON reply with the status given.</summary>
     private static HttpResponseMessage Json(HttpStatusCode status, string json) =>
         new(status) { Content = new StringContent(json, Encoding.UTF8, "application/json") };
 
-    /// <summary>The specialist's own instance: creates sess_minion, answers with the stream and accepts the delete; keeps every create body.</summary>
+    /// <summary>
+    /// The specialist's own instance: it opens sess_minion, answers with the stream and accepts the delete, and keeps
+    /// every body it was asked to open a session with.
+    /// </summary>
     private static StubHandler Peer(List<JsonDocument> creates, Func<HttpResponseMessage>? answer = null) =>
         new(request =>
         {
@@ -55,12 +69,15 @@ public class MinionToolsTests
             return request.Method.Method switch
             {
                 "POST" => answer?.Invoke() ?? new HttpResponseMessage(HttpStatusCode.OK)
-                { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") },
+                {
+                    Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream")
+                },
                 "DELETE" => Json(HttpStatusCode.OK, """{"deleted":true}"""),
                 _ => new HttpResponseMessage(HttpStatusCode.NotFound),
             };
         });
 
+    /// <summary>The minions toolset on the stub peer, with the default models unless a test gives its own.</summary>
     private static MinionTools Tools(StubHandler handler,
         IReadOnlyDictionary<string, IReadOnlyList<string>>? llms = null, TimeSpan? timeout = null,
         IUsageSink? sink = null) =>
@@ -78,8 +95,10 @@ public class MinionToolsTests
         return new Both(scope, mine);
     }
 
+    /// <summary>Two scopes that end together, the second one first.</summary>
     private sealed class Both(IDisposable first, IDisposable second) : IDisposable
     {
+        /// <summary>Ends both scopes, in the reverse of the order they began.</summary>
         public void Dispose()
         {
             second.Dispose();
@@ -87,6 +106,10 @@ public class MinionToolsTests
         }
     }
 
+    /// <summary>
+    /// A minion opens two levels down with its role, its one tool and the role's model, and what it used is rolled up
+    /// under the specialist's turn.
+    /// </summary>
     [Test]
     public async Task AMinion_OpensAtDepthTwo_WithItsRoleItsToolAndTheRolesModel_AndRollsUpUnderTheSpecialist()
     {
@@ -118,13 +141,41 @@ public class MinionToolsTests
             "the local model's cost, 0, is still a number: never unknown");
     }
 
+    /// <summary>
+    /// A minion's answer reads the same whatever it used: on a replay its usage is zero, and the specialist's next
+    /// request must still match its recording (FX27).
+    /// </summary>
+    [Test]
+    public async Task TheAnswer_ReadsTheSame_WhateverTheMinionUsed()
+    {
+        string replayedStream = Stream.Replace("\"input_tokens\":1500", "\"input_tokens\":0")
+            .Replace("\"output_tokens\":40", "\"output_tokens\":0");
+
+        string recorded = await AnswerFrom(Stream);
+        string replayed = await AnswerFrom(replayedStream);
+
+        Assert.That(replayed, Is.EqualTo(recorded));
+    }
+
+    /// <summary>What the specialist reads back from one minion whose stream is <paramref name="stream"/>.</summary>
+    private static async Task<string> AnswerFrom(string stream)
+    {
+        var answer = () => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(stream, Encoding.UTF8, "text/event-stream")
+        };
+        using (CooksTurn())
+            return await Tools(Peer([], answer)).StartMinion(Role, "FetchUrl", "https://shop.test/mince");
+    }
+
+    /// <summary>A minion records into, or replays from, its chat's own trial; with no trial it gets none.</summary>
     [Test]
     public async Task TheReplay_GoesToTheMinion_AsTheParentsOwnTrial_AndNoneWhenThereIsNone()
     {
         // F18 step 4a: a minion that reads a page records into, or replays from, the trial of the chat it works for.
         var withReplay = new List<JsonDocument>();
-        using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay, SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"),
-                   Model: false)))
+        using (SessionReplay.Use(new SessionReplay(WebReplayMode.Replay,
+                   SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), Model: false)))
         using (CooksTurn())
             await Tools(Peer(withReplay))
                 .StartMinion(Role, "FetchUrl", "https://shop.test/mince; beef mince 500 g; Stellenbosch");
@@ -143,6 +194,10 @@ public class MinionToolsTests
             none.ValueKind == JsonValueKind.Object, Is.False);
     }
 
+    /// <summary>
+    /// A tool the specialist doesn't hold, one never handed down, or a role that isn't a minion's is refused before
+    /// anything is sent.
+    /// </summary>
     [Test]
     public async Task
         AToolTheSpecialistDoesntHold_OrNeverHandedDown_OrARoleThatIsntAMinions_IsRefused_WithoutANetworkCall()
@@ -166,6 +221,9 @@ public class MinionToolsTests
         Assert.That(creates, Is.Empty);
     }
 
+    /// <summary>
+    /// Asking for a stronger model runs the task on the next one in the list, and is refused past its end.
+    /// </summary>
     [Test]
     public async Task Stronger_RunsTheSameTaskOnTheNextModel_AndIsRefusedAtTheEndOfTheList()
     {
@@ -190,6 +248,7 @@ public class MinionToolsTests
         }
     }
 
+    /// <summary>A role's own list of models wins over the default, and a role with neither is refused.</summary>
     [Test]
     public async Task ARolesOwnModelList_BeatsTheDefault_AndARoleWithNeither_IsRefused()
     {
@@ -211,12 +270,16 @@ public class MinionToolsTests
         }
     }
 
+    /// <summary>
+    /// One minion past the cap is refused, counted across every specialist of the same user turn; the next turn starts
+    /// fresh.
+    /// </summary>
     [Test]
     public async Task OnePastTheCap_IsRefused_AcrossSpecialists()
     {
         // One GPU answers one request at a time, so the limit counts the whole tree of Puls's turn: two specialists
-        // under the same Puls turn share it. Every shop's price goes through a minion (Louis, F30 hand check), so a meal
-        // of about eight ingredients at two shops needs sixteen.
+        // under the same Puls turn share it. Every shop's price goes through a minion (Louis, F30 hand check), so a
+        // meal of about eight ingredients at two shops needs sixteen.
         Assert.That(MinionTools.MaxPerTurn, Is.EqualTo(16));
         var creates = new List<JsonDocument>();
         var tools = Tools(Peer(creates));
@@ -240,6 +303,7 @@ public class MinionToolsTests
         Assert.That(creates, Has.Count.EqualTo(MinionTools.MaxPerTurn + 1));
     }
 
+    /// <summary>A minion that takes too long is stopped after its own timeout and deleted on the peer.</summary>
     [Test]
     public async Task AMinion_IsStoppedAfterItsOwnTimeout_AndDeleted()
     {
@@ -261,7 +325,9 @@ public class MinionToolsTests
 
             Thread.Sleep(2000);
             return new HttpResponseMessage(HttpStatusCode.OK)
-            { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") };
+            {
+                Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream")
+            };
         });
 
         string answer;
@@ -274,6 +340,7 @@ public class MinionToolsTests
         Assert.That(MinionTools.DefaultTimeout, Is.EqualTo(TimeSpan.FromMinutes(2)), "inside the specialist's 5");
     }
 
+    /// <summary>Even in a chat a minion is never kept: it's deleted as soon as it answers.</summary>
     [Test]
     public async Task InAChat_AMinionIsNeverKept_ItIsDeletedOnceItAnswers()
     {
@@ -296,7 +363,9 @@ public class MinionToolsTests
             }
 
             return new HttpResponseMessage(HttpStatusCode.OK)
-            { Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream") };
+            {
+                Content = new StringContent(Stream, Encoding.UTF8, "text/event-stream")
+            };
         });
         var registry = new SubSessionRegistry();
 
@@ -311,6 +380,9 @@ public class MinionToolsTests
         Assert.That(typeof(MinionTools).GetMethod("ContinueMinion"), Is.Null, "nothing to continue");
     }
 
+    /// <summary>
+    /// MINION_LLMS gives each role, or the default, its models cheapest first; broken entries are dropped.
+    /// </summary>
     [Test]
     public void TheMinionModels_AreParsedFromMinionLlms_RoleOrStar_CheapestFirst()
     {
@@ -327,6 +399,7 @@ public class MinionToolsTests
         Assert.That(AgentOptions.FromEnvironment(_ => null).MinionLlms, Is.Empty, "unset: no minions toolset");
     }
 
+    /// <summary>A minion model that is neither a known profile nor the instance's own stops start-up.</summary>
     [Test]
     public void AMinionModel_ThatIsntAProfileOrTheInstance_StopsStartUp()
     {
@@ -346,12 +419,18 @@ public class MinionToolsTests
         }));
     }
 
+    /// <summary>The minions toolset needs peers and models, and a tool names the toolset it belongs to.</summary>
     [Test]
     public void TheMinionsToolset_NeedsPeersAndModels_AndATool_NamesItsToolset()
     {
         var minions = ToolsetCatalog.Find(CoreToolset.Minions.Wire())!;
         var without = new ToolsetContext(new AgentOptions { RatesUrl = null }, new NoSearch());
-        var with = new ToolsetContext(new AgentOptions { RatesUrl = null, AgentPeers = Self, MinionLlms = Cascade },
+        var with = new ToolsetContext(new AgentOptions
+        {
+            RatesUrl = null,
+            AgentPeers = Self,
+            MinionLlms = Cascade
+        },
             new NoSearch());
 
         Assert.That(minions.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS", "MINION_LLMS" }));
@@ -362,10 +441,13 @@ public class MinionToolsTests
         Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
     }
 
+    /// <summary>A search provider that finds nothing, so the toolsets can be checked without one.</summary>
     private sealed class NoSearch : LouisAgent.Core.Tools.Web.Search.IWebSearchProvider
     {
+        /// <summary>It has no real name.</summary>
         public string Name => "none";
 
+        /// <summary>Finds nothing.</summary>
         public Task<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>> SearchAsync(
             LouisAgent.Core.Tools.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>>([]);

@@ -73,6 +73,9 @@ flowchart LR
   `content_block_start/delta/stop` (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the
   turn's `usage`, F3) and `message_stop`;
   failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
+  The error's `type` is the failure's kind (`StreamErrorKind` in `louis-agent.session-stream`, FX26): `api_error`
+  for any failure, `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`,
+  mapped by `Sessions/Streaming/StreamErrorKinds`), so a client can tell a replay miss from the agent's own failure.
   `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
 - **Usage** (F3): each session keeps its finished turns' records (`UsageSession`) for `/usage` and the `usage` of
   `GET /v1/sessions/{id}`; the turn is added in the stream's `finally`, so a disconnected or failed turn still counts.

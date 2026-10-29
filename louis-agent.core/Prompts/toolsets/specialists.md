@@ -1,8 +1,8 @@
 # Specialists Skills
 
 How to hand a piece of work to a specialist agent with `StartSubSession`. A sub-session runs on another louis-agent
-(a peer in `AGENT_PEERS`) with only the toolsets the task needs; you get back its final answer and a usage line, never
-its tools or its conversation.
+(a peer in `AGENT_PEERS`) with only the toolsets the task needs; you get back its final answer, never its tools or its
+conversation.
 
 ## Tools
 
@@ -70,8 +70,8 @@ Like a person with a team, you tell the user what's happening, and you don't rew
   link and every line under a table, in its order and its words. Never a summary, a shortened table, a rounded figure
   or a section left out: the specialist checked the pages, you didn't, and a report rewritten is a report with its
   prices and sources gone. Every role's answer you pass on in full the same way, in the task's language.
-- **The footer the tool adds under the report** (`[Sub-session sub-1 on {peer} ({toolsets}; {role}): 4 requests, …]`)
-  is for you, not part of the report: its handle and cost, never in your answer. The chat shows the cost already.
+- **The footer the tool adds under the report** (`[Sub-session sub-1 on {peer} ({toolsets}; {role}). It stays open: …]`)
+  is for you, not part of the report: its handle, never in your answer.
 
 ## Limits and results
 
@@ -80,4 +80,4 @@ Like a person with a team, you tell the user what's happening, and you don't rew
   call.
 - The answer is the peer's claim. Check what matters before reporting it as done (for example, read the diff or the
   test summary it gives).
-- The usage line is what the sub-session cost; it is already in the usage ledger, linked to this turn.
+- What the sub-session cost is in the usage ledger and the chat, linked to this turn; never put it in your answer.

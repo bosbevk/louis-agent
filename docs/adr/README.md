@@ -56,6 +56,9 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0047](0047-protocol-v2-one-event-contract.md) | Protocol v2: one event contract both sides share: the runner and the API read and write the records in `louis-agent.evals.protocol`, JSON Lines with `"event"` first, kebab-case words, UTC `t`; our own field names, not OpenTelemetry's `gen_ai.*`; amends 0022 | Accepted |
 | [0048](0048-mongo-through-records.md) | MongoDB goes through records: each collection a typed `IMongoCollection<T>` over a document record with its stored names as attributes, enums as wire names, dates in UTC, typed filters; `BsonDocument` only for a shape decided at run time | Accepted |
 | [0049](0049-nothing-is-compatible-before-a-sale.md) | Nothing is backward compatible until something is sold in production: no migration, alias, lenient reader or second parser for what we store or send between our own parts; a changed shape means delete and re-run | Accepted |
+| [0050](0050-summaries-like-a-person.md) | Every class and method has a summary written like a person, a `<remarks>` for its pattern and why, a `<seealso>` per ADR that shaped it; a step inside a method gets one plain comment line, and steps sit in groups; fixed file by file, in the step's own commit | Accepted |
+| [0051](0051-flat-conditionals-and-named-endpoints.md) | No nested conditionals (a switch on the shape or guard clauses), and an endpoint is a named method on a handler class, its checks first as guard clauses | Accepted |
+| [0052](0052-edit-never-script.md) | Code changes only by editing, never a script; layout only through the formatter; a rename only through Rider; in Rider, Rider's tools come first for any job they cover | Accepted |
 
 ## When to write one
 

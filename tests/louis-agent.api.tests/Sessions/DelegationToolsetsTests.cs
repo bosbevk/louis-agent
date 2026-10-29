@@ -8,10 +8,14 @@ using LouisAgent.Web.Shared;
 
 namespace LouisAgent.Api.Tests.Sessions;
 
-// F34, Louis's screenshot of the cook's card: its chips said `web`, the toolsets Puls sent, while the cook also had
-// `shops`, which its role adds on the peer. Each session's message_start says what it loaded; the card shows that.
+/// <summary>
+/// A delegation card shows the toolsets the specialist actually loaded, not just the ones Puls sent (F34). From
+/// Louis's screenshot: the cook's chips said `web`, though its role also adds `shops` on the peer. Each session's
+/// message_start says what it loaded, and the card shows that.
+/// </summary>
 public class DelegationToolsetsTests
 {
+    /// <summary>A session's stream opens by naming the toolsets it loaded.</summary>
     [Test]
     public void ASessionsStream_StartsWithTheToolsetsItLoaded()
     {
@@ -19,10 +23,12 @@ public class DelegationToolsetsTests
 
         using var data = JsonDocument.Parse(start.Data);
         Assert.That(
-            data.RootElement.GetProperty("message").GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
+            data.RootElement.GetProperty("message").GetProperty("toolsets").EnumerateArray()
+                .Select(t => t.GetString()),
             Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
+    /// <summary>The cook's call as a block, with its answer and footer once it returned.</summary>
     private static Block Cook(string? footer = null) => new()
     {
         Kind = BlockKind.Tool,
@@ -33,6 +39,9 @@ public class DelegationToolsetsTests
         ToolResult = footer is null ? null : "Die resep.\n\n" + footer,
     };
 
+    /// <summary>
+    /// While the specialist works, its own stream's start says what it loaded, and the card shows that.
+    /// </summary>
     [Test]
     public void TheCard_ShowsWhatTheSpecialistLoaded_WhileItWorks()
     {
@@ -56,14 +65,16 @@ public class DelegationToolsetsTests
             Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
+    /// <summary>Once it's done, the card takes the toolsets from the footer.</summary>
     [Test]
     public void TheCard_ShowsTheFootersToolsets_OnceItsDone() =>
         Assert.That(
-            Delegation.From(Cook(SampleToolset.Fill(
-                    SampleRole.Fill("[Sub-session sub-1 on puls (<Alpha>, <Beta>; <RoleAlpha>): 3 requests, 1 USD]"))))!
+            Delegation.From(Cook(SampleToolset.Fill(SampleRole.Fill(
+                    "[Sub-session sub-1 on puls (<Alpha>, <Beta>; <RoleAlpha>). It stays open: …]"))))!
                 .Toolsets,
             Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
 
+    /// <summary>A chat with neither a live stream nor a footer shows the toolsets that were sent.</summary>
     [Test]
     public void AnOlderChat_ShowsTheToolsetsSent() =>
         Assert.That(Delegation.From(Cook())!.Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha }));

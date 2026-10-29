@@ -13,6 +13,7 @@ using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Usage.Records;
+using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Api.Sessions;
@@ -23,7 +24,10 @@ namespace LouisAgent.Api.Sessions;
 /// </summary>
 internal static class TurnStream
 {
-    // Attachments are sent as file contents (the API can't see the caller's disk); each is capped so one can't fill the context.
+    /// <summary>
+    /// The prompt for a message: its text, then each attachment's contents (the API can't see the caller's disk), each
+    /// capped so one can't fill the context.
+    /// </summary>
     public static string BuildPrompt(SendMessageRequest request)
     {
         const int maxAttachmentChars = 100_000;
@@ -33,7 +37,11 @@ internal static class TurnStream
         {
             string content = attachment.Content ?? string.Empty;
             string body = content.Length <= maxAttachmentChars ? content : content[..maxAttachmentChars];
-            parts.Add(MessageText.Format(ApiModelText.Attachment, new { attachment.Name, Content = body }) +
+            parts.Add(MessageText.Format(ApiModelText.Attachment, new
+            {
+                attachment.Name,
+                Content = body
+            }) +
                       (content.Length <= maxAttachmentChars
                           ? ""
                           : MessageText.Format(ApiModelText.AttachmentTruncated, new
@@ -46,6 +54,10 @@ internal static class TurnStream
         return string.Join("\n\n", parts);
     }
 
+    /// <summary>
+    /// Runs one turn and streams it: a user's command answered at once, or the engine's updates as the session's
+    /// format writes them, a sub-session's events among them, and the turn's end or its failure with its kind.
+    /// </summary>
     public static async IAsyncEnumerable<SseItem<string>> StreamTurnAsync(
         AgentEngine engine, AgentSession session, string prompt, CancellationTokenSource turn)
     {
@@ -71,9 +83,10 @@ internal static class TurnStream
                 .GetAsyncEnumerator(turn.Token);
             string stopReason = "end_turn";
             string? error = null;
-            // F5: a sub-session's events (StartSubSession) arrive while its tool call runs, so the next update is awaited
-            // alongside them and they are sent as they come: the chat shows the specialist's work live. The model still
-            // gets only the sub-session's answer.
+            var errorKind = StreamErrorKind.Api;
+            // F5: a sub-session's events (StartSubSession) arrive while its tool call runs, so the next update is
+            // awaited alongside them and they are sent as they come: the chat shows the specialist's work live. The
+            // model still gets only the sub-session's answer.
             var subSessions = Channel.CreateUnbounded<SubSessionEvent>();
             while (true)
             {
@@ -109,6 +122,8 @@ internal static class TurnStream
                     AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Api").Log(LogLevel.Error,
                         ApiLogMessage.TurnFailed, new { Session = session.Id }, exception: ex, tag: "API");
                     error = $"{ex.GetType().Name}: {ex.Message}";
+                    // A replay with no recorded answer is streamed as its own kind, so a reader can tell it (FX26).
+                    errorKind = StreamErrorKinds.Of(ex);
                     break;
                 }
 
@@ -117,15 +132,15 @@ internal static class TurnStream
                         yield return item;
             }
 
-            // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the scope.
-            // None when no request returned (e.g. the first one failed): there is nothing to report.
+            // The stream has ended (or thrown), so every request of the turn, a cancelled or failed one too, is in the
+            // scope. None when no request returned (e.g. the first one failed): there is nothing to report.
             IReadOnlyList<UsageRecord> turnRecords = usage.Records;
             TurnUsage? turnUsage = engine.RecordsUsage && turnRecords.Count > 0
                 ? TurnUsage.From(turnRecords, engine.Display)
                 : null;
             if (error is not null)
             {
-                foreach (var item in stream.Fail(error, turnUsage)) yield return item;
+                foreach (var item in stream.Fail(errorKind, error, turnUsage)) yield return item;
             }
             else
             {
@@ -134,8 +149,8 @@ internal static class TurnStream
         }
         finally
         {
-            // Here rather than after the loop: if the client disconnects, the SSE writer stops reading and the code after
-            // the last yield never runs, but what the turn used still counts toward the session.
+            // Here rather than after the loop: if the client disconnects, the SSE writer stops reading and the code
+            // after the last yield never runs, but what the turn used still counts toward the session.
             if (usage is not null)
             {
                 session.Usage.EndTurn(usage.Records);

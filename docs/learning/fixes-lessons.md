@@ -156,5 +156,24 @@ the parent's environment unless told otherwise, so "it only reads four settings"
 makes the runner's inputs explicit, which is also documentation: the list *is* what the runner depends on. The paste's other three points (the
 runner as its own job with its own identity, sign-in with roles and an audit log, and how long transcripts are kept) are Phase 9's.
 
+## FX26 · A replay miss is marked `replay-miss`, not taken for the agent's failure
+
+An error that crosses a process boundary as text loses its kind. The replay client knew exactly what had gone wrong,
+but the API flattened every failure to `api_error` and the runner only classified its own exceptions, so the label
+the contract already had (`TurnFailure.ReplayMiss`) was never reachable. Name a failure where it happens, carry the
+name on the wire as a typed value (an enum with its wire name, parsed once), and read it once at the other end. And a
+label is not a fix: the turn is counted fairly, but it has no answer until FX27 removes the cause. Skill 12
+(evaluation) and 4 (the stream's seam).
+
+## FX27 · A sub-session's answer carries no usage, so a replay matches its recording
+
+What the model reads is the key a replay (and a prompt cache) looks things up by, so anything in it that changes from
+run to run, a count, a cost, a time, breaks the lookup. Keep measurements out of the prompt: they belong to the ledger
+and the screens ([ADR 0007](../adr/0007-measure-every-request.md)), and the model gains nothing from them. Of the
+three options (take the usage out, mask it in the replay's key, replay the usage too), taking it out fixed the cause
+instead of hiding it from the key and was the smallest change; the price was a fresh cook recording
+([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md)). When a replay misses, read *which* message changed
+first: here it pointed straight at the one line that carried numbers. Skill 12 (evaluation) and 13 (cost).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

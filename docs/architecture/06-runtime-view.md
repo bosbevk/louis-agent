@@ -4,7 +4,7 @@
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
 > [a C# tool](../../louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../../louis-agent.core/CLAUDE.md#adding-a-toolset),
-> [a skill](../CLAUDE.md#adding-a-skill), [a mode or a role](../CLAUDE.md#adding-a-mode-or-a-role) or
+> [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
 > [another agent on core](../../louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 
 ## Two kinds of capability
@@ -163,4 +163,5 @@ To see what the model is offered, inspect `engine.Tools` (name, description, JSO
 | Scenario | What happens | In detail |
 |---|---|---|
 | **Puls delegates** | Puls opens a sub-session on its specialist with only the toolsets the task needs and a role; the specialist's steps stream into Puls's Werk panel; Puls answers in its own voice | [Agent to agent: Puls and its specialists](../AGENT_COMMUNICATION.md#agent-to-agent-puls-and-its-specialists) |
+| **An eval runs** | The runner, started by the API, opens real sessions on the API, grades each conversation and writes the protocol's lines; the API records them and joins the cost from the ledger | [The evals](evals.md) |
 | **The orchestrator fixes an error** | It reads the service's error, follows the method's runbook, opens a fix session on louis-agent.api, verifies the commit and replays the request | [Agent to agent: the orchestrator and louis-agent](../AGENT_COMMUNICATION.md#agent-to-agent-the-orchestrator-and-louis-agent) · [Runbooks](../projects/orchestrator-runbooks.md) |

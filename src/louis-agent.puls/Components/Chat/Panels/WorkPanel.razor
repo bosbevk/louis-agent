@@ -64,14 +64,14 @@
             <ol class="work-steps">
                 @foreach (var step in steps)
                 {
-                    string state = step.ToolResult is null ? "waiting" : step.ToolFailed ? "failed" : "ok";
+                    string state = StepMarks.StateOf(step);
                     @if (Delegation.From(step) is { Minion: true } minion)
                     {
                         @* F30 step 6b (Louis: "display when a minion was called"): the specialist handed one page to a minion;
                            its role, tool and model, its own step and what it cost, nested under the specialist's steps. *@
                         var minionSteps = step.SubTurn?.Blocks.Where(b => b.Kind == BlockKind.Tool).ToList() ?? [];
                         <li class="work-step minion @state">
-                            <span class="work-step-mark">@(step.ToolResult is null ? "⋯" : step.ToolFailed ? "✗" : "✓")</span>
+                            <span class="work-step-mark">@StepMarks.MarkOf(step)</span>
                             <div class="work-minion">
                                 <div class="work-minion-head">
                                     <span class="work-step-name">@Text.MinionLabel</span>
@@ -98,8 +98,8 @@
                                     <ol class="work-steps nested">
                                         @foreach (var inner in minionSteps)
                                         {
-                                            <li class="work-step @(inner.ToolResult is null ? "waiting" : inner.ToolFailed ? "failed" : "ok")">
-                                                <span class="work-step-mark">@(inner.ToolResult is null ? "⋯" : inner.ToolFailed ? "✗" : "✓")</span>
+                                            <li class="work-step @StepMarks.StateOf(inner)">
+                                                <span class="work-step-mark">@StepMarks.MarkOf(inner)</span>
                                                 <span class="work-step-name">@inner.ToolName</span>
                                                 @if (Summarise(inner.ToolInput) is { Length: > 0 } innerArgs)
                                                 {
@@ -113,16 +113,12 @@
                                 {
                                     <div class="work-minion-cost" title="@UsageFormat.Detail(minionUsage, Currency)">@UsageFormat.Cost(minionUsage, Currency) · @minionUsage.Requests versoeke</div>
                                 }
-                                else if (minion.UsageLine is { } minionLine)
-                                {
-                                    <div class="work-minion-cost">@minionLine</div>
-                                }
                             </div>
                         </li>
                         continue;
                     }
                     <li class="work-step @state">
-                        <span class="work-step-mark">@(step.ToolResult is null ? "⋯" : step.ToolFailed ? "✗" : "✓")</span>
+                        <span class="work-step-mark">@StepMarks.MarkOf(step)</span>
                         <span class="work-step-name">@step.ToolName</span>
                         @if (Summarise(step.ToolInput) is { Length: > 0 } args)
                         {
@@ -143,10 +139,6 @@
                     <strong data-count="@UsageFormat.Cost(usage, Currency)">@UsageFormat.Cost(usage, Currency)</strong>
                     <span>@usage.Requests versoeke</span>
                 </div>
-            }
-            else if (item.Delegation.UsageLine is { } line)
-            {
-                <div class="work-cost"><span>@line</span></div>
             }
         </section>
     }

@@ -21,11 +21,18 @@ using static LouisAgent.Core.Tests.Tools.Agents.FakePeer;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
 
-// F5 step 8 (F5-S5): a sub-session on a peer, with its limits in code. The peer is a stub (FakePeer): no network.
+/// <summary>
+/// Handing a task to a specialist on a peer, with its limits held in code (F5 step 8). The peer is a stub
+/// (<see cref="FakePeer"/>), so nothing goes over the network.
+/// </summary>
 public class SpecialistToolsTests
 {
+    /// <summary>
+    /// A sub-session sends the task, hands back the answer under a footer that names it, and deletes the child
+    /// afterwards.
+    /// </summary>
     [Test]
-    public async Task ASubSession_ReturnsTheAnswerAndUsage_AndIsDeleted()
+    public async Task ASubSession_ReturnsTheAnswer_AndIsDeleted()
     {
         var handler = Peer();
 
@@ -33,10 +40,14 @@ public class SpecialistToolsTests
             "Fix order 1006.", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
-        Assert.That(result, Does.Contain("[Sub-session on coder (files, git): 3 requests, 10,200 tokens, 0.0123 USD]"));
+        Assert.That(result,
+            Does.EndWith($"\n\n[Sub-session on coder ({CoreToolset.Files.Wire()}, {CoreToolset.Git.Wire()})]"),
+            "the footer names the specialist and what it loaded, never what it used (FX27)");
         Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"),
             Is.EqualTo(new[]
-                { "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "DELETE /v1/sessions/sess_child" }));
+            {
+                "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "DELETE /v1/sessions/sess_child"
+            }));
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("depth").GetInt32(), Is.EqualTo(1), "one level deep");
         Assert.That(create.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
@@ -47,8 +58,35 @@ public class SpecialistToolsTests
             "none named: the peer's own model");
     }
 
-    // F34, Louis's screenshot: the cook's card showed `web` only, though its role adds `shops` on the peer. The peer
-    // says what the session loaded; the footer and the kept sub-session say that, not just what was sent.
+    /// <summary>
+    /// A specialist's answer reads the same whatever the child used. On a replay its usage is zero, and the parent's
+    /// next request must still match its recording (FX27). Kept or not, as the cook's sub-session is kept.
+    /// </summary>
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task TheAnswer_ReadsTheSame_WhateverTheChildUsed(bool kept)
+    {
+        string recorded = await AnswerFrom(AnswerStream, kept);
+        string replayed = await AnswerFrom(ReplayedAnswerStream, kept);
+
+        Assert.That(replayed, Is.EqualTo(recorded));
+    }
+
+    /// <summary>
+    /// What the parent reads back from one sub-session whose child streams <paramref name="stream"/>.
+    /// </summary>
+    private static async Task<string> AnswerFrom(string stream, bool kept)
+    {
+        // A kept sub-session needs the chat's registry; without one it is closed after its answer.
+        using IDisposable? registry = kept ? SubSessionRegistry.Use(new SubSessionRegistry()) : null;
+        return await ToolsOn(Peer(Replies(stream))).StartSubSession([CoreToolset.Web.Wire()], "Wat kook ek?",
+            agent: "coder");
+    }
+
+    /// <summary>
+    /// The footer names the toolsets the peer actually loaded, not just the ones that were sent (F34: the cook's
+    /// card showed `web` only, though its role adds `shops` on the peer).
+    /// </summary>
     [Test]
     public async Task TheFooter_NamesTheToolsetsThePeerLoaded()
     {
@@ -59,7 +97,9 @@ public class SpecialistToolsTests
                     SampleToolset.Fill(SampleRole.Fill(
                         """{"session_id":"sess_child","toolsets":["<Alpha>","<Beta>"],"role":"<RoleAlpha>"}"""))),
             "POST" => new HttpResponseMessage(HttpStatusCode.OK)
-            { Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream") },
+            {
+                Content = new StringContent(AnswerStream, Encoding.UTF8, "text/event-stream")
+            },
             _ => new HttpResponseMessage(HttpStatusCode.NotFound),
         });
         var registry = new SubSessionRegistry();
@@ -75,28 +115,33 @@ public class SpecialistToolsTests
         Assert.That(registry.Open.Single().Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
     }
 
+    /// <summary>
+    /// A child that ends without an answer is asked once more, in the same session, for what it found.
+    /// </summary>
     [Test]
     public async Task AnEmptyAnswer_IsAskedForOnce_InTheSameSession()
     {
-        // FX11: the specialist used its ten tool rounds and ended with no text; Puls sent the whole task again, to a new one.
+        // FX11: the specialist used its ten tool rounds and ended with no text; Puls sent the whole task again, to a
+        // new one.
         var handler = Peer(Replies(EmptyStream, AnswerStream));
 
-        string result = await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire(), CoreToolset.Python.Wire()],
-            "Count the test methods.", agent: "coder");
+        string result = await ToolsOn(handler).StartSubSession(
+            [CoreToolset.Files.Wire(), CoreToolset.Python.Wire()], "Count the test methods.", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
-        Assert.That(result, Does.Contain("11 requests, 204 tokens, 0.0081 USD + 3 requests, 10,200 tokens, 0.0123 USD"),
-            "both turns' usage");
-        Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"), Is.EqualTo(new[]
-        {
-            "POST /v1/sessions", "POST /v1/sessions/sess_child/messages", "POST /v1/sessions/sess_child/messages",
-            "DELETE /v1/sessions/sess_child",
-        }));
+        Assert.That(result, Does.Not.Contain("requests"), "both turns' usage goes to the ledger, not the answer");
+        Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"),
+            Is.EqualTo(new[]
+            {
+                "POST /v1/sessions", "POST /v1/sessions/sess_child/messages",
+                "POST /v1/sessions/sess_child/messages", "DELETE /v1/sessions/sess_child",
+            }));
         using var followUp = JsonDocument.Parse(handler.Requests[2].Body!);
         Assert.That(followUp.RootElement.GetProperty("message").GetString(),
             Does.Contain("answer the task now from what you found"));
     }
 
+    /// <summary>Empty twice, the tool says so and stops; it never asks a third time.</summary>
     [Test]
     public async Task EmptyTwice_SaysSo_AndDoesNotAskAgain()
     {
@@ -110,13 +155,17 @@ public class SpecialistToolsTests
         Assert.That(handler.Requests[^1].Method, Is.EqualTo(HttpMethod.Delete));
     }
 
+    /// <summary>Only the attachments the model names go with the task, with their contents from the session.</summary>
     [Test]
     public async Task NamedAttachments_AreSentWithTheTask()
     {
         // F22: the model names the file; its content comes from the session, not through the model's output.
         var handler = Peer();
         var attached = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
-        { ["verslag.txt"] = "Inkomste: R1 200 000", ["other.txt"] = "x" };
+        {
+            ["verslag.txt"] = "Inkomste: R1 200 000",
+            ["other.txt"] = "x"
+        };
 
         using (SessionAttachments.Use(attached))
             await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire()], "Som die verslag op.", agent: "coder",
@@ -129,6 +178,7 @@ public class SpecialistToolsTests
         Assert.That(sent[0].GetProperty("content").GetString(), Is.EqualTo("Inkomste: R1 200 000"));
     }
 
+    /// <summary>An attachment the session doesn't have is refused before anything goes to the peer.</summary>
     [Test]
     public async Task AnUnknownAttachment_IsRefused_WithoutANetworkCall()
     {
@@ -143,6 +193,7 @@ public class SpecialistToolsTests
         Assert.That(handler.Requests, Is.Empty);
     }
 
+    /// <summary>With no attachments named, the task goes with an empty list.</summary>
     [Test]
     public async Task NoAttachments_SendsAnEmptyList()
     {
@@ -154,6 +205,7 @@ public class SpecialistToolsTests
         Assert.That(message.RootElement.GetProperty("attachments").GetArrayLength(), Is.Zero);
     }
 
+    /// <summary>The user's place goes to the specialist, so its time and "near me" are the user's.</summary>
     [Test]
     public async Task TheUsersPlace_GoesToTheSpecialist()
     {
@@ -170,11 +222,15 @@ public class SpecialistToolsTests
         Assert.That(create.RootElement.GetProperty("time_zone").GetString(), Is.EqualTo("Africa/Johannesburg"));
     }
 
+    /// <summary>
+    /// An eval's replay goes to the specialist as the parent's own trial, so its pages share the recording.
+    /// </summary>
     [TestCase(WebReplayMode.Record, "record")]
     [TestCase(WebReplayMode.Replay, "replay")]
     public async Task TheReplay_GoesToTheSpecialist_AsTheParentsOwnTrial(WebReplayMode mode, string expected)
     {
-        // F18 step 4a: the child never works out a key of its own (its task is sub-session:{name}, and one run tag holds every scenario).
+        // F18 step 4a: the child never works out a key of its own (its task is sub-session:{name}, and one run tag
+        // holds every scenario).
         var handler = Peer();
 
         using (SessionReplay.Use(new SessionReplay(mode, SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), Model: false)))
@@ -187,6 +243,7 @@ public class SpecialistToolsTests
         Assert.That(replay.GetProperty("model").GetBoolean(), Is.False);
     }
 
+    /// <summary>Without a replay, the specialist is sent none.</summary>
     [Test]
     public async Task WithoutAReplay_TheSpecialistIsToldNone()
     {
@@ -200,6 +257,7 @@ public class SpecialistToolsTests
             Is.False);
     }
 
+    /// <summary>The role the model names is the role the specialist's session opens with.</summary>
     [Test]
     public async Task ARole_IsSentToThePeer()
     {
@@ -213,6 +271,7 @@ public class SpecialistToolsTests
         Assert.That(create.RootElement.GetProperty("role").GetString(), Is.EqualTo(SampleRole.Beta));
     }
 
+    /// <summary>A model profile the model names goes to the peer, trimmed.</summary>
     [Test]
     public async Task AnLlmProfile_IsSentToThePeer_Trimmed()
     {
@@ -227,6 +286,10 @@ public class SpecialistToolsTests
         Assert.That(create.RootElement.GetProperty("llm").GetString(), Is.EqualTo("ollama-puls"));
     }
 
+    /// <summary>
+    /// Every event of the child goes to the turn's observer as it comes, so a host can show the work live; the model
+    /// still gets only the answer.
+    /// </summary>
     [Test]
     public async Task EverySubSessionEvent_GoesToTheTurnsObserver_InOrder_AndTheModelStillGetsOnlyTheAnswer()
     {
@@ -238,14 +301,18 @@ public class SpecialistToolsTests
         using (SubSessionFeed.Observe(seen.Add))
             result = await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
 
-        Assert.That(seen.Select(e => e.Type), Is.EqualTo(new[]
-            { "message_start", "content_block_delta", "content_block_delta", "message_delta", "message_stop" }));
+        Assert.That(seen.Select(e => e.Type),
+            Is.EqualTo(new[]
+            {
+                "message_start", "content_block_delta", "content_block_delta", "message_delta", "message_stop"
+            }));
         Assert.That(seen.All(e => e.Agent == "coder"), Is.True);
         Assert.That(seen[1].Data, Does.Contain("Fixed the null check"));
         Assert.That(result,
             Does.StartWith("Fixed the null check; 14/14 tests pass.").And.Not.Contain("content_block_delta"));
     }
 
+    /// <summary>A host that doesn't observe (the CLI) still gets its answer.</summary>
     [Test]
     public async Task WithoutAnObserver_NothingIsReported()
     {
@@ -254,6 +321,7 @@ public class SpecialistToolsTests
             Does.StartWith("Fixed"));
     }
 
+    /// <summary>With one peer, an empty name uses that one.</summary>
     [Test]
     public async Task AnEmptyName_UsesTheOnlyPeer()
     {
@@ -266,6 +334,7 @@ public class SpecialistToolsTests
         Assert.That(handler.Requests[0].Url, Does.StartWith("http://coder.test/"));
     }
 
+    /// <summary>A call made as the model makes it, with no agent at all, uses the only peer.</summary>
     [Test]
     public async Task ACallWithoutAgent_UsesTheOnlyPeer()
     {
@@ -286,12 +355,16 @@ public class SpecialistToolsTests
             Is.EquivalentTo(new[] { "toolsets", "message" }));
     }
 
+    /// <summary>With several peers, an empty name is refused with their names, before anything goes out.</summary>
     [Test]
     public async Task AnEmptyName_WithSeveralPeers_AsksForOne_WithoutANetworkCall()
     {
         var handler = Peer();
         var peers = new Dictionary<string, Uri>
-        { ["coder"] = new("http://coder.test/"), ["writer"] = new("http://writer.test/") };
+        {
+            ["coder"] = new("http://coder.test/"),
+            ["writer"] = new("http://writer.test/")
+        };
 
         string result =
             await new SpecialistTools(peers, null, new HttpClient(handler)).StartSubSession([CoreToolset.Files.Wire()],
@@ -301,6 +374,7 @@ public class SpecialistToolsTests
         Assert.That(handler.Requests, Is.Empty);
     }
 
+    /// <summary>A peer nobody configured is refused before anything goes out.</summary>
     [Test]
     public async Task AnUnknownPeer_FailsWithoutANetworkCall()
     {
@@ -312,6 +386,7 @@ public class SpecialistToolsTests
         Assert.That(handler.Requests, Is.Empty);
     }
 
+    /// <summary>When the message fails, the child is still deleted.</summary>
     [Test]
     public async Task AFailedMessage_StillDeletesTheChild()
     {
@@ -324,6 +399,9 @@ public class SpecialistToolsTests
         Assert.That(handler.Requests.Last().Method, Is.EqualTo(HttpMethod.Delete));
     }
 
+    /// <summary>
+    /// A peer that refuses to open the session gets its reason passed on; there is nothing to delete.
+    /// </summary>
     [Test]
     public async Task ARefusedSession_ReportsThePeersReason()
     {
@@ -336,11 +414,14 @@ public class SpecialistToolsTests
         Assert.That(handler.Requests, Has.Count.EqualTo(1), "nothing was created, so nothing to delete");
     }
 
+    /// <summary>Outside a turn the limit counts per minute, so it frees up again a minute later.</summary>
     [Test]
     public async Task OutsideATurn_TheLimitIsPerMinute_NotForever()
     {
-        // PR #27 review: MCP calls have no turn; they used to share one key that, once full, refused every later call.
-        var time = new Microsoft.Extensions.Time.Testing.FakeTimeProvider(DateTimeOffset.Parse("2026-10-13T10:00:00Z"));
+        // PR #27 review: MCP calls have no turn; they used to share one key that, once full, refused every later
+        // call.
+        var time = new Microsoft.Extensions.Time.Testing.FakeTimeProvider(
+            DateTimeOffset.Parse("2026-10-13T10:00:00Z"));
         var tools = ToolsOn(Peer(), time: time);
 
         for (int i = 0; i < SpecialistTools.MaxPerTurn; i++)
@@ -354,6 +435,7 @@ public class SpecialistToolsTests
             Does.Not.StartWith("Error"), "a minute later it works again");
     }
 
+    /// <summary>A reply that isn't the API's JSON becomes an answer the model can act on, not a crash.</summary>
     [Test]
     public async Task AnUnreadableReply_IsAnAnswer_NotACrash()
     {
@@ -361,7 +443,9 @@ public class SpecialistToolsTests
         var handler = new StubHandler(request => request.Method.Method switch
         {
             "POST" => new HttpResponseMessage(HttpStatusCode.Created)
-            { Content = new StringContent("<html>proxy error</html>") },
+            {
+                Content = new StringContent("<html>proxy error</html>")
+            },
             _ => new HttpResponseMessage(HttpStatusCode.OK),
         });
 
@@ -370,6 +454,7 @@ public class SpecialistToolsTests
         Assert.That(result, Does.StartWith("Error: coder's reply couldn't be read"));
     }
 
+    /// <summary>A turn gets three sub-session calls; the fourth is refused, and the next turn starts again.</summary>
     [Test]
     public async Task TheFourthCallInATurn_IsRefused()
     {
@@ -391,6 +476,9 @@ public class SpecialistToolsTests
                 Does.Not.StartWith("Error"), "a new turn starts again");
     }
 
+    /// <summary>
+    /// A child that runs too long is stopped and deleted, and the parent gets an error it can handle.
+    /// </summary>
     [Test]
     public async Task ATimeout_ReturnsAnErrorTheParentCanHandle_AndDeletesTheChild()
     {
@@ -403,6 +491,7 @@ public class SpecialistToolsTests
         Assert.That(handler.Deleted, Is.True);
     }
 
+    /// <summary>AGENT_PEERS keeps the good entries, names lower-cased and addresses ending in a slash.</summary>
     [Test]
     public void Peers_AreParsedFromAgentPeers()
     {
