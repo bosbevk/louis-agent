@@ -100,6 +100,26 @@ public class AdminRowsTests
         Assert.That(recordingRow.GetProperty("replay_of").ValueKind, Is.EqualTo(JsonValueKind.Null));
     }
 
+    /// <summary>
+    /// A recorded run says so, so the Benchmarks page can offer to replay it; a replay of it, which asked no model,
+    /// doesn't (FX28).
+    /// </summary>
+    [Test]
+    public void ARecordedRun_SaysSo_AndItsReplayDoesNot()
+    {
+        var recording = Run("stub", null) with
+        {
+            Settings = new Dictionary<string, string> { ["web"] = "record" }
+        };
+        var replay = Run("stub", null) with
+        {
+            Settings = new Dictionary<string, string> { ["web"] = "replay", ["replay_of"] = "dc272b95eaeb" }
+        };
+
+        Assert.That(Json(StoredRunRow.Of(recording)).GetProperty("recorded").GetBoolean(), Is.True);
+        Assert.That(Json(StoredRunRow.Of(replay)).GetProperty("recorded").GetBoolean(), Is.False);
+    }
+
     /// <summary>A conversation's grades come through in order, each with its outcome, and so does its own.</summary>
     [Test]
     public void AConversationWithTwoGrades_GivesThemInOrder_WithTheirOutcomes()

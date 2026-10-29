@@ -37,7 +37,8 @@ internal static class AdminRunReplies
             r.Commit,
             r.RescoreOf,
             r.Graders?.Select(g => new RunGraderRow(g.Name, g.Version, g.Kind.Wire(), g.Question)).ToList(),
-            EvalSettings.ReplayOf(r.Settings));
+            EvalSettings.ReplayOf(r.Settings),
+            EvalSettings.Recorded(r.Settings));
     }
 
     /// <summary>A live run's row.</summary>

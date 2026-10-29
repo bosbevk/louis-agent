@@ -1,5 +1,6 @@
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Choices;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Search;
 
@@ -12,7 +13,8 @@ namespace LouisAgent.Api.Evals.Runs.Start;
 /// </summary>
 /// <remarks>
 /// Information Expert (GRASP), chosen in CL26: the class that writes a setting also reads it back
-/// (<see cref="ReplayOf"/>), so its name lives in one place and the run row and the trend can't spell it differently.
+/// (<see cref="ReplayOf"/>, <see cref="Recorded"/>), so its name lives in one place and the run row and the trend
+/// can't spell it differently.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
@@ -20,6 +22,9 @@ public static class EvalSettings
 {
     /// <summary>Where a replay keeps the run it replayed.</summary>
     private const string ReplayOfKey = "replay_of";
+
+    /// <summary>Where a run keeps how its web was handled: recorded, replayed, or another mode.</summary>
+    private const string WebKey = "web";
 
     /// <summary>
     /// Collects what a run ran with: the model, the roles, the eval and its runner, and which search engine and page
@@ -83,7 +88,7 @@ public static class EvalSettings
 
         // Copy them, then add how the web was handled.
         var withOptions = new Dictionary<string, string>(settings);
-        if (options.Web is { } web) withOptions["web"] = web.Wire();
+        if (options.Web is { } web) withOptions[WebKey] = web.Wire();
         if (options.Replay is { } replayOf) withOptions[ReplayOfKey] = replayOf;
         return withOptions;
     }
@@ -91,6 +96,15 @@ public static class EvalSettings
     /// <summary>The run a replay replayed, read back from its settings; a run that wasn't a replay has none.</summary>
     public static string? ReplayOf(IReadOnlyDictionary<string, string>? settings) =>
         settings?.GetValueOrDefault(ReplayOfKey);
+
+    /// <summary>
+    /// Whether the run recorded its web and model answers, so it can be replayed (FX28). The mode is parsed once here
+    /// (ADR 0024); a run with another mode, or from before the setting, wasn't a recording.
+    /// </summary>
+    public static bool Recorded(IReadOnlyDictionary<string, string>? settings) =>
+        settings?.GetValueOrDefault(WebKey) is { } web
+        && SettingChoice.TryParse(web, out WebReplayMode? mode)
+        && mode == WebReplayMode.Record;
 
     /// <summary>
     /// Adds the hashes of the prompts the run used. It's the set the run used, not all it has, so a shorter list may

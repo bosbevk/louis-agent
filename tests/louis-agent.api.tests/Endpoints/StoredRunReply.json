@@ -33,7 +33,8 @@
         "question": "Is this a meal?"
       }
     ],
-    "replay_of": null
+    "replay_of": null,
+    "recorded": false
   },
   "settings": {
     "WEB": "record"
