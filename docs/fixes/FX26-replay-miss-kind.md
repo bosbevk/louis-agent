@@ -33,6 +33,11 @@ Step by step, in the plan's order:
    `InvalidOperationException` underneath, is what `ModelReplayChatClient` throws on a miss, its message unchanged.
    Red first: the replay client's two miss tests (streamed and not, 4 cases) expected the named exception and got the
    plain one.
+2. **The stream's error kinds:** `StreamErrorKind` in `louis-agent.session-stream` (`api_error`,
+   `replay_miss_error`), which now references `louis-agent.choices`; `ErrorReported.Kind` reads `error.type` once with
+   `SettingChoice`, through guard clauses, and is none for a type it doesn't know or an event without one. The enum
+   joins the repeated-name scan's list (ADR 0043). Red first: the two known kinds read null against a stub; the
+   unknown-or-none case passed against the stub too and stays as the guard.
 
 ## Tests
 
