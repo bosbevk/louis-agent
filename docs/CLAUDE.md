@@ -7,80 +7,61 @@ The goal and the skill map are in [GOAL.md](GOAL.md).
 
 1. **Louis drives the code.** Implement only what Louis asks for, one step at a time; planning, reviews and learning
    write-ups happen in the Claude project, so don't start the next feature on your own.
-2. **Small steps, small features.** Follow the steps in the feature doc. Each step is one commit (or PR) with its
-   test, small enough to review in about ten minutes. **A feature holds at most about ten steps** (Louis, 2026-10-28,
-   after F18 ran to twenty-odd steps and ten days on one branch: "we also need to keep features smaller by making sub
-   features"): anything bigger is a parent with dotted children, `F49.1`, `F49.2`, each with its own plan, branch, pull
-   request to `main`, done-when and write-up, so `main` moves every few days. The parent keeps the goal, the order and
-   its children's done-whens; a child's plan is written when the child starts.
-3. **Plan first, and keep the plan.** Before the first step of a feature, or of a fix that takes more than one step,
-   the plan Louis approved (made here or in the Claude project) is saved to [plans/](plans/README.md) as `Fnn-name.md`
-   or `FXnn-name.md` and committed on its branch. Don't rewrite it afterwards: a change Louis approves during the build
-   is added under *Approved during the build*; anything else the build learns goes in the feature or fix doc. **When
-   the work is done, the plan goes** (Louis, 2026-10-28: "do we still need implemented feature plans? and feature
-   docs?", then "yes add it"): the plan file is deleted, the feature or fix doc's lasting parts move to the project's
-   design doc in [projects/](projects/README.md) and its write-up in [learning/](learning/), then that doc is deleted
-   too; its README keeps one line per id, and git keeps the rest (the files as they were are at the tag `pre-cl24`).
-4. **Explain every change:** what changed, why this design and not the alternatives, and what to look at closely.
-   **In plain words** (Louis, 2026-10-26): the way a friend would explain it, casual but straight to the point, in
-   short everyday sentences. Lead with what it means, then the detail; when a technical term is needed, say what it
-   means the first time; name code (a class, a file) only where Louis needs to find it. This holds for every
-   explanation: a step, a finding, a review, an answer.
+2. **Small steps, small features.** Each step is one commit (or PR) with its test, small enough to review in about
+   ten minutes. A feature holds at most about ten steps; anything bigger is a parent with dotted children (`F49.1`),
+   each its own plan, branch, pull request to `main`, done-when and write-up, so `main` moves every few days.
+3. **Plan first, and keep the plan.** Before the first step, the plan Louis approved is saved to
+   [plans/](plans/README.md) and committed on its branch; it changes only under *Approved during the build*. When
+   the work is done the plan goes: its lasting parts move to an ADR, the project's design doc or a write-up, and the
+   file is deleted (`.claude/rules/docs.md` has the lifecycle).
+4. **Explain every change** in plain words, the way a friend would: what it means first, then what changed, why this
+   design and not the alternatives, and what to look at closely; say what a term means the first time; name code only
+   where Louis needs to find it. This holds for every explanation: a step, a finding, a review, an answer.
 5. **Stop after each step** and wait for Louis to review and understand it before starting the next one.
 6. **Teach, don't just do.** Name the AI-engineering concept behind each step and where it sits in the GOAL.md skill map.
-7. **Measure, don't assume.** Ask before anything that spends real money (benchmark or demo runs against the API) and
-   before pushing.
+7. **Measure, don't assume.** Ask before anything that spends real money (a run against the API) and before pushing.
 8. **Write it up.** When a skill or feature finishes, write its learning write-up in [learning/](learning/) for Louis
-   to read afterwards (Louis, 2026-10-19: Claude types the lesson).
-9. **Source of truth:** [TODO.md](../TODO.md) (what's next), [features/](features/README.md) (how), [plans/](plans/README.md)
-   (how we're building it now), [fixes/](fixes/README.md) (what broke and why) and [specs/](specs/) (why). Update them
-   rather than duplicating them.
-10. **Ask about every finding, with three options** (Louis, 2026-10-26). When a step turns up a finding that needs a
-    choice the plan or the brief doesn't settle (a design point, a rule that clashes with the brief, a layout or
-    naming question, a test that can't be written as asked), don't choose: stop and put **each finding to Louis on its
-    own**, with **three options**, each with what it changes and what it costs, and the one you recommend and why.
-    Wait for his pick before writing the code it decides. A mechanical call (a local variable's name, a test's
-    wording) is not a finding.
-11. **Look up the pattern, then give three options** (Louis, 2026-10-27). A design choice (how to shape a class, pick an
-    implementation, hold a rule) is never "your call" and never the first pattern that comes to mind: look up the
-    software patterns that fit what we are trying to achieve (a catalogue such as Refactoring.Guru, the Gang of Four,
-    Fowler's refactorings and *Patterns of Enterprise Application Architecture*, Microsoft's .NET guidance), then put
-    **three options** to Louis as rule 10 says, each naming its pattern in plain words, what it changes and what it
-    costs, with the sources and the one you recommend for this goal. The pick is named in the commit, the
-    explanation and the `<remarks>` of each class that carries it, with why it was chosen (*Every class and
-    method has a summary*). A brief that leaves a design choice open says so as a finding instead.
+   to read afterwards.
+9. **Source of truth:** [TODO.md](../TODO.md) (what's next), [plans/](plans/README.md) (how we're building it now),
+   [fixes/](fixes/README.md) (what broke and why), [projects/](projects/README.md) (how each project works) and
+   [adr/](adr/README.md) (why). Update them rather than duplicating them.
+10. **Ask about every finding, with three options.** When a step turns up a choice the plan or the brief doesn't
+    settle (a design point, a rule that clashes with the brief, a layout or naming question, a test that can't be
+    written as asked), don't choose: put each finding to Louis on its own, with three options, each with what it
+    changes and what it costs, and the one you recommend and why. Wait for his pick. A mechanical call (a local
+    variable's name, a test's wording) is not a finding.
+11. **Look up the pattern, then give three options.** A design choice (how to shape a class, pick an implementation,
+    hold a rule) is never "your call" and never the first pattern that comes to mind: look up the patterns that fit
+    (Refactoring.Guru, the Gang of Four, Fowler, Microsoft's .NET guidance), then put three options to Louis as rule
+    10 says, each naming its pattern in plain words, with the sources and the one you recommend. The pick is named in
+    the commit, the explanation and the `<remarks>` of each class that carries it ([ADR 0050](adr/0050-summaries-like-a-person.md)).
 
 ## Steps, branches and commits
 
-**Doing a step: test first** ([how](../tests/CLAUDE.md#test-first)):
+**Doing a step: test first** ([how](guides/write-tests.md#write-the-test-first)): write the test for the step's
+behaviour (a fix: one that reproduces the bug), run it and see it fail for the expected reason, keep the output for
+the explanation, then implement until it passes and tidy with the tests green. Docs-only and configuration-only steps
+have no test to write first.
 
-1. Write the test for the step's behaviour (a fix: a test that reproduces the bug).
-2. Run it and see it fail for the expected reason; keep the output for the explanation.
-3. Implement until it passes, then tidy with the tests green.
+**Finishing a step** ([the how-to](guides/finish-a-step.md)), before rule 5's stop:
 
-Docs-only and configuration-only steps have no test to write first.
+1. Build and test the projects the step touches; the whole solution before a PR.
+2. If tools, their descriptions, the tool texts or the prompts changed, regenerate the golden files and review their diff.
+3. Update the feature or fix doc with what the step learned; on the last step, *Finishing a feature* or *Finishing a
+   fix* in their READMEs.
+4. Format every C# file in the commit, in order and once: Rider's formatter, Rider's inspections, long comment lines
+   by hand, then `dotnet format … --include <its files>` last (CI checks with it). Only the commit's files, whole.
+5. Show the step before committing: the files it changes, the commit message and the explanation (with the test
+   failing before the code and passing after), and wait for Louis's ok.
+6. Commit the step on its own, test and code together, and stop. Never push without asking (rule 7).
 
-**Finishing a step** (before rule 5's stop):
-
-1. Build the projects the step touches (in Rider, `build_project` through its MCP server; elsewhere
-   `dotnet build <project>`), and `dotnet test` on them ([Tests](../tests/CLAUDE.md)); the whole solution
-   (`dotnet build louis-agent-solution.sln`) before a PR.
-2. If tools, their descriptions, the tool texts (the `*ToolMessage` enums) or the prompts in `louis-agent.core/Prompts/` changed, regenerate the golden files and review
-   their diff ([golden files](../tests/CLAUDE.md#golden-files)).
-3. Update the feature or fix doc with what the step learned; on the last step, follow *Finishing a feature* or
-   *Finishing a fix* in their READMEs. The plan changes only under *Approved during the build*. New text goes in the
-   doc of its type (*Rules that always apply*: one type per doc).
-4. Format every C# file in the commit (*Formatting*), in this order and once: `git_status` (or `git diff --name-only`)
-   for the commit's files; Rider's own formatter on each, through Rider's MCP server (`reformat_file`), which wraps
-   long lines; `get_file_problems` on each (or `lint_files` on all of them) to see what Rider's inspections still
-   flag, instead of re-reading the file; the `//` and `///` lines over 120 wrapped by hand; then
-   `dotnet format louis-agent-solution.sln --include <its .cs files>` once, which moves usings and is what CI checks,
-   so it goes last. Never a whole-solution `dotnet format` in a loop. CI fails a push whose commits' files aren't
-   formatted.
-5. Before committing, show the step (Louis, 2026-10-28): the files it changes, the commit message (what changed and
-   why) and the explanation (rules 4 and 6, with the test failing before the code and passing after), and wait for
-   Louis's ok. He reviews the step while it can still change; a commit is harder to reshape than a diff.
-6. Commit the step on its own, test and code together, and stop.
+**In Rider, Rider's tools come first** ([ADR 0052](adr/0052-edit-never-script.md)). A session starts with `/mcp` to see
+what Rider offers, and for any job a Rider tool covers (format, inspect, build, test, rename, find usages, symbol
+info, git status) it uses that tool, never a hand edit, a script (Python, sed, PowerShell) or a search-and-replace
+that does the same thing less well: a file is formatted with Rider's formatter, not re-typed; a symbol is renamed with
+Rider's rename, not replaced; a problem is found with Rider's inspections, not by re-reading the file. A shell command
+is for what no Rider tool does. *Brave mode* stays off. The tool-to-job table per Rider version is in
+[Finish a step](guides/finish-a-step.md#riders-tools-by-job).
 
 **Branches** are off `main` and carry the plan's id: `feature/F22-role-tools`, `fix/FX14-sub-session-prompt-budget`,
 `refactor/CL3-messages-and-logging`, a sub-feature `feature/F49.1-checks-contract`; `docs/{name}` for docs-only work.
@@ -94,9 +75,8 @@ fix(fx14): the prompt budget counts cached tokens
 docs(f5): review of PR #27 - toolset guides
 ```
 
-`type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`, `f49.1`), or the
-area when there is none (`ollama`, `samples`, `guide`); `step N -` only on a plan's steps. Never push without asking
-(rule 7).
+`type` is `feat`, `fix`, `refactor`, `test` or `docs`; `scope` is the id in lowercase (`f22`, `fx14`, `cl3`,
+`f49.1`), or the area when there is none (`ollama`, `guide`); `step N -` only on a plan's steps.
 
 ## Rules that always apply
 
