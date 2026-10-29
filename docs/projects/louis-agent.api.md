@@ -73,6 +73,9 @@ flowchart LR
   `content_block_start/delta/stop` (thinking, text, tool_use, tool_result), `message_delta` (stop reason and the
   turn's `usage`, F3) and `message_stop`;
   failures become an `error` event in Claude's shape, with the turn's `usage` when a request had returned (FX6).
+  The error's `type` is the failure's kind (`StreamErrorKind` in `louis-agent.session-stream`, FX26): `api_error`
+  for any failure, `replay_miss_error` when the engine's replay had no recorded answer (`ModelReplayMissException`,
+  mapped by `Sessions/Streaming/StreamErrorKinds`), so a client can tell a replay miss from the agent's own failure.
   `/tools`, `/approve`, `/reject` and `/usage` are answered without the model.
 - **Usage** (F3): each session keeps its finished turns' records (`UsageSession`) for `/usage` and the `usage` of
   `GET /v1/sessions/{id}`; the turn is added in the stream's `finally`, so a disconnected or failed turn still counts.
@@ -152,11 +155,12 @@ resources in a temporary repository (`GitResourceTests`). A streamed turn is sti
 ## Limits and plans
 
 - Sessions are in memory → [session architecture](../specs/SESSION_ARCHITECTURE.md).
-- A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) →
-  [F11](../features/F11-usage-tab-and-reconciliation.md); costs in another currency →
-  [F14](../features/F14-display-currency.md); budget and account-limit errors →
-  [F7](../features/F07-budgets.md), [F8](../features/F08-reliability.md); session tags and profiles →
-  [F1](../features/F01-usage-ledger.md), [F10](../features/F10-route-settings.md).
+- A usage API over the ledger (`/v1/usage` endpoints, `/v1/budgets`, `/v1/estimates`) and budget errors →
+  [F7](../features/F07-budgets.md) (taking in [F11](../features/F11-usage-tab-and-reconciliation.md)); account-limit
+  errors → [F8](../features/F08-reliability.md); settings per role and per session →
+  [F10](../features/F10-route-settings.md).
+- The eval routes still answer under their old `/v1/admin/benchmarks/…` names too, until a deploy has passed (TODO,
+  *Small cleanups*).
 
 ## Related docs
 

@@ -48,7 +48,7 @@ then the cheap, honest move is to change the shape and throw the old data away.
 ## Links
 
 [0007](0007-measure-every-request.md) · [0024](0024-choices-are-enums.md) · [0048](0048-mongo-through-records.md) ·
-[F18 plan](../plans/F18-evals.md), 7c ·
+[F18 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-evals.md), 7c ·
 [Semantic Versioning 2.0.0, item 4](https://semver.org/#spec-item-4) ·
 [.NET breaking changes, the rules for shipped APIs](https://learn.microsoft.com/dotnet/core/compatibility/)
 

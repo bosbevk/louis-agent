@@ -25,6 +25,10 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `evals/louis-agent.evals.protocol` | Class library | The eval protocol v2: the events the runner writes and the API and portal read, records and enums only (ADR 0047) | [evals.protocol](louis-agent.evals.protocol.md) |
 | `evals/louis-agent.evals.runner` | Console app | The command that lists and runs evals, re-scores a stored run and checks a judge; the API starts it as a child process | [evals.runner](louis-agent.evals.runner.md) |
 | `evals/louis-agent.evals.puls` | Class library | Puls's evals: `puls-cook` and `puls-routing`, their datasets, graders and reference transcripts | [evals.puls](louis-agent.evals.puls.md) |
+| `louis-agent.choices` | Class library | `SettingChoice` and `[WireName]`: the one parser for a name that is an enum member; references nothing ([ADR 0043](../adr/0043-repeated-names-are-enums.md)) | — (to write) |
+| `louis-agent.session-stream` | Class library | Reads a session's server-sent events into records, for core's sub-sessions, the web apps and the eval runner | — (to write) |
+| `src/louis-agent.api.contracts` | Class library | The API's replies and bodies as records, and each wire's options object, shared by the API and its clients ([ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md)) | — (to write) |
+| `evals/louis-agent.evals.template` | Class library | A one-eval set to copy when an identity gets its evals ([Add an eval set](../guides/add-an-eval-set.md)) | — (to write) |
 | `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [web.shared](louis-agent.web.shared.md) |
 | `tests/louis-agent.*.tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the shops pack, the composition root and the three web projects (bUnit); `tests/louis-agent.testing` and `tests/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 

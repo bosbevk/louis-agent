@@ -3,7 +3,7 @@
 > **How-to.** What runs in the cloud, how to build and deploy it, where its secrets come from, and how it reaches the
 > browser and the benchmark store on the home PC. **Elsewhere:** the local stacks in [docker/](../../docker/README.md),
 > every setting in [Setup](../../docs/SETUP.md), why the layout is what it is in the
-> [CL19 plan](../../docs/plans/CL19-config-by-place.md).
+> [CL19 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md).
 
 Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the whole footprint: two app
 definitions, the tunnel's sidecar image and one script. No secret value is in any file here.

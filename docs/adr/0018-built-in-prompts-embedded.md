@@ -35,5 +35,5 @@ its function skills (`agent/functions/`) and its tools (`tools/`).
 
 ## Links
 
-[CL8 plan](../plans/CL8-skills-by-level.md) (*Approved during the build*, step 4) ·
+[CL8 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL8-skills-by-level.md) (*Approved during the build*, step 4) ·
 [ADR 0011](0011-prompts-are-content.md) · [ADR 0017](0017-skills-by-level.md)

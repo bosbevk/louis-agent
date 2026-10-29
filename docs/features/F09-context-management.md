@@ -2,7 +2,7 @@
 
 > **Status:** planned · **Milestone:** M4 · **Depends on:** F1, F4, [F15](F15-model-limits.md) (the compaction point per
 > model: below the smaller of a share of its window and its price step), [F16](F16-summariser.md) (the summariser
-> compaction uses), [F18](F18-evaluation.md) (the recall check)
+> compaction uses), [F18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md) (the recall check)
 >
 > **Spec:** [Optimisation §D](../specs/RESPONSE_OPTIMISATION.md) · [Session architecture §2](../specs/SESSION_ARCHITECTURE.md)
 >

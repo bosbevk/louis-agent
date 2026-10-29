@@ -79,4 +79,4 @@ Uses:
   set *Status* to done here and in the features table, and note it in the spec's implementation map.
 
 ---
-[Features](README.md) · Previous: [F5 Toolset profiles](F05-toolset-profiles.md) · Next: [F7 Budgets](F07-budgets.md)
+[Features](README.md) · Previous: [F5 Toolset profiles](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F05-toolset-profiles.md) · Next: [F7 Budgets](F07-budgets.md)

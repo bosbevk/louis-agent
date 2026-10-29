@@ -25,5 +25,5 @@ with `tool_choice: none` (FX1); the finished turn is appended with its thinking 
 
 ## Links
 
-[FX1](../fixes/FX01-round-limit-tools.md) · [FX4](../fixes/FX04-append-only-history.md) ·
+[FX1](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX01-round-limit-tools.md) · [FX4](../fixes/FX04-append-only-history.md) ·
 [Known limitations](../../TODO.md#known-limitations)

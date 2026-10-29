@@ -3,7 +3,7 @@
 > **Status:** merged into [F9](F09-context-management.md) (2026-10-19, [the platform plan](../plans/platform.md)):
 > today's guard already summarises every result over 50,000 characters, so F9 is its second user, not its only one;
 > F16-S1 (the oversized-results report, and the worst offenders paged) is a small cleanup of its own · **Milestone:**
-> M4 (with [F18](F18-evaluation.md), before F9) · **Depends on:** F1, F4 (the caching strategy), F18 (its eval)
+> M4 (with [F18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md), before F9) · **Depends on:** F1, F4 (the caching strategy), F18 (its eval)
 >
 > **Spec:** [Optimisation §D (bounded history), §E (summary model)](../specs/RESPONSE_OPTIMISATION.md)
 >

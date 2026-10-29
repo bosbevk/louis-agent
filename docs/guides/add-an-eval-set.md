@@ -3,7 +3,7 @@
 > **How-to.** Give an identity its evals: a project in `evals/` with its dataset, its graders, its evals and the set the
 > runner lists under `EVALS=`, the reference transcripts that prove its checks work, and the tests. **Elsewhere:** why evals
 > are C# and what they prove in [ADR 0029](../adr/0029-simulations-in-csharp.md); the feature in
-> [F18](../features/F18-evaluation.md); the portal's view of them in
+> [F18](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md); the portal's view of them in
 > [Change the API](change-the-api.md#add-an-eval-to-the-portal); running and writing tests in
 > [Write and run tests](write-tests.md); the identity an eval proves in [Build an identity](build-an-identity.md).
 

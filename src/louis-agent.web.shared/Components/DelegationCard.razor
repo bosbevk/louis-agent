@@ -17,7 +17,7 @@
                 }
                 @if (Delegation.Continued)
                 {
-                    <span class="toolset-chip follow-up">@Text.FollowUp@(Delegation.Handle is { } handle ? " · " + handle : "")</span>
+                    <span class="toolset-chip follow-up">@Text.FollowUp</span>
                 }
                 @foreach (string toolset in Delegation.Toolsets)
                 {

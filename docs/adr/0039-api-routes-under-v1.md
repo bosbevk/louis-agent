@@ -61,6 +61,6 @@ it separates the API from the pages.
 
 ## Links
 
-- [CL20 API standards](../plans/CL20-api-standards.md): the survey, the routes before and after, the steps.
-- [FX18 Auth fails closed](../fixes/FX18-auth-fails-closed.md): the key's start-up rule, which this keeps.
+- [CL20 API standards](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md): the survey, the routes before and after, the steps.
+- [FX18 Auth fails closed](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX18-auth-fails-closed.md): the key's start-up rule, which this keeps.
 - [0009](0009-message-text-as-enum-templates.md): the error texts stay message enums.

@@ -72,7 +72,7 @@ window and price step, so that F9 and F13 use the right number for each model.
   | **B. A separate `config/models.json`** (`MODELS_FILE` / `MODELS_URL`, `GET /models`) | Each file does one thing; limits can change without touching prices | A second table matched by the same ids, kept in step by hand; another URL and endpoint |
 
   Either way: our own format, the only one read, a tracked fallback file, and served on the API, as for prices
-  ([F2](F02-prices-and-cost.md)) and exchange rates ([F14](F14-display-currency.md)).
+  ([F2](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F02-prices-and-cost.md)) and exchange rates ([F14](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md)).
 - **Local models** (taken over from F13): `LLM_CONTEXT_TOKENS` in `LlmOptions` (unset = the table's window, or none);
   `LlmClientFactory` sends it to Ollama as `num_ctx` on every request. Provider differences stay in the factory.
 - **Limits** (`ModelTargets`, core): pure functions of a model's limits, its price step and the measured prefix, so
@@ -118,4 +118,4 @@ Changing F9's or F13's behaviour (each uses its limit when it's built); cost tar
 limit per model (until something uses it); choosing a model by its limits (routing, F10 and later).
 
 ---
-[Features](README.md) · Previous: [F14 Display currency](F14-display-currency.md) · Next: [F16 Summariser](F16-summariser.md)
+[Features](README.md) · Previous: [F14 Display currency](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F14-display-currency.md) · Next: [F16 Summariser](F16-summariser.md)

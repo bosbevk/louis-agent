@@ -38,5 +38,5 @@ A value that names one of a fixed set is an **enum**.
 
 ## Links
 
-[F32 plan](../plans/F32-self-hosted-web.md) (*Approved during the build*) · [ADR 0009](0009-message-text-as-enum-templates.md)
+[F32 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F32-self-hosted-web.md) (*Approved during the build*) · [ADR 0009](0009-message-text-as-enum-templates.md)
 (message text as enum members, the same idea for texts) · [ADR 0043](0043-repeated-names-are-enums.md) (extends it: a name that repeats is an enum too, even in an open set)

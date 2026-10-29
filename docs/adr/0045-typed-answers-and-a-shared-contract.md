@@ -48,7 +48,7 @@ serializer can't read JSON into an interface, so a client needs the concrete rec
 
 [0039](0039-api-routes-under-v1.md) · [0040](0040-records-for-values-classes-for-things.md) ·
 [0041](0041-json-through-records-by-hand-only-for-bytes.md) · `docs/CLAUDE.md`, *An endpoint is a named method* ·
-[F18 plan](../plans/F18-evals.md)
+[F18 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-evals.md)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)
