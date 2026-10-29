@@ -1,6 +1,6 @@
 @* F18 step 5b.2: a stored run's row in the Benchmarks page. A re-scored run says which run it re-scored, a replay which recording it played back (FX28); a finished run
-   can be re-scored. The row is a grid of fixed columns (the rework of 2026-10-26), so the runs read as a table: the run, when, its repeats, its status, its requests,
-   its notes and its cost. *@
+   can be re-scored, a recorded one replayed. The row is a grid of fixed columns (the rework of 2026-10-26), so the runs read as a table: the run, when, its repeats,
+   its status, its requests, its notes and its cost. *@
 <li class="run-row">
     <a class="run-row-main" href="admin/benchmarks/@Run.Id" title="Open this run"><code>@Run.Id</code></a>
     <span class="run-row-when">@Run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span>
@@ -12,6 +12,7 @@
         @if (Run.ReplayOf is { } recording) { <ReplayedFrom Id="@recording" /> }
         @if (Run.StoreError is not null) { <span class="chip bad" title="@Run.StoreError">not everything stored</span> }
         @if (Run.Status == "done") { <RescoreButton RunId="@Run.Id" Disabled="Disabled" OnStarted="OnRescored" /> }
+        @if (Run.Status == "done" && Run.Recorded) { <ReplayButton Run="Run" Disabled="Disabled" OnStart="OnReplay" /> }
     </span>
     <strong class="run-row-cost num">@Cost</strong>
 </li>

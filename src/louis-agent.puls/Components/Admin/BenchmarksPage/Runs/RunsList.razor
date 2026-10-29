@@ -30,7 +30,7 @@
         <ol class="runs">
             @foreach (var run in _list.Shown)
             {
-                <RunListItem Run="run" Currency="Currency" Disabled="Running" OnRescored="OnRescored" />
+                <RunListItem Run="run" Currency="Currency" Disabled="Running" OnRescored="OnRescored" OnReplay="OnReplay" />
             }
         </ol>
     }

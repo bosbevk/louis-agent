@@ -1,5 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Puls.Admin.Runs;
+using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Web.Shared.Usage;
 using Microsoft.AspNetCore.Components;
 
@@ -7,7 +8,7 @@ namespace LouisAgent.Puls.Components.Admin.BenchmarksPage.Runs;
 
 /// <summary>
 /// The chosen check's stored runs, newest first, with a filter by model and what they cost together; each run can be
-/// opened or re-scored.
+/// opened or re-scored, a recorded one replayed (FX28).
 /// </summary>
 public partial class RunsList
 {
@@ -33,6 +34,10 @@ public partial class RunsList
     /// <summary>A re-score was started, with the new run's id.</summary>
     [Parameter]
     public EventCallback<string> OnRescored { get; set; }
+
+    /// <summary>A row's Replay button was clicked: what the page should start.</summary>
+    [Parameter]
+    public EventCallback<StartRequest> OnReplay { get; set; }
 
     /// <summary>The model the list is filtered to (F18 step 2a); none shows every run.</summary>
     private string? Model

@@ -20,7 +20,7 @@
 .run-row-main:hover code { text-decoration: underline; }
 .run-row-when, .run-row-repeat, .run-row-requests { font-size: 13px; color: var(--text); white-space: nowrap; }
 .run-row-notes { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; min-width: 0; }
-.run-row-notes .rescore { height: 28px; padding: 0 10px; font-size: 12px; }
+.run-row-notes .rescore, .run-row-notes .replay-run { height: 28px; padding: 0 10px; font-size: 12px; }
 .run-row-cost { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); font-size: 13.5px; }
 @media (max-width: 1100px) { .runs-head { display: none; } .run-row { grid-template-columns: 1fr 1fr; } .run-row-notes { grid-column: 1 / -1; } }
 /* A run's page (the rework of 2026-10-26): the check's name as the title, the sentence it proves under it, the facts in one line; each fold says in a note what it holds. */

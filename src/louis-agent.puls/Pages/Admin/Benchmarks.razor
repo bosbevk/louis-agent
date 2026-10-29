@@ -39,5 +39,5 @@ else if (_data is { } data)
         <ManualDialog Manual="manual" OnClose="CloseManual" />
     }
 
-    <RunsList Check="Chosen" Runs="_runs" Running="Running" Currency="Currency.Current" OnRescored="FollowRescoreAsync" />
+    <RunsList Check="Chosen" Runs="_runs" Running="Running" Currency="Currency.Current" OnRescored="FollowRescoreAsync" OnReplay="StartAsync" />
 }

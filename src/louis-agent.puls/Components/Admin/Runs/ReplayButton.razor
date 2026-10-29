@@ -1,0 +1,5 @@
+@* FX28: starts a replay of a recorded run: its web and model answers played back by the same eval. It asks no model, so it is free; it checks the harness, not the agent. *@
+<button type="button" class="header-button replay-run" disabled="@Disabled" @onclick="StartAsync"
+        title="Play this run's recorded answers back, web and model. Free: no model is asked; it measures nothing new.">
+    <span class="ic i-pulse" aria-hidden="true"></span>Replay
+</button>
