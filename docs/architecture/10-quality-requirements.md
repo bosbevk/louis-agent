@@ -13,5 +13,5 @@
 | Safety | The model asks to read a secret or leave the workspace | The file tools refuse; tests cover the boundary and sensitive files | [Security](08-crosscutting-concepts.md#security) |
 | Provider portability | The model is switched to Ollama | The same tools and skills work; the ledger records it | [Models](../MODELS.md) |
 
-**Planned:** a shared evaluation harness with scorers and baselines ([F18](../features/F18-evaluation.md)), and
-budgets that warn, ask or stop ([F7](../features/F07-budgets.md)).
+**Measured by the evals:** the eval harness grades each identity's answers against its datasets, with baselines per
+run ([The evals](evals.md)). **Planned:** budgets that warn, ask or stop ([F7](../features/F07-budgets.md)).
