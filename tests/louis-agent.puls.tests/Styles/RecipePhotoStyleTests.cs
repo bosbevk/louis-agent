@@ -2,14 +2,18 @@ using System.Text.RegularExpressions;
 
 namespace LouisAgent.Puls.Tests.Styles;
 
-// FX24 (Louis, 2026-10-26: "make the image a fixed size to fit in our chat screen", "give it some rounded corners"): the recipe's photo is a fixed box with rounded
-// corners, not the page's full-size picture (a 1024-wide photo filled the chat). The product photos in a shopping list's cells keep their own, smaller size. The
-// stylesheet is what sizes it, so this holds the rule in the file; how it looks is checked in the browser.
-public partial class RecipePhotoStyleTests
+/// <summary>
+/// The recipe's photo is a fixed box with rounded corners, not the page's full-size picture: a 1024-wide photo filled
+/// the chat (FX24, Louis: "make the image a fixed size to fit in our chat screen", "give it some rounded corners").
+/// The product photos in a shopping list's cells keep their own, smaller size. The stylesheet sizes it, so this holds
+/// the rule; how it looks is checked in the browser.
+/// </summary>
+public class RecipePhotoStyleTests
 {
-    private static string Css =>
-        File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.puls", "wwwroot", "css", "app.css"));
+    /// <summary>The Puls stylesheet, every file it imports.</summary>
+    private static string Css => PulsStylesheet.Read();
 
+    /// <summary>The declarations of the first rule for this selector, or a failure naming it.</summary>
     private static string RuleOf(string selector)
     {
         var match = Regex.Match(Css, Regex.Escape(selector) + @"\s*\{([^}]*)\}");
@@ -17,6 +21,7 @@ public partial class RecipePhotoStyleTests
         return match.Groups[1].Value;
     }
 
+    /// <summary>The photo fits the chat, takes the same room tall or wide, and is cropped, never stretched.</summary>
     [Test]
     public void TheRecipePhoto_IsAFixedBox_ThatFitsTheChat()
     {
@@ -29,6 +34,7 @@ public partial class RecipePhotoStyleTests
         Assert.That(rule, Does.Contain("object-fit: cover"), "cropped to the box, never stretched");
     }
 
+    /// <summary>Its corners are rounded.</summary>
     [Test]
     public void TheRecipePhoto_HasRoundedCorners() =>
         Assert.That(RuleOf(".markdown img:not(td img)"), Does.Match(@"border-radius:\s*1\d+px"));

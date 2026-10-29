@@ -33,4 +33,25 @@ public class CodeLineCountTests
 
         Assert.That(FileSizeTests.CountCodeLines(lines), Is.EqualTo(2));
     }
+
+    /// <summary>
+    /// In a stylesheet a comment is <c>/* … */</c>, on one line or many; those lines and blank ones don't count, a
+    /// rule with a comment beside it does (CL26).
+    /// </summary>
+    [Test]
+    public void InAStylesheet_OnlyLinesWithARuleOnThemCount()
+    {
+        string[] lines =
+        [
+            "/* The card: what it proves. */",
+            ".card { gap: 10px; }",
+            "",
+            "/* A note that runs",
+            "   over two lines. */",
+            ".chip { color: red; } /* the red one */",
+            "/* before */ .pill { margin: 0; }"
+        ];
+
+        Assert.That(FileSizeTests.CountCssLines(lines), Is.EqualTo(3));
+    }
 }

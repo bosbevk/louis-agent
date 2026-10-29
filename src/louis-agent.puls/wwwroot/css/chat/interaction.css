@@ -1,0 +1,80 @@
+/* ---- Hover and interaction ---- */
+
+/* Spotlight: cards carry a soft orange light where the mouse is (--mx/--my set by js/chat.js). */
+.suggestion, .delegation, .tool { position: relative; isolation: isolate; }
+.suggestion::after, .delegation::after, .tool::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1; opacity: 0;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(245, 130, 32, .14), transparent 60%);
+    transition: opacity .3s var(--ease);
+}
+.suggestion:hover::after, .delegation:hover::after, .tool:hover::after { opacity: 1; }
+
+/* Sidebar: items slide a little and show an orange marker; New chat gets a light sweep. */
+.chat-item { transition: background .2s var(--ease), transform .25s var(--spring); }
+.chat-item:hover { transform: translateX(3px); }
+.chat-item:hover::before { content: ""; position: absolute; left: 0; top: 11px; bottom: 11px; width: 2px; border-radius: 2px; background: rgba(245, 130, 32, .7); }
+.chat-item .icon:hover { background: rgba(242, 107, 79, .18); color: var(--danger); }
+.new-chat { overflow: hidden; }
+.new-chat::after {
+    content: ""; position: absolute; inset: 0; transform: translateX(-120%) skewX(-20deg);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent);
+}
+.new-chat:hover::after { transition: transform .7s var(--ease); transform: translateX(120%) skewX(-20deg); }
+.sidebar-settings summary { transition: background .2s, color .2s; }
+.sidebar-settings summary:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+
+/* Suggestions: an icon each, and an arrow that slides in. */
+.suggestion { padding-right: 34px; }
+.suggestion strong { display: flex; align-items: center; gap: 9px; }
+.suggestion strong::before {
+    content: ""; width: 16px; height: 16px; flex: none; background: var(--orange);
+    -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.suggestion:nth-child(1) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='10.5' cy='10.5' r='6.5'/><path d='M15.5 15.5 21 21'/></svg>"); }
+.suggestion:nth-child(2) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 3h8l5 5v13H6z'/><path d='M14 3v5h5M9 13h7M9 17h7'/></svg>"); }
+.suggestion:nth-child(3) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg>"); }
+.suggestion:nth-child(4) strong::before { --icon: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 20V10M10 20V4M16 20v-7M22 20H2'/></svg>"); }
+.suggestion > span::after {
+    content: "→"; position: absolute; right: 14px; top: 50%; transform: translate(-6px, -50%); opacity: 0;
+    color: var(--orange); font-weight: 700; transition: transform .3s var(--spring), opacity .2s;
+}
+.suggestion:hover > span::after { transform: translate(0, -50%); opacity: 1; }
+.suggestion:active { transform: translateY(-1px) scale(.98); }
+
+/* Messages */
+.user-message { transition: transform .25s var(--spring), box-shadow .25s var(--ease); }
+.user-message:hover { transform: translateY(-1px); }
+.markdown a { color: var(--green-light); font-weight: 600; text-decoration: none; background: linear-gradient(var(--orange), var(--orange)) 0 100% / 0 2px no-repeat; transition: background-size .3s var(--ease), color .2s; }
+.markdown a:hover { background-size: 100% 2px; color: var(--ink); }
+.markdown tr { transition: background .15s; }
+.markdown tbody tr:hover { background: var(--orange-soft); }
+.markdown pre { transition: border-color .2s, box-shadow .2s; }
+.markdown pre:hover { border-color: #454b52; }
+.thinking summary { transition: background .2s, color .2s; }
+.thinking summary:hover { color: var(--ink); }
+
+/* Delegation cards and tools */
+.delegation:hover { border-color: rgba(245, 130, 32, .35); }
+.delegation-head:hover .delegation-chevron { transform: scale(1.08); }
+.delegation[open] .delegation-head:hover .delegation-chevron { transform: rotate(135deg) scale(1.08); }
+.delegation[open] .delegation-head:hover .delegation-chevron { transform: rotate(90deg) translateX(2px); }
+.toolset-chip { transition: transform .2s var(--spring), background .2s, color .2s; }
+.toolset-chip:hover { transform: translateY(-1px); background: var(--green); color: #fff; }
+.tool { transition: border-color .2s, box-shadow .2s, transform .25s var(--ease); }
+.tool:hover { transform: translateX(2px); border-left-color: var(--orange); }
+.delegation-task summary, .delegation-work summary { transition: color .2s; }
+.delegation-task summary:hover, .delegation-work summary:hover { color: var(--orange-deep); }
+
+/* Composer: the send button breathes once there's something to send. */
+.input-row:hover { border-color: #454b52; }
+.send:not(:disabled) { animation: breathe 2.4s var(--ease) infinite; }
+@keyframes breathe { 0%, 100% { box-shadow: 0 8px 18px -6px rgba(245, 130, 32, .8); } 50% { box-shadow: 0 8px 26px -4px rgba(245, 130, 32, 1); } }
+.chat-usage { transition: color .2s; }
+.chat-usage:hover { color: var(--muted); }
+
+
+/* The pulse and the suggestions fit any width: no sideways scroll, and full-width cards on a phone. */
+.messages { overflow-x: hidden; }
+.suggestions { width: min(540px, 100%); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 600px) { .suggestions { grid-template-columns: minmax(0, 1fr); } }
+

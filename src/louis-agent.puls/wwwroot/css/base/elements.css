@@ -1,0 +1,10 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font: 14.5px/1.7 var(--font); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+::selection { background: rgba(245, 130, 32, .25); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; border-radius: 6px; }
+button { font: inherit; cursor: pointer; }
+button:disabled { cursor: default; opacity: .4; }
+a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+* { scrollbar-width: thin; scrollbar-color: #3b4046 transparent; }
+

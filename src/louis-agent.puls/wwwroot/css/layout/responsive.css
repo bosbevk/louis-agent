@@ -1,0 +1,54 @@
+/* ---- Responsive layout and depth ---- */
+
+/* On a wide screen the sidebar is a plain column beside the chat. */
+@media (min-width: 992px) {
+    .sidebar { position: relative; z-index: 3; overflow: hidden; }
+}
+
+/* The resize handle: invisible until hovered, then an orange grip. */
+.resizer { position: relative; cursor: col-resize; z-index: 4; background: transparent; touch-action: none; }
+.resizer::after { content: ""; position: absolute; inset: 0 3px; border-radius: 2px; background: transparent; transition: background .2s var(--ease); }
+.resizer:hover::after, .resizing .resizer::after { background: linear-gradient(var(--orange), var(--orange-deep)); box-shadow: 0 0 12px rgba(245, 130, 32, .6); }
+
+/* Hidden sidebar: it folds away, and a floating tab brings it back. */
+.sidebar-hidden .app { grid-template-columns: 0 0 minmax(0, 1fr); }
+.sidebar-hidden .sidebar { visibility: hidden; padding-left: 0; padding-right: 0; min-width: 0; }
+.sidebar-tab {
+    position: absolute; top: 14px; left: 14px; z-index: 5; width: 38px; height: 38px; border: 0; border-radius: 12px;
+    place-items: center; color: var(--ink); background: var(--surface); border: 1px solid var(--border);
+    box-shadow: var(--shadow-md); opacity: 0; pointer-events: none; transform: translateX(-8px);
+    transition: opacity .25s var(--ease), transform .3s var(--spring);
+}
+.sidebar-hidden .sidebar-tab { opacity: 1; pointer-events: auto; transform: none; }
+.sidebar-tab:hover { transform: translateY(-2px); box-shadow: 0 14px 28px -8px rgba(245, 130, 32, .55); }
+
+/* More depth: layered, tinted shadows that lift on hover. */
+.user-message { box-shadow: 0 1px 0 rgba(255, 255, 255, .12) inset, 0 12px 28px -12px rgba(36, 40, 44, .75), 0 2px 6px rgba(36, 40, 44, .15); }
+.delegation { box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 14px 34px -14px rgba(36, 40, 44, .28), 0 3px 8px rgba(36, 40, 44, .06); transition: box-shadow .3s var(--ease), transform .3s var(--ease); }
+.delegation:not([open]):hover { transform: translateY(-2px); box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 18px 40px -14px rgba(36, 40, 44, .34), 0 4px 10px rgba(36, 40, 44, .08); }
+.tool:hover, .suggestion:hover { box-shadow: 0 16px 34px -14px rgba(36, 40, 44, .3), 0 3px 8px rgba(36, 40, 44, .06); }
+.input-row { box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 18px 40px -18px rgba(36, 40, 44, .35), 0 4px 12px rgba(36, 40, 44, .06); }
+.markdown pre { box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 8px 20px -14px rgba(36, 40, 44, .25); }
+
+/* Below Bootstrap's lg breakpoint: a frosted top bar, and the sidebar slides in as an offcanvas. */
+.topbar { display: none; }
+@media (max-width: 991.98px) {
+    .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+    .sidebar-hidden .app { grid-template-columns: minmax(0, 1fr); }
+    .topbar {
+        display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px;
+        background: rgba(22, 25, 27, .86); backdrop-filter: blur(14px); color: var(--ink); position: sticky; top: 0; z-index: 6;
+        border-bottom: 1px solid var(--border);
+    }
+    .topbar .brand { padding: 0; }
+    .topbar .puls-logo { height: 32px; }
+    .topbar .icon { color: var(--text); width: 38px; height: 38px; display: grid; place-items: center; font-size: 18px; }
+    .topbar .icon:hover { background: rgba(255, 255, 255, .08); color: var(--ink); }
+    .sidebar.offcanvas-lg { --bs-offcanvas-width: min(320px, 86vw); --bs-offcanvas-transition: transform .35s cubic-bezier(.2, .8, .2, 1); border-right: 0; }
+    .sidebar-hidden .sidebar { visibility: visible; }
+}
+@media (min-width: 992px) {
+    /* At lg Bootstrap makes the offcanvas a plain element again; keep it a full-height column. */
+    .sidebar.offcanvas-lg { display: flex; flex-direction: column; visibility: visible; }
+}
+

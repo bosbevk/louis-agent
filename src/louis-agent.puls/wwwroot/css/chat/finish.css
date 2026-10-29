@@ -1,0 +1,91 @@
+/* ---- The slow pulse behind an empty chat: faint orange rings that ripple out from the headline, and a soft orange
+   core beating in time, like the logo's line. Behind everything, and off for reduced motion. ---- */
+.pulse-bg { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; z-index: -2; overflow: hidden; }
+.pulse-bg span {
+    position: absolute; width: min(240px, 50vw); aspect-ratio: 1; border-radius: 50%;
+    border: 1.5px solid rgba(245, 130, 32, .22);
+    opacity: 0; transform: scale(.4); animation: pulse-ring 7.2s cubic-bezier(.25, .6, .3, 1) infinite;
+}
+.pulse-bg span:nth-child(2) { animation-delay: 1.8s; }
+.pulse-bg span:nth-child(3) { animation-delay: 3.6s; }
+.pulse-bg span:nth-child(4) { animation-delay: 5.4s; }
+@keyframes pulse-ring {
+    0% { opacity: 0; transform: scale(.4); }
+    12% { opacity: 1; }
+    100% { opacity: 0; transform: scale(3.4); }
+}
+.pulse-bg::before {
+    content: ""; position: absolute; width: min(360px, 76vw); aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 130, 32, .16), rgba(245, 130, 32, .05) 45%, transparent 70%);
+    animation: heartbeat 3.6s ease-in-out infinite;
+}
+@keyframes heartbeat { 0%, 100% { transform: scale(.94); opacity: .8; } 18% { transform: scale(1.05); opacity: 1; } 32% { transform: scale(.98); } 46% { transform: scale(1.02); } }
+
+/* ---- Finish: the details that make it feel made. ---- */
+
+/* A faint paper grain over the soft background, so large areas never look flat or digital (fixed, under everything). */
+body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.app { position: relative; z-index: 1; }
+.conversation { background: transparent; }
+/* A gradient, not a colour: at lg Bootstrap sets an offcanvas's background-color to transparent !important. */
+.sidebar { background-image: linear-gradient(color-mix(in srgb, var(--sidebar) 94%, transparent), color-mix(in srgb, var(--sidebar) 94%, transparent)); }
+
+/* Type: balanced headline lines, no lone last words in answers, figures that line up. */
+.empty h1 { text-wrap: balance; letter-spacing: -1.6px; font-weight: 800; }
+.empty .hint { text-wrap: balance; max-width: 560px; }
+.markdown p, .markdown li { text-wrap: pretty; }
+.markdown { font-variant-numeric: tabular-nums; }
+
+/* Hairlines, not borders: a touch of charcoal mixed into the background, and an inner light on raised surfaces. */
+.suggestion, .tool, .delegation, .input-row, .markdown pre, .chip { border-color: color-mix(in srgb, var(--ink) 10%, var(--bg)); }
+.suggestion { border-radius: 16px; padding: 14px 36px 14px 16px; background: color-mix(in srgb, var(--surface) 85%, transparent); backdrop-filter: blur(6px); }
+.suggestion:hover { border-color: color-mix(in srgb, var(--orange) 45%, var(--bg)); }
+
+/* The sidebar: a small label over the chats, as in a well-made app. */
+.sidebar-label { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dim); padding: 6px 12px 0; }
+
+/* Focus is always visible, in orange, and never a browser default. */
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--orange) 70%, transparent); outline-offset: 3px; }
+.input-row:focus-within { border-color: color-mix(in srgb, var(--orange) 55%, var(--bg)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--orange) 12%, transparent), 0 18px 40px -18px rgba(36, 40, 44, .3); }
+
+/* Scrolling never shifts the layout. */
+.messages, .chat-list { scrollbar-gutter: stable; }
+
+/* The tagline under the logo in the sidebar: what the name means (a puls travels out from its source; pulses make a wave). */
+.brand-stack { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
+.sidebar .puls-logo { height: 44px; }
+.tagline { font-size: 11px; font-weight: 600; letter-spacing: 0; color: var(--muted); text-wrap: balance; animation: rise .7s .9s var(--ease) both; }
+
+/* ---- The app icon tiles (wwwroot/brand/puls-icon-tile*.svg) ---- */
+
+/* The empty chat: the light tile above the headline, the slow pulse spreading out from it. The chat's scroll area
+   clips it (.messages), not the empty state, whose top edge would cut the glow off in a straight line. */
+.hero-mark { position: relative; width: 76px; height: 76px; display: grid; place-items: center; margin-bottom: 26px; animation: rise .6s var(--ease) both; }
+.hero-mark img, .hero-mark .puls-tile { position: relative; z-index: 1; display: block; width: 100%; height: 100%; border-radius: 17px; overflow: visible; box-shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 16px 34px -14px rgba(36, 40, 44, .35), 0 3px 8px rgba(36, 40, 44, .06); }
+.hero-mark .pulse-bg { overflow: visible; z-index: 0; }
+.hero-mark .pulse-bg::before { width: min(300px, 70vw); }
+
+/* A delegation comes from Puls: its avatar is the charcoal tile instead of an initial. */
+.delegation-avatar { background: url("../brand/puls-icon-tile.svg") center / cover no-repeat; color: transparent; font-size: 0; }
+
+/* ---- Dark (F20): the glows. Soft orange and green light behind the chat, as in the Sensai look; drawn on the page so
+   the sidebar, the chat and the composer's fade all sit over the same light. ---- */
+body {
+    background:
+        radial-gradient(900px 600px at 78% -8%, rgba(245, 130, 32, .13), transparent 62%),
+        radial-gradient(800px 600px at 12% 108%, rgba(56, 180, 73, .09), transparent 60%),
+        radial-gradient(600px 500px at 50% 45%, rgba(245, 130, 32, .04), transparent 70%),
+        var(--bg);
+    background-attachment: fixed;
+}
+.conversation { background: transparent; }
+.composer { background: linear-gradient(to top, rgba(28, 31, 34, .92) 55%, rgba(28, 31, 34, 0)); }
+.pulse-bg span { border-color: rgba(245, 130, 32, .3); }
+.hero-mark img, .hero-mark .puls-tile { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 18px 40px -14px rgba(0, 0, 0, .7), 0 0 60px -10px rgba(245, 130, 32, .35); }
+.user-message { box-shadow: 0 1px 0 rgba(255, 255, 255, .08) inset, 0 12px 28px -12px rgba(0, 0, 0, .7); }
+.new-chat { box-shadow: 0 8px 22px -8px rgba(245, 130, 32, .6); }
+.tagline { color: var(--muted); }
+

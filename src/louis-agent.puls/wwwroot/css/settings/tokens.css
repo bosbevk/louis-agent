@@ -1,0 +1,43 @@
+/* Puls: dark and calm in its four colours, set in Montserrat (F20): deep charcoal to rest the eyes on, a charcoal-tinted
+   white for text, orange for actions, green for your messages and what's done, and soft orange and green glows. One theme; the shared components only emit
+   class names (TurnView, BlocksView, DelegationCard, CurrencySwitcher), and this file styles them. Motion is smooth and
+   purposeful, and turned off for people who ask their system for less motion. */
+
+@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+
+:root {
+    --orange: #f58220;          /* the lead colour: actions, accents, active states */
+    --orange-deep: #e5731a;
+    --orange-soft: #3a2a1d;     /* orange tint on dark */
+    --orange-text: #f7a55a;     /* orange that reads as text on dark */
+    --green: #00723a;           /* your messages */
+    --green-deep: #00592d;
+    --green-light: #38b449;     /* green that reads on dark: links, done, the logo's source on dark */
+    --green-soft: #1b3326;
+    --navy: #121416;            /* the darkest charcoal: the sidebar's footer (the name is kept for the rules that use it) */
+    --navy-deep: #0d0f10;
+    --blue: #38b449;
+    --blue-soft: #1b3326;
+    --cream: #1c1f22;
+    --ink: #efefeb;             /* the charcoal-tinted white: headings and strong text */
+    --text: #d4d4cf;
+    --muted: #9ba1a8;
+    --dim: #6c727a;
+    --bg: #1c1f22;              /* the chat: deep charcoal */
+    --surface: #25292d;         /* cards and the composer: a step lighter */
+    --sidebar: #16191b;         /* the menu: a step darker than the chat */
+    --border: #33383d;
+    --danger: #f26b4f;
+    --code-bg: #2a2e33;
+    --cta: linear-gradient(135deg, #f7952f 0%, var(--orange) 45%, #d9660b 100%);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3), 0 1px 1px rgba(0, 0, 0, .2);
+    --shadow-md: 0 10px 28px -10px rgba(0, 0, 0, .55), 0 2px 6px rgba(0, 0, 0, .25);
+    --shadow-glow: 0 0 0 4px rgba(245, 130, 32, .18), 0 10px 30px -10px rgba(245, 130, 32, .45);
+    --radius: 16px;
+    --font: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-code: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+    --ease: cubic-bezier(.2, .8, .2, 1);
+    --spring: cubic-bezier(.34, 1.56, .64, 1);
+    color-scheme: dark;
+}
+
