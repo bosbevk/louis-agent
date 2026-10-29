@@ -37,6 +37,30 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   graders) and known-bad ones (each required grader must fail one); `Labels/` writes the sheet a person labels and
   calibrates a model judge against the labels (90% of each class, ADR 0029).
 
+## Design notes
+
+What F18 settled while building the harness, and why (the plan, the feature doc with every step's notes and the
+unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md)):
+
+- **No parity run against the Python.** Its runs were deleted before they could be exported, so the first C# run is
+  the baseline and the trends start there; step 3's tests and reference transcripts that pass every grader hold the
+  graders instead.
+- **The first v2 baseline** (2026-10-29): `puls-cook` 23 of 24 when Puls hands the meal to its cook (25% when it
+  answers itself with web tools), `puls-routing` 72 of 72, $0.37 together; baseline runs `5d1fd231c9b1` (cook) and
+  `0d3b95e093a6` (routing). A replay costs $0, every request a cache hit.
+- **The judge isn't trusted yet.** The local judge agreed with a blind labeller on 31 of 36 meals, under the 90% bar
+  ([ADR 0029](../adr/0029-simulations-in-csharp.md)), so its grades stay advisory until Louis's own 36 labels
+  calibrate it (TODO, *Now*).
+- **A person's review only checks a judge.** Each `Human` grader is named `{x}.human` beside a model grader `x` of the
+  same eval; conformance refuses any other, and a human review is never required, so the roll-up has no pending count.
+- **A required grade nobody could give is Unknown, never a pass** (`PassRates`).
+- **Names are enums per project** ([ADR 0043](../adr/0043-repeated-names-are-enums.md)): an eval set keeps its own
+  toolset enum (`PulsToolset`, `StubToolset`), and `RepeatedNameTests` keeps the strings out.
+- **The cook gives estimates and reads no shop page** (step 5.7): Checkers refuses our browser and the other shops'
+  robots.txt disallow their search pages ([ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), so
+  `estimates-at-shop` checks that no price is given as fact; the old `PricedAtRetailer` waits, tested, for a
+  retailer's yes.
+
 ## Structure
 
 | Folder | What's in it |
@@ -76,14 +100,14 @@ golden. The runner's tests run the stub end to end ([tests](tests.md)).
 ## Limits and plans
 
 - A gate on recorded transcripts can't see the agent; only a run can (the learning write-up, skill 12).
-- A replay of a mode that delegates misses at the sub-session's tool result (step 5.5's finding), and a run's first
+- A replay of a mode that delegates misses at the sub-session's tool result (F18's step 5.5 finding), and a run's first
   line carries no dataset yet.
 
 ## Related docs
 
 [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md) ·
 [Add an eval set](../guides/add-an-eval-set.md) · [Run the evals](../guides/run-the-evals.md) ·
-[F18](../features/F18-evaluation.md)
+[Write-up 12](../learning/12-evaluation.md)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [louis-agent.evals.protocol](louis-agent.evals.protocol.md)
