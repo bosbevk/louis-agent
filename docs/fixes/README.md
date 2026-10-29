@@ -1,9 +1,10 @@
 # Fixes: what broke, why, and how it was fixed
 
 Features add something; fixes repair something that didn't work. Each fix gets a short doc here: the symptom as it was
-seen, the cause once found, the fix, how it is tested and how it was confirmed. They are kept, done or not, so the next
-person who sees the same symptom finds the cause, and so the [goal](../GOAL.md)'s skills have their real lessons on
-record (most fixes so far taught something about a model's API).
+seen, the cause once found, the fix, how it is tested and how it was confirmed. When a fix is done its doc is folded
+(*Finishing a fix*, step 5): its row below keeps the symptom and the cause, so the next person who sees the same error
+finds why, and its lesson moves to the [goal](../GOAL.md)'s write-ups (most fixes so far taught something about a
+model's API).
 
 ## Fixes
 
@@ -59,6 +60,10 @@ In the commit that fixes it, or the one right after:
    [docs/CLAUDE.md](../CLAUDE.md#known-limitations).
 4. **Docs:** anything the fix changes for users (settings, MODELS, SETUP), and an [ADR](../adr/README.md) if the fix
    made a lasting decision (FX1's append-only rule is [0008](../adr/0008-history-is-append-only.md)).
+5. **Fold and delete** (Louis, 2026-10-29): the fix's row in the table above keeps its exact symptom (the error as
+   it was seen) and its cause in a sentence, so a search for the error still finds it; the lesson goes into its
+   write-up in [docs/learning/](../learning/), anything lasting about the code into its project's design doc; then
+   the fix's doc and its plan are deleted. The docs folded on 2026-10-29 are at the tag `pre-cl24`.
 
 ---
 [Docs index](../README.md) · Related: [Features](../features/README.md) · [Plans](../plans/README.md) · [TODO](../../TODO.md)

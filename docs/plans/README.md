@@ -10,6 +10,7 @@ or fix doc (*What the build changed*), not here.
 
 | Plan | For | Approved | Notes |
 |---|---|---|---|
+| [CL24-done-docs-folded.md](CL24-done-docs-folded.md) | TODO: *CL24 Done docs folded*, and the sub-features rule (the docs step after F18) | 2026-10-29 | The plans of built work deleted, the docs of built features and fixes folded into the project docs and write-ups, links to them at the tag `pre-cl24`, the living roadmap in `platform.md`, the sub-features as TODO lines |
 | [platform.md](platform.md) | The roadmap: CL15, F18, F40, F7, F39, FX4, F41, F42, F36, F43, F8, F15, F44, Puls's track | 2026-10-19 | One engine, its identities and packs (CL15), C# simulations (F18), the sales playground (F40), then the control layer phase by phase; replaces the CL15 and F39 drafts; the 15 questions answered in it (orchestrator `voorman`, a place specialist with sites as data) |
 | [F48-cook-and-teacher.md](F48-cook-and-teacher.md) | TODO: *F48 Recipe maths and a teaching cook* (Puls, after F35's steps 1 to 4) | 2026-10-26 | Decisions settled, steps proposed: no Cooklang, our own C# ingredient-line reader, scaler and shopping list on F35's `Recipe`; a `WriteRecipe` tool prints the recipe and list; estimates from Stats SA's average prices plus our own rows (`null`, never 0); cues and whys in every answer; a pantry (global catalogue, stock per browser id, Mongo in the recipes pack). The four diagrams, the namespace map and folder trees are added when it is copied onto its branch |
 | [CL20-api-standards.md](CL20-api-standards.md) | TODO: *CL20 API standards* (before F18's step 5) | 2026-10-25 | Every route under `/v1` but `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)); resources as nouns, 201 and `Location` on a create; the key needed by default; every client follows; the route table pinned by a golden file and rule tests; the git endpoints split by resource. Done: PR #78 (2026-10-25) |
@@ -58,8 +59,15 @@ or fix doc (*What the build changed*), not here.
   cleanup (a TODO line with no feature or fix doc). A fix gets a plan only when it takes more than one step; a one-step
   fix has its fix doc alone (FX18, FX19 and FX20).
 - **The roadmap** is the one other kind: [platform.md](platform.md) says what we build and in which order, and each plan
-  says how. It is the one name allowed outside `Fnn`/`FXnn`/`CLn`, and after its approval it is never edited except to
-  link each phase's plan.
+  says how. It is the one name allowed outside `Fnn`/`FXnn`/`CLn`. It holds only current and future work (Louis,
+  2026-10-28): a built phase leaves one done-line, and the detail stays in the ADRs, the write-ups and git
+  (Louis, 2026-10-29, replacing the frozen copy of 2026-10-19).
+- **Sub-features** (Louis, 2026-10-28): a plan holds at most about ten steps; bigger work is a parent with dotted
+  children (`F49.1-name.md`, `F49.2-name.md`), each its own plan, branch, pull request to `main`, done-when and
+  write-up. The parent's TODO line lists its children and their done-whens; a parent plan file is written when the
+  parent starts, and a child's plan when the child starts (Louis, 2026-10-29).
+- **A done plan is deleted** (Louis, 2026-10-28) in the PR that finishes its work, after its lasting parts are in an
+  ADR, a project doc or a write-up; git keeps it, and the plans deleted on 2026-10-29 are at the tag `pre-cl24`.
 - **A phase's plan is copied from the roadmap**, as approved, into its own file on the phase's own branch before its
   first step (`CL15-engine-identities-packs.md`, `F18-evals.md`, `F40-sales-playground.md`,
   `F39-orchestration.md`), with its diagrams, namespace map and folder trees; *Approved during the build* goes only in
