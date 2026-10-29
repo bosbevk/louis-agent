@@ -23,7 +23,9 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 - **A trial is one conversation.** `Running/` opens a session per mode, repeat and scenario through an
   `ISessionClient` (`HttpSessionClient` against the API, `CannedSessionClient` for the stub), asks the questions and
   follow-ups, and reads the stream into a `Transcript` (`Trials/`). A transport failure is tried once more; an
-  infrastructure failure is kept apart from a failing answer (`TurnFailures`).
+  infrastructure failure is kept apart from a failing answer (`TurnFailures`); a stream that ends on an error of kind
+  `replay_miss_error` marks the turn `TurnFailure.ReplayMiss` (FX26), so a replay with no recording never counts as
+  the agent's answer.
 - **Graders grade, metrics measure.** `Grading/` holds `IGrader` and the common graders (no error, answered within a
   time, cost under a limit, routed to a role), the model judge (`Models/`, `EvaluatorGrader` over Microsoft.Extensions.
   AI.Evaluation) and the human review (`Human/`). A grade has a score from 0 to 1, an outcome and a reason; a

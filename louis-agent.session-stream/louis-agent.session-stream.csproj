@@ -11,6 +11,11 @@
     <InternalsVisibleTo Include="louis-agent.session-stream.tests" />
   </ItemGroup>
 
+  <!-- FX26: a failed turn's kind is an enum, read once with SettingChoice (ADR 0024). -->
+  <ItemGroup>
+    <ProjectReference Include="..\louis-agent.choices\louis-agent.choices.csproj" />
+  </ItemGroup>
+
   <!-- F18 step 1a: the one reader of a session's stream. No package: SseParser is in the BCL (System.Net.ServerSentEvents). -->
 
 </Project>

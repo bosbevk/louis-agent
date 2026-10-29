@@ -1,11 +1,11 @@
 using System.Net.ServerSentEvents;
 using System.Text.Json;
 using LouisAgent.Api.Contracts;
-using LouisAgent.Api.Endpoints;
 using LouisAgent.Choices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Reports;
+using LouisAgent.SessionStream;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions.Streaming.Claude;
@@ -90,13 +90,15 @@ internal sealed class ClaudeStreamFormat(
     /// A failed turn: the open block closes, then the error. The usage goes with it when there is one: an extra field
     /// (Claude's error event has none, and its clients ignore what they don't know).
     /// </summary>
-    public IEnumerable<SseItem<string>> Fail(string error, TurnUsage? usage)
+    public IEnumerable<SseItem<string>> Fail(StreamErrorKind kind, string error, TurnUsage? usage)
     {
         foreach (var item in CloseBlock()) yield return item;
+        // The error names its kind as Claude's does, in error.type (a replay miss its own, FX26).
+        var detail = new ApiErrorDetail(kind.Wire(), error);
         object? rendered = RenderUsage(usage);
         yield return Event("error", rendered is null
-            ? ApiErrors.Body(ApiErrorKind.Api, error)
-            : new StreamErrorEvent(new ApiErrorDetail(ApiErrorKind.Api.Wire(), error), rendered));
+            ? new ApiError("error", detail)
+            : new StreamErrorEvent(detail, rendered));
     }
 
     /// <summary>

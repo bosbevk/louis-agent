@@ -114,6 +114,13 @@ public sealed class ScenarioAttempt(
             : new WebReplayRequest(run.Web, null, run.Model);
 
     /// <summary>
+    /// The failure the API's own stream names: a turn that ends on a replay miss. Any other error it streams stays
+    /// the agent's answer, for the graders to judge.
+    /// </summary>
+    private static TurnFailure? StreamedFailure(IReadOnlyList<SessionEvent> events) =>
+        events.LastOrDefault() is ErrorReported { Kind: StreamErrorKind.ReplayMiss } ? TurnFailure.ReplayMiss : null;
+
+    /// <summary>
     /// One turn. A failure of the infrastructure (<see cref="TurnFailures"/>) ends it with its
     /// <see cref="TurnFailure"/>, keeping the events read before it; a turn whose session never opened
     /// (<paramref name="session"/> null) is that failure from the start. A cancelled run throws.
@@ -149,6 +156,10 @@ public sealed class ScenarioAttempt(
                         Reason = ex.Message
                     }, exception: ex);
             }
+
+        // A turn the API ended because the replay had no recorded answer is the replay's failure, not the agent's
+        // (FX26).
+        failure ??= StreamedFailure(events);
 
         var duration = clock.GetUtcNow() - started;
         var transcript = new TurnTranscript(number, session ?? string.Empty, message, events, duration, failure);

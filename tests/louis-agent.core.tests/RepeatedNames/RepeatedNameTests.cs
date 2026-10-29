@@ -47,6 +47,7 @@ public class RepeatedNameTests
         "identities/louis-agent.identity.puls/PulsPack.cs",
         "src/louis-agent.composition/PackKind.cs",
         "src/louis-agent.api/Endpoints/ApiErrorKind.cs",
+        "louis-agent.session-stream/StreamErrorKind.cs",
     ];
 
     /// <summary>

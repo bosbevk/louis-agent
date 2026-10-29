@@ -156,5 +156,14 @@ the parent's environment unless told otherwise, so "it only reads four settings"
 makes the runner's inputs explicit, which is also documentation: the list *is* what the runner depends on. The paste's other three points (the
 runner as its own job with its own identity, sign-in with roles and an audit log, and how long transcripts are kept) are Phase 9's.
 
+## FX26 · A replay miss is marked `replay-miss`, not taken for the agent's failure
+
+An error that crosses a process boundary as text loses its kind. The replay client knew exactly what had gone wrong,
+but the API flattened every failure to `api_error` and the runner only classified its own exceptions, so the label
+the contract already had (`TurnFailure.ReplayMiss`) was never reachable. Name a failure where it happens, carry the
+name on the wire as a typed value (an enum with its wire name, parsed once), and read it once at the other end. And a
+label is not a fix: the turn is counted fairly, but it has no answer until FX27 removes the cause. Skill 12
+(evaluation) and 4 (the stream's seam).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

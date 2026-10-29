@@ -4,6 +4,10 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-29 — **FX26 A replay miss is marked `replay-miss`**: the replay client throws `ModelReplayMissException`, the
+  API streams it as `error.type` `replay_miss_error` (`StreamErrorKind` in session-stream), and the runner sets the
+  turn's failure, so a replayed trial with no recording counts as infrastructure, not as the agent's failed answer
+  ([fix doc as it was](https://github.com/bosbevk/louis-agent/blob/deb14797f4be3e6b8fa0b66eab9900aedb5f87c9/docs/fixes/FX26-replay-miss-kind.md))
 - 2026-10-29 — **CL24 Done docs folded**: the docs of built features and done fixes folded into the project design docs
   and the write-ups, then deleted; the plans of built work deleted; every link to them at the tag `pre-cl24`. Each
   fix's row keeps its symptom and cause; the lessons are in [Lessons from the fixes](docs/learning/fixes-lessons.md);
