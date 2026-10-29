@@ -14,4 +14,9 @@
     <ProjectReference Include="..\..\louis-agent.choices\louis-agent.choices.csproj" />
   </ItemGroup>
 
+  <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built from it. -->
+  <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.evals.protocol.md" Link="docs\louis-agent.evals.protocol.md" />
+  </ItemGroup>
+
 </Project>

@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.evals.puls.md" Link="docs\louis-agent.evals.puls.md" />
     <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
     <None Include="..\..\docs\guides\run-the-evals.md" Link="docs\run-the-evals.md" />
   </ItemGroup>

@@ -107,6 +107,22 @@ source: `ToolCards` (a card's kind, the preview cut), `PromptBuilder` (text, an 
 and capped, the open file left out, an unmounted one reported), `ContainerPaths` (a mapping, a root searched by the last
 path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
 
+## The eval projects' tests (F18)
+
+- **`louis-agent.evals.tests`** (the harness): the dataset loader (Inspect's Sample shape read strictly, the hash, an
+  expected key no grader reads), the common graders, the model grader over Microsoft.Extensions.AI.Evaluation, the
+  roll-up, the conformance cases, the label sheet and the calibration, and the protocol writer against its golden.
+- **`louis-agent.evals.protocol.tests`**: every event round-trips through `EvalProtocolJson`, `event` first, the time
+  with `Z`, and a person's line or an unknown event reads as none.
+- **`louis-agent.evals.runner.tests`**: the arguments, the catalogue, the stub eval's run against its golden, the
+  conformance of every eval of every set, the data files copied beside the assembly.
+- **`louis-agent.evals.puls.tests`**: each Puls grader on hand-cut answers, the datasets' versions and hashes, the
+  scenario ids as test constants, and both evals' conformance against their references.
+- **`louis-agent.evals.template.tests`**: the template project's layout and its empty members.
+
+The runner end to end through the API is `StubCheckTests` in `louis-agent.api.integration-tests`. A paid run is never
+a test: CI grades only recorded transcripts.
+
 ## What isn't covered yet
 
 - **The API's endpoints and the MCP server** have no automated tests (only the API's sessions do); they're checked by
@@ -128,4 +144,4 @@ doc in [docs/features/](../features/README.md) names the tests each step adds.
 [Tests guide](../../tests/CLAUDE.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) 
+[Projects](README.md) · Previous: [louis-agent.evals.puls](louis-agent.evals.puls.md)
