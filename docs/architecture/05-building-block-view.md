@@ -51,7 +51,8 @@ pack in `packs/`, and only the composition root (`src/louis-agent.composition`) 
 
 ## Hosts
 
-Each project also has its own design doc in [projects/](../projects/README.md).
+Each project also has its own design doc in [projects/](../projects/README.md). The evals (the harness, the runner,
+the protocol and an eval set) are drawn on their own page, [The evals](evals.md).
 
 
 | Host | Project | Bootstrap | Transport |
