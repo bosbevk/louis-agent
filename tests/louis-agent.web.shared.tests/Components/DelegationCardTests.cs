@@ -50,6 +50,28 @@ public class DelegationCardTests
         Assert.That(cut.FindAll(".delegation-cost"), Is.Empty, "the cost comes with the rolled-up line");
     }
 
+    /// <summary>A follow-up's chip just says it's a follow-up; the handle Puls uses inside stays out of sight.</summary>
+    [Test]
+    public void AFollowUp_ShowsOnlyTheFollowUpChip_NotTheHandle()
+    {
+        // A continue call, which carries the handle of the specialist it goes back to.
+        var block = new Block
+        {
+            Kind = BlockKind.Tool,
+            ToolUseId = "call_2",
+            ToolName = "ContinueSubSession",
+            ToolInput = """{"handle":"sub-1","message":"En die nagereg?"}""",
+            ToolResult = "Malva poeding.",
+        };
+        using var ctx = new BunitContext();
+        ctx.Services.AddSingleton(new ChatText());
+
+        var cut = ctx.Render<DelegationCard>(p =>
+            p.Add(x => x.Delegation, Delegation.From(block)!).Add(x => x.Block, block));
+
+        Assert.That(cut.Find(".toolset-chip.follow-up").TextContent, Is.EqualTo("follow-up"));
+    }
+
     [Test]
     public void AFailedCall_IsMarkedFailed_WithTheError()
     {

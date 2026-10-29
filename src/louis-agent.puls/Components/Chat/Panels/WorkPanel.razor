@@ -42,7 +42,7 @@
                 <div class="work-chips">
                     @if (item.Delegation.Continued)
                     {
-                        <span class="toolset-chip follow-up">@Text.FollowUp@(item.Delegation.Handle is { } handle ? " · " + handle : "")</span>
+                        <span class="toolset-chip follow-up">@Text.FollowUp</span>
                     }
                     @foreach (string toolset in item.Delegation.Toolsets)
                     {
@@ -78,7 +78,7 @@
                                     <span class="work-minion-role">@(minion.Role ?? step.ToolName)</span>
                                     @if (minion.Continued)
                                     {
-                                        <span class="toolset-chip follow-up">@Text.FollowUp@(minion.Handle is { } h ? " · " + h : "")</span>
+                                        <span class="toolset-chip follow-up">@Text.FollowUp</span>
                                     }
                                     @foreach (string tool in minion.Toolsets)
                                     {
