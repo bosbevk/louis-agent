@@ -1,27 +1,32 @@
 {
   "id": "cook-af",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Wat kan ek vanaand vir vier mense kook vir onder R250? Ek koop by PnP. Gee die resep en 'n inkopielys met pryse."
+    }
+  ],
+  "metadata": {
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Wat kan ek vanaand vir vier mense kook vir onder R250? Ek koop by PnP. Gee die resep en 'n inkopielys met pryse.",
+    "follow_ups": [
       "Maak dit eerder vir ses mense. Wat kos dit nou?"
-    ]
-  },
-  "expected": {
-    "routes_to": "puls-cook",
-    "town": "Stellenbosch",
-    "serves": [
-      4,
-      6
     ],
-    "budget": 250,
-    "shop": "pnp",
-    "recipe_image": true
-  },
-  "categories": [
-    "language:af",
-    "budget",
-    "follow-up"
-  ]
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Stellenbosch",
+      "serves": [
+        4,
+        6
+      ],
+      "budget": 250,
+      "shop": "pnp",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "budget",
+      "follow-up"
+    ]
+  }
 }

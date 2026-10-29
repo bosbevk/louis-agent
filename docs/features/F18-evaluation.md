@@ -1829,6 +1829,23 @@ The steps are the plan's, in order; each one's tests, and what it changes from t
   the `scores` keys in the Puls fixtures. Red twice: the ratchet named `BenchmarkRun.razor.cs`, then
   `StoredRunReply.json` with its two `scores` keys taken out failed against the API's reply ("scores": [] at index
   1661); both green after. That golden is the only one that changed.
+- **Step 7d: the datasets take Inspect's Sample shape** (Louis's pick G, the unattended run 2's Part C). Commit 1
+  splits `evals/louis-agent.evals/Datasets` by concern first, as its place on `FolderSizeTests`' list asks (R2-5):
+  `Manifest/` (`DatasetManifest`, `DatasetHash`), `Scenarios/` (`EvalScenario`, `EvalInput`, `DatasetSplit`), moves
+  only through Rider. Commit 2: a scenario file is `id`, `input` (the user's first question, one chat message),
+  an optional `target`, and ours under `metadata` (`place`, `time_zone`, `follow_ups`, `expected`, `categories`); the
+  split stays the folder. The records are `SampleFile`, `SampleMessage` and `SampleMetadata` in `Datasets/Samples/`,
+  read strictly; the message's role is read once into `MessageRole` (only `user`: a scenario replays a user's
+  questions), and an input that isn't one question from the user is refused (`InputNotOneQuestion`, which replaced
+  `NoMessages`). The loader maps the file onto the unchanged `EvalScenario` (the question, then the follow-ups), which
+  gains an optional `Target`, so nothing past the loader moved. The files moved by a one-off runner command,
+  `convert-samples {folder}` (`SampleConversion`), run once per dataset: puls-cook 11 scenarios, version 6 → 7, hash
+  `790c711e…` → `e06cbbe3…`; puls-routing 18, 3 → 4, `6d17a43b…` → `b300c7c0…`; the template's example 1, 1 → 2,
+  `24ce6293…` → `7ae95ac7…`, each with a dated `changes` line (UTC date, 2026-10-28). The stub eval has no dataset,
+  so its golden didn't move. Red first: `DatasetLoaderTests` 16 of 24 against the old loader, `SampleConversionTests`
+  3 of 3 against a stub; `CommandLineTests.ConvertSamplesTakesItsFolder` was written with its code, never seen red.
+  `PulsDatasetsTests` pins the new versions; it, `ExportedLabelLoadingTests`, `RunnerMessage` and the loader were
+  brought up whole (summaries, lines, one nested `if` split into a helper).
 
 ---
 [Features](README.md) · Previous: [F17 Orchestrator agent](F17-orchestrator-agent.md)

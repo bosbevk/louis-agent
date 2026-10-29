@@ -3,8 +3,8 @@ using System.ComponentModel;
 namespace LouisAgent.Evals.Runner.Messages;
 
 /// <summary>
-/// The runner's refusals, usage and grader reasons (ADR 0009: a text is a message enum member). Refusals go to stderr; stdout
-/// carries only the protocol and the listing.
+/// The runner's refusals, usage and grader reasons (ADR 0009: a text is a message enum member). Refusals go to
+/// stderr; stdout carries only the protocol and the listing.
 /// </summary>
 public enum RunnerMessage
 {
@@ -20,6 +20,14 @@ public enum RunnerMessage
     [Description("Two evals are named '{Name}'.")]
     DuplicateEval,
 
+    [Description("{Date}: step 7d - the scenarios take Inspect's Sample shape: id, input (the user's first question "
+                 + "as a chat message), target, and ours under metadata (place, time_zone, follow_ups, expected, "
+                 + "categories); no scenario's content changed")]
+    SamplesChanged,
+
+    [Description("{Count} scenario(s) in '{Folder}' are in the Sample shape now; its manifest moved one version on.")]
+    SamplesConverted,
+
     [Description("Eval '{Name}' has no graders, so it can't run.")]
     NoGraders,
 
@@ -30,39 +38,44 @@ public enum RunnerMessage
     [Description("--repeat needs a whole number, not '{Value}'.")]
     BadRepeat,
 
-    [Description(
-        "Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
+    [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] "
+                 + "[--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader> "
+                 + "[--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
     Usage,
 
-    [Description(
-        "Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
+    [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] "
+                 + "[--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, "
+                 + "--list, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> "
+                 + "<folder> [<count>].")]
     UnknownArgument,
 
-    [Description(
-        "--labels takes only '-': the label files on stdin, one JSON object per line, not '{Value}'. Labels in a folder are the dataset's labels/, read without --labels.")]
+    [Description("--labels takes only '-': the label files on stdin, one JSON object per line, not '{Value}'. "
+                 + "Labels in a folder are the dataset's labels/, read without --labels.")]
     LabelsOnlyStdin,
 
-    [Description(
-        "No label files for the grader '{Grader}' of eval '{Eval}' arrived on stdin (--labels -): one JSON object per line, as the API's label export writes them.")]
+    [Description("No label files for the grader '{Grader}' of eval '{Eval}' arrived on stdin (--labels -): one "
+                 + "JSON object per line, as the API's label export writes them.")]
     NoLabelsOnStdin,
 
-    [Description(
-        "--calibrate asks a model, so it is never run in CI. Run it by hand, with the judge you mean to measure (EVAL_JUDGE_*).")]
+    [Description("--calibrate asks a model, so it is never run in CI. Run it by hand, with the judge you mean to "
+                 + "measure (EVAL_JUDGE_*).")]
     CalibrationNotInCi,
 
     [Description("Eval '{Eval}' has no grader '{Grader}'. Its graders are {Graders}.")]
     NoSuchGrader,
 
-    [Description(
-        "Grader '{Grader}' of eval '{Eval}' is a fixed rule, not a model. Only a model grader is calibrated against a person.")]
+    [Description("Grader '{Grader}' of eval '{Eval}' is a fixed rule, not a model. Only a model grader is "
+                 + "calibrated against a person.")]
     GraderNotModel,
 
-    [Description(
-        "Eval '{Eval}' has no labels for the grader '{Grader}'. Make a sheet from a stored run with --label-sheet {Eval} <grader> <runId> <folder>, label it, and put the files in its dataset's labels/ folder.")]
+    [Description("Eval '{Eval}' has no labels for the grader '{Grader}'. Make a sheet from a stored run with "
+                 + "--label-sheet {Eval} <grader> <runId> <folder>, label it, and put the files in its dataset's "
+                 + "labels/ folder.")]
     NoLabels,
 
-    [Description(
-        "{Count} label file(s) written to {Folder}. Give each a label (\"pass\" true or false, and a note) and copy them to the eval's dataset in labels/; a file with no label stops the eval from loading.")]
+    [Description("{Count} label file(s) written to {Folder}. Give each a label (\"pass\" true or false, and a "
+                 + "note) and copy them to the eval's dataset in labels/; a file with no label stops the eval from "
+                 + "loading.")]
     LabelSheetWritten,
 
     [Description("--label-sheet's count needs a whole number of at least 1, not '{Value}'.")]
@@ -80,15 +93,15 @@ public enum RunnerMessage
     [Description("--of needs --web replay: it names the recorded run to replay, and only a replay reads one.")]
     OfNeedsReplay,
 
-    [Description(
-        "--replay <runId> is --web replay --of <runId> with the model's answers too, so it can't be given with --web or --of.")]
+    [Description("--replay <runId> is --web replay --of <runId> with the model's answers too, so it can't be given "
+                 + "with --web or --of.")]
     ReplayExcludesWebAndOf,
 
     [Description("--of takes a run id's letters, digits, '-' and '_', not '{Value}'.")]
     BadOf,
 
-    [Description(
-        "--rescore <runId> re-grades a stored run's transcripts and opens no session, so it can't be given with --web, --replay, --repeat or --split (the repeats come from the stored run).")]
+    [Description("--rescore <runId> re-grades a stored run's transcripts and opens no session, so it can't be given "
+                 + "with --web, --replay, --repeat or --split (the repeats come from the stored run).")]
     RescoreExcludesRunFlags,
 
     [Description("The stub's canned run: it proves the portal, not Puls, and costs nothing.")]

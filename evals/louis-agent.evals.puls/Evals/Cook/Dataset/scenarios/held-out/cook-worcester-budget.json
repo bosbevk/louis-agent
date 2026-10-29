@@ -1,22 +1,26 @@
 {
   "id": "cook-worcester-budget",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "I have R180 to cook dinner for three tonight in Worcester, and I shop at PnP. What can I make, and what does it cost? Please give the recipe and a shopping list with prices."
+    }
+  ],
+  "metadata": {
     "place": "Worcester, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "I have R180 to cook dinner for three tonight in Worcester, and I shop at PnP. What can I make, and what does it cost? Please give the recipe and a shopping list with prices."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Worcester",
+      "serves": 3,
+      "budget": 180,
+      "shop": "pnp",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en",
+      "budget"
     ]
-  },
-  "expected": {
-    "routes_to": "puls-cook",
-    "town": "Worcester",
-    "serves": 3,
-    "budget": 180,
-    "shop": "pnp",
-    "recipe_image": true
-  },
-  "categories": [
-    "language:en",
-    "budget"
-  ]
+  }
 }

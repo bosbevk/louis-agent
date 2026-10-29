@@ -7,13 +7,17 @@ using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Tests.Datasets;
 
-// The dataset loader (F18 step 3a): a folder of scenarios is read strictly, and refused whenever it can't be checked.
-// Written first: the loader and the hash threw NotImplementedException on the red run; each finding of the 3a.1 review
-// was a red test here before its fix.
+/// <summary>
+/// The dataset loader (F18 step 3a): a folder of scenarios is read strictly, and refused whenever it can't be checked.
+/// Each file is in Inspect's Sample shape (step 7d): <c>id</c>, <c>input</c> (the user's first question),
+/// <c>target</c>, and ours under <c>metadata</c>.
+/// </summary>
 public class DatasetLoaderTests
 {
+    /// <summary>A grader that reads the one key the sample scenarios set.</summary>
     private static readonly IReadOnlyList<IGrader> Graders = [new ReadsKeys("routed")];
 
+    /// <summary>The manifest's fields come through, and each split's scenarios with their input and criteria.</summary>
     [Test]
     public void LoadsTheManifestAndBothSplits()
     {
@@ -37,8 +41,57 @@ public class DatasetLoaderTests
         Assert.That(dev.Input.TimeZone, Is.EqualTo("Etc/UTC"));
         Assert.That(dev.Input.Messages, Is.EqualTo(new[] { "Hello" }));
         Assert.That(dev.Expected.GetProperty("routed").GetBoolean(), Is.True);
+        Assert.That(dev.Target, Is.Null);
     }
 
+    /// <summary>A sample's follow-ups are asked after its question, in order, and its target is kept.</summary>
+    [Test]
+    public void ASamplesFollowUpsComeAfterItsQuestion_AndItsTargetIsKept()
+    {
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a", followUps: "[\"And for six?\", \"Thanks\"]",
+                target: ", \"target\": \"a meal for six\""))
+            .WithManifest();
+
+        EvalScenario scenario = DatasetLoader.Load(folder.Root, Graders).Scenarios.Single();
+
+        Assert.That(scenario.Input.Messages, Is.EqualTo(new[] { "Hello", "And for six?", "Thanks" }));
+        Assert.That(scenario.Target, Is.EqualTo("a meal for six"));
+    }
+
+    /// <summary>A file still in the old scenario shape (an input object, criteria at the top) is refused.</summary>
+    [Test]
+    public void RefusesAFileInTheOldScenarioShape()
+    {
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json",
+                "{\"id\": \"a\", \"input\": {\"place\": null, \"time_zone\": \"Etc/UTC\", \"messages\": [\"Hello\"]},"
+                + " \"expected\": {\"routed\": true}, \"categories\": []}")
+            .WithManifest();
+
+        Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("input"));
+    }
+
+    /// <summary>
+    /// The input is the user's first question, one message from the user; none, two, or one from the assistant is
+    /// refused (follow-ups go in <c>metadata.follow_ups</c>).
+    /// </summary>
+    [TestCase("[]")]
+    [TestCase("[{\"role\": \"user\", \"content\": \"A\"}, {\"role\": \"user\", \"content\": \"B\"}]")]
+    [TestCase("[{\"role\": \"assistant\", \"content\": \"A\"}]")]
+    public void RefusesAnInputThatIsNotOneQuestionFromTheUser(string input)
+    {
+        using var folder = new DatasetFolder()
+            .Write("scenarios/dev/a.json",
+                DatasetFolder.Scenario("a").Replace("[{\"role\": \"user\", \"content\": \"Hello\"}]", input))
+            .WithManifest();
+
+        Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
+            Throws.TypeOf<InvalidDataException>().With.Message.Contains("one question"));
+    }
+
+    /// <summary>Two scenarios with one id are refused, whichever split each is in.</summary>
     [Test]
     public void RefusesTwoScenariosWithOneId()
     {
@@ -51,10 +104,12 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'same' twice"));
     }
 
+    /// <summary>
+    /// The split comes from the folder, so a scenario that names one itself is refused, as any unknown field is.
+    /// </summary>
     [Test]
     public void RefusesAFieldTheLoaderDoesNotKnow()
     {
-        // The split comes from the folder, so a scenario that names one itself is refused, as any unknown field is.
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a", extra: ", \"split\": \"dev\""))
             .WithManifest();
@@ -63,6 +118,7 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("split"));
     }
 
+    /// <summary>A criterion no grader reads would be checked by nobody, so it is refused.</summary>
     [Test]
     public void RefusesAnExpectedKeyNoGraderReads()
     {
@@ -74,10 +130,12 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'shop'"));
     }
 
+    /// <summary>
+    /// The hash catches a change to the scenarios; the message names both hashes, so the person sees what changed.
+    /// </summary>
     [Test]
     public void RefusesAChangedFolderWhoseHashIsStale()
     {
-        // The hash catches a change to the scenarios; the message names both hashes, so the person sees what changed.
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a"))
             .WithManifest();
@@ -90,6 +148,7 @@ public class DatasetLoaderTests
                 .And.Message.Contains("If a scenario changed").And.Not.Message.Contains("without a new version"));
     }
 
+    /// <summary>A split folder other than dev or held-out is refused by its name.</summary>
     [Test]
     public void RefusesAFolderThatIsNeitherDevNorHeldOut()
     {
@@ -101,6 +160,7 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'training'"));
     }
 
+    /// <summary>The criteria must be an object of keys the graders read.</summary>
     [Test]
     public void RefusesAnExpectedThatIsNotAnObject()
     {
@@ -112,6 +172,7 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("no object of success criteria"));
     }
 
+    /// <summary>A folder with no <c>dataset.json</c> is refused.</summary>
     [Test]
     public void RefusesAFolderWithoutAManifest()
     {
@@ -121,10 +182,10 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("dataset.json"));
     }
 
+    /// <summary>One dated line per version: a bump without its line fails.</summary>
     [Test]
     public void RefusesAVersionWithoutItsChangeLine()
     {
-        // One dated line per version: a bump without its line fails...
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a"))
             .WithManifest(version: 2, lines: 1);
@@ -133,10 +194,10 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("needs 2"));
     }
 
+    /// <summary>And a line without its bump fails too.</summary>
     [Test]
     public void RefusesAChangeLineWithoutItsVersion()
     {
-        // ...and a line without its bump fails too.
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a"))
             .WithManifest(version: 1, lines: 2);
@@ -145,19 +206,20 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("needs 1"));
     }
 
+    /// <summary>A missing required field is refused, not bound to null: the run would fail far from the file.</summary>
     [Test]
-    public void RefusesAnInputWithoutATimeZone()
+    public void RefusesMetadataWithoutATimeZone()
     {
-        // A missing constructor parameter is refused, not bound to null: the run would fail far from the file.
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/a.json",
-                "{\"id\": \"a\", \"input\": {\"place\": null, \"messages\": [\"Hello\"]}, \"expected\": {\"routed\": true}, \"categories\": []}")
+                DatasetFolder.Scenario("a").Replace(" \"time_zone\": \"Etc/UTC\",", ""))
             .WithManifest();
 
         Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("time_zone"));
     }
 
+    /// <summary>Categories may be left out, but a null is refused.</summary>
     [Test]
     public void RefusesCategoriesThatAreNull()
     {
@@ -169,10 +231,12 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("categories"));
     }
 
+    /// <summary>
+    /// The hash covers every file under <c>scenarios/</c>, so the loader must read every one of them or refuse it.
+    /// </summary>
     [Test]
     public void RefusesAScenarioOutsideTheSplits()
     {
-        // The hash covers every file under scenarios/, so the loader must read every one of them or refuse it.
         using var folder = new DatasetFolder()
             .Write("scenarios/a.json", DatasetFolder.Scenario("a"))
             .WithManifest();
@@ -181,6 +245,7 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'a.json'"));
     }
 
+    /// <summary>A scenario in a folder inside a split is refused.</summary>
     [Test]
     public void RefusesAScenarioNestedInASplit()
     {
@@ -192,6 +257,7 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'dev/extra/a.json'"));
     }
 
+    /// <summary>A file that isn't a scenario's JSON is refused by its name.</summary>
     [Test]
     public void RefusesAFileThatIsNotScenarioJson()
     {
@@ -203,10 +269,13 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'dev/notes.txt'"));
     }
 
+    /// <summary>
+    /// The same name on Windows and Linux: the extension is checked ordinally and in lowercase, never by the file
+    /// system.
+    /// </summary>
     [Test]
     public void RefusesAScenarioWhoseNameIsNotLowercaseJson()
     {
-        // The same name on Windows and Linux: the extension is checked ordinally and in lowercase, never by the file system.
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/Cook-AF.JSON", DatasetFolder.Scenario("a"))
             .WithManifest();
@@ -215,11 +284,13 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'dev/Cook-AF.JSON'"));
     }
 
+    /// <summary>
+    /// A stray file (notes.txt, desktop.ini) is in the hash, so it also makes the hash stale. The file is the problem,
+    /// so it is what the loader names: a version bump would only hash the stray file in.
+    /// </summary>
     [Test]
     public void AStrayFileIsRefusedBeforeAHashChange()
     {
-        // A stray file (notes.txt, desktop.ini) is in the hash, so it also makes the hash stale. The file is the problem, so it is
-        // what the loader names: a version bump would only hash the stray file in.
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a"))
             .WithManifest()
@@ -229,22 +300,12 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'dev/desktop.ini'"));
     }
 
-    [Test]
-    public void RefusesAScenarioWithNoMessages()
-    {
-        using var folder = new DatasetFolder()
-            .Write("scenarios/dev/a.json",
-                "{\"id\": \"a\", \"input\": {\"place\": null, \"time_zone\": \"Etc/UTC\", \"messages\": []}, \"expected\": {\"routed\": true}, \"categories\": []}")
-            .WithManifest();
-
-        Assert.That(() => DatasetLoader.Load(folder.Root, Graders),
-            Throws.TypeOf<InvalidDataException>().With.Message.Contains("no messages"));
-    }
-
+    /// <summary>
+    /// A grader that reads a key no scenario sets would grade nothing, and say so nowhere (F18 step 5.4).
+    /// </summary>
     [Test]
     public void RefusesAGraderKeyNoScenarioFeeds()
     {
-        // F18 step 5.4 (the plan's 3a test, left for step 5): a grader that reads a key no scenario sets would grade nothing, and say so nowhere.
         using var folder = new DatasetFolder()
             .Write("scenarios/dev/a.json", DatasetFolder.Scenario("a"))
             .WithManifest();
@@ -253,6 +314,7 @@ public class DatasetLoaderTests
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'budget'"));
     }
 
+    /// <summary>A grader that reads no key needs no scenario to feed it.</summary>
     [Test]
     public void AGraderThatReadsNoKeyNeedsNoScenarioToFeedIt()
     {
@@ -266,12 +328,22 @@ public class DatasetLoaderTests
     /// <summary>A grader that is named only for the keys it reads; it never grades.</summary>
     private sealed class ReadsKeys(params string[] keys) : IGrader
     {
+        /// <summary>Its name.</summary>
         public string Name => "reads-keys";
+
+        /// <summary>Its version.</summary>
         public int Version => 1;
+
+        /// <summary>Its kind.</summary>
         public GraderKind Kind => GraderKind.FixedRule;
+
+        /// <summary>It is required.</summary>
         public bool Required => true;
+
+        /// <summary>The keys it reads.</summary>
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>(keys);
 
+        /// <summary>Never called: the loader only reads its keys.</summary>
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
             throw new NotImplementedException();
     }

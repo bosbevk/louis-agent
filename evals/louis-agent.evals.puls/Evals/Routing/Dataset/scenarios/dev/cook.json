@@ -1,16 +1,20 @@
 {
   "id": "cook",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Ek is in Stellenbosch. Wat kan ek vanaand vir vier mense kook? Ek koop by PnP. Gee die resep en 'n inkopielys met pryse."
+    }
+  ],
+  "metadata": {
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Ek is in Stellenbosch. Wat kan ek vanaand vir vier mense kook? Ek koop by PnP. Gee die resep en 'n inkopielys met pryse."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook"
+    },
+    "categories": [
+      "kind:cook"
     ]
-  },
-  "expected": {
-    "routes_to": "puls-cook"
-  },
-  "categories": [
-    "kind:cook"
-  ]
+  }
 }

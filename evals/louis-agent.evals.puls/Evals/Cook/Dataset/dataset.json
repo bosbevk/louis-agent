@@ -1,14 +1,15 @@
 {
   "name": "puls-cook",
-  "version": 6,
+  "version": 7,
   "covers": "Puls's cook: a meal in Afrikaans or English, estimates and where to buy at the user's shop (PnP, Woolworths), with an image of the recipe, a town where the shop has no branch (estimates, no prices), no shop chosen (the recipe only, or Puls asking first), a budget, a follow-up, and a plain web question the cook is not for (the control); three more towns are held out.",
-  "content_hash": "790c711eaabd4eab327a667cd36763811a85c39a36c2365dee32d01676f981e3",
+  "content_hash": "e06cbbe303a2bf138a9a241dbc8a8147ef7c37e3cd497034914e9cce53b108a2",
   "changes": [
     "2026-10-24: first version, the scenarios of benchmarks/cook/run_check.py (CONVERSATIONS) as files",
     "2026-10-25: step 5.4 - the cook scenarios follow the prompts: each question names its people and its shop (or says any shop will do) and each states them in expected (routes_to, town, serves, budget, shop); cook-no-shop is cook-no-branch (priced at the nearest store), cook-recipe-only and cook-asks-first are new; three held-out scenarios, never used while tuning a prompt",
     "2026-10-25: the shop named in each question is PnP (was Checkers), and Woolworths where Pick n Pay was, for a run while Checkers refuses the browser; the shop requirement is pnp (a page of its site, read with ReadRenderedPage), as PnP has no catalogue tool",
     "2026-10-25: cook-no-branch expects no prices (shop no-branch): the shop has no branch in the town, so the answer is estimates, reads no shop page, links no price, and says there is no branch (was: price at the nearest store and say so under Unsure)",
     "2026-10-25: step 5.7 - the cook looks up no shop prices (Checkers refuses our browser; PnP and Woolworths disallow their search pages in robots.txt; emails asking for access sent): the scenarios keep their shop, which now means estimates and that shop's branch named under where to buy (grader estimates-at-shop, was priced-at-shop), and each scenario that wants a recipe sets recipe_image: the answer shows an image the recipe page gave (grader recipe-image)",
-    "2026-10-26: cook-shops asks what Puls does now (the recipe, roughly what it costs, and the branches' addresses), no longer for every ingredient's price at both shops with its link and the cheapest basket, which the cook has not done since step 5.7; expected.shop stays pnp, as the expectation holds one shop"
+    "2026-10-26: cook-shops asks what Puls does now (the recipe, roughly what it costs, and the branches' addresses), no longer for every ingredient's price at both shops with its link and the cheapest basket, which the cook has not done since step 5.7; expected.shop stays pnp, as the expectation holds one shop",
+    "2026-10-28: step 7d - the scenarios take Inspect's Sample shape: id, input (the user's first question as a chat message), target, and ours under metadata (place, time_zone, follow_ups, expected, categories); no scenario's content changed"
   ]
 }

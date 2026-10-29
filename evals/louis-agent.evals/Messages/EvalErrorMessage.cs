@@ -10,8 +10,9 @@ public enum EvalErrorMessage
     [Description("Dataset '{Dataset}' has the scenario id '{Id}' twice.")]
     DuplicateScenarioId,
 
-    [Description("Scenario '{Id}' has no messages, so there is nothing to run.")]
-    NoMessages,
+    [Description("Scenario '{Id}': its input must be one question from the user (one message whose role is "
+                 + "user); a follow-up goes in metadata.follow_ups.")]
+    InputNotOneQuestion,
 
     [Description("the protocol's lines have no mode line, so the conversation's mode is unknown.")]
     NoModeLine,

@@ -1,17 +1,21 @@
 {
   "id": "cook-asks-first",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Wat kan ek vanaand kook?"
+    }
+  ],
+  "metadata": {
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Wat kan ek vanaand kook?"
+    "follow_ups": [],
+    "expected": {
+      "routes_to": null
+    },
+    "categories": [
+      "language:af",
+      "asks-first"
     ]
-  },
-  "expected": {
-    "routes_to": null
-  },
-  "categories": [
-    "language:af",
-    "asks-first"
-  ]
+  }
 }

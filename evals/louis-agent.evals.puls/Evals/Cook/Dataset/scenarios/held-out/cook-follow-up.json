@@ -1,25 +1,30 @@
 {
   "id": "cook-follow-up",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Wat kan ek vanaand vir vier mense kook met hoender? Ek koop by PnP in Somerset-Wes. Gee die resep en 'n inkopielys met pryse."
+    }
+  ],
+  "metadata": {
     "place": "Somerset-Wes, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Wat kan ek vanaand vir vier mense kook met hoender? Ek koop by PnP in Somerset-Wes. Gee die resep en 'n inkopielys met pryse.",
+    "follow_ups": [
       "Maak dit eerder vegetaries, vir ses mense. Wat kos dit nou?"
-    ]
-  },
-  "expected": {
-    "routes_to": "puls-cook",
-    "town": "Somerset-Wes",
-    "serves": [
-      4,
-      6
     ],
-    "shop": "pnp",
-    "recipe_image": true
-  },
-  "categories": [
-    "language:af",
-    "follow-up"
-  ]
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Somerset-Wes",
+      "serves": [
+        4,
+        6
+      ],
+      "shop": "pnp",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "follow-up"
+    ]
+  }
 }

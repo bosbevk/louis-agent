@@ -1,20 +1,24 @@
 {
   "id": "cook-paarl",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Ek is in Paarl en wil vanaand vir vyf mense kook. Ek koop by PnP en het ongeveer 'n uur. Wat stel jy voor? Gee die resep en wat die bestanddele by die winkel kos."
+    }
+  ],
+  "metadata": {
     "place": "Paarl, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Ek is in Paarl en wil vanaand vir vyf mense kook. Ek koop by PnP en het ongeveer 'n uur. Wat stel jy voor? Gee die resep en wat die bestanddele by die winkel kos."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Paarl",
+      "serves": 5,
+      "shop": "pnp",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af"
     ]
-  },
-  "expected": {
-    "routes_to": "puls-cook",
-    "town": "Paarl",
-    "serves": 5,
-    "shop": "pnp",
-    "recipe_image": true
-  },
-  "categories": [
-    "language:af"
-  ]
+  }
 }

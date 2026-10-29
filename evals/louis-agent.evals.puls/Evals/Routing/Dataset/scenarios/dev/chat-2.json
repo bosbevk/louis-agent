@@ -1,16 +1,20 @@
 {
   "id": "chat-2",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans."
+    }
+  ],
+  "metadata": {
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Skryf 'n kort verjaardagboodskap vir my ma in Afrikaans."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": null
+    },
+    "categories": [
+      "kind:chat"
     ]
-  },
-  "expected": {
-    "routes_to": null
-  },
-  "categories": [
-    "kind:chat"
-  ]
+  }
 }

@@ -1,16 +1,20 @@
 {
   "id": "example",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Replace this with what the user sends."
+    }
+  ],
+  "metadata": {
     "place": null,
     "time_zone": "Etc/UTC",
-    "messages": [
-      "Replace this with what the user sends."
+    "follow_ups": [],
+    "expected": {
+      "example": true
+    },
+    "categories": [
+      "example"
     ]
-  },
-  "expected": {
-    "example": true
-  },
-  "categories": [
-    "example"
-  ]
+  }
 }

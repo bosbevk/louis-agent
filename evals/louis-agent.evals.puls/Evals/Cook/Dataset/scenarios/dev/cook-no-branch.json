@@ -1,21 +1,25 @@
 {
   "id": "cook-no-branch",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos."
+    }
+  ],
+  "metadata": {
     "place": "Prince Albert, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Prince Albert",
+      "serves": 2,
+      "shop": "no-branch",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "shop:no-branch"
     ]
-  },
-  "expected": {
-    "routes_to": "puls-cook",
-    "town": "Prince Albert",
-    "serves": 2,
-    "shop": "no-branch",
-    "recipe_image": true
-  },
-  "categories": [
-    "language:af",
-    "shop:no-branch"
-  ]
+  }
 }

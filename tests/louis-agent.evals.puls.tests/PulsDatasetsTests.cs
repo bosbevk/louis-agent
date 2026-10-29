@@ -1,6 +1,5 @@
-using LouisAgent.Choices;
-using LouisAgent.Evals.Puls.Shared;
 using System.Text.Json;
+using LouisAgent.Choices;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
@@ -8,20 +7,24 @@ using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
 using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 using LouisAgent.Evals.Puls.Evals.Routing;
+using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Puls.Shared.Expectations;
 
 namespace LouisAgent.Evals.Puls.Tests;
 
-// Puls's datasets (F18 step 3a.2): the Python checks' scenarios as files. Each input must equal the Python's, which
-// Fixtures/python-scenarios.json holds as read from benchmarks/*/run_check.py with ast. Each dataset must load strictly with
-// Puls's own graders; scenarios compare as sets, since the loader orders them by file name. Written first: the folders didn't exist yet, so every load failed.
+/// <summary>
+/// Puls's datasets (F18 step 3a.2; Inspect's Sample shape since step 7d): each loads strictly with Puls's own graders,
+/// and each scenario asks what the eval needs. Scenarios compare as sets, since the loader orders them by file name.
+/// </summary>
 public class PulsDatasetsTests
 {
+    /// <summary>The graders of the eval that owns this dataset.</summary>
     internal static IReadOnlyList<IGrader> GradersOf(PulsEvalName dataset) =>
         dataset == PulsEvalName.Cook ? new CookEval().Graders : new RoutingEval().Graders;
 
-    [TestCase(PulsEvalName.Cook, 6)]
-    [TestCase(PulsEvalName.Routing, 3)]
+    /// <summary>Each dataset loads strictly, under its name and at its version.</summary>
+    [TestCase(PulsEvalName.Cook, 7)]
+    [TestCase(PulsEvalName.Routing, 4)]
     public void EachDatasetLoadsStrictly(PulsEvalName name, int version)
     {
         Dataset dataset = Load(name);
@@ -30,6 +33,7 @@ public class PulsDatasetsTests
         Assert.That(dataset.Manifest.Version, Is.EqualTo(version));
     }
 
+    /// <summary>The routing's dev questions are two of each kind.</summary>
     [Test]
     public void TheRoutingScenariosAreTwelveQuestions() =>
         Assert.That(Load(PulsEvalName.Routing).Scenarios.Where(s => s.Split == DatasetSplit.Dev).Select(s => s.Id),
@@ -39,16 +43,19 @@ public class PulsDatasetsTests
                 PulsTaskIds.Cook, "web-2", "files-2", "git-2", "numbers-2", "chat-2", "cook-2",
             }));
 
+    /// <summary>
+    /// The place of each conversation is the dataset's: Malmesbury, and a town where PnP has no branch.
+    /// </summary>
     [Test]
     public void TheCheckAsksInMalmesburyAndInATownWithNoBranch()
     {
-        // Moved here from CookSetup.Places: the place of each conversation is the dataset's.
         var places = Load(PulsEvalName.Cook).Scenarios.ToDictionary(s => s.Id, s => s.Input.Place);
 
         Assert.That(places["cook-malmesbury"], Is.EqualTo("Malmesbury, Wes-Kaap, Suid-Afrika"));
         Assert.That(places["cook-no-branch"], Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
     }
 
+    /// <summary>The cook's dev scenarios carry the categories decided in step 5c.</summary>
     [Test]
     public void TheCookCategoriesAreTheDecidedOnes()
     {
@@ -69,21 +76,27 @@ public class PulsDatasetsTests
                 .ToDictionary(s => s.Id, s => s.Categories.ToArray()), Is.EqualTo(expected));
     }
 
+    /// <summary>What each dev scenario asks for, in its criteria (step 5.4); the control has only its route.</summary>
     [Test]
     public void TheCookScenariosStateTheirRequirements()
     {
-        // F18 step 5.4: what each dev scenario asks for, in its `expected`; the control has only its route.
         var expected = new Dictionary<string, string>
         {
             ["control-web"] = """{"routes_to":null}""",
-            [PulsCookScenarioIds.CookAf] =
-                """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp","recipe_image":true}""",
+            [PulsCookScenarioIds.CookAf] = """
+                {"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"pnp",
+                 "recipe_image":true}
+                """,
             [PulsCookScenarioIds.CookEn] =
                 """{"routes_to":"puls-cook","town":"Pretoria","serves":2,"shop":"pnp","recipe_image":true}""",
-            ["cook-malmesbury"] =
-                """{"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp","recipe_image":true}""",
-            ["cook-no-branch"] =
-                """{"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"no-branch","recipe_image":true}""",
+            ["cook-malmesbury"] = """
+                {"routes_to":"puls-cook","town":"Malmesbury","serves":4,"budget":150,"shop":"pnp",
+                 "recipe_image":true}
+                """,
+            ["cook-no-branch"] = """
+                {"routes_to":"puls-cook","town":"Prince Albert","serves":2,"shop":"no-branch",
+                 "recipe_image":true}
+                """,
             ["cook-recipe-only"] =
                 """{"routes_to":"puls-cook","town":"Stellenbosch","serves":4,"shop":"any","recipe_image":true}""",
             ["cook-asks-first"] = """{"routes_to":null}""",
@@ -96,10 +109,13 @@ public class PulsDatasetsTests
             Is.EqualTo(expected.ToDictionary(e => e.Key, e => Normal(JsonDocument.Parse(e.Value).RootElement))));
     }
 
+    /// <summary>
+    /// The held-out cook scenarios are new, never used while tuning a prompt (step 5.4), and state their requirements
+    /// like the dev ones.
+    /// </summary>
     [Test]
     public void TheHeldOutCookScenariosAreASecondTownAnEnglishBudgetAndAFollowUp()
     {
-        // F18 step 5.4: new, never used while tuning a prompt; each states its requirements like the dev ones.
         var held = Load(PulsEvalName.Cook).Scenarios.Where(s => s.Split == DatasetSplit.HeldOut)
             .ToDictionary(s => s.Id);
 
@@ -116,6 +132,7 @@ public class PulsDatasetsTests
         Assert.That(held.Values.Select(s => CookExpectations.ShopOf(s)), Is.All.EqualTo(ShopExpectation.Pnp));
     }
 
+    /// <summary>The routing's held-out questions are one new question of each kind.</summary>
     [Test]
     public void TheHeldOutRoutingQuestionsAreOneNewOneOfEachKind()
     {
@@ -127,11 +144,13 @@ public class PulsDatasetsTests
             Is.EquivalentTo(new string?[] { null, null, null, null, null, PulsEvalRole.Cook.Wire() }));
     }
 
+    /// <summary>
+    /// The prompts ask first about a meal that doesn't say for how many or where they'll shop, and never hand it on;
+    /// so a question that should reach the cook states them, and its criteria repeat them for the graders.
+    /// </summary>
     [Test]
     public void EveryQuestionForTheCook_NamesItsTownItsPeopleAndItsShop_ElsePulsWouldAskFirst()
     {
-        // The prompts (Puls's routing, the cook's report): a meal that doesn't say for how many or where they'll shop is asked about first, never handed
-        // on. So a question that should reach the cook states them, and the scenario's `expected` repeats them for the graders.
         foreach (var name in Enum.GetValues<PulsEvalName>())
             foreach (EvalScenario scenario in Load(name).Scenarios.Where(s => ExpectedRoute.Of(s) is not null))
             {
@@ -139,19 +158,24 @@ public class PulsDatasetsTests
                 Assert.That(Servings.Of(first), Is.Not.Empty, $"{scenario.Id}: the people");
                 Assert.That(first, Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"),
                     $"{scenario.Id}: the shop");
-                if (name == PulsEvalName.Cook)
-                {
-                    var expected = CookExpectations.Of(scenario);
-                    Assert.That(Servings.Of(first), Does.Contain(expected.Serves[0]),
-                        $"{scenario.Id}: the first turn's people");
-                    Assert.That(first + scenario.Input.Place, Does.Contain(expected.Town), $"{scenario.Id}: the town");
-                    if (expected.Budget is { } budget)
-                        Assert.That(first, Does.Contain("R" + budget.ToString("0")),
-                            $"{scenario.Id}: the budget the grader checks is the one the question names");
-                }
+                if (name == PulsEvalName.Cook) AssertTheCriteriaMatchTheQuestion(scenario, first);
             }
     }
 
+    /// <summary>A cook scenario's criteria name the people, the town and the budget its first question names.</summary>
+    private static void AssertTheCriteriaMatchTheQuestion(EvalScenario scenario, string first)
+    {
+        var expected = CookExpectations.Of(scenario);
+        Assert.That(Servings.Of(first), Does.Contain(expected.Serves[0]), $"{scenario.Id}: the first turn's people");
+        Assert.That(first + scenario.Input.Place, Does.Contain(expected.Town), $"{scenario.Id}: the town");
+        if (expected.Budget is { } budget)
+            Assert.That(first, Does.Contain("R" + budget.ToString("0")),
+                $"{scenario.Id}: the budget the grader checks is the one the question names");
+    }
+
+    /// <summary>
+    /// A question that leaves out the people and the shop is one Puls answers itself, by asking first.
+    /// </summary>
     [Test]
     public void AQuestionThatLeavesOutThePeopleAndTheShop_IsOneWherePulsAsksFirst()
     {
@@ -161,10 +185,10 @@ public class PulsDatasetsTests
         Assert.That(Servings.Of(asks.Input.Messages[0]), Is.Empty);
     }
 
+    /// <summary>The held-out set is for a release check: a question tuned against would tell nothing.</summary>
     [Test]
     public void NoHeldOutQuestionIsAlsoADevQuestion()
     {
-        // The held-out set is for a release check: a question tuned against would tell nothing.
         foreach (var name in Enum.GetValues<PulsEvalName>())
         {
             var scenarios = Load(name).Scenarios;
@@ -175,6 +199,7 @@ public class PulsDatasetsTests
         }
     }
 
+    /// <summary>A routing question about a meal expects the cook, and every other question nobody.</summary>
     [Test]
     public void TheRoutingQuestionsExpectTheCookForAMealAndNobodyOtherwise()
     {
@@ -183,8 +208,7 @@ public class PulsDatasetsTests
                 scenario.Id.StartsWith("cook") ? Is.EqualTo(PulsEvalRole.Cook.Wire()) : Is.Null, scenario.Id);
     }
 
-    private static string Normal(JsonElement element) => JsonSerializer.Serialize(element);
-
+    /// <summary>Each routing question carries its kind as its one category.</summary>
     [Test]
     public void EachRoutingQuestionIsInItsKind()
     {
@@ -192,6 +216,10 @@ public class PulsDatasetsTests
             Assert.That(scenario.Categories, Is.EqualTo(new[] { "kind:" + scenario.Id.Split('-')[0] }), scenario.Id);
     }
 
+    /// <summary>A JSON value as compact text, so two criteria compare whatever their spacing.</summary>
+    private static string Normal(JsonElement element) => JsonSerializer.Serialize(element);
+
+    /// <summary>The dataset of one of Puls's evals, loaded with that eval's graders.</summary>
     internal static Dataset Load(PulsEvalName name) =>
         DatasetLoader.Load(EvalFiles.DatasetOf(name == PulsEvalName.Cook ? typeof(CookEval) : typeof(RoutingEval)),
             GradersOf(name));

@@ -1,16 +1,20 @@
 {
   "id": "web",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne."
+    }
+  ],
+  "metadata": {
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Wat is die nuutste weergawe van .NET en wanneer is dit vrygestel? Gee jou bronne."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": null
+    },
+    "categories": [
+      "kind:web"
     ]
-  },
-  "expected": {
-    "routes_to": null
-  },
-  "categories": [
-    "kind:web"
-  ]
+  }
 }

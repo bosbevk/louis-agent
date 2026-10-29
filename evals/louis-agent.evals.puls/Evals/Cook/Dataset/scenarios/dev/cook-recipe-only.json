@@ -1,21 +1,25 @@
 {
   "id": "cook-recipe-only",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie."
+    }
+  ],
+  "metadata": {
     "place": "Stellenbosch, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Stellenbosch",
+      "serves": 4,
+      "shop": "any",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "shop:any"
     ]
-  },
-  "expected": {
-    "routes_to": "puls-cook",
-    "town": "Stellenbosch",
-    "serves": 4,
-    "shop": "any",
-    "recipe_image": true
-  },
-  "categories": [
-    "language:af",
-    "shop:any"
-  ]
+  }
 }

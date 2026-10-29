@@ -1,22 +1,26 @@
 {
   "id": "cook-malmesbury",
-  "input": {
+  "input": [
+    {
+      "role": "user",
+      "content": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is."
+    }
+  ],
+  "metadata": {
     "place": "Malmesbury, Wes-Kaap, Suid-Afrika",
     "time_zone": "Africa/Johannesburg",
-    "messages": [
-      "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is."
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "town": "Malmesbury",
+      "serves": 4,
+      "budget": 150,
+      "shop": "pnp",
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af",
+      "budget"
     ]
-  },
-  "expected": {
-    "routes_to": "puls-cook",
-    "town": "Malmesbury",
-    "serves": 4,
-    "budget": 150,
-    "shop": "pnp",
-    "recipe_image": true
-  },
-  "categories": [
-    "language:af",
-    "budget"
-  ]
+  }
 }
