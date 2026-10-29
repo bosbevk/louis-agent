@@ -1,20 +1,24 @@
 using System.Net.ServerSentEvents;
 using LouisAgent.Core.Sessions.SubSessions;
+using LouisAgent.SessionStream;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions.Streaming;
 
 /// <summary>
-/// The writer of one turn's events (F18 step 1f). The turn and the session view call only this: a format renders what the
-/// turn is in its own shape, and the turn's usage is computed once (<see cref="TurnUsage"/>) and only rendered here.
+/// The writer of one turn's events (F18 step 1f). The turn and the session view call only this: a format renders what
+/// the turn is in its own shape, and the turn's usage is computed once (<see cref="TurnUsage"/>) and only rendered
+/// here.
 /// </summary>
 public interface ITurnStreamFormat
 {
     /// <summary>The turn's start: the toolsets the session loaded and its role.</summary>
     SseItem<string> Start();
 
+    /// <summary>One piece of what the model sent: text, thinking, a tool call or its result.</summary>
     IEnumerable<SseItem<string>> Content(AIContent content);
 
+    /// <summary>Plain text the turn writes itself, outside the model's answer.</summary>
     IEnumerable<SseItem<string>> Text(string text);
 
     /// <summary>A sub-session's event, nested under the call that opened it (F5).</summary>
@@ -23,12 +27,15 @@ public interface ITurnStreamFormat
     /// <summary>The turn's end: its stop reason, and its usage when one was recorded (null otherwise).</summary>
     IEnumerable<SseItem<string>> Stop(string stopReason, TurnUsage? usage);
 
-    /// <summary>A failed turn: the error, with the usage of the requests made before the failure when there are any.</summary>
-    IEnumerable<SseItem<string>> Fail(string error, TurnUsage? usage);
+    /// <summary>
+    /// A failed turn: what kind of failure it was, the error, and the usage of the requests made before the failure
+    /// when there are any.
+    /// </summary>
+    IEnumerable<SseItem<string>> Fail(StreamErrorKind kind, string error, TurnUsage? usage);
 
     /// <summary>
-    /// The usage as this format shows it, or null when there is none. The session view shows a session's usage in the same
-    /// shape as a turn's, so the format renders it there too: the writer is the one place that knows the shape.
+    /// The usage as this format shows it, or null when there is none. The session view shows a session's usage in the
+    /// same shape as a turn's, so the format renders it there too: the writer is the one place that knows the shape.
     /// </summary>
     object? RenderUsage(TurnUsage? usage);
 }

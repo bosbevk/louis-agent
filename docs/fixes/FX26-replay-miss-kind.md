@@ -2,8 +2,8 @@
 
 > **Status:** open · **Area:** core: the model replay client; `louis-agent.session-stream`: the error event; API: the
 > failed turn's stream; the eval runner's turn failures · **Found:** 2026-10-29, the free replays of F18's first v2
-> baseline (step 5.5) · **Plan:** [FX26](../plans/FX26-replay-miss-kind.md), on the F18 branch (the code it touches
-> exists only there)
+> baseline (step 5.5) · **Plan:** [FX26](../plans/FX26-replay-miss-kind.md), on `fix/FX26-replay-miss-kind`,
+> branched from the F18 branch (the code it touches exists only there)
 
 ## Symptom
 
@@ -38,6 +38,12 @@ Step by step, in the plan's order:
    `SettingChoice`, through guard clauses, and is none for a type it doesn't know or an event without one. The enum
    joins the repeated-name scan's list (ADR 0043). Red first: the two known kinds read null against a stub; the
    unknown-or-none case passed against the stub too and stays as the guard.
+3. **The API streams the kind:** `StreamErrorKinds.Of` (`Sessions/Streaming/`) maps `ModelReplayMissException` to
+   `ReplayMiss` and anything else to `Api`; `TurnStream`'s catch takes the kind with the error, and
+   `ITurnStreamFormat.Fail` (with `ClaudeStreamFormat`'s) writes `error.type` from the kind's wire name. The API now
+   references `louis-agent.session-stream` itself (it reached it only through its web app). Red first: a turn whose
+   model request throws the miss streamed `api_error`; the other case (any other failure still `api_error`) passed
+   and stays as the guard. The stream golden is unchanged.
 
 ## Tests
 
