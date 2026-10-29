@@ -37,12 +37,6 @@ or fix doc (*What the build changed*), not here.
 | [F22-role-tools.md](F22-role-tools.md) | [F22 Role tools](../features/F22-role-tools.md) | 2026-10-13 | Reuse before building: PdfPig, OpenXml, ExcelDataReader, git CLI, F14's rates |
 | [F21-personalities.md](F21-personalities.md) | [F21 Personalities](../features/F21-personalities.md) | 2026-10-13 | Built before F20 continues; `puls.md` and `puls-specialist.md` |
 | [F20-puls-look.md](F20-puls-look.md) | [F20 Puls look](../features/F20-puls-look.md) | 2026-10-13 | Sensai's look and Preline's placeholders, in Puls's colours, dark; ten steps |
-| [F01-usage-ledger.md](F01-usage-ledger.md) | [F1 Usage ledger](../features/F01-usage-ledger.md) | 2026-10-10 | Recreated on 2026-10-11 from the plans approved in the session |
-| [F02-prices-and-cost.md](F02-prices-and-cost.md) | [F2 Prices and cost](../features/F02-prices-and-cost.md) | 2026-10-10 | Recreated on 2026-10-11; includes the `PRICES_URL` addition approved during the build |
-| [F03-usage-display.md](F03-usage-display.md) | [F3 Show usage](../features/F03-usage-display.md) | 2026-10-11 | |
-| [F14-display-currency.md](F14-display-currency.md) | [F14 Display currency](../features/F14-display-currency.md) | 2026-10-11 | Built before M2 by choice |
-| [F05-toolset-profiles.md](F05-toolset-profiles.md) | [F5 Toolset profiles](../features/F05-toolset-profiles.md) | 2026-10-13 | No toolsets at start-up; an engine per toolset list; sub-sessions on a peer (`StartSubSession`) |
-| [F05-usage-rollup.md](F05-usage-rollup.md) | TODO: *F5 follow-up: roll sub-session usage up* | 2026-10-13 | One roll-up record per sub-session reply in the parent scope, and (approved during the build) a row in the parent's ledger; three steps, built 2026-10-14 |
 | [F24-landing-motion.md](F24-landing-motion.md) | [F24 Landing motion](../features/F24-landing-motion.md) | 2026-10-15 | The reviewed artifact into `LandingPage.razor`, `landing.js`, `Water.razor` and `LandingDemo.razor`; the app's empty chat, Werk panel, real loading percentage and an *Animasies* switch; eight steps |
 | [CL7-docs-tidy.md](CL7-docs-tidy.md) | TODO: *Docs tidy* (cleanup) | 2026-10-14 | The session picture to `specs/images/` (SVG only); How a turn works into the runtime view; Runbooks beside the orchestrator's doc |
 | [CL6-arc42.md](CL6-arc42.md) | TODO: *Architecture docs in arc42* (cleanup) | 2026-10-14 | arc42's twelve sections replace ARCHITECTURE.md; 13 ADRs (Nygard) written from where each decision is recorded; C4 diagrams in mermaid flowcharts |
@@ -51,7 +45,6 @@ or fix doc (*What the build changed*), not here.
 | [CL3-messages-and-logging.md](CL3-messages-and-logging.md) | TODO: *Messages and logging* (cleanup) | 2026-10-12 | Serilog behind `ILogger`, not NLog; tool texts pinned by a golden file; the comms log unchanged |
 | [CL2-split-agent-engine.md](CL2-split-agent-engine.md) | TODO: *Split `AgentEngine`* (cleanup) | 2026-10-11 | Classes with the engine as façade; console UI to the CLI; pure checks in `Guardrails/` |
 | [CL1-project-layout.md](CL1-project-layout.md) | TODO: *Project layout* (cleanup) | 2026-10-11 | PascalCase in every project, one type per file; `AgentEngine` moved whole, its split next |
-| [F04-prompt-caching.md](F04-prompt-caching.md) | [F4 Prompt caching](../features/F04-prompt-caching.md) | 2026-10-11 | Conversation marker by automatic caching (option B); orchestrator and summariser left to their own features |
 
 ## Conventions
 

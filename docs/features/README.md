@@ -18,11 +18,11 @@ where its work went and stays as its design.
 
 | ID | Feature | Status | Spec | Replaces in the TODO | Depends on | Milestone |
 |---|---|---|---|---|---|---|
-| [F1](F01-usage-ledger.md) | Usage ledger: record every model request | done | U §4.1, §4.3 · R §A | *Track token usage / cost per session* (with F2, F3, F6, F7, F11) | — | M1 |
-| [F2](F02-prices-and-cost.md) | Prices and cost | done | U §4.2 | (as F1) | F1 | M1 |
-| [F3](F03-usage-display.md) | Show usage: chat, CLI, Rider, API, comms log | done | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
-| [F4](F04-prompt-caching.md) | Prompt caching (Anthropic) | **done** | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
-| [F5](F05-toolset-profiles.md) | Toolset profiles | done | R §C | — | F1 | M2 |
+| F1 | Usage ledger: record every model request | done | U §4.1, §4.3 · R §A | *Track token usage / cost per session* (with F2, F3, F6, F7, F11) | — | M1 |
+| F2 | Prices and cost | done | U §4.2 | (as F1) | F1 | M1 |
+| F3 | Show usage: chat, CLI, Rider, API, comms log | done | U §7.2–7.4 | (as F1) | F1, F2 | M1 |
+| F4 | Prompt caching (Anthropic) | **done** | R §B | *Wire up Anthropic prompt caching* | F1 | M2 |
+| F5 | Toolset profiles | done | R §C | — | F1 | M2 |
 | [F6](F06-estimates.md) | Cost estimates before a run | merged into F7 | U §5 | (as F1) | F1, F2 | M3 |
 | [F7](F07-budgets.md) | Budgets: warn, ask, stop | planned | U §6 | (as F1) | F1, F2, F6 | M3 |
 | [F8](F08-reliability.md) | Reliability: retries, account limits, fallback, structured results | planned (F8-S4 moved into F39) | R §F · U §6.2 | *Retry and back off…*, *Add model fallback*, *Wire up structured outputs* | F1 | M3 |
@@ -31,7 +31,7 @@ where its work went and stays as its design.
 | [F11](F11-usage-tab-and-reconciliation.md) | Usage tab, usage API, reconciliation with the bill | merged into F7 | U §7.1–7.2, §4.4 | (as F1) | F1–F3, F6, F7 | M5 |
 | [F12](F12-response-speed.md) | Response speed: time to first token and tokens per second, every provider | merged into F44 | U §4.1 · R §A | — | F1 (F3, F11 to show it) | M5 |
 | [F13](F13-local-models.md) | Local models: fit every request into a small context window (2,048 tokens) | merged into F15 | R §C | Known limitation *local models get a truncated prompt* | F1, F5, F15 | Local |
-| [F14](F14-display-currency.md) | Display currency: show costs in a chosen currency (the ledger stays in the bill's) | done | U §4.2, §7 | — | F2, F3 | M5 |
+| F14 | Display currency: show costs in a chosen currency (the ledger stays in the bill's) | done | U §4.2, §7 | — | F2, F3 | M5 |
 | [F15](F15-model-limits.md) | Model limits: each model's context window and cache minimum, `num_ctx` for local models, and F9's and F13's limits per model | planned | R §B–D | — | F2 | M2 |
 | [F16](F16-summariser.md) | Summariser: one measured component for oversized tool results and (later) compaction, with its own model, prompt and no caching | merged into F9 (F16-S1 a small cleanup) | R §D | F10-S3 (summary model) | F1, F4, F18 | M4 |
 | [F17](F17-orchestrator-agent.md) | Orchestrator agent: a routing workflow with an agent for the exceptions, its own settings and cache policy, measured against today's | merged into F39 | Orchestrator design | — | F4, F8, F10, F18 | M4 |

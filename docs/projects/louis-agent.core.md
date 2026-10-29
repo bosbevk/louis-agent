@@ -38,7 +38,50 @@ flowchart LR
 4. **Usage** (F1): `UsageRecordingChatClient` sits inside the tool loop, so every model request (each tool round, each
    summary) writes one line to the usage ledger: token counts mapped by the provider's `IUsageMapper`, model, duration,
    stop reason, and the `UsageScope` the host opened for the turn (host, session, turn, purpose, task/run/service tags).
-   Counts and ids only, never prompt text.
+   Counts and ids only, never prompt text. A request cancelled before it ends is still written, with unknown tokens
+   rather than 0 (FX9).
+5. **Prices** (F2): `PricingUsageSink` wraps the ledger and prices each record as it is written, from the price table
+   `AgentHost` loads once: `PRICES_URL` if it answers (the API serves its own at `GET /v1/prices`), else `PRICES_FILE`,
+   else the tracked `config/prices.json`. `PriceTable.Find` matches the model by its longest prefix; `CostCalculator`
+   picks the tier from the whole prompt (input, cache reads and writes; a model with a `long_prompt` tier, such as
+   Haiku 5.5 above 100,000 tokens, costs more for the whole request), prices cache writes at their lifetime, and rounds
+   to 6 decimals. A record's `cost` names the table's `as_of`, so a later price change never rewrites it; no price is
+   `null`, never 0 ([ADR 0007](../adr/0007-measure-every-request.md)). Thinking is inside `output`, so it isn't added.
+6. **Showing usage** (F3): the turn's `UsageScope` collects its priced records (a summary request counts toward its
+   turn, a sub-session's toward the parent's as one `sub_session` record per reply), and every host shows the same
+   totals (`UsageReport.Total`): the API on `message_delta` and on the `error` event of a failed turn (FX6), the web
+   apps per answer and per chat, the CLI after each answer, Rider when `USAGE_IN_CHAT` is on, `/usage` per session. A
+   turn's line keeps the four kinds apart (in, cache write, cached, out), since each is priced differently, and says
+   how many requests went unpriced.
+7. **Display currency** (F14): the ledger stays in the bill's currency (USD); a host shows its totals in
+   `DISPLAY_CURRENCY`, or the currency of `HOST_CULTURE` (written once on the PC by `usage-probe --host-culture`,
+   since a container can't see the region and running it in that culture would change every tool's number format).
+   `ExchangeRates` come from `RATES_URL` (Frankfurter by default, mapped by an `IRatesMapper` into our own
+   `rates.json` shape), falling back to the tracked `config/rates.json`; a missing rate shows the charged figure,
+   never a guess. Amounts always use `.` (`R35.00`); a symbol that would clash with `$` is written as the code.
+8. **Prompt caching** (F4): `PromptCachingChatClient`, innermost around every provider's client, asks the provider's
+   `IPromptCachingStrategy` to mark the request (`AnthropicPromptCaching`; `NoPromptCaching` elsewhere). Two markers:
+   one on a copy of the system prompt's last block, which caches the tools and the system prompt with
+   `LLM_CACHE_TTL` (5 minutes by default, or an hour), and Anthropic's automatic marker for the conversation, always 5
+   minutes. The stored history is never marked. The prefix stays the same bytes because tools are sorted by name (a
+   duplicate name stops start-up), the system prompt holds nothing per request, and thinking is fixed per engine.
+   `LLM_CACHE=off` turns it off. `usage-probe --cache-gaps` reads a ledger's gaps between requests to pick the lifetime.
+9. **Toolsets per session** (F5, [ADR 0006](../adr/0006-toolsets-per-session.md)): nothing loads at start-up; a session
+   names its toolsets when it opens and keeps them, and `AgentEngineFactory` builds one engine per sorted toolset list
+   (up to 16 cached), sharing the chat client, the ledger and the settings; the system prompt carries only those
+   toolsets' guides (`ToolsetCatalog`). A session with no list gets `skills`. A sub-session (`StartSubSession` in the
+   `specialists` toolset) runs on a peer from `AGENT_PEERS` with its own toolsets, one level deep, at most 3 a turn, 5
+   minutes each, and stops using tools when its prompt nears 80,000 tokens (FX14); the chat's session keeps it open for
+   a follow-up by handle (`ContinueSubSession`, F26), and a role may declare its own toolsets (F33,
+   [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
+10. **Minions** (F30, built, not in use): a specialist can hand one task and one of its own tools to a minion on a cheap
+    model (`MINION_LLMS`, a session naming its LLM profile); no session is given `minions` until the cook is measured
+    with and without them (the TODO's *F30's minions tested*).
+11. **The web** (F32 to F34): `WebSearch` behind `IWebSearchProvider` (SearXNG in Docker, or a licensed API), and pages
+    drawn with JavaScript read through one headless Chrome behind `IPageRenderer` (PuppeteerSharp over CDP), every
+    request it makes held to the address rule (`SsrfGuard`), no WebSockets, on a network apart from the database. The
+    browser says what it is (`BROWSER_USER_AGENT`, [ADR 0038](../adr/0038-the-browser-says-what-it-is.md)). `WEB_REPLAY`
+    records the pages a session reads and replays them, so an eval reads the same web twice.
 
 The full step-by-step is in [How a turn works](../architecture/06-runtime-view.md).
 
@@ -132,7 +175,7 @@ attributes (121 tools with every toolset, Paymo and DevOps included). Helpers mu
 
 `LLM_PROVIDER`, `LLM_MODEL`, `LLM_ENDPOINT`, `LLM_API_KEY` / `ANTHROPIC_API_KEY`, `ANTHROPIC_WORKSPACE_ID`,
 `LLM_SUPPORTS_TOOLS`, `LLM_THINKING`, `LLM_PROFILE`, `WORKSPACE_ROOT`, `SKILLS_DIRECTORY`,
-`LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
+`LLM_CACHE`, `LLM_CACHE_TTL`, `LOG_DIRECTORY`, `USAGE_LEDGER`, `USAGE_IN_CHAT`, `AGENT_PEERS`, `MINION_LLMS`, `PRICES_FILE`, `PRICES_URL`, `RATES_URL`, `RATES_FORMAT`, `RATES_FILE`,
 `HOST_CULTURE`, `DISPLAY_CURRENCY`,
 `PAYMO_API_KEY`, `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION`, `DEVOPS_PROJECT`, `DEVOPS_TEAM`, `WEB_SEARCH_PROVIDER`,
 `GOOGLE_SEARCH_API_KEY`, `GOOGLE_SEARCH_ENGINE_ID`, `SEARXNG_URL`, `BROWSER_URL`, `PAGE_RENDERER`, `WEB_REPLAY` (the default for eval
@@ -163,9 +206,14 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 
 ## Limits and plans
 
-- 10 tool rounds per message → [F10](../features/F10-route-settings.md); nothing cached → [F4](../features/F04-prompt-caching.md);
-  usage recorded but not priced → [F2](../features/F02-prices-and-cost.md); history grows unbounded → [F9](../features/F09-context-management.md);
-  sub-session usage not yet in the parent chat's totals → the F5 follow-up in the TODO.
+- 10 tool rounds per message → [F10](../features/F10-route-settings.md); history grows unbounded →
+  [F9](../features/F09-context-management.md); estimates and budgets → [F7](../features/F07-budgets.md); each model's
+  window and cache minimum → [F15](../features/F15-model-limits.md).
+- Totals convert at the one rate a host loaded at start-up; a report over months (F7) must convert each record at its
+  own date's rate.
+- `tool_choice: none` on the round after the limit (FX1) didn't break the conversation's cache when measured, though
+  Anthropic's docs say a change of `tool_choice` should; if the API starts enforcing it, each such request rewrites the
+  conversation's cache (about $0.006 more per round-limited message on Haiku 5.5).
 - Rider MCP discovery only logs; Ollama tool support is a name heuristic; Paymo task lookup takes the first match
   ([known limitations](../../TODO.md#known-limitations)).
 
