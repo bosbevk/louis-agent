@@ -9,6 +9,7 @@
   fix's row keeps its symptom and cause; the lessons are in [Lessons from the fixes](docs/learning/fixes-lessons.md);
   [platform.md](docs/plans/platform.md) is the living roadmap with Phases 0 to 3 done; the rule *a feature holds at most
   about ten steps* and its sub-features ([docs/CLAUDE.md](docs/CLAUDE.md), rules 2 and 3) are TODO lines
+  ([plan](https://github.com/bosbevk/louis-agent/blob/113501480e9df53e94a84a447f4c3abc5c93e081/docs/plans/CL24-done-docs-folded.md))
 - 2026-10-29 — **F18 Evaluation**: every check is a C# eval on one harness (`evals/louis-agent.evals/`): `IEval` and
   `IEvalSet`, datasets in Inspect's Sample shape with a held-out split and a hash, code graders first, a model judge
   calibrated against people's labels (90% of each class), human review in the portal, pass@k and pass^k, a roll-up by
