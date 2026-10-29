@@ -25,9 +25,12 @@ as you go: every answer shows what it cost, specialists included.
   specialist, toolsets, task, steps and cost, the chat's sources, Puls's and the specialists' cost). Below 1200px the
   Werk panel slides in; below 992px the sidebar does.
 - **The admin portal** (F27, F31; English, the builders' screen): *Admin* in the profile menu opens `/admin`, its own
-  layout (`AdminLayout`). `/admin/evals` lists every eval the runner has, with its runs, an eval that never ran
-  included (`Evals.razor`, F18); `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's
-  runs; `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
+  layout (`AdminLayout`). `/admin/evals` lists every eval the runner has, an eval that never ran included
+  (`Evals.razor`, F18), each as a card (CL26): its latest run as a scorecard, a ring per mode with pass@k in the
+  middle and pass^k under it; the runs before it down a timeline, a bar per mode; each run tagged *recorded*,
+  *replay of …* or *re-scored from …* and linked to its source (`StoredRunRow.ReplayOf`); its graders, categories and
+  modes in a fold. `EvalCardView` (a Presentation Model) works out what the card shows, and `EvalText` its words.
+  `/admin/benchmarks` lists the checks, runs one with live progress, and lists a check's runs; `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
   request), the trend (`TrendChart`) and what the run ran with. Each chart explains itself on hover (`ChartInfo`).
   The old `/admin/maatstawwe` addresses still open. **The grades view** (F18 step 4.5c) shows every eval the same way, from
   the standard records alone: `GraderList` above the explorer (the run's eval, version, commit and graders, or one line saying
@@ -64,7 +67,7 @@ as you go: every answer shows what it cost, specialists included.
 | `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the records both components use (`GradeOutcome`, `GraderRow`, `GradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Grades/Reading/`: the outcome parsed once (`GradeOutcomes`); the run's graders and a conversation's grades come from their typed rows (`RunGraders.Of`, `ConversationGrades.Of`); `Grades/Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`); `Charts/`: the charts' colours and maths, no markup (`ChartPalette`, the six series colours for the trend chart and the explorer, `RingArcs`, `TokenKinds`, `ChartNumbers`); `Reviews/`: the review's rules and words in plain classes: `BlindReview` (the one place that knows `.human`: `IsReview`, `JudgeOf`; who answered: `OwnGrades`, `Answered`; which review a conversation shows: `ReviewOf`; what hides the judge's verdict; whether the person agreed: `Compare`), `ReviewStatus` (to review, reviewed, no review, and the list's filter `Keeps`), `ReviewText` and `AgreementText` (the sentences), `CalibrationText` and `CalibrationView` (the judge check), `ReviewerName` and `ReviewNote` (their limits), `ReviewerState` |
 | `Text/PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
 | `Content/` | `Source` and `Sources` (a turn's sources: the answer's links and the pages its specialists read); `Template` and `Templates` (the starters on Verken and Studio) |
-| `wwwroot/css/app.css` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat) |
+| `wwwroot/css/` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat): `app.css` is the `@import` list in cascade order, the rules in area files at most 200 lines each (`settings/tokens.css`, `base/`, `layout/`, `chat/`, `landing/`, `admin/`; CL26, [ADR 0053](../adr/0053-stylesheets-by-concern.md)) |
 | `wwwroot/js/chat.js` | Scrolling, the sidebar and panel toggles, copy, location (browser + Nominatim), focus, the pointer spotlight and tilt, the motion switch, costs counting up |
 | `wwwroot/js/landing.js` | The landing page's motion (F24): progress line, section index, centred links, reveals, counters, the pinned tour, the demo, the accordion; started and stopped by `LandingPage.razor` |
 | `wwwroot/index.html` | The start screen with Blazor's real loading count; the saved layout and the motion choice applied before the first paint |
@@ -84,7 +87,7 @@ What the look (F20) and the motion (F24) settled, so a change keeps it:
 - **The loading count is Blazor's own** (`--blazor-load-percentage-text` on `<html>`, shown in a `::after`); no script
   counts files.
 - **One motion switch:** `data-motion="on"` on `<html>`, set by `index.html` before the first paint and changed by
-  `pulsUi.setMotion` (the sidebar's checkbox and the landing's pill both call it); `app.css` guards its reduced-motion
+  `pulsUi.setMotion` (the sidebar's checkbox and the landing's pill both call it); the stylesheets guard their reduced-motion
   blocks with `:root:not([data-motion="on"])`. Text arriving in order is content, not motion, so a reader who asked
   for less motion still sees the demo play at a reading pace; only the loop stops. Moving content that lasts over five
   seconds has a *Stop* or *Pouse* button (WCAG 2.2.2), and a closed FAQ answer is `inert`.

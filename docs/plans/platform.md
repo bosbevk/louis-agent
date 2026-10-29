@@ -1440,7 +1440,7 @@ simulation ("we call it simulations"). If he answers *first*, that eval's role f
 |---|---|
 | No demo identity, no customers pack and no F40 doc: the feature docs stop at F34, and no TODO line names F40 | `docs/features/`, `TODO.md` |
 | The admin portal (F27, F31), which the control room grows from, lives in Puls's web app: the page of checks and the live run (routes `/admin` and `/admin/benchmarks`, 671 lines) and one stored run (138 lines). It already follows a running check live: a row per turn, the open turn streaming in the chat's own `TurnView`, and a reloaded page picks the run up again | `src/louis-agent.puls/Pages/Admin/Benchmarks.razor:1-2,16-19`, `BenchmarkRun.razor` |
-| What ties the portal to Puls: `@layout AdminLayout` (with `PulsLogo` and "Back to Puls"); `RunExplorer` (986 lines), `TrendChart` (135) and `ChartInfo` (76), which are Puls's own components; the focus helper `pulsUi.focus`; the "· Puls Admin" titles; its styles in Puls's `css/app.css`, and Bootstrap's offcanvas, which only Puls's app loads. 47 lines across these six files name Puls, 27 of them in `RunExplorer`'s charts and legends ("Puls itself" beside the specialist) | `src/louis-agent.puls/Layout/AdminLayout.razor:11,17`; `src/louis-agent.puls/Components/`; `Benchmarks.razor:21,658`; `src/louis-agent.puls/wwwroot/js/chat.js:162`, `wwwroot/css/app.css:1249-1252`, `wwwroot/index.html:17,52` (counted with `grep -c Puls`) |
+| What ties the portal to Puls: `@layout AdminLayout` (with `PulsLogo` and "Back to Puls"); `RunExplorer` (986 lines), `TrendChart` (135) and `ChartInfo` (76), which are Puls's own components; the focus helper `pulsUi.focus`; the "· Puls Admin" titles; its styles in Puls's `css/admin/`, and Bootstrap's offcanvas, which only Puls's app loads. 47 lines across these six files name Puls, 27 of them in `RunExplorer`'s charts and legends ("Puls itself" beside the specialist) | `src/louis-agent.puls/Layout/AdminLayout.razor:11,17`; `src/louis-agent.puls/Components/`; `Benchmarks.razor:21,658`; `src/louis-agent.puls/wwwroot/js/chat.js:162`, `wwwroot/css/admin/shell.css:1-4`, `wwwroot/index.html:17,52` (counted with `grep -c Puls`) |
 | The shared web project holds no pages: "Each app keeps its own pages, look (CSS) and JavaScript; the shared components only emit class names". Both apps' routers know only their own assembly | `src/louis-agent.web.shared/louis-agent.web.shared.csproj:3-5`; `src/louis-agent.puls/App.razor:1`, `src/louis-agent.web/App.razor:1` |
 | Neither web app opens another identity's mode: Puls's app always opens `puls/voice-{language}`, and the code-review app passes no role, so it gets the API's default mode; the shared API client already takes a role | `src/louis-agent.puls/Pages/ChatPage.razor:326,769`; `src/louis-agent.web/Pages/ChatPage.razor:415`; `src/louis-agent.web.shared/Services/AgentApi.cs:26` |
 | The checks the portal offers are stub, cook and routing. A run needs the run store ("without a store no run starts"), and only Puls's stack runs one: the code-review stack has no MongoDB | `src/louis-agent.api/Services/BenchmarkCatalog.cs:12-21`; `src/louis-agent.api/Program.cs:108-109,114`; `docker/docker-compose.yml` |
@@ -1787,7 +1787,7 @@ louis-agent/
 │   │   ├── Pages/Admin/                   Benchmarks.razor (671 lines), BenchmarkRun.razor (138): the portal (F27, F31)
 │   │   ├── Layout/AdminLayout.razor       its sidebar, with PulsLogo and "Back to Puls"
 │   │   ├── Components/                    RunExplorer (986), TrendChart (135), ChartInfo (76), PulsLogo, …
-│   │   └── wwwroot/                       the admin's styles in css/app.css; pulsUi.focus in js/chat.js;
+│   │   └── wwwroot/                       the admin's styles in css/admin/; pulsUi.focus in js/chat.js;
 │   │                                      Bootstrap from index.html
 │   ├── louis-agent.web/App.razor          the code-review app: a router over its own assembly only; no /admin
 │   └── louis-agent.web.shared/            components and services only: "each app keeps its own pages, look (CSS)
@@ -3595,7 +3595,7 @@ instance Malmesbury is swartland municipality give it that municipality colours"
   asks Nominatim at `zoom=10`, with the position rounded to 2 decimals, about 1 km, and falls back to
   `address.municipality` for the town (`src/louis-agent.puls/wwwroot/js/chat.js:213-218`).
 - **The theme.** Puls's web app applies the municipality's colours as its theme: Puls has one theme today, its colours
-  as CSS variables (`src/louis-agent.puls/wwwroot/css/app.css:1-4,8`). Colours only: a crest or a logo is official
+  as CSS variables (`src/louis-agent.puls/wwwroot/css/settings/tokens.css:1-4,8`). Colours only: a crest or a logo is official
   insignia and needs the municipality's permission. While the user drives, the theme changes when they stop or open the
   app, never mid-chat.
 - **Location under POPIA.** Location is personal information: the user is asked once (as today: the browser asks

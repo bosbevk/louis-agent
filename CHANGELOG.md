@@ -4,6 +4,13 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-29 — **CL26 The eval card, reworked, and the stylesheets split**: the Evals page's card leads with its
+  latest run as a ring per mode, the runs before it down a timeline with a bar per mode and a tag that says
+  recorded, replay or re-score (a run row says what it replayed, `ReplayOf`), and what it checks in a fold
+  (`EvalCardView`, a Presentation Model); both web apps' `app.css` became an `@import` list of area files (Puls 18,
+  the code-review app 8), byte-identical when joined, and a `.css` file holds at most 200 lines of rules
+  ([0053](docs/adr/0053-stylesheets-by-concern.md); the byte-checked move is
+  [0054](docs/adr/0054-a-move-may-copy-line-ranges.md))
 - 2026-10-29 — **CL25 Every CLAUDE.md in 200 lines**: `docs/CLAUDE.md` from 558 lines to under 200 and every
   `CLAUDE.md` and `.claude/rules/` file held to 200 by `ClaudeMdSizeTests`; the why of each rule in its ADR (new:
   [0050](docs/adr/0050-summaries-like-a-person.md) summaries like a person, [0051](docs/adr/0051-flat-conditionals-and-named-endpoints.md)
