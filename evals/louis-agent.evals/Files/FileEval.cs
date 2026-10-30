@@ -8,6 +8,7 @@ using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Labels;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Readers;
 
 namespace LouisAgent.Evals.Files;
 
@@ -45,13 +46,14 @@ public sealed class FileEval : IEval
         (_file, _dataset, Checks, Manual) = (file, dataset, checks, manual);
 
     /// <summary>
-    /// Reads the eval in <paramref name="folder"/>, building its checks from <paramref name="catalog"/>;
-    /// <paramref name="source"/> is where the folder sits in the repository, which the manual's path starts from.
+    /// Reads the eval in <paramref name="folder"/>, building its checks from <paramref name="catalog"/>, with
+    /// <paramref name="readers"/> for a check that names a reader; <paramref name="source"/> is where the folder
+    /// sits in the repository, which the manual's path starts from.
     /// </summary>
-    public static FileEval Load(string folder, CheckCatalog catalog, string source)
+    public static FileEval Load(string folder, CheckCatalog catalog, ReaderCatalog readers, string source)
     {
         var file = EvalFileReader.Read(folder);
-        var checks = Build(file, folder, catalog);
+        var checks = Build(file, folder, catalog, readers);
         var dataset = DatasetLoader.Load(Path.Combine(folder, DatasetFolder), checks);
         return new FileEval(file, dataset, checks, file.Manual is null ? null : $"{source}/{file.Manual}")
         {
@@ -102,7 +104,8 @@ public sealed class FileEval : IEval
     /// The file's checks in its order, each from its catalogue entry with the folder and the checks before it; a type
     /// the catalogue doesn't have is refused, naming the file and the types it does have.
     /// </summary>
-    private static IReadOnlyList<ICheck> Build(EvalFile file, string folder, CheckCatalog catalog)
+    private static IReadOnlyList<ICheck> Build(EvalFile file, string folder, CheckCatalog catalog,
+        ReaderCatalog readers)
     {
         var built = new List<ICheck>();
         foreach (var entry in file.Checks)
@@ -114,7 +117,7 @@ public sealed class FileEval : IEval
                     entry.Type,
                     Supported = string.Join(", ", catalog.Listing().Select(line => line.Type))
                 }));
-            var check = type.Create(entry.Parameters ?? NoParameters, new CheckContext(folder, [.. built]));
+            var check = type.Create(entry.Parameters ?? NoParameters, new CheckContext(folder, [.. built], readers));
             built.Add(entry.Name is { } name ? new NamedCheck(name, check) : check);
         }
 

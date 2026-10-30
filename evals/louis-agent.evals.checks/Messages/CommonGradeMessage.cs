@@ -132,6 +132,33 @@ public enum CommonGradeMessage
     [Description("{Calls} tool calls, not under {Limit}")]
     ToolCallsOver,
 
+    [Description("the scenario sets no {Key}, so there is no amount to keep within")]
+    AmountNotSet,
+
+    [Description("no amount could be read from the answer")]
+    AmountUnread,
+
+    [Description("the total {Total} is within {Expected}")]
+    AmountWithin,
+
+    [Description("the total {Total} is over {Expected}")]
+    AmountOver,
+
+    [Description("the scenario asks for no {Key}, so there is no number to name")]
+    NumberNotAsked,
+
+    [Description("turn {Turn} has no answer to read")]
+    NumberNothingToRead,
+
+    [Description("turn {Turn} names no number, not {Asked}")]
+    NumberForgotten,
+
+    [Description("turn {Turn} names {Found}, not {Asked}")]
+    NumberWrong,
+
+    [Description("every turn names the number asked")]
+    NumberNamedPass,
+
     [Description("answered itself, as expected")]
     AnsweredAsExpected,
 

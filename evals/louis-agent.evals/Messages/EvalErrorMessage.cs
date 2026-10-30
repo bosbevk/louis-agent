@@ -104,6 +104,13 @@ public enum EvalErrorMessage
     [Description("Scenario '{Id}': '{Key}' in expected must be a text or a number.")]
     BadExpectedValue,
 
+    [Description("Scenario '{Id}': '{Key}' in expected must be an amount above 0.")]
+    BadExpectedAmount,
+
+    [Description(
+        "Scenario '{Id}': '{Key}' in expected must be a whole number of at least 1, or a list of them, one per turn.")]
+    BadExpectedNumber,
+
     [Description("Rubric '{File}' isn't there: a judge reads its rubric from the eval's folder.")]
     RubricMissing,
 

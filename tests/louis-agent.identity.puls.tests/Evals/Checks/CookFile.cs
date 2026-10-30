@@ -1,7 +1,9 @@
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Compare.Readers;
 using LouisAgent.Evals.Grading.Human;
+using LouisAgent.Evals.Readers;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.Identities.Puls.Judges;
 
@@ -21,7 +23,8 @@ internal static class CookFile
 
     /// <summary>The cook's eval, loaded once.</summary>
     public static FileEval Eval { get; } =
-        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. PulsChecks.All, .. PulsJudges.All]), Source);
+        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. PulsChecks.All, .. PulsJudges.All]),
+            new ReaderCatalog(GeneralReaders.All), Source);
 
     /// <summary>The cook's judge's rubric, as its file holds it.</summary>
     public static string Rubric { get; } =

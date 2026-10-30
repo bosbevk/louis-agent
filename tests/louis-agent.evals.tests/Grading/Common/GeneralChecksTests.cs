@@ -34,6 +34,7 @@ public class GeneralChecksTests
                 ("is-json", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
                 ("tool-used", CheckKind.FixedRule), ("tool-not-used", CheckKind.FixedRule),
                 ("tool-used-with", CheckKind.FixedRule), ("tool-calls-under", CheckKind.FixedRule),
+                ("amount-under", CheckKind.FixedRule), ("number-named", CheckKind.FixedRule),
                 ("judge", CheckKind.Model), ("human", CheckKind.Human)
             }));
     }

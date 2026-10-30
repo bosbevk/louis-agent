@@ -20,7 +20,7 @@ try
     // Every eval folder copied beside the runner is found, its checks built from the catalogue the runner gathers;
     // EVALS= then chooses them by the identity each one proves.
     var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-        .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source))
+        .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, RunnerReaders.Catalog, folder.Source))
         .ToList();
     var chosen = EvalFolders.Choose(files, Environment.GetEnvironmentVariable("EVALS"));
     var catalog = new EvalCatalog(chosen, new StubEval());

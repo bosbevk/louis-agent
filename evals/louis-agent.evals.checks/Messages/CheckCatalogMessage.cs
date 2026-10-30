@@ -23,6 +23,15 @@ public enum CheckCatalogMessage
     [Description("check type '{Type}' needs '{Field}' to be at least 1")]
     BelowOne,
 
+    [Description("reader '{Name}' is not in the catalogue; the readers are {Supported}")]
+    UnknownReader,
+
+    [Description("reader '{Name}' is not a {Kind}")]
+    WrongReaderKind,
+
+    [Description("reader '{Name}' is listed twice")]
+    DuplicateReader,
+
     [Description("check type '{Type}' isn't a safe name: use letters, digits, '-' and '_', at most 64")]
     TypeNotSafe,
 

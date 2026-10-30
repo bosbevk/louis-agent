@@ -1,5 +1,6 @@
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading.Common.Answers;
+using LouisAgent.Evals.Grading.Common.Compare;
 using LouisAgent.Evals.Grading.Common.Facts;
 using LouisAgent.Evals.Grading.Common.Tools;
 using LouisAgent.Evals.Grading.Human;
@@ -20,7 +21,7 @@ public static class GeneralChecks
 {
     /// <summary>
     /// Every general check type, by family, in the order the catalogue lists them: the run's facts, the text rules,
-    /// the structure, the tool calls, then the model and the person.
+    /// the structure, the tool calls, the compares through a reader, then the model and the person.
     /// </summary>
     public static IReadOnlyList<ICheckType> All { get; } =
     [
@@ -32,6 +33,7 @@ public static class GeneralChecks
         new RoutedToCheck.Entry(), new ToolUsedCheck.Entry(), new ToolNotUsedCheck.Entry(),
         new ToolUsedWithCheck.Entry(),
         new ToolCallsUnderCheck.Entry(),
+        new AmountUnderCheck.Entry(), new NumberNamedCheck.Entry(),
         new JudgeCheck.Entry(), new HumanReviewCheck.Entry()
     ];
 }

@@ -7,7 +7,9 @@ using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Compare.Readers;
 using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Readers;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Routing;
@@ -149,5 +151,5 @@ public class RoutingEvalTests
     /// <summary>The eval, from the folder its project copied beside these tests.</summary>
     private static FileEval Load() =>
         FileEval.Load(Path.Combine(AppContext.BaseDirectory, "EvalFiles", Source), new CheckCatalog(GeneralChecks.All),
-            Source);
+            new ReaderCatalog(GeneralReaders.All), Source);
 }

@@ -6,6 +6,7 @@ using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Models;
 using LouisAgent.Evals.Grading.Models.Rubrics;
 using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Evals.Readers;
 using Microsoft.Extensions.AI.Evaluation;
 using static LouisAgent.Identities.Puls.Judges.Tests.JudgeTrials;
 
@@ -73,7 +74,8 @@ public class MealForPeopleEntryTests
         var judge = Build(Settings, folder.Root);
 
         var review = (HumanReviewCheck)new CheckCatalog([.. GeneralChecks.All, .. PulsJudges.All]).Get("human")
-            .Create(Json("""{"reviews": "meal-for-people"}"""), new CheckContext(folder.Root, [judge]));
+            .Create(Json("""{"reviews": "meal-for-people"}"""),
+                new CheckContext(folder.Root, [judge], ReaderCatalog.Empty));
 
         Assert.That((review.Name, review.Question),
             Is.EqualTo(("meal-for-people.human", CookRubric.Question)));
@@ -81,7 +83,8 @@ public class MealForPeopleEntryTests
 
     /// <summary>Builds the judge the way the cook's eval file does: from Puls's judges, in this folder.</summary>
     private static ICheck Build(string settings, string folder) =>
-        new CheckCatalog(PulsJudges.All).Get("meal-for-people").Create(Json(settings), new CheckContext(folder, []));
+        new CheckCatalog(PulsJudges.All).Get("meal-for-people").Create(Json(settings),
+            new CheckContext(folder, [], ReaderCatalog.Empty));
 
     /// <summary>A JSON value from its text.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();

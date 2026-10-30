@@ -27,7 +27,7 @@ public class EvalConformanceTests
     private static IEnumerable<TestCaseData> EveryEval()
     {
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source));
+            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, RunnerReaders.Catalog, folder.Source));
         var catalog = new EvalCatalog([.. files, new FakeEval()], new StubEval());
         foreach (var eval in catalog.Evals)
             yield return new TestCaseData(eval).SetName(eval.Name);
