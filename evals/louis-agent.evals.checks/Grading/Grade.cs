@@ -3,8 +3,8 @@ using LouisAgent.Evals.Protocol.Kinds;
 namespace LouisAgent.Evals.Grading;
 
 /// <summary>
-/// One grader's verdict on one trial: a score, its outcome, and the reason a person reads. A model grader's also says what judged (<see cref="Judge"/>); a code grader's
-/// has none.
+/// One check's verdict on one trial: a score, its outcome, and the reason a person reads. A model check's also says
+/// what judged (<see cref="Judge"/>); a code check's has none.
 /// </summary>
 public sealed record Grade(
     string Check,

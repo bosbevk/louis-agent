@@ -16,7 +16,7 @@ contract left the harness, and what was left out on purpose.
 | Who can write a check | The harness and an eval set | Also a pack (F49.3), without reaching the harness that runs Puls's evals |
 | How an eval gets a check | `new WithinTimeGrader(TimeSpan.FromSeconds(120))` in C# | That, or `within-time` with `{"seconds": 120}` from a file, through the catalogue |
 | The words | "Grader" everywhere | `ICheck` in C#; the wire still says `grader`, so stored runs read the same (ADR 0049) |
-| The general checks | four, all C# only | six: `no-error`, `within-time`, `cost-under`, `contains`, `tool-used` named from a file; `routed-to` C# only |
+| The general checks | four, all C# only | six, five of them named from a file: `no-error`, `within-time`, `cost-under`, `contains`, `tool-used`; `routed-to` C# only |
 
 The cook's and routing's evals didn't change: they still build their checks in C#, every check kept its name and
 version, and their reference and known-bad transcripts grade the same in the test suite before and after.

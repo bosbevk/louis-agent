@@ -6,11 +6,17 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Grading.Common;
 
 /// <summary>
-/// The trial's first turn went where the eval expects for this trial (F18 step 4.2): "went to role X", the way Anthropic's tool-call
-/// grader checks which tool was called. The expected role is the eval's, per trial; null means the agent should answer itself. As the
-/// Python check: a turn that errored is not right, and a specialist's own hand-over is not the turn's route. An eval whose route is a
-/// scenario's `expected` key names it in <paramref name="expectedKeys"/>, so the loader checks it is read and fed (F18 step 5.4).
+/// The trial's first turn went where the eval expects for this trial: "went to role X", the way Anthropic's tool-call
+/// check reads which tool was called. The expected role is the eval's, per trial; null means the agent should answer
+/// itself. A turn that errored is not right, and a specialist's own hand-over is not the turn's route. An eval whose
+/// route is a scenario's <c>expected</c> key names it in <paramref name="expectedKeys"/>, so the loader checks it is
+/// read and fed.
 /// </summary>
+/// <remarks>
+/// The only general check with no catalogue entry: its expected role is a function of the trial, which a file can't
+/// hold; F49.2's eval file settles how a route is stated, and the entry comes with it.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class RoutedToCheck(
     Func<Trial, string?> expectedRole,
     bool required = true,

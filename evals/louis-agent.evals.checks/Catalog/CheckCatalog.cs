@@ -1,5 +1,4 @@
 using System.Text.Json.Schema;
-using System.Text.RegularExpressions;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Messages;
 
@@ -15,7 +14,7 @@ namespace LouisAgent.Evals.Catalog;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-public sealed partial class CheckCatalog
+public sealed class CheckCatalog
 {
     private readonly IReadOnlyList<ICheckType> _entries;
 
@@ -48,7 +47,7 @@ public sealed partial class CheckCatalog
         var types = new HashSet<string>(StringComparer.Ordinal);
         foreach (ICheckType entry in entries)
         {
-            if (!McpName().IsMatch(entry.Type))
+            if (!IsMcpName(entry.Type))
                 throw Refuse(CheckCatalogMessage.TypeNotSafe, new { entry.Type });
             if (!types.Add(entry.Type)) throw Refuse(CheckCatalogMessage.DuplicateType, new { entry.Type });
         }
@@ -61,8 +60,9 @@ public sealed partial class CheckCatalog
         new(MessageText.Format(message, values));
 
     /// <summary>
-    /// An MCP tool name, as the conformance check holds an eval's: letters, digits, '-' and '_', at most 64.
+    /// True when the type is one an MCP tool name can carry, as the conformance check holds an eval's name: ASCII
+    /// letters, digits, '-' and '_', one to 64 of them ("within-time" is; "" and "time.limit" aren't).
     /// </summary>
-    [GeneratedRegex("^[A-Za-z0-9_-]{1,64}$", RegexOptions.CultureInvariant)]
-    private static partial Regex McpName();
+    private static bool IsMcpName(string type) =>
+        type.Length is >= 1 and <= 64 && type.All(letter => char.IsAsciiLetterOrDigit(letter) || letter is '-' or '_');
 }
