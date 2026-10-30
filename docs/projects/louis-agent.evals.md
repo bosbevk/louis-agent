@@ -31,6 +31,10 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   AI.Evaluation) and the human review (`Human/`); `ICheck`, `Grade` and `Verdict` are the check contract's, in
   [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score from 0 to 1, an outcome and a reason; a
   conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
+- **A general check can be named from a file.** `no-error`, `within-time` and `cost-under` each carry a nested
+  `Entry` and its `Settings` record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), and
+  `Grading/Common/GeneralChecks.All` is the harness's list for the check catalogue. `routed-to` has no entry yet: its
+  expected role is a function (Puls's reads a scenario key and the mode's toolsets), which F49.2's eval file settles.
 - **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
   contract's `EvalProtocolJson` ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); `ProtocolTranscripts`
   reads a stored run back for a re-score or a conformance case.
@@ -93,8 +97,9 @@ The runner's own settings (`EVALS`, `BENCHMARK_RUN`) are in [louis-agent.evals.r
 ## Extending it
 
 A new identity's evals are a new project with one `IEvalSet`, its evals, datasets and graders; the steps are
-[Add an eval set](../guides/add-an-eval-set.md). A grader every identity could use goes in `Grading/Common/`; one
-that knows an identity's rules stays in its set.
+[Add an eval set](../guides/add-an-eval-set.md). A check every identity could use goes in `Grading/Common/`,
+with a nested `Entry` and a line in `GeneralChecks.All` when a file should be able to name it; one that knows an
+identity's rules stays in its set.
 
 ## Tests
 
