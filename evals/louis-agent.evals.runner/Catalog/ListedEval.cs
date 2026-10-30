@@ -32,5 +32,5 @@ public sealed record ListedDataset(string Name, int Version);
 public sealed record ListedGrader(
     string Name,
     int Version,
-    [property: JsonConverter(typeof(JsonStringEnumConverter<GraderKind>))]
-    GraderKind Kind);
+    [property: JsonConverter(typeof(JsonStringEnumConverter<CheckKind>))]
+    CheckKind Kind);

@@ -14,27 +14,27 @@ namespace LouisAgent.Evals.Tests.Running;
 // Grading a trial in the runner (F18 step 4.5a): every grader of the eval in the eval's order; one that throws gives Unknown with its
 // reason and one warning, and the next grader still runs; a cancel of the run stops it, a grader's own timeout does not. Written first: TrialGrading.GradeAsync threw
 // NotImplementedException on the red run.
-public class TrialGradingTests
+public class TrialCheckingTests
 {
     [Test]
     public async Task TheGradesComeInTheEvalsOrder()
     {
-        var eval = new GradedEval(new PassingGrader("zebra"), new PassingGrader("apple"), new PassingGrader("mango"));
+        var eval = new GradedEval(new PassingCheck("zebra"), new PassingCheck("apple"), new PassingCheck("mango"));
 
-        var grades = await TrialGrading.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), CancellationToken.None);
+        var grades = await TrialChecking.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), CancellationToken.None);
 
-        Assert.That(grades.Select(g => g.Grader), Is.EqualTo(new[] { "zebra", "apple", "mango" }));
+        Assert.That(grades.Select(g => g.Check), Is.EqualTo(new[] { "zebra", "apple", "mango" }));
     }
 
     [Test]
     public async Task AGraderThatThrows_GivesUnknownWithItsReason_AndOneWarning_AndTheNextGraderStillRuns()
     {
-        var eval = new GradedEval(new ThrowingGrader("broken"), new PassingGrader("fine"));
+        var eval = new GradedEval(new ThrowingCheck("broken"), new PassingCheck("fine"));
         var log = new CapturingLogger();
 
-        var grades = await TrialGrading.GradeAsync(eval, Trial(Turn(1)), log, CancellationToken.None);
+        var grades = await TrialChecking.GradeAsync(eval, Trial(Turn(1)), log, CancellationToken.None);
 
-        Assert.That(grades.Select(g => (g.Grader, g.Outcome)),
+        Assert.That(grades.Select(g => (Grader: g.Check, g.Outcome)),
             Is.EqualTo(new[] { ("broken", GradeOutcome.Unknown), ("fine", GradeOutcome.Pass) }));
         Assert.That(grades[0].Reason, Does.Contain("the index was out of range"));
         Assert.That(log.Warnings, Has.Count.EqualTo(1));
@@ -48,10 +48,10 @@ public class TrialGradingTests
     {
         using var cancelled = new CancellationTokenSource();
         cancelled.Cancel();
-        var eval = new GradedEval(new CancellingGrader(), new PassingGrader("never"));
+        var eval = new GradedEval(new CancellingCheck(), new PassingCheck("never"));
 
         Assert.That(
-            async () => await TrialGrading.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), cancelled.Token),
+            async () => await TrialChecking.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), cancelled.Token),
             Throws.InstanceOf<OperationCanceledException>());
     }
 
@@ -59,21 +59,21 @@ public class TrialGradingTests
     [Test]
     public async Task AGradersOwnTimeout_IsUnknown_WhenTheRunWasNotCancelled_AndTheNextGraderStillRuns()
     {
-        var eval = new GradedEval(new CancellingGrader(), new PassingGrader("fine"));
+        var eval = new GradedEval(new CancellingCheck(), new PassingCheck("fine"));
         var log = new CapturingLogger();
 
-        var grades = await TrialGrading.GradeAsync(eval, Trial(Turn(1)), log, CancellationToken.None);
+        var grades = await TrialChecking.GradeAsync(eval, Trial(Turn(1)), log, CancellationToken.None);
 
-        Assert.That(grades.Select(g => (g.Grader, g.Outcome)),
+        Assert.That(grades.Select(g => (Grader: g.Check, g.Outcome)),
             Is.EqualTo(new[] { ("cancels", GradeOutcome.Unknown), ("fine", GradeOutcome.Pass) }));
         Assert.That(log.Warnings, Has.Count.EqualTo(1));
     }
 
-    private sealed class PassingGrader(string name) : IGrader
+    private sealed class PassingCheck(string name) : ICheck
     {
         public string Name => name;
         public int Version => 1;
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => true;
 
@@ -81,11 +81,11 @@ public class TrialGradingTests
             ValueTask.FromResult(Verdict.Pass(Name, Version, "fine"));
     }
 
-    private sealed class ThrowingGrader(string name) : IGrader
+    private sealed class ThrowingCheck(string name) : ICheck
     {
         public string Name => name;
         public int Version => 1;
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => true;
 
@@ -93,11 +93,11 @@ public class TrialGradingTests
             throw new IndexOutOfRangeException("the index was out of range");
     }
 
-    private sealed class CancellingGrader : IGrader
+    private sealed class CancellingCheck : ICheck
     {
         public string Name => "cancels";
         public int Version => 1;
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => true;
 

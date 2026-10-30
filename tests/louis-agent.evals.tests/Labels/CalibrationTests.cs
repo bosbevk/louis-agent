@@ -35,12 +35,12 @@ public class CalibrationTests
             ], pass, $"note on {text}");
 
     /// <summary>A model grader that answers by what the answer says: "yes" passes, "no" fails, anything else it can't tell. It keeps the trials it was asked about.</summary>
-    private sealed class WordGrader : IGrader
+    private sealed class WordCheck : ICheck
     {
         public List<Trial> Asked { get; } = [];
         public string Name => "meal-for-people";
         public int Version => 1;
-        public GraderKind Kind => GraderKind.Model;
+        public CheckKind Kind => CheckKind.Model;
         public bool Required => false;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "serves" };
 
@@ -73,7 +73,7 @@ public class CalibrationTests
             Answer(SampleScenario.Beta, "yes", pass: false, repeat: 3)
         };
 
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, labels, CancellationToken.None);
+        var report = await Calibration.RunAsync(new WordCheck(), Scenarios, labels, CancellationToken.None);
 
         Assert.That((report.Agreed, report.Total), Is.EqualTo((2, 3)));
         Assert.That(report.Disagreements.Single().Answer.Repeat, Is.EqualTo(3));
@@ -84,7 +84,7 @@ public class CalibrationTests
     [Test]
     public async Task ACantTell_IsNotAgreement_ItIsListedAsOne()
     {
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios,
+        var report = await Calibration.RunAsync(new WordCheck(), Scenarios,
             [Answer(SampleScenario.Beta, "hmm", pass: true)], CancellationToken.None);
 
         Assert.That((report.Agreed, report.Total), Is.EqualTo((0, 1)));
@@ -94,7 +94,7 @@ public class CalibrationTests
     [Test]
     public async Task TheTrialHasTheWholeConversation_TheEarlierAnswersToo_AndTheLabelledAnswerLast()
     {
-        var grader = new WordGrader();
+        var grader = new WordCheck();
 
         await Calibration.RunAsync(grader, Scenarios, [Answer(SampleScenario.Alpha, "yes", pass: true, turn: 2)],
             CancellationToken.None);
@@ -118,7 +118,7 @@ public class CalibrationTests
             Answer(SampleScenario.Beta, "yes", pass: true), Answer(SampleScenario.Beta, "yes", pass: false, repeat: 2)
         };
 
-        var lines = (await Calibration.RunAsync(new WordGrader(), Scenarios, labels, CancellationToken.None)).Lines();
+        var lines = (await Calibration.RunAsync(new WordCheck(), Scenarios, labels, CancellationToken.None)).Lines();
 
         Assert.That(lines[0], Is.EqualTo("Agreement: 1 of 2"));
         Assert.That(lines[1],
@@ -135,7 +135,7 @@ public class CalibrationTests
     public async Task AJudgeThatAlwaysSaysPass_FailsTheBar_WhateverItsHeadlineScore()
     {
         // 14 labelled pass and 4 labelled fail, as Louis's 18 are: always saying pass agrees on 14 of 18 (78%) without judging anything.
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, Labels(pass: 14, fail: 4, failText: "yes"),
+        var report = await Calibration.RunAsync(new WordCheck(), Scenarios, Labels(pass: 14, fail: 4, failText: "yes"),
             CancellationToken.None);
 
         Assert.That((report.Agreed, report.Total), Is.EqualTo((14, 18)));
@@ -147,12 +147,12 @@ public class CalibrationTests
     [Test]
     public async Task TheBarIsNinetyPercentInEachClass_AndAClassOfFourNeedsAllFour()
     {
-        var ok = await Calibration.RunAsync(new WordGrader(), Scenarios, Labels(pass: 14, fail: 4),
+        var ok = await Calibration.RunAsync(new WordCheck(), Scenarios, Labels(pass: 14, fail: 4),
             CancellationToken.None);
-        var oneMissed = await Calibration.RunAsync(new WordGrader(), Scenarios,
+        var oneMissed = await Calibration.RunAsync(new WordCheck(), Scenarios,
             [.. Labels(pass: 14, fail: 3), Answer(SampleScenario.Beta, "yes", pass: false, repeat: 200)],
             CancellationToken.None);
-        var tenOfEleven = await Calibration.RunAsync(new WordGrader(), Scenarios,
+        var tenOfEleven = await Calibration.RunAsync(new WordCheck(), Scenarios,
             [.. Labels(pass: 10, fail: 4), Answer(SampleScenario.Beta, "no", pass: true, repeat: 300)],
             CancellationToken.None);
 
@@ -164,7 +164,7 @@ public class CalibrationTests
     [Test]
     public async Task ACantTell_CountsAgainstItsClass()
     {
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios,
+        var report = await Calibration.RunAsync(new WordCheck(), Scenarios,
             [.. Labels(pass: 9, fail: 0), Answer(SampleScenario.Beta, "hmm", pass: true, repeat: 500)],
             CancellationToken.None);
 
@@ -175,7 +175,7 @@ public class CalibrationTests
     [Test]
     public async Task AClassWithNoLabels_CannotBePassed_ItIsUntested()
     {
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, Labels(pass: 12, fail: 0),
+        var report = await Calibration.RunAsync(new WordCheck(), Scenarios, Labels(pass: 12, fail: 0),
             CancellationToken.None);
 
         Assert.That(report.Passes, Is.False);
@@ -187,7 +187,7 @@ public class CalibrationTests
     [Test]
     public async Task WithNothingLabelled_ThereIsNothingToAgreeWith()
     {
-        var report = await Calibration.RunAsync(new WordGrader(), Scenarios, [], CancellationToken.None);
+        var report = await Calibration.RunAsync(new WordCheck(), Scenarios, [], CancellationToken.None);
 
         Assert.That((report.Agreed, report.Total, report.Passes), Is.EqualTo((0, 0, false)));
         Assert.That(report.Lines()[0], Is.EqualTo("Agreement: 0 of 0"));

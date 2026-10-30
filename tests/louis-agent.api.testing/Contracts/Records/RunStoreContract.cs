@@ -160,7 +160,7 @@ public abstract class RunStoreContract
             Eval = "cook",
             EvalVersion = 2,
             Commit = "abc123",
-            Graders = [new Grader("priced-with-source", 1, GraderKind.FixedRule)],
+            Graders = [new Grader("priced-with-source", 1, CheckKind.FixedRule)],
             Models = [new ModelUse("cook", ModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")],
         };
 

@@ -27,8 +27,8 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   `replay_miss_error` marks the turn `TurnFailure.ReplayMiss` (FX26), so a replay with no recording never counts as
   the agent's answer.
 - **Graders grade, metrics measure.** `Grading/` holds the common graders (no error, answered within a
-  time, cost under a limit, routed to a role), the model judge (`Models/`, `EvaluatorGrader` over Microsoft.Extensions.
-  AI.Evaluation) and the human review (`Human/`); `IGrader`, `Grade` and `Verdict` are the check contract's, in
+  time, cost under a limit, routed to a role), the model judge (`Models/`, `EvaluatorCheck` over Microsoft.Extensions.
+  AI.Evaluation) and the human review (`Human/`); `ICheck`, `Grade` and `Verdict` are the check contract's, in
   [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score from 0 to 1, an outcome and a reason; a
   conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
 - **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
@@ -73,7 +73,7 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
 | `Api/` | The session clients and the session request the runner sends (with `replay`) |
 | `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
 | `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Samples/` (a scenario's types are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
-| `Grading/` | The common graders, the model and human graders, the outcomes (`IGrader`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
+| `Grading/` | The common graders, the model and human graders, the outcomes (`ICheck`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
 | `Messages/` | The harness's texts (errors, logs, conformance, calibration); the grade reasons, `CommonGradeMessage`, are in [louis-agent.evals.checks](louis-agent.evals.checks.md) |
 | `Protocol/` | The writer and the stored-run reader |

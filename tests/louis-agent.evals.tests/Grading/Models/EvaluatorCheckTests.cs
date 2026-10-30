@@ -16,13 +16,13 @@ namespace LouisAgent.Evals.Tests.Grading.Models;
 
 // F18 step 6.1: a model grader is an IEvaluator behind IGrader. It hands the evaluator the trial's messages and its answer, maps the one yes-or-no metric to a
 // grade (no value is Unknown, never a guessed pass), says what judged, and has its requests recorded as `grading` on the run. Written first: EvaluatorGrader did not exist.
-public class EvaluatorGraderTests
+public class EvaluatorCheckTests
 {
     private static readonly ConfiguredJudge Judge = new(new ChatConfiguration(new FakeChatClient()), "qwen3:8b");
 
     private sealed class AskContext(string text) : EvaluationContext("ask", text);
 
-    private static EvaluatorGrader Grader(IEvaluator evaluator, ConfiguredJudge? judge = null, bool noJudge = false) =>
+    private static EvaluatorCheck Grader(IEvaluator evaluator, ConfiguredJudge? judge = null, bool noJudge = false) =>
         new(evaluator, noJudge ? null : judge ?? Judge, "meal-for-people", 3, "abc123def456");
 
     private static BooleanMetric Metric(bool? value, string? reason = "a main dish for four",
@@ -34,7 +34,7 @@ public class EvaluatorGraderTests
     {
         var grader = Grader(new FakeEvaluator(Metric(true)));
 
-        Assert.That(grader.Kind, Is.EqualTo(GraderKind.Model));
+        Assert.That(grader.Kind, Is.EqualTo(CheckKind.Model));
         Assert.That(grader.Required, Is.False);
         Assert.That((grader.Name, grader.Version), Is.EqualTo(("meal-for-people", 3)));
     }
@@ -58,7 +58,7 @@ public class EvaluatorGraderTests
     public async Task TheContext_IsBuiltFromTheTrial_AndHandedToTheEvaluator()
     {
         var evaluator = new FakeEvaluator(Metric(true));
-        var grader = new EvaluatorGrader(evaluator, Judge, "meal-for-people", 3, "abc123def456",
+        var grader = new EvaluatorCheck(evaluator, Judge, "meal-for-people", 3, "abc123def456",
             context: trial => [new AskContext("for " + trial.Scenario.Id)]);
 
         await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
@@ -82,7 +82,7 @@ public class EvaluatorGraderTests
     public async Task ALazyJudge_IsResolvedOnTheFirstGrade_AndOnlyOnce()
     {
         int resolved = 0;
-        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () =>
+        var grader = new EvaluatorCheck(new FakeEvaluator(Metric(true)), () =>
         {
             resolved++;
             return Judge;
@@ -98,7 +98,7 @@ public class EvaluatorGraderTests
     [Test]
     public async Task ALazyJudgeThatIsNone_GivesTheNoJudgeGrade()
     {
-        var grader = new EvaluatorGrader(new FakeEvaluator(Metric(true)), () => null, "meal-for-people", 3,
+        var grader = new EvaluatorCheck(new FakeEvaluator(Metric(true)), () => null, "meal-for-people", 3,
             "abc123def456");
 
         var grade = await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
@@ -184,7 +184,7 @@ public class EvaluatorGraderTests
         var eval = new GradedEval(
             Grader(new FakeEvaluator(new InvalidOperationException("ollama refused the connection"))));
 
-        var grades = await TrialGrading.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), CancellationToken.None);
+        var grades = await TrialChecking.GradeAsync(eval, Trial(Turn(1)), new CapturingLogger(), CancellationToken.None);
 
         Assert.That(grades[0].Outcome, Is.EqualTo(GradeOutcome.Unknown));
         Assert.That(grades[0].Reason, Does.Contain("ollama refused the connection"));

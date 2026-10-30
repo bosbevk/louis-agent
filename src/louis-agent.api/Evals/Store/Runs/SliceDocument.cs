@@ -49,7 +49,7 @@ internal sealed record SliceDocument(
 [BsonIgnoreExtraElements]
 internal sealed record SliceGraderDocument(
     [property: BsonElement("grader")] string Grader,
-    [property: BsonElement("kind")] GraderKind Kind,
+    [property: BsonElement("kind")] CheckKind Kind,
     [property: BsonElement("passed")] int Passed,
     [property: BsonElement("failed")] int Failed,
     [property: BsonElement("unknown")] int Unknown,
@@ -67,7 +67,7 @@ internal sealed record SliceGraderDocument(
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record SliceKindDocument(
-    [property: BsonElement("kind")] GraderKind Kind,
+    [property: BsonElement("kind")] CheckKind Kind,
     [property: BsonElement("passed")] int Passed,
     [property: BsonElement("failed")] int Failed,
     [property: BsonElement("unknown")] int Unknown)

@@ -83,8 +83,8 @@ public class StoredRunReplyJsonTests
             new Total(1.25m, "USD", 1200, 4), ["started"], Eval: SampleEval.Beta, EvalVersion: 3, Commit: "abc1234",
             Graders:
             [
-                new Grader("meal", 1, GraderKind.Model),
-                new Grader("meal.human", 1, GraderKind.Human, "Is this a meal?")
+                new Grader("meal", 1, CheckKind.Model),
+                new Grader("meal.human", 1, CheckKind.Human, "Is this a meal?")
             ],
             Slices: [slice]));
 

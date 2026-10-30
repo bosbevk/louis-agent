@@ -6,11 +6,11 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Grading.Common;
 
 /// <summary>Every turn of the trial was answered within a limit (F18 step 4.2), by the harness's clock.</summary>
-public sealed class WithinTimeGrader(TimeSpan limit, bool required = true) : IGrader
+public sealed class WithinTimeCheck(TimeSpan limit, bool required = true) : ICheck
 {
     public string Name => "within-time";
     public int Version => 1;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => required;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
 

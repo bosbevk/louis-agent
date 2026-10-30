@@ -9,11 +9,11 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 
 /// <summary>No turn of the conversation failed: an errored turn is never right (F31). Required.</summary>
-public sealed class CookNoError : IGrader
+public sealed class CookNoError : ICheck
 {
     public string Name => "cook-no-error";
     public int Version => 1;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => true;
     public IReadOnlySet<string> ExpectedKeys => FrozenSet<string>.Empty;
 

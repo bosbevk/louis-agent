@@ -57,7 +57,7 @@ public sealed class EvalCatalog
         eval.Manual,
         eval.Dataset is { } dataset ? new ListedDataset(dataset.Name, dataset.Version) : null,
         eval.Scenarios.SelectMany(scenario => scenario.Categories).Distinct(StringComparer.Ordinal).ToList(),
-        eval.Graders.Select(grader => new ListedGrader(grader.Name, grader.Version, grader.Kind)).ToList());
+        eval.Checks.Select(grader => new ListedGrader(grader.Name, grader.Version, grader.Kind)).ToList());
 
     /// <summary>
     /// Refuses an eval no run could trust: a name used twice, no graders, no fixed rule, or nothing to send.
@@ -68,8 +68,8 @@ public sealed class EvalCatalog
         foreach (IEval eval in evals)
         {
             if (!names.Add(eval.Name)) throw Refuse(RunnerMessage.DuplicateEval, new { Name = eval.Name });
-            if (eval.Graders.Count == 0) throw Refuse(RunnerMessage.NoGraders, new { Name = eval.Name });
-            if (!eval.Graders.Any(grader => grader.Required && grader.Kind == GraderKind.FixedRule))
+            if (eval.Checks.Count == 0) throw Refuse(RunnerMessage.NoGraders, new { Name = eval.Name });
+            if (!eval.Checks.Any(grader => grader.Required && grader.Kind == CheckKind.FixedRule))
                 throw Refuse(RunnerMessage.NoFixedRuleGrader, new { Name = eval.Name });
             // A scenario with nothing to send is refused here, not skipped by the runner later.
             var empty = eval.Scenarios.FirstOrDefault(scenario => scenario.Input.Messages.Count == 0);

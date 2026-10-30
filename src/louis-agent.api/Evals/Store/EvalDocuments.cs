@@ -60,7 +60,7 @@ public static class EvalDocuments
     public sealed record RunNote(string Text, DateTimeOffset At, ConversationKey? Conversation = null);
 
     /// <summary>One of the eval's graders, as the run started.</summary>
-    public sealed record Grader(string Name, int Version, GraderKind Kind, string? Question = null);
+    public sealed record Grader(string Name, int Version, CheckKind Kind, string? Question = null);
 
     /// <summary>Which model one level of a mode ran on, so runs on different models can be told apart.</summary>
     public sealed record ModelUse(string Mode, ModelLevel Level, string? Role, string? Model);

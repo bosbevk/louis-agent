@@ -39,7 +39,7 @@ public static class RunSummary
     /// The mode's lines: the overall one first, then each category by name (ordinal). No trials, no lines.
     /// </summary>
     public static IReadOnlyList<SummaryLine> Of(string mode, IReadOnlyList<TrialResult> trials,
-        IReadOnlyList<IGrader> graders)
+        IReadOnlyList<ICheck> graders)
     {
         if (trials.Count == 0) return [];
 
@@ -56,7 +56,7 @@ public static class RunSummary
     /// One slice: its counts, its rates when it has enough trials, and its counts per grader and kind.
     /// </summary>
     private static SummaryLine Slice(string mode, string slice, IReadOnlyList<TrialResult> trials,
-        IReadOnlyList<IGrader> required)
+        IReadOnlyList<ICheck> required)
     {
         // The counted trials are the ones the agent is answerable for; the rates need enough of them.
         var counted = trials.Where(trial => trial.Outcome != TrialOutcome.Infrastructure).ToList();
@@ -84,9 +84,9 @@ public static class RunSummary
     /// One grader's counts over the counted trials, a trial it gave no grade counting as Unknown, and the mean of the
     /// scores it gave (partial credit a pass or a fail hides), null when it gave none.
     /// </summary>
-    private static GraderCount GraderCountOf(IGrader grader, IReadOnlyList<TrialResult> counted)
+    private static GraderCount GraderCountOf(ICheck grader, IReadOnlyList<TrialResult> counted)
     {
-        var grades = counted.Select(trial => trial.Grades.FirstOrDefault(grade => grade.Grader == grader.Name))
+        var grades = counted.Select(trial => trial.Grades.FirstOrDefault(grade => grade.Check == grader.Name))
             .ToList();
         var given = grades.OfType<Grade>().ToList();
 

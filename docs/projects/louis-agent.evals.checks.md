@@ -20,7 +20,7 @@ Today it holds what a check reads: a `Trial` is one run of a scenario in one mod
 it left, each a `TurnTranscript` with the session's events as they arrived. `EngineEvents` reads those events (the
 answer, the error, the usage), and `TurnFacts` is what a turn's protocol record says about it.
 
-And what a check returns: `IGrader` scores one trial into a `Grade` (a score from 0 to 1, an outcome, a reason, and
+And what a check returns: `ICheck` scores one trial into a `Grade` (a score from 0 to 1, an outcome, a reason, and
 for a model grader the `GradeJudge` that judged it). `Verdict` builds the four kinds of grade, so a pass always scores
 1, and an infrastructure failure is always Unknown, never the agent's fail. The reasons are `CommonGradeMessage`
 members (ADR 0009), formatted by core's `MessageText`.
@@ -33,7 +33,7 @@ It references only what a pack already references, each for one thing:
 - **louis-agent.core** for `MessageText`, which formats a check's reason from its message enum
   ([ADR 0009](../adr/0009-message-text-as-enum-templates.md));
 - **louis-agent.session-stream** for the `SessionEvent`s a turn of a trial carries;
-- **louis-agent.evals.protocol** for `GraderKind` and `GradeOutcome`, the kinds a grade carries on the wire.
+- **louis-agent.evals.protocol** for `CheckKind` and `GradeOutcome`, the kinds a grade carries on the wire.
 
 Never the harness, a pack, an identity or a package: the harness keeps `Microsoft.Extensions.AI.Evaluation`.
 
@@ -45,7 +45,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 | `EvalMode.cs` | One mode a task runs in: its role, its toolsets, and a sub-session's depth and LLM |
 | `Datasets/Scenarios/` | `EvalScenario`, `EvalInput`, `DatasetSplit`: one scenario, what the user sends, and its split |
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
-| `Grading/` | `IGrader`, `Grade` and `GradeJudge`; `Common/Verdict` |
+| `Grading/` | `ICheck`, `Grade` and `GradeJudge`; `Common/Verdict` |
 | `Messages/` | `CommonGradeMessage`: the reasons a grade gives |
 
 ## Tests
@@ -54,7 +54,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 references: exactly the three above, none into `packs/` or `identities/`. `EngineEvents` is still tested in
 `louis-agent.evals.tests` (`EngineEventsTests`, `AnswerOfTests`): those tests build their trials with the harness
 tests' shared `TrialBuilder`, and a test project may not reference another, so they stay until a second project
-needs the builder (F49.3). `Verdict` is tested from outside, by the graders that use it (`CommonGradersTests`) and by
+needs the builder (F49.3). `Verdict` is tested from outside, by the checks that use it (`CommonChecksTests`) and by
 an identity's (`VerdictFromOutsideTests`). `tests/louis-agent.evals.checks.tests` gets its first tests in step 5.
 
 ## Related docs

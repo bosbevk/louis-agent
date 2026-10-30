@@ -9,7 +9,7 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
 // F18 step 5.4: two scenario requirements, each read by a named grader. The people it serves is a fixed rule that is not required (the real
 // check, that the quantities scale, is step 6's model grader); the budget is required where a scenario sets one. Written first: the graders
 // threw NotImplementedException on the red run.
-public class ServesAndBudgetGradersTests
+public class ServesAndBudgetChecksTests
 {
     private const string Checkers = "https://www.checkers.co.za/p/";
 
@@ -31,7 +31,7 @@ public class ServesAndBudgetGradersTests
         var grader = new ServesAsAsked();
 
         Assert.That((grader.Name, grader.Kind, grader.Required),
-            Is.EqualTo(("serves-as-asked", GraderKind.FixedRule, false)));
+            Is.EqualTo(("serves-as-asked", CheckKind.FixedRule, false)));
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "serves" }));
     }
 
@@ -106,7 +106,7 @@ public class ServesAndBudgetGradersTests
         var grader = new WithinBudget();
 
         Assert.That((grader.Name, grader.Kind, grader.Required),
-            Is.EqualTo(("within-budget", GraderKind.FixedRule, true)));
+            Is.EqualTo(("within-budget", CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "budget" }));
     }
 

@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Tests.Evals.Store.Mongo;
 public class MongoMappingsTests
 {
     /// <summary>A document with an enum, an enum that may be missing, and a time.</summary>
-    private sealed record Sample(GraderKind Kind, TurnFailure? Failure, DateTimeOffset At);
+    private sealed record Sample(CheckKind Kind, TurnFailure? Failure, DateTimeOffset At);
 
     /// <summary>Two in the afternoon in Johannesburg, which is noon in UTC.</summary>
     private static readonly DateTimeOffset Afternoon = new(2026, 10, 28, 14, 0, 0, TimeSpan.FromHours(2));
@@ -27,10 +27,10 @@ public class MongoMappingsTests
     [Test]
     public void AnEnum_IsStoredAsItsWireName()
     {
-        var stored = new Sample(GraderKind.FixedRule, TurnFailure.ApiError, Afternoon).ToBsonDocument();
+        var stored = new Sample(CheckKind.FixedRule, TurnFailure.ApiError, Afternoon).ToBsonDocument();
 
         Assert.That((stored["Kind"], stored["Failure"]), Is.EqualTo(((BsonValue)"fixed-rule", (BsonValue)"api-error")));
-        Assert.That(new Sample(GraderKind.Model, null, Afternoon).ToBsonDocument()["Failure"],
+        Assert.That(new Sample(CheckKind.Model, null, Afternoon).ToBsonDocument()["Failure"],
             Is.EqualTo(BsonNull.Value));
     }
 
@@ -38,7 +38,7 @@ public class MongoMappingsTests
     [Test]
     public void ATime_IsAUtcDate_ReadBackAtOffsetZero()
     {
-        var stored = new Sample(GraderKind.Model, null, Afternoon).ToBsonDocument();
+        var stored = new Sample(CheckKind.Model, null, Afternoon).ToBsonDocument();
 
         var read = BsonSerializer.Deserialize<Sample>(stored);
 
@@ -51,9 +51,9 @@ public class MongoMappingsTests
     public void ADocument_ReadsBackAsItWasWritten()
     {
         var read = BsonSerializer.Deserialize<Sample>(
-            new Sample(GraderKind.Human, TurnFailure.ReplayMiss, Afternoon).ToBsonDocument());
+            new Sample(CheckKind.Human, TurnFailure.ReplayMiss, Afternoon).ToBsonDocument());
 
-        Assert.That((read.Kind, read.Failure), Is.EqualTo((GraderKind.Human, (TurnFailure?)TurnFailure.ReplayMiss)));
+        Assert.That((read.Kind, read.Failure), Is.EqualTo((CheckKind.Human, (TurnFailure?)TurnFailure.ReplayMiss)));
     }
 
     /// <summary>A stored name that is no member, or a number, is refused with the name it found.</summary>
@@ -61,7 +61,7 @@ public class MongoMappingsTests
     [TestCase(1)]
     public void ANameThatIsNoMember_IsRefused_ANumberToo(object stored)
     {
-        var document = new Sample(GraderKind.Model, null, Afternoon).ToBsonDocument();
+        var document = new Sample(CheckKind.Model, null, Afternoon).ToBsonDocument();
         document["Kind"] = BsonValue.Create(stored);
 
         Assert.That(() => BsonSerializer.Deserialize<Sample>(document),

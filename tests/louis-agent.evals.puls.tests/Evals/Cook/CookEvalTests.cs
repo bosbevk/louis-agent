@@ -66,14 +66,14 @@ public class CookEvalTests
     /// </summary>
     [Test]
     public void ItsGraders_AreTheRequiredRulesFirst_ThenTheOnesThatAreNot() =>
-        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)),
+        Assert.That(Eval.Checks.Select(g => (g.Name, g.Required, g.Kind)),
             Is.EqualTo(new[]
             {
-                ("cook-no-error", true, GraderKind.FixedRule), ("routed-to", true, GraderKind.FixedRule),
-                ("within-budget", true, GraderKind.FixedRule), ("estimates-at-shop", true, GraderKind.FixedRule),
-                ("untooled-shops", true, GraderKind.FixedRule), ("recipe-image", true, GraderKind.FixedRule),
-                ("serves-as-asked", false, GraderKind.FixedRule), ("meal-for-people", false, GraderKind.Model),
-                ("meal-for-people.human", false, GraderKind.Human),
+                ("cook-no-error", true, CheckKind.FixedRule), ("routed-to", true, CheckKind.FixedRule),
+                ("within-budget", true, CheckKind.FixedRule), ("estimates-at-shop", true, CheckKind.FixedRule),
+                ("untooled-shops", true, CheckKind.FixedRule), ("recipe-image", true, CheckKind.FixedRule),
+                ("serves-as-asked", false, CheckKind.FixedRule), ("meal-for-people", false, CheckKind.Model),
+                ("meal-for-people.human", false, CheckKind.Human),
             }));
 
     /// <summary>What it says of a turn is what Puls's turn view reads: who answered, the calls, the sites.</summary>

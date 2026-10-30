@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 /// The cook never puts a price column in its list for a shop it can't read, such as Shoprite. It can read Checkers
 /// through its tools, and PnP and Woolworths as a rendered page; anything else would be a made-up price. Required.
 /// </summary>
-public sealed class UntooledShops : IGrader
+public sealed class UntooledShops : ICheck
 {
     /// <inheritdoc />
     public string Name => "untooled-shops";
@@ -22,7 +22,7 @@ public sealed class UntooledShops : IGrader
     public int Version => 1;
 
     /// <inheritdoc />
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
 
     /// <inheritdoc />
     public bool Required => true;

@@ -43,7 +43,7 @@ public class UntooledShopsTests
         var grader = new UntooledShops();
 
         Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required),
-            Is.EqualTo(("untooled-shops", 1, GraderKind.FixedRule, true)));
+            Is.EqualTo(("untooled-shops", 1, CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.Empty);
     }
 

@@ -75,7 +75,7 @@ public class ReviewReplyJsonTests
     {
         var store = new InMemoryEvalStore();
         await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At,
-            Graders: [new Grader("meal.human", 1, GraderKind.Human, "Is this a meal?")]));
+            Graders: [new Grader("meal.human", 1, CheckKind.Human, "Is this a meal?")]));
         await store.SaveConversationAsync("run_1", new Conversation(Key, 1, null, null, 0, 1));
 
         return (store, new InMemoryHumanReviewStore());

@@ -23,7 +23,7 @@ references only `louis-agent.choices`, so each side takes it without the others.
   `TurnEvent` (its figures: `agent_calls`, `specialist_calls`, hosts, seconds, error, failure) and
   `ConversationEvent` (its `GradeInfo`s, its `TrialOutcome` and its `Metrics`). `TurnKey` and `ConversationKey` name
   them.
-- **Words are kebab-case, fields snake_case.** Every choice is an enum in `Kinds/` (`GraderKind`, `GradeOutcome`,
+- **Words are kebab-case, fields snake_case.** Every choice is an enum in `Kinds/` (`CheckKind`, `GradeOutcome`,
   `TrialOutcome`, `TurnFailure`, `ModelLevel`, `RunSplit`), written with its `[WireName]`
   ([ADR 0024](../adr/0024-choices-are-enums.md)). The field names are our own, not OpenTelemetry's `gen_ai.*`.
 - **A line that is no event is a line for people.** `EvalProtocolJson.Read` returns null for a line that isn't a JSON

@@ -13,7 +13,7 @@ using LouisAgent.Evals.Puls.Tests.Shared.Grading;
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
 
 // The cook's no-error grader (F31): the errors, read from a trial's turns. Its route cases are PulsRouteTests now (F18 step 5.4).
-public class CookGradersTests
+public class CookChecksTests
 {
     private static readonly EvalMode Cook = new(CookMode.Cook.Wire(), PulsEvalRole.Cook.Wire(),
         [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]);

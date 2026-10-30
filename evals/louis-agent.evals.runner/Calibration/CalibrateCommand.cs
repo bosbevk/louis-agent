@@ -43,7 +43,7 @@ public static class CalibrateCommand
     /// <summary>The label files on stdin, one JSON object per line, each checked as the loader checks a file and named by its line for a refusal; blank lines are skipped.</summary>
     private static List<LabeledAnswer> FromStdin(TextReader stdin, IEval eval)
     {
-        var graders = eval.Graders.Select(g => g.Name).ToHashSet();
+        var graders = eval.Checks.Select(g => g.Name).ToHashSet();
         var labels = new List<LabeledAnswer>();
         int number = 0;
         while (stdin.ReadLine() is { } line)
@@ -57,17 +57,17 @@ public static class CalibrateCommand
     }
 
     /// <summary>The eval's model grader of that name; a name it has not, or a fixed rule, is refused.</summary>
-    public static IGrader ModelGraderOf(IEval eval, string name)
+    public static ICheck ModelGraderOf(IEval eval, string name)
     {
-        var grader = eval.Graders.FirstOrDefault(g => g.Name == name)
+        var grader = eval.Checks.FirstOrDefault(g => g.Name == name)
                      ?? throw new RunnerException(MessageText.Format(RunnerMessage.NoSuchGrader,
                          new
                          {
                              Eval = eval.Name,
                              Grader = name,
-                             Graders = string.Join(", ", eval.Graders.Select(g => g.Name))
+                             Graders = string.Join(", ", eval.Checks.Select(g => g.Name))
                          }));
-        if (grader.Kind != GraderKind.Model)
+        if (grader.Kind != CheckKind.Model)
             throw new RunnerException(MessageText.Format(RunnerMessage.GraderNotModel,
                 new { Eval = eval.Name, Grader = name }));
         return grader;

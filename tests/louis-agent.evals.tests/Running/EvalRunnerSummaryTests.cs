@@ -113,8 +113,8 @@ public class EvalRunnerSummaryTests
         var overall = Summaries(await RunAsync(new SummaryEval())).Single(s => s.Slice == "overall");
 
         Assert.That(overall.Graders.Single(),
-            Is.EqualTo(new GraderCount("wants-text", GraderKind.FixedRule, 3, 0, 0, 1)));
-        Assert.That(overall.Kinds.Single(), Is.EqualTo(new KindCount(GraderKind.FixedRule, 3, 0, 0)));
+            Is.EqualTo(new GraderCount("wants-text", CheckKind.FixedRule, 3, 0, 0, 1)));
+        Assert.That(overall.Kinds.Single(), Is.EqualTo(new KindCount(CheckKind.FixedRule, 3, 0, 0)));
     }
 
     /// <summary>A re-score writes its summaries from its new grades, and never the stored run's own.</summary>
@@ -196,14 +196,14 @@ public class EvalRunnerSummaryTests
                 Categories[id], DatasetSplit.Dev)).ToList();
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders { get; } = [new WantsText(wanted)];
+        public IReadOnlyList<ICheck> Checks { get; } = [new WantsText(wanted)];
 
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
     }
 
     /// <summary>A grader that passes when every answer holds the wanted text.</summary>
-    private sealed class WantsText(string wanted) : IGrader
+    private sealed class WantsText(string wanted) : ICheck
     {
         /// <inheritdoc />
         public string Name => "wants-text";
@@ -212,7 +212,7 @@ public class EvalRunnerSummaryTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
 
         /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();

@@ -46,7 +46,7 @@ public class EstimatesAtShopTests
         var grader = new EstimatesAtShop();
 
         Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required),
-            Is.EqualTo(("estimates-at-shop", 2, GraderKind.FixedRule, true)));
+            Is.EqualTo(("estimates-at-shop", 2, CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "shop", "town" }));
     }
 

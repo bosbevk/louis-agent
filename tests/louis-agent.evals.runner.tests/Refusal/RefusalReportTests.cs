@@ -68,10 +68,10 @@ public class RefusalReportTests
             ValueTask.FromResult<IReadOnlyList<EvalMode>>([]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } =
-            DatasetLoader.Load(Path.Combine(Path.GetTempPath(), "louis-agent-no-such-dataset"), [new NoErrorGrader()])
+            DatasetLoader.Load(Path.Combine(Path.GetTempPath(), "louis-agent-no-such-dataset"), [new NoErrorCheck()])
                 .Scenarios;
 
-        public IReadOnlyList<IGrader> Graders { get; } = [new NoErrorGrader()];
+        public IReadOnlyList<ICheck> Checks { get; } = [new NoErrorCheck()];
 
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
     }

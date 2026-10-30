@@ -175,7 +175,7 @@ public class EvalRunnerPassRatesTests
     }
 
     /// <summary>The trial passes when the answer is "Hallo".</summary>
-    private sealed class AnswerGrader : IGrader
+    private sealed class AnswerCheck : ICheck
     {
         /// <inheritdoc />
         public string Name => "says-hallo";
@@ -184,7 +184,7 @@ public class EvalRunnerPassRatesTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
 
         /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
@@ -226,7 +226,7 @@ public class EvalRunnerPassRatesTests
         ];
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders { get; } = [new AnswerGrader()];
+        public IReadOnlyList<ICheck> Checks { get; } = [new AnswerCheck()];
 
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);

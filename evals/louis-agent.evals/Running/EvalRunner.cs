@@ -19,7 +19,7 @@ namespace LouisAgent.Evals.Running;
 /// <summary>
 /// Runs an eval (F18 step 2): each mode, each repeat, each scenario the run's split asks for (step 5.4); each message
 /// is sent to the API and the session's events are written as they arrive, then the turn, and the conversation with its
-/// grades (every grader of the eval, <see cref="TrialGrading"/>), its outcome (<see cref="PassRates.Of"/>) and what it
+/// grades (every grader of the eval, <see cref="TrialChecking"/>), its outcome (<see cref="PassRates.Of"/>) and what it
 /// measured, then the mode's end (F18 step 4.5a).
 /// </summary>
 public sealed class EvalRunner(
@@ -48,7 +48,7 @@ public sealed class EvalRunner(
             });
         // The first line names the dataset the eval loaded, as a re-score's does. The model isn't reported yet: the
         // session client that could read it is the HTTP client, which is step 5.
-        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders,
+        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Checks,
             modes.Select(m => new ModelInfo(m.Name, ModelLevel.Agent, m.Role, null)).ToList(), run.Split,
             dataset: eval.Dataset);
 
@@ -65,7 +65,7 @@ public sealed class EvalRunner(
             }
 
             // The mode rolled up, overall and by category (F18 step 5c), after its last mode_done.
-            foreach (var line in RunSummary.Of(mode.Name, tally.Results, eval.Graders)) protocol.Summary(line);
+            foreach (var line in RunSummary.Of(mode.Name, tally.Results, eval.Checks)) protocol.Summary(line);
         }
     }
 
@@ -113,8 +113,8 @@ public sealed class EvalRunner(
         }
 
         var trial = new Trial(run.RunId, mode, repeat, scenario, new Transcript(turns));
-        var grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
-        var outcome = PassRates.Of(trial, grades, eval.Graders);
+        var grades = await TrialChecking.GradeAsync(eval, trial, logger, cancellationToken);
+        var outcome = PassRates.Of(trial, grades, eval.Checks);
         tally.Add(new TrialResult(scenario.Id, scenario.Categories, outcome, grades));
 
         // The conversation's role is the one that answered its first turn; its errors are the turns that failed, and

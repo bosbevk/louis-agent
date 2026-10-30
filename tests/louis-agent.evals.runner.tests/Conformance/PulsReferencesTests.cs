@@ -25,7 +25,7 @@ public class PulsReferencesTests
         var scenario = eval.Scenarios.Single(s => s.Id == conformanceCase.Scenario);
         var trial = new Trial("conformance", conformanceCase.Mode, 1, scenario, conformanceCase.Reference);
 
-        foreach (IGrader grader in eval.Graders.Where(g => g.Kind == GraderKind.FixedRule))
+        foreach (ICheck grader in eval.Checks.Where(g => g.Kind == CheckKind.FixedRule))
         {
             var grade = await grader.GradeAsync(trial, CancellationToken.None);
 

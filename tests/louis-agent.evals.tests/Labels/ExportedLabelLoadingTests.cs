@@ -16,7 +16,7 @@ namespace LouisAgent.Evals.Tests.Labels;
 public class ExportedLabelLoadingTests
 {
     /// <summary>The model grader the label answers; it never grades here.</summary>
-    private sealed class MealGrader : IGrader
+    private sealed class MealCheck : ICheck
     {
         /// <summary>Its name.</summary>
         public string Name => "meal-for-people";
@@ -25,7 +25,7 @@ public class ExportedLabelLoadingTests
         public int Version => 1;
 
         /// <summary>Its kind: a model, so it can be labelled.</summary>
-        public GraderKind Kind => GraderKind.Model;
+        public CheckKind Kind => CheckKind.Model;
 
         /// <summary>Not required.</summary>
         public bool Required => false;
@@ -51,7 +51,7 @@ public class ExportedLabelLoadingTests
             .Write($"labels/meal-for-people.sample-dev.{SampleMode.Beta}.8f7802b9a72e.1.json",
                 File.ReadAllText(fixture));
 
-        var label = DatasetLoader.Load(folder.Root, [new MealGrader()]).Labels.Single();
+        var label = DatasetLoader.Load(folder.Root, [new MealCheck()]).Labels.Single();
 
         Assert.That(
             (label.Grader, label.Scenario, label.Mode, label.Run, label.Repeat, label.Turn, label.Answer, label.Pass,

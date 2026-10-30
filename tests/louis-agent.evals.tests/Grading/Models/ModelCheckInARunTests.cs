@@ -22,7 +22,7 @@ namespace LouisAgent.Evals.Tests.Grading.Models;
 /// A model grader in a whole run and in its re-score. The run goes on with no judge (Unknown, "no judge
 /// configured"), and what judged (the model, the prompt's hash) is on the grade of the run and of a re-score of it.
 /// </summary>
-public class ModelGraderInARunTests
+public class ModelCheckInARunTests
 {
     /// <summary>The time every line carries.</summary>
     private static readonly DateTimeOffset At = DateTimeOffset.FromUnixTimeMilliseconds(1700000000123);
@@ -38,7 +38,7 @@ public class ModelGraderInARunTests
     ];
 
     /// <summary>The eval with its model grader, with a judge or without one.</summary>
-    private static ModelEval Eval(bool withJudge) => new(new EvaluatorGrader(
+    private static ModelEval Eval(bool withJudge) => new(new EvaluatorCheck(
         new FakeEvaluator(new BooleanMetric("meal", true, "feeds four")),
         withJudge ? new ConfiguredJudge(new ChatConfiguration(new FakeChatClient()), "qwen3:8b") : null,
         "meal-for-people", 1, "abc123def456"));
@@ -93,7 +93,7 @@ public class ModelGraderInARunTests
     /// <summary>
     /// An eval of one scenario and one model grader, the shape of the cook's judge before it has a prompt.
     /// </summary>
-    private sealed class ModelEval(IGrader grader) : IEval
+    private sealed class ModelEval(ICheck grader) : IEval
     {
         /// <inheritdoc />
         public string Name => "model-eval";
@@ -119,7 +119,7 @@ public class ModelGraderInARunTests
         ];
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders { get; } = [grader];
+        public IReadOnlyList<ICheck> Checks { get; } = [grader];
 
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);

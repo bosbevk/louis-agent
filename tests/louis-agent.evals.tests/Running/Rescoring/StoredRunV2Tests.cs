@@ -33,7 +33,7 @@ public class StoredRunV2Tests
         EvalEvent[] events =
         [
             new ProtocolEvent(At, ProtocolEvent.CurrentVersion, "v2-cook", 1, "abc123", RunSplit.HeldOut, null, null,
-                [new GraderInfo("wants-hallo", 1, GraderKind.FixedRule, null)],
+                [new GraderInfo("wants-hallo", 1, CheckKind.FixedRule, null)],
                 [new ModelInfo("cook", ModelLevel.Agent, SampleRole.Alpha, "claude-haiku-5-5")]),
             new ModeEvent(At, "cook", 1, [SampleToolset.Alpha], SampleRole.Alpha, null, 1),
             new QuestionEvent(At, "cook", 1, "pannekoek", 1, "sess_1", "Gee my resep"),
@@ -108,7 +108,7 @@ public class StoredRunV2Tests
     }
 
     /// <summary>A grader that passes when every answer says "Hallo".</summary>
-    private sealed class WantsHallo : IGrader
+    private sealed class WantsHallo : ICheck
     {
         /// <inheritdoc />
         public string Name => "wants-hallo";
@@ -117,7 +117,7 @@ public class StoredRunV2Tests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
 
         /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
@@ -162,7 +162,7 @@ public class StoredRunV2Tests
         ];
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders { get; } = [new WantsHallo()];
+        public IReadOnlyList<ICheck> Checks { get; } = [new WantsHallo()];
 
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);

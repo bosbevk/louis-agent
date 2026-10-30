@@ -80,14 +80,14 @@ public class ProtocolWriterTests
     {
         var (writer, sink) = NewWriter();
 
-        writer.Begin("cook", 2, "abc123", [new FakeGrader("priced-with-source", 1, GraderKind.FixedRule)],
+        writer.Begin("cook", 2, "abc123", [new FakeCheck("priced-with-source", 1, CheckKind.FixedRule)],
             [new ModelInfo("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")]);
 
         var begin = Single<ProtocolEvent>(sink);
         Assert.That((begin.Version, begin.Eval, begin.EvalVersion, begin.Commit, begin.Split, begin.RescoreOf),
             Is.EqualTo((ProtocolEvent.CurrentVersion, "cook", 2, "abc123", RunSplit.Dev, (string?)null)));
         Assert.That(begin.Graders.Single(),
-            Is.EqualTo(new GraderInfo("priced-with-source", 1, GraderKind.FixedRule, null)));
+            Is.EqualTo(new GraderInfo("priced-with-source", 1, CheckKind.FixedRule, null)));
         Assert.That(begin.Models.Single(),
             Is.EqualTo(new ModelInfo("cook", ModelLevel.Agent, "puls-cook", "claude-haiku-5-5")));
         Assert.That(begin.Dataset, Is.Null);
@@ -214,8 +214,8 @@ public class ProtocolWriterTests
     {
         var (writer, sink) = NewWriter();
         var line = new SummaryLine("cook", "budget", 6, 4, 2, 0, 0, ["cook-af"], false, 0.6666666666666666, 1, 0.5,
-            [new GraderCount("within-budget", GraderKind.FixedRule, 4, 2, 0, 0.75)],
-            [new KindCount(GraderKind.FixedRule, 4, 2, 0)]);
+            [new GraderCount("within-budget", CheckKind.FixedRule, 4, 2, 0, 0.75)],
+            [new KindCount(CheckKind.FixedRule, 4, 2, 0)]);
 
         writer.Summary(line);
 
@@ -242,7 +242,7 @@ public class ProtocolWriterTests
     }
 
     /// <summary>A grader that is only named here: the protocol's first line says what graders the eval has.</summary>
-    private sealed class FakeGrader(string name, int version, GraderKind kind) : IGrader
+    private sealed class FakeCheck(string name, int version, CheckKind kind) : ICheck
     {
         /// <inheritdoc />
         public string Name { get; } = name;
@@ -251,7 +251,7 @@ public class ProtocolWriterTests
         public int Version { get; } = version;
 
         /// <inheritdoc />
-        public GraderKind Kind { get; } = kind;
+        public CheckKind Kind { get; } = kind;
 
         /// <inheritdoc />
         public bool Required => true;

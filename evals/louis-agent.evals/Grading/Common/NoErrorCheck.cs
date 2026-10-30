@@ -9,11 +9,11 @@ namespace LouisAgent.Evals.Grading.Common;
 /// No turn of the trial raised an error (F18 step 4.2): the agent's error in the stream, with its message in the reason. A specialist's
 /// error is not the turn's, and a turn that failed for the infrastructure is Unknown, not a fail.
 /// </summary>
-public sealed class NoErrorGrader(bool required = true) : IGrader
+public sealed class NoErrorCheck(bool required = true) : ICheck
 {
     public string Name => "no-error";
     public int Version => 1;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => required;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
 

@@ -32,7 +32,7 @@ public class RecipeImageTests
         var grader = new RecipeImage();
 
         Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required),
-            Is.EqualTo(("recipe-image", 2, GraderKind.FixedRule, true)));
+            Is.EqualTo(("recipe-image", 2, CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "recipe_image" }));
     }
 

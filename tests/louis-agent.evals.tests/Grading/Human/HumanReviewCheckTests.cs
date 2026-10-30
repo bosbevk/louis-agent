@@ -9,13 +9,13 @@ namespace LouisAgent.Evals.Tests.Grading.Human;
 // F18 step 6a.1: a human review is a grader that waits for a person. It belongs to one model grader (so the person's grade and the judge's are about the same question), it is named
 // `{grader}.human`, it is never required, and it grades every trial Pending: a grade nobody has given yet, never a pass. The person's grade lives in the API's store, not in the transcript.
 // Written first: HumanReviewGrader and ReviewQuestion did not exist.
-public class HumanReviewGraderTests
+public class HumanReviewCheckTests
 {
-    private sealed class ModelGrader(string name = "meal-for-people", GraderKind kind = GraderKind.Model) : IGrader
+    private sealed class ModelCheck(string name = "meal-for-people", CheckKind kind = CheckKind.Model) : ICheck
     {
         public string Name => name;
         public int Version => 1;
-        public GraderKind Kind => kind;
+        public CheckKind Kind => kind;
         public bool Required => false;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
 
@@ -28,10 +28,10 @@ public class HumanReviewGraderTests
     [Test]
     public void ItIsNamedForTheModelGraderItReviews_AHumanOne_ThatIsNeverRequired()
     {
-        var grader = HumanReviewGrader.For(new ModelGrader(), Question);
+        var grader = HumanReviewCheck.For(new ModelCheck(), Question);
 
         Assert.That((grader.Name, grader.Kind, grader.Required, grader.Version),
-            Is.EqualTo(("meal-for-people.human", GraderKind.Human, false, 2)));
+            Is.EqualTo(("meal-for-people.human", CheckKind.Human, false, 2)));
         Assert.That((grader.Reviews, grader.Question), Is.EqualTo(("meal-for-people", Question)));
         Assert.That(grader.ExpectedKeys, Is.Empty);
     }
@@ -39,7 +39,7 @@ public class HumanReviewGraderTests
     [Test]
     public void ItCanBeMadeForAGradersName()
     {
-        var grader = HumanReviewGrader.For("meal-for-people", Question);
+        var grader = HumanReviewCheck.For("meal-for-people", Question);
 
         Assert.That((grader.Name, grader.Reviews), Is.EqualTo(("meal-for-people.human", "meal-for-people")));
     }
@@ -47,18 +47,18 @@ public class HumanReviewGraderTests
     [Test]
     public void ItReviewsOnlyAModelGrader_ACodeRuleNeedsNoPerson()
     {
-        Assert.That(() => HumanReviewGrader.For(new ModelGrader("no-error", GraderKind.FixedRule), Question),
+        Assert.That(() => HumanReviewCheck.For(new ModelCheck("no-error", CheckKind.FixedRule), Question),
             Throws.TypeOf<ArgumentException>().With.Message.Contains("no-error"));
     }
 
     [Test]
     public async Task EveryTrialIsPending_WithAReasonThatSaysItWaitsForAPerson_AndTheQuestion()
     {
-        var grader = HumanReviewGrader.For("meal-for-people", Question);
+        var grader = HumanReviewCheck.For("meal-for-people", Question);
 
         var grade = await grader.GradeAsync(Trial(Turn(1)), CancellationToken.None);
 
-        Assert.That((grade.Grader, grade.Outcome, grade.Score),
+        Assert.That((grade.Check, grade.Outcome, grade.Score),
             Is.EqualTo(("meal-for-people.human", GradeOutcome.Pending, 0d)));
         Assert.That(grade.Judge, Is.Null);
         Assert.That(grade.Reason, Does.Contain("person").And.Contain(Question));
@@ -67,7 +67,7 @@ public class HumanReviewGraderTests
     [Test]
     public async Task ItIsPendingEvenForAFailedTurn_ThereIsNothingElseItCouldBe()
     {
-        var grader = HumanReviewGrader.For("meal-for-people", Question);
+        var grader = HumanReviewCheck.For("meal-for-people", Question);
 
         var grade = await grader.GradeAsync(Trial(Turn(1, failure: TurnFailure.Transport)), CancellationToken.None);
 

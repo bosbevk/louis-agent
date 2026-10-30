@@ -284,7 +284,7 @@ public class EvalRunnerRescoreTests
     }
 
     /// <summary>A grader whose rule and version a test sets: the answer holds the wanted text.</summary>
-    private sealed class WantsText(int version, string wanted) : IGrader
+    private sealed class WantsText(int version, string wanted) : ICheck
     {
         /// <inheritdoc />
         public string Name => "wants-text";
@@ -293,7 +293,7 @@ public class EvalRunnerRescoreTests
         public int Version => version;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
 
         /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
@@ -347,7 +347,7 @@ public class EvalRunnerRescoreTests
                 [], DatasetSplit.Dev)).ToList();
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders { get; } = [new WantsText(graderVersion, wanted)];
+        public IReadOnlyList<ICheck> Checks { get; } = [new WantsText(graderVersion, wanted)];
 
         /// <summary>One call of the agent's and two of a specialist's, reading one site, on every turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>

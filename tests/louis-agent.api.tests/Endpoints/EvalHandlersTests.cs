@@ -89,8 +89,8 @@ public class EvalHandlersTests
         var line = new EvalLine(SampleEval.Beta, 3, "A meal", SampleIdentity.Alpha, null,
             new EvalDatasetLine("meals", 2), ["town"],
             [
-                new EvalGraderLine("priced", 1, GraderKind.FixedRule),
-                new EvalGraderLine("judge", 2, GraderKind.Model)
+                new EvalGraderLine("priced", 1, CheckKind.FixedRule),
+                new EvalGraderLine("judge", 2, CheckKind.Model)
             ]);
         var catalog = new EvalList(EvalList.Merge([line]));
         var handlers = new EvalHandlers(catalog, store, ApiTestHost.RepoRoot);

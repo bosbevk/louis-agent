@@ -16,15 +16,15 @@ namespace LouisAgent.Evals.Running;
 /// conformance check (<c>EvalConformance</c>) keeps its own loop on purpose: there a throw is a conformance failure with no grade,
 /// because the check is about the grader; here it is an Unknown grade, because the run is about the trial.
 /// </summary>
-public static class TrialGrading
+public static class TrialChecking
 {
     public static async Task<IReadOnlyList<Grade>> GradeAsync(IEval eval, Trial trial, ILogger logger,
         CancellationToken cancellationToken)
     {
-        var grades = new List<Grade>(eval.Graders.Count);
-        foreach (IGrader grader in eval.Graders)
+        var grades = new List<Grade>(eval.Checks.Count);
+        foreach (ICheck grader in eval.Checks)
         {
-            if (grader is HumanReviewGrader review && !review.AppliesTo(trial)) continue;
+            if (grader is HumanReviewCheck review && !review.AppliesTo(trial)) continue;
             try
             {
                 grades.Add(await grader.GradeAsync(trial, cancellationToken));

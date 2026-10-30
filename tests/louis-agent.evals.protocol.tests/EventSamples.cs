@@ -21,7 +21,7 @@ internal static class EventSamples
     public static IEnumerable<EvalEvent> All()
     {
         yield return new ProtocolEvent(At, ProtocolEvent.CurrentVersion, "sample-eval", 1, "unknown", RunSplit.Dev,
-            "abc123def456", null, [new GraderInfo("sample-grader", 1, GraderKind.FixedRule, null)],
+            "abc123def456", null, [new GraderInfo("sample-grader", 1, CheckKind.FixedRule, null)],
             [new ModelInfo(Mode, ModelLevel.Grader, null, null)]);
         yield return new ModeEvent(At, Mode, 2, [], null, "sample-llm", null);
         yield return new QuestionEvent(At, Mode, 2, Task, 3, "s-2", "Line one\nline two, \"quoted\"");
@@ -32,7 +32,7 @@ internal static class EventSamples
             new Metrics(null, null, null, null, null, null, null, null));
         yield return new ModeDoneEvent(At, Mode, 2, null);
         yield return new SummaryEvent(At, Mode, "budget", 6, 4, 2, 0, 0, [Task], false, 0.6666666666666666, 1, 0.5,
-            [new GraderCount("sample-grader", GraderKind.Human, 0, 0, 6, null)], []);
+            [new GraderCount("sample-grader", CheckKind.Human, 0, 0, 6, null)], []);
     }
 
     /// <summary>A stream event's data, kept beyond the document it was parsed from.</summary>

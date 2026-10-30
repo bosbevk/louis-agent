@@ -78,7 +78,7 @@ public class EvalReplyJsonTests
     private static EvalList Catalog() => new(EvalList.Merge(
     [
         new EvalLine(SampleEval.Beta, 3, "A meal", SampleIdentity.Alpha, null, new EvalDatasetLine("meals", 2),
-            ["town"], [new EvalGraderLine("priced", 1, GraderKind.FixedRule)])
+            ["town"], [new EvalGraderLine("priced", 1, CheckKind.FixedRule)])
     ]));
 
     /// <summary>Asks the admin route and hands back the body; the call must have been a 200.</summary>

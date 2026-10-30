@@ -30,7 +30,7 @@ public class StoredNamesTests
     private static BsonDocument Stored() => RunDocument.Of(
         new Run("run123456789", "check-x", 1, EvalRunStatus.Done, T0)
         {
-            Graders = [new Grader("no-error", 1, GraderKind.FixedRule)],
+            Graders = [new Grader("no-error", 1, CheckKind.FixedRule)],
             Models = [new ModelUse(SampleMode.Alpha, ModelLevel.Agent, null, "model-x")],
         }).ToBsonDocument();
 
@@ -43,7 +43,7 @@ public class StoredNamesTests
     {
         var run = Read(Stored());
 
-        Assert.That(run.Graders![0].Kind, Is.EqualTo(GraderKind.FixedRule));
+        Assert.That(run.Graders![0].Kind, Is.EqualTo(CheckKind.FixedRule));
         Assert.That(run.Models![0].Level, Is.EqualTo(ModelLevel.Agent));
     }
 
@@ -56,7 +56,7 @@ public class StoredNamesTests
         document["graders"][0]["kind"] = stored;
 
         Assert.That(() => Read(document), Throws.InstanceOf<FormatException>()
-            .With.Message.Contains(Refused(nameof(GraderKind), stored)).And.Message.Contains("Kind"));
+            .With.Message.Contains(Refused(nameof(CheckKind), stored)).And.Message.Contains("Kind"));
     }
 
     /// <summary>A model level stored as a number or an unknown word is refused, naming what it found.</summary>

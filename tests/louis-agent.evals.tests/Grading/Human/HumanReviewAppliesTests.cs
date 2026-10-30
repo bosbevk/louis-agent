@@ -18,11 +18,11 @@ namespace LouisAgent.Evals.Tests.Grading.Human;
 // Written first: the review took no keys and graded every trial Pending.
 public class HumanReviewAppliesTests
 {
-    private sealed class Judge(params string[] keys) : IGrader
+    private sealed class Judge(params string[] keys) : ICheck
     {
         public string Name => "meal-for-people";
         public int Version => 1;
-        public GraderKind Kind => GraderKind.Model;
+        public CheckKind Kind => CheckKind.Model;
         public bool Required => false;
         public IReadOnlySet<string> ExpectedKeys { get; } = keys.ToHashSet();
 
@@ -38,7 +38,7 @@ public class HumanReviewAppliesTests
     [Test]
     public void AReviewTakesItsJudgesKeys_AndIsVersionTwo()
     {
-        var review = HumanReviewGrader.For(new Judge("serves"), "Is this a meal?");
+        var review = HumanReviewCheck.For(new Judge("serves"), "Is this a meal?");
 
         Assert.That(review.ExpectedKeys, Is.EquivalentTo(new[] { "serves" }));
         Assert.That(review.Version, Is.EqualTo(2));
@@ -47,7 +47,7 @@ public class HumanReviewAppliesTests
     [Test]
     public void ItAppliesWhereTheScenarioHasEveryKey_AndNotWhereOneIsMissing()
     {
-        var review = HumanReviewGrader.For(new Judge("serves"), "q");
+        var review = HumanReviewCheck.For(new Judge("serves"), "q");
 
         Assert.That(review.AppliesTo(With("""{"serves":4,"budget":150}""")), Is.True);
         Assert.That(review.AppliesTo(With("""{"routes_to":null}""")), Is.False, "a control: no meal asked");
@@ -57,27 +57,27 @@ public class HumanReviewAppliesTests
     [Test]
     public void AReviewWhoseJudgeReadsNoKeys_AppliesToEveryScenario()
     {
-        Assert.That(HumanReviewGrader.For(new Judge(), "q").AppliesTo(With("{}")), Is.True);
-        Assert.That(HumanReviewGrader.For("meal-for-people", "q").AppliesTo(With("{}")), Is.True);
+        Assert.That(HumanReviewCheck.For(new Judge(), "q").AppliesTo(With("{}")), Is.True);
+        Assert.That(HumanReviewCheck.For("meal-for-people", "q").AppliesTo(With("{}")), Is.True);
     }
 
     [Test]
     public async Task InARun_ATrialItDoesNotApplyTo_HasNoGradeFromIt_AndOneItAppliesToHasAPendingOne()
     {
-        var eval = new OneEval([new Judge("serves"), HumanReviewGrader.For(new Judge("serves"), "q")]);
+        var eval = new OneEval([new Judge("serves"), HumanReviewCheck.For(new Judge("serves"), "q")]);
 
-        var control = await TrialGrading.GradeAsync(eval, With("""{"routes_to":null}"""), NullLogger.Instance,
+        var control = await TrialChecking.GradeAsync(eval, With("""{"routes_to":null}"""), NullLogger.Instance,
             CancellationToken.None);
-        var meal = await TrialGrading.GradeAsync(eval, With("""{"serves":4}"""), NullLogger.Instance,
+        var meal = await TrialChecking.GradeAsync(eval, With("""{"serves":4}"""), NullLogger.Instance,
             CancellationToken.None);
 
-        Assert.That(control.Select(g => g.Grader), Is.EqualTo(new[] { "meal-for-people" }));
-        Assert.That(meal.Select(g => (g.Grader, g.Outcome)),
+        Assert.That(control.Select(g => g.Check), Is.EqualTo(new[] { "meal-for-people" }));
+        Assert.That(meal.Select(g => (Grader: g.Check, g.Outcome)),
             Is.EqualTo(
                 new[] { ("meal-for-people", GradeOutcome.Pass), ("meal-for-people.human", GradeOutcome.Pending) }));
     }
 
-    private sealed class OneEval(IReadOnlyList<IGrader> graders) : IEval
+    private sealed class OneEval(IReadOnlyList<ICheck> graders) : IEval
     {
         public string Name => "applies-eval";
         public int Version => 1;
@@ -87,7 +87,7 @@ public class HumanReviewAppliesTests
             CancellationToken cancellationToken) => ValueTask.FromResult<IReadOnlyList<EvalMode>>([Mode]);
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
-        public IReadOnlyList<IGrader> Graders { get; } = graders;
+        public IReadOnlyList<ICheck> Checks { get; } = graders;
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);
     }
 }

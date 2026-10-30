@@ -9,11 +9,11 @@ namespace LouisAgent.Evals.Grading.Common;
 /// The trial's cost is at or under a limit in US dollars (F18 step 4.2): the turns' costs from the stream, summed. A turn that reported no
 /// usage, a request with no price, or a price in another currency is Unknown, never a pass, and never a fail either: the grader can't tell.
 /// </summary>
-public sealed class CostUnderGrader(decimal limitUsd, bool required = true) : IGrader
+public sealed class CostUnderCheck(decimal limitUsd, bool required = true) : ICheck
 {
     public string Name => "cost-under";
     public int Version => 1;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => required;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
 

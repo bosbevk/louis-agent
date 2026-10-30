@@ -13,13 +13,13 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.Judges;
 // F18 step 6.2: the cook's model grader. It judges the last answer for the people asked in that turn (the scenario's `serves`, a number for the first turn or one per turn, carried
 // forward), hands the judge the ask as an EvaluationContext, and is shown and counted but not required: the outcome doesn't wait on it until its calibration passes (step 6.3).
 // A scenario that asks for no number of people has no meal to judge, and costs no request. Written first: MealForPeopleGrader did not exist.
-public class MealForPeopleGraderTests
+public class MealForPeopleCheckTests
 {
     private static readonly MealForPeopleTests.ScriptedJudge Client =
         new("""{"meal": true, "reason": "a main dish for the people asked"}""");
 
-    private static MealForPeopleGrader Grader(MealForPeopleTests.ScriptedJudge? client = null) =>
-        MealForPeopleGrader.Create(() => new ConfiguredJudge(new ChatConfiguration(client ?? Client), "qwen3:8b"));
+    private static MealForPeopleCheck Grader(MealForPeopleTests.ScriptedJudge? client = null) =>
+        MealForPeopleCheck.Create(() => new ConfiguredJudge(new ChatConfiguration(client ?? Client), "qwen3:8b"));
 
     private static Trial Cook(string expected, int turns) =>
         Trial(CookEvalMode, "cook-x", expected, "Malmesbury",
@@ -31,7 +31,7 @@ public class MealForPeopleGraderTests
         var grader = Grader();
 
         Assert.That((grader.Name, grader.Kind, grader.Required),
-            Is.EqualTo(("meal-for-people", GraderKind.Model, false)));
+            Is.EqualTo(("meal-for-people", CheckKind.Model, false)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "serves" }));
     }
 
@@ -92,7 +92,7 @@ public class MealForPeopleGraderTests
     [Test]
     public async Task WithNoJudgeConfigured_TheGradeIsUnknown()
     {
-        var grade = await MealForPeopleGrader.Create(() => null)
+        var grade = await MealForPeopleCheck.Create(() => null)
             .GradeAsync(Cook("""{"serves":4}""", turns: 1), CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Unknown, "no judge configured")));
@@ -113,11 +113,11 @@ public class MealForPeopleGraderTests
     {
         var eval = new CookEval();
 
-        var grader = eval.Graders.Single(g => g.Name == "meal-for-people");
+        var grader = eval.Checks.Single(g => g.Name == "meal-for-people");
 
-        Assert.That((grader.Kind, grader.Required), Is.EqualTo((GraderKind.Model, false)));
-        Assert.That(eval.Graders.Where(g => g.Required).Select(g => g.Kind), Has.All.EqualTo(GraderKind.FixedRule));
-        Assert.That(eval.Graders[^2], Is.SameAs(grader), "the judge, then the person's review of its question");
-        Assert.That(eval.Graders[^1].Name, Is.EqualTo("meal-for-people.human"));
+        Assert.That((grader.Kind, grader.Required), Is.EqualTo((CheckKind.Model, false)));
+        Assert.That(eval.Checks.Where(g => g.Required).Select(g => g.Kind), Has.All.EqualTo(CheckKind.FixedRule));
+        Assert.That(eval.Checks[^2], Is.SameAs(grader), "the judge, then the person's review of its question");
+        Assert.That(eval.Checks[^1].Name, Is.EqualTo("meal-for-people.human"));
     }
 }

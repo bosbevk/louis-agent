@@ -39,7 +39,7 @@ public class StubManualTests
         Assert.That(text, Does.Contain($"`{eval.Name}`"));
         Assert.That(modes.Select(m => m.Name), Has.All.Matches<string>(mode => text.Contains($"`{mode}`")),
             "every mode, in backticks");
-        Assert.That(eval.Graders.Select(g => g.Name), Has.All.Matches<string>(grader => text.Contains($"`{grader}`")),
+        Assert.That(eval.Checks.Select(g => g.Name), Has.All.Matches<string>(grader => text.Contains($"`{grader}`")),
             "every grader, in backticks");
     }
 }

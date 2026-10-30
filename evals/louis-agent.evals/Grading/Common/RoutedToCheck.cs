@@ -11,14 +11,14 @@ namespace LouisAgent.Evals.Grading.Common;
 /// Python check: a turn that errored is not right, and a specialist's own hand-over is not the turn's route. An eval whose route is a
 /// scenario's `expected` key names it in <paramref name="expectedKeys"/>, so the loader checks it is read and fed (F18 step 5.4).
 /// </summary>
-public sealed class RoutedToGrader(
+public sealed class RoutedToCheck(
     Func<Trial, string?> expectedRole,
     bool required = true,
-    IReadOnlySet<string>? expectedKeys = null) : IGrader
+    IReadOnlySet<string>? expectedKeys = null) : ICheck
 {
     public string Name => "routed-to";
     public int Version => 1;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => required;
     public IReadOnlySet<string> ExpectedKeys { get; } = expectedKeys ?? new HashSet<string>();
 

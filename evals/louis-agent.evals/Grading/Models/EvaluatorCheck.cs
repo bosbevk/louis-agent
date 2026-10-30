@@ -10,13 +10,13 @@ using Microsoft.Extensions.AI.Evaluation;
 namespace LouisAgent.Evals.Grading.Models;
 
 /// <summary>
-/// A model grader (F18 step 6.1): an <see cref="IEvaluator"/> from Microsoft.Extensions.AI.Evaluation behind <see cref="IGrader"/>, for what code can't judge. It hands the
+/// A model grader (F18 step 6.1): an <see cref="IEvaluator"/> from Microsoft.Extensions.AI.Evaluation behind <see cref="ICheck"/>, for what code can't judge. It hands the
 /// evaluator the trial's messages and its answer, and maps the evaluator's one yes-or-no metric: true is a pass, false a fail, and no value (or a rating of unknown or
 /// inconclusive) is Unknown, never a guessed pass. With no judge configured the grade is Unknown too, and the run goes on. Each grade says what judged
 /// (<see cref="GradeJudge"/>), and the judge's requests run in a <see cref="UsagePurpose.Grading"/> scope tagged like the trial's turns, so the ledger counts them on the conversation and its run. Not
 /// required until its calibration passes (the plan's step 6).
 /// </summary>
-public sealed class EvaluatorGrader : IGrader
+public sealed class EvaluatorCheck : ICheck
 {
     private readonly IEvaluator _evaluator;
     private readonly Lazy<ConfiguredJudge?> _judge;
@@ -24,7 +24,7 @@ public sealed class EvaluatorGrader : IGrader
     private readonly int _version;
     private readonly Func<Trial, IEnumerable<EvaluationContext>>? _context;
 
-    public EvaluatorGrader(IEvaluator evaluator, ConfiguredJudge? judge, string name, int version, string promptHash,
+    public EvaluatorCheck(IEvaluator evaluator, ConfiguredJudge? judge, string name, int version, string promptHash,
         IReadOnlySet<string>? expectedKeys = null,
         Func<Trial, IEnumerable<EvaluationContext>>? context = null)
         : this(evaluator, () => judge, name, version, promptHash, expectedKeys, context)
@@ -32,7 +32,7 @@ public sealed class EvaluatorGrader : IGrader
     }
 
     /// <summary>The judge is built when a trial is first graded, not when the eval is listed, so listing reads no settings and opens no ledger.</summary>
-    public EvaluatorGrader(IEvaluator evaluator, Func<ConfiguredJudge?> judge, string name, int version,
+    public EvaluatorCheck(IEvaluator evaluator, Func<ConfiguredJudge?> judge, string name, int version,
         string promptHash, IReadOnlySet<string>? expectedKeys = null,
         Func<Trial, IEnumerable<EvaluationContext>>? context = null)
     {
@@ -43,7 +43,7 @@ public sealed class EvaluatorGrader : IGrader
 
     public string Name => _name;
     public int Version => _version;
-    public GraderKind Kind => GraderKind.Model;
+    public CheckKind Kind => CheckKind.Model;
     public IReadOnlySet<string> ExpectedKeys { get; }
     public bool Required => false;
 

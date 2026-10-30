@@ -19,7 +19,7 @@ namespace LouisAgent.Evals.Template.Evals.Example;
 public sealed class ExampleEval : IEval
 {
     // Static, so the scenarios can load with them: the loader checks every expected key against these graders (section 3).
-    private static readonly IReadOnlyList<IGrader> GraderList = [new ExampleGrader()];
+    private static readonly IReadOnlyList<ICheck> GraderList = [new ExampleCheck()];
 
     // The eval's name: MCP-safe (letters, digits, '-' and '_'), the portal's check id, and a member of this set's own enum (section 4).
     public string Name => TemplateEvalName.Example.Wire();
@@ -45,7 +45,7 @@ public sealed class ExampleEval : IEval
     public DatasetManifest? Dataset => Loaded.Manifest;
 
     // The graders, in the order the portal shows them; at least one required fixed rule (section 3).
-    public IReadOnlyList<IGrader> Graders => GraderList;
+    public IReadOnlyList<ICheck> Checks => GraderList;
 
     // What the protocol records about one turn: who answered, its calls, the hosts it read and its error (section 4). Write it.
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();

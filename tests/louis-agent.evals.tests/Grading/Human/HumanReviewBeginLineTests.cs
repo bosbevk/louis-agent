@@ -21,7 +21,7 @@ public class HumanReviewBeginLineTests
     private const string Question = "Is this a meal for the people asked for?";
 
     /// <summary>A model grader, the one the review reviews.</summary>
-    private sealed class Judge : IGrader
+    private sealed class Judge : ICheck
     {
         /// <inheritdoc />
         public string Name => "meal-for-people";
@@ -30,7 +30,7 @@ public class HumanReviewBeginLineTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.Model;
+        public CheckKind Kind => CheckKind.Model;
 
         /// <inheritdoc />
         public bool Required => false;
@@ -44,7 +44,7 @@ public class HumanReviewBeginLineTests
     }
 
     /// <summary>A fixed rule.</summary>
-    private sealed class Rule : IGrader
+    private sealed class Rule : ICheck
     {
         /// <inheritdoc />
         public string Name => "routed-to";
@@ -53,7 +53,7 @@ public class HumanReviewBeginLineTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
 
         /// <inheritdoc />
         public bool Required => true;
@@ -67,7 +67,7 @@ public class HumanReviewBeginLineTests
     }
 
     /// <summary>The grader entries of the first line a run of these graders writes.</summary>
-    private static IReadOnlyList<GraderInfo> Graders(params IGrader[] graders)
+    private static IReadOnlyList<GraderInfo> Graders(params ICheck[] graders)
     {
         var sink = new StringWriter();
 
@@ -81,7 +81,7 @@ public class HumanReviewBeginLineTests
     [Test]
     public void AHumanReviewsEntry_CarriesItsQuestion()
     {
-        var entries = Graders(new Rule(), new Judge(), HumanReviewGrader.For(new Judge(), Question));
+        var entries = Graders(new Rule(), new Judge(), HumanReviewCheck.For(new Judge(), Question));
 
         Assert.That((entries[2].Name, entries[2].Question), Is.EqualTo(("meal-for-people.human", Question)));
     }

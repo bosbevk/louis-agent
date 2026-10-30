@@ -15,7 +15,7 @@ namespace LouisAgent.Evals.Tests.Datasets;
 public class DatasetLoaderTests
 {
     /// <summary>A grader that reads the one key the sample scenarios set.</summary>
-    private static readonly IReadOnlyList<IGrader> Graders = [new ReadsKeys("routed")];
+    private static readonly IReadOnlyList<ICheck> Graders = [new ReadsKeys("routed")];
 
     /// <summary>The manifest's fields come through, and each split's scenarios with their input and criteria.</summary>
     [Test]
@@ -326,7 +326,7 @@ public class DatasetLoaderTests
     }
 
     /// <summary>A grader that is named only for the keys it reads; it never grades.</summary>
-    private sealed class ReadsKeys(params string[] keys) : IGrader
+    private sealed class ReadsKeys(params string[] keys) : ICheck
     {
         /// <summary>Its name.</summary>
         public string Name => "reads-keys";
@@ -335,7 +335,7 @@ public class DatasetLoaderTests
         public int Version => 1;
 
         /// <summary>Its kind.</summary>
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
 
         /// <summary>It is required.</summary>
         public bool Required => true;

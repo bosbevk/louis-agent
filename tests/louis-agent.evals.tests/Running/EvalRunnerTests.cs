@@ -185,7 +185,7 @@ public class EvalRunnerTests
     [Test]
     public async Task TheConversationLineCarriesOneGradePerGraderInOrder_AndTheOutcome()
     {
-        var eval = new CannedEval(graders: [new WithinTimeGrader(TimeSpan.FromMinutes(1)), new NoErrorGrader()]);
+        var eval = new CannedEval(graders: [new WithinTimeCheck(TimeSpan.FromMinutes(1)), new NoErrorCheck()]);
 
         var events = await RunAsync(OneAnswer.ToArray(), eval);
 
@@ -349,7 +349,7 @@ public class EvalRunnerTests
     /// </summary>
     private sealed class CannedEval(
         TurnFacts? facts = null,
-        IReadOnlyList<IGrader>? graders = null,
+        IReadOnlyList<ICheck>? graders = null,
         int messages = 1,
         DatasetManifest? dataset = null) : IEval
     {
@@ -381,7 +381,7 @@ public class EvalRunnerTests
         ];
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders { get; } = graders ?? [];
+        public IReadOnlyList<ICheck> Checks { get; } = graders ?? [];
 
         /// <summary>The facts the test handed in, or none at all.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) =>

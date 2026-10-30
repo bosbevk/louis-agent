@@ -90,10 +90,10 @@ public class EvalCardViewTests
     {
         var view = EvalCardView.Of(Eval([],
         [
-            new("no-error", 1, GraderKind.FixedRule.Wire()),
-            new("meal", 2, GraderKind.Model.Wire()),
-            new("budget", 2, GraderKind.FixedRule.Wire()),
-            new("meal.human", 2, GraderKind.Human.Wire())
+            new("no-error", 1, CheckKind.FixedRule.Wire()),
+            new("meal", 2, CheckKind.Model.Wire()),
+            new("budget", 2, CheckKind.FixedRule.Wire()),
+            new("meal.human", 2, CheckKind.Human.Wire())
         ]));
 
         Assert.That(view.Graders.Select(g => (g.Kind, string.Join(",", g.Graders.Select(x => x.Name)))),

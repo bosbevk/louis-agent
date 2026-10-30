@@ -7,7 +7,7 @@ namespace LouisAgent.Evals.Grading;
 /// has none.
 /// </summary>
 public sealed record Grade(
-    string Grader,
+    string Check,
     int Version,
     double Score,
     GradeOutcome Outcome,

@@ -21,11 +21,11 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 /// FetchUrl), no price links to a shop or is given as fact, and the answer says the prices are estimates. A scenario that names a shop also needs the
 /// answer to name that shop's branch under Where to buy; <c>no-branch</c> needs the answer to say there is none. A fixed rule over the calls and the answer.
 /// </summary>
-public sealed class EstimatesAtShop : IGrader
+public sealed class EstimatesAtShop : ICheck
 {
     public string Name => "estimates-at-shop";
     public int Version => 2;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => true;
 
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>

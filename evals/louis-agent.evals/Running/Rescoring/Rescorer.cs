@@ -40,7 +40,7 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
                 Run = runId,
                 Conversations = stored.Lines.Count(line => line.Event is ConversationEvent)
             });
-        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Graders, stored.Models, stored.Split, rescoreOf,
+        protocol.Begin(eval.Name, eval.Version, EvalBuild.Commit, eval.Checks, stored.Models, stored.Split, rescoreOf,
             eval.Dataset);
 
         string? current = null;
@@ -88,7 +88,7 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
     /// </summary>
     private void WriteSummary(IEval eval, string mode, ModeTally tally)
     {
-        foreach (var line in RunSummary.Of(mode, tally.Results, eval.Graders)) protocol.Summary(line);
+        foreach (var line in RunSummary.Of(mode, tally.Results, eval.Checks)) protocol.Summary(line);
     }
 
     /// <summary>
@@ -112,14 +112,14 @@ internal sealed class Rescorer(ProtocolWriter protocol, ILogger logger)
         {
             logger.Log(LogLevel.Warning, EvalLogMessage.ScenarioGone, new { Scenario = stored.Task });
             string reason = MessageText.Format(CommonGradeMessage.ScenarioGone, new { Scenario = stored.Task });
-            grades = [.. eval.Graders.Select(grader => Verdict.Unknown(grader.Name, grader.Version, reason))];
+            grades = [.. eval.Checks.Select(grader => Verdict.Unknown(grader.Name, grader.Version, reason))];
         }
         else
         {
-            grades = await TrialGrading.GradeAsync(eval, trial, logger, cancellationToken);
+            grades = await TrialChecking.GradeAsync(eval, trial, logger, cancellationToken);
         }
 
-        var outcome = PassRates.Of(trial, grades, eval.Graders);
+        var outcome = PassRates.Of(trial, grades, eval.Checks);
         tally.Add(new TrialResult(stored.Task, gone ? [] : scenario.Categories, outcome, grades));
 
         // Measured again from the stored turns, the way the run measured them, so the metrics are the run's.
