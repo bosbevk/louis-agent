@@ -96,5 +96,11 @@ public enum EvalErrorMessage
     NoExpectedRole,
 
     [Description("Scenario '{Id}': '{Key}' in expected must be a role's name or null.")]
-    BadExpectedRole
+    BadExpectedRole,
+
+    [Description("Rubric '{File}' isn't there: a judge reads its rubric from the eval's folder.")]
+    RubricMissing,
+
+    [Description("'human' reviews '{Reviews}', which is no judge the eval lists before it.")]
+    ReviewsNoJudge
 }

@@ -1,6 +1,8 @@
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading.Common.Answers;
 using LouisAgent.Evals.Grading.Common.Tools;
+using LouisAgent.Evals.Grading.Human;
+using LouisAgent.Evals.Grading.Models.Rubrics;
 
 namespace LouisAgent.Evals.Grading.Common;
 
@@ -19,6 +21,6 @@ public static class GeneralChecks
     public static IReadOnlyList<ICheckType> All { get; } =
     [
         new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry(), new RoutedToCheck.Entry(),
-        new ContainsCheck.Entry(), new ToolUsedCheck.Entry()
+        new ContainsCheck.Entry(), new ToolUsedCheck.Entry(), new JudgeCheck.Entry(), new HumanReviewCheck.Entry()
     ];
 }

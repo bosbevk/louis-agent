@@ -170,7 +170,8 @@ The three kinds of check (`CheckKind`; on the wire a check is still a `grader`, 
 
 A check can also be named from a file by its type (`within-time`, `{"seconds": 120}`): its entry, an `ICheckType`,
 builds it from a typed settings record, and `CheckCatalog` finds the entry. The harness's entries are
-`GeneralChecks.All`: `no-error`, `within-time`, `cost-under`, `routed-to`, `contains` and `tool-used`
+`GeneralChecks.All`: `no-error`, `within-time`, `cost-under`, `routed-to`, `contains`, `tool-used`, `judge` (a
+rubric file, the keys it is told, a `{"pass", "reason"}` reply) and `human` (a person's review of a judge)
 ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)). F49.2's eval files are the first to name them.
 
 A grade's score is 0 to 1 with an outcome (pass, fail, unknown) and a reason. A conversation's metrics (calls, hosts,

@@ -63,7 +63,7 @@ public sealed class ContainsCheck(IReadOnlyList<string> texts, bool required = t
         /// <summary>
         /// Builds the check from its settings, refusing an empty list: there would be nothing to find.
         /// </summary>
-        protected override ICheck Create(Settings settings) => settings.Texts.Count > 0
+        protected override ICheck Create(Settings settings, CheckContext context) => settings.Texts.Count > 0
             ? new ContainsCheck(settings.Texts, settings.Required)
             : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.NothingListed, new
             {

@@ -32,15 +32,19 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score from 0 to 1, an outcome and a reason; a
   conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
 - **A general check can be named from a file** ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)).
-  `no-error`, `within-time`, `cost-under`, `routed-to`, `contains` and `tool-used` each carry a nested `Entry` and
-  its `Settings`
-  record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), and `Grading/Common/GeneralChecks.All` is the
+  `no-error`, `within-time`, `cost-under`, `routed-to`, `contains`, `tool-used`, `judge` and `human` each carry a
+  nested `Entry` and its `Settings` record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), and
+  `Grading/Common/GeneralChecks.All` is the
   harness's list for the check catalogue. `contains` (`Grading/Common/Answers/`) checks that the first turn's answer
   holds one of a list of texts, case and accents ignored, never a pattern
   ([ADR 0057](../adr/0057-regex-is-the-last-option.md)). `tool-used` (`Grading/Common/Tools/`) checks that a tool
   with this exact name was called in the trial, by the agent or a specialist; a streamed error is `no-error`'s to
   report. `routed-to` reads the expected role from a scenario key (`expected_key`), and a mode with none of the
-  `delegating_toolsets` is expected to answer itself (`RoutedToCheck.ByScenarioKey`).
+  `delegating_toolsets` is expected to answer itself (`RoutedToCheck.ByScenarioKey`). `judge`
+  (`Grading/Models/Rubrics/JudgeCheck`) sends a rubric file from the eval's folder as the system prompt, only the
+  scenario keys it lists (`ask`), the conversation so far and the answer, and reads `{"pass", "reason"}` from the
+  reply: null or no verdict is Unknown, and it is never required. `human` reviews a judge the eval lists before it,
+  asking the rubric's title as its question.
 - **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
   contract's `EvalProtocolJson` ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); `ProtocolTranscripts`
   reads a stored run back for a re-score or a conformance case.

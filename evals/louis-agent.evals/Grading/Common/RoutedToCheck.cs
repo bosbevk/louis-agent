@@ -111,7 +111,7 @@ public sealed class RoutedToCheck(
     public sealed class Entry() : CheckType<Settings>("routed-to", CheckKind.FixedRule)
     {
         /// <summary>Builds the route from the scenario's key, as the settings say.</summary>
-        protected override ICheck Create(Settings settings) =>
+        protected override ICheck Create(Settings settings, CheckContext context) =>
             ByScenarioKey(settings.ExpectedKey, settings.DelegatingToolsets, settings.Required);
     }
 }

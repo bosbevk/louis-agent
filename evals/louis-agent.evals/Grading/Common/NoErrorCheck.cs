@@ -53,6 +53,7 @@ public sealed class NoErrorCheck(bool required = true) : ICheck
     public sealed class Entry() : CheckType<Settings>("no-error", CheckKind.FixedRule)
     {
         /// <summary>Builds the check from its settings.</summary>
-        protected override ICheck Create(Settings settings) => new NoErrorCheck(settings.Required);
+        protected override ICheck Create(Settings settings, CheckContext context) =>
+            new NoErrorCheck(settings.Required);
     }
 }

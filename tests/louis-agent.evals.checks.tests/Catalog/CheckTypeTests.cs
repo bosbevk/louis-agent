@@ -19,7 +19,7 @@ public class CheckTypeTests
     [Test]
     public void BuildsItsCheck_FromItsParameters()
     {
-        var check = Entry.Create(Json("""{"seconds": 30}"""));
+        var check = Entry.Create(Json("""{"seconds": 30}"""), CheckContext.None);
 
         Assert.That(check, Is.TypeOf<TimeLimitCheck>());
         Assert.That(((TimeLimitCheck)check).Seconds, Is.EqualTo(30));
@@ -32,7 +32,8 @@ public class CheckTypeTests
     [Test]
     public void AFieldOfTheWrongType_IsRefused()
     {
-        var refusal = Assert.Throws<InvalidDataException>(() => Entry.Create(Json("""{"seconds": "x"}""")));
+        var refusal =
+            Assert.Throws<InvalidDataException>(() => Entry.Create(Json("""{"seconds": "x"}"""), CheckContext.None));
 
         Assert.That(refusal!.Message, Does.Contain("time-limit").And.Contain("seconds"));
     }
@@ -41,7 +42,7 @@ public class CheckTypeTests
     [Test]
     public void AMissingField_IsRefused()
     {
-        var refusal = Assert.Throws<InvalidDataException>(() => Entry.Create(Json("{}")));
+        var refusal = Assert.Throws<InvalidDataException>(() => Entry.Create(Json("{}"), CheckContext.None));
 
         Assert.That(refusal!.Message, Does.Contain("time-limit").And.Contain("seconds"));
     }
@@ -51,7 +52,7 @@ public class CheckTypeTests
     public void AnUnknownField_IsRefused()
     {
         var refusal = Assert.Throws<InvalidDataException>(() =>
-            Entry.Create(Json("""{"seconds": 30, "secnds": 30}""")));
+            Entry.Create(Json("""{"seconds": 30, "secnds": 30}"""), CheckContext.None));
 
         Assert.That(refusal!.Message, Does.Contain("time-limit").And.Contain("secnds"));
     }
@@ -60,7 +61,7 @@ public class CheckTypeTests
     [Test]
     public void NoParameters_IsRefused()
     {
-        var refusal = Assert.Throws<InvalidDataException>(() => Entry.Create(Json("null")));
+        var refusal = Assert.Throws<InvalidDataException>(() => Entry.Create(Json("null"), CheckContext.None));
 
         Assert.That(refusal!.Message, Does.Contain("time-limit"));
     }
@@ -75,7 +76,8 @@ public class CheckTypeTests
     private sealed class TimeLimitType() : CheckType<TimeLimitParameters>("time-limit", CheckKind.FixedRule)
     {
         /// <summary>Builds the test's check with the seconds it was given.</summary>
-        protected override ICheck Create(TimeLimitParameters parameters) => new TimeLimitCheck(parameters.Seconds);
+        protected override ICheck Create(TimeLimitParameters parameters, CheckContext context) =>
+            new TimeLimitCheck(parameters.Seconds);
     }
 
     /// <summary>The check the test's type builds; it only keeps its seconds, so a test can read them back.</summary>

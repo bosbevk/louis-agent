@@ -29,10 +29,13 @@ public abstract class CheckType<TParameters>(string type, CheckKind kind) : IChe
     public Type Parameters => typeof(TParameters);
 
     /// <inheritdoc />
-    public ICheck Create(JsonElement parameters) => Create(Read(parameters));
+    public ICheck Create(JsonElement parameters, CheckContext context) => Create(Read(parameters), context);
 
-    /// <summary>Builds your check from settings that have already been read and checked.</summary>
-    protected abstract ICheck Create(TParameters parameters);
+    /// <summary>
+    /// Builds your check from settings that have already been read and checked, with the eval's folder and the
+    /// checks built before it, should it need them.
+    /// </summary>
+    protected abstract ICheck Create(TParameters parameters, CheckContext context);
 
     /// <summary>
     /// Reads the settings into the record. If they don't fit, the refusal names this check type, and the JSON

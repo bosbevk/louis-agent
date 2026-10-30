@@ -12,15 +12,23 @@ namespace LouisAgent.Evals.Tests.Grading.Common;
 /// </summary>
 public class GeneralChecksTests
 {
-    /// <summary>The catalogue of the general checks lists each by its type, all fixed rules.</summary>
+    /// <summary>
+    /// The catalogue of the general checks lists each by its type: the fixed rules, then the judge and a person's
+    /// review of it.
+    /// </summary>
     [Test]
     public void TheCatalogue_ListsEachGeneralCheck()
     {
         var listing = new CheckCatalog(GeneralChecks.All).Listing();
 
-        Assert.That(listing.Select(line => line.Type),
-            Is.EqualTo(new[] { "no-error", "within-time", "cost-under", "routed-to", "contains", "tool-used" }));
-        Assert.That(listing.Select(line => line.Kind), Has.All.EqualTo(CheckKind.FixedRule));
+        Assert.That(listing.Select(line => (line.Type, line.Kind)),
+            Is.EqualTo(new[]
+            {
+                ("no-error", CheckKind.FixedRule), ("within-time", CheckKind.FixedRule),
+                ("cost-under", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
+                ("contains", CheckKind.FixedRule), ("tool-used", CheckKind.FixedRule), ("judge", CheckKind.Model),
+                ("human", CheckKind.Human)
+            }));
     }
 
     /// <summary>Each type, given its settings, builds today's check under today's name and version.</summary>
@@ -61,5 +69,6 @@ public class GeneralChecksTests
 
     /// <summary>Builds a check the way an eval file will: by type, from its settings.</summary>
     private static ICheck Build(string type, string settings) =>
-        new CheckCatalog(GeneralChecks.All).Get(type).Create(JsonDocument.Parse(settings).RootElement.Clone());
+        new CheckCatalog(GeneralChecks.All).Get(type)
+            .Create(JsonDocument.Parse(settings).RootElement.Clone(), CheckContext.None);
 }

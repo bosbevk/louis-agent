@@ -47,7 +47,7 @@ public sealed class WithinTimeCheck(TimeSpan limit, bool required = true) : IChe
     public sealed class Entry() : CheckType<Settings>("within-time", CheckKind.FixedRule)
     {
         /// <summary>Builds the check from its settings.</summary>
-        protected override ICheck Create(Settings settings) =>
+        protected override ICheck Create(Settings settings, CheckContext context) =>
             new WithinTimeCheck(TimeSpan.FromSeconds(settings.Seconds), settings.Required);
     }
 }

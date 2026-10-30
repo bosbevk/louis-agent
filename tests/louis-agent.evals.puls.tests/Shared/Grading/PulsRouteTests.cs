@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Choices;
+using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -26,7 +27,7 @@ public class PulsRouteTests
 
     /// <summary>The route check built from Puls's settings, as an eval file builds it.</summary>
     private static ICheck Route() =>
-        new RoutedToCheck.Entry().Create(JsonDocument.Parse(Settings).RootElement.Clone());
+        new RoutedToCheck.Entry().Create(JsonDocument.Parse(Settings).RootElement.Clone(), CheckContext.None);
 
     /// <summary>Grades a trial of a scenario with this <c>expected</c>, in this mode.</summary>
     private static Task<Grade> Grade(EvalMode mode, string expected, params TurnTranscript[] turns) =>
