@@ -263,7 +263,7 @@ evals/
 │   ├── Reports/                    # RunSummary
 │   ├── Running/                    # EvalRunner, ScenarioAttempt, TrialGrading, Rescoring/
 │   └── Trials/                     # ConversationMetrics
-├── louis-agent.evals.checks/       # the check contract: EvalMode; Datasets/Scenarios/; Trials/; Grading/ (IGrader, Grade, Verdict); Messages/
+├── louis-agent.evals.checks/       # the check contract: EvalMode, EvalJson; Catalog/ (ICheckType, CheckType); Datasets/Scenarios/; Trials/; Grading/ (ICheck, Grade, Verdict); Messages/
 ├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
 ├── louis-agent.evals.puls/         # PulsEvalSet; Evals/Cook/, Evals/Routing/ (each with Dataset/ and transcripts); Shared/
 ├── louis-agent.evals.runner/       # Program, Arguments/, Catalog/, Calibration/, Evals/Stub/

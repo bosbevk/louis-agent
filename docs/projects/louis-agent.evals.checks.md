@@ -25,7 +25,14 @@ for a model grader the `GradeJudge` that judged it). `Verdict` builds the four k
 1, and an infrastructure failure is always Unknown, never the agent's fail. The reasons are `CommonGradeMessage`
 members (ADR 0009), formatted by core's `MessageText`.
 
-These came from the harness as a pure move: the root namespace is `LouisAgent.Evals`, the harness's, so a moved type
+And how a check is named from a file: an `ICheckType` is one kind of check, with its type in kebab case
+(`within-time`), its kind, and the record its settings are read into. `CheckType<TParameters>` is the base an entry
+starts from (*Factory Method*): it reads the settings with `EvalJson.Strict` and refuses ones it can't read, naming
+the check type and, from the JSON reader, the field; the entry only says how to build its check from the record. An
+unknown field, a missing one and a null are all refused, so a typo can't become a default.
+
+`EvalJson` is the eval's one set of JSON options (snake_case; for the API; strict), here so the eval file and a
+check's settings inside it read alike. These came from the harness as a pure move: the root namespace is `LouisAgent.Evals`, the harness's, so a moved type
 keeps its namespace and nothing that uses it changes.
 
 It references only what a pack already references, each for one thing:
@@ -43,10 +50,12 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 |---|---|
 | `louis-agent.evals.checks.csproj` | The three references, each with what it's for |
 | `EvalMode.cs` | One mode a task runs in: its role, its toolsets, and a sub-session's depth and LLM |
+| `EvalJson.cs` | The eval's JSON options: `SnakeCase`, `SnakeCaseNoNulls` (what is sent to the API), `Strict` (what a person wrote) |
+| `Catalog/` | `ICheckType` and `CheckType<TParameters>`: a check named by its type and built from its settings |
 | `Datasets/Scenarios/` | `EvalScenario`, `EvalInput`, `DatasetSplit`: one scenario, what the user sends, and its split |
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
 | `Grading/` | `ICheck`, `Grade` and `GradeJudge`; `Common/Verdict` |
-| `Messages/` | `CommonGradeMessage`: the reasons a grade gives |
+| `Messages/` | `CommonGradeMessage`: the reasons a grade gives; `CheckCatalogMessage`: what the catalogue refuses |
 
 ## Tests
 
@@ -55,7 +64,10 @@ references: exactly the three above, none into `packs/` or `identities/`. `Engin
 `louis-agent.evals.tests` (`EngineEventsTests`, `AnswerOfTests`): those tests build their trials with the harness
 tests' shared `TrialBuilder`, and a test project may not reference another, so they stay until a second project
 needs the builder (F49.3). `Verdict` is tested from outside, by the checks that use it (`CommonChecksTests`) and by
-an identity's (`VerdictFromOutsideTests`). `tests/louis-agent.evals.checks.tests` gets its first tests in step 5.
+an identity's (`VerdictFromOutsideTests`).
+
+`tests/louis-agent.evals.checks.tests/Catalog/CheckTypeTests` builds a check from its settings and refuses a field of
+the wrong type, a missing field, an unknown field and no settings at all, each naming the check type (and the field).
 
 ## Related docs
 
