@@ -4,6 +4,18 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-30 — **F49.2 Evals as files**: an eval is a folder with an `eval.json` (its name, the identity it proves,
+  a hand-bumped version, its modes and its checks by type with their settings), its manual, dataset, rubric and
+  transcripts beside it, read strictly by `FileEval`; Puls's `puls-routing` and `puls-cook` live in
+  `identities/louis-agent.identity.puls/Evals/`, the cook's version unchanged and its recorded baseline replayed for
+  $0 with 140 of 140 grades the same; the runner finds every eval folder through the composition, and `EVALS=`
+  chooses by identity (a name no eval proves is refused); `IEvalSet` and the sets are gone; new general entries
+  `routed-to`, `judge` (a rubric file) and `human`; Puls's own fixed rules beside the identity (`Evals/Checks/`),
+  which references only core and the check contract, reaching the runner through the composition's `EvalChecks`;
+  its judge `meal-for-people` in `identities/louis-agent.identity.puls.judges`, which only the runner references;
+  `evals/louis-agent.evals.puls` deleted; the template is a folder to copy (`evals/template/Example/`, zero C#); a
+  turn's facts read by the harness for every eval. Guide [Add an eval](docs/guides/add-an-eval.md)
+  ([0058](docs/adr/0058-an-eval-is-a-folder-of-files.md), [write-up 20](docs/learning/20-extensibility.md))
 - 2026-10-30 — **F49.1 The checks catalogue**: the check contract (`ICheck`, `Grade`, `Trial` and the turn types) out
   of the harness into `evals/louis-agent.evals.checks`, which a pack can reference; grader became check in C# (the
   wire keeps `grader`); a check type is named in kebab case and built from a strict typed settings record

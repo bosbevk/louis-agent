@@ -44,7 +44,12 @@ referencing the harness.
 - A new eval, a changed mode or a reordered check is a file change in the identity's folder, reviewed like any
   content; a stored run and its trend read the same, since a check keeps its name and version.
 - A check of an identity's own is still C#: a class with an `Entry`, listed by its owner. A judge on the harness's
-  judge needs a project beside the identity (`identities/louis-agent.identity.puls.judges`), one more project.
+  judge needs a project beside the identity (`identities/louis-agent.identity.puls.judges`), one more project. The
+  general `judge` (a rubric file, the scenario keys it is told, a yes or no with a reason) covers a new eval; the cook
+  keeps its own, `meal-for-people`, because its rubric asks for `meal` and its ask is the people and the town, which is
+  what its calibration measured.
+- A mode lists its toolsets in the file, so the routing eval's baseline names Puls's toolsets but the delegating ones;
+  a test holds that list to what the composition gives Puls, so a new toolset can't be forgotten.
 - The runner can't run an eval it can't see: an eval folder outside a project's `Evals/` (the template) is never
   listed, by design.
 - The eval's version is bumped by hand, so forgetting it is possible; `dataset.json`'s hash still catches a changed
