@@ -17,6 +17,7 @@ using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Manifest;
 using LouisAgent.Evals.Datasets.Scenarios;
+using LouisAgent.Evals.Grading.Common.Facts;
 
 namespace LouisAgent.Evals.Tests.Running;
 

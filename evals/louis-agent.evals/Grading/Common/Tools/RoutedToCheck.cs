@@ -6,7 +6,7 @@ using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Grading.Common;
+namespace LouisAgent.Evals.Grading.Common.Tools;
 
 /// <summary>
 /// The trial's first turn went where the eval expects for this trial: "went to role X", the way Anthropic's tool-call

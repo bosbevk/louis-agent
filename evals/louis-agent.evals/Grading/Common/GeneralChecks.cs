@@ -1,5 +1,6 @@
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading.Common.Answers;
+using LouisAgent.Evals.Grading.Common.Facts;
 using LouisAgent.Evals.Grading.Common.Tools;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Models.Rubrics;

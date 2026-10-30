@@ -2,6 +2,8 @@ using System.Text.Json;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Facts;
+using LouisAgent.Evals.Grading.Common.Tools;
 using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Tests.Grading.Common;

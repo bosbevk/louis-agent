@@ -4,7 +4,7 @@ using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Grading.Common;
+namespace LouisAgent.Evals.Grading.Common.Facts;
 
 /// <summary>Every turn of the trial was answered within a time limit, by the harness's clock.</summary>
 /// <remarks>

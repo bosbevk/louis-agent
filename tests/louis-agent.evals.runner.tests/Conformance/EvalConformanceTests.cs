@@ -7,6 +7,7 @@ using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Facts;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Runner.Evals.Stub;

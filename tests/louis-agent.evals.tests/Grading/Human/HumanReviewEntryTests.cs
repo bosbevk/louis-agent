@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Facts;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Models.Rubrics;
 
