@@ -10,33 +10,36 @@ namespace LouisAgent.Evals.Tests.Files;
 /// </summary>
 public class EvalFileReaderTests
 {
-    /// <summary>The plan's cook file: two modes, nine checks, one keeping an old name, some with settings.</summary>
+    /// <summary>
+    /// The plan's cook file, with the sample names where it names Puls's eval, modes and toolsets (the harness's tests
+    /// name no product, ADR 0043): two modes, nine checks, one keeping an old name, some with settings.
+    /// </summary>
     private const string CookFile =
-        """
-        {
-          "schema_version": 1,
-          "name": "puls-cook",
-          "identity": "puls",
-          "version": 11,
-          "proves": "Puls gives a meal for the people asked, with estimates and the shop's branches, in Afrikaans or English.",
-          "manual": "manual.md",
-          "modes": [
-            { "name": "puls-tools", "role": "puls/voice-af", "toolsets": ["web", "shops"] },
-            { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["specialists", "web"] }
-          ],
-          "checks": [
-            { "type": "no-error", "name": "cook-no-error" },
-            { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists", "minions"] } },
-            { "type": "within-budget" },
-            { "type": "estimates-at-shop" },
-            { "type": "untooled-shops" },
-            { "type": "recipe-image" },
-            { "type": "serves-as-asked" },
-            { "type": "meal-for-people", "parameters": { "rubric": "rubrics/meal-for-people.md", "version": 2 } },
-            { "type": "human", "parameters": { "reviews": "meal-for-people" } }
-          ]
-        }
-        """;
+        $$"""
+          {
+            "schema_version": 1,
+            "name": "{{SampleEval.Alpha}}",
+            "identity": "{{SampleIdentity.Alpha}}",
+            "version": 11,
+            "proves": "Puls gives a meal for the people asked, with estimates and the shop's branches, in Afrikaans or English.",
+            "manual": "manual.md",
+            "modes": [
+              { "name": "{{SampleMode.Alpha}}", "role": "{{SampleRole.Alpha}}", "toolsets": ["{{SampleToolset.Gamma}}", "{{SampleToolset.Beta}}"] },
+              { "name": "{{SampleMode.Beta}}", "role": "{{SampleRole.Alpha}}", "toolsets": ["{{SampleToolset.Alpha}}", "{{SampleToolset.Gamma}}"] }
+            ],
+            "checks": [
+              { "type": "no-error", "name": "cook-no-error" },
+              { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["{{SampleToolset.Alpha}}"] } },
+              { "type": "within-budget" },
+              { "type": "estimates-at-shop" },
+              { "type": "untooled-shops" },
+              { "type": "recipe-image" },
+              { "type": "serves-as-asked" },
+              { "type": "meal-for-people", "parameters": { "rubric": "rubrics/meal-for-people.md", "version": 2 } },
+              { "type": "human", "parameters": { "reviews": "meal-for-people" } }
+            ]
+          }
+          """;
 
     /// <summary>The cook's file reads into the records, field by field.</summary>
     [Test]
@@ -47,9 +50,9 @@ public class EvalFileReaderTests
         var eval = EvalFileReader.Read(folder.Root);
 
         Assert.That((eval.SchemaVersion, eval.Name, eval.Identity, eval.Version, eval.Manual),
-            Is.EqualTo((1, "puls-cook", "puls", 11, "manual.md")));
-        Assert.That(eval.Modes.Select(mode => mode.Name), Is.EqualTo(new[] { "puls-tools", "puls-cook" }));
-        Assert.That(eval.Modes[1].Toolsets, Is.EqualTo(new[] { "specialists", "web" }));
+            Is.EqualTo((1, SampleEval.Alpha, SampleIdentity.Alpha, 11, "manual.md")));
+        Assert.That(eval.Modes.Select(mode => mode.Name), Is.EqualTo(new[] { SampleMode.Alpha, SampleMode.Beta }));
+        Assert.That(eval.Modes[1].Toolsets, Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Gamma }));
         Assert.That(eval.Checks, Has.Count.EqualTo(9));
         Assert.That((eval.Checks[0].Type, eval.Checks[0].Name), Is.EqualTo(("no-error", "cook-no-error")));
         Assert.That(eval.Checks[1].Parameters?.GetProperty("expected_key").GetString(), Is.EqualTo("routes_to"));
@@ -125,9 +128,9 @@ public class EvalFileReaderTests
     [Test]
     public void AModeTwice_IsRefused()
     {
-        using var folder = Cook(file => file["modes"]![0]!["name"] = "puls-cook");
+        using var folder = Cook(file => file["modes"]![0]!["name"] = SampleMode.Beta);
 
-        Assert.That(Refusal(folder), Does.Contain("eval.json").And.Contain("puls-cook"));
+        Assert.That(Refusal(folder), Does.Contain("eval.json").And.Contain(SampleMode.Beta));
     }
 
     /// <summary>Two checks under one name are refused, naming it: the name it was given, else its type.</summary>
