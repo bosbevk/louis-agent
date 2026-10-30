@@ -1,7 +1,7 @@
 # louis-agent.evals — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `evals/louis-agent.evals/` · **References:** louis-agent.core,
-> louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals.runner, every eval set
+> louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner, every eval set
 > (`louis-agent.evals.puls`, `louis-agent.evals.template`)
 
 ## Purpose
@@ -71,14 +71,14 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
 |---|---|
 | `Api/` | The session clients and the session request the runner sends (with `replay`) |
 | `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
-| `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Scenarios/`, `Samples/` |
+| `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Samples/` (a scenario's types are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Grading/` | `IGrader`, `Grade`, the common graders, the model and human graders, the outcomes |
 | `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
 | `Messages/` | The harness's texts (errors, logs, grade reasons, conformance, calibration) |
 | `Protocol/` | The writer and the stored-run reader |
 | `Reports/` | `RunSummary`, `SummaryLine`, `TrialResult` |
 | `Running/` | `EvalRunner`, a trial's attempt and grading, re-scoring, the tallies |
-| `Trials/` | `Trial`, `Transcript`, `TurnFacts`, the engine's events, the conversation's metrics |
+| `Trials/` | The conversation's metrics (`Trial`, `Transcript`, `TurnFacts` and the engine's events are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 
 ## Configuration
 

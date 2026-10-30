@@ -1,8 +1,8 @@
 # louis-agent.evals.checks — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `evals/louis-agent.evals.checks/` · **References:**
-> louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** nothing yet (from F49.1
-> step 2, the harness; from F49.3, the packs)
+> louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals (the
+> harness); from F49.3, the packs
 
 ## Purpose
 
@@ -16,9 +16,13 @@ The why is [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md).
 
 ## How it works
 
-Today the project is empty: F49.1 step 1 only makes it and fences its references. Steps 2 and 3 move the contract in
-from the harness (`Trial` and its turn types, then `IGrader`, `Grade` and `Verdict`), a pure move: the root namespace
-is `LouisAgent.Evals`, the harness's, so a moved type keeps its namespace and nothing that uses it changes.
+Today it holds what a check reads: a `Trial` is one run of a scenario in one mode, and its `Transcript` is the turns
+it left, each a `TurnTranscript` with the session's events as they arrived. `EngineEvents` reads those events (the
+answer, the error, the usage), and `TurnFacts` is what a turn's protocol record says about it. Step 3 moves in what a
+check returns (`IGrader`, `Grade`, `Verdict`).
+
+These came from the harness as a pure move: the root namespace is `LouisAgent.Evals`, the harness's, so a moved type
+keeps its namespace and nothing that uses it changes.
 
 It references only what a pack already references, each for one thing:
 
@@ -33,13 +37,18 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 
 | Path | What's in it |
 |---|---|
-| `louis-agent.evals.checks.csproj` | The three references, each with what it's for; no code yet |
+| `louis-agent.evals.checks.csproj` | The three references, each with what it's for |
+| `EvalMode.cs` | One mode a task runs in: its role, its toolsets, and a sub-session's depth and LLM |
+| `Datasets/Scenarios/` | `EvalScenario`, `EvalInput`, `DatasetSplit`: one scenario, what the user sends, and its split |
+| `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
 
 ## Tests
 
 `ArchitectureTests.Checks_ReferencesOnlyTheEngineTheProtocolAndTheStream` (in `louis-agent.core.tests`) holds the
-references: exactly the three above, none into `packs/` or `identities/`. `tests/louis-agent.evals.checks.tests` is
-empty until step 2 moves the contract's tests in.
+references: exactly the three above, none into `packs/` or `identities/`. `EngineEvents` is still tested in
+`louis-agent.evals.tests` (`EngineEventsTests`, `AnswerOfTests`): those tests build their trials with the harness
+tests' shared `TrialBuilder`, and a test project may not reference another, so they stay until a second project
+needs the builder (F49.3). `tests/louis-agent.evals.checks.tests` gets its first tests in step 5.
 
 ## Related docs
 

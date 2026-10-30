@@ -262,7 +262,8 @@ evals/
 │   ├── Protocol/                   # ProtocolWriter, ProtocolTranscripts
 │   ├── Reports/                    # RunSummary
 │   ├── Running/                    # EvalRunner, ScenarioAttempt, TrialGrading, Rescoring/
-│   └── Trials/                     # Trial, Transcript, TurnFacts
+│   └── Trials/                     # ConversationMetrics
+├── louis-agent.evals.checks/       # the check contract: EvalMode; Datasets/Scenarios/; Trials/ (Trial, Transcript, TurnFacts, EngineEvents)
 ├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
 ├── louis-agent.evals.puls/         # PulsEvalSet; Evals/Cook/, Evals/Routing/ (each with Dataset/ and transcripts); Shared/
 ├── louis-agent.evals.runner/       # Program, Arguments/, Catalog/, Calibration/, Evals/Stub/
