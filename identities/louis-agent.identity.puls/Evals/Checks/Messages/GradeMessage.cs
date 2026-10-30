@@ -6,51 +6,11 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Messages;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum GradeMessage
 {
-    [Description("no turn failed")] NoTurnFailed,
-
-    [Description("{Count} turn(s) failed")]
-    TurnsFailed,
-
-    [Description("the scenario asks for no number of people")]
-    ServesNotAsked,
-
-    [Description("every answer names the number of people asked for")]
-    ServesRight,
-
-    [Description("turn {Turn} gave no answer to read the number of people from")]
-    ServesNothingToRead,
-
-    [Description("turn {Turn} doesn't say it serves {Asked}")]
-    ServesForgotten,
-
-    [Description("turn {Turn} says it serves {Found}, not the {Asked} asked for")]
-    ServesWrong,
-
     [Description("the scenario asks for no number of people, so there is no meal to judge")]
     MealNotAsked,
 
     [Description("the judge's reply is not a verdict: {Reply}")]
     JudgeReplyUnreadable,
-
-    [Description("the scenario sets no budget")]
-    BudgetNotSet,
-
-    [Description("the answer gives no amount to read a basket total from")]
-    BudgetNoAmount,
-
-    [Description("the total R{Total} (from the {Source}) is within the budget R{Budget}")]
-    BudgetWithin,
-
-    [Description("the total R{Total} (from the {Source}) is over the budget R{Budget}")]
-    BudgetOver,
-
-    [Description("total line")] SourceTotalLine,
-
-    [Description("sum of the priced rows")]
-    SourceRowSum,
-
-    [Description("shopping list's total row")]
-    SourceListTotalRow,
 
     [Description("the scenario names no shop to price at")]
     ShopNotSet,
@@ -109,19 +69,4 @@ public enum GradeMessage
 
     [Description("every shop the list has a column for is one the cook can read")]
     UntooledShopsNone,
-
-    [Description("the scenario asks for no image of the recipe")]
-    RecipeImageNotSet,
-
-    [Description("no page the cook read had an image to show")]
-    RecipeImageNoneOnPages,
-
-    [Description("the answer shows no image of the recipe, though the recipe page had one")]
-    RecipeImageMissing,
-
-    [Description("the answer's image is not one the recipe page gave")]
-    RecipeImageNotFromPage,
-
-    [Description("the answer shows an image the recipe page gave")]
-    RecipeImageRight,
 }

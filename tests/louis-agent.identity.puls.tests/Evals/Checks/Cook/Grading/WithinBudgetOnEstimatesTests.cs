@@ -1,6 +1,5 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
 using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
 
@@ -22,10 +21,12 @@ public class WithinBudgetOnEstimatesTests
     /// <summary>The Afrikaans total and per-person rows.</summary>
     private const string AfrikaansEnd = "| **Totaal** | | | **± R112** |\n| **Per persoon** | | | **± R28** |\n";
 
-    /// <summary>The budget check's grade of a one-turn trial with this answer.</summary>
+    /// <summary>
+    /// The cook's budget check's grade, as its eval file builds it, of a one-turn trial with this answer.
+    /// </summary>
     private static Task<Grade> Budget(string expected, string answer) =>
-        new WithinBudget().GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, [Text(answer)])),
-            CancellationToken.None).AsTask();
+        CookFile.Check("within-budget").GradeAsync(
+            Trial(CookEvalMode, "cook-x", expected, null, Turn(1, [Text(answer)])), CancellationToken.None).AsTask();
 
     /// <summary>The bold total row of an estimates list is read as the total, in either language.</summary>
     [TestCase(EnglishEnd)]
@@ -59,14 +60,14 @@ public class WithinBudgetOnEstimatesTests
         Assert.That(Prices.Total(Rows + AfrikaansEnd + "\n" + Elsewhere),
             Is.EqualTo(new BasketTotal(112m, TotalSource.ListTotalRow)));
 
-    /// <summary>Over the budget fails, naming the total row it read, even with other totals around it.</summary>
+    /// <summary>Over the budget fails, naming the total row's amount, even with other totals around it.</summary>
     [Test]
-    public async Task AnEstimatedTotalOverTheBudget_Fails_NamingTheRowItWasReadFrom_EvenWithOtherTotalsInTheAnswer()
+    public async Task AnEstimatedTotalOverTheBudget_Fails_NamingTheRowsTotal_EvenWithOtherTotalsInTheAnswer()
     {
         var grade = await Budget("""{"budget":100}""", Rows + AfrikaansEnd + "\n" + Elsewhere);
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
-        Assert.That(grade.Reason, Does.Contain("112").And.Contain("total row"));
+        Assert.That(grade.Reason, Does.Contain("112.00"));
     }
 
     /// <summary>Under the budget passes, even with other totals around it.</summary>
