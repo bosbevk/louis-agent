@@ -15,12 +15,17 @@ using LouisAgent.Evals.Puls.Shared.Turns;
 namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 
 /// <summary>
-/// The shop the user chose priced the conversation, as the cook's prompt worked until F18 step 5.7 (Checkers: its shop tool was called, with the user's town as
-/// <c>area</c> in every call, and the list's prices link to its site; PnP or Woolworths, which have no catalogue: a page of the site was read with ReadRenderedPage,
-/// and the prices link to it). Kept, with its tests, for when a retailer gives access and the cook prices again (emails to PnP, Woolworths and Checkers
-/// went out on 2026-10-25); it is not in <see cref="CookEval"/>'s graders now, <see cref="EstimatesAtShop"/> is. It keeps its old name and version, so the runs
-/// it graded still read. A scenario that names no shop, or one with no priced shop (<c>any</c>, <c>no-branch</c>), passes: those are the estimates rules.
+/// The shop the user chose priced the conversation, as the cook's prompt worked until F18 step 5.7 (Checkers: its
+/// shop tool was called, with the user's town as <c>area</c> in every call, and the list's prices link to its site;
+/// PnP or Woolworths, which have no catalogue: a page of the site was read with ReadRenderedPage, and the prices link
+/// to it). A scenario that names no shop, or one with no priced shop (<c>any</c>, <c>no-branch</c>), passes: those
+/// are the estimates rules.
 /// </summary>
+/// <remarks>
+/// Kept, with its tests, for when a retailer gives access and the cook prices again (emails to PnP, Woolworths and
+/// Checkers went out on 2026-10-25); the cook's eval file doesn't name it now, <see cref="EstimatesAtShop"/> is in its
+/// place, and it has no catalogue entry. It keeps its old name and version, so the runs it graded still read.
+/// </remarks>
 public sealed class PricedAtRetailer : ICheck
 {
     public string Name => "priced-at-shop";
@@ -34,9 +39,13 @@ public sealed class PricedAtRetailer : ICheck
         "town"
     }.ToFrozenSet();
 
+    /// <summary>Checks the chosen shop priced the conversation, by its tool or its page.</summary>
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
         ValueTask.FromResult(Grade(trial));
 
+    /// <summary>
+    /// Unknown for a broken turn; a pass with no priced shop; else the shop's own rule, by its catalogue or its page.
+    /// </summary>
     private Grade Grade(Trial trial)
     {
         var turns = trial.Transcript.Turns;
@@ -56,7 +65,10 @@ public sealed class PricedAtRetailer : ICheck
             : ForPage(shop.Wire(), all, views[0].Answer);
     }
 
-    /// <summary>A shop with no catalogue (PnP, Woolworths): a page of its site was read with ReadRenderedPage, and the prices link to its site. No area: a page has none.</summary>
+    /// <summary>
+    /// A shop with no catalogue (PnP, Woolworths): a page of its site was read with ReadRenderedPage, and the prices
+    /// link to its site. No area: a page has none.
+    /// </summary>
     private Grade ForPage(string shop, IReadOnlyList<ToolCall> allCalls, string answer)
     {
         string host = Shops.Hosts.First(known => known.Name == shop).Host;
@@ -69,6 +81,10 @@ public sealed class PricedAtRetailer : ICheck
             : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPricesNotLinked, new { Shop = shop }));
     }
 
+    /// <summary>
+    /// Checkers, with a catalogue: its shop tool was called, for the user's town in every call, and the prices link
+    /// to its site.
+    /// </summary>
     private Grade ForShop(string shop, string town, IReadOnlyList<ToolCall> shopCalls, string answer)
     {
         var calls = shopCalls.Where(call =>
@@ -90,12 +106,16 @@ public sealed class PricedAtRetailer : ICheck
             : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.ShopPricesNotLinked, new { Shop = shop }));
     }
 
-    /// <summary>Whether a tool's <c>area</c> names the town: either contains the other, case ignored ("malmesbury, western cape" is Malmesbury). No area names none.</summary>
+    /// <summary>
+    /// Whether a tool's <c>area</c> names the town: either contains the other, case ignored ("malmesbury, western
+    /// cape" is Malmesbury). No area names none.
+    /// </summary>
     private static bool InTown(string? area, string town) =>
         !string.IsNullOrWhiteSpace(area)
         && (area.Contains(town, StringComparison.OrdinalIgnoreCase) ||
             town.Contains(area.Trim(), StringComparison.OrdinalIgnoreCase));
 
+    /// <summary>A string field of a tool's input, or null when it is absent or isn't a string.</summary>
     private static string? Text(JsonElement input, string name) =>
         input.ValueKind == JsonValueKind.Object && input.TryGetProperty(name, out var value) &&
         value.ValueKind == JsonValueKind.String

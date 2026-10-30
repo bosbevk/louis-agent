@@ -6,13 +6,22 @@ using Microsoft.Extensions.AI.Evaluation;
 
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.Judges;
 
-// F18 step 6.2: the cook's judge, "is this a meal for the people asked for". An IEvaluator that sends the scenario's ask (people, budget, town), the answer and its prompt to the judge
-// model, and reads a JSON verdict (meal: true, false or null, and a reason) through a record. A reply it can't read is no verdict, never a pass. Written first: MealForPeople did not exist.
+/// <summary>
+/// The cook's judge, "is this a meal for the people asked for": an <see cref="IEvaluator"/> that sends the scenario's
+/// ask (the people and the town), the answer and its rubric to the judge model, and reads a JSON verdict (<c>meal</c>:
+/// true, false or null, and a reason) through a record. A reply it can't read is no verdict, never a pass.
+/// </summary>
 public class MealForPeopleTests
 {
+    /// <summary>The ask: four people in Malmesbury.</summary>
     private static readonly CookAsk Ask = new(people: 4, town: "Malmesbury");
+
+    /// <summary>An answer to judge.</summary>
     private const string Answer = "Bobotie vir vier: 'n hoofgereg met 500 g maalvleis, rys en 'n eier-melk-bedekking.";
 
+    /// <summary>
+    /// Judges the answer with a judge that gives this reply, and returns the metric and what was sent.
+    /// </summary>
     private static async Task<(BooleanMetric Metric, ScriptedJudge Client)> JudgeAsync(string reply,
         CookAsk? ask = null)
     {
@@ -23,6 +32,7 @@ public class MealForPeopleTests
         return (result.Metrics.Values.OfType<BooleanMetric>().Single(), client);
     }
 
+    /// <summary>It sends its rubric as the system message, and the ask and the answer as the user's.</summary>
     [Test]
     public async Task ItSendsItsPromptAsTheSystem_AndTheAsk_AndTheAnswerAsTheUser()
     {
@@ -36,8 +46,11 @@ public class MealForPeopleTests
             "6a.4f: the budget is not the judge's to see");
     }
 
-    // 6a.4f (Louis: the judge failed a follow-up turn that swapped the meat and gave the list, since the recipe was in the turn before): the judge is sent the earlier turns too, question
-    // and answer, before the answer it judges, and the prompt tells it a follow-up may rely on them. A single-turn conversation is sent as before.
+    /// <summary>
+    /// The judge is sent the earlier turns too, question and answer, before the answer it judges, and the rubric tells
+    /// it a follow-up may rely on them (Louis: the judge failed a follow-up that swapped the meat and gave the list,
+    /// since the recipe was in the turn before). A single-turn conversation is sent as before.
+    /// </summary>
     [Test]
     public async Task TheEarlierTurns_AreSentBeforeTheAnswer_SoAFollowUpIsJudgedWithWhatItReliesOn()
     {
@@ -53,24 +66,30 @@ public class MealForPeopleTests
             new ChatResponse(new ChatMessage(ChatRole.Assistant, "Vir ses: 750 g maalvleis, meer rys.")),
             new ChatConfiguration(client), [Ask]);
 
-        string sent = client.Sent.Single()[1].Text!;
+        var sent = client.Sent.Single()[1].Text!;
         Assert.That(sent,
             Does.Contain("The conversation so far:").And.Contain("User: Wat kan ek kook vir vier?").And
                 .Contain("Assistant: Bobotie vir vier").And.Contain("User: Maak dit vir ses."));
         Assert.That(sent.IndexOf("The conversation so far:"), Is.LessThan(sent.IndexOf("The answer to judge:")));
         Assert.That(sent, Does.EndWith("Vir ses: 750 g maalvleis, meer rys."));
-        Assert.That(MealForPeoplePrompt.Text, Does.Contain("follow-up"),
-            "the prompt says a follow-up may rely on the turns before");
+        Assert.That(CookFile.Rubric, Does.Contain("follow-up"),
+            "the rubric says a follow-up may rely on the turns before");
     }
 
-    // F18 step 6a.1: the question a person is asked to review is the judge prompt's own title, read from it, so the judge and the person answer the same words.
+    /// <summary>
+    /// The question a person is asked to review is the rubric's own title, read from it, so the judge and the person
+    /// answer the same words.
+    /// </summary>
     [Test]
     public void ThePersonIsAskedTheQuestionTheJudgeIs_ReadFromItsPromptsTitle()
     {
-        Assert.That(MealForPeoplePrompt.Question, Is.EqualTo("Is this a meal for the people asked for?"));
+        Assert.That(CookFile.Question, Is.EqualTo("Is this a meal for the people asked for?"));
     }
 
-    // The calibration compares the judge with a person on the same answers, so the same answer must get the same verdict: temperature 0 is part of the measure (6.2 review).
+    /// <summary>
+    /// The calibration compares the judge with a person on the same answers, so the same answer must get the same
+    /// verdict: temperature 0 is part of the measure.
+    /// </summary>
     [Test]
     public async Task ItAsksAtTemperatureZero()
     {
@@ -79,6 +98,7 @@ public class MealForPeopleTests
         Assert.That(client.Options.Single()?.Temperature, Is.EqualTo(0f));
     }
 
+    /// <summary>A yes, a no and a can't-tell are three answers; can't-tell is no value.</summary>
     [Test]
     public async Task ATrueVerdict_AFalseOne_AndACantTell_AreThreeAnswers()
     {
@@ -92,6 +112,7 @@ public class MealForPeopleTests
             "can't tell is an answer, and it is no value");
     }
 
+    /// <summary>A verdict in a code fence, or with words around it, is still read.</summary>
     [Test]
     public async Task AVerdictInACodeFence_OrWithWordsAround_IsStillRead()
     {
@@ -103,6 +124,7 @@ public class MealForPeopleTests
         Assert.That(wrapped.Value, Is.True);
     }
 
+    /// <summary>A reply it can't read is no verdict, never a pass, and the grade says why.</summary>
     [TestCase("")]
     [TestCase("I think it is a meal.")]
     [TestCase("""{"meal": "yes", "reason": "x"}""")]
@@ -116,6 +138,7 @@ public class MealForPeopleTests
         Assert.That(metric.Reason, Is.Not.Empty, "a grade says why");
     }
 
+    /// <summary>Asked with no people and no town, it still sends what is known, and never the budget.</summary>
     [Test]
     public async Task AskedWithNoPeople_ItStillSendsWhatIsKnown()
     {
@@ -125,32 +148,37 @@ public class MealForPeopleTests
             Does.Contain("People: not said").And.Not.Contain("Budget").And.Contain("Town: not said"));
     }
 
-    // The prompt is a markdown file beside the eval (ADR 0011), embedded; its hash is of its bytes, so a re-score with a changed prompt is a different measure.
+    /// <summary>
+    /// The rubric is a markdown file beside the cook's eval (ADR 0011); its hash is of its bytes, so a re-score with a
+    /// changed rubric is a different measure.
+    /// </summary>
     [Test]
-    public void ThePromptIsTheEmbeddedFile_AndItsHashIsOfItsBytes()
+    public void TheRubricIsAFileBesideTheEval_AndItsHashIsOfItsBytes()
     {
-        string text = MealForPeoplePrompt.Text;
+        var text = CookFile.Rubric;
 
         Assert.That(text,
             Does.Contain("main dish").And.Contain("can't tell").And.Contain("never the prices").And
                 .Contain("\"meal\""));
-        Assert.That(MealForPeoplePrompt.Hash,
-            Is.EqualTo(Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)))[..12]));
-        Assert.That(MealForPeoplePrompt.Hash, Does.Match("^[0-9a-f]{12}$"));
+        Assert.That(Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)))[..12],
+            Is.EqualTo(CookFile.RubricHash));
     }
 
-    // What the judge is sent is what the measure is: pinned like what the cook's model is sent. LOUIS_UPDATE_GOLDEN=1 writes it; review the diff before committing.
+    /// <summary>
+    /// What the judge is sent is what the measure is: pinned like what the cook's model is sent.
+    /// <c>LOUIS_UPDATE_GOLDEN=1</c> writes it; review the diff before committing.
+    /// </summary>
     [Test]
     public async Task WhatTheJudgeIsSent_IsPinned()
     {
         var recorder = new ScriptedJudge("""{"meal": true, "reason": "x"}""");
-        await new MealForPeople(MealForPeoplePrompt.Text).EvaluateAsync(
+        await new MealForPeople(CookFile.Rubric).EvaluateAsync(
             [new ChatMessage(ChatRole.User, "Wat kan ek kook?")],
             new ChatResponse(new ChatMessage(ChatRole.Assistant, Answer)),
             new ChatConfiguration(recorder), [Ask]);
-        string actual = string.Join("\n", recorder.Sent.Single().Select(m => $"[{m.Role.Value}]\n{m.Text}"))
+        var actual = string.Join("\n", recorder.Sent.Single().Select(m => $"[{m.Role.Value}]\n{m.Text}"))
             .ReplaceLineEndings("\n") + "\n";
-        string golden = GoldenPath();
+        var golden = GoldenPath();
 
         if (Environment.GetEnvironmentVariable("LOUIS_UPDATE_GOLDEN") == "1")
         {
@@ -161,15 +189,20 @@ public class MealForPeopleTests
         Assert.That(actual, Is.EqualTo(File.ReadAllText(golden).ReplaceLineEndings("\n")));
     }
 
+    /// <summary>The golden of what the judge is sent, beside this file.</summary>
     private static string GoldenPath([CallerFilePath] string here = "") =>
         Path.Combine(Path.GetDirectoryName(here)!, "meal-for-people.sent.txt");
 
     /// <summary>A judge model that answers with a canned reply and keeps what it was sent.</summary>
     internal sealed class ScriptedJudge(string reply) : IChatClient
     {
+        /// <summary>Each request's messages, in order.</summary>
         public List<List<ChatMessage>> Sent { get; } = [];
+
+        /// <summary>Each request's options, in order.</summary>
         public List<ChatOptions?> Options { get; } = [];
 
+        /// <summary>Keeps what it was sent and answers with its reply.</summary>
         public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
             CancellationToken cancellationToken = default)
         {
@@ -178,12 +211,15 @@ public class MealForPeopleTests
             return Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, reply)));
         }
 
+        /// <summary>Never asked: the judge doesn't stream.</summary>
         public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
             ChatOptions? options = null, CancellationToken cancellationToken = default) =>
             throw new NotSupportedException();
 
+        /// <summary>No services.</summary>
         public object? GetService(Type serviceType, object? serviceKey = null) => null;
 
+        /// <summary>Nothing to free.</summary>
         public void Dispose()
         {
         }

@@ -1,4 +1,3 @@
-using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
 
 namespace LouisAgent.Evals.Puls.Tests;
@@ -9,9 +8,7 @@ namespace LouisAgent.Evals.Puls.Tests;
 /// </summary>
 internal static class Dev
 {
-    /// <summary>The cook's eval, whose scenarios are read.</summary>
-    private static readonly CookEval CookEval = new();
-
     /// <summary>The cook scenario's expectations, by its id.</summary>
-    public static CookExpectations Cook(string id) => CookExpectations.Of(CookEval.Scenarios.Single(s => s.Id == id));
+    public static CookExpectations Cook(string id) =>
+        CookExpectations.Of(CookFile.Eval.Scenarios.Single(s => s.Id == id));
 }

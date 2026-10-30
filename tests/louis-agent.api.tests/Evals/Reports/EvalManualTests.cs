@@ -17,7 +17,7 @@ public class EvalManualTests
 
     /// <summary>Each real eval's manual is found beside the eval and opens with a heading.</summary>
     [TestCase("stub", "evals/louis-agent.evals.runner/Manuals/stub.md")]
-    [TestCase("puls-cook", "evals/louis-agent.evals.puls/Manuals/cook.md")]
+    [TestCase("puls-cook", "identities/louis-agent.identity.puls/Evals/Cook/manual.md")]
     [TestCase("puls-routing", "identities/louis-agent.identity.puls/Evals/Routing/manual.md")]
     public void AnEvalsManual_IsReadFromBesideTheEval(string eval, string path)
     {

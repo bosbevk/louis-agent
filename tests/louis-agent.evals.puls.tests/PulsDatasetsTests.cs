@@ -2,8 +2,8 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
+using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
 using LouisAgent.Evals.Puls.Evals.Cook.Scoring;
 using LouisAgent.Evals.Puls.Shared;
@@ -18,9 +18,9 @@ namespace LouisAgent.Evals.Puls.Tests;
 /// </summary>
 public class PulsDatasetsTests
 {
-    /// <summary>Each of Puls's evals in C#, by its name.</summary>
-    private static readonly IReadOnlyDictionary<PulsEvalName, IEval> Evals =
-        new Dictionary<PulsEvalName, IEval> { [PulsEvalName.Cook] = new CookEval() };
+    /// <summary>Each of Puls's evals, by its name, as the runner reads it from its folder.</summary>
+    private static readonly IReadOnlyDictionary<PulsEvalName, FileEval> Evals =
+        new Dictionary<PulsEvalName, FileEval> { [PulsEvalName.Cook] = CookFile.Eval };
 
     /// <summary>The checks of the eval that owns this dataset.</summary>
     internal static IReadOnlyList<ICheck> GradersOf(PulsEvalName dataset) => Evals[dataset].Checks;
@@ -184,5 +184,5 @@ public class PulsDatasetsTests
 
     /// <summary>The dataset of one of Puls's evals, loaded with that eval's graders.</summary>
     internal static Dataset Load(PulsEvalName name) =>
-        DatasetLoader.Load(EvalFiles.DatasetOf(Evals[name]), GradersOf(name));
+        DatasetLoader.Load(Path.Combine(CookFile.Folder, "Dataset"), GradersOf(name));
 }

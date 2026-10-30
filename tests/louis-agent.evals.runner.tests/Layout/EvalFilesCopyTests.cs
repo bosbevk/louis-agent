@@ -1,5 +1,4 @@
 using LouisAgent.Evals.Datasets;
-using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
 namespace LouisAgent.Evals.Runner.Tests.Layout;
@@ -13,21 +12,22 @@ namespace LouisAgent.Evals.Runner.Tests.Layout;
 /// <remarks>
 /// A learning test (F18 step 5.4b) kept as the item's proof: <c>%(RecursiveDir)</c> is the file's whole path from the
 /// project root, because the default None glob starts there; the files reach the runner's output and this project's
-/// output through the project reference alone; <c>TargetPath</c>, not <c>Link</c>, because <c>Link</c> shows every file
-/// a second time in the IDE, under a folder named like the project.
+/// output through the project references alone (an identity's through the composition); <c>TargetPath</c>, not
+/// <c>Link</c>, because <c>Link</c> shows every file a second time in the IDE, under a folder named like the project.
 /// </remarks>
 public class EvalFilesCopyTests
 {
-    /// <summary>The cook's manifest, copied from the Puls evals project.</summary>
-    private const string CookDataset = "EvalFiles/evals/louis-agent.evals.puls/Evals/Cook/Dataset/dataset.json";
+    /// <summary>The cook's manifest, copied from the Puls identity's project.</summary>
+    private const string CookDataset =
+        "EvalFiles/identities/louis-agent.identity.puls/Evals/Cook/Dataset/dataset.json";
 
     /// <summary>One of the stub's reference transcripts, copied from the runner's own project.</summary>
     private const string StubReference =
         "EvalFiles/evals/louis-agent.evals.runner/Evals/Stub/Transcripts/bobotie.reference.txt";
 
-    /// <summary>A dataset reaches this project's output through its reference to the Puls project.</summary>
+    /// <summary>An identity's dataset reaches this project's output through the runner and the composition.</summary>
     [Test]
-    public void ADatasetReachesThisProjectsOutput_ThroughTheProjectReference() =>
+    public void ADatasetReachesThisProjectsOutput_ThroughTheProjectReferences() =>
         Assert.That(File.Exists(Path.Combine(AppContext.BaseDirectory, CookDataset)), Is.True, CookDataset);
 
     /// <summary>The stub's transcripts reach it from the runner's own item.</summary>
@@ -35,9 +35,9 @@ public class EvalFilesCopyTests
     public void TheStubsTranscripts_ReachThisProjectsOutput_FromTheRunnersOwnItem() =>
         Assert.That(File.Exists(Path.Combine(AppContext.BaseDirectory, StubReference)), Is.True, StubReference);
 
-    /// <summary>A dataset reaches the runner's own output too.</summary>
+    /// <summary>An identity's dataset reaches the runner's own output too.</summary>
     [Test]
-    public void ADatasetReachesTheRunnersOwnOutput_ThroughItsReferenceToThePulsProject()
+    public void ADatasetReachesTheRunnersOwnOutput_ThroughItsReferenceToTheComposition()
     {
         // This project's output is bin/{Config}/net10.0/; the runner's is the same under its own folder.
         var output =
@@ -50,16 +50,10 @@ public class EvalFilesCopyTests
             Path.Combine(runnerOutput, CookDataset));
     }
 
-    /// <summary>EvalFiles says where the item put an eval in C#'s data.</summary>
+    /// <summary>EvalFiles says where the item put an eval in C#'s data: the stub's, the one left in C#.</summary>
     [Test]
-    public void EvalFiles_SaysWhereTheItemPutThem()
-    {
-        Assert.That(EvalFiles.DatasetOf(typeof(CookEval)),
-            Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "evals", "louis-agent.evals.puls", "Evals",
-                "Cook", "Dataset")));
+    public void EvalFiles_SaysWhereTheItemPutThem() =>
         Assert.That(EvalFiles.TranscriptsOf(typeof(StubEval)),
             Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "evals", "louis-agent.evals.runner", "Evals",
                 "Stub", "Transcripts")));
-        Assert.That(File.Exists(Path.Combine(EvalFiles.DatasetOf(typeof(CookEval)), "dataset.json")), Is.True);
-    }
 }

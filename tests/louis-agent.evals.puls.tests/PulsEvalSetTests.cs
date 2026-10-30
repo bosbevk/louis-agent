@@ -1,29 +1,25 @@
 using LouisAgent.Choices;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Evals.Puls.Shared;
-using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Evals.Puls.Evals.Cook;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
 namespace LouisAgent.Evals.Puls.Tests;
 
 /// <summary>
-/// Puls's set lists its eval in C#, and its checks leave a turn that failed for the infrastructure Unknown, so a flaky
-/// network can never count as the agent failing.
+/// Puls's set is empty now, its evals folders of files beside the identity; the cook's checks leave a turn that failed
+/// for the infrastructure Unknown, so a flaky network can never count as the agent failing.
 /// </summary>
 public class PulsEvalSetTests
 {
-    /// <summary>
-    /// The set lists the cook, its one eval left in C#; the routing eval is a folder beside the identity.
-    /// </summary>
+    /// <summary>The set lists no eval: the routing and the cook are folders of files beside the identity.</summary>
     [Test]
-    public void TheSetListsTheCook()
+    public void TheSetListsNoEval()
     {
         var set = new PulsEvalSet();
 
         Assert.That(set.Identity, Is.EqualTo(PulsEvalIdentity.Puls.Wire()));
-        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { PulsEvalName.Cook.Wire() }));
+        Assert.That(set.Evals, Is.Empty);
     }
 
     /// <summary>The set's own copy of the identity's name is the name the Puls identity goes by.</summary>
@@ -45,7 +41,7 @@ public class PulsEvalSetTests
     [TestCase("meal-for-people")]
     public async Task ATurnThatFailedForTheInfrastructure_IsUnknown_NeverAFail(string name)
     {
-        ICheck grader = new CookEval().Checks.Single(g => g.Name == name);
+        var grader = CookFile.Eval.Checks.Single(g => g.Name == name);
         // The failed turn has a whole, good answer: without the infrastructure check each check would pass it, so the
         // test tells a check that looked from one that was merely handed an empty turn (reviewed on 5.4: three
         // checks could be removed and the tests still passed).

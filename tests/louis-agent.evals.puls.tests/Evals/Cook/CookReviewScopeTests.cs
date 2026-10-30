@@ -1,25 +1,27 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals.Puls.Shared;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook;
 
-// F18 step 6a.4 (Louis): the cook's human review asks "is this a meal for the people asked for?", so it applies only where the meal judge has a meal to judge (the scenario has `serves`).
-// The control (control-web) and the ask-first scenario ask for no number of people: no pending review, no panel. Written first: the review applied to every scenario.
+/// <summary>
+/// The cook's human review asks "is this a meal for the people asked for?", so it applies only where the meal judge
+/// has a meal to judge (the scenario has <c>serves</c>). The control (<c>control-web</c>) and the ask-first scenario
+/// ask for no number of people: no pending review, no panel.
+/// </summary>
 public class CookReviewScopeTests
 {
-    private static readonly CookEval Eval = new();
-
+    /// <summary>Whether the cook's review has a question to ask about a trial of this scenario.</summary>
     private static bool Applies(string scenario) =>
-        Eval.Checks.OfType<HumanReviewCheck>().Single().AppliesTo(
+        CookFile.Eval.Checks.OfType<HumanReviewCheck>().Single().AppliesTo(
             new Trial("run_1",
                 new EvalMode(CookMode.Cook.Wire(), "puls/voice-af",
                     [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), 1,
-                Eval.Scenarios.Single(s => s.Id == scenario), new Transcript([])));
+                CookFile.Eval.Scenarios.Single(s => s.Id == scenario), new Transcript([])));
 
+    /// <summary>The review applies where the judge has a meal to judge, and nowhere else.</summary>
     [TestCase("control-web", false)]
     [TestCase("cook-asks-first", false)]
     [TestCase(PulsCookScenarioIds.CookEn, true)]

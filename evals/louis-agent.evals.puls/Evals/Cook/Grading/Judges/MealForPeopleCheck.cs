@@ -50,11 +50,6 @@ public sealed class MealForPeopleCheck : IRubricCheck
         new(rubric, new EvaluatorCheck(new MealForPeople(rubric), judge, MealForPeople.MetricName, JudgeVersion,
             HashOf(rubric), new HashSet<string> { "serves" }, trial => [CookAsk.Of(trial)]));
 
-    /// <summary>
-    /// The cook's judge over the rubric embedded with this project, as the cook's eval in C# builds it.
-    /// </summary>
-    public static MealForPeopleCheck Create(Func<ConfiguredJudge?> judge) => Create(MealForPeoplePrompt.Text, judge);
-
     /// <inheritdoc />
     public string Rubric { get; }
 
@@ -71,8 +66,8 @@ public sealed class MealForPeopleCheck : IRubricCheck
             : _inner.GradeAsync(trial, cancellationToken);
 
     /// <summary>
-    /// The first 12 hex digits of the SHA-256 of the rubric's text, as <see cref="MealForPeoplePrompt.Hash"/> is of
-    /// the embedded copy's.
+    /// The first 12 hex digits of the SHA-256 of the rubric's text: as long as a prompt hash is anywhere else in the
+    /// ledger and the portal.
     /// </summary>
     private static string HashOf(string rubric) =>
         Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(rubric)))[..12];

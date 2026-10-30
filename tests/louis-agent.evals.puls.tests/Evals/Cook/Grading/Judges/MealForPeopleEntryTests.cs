@@ -27,7 +27,7 @@ public class MealForPeopleEntryTests
     [Test]
     public void TheEntry_ReadsItsRubric_FromTheEvalsFolder()
     {
-        using var folder = new RubricFolder(MealForPeoplePrompt.Text);
+        using var folder = new RubricFolder(CookFile.Rubric);
 
         var check = Build(Settings, folder.Root);
 
@@ -35,15 +35,15 @@ public class MealForPeopleEntryTests
         Assert.That((check.Name, check.Version, check.Kind, check.Required),
             Is.EqualTo(("meal-for-people", 2, CheckKind.Model, false)));
         Assert.That(check.ExpectedKeys, Is.EqualTo(new[] { "serves" }));
-        Assert.That(((IRubricCheck)check).Rubric, Is.EqualTo(MealForPeoplePrompt.Text));
+        Assert.That(((IRubricCheck)check).Rubric, Is.EqualTo(CookFile.Rubric));
     }
 
-    /// <summary>The rubric's bytes are the embedded prompt's, so its grades carry the same prompt hash.</summary>
+    /// <summary>The rubric file's bytes are the calibrated ones, so its grades carry the same prompt hash.</summary>
     [Test]
     public async Task TheSameRubric_GradesUnderTheSameHash()
     {
         var client = new MealForPeopleTests.ScriptedJudge("""{"meal": true, "reason": "For four."}""");
-        var check = MealForPeopleCheck.Create(MealForPeoplePrompt.Text,
+        var check = MealForPeopleCheck.Create(CookFile.Rubric,
             () => new ConfiguredJudge(new ChatConfiguration(client), "qwen3:8b"));
 
         var grade = await check.GradeAsync(
@@ -51,7 +51,7 @@ public class MealForPeopleEntryTests
             CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Judge?.PromptHash),
-            Is.EqualTo((GradeOutcome.Pass, MealForPeoplePrompt.Hash)));
+            Is.EqualTo((GradeOutcome.Pass, CookFile.RubricHash)));
     }
 
     /// <summary>A rubric that isn't in the folder is refused when the eval is read, naming the file.</summary>
@@ -71,14 +71,14 @@ public class MealForPeopleEntryTests
     [Test]
     public void APersonsReview_OfTheCooksJudge_AsksItsRubricsTitle()
     {
-        using var folder = new RubricFolder(MealForPeoplePrompt.Text);
+        using var folder = new RubricFolder(CookFile.Rubric);
         var judge = Build(Settings, folder.Root);
 
         var review = (HumanReviewCheck)new CheckCatalog([.. GeneralChecks.All, .. PulsChecks.All]).Get("human")
             .Create(Json("""{"reviews": "meal-for-people"}"""), new CheckContext(folder.Root, [judge]));
 
         Assert.That((review.Name, review.Question),
-            Is.EqualTo(("meal-for-people.human", MealForPeoplePrompt.Question)));
+            Is.EqualTo(("meal-for-people.human", CookFile.Question)));
     }
 
     /// <summary>Builds the judge the way the cook's eval file will: from Puls's list, in this folder.</summary>

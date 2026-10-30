@@ -1,11 +1,11 @@
 using LouisAgent.Choices;
-using LouisAgent.Evals.Puls.Evals.Cook;
 
 namespace LouisAgent.Evals.Puls;
 
 /// <summary>
-/// Puls's evals in C#: the set the runner's catalogue lists under <c>EVALS=puls</c>. The cook is the one left; the
-/// routing eval is a folder of files beside the identity (F49.2 step 6), and the cook follows in step 8.
+/// Puls's evals in C#: none are left. The routing eval and the cook are folders of files beside the identity (F49.2
+/// steps 6 and 8b); the set stays one more step, empty, so <c>EVALS=puls</c> still reads, and goes with the runner's
+/// sets in step 8c.
 /// </summary>
 public sealed class PulsEvalSet : IEvalSet
 {
@@ -13,7 +13,7 @@ public sealed class PulsEvalSet : IEvalSet
     public string Identity => PulsEvalIdentity.Puls.Wire();
 
     /// <inheritdoc />
-    public IReadOnlyList<IEval> Evals { get; } = [new CookEval()];
+    public IReadOnlyList<IEval> Evals { get; } = [];
 }
 
 /// <summary>
