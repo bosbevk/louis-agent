@@ -23,6 +23,11 @@
     <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
+    <!-- F49.2: the harness loads the identity's evals from their folders, and the composition says which toolsets Puls
+         has (its identity and the packs it names), which the routing eval's baseline lists. The identity itself
+         references neither. -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals\louis-agent.evals.csproj" />
+    <ProjectReference Include="..\..\src\louis-agent.composition\louis-agent.composition.csproj" />
   </ItemGroup>
 
   <ItemGroup>

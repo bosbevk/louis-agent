@@ -1,7 +1,8 @@
 # louis-agent.evals.runner — design
 
 > **Kind:** console app (`net10.0`) · **Path:** `evals/louis-agent.evals.runner/` · **References:**
-> louis-agent.evals, louis-agent.evals.puls · **Used by:** louis-agent.api (starts it as a child process; published to
+> louis-agent.evals, louis-agent.evals.puls, louis-agent.composition (the identities' and packs' eval folders reach
+> the runner through it, ADR 0027) · **Used by:** louis-agent.api (starts it as a child process; published to
 > `/app/evals` in the API's images)
 
 ## Purpose

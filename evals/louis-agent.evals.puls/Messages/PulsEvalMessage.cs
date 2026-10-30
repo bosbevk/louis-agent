@@ -7,8 +7,5 @@ public enum PulsEvalMessage
 {
     [Description(
         "Puls routes a meal to its cook, within the budget and at the shop that serves the town, and the conversation runs without a failed turn.")]
-    CookProves,
-
-    [Description("Puls sends each kind of question to the right place: a meal to its cook, the rest answered itself.")]
-    RoutingProves,
+    CookProves
 }

@@ -58,7 +58,6 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly (string File, string Class)[] IdsFiles =
     [
-        ("tests/louis-agent.evals.puls.tests/PulsTaskIds.cs", "PulsTaskIds"),
         ("tests/louis-agent.evals.puls.tests/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
     ];
 

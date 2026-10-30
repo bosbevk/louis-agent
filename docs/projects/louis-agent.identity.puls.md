@@ -70,6 +70,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `PulsPack.cs` | The packs Puls names as an enum of its own (the shops pack), never the pack's enum; the composition root's `PackKind` is checked against the packs it builds (F18 step 7.5.4e) |
 | `Prompts/agent/puls/voice-af.md`, `voice-en.md` | The voice in each language (*Puls - Stem*, *Puls - Voice*): who Puls is and how it talks; the two have the same sections |
 | `Prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one, what isn't available yet; no mode of its own |
+| `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition. Files only: the identity references no harness |
 | `Prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |
 | `Prompts/specialists/puls-researcher.md`, `puls-reader.md`, `puls-analyst.md`, `puls-historian.md` | The web researcher, file reader, numbers and history specialists (written, off until each passes a check) |
 | `Prompts/minions/puls-minion.md` | What every Puls minion is: one task, one tool, a short answer in its role's fields |
@@ -97,8 +98,11 @@ session golden: regenerate it and read the diff.
 refusing Puls without its pack), `PulsPromptsTests` (the modes and roles listed, a language loading its voice then the
 routing, the languages with the same sections, the cook's header) and `PulsSessionSnapshotTests` with
 `PulsSessionSnapshot.json`, the golden of exactly what the model is sent in Puls's chat and in its cook. `PulsPrompts`
-registers the identity's and the pack's prompts first, as a host does. Puls's behaviour is measured by its evals
-([evals](louis-agent.evals.puls.md): the cook and the routing, in `evals/louis-agent.evals.puls`).
+registers the identity's and the pack's prompts first, as a host does. Puls's behaviour is measured by its evals:
+the routing eval beside the identity (`Evals/Routing/RoutingEvalTests`: its modes, with the baseline equal to Puls's
+toolsets from the composition minus the delegating ones; its dataset's shape; its references and known-bads conform;
+its manual), and the cook in [evals](louis-agent.evals.puls.md) until it moves (F49.2 step 8). The test project
+references the harness and the composition for these; the identity doesn't.
 
 ## Limits and plans
 

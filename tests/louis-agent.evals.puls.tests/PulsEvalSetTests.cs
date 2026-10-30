@@ -8,25 +8,35 @@ using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
 namespace LouisAgent.Evals.Puls.Tests;
 
-// F18 step 5.3: Puls's set lists its two evals, and its graders leave a turn that failed for the infrastructure Unknown (step 5.1 now records
-// such turns, so a flaky network can never count as the agent failing).
+/// <summary>
+/// Puls's set lists its eval in C#, and its checks leave a turn that failed for the infrastructure Unknown, so a flaky
+/// network can never count as the agent failing.
+/// </summary>
 public class PulsEvalSetTests
 {
+    /// <summary>
+    /// The set lists the cook, its one eval left in C#; the routing eval is a folder beside the identity.
+    /// </summary>
     [Test]
-    public void TheSetListsTheCookAndTheRoutingEvals()
+    public void TheSetListsTheCook()
     {
         var set = new PulsEvalSet();
 
         Assert.That(set.Identity, Is.EqualTo(PulsEvalIdentity.Puls.Wire()));
-        Assert.That(set.Evals.Select(e => e.Name),
-            Is.EqualTo(new[] { PulsEvalName.Cook.Wire(), PulsEvalName.Routing.Wire() }));
+        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { PulsEvalName.Cook.Wire() }));
     }
 
+    /// <summary>The set's own copy of the identity's name is the name the Puls identity goes by.</summary>
     [Test]
     public void TheSetsIdentity_IsTheNameThePulsIdentityGoesBy() =>
-        // ADR 0043: the set keeps its own copy of the name (it never references an identity); this project's tests see both and hold the copy to the original.
+        // ADR 0043: the set keeps its own copy of the name (it never references an identity); this project's tests
+        // see both and hold the copy to the original.
         Assert.That(new PulsEvalSet().Identity, Is.EqualTo(new PulsIdentity().Name));
 
+    /// <summary>
+    /// Each of the cook's fixed checks leaves a turn the infrastructure broke Unknown, never a fail, even when the turn
+    /// holds a whole, good answer.
+    /// </summary>
     [TestCase("cook-no-error")]
     [TestCase("routed-to")]
     [TestCase("within-budget")]
@@ -36,8 +46,9 @@ public class PulsEvalSetTests
     public async Task ATurnThatFailedForTheInfrastructure_IsUnknown_NeverAFail(string name)
     {
         ICheck grader = new CookEval().Checks.Single(g => g.Name == name);
-        // The failed turn has a whole, good answer: without the infrastructure check each grader would pass it, so the test tells a grader that
-        // checked from one that was merely handed an empty turn (reviewed on 5.4: three checks could be removed and the tests still passed).
+        // The failed turn has a whole, good answer: without the infrastructure check each check would pass it, so the
+        // test tells a check that looked from one that was merely handed an empty turn (reviewed on 5.4: three
+        // checks could be removed and the tests still passed).
         const string answer = """
                               Hoender vir 4 mense.
 

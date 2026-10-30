@@ -11,27 +11,28 @@ identity gets a project of its own ([ADR 0029](../adr/0029-simulations-in-csharp
 
 ## How it works
 
-- **One set, two evals.** `PulsEvalSet` lists `puls-cook` and `puls-routing`; the set keeps its own copy of the
-  identity's name (a set never references an identity), held to the original by a test.
+- **One set, one eval left.** `PulsEvalSet` lists `puls-cook`; the set keeps its own copy of the identity's name (a
+  set never references an identity), held to the original by a test. `puls-routing` is a folder of files beside the
+  identity since F49.2 step 6 ([louis-agent.identity.puls](louis-agent.identity.puls.md)); the cook follows in step 8,
+  and this project goes in step 9.
 - **`puls-cook`** (`Evals/Cook/`) asks the dataset's meal questions in two modes: `puls-cook` (Puls hands the meal to
   its cook) and `puls-tools` (Puls answers itself with the web tools). Its graders: no failed turn, routed to the
   cook, within the budget, estimates at the shop that serves the town, an image from the recipe, serves as asked,
   and the model judge `meal-for-people` with its human review `meal-for-people.human`.
-- **`puls-routing`** (`Evals/Routing/`) asks one question per kind (chat, cook, files, git, numbers, web) in
-  `baseline` and `delegated` modes, and grades where it went (`routed-to`).
 - **One folder per eval.** Each holds the eval, its setup, its dataset (`Dataset/`, Inspect's Sample shape, step 7d),
   its graders and scoring rules, and its transcripts (`Transcripts/`: a reference per scenario, cut from a real run
-  that passed every grader, and known-bad ones). What both evals use is in `Shared/` (expectations, turn reading,
-  the names as enums, ADR 0043).
+  that passed every grader, and known-bad ones). What both evals used is in `Shared/` (expectations, turn reading,
+  the names as enums, ADR 0043); with the cook alone, the layout rule for `Shared/` waits (`EvalLayoutTests`) until
+  step 7 moves it beside the identity.
 
 ## Structure
 
 | Path | What's in it |
 |---|---|
 | `PulsEvalSet.cs` | The set the runner lists |
-| `Evals/Cook/`, `Evals/Routing/` | Each eval, its dataset, graders, scoring and transcripts |
+| `Evals/Cook/` | The cook's eval, its dataset, graders, scoring and transcripts |
 | `Shared/` | Expectations, grading and scoring helpers, turn reading, `PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice` (the route is the general `routed-to`, only the specialists delegating) |
-| `Manuals/` | Each eval's manual, shown in the portal (`cook.md`, `routing.md`) |
+| `Manuals/` | The cook's manual, shown in the portal (`cook.md`) |
 | `Messages/` | The graders' reasons and the set's texts (`GradeMessage`, `ExpectationMessage`, `PulsEvalMessage`, ADR 0009) |
 | `Prompts/judges/` | The model judges' prompts |
 

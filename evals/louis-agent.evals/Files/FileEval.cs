@@ -28,6 +28,9 @@ public sealed class FileEval : IEval
     /// <summary>The folder beside <c>eval.json</c> that holds the dataset.</summary>
     private const string DatasetFolder = "Dataset";
 
+    /// <summary>The folder beside <c>eval.json</c> that holds the reference and known-bad transcripts.</summary>
+    private const string TranscriptsFolder = "Transcripts";
+
     /// <summary>Settings left out of an entry: its record's defaults.</summary>
     private static readonly JsonElement NoParameters = JsonDocument.Parse("{}").RootElement.Clone();
 
@@ -50,8 +53,17 @@ public sealed class FileEval : IEval
         var file = EvalFileReader.Read(folder);
         var checks = Build(file, folder, catalog);
         var dataset = DatasetLoader.Load(Path.Combine(folder, DatasetFolder), checks);
-        return new FileEval(file, dataset, checks, file.Manual is null ? null : $"{source}/{file.Manual}");
+        return new FileEval(file, dataset, checks, file.Manual is null ? null : $"{source}/{file.Manual}")
+        {
+            Transcripts = Path.Combine(folder, TranscriptsFolder)
+        };
     }
+
+    /// <summary>
+    /// The eval's reference and known-bad transcripts, in <c>Transcripts/</c> beside its file, which the conformance
+    /// check reads.
+    /// </summary>
+    public string Transcripts { get; private init; } = "";
 
     /// <summary>The identity the eval proves, as its file names it.</summary>
     public string Identity => _file.Identity;
