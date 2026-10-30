@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
+using LouisAgent.Evals.Grading.Models.Rubrics;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;
 
@@ -149,19 +149,19 @@ public class MealForPeopleTests
     }
 
     /// <summary>
-    /// The rubric is a markdown file beside the cook's eval (ADR 0011); its hash is of its bytes, so a re-score with a
-    /// changed rubric is a different measure.
+    /// The rubric is a markdown file beside the cook's eval (ADR 0011); its hash is of its words, taken as the judge
+    /// takes it (line endings made LF), so it is the same on every platform and a re-score with a changed rubric is a
+    /// different measure.
     /// </summary>
     [Test]
-    public void TheRubricIsAFileBesideTheEval_AndItsHashIsOfItsBytes()
+    public void TheRubricIsAFileBesideTheEval_AndItsHashIsOfItsWords()
     {
         var text = CookRubric.Text;
 
         Assert.That(text,
             Does.Contain("main dish").And.Contain("can't tell").And.Contain("never the prices").And
                 .Contain("\"meal\""));
-        Assert.That(Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)))[..12],
-            Is.EqualTo(CookRubric.Hash));
+        Assert.That(RubricHash.Of(text), Is.EqualTo(CookRubric.Hash));
     }
 
     /// <summary>
