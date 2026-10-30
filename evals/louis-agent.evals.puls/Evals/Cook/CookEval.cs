@@ -5,6 +5,8 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Manifest;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Labels;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
@@ -14,7 +16,7 @@ using LouisAgent.Evals.Puls.Evals.Cook.Grading;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 using LouisAgent.Evals.Puls.Shared;
-using LouisAgent.Evals.Puls.Shared.Grading;
+using LouisAgent.Evals.Puls.Shared.Expectations;
 using LouisAgent.Evals.Puls.Shared.Turns;
 
 namespace LouisAgent.Evals.Puls.Evals.Cook;
@@ -44,8 +46,9 @@ public sealed class CookEval : IEval
         var judge = MealForPeopleCheck.Create(() => JudgeClients.FromEnvironment());
         return
         [
-            new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new EstimatesAtShop(), new UntooledShops(),
-            new RecipeImage(), new ServesAsAsked(), judge,
+            new CookNoError(), RoutedToCheck.ByScenarioKey(ExpectedRoute.Key, [PulsToolset.Specialists.Wire()]),
+            new WithinBudget(), new EstimatesAtShop(), new UntooledShops(), new RecipeImage(), new ServesAsAsked(),
+            judge,
             HumanReviewCheck.For(judge, MealForPeoplePrompt.Question)
         ];
     }
@@ -54,7 +57,7 @@ public sealed class CookEval : IEval
     public string Name => PulsEvalName.Cook.Wire();
 
     /// <inheritdoc />
-    public string? Manual => "evals/louis-agent.evals.puls/Manuals/cook.md";
+    public string Manual => "evals/louis-agent.evals.puls/Manuals/cook.md";
 
     /// <inheritdoc />
     public int Version => 10;
@@ -72,10 +75,10 @@ public sealed class CookEval : IEval
     public IReadOnlyList<EvalScenario> Scenarios { get; } = Loaded.Scenarios;
 
     /// <inheritdoc />
-    public DatasetManifest? Dataset => Loaded.Manifest;
+    public DatasetManifest Dataset => Loaded.Manifest;
 
     /// <summary>A person's labels of stored answers, which <c>meal-for-people</c> is calibrated against.</summary>
-    public IReadOnlyList<LouisAgent.Evals.Labels.LabeledAnswer> Labels => Loaded.Labels;
+    public IReadOnlyList<LabeledAnswer> Labels => Loaded.Labels;
 
     /// <inheritdoc />
     public IReadOnlyList<ICheck> Checks => GraderList;

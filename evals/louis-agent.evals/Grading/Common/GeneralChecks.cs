@@ -18,7 +18,7 @@ public static class GeneralChecks
     /// <summary>Every general check type, in the order the catalogue lists them.</summary>
     public static IReadOnlyList<ICheckType> All { get; } =
     [
-        new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry(), new ContainsCheck.Entry(),
-        new ToolUsedCheck.Entry()
+        new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry(), new RoutedToCheck.Entry(),
+        new ContainsCheck.Entry(), new ToolUsedCheck.Entry()
     ];
 }

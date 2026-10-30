@@ -210,12 +210,14 @@ Start from the general checks in `evals/louis-agent.evals/Grading/Common/`:
 - `RoutedToCheck(Func<Trial, string?> expectedRole, bool required = true, IReadOnlySet<string>? expectedKeys = null)`: the first
   turn was routed to the role `expectedRole` gives for the trial (null means it must answer itself). A later turn's hand-over
   is no reason for a miss. An eval whose route is a scenario's key names it in `expectedKeys` (Puls: `routes_to`), so the loader
-  can check it is read and fed.
+  can check it is read and fed. `RoutedToCheck.ByScenarioKey(expectedKey, delegatingToolsets)` is that case built for
+  you: the role under the key where the mode has a delegating toolset, else the agent answers itself.
 
 Each is `required` by default, and the stub uses two of them (`NoErrorCheck` and `WithinTimeCheck`, in
 `StubEval.cs`). An infrastructure failure (a timeout, a dropped connection) is `Unknown` in each of them, never a fail.
-All but `RoutedToCheck` can also be named from a file by their type, with their settings as JSON (`within-time`,
-`{"seconds": 120}`; `contains`, `{"texts": ["recipe", "resep"]}`): `GeneralChecks.All` lists them for the check
+Each can also be named from a file by its type, with its settings as JSON (`within-time`, `{"seconds": 120}`;
+`contains`, `{"texts": ["recipe", "resep"]}`; `routed-to`, `{"expected_key": "routes_to", "delegating_toolsets":
+["specialists"]}`): `GeneralChecks.All` lists them for the check
 catalogue ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)), and F49.2's eval files are the first to do so.
 
 Your check builds its grades with `Verdict`, which the general checks use too: `Verdict.Pass`, `Verdict.Fail`

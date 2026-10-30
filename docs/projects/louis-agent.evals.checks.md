@@ -83,8 +83,8 @@ type, and lists each entry with its settings' schema.
 
 What F49.1 left for later, each where its need comes:
 
-- **The runner doesn't build the catalogue yet**, and `routed-to` has no entry: both wait for F49.2's eval file, the
-  first thing that names a check from a file and states a route.
+- **The runner doesn't build the catalogue yet**: it waits for F49.2's runner step, the first thing that names a
+  check from a file.
 - **A check's name is its type** for an entry (`contains`), so an eval holds one of each until F49.2's file names
   its checks; the conformance rule then holds names, not types.
 - **`TrialBuilder` is the harness tests' own**, so `EngineEventsTests` and `AnswerOfTests` stay in

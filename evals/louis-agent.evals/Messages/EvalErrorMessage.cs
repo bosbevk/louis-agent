@@ -90,4 +90,11 @@ public enum EvalErrorMessage
 
     [Description("EVAL_JUDGE_PROVIDER '{Value}' is not supported. Use one of: {Supported}.")]
     UnknownJudgeProvider,
+
+    [Description("Scenario '{Id}' needs '{Key}' in expected: the role its first turn goes to, or null when the "
+                 + "agent answers it itself.")]
+    NoExpectedRole,
+
+    [Description("Scenario '{Id}': '{Key}' in expected must be a role's name or null.")]
+    BadExpectedRole
 }

@@ -30,7 +30,7 @@ identity gets a project of its own ([ADR 0029](../adr/0029-simulations-in-csharp
 |---|---|
 | `PulsEvalSet.cs` | The set the runner lists |
 | `Evals/Cook/`, `Evals/Routing/` | Each eval, its dataset, graders, scoring and transcripts |
-| `Shared/` | Expectations, grading and scoring helpers, turn reading, `PulsEvalName`, `PulsEvalRole`, `PulsModes`, `PulsToolset`, `PulsVoice` |
+| `Shared/` | Expectations, grading and scoring helpers, turn reading, `PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice` (the route is the general `routed-to`, only the specialists delegating) |
 | `Manuals/` | Each eval's manual, shown in the portal (`cook.md`, `routing.md`) |
 | `Messages/` | The graders' reasons and the set's texts (`GradeMessage`, `ExpectationMessage`, `PulsEvalMessage`, ADR 0009) |
 | `Prompts/judges/` | The model judges' prompts |

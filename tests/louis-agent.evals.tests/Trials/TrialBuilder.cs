@@ -17,9 +17,18 @@ internal static class TrialBuilder
         [SampleToolset.Gamma, SampleToolset.Alpha]);
 
     /// <summary>A trial of the bobotie scenario made of these turns.</summary>
-    public static Trial Trial(params TurnTranscript[] turns) =>
-        new("run_1", Mode, 1,
-            new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Hallo"]), default, [],
+    public static Trial Trial(params TurnTranscript[] turns) => Build(Mode, default, turns);
+
+    /// <summary>
+    /// A trial of the bobotie scenario in this mode, its <c>expected</c> the given JSON, made of these turns.
+    /// </summary>
+    public static Trial Trial(EvalMode mode, string expected, params TurnTranscript[] turns) =>
+        Build(mode, Json(expected), turns);
+
+    /// <summary>The trial itself, from a mode and the scenario's success criteria.</summary>
+    private static Trial Build(EvalMode mode, JsonElement expected, TurnTranscript[] turns) =>
+        new("run_1", mode, 1,
+            new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Hallo"]), expected, [],
                 DatasetSplit.Dev),
             new Transcript(turns));
 

@@ -19,7 +19,7 @@ public class GeneralChecksTests
         var listing = new CheckCatalog(GeneralChecks.All).Listing();
 
         Assert.That(listing.Select(line => line.Type),
-            Is.EqualTo(new[] { "no-error", "within-time", "cost-under", "contains", "tool-used" }));
+            Is.EqualTo(new[] { "no-error", "within-time", "cost-under", "routed-to", "contains", "tool-used" }));
         Assert.That(listing.Select(line => line.Kind), Has.All.EqualTo(CheckKind.FixedRule));
     }
 
@@ -27,6 +27,7 @@ public class GeneralChecksTests
     [TestCase("no-error", "{}", typeof(NoErrorCheck))]
     [TestCase("within-time", """{"seconds": 120}""", typeof(WithinTimeCheck))]
     [TestCase("cost-under", """{"limit_usd": 0.50}""", typeof(CostUnderCheck))]
+    [TestCase("routed-to", """{"expected_key": "routes_to", "delegating_toolsets": ["x"]}""", typeof(RoutedToCheck))]
     public void EachType_BuildsTodaysCheck(string type, string settings, Type check)
     {
         var built = Build(type, settings);
@@ -41,14 +42,16 @@ public class GeneralChecksTests
     [TestCase("no-error", """{"required": false}""")]
     [TestCase("within-time", """{"seconds": 120, "required": false}""")]
     [TestCase("cost-under", """{"limit_usd": 0.50, "required": false}""")]
+    [TestCase("routed-to", """{"expected_key": "routes_to", "delegating_toolsets": ["x"], "required": false}""")]
     public void EachType_CanBeMadeOptional(string type, string settings)
     {
         Assert.That(Build(type, settings).Required, Is.False);
     }
 
-    /// <summary>A limit left out is refused, never read as zero, naming the check type and the field.</summary>
+    /// <summary>A setting left out is refused, never read as a default, naming the check type and the field.</summary>
     [TestCase("within-time", "seconds")]
     [TestCase("cost-under", "limit_usd")]
+    [TestCase("routed-to", "expected_key")]
     public void AMissingLimit_IsRefused(string type, string field)
     {
         var refusal = Assert.Throws<InvalidDataException>(() => Build(type, "{}"));

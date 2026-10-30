@@ -5,31 +5,46 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Manifest;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Evals.Puls.Evals.Routing.Scoring;
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Puls.Shared.Expectations;
-using LouisAgent.Evals.Puls.Shared.Grading;
 using LouisAgent.Evals.Puls.Shared.Turns;
 
 namespace LouisAgent.Evals.Puls.Evals.Routing;
 
 /// <summary>
-/// The routing check as an eval (F18 step 5.3): eighteen questions (twelve for the dev split, two of each kind, and six held out, one of each), each in a session of its own, in two modes: the
-/// baseline, one agent with every toolset the instance has but the delegating ones, and the delegated, Puls as built. A meal must go to
-/// the cook; every other question is right when Puls answers it itself. The scenarios are the <c>puls-routing</c> dataset.
+/// The routing check as an eval: eighteen questions (twelve for the dev split, two of each kind, and six held out,
+/// one of each), each in a session of its own, in two modes: the baseline, one agent with every toolset the instance
+/// has but the delegating ones, and the delegated, Puls as built. A meal must go to the cook; every other question is
+/// right when Puls answers it itself. The scenarios are the <c>puls-routing</c> dataset.
 /// </summary>
 public sealed class RoutingEval : IEval
 {
-    // One required route, the harness's RoutedToGrader reading `routes_to`. A no-error grader would add nothing: a one-turn question is routed right only without an error (RoutingScorer).
-    private static readonly IReadOnlyList<ICheck> GraderList = [PulsRoute.Grader()];
+    /// <summary>
+    /// One required route, the general <c>routed-to</c> reading <c>routes_to</c>, where only the specialists hand a
+    /// question on. A no-error check would add nothing: a one-turn question is routed right only without an error.
+    /// </summary>
+    private static readonly IReadOnlyList<ICheck> GraderList =
+        [RoutedToCheck.ByScenarioKey(ExpectedRoute.Key, [PulsToolset.Specialists.Wire()])];
 
+    /// <inheritdoc />
     public string Name => PulsEvalName.Routing.Wire();
-    public string? Manual => "evals/louis-agent.evals.puls/Manuals/routing.md";
+
+    /// <inheritdoc />
+    public string Manual => "evals/louis-agent.evals.puls/Manuals/routing.md";
+
+    /// <inheritdoc />
     public int Version => 2;
+
+    /// <inheritdoc />
     public string Proves => MessageText.Format(PulsEvalMessage.RoutingProves);
 
+    /// <summary>
+    /// The baseline, every toolset the instance has but the delegating ones, and the delegated, Puls as built.
+    /// </summary>
     public async ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
         CancellationToken cancellationToken)
     {
@@ -41,13 +56,19 @@ public sealed class RoutingEval : IEval
         ];
     }
 
+    /// <summary>The dataset, loaded once with the check above.</summary>
     private static readonly Dataset Loaded = Load();
 
+    /// <inheritdoc />
     public IReadOnlyList<EvalScenario> Scenarios { get; } = Loaded.Scenarios;
 
-    public DatasetManifest? Dataset => Loaded.Manifest;
+    /// <inheritdoc />
+    public DatasetManifest Dataset => Loaded.Manifest;
 
-    /// <summary>The dataset, with every scenario's route read once: a scenario without a readable `routes_to` refuses the runner before a run.</summary>
+    /// <summary>
+    /// The dataset, with every scenario's route read once: a scenario without a readable <c>routes_to</c> stops the
+    /// runner before a run.
+    /// </summary>
     private static Dataset Load()
     {
         var dataset = DatasetLoader.Load(EvalFiles.DatasetOf(typeof(RoutingEval)), GraderList);
@@ -55,7 +76,9 @@ public sealed class RoutingEval : IEval
         return dataset;
     }
 
+    /// <inheritdoc />
     public IReadOnlyList<ICheck> Checks => GraderList;
 
+    /// <summary>What Puls's own turn view reads from a turn.</summary>
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => PulsTurnFacts.Of(turn);
 }
