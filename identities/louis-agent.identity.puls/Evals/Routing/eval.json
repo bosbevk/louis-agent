@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "name": "puls-routing",
+  "identity": "puls",
+  "version": 2,
+  "proves": "Puls sends each kind of question to the right place: a meal to its cook, the rest answered itself.",
+  "manual": "manual.md",
+  "modes": [
+    {
+      "name": "baseline",
+      "role": "puls/voice-af",
+      "toolsets": ["files", "git", "dotnet", "python", "powershell", "bash", "web", "paymo", "devops", "skills", "shops"]
+    },
+    {
+      "name": "delegated",
+      "role": "puls/voice-af",
+      "toolsets": ["specialists", "web"]
+    }
+  ],
+  "checks": [
+    {
+      "type": "routed-to",
+      "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists"] }
+    }
+  ]
+}

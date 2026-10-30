@@ -34,12 +34,12 @@ public class EvalListTests
     {
         var merged = EvalList.Merge([
             new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha,
-                "evals/louis-agent.evals.puls/Manuals/cook.md"),
+                "identities/louis-agent.identity.puls/Evals/Cook/manual.md"),
             new EvalLine("quiet", 1, "No manual")
         ]);
 
         Assert.That(merged.Select(c => c.ManualPath),
-            Is.EqualTo(new string?[] { "evals/louis-agent.evals.puls/Manuals/cook.md", null }));
+            Is.EqualTo(new string?[] { "identities/louis-agent.identity.puls/Evals/Cook/manual.md", null }));
     }
 
     /// <summary>Each listed eval is a check under its name, titled with what it proves.</summary>

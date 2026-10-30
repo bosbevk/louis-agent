@@ -17,9 +17,18 @@ internal static class TrialBuilder
         [SampleToolset.Gamma, SampleToolset.Alpha]);
 
     /// <summary>A trial of the bobotie scenario made of these turns.</summary>
-    public static Trial Trial(params TurnTranscript[] turns) =>
-        new("run_1", Mode, 1,
-            new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Hallo"]), default, [],
+    public static Trial Trial(params TurnTranscript[] turns) => Build(Mode, default, turns);
+
+    /// <summary>
+    /// A trial of the bobotie scenario in this mode, its <c>expected</c> the given JSON, made of these turns.
+    /// </summary>
+    public static Trial Trial(EvalMode mode, string expected, params TurnTranscript[] turns) =>
+        Build(mode, Json(expected), turns);
+
+    /// <summary>The trial itself, from a mode and the scenario's success criteria.</summary>
+    private static Trial Build(EvalMode mode, JsonElement expected, TurnTranscript[] turns) =>
+        new("run_1", mode, 1,
+            new EvalScenario("bobotie", new EvalInput(null, "Africa/Johannesburg", ["Hallo"]), expected, [],
                 DatasetSplit.Dev),
             new Transcript(turns));
 
@@ -55,12 +64,12 @@ internal static class TrialBuilder
                 """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"agent":"puls","role":"ROLE"}}}"""
                     .Replace("ROLE", role)));
 
-    /// <summary>The start of the agent's own call to a tool, as the stream sends it.</summary>
-    public static SessionEvent ToolCall(string tool) =>
+    /// <summary>The start of the agent's own call to a tool, with its input as JSON, as the stream sends it.</summary>
+    public static SessionEvent ToolCall(string tool, string input = "{}") =>
         SessionEvent.From("content_block_start",
             Json(
-                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"TOOL","input":{}}}"""
-                    .Replace("TOOL", tool)));
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"TOOL","input":INPUT}}"""
+                    .Replace("TOOL", tool).Replace("INPUT", input)));
 
     /// <summary>A piece of the agent's answer, as the stream sends it.</summary>
     public static SessionEvent Text(string text) =>

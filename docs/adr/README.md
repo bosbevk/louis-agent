@@ -64,6 +64,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0055](0055-keep-it-simple.md) | Keep it simple: the simplest elegant design that meets the step, nothing for a future that isn't planned | Accepted |
 | [0056](0056-a-check-is-a-catalogue-entry.md) | A check is a catalogue entry: the contract in `evals/louis-agent.evals.checks` (what a pack references, nothing more), found by its kebab-case type, built from a typed parameter record, listed in a registry each owner fills | Accepted |
 | [0057](0057-regex-is-the-last-option.md) | A regular expression is the last option: plain string methods or a reader first; when one is needed, a named [GeneratedRegex] with an example, NonBacktracking on outside input; never in content | Accepted |
+| [0058](0058-an-eval-is-a-folder-of-files.md) | An eval is a folder of files (`eval.json`, its manual, dataset and transcripts) beside the identity or pack it proves, found by the runner through the composition, its checks named from the catalogue; a new eval starts as a copy of the template folder | Accepted |
 
 ## When to write one
 

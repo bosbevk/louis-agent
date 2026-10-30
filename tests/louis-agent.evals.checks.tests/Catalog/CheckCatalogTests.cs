@@ -77,6 +77,7 @@ public class CheckCatalogTests
     private sealed class TestEntry(string type, CheckKind kind) : CheckType<LimitParameters>(type, kind)
     {
         /// <summary>Never called: these tests are about finding and listing entries.</summary>
-        protected override ICheck Create(LimitParameters parameters) => throw new UnreachableException();
+        protected override ICheck Create(LimitParameters parameters, CheckContext context) =>
+            throw new UnreachableException();
     }
 }

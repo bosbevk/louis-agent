@@ -27,8 +27,9 @@
 > **How to read it.** *The plan on one page* is the whole thing in a table. Part 1 is what we sell and why anyone
 > buys it. Part 2 is the shape of the code: the engine, an identity (who an agent is), a pack (what it can do), and the
 > rule that every pack stays convertible to MCP. Part 3 is the list of changes the engine still needs, with the
-> standard each follows. Part 4 is the phases, each planned to the step or to the feature, with its diagrams. Then the
-> verification, the money and the risks, and the concepts each phase teaches, mapped to `docs/GOAL.md`.
+> standard each follows. Part 4 is the phases, each planned to the step or to the feature, with its diagrams. Part 6
+> is the business plan: ten ideas scored for South Africa, the one we pursue, and how to make it happen step by step.
+> Then the verification, the money and the risks, and the concepts each phase teaches, mapped to `docs/GOAL.md`.
 >
 > **The rules this plan follows** are the repo's (`docs/CLAUDE.md`): one step at a time, test first, Louis reviews
 > each step before the next, every paid run waits for his go, and every phase ends with a learning write-up. Every
@@ -62,7 +63,7 @@ items take their turns between the phases.
 | 3c | **The cook:** F35 recipe sources (its first four steps: the `Recipe` record and the SA sites as data), then F48 *the cook as a home cook and teacher*: `WriteRecipe`, scaling, the shopping list and prices in C#, Stats SA average prices, a pantry per person, cues and whys in every answer. | Puls sells itself: the first specialist people come back for | 7, 12 | F35's recipe simulation and F48's cook run, on Louis's go |
 | 3d | **F46 Localisation:** every text from a resource file beside its enum (`.resx`, English and Afrikaans); the enums stay the keys; its ADR replaces ADR 0009's rule that the text lives in `[Description]`. | Puls in its own language, a configured agent in its buyer's | 3 | none |
 | 3e | **Puls's local specialists:** about twelve (cook, gardener, farmer, stargazer, braaimaster, sonkrag, padreis, hengelaar, voëlkyker, handyman, weerman, stapper), the shared weather and where-to-buy packs first, each specialist a role file on the packs, each with its eval as 3b's files; then Puls's front end shows them and hides every not-implemented marker. | A directory of local specialists, the Puls vision | 3, 7, 12 | one eval run per specialist, on Louis's go |
-| 4 | **F40 The sales playground:** the demo identity, its invoice and area-guide simulations (in the order Phase 0's conversations choose), and the control room that shows them live | The demos we sell with | 18, 7, 12 | one run per simulation (invoice, area guide) |
+| 4 | **F40 The sales playground:** the demo identity, its pitches (Part 6's ten ideas in rank order: the practice's invoice clerk, "get paid" and the area guide built now, every other idea its own child the week a buyer asks to see it), and the control room that shows them live | The demos we sell with | 18, 7, 12 | one run per simulation built (invoice, get paid, area guide) |
 | 5 | **F7 Cost you can see and stop:** estimates, budgets that warn, ask or stop, cost per customer, checked against the bill | Cost you can see and stop | 13, 16 | one simulation run (step 2: the estimate against the actual) |
 | 6 | **F39 Orchestration:** one delegation function in the engine, typed and checked results, the orchestrator as the `voorman` identity, triaging a small service with seeded bugs | Checked, not trusted | 10, 5, 6 | one live triage run against the seeded service (question 7); one rerun each of Puls's routing and cook simulations |
 | 7 | **FX4 Append-only history** first (each conversation's prompt and tools frozen); then **F41 Drafts and approvals** and **F42 Safety and audit** | Checked, not trusted; guards in code | 5, 16, 15 | the injection simulations, with FX4's hand confirm on Haiku 5.5 in the same sitting (`docs/fixes/FX04-append-only-history.md:78-81`) |
@@ -182,9 +183,9 @@ Phase 9:** until then a configured agent is only shown (the playground's simulat
 conversations, Phase 0). **Before either:** ten conversations (five businesses, five likely Puls users) on what they'd
 pay for, and 30 real local questions from Malmesbury people, answered blind by Puls (later by the area-guide
 simulation), Gemini, ChatGPT and Google Maps, so we build only for the question types where they fail. That is Louis's
-own task in Phase 0 step 4. Its answers choose the order in which Phase 4 runs its two pitches (invoices first by
-default); if they point to a pitch this plan doesn't hold (documents with sources, for example), that pitch gets its own
-plan before Phase 4 starts.
+own task in Phase 0 step 4. Its answers can reorder Phase 4's pitches, which follow Part 6's rank by default (the
+practice's invoice clerk, then "get paid", then the area guide); a pitch this plan doesn't hold gets its own child plan
+(Phase 4's pitch table) before it is built.
 
 ### Why someone buys the engine: the control layer
 
@@ -208,6 +209,8 @@ runs, so a pitch is also a measurement.
 | A South African meal for four, priced at the shops near you | The public | Puls | `puls-cook` (Phase 3) | Measured | **Tested:** 31 of 31 rows right: 26 ingredients priced with sources and Prince Albert's 5 rightly left unpriced where Checkers has no store (F34, run `d94597a51d4d`; `docs/features/F34-shop-deals.md:149-151`) |
 | A South African recipe, read from the site that published it | The public | Puls | The recipes simulation (F35, Puls's track): the same 10 SA dishes three ways (today's search snippets, `FetchUrl` of the page, `ReadRecipe` of its schema.org block) on recorded pages | Measured; cost you can see (the cost per answer from the ledger, and the share of answers that match their source) | Planned; free sources only (Louis: "it has to be free"), each site turned on after its terms are read (ADR 0023) |
 | Invoices matched to customers | A firm's debtors or accounts desk | Configured agent, or the engine | `demo-invoice-batch` (Phase 4); each match becomes a draft a clerk approves (Phase 7) | Checked, cost per customer, your data (Ollama on their server) | Hypothetical, made-up invoices |
+| Late payments chased, nothing sent without a person | A small business, through its bookkeeper | Configured agent | `demo-get-paid` (Phase 4): one reminder drafted per overdue invoice from a made-up debtors book; each becomes a draft the business approves (Phase 7) | Checked, cost per customer, audit | Hypothetical, made-up book; Part 6's idea 3 |
+| A company's own agent, built on the engine and run for it | A bigger company that wants its agent custom built and hosted | Configured agent at company size, then the engine | `demo-your-own-agent` (Phase 4, a child when a company asks): a made-up company's identity and one pack over a stand-in system, built in the open and timed | Configured, not coded; their systems | Hypothetical (Louis, 2026-10-30) |
 | What is here: an area guide | A tourism office, an estate agent, a guest farm; Puls's users | Configured agent; Puls | `demo-area-guide` (Phase 4), which later answers the 30 real Malmesbury questions of Phase 0 step 4 | Measured (every fact with its source and date) | Hypothetical |
 | Errors fixed and confirmed | An operations team | The engine | `voorman-triage` on a small service with seeded bugs (Phase 6, question 7) | Checked, not trusted | The POC fixed 10 of 10 before CL10 (M1 baseline, `docs/GOAL.md:34`) |
 | A shop's own specials answered | A shop owner, from their own catalogue | Configured agent | A shops simulation on the owner's own feed | Their systems, measured | Hypothetical; Checkers stays off on the sold endpoint until its terms are checked (ADR 0023) |
@@ -1306,7 +1309,7 @@ when it starts, and the child's done-when is one line a reader can check.
 | 3c | **F48 The cook as a home cook and teacher** (9 steps) | **F48.1** `WriteRecipe`: the ingredient-line reader, scaling, the shopping list and the prices (Stats SA first) · **F48.2** the pantry per person and the teaching (cues and whys) in every answer | 48.1 a scaled recipe and its priced list come from code, never the model · 48.2 the cook knows what's in the pantry and teaches in its eval run |
 | 3d | **F46 Localisation** | **F46.1** core and the API: the text out of `[Description]` into `.resx` beside each enum, the loader, the ADR · **F46.2** the web apps: `ChatText`, Puls's page text, Afrikaans | 46.1 no message text left in an attribute · 46.2 Puls switches language from the files alone |
 | 3e | **F50 Puls's local specialists** (two packs, twelve roles, the front end) | **F50.1** the weather pack · **F50.2** the where-to-buy pack (F33 and F48's prices generalised) · **F50.3** gardener, braaimaster, weerman · **F50.4** farmer, sonkrag, stapper · **F50.5** stargazer, padreis, hengelaar · **F50.6** voëlkyker, handyman, and the cook on the new packs · **F50.7** the front end shows them and hides every not-implemented marker | 50.1 and 50.2 a pack with its guide and checks · each role child: three role files, each with its eval as F49's files, run before it is shown · 50.7 no not-implemented marker left on Puls |
-| 4 | **F40 The sales playground** (9 steps) | **F40.1** the demo identity, the customers pack and the invoice clerk with its simulation (0 to 3) · **F40.2** the area guide and its simulation (4) · **F40.3** the control room in `web.shared`, any simulation's grades, *Try it*, docs (5 to 8) | 40.1 `demo-invoice-batch` passes its bar on a recorded run · 40.2 `demo-area-guide` graded · 40.3 a pitch is given from the room |
+| 4 | **F40 The sales playground** (10 steps, then one child per pitch) | **F40.1** the demo identity, the customers pack and the practice's invoice clerk with its simulation (0 to 3) · **F40.2** "get paid", the debtors agent and its simulation (3b) · **F40.3** the area guide and its simulation (4) · **F40.4** the control room in `web.shared`, any simulation's grades, *Try it*, docs (5 to 8) · **F40.5 and on** one child per remaining idea of Part 6, in rank order, each planned the week a buyer asks to see it (Phase 4's pitch table) | 40.1 `demo-invoice-batch` passes its bar on a recorded run · 40.2 `demo-get-paid` passes its bar and no send happened · 40.3 `demo-area-guide` graded · 40.4 a pitch is given from the room · 40.x its simulation passes its bar on a recorded run |
 | 5 | **F7 Cost you can see and stop** (5 here, 9 in its doc) | **F7.1** a customer on every row and estimates · **F7.2** budgets that warn, ask or stop, the room's cost view, the bill check, docs | 7.1 an estimate with its basis before a run · 7.2 a budget stops a run cleanly and the ledger matches the bill |
 | 6 | **F39 Orchestration** (19 steps, A0 to B7) | **F39.1** the delegation function: transport, credentials per peer, policy and limiter, `TurnContext`, the town as a turn input (A0 to A4a) · **F39.2** typed results and the route classifier (A5, A6) · **F39.3** the voorman identity, its packs, the fix call and `ConfirmFix` (B0 to B3) · **F39.4** the triage workflow, the exceptions agent, the recovery contract, the seeded service, the measure and docs (B4 to B7) | 39.1 every host delegates through one function · 39.2 a child's answer is a typed, checked result · 39.3 voorman runs on core with no code of its own in core · 39.4 `voorman-triage` passes on the seeded service |
 | 7 | **FX4**, **F41**, **F42** | **FX4** its own plan (a fix of more than one step) · **F41** (3 steps) stays one · **F42.1** the untrusted-content frame, the audit log and rate limits (5, 6) · **F42.2** moderation and output guardrails, the egress proxy, mounts and branch protection, the injection simulations, docs (7 to 9) | FX4 a chat's prompt and tools are frozen · 41 an effect outside the app waits for a person · 42.1 every outside text arrives framed and every effect is logged · 42.2 the injection suite passes |
@@ -1342,7 +1345,7 @@ at the tag `pre-cl24`.
 | 0 | **Docs.** This plan landed as the roadmap, ADRs 0027 to 0031, the TODO trimmed to one item per line, the merged features marked, F21, F22, F25, F26 and F29 closed. PR #64, merged 2026-10-19. Step 4, Louis's ten buyer conversations and 30 Malmesbury questions, is still his and still open. | `docs/plans/platform.md`, `docs/adr/0027` to `0031`, `TODO.md` |
 | 1 | **Three doors closed.** FX18 the API and the MCP server's HTTP transport refuse to start without a key (PR #65); FX19 every git call takes a list of arguments (PR #66); FX20 a skill file the agent writes waits in `pending/` for `/approve` (PR #68). ADR 0033 records what the agent writes and who widens its scope. Merged 2026-10-19. | `docs/fixes/FX18`, `FX19`, `FX20`, `docs/adr/0033`, `docs/learning/15-safety` |
 | 2 | **CL15 The cut.** Core is the engine and names no product; `identities/louis-agent.identity.puls` is who Puls is, `packs/louis-agent.pack.shops` what it can do, `src/louis-agent.composition` the one project that knows them all, picked with `IDENTITIES` and `PACKS`; a Puls golden file proved the moves; F30's minions stayed in core as a specialist's toolset; every pack stays convertible to MCP (`PackConvertibilityTests`). PR #71 (merged 2026-10-20) and its close-out PR #72 (ADR 0034, code a person can maintain). | `docs/plans/CL15-engine-identities-packs.md`, `docs/adr/0027`, `0028`, `0034`, `docs/architecture/` (today's stack and diagrams), `docs/learning/18` |
-| 3 | **F18 Evals in C#.** Every check is a C# eval on one harness (`evals/louis-agent.evals/`): datasets in Inspect's Sample shape with a held-out split and a hash, code graders first, a model judge calibrated against people's labels, human review in the portal, pass@k and pass^k, a roll-up by category, frozen web input and $0 replays, traces and hashed logs, CI grading recorded transcripts; the runner and the API on one event contract (protocol v2). First v2 baseline: `puls-cook` 23 of 24 with its cook, `puls-routing` 72 of 72, $0.37 together; the local judge 31 of 36 on a blind agent's labels, below the bar. PR #95, merged 2026-10-29. Leftovers in the TODO: FX26, FX27, Louis's own judge labels, the eval architecture doc. | `docs/projects/louis-agent.evals*.md`, `docs/adr/0040` to `0049`, `docs/learning/12`, `13`, `docs/guides/add-an-eval-set.md`, `run-the-evals.md` |
+| 3 | **F18 Evals in C#.** Every check is a C# eval on one harness (`evals/louis-agent.evals/`): datasets in Inspect's Sample shape with a held-out split and a hash, code graders first, a model judge calibrated against people's labels, human review in the portal, pass@k and pass^k, a roll-up by category, frozen web input and $0 replays, traces and hashed logs, CI grading recorded transcripts; the runner and the API on one event contract (protocol v2). First v2 baseline: `puls-cook` 23 of 24 with its cook, `puls-routing` 72 of 72, $0.37 together; the local judge 31 of 36 on a blind agent's labels, below the bar. PR #95, merged 2026-10-29. Leftovers in the TODO: FX26, FX27, Louis's own judge labels, the eval architecture doc. | `docs/projects/louis-agent.evals*.md`, `docs/adr/0040` to `0049`, `docs/learning/12`, `13`, `docs/guides/add-an-eval.md`, `run-the-evals.md` |
 
 
 ### Phase 3b · Evals as content
@@ -1407,7 +1410,7 @@ Branch `feature/F40-sales-playground`. Before step 0 this section is copied, as 
 during the build* goes in that file, never in `platform.md` (Phase 0 step 1). It starts after Phase 3, whose harness,
 runner, simulation catalogue, web record and replay and replay cache it runs on, and it is done only when Louis has
 written its learning write-up himself (step 8). GOAL skills: 18, 7 and 12. Paid runs: one per simulation, the invoice
-batch in step 3 and the area guide in step 4, each on Louis's go.
+batch in step 3, the debtors book in step 3b and the area guide in step 4, each on Louis's go.
 
 Louis: "demos is for selling, the playground". The two pitches are his own: "Agent should easily be configured for say
 reading invoices and matching them to customers or become a code review agent", and "a demo package which contains
@@ -1418,10 +1421,23 @@ A pitch that sells moves to a real identity or pack in its own feature, and one 
 compose names the demo. **Shown, not sold:** no pilot or sale starts before Phase 9, so until then the playground is how
 a configured agent is shown, with its numbers, and Phase 0's ten conversations are how it is priced.
 
-**The order of the pitches.** Steps 3 and 4 run in the order Phase 0 step 4's answers choose, invoices first by
-default. The order is settled before this section is copied into F40's plan; a swap decided later goes under *Approved
-during the build*. If the answers point to a pitch not planned here (documents with sources, for example), it gets its
-own plan before Phase 4 starts.
+**The pitches are the business plan's ten ideas** (Louis, 2026-10-30: "these 10 plans must be in the demonstration
+feature", and "to sell it"). Part 6 scores ten ways this earns money in South Africa; each is a pitch here, in Part 6's
+rank order, in the pitch table below. The practice's invoice clerk and "get paid" are built in F40 itself, the area
+guide stays as Puls's own pitch (the hobby, and the CV), and every other idea is a child feature (`F40.5` and on) with
+its own small plan, built the week a buyer asks to see it and not before, so no month goes on a demo nobody asked for.
+A bigger company that wants its agent custom built and hosted for it (Louis, 2026-10-30) is a pitch too, *your own
+agent*, where the demo is the build itself. Every pitch has one shape, a template (the *template method* of the Gang
+of Four, in plain words: the same steps every time, only the content differs): a specialist role file over a small
+pack of made-up data, a simulation whose answer key is out of the agent's reach, graders in code, its cost per
+conversation from the ledger, a read-only workspace, and nothing sent or changed without a person. In Phase 7 what a
+pitch writes becomes a draft a person approves, which is the product; a pitch that sells moves to its own identity or
+pack in its own feature (the rule above).
+
+**The order of the pitches.** Part 6's rank, unless Phase 0 step 4's answers choose otherwise: the invoice clerk
+(step 3), "get paid" (step 3b), the area guide (step 4). The order is settled before this section is copied into F40's
+plan; a swap decided later goes under *Approved during the build*. A pitch the answers ask for that the table doesn't
+hold gets its own child plan before it is built.
 
 **Why the demo identity and the invoice pitch are built now.** The challenge recommended deferring the composition
 project, `PACKS`, the demo identity and the invoice pitch until a second real consumer exists. They stay, because Louis
@@ -1433,6 +1449,33 @@ eval before Phase 2 (one paid run, a role file on the `web` toolset, no new code
 The plan keeps it here, because a simulation needs Phase 3's C# harness and Louis asked that every demo be a C#
 simulation ("we call it simulations"). If he answers *first*, that eval's role file and its scored answers become step
 4's starting point and the baseline its simulation is compared with; nothing else in this phase changes.
+
+#### The pitches: Part 6's ten ideas, one simulation each
+
+The name a pitch sells under is Part 6's; its code name is its `demo-` role. Grader names past step 4 are a first
+sketch that each child's plan settles. Every book, file and roll is made up and embedded; no pitch reads a real
+person's data.
+
+| Part 6 rank | Idea | The pitch: a role over made-up data | The simulation, graded in code | Built |
+|---|---|---|---|---|
+| 1 | Practice assistant for bookkeepers and tax practitioners | `demo-invoice-clerk`: reads a supplier invoice and matches it to the customer by name, VAT number or e-mail (the first pitch in *Design*); the practice's later jobs (a SARS letter read and summarised, CIPC dates) come as children | `demo-invoice-batch`: `MatchedRight`, `NoCustomerSaid`, `VatChecked`; cost per invoice | **F40.1**, steps 0 to 3, now |
+| 2 | "Get paid": a debtors agent for small businesses | `demo-debtors-clerk`: reads a made-up age analysis and drafts one reminder per overdue invoice in the business's tone, firmer at 30, 60 and 90 days; it cannot send, because the demo peer has no tool that sends | `demo-get-paid`: `EveryOverdueDrafted`, `NoPaidInvoiceChased`, `AmountsMatchTheBook`, `NothingSent`; cost per debtor | **F40.2**, step 3b, now |
+| hobby | Puls, the area guide | `demo-area-guide` (the area guide in *Design*): what is here, each fact with its source and date | `demo-area-guide`: `MunicipalityRight`, `EveryFactSourced`, `NearbyWithinDistance` | **F40.3**, step 4, now |
+| 3 | FICA agent for small law firms and estate agencies | `demo-fica-clerk`: from a made-up client file (the text of an ID copy, a proof of address, company documents) fills the firm's FICA checklist, names what is missing and gives a risk rating with its reason; a person signs; the screening list is a stand-in table | `demo-fica-file`: `TickedOnlyWhatIsThere`, `MissingNamed`, `EveryRatingHasItsReason`, `NothingSigned` | **F40.5**, its own plan, when a firm asks |
+| 4 | .NET agent engineering, and *your own agent*: custom built and hosted for a bigger company | the demo is the build: a made-up company's identity and one pack over a stand-in system (an in-memory API), built in the open from the engine's guide and timed in steps and hours; it doubles as the engine package's sample (Phase 10) | `demo-your-own-agent`: the new identity loads beside `demo` through `IDENTITIES`, its tool answers only from the stand-in system, every outside result framed, cost per call known | **F40.6**, when a company asks |
+| 5 | Assistant for sectional-title managing agents | `demo-scheme-clerk`: levy arrears per unit from a made-up roll, maintenance requests sorted to the right trade, the summary a CSOS dispute needs | `demo-scheme-month`: `ArrearsMatchTheRoll`, `EveryRequestToATrade`, `NothingSent` | **F40.7**, when asked |
+| 6 | Claims and admin agent for medical practices | `demo-claims-clerk`: rejected claims from a made-up remittance matched to their reason codes, a resubmission drafted; made-up patients only, never real health data (special personal information, POPIA s26) | `demo-claims-batch`: `EveryRejectionExplained`, `ResubmissionMatchesTheCode`, `NoRealPatient` | **F40.8**, only with a partner that carries the compliance |
+| 7 | Shop assistant for online sellers | `demo-seller-clerk`: answers a customer's question from a made-up catalogue and order list and drafts a listing (not the `shops` pack, which reads the grocers' public catalogues) | `demo-seller-questions`: `AnswerFromTheCatalogue`, `OrderStateRight`, `NoPriceInvented` | **F40.9**, when asked |
+| 8 | Compliance and renewals agent for insurance brokers | `demo-broker-clerk`: renewals and policy anniversaries from a made-up book, a notice drafted per client, the record-of-advice check | `demo-renewals`: `EveryRenewalInItsMonth`, `NoticeMatchesThePolicy`, `NothingSent` | **F40.10**, when asked |
+| 9 | Farm compliance assistant | `demo-farm-clerk`: a GlobalG.A.P. or SIZA checklist against a made-up farm's records, the missing evidence named | `demo-farm-audit`: `TickedOnlyWithEvidence`, `MissingNamed` | **F40.11**, when asked |
+
+**A child from F40.5 on** is about five steps, each a commit with its test: the role file and its made-up data; a pack
+only where the data needs a tool (a stand-in system, a screening table), self-contained in the demo's project as the
+customers pack is; the simulation, its graders on recorded transcripts and its line in the catalogue; one paid run on
+Louis's go; the manual with its cost bar, the feature doc and the write-up. Its plan is `docs/plans/F40.x-name.md`, its
+branch `feature/F40.x-name`, its done-when "its simulation passes its bar on a recorded run", and it opens the week a
+buyer asks to see that pitch, never before. The playground itself ends with F40.4; the children come and go without
+reopening it.
 
 #### Context
 
@@ -1460,7 +1503,7 @@ simulation ("we call it simulations"). If he answers *first*, that eval's role f
   (`docker compose -f docker/docker-compose.puls.yml -f docker/docker-compose.demo.yml --env-file config/.env up -d
   --build`), so it reuses Puls's run store, SearXNG and browser; SearXNG is for development, tests and benchmarks only
   (ADR 0023), which is what the playground is. It sets `IDENTITIES=demo,puls` on Puls's two agent containers, adds
-  `demo/voice`, `demo-invoice-clerk` and `demo-area-guide` to their `ROLES_ENABLED`, and adds one container,
+  `demo/voice`, `demo-invoice-clerk`, `demo-debtors-clerk` and `demo-area-guide` to their `ROLES_ENABLED`, and adds one container,
   `demo-agent` (the same image), the peer the demo's specialists run on: `IDENTITIES=demo`, the settings `puls-agent`
   has (`HOST_TIME_ZONE`, `SEARXNG_URL`, `BROWSER_URL`, and Phase 3's `REPLAY_DIRECTORY`), the same ledger folder, the
   same data folder (`../data/puls:/data`, as both Puls agents mount it, `docker/docker-compose.puls.yml:54,97`; Phase 3
@@ -1468,7 +1511,7 @@ simulation ("we call it simulations"). If he answers *first*, that eval's role f
   cook's are on `puls-agent`), and **a workspace that holds only the made-up invoices**, mounted read-only, with
   `config/` mounted apart for the price and rate tables. `puls`'s `AGENT_PEERS` gains `demo=http://demo-agent:8080`
   (`name=url` pairs, `AgentOptions.cs:117`). Puls's compose alone runs Puls as today.
-- **The first pitch: invoices matched to customers.** A specialist `demo-invoice-clerk` (header `toolsets: files,
+- **The first pitch: invoices matched to customers** (step 3; the practice assistant's first job, Part 6's idea 2). A specialist `demo-invoice-clerk` (header `toolsets: files,
   customers`) reads an invoice with core's `ReadDocument` and matches it with `FindCustomer`.
   - **The clerk sees only the invoices.** It runs on `demo-agent`, whose whole workspace is the made-up invoices (PDFs
     with a text layer, since `ReadDocument` does no OCR, `louis-agent.core/Prompts/toolsets/files.md:10`), mounted read-only, so a write fails. The
@@ -1492,7 +1535,18 @@ simulation ("we call it simulations"). If he answers *first*, that eval's role f
     `CostPerAnswer`, and the simulation's manual states its cost bar (as each of F31's checks has a manual,
     `src/louis-agent.api/Services/BenchmarkCheck.cs:12-13`).
   - In Phase 7 each match becomes a draft a clerk approves.
-- **The second pitch: the area guide.** A specialist `demo-area-guide` (header `toolsets: web`) that, given a town,
+- **The "get paid" pitch: the debtors agent** (step 3b; Part 6's idea 3, the product's first job). A specialist
+  `demo-debtors-clerk` (header `toolsets: files, customers`) reads a made-up age analysis, a CSV in the clerks' workspace
+  beside the invoices, with core's `ReadTable`, finds each debtor with `FindCustomer`, and writes one reminder per
+  overdue invoice as its answer: friendly at 30 days, firmer at 60, a final notice at 90, each naming the invoice, the
+  amount and the days overdue from the book, never a number of its own. It cannot send: `demo-agent` has no mail or
+  WhatsApp tool, so a send is impossible rather than forbidden (least agency again), and in Phase 7 each reminder
+  becomes a draft the business approves, which is the product. The simulation `demo-get-paid` is one conversation per
+  debtor, graded in code: every overdue invoice got a reminder, no paid or current one did, the amounts and dates match
+  the book, and no tool with an effect appears in the transcript; its cost per debtor comes from the ledger as the
+  clerk's does. Its files follow step 3's shape (`GetPaidSimulation`, its graders, the book embedded in the simulations
+  project as the answer key).
+- **The area guide, Puls's own pitch** (step 4; the hobby, and the CV). A specialist `demo-area-guide` (header `toolsets: web`) that, given a town,
   answers *what is here*: the municipality, what to see nearby and how far, its history, what's on, each fact with its
   source and the date it was read, using core's web tools, OpenStreetMap's Nominatim and Wikipedia's nearby search
   through `FetchUrl` (no new code: the cook already calls Nominatim that way, `puls-cook.md:24-25`). The simulation
@@ -1562,9 +1616,10 @@ public enum CustomerToolMessage { … }                              // every te
 
 // simulations/louis-agent.simulations.demo (namespace LouisAgent.Simulations.Demo)
 public sealed class InvoiceBatchSimulation : ISimulation { public string Name => "demo-invoice-batch"; public string Identity => "demo"; }
+public sealed class GetPaidSimulation : ISimulation { public string Name => "demo-get-paid"; public string Identity => "demo"; }
 public sealed class AreaGuideSimulation : ISimulation { public string Name => "demo-area-guide"; public string Identity => "demo"; }
-// Code graders (IGrader): MatchedRight, NoCustomerSaid, VatChecked (step 3); MunicipalityRight, EveryFactSourced,
-// NearbyWithinDistance (step 4). The answer keys are embedded in this project, which only the runner loads.
+// Code graders (IGrader): MatchedRight, NoCustomerSaid, VatChecked (step 3); EveryOverdueDrafted, NoPaidInvoiceChased,
+// AmountsMatchTheBook, NothingSent (step 3b); MunicipalityRight, EveryFactSourced, NearbyWithinDistance (step 4). The answer keys are embedded in this project, which only the runner loads.
 
 // simulations/louis-agent.simulation.runner: SimulationCatalog gains one line for the demo's project (step 3)
 // src/louis-agent.composition: IdentityKind gains Demo (step 1), PackKind gains Customers (step 2)
@@ -1581,16 +1636,16 @@ flowchart TB
     end
     subgraph stack["The playground: Puls's compose plus docker-compose.demo.yml (step 1)"]
         api["puls: louis-agent.api<br/>IDENTITIES=demo,puls; the portal's endpoints"]
-        runner["simulation runner, its own process (Phase 3)<br/>demo-invoice-batch (step 3), demo-area-guide (step 4)"]
+        runner["simulation runner, its own process (Phase 3)<br/>demo-invoice-batch (3), demo-get-paid (3b), demo-area-guide (4)"]
         pagent["puls-agent<br/>Puls's specialists"]
-        dagent["demo-agent (step 1)<br/>IDENTITIES=demo: the clerk (3), the area guide (4)<br/>workspace: the made-up invoices only, read-only"]
+        dagent["demo-agent (step 1)<br/>IDENTITIES=demo: the clerk (3), the debtors clerk (3b), the area guide (4)<br/>workspace: the made-up invoices and the age analysis, read-only"]
         store["puls-mongo<br/>the run store (F31)"]
         ledger["usage ledger<br/>one folder for the three agents"]
         web["puls-searxng, puls-browser<br/>search and pages"]
     end
     subgraph code["What the agents load"]
         comp["louis-agent.composition<br/>IdentityKind.Demo (1), PackKind.Customers (2)"]
-        demo["identity.demo (step 1)<br/>demo/voice and its two roles"]
+        demo["identity.demo (step 1)<br/>demo/voice and its three roles"]
         cust["customers pack (step 2)<br/>FindCustomer; made-up customers embedded"]
         shops["shops pack (Phase 2)<br/>one instance for the demo and Puls"]
         puls["identity.puls (Phase 2)"]
@@ -1843,6 +1898,7 @@ louis-agent/
 | 1 | **The demo identity and the playground:** `identities/louis-agent.identity.demo` and its tests, `DemoIdentity` naming `shops`, `IdentityKind.Demo`, `demo/voice`, the README of pitches; `docker/docker-compose.demo.yml` with `demo-agent`; `docs/CLAUDE.md`'s quick start names the playground, and its project structure's compose list (`docs/CLAUDE.md:175`) is right again | `IDENTITIES=demo,puls` loads both and one shops pack; each lists its own roles; a demo role named like a Puls one stops start-up; with `IdentityKind.Demo`, the convertibility test refuses a `FakePack` description that names "demo" as a whole word, and "demonstrate" passes | Reuse proven: two identities, one pack (18) |
 | 2 | **The customers pack:** `CustomersPack` in its own folder of the demo's project, `ICustomerDirectory`, `SampleCustomerDirectory` over the embedded made-up customers, `CustomerTools`, `CustomerToolMessage`, `toolsets/customers.md`; `PackKind.Customers`; `DemoIdentity` names `customers` | `FindCustomer` finds by name, VAT number or e-mail, says when none matches, frames its result as data, and reads no file; nothing in `Packs/Customers/` uses the rest of the demo project (a reflection check), so the folder can move out whole; the convertibility test covers it once `PackKind.Customers` exists, with no new test; `HostMessageEnumTests`, which scans `identities/` at any depth since Phase 2 step 4, lists `CustomerToolMessage` and finds it in `identities/louis-agent.identity.demo/Packs/Customers/Messages/`; `CustomerToolMessageSnapshot.json` pins its texts | A provider swapped per client, the tool unchanged (4, 11) |
 | 3 | **The invoice clerk and `demo-invoice-batch`:** `specialists/demo-invoice-clerk.md`, the made-up invoices, `louis-agent.simulations.demo` with `InvoiceBatchSimulation` and its three graders, its line in `SimulationCatalog`, `BenchmarkTrends`' cost per conversation, the simulation's manual with its cost bar; a golden of the clerk's request | the graders on recorded transcripts: a right match, a wrong one, a missed "no customer", a VAT-only invoice matched without checking its number; `SimulationCatalog` lists `demo-invoice-batch` and the portal offers it; the cost per conversation from a recorded run's ledger rows, an unpriced row leaving it unknown, never 0 (ADR 0007); then **one paid run, on Louis's go** | A real task, graded on its outcome, its answer key out of the agent's reach (12) |
+| 3b | **"Get paid" and `demo-get-paid`:** `specialists/demo-debtors-clerk.md`, the made-up age analysis beside the invoices, `GetPaidSimulation` and its graders, its line in `SimulationCatalog`, the simulation's manual with its cost bar; a golden of the debtors clerk's request | the graders on recorded transcripts: a reminder for every overdue invoice, none for a paid one, an amount that differs from the book, a transcript with a send-like tool call; `SimulationCatalog` lists `demo-get-paid`; then **one paid run, on Louis's go** | The pitch that sells first, as a scored run; least agency: a send that cannot happen (12, 15) |
 | 4 | **The area guide and `demo-area-guide`:** `specialists/demo-area-guide.md`, `AreaGuideSimulation` and its three graders, the town-to-municipality table, its cases (the three towns and Phase 0 step 4's 30 Malmesbury questions, without names or contact details) | the graders on recorded transcripts fail a wrong municipality, a fact with no source or no date, a fact whose source the trial never read, and a nearby place beyond the distance it states; `SimulationCatalog` lists `demo-area-guide`; then **one paid run, on Louis's go**, recording its pages, so later runs replay them | Grounding on location, one place many sources (7, 3) |
 | 5 | **The control room moves to `louis-agent.web.shared`:** the portal's two pages, `AdminLayout`, `RunExplorer`, `TrendChart` and `ChartInfo`, their words identity-neutral; the focus helper and the admin's styles as the shared project's own assets; both routers' `AdditionalAssemblies`; the csproj's note; `tests/louis-agent.web.shared.tests` (bUnit 2.11.3, MIT, built for .NET 10; nuget.org, published 2026-09-13), the repo's first web tests | bUnit renders the moved run page from a recorded cook run with the rows, grades and cost that a hand check on `main` shows for the same run, and no Puls name or logo; hand check: Puls's web app and the code-review app both route `/admin`, and in the code-review stack, with no store, it says runs need one | A screen that sells with numbers (17) |
 | 6 | **Any simulation's grades in the room:** each grader's score per mode and the cost per conversation, so the demo's runs read as clearly as the cook's; the cook keeps its own measures | bUnit renders a recorded `demo-invoice-batch` run: a row per grader per mode, the cost per invoice, and an unknown cost shown as unknown | Graders, not only one check's measures, on the screen (12, 17) |
@@ -1856,15 +1912,15 @@ louis-agent/
   stay byte-equal through the phase: the demo brings its own prompts and pack and changes no text that core or Puls
   sends. The demo's own goldens, `CustomerToolMessageSnapshot.json` (step 2) and the clerk's request (step 3), are new,
   and each later diff to them is reviewed.
-- **Paid, on Louis's go:** one run of `demo-invoice-batch` (step 3) and one of `demo-area-guide` (step 4, recording its
-  pages); each is recorded, costed and comparable, and a re-run shown to a client replays it at a known $0 through
+- **Paid, on Louis's go:** one run of `demo-invoice-batch` (step 3), one of `demo-get-paid` (step 3b) and one of
+  `demo-area-guide` (step 4, recording its pages); each is recorded, costed and comparable, and a re-run shown to a client replays it at a known $0 through
   Phase 3's replay cache.
-- **The answer key out of reach:** no file the agent can reach holds the expected matches or the customers. The clerk's
-  workspace is the invoices alone, the customers are embedded in the demo's assembly, and the answer keys in the
+- **The answer key out of reach:** no file the agent can reach holds the expected matches or the customers. The clerks'
+  workspace is the invoices and the age analysis alone, the customers are embedded in the demo's assembly, and the answer keys in the
   simulations project, which only the runner loads.
 - Free hand checks: the playground up (`docker compose -f docker/docker-compose.puls.yml -f
   docker/docker-compose.demo.yml --env-file config/.env up -d --build`); `GET /roles` lists `demo/voice`,
-  `demo-invoice-clerk` and `demo-area-guide` beside Puls's roles; the free stub simulation runs from `/admin`; in
+  `demo-invoice-clerk`, `demo-debtors-clerk` and `demo-area-guide` beside Puls's roles; the free stub simulation runs from `/admin`; in
   `demo-agent`, the workspace lists only the invoices and a write fails; Puls's compose alone lists no demo role;
   `/admin` in both web apps (in the code-review stack it says runs need a store); *Try it* hands an invoice from a
   `demo/voice` chat to the clerk.
@@ -1889,6 +1945,14 @@ louis-agent/
   its terms are checked (ADR 0023), and the playground is never sold.
 - **Real questions in a simulation:** the 30 Malmesbury questions join the area guide only without names or contact
   details, as Phase 0 step 4 keeps its notes (POPIA).
+- **Ten pitches, one person:** every idea past the first three is built only when a buyer asks to see it, as its own
+  child with its own plan; a pitch nobody asks for is never built, and the pitch table's grader names stay a sketch
+  until then. The playground ends with F40.4, and the children come and go without reopening it.
+- **A pitch that sends:** "get paid" and every later clerk draft and never send; the demo peer has no tool with an
+  effect outside it, and a transcript with one fails its simulation. The real send is Phase 7's approved draft.
+- **Real data in a pitch:** every book, file and roll is made up; the medical pitch never holds a real patient (health
+  data is special personal information under POPIA), and it is built only with a partner that carries the compliance
+  (Part 6).
 - **Order:** Phase 4 needs Phase 2 (the contracts, the composition project, the convertibility test) and Phase 3 (the
   harness, the runner and its catalogue, record and replay, the replay cache).
 
@@ -3824,6 +3888,160 @@ wrote it in this plan's shape (from 110 open lines to 62, each old line kept, me
 Phase 0 pull request). This plan no longer repeats it.
 
 
+## Part 6 · The business plan: how this earns money in South Africa
+
+> **What this part is.** How the phases above turn into income, for the whole South African market, written for a
+> software developer with no business background: every business word explained, every step numbered, the people
+> parts scripted. The research behind it, with every source, is
+> `/mnt/project-files/research/reports/Ten ways to make money in South Africa.md` (2026-10-30). Prices we would
+> *charge* are estimates until the ten conversations (Phase 0 step 4) test them. Learning stays first (Louis,
+> 2026-10-19), **Puls is a hobby and goes on the CV** (Louis, 2026-10-30), and **nothing is hosted for a paying client
+> before Phase 9** (Louis, 2026-10-30: "Keep it, earn on the side").
+
+### Ten ideas, scored
+
+Every idea is the same product in different clothes: a hosted assistant that does one admin job inside a business's
+own systems, with answers checked in code, cost shown in rand and a person approving what matters (Part 1's
+configured agent). Scores run 1 (bad) to 5 (good); *people contact* is 5 when the idea sells in writing or through a
+partner and 1 when it needs constant meetings; *fit* is how much of the control layer it uses.
+
+| # | Idea | Who pays | Market | Pain | Money per client | Few rivals | People contact | Fit | Total | Rank |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | **Puls**, the local assistant | Hobby; the CV | 3 | 2 | 1 | 2 | 4 | 4 | 16 | hobby |
+| 2 | **Practice assistant for bookkeepers and tax practitioners** | The practice | 4 | 5 | 4 | 3 | 4 | 5 | 25 | **1** |
+| 3 | **"Get paid": a debtors agent for small businesses** | The business, via its accountant | 5 | 5 | 2 | 3 | 5 | 4 | 24 | **2** |
+| 4 | **FICA agent for small law firms and estate agencies** | The firm | 4 | 5 | 4 | 2 | 3 | 5 | 23 | **3** |
+| 5 | **.NET agent engineering for companies**, services first, the engine licence later | A company on .NET | 3 | 4 | 5 | 3 | 2 | 5 | 22 | 4, and the money floor |
+| 6 | **Assistant for sectional-title managing agents** | The managing agent | 3 | 4 | 4 | 2 | 3 | 4 | 20 | 5 |
+| 7 | **Claims and admin agent for medical practices** | The practice | 4 | 4 | 4 | 2 | 2 | 3 | 19 | 6 |
+| 8 | **Shop assistant for online sellers** | The seller | 3 | 3 | 2 | 3 | 5 | 3 | 19 | 7 |
+| 9 | **Compliance and renewals agent for insurance brokers** | The brokerage | 3 | 3 | 3 | 3 | 2 | 4 | 18 | 8 |
+| 10 | **Farm compliance assistant** (GlobalG.A.P., SIZA) | The farm | 2 | 4 | 3 | 2 | 1 | 2 | 14 | 9 |
+
+The numbers behind the scores, one line each (sources in the report):
+
+- **Why businesses, not the public:** a business conversation on Claude Haiku 5.5 ($0.10 in, $0.50 out per million
+  tokens, five times that above a 100,000-token prompt) costs under R0.10; a heavy Puls answer costs about R2 (F34).
+  The public pays R0 to R150 a month for AI (ChatGPT Go R150) and the grocers give AI cooks away; a practice pays
+  R2,500 to R6,000 a month for an assistant that does its admin.
+- **Idea 2:** SAIPA 10,000+ and SAIT 9,000+ members; 79% of SA practices use AI, 62% weekly (Xero 2026); the Tax
+  Faculty sells courses on *escaping the SARS and CIPC compliance efficiency trap*; Xero and Sage automate inside
+  their own product, nobody found does the work between systems (email, WhatsApp, PDFs, SARS letters) with checks.
+- **Idea 3:** 91% of SA SMEs get paid late; nearly 46% of owners spend one to two months a year chasing money;
+  government alone owed R12.4 billion on 95,399 invoices over 30 days (Q2 2025). First-party only: a business
+  collecting its own debts is outside the Debt Collectors Act's definition (section 1; confirm with an attorney).
+- **Idea 4:** 9,307 law firms, 75% sole practitioners (LSSA 2026); 16,000 legal practitioners and 9,000 estate
+  agencies registered with the FIC; 558 FIC inspections in 2023/24, half on lawyers; one firm fined R7.7 million;
+  South Africa left the grey list in October 2025 and supervision moves to an "effectiveness" phase.
+- **Idea 5:** 70% of banking CEOs plan 10 to 20% of budget on AI, 78% worry about AI skills (KPMG, Feb 2026); 8.9% of
+  SA freelance briefs want AI skills and 5.3% of freelancers offer them; Microsoft Agent Framework 1.0 is free, so the
+  loop is worth nothing and the measured, safe layer is worth paying for.
+- **Ideas 6 to 10:** 70,000 community schemes, 16,000+ CSOS disputes a year, WeconnectU entrenched; 13,000 private
+  GPs, mature billing vendors and health data is special personal information under POPIA; 15,000 Takealot sellers,
+  price-sensitive; FSP counts last published 2022; 5,600 GlobalG.A.P. producers with a free incumbent (Farmable).
+
+### The path we take
+
+1. **One product for bookkeeping and tax practices (idea 2), whose first job is chasing late payments for the
+   practice's clients (idea 3).** One product, two buyers; a practice is a channel to 20 to 80 businesses; sold mostly
+   in writing through SAIPA, SAIT and SAIBA and the Xero and Sage app stores. It uses the whole control layer: drafts and
+   approvals (Phase 7), audit (F42), cost per client (F7), Xero and Sage over MCP (Phase 8), evals as content (3b).
+2. **.NET agent work for companies alongside (idea 5)**, capped at two days a week: money now, no new build, and the
+   road to the engine licence (Phase 10). A bigger company that wants its agent custom built and hosted for it gets
+   exactly that (Louis, 2026-10-30): built on the engine, run by us, Part 1's configured agent at company size; Phase
+   4's *your own agent* pitch shows how fast.
+3. **FICA (idea 4) as the second product** once idea 2 has three paying clients: the same onboarding engine.
+4. **Puls stays the hobby and the showpiece**: its measured numbers go on the CV and on a public results page that
+   every pitch points to.
+
+Nothing in the phases moves. Phase 4's pitches are these ten ideas, in this rank, each a simulation over made-up data
+(its pitch table: the first three built in F40, the rest as children the week a buyer asks to see one), Phase 9 stays the gate for hosting a paying client, Phase 10 stays last.
+
+```mermaid
+flowchart TB
+    now["Now, Phases 3b to 3e<br/>20 emails, 10 conversations (Phase 0 step 4)<br/>three one-page service offers; a public results page<br/>.NET audits for cash, two days a week"]
+    company["Any time before the first invoice<br/>(Pty) Ltd at BizPortal (R175), SARS representative,<br/>bank account, B-BBEE affidavit, one attorney hour (POPIA)"]
+    p4["Phase 4, the playground<br/>the chosen job as a simulation, cost in rand on screen<br/>a four-minute video to the practices that replied"]
+    p58["Phases 5 to 8<br/>budgets; checked answers; drafts a person approves; audit;<br/>Xero and Sage over MCP; app store developer accounts"]
+    p9["Phase 9, what a sale needs<br/>accounts, tenants, durable sessions, hosting"]
+    pilot["Three 60-day pilots at R1,500<br/>setup waived, results quotable"]
+    grow["Full price R3,500; app store listings live;<br/>a practice resells 'get paid' to its clients; FICA as product two"]
+    licence["Phase 10 and later<br/>the engine as a licence, when the .NET clients ask"]
+    now --> p4 --> p58 --> p9 --> pilot --> grow --> licence
+    company --> pilot
+```
+
+### How to make it happen: the steps
+
+Full scripts, email templates and the one-hour attorney checklist are in the report (section 5). The order:
+
+| When | Step | Done when |
+|---|---|---|
+| **Now** | Send the one-question email ("which admin job eats your week?") to 20 people: ten practices from the SAIPA and SAIT directories, five small businesses, three sole-practitioner attorneys, two .NET team leads; 15-minute calls only for those who offer; one file per answer in `/mnt/project-files/research/conversations/` | Three practices name the same job and a rand number |
+| **Now** | Three one-page service offers (an evals-and-cost audit, an MCP layer over one system, a two-day workshop); twenty personalised LinkedIn messages a week, one follow-up after a week and one after three, then stop | The first paid audit (R60,000 to R90,000 for two weeks) |
+| **Now** | A public page with the measured results and the write-ups | Every email links to it |
+| **Before the first invoice** | BizPortal: private company, February year end, R175; appoint yourself SARS representative; beneficial ownership filing; business bank account; B-BBEE EME affidavit (free); ask an accountant about Small Business Corporation rates (0% to R99,000, then 7%, 21%, 27%) or turnover tax; no VAT until R2.3 million | Company number on the price sheet |
+| **Before the first pilot** | One attorney hour (R2,000 to R4,000): operator agreement (POPIA ss 20 and 21), the section 72 note (model abroad; Bedrock Cape Town offered), terms (month to month, liability capped at fees); privacy notice | Signed off |
+| **Phase 4** | The practice's invoice clerk and "get paid" as simulations with cost on screen (Phase 4's pitch table), the area guide for the CV; the four-minute video | Three of ten say what they would pay |
+| **Phases 5 to 8** | Price sheet with three tiers (R1,500, R3,500, R6,000; setup R5,000 to R25,000); Xero developer account (two reference integrations) and Sage marketplace; apply for Microsoft for Startups credits | Listings ready; credits cover hosting |
+| **After Phase 9** | Three pilots at R1,500, 60 days, setup waived; EFT or debit order for fees | Two of three renew at full price |
+| **After the pilots** | Full price; a practice resells "get paid" at R99 to R199 per business; FICA as product two; a SAIPA or SAIT webinar from the write-ups | Ten paying clients |
+
+### The money
+
+| Line, one practice at full price | Per month |
+|---|---|
+| Fee | R3,500 |
+| Model: 2,000 conversations at R0.30 (generous) | −R600 |
+| Hosting: Azure South Africa North B2s, about R660, over five clients | −R130 |
+| WhatsApp (Meta's per-message fee since 1 October 2026, about R0.12 utility) | passed on at cost |
+| EFT or debit order | −R10 |
+| **Left before Louis's time** | **about R2,760 (79%)** |
+
+Twelve months, estimated: months 1 to 8 services only (one or two audits); months 8 to 10 three pilots (R4,500 a
+month); months 10 to 12 R10,000 to R20,000 a month recurring plus services. Running costs: hosting R660 to R1,300 a
+month, model under R500 a month at this scale, company admin under R2,000 a year, the attorney hour once. **Pricing
+rules:** a fixed fee that covers expected usage three times over, the ledger shown to the client, a budget that warns
+and stops (Phase 5), rand prices with a 20% buffer for the dollar (R15.75 to R17.15 in 2026) reviewed twice a year.
+
+### Rules before the first invoice
+
+General information, not legal advice. **POPIA:** we are the operator for a client's data (written operator
+agreement, safeguards, breach notices); the model runs abroad (section 72: Anthropic's processing terms plus the
+client's instruction, written down; Bedrock in `af-south-1` for clients who want logs and stored data in SA); the
+Information Regulator fined FNB R1 million in 2026, maximum R10 million. **Debt collection:** first-party only, never
+for a cut of what is recovered, or the Debt Collectors Act applies. **FICA product:** the agent fills the forms and a
+person signs; screening data is a paid source. **Health data** (idea 7) is special personal information: not before a
+partner carries the compliance. **Company and tax:** (Pty) Ltd before invoicing; B-BBEE EME affidavit for corporate
+buyers; VAT only past R2.3 million; a personal-service company can lose the SBC rates, so ask the accountant. **The
+National AI Policy** (gazetted April 2026, then withdrawn) binds nothing yet; Phase 7's audit log and approvals are what
+a risk-based rule would ask for.
+
+### The numbers we watch
+
+| Number | Target | If missed |
+|---|---|---|
+| Replies to the 20 emails | 3 or more | Change the subject line and the job named, not the product |
+| Practices that name a price | 3 of 10 | Change the kind of business before Phase 4 |
+| Cost per business conversation (ledger) | Under R1 | Check the prompt's size; nothing crosses Haiku's 100,000-token line |
+| Pilots that renew at full price | 2 of 3 | Fix the job, not the price |
+| Support hours per client a month | Under 4 | Fix checks, budgets and audit before the next client |
+| Gross margin per client | Above 70% | Raise the fee or cap usage |
+| Churn | Under 3% a month | Ask every leaver why, in one email |
+
+### Risks to the business
+
+| Risk | What we do |
+|---|---|
+| Nobody pays what we hoped | The 20 emails and ten conversations come first; the first price is a pilot price; services carry the bills |
+| Xero or Sage builds it in | Sell the work between systems and the practice's own WhatsApp and email, outside their product |
+| A cheaper bot wins on price | Don't sell where data doesn't matter; sell connected, checked, costed work |
+| Selling needs more people time than Louis wants to give | Written channels first (app stores, bodies' newsletters, LinkedIn), a fixed menu of offers, scripts for every call, one follow-up rule |
+| One person can't support many clients | Ten clients is the first ceiling; checks, budgets and audit keep support under four hours a client |
+| A data breach or a POPIA complaint | No hosting before Phase 9's tenants and Phase 7's audit; operator agreements; keep only what the job needs |
+| The business pulls the learning off course | Learning first; services capped at two days a week; no phase hurried for a sale |
+
+
 ## Verification, money and risks
 
 - **Every step:** `dotnet build louis-agent-solution.sln`, `dotnet test` on the projects the step touches, and the
@@ -3897,6 +4115,7 @@ Each phase's GOAL skills here are the one-page table's.
 | Prompt versioning: the prompt's hash on every ledger row | Phase 3 | 3 |
 | Reuse proven: two identities, one pack; a stack apart for showing | Phase 4 | 18 |
 | Grounding on location: one place, many sources, each fact with its source and date | Phase 4 | 7 |
+| A pitch is a scored run, and a send that cannot happen: least agency on a sales demo | Phase 4 | 15 |
 | Estimates; budgets that warn, ask or stop; cost per customer; the ledger checked against the bill | Phase 5 | 13 |
 | A budget that asks: a person decides before more is spent | Phase 5 | 16 |
 | Agents as tools; one policy per turn tree; credentials per peer | Phase 6 | 10 |

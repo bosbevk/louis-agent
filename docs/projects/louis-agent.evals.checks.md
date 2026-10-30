@@ -18,7 +18,9 @@ The why is [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md).
 
 Today it holds what a check reads: a `Trial` is one run of a scenario in one mode, and its `Transcript` is the turns
 it left, each a `TurnTranscript` with the session's events as they arrived. `EngineEvents` reads those events (the
-answer, the error, the usage, the route, and the tools the agent and its specialists called), and `TurnFacts` is what a turn's protocol record says about it.
+answer, the error, the usage, the route, the tools the agent and its specialists called, the sub-session it went
+back to and the URLs its tools were given), and `TurnFacts` is what a turn's protocol record says about it;
+`TurnFacts.Of(turn)` reads it from those events for every eval, unless an eval in C# says its own.
 
 And what a check returns: `ICheck` scores one trial into a `Grade` (a score from 0 to 1, an outcome, a reason, and
 for a model grader the `GradeJudge` that judged it). `Verdict` builds the four kinds of grade, so a pass always scores
@@ -29,7 +31,10 @@ And how a check is named from a file: an `ICheckType` is one kind of check, with
 (`within-time`), its kind, and the record its settings are read into. `CheckType<TParameters>` is the base an entry
 starts from (*Factory Method*): it reads the settings with `EvalJson.Strict` and refuses ones it can't read, naming
 the check type and, from the JSON reader, the field; the entry only says how to build its check from the record. An
-unknown field, a missing one and a null are all refused, so a typo can't become a default.
+unknown field, a missing one and a null are all refused, so a typo can't become a default. Beside its settings an
+entry gets a `CheckContext` (F49.2): the eval's folder, where a file it names is read from (a judge's rubric), and
+the checks built before it (a person's review finds its judge there). Most entries ignore it; `CheckContext.None`
+is for a check built in C# or a test.
 
 `CheckCatalog` holds the entries (*Registry*, filled with *Plugin* entries: each owner lists its own, the composition
 gathers them). It's built once and refuses a list a file couldn't name from: a type an MCP tool name can't carry
@@ -59,7 +64,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 | `louis-agent.evals.checks.csproj` | The three references, each with what it's for |
 | `EvalMode.cs` | One mode a task runs in: its role, its toolsets, and a sub-session's depth and LLM |
 | `EvalJson.cs` | The eval's JSON options: `SnakeCase`, `SnakeCaseNoNulls` (what is sent to the API), `Strict` (what a person wrote) |
-| `Catalog/` | `ICheckType` and `CheckType<TParameters>`: a check named by its type and built from its settings; `CheckCatalog`, `ListedCheck`, `CheckCatalogException`: the entries found by type and listed |
+| `Catalog/` | `ICheckType` and `CheckType<TParameters>`: a check named by its type and built from its settings and its `CheckContext`; `CheckCatalog`, `ListedCheck`, `CheckCatalogException`: the entries found by type and listed |
 | `Datasets/Scenarios/` | `EvalScenario`, `EvalInput`, `DatasetSplit`: one scenario, what the user sends, and its split |
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
 | `Grading/` | `ICheck`, `Grade` and `GradeJudge`; `Common/Verdict` |
@@ -83,8 +88,8 @@ type, and lists each entry with its settings' schema.
 
 What F49.1 left for later, each where its need comes:
 
-- **The runner doesn't build the catalogue yet**, and `routed-to` has no entry: both wait for F49.2's eval file, the
-  first thing that names a check from a file and states a route.
+- **The runner doesn't build the catalogue yet**: it waits for F49.2's runner step, the first thing that names a
+  check from a file.
 - **A check's name is its type** for an entry (`contains`), so an eval holds one of each until F49.2's file names
   its checks; the conformance rule then holds names, not types.
 - **`TrialBuilder` is the harness tests' own**, so `EngineEventsTests` and `AnswerOfTests` stay in

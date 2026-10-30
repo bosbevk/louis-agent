@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <None Include="..\..\docs\projects\louis-agent.evals.md" Link="docs\louis-agent.evals.md" />
-    <None Include="..\..\docs\guides\add-an-eval-set.md" Link="docs\add-an-eval-set.md" />
+    <None Include="..\..\docs\guides\add-an-eval.md" Link="docs\add-an-eval.md" />
   </ItemGroup>
 
   <ItemGroup>

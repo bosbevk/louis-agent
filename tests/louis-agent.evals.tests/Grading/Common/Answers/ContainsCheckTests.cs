@@ -112,5 +112,6 @@ public class ContainsCheckTests
 
     /// <summary>Builds the check the way an eval file will: from the general checks' catalogue, by its type.</summary>
     private static ICheck Build(string settings) =>
-        new CheckCatalog(GeneralChecks.All).Get("contains").Create(JsonDocument.Parse(settings).RootElement.Clone());
+        new CheckCatalog(GeneralChecks.All).Get("contains")
+            .Create(JsonDocument.Parse(settings).RootElement.Clone(), CheckContext.None);
 }

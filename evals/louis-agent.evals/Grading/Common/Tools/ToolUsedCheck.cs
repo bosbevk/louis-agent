@@ -61,6 +61,7 @@ public sealed class ToolUsedCheck(string tool, bool required = true) : ICheck
     public sealed class Entry() : CheckType<Settings>("tool-used", CheckKind.FixedRule)
     {
         /// <summary>Builds the check from its settings.</summary>
-        protected override ICheck Create(Settings settings) => new ToolUsedCheck(settings.Tool, settings.Required);
+        protected override ICheck Create(Settings settings, CheckContext context) =>
+            new ToolUsedCheck(settings.Tool, settings.Required);
     }
 }

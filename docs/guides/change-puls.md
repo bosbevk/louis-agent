@@ -50,7 +50,8 @@ chat to see the change.
 
 2. Add its row to `voice.md`'s routing table. The routing also says the cook is the only specialist that has passed
    its check, so Puls hands nothing else on: change that line too, once the new one has passed.
-3. Measure it before users see it: an eval in `evals/louis-agent.evals.puls` (F18), compared with Puls answering alone.
+3. Measure it before users see it: an eval folder in `identities/louis-agent.identity.puls/Evals/`
+   ([Add an eval](add-an-eval.md)), with a mode where Puls answers alone to compare against.
    Only then add it to `ROLES_ENABLED`: where that setting is set (the Puls stack sets it), a role not listed is
    refused, and start-up refuses a listed name the instance doesn't have.
 4. If it needs a capability Puls doesn't have, that is a pack ([Build a pack](build-a-pack.md)), named in

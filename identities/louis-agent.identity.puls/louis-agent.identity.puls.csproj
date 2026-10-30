@@ -13,12 +13,23 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <!-- F49.2 step 9b: the cook's fixed rules (Evals/Checks/) implement the check contract, which a pack or an identity
+         may reference (ADR 0056); never the harness, which runs them. -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Step 3 moves Puls's prompts here from core's Prompts/, byte for byte. -->
     <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F49.2: Puls's evals are folders of files (Evals/{Folder}/: eval.json, Dataset/, Transcripts/, its manual),
+         copied as every eval project's are, to EvalFiles/{this project's path from the repository root}/Evals/{Folder}/,
+         where the runner finds them through the composition. The code beside them (Evals/Checks/) is compiled, not
+         copied; the identity references no harness. -->
+    <None Update="Evals\**\*" TargetPath="EvalFiles\identities\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

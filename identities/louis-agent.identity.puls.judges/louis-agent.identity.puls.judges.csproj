@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- F49.2 step 9a: Puls's model judge, the cook's meal-for-people. It is built on the harness's judge (EvaluatorCheck,
+       JudgeClients), which the identity must never reference (ADR 0027), so it lives here, beside the identity, and only
+       the runner references it; the composition never does, so no host carries the harness. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Identities.Puls.Judges</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\evals\louis-agent.evals\louis-agent.evals.csproj" />
+    <!-- The cook's expectations and messages the judge reads, beside the identity in Evals/Checks/. -->
+    <ProjectReference Include="..\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+  </ItemGroup>
+
+</Project>

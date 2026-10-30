@@ -1,0 +1,10 @@
+{"event":"mode","t":"2026-10-30T12:00:00Z","mode":"example","repeat":1,"toolsets":["web"],"role":"template/voice","llm":null,"conversations":1}
+{"event":"question","t":"2026-10-30T12:00:00Z","mode":"example","repeat":1,"task":"example","turn":1,"session":"sess_example_1","text":"Replace this with what the user sends."}
+{"event":"sse","t":"2026-10-30T12:00:00Z","mode":"example","repeat":1,"task":"example","turn":1,"type":"message_start","data":{"type":"message_start","message":{"id":"msg_example_1"}}}
+{"event":"sse","t":"2026-10-30T12:00:00Z","mode":"example","repeat":1,"task":"example","turn":1,"type":"error","data":{"type":"error","error":{"type":"api_error","message":"overloaded"}}}
+{"event":"sse","t":"2026-10-30T12:00:00Z","mode":"example","repeat":1,"task":"example","turn":1,"type":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}}
+{"event":"sse","t":"2026-10-30T12:00:01Z","mode":"example","repeat":1,"task":"example","turn":1,"type":"content_block_delta","data":{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"Replace this with a good answer."}}}
+{"event":"sse","t":"2026-10-30T12:00:01Z","mode":"example","repeat":1,"task":"example","turn":1,"type":"content_block_stop","data":{"type":"content_block_stop","index":0}}
+{"event":"sse","t":"2026-10-30T12:00:01Z","mode":"example","repeat":1,"task":"example","turn":1,"type":"message_delta","data":{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":null}}
+{"event":"sse","t":"2026-10-30T12:00:01Z","mode":"example","repeat":1,"task":"example","turn":1,"type":"message_stop","data":{"type":"message_stop"}}
+{"event":"turn","t":"2026-10-30T12:00:01Z","mode":"example","repeat":1,"task":"example","turn":1,"session":"sess_example_1","question":"Replace this with what the user sends.","answer":"Replace this with a good answer.","role":null,"continued":null,"agent_calls":0,"specialist_calls":0,"hosts":[],"seconds":1.0,"error":null,"failure":null}

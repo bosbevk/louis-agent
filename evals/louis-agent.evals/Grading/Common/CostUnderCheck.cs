@@ -73,6 +73,7 @@ public sealed class CostUnderCheck(decimal limitUsd, bool required = true) : ICh
     public sealed class Entry() : CheckType<Settings>("cost-under", CheckKind.FixedRule)
     {
         /// <summary>Builds the check from its settings.</summary>
-        protected override ICheck Create(Settings settings) => new CostUnderCheck(settings.LimitUsd, settings.Required);
+        protected override ICheck Create(Settings settings, CheckContext context) =>
+            new CostUnderCheck(settings.LimitUsd, settings.Required);
     }
 }

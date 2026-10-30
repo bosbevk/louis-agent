@@ -90,4 +90,17 @@ public enum EvalErrorMessage
 
     [Description("EVAL_JUDGE_PROVIDER '{Value}' is not supported. Use one of: {Supported}.")]
     UnknownJudgeProvider,
+
+    [Description("Scenario '{Id}' needs '{Key}' in expected: the role its first turn goes to, or null when the "
+                 + "agent answers it itself.")]
+    NoExpectedRole,
+
+    [Description("Scenario '{Id}': '{Key}' in expected must be a role's name or null.")]
+    BadExpectedRole,
+
+    [Description("Rubric '{File}' isn't there: a judge reads its rubric from the eval's folder.")]
+    RubricMissing,
+
+    [Description("'human' reviews '{Reviews}', which is no judge the eval lists before it.")]
+    ReviewsNoJudge
 }

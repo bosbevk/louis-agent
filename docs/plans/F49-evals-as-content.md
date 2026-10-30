@@ -263,12 +263,14 @@ sequenceDiagram
    - **One enum and a switch in the harness**: the names as `CheckType` members, a switch builds each. Pattern:
      *Factory Method* over an enum (ADR 0024 likes enums). Cost: the harness would have to reference every pack to
      build its checks, the dependency the wrong way round (a pack never references the harness's callers).
-4. **What the eval version looks like** (F49.2): an integer as today, inspect_evals' `N-X`, or a hash of the files.
-5. **Where an eval's "turn facts" come from** (F49.2): today `PulsTurnFacts` reads a turn into facts the checks use;
-   as files, that reading is either a named extractor in the catalogue, the identity's own C#, or part of each check.
+4. **What the eval version looks like** (F49.2): **decided 2026-10-30, an integer as today**, bumped by hand
+   ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)).
+5. **Where an eval's "turn facts" come from** (F49.2): **decided 2026-10-30, the harness reads them** from the
+   engine's events for every eval; `PulsTurnFacts` is gone ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)).
 6. **How "publish" reaches git on a hosted instance** (F49.5): a pull request through the API, a download, or both.
 
-Finding 2 is decided and finding 3 is the card on the table; the rest wait for their child's plan.
+Findings 1 to 5 are decided (F49.1 and F49.2 are built: [write-up 20](../learning/20-extensibility.md)); finding 6
+waits for F49.5's plan.
 
 ## Paid runs
 

@@ -1,13 +1,13 @@
 # louis-agent.evals — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `evals/louis-agent.evals/` · **References:** louis-agent.core,
-> louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner, every eval set
-> (`louis-agent.evals.puls`, `louis-agent.evals.template`)
+> louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner,
+> louis-agent.identity.puls.judges
 
 ## Purpose
 
 The eval harness (F18): the one place that knows how an eval runs, so an eval set only says what it asks and how it
-grades. It holds the contract an eval implements (`IEval`, `IEvalSet`), the datasets and their loader, the trials and
+grades. It holds the contract an eval implements (`IEval`), the datasets and their loader, the trials and
 their transcripts, the graders every identity can use, the runner loop, the conformance check, the label sheet and
 the judge's calibration. It names no identity and no product: Puls's evals live in their own project
 ([ADR 0029](../adr/0029-simulations-in-csharp.md)).
@@ -15,7 +15,8 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 ## How it works
 
 - **An eval is a C# class.** `IEval` names its modes (`EvalMode`: the toolsets and role a session opens with), its
-  dataset and its graders; `IEvalSet` groups an identity's evals for the runner's catalogue.
+  dataset and its graders, and the identity it proves, which `EVALS=` chooses by. Since F49.2, `Files/FileEval` is
+  the one that reads a folder of files; the stub and the template's example are the C# ones left.
 - **A dataset is a folder.** `Datasets/` loads `dataset.json` (name, version, hash, `changes`) and the scenario files
   under `scenarios/{dev,held-out}/`, in Inspect's Sample shape (`id`, `input`, `target`, `metadata`; step 7d). The
   loader is strict: an unknown field, a stale hash or an expected key no grader reads is refused with a message that
@@ -32,14 +33,19 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score from 0 to 1, an outcome and a reason; a
   conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
 - **A general check can be named from a file** ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)).
-  `no-error`, `within-time`, `cost-under`, `contains` and `tool-used` each carry a nested `Entry` and its `Settings`
-  record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), and `Grading/Common/GeneralChecks.All` is the
+  `no-error`, `within-time`, `cost-under`, `routed-to`, `contains`, `tool-used`, `judge` and `human` each carry a
+  nested `Entry` and its `Settings` record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), and
+  `Grading/Common/GeneralChecks.All` is the
   harness's list for the check catalogue. `contains` (`Grading/Common/Answers/`) checks that the first turn's answer
   holds one of a list of texts, case and accents ignored, never a pattern
   ([ADR 0057](../adr/0057-regex-is-the-last-option.md)). `tool-used` (`Grading/Common/Tools/`) checks that a tool
   with this exact name was called in the trial, by the agent or a specialist; a streamed error is `no-error`'s to
-  report. `routed-to` has no entry yet: its expected role is a function (Puls's reads a scenario key and the mode's
-  toolsets), which F49.2's eval file settles.
+  report. `routed-to` reads the expected role from a scenario key (`expected_key`), and a mode with none of the
+  `delegating_toolsets` is expected to answer itself (`RoutedToCheck.ByScenarioKey`). `judge`
+  (`Grading/Models/Rubrics/JudgeCheck`) sends a rubric file from the eval's folder as the system prompt, only the
+  scenario keys it lists (`ask`), the conversation so far and the answer, and reads `{"pass", "reason"}` from the
+  reply: null or no verdict is Unknown, and it is never required. `human` reviews a judge the eval lists before it,
+  asking the rubric's title as its question.
 - **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
   contract's `EvalProtocolJson` ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); `ProtocolTranscripts`
   reads a stored run back for a re-score or a conformance case.
@@ -82,7 +88,8 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
 | `Api/` | The session clients and the session request the runner sends (with `replay`) |
 | `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
 | `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Samples/` (a scenario's types are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
-| `Grading/` | The general checks (`Common/`, with `Answers/` and `Tools/`), the model and human checks, the outcomes (`ICheck`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
+| `Files/` | An eval as a folder of files (F49.2): `EvalFile` and its records, the shape of `eval.json`; `EvalFileReader`, which reads one strictly and refuses what it can't trust; `FileEval`, the eval built from the folder (its checks from the catalogue in the file's order, `Dataset/` beside it, the manual's path from the source the caller gives) |
+| `Grading/` | `NamedCheck`, a check under the name an eval file gives it; the general checks (`Common/`, with `Answers/` and `Tools/`), the model and human checks, the outcomes (`ICheck`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
 | `Messages/` | The harness's texts (errors, logs, conformance, calibration); the grade reasons, `CommonGradeMessage`, are in [louis-agent.evals.checks](louis-agent.evals.checks.md) |
 | `Protocol/` | The writer and the stored-run reader |
@@ -101,10 +108,9 @@ The runner's own settings (`EVALS`, `BENCHMARK_RUN`) are in [louis-agent.evals.r
 
 ## Extending it
 
-A new identity's evals are a new project with one `IEvalSet`, its evals, datasets and graders; the steps are
-[Add an eval set](../guides/add-an-eval-set.md). A check every identity could use goes in `Grading/Common/`,
+A new identity's evals are folders of files beside it; the steps are [Add an eval](../guides/add-an-eval.md). A check every identity could use goes in `Grading/Common/`,
 with a nested `Entry` and a line in `GeneralChecks.All` when a file should be able to name it; one that knows an
-identity's rules stays in its set.
+identity's rules stays with that identity's checks.
 
 ## Tests
 
@@ -121,7 +127,7 @@ golden. The runner's tests run the stub end to end ([tests](tests.md)).
 ## Related docs
 
 [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md) ·
-[Add an eval set](../guides/add-an-eval-set.md) · [Run the evals](../guides/run-the-evals.md) ·
+[Add an eval](../guides/add-an-eval.md) · [Run the evals](../guides/run-the-evals.md) ·
 [Write-up 12](../learning/12-evaluation.md) · [Write-up 20](../learning/20-extensibility.md)
 
 ---

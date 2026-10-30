@@ -11,7 +11,7 @@
 |---|---|
 | [Build a pack](build-a-pack.md) | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests |
 | [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its specialists, the packs it names, its tests, running it; the rules for modes, roles and minions |
-| [Add an eval set](add-an-eval-set.md) | Give an identity its evals: start from the template project, then its dataset, graders, evals, set, reference transcripts, tests, and listing it with `EVALS=` |
+| [Add an eval](add-an-eval.md) | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, pick its checks, and list it with `EVALS=` |
 | [Run the evals](run-the-evals.md) | Run an eval from the command line or the portal: the flags, record and replay, dev and held-out, what a run costs |
 | [Add a shop](add-a-shop.md) | Price a list at another retailer: its catalogue, throttle, tests on recorded answers, and turning it on |
 | [Write and run tests](write-tests.md) | Run the tests, write one first, use the shared fakes, regenerate a golden, add a test project |

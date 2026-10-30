@@ -2,12 +2,11 @@ using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Api;
+using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Protocol;
-using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Calibration;
 using LouisAgent.Evals.Runner.Catalog;
-using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Runner.Refusal;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Runner.Evals.Stub;
@@ -18,8 +17,13 @@ try
 {
     var request = CommandLine.Parse(args);
 
-    var sets = EvalSetSelection.Parse(Environment.GetEnvironmentVariable("EVALS")).Select(EvalSets.Create).ToList();
-    var catalog = new EvalCatalog(sets, new StubEval());
+    // Every eval folder copied beside the runner is found, its checks built from the catalogue the runner gathers;
+    // EVALS= then chooses them by the identity each one proves.
+    var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
+        .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source))
+        .ToList();
+    var chosen = EvalFolders.Choose(files, Environment.GetEnvironmentVariable("EVALS"));
+    var catalog = new EvalCatalog(chosen, new StubEval());
 
     switch (request)
     {
@@ -49,7 +53,7 @@ try
                 var rescorer = new EvalRunner(new NoSessionClient(),
                     new ProtocolWriter(Console.Out, TimeProvider.System), TimeProvider.System,
                     AgentLogging.For<EvalRunner>());
-                string[] stored = Console.In.ReadToEnd().Split('\n',
+                var stored = Console.In.ReadToEnd().Split('\n',
                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 await rescorer.RescoreAsync(eval,
                     BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), source,

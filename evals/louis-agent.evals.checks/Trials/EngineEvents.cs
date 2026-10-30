@@ -19,6 +19,9 @@ public static class EngineEvents
     /// <summary>The engine's own tool that hands a question to a role (core's sub-sessions).</summary>
     private const string StartSubSession = "StartSubSession";
 
+    /// <summary>The engine's own tool that goes back to a sub-session by its handle.</summary>
+    private const string ContinueSubSession = "ContinueSubSession";
+
     /// <summary>
     /// True when the turn streamed an error event: the agent's error. A specialist's error is not the turn's.
     /// </summary>
@@ -78,8 +81,26 @@ public static class EngineEvents
     /// The names of the tools the turn's specialists called, in order: read from the sub_session events that carry
     /// their streams.
     /// </summary>
-    public static IReadOnlyList<string> SpecialistToolsCalled(TurnTranscript turn) =>
-        CalledIn(turn.Events.OfType<SubSessionStreamed>().Select(sub => sub.Inner));
+    public static IReadOnlyList<string> SpecialistToolsCalled(TurnTranscript turn) => CalledIn(SpecialistEvents(turn));
+
+    /// <summary>
+    /// The handle of the sub-session the turn's agent went back to (its first ContinueSubSession call that names
+    /// one), or null when it went back to none.
+    /// </summary>
+    public static string? ContinuedHandle(TurnTranscript turn) =>
+        ToolBlocks(turn.Events).Where(block => Text(block, "name") == ContinueSubSession)
+            .Select(block => Field(block, "input", out var input) ? Text(input, "handle") : null)
+            .FirstOrDefault(handle => !string.IsNullOrEmpty(handle));
+
+    /// <summary>
+    /// The URLs the turn's tool calls were given, the agent's first and then its specialists', in order.
+    /// </summary>
+    public static IReadOnlyList<string> UrlsGiven(TurnTranscript turn) =>
+    [
+        .. ToolBlocks(turn.Events.Concat(SpecialistEvents(turn)))
+            .Select(block => Field(block, "input", out var input) ? Text(input, "url") : null)
+            .OfType<string>()
+    ];
 
     /// <summary>The message of the turn's error event, or null when it has none.</summary>
     public static string? ErrorMessageOf(TurnTranscript turn)
@@ -118,13 +139,17 @@ public static class EngineEvents
     /// The names of the tool calls among these events, skipping a block that isn't a call or has no name.
     /// </summary>
     private static IReadOnlyList<string> CalledIn(IEnumerable<SessionEvent> events) =>
-        [.. events.OfType<ContentBlockStarted>().Select(ToolNameOf).OfType<string>()];
+        [.. ToolBlocks(events).Select(block => Text(block, "name")).OfType<string>()];
 
-    /// <summary>The tool's name when the block that starts is a tool call, else null.</summary>
-    private static string? ToolNameOf(ContentBlockStarted started) =>
-        Field(started.Data, "content_block", out var block) && Text(block, "type") == "tool_use"
-            ? Text(block, "name")
-            : null;
+    /// <summary>The tool-call blocks among these events, in order: each one's name and input.</summary>
+    private static IEnumerable<JsonElement> ToolBlocks(IEnumerable<SessionEvent> events) =>
+        events.OfType<ContentBlockStarted>()
+            .Select(started => Field(started.Data, "content_block", out var block) ? block : default)
+            .Where(block => Text(block, "type") == "tool_use");
+
+    /// <summary>The specialists' events, unwrapped from the sub_session events that carry their streams.</summary>
+    private static IEnumerable<SessionEvent> SpecialistEvents(TurnTranscript turn) =>
+        turn.Events.OfType<SubSessionStreamed>().Select(sub => sub.Inner);
 
     /// <summary>
     /// The usage object on the turn's last message_delta, or on its error when it failed: the stream's end. Null when

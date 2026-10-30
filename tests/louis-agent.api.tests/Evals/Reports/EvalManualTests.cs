@@ -4,9 +4,10 @@ using LouisAgent.Api.Evals.Reports;
 namespace LouisAgent.Api.Tests.Evals.Reports;
 
 /// <summary>
-/// Each eval's manual lives beside the eval (evals/{project}/Manuals/{name}.md) and opens from its card. The API
-/// reads it from the path the catalogue keeps, never from one the caller names, and nothing outside evals/ can be
-/// read that way.
+/// Each eval's manual lives beside the eval (<c>evals/{project}/Manuals/{name}.md</c>, or <c>manual.md</c> in an
+/// eval's folder beside its identity or pack) and opens from its card. The API reads it from the path the catalogue
+/// keeps, never from one the caller names, and nothing outside <c>evals/</c>, <c>identities/</c> and <c>packs/</c> can
+/// be read that way.
 /// </summary>
 public class EvalManualTests
 {
@@ -16,8 +17,8 @@ public class EvalManualTests
 
     /// <summary>Each real eval's manual is found beside the eval and opens with a heading.</summary>
     [TestCase("stub", "evals/louis-agent.evals.runner/Manuals/stub.md")]
-    [TestCase("puls-cook", "evals/louis-agent.evals.puls/Manuals/cook.md")]
-    [TestCase("puls-routing", "evals/louis-agent.evals.puls/Manuals/routing.md")]
+    [TestCase("puls-cook", "identities/louis-agent.identity.puls/Evals/Cook/manual.md")]
+    [TestCase("puls-routing", "identities/louis-agent.identity.puls/Evals/Routing/manual.md")]
     public void AnEvalsManual_IsReadFromBesideTheEval(string eval, string path)
     {
         var check = new EvalEntry(eval, "An eval", path);
@@ -38,12 +39,17 @@ public class EvalManualTests
             Is.Null, "a path that names no file");
     }
 
-    /// <summary>A path that leads outside evals/, even by climbing out of it, is never read.</summary>
+    /// <summary>
+    /// A path that leads outside the eval folders (evals/, identities/, packs/), even by climbing out of one, is never
+    /// read.
+    /// </summary>
     [TestCase("evals/../config/prices.json")]
     [TestCase("../outside/manual.md")]
     [TestCase("docs/README.md")]
     [TestCase("benchmarks/stub/HANDLEIDING.md")]
     [TestCase("evals/../docs/README.md")]
+    [TestCase("identities/../config/.env")]
+    [TestCase("packs/../docs/README.md")]
     public void AManualOutsideEvals_IsNeverRead(string path)
     {
         var check = new EvalEntry("escape", "Escape", path);

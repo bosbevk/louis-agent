@@ -1,10 +1,8 @@
 using System.Text.Json;
 using LouisAgent.Testing;
 using LouisAgent.Evals.Api;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Trials;
@@ -23,20 +21,20 @@ public class EvalCatalogTests
 {
     private static readonly IEval Stub = new StubEval();
 
-    /// <summary>The stub is always there, even when no eval set is chosen.</summary>
+    /// <summary>The stub is always there, even when no eval is chosen.</summary>
     [Test]
-    public void TheStubIsAlwaysListed_EvenWithNoSets()
+    public void TheStubIsAlwaysListed_EvenWithNoEvals()
     {
         var catalog = new EvalCatalog([], Stub);
 
         Assert.That(catalog.Listing().Select(l => l.Name), Is.EqualTo(new[] { "stub" }));
     }
 
-    /// <summary>Each eval shows up once, the sets' evals first and the stub last.</summary>
+    /// <summary>Each eval shows up once, the chosen evals first and the stub last.</summary>
     [Test]
     public void EachEval_IsListedOnce()
     {
-        var catalog = new EvalCatalog([new FakeSet(new FakeEval("cook")), new FakeSet(new FakeEval("routing"))], Stub);
+        var catalog = new EvalCatalog([new FakeEval("cook"), new FakeEval("routing")], Stub);
 
         Assert.That(catalog.Listing().Select(l => l.Name), Is.EqualTo(new[] { "cook", "routing", "stub" }));
     }
@@ -45,7 +43,7 @@ public class EvalCatalogTests
     [Test]
     public void RefusesTwoEvalsWithOneName()
     {
-        Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook")), new FakeSet(new FakeEval("cook"))], Stub),
+        Assert.That(() => new EvalCatalog([new FakeEval("cook"), new FakeEval("cook")], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'cook'"));
     }
 
@@ -53,7 +51,7 @@ public class EvalCatalogTests
     [Test]
     public void RefusesAnEvalWithNoGraders()
     {
-        Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", []))], Stub),
+        Assert.That(() => new EvalCatalog([new FakeEval("cook", [])], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'cook' has no graders"));
     }
 
@@ -63,7 +61,7 @@ public class EvalCatalogTests
     {
         var model = new FakeCheck(CheckKind.Model, required: true);
 
-        Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", [model]))], Stub),
+        Assert.That(() => new EvalCatalog([new FakeEval("cook", [model])], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'cook' has no required fixed-rule grader"));
     }
 
@@ -74,7 +72,7 @@ public class EvalCatalogTests
         // A fixed rule that doesn't decide the trial is no check: the eval needs one it must pass.
         var optional = new FakeCheck(CheckKind.FixedRule, required: false);
 
-        Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", [optional]))], Stub),
+        Assert.That(() => new EvalCatalog([new FakeEval("cook", [optional])], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'cook' has no required fixed-rule grader"));
     }
 
@@ -82,9 +80,8 @@ public class EvalCatalogTests
     [Test]
     public void AcceptsAnEvalWithARequiredFixedRule()
     {
-        var catalog =
-            new EvalCatalog([new FakeSet(new FakeEval("cook", [new FakeCheck(CheckKind.FixedRule, required: true)]))],
-                Stub);
+        var catalog = new EvalCatalog([new FakeEval("cook", [new FakeCheck(CheckKind.FixedRule, required: true)])],
+            Stub);
 
         Assert.That(catalog.Find("cook"), Is.Not.Null);
     }
@@ -148,15 +145,15 @@ public class EvalCatalogTests
         var empty = new EvalScenario("empty", new EvalInput(null, "Africa/Johannesburg", []), default, [],
             DatasetSplit.Dev);
 
-        Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", scenarios: [empty]))], Stub),
+        Assert.That(() => new EvalCatalog([new FakeEval("cook", scenarios: [empty])], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'empty'").And.Message.Contains("no messages"));
     }
 
-    /// <summary>An eval is listed under its set's identity, and the stub, in no set, under none.</summary>
+    /// <summary>An eval is listed under the identity it proves, and the stub, which proves none, under none.</summary>
     [Test]
-    public void AnEvalIsListedUnderItsSetsIdentity_AndTheStubUnderNone()
+    public void AnEvalIsListedUnderItsIdentity_AndTheStubUnderNone()
     {
-        var catalog = new EvalCatalog([new FakeSet(new FakeEval("cook"), SampleIdentity.Alpha)], Stub);
+        var catalog = new EvalCatalog([new FakeEval("cook")], Stub);
 
         Assert.That(catalog.Listing().Select(l => (l.Name, l.Identity)),
             Is.EqualTo(new (string, string?)[] { ("cook", SampleIdentity.Alpha), ("stub", null) }));
@@ -173,8 +170,8 @@ public class EvalCatalogTests
         var model = new FakeCheck(CheckKind.Model, required: false);
         var catalog = new EvalCatalog(
         [
-            new FakeSet(new FakeEval("cook", [new FakeCheck(CheckKind.FixedRule, required: true), model],
-                [Scenario("a", "town", "city"), Scenario("b", "town")], dataset))
+            new FakeEval("cook", [new FakeCheck(CheckKind.FixedRule, required: true), model],
+                [Scenario("a", "town", "city"), Scenario("b", "town")], dataset)
         ], Stub);
 
         var cook = catalog.Listing().First();
@@ -192,15 +189,9 @@ public class EvalCatalogTests
     private static EvalScenario Scenario(string id, params string[] categories) =>
         new(id, new EvalInput(null, "Africa/Johannesburg", ["hi"]), default, categories, DatasetSplit.Dev);
 
-    /// <summary>A set of one eval, under an identity.</summary>
-    private sealed class FakeSet(IEval eval, string identity = SampleIdentity.Alpha) : IEvalSet
-    {
-        public string Identity { get; } = identity;
-        public IReadOnlyList<IEval> Evals { get; } = [eval];
-    }
-
     /// <summary>
-    /// An eval that only describes itself: the catalogue never runs it, so its modes and a turn's facts aren't there.
+    /// An eval of the sample identity that only describes itself: the catalogue never runs it, so its modes and a
+    /// turn's facts aren't there.
     /// </summary>
     private sealed class FakeEval(
         string name,
@@ -209,6 +200,7 @@ public class EvalCatalogTests
         DatasetManifest? dataset = null) : IEval
     {
         public string Name { get; } = name;
+        public string Identity => SampleIdentity.Alpha;
         public DatasetManifest? Dataset { get; } = dataset;
         public int Version => 1;
         public string Proves => "A fake eval, to test the catalogue.";

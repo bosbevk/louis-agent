@@ -1,0 +1,9 @@
+{
+  "name": "template-example",
+  "version": 1,
+  "covers": "Replace this with what the scenarios cover: one question so far, in the dev split.",
+  "content_hash": "475760d79307e70db4e5fe8373326aa849033d82dfd1762f7f369fdda2e37f86",
+  "changes": [
+    "2026-10-30: the template as a folder of files (F49.2)"
+  ]
+}

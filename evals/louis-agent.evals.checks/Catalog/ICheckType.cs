@@ -24,6 +24,9 @@ public interface ICheckType
     /// <summary>The record its settings are read into, so a form can be made from it.</summary>
     Type Parameters { get; }
 
-    /// <summary>Builds the check from its settings as they appear in the eval file.</summary>
-    ICheck Create(JsonElement parameters);
+    /// <summary>
+    /// Builds the check from its settings as they appear in the eval file, with the eval's folder and the checks
+    /// built before it for an entry that needs them (<see cref="CheckContext"/>).
+    /// </summary>
+    ICheck Create(JsonElement parameters, CheckContext context);
 }
