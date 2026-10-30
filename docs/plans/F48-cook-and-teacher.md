@@ -240,6 +240,25 @@ page had none) beside this plan's own (no basics for a confident cook, no lesson
 third in `held-out/`; each with its categories, and the dataset's version and hash go up. The before-and-after run in
 step 8 uses all of them.
 
+### Decided · Wave 1 is in F48 (Louis, 2026-10-30)
+
+Wave 1 of [PULS_COOK.md](../specs/PULS_COOK.md#wave-1-with-f48-cheap-high-value) is built in F48, as its third part
+(**F48.3**, after the steps below), each idea one step or more with its test first:
+
+| # | Step | Test first |
+|---|---|---|
+| 3.1 | Food-safety rules in C# on the `Recipe` record: poultry 74 °C, mince and egg dishes 71 °C, leftovers reheated to 74 °C and in the fridge within 2 hours, a note on ready-to-eat meats | A chicken recipe always gets its line; the model can't drop it |
+| 3.2 | `WriteRecipe` prints the safety lines; a grader checks them | Golden file; the grader on a recorded transcript |
+| 3.3 | The cheaper pack size from the estimates table ("the 5 kg is 15% cheaper per kg") | Maize meal 5 kg against 2.5 kg |
+| 3.4 | SA dietary-guideline nudges: a small credited table, one message where it fits, in `puls-cook.md` | Role golden file |
+| 3.5 | Copy the list: a button that gives plain text to paste | bUnit |
+| 3.6 to 3.8 | Cook mode in the Puls app: the mise en place list and one step on screen; a timer per step; the screen stays on (wake lock) | bUnit per step |
+| 3.9 | "How did it go?": one tap and an optional line, kept with the browser id | Store test |
+| 3.10 | "Not good" opens troubleshooting and goes to the eval inbox | API test |
+
+F48.3 adds about 10 steps and almost nothing per answer (code and small tables); cook mode reads the `WriteRecipe`
+result, so it makes no model call.
+
 ### Decided · Function skills follow Agent Skills (Louis, 2026-10-26)
 
 Louis asked what the international standard for prompt files is. There's no ISO or W3C one; the open formats are
@@ -361,7 +380,8 @@ specialists want first anyway.
   cache read): one extra `WriteRecipe` round is about 15K cached prefix ($0.00015), 1.5K new input ($0.00015) and
   600 output ($0.0003): **about $0.0006 per answer**, against roughly 1 cent a trial today. Cues and whys add about 200
   output tokens ($0.0001). So about **+5% a trial**.
-- **Building it:** 9 steps (0 to 8), about three days at your three-a-day pace.
+- **Building it:** 9 steps (0 to 8), about three days at your three-a-day pace; wave 1 (F48.3, decided 2026-10-30)
+  about 10 more, three to four days.
 - **The eval run:** a `--repeat 3` on 20 scenarios is about $0.60 (the figure F18's 6b worked out), twice for before and after: about
   **$1.20**, on your go.
 - **Upkeep:** the estimates table, monthly.
