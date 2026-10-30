@@ -113,4 +113,4 @@ golden. The runner's tests run the stub end to end ([tests](tests.md)).
 [Write-up 12](../learning/12-evaluation.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [louis-agent.evals.protocol](louis-agent.evals.protocol.md)
+[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [louis-agent.evals.checks](louis-agent.evals.checks.md)

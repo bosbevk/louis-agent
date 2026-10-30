@@ -62,4 +62,4 @@ golden in `louis-agent.evals.tests`, and the API's reader in its `RecordedV2RunT
 [louis-agent.evals](louis-agent.evals.md) · [louis-agent.api](louis-agent.api.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.evals](louis-agent.evals.md) · Next: [louis-agent.evals.runner](louis-agent.evals.runner.md)
+[Projects](README.md) · Previous: [louis-agent.evals.checks](louis-agent.evals.checks.md) · Next: [louis-agent.evals.runner](louis-agent.evals.runner.md)
