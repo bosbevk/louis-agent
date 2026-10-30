@@ -1,7 +1,7 @@
-using System.Security.Cryptography;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Datasets.Scenarios;
+using LouisAgent.Evals.Grading.Models.Rubrics;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared;
@@ -77,16 +77,16 @@ public class CookEvalTests
             }));
 
     /// <summary>
-    /// Its rubric is the judge's calibrated prompt, byte for byte: the same hash its grades carry, so the 36 labels
-    /// still describe it, and they travel with its dataset.
+    /// Its rubric is the judge's calibrated prompt, word for word: the hash its grades carry on every platform (line
+    /// endings made LF, since git gives CRLF on Windows and LF on Linux), so the 36 labels still describe it, and they
+    /// travel with its dataset.
     /// </summary>
     [Test]
     public void ItsRubricAndLabels_AreTheCalibratedOnes()
     {
-        var hash = Convert.ToHexStringLower(
-            SHA256.HashData(File.ReadAllBytes(Path.Combine(CookFile.Folder, "Rubrics", "meal-for-people.md"))))[..12];
+        var hash = RubricHash.Of(File.ReadAllText(Path.Combine(CookFile.Folder, "Rubrics", "meal-for-people.md")));
 
-        Assert.That(hash, Is.EqualTo("161e5cebcc15"));
+        Assert.That(hash, Is.EqualTo(CookFile.RubricHash));
         Assert.That(CookFile.Eval.Labels, Has.Count.EqualTo(36));
     }
 

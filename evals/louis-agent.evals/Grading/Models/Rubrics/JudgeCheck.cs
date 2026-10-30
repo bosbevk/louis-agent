@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Catalog;
@@ -37,7 +35,7 @@ public sealed class JudgeCheck : IRubricCheck
     public JudgeCheck(string name, int version, string rubric, IReadOnlyList<string> ask, Func<ConfiguredJudge?> judge)
     {
         (_ask, Rubric) = (ask, rubric);
-        _inner = new EvaluatorCheck(new RubricJudge(name, rubric), judge, name, version, HashOf(rubric),
+        _inner = new EvaluatorCheck(new RubricJudge(name, rubric), judge, name, version, RubricHash.Of(rubric),
             new HashSet<string>(ask), trial => [JudgeAsk.Of(trial.Scenario, ask)]);
     }
 
@@ -61,13 +59,6 @@ public sealed class JudgeCheck : IRubricCheck
     private bool Asked(Trial trial) =>
         _ask.Count == 0 || (trial.Scenario.Expected.ValueKind == JsonValueKind.Object &&
                             _ask.All(key => trial.Scenario.Expected.TryGetProperty(key, out _)));
-
-    /// <summary>
-    /// The first 12 hex digits of the SHA-256 of the rubric's text: as long as a prompt hash is anywhere else in the
-    /// ledger and the portal.
-    /// </summary>
-    private static string HashOf(string rubric) =>
-        Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(rubric)))[..12];
 
     /// <summary>
     /// What a file can set: the rubric's path in the eval's folder, the scenario keys the judge is told, and the

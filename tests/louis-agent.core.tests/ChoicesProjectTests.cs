@@ -23,7 +23,7 @@ public class ChoicesProjectTests
     }
 
     [Test]
-    public void Core_ReferencesIt_SoPacksIdentitiesAndEvalSetsGetItThroughCore()
+    public void Core_ReferencesIt_SoPacksAndIdentitiesGetItThroughCore()
     {
         Assert.That(Csproj("louis-agent.core", "louis-agent.core.csproj"),
             Does.Contain(@"louis-agent.choices\louis-agent.choices.csproj"));

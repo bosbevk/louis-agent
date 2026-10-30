@@ -34,8 +34,8 @@ public interface IEval
 
     /// <summary>
     /// Where the eval's manual is: a markdown file beside the eval, as a path from the repository root with forward
-    /// slashes (<c>evals/louis-agent.evals.puls/Manuals/cook.md</c>); the portal opens it from the eval's card. Null
-    /// for an eval with none.
+    /// slashes (<c>identities/louis-agent.identity.puls/Evals/Cook/manual.md</c>); the portal opens it from the eval's
+    /// card. Null for an eval with none.
     /// </summary>
     string? Manual => null;
 

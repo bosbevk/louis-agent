@@ -163,7 +163,7 @@ src/
 ├── louis-agent.mcp-server/   # Publishes the tools over MCP (no model)
 ├── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
 └── louis-agent.composition/  # The one project that knows every identity and pack; a host picks with IDENTITIES and PACKS
-evals/                   # The eval harness, its protocol, the runner, the template and Puls's evals; louis-agent.session-stream/ and src/louis-agent.api.contracts/ hold the records the API shares
+evals/                   # The eval harness, its protocol, the checks contract, the runner and the template folder; an eval is a folder of files beside its identity (identities/…/Evals/); louis-agent.session-stream/ and src/louis-agent.api.contracts/ hold the records the API shares
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
 tests/                   # NUnit, one project per project ([tests](projects/tests.md)); the ones that leave their process are *.integration-tests
 docker/, deploy/azure/, config/ # This PC's images and compose stacks; the cloud (Puls on Azure); what the app reads at run time

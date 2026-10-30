@@ -29,7 +29,7 @@ use is the harness's general `judge` entry instead, which needs no C#.
 ## Tests
 
 `tests/louis-agent.identity.puls.judges.tests`: the judge on a scripted client, the prompt it sends against its golden
-(`meal-for-people.sent.txt`), the rubric's hash (`161e5cebcc15`, the one its calibration measured), its entry built
+(`meal-for-people.sent.txt`), the rubric's hash (`438a8deb91f4`, the same on every platform), its entry built
 from an eval folder, and the list. Its small helpers (`JudgeTrials`, `CookRubric`) are its own, cut from the Puls
 evals' tests' helpers, since no test project references another.
 

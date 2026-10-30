@@ -64,8 +64,8 @@ every `eval.json` copied beside the runner is an eval.
 - **`modes`** are the ways the same conversations run: a role and its toolsets each. Two modes compare, for example,
   the agent alone with the agent handing work to a specialist.
 - **`checks`** grade each conversation, in this order on the portal. `parameters` holds the check's settings, in snake
-  case; leave it out when the defaults do. `name` keeps an old name a stored run already carries (Puls's `cook-no-error`);
-  a new eval leaves it out.
+  case; leave it out when the defaults do. `name` keeps an old name a stored run already carries when a check's type
+  changes under it (none of Puls's today); a new eval leaves it out.
 
 The file is read strictly: a field it doesn't know, one missing, a null, a mode or a check twice, or a check type the
 catalogue doesn't have is refused, naming the file and the field.

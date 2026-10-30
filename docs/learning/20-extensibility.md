@@ -102,9 +102,11 @@ that throw.
   cook's leaves a broken turn Unknown before counting errors and the general one fails on an error first, with other
   reasons. Swapping one for the other would have changed what stored grades mean under the same name, so the cook's
   stayed its own entry.
-- **A rubric is content, and its bytes are its identity.** The judge's prompt left its embedded resource for a file
-  in the eval's folder byte for byte, so its hash (`161e5cebcc15`) stayed, and the 36 labels the judge was calibrated
-  against still describe it.
+- **A rubric is content, and its words are its identity.** The judge's prompt left its embedded resource for a file
+  in the eval's folder word for word, and the review found its hash was of the bytes: `161e5cebcc15` on a Windows
+  checkout (CRLF), another on Linux (CI went red). `RubricHash` now makes the line endings LF before hashing, so one
+  rubric is one hash (`438a8deb91f4`) everywhere; the 36 labels the judge was calibrated against still describe it,
+  and the runs recorded before carry the old hash as another measure.
 - **A dependency rule finds the design for you.** "The identity never references the harness" is what put the judge
   in a project of its own; a check the identity's code could hold (the six fixed rules) went beside it, one that
   needed the harness couldn't. Writing the rule as a test (`ArchitectureTests`) keeps it.

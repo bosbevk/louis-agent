@@ -18,6 +18,9 @@ internal static class CookRubric
     /// <summary>What a person reviewing the judge is asked: the rubric's title as a question.</summary>
     public static string Question { get; } = ReviewQuestion.From(Text);
 
-    /// <summary>The rubric's hash, the one the judge's grades carry and its calibration measured.</summary>
-    public const string Hash = "161e5cebcc15";
+    /// <summary>
+    /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF).
+    /// The runs before F49.2 carried <c>161e5cebcc15</c>, the same words read with CRLF on Windows.
+    /// </summary>
+    public const string Hash = "438a8deb91f4";
 }

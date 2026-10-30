@@ -27,7 +27,7 @@ public sealed record EvalFile(
 public sealed record EvalModeFile(string Name, string Role, IReadOnlyList<string> Toolsets);
 
 /// <summary>
-/// One check the eval grades with: its catalogue type, a name only where a stored run already carries one
-/// (<c>cook-no-error</c>), and its settings, left out where the entry's defaults are enough.
+/// One check the eval grades with: its catalogue type, a name only where a stored run already carries one that
+/// differs from the type (none of Puls's today), and its settings, left out where the entry's defaults are enough.
 /// </summary>
 public sealed record CheckEntryFile(string Type, string? Name = null, JsonElement? Parameters = null);

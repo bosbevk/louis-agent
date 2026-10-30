@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
@@ -27,7 +25,8 @@ namespace LouisAgent.Identities.Puls.Judges;
 /// one checks the number is named, this one that the meal is for them. The cook's own judge, not the generic
 /// <c>judge</c>: its rubric asks for <c>meal</c>, and its ask is <see cref="CookAsk"/>'s people and town, which is
 /// what its calibration measured (Louis's pick, F49.2 step 8a). Its <see cref="Entry"/> reads the rubric from the
-/// eval's folder (Factory Method); the same bytes give the same prompt hash.
+/// eval's folder (Factory Method); the same words give the same prompt hash on every platform
+/// (<see cref="RubricHash"/>).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class MealForPeopleCheck : IRubricCheck
@@ -49,7 +48,7 @@ public sealed class MealForPeopleCheck : IRubricCheck
     /// </summary>
     public static MealForPeopleCheck Create(string rubric, Func<ConfiguredJudge?> judge) =>
         new(rubric, new EvaluatorCheck(new MealForPeople(rubric), judge, MealForPeople.MetricName, JudgeVersion,
-            HashOf(rubric), new HashSet<string> { "serves" }, trial => [CookAsk.Of(trial)]));
+            RubricHash.Of(rubric), new HashSet<string> { "serves" }, trial => [CookAsk.Of(trial)]));
 
     /// <inheritdoc />
     public string Rubric { get; }
@@ -74,13 +73,6 @@ public sealed class MealForPeopleCheck : IRubricCheck
         CookExpectations.ServesOf(trial.Scenario).Count == 0
             ? ValueTask.FromResult(Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.MealNotAsked)))
             : _inner.GradeAsync(trial, cancellationToken);
-
-    /// <summary>
-    /// The first 12 hex digits of the SHA-256 of the rubric's text: as long as a prompt hash is anywhere else in the
-    /// ledger and the portal.
-    /// </summary>
-    private static string HashOf(string rubric) =>
-        Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(rubric)))[..12];
 
     /// <summary>What a file can set: the rubric's path in the eval's folder.</summary>
     public sealed record Settings(string Rubric);

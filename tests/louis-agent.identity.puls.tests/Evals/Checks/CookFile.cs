@@ -30,6 +30,8 @@ internal static class CookFile
     /// <summary>What a person reviewing the cook's judge is asked: the rubric's title as a question.</summary>
     public static string Question { get; } = ReviewQuestion.From(Rubric);
 
-    /// <summary>The rubric's hash, the one the judge's grades carry and its calibration measured.</summary>
-    public const string RubricHash = "161e5cebcc15";
+    /// <summary>
+    /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF).
+    /// </summary>
+    public const string RubricHash = "438a8deb91f4";
 }
