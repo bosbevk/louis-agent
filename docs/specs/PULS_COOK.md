@@ -111,6 +111,8 @@ Each: what it is, why, how it fits, and what it costs. *Steps* are commits of ab
 
 ### Wave 1: with F48 (cheap, high value)
 
+Decided (Louis, 2026-10-30): built in F48, as F48.3 ([its steps](../plans/F48-cook-and-teacher.md)).
+
 | # | Idea | Why | How it fits | Cost |
 |---|---|---|---|---|
 | 1 | **Food-safety guard** | Users miss AI recipe flaws; listeriosis | C# rules on the recipe record: poultry → "74 °C in the thickest part, juices clear", mince → 71 °C, egg dishes → 71 °C, leftovers → reheat to 74 °C and fridge within 2 hours; ready-to-eat meats → a note for pregnancy and small children. The rule adds the line; a grader checks it. | 2 steps, no model cost |
