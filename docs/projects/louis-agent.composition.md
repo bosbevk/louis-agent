@@ -34,6 +34,7 @@ thin and never references an identity or a pack; and which agent a host runs is 
 | `Plugins.cs` | `FromEnvironment`, `FromSettings(identities, packs)`, and one `Create` switch for identities and one for packs |
 | `IdentityKind.cs` | The identities a host may load (`Puls`) |
 | `PackKind.cs` | The compiled packs a host may load or an identity may name (`Shops`) |
+| `EvalChecks.cs` | Every identity's and pack's own eval checks an eval file can name (today Puls's fixed rules, `PulsChecks.All`), which the eval runner gathers with the harness's general checks (F49.2); a judge that needs the harness never comes here |
 | `Messages/CompositionErrorMessage.cs` | The two refusals: an unknown identity, an unknown pack |
 | `louis-agent.composition.csproj` | References core, the Puls identity and the shops pack |
 
@@ -50,7 +51,7 @@ compose sets `IDENTITIES`.
 ## Extending it
 
 A new identity or pack is three edits here: a member in `IdentityKind` or `PackKind`, its arm in the `Create` switch,
-and a project reference. The steps are the registration step of [Build a pack](../guides/build-a-pack.md#6-register-it-in-the-composition-root)
+and a project reference; and a fourth when it brings its own eval checks: its list in `EvalChecks.All`. The steps are the registration step of [Build a pack](../guides/build-a-pack.md#6-register-it-in-the-composition-root)
 and of [Build an identity](../guides/build-an-identity.md#5-register-it-in-the-composition-root). Keep the names one word: the
 setting is matched to the enum member with the case ignored, so `price-rules` would not match `PriceRules`.
 
@@ -60,7 +61,8 @@ setting is matched to the enum member with the case ignored, so `price-rules` wo
 one, unset loads none, an unknown name is refused naming the supported ones, `PACKS=shops` works without an identity,
 `config/.env` is read before the settings) and `PackConvertibilityTests`, which builds every `PackKind` and checks
 each tool against the MCP SDK's shapes ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)): plain data in, text
-out, a `CancellationToken` when it waits, an MCP-safe name, and no identity named in a description.
+out, a `CancellationToken` when it waits, an MCP-safe name, and no identity named in a description. `EvalChecksTests`
+holds the eval checks' list to Puls's.
 
 ## Limits and plans
 

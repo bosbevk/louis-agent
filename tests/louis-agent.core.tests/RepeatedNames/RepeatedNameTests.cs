@@ -28,13 +28,13 @@ public class RepeatedNameTests
         "louis-agent.core/Agent/Toolsets/CoreToolset.cs",
         "louis-agent.core/Skills/Languages/ScriptLanguage.cs",
         "packs/louis-agent.pack.shops/ShopsToolset.cs",
-        "evals/louis-agent.evals.puls/Shared/PulsToolset.cs",
+        "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsToolset.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
         "src/louis-agent.web.shared/Api/AskedToolset.cs",
         "src/louis-agent.web.shared/Api/ScriptLanguage.cs",
-        "evals/louis-agent.evals.puls/Evals/Cook/CookMode.cs",
-        "evals/louis-agent.evals.puls/Shared/PulsEvalName.cs",
-        "evals/louis-agent.evals.puls/Shared/PulsEvalRole.cs",
+        "identities/louis-agent.identity.puls/Evals/Checks/Cook/CookMode.cs",
+        "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsEvalName.cs",
+        "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsEvalRole.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubMode.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubRole.cs",
         "identities/louis-agent.identity.puls/PulsRole.cs",
@@ -56,7 +56,7 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly (string File, string Class)[] IdsFiles =
     [
-        ("tests/louis-agent.evals.puls.tests/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
+        ("tests/louis-agent.identity.puls.tests/Evals/Checks/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
     ];
 
     /// <summary>

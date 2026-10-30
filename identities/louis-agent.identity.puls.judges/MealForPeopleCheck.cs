@@ -8,10 +8,10 @@ using LouisAgent.Evals.Grading.Models;
 using LouisAgent.Evals.Grading.Models.Rubrics;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading;
-using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Identities.Puls.Evals.Checks.Cook.Expectations;
+using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
+using LouisAgent.Identities.Puls.Evals.Checks.Messages;
 
 namespace LouisAgent.Identities.Puls.Judges;
 

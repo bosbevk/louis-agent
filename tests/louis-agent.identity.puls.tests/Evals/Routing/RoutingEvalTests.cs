@@ -8,6 +8,7 @@ using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Routing;
 
@@ -87,16 +88,20 @@ public class RoutingEvalTests
     }
 
     /// <summary>
-    /// Puls asks first about a meal that doesn't say where they'll shop, and never hands it on; so a question that
-    /// should reach the cook names its shop. (Its people, in words, are read by the cook's <c>Servings</c>, which
-    /// moves beside the identity in step 7, and this test with it.)
+    /// Puls asks first about a meal that doesn't say for how many or where they'll shop, and never hands it on; so a
+    /// question that should reach the cook names its people (read as the cook's checks read them, in words too) and its
+    /// shop.
     /// </summary>
     [Test]
-    public void EveryQuestionForTheCook_NamesItsShop_ElsePulsWouldAskFirst()
+    public void EveryQuestionForTheCook_NamesItsPeopleAndItsShop_ElsePulsWouldAskFirst()
     {
         foreach (var scenario in Load().Scenarios.Where(scenario => RouteOf(scenario) is not null))
-            Assert.That(scenario.Input.Messages[0],
-                Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"), scenario.Id);
+        {
+            var first = scenario.Input.Messages[0];
+            Assert.That(Servings.Of(first), Is.Not.Empty, $"{scenario.Id}: the people");
+            Assert.That(first, Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"),
+                $"{scenario.Id}: the shop");
+        }
     }
 
     /// <summary>

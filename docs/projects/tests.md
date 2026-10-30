@@ -34,7 +34,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `RepeatedNames/` | The ratchets of ADR 0043: a wire name written as a string outside its enum (`RepeatedNameTests`, with `Scanning/`: a C# lexer, the scan, the compiled-code reader), and `.Wire()` as the one way out (`WireTextTests`: no direct `SettingChoice.Wire`, no case-folded `ToString()`, no `ToString()` of an enum in the compiled code). Five exemptions, each with its reason, narrowed rather than lengthened (F18 step 7.5) |
 | `louis-agent.testing`'s samples | `SampleToolset`, `SampleMode`, `SampleEval`, `SampleRole`, `SampleIdentity`, `SampleScenario`: neutral names (with `Fill` for a test's JSON) for a test that only stores, shows or parses a name; a test that needs the real one uses its owner's enum member |
 | `Outside` (louis-agent.testing) | How an integration test asks for the outside: `Tool` skips a missing tool locally and fails it where `INTEGRATION_REQUIRED` is set (CI), `Stack` always skips a missing Puls-stack address (F18 step 7.6.2) |
-| `PulsTaskIds`, `PulsCookScenarioIds` (evals.puls.tests) | The routing tasks' and the cook scenarios' ids as test constants, because an id is data and not an enum (ADR 0043); `PulsIdsTests` holds each to its dataset, and `RepeatedNameTests` lists the files (`IdsFiles`) and skips only that class (F18 step 7.5.4f) |
+| `PulsCookScenarioIds` (identity.puls.tests, `Evals/Checks/`) | The cook scenarios' ids as test constants, because an id is data and not an enum (ADR 0043); `PulsIdsTests` holds each to its dataset, and `RepeatedNameTests` lists the files (`IdsFiles`) and skips only that class (F18 step 7.5.4f) |
 | `Tools/{Toolset}/` | Every toolset: workspace boundary and secret files, git, dotnet, Python, PowerShell, bash, web search and fetch, Paymo, DevOps, agent-built tools |
 | `Usage/` | Scopes and their totals, the ledger file, reports, the usage text and sessions, `CacheGaps` |
 | `ArchitectureTests.cs` | The layout rules on core's source: namespace = folder, one type per file, dependencies one way |
@@ -67,7 +67,9 @@ an `AgentEngineFactory` with a client that throws if called.
 ## louis-agent.identity.puls.tests, louis-agent.pack.shops.tests, louis-agent.composition.tests
 
 CL15 cut the engine into identities and packs, and each got its tests beside it: the identity's prove its prompts are
-its own and read through `SkillFileSource` (`PulsPromptsTests`, the Puls golden `PulsSessionSnapshot.json`); the pack's
+its own and read through `SkillFileSource` (`PulsPromptsTests`, the Puls golden `PulsSessionSnapshot.json`), and,
+since F49.2, its evals and their checks (`Evals/Routing/`, and `Evals/Checks/` with each check on hand-cut answers,
+the cook's dataset, ids and conformance; the judge's tests are in `louis-agent.identity.puls.judges.tests`); the pack's
 are the shop tests that left core, with their fixtures and their own golden (`ShopToolMessageSnapshot.json`); the
 composition root's prove `IDENTITIES` and `PACKS` pick (`PluginsTests`) and that every pack stays convertible to an
 MCP server (`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, a test-only package). Each
@@ -116,8 +118,6 @@ path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
   with `Z`, and a person's line or an unknown event reads as none.
 - **`louis-agent.evals.runner.tests`**: the arguments, the catalogue, the stub eval's run against its golden, the
   conformance of every eval of every set, the data files copied beside the assembly.
-- **`louis-agent.evals.puls.tests`**: each of Puls's fixed rules on hand-cut answers, the datasets' versions and
-  hashes, the scenario ids as test constants, and the cook's conformance against its references.
 - **`louis-agent.identity.puls.judges.tests`**: Puls's judge `meal-for-people` on a scripted client, the prompt it
   sends against its golden, its rubric's hash, its entry and its list.
 - **`louis-agent.evals.template.tests`**: the template project's layout and its empty members.
@@ -146,4 +146,4 @@ doc in [docs/features/](../features/README.md) names the tests each step adds.
 [Tests guide](../../tests/CLAUDE.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.evals.puls](louis-agent.evals.puls.md)
+[Projects](README.md) · Previous: [louis-agent.evals.runner](louis-agent.evals.runner.md)

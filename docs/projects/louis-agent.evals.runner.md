@@ -1,8 +1,8 @@
 # louis-agent.evals.runner — design
 
 > **Kind:** console app (`net10.0`) · **Path:** `evals/louis-agent.evals.runner/` · **References:**
-> louis-agent.evals, louis-agent.evals.puls, louis-agent.composition (the identities' and packs' eval folders reach
-> the runner through it, ADR 0027), louis-agent.identity.puls.judges (Puls's judge, which needs the harness, so no host
+> louis-agent.evals, louis-agent.composition (the identities' and packs' eval folders and their checks' lists,
+> `EvalChecks`, reach the runner through it, ADR 0027), louis-agent.identity.puls.judges (Puls's judge, which needs the harness, so no host
 > may reach it through the composition) · **Used by:** louis-agent.api (starts it as a child process; published to
 > `/app/evals` in the API's images)
 
@@ -72,7 +72,7 @@ against its golden, the conformance of every eval folder, the data files copied 
 ## Related docs
 
 [Run the evals](../guides/run-the-evals.md) · [Add an eval set](../guides/add-an-eval-set.md) ·
-[louis-agent.evals](louis-agent.evals.md) · [louis-agent.evals.puls](louis-agent.evals.puls.md)
+[louis-agent.evals](louis-agent.evals.md) · [louis-agent.identity.puls](louis-agent.identity.puls.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.evals.protocol](louis-agent.evals.protocol.md) · Next: [louis-agent.evals.puls](louis-agent.evals.puls.md)
+[Projects](README.md) · Previous: [louis-agent.evals.protocol](louis-agent.evals.protocol.md) · Next: [tests](tests.md)

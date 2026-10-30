@@ -247,6 +247,25 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
+    /// Puls's identity, which every host loads, leans only on the engine and the check contract its own checks
+    /// implement: never the harness that runs them, which its judges' project references instead.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+    [Test]
+    public void TheIdentity_ReferencesOnlyTheEngineAndTheCheckContract()
+    {
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "identities", "louis-agent.identity.puls",
+            "louis-agent.identity.puls.csproj"));
+
+        // By file name, so the test reads the same on Linux, where a backslash isn't a folder separator.
+        var references = ProjectReference().Matches(csproj)
+            .Select(m => Path.GetFileName(m.Groups[1].Value.Replace('\\', '/')));
+
+        Assert.That(references,
+            Is.EquivalentTo(new[] { "louis-agent.core.csproj", "louis-agent.evals.checks.csproj" }));
+    }
+
+    /// <summary>
     /// Someone reading core never meets a product, a shop or a country, not even in a comment or an example: those
     /// live in an identity or a pack, and core's examples use made-up names.
     /// </summary>
@@ -301,8 +320,10 @@ public partial class ArchitectureTests
             .Where(include => PackOrIdentityPath().IsMatch(include))
             .ToList();
 
-    // What the model reads from core, and may not name: a product (puls), its country, or its Afrikaans briefing
-    // labels. The known pieces, each "file: what"; a new one fails, a stale entry fails too.
+    /// <summary>
+    /// The product words still in what the model reads from core, each "file: what": a new one fails, and so does one
+    /// that's gone, so the list only ever shrinks.
+    /// </summary>
     private static readonly HashSet<string> PendingProductText =
     [
         // CL15 step 3 moved Puls's files to its identity, split its protocol out of the shared guides, and took the
@@ -310,6 +331,9 @@ public partial class ArchitectureTests
         // shops, whose area text named Puls, to its pack. Empty since: the cut held.
     ];
 
+    /// <summary>
+    /// What core's model-visible text may not name: the product, its country, or its Afrikaans briefing labels.
+    /// </summary>
     private static readonly (string Label, Regex Pattern)[] ProductWords =
     [
         ("Puls", new Regex(@"\bpuls\b", RegexOptions.IgnoreCase)),

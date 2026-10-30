@@ -1,6 +1,6 @@
 using LouisAgent.Evals.Grading.Common;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading;
 using LouisAgent.Evals.Runner.Catalog;
+using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.Identities.Puls.Judges;
 
 namespace LouisAgent.Evals.Runner.Tests.Catalog;

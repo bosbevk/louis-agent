@@ -2,16 +2,16 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Datasets.Scenarios;
-using LouisAgent.Evals.Puls.Evals.Cook;
-using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Identities.Puls.Evals.Checks.Cook;
+using LouisAgent.Identities.Puls.Evals.Checks.Shared;
 using LouisAgent.SessionStream;
 
 namespace LouisAgent.Identities.Puls.Judges.Tests;
 
 /// <summary>
 /// The cook's trials as the judge's tests need them: a scenario's expected keys and its answers, built from canned
-/// events. A cut of the Puls evals' own helper, which lives in their tests project.
+/// events. A cut of the Puls checks' own helper, which lives in the identity's tests project.
 /// </summary>
 internal static class JudgeTrials
 {

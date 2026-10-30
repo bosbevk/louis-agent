@@ -1,8 +1,8 @@
 # louis-agent.evals — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `evals/louis-agent.evals/` · **References:** louis-agent.core,
-> louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner, every eval set
-> (`louis-agent.evals.puls`, `louis-agent.evals.template`)
+> louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner,
+> louis-agent.identity.puls.judges, louis-agent.evals.template
 
 ## Purpose
 

@@ -1,7 +1,8 @@
 # louis-agent.identity.puls — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `identities/louis-agent.identity.puls/` · **References:**
-> louis-agent.core, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
+> louis-agent.core, louis-agent.evals.checks (the check contract its eval checks implement),
+> Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
 > sets it) · **Names:** the `shops` pack
 
 ## Purpose
@@ -28,6 +29,13 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
   `puls/voice-en`, `puls-cook` and `puls-minion-web-price-lookup`, the ones that passed their check
   (F29). The other specialists are written but off.
+- **Its evals and their checks.** Puls's two evals, `puls-routing` and `puls-cook`, are folders of files under
+  `Evals/` (F49.2), and the cook's own fixed rules sit beside them in `Evals/Checks/`: no failed turn, within the
+  budget, estimates at the shop that serves the town, no price column for a shop the cook can't read, an image from the
+  recipe, and serves as asked. Each has a nested `Entry` and is listed in `PulsChecks.All`, which reaches the runner
+  through the composition's `EvalChecks`, so the cook's file can name them. They implement the check contract only;
+  the cook's model judge needs the harness, so it lives apart in
+  [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
 
 ## Design notes
 
@@ -71,12 +79,15 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `Prompts/agent/puls/voice-af.md`, `voice-en.md` | The voice in each language (*Puls - Stem*, *Puls - Voice*): who Puls is and how it talks; the two have the same sections |
 | `Prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one, what isn't available yet; no mode of its own |
 | `Evals/Cook/` | The cook's eval as a folder of files (F49.2): `eval.json` (its two modes and nine checks: the cook's own from `PulsChecks.All`, `routed-to`, the cook's judge `meal-for-people` and a person's review of it), `manual.md`, `Rubrics/meal-for-people.md` (the judge's calibrated rubric), `Dataset/` with the 36 labels, and `Transcripts/` |
-| `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition. Files only: the identity references no harness |
+| `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition |
+| `Evals/Checks/Cook/` | The cook's fixed rules (`Grading/`, with `PulsChecks.All`), the scenario's expectations (`Expectations/`), the scoring of prices and servings (`Scoring/`), and `CookMode` |
+| `Evals/Checks/Shared/` | Reading a turn (`TurnView`, `ToolHosts`), the shops and links, and the names the checks use as enums of their own (`PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice`; ADR 0043) |
+| `Evals/Checks/Messages/` | The checks' reasons (`GradeMessage`, `ExpectationMessage`; ADR 0009) |
 | `Prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |
 | `Prompts/specialists/puls-researcher.md`, `puls-reader.md`, `puls-analyst.md`, `puls-historian.md` | The web researcher, file reader, numbers and history specialists (written, off until each passes a check) |
 | `Prompts/minions/puls-minion.md` | What every Puls minion is: one task, one tool, a short answer in its role's fields |
 | `Prompts/minions/puls-minion-web-price-lookup.md` | One ingredient's price at each named shop, with `WebSearch` (F30); runs only where the instance sets `MINION_LLMS` |
-| `louis-agent.identity.puls.csproj` | References core only; the two embedding lines (`GenerateEmbeddedFilesManifest`, the `Prompts\**\*.md` glob) |
+| `louis-agent.identity.puls.csproj` | References core and the check contract, never the harness (`ArchitectureTests` holds it); the two embedding lines (`GenerateEmbeddedFilesManifest`, the `Prompts\**\*.md` glob) and the item that copies `Evals/`'s files |
 
 ## Configuration
 
@@ -101,13 +112,20 @@ routing, the languages with the same sections, the cook's header) and `PulsSessi
 `PulsSessionSnapshot.json`, the golden of exactly what the model is sent in Puls's chat and in its cook. `PulsPrompts`
 registers the identity's and the pack's prompts first, as a host does. Puls's behaviour is measured by its evals:
 the routing eval beside the identity (`Evals/Routing/RoutingEvalTests`: its modes, with the baseline equal to Puls's
-toolsets from the composition minus the delegating ones; its dataset's shape; its references and known-bads conform;
-its manual), and the cook in [evals](louis-agent.evals.puls.md) until it moves (F49.2 step 8). The test project
-references the harness and the composition for these; the identity doesn't.
+toolsets from the composition minus the delegating ones; its dataset's shape, each question for the cook naming its
+people and its shop; its references and known-bads conform; its manual), and the cook and its checks in
+`Evals/Checks/` (each check on hand-cut answers, a turn the infrastructure broke left Unknown by every check, the
+cook's dataset with its versions, hashes and every expected key read, the ids as test constants, the cook's
+references and known-bads). The test project references the harness, the composition and the judges for these; the
+identity doesn't.
 
 ## Limits and plans
 
 - Only the cook has passed its check; each other specialist is turned on after its own eval.
+- The first v2 baseline (2026-10-29): `puls-cook` 23 of 24 in its cook mode, 6 of 24 when Puls answers itself;
+  `puls-routing` 72 of 72; the local judge agrees 31 of 36 with a blind labeller, below the 90% bar
+  ([louis-agent.evals](louis-agent.evals.md#design-notes)). The held-out scenarios still have their older, hand-cut
+  references.
 - Recipes come from the web today → F35 adds the `recipes` pack; CL16 moves the cook into a `cooking` pack; the area
   guide moves here with the Places pack ([TODO](../../TODO.md), *Puls*).
 - Louis's corrections to the Afrikaans, and the eleven official languages, measured → [TODO](../../TODO.md).

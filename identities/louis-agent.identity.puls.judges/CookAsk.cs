@@ -1,6 +1,6 @@
 using System.Globalization;
-using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
 using LouisAgent.Evals.Trials;
+using LouisAgent.Identities.Puls.Evals.Checks.Cook.Expectations;
 using Microsoft.Extensions.AI.Evaluation;
 
 namespace LouisAgent.Identities.Puls.Judges;
