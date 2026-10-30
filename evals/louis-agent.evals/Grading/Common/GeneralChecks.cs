@@ -22,6 +22,8 @@ public static class GeneralChecks
     public static IReadOnlyList<ICheckType> All { get; } =
     [
         new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry(), new RoutedToCheck.Entry(),
-        new ContainsCheck.Entry(), new ToolUsedCheck.Entry(), new JudgeCheck.Entry(), new HumanReviewCheck.Entry()
+        new ContainsCheck.Entry(), new NotContainsCheck.Entry(), new StartsWithCheck.Entry(),
+        new LengthUnderCheck.Entry(), new MentionsExpectedCheck.Entry(), new ToolUsedCheck.Entry(),
+        new JudgeCheck.Entry(), new HumanReviewCheck.Entry()
     ];
 }

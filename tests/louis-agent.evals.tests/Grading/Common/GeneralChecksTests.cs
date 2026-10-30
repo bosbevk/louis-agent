@@ -28,8 +28,10 @@ public class GeneralChecksTests
             {
                 ("no-error", CheckKind.FixedRule), ("within-time", CheckKind.FixedRule),
                 ("cost-under", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
-                ("contains", CheckKind.FixedRule), ("tool-used", CheckKind.FixedRule), ("judge", CheckKind.Model),
-                ("human", CheckKind.Human)
+                ("contains", CheckKind.FixedRule), ("not-contains", CheckKind.FixedRule),
+                ("starts-with", CheckKind.FixedRule), ("length-under", CheckKind.FixedRule),
+                ("mentions-expected", CheckKind.FixedRule), ("tool-used", CheckKind.FixedRule),
+                ("judge", CheckKind.Model), ("human", CheckKind.Human)
             }));
     }
 

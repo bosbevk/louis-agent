@@ -61,6 +61,27 @@ public enum CommonGradeMessage
     [Description("the answer contains none of the {Count} texts")]
     ContainsNone,
 
+    [Description("the answer contains '{Text}', which it mustn't")]
+    ContainsForbidden,
+
+    [Description("the answer starts with '{Text}'")]
+    StartsWithPass,
+
+    [Description("the answer doesn't start with '{Text}'")]
+    StartsOtherwise,
+
+    [Description("the answer is {Length} characters, under {Limit}")]
+    LengthUnderPass,
+
+    [Description("the answer is {Length} characters, not under {Limit}")]
+    LengthOver,
+
+    [Description("the answer mentions '{Value}'")]
+    MentionsPass,
+
+    [Description("the answer doesn't mention '{Value}'")]
+    MentionsMissing,
+
     [Description("{Tool} was called in turn {Turn}")]
     ToolUsed,
 
