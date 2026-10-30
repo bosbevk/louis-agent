@@ -1,35 +1,21 @@
 using LouisAgent.Core.Messages;
-using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Runner.Messages;
 
 namespace LouisAgent.Evals.Runner.Catalog;
 
 /// <summary>
-/// Every eval the runner can run: the chosen sets' evals in C#, the evals that are folders of files, then the stub
-/// (always). Each is checked when the catalogue is built, and a refusal stops the start: a name twice, no checks, or
-/// no required fixed-rule check (Louis, 2026-10-20: no eval runs without a check that needs no model).
+/// Every eval the runner can run: the chosen evals, each a folder of files, then the stub (always). Each is checked
+/// when the catalogue is built, and a refusal stops the start: a name twice, no checks, or no required fixed-rule
+/// check (Louis, 2026-10-20: no eval runs without a check that needs no model).
 /// </summary>
 public sealed class EvalCatalog
 {
-    /// <summary>
-    /// Each eval with whose it is: a set says it for its evals, a file for its own; the stub belongs to none.
-    /// </summary>
-    private readonly IReadOnlyList<(IEval Eval, string? Identity)> _entries;
-
-    /// <summary>The evals, checked, in the catalogue's order.</summary>
+    /// <summary>The evals, checked, in the catalogue's order; each says whose it is, the stub nobody's.</summary>
     private readonly IReadOnlyList<IEval> _evals;
 
-    /// <summary>
-    /// Gathers the sets' evals, the evals in files and the stub, and refuses the lot if any of them can't be trusted.
-    /// </summary>
-    public EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub, IEnumerable<FileEval>? files = null)
-    {
-        _entries = sets.SelectMany(set => set.Evals.Select(eval => (eval, (string?)set.Identity)))
-            .Concat((files ?? []).Select(file => ((IEval)file, (string?)file.Identity)))
-            .Append((stub, null)).ToList();
-        _evals = Check(_entries.Select(entry => entry.Eval).ToList());
-    }
+    /// <summary>Gathers the evals and the stub, and refuses the lot if any of them can't be trusted.</summary>
+    public EvalCatalog(IEnumerable<IEval> evals, IEval stub) => _evals = Check([.. evals, stub]);
 
     /// <summary>Every eval, in the catalogue's order.</summary>
     public IReadOnlyList<IEval> Evals => _evals;
@@ -51,14 +37,15 @@ public sealed class EvalCatalog
     /// One line per eval, in the catalogue's order: what the API's catalogue reads, with what the portal shows
     /// before an eval ever ran.
     /// </summary>
-    public IReadOnlyList<ListedEval> Listing() => _entries.Select(entry => Listed(entry.Eval, entry.Identity)).ToList();
+    public IReadOnlyList<ListedEval> Listing() => [.. _evals.Select(Listed)];
 
     /// <summary>
-    /// An eval's line: its dataset, its scenarios' categories once each in the order they first come, and its checks.
+    /// An eval's line: whose it is, its dataset, its scenarios' categories once each in the order they first come, and
+    /// its checks.
     /// </summary>
-    private static ListedEval Listed(IEval eval, string? identity) => new(
+    private static ListedEval Listed(IEval eval) => new(
         eval.Name,
-        identity,
+        eval.Identity,
         eval.Version,
         eval.Proves,
         eval.Manual,

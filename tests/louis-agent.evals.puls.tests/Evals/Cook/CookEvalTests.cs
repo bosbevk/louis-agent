@@ -5,6 +5,7 @@ using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Puls.Evals.Cook;
 using LouisAgent.Evals.Puls.Shared;
+using LouisAgent.Identities.Puls;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 
 namespace LouisAgent.Evals.Puls.Tests.Evals.Cook;
@@ -23,7 +24,7 @@ public class CookEvalTests
         var eval = CookFile.Eval;
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version),
-            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsEvalIdentity.Puls.Wire(), 10)));
+            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 10)));
         Assert.That(eval.Proves, Does.StartWith("Puls routes a meal to its cook"));
         Assert.That(eval.Manual, Is.EqualTo($"{CookFile.Source}/manual.md"));
     }

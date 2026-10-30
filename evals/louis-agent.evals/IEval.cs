@@ -12,13 +12,19 @@ namespace LouisAgent.Evals;
 /// modes it runs in, and how its checks judge a trial.
 /// </summary>
 /// <remarks>
-/// An eval is a folder of files (<c>Files/FileEval</c>, F49.2) or, until each moves, a C# class; the runner runs both
-/// through this one contract.
+/// An eval is a folder of files (<c>Files/FileEval</c>, F49.2); the stub and the template's example are the C# ones
+/// left. The runner runs both through this one contract.
 /// </remarks>
 public interface IEval
 {
     /// <summary>The eval's name, as the runner's verb names it ("cook").</summary>
     string Name { get; }
+
+    /// <summary>
+    /// The identity the eval proves, as its file names it (<c>puls</c>); null for one that proves none, such as the
+    /// stub. <c>EVALS=</c> chooses evals by it.
+    /// </summary>
+    string? Identity => null;
 
     /// <summary>Bumped by any change to a scenario, a mode or a check.</summary>
     int Version { get; }

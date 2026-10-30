@@ -14,21 +14,20 @@ using LouisAgent.Evals.Runner.Evals.Stub;
 namespace LouisAgent.Evals.Runner.Tests.Conformance;
 
 /// <summary>
-/// The conformance test: one test per eval the runner can run, of every set and every folder it finds. An eval's
-/// references are the files beside it, in <c>Evals/{Folder}/Transcripts</c>; the fake set's are here, beside this test.
+/// The conformance test: one test per eval the runner can run, of every folder it finds. An eval's references are the
+/// files beside it, in its folder's <c>Transcripts</c>; the fake eval's are here, beside this test.
 /// </summary>
 public class EvalConformanceTests
 {
     /// <summary>
-    /// Every eval the runner knows: every set's, every eval folder copied beside these tests, and the stub, so a new
-    /// set or folder is checked with no edit here.
+    /// Every eval the runner knows: every eval folder copied beside these tests, the fake and the stub, so a new
+    /// folder is checked with no edit here.
     /// </summary>
     private static IEnumerable<TestCaseData> EveryEval()
     {
-        var sets = Enum.GetValues<EvalSetKind>().Select(EvalSets.Create).Append(new FakeSet());
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
             .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source));
-        var catalog = new EvalCatalog(sets.ToList(), new StubEval(), files);
+        var catalog = new EvalCatalog([.. files, new FakeEval()], new StubEval());
         foreach (var eval in catalog.Evals)
             yield return new TestCaseData(eval).SetName(eval.Name);
     }
@@ -65,21 +64,14 @@ public class EvalConformanceTests
         _ => EvalFiles.TranscriptsOf(eval)
     };
 
-    /// <summary>A second set, of one eval, to test the conformance check on a set that isn't Puls's.</summary>
-    private sealed class FakeSet : IEvalSet
-    {
-        public string Identity => "fake";
-        public IReadOnlyList<IEval> Evals { get; } = [new FakeEval()];
-    }
-
     /// <summary>
-    /// A second set's eval, with the general no-error check it would use; its references are in Transcripts/fake.
+    /// An eval that isn't Puls's, with the general no-error check it would use; its references are in Transcripts/fake.
     /// </summary>
     private sealed class FakeEval : IEval
     {
         public string Name => "fake";
         public int Version => 1;
-        public string Proves => "A fake eval, to test the conformance check on a set that isn't Puls's.";
+        public string Proves => "A fake eval, to test the conformance check on an eval that isn't Puls's.";
 
         /// <summary>Its one mode, the stub's delegating one.</summary>
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,

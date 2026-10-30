@@ -12,22 +12,21 @@ identity gets a project of its own ([ADR 0029](../adr/0029-simulations-in-csharp
 ## How it works
 
 - **No eval left, only the cook's checks.** `puls-routing` and `puls-cook` are folders of files beside the identity
-  since F49.2 steps 6 and 8b ([louis-agent.identity.puls](louis-agent.identity.puls.md)). `PulsEvalSet` is empty
-  for one step, so `EVALS=puls` still reads, and goes with the runner's sets in step 8c. What's left are the cook's
-  checks and the rules they read; step 9 moves them beside the identity and deletes this project.
+  since F49.2 steps 6 and 8b ([louis-agent.identity.puls](louis-agent.identity.puls.md)), and `EVALS=puls` picks them
+  by the identity their files name (step 8c deleted the sets). What's left are the cook's checks and the rules they
+  read; step 9 moves them beside the identity and deletes this project.
 - **The cook's checks** (`Evals/Cook/Grading/`): no failed turn, within the budget, estimates at the shop that serves
   the town, no price column for a shop the cook can't read, an image from the recipe, serves as asked, and the model
   judge `meal-for-people` (its rubric is a file beside the cook's `eval.json`). Each carries a nested `Entry` and is
   listed in `PulsChecks.All`, which the runner gathers into its check catalogue, so the cook's file names them.
 - **The rules they read**: the scenario's expectations (`Evals/Cook/Expectations/`), the scoring of prices and
   servings (`Evals/Cook/Scoring/`), and in `Shared/` the turn reading, the shops and links, and the names as enums
-  (ADR 0043). With no eval left, `EvalLayoutTests` waits for this project until step 9.
+  (ADR 0043). With no eval left, `EvalLayoutTests` no longer looks at this project.
 
 ## Structure
 
 | Path | What's in it |
 |---|---|
-| `PulsEvalSet.cs` | The set the runner lists, empty until step 8c |
 | `Evals/Cook/` | The cook's checks (`Grading/`, `PulsChecks.All`), expectations, scoring, and `CookMode` |
 | `Shared/` | Turn reading, shops and links, `PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice` |
 | `Messages/` | The checks' reasons (`GradeMessage`, `ExpectationMessage`, ADR 0009) |
@@ -42,7 +41,8 @@ The steps are [Add an eval set](../guides/add-an-eval-set.md); running them is
 
 ## Tests
 
-`tests/louis-agent.evals.puls.tests`: each grader on hand-cut answers, the datasets (`PulsDatasetsTests`: versions,
+`tests/louis-agent.evals.puls.tests`: each grader on hand-cut answers, a turn the infrastructure broke left Unknown
+by every check (`InfrastructureFailureTests`), the datasets (`PulsDatasetsTests`: versions,
 hashes, every expected key read), the ids as test constants (`PulsTaskIds`, `PulsCookScenarioIds`), and the
 conformance of both evals against their references and known-bad transcripts.
 

@@ -9,17 +9,18 @@
 
 The command that runs an eval: `dotnet louis-agent.evals.runner.dll run {eval}`. It lists the evals it knows, runs
 one, re-scores a stored run, writes a label sheet and checks a judge. The API never references an eval project: it
-starts this runner and reads its stdout, so a new eval set is a reference here and nothing in the API
+starts this runner and reads its stdout, so a new eval is a folder of files and nothing in the API
 ([ADR 0022](../adr/0022-benchmarks-recorded-from-the-protocol.md)).
 
 ## How it works
 
-- **The catalogue.** `Catalog/EvalCatalog` lists every eval of every set named in `EvalSetKind`, then every eval that is
-  a folder of files, then the stub; `EVALS=` picks the sets by name and the folders by the identity their file names
-  (all when unset). It refuses a name twice and an eval with no fixed-rule check. `Catalog/EvalFolders` finds the
-  folders: every `eval.json` under `EvalFiles/` beside the runner, whose path below it is where the folder sits in the
-  repository (F49.2); the runner builds their checks from the check catalogue it gathers (`Catalog/RunnerChecks`: the general checks, then Puls's `PulsChecks.All`). `--list` prints one JSON line per
-  eval (what it proves, its modes, categories and graders), which the API's eval list reads.
+- **The catalogue.** Every eval is a folder of files (F49.2). `Catalog/EvalFolders` finds them: every `eval.json`
+  under `EvalFiles/` beside the runner, whose path below it is where the folder sits in the repository. The runner
+  builds their checks from the check catalogue it gathers (`Catalog/RunnerChecks`: the general checks, then Puls's
+  `PulsChecks.All`). `EVALS=` then keeps the evals of the identities it names (all when unset); a name no eval proves
+  is refused, naming the ones that do, so a typo runs nothing. `Catalog/EvalCatalog` lists the chosen evals, then the
+  stub, and refuses a name twice and an eval with no fixed-rule check. `--list` prints one JSON line per eval (whose
+  it is, what it proves, its categories and graders), which the API's eval list reads.
 - **The arguments.** `Arguments/CommandLine` parses `run {eval}` with `--repeat N` (1 to 5), `--split`, `--web`,
   `--replay {runId}` and `--rescore {runId}`, and the two judge commands, `--label-sheet` and `--calibrate`. A bad
   argument is refused before anything starts (`Refusal/`).
@@ -35,9 +36,9 @@ starts this runner and reads its stdout, so a new eval set is a reference here a
 
 | Folder | What's in it |
 |---|---|
-| `Arguments/` | `CommandLine`, the run request, the eval-set selection |
+| `Arguments/` | `CommandLine`, the run request |
 | `Calibration/` | The label sheet and the calibration commands |
-| `Catalog/` | `EvalCatalog`, `EvalSetKind`, `EvalSets`, the listing line |
+| `Catalog/` | `EvalCatalog`, `EvalFolders`, `RunnerChecks`, the listing line |
 | `Evals/Stub/` | The stub eval, its mode, role and toolset |
 | `Manuals/` | The stub's manual (`stub.md`) |
 | `Messages/`, `Refusal/` | The runner's texts and the refusal report |
@@ -46,21 +47,22 @@ starts this runner and reads its stdout, so a new eval set is a reference here a
 
 | Setting | What it does |
 |---|---|
-| `EVALS` | The eval sets the catalogue lists, and the identities whose eval folders it lists (`puls` today; the template project is never registered); unset: all |
+| `EVALS` | The identities whose evals the catalogue lists, by commas, case ignored (`puls` today); an unknown one is refused; unset: all |
 | `BENCHMARK_RUN` | The run's id, so the API can tie the lines to its run |
 | `AGENT_API`, `AGENT_API_KEY`, `EVAL_JUDGE_*` | Read by the harness ([louis-agent.evals](louis-agent.evals.md)) |
 | `EVAL_RUNNER` (the API's) | Where the API finds this runner; `/app/evals/louis-agent.evals.runner.dll` in the images |
 
 ## Extending it
 
-A new eval set is a project reference and one member of `EvalSetKind` with its arm in `EvalSets`; the steps are
-[Add an eval set](../guides/add-an-eval-set.md).
+A new eval is a folder of files beside its identity or pack, which reaches the runner through
+`louis-agent.composition`; nothing here changes. The guide is rewritten for folders in F49.2 step 10
+([Add an eval set](../guides/add-an-eval-set.md) until then).
 
 ## Tests
 
 `tests/louis-agent.evals.runner.tests`: the arguments (clamped repeats, an unknown name refused), the catalogue (no
-grader refused, each eval once), the stub's run against its golden, the conformance of every eval of every set, the
-data files copied beside the assembly. `StubCheckTests` (api integration) runs the real runner through the API.
+grader refused, each eval once), the folders found and chosen by `EVALS=` (`EvalFoldersTests`), the stub's run
+against its golden, the conformance of every eval folder, the data files copied beside the assembly. `StubCheckTests` (api integration) runs the real runner through the API.
 
 ## Limits and plans
 

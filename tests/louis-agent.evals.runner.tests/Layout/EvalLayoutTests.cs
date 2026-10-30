@@ -1,50 +1,34 @@
 using LouisAgent.Evals.Template.Evals.Example;
 using LouisAgent.Choices;
 using System.Text.RegularExpressions;
+using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Evals.Stub;
-using LouisAgent.Evals.Template;
 
 namespace LouisAgent.Evals.Runner.Tests.Layout;
 
 /// <summary>
-/// An eval project in C# is cut per eval (ADR 0010, 0034): one folder holds everything only that eval uses, with the
-/// same names every time, and what two evals or more use is in <c>Shared/</c> and only then. Adding, changing or
-/// deleting an eval touches one folder. A ratchet in the style of <c>SkillsLayoutTests</c>, read from the source
-/// tree, so a misplaced file fails here before anyone has to find it.
+/// The C# evals left, the stub and the template's example, are cut per eval (ADR 0010, 0034): one folder holds
+/// everything only that eval uses, with the same names every time, and what two evals or more use is in
+/// <c>Shared/</c> and only then. A ratchet in the style of <c>SkillsLayoutTests</c>, read from the source tree, so a
+/// misplaced file fails here before anyone has to find it.
 /// </summary>
 /// <remarks>
 /// <code>
-///   louis-agent.evals.{set}/   {Set}EvalSet.cs and the folders Evals/, Shared/, Messages/, Prompts/, Manuals/ only
-///     Evals/{Folder}/          {Folder}Eval.cs, {Folder}Setup.cs (optional), Grading/, Scoring/, Dataset/,
-///                              Transcripts/
-///     Shared/                  Grading/, Scoring/, Turns/ ... used by two evals or more
+///   louis-agent.evals.template/  its csproj and the folders Evals/, Shared/, Messages/, Prompts/, Manuals/ only
+///     Evals/{Folder}/            {Folder}Eval.cs, {Folder}Setup.cs (optional), Grading/, Scoring/, Dataset/,
+///                                Transcripts/
+///     Shared/                    Grading/, Scoring/, Turns/ ... used by two evals or more
 /// </code>
-/// An eval that is a folder of files (F49.2) is held by its own tests, not here.
+/// An eval that is a folder of files (F49.2) is held by its own tests, not here; step 10 makes the template one too.
 /// </remarks>
 public class EvalLayoutTests
 {
-    /// <summary>
-    /// A project that holds evals: the sets the runner knows, the template's, and the runner for the stub.
-    /// </summary>
-    public sealed record EvalProject(
-        string Name,
-        string Folder,
-        string RootNamespace,
-        bool IsSet,
-        IReadOnlyList<IEval> Evals,
-        Type? SetType);
+    /// <summary>The template's project, the one whose root is held to the rule.</summary>
+    private const string TemplateProject = "louis-agent.evals.template";
 
-    /// <summary>
-    /// The projects whose <c>Shared/</c> and <c>Evals/</c> folders are not held to the rules for now, each with why.
-    /// Puls's routing eval and its cook became folders of files in F49.2 steps 6 and 8b, leaving their checks and
-    /// helpers in <c>evals.puls</c>; step 9 moves them beside the identity, deletes the project, and this list empties.
-    /// </summary>
-    private static readonly IReadOnlyDictionary<string, string> SharedRuleWaits = new Dictionary<string, string>
-    {
-        ["louis-agent.evals.puls"] = "Puls's evals moved to files (F49.2 steps 6 and 8b); step 9 moves their checks " +
-                                     "beside the identity"
-    };
+    /// <summary>A project that holds C# evals: the runner for the stub, and the template.</summary>
+    public sealed record EvalProject(string Name, string Folder, string RootNamespace, IReadOnlyList<IEval> Evals);
 
     /// <summary>The repository's root, found above where the tests run.</summary>
     private static readonly string RepoRoot = FindRepoRoot();
@@ -60,27 +44,19 @@ public class EvalLayoutTests
         throw new InvalidOperationException("the solution's folder was not found above " + AppContext.BaseDirectory);
     }
 
-    /// <summary>Every project held to the layout: each set, the runner (for the stub) and the template.</summary>
+    /// <summary>Every project held to the layout: the runner (for the stub) and the template.</summary>
     private static IEnumerable<EvalProject> Projects()
     {
-        foreach (var set in Enum.GetValues<EvalSetKind>().Select(EvalSets.Create))
-            yield return ProjectOf(set.GetType().Assembly.GetName().Name!, set.GetType().Namespace!, isSet: true,
-                set.Evals, set.GetType());
-        var stub = new StubEval();
-        yield return ProjectOf(stub.GetType().Assembly.GetName().Name!, "LouisAgent.Evals.Runner", isSet: false, [stub],
-            null);
+        yield return ProjectOf(typeof(StubEval).Assembly.GetName().Name!, "LouisAgent.Evals.Runner", new StubEval());
 
-        // The template is never registered, so the runner doesn't know it: this project references it for this test
-        // alone, and it is held to the layout like any set, so a copy of it starts right and can't drift from the rule.
-        var template = new TemplateEvalSet();
-        yield return ProjectOf(template.GetType().Assembly.GetName().Name!, template.GetType().Namespace!, isSet: true,
-            template.Evals, template.GetType());
+        // The runner doesn't know the template: this project references it for this test alone, and it is held to the
+        // layout, so a copy of it starts right and can't drift from the rule.
+        yield return ProjectOf(TemplateProject, "LouisAgent.Evals.Template", new ExampleEval());
     }
 
-    /// <summary>A project under <c>evals/</c>, by its assembly's name.</summary>
-    private static EvalProject ProjectOf(string assembly, string rootNamespace, bool isSet, IReadOnlyList<IEval> evals,
-        Type? setType) =>
-        new(assembly, Path.Combine(RepoRoot, "evals", assembly), rootNamespace, isSet, evals, setType);
+    /// <summary>A project under <c>evals/</c>, by its assembly's name, with its one eval.</summary>
+    private static EvalProject ProjectOf(string assembly, string rootNamespace, IEval eval) =>
+        new(assembly, Path.Combine(RepoRoot, "evals", assembly), rootNamespace, [eval]);
 
     /// <summary>One test case per project, named for it.</summary>
     private static IEnumerable<TestCaseData> EachProject() =>
@@ -137,7 +113,7 @@ public class EvalLayoutTests
                 missing.Add($"{eval.Name}: Evals/{FolderOf(eval)}/Dataset/dataset.json is missing");
             // The template's one exception: git keeps no empty folder, and the conformance rule refuses a stray file
             // such as a README, so it has none yet.
-            if (project.Name != "louis-agent.evals.template" && !Directory.Exists(Path.Combine(root, "Transcripts")))
+            if (project.Name != TemplateProject && !Directory.Exists(Path.Combine(root, "Transcripts")))
                 missing.Add($"{eval.Name}: Evals/{FolderOf(eval)}/Transcripts/ is missing");
         }
 
@@ -174,21 +150,15 @@ public class EvalLayoutTests
     private static bool In(string? ns, string folder) =>
         ns == folder || (ns?.StartsWith(folder + ".", StringComparison.Ordinal) ?? false);
 
-    /// <summary>
-    /// Every file of <c>Shared/</c> is used by two evals or more, unless its project's rule waits
-    /// (<see cref="SharedRuleWaits"/>).
-    /// </summary>
+    /// <summary>Every file of <c>Shared/</c> is used by two evals or more.</summary>
     [TestCaseSource(nameof(EachProject))]
     public void EachFileOfShared_IsUsedByTwoEvalsOrMore(EvalProject project)
     {
-        // A project whose rule waits passes here; why it waits, and until when, is in the list.
-        if (SharedRuleWaits.ContainsKey(project.Name)) return;
-
         string shared = Path.Combine(project.Folder, "Shared");
         var evalFolders = Directory.Exists(Path.Combine(project.Folder, "Evals"))
             ? Directory.GetDirectories(Path.Combine(project.Folder, "Evals"))
             : [];
-        var texts = evalFolders.ToDictionary(f => Path.GetFileName(f)!,
+        var texts = evalFolders.ToDictionary(f => Path.GetFileName(f),
             f => string.Join(Environment.NewLine, SourceFiles(f).Select(File.ReadAllText)));
         var files = SourceFiles(shared)
             .ToDictionary(f => f, f => (Text: File.ReadAllText(f), Types: DeclaredTypes(f).ToList()));
@@ -243,18 +213,19 @@ public class EvalLayoutTests
     }
 
     /// <summary>
-    /// A set's root is the set class, the csproj, and <c>Evals/</c>, <c>Shared/</c>, <c>Messages/</c>,
-    /// <c>Prompts/</c> (a judge's prompt, ADR 0011) and <c>Manuals/</c>. The runner is not a set: its rule is only
+    /// The template's root is its csproj, the <c>dotnet new</c> config, and <c>Evals/</c>, <c>Shared/</c>,
+    /// <c>Messages/</c>, <c>Prompts/</c> (a judge's prompt, ADR 0011) and <c>Manuals/</c>. The runner's rule is only
     /// that the stub is under <c>Evals/</c>.
     /// </summary>
     [TestCaseSource(nameof(EachProject))]
-    public void TheProjectRoot_HoldsOnlyTheSetAndItsFolders(EvalProject project)
+    public void TheProjectRoot_HoldsOnlyTheProjectAndItsFolders(EvalProject project)
     {
-        if (!project.IsSet) return;
-        var allowedFiles = new[] { project.SetType!.Name + ".cs", project.Name + ".csproj" };
-        // The template alone also holds the `dotnet new` template's config (.template.config); a real set doesn't.
-        var allowedFolders = new[] { "Evals", "Shared", "Messages", "Prompts", "Manuals", "bin", "obj" }
-            .Concat(project.Name == "louis-agent.evals.template" ? new[] { ".template.config" } : []).ToArray();
+        if (project.Name != TemplateProject) return;
+        var allowedFiles = new[] { project.Name + ".csproj" };
+        var allowedFolders = new[]
+        {
+            "Evals", "Shared", "Messages", "Prompts", "Manuals", ".template.config", "bin", "obj"
+        };
         var stray = Directory.EnumerateFileSystemEntries(project.Folder)
             .Select(Path.GetFileName)
             .Where(name => Directory.Exists(Path.Combine(project.Folder, name!))
@@ -266,34 +237,29 @@ public class EvalLayoutTests
             string.Join("\n  ", stray));
     }
 
-    /// <summary>The template is never registered, so no run and no portal ever shows it.</summary>
+    /// <summary>
+    /// The runner's catalogue, built from the eval folders copied beside it, never holds the template's example, so no
+    /// run and no portal ever shows it.
+    /// </summary>
     [Test]
-    public void TheTemplate_IsNeverRegistered_SoNoRunAndNoPortalShowsIt()
+    public void TheTemplate_IsNeverInTheCatalogue_SoNoRunAndNoPortalShowsIt()
     {
-        Assert.That(Enum.GetNames<EvalSetKind>(), Does.Not.Contain("Template"),
-            "EvalSetKind doesn't list the template");
-        Assert.That(
-            new EvalCatalog(Enum.GetValues<EvalSetKind>().Select(EvalSets.Create).ToList(), new StubEval()).Evals
-                .Select(e => e.Name),
+        var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
+            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source));
+
+        Assert.That(new EvalCatalog(files, new StubEval()).Evals.Select(e => e.Name),
             Does.Not.Contain(TemplateEvalName.Example.Wire()));
     }
 
-    /// <summary>
-    /// A folder under <c>Evals/</c> is one eval's, listed by the set, unless its project's rule waits
-    /// (<see cref="SharedRuleWaits"/>: <c>evals.puls</c>'s <c>Evals/Cook/</c> holds only the cook's checks since F49.2
-    /// step 8b, until step 9 moves them).
-    /// </summary>
+    /// <summary>A folder under <c>Evals/</c> is one eval's.</summary>
     [TestCaseSource(nameof(EachProject))]
     public void EachFolderUnderEvals_IsAnEval(EvalProject project)
     {
-        // A project whose rule waits passes here; why it waits, and until when, is in the list.
-        if (SharedRuleWaits.ContainsKey(project.Name)) return;
-
         var folders = Directory.Exists(Path.Combine(project.Folder, "Evals"))
             ? Directory.GetDirectories(Path.Combine(project.Folder, "Evals")).Select(Path.GetFileName).ToList()
             : [];
         var stray = folders.Where(folder => project.Evals.All(eval => FolderOf(eval) != folder)).ToList();
         Assert.That(stray, Is.Empty,
-            "A folder under Evals/ is one eval's, listed by the set:\n  " + string.Join("\n  ", stray));
+            "A folder under Evals/ is one eval's:\n  " + string.Join("\n  ", stray));
     }
 }

@@ -7,7 +7,7 @@
 ## Purpose
 
 The eval harness (F18): the one place that knows how an eval runs, so an eval set only says what it asks and how it
-grades. It holds the contract an eval implements (`IEval`, `IEvalSet`), the datasets and their loader, the trials and
+grades. It holds the contract an eval implements (`IEval`), the datasets and their loader, the trials and
 their transcripts, the graders every identity can use, the runner loop, the conformance check, the label sheet and
 the judge's calibration. It names no identity and no product: Puls's evals live in their own project
 ([ADR 0029](../adr/0029-simulations-in-csharp.md)).
@@ -15,7 +15,8 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 ## How it works
 
 - **An eval is a C# class.** `IEval` names its modes (`EvalMode`: the toolsets and role a session opens with), its
-  dataset and its graders; `IEvalSet` groups an identity's evals for the runner's catalogue.
+  dataset and its graders, and the identity it proves, which `EVALS=` chooses by. Since F49.2, `Files/FileEval` is
+  the one that reads a folder of files; the stub and the template's example are the C# ones left.
 - **A dataset is a folder.** `Datasets/` loads `dataset.json` (name, version, hash, `changes`) and the scenario files
   under `scenarios/{dev,held-out}/`, in Inspect's Sample shape (`id`, `input`, `target`, `metadata`; step 7d). The
   loader is strict: an unknown field, a stale hash or an expected key no grader reads is refused with a message that
@@ -107,10 +108,10 @@ The runner's own settings (`EVALS`, `BENCHMARK_RUN`) are in [louis-agent.evals.r
 
 ## Extending it
 
-A new identity's evals are a new project with one `IEvalSet`, its evals, datasets and graders; the steps are
-[Add an eval set](../guides/add-an-eval-set.md). A check every identity could use goes in `Grading/Common/`,
+A new identity's evals are folders of files beside it; F49.2 step 10 rewrites
+[Add an eval set](../guides/add-an-eval-set.md) for them. A check every identity could use goes in `Grading/Common/`,
 with a nested `Entry` and a line in `GeneralChecks.All` when a file should be able to name it; one that knows an
-identity's rules stays in its set.
+identity's rules stays with that identity's checks.
 
 ## Tests
 

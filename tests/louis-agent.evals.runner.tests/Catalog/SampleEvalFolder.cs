@@ -9,13 +9,16 @@ namespace LouisAgent.Evals.Runner.Tests.Catalog;
 /// </summary>
 internal sealed class SampleEvalFolder : IDisposable
 {
-    /// <summary>The sample eval's file: one mode, and the general no-error check as its required fixed rule.</summary>
+    /// <summary>
+    /// The sample eval's file: one mode, and the general no-error check as its required fixed rule; its name and
+    /// identity are filled in.
+    /// </summary>
     private const string EvalFile =
         $$"""
           {
             "schema_version": 1,
-            "name": "{{SampleEval.Alpha}}",
-            "identity": "{{SampleIdentity.Alpha}}",
+            "name": "NAME",
+            "identity": "IDENTITY",
             "version": 1,
             "proves": "The agent answers.",
             "manual": "manual.md",
@@ -35,9 +38,12 @@ internal sealed class SampleEvalFolder : IDisposable
     public string Root { get; } = Path.Combine(Path.GetTempPath(), "eval-files-" + Guid.NewGuid().ToString("N"));
 
     /// <summary>Writes the sample eval at <paramref name="source"/>, a path from the repository root.</summary>
-    public SampleEvalFolder(string source)
+    public SampleEvalFolder(string source) => AddEval(source, SampleIdentity.Alpha, SampleEval.Alpha);
+
+    /// <summary>Writes a sample eval of this identity and name at <paramref name="source"/>.</summary>
+    public void AddEval(string source, string identity, string name)
     {
-        Write($"{source}/eval.json", EvalFile);
+        Write($"{source}/eval.json", EvalFile.Replace("IDENTITY", identity).Replace("NAME", name));
         Write($"{source}/manual.md", "# Sample\n");
         Write($"{source}/Dataset/scenarios/dev/hello.json", Scenario);
         var hash = DatasetHash.Of(Path.Combine(Root, source, "Dataset", "scenarios"));

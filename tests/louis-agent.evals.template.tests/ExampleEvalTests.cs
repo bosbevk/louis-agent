@@ -1,8 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
-using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
-using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Template.Evals.Example;
 using LouisAgent.Evals.Template.Messages;
@@ -28,17 +26,7 @@ public class ExampleEvalTests
         new EvalScenario("example", new EvalInput(null, "Etc/UTC", ["x"]), default, [], DatasetSplit.Dev),
         new Transcript([]));
 
-    /// <summary>The set lists its one eval, under the template's identity.</summary>
-    [Test]
-    public void TheSetListsItsOneEval()
-    {
-        var set = new TemplateEvalSet();
-
-        Assert.That(set.Identity, Is.EqualTo(TemplateIdentity.Template.Wire()));
-        Assert.That(set.Evals.Select(e => e.Name), Is.EqualTo(new[] { TemplateEvalName.Example.Wire() }));
-    }
-
-    /// <summary>The eval's name comes from the set's own enum, as the guide shows it.</summary>
+    /// <summary>The eval's name comes from the project's own enum, as the guide shows it.</summary>
     [Test]
     public void ItsNameIsAMemberOfTheSetsOwnEnum_UnderTheNameTheGuideShows() =>
         Assert.That(Enum.GetValues<TemplateEvalName>().Select(n => n.Wire()), Is.EqualTo(new[] { "template-example" }));

@@ -1,5 +1,4 @@
 using LouisAgent.Choices;
-using LouisAgent.Identities.Puls;
 using LouisAgent.Evals.Puls.Shared;
 using LouisAgent.Evals.Protocol.Kinds;
 using static LouisAgent.Evals.Puls.Tests.PulsTrials;
@@ -7,28 +6,11 @@ using static LouisAgent.Evals.Puls.Tests.PulsTrials;
 namespace LouisAgent.Evals.Puls.Tests;
 
 /// <summary>
-/// Puls's set is empty now, its evals folders of files beside the identity; the cook's checks leave a turn that failed
-/// for the infrastructure Unknown, so a flaky network can never count as the agent failing.
+/// The cook's checks leave a turn that failed for the infrastructure Unknown, so a flaky network can never count as
+/// the agent failing.
 /// </summary>
-public class PulsEvalSetTests
+public class InfrastructureFailureTests
 {
-    /// <summary>The set lists no eval: the routing and the cook are folders of files beside the identity.</summary>
-    [Test]
-    public void TheSetListsNoEval()
-    {
-        var set = new PulsEvalSet();
-
-        Assert.That(set.Identity, Is.EqualTo(PulsEvalIdentity.Puls.Wire()));
-        Assert.That(set.Evals, Is.Empty);
-    }
-
-    /// <summary>The set's own copy of the identity's name is the name the Puls identity goes by.</summary>
-    [Test]
-    public void TheSetsIdentity_IsTheNameThePulsIdentityGoesBy() =>
-        // ADR 0043: the set keeps its own copy of the name (it never references an identity); this project's tests
-        // see both and hold the copy to the original.
-        Assert.That(new PulsEvalSet().Identity, Is.EqualTo(new PulsIdentity().Name));
-
     /// <summary>
     /// Each of the cook's fixed checks leaves a turn the infrastructure broke Unknown, never a fail, even when the turn
     /// holds a whole, good answer.

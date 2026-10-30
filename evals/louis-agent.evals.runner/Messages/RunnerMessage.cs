@@ -8,8 +8,8 @@ namespace LouisAgent.Evals.Runner.Messages;
 /// </summary>
 public enum RunnerMessage
 {
-    [Description("Unknown EVALS value '{Name}'. The sets are {Supported}.")]
-    UnknownEvalSet,
+    [Description("No eval proves the identity '{Name}' that EVALS names. The identities with evals are {Supported}.")]
+    UnknownIdentity,
 
     [Description("No eval is named '{Name}'. The evals are {Supported}.")]
     UnknownEval,

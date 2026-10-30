@@ -17,14 +17,13 @@ try
 {
     var request = CommandLine.Parse(args);
 
-    // EVALS= chooses the C# sets by name and the evals in files by the identity they name; every eval folder copied
-    // beside the runner is found, its checks built from the catalogue the runner gathers.
-    var evals = Environment.GetEnvironmentVariable("EVALS");
-    var sets = EvalSetSelection.Parse(evals).Select(EvalSets.Create).ToList();
+    // Every eval folder copied beside the runner is found, its checks built from the catalogue the runner gathers;
+    // EVALS= then chooses them by the identity each one proves.
     var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
         .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source))
-        .Where(file => EvalFolders.Chosen(evals, file.Identity));
-    var catalog = new EvalCatalog(sets, new StubEval(), files);
+        .ToList();
+    var chosen = EvalFolders.Choose(files, Environment.GetEnvironmentVariable("EVALS"));
+    var catalog = new EvalCatalog(chosen, new StubEval());
 
     switch (request)
     {
