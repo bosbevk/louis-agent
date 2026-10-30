@@ -82,6 +82,7 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
 | `Api/` | The session clients and the session request the runner sends (with `replay`) |
 | `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
 | `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Samples/` (a scenario's types are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
+| `Files/` | An eval as a file (F49.2): `EvalFile` and its records, the shape of `eval.json`; `EvalFileReader`, which reads one strictly and refuses what it can't trust |
 | `Grading/` | The general checks (`Common/`, with `Answers/` and `Tools/`), the model and human checks, the outcomes (`ICheck`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
 | `Messages/` | The harness's texts (errors, logs, conformance, calibration); the grade reasons, `CommonGradeMessage`, are in [louis-agent.evals.checks](louis-agent.evals.checks.md) |
