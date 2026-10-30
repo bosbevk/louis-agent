@@ -56,8 +56,7 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 ## Extending it
 
 A new eval is a folder of files beside its identity or pack, which reaches the runner through
-`louis-agent.composition`; nothing here changes. The guide is rewritten for folders in F49.2 step 10
-([Add an eval set](../guides/add-an-eval-set.md) until then).
+`louis-agent.composition`; nothing here changes. The steps are [Add an eval](../guides/add-an-eval.md).
 
 ## Tests
 
@@ -71,7 +70,7 @@ against its golden, the conformance of every eval folder, the data files copied 
 
 ## Related docs
 
-[Run the evals](../guides/run-the-evals.md) · [Add an eval set](../guides/add-an-eval-set.md) ·
+[Run the evals](../guides/run-the-evals.md) · [Add an eval](../guides/add-an-eval.md) ·
 [louis-agent.evals](louis-agent.evals.md) · [louis-agent.identity.puls](louis-agent.identity.puls.md)
 
 ---

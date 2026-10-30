@@ -1,7 +1,7 @@
 # The template eval
 
 > **Reference.** What `template-example` checks and how to read its grades. Copy this folder to start an eval;
-> **Elsewhere:** the steps in [Add an eval](../../../docs/guides/add-an-eval-set.md).
+> **Elsewhere:** the steps in [Add an eval](../../../docs/guides/add-an-eval.md).
 
 Replace this page with your eval's manual: what it asks, what a pass means, and what to do when a check fails. The
 portal opens it from the eval's card.

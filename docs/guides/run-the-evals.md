@@ -2,7 +2,7 @@
 
 > **How-to.** Run an eval, from the admin portal or the command line; record its web once and replay it; pick the dev or
 > the held-out scenarios; and read what a run cost. **Elsewhere:** writing an eval and its dataset in
-> [Add an eval set](add-an-eval-set.md); the portal's own pages in [Change the Puls app](change-the-puls-app.md#change-the-admin-portal);
+> [Add an eval](add-an-eval.md); the portal's own pages in [Change the Puls app](change-the-puls-app.md#change-the-admin-portal);
 > the runner's start from the API in [Change the API](change-the-api.md#add-an-eval-to-the-portal); why evals are C# in
 > [ADR 0029](../adr/0029-simulations-in-csharp.md).
 
@@ -12,7 +12,7 @@ read the cost in the ledger afterwards, never from a grader. Listing the evals i
 ## From the command line
 
 ```bash
-EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --list     # free: the evals the runner knows
+EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --list     # free: Puls's evals (unset: every eval)
 BENCHMARK_RUN=cook-1 AGENT_API=http://127.0.0.1:5070/ \
   dotnet run --project evals/louis-agent.evals.runner -- run puls-cook --repeat 1 --web record
 ```
@@ -128,7 +128,7 @@ The check costs nothing on a local model (Ollama), and it **never runs in CI**: 
 
 ```bash
 # run.txt is GET /v1/admin/evals/runs/8f7802b9a72e/protocol (the same file a re-score reads)
-EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels 10 < run.txt
+EVALS=puls dotnet run --project evals/louis-agent.evals.runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   identities/louis-agent.identity.puls/Evals/Cook/Dataset/labels 10 < run.txt
 ```
 
 The sheet holds only scenarios that ask for a number of people (a meal for four can't be labelled where no four is asked), one conversation of each scenario before a second of any, so ten labels are not ten repeats of one dish. Asking twice gives the same sheet.
@@ -176,7 +176,7 @@ The judge is only worth trusting if people agree with it, so the portal lets you
 
 **Checking the judge against your grades: from the portal.** In the same card, press **Check the judge now**. The API writes your decided grades (pass or fail, each with its whole conversation) to the eval runner's stdin and runs `--calibrate … --labels -` with the judge the API's instance is set to (`EVAL_JUDGE_*`), so a prompt change needs the image rebuilt first; nothing else can run meanwhile (one run at a time: the judge is shared). A minute or two on a local judge; the card says it is asking. When it ends, the card shows the report: when and with which judge, how often it agreed with you, whether it clears the bar (90% in each class) or which class fell short, your passes and your fails with what the judge said to each, *Where the judge differed* with the judge's reason for each, and *Earlier checks* folded under it, so you can see a prompt change move the number. A check that ended without a report says the runner's last line, which is the reason. The reports are kept in the store (`calibrations`), beside your grades, and go when the run is deleted. The API's routes: `POST /v1/admin/evals/runs/{id}/calibrations/{grader}` and `GET /v1/admin/evals/runs/{id}/calibrations`.
 
-**Using your grades as labels in the dataset.** Press *Download the labels (zip)*, unzip the files into `evals/louis-agent.evals.puls/Evals/Cook/Dataset/labels/` and run the check from *Checking the judge* (`--calibrate`). The dataset's labels are the ones a developer runs against without a store; the portal's check reads the store.
+**Using your grades as labels in the dataset.** Press *Download the labels (zip)*, unzip the files into `identities/louis-agent.identity.puls/Evals/Cook/Dataset/labels/` and run the check from *Checking the judge* (`--calibrate`). The dataset's labels are the ones a developer runs against without a store; the portal's check reads the store.
 
 **What the name means.** The portal has one shared key, so nobody logs in: the name records who *said* they graded, not who proved it. The panel says who it is grading as; *Not you?* lets the name go so you can type your own. The store keeps the name with each grade; the downloaded label files don't carry it, so a label is a label whoever gave it.
 

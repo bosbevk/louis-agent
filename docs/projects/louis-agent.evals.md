@@ -108,8 +108,7 @@ The runner's own settings (`EVALS`, `BENCHMARK_RUN`) are in [louis-agent.evals.r
 
 ## Extending it
 
-A new identity's evals are folders of files beside it; F49.2 step 10 rewrites
-[Add an eval set](../guides/add-an-eval-set.md) for them. A check every identity could use goes in `Grading/Common/`,
+A new identity's evals are folders of files beside it; the steps are [Add an eval](../guides/add-an-eval.md). A check every identity could use goes in `Grading/Common/`,
 with a nested `Entry` and a line in `GeneralChecks.All` when a file should be able to name it; one that knows an
 identity's rules stays with that identity's checks.
 
@@ -128,7 +127,7 @@ golden. The runner's tests run the stub end to end ([tests](tests.md)).
 ## Related docs
 
 [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md) ·
-[Add an eval set](../guides/add-an-eval-set.md) · [Run the evals](../guides/run-the-evals.md) ·
+[Add an eval](../guides/add-an-eval.md) · [Run the evals](../guides/run-the-evals.md) ·
 [Write-up 12](../learning/12-evaluation.md) · [Write-up 20](../learning/20-extensibility.md)
 
 ---

@@ -36,7 +36,7 @@ you need otherwise.
 | [Guides](guides/README.md) | How-to | Find the step-by-step guide for the project you are changing, or for what you are building |
 | [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
 | [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its specialists, the packs it names, its tests, and running it |
-| [Add an eval set](guides/add-an-eval-set.md) | How-to | Give an identity its evals: its dataset, graders, evals, set, reference transcripts, tests, and listing it with `EVALS=` |
+| [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
 | [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
 | [Hosts guide](../src/CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
 | [Deploying Puls to Azure](../deploy/azure/README.md) | How-to | Build, deploy and watch Puls on Azure Container Apps, set its secrets, and run the home end of its tunnel to this PC's browser and Mongo |

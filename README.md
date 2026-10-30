@@ -120,7 +120,7 @@ it proves ([ADR 0029](docs/adr/0029-simulations-in-csharp.md)).
 - **Everything shows in the admin portal**, including human review.
 
 The first baseline: Puls's cook passed 23 of 24, its routing 72 of 72, for $0.37 together. How to:
-[run the evals](docs/guides/run-the-evals.md) · [add an eval set](docs/guides/add-an-eval-set.md); design:
+[run the evals](docs/guides/run-the-evals.md) · [add an eval](docs/guides/add-an-eval.md); design:
 [the evals design doc](docs/projects/louis-agent.evals.md).
 
 ## Quick start
