@@ -14,11 +14,14 @@ identity gets a project of its own ([ADR 0029](../adr/0029-simulations-in-csharp
 - **One set, one eval left.** `PulsEvalSet` lists `puls-cook`; the set keeps its own copy of the identity's name (a
   set never references an identity), held to the original by a test. `puls-routing` is a folder of files beside the
   identity since F49.2 step 6 ([louis-agent.identity.puls](louis-agent.identity.puls.md)); the cook follows in step 8,
-  and this project goes in step 9.
+  its checks and helpers move beside the identity in step 9, and this project goes then.
 - **`puls-cook`** (`Evals/Cook/`) asks the dataset's meal questions in two modes: `puls-cook` (Puls hands the meal to
   its cook) and `puls-tools` (Puls answers itself with the web tools). Its graders: no failed turn, routed to the
   cook, within the budget, estimates at the shop that serves the town, an image from the recipe, serves as asked,
-  and the model judge `meal-for-people` with its human review `meal-for-people.human`.
+  and the model judge `meal-for-people` with its human review `meal-for-people.human`. Its six fixed rules carry
+  a nested `Entry` each and are listed in `Evals/Cook/Grading/PulsChecks.All` (F49.2 step 7), so an eval file can
+  name them (`cook-no-error`, `within-budget`, `estimates-at-shop`, `untooled-shops`, `recipe-image`,
+  `serves-as-asked`); the runner gathers the list into its check catalogue.
 - **One folder per eval.** Each holds the eval, its setup, its dataset (`Dataset/`, Inspect's Sample shape, step 7d),
   its graders and scoring rules, and its transcripts (`Transcripts/`: a reference per scenario, cut from a real run
   that passed every grader, and known-bad ones). What both evals used is in `Shared/` (expectations, turn reading,

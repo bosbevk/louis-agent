@@ -18,7 +18,7 @@ starts this runner and reads its stdout, so a new eval set is a reference here a
   a folder of files, then the stub; `EVALS=` picks the sets by name and the folders by the identity their file names
   (all when unset). It refuses a name twice and an eval with no fixed-rule check. `Catalog/EvalFolders` finds the
   folders: every `eval.json` under `EvalFiles/` beside the runner, whose path below it is where the folder sits in the
-  repository (F49.2); the runner builds their checks from the check catalogue it gathers (`GeneralChecks.All` today). `--list` prints one JSON line per
+  repository (F49.2); the runner builds their checks from the check catalogue it gathers (`Catalog/RunnerChecks`: the general checks, then Puls's `PulsChecks.All`). `--list` prints one JSON line per
   eval (what it proves, its modes, categories and graders), which the API's eval list reads.
 - **The arguments.** `Arguments/CommandLine` parses `run {eval}` with `--repeat N` (1 to 5), `--split`, `--web`,
   `--replay {runId}` and `--rescore {runId}`, and the two judge commands, `--label-sheet` and `--calibrate`. A bad

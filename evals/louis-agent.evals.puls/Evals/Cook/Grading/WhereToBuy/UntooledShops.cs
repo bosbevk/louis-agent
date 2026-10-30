@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using LouisAgent.Core.Messages;
+using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -13,6 +14,11 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 /// The cook never puts a price column in its list for a shop it can't read, such as Shoprite. It can read Checkers
 /// through its tools, and PnP and Woolworths as a rendered page; anything else would be a made-up price. Required.
 /// </summary>
+/// <remarks>
+/// Its <see cref="Entry"/> lets an eval file name it, <c>untooled-shops</c> (Factory Method), as the general checks'
+/// entries do; it takes no settings. It moves to the shops pack in F49.3.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class UntooledShops : ICheck
 {
     /// <inheritdoc />
@@ -49,5 +55,15 @@ public sealed class UntooledShops : ICheck
                 MessageText.Format(GradeMessage.UntooledShopColumn, new { Shops = string.Join(", ", shops) }));
 
         return Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.UntooledShopsNone));
+    }
+
+    /// <summary>What a file can set: nothing yet.</summary>
+    public sealed record Settings;
+
+    /// <summary>The check as a file names it, <c>untooled-shops</c>.</summary>
+    public sealed class Entry() : CheckType<Settings>("untooled-shops", CheckKind.FixedRule)
+    {
+        /// <summary>Builds the check.</summary>
+        protected override ICheck Create(Settings settings, CheckContext context) => new UntooledShops();
     }
 }

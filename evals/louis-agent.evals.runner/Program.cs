@@ -2,9 +2,7 @@ using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Api;
-using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Files;
-using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Calibration;
@@ -23,9 +21,8 @@ try
     // beside the runner is found, its checks built from the catalogue the runner gathers.
     var evals = Environment.GetEnvironmentVariable("EVALS");
     var sets = EvalSetSelection.Parse(evals).Select(EvalSets.Create).ToList();
-    var checks = new CheckCatalog(GeneralChecks.All);
     var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-        .Select(folder => FileEval.Load(folder.Folder, checks, folder.Source))
+        .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source))
         .Where(file => EvalFolders.Chosen(evals, file.Identity));
     var catalog = new EvalCatalog(sets, new StubEval(), files);
 

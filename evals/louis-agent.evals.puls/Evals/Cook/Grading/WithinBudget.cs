@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.Globalization;
 using LouisAgent.Core.Messages;
+using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -13,10 +14,16 @@ using LouisAgent.Evals.Puls.Shared.Turns;
 namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 
 /// <summary>
-/// The first turn's basket costs no more than the scenario's <c>budget</c> in rand (F18 step 5.4). The total is read from the answer by
-/// <see cref="Prices.Total"/>, from the line that says it or the sum of the priced rows, and the reason says which. An answer with no amount it can
-/// read is Unknown, never a guess. Required where a scenario sets a budget; a scenario that sets none passes.
+/// The first turn's basket costs no more than the scenario's <c>budget</c> in rand. The total is read from the answer
+/// by <see cref="Prices.Total"/>, from the line that says it or the sum of the priced rows, and the reason says which.
+/// An answer with no amount it can read is Unknown, never a guess. Required where a scenario sets a budget; a scenario
+/// that sets none passes.
 /// </summary>
+/// <remarks>
+/// Its <see cref="Entry"/> lets an eval file name it, <c>within-budget</c> (Factory Method), as the general checks'
+/// entries do; it takes no settings.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class WithinBudget : ICheck
 {
     public string Name => "within-budget";
@@ -25,9 +32,14 @@ public sealed class WithinBudget : ICheck
     public bool Required => true;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "budget" }.ToFrozenSet();
 
+    /// <summary>Compares the first turn's total with the scenario's budget.</summary>
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
         ValueTask.FromResult(Grade(trial));
 
+    /// <summary>
+    /// Unknown with no turn, a broken one or no amount to read; a pass with no budget set; then within or over.
+    /// </summary>
+    /// <remarks>Guard clauses, one case each from the top (ADR 0051).</remarks>
     private Grade Grade(Trial trial)
     {
         var first = trial.Transcript.Turns.FirstOrDefault();
@@ -55,5 +67,15 @@ public sealed class WithinBudget : ICheck
         return total.Amount <= budget
             ? Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.BudgetWithin, values))
             : Verdict.Fail(Name, Version, MessageText.Format(GradeMessage.BudgetOver, values));
+    }
+
+    /// <summary>What a file can set: nothing yet; the budget is the scenario's.</summary>
+    public sealed record Settings;
+
+    /// <summary>The check as a file names it, <c>within-budget</c>.</summary>
+    public sealed class Entry() : CheckType<Settings>("within-budget", CheckKind.FixedRule)
+    {
+        /// <summary>Builds the check.</summary>
+        protected override ICheck Create(Settings settings, CheckContext context) => new WithinBudget();
     }
 }

@@ -1,7 +1,6 @@
 using LouisAgent.Choices;
 using System.Text.Json;
 using LouisAgent.Evals.Api;
-using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Datasets.Scenarios;
@@ -28,7 +27,7 @@ public class EvalConformanceTests
     {
         var sets = Enum.GetValues<EvalSetKind>().Select(EvalSets.Create).Append(new FakeSet());
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-            .Select(folder => FileEval.Load(folder.Folder, new CheckCatalog(GeneralChecks.All), folder.Source));
+            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source));
         var catalog = new EvalCatalog(sets.ToList(), new StubEval(), files);
         foreach (var eval in catalog.Evals)
             yield return new TestCaseData(eval).SetName(eval.Name);
