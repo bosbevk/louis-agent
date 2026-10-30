@@ -31,6 +31,14 @@ starts from (*Factory Method*): it reads the settings with `EvalJson.Strict` and
 the check type and, from the JSON reader, the field; the entry only says how to build its check from the record. An
 unknown field, a missing one and a null are all refused, so a typo can't become a default.
 
+`CheckCatalog` holds the entries (*Registry*, filled with *Plugin* entries: each owner lists its own, the composition
+gathers them). It's built once and refuses a list a file couldn't name from: a type an MCP tool name can't carry
+(letters, digits, `-` and `_`, at most 64; an empty one too) or a type listed twice. `Find` gives the entry for a
+type or nothing; `Get` refuses an unknown type, naming the known ones, as the runner's `EvalCatalog` does. `Listing()`
+gives each entry's type, kind and its settings' JSON schema (.NET's `JsonSchemaExporter` over `EvalJson.Strict`), so
+the studio (F49.5) can make a form from it: snake_case fields, the required ones listed, defaults given, and
+`additionalProperties: false`, as the reader refuses an unknown field.
+
 `EvalJson` is the eval's one set of JSON options (snake_case; for the API; strict), here so the eval file and a
 check's settings inside it read alike. These came from the harness as a pure move: the root namespace is `LouisAgent.Evals`, the harness's, so a moved type
 keeps its namespace and nothing that uses it changes.
@@ -51,7 +59,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 | `louis-agent.evals.checks.csproj` | The three references, each with what it's for |
 | `EvalMode.cs` | One mode a task runs in: its role, its toolsets, and a sub-session's depth and LLM |
 | `EvalJson.cs` | The eval's JSON options: `SnakeCase`, `SnakeCaseNoNulls` (what is sent to the API), `Strict` (what a person wrote) |
-| `Catalog/` | `ICheckType` and `CheckType<TParameters>`: a check named by its type and built from its settings |
+| `Catalog/` | `ICheckType` and `CheckType<TParameters>`: a check named by its type and built from its settings; `CheckCatalog`, `ListedCheck`, `CheckCatalogException`: the entries found by type and listed |
 | `Datasets/Scenarios/` | `EvalScenario`, `EvalInput`, `DatasetSplit`: one scenario, what the user sends, and its split |
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
 | `Grading/` | `ICheck`, `Grade` and `GradeJudge`; `Common/Verdict` |
@@ -68,6 +76,8 @@ an identity's (`VerdictFromOutsideTests`).
 
 `tests/louis-agent.evals.checks.tests/Catalog/CheckTypeTests` builds a check from its settings and refuses a field of
 the wrong type, a missing field, an unknown field and no settings at all, each naming the check type (and the field).
+`CheckCatalogTests` finds entries by type, refuses an unknown type (naming the known ones), a duplicate and an unsafe
+type, and lists each entry with its settings' schema.
 
 ## Related docs
 

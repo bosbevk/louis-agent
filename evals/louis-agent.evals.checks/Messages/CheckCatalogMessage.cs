@@ -13,4 +13,13 @@ public enum CheckCatalogMessage
 
     [Description("check type '{Type}' was given no parameters")]
     NoParameters,
+
+    [Description("check type '{Type}' isn't a safe name: use letters, digits, '-' and '_', at most 64")]
+    TypeNotSafe,
+
+    [Description("check type '{Type}' is listed twice")]
+    DuplicateType,
+
+    [Description("check type '{Type}' is not in the catalogue; the types are {Supported}")]
+    UnknownType,
 }

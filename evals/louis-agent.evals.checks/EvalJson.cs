@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 
 namespace LouisAgent.Evals;
 
@@ -28,10 +29,12 @@ public static class EvalJson
 
     /// <summary>
     /// The same, strict, for reading what a person wrote: an unknown field, a missing required field or a null where
-    /// none is allowed is refused, so a typo in a file can't quietly become a default.
+    /// none is allowed is refused, so a typo in a file can't quietly become a default. Its resolver is set, the one the
+    /// serializer would pick anyway, so a settings record's JSON schema can be made from it before anything is read.
     /// </summary>
     public static readonly JsonSerializerOptions Strict = new(SnakeCase)
     {
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
         RespectRequiredConstructorParameters = true,
         RespectNullableAnnotations = true,
