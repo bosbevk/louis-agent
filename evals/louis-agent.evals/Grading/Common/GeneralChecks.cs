@@ -18,12 +18,18 @@ namespace LouisAgent.Evals.Grading.Common;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class GeneralChecks
 {
-    /// <summary>Every general check type, in the order the catalogue lists them.</summary>
+    /// <summary>
+    /// Every general check type, by family, in the order the catalogue lists them: the run's facts, the text rules,
+    /// the structure, the tool calls, then the model and the person.
+    /// </summary>
     public static IReadOnlyList<ICheckType> All { get; } =
     [
-        new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry(), new RoutedToCheck.Entry(),
+        new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry(), new TurnsUnderCheck.Entry(),
+        new TokensUnderCheck.Entry(),
         new ContainsCheck.Entry(), new NotContainsCheck.Entry(), new StartsWithCheck.Entry(),
-        new LengthUnderCheck.Entry(), new MentionsExpectedCheck.Entry(), new ToolUsedCheck.Entry(),
+        new LengthUnderCheck.Entry(), new MentionsExpectedCheck.Entry(),
+        new IsJsonCheck.Entry(),
+        new RoutedToCheck.Entry(), new ToolUsedCheck.Entry(),
         new JudgeCheck.Entry(), new HumanReviewCheck.Entry()
     ];
 }

@@ -57,6 +57,31 @@ public static class EngineEvents
     }
 
     /// <summary>
+    /// The turn's tokens: its usage's input, cache-write, cache-read and output counts summed. Null when the turn
+    /// reported no usage, or a count is missing or isn't a number, so a total is never quietly short.
+    /// </summary>
+    public static long? TokensOf(TurnTranscript turn)
+    {
+        if (Usage(turn) is not { } usage) return null;
+        long total = 0;
+        foreach (var name in TokenCounts)
+        {
+            if (!Field(usage, name, out var count) || count.ValueKind != JsonValueKind.Number ||
+                !count.TryGetInt64(out var value))
+                return null;
+            total += value;
+        }
+
+        return total;
+    }
+
+    /// <summary>
+    /// The four token counts a turn's usage reports, which together are every token the turn was billed for.
+    /// </summary>
+    private static readonly string[] TokenCounts =
+        ["input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"];
+
+    /// <summary>
     /// The role of the turn's first StartSubSession call that names a role, or null when the agent answered itself
     /// or no such call names one.
     /// </summary>

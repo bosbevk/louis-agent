@@ -27,11 +27,12 @@ public class GeneralChecksTests
             Is.EqualTo(new[]
             {
                 ("no-error", CheckKind.FixedRule), ("within-time", CheckKind.FixedRule),
-                ("cost-under", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
-                ("contains", CheckKind.FixedRule), ("not-contains", CheckKind.FixedRule),
-                ("starts-with", CheckKind.FixedRule), ("length-under", CheckKind.FixedRule),
-                ("mentions-expected", CheckKind.FixedRule), ("tool-used", CheckKind.FixedRule),
-                ("judge", CheckKind.Model), ("human", CheckKind.Human)
+                ("cost-under", CheckKind.FixedRule), ("turns-under", CheckKind.FixedRule),
+                ("tokens-under", CheckKind.FixedRule), ("contains", CheckKind.FixedRule),
+                ("not-contains", CheckKind.FixedRule), ("starts-with", CheckKind.FixedRule),
+                ("length-under", CheckKind.FixedRule), ("mentions-expected", CheckKind.FixedRule),
+                ("is-json", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
+                ("tool-used", CheckKind.FixedRule), ("judge", CheckKind.Model), ("human", CheckKind.Human)
             }));
     }
 

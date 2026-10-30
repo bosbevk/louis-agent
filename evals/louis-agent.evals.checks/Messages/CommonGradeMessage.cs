@@ -82,6 +82,29 @@ public enum CommonGradeMessage
     [Description("the answer doesn't mention '{Value}'")]
     MentionsMissing,
 
+    [Description("{Turns} turns, under {Limit}")]
+    TurnsUnderPass,
+
+    [Description("{Turns} turns, not under {Limit}")]
+    TurnsOver,
+
+    [Description("{Total} tokens, under {Limit}")]
+    TokensUnderPass,
+
+    [Description("{Total} tokens, not under {Limit}")]
+    TokensOver,
+
+    [Description("turn {Turn} reported usage without its four token counts")]
+    NoTokenCounts,
+
+    [Description("the answer is JSON")] IsJsonPass,
+
+    [Description("the answer isn't JSON: {Reason}")]
+    NotJson,
+
+    [Description("the answer has {Count} fence lines, not the two of one fenced block")]
+    FencesUnclear,
+
     [Description("{Tool} was called in turn {Turn}")]
     ToolUsed,
 

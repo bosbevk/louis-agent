@@ -6,21 +6,27 @@ using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
 namespace LouisAgent.Evals.Tests.Trials;
 
-// The one reader of the engine's events (F18 step 4.2). Written first: the reader threw NotImplementedException on the red run.
+/// <summary>
+/// The one reader of the engine's events: a turn's cost, tokens, currency, error, route and tools, read from the
+/// stream as the API sends it, and an odd event read as saying nothing rather than throwing.
+/// </summary>
 public class EngineEventsTests
 {
+    /// <summary>The cost is the usage the stream reports at the turn's end.</summary>
     [Test]
     public void TheCostIsTheUsageTheStreamReports()
     {
         Assert.That(EngineEvents.CostOf(Turn(1, [Usage("0.25")])), Is.EqualTo(0.25m));
     }
 
+    /// <summary>A turn that failed still has a cost, read from the usage on its error.</summary>
     [Test]
     public void AFailedTurnsCostIsReadFromItsError()
     {
         Assert.That(EngineEvents.CostOf(Turn(1, [ErrorWithUsage("0.1")])), Is.EqualTo(0.1m));
     }
 
+    /// <summary>One request with no price leaves the turn's cost unknown, never too low.</summary>
     [Test]
     public void AnUnpricedRequestMakesTheCostUnknown()
     {
@@ -28,18 +34,39 @@ public class EngineEventsTests
         Assert.That(EngineEvents.CostOf(Turn(1, [Usage("0.25", unpriced: 1)])), Is.Null);
     }
 
+    /// <summary>A null cost is unknown, not zero.</summary>
     [Test]
     public void ANullCostIsUnknown()
     {
         Assert.That(EngineEvents.CostOf(Turn(1, [Usage("null")])), Is.Null);
     }
 
+    /// <summary>A turn that reported no usage has no known cost.</summary>
     [Test]
     public void ATurnWithoutUsageHasAnUnknownCost()
     {
         Assert.That(EngineEvents.CostOf(Turn(1, [Text("Hallo")])), Is.Null);
     }
 
+    /// <summary>A turn's tokens are its four counts summed: input, both cache counts and output.</summary>
+    [Test]
+    public void ATurnsTokens_AreItsFourCountsSummed()
+    {
+        Assert.That(EngineEvents.TokensOf(Turn(1, [Tokens(8, 20572, 26125, 1582)])), Is.EqualTo(48287));
+    }
+
+    /// <summary>A missing count, or no usage at all, leaves the tokens unknown, never a smaller sum.</summary>
+    [Test]
+    public void AMissingCount_OrNoUsage_LeavesTheTokensUnknown()
+    {
+        var missing = SessionEvent.From("message_delta", Json(
+            """{"type":"message_delta","usage":{"input_tokens":8,"cache_creation_input_tokens":1,"output_tokens":3}}"""));
+
+        Assert.That(EngineEvents.TokensOf(Turn(1, [missing])), Is.Null);
+        Assert.That(EngineEvents.TokensOf(Turn(1, [Text("Hallo")])), Is.Null);
+    }
+
+    /// <summary>An error event in the stream is the turn's error; a plain answer has none.</summary>
     [Test]
     public void AStreamedErrorIsTheTurnsError()
     {
@@ -47,6 +74,7 @@ public class EngineEventsTests
         Assert.That(EngineEvents.StreamedError(Turn(1, [Text("Hallo")])), Is.False);
     }
 
+    /// <summary>A timeout is the infrastructure's failure, reported apart from the agent's errors.</summary>
     [Test]
     public void AnInfrastructureFailureIsReportedApart()
     {
@@ -57,24 +85,28 @@ public class EngineEventsTests
         Assert.That(EngineEvents.InfrastructureFailure(Turn(1, [Text("Hallo")])), Is.Null);
     }
 
+    /// <summary>A specialist's error, inside its sub-session, isn't the turn's error.</summary>
     [Test]
     public void ASpecialistsErrorIsNotTheTurnsError()
     {
         Assert.That(EngineEvents.StreamedError(Turn(1, [SubError()])), Is.False);
     }
 
+    /// <summary>A specialist's usage isn't added again: the turn's own usage already holds the whole cost.</summary>
     [Test]
     public void ASpecialistsUsageIsNotAddedToTheTurnsCost()
     {
         Assert.That(EngineEvents.CostOf(Turn(1, [SubUsage("0.5"), Usage("0.25")])), Is.EqualTo(0.25m));
     }
 
+    /// <summary>A specialist handing work on isn't where the turn was routed.</summary>
     [Test]
     public void ASpecialistsCallIsNotTheTurnsRoute()
     {
         Assert.That(EngineEvents.RoutedRole(Turn(1, [SubCall(SampleRole.Alpha)])), Is.Null);
     }
 
+    /// <summary>A content block with no name, or one that isn't an object, is no route.</summary>
     [Test]
     public void AContentBlockWithNoNameIsNoRoute()
     {
@@ -88,6 +120,7 @@ public class EngineEventsTests
         Assert.That(EngineEvents.RoutedRole(Turn(1, [notAnObject])), Is.Null);
     }
 
+    /// <summary>An unpriced count that isn't a number leaves the cost unknown.</summary>
     [Test]
     public void AnUnpricedCountThatIsNotANumberMakesTheCostUnknown()
     {
@@ -98,6 +131,7 @@ public class EngineEventsTests
         Assert.That(EngineEvents.CostOf(Turn(1, [odd])), Is.Null);
     }
 
+    /// <summary>The error's message is read from the stream; a turn without an error has none.</summary>
     [Test]
     public void TheErrorsMessageIsReadFromTheStream()
     {
@@ -105,6 +139,7 @@ public class EngineEventsTests
         Assert.That(EngineEvents.ErrorMessageOf(Turn(1, [Text("Hallo")])), Is.Null);
     }
 
+    /// <summary>A hand-over to a blank role is no route.</summary>
     [Test]
     public void ABlankRoleIsNoRoute()
     {
@@ -119,6 +154,7 @@ public class EngineEventsTests
         Assert.That(EngineEvents.RoutedRole(Turn(1, [spaces])), Is.Null);
     }
 
+    /// <summary>A turn has usage only when its stream reported some.</summary>
     [Test]
     public void HasUsageIsWhetherTheTurnReportedUsage()
     {
@@ -126,6 +162,7 @@ public class EngineEventsTests
         Assert.That(EngineEvents.HasUsage(Turn(1, [Text("Hallo")])), Is.False);
     }
 
+    /// <summary>The currency is the one the usage names, and none when it names none.</summary>
     [Test]
     public void TheCurrencyIsTheUsagesCurrency()
     {
@@ -133,6 +170,7 @@ public class EngineEventsTests
         Assert.That(EngineEvents.CurrencyOf(Turn(1, [Usage("0.25")])), Is.Null);
     }
 
+    /// <summary>The route is the role of the turn's first hand-over, and none when the agent answered itself.</summary>
     [Test]
     public void TheRoleIsTheFirstStartSubSessionsRole()
     {
@@ -140,10 +178,11 @@ public class EngineEventsTests
         Assert.That(EngineEvents.RoutedRole(Turn(1, [Text("Hallo")])), Is.Null);
     }
 
+    /// <summary>An error's text is its message, else its JSON, else nothing.</summary>
     [Test]
     public void TheErrorText_IsItsMessage_ElseItsJson_ElseNothing()
     {
-        // F18 step 5.3: the reader Puls's TurnView builds on. A message-less error is still an error, so its JSON is the text.
+        // A message-less error is still an error, so its JSON is the text.
         var noMessage = SessionEvent.From("error", Json("""{"type":"error","error":"the connection dropped"}"""));
 
         Assert.That(EngineEvents.ErrorTextOf(Turn(1, [Error()])), Is.EqualTo("overloaded"));
