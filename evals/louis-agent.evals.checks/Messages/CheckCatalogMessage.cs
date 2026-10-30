@@ -23,6 +23,9 @@ public enum CheckCatalogMessage
     [Description("check type '{Type}' needs '{Field}' to be at least 1")]
     BelowOne,
 
+    [Description("check type '{Type}' needs '{Field}' to be 0 or more")]
+    BelowZero,
+
     [Description("reader '{Name}' is not in the catalogue; the readers are {Supported}")]
     UnknownReader,
 

@@ -35,7 +35,8 @@ public class GeneralChecksTests
                 ("tool-used", CheckKind.FixedRule), ("tool-not-used", CheckKind.FixedRule),
                 ("tool-used-with", CheckKind.FixedRule), ("tool-calls-under", CheckKind.FixedRule),
                 ("amount-under", CheckKind.FixedRule), ("number-named", CheckKind.FixedRule),
-                ("judge", CheckKind.Model), ("human", CheckKind.Human)
+                ("image-shown", CheckKind.FixedRule), ("links-to-host", CheckKind.FixedRule),
+                ("near", CheckKind.FixedRule), ("judge", CheckKind.Model), ("human", CheckKind.Human)
             }));
     }
 

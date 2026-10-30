@@ -71,6 +71,18 @@ public class EngineEventsTests
             Is.EqualTo(new[] { "checkers", "pnp" }));
     }
 
+    /// <summary>
+    /// The tools' results are the texts they gave back, the agent's first and then its specialists', and a tool call
+    /// is no result.
+    /// </summary>
+    [Test]
+    public void TheToolResults_AreTheAgentsThenTheSpecialists()
+    {
+        var turn = Turn(1, [SubToolResult("the recipe page"), ToolCall("FetchUrl"), ToolResult("the shop's page")]);
+
+        Assert.That(EngineEvents.ToolResultsOf(turn), Is.EqualTo(new[] { "the shop's page", "the recipe page" }));
+    }
+
     /// <summary>A missing count, or no usage at all, leaves the tokens unknown, never a smaller sum.</summary>
     [Test]
     public void AMissingCount_OrNoUsage_LeavesTheTokensUnknown()

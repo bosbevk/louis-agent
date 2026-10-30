@@ -12,7 +12,7 @@ public class GeneralReadersTests
     [Test]
     public void TheGeneralReaders_AreListedByName() =>
         Assert.That(GeneralReaders.All.Select(reader => reader.Name),
-            Is.EqualTo(new[] { "currency-amount", "digits" }));
+            Is.EqualTo(new[] { "currency-amount", "digits", "markdown-images" }));
 
     /// <summary>
     /// An amount after a currency sign is read, with a space or none, and a last separator followed by two digits as
@@ -45,4 +45,30 @@ public class GeneralReadersTests
     /// <summary>An answer with no number in digits gives none.</summary>
     [Test]
     public void NoDigits_IsNone() => Assert.That(new Digits().Numbers("For four people."), Is.Empty);
+
+    /// <summary>
+    /// Every image written as <c>![alt](url)</c> is read, in order, an image inside a link too; a plain link is no
+    /// image, nor is one whose address isn't a web address or holds a space.
+    /// </summary>
+    [Test]
+    public void EveryMarkdownImage_IsRead_NotAPlainLink() =>
+        Assert.That(
+            new MarkdownImages().Images(
+                "![Bobotie](https://a.co.za/b.jpg) and [a link](https://a.co.za/x) and " +
+                "[![Dish](http://a.co.za/c.png)](https://a.co.za/y), ![local](images/d.png), " +
+                "![x](https://a.co.za/e f.png)"),
+            Is.EqualTo(new[] { "https://a.co.za/b.jpg", "http://a.co.za/c.png" }));
+
+    /// <summary>
+    /// An image's alt text runs to its first closing bracket, so an unfinished image before a whole one reads as the
+    /// whole one, once.
+    /// </summary>
+    [Test]
+    public void AnUnfinishedImage_ReadsTheNextWholeOne_Once() =>
+        Assert.That(new MarkdownImages().Images("![a ![b](https://a.co.za/b.jpg)"),
+            Is.EqualTo(new[] { "https://a.co.za/b.jpg" }));
+
+    /// <summary>Text with no image gives none.</summary>
+    [Test]
+    public void NoImage_IsNone() => Assert.That(new MarkdownImages().Images("Resep."), Is.Empty);
 }

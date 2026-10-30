@@ -14,5 +14,5 @@ namespace LouisAgent.Evals.Grading.Common.Compare.Readers;
 public static class GeneralReaders
 {
     /// <summary>Every general reader, by name.</summary>
-    public static IReadOnlyList<IReader> All { get; } = [new CurrencyAmount(), new Digits()];
+    public static IReadOnlyList<IReader> All { get; } = [new CurrencyAmount(), new Digits(), new MarkdownImages()];
 }

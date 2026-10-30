@@ -159,6 +159,36 @@ public enum CommonGradeMessage
     [Description("every turn names the number asked")]
     NumberNamedPass,
 
+    [Description("the scenario doesn't ask for an image under {Key}")]
+    ImageNotAsked,
+
+    [Description("turn 1 gave no answer to look for an image in")]
+    ImageNothingToRead,
+
+    [Description("no page the agent read had an image to show")]
+    ImageNoneOnPages,
+
+    [Description("the answer shows no image, though a page it read had one")]
+    ImageMissing,
+
+    [Description("the answer's image is not one a page it read gave")]
+    ImageNotFromPage,
+
+    [Description("the answer shows an image a page it read gave")]
+    ImageShownPass,
+
+    [Description("the answer links to {Host}")]
+    LinksToHostPass,
+
+    [Description("the answer links to none of {Hosts}")]
+    LinksToNoHost,
+
+    [Description("the answer is {Edits} edits from '{Text}', within {Distance}")]
+    NearPass,
+
+    [Description("the answer is {Edits} edits from '{Text}', more than {Distance}")]
+    NearFar,
+
     [Description("answered itself, as expected")]
     AnsweredAsExpected,
 
