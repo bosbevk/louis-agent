@@ -17,19 +17,19 @@ namespace LouisAgent.Evals.Tests.Reports;
 public class RunSummaryTests
 {
     /// <summary>A required fixed rule.</summary>
-    private static readonly IGrader Route = new FakeGrader("routed-to", GraderKind.FixedRule);
+    private static readonly ICheck Route = new FakeCheck("routed-to", CheckKind.FixedRule);
 
     /// <summary>A required model grader.</summary>
-    private static readonly IGrader Judge = new FakeGrader("judge", GraderKind.Model);
+    private static readonly ICheck Judge = new FakeCheck("judge", CheckKind.Model);
 
     /// <summary>A grader that is not required, so the roll-up leaves it out.</summary>
-    private static readonly IGrader Optional = new FakeGrader("nice-to-have", GraderKind.FixedRule, required: false);
+    private static readonly ICheck Optional = new FakeCheck("nice-to-have", CheckKind.FixedRule, required: false);
 
     /// <summary>The eval's graders.</summary>
-    private static readonly IReadOnlyList<IGrader> Graders = [Route, Judge, Optional];
+    private static readonly IReadOnlyList<ICheck> Graders = [Route, Judge, Optional];
 
     /// <summary>A grade from the grader with that outcome, scoring 1 for a pass and 0 otherwise.</summary>
-    private static Grade G(IGrader grader, GradeOutcome outcome) => new(grader.Name, grader.Version,
+    private static Grade G(ICheck grader, GradeOutcome outcome) => new(grader.Name, grader.Version,
         outcome == GradeOutcome.Pass ? 1 : 0, outcome, "because");
 
     /// <summary>A trial of the scenario, with its outcome, categories and the two required grades.</summary>
@@ -196,10 +196,10 @@ public class RunSummaryTests
 
         var overall = Line(lines, "overall");
         Assert.That(overall.Graders.Select(g => (g.Grader, g.Kind, g.Passed, g.Failed, g.Unknown)),
-            Is.EqualTo(new[] { ("routed-to", GraderKind.FixedRule, 2, 1, 0), ("judge", GraderKind.Model, 2, 0, 1), }),
+            Is.EqualTo(new[] { ("routed-to", CheckKind.FixedRule, 2, 1, 0), ("judge", CheckKind.Model, 2, 0, 1), }),
             "the optional grader is not listed; the infrastructure trial is not counted for any grader");
         Assert.That(overall.Kinds.Select(k => (k.Kind, k.Passed, k.Failed, k.Unknown)),
-            Is.EqualTo(new[] { (GraderKind.FixedRule, 2, 1, 0), (GraderKind.Model, 2, 0, 1), }));
+            Is.EqualTo(new[] { (CheckKind.FixedRule, 2, 1, 0), (CheckKind.Model, 2, 0, 1), }));
     }
 
     /// <summary>A trial with no grade from a required grader counts as Unknown for it.</summary>
@@ -258,7 +258,7 @@ public class RunSummaryTests
     /// <summary>
     /// A grader that grades nothing here: the roll-up reads only its name, kind and whether it is required.
     /// </summary>
-    private sealed class FakeGrader(string name, GraderKind kind, bool required = true) : IGrader
+    private sealed class FakeCheck(string name, CheckKind kind, bool required = true) : ICheck
     {
         /// <inheritdoc />
         public string Name => name;
@@ -267,7 +267,7 @@ public class RunSummaryTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => kind;
+        public CheckKind Kind => kind;
 
         /// <inheritdoc />
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();

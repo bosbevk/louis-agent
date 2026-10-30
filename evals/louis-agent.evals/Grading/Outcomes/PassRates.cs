@@ -24,9 +24,9 @@ public static class PassRates
 {
     /// <summary>
     /// A trial's outcome: Infrastructure when a turn failed for the infrastructure, whatever its grades say (a failed turn's grades are
-    /// Unknown at best); otherwise <see cref="Of(IReadOnlyList{Grade}, IReadOnlyList{IGrader})"/>.
+    /// Unknown at best); otherwise <see cref="Of(IReadOnlyList{Grade}, IReadOnlyList{ICheck})"/>.
     /// </summary>
-    public static TrialOutcome Of(Trial trial, IReadOnlyList<Grade> grades, IReadOnlyList<IGrader> graders) =>
+    public static TrialOutcome Of(Trial trial, IReadOnlyList<Grade> grades, IReadOnlyList<ICheck> graders) =>
         trial.Transcript.Turns.Any(turn => EngineEvents.InfrastructureFailure(turn) is not null)
             ? TrialOutcome.Infrastructure
             : Of(grades, graders);
@@ -36,12 +36,12 @@ public static class PassRates
     /// Unknown; otherwise Unknown when any required grader is Unknown or has no grade; otherwise Pass. With no required grader it is
     /// Unknown, so no trial passes without a check (the catalogue refuses such an eval anyway).
     /// </summary>
-    public static TrialOutcome Of(IReadOnlyList<Grade> grades, IReadOnlyList<IGrader> graders)
+    public static TrialOutcome Of(IReadOnlyList<Grade> grades, IReadOnlyList<ICheck> graders)
     {
         var required = graders.Where(grader => grader.Required).ToList();
         if (required.Count == 0) return TrialOutcome.Unknown;
 
-        var outcomes = required.Select(grader => grades.FirstOrDefault(grade => grade.Grader == grader.Name)?.Outcome)
+        var outcomes = required.Select(grader => grades.FirstOrDefault(grade => grade.Check == grader.Name)?.Outcome)
             .ToList();
         if (outcomes.Any(outcome => outcome == GradeOutcome.Fail)) return TrialOutcome.Fail;
         if (outcomes.Any(outcome => outcome is null or GradeOutcome.Unknown or GradeOutcome.Pending))

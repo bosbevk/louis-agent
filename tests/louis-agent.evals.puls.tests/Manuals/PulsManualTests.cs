@@ -38,7 +38,7 @@ public class PulsManualTests
 
         Assert.That(text, Does.StartWith("# "));
         Assert.That(text, Does.Contain($"`{eval.Name}`"));
-        Assert.That(eval.Graders.Select(g => g.Name), Has.All.Matches<string>(grader => text.Contains($"`{grader}`")),
+        Assert.That(eval.Checks.Select(g => g.Name), Has.All.Matches<string>(grader => text.Contains($"`{grader}`")),
             "every grader, in backticks");
     }
 

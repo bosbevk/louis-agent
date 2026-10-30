@@ -12,7 +12,7 @@ public partial class KindWireNamesTests
 {
     /// <summary>The grader kinds.</summary>
     [Test]
-    public void GraderKinds() => AssertWireNames<GraderKind>();
+    public void GraderKinds() => AssertWireNames<CheckKind>();
 
     /// <summary>A grade's outcomes.</summary>
     [Test]

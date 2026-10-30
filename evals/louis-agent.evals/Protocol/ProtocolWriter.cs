@@ -32,7 +32,7 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
     /// The run's first line: the eval, its version, the commit, the scenarios it asked for, the run it re-scores, the
     /// dataset it graded against, its graders and the model each mode ran on.
     /// </summary>
-    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<IGrader> graders,
+    public void Begin(string eval, int evalVersion, string commit, IReadOnlyList<ICheck> graders,
         IReadOnlyList<ModelInfo> models,
         RunSplit split = RunSplit.Dev, string? rescoreOf = null, DatasetManifest? dataset = null) =>
         Emit(new ProtocolEvent(Now, Version, eval, evalVersion, commit, split, rescoreOf, DatasetOf(dataset),
@@ -98,14 +98,14 @@ public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
         dataset is null ? null : new DatasetInfo(dataset.Name, dataset.Version, dataset.ContentHash);
 
     /// <summary>A grader as the first line names it; a human review carries the question a person is asked.</summary>
-    private static GraderInfo GraderOf(IGrader grader) =>
-        new(grader.Name, grader.Version, grader.Kind, (grader as HumanReviewGrader)?.Question);
+    private static GraderInfo GraderOf(ICheck grader) =>
+        new(grader.Name, grader.Version, grader.Kind, (grader as HumanReviewCheck)?.Question);
 
     /// <summary>
     /// A grade as the conversation carries it, with the judge's model and prompt when a model judged.
     /// </summary>
     private static GradeInfo GradeOf(Grade grade) =>
-        new(grade.Grader, grade.Version, grade.Score, grade.Outcome, grade.Reason, grade.Judge?.Model,
+        new(grade.Check, grade.Version, grade.Score, grade.Outcome, grade.Reason, grade.Judge?.Model,
             grade.Judge?.PromptHash);
 
     /// <summary>Writes one event as its line.</summary>

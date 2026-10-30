@@ -75,7 +75,7 @@ internal sealed record TotalDocument(
 internal sealed record GraderDocument(
     [property: BsonElement("name")] string Name,
     [property: BsonElement("version")] int Version,
-    [property: BsonElement("kind")] GraderKind Kind,
+    [property: BsonElement("kind")] CheckKind Kind,
     [property: BsonElement("question")] string? Question)
 {
     /// <summary>The document for a grader.</summary>

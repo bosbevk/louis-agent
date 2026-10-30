@@ -40,8 +40,8 @@ public class SummaryStoredTests
     private static SummaryEvent Summary(string slice, bool tooFew, string[] tasks, int second) =>
         new(T0.AddSeconds(second), SampleMode.Beta, slice, 8, 6, 1, 1, 0, tasks, tooFew, tooFew ? null : 0.75,
             tooFew ? null : 1.0, tooFew ? null : 0.5,
-            [new GraderCount("routed-to", GraderKind.FixedRule, 7, 1, 0, 0.875)],
-            [new KindCount(GraderKind.FixedRule, 7, 1, 0)]);
+            [new GraderCount("routed-to", CheckKind.FixedRule, 7, 1, 0, 0.875)],
+            [new KindCount(CheckKind.FixedRule, 7, 1, 0)]);
 
     /// <summary>
     /// One run as the runner writes it: a mode with one conversation, its end, then two summaries (overall, and a

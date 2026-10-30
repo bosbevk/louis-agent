@@ -64,8 +64,8 @@ public class RoutingEvalTests
     public void ItsOneGraderIsTheRequiredRoute_AndNoErrorGraderWouldAddToIt()
     {
         // A route is right only without an error, so a no-error grader on a one-turn question would only repeat it.
-        Assert.That(Eval.Graders.Select(g => (g.Name, g.Required, g.Kind)),
-            Is.EqualTo(new[] { ("routed-to", true, GraderKind.FixedRule) }));
+        Assert.That(Eval.Checks.Select(g => (g.Name, g.Required, g.Kind)),
+            Is.EqualTo(new[] { ("routed-to", true, CheckKind.FixedRule) }));
     }
 
     /// <summary>What it says of a turn is what Puls's turn view reads: who answered, the calls, the sites.</summary>

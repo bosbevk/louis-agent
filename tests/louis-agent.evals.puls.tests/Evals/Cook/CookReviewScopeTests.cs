@@ -14,7 +14,7 @@ public class CookReviewScopeTests
     private static readonly CookEval Eval = new();
 
     private static bool Applies(string scenario) =>
-        Eval.Graders.OfType<HumanReviewGrader>().Single().AppliesTo(
+        Eval.Checks.OfType<HumanReviewCheck>().Single().AppliesTo(
             new Trial("run_1",
                 new EvalMode(CookMode.Cook.Wire(), "puls/voice-af",
                     [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]), 1,

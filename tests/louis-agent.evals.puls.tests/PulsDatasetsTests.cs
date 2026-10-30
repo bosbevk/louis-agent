@@ -19,8 +19,8 @@ namespace LouisAgent.Evals.Puls.Tests;
 public class PulsDatasetsTests
 {
     /// <summary>The graders of the eval that owns this dataset.</summary>
-    internal static IReadOnlyList<IGrader> GradersOf(PulsEvalName dataset) =>
-        dataset == PulsEvalName.Cook ? new CookEval().Graders : new RoutingEval().Graders;
+    internal static IReadOnlyList<ICheck> GradersOf(PulsEvalName dataset) =>
+        dataset == PulsEvalName.Cook ? new CookEval().Checks : new RoutingEval().Checks;
 
     /// <summary>Each dataset loads strictly, under its name and at its version.</summary>
     [TestCase(PulsEvalName.Cook, 7)]

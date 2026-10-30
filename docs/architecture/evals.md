@@ -10,7 +10,7 @@
 
 An eval is a C# class that asks the agent real questions and grades the answers. The **runner** is a small console
 app: it opens real chat sessions on the **API**, exactly as a person's chat would, reads what streams back, grades each
-conversation with the eval's **graders**, and writes everything it saw as JSON lines on stdout (the **protocol**). The
+conversation with the eval's **checks**, and writes everything it saw as JSON lines on stdout (the **protocol**). The
 API starts the runner as a child process when someone presses *Run* in the **portal**, reads those lines as they come,
 keeps them in the **store**, joins the cost from the **usage ledger** when the run ends, and the portal shows the
 result. The runner never knows the cost and the API never knows how to grade: each side does one job, and the protocol
@@ -48,7 +48,7 @@ flowchart LR
   Sessions --> Replay --> RStore
   Agent -->|"every model request"| Ledger
   Agent -.->|"stream (SSE)"| Harness
-  Harness -->|"model graders"| Judge
+  Harness -->|"model checks"| Judge
   Harness -->|"protocol v2 on stdout"| Proc --> Rec --> Store
   Rec -->|"when the run ends"| Ledger
   Explorer -->|"read"| Admin --> Store
@@ -56,8 +56,9 @@ flowchart LR
 
 | Part | Project | Its one job |
 |---|---|---|
-| The harness | `evals/louis-agent.evals` | How an eval runs: `IEval`, the datasets, the trials, the graders, the protocol writer, re-scoring, conformance, labels and calibration. Names no product. |
-| An eval set | `evals/louis-agent.evals.puls` | What proves Puls: `puls-cook` and `puls-routing`, their datasets, their own graders, their reference and known-bad transcripts. |
+| The check contract | `evals/louis-agent.evals.checks` | What a check reads and returns (`Trial`, `ICheck`, `Grade`), and the catalogue a file names a check from (`ICheckType`, `CheckCatalog`). What a pack can reference to ship a check ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)). |
+| The harness | `evals/louis-agent.evals` | How an eval runs: `IEval`, the datasets, the general checks and their entries, the protocol writer, re-scoring, conformance, labels and calibration. Names no product. |
+| An eval set | `evals/louis-agent.evals.puls` | What proves Puls: `puls-cook` and `puls-routing`, their datasets, their own checks, their reference and known-bad transcripts. |
 | The runner | `evals/louis-agent.evals.runner` | The command: lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge. |
 | The protocol | `evals/louis-agent.evals.protocol` | The eight line records both sides share, and their reader and writer. Records only. |
 | The API | `src/louis-agent.api` (`Evals/`, `Endpoints/Admin/`) | Starts the runner, records its lines, prices them from the ledger, serves the portal; also runs the sessions the runner opens. |
@@ -81,22 +82,34 @@ classDiagram
     ModesAsync(sessions) EvalMode list
     IReadOnlyList~EvalScenario~ Scenarios
     DatasetManifest Dataset
-    IReadOnlyList~IGrader~ Graders
+    IReadOnlyList~ICheck~ Checks
     IReadOnlyList~LabeledAnswer~ Labels
     TurnFactsOf(turn, mode) TurnFacts
   }
-  class IGrader {
+  class ICheck {
     <<interface>>
     string Name
     int Version
-    GraderKind Kind
+    CheckKind Kind
     IReadOnlySet~string~ ExpectedKeys
     bool Required
     GradeAsync(Trial) Grade
   }
+  class ICheckType {
+    <<interface>>
+    string Type
+    CheckKind Kind
+    Type Parameters
+    Create(JsonElement) ICheck
+  }
+  class CheckCatalog {
+    Find(type) ICheckType
+    Get(type) ICheckType
+    Listing() ListedCheck list
+  }
   class Grade {
     <<record>>
-    string Grader
+    string Check
     int Version
     double Score
     GradeOutcome Outcome
@@ -123,16 +136,20 @@ classDiagram
     DateTimeOffset T
   }
   IEvalSet o-- IEval
-  IEval o-- IGrader
-  IGrader ..> Trial : grades
-  IGrader ..> Grade : returns
-  IGrader <|.. NoErrorGrader
-  IGrader <|.. RoutedToGrader
-  IGrader <|.. CostUnderGrader
-  IGrader <|.. WithinTimeGrader
-  IGrader <|.. EvaluatorGrader
-  IGrader <|.. HumanReviewGrader
-  IGrader <|.. PricedAtRetailer
+  IEval o-- ICheck
+  ICheck ..> Trial : grades
+  ICheck ..> Grade : returns
+  ICheck <|.. NoErrorCheck
+  ICheck <|.. RoutedToCheck
+  ICheck <|.. CostUnderCheck
+  ICheck <|.. WithinTimeCheck
+  ICheck <|.. ContainsCheck
+  ICheck <|.. ToolUsedCheck
+  ICheck <|.. EvaluatorCheck
+  ICheck <|.. HumanReviewCheck
+  ICheck <|.. PricedAtRetailer
+  ICheckType ..> ICheck : builds
+  CheckCatalog o-- ICheckType
   ISessionClient <|.. HttpSessionClient
   ISessionClient <|.. CannedSessionClient
   EvalRunner ..> IEval
@@ -143,13 +160,18 @@ classDiagram
   EvalEvent <|-- ConversationEvent
 ```
 
-The three kinds of grader (`GraderKind`):
+The three kinds of check (`CheckKind`; on the wire a check is still a `grader`, as stored runs say):
 
 | Kind | What it is | Examples |
 |---|---|---|
-| `fixed-rule` | Plain C# that reads the transcript. Every eval needs at least one required fixed-rule grader. | `NoErrorGrader`, `RoutedToGrader`, `CostUnderGrader`, `WithinTimeGrader` (the harness's); `PricedAtRetailer`, `UntooledShops`, `EstimatesAtShop`, `WithinBudget`, `ServesAsAsked`, `RecipeImage` (the cook's) |
-| `model` | A judge model reads the answer against a rubric. `EvaluatorGrader` wraps Microsoft.Extensions.AI.Evaluation's `IEvaluator`; the grade carries the model and the prompt's hash. | `meal-for-people` (`MealForPeopleGrader`) |
-| `human` | A person's verdict in the run explorer, paired with a model grader so the two can be compared. | `meal-for-people.human` (`HumanReviewGrader.For`) |
+| `fixed-rule` | Plain C# that reads the transcript. Every eval needs at least one required fixed-rule check. | `NoErrorCheck`, `RoutedToCheck`, `CostUnderCheck`, `WithinTimeCheck`, `ContainsCheck`, `ToolUsedCheck` (the harness's); `PricedAtRetailer`, `UntooledShops`, `EstimatesAtShop`, `WithinBudget`, `ServesAsAsked`, `RecipeImage` (the cook's) |
+| `model` | A judge model reads the answer against a rubric. `EvaluatorCheck` wraps Microsoft.Extensions.AI.Evaluation's `IEvaluator`; the grade carries the model and the prompt's hash. | `meal-for-people` (`MealForPeopleCheck`) |
+| `human` | A person's verdict in the run explorer, paired with a model check so the two can be compared. | `meal-for-people.human` (`HumanReviewCheck.For`) |
+
+A check can also be named from a file by its type (`within-time`, `{"seconds": 120}`): its entry, an `ICheckType`,
+builds it from a typed settings record, and `CheckCatalog` finds the entry. The harness's entries are
+`GeneralChecks.All`: `no-error`, `within-time`, `cost-under`, `contains` and `tool-used`
+([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)). F49.2's eval files are the first to name them.
 
 A grade's score is 0 to 1 with an outcome (pass, fail, unknown) and a reason. A conversation's metrics (calls, hosts,
 turns, tokens, seconds, cost) are measured beside the grades and never decide a pass.
@@ -162,7 +184,7 @@ flowchart TB
   eval["CookEval : IEval<br/>Name = puls-cook, Version = 10"]
   modes["EvalMode puls-cook · EvalMode puls-tools"]
   data["Dataset puls-cook v7<br/>dev and held-out scenarios, labels"]
-  graders["9 graders: CookNoError, routed-to, WithinBudget,<br/>EstimatesAtShop, UntooledShops, RecipeImage, ServesAsAsked,<br/>meal-for-people, meal-for-people.human"]
+  graders["9 checks: CookNoError, routed-to, WithinBudget,<br/>EstimatesAtShop, UntooledShops, RecipeImage, ServesAsAsked,<br/>meal-for-people, meal-for-people.human"]
   trial["Trial<br/>run 5d1fd231c9b1 · puls-cook · repeat 1 · cook-malmesbury"]
   transcript["Transcript<br/>TurnTranscript per question"]
   grades["Grade × 9<br/>e.g. untooled-shops 1.0 pass"]
@@ -202,7 +224,7 @@ sequenceDiagram
     Agent->>Ledger: one row per model request
     Agent-->>Runner: the turn's stream (SSE)
     Runner-->>API: sse lines, then turn
-    Runner->>Judge: the answer and the rubric (model graders only)
+    Runner->>Judge: the answer and the rubric (model checks only)
     Judge-->>Runner: label and reason
     Runner-->>API: conversation (grades, outcome, metrics)
     API->>Store: run, conversation, turn as they arrive
@@ -257,12 +279,13 @@ evals/
 │   ├── Api/                        # ISessionClient, HttpSessionClient, CannedSessionClient, the session request
 │   ├── Conformance/                # references must pass, known-bads must fail
 │   ├── Datasets/                   # dataset.json + scenarios/{dev,held-out}/ (Inspect's Sample shape), the loader
-│   ├── Grading/                    # IGrader, Grade; Common/, Models/ (the judge), Human/, Outcomes/
+│   ├── Grading/                    # Common/ (the general checks, GeneralChecks; Answers/, Tools/), Models/ (the judge), Human/, Outcomes/
 │   ├── Labels/                     # the label sheet and the calibration
 │   ├── Protocol/                   # ProtocolWriter, ProtocolTranscripts
 │   ├── Reports/                    # RunSummary
-│   ├── Running/                    # EvalRunner, ScenarioAttempt, TrialGrading, Rescoring/
-│   └── Trials/                     # Trial, Transcript, TurnFacts
+│   ├── Running/                    # EvalRunner, ScenarioAttempt, TrialChecking, Rescoring/
+│   └── Trials/                     # ConversationMetrics
+├── louis-agent.evals.checks/       # the check contract: EvalMode, EvalJson; Catalog/ (ICheckType, CheckType, CheckCatalog); Datasets/Scenarios/; Trials/; Grading/ (ICheck, Grade, Verdict); Messages/
 ├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
 ├── louis-agent.evals.puls/         # PulsEvalSet; Evals/Cook/, Evals/Routing/ (each with Dataset/ and transcripts); Shared/
 ├── louis-agent.evals.runner/       # Program, Arguments/, Catalog/, Calibration/, Evals/Stub/
@@ -275,7 +298,7 @@ src/louis-agent.puls/Components/Admin/  # the portal's pages
 
 - **The API decides, the runner asks.** The runner only says it wants a replay; the API's settings decide what a
   session may do (ADR 0029).
-- **Cost comes from the ledger, never from a grader.** The runner can't see prices; the API joins them after the run
+- **Cost comes from the ledger, never from a check.** The runner can't see prices; the API joins them after the run
   (ADR 0007).
 - **CI grades recorded transcripts only.** Every eval's references and known-bads run in the tests for free; a live
   run waits for Louis's go.

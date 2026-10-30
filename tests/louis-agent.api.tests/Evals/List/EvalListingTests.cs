@@ -89,8 +89,8 @@ public class EvalListingTests
         Assert.That(cook.Graders,
             Is.EqualTo(new[]
             {
-                new EvalGraderLine("priced", 1, GraderKind.FixedRule),
-                new EvalGraderLine("judge", 2, GraderKind.Model)
+                new EvalGraderLine("priced", 1, CheckKind.FixedRule),
+                new EvalGraderLine("judge", 2, CheckKind.Model)
             }));
     }
 

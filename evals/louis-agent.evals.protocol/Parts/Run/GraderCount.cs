@@ -8,7 +8,7 @@ namespace LouisAgent.Evals.Protocol.Parts.Run;
 /// </summary>
 public sealed record GraderCount(
     string Grader,
-    GraderKind Kind,
+    CheckKind Kind,
     int Passed,
     int Failed,
     int Unknown,

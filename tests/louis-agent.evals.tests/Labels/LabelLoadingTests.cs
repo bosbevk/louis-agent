@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Tests.Labels;
 // name, so a half-labelled sheet can never be calibrated against as if it were whole. Written first: LabelLoader did not exist.
 public class LabelLoadingTests
 {
-    private static readonly IReadOnlyList<IGrader> Graders = [new ReadsKeys("routed")];
+    private static readonly IReadOnlyList<ICheck> Graders = [new ReadsKeys("routed")];
 
     // 6a.4f (Louis): a label carries the conversation's turns, every question and answer, so a judge can see what a follow-up relies on; the last turn's answer is the one labelled.
     private static string Label(string scenario = "sample-dev",
@@ -158,11 +158,11 @@ public class LabelLoadingTests
     }
 
     /// <summary>A grader that is named only for the keys it reads; it never grades.</summary>
-    private sealed class ReadsKeys(params string[] keys) : IGrader
+    private sealed class ReadsKeys(params string[] keys) : ICheck
     {
         public string Name => "reads-keys";
         public int Version => 1;
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
         public bool Required => true;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>(keys);
 

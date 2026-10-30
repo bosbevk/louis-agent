@@ -1,7 +1,7 @@
 # louis-agent.evals — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `evals/louis-agent.evals/` · **References:** louis-agent.core,
-> louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals.runner, every eval set
+> louis-agent.session-stream, louis-agent.evals.protocol, louis-agent.evals.checks · **Used by:** louis-agent.evals.runner, every eval set
 > (`louis-agent.evals.puls`, `louis-agent.evals.template`)
 
 ## Purpose
@@ -26,10 +26,20 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   infrastructure failure is kept apart from a failing answer (`TurnFailures`); a stream that ends on an error of kind
   `replay_miss_error` marks the turn `TurnFailure.ReplayMiss` (FX26), so a replay with no recording never counts as
   the agent's answer.
-- **Graders grade, metrics measure.** `Grading/` holds `IGrader` and the common graders (no error, answered within a
-  time, cost under a limit, routed to a role), the model judge (`Models/`, `EvaluatorGrader` over Microsoft.Extensions.
-  AI.Evaluation) and the human review (`Human/`). A grade has a score from 0 to 1, an outcome and a reason; a
+- **Checks grade, metrics measure.** `Grading/` holds the general checks (no error, answered within a
+  time, cost under a limit, routed to a role, the answer contains a text, a tool was used), the model judge (`Models/`, `EvaluatorCheck` over Microsoft.Extensions.
+  AI.Evaluation) and the human review (`Human/`); `ICheck`, `Grade` and `Verdict` are the check contract's, in
+  [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score from 0 to 1, an outcome and a reason; a
   conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
+- **A general check can be named from a file** ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)).
+  `no-error`, `within-time`, `cost-under`, `contains` and `tool-used` each carry a nested `Entry` and its `Settings`
+  record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), and `Grading/Common/GeneralChecks.All` is the
+  harness's list for the check catalogue. `contains` (`Grading/Common/Answers/`) checks that the first turn's answer
+  holds one of a list of texts, case and accents ignored, never a pattern
+  ([ADR 0057](../adr/0057-regex-is-the-last-option.md)). `tool-used` (`Grading/Common/Tools/`) checks that a tool
+  with this exact name was called in the trial, by the agent or a specialist; a streamed error is `no-error`'s to
+  report. `routed-to` has no entry yet: its expected role is a function (Puls's reads a scenario key and the mode's
+  toolsets), which F49.2's eval file settles.
 - **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
   contract's `EvalProtocolJson` ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); `ProtocolTranscripts`
   reads a stored run back for a re-score or a conformance case.
@@ -71,14 +81,14 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
 |---|---|
 | `Api/` | The session clients and the session request the runner sends (with `replay`) |
 | `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
-| `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Scenarios/`, `Samples/` |
-| `Grading/` | `IGrader`, `Grade`, the common graders, the model and human graders, the outcomes |
+| `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Samples/` (a scenario's types are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
+| `Grading/` | The general checks (`Common/`, with `Answers/` and `Tools/`), the model and human checks, the outcomes (`ICheck`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
-| `Messages/` | The harness's texts (errors, logs, grade reasons, conformance, calibration) |
+| `Messages/` | The harness's texts (errors, logs, conformance, calibration); the grade reasons, `CommonGradeMessage`, are in [louis-agent.evals.checks](louis-agent.evals.checks.md) |
 | `Protocol/` | The writer and the stored-run reader |
 | `Reports/` | `RunSummary`, `SummaryLine`, `TrialResult` |
 | `Running/` | `EvalRunner`, a trial's attempt and grading, re-scoring, the tallies |
-| `Trials/` | `Trial`, `Transcript`, `TurnFacts`, the engine's events, the conversation's metrics |
+| `Trials/` | The conversation's metrics (`Trial`, `Transcript`, `TurnFacts` and the engine's events are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 
 ## Configuration
 
@@ -92,13 +102,15 @@ The runner's own settings (`EVALS`, `BENCHMARK_RUN`) are in [louis-agent.evals.r
 ## Extending it
 
 A new identity's evals are a new project with one `IEvalSet`, its evals, datasets and graders; the steps are
-[Add an eval set](../guides/add-an-eval-set.md). A grader every identity could use goes in `Grading/Common/`; one
-that knows an identity's rules stays in its set.
+[Add an eval set](../guides/add-an-eval-set.md). A check every identity could use goes in `Grading/Common/`,
+with a nested `Entry` and a line in `GeneralChecks.All` when a file should be able to name it; one that knows an
+identity's rules stays in its set.
 
 ## Tests
 
-`tests/louis-agent.evals.tests`: the loader (both shapes refused or read, the hash, the expected keys), the common
-graders, the roll-up, the conformance cases, the label sheet and the calibration, the protocol writer against its
+`tests/louis-agent.evals.tests`: the loader (both shapes refused or read, the hash, the expected keys), the general
+checks and their entries (`CommonChecksTests`, `GeneralChecksTests`, `ContainsCheckTests`, `ToolUsedCheckTests`),
+the roll-up, the conformance cases, the label sheet and the calibration, the protocol writer against its
 golden. The runner's tests run the stub end to end ([tests](tests.md)).
 
 ## Limits and plans
@@ -110,7 +122,7 @@ golden. The runner's tests run the stub end to end ([tests](tests.md)).
 
 [ADR 0029](../adr/0029-simulations-in-csharp.md) · [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md) ·
 [Add an eval set](../guides/add-an-eval-set.md) · [Run the evals](../guides/run-the-evals.md) ·
-[Write-up 12](../learning/12-evaluation.md)
+[Write-up 12](../learning/12-evaluation.md) · [Write-up 20](../learning/20-extensibility.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [louis-agent.evals.protocol](louis-agent.evals.protocol.md)
+[Projects](README.md) · Previous: [louis-agent.usage-probe](louis-agent.usage-probe.md) · Next: [louis-agent.evals.checks](louis-agent.evals.checks.md)

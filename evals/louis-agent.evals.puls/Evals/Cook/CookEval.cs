@@ -30,7 +30,7 @@ public sealed class CookEval : IEval
     /// <summary>
     /// The graders, static so the scenarios can load with them: the dataset checks its expected keys against them.
     /// </summary>
-    private static readonly IReadOnlyList<IGrader> GraderList = BuildGraders();
+    private static readonly IReadOnlyList<ICheck> GraderList = BuildGraders();
 
     /// <summary>The dataset, loaded once with the graders above.</summary>
     private static readonly Dataset Loaded = Load();
@@ -39,14 +39,14 @@ public sealed class CookEval : IEval
     /// The fixed rules first, then the model judge and a person's review of the same question, made for the judge it
     /// reviews (F18 step 6a).
     /// </summary>
-    private static IReadOnlyList<IGrader> BuildGraders()
+    private static IReadOnlyList<ICheck> BuildGraders()
     {
-        var judge = MealForPeopleGrader.Create(() => JudgeClients.FromEnvironment());
+        var judge = MealForPeopleCheck.Create(() => JudgeClients.FromEnvironment());
         return
         [
             new CookNoError(), PulsRoute.Grader(), new WithinBudget(), new EstimatesAtShop(), new UntooledShops(),
             new RecipeImage(), new ServesAsAsked(), judge,
-            HumanReviewGrader.For(judge, MealForPeoplePrompt.Question)
+            HumanReviewCheck.For(judge, MealForPeoplePrompt.Question)
         ];
     }
 
@@ -78,7 +78,7 @@ public sealed class CookEval : IEval
     public IReadOnlyList<LouisAgent.Evals.Labels.LabeledAnswer> Labels => Loaded.Labels;
 
     /// <inheritdoc />
-    public IReadOnlyList<IGrader> Graders => GraderList;
+    public IReadOnlyList<ICheck> Checks => GraderList;
 
     /// <summary>What Puls's own turn view reads from a turn.</summary>
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => PulsTurnFacts.Of(turn);

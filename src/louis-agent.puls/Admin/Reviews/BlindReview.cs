@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.Puls.Admin.Grades;
-using GraderKind = LouisAgent.Evals.Protocol.Kinds.GraderKind;
+using CheckKind = LouisAgent.Evals.Protocol.Kinds.CheckKind;
 
 namespace LouisAgent.Puls.Admin.Reviews;
 
@@ -30,7 +30,7 @@ public static class BlindReview
 
     /// <summary>Whether a grader is a human review: a grader a person answers, named for its judge.</summary>
     public static bool IsReview(GraderRow grader) =>
-        SettingChoice.TryParse(grader.Kind, out GraderKind? kind) && kind == GraderKind.Human &&
+        SettingChoice.TryParse(grader.Kind, out CheckKind? kind) && kind == CheckKind.Human &&
         grader.Name.EndsWith(HumanSuffix, StringComparison.Ordinal);
 
     /// <summary>

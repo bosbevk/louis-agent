@@ -94,6 +94,10 @@ return new Host(app, app.GetTestClient(), store);
 - It returns `TypedResults`, its answers declared (`Results<JsonHttpResult<TrendReply>, JsonHttpResult<ApiError>>`,
   named once with a `using` alias), errors as the `ApiError` record; the records and each wire's options object live
   in `louis-agent.api.contracts`, so a client reads `TrendReply`, never a `JsonElement` picked apart by name.
+- **A regular expression is the last option** ([ADR 0057](../../docs/adr/0057-regex-is-the-last-option.md)): plain
+  string methods, a small reader or a typed parser first; when nothing plainer does it, a named `[GeneratedRegex]`
+  with one matching and one non-matching example in its summary, `NonBacktracking` on outside input; replaced as
+  the code is touched, never in a sweep.
 
 ## Values, JSON, Mongo, dates, choices, messages
 

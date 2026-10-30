@@ -27,7 +27,7 @@ public class PassRatesOverTrialsTests
             new EvalScenario("pannekoek", new EvalInput(null, "Africa/Johannesburg", ["Vraag"]), default, [],
                 DatasetSplit.Dev), new Transcript(turns));
 
-    private static readonly IGrader[] Required = [new RequiredGrader()];
+    private static readonly ICheck[] Required = [new RequiredCheck()];
 
     // --- a trial's outcome
 
@@ -115,11 +115,11 @@ public class PassRatesOverTrialsTests
         Assert.That(PassRates.ShareOf([]), Is.EqualTo(new PassShare(null, null)));
     }
 
-    private sealed class RequiredGrader : IGrader
+    private sealed class RequiredCheck : ICheck
     {
         public string Name => "always";
         public int Version => 1;
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => true;
 

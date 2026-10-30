@@ -35,7 +35,7 @@ public class PulsEvalSetTests
     [TestCase("meal-for-people")]
     public async Task ATurnThatFailedForTheInfrastructure_IsUnknown_NeverAFail(string name)
     {
-        IGrader grader = new CookEval().Graders.Single(g => g.Name == name);
+        ICheck grader = new CookEval().Checks.Single(g => g.Name == name);
         // The failed turn has a whole, good answer: without the infrastructure check each grader would pass it, so the test tells a grader that
         // checked from one that was merely handed an empty turn (reviewed on 5.4: three checks could be removed and the tests still passed).
         const string answer = """

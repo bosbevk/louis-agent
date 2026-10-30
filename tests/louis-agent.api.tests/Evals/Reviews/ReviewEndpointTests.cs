@@ -50,9 +50,9 @@ public class ReviewEndpointTests
         await store.SaveRunAsync(new Run(RunId, SampleEval.Beta, 1, EvalRunStatus.Done, T0, T0.AddMinutes(5), 0,
             Graders:
             [
-                new Grader("cook-no-error", 1, GraderKind.FixedRule),
-                new Grader("meal-for-people", 1, GraderKind.Model),
-                new Grader("meal-for-people.human", 1, GraderKind.Human)
+                new Grader("cook-no-error", 1, CheckKind.FixedRule),
+                new Grader("meal-for-people", 1, CheckKind.Model),
+                new Grader("meal-for-people.human", 1, CheckKind.Human)
             ]));
 
         // Each conversation with the judge's grade and its one turn.

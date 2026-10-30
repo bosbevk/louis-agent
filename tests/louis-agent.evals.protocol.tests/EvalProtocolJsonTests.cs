@@ -114,8 +114,8 @@ public class EvalProtocolJsonTests
     {
         // A real summary line with one kind count, its kind swapped for the one under test.
         var summary = new SummaryEvent(DateTimeOffset.UnixEpoch, "m", "overall", 0, 0, 0, 0, 0, [], true, null, null,
-            null, [], [new KindCount(GraderKind.FixedRule, 0, 0, 0)]);
-        string wire = $"\"kind\":\"{GraderKind.FixedRule.Wire()}\"";
+            null, [], [new KindCount(CheckKind.FixedRule, 0, 0, 0)]);
+        string wire = $"\"kind\":\"{CheckKind.FixedRule.Wire()}\"";
         string line = EvalProtocolJson.Line(summary).Replace(wire, $"\"kind\":{kind}");
 
         Assert.That(line, Does.Not.Contain(wire));

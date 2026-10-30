@@ -17,11 +17,11 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 /// <see cref="Prices.Total"/>, from the line that says it or the sum of the priced rows, and the reason says which. An answer with no amount it can
 /// read is Unknown, never a guess. Required where a scenario sets a budget; a scenario that sets none passes.
 /// </summary>
-public sealed class WithinBudget : IGrader
+public sealed class WithinBudget : ICheck
 {
     public string Name => "within-budget";
     public int Version => 2;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => true;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "budget" }.ToFrozenSet();
 

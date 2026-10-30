@@ -16,11 +16,11 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 /// turn). Not required: its job until step 6's model grader checks that the quantities scale is to catch the answer that forgot the number. A turn
 /// with nothing to read (it failed, or answered nothing) leaves it Unknown, never a fail.
 /// </summary>
-public sealed class ServesAsAsked : IGrader
+public sealed class ServesAsAsked : ICheck
 {
     public string Name => "serves-as-asked";
     public int Version => 1;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => false;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "serves" }.ToFrozenSet();
 

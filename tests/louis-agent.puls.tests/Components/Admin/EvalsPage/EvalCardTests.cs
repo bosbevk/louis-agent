@@ -28,9 +28,9 @@ public class EvalCardTests
     private static EvalRow Eval(IReadOnlyList<EvalRunRow> runs) =>
         new("cook", SampleIdentity.Alpha, 10, "Meals", true, new EvalDatasetRow("meals", 7), ["budget", "follow-up"],
         [
-            new("no-error", 1, GraderKind.FixedRule.Wire()),
-            new("meal", 2, GraderKind.Model.Wire()),
-            new("meal.human", 2, GraderKind.Human.Wire())
+            new("no-error", 1, CheckKind.FixedRule.Wire()),
+            new("meal", 2, CheckKind.Model.Wire()),
+            new("meal.human", 2, CheckKind.Human.Wire())
         ], [SampleMode.Alpha, SampleMode.Beta], [], runs.Count == 0, runs);
 
     /// <summary>The card for an eval with these runs.</summary>

@@ -16,7 +16,7 @@ working examples to open beside this guide.
 
 The example is `acme`, the identity [Build an identity](build-an-identity.md) makes: a hardware shop's assistant, whose
 evals here are a quote for the tiles a room needs. `acme` is not in the repo, and the steps don't create it. Each step
-names the file in the repo that does the same thing today (`StubEval`, `PulsEvalSet`, the Puls dataset, `NoErrorGrader`,
+names the file in the repo that does the same thing today (`StubEval`, `PulsEvalSet`, the Puls dataset, `NoErrorCheck`,
 the stub's transcripts), so you can open working code beside this guide.
 
 ## Start from the template
@@ -196,30 +196,38 @@ facts, so nothing depends on a rule about the scenario's name: a cook question n
 reads the dataset and checks each question against its `expected` keys keeps the two from drifting apart
 (`PulsDatasetsTests.EveryQuestionForTheCook_NamesItsTownItsPeopleAndItsShop_ElsePulsWouldAskFirst`).
 
-## 3. Choose the graders
+## 3. Choose the checks
 
-Start from the common graders in `evals/louis-agent.evals/Grading/Common/`:
+Start from the general checks in `evals/louis-agent.evals/Grading/Common/`:
 
-- `NoErrorGrader()`: no turn's stream reported an error;
-- `WithinTimeGrader(TimeSpan limit)`: every turn was answered within the limit;
-- `CostUnderGrader(decimal limitUsd)`: the trial's cost, from the stream's own usage, is under the limit;
-- `RoutedToGrader(Func<Trial, string?> expectedRole, bool required = true, IReadOnlySet<string>? expectedKeys = null)`: the first
+- `NoErrorCheck()`: no turn's stream reported an error;
+- `WithinTimeCheck(TimeSpan limit)`: every turn was answered within the limit;
+- `CostUnderCheck(decimal limitUsd)`: the trial's cost, from the stream's own usage, is under the limit;
+- `ContainsCheck(IReadOnlyList<string> texts)` (`Answers/`): the first turn's answer holds at least one of the
+  texts, case and accents ignored; never a pattern ([ADR 0057](../adr/0057-regex-is-the-last-option.md));
+- `ToolUsedCheck(string tool)` (`Tools/`): a tool with this exact name was called in the trial, by the agent or a
+  specialist; a streamed error doesn't change it, that is `NoErrorCheck`'s to report;
+- `RoutedToCheck(Func<Trial, string?> expectedRole, bool required = true, IReadOnlySet<string>? expectedKeys = null)`: the first
   turn was routed to the role `expectedRole` gives for the trial (null means it must answer itself). A later turn's hand-over
   is no reason for a miss. An eval whose route is a scenario's key names it in `expectedKeys` (Puls: `routes_to`), so the loader
   can check it is read and fed.
 
-Each is `required` by default, and the stub uses two of them (`NoErrorGrader` and `WithinTimeGrader`, in
+Each is `required` by default, and the stub uses two of them (`NoErrorCheck` and `WithinTimeCheck`, in
 `StubEval.cs`). An infrastructure failure (a timeout, a dropped connection) is `Unknown` in each of them, never a fail.
-Your grader builds its grades with `Verdict`, which the common graders use too: `Verdict.Pass`, `Verdict.Fail`
-and `Verdict.Unknown`. For your identity's rules, write your own `IGrader`. Its members are what the conformance check reads:
+All but `RoutedToCheck` can also be named from a file by their type, with their settings as JSON (`within-time`,
+`{"seconds": 120}`; `contains`, `{"texts": ["recipe", "resep"]}`): `GeneralChecks.All` lists them for the check
+catalogue ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)), and F49.2's eval files are the first to do so.
+
+Your check builds its grades with `Verdict`, which the general checks use too: `Verdict.Pass`, `Verdict.Fail`
+and `Verdict.Unknown`. For your identity's rules, write your own `ICheck`. Its members are what the conformance check reads:
 
 ```csharp
-public sealed class SquareMetresRight : IGrader
+public sealed class SquareMetresRight : ICheck
 {
     public string Name => "square-metres-right";                  // MCP-safe: letters, digits, '-' and '_'
     public int Version => 1;                                       // bump it when the rule changes
-    public GraderKind Kind => GraderKind.FixedRule;               // no model: free and repeatable
-    public bool Required => true;                                  // a trial passes only if every required grader does
+    public CheckKind Kind => CheckKind.FixedRule;                 // no model: free and repeatable
+    public bool Required => true;                                  // a trial passes only if every required check does
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>(["square_metres"]); // every key it reads from expected
 
     public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken)
@@ -252,10 +260,10 @@ public enum AcmeGradeMessage
 
 The rules every set must keep, which the catalogue and the conformance check hold:
 
-- at least one required grader is a fixed rule (`Kind == FixedRule`), so no eval runs without a check that needs no model;
-- every key in a scenario's `expected` is in some grader's `ExpectedKeys`;
+- at least one required check is a fixed rule (`Kind == FixedRule`), so no eval runs without a check that needs no model;
+- every key in a scenario's `expected` is in some check's `ExpectedKeys`;
 - `Unknown` (a cost with no price, no usage) never counts as a pass; a trial whose turn failed for the infrastructure (a timeout, a dropped connection, an API error, a replay miss) is `Infrastructure` for the run: neither a pass nor a fail, left out of pass@k and pass^k and counted apart (a transport failure is run once more first);
-- the cost comes from the stream's usage (`EngineEvents.CostOf`), never from a grader's own sum (ADR 0029);
+- the cost comes from the stream's usage (`EngineEvents.CostOf`), never from a check's own sum (ADR 0029);
 - names are MCP-safe and unique, and versions are at least 1. The check requires the number; bumping it when a rule
   changes is your job, and nothing checks it.
 
@@ -275,10 +283,10 @@ public sealed class QuotesEval : IEval
         ValueTask.FromResult<IReadOnlyList<EvalMode>>([new EvalMode(QuotesMode.Only.Wire(), "acme/voice", [QuotesToolset.Web.Wire()])]);
 
     // Static, so the scenarios can load with them: the dataset checks its expected keys against these graders when it loads.
-    private static readonly IReadOnlyList<IGrader> GraderList =
-        [new NoErrorGrader(), new WithinTimeGrader(TimeSpan.FromMinutes(2)), new SquareMetresRight()];
+    private static readonly IReadOnlyList<ICheck> GraderList =
+        [new NoErrorCheck(), new WithinTimeCheck(TimeSpan.FromMinutes(2)), new SquareMetresRight()];
 
-    public IReadOnlyList<IGrader> Graders => GraderList;
+    public IReadOnlyList<ICheck> Checks => GraderList;
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } =
         DatasetLoader.Load(EvalFiles.DatasetOf(typeof(QuotesEval)), GraderList).Scenarios;
@@ -436,7 +444,7 @@ broken stream, a non-2xx answer) is recorded in its `turn` line as `failure` and
 The portal lists the runner's evals with no change in the API. [Change the API](change-the-api.md#add-an-eval-to-the-portal)
 says what the portal shows and how to rebuild the image that serves it. Its grades show in the run with nothing to add: the
 run page reads only the standard records (your eval's name, version and graders on the run; each conversation's grades and
-outcome), so every grader you wrote is a chip on its conversation, in your `Graders` order, with its reason on hover
+outcome), so every grader you wrote is a chip on its conversation, in your `Checks` order, with its reason on hover
 ([Change the Puls app](change-the-puls-app.md#change-the-admin-portal)).
 
 ## 11. Record a run, and replay it

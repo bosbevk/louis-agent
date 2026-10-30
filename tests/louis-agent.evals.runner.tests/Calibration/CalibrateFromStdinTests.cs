@@ -170,13 +170,13 @@ public class CalibrateFromStdinTests
             StubMode.Delegating.Wire(), "8f7802b9a72e", 1, [new LabelTurn("For two", text)], pass, "");
 
     /// <summary>A model grader that says yes to "yes" and no to anything else, and keeps the last trial it saw.</summary>
-    private sealed class FakeGrader : IGrader
+    private sealed class FakeCheck : ICheck
     {
         public int Asked { get; private set; }
         public Trial? LastTrial { get; private set; }
         public string Name => "meal-for-people";
         public int Version => 1;
-        public GraderKind Kind => GraderKind.Model;
+        public CheckKind Kind => CheckKind.Model;
         public bool Required => false;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "serves" };
 
@@ -192,13 +192,13 @@ public class CalibrateFromStdinTests
 
     private sealed class FakeEval(IReadOnlyList<LabeledAnswer> labels) : IEval
     {
-        public FakeGrader Grader { get; } = new();
+        public FakeCheck Grader { get; } = new();
         public string Name => "fake";
         public int Version => 1;
         public string Proves => "A fake eval for the calibration from stdin.";
         public IReadOnlyList<LabeledAnswer> Labels => labels;
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [Scenario];
-        public IReadOnlyList<IGrader> Graders => [Grader];
+        public IReadOnlyList<ICheck> Checks => [Grader];
 
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,
             CancellationToken cancellationToken) => throw new NotSupportedException();

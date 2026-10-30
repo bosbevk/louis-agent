@@ -76,8 +76,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 
 **The engine and its parts**
 
-- **Reuse before building** — reuse the repo's components and maintained packages (MIT, Apache, BSD); write our own
-  only when nothing fits, and say in the plan which were considered. [ADR 0030](adr/0030-build-or-adopt.md).
+- **Reuse before building, and keep it simple** — reuse the repo's components and maintained packages (MIT, Apache,
+  BSD); the simplest design that meets the step, nothing for a future no plan names. [ADR 0030](adr/0030-build-or-adopt.md), [ADR 0055](adr/0055-keep-it-simple.md).
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
   sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who an agent is, a pack what it

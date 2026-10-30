@@ -117,7 +117,7 @@ public sealed record ClassReport(bool Pass, int Total, int Agreed, int Passed, i
 /// </summary>
 public static class Calibration
 {
-    public static async Task<CalibrationReport> RunAsync(IGrader grader, IReadOnlyList<EvalScenario> scenarios,
+    public static async Task<CalibrationReport> RunAsync(ICheck grader, IReadOnlyList<EvalScenario> scenarios,
         IReadOnlyList<LabeledAnswer> labels, CancellationToken cancellationToken)
     {
         var judged = new List<JudgedAnswer>();

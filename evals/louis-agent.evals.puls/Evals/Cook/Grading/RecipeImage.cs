@@ -17,11 +17,11 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading;
 /// a scenario sets <c>recipe_image</c>. When none of the pages the cook read had an image there is nothing to show, so the grade is Unknown, never a Fail.
 /// A fixed rule over the answer and the results, so it needs no model.
 /// </summary>
-public sealed class RecipeImage : IGrader
+public sealed class RecipeImage : ICheck
 {
     public string Name => "recipe-image";
     public int Version => 2;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => true;
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "recipe_image" }.ToFrozenSet();
 

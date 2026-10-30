@@ -117,7 +117,7 @@ public class EvalLayoutTests
     {
         var wrong = new List<string>();
         foreach (var eval in project.Evals)
-            foreach (var grader in eval.Graders)
+            foreach (var grader in eval.Checks)
             {
                 string? ns = grader.GetType().Namespace;
                 string own = $"{project.RootNamespace}.Evals.{FolderOf(eval)}.Grading",

@@ -79,11 +79,11 @@ public static class EvalText
 
     /// <summary>A grader kind's colour on the card: rules, a model judge and a person each have their own.</summary>
     public static string Tone(string kind) =>
-        (SettingChoice.TryParse(kind, out GraderKind? known) ? known : null) switch
+        (SettingChoice.TryParse(kind, out CheckKind? known) ? known : null) switch
         {
-            GraderKind.FixedRule => "rule",
-            GraderKind.Model => "model",
-            GraderKind.Human => "person",
+            CheckKind.FixedRule => "rule",
+            CheckKind.Model => "model",
+            CheckKind.Human => "person",
             _ => "other"
         };
 
@@ -97,11 +97,11 @@ public static class EvalText
 
     /// <summary>What a grader judges with, in words; a kind we don't know is shown as it came.</summary>
     public static string Kind(string kind) =>
-        (SettingChoice.TryParse(kind, out GraderKind? known) ? known : null) switch
+        (SettingChoice.TryParse(kind, out CheckKind? known) ? known : null) switch
         {
-            GraderKind.FixedRule => "fixed rule",
-            GraderKind.Model => "model",
-            GraderKind.Human => "a person",
+            CheckKind.FixedRule => "fixed rule",
+            CheckKind.Model => "model",
+            CheckKind.Human => "a person",
             _ => kind
         };
 }

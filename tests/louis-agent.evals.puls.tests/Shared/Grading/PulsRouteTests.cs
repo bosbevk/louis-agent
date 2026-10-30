@@ -24,7 +24,7 @@ public class PulsRouteTests
     {
         var grader = PulsRoute.Grader();
 
-        Assert.That((grader.Name, grader.Required, grader.Kind), Is.EqualTo(("routed-to", true, GraderKind.FixedRule)));
+        Assert.That((grader.Name, grader.Required, grader.Kind), Is.EqualTo(("routed-to", true, CheckKind.FixedRule)));
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "routes_to" }));
     }
 

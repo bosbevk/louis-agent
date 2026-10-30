@@ -4,6 +4,14 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-30 — **F49.1 The checks catalogue**: the check contract (`ICheck`, `Grade`, `Trial` and the turn types) out
+  of the harness into `evals/louis-agent.evals.checks`, which a pack can reference; grader became check in C# (the
+  wire keeps `grader`); a check type is named in kebab case and built from a strict typed settings record
+  (`CheckType<TParameters>`), found in `CheckCatalog`, which lists each entry's JSON schema; the harness's entries are
+  `GeneralChecks.All`: `no-error`, `within-time`, `cost-under`, and two new checks, `contains` (one of a list of
+  texts, case and accents ignored) and `tool-used` (by the agent or a specialist). No regex check
+  ([0057](docs/adr/0057-regex-is-the-last-option.md)); `routed-to` waits for F49.2
+  ([0056](docs/adr/0056-a-check-is-a-catalogue-entry.md), [write-up 20](docs/learning/20-extensibility.md))
 - 2026-10-29 — **FX23 A script that never reads its input keeps its exit code and output**: `ProcessRunner` guards the
   stdin write and close, so a child that exits first ("Broken pipe") no longer reports as a failed run with its output
   lost; `CreatedTool_SupportsPowerShellAndBash` is no longer flaky (ten green runs on the fix, eight of ten red before)

@@ -65,7 +65,7 @@ public class RecordedV2RunTests
         Assert.That((run.Eval, run.EvalVersion, run.Commit, run.Split),
             Is.EqualTo(("sample-eval", (int?)9, "5857373b", (RunSplit?)RunSplit.HeldOut)));
         Assert.That(run.Models, Has.Count.EqualTo(2));
-        Assert.That(run.Graders!.Single(g => g.Kind == GraderKind.Human).Question,
+        Assert.That(run.Graders!.Single(g => g.Kind == CheckKind.Human).Question,
             Is.EqualTo("Is this a meal for the people asked for?"));
         Assert.That(run.Slices!.Single().Graders.Single().ScoreMean, Is.EqualTo(0.5));
         Assert.That(run.Log, Is.Empty);

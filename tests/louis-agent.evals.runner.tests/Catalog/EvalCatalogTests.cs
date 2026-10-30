@@ -61,7 +61,7 @@ public class EvalCatalogTests
     [Test]
     public void RefusesAnEvalWithOnlyModelGraders()
     {
-        var model = new FakeGrader(GraderKind.Model, required: true);
+        var model = new FakeCheck(CheckKind.Model, required: true);
 
         Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", [model]))], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'cook' has no required fixed-rule grader"));
@@ -72,7 +72,7 @@ public class EvalCatalogTests
     public void RefusesAnEvalWhoseFixedRuleIsNotRequired()
     {
         // A fixed rule that doesn't decide the trial is no check: the eval needs one it must pass.
-        var optional = new FakeGrader(GraderKind.FixedRule, required: false);
+        var optional = new FakeCheck(CheckKind.FixedRule, required: false);
 
         Assert.That(() => new EvalCatalog([new FakeSet(new FakeEval("cook", [optional]))], Stub),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("'cook' has no required fixed-rule grader"));
@@ -83,7 +83,7 @@ public class EvalCatalogTests
     public void AcceptsAnEvalWithARequiredFixedRule()
     {
         var catalog =
-            new EvalCatalog([new FakeSet(new FakeEval("cook", [new FakeGrader(GraderKind.FixedRule, required: true)]))],
+            new EvalCatalog([new FakeSet(new FakeEval("cook", [new FakeCheck(CheckKind.FixedRule, required: true)]))],
                 Stub);
 
         Assert.That(catalog.Find("cook"), Is.Not.Null);
@@ -170,10 +170,10 @@ public class EvalCatalogTests
     public void AnEvalsDatasetCategoriesAndGraders_AreListed()
     {
         var dataset = new DatasetManifest("cook-set", 3, "Meals", "hash", []);
-        var model = new FakeGrader(GraderKind.Model, required: false);
+        var model = new FakeCheck(CheckKind.Model, required: false);
         var catalog = new EvalCatalog(
         [
-            new FakeSet(new FakeEval("cook", [new FakeGrader(GraderKind.FixedRule, required: true), model],
+            new FakeSet(new FakeEval("cook", [new FakeCheck(CheckKind.FixedRule, required: true), model],
                 [Scenario("a", "town", "city"), Scenario("b", "town")], dataset))
         ], Stub);
 
@@ -184,7 +184,7 @@ public class EvalCatalogTests
         Assert.That(cook.Graders,
             Is.EqualTo(new[]
             {
-                new ListedGrader("fake", 1, GraderKind.FixedRule), new ListedGrader("fake", 1, GraderKind.Model)
+                new ListedGrader("fake", 1, CheckKind.FixedRule), new ListedGrader("fake", 1, CheckKind.Model)
             }));
     }
 
@@ -204,7 +204,7 @@ public class EvalCatalogTests
     /// </summary>
     private sealed class FakeEval(
         string name,
-        IReadOnlyList<IGrader>? graders = null,
+        IReadOnlyList<ICheck>? graders = null,
         IReadOnlyList<EvalScenario>? scenarios = null,
         DatasetManifest? dataset = null) : IEval
     {
@@ -219,19 +219,19 @@ public class EvalCatalogTests
 
         public IReadOnlyList<EvalScenario> Scenarios { get; } = scenarios ?? [];
 
-        public IReadOnlyList<IGrader> Graders { get; } =
-            graders ?? [new FakeGrader(GraderKind.FixedRule, required: true)];
+        public IReadOnlyList<ICheck> Checks { get; } =
+            graders ?? [new FakeCheck(CheckKind.FixedRule, required: true)];
 
         /// <summary>Never asked: the catalogue doesn't record turns.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
     }
 
     /// <summary>A grader of the kind given, which the catalogue only looks at and never asks to grade.</summary>
-    private sealed class FakeGrader(GraderKind kind, bool required) : IGrader
+    private sealed class FakeCheck(CheckKind kind, bool required) : ICheck
     {
         public string Name => "fake";
         public int Version => 1;
-        public GraderKind Kind { get; } = kind;
+        public CheckKind Kind { get; } = kind;
         public bool Required { get; } = required;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
 

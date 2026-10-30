@@ -65,9 +65,9 @@ public class ExampleEvalTests
     [Test]
     public void ItsGraderIsARequiredFixedRule_ThatReadsTheKeyTheScenarioSets()
     {
-        var grader = Eval.Graders.Single();
+        var grader = Eval.Checks.Single();
 
-        Assert.That((grader.Name, grader.Kind, grader.Required), Is.EqualTo(("example", GraderKind.FixedRule, true)));
+        Assert.That((grader.Name, grader.Kind, grader.Required), Is.EqualTo(("example", CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "example" }));
     }
 
@@ -79,6 +79,6 @@ public class ExampleEvalTests
         Assert.Throws<NotImplementedException>(() =>
             Eval.TurnFactsOf(new TurnTranscript(1, "s", "q", [], TimeSpan.Zero, null), AnyMode));
         Assert.Throws<NotImplementedException>(() =>
-            Eval.Graders.Single().GradeAsync(AnyTrial, CancellationToken.None));
+            Eval.Checks.Single().GradeAsync(AnyTrial, CancellationToken.None));
     }
 }

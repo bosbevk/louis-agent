@@ -27,7 +27,7 @@ namespace LouisAgent.Evals.Tests.Grading.Human;
 public class PendingOutcomeTests
 {
     /// <summary>A grader of the kind given: a human one waits, any other passes.</summary>
-    private sealed class Rule(string name, GraderKind kind, bool required) : IGrader
+    private sealed class Rule(string name, CheckKind kind, bool required) : ICheck
     {
         /// <inheritdoc />
         public string Name => name;
@@ -36,7 +36,7 @@ public class PendingOutcomeTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => kind;
+        public CheckKind Kind => kind;
 
         /// <inheritdoc />
         public bool Required => required;
@@ -46,19 +46,19 @@ public class PendingOutcomeTests
 
         /// <summary>A human grader waits for a person; any other passes.</summary>
         public ValueTask<Grade> GradeAsync(Trial trial, CancellationToken cancellationToken) =>
-            ValueTask.FromResult(kind == GraderKind.Human
+            ValueTask.FromResult(kind == CheckKind.Human
                 ? Verdict.Pending(name, 1, "waits")
                 : Verdict.Pass(name, 1, "fine"));
     }
 
     /// <summary>The required fixed rule.</summary>
-    private static readonly IGrader Fixed = new Rule("routed-to", GraderKind.FixedRule, required: true);
+    private static readonly ICheck Fixed = new Rule("routed-to", CheckKind.FixedRule, required: true);
 
     /// <summary>The judge the review reviews.</summary>
-    private static readonly IGrader Judge = new Rule("meal-for-people", GraderKind.Model, required: false);
+    private static readonly ICheck Judge = new Rule("meal-for-people", CheckKind.Model, required: false);
 
     /// <summary>The human review.</summary>
-    private static readonly IGrader Review = new Rule("meal-for-people.human", GraderKind.Human, required: false);
+    private static readonly ICheck Review = new Rule("meal-for-people.human", CheckKind.Human, required: false);
 
     /// <summary>Pending scores 0 and is its own word: not a pass, and not Unknown.</summary>
     [Test]
@@ -88,7 +88,7 @@ public class PendingOutcomeTests
     [Test]
     public void APendingGraderThatWereRequired_IsNeverAPass()
     {
-        var required = new Rule("meal-for-people.human", GraderKind.Human, required: true);
+        var required = new Rule("meal-for-people.human", CheckKind.Human, required: true);
 
         var outcome = PassRates.Of([Verdict.Pending("meal-for-people.human", 1, "waits")], [required]);
 
@@ -101,7 +101,7 @@ public class PendingOutcomeTests
     {
         var accepted = await EvalConformance.CheckAsync(new Eval(Fixed, Judge, Review), [], CancellationToken.None);
         var refused = await EvalConformance.CheckAsync(
-            new Eval(Fixed, Judge, new Rule("meal-for-people.human", GraderKind.Human, required: true)), [],
+            new Eval(Fixed, Judge, new Rule("meal-for-people.human", CheckKind.Human, required: true)), [],
             CancellationToken.None);
 
         Assert.That(accepted.Where(f => f.Contains("meal-for-people.human")), Is.Empty);
@@ -115,8 +115,8 @@ public class PendingOutcomeTests
     public async Task AGraderNameMayHoldADot_ForAHumanReviews_ButAnEvalsNameMayNot()
     {
         var dotted = await EvalConformance.CheckAsync(
-            new Eval(Fixed, new Rule("meal.for.people", GraderKind.Model, required: false),
-                new Rule("meal.for.people.human", GraderKind.Human, required: false)), [], CancellationToken.None);
+            new Eval(Fixed, new Rule("meal.for.people", CheckKind.Model, required: false),
+                new Rule("meal.for.people.human", CheckKind.Human, required: false)), [], CancellationToken.None);
         var evalName = await EvalConformance.CheckAsync(new Eval("a.dotted.eval", Fixed), [], CancellationToken.None);
 
         Assert.That(dotted.Where(f => f.Contains("not safe")), Is.Empty);
@@ -160,10 +160,10 @@ public class PendingOutcomeTests
     }
 
     /// <summary>An eval of one scenario and the graders given.</summary>
-    private sealed class Eval(string name, params IGrader[] graders) : IEval
+    private sealed class Eval(string name, params ICheck[] graders) : IEval
     {
         /// <summary>The eval under its usual name.</summary>
-        public Eval(params IGrader[] graders) : this("pending-eval", graders)
+        public Eval(params ICheck[] graders) : this("pending-eval", graders)
         {
         }
 
@@ -191,7 +191,7 @@ public class PendingOutcomeTests
         ];
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders { get; } = graders;
+        public IReadOnlyList<ICheck> Checks { get; } = graders;
 
         /// <summary>No facts about a turn.</summary>
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => new(null, null, 0, 0, [], null);

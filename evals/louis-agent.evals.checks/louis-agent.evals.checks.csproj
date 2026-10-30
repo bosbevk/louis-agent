@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- F49.1 step 1: the check contract, what a check reads (a trial) and what it returns (a grade), out of the
+       harness so a pack can reference it and ship its own check (ADR 0056, docs/learning/20-extensibility.md).
+       Pattern: Separated Interface (Fowler, PoEAA): the contract in a small project its clients can reference, the
+       checks elsewhere. It references only what a pack already references; never the harness, a pack, an identity
+       or a package (ArchitectureTests holds it). The root namespace is the harness's, so a moved type keeps its own. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.evals.checks.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The engine: MessageText, which formats a check's reason from its message enum (ADR 0009). -->
+    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <!-- The session stream: the SessionEvents a turn of a trial carries. -->
+    <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+    <!-- The eval protocol: CheckKind and GradeOutcome, the kinds a grade carries on the wire. -->
+    <ProjectReference Include="..\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
+  </ItemGroup>
+
+  <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built from it. -->
+  <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.evals.checks.md" Link="docs\louis-agent.evals.checks.md" />
+  </ItemGroup>
+
+</Project>

@@ -21,11 +21,11 @@ namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.WhereToBuy;
 /// went out on 2026-10-25); it is not in <see cref="CookEval"/>'s graders now, <see cref="EstimatesAtShop"/> is. It keeps its old name and version, so the runs
 /// it graded still read. A scenario that names no shop, or one with no priced shop (<c>any</c>, <c>no-branch</c>), passes: those are the estimates rules.
 /// </summary>
-public sealed class PricedAtRetailer : IGrader
+public sealed class PricedAtRetailer : ICheck
 {
     public string Name => "priced-at-shop";
     public int Version => 1;
-    public GraderKind Kind => GraderKind.FixedRule;
+    public CheckKind Kind => CheckKind.FixedRule;
     public bool Required => true;
 
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>

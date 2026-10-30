@@ -36,7 +36,7 @@ public interface IEval
     /// <summary>The dataset the scenarios came from (its name, version and hash), which a run's first line records; null for an eval with no dataset file, such as the stub (F18 step 5b).</summary>
     DatasetManifest? Dataset => null;
 
-    IReadOnlyList<IGrader> Graders { get; }
+    IReadOnlyList<ICheck> Checks { get; }
 
     /// <summary>A person's labels of stored answers, which a model grader is calibrated against (F18 step 6.3); none for an eval with no <c>labels/</c> folder.</summary>
     IReadOnlyList<LouisAgent.Evals.Labels.LabeledAnswer> Labels => [];

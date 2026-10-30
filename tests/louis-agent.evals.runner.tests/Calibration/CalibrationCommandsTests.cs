@@ -198,7 +198,7 @@ public class CalibrationCommandsTests
     }
 
     /// <summary>A model grader that says yes to "yes" and no to anything else, and counts its asks.</summary>
-    private sealed class FakeGrader : IGrader
+    private sealed class FakeCheck : ICheck
     {
         /// <summary>How many answers it was asked about.</summary>
         public int Asked { get; private set; }
@@ -210,7 +210,7 @@ public class CalibrationCommandsTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.Model;
+        public CheckKind Kind => CheckKind.Model;
 
         /// <inheritdoc />
         public bool Required => false;
@@ -229,7 +229,7 @@ public class CalibrationCommandsTests
     }
 
     /// <summary>A fixed rule that always passes: one a calibration refuses.</summary>
-    private sealed class NoErrorRule : IGrader
+    private sealed class NoErrorRule : ICheck
     {
         /// <inheritdoc />
         public string Name => "no-error";
@@ -238,7 +238,7 @@ public class CalibrationCommandsTests
         public int Version => 1;
 
         /// <inheritdoc />
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
 
         /// <inheritdoc />
         public bool Required => true;
@@ -255,7 +255,7 @@ public class CalibrationCommandsTests
     private sealed class FakeEval(IReadOnlyList<LabeledAnswer> labels) : IEval
     {
         /// <summary>The model grader, so a test can count its asks.</summary>
-        public FakeGrader Grader { get; } = new();
+        public FakeCheck Grader { get; } = new();
 
         /// <inheritdoc />
         public string Name => "fake";
@@ -273,7 +273,7 @@ public class CalibrationCommandsTests
         public IReadOnlyList<EvalScenario> Scenarios { get; } = [Scenario];
 
         /// <inheritdoc />
-        public IReadOnlyList<IGrader> Graders => [new NoErrorRule(), Grader];
+        public IReadOnlyList<ICheck> Checks => [new NoErrorRule(), Grader];
 
         /// <summary>Never called: the calibration commands run no mode.</summary>
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,

@@ -14,7 +14,7 @@ internal static class ReviewQueries
     /// <summary>The names of the human reviews a run has.</summary>
     public static HashSet<string> HumanReviewsOf(Run run) =>
         (run.Graders ?? [])
-        .Where(g => g.Kind == GraderKind.Human &&
+        .Where(g => g.Kind == CheckKind.Human &&
                     g.Name.EndsWith(HumanReview.Suffix, StringComparison.Ordinal))
         .Select(g => g.Name)
         .ToHashSet();

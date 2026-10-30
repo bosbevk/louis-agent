@@ -48,8 +48,8 @@ public sealed class StubEval : IEval
     ];
 
     /// <summary>The stub's graders: no turn errored, and each turn was answered within a minute (a stuck run, the only slow one).</summary>
-    public IReadOnlyList<IGrader> Graders { get; } =
-        [new NoErrorGrader(), new WithinTimeGrader(TimeSpan.FromMinutes(1))];
+    public IReadOnlyList<ICheck> Checks { get; } =
+        [new NoErrorCheck(), new WithinTimeCheck(TimeSpan.FromMinutes(1))];
 
     /// <summary>The canned facts the Python stub writes: the cook answers with one call and three specialist events, and a follow-up continues it.</summary>
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode)

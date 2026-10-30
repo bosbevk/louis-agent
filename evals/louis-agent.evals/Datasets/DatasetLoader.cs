@@ -43,7 +43,7 @@ public static class DatasetLoader
         new Dictionary<string, DatasetSplit> { ["held-out"] = DatasetSplit.HeldOut };
 
     /// <summary>Loads and checks the dataset in this folder for these graders, or refuses it saying why.</summary>
-    public static Dataset Load(string folder, IReadOnlyList<IGrader> graders)
+    public static Dataset Load(string folder, IReadOnlyList<ICheck> graders)
     {
         string manifestPath = Path.Combine(folder, ManifestFileName);
         if (!File.Exists(manifestPath)) throw Refuse(EvalErrorMessage.NoManifest, new { Folder = folder });

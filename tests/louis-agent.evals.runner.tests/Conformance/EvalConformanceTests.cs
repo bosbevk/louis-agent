@@ -76,7 +76,7 @@ public class EvalConformanceTests
                 JsonDocument.Parse("{}").RootElement.Clone(), [], DatasetSplit.Dev),
         ];
 
-        public IReadOnlyList<IGrader> Graders { get; } = [new NoErrorGrader()];
+        public IReadOnlyList<ICheck> Checks { get; } = [new NoErrorCheck()];
 
         public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotImplementedException();
     }

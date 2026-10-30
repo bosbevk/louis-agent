@@ -8,7 +8,7 @@ using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 namespace LouisAgent.Evals.Tests.Trials;
 
 /// <summary>An eval that is only its graders; the trial comes from the builder.</summary>
-internal sealed class GradedEval(params IGrader[] graders) : IEval
+internal sealed class GradedEval(params ICheck[] graders) : IEval
 {
     public string Name => "stub-cook";
     public int Version => 1;
@@ -19,6 +19,6 @@ internal sealed class GradedEval(params IGrader[] graders) : IEval
         ValueTask.FromResult<IReadOnlyList<EvalMode>>([Mode]);
 
     public IReadOnlyList<EvalScenario> Scenarios { get; } = [];
-    public IReadOnlyList<IGrader> Graders { get; } = graders;
+    public IReadOnlyList<ICheck> Checks { get; } = graders;
     public TurnFacts TurnFactsOf(TurnTranscript turn, EvalMode mode) => throw new NotSupportedException();
 }

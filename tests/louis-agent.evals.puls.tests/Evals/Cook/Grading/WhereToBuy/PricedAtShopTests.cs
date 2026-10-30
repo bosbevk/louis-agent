@@ -46,7 +46,7 @@ public class PricedAtShopTests
         var grader = new PricedAtRetailer();
 
         Assert.That((grader.Name, grader.Kind, grader.Required),
-            Is.EqualTo(("priced-at-shop", GraderKind.FixedRule, true)));
+            Is.EqualTo(("priced-at-shop", CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "shop", "town" }));
     }
 

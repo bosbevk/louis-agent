@@ -23,7 +23,7 @@ references only `louis-agent.choices`, so each side takes it without the others.
   `TurnEvent` (its figures: `agent_calls`, `specialist_calls`, hosts, seconds, error, failure) and
   `ConversationEvent` (its `GradeInfo`s, its `TrialOutcome` and its `Metrics`). `TurnKey` and `ConversationKey` name
   them.
-- **Words are kebab-case, fields snake_case.** Every choice is an enum in `Kinds/` (`GraderKind`, `GradeOutcome`,
+- **Words are kebab-case, fields snake_case.** Every choice is an enum in `Kinds/` (`CheckKind`, `GradeOutcome`,
   `TrialOutcome`, `TurnFailure`, `ModelLevel`, `RunSplit`), written with its `[WireName]`
   ([ADR 0024](../adr/0024-choices-are-enums.md)). The field names are our own, not OpenTelemetry's `gen_ai.*`.
 - **A line that is no event is a line for people.** `EvalProtocolJson.Read` returns null for a line that isn't a JSON
@@ -62,4 +62,4 @@ golden in `louis-agent.evals.tests`, and the API's reader in its `RecordedV2RunT
 [louis-agent.evals](louis-agent.evals.md) · [louis-agent.api](louis-agent.api.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.evals](louis-agent.evals.md) · Next: [louis-agent.evals.runner](louis-agent.evals.runner.md)
+[Projects](README.md) · Previous: [louis-agent.evals.checks](louis-agent.evals.checks.md) · Next: [louis-agent.evals.runner](louis-agent.evals.runner.md)

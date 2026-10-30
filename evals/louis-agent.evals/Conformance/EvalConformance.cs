@@ -35,7 +35,7 @@ public static class EvalConformance
     {
         var failures = new List<string>();
         CheckShape(eval, failures);
-        var required = eval.Graders.Where(grader => grader.Required).ToList();
+        var required = eval.Checks.Where(grader => grader.Required).ToList();
         // Per eval: a grader needs a Fail on a known-bad of any scenario, so each scenario can cover the graders the others don't.
         var failedBy = new HashSet<string>(StringComparer.Ordinal);
 
@@ -50,10 +50,10 @@ public static class EvalConformance
 
             var reference = await GradeAllAsync(eval, Trial(scenario, conformanceCase.Mode, conformanceCase.Reference),
                 failures, cancellationToken);
-            foreach (IGrader grader in required)
+            foreach (ICheck grader in required)
             {
                 // A grader that threw is reported as a throw; it has no grade to fail the reference with.
-                var grade = reference.FirstOrDefault(g => g.Grader == grader.Name);
+                var grade = reference.FirstOrDefault(g => g.Check == grader.Name);
                 if (grade is { Outcome: not GradeOutcome.Pass })
                     failures.Add(MessageText.Format(ConformanceMessage.ReferenceFails,
                         new { Scenario = scenario.Id, Grader = grader.Name, Reason = grade.Reason }));
@@ -63,19 +63,19 @@ public static class EvalConformance
             {
                 var grades = await GradeAllAsync(eval, Trial(scenario, conformanceCase.Mode, bad.Transcript), failures,
                     cancellationToken);
-                var requiredGrades = grades.Where(g => required.Any(r => r.Name == g.Grader)).ToList();
+                var requiredGrades = grades.Where(g => required.Any(r => r.Name == g.Check)).ToList();
                 if (required.Count > 0 && requiredGrades.Count == required.Count &&
                     requiredGrades.All(g => g.Outcome == GradeOutcome.Pass))
                     failures.Add(MessageText.Format(ConformanceMessage.BadPasses,
                         new { Scenario = scenario.Id, Label = bad.Label }));
                 foreach (Grade grade in grades)
                     if (grade.Outcome == GradeOutcome.Fail)
-                        failedBy.Add(grade.Grader);
+                        failedBy.Add(grade.Check);
             }
         }
 
         // A known-bad that a grader only calls Unknown doesn't show it failing: only a Fail counts.
-        foreach (IGrader grader in required)
+        foreach (ICheck grader in required)
             if (!failedBy.Contains(grader.Name))
                 failures.Add(MessageText.Format(ConformanceMessage.NoKnownBadFails,
                     new { Name = eval.Name, Grader = grader.Name }));
@@ -92,14 +92,14 @@ public static class EvalConformance
         if (eval.Version < 1)
             failures.Add(MessageText.Format(ConformanceMessage.VersionBelowOne,
                 new { Name = eval.Name, Version = eval.Version }));
-        if (!eval.Graders.Any(grader => grader.Required && grader.Kind == GraderKind.FixedRule))
+        if (!eval.Checks.Any(grader => grader.Required && grader.Kind == CheckKind.FixedRule))
             failures.Add(MessageText.Format(ConformanceMessage.NoRequiredFixedRule, new { Name = eval.Name }));
 
         var names = new HashSet<string>(StringComparer.Ordinal);
-        foreach (IGrader grader in eval.Graders)
+        foreach (ICheck grader in eval.Checks)
         {
             // A human review waits for a person, so a required one would make every run wait on one (F18 step 6a): it is never required.
-            if (grader.Kind == GraderKind.Human)
+            if (grader.Kind == CheckKind.Human)
             {
                 if (grader.Required)
                     failures.Add(MessageText.Format(ConformanceMessage.HumanGraderRequired,
@@ -109,7 +109,7 @@ public static class EvalConformance
                     ? grader.Name[..^HumanSuffix.Length]
                     : grader.Name;
                 if (reviews.Length == 0 || reviews == grader.Name ||
-                    !eval.Graders.Any(other => other.Kind == GraderKind.Model && other.Name == reviews))
+                    !eval.Checks.Any(other => other.Kind == CheckKind.Model && other.Name == reviews))
                     failures.Add(MessageText.Format(ConformanceMessage.HumanReviewReviewsNoModelGrader,
                         new { Grader = grader.Name, Reviews = reviews }));
             }
@@ -124,7 +124,7 @@ public static class EvalConformance
                     new { Grader = grader.Name, Version = grader.Version }));
         }
 
-        var keys = eval.Graders.SelectMany(grader => grader.ExpectedKeys).ToHashSet();
+        var keys = eval.Checks.SelectMany(grader => grader.ExpectedKeys).ToHashSet();
         foreach (EvalScenario scenario in eval.Scenarios)
         {
             if (scenario.Expected.ValueKind != JsonValueKind.Object) continue;
@@ -140,9 +140,9 @@ public static class EvalConformance
         CancellationToken cancellationToken)
     {
         var grades = new List<Grade>();
-        foreach (IGrader grader in eval.Graders)
+        foreach (ICheck grader in eval.Checks)
         {
-            if (grader is HumanReviewGrader review && !review.AppliesTo(trial)) continue;
+            if (grader is HumanReviewCheck review && !review.AppliesTo(trial)) continue;
             Grade grade;
             try
             {
@@ -165,13 +165,13 @@ public static class EvalConformance
     private static void CheckGrade(Grade grade, List<string> failures)
     {
         if (string.IsNullOrWhiteSpace(grade.Reason))
-            failures.Add(MessageText.Format(ConformanceMessage.NoReason, new { Grader = grade.Grader }));
+            failures.Add(MessageText.Format(ConformanceMessage.NoReason, new { Grader = grade.Check }));
         if (grade.Score < 0 || grade.Score > 1)
             failures.Add(MessageText.Format(ConformanceMessage.ScoreOutOfRange,
-                new { Grader = grade.Grader, Score = grade.Score }));
+                new { Grader = grade.Check, Score = grade.Score }));
         bool agrees = grade.Outcome == GradeOutcome.Pass ? grade.Score == 1 : grade.Score == 0;
         if (!agrees)
             failures.Add(MessageText.Format(ConformanceMessage.OutcomeScore,
-                new { Grader = grade.Grader, Outcome = grade.Outcome, Score = grade.Score }));
+                new { Grader = grade.Check, Outcome = grade.Outcome, Score = grade.Score }));
     }
 }

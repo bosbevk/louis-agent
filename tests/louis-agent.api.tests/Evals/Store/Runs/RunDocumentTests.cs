@@ -41,8 +41,8 @@ public class RunDocumentTests
         Eval: SampleMode.Alpha, EvalVersion: 10, Commit: "abc1234",
         Graders:
         [
-            new Grader("routed-to", 1, GraderKind.FixedRule),
-            new Grader("meal-for-people.human", 2, GraderKind.Human, "Is this a meal?"),
+            new Grader("routed-to", 1, CheckKind.FixedRule),
+            new Grader("meal-for-people.human", 2, CheckKind.Human, "Is this a meal?"),
         ],
         Models: [new ModelUse(SampleMode.Alpha, ModelLevel.Agent, "puls/voice-af", "claude-haiku-5-5")],
         Split: RunSplit.HeldOut, RescoreOf: "old123456789",
@@ -50,10 +50,10 @@ public class RunDocumentTests
         [
             new EvalSlice(SampleMode.Alpha, "overall", 8, 6, 1, 1, 0, ["cook-af", "cook-en"], false, 0.75, 1.0, 0.5,
                 [
-                    new GraderCount("routed-to", GraderKind.FixedRule, 7, 1, 0, 0.875),
-                    new GraderCount("meal-for-people.human", GraderKind.Human, 0, 0, 0, null),
+                    new GraderCount("routed-to", CheckKind.FixedRule, 7, 1, 0, 0.875),
+                    new GraderCount("meal-for-people.human", CheckKind.Human, 0, 0, 0, null),
                 ],
-                [new KindCount(GraderKind.FixedRule, 7, 1, 0)], T0.AddMinutes(4)),
+                [new KindCount(CheckKind.FixedRule, 7, 1, 0)], T0.AddMinutes(4)),
         ],
         Prompts:
         [

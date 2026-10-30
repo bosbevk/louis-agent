@@ -31,7 +31,7 @@ public sealed record EvalDatasetLine(string Name, int Version);
 
 /// <summary>One of an eval's graders: its name, its version and what it judges with.</summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-public sealed record EvalGraderLine(string Name, int Version, GraderKind Kind);
+public sealed record EvalGraderLine(string Name, int Version, CheckKind Kind);
 
 /// <summary>What reading the runner's listing gave: its evals, or why it couldn't be read, in words.</summary>
 public sealed record EvalListingResult(IReadOnlyList<EvalLine> Evals, string? Failure);
@@ -65,7 +65,7 @@ public sealed class EvalListing(
         PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
         RespectRequiredConstructorParameters = true,
         RespectNullableAnnotations = true,
-        Converters = { new JsonStringEnumConverter<GraderKind>(allowIntegerValues: false) },
+        Converters = { new JsonStringEnumConverter<CheckKind>(allowIntegerValues: false) },
     };
 
     /// <summary>Runs the listing and reads what it wrote, or says why it couldn't.</summary>

@@ -18,7 +18,7 @@ public class PassRatesTests
     [Test]
     public void EveryRequiredGraderPassing_IsAPass()
     {
-        var graders = new IGrader[] { new FakeGrader("a", required: true), new FakeGrader("b", required: true) };
+        var graders = new ICheck[] { new FakeCheck("a", required: true), new FakeCheck("b", required: true) };
 
         Assert.That(PassRates.Of([Pass("a"), Pass("b")], graders), Is.EqualTo(TrialOutcome.Pass));
     }
@@ -26,7 +26,7 @@ public class PassRatesTests
     [Test]
     public void ARequiredFail_BesideARequiredUnknown_IsAFail()
     {
-        var graders = new IGrader[] { new FakeGrader("a", required: true), new FakeGrader("b", required: true) };
+        var graders = new ICheck[] { new FakeCheck("a", required: true), new FakeCheck("b", required: true) };
 
         Assert.That(PassRates.Of([Unknown("a"), Fail("b")], graders), Is.EqualTo(TrialOutcome.Fail));
     }
@@ -34,7 +34,7 @@ public class PassRatesTests
     [Test]
     public void ARequiredUnknown_AndNoFail_IsUnknown()
     {
-        var graders = new IGrader[] { new FakeGrader("a", required: true), new FakeGrader("b", required: true) };
+        var graders = new ICheck[] { new FakeCheck("a", required: true), new FakeCheck("b", required: true) };
 
         Assert.That(PassRates.Of([Pass("a"), Unknown("b")], graders), Is.EqualTo(TrialOutcome.Unknown));
     }
@@ -42,10 +42,10 @@ public class PassRatesTests
     [Test]
     public void AnOptionalFailOrUnknown_StillPasses()
     {
-        var graders = new IGrader[]
+        var graders = new ICheck[]
         {
-            new FakeGrader("a", required: true), new FakeGrader("b", required: false),
-            new FakeGrader("c", required: false)
+            new FakeCheck("a", required: true), new FakeCheck("b", required: false),
+            new FakeCheck("c", required: false)
         };
 
         Assert.That(PassRates.Of([Pass("a"), Fail("b"), Unknown("c")], graders), Is.EqualTo(TrialOutcome.Pass));
@@ -55,7 +55,7 @@ public class PassRatesTests
     public void ARequiredGraderWithNoGrade_IsUnknown()
     {
         // A grader that never graded can't have passed: the trial isn't a pass until every required check is in.
-        var graders = new IGrader[] { new FakeGrader("a", required: true), new FakeGrader("b", required: true) };
+        var graders = new ICheck[] { new FakeCheck("a", required: true), new FakeCheck("b", required: true) };
 
         Assert.That(PassRates.Of([Pass("a")], graders), Is.EqualTo(TrialOutcome.Unknown));
     }
@@ -64,17 +64,17 @@ public class PassRatesTests
     public void NoRequiredGrader_IsUnknown()
     {
         // No trial passes without a check; the catalogue refuses such an eval anyway.
-        var graders = new IGrader[] { new FakeGrader("a", required: false) };
+        var graders = new ICheck[] { new FakeCheck("a", required: false) };
 
         Assert.That(PassRates.Of([Pass("a")], graders), Is.EqualTo(TrialOutcome.Unknown));
     }
 
     /// <summary>A grader by name and requirement only: these tests never call it.</summary>
-    private sealed class FakeGrader(string name, bool required) : IGrader
+    private sealed class FakeCheck(string name, bool required) : ICheck
     {
         public string Name => name;
         public int Version => 1;
-        public GraderKind Kind => GraderKind.FixedRule;
+        public CheckKind Kind => CheckKind.FixedRule;
         public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>();
         public bool Required => required;
 

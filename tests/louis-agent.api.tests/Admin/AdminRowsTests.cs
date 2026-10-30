@@ -41,7 +41,7 @@ public class AdminRowsTests
     public void ARunWithAnEvalAndTwoGraders_GivesThemInOrder()
     {
         var row = Json(StoredRunRow.Of(Run("stub",
-            [new("no-error", 1, GraderKind.FixedRule), new("meal", 2, GraderKind.Model)])));
+            [new("no-error", 1, CheckKind.FixedRule), new("meal", 2, CheckKind.Model)])));
 
         Assert.That(row.GetProperty("eval").GetString(), Is.EqualTo("stub"));
         Assert.That(row.GetProperty("eval_version").GetInt32(), Is.EqualTo(3));
@@ -58,8 +58,8 @@ public class AdminRowsTests
     {
         var row = Json(StoredRunRow.Of(Run("stub",
         [
-            new("no-error", 1, GraderKind.FixedRule),
-            new("meal.human", 1, GraderKind.Human, "Is this a meal?")
+            new("no-error", 1, CheckKind.FixedRule),
+            new("meal.human", 1, CheckKind.Human, "Is this a meal?")
         ])));
 
         var graders = row.GetProperty("graders").EnumerateArray().ToList();

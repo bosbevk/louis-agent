@@ -42,7 +42,7 @@ public static class MongoEvalDatabase
         BsonSerializer.TryRegisterSerializer(new DateTimeOffsetSerializer(BsonType.DateTime));
         WireName<EvalRunStatus>();
         WireName<RunSplit>();
-        WireName<GraderKind>();
+        WireName<CheckKind>();
         WireName<ModelLevel>();
         WireName<GradeOutcome>();
         WireName<TrialOutcome>();

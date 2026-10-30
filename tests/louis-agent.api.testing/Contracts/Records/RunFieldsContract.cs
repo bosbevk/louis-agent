@@ -47,8 +47,8 @@ public abstract class RunFieldsContract
         string id = NewId();
         var graders = new[]
         {
-            new Grader("routed-to", 1, GraderKind.FixedRule),
-            new Grader("meal-for-people.human", 1, GraderKind.Human, "Is this a meal for the people asked for?")
+            new Grader("routed-to", 1, CheckKind.FixedRule),
+            new Grader("meal-for-people.human", 1, CheckKind.Human, "Is this a meal for the people asked for?")
         };
         await _store.SaveRunAsync(NewRun(id) with { Graders = graders });
 
@@ -94,10 +94,10 @@ public abstract class RunFieldsContract
         {
             new EvalSlice(SampleMode.Beta, "overall", 8, 6, 1, 1, 0, ["a", "b"], false, 0.75, 1.0, 0.5,
                 [
-                    new GraderCount("routed-to", GraderKind.FixedRule, 7, 1, 0, 0.875),
-                    new GraderCount("meal-for-people.human", GraderKind.Human, 0, 0, 0, null)
+                    new GraderCount("routed-to", CheckKind.FixedRule, 7, 1, 0, 0.875),
+                    new GraderCount("meal-for-people.human", CheckKind.Human, 0, 0, 0, null)
                 ],
-                [new KindCount(GraderKind.FixedRule, 7, 1, 0)]),
+                [new KindCount(CheckKind.FixedRule, 7, 1, 0)]),
             new EvalSlice(SampleMode.Beta, "language:af", 3, 3, 0, 0, 0, ["a"], true, null, null, null, [], []),
         };
 
