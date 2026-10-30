@@ -18,8 +18,12 @@ The why is [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md).
 
 Today it holds what a check reads: a `Trial` is one run of a scenario in one mode, and its `Transcript` is the turns
 it left, each a `TurnTranscript` with the session's events as they arrived. `EngineEvents` reads those events (the
-answer, the error, the usage), and `TurnFacts` is what a turn's protocol record says about it. Step 3 moves in what a
-check returns (`IGrader`, `Grade`, `Verdict`).
+answer, the error, the usage), and `TurnFacts` is what a turn's protocol record says about it.
+
+And what a check returns: `IGrader` scores one trial into a `Grade` (a score from 0 to 1, an outcome, a reason, and
+for a model grader the `GradeJudge` that judged it). `Verdict` builds the four kinds of grade, so a pass always scores
+1, and an infrastructure failure is always Unknown, never the agent's fail. The reasons are `CommonGradeMessage`
+members (ADR 0009), formatted by core's `MessageText`.
 
 These came from the harness as a pure move: the root namespace is `LouisAgent.Evals`, the harness's, so a moved type
 keeps its namespace and nothing that uses it changes.
@@ -41,6 +45,8 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 | `EvalMode.cs` | One mode a task runs in: its role, its toolsets, and a sub-session's depth and LLM |
 | `Datasets/Scenarios/` | `EvalScenario`, `EvalInput`, `DatasetSplit`: one scenario, what the user sends, and its split |
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
+| `Grading/` | `IGrader`, `Grade` and `GradeJudge`; `Common/Verdict` |
+| `Messages/` | `CommonGradeMessage`: the reasons a grade gives |
 
 ## Tests
 
@@ -48,7 +54,8 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 references: exactly the three above, none into `packs/` or `identities/`. `EngineEvents` is still tested in
 `louis-agent.evals.tests` (`EngineEventsTests`, `AnswerOfTests`): those tests build their trials with the harness
 tests' shared `TrialBuilder`, and a test project may not reference another, so they stay until a second project
-needs the builder (F49.3). `tests/louis-agent.evals.checks.tests` gets its first tests in step 5.
+needs the builder (F49.3). `Verdict` is tested from outside, by the graders that use it (`CommonGradersTests`) and by
+an identity's (`VerdictFromOutsideTests`). `tests/louis-agent.evals.checks.tests` gets its first tests in step 5.
 
 ## Related docs
 

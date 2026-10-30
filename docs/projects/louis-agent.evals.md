@@ -26,9 +26,10 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   infrastructure failure is kept apart from a failing answer (`TurnFailures`); a stream that ends on an error of kind
   `replay_miss_error` marks the turn `TurnFailure.ReplayMiss` (FX26), so a replay with no recording never counts as
   the agent's answer.
-- **Graders grade, metrics measure.** `Grading/` holds `IGrader` and the common graders (no error, answered within a
+- **Graders grade, metrics measure.** `Grading/` holds the common graders (no error, answered within a
   time, cost under a limit, routed to a role), the model judge (`Models/`, `EvaluatorGrader` over Microsoft.Extensions.
-  AI.Evaluation) and the human review (`Human/`). A grade has a score from 0 to 1, an outcome and a reason; a
+  AI.Evaluation) and the human review (`Human/`); `IGrader`, `Grade` and `Verdict` are the check contract's, in
+  [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score from 0 to 1, an outcome and a reason; a
   conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
 - **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
   contract's `EvalProtocolJson` ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); `ProtocolTranscripts`
@@ -72,9 +73,9 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
 | `Api/` | The session clients and the session request the runner sends (with `replay`) |
 | `Conformance/` | `EvalConformance`, its cases and the known-bad transcripts |
 | `Datasets/` | The loader, `EvalFiles` (where an eval's data is at run time), `Manifest/`, `Samples/` (a scenario's types are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
-| `Grading/` | `IGrader`, `Grade`, the common graders, the model and human graders, the outcomes |
+| `Grading/` | The common graders, the model and human graders, the outcomes (`IGrader`, `Grade`, `Verdict` are in [louis-agent.evals.checks](louis-agent.evals.checks.md)) |
 | `Labels/` | The label sheet, the label loader and the calibration with its `@` report line |
-| `Messages/` | The harness's texts (errors, logs, grade reasons, conformance, calibration) |
+| `Messages/` | The harness's texts (errors, logs, conformance, calibration); the grade reasons, `CommonGradeMessage`, are in [louis-agent.evals.checks](louis-agent.evals.checks.md) |
 | `Protocol/` | The writer and the stored-run reader |
 | `Reports/` | `RunSummary`, `SummaryLine`, `TrialResult` |
 | `Running/` | `EvalRunner`, a trial's attempt and grading, re-scoring, the tallies |

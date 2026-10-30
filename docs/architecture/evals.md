@@ -257,13 +257,13 @@ evals/
 │   ├── Api/                        # ISessionClient, HttpSessionClient, CannedSessionClient, the session request
 │   ├── Conformance/                # references must pass, known-bads must fail
 │   ├── Datasets/                   # dataset.json + scenarios/{dev,held-out}/ (Inspect's Sample shape), the loader
-│   ├── Grading/                    # IGrader, Grade; Common/, Models/ (the judge), Human/, Outcomes/
+│   ├── Grading/                    # Common/ (the graders), Models/ (the judge), Human/, Outcomes/
 │   ├── Labels/                     # the label sheet and the calibration
 │   ├── Protocol/                   # ProtocolWriter, ProtocolTranscripts
 │   ├── Reports/                    # RunSummary
 │   ├── Running/                    # EvalRunner, ScenarioAttempt, TrialGrading, Rescoring/
 │   └── Trials/                     # ConversationMetrics
-├── louis-agent.evals.checks/       # the check contract: EvalMode; Datasets/Scenarios/; Trials/ (Trial, Transcript, TurnFacts, EngineEvents)
+├── louis-agent.evals.checks/       # the check contract: EvalMode; Datasets/Scenarios/; Trials/; Grading/ (IGrader, Grade, Verdict); Messages/
 ├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
 ├── louis-agent.evals.puls/         # PulsEvalSet; Evals/Cook/, Evals/Routing/ (each with Dataset/ and transcripts); Shared/
 ├── louis-agent.evals.runner/       # Program, Arguments/, Catalog/, Calibration/, Evals/Stub/
