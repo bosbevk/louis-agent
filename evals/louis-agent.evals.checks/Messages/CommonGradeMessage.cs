@@ -61,6 +61,15 @@ public enum CommonGradeMessage
     [Description("the answer contains none of the {Count} texts")]
     ContainsNone,
 
+    [Description("{Tool} was called in turn {Turn}")]
+    ToolUsed,
+
+    [Description("a specialist called {Tool} in turn {Turn}")]
+    ToolUsedBySpecialist,
+
+    [Description("{Tool} was never called")]
+    ToolNotUsed,
+
     [Description("answered itself, as expected")]
     AnsweredAsExpected,
 

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <!-- F49.1 step 1: the check contract, what a check reads (a trial) and what it returns (a grade), out of the
-       harness so a pack can reference it and ship its own check (ADR 0056, docs/plans/F49.1-checks-catalogue.md).
+       harness so a pack can reference it and ship its own check (ADR 0056, docs/learning/20-extensibility.md).
        Pattern: Separated Interface (Fowler, PoEAA): the contract in a small project its clients can reference, the
        checks elsewhere. It references only what a pack already references; never the harness, a pack, an identity
        or a package (ArchitectureTests holds it). The root namespace is the harness's, so a moved type keeps its own. -->

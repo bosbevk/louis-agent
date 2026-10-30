@@ -19,7 +19,7 @@ public class GeneralChecksTests
         var listing = new CheckCatalog(GeneralChecks.All).Listing();
 
         Assert.That(listing.Select(line => line.Type),
-            Is.EqualTo(new[] { "no-error", "within-time", "cost-under", "contains" }));
+            Is.EqualTo(new[] { "no-error", "within-time", "cost-under", "contains", "tool-used" }));
         Assert.That(listing.Select(line => line.Kind), Has.All.EqualTo(CheckKind.FixedRule));
     }
 

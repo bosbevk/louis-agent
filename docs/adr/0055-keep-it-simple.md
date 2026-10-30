@@ -40,7 +40,7 @@ design* (Beck: passes the tests, says its intent, no duplication, the fewest par
 ## Links
 
 [0030](0030-build-or-adopt.md) (build only what nothing offers) · [0034](0034-code-a-person-can-maintain.md) ·
-[0050](0050-summaries-like-a-person.md) · [F49.1 The checks catalogue](../plans/F49.1-checks-catalogue.md) · Fowler,
+[0050](0050-summaries-like-a-person.md) · [F49.1 The checks catalogue](../learning/20-extensibility.md) · Fowler,
 [Yagni](https://martinfowler.com/bliki/Yagni.html) · Kent Beck, *Extreme Programming Explained* (simple design) ·
 [Refactoring.Guru: rule of three](https://refactoring.guru/refactoring/when)
 

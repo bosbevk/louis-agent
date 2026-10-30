@@ -34,7 +34,7 @@ catalogue (F49.1, step 8) raised the question for the code too: when is one allo
 
 ## Links
 
-[0055](0055-keep-it-simple.md) · [F49.1 The checks catalogue](../plans/F49.1-checks-catalogue.md) (step 8: no
+[0055](0055-keep-it-simple.md) · [F49.1 The checks catalogue](../learning/20-extensibility.md) (step 8: no
 `regex` check) · Microsoft, [Regular expression source generators](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-source-generators)
 and [NonBacktracking](https://devblogs.microsoft.com/dotnet/regular-expression-improvements-in-dotnet-7/#backtracking-and-regexoptions-nonbacktracking)
 

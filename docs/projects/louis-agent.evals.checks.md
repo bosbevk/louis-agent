@@ -18,7 +18,7 @@ The why is [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md).
 
 Today it holds what a check reads: a `Trial` is one run of a scenario in one mode, and its `Transcript` is the turns
 it left, each a `TurnTranscript` with the session's events as they arrived. `EngineEvents` reads those events (the
-answer, the error, the usage), and `TurnFacts` is what a turn's protocol record says about it.
+answer, the error, the usage, the route, and the tools the agent and its specialists called), and `TurnFacts` is what a turn's protocol record says about it.
 
 And what a check returns: `ICheck` scores one trial into a `Grade` (a score from 0 to 1, an outcome, a reason, and
 for a model grader the `GradeJudge` that judged it). `Verdict` builds the four kinds of grade, so a pass always scores
@@ -79,10 +79,27 @@ the wrong type, a missing field, an unknown field and no settings at all, each n
 `CheckCatalogTests` finds entries by type, refuses an unknown type (naming the known ones), a duplicate and an unsafe
 type, and lists each entry with its settings' schema.
 
+## Limits and plans
+
+What F49.1 left for later, each where its need comes:
+
+- **The runner doesn't build the catalogue yet**, and `routed-to` has no entry: both wait for F49.2's eval file, the
+  first thing that names a check from a file and states a route.
+- **A check's name is its type** for an entry (`contains`), so an eval holds one of each until F49.2's file names
+  its checks; the conformance rule then holds names, not types.
+- **`TrialBuilder` is the harness tests' own**, so `EngineEventsTests` and `AnswerOfTests` stay in
+  `louis-agent.evals.tests`; they move with a shared builder when a pack's checks need one (F49.3).
+- **Two copies of the MCP name rule**: the catalogue's and `EvalConformance`'s (private there); one could reuse the
+  other when either changes.
+- **`CommonGradeMessage` holds harness-only reasons too** (a check that threw, a scenario gone), which a pack never
+  gives; they can move back to the harness if the contract's messages grow.
+- **The schema's root says `"type": ["object", "null"]`**: .NET's exporter allows a null record, which the reader
+  refuses anyway (`NoParameters`); harmless, unless the studio shows it.
+
 ## Related docs
 
 [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) ·
-[F49.1 The checks catalogue](../plans/F49.1-checks-catalogue.md) · [louis-agent.evals](louis-agent.evals.md) ·
+[Write-up 20](../learning/20-extensibility.md) · [louis-agent.evals](louis-agent.evals.md) ·
 [louis-agent.evals.protocol](louis-agent.evals.protocol.md)
 
 ---
