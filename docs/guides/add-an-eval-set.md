@@ -82,9 +82,10 @@ where each grader is; that every file of `Shared/` is used by two evals or more 
 and names no eval; and what the project's root holds. A misplaced file fails there and names the rule. `louis-agent.evals.puls` is
 the worked example to open beside this guide; the cook (`Evals/Cook/`) is the bigger eval, the routing the smaller.
 
-The evals project's csproj has one data item, the same in every eval project: it copies each eval's `Dataset/` and `Transcripts/`
-beside the assembly under `EvalFiles/{assembly}/...`, which reaches the runner and the tests through the project reference, and the
-harness's `EvalFiles` finds it for any eval (no eval builds a path). `TargetPath`, not `Link`, because `Link` shows every file a
+The evals project's csproj has one data item, the same in every eval project: it copies every file under `Evals/` that isn't
+code beside the assembly under `EvalFiles/{the project's path from the repository root}/...` (`EvalFiles/evals/louis-agent.evals.acme/`),
+which reaches the runner and the tests through the project reference, and the harness's `EvalFiles` finds it for any eval (no eval
+builds a path); the runner also finds every `eval.json` there, and a copy's path below `EvalFiles/` is where it sits in the repository. `TargetPath`, not `Link`, because `Link` shows every file a
 second time in the IDE, under a folder named like the project. The project references the harness, which names no identity, so
 nothing in it changes:
 
@@ -98,8 +99,8 @@ nothing in it changes:
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- An eval's data is beside it, and copied beside the assembly so the runner and the tests find it with EvalFiles. -->
-    <None Update="Evals\**\Dataset\**\*;Evals\**\Transcripts\**\*" TargetPath="EvalFiles\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- An eval's files are beside it, and copied beside the assembly at their place in the repository, so the runner and the tests find them. -->
+    <None Update="Evals\**\*" TargetPath="EvalFiles\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

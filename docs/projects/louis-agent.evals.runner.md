@@ -13,8 +13,11 @@ starts this runner and reads its stdout, so a new eval set is a reference here a
 
 ## How it works
 
-- **The catalogue.** `Catalog/EvalCatalog` lists every eval of every set named in `EvalSetKind`, picked with `EVALS=`
-  (all when unset); it refuses a name twice and an eval with no fixed-rule grader. `--list` prints one JSON line per
+- **The catalogue.** `Catalog/EvalCatalog` lists every eval of every set named in `EvalSetKind`, then every eval that is
+  a folder of files, then the stub; `EVALS=` picks the sets by name and the folders by the identity their file names
+  (all when unset). It refuses a name twice and an eval with no fixed-rule check. `Catalog/EvalFolders` finds the
+  folders: every `eval.json` under `EvalFiles/` beside the runner, whose path below it is where the folder sits in the
+  repository (F49.2); the runner builds their checks from the check catalogue it gathers (`GeneralChecks.All` today). `--list` prints one JSON line per
   eval (what it proves, its modes, categories and graders), which the API's eval list reads.
 - **The arguments.** `Arguments/CommandLine` parses `run {eval}` with `--repeat N` (1 to 5), `--split`, `--web`,
   `--replay {runId}` and `--rescore {runId}`, and the two judge commands, `--label-sheet` and `--calibrate`. A bad
@@ -42,7 +45,7 @@ starts this runner and reads its stdout, so a new eval set is a reference here a
 
 | Setting | What it does |
 |---|---|
-| `EVALS` | The eval sets the catalogue lists (`puls` today; the template project is never registered); unset: all |
+| `EVALS` | The eval sets the catalogue lists, and the identities whose eval folders it lists (`puls` today; the template project is never registered); unset: all |
 | `BENCHMARK_RUN` | The run's id, so the API can tie the lines to its run |
 | `AGENT_API`, `AGENT_API_KEY`, `EVAL_JUDGE_*` | Read by the harness ([louis-agent.evals](louis-agent.evals.md)) |
 | `EVAL_RUNNER` (the API's) | Where the API finds this runner; `/app/evals/louis-agent.evals.runner.dll` in the images |

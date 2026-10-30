@@ -2,12 +2,13 @@ using System.Text.Json;
 using LouisAgent.Core.Logging;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Api;
+using LouisAgent.Evals.Catalog;
+using LouisAgent.Evals.Files;
+using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol;
-using LouisAgent.Evals.Runner;
 using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Calibration;
 using LouisAgent.Evals.Runner.Catalog;
-using LouisAgent.Evals.Runner.Messages;
 using LouisAgent.Evals.Runner.Refusal;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Runner.Evals.Stub;
@@ -18,8 +19,15 @@ try
 {
     var request = CommandLine.Parse(args);
 
-    var sets = EvalSetSelection.Parse(Environment.GetEnvironmentVariable("EVALS")).Select(EvalSets.Create).ToList();
-    var catalog = new EvalCatalog(sets, new StubEval());
+    // EVALS= chooses the C# sets by name and the evals in files by the identity they name; every eval folder copied
+    // beside the runner is found, its checks built from the catalogue the runner gathers.
+    var evals = Environment.GetEnvironmentVariable("EVALS");
+    var sets = EvalSetSelection.Parse(evals).Select(EvalSets.Create).ToList();
+    var checks = new CheckCatalog(GeneralChecks.All);
+    var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
+        .Select(folder => FileEval.Load(folder.Folder, checks, folder.Source))
+        .Where(file => EvalFolders.Chosen(evals, file.Identity));
+    var catalog = new EvalCatalog(sets, new StubEval(), files);
 
     switch (request)
     {
@@ -49,7 +57,7 @@ try
                 var rescorer = new EvalRunner(new NoSessionClient(),
                     new ProtocolWriter(Console.Out, TimeProvider.System), TimeProvider.System,
                     AgentLogging.For<EvalRunner>());
-                string[] stored = Console.In.ReadToEnd().Split('\n',
+                var stored = Console.In.ReadToEnd().Split('\n',
                     StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
                 await rescorer.RescoreAsync(eval,
                     BenchmarkRun.Of(Environment.GetEnvironmentVariable("BENCHMARK_RUN"), TimeProvider.System), source,

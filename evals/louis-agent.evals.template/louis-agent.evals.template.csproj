@@ -10,10 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- An eval's data is beside it (Evals/{Folder}/Dataset and Transcripts). One item, the same in every eval project, copies it to
-         EvalFiles/{assembly}/..., where EvalFiles (the harness) finds it for any eval. TargetPath, not Link: Link would show the files a second time
-         in the IDE under a folder named like the project. -->
-    <None Update="Evals\**\Dataset\**\*;Evals\**\Transcripts\**\*" TargetPath="EvalFiles\$(AssemblyName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- An eval's files are beside it (Evals/{Folder}/: eval.json, Dataset/, Transcripts/, rubrics, its manual). One item, the same in every
+         eval project, copies every one that isn't code to EvalFiles/{this project's path from the repository root}/Evals/{Folder}/..., so a copy's
+         path below EvalFiles/ is where it sits in the repository (F49.2). TargetPath, not Link: Link would show the files a second time in the IDE
+         under a folder named like the project. -->
+    <None Update="Evals\**\*" TargetPath="EvalFiles\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

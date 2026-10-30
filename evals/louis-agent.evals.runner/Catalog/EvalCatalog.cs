@@ -1,26 +1,33 @@
 using LouisAgent.Core.Messages;
-using LouisAgent.Evals.Grading;
+using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Runner.Messages;
 
 namespace LouisAgent.Evals.Runner.Catalog;
 
 /// <summary>
-/// Every eval the runner can run: the chosen sets' evals, then the stub (always). Each is checked when the catalogue is
-/// built, and a refusal stops the start: a name twice, no graders, or no required fixed-rule grader (Louis,
-/// 2026-10-20: no eval runs without a check that needs no model).
+/// Every eval the runner can run: the chosen sets' evals in C#, the evals that are folders of files, then the stub
+/// (always). Each is checked when the catalogue is built, and a refusal stops the start: a name twice, no checks, or
+/// no required fixed-rule check (Louis, 2026-10-20: no eval runs without a check that needs no model).
 /// </summary>
 public sealed class EvalCatalog
 {
-    // An eval belongs to exactly one set, and the set says whose it is (F18 step 7.5.4d); the stub belongs to none.
+    /// <summary>
+    /// Each eval with whose it is: a set says it for its evals, a file for its own; the stub belongs to none.
+    /// </summary>
     private readonly IReadOnlyList<(IEval Eval, string? Identity)> _entries;
+
+    /// <summary>The evals, checked, in the catalogue's order.</summary>
     private readonly IReadOnlyList<IEval> _evals;
 
-    /// <summary>Gathers the sets' evals and the stub, and refuses the lot if any of them can't be trusted.</summary>
-    public EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub)
+    /// <summary>
+    /// Gathers the sets' evals, the evals in files and the stub, and refuses the lot if any of them can't be trusted.
+    /// </summary>
+    public EvalCatalog(IEnumerable<IEvalSet> sets, IEval stub, IEnumerable<FileEval>? files = null)
     {
         _entries = sets.SelectMany(set => set.Evals.Select(eval => (eval, (string?)set.Identity)))
-            .Append((stub, (string?)null)).ToList();
+            .Concat((files ?? []).Select(file => ((IEval)file, (string?)file.Identity)))
+            .Append((stub, null)).ToList();
         _evals = Check(_entries.Select(entry => entry.Eval).ToList());
     }
 
@@ -47,7 +54,7 @@ public sealed class EvalCatalog
     public IReadOnlyList<ListedEval> Listing() => _entries.Select(entry => Listed(entry.Eval, entry.Identity)).ToList();
 
     /// <summary>
-    /// An eval's line: its dataset, its scenarios' categories once each in the order they first come, and its graders.
+    /// An eval's line: its dataset, its scenarios' categories once each in the order they first come, and its checks.
     /// </summary>
     private static ListedEval Listed(IEval eval, string? identity) => new(
         eval.Name,
@@ -60,23 +67,24 @@ public sealed class EvalCatalog
         eval.Checks.Select(grader => new ListedGrader(grader.Name, grader.Version, grader.Kind)).ToList());
 
     /// <summary>
-    /// Refuses an eval no run could trust: a name used twice, no graders, no fixed rule, or nothing to send.
+    /// Refuses an eval no run could trust: a name used twice, no checks, no fixed rule, or nothing to send.
     /// </summary>
+    /// <remarks>Guard clauses, one case each from the top (ADR 0051).</remarks>
     private static IReadOnlyList<IEval> Check(IReadOnlyList<IEval> evals)
     {
         var names = new HashSet<string>(StringComparer.Ordinal);
-        foreach (IEval eval in evals)
+        foreach (var eval in evals)
         {
-            if (!names.Add(eval.Name)) throw Refuse(RunnerMessage.DuplicateEval, new { Name = eval.Name });
-            if (eval.Checks.Count == 0) throw Refuse(RunnerMessage.NoGraders, new { Name = eval.Name });
-            if (!eval.Checks.Any(grader => grader.Required && grader.Kind == CheckKind.FixedRule))
-                throw Refuse(RunnerMessage.NoFixedRuleGrader, new { Name = eval.Name });
+            if (!names.Add(eval.Name)) throw Refuse(RunnerMessage.DuplicateEval, new { eval.Name });
+            if (eval.Checks.Count == 0) throw Refuse(RunnerMessage.NoGraders, new { eval.Name });
+            if (!eval.Checks.Any(check => check is { Required: true, Kind: CheckKind.FixedRule }))
+                throw Refuse(RunnerMessage.NoFixedRuleGrader, new { eval.Name });
             // A scenario with nothing to send is refused here, not skipped by the runner later.
             var empty = eval.Scenarios.FirstOrDefault(scenario => scenario.Input.Messages.Count == 0);
             if (empty is not null)
                 throw Refuse(RunnerMessage.NoMessages, new
                 {
-                    Name = eval.Name,
+                    eval.Name,
                     Scenario = empty.Id
                 });
         }
