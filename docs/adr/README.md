@@ -61,6 +61,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0052](0052-edit-never-script.md) | Code changes only by editing, never a script; layout only through the formatter; a rename only through Rider; in Rider, Rider's tools come first for any job they cover | Amended by [0054](0054-a-move-may-copy-line-ranges.md) |
 | [0053](0053-stylesheets-by-concern.md) | A stylesheet is split by concern: at most 200 lines of rules a file, `app.css` the `@import` list in cascade order | Accepted |
 | [0054](0054-a-move-may-copy-line-ranges.md) | A pure move may copy whole line ranges with a command, when a byte check proves nothing changed | Accepted |
+| [0055](0055-keep-it-simple.md) | Keep it simple: the simplest elegant design that meets the step, nothing for a future that isn't planned | Accepted |
 
 ## When to write one
 
