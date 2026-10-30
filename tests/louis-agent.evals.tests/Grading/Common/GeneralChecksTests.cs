@@ -1,4 +1,3 @@
-
 using System.Text.Json;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
@@ -19,7 +18,8 @@ public class GeneralChecksTests
     {
         var listing = new CheckCatalog(GeneralChecks.All).Listing();
 
-        Assert.That(listing.Select(line => line.Type), Is.EqualTo(new[] { "no-error", "within-time", "cost-under" }));
+        Assert.That(listing.Select(line => line.Type),
+            Is.EqualTo(new[] { "no-error", "within-time", "cost-under", "contains" }));
         Assert.That(listing.Select(line => line.Kind), Has.All.EqualTo(CheckKind.FixedRule));
     }
 

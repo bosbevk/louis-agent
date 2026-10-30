@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Catalog;
+using LouisAgent.Evals.Grading.Common.Answers;
 
 namespace LouisAgent.Evals.Grading.Common;
 
@@ -15,5 +16,5 @@ public static class GeneralChecks
 {
     /// <summary>Every general check type, in the order the catalogue lists them.</summary>
     public static IReadOnlyList<ICheckType> All { get; } =
-        [new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry()];
+        [new NoErrorCheck.Entry(), new WithinTimeCheck.Entry(), new CostUnderCheck.Entry(), new ContainsCheck.Entry()];
 }

@@ -2,7 +2,11 @@ using System.ComponentModel;
 
 namespace LouisAgent.Evals.Messages;
 
-/// <summary>The reasons the harness's grades give (the common graders', and the runner's for a grader that threw), in words a person reads (ADR 0009: a text is a message enum member).</summary>
+/// <summary>
+/// The reasons the harness's grades give, in words a person reads: the general checks' reasons, and the runner's for
+/// a check that threw.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum CommonGradeMessage
 {
     [Description("no turn raised an error")]
@@ -51,6 +55,12 @@ public enum CommonGradeMessage
 
     [Description("the turn failed")] TurnFailed,
 
+    [Description("the answer contains '{Text}'")]
+    ContainsPass,
+
+    [Description("the answer contains none of the {Count} texts")]
+    ContainsNone,
+
     [Description("answered itself, as expected")]
     AnsweredAsExpected,
 
@@ -73,5 +83,5 @@ public enum CommonGradeMessage
     [Description("the judge said no")] JudgeSaidNo,
 
     [Description("scenario '{Scenario}' is no longer in the dataset, so this conversation can't be graded")]
-    ScenarioGone,
+    ScenarioGone
 }

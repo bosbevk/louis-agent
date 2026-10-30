@@ -14,6 +14,9 @@ public enum CheckCatalogMessage
     [Description("check type '{Type}' was given no parameters")]
     NoParameters,
 
+    [Description("check type '{Type}' needs at least one item in '{Field}'")]
+    NothingListed,
+
     [Description("check type '{Type}' isn't a safe name: use letters, digits, '-' and '_', at most 64")]
     TypeNotSafe,
 
