@@ -32,11 +32,19 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class EstimatesAtShop : ICheck
 {
+    /// <inheritdoc />
     public string Name => "estimates-at-shop";
+
+    /// <inheritdoc />
     public int Version => 2;
+
+    /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
+
+    /// <inheritdoc />
     public bool Required => true;
 
+    /// <inheritdoc />
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>
     {
         "shop",

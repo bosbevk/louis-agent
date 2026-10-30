@@ -3,9 +3,10 @@ using LouisAgent.Identities.Puls.Evals.Checks.Shared;
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 
 /// <summary>
-/// An id is data (ADR 0043), so the tests hold it as one constant where it repeats, and the constant is held to the
-/// dataset it names: a misspelt id fails here, once.
+/// An id is data, so the tests hold it as one constant where it repeats, and the constant is held to the dataset it
+/// names: a misspelt id fails here, once.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public class PulsIdsTests
 {
     /// <summary>The values of a class's string constants.</summary>

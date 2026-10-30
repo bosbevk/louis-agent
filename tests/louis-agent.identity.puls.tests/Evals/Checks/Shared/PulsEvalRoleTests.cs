@@ -3,10 +3,14 @@ using LouisAgent.Identities.Puls.Evals.Checks.Shared;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared;
 
-// F18 step 7.5.4c (ADR 0043: a copied name is checked across the boundary). The eval set keeps its own enum of the roles its evals name, because a set never references
-// an identity; a role it expects that the identity does not offer would make a run grade against nothing. This test sees both and holds the copy to the original.
+/// <summary>
+/// The checks keep their own enum of the roles they name; a role they expect that the identity doesn't offer would
+/// make a run grade against nothing, so this test holds the copy to the original.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public class PulsEvalRoleTests
 {
+    /// <summary>Every role the checks name is one the Puls identity offers.</summary>
     [Test]
     public void EveryRoleThePulsEvalsName_IsARoleTheIdentityOffers() =>
         Assert.That(

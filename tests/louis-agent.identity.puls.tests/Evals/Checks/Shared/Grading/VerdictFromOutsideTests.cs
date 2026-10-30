@@ -3,10 +3,13 @@ using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared.Grading;
 
-// The grade helpers are public (F18 step 4.4 review): a grader in an identity's own project builds its grades with Verdict, as the
-// common graders do. Written first: Verdict was internal, so this project didn't compile on the red run (CS0122).
+/// <summary>
+/// The grade helpers are public, so a check in an identity's own project builds its grades with <c>Verdict</c>, as the
+/// common checks do.
+/// </summary>
 public class VerdictFromOutsideTests
 {
+    /// <summary>A check outside the harness can build a pass, a fail and an unknown with <c>Verdict</c>.</summary>
     [Test]
     public void AGraderOutsideTheHarnessBuildsItsGradesWithVerdict()
     {

@@ -8,12 +8,16 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Turns;
 public sealed record ToolCall(string Name, JsonElement Input);
 
 /// <summary>
-/// What one turn says (the Python's <c>read_turn</c>): its answer, the calls Puls made, the calls its specialists made, the role
-/// it handed to, the sub-session it continued, its error, and the results its tools returned. The answer, the role and the error come
-/// from <see cref="EngineEvents"/>, the harness's one reader of them (F18 step 5.3), so a grader and the protocol's facts can't disagree;
-/// the calls, the results and the handle are read here, as only an identity cares about them. A specialist's error is the specialist's,
-/// not the turn's; an empty handle is none, as the Python's truthiness reads it.
+/// What one turn says, as the Python's <c>read_turn</c> read it: its answer, the calls Puls made, the calls its
+/// specialists made, the role it handed to, the sub-session it continued, its error, and the results its tools
+/// returned.
 /// </summary>
+/// <remarks>
+/// The answer, the role and the error come from <see cref="EngineEvents"/>, the one reader of them, so a check and the
+/// protocol's facts can't disagree; the calls, the results and the handle are read here, since only an identity cares
+/// about them. A specialist's error is the specialist's, not the turn's; an empty handle counts as none, as the
+/// Python's truthiness read it.
+/// </remarks>
 public sealed record TurnView(
     string Answer,
     IReadOnlyList<ToolCall> Calls,
@@ -28,7 +32,10 @@ public sealed record TurnView(
     public static TurnView From(IEnumerable<SessionEvent> events) =>
         From(new TurnTranscript(1, string.Empty, string.Empty, events.ToList(), TimeSpan.Zero, null));
 
-    /// <summary>Reads a turn: the answer, the role and the error from <see cref="EngineEvents"/>; its calls, results and sub-session handle here.</summary>
+    /// <summary>
+    /// Reads a turn: the answer, the role and the error from <see cref="EngineEvents"/>; its calls, results and
+    /// sub-session handle here.
+    /// </summary>
     public static TurnView From(TurnTranscript turn)
     {
         var calls = new List<ToolCall>();
@@ -67,9 +74,12 @@ public sealed record TurnView(
             Truthy(EngineEvents.ErrorTextOf(turn)), results, specialistResults);
     }
 
+    /// <summary>An empty input, for a tool call that sent none.</summary>
     private static readonly JsonElement Empty = JsonDocument.Parse("{}").RootElement.Clone();
 
-    /// <summary>A tool result's text: its content when it's a string, else its JSON (a list of blocks, say), never a throw.</summary>
+    /// <summary>
+    /// A tool result's text: its content when it's a string, else its JSON (a list of blocks, say), never a throw.
+    /// </summary>
     private static string ResultText(JsonElement block) =>
         block.TryGetProperty("content", out var content)
             ? content.ValueKind == JsonValueKind.String ? content.GetString() ?? "" : content.GetRawText()
@@ -89,5 +99,6 @@ public sealed record TurnView(
             ? value.GetString()
             : null;
 
+    /// <summary>An empty text counts as none, as the Python read it.</summary>
     private static string? Truthy(string? value) => string.IsNullOrEmpty(value) ? null : value;
 }

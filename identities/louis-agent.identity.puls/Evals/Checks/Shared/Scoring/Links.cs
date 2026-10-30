@@ -3,8 +3,8 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
 
 /// <summary>
-/// The links in an answer, and whether a price cell is sourced by one: a price counts only with the link it came from, to the
-/// shop whose column it is in (or, under a column that names none, to a shop) (F31 step 11b, review of PR #55).
+/// The links in an answer, and whether a price cell is sourced by one: a price counts only with the link it came from,
+/// to the shop whose column it is in (or, under a column that names none, to any shop).
 /// </summary>
 public static partial class Links
 {
@@ -32,7 +32,9 @@ public static partial class Links
     [GeneratedRegex(@"-\d+KG/?$")]
     private static partial Regex ByWeightPath();
 
-    /// <summary>The answer's reference-style link definitions, by their label in lower case; a later one for a label wins.</summary>
+    /// <summary>
+    /// The answer's reference-style link definitions, by their label in lower case; a later one for a label wins.
+    /// </summary>
     public static Dictionary<string, string> References(string answer)
     {
         var references = new Dictionary<string, string>();
@@ -55,47 +57,62 @@ public static partial class Links
         return urls.Where(url => url.Length > 0).ToList();
     }
 
+    /// <summary>A markdown image, <c>![alt](url)</c>. Its URL is group 1.</summary>
     [GeneratedRegex(@"!\[[^\]]*\]\((https?://[^)\s]+)\)")]
     private static partial Regex Image();
 
-    /// <summary>The images a text shows, as <c>![alt](url)</c> (also inside a link to a page), in order; a plain link is no image.</summary>
+    /// <summary>
+    /// The images a text shows, as <c>![alt](url)</c> (also inside a link to a page), in order; a plain link is no
+    /// image.
+    /// </summary>
     public static IReadOnlyList<string> ImageUrls(string? text) =>
         Image().Matches(text ?? "").Select(m => m.Groups[1].Value).ToList();
 
-    /// <summary>The words in an image's address that make it a share button, an icon or a logo: furniture of the page, never the dish (F18, FX24).</summary>
+    /// <summary>
+    /// The words in an image's address that make it a share button, an icon or a logo: furniture of the page, never
+    /// the dish.
+    /// </summary>
     [GeneratedRegex(
         @"(/plugins/|/icons?/|/emoji/|gravatar|sprite|\b(logo|icon|avatar|badge|button|buttons|share|print|pdf|facebook|twitter|pinterest|linkedin|whatsapp|instagram|youtube|email)\b|[-_./](logo|icon|avatar|badge|button|share|print|pdf|facebook|twitter|pinterest|linkedin|whatsapp)[-_.0-9]*\.(png|jpe?g|gif|svg|webp))",
         RegexOptions.IgnoreCase)]
     private static partial Regex PageFurniture();
 
     /// <summary>
-    /// The images of a text that could be a photo of the dish: <see cref="ImageUrls"/> without the page's share buttons, print and PDF icons, logos and
-    /// avatars, which the pages the cook reads carry (a recipe page's own plugin images are not its recipe's photo).
+    /// The images of a text that could be a photo of the dish: <see cref="ImageUrls"/> without the share buttons,
+    /// print and PDF icons, logos and avatars that the pages the cook reads carry (a recipe page's own plugin images
+    /// are not its recipe's photo).
     /// </summary>
     public static IReadOnlyList<string> RecipePhotos(string? text) =>
         ImageUrls(text).Where(url => !PageFurniture().IsMatch(url)).ToList();
 
-    /// <summary>Whether a price is a price per kg: it says so, or it's one amount for a product sold by weight.</summary>
+    /// <summary>
+    /// Whether a price is a price per kg: it says so, or it's one amount for a product sold by weight.
+    /// </summary>
     public static bool PerKg(string cell, IReadOnlyDictionary<string, string> references)
     {
         if (PerKgWords().IsMatch(InlineLink().Replace(cell, "]"))) return true;
         return !Range().IsMatch(cell) && Urls(cell, references).Any(url => ByWeightPath().IsMatch(PathOf(url)));
     }
 
-    /// <summary>Whether a price cell links to its source: the column's shop, or any shop when the column names none.</summary>
+    /// <summary>
+    /// Whether a price cell links to its source: the column's shop, or any shop when the column names none.
+    /// </summary>
     public static bool Sourced(string cell, string? shop, IReadOnlyDictionary<string, string> references)
     {
         IEnumerable<string> sites = shop is not null ? [shop] : Shops.Hosts.Select(h => h.Host);
         return Urls(cell, references).Any(url => sites.Any(site => IsHost(url, site)));
     }
 
-    /// <summary>Whether a URL is on the site or one of its subdomains (shop.woolworths.co.za is Woolworths; notcheckers isn't).</summary>
+    /// <summary>
+    /// Whether a URL is on the site or one of its subdomains (shop.woolworths.co.za is Woolworths; notcheckers isn't).
+    /// </summary>
     internal static bool IsHost(string url, string site)
     {
         string host = Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri.Host.ToLowerInvariant() : "";
         return host == site || host.EndsWith("." + site, StringComparison.Ordinal);
     }
 
+    /// <summary>A URL's path, or nothing if it isn't a full address.</summary>
     private static string PathOf(string url) =>
         Uri.TryCreate(url, UriKind.Absolute, out var uri) ? uri.AbsolutePath : "";
 }

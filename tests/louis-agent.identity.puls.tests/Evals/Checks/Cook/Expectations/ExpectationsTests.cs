@@ -7,14 +7,19 @@ using LouisAgent.Identities.Puls.Evals.Checks.Shared.Expectations;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Expectations;
 
-// F18 step 5.4: what a scenario asks for, read from its `expected` once and checked there (ADR 0024): a route, the town, the people it serves, a budget
-// and the shop the user chose. Written first: the readers threw NotImplementedException on the red run.
+/// <summary>
+/// What a scenario asks for is read from its <c>expected</c> once, and checked there: the route, the town, the people
+/// it serves, a budget and the shop the user chose. A bad value is refused by its key, naming the scenario.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public class ExpectationsTests
 {
+    /// <summary>A cook scenario in Malmesbury that expects what this JSON says.</summary>
     private static EvalScenario Scenario(string expected) =>
         new("cook-x", new EvalInput("Malmesbury, Wes-Kaap, Suid-Afrika", "Africa/Johannesburg", ["x"]),
             JsonDocument.Parse(expected).RootElement.Clone(), [], DatasetSplit.Dev);
 
+    /// <summary>Every key of a full expectation is read into its field.</summary>
     [Test]
     public void AWholeExpectationIsRead()
     {
@@ -27,6 +32,7 @@ public class ExpectationsTests
         Assert.That(expected.Serves, Is.EqualTo(new[] { 4, 6 }));
     }
 
+    /// <summary>The people can be one number for the first turn, one per turn, or not said at all.</summary>
     [Test]
     public void ServesIsOneNumberForTheFirstTurn_OrOnePerTurn()
     {
@@ -34,10 +40,12 @@ public class ExpectationsTests
         Assert.That(CookExpectations.Of(Scenario("""{"routes_to":null}""")).Serves, Is.Empty);
     }
 
+    /// <summary>A route of null means Puls should answer itself.</summary>
     [Test]
     public void ARouteOfNull_IsPulsAnsweringItself() =>
         Assert.That(ExpectedRoute.Of(Scenario("""{"routes_to":null}""")), Is.Null);
 
+    /// <summary>The shop is parsed once, by its name, whatever its case.</summary>
     [TestCase("any", ShopExpectation.Any)]
     [TestCase("Any", ShopExpectation.Any)]
     [TestCase("checkers", ShopExpectation.Checkers)]
@@ -51,16 +59,19 @@ public class ExpectationsTests
             CookExpectations.Of(Scenario("""{"routes_to":null,"town":"Paarl","shop":"NAME"}""".Replace("NAME", name)))
                 .Shop, Is.EqualTo(expected));
 
+    /// <summary>A scenario that expects a real shop must name the town too; "any shop" needs none.</summary>
     [Test]
     public void AShopAtATown_NeedsItsTown()
     {
-        // The cook's prompt: area = the user's town in every call. A scenario that expects a shop without its town couldn't be graded.
+        // The cook's prompt sends the user's town as the area in every call, so a scenario that expects a shop
+        // without its town couldn't be graded.
         Assert.That(() => CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","shop":"checkers"}""")),
             Throws.TypeOf<InvalidDataException>().With.Message.Contains("'town'"));
         Assert.That(CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","shop":"any"}""")).Shop,
             Is.EqualTo(ShopExpectation.Any), "no shop is searched, so no town is needed");
     }
 
+    /// <summary>A key that's missing or of the wrong kind is refused, naming the key and the scenario.</summary>
     [TestCase("""{}""", "routes_to")]
     [TestCase("""{"routes_to":5}""", "routes_to")]
     [TestCase("""{"routes_to":null,"shop":"gremlins"}""", "shop")]

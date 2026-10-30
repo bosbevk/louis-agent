@@ -6,25 +6,31 @@ using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Grading;
 
-// F18 step 5.4: two scenario requirements, each read by a named grader. The people it serves is a fixed rule that is not required (the real
-// check, that the quantities scale, is step 6's model grader); the budget is required where a scenario sets one. Written first: the graders
-// threw NotImplementedException on the red run.
+/// <summary>
+/// Two things a scenario asks for, each with its own check. The people it serves is a fixed rule that isn't required
+/// (whether the quantities really scale is the model judge's job); the budget is required where a scenario sets one.
+/// </summary>
 public class ServesAndBudgetChecksTests
 {
+    /// <summary>Where a Checkers product link starts.</summary>
     private const string Checkers = "https://www.checkers.co.za/p/";
 
+    /// <summary>A cook trial in Stellenbosch with one turn per answer.</summary>
     private static Trial Asked(string expected, params string[] answers) =>
         Trial(CookEvalMode, "cook-x", expected, "Stellenbosch, Wes-Kaap, Suid-Afrika",
             answers.Select((answer, i) => Turn(i + 1, [Text(answer)])).ToArray());
 
+    /// <summary>The serving check's grade of a trial.</summary>
     private static Task<Grade> Serves(Trial trial) =>
         new ServesAsAsked().GradeAsync(trial, CancellationToken.None).AsTask();
 
+    /// <summary>The budget check's grade of a trial.</summary>
     private static Task<Grade> Budget(Trial trial) =>
         new WithinBudget().GradeAsync(trial, CancellationToken.None).AsTask();
 
     // --- ServesAsAsked
 
+    /// <summary>The serving check is a fixed rule that isn't required, and reads only <c>serves</c>.</summary>
     [Test]
     public void ServesIsAFixedRule_ThatIsNotRequired_AndReadsOneKey()
     {
@@ -35,12 +41,14 @@ public class ServesAndBudgetChecksTests
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "serves" }));
     }
 
+    /// <summary>The answer names the number asked, as a digit or in words.</summary>
     [TestCase("""{"serves":4}""", "Hier is bobotie vir 4 mense.")]
     [TestCase("""{"serves":4}""", "Hier is bobotie vir vier mense.")]
     [TestCase("""{"serves":2}""", "A stew for two.")]
     public async Task ServesPasses_WhenTheAnswerNamesTheNumberAsked(string expected, string answer) =>
         Assert.That((await Serves(Asked(expected, answer))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
+    /// <summary>Each turn is held to its own number, and a fail names the turn and the number it missed.</summary>
     [Test]
     public async Task ServesChecksEachTurnAgainstItsOwnNumber()
     {
@@ -52,6 +60,7 @@ public class ServesAndBudgetChecksTests
         Assert.That(forgot.Reason, Does.Contain("turn 2").And.Contain("6"));
     }
 
+    /// <summary>A different number fails, naming both what it found and what was asked.</summary>
     [Test]
     public async Task ServesFails_NamingTheNumberItFound()
     {
@@ -61,6 +70,7 @@ public class ServesAndBudgetChecksTests
         Assert.That(grade.Reason, Does.Contain("2").And.Contain("4"));
     }
 
+    /// <summary>An answer that never says how many it's for fails.</summary>
     [Test]
     public async Task ServesFails_WhenTheAnswerForgotTheNumber()
     {
@@ -70,6 +80,7 @@ public class ServesAndBudgetChecksTests
         Assert.That(grade.Reason, Does.Contain("4"));
     }
 
+    /// <summary>An error, a blank answer or a missing turn leaves nothing to read: Unknown.</summary>
     [Test]
     public async Task ServesIsUnknown_WhenThereIsNothingToRead()
     {
@@ -81,10 +92,12 @@ public class ServesAndBudgetChecksTests
             Assert.That((await Serves(trial)).Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
 
+    /// <summary>A turn the infrastructure broke is Unknown, even when its answer names the number.</summary>
     [Test]
     public async Task ServesIsUnknown_ForAnInfrastructureFailure_EvenWhenTheAnswerNamesTheNumber()
     {
-        // The turn has a good answer: without the infrastructure check this would pass, so the reason shows the check ran.
+        // The turn has a good answer: without the infrastructure check this would pass, so the reason shows the check
+        // ran.
         var failed = Trial(CookEvalMode, "cook-x", """{"serves":4}""", null,
             Turn(1, [Text("Hier is bobotie vir 4 mense.")], TurnFailure.Timeout));
 
@@ -94,12 +107,14 @@ public class ServesAndBudgetChecksTests
         Assert.That(grade.Reason, Does.Contain("infrastructure"));
     }
 
+    /// <summary>A scenario that asks for no number passes.</summary>
     [Test]
     public async Task ServesPasses_WhenTheScenarioAsksForNoNumber() =>
         Assert.That((await Serves(Asked("{}", "Hier is 'n resep."))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
     // --- WithinBudget
 
+    /// <summary>The budget check is a required fixed rule that reads only <c>budget</c>.</summary>
     [Test]
     public void BudgetIsRequired_AndReadsOneKey()
     {
@@ -110,6 +125,7 @@ public class ServesAndBudgetChecksTests
         Assert.That(grader.ExpectedKeys, Is.EqualTo(new[] { "budget" }));
     }
 
+    /// <summary>A total at or under the limit passes, and the reason names the limit.</summary>
     [TestCase("Totaal: R149,95")]
     [TestCase("Totaal: R150")]
     [TestCase("Total: R149.95")]
@@ -121,6 +137,9 @@ public class ServesAndBudgetChecksTests
         Assert.That(grade.Reason, Does.Contain("150"));
     }
 
+    /// <summary>
+    /// Over the limit fails, and says whether it read the total line or added up the price rows.
+    /// </summary>
     [Test]
     public async Task BudgetFails_OverTheLimit_SayingWhichReadingItUsed()
     {
@@ -136,6 +155,7 @@ public class ServesAndBudgetChecksTests
         Assert.That(byRows.Reason, Does.Contain("rows"));
     }
 
+    /// <summary>An answer with no amount can't be held to the budget: Unknown.</summary>
     [Test]
     public async Task BudgetIsUnknown_WhenTheAnswerGivesNoAmount()
     {
@@ -144,6 +164,7 @@ public class ServesAndBudgetChecksTests
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
 
+    /// <summary>Only the first turn is held to the budget; a follow-up for more people may cost more.</summary>
     [Test]
     public async Task BudgetReadsTheFirstTurnOnly()
     {
@@ -152,12 +173,16 @@ public class ServesAndBudgetChecksTests
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
     }
 
+    /// <summary>
+    /// With no budget set it passes; a turn the infrastructure broke is Unknown, even when its total is within budget.
+    /// </summary>
     [Test]
     public async Task BudgetPasses_WhenTheScenarioSetsNone_AndIsUnknownForAnInfrastructureFailure()
     {
         Assert.That((await Budget(Asked("{}", "Totaal: R999,00"))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
-        // A turn that failed but whose answer is within the budget: without the infrastructure check this would pass.
+        // A turn that failed but whose answer is within the budget: without the infrastructure check this would
+        // pass.
         var failed = await Budget(Trial(CookEvalMode, "cook-x", """{"budget":150}""", null,
             Turn(1, [Text("Totaal: R100,00")], TurnFailure.Transport)));
 

@@ -5,10 +5,13 @@ using LouisAgent.SessionStream;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared.Turns;
 
-// The turn reader (the Python's read_turn and hosts), read from the session's typed events: the answer, the calls, the role,
-// and the hosts a turn read. Added with 3.2, since the cook scores read the turn it makes.
+/// <summary>
+/// Reading a turn from the session's typed events, as the old Python did: the answer, the calls, the role, and the
+/// hosts a turn read. The cook's checks read the turn this makes.
+/// </summary>
 public class TurnViewTests
 {
+    /// <summary>A turn's events are read as its answer, its calls, its role and its tool results.</summary>
     [Test]
     public void ATurnsEvents_AreReadAsItsAnswerCallsRoleAndResults()
     {
@@ -32,6 +35,7 @@ public class TurnViewTests
         Assert.That(turn.Results, Is.EqualTo(new[] { "Die resep." }));
     }
 
+    /// <summary>A specialist's tool call is its own, not the turn's, and its host is read.</summary>
     [Test]
     public void ASpecialistsCall_IsItsSpecialistCall_AndItsHostIsRead()
     {
@@ -49,6 +53,7 @@ public class TurnViewTests
         Assert.That(ToolHosts.Of(turn.SpecialistCalls), Is.EqualTo(new[] { "checkers.co.za" }));
     }
 
+    /// <summary>An error inside a specialist is the specialist's, not the turn's.</summary>
     [Test]
     public void AnErrorInASpecialist_IsNotTheTurnsError()
     {
@@ -63,6 +68,7 @@ public class TurnViewTests
         Assert.That(TurnView.From(events).Error, Is.Null);
     }
 
+    /// <summary>A tool result whose content isn't a string is still read, as its text.</summary>
     [Test]
     public void AToolResultWhoseContentIsNotAString_IsReadAsItsText()
     {
@@ -76,15 +82,19 @@ public class TurnViewTests
         Assert.That(TurnView.From(events).Results.Single(), Does.Contain("Die resep."));
     }
 
+    /// <summary>An error given as a plain string is the turn's error, read as its JSON.</summary>
     [Test]
     public void AnErrorThatIsAString_IsTheTurnsError_ReadAsItsJson()
     {
         var events = new[]
-            { SessionEvent.From("error", Json("""{"type":"error","error":"the connection dropped"}""")) };
+        {
+            SessionEvent.From("error", Json("""{"type":"error","error":"the connection dropped"}"""))
+        };
 
         Assert.That(TurnView.From(events).Error, Does.Contain("the connection dropped"));
     }
 
+    /// <summary>An empty role is no role, so the next sub-session's role is the turn's.</summary>
     [Test]
     public void AnEmptyRole_IsNoRole_AndTheNextStartIsTheRole()
     {
@@ -102,6 +112,7 @@ public class TurnViewTests
         Assert.That(TurnView.From(events).Role, Is.EqualTo(PulsEvalRole.Cook.Wire()));
     }
 
+    /// <summary>A JSON value from its text.</summary>
     private static System.Text.Json.JsonElement Json(string text) =>
         System.Text.Json.JsonDocument.Parse(text).RootElement.Clone();
 }

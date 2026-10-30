@@ -25,10 +25,19 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class RecipeImage : ICheck
 {
+    /// <inheritdoc />
     public string Name => "recipe-image";
+
+    /// <inheritdoc />
     public int Version => 2;
+
+    /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
+
+    /// <inheritdoc />
     public bool Required => true;
+
+    /// <inheritdoc />
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "recipe_image" }.ToFrozenSet();
 
     /// <summary>Looks for a recipe photo from the cited pages in the first turn's answer.</summary>
@@ -80,9 +89,9 @@ public sealed class RecipeImage : ICheck
     /// <summary>The address on a fetched page's first line (<c>URL: …</c>), or null when it has none.</summary>
     private static string? UrlOf(string result)
     {
-        const string Marker = "URL:";
-        if (!result.StartsWith(Marker, StringComparison.Ordinal)) return null;
-        string line = result.Split('\n', 2)[0][Marker.Length..].Trim();
+        const string marker = "URL:";
+        if (!result.StartsWith(marker, StringComparison.Ordinal)) return null;
+        string line = result.Split('\n', 2)[0][marker.Length..].Trim();
         return line.Length > 0 ? line : null;
     }
 

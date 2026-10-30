@@ -9,7 +9,7 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Grading;
 
 /// <summary>
 /// The cook's own checks can be named from a file: each is in Puls's list under the name its stored runs carry, and
-/// builds the same check, at the same version, that the cook's eval builds in C#.
+/// builds the check at the version those runs were graded with.
 /// </summary>
 public class PulsChecksTests
 {

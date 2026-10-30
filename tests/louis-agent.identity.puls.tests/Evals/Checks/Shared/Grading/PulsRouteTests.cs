@@ -23,7 +23,10 @@ public class PulsRouteTests
     private static readonly string Settings =
         $$"""{"expected_key": "routes_to", "delegating_toolsets": ["{{PulsToolset.Specialists.Wire()}}"]}""";
 
+    /// <summary>A scenario that should reach the cook.</summary>
     private const string CookRoute = """{"routes_to":"puls-cook"}""";
+
+    /// <summary>A scenario Puls should answer itself.</summary>
     private const string SelfRoute = """{"routes_to":null}""";
 
     /// <summary>The route check built from Puls's settings, as an eval file builds it.</summary>

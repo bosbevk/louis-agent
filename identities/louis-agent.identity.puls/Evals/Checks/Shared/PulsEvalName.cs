@@ -3,10 +3,10 @@ using LouisAgent.Choices;
 namespace LouisAgent.Identities.Puls.Evals.Checks.Shared;
 
 /// <summary>
-/// The evals the Puls set offers in C#, by the names they are listed, run and stored under (ADR 0043: each eval set
-/// keeps its own enum of the names it uses). The routing eval is a folder of files beside the identity (F49.2), named
-/// in its file.
+/// The name the cook's eval is listed, run and stored under, for the checks and tests that need it. The eval's own file
+/// says the same name; the routing eval's name lives only in its file.
 /// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public enum PulsEvalName
 {
     [WireName("puls-cook")] Cook

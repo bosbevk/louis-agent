@@ -15,11 +15,10 @@ using LouisAgent.Identities.Puls.Evals.Checks.Shared.Turns;
 namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
 
 /// <summary>
-/// The shop the user chose priced the conversation, as the cook's prompt worked until F18 step 5.7 (Checkers: its
-/// shop tool was called, with the user's town as <c>area</c> in every call, and the list's prices link to its site;
-/// PnP or Woolworths, which have no catalogue: a page of the site was read with ReadRenderedPage, and the prices link
-/// to it). A scenario that names no shop, or one with no priced shop (<c>any</c>, <c>no-branch</c>), passes: those
-/// are the estimates rules.
+/// Checks that the shop the user chose really priced the conversation, the way the cook used to work. For Checkers,
+/// its shop tool was called for the user's town every time and the prices link to its site; for PnP or Woolworths,
+/// which have no catalogue, a page of the site was read with ReadRenderedPage and the prices link to it. A scenario
+/// with no priced shop (none, <c>any</c>, <c>no-branch</c>) passes: those follow the estimates rules.
 /// </summary>
 /// <remarks>
 /// Kept, with its tests, for when a retailer gives access and the cook prices again (emails to PnP, Woolworths and
@@ -28,11 +27,19 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
 /// </remarks>
 public sealed class PricedAtRetailer : ICheck
 {
+    /// <summary>Its old name, kept so the runs it graded still read.</summary>
     public string Name => "priced-at-shop";
+
+    /// <inheritdoc />
     public int Version => 1;
+
+    /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
+
+    /// <inheritdoc />
     public bool Required => true;
 
+    /// <inheritdoc />
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>
     {
         "shop",

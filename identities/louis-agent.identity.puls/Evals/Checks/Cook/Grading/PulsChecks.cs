@@ -8,9 +8,9 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 /// the runner gathers with the harness's general checks and Puls's judges.
 /// </summary>
 /// <remarks>
-/// Registry (Fowler, PoEAA): each owner lists its entries in one place, and the runner gathers the lists. Puls's judge
-/// is in <c>PulsJudges</c>, beside the identity, since it needs the harness (F49.2 step 9a); this list moves beside
-/// the identity with its checks in step 9b, and the shops' two to the shops pack in F49.3.
+/// Registry (Fowler, PoEAA): each owner lists its entries in one place, and the runner gathers the lists through the
+/// composition's <c>EvalChecks</c>. Puls's judge is in <c>PulsJudges</c>, in a project of its own, since it needs the
+/// harness; the shops' two checks move to the shops pack in F49.3.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class PulsChecks

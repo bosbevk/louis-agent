@@ -6,14 +6,17 @@ using LouisAgent.Identities.Puls.Evals.Checks.Messages;
 namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Expectations;
 
 /// <summary>
-/// Where a scenario's first turn should go (F18 step 5.4): its <c>routes_to</c>, the role Puls hands the question to, or null when Puls answers
-/// it itself. Both Puls datasets state it, and the route grader reads it; it is not a rule on the scenario's name.
+/// Where a scenario's first turn should go: the role Puls hands the question to, or nobody when Puls answers it itself.
+/// Both Puls datasets say it in <c>routes_to</c>, and the route check reads it there, never from the scenario's name.
 /// </summary>
 public static class ExpectedRoute
 {
+    /// <summary>The expected key a scenario states its route under.</summary>
     public const string Key = "routes_to";
 
-    /// <summary>The scenario's route; a scenario with none stated, or one that is neither a role's name nor null, is refused.</summary>
+    /// <summary>
+    /// The scenario's route. A scenario that states none, or one that is neither a role's name nor null, is refused.
+    /// </summary>
     public static string? Of(EvalScenario scenario)
     {
         if (scenario.Expected.ValueKind != JsonValueKind.Object ||

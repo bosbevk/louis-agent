@@ -21,10 +21,19 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class CookNoError : ICheck
 {
+    /// <inheritdoc />
     public string Name => "cook-no-error";
+
+    /// <inheritdoc />
     public int Version => 1;
+
+    /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
+
+    /// <inheritdoc />
     public bool Required => true;
+
+    /// <inheritdoc />
     public IReadOnlySet<string> ExpectedKeys => FrozenSet<string>.Empty;
 
     /// <summary>Unknown when a turn broke; else a pass, or a fail counting the turns that errored.</summary>

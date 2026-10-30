@@ -2,23 +2,32 @@ using LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Scoring;
 
-// The Python's test_scoring.py, the price rules (F31 step 7a; the cases and their numbers as the Python has them). Each
-// expected value is the Python's, so the C# and the Python score an answer the same way.
+/// <summary>
+/// The price rules, with the Python <c>test_scoring.py</c>'s cases and numbers, so the C# and the Python score an
+/// answer the same way: a price counts as priced only with a link to its shop.
+/// </summary>
 public class PricesTests
 {
+    /// <summary>An English shopping list's header, with three shops.</summary>
     private const string HeaderEn =
         "| Ingredient | Recipe needs | Buy | Checkers | Shoprite | Pick n Pay | Best price |\n|---|---|---|---|---|---|---|\n";
 
+    /// <summary>An Afrikaans shopping list's header, with two shops.</summary>
     private const string HeaderAf =
         "| Bestanddeel | Hoeveel | Koop | Checkers | Shoprite | Goedkoopste |\n|---|---|---|---|---|---|\n";
 
+    /// <summary>A Checkers product sold by weight (its link ends in KG).</summary>
     private const string Thighs =
         "https://www.checkers.co.za/product/farmers-choice-chicken-8-piece-thighs-per-kg-10732975KG";
 
+    /// <summary>Every rand amount in a text is counted, however it's written.</summary>
     [Test]
     public void RandAmounts_AreCounted() =>
         Assert.That(Prices.RandAmounts("Meel R22.99, eiers R 45,00 en melk R18"), Is.EqualTo(3));
 
+    /// <summary>
+    /// A price with its shop link is priced; "unknown" is neither priced nor estimated; ± is an estimate.
+    /// </summary>
     [Test]
     public void APriceWithItsLink_IsPriced()
     {
@@ -29,11 +38,12 @@ public class PricesTests
             "the unknown row is neither priced nor an estimate; the Melk one is an estimate");
     }
 
+    /// <summary>A dash is a shop with no price: it neither prices nor guesses.</summary>
     [Test]
     public void ADash_IsAShopWithoutAPrice()
     {
-        // The cook writes `-` for a price it couldn't find (Louis, review of PR #55). A row priced with its link at one shop
-        // and `-` at another is priced; a row of dashes is listed, not priced, not guessed.
+        // The cook writes `-` for a price it couldn't find (Louis, review of PR #55). A row priced with its link at
+        // one shop and `-` at another is priced; a row of dashes is listed, not priced, not guessed.
         string answer = "| Bestanddeel | Checkers | Shoprite | Beste prys |\n|---|---|---|---|\n"
                         + "| Suurlemoene | [R12,99](https://www.checkers.co.za/p/1) | - | R12,99 Checkers |\n"
                         + "| Koljander | - | - | - |\n";
@@ -41,6 +51,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 2, 0, 0)));
     }
 
+    /// <summary>A price without a link is a guess, not priced.</summary>
     [Test]
     public void APriceWithoutALink_IsAGuessNotPriced()
     {
@@ -50,6 +61,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 3, 2, 0)));
     }
 
+    /// <summary>A link to a recipe is no source for a price.</summary>
     [Test]
     public void ARecipeLink_IsNoSource()
     {
@@ -59,6 +71,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 1, 0)));
     }
 
+    /// <summary>Another shop's link is no source for this shop's price.</summary>
     [Test]
     public void AnotherShopsLink_IsNoSourceForThisShopsPrice()
     {
@@ -69,6 +82,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 2, 1, 0)));
     }
 
+    /// <summary>A reference-style link is read as the address it refers to.</summary>
     [Test]
     public void AReferenceStyleLink_IsItsUrl()
     {
@@ -78,10 +92,11 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(2, 2, 0, 0)));
     }
 
+    /// <summary>A row whose product links to the price's shop is priced too.</summary>
     [Test]
     public void APriceWhoseProductLinksToTheShop_IsPriced()
     {
-        // F34, run 26527259bf31: Puls alone linked the product, not the price, and scored 0 priced. The row's link to the
+        // Run 26527259bf31: Puls alone linked the product, not the price, and scored 0 priced. The row's link to the
         // product at the price's shop is its source too.
         string answer = "| Item | Pryse | Subtotaal |\n|---|---|---|\n"
                         + "| [Onions 1kg](https://www.checkers.co.za/product/onions-1kg-10135699EA) | R34.99 | R34.99 |\n"
@@ -90,6 +105,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(2, 2, 0, 0)));
     }
 
+    /// <summary>One price for a product linked as sold by weight is its price per kg, not a pack's.</summary>
     [Test]
     public void OnePriceForAProductLinkedAsSoldByWeight_IsItsPricePerKg()
     {
@@ -99,6 +115,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 0, 1)));
     }
 
+    /// <summary>A product linked to another shop or to a recipe is no source.</summary>
     [Test]
     public void AProductLinkedToAnotherShopOrARecipe_IsNoSource()
     {
@@ -108,6 +125,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 2, 2, 0)));
     }
 
+    /// <summary>A list headed "Wat" or "What" is the shopping list, but the cook's "unsure" table is not.</summary>
     [Test]
     public void AListHeadedWat_IsTheShoppingList()
     {
@@ -121,6 +139,7 @@ public class PricesTests
             "the cook's Onseker table is no list");
     }
 
+    /// <summary>A shop's own subdomain is the shop.</summary>
     [Test]
     public void AShopsOwnSubdomain_IsTheShop()
     {
@@ -130,6 +149,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 1, 0, 0)));
     }
 
+    /// <summary>A host that only ends like a shop's name is not the shop.</summary>
     [Test]
     public void AHostThatOnlyEndsLikeAShop_IsNotTheShop()
     {
@@ -138,6 +158,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 1, 0)));
     }
 
+    /// <summary>The cook's own "priced: 11 of 11" is a claim; the rows say what was really sourced.</summary>
     [Test]
     public void TheCooksOwnTally_IsAClaimNotARating()
     {
@@ -147,10 +168,11 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 1, 0)));
     }
 
+    /// <summary>Only the shopping list's ingredient rows count, not its totals or the other tables.</summary>
     [Test]
     public void OnlyTheShoppingListsIngredientRows_Count()
     {
-        // The cook's real answer (F31 step 11b): the list with its bold totals, then the branches and what's unsure.
+        // The cook's real answer: the list with its bold totals, then the branches and what's unsure.
         string answer = "| Bestanddeel | Koop | Checkers |\n|---|---|---|\n| Boerewors | 1 kg | unknown |\n"
                         + "| Uie | 1 kg | [R24.99](https://www.checkers.co.za/uie) |\n| **Totaal** | | **R24.99** |\n\n"
                         + "| Winkel | Tak | Webwerf |\n|---|---|---|\n| Checkers | Andringa Street | [checkers.co.za](https://www.checkers.co.za/) |\n\n"
@@ -159,14 +181,17 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 2, 0, 0)));
     }
 
+    /// <summary>A tally with no list rates nothing.</summary>
     [Test]
     public void ATallyAlone_RatesNothing() =>
         Assert.That(Prices.Priced("...\nGeprys: 7 van 9 bestanddele"), Is.Null);
 
+    /// <summary>An answer with no list gets no rating.</summary>
     [Test]
     public void NoList_IsNoRating() =>
         Assert.That(Prices.Priced("Net 'n resep, geen lys."), Is.Null);
 
+    /// <summary>A price that says "/kg" is a price per kg, not a pack's.</summary>
     [Test]
     public void APriceThatSaysPerKg_IsNoPacksPrice()
     {
@@ -177,6 +202,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 0, 1)));
     }
 
+    /// <summary>One price for a product sold by weight is its price per kg.</summary>
     [Test]
     public void OnePriceForAProductSoldByWeight_IsItsPricePerKg()
     {
@@ -187,6 +213,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 1, 0, 1)));
     }
 
+    /// <summary>A range for a product sold by weight is its pack's price.</summary>
     [Test]
     public void ARangeForAProductSoldByWeight_IsItsPacksPrice()
     {
@@ -197,6 +224,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(2, 2, 0, 0)));
     }
 
+    /// <summary>One price for a product sold each is its pack's price.</summary>
     [Test]
     public void OnePriceForAProductSoldEach_IsItsPacksPrice()
     {
@@ -206,8 +234,10 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(1, 1, 0, 0)));
     }
 
-    // F18 FX24 (Louis, 2026-10-26: "if we give estimates it must now count as priced"): the cook gives estimates, awaiting the stores' word. A row with a rand amount marked
-    // ± or as an estimate is counted as estimated, apart from priced (which stays the shop's own, linked price: EstimatesAtShop reads it) and never as guessed.
+    /// <summary>
+    /// A row with an amount marked ± or as an estimate is counted as estimated: not priced (that stays the shop's own,
+    /// linked price) and never guessed. FX24, Louis, 2026-10-26: "if we give estimates it must now count as priced".
+    /// </summary>
     [Test]
     public void ARowWithAPlusMinusAmountOrAnEstimateWord_IsEstimated_NotPricedNorGuessed()
     {
@@ -217,6 +247,7 @@ public class PricesTests
         Assert.That(Prices.Priced(answer), Is.EqualTo(new PriceCount(0, 3, 0, 0, 2)));
     }
 
+    /// <summary>The words that mark a price as unconfirmed are counted.</summary>
     [Test]
     public void UnconfirmedMarks_AreCounted() =>
         Assert.That(Prices.UnconfirmedMarks("Prys onbekend; die ander is geskat uit die soekindeks."), Is.EqualTo(3));

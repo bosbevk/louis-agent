@@ -25,10 +25,19 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class ServesAsAsked : ICheck
 {
+    /// <inheritdoc />
     public string Name => "serves-as-asked";
+
+    /// <inheritdoc />
     public int Version => 1;
+
+    /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
+
+    /// <summary>Not required: it catches an answer that forgot the number, but doesn't decide the trial.</summary>
     public bool Required => false;
+
+    /// <inheritdoc />
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string> { "serves" }.ToFrozenSet();
 
     /// <summary>Looks for the people asked for in each turn's answer.</summary>

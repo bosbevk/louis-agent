@@ -2,7 +2,10 @@ using System.ComponentModel;
 
 namespace LouisAgent.Identities.Puls.Evals.Checks.Messages;
 
-/// <summary>The refusals for a scenario whose <c>expected</c> asks for something unreadable (ADR 0009: a text is a message enum member).</summary>
+/// <summary>
+/// What you're told when a scenario's <c>expected</c> asks for something the checks can't read.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ExpectationMessage
 {
     [Description(

@@ -3,8 +3,8 @@ using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared.Scoring;
 
 /// <summary>
-/// The shops a list has a column for that the cook can't read (F34). Checkers has its shop tools, and PnP and
-/// Woolworths a rendered page; Shoprite has neither, so its column breaks the rule.
+/// The shops a list has a column for that the cook can't read. Checkers has its shop tools, and PnP and Woolworths a
+/// rendered page; Shoprite has neither, so its column breaks the rule.
 /// </summary>
 public class ShopsTests
 {

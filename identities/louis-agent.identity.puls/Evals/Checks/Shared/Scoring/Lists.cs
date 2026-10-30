@@ -2,12 +2,14 @@ using System.Text.RegularExpressions;
 
 namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
 
-/// <summary>A shopping list in an answer: its header's cells, and its ingredient rows' cells (totals and separators left out).</summary>
+/// <summary>
+/// A shopping list in an answer: its header's cells, and its ingredient rows' cells (totals and separators left out).
+/// </summary>
 public sealed record ShoppingList(List<string> Header, List<List<string>> Rows);
 
 /// <summary>
-/// The answer's markdown tables, and which of them is the shopping list (F31 step 11b: the branches and what's unsure are
-/// tables too; a table with a why column is the cook's *Onseker* table, never the list, cook check 42d837f13659).
+/// The answer's markdown tables, and which of them is the shopping list. The branches and what's unsure are tables
+/// too: a table with a why column is the cook's *Onseker* table, never the list (cook check 42d837f13659).
 /// </summary>
 public static partial class Lists
 {
@@ -15,12 +17,15 @@ public static partial class Lists
     [GeneratedRegex(@"^\|\s*(Item|Bestanddeel|Ingredient|Produk|Wat|What)\b", RegexOptions.IgnoreCase)]
     private static partial Regex Header();
 
+    /// <summary>A why column, which marks the cook's table of what it's unsure about.</summary>
     [GeneratedRegex(@"\|\s*(Hoekom|Waarom|Why)\s*\|", RegexOptions.IgnoreCase)]
     private static partial Regex WhyColumn();
 
+    /// <summary>The line of dashes under a table's header.</summary>
     [GeneratedRegex(@"^\|\s*:?-")]
     private static partial Regex Separator();
 
+    /// <summary>A bold row, which closes a list with its totals.</summary>
     [GeneratedRegex(@"^\|\s*\*\*")]
     private static partial Regex Total();
 
@@ -50,7 +55,10 @@ public static partial class Lists
                 table.Skip(1).Where(row => !IsSeparator(row) && !IsTotal(row)).Select(Cells).ToList()))
             .ToList();
 
-    /// <summary>The bold rows that close a shopping list (`**Totaal** … **± R312**`, `**Per persoon** …`), as their cells, in order (FX24); none for another table.</summary>
+    /// <summary>
+    /// The bold rows that close a shopping list (`**Totaal** … **± R312**`, `**Per persoon** …`), as their cells, in
+    /// order; none for another table.
+    /// </summary>
     public static List<List<string>> TotalRows(string? answer) =>
         Tables(answer ?? "").Where(table => IsList(table[0]))
             .SelectMany(table => table.Skip(1).Where(IsTotal).Select(Cells)).ToList();
@@ -58,8 +66,10 @@ public static partial class Lists
     /// <summary>Whether a table's header is a shopping list's: an ingredient column first, and no why column.</summary>
     public static bool IsList(string header) => Header().IsMatch(header) && !WhyColumn().IsMatch(header);
 
+    /// <summary>Whether a row is the line of dashes under a table's header.</summary>
     public static bool IsSeparator(string row) => Separator().IsMatch(row);
 
+    /// <summary>Whether a row is a bold totals row.</summary>
     public static bool IsTotal(string row) => Total().IsMatch(row);
 
     /// <summary>A table row's cells, without the outer pipes.</summary>

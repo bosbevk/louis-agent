@@ -12,9 +12,8 @@ using LouisAgent.Identities.Puls.Evals.Checks.Shared.Expectations;
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 
 /// <summary>
-/// Puls's datasets in C# (F18 step 3a.2; Inspect's Sample shape since step 7d): each loads strictly with Puls's own
-/// checks, and each scenario asks what the eval needs. Scenarios compare as sets, since the loader orders them by file
-/// name. The routing eval's dataset is a folder of files now, tested beside the identity (F49.2 step 6).
+/// The cook's dataset loads strictly with its eval's checks, and each scenario asks what the eval needs. Scenarios
+/// compare as sets, since the loader orders them by file name. The routing's dataset is tested with its eval.
 /// </summary>
 public class PulsDatasetsTests
 {
@@ -47,7 +46,7 @@ public class PulsDatasetsTests
         Assert.That(places["cook-no-branch"], Is.EqualTo("Prince Albert, Wes-Kaap, Suid-Afrika"));
     }
 
-    /// <summary>The cook's dev scenarios carry the categories decided in step 5c.</summary>
+    /// <summary>The cook's dev scenarios carry the categories we decided on.</summary>
     [Test]
     public void TheCookCategoriesAreTheDecidedOnes()
     {
@@ -68,7 +67,7 @@ public class PulsDatasetsTests
                 .ToDictionary(s => s.Id, s => s.Categories.ToArray()), Is.EqualTo(expected));
     }
 
-    /// <summary>What each dev scenario asks for, in its criteria (step 5.4); the control has only its route.</summary>
+    /// <summary>What each dev scenario asks for, in its criteria; the control has only its route.</summary>
     [Test]
     public void TheCookScenariosStateTheirRequirements()
     {
@@ -102,8 +101,8 @@ public class PulsDatasetsTests
     }
 
     /// <summary>
-    /// The held-out cook scenarios are new, never used while tuning a prompt (step 5.4), and state their requirements
-    /// like the dev ones.
+    /// The held-out cook scenarios are new, never used while tuning a prompt, and state their requirements like the dev
+    /// ones.
     /// </summary>
     [Test]
     public void TheHeldOutCookScenariosAreASecondTownAnEnglishBudgetAndAFollowUp()
