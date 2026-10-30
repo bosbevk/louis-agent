@@ -23,7 +23,7 @@ namespace LouisAgent.Evals.Grading.Models.Rubrics;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0029-simulations-in-csharp.md">ADR 0029: a judge counts once calibrated</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-public sealed class JudgeCheck : ICheck
+public sealed class JudgeCheck : IRubricCheck
 {
     /// <summary>The keys the judge is told, in the order the file lists them.</summary>
     private readonly IReadOnlyList<string> _ask;
@@ -41,7 +41,7 @@ public sealed class JudgeCheck : ICheck
             new HashSet<string>(ask), trial => [JudgeAsk.Of(trial.Scenario, ask)]);
     }
 
-    /// <summary>The rubric's text, the judge's system prompt; a person's review asks its title as a question.</summary>
+    /// <inheritdoc />
     public string Rubric { get; }
 
     public string Name => _inner.Name;

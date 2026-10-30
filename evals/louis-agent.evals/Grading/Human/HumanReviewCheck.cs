@@ -83,7 +83,7 @@ public sealed class HumanReviewCheck : ICheck
         protected override ICheck Create(Settings settings, CheckContext context)
         {
             var reviewed = context.Before.LastOrDefault(check => check.Name == settings.Reviews);
-            return ((reviewed as NamedCheck)?.Inner ?? reviewed) is JudgeCheck judge
+            return ((reviewed as NamedCheck)?.Inner ?? reviewed) is IRubricCheck judge
                 ? For(reviewed!, ReviewQuestion.From(judge.Rubric))
                 : throw new InvalidDataException(MessageText.Format(EvalErrorMessage.ReviewsNoJudge,
                     new { settings.Reviews }));

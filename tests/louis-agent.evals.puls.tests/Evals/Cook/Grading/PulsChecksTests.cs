@@ -13,9 +13,11 @@ namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading;
 /// </summary>
 public class PulsChecksTests
 {
-    /// <summary>Puls's list holds the cook's six fixed rules, each by the name its grades carry.</summary>
+    /// <summary>
+    /// Puls's list holds the cook's six fixed rules and its judge, each by the name its grades carry.
+    /// </summary>
     [Test]
-    public void PulssList_HoldsTheCooksFixedRules()
+    public void PulssList_HoldsTheCooksFixedRules_AndItsJudge()
     {
         var listing = new CheckCatalog(PulsChecks.All).Listing();
 
@@ -23,9 +25,10 @@ public class PulsChecksTests
             Is.EqualTo(new[]
             {
                 "cook-no-error", "within-budget", "estimates-at-shop", "untooled-shops", "recipe-image",
-                "serves-as-asked"
+                "serves-as-asked", "meal-for-people"
             }));
-        Assert.That(listing.Select(line => line.Kind), Has.All.EqualTo(CheckKind.FixedRule));
+        Assert.That(listing.SkipLast(1).Select(line => line.Kind), Has.All.EqualTo(CheckKind.FixedRule));
+        Assert.That(listing[^1].Kind, Is.EqualTo(CheckKind.Model));
     }
 
     /// <summary>Each type, with no settings, builds today's check under today's name, version and required.</summary>
