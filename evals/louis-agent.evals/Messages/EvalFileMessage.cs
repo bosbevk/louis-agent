@@ -30,5 +30,9 @@ public enum EvalFileMessage
     ModeTwice,
 
     [Description("eval file '{File}' names the check '{Name}' twice; give one its own name")]
-    CheckTwice
+    CheckTwice,
+
+    [Description("eval file '{File}' names the check type '{Type}', which isn't in the catalogue; the types are "
+                 + "{Supported}")]
+    UnknownCheck
 }

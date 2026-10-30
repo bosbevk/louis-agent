@@ -28,6 +28,15 @@ public class HumanReviewEntryTests
         Assert.That(review.ExpectedKeys, Is.EqualTo(new[] { "tone" }));
     }
 
+    /// <summary>A judge the eval renamed is reviewed under its new name, so the review's name matches it.</summary>
+    [Test]
+    public void ARenamedJudge_IsReviewedUnderItsName()
+    {
+        var review = (HumanReviewCheck)Build("""{"reviews": "warmth"}""", new NamedCheck("warmth", Judge));
+
+        Assert.That((review.Name, review.Question), Is.EqualTo(("warmth.human", "Is the answer polite?")));
+    }
+
     /// <summary>A review of a check that isn't built before it, or isn't a judge, is refused, naming it.</summary>
     [TestCase("judge")]
     [TestCase("no-error")]

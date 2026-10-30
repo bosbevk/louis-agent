@@ -77,13 +77,16 @@ public sealed class HumanReviewCheck : ICheck
     public sealed class Entry() : CheckType<Settings>("human", CheckKind.Human)
     {
         /// <summary>
-        /// The review of the judge the eval built before it, asking its rubric's title as the question; a name that
-        /// is no judge built before it is refused, naming it.
+        /// The review of the judge the eval built before it, under the name the eval gave it, asking its rubric's
+        /// title as the question; a name that is no judge built before it is refused, naming it.
         /// </summary>
-        protected override ICheck Create(Settings settings, CheckContext context) =>
-            context.Before.LastOrDefault(check => check.Name == settings.Reviews) is JudgeCheck judge
-                ? For(judge, ReviewQuestion.From(judge.Rubric))
+        protected override ICheck Create(Settings settings, CheckContext context)
+        {
+            var reviewed = context.Before.LastOrDefault(check => check.Name == settings.Reviews);
+            return ((reviewed as NamedCheck)?.Inner ?? reviewed) is JudgeCheck judge
+                ? For(reviewed!, ReviewQuestion.From(judge.Rubric))
                 : throw new InvalidDataException(MessageText.Format(EvalErrorMessage.ReviewsNoJudge,
                     new { settings.Reviews }));
+        }
     }
 }

@@ -18,7 +18,9 @@ The why is [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md).
 
 Today it holds what a check reads: a `Trial` is one run of a scenario in one mode, and its `Transcript` is the turns
 it left, each a `TurnTranscript` with the session's events as they arrived. `EngineEvents` reads those events (the
-answer, the error, the usage, the route, and the tools the agent and its specialists called), and `TurnFacts` is what a turn's protocol record says about it.
+answer, the error, the usage, the route, the tools the agent and its specialists called, the sub-session it went
+back to and the URLs its tools were given), and `TurnFacts` is what a turn's protocol record says about it;
+`TurnFacts.Of(turn)` reads it from those events for every eval, unless an eval in C# says its own.
 
 And what a check returns: `ICheck` scores one trial into a `Grade` (a score from 0 to 1, an outcome, a reason, and
 for a model grader the `GradeJudge` that judged it). `Verdict` builds the four kinds of grade, so a pass always scores

@@ -64,12 +64,12 @@ internal static class TrialBuilder
                 """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"StartSubSession","input":{"agent":"puls","role":"ROLE"}}}"""
                     .Replace("ROLE", role)));
 
-    /// <summary>The start of the agent's own call to a tool, as the stream sends it.</summary>
-    public static SessionEvent ToolCall(string tool) =>
+    /// <summary>The start of the agent's own call to a tool, with its input as JSON, as the stream sends it.</summary>
+    public static SessionEvent ToolCall(string tool, string input = "{}") =>
         SessionEvent.From("content_block_start",
             Json(
-                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"TOOL","input":{}}}"""
-                    .Replace("TOOL", tool)));
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"TOOL","input":INPUT}}"""
+                    .Replace("TOOL", tool).Replace("INPUT", input)));
 
     /// <summary>A piece of the agent's answer, as the stream sends it.</summary>
     public static SessionEvent Text(string text) =>
