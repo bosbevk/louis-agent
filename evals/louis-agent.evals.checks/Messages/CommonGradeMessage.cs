@@ -114,6 +114,24 @@ public enum CommonGradeMessage
     [Description("{Tool} was never called")]
     ToolNotUsed,
 
+    [Description("{Tool} was called in turn {Turn}, which it mustn't be")]
+    ToolUsedForbidden,
+
+    [Description("a specialist called {Tool} in turn {Turn}, which it mustn't")]
+    ToolUsedBySpecialistForbidden,
+
+    [Description("{Tool} was called with {Field} '{Value}' in turn {Turn}")]
+    ToolUsedWithPass,
+
+    [Description("{Tool} was called, but never with {Field} '{Value}'")]
+    ToolCalledOtherwise,
+
+    [Description("{Calls} tool calls, under {Limit}")]
+    ToolCallsUnderPass,
+
+    [Description("{Calls} tool calls, not under {Limit}")]
+    ToolCallsOver,
+
     [Description("answered itself, as expected")]
     AnsweredAsExpected,
 

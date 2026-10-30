@@ -29,7 +29,9 @@ public static class GeneralChecks
         new ContainsCheck.Entry(), new NotContainsCheck.Entry(), new StartsWithCheck.Entry(),
         new LengthUnderCheck.Entry(), new MentionsExpectedCheck.Entry(),
         new IsJsonCheck.Entry(),
-        new RoutedToCheck.Entry(), new ToolUsedCheck.Entry(),
+        new RoutedToCheck.Entry(), new ToolUsedCheck.Entry(), new ToolNotUsedCheck.Entry(),
+        new ToolUsedWithCheck.Entry(),
+        new ToolCallsUnderCheck.Entry(),
         new JudgeCheck.Entry(), new HumanReviewCheck.Entry()
     ];
 }

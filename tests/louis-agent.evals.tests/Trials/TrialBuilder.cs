@@ -106,12 +106,12 @@ internal static class TrialBuilder
                 """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"StartSubSession","input":{"agent":"puls","role":"ROLE"}}}}"""
                     .Replace("ROLE", role)));
 
-    /// <summary>A specialist's call to a tool, carried as a sub_session event.</summary>
-    public static SessionEvent SubToolCall(string tool) =>
+    /// <summary>A specialist's call to a tool, with its input as JSON, carried as a sub_session event.</summary>
+    public static SessionEvent SubToolCall(string tool, string input = "{}") =>
         SessionEvent.From("sub_session",
             Json(
-                """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"TOOL","input":{}}}}"""
-                    .Replace("TOOL", tool)));
+                """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"TOOL","input":INPUT}}}"""
+                    .Replace("TOOL", tool).Replace("INPUT", input)));
 
     /// <summary>A specialist's usage, carried as a sub_session event (the turn's usage is the top-level one).</summary>
     public static SessionEvent SubUsage(string cost) =>

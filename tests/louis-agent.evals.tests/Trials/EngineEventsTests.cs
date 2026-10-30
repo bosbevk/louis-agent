@@ -55,6 +55,22 @@ public class EngineEventsTests
         Assert.That(EngineEvents.TokensOf(Turn(1, [Tokens(8, 20572, 26125, 1582)])), Is.EqualTo(48287));
     }
 
+    /// <summary>
+    /// A tool's inputs are those of its calls, the agent's first and then its specialists', and no other tool's.
+    /// </summary>
+    [Test]
+    public void AToolsInputs_AreTheAgentsThenTheSpecialists()
+    {
+        var turn = Turn(1, [
+            SubToolCall("FindProducts", """{"shop":"pnp"}"""), ToolCall("FindProducts", """{"shop":"checkers"}"""),
+            ToolCall("WebSearch", """{"query":"x"}""")
+        ]);
+
+        Assert.That(
+            EngineEvents.ToolInputsOf(turn, "FindProducts").Select(input => input.GetProperty("shop").GetString()),
+            Is.EqualTo(new[] { "checkers", "pnp" }));
+    }
+
     /// <summary>A missing count, or no usage at all, leaves the tokens unknown, never a smaller sum.</summary>
     [Test]
     public void AMissingCount_OrNoUsage_LeavesTheTokensUnknown()

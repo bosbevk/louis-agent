@@ -109,6 +109,16 @@ public static class EngineEvents
     public static IReadOnlyList<string> SpecialistToolsCalled(TurnTranscript turn) => CalledIn(SpecialistEvents(turn));
 
     /// <summary>
+    /// The inputs of the turn's calls to this tool, the agent's own first and then its specialists', in order.
+    /// </summary>
+    public static IReadOnlyList<JsonElement> ToolInputsOf(TurnTranscript turn, string tool) =>
+    [
+        .. ToolBlocks(turn.Events).Concat(ToolBlocks(SpecialistEvents(turn)))
+            .Where(block => Text(block, "name") == tool)
+            .Select(block => Field(block, "input", out var input) ? input : default)
+    ];
+
+    /// <summary>
     /// The handle of the sub-session the turn's agent went back to (its first ContinueSubSession call that names
     /// one), or null when it went back to none.
     /// </summary>
