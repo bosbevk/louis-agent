@@ -10,9 +10,7 @@
     "place": null,
     "time_zone": "Etc/UTC",
     "follow_ups": [],
-    "expected": {
-      "example": true
-    },
+    "expected": {},
     "categories": [
       "example"
     ]

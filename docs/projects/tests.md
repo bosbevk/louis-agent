@@ -117,10 +117,10 @@ path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
 - **`louis-agent.evals.protocol.tests`**: every event round-trips through `EvalProtocolJson`, `event` first, the time
   with `Z`, and a person's line or an unknown event reads as none.
 - **`louis-agent.evals.runner.tests`**: the arguments, the catalogue, the stub eval's run against its golden, the
-  conformance of every eval of every set, the data files copied beside the assembly.
+  conformance of every eval folder, the data files copied beside the assembly, and the template folder
+  (`evals/template/Example/`: it loads with the general checks alone, conforms, and is never listed).
 - **`louis-agent.identity.puls.judges.tests`**: Puls's judge `meal-for-people` on a scripted client, the prompt it
   sends against its golden, its rubric's hash, its entry and its list.
-- **`louis-agent.evals.template.tests`**: the template project's layout and its empty members.
 
 The runner end to end through the API is `StubCheckTests` in `louis-agent.api.integration-tests`. A paid run is never
 a test: CI grades only recorded transcripts.

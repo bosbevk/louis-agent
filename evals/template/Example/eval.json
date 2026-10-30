@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "name": "template-example",
+  "identity": "template",
+  "version": 1,
+  "proves": "Replace this with the one sentence the portal shows: what a pass means.",
+  "manual": "manual.md",
+  "modes": [
+    {
+      "name": "example",
+      "role": "template/voice",
+      "toolsets": ["web"]
+    }
+  ],
+  "checks": [
+    { "type": "no-error" },
+    { "type": "within-time", "parameters": { "seconds": 120, "required": false } }
+  ]
+}

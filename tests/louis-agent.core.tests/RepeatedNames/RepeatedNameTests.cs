@@ -39,7 +39,6 @@ public class RepeatedNameTests
         "evals/louis-agent.evals.runner/Evals/Stub/StubRole.cs",
         "identities/louis-agent.identity.puls/PulsRole.cs",
         "src/louis-agent.puls/Text/PulsWebRole.cs",
-        "evals/louis-agent.evals.template/Evals/Example/TemplateEvalName.cs",
         "identities/louis-agent.identity.puls/PulsIdentity.cs",
         "src/louis-agent.composition/IdentityKind.cs",
         "identities/louis-agent.identity.puls/PulsPack.cs",
