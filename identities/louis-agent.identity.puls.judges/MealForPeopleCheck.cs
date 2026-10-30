@@ -9,10 +9,11 @@ using LouisAgent.Evals.Grading.Models.Rubrics;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Puls.Evals.Cook.Expectations;
+using LouisAgent.Evals.Puls.Evals.Cook.Grading;
 using LouisAgent.Evals.Puls.Messages;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
+namespace LouisAgent.Identities.Puls.Judges;
 
 /// <summary>
 /// The cook's model check: "is this a meal for the people asked for", the judge of <see cref="MealForPeople"/> behind
@@ -53,10 +54,19 @@ public sealed class MealForPeopleCheck : IRubricCheck
     /// <inheritdoc />
     public string Rubric { get; }
 
+    /// <inheritdoc />
     public string Name => _inner.Name;
+
+    /// <inheritdoc />
     public int Version => _inner.Version;
+
+    /// <inheritdoc />
     public CheckKind Kind => CheckKind.Model;
+
+    /// <inheritdoc />
     public IReadOnlySet<string> ExpectedKeys => _inner.ExpectedKeys;
+
+    /// <summary>Never required: the outcome doesn't wait on it until its calibration passes.</summary>
     public bool Required => false;
 
     /// <summary>Asks the judge, unless the scenario asks for no number of people.</summary>

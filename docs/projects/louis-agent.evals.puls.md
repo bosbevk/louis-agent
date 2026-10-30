@@ -14,11 +14,12 @@ identity gets a project of its own ([ADR 0029](../adr/0029-simulations-in-csharp
 - **No eval left, only the cook's checks.** `puls-routing` and `puls-cook` are folders of files beside the identity
   since F49.2 steps 6 and 8b ([louis-agent.identity.puls](louis-agent.identity.puls.md)), and `EVALS=puls` picks them
   by the identity their files name (step 8c deleted the sets). What's left are the cook's checks and the rules they
-  read; step 9 moves them beside the identity and deletes this project.
-- **The cook's checks** (`Evals/Cook/Grading/`): no failed turn, within the budget, estimates at the shop that serves
-  the town, no price column for a shop the cook can't read, an image from the recipe, serves as asked, and the model
-  judge `meal-for-people` (its rubric is a file beside the cook's `eval.json`). Each carries a nested `Entry` and is
-  listed in `PulsChecks.All`, which the runner gathers into its check catalogue, so the cook's file names them.
+  read; step 9b moves them beside the identity and deletes this project.
+- **The cook's fixed rules** (`Evals/Cook/Grading/`): no failed turn, within the budget, estimates at the shop that
+  serves the town, no price column for a shop the cook can't read, an image from the recipe, and serves as asked.
+  Each carries a nested `Entry` and is listed in `PulsChecks.All`, which the runner gathers into its check catalogue,
+  so the cook's file names them. The model judge `meal-for-people` left in step 9a for its own project beside the
+  identity ([louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md)), since it needs the harness.
 - **The rules they read**: the scenario's expectations (`Evals/Cook/Expectations/`), the scoring of prices and
   servings (`Evals/Cook/Scoring/`), and in `Shared/` the turn reading, the shops and links, and the names as enums
   (ADR 0043). With no eval left, `EvalLayoutTests` no longer looks at this project.

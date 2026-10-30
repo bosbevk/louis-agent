@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\evals\louis-agent.evals.puls\louis-agent.evals.puls.csproj" />
+    <!-- F49.2 step 9a: the cook's eval names Puls's judge, so loading its file needs the judges' list. -->
+    <ProjectReference Include="..\..\identities\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />
     <!-- Test-only (ADR 0043): the identity's PulsRole is the one the eval set's copy is checked against. -->
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
   </ItemGroup>

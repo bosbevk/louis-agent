@@ -2,7 +2,8 @@
 
 > **Kind:** console app (`net10.0`) · **Path:** `evals/louis-agent.evals.runner/` · **References:**
 > louis-agent.evals, louis-agent.evals.puls, louis-agent.composition (the identities' and packs' eval folders reach
-> the runner through it, ADR 0027) · **Used by:** louis-agent.api (starts it as a child process; published to
+> the runner through it, ADR 0027), louis-agent.identity.puls.judges (Puls's judge, which needs the harness, so no host
+> may reach it through the composition) · **Used by:** louis-agent.api (starts it as a child process; published to
 > `/app/evals` in the API's images)
 
 ## Purpose
@@ -17,7 +18,7 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 - **The catalogue.** Every eval is a folder of files (F49.2). `Catalog/EvalFolders` finds them: every `eval.json`
   under `EvalFiles/` beside the runner, whose path below it is where the folder sits in the repository. The runner
   builds their checks from the check catalogue it gathers (`Catalog/RunnerChecks`: the general checks, then Puls's
-  `PulsChecks.All`). `EVALS=` then keeps the evals of the identities it names (all when unset); a name no eval proves
+  fixed rules `PulsChecks.All`, then its judges `PulsJudges.All`). `EVALS=` then keeps the evals of the identities it names (all when unset); a name no eval proves
   is refused, naming the ones that do, so a typo runs nothing. `Catalog/EvalCatalog` lists the chosen evals, then the
   stub, and refuses a name twice and an eval with no fixed-rule check. `--list` prints one JSON line per eval (whose
   it is, what it proves, its categories and graders), which the API's eval list reads.

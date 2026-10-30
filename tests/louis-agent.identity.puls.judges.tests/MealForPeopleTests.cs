@@ -1,10 +1,9 @@
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;
 
-namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.Judges;
+namespace LouisAgent.Identities.Puls.Judges.Tests;
 
 /// <summary>
 /// The cook's judge, "is this a meal for the people asked for": an <see cref="IEvaluator"/> that sends the scenario's
@@ -66,13 +65,14 @@ public class MealForPeopleTests
             new ChatResponse(new ChatMessage(ChatRole.Assistant, "Vir ses: 750 g maalvleis, meer rys.")),
             new ChatConfiguration(client), [Ask]);
 
-        var sent = client.Sent.Single()[1].Text!;
+        var sent = client.Sent.Single()[1].Text;
         Assert.That(sent,
             Does.Contain("The conversation so far:").And.Contain("User: Wat kan ek kook vir vier?").And
                 .Contain("Assistant: Bobotie vir vier").And.Contain("User: Maak dit vir ses."));
-        Assert.That(sent.IndexOf("The conversation so far:"), Is.LessThan(sent.IndexOf("The answer to judge:")));
+        Assert.That(sent.IndexOf("The conversation so far:", StringComparison.Ordinal),
+            Is.LessThan(sent.IndexOf("The answer to judge:", StringComparison.Ordinal)));
         Assert.That(sent, Does.EndWith("Vir ses: 750 g maalvleis, meer rys."));
-        Assert.That(CookFile.Rubric, Does.Contain("follow-up"),
+        Assert.That(CookRubric.Text, Does.Contain("follow-up"),
             "the rubric says a follow-up may rely on the turns before");
     }
 
@@ -83,7 +83,7 @@ public class MealForPeopleTests
     [Test]
     public void ThePersonIsAskedTheQuestionTheJudgeIs_ReadFromItsPromptsTitle()
     {
-        Assert.That(CookFile.Question, Is.EqualTo("Is this a meal for the people asked for?"));
+        Assert.That(CookRubric.Question, Is.EqualTo("Is this a meal for the people asked for?"));
     }
 
     /// <summary>
@@ -155,13 +155,13 @@ public class MealForPeopleTests
     [Test]
     public void TheRubricIsAFileBesideTheEval_AndItsHashIsOfItsBytes()
     {
-        var text = CookFile.Rubric;
+        var text = CookRubric.Text;
 
         Assert.That(text,
             Does.Contain("main dish").And.Contain("can't tell").And.Contain("never the prices").And
                 .Contain("\"meal\""));
         Assert.That(Convert.ToHexStringLower(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(text)))[..12],
-            Is.EqualTo(CookFile.RubricHash));
+            Is.EqualTo(CookRubric.Hash));
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public class MealForPeopleTests
     public async Task WhatTheJudgeIsSent_IsPinned()
     {
         var recorder = new ScriptedJudge("""{"meal": true, "reason": "x"}""");
-        await new MealForPeople(CookFile.Rubric).EvaluateAsync(
+        await new MealForPeople(CookRubric.Text).EvaluateAsync(
             [new ChatMessage(ChatRole.User, "Wat kan ek kook?")],
             new ChatResponse(new ChatMessage(ChatRole.Assistant, Answer)),
             new ChatConfiguration(recorder), [Ask]);

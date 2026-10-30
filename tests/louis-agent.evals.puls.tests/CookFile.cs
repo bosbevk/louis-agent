@@ -3,12 +3,13 @@ using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Puls.Evals.Cook.Grading;
+using LouisAgent.Identities.Puls.Judges;
 
 namespace LouisAgent.Evals.Puls.Tests;
 
 /// <summary>
 /// The cook's eval as the runner reads it: the folder of files beside the identity, copied beside these tests, with
-/// its checks from the harness's general list and Puls's own.
+/// its checks from the harness's general list, Puls's fixed rules and Puls's judges.
 /// </summary>
 internal static class CookFile
 {
@@ -20,7 +21,7 @@ internal static class CookFile
 
     /// <summary>The cook's eval, loaded once.</summary>
     public static FileEval Eval { get; } =
-        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. PulsChecks.All]), Source);
+        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. PulsChecks.All, .. PulsJudges.All]), Source);
 
     /// <summary>The cook's judge's rubric, as its file holds it.</summary>
     public static string Rubric { get; } =

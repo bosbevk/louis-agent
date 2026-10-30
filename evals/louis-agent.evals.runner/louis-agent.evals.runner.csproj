@@ -12,6 +12,8 @@
     <!-- F18 step 4 (ADR 0027): the runner, like the composition root, is the one project that knows every evals project. -->
     <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
     <ProjectReference Include="..\louis-agent.evals.puls\louis-agent.evals.puls.csproj" />
+    <!-- F49.2 step 9a: Puls's judge, which needs the harness and so is never reached through the composition. -->
+    <ProjectReference Include="..\..\identities\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />
     <!-- F49.2: the one project that knows every identity and pack (ADR 0027): their eval folders reach the runner
          through it, and their checks' lists from step 7. -->
     <ProjectReference Include="..\..\src\louis-agent.composition\louis-agent.composition.csproj" />

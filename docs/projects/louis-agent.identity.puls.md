@@ -118,4 +118,4 @@ references the harness and the composition for these; the identity doesn't.
 [louis-agent.pack.shops](louis-agent.pack.shops.md) · [ADR 0019 modes](../adr/0019-modes-one-file-per-product.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.core](louis-agent.core.md) · Next: [louis-agent.pack.shops](louis-agent.pack.shops.md)
+[Projects](README.md) · Previous: [louis-agent.core](louis-agent.core.md) · Next: [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md)

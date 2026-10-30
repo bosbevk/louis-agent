@@ -1,18 +1,23 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
+namespace LouisAgent.Identities.Puls.Judges;
 
-/// <summary>The judge's reply (ADR 0041: a known shape is a record the serializer reads): <c>meal</c> true, false or null for "can't tell", and the reason in a sentence.</summary>
+/// <summary>
+/// What the judge answers: <c>meal</c> is yes, no, or null for "can't tell", with the reason in a sentence.
+/// </summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record MealVerdict(
     [property: JsonPropertyName("meal")] bool? Meal,
     [property: JsonPropertyName("reason")] string? Reason)
 {
+    /// <summary>Reads the names whatever their case, since a model may write <c>Meal</c>.</summary>
     private static readonly JsonSerializerOptions Options = new() { PropertyNameCaseInsensitive = true };
 
     /// <summary>
-    /// The verdict in a reply that may hold words, or a code fence, around it: the last JSON object in the text (a model that thinks aloud first may write braces before it).
-    /// Null when the reply holds none, or one that is not a verdict (<c>"meal": "yes"</c>).
+    /// Finds the verdict in a reply that may have words or a code fence around it: the last JSON object in the text,
+    /// since a model that thinks aloud may write braces before it. You get nothing back if there is none, or if it
+    /// isn't a verdict (<c>"meal": "yes"</c>).
     /// </summary>
     public static MealVerdict? Read(string reply)
     {

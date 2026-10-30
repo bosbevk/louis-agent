@@ -1,12 +1,11 @@
 using LouisAgent.Evals.Grading;
-using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Grading.Models;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
+using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using Microsoft.Extensions.AI.Evaluation;
-using static LouisAgent.Evals.Puls.Tests.PulsTrials;
+using static LouisAgent.Identities.Puls.Judges.Tests.JudgeTrials;
 
-namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.Judges;
+namespace LouisAgent.Identities.Puls.Judges.Tests;
 
 /// <summary>
 /// The cook's model check. It judges the last answer for the people asked in that turn (the scenario's <c>serves</c>,
@@ -22,7 +21,7 @@ public class MealForPeopleCheckTests
 
     /// <summary>The cook's judge over its rubric, asking this client.</summary>
     private static MealForPeopleCheck Grader(MealForPeopleTests.ScriptedJudge? client = null) =>
-        MealForPeopleCheck.Create(CookFile.Rubric,
+        MealForPeopleCheck.Create(CookRubric.Text,
             () => new ConfiguredJudge(new ChatConfiguration(client ?? Client), "qwen3:8b"));
 
     /// <summary>A cook trial with this <c>expected</c> and as many turns, each answering its number.</summary>
@@ -64,7 +63,7 @@ public class MealForPeopleCheckTests
             CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Pass, "feeds four")));
-        Assert.That(grade.Judge, Is.EqualTo(new GradeJudge("qwen3:8b", CookFile.RubricHash)));
+        Assert.That(grade.Judge, Is.EqualTo(new GradeJudge("qwen3:8b", CookRubric.Hash)));
         var user = client.Sent.Single()[1].Text;
         // The judge is not told the budget. It must never judge it, and a small model judged it anyway when told;
         // another check checks the cost.
@@ -109,7 +108,7 @@ public class MealForPeopleCheckTests
     [Test]
     public async Task WithNoJudgeConfigured_TheGradeIsUnknown()
     {
-        var grade = await MealForPeopleCheck.Create(CookFile.Rubric, () => null)
+        var grade = await MealForPeopleCheck.Create(CookRubric.Text, () => null)
             .GradeAsync(Cook("""{"serves":4}""", turns: 1), CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Unknown, "no judge configured")));
@@ -124,22 +123,5 @@ public class MealForPeopleCheckTests
         var grade = await Grader(client).GradeAsync(Cook("""{"serves":4}""", turns: 1), CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Reason), Is.EqualTo((GradeOutcome.Unknown, "no quantities")));
-    }
-
-    /// <summary>
-    /// The cook's eval lists it after the fixed rules, then the person's review of its question, and the outcome
-    /// doesn't wait on either.
-    /// </summary>
-    [Test]
-    public void TheCookEvalHasIt_AfterTheFixedRules_AndTheOutcomeDoesNotWaitOnIt()
-    {
-        var checks = CookFile.Eval.Checks;
-
-        var grader = checks.Single(g => g.Name == "meal-for-people");
-
-        Assert.That((grader.Kind, grader.Required), Is.EqualTo((CheckKind.Model, false)));
-        Assert.That(checks.Where(g => g.Required).Select(g => g.Kind), Has.All.EqualTo(CheckKind.FixedRule));
-        Assert.That(checks[^2], Is.SameAs(grader), "the judge, then the person's review of its question");
-        Assert.That(checks[^1].Name, Is.EqualTo("meal-for-people.human"));
     }
 }

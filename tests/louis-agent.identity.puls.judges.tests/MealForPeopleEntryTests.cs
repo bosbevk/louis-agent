@@ -6,12 +6,10 @@ using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Models;
 using LouisAgent.Evals.Grading.Models.Rubrics;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading;
-using LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
 using Microsoft.Extensions.AI.Evaluation;
-using static LouisAgent.Evals.Puls.Tests.PulsTrials;
+using static LouisAgent.Identities.Puls.Judges.Tests.JudgeTrials;
 
-namespace LouisAgent.Evals.Puls.Tests.Evals.Cook.Grading.Judges;
+namespace LouisAgent.Identities.Puls.Judges.Tests;
 
 /// <summary>
 /// The cook's judge as an entry an eval file names, <c>meal-for-people</c>: it reads its rubric from the eval's
@@ -27,7 +25,7 @@ public class MealForPeopleEntryTests
     [Test]
     public void TheEntry_ReadsItsRubric_FromTheEvalsFolder()
     {
-        using var folder = new RubricFolder(CookFile.Rubric);
+        using var folder = new RubricFolder(CookRubric.Text);
 
         var check = Build(Settings, folder.Root);
 
@@ -35,7 +33,7 @@ public class MealForPeopleEntryTests
         Assert.That((check.Name, check.Version, check.Kind, check.Required),
             Is.EqualTo(("meal-for-people", 2, CheckKind.Model, false)));
         Assert.That(check.ExpectedKeys, Is.EqualTo(new[] { "serves" }));
-        Assert.That(((IRubricCheck)check).Rubric, Is.EqualTo(CookFile.Rubric));
+        Assert.That(((IRubricCheck)check).Rubric, Is.EqualTo(CookRubric.Text));
     }
 
     /// <summary>The rubric file's bytes are the calibrated ones, so its grades carry the same prompt hash.</summary>
@@ -43,7 +41,7 @@ public class MealForPeopleEntryTests
     public async Task TheSameRubric_GradesUnderTheSameHash()
     {
         var client = new MealForPeopleTests.ScriptedJudge("""{"meal": true, "reason": "For four."}""");
-        var check = MealForPeopleCheck.Create(CookFile.Rubric,
+        var check = MealForPeopleCheck.Create(CookRubric.Text,
             () => new ConfiguredJudge(new ChatConfiguration(client), "qwen3:8b"));
 
         var grade = await check.GradeAsync(
@@ -51,7 +49,7 @@ public class MealForPeopleEntryTests
             CancellationToken.None);
 
         Assert.That((grade.Outcome, grade.Judge?.PromptHash),
-            Is.EqualTo((GradeOutcome.Pass, CookFile.RubricHash)));
+            Is.EqualTo((GradeOutcome.Pass, CookRubric.Hash)));
     }
 
     /// <summary>A rubric that isn't in the folder is refused when the eval is read, naming the file.</summary>
@@ -71,19 +69,19 @@ public class MealForPeopleEntryTests
     [Test]
     public void APersonsReview_OfTheCooksJudge_AsksItsRubricsTitle()
     {
-        using var folder = new RubricFolder(CookFile.Rubric);
+        using var folder = new RubricFolder(CookRubric.Text);
         var judge = Build(Settings, folder.Root);
 
-        var review = (HumanReviewCheck)new CheckCatalog([.. GeneralChecks.All, .. PulsChecks.All]).Get("human")
+        var review = (HumanReviewCheck)new CheckCatalog([.. GeneralChecks.All, .. PulsJudges.All]).Get("human")
             .Create(Json("""{"reviews": "meal-for-people"}"""), new CheckContext(folder.Root, [judge]));
 
         Assert.That((review.Name, review.Question),
-            Is.EqualTo(("meal-for-people.human", CookFile.Question)));
+            Is.EqualTo(("meal-for-people.human", CookRubric.Question)));
     }
 
-    /// <summary>Builds the judge the way the cook's eval file will: from Puls's list, in this folder.</summary>
+    /// <summary>Builds the judge the way the cook's eval file does: from Puls's judges, in this folder.</summary>
     private static ICheck Build(string settings, string folder) =>
-        new CheckCatalog(PulsChecks.All).Get("meal-for-people").Create(Json(settings), new CheckContext(folder, []));
+        new CheckCatalog(PulsJudges.All).Get("meal-for-people").Create(Json(settings), new CheckContext(folder, []));
 
     /// <summary>A JSON value from its text.</summary>
     private static JsonElement Json(string text) => JsonDocument.Parse(text).RootElement.Clone();

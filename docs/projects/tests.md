@@ -116,8 +116,10 @@ path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
   with `Z`, and a person's line or an unknown event reads as none.
 - **`louis-agent.evals.runner.tests`**: the arguments, the catalogue, the stub eval's run against its golden, the
   conformance of every eval of every set, the data files copied beside the assembly.
-- **`louis-agent.evals.puls.tests`**: each Puls grader on hand-cut answers, the datasets' versions and hashes, the
-  scenario ids as test constants, and both evals' conformance against their references.
+- **`louis-agent.evals.puls.tests`**: each of Puls's fixed rules on hand-cut answers, the datasets' versions and
+  hashes, the scenario ids as test constants, and the cook's conformance against its references.
+- **`louis-agent.identity.puls.judges.tests`**: Puls's judge `meal-for-people` on a scripted client, the prompt it
+  sends against its golden, its rubric's hash, its entry and its list.
 - **`louis-agent.evals.template.tests`**: the template project's layout and its empty members.
 
 The runner end to end through the API is `StubCheckTests` in `louis-agent.api.integration-tests`. A paid run is never

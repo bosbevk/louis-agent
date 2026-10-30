@@ -3,19 +3,27 @@ using LouisAgent.Evals.Puls.Messages;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;
 
-namespace LouisAgent.Evals.Puls.Evals.Cook.Grading.Judges;
+namespace LouisAgent.Identities.Puls.Judges;
 
 /// <summary>
-/// The cook's judge (F18 step 6.2): an <see cref="IEvaluator"/> with one yes-or-no metric, "is this answer a meal for the people asked for". It sends the judge model its prompt as
-/// the system message, and as the user message the ask (<see cref="CookAsk"/>: people, town), the earlier turns when there are any (6a.4f) and the answer; it reads a <see cref="MealVerdict"/> from the reply. A reply it
-/// can't read is a metric with no value and the reason why, never a pass: the grader above maps no value to Unknown.
+/// Asks the judge model one yes-or-no question: is this answer a meal for the people asked for? It sends the rubric
+/// as the system message, then the ask (<see cref="CookAsk"/>), the earlier turns if there are any, and the answer, and
+/// reads a <see cref="MealVerdict"/> back.
 /// </summary>
+/// <remarks>
+/// Adapter: it fits Microsoft.Extensions.AI.Evaluation's <see cref="IEvaluator"/>, so the harness's judge runs it like
+/// any other evaluator. A reply it can't read gives no value and says why, never a pass; the check above it turns no
+/// value into Unknown.
+/// </remarks>
 public sealed class MealForPeople(string prompt) : IEvaluator
 {
+    /// <summary>The metric's name, which is also the check's.</summary>
     public const string MetricName = "meal-for-people";
 
+    /// <summary>The one metric it gives.</summary>
     public IReadOnlyCollection<string> EvaluationMetricNames => [MetricName];
 
+    /// <summary>Asks the judge about the answer and turns its reply into the metric.</summary>
     public async ValueTask<EvaluationResult> EvaluateAsync(IEnumerable<ChatMessage> messages,
         ChatResponse modelResponse, ChatConfiguration? chatConfiguration = null,
         IEnumerable<EvaluationContext>? additionalContext = null, CancellationToken cancellationToken = default)
@@ -39,7 +47,10 @@ public sealed class MealForPeople(string prompt) : IEvaluator
         return new EvaluationResult(new BooleanMetric(MetricName, verdict?.Meal, reason));
     }
 
-    /// <summary>The earlier turns, question and answer, when there are any (6a.4f): a follow-up's answer relies on the recipe given before it. A single turn adds nothing.</summary>
+    /// <summary>
+    /// The earlier turns, question and answer, if there are any: a follow-up's answer relies on the recipe given before
+    /// it. A single turn adds nothing.
+    /// </summary>
     private static string SoFar(IEnumerable<ChatMessage> messages)
     {
         var turns = messages.Where(m => m.Role == ChatRole.User || m.Role == ChatRole.Assistant).ToList();
@@ -48,5 +59,6 @@ public sealed class MealForPeople(string prompt) : IEvaluator
             turns.Select(m => $"{(m.Role == ChatRole.User ? "User" : "Assistant")}: {m.Text}")) + "\n";
     }
 
+    /// <summary>The start of a reply, short enough to quote in a reason.</summary>
     private static string Clip(string text) => text.Length <= 120 ? text.Trim() : text[..120].Trim() + "…";
 }
