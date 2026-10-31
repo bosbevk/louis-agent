@@ -148,7 +148,9 @@ name your stored grades carry when the type is a general one.
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
 that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its owner's
 list (as the shops pack's rules are in `ShopsChecks.All`, in `packs/louis-agent.pack.shops/Checks/`), which the
-composition hands to the runner (`EvalChecks.All`). The worked example is `EstimatesAtShop` and its tests. Its reasons
+composition hands to the runner (`EvalChecks.All`). A rule that proves a pack's tools is the pack's
+([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools), ADR 0060). The worked example is
+`EstimatesAtShop` and its tests. Its reasons
 are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
 (`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,
 so it goes in a project of its own beside the identity that only the runner references, as

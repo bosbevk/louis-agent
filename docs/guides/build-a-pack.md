@@ -49,7 +49,9 @@ Delete the template's `Class1.cs`, and make the csproj look like the shops pack'
 </Project>
 ```
 
-The only project reference is core. A reference to another pack or to an identity fails `ArchitectureTests`.
+The only project reference is core, until the pack ships checks of its own: then it references the check contract too
+([step 9](#9-its-checks-when-it-proves-its-tools)). A reference to another pack or to an identity fails
+`ArchitectureTests`.
 
 The last group shows the pack's design doc under `docs/` in the IDE's solution explorer, as every project does;
 nothing is built or copied. Write the doc (`docs/projects/louis-agent.pack.units.md`) once the pack works.
@@ -261,9 +263,36 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 and its guide, and keeps them for its whole life. The images build every project (`COPY . .`), so a compose stack only
 needs `PACKS` (or `IDENTITIES`) and the pack's settings in its environment.
 
+## 9. Its checks (when it proves its tools)
+
+A pack ships the checks that prove what its tools do, the way it ships the tools
+([ADR 0060](../adr/0060-a-pack-ships-its-checks.md)): an eval file names them by type, as it names a general check.
+Write one only for a rule no general check and reader can say ([Add an eval](add-an-eval.md#4-choose-the-checks)).
+The shops pack's are the model: `packs/louis-agent.pack.shops/Checks/`.
+
+1. **Reference the check contract** in the pack's csproj, `..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj`,
+   with a comment that says why. Never the harness (`evals/louis-agent.evals`): every host loads the pack.
+2. **Write the check** in `Checks/`: a class that implements `ICheck`, with a nested `Entry` (a `CheckType<Settings>`)
+   that builds it from a typed `Settings` record. What it reads an answer with goes in `Checks/Reading/`; plain markdown
+   reading (a table, a link, `Links.IsHost`) is already the contract's (`LouisAgent.Evals.Markdown`). It reads the turn
+   from the engine's events (`EngineEvents`), never an identity's turn reader, and its reasons are a message enum of
+   the pack's (`ShopCheckMessage`).
+3. **What only an identity knows is a reader** the file names beside the check: how its answers write a price is
+   Puls's, so `estimates-at-shop` takes an `IPriceReader` (`{"reader": "rand-prices"}`) and the pack never names Puls.
+   The check's tests use a fake reader; the real one is tested beside the identity that ships it.
+4. **List it** in the pack's registry (`ShopsChecks.All`) and add that list to the composition's `EvalChecks.All`, so
+   the runner gathers it without naming the pack.
+5. **Test it** in the pack's tests (`tests/louis-agent.pack.shops.tests/Checks/`), on trials built from canned events
+   (`ShopTrials`), test first; the list and each entry's settings in a registry test (`ShopsChecksTests`).
+
+A name an identity keeps too (a shop's site, a scenario key's values) is the pack's own copy (ADR 0043); where both
+must agree, a test in `tests/louis-agent.composition.tests`, the one project that sees both, holds them equal
+(`ShopTableTests`).
+
 ## Before you ask for a review
 
-- [ ] References core only; no other pack, no identity.
+- [ ] References core, and the check contract if it ships checks; no other pack, no identity, never the harness.
+- [ ] Its checks, if any: listed in its registry and gathered by `EvalChecks.All`; what an identity knows comes in through a reader the file names.
 - [ ] Tools take plain data and return text; a failure is text with its reason; a waiting tool takes a `CancellationToken`.
 - [ ] Session input (the user's place) also arrives as a parameter.
 - [ ] Outside data is framed as data; output is bounded.

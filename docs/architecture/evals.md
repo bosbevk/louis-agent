@@ -179,15 +179,22 @@ An eval's file names its checks by type (`within-time`, `{"seconds": 120}`): eac
 builds it from a typed settings record, and `CheckCatalog` finds the entry. The runner's catalogue is three lists
 (`RunnerChecks`): the harness's `GeneralChecks.All` (24 types by family, from `no-error` to `judge` and `human`; the
 table is in [Add an eval](../guides/add-an-eval.md#4-choose-the-checks)), every identity's and pack's own through the
-composition's `EvalChecks.All` (Puls's two shop rules), and Puls's judges (`PulsJudges.All`)
+composition's `EvalChecks.All` (the shops pack's rules, `ShopsChecks.All`, F49.3), and Puls's judges
+(`PulsJudges.All`)
 ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md), [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)).
 
 **Extract, then compare** (F49.2b): a check that compares a value in the answer with the scenario's (a total with a
 budget, a number of people, an image with the pages read) is a general compare plus a *reader* the file names beside
 the key (`"reader": "rand-total"`). Readers are a second registry, `ReaderCatalog` (`RunnerReaders`): the harness's
 `GeneralReaders.All` (`currency-amount`, `digits`, `markdown-images`) and every identity's through the composition's
-`EvalReaders.All` (Puls's `rand-total`, `servings`, `recipe-photos`). So an identity ships readers, not checks, and its
-eval file keeps its stored names with `name` (`{"type": "amount-under", "name": "within-budget", …}`).
+`EvalReaders.All` (Puls's `rand-total`, `rand-prices`, `servings`, `recipe-photos`). So an identity ships readers, not
+checks, and its eval file keeps its stored names with `name` (`{"type": "amount-under", "name": "within-budget", …}`).
+
+**A pack ships its checks** (F49.3, [ADR 0060](../adr/0060-a-pack-ships-its-checks.md)): the rules that prove a pack's
+tools live beside them, in the pack's `Checks/` and its registry (`ShopsChecks.All`), and reference only the check
+contract. What an identity knows comes in through a reader the file names: the shops pack's `estimates-at-shop` reads
+whether a price is given as fact through Puls's `rand-prices`. Plain markdown reading (tables, links, a site's host)
+is the contract's (`Markdown/`), so an identity, a pack and the harness read them the same way.
 
 A grade's score is 0 to 1 with an outcome (pass, fail, unknown) and a reason. A conversation's metrics (calls, hosts,
 turns, tokens, seconds, cost) are measured beside the grades and never decide a pass.
