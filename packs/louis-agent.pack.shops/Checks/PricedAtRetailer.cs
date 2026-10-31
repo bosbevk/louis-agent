@@ -98,7 +98,8 @@ public sealed class PricedAtRetailer(IPriceReader prices) : ICheck
     {
         var calls = turns
             .SelectMany(turn => ShopSites.ShopTools.SelectMany(tool => EngineEvents.ToolInputsOf(turn, tool)))
-            .Where(input => string.Equals(EngineEvents.TextOf(input, "shop")?.Trim(), shop, StringComparison.OrdinalIgnoreCase))
+            .Where(input => string.Equals(EngineEvents.TextOf(input, "shop")?.Trim(), shop,
+                StringComparison.OrdinalIgnoreCase))
             .ToList();
         if (calls.Count == 0)
             return Verdict.Fail(Name, Version, MessageText.Format(ShopCheckMessage.ShopNotCalled, new { Shop = shop }));
