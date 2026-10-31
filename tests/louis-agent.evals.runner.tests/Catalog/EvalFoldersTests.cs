@@ -2,6 +2,8 @@ using LouisAgent.Testing;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Compare.Readers;
+using LouisAgent.Evals.Readers;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
@@ -89,6 +91,7 @@ public class EvalFoldersTests
     private static IReadOnlyList<FileEval> Load(SampleEvalFolder root) =>
     [
         .. EvalFolders.Find(root.Root)
-            .Select(folder => FileEval.Load(folder.Folder, new CheckCatalog(GeneralChecks.All), folder.Source))
+            .Select(folder => FileEval.Load(folder.Folder, new CheckCatalog(GeneralChecks.All),
+                new ReaderCatalog(GeneralReaders.All), folder.Source))
     ];
 }

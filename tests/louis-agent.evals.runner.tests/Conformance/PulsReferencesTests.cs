@@ -22,7 +22,7 @@ public class PulsReferencesTests
     {
         foreach (var folder in EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles")))
         {
-            var eval = FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source);
+            var eval = FileEval.Load(folder.Folder, RunnerChecks.Catalog, RunnerReaders.Catalog, folder.Source);
             foreach (var conformanceCase in ConformanceCases.Load(eval.Transcripts, eval.Scenarios))
                 yield return new TestCaseData(eval, conformanceCase).SetName($"{eval.Name}/{conformanceCase.Scenario}");
         }

@@ -4,8 +4,9 @@ using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
 namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 
 /// <summary>
-/// Puls's own fixed rules, the cook's, that an eval file can name: the list Puls puts into the check catalogue, which
-/// the runner gathers with the harness's general checks and Puls's judges.
+/// Puls's own fixed rules that an eval file can name: the list Puls puts into the check catalogue, which the runner
+/// gathers with the harness's general checks and Puls's judges. Today that is the cook's two shop rules; the rest of
+/// the cook's rules are general checks over Puls's readers (<c>PulsReaders</c>).
 /// </summary>
 /// <remarks>
 /// Registry (Fowler, PoEAA): each owner lists its entries in one place, and the runner gathers the lists through the
@@ -16,9 +17,5 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 public static class PulsChecks
 {
     /// <summary>Every fixed rule of Puls's, in the order the cook's eval lists its checks.</summary>
-    public static IReadOnlyList<ICheckType> All { get; } =
-    [
-        new CookNoError.Entry(), new WithinBudget.Entry(), new EstimatesAtShop.Entry(), new UntooledShops.Entry(),
-        new RecipeImage.Entry(), new ServesAsAsked.Entry()
-    ];
+    public static IReadOnlyList<ICheckType> All { get; } = [new EstimatesAtShop.Entry(), new UntooledShops.Entry()];
 }

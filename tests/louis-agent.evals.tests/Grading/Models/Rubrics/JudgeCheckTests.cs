@@ -6,6 +6,7 @@ using LouisAgent.Evals.Grading.Models;
 using LouisAgent.Evals.Grading.Models.Rubrics;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Tests.Datasets;
+using LouisAgent.Evals.Readers;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
@@ -104,5 +105,6 @@ public class JudgeCheckTests
     /// </summary>
     private static ICheck Build(string folder, string settings) =>
         new CheckCatalog(GeneralChecks.All).Get("judge")
-            .Create(JsonDocument.Parse(settings).RootElement.Clone(), new CheckContext(folder, []));
+            .Create(JsonDocument.Parse(settings).RootElement.Clone(),
+                new CheckContext(folder, [], ReaderCatalog.Empty));
 }

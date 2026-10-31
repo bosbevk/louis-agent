@@ -97,32 +97,61 @@ changes it, and the loader refuses the folder until you bump `version`, add a da
 
 ## 4. Choose the checks
 
-The harness's general checks, which any eval can name:
+The harness's general checks, which any eval can name, by family. "The answer" is the first turn's; every setting
+list also takes `required`:
 
 | Type | Settings | Passes when |
 |---|---|---|
-| `no-error` | `required` | no turn's stream reported an error |
-| `within-time` | `seconds`, `required` | every turn was answered within the limit |
-| `cost-under` | `limit_usd`, `required` | the trial's cost, from the stream's usage, is under the limit |
-| `contains` | `texts`, `required` | the first answer holds one of the texts, case and accents ignored |
-| `tool-used` | `tool`, `required` | a tool with this name was called, by the agent or a specialist |
-| `routed-to` | `expected_key`, `delegating_toolsets`, `required` | the first turn went to the role under the scenario's key; a mode without a delegating toolset must answer itself |
+| **Run facts** | | |
+| `no-error` | | no turn's stream reported an error |
+| `within-time` | `seconds` | every turn was answered within the limit |
+| `cost-under` | `limit_usd` | the trial's cost, from the stream's usage, is under the limit |
+| `turns-under` | `count` | the trial took fewer turns than the count |
+| `tokens-under` | `count` | the trial's tokens (input, cache and output) stay under the count |
+| **Text rules** (case and accents ignored) | | |
+| `contains` · `not-contains` | `texts` | the answer holds one of the texts · none of them |
+| `starts-with` | `text` | the answer, trimmed, opens with the text |
+| `length-under` | `characters` | the answer is shorter than that |
+| `mentions-expected` | `key` | the answer names the scenario's value under the key (its town, its shop) |
+| **Structure** | | |
+| `is-json` | | the answer, or its fenced block, parses as JSON |
+| **Tool calls** (the agent's and its specialists') | | |
+| `tool-used` · `tool-not-used` | `tool` | the tool was called · never called |
+| `tool-used-with` | `tool`, `field`, `value` | the tool was called with that input field set to the value |
+| `tool-calls-under` | `count` | fewer tool calls than the count, hand-overs included |
+| `routed-to` | `expected_key`, `delegating_toolsets` | the first turn went to the role under the scenario's key; a mode without a delegating toolset must answer itself |
+| **Extract, then compare** (through a reader) | | |
+| `amount-under` | `key`, `reader` | the answer's total, as the reader reads it, is at most the scenario's amount |
+| `number-named` | `key`, `reader` | each turn names the scenario's number (one, or one per turn) |
+| `image-shown` | `reader`, `key` (optional) | the answer shows an image a page the agent read gave; with a key, only where the scenario sets it to true |
+| `links-to-host` | `hosts` | the answer links to one of the hosts, or a subdomain of one |
+| **Similarity and language** | | |
+| `near` | `text`, `distance` | the whole answer is at most that many edits from the text (Levenshtein, case ignored) |
+| `answers-in-language` | `language` (`af`, `en`) | the answer has more of that language's common small words than of any other's |
+| **Model and person** | | |
 | `judge` | `rubric`, `ask`, `version` | a model, given the rubric file as its prompt and the scenario's `ask` keys, says yes |
 | `human` | `reviews` | a person's review of the named judge (shown, never required) |
 
 Each is required unless you say `"required": false`, a `judge` never is, and a timeout or a dropped connection is
-`Unknown`, never a fail. Every eval needs at least one required check that asks no model (a fixed rule), so a run
-always has a check that is free and repeatable.
+`Unknown`, never a fail. A compare passes a scenario that sets no key ("not asked"). Every eval needs at least one
+required check that asks no model (a fixed rule), so a run always has a check that is free and repeatable.
 
-**A check of your own** is C#, because a rule is code: a class that implements `ICheck` (from the check contract,
-`evals/louis-agent.evals.checks`), with a nested `Entry` that builds it from a typed `Settings` record, listed in your
-identity's list (as Puls's six are in `PulsChecks.All`, in `Evals/Checks/Cook/Grading/`). The composition hands every
-list to the runner (`EvalChecks.All`), so add yours there. The worked examples are the cook's (`WithinBudget`,
-`RecipeImage`) and their tests beside the identity's tests. Its reasons are message enum members (ADR 0009), and a turn
-that failed for the infrastructure is `Unknown` (`Verdict.InfrastructureFailure`). A model judge of your own needs the
-harness, which an identity never references, so it goes in a project of its own beside the identity that only the
-runner references, as `identities/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file
-usually does instead.
+**A reader** is what a compare reads the value with, named beside its key: `{"type": "amount-under", "name":
+"within-budget", "parameters": {"key": "budget", "reader": "rand-total"}}`. The harness ships `currency-amount`,
+`digits` and `markdown-images`; an identity ships its own when the value is written its way (Puls's `rand-total`,
+`servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements `IMoneyReader`,
+`INumberReader` or `IImageReader` (from the check contract, `evals/louis-agent.evals.checks`), listed in your
+identity's list (`PulsReaders.All`), which the composition hands to the runner (`EvalReaders.All`). `name` keeps the
+name your stored grades carry when the type is a general one.
+
+**A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
+that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in your
+identity's list (as Puls's two shop rules are in `PulsChecks.All`, in `Evals/Checks/Cook/Grading/`), which the
+composition hands to the runner (`EvalChecks.All`). The worked example is `EstimatesAtShop` and its tests. Its reasons
+are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
+(`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,
+so it goes in a project of its own beside the identity that only the runner references, as
+`identities/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
 
 ## 5. Write the manual
 

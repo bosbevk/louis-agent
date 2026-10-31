@@ -1,17 +1,18 @@
 using LouisAgent.Choices;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Datasets.Scenarios;
+using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared;
 using LouisAgent.SessionStream;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Grading;
 
 /// <summary>
-/// The cook's no-error check reads the errors from every turn of a trial. Its route cases are in
+/// The cook's no-error check, the general <c>no-error</c> under the name its grades carry, reads the errors from every
+/// turn of a trial. Its route cases are in
 /// <c>PulsRouteTests</c>.
 /// </summary>
 public class CookChecksTests
@@ -20,13 +21,16 @@ public class CookChecksTests
     private static readonly EvalMode Cook = new(CookMode.Cook.Wire(), PulsEvalRole.Cook.Wire(),
         [PulsToolset.Specialists.Wire(), PulsToolset.Web.Wire()]);
 
+    /// <summary>The cook's no-error check, as its eval file builds it.</summary>
+    private static readonly ICheck NoError = CookFile.Check("cook-no-error");
+
     /// <summary>A turn that errored fails the check.</summary>
     [Test]
     public async Task NoError_FailsOnAnErroredTurn()
     {
         var trial = Trial(Cook, PulsCookScenarioIds.CookAf, [Start(), Error("overloaded")]);
 
-        var grade = await new CookNoError().GradeAsync(trial, CancellationToken.None);
+        var grade = await NoError.GradeAsync(trial, CancellationToken.None);
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
     }
@@ -37,7 +41,7 @@ public class CookChecksTests
     {
         var trial = Trial(Cook, PulsCookScenarioIds.CookAf, [Start(), Text("Resep.")]);
 
-        Assert.That((await new CookNoError().GradeAsync(trial, CancellationToken.None)).Outcome,
+        Assert.That((await NoError.GradeAsync(trial, CancellationToken.None)).Outcome,
             Is.EqualTo(GradeOutcome.Pass));
     }
 
@@ -57,7 +61,7 @@ public class CookChecksTests
             ])
         };
 
-        Assert.That((await new CookNoError().GradeAsync(trial, CancellationToken.None)).Outcome,
+        Assert.That((await NoError.GradeAsync(trial, CancellationToken.None)).Outcome,
             Is.EqualTo(GradeOutcome.Unknown));
     }
 

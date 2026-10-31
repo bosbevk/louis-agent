@@ -2,8 +2,8 @@
 
 > **Skill:** #12 in the [goal](../GOAL.md)'s map, with #16 (human in the loop), a nod to #15 (least privilege) and side
 > lessons for #17, #4 and #3 · **Stages:** F18 steps 6.3 to 6a.5, the judge calibrated and then checked from the portal
-> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29) · **Written by** Claude, for Louis to read
-> (2026-10-27, extended 2026-10-29)
+> (2026-10-26 to 27); the rest of F18 and its first v2 baseline (2026-10-29); F49.2b, the generic checks (2026-10-31)
+> · **Written by** Claude, for Louis to read (2026-10-27, extended 2026-10-29 and 2026-10-31)
 
 What this answers: how we know the model that grades the cook's answers sees what you see, what it took to get it there, and
 why the check is now a button in the admin portal instead of four commands in a terminal.
@@ -155,6 +155,38 @@ agent is still missing (GOAL, skill 12).
 - **The prompt's hash (skill 3).** Each run keeps the hash of every prompt each agent used, and the trend chart puts a
   marker where a hash changed. So when a pass rate jumps, you can see whether the prompt changed that night. Comparing
   two prompt versions side by side, as a habit before a merge, is the next step and still missing.
+
+## Generic checks, and readers instead of Puls's own (F49.2b)
+
+Every eval tool (promptfoo, Inspect, OpenAI's evals) ships the same families of check: facts about the run (no error,
+time, cost, turns, tokens), rules about the text (contains, starts with, short enough, valid JSON), tool calls, a
+compare against an expected value, closeness to a text, and a model judge. Before F49.2b the harness had six of them,
+and the cook had six of its own. Now the harness has 24, by family, and any eval names them from its file.
+
+The interesting part is the cook's rules. "The basket is within the budget" looks like Puls knowledge, but most of it
+is general: read a number from the answer, compare it with the scenario's. Only the *reading* is Puls's: the rand
+total is on an Afrikaans *Totaal* line or the bold row of a list, and a price without a link is a guess. So the check
+splits in two. The harness's `amount-under` does the compare, and a **reader** Puls ships (`rand-total`) does the
+reading, named in the file beside the key. The field calls this a feature extractor in front of a generic matcher
+(Hamcrest's `FeatureMatcher`, promptfoo's `transform`). The same split gave `number-named` with Puls's `servings`
+and `image-shown` with Puls's `recipe-photos`. Puls now ships readers, not checks; its file keeps the old names
+(`"name": "within-budget"`), so a person reading a run sees what they always saw.
+
+**How we knew the swap changed nothing.** A grader swap is a refactor of a measuring instrument, so it gets the
+refactor's test: pin the outputs first, then change the code, and the pins must hold.
+1. Before touching anything, `CookGradesTests` wrote every grade's outcome and score on all 26 reference and
+   known-bad transcripts to a golden file: 230 grades from the old checks.
+2. After the swap the test passed without rewriting the file.
+3. Then a replay of the baseline run (the recorded model answers, $0) graded the same as the run it replayed: 140 of
+   140 grades equal.
+
+The reasons changed wording, and the version numbers moved, so the eval went to version 11 and its trend starts a
+new line; the outcomes didn't move. That's the difference between "it looks the same" and "it measures the same".
+
+**Two families left as heuristics or out.** Language is told by counting common small words per language (*die*,
+*en*, *nie* against *the*, *and*, *not*), with no model: free, instant, and Unknown when an answer is too short to
+tell. Similarity by meaning needs embeddings, which no eval asks for yet and the provider we use doesn't offer, so it
+waits (TODO); `near` covers closeness to a short fixed text with the edit distance.
 
 ## The limits, said plainly
 

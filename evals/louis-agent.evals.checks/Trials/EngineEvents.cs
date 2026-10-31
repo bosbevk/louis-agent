@@ -7,7 +7,8 @@ namespace LouisAgent.Evals.Trials;
 
 /// <summary>
 /// The one reader of the engine's events for the general checks: whether a turn streamed an error, what it cost and
-/// in which currency, which role its first sub-session went to, which tools were called, and the error's message.
+/// in which currency, which role its first sub-session went to, which tools were called and what they gave back, and
+/// the error's message.
 /// </summary>
 /// <remarks>
 /// It reads the stream as the API sends it, and never throws on an odd event: a field it can't read is read as
@@ -57,6 +58,31 @@ public static class EngineEvents
     }
 
     /// <summary>
+    /// The turn's tokens: its usage's input, cache-write, cache-read and output counts summed. Null when the turn
+    /// reported no usage, or a count is missing or isn't a number, so a total is never quietly short.
+    /// </summary>
+    public static long? TokensOf(TurnTranscript turn)
+    {
+        if (Usage(turn) is not { } usage) return null;
+        long total = 0;
+        foreach (var name in TokenCounts)
+        {
+            if (!Field(usage, name, out var count) || count.ValueKind != JsonValueKind.Number ||
+                !count.TryGetInt64(out var value))
+                return null;
+            total += value;
+        }
+
+        return total;
+    }
+
+    /// <summary>
+    /// The four token counts a turn's usage reports, which together are every token the turn was billed for.
+    /// </summary>
+    private static readonly string[] TokenCounts =
+        ["input_tokens", "cache_creation_input_tokens", "cache_read_input_tokens", "output_tokens"];
+
+    /// <summary>
     /// The role of the turn's first StartSubSession call that names a role, or null when the agent answered itself
     /// or no such call names one.
     /// </summary>
@@ -82,6 +108,25 @@ public static class EngineEvents
     /// their streams.
     /// </summary>
     public static IReadOnlyList<string> SpecialistToolsCalled(TurnTranscript turn) => CalledIn(SpecialistEvents(turn));
+
+    /// <summary>
+    /// The inputs of the turn's calls to this tool, the agent's own first and then its specialists', in order.
+    /// </summary>
+    public static IReadOnlyList<JsonElement> ToolInputsOf(TurnTranscript turn, string tool) =>
+    [
+        .. ToolBlocks(turn.Events).Concat(ToolBlocks(SpecialistEvents(turn)))
+            .Where(block => Text(block, "name") == tool)
+            .Select(block => Field(block, "input", out var input) ? input : default)
+    ];
+
+    /// <summary>
+    /// The texts the turn's tools gave back, the agent's first and then its specialists', in order: a fetched page,
+    /// a search's results.
+    /// </summary>
+    public static IReadOnlyList<string> ToolResultsOf(TurnTranscript turn) =>
+    [
+        .. Blocks(turn.Events, "tool_result").Concat(Blocks(SpecialistEvents(turn), "tool_result")).Select(ResultText)
+    ];
 
     /// <summary>
     /// The handle of the sub-session the turn's agent went back to (its first ContinueSubSession call that names
@@ -142,10 +187,23 @@ public static class EngineEvents
         [.. ToolBlocks(events).Select(block => Text(block, "name")).OfType<string>()];
 
     /// <summary>The tool-call blocks among these events, in order: each one's name and input.</summary>
-    private static IEnumerable<JsonElement> ToolBlocks(IEnumerable<SessionEvent> events) =>
+    private static IEnumerable<JsonElement> ToolBlocks(IEnumerable<SessionEvent> events) => Blocks(events, "tool_use");
+
+    /// <summary>The content blocks of one type among these events, in order.</summary>
+    private static IEnumerable<JsonElement> Blocks(IEnumerable<SessionEvent> events, string type) =>
         events.OfType<ContentBlockStarted>()
             .Select(started => Field(started.Data, "content_block", out var block) ? block : default)
-            .Where(block => Text(block, "type") == "tool_use");
+            .Where(block => Text(block, "type") == type);
+
+    /// <summary>
+    /// A tool result's text: its content when it's a string, else its JSON (a list of blocks, say), as Puls's
+    /// <c>TurnView</c> read it; empty when it has none.
+    /// </summary>
+    private static string ResultText(JsonElement block)
+    {
+        if (!Field(block, "content", out var content)) return "";
+        return content.ValueKind == JsonValueKind.String ? content.GetString() ?? "" : content.GetRawText();
+    }
 
     /// <summary>The specialists' events, unwrapped from the sub_session events that carry their streams.</summary>
     private static IEnumerable<SessionEvent> SpecialistEvents(TurnTranscript turn) =>

@@ -46,6 +46,15 @@ internal static class TrialBuilder
                 .Replace("COST", cost).Replace("UNPRICED", unpriced.ToString())
                 .Replace("CURRENCY", currency is null ? "null" : $"\"{currency}\"")));
 
+    /// <summary>
+    /// The usage a turn's message_delta carries with its four token counts, as the stream reports them.
+    /// </summary>
+    public static SessionEvent Tokens(int input, int cacheCreation, int cacheRead, int output) =>
+        SessionEvent.From("message_delta", Json(
+            """{"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"input_tokens":IN,"cache_creation_input_tokens":CW,"cache_read_input_tokens":CR,"output_tokens":OUT,"cost":0.01,"unpriced":0}}"""
+                .Replace("IN", input.ToString()).Replace("CW", cacheCreation.ToString())
+                .Replace("CR", cacheRead.ToString()).Replace("OUT", output.ToString())));
+
     /// <summary>The agent's error, as the stream sends it.</summary>
     public static SessionEvent Error() =>
         SessionEvent.From("error", Json("""{"type":"error","error":{"type":"api_error","message":"overloaded"}}"""));
@@ -71,11 +80,14 @@ internal static class TrialBuilder
                 """{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t1","name":"TOOL","input":INPUT}}"""
                     .Replace("TOOL", tool).Replace("INPUT", input)));
 
-    /// <summary>A piece of the agent's answer, as the stream sends it.</summary>
+    /// <summary>
+    /// A piece of the agent's answer, as the stream sends it; the text is written as a JSON string, so quotes and line
+    /// breaks in it stay text.
+    /// </summary>
     public static SessionEvent Text(string text) =>
         SessionEvent.From("content_block_delta",
-            Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"TEXT"}}"""
-                .Replace("TEXT", text)));
+            Json("""{"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":TEXT}}"""
+                .Replace("TEXT", JsonSerializer.Serialize(text))));
 
     /// <summary>
     /// A specialist's error, carried on the turn's stream as a sub_session event (it is not the turn's error).
@@ -94,12 +106,26 @@ internal static class TrialBuilder
                 """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"StartSubSession","input":{"agent":"puls","role":"ROLE"}}}}"""
                     .Replace("ROLE", role)));
 
-    /// <summary>A specialist's call to a tool, carried as a sub_session event.</summary>
-    public static SessionEvent SubToolCall(string tool) =>
+    /// <summary>A specialist's call to a tool, with its input as JSON, carried as a sub_session event.</summary>
+    public static SessionEvent SubToolCall(string tool, string input = "{}") =>
         SessionEvent.From("sub_session",
             Json(
-                """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"TOOL","input":{}}}}"""
-                    .Replace("TOOL", tool)));
+                """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t2","name":"TOOL","input":INPUT}}}"""
+                    .Replace("TOOL", tool).Replace("INPUT", input)));
+
+    /// <summary>What a tool gave the agent back, as the stream sends it: the text is the result's content.</summary>
+    public static SessionEvent ToolResult(string text) =>
+        SessionEvent.From("content_block_start",
+            Json(
+                """{"type":"content_block_start","index":0,"content_block":{"type":"tool_result","tool_use_id":"t1","content":CONTENT}}"""
+                    .Replace("CONTENT", JsonSerializer.Serialize(text))));
+
+    /// <summary>What a tool gave a specialist back, carried as a sub_session event.</summary>
+    public static SessionEvent SubToolResult(string text) =>
+        SessionEvent.From("sub_session",
+            Json(
+                """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_result","tool_use_id":"t2","content":CONTENT}}}"""
+                    .Replace("CONTENT", JsonSerializer.Serialize(text))));
 
     /// <summary>A specialist's usage, carried as a sub_session event (the turn's usage is the top-level one).</summary>
     public static SessionEvent SubUsage(string cost) =>

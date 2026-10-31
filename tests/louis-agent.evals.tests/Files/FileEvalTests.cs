@@ -2,6 +2,8 @@ using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Datasets.Manifest;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Compare.Readers;
+using LouisAgent.Evals.Readers;
 using LouisAgent.Evals.Tests.Datasets;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
@@ -47,7 +49,7 @@ public class FileEvalTests
     {
         using var folder = SampleFolder(EvalFile);
 
-        var eval = FileEval.Load(folder.Root, Catalog, Source);
+        var eval = FileEval.Load(folder.Root, Catalog, Readers, Source);
         var modes = await eval.ModesAsync(null!, CancellationToken.None);
 
         Assert.That((eval.Name, eval.Identity, eval.Version), Is.EqualTo((SampleEval.Alpha, SampleIdentity.Alpha, 3)));
@@ -68,7 +70,7 @@ public class FileEvalTests
     {
         using var folder = SampleFolder(EvalFile);
 
-        var grade = await FileEval.Load(folder.Root, Catalog, Source).Checks[0]
+        var grade = await FileEval.Load(folder.Root, Catalog, Readers, Source).Checks[0]
             .GradeAsync(Trial(Turn(1, [Text("Hallo")])), CancellationToken.None);
 
         Assert.That(grade.Check, Is.EqualTo("sample-no-error"));
@@ -80,7 +82,7 @@ public class FileEvalTests
     {
         using var folder = SampleFolder(EvalFile.Replace("\"type\": \"no-error\"", "\"type\": \"no-eror\""));
 
-        var refusal = Assert.Throws<InvalidDataException>(() => FileEval.Load(folder.Root, Catalog, Source));
+        var refusal = Assert.Throws<InvalidDataException>(() => FileEval.Load(folder.Root, Catalog, Readers, Source));
 
         Assert.That(refusal!.Message, Does.Contain("eval.json").And.Contain("no-eror"));
     }
@@ -91,7 +93,8 @@ public class FileEvalTests
     {
         using var folder = SampleFolder(EvalFile.Replace("\"manual\": \"manual.md\",", ""));
 
-        Assert.That(FileEval.Load(folder.Root, Catalog, Source).Manual, Is.Null);
+        Assert.That(
+            FileEval.Load(folder.Root, Catalog, Readers, Source).Manual, Is.Null);
     }
 
     /// <summary>
@@ -107,7 +110,7 @@ public class FileEvalTests
             Call(SampleRole.Alpha), ToolCall("ReadPage", """{"url": "https://www.example.com/a"}"""), Error()
         ]);
 
-        var facts = ((IEval)FileEval.Load(folder.Root, Catalog, Source)).TurnFactsOf(turn, Mode);
+        var facts = ((IEval)FileEval.Load(folder.Root, Catalog, Readers, Source)).TurnFactsOf(turn, Mode);
 
         Assert.That((facts.Role, facts.AgentCalls, facts.SpecialistCalls, facts.Error),
             Is.EqualTo((SampleRole.Alpha, 2, 0, "overloaded")));
@@ -116,6 +119,9 @@ public class FileEvalTests
 
     /// <summary>The catalogue of the general checks, as the runner will gather it.</summary>
     private static readonly CheckCatalog Catalog = new(GeneralChecks.All);
+
+    /// <summary>The harness's general readers, which a file's checks name a reader from.</summary>
+    private static readonly ReaderCatalog Readers = new(GeneralReaders.All);
 
     /// <summary>A sample eval folder: this <c>eval.json</c>, a one-scenario dataset, a rubric and a manual.</summary>
     private static DatasetFolder SampleFolder(string evalFile)

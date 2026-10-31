@@ -2,7 +2,8 @@
 
 > **Skill:** #20 in the [goal](../GOAL.md)'s map, with #12 (evaluation) for what a check is · **Stages:** Phase 3b,
 > F49.1 *The checks catalogue* and F49.2 *Evals as files*, the first two children of F49 *Evals as content*
-> (2026-10-30) · **Written by** Claude, for Louis to read (2026-10-30, extended the same day for F49.2) · **Next:** a
+> (2026-10-30), and F49.2b *The generic checks* (2026-10-31) · **Written by** Claude, for Louis to read (2026-10-30,
+> extended the same day for F49.2 and on 2026-10-31 for F49.2b) · **Next:** a
 > pack shipping its own checks (F49.3); the studio's form made from a check's settings (F49.5)
 
 What this answers: how a check went from "a constructor call in an eval's C#" to "a name a file can use", why the
@@ -121,6 +122,16 @@ that throw.
 **Left out on purpose:** the cook's shop hosts are no longer a turn's facts (the harness reads the URLs a tool was
 given, and a passing cook run calls no shop tool), and a check of an identity's own is still C#: a rule is code, and
 F49.3 moves the shops' checks to the shops pack.
+
+## Readers: the smallest thing a domain ships (F49.2b)
+
+F49.2b made the extension point smaller. An identity used to ship whole checks; now a check that compares a value in
+the answer with the scenario's is a general compare plus a **reader**, a one-method Strategy the file names beside the
+key (`"reader": "rand-total"`). Readers sit in their own registry (`ReaderCatalog`), built like the check catalogue:
+the harness lists its plain ones, Puls lists its three (`PulsReaders.All`), the composition gathers them. Puls's
+readers are Adapters over the scoring code its old checks used, unchanged, so the knowledge didn't move, only the
+seam did. It's the same shape as a pack shipping tools: the engine owns the loop, the domain owns the small piece only
+it knows. How we proved no grade moved is in [write-up 12](12-evaluation.md#generic-checks-and-readers-instead-of-pulss-own-f492b).
 
 ## Sources
 

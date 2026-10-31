@@ -2,6 +2,8 @@ using System.Text.Json;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Facts;
+using LouisAgent.Evals.Grading.Common.Tools;
 using LouisAgent.Evals.Protocol.Kinds;
 
 namespace LouisAgent.Evals.Tests.Grading.Common;
@@ -25,9 +27,17 @@ public class GeneralChecksTests
             Is.EqualTo(new[]
             {
                 ("no-error", CheckKind.FixedRule), ("within-time", CheckKind.FixedRule),
-                ("cost-under", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
-                ("contains", CheckKind.FixedRule), ("tool-used", CheckKind.FixedRule), ("judge", CheckKind.Model),
-                ("human", CheckKind.Human)
+                ("cost-under", CheckKind.FixedRule), ("turns-under", CheckKind.FixedRule),
+                ("tokens-under", CheckKind.FixedRule), ("contains", CheckKind.FixedRule),
+                ("not-contains", CheckKind.FixedRule), ("starts-with", CheckKind.FixedRule),
+                ("length-under", CheckKind.FixedRule), ("mentions-expected", CheckKind.FixedRule),
+                ("is-json", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
+                ("tool-used", CheckKind.FixedRule), ("tool-not-used", CheckKind.FixedRule),
+                ("tool-used-with", CheckKind.FixedRule), ("tool-calls-under", CheckKind.FixedRule),
+                ("amount-under", CheckKind.FixedRule), ("number-named", CheckKind.FixedRule),
+                ("image-shown", CheckKind.FixedRule), ("links-to-host", CheckKind.FixedRule),
+                ("near", CheckKind.FixedRule), ("answers-in-language", CheckKind.FixedRule),
+                ("judge", CheckKind.Model), ("human", CheckKind.Human)
             }));
     }
 

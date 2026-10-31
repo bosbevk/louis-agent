@@ -4,7 +4,7 @@ using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Grading.Common;
+namespace LouisAgent.Evals.Grading.Common.Facts;
 
 /// <summary>
 /// The trial's cost is at or under a limit in US dollars: the turns' costs from the stream, summed. A turn that

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "puls-cook",
   "identity": "puls",
-  "version": 10,
+  "version": 11,
   "proves": "Puls routes a meal to its cook, within the budget and at the shop that serves the town, and the conversation runs without a failed turn.",
   "manual": "manual.md",
   "modes": [
@@ -10,13 +10,13 @@
     { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["specialists", "web"] }
   ],
   "checks": [
-    { "type": "cook-no-error" },
+    { "type": "no-error", "name": "cook-no-error" },
     { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists"] } },
-    { "type": "within-budget" },
+    { "type": "amount-under", "name": "within-budget", "parameters": { "key": "budget", "reader": "rand-total" } },
     { "type": "estimates-at-shop" },
     { "type": "untooled-shops" },
-    { "type": "recipe-image" },
-    { "type": "serves-as-asked" },
+    { "type": "image-shown", "name": "recipe-image", "parameters": { "reader": "recipe-photos", "key": "recipe_image" } },
+    { "type": "number-named", "name": "serves-as-asked", "parameters": { "key": "serves", "reader": "servings", "required": false } },
     { "type": "meal-for-people", "parameters": { "rubric": "Rubrics/meal-for-people.md" } },
     { "type": "human", "parameters": { "reviews": "meal-for-people" } }
   ]

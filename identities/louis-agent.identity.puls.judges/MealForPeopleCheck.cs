@@ -8,7 +8,6 @@ using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Expectations;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.Identities.Puls.Evals.Checks.Messages;
 
 namespace LouisAgent.Identities.Puls.Judges;
@@ -21,7 +20,7 @@ namespace LouisAgent.Identities.Puls.Judges;
 /// </summary>
 /// <remarks>
 /// It is shown and counted but <b>not required</b>: the outcome does not wait on it until its calibration against a
-/// person's labels passes. It reads <c>serves</c>, which the fixed rule <see cref="ServesAsAsked"/> also reads: that
+/// person's labels passes. It reads <c>serves</c>, which the fixed rule <c>serves-as-asked</c> also reads: that
 /// one checks the number is named, this one that the meal is for them. The cook's own judge, not the generic
 /// <c>judge</c>: its rubric asks for <c>meal</c>, and its ask is <see cref="CookAsk"/>'s people and town, which is
 /// what its calibration measured (Louis's pick, F49.2 step 8a). Its <see cref="Entry"/> reads the rubric from the

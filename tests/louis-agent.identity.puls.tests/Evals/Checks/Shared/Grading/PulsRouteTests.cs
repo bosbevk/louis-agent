@@ -4,6 +4,7 @@ using LouisAgent.Evals;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Tools;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared;

@@ -1,6 +1,5 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.SessionStream;
 using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
 
@@ -27,20 +26,24 @@ public class RecipeImageTests
     private static readonly SessionEvent Reads =
         SpecialistCall("FetchUrl", """{"url":"https://marindakook.co.za/bobotie/"}""");
 
+    /// <summary>The cook's image check, as its eval file builds it.</summary>
+    private static readonly ICheck Check = CookFile.Check("recipe-image");
+
     /// <summary>The check's grade of a one-turn trial made of these events.</summary>
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new RecipeImage()
-            .GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None)
+        Check.GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None)
             .AsTask();
 
-    /// <summary>It's a required fixed rule, at version 2, that reads only <c>recipe_image</c>.</summary>
+    /// <summary>
+    /// It's a required fixed rule, at the general check's version 1, that reads only <c>recipe_image</c>.
+    /// </summary>
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheRecipeImageKey()
     {
-        var grader = new RecipeImage();
+        var grader = Check;
 
         Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required),
-            Is.EqualTo(("recipe-image", 2, CheckKind.FixedRule, true)));
+            Is.EqualTo(("recipe-image", 1, CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "recipe_image" }));
     }
 
@@ -99,7 +102,7 @@ public class RecipeImageTests
         var failed = Trial(CookEvalMode, "cook-x", Expected, null,
             Turn(1, [Reads, SpecialistResult(Page), Text(Shown)], TurnFailure.Timeout));
 
-        Assert.That((await new RecipeImage().GradeAsync(failed, CancellationToken.None)).Outcome,
+        Assert.That((await Check.GradeAsync(failed, CancellationToken.None)).Outcome,
             Is.EqualTo(GradeOutcome.Unknown));
     }
 

@@ -3,6 +3,8 @@ using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Compare.Readers;
+using LouisAgent.Evals.Readers;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
@@ -50,7 +52,7 @@ public class TemplateFolderTests
     public void TheRunner_NeverListsIt()
     {
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, folder.Source));
+            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, RunnerReaders.Catalog, folder.Source));
 
         Assert.That(new EvalCatalog(files, new StubEval()).Evals.Select(eval => eval.Name), Does.Not.Contain(Name));
     }
@@ -58,5 +60,5 @@ public class TemplateFolderTests
     /// <summary>The template's eval, read from the repository with the general checks only.</summary>
     private static FileEval Load() =>
         FileEval.Load(Path.Combine(TestPaths.RepoRoot, "evals", "template", "Example"),
-            new CheckCatalog(GeneralChecks.All), Source);
+            new CheckCatalog(GeneralChecks.All), new ReaderCatalog(GeneralReaders.All), Source);
 }

@@ -61,6 +61,50 @@ public enum CommonGradeMessage
     [Description("the answer contains none of the {Count} texts")]
     ContainsNone,
 
+    [Description("the answer contains '{Text}', which it mustn't")]
+    ContainsForbidden,
+
+    [Description("the answer starts with '{Text}'")]
+    StartsWithPass,
+
+    [Description("the answer doesn't start with '{Text}'")]
+    StartsOtherwise,
+
+    [Description("the answer is {Length} characters, under {Limit}")]
+    LengthUnderPass,
+
+    [Description("the answer is {Length} characters, not under {Limit}")]
+    LengthOver,
+
+    [Description("the answer mentions '{Value}'")]
+    MentionsPass,
+
+    [Description("the answer doesn't mention '{Value}'")]
+    MentionsMissing,
+
+    [Description("{Turns} turns, under {Limit}")]
+    TurnsUnderPass,
+
+    [Description("{Turns} turns, not under {Limit}")]
+    TurnsOver,
+
+    [Description("{Total} tokens, under {Limit}")]
+    TokensUnderPass,
+
+    [Description("{Total} tokens, not under {Limit}")]
+    TokensOver,
+
+    [Description("turn {Turn} reported usage without its four token counts")]
+    NoTokenCounts,
+
+    [Description("the answer is JSON")] IsJsonPass,
+
+    [Description("the answer isn't JSON: {Reason}")]
+    NotJson,
+
+    [Description("the answer has {Count} fence lines, not the two of one fenced block")]
+    FencesUnclear,
+
     [Description("{Tool} was called in turn {Turn}")]
     ToolUsed,
 
@@ -69,6 +113,93 @@ public enum CommonGradeMessage
 
     [Description("{Tool} was never called")]
     ToolNotUsed,
+
+    [Description("{Tool} was called in turn {Turn}, which it mustn't be")]
+    ToolUsedForbidden,
+
+    [Description("a specialist called {Tool} in turn {Turn}, which it mustn't")]
+    ToolUsedBySpecialistForbidden,
+
+    [Description("{Tool} was called with {Field} '{Value}' in turn {Turn}")]
+    ToolUsedWithPass,
+
+    [Description("{Tool} was called, but never with {Field} '{Value}'")]
+    ToolCalledOtherwise,
+
+    [Description("{Calls} tool calls, under {Limit}")]
+    ToolCallsUnderPass,
+
+    [Description("{Calls} tool calls, not under {Limit}")]
+    ToolCallsOver,
+
+    [Description("the scenario sets no {Key}, so there is no amount to keep within")]
+    AmountNotSet,
+
+    [Description("no amount could be read from the answer")]
+    AmountUnread,
+
+    [Description("the total {Total} is within {Expected}")]
+    AmountWithin,
+
+    [Description("the total {Total} is over {Expected}")]
+    AmountOver,
+
+    [Description("the scenario asks for no {Key}, so there is no number to name")]
+    NumberNotAsked,
+
+    [Description("turn {Turn} has no answer to read")]
+    NumberNothingToRead,
+
+    [Description("turn {Turn} names no number, not {Asked}")]
+    NumberForgotten,
+
+    [Description("turn {Turn} names {Found}, not {Asked}")]
+    NumberWrong,
+
+    [Description("every turn names the number asked")]
+    NumberNamedPass,
+
+    [Description("the scenario doesn't ask for an image under {Key}")]
+    ImageNotAsked,
+
+    [Description("turn 1 gave no answer to look for an image in")]
+    ImageNothingToRead,
+
+    [Description("no page the agent read had an image to show")]
+    ImageNoneOnPages,
+
+    [Description("the answer shows no image, though a page it read had one")]
+    ImageMissing,
+
+    [Description("the answer's image is not one a page it read gave")]
+    ImageNotFromPage,
+
+    [Description("the answer shows an image a page it read gave")]
+    ImageShownPass,
+
+    [Description("the answer links to {Host}")]
+    LinksToHostPass,
+
+    [Description("the answer links to none of {Hosts}")]
+    LinksToNoHost,
+
+    [Description("the answer is {Edits} edits from '{Text}', within {Distance}")]
+    NearPass,
+
+    [Description("the answer is {Edits} edits from '{Text}', more than {Distance}")]
+    NearFar,
+
+    [Description("the answer is in {Language}: {Count} of its common words, more than any other language's")]
+    InLanguagePass,
+
+    [Description("the answer reads as {Other} ({OtherCount} common words), not {Language} ({Count})")]
+    InOtherLanguage,
+
+    [Description("the answer has too few common words ({Count}) to tell its language")]
+    LanguageTooFewWords,
+
+    [Description("the answer has as many {Other} common words as {Language} ({Count}), so its language can't be told")]
+    LanguageTied,
 
     [Description("answered itself, as expected")]
     AnsweredAsExpected,

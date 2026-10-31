@@ -6,7 +6,7 @@ using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
-namespace LouisAgent.Evals.Tests.Grading.Common;
+namespace LouisAgent.Evals.Tests.Grading.Common.Tools;
 
 /// <summary>
 /// The <c>routed-to</c> entry: the expected role is a scenario key, and a mode without a delegating toolset is

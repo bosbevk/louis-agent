@@ -23,7 +23,7 @@ public class CookEvalTests
         var eval = CookFile.Eval;
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version),
-            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 10)));
+            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 11)));
         Assert.That(eval.Proves, Does.StartWith("Puls routes a meal to its cook"));
         Assert.That(eval.Manual, Is.EqualTo($"{CookFile.Source}/manual.md"));
     }
@@ -61,7 +61,8 @@ public class CookEvalTests
 
     /// <summary>
     /// The fixed rules that must hold come first; the serving rule, the meal judge and its human review are measured
-    /// but never fail a run. Each keeps the name and version its stored grades carry.
+    /// but never fail a run. Each keeps the name its stored grades carry; from version 11 of the eval, the budget and
+    /// image rules are the general checks, at their own version 1.
     /// </summary>
     [Test]
     public void ItsChecks_AreTheRequiredRulesFirst_ThenTheOnesThatAreNot() =>
@@ -69,9 +70,9 @@ public class CookEvalTests
             Is.EqualTo(new[]
             {
                 ("cook-no-error", 1, true, CheckKind.FixedRule), ("routed-to", 1, true, CheckKind.FixedRule),
-                ("within-budget", 2, true, CheckKind.FixedRule),
+                ("within-budget", 1, true, CheckKind.FixedRule),
                 ("estimates-at-shop", 2, true, CheckKind.FixedRule),
-                ("untooled-shops", 1, true, CheckKind.FixedRule), ("recipe-image", 2, true, CheckKind.FixedRule),
+                ("untooled-shops", 1, true, CheckKind.FixedRule), ("recipe-image", 1, true, CheckKind.FixedRule),
                 ("serves-as-asked", 1, false, CheckKind.FixedRule), ("meal-for-people", 2, false, CheckKind.Model),
                 ("meal-for-people.human", 2, false, CheckKind.Human)
             }));

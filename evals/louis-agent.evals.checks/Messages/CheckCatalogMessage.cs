@@ -17,6 +17,27 @@ public enum CheckCatalogMessage
     [Description("check type '{Type}' needs at least one item in '{Field}'")]
     NothingListed,
 
+    [Description("check type '{Type}' needs a text in '{Field}'")]
+    NoText,
+
+    [Description("check type '{Type}' needs '{Field}' to be at least 1")]
+    BelowOne,
+
+    [Description("check type '{Type}' needs '{Field}' to be 0 or more")]
+    BelowZero,
+
+    [Description("check type '{Type}' can't use '{Value}' for '{Field}'; use one of: {Supported}")]
+    NotAChoice,
+
+    [Description("reader '{Name}' is not in the catalogue; the readers are {Supported}")]
+    UnknownReader,
+
+    [Description("reader '{Name}' is not a {Kind}")]
+    WrongReaderKind,
+
+    [Description("reader '{Name}' is listed twice")]
+    DuplicateReader,
+
     [Description("check type '{Type}' isn't a safe name: use letters, digits, '-' and '_', at most 64")]
     TypeNotSafe,
 

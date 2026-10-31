@@ -2,8 +2,10 @@ using System.Text.Json;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Common.Facts;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Models.Rubrics;
+using LouisAgent.Evals.Readers;
 
 namespace LouisAgent.Evals.Tests.Grading.Human;
 
@@ -51,5 +53,6 @@ public class HumanReviewEntryTests
     /// <summary>Builds the review the way an eval file will, after these checks.</summary>
     private static ICheck Build(string settings, params ICheck[] before) =>
         new CheckCatalog(GeneralChecks.All).Get("human")
-            .Create(JsonDocument.Parse(settings).RootElement.Clone(), new CheckContext("", before));
+            .Create(JsonDocument.Parse(settings).RootElement.Clone(),
+                new CheckContext("", before, ReaderCatalog.Empty));
 }

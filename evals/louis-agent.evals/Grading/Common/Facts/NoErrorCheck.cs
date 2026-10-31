@@ -4,7 +4,7 @@ using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Grading.Common;
+namespace LouisAgent.Evals.Grading.Common.Facts;
 
 /// <summary>
 /// No turn of the trial raised an error: the agent's error in the stream fails it, with its message in the reason. A

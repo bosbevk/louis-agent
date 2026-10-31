@@ -1,7 +1,6 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Grading;
@@ -20,21 +19,25 @@ public class ServesAndBudgetChecksTests
         Trial(CookEvalMode, "cook-x", expected, "Stellenbosch, Wes-Kaap, Suid-Afrika",
             answers.Select((answer, i) => Turn(i + 1, [Text(answer)])).ToArray());
 
+    /// <summary>The cook's serving check, as its eval file builds it.</summary>
+    private static readonly ICheck ServesCheck = CookFile.Check("serves-as-asked");
+
+    /// <summary>The cook's budget check, as its eval file builds it.</summary>
+    private static readonly ICheck BudgetCheck = CookFile.Check("within-budget");
+
     /// <summary>The serving check's grade of a trial.</summary>
-    private static Task<Grade> Serves(Trial trial) =>
-        new ServesAsAsked().GradeAsync(trial, CancellationToken.None).AsTask();
+    private static Task<Grade> Serves(Trial trial) => ServesCheck.GradeAsync(trial, CancellationToken.None).AsTask();
 
     /// <summary>The budget check's grade of a trial.</summary>
-    private static Task<Grade> Budget(Trial trial) =>
-        new WithinBudget().GradeAsync(trial, CancellationToken.None).AsTask();
+    private static Task<Grade> Budget(Trial trial) => BudgetCheck.GradeAsync(trial, CancellationToken.None).AsTask();
 
-    // --- ServesAsAsked
+    // --- serves-as-asked
 
     /// <summary>The serving check is a fixed rule that isn't required, and reads only <c>serves</c>.</summary>
     [Test]
     public void ServesIsAFixedRule_ThatIsNotRequired_AndReadsOneKey()
     {
-        var grader = new ServesAsAsked();
+        var grader = ServesCheck;
 
         Assert.That((grader.Name, grader.Kind, grader.Required),
             Is.EqualTo(("serves-as-asked", CheckKind.FixedRule, false)));
@@ -112,13 +115,13 @@ public class ServesAndBudgetChecksTests
     public async Task ServesPasses_WhenTheScenarioAsksForNoNumber() =>
         Assert.That((await Serves(Asked("{}", "Hier is 'n resep."))).Outcome, Is.EqualTo(GradeOutcome.Pass));
 
-    // --- WithinBudget
+    // --- within-budget
 
     /// <summary>The budget check is a required fixed rule that reads only <c>budget</c>.</summary>
     [Test]
     public void BudgetIsRequired_AndReadsOneKey()
     {
-        var grader = new WithinBudget();
+        var grader = BudgetCheck;
 
         Assert.That((grader.Name, grader.Kind, grader.Required),
             Is.EqualTo(("within-budget", CheckKind.FixedRule, true)));
@@ -138,10 +141,11 @@ public class ServesAndBudgetChecksTests
     }
 
     /// <summary>
-    /// Over the limit fails, and says whether it read the total line or added up the price rows.
+    /// Over the limit fails, whether the total is read from its line or added up from the linked price rows, and the
+    /// reason names the total it read.
     /// </summary>
     [Test]
-    public async Task BudgetFails_OverTheLimit_SayingWhichReadingItUsed()
+    public async Task BudgetFails_OverTheLimit_ByTheTotalLineOrTheRows()
     {
         var byLine = await Budget(Asked("""{"budget":150}""", "Totaal: R150,01"));
         var byRows = await Budget(Asked("""{"budget":150}""",
@@ -149,10 +153,9 @@ public class ServesAndBudgetChecksTests
             Checkers + "2) |\n"));
 
         Assert.That(byLine.Outcome, Is.EqualTo(GradeOutcome.Fail));
-        Assert.That(byLine.Reason, Does.Contain("150,01").Or.Contain("150.01"));
-        Assert.That(byLine.Reason, Does.Contain("total line"));
+        Assert.That(byLine.Reason, Does.Contain("150.01"));
         Assert.That(byRows.Outcome, Is.EqualTo(GradeOutcome.Fail));
-        Assert.That(byRows.Reason, Does.Contain("rows"));
+        Assert.That(byRows.Reason, Does.Contain("165.00"));
     }
 
     /// <summary>An answer with no amount can't be held to the budget: Unknown.</summary>
