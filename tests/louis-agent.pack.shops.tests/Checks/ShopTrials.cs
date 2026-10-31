@@ -29,6 +29,16 @@ internal static class ShopTrials
         new(number, "sess_1", "q", events, TimeSpan.FromSeconds(1), failure);
 
     /// <summary>
+    /// A tool call a specialist made, as the stream carries it: inside a sub_session event, not the turn's own.
+    /// </summary>
+    public static SessionEvent SpecialistCall(string name, string inputJson) =>
+        SessionEvent.From("sub_session",
+            JsonDocument.Parse(
+                    """{"tool_use_id":"t0","agent":"puls","event":"content_block_start","data":{"type":"content_block_start","index":0,"content_block":{"type":"tool_use","id":"t3","name":"NAME","input":INPUT}}}"""
+                        .Replace("NAME", name).Replace("INPUT", inputJson))
+                .RootElement.Clone());
+
+    /// <summary>
     /// A piece of the answer's text, as the stream carries it; the text is written as a JSON string, so quotes and line
     /// breaks in it stay text.
     /// </summary>

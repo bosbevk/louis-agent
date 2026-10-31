@@ -139,14 +139,15 @@ required check that asks no model (a fixed rule), so a run always has a check th
 **A reader** is what a compare reads the value with, named beside its key: `{"type": "amount-under", "name":
 "within-budget", "parameters": {"key": "budget", "reader": "rand-total"}}`. The harness ships `currency-amount`,
 `digits` and `markdown-images`; an identity ships its own when the value is written its way (Puls's `rand-total`,
-`servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements `IMoneyReader`,
-`INumberReader` or `IImageReader` (from the check contract, `evals/louis-agent.evals.checks`), listed in your
+`rand-prices`, `servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements
+`IMoneyReader`, `INumberReader`, `IImageReader` or `IPriceReader` (from the check contract,
+`evals/louis-agent.evals.checks`), listed in your
 identity's list (`PulsReaders.All`), which the composition hands to the runner (`EvalReaders.All`). `name` keeps the
 name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
-that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in your
-identity's list (as Puls's two shop rules are in `PulsChecks.All`, in `Evals/Checks/Cook/Grading/`), which the
+that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its owner's
+list (as the shops pack's rules are in `ShopsChecks.All`, in `packs/louis-agent.pack.shops/Checks/`), which the
 composition hands to the runner (`EvalChecks.All`). The worked example is `EstimatesAtShop` and its tests. Its reasons
 are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
 (`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,

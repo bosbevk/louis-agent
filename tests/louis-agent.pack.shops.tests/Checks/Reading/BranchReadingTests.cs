@@ -1,12 +1,12 @@
-using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+using LouisAgent.Packs.Shops.Checks.Reading;
 
-namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared.Scoring;
+namespace LouisAgent.Packs.Shops.Tests.Checks.Reading;
 
 /// <summary>
 /// With no shop's prices looked up, the user's shop is named under Where to buy with a place (<c>Pick n Pay
 /// Malmesbury</c>, <c>PnP in Paarl Mall</c>), in either language.
 /// </summary>
-public class ShopsBranchTests
+public class BranchReadingTests
 {
     /// <summary>The start of the Where to buy section.</summary>
     private const string Heading = "### Where to buy\n\n";
@@ -18,13 +18,13 @@ public class ShopsBranchTests
     [TestCase("Woolworths Paarl Mall", "woolworths")]
     [TestCase("Checkers te Stellenbosch", "checkers")]
     public void AShopNamedWithAPlace_IsABranch(string line, string shop) =>
-        Assert.That(Shops.NamesBranch(Heading + line, shop), Is.True);
+        Assert.That(ShopLines.NamesBranch(Heading + line, shop), Is.True);
 
     /// <summary>A table row whose branch cell holds the place is a branch.</summary>
     [Test]
     public void ATableRowWhoseBranchCellHasThePlace_IsABranch() =>
         Assert.That(
-            Shops.NamesBranch(
+            ShopLines.NamesBranch(
                 Heading +
                 "| Shop | Branch | Street or mall |\n|---|---|---|\n| Pick n Pay | Pick n Pay Malmesbury | Voortrekker Street |\n",
                 "pnp"), Is.True);
@@ -32,7 +32,7 @@ public class ShopsBranchTests
     /// <summary>The section's Afrikaans heading counts as well.</summary>
     [Test]
     public void TheAfrikaansHeading_Counts() =>
-        Assert.That(Shops.NamesBranch("### Waar om te koop\n\nPnP in Paarl Mall\n", "pnp"), Is.True);
+        Assert.That(ShopLines.NamesBranch("### Waar om te koop\n\nPnP in Paarl Mall\n", "pnp"), Is.True);
 
     /// <summary>A shop with no place, or only "the nearest one", is no branch.</summary>
     [TestCase("Any supermarket near you.")]
@@ -41,24 +41,25 @@ public class ShopsBranchTests
     [TestCase("Nearest Pick n Pay branch")]
     [TestCase("| Pick n Pay | nearest Pick n Pay | | [pnp.co.za](https://www.pnp.co.za) |")]
     public void AShopWithNoPlace_IsNoBranch(string line) =>
-        Assert.That(Shops.NamesBranch(Heading + line, "pnp"), Is.False);
+        Assert.That(ShopLines.NamesBranch(Heading + line, "pnp"), Is.False);
 
     /// <summary>Another shop's branch is no branch of the user's shop.</summary>
     [Test]
     public void AnotherShopsBranch_IsNoBranchOfThisShop() =>
-        Assert.That(Shops.NamesBranch(Heading + "Woolworths Paarl Mall", "pnp"), Is.False);
+        Assert.That(ShopLines.NamesBranch(Heading + "Woolworths Paarl Mall", "pnp"), Is.False);
 
     /// <summary>A branch named outside the Where to buy section doesn't count.</summary>
     [Test]
     public void ABranchOutsideTheWhereToBuySection_DoesNotCount() =>
         Assert.That(
-            Shops.NamesBranch("### Recipe\n\nBuy at Pick n Pay Malmesbury.\n\n" + Heading + "Any supermarket near you.",
+            ShopLines.NamesBranch(
+                "### Recipe\n\nBuy at Pick n Pay Malmesbury.\n\n" + Heading + "Any supermarket near you.",
                 "pnp"), Is.False);
 
     /// <summary>An answer with no Where to buy section names no branch.</summary>
     [Test]
     public void NoWhereToBuySection_IsNoBranch() =>
-        Assert.That(Shops.NamesBranch("Pick n Pay Malmesbury", "pnp"), Is.False);
+        Assert.That(ShopLines.NamesBranch("Pick n Pay Malmesbury", "pnp"), Is.False);
 
     /// <summary>The top of a Where to buy table, with its branch and street columns.</summary>
     private const string Table = "| Shop | Branch | Street or mall |\n|---|---|---|\n";
@@ -74,20 +75,20 @@ public class ShopsBranchTests
     [TestCase("### Where to buy\n\nPick n Pay — Brooklyn Mall")]
     [TestCase("### Waar om te koop\n\nPick n Pay – Brooklyn Mall")]
     public void AHeadingInAnyOfTheShapesAPersonReads_AndAnEmDash_StillNameTheBranch(string answer) =>
-        Assert.That(Shops.NamesBranch(answer, "pnp"), Is.True);
+        Assert.That(ShopLines.NamesBranch(answer, "pnp"), Is.True);
 
     /// <summary>A table row of the user's shop whose branch or street cell holds a place names the branch.</summary>
     [TestCase("| PnP | Pick n Pay Menlyn | Menlyn Park |")]
     [TestCase("| Pick n Pay | | Menlyn Park |")]
     [TestCase("| Pick n Pay | Pick n Pay Menlyn | |")]
     public void ATableRowOfTheShop_WhoseBranchOrStreetCellHoldsAPlace_NamesTheBranch(string row) =>
-        Assert.That(Shops.NamesBranch(Heading + Table + row + "\n", "pnp"), Is.True);
+        Assert.That(ShopLines.NamesBranch(Heading + Table + row + "\n", "pnp"), Is.True);
 
     /// <summary>The table is read by its columns, with Afrikaans headings too.</summary>
     [Test]
     public void TheTableIsReadByItsColumns_InAfrikaansToo() =>
         Assert.That(
-            Shops.NamesBranch(
+            ShopLines.NamesBranch(
                 "### Waar om te koop\n\n| Winkel | Tak | Straat |\n|---|---|---|\n| Pick n Pay | Pick n Pay Menlyn | Atterburystraat |\n",
                 "pnp"), Is.True);
 

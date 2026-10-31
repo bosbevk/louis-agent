@@ -1,4 +1,4 @@
-namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+namespace LouisAgent.Packs.Shops.Checks.Reading;
 
 /// <summary>
 /// What a reply says about the user's shop under Where to buy, case by case, so a failed check can say which one it

@@ -39,9 +39,12 @@ public class PricedAtShopTests
     /// <summary>The Afrikaans line that says the prices are estimates.</summary>
     private const string EstimatesLine = "*Pryse is skattings, nie by 'n winkel nagegaan nie.*";
 
-    /// <summary>The estimates check's grade of a one-turn trial made of these events.</summary>
+    /// <summary>
+    /// The cook's estimates check's grade, as its eval file builds it (the shops pack's rule over Puls's price reader),
+    /// of a one-turn trial made of these events.
+    /// </summary>
     private static Task<Grade> Estimate(string expected, params SessionEvent[] events) =>
-        new EstimatesAtShop()
+        CookFile.Check("estimates-at-shop")
             .GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None)
             .AsTask();
 

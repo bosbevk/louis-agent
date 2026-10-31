@@ -36,9 +36,12 @@ public class PricedAtRenderedShopTests
     private const string WoolworthsList =
         "| Ingredient | For the recipe | To buy | Woolworths |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R52,00](https://www.woolworths.co.za/p/1) |\n";
 
-    /// <summary>The estimates check's grade of a one-turn trial made of these events.</summary>
+    /// <summary>
+    /// The cook's estimates check's grade, as its eval file builds it (the shops pack's rule over Puls's price reader),
+    /// of a one-turn trial made of these events.
+    /// </summary>
     private static Task<Grade> Estimate(string expected, params SessionEvent[] events) =>
-        new EstimatesAtShop()
+        CookFile.Check("estimates-at-shop")
             .GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None)
             .AsTask();
 

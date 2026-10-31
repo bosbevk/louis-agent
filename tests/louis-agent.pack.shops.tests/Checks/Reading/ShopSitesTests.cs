@@ -1,6 +1,6 @@
-using LouisAgent.Packs.Shops.Checks;
+using LouisAgent.Packs.Shops.Checks.Reading;
 
-namespace LouisAgent.Packs.Shops.Tests.Checks;
+namespace LouisAgent.Packs.Shops.Tests.Checks.Reading;
 
 /// <summary>
 /// The shops a list has a column for that the cook can't read. Checkers has its shop tools, and PnP and Woolworths a

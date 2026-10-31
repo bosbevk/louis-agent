@@ -4,8 +4,8 @@ using LouisAgent.Identities.Puls.Evals.Readers;
 namespace LouisAgent.Identities.Puls.Evals;
 
 /// <summary>
-/// Puls's own readers, the ones its eval files name beside a general check: what a cook's answer says a basket costs,
-/// how many people a meal is for, and which of its images are photos of the dish.
+/// Puls's own readers, the ones its eval files name beside a check: what a cook's answer says a basket costs, whether
+/// it gives prices as fact, how many people a meal is for, and which of its images are photos of the dish.
 /// </summary>
 /// <remarks>
 /// Registry (Fowler, PoEAA), as <c>PulsChecks</c> is for checks: Puls lists its readers in one place, and the
@@ -15,5 +15,6 @@ namespace LouisAgent.Identities.Puls.Evals;
 public static class PulsReaders
 {
     /// <summary>Every reader of Puls's, by name.</summary>
-    public static IReadOnlyList<IReader> All { get; } = [new RandTotal(), new PeopleServed(), new RecipePhotos()];
+    public static IReadOnlyList<IReader> All { get; } =
+        [new RandTotal(), new RandPrices(), new PeopleServed(), new RecipePhotos()];
 }

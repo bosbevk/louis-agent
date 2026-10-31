@@ -171,7 +171,7 @@ The three kinds of check (`CheckKind`; on the wire a check is still a `grader`, 
 
 | Kind | What it is | Examples |
 |---|---|---|
-| `fixed-rule` | Plain C# that reads the transcript. Every eval needs at least one required fixed-rule check. | `NoErrorCheck`, `RoutedToCheck`, `ContainsCheck`, `AmountUnderCheck`, `ImageShownCheck`, `NearCheck` and the rest of the harness's 22; `UntooledShops`, `EstimatesAtShop` (the cook's shop rules) |
+| `fixed-rule` | Plain C# that reads the transcript. Every eval needs at least one required fixed-rule check. | `NoErrorCheck`, `RoutedToCheck`, `ContainsCheck`, `AmountUnderCheck`, `ImageShownCheck`, `NearCheck` and the rest of the harness's 22; `UntooledShops`, `EstimatesAtShop` (the shops pack's rules, F49.3) |
 | `model` | A judge model reads the answer against a rubric. `EvaluatorCheck` wraps Microsoft.Extensions.AI.Evaluation's `IEvaluator`; the grade carries the model and the prompt's hash. | `judge` (the general one over a rubric file); `meal-for-people` (`MealForPeopleCheck`, Puls's own) |
 | `human` | A person's verdict in the run explorer, paired with a model check so the two can be compared. | `meal-for-people.human` (`HumanReviewCheck`, the `human` entry) |
 
@@ -200,7 +200,7 @@ flowchart TB
   eval["FileEval : IEval<br/>Name = puls-cook, Version = 11"]
   modes["EvalMode puls-cook · EvalMode puls-tools"]
   data["Dataset puls-cook v7<br/>dev and held-out scenarios, labels"]
-  graders["9 checks: cook-no-error (no-error), routed-to,<br/>within-budget (amount-under · rand-total), EstimatesAtShop, UntooledShops,<br/>recipe-image (image-shown · recipe-photos), serves-as-asked (number-named · servings),<br/>meal-for-people, meal-for-people.human"]
+  graders["9 checks: cook-no-error (no-error), routed-to,<br/>within-budget (amount-under · rand-total), estimates-at-shop (· rand-prices), untooled-shops,<br/>recipe-image (image-shown · recipe-photos), serves-as-asked (number-named · servings),<br/>meal-for-people, meal-for-people.human"]
   trial["Trial<br/>run 5d1fd231c9b1 · puls-cook · repeat 1 · cook-malmesbury"]
   transcript["Transcript<br/>TurnTranscript per question"]
   grades["Grade × 9<br/>e.g. untooled-shops 1.0 pass"]

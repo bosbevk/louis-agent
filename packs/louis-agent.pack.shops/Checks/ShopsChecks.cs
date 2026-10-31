@@ -16,5 +16,5 @@ namespace LouisAgent.Packs.Shops.Checks;
 public static class ShopsChecks
 {
     /// <summary>Every check of the pack's, in the order the cook's eval lists them.</summary>
-    public static IReadOnlyList<ICheckType> All { get; } = [new UntooledShops.Entry()];
+    public static IReadOnlyList<ICheckType> All { get; } = [new EstimatesAtShop.Entry(), new UntooledShops.Entry()];
 }

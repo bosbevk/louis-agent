@@ -1,5 +1,5 @@
-using LouisAgent.Packs.Shops.Checks;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+using LouisAgent.Packs.Shops.Checks.Reading;
 
 namespace LouisAgent.Composition.Tests;
 
