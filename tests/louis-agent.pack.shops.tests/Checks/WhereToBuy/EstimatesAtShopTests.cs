@@ -1,16 +1,17 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
+using LouisAgent.Packs.Shops.Checks;
 using LouisAgent.SessionStream;
-using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
+using static LouisAgent.Packs.Shops.Tests.Checks.ShopTrials;
 
-namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Grading.WhereToBuy;
+namespace LouisAgent.Packs.Shops.Tests.Checks.WhereToBuy;
 
 /// <summary>
 /// A scenario that names a shop passes when the answer reads no shop page, calls no shop tool, links no price, says the
 /// prices are estimates, and names the shop's branch under Where to buy. Louis, 2026-10-25: "keep cook but just rework
-/// it to not lookup prices but just focus on local recipes and where to shop". <c>any</c> and <c>no-branch</c> keep
-/// their own rules (<c>PricedAtShopTests</c>, <c>PricedAtNoBranchTests</c>).
+/// it to not lookup prices but just focus on local recipes and where to shop". <c>no-branch</c> keeps its own rule
+/// (<c>EstimatesAtNoBranchTests</c>). Whether a price is given as fact is the reader's to say (a fake here; Puls's
+/// <c>rand-prices</c> is tested beside Puls, and the two together by the cook's <c>CookGradesTests</c>).
 /// </summary>
 public class EstimatesAtShopTests
 {
@@ -36,10 +37,6 @@ public class EstimatesAtShopTests
     /// <summary>The Afrikaans section naming Woolworths' Stellenbosch branch.</summary>
     private const string WoolworthsBranch = "\n### Waar om te koop\n\nWoolworths Eikestad Mall, Stellenbosch\n";
 
-    /// <summary>A list with a price linked to PnP's site.</summary>
-    private const string Priced =
-        "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
-
     /// <summary>The cook reading a PnP search page in the browser.</summary>
     private static readonly SessionEvent ReadsPnp = SpecialistCall("ReadRenderedPage",
         """{"url":"https://www.pnp.co.za/search/uie","maxChars":3000}""");
@@ -52,17 +49,21 @@ public class EstimatesAtShopTests
     private static readonly SessionEvent ReadsRecipe =
         SpecialistCall("FetchUrl", """{"url":"https://marindakook.co.za/bobotie/"}""");
 
-    /// <summary>The check's grade of a one-turn trial made of these events.</summary>
+    /// <summary>
+    /// The check's grade of a one-turn trial made of these events, with a reader that finds no price.
+    /// </summary>
     private static Task<Grade> Grade(string expected, params SessionEvent[] events) =>
-        new EstimatesAtShop()
-            .GradeAsync(Trial(CookEvalMode, "cook-x", expected, null, Turn(1, events)), CancellationToken.None)
-            .AsTask();
+        Grade(FakePrices.None, expected, events);
+
+    /// <summary>The check's grade of a one-turn trial made of these events, over this price reader.</summary>
+    private static Task<Grade> Grade(FakePrices prices, string expected, params SessionEvent[] events) =>
+        new EstimatesAtShop(prices).GradeAsync(Trial(expected, Turn(1, events)), CancellationToken.None).AsTask();
 
     /// <summary>It's a required fixed rule, at version 2, that reads the shop and the town.</summary>
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheShopAndTheTownKeys()
     {
-        var grader = new EstimatesAtShop();
+        var grader = new EstimatesAtShop(FakePrices.None);
 
         Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required),
             Is.EqualTo(("estimates-at-shop", 2, CheckKind.FixedRule, true)));
@@ -113,15 +114,21 @@ public class EstimatesAtShopTests
             SpecialistCall("FindProducts", """{"shop":"checkers","area":"Malmesbury","query":"uie"}"""),
             Text(Estimates + EstimatesLine + PnpBranch))).Outcome, Is.EqualTo(GradeOutcome.Fail));
 
-    /// <summary>A price linked to a shop fails, saying so.</summary>
+    /// <summary>A price linked to a shop, as the reader reads it, fails, saying so.</summary>
     [Test]
     public async Task ItFails_WhenAPriceLinksToAShop()
     {
-        var grade = await Grade(Pnp, Text(Priced + EstimatesLine + PnpBranch));
+        var grade = await Grade(new FakePrices(0, "pnp.co.za"), Pnp, Text(Estimates + EstimatesLine + PnpBranch));
 
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
         Assert.That(grade.Reason, Does.Contain("price"));
     }
+
+    /// <summary>A price the reader reads as given as fact, with no link, fails too.</summary>
+    [Test]
+    public async Task ItFails_WhenAPriceIsGivenAsFact() =>
+        Assert.That((await Grade(new FakePrices(1), Pnp, Text(Estimates + EstimatesLine + PnpBranch))).Outcome,
+            Is.EqualTo(GradeOutcome.Fail));
 
     /// <summary>Without the line saying they're estimates, it fails.</summary>
     [Test]
@@ -148,10 +155,9 @@ public class EstimatesAtShopTests
     [Test]
     public async Task ItIsUnknown_ForAnInfrastructureFailure()
     {
-        var failed = Trial(CookEvalMode, "cook-x", Pnp, null,
-            Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TurnFailure.Timeout));
+        var failed = Trial(Pnp, Turn(1, [Text(Estimates + EstimatesLine + PnpBranch)], TurnFailure.Timeout));
 
-        Assert.That((await new EstimatesAtShop().GradeAsync(failed, CancellationToken.None)).Outcome,
+        Assert.That((await new EstimatesAtShop(FakePrices.None).GradeAsync(failed, CancellationToken.None)).Outcome,
             Is.EqualTo(GradeOutcome.Unknown));
     }
 

@@ -1,3 +1,4 @@
+using LouisAgent.Composition;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Grading;
@@ -5,16 +6,14 @@ using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Grading.Common.Compare.Readers;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Readers;
-using LouisAgent.Identities.Puls.Evals;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.Identities.Puls.Judges;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 
 /// <summary>
 /// The cook's eval as the runner reads it: the folder of files beside the identity, copied beside these tests, with
-/// its checks from the harness's general list, Puls's fixed rules and Puls's judges, and its readers from the
-/// harness's and Puls's.
+/// its checks from the harness's general list, every identity's and pack's through the composition (Puls's and the
+/// shops pack's) and Puls's judges, and its readers from the harness's and the composition's.
 /// </summary>
 internal static class CookFile
 {
@@ -24,10 +23,10 @@ internal static class CookFile
     /// <summary>The copy of the folder beside these tests.</summary>
     public static string Folder { get; } = Path.Combine(AppContext.BaseDirectory, "EvalFiles", Source);
 
-    /// <summary>The cook's eval, loaded once.</summary>
+    /// <summary>The cook's eval, loaded once, from the catalogues the runner gathers.</summary>
     public static FileEval Eval { get; } =
-        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. PulsChecks.All, .. PulsJudges.All]),
-            new ReaderCatalog([.. GeneralReaders.All, .. PulsReaders.All]), Source);
+        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. EvalChecks.All, .. PulsJudges.All]),
+            new ReaderCatalog([.. GeneralReaders.All, .. EvalReaders.All]), Source);
 
     /// <summary>
     /// One of the cook's checks as its file builds it, by the name its grades carry (<c>within-budget</c>), whatever

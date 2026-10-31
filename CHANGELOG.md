@@ -4,6 +4,16 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-31 — **F49.3 Checks in packs**: a pack ships the checks that prove its tools, in a registry of its own
+  that the composition's `EvalChecks.All` gathers; the shops pack's `ShopsChecks.All` holds `estimates-at-shop` and
+  `untooled-shops`, and `PricedAtRetailer` (`priced-at-shop`, no entry) moved beside them, with what only they read
+  (`Checks/Reading/`: the shop sites, the estimates and no-branch lines as plain scans, the branch under Where to buy,
+  the scenario's `shop` and `town`); plain markdown reading (`Lists`, `Links`) moved down to the check contract
+  (`Markdown/`), and the harness's `links-to-host` uses its `IsHost`; whether a price is given as fact comes in through
+  a new `IPriceReader` the file names, Puls's `rand-prices`; the shops' site table lives in the pack and in Puls,
+  held equal by `ShopTableTests`; Puls keeps no check (`PulsChecks` deleted) and no shop reading; `ToolHosts` deleted;
+  the cook's 230 pinned grades unchanged throughout. Guide [Build a pack](docs/guides/build-a-pack.md#9-its-checks-when-it-proves-its-tools)
+  ([0060](docs/adr/0060-a-pack-ships-its-checks.md), [write-up 20](docs/learning/20-extensibility.md))
 - 2026-10-31 — **F49.2b The generic checks**: every family an eval tool ships has a general check, 24 in
   `GeneralChecks.All` by family (`Facts/`, `Answers/`, `Tools/`, `Compare/`, `Similarity/`, `Language/`): new
   `turns-under`, `tokens-under`, `not-contains`, `starts-with`, `length-under`, `mentions-expected`, `is-json`,

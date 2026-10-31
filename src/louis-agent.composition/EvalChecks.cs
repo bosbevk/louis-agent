@@ -1,11 +1,11 @@
 using LouisAgent.Evals.Catalog;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
+using LouisAgent.Packs.Shops.Checks;
 
 namespace LouisAgent.Composition;
 
 /// <summary>
 /// Every identity's and pack's own checks that an eval file can name, which the runner gathers with the harness's
-/// general checks. Today that is Puls's fixed rules.
+/// general checks: today the shops pack's (F49.3). Puls ships readers, not checks (<see cref="EvalReaders"/>).
 /// </summary>
 /// <remarks>
 /// Registry (Fowler, PoEAA): each owner lists its checks in one place, and this is where the lists meet, since the
@@ -16,6 +16,8 @@ namespace LouisAgent.Composition;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class EvalChecks
 {
-    /// <summary>Every identity's and pack's check types, an identity's in the order its list gives.</summary>
-    public static IReadOnlyList<ICheckType> All { get; } = [.. PulsChecks.All];
+    /// <summary>
+    /// Every identity's and pack's check types, the identities' first, each in the order its owner's list gives.
+    /// </summary>
+    public static IReadOnlyList<ICheckType> All { get; } = [.. ShopsChecks.All];
 }

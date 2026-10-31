@@ -8,8 +8,8 @@ namespace LouisAgent.Identities.Puls.Evals.Readers;
 /// PDF icons, logos and avatars that the recipe pages the cook reads carry.
 /// </summary>
 /// <remarks>
-/// An Adapter (Gang of Four, Louis's pick) over <see cref="Links.RecipePhotos"/>, the cook's image rule's own reading,
-/// so <c>image-shown</c> over this reader grades as <c>recipe-image</c> did. The page-furniture list is Puls's
+/// An Adapter (Gang of Four, Louis's pick) over <see cref="RecipeLinks.RecipePhotos"/>, the cook's image rule's own
+/// reading, so <c>image-shown</c> over this reader grades as <c>recipe-image</c> did. The page-furniture list is Puls's
 /// knowledge of the sites it reads, so it stays in the identity, untouched, rather than move into the harness. The
 /// eval file names it <c>recipe-photos</c>.
 /// </remarks>
@@ -20,5 +20,5 @@ public sealed class RecipePhotos : IImageReader
     public string Name => "recipe-photos";
 
     /// <inheritdoc />
-    public IReadOnlyList<string> Images(string text) => Links.RecipePhotos(text);
+    public IReadOnlyList<string> Images(string text) => RecipeLinks.RecipePhotos(text);
 }

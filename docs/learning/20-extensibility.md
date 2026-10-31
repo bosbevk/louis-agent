@@ -2,9 +2,9 @@
 
 > **Skill:** #20 in the [goal](../GOAL.md)'s map, with #12 (evaluation) for what a check is · **Stages:** Phase 3b,
 > F49.1 *The checks catalogue* and F49.2 *Evals as files*, the first two children of F49 *Evals as content*
-> (2026-10-30), and F49.2b *The generic checks* (2026-10-31) · **Written by** Claude, for Louis to read (2026-10-30,
-> extended the same day for F49.2 and on 2026-10-31 for F49.2b) · **Next:** a
-> pack shipping its own checks (F49.3); the studio's form made from a check's settings (F49.5)
+> (2026-10-30), F49.2b *The generic checks* and F49.3 *Checks in packs* (2026-10-31) · **Written by** Claude, for
+> Louis to read (2026-10-30, extended the same day for F49.2 and on 2026-10-31 for F49.2b and F49.3) · **Next:** the
+> studio: samples and known-bads from conversations (F49.4), then a check's settings as a form (F49.5)
 
 What this answers: how a check went from "a constructor call in an eval's C#" to "a name a file can use", why the
 contract left the harness, and what was left out on purpose (F49.1); then how an eval went from a C# class in its own
@@ -133,6 +133,33 @@ readers are Adapters over the scoring code its old checks used, unchanged, so th
 seam did. It's the same shape as a pack shipping tools: the engine owns the loop, the domain owns the small piece only
 it knows. How we proved no grade moved is in [write-up 12](12-evaluation.md#generic-checks-and-readers-instead-of-pulss-own-f492b).
 
+## A pack ships its checks (F49.3)
+
+The platform's rule is *identity = who, pack = what it can do, eval = how we prove it*. After F49.2b, two checks
+still sat in the wrong place: the shop rules (`untooled-shops`, `estimates-at-shop`, and the kept `priced-at-shop`)
+were Puls's, though what they prove is the shops pack's tools. F49.3 moved them beside the tools, with a registry of
+the pack's own (`ShopsChecks.All`), so a pack is complete on its own and the identity only composes.
+
+**Dependencies one way is the whole job.** A pack may not reference an identity, an identity may not reference a
+pack, and neither may reference the harness (every host loads them). So every move asked the same question: *who
+else needs this?*
+- **Shared by everyone, and plain:** reading a markdown table, a link, a site's host. It moved *down* to the check
+  contract (`Markdown/`), where all three can reach it (Fowler's Move Method).
+- **What only the identity knows:** how Puls writes a rand price, or what counts as one given as fact. It came in
+  *sideways*, as a reader the eval file names (`IPriceReader`, Puls's `rand-prices`): the same seam as F49.2b's.
+- **What both sides need, and only seven rows long:** the table of shops' names and sites. It lives twice, and a test
+  in the one project that sees both (`ShopTableTests`) fails if the copies ever differ. That's cheaper than a third
+  project, and honest about the cost.
+
+**The plan was cut where the work turned out to be.** Its step 2 was "move all the shop helpers", but their only users
+stayed in Puls until steps 3 and 4, so each helper moved *with* the check that used it. Step 2 became the one change
+of behaviour worth reviewing alone: two regexes rewritten as plain scans, pinned first by 21 characterisation tests
+that passed on the regexes before the rewrite.
+
+**The tests split by what they prove.** The pack's tests prove its rules with a fake price reader. Puls's tests
+prove `rand-prices` on the same answers. And the cook's `CookGradesTests` proves the two together: its 230 pinned
+grades held through every step.
+
 ## Sources
 
 Fowler, *Patterns of Enterprise Application Architecture* (Separated Interface, Registry, Plugin) · Gamma et al.,
@@ -141,7 +168,8 @@ Dependencies Principle) · Microsoft, *Framework Design Guidelines* (namespaces)
 exporter · promptfoo, *assertions* (`icontains-any`) · Inspect AI, *scorers* (`includes()`) and *datasets* (`Sample`)
 · Anthropic, *Develop tests* (tool-call checks) · [ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md) ·
 [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) · [ADR 0055](../adr/0055-keep-it-simple.md) ·
-[ADR 0057](../adr/0057-regex-is-the-last-option.md)
+[ADR 0057](../adr/0057-regex-is-the-last-option.md) · [ADR 0060](../adr/0060-a-pack-ships-its-checks.md) · Fowler,
+*Refactoring* (Move Method, Extract Class) · Feathers, *Working Effectively with Legacy Code* (characterisation tests)
 
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)

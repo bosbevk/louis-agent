@@ -13,7 +13,7 @@
     { "type": "no-error", "name": "cook-no-error" },
     { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists"] } },
     { "type": "amount-under", "name": "within-budget", "parameters": { "key": "budget", "reader": "rand-total" } },
-    { "type": "estimates-at-shop" },
+    { "type": "estimates-at-shop", "parameters": { "reader": "rand-prices" } },
     { "type": "untooled-shops" },
     { "type": "image-shown", "name": "recipe-image", "parameters": { "reader": "recipe-photos", "key": "recipe_image" } },
     { "type": "number-named", "name": "serves-as-asked", "parameters": { "key": "serves", "reader": "servings", "required": false } },

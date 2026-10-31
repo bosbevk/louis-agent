@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+namespace LouisAgent.Evals.Markdown;
 
 /// <summary>
 /// A shopping list in an answer: its header's cells, and its ingredient rows' cells (totals and separators left out).
@@ -11,6 +11,11 @@ public sealed record ShoppingList(List<string> Header, List<List<string>> Rows);
 /// The answer's markdown tables, and which of them is the shopping list. The branches and what's unsure are tables
 /// too: a table with a why column is the cook's *Onseker* table, never the list (cook check 42d837f13659).
 /// </summary>
+/// <remarks>
+/// In the check contract (Louis's pick, F49.3 step 1a), so an identity's prices and a pack's shop rules read a table
+/// and a shopping list the same way, with no copy and no reference to a sibling (Move Method, Fowler). It knows how
+/// the agents head a shopping list, in Afrikaans and English: that's what tells the list from the other tables.
+/// </remarks>
 public static partial class Lists
 {
     /// <summary>A header that starts a shopping list: an ingredient column first.</summary>

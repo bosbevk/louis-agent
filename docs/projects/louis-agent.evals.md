@@ -88,7 +88,7 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
 - **The cook gives estimates and reads no shop page** (step 5.7): Checkers refuses our browser and the other shops'
   robots.txt disallow their search pages ([ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), so
   `estimates-at-shop` checks that no price is given as fact; the old `PricedAtRetailer` waits, tested, for a
-  retailer's yes.
+  retailer's yes. Both are the shops pack's since F49.3.
 
 ## Structure
 

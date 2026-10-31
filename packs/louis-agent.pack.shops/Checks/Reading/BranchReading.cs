@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
+using LouisAgent.Evals.Markdown;
 
-namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+namespace LouisAgent.Packs.Shops.Checks.Reading;
 
 /// <summary>
 /// Tells you whether a reply names a branch of the user's shop under Where to buy, and if not, why not. It reads what a
@@ -52,9 +53,9 @@ public static partial class BranchReading
     /// <summary>The shop's names as a pattern (<c>Pick n Pay</c> and <c>PnP</c> are one shop).</summary>
     private static Regex NamesOf(string shop)
     {
-        string host = Shops.Hosts.First(known => known.Name == shop).Host;
+        string host = ShopSites.Hosts.First(known => known.Name == shop).Host;
         string names = string.Join("|",
-            Shops.Hosts.Where(known => known.Host == host).Select(known => Regex.Escape(known.Name)));
+            ShopSites.Hosts.Where(known => known.Host == host).Select(known => Regex.Escape(known.Name)));
         return new Regex($@"\b(?:{names})\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
     }
 
@@ -76,7 +77,7 @@ public static partial class BranchReading
     {
         string? place = SplitAtPlace().Split(rest)
             .FirstOrDefault(token => token.Length > 0 && !NoPlaceWords.Contains(token.ToLowerInvariant()));
-        return place is { Length: > 0 } && char.IsUpper(place[0]) && !Shops.Hosts.Any(known =>
+        return place is { Length: > 0 } && char.IsUpper(place[0]) && !ShopSites.Hosts.Any(known =>
             known.Name.StartsWith(place, StringComparison.OrdinalIgnoreCase))
             ? place
             : null;
@@ -91,7 +92,7 @@ public static partial class BranchReading
         string text = names.Replace(InlineLinkText().Replace(cell, " ").Replace("*", ""), " ");
         return SplitAtPlace().Split(text).Any(token =>
             token.Length > 0 && char.IsUpper(token[0]) && !NoPlaceWords.Contains(token.ToLowerInvariant())
-            && !Shops.Hosts.Any(known => known.Name.StartsWith(token, StringComparison.OrdinalIgnoreCase)));
+            && !ShopSites.Hosts.Any(known => known.Name.StartsWith(token, StringComparison.OrdinalIgnoreCase)));
     }
 
     /// <summary>

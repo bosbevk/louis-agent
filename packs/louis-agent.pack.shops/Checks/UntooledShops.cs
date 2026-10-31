@@ -5,10 +5,10 @@ using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
-using LouisAgent.Identities.Puls.Evals.Checks.Messages;
-using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+using LouisAgent.Packs.Shops.Checks.Reading;
+using LouisAgent.Packs.Shops.Messages;
 
-namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
+namespace LouisAgent.Packs.Shops.Checks;
 
 /// <summary>
 /// The cook never puts a price column in its list for a shop it can't read, such as Shoprite. It can read Checkers
@@ -16,7 +16,8 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
 /// </summary>
 /// <remarks>
 /// Its <see cref="Entry"/> lets an eval file name it, <c>untooled-shops</c> (Factory Method), as the general checks'
-/// entries do; it takes no settings. It moves to the shops pack in F49.3.
+/// entries do; it takes no settings. The shops pack's own, beside the tools it proves (F49.3), listed in
+/// <see cref="ShopsChecks.All"/>.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class UntooledShops : ICheck
@@ -48,13 +49,13 @@ public sealed class UntooledShops : ICheck
         var turns = trial.Transcript.Turns;
         if (Verdict.InfrastructureFailure(Name, Version, turns) is { } unknown) return unknown;
 
-        var shops = turns.SelectMany(turn => Shops.UntooledShops(EngineEvents.AnswerOf(turn)))
+        var shops = turns.SelectMany(turn => ShopSites.UntooledShops(EngineEvents.AnswerOf(turn)))
             .Distinct(StringComparer.Ordinal).ToList();
         if (shops.Count > 0)
             return Verdict.Fail(Name, Version,
-                MessageText.Format(GradeMessage.UntooledShopColumn, new { Shops = string.Join(", ", shops) }));
+                MessageText.Format(ShopCheckMessage.UntooledShopColumn, new { Shops = string.Join(", ", shops) }));
 
-        return Verdict.Pass(Name, Version, MessageText.Format(GradeMessage.UntooledShopsNone));
+        return Verdict.Pass(Name, Version, MessageText.Format(ShopCheckMessage.UntooledShopsNone));
     }
 
     /// <summary>What a file can set: nothing yet.</summary>

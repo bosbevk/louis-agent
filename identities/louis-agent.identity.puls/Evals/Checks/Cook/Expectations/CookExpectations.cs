@@ -1,5 +1,4 @@
 using System.Text.Json;
-using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Identities.Puls.Evals.Checks.Messages;
@@ -9,33 +8,30 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Expectations;
 
 /// <summary>
 /// What a cook scenario asks for, read from its <c>expected</c>: where the first turn goes, the user's town, how many
-/// people each turn serves, the rand budget of the first turn's basket, and the shop the user chose.
+/// people each turn serves, and the rand budget of the first turn's basket.
 /// </summary>
 /// <remarks>
 /// Each key is read by a named check. A key that's missing isn't asked for; one of the wrong kind is refused, naming
-/// the scenario, so a typo in the dataset fails loudly instead of grading nothing.
+/// the scenario, so a typo in the dataset fails loudly instead of grading nothing. The shop the user chose is the
+/// shops pack's to read (its <c>ScenarioShop</c>, F49.3, Louis's pick): no rule of Puls's reads it now.
 /// </remarks>
 public sealed record CookExpectations(
     string? RoutesTo,
     string? Town,
     IReadOnlyList<int> Serves,
-    decimal? Budget,
-    ShopExpectation? Shop)
+    decimal? Budget)
 {
     /// <summary>Reads every key of a scenario at once.</summary>
     public static CookExpectations Of(EvalScenario scenario) =>
-        new(ExpectedRoute.Of(scenario), TownOf(scenario), ServesOf(scenario), BudgetOf(scenario), ShopOf(scenario));
+        new(ExpectedRoute.Of(scenario), TownOf(scenario), ServesOf(scenario), BudgetOf(scenario));
 
     /// <summary>
-    /// The user's town, which the cook names as <c>area</c> in every shop call. A scenario that expects a shop to price
-    /// (Checkers) must name it, since the shop's store is the town's.
+    /// The user's town, which the cook's judge is told; none when the scenario names none. A scenario whose shop needs
+    /// a town is the shops pack's to refuse.
     /// </summary>
     public static string? TownOf(EvalScenario scenario)
     {
-        if (!TryGet(scenario, "town", out var town))
-            return ShopOf(scenario) == ShopExpectation.Checkers
-                ? throw new InvalidDataException(MessageText.Format(ExpectationMessage.NoTown, new { scenario.Id }))
-                : null;
+        if (!TryGet(scenario, "town", out var town)) return null;
         if (town.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(town.GetString()))
             throw new InvalidDataException(MessageText.Format(ExpectationMessage.BadTown, new { scenario.Id }));
         return town.GetString()!.Trim();
@@ -69,26 +65,6 @@ public sealed record CookExpectations(
         if (budget.ValueKind != JsonValueKind.Number || !budget.TryGetDecimal(out decimal rand) || rand <= 0)
             throw new InvalidDataException(MessageText.Format(ExpectationMessage.BadBudget, new { Id = id }));
         return rand;
-    }
-
-    /// <summary>The datasets write "no-branch" with a dash, which the enum's name can't hold.</summary>
-    private static readonly IReadOnlyDictionary<string, ShopExpectation> Aliases =
-        new Dictionary<string, ShopExpectation> { ["no-branch"] = ShopExpectation.NoBranch };
-
-    /// <summary>The shop the user chose; null when the scenario names none.</summary>
-    public static ShopExpectation? ShopOf(EvalScenario scenario)
-    {
-        string id = scenario.Id;
-        if (!TryGet(scenario, "shop", out var shop)) return null;
-        if (shop.ValueKind != JsonValueKind.String ||
-            !SettingChoice.TryParse(shop.GetString(), out ShopExpectation? parsed, Aliases) || parsed is null)
-            throw new InvalidDataException(MessageText.Format(ExpectationMessage.BadShop,
-                new
-                {
-                    Id = id,
-                    Supported = string.Join(", ", SettingChoice.Names<ShopExpectation>())
-                }));
-        return parsed;
     }
 
     /// <summary>Finds a key in the scenario's <c>expected</c>, if it has one.</summary>

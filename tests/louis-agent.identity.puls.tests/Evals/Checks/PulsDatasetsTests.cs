@@ -8,6 +8,7 @@ using LouisAgent.Identities.Puls.Evals.Checks.Cook.Expectations;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared.Expectations;
+using LouisAgent.Packs.Shops.Checks.Reading;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 
@@ -120,7 +121,7 @@ public class PulsDatasetsTests
         Assert.That(held.Values.Select(s => CookExpectations.TownOf(s)),
             Is.EqualTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }).Or
                 .EquivalentTo(new[] { "Somerset-Wes", "Paarl", "Worcester" }));
-        Assert.That(held.Values.Select(s => CookExpectations.ShopOf(s)), Is.All.EqualTo(ShopExpectation.Pnp));
+        Assert.That(held.Values.Select(ScenarioShop.Of), Is.All.EqualTo(ShopExpectation.Pnp));
     }
 
     /// <summary>
