@@ -68,8 +68,9 @@ public sealed class TokensUnderCheck(long count, bool required = true) : ICheck
     /// <summary>The check as a file names it, <c>tokens-under</c>.</summary>
     public sealed class Entry() : CheckType<Settings>("tokens-under", CheckKind.FixedRule)
     {
-        /// <summary>Builds the check from its settings.</summary>
-        protected override ICheck Create(Settings settings, CheckContext context) =>
-            new TokensUnderCheck(settings.Count, settings.Required);
+        /// <summary>Builds the check from its settings, refusing a limit under one: no trial could pass.</summary>
+        protected override ICheck Create(Settings settings, CheckContext context) => settings.Count >= 1
+            ? new TokensUnderCheck(settings.Count, settings.Required)
+            : throw Refused(CheckCatalogMessage.BelowOne, "count");
     }
 }

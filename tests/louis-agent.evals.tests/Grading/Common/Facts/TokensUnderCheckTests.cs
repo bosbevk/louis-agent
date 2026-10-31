@@ -72,11 +72,14 @@ public class TokensUnderCheckTests
         Assert.That((built.Name, built.Version, built.Required), Is.EqualTo(("tokens-under", 1, true)));
     }
 
-    /// <summary>A missing limit is refused, never read as a default, naming the check type and the field.</summary>
-    [Test]
-    public void AMissingLimit_IsRefused()
+    /// <summary>
+    /// A limit under one, or none, is refused, naming the check type and the field: no trial could pass.
+    /// </summary>
+    [TestCase("""{"count": 0}""")]
+    [TestCase("{}")]
+    public void ALimitUnderOne_IsRefused(string settings)
     {
-        var refusal = Assert.Throws<InvalidDataException>(() => Build("{}"));
+        var refusal = Assert.Throws<InvalidDataException>(() => Build(settings));
 
         Assert.That(refusal!.Message, Does.Contain("tokens-under").And.Contain("count"));
     }

@@ -102,18 +102,10 @@ public sealed class ToolUsedWithCheck(string tool, string field, string value, b
         /// <remarks>Guard clauses, one blank setting each from the top (ADR 0051).</remarks>
         protected override ICheck Create(Settings settings, CheckContext context)
         {
-            if (string.IsNullOrWhiteSpace(settings.Tool)) throw Blank("tool");
-            if (string.IsNullOrWhiteSpace(settings.Field)) throw Blank("field");
-            if (string.IsNullOrWhiteSpace(settings.Value)) throw Blank("value");
+            if (string.IsNullOrWhiteSpace(settings.Tool)) throw Refused(CheckCatalogMessage.NoText, "tool");
+            if (string.IsNullOrWhiteSpace(settings.Field)) throw Refused(CheckCatalogMessage.NoText, "field");
+            if (string.IsNullOrWhiteSpace(settings.Value)) throw Refused(CheckCatalogMessage.NoText, "value");
             return new ToolUsedWithCheck(settings.Tool, settings.Field, settings.Value, settings.Required);
         }
-
-        /// <summary>The refusal of a blank setting, naming the check type and the field.</summary>
-        private InvalidDataException Blank(string name) =>
-            new(MessageText.Format(CheckCatalogMessage.NoText, new
-            {
-                Type,
-                Field = name
-            }));
     }
 }

@@ -95,10 +95,6 @@ public sealed class LinksToHostCheck(IReadOnlyList<string> hosts, bool required 
         /// </summary>
         protected override ICheck Create(Settings settings, CheckContext context) => settings.Hosts.Count > 0
             ? new LinksToHostCheck(settings.Hosts, settings.Required)
-            : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.NothingListed, new
-            {
-                Type,
-                Field = "hosts"
-            }));
+            : throw Refused(CheckCatalogMessage.NothingListed, "hosts");
     }
 }

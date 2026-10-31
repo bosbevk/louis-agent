@@ -106,18 +106,10 @@ public sealed class NearCheck(string text, int distance, bool required = true) :
         protected override ICheck Create(Settings settings, CheckContext context)
         {
             if (string.IsNullOrWhiteSpace(settings.Text))
-                throw Refusal(CheckCatalogMessage.NoText, "text");
+                throw Refused(CheckCatalogMessage.NoText, "text");
             if (settings.Distance < 0)
-                throw Refusal(CheckCatalogMessage.BelowZero, "distance");
+                throw Refused(CheckCatalogMessage.BelowZero, "distance");
             return new NearCheck(settings.Text, settings.Distance, settings.Required);
         }
-
-        /// <summary>A refusal of one setting, naming the check type and the field.</summary>
-        private InvalidDataException Refusal(CheckCatalogMessage message, string field) =>
-            new(MessageText.Format(message, new
-            {
-                Type,
-                Field = field
-            }));
     }
 }

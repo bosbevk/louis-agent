@@ -69,10 +69,6 @@ public sealed class StartsWithCheck(string text, bool required = true) : ICheck
         protected override ICheck Create(Settings settings, CheckContext context) =>
             !string.IsNullOrWhiteSpace(settings.Text)
                 ? new StartsWithCheck(settings.Text, settings.Required)
-                : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.NoText, new
-                {
-                    Type,
-                    Field = "text"
-                }));
+                : throw Refused(CheckCatalogMessage.NoText, "text");
     }
 }

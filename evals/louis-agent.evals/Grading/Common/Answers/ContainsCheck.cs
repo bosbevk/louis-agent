@@ -65,10 +65,6 @@ public sealed class ContainsCheck(IReadOnlyList<string> texts, bool required = t
         /// </summary>
         protected override ICheck Create(Settings settings, CheckContext context) => settings.Texts.Count > 0
             ? new ContainsCheck(settings.Texts, settings.Required)
-            : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.NothingListed, new
-            {
-                Type,
-                Field = "texts"
-            }));
+            : throw Refused(CheckCatalogMessage.NothingListed, "texts");
     }
 }

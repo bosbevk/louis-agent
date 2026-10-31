@@ -104,10 +104,6 @@ public sealed class MentionsExpectedCheck(string key, bool required = true) : IC
         protected override ICheck Create(Settings settings, CheckContext context) =>
             !string.IsNullOrWhiteSpace(settings.Key)
                 ? new MentionsExpectedCheck(settings.Key, settings.Required)
-                : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.NoText, new
-                {
-                    Type,
-                    Field = "key"
-                }));
+                : throw Refused(CheckCatalogMessage.NoText, "key");
     }
 }

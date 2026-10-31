@@ -72,10 +72,6 @@ public sealed class ToolNotUsedCheck(string tool, bool required = true) : ICheck
         protected override ICheck Create(Settings settings, CheckContext context) =>
             !string.IsNullOrWhiteSpace(settings.Tool)
                 ? new ToolNotUsedCheck(settings.Tool, settings.Required)
-                : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.NoText, new
-                {
-                    Type,
-                    Field = "tool"
-                }));
+                : throw Refused(CheckCatalogMessage.NoText, "tool");
     }
 }

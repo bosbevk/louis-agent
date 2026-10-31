@@ -104,18 +104,10 @@ public sealed class AmountUnderCheck(IMoneyReader reader, string key, bool requi
         /// <remarks>Guard clauses, one blank setting each from the top (ADR 0051).</remarks>
         protected override ICheck Create(Settings settings, CheckContext context)
         {
-            if (string.IsNullOrWhiteSpace(settings.Key)) throw Blank("key");
-            if (string.IsNullOrWhiteSpace(settings.Reader)) throw Blank("reader");
+            if (string.IsNullOrWhiteSpace(settings.Key)) throw Refused(CheckCatalogMessage.NoText, "key");
+            if (string.IsNullOrWhiteSpace(settings.Reader)) throw Refused(CheckCatalogMessage.NoText, "reader");
             return new AmountUnderCheck(context.Readers.Get<IMoneyReader>(settings.Reader), settings.Key,
                 settings.Required);
         }
-
-        /// <summary>The refusal of a blank setting, naming the check type and the field.</summary>
-        private InvalidDataException Blank(string field) =>
-            new(MessageText.Format(CheckCatalogMessage.NoText, new
-            {
-                Type,
-                Field = field
-            }));
     }
 }

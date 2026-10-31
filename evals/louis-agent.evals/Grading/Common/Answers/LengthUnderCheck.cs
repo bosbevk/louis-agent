@@ -66,8 +66,9 @@ public sealed class LengthUnderCheck(int characters, bool required = true) : ICh
     /// <summary>The check as a file names it, <c>length-under</c>.</summary>
     public sealed class Entry() : CheckType<Settings>("length-under", CheckKind.FixedRule)
     {
-        /// <summary>Builds the check from its settings.</summary>
-        protected override ICheck Create(Settings settings, CheckContext context) =>
-            new LengthUnderCheck(settings.Characters, settings.Required);
+        /// <summary>Builds the check from its settings, refusing a limit under one: no answer could pass.</summary>
+        protected override ICheck Create(Settings settings, CheckContext context) => settings.Characters >= 1
+            ? new LengthUnderCheck(settings.Characters, settings.Required)
+            : throw Refused(CheckCatalogMessage.BelowOne, "characters");
     }
 }

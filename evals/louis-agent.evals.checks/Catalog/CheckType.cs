@@ -58,6 +58,17 @@ public abstract class CheckType<TParameters>(string type, CheckKind kind) : IChe
         }
     }
 
+    /// <summary>
+    /// The refusal an entry throws when a setting can't work (blank, under one, not a choice): its text names this
+    /// check type and the field, so every entry refuses the same way.
+    /// </summary>
+    protected InvalidDataException Refused(CheckCatalogMessage message, string field) =>
+        Refuse(message, new
+        {
+            Type = type,
+            Field = field
+        });
+
     /// <summary>The refusal with its text filled in.</summary>
     private static InvalidDataException Refuse(CheckCatalogMessage message, object values) =>
         new(MessageText.Format(message, values));

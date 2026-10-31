@@ -63,10 +63,6 @@ public sealed class ToolCallsUnderCheck(int count, bool required = true) : IChec
         /// <summary>Builds the check from its settings, refusing a limit under one: no trial could pass.</summary>
         protected override ICheck Create(Settings settings, CheckContext context) => settings.Count >= 1
             ? new ToolCallsUnderCheck(settings.Count, settings.Required)
-            : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.BelowOne, new
-            {
-                Type,
-                Field = "count"
-            }));
+            : throw Refused(CheckCatalogMessage.BelowOne, "count");
     }
 }
