@@ -1,5 +1,4 @@
 using System.Collections.Frozen;
-using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Catalog;
@@ -116,14 +115,7 @@ public sealed class EstimatesAtShop(IPriceReader prices) : ICheck
     /// </summary>
     private static bool ReadsAShopPage(TurnTranscript turn) =>
         ShopSites.PageTools.SelectMany(tool => EngineEvents.ToolInputsOf(turn, tool))
-            .Any(input => UrlOf(input) is { } url && ShopSites.SiteOf(url) is not null);
-
-    /// <summary>A page tool's <c>url</c>, or null when the input has none.</summary>
-    private static string? UrlOf(JsonElement input) =>
-        input.ValueKind == JsonValueKind.Object && input.TryGetProperty("url", out var value) &&
-        value.ValueKind == JsonValueKind.String
-            ? value.GetString()
-            : null;
+            .Any(input => EngineEvents.TextOf(input, "url") is { } url && ShopSites.SiteOf(url) is not null);
 
     /// <summary>What a file can set: the reader that tells whether the answer gives prices as fact.</summary>
     public sealed record Settings(string Reader);
@@ -138,10 +130,6 @@ public sealed class EstimatesAtShop(IPriceReader prices) : ICheck
         protected override ICheck Create(Settings settings, CheckContext context) =>
             !string.IsNullOrWhiteSpace(settings.Reader)
                 ? new EstimatesAtShop(context.Readers.Get<IPriceReader>(settings.Reader))
-                : throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.NoText, new
-                {
-                    Type,
-                    Field = "reader"
-                }));
+                : throw Refused(CheckCatalogMessage.NoText, "reader");
     }
 }

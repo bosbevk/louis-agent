@@ -38,7 +38,7 @@ public static class EngineEvents
     public static bool HasUsage(TurnTranscript turn) => Usage(turn) is not null;
 
     /// <summary>The currency the turn's usage is in, or null when it doesn't say.</summary>
-    public static string? CurrencyOf(TurnTranscript turn) => Usage(turn) is { } usage ? Text(usage, "currency") : null;
+    public static string? CurrencyOf(TurnTranscript turn) => Usage(turn) is { } usage ? TextOf(usage, "currency") : null;
 
     /// <summary>
     /// The turn's cost in the ledger's currency; null when unknown (no usage, no cost, or a request with no price).
@@ -91,9 +91,9 @@ public static class EngineEvents
         foreach (var e in turn.Events)
         {
             if (e is not ContentBlockStarted || !Field(e.Data, "content_block", out var block)) continue;
-            if (Text(block, "type") == "tool_use" && Text(block, "name") == StartSubSession
+            if (TextOf(block, "type") == "tool_use" && TextOf(block, "name") == StartSubSession
                                                   && Field(block, "input", out var input) &&
-                                                  Text(input, "role") is { } role && !string.IsNullOrWhiteSpace(role))
+                                                  TextOf(input, "role") is { } role && !string.IsNullOrWhiteSpace(role))
                 return role;
         }
 
@@ -115,7 +115,7 @@ public static class EngineEvents
     public static IReadOnlyList<JsonElement> ToolInputsOf(TurnTranscript turn, string tool) =>
     [
         .. ToolBlocks(turn.Events).Concat(ToolBlocks(SpecialistEvents(turn)))
-            .Where(block => Text(block, "name") == tool)
+            .Where(block => TextOf(block, "name") == tool)
             .Select(block => Field(block, "input", out var input) ? input : default)
     ];
 
@@ -133,8 +133,8 @@ public static class EngineEvents
     /// one), or null when it went back to none.
     /// </summary>
     public static string? ContinuedHandle(TurnTranscript turn) =>
-        ToolBlocks(turn.Events).Where(block => Text(block, "name") == ContinueSubSession)
-            .Select(block => Field(block, "input", out var input) ? Text(input, "handle") : null)
+        ToolBlocks(turn.Events).Where(block => TextOf(block, "name") == ContinueSubSession)
+            .Select(block => Field(block, "input", out var input) ? TextOf(input, "handle") : null)
             .FirstOrDefault(handle => !string.IsNullOrEmpty(handle));
 
     /// <summary>
@@ -143,7 +143,7 @@ public static class EngineEvents
     public static IReadOnlyList<string> UrlsGiven(TurnTranscript turn) =>
     [
         .. ToolBlocks(turn.Events.Concat(SpecialistEvents(turn)))
-            .Select(block => Field(block, "input", out var input) ? Text(input, "url") : null)
+            .Select(block => Field(block, "input", out var input) ? TextOf(input, "url") : null)
             .OfType<string>()
     ];
 
@@ -151,7 +151,7 @@ public static class EngineEvents
     public static string? ErrorMessageOf(TurnTranscript turn)
     {
         var error = turn.Events.OfType<ErrorReported>().FirstOrDefault();
-        return error is not null && Field(error.Data, "error", out var detail) ? Text(detail, "message") : null;
+        return error is not null && Field(error.Data, "error", out var detail) ? TextOf(detail, "message") : null;
     }
 
     /// <summary>
@@ -174,8 +174,8 @@ public static class EngineEvents
     {
         var text = new StringBuilder();
         foreach (var e in turn.Events)
-            if (e is ContentBlockDelta && Field(e.Data, "delta", out var delta) && Text(delta, "type") == "text_delta"
-                && Text(delta, "text") is { } piece)
+            if (e is ContentBlockDelta && Field(e.Data, "delta", out var delta) && TextOf(delta, "type") == "text_delta"
+                && TextOf(delta, "text") is { } piece)
                 text.Append(piece);
         return text.ToString().Trim();
     }
@@ -184,7 +184,7 @@ public static class EngineEvents
     /// The names of the tool calls among these events, skipping a block that isn't a call or has no name.
     /// </summary>
     private static IReadOnlyList<string> CalledIn(IEnumerable<SessionEvent> events) =>
-        [.. ToolBlocks(events).Select(block => Text(block, "name")).OfType<string>()];
+        [.. ToolBlocks(events).Select(block => TextOf(block, "name")).OfType<string>()];
 
     /// <summary>The tool-call blocks among these events, in order: each one's name and input.</summary>
     private static IEnumerable<JsonElement> ToolBlocks(IEnumerable<SessionEvent> events) => Blocks(events, "tool_use");
@@ -193,7 +193,7 @@ public static class EngineEvents
     private static IEnumerable<JsonElement> Blocks(IEnumerable<SessionEvent> events, string type) =>
         events.OfType<ContentBlockStarted>()
             .Select(started => Field(started.Data, "content_block", out var block) ? block : default)
-            .Where(block => Text(block, "type") == type);
+            .Where(block => TextOf(block, "type") == type);
 
     /// <summary>
     /// A tool result's text: its content when it's a string, else its JSON (a list of blocks, say), as Puls's
@@ -229,7 +229,10 @@ public static class EngineEvents
         return false;
     }
 
-    /// <summary>A string field of a JSON object; null when it is absent or isn't a string.</summary>
-    private static string? Text(JsonElement element, string name) =>
+    /// <summary>
+    /// A string field of a JSON object, such as a tool input's <c>url</c>; null when it is absent, isn't a string, or
+    /// the element isn't an object. Public so a pack's check reads a tool's input the way the harness does.
+    /// </summary>
+    public static string? TextOf(JsonElement element, string name) =>
         Field(element, name, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 }

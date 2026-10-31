@@ -1,5 +1,4 @@
 using System.Collections.Frozen;
-using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
@@ -80,7 +79,7 @@ public sealed class PricedAtRetailer(IPriceReader prices) : ICheck
     {
         string host = ShopSites.Hosts.First(known => known.Name == shop).Host;
         bool read = turns.SelectMany(turn => EngineEvents.ToolInputsOf(turn, ShopSites.RenderedPageTool))
-            .Any(input => Text(input, "url") is { } url && Links.IsHost(url, host));
+            .Any(input => EngineEvents.TextOf(input, "url") is { } url && Links.IsHost(url, host));
         if (!read)
             return Verdict.Fail(Name, Version,
                 MessageText.Format(ShopCheckMessage.ShopPageNotRead, new { Shop = shop }));
@@ -99,12 +98,12 @@ public sealed class PricedAtRetailer(IPriceReader prices) : ICheck
     {
         var calls = turns
             .SelectMany(turn => ShopSites.ShopTools.SelectMany(tool => EngineEvents.ToolInputsOf(turn, tool)))
-            .Where(input => string.Equals(Text(input, "shop")?.Trim(), shop, StringComparison.OrdinalIgnoreCase))
+            .Where(input => string.Equals(EngineEvents.TextOf(input, "shop")?.Trim(), shop, StringComparison.OrdinalIgnoreCase))
             .ToList();
         if (calls.Count == 0)
             return Verdict.Fail(Name, Version, MessageText.Format(ShopCheckMessage.ShopNotCalled, new { Shop = shop }));
         // The cook's prompt: area is the user's town in every call, so the shop's store there is the one searched.
-        if (calls.Any(input => !InTown(Text(input, "area"), town)))
+        if (calls.Any(input => !InTown(EngineEvents.TextOf(input, "area"), town)))
             return Verdict.Fail(Name, Version,
                 MessageText.Format(ShopCheckMessage.ShopWrongArea, new
                 {
@@ -126,11 +125,4 @@ public sealed class PricedAtRetailer(IPriceReader prices) : ICheck
         !string.IsNullOrWhiteSpace(area)
         && (area.Contains(town, StringComparison.OrdinalIgnoreCase) ||
             town.Contains(area.Trim(), StringComparison.OrdinalIgnoreCase));
-
-    /// <summary>A string field of a tool's input, or null when it is absent or isn't a string.</summary>
-    private static string? Text(JsonElement input, string name) =>
-        input.ValueKind == JsonValueKind.Object && input.TryGetProperty(name, out var value) &&
-        value.ValueKind == JsonValueKind.String
-            ? value.GetString()
-            : null;
 }
