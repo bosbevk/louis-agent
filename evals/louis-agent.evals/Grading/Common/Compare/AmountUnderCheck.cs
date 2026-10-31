@@ -18,8 +18,8 @@ namespace LouisAgent.Evals.Grading.Common.Compare;
 /// <remarks>
 /// Extract, then compare (Hamcrest's FeatureMatcher, promptfoo's transform): the check holds the compare, the verdict
 /// and the reasons, and an <see cref="IMoneyReader"/> (a Strategy, named in the file) holds how the domain writes a
-/// total, so a domain ships a reader, not a check. It grades as the cook's <c>within-budget</c> did, step for step, so
-/// that check can become this one over Puls's reader with its grades unchanged (F49.2b step 6): a streamed error is
+/// total, so a domain ships a reader, not a check. It grades as the cook's own <c>within-budget</c> did, step for
+/// step, so the cook names it under that name, over Puls's reader, with its grades unchanged: a streamed error is
 /// <c>no-error</c>'s to report, not this one's. Its <see cref="Entry"/> builds it from a file's settings (Factory
 /// Method).
 /// </remarks>

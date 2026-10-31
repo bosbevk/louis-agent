@@ -189,6 +189,18 @@ public enum CommonGradeMessage
     [Description("the answer is {Edits} edits from '{Text}', more than {Distance}")]
     NearFar,
 
+    [Description("the answer is in {Language}: {Count} of its common words, more than any other language's")]
+    InLanguagePass,
+
+    [Description("the answer reads as {Other} ({OtherCount} common words), not {Language} ({Count})")]
+    InOtherLanguage,
+
+    [Description("the answer has too few common words ({Count}) to tell its language")]
+    LanguageTooFewWords,
+
+    [Description("the answer has as many {Other} common words as {Language} ({Count}), so its language can't be told")]
+    LanguageTied,
+
     [Description("answered itself, as expected")]
     AnsweredAsExpected,
 

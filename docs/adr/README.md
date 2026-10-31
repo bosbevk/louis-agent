@@ -65,6 +65,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0056](0056-a-check-is-a-catalogue-entry.md) | A check is a catalogue entry: the contract in `evals/louis-agent.evals.checks` (what a pack references, nothing more), found by its kebab-case type, built from a typed parameter record, listed in a registry each owner fills | Accepted |
 | [0057](0057-regex-is-the-last-option.md) | A regular expression is the last option: plain string methods or a reader first; when one is needed, a named [GeneratedRegex] with an example, NonBacktracking on outside input; never in content | Accepted |
 | [0058](0058-an-eval-is-a-folder-of-files.md) | An eval is a folder of files (`eval.json`, its manual, dataset and transcripts) beside the identity or pack it proves, found by the runner through the composition, its checks named from the catalogue; a new eval starts as a copy of the template folder | Accepted |
+| [0059](0059-an-identity-ships-readers-not-checks.md) | The harness ships every family of check an eval tool ships; a compare reads its value through a reader the file names beside the key, from a second registry; an identity ships readers, not checks; a swap of checks is proven on pinned grades and a replay | Accepted |
 
 ## When to write one
 

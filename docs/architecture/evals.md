@@ -171,16 +171,23 @@ The three kinds of check (`CheckKind`; on the wire a check is still a `grader`, 
 
 | Kind | What it is | Examples |
 |---|---|---|
-| `fixed-rule` | Plain C# that reads the transcript. Every eval needs at least one required fixed-rule check. | `NoErrorCheck`, `RoutedToCheck`, `CostUnderCheck`, `WithinTimeCheck`, `ContainsCheck`, `ToolUsedCheck` (the harness's); `PricedAtRetailer`, `UntooledShops`, `EstimatesAtShop`, `WithinBudget`, `ServesAsAsked`, `RecipeImage` (the cook's) |
+| `fixed-rule` | Plain C# that reads the transcript. Every eval needs at least one required fixed-rule check. | `NoErrorCheck`, `RoutedToCheck`, `ContainsCheck`, `AmountUnderCheck`, `ImageShownCheck`, `NearCheck` and the rest of the harness's 22; `UntooledShops`, `EstimatesAtShop` (the cook's shop rules) |
 | `model` | A judge model reads the answer against a rubric. `EvaluatorCheck` wraps Microsoft.Extensions.AI.Evaluation's `IEvaluator`; the grade carries the model and the prompt's hash. | `judge` (the general one over a rubric file); `meal-for-people` (`MealForPeopleCheck`, Puls's own) |
 | `human` | A person's verdict in the run explorer, paired with a model check so the two can be compared. | `meal-for-people.human` (`HumanReviewCheck`, the `human` entry) |
 
 An eval's file names its checks by type (`within-time`, `{"seconds": 120}`): each check's entry, an `ICheckType`,
 builds it from a typed settings record, and `CheckCatalog` finds the entry. The runner's catalogue is three lists
-(`RunnerChecks`): the harness's `GeneralChecks.All` (`no-error`, `within-time`, `cost-under`, `routed-to`,
-`contains`, `tool-used`, `judge`, `human`), every identity's and pack's own through the composition's
-`EvalChecks.All` (Puls's six fixed rules), and Puls's judges (`PulsJudges.All`)
+(`RunnerChecks`): the harness's `GeneralChecks.All` (24 types by family, from `no-error` to `judge` and `human`; the
+table is in [Add an eval](../guides/add-an-eval.md#4-choose-the-checks)), every identity's and pack's own through the
+composition's `EvalChecks.All` (Puls's two shop rules), and Puls's judges (`PulsJudges.All`)
 ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md), [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)).
+
+**Extract, then compare** (F49.2b): a check that compares a value in the answer with the scenario's (a total with a
+budget, a number of people, an image with the pages read) is a general compare plus a *reader* the file names beside
+the key (`"reader": "rand-total"`). Readers are a second registry, `ReaderCatalog` (`RunnerReaders`): the harness's
+`GeneralReaders.All` (`currency-amount`, `digits`, `markdown-images`) and every identity's through the composition's
+`EvalReaders.All` (Puls's `rand-total`, `servings`, `recipe-photos`). So an identity ships readers, not checks, and its
+eval file keeps its stored names with `name` (`{"type": "amount-under", "name": "within-budget", …}`).
 
 A grade's score is 0 to 1 with an outcome (pass, fail, unknown) and a reason. A conversation's metrics (calls, hosts,
 turns, tokens, seconds, cost) are measured beside the grades and never decide a pass.
@@ -190,10 +197,10 @@ turns, tokens, seconds, cost) are measured beside the grades and never decide a 
 ```mermaid
 flowchart TB
   set["identities/louis-agent.identity.puls/Evals/Cook/eval.json<br/>identity = puls"]
-  eval["FileEval : IEval<br/>Name = puls-cook, Version = 10"]
+  eval["FileEval : IEval<br/>Name = puls-cook, Version = 11"]
   modes["EvalMode puls-cook · EvalMode puls-tools"]
   data["Dataset puls-cook v7<br/>dev and held-out scenarios, labels"]
-  graders["9 checks: CookNoError, routed-to, WithinBudget,<br/>EstimatesAtShop, UntooledShops, RecipeImage, ServesAsAsked,<br/>meal-for-people, meal-for-people.human"]
+  graders["9 checks: cook-no-error (no-error), routed-to,<br/>within-budget (amount-under · rand-total), EstimatesAtShop, UntooledShops,<br/>recipe-image (image-shown · recipe-photos), serves-as-asked (number-named · servings),<br/>meal-for-people, meal-for-people.human"]
   trial["Trial<br/>run 5d1fd231c9b1 · puls-cook · repeat 1 · cook-malmesbury"]
   transcript["Transcript<br/>TurnTranscript per question"]
   grades["Grade × 9<br/>e.g. untooled-shops 1.0 pass"]

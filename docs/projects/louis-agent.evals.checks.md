@@ -68,6 +68,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 | `Datasets/Scenarios/` | `EvalScenario`, `EvalInput`, `DatasetSplit`: one scenario, what the user sends, and its split |
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
 | `Grading/` | `ICheck`, `Grade` and `GradeJudge`; `Common/Verdict` |
+| `Readers/` | `IReader` and its three kinds, `IMoneyReader`, `INumberReader` and `IImageReader`: what a general compare reads a value with; `ReaderCatalog`, the readers found by name and kind (F49.2b) |
 | `Messages/` | `CommonGradeMessage`: the reasons a grade gives; `CheckCatalogMessage`: what the catalogue refuses |
 
 ## Tests
@@ -76,7 +77,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 references: exactly the three above, none into `packs/` or `identities/`. `EngineEvents` is still tested in
 `louis-agent.evals.tests` (`EngineEventsTests`, `AnswerOfTests`): those tests build their trials with the harness
 tests' shared `TrialBuilder`, and a test project may not reference another, so they stay until a second project
-needs the builder (F49.3). `Verdict` is tested from outside, by the checks that use it (`CommonChecksTests`) and by
+needs the builder (F49.3). `Verdict` is tested from outside, by the checks that use it (`FactsChecksTests` and the other general checks' tests) and by
 an identity's (`VerdictFromOutsideTests`).
 
 `tests/louis-agent.evals.checks.tests/Catalog/CheckTypeTests` builds a check from its settings and refuses a field of

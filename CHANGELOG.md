@@ -4,6 +4,19 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-10-31 — **F49.2b The generic checks**: every family an eval tool ships has a general check, 24 in
+  `GeneralChecks.All` by family (`Facts/`, `Answers/`, `Tools/`, `Compare/`, `Similarity/`, `Language/`): new
+  `turns-under`, `tokens-under`, `not-contains`, `starts-with`, `length-under`, `mentions-expected`, `is-json`,
+  `tool-not-used`, `tool-used-with`, `tool-calls-under`, `links-to-host`, `near` (Levenshtein) and
+  `answers-in-language` (a word count per language, `af` and `en`, no model); **extract, then compare**: a compare
+  (`amount-under`, `number-named`, `image-shown`) reads its value through a reader the file names beside the key,
+  from a second registry (`ReaderCatalog`: the harness's `currency-amount`, `digits`, `markdown-images`, and every
+  identity's through the composition's `EvalReaders`); Puls ships readers, not checks (`rand-total`, `servings`,
+  `recipe-photos`, Adapters over its scoring code), its `CookNoError`, `WithinBudget`, `RecipeImage` and
+  `ServesAsAsked` deleted and the cook's file naming the general types under the old names (version 11); no grade
+  moved: 230 pinned on the 26 transcripts (`CookGradesTests`) and 140 of 140 on a $0 replay of the baseline;
+  `similar` (embeddings) left for when an eval needs it. Guide [Add an eval](docs/guides/add-an-eval.md#4-choose-the-checks)
+  ([write-up 12](docs/learning/12-evaluation.md), [write-up 20](docs/learning/20-extensibility.md))
 - 2026-10-30 — **F49.2 Evals as files**: an eval is a folder with an `eval.json` (its name, the identity it proves,
   a hand-bumped version, its modes and its checks by type with their settings), its manual, dataset, rubric and
   transcripts beside it, read strictly by `FileEval`; Puls's `puls-routing` and `puls-cook` live in

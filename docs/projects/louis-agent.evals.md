@@ -27,20 +27,29 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
   infrastructure failure is kept apart from a failing answer (`TurnFailures`); a stream that ends on an error of kind
   `replay_miss_error` marks the turn `TurnFailure.ReplayMiss` (FX26), so a replay with no recording never counts as
   the agent's answer.
-- **Checks grade, metrics measure.** `Grading/` holds the general checks (no error, answered within a
-  time, cost under a limit, routed to a role, the answer contains a text, a tool was used), the model judge (`Models/`, `EvaluatorCheck` over Microsoft.Extensions.
-  AI.Evaluation) and the human review (`Human/`); `ICheck`, `Grade` and `Verdict` are the check contract's, in
-  [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score from 0 to 1, an outcome and a reason; a
-  conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the ledger) never decide a pass.
-- **A general check can be named from a file** ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)).
-  `no-error`, `within-time`, `cost-under`, `routed-to`, `contains`, `tool-used`, `judge` and `human` each carry a
-  nested `Entry` and its `Settings` record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), and
-  `Grading/Common/GeneralChecks.All` is the
-  harness's list for the check catalogue. `contains` (`Grading/Common/Answers/`) checks that the first turn's answer
-  holds one of a list of texts, case and accents ignored, never a pattern
-  ([ADR 0057](../adr/0057-regex-is-the-last-option.md)). `tool-used` (`Grading/Common/Tools/`) checks that a tool
-  with this exact name was called in the trial, by the agent or a specialist; a streamed error is `no-error`'s to
-  report. `routed-to` reads the expected role from a scenario key (`expected_key`), and a mode with none of the
+- **Checks grade, metrics measure.** `Grading/` holds the general checks (`Common/`), the model judge (`Models/`,
+  `EvaluatorCheck` over Microsoft.Extensions.AI.Evaluation) and the human review (`Human/`); `ICheck`, `Grade` and
+  `Verdict` are the check contract's, in [louis-agent.evals.checks](louis-agent.evals.checks.md). A grade has a score
+  from 0 to 1, an outcome and a reason; a conversation's metrics (calls, hosts, turns, tokens, seconds, cost from the
+  ledger) never decide a pass.
+- **Every family a standard eval tool ships has a general check** (F49.2b), each a small class with a nested
+  `Entry` and its `Settings` record (`WithinTimeCheck.Entry`, built from `{"seconds": 120}`), named from a file
+  ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)); `Grading/Common/GeneralChecks.All` lists the 24 by
+  family, and [Add an eval](../guides/add-an-eval.md#4-choose-the-checks) has the table. A folder per family:
+  `Facts/` (no error, time, cost, turns, tokens), `Answers/` (the text rules and `is-json`), `Tools/` (`tool-used`
+  and its kin, `routed-to`), `Compare/` (extract, then compare), `Similarity/` (`near`, the Levenshtein distance)
+  and `Language/` (`answers-in-language`, a word count per language, no model). They read the engine's events
+  through `EngineEvents` and use plain string methods, never a pattern
+  ([ADR 0057](../adr/0057-regex-is-the-last-option.md)); a text rule ignores case and accents, and a tool rule
+  counts the agent's and its specialists' calls.
+- **Extract, then compare.** A check that compares a value in the answer with the scenario's is a general compare
+  plus a reader the file names beside the key: `amount-under` (an `IMoneyReader`), `number-named` (an
+  `INumberReader`) and `image-shown` (an `IImageReader`) in `Compare/`, with the plain readers in
+  `Compare/Readers/` (`currency-amount`, `digits`, `markdown-images`, listed in `GeneralReaders.All`). An entry gets
+  its reader from `CheckContext.Readers`, a `ReaderCatalog` the runner fills with these and every identity's own, so
+  an identity ships readers, not checks; a compare passes a scenario that sets no key. Embedding similarity
+  (`similar`) is not built: no eval asks for it, and it needs a provider with embeddings (TODO).
+- **The route and the judge.** `routed-to` reads the expected role from a scenario key (`expected_key`), and a mode with none of the
   `delegating_toolsets` is expected to answer itself (`RoutedToCheck.ByScenarioKey`). `judge`
   (`Grading/Models/Rubrics/JudgeCheck`) sends a rubric file from the eval's folder as the system prompt, only the
   scenario keys it lists (`ask`), the conversation so far and the answer, and reads `{"pass", "reason"}` from the
@@ -109,13 +118,15 @@ The runner's own settings (`EVALS`, `BENCHMARK_RUN`) are in [louis-agent.evals.r
 ## Extending it
 
 A new identity's evals are folders of files beside it; the steps are [Add an eval](../guides/add-an-eval.md). A check every identity could use goes in `Grading/Common/`,
-with a nested `Entry` and a line in `GeneralChecks.All` when a file should be able to name it; one that knows an
-identity's rules stays with that identity's checks.
+in its family's folder, with a nested `Entry` and a line in `GeneralChecks.All`; a value an identity writes its own
+way is a reader in the identity, named beside a general compare; only a rule no general check can say stays with
+the identity's checks. A language for `answers-in-language` is one member of `AnswerLanguage` and one list in
+`LanguageWords`.
 
 ## Tests
 
 `tests/louis-agent.evals.tests`: the loader (both shapes refused or read, the hash, the expected keys), the general
-checks and their entries (`CommonChecksTests`, `GeneralChecksTests`, `ContainsCheckTests`, `ToolUsedCheckTests`),
+checks and their entries (`GeneralChecksTests`, and one test class per check under `Grading/Common/`, by family),
 the roll-up, the conformance cases, the label sheet and the calibration, the protocol writer against its
 golden. The runner's tests run the stub end to end ([tests](tests.md)).
 

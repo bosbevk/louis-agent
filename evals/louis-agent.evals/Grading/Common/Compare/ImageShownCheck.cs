@@ -17,8 +17,8 @@ namespace LouisAgent.Evals.Grading.Common.Compare;
 /// <remarks>
 /// Extract, then compare, as <see cref="AmountUnderCheck"/> is: an <see cref="IImageReader"/> (a Strategy, named in
 /// the file) says what counts as an image, on the pages and in the answer alike, so Puls's reader can leave out a
-/// recipe page's share buttons and logos. It grades as the cook's <c>recipe-image</c> did at its version 2, step for
-/// step, so that check can become this one over Puls's reader with its grades unchanged (F49.2b step 6). The key is
+/// recipe page's share buttons and logos. It grades as the cook's own <c>recipe-image</c> did at its version 2, step
+/// for step, so the cook names it under that name, over Puls's reader, with its grades unchanged. The key is
 /// optional (Louis's pick): left out, every scenario is asked. Its <see cref="Entry"/> builds it from a file's
 /// settings (Factory Method).
 /// </remarks>

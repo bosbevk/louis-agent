@@ -17,9 +17,9 @@ namespace LouisAgent.Evals.Grading.Common.Compare;
 /// </summary>
 /// <remarks>
 /// Extract, then compare, as <see cref="AmountUnderCheck"/> is: an <see cref="INumberReader"/> (a Strategy, named in
-/// the file) holds how the domain writes a number, in digits or in its words. It grades as the cook's
-/// <c>serves-as-asked</c> did, step for step, so that check can become this one over Puls's reader with its grades
-/// unchanged (F49.2b step 6). Its <see cref="Entry"/> builds it from a file's settings (Factory Method).
+/// the file) holds how the domain writes a number, in digits or in its words. It grades as the cook's own
+/// <c>serves-as-asked</c> did, step for step, so the cook names it under that name, over Puls's reader, with its
+/// grades unchanged. Its <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class NumberNamedCheck(INumberReader reader, string key, bool required = true) : ICheck

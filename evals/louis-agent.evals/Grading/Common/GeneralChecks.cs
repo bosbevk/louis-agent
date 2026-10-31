@@ -2,6 +2,7 @@ using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading.Common.Answers;
 using LouisAgent.Evals.Grading.Common.Compare;
 using LouisAgent.Evals.Grading.Common.Facts;
+using LouisAgent.Evals.Grading.Common.Language;
 using LouisAgent.Evals.Grading.Common.Similarity;
 using LouisAgent.Evals.Grading.Common.Tools;
 using LouisAgent.Evals.Grading.Human;
@@ -22,8 +23,8 @@ public static class GeneralChecks
 {
     /// <summary>
     /// Every general check type, by family, in the order the catalogue lists them: the run's facts, the text rules,
-    /// the structure, the tool calls, the compares (through a reader, or to a link), the similarity, then the model and
-    /// the person.
+    /// the structure, the tool calls, the compares (through a reader, or to a link), the similarity, the language, then
+    /// the model and the person.
     /// </summary>
     public static IReadOnlyList<ICheckType> All { get; } =
     [
@@ -37,7 +38,7 @@ public static class GeneralChecks
         new ToolCallsUnderCheck.Entry(),
         new AmountUnderCheck.Entry(), new NumberNamedCheck.Entry(), new ImageShownCheck.Entry(),
         new LinksToHostCheck.Entry(),
-        new NearCheck.Entry(),
+        new NearCheck.Entry(), new AnswersInLanguageCheck.Entry(),
         new JudgeCheck.Entry(), new HumanReviewCheck.Entry()
     ];
 }
