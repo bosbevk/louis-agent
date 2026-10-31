@@ -34,9 +34,8 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   (`no-error`, `amount-under`, `image-shown`, `number-named`) under the names its grades carry, over Puls's readers
   in `Evals/Readers/` (`rand-total`, `rand-prices`, `servings`, `recipe-photos`: Adapters over the cook's scoring
   code), listed in `PulsReaders.All`, which reaches the runner through the composition's `EvalReaders`. The shop
-  rules are the shops pack's (F49.3): `untooled-shops` and `estimates-at-shop` (over `rand-prices`) have moved, and
-  `PricedAtRetailer`, kept without an entry, follows; `PulsChecks.All` is empty. Readers and rules implement the
-  check contract only; the cook's model judge needs the harness, so it lives apart in
+  rules are the shops pack's (F49.3), with the reading of the scenario's shop: Puls has no check of its own left.
+  Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
   [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
 
 ## Design notes
@@ -83,7 +82,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `Evals/Cook/` | The cook's eval as a folder of files (F49.2): `eval.json` (version 11: its two modes and nine checks: general checks over Puls's readers under the cook's names, the shops pack's two shop rules, `routed-to`, the cook's judge `meal-for-people` and a person's review of it), `manual.md`, `Rubrics/meal-for-people.md` (the judge's calibrated rubric), `Dataset/` with the 36 labels, and `Transcripts/` |
 | `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition |
 | `Evals/Readers/`, `Evals/PulsReaders.cs` | Puls's readers (F49.2b, F49.3): `RandTotal` (`rand-total`), `RandPrices` (`rand-prices`), `PeopleServed` (`servings`) and `RecipePhotos` (`recipe-photos`), Adapters over the scoring code below, and their list |
-| `Evals/Checks/Cook/` | `PricedAtRetailer` until it moves to the shops pack, and the empty `PulsChecks.All` (`Grading/`), the scenario's expectations (`Expectations/`), the scoring of prices and servings (`Scoring/`), and `CookMode` |
+| `Evals/Checks/Cook/` | The scenario's expectations (`Expectations/`: the route, the town, the people, the budget), the scoring of prices and servings (`Scoring/`), and `CookMode` |
 | `Evals/Checks/Shared/` | Reading a turn (`TurnView`), the shops and their links (`Shops`, `PriceLinks`, `RecipeLinks`), and the names the checks use as enums of their own (`PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice`; ADR 0043) |
 | `Evals/Checks/Messages/` | The checks' reasons (`GradeMessage`, `ExpectationMessage`; ADR 0009) |
 | `Prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |

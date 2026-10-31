@@ -39,8 +39,11 @@ public static class ShopSites
         nameof(Tools.ShopTools.SearchPromotions)
     ];
 
+    /// <summary>The engine's tool that reads a page in the browser, as a shop with no catalogue is read.</summary>
+    public const string RenderedPageTool = "ReadRenderedPage";
+
     /// <summary>The engine's tools that read a page, a shop's site among them: rendered, or fetched.</summary>
-    public static readonly IReadOnlyList<string> PageTools = ["ReadRenderedPage", "FetchUrl"];
+    public static readonly IReadOnlyList<string> PageTools = [RenderedPageTool, "FetchUrl"];
 
     /// <summary>Which shop's site a column is about: a "Checkers" column is checkers.co.za.</summary>
     public static string? ShopOf(string header)

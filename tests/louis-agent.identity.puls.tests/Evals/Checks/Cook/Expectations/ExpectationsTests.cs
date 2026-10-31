@@ -9,7 +9,8 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Expectations;
 
 /// <summary>
 /// What a scenario asks for is read from its <c>expected</c> once, and checked there: the route, the town, the people
-/// it serves, a budget and the shop the user chose. A bad value is refused by its key, naming the scenario.
+/// it serves and a budget. A bad value is refused by its key, naming the scenario. The shop the user chose is the
+/// shops pack's to read (its <c>ScenarioShopTests</c>).
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public class ExpectationsTests
@@ -26,9 +27,8 @@ public class ExpectationsTests
         var expected = CookExpectations.Of(Scenario(
             """{"routes_to":"puls-cook","town":"Stellenbosch","serves":[4,6],"budget":250,"shop":"checkers"}"""));
 
-        Assert.That((expected.RoutesTo, expected.Town, expected.Budget, expected.Shop),
-            Is.EqualTo((PulsEvalName.Cook.Wire(), "Stellenbosch", (decimal?)250m,
-                (ShopExpectation?)ShopExpectation.Checkers)));
+        Assert.That((expected.RoutesTo, expected.Town, expected.Budget),
+            Is.EqualTo((PulsEvalName.Cook.Wire(), "Stellenbosch", (decimal?)250m)));
         Assert.That(expected.Serves, Is.EqualTo(new[] { 4, 6 }));
     }
 
@@ -45,38 +45,9 @@ public class ExpectationsTests
     public void ARouteOfNull_IsPulsAnsweringItself() =>
         Assert.That(ExpectedRoute.Of(Scenario("""{"routes_to":null}""")), Is.Null);
 
-    /// <summary>The shop is parsed once, by its name, whatever its case.</summary>
-    [TestCase("any", ShopExpectation.Any)]
-    [TestCase("Any", ShopExpectation.Any)]
-    [TestCase("checkers", ShopExpectation.Checkers)]
-    [TestCase("pnp", ShopExpectation.Pnp)]
-    [TestCase("PnP", ShopExpectation.Pnp)]
-    [TestCase("woolworths", ShopExpectation.Woolworths)]
-    [TestCase("no-branch", ShopExpectation.NoBranch)]
-    [TestCase("NoBranch", ShopExpectation.NoBranch)]
-    public void TheShopIsParsedOnceByItsName_CaseIgnored(string name, ShopExpectation expected) =>
-        Assert.That(
-            CookExpectations.Of(Scenario("""{"routes_to":null,"town":"Paarl","shop":"NAME"}""".Replace("NAME", name)))
-                .Shop, Is.EqualTo(expected));
-
-    /// <summary>A scenario that expects a real shop must name the town too; "any shop" needs none.</summary>
-    [Test]
-    public void AShopAtATown_NeedsItsTown()
-    {
-        // The cook's prompt sends the user's town as the area in every call, so a scenario that expects a shop
-        // without its town couldn't be graded.
-        Assert.That(() => CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","shop":"checkers"}""")),
-            Throws.TypeOf<InvalidDataException>().With.Message.Contains("'town'"));
-        Assert.That(CookExpectations.Of(Scenario("""{"routes_to":"puls-cook","shop":"any"}""")).Shop,
-            Is.EqualTo(ShopExpectation.Any), "no shop is searched, so no town is needed");
-    }
-
     /// <summary>A key that's missing or of the wrong kind is refused, naming the key and the scenario.</summary>
     [TestCase("""{}""", "routes_to")]
     [TestCase("""{"routes_to":5}""", "routes_to")]
-    [TestCase("""{"routes_to":null,"shop":"gremlins"}""", "shop")]
-    [TestCase("""{"routes_to":null,"shop":"none"}""", "shop")]
-    [TestCase("""{"routes_to":null,"shop":1}""", "shop")]
     [TestCase("""{"routes_to":null,"town":7}""", "town")]
     [TestCase("""{"routes_to":null,"town":""}""", "town")]
     [TestCase("""{"routes_to":null,"budget":"veel"}""", "budget")]

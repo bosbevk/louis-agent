@@ -4,7 +4,7 @@ using LouisAgent.Packs.Shops.Checks;
 using LouisAgent.SessionStream;
 using static LouisAgent.Packs.Shops.Tests.Checks.ShopTrials;
 
-namespace LouisAgent.Packs.Shops.Tests.Checks;
+namespace LouisAgent.Packs.Shops.Tests.Checks.WhereToBuy;
 
 /// <summary>
 /// When the user's shop has no branch in their town (PnP in Prince Albert), the cook prices nothing, reads no shop

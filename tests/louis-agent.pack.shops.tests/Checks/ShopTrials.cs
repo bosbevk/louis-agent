@@ -38,6 +38,12 @@ internal static class ShopTrials
                         .Replace("NAME", name).Replace("INPUT", inputJson))
                 .RootElement.Clone());
 
+    /// <summary>An error the turn's stream reported: the agent's own, not the infrastructure's.</summary>
+    public static SessionEvent Error() =>
+        SessionEvent.From("error",
+            JsonDocument.Parse("""{"type":"error","error":{"type":"api_error","message":"overloaded"}}""")
+                .RootElement.Clone());
+
     /// <summary>
     /// A piece of the answer's text, as the stream carries it; the text is written as a JSON string, so quotes and line
     /// breaks in it stay text.

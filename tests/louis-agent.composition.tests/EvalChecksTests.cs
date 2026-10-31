@@ -1,4 +1,3 @@
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading;
 using LouisAgent.Packs.Shops.Checks;
 
 namespace LouisAgent.Composition.Tests;
@@ -9,22 +8,20 @@ namespace LouisAgent.Composition.Tests;
 /// </summary>
 public class EvalChecksTests
 {
-    /// <summary>The list holds Puls's fixed rules, then the shops pack's, each in its owner's order.</summary>
-    [Test]
-    public void TheList_HoldsPulssFixedRules_ThenTheShopsPacks() =>
-        Assert.That(EvalChecks.All.Select(entry => entry.Type),
-            Is.EqualTo(PulsChecks.All.Concat(ShopsChecks.All).Select(entry => entry.Type)));
-
     /// <summary>
-    /// <c>untooled-shops</c> is the shops pack's: the composition's entry for it is the one the pack lists, and Puls
-    /// lists it no more.
+    /// The list is the shops pack's, in the pack's order: Puls ships readers, not checks, since F49.3.
     /// </summary>
     [Test]
-    public void UntooledShops_IsTheShopsPacks()
-    {
-        var entry = EvalChecks.All.Single(each => each.Type == "untooled-shops");
+    public void TheList_IsTheShopsPacks() =>
+        Assert.That(EvalChecks.All.Select(entry => entry.Type),
+            Is.EqualTo(ShopsChecks.All.Select(entry => entry.Type)));
 
-        Assert.That(ShopsChecks.All, Has.Member(entry));
-        Assert.That(PulsChecks.All.Select(each => each.Type), Has.No.Member("untooled-shops"));
-    }
+    /// <summary>
+    /// <c>untooled-shops</c> and <c>estimates-at-shop</c> are the shops pack's: the composition's entries are the ones
+    /// the pack lists.
+    /// </summary>
+    [TestCase("untooled-shops")]
+    [TestCase("estimates-at-shop")]
+    public void AShopRule_IsTheShopsPacks(string type) =>
+        Assert.That(ShopsChecks.All, Has.Member(EvalChecks.All.Single(each => each.Type == type)));
 }

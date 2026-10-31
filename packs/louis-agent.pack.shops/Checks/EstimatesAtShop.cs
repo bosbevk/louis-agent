@@ -49,7 +49,7 @@ public sealed class EstimatesAtShop(IPriceReader prices) : ICheck
     public IReadOnlySet<string> ExpectedKeys { get; } = new HashSet<string>
     {
         ScenarioShop.Key,
-        "town"
+        ScenarioShop.TownKey
     }.ToFrozenSet();
 
     /// <summary>Reads the calls of every turn and the first turn's answer.</summary>

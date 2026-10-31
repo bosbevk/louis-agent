@@ -22,13 +22,6 @@ public enum ExpectationMessage
     [Description("Scenario '{Id}': 'budget' in expected must be a rand amount above 0.")]
     BadBudget,
 
-    [Description("Scenario '{Id}': 'shop' in expected must be one of: {Supported}.")]
-    BadShop,
-
-    [Description(
-        "Scenario '{Id}' expects a shop to price at, so it needs 'town' in expected: the town the cook names as the area of every shop call.")]
-    NoTown,
-
     [Description("Scenario '{Id}': 'town' in expected must be a town's name.")]
     BadTown,
 }

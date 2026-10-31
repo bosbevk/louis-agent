@@ -4,7 +4,7 @@ using LouisAgent.Packs.Shops.Checks;
 using LouisAgent.SessionStream;
 using static LouisAgent.Packs.Shops.Tests.Checks.ShopTrials;
 
-namespace LouisAgent.Packs.Shops.Tests.Checks;
+namespace LouisAgent.Packs.Shops.Tests.Checks.WhereToBuy;
 
 /// <summary>
 /// A scenario that names a shop passes when the answer reads no shop page, calls no shop tool, links no price, says the
