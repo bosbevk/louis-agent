@@ -1,10 +1,10 @@
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Identities.Puls.Evals.Checks.Cook.Grading.WhereToBuy;
+using LouisAgent.Packs.Shops.Checks;
 using LouisAgent.SessionStream;
-using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
+using static LouisAgent.Packs.Shops.Tests.Checks.ShopTrials;
 
-namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Grading.WhereToBuy;
+namespace LouisAgent.Packs.Shops.Tests.Checks;
 
 /// <summary>
 /// The cook prices at no shop it has no tool for: an answer whose list has a column for one (Shoprite, say) fails,
@@ -32,9 +32,7 @@ public class UntooledShopsTests
 
     /// <summary>The grade of a one-turn trial whose turn is these events.</summary>
     private static Task<Grade> Grade(params SessionEvent[] events) =>
-        new UntooledShops()
-            .GradeAsync(Trial(CookEvalMode, "cook-x", Pnp, null, Turn(1, events)), CancellationToken.None)
-            .AsTask();
+        new UntooledShops().GradeAsync(Trial(Pnp, Turn(1, events)), CancellationToken.None).AsTask();
 
     /// <summary>It is a required fixed rule that reads no expected key.</summary>
     [Test]
@@ -72,7 +70,7 @@ public class UntooledShopsTests
     [Test]
     public async Task AFollowUpsList_CountsToo()
     {
-        var trial = Trial(CookEvalMode, "cook-x", Pnp, null, Turn(1, [Text(Estimates)]), Turn(2, [Text(ThreeShops)]));
+        var trial = Trial(Pnp, Turn(1, [Text(Estimates)]), Turn(2, [Text(ThreeShops)]));
 
         var grade = await new UntooledShops().GradeAsync(trial, CancellationToken.None);
 
@@ -83,7 +81,7 @@ public class UntooledShopsTests
     [Test]
     public async Task ATurnThatFailedForTheInfrastructure_IsUnknown()
     {
-        var trial = Trial(CookEvalMode, "cook-x", Pnp, null, Turn(1, [Text(ThreeShops)], TurnFailure.Timeout));
+        var trial = Trial(Pnp, Turn(1, [Text(ThreeShops)], TurnFailure.Timeout));
 
         var grade = await new UntooledShops().GradeAsync(trial, CancellationToken.None);
 

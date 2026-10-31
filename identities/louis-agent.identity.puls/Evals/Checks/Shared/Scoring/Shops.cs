@@ -4,9 +4,15 @@ using LouisAgent.Evals.Markdown;
 namespace LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
 
 /// <summary>
-/// The shops a cook's list prices at (F31, F34): their names as a column header writes them, their sites, the ones
-/// the cook can read, and what an answer says about them (estimates, no branch, the branch it names).
+/// The shops a cook's list prices at (F31, F34): their names as a column header writes them, their sites, and what an
+/// answer says about them (estimates, no branch, the branch it names).
 /// </summary>
+/// <remarks>
+/// The shop rules are moving to the shops pack (F49.3): <c>untooled-shops</c> and the shops the agent can read went
+/// in step 1b, the rest goes in step 2. <see cref="Hosts"/> stays here for Puls's price reading as a copy of the
+/// pack's <c>ShopSites.Hosts</c>, since an identity may not reference a pack (ADR 0027); the composition's
+/// <c>ShopTableTests</c> holds the two equal (Louis's pick).
+/// </remarks>
 public static partial class Shops
 {
     /// <summary>
@@ -18,12 +24,6 @@ public static partial class Shops
         ("pnp", "pnp.co.za"),
         ("spar", "spar.co.za"), ("usave", "usave.co.za"), ("woolworths", "woolworths.co.za"),
     ];
-
-    /// <summary>
-    /// The shops the cook can read, by their sites: Checkers through its shop tools, PnP and Woolworths as a rendered
-    /// page.
-    /// </summary>
-    public static readonly IReadOnlyList<string> ToolShopHosts = ["checkers.co.za", "pnp.co.za", "woolworths.co.za"];
 
     /// <summary>The tool that reads a shop with no catalogue: a page of its site, rendered.</summary>
     public const string PageTool = "ReadRenderedPage";
@@ -41,16 +41,6 @@ public static partial class Shops
     /// <summary>Which shop's site a link is on, a subdomain included.</summary>
     public static string? SiteOf(string url) =>
         Hosts.Select(shop => shop.Host).Distinct().FirstOrDefault(site => Links.IsHost(url, site));
-
-    /// <summary>
-    /// The shops the list has a column for that the cook can't read, by their sites, each once in the order they first
-    /// appear. None is right.
-    /// </summary>
-    public static IReadOnlyList<string> UntooledShops(string? answer) =>
-    [
-        .. Lists.Of(answer).SelectMany(list => list.Header).Select(ShopOf).OfType<string>()
-            .Where(shop => !ToolShopHosts.Contains(shop)).Distinct(StringComparer.Ordinal)
-    ];
 
     /// <summary>
     /// The answer says its prices are estimates, not checked at a shop, in either language: the line the cook writes

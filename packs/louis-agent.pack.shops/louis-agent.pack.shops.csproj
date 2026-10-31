@@ -2,7 +2,8 @@
 
   <!-- What an agent can do with shops (CL15, ADR 0027, 0028): a shop's products, specials and promotions from its own
        catalogue, read through core's guarded browser; one provider today (Checkers, F33, F34), and the town geocoder the
-       Checkers store lookup uses (OpenStreetMap's Nominatim), until the places feature takes it. References core only. -->
+       Checkers store lookup uses (OpenStreetMap's Nominatim), until the places feature takes it. References core, and
+       the check contract for the shop rules that prove its tools (F49.3). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Packs.Shops</RootNamespace>
@@ -18,6 +19,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <!-- The check contract: the pack ships the checks that prove what it does, as it ships its tools (F49.3,
+         ShopsChecks.All); never the harness that runs them (ADR 0027). -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
 

@@ -1,12 +1,12 @@
-using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+using LouisAgent.Packs.Shops.Checks;
 
-namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared.Scoring;
+namespace LouisAgent.Packs.Shops.Tests.Checks;
 
 /// <summary>
 /// The shops a list has a column for that the cook can't read. Checkers has its shop tools, and PnP and Woolworths a
 /// rendered page; Shoprite has neither, so its column breaks the rule.
 /// </summary>
-public class ShopsTests
+public class ShopSitesTests
 {
     /// <summary>The top of a list with one Checkers column.</summary>
     private const string OneShop = "| Ingredient | For the recipe | To buy | Checkers |\n|---|---|---|---|\n";
@@ -20,7 +20,7 @@ public class ShopsTests
             + "|---|---|---|---|---|---|---|\n"
             + "| Onions | 2 | Onions 1 kg | [R34,99](https://www.checkers.co.za/p/3) | - | - | R34,99 Checkers |\n";
 
-        Assert.That(Shops.UntooledShops(answer), Is.EqualTo(new[] { "shoprite.co.za" }));
+        Assert.That(ShopSites.UntooledShops(answer), Is.EqualTo(new[] { "shoprite.co.za" }));
     }
 
     /// <summary>Columns only for shops the cook can read list nothing.</summary>
@@ -28,8 +28,8 @@ public class ShopsTests
     public void ShopsTheCookCanRead_AreNotListed()
     {
         Assert.That(
-            Shops.UntooledShops(OneShop.Replace("Checkers", "Woolworths") + "| Onions | 2 | Onions 1 kg | - |\n"),
+            ShopSites.UntooledShops(OneShop.Replace("Checkers", "Woolworths") + "| Onions | 2 | Onions 1 kg | - |\n"),
             Is.Empty);
-        Assert.That(Shops.UntooledShops(OneShop + "| Onions | 2 | Onions 1 kg | - |\n"), Is.Empty);
+        Assert.That(ShopSites.UntooledShops(OneShop + "| Onions | 2 | Onions 1 kg | - |\n"), Is.Empty);
     }
 }

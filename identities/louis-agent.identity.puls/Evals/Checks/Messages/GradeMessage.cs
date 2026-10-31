@@ -63,10 +63,4 @@ public enum GradeMessage
     [Description("no shop page was read, no price is linked, the answer says the prices are estimates and names a "
                  + "{Shop} branch")]
     ShopEstimatesRight,
-
-    [Description("the list has a column for a shop the cook can't read: {Shops}")]
-    UntooledShopColumn,
-
-    [Description("every shop the list has a column for is one the cook can read")]
-    UntooledShopsNone,
 }

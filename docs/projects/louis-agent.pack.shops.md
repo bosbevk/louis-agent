@@ -79,7 +79,8 @@ prices 0 of 32 when the cook read pages, 19 of 23 with the catalogue, 31 of 31 w
 | `Catalogues/` | The shop contract (`IShopCatalogue`), the records (`ShopProduct`, `ShopDeal`, `ShopSearch`), the choices (`ShopKind`, `ShopDealKind`) and `ShopCatalogueFactory`, which builds a catalogue per enabled shop |
 | `Providers/` | Checkers: `CheckersCatalogue` (search and parse), `CheckersStore` (the store for a town), `ShopThrottle`, `StoreSessionCache` |
 | `Places/PlaceCoordinates.cs` | A town's centre from Nominatim, for a shop that serves by area |
-| `Messages/` | `ShopToolMessage` (what the tools return) and `ShopLogMessage` (its log lines: the shop and what happened stay in clear; the town, its centre's coordinates, the store ids and a failure's reason show as keyed hashes and lengths through core's `LogContent`, F18 step 4f; `LOG_CONTENT=full` shows them) |
+| `Checks/` | The shop rules that prove the tools (F49.3), an eval file names them: `ShopsChecks.All` (the pack's list, which the composition's `EvalChecks` gathers), `UntooledShops` (`untooled-shops`: no price column for a shop the agent can't read) and `ShopSites` (the shops' names and sites, held equal to Puls's copy by the composition's `ShopTableTests`); the pack references the check contract for them, never the harness |
+| `Messages/` | `ShopCheckMessage` (the shop rules' reasons), `ShopToolMessage` (what the tools return) and `ShopLogMessage` (its log lines: the shop and what happened stay in clear; the town, its centre's coordinates, the store ids and a failure's reason show as keyed hashes and lengths through core's `LogContent`, F18 step 4f; `LOG_CONTENT=full` shows them) |
 | `Prompts/toolsets/shops.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and price |
 
 ## Configuration

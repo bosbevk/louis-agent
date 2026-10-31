@@ -34,7 +34,7 @@ thin and never references an identity or a pack; and which agent a host runs is 
 | `Plugins.cs` | `FromEnvironment`, `FromSettings(identities, packs)`, and one `Create` switch for identities and one for packs |
 | `IdentityKind.cs` | The identities a host may load (`Puls`) |
 | `PackKind.cs` | The compiled packs a host may load or an identity may name (`Shops`) |
-| `EvalChecks.cs` | Every identity's and pack's own eval checks an eval file can name (today Puls's two shop rules, `PulsChecks.All`), which the eval runner gathers with the harness's general checks (F49.2); a judge that needs the harness never comes here |
+| `EvalChecks.cs` | Every identity's and pack's own eval checks an eval file can name (Puls's `PulsChecks.All`, then the shops pack's `ShopsChecks.All`, F49.3), which the eval runner gathers with the harness's general checks (F49.2); a judge that needs the harness never comes here |
 | `EvalReaders.cs` | Every identity's and pack's own readers an eval file can name beside a general check (today Puls's `PulsReaders.All`: `rand-total`, `servings`, `recipe-photos`), which the runner gathers with the harness's plain readers (F49.2b) |
 | `Messages/CompositionErrorMessage.cs` | The two refusals: an unknown identity, an unknown pack |
 | `louis-agent.composition.csproj` | References core, the Puls identity and the shops pack |
