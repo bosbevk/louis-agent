@@ -4,6 +4,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Markdown;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Expectations;

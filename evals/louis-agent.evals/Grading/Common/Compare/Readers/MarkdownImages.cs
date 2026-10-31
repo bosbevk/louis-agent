@@ -8,8 +8,8 @@ namespace LouisAgent.Evals.Grading.Common.Compare.Readers;
 /// buttons aren't images of its subject ships its own reader.
 /// </summary>
 /// <remarks>
-/// The plain image reader any eval can name, <c>markdown-images</c>. It reads the same images Puls's
-/// <c>Links.ImageUrls</c> pattern did (<c>!\[[^\]]*\]\((https?://[^)\s]+)\)</c>), by walking the text instead (ADR
+/// The plain image reader any eval can name, <c>markdown-images</c>. It reads the same images the check contract's
+/// <c>Links.ImageUrls</c> pattern does (<c>!\[[^\]]*\]\((https?://[^)\s]+)\)</c>), by walking the text instead (ADR
 /// 0057): the alt text runs to the first closing bracket, and the address to its closing parenthesis, with no space.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>

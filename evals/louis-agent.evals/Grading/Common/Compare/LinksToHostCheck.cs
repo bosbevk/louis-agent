@@ -1,5 +1,6 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Catalog;
+using LouisAgent.Evals.Markdown;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
@@ -12,8 +13,9 @@ namespace LouisAgent.Evals.Grading.Common.Compare;
 /// written in plain words is no link. A turn the infrastructure broke is Unknown; a turn that streamed an error fails.
 /// </summary>
 /// <remarks>
-/// A Specification over the answer (Evans and Fowler), with the host rule Puls's <c>Links.IsHost</c> uses for a
-/// price's shop. A link is any web address in the answer, inline, reference-style or bare, found by cutting the answer
+/// A Specification over the answer (Evans and Fowler), with the check contract's host rule,
+/// <see cref="Links.IsHost"/>, the one a shop rule uses for a price's shop (Louis's pick, F49.3 step 1a: one rule, not
+/// two copies). A link is any web address in the answer, inline, reference-style or bare, found by cutting the answer
 /// at spaces and markdown's brackets and keeping what starts with a web scheme, never a pattern (ADR 0057). Its
 /// <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
@@ -58,31 +60,23 @@ public sealed class LinksToHostCheck(IReadOnlyList<string> hosts, bool required 
         if (EngineEvents.StreamedError(first))
             return Verdict.Fail(Name, Version, MessageText.Format(CommonGradeMessage.TurnFailed));
 
-        var linked = HostsLinked(EngineEvents.AnswerOf(first));
-        var host = hosts.FirstOrDefault(site => linked.Any(on => IsOn(on, site)));
+        // A site as the file writes it, in any case and with spaces around it, is the same site.
+        var linked = LinksIn(EngineEvents.AnswerOf(first));
+        var host = hosts.FirstOrDefault(site => linked.Any(url => Links.IsHost(url, site.Trim().ToLowerInvariant())));
         return host is null
             ? Verdict.Fail(Name, Version,
                 MessageText.Format(CommonGradeMessage.LinksToNoHost, new { Hosts = string.Join(", ", hosts) }))
             : Verdict.Pass(Name, Version, MessageText.Format(CommonGradeMessage.LinksToHostPass, new { Host = host }));
     }
 
-    /// <summary>The hosts of the web addresses in the answer, in lower case.</summary>
-    private static IReadOnlyList<string> HostsLinked(string answer) =>
+    /// <summary>The web addresses in the answer, without the sentence's punctuation a bare one ends on.</summary>
+    private static IReadOnlyList<string> LinksIn(string answer) =>
     [
         .. answer.Split(LinkEnds, StringSplitOptions.RemoveEmptyEntries)
             .Select(piece => piece.TrimEnd(Punctuation))
             .Where(piece => piece.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
                             piece.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
-            .Select(piece => Uri.TryCreate(piece, UriKind.Absolute, out var uri) ? uri.Host.ToLowerInvariant() : "")
-            .Where(host => host.Length > 0)
     ];
-
-    /// <summary>Whether a host is the site or one of its subdomains, case ignored.</summary>
-    private static bool IsOn(string host, string site)
-    {
-        var wanted = site.Trim().ToLowerInvariant();
-        return host == wanted || host.EndsWith("." + wanted, StringComparison.Ordinal);
-    }
 
     /// <summary>What a file can set: the hosts, any one of which will do, and whether the check must pass.</summary>
     public sealed record Settings(IReadOnlyList<string> Hosts, bool Required = true);

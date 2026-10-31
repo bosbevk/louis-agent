@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using LouisAgent.Evals.Markdown;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
 
 namespace LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
@@ -84,12 +85,12 @@ public static partial class Prices
                 {
                     if (!Rand().IsMatch(cells[i])) continue;
                     string? shop = i < list.Header.Count ? Shops.ShopOf(list.Header[i]) : null;
-                    bool ownLink = Links.Sourced(cells[i], shop, references);
-                    if (ownLink || Links.Sourced(linked, shop, references))
+                    bool ownLink = PriceLinks.Sourced(cells[i], shop, references);
+                    if (ownLink || PriceLinks.Sourced(linked, shop, references))
                         sourced.Add(ownLink ? cells[i] : cells[i] + " " + linked);
                 }
 
-                if (sourced.Any(cell => !Links.PerKg(cell, references))) priced++;
+                if (sourced.Any(cell => !PriceLinks.PerKg(cell, references))) priced++;
                 else if (sourced.Count > 0) perKg++;
                 else if (Rand().IsMatch(row) && (Estimate().IsMatch(row) || row.Contains('±'))) estimated++;
                 else if (Rand().IsMatch(row)) guessed++;
@@ -155,11 +156,11 @@ public static partial class Prices
                 {
                     if (Money.Amounts(cells[i]).Count == 0) continue;
                     string? shop = i < list.Header.Count ? Shops.ShopOf(list.Header[i]) : null;
-                    if (Links.Sourced(cells[i], shop, references) || Links.Sourced(linked, shop, references))
+                    if (PriceLinks.Sourced(cells[i], shop, references) || PriceLinks.Sourced(linked, shop, references))
                         sourced.Add(cells[i]);
                 }
 
-                if (sourced.Count == 0 || sourced.Any(cell => Links.PerKg(cell, references))) continue;
+                if (sourced.Count == 0 || sourced.Any(cell => PriceLinks.PerKg(cell, references))) continue;
                 var amounts = Money.Amounts(sourced[0]);
                 if (sourced.Count > 1 || amounts.Count != 1) return null;
                 sum += amounts[0];

@@ -1,6 +1,6 @@
-using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
+using LouisAgent.Evals.Markdown;
 
-namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared.Scoring;
+namespace LouisAgent.Evals.Checks.Tests.Markdown;
 
 /// <summary>The images an answer or a page shows, written as <c>![alt](url)</c>.</summary>
 public class LinksImagesTests
