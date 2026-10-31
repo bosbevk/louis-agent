@@ -6,8 +6,8 @@ using LouisAgent.SessionStream;
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Shared.Turns;
 
 /// <summary>
-/// Reading a turn from the session's typed events, as the old Python did: the answer, the calls, the role, and the
-/// hosts a turn read. The cook's checks read the turn this makes.
+/// Reading a turn from the session's typed events, as the old Python did: the answer, the calls and the role. The
+/// cook's checks read the turn this makes.
 /// </summary>
 public class TurnViewTests
 {
@@ -35,9 +35,9 @@ public class TurnViewTests
         Assert.That(turn.Results, Is.EqualTo(new[] { "Die resep." }));
     }
 
-    /// <summary>A specialist's tool call is its own, not the turn's, and its host is read.</summary>
+    /// <summary>A specialist's tool call is its own, not the turn's.</summary>
     [Test]
-    public void ASpecialistsCall_IsItsSpecialistCall_AndItsHostIsRead()
+    public void ASpecialistsCall_IsItsSpecialistCall()
     {
         var events = new[]
         {
@@ -50,7 +50,6 @@ public class TurnViewTests
 
         Assert.That(turn.Calls, Is.Empty);
         Assert.That(turn.SpecialistCalls.Single().Name, Is.EqualTo("FetchUrl"));
-        Assert.That(ToolHosts.Of(turn.SpecialistCalls), Is.EqualTo(new[] { "checkers.co.za" }));
     }
 
     /// <summary>An error inside a specialist is the specialist's, not the turn's.</summary>

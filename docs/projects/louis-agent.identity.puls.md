@@ -84,7 +84,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition |
 | `Evals/Readers/`, `Evals/PulsReaders.cs` | Puls's readers (F49.2b): `RandTotal` (`rand-total`), `PeopleServed` (`servings`) and `RecipePhotos` (`recipe-photos`), Adapters over the scoring code below, and their list |
 | `Evals/Checks/Cook/` | The cook's two shop rules (`Grading/`, with `PulsChecks.All`), the scenario's expectations (`Expectations/`), the scoring of prices and servings (`Scoring/`), and `CookMode` |
-| `Evals/Checks/Shared/` | Reading a turn (`TurnView`, `ToolHosts`), the shops and links, and the names the checks use as enums of their own (`PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice`; ADR 0043) |
+| `Evals/Checks/Shared/` | Reading a turn (`TurnView`), the shops and their links (`Shops`, `PriceLinks`, `RecipeLinks`), and the names the checks use as enums of their own (`PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice`; ADR 0043) |
 | `Evals/Checks/Messages/` | The checks' reasons (`GradeMessage`, `ExpectationMessage`; ADR 0009) |
 | `Prompts/specialists/puls-cook.md` | The local cook: a recipe from a real page, priced at the shops near the user, with sources (on) |
 | `Prompts/specialists/puls-researcher.md`, `puls-reader.md`, `puls-analyst.md`, `puls-historian.md` | The web researcher, file reader, numbers and history specialists (written, off until each passes a check) |
