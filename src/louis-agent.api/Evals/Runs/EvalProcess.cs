@@ -4,6 +4,7 @@ using LouisAgent.Api.Config;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Runs.Start;
+using LouisAgent.Api.Evals.Store;
 
 namespace LouisAgent.Api.Evals.Runs;
 
@@ -43,7 +44,7 @@ public sealed class EvalProcess(
     public RunningEval? Start(string checkId, int repeat, EvalRunOptions? options = null)
     {
         if (catalog.Checks.FirstOrDefault(c => c.Id == checkId) is not { } check) return null;
-        return StartLocked(check, new RunningEval(NewId(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), options));
+        return StartLocked(check, new RunningEval(ShortId.New(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), options));
     }
 
     /// <summary>
@@ -55,7 +56,8 @@ public sealed class EvalProcess(
     {
         if (EvalCheck(checkId) is not { } check) return null;
         return StartLocked(check,
-            new RunningEval(NewId(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), rescoreOf: rescoreOf, input: export));
+            new RunningEval(ShortId.New(), check.Id, Math.Clamp(repeat, 1, MaxRepeat), rescoreOf: rescoreOf,
+                input: export));
     }
 
     /// <summary>
@@ -68,7 +70,7 @@ public sealed class EvalProcess(
     {
         if (EvalCheck(checkId) is not { } check) return null;
         return StartLocked(check,
-            new RunningEval(NewId(), check.Id, 1, calibration: new EvalCalibration(calibrationOf, grader),
+            new RunningEval(ShortId.New(), check.Id, 1, calibration: new EvalCalibration(calibrationOf, grader),
                 input: labels));
     }
 
@@ -103,9 +105,6 @@ public sealed class EvalProcess(
         {
         }
     }
-
-    /// <summary>A short, fresh run id.</summary>
-    private static string NewId() => Guid.NewGuid().ToString("N")[..12];
 
     /// <summary>The eval with this name, if the catalogue has it.</summary>
     private EvalEntry? EvalCheck(string checkId) => catalog.Checks.FirstOrDefault(c => c.Id == checkId);

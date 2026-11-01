@@ -4,6 +4,7 @@ using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
 using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Start;
@@ -19,7 +20,6 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Search;
-using Microsoft.Extensions.Logging;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer
 // streams as Server-Sent Events shaped like Claude's (message_start, content_block_start/delta/stop for thinking,
@@ -75,6 +75,12 @@ IEvalStore? evalStore = admin.EvalsMongoUrl is { } mongoUrl
 IHumanReviewStore? reviewStore = admin.EvalsMongoUrl is { } reviewsUrl
     ? new MongoHumanReviewStore(reviewsUrl, admin.EvalsDatabase)
     : null;
+
+// The drafts made from stored runs wait beside the grades until F49.5 publishes them; without Mongo they live in
+// memory. Step 3's endpoints take the store.
+IEvalDraftStore draftStore = admin.EvalsMongoUrl is { } draftsUrl
+    ? new MongoEvalDraftStore(draftsUrl, admin.EvalsDatabase)
+    : new InMemoryEvalDraftStore();
 
 // The judge checks sit beside the grades; a check's report is kept by its own recorder, never by the runs' store.
 ICalibrationStore? calibrationStore = admin.EvalsMongoUrl is { } calibrationsUrl

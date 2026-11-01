@@ -1,3 +1,5 @@
+using LouisAgent.Api.Evals.Drafts;
+using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.Reviews;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -48,6 +50,8 @@ public static class MongoEvalDatabase
         WireName<TrialOutcome>();
         WireName<TurnFailure>();
         WireName<HumanVerdict>();
+        WireName<DraftKind>();
+        WireName<TranscriptKind>();
         return true;
     }
 
