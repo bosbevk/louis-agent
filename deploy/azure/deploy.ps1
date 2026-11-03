@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Deploys Puls to Azure Container Apps (rg-puls-za): five verbs, each one az command with the names filled in (CL19).
+Deploys Puls to Azure Container Apps (rg-puls-za): eight verbs, each a few az commands with the names filled in (CL19).
 
 .DESCRIPTION
   deploy.ps1 build   [-Tag 2026-10-24-1732]       builds louis-agent-puls and ts-forwarder in the registry, tagged alike
@@ -15,12 +15,15 @@ Deploys Puls to Azure Container Apps (rg-puls-za): five verbs, each one az comma
                                                   app answers without a key (AGENT_AUTH=off), so nobody else may reach it
   deploy.ps1 release [-Tag ...]                   the every-day deploy in one go: build (date-and-time tag), then update as the
                                                   next revision after the one Azure runs (v018 -> v019)
+  deploy.ps1 telemetry [-WhatIf]                  creates Application Insights puls-insights on the environment's Log
+                                                  Analytics workspace and turns on the environment's OpenTelemetry agent
+                                                  (F52); -WhatIf runs the reads and prints the two writes
 The how-to, and what each piece is, is README.md beside this file. Run `az login` first.
 #>
-[CmdletBinding()]
+[CmdletBinding(SupportsShouldProcess)]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs', 'lock', 'release')]
+    [ValidateSet('build', 'secrets', 'update', 'searxng-settings', 'logs', 'lock', 'release', 'telemetry')]
     [string]$Verb,
     [string]$Ip,
     # build and release make one from the date and time when none is given, so two releases on one day keep both images
@@ -37,6 +40,9 @@ if (-not $Tag -and $Verb -in @('build', 'release')) { $Tag = Get-Date -Format 'y
 $ResourceGroup = 'rg-puls-za'
 $Registry = 'acrpulsza'
 $StorageAccount = 'pulsstorage'
+$Environment = 'puls-container-env'
+$Location = 'southafricanorth'
+$Insights = 'puls-insights'
 $Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
 $Here = $PSScriptRoot
 
@@ -142,6 +148,35 @@ switch ($Verb) {
         Write-Host "Uploading $settings to share searxng-config (the SearXNG app reads it at /etc/searxng/settings.yml)..."
         Invoke-Az storage file upload --account-name $StorageAccount --account-key $key --share-name 'searxng-config' --source $settings --path 'settings.yml' --only-show-errors
         Write-Host 'Restart puls-searxng (a new revision, or az containerapp revision restart) for it to read the file again.'
+    }
+    'telemetry' {
+        # The Log Analytics workspace the environment already logs to (Louis's pick K1): App Insights goes on it, so its
+        # traces and logs sit beside the container logs. Reads, so -WhatIf runs them too.
+        $customerId = Invoke-Az containerapp env show -n $Environment -g $ResourceGroup --query 'properties.appLogsConfiguration.logAnalyticsConfiguration.customerId' -o tsv
+        if (-not $customerId) { throw "$Environment logs to no Log Analytics workspace: see Monitoring > Logging options on the environment in the portal." }
+        $workspace = Invoke-Az monitor log-analytics workspace list -g $ResourceGroup --query "[?customerId=='$customerId'].id" -o tsv
+        if (-not $workspace) { throw "No Log Analytics workspace in $ResourceGroup has the environment's id ($customerId): it logs to one in another resource group; find it in the portal and pass that group here." }
+        Write-Host "The environment logs to $workspace."
+
+        # Application Insights on that workspace: create is an upsert, so a second run answers the same resource. The
+        # connection string isn't a secret (Microsoft says so), but it isn't printed either: the environment holds it.
+        $connection = $null
+        if ($PSCmdlet.ShouldProcess($ResourceGroup, "az monitor app-insights component create --app $Insights -l $Location --workspace <the workspace above> --kind web --application-type web")) {
+            $connection = Invoke-Az monitor app-insights component create --app $Insights -g $ResourceGroup -l $Location --workspace $workspace --kind web --application-type web --query connectionString -o tsv
+            $key = ($connection -split ';' | Where-Object { $_ -like 'InstrumentationKey=*' }) -replace '^InstrumentationKey=', ''
+            Write-Host "Application Insights ${Insights}: instrumentation key $($key.Substring(0, 8))... (the rest stays in Azure)"
+        }
+
+        # The environment's managed OpenTelemetry agent (preview), sending traces and logs to it: every app of the
+        # environment gets OTEL_EXPORTER_OTLP_ENDPOINT and _PROTOCOL (gRPC) injected, which both exporters read.
+        if ($PSCmdlet.ShouldProcess($ResourceGroup, "az containerapp env telemetry app-insights set -n $Environment --connection-string <the string above> --enable-open-telemetry-traces true --enable-open-telemetry-logs true")) {
+            Invoke-Az containerapp env telemetry app-insights set -n $Environment -g $ResourceGroup --connection-string $connection --enable-open-telemetry-traces true --enable-open-telemetry-logs true -o none
+            Invoke-Az containerapp env telemetry app-insights show -n $Environment -g $ResourceGroup --query '{traces:enableOpenTelemetryTraces, logs:enableOpenTelemetryLogs}' -o table
+        }
+
+        Write-Host 'Once set, every app in the environment gets the agent''s OTEL_EXPORTER_OTLP_ENDPOINT and _PROTOCOL; a running'
+        Write-Host 'revision picks them up on its next one (deploy.ps1 release). Then ask Puls a question and look in the portal:'
+        Write-Host "$Insights > Transaction search, a few minutes later."
     }
     'logs' {
         if (-not $Container) { $Container = $App }
