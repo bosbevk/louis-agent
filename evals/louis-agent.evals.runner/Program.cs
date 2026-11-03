@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Core.Logging;
+using LouisAgent.Core.Telemetry;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Files;
@@ -15,6 +16,8 @@ using LouisAgent.Evals.Runner.Evals.Stub;
 
 // The runner starts here: the command line and EVALS= pick the evals, the catalogue checks them, and the runner runs
 // the one you named. stdout carries only the protocol and the --list lines; refusals and logs go to stderr.
+// It loads no .env and isn't built through AgentHost, so it starts its traces first, from the environment it was given.
+AgentTelemetry.Start();
 try
 {
     var request = CommandLine.Parse(args);

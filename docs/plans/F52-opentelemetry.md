@@ -468,6 +468,14 @@ a replay, and the measurement in step 8 replays a recorded eval run.
   Puls question shows up in App Insights' *Transaction search* within a few minutes. App Insights' first 5 GB a
   month is free; nothing else is paid.
 
+## Approved during the build
+
+- **2026-11-03, step 2, the runner's settings** (Louis's pick B of three): the API starts the eval runner with an
+  allowlist of settings (FX25), so the `OTEL_*` ones don't reach it in a container. Step 6 adds
+  `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_PROTOCOL` to that allowlist and gives the runner its own
+  `OTEL_SERVICE_NAME`; not `OTEL_EXPORTER_OTLP_HEADERS`, which can carry a collector's key. A collector that needs a
+  key gets no runner spans.
+
 ## Concepts this teaches (GOAL skill 17, with 15 and 18)
 
 | Step | Concept | Skill |

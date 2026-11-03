@@ -79,8 +79,10 @@ public static class AgentLogging
     /// <summary>What the last <see cref="Configure"/> was given, so <see cref="Flush"/> can make it again.</summary>
     private static (string? Directory, LogContentMode Content) _configured;
 
-    /// <summary>The standard setting that names an OTLP collector (F52); unset, nothing leaves the process.</summary>
-    private const string OtlpEndpointVariable = "OTEL_EXPORTER_OTLP_ENDPOINT";
+    /// <summary>
+    /// The standard setting that names an OTLP collector (F52); unset, no log line or span leaves the process.
+    /// </summary>
+    internal const string OtlpEndpointVariable = "OTEL_EXPORTER_OTLP_ENDPOINT";
 
     /// <summary>The file this run logs to, or null without a log directory.</summary>
     public static string? RunFile => _runFile?.File;
@@ -88,8 +90,8 @@ public static class AgentLogging
     /// <summary>
     /// Console to stderr; with <paramref name="logDirectory"/>, a file per run
     /// (<c>agent-{host}-{time}-{process}.log</c>: containers run with --rm, so their own logs disappear on exit) and
-    /// the record files too; with an OTLP endpoint set, the collector. Replaces (and flushes) the previous configuration,
-    /// so it is safe to call again.
+    /// the record files too; with an OTLP endpoint set, the collector. Replaces (and flushes) the previous
+    /// configuration, so it is safe to call again.
     /// </summary>
     public static void Configure(string? logDirectory, LogContentMode content = LogContentMode.Hashed)
     {
