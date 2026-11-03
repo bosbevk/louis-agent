@@ -26,18 +26,37 @@ namespace LouisAgent.Core.Agent;
 /// </summary>
 public class AgentEngine
 {
+    /// <summary>The engine's own lines: a model without tools.</summary>
     private static readonly ILogger Log = AgentLogging.For<AgentEngine>();
 
+    /// <summary>The skills: the system prompt, running one, writing and reloading them.</summary>
     private readonly SkillTools _skillTools;
+
+    /// <summary>The tools the model is offered.</summary>
     private readonly ToolRegistry _registry;
+
+    /// <summary>What stops a cut-off call and summarises an oversized result.</summary>
     private readonly ToolCallGuards _guards;
+
+    /// <summary>One turn on the pipeline.</summary>
     private readonly TurnRunner _turns;
+
+    /// <summary>What the user types that the model never sees.</summary>
     private readonly UserCommands _commands;
 
     /// <summary>Combined default instructions and skill documentation used as the system prompt.</summary>
     public string SkillDocumentation => _skillTools.Documentation;
 
+    /// <summary>
+    /// Which agent this is, as a trace names it (F52): the factory gives a role's engine its role and a session's
+    /// engine the default mode; one built by hand is named for its host.
+    /// </summary>
+    public string Name { get; init; } = AgentLogging.ServiceName;
+
+    /// <summary>The folder the agent's file and git tools work in.</summary>
     public string WorkspaceRoot { get; }
+
+    /// <summary>Whether the model takes tools; without, it gets none and is told so.</summary>
     public bool SupportsTools { get; }
 
     /// <summary>
@@ -52,6 +71,7 @@ public class AgentEngine
     /// </summary>
     public DisplayCurrency? Display { get; set; }
 
+    /// <summary>The tools the model is offered now, agent-built ones included.</summary>
     public IReadOnlyList<AITool> Tools => _registry.Live;
 
     /// <summary>The tool-call guards in this engine's pipeline (tests call them directly).</summary>
@@ -100,6 +120,7 @@ public class AgentEngine
     /// </summary>
     public IReadOnlySet<string> ReservedToolNames { get; init; } = AgentCatalog.CoreOnly.ToolNames;
 
+    /// <summary>The tools the agent wrote itself, approved or waiting.</summary>
     private readonly AgentBuiltTools _agentBuiltTools;
 
     /// <summary>Builds the agent's parts once and registers its tools; a model without tools gets none.</summary>
@@ -142,7 +163,7 @@ public class AgentEngine
             options.SubSessionPromptBudget);
         _turns = new TurnRunner(
             ChatPipeline.Build(chatClient, _guards, usageSink, usageMapper, concurrentToolCalls, replay), _registry,
-            () => SkillDocumentation, () => Thinking, supportsTools);
+            () => SkillDocumentation, () => Thinking, supportsTools, () => Name);
 
         if (!supportsTools)
         {

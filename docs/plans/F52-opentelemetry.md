@@ -475,6 +475,9 @@ a replay, and the measurement in step 8 replays a recorded eval run.
   `OTEL_EXPORTER_OTLP_ENDPOINT` and `OTEL_EXPORTER_OTLP_PROTOCOL` to that allowlist and gives the runner its own
   `OTEL_SERVICE_NAME`; not `OTEL_EXPORTER_OTLP_HEADERS`, which can carry a collector's key. A collector that needs a
   key gets no runner spans.
+- **2026-11-03, step 3, the span's agent name** (Louis's pick G1 of three, 20:47): `AgentEngineFactory` names the
+  engine it builds for the profile's role, else the default mode; an engine built by hand is named for its host.
+  `gen_ai.agent.name` is that name, so a trace tells the cook's turn from the chat's.
 
 ## Concepts this teaches (GOAL skill 17, with 15 and 18)
 
