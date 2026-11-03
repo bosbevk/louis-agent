@@ -14,6 +14,10 @@
 - In Docker, logs persist in `logs/`; `docker logs louis_agent_api` shows the API.
 - With `LOG_DIRECTORY` set, each process's run file is there; the orchestrator's lines are tagged `[orchestrator]`,
   louis-agent's progress under it `[louis-agent]`.
+- With `OTEL_EXPORTER_OTLP_ENDPOINT` set (the standard OpenTelemetry setting), every log line also goes to that
+  collector, each template's holes as fields and the host named by `OTEL_SERVICE_NAME` (else its project's name);
+  `OTEL_EXPORTER_OTLP_PROTOCOL` picks gRPC (the default) or `http/protobuf`. The JSON-lines records stay out. F52's
+  step 6 adds the dashboard to send them to.
 - stdout is a protocol for the ACP and MCP servers, so every log goes through `ILogger` to stderr
   ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
 
