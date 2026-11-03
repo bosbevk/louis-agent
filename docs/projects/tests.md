@@ -30,7 +30,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `Messages/` | Every message enum member, core's and each host's (from source), has a template with well-formed holes; `ToolMessageSnapshot.json` pins every text tools return to the model |
 | `Pricing/` | The price table and the shipped `config/prices.json`, costs, the pricing sink, exchange rates, the display currency |
 | `Protocols/Mcp/` | The Rider MCP client with mocked HTTP |
-| `Skills/` | `MarkdownSkillLoader` (procedures, parameters, fence languages); `Providers/`: each skill provider and the composite (order, de-duplication, the role first); `Roles/`: the role catalogue, minions' roles, a role's header, and `RoleNamingTests` (nothing in core named "personality", CL13, CL14); the API has `ApiRoleNamingTests` |
+| `Skills/` | `MarkdownSkillLoader` (procedures, parameters, fence languages); `Providers/`: each skill provider and the composite (order, de-duplication, the role first); `Headers/`: a prompt's header and the catalogue that reads them once (CL27; the loader's side in `Hosting/Prompts/SkillLoaderHeadersTests`); `Roles/`: the role catalogue, minions' roles, and `RoleNamingTests` (nothing in core named "personality", CL13, CL14); the API has `ApiRoleNamingTests` |
 | `RepeatedNames/` | The ratchets of ADR 0043: a wire name written as a string outside its enum (`RepeatedNameTests`, with `Scanning/`: a C# lexer, the scan, the compiled-code reader), and `.Wire()` as the one way out (`WireTextTests`: no direct `SettingChoice.Wire`, no case-folded `ToString()`, no `ToString()` of an enum in the compiled code). Five exemptions, each with its reason, narrowed rather than lengthened (F18 step 7.5) |
 | `louis-agent.testing`'s samples | `SampleToolset`, `SampleMode`, `SampleEval`, `SampleRole`, `SampleIdentity`, `SampleScenario`: neutral names (with `Fill` for a test's JSON) for a test that only stores, shows or parses a name; a test that needs the real one uses its owner's enum member |
 | `Outside` (louis-agent.testing) | How an integration test asks for the outside: `Tool` skips a missing tool locally and fails it where `INTEGRATION_REQUIRED` is set (CI), `Stack` always skips a missing Puls-stack address (F18 step 7.6.2) |
@@ -72,7 +72,9 @@ since F49.2, its evals and their checks (`Evals/Routing/`, and `Evals/Checks/` w
 the cook's dataset, ids and conformance; the judge's tests are in `louis-agent.identity.puls.judges.tests`); the pack's
 are the shop tests that left core, with their fixtures and their own golden (`ShopToolMessageSnapshot.json`); the
 composition root's prove `IDENTITIES` and `PACKS` pick (`PluginsTests`) and that every pack stays convertible to an
-MCP server (`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, a test-only package). Each
+MCP server (`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, a test-only package), and
+that every built-in prompt of every identity and pack opens with its header, its level its folder's
+(`EveryPromptHasAHeaderTests`, CL27). Each
 registers the prompts its identity or pack brings in a `[SetUpFixture]`, as a host's `Build` does.
 
 `tests/louis-agent.testing` is a class library, not a test project: the fakes and paths every test project shares
