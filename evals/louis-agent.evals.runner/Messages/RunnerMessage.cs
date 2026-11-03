@@ -68,6 +68,12 @@ public enum RunnerMessage
     [Description("promptfoo's '{Type}' assert on test {Test} has no per-scenario check of ours: left out.")]
     PromptfooTestLeftOut,
 
+    [Description("Imported from promptfoo.")]
+    PromptfooImported,
+
+    [Description("{Date}: imported from promptfoo (F49.5)")]
+    PromptfooImportedChange,
+
     [Description("--labels takes only '-': the label files on stdin, one JSON object per line, not '{Value}'. "
                  + "Labels in a folder are the dataset's labels/, read without --labels.")]
     LabelsOnlyStdin,

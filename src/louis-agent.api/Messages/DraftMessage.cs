@@ -102,6 +102,15 @@ public enum DraftMessage
     [Description("git {Command} took longer than {Seconds} seconds while publishing, so it was stopped.")]
     PublishGitTimedOut,
 
+    [Description("feat(evals): {Name} for {Identity}, composed in the studio by {Author}")]
+    PublishCommitMessage,
+
+    [Description("Composed in the studio.")]
+    ComposedCovers,
+
+    [Description("{Date}: composed in the studio (F49.5)")]
+    ComposedChange,
+
     [Description(
         "The eval isn't ready to publish: the runner's check found {Count} problem(s), the first: {First}. Check it on the Studio page, fix it, then publish.")]
     PublishNeedsAPassingCheck,

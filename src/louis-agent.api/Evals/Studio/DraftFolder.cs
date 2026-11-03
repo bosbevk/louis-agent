@@ -2,6 +2,8 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Drafts;
 using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Drafts.Samples;
+using LouisAgent.Api.Messages;
+using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Api.Evals.Studio;
 
@@ -30,8 +32,8 @@ public static class DraftFolder
         foreach (var rubric in draft.Rubrics) Write(folder, ["Rubrics", rubric.Name], rubric.Text);
 
         // The dataset: a manifest the runner seals, the draft's own scenarios and the sample drafts as dev scenarios.
-        var manifest = new ManifestFile(draft.Name, 1, "Composed in the studio.", "",
-            [$"{draft.At:yyyy-MM-dd}: composed in the studio (F49.5)"]);
+        var manifest = new ManifestFile(draft.Name, 1, MessageText.Format(DraftMessage.ComposedCovers), "",
+            [MessageText.Format(DraftMessage.ComposedChange, new { Date = $"{draft.At:yyyy-MM-dd}" })]);
         Write(folder, ["Dataset", "dataset.json"], JsonSerializer.Serialize(manifest, SampleBody.FileJson) + "\n");
         foreach (var scenario in draft.Scenarios)
             Write(folder, ["Dataset", "scenarios", "dev", scenario.Name], scenario.Text);

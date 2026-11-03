@@ -45,7 +45,7 @@ public static class PromptfooImport
             ["name"] = name,
             ["identity"] = "imported",
             ["version"] = 1,
-            ["proves"] = Text(root, "description") ?? "Imported from promptfoo.",
+            ["proves"] = Text(root, "description") ?? MessageText.Format(RunnerMessage.PromptfooImported),
             ["modes"] = new JsonArray(new JsonObject
             {
                 ["name"] = "imported",
@@ -59,9 +59,10 @@ public static class PromptfooImport
         {
             ["name"] = name,
             ["version"] = 1,
-            ["covers"] = "Imported from promptfoo.",
+            ["covers"] = MessageText.Format(RunnerMessage.PromptfooImported),
             ["content_hash"] = "",
-            ["changes"] = new JsonArray($"{DateTime.UtcNow:yyyy-MM-dd}: imported from promptfoo (F49.5)")
+            ["changes"] = new JsonArray(MessageText.Format(RunnerMessage.PromptfooImportedChange,
+                new { Date = $"{DateTime.UtcNow:yyyy-MM-dd}" }))
         });
         return skipped;
     }

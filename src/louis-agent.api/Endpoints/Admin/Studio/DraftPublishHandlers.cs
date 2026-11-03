@@ -59,8 +59,13 @@ internal sealed class DraftPublishHandlers(
                 return ApiErrors.BadRequest(MessageText.Format(DraftMessage.PublishNoIdentity,
                     new { Folder = target.IdentityFolder }));
 
-            var published = await publisher.PublishAsync(folder, target,
-                $"feat(evals): {draft.Name} for {draft.Identity}, composed in the studio by {draft.Author}");
+            var published = await publisher.PublishAsync(folder, target, MessageText.Format(
+                DraftMessage.PublishCommitMessage, new
+                {
+                    draft.Name,
+                    draft.Identity,
+                    draft.Author
+                }));
             return TypedResults.Json(new PublishReply(published.Branch, published.Commit, target.Folder),
                 AdminJson.SnakeCase);
         }
