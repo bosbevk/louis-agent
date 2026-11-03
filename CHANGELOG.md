@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **FX29 A failed send says why**: Puls's send button seemed dead when the API refused the chat's key;
+  the runner set its notice but never redrew the page, which shows it. It does now
+  ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx29--a-failure-has-to-reach-the-screen-that-shows-it))
 - 2026-11-03 — **FX33 The header test reads the same on every checkout**: CL27's `PromptHeadersTests` makes its
   raw-string file LF before splitting it, so a Windows checkout's CRLF no longer fails it
   ([lesson](docs/learning/fixes-lessons.md#fx33--a-raw-string-has-its-files-line-endings))
