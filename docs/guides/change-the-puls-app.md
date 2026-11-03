@@ -49,9 +49,18 @@ its copy as a C# array in its `.razor.cs`. The motion (the progress line, the re
 ## Change the admin portal
 
 The portal is English, for the builders: `Layout/AdminLayout.razor`, `Pages/Admin/` and `Components/Admin/`
-(`RunExplorer`, `TrendChart`, `ChartInfo`). It shows the stored benchmark runs (soon: eval runs) through the API's
-admin endpoints, which need the admin key. `ChartInfo` and `RunExplorer` still carry an `@code` block
+(`RunExplorer`, `TrendChart`, `ChartInfo`). It shows the evals and their stored runs through the API's admin
+endpoints, which need the admin key. `ChartInfo` and `RunExplorer` still carry an `@code` block
 (`RazorHasNoCodeTests`' pending list): move it to a `.razor.cs` when you change them.
+
+**The portal is organised by job** (F53): `/admin` is the Evals page, one list and one details pane. Something new
+about an eval goes in the details (`EvalDetails`, or a component of its own under `Components/Admin/EvalsPage/Details/`);
+something the reader needs to *choose* an eval by goes on the list's line (`EvalLine`, worked out in `EvalListView`
+with a test, placed by `EvalListItem`). The chosen eval is in the address (`?eval=`): a link to an eval goes through
+`EvalAddress.Of`, never a string of its own. A run is started and followed by the page alone (`Evals.razor.cs`:
+`StartAsync`, `Follow`); a component that wants a run started raises `OnRun` with a `StartRequest`. The live-run
+strip in the layout (`LiveRunStrip`) polls the runner's current run; a page that follows a run keeps the event stream.
+No puls `.cs` or `.razor` may spell `admin/benchmarks` or `admin/maatstawwe` (`PortalAddressesTests`).
 
 **The run page is tabs, and what it shows is in its address** (F53.1, [ADR 0065](../adr/0065-the-view-is-in-the-address.md)).
 A new block on the run page is a tab: a member of `RunTab` with its wire name, an entry in `RunTabs.All`, and a case

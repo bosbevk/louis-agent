@@ -19,6 +19,13 @@
   (`docker-compose.observability.yml`), and `deploy.ps1 telemetry` sends Azure's to Application Insights; the guide
   has the table of what to log at which level. PRs #121, #122, #124, #126 to #130;
   [ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)
+- 2026-11-03 — **F53.2 One Evals page**: `/admin` is the Evals page in list/details shape: the list names every eval
+  with its last run and per mode the pass@k with its move against the run before; the chosen eval is in the address
+  (`?eval=`, the eval that ran last when none is named) and its details hold the Run button with its estimate, the
+  manual, the scorecard, the timeline, the trend, what it checks and every stored run as a table; a run starts and is
+  followed there, and a thin strip on every admin page says a run is going; the Benchmarks page and the old
+  `/admin/benchmarks` and `/admin/maatstawwe` addresses are gone, the run page is at `/admin/runs/{id}`, and the
+  sidebar is by job (Measure: Evals; Build: Studio, Prompts) (the second child of F53)
 - 2026-11-03 — **F53.1 The run page opens on its answer**: a verdict card under the head (per mode passed of
   graded and the change against the eval's run before, from the trend the page already fetched; the cost, the
   requests, the answers still to grade), the page's blocks as tabs, and the tab and the explorer's place in the

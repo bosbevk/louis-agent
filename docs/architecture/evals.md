@@ -26,7 +26,7 @@ is the only thing they share.
 ```mermaid
 flowchart LR
   subgraph Portal["Portal (louis-agent.puls, Components/Admin)"]
-    Bench["Benchmarks page<br/>checks, runs, live run"]
+    Bench["Evals page<br/>evals, runs, live run"]
     Explorer["Run explorer<br/>conversations, turns, reviews"]
   end
   subgraph API["louis-agent.api"]
