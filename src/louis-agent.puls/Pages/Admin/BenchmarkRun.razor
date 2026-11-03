@@ -26,7 +26,7 @@ else
     {
         <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
     }
-    <RunVerdict View="RunVerdictView.Of(_run, _trend)" Currency="Currency.Current" />
+    <RunVerdict RunId="@RunId" View="RunVerdictView.Of(_run, _trend)" Currency="Currency.Current" />
     <RunTabBar RunId="@RunId" Active="ActiveTab" />
     @switch (ActiveTab)
     {
@@ -34,7 +34,7 @@ else
             @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed
                child, so the explorer's chats modal would be clipped to the card and painted under the cards after it. *@
             <section class="card-p holds-modal">
-                <RunExplorer Run="_run" Currency="Currency.Current" OpenTask="@FocusTask" />
+                <RunExplorer Run="_run" Currency="Currency.Current" Place="_place" OnMoved="Moved" />
             </section>
             break;
         case RunTab.Judge:

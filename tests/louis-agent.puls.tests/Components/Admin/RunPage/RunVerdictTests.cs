@@ -21,7 +21,7 @@ public class RunVerdictTests
     {
         using var ctx = new BunitContext();
 
-        var cut = ctx.Render<RunVerdict>(p => p.Add(x => x.View, View));
+        var cut = ctx.Render<RunVerdict>(p => p.Add(x => x.RunId, "run1").Add(x => x.View, View));
 
         Snapshots.Match("louis-agent.puls.tests", "Components/Admin/RunPage/RunVerdict.html", cut.Markup);
     }
@@ -32,7 +32,7 @@ public class RunVerdictTests
     {
         using var ctx = new BunitContext();
 
-        var cut = ctx.Render<RunVerdict>(p => p.Add(x => x.View, View with { ToGrade = 0 }));
+        var cut = ctx.Render<RunVerdict>(p => p.Add(x => x.RunId, "run1").Add(x => x.View, View with { ToGrade = 0 }));
 
         Assert.That(cut.FindAll(".verdict-grade"), Is.Empty);
     }

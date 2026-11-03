@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Puls.Admin.Explorer.Place;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -204,7 +205,7 @@ public partial class RunExplorerSnapshotTests
 
         // The run as the page reads it from the API: the contract's stored run reply.
         var run = JsonSerializer.Deserialize<StoredRunReply>(Run, AdminJson.SnakeCase)!;
-        return ctx.Render<RunExplorer>(p => p.Add(x => x.Run, run).Add(x => x.OpenTask, openTask));
+        return ctx.Render<RunExplorer>(p => p.Add(x => x.Run, run).Add(x => x.Place, openTask is null ? null : ExplorerPlace.Conversation(openTask)));
     }
 
     /// <summary>

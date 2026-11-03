@@ -29,7 +29,7 @@ public class BenchmarkRunTabsTests
     /// <summary>The list of checks, with this one's title.</summary>
     private const string Checks = """{"checks":[{"id":"puls-cook","title":"Puls cooks."}]}""";
 
-    /// <summary>The services the page injects, over an API that serves the run, counting reads, and the checks.</summary>
+    /// <summary>The services the page injects, over an API serving the run (reads counted) and the checks.</summary>
     private static (BunitContext Context, Func<int> RunReads) Open()
     {
         var ctx = new BunitContext();
@@ -130,6 +130,30 @@ public class BenchmarkRunTabsTests
             ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/benchmarks/run1?tab=conversations");
 
             cut.WaitForAssertion(() => Assert.That(cut.FindAll(".explorer"), Has.Count.EqualTo(1)));
+            Assert.That(runReads(), Is.EqualTo(1), "the same run: nothing to fetch");
+        }
+    }
+
+    /// <summary>
+    /// A move in the explorer goes into the address (so Back goes up a level and a link opens the same view), and
+    /// the run isn't fetched again for it.
+    /// </summary>
+    [Test]
+    public void AMoveInTheExplorer_GoesIntoTheAddress_WithoutFetchingAgain()
+    {
+        var (ctx, runReads) = Open();
+        using (ctx)
+        {
+            var cut = Render(ctx, "admin/benchmarks/run1?tab=conversations");
+            cut.WaitForAssertion(() => Assert.That(cut.FindAll(".tile"), Is.Not.Empty));
+
+            cut.Find(".tile").Click();
+
+            var navigation = ctx.Services.GetRequiredService<NavigationManager>();
+            cut.WaitForAssertion(() =>
+                Assert.That(navigation.Uri,
+                    Does.EndWith("admin/benchmarks/run1?tab=conversations&view=conversations")));
+            cut.WaitForAssertion(() => Assert.That(cut.FindAll(".conv-filter"), Has.Count.EqualTo(1)));
             Assert.That(runReads(), Is.EqualTo(1), "the same run: nothing to fetch");
         }
     }

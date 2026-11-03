@@ -2,6 +2,7 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Trends;
+using LouisAgent.Puls.Admin.Explorer.Place;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.RunPage;
@@ -48,6 +49,9 @@ public partial class BenchmarkRun : IDisposable
     /// <summary>The run the page last fetched, so a change of tab doesn't fetch it again.</summary>
     private string? _fetched;
 
+    /// <summary>Where the address says the explorer is, read once from its parts.</summary>
+    private ExplorerPlace? _place;
+
     /// <summary>The API the page reads.</summary>
     [Inject]
     private AgentApi Api { get; set; } = null!;
@@ -68,17 +72,41 @@ public partial class BenchmarkRun : IDisposable
     [Inject]
     private RunNotesState NoteState { get; set; } = null!;
 
+    /// <summary>The browser's address, which carries the tab and the explorer's place.</summary>
+    [Inject]
+    private NavigationManager Navigation { get; set; } = null!;
+
     /// <summary>The run to show.</summary>
     [Parameter]
     public string RunId { get; set; } = "";
 
-    /// <summary>A task a category's line linked to (`?task=`): its conversation opens in the explorer.</summary>
-    [SupplyParameterFromQuery(Name = "task")]
-    public string? FocusTask { get; set; }
-
     /// <summary>The tab the address names (`?tab=`); the summary when it names none.</summary>
     [SupplyParameterFromQuery(Name = "tab")]
     public string? Tab { get; set; }
+
+    /// <summary>The explorer's view (`?view=`): the run when the address names none.</summary>
+    [SupplyParameterFromQuery(Name = "view")]
+    public string? View { get; set; }
+
+    /// <summary>The open conversation's task (`?task=`).</summary>
+    [SupplyParameterFromQuery(Name = "task")]
+    public string? FocusTask { get; set; }
+
+    /// <summary>The open turn's number (`?turn=`).</summary>
+    [SupplyParameterFromQuery(Name = "turn")]
+    public int? FocusTurn { get; set; }
+
+    /// <summary>The open request's time (`?request=`), in UTC round-trip form.</summary>
+    [SupplyParameterFromQuery(Name = "request")]
+    public string? FocusRequest { get; set; }
+
+    /// <summary>The open request's mode (`?mode=`).</summary>
+    [SupplyParameterFromQuery(Name = "mode")]
+    public string? FocusMode { get; set; }
+
+    /// <summary>Only the conversations still to review are listed (`?review=true`).</summary>
+    [SupplyParameterFromQuery(Name = "review")]
+    public bool Review { get; set; }
 
     /// <summary>The open tab, read once from the address.</summary>
     private RunTab ActiveTab => RunTabs.Parse(Tab);
@@ -99,6 +127,7 @@ public partial class BenchmarkRun : IDisposable
     /// </summary>
     protected override async Task OnParametersSetAsync()
     {
+        _place = ExplorerPlace.Of(View, FocusTask, FocusTurn, FocusRequest, FocusMode, Review);
         if (_fetched == RunId) return;
         _fetched = RunId;
         if (!Store.Loaded) await Store.LoadAsync();
@@ -129,6 +158,10 @@ public partial class BenchmarkRun : IDisposable
         Reviewer.Changed -= Refetch;
         NoteState.Changed -= Refetch;
     }
+
+    /// <summary>Puts the explorer's new place in the address, so Back and a link bring it back.</summary>
+    private void Moved(ExplorerPlace place) =>
+        Navigation.NavigateTo(RunAddress.Of(RunId, RunTab.Conversations, place));
 
     /// <summary>Fetches the run from the store.</summary>
     private Task<StoredRunReply> ReadRunAsync() => Api.GetAsync<StoredRunReply>(RunUrl, AdminJson.SnakeCase);

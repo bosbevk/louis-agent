@@ -15,6 +15,6 @@
     <p class="verdict-facts muted">
         <span class="verdict-cost">@RunText.Money(View.Cost, Currency)</span>
         @if (View.Requests is { } requests) { <span>·</span><span class="verdict-requests">@requests requests</span> }
-        @if (View.ToGrade > 0) { <span>·</span><strong class="verdict-grade">@VerdictText.ToGrade(View.ToGrade)</strong> }
+        @if (View.ToGrade > 0) { <span>·</span><a class="verdict-grade" href="@RunAddress.Of(RunId, RunTab.Conversations, new ExplorerPlace(ExplorerView.Conversations, Review: true))"><strong>@VerdictText.ToGrade(View.ToGrade)</strong></a> }
     </p>
 </section>

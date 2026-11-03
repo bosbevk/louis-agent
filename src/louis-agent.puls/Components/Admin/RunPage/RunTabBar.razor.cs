@@ -1,4 +1,3 @@
-using LouisAgent.Choices;
 using LouisAgent.Puls.Admin.RunPage;
 using Microsoft.AspNetCore.Components;
 
@@ -16,5 +15,5 @@ public partial class RunTabBar
     public RunTab Active { get; set; }
 
     /// <summary>The same run with this tab in the address.</summary>
-    private string Href(RunTab tab) => $"admin/benchmarks/{Uri.EscapeDataString(RunId)}?tab={tab.Wire()}";
+    private string Href(RunTab tab) => RunAddress.Of(RunId, tab, null);
 }
