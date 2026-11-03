@@ -63,7 +63,8 @@ public static class AgentTelemetry
 
     /// <summary>
     /// The tracer over our sources with the OTLP exporter, or none without an endpoint. The service name is ours first
-    /// and then the environment's, so <c>OTEL_SERVICE_NAME</c> and <c>OTEL_RESOURCE_ATTRIBUTES</c> win.
+    /// and then the environment's, so <c>OTEL_SERVICE_NAME</c> and <c>OTEL_RESOURCE_ATTRIBUTES</c> win. The calls to
+    /// the collector itself are filtered out before the exporter sees them.
     /// </summary>
     private static TracerProvider? Build()
     {
@@ -74,6 +75,8 @@ public static class AgentTelemetry
             .AddSource(Sources)
             .SetResourceBuilder(ResourceBuilder.CreateEmpty().AddService(AgentLogging.ServiceName)
                 .AddEnvironmentVariableDetector())
+            // Before the exporter: processors run in the order they're added.
+            .AddProcessor(new OwnTrafficFilter())
             .AddOtlpExporter()
             .Build();
     }

@@ -39,6 +39,9 @@ public class AgentTelemetryTests
     /// <summary>The source Microsoft.Extensions.AI traces model requests and tool calls on.</summary>
     private const string ModelSource = "Experimental.Microsoft.Extensions.AI";
 
+    /// <summary>The source .NET's <see cref="HttpClient"/> traces its calls on.</summary>
+    private const string HttpSource = "System.Net.Http";
+
     /// <summary>The collector the exporter sends to.</summary>
     private OtlpReceiver _receiver = null!;
 
@@ -131,6 +134,30 @@ public class AgentTelemetryTests
         AgentTelemetry.Flush();
 
         Assert.That(await _receiver.EventuallyHoldsAsync("our-own-span"), Is.True);
+    }
+
+    /// <summary>
+    /// A call to the collector itself is no span of ours (F52 step 4b, H1): the log sink sends its batches on its own
+    /// client, and without the filter every batch of log lines would be a span. Any other call stays.
+    /// </summary>
+    [Test]
+    public async Task ACallToTheCollector_IsLeftOut_AnyOtherStays()
+    {
+        _telemetry = AgentTelemetry.Start();
+
+        // Two calls as HttpClient's source reports them: one to the collector, as the log sink makes, one elsewhere.
+        using (var http = new ActivitySource(HttpSource))
+        {
+            using (var own = http.StartActivity("collector-call"))
+                own?.SetTag("url.full", _receiver.Endpoint + "/v1/logs");
+            using (var other = http.StartActivity("other-call"))
+                other?.SetTag("url.full", "http://example.test/other");
+        }
+
+        AgentTelemetry.Flush();
+
+        Assert.That(await _receiver.EventuallyHoldsAsync("other-call"), Is.True, "another call is still a span");
+        Assert.That(_receiver.Holds("collector-call"), Is.False, "the collector's own traffic became a span");
     }
 
     /// <summary>One turn with one model request, as <c>ChatPipelineTests</c> runs it, on a fake model.</summary>

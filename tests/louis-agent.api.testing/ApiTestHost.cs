@@ -14,6 +14,8 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Shops;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -37,7 +39,7 @@ internal static class ApiTestHost
     /// <summary>
     /// Starts the API in memory the way Program.cs builds it, on a test server with no port. Give it an admin key and a
     /// store to open the admin portal, and a clock to fix the time notes are stamped with. A test that writes or
-    /// commits gives its own workspace folder.
+    /// commits gives its own workspace folder, and one that sends a message gives the model that answers it.
     /// </summary>
     public static WebApplication Build(string? apiKey = null, string? workspaceRoot = null, string? adminKey = null,
         IEvalStore? store = null,
@@ -45,10 +47,10 @@ internal static class ApiTestHost
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
         TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
-        DraftChecker? checker = null, PromptfooRunner? promptfoo = null)
+        DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null)
     {
         // The same services as Program.cs, on an in-memory test server instead of a port.
-        var host = HostContext(workspaceRoot ?? RepoRoot);
+        var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel());
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddApi(host);
@@ -102,9 +104,10 @@ internal static class ApiTestHost
         AgentKeyGate.AccessFor(new PathString(Pattern(endpoint)), endpoint);
 
     /// <summary>
-    /// What the API runs on: an engine over a model that is never called, with the Puls identity and the shops pack.
+    /// What the API runs on: an engine over the model given (one that is never called, unless a test sends a message),
+    /// with the Puls identity and the shops pack.
     /// </summary>
-    private static AgentHostContext HostContext(string workspaceRoot)
+    private static AgentHostContext HostContext(string workspaceRoot, IChatClient model)
     {
         var options = new AgentOptions
         {
@@ -112,15 +115,14 @@ internal static class ApiTestHost
             SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
             RatesUrl = null
         };
-        var catalog = new AgentCatalog([new LouisAgent.Identities.Puls.PulsIdentity()],
-            [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions())]);
-        var engines = new AgentEngineFactory(new NoModel(), options, catalog: catalog);
+        var catalog = new AgentCatalog([new PulsIdentity()], [new ShopsPack(new ShopsOptions())]);
+        var engines = new AgentEngineFactory(model, options, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,
             DisplayCurrency.Charged("USD"), engines);
     }
 
-    /// <summary>A chat client that is never called: no route test sends a message.</summary>
+    /// <summary>A chat client that is never called: a route test that sends no message gets it.</summary>
     private sealed class NoModel : IChatClient
     {
         /// <summary>Never called: no route test sends a message.</summary>
