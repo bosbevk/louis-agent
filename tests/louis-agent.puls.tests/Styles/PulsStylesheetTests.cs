@@ -16,6 +16,19 @@ public class PulsStylesheetTests
     public void EveryAreaFile_IsImported_AndEveryImportIsThere() =>
         Assert.That(Css.Imports().Order(), Is.EqualTo(Css.AreaFiles().Order()));
 
+    /// <summary>
+    /// Every file a rule points at is one the app serves (FX30): the delegation card's Puls tile went missing when its
+    /// rule moved from app.css into css/chat/ and kept its <c>../brand/</c>.
+    /// </summary>
+    [Test]
+    public void EveryUrl_PointsAtAFileTheAppServes()
+    {
+        var urls = Css.Urls();
+
+        Assert.That(urls, Is.Not.Empty, "the delegation card's tile is one");
+        Assert.That(urls.Where(u => !File.Exists(u.Target)).Select(u => $"{u.File}: {u.Url}"), Is.Empty);
+    }
+
     /// <summary>The tokens are imported first, then the plain elements: the rest of the files build on them.</summary>
     [Test]
     public void TheTokensComeFirst_ThenThePlainElements() =>

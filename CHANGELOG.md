@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **FX30 The delegation card's tile**: back in place (`../../brand/` from `css/chat/`), and every relative
+  `url(…)` in Puls's stylesheet is tested to point at a file the app serves
+  ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx30--a-path-written-from-a-file-breaks-when-the-file-moves))
 - 2026-11-03 — **FX29 A failed send says why**: Puls's send button seemed dead when the API refused the chat's key;
   the runner set its notice but never redrew the page, which shows it. It does now
   ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx29--a-failure-has-to-reach-the-screen-that-shows-it))
