@@ -27,6 +27,7 @@
   "GET /v1/admin/evals/runs/{id}/turns/{mode}/{repeat:int}/{task}/{turn:int}/events (AdminKey)",
   "GET /v1/admin/evals/{check}/manual (AdminKey)",
   "GET /v1/admin/evals/{check}/trend (AdminKey)",
+  "GET /v1/admin/prompts (AdminKey)",
   "GET /v1/git/branches (Key)",
   "GET /v1/git/branches/{**name} (Key)",
   "GET /v1/git/commits (Key)",

@@ -1,4 +1,5 @@
 using LouisAgent.Api.Endpoints.Admin.Evals;
+using LouisAgent.Api.Endpoints.Admin.Prompts;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
@@ -44,6 +45,9 @@ internal static class AdminEndpoints
         // The two lists: every eval (GET /evals), and the checks with their latest runs the Benchmarks page reads.
         admin.MapEvals(catalog, store, workspaceRoot);
         admin.MapGet("/benchmarks", handlers.GetList);
+
+        // Every built-in prompt as its header says it (CL27).
+        admin.MapGet("/prompts", PromptsHandlers.GetPrompts);
 
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.
