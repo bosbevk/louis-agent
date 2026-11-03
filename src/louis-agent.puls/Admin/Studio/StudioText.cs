@@ -13,6 +13,9 @@ public static class StudioText
     /// <summary>Without a name nobody can say who made the draft.</summary>
     public const string NeedsAName = "Type your name in a review first: a draft keeps who made it.";
 
+    /// <summary>How many drafts an eval has, in words.</summary>
+    public static string Drafts(int count) => count == 1 ? "1 draft" : $"{count} drafts";
+
     /// <summary>A sample was kept as a draft of its eval.</summary>
     public static string SampleKept(string sample, string eval) =>
         $"Kept {sample} as a draft of {eval}. It waits on the Evals page until it is published.";

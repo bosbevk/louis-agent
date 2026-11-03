@@ -43,12 +43,12 @@ internal static class AdminEndpoints
         // One group for all of them, so the key check runs before any route's own work.
         var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(handlers.Gate);
 
-        // The two lists: every eval (GET /evals), and the checks with their latest runs the Benchmarks page reads.
-        admin.MapEvals(catalog, store, workspaceRoot);
-        admin.MapGet("/benchmarks", handlers.GetList);
-
-        // One draft store for both names, so a draft made under one is listed under the other.
+        // One draft store for the list and both names, so a draft made under one is listed under the other.
         var draftStore = drafts ?? new InMemoryEvalDraftStore();
+
+        // The two lists: every eval (GET /evals), and the checks with their latest runs the Benchmarks page reads.
+        admin.MapEvals(catalog, store, workspaceRoot, draftStore);
+        admin.MapGet("/benchmarks", handlers.GetList);
 
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.
