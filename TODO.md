@@ -31,6 +31,7 @@ changes instead of relying on training; **a configured agent**, an identity and 
 
 Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a time:
 
+- [ ] [FX34 A live run shows each turn's cost](docs/fixes/FX34-live-turn-cost.md) (Louis, 2026-11-03, option 1 of three: the API reads the ledger live; plan [FX34](docs/plans/FX34-live-turn-cost.md))
 - [ ] Validate demand: ten conversations and 30 real Malmesbury questions, answered blind by Puls, Gemini, ChatGPT and Google Maps (Louis's own, Phase 0 step 4)
 - [ ] **F18's leftovers, before F49.1** (Louis, 2026-10-29): Louis labels the judge's 36 answers himself (the 31 of 36 was a blind agent's labels)
 - [ ] The reference transcripts in git: a TODO of its own if they grow (some are over 200 KB today, F18)
