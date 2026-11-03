@@ -149,7 +149,9 @@ public partial class LiveRunPanel
 
     /// <summary>
     /// Each turn's cost so far, asked when a turn ends: one question at a time, and once more if another turn ended
-    /// meanwhile. What the API can't say (a ledger read mid-write) leaves the costs the table already shows.
+    /// meanwhile. What the API can't say (a ledger read mid-write) and a question that never reaches it (the network,
+    /// a time-out, a reply that isn't the record) leave the costs the table already shows. Nobody awaits this, so
+    /// nothing may escape it: an exception would leave the question marked as out, and no later turn would ask again.
     /// </summary>
     private async Task CostsSoFarAsync()
     {
@@ -165,7 +167,8 @@ public partial class LiveRunPanel
                 var reply = await Api.GetAsync<LiveRequestsReply?>($"{RunUrl}/requests", AdminJson.SnakeCase);
                 if (reply is not null) _turns.CostsFrom(reply.Requests);
             }
-            catch (AgentApiException)
+            catch (Exception ex) when (ex is AgentApiException or HttpRequestException or JsonException
+                                           or TaskCanceledException)
             {
                 // Nothing to change: the next turn's end asks again, and the run's end reads the stored costs.
             }
