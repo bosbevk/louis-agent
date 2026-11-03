@@ -16,6 +16,7 @@ definitions, the tunnel's sidecar image and one script. No secret value is in an
 | Container App | `puls-searxng` | The SearXNG it searches with (development and benchmarks only, ADR 0023) |
 | Environment | `puls-container-env` | The Container Apps environment both run in; its storages name the file shares below |
 | Registry | `acrpulsza` | `louis-agent-puls`, `ts-forwarder` (ours, built by `deploy.ps1 build`) and `searxng/searxng` (SearXNG's own image, copied in) |
+| Application Insights | `puls-insights` | Puls's logs and traces (F52), on the Log Analytics workspace the environment logs to; created by `deploy.ps1 telemetry` |
 | Storage account | `pulsstorage` | File shares: `puls-app-workspace` (storage `puls-app-vol`: the app's `config/`, `logs/` and `data/`), `searxng-config` (storage `searxngvol`: SearXNG's `settings.yml`) |
 | Unused | `mongo-data` share (storage `mongo-data-vol`), `mongo` and `headless-shell` images | From an earlier design with Mongo and the browser in Azure; both run on the home PC now. Deleting them is a decision for Louis |
 
@@ -51,6 +52,15 @@ stay for a deploy of an image already built (`update -Tag 2026-10-22b -Revision 
 The running revision is in `az containerapp revision list -n puls-app -g rg-puls-za -o table`; the app is up when
 `https://puls-app.…/health` answers 200. The same for SearXNG with `-App puls-searxng`; its settings file is the local
 stack's `docker/searxng/settings.yml`, uploaded with `deploy.ps1 searxng-settings` and read on its next restart.
+
+## Telemetry
+
+`deploy\azure\deploy.ps1 telemetry` (`-WhatIf` first to see it) creates `puls-insights` on the environment's Log
+Analytics workspace and turns on the environment's managed OpenTelemetry agent, which gives every app the collector's
+address; `puls-app.yaml` sets only `OTEL_SERVICE_NAME=puls`. Once per environment, safe to run again; the agent is
+still preview. It takes logs and traces, not metrics. The first 5 GB a month is free, and nothing else is paid. After
+the next `release`, look in `puls-insights` under *Transaction search*, or *Logs* with `requests`, `dependencies` and
+`traces` in KQL; the lines show values hashed, as on the PC (`LOG_CONTENT` unset, POPIA).
 
 ## Secrets
 

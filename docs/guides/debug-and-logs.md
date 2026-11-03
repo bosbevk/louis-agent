@@ -19,9 +19,37 @@
   `OTEL_EXPORTER_OTLP_PROTOCOL` picks gRPC (the default) or `http/protobuf`. The JSON-lines records stay out. The
   traces go to the same collector: every turn is a span, `invoke_agent {agent}` named for the agent (its role, or
   the default mode) and tagged with its session, host, turn, run and task, holding a span per model request and tool
-  call, with no prompt or answer on any of them. F52's step 6 adds the dashboard to send them to.
+  call, with no prompt or answer on any of them. A crash is one `[FATAL]` line with its stack, and the last lines
+  and spans still leave; a failed task nothing awaited is one `[ERROR]`.
 - stdout is a protocol for the ACP and MCP servers, so every log goes through `ILogger` to stderr
   ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
+
+## Traces and the dashboard
+
+Start it once, beside the stacks: `docker compose -f docker/docker-compose.observability.yml up -d`, then open
+`http://127.0.0.1:18888`. Every container already sends to it. One Puls question shows as one trace: the request
+span, `invoke_agent puls`, a `chat` span per model request and an `execute_tool` per tool call, and nested under the
+tool call that handed it over, the cook's own `invoke_agent`. The *Structured logs* tab has the same turn's lines,
+each template hole a field, filtered by `service.name`. It keeps everything in memory: a restart forgets it. For
+Rider and `dotnet run`, set `OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317` in `config/.env`. With the dashboard
+down, everything works as before and no error line appears.
+
+## What to log at which level
+
+The why is [ADR 0064](../adr/0064-observability-through-opentelemetry.md).
+
+| Level | Means | Ours, examples |
+|---|---|---|
+| **Critical** | The process can't go on | an unhandled exception at the top of a host, a store that won't open |
+| **Error** | One operation failed; the process goes on | a turn failed on the API, a run exited non-zero, a request 500, a task nobody awaited |
+| **Warning** | Unexpected, but handled | a retry, a tool result cut to size, a price missing, a check that threw (Unknown) |
+| **Information** | A milestone a person wants later | session opened, run started, turn done in N s, the file logging to |
+| **Debug** | A decision, for the developer | which toolset, a cache hit, which provider strategy |
+| **Trace** | Everything, never on in production | the raw request |
+
+- Log an exception once, where it is handled, with the exception object, never `ex.Message` alone.
+- Structured: a template with named holes, which the message enums are already.
+- Levels are fixed as a file is touched, no sweep (F52's pick F1, the Boy Scout Rule, as ADR 0057 does it).
 
 ## The usage ledger
 

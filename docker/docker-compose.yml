@@ -1,3 +1,5 @@
+# The code-review stack. To see its logs and traces, start the dashboard first (F52):
+#   docker compose -f docker/docker-compose.observability.yml up -d
 name: louis-agent
 
 services:
@@ -13,6 +15,9 @@ services:
       - path: ../config/.env.secrets
         required: false
     environment:
+      # Logs and traces to the dashboard stack on the host (F52); with it down, the exporters drop them quietly.
+      # Each service is named by its project (mcp-server, acp-server, api, cli).
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       WORKSPACE_ROOT: /workspace
       # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
       SKILLS_DIRECTORY: /skills
@@ -54,6 +59,7 @@ services:
       - path: ../config/.env.secrets
         required: false
     environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       WORKSPACE_ROOT: /workspace
       # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
       SKILLS_DIRECTORY: /skills
@@ -92,6 +98,7 @@ services:
       - path: ../config/.env.secrets
         required: false
     environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       WORKSPACE_ROOT: /workspace
       # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
       SKILLS_DIRECTORY: /skills
@@ -132,6 +139,7 @@ services:
       - path: ../config/.env.secrets
         required: false
     environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       WORKSPACE_ROOT: /workspace
       # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
       SKILLS_DIRECTORY: /skills

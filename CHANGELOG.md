@@ -4,6 +4,14 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F52 Observability through OpenTelemetry**: every host sends its logs (Serilog's OTLP sink) and
+  traces (the OpenTelemetry SDK) to the collector `OTEL_EXPORTER_OTLP_ENDPOINT` names, on the standard settings
+  alone; a turn is an `invoke_agent` span named for its agent and tagged with its session and turn, never its words; a
+  sub-session's turn nests under the parent's tool call across the HTTP hop; a crash is one Critical line with its
+  stack and the last lines and spans still leave; the Aspire dashboard runs as its own stack on the PC
+  (`docker-compose.observability.yml`), and `deploy.ps1 telemetry` sends Azure's to Application Insights; the guide
+  has the table of what to log at which level. PRs #121, #122, #124, #126 to #130;
+  [ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)
 - 2026-11-03 — **F53.1 The run page opens on its answer**: a verdict card under the head (per mode passed of
   graded and the change against the eval's run before, from the trend the page already fetched; the cost, the
   requests, the answers still to grade), the page's blocks as tabs, and the tab and the explorer's place in the

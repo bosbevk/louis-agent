@@ -1,0 +1,17 @@
+/* The engine's site, one file per concern (ADR 0053), each at most 200 lines of rules. The order below is the cascade:
+   the tokens and the plain elements first, then the shell, the landing page's parts, the two films (the stage they
+   share, then each film's positions and timing), and the phone-width rules last so they win. */
+
+@import url("settings/tokens.css");
+@import url("base/elements.css");
+
+@import url("layout/shell.css");
+@import url("landing/hero.css");
+@import url("landing/live-turn.css");
+@import url("landing/sections.css");
+
+@import url("movie/stage.css");
+@import url("movie/short.css");
+@import url("movie/detail.css");
+
+@import url("layout/responsive.css");
