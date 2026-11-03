@@ -1,13 +1,18 @@
+using LouisAgent.Api.Endpoints.Admin.Drafts;
 using LouisAgent.Api.Endpoints.Admin.Evals;
+using LouisAgent.Api.Endpoints.Admin.Prompts;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
+using LouisAgent.Api.Endpoints.Admin.Studio;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 
@@ -35,15 +40,35 @@ internal static class AdminEndpoints
         Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
         string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null,
         CalibrationRecorder? calibrationRecorder = null,
-        TimeProvider? time = null)
+        TimeProvider? time = null, IEvalDraftStore? drafts = null, StudioRunner? studio = null)
     {
         var handlers = new AdminHandlers(catalog, runner, adminKey, store, recorder, settingsOf, workspaceRoot);
         // One group for all of them, so the key check runs before any route's own work.
         var admin = routes.MapGroup("/admin").WithAccess(RouteAccess.AdminKey).AddEndpointFilter(handlers.Gate);
 
+        // One draft store for the list and both names, so a draft made under one is listed under the other.
+        var draftStore = drafts ?? new InMemoryEvalDraftStore();
+
         // The two lists: every eval (GET /evals), and the checks with their latest runs the Benchmarks page reads.
-        admin.MapEvals(catalog, store, workspaceRoot);
+        admin.MapEvals(catalog, store, workspaceRoot, draftStore);
         admin.MapGet("/benchmarks", handlers.GetList);
+
+        // Every built-in prompt as its header says it (CL27).
+        admin.MapGet("/prompts", PromptsHandlers.GetPrompts);
+
+        // The studio (F49.5): the runner's catalogue, its check and promptfoo in and out, which say the runner isn't
+        // there when none was given, and the evals being composed, kept beside the other drafts.
+        var runnerParts = studio ?? StudioRunner.None;
+        admin.MapStudio(runnerParts, draftStore, time ?? TimeProvider.System);
+
+        // A draft's try is a run like the Run button's, recorded with the settings every run reports.
+        var trying = new DraftTryHandlers(draftStore, runner, recorder, settingsOf, StudioEndpoints.Scratch);
+        admin.MapPost("/evals/drafts/{id}/try", trying.PostTry);
+
+        // Its publish: the checked folder on a branch in the workspace, or a zip where there's no git workspace.
+        var publishing = new DraftPublishHandlers(draftStore, runnerParts.Checker, workspaceRoot,
+            StudioEndpoints.Scratch);
+        admin.MapPost("/evals/drafts/{id}/publish", publishing.PostPublish);
 
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.
@@ -56,6 +81,7 @@ internal static class AdminEndpoints
             evals.MapNotes(store, time ?? TimeProvider.System);
             evals.MapRescore(catalog, runner, store, recorder, settingsOf);
             evals.MapCalibrations(catalog, runner, store, reviews, calibrations, calibrationRecorder);
+            evals.MapDrafts(catalog, store, reviews, draftStore, workspaceRoot, time ?? TimeProvider.System);
             evals.MapPost("/{check}/runs", handlers.StartRun);
             evals.MapGet("/runs/current", handlers.GetCurrent);
             evals.MapGet("/runs/{id}/events", handlers.GetEvents);

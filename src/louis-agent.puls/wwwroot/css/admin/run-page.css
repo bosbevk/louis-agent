@@ -51,7 +51,8 @@
 .cat-bar-fill.hat { opacity: .6; }
 .cat-bar-value { font-size: 12.5px; color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
 .category-no-trend { margin: 2px 0 0; font-size: 12px; }
-.trend.compact .trend-grid { gap: 8px; }
+.trend.compact .trend-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.trend.compact .trend-values > span { flex-wrap: wrap; }
 .trend.compact .trend-panel { padding: 8px 10px 10px; background: none; }
 .trend.compact .trend-svg { height: 64px; }
 .trend.compact .chart-head { gap: 6px; font-size: 12px; }

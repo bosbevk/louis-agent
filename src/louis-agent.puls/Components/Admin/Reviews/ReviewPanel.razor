@@ -39,4 +39,8 @@
         <p class="review-result">@ResultText</p>
         <p class="review-judge muted">@JudgeText @judge.Reason</p>
     }
+    @if (HasName && PersonVerdict is not null)
+    {
+        <KeepButtons Conversation="Conversation" Verdict="@PersonVerdict" />
+    }
 </section>

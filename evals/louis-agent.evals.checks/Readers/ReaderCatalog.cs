@@ -1,5 +1,6 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Readers.Listing;
 
 namespace LouisAgent.Evals.Readers;
 
@@ -30,6 +31,26 @@ public sealed class ReaderCatalog
                     new { reader.Name }));
         _readers = byName;
     }
+
+    /// <summary>Every reader by name, with the kind it reads.</summary>
+    public IReadOnlyList<ListedReader> Listing() =>
+        [.. _readers.Values.Select(reader => new ListedReader(reader.Name, KindOf(reader)))];
+
+    /// <summary>The kind a reader reads, from the interface it implements.</summary>
+    /// <remarks>A switch on the reader's type, one arm per reader interface (ADR 0051).</remarks>
+    private static ReaderKind KindOf(IReader reader) => reader switch
+    {
+        IMoneyReader => ReaderKind.Money,
+        INumberReader => ReaderKind.Number,
+        IImageReader => ReaderKind.Image,
+        IPriceReader => ReaderKind.Price,
+        _ => throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.WrongReaderKind,
+            new
+            {
+                reader.Name,
+                Kind = string.Join(", ", Enum.GetNames<ReaderKind>())
+            })),
+    };
 
     /// <summary>A catalogue with no readers: for a check built outside an eval, which names none.</summary>
     public static ReaderCatalog Empty { get; } = new([]);

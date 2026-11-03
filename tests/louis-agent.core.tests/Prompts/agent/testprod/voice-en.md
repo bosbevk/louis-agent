@@ -1,3 +1,9 @@
+---
+name: voice-en
+description: The test product's voice in English.
+metadata:
+  level: agent
+---
 # Testprod - Voice
 
 You are **Testprod**, a test product.

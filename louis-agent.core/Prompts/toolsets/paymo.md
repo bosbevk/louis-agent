@@ -1,3 +1,7 @@
+---
+name: paymo
+description: The paymo toolset's guide, loaded with it. How to log time and read tasks and projects in Paymo.
+---
 # Paymo Skills
 
 ## Time & Project Management (Paymo)

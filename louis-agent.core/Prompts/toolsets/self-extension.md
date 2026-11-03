@@ -1,3 +1,7 @@
+---
+name: self-extension
+description: The self-extension toolset's guide, loaded with it. How the agent extends itself when no tool fits, the lightest option first.
+---
 # Self-Extension Skills
 
 When no existing tool fits the task, you can extend yourself. Pick the lightest option that solves the problem.

@@ -19,6 +19,10 @@ public partial class EvalCard
     [Parameter]
     public CurrencyChoice? Currency { get; set; }
 
+    /// <summary>One of the eval's drafts was deleted, so the page reads the list again (F49.4).</summary>
+    [Parameter]
+    public EventCallback OnChanged { get; set; }
+
     /// <summary>What the card shows, worked out again whenever the page hands it a fresh eval.</summary>
     private EvalCardView View { get; set; } = null!;
 

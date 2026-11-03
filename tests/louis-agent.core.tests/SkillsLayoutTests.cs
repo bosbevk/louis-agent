@@ -1,5 +1,6 @@
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests;
@@ -45,7 +46,8 @@ public class SkillsLayoutTests
         // CL9 step 6: {product}/voice-{xx}.md is how the product talks in one language; {product}/voice.md holds the rest.
         foreach (string mode in RoleCatalog.Available(RoleLevel.Agent).Where(m => RoleCatalog.LanguageOf(m) is not null))
         {
-            string text = SkillFileSource.ReadEmbedded(RoleCatalog.FileName(mode, RoleLevel.Agent))!;
+            string file = RoleCatalog.FileName(mode, RoleLevel.Agent);
+            string text = PromptHeaders.Split(file, SkillFileSource.ReadEmbedded(file)!).Body;
             Assert.That(RoleCatalog.ModeParts(text).Routing, Is.Empty, $"{mode} has no routing of its own");
             Assert.That(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.SharedOf(mode), RoleLevel.Agent)), Is.Not.Null,
                 $"{mode}'s product has its shared voice.md");

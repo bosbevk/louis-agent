@@ -18,6 +18,7 @@ public sealed record ListedEval(
     int Version,
     string Proves,
     string? Manual,
+    string? Folder,
     ListedDataset? Dataset,
     IReadOnlyList<string> Categories,
     IReadOnlyList<ListedGrader> Graders);

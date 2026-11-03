@@ -4,8 +4,13 @@
     <div class="conv-head" title="@Question">
         <code>@Conversation.Task</code><small class="conv-q">@ExplorerText.Blurb(Question)</small>
         <span class="row-cost small">@Money(Conversation.Cost)</span>
+        <button type="button" class="turn-open quiet conv-sample" @onclick="ToggleSample">Sample</button>
         <RowActions TaskId="@Conversation.Task" OnReplay="OnReplay" OnTurns="OnOpenConversation" />
     </div>
+    @if (_sampling)
+    {
+        <SampleDialog Conversation="Where" OnClose="ToggleSample" />
+    }
     <div class="conv-chips">
         <ReviewPill Grades="Conversation.Grades" Order="Graders" Conversation="Where" />
         @if (Conversation.Errors > 0) { <span class="tree-chips"><span class="chip bad">errors @Conversation.Errors</span></span> }

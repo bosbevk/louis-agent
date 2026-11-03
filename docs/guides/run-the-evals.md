@@ -82,6 +82,10 @@ Pick by what you changed:
 | a prompt | `--web replay --of {runId}` | the recording's | live | the run's own |
 | the graders, the harness, the engine's code | `--replay {runId}` | the recording's | the recording's | $0 |
 
+The studio's *Try* ([Add an eval](add-an-eval.md#9-or-compose-it-in-the-studio)) is the last row on an eval that
+isn't in the catalogue yet: a replay of the run you name, of its folder (`--folder`) and only the samples you list
+(`--samples`), so it costs nothing.
+
 ### Re-scoring a run
 
 A grader change shouldn't cost a paid run. `run {name} --rescore {runId} < run.txt` (the file is `GET /v1/admin/evals/runs/{id}/protocol`) grades the

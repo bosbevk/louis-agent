@@ -1,5 +1,9 @@
 ---
-toolsets: web?
+name: testprod-specialist
+description: The test product's specialist, which always loads the web where the instance has it.
+metadata:
+  level: specialist
+  toolsets: web?
 ---
 # Testprod specialist
 

@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Agent;
@@ -241,9 +242,8 @@ internal static class OrchestratorSkills
                 new { Service = service, Directory = serviceDirectory }));
 
         var composite = new CompositeSkillProvider();
-        composite.AddProvider(MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(SkillFiles.Principles)!));
-        composite.AddProvider(
-            MarkdownSkillProvider.FromText(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(Mode, RoleLevel.Agent))!));
+        composite.AddProvider(MarkdownSkillProvider.FromText(BodyOf(SkillFiles.Principles)));
+        composite.AddProvider(MarkdownSkillProvider.FromText(BodyOf(RoleCatalog.FileName(Mode, RoleLevel.Agent))));
 
         string serviceFile = Path.Combine(serviceDirectory, "service.md");
         if (File.Exists(serviceFile)) composite.AddProvider(new MarkdownSkillProvider(serviceFile));
@@ -258,4 +258,7 @@ internal static class OrchestratorSkills
 
         return (composite, methods);
     }
+
+    /// <summary>A built-in prompt as the model reads it: without its header (CL27), which is for the loader.</summary>
+    private static string BodyOf(string path) => PromptCatalog.Get(path)!.Body;
 }

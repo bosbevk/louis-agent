@@ -31,4 +31,8 @@
     <None Include="..\..\docs\guides\add-an-eval.md" Link="docs\add-an-eval.md" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="18.1.0" />
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,7 @@
 # louis-agent.core — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `louis-agent.core/` · **References:** Microsoft.Extensions.AI,
-> Anthropic SDK, OpenAI and Ollama clients, dotenv.net · **Used by:** every host, the orchestrator, the tests
+> Anthropic SDK, OpenAI and Ollama clients, dotenv.net, YamlDotNet (a prompt's header, CL27) · **Used by:** every host, the orchestrator, the tests
 
 ## Purpose
 
@@ -116,7 +116,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Guardrails/` | `WorkspaceBoundary` (relative, inside the root, no symbolic links), `SensitiveFiles`, `SsrfGuard` (public addresses only, every hop and at connect time) |
 | `Hosting/AgentHost.cs`, `AgentHostContext.cs` | Bootstrap for every host (S, CL15: the flow only): options, client, prices, rates, ledger, engine; `UsageLedger` (where the records go), `ToolsOnlyChatClient` (the MCP server's stand-in) |
 | `Hosting/EnvFiles/HostEnvironment.cs` | The .env files a host loads (secrets, .env, the LLM profile), and the profile-name rule |
-| `Hosting/Prompts/SkillLoader.cs` | The system prompt assembled from skill files: the principles, the role, the guides of the session's toolsets, the function skills |
+| `Hosting/Prompts/SkillLoader.cs` | The system prompt assembled from skill files: the principles, the role, the guides of the session's toolsets, the function skills, each built-in one as its body from `PromptCatalog` (no header, CL27); `ToolsetsOf`, the toolsets a role's header always loads (F33, ADR 0025), which the API's sessions add |
 | `Hosting/SessionLlms/SessionLlmLoader.cs` | The models a session may name (F30): their profiles read, the minions' choices checked |
 | `Hosting/AgentEngineFactory.cs` | One engine per toolsets + role + level (F5, F21, CL8), shared by the sessions that ask for the same; checks the request and builds the engine, and keeps the cache in `Engines/` |
 | `Hosting/Engines/EngineCache.cs`, `ProfileKey.cs` | The factory's cache (a class: built once on first use, outside the lock; the least recently used of 16 is dropped) and the key it holds engines by (a record: toolsets, role, level, LLM profile, tool; its `Text` is what `Profiles` shows) |
@@ -138,8 +138,9 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 | `Skills/MarkdownSkillLoader.cs` | Parses `## Skill:` procedures (description, parameters, a bash / PowerShell / Python fence) from Markdown |
 | `Skills/Providers/MarkdownSkillProvider.cs`, `CompositeSkillProvider.cs` | Every skill file we control is plain markdown read by `MarkdownSkillProvider`; `CompositeSkillProvider` joins them into the system prompt (CL13: the seam's implementations in `Providers/`) |
 | `Skills/Languages/ScriptLanguage.cs`, `ScriptLanguages.cs` | The script languages a fence can name (bash, PowerShell, Python; F18 step 7.5.3), parsed once in `MarkdownSkillLoader.NormalizeLanguage`; a leaf folder that uses nothing of core, so the top of `Skills/` and every other folder may use it |
-| `Skills/Roles/RoleCatalog.cs`, `RoleLevel.cs`, `RoleException.cs` | A session's role (F21; "personality" before CL13 and CL14): its file in its level's folder (`RoleLevel`, CL8), valid names, the ones available, and the toolsets a role declares (`ToolsetsOf`, F33) |
-| `Skills/Roles/RoleHeader.cs` | A role's header (F33, ADR 0025): `toolsets: shops?` between `---` lines at the top of its file, read for the session and stripped before the model sees the file |
+| `Skills/Roles/RoleCatalog.cs`, `RoleException.cs` | A session's role (F21; "personality" before CL13 and CL14): its file in its level's folder (CL8), valid names, the ones available |
+| `Skills/RoleLevel.cs` | The level a session runs at (agent, specialist, minion; CL8, ADR 0017), at the top of `Skills/` since CL27, since a prompt's header names it too and the skills' folders use only the top |
+| `Skills/Headers/` | Every built-in prompt's front matter (CL27, ADR 0063): `PromptHeader` (name, description, level, toolsets), `PromptFile` (path, header, body), `PromptHeaders.Split` (the one strict reader, YamlDotNet's node model: an unknown key, a name not the file's, a bad level, a missing description or an unclosed fence refuses the file with `PromptHeaderException`, naming it; a file without the fence is read whole), `PromptCatalog` (every embedded prompt read once, lazily, after the host registered its prompts; the loader takes bodies from it, `SkillLoader.ToolsetsOf` a role's toolsets, F33, and the API's admin list). The refusals are `Messages/PromptHeaderMessage` |
 | `Agent/Toolsets/CoreToolset.cs` | Core's twelve toolsets as an enum (ADR 0043), shared by core, the hosts and their tests; the lower-case name is the wire name, written with `.Wire()` (F18 step 7.5.3). The catalogue stays open: a pack adds names core does not list |
 | `Skills/SkillFileSource.cs`, `SkillFiles.cs` | The built-in prompts in `Prompts/`, embedded with a manifest and read only from the assembly (`ManifestEmbeddedFileProvider`); their paths, the files `AgentHost` loads by name; which names the agent may not take |
 | `Tools/Workspace/` | The files toolset as five classes, one concern each (S, CL15): `WorkspaceFileTools` (read ≤ 1 MB, write, append), `WorkspaceOrganiseTools` (create a directory, delete, rename, copy), `WorkspaceBrowseTools` (list, tree, exists, file info), `WorkspaceSearchTools` (text in files, files by name), each on the workspace boundary with the secret-file checks; `Listing/` holds what they share and is tested alone: `WorkspaceFilter` (what is skipped, what is searched), `DirectoryTree` (the tree drawn), `FileSizeText` |

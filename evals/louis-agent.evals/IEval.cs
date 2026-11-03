@@ -40,6 +40,13 @@ public interface IEval
     string? Manual => null;
 
     /// <summary>
+    /// The eval's folder, as a path from the repository root with forward slashes
+    /// (<c>identities/louis-agent.identity.puls/Evals/Cook</c>), where the portal reads its scenarios to make a sample
+    /// from a run. Null for an eval that is no folder, such as the stub.
+    /// </summary>
+    string? Folder => null;
+
+    /// <summary>
     /// The modes the task runs in (the agent alone, or with a helper). Some evals read them from the instance.
     /// </summary>
     ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions, CancellationToken cancellationToken);

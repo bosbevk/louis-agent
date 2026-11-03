@@ -1,3 +1,9 @@
+---
+name: puls-minion-web-price-lookup
+description: A Puls minion that finds one ingredient's price at every shop the specialist names, one line per shop.
+metadata:
+  level: minion
+---
 # Puls minion: Web price lookup
 
 Your one task: find the price of one ingredient at every shop the specialist names, and report one line per shop.

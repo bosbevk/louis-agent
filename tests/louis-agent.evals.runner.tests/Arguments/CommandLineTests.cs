@@ -16,6 +16,26 @@ public class CommandLineTests
     public void ListIsParsed() =>
         Assert.That(CommandLine.Parse(["--list"]), Is.EqualTo(new ListRequest()));
 
+    /// <summary>Asking for the catalogue's checks and readers is one word too (F49.5).</summary>
+    [Test]
+    public void ChecksIsParsed() =>
+        Assert.That(CommandLine.Parse(["--checks"]), Is.EqualTo(new ChecksRequest()));
+
+    /// <summary>promptfoo in names the file and the folder; out names the folder (F49.5).</summary>
+    [Test]
+    public void PromptfooInAndOut_AreParsed()
+    {
+        Assert.That(CommandLine.Parse(["--import-promptfoo", "a.yaml", "/tmp/e"]),
+            Is.EqualTo(new ImportPromptfooRequest("a.yaml", "/tmp/e")));
+        Assert.That(CommandLine.Parse(["--export-promptfoo", "/tmp/e"]),
+            Is.EqualTo(new ExportPromptfooRequest("/tmp/e")));
+    }
+
+    /// <summary>A check names the folder it judges (F49.5).</summary>
+    [Test]
+    public void CheckIsParsed_WithItsFolder() =>
+        Assert.That(CommandLine.Parse(["--check", "/tmp/studio/abc"]), Is.EqualTo(new CheckRequest("/tmp/studio/abc")));
+
     /// <summary>A run needs only its eval's name, and then runs each mode once.</summary>
     [Test]
     public void RunTakesItsNameAndOneRepeatByDefault() =>

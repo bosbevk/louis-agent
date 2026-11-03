@@ -13,6 +13,10 @@ needed (CL9 retired `AGENT_FUNCTION`); a session without it (Puls's chats: `spec
 its toolsets' guides, no skill file. A name that is a built-in prompt (a toolset's guide) is refused: what is embedded
 is built in (`SkillFiles.IsBuiltIn`).
 
+A function skill on disk needs no header: unlike the built-in prompts, which open with their front matter
+([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)), it is read whole until Phase 7 turns these files into
+`SKILL.md` folders with the same header.
+
 Procedures use `## Skill: Name` with an `Execution:` fence (bash, powershell or python); arguments arrive as
 `SKILL_ARG_*` environment variables, so quote them and never build commands from them
 ([ADR 0004](../adr/0004-arguments-as-data.md)):

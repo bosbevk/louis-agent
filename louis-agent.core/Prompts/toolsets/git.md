@@ -1,3 +1,7 @@
+---
+name: git
+description: The git toolset's guide, loaded with it. Status, diffs, branches, staging, commits, merges and history, and the rules for each.
+---
 # Git Skills
 
 Guidance for the `git` toolset: status, diffs, branches, staging, commits, merges and history.

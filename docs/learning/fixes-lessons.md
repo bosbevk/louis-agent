@@ -175,6 +175,23 @@ instead of hiding it from the key and was the smallest change; the price was a f
 ([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md)). When a replay misses, read *which* message changed
 first: here it pointed straight at the one line that carried numbers. Skill 12 (evaluation) and 13 (cost).
 
+## FX33 · A raw string has its file's line endings
+
+A C# raw string literal spanning lines holds the newlines of the source file it is written in, and git writes that
+file with CRLF on a Windows checkout and LF on Linux. A test that compares a raw string's text to a `\n` literal
+passes or fails by where it was checked out: here it passed in the worktree that wrote the file and failed on a fresh
+checkout of `main`. The lesson for platform-neutral tests (ADR 0014): a test that cares about line endings sets them
+itself (`ReplaceLineEndings`), and a test is proved on a fresh checkout, not only where it was written. Skill 18.
+
+## FX31 · A small copy of a layout needs its own columns
+
+The category cards draw the same trend chart as the big panel, only smaller, and they took its grid with it: three
+fixed columns. A card has two panels, so each got a third of the card and the last third stayed empty; in that narrow
+panel the change badge's text wrapped inside its round pill and turned into a green blob. Two lessons. A pill (a badge
+with fully rounded ends) must never wrap, so `white-space: nowrap` belongs on the pill itself, wherever it is drawn.
+And a compact version of a component should size its columns from what it holds (`auto-fit`), not inherit the big
+version's count. Skill 18 (shipping: what a reviewer sees).
+
 ## FX28 · A free run is marked as one, wherever a number is read as a measure
 
 A replay and a re-score both cost R0 for a reason (no model was asked), and a screen that shows the number without
