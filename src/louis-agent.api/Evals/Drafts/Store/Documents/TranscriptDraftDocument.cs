@@ -2,7 +2,7 @@ using LouisAgent.Api.Evals.Drafts.Transcripts;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace LouisAgent.Api.Evals.Drafts.Store;
+namespace LouisAgent.Api.Evals.Drafts.Store.Documents;
 
 /// <summary>
 /// A transcript draft as MongoDB keeps it in <c>eval_drafts</c>: its id as the document's own, <c>kind</c> set to

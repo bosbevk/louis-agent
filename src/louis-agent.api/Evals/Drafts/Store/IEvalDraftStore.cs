@@ -1,3 +1,4 @@
+using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Drafts.Samples;
 using LouisAgent.Api.Evals.Drafts.Transcripts;
 
@@ -28,6 +29,18 @@ public interface IEvalDraftStore
 
     /// <summary>The transcript draft with this id, if there is one.</summary>
     Task<TranscriptDraft?> GetTranscriptAsync(string id, CancellationToken cancellationToken = default);
+
+    /// <summary>Adds an eval being composed (F49.5).</summary>
+    Task AddAsync(EvalDraft draft, CancellationToken cancellationToken = default);
+
+    /// <summary>Replaces the eval draft with this one's id, and says whether there was one to replace.</summary>
+    Task<bool> ReplaceAsync(EvalDraft draft, CancellationToken cancellationToken = default);
+
+    /// <summary>The eval draft with this id, if there is one.</summary>
+    Task<EvalDraft?> GetEvalAsync(string id, CancellationToken cancellationToken = default);
+
+    /// <summary>Every eval being composed, oldest first.</summary>
+    Task<IReadOnlyList<EvalDraft>> EvalsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>Deletes the draft with this id, whichever kind it is, and says whether there was one.</summary>
     Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default);

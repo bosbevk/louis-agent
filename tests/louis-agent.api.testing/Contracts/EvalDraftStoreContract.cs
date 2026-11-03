@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Drafts.Samples;
 using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.Drafts.Transcripts;
@@ -195,4 +196,74 @@ public abstract class EvalDraftStoreContract
     [Test]
     public async Task DeletingADraftThatIsNotThere_SaysSo() =>
         Assert.That(await _store.DeleteAsync(NewId()), Is.False);
+
+    /// <summary>
+    /// An eval being composed (F49.5), some seconds after the start: its file's text as the person wrote it, with
+    /// Afrikaans and a quote in it, and one rubric.
+    /// </summary>
+    private static EvalDraft Composed(string name, int seconds, string proves = "Kook \"lekker\" vir vier — ê") =>
+        new(NewId(), Identity, name, $$"""{"name":"{{name}}","proves":"{{proves.Replace("\"", "\\\"")}}"}""",
+            [new RubricFile("meal.md", "Is dit 'n maaltyd vir vier?\n- ja\n- nee")], "Louis", T0.AddSeconds(seconds));
+
+    /// <summary>An eval draft reads back whole: its file's text exactly, its rubrics, who and when.</summary>
+    [Test]
+    public async Task AnEvalDraft_ReadsBackWhole()
+    {
+        var draft = Composed(NewEval(), 1);
+
+        await _store.AddAsync(draft);
+
+        var read = await _store.GetEvalAsync(draft.Id);
+        Assert.That(read, Is.Not.Null);
+        Assert.That((read!.Identity, read.Name, read.Json, read.Author, read.At),
+            Is.EqualTo((draft.Identity, draft.Name, draft.Json, draft.Author, draft.At)));
+        Assert.That(read.Rubrics, Is.EqualTo(draft.Rubrics));
+    }
+
+    /// <summary>Replacing an eval draft keeps its id and takes the new text; one that isn't there says so.</summary>
+    [Test]
+    public async Task ReplacingAnEvalDraft_TakesTheNewText_AndOneNotThereSaysSo()
+    {
+        var draft = Composed(NewEval(), 1);
+        await _store.AddAsync(draft);
+        var changed = Composed(draft.Name, 5, "Kook vir ses") with { Id = draft.Id };
+
+        Assert.That(await _store.ReplaceAsync(changed), Is.True);
+        Assert.That(await _store.ReplaceAsync(Composed(NewEval(), 6)), Is.False, "a new id isn't there to replace");
+
+        var read = await _store.GetEvalAsync(draft.Id);
+        Assert.That((read!.Json, read.At), Is.EqualTo((changed.Json, changed.At)));
+    }
+
+    /// <summary>
+    /// The eval drafts are listed oldest first, and never as another kind: an eval draft is no sample, and a sample's
+    /// id finds no eval draft.
+    /// </summary>
+    [Test]
+    public async Task EvalDrafts_AreListedOldestFirst_AndKeptApartFromTheOtherKinds()
+    {
+        var (later, earlier) = (Composed(NewEval(), 9), Composed(NewEval(), 2));
+        var sample = Sample(later.Name, 3);
+        await _store.AddAsync(later);
+        await _store.AddAsync(earlier);
+        await _store.AddAsync(sample);
+
+        var ids = (await _store.EvalsAsync()).Select(d => d.Id).ToList();
+
+        Assert.That(ids.IndexOf(earlier.Id), Is.LessThan(ids.IndexOf(later.Id)));
+        Assert.That(ids, Does.Not.Contain(sample.Id));
+        Assert.That(await _store.GetEvalAsync(sample.Id), Is.Null);
+        Assert.That((await _store.OfEvalAsync(later.Name)).Samples.Select(d => d.Id), Is.EqualTo(new[] { sample.Id }));
+    }
+
+    /// <summary>An eval draft is deleted by its id, as the other kinds are.</summary>
+    [Test]
+    public async Task AnEvalDraft_IsDeletedByItsId()
+    {
+        var draft = Composed(NewEval(), 1);
+        await _store.AddAsync(draft);
+
+        Assert.That(await _store.DeleteAsync(draft.Id), Is.True);
+        Assert.That(await _store.GetEvalAsync(draft.Id), Is.Null);
+    }
 }

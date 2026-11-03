@@ -1,6 +1,7 @@
 using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Listing;
 
 namespace LouisAgent.Api.Tests.Evals.Studio;
 

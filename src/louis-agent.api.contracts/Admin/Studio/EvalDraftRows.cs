@@ -1,0 +1,27 @@
+namespace LouisAgent.Api.Contracts.Admin.Studio;
+
+/// <summary>Every eval being composed in the studio, oldest first.</summary>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+public sealed record EvalDraftsReply(IReadOnlyList<EvalDraftRow> Drafts);
+
+/// <summary>
+/// An eval being composed: its id, the identity and name read from its file, the file's text as typed, its rubrics,
+/// who saved it last and when.
+/// </summary>
+public sealed record EvalDraftRow(
+    string Id,
+    string Identity,
+    string Name,
+    string Json,
+    IReadOnlyList<RubricRow> Rubrics,
+    string Author,
+    DateTimeOffset At);
+
+/// <summary>One rubric: its file's name in <c>Rubrics/</c> and its text.</summary>
+public sealed record RubricRow(string Name, string Text);
+
+/// <summary>
+/// What the compose page sends to save an eval: its file's text (which names the eval and its identity), its rubrics
+/// and who is saving it.
+/// </summary>
+public sealed record EvalDraftRequest(string? Json, IReadOnlyList<RubricRow>? Rubrics, string? Author);

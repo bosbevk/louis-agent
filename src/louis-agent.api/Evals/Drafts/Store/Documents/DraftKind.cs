@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 
-namespace LouisAgent.Api.Evals.Drafts.Store;
+namespace LouisAgent.Api.Evals.Drafts.Store.Documents;
 
 /// <summary>
 /// Which kind of draft a document in <c>eval_drafts</c> holds, so each kind's typed view of the one collection reads
@@ -12,4 +12,5 @@ internal enum DraftKind
 {
     [WireName("sample")] Sample,
     [WireName("transcript")] Transcript,
+    [WireName("eval")] Eval,
 }

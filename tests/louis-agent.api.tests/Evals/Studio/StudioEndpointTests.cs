@@ -3,6 +3,7 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Listing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 

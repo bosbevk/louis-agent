@@ -5,6 +5,7 @@ using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Listing;
 
 namespace LouisAgent.Api.Evals.Studio;
 

@@ -1,4 +1,6 @@
+using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Drafts.Samples;
+using LouisAgent.Api.Evals.Drafts.Store.Documents;
 using LouisAgent.Api.Evals.Drafts.Transcripts;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Mongo;
@@ -11,9 +13,10 @@ namespace LouisAgent.Api.Evals.Drafts.Store;
 /// its id the document's own and a <c>kind</c> field saying which kind it is.
 /// </summary>
 /// <remarks>
-/// Repository over typed collections (ADR 0048): the store opens two typed views of the one collection, a sample's
-/// <see cref="SampleDraftDocument"/> and a transcript's <see cref="TranscriptDraftDocument"/>, and each reads only the
-/// documents of its kind, so the driver needs no polymorphism (Louis's pick). A delete goes by the id alone, whichever
+/// Repository over typed collections (ADR 0048): the store opens three typed views of the one collection, a sample's
+/// <see cref="SampleDraftDocument"/>, a transcript's <see cref="TranscriptDraftDocument"/> and an eval being
+/// composed's <see cref="EvalDraftDocument"/>, and each reads only the documents of its kind, so the driver needs no
+/// polymorphism (Louis's pick). A delete goes by the id alone, whichever
 /// kind it is. It opens the database as the eval store does (<see cref="MongoEvalDatabase.Open"/>), with the same
 /// short timeouts and mappings; the index on eval then time serves both views and is made on first use.
 /// </remarks>
@@ -29,6 +32,9 @@ public sealed class MongoEvalDraftStore : IEvalDraftStore
     /// <summary>The same collection, read as transcript drafts.</summary>
     private readonly IMongoCollection<TranscriptDraftDocument> _transcripts;
 
+    /// <summary>The same collection, read as evals being composed (F49.5).</summary>
+    private readonly IMongoCollection<EvalDraftDocument> _evals;
+
     /// <summary>Makes the index the first time anything needs it, and tries again if that failed.</summary>
     private readonly OnceItWorks _index;
 
@@ -38,6 +44,7 @@ public sealed class MongoEvalDraftStore : IEvalDraftStore
         var db = MongoEvalDatabase.Open(url, database);
         _samples = db.GetCollection<SampleDraftDocument>(Collection);
         _transcripts = db.GetCollection<TranscriptDraftDocument>(Collection);
+        _evals = db.GetCollection<EvalDraftDocument>(Collection);
 
         // An eval's drafts, oldest first, is the one query; both kinds name the two fields the same way.
         _index = new OnceItWorks(() => _samples.Indexes.CreateOneAsync(new CreateIndexModel<SampleDraftDocument>(
@@ -81,6 +88,30 @@ public sealed class MongoEvalDraftStore : IEvalDraftStore
     public async Task<TranscriptDraft?> GetTranscriptAsync(string id, CancellationToken cancellationToken = default) =>
         (await _transcripts.Find(d => d.Id == id && d.Kind == DraftKind.Transcript)
             .FirstOrDefaultAsync(cancellationToken))?.ToDraft();
+
+    /// <summary>Writes the eval draft as a new document.</summary>
+    public async Task AddAsync(EvalDraft draft, CancellationToken cancellationToken = default)
+    {
+        await _index.RunAsync();
+        await _evals.InsertOneAsync(EvalDraftDocument.Of(draft), cancellationToken: cancellationToken);
+    }
+
+    /// <summary>Replaces the eval draft's document, only if there is one of that kind under its id.</summary>
+    public async Task<bool> ReplaceAsync(EvalDraft draft, CancellationToken cancellationToken = default) =>
+        (await _evals.ReplaceOneAsync(d => d.Id == draft.Id && d.Kind == DraftKind.Eval,
+            EvalDraftDocument.Of(draft), cancellationToken: cancellationToken)).MatchedCount > 0;
+
+    /// <summary>Reads the eval draft with this id; another kind's id finds none.</summary>
+    public async Task<EvalDraft?> GetEvalAsync(string id, CancellationToken cancellationToken = default) =>
+        (await _evals.Find(d => d.Id == id && d.Kind == DraftKind.Eval).FirstOrDefaultAsync(cancellationToken))
+        ?.ToDraft();
+
+    /// <summary>Reads every eval draft, oldest first.</summary>
+    public async Task<IReadOnlyList<EvalDraft>> EvalsAsync(CancellationToken cancellationToken = default) =>
+    [
+        .. (await _evals.Find(d => d.Kind == DraftKind.Eval).SortBy(d => d.At).ToListAsync(cancellationToken))
+        .Select(d => d.ToDraft())
+    ];
 
     /// <summary>Deletes the draft with this id, whichever kind it is.</summary>
     public async Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default) =>

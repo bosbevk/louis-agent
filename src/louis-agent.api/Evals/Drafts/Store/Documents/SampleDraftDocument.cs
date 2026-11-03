@@ -5,7 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace LouisAgent.Api.Evals.Drafts.Store;
+namespace LouisAgent.Api.Evals.Drafts.Store.Documents;
 
 /// <summary>
 /// A sample draft as MongoDB keeps it in <c>eval_drafts</c>: its id as the document's own, <c>kind</c> set to
@@ -40,14 +40,16 @@ internal sealed record SampleDraftDocument(
     [property: BsonElement("at")] DateTimeOffset At)
 {
     /// <summary>How the expected values are written back out as JSON: numbers as plain numbers.</summary>
-    private static readonly JsonWriterSettings RelaxedJson = new() { OutputMode = JsonOutputMode.RelaxedExtendedJson };
+    private static readonly JsonWriterSettings RelaxedJson =
+        new() { OutputMode = JsonOutputMode.RelaxedExtendedJson };
 
     /// <summary>The document for a sample draft.</summary>
     public static SampleDraftDocument Of(SampleDraft d)
     {
         var (sample, metadata) = (d.Sample, d.Sample.Metadata);
         return new SampleDraftDocument(d.Id, DraftKind.Sample, d.Eval, d.Identity, d.Run, d.Conversation.Mode,
-            d.Conversation.Repeat, d.Conversation.Task, sample.Id, [.. sample.Input.Select(SampleMessageDocument.Of)],
+            d.Conversation.Repeat, d.Conversation.Task, sample.Id,
+            [.. sample.Input.Select(SampleMessageDocument.Of)],
             sample.Target, metadata.Place, metadata.TimeZone, metadata.FollowUps,
             BsonDocument.Parse(JsonSerializer.Serialize(metadata.Expected)), metadata.Categories, d.Author, d.At);
     }

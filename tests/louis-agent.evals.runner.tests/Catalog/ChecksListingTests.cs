@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Listing;
 using LouisAgent.Evals.Runner.Catalog;
 
 namespace LouisAgent.Evals.Runner.Tests.Catalog;

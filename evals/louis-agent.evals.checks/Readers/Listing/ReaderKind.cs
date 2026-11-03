@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 
-namespace LouisAgent.Evals.Readers;
+namespace LouisAgent.Evals.Readers.Listing;
 
 /// <summary>
 /// What a reader reads: a money total, numbers, images or prices, one per reader interface. The studio's form offers a

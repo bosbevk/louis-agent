@@ -59,4 +59,26 @@ public enum DraftMessage
     [Description(
         "A known-bad needs a person's fail on {Task}, and it has only passes: keep it as a reference instead.")]
     KnownBadNeedsAFail,
+
+    [Description("The eval's file must be a JSON object that names the eval and the identity it proves.")]
+    EvalFileNotAnObject,
+
+    [Description(
+        "The eval's file needs its '{Field}' as text in kebab-case (lowercase letters and digits joined by single dashes): it names the folder the eval becomes.")]
+    EvalFileNeedsAName,
+
+    [Description("The eval's file is missing, or longer than {Limit} characters.")]
+    EvalFileTooBig,
+
+    [Description("An eval takes at most {Limit} rubrics.")]
+    TooManyRubrics,
+
+    [Description("The rubric '{Name}' must be a kebab-case name ending in .md, such as meal-for-people.md.")]
+    RubricNameNotKebabCase,
+
+    [Description("The rubric '{Name}' is longer than {Limit} characters.")]
+    RubricTooBig,
+
+    [Description("There is no eval being composed with the id '{Id}'.")]
+    NoEvalDraft,
 }

@@ -1,4 +1,5 @@
 using LouisAgent.Api.Contracts.Admin.Studio;
+using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Choices;
 
@@ -20,4 +21,17 @@ internal static class StudioReplies
             new([.. listed.Checks.Select(check => new CheckTypeRow(check.Type, check.Kind.Wire(), check.Parameters))],
                 [.. listed.Readers.Select(reader => new ReaderRow(reader.Reader, reader.Kind.Wire()))]);
     }
+
+    /// <summary>An eval draft's row.</summary>
+    extension(EvalDraftRow)
+    {
+        /// <summary>The row for an eval being composed.</summary>
+        public static EvalDraftRow Of(EvalDraft draft) =>
+            new(draft.Id, draft.Identity, draft.Name, draft.Json,
+                [.. draft.Rubrics.Select(r => new RubricRow(r.Name, r.Text))], draft.Author, draft.At);
+    }
+
+    /// <summary>The rubrics a request sent, as the draft keeps them.</summary>
+    public static IReadOnlyList<RubricFile>? ToFiles(this IReadOnlyList<RubricRow>? rows) =>
+        rows?.Select(r => new RubricFile(r.Name, r.Text ?? "")).ToList();
 }
