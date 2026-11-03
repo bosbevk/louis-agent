@@ -33,6 +33,7 @@
 | [Change the usage probe](change-the-usage-probe.md) | `tools/louis-agent.usage-probe` | Check a provider's usage, fix a mapper, total a ledger, add a command |
 | [Change the code-review web app](change-the-web-app.md) | `src/louis-agent.web` | Add a tab, call a new endpoint, add a theme, test the page |
 | [Change the Puls web app](change-the-puls-app.md) | `src/louis-agent.puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
+| [Change the site](change-the-site.md) | `src/louis-agent.site` | Run it, add a page, change the theme, change a film, export a film as a video |
 | [Change the shared web library](change-the-web-shared.md) | `src/louis-agent.web.shared` | Decide what is shared, add an API call, follow a new event, add a component |
 | [Change the engine](change-the-engine.md) | `louis-agent.core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
 | [Change Puls](change-puls.md) | `identities/louis-agent.identity.puls` | Change what Puls says or routes, add a language, a specialist or a minion's function |
