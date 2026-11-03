@@ -6,7 +6,7 @@ namespace LouisAgent.Api.Evals.Drafts.Store.Documents;
 /// <summary>
 /// An eval being composed, as MongoDB keeps it in <c>eval_drafts</c>: its id as the document's own, <c>kind</c> set
 /// to <c>eval</c>, its name under <c>eval</c> as the other kinds file theirs, its identity, its file's text, its
-/// rubrics, and who saved it last and when. A field added later never breaks a read.
+/// rubrics, who saved it last and when, and its own scenario files (none for a draft composed by hand). A field added later never breaks a read.
 /// </summary>
 /// <remarks>
 /// Metadata Mapping on a Data Transfer Object (Fowler, PoEAA), the third typed view of the one collection, beside
@@ -23,7 +23,7 @@ internal sealed record EvalDraftDocument(
     [property: BsonElement("rubrics")] IReadOnlyList<RubricDocument> Rubrics,
     [property: BsonElement("author")] string Author,
     [property: BsonElement("at")] DateTimeOffset At,
-    [property: BsonElement("scenarios")] IReadOnlyList<RubricDocument>? Scenarios = null)
+    [property: BsonElement("scenarios")] IReadOnlyList<RubricDocument> Scenarios)
 {
     /// <summary>The document for an eval draft.</summary>
     public static EvalDraftDocument Of(EvalDraft d) =>
@@ -34,7 +34,7 @@ internal sealed record EvalDraftDocument(
     /// <summary>The eval draft this document holds.</summary>
     public EvalDraft ToDraft() =>
         new(Id, Identity, Eval, Json, [.. Rubrics.Select(r => new RubricFile(r.Name, r.Text))], Author, At,
-            [.. (Scenarios ?? []).Select(s => new RubricFile(s.Name, s.Text))]);
+            [.. Scenarios.Select(s => new RubricFile(s.Name, s.Text))]);
 }
 
 /// <summary>One rubric of an eval draft, as its document keeps it: the file's name and its text.</summary>
