@@ -100,7 +100,8 @@ public class DraftFolderTests
         Write(kept, "Dataset/scenarios/held-out/weather-worcester.json", "{}");
         Write(kept, "Rubrics/weather-right.md", "Was die weer reg?");
 
-        string folder = DraftFolder.Write(Composed(), Drafts(), _root, kept);
+        // Only a kept transcript, so the scenarios are as git holds them and the manifest stays as it is.
+        string folder = DraftFolder.Write(Composed(), new EvalDrafts([], Drafts().Transcripts), _root, kept);
 
         Assert.That(File.Exists(Path.Combine(folder, "manual.md")), Is.True, "the manual");
         Assert.That(File.Exists(Path.Combine(folder, "Transcripts", "weather-old.reference.txt")), Is.True,
@@ -113,6 +114,54 @@ public class DraftFolderTests
             Is.EqualTo("Is die weer reg?"), "the draft's rubric over the old one");
         Assert.That(File.Exists(Path.Combine(folder, "Transcripts", "weather-paarl.reference.txt")), Is.True,
             "and the kept transcript beside them");
+    }
+
+    /// <summary>
+    /// An edit that changes the scenarios bumps the eval's manifest (FX32, Louis's pick): one version up, a dated
+    /// change line, and the hash cleared for the runner to seal, as a person does by hand when a dataset changes.
+    /// </summary>
+    [Test]
+    public void AnEditThatChangesTheScenarios_BumpsTheManifest()
+    {
+        string kept = AWorkspaceEval();
+
+        string folder = DraftFolder.Write(Composed(), Drafts(), _root, kept);
+
+        var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(folder, "Dataset", "dataset.json")))
+            .RootElement;
+        var changes = manifest.GetProperty("changes").EnumerateArray().Select(change => change.GetString()).ToList();
+        Assert.That((manifest.GetProperty("version").GetInt32(), manifest.GetProperty("content_hash").GetString()),
+            Is.EqualTo((2, "")));
+        Assert.That(changes, Has.Count.EqualTo(2));
+        Assert.That(changes[0], Is.EqualTo("2026-10-01: first version"));
+        Assert.That(changes[1], Does.StartWith("2026-11-03: "));
+        Assert.That(manifest.GetProperty("covers").GetString(), Is.EqualTo("Die weer in die Boland."),
+            "the rest of the manifest as it was");
+    }
+
+    /// <summary>An edit whose scenarios are the ones git holds keeps the manifest as it is, hash and all.</summary>
+    [Test]
+    public void AnEditThatKeepsTheScenarios_KeepsTheManifest()
+    {
+        string kept = AWorkspaceEval();
+        string sample = JsonSerializer.Serialize(Drafts().Samples[0].Sample, SampleBody.FileJson) + "\n";
+        Write(kept, "Dataset/scenarios/dev/weather-paarl.json", sample);
+
+        string folder = DraftFolder.Write(Composed(), Drafts(), _root, kept);
+
+        Assert.That(File.ReadAllText(Path.Combine(folder, "Dataset", "dataset.json")),
+            Is.EqualTo(File.ReadAllText(Path.Combine(kept, "Dataset", "dataset.json"))));
+    }
+
+    /// <summary>An eval in the workspace with a sealed manifest at version 1, and its folder.</summary>
+    private string AWorkspaceEval()
+    {
+        string kept = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent", "Evals", "Weather");
+        Write(kept, "Dataset/dataset.json", """
+            {"name":"weather-eval","version":1,"covers":"Die weer in die Boland.","content_hash":"abc123",
+             "changes":["2026-10-01: first version"]}
+            """);
+        return kept;
     }
 
     /// <summary>Writing again starts afresh: a file the draft no longer has is gone.</summary>

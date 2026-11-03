@@ -111,6 +111,9 @@ public enum DraftMessage
     [Description("{Date}: composed in the studio (F49.5)")]
     ComposedChange,
 
+    [Description("{Date}: edited in the studio, its scenarios changed")]
+    EditedChange,
+
     [Description(
         "The eval isn't ready to publish: the runner's check found {Count} problem(s), the first: {First}. Check it on the Studio page, fix it, then publish.")]
     PublishNeedsAPassingCheck,

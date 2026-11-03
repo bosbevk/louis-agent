@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using LouisAgent.Api.Evals.Drafts;
 using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Drafts.Samples;
@@ -14,7 +15,8 @@ namespace LouisAgent.Api.Evals.Studio;
 /// its dev scenarios and its transcript drafts under the names they were kept with. Each draft has a folder of its own
 /// under the root, written afresh every time, so a file the draft dropped is gone. An edit of an eval the workspace
 /// already has starts from a copy of its folder (FX32), so what git holds and the studio doesn't keep (its reference
-/// transcripts, held-out scenarios, labels, manual and manifest) is checked and published with it.
+/// transcripts, held-out scenarios, labels, manual and manifest) is checked and published with it; when the draft
+/// changes a scenario, that manifest is bumped a version for the runner to seal.
 /// </summary>
 /// <remarks>
 /// The studio's one bridge from records to files: check, try and publish all read the folder this writes, so what is
@@ -26,6 +28,9 @@ namespace LouisAgent.Api.Evals.Studio;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
 public static class DraftFolder
 {
+    /// <summary>How a bumped manifest is written back: indented, as the eval folders keep theirs.</summary>
+    private static readonly JsonSerializerOptions Indented = new() { WriteIndented = true };
+
     /// <summary>
     /// The draft's folder under <paramref name="root"/>, written afresh, and its path; an edit starts from a copy of
     /// <paramref name="existing"/>, the eval's folder in the workspace (<see cref="EvalHomes.Existing"/>).
@@ -49,11 +54,15 @@ public static class DraftFolder
             [MessageText.Format(DraftMessage.ComposedChange, new { Date = $"{draft.At:yyyy-MM-dd}" })]);
         if (!File.Exists(Path.Combine(folder, "Dataset", "dataset.json")))
             Write(folder, ["Dataset", "dataset.json"], JsonSerializer.Serialize(manifest, SampleBody.FileJson) + "\n");
+        bool changed = false;
         foreach (var scenario in draft.Scenarios)
-            Write(folder, ["Dataset", "scenarios", "dev", scenario.Name], scenario.Text);
+            changed |= WriteScenario(folder, scenario.Name, scenario.Text);
         foreach (var sample in drafts.Samples)
-            Write(folder, ["Dataset", "scenarios", "dev", sample.Sample.Id + ".json"],
+            changed |= WriteScenario(folder, sample.Sample.Id + ".json",
                 JsonSerializer.Serialize(sample.Sample, SampleBody.FileJson) + "\n");
+
+        // An edit that changed a scenario bumps the eval's own manifest (FX32), as a person does by hand.
+        if (existing is not null && changed) Bump(Path.Combine(folder, "Dataset", "dataset.json"), draft.At);
 
         // The kept transcripts, one protocol line each, as the eval folders hold theirs.
         foreach (var transcript in drafts.Transcripts)
@@ -71,6 +80,33 @@ public static class DraftFolder
             Directory.CreateDirectory(Path.GetDirectoryName(target)!);
             File.Copy(file, target);
         }
+    }
+
+    /// <summary>Writes one dev scenario, and whether that changed it: a new file, or other text than before.</summary>
+    private static bool WriteScenario(string folder, string name, string text)
+    {
+        string file = Path.Combine(folder, "Dataset", "scenarios", "dev", name);
+        bool same = File.Exists(file) && File.ReadAllText(file) == text;
+        Write(folder, ["Dataset", "scenarios", "dev", name], text);
+        return !same;
+    }
+
+    /// <summary>
+    /// Bumps a manifest whose scenarios changed: one version up, a dated change line, and its hash cleared for the
+    /// runner to seal (<c>ManifestSeal</c>); the rest is kept as written.
+    /// </summary>
+    /// <remarks>
+    /// Read as a <see cref="JsonObject"/> to change three fields in place, as the runner's seal does (ADR 0041: a node
+    /// for an edit in place). A manifest that isn't an object is left for the runner's check to name.
+    /// </remarks>
+    private static void Bump(string manifest, DateTimeOffset at)
+    {
+        if (JsonNode.Parse(File.ReadAllText(manifest)) is not JsonObject node) return;
+        node["version"] = (node["version"]?.GetValue<int>() ?? 0) + 1;
+        if (node["changes"] is not JsonArray changes) node["changes"] = changes = [];
+        changes.Add(MessageText.Format(DraftMessage.EditedChange, new { Date = $"{at:yyyy-MM-dd}" }));
+        node["content_hash"] = "";
+        File.WriteAllText(manifest, node.ToJsonString(Indented) + "\n");
     }
 
     /// <summary>Writes one file under the folder, making its folders first.</summary>
