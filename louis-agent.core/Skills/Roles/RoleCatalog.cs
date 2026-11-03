@@ -1,7 +1,7 @@
-
 using System.Text.RegularExpressions;
 
 namespace LouisAgent.Core.Skills.Roles;
+
 /// <summary>
 /// The roles a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0017):
 /// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
