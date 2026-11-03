@@ -13,8 +13,11 @@ namespace LouisAgent.Api.Evals.Studio.Publish;
 /// sample drafts already ask it (<c>ScenarioFiles</c>), so the studio asks the catalogue, never a path the person
 /// typed. The folder is found behind <see cref="EvalPaths"/>, the guard the manuals use.
 /// </remarks>
-public sealed record EvalHomes(EvalList Catalog, string WorkspaceRoot)
+public sealed class EvalHomes(EvalList catalog, string workspaceRoot)
 {
+    /// <summary>The workspace the evals are committed in.</summary>
+    public string WorkspaceRoot { get; } = workspaceRoot;
+
     /// <summary>The eval's folder here, when the runner lists it and it's in this workspace; none if new.</summary>
     /// <remarks>
     /// Guard clauses: not listed, listed outside its identity's <c>Evals/</c>, outside the workspace, not here.
@@ -33,6 +36,6 @@ public sealed record EvalHomes(EvalList Catalog, string WorkspaceRoot)
 
     /// <summary>The folder the runner lists the eval of this name in, when it lists one for this identity.</summary>
     private string? ListedFolder(EvalDraft draft) =>
-        Catalog.Checks.Select(entry => entry.Eval).FirstOrDefault(eval =>
+        catalog.Checks.Select(entry => entry.Eval).FirstOrDefault(eval =>
             eval is not null && eval.Name == draft.Name && (eval.Identity ?? draft.Identity) == draft.Identity)?.Folder;
 }

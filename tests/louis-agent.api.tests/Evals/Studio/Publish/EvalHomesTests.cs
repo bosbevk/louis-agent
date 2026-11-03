@@ -16,10 +16,12 @@ public class EvalHomesTests
     /// <summary>The workspace this test writes its eval folder in.</summary>
     private string _workspace = null!;
 
+    /// <summary>A workspace of its own for every test, empty until a test makes the eval's folder.</summary>
     [SetUp]
     public void MakeAWorkspace() =>
         _workspace = Path.Combine(Path.GetTempPath(), "louis-agent-homes-" + Guid.NewGuid().ToString("N")[..8]);
 
+    /// <summary>The workspace goes when the test is done.</summary>
     [TearDown]
     public void DeleteTheWorkspace()
     {

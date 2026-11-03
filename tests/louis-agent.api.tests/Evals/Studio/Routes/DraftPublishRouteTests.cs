@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using LouisAgent.Api.Contracts.Admin.Studio;
 using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Studio;
@@ -44,11 +45,8 @@ public class DraftPublishRouteTests
     {
         using var request = new HttpRequestMessage(HttpMethod.Post, "/v1/admin/evals/drafts")
         {
-            Content = JsonContent.Create(new
-            {
-                json = """{"name":"weather-eval","identity":"weather-agent"}""",
-                author = "Louis"
-            })
+            Content = JsonContent.Create(new EvalDraftRequest(
+                """{"name":"weather-eval","identity":"weather-agent"}""", null, "Louis", null))
         };
         request.Headers.Add("x-api-key", AdminKey);
         using var made = await client.SendAsync(request);
