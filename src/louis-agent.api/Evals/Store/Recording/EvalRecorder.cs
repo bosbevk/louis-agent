@@ -24,16 +24,17 @@ public sealed class EvalRecorder(IEvalStore store, ILogger? logger = null, strin
     /// <summary>Guards the list of recordings, which the endpoints read while runs add to it.</summary>
     private readonly Lock _lock = new();
 
-    /// <summary>The latest runs' recordings, oldest first.</summary>
-    private readonly List<(string Run, Task<Result> Recording)> _recordings = [];
+    /// <summary>The latest runs' recordings, oldest first: what each has heard so far, and its end.</summary>
+    private readonly List<(string Run, RunRecording Heard, Task<Result> Recording)> _recordings = [];
 
     /// <summary>Starts recording the run in the background, so the endpoint that started it doesn't wait.</summary>
     public void Attach(RunningEval run, IReadOnlyDictionary<string, string>? settings = null)
     {
-        var recording = RecordAsync(run, settings);
+        var heard = new RunRecording(run, settings, store, logger, ledgerDirectory, CancellationToken.None);
+        var recording = RecordAsync(run, heard, CancellationToken.None);
         lock (_lock)
         {
-            _recordings.Add((run.Id, recording));
+            _recordings.Add((run.Id, heard, recording));
             if (_recordings.Count > KeptRecordings) _recordings.RemoveAt(0);
         }
     }
@@ -44,13 +45,29 @@ public sealed class EvalRecorder(IEvalStore store, ILogger? logger = null, strin
         lock (_lock) return _recordings.LastOrDefault(r => r.Run == id).Recording;
     }
 
+    /// <summary>
+    /// What a run started here has asked the model so far, from the ledger, each request on its turn (FX34); nothing
+    /// for a run this recorder isn't keeping.
+    /// </summary>
+    public IReadOnlyList<EvalDocuments.Request>? RequestsSoFar(string id)
+    {
+        RunRecording? heard;
+        lock (_lock) heard = _recordings.LastOrDefault(r => r.Run == id).Heard;
+        return heard?.RequestsSoFar();
+    }
+
     /// <summary>Records the run until it ends; the settings are what it ran with.</summary>
-    public async Task<Result> RecordAsync(RunningEval run, IReadOnlyDictionary<string, string>? settings = null,
-        CancellationToken cancellationToken = default)
+    public Task<Result> RecordAsync(RunningEval run, IReadOnlyDictionary<string, string>? settings = null,
+        CancellationToken cancellationToken = default) =>
+        RecordAsync(run, new RunRecording(run, settings, store, logger, ledgerDirectory, cancellationToken),
+            cancellationToken);
+
+    /// <summary>Folds every line of the run into its recording, then closes it.</summary>
+    private static async Task<Result> RecordAsync(RunningEval run, RunRecording recording,
+        CancellationToken cancellationToken)
     {
         // Listen before the first await, so no line printed meanwhile is missed.
         var (soFar, live) = run.Listen();
-        var recording = new RunRecording(run, settings, store, logger, ledgerDirectory, cancellationToken);
         await recording.SaveRunAsync();
 
         foreach (string line in soFar) await recording.FoldAsync(line);

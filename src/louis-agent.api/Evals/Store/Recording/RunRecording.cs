@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Kinds;
@@ -49,8 +50,11 @@ internal sealed class RunRecording(
     /// <summary>The turns asked and not yet ended.</summary>
     private readonly Dictionary<TurnKey, OpenTurn> _open = [];
 
-    /// <summary>Which conversation each chat session belongs to, for joining the ledger's rows.</summary>
-    private readonly Dictionary<string, ConversationKey> _sessions = [];
+    /// <summary>
+    /// Which conversation each chat session belongs to, for joining the ledger's rows. Concurrent, because the live
+    /// table's request reads it while the run's lines are still adding to it (FX34).
+    /// </summary>
+    private readonly ConcurrentDictionary<string, ConversationKey> _sessions = [];
 
     /// <summary>The store's writes, stopped after the first failure.</summary>
     private readonly GuardedWrites _writes = new(run.Id, logger);
@@ -85,6 +89,9 @@ internal sealed class RunRecording(
 
     /// <summary>Writes the run as it stands now, so a half-done run can already be read.</summary>
     public Task SaveRunAsync() => _writes.WriteAsync(() => store.SaveRunAsync(Document(), cancellationToken));
+
+    /// <summary>The run's requests so far, from the ledger, each on the turn whose session asked it.</summary>
+    public IReadOnlyList<Request> RequestsSoFar() => LedgerJoin.SoFar(run, ledgerDirectory, _sessions);
 
     /// <summary>
     /// Takes one line of the run in: an event of the protocol, or a line for people, which goes to the run's log.

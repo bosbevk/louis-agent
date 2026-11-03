@@ -27,9 +27,17 @@ session and its turn, and the recording knows each session's conversation from i
 placed on their turns by the same `EvalLedger.Join` the run's end uses; the panel asks after each turn's end and sums
 them with the same `LiveTurns.CostsFrom` as at the end, so the live cost and the final one can't disagree.
 
+**What the build changed.** The plan had a ledger that can't be read mid-run give no requests. Step 1 found the ledger
+reader throws on a line half written (`UsageReport.Read`, an `InvalidDataException`), which a read in the middle of a
+session's write can meet; an empty answer then would blank the costs the page already shows. So it throws to the
+caller, and the route says why (step 2) while the page keeps what it had.
+
 ## Tests
 
-*(each step's, as they are written)*
+- `RequestsSoFarTests` (api.tests, step 1): a turn's two requests are there, on that turn with their costs, before the
+  run ends; a run the recorder isn't keeping has none (null); no ledger gives an empty list; a half-written ledger
+  line throws `InvalidDataException`. Red first: `CS1061 'EvalRecorder' does not contain a definition for
+  'RequestsSoFar'`.
 
 ## Confirmed
 
