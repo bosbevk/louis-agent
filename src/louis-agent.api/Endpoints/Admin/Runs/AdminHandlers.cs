@@ -30,6 +30,9 @@ using RunAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
 using EventsAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.ServerSentEventsResult<string>,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
+using RequestsAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Admin.Runs.LiveRequestsReply>,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
 namespace LouisAgent.Api.Endpoints.Admin.Runs;
 
@@ -165,6 +168,27 @@ internal sealed class AdminHandlers(
     {
         if (runner.Current is not { } run || run.Id != id) return NoRun();
         return TypedResults.ServerSentEvents(Events(run, cancellationToken));
+    }
+
+    /// <summary>
+    /// What a run started here has asked the model so far, each request on its turn, so the live table shows a turn's
+    /// cost as it ends (FX34). A ledger that can't be read just now is a 503 with its reason, and the page keeps the
+    /// costs it already has.
+    /// </summary>
+    /// <remarks>Guard clauses: no recorder, a run it isn't keeping, then the ledger's read.</remarks>
+    public RequestsAnswer GetRequests(string id)
+    {
+        if (recorder is null) return NoStore();
+        try
+        {
+            if (recorder.RequestsSoFar(id) is not { } requests) return NoRun();
+            return TypedResults.Json(new LiveRequestsReply([.. requests.Select(RequestRow.Of)]), AdminJson.SnakeCase);
+        }
+        catch (Exception ex) when (LedgerJoin.Unreadable(ex))
+        {
+            return ApiErrors.Unavailable(
+                MessageText.Format(ApiUserText.BenchmarkLedgerUnreadable, new { Reason = ex.Message }));
+        }
     }
 
     /// <summary>Builds the page's list from these runs, with whether the store is there and why not.</summary>

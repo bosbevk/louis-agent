@@ -23,9 +23,9 @@ internal sealed record LedgerJoinResult(
     IReadOnlyList<AgentPrompt>? Prompts = null);
 
 /// <summary>
-/// Reads a run's requests and what it cost from the ledger once the script has ended. A request's row is written when
-/// it finishes, so the last turn's rows are there by then. A re-score that asked nothing cost a known 0, never the
-/// unknown of a missing price.
+/// Reads a run's requests and what it cost from the ledger once the script has ended, and its requests so far while it
+/// goes on. A request's row is written when it finishes, so a turn's rows are there by the time the turn ends. A
+/// re-score that asked nothing cost a known 0, never the unknown of a missing price.
 /// </summary>
 /// <remarks>
 /// Taken out of <see cref="EvalRecorder"/> (Fowler's Extract Class), which was past 200 lines: the recorder keeps
@@ -55,7 +55,7 @@ internal static class LedgerJoin
             ofRun = EvalLedger.OfRun(run.Id,
                 EvalLedger.Read(ledgerDirectory, run.StartedAt, run.EndedAt ?? DateTimeOffset.UtcNow));
         }
-        catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
+        catch (Exception ex) when (Unreadable(ex))
         {
             // A ledger we can't read leaves the cost unknown, and the run's log says why.
             return new LedgerJoinResult(null, settings, [],
@@ -75,5 +75,25 @@ internal static class LedgerJoin
                 ? [MessageText.Format(ApiUserText.BenchmarkModelUnlisted, new { Model = string.Join(", ", unlisted) })]
                 : [],
             AgentPrompts.Of(run.Id, ofRun));
+    }
+
+    /// <summary>
+    /// Whether this is the ledger being unreadable just now (missing access, a line half written, the file held by its
+    /// writer), which leaves the cost unknown with its reason, rather than a bug that should surface.
+    /// </summary>
+    public static bool Unreadable(Exception ex) =>
+        ex is IOException or InvalidDataException or UnauthorizedAccessException;
+
+    /// <summary>
+    /// The run's requests up to now, while it's still going, each on its turn the way the run's end places them, so
+    /// the live table can price a turn as soon as it's done (FX34). With no ledger there are none yet; a ledger that
+    /// can't be read just now throws, so the caller can say why instead of showing nothing.
+    /// </summary>
+    public static IReadOnlyList<Request> SoFar(RunningEval run, string? ledgerDirectory,
+        IReadOnlyDictionary<string, ConversationKey> sessions)
+    {
+        if (ledgerDirectory is null) return [];
+        var ofRun = EvalLedger.OfRun(run.Id, EvalLedger.Read(ledgerDirectory, run.StartedAt, DateTimeOffset.UtcNow));
+        return EvalLedger.Join(run.Id, ofRun, sessions);
     }
 }

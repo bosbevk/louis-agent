@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Evals.Protocol;
+using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Puls.Admin.LiveRuns;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Usage;
@@ -11,8 +12,8 @@ namespace LouisAgent.Puls.Components.Admin.BenchmarksPage.LiveRun;
 
 /// <summary>
 /// The run in progress: it follows the run's events as they come, a row per turn with the open turn typing out, and
-/// the script's plain lines folded under it. When the run ends it fetches each turn's cost and hands the finished run
-/// back to the page.
+/// the script's plain lines folded under it. Each time a turn ends it asks what the run has cost so far, so a turn's
+/// cost shows as it ends; when the run ends it reads the stored costs and hands the finished run back to the page.
 /// </summary>
 /// <remarks>
 /// The panel owns the following (the stream, the table, the open turn), and the page only says which run and hears
@@ -33,6 +34,12 @@ public partial class LiveRunPanel
 
     /// <summary>A render is already waiting, so the next event doesn't ask for another.</summary>
     private bool _renderPending;
+
+    /// <summary>A question for the costs so far is out, so a turn that ends meanwhile doesn't send a second.</summary>
+    private bool _costsAsking;
+
+    /// <summary>A turn ended while the costs were being asked, so they're asked once more after.</summary>
+    private bool _costsAgain;
 
     /// <summary>The API the page talks to.</summary>
     [Inject]
@@ -135,6 +142,40 @@ public partial class LiveRunPanel
         {
             Console.Error.WriteLine($"[admin] event of run {Run.Id} not applied: {ex.Message}");
         }
+
+        // A turn that ended has all its requests in the ledger by now, so its cost can show (FX34).
+        if (e is TurnEvent) _ = CostsSoFarAsync();
+    }
+
+    /// <summary>
+    /// Each turn's cost so far, asked when a turn ends: one question at a time, and once more if another turn ended
+    /// meanwhile. What the API can't say (a ledger read mid-write) and a question that never reaches it (the network,
+    /// a time-out, a reply that isn't the record) leave the costs the table already shows. Nobody awaits this, so
+    /// nothing may escape it: an exception would leave the question marked as out, and no later turn would ask again.
+    /// </summary>
+    private async Task CostsSoFarAsync()
+    {
+        _costsAgain = true;
+        if (_costsAsking) return;
+
+        _costsAsking = true;
+        while (_costsAgain)
+        {
+            _costsAgain = false;
+            try
+            {
+                var reply = await Api.GetAsync<LiveRequestsReply?>($"{RunUrl}/requests", AdminJson.SnakeCase);
+                if (reply is not null) _turns.CostsFrom(reply.Requests);
+            }
+            catch (Exception ex) when (ex is AgentApiException or HttpRequestException or JsonException
+                                           or TaskCanceledException)
+            {
+                // Nothing to change: the next turn's end asks again, and the run's end reads the stored costs.
+            }
+        }
+
+        _costsAsking = false;
+        RenderThrottled();
     }
 
     /// <summary>
@@ -147,11 +188,12 @@ public partial class LiveRunPanel
     }
 
     /// <summary>
-    /// Each turn's cost once the run has ended, from the store's requests; they stay "—" if it can't say.
+    /// Each turn's cost once the run has ended, from the store's requests; if the store can't say, the costs asked
+    /// while it ran stay.
     /// </summary>
     private async Task CostsAsync()
     {
-        if (await StoredAsync() is { } stored) _turns.CostsFrom(stored);
+        if (await StoredAsync() is { } stored) _turns.CostsFrom(stored.Requests);
     }
 
     /// <summary>The run as the store holds it, or nothing when the store can't say.</summary>

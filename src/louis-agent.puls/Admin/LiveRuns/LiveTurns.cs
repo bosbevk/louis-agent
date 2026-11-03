@@ -9,8 +9,8 @@ namespace LouisAgent.Puls.Admin.LiveRuns;
 
 /// <summary>
 /// The table of the run in progress: a row per turn as the runner's events come in (the protocol's own records), the
-/// turns the store already holds when the page picks a run up again, each turn's cost once the run has ended, and the
-/// turn that is open (the newest question, until you open another).
+/// turns the store already holds when the page picks a run up again, each turn's cost from its requests (as each turn
+/// ends, and again when the run has), and the turn that is open (the newest question, until you open another).
 /// </summary>
 /// <remarks>
 /// The page's live state as a plain class, so what an event does to the table is tested without a browser; the panel
@@ -22,7 +22,7 @@ public sealed class LiveTurns
     /// <summary>The turns, in the order they first came.</summary>
     private readonly List<LiveTurn> _rows = [];
 
-    /// <summary>Each turn's known cost, once the run has ended.</summary>
+    /// <summary>Each turn's known cost, from the requests the page was last given.</summary>
     private readonly Dictionary<TurnKey, decimal?> _costs = [];
 
     /// <summary>Whether the newest question opens as it comes.</summary>
@@ -80,11 +80,14 @@ public sealed class LiveTurns
     }
 
     /// <summary>
-    /// Each turn's cost once the run has ended: the store's requests, priced from the ledger, summed per turn.
+    /// Each turn's cost from the run's requests, priced from the ledger, summed per turn: the ones so far while the
+    /// run goes on (FX34), the store's when it has ended. Each call starts again from these requests, so asking after
+    /// every turn never counts one twice.
     /// </summary>
-    public void CostsFrom(StoredRunReply run)
+    public void CostsFrom(IEnumerable<RequestRow> requests)
     {
-        foreach (var request in run.Requests)
+        _costs.Clear();
+        foreach (var request in requests)
         {
             // A request no turn made (a judge's) belongs to no row.
             if (request.Turn is not { } turn) continue;
@@ -93,7 +96,7 @@ public sealed class LiveTurns
         }
     }
 
-    /// <summary>What a turn cost; none while the run goes on, or when no price was known.</summary>
+    /// <summary>What a turn cost; none before its requests came, or when no price was known.</summary>
     public decimal? CostOf(TurnKey key) => _costs.GetValueOrDefault(key);
 
     /// <summary>

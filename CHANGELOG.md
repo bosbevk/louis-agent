@@ -4,6 +4,11 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **FX34 A live run shows each turn's cost**: the Benchmarks page's live table priced its turns only
+  once the whole run had ended; now the API answers a run's requests so far from the usage ledger
+  (`GET …/runs/{id}/requests`), joined as the run's end joins them, and the table asks after each turn's end, so a
+  paid run's spend shows turn by turn and the live and final costs can't disagree
+  ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx34--a-cost-is-worth-most-while-its-being-spent))
 - 2026-11-03 — **FX32 An edit in the studio keeps its eval's folder**: a draft of an eval the workspace has starts
   from a copy of the folder the runner lists it in (the cook's `Cook`), so its references, held-out scenarios, labels,
   manual and manifest are checked and published back into that folder with the draft's changes on top (an edit that
