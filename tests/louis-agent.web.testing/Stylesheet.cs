@@ -48,26 +48,50 @@ public sealed partial record Stylesheet(string Folder)
     private string Text(string file) => File.ReadAllText(Path.Combine(Folder, file));
 
     /// <summary>
-    /// Every file path a rule points at with <c>url(…)</c> that the browser resolves from the stylesheet's own folder,
-    /// as the area file, the path written and the file on disk it reaches (FX30: a rule moved one folder deeper kept
-    /// its old path). Web addresses, data, absolute paths and fragments are left out: they don't depend on where the
-    /// file sits.
+    /// Every file path a rule points at with <c>url(…)</c> that the browser resolves from the stylesheet's own folder
+    /// (FX30: a rule moved one folder deeper kept its old path). Web addresses, data, absolute paths and fragments are
+    /// left out: they don't depend on where the file sits.
     /// </summary>
-    public IReadOnlyList<(string File, string Url, string Target)> Urls() =>
+    public IReadOnlyList<StylesheetUrl> Urls() =>
     [
-        .. AreaFiles().SelectMany(file => Url().Matches(Text(file)).Select(m => m.Groups["path"].Value)
-            .Where(url => !url.Contains(':') && !url.StartsWith('/') && !url.StartsWith('#'))
-            .Select(url => (file, url,
+        .. AreaFiles().SelectMany(file => PathsIn(Text(file))
+            .Where(IsRelative)
+            .Select(url => new StylesheetUrl(file, url,
                 Path.GetFullPath(Path.Combine(Folder, Path.GetDirectoryName(file) ?? "", url)))))
     ];
 
     /// <summary>
-    /// A <c>url(…)</c> and the path in it, read to its own closing quote: <c>url("../../brand/tile.svg")</c> gives
-    /// <c>../../brand/tile.svg</c>, and <c>url("data:…fill='%23fff'…")</c> its whole data; an <c>@import</c> line
-    /// doesn't match, its path is <see cref="Import"/>'s.
+    /// The path inside each <c>url(…)</c> of one file, read by hand rather than by a regular expression (ADR 0057): a
+    /// quoted path runs to its own closing quote, so <c>url("../../brand/tile.svg")</c> gives
+    /// <c>../../brand/tile.svg</c> and an inline SVG's <c>url("data:…url(%23n)…")</c> stays one whole path; an
+    /// unquoted one runs to the closing bracket.
     /// </summary>
-    [GeneratedRegex("""(?<!@import )url\(\s*(?:"(?<path>[^"]*)"|'(?<path>[^']*)'|(?<path>[^)"'\s]+))\s*\)""")]
-    private static partial Regex Url();
+    private static IEnumerable<string> PathsIn(string css)
+    {
+        const string open = "url(";
+        int at = css.IndexOf(open, StringComparison.Ordinal);
+        while (at >= 0)
+        {
+            int start = at + open.Length;
+            while (start < css.Length && char.IsWhiteSpace(css[start])) start++;
+
+            // A quoted path ends at its own quote, an unquoted one at the bracket.
+            char first = start < css.Length ? css[start] : ')';
+            bool quoted = first is '"' or '\'';
+            int end = quoted ? css.IndexOf(first, start + 1) : css.IndexOf(')', start);
+            if (end < 0) yield break;
+
+            yield return quoted ? css[(start + 1)..end] : css[start..end].Trim();
+            at = css.IndexOf(open, end + 1, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// Whether a path is found from the stylesheet's own folder: <c>../brand/tile.svg</c> is, <c>data:…</c>,
+    /// <c>https://…</c>, <c>/brand/tile.svg</c> and <c>#n</c> aren't.
+    /// </summary>
+    private static bool IsRelative(string url) =>
+        url.Length > 0 && !url.Contains(':') && !url.StartsWith('/') && !url.StartsWith('#');
 
     /// <summary>One import line, <c>@import url("chat/bars.css");</c>, and the path in it.</summary>
     [GeneratedRegex("""@import url\("([^"]+)"\);""")]
