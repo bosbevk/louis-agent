@@ -10,7 +10,7 @@
   sub-session's turn nests under the parent's tool call across the HTTP hop; a crash is one Critical line with its
   stack and the last lines and spans still leave; the Aspire dashboard runs as its own stack on the PC
   (`docker-compose.observability.yml`), and `deploy.ps1 telemetry` sends Azure's to Application Insights; the guide
-  has the table of what to log at which level. PRs #121, #122, #124, #126 to #129 and this one;
+  has the table of what to log at which level. PRs #121, #122, #124, #126 to #130;
   [ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)
 - 2026-11-03 — **The cook's judge recalibrated**: against 60 answers Louis graded in the portal (run
   `cf37574d0f23`), `meal-for-people` agreed on 43 of 45 passes but only 8 of 15 fails, all of them Puls alone
