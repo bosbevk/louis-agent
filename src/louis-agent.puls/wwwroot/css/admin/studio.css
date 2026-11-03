@@ -44,4 +44,10 @@
 .studio-ok { margin: 0; color: var(--ink); }
 .studio-problems { margin: 0; padding-left: 18px; color: var(--danger); font-size: 13px; }
 .studio-json { margin: 0; max-height: 420px; overflow: auto; font-size: 12px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+.promptfoo-panel { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 8px; }
+.promptfoo-yaml { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font: 12px/1.45 var(--mono, monospace); resize: vertical; width: 100%; }
+.promptfoo-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.promptfoo-left-out { margin: 0; padding-left: 16px; color: var(--muted); }
+.promptfoo-error { margin: 0; color: var(--danger); }
+.promptfoo-exported { margin: 0; }
 @media (max-width: 720px) { .studio { grid-template-columns: 1fr; } }

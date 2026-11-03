@@ -1,3 +1,4 @@
+using LouisAgent.Api.Endpoints.Admin.Studio.Promptfoo;
 using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.Studio;
 
@@ -16,15 +17,21 @@ internal static class StudioEndpoints
     /// </summary>
     internal static readonly string Scratch = Path.Combine(Path.GetTempPath(), "louis-agent-studio");
 
-    /// <summary>Adds <c>GET /evals/checks</c>, the <c>/evals/drafts</c> resource and a draft's check.</summary>
-    public static void MapStudio(this RouteGroupBuilder admin, CheckList checks, IEvalDraftStore drafts,
-        TimeProvider time, DraftChecker checker)
+    /// <summary>
+    /// Adds <c>GET /evals/checks</c>, the <c>/evals/drafts</c> resource, a draft's check and promptfoo in and out.
+    /// </summary>
+    public static void MapStudio(this RouteGroupBuilder admin, StudioRunner runner, IEvalDraftStore drafts,
+        TimeProvider time)
     {
-        var checking = new DraftCheckHandlers(drafts, checker, Scratch);
+        var checking = new DraftCheckHandlers(drafts, runner.Checker, Scratch);
         admin.MapPost("/evals/drafts/{id}/verdict", checking.PostVerdict);
 
-        var catalogue = new StudioHandlers(checks);
+        var catalogue = new StudioHandlers(runner.Checks);
         admin.MapGet("/evals/checks", catalogue.GetChecks);
+
+        var promptfoo = new DraftPromptfooHandlers(drafts, runner.Promptfoo, time, Scratch);
+        admin.MapPost("/evals/drafts/promptfoo", promptfoo.PostImport);
+        admin.MapGet("/evals/drafts/{id}/promptfoo", promptfoo.GetExport);
 
         var composed = new EvalDraftHandlers(drafts, time);
         admin.MapPost("/evals/drafts", composed.PostDraft);

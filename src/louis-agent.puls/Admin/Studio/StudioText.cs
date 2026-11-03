@@ -35,6 +35,10 @@ public static class StudioText
     public static string TryStarted(string run) =>
         $"Try {run} started, a replay at no cost: follow it on Benchmarks ›";
 
+    /// <summary>A draft went out as a promptfoo file.</summary>
+    public static string PromptfooExported(string file) =>
+        $"Saved the draft, and its promptfoo file came as {file}: run it with promptfoo eval.";
+
     /// <summary>A transcript was kept as a draft, under the file name it will have.</summary>
     public static string TranscriptKept(string file) =>
         $"Kept as {file}. It waits on the Evals page until it is published.";

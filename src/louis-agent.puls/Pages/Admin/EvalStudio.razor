@@ -34,6 +34,7 @@
                 <code>@draft.Name</code><small class="muted">for @draft.Identity · @draft.Author</small>
             </button>
         }
+        <PromptfooPanel HasDraft="_eval is not null" SaveDraft="SaveDraftAsync" OnImported="ImportedAsync" />
     </aside>
 
     @if (_eval is { } eval && _catalogue is { } catalogue)
@@ -42,6 +43,10 @@
             <ComposeHead Eval="eval" />
             <ComposeChecks Eval="eval" Catalogue="catalogue" />
             <ComposeRubrics Rubrics="_rubrics" />
+            @if (_scenarios.Count > 0)
+            {
+                <p class="studio-scenarios muted small">@_scenarios.Count scenario file(s) of its own, as an import brought them: kept with the draft.</p>
+            }
             <div class="studio-actions">
                 <button type="button" class="studio-save header-button" disabled="@_busy" @onclick="SaveAsync">Save</button>
                 <button type="button" class="studio-check header-button" disabled="@_busy" @onclick="CheckAsync">Check</button>

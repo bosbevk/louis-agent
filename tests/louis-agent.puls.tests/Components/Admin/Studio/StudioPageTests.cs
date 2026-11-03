@@ -22,7 +22,7 @@ public class StudioPageTests
 
     /// <summary>One eval being composed.</summary>
     private const string Draft =
-        """{"id":"d1","identity":"weather-agent","name":"weather-eval","json":"{\"name\":\"weather-eval\",\"identity\":\"weather-agent\",\"version\":3,\"proves\":\"Weather\",\"modes\":[],\"checks\":[{\"type\":\"amount-under\",\"parameters\":{\"key\":\"budget\"}}]}","rubrics":[{"name":"weather-right.md","text":"Is die weer reg?"}],"author":"Louis","at":"2026-11-03T10:00:00Z"}""";
+        """{"id":"d1","identity":"weather-agent","name":"weather-eval","json":"{\"name\":\"weather-eval\",\"identity\":\"weather-agent\",\"version\":3,\"proves\":\"Weather\",\"modes\":[],\"checks\":[{\"type\":\"amount-under\",\"parameters\":{\"key\":\"budget\"}}]}","rubrics":[{"name":"weather-right.md","text":"Is die weer reg?"}],"author":"Louis","at":"2026-11-03T10:00:00Z","scenarios":[{"name":"test-1.json","text":"{}"}]}""";
 
     /// <summary>Renders the page over a stand-in API, with the reviewer's name kept.</summary>
     private static (IRenderedComponent<EvalStudio> Cut, StubHandler Handler) Render()
@@ -41,6 +41,12 @@ public class StudioPageTests
                 Json("""{"id":"run_9","check":"weather-eval","repeat":1,"status":"running"}"""),
             ("POST", "/v1/admin/evals/drafts/d1/verdict") =>
                 Json("""{"ok":false,"problems":["scenario weather-paarl has no reference transcript"]}"""),
+            ("POST", "/v1/admin/evals/drafts/promptfoo") =>
+                Json($$"""{"draft":{{Draft}},"left_out":["promptfoo's 'javascript' assert has no check of ours"]}"""),
+            ("GET", "/v1/admin/evals/drafts/d1/promptfoo") => new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("description: Weather\n", Encoding.UTF8, "application/yaml")
+            },
             _ => new HttpResponseMessage(HttpStatusCode.NotFound)
         });
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") },
@@ -134,5 +140,51 @@ public class StudioPageTests
             .GetString()), Is.EqualTo(("Louis", "weather-right.md")));
         Assert.That(JsonDocument.Parse(sent.GetProperty("json").GetString()!).RootElement.GetProperty("name")
             .GetString(), Is.EqualTo("weather-eval"));
+    }
+
+    /// <summary>A draft's own scenario files, as an import brought them, go back with it when it is saved.</summary>
+    [Test]
+    public void Save_KeepsTheDraftsOwnScenarios()
+    {
+        var (cut, handler) = Render();
+        cut.Find(".studio-draft").Click();
+
+        cut.Find(".studio-save").Click();
+
+        cut.WaitForAssertion(() => Assert.That(handler.Requests.Any(r => r.Method == HttpMethod.Put), Is.True));
+        var sent = JsonDocument.Parse(handler.Requests.Single(r => r.Method == HttpMethod.Put).Body!).RootElement;
+        Assert.That(sent.GetProperty("scenarios")[0].GetProperty("name").GetString(), Is.EqualTo("test-1.json"));
+    }
+
+    /// <summary>An import sends the pasted file, opens the draft it made and names what was left out.</summary>
+    [Test]
+    public void APromptfooImport_OpensTheDraft_AndNamesWhatWasLeftOut()
+    {
+        var (cut, handler) = Render();
+
+        cut.Find(".promptfoo-yaml").Change("description: Weather\n");
+        cut.Find(".promptfoo-import").Click();
+
+        cut.WaitForAssertion(() => Assert.That(cut.Find(".promptfoo-left-out").TextContent,
+            Does.Contain("javascript")));
+        Assert.That(cut.Find(".compose-name").GetAttribute("value"), Is.EqualTo("weather-eval"));
+        var sent = JsonDocument.Parse(handler.Requests.Single(r => r.Url.EndsWith("/promptfoo")).Body!).RootElement;
+        Assert.That((sent.GetProperty("yaml").GetString(), sent.GetProperty("author").GetString()),
+            Is.EqualTo(("description: Weather\n", "Louis")));
+    }
+
+    /// <summary>An export saves the draft, then fetches its promptfoo file for the browser to save.</summary>
+    [Test]
+    public void APromptfooExport_SavesTheDraft_ThenFetchesTheFile()
+    {
+        var (cut, handler) = Render();
+        cut.Find(".studio-draft").Click();
+
+        cut.Find(".promptfoo-export").Click();
+
+        cut.WaitForAssertion(() => Assert.That(cut.Find(".promptfoo-exported").TextContent,
+            Does.Contain("promptfooconfig.yaml")));
+        Assert.That(handler.Requests.Select(r => r.Method.Method + " " + new Uri(r.Url).AbsolutePath),
+            Is.SupersetOf(new[] { "PUT /v1/admin/evals/drafts/d1", "GET /v1/admin/evals/drafts/d1/promptfoo" }));
     }
 }

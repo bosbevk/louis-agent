@@ -3,7 +3,9 @@ namespace LouisAgent.Api.Evals.Drafts.Composed;
 /// <summary>
 /// An eval being composed in the studio (F49.5), waiting to be checked, tried and published: the identity it proves
 /// and its name, both read from its file; the file's text exactly as the person wrote it; its rubrics; who saved it
-/// last and when. Like the other drafts it never changes the repository by itself: the publish writes the folder.
+/// last and when; and scenario files of its own, as a promptfoo import brings them (the sample drafts made from runs
+/// are kept beside it, not in it). Like the other drafts it never changes the repository by itself: the publish
+/// writes the folder.
 /// </summary>
 /// <remarks>
 /// The file stays text, not a parsed record: the runner is the one reader of eval files (finding R), so the API keeps
@@ -18,7 +20,15 @@ public sealed record EvalDraft(
     string Json,
     IReadOnlyList<RubricFile> Rubrics,
     string Author,
-    DateTimeOffset At);
+    DateTimeOffset At,
+    IReadOnlyList<RubricFile>? Scenarios = null)
+{
+    /// <summary>The draft's own scenario files, by name in <c>Dataset/scenarios/dev/</c>; none by default.</summary>
+    public IReadOnlyList<RubricFile> Scenarios { get; init; } = Scenarios ?? [];
+}
 
-/// <summary>One rubric of an eval being composed: its file's name in <c>Rubrics/</c> and its text.</summary>
+/// <summary>
+/// One file of an eval being composed, by its name in its folder and its text: a rubric in <c>Rubrics/</c>, or a
+/// scenario in <c>Dataset/scenarios/dev/</c>.
+/// </summary>
 public sealed record RubricFile(string Name, string Text);

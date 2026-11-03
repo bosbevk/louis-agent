@@ -28,7 +28,8 @@ internal static class StudioReplies
         /// <summary>The row for an eval being composed.</summary>
         public static EvalDraftRow Of(EvalDraft draft) =>
             new(draft.Id, draft.Identity, draft.Name, draft.Json,
-                [.. draft.Rubrics.Select(r => new RubricRow(r.Name, r.Text))], draft.Author, draft.At);
+                [.. draft.Rubrics.Select(r => new RubricRow(r.Name, r.Text))], draft.Author, draft.At,
+                [.. draft.Scenarios.Select(s => new RubricRow(s.Name, s.Text))]);
     }
 
     /// <summary>The rubrics a request sent, as the draft keeps them.</summary>

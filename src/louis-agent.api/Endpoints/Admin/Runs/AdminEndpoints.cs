@@ -52,10 +52,10 @@ internal static class AdminEndpoints
         admin.MapEvals(catalog, store, workspaceRoot, draftStore);
         admin.MapGet("/benchmarks", handlers.GetList);
 
-        // The studio (F49.5): the runner's catalogue and its check, which say the runner isn't there when none was
-        // given, and the evals being composed, kept beside the other drafts.
+        // The studio (F49.5): the runner's catalogue, its check and promptfoo in and out, which say the runner isn't
+        // there when none was given, and the evals being composed, kept beside the other drafts.
         var runnerParts = studio ?? StudioRunner.None;
-        admin.MapStudio(runnerParts.Checks, draftStore, time ?? TimeProvider.System, runnerParts.Checker);
+        admin.MapStudio(runnerParts, draftStore, time ?? TimeProvider.System);
 
         // A draft's try is a run like the Run button's, recorded with the settings every run reports.
         var trying = new DraftTryHandlers(draftStore, runner, recorder, settingsOf, StudioEndpoints.Scratch);

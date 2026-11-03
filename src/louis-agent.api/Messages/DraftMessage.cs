@@ -76,6 +76,16 @@ public enum DraftMessage
     [Description("The rubric '{Name}' must be a kebab-case name ending in .md, such as meal-for-people.md.")]
     RubricNameNotKebabCase,
 
+    [Description("An eval draft takes at most {Limit} scenario files.")]
+    TooManyScenarios,
+
+    [Description(
+        "The scenario file '{Name}' must be a kebab-case name ending in .json, at most {Limit} characters long.")]
+    ScenarioFileRefused,
+
+    [Description("The promptfoo file is missing, or longer than {Limit} characters.")]
+    PromptfooFileTooBig,
+
     [Description("The rubric '{Name}' is longer than {Limit} characters.")]
     RubricTooBig,
 

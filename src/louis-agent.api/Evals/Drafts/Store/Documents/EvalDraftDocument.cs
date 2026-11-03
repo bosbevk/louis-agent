@@ -22,16 +22,19 @@ internal sealed record EvalDraftDocument(
     [property: BsonElement("json")] string Json,
     [property: BsonElement("rubrics")] IReadOnlyList<RubricDocument> Rubrics,
     [property: BsonElement("author")] string Author,
-    [property: BsonElement("at")] DateTimeOffset At)
+    [property: BsonElement("at")] DateTimeOffset At,
+    [property: BsonElement("scenarios")] IReadOnlyList<RubricDocument>? Scenarios = null)
 {
     /// <summary>The document for an eval draft.</summary>
     public static EvalDraftDocument Of(EvalDraft d) =>
         new(d.Id, DraftKind.Eval, d.Name, d.Identity, d.Json,
-            [.. d.Rubrics.Select(r => new RubricDocument(r.Name, r.Text))], d.Author, d.At);
+            [.. d.Rubrics.Select(r => new RubricDocument(r.Name, r.Text))], d.Author, d.At,
+            [.. d.Scenarios.Select(s => new RubricDocument(s.Name, s.Text))]);
 
     /// <summary>The eval draft this document holds.</summary>
     public EvalDraft ToDraft() =>
-        new(Id, Identity, Eval, Json, [.. Rubrics.Select(r => new RubricFile(r.Name, r.Text))], Author, At);
+        new(Id, Identity, Eval, Json, [.. Rubrics.Select(r => new RubricFile(r.Name, r.Text))], Author, At,
+            [.. (Scenarios ?? []).Select(s => new RubricFile(s.Name, s.Text))]);
 }
 
 /// <summary>One rubric of an eval draft, as its document keeps it: the file's name and its text.</summary>

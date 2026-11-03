@@ -16,11 +16,26 @@ namespace LouisAgent.Api.Evals.Drafts.Composed;
 /// </remarks>
 public static class ComposedEvals
 {
-    /// <summary>The largest file and rubric a draft takes, and how many rubrics.</summary>
-    public const int MaxJsonLength = 64 * 1024, MaxRubricLength = 32 * 1024, MaxRubrics = 10;
+    /// <summary>The largest file and rubric a draft takes, and how many rubrics and scenario files.</summary>
+    public const int MaxJsonLength = 64 * 1024, MaxRubricLength = 32 * 1024, MaxRubrics = 10, MaxScenarios = 200;
+
+    /// <summary>The draft for this file, these rubrics and scenario files, saved by this person now.</summary>
+    public static EvalDraft Of(string id, string? json, IReadOnlyList<RubricFile>? rubrics, string? author,
+        DateTimeOffset at, IReadOnlyList<RubricFile>? scenarios = null)
+    {
+        var files = scenarios ?? [];
+        if (files.Count > MaxScenarios) throw Refuse(DraftMessage.TooManyScenarios, new { Limit = MaxScenarios });
+        if (files.FirstOrDefault(s => !IsFileName(s.Name, ".json") || s.Text.Length > MaxJsonLength) is { } bad)
+            throw Refuse(DraftMessage.ScenarioFileRefused, new
+            {
+                bad.Name,
+                Limit = MaxJsonLength
+            });
+        return Of(id, json, rubrics, author, at) with { Scenarios = files };
+    }
 
     /// <summary>The draft for this file and these rubrics, saved by this person now.</summary>
-    public static EvalDraft Of(string id, string? json, IReadOnlyList<RubricFile>? rubrics, string? author,
+    private static EvalDraft Of(string id, string? json, IReadOnlyList<RubricFile>? rubrics, string? author,
         DateTimeOffset at)
     {
         if (string.IsNullOrWhiteSpace(author)) throw Refuse(DraftMessage.AuthorBlank, null);
@@ -67,8 +82,11 @@ public static class ComposedEvals
         root.TryGetProperty(field, out var value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
 
     /// <summary>Whether a rubric's file name is a kebab-case name with <c>.md</c> after it.</summary>
-    private static bool IsRubricName(string name) =>
-        name.EndsWith(".md", StringComparison.Ordinal) && KebabCase.Is(name[..^3]);
+    private static bool IsRubricName(string name) => IsFileName(name, ".md");
+
+    /// <summary>Whether a file name is a kebab-case name with this extension after it.</summary>
+    private static bool IsFileName(string name, string extension) =>
+        name.EndsWith(extension, StringComparison.Ordinal) && KebabCase.Is(name[..^extension.Length]);
 
     /// <summary>The refusal the person reads.</summary>
     private static ArgumentException Refuse(DraftMessage message, object? values) =>

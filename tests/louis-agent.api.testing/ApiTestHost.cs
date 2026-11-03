@@ -45,7 +45,7 @@ internal static class ApiTestHost
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
         TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
-        DraftChecker? checker = null)
+        DraftChecker? checker = null, PromptfooRunner? promptfoo = null)
     {
         // The same services as Program.cs, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot);
@@ -65,7 +65,8 @@ internal static class ApiTestHost
             store, recorder,
             _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations,
             calibrationRecorder, time, drafts ?? new InMemoryEvalDraftStore(),
-            new StudioRunner(checks ?? StudioRunner.None.Checks, checker ?? StudioRunner.None.Checker));
+            new StudioRunner(checks ?? StudioRunner.None.Checks, checker ?? StudioRunner.None.Checker,
+                promptfoo ?? StudioRunner.None.Promptfoo));
         return app;
     }
 

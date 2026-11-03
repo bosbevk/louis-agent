@@ -122,7 +122,7 @@ internal sealed class EvalDraftHandlers(IEvalDraftStore drafts, TimeProvider tim
         try
         {
             return (ComposedEvals.Of(id, request?.Json, request?.Rubrics.ToFiles(), request?.Author,
-                time.GetUtcNow()), null);
+                time.GetUtcNow(), request?.Scenarios.ToFiles()), null);
         }
         catch (ArgumentException ex)
         {

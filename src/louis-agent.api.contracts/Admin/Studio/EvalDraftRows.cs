@@ -6,7 +6,7 @@ public sealed record EvalDraftsReply(IReadOnlyList<EvalDraftRow> Drafts);
 
 /// <summary>
 /// An eval being composed: its id, the identity and name read from its file, the file's text as typed, its rubrics,
-/// who saved it last and when.
+/// who saved it last and when, and the scenario files of its own a promptfoo import brought.
 /// </summary>
 public sealed record EvalDraftRow(
     string Id,
@@ -15,7 +15,17 @@ public sealed record EvalDraftRow(
     string Json,
     IReadOnlyList<RubricRow> Rubrics,
     string Author,
-    DateTimeOffset At);
+    DateTimeOffset At,
+    IReadOnlyList<RubricRow> Scenarios);
+
+/// <summary>What the studio's import page sends: a promptfoo file's text and who is importing it.</summary>
+public sealed record PromptfooImportRequest(string? Yaml, string? Author);
+
+/// <summary>
+/// What a promptfoo import made: the new eval draft, and each part of the file that has no counterpart here, in the
+/// runner's words, so the person knows what to add by hand.
+/// </summary>
+public sealed record PromptfooImportReply(EvalDraftRow Draft, IReadOnlyList<string> LeftOut);
 
 /// <summary>
 /// What the compose page sends to try a draft: the stored run to replay (a try is always a replay, so it costs
@@ -39,7 +49,11 @@ public sealed record DraftCheckReply(bool Ok, IReadOnlyList<string> Problems);
 public sealed record RubricRow(string Name, string Text);
 
 /// <summary>
-/// What the compose page sends to save an eval: its file's text (which names the eval and its identity), its rubrics
-/// and who is saving it.
+/// What the compose page sends to save an eval: its file's text (which names the eval and its identity), its rubrics,
+/// who is saving it and the scenario files of its own it keeps.
 /// </summary>
-public sealed record EvalDraftRequest(string? Json, IReadOnlyList<RubricRow>? Rubrics, string? Author);
+public sealed record EvalDraftRequest(
+    string? Json,
+    IReadOnlyList<RubricRow>? Rubrics,
+    string? Author,
+    IReadOnlyList<RubricRow>? Scenarios);

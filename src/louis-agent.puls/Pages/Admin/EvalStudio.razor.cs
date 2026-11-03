@@ -38,6 +38,7 @@ public partial class EvalStudio : IDisposable
     private CheckListReply? _catalogue;
     private EvalComposition? _eval;
     private List<RubricEntry> _rubrics = [];
+    private IReadOnlyList<RubricRow> _scenarios = [];
     private string? _id;
     private DraftCheckReply? _verdict;
     private string? _error;
@@ -80,17 +81,25 @@ public partial class EvalStudio : IDisposable
     }
 
     /// <summary>An empty form for a new eval.</summary>
-    private void New() => Show(null, new EvalComposition(), []);
+    private void New() => Show(null, new EvalComposition(), [], []);
 
     /// <summary>Opens a draft into the form.</summary>
     private void Open(EvalDraftRow draft) =>
         Show(draft.Id, EvalComposition.FromJson(draft.Json),
-            [.. draft.Rubrics.Select(r => new RubricEntry { Name = r.Name, Text = r.Text })]);
+            [.. draft.Rubrics.Select(r => new RubricEntry { Name = r.Name, Text = r.Text })], draft.Scenarios);
 
     /// <summary>Puts an eval in the form, its verdict and saved line cleared.</summary>
-    private void Show(string? id, EvalComposition eval, List<RubricEntry> rubrics)
+    private void Show(string? id, EvalComposition eval, List<RubricEntry> rubrics,
+        IReadOnlyList<RubricRow> scenarios)
     {
-        (_id, _eval, _rubrics, _verdict, _saved) = (id, eval, rubrics, null, null);
+        (_id, _eval, _rubrics, _scenarios, _verdict, _saved) = (id, eval, rubrics, scenarios, null, null);
+    }
+
+    /// <summary>Lists the drafts again and opens the one a promptfoo import made.</summary>
+    private async Task ImportedAsync(EvalDraftRow draft)
+    {
+        await LoadAsync();
+        Open(draft);
     }
 
     /// <summary>Saves the form as its draft, new or replaced, and reads the list again.</summary>
@@ -199,7 +208,8 @@ public partial class EvalStudio : IDisposable
         try
         {
             // A new draft is posted, a kept one replaced under its id; the reply is the draft as kept.
-            var body = new EvalDraftRequest(Json, [.. _rubrics.Select(r => new RubricRow(r.Name, r.Text))], name);
+            var body = new EvalDraftRequest(Json, [.. _rubrics.Select(r => new RubricRow(r.Name, r.Text))], name,
+                _scenarios);
             using var request = new HttpRequestMessage(_id is null ? HttpMethod.Post : HttpMethod.Put,
                 _id is null ? Drafts : $"{Drafts}/{Uri.EscapeDataString(_id)}")
             {
