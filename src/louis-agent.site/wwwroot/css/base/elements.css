@@ -1,0 +1,76 @@
+/* The plain elements and the few utilities every page uses: the chrome headline, the kicker, the buttons, the panel. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--bg); color-scheme: dark; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.6 var(--sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--text); }
+a:hover { color: var(--ink); }
+
+h1, h2, h3, h4 { margin: 0; color: var(--ink); letter-spacing: -.02em; line-height: 1.1; text-wrap: balance; }
+h1 { font-size: 60px; font-weight: 700; letter-spacing: -.03em; line-height: 1.04; }
+h2 { font-size: 40px; font-weight: 700; }
+h3 { font-size: 22px; font-weight: 600; }
+h4 { font-size: 17px; font-weight: 600; }
+p { margin: 0; }
+
+code { font-family: var(--mono); font-size: .92em; color: var(--text-soft); }
+
+/* The big words in chrome: a white-to-steel gradient clipped to the letters. */
+.chrome {
+    background: var(--chrome);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* A small mono label above a section. */
+.kicker {
+    display: block;
+    font: 500 12px/1 var(--mono);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+
+.lede { font-size: 18px; line-height: 1.55; color: var(--muted); max-width: var(--measure); }
+.muted { color: var(--muted); font-size: 15px; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    height: 46px;
+    padding: 0 20px;
+    border-radius: var(--radius-small);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.btn-fill { background: var(--ink); color: var(--bg); }
+.btn-fill:hover { background: #e6e8eb; color: var(--bg); }
+.btn-line { border: 1px solid var(--line-bright); color: var(--text); }
+.btn-line:hover { border-color: var(--ink); color: var(--ink); }
+.btn-dark { background: var(--bg); color: var(--ink); }
+.btn-small { height: 38px; padding: 0 14px; font-size: 14px; }
+
+.panel {
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: var(--bg-raised);
+    padding: 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.panel p { font-size: 15px; line-height: 1.6; color: var(--muted); }
+.panel.small { padding: 20px; }
+.panel.small p { font-size: 14px; }

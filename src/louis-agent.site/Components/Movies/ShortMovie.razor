@@ -1,0 +1,45 @@
+@* How the engine works, as a 36-second film in six scenes: a turn as a light travelling over the parts on a tilted
+   floor, a flat card with the detail of each scene, a caption strip. All of it is CSS (css/movie/stage.css for the
+   stage, css/movie/short.css for this film's positions and timing). *@
+<div class="movie" role="img" aria-label="A 36-second loop: a prompt leaves the host, the composition picks an identity and its packs, core asks the model, a tool runs behind a guard, the ledger prices every request, and the answer returns to the host with its bill; a detail card explains each scene">
+    <div class="stage film-short">
+        <div class="camera" aria-hidden="true">
+            <div class="floor">
+                <div class="wire w1"></div><div class="wire w2"></div><div class="wire w3"></div><div class="wire w4"></div>
+                <div class="wire w5"></div><div class="wire w6"></div><div class="wire w7"></div><div class="wire w8"></div>
+                <div class="pool pool-host"></div><div class="pool pool-comp"></div><div class="pool pool-core"></div>
+                <div class="pool pool-model"></div><div class="pool pool-tools"></div><div class="pool pool-ledger"></div>
+                <div class="part p-host"><i>1</i>Host<small>Rider · web · API · CLI · MCP</small></div>
+                <div class="part p-comp"><i>2</i>Composition<small>IDENTITIES + PACKS</small></div>
+                <div class="part p-ident">Identity<small>who it is</small></div>
+                <div class="part p-packs">Packs<small>what it can do</small></div>
+                <div class="part p-core core"><i>3</i>Core<small>the loop · guards · ledger · streaming</small></div>
+                <div class="part p-model">Model<small>Claude · Ollama · OpenAI-compatible</small></div>
+                <div class="part p-tools"><i>4</i>Tools<small>files · git · dotnet · a pack's own</small></div>
+                <div class="part p-ledger"><i>5</i>Usage ledger<small>one priced record per request</small></div>
+                <div class="shadow"></div><div class="dot"></div>
+            </div>
+        </div>
+
+        <div class="title"><span class="kicker">How the engine works</span><span class="title-text">One turn, through every part</span></div>
+
+        <div class="cards">
+            <div class="card c1"><b>1 · The host</b><code>Rider · web app · HTTP API · CLI · MCP server</code><ul><li>Every host speaks to the same engine</li><li>The prompt is appended to a history that only grows</li></ul><em>› fix the failing test</em></div>
+            <div class="card c2"><b>2 · The composition</b><code>IDENTITIES=… PACKS=…</code><ul><li>An identity is who the agent is: voice, modes, roles</li><li>A pack is what it can do: tools, guides, settings</li><li>The engine itself names no product</li></ul><em>identity: coding agent · packs: files, git, dotnet</em></div>
+            <div class="card c3"><b>3 · Core asks the model</b><code>Microsoft.Extensions.AI · IChatClient</code><ul><li>The history and the session's tools go to the model</li><li>The provider is configuration: Claude, Ollama or OpenAI-compatible</li><li>The prompt prefix stays the same bytes, so it caches</li></ul><em>thinking · reads the test first… → ReadWorkspaceFile</em></div>
+            <div class="card c4"><b>4 · A tool, behind a guard</b><code>the tool loop · ToolCallGuards</code><ul><li>Arguments are data, never a shell command</li><li>A result over 50,000 characters is summarised first</li><li>A call cut off by the output limit never runs</li></ul><em>DotNetTest → 61,340 chars → 1,100</em></div>
+            <div class="card c5"><b>5 · The ledger</b><code>one record per request · a dated price table</code><ul><li>Every model request is recorded with its tokens and cost</li><li>An unknown price stays unknown, never 0</li></ul><em>request 3 · 9.4k tokens · $0.002</em></div>
+            <div class="card c6"><b>6 · Back to the host, with the bill</b><code>every host shows the same totals</code><ul><li>Thinking, text and every tool call streamed as they happened</li><li>The turn ends with what it cost</li></ul><em>turn: 4 requests · 31k tokens (27k cached) · $0.008</em></div>
+        </div>
+
+        <div class="strip" aria-hidden="true"></div>
+        <div class="steps" aria-hidden="true"><i class="k1"></i><i class="k2"></i><i class="k3"></i><i class="k4"></i><i class="k5"></i><i class="k6"></i></div>
+        <div class="bar" aria-hidden="true"><i></i></div>
+        <div class="cap c1"><b>1 / 6</b><span>A host sends a prompt. Every host speaks to the same engine.</span></div>
+        <div class="cap c2"><b>2 / 6</b><span>The composition picks who the agent is and what it can do.</span></div>
+        <div class="cap c3"><b>3 / 6</b><span>Core sends the history and the tools to the model. The provider is configuration.</span></div>
+        <div class="cap c4"><b>4 / 6</b><span>The model calls a tool. A guard keeps the result in bounds.</span></div>
+        <div class="cap c5"><b>5 / 6</b><span>Every request lands in the ledger, priced.</span></div>
+        <div class="cap c6"><b>6 / 6</b><span>The answer streams back with its bill. Then the next turn.</span></div>
+    </div>
+</div>
