@@ -36,6 +36,22 @@ public class JudgeCheckTests
         Assert.That(((JudgeCheck)check).Rubric, Is.EqualTo(Rubric));
     }
 
+    /// <summary>
+    /// A rubric's header (CL27) is for the portal, not the judge: the judge reads the body, and the rubric's hash is
+    /// the body's, so a calibration made before the header still matches it.
+    /// </summary>
+    [Test]
+    public void ARubricsHeader_IsNeitherSentNorHashed()
+    {
+        const string header = "---\nname: polite\ndescription: Whether the answer is polite.\n---\n";
+        using var folder = new DatasetFolder().Write("rubrics/polite.md", header + Rubric);
+
+        var check = (JudgeCheck)Build(folder.Root, """{"rubric": "rubrics/polite.md", "ask": ["tone"]}""");
+
+        Assert.That(check.Rubric, Is.EqualTo(Rubric));
+        Assert.That(RubricHash.Of(check.Rubric), Is.EqualTo(RubricHash.Of(Rubric)));
+    }
+
     /// <summary>A rubric that isn't in the folder is refused when the eval is read, naming the file.</summary>
     [Test]
     public void AMissingRubric_IsRefused_NamingTheFile()
