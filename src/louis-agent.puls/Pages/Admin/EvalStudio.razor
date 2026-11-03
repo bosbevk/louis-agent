@@ -45,12 +45,17 @@
             <div class="studio-actions">
                 <button type="button" class="studio-save header-button" disabled="@_busy" @onclick="SaveAsync">Save</button>
                 <button type="button" class="studio-check header-button" disabled="@_busy" @onclick="CheckAsync">Check</button>
+                <button type="button" class="studio-publish header-button" disabled="@_busy" @onclick="PublishAsync">Publish</button>
                 <button type="button" class="studio-view-json link-button" @onclick="() => _showJson = !_showJson">@JsonLabel</button>
                 @if (_saved is not null)
                 {
                     <span class="muted small">@_saved</span>
                 }
             </div>
+            @if (_published is not null)
+            {
+                <p class="studio-published">@_published</p>
+            }
             <div class="studio-try">
                 <input class="studio-try-replay" placeholder="run to replay, such as c0362ff73151" @bind="_tryReplay" />
                 <input class="studio-try-samples" placeholder="samples, commas between (all when empty)" @bind="_trySamples" />

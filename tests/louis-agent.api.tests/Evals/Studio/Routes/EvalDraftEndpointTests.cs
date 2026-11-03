@@ -5,7 +5,7 @@ using LouisAgent.Api.Evals.Drafts.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 
-namespace LouisAgent.Api.Tests.Evals.Studio;
+namespace LouisAgent.Api.Tests.Evals.Studio.Routes;
 
 /// <summary>
 /// The compose page's drafts (F49.5): an eval being composed is made, replaced, read, listed and deleted. Its name and

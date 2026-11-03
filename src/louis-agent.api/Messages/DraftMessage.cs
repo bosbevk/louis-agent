@@ -85,4 +85,15 @@ public enum DraftMessage
     [Description(
         "A try replays a stored run, so it costs nothing: name the run to replay. A fresh run is the Run button's.")]
     TryNeedsAReplay,
+
+    [Description("git {Command} failed while publishing: {Reason}")]
+    PublishGitFailed,
+
+    [Description(
+        "The eval isn't ready to publish: the runner's check found {Count} problem(s), the first: {First}. Check it on the Studio page, fix it, then publish.")]
+    PublishNeedsAPassingCheck,
+
+    [Description(
+        "There is no identity project '{Folder}' in the workspace to publish the eval beside: its identity must be one the workspace has.")]
+    PublishNoIdentity,
 }

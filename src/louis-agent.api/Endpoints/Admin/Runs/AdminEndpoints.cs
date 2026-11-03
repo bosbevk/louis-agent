@@ -61,6 +61,11 @@ internal static class AdminEndpoints
         var trying = new DraftTryHandlers(draftStore, runner, recorder, settingsOf, StudioEndpoints.Scratch);
         admin.MapPost("/evals/drafts/{id}/try", trying.PostTry);
 
+        // Its publish: the checked folder on a branch in the workspace, or a zip where there's no git workspace.
+        var publishing = new DraftPublishHandlers(draftStore, runnerParts.Checker, workspaceRoot,
+            StudioEndpoints.Scratch);
+        admin.MapPost("/evals/drafts/{id}/publish", publishing.PostPublish);
+
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.
         foreach (string prefix in Prefixes)

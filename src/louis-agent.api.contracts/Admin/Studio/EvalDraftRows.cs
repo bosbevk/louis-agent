@@ -24,6 +24,12 @@ public sealed record EvalDraftRow(
 public sealed record TryRequest(string? Replay, IReadOnlyList<string>? Samples);
 
 /// <summary>
+/// What a publish made: the branch the eval's folder was committed on, the commit, and the folder's path in the
+/// repository. The push and the pull request are the person's.
+/// </summary>
+public sealed record PublishReply(string Branch, string Commit, string Folder);
+
+/// <summary>
 /// What the eval runner said of a draft written out as a folder: whether it conforms, and every problem in the runner's
 /// own words, in the order a run would meet them.
 /// </summary>

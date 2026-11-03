@@ -23,6 +23,14 @@ public static class StudioText
     /// <summary>An eval being composed was saved as a draft (F49.5).</summary>
     public static string EvalSaved(string eval) => $"Saved {eval} as a draft.";
 
+    /// <summary>An eval was committed on its branch; the push and the pull request are the person's.</summary>
+    public static string Published(string branch, string folder) =>
+        $"Committed {folder} on {branch}. Push the branch and open a pull request to make it part of the evals.";
+
+    /// <summary>An eval was handed back as a zip, where the API has no git workspace.</summary>
+    public static string PublishedAsZip(string file) =>
+        $"This instance has no git workspace, so the eval came as {file}: add its folder in a pull request.";
+
     /// <summary>A try started; the Benchmarks page follows it.</summary>
     public static string TryStarted(string run) =>
         $"Try {run} started, a replay at no cost: follow it on Benchmarks ›";

@@ -9,7 +9,7 @@ using LouisAgent.Api.Evals.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 
-namespace LouisAgent.Api.Tests.Evals.Studio;
+namespace LouisAgent.Api.Tests.Evals.Studio.Routes;
 
 /// <summary>
 /// A studio try (F49.5): a replay of a stored run, on the draft's folder and a few of its samples, so it costs nothing.

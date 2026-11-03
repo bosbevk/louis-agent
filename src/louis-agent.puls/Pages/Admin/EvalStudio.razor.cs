@@ -10,6 +10,7 @@ using LouisAgent.Puls.Admin.Studio.Schema;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Storage;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace LouisAgent.Puls.Pages.Admin;
 
@@ -29,6 +30,7 @@ public partial class EvalStudio : IDisposable
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
     [Inject] private ReviewerState Reviewer { get; set; } = null!;
+    [Inject] private IJSRuntime JS { get; set; } = null!;
 
     private const string Drafts = "v1/admin/evals/drafts";
 
@@ -41,6 +43,7 @@ public partial class EvalStudio : IDisposable
     private string? _error;
     private string? _saved;
     private string? _tried;
+    private string? _published;
     private string _tryReplay = "";
     private string _trySamples = "";
     private bool _needsKey, _busy, _showJson;
@@ -136,6 +139,41 @@ public partial class EvalStudio : IDisposable
             using var response = await Api.SendAsync(request);
             var run = await response.Content.ReadFromJsonAsync<LiveRunRow>(AdminJson.SnakeCase);
             _tried = StudioText.TryStarted(run!.Id);
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    /// <summary>
+    /// Saves the draft, then publishes it: committed on its branch in the workspace, which the page names; or, where
+    /// the API has no git workspace, the eval's folder as a zip to download.
+    /// </summary>
+    private async Task PublishAsync()
+    {
+        if (await SaveDraftAsync() is not { } id) return;
+        _busy = true;
+        try
+        {
+            using var response = await Api.SendAsync(new HttpRequestMessage(HttpMethod.Post,
+                $"{Drafts}/{Uri.EscapeDataString(id)}/publish"));
+            if (response.Content.Headers.ContentType?.MediaType == "application/zip")
+            {
+                // No workspace to commit in: the browser saves the folder as a zip.
+                string name = response.Content.Headers.ContentDisposition?.FileName?.Trim('"') ?? "eval.zip";
+                byte[] zip = await response.Content.ReadAsByteArrayAsync();
+                await JS.InvokeVoidAsync("louisDownload", name, Convert.ToBase64String(zip), "application/zip");
+                _published = StudioText.PublishedAsZip(name);
+                return;
+            }
+
+            var published = await response.Content.ReadFromJsonAsync<PublishReply>(AdminJson.SnakeCase);
+            _published = StudioText.Published(published!.Branch, published.Folder);
         }
         catch (AgentApiException ex)
         {

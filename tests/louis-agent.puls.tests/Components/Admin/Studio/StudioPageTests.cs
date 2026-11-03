@@ -35,6 +35,8 @@ public class StudioPageTests
             ("GET", "/v1/admin/evals/checks") => Json(Checks),
             ("GET", "/v1/admin/evals/drafts") => Json($$"""{"drafts":[{{Draft}}]}"""),
             ("PUT", "/v1/admin/evals/drafts/d1") => Json(Draft),
+            ("POST", "/v1/admin/evals/drafts/d1/publish") => Json(
+                """{"branch":"eval/weather-agent-weather-eval","commit":"abc123","folder":"identities/louis-agent.identity.weather-agent/Evals/WeatherEval"}"""),
             ("POST", "/v1/admin/evals/drafts/d1/try") =>
                 Json("""{"id":"run_9","check":"weather-eval","repeat":1,"status":"running"}"""),
             ("POST", "/v1/admin/evals/drafts/d1/verdict") =>
@@ -99,6 +101,20 @@ public class StudioPageTests
         var sent = JsonDocument.Parse(handler.Requests.Single(r => r.Url.EndsWith("/try")).Body!).RootElement;
         Assert.That((sent.GetProperty("replay").GetString(), sent.GetProperty("samples").GetArrayLength()),
             Is.EqualTo(("c0362ff73151", 2)));
+    }
+
+    /// <summary>Publish saves the draft, then names the branch it was committed on, for the person to push.</summary>
+    [Test]
+    public void Publish_SavesTheDraft_ThenNamesTheBranch()
+    {
+        var (cut, handler) = Render();
+        cut.Find(".studio-draft").Click();
+
+        cut.Find(".studio-publish").Click();
+
+        cut.WaitForAssertion(() => Assert.That(cut.Find(".studio-published").TextContent,
+            Does.Contain("eval/weather-agent-weather-eval").And.Contain("pull request")));
+        Assert.That(handler.Requests.Select(r => r.Method.Method), Does.Contain("PUT"), "saved first");
     }
 
     /// <summary>Check saves the draft under the reviewer's name, then shows the runner's problems.</summary>
