@@ -70,6 +70,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0061](0061-evals-grow-from-use.md) | Evals grow from use: a sample or transcript made in the portal is a draft in a store until F49.5 publishes it; a sample is a variant of its conversation's scenario; a transcript is kept only when people's verdicts back it | Accepted |
 | [0062](0062-the-studio-writes-what-git-keeps.md) | The studio writes what git keeps: the runner is the one reader and judge of eval files, reached as a process; an eval being composed is a draft written out as one folder that is checked, tried (always a replay) and published (a commit on a branch, never a push, or a zip); promptfoo in and out by a mapping table that names what it leaves out | Accepted |
 | [0063](0063-a-prompt-says-what-it-is.md) | A prompt says what it is: every built-in prompt and judge rubric opens with the Agent Skills spec's front matter (name, description, our level and toolsets under metadata), read once by one strict reader in core; the model and the judge get only the body; the portal lists them | Accepted |
+| [0064](0064-observability-through-opentelemetry.md) | Observability through OpenTelemetry: logs through Serilog's OTLP sink and traces through the OpenTelemetry SDK, on the standard `OTEL_*` settings alone; a turn is an `invoke_agent` span with no content, a sub-session nests across the HTTP hop, a crash is one Critical line; the Aspire dashboard on the PC, Application Insights on Azure; and the table of what to log at which level | Accepted |
 
 ## When to write one
 
