@@ -1,4 +1,4 @@
-namespace LouisAgent.Web.Testing;
+namespace LouisAgent.Web.Testing.Styles;
 
 /// <summary>
 /// One relative <c>url(…)</c> in a web app's stylesheet: the area file it is written in, the path as written, and the

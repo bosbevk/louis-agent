@@ -33,6 +33,7 @@
     <Using Include="Bunit" />
     <Using Include="LouisAgent.Testing" />
     <Using Include="LouisAgent.Web.Testing" />
+    <Using Include="LouisAgent.Web.Testing.Styles" />
   </ItemGroup>
 
   <ItemGroup>
