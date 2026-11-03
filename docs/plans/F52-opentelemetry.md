@@ -478,6 +478,12 @@ a replay, and the measurement in step 8 replays a recorded eval run.
 - **2026-11-03, step 3, the span's agent name** (Louis's pick G1 of three, 20:47): `AgentEngineFactory` names the
   engine it builds for the profile's role, else the default mode; an engine built by hand is named for its host.
   `gen_ai.agent.name` is that name, so a trace tells the cook's turn from the chat's.
+- **2026-11-03, step 4, the collector's own traffic** (Louis's pick H1 of three, built and merged as step 4b): the
+  Serilog sink sends its log batches on a plain `HttpClient`, which the tracer listens to since step 2, so every
+  batch became a `POST` span. `OwnTrafficFilter`, a processor before the exporter, drops an `HttpClient` span whose
+  address starts with `OTEL_EXPORTER_OTLP_ENDPOINT`. And the parent's test runs `PeerHttp` over a real
+  `HttpClient` to a loopback listener (`TestHttp/HeaderEcho`), not the recording handler the table says: .NET writes
+  `traceparent` in the handler a real client sends through, which a handler fake bypasses.
 
 ## Concepts this teaches (GOAL skill 17, with 15 and 18)
 

@@ -138,7 +138,7 @@ public class AgentTelemetryTests
 
     /// <summary>
     /// A call to the collector itself is no span of ours (F52 step 4b, H1): the log sink sends its batches on its own
-    /// client, and without the filter every batch would be a span, in a loop. Any other call stays.
+    /// client, and without the filter every batch of log lines would be a span. Any other call stays.
     /// </summary>
     [Test]
     public async Task ACallToTheCollector_IsLeftOut_AnyOtherStays()
