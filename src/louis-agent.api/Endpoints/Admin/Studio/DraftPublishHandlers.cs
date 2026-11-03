@@ -40,7 +40,8 @@ internal sealed class DraftPublishHandlers(
                 return ApiErrors.NotFound(MessageText.Format(DraftMessage.NoEvalDraft, new { Id = id }));
 
             // What is published is what the runner checked: the folder it sealed and found no problem with.
-            string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch);
+            string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch,
+                workspaceRoot);
             var verdict = checker.Check(folder);
             if (verdict.Failure is { } failure) return ApiErrors.Unavailable(failure);
             if (!verdict.Ok)
@@ -48,7 +49,8 @@ internal sealed class DraftPublishHandlers(
                     new
                     {
                         verdict.Problems.Count,
-                        First = verdict.Problems.FirstOrDefault() ?? ""
+                        // The runner's sentence ends with its own full stop; the refusal adds the next one.
+                        First = (verdict.Problems.FirstOrDefault() ?? "").TrimEnd('.')
                     }));
 
             var target = PublishTarget.Of(draft.Identity, draft.Name);

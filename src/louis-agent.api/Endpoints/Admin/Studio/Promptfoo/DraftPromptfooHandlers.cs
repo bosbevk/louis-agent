@@ -35,7 +35,8 @@ internal sealed class DraftPromptfooHandlers(
     IEvalDraftStore drafts,
     PromptfooRunner promptfoo,
     TimeProvider time,
-    string scratch)
+    string scratch,
+    string workspaceRoot)
 {
     /// <summary>Makes a new eval draft from a promptfoo file.</summary>
     public async Task<ImportAnswer> PostImport(PromptfooImportRequest? request, CancellationToken cancellationToken)
@@ -69,7 +70,8 @@ internal sealed class DraftPromptfooHandlers(
             if (await drafts.GetEvalAsync(id, cancellationToken) is not { } draft)
                 return ApiErrors.NotFound(MessageText.Format(DraftMessage.NoEvalDraft, new { Id = id }));
 
-            string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch);
+            string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch,
+                workspaceRoot);
             var exported = promptfoo.Export(folder);
             if (exported.Failure is { } failure) return ApiErrors.Unavailable(failure);
             return TypedResults.Text(exported.Stdout, "application/yaml", Encoding.UTF8);

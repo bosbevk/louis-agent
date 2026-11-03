@@ -35,7 +35,8 @@ internal sealed class DraftTryHandlers(
     EvalProcess runner,
     EvalRecorder? recorder,
     Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
-    string scratch)
+    string scratch,
+    string workspaceRoot)
 {
     /// <summary>Writes the draft out and starts its try, answering 202 with the live run.</summary>
     public async Task<TryAnswer> PostTry(string id, TryRequest? request, CancellationToken cancellationToken)
@@ -53,7 +54,8 @@ internal sealed class DraftTryHandlers(
         if (runner.IsRunning) return Running();
 
         // The folder holds what will be published, and the runner runs it as a replay on the named samples.
-        string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch);
+        string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch,
+            workspaceRoot);
         var eval = new EvalEntry(draft.Name, draft.Name);
         var tried = options! with
         {

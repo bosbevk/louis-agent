@@ -21,15 +21,15 @@ internal static class StudioEndpoints
     /// Adds <c>GET /evals/checks</c>, the <c>/evals/drafts</c> resource, a draft's check and promptfoo in and out.
     /// </summary>
     public static void MapStudio(this RouteGroupBuilder admin, StudioRunner runner, IEvalDraftStore drafts,
-        TimeProvider time)
+        TimeProvider time, string workspaceRoot)
     {
-        var checking = new DraftCheckHandlers(drafts, runner.Checker, Scratch);
+        var checking = new DraftCheckHandlers(drafts, runner.Checker, Scratch, workspaceRoot);
         admin.MapPost("/evals/drafts/{id}/verdict", checking.PostVerdict);
 
         var catalogue = new StudioHandlers(runner.Checks);
         admin.MapGet("/evals/checks", catalogue.GetChecks);
 
-        var promptfoo = new DraftPromptfooHandlers(drafts, runner.Promptfoo, time, Scratch);
+        var promptfoo = new DraftPromptfooHandlers(drafts, runner.Promptfoo, time, Scratch, workspaceRoot);
         admin.MapPost("/evals/drafts/promptfoo", promptfoo.PostImport);
         admin.MapGet("/evals/drafts/{id}/promptfoo", promptfoo.GetExport);
 

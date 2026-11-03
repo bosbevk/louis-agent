@@ -2,6 +2,7 @@ using System.Text.Json;
 using LouisAgent.Api.Evals.Drafts;
 using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Drafts.Samples;
+using LouisAgent.Api.Evals.Studio.Publish;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 
@@ -11,30 +12,41 @@ namespace LouisAgent.Api.Evals.Studio;
 /// Writes an eval being composed out as the folder the runner reads (ADR 0058): its file as typed, its rubrics under
 /// <c>Rubrics/</c>, a manifest for its dataset with the hash left for the runner to seal, the eval's sample drafts as
 /// its dev scenarios and its transcript drafts under the names they were kept with. Each draft has a folder of its own
-/// under the root, written afresh every time, so a file the draft dropped is gone.
+/// under the root, written afresh every time, so a file the draft dropped is gone. An edit of an eval the workspace
+/// already has starts from a copy of its folder (FX32), so what git holds and the studio doesn't keep (its reference
+/// transcripts, held-out scenarios, labels, manual and manifest) is checked and published with it.
 /// </summary>
 /// <remarks>
 /// The studio's one bridge from records to files: check, try and publish all read the folder this writes, so what is
-/// checked is what is published. The scenarios and the manifest are written with the scenario files' own wire
-/// (<see cref="SampleBody.FileJson"/>), snake_case and indented.
+/// checked is what is published. The eval's folder is copied, never read: the runner stays the one reader of eval files
+/// (finding R). The draft's files go over the copy, so a file the draft renamed leaves its old one beside it, as an
+/// edit in Rider would until the person deletes it. The scenarios and the manifest are written with the scenario
+/// files' own wire (<see cref="SampleBody.FileJson"/>), snake_case and indented.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
 public static class DraftFolder
 {
     /// <summary>The draft's folder under <paramref name="root"/>, written afresh, and its path.</summary>
-    public static string Write(EvalDraft draft, EvalDrafts drafts, string root)
+    public static string Write(EvalDraft draft, EvalDrafts drafts, string root, string workspaceRoot)
     {
         string folder = Path.Combine(root, draft.Id);
         if (Directory.Exists(folder)) Directory.Delete(folder, recursive: true);
         Directory.CreateDirectory(folder);
 
+        // An edit of an eval the workspace has starts from its folder (FX32): its references, held-out scenarios,
+        // labels, manual and manifest stay, and the draft's files go over them.
+        string existing = Path.Combine(workspaceRoot, PublishTarget.Of(draft.Identity, draft.Name).Folder);
+        if (Directory.Exists(existing)) Copy(existing, folder);
+
         File.WriteAllText(Path.Combine(folder, "eval.json"), draft.Json);
         foreach (var rubric in draft.Rubrics) Write(folder, ["Rubrics", rubric.Name], rubric.Text);
 
-        // The dataset: a manifest the runner seals, the draft's own scenarios and the sample drafts as dev scenarios.
+        // The dataset: a new eval's manifest for the runner to seal (an edit keeps its own), the draft's own scenarios
+        // and the sample drafts as dev scenarios.
         var manifest = new ManifestFile(draft.Name, 1, MessageText.Format(DraftMessage.ComposedCovers), "",
             [MessageText.Format(DraftMessage.ComposedChange, new { Date = $"{draft.At:yyyy-MM-dd}" })]);
-        Write(folder, ["Dataset", "dataset.json"], JsonSerializer.Serialize(manifest, SampleBody.FileJson) + "\n");
+        if (!File.Exists(Path.Combine(folder, "Dataset", "dataset.json")))
+            Write(folder, ["Dataset", "dataset.json"], JsonSerializer.Serialize(manifest, SampleBody.FileJson) + "\n");
         foreach (var scenario in draft.Scenarios)
             Write(folder, ["Dataset", "scenarios", "dev", scenario.Name], scenario.Text);
         foreach (var sample in drafts.Samples)
@@ -46,6 +58,17 @@ public static class DraftFolder
             Write(folder, ["Transcripts", transcript.FileName],
                 string.Concat(transcript.Lines.Select(line => line + "\n")));
         return folder;
+    }
+
+    /// <summary>Copies every file of the eval's folder into the draft's, keeping their paths.</summary>
+    private static void Copy(string from, string to)
+    {
+        foreach (string file in Directory.EnumerateFiles(from, "*", SearchOption.AllDirectories))
+        {
+            string target = Path.Combine(to, Path.GetRelativePath(from, file));
+            Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+            File.Copy(file, target);
+        }
     }
 
     /// <summary>Writes one file under the folder, making its folders first.</summary>
