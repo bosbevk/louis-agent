@@ -33,6 +33,10 @@ properties:
         env:
           - name: IDENTITIES
             value: puls
+          # Its name in Application Insights (F52 step 7): its project is the API's, so it says puls. The collector's
+          # address and protocol come from the environment's OpenTelemetry agent (deploy.ps1 telemetry), never from here.
+          - name: OTEL_SERVICE_NAME
+            value: puls
           - name: HOST_TIME_ZONE
             value: Africa/Johannesburg
           - name: HOST_CULTURE
