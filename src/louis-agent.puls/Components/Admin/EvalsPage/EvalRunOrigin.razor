@@ -3,7 +3,7 @@
 
 @if (Line.Source is { } source)
 {
-    <a class="run-origin @EvalText.OriginTone(Line.Origin)" href="admin/benchmarks/@source" title="@EvalText.OriginHint(Line.Origin)">@EvalText.Origin(Line.Origin, source)</a>
+    <a class="run-origin @EvalText.OriginTone(Line.Origin)" href="@RunAddress.Of(source)" title="@EvalText.OriginHint(Line.Origin)">@EvalText.Origin(Line.Origin, source)</a>
 }
 else
 {

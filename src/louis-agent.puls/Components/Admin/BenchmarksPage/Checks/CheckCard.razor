@@ -23,7 +23,7 @@
         }
         else
         {
-            <a class="check-last" href="admin/benchmarks/@last.Id" @onclick:stopPropagation>
+            <a class="check-last" href="@RunAddress.Of(last.Id)" @onclick:stopPropagation>
                 <span class="muted">Last run</span>
                 <span>@last.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span>
                 <span class="muted">·</span><span>@RunText.Repeats(last.Repeat)</span>

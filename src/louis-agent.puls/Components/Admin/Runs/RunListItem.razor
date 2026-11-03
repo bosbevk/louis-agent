@@ -2,7 +2,7 @@
    can be re-scored, a recorded one replayed. The row is a grid of fixed columns (the rework of 2026-10-26), so the runs read as a table: the run, when, its repeats,
    its status, its requests, its notes and its cost. *@
 <li class="run-row">
-    <a class="run-row-main" href="admin/benchmarks/@Run.Id" title="Open this run"><code>@Run.Id</code></a>
+    <a class="run-row-main" href="@RunAddress.Of(Run.Id)" title="Open this run"><code>@Run.Id</code></a>
     <span class="run-row-when">@Run.StartedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</span>
     <span class="run-row-repeat">@Run.Repeat×</span>
     <span class="status-pill @Run.Status">@StatusText</span>

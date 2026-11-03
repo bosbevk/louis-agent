@@ -131,10 +131,10 @@ public class SummaryPanelTests
             {
                 (SampleScenario.Alpha,
                     SampleScenario.Fill(
-                        "admin/benchmarks/run123456789?tab=conversations&view=conversation&task=<ScenarioAlpha>")),
+                        "admin/runs/run123456789?tab=conversations&view=conversation&task=<ScenarioAlpha>")),
                 (SampleScenario.Beta,
                     SampleScenario.Fill(
-                        "admin/benchmarks/run123456789?tab=conversations&view=conversation&task=<ScenarioBeta>")),
+                        "admin/runs/run123456789?tab=conversations&view=conversation&task=<ScenarioBeta>")),
             }));
     }
 

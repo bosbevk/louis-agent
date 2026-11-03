@@ -78,7 +78,7 @@ public class BenchmarkRunTabsTests
         var (ctx, _) = Open();
         using (ctx)
         {
-            var cut = Render(ctx, "admin/benchmarks/run1");
+            var cut = Render(ctx, "admin/runs/run1");
 
             Assert.That(cut.FindAll(".summary-none"), Has.Count.EqualTo(1), "the summary (here: none to show)");
             Assert.That(cut.FindAll(".explorer"), Is.Empty, "the explorer is on its own tab");
@@ -93,7 +93,7 @@ public class BenchmarkRunTabsTests
         var (ctx, _) = Open();
         using (ctx)
         {
-            var cut = Render(ctx, "admin/benchmarks/run1?tab=notes");
+            var cut = Render(ctx, "admin/runs/run1?tab=notes");
 
             Assert.That(cut.FindAll(".notes-panel"), Has.Count.EqualTo(1));
             Assert.That(cut.FindAll(".summary-none"), Is.Empty);
@@ -108,7 +108,7 @@ public class BenchmarkRunTabsTests
         var (ctx, _) = Open();
         using (ctx)
         {
-            var cut = Render(ctx, "admin/benchmarks/run1?tab=recipes");
+            var cut = Render(ctx, "admin/runs/run1?tab=recipes");
 
             Assert.That(cut.FindAll(".summary-none"), Has.Count.EqualTo(1));
         }
@@ -124,10 +124,10 @@ public class BenchmarkRunTabsTests
         var (ctx, runReads) = Open();
         using (ctx)
         {
-            var cut = Render(ctx, "admin/benchmarks/run1");
+            var cut = Render(ctx, "admin/runs/run1");
             Assert.That(runReads(), Is.EqualTo(1));
 
-            ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/benchmarks/run1?tab=conversations");
+            ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/runs/run1?tab=conversations");
 
             cut.WaitForAssertion(() => Assert.That(cut.FindAll(".explorer"), Has.Count.EqualTo(1)));
             Assert.That(runReads(), Is.EqualTo(1), "the same run: nothing to fetch");
@@ -144,7 +144,7 @@ public class BenchmarkRunTabsTests
         var (ctx, runReads) = Open();
         using (ctx)
         {
-            var cut = Render(ctx, "admin/benchmarks/run1?tab=conversations");
+            var cut = Render(ctx, "admin/runs/run1?tab=conversations");
             cut.WaitForAssertion(() => Assert.That(cut.FindAll(".tile"), Is.Not.Empty));
 
             cut.Find(".tile").Click();
@@ -152,7 +152,7 @@ public class BenchmarkRunTabsTests
             var navigation = ctx.Services.GetRequiredService<NavigationManager>();
             cut.WaitForAssertion(() =>
                 Assert.That(navigation.Uri,
-                    Does.EndWith("admin/benchmarks/run1?tab=conversations&view=conversations")));
+                    Does.EndWith("admin/runs/run1?tab=conversations&view=conversations")));
             cut.WaitForAssertion(() => Assert.That(cut.FindAll(".conv-filter"), Has.Count.EqualTo(1)));
             Assert.That(runReads(), Is.EqualTo(1), "the same run: nothing to fetch");
         }

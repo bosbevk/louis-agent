@@ -8,7 +8,7 @@
         {
             <li class="eval-tl-item @EvalText.OriginTone(line.Origin)" style="--i: @i">
                 <div class="eval-tl-head">
-                    <a class="eval-run-id" href="admin/benchmarks/@line.Run.Run.Id"><code>@RunText.Short(line.Run.Run.Id)</code></a>
+                    <a class="eval-run-id" href="@RunAddress.Of(line.Run.Run.Id)"><code>@RunText.Short(line.Run.Run.Id)</code></a>
                     <span class="eval-when">@EvalText.When(line.Run.Run.StartedAt)</span>
                     <span class="status-pill @RunText.Status(line.Run.Run.Status)">@RunText.Status(line.Run.Run.Status)</span>
                     <span class="chip">@RunText.Repeats(line.Run.Run.Repeat)</span>

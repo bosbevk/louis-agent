@@ -55,12 +55,13 @@ public class ExplorerPlaceTests
         Assert.That(Enum.GetValues<ExplorerView>().Select(v => new ExplorerPlace(v).Level),
             Is.EqualTo(new[] { 0, 1, 2, 3, 4 }));
 
-    /// <summary>The run's address holds its tab and, on the conversations tab, the explorer's place.</summary>
+    /// <summary>The run's address is under admin/runs, with its tab and, on the conversations tab, the place.</summary>
     [Test]
     public void TheRunsAddress_HoldsItsTab_AndThePlace()
     {
-        Assert.That(RunAddress.Of("run 1", RunTab.Notes, null), Is.EqualTo("admin/benchmarks/run%201?tab=notes"));
+        Assert.That(RunAddress.Of("run 1"), Is.EqualTo("admin/runs/run%201"));
+        Assert.That(RunAddress.Of("run 1", RunTab.Notes, null), Is.EqualTo("admin/runs/run%201?tab=notes"));
         Assert.That(RunAddress.Of("run1", RunTab.Conversations, ExplorerPlace.Conversation("bobotie")),
-            Is.EqualTo("admin/benchmarks/run1?tab=conversations&view=conversation&task=bobotie"));
+            Is.EqualTo("admin/runs/run1?tab=conversations&view=conversation&task=bobotie"));
     }
 }

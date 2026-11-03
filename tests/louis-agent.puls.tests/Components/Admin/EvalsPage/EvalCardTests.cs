@@ -59,7 +59,7 @@ public class EvalCardTests
 
         var tag = cut.Find(".eval-timeline .run-origin.is-replay");
         Assert.That(tag.TextContent, Is.EqualTo("replay of run_1"));
-        Assert.That(tag.GetAttribute("href"), Is.EqualTo("admin/benchmarks/run_1"));
+        Assert.That(tag.GetAttribute("href"), Is.EqualTo("admin/runs/run_1"));
         Assert.That(cut.FindAll(".eval-timeline > li"), Has.Count.EqualTo(2), "the latest is in the scorecard");
     }
 
