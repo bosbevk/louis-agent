@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 4,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek het 'n resep gaan haal (Getaway se tradisionele bobotie, wat tot agt mense maak) en dit vir vier mense halveer. Ek kon nie vir my kok vra nie, so dit is my eie werk.\n\n**Bobotie vir 4**\n\n**Bestanddele**\n- ½ snitjie wit of bruin brood sonder korsie\n- 190 ml melk (die helfte gaan later in die custard)\n- 12,5 ml olie\n- 5 ml botter\n- 1 groot ui, in skyfies\n- 1 knoffelhuisie, fyngedruk\n- 12,5 ml kerriepoeier\n- 5 ml sout\n- 12,5 ml mangogsjatni\n- 7,5 ml gladde appelkooskonfyt\n- 7,5 ml Worcestersous\n- 2,5 ml borrie (turmeric)\n- 12,5 ml bruin asyn\n- 500 g rou maalvleis\n- 50 ml sultanas (nie rosyne nie, dit is te soet)\n- 1 eier\n- 'n knippie sout en borrie vir die custard\n- 2 eiers vir die custard\n- 'n paar varingblare (bay leaves)\n- 'n handjie gekwarteerde amandels as jy hulle wil hê (die oorspronklike resep sê so)\n\n**Metode**\n1. Week die brood in die melk. Verhit die olie en botter in 'n groot pan en fruit die ui en knoffel tot sag.\n2. Voeg die kerrie, sout, sjatni, konfyt, Worcestersous, borrie en asyn by en roer goed.\n3. Druk die brood uit en hou die melk opsy. Voeg die brood, vleis en sultanas by die pan.\n4. Kook op lae hitte en roer tot die vleis nie meer pienk is nie. Haal van die stoof af, klits die 1 eier in en roer goed.\n5. Skep in 'n gesmeerde bakdish (sowat 20 x 20 cm, of 'n klein ovenbakkie) en gelyk die bokant.\n6. Klits die 2 eiers met die oorblywende melk (sowat 150 ml; as dit te min is, gooi 'n bietjie gewone melk by), 'n knippie sout en 'n knippie borrie. Giet oor die vleis en lê 'n paar varingblare bo-op.\n7. Sit die dish in 'n groter pan water (dit hou die bobotie vogtig) en bak onbedek by 180 °C vir sowat 45 minute tot 1 uur, tot die custard vas is.\n\n**Bedien met** rys, kokosvlokkies, sjatni, nootjies en piesangskyfies.\n\n**Let wel:** Ek soek nie winkels se pryse op nie (ek het hulle om toestemming gevra), so ek kan nie sê wat dit by Checkers, Pick n Pay of Spar kos nie. Vir 'n skatting: 500 g maalvleis is die grootste deel van die koste, dus begin daar as jy na pryse kyk.\n\nBron: Getaway Magazine, \"Traditional South African bobotie recipe\" (https://www.getaway.co.za/food/recipes-food/traditional-south-african-bobotie-recipe/). Die hoeveelhede vir vier is my halvering van hulle resep, nie hulle eie nie."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

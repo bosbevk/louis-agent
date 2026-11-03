@@ -44,5 +44,5 @@ internal static class CookFile
     /// <summary>
     /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF).
     /// </summary>
-    public const string RubricHash = "2ab944be4e29";
+    public const string RubricHash = "51f8ca5a5f84";
 }

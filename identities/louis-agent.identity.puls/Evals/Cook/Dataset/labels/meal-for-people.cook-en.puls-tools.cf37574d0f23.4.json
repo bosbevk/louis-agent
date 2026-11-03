@@ -1,0 +1,21 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-en",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 4,
+  "turns": [
+    {
+      "question": "What should I cook tonight in Pretoria for two? I have about an hour and I shop at PnP. Give me the recipe and what it'll cost.",
+      "answer": "I can't hand this to my cook in this chat, so I'm answering myself. Two things I can't do properly: price it at PnP, and give you a cost.\n\n**Why no cost:** PnP isn't one of the shops I can look up, so I can't check its prices. I won't guess rand amounts. You'd need to add up the list at PnP's site or in the app.\n\n**A dinner I found:** Chutney and mayo oven-baked chicken, from Lizna (a South African food blog). It's an easy one, but it isn't quite what you asked for:\n\n- **It takes about 70 minutes**, not under an hour: 10 minutes prep and 60 minutes baking, plus preheating.\n- **It makes 4 servings.** Halve it for two. The bake time stays the same, so the oven is the bottleneck.\n\n**Ingredients, for four (halve for two):**\n- 8 chicken pieces (drumsticks, thighs or a mix, bone-in and skin-on works best)\n- Salt and pepper\n- 1 cup boiling water\n- 1 cup chutney (Mrs Ball's is the blogger's choice)\n- 1 cup full-fat mayonnaise\n- 1 packet brown onion soup\n\n**Method:**\n1. Preheat the oven to 180°C.\n2. Lay the chicken in one layer in an oven dish and season it.\n3. Mix the boiling water, chutney, mayo and onion soup, and pour it over the chicken.\n4. Bake uncovered for 60 minutes, until golden and tender. Grill the last 5 minutes for a crisper top if you like.\n\nServe it with rice, mash, or couscous, which is quicker than potatoes.\n\nIf you want it under an hour, tell me and I'll look for a stovetop recipe instead.\n\nSource: https://www.lizna.co.za/chutney-and-mayo-chicken/"
+    },
+    {
+      "question": "Swap the meat for chicken. What does the shopping list look like now?",
+      "answer": "The recipe already uses chicken, so there's nothing to swap. Here's the list for two, halved from the recipe:\n\n- 4 chicken pieces (drumsticks, thighs or a mix, bone-in and skin-on works best)\n- 1/2 cup chutney (Mrs Ball's is the blogger's pick)\n- 1/2 cup full-fat mayonnaise\n- 1/2 packet brown onion soup (or a whole packet, if that's how they sell it)\n- Salt and pepper\n- Water to boil (no purchase needed)\n\nI can't give you prices for PnP, so there's no total. Add these up on PnP's site or in the app. If you wanted a different meat, tell me which one and I'll redo the list."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

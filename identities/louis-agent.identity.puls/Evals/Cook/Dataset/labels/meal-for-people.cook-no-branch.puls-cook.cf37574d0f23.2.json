@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-no-branch",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n ete vir twee en die pryse by PnP in Prince Albert.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nMaklike hoenderkerrie met aartappels, uie en babawortels, in een pot. Dit is klaar in ongeveer 45 minute en is maklik vir twee vanaand.\n\n**Resep**\n\n![Maklike Kerrie Hoender Resep](https://idata.hiloved.com/imgs/71c8af47bc3e39b6-1024x681.jpg)\n\nDien 2 · ongeveer 45 minute\n\n1. Verhit 2 eetlepels kookolie in 'n wok of diepe braaipan op medium-hoë hitte. Braai die gekapte ui sag en deurskynend.\n2. Voeg die geel kerriepasta by en roerbraai tot dit geurig is.\n3. Voeg die hoenderstukke by en roerbraai sowat 5 minute tot bruin en bedek met die kerriepasta.\n4. Voeg die babawortels en aartappels by, roer 'n minuut, en voeg dan die hoenderbouillon (1 koppie), suiker, sout en peper by.\n5. Dek en prut oor lae hitte 15–20 minute, tot die hoender en aartappels gaar is.\n6. Proe en pas die speserye aan. Strooi die koljander oor en dien op.\n\nSkakel: https://af.hiloved.com/maklike-kerrie-hoender-resep/\n\n**Inkopielys**\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Hoenderborsies sonder been en vel | 450 g | hoenderborsies sonder been en vel 500 g | ± R60 |\n| Aartappels | 2 | aartappels 1 kg | ± R22 |\n| Rooi ui | 1 | rooi ui 1 kg | ± R28 |\n| Babawortels | 10 stuks (±150 g) | babawortels 250 g | ± R18 |\n| Geel kerriepasta | 2 eetlepels | geel kerriepasta 200 g | ± R45 |\n| **Totaal** | | | **± R173** |\n| **Per persoon** | | | **± R87** |\n\nUit die voorraadkas: kookolie, sout, peper, suiker, hoenderbouillon (kubus) en koljander, indien gebruik.\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Daar is geen Pick n Pay-tak in Prince Albert nie | — | [pnp.co.za](https://www.pnp.co.za) |\n\n**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkelpryse is opgesoek nie. |\n| Pick n Pay-tak | Geen tak in Prince Albert op OpenStreetMap gevind nie. Die naaste tak is nie bevestig nie. |\n| Hoender | Die resep sê 340–450 g vir 2–4 mense; ek het 450 g vir twee gebruik. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

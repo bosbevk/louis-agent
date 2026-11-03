@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-malmesbury",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+      "answer": "Ek kan nie PnP se pryse opsoek nie, want Puls het nog nie toestemming om winkels se pryse te gebruik nie. Ek kan ook nie nou my kok inroep nie, so dit is my eie raad, en die koste is skattings, nie die winkel se pryse nie. Kyk asseblief by die rak of in die PnP-app voor jy koop.\n\n**Idee: hoendertjops met tamatie-uiegrawie, rys en spinasie**\n\nDit is 'n lekker, goedkoop ete vir vier, en dit bly binne R150 as jy slim koop.\n\n- 1,5 kg hoenderdye of -onderboude (met been, dis die goedkoopste)\n- 1 groot ui, 2 knoffelpitte\n- 1 blikkie gesnyde tamatie (410 g)\n- 1 teelepel paprika, 1 teelepel komyn, sout en peper\n- 2 koppies rys (sowat 500 g)\n- 1 pakkie spinasie of 'n blikkie botter- of tuisboontjies\n\n**Skatting:** sowat R120 tot R150, afhangend van die pryse by PnP. Die hoender is die grootste uitgawe.\n\n**Hoe:** Braai die hoender goudbruin in 'n bietjie olie, haal dit uit, en bak die ui en knoffel. Voeg die tamatie, die kruie en 'n halwe koppie water by. Lê die hoender terug en laat dit sowat 30 tot 40 minute sag sluit. Kook die rys en vou die spinasie of boontjies in die laaste paar minute by.\n\nAs jy wil hê ek moet 'n ander ete voorstel, of as jy vir my sê watter PnP-produkte jy by die hand het, kan ek help om die lys aan te pas."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

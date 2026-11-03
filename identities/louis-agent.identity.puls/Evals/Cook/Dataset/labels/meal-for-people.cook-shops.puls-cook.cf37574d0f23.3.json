@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-shops",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Ek koop by PnP en Woolworths. Wat moet ek maak? Gee my die resep, ongeveer wat dit kos, en die takke se adresse.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nMaklike hoenderkerrie met aartappels en wortels, in een pot, klaar in ongeveer 45 minute. Dit pas by 'n uur vanaand, vir vier mense, met goedkoop, gewone winkelkos.\n\n**Resep**\n\n![Maklike Kerrie Hoender Resep](https://idata.hiloved.com/imgs/71c8af47bc3e39b6-1024x681.jpg)\n\nDien 4 · ongeveer 45 minute\n\n1. Verhit 2 e.l. olie in 'n wok of diep braaipan op medium-hoë hitte. Voeg die ui by en roerbraai tot sag en deurskynend.\n2. Roer die kerriepasta (3 e.l.) by en roerbraai tot dit geur. Gebruik 'n bietjie water as jy kerriepoeier in plaas van pasta gebruik.\n3. Voeg die hoender (900 g, in stukke van ± 4 cm) by en roerbraai ± 5 minute tot dit bruin is en met die kerrie bedek is.\n4. Voeg die wortels (20 babawortels, in die helfte gesny) en aartappels (4, in stukkies) by. Roer 1 minuut.\n5. Voeg die bouillon (1½ koppie), suiker (1½ t.l.) en sout (¾ t.l.) by, en peper na smaak. Bedek en prut oor lae hitte 15–20 minute, tot die hoender en aartappels gaar is.\n6. Proe en pas die kruie aan. Strooi die koljander (opsioneel) bo-oor. Dien op met rys.\n\nSkakel: https://af.hiloved.com/maklike-kerrie-hoender-resep/\n\n**Inkopielys**\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Hoender | 900 g | hoenderborsies, botteloos, velloos 1 kg | ± R120 |\n| Aartappels | 4 medium (± 600 g) | aartappels 1 kg | ± R22 |\n| Rooi ui | 2 | rooi uie, los, 2 stuks | ± R10 |\n| Babawortels | 20 | babawortels 500 g | ± R28 |\n| Kerriepasta | 3 e.l. | geel Indiese kerriepasta 200 g | ± R35 |\n| **Totaal** | | | **± R215** |\n| **Per persoon** | | | **± R54** |\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\nUit die voorraadkas: kookolie, sout, peper, suiker, hoenderbouillon (of 'n bouillonblokkie) en koljander.\n\n**Waar om te koop**\nEen winkel dek die hele lys. Daar is 'n tak in die middestad van Stellenbosch:\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay, Stellenbosch Sentrum | Bird Street, Stellenbosch | [pnp.co.za](https://www.pnp.co.za) |\n| Woolworths | Woolworths, Stellenbosch Sentrum | Andringa Street, Stellenbosch | [woolworths.co.za](https://www.woolworths.co.za) |\n\nPick n Pay se Bird Street-tak is die een wat ek vir die hele lys aanbeveel. Woolworths se Andringa Street-tak is die alternatief.\n\n**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Pryse | Skattings: geen winkel se pryse is vir hierdie lys nagegaan nie. |\n| Hoeveelhede | Die bron-resep is vir 2–4 mense. Ek het dit vir 4 opgeskaal en die hoender op 900 g gestel. |\n| Takke | Die adresse kom van OpenStreetMap. Die webskakels is die tuisblaaie, nie die takbladsye nie. |\n\nKort samevatting: gaan by Pick n Pay in Bird Street, koop die lys (sowat R215), en die kerrie is klaar binne 45 minute. Die pryse is net skattings, so hou 'n bietjie kleingeld of kaart gereed vir die verskil."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

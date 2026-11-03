@@ -24,7 +24,7 @@ public class CookEvalTests
         var eval = CookFile.Eval;
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version),
-            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 12)));
+            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 13)));
         Assert.That(eval.Proves, Does.StartWith("Puls routes a meal to its cook"));
         Assert.That(eval.Manual, Is.EqualTo($"{CookFile.Source}/manual.md"));
     }
@@ -80,7 +80,7 @@ public class CookEvalTests
 
     /// <summary>
     /// Its rubric is the judge's calibrated prompt, word for word: the hash its grades carry on every platform (line
-    /// endings made LF, since git gives CRLF on Windows and LF on Linux), so the 36 labels still describe it, and they
+    /// endings made LF, since git gives CRLF on Windows and LF on Linux), so the 60 labels still describe it, and they
     /// travel with its dataset.
     /// </summary>
     [Test]
@@ -91,7 +91,7 @@ public class CookEvalTests
             File.ReadAllText(Path.Combine(CookFile.Folder, "Rubrics", "meal-for-people.md"))).Body);
 
         Assert.That(hash, Is.EqualTo(CookFile.RubricHash));
-        Assert.That(CookFile.Eval.Labels, Has.Count.EqualTo(36));
+        Assert.That(CookFile.Eval.Labels, Has.Count.EqualTo(60));
     }
 
     /// <summary>Its reference transcripts pass its required checks, and its known-bad ones fail them.</summary>

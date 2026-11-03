@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-shops",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 5,
+  "turns": [
+    {
+      "question": "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Ek koop by PnP en Woolworths. Wat moet ek maak? Gee my die resep, ongeveer wat dit kos, en die takke se adresse.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n resep en 'n lys.My kok is terug, hier is wat hy gekry het:\n\n![Maklike Kerrie Hoender Resep](https://idata.hiloved.com/imgs/71c8af47bc3e39b6-1024x681.jpg)\n\nDien 4 · ongeveer 45 min\n\n1. Verhit 2 eetlepels olie in 'n wok of breë pan oor medium-hoë hitte. Voeg 2 rooi uie by en roerbraai tot sag en deurskynend.\n2. Voeg 4 eetlepels kerriepasta by en roerbraai tot geurig. (Gebruik kerriepoeier? Voeg 'n bietjie water by tot 'n pasta.)\n3. Voeg 1 kg hoenderborsies by en roerbraai ongeveer 5 minute tot bruin en bedek met die kerrie.\n4. Voeg 20 baba wortels (in die helfte) en 4 aartappels (in blokkies) by. Roer 1 minuut.\n5. Voeg 1 koppie hoenderbouillon (2 koppies vir 4 mense, met water aangevul), 2 teelepels suiker, sout en peper by.\n6. Bedek en prut oor lae hitte 15–20 minute tot hoender en groente gaar is. Smaak, pas aan en strooi grondkoljander bo-oor.\n\nSkakel: https://af.hiloved.com/maklike-kerrie-hoender-resep/\n\n### Inkopielys\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Hoenderborsies | 1 kg | hoenderborsies, botteloos 1 kg | ± R110 |\n| Aartappels | 4 | aartappels 1,5 kg | ± R35 |\n| Rooi uie | 2 | rooi uie 1 kg | ± R25 |\n| Kerriepasta | 4 el | kerriepasta 100 g | ± R35 |\n| Baba wortels | 20 | baba wortels 500 g | ± R40 |\n| **Totaal** | | | **± R245** |\n| **Per persoon** | | | **± R61** |\n\nPick n Pay: hoenderborsies, aartappels, rooi uie, kerriepasta. Woolworths: baba wortels.\n\nUit die voorraadkas: kookolie, sout, peper, suiker, hoenderbouillon en grondkoljander.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n### Waar om te koop\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Stellenbosch | Bird Street, Stellenbosch Sentrum | [pnp.co.za](https://www.pnp.co.za) |\n| Woolworths | Woolworths Stellenbosch | Andringa Street, Stellenbosch Sentrum | [woolworths.co.za](https://www.woolworths.co.za) |\n| Woolworths | Woolworths Stellenbosch (Technopark) | Webersvallei Road, De Vleie | [woolworths.co.za](https://www.woolworths.co.za) |\n\n### Onseker\n\n| Wat | Hoekom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. |\n| Hoeveelhede | Die resep is vir 2–4 mense; ek het dit vir 4 opgeskaal. |\n| Rys | Nie in die resep nie; bedien met rys as jy wil, dit is nie in die lys nie. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

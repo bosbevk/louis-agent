@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-shops",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 1,
+  "turns": [
+    {
+      "question": "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Ek koop by PnP en Woolworths. Wat moet ek maak? Gee my die resep, ongeveer wat dit kos, en die takke se adresse.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n ete vir vier mense, met die resep, die koste en die takke in Stellenbosch.My kok is terug, hier is wat hy gekry het:\n\n### Die gereg\nMaklike kerrie-hoender met aartappels en baba wortels, één pot, sowat 40 minute. Dit pas by 'n haastige Dinsdagaand vir vier, en die stukkies is goedkoop om te koop.\n\n### Resep\n![Maklike Kerrie Hoender Resep](https://idata.hiloved.com/imgs/71c8af47bc3e39b6-1024x681.jpg)\n\n**Dien 4 · ongeveer 40 minute**\n\n1. Verhit 4 eetlepels olie in 'n wok of diep braaipan op medium-hoë hitte. Voeg die ui by en roerbraai tot sag en deurskynend.\n2. Voeg die kerriepasta by en roerbraai tot dit geurig is. (Gebruik jy kerriepoeier, voeg 'n bietjie water by om 'n pasta te maak.)\n3. Voeg die hoender by en roerbraai sowat 5 minute tot dit bruin is en bedek met die kerriepasta.\n4. Voeg die wortels en aartappels by, roer 'n minuut, en voeg dan die hoenderbouillon (2 koppies), suiker, sout en peper by.\n5. Bedek en prut oor lae hitte 15–20 minute, tot die hoender en aartappels gaar is.\n6. Proe en pas die speserye aan. Strooi die koljander oor, as jy dit gebruik.\n\nSkakel: https://af.hiloved.com/maklike-kerrie-hoender-resep/\n\n### Inkopielys\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Hoenderborsies, botteloos | 900 g | hoenderborsies, botteloos 1 kg | ± R130 |\n| Aartappels | 4 medium (±600 g) | aartappels 2 kg | ± R35 |\n| Rooi ui | 2 medium | rooi uie 1 kg | ± R25 |\n| Baba wortels | 20 stuks (±250 g) | baba wortels 500 g | ± R30 |\n| Kerriepasta | 4 eetlepels | geel kerriepasta 200 g | ± R40 |\n| **Totaal** | | | **± R260** |\n| **Per persoon** | | | **± R65** |\n\nUit die voorraadkas: kookolie, sout, peper, suiker en speserye (ook hoenderbouillon of 'n bouillonblokkie).\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n### Waar om te koop\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Woolworths | Woolworths Stellenbosch | Andringa Street, Stellenbosch-sentrum | [woolworths.co.za](https://www.woolworths.co.za) |\n| Woolworths | Woolworths Stellenbosch (Technopark) | Webersvallei Road, De Vleie | [woolworths.co.za](https://www.woolworths.co.za) |\n| Pick n Pay | Pick n Pay Stellenbosch | Bird Street, Stellenbosch-sentrum | [pnp.co.za](https://www.pnp.co.za) |\n| Pick n Pay | Pick n Pay Stellenbosch (Technopark) | Strand Road, Technopark | [pnp.co.za](https://www.pnp.co.za) |\n\nKoop die hoenderborsies by Woolworths, want die gehalte is beter. Die aartappels, uie, wortels en kerriepasta is by Pick n Pay goedkoper.\n\n### Onseker\n\n| Wat | Waarom |\n|---|---|\n| Pryse | Skattings: geen winkel se pryse is nagegaan nie. |\n| Hoeveelheid hoender | Die bron se resep is vir 2–4 mense (3/4–1 pond). Vir vier is 900 g gekies. |\n| Tyd | Die bron gee geen totale tyd nie; 40 minute is my skatting. |\n| Woolworths-takke | Albei takke is in Stellenbosch gevind; die webwerf-skakels is die hoofbladsye, nie takbladsye nie. |\n\nHoop dit werk vir vanaand! As jy vir meer of minder mense wil kook, sê net, dan pas my kok die lys aan."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

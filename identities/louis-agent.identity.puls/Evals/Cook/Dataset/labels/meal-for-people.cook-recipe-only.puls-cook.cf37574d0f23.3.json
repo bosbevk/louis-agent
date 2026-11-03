@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nBobotie is 'n klassieke Suid-Afrikaanse maalvleisgereg wat met één kilogram bees maalvleis vir vier mense werk. Dit neem ongeveer 1½ uur, en die resep gebruik gewone winkelprodukte.\n\n**Resep**\n![Bobotie vir ete - Marinda Kook](https://marindakook.co.za/wp-content/uploads/2017/10/featured-bobotie-blog-018.jpg)\n\nDien 4 · ongeveer 1½ uur (30 min voorbereiding, 60 min bak)\n1. Sit die 2 snye brood in 'n diep bord en gooi 100 ml melk oor.\n2. Braai die 2 uie fyn gesny tot glasagtig in 'n bietjie olie bo-op die stoof.\n3. Gooi die kerriepoeier, borrie, komyn, appelkooskonfyt, asyn, sout, peper en die 1 kg maalvleis in 'n mengbak en meng deeglik.\n4. Druk die melk uit die brood, meng die brood saam met die uie by die vleismengsel.\n5. Skep die mengsel in 'n gesmeerde oondbak.\n6. Klits 1 eier met 60 ml melk en gooi oor die vleis.\n7. Sit die lourierblare bo-op.\n8. Bak 60 minute by 190 °C.\n\nSkakel: https://marindakook.co.za/bobotie/\n\n**Inkopielys**\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Uie | 2 uie | uie 1 kg | ± R25 |\n| Brood | 2 snye | witbrood 700 g | ± R22 |\n| Melk | 160 ml (100 ml + 60 ml) | melk 1 L | ± R25 |\n| Appelkooskonfyt | 80 ml | appelkooskonfyt 370 g | ± R38 |\n| Kerriepoeier | 40 ml | kerriepoeier 100 g | ± R30 |\n| Borrie | 15 ml | droë gemengde kruie 20 g | ± R20 |\n| Komyn, gemaal | 5 ml | komyn, gemaal 50 g | ± R22 |\n| Lourierblare | 3 blare | lourierblare 10 g | ± R18 |\n| Bees maalvleis | 1 kg | bees maalvleis 1 kg | ± R140 |\n| Eiers | 1 eier | eiers 6 stuks | ± R55 |\n| **Totaal** | | | **± R395** |\n| **Per persoon** | | | **± R99** |\n\nUit die voorraadkas: kookolie, sout, peper en asyn.\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\nEnige supermark naby jou.\n\n**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. |\n| Borrie | Die resep sê \"borrie\" sonder om dit te verduidelik. Ek het droë gemengde kruie as vervanging gebruik; 'n bobotie-kruiemengsel sal ook werk. |\n| Porsies | Die bladsy gee geen aantal porsies nie. Ek het aangeneem dat die 1 kg maalvleis-bondel vir 4 mense genoeg is. |\n| Lourierblare of suurlemoen | Die resep gee albei as opsie. Ek het lourierblare gekies; gebruik 3 suurlemoen as jy dit verkies. |\n\nLet wel: ek het nie winkelpryse opgesoek nie (ons het die winkels om toestemming gevra); die koste hierbo is skattings."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

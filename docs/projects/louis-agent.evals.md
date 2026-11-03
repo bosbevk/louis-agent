@@ -78,7 +78,7 @@ unattended run's decisions are at the tag [`pre-cl24`](https://github.com/bosbev
   `dc272b95eaeb` (`puls-cook` 8 of 8, `puls-tools` 2 of 8, $0.075): its free replay `c0362ff73151` hits at all 20
   turns, the delegating ones included, where the first baseline's replay missed at 8.
 - **The judge isn't trusted yet.** The local judge agreed with a blind labeller on 31 of 36 meals, under the 90% bar
-  ([ADR 0029](../adr/0029-simulations-in-csharp.md)), so its grades stay advisory until Louis's own 36 labels
+  ([ADR 0029](../adr/0029-simulations-in-csharp.md)), so its grades stay advisory until Louis's own labels
   calibrate it (TODO, *Now*).
 - **A person's review only checks a judge.** Each `Human` grader is named `{x}.human` beside a model grader `x` of the
   same eval; conformance refuses any other, and a human review is never required, so the roll-up has no pending count.

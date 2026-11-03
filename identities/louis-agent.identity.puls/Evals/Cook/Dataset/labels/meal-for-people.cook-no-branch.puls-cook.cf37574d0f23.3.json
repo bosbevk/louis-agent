@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-no-branch",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n ete vir twee.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nMaklike hoenderkerrie met aartappels, uie en baba-wortels, in een pot. Dit is 'n weeksaand-gereg wat ongeveer 40 minute neem, net een vleissoort gebruik en vir twee mense genoeg is.\n\n**Resep**\n\n![Maklike Kerrie Hoender Resep](https://idata.hiloved.com/imgs/71c8af47bc3e39b6-1024x681.jpg)\n\nDien 2 · ongeveer 40 minute\n\n1. Verhit 'n wok of diep braaipan oor medium-hoë hitte en voeg 2 eetlepels olie by.\n2. Braai die ui in die warm olie tot sag en deurskynend.\n3. Voeg die kerriepasta by en roerbraai tot dit geurig is. (Gebruik jy kerriepoeier, voeg 'n klein bietjie water by om 'n pasta te maak.)\n4. Voeg die hoender by en roerbraai sowat 5 minute, sodat die stukke bruin word en met die kerriepasta bedek is.\n5. Voeg die wortels en aartappels by, roer 'n minuut, en voeg dan die hoenderbouillon, suiker, sout en peper by.\n6. Bedek en prut oor lae hitte sowat 15 tot 20 minute, tot die hoender en aartappels gaar is.\n7. Proe, pas die speserye aan indien nodig, en strooi die koljander bo-oor as jy dit gebruik. Bedien met rys of roti.\n\nSkakel: https://af.hiloved.com/maklike-kerrie-hoender-resep/\n\n**Inkopielys**\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Hoenderborsies | 3/4 tot 1 pond (ongeveer 400 g) | hoenderborsfilette 500 g | ± R55 |\n| Aartappels | 2 middelgrootte | aartappels 1 kg | ± R20 |\n| Rooi ui | 1 | uie 1 kg | ± R20 |\n| Baba-wortels | 10 | baba-wortels 250 g | ± R20 |\n| Kerriepasta | 2 eetlepels | kerriepasta 100 g | ± R35 |\n| **Totaal** | | | **± R150** |\n| **Per persoon** | | | **± R75** |\n\nUit die voorraadkas: kookolie, hoenderbouillon (of 'n hoenderbouillonblokkie), sout, peper, suiker en speserye. Pryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Naaste Pick n Pay (nie bevestig nie) | | [pnp.co.za](https://www.pnp.co.za) |\n\n**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. |\n| Tak | Die kaartdata het geen Pick n Pay-tak in Prince Albert gevind nie, en ek kon ook nie 'n naaste tak bevestig nie. Kyk op pnp.co.za vir die naaste tak. |\n| Hoenderbouillon | Die resep vra vir 1 koppie hoenderbouillon. Ek het aangeneem dat jy 'n blokkie of 'n bekende voorraadkas-bouillon het. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

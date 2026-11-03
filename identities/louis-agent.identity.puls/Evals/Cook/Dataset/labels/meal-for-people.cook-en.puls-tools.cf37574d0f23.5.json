@@ -1,0 +1,21 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-en",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 5,
+  "turns": [
+    {
+      "question": "What should I cook tonight in Pretoria for two? I have about an hour and I shop at PnP. Give me the recipe and what it'll cost.",
+      "answer": "I can't give you the full recipe and costing from here. My cook specialist isn't switched on in this chat, so I can't hand it over. I also can't look up Pick n Pay prices, so I can't tell you what it'll cost there.\n\nI did find some quick two-person-friendly ideas that fit an hour, from Bona's \"Quick & Easy South African Dinner Recipes\" article:\n\n- **One-pan chicken and potato bake:** chicken pieces, potatoes, onions, spices and oil, all in one tray. Their budget tip is to use drumsticks.\n- **Quick chicken curry and rice:** chicken strips, curry powder, onion, tomato, and coconut milk or cream, served with rice.\n- **Creamy mince pasta:** mince, pasta, tomato sauce, onion and spices, with optional cream or cheese.\n- **Fried rice with leftovers:** leftover rice, chicken or viennas, mixed veg, eggs and soy sauce.\n\nThe article gives the ingredients but no quantities or prices, so it can't answer the cost question.\n\nTell me which one you fancy, and I can look for a full recipe with quantities. For the prices, I'd need the cook, which means starting a new session where it's on. Or, if you want, I can search the web for typical South African prices for those ingredients. Those would be rough numbers, not what PnP charges today.\n\nSource: https://www.bona.co.za/lifestyle/quick-easy-south-african-dinner-recipes/"
+    },
+    {
+      "question": "Swap the meat for chicken. What does the shopping list look like now?",
+      "answer": "I can't build that list properly yet. Two things are in the way:\n\n- **The cook isn't on in this chat.** A shopping list with quantities and estimated costs is the cook's job, and I'd only be guessing if I wrote one from memory.\n- **Pick n Pay prices aren't something I can look up.** Only Checkers has a catalogue I can search, and I'm not allowed to offer another shop's prices instead.\n\nThe swap itself is simple. If you mean the creamy mince pasta, chicken would replace the mince. Chicken strips or diced chicken would work, and you'd cook it in the pan before the onion and tomato, as you would with the mince. The rest of the list (pasta, tomato sauce, onion, spices, and optional cream or cheese) stays the same.\n\nIf you want the full list with quantities and costs, the fix is to start a new chat where the cook is on. Tell me which dish and that you're shopping at Pick n Pay in Pretoria, and I'll pass it on there."
+    }
+  ],
+  "label": {
+    "pass": false,
+    "note": ""
+  }
+}
