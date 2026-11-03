@@ -484,6 +484,10 @@ a replay, and the measurement in step 8 replays a recorded eval run.
   address starts with `OTEL_EXPORTER_OTLP_ENDPOINT`. And the parent's test runs `PeerHttp` over a real
   `HttpClient` to a loopback listener (`TestHttp/HeaderEcho`), not the recording handler the table says: .NET writes
   `traceparent` in the handler a real client sends through, which a handler fake bypasses.
+- **2026-11-03, step 5, the lost task's level** (Louis's pick I1 of three, 21:39): an exception nothing caught is
+  Critical, and the logs and spans flush, as the process ends; a faulted task nobody awaited is an Error with no
+  flush, marked observed, because since .NET 4.5 it doesn't end the process. The level says whether the process
+  lived on, which is what the level table (F1) is for.
 
 ## Concepts this teaches (GOAL skill 17, with 15 and 18)
 
