@@ -129,7 +129,7 @@ api.MapAdmin(evals,
         WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
     host.Engine.WorkspaceRoot, reviewStore,
     calibrationStore, calibrationRecorder, drafts: draftStore,
-    checks: new CheckList(CheckListing.ForRunner(admin.EvalRunner).Read));
+    studio: StudioRunner.ForRunner(admin.EvalRunner));
 
 // Listen until the host is stopped.
 app.Run();

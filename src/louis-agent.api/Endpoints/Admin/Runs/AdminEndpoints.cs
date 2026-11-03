@@ -39,7 +39,7 @@ internal static class AdminEndpoints
         Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
         string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null,
         CalibrationRecorder? calibrationRecorder = null,
-        TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null)
+        TimeProvider? time = null, IEvalDraftStore? drafts = null, StudioRunner? studio = null)
     {
         var handlers = new AdminHandlers(catalog, runner, adminKey, store, recorder, settingsOf, workspaceRoot);
         // One group for all of them, so the key check runs before any route's own work.
@@ -52,11 +52,10 @@ internal static class AdminEndpoints
         admin.MapEvals(catalog, store, workspaceRoot, draftStore);
         admin.MapGet("/benchmarks", handlers.GetList);
 
-        // The studio (F49.5): its catalogue of checks and readers, which says the runner isn't there when none was
+        // The studio (F49.5): the runner's catalogue and its check, which say the runner isn't there when none was
         // given, and the evals being composed, kept beside the other drafts.
-        admin.MapStudio(checks ?? new CheckList(() => new CheckListingResult([], [],
-                MessageText.Format(EvalListingMessage.Missing, new { Path = "(none)" }))), draftStore,
-            time ?? TimeProvider.System);
+        var runnerParts = studio ?? StudioRunner.None;
+        admin.MapStudio(runnerParts.Checks, draftStore, time ?? TimeProvider.System, runnerParts.Checker);
 
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.

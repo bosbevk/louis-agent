@@ -21,6 +21,12 @@ public sealed record ListRequest : CommandLineRequest;
 public sealed record ChecksRequest : CommandLineRequest;
 
 /// <summary>
+/// <c>--check {folder}</c>: judge an eval folder the studio wrote, as strictly as a run would and against the
+/// conformance gate, one JSON line per problem and then whether it was ok (F49.5).
+/// </summary>
+public sealed record CheckRequest(string Folder) : CommandLineRequest;
+
+/// <summary>
 /// Run one eval: <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;]
 /// [--split dev|held-out|all] | --rescore &lt;runId&gt;</c>. Each mode runs N times, and its web reads can be recorded
 /// or replayed. With no web choice the instance's <c>WEB_REPLAY</c> decides; <paramref name="Of"/> is the recorded run
@@ -74,6 +80,7 @@ public static class CommandLine
     {
         if (args is ["--list"]) return new ListRequest();
         if (args is ["--checks"]) return new ChecksRequest();
+        if (args is ["--check", var evalFolder]) return new CheckRequest(evalFolder);
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
         if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
         if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where])

@@ -17,6 +17,12 @@ public sealed record EvalDraftRow(
     string Author,
     DateTimeOffset At);
 
+/// <summary>
+/// What the eval runner said of a draft written out as a folder: whether it conforms, and every problem in the runner's
+/// own words, in the order a run would meet them.
+/// </summary>
+public sealed record DraftCheckReply(bool Ok, IReadOnlyList<string> Problems);
+
 /// <summary>One rubric: its file's name in <c>Rubrics/</c> and its text.</summary>
 public sealed record RubricRow(string Name, string Text);
 

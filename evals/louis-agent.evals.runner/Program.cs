@@ -8,6 +8,7 @@ using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Calibration;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Refusal;
+using LouisAgent.Evals.Runner.Studio;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
@@ -37,6 +38,10 @@ try
             foreach (string line in ChecksListing.Lines(RunnerChecks.Catalog, RunnerReaders.Catalog))
                 Console.Out.WriteLine(line);
             return 0;
+
+        // A folder the studio wrote, judged as a run would judge it: its problems, then whether it was ok.
+        case CheckRequest check:
+            return await CheckCommand.RunAsync(check.Folder, Console.Out, CancellationToken.None);
 
         // The two commands that check a model grader against a person. Neither opens a session; --calibrate asks the
         // judge, so it refuses in CI.

@@ -60,6 +60,7 @@
   "POST /v1/admin/benchmarks/runs/{id}/transcripts (AdminKey)",
   "POST /v1/admin/benchmarks/{check}/runs (AdminKey)",
   "POST /v1/admin/evals/drafts (AdminKey)",
+  "POST /v1/admin/evals/drafts/{id}/verdict (AdminKey)",
   "POST /v1/admin/evals/runs/{id}/calibrations/{grader} (AdminKey)",
   "POST /v1/admin/evals/runs/{id}/notes (AdminKey)",
   "POST /v1/admin/evals/runs/{id}/rescore (AdminKey)",

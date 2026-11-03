@@ -21,6 +21,11 @@ public class CommandLineTests
     public void ChecksIsParsed() =>
         Assert.That(CommandLine.Parse(["--checks"]), Is.EqualTo(new ChecksRequest()));
 
+    /// <summary>A check names the folder it judges (F49.5).</summary>
+    [Test]
+    public void CheckIsParsed_WithItsFolder() =>
+        Assert.That(CommandLine.Parse(["--check", "/tmp/studio/abc"]), Is.EqualTo(new CheckRequest("/tmp/studio/abc")));
+
     /// <summary>A run needs only its eval's name, and then runs each mode once.</summary>
     [Test]
     public void RunTakesItsNameAndOneRepeatByDefault() =>
