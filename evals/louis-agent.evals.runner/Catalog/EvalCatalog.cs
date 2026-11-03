@@ -49,6 +49,7 @@ public sealed class EvalCatalog
         eval.Version,
         eval.Proves,
         eval.Manual,
+        eval.Folder,
         eval.Dataset is { } dataset ? new ListedDataset(dataset.Name, dataset.Version) : null,
         eval.Scenarios.SelectMany(scenario => scenario.Categories).Distinct(StringComparer.Ordinal).ToList(),
         eval.Checks.Select(grader => new ListedGrader(grader.Name, grader.Version, grader.Kind)).ToList());

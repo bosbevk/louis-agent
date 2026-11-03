@@ -27,6 +27,19 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 - **The arguments.** `Arguments/CommandLine` parses `run {eval}` with `--repeat N` (1 to 5), `--split`, `--web`,
   `--replay {runId}` and `--rescore {runId}`, and the two judge commands, `--label-sheet` and `--calibrate`. A bad
   argument is refused before anything starts (`Refusal/`).
+- **The studio's commands** (F49.5, [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)): the API asks the
+  runner, never the harness, about an eval being composed. `--checks` prints the catalogue as JSON lines
+  (`Catalog/ChecksListing`: each check type with its kind and its settings' JSON schema, then each reader with the
+  kind it reads). `--check {folder}` (`Studio/CheckCommand`) seals a manifest left without its hash
+  (`ManifestSeal`), loads the folder as strictly as a run would and holds it to the conformance gate, then prints one
+  `{"problem": …}` line each and `{"ok": …}` last, exiting 0 whenever it could look. `run {eval} --folder {path}`
+  runs the eval in that folder (`RunTarget`, its name checked against the run's), and `--samples a,b` narrows it to
+  those scenarios (`SampleSubset`, a Decorator over `IEval`); the studio's try adds `--replay`.
+- **promptfoo in and out** (`Promptfoo/`, YamlDotNet): `--import-promptfoo {file} {folder}` writes an eval folder
+  from a promptfoo file (`PromptfooImport`: the tests as dev scenarios, the asserts as checks by the mapping table
+  `PromptfooAssertion`, each `llm-rubric` a rubric file a `judge` reads) and prints a `{"left_out": …}` line for
+  each part with no counterpart; `--export-promptfoo {folder}` prints the folder as a promptfoo file
+  (`PromptfooExport`, the table backwards, a check with no counterpart named in a comment at the top).
 - **A run.** The harness's `EvalRunner` runs the modes and repeats and writes protocol v2 on stdout; logs go to
   stderr. The run's id is `BENCHMARK_RUN`, else `local-` and its start time.
 - **A re-score** reads the stored run's own export on stdin and grades it again, for $0 (`rescore_of`).
@@ -41,10 +54,14 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 |---|---|
 | `Arguments/` | `CommandLine`, the run request |
 | `Calibration/` | The label sheet and the calibration commands |
-| `Catalog/` | `EvalCatalog`, `EvalFolders`, `RunnerChecks`, the listing line |
+| `Catalog/` | `EvalCatalog`, `EvalFolders`, `RunnerChecks`, `RunnerReaders`, the listing line, `ChecksListing` (`--checks`) |
 | `Evals/Stub/` | The stub eval, its mode, role and toolset |
 | `Manuals/` | The stub's manual (`stub.md`) |
 | `Messages/`, `Refusal/` | The runner's texts and the refusal report |
+| `Promptfoo/` | `PromptfooAssertion` (the mapping table, promptfoo's names as an enum), `PromptfooImport`, `PromptfooExport` |
+| `Studio/` | `CheckCommand` (`--check`), `ManifestSeal`, `RunTarget` (`--folder`), `SampleSubset` (`--samples`) |
+
+The one package of its own is **YamlDotNet** (MIT, 18.1.0), for promptfoo's YAML; no host carries it.
 
 ## Configuration
 
@@ -64,7 +81,8 @@ A new eval is a folder of files beside its identity or pack, which reaches the r
 
 `tests/louis-agent.evals.runner.tests`: the arguments (clamped repeats, an unknown name refused), the catalogue (no
 grader refused, each eval once), the folders found and chosen by `EVALS=` (`EvalFoldersTests`), the stub's run
-against its golden, the conformance of every eval folder, the data files copied beside the assembly. `StubCheckTests` (api integration) runs the real runner through the API.
+against its golden, the conformance of every eval folder, the data files copied beside the assembly, the studio's
+commands (`--checks`, `--check`, `--folder`, `--samples`) and a promptfoo file's round trip (`PromptfooRoundTripTests`). `StubCheckTests` (api integration) runs the real runner through the API.
 
 ## Limits and plans
 

@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Listing;
 
 namespace LouisAgent.Evals.Checks.Tests.Readers;
 
@@ -49,6 +50,19 @@ public class ReaderCatalogTests
 
         Assert.That(refusal!.Message, Does.Contain("same"));
     }
+
+    /// <summary>
+    /// The listing names every reader with its kind, read from the interface it implements, so the studio's form can
+    /// offer only the readers a check's kind takes (F49.5).
+    /// </summary>
+    [Test]
+    public void TheListing_NamesEachReader_WithItsKind() =>
+        Assert.That(Catalog.Listing(),
+            Is.EqualTo(new[]
+            {
+                new ListedReader("plain-money", ReaderKind.Money),
+                new ListedReader("plain-numbers", ReaderKind.Number)
+            }));
 
     /// <summary>The empty catalogue has no readers, so any name is refused.</summary>
     [Test]

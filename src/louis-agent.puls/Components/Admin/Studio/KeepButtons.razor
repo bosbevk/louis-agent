@@ -1,0 +1,23 @@
+@* F49.4: under a graded review, keep the conversation as a reference (a pass) or a known-bad with its reason (a fail). *@
+@if (Offer != KeepOffer.None)
+{
+    <div class="keep-buttons">
+        @if (Offer == KeepOffer.Reference)
+        {
+            <button type="button" class="keep-reference header-button" disabled="@_busy" @onclick="KeepReferenceAsync">Keep as reference</button>
+        }
+        @if (Offer == KeepOffer.KnownBad)
+        {
+            <input class="keep-reason" placeholder="what went wrong, in-kebab-case" @bind="_reason" />
+            <button type="button" class="keep-bad header-button" disabled="@_busy" @onclick="KeepBadAsync">Keep as known-bad</button>
+        }
+        @if (_done is not null)
+        {
+            <p class="keep-done muted">@_done</p>
+        }
+        @if (_error is not null)
+        {
+            <p class="keep-error">@_error</p>
+        }
+    </div>
+}

@@ -60,7 +60,7 @@ referencing the harness.
 
 ## Links
 
-[F49 Evals as content](../plans/F49-evals-as-content.md) · [0027](0027-engine-identities-and-packs.md) ·
+[F49 Evals as content](../architecture/evals.md#where-f49-came-from) · [0027](0027-engine-identities-and-packs.md) ·
 [0029](0029-simulations-in-csharp.md) · [0041](0041-json-through-records-by-hand-only-for-bytes.md) ·
 [0043](0043-repeated-names-are-enums.md) · [0055](0055-keep-it-simple.md) ·
 [0056](0056-a-check-is-a-catalogue-entry.md) · [Add an eval](../guides/add-an-eval.md) ·

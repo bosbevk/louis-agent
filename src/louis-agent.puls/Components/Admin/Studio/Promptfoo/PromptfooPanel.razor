@@ -1,0 +1,29 @@
+@* F49.5: promptfoo in and out. A pasted promptfoo file becomes a new draft; the open draft goes out as one. *@
+<section class="promptfoo-panel">
+    <h4>promptfoo</h4>
+    <textarea class="promptfoo-yaml" rows="5" placeholder="Paste a promptfooconfig.yaml to make a draft of it" @bind="_yaml"></textarea>
+    <div class="promptfoo-actions">
+        <button type="button" class="promptfoo-import header-button" disabled="@_busy" @onclick="ImportAsync">Import</button>
+        @if (HasDraft)
+        {
+            <button type="button" class="promptfoo-export link-button" disabled="@_busy" @onclick="ExportAsync">Export the open draft</button>
+        }
+    </div>
+    @if (_error is { } error)
+    {
+        <p class="promptfoo-error small">@error</p>
+    }
+    @if (_leftOut.Count > 0)
+    {
+        <ul class="promptfoo-left-out small">
+            @foreach (var left in _leftOut)
+            {
+                <li>@left</li>
+            }
+        </ul>
+    }
+    @if (_exported is not null)
+    {
+        <p class="promptfoo-exported muted small">@_exported</p>
+    }
+</section>

@@ -121,13 +121,14 @@ public class EvalCatalogTests
         Assert.That(line.EnumerateObject().Select(p => p.Name),
             Is.EqualTo(new[]
             {
-                "name", "identity", "version", "proves", "manual", "dataset", "categories", "graders"
+                "name", "identity", "version", "proves", "manual", "folder", "dataset", "categories", "graders"
             }));
         Assert.That(line.GetProperty("graders").GetRawText(),
             Is.EqualTo("""[{"name":"no-error","version":1,"kind":"fixed-rule"},"""
                        + """{"name":"within-time","version":1,"kind":"fixed-rule"}]"""),
             "each grader by name, version and kind, the kind as the protocol writes it");
         Assert.That(line.GetProperty("dataset").ValueKind, Is.EqualTo(JsonValueKind.Null), "the stub has no dataset");
+        Assert.That(line.GetProperty("folder").ValueKind, Is.EqualTo(JsonValueKind.Null), "the stub is no folder");
         Assert.That(line.GetProperty("categories").GetRawText(), Is.EqualTo("[]"));
         Assert.That(line.GetProperty("manual").GetString(),
             Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"),

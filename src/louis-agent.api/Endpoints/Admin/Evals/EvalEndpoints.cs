@@ -1,3 +1,4 @@
+using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Store;
 
@@ -9,9 +10,9 @@ internal static class EvalEndpoints
 {
     /// <summary>Adds the eval list to the admin group.</summary>
     public static void MapEvals(this RouteGroupBuilder admin, EvalList catalog, IEvalStore? store,
-        string workspaceRoot)
+        string workspaceRoot, IEvalDraftStore drafts)
     {
-        var handlers = new EvalHandlers(catalog, store, workspaceRoot);
+        var handlers = new EvalHandlers(catalog, store, workspaceRoot, drafts);
         admin.MapGet("/evals", handlers.GetList);
     }
 }

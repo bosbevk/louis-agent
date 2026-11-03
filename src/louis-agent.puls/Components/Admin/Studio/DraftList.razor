@@ -1,0 +1,35 @@
+@* F49.4: an eval's drafts on its card, folded under their count; opened, each sample and transcript with a delete.
+   They wait here until F49.5 publishes them. *@
+<div class="eval-drafts">
+    <button type="button" class="drafts-open link-button" aria-expanded="@Expanded" @onclick="ToggleAsync">@StudioText.Drafts(Count) waiting to be published <span aria-hidden="true">@Arrow</span></button>
+    @if (_open && _drafts is { } drafts)
+    {
+        <ul class="draft-list">
+            @foreach (var sample in drafts.Samples)
+            {
+                <li class="draft-row draft-sample">
+                    <div class="draft-head">
+                        <code>@sample.SampleId</code><span class="draft-what">@sample.Question</span>
+                        <small class="muted">by @sample.Author, from @sample.Conversation.Task</small>
+                        <button type="button" class="draft-delete link-button" disabled="@_busy" @onclick="() => DeleteAsync(sample.Id)">Delete</button>
+                    </div>
+                    <details><summary class="muted">The scenario file</summary><pre>@sample.Json</pre></details>
+                </li>
+            }
+            @foreach (var transcript in drafts.Transcripts)
+            {
+                <li class="draft-row draft-transcript">
+                    <div class="draft-head">
+                        <code>@transcript.FileName</code><span class="draft-what">@transcript.Lines lines</span>
+                        <small class="muted">by @transcript.Author, from @transcript.Conversation.Task</small>
+                        <button type="button" class="draft-delete link-button" disabled="@_busy" @onclick="() => DeleteAsync(transcript.Id)">Delete</button>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    @if (_error is not null)
+    {
+        <p class="draft-error">@_error</p>
+    }
+</div>

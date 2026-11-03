@@ -1,0 +1,95 @@
+@page "/admin/studio"
+@layout AdminLayout
+
+@* F49.5: compose an eval from the runner's catalogue, see its file, save it and ask the runner's verdict. A draft
+   changes no eval: publishing writes its folder. *@
+
+<PageTitle>Studio · Puls Admin</PageTitle>
+
+<div class="page-head">
+    <div>
+        <h1>Studio</h1>
+        <p>Compose an eval from the checks the runner has, check it as a run would, and keep it as a draft until it is published.</p>
+    </div>
+    <div class="page-actions">
+        <button class="header-button studio-new" type="button" @onclick="New"><span class="ic i-plus" aria-hidden="true"></span>New eval</button>
+    </div>
+</div>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync" />
+}
+
+<div class="studio">
+    <aside class="studio-list card-p">
+        <h4>Drafts</h4>
+        @if (_drafts.Count == 0)
+        {
+            <p class="muted small">No eval is being composed yet.</p>
+        }
+        @foreach (var draft in _drafts)
+        {
+            <button type="button" class="studio-draft @(draft.Id == _id ? "active" : "")" @onclick="() => Open(draft)">
+                <code>@draft.Name</code><small class="muted">for @draft.Identity · @draft.Author</small>
+            </button>
+        }
+        <PromptfooPanel HasDraft="_eval is not null" SaveDraft="SaveDraftAsync" OnImported="ImportedAsync" />
+    </aside>
+
+    @if (_eval is { } eval && _catalogue is { } catalogue)
+    {
+        <div class="studio-editor">
+            <ComposeHead Eval="eval" />
+            <ComposeChecks Eval="eval" Catalogue="catalogue" />
+            <ComposeRubrics Rubrics="_rubrics" />
+            @if (_scenarios.Count > 0)
+            {
+                <p class="studio-scenarios muted small">@_scenarios.Count scenario file(s) of its own, as an import brought them: kept with the draft.</p>
+            }
+            <div class="studio-actions">
+                <button type="button" class="studio-save header-button" disabled="@_busy" @onclick="SaveAsync">Save</button>
+                <button type="button" class="studio-check header-button" disabled="@_busy" @onclick="CheckAsync">Check</button>
+                <button type="button" class="studio-publish header-button" disabled="@_busy" @onclick="PublishAsync">Publish</button>
+                <button type="button" class="studio-view-json link-button" @onclick="() => _showJson = !_showJson">@JsonLabel</button>
+                @if (_saved is not null)
+                {
+                    <span class="muted small">@_saved</span>
+                }
+            </div>
+            @if (_published is not null)
+            {
+                <p class="studio-published">@_published</p>
+            }
+            <div class="studio-try">
+                <input class="studio-try-replay" placeholder="run to replay, such as c0362ff73151" @bind="_tryReplay" />
+                <input class="studio-try-samples" placeholder="samples, commas between (all when empty)" @bind="_trySamples" />
+                <button type="button" class="studio-try-start header-button" disabled="@_busy" @onclick="TryAsync">Try</button>
+                @if (_tried is not null)
+                {
+                    <a class="studio-tried small" href="admin">@_tried</a>
+                }
+            </div>
+            @if (_verdict is { } verdict)
+            {
+                @if (verdict.Ok)
+                {
+                    <p class="studio-ok">The runner checked it: it loads and conforms, as a run would want.</p>
+                }
+                else
+                {
+                    <ul class="studio-problems">
+                        @foreach (var problem in verdict.Problems)
+                        {
+                            <li>@problem</li>
+                        }
+                    </ul>
+                }
+            }
+            @if (_showJson)
+            {
+                <pre class="studio-json">@Json</pre>
+            }
+        </div>
+    }
+</div>
