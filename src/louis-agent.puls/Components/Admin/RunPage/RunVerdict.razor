@@ -1,0 +1,20 @@
+@* F53.1 step 1: the run's answer first (Shneiderman's "overview first"): a line per mode with passed of graded and the
+   change against the eval's run before, coloured by its tone; under it the cost, the requests, and how many answers
+   still wait for a person's grade. The numbers come from RunVerdictView; this file only places them. *@
+<section class="card-p run-verdict">
+    <ul class="verdict-modes">
+        @foreach (var (mode, i) in View.Modes.Select((m, i) => (m, i)))
+        {
+            <li class="verdict-mode @VerdictText.Tone(mode)" style="--i: @i">
+                <code class="verdict-mode-name">@mode.Mode</code>
+                <strong class="verdict-passed">@VerdictText.Passed(mode)</strong>
+                <span class="verdict-change">@VerdictText.Change(mode)</span>
+            </li>
+        }
+    </ul>
+    <p class="verdict-facts muted">
+        <span class="verdict-cost">@RunText.Money(View.Cost, Currency)</span>
+        @if (View.Requests is { } requests) { <span>·</span><span class="verdict-requests">@requests requests</span> }
+        @if (View.ToGrade > 0) { <span>·</span><strong class="verdict-grade">@VerdictText.ToGrade(View.ToGrade)</strong> }
+    </p>
+</section>

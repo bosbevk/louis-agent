@@ -26,6 +26,8 @@ else
     {
         <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
     }
+    @* F53.1 step 1: the answer first: passed of graded per mode, against the eval's run before. *@
+    <RunVerdict View="RunVerdictView.Of(_run, _trend)" Currency="Currency.Current" />
     @* F18 step 7a.2: why this run behaved as it did, in people's words; the notes are the store's, fetched with the run. *@
     <section class="card-p">
         <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Notes<span class="fold-note">what changed, what you think explains it</span></summary>
