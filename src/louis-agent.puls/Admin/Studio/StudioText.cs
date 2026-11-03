@@ -23,6 +23,10 @@ public static class StudioText
     /// <summary>An eval being composed was saved as a draft (F49.5).</summary>
     public static string EvalSaved(string eval) => $"Saved {eval} as a draft.";
 
+    /// <summary>A try started; the Benchmarks page follows it.</summary>
+    public static string TryStarted(string run) =>
+        $"Try {run} started, a replay at no cost: follow it on Benchmarks ›";
+
     /// <summary>A transcript was kept as a draft, under the file name it will have.</summary>
     public static string TranscriptKept(string file) =>
         $"Kept as {file}. It waits on the Evals page until it is published.";

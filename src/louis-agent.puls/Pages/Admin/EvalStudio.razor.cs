@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using LouisAgent.Api.Contracts.Admin;
+using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Studio;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Studio;
@@ -39,6 +40,9 @@ public partial class EvalStudio : IDisposable
     private DraftCheckReply? _verdict;
     private string? _error;
     private string? _saved;
+    private string? _tried;
+    private string _tryReplay = "";
+    private string _trySamples = "";
     private bool _needsKey, _busy, _showJson;
 
     /// <summary>The file the form makes now.</summary>
@@ -102,6 +106,36 @@ public partial class EvalStudio : IDisposable
             using var response = await Api.SendAsync(new HttpRequestMessage(HttpMethod.Post,
                 $"{Drafts}/{Uri.EscapeDataString(id)}/verdict"));
             _verdict = await response.Content.ReadFromJsonAsync<DraftCheckReply>(AdminJson.SnakeCase);
+        }
+        catch (AgentApiException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    /// <summary>
+    /// Saves the draft, then starts its try: a replay of the run named, on the samples named, which the Benchmarks
+    /// page follows as it runs.
+    /// </summary>
+    private async Task TryAsync()
+    {
+        if (await SaveDraftAsync() is not { } id) return;
+        _busy = true;
+        try
+        {
+            var samples = _trySamples.Split(',',
+                StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"{Drafts}/{Uri.EscapeDataString(id)}/try")
+            {
+                Content = JsonContent.Create(new TryRequest(_tryReplay.Trim(), samples), options: AdminJson.SnakeCase)
+            };
+            using var response = await Api.SendAsync(request);
+            var run = await response.Content.ReadFromJsonAsync<LiveRunRow>(AdminJson.SnakeCase);
+            _tried = StudioText.TryStarted(run!.Id);
         }
         catch (AgentApiException ex)
         {

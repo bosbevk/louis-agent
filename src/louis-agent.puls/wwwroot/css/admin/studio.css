@@ -39,6 +39,8 @@
 .compose-check, .compose-rubric { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
 .compose-rubric textarea { resize: vertical; width: 100%; }
 .studio-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.studio-try { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.studio-try input { flex: 1; min-width: 160px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
 .studio-ok { margin: 0; color: var(--ink); }
 .studio-problems { margin: 0; padding-left: 18px; color: var(--danger); font-size: 13px; }
 .studio-json { margin: 0; max-height: 420px; overflow: auto; font-size: 12px; background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }

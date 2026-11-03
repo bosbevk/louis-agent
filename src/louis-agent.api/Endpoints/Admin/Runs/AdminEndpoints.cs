@@ -57,6 +57,10 @@ internal static class AdminEndpoints
         var runnerParts = studio ?? StudioRunner.None;
         admin.MapStudio(runnerParts.Checks, draftStore, time ?? TimeProvider.System, runnerParts.Checker);
 
+        // A draft's try is a run like the Run button's, recorded with the settings every run reports.
+        var trying = new DraftTryHandlers(draftStore, runner, recorder, settingsOf, StudioEndpoints.Scratch);
+        admin.MapPost("/evals/drafts/{id}/try", trying.PostTry);
+
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.
         foreach (string prefix in Prefixes)

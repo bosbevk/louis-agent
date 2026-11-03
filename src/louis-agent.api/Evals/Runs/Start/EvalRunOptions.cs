@@ -9,9 +9,14 @@ namespace LouisAgent.Api.Evals.Runs.Start;
 /// How a run treats the web, as the portal's start request asks. <c>{"repeat": 1, "web": "record"}</c> records every
 /// page, search and fetch the run reads; <c>{"repeat": 1, "replay": "{runId}"}</c> plays a recorded run back, the
 /// model's answers too, so it costs nothing. The runner gets them as <c>--web record</c> and <c>--replay {runId}</c>.
+/// A studio try (F49.5) also names the eval's folder and the samples to run (<c>--folder</c>, <c>--samples</c>).
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-public sealed record EvalRunOptions(WebReplayMode? Web = null, string? Replay = null)
+public sealed record EvalRunOptions(
+    WebReplayMode? Web = null,
+    string? Replay = null,
+    string? Folder = null,
+    string? Samples = null)
 {
     /// <summary>A run that asks for nothing: the instance's own <c>WEB_REPLAY</c> decides.</summary>
     public static readonly EvalRunOptions None = new();

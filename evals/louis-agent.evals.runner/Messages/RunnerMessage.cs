@@ -45,6 +45,18 @@ public enum RunnerMessage
     [Description("There is no eval folder at '{Folder}'.")]
     NoEvalFolder,
 
+    [Description("The folder '{Folder}' holds the eval '{Found}', not '{Named}': run it under its own name.")]
+    FolderIsAnotherEval,
+
+    [Description("Eval {Eval} has no sample '{Sample}'. Its samples are: {Supported}.")]
+    UnknownSample,
+
+    [Description("--samples takes kebab-case ids with commas between, such as cook-af,cook-en, not '{Value}'.")]
+    BadSamples,
+
+    [Description("A re-score takes no --folder or --samples: it grades the stored run's own conversations.")]
+    RescoreExcludesFolder,
+
     [Description("--labels takes only '-': the label files on stdin, one JSON object per line, not '{Value}'. "
                  + "Labels in a folder are the dataset's labels/, read without --labels.")]
     LabelsOnlyStdin,

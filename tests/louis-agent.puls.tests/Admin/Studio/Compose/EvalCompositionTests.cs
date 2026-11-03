@@ -50,7 +50,12 @@ public class EvalCompositionTests
             Version = 1,
             Proves = "The agent says what the weather does"
         };
-        eval.Modes.Add(new ModeEntry { Name = "weather", Role = "weather/voice", Toolsets = "web, specialists" });
+        eval.Modes.Add(new ModeEntry
+        {
+            Name = "weather",
+            Role = "weather/voice",
+            Toolsets = $"{SampleToolset.Alpha}, {SampleToolset.Beta}"
+        });
         var check = new CheckEntry { Type = "amount-under", Name = "within-budget" };
         check.Values["key"] = "budget";
         check.Values["reader"] = "rand-total";
@@ -65,7 +70,7 @@ public class EvalCompositionTests
         Assert.That(string.Join(",", file.EnumerateObject().Select(p => p.Name)),
             Is.EqualTo("schema_version,name,identity,version,proves,modes,checks"));
         Assert.That(file.GetProperty("modes")[0].GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
-            Is.EqualTo(new[] { "web", "specialists" }));
+            Is.EqualTo(new[] { SampleToolset.Alpha, SampleToolset.Beta }));
         var parameters = file.GetProperty("checks")[0].GetProperty("parameters");
         Assert.That((parameters.GetProperty("limit").GetInt32(), parameters.GetProperty("required").GetBoolean(),
                 parameters.GetProperty("toolsets").GetArrayLength(), parameters.TryGetProperty("share", out _)),
@@ -77,16 +82,16 @@ public class EvalCompositionTests
     [Test]
     public void AnEvalsFile_ReadsBackIntoTheForm()
     {
-        string json = """
-                      {"schema_version":1,"name":"weather-eval","identity":"weather-agent","version":2,
-                       "proves":"Weather","modes":[{"name":"weather","role":"weather/voice","toolsets":["web"]}],
-                       "checks":[{"type":"amount-under","parameters":{"key":"budget","reader":"rand-total","limit":9}}]}
-                      """;
+        string json = $$$"""
+                         {"schema_version":1,"name":"weather-eval","identity":"weather-agent","version":2,
+                          "proves":"Weather","modes":[{"name":"weather","role":"weather/voice","toolsets":["{{{SampleToolset.Alpha}}}"]}],
+                          "checks":[{"type":"amount-under","parameters":{"key":"budget","reader":"rand-total","limit":9}}]}
+                         """;
 
         var eval = EvalComposition.FromJson(json);
 
         Assert.That((eval.Name, eval.Version, eval.Modes.Single().Toolsets, eval.Checks.Single().Values["limit"]),
-            Is.EqualTo(("weather-eval", 2, "web", "9")));
+            Is.EqualTo(("weather-eval", 2, SampleToolset.Alpha, "9")));
         var again = JsonDocument.Parse(eval.ToJson(SchemaFields.ByType([AmountUnder]))).RootElement;
         Assert.That(again.GetProperty("checks")[0].GetProperty("parameters").GetProperty("limit").GetInt32(),
             Is.EqualTo(9));

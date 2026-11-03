@@ -55,8 +55,9 @@ try
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
                 Console.Out);
 
+        // A run of the catalogue's eval, or of a studio folder's on a few of its samples (a try, F49.5).
         case RunRequest run:
-            var eval = catalog.Get(run.Name);
+            var eval = RunTarget.Of(run, catalog);
             // A re-score grades the stored run's lines, which the API pipes to stdin. It opens no session, so it has
             // no client to call.
             if (run.RescoreOf is { } source)

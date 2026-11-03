@@ -35,6 +35,8 @@ public class StudioPageTests
             ("GET", "/v1/admin/evals/checks") => Json(Checks),
             ("GET", "/v1/admin/evals/drafts") => Json($$"""{"drafts":[{{Draft}}]}"""),
             ("PUT", "/v1/admin/evals/drafts/d1") => Json(Draft),
+            ("POST", "/v1/admin/evals/drafts/d1/try") =>
+                Json("""{"id":"run_9","check":"weather-eval","repeat":1,"status":"running"}"""),
             ("POST", "/v1/admin/evals/drafts/d1/verdict") =>
                 Json("""{"ok":false,"problems":["scenario weather-paarl has no reference transcript"]}"""),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound)
@@ -80,6 +82,23 @@ public class StudioPageTests
         Assert.That((file.GetProperty("name").GetString(), file.GetProperty("version").GetInt32(),
                 file.GetProperty("checks")[0].GetProperty("parameters").GetProperty("key").GetString()),
             Is.EqualTo(("weather-eval", 3, "budget")));
+    }
+
+    /// <summary>Try saves the draft, then starts a replay on the samples typed, and links to where it runs.</summary>
+    [Test]
+    public void Try_SavesTheDraft_ThenStartsAReplay_OnTheSamplesTyped()
+    {
+        var (cut, handler) = Render();
+        cut.Find(".studio-draft").Click();
+        cut.Find(".studio-try-replay").Change("c0362ff73151");
+        cut.Find(".studio-try-samples").Change("weather-paarl, weather-af");
+
+        cut.Find(".studio-try-start").Click();
+
+        cut.WaitForAssertion(() => Assert.That(cut.Find(".studio-tried").TextContent, Does.Contain("run_9")));
+        var sent = JsonDocument.Parse(handler.Requests.Single(r => r.Url.EndsWith("/try")).Body!).RootElement;
+        Assert.That((sent.GetProperty("replay").GetString(), sent.GetProperty("samples").GetArrayLength()),
+            Is.EqualTo(("c0362ff73151", 2)));
     }
 
     /// <summary>Check saves the draft under the reviewer's name, then shows the runner's problems.</summary>

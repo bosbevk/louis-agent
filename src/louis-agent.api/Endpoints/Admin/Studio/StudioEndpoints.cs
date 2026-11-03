@@ -14,7 +14,7 @@ internal static class StudioEndpoints
     /// <summary>
     /// The folder the drafts are written out under to be checked, tried and published: the machine's temp folder.
     /// </summary>
-    private static readonly string Scratch = Path.Combine(Path.GetTempPath(), "louis-agent-studio");
+    internal static readonly string Scratch = Path.Combine(Path.GetTempPath(), "louis-agent-studio");
 
     /// <summary>Adds <c>GET /evals/checks</c>, the <c>/evals/drafts</c> resource and a draft's check.</summary>
     public static void MapStudio(this RouteGroupBuilder admin, CheckList checks, IEvalDraftStore drafts,

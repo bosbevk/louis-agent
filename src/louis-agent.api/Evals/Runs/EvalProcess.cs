@@ -48,6 +48,13 @@ public sealed class EvalProcess(
     }
 
     /// <summary>
+    /// Starts a studio try (F49.5): one repeat of an eval that may not be in the catalogue yet, from the folder and on
+    /// the samples its options name, replaying a stored run. You get nothing back if another run is still going.
+    /// </summary>
+    public RunningEval? StartTry(EvalEntry eval, EvalRunOptions options) =>
+        StartLocked(eval, new RunningEval(ShortId.New(), eval.Id, 1, options));
+
+    /// <summary>
     /// Grades a stored run again without asking the model: the runner gets <c>--rescore {rescoreOf}</c> and reads the
     /// stored run's export from its input. The new run keeps the stored run's repeats, since it holds the same
     /// conversations. You get nothing back if the eval is unknown or another run is still going.

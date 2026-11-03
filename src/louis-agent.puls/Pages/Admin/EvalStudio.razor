@@ -51,6 +51,15 @@
                     <span class="muted small">@_saved</span>
                 }
             </div>
+            <div class="studio-try">
+                <input class="studio-try-replay" placeholder="run to replay, such as c0362ff73151" @bind="_tryReplay" />
+                <input class="studio-try-samples" placeholder="samples, commas between (all when empty)" @bind="_trySamples" />
+                <button type="button" class="studio-try-start header-button" disabled="@_busy" @onclick="TryAsync">Try</button>
+                @if (_tried is not null)
+                {
+                    <a class="studio-tried small" href="admin">@_tried</a>
+                }
+            </div>
             @if (_verdict is { } verdict)
             {
                 @if (verdict.Ok)

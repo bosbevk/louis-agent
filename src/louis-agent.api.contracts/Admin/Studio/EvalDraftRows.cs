@@ -18,6 +18,12 @@ public sealed record EvalDraftRow(
     DateTimeOffset At);
 
 /// <summary>
+/// What the compose page sends to try a draft: the stored run to replay (a try is always a replay, so it costs
+/// nothing) and the samples to run, none for all of them.
+/// </summary>
+public sealed record TryRequest(string? Replay, IReadOnlyList<string>? Samples);
+
+/// <summary>
 /// What the eval runner said of a draft written out as a folder: whether it conforms, and every problem in the runner's
 /// own words, in the order a run would meet them.
 /// </summary>

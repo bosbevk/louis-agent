@@ -81,4 +81,8 @@ public enum DraftMessage
 
     [Description("There is no eval being composed with the id '{Id}'.")]
     NoEvalDraft,
+
+    [Description(
+        "A try replays a stored run, so it costs nothing: name the run to replay. A fresh run is the Run button's.")]
+    TryNeedsAReplay,
 }
