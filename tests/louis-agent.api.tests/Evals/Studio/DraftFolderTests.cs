@@ -60,7 +60,7 @@ public class DraftFolderTests
     [Test]
     public void TheFolder_HoldsTheFileTheRubricsTheScenariosAndTheTranscripts()
     {
-        string folder = DraftFolder.Write(Composed(), Drafts(), _root, _workspace);
+        string folder = DraftFolder.Write(Composed(), Drafts(), _root, null);
 
         Assert.That(File.ReadAllText(Path.Combine(folder, "eval.json")), Is.EqualTo("""{"name":"weather-eval"}"""));
         Assert.That(File.ReadAllText(Path.Combine(folder, "Rubrics", "weather-right.md")),
@@ -76,7 +76,7 @@ public class DraftFolderTests
     [Test]
     public void TheManifest_NamesTheDataset_AndLeavesItsHashToTheRunner()
     {
-        string folder = DraftFolder.Write(Composed(), Drafts(), _root, _workspace);
+        string folder = DraftFolder.Write(Composed(), Drafts(), _root, null);
 
         var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(folder, "Dataset", "dataset.json")))
             .RootElement;
@@ -92,15 +92,15 @@ public class DraftFolderTests
     [Test]
     public void AnEditOfAnEvalTheWorkspaceHas_KeepsItsFolder_UnderTheDraftsFiles()
     {
-        string kept = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent", "Evals",
-            "WeatherEval");
+        // Named as the runner lists it, not after the eval: the cook's folder is Cook.
+        string kept = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent", "Evals", "Weather");
         Write(kept, "manual.md", "# Weather");
         Write(kept, "Transcripts/weather-old.reference.txt", "{\"event\":\"mode\"}\n");
         Write(kept, "Dataset/dataset.json", """{"name":"weather-eval","version":4}""");
         Write(kept, "Dataset/scenarios/held-out/weather-worcester.json", "{}");
         Write(kept, "Rubrics/weather-right.md", "Was die weer reg?");
 
-        string folder = DraftFolder.Write(Composed(), Drafts(), _root, _workspace);
+        string folder = DraftFolder.Write(Composed(), Drafts(), _root, kept);
 
         Assert.That(File.Exists(Path.Combine(folder, "manual.md")), Is.True, "the manual");
         Assert.That(File.Exists(Path.Combine(folder, "Transcripts", "weather-old.reference.txt")), Is.True,
@@ -119,9 +119,8 @@ public class DraftFolderTests
     [Test]
     public void WritingAgain_StartsAfresh()
     {
-        string first = DraftFolder.Write(Composed(), Drafts(), _root, _workspace);
-        string second = DraftFolder.Write(Composed() with { Rubrics = [] }, new EvalDrafts([], []), _root,
-            _workspace);
+        string first = DraftFolder.Write(Composed(), Drafts(), _root, null);
+        string second = DraftFolder.Write(Composed() with { Rubrics = [] }, new EvalDrafts([], []), _root, null);
 
         Assert.That(second, Is.EqualTo(first));
         Assert.That(Directory.Exists(Path.Combine(second, "Rubrics")), Is.False);

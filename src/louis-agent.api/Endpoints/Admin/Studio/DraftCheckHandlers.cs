@@ -4,6 +4,7 @@ using LouisAgent.Api.Contracts.Admin.Studio;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.Studio;
+using LouisAgent.Api.Evals.Studio.Publish;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using CheckAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
@@ -26,7 +27,7 @@ internal sealed class DraftCheckHandlers(
     IEvalDraftStore drafts,
     DraftChecker checker,
     string scratch,
-    string workspaceRoot)
+    EvalHomes homes)
 {
     /// <summary>Writes the draft out and has the runner judge it.</summary>
     public async Task<CheckAnswer> PostVerdict(string id, CancellationToken cancellationToken)
@@ -38,7 +39,7 @@ internal sealed class DraftCheckHandlers(
 
             // The folder holds what will be published: the draft and the samples and transcripts kept for its eval.
             string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch,
-                workspaceRoot);
+                homes.Existing(draft));
             var check = checker.Check(folder);
             if (check.Failure is { } failure) return ApiErrors.Unavailable(failure);
             return TypedResults.Json(new DraftCheckReply(check.Ok, check.Problems), AdminJson.SnakeCase);

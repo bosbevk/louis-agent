@@ -28,9 +28,12 @@ namespace LouisAgent.Api.Endpoints.Admin.Studio;
 internal sealed class DraftPublishHandlers(
     IEvalDraftStore drafts,
     DraftChecker checker,
-    string workspaceRoot,
+    EvalHomes homes,
     string scratch)
 {
+    /// <summary>The workspace the eval is committed in.</summary>
+    private string WorkspaceRoot => homes.WorkspaceRoot;
+
     /// <summary>Publishes the draft, or says why it can't be yet.</summary>
     public async Task<PublishAnswer> PostPublish(string id, CancellationToken cancellationToken)
     {
@@ -41,7 +44,7 @@ internal sealed class DraftPublishHandlers(
 
             // What is published is what the runner checked: the folder it sealed and found no problem with.
             string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch,
-                workspaceRoot);
+                homes.Existing(draft));
             var verdict = checker.Check(folder);
             if (verdict.Failure is { } failure) return ApiErrors.Unavailable(failure);
             if (!verdict.Ok)
@@ -53,11 +56,12 @@ internal sealed class DraftPublishHandlers(
                         First = (verdict.Problems.FirstOrDefault() ?? "").TrimEnd('.')
                     }));
 
-            var target = PublishTarget.Of(draft.Identity, draft.Name);
-            var publisher = new EvalPublisher(workspaceRoot);
+            // An edit goes back into the folder the runner lists it in (FX32); a new eval into a new one.
+            var target = homes.TargetOf(draft);
+            var publisher = new EvalPublisher(WorkspaceRoot);
             if (!publisher.CanCommit)
                 return TypedResults.File(target.Zip(folder), "application/zip", $"{target.FolderName}.zip");
-            if (!Directory.Exists(Path.Combine(workspaceRoot, target.IdentityFolder)))
+            if (!Directory.Exists(Path.Combine(WorkspaceRoot, target.IdentityFolder)))
                 return ApiErrors.BadRequest(MessageText.Format(DraftMessage.PublishNoIdentity,
                     new { Folder = target.IdentityFolder }));
 

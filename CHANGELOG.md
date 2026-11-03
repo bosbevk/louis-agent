@@ -5,8 +5,9 @@
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
 - 2026-11-03 — **FX32 An edit in the studio keeps its eval's folder**: a draft of an eval the workspace has starts
-  from a copy of that folder, so its references, held-out scenarios, labels, manual and manifest are checked and
-  published with the draft's changes on top; a refused publish no longer ends its quote with `..`
+  from a copy of the folder the runner lists it in (the cook's `Cook`), so its references, held-out scenarios, labels,
+  manual and manifest are checked and published back into that folder with the draft's changes on top; a refused
+  publish no longer ends its quote with `..`
   ([lesson](docs/learning/fixes-lessons.md#fx32--an-edit-starts-from-what-is-already-there))
 - 2026-11-03 — **CL27 Prompt headers**: every built-in prompt (core's, Puls's and the shops pack's 26, and the
   tests' six) and the cook's judge rubric open with the Agent Skills spec's front matter: `name` (the file's),

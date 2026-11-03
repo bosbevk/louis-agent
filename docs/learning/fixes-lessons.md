@@ -183,7 +183,10 @@ stripped copy: no references, no held-out scenarios, no labels, no manual. Every
 one checked a new eval; it took an end-to-end run on the real cook eval to see it. Two lessons. An editor writes over
 what exists, it doesn't rebuild it from its own fields, so the folder now starts as a copy of the eval's folder and
 the draft goes on top (the runner stays the one that reads it, finding R). And a feature that edits real content is
-tested on real content, not only on a made-up one. Skill 18 (shipping: end-to-end checks) and 12 (evaluation).
+tested on real content, not only on a made-up one: the first fix passed every unit test too, and the second run on
+the cook showed its folder is `Cook`, not the `PulsCook` the studio worked out from the eval's name. Where a thing
+lives is asked of the one that knows (the runner's listing), never derived from its name. Skill 18 (shipping:
+end-to-end checks) and 12 (evaluation).
 
 ## FX31 · A small copy of a layout needs its own columns
 

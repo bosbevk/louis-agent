@@ -26,8 +26,11 @@ namespace LouisAgent.Api.Evals.Studio;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
 public static class DraftFolder
 {
-    /// <summary>The draft's folder under <paramref name="root"/>, written afresh, and its path.</summary>
-    public static string Write(EvalDraft draft, EvalDrafts drafts, string root, string workspaceRoot)
+    /// <summary>
+    /// The draft's folder under <paramref name="root"/>, written afresh, and its path; an edit starts from a copy of
+    /// <paramref name="existing"/>, the eval's folder in the workspace (<see cref="EvalHomes.Existing"/>).
+    /// </summary>
+    public static string Write(EvalDraft draft, EvalDrafts drafts, string root, string? existing)
     {
         string folder = Path.Combine(root, draft.Id);
         if (Directory.Exists(folder)) Directory.Delete(folder, recursive: true);
@@ -35,8 +38,7 @@ public static class DraftFolder
 
         // An edit of an eval the workspace has starts from its folder (FX32): its references, held-out scenarios,
         // labels, manual and manifest stay, and the draft's files go over them.
-        string existing = Path.Combine(workspaceRoot, PublishTarget.Of(draft.Identity, draft.Name).Folder);
-        if (Directory.Exists(existing)) Copy(existing, folder);
+        if (existing is not null) Copy(existing, folder);
 
         File.WriteAllText(Path.Combine(folder, "eval.json"), draft.Json);
         foreach (var rubric in draft.Rubrics) Write(folder, ["Rubrics", rubric.Name], rubric.Text);

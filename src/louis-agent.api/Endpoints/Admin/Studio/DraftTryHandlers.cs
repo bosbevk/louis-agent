@@ -11,6 +11,7 @@ using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Start;
 using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Evals.Studio;
+using LouisAgent.Api.Evals.Studio.Publish;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using TryAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
@@ -36,7 +37,7 @@ internal sealed class DraftTryHandlers(
     EvalRecorder? recorder,
     Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
     string scratch,
-    string workspaceRoot)
+    EvalHomes homes)
 {
     /// <summary>Writes the draft out and starts its try, answering 202 with the live run.</summary>
     public async Task<TryAnswer> PostTry(string id, TryRequest? request, CancellationToken cancellationToken)
@@ -55,7 +56,7 @@ internal sealed class DraftTryHandlers(
 
         // The folder holds what will be published, and the runner runs it as a replay on the named samples.
         string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch,
-            workspaceRoot);
+            homes.Existing(draft));
         var eval = new EvalEntry(draft.Name, draft.Name);
         var tried = options! with
         {

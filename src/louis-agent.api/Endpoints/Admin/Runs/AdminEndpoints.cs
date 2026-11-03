@@ -13,6 +13,7 @@ using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Evals.Studio;
+using LouisAgent.Api.Evals.Studio.Publish;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 
@@ -58,17 +59,17 @@ internal static class AdminEndpoints
 
         // The studio (F49.5): the runner's catalogue, its check and promptfoo in and out, which say the runner isn't
         // there when none was given, and the evals being composed, kept beside the other drafts.
+        // An eval the runner lists is edited in its own folder (FX32).
         var runnerParts = studio ?? StudioRunner.None;
-        admin.MapStudio(runnerParts, draftStore, time ?? TimeProvider.System, workspaceRoot);
+        var homes = new EvalHomes(catalog, workspaceRoot);
+        admin.MapStudio(runnerParts, draftStore, time ?? TimeProvider.System, homes);
 
         // A draft's try is a run like the Run button's, recorded with the settings every run reports.
-        var trying = new DraftTryHandlers(draftStore, runner, recorder, settingsOf, StudioEndpoints.Scratch,
-            workspaceRoot);
+        var trying = new DraftTryHandlers(draftStore, runner, recorder, settingsOf, StudioEndpoints.Scratch, homes);
         admin.MapPost("/evals/drafts/{id}/try", trying.PostTry);
 
         // Its publish: the checked folder on a branch in the workspace, or a zip where there's no git workspace.
-        var publishing = new DraftPublishHandlers(draftStore, runnerParts.Checker, workspaceRoot,
-            StudioEndpoints.Scratch);
+        var publishing = new DraftPublishHandlers(draftStore, runnerParts.Checker, homes, StudioEndpoints.Scratch);
         admin.MapPost("/evals/drafts/{id}/publish", publishing.PostPublish);
 
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
