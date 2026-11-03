@@ -2,7 +2,8 @@ namespace LouisAgent.Site.Tests.Styles;
 
 /// <summary>
 /// The site's stylesheet is app.css's import list (ADR 0053): every area file is imported once, nothing imported is
-/// missing, the tokens come first, and each film's timing is its own so the two never share a keyframe name.
+/// missing, the tokens come first, each film's timing is its own so the two never share a keyframe name, and a
+/// visitor's reduced-motion setting stills the decoration but never the films (FX35).
 /// </summary>
 public class SiteStylesheetTests
 {
@@ -41,6 +42,24 @@ public class SiteStylesheetTests
 
         Assert.That(names, Is.Unique);
         Assert.That(names.Where(n => n != "bar" && !n.StartsWith("turn-")), Is.All.Matches<string>(BelongsToOneFilm));
+    }
+
+    /// <summary>
+    /// A PC with its animations switched off asks for reduced motion; that stills the hero's typing but not the films,
+    /// which are the content and play as a video would (FX35: with them stilled, a visitor saw every part at once and
+    /// no card, caption or light). Every selector in the reduced-motion rule leaves the stage out.
+    /// </summary>
+    [Test]
+    public void ReducedMotion_StillsTheDecoration_AndLeavesTheFilmsPlaying()
+    {
+        string css = Css.Read();
+        string block = css[css.IndexOf("@media (prefers-reduced-motion: reduce)")..];
+        block = block[..block.IndexOf("\n}")];
+        var selectors = block.Split('{').Skip(1).Select(rule => rule[(rule.LastIndexOf('}') + 1)..].Trim()).Where(s => s.Length > 0)
+            .SelectMany(list => list.Split(',')).Select(s => s.Trim()).ToList();
+
+        Assert.That(selectors, Is.Not.Empty, "the reduced-motion rule is there");
+        Assert.That(selectors, Is.All.Contains(":not(.stage *)"), "nothing in it reaches a film");
     }
 
     /// <summary>A film's keyframe name ends in <c>-s</c> or <c>-d</c>, or in that letter and the scene's number.</summary>
