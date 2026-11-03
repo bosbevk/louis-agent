@@ -31,14 +31,14 @@ public enum RunnerMessage
     BadRepeat,
 
     [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] "
-                 + "[--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader> "
-                 + "[--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
+                 + "[--split dev|held-out|all], run <eval> --rescore <runId>, --list, --checks, --calibrate <eval> "
+                 + "<grader> [--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
     Usage,
 
     [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] "
                  + "[--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, "
-                 + "--list, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> "
-                 + "<folder> [<count>].")]
+                 + "--list, --checks, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> "
+                 + "<runId> <folder> [<count>].")]
     UnknownArgument,
 
     [Description("--labels takes only '-': the label files on stdin, one JSON object per line, not '{Value}'. "

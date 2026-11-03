@@ -32,6 +32,12 @@ try
                 Console.Out.WriteLine(JsonSerializer.Serialize(listed, EvalJson.SnakeCase));
             return 0;
 
+        // The catalogue the studio composes an eval from: every check type with its settings' schema, then the readers.
+        case ChecksRequest:
+            foreach (string line in ChecksListing.Lines(RunnerChecks.Catalog, RunnerReaders.Catalog))
+                Console.Out.WriteLine(line);
+            return 0;
+
         // The two commands that check a model grader against a person. Neither opens a session; --calibrate asks the
         // judge, so it refuses in CI.
         case CalibrateRequest calibrate:

@@ -15,6 +15,12 @@ public abstract record CommandLineRequest;
 public sealed record ListRequest : CommandLineRequest;
 
 /// <summary>
+/// You asked for <c>--checks</c>: every check type the runner's evals can name, with its kind and the schema of its
+/// settings, then every reader with its kind, one JSON object per line (F49.5's studio composes from it).
+/// </summary>
+public sealed record ChecksRequest : CommandLineRequest;
+
+/// <summary>
 /// Run one eval: <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;]
 /// [--split dev|held-out|all] | --rescore &lt;runId&gt;</c>. Each mode runs N times, and its web reads can be recorded
 /// or replayed. With no web choice the instance's <c>WEB_REPLAY</c> decides; <paramref name="Of"/> is the recorded run
@@ -67,6 +73,7 @@ public static class CommandLine
     public static CommandLineRequest Parse(IReadOnlyList<string> args)
     {
         if (args is ["--list"]) return new ListRequest();
+        if (args is ["--checks"]) return new ChecksRequest();
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
         if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
         if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where])

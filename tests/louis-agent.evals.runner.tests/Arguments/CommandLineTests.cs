@@ -16,6 +16,11 @@ public class CommandLineTests
     public void ListIsParsed() =>
         Assert.That(CommandLine.Parse(["--list"]), Is.EqualTo(new ListRequest()));
 
+    /// <summary>Asking for the catalogue's checks and readers is one word too (F49.5).</summary>
+    [Test]
+    public void ChecksIsParsed() =>
+        Assert.That(CommandLine.Parse(["--checks"]), Is.EqualTo(new ChecksRequest()));
+
     /// <summary>A run needs only its eval's name, and then runs each mode once.</summary>
     [Test]
     public void RunTakesItsNameAndOneRepeatByDefault() =>
