@@ -70,7 +70,9 @@ steps to cook the dish. It is **not told the budget**: it judges the meal, and `
   labels, but against 60 answers graded in the portal (run `cf37574d0f23`) it failed only 8 of the 15 that were no
   meal: Puls alone refusing, asking a question back, or listing ideas. Since eval version 12 the rubric is an ordered
   decision (a chosen dish with a way to cook it, then a main dish, then enough for the people) that says such an
-  answer is `false`, never "can't tell".
+  answer is `false`, never "can't tell". That caught 14 of the 15 but failed 7 of the 45 meals: follow-ups whose last
+  turn is only the list or the cost, and methods written as a paragraph. Version 13 says a dish from an earlier turn
+  counts and a short paragraph is a method. The dataset's labels are those 60.
 - **Unknown is an answer.** With no judge configured (`EVAL_JUDGE_MODEL` unset), a reply it can't read, or a judge that
   can't tell, the grade is Unknown with the reason, never a guessed pass. A scenario that asks for no number of people
   has no meal to judge and passes without a request.

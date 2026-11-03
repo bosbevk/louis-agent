@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-malmesbury",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+      "answer": "Ek kan nie vandag PnP se pryse of spesiale opsoek nie. Ek het net Checkers se katalogus, en ek kan ook nie my kok (die kookspesialis) hier roep nie. Die res hieronder is dus uit my eie kop, en die pryse is ruwe skattings wat jy by die till moet nagaan.\n\n**Idee: Bolognese vir vier**\n\nDit is maklik, en die res van die pot kan jy môre weer gebruik.\n\n- Maalvleis, 500 g\n- Pasta (spaghetti of penne), 500 g\n- Ui, 1 groot\n- Knoffel, 2 very\n- Stukkende tamaties, 1 blik (400 g)\n- Tamatiepasta, 1 klein sakkie of tuba\n- Olie, sout, peper, en 'n teelepel suiker as die sous suur smaak\n\n**Maak so:** Bak die ui en knoffel saggies in olie. Voeg die maalvleis by en bak tot dit bruin is. Roer die tamaties en tamatiepasta in, en laat dit 20 tot 30 minute sag borrel. Kook die pasta intussen. Klaar.\n\n**Ruwe koste (my skatting, nie PnP se pryse nie):** maalvleis R60 tot R80, pasta R20 tot R25, blik tamaties R15 tot R20, en ui, knoffel en tamatiepasta saam sowat R20 tot R30. Totaal ongeveer **R115 tot R155**. Dit is op die grens van jou R150, so kyk gou na die pryse by PnP voor jy koop.\n\nWil jy hê ek moet 'n ander gereg probeer uitdink, of sal jy eers na die winkel toe gaan en die pryse self kyk?"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

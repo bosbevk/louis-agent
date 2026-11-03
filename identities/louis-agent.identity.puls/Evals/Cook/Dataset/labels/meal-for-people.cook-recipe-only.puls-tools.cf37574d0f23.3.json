@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 3,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek kan nie nou 'n kok of 'n ander spesialis vir jou inkry nie, so hierdie resep kom uit my eie kennis. Dit is nie van 'n webblad nagegaan nie, maar bobotie is 'n klassieke resep en dit werk.\n\n**Bobotie vir 4**\n\n**Bestanddele**\n- 1 snee wit brood, sonder die kors\n- 250 ml volvet melk (hou 125 ml opsy vir die bokant)\n- 1 groot ui, fyn gekap\n- 1 eetlepel olie of botter\n- 1 eetlepel kerriepoeier (mild of medium)\n- 1 teelepel borrie (geelwortel)\n- 500 g beesmalie\n- 1 eetlepel aprikosjem\n- 1 eetlepel suurlemoensap\n- 1 eetlepel Worcestershire-sous (opsioneel)\n- 1 appel, fyn gerasper (opsioneel)\n- 50 g rosyntjies\n- 30 g amandelflakies (opsioneel)\n- 1 teelepel sout en ½ teelepel varsgemaalde swart peper\n- 2 eiers (1 vir die maalvleis, 1 vir die bokant)\n- 4 lourierblare of 6 suurlemoenblare vir bo-op\n\n**Metode**\n1. Verwarm die oond tot 180 °C.\n2. Week die brood in die 250 ml melk. Druk dit uit en hou die melk oor.\n3. Fruit die ui in die olie of botter tot sag en goudkleurig. Voeg die kerrie en borrie by en roerbak 1 minuut.\n4. Voeg die maalvleis by en bruin dit en breek die klontjies met 'n houtlepel. Dit neem sowat 10 minute.\n5. Haal van die hitte af. Roer die uitgedrukte brood, aprikosjem, suurlemoensap, Worcestershire-sous, appel, rosyntjies, amandels, sout en peper deur.\n6. Klits een eier en roer dit by die vleismengsel.\n7. Skep dit in 'n ingevette ovenskottel en druk dit plat.\n8. Klits die ander eier met die 125 ml melk wat jy opgehou het en giet dit oor die vleis. Plaas die lourierblare of suurlemoenblare bo-op.\n9. Bak 45 tot 50 minute tot die bokant styf en goudbruin is.\n\n**Om mee te eet:** geelrys, mangochutney, sambal en skyfies banana.\n\nOor die koste en watter winkel: ek kan dit nie nou vir jou uitwerk nie, want my kok is nie in hierdie sessie beskikbaar nie. Ek soek ook nie winkels se pryse op nie. As jy wil hê ek moet die koste skat, sê net, en ons kan dit daar doen."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

@@ -7,7 +7,11 @@
 - 2026-11-03 — **The cook's judge recalibrated**: against 60 answers Louis graded in the portal (run
   `cf37574d0f23`), `meal-for-people` agreed on 43 of 45 passes but only 8 of 15 fails, all of them Puls alone
   refusing, asking back or listing ideas; its rubric is now a short ordered decision that calls those `false` and
-  keeps "can't tell" for a recipe with no amounts (rubric hash `2ab944be4e29`, was `438a8deb91f4`; eval version 12)
+  keeps "can't tell" for a recipe with no amounts (rubric hash `2ab944be4e29`, was `438a8deb91f4`; eval version 12);
+  that judge caught 14 of the 15 fails but failed 7 of the 45 passes (a follow-up whose last turn is only the list or
+  the cost, a method written as a paragraph), so the rubric now says an earlier turn's dish counts and a short
+  paragraph is a method (hash `51f8ca5a5f84`, eval version 13), and the dataset's 36 labels of run `76667d39dcdb`
+  are replaced by those 60
 - 2026-11-03 — **FX34 A live run shows each turn's cost**: the Benchmarks page's live table priced its turns only
   once the whole run had ended; now the API answers a run's requests so far from the usage ledger
   (`GET …/runs/{id}/requests`), joined as the run's end joins them, and the table asks after each turn's end, so a

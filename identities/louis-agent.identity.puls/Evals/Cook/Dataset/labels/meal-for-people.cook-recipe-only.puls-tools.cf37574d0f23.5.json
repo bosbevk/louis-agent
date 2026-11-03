@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 5,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek gee dit self, want my kok is nie vandag in hierdie sessie beskikbaar nie. Die resep is gebaseer op die TASTE-resep (6–8 mense), gekrimp na vier. Ek het die hoeveelhede self omgereken, so as jy dit in die pan sien, proe jy eers voor jy ander vir vier mense optel.\n\n**Bobotie vir 4**\n\n**Bestanddele**\n- 650 g beesmink\n- 1 groot ui, fyngekap\n- 1 tjops (ongeveer 1 el) olyfolie\n- 1 el medium kerriepoeier\n- ¾ t borrie\n- 1½ t vars gerasperde gemmer\n- 1 klontjie knoffel, fyngekap (of 2 klein)\n- 1½ el appelasynasyn\n- ¾ t suiker\n- ¾ t seesout\n- ¾ t varsgemaalde swart peper\n- 1 snytjie wit brood (dik)\n- 170 ml melk\n- 3 eiers\n- 2 el vrugtechutney\n- 35 g gevlakte amandels\n- 2 lourierblare\n\n**Metode**\n1. Verhit die oond tot 180 °C en smeer 'n ovenbestande dish in.\n2. Bak die ui in die olie sag. Meng die kerrie, borrie, gemmer, knoffel, asyn, suiker, sout en peper in 'n bakkie, voeg by die ui en bak nog twee minute.\n3. Voeg die mink by en roerbak sowat 5 minute.\n4. Week die brood in 'n deel van die melk. Haal die brood uit en hou die oorblywende melk.\n5. Vryf die brood fyn met 'n vurk, voeg een liggeklopte eier en die chutney by, en roer dit deur die mink. Roer die amandels in.\n6. Druk die mink in die dish, gelykmaak die bopunt en bak 1 uur.\n7. Klop die oorblywende melk en twee eiers saam, sif dit, gooi oor die gaar mink, lê die lourierblare bo-op en bak 30 minute tot die eier gestol is.\n\n**Wat dit kos en waar**\nJy het gesê dit maak nie saak waar jy koop nie, so ek noem geen winkel nie. Ek kan ook nie winkels se pryse opsoek nie (ek het hulle om toestemming gevra), so ek kan vir jou nie 'n rand-bedrag gee wat ek kan staan by nie. Die lys hierbo is wat jy nodig het: die mink is die grootste uitgawe, die res is kleingoed wat die meeste kombuise al in die kas het.\n\n**Bron:** TASTE, \"Traditional bobotie recipe\": https://taste.co.za/recipes/bobotie/"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

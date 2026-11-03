@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-no-branch",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 1,
+  "turns": [
+    {
+      "question": "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nBobotie is 'n klassieke Suid-Afrikaanse maalvleisgereg wat maklik is om in ongeveer 'n uur en 'n half te maak, en dit is genoeg vir twee. Dit is 'n warm aandete in die somer en die winter, en die resep gebruik net gewone winkelprodukte.\n\n**Resep**\n\n![Bobotie vir ete - Marinda Kook](https://marindakook.co.za/wp-content/uploads/2017/10/featured-bobotie-blog-018.jpg)\n\nDien 2 · ongeveer 1 uur 20 min\n\n1. Verhit die oond tot 190 °C en smeer 'n oondbak van ongeveer 20 cm.\n2. Sit die brood in 'n diep bord, gooi 50 ml van die melk oor en laat dit week.\n3. Braai die uie tot glaserig in die olie bo-op die stoof.\n4. Gooi die maalvleis, appelkooskonfyt, kerriepoeier, borrie, komyn, asyn, sout en peper in 'n mengbak. Voeg die uie by.\n5. Druk die melk uit die brood, voeg die brood by die vleismengsel en meng deeglik.\n6. Skep die vleismengsel in die gesmeerde oondbak.\n7. Klits die eier met die oorblywende 30 ml melk en gooi dit oor die vleis.\n8. Sit die lourierblare bo-op.\n9. Bak ongeveer 50 minute by 190 °C, tot die bolaag gestol en goudbruin is. Die resep gee 60 minute vir 'n groter hoeveelheid, so kyk na 45 minute of dit gaar is.\n\nSkakel: https://marindakook.co.za/bobotie/\n\n**Inkopielys**\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Uie, fyn gesny | 1 | uie 1 kg | ± R25 |\n| Brood | 1 snee | witbrood 700 g | ± R22 |\n| Melk | 80 ml | melk 1 l | ± R22 |\n| Appelkooskonfyt | 40 ml | appelkooskonfyt 250 g | ± R35 |\n| Kerriepoeier | 20 ml | kerriepoeier 100 g | ± R30 |\n| Borrie | 7,5 ml | borrie 50 g | ± R20 |\n| Lourierblare | 2 | lourierblare 10 g | ± R15 |\n| Beesmaalvleis | 500 g | beef mince 500 g | ± R90 |\n| Eiers | 1 | eiers 6 | ± R55 |\n| **Totaal** | | | **± R314** |\n| **Per persoon** | | | **± R157** |\n\nUit die voorraadkas: kookolie, sout, peper, komyn, asyn en suiker.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | naaste Pick n Pay (nie bevestig nie) | | [pnp.co.za](https://www.pnp.co.za) |\n\nDaar is geen Pick n Pay-tak in Prince Albert wat ek kon bevestig nie. Gaan asseblief na die webwerf om die naaste tak te vind.\n\n**Onseker**\n\n| Wat | Hoekom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir hierdie antwoord nagegaan nie. |\n| Tak | Geen Pick n Pay-tak in Prince Albert is gevind nie, en die naaste tak is nie bevestig nie. |\n| Hoeveelheid | Die oorspronklike resep is vir 1 kg maalvleis. Ek het alles vir twee mense gehalveer. |\n| Eiers | Die resep vra vir 1 eier. Jy koop 'n pak van 6, so die res kan jy gebruik of wegsit. |\n| Borrie | Dit is 'n kruie- of speserymengsel. Die presiese produk kan verskil, so kyk na die etiket. |\n| Baktyd | Die resep se 60 minute is vir 'n groter hoeveelheid. Die 50 minute hier is 'n skatting. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

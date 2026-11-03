@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-no-branch",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 5,
+  "turns": [
+    {
+      "question": "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos.",
+      "answer": "Ek kon nie my kok vanaand inroep nie, so ek het self gesoek. Die resep is hierdie een: **Hoenderborsies met groente- en kaassous**, 'n eenskottel-ete van [Your Recipe Blog](https://yourrecipeblog.com/recipes/hoenderborsies-met-groente-en-kaassous/). Die oorspronklike is vir 3 groot borsies. Vir twee het ek dit ongeveer twederde gemaak.\n\n**Vir twee (ongeveer 30 minute, plus die rys):**\n\n**Bestanddele**\n- 2 groot hoenderborsies, elk in die lengte in twee plat stukke gesny\n- 1 eetlepel kookolie\n- hoenderspeserye na smaak (let op: die sop het ook sout)\n- ongeveer 250 g gevriesde groente na jou keuse\n- ongeveer 100 g sampioenskyfies\n- ½ blikkie hoenderroomsop of sampioensop (of ½ pakkie soppoeier met 1 koppie kookwater)\n- ½ koppie Cheddarkaas, gerasper\n- rys vir twee\n\n**Metode**\n1. Verhit die olie in 'n groot kastrol of diep pan op medium hitte.\n2. Strooi die speserye oor die borsies en braai hulle sowat 15 minute in totaal, 'n kant en dan die ander, tot hulle gaar is.\n3. Haal die borsies uit en hou hulle warm met 'n deksel.\n4. Gooi die groente, sampioene, sop en kaas in dieselfde pan. Kook op medium hitte sowat 7 minute, tot die kaas gesmelt is en die sous lekker warm is.\n5. Skep die rys op 'n bord of in 'n bak, lê die borsies daarop en gooi die sous oor.\n\n**Wat jy by PnP in Prince Albert nodig het**\n- hoenderborsies (2 groot)\n- kookolie\n- hoenderspeserye\n- gevriesde groente (250 g)\n- sampioenskyfies (100 g)\n- hoenderroomsop of sampioensop, of soppoeier\n- Cheddarkaas\n- rys\n\n**Pryse:** Ek kan nie PnP se pryse in Prince Albert opsoek nie. Die shop-soektog wat ek het, dek net Checkers, en ek het nie die toestemming om ander winkels se pryse te kyk nie. Ek kan dus nie vir jou sê wat dit by PnP kos nie, en ek gee ook nie 'n skatting wat na 'n werklike prys lyk nie. Die gerookte kant: die resep is nie vir PnP se voorraad nagegaan nie, so kyk die rak of die app voor jy gaan.\n\nAs jy wil, kan ek die lys vir Checkers in Prince Albert nagaan, of 'n ander maklike ete vir twee soek."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

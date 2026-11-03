@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-malmesbury",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 4,
+  "turns": [
+    {
+      "question": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+      "answer": "Ek kan nie vandag PnP se pryse of spesiale kry nie. My prysopsoeker dek net Checkers, en ek soek nie vir jou ander winkels se pryse op nie. Die kok wat die resep, die inkopielys en die plek om te koop sou doen, is ook nie in hierdie gesprek beskikbaar nie. Die res hieronder is dus my eie raaiwerk, nie 'n nagegaan pryslys nie.\n\n**Hoender in tamatiesous met rys en groente (vir 4)**\n\n- 1,5 kg hoenderstukke (heel of pote): ongeveer R70 tot R90\n- 2 blikkies gesnyde tamaties: ongeveer R30\n- 1 kg rys: ongeveer R25\n- 1 groot ui, 3 knoffelhuisies, 'n bietjie komyn en paprika uit jou kas: ongeveer R15\n- 'n Bondel spinasie of 'n halwe kool: ongeveer R20\n\nDit kom op sowat **R150 tot R180**, so dit is 'n bietjie bo jou bedrag. Om binne R150 te bly, gebruik minder hoender (1 kg) en 'n blikkie tamaties minder, of kies die goedkoopste stuk hoender wat PnP op die dag het.\n\n**Goedkoper alternatief: pap en wors met tamatie-en-uiesmoor**\n\n- 1 kg boerewors: ongeveer R80\n- 2,5 kg mieliemeel: ongeveer R40\n- 'n Blikkie tamaties en 'n ui vir die smoor: ongeveer R25\n\nDit is ongeveer **R145**.\n\nDie pryse is sommer ruwe skattings van my kant af. Kyk gerus op PnP se webwerf of in die app vir die werklike pryse, en vra gerus weer as jy wil hê ek moet 'n ander gereg voorstel."
+    }
+  ],
+  "label": {
+    "pass": false,
+    "note": ""
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-no-branch",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Wat kan ek vanaand vir twee kook? Ek koop by PnP in Prince Albert. Gee die resep en wat dit by die winkel kos.",
+      "answer": "Ek kan nie vandag my kok vra nie, so ek gee jou self 'n plan. Die pryse is skattings; ek soek nie PnP se pryse op nie.\n\n**Hoender-en-aartappel uit die oond met paprika en knoffel** (vir 2, ongeveer 50 minute)\n\n**Wat jy nodig het:**\n- 6 hoenderdye, met been en vel (sowat 800 g)\n- 500 g klein aartappels, in kwartiers gesny\n- 1 rooi paprika, in stukke\n- 1 ui, in ringe\n- 3 knoffelhuisies, fyngedruk\n- 1 blik gesnyde tamatie (400 g)\n- 2 eetlepels olierig, 1 teelepel soetrissie (paprika), ½ teelepel gerookte paprika, sout, peper, 'n takkie rosmaryn of 1 teelepel gedroogde origanum\n\n**Hoe:**\n1. Verhit die oond tot 200 °C.\n2. Meng die aartappels, paprika, ui en helfte van die olie met sout en peper op 'n bakplaat.\n3. Vryf die hoender in met die res van die olie, knoffel, soetrissie, gerookte paprika, sout en peper.\n4. Lê die hoender met die vel na bo tussen die groente. Strooi die rosmaryn of origanum oor.\n5. Bak 35 tot 40 minute, tot die hoender goudbruin is en die kern nie meer pienk is nie (binne 75 °C).\n6. Laat die tamaties in die laaste 10 minute om die bakplaat warm word, of meng dit in vir 'n sappiger kos.\n7. Eet dit met 'n slaaitjie of brood.\n\n**Wat dit by PnP in Prince Albert ongeveer kos (skatting, nie gekontroleer nie):**\n\n| Item | Skatting |\n|---|---|\n| Hoenderdye, 800 g | R75 – R100 |\n| Klein aartappels, 500 g | R15 – R20 |\n| Rooi paprika | R18 – R25 |\n| Ui | R5 – R8 |\n| Knoffel | R5 – R8 |\n| Blik gesnyde tamatie | R15 – R20 |\n| Speserye en olie (as jy dit al in die kas het, is dit minder) | R10 – R20 |\n| **Totaal** | **sowat R145 – R200** |\n\nDit is 'n skatting. Die werklike prys hang af van die branch en van wat in die winkel op daardie dag beskikbaar is. As jy die lys by PnP self natrek, sal jy die presiese bedrag sien."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

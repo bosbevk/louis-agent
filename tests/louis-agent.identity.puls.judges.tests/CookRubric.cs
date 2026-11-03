@@ -22,8 +22,9 @@ internal static class CookRubric
 
     /// <summary>
     /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF).
-    /// The runs before F49.2 carried <c>161e5cebcc15</c>, the same words read with CRLF on Windows, and the runs before
-    /// the recalibration of 2026-11-03 carried <c>438a8deb91f4</c>, the rubric before it became an ordered decision.
+    /// The runs before F49.2 carried <c>161e5cebcc15</c>, the same words read with CRLF on Windows; the runs before the
+    /// recalibration of 2026-11-03 carried <c>438a8deb91f4</c>, then <c>2ab944be4e29</c>: the rubric before it became
+    /// an ordered decision, and before an earlier turn's recipe counted in its first question.
     /// </summary>
-    public const string Hash = "2ab944be4e29";
+    public const string Hash = "51f8ca5a5f84";
 }

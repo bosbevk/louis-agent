@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-malmesbury",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 1,
+  "turns": [
+    {
+      "question": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nErtjiesop vir vier, met droë ertjies, groente en worcestersous, geskat op ± R125 en so onder die R150-budget. Die frikkadelle (± R300) en die hoenderkerrie (te veel bestanddele vir die budget) is laat vaar.\n\n**Resep**\n\n![Ertjiesop](https://marindakook.co.za/wp-content/uploads/2017/10/blog-ertjiesop-016.jpg)\n\nDien 4 · ongeveer 1 uur 10\n\n1. Skil die wortels, aartappels en uie. Sny die wortels en aartappels in dobbelsteentjies en die uie in ringetjies.\n2. Braai die uie in 'n bietjie kookolie in 'n groot pot tot sag en bruin.\n3. Voeg 2 liter water by, met 2 sopblokkies (in plaas van die vleis, sien *Onseker*). Voeg die droë ertjies, wortels, aartappels en 100 ml worcestersous by.\n4. Kook stadig tot die ertjies en groente sag is, roer gereeld en voeg water by as dit te dik word. Dit neem ongeveer 40 minute in 'n gewone pot.\n5. Druk die groente fyn of versap dit vir 'n dikker sop.\n6. Proe en voeg sout, peper, die 30 ml bruinasyn en meer worcestersous by na smaak.\n\nSkakel: https://marindakook.co.za/ertjiesop/\n\n**Inkopielys**\n\n| Ingrediënt | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Droë ertjies | 500 g | droë ertjies (split peas) 500 g | ± R30 |\n| Wortels | 2 | wortels 1 kg | ± R20 |\n| Aartappels | 4 | aartappels 1 kg | ± R25 |\n| Uie | 2 | uie 1 kg | ± R20 |\n| Worcestersous | 100 ml | Worcestersous 150 ml | ± R30 |\n| **Totaal** | | | **± R125** |\n| **Per persoon** | | | **± R31** |\n\nUit die voorraadkas: kookolie, sout, peper, bruinasyn en sopblokkies.\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Malmesbury | 55 Voortrekker Road, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |\n\n**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse of spesiale is nagegaan nie, dus is geen spesiaal gebruik nie. |\n| Vleis weggelaat | Die resep se 400 g sopvleis is uitgelaat om binne R150 te bly. Die sop kom van sopblokkies, soos die resep self as alternatief voorstel. Met vleis sal die prys oor R150 gaan. |\n| Porsies | Die bron se resep noem nie hoeveel porsies nie. Die hoeveelhede is soos geskryf, en 4 is aanvaar. |\n| Voorraadkas | Sopblokkies en bruinasyn is aanvaar as wat in die huis is. As nie, is dit ekstra (skatting R10–R30). |\n| Tak | Geen aparte Pick n Pay-takbladsy is gevind nie. Die adres kom van OpenStreetMap, en die skakel is na die hoofbladsy. |\n\nLet wel: ek kon nie die spesiale by Pick n Pay nagaan nie, so ek kan nie sê of enige van hierdie items op spesiaal is nie. Die pryse is skattings."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 4,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nBobotie is 'n klassieke Suid-Afrikaanse hoofgereg wat 'n vinnige, eenvoudige resep het met een pot maalvleis, wat dit gepas maak vir 'n doordeweekse aand. Dit vat ongeveer 1 uur 30 vir vier mense, en die koste bly onder R100 per persoon.\n\n**Resep**\n\n![Bobotie vir ete](https://marindakook.co.za/wp-content/uploads/2017/10/featured-bobotie-blog-018-1024x768.jpg)\n\nDien 4 · ongeveer 1 uur 30 min\n\n1. Sit die brood in 'n diep bord en gooi die 100 ml melk oor die brood.\n2. Braai die uie tot glasierig in 'n bietjie olie op die stoof.\n3. Gooi al die res van die bestanddele (behalwe die lourierblare en die eierlaag) in 'n mengbak en meng goed.\n4. Druk die melk uit die brood en meng die brood saam met die uie by die vleismengsel.\n5. Skep dit in 'n gesmeerde ovenbak.\n6. Klits die eier met die 60 ml melk en gooi dit oor die vleis.\n7. Sit die lourierblare bo-op.\n8. Bak vir 60 minute by 190 °C.\n\nSkakel: https://marindakook.co.za/bobotie/\n\n**Inkopielys**\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Uie | 2 uie, fyn gesny | uie 1 kg | ± R25 |\n| Witbrood | 2 snye | witbrood 700 g | ± R22 |\n| Melk | 160 ml (100 ml + 60 ml) | melk 1 l | ± R21 |\n| Appelkooskonfyt | 80 ml | appelkooskonfyt 250 g | ± R32 |\n| Kerriepoeier | 40 ml | kerriepoeier 100 g | ± R28 |\n| Borrie | 15 ml | borrie 50 g | ± R22 |\n| Lourierblare | 3 blare | lourierblare 10 g | ± R15 |\n| Beesmaalvleis | 1 kg | beesmaalvleis 1 kg | ± R115 |\n| Eiers | 1 eier | eiers 6 pak | ± R50 |\n| **Totaal** | | | **± R330** |\n| **Per persoon** | | | **± R83** |\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\nUit die voorraadkas: kookolie, sout, peper, komyn, asyn en water.\n\n**Waar om te koop**\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Technopark | Strand Road, Oudepost, Technopark | [pnp.co.za](https://www.pnp.co.za) |\n| Pick n Pay | Pick n Pay Stellenbosch Sentrum | Bird Street, Stellenbosch Sentraal | [pnp.co.za](https://www.pnp.co.za) |\n\n**Onseker**\n\n| Wat | Hoekom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is opgesoek nie. |\n| Borrie | Dit is 'n minder algemene speserye. As jy dit nie kry nie, los dit uit of gebruik 15 ml gemengde speserye. |\n| Lourierblare | Die resep sê suurlemoenblare of lourierblare. Ek het lourierblare gekies. |\n| Baktyd | Die bladsy noem 40 minute kooktyd, maar die metode sê 60 minute by 190 °C. Ek het 60 minute gebruik. |\n| Hoeveelhede | Die bladsy sê nie vir hoeveel mense die resep is nie. Die 1 kg vleis is gebruik vir 4 mense. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

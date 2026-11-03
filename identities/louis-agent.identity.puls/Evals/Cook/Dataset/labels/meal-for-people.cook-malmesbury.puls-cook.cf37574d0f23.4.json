@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-malmesbury",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 4,
+  "turns": [
+    {
+      "question": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n ete vir vier en wat dit by PnP in Malmesbury sal kos.My kok is terug, hier is wat hy gekry het:\n\n### Die gereg\n\nFrikkadelle met drie bestanddele: maalvleis, room en uiesoppoeier, met pap. Net drie hoofbestanddele en een pan of oond, dus min werk, en die totaal bly onder R150 vir vier mense.\n\n### Resep\n\n![FRIKKADELLE MET DRIE BESTANDDELE](https://www.foodloversrecipes.com/wp-content/uploads/2017/01/16114024_1431356870231273_3456808173123236900_n.jpg)\n\nDien 4 · ongeveer 45 minute (skatting)\n\n1. Skaal die resep af na 500 g maalvleis (die bladsy is vir 1 kg). Meng die maalvleis met 60 ml room en ½ pakkie uiesoppoeier. Voeg meer room by as dit te droog voel, maar nie so veel dat dit papperig word nie.\n2. Meng alles liggies met die hand. Moenie die vleis te veel hanteer nie, dan bly die bolletjies lekker los.\n3. Rol ongeveer 8 tot 10 balletjies.\n4. Bak tot deurgaar: in 'n voorverhitte oond by 180 °C of in 'n bietjie olie in 'n pan. Die bladsy gee geen tyd of temperatuur nie.\n5. Bedien met pap, gekook volgens die pakket se aanwysings.\n\nSkakel: https://www.foodloversrecipes.com/2017/01/frikadelle-met-drie-bestanddele/\n\n### Inkopielys\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Maalvleis | 500 g | beef mince 500 g | ± R55 |\n| Room | 60–125 ml | cream 250 ml | ± R28 |\n| Uiesoppoeier | ½ pakkie | brown onion soup powder 50 g | ± R12 |\n| Pap (bykos, nie in die resep nie) | ± 400 g | mielie meal 1 kg | ± R22 |\n| **Totaal** | | | **± R117** |\n| **Per persoon** | | | **± R29** |\n\nUit die voorraadkas: kookolie, sout en peper.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n### Waar om te koop\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Malmesbury | 55 Voortrekker Road, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |\n\n### Onseker\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is nagegaan nie. |\n| Pick n Pay se spesiale | Nie nagegaan nie. Geen spesiale is in die totaal ingereken nie. |\n| Baktyd en temperatuur | Die resepbladsy gee geen tyd of temperatuur nie. Die 180 °C en 45 minute is my skatting. |\n| Porsies | Die resep is vir 1 kg; 500 g is my aanname vir vier mense. |\n| Pap | Nie deel van die resep nie; bygevoeg as bykos. |\n| Bobotie (eerste resep wat ek gelees het) | Verwerp: 1 kg maalvleis en te veel klein speserye, en oor R150. |\n\nLet wel: die spesiale by PnP het my kok nie kon nagaan nie, so die R117 is sonder enige spesiale. As jy vir my die spesiale wil hê, kan ek hom daarvoor terugvra, maar hy sê self hy kan nie PnP se pryse opsoek nie, so dit sal ook net 'n skatting wees."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

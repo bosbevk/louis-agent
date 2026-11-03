@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-malmesbury",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 5,
+  "turns": [
+    {
+      "question": "Ek het R150 vir aandete vir vier mense. Ek koop by PnP in Malmesbury. Wat kan ek maak, en wat kos dit by die winkel? Gebruik spesiale as daar is.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n antwoord.My kok is terug, hier is wat hy gekry het:\n\nEk soek vir eers nie winkels se pryse op nie (ek het hulle om toestemming gevra), so die koste hieronder is skattings.\n\n### Die gereg\nMaklike kerrie-hoender met aartappels, uie en wortels in een pot, vir vier mense en ongeveer 50 minute werk. Die geskatte totaal is ± R117, dus onder R150, en dit gebruik geen spesiale wat ek kon nagaan nie.\n\n### Resep\n![Maklike Kerrie Hoender Resep](https://idata.hiloved.com/imgs/71c8af47bc3e39b6-1024x681.jpg)\n\nDien 4 · ongeveer 50 minute\n\n1. Verhit 3 eetlepels olie in 'n wok of diep braaipan oor medium-hoë hitte. Voeg die ui by en roerbraai tot sag en deurskynend.\n2. Voeg die kerriepoeier by en roerbraai tot geurig. Voeg 'n bietjie water by om 'n pasta te maak.\n3. Voeg die hoender by en roerbraai ongeveer 5 minute tot dit bruin en met die kerrie bedek is.\n4. Voeg die wortels en aartappels by en roer 'n minuut. Voeg 2 koppies warm hoenderbouillon (1 blokkie in 2 koppies water), 2 teelepels suiker, sout en peper by.\n5. Bedek en prut oor lae hitte tot die hoender en groente gaar is. Die bron sê 15–20 minute vir sonder been; met been (soos hier) neem dit ongeveer 30–35 minute. Toets dat die hoender heeltemal gaar is.\n6. Proe en pas sout, peper of suiker aan. Sprinkel die grondkoljander bo-oor as jy dit gebruik.\n\nSkakel: https://af.hiloved.com/maklike-kerrie-hoender-resep/\n\n### Inkopielys\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Hoenderporsies | 1,2 kg | hoenderporsies 1,2 kg | ± R60 |\n| Aartappels | 4 medium (± 600 g) | aartappels 1 kg | ± R18 |\n| Rooi ui | 2 | rooi ui 500 g | ± R12 |\n| Baba wortels | 20 (± 200 g) | wortels 500 g | ± R12 |\n| Kerriepoeier | 3 eetlepels | kerriepoeier 50 g | ± R15 |\n| **Totaal** | | | **± R117** |\n| **Per persoon** | | | **± R29** |\n\nUit die voorraadkas: kookolie, sout, peper, suiker, hoenderbouillon (blokkie) en speserye.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n### Waar om te koop\n\n| Winkel | Tak | Straat of winkelsentrum | Webwerf |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Malmesbury | Voortrekker Road 55, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |\n\n### Onseker\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. |\n| Spesiale | Ek kon Pick n Pay se spesiale nie nagaan nie. Kyk self in die winkel of op hul app; enige spesiaal kan die totaal laat sak. |\n| Hoender | Die resep gebruik hoenderdye sonder been. Ek het hoenderporsies met been gekies, wat goedkoper is maar langer moet prut. |\n| Kerrie | Die resep gebruik kerriepasta. Ek het kerriepoeier gekies omdat dit by die winkel makliker is; die resep sê 1½–2 eetlepels per 2–4 mense, en 3 eetlepels is vir vier. |\n| Rys | Die resep noem geen rys nie, so ek het dit nie bygevoeg nie; die aartappels is in die pot. |\n| Tak | Die tak is gevind op OpenStreetMap; ek kon nie die oopure of voorraad bevestig nie. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

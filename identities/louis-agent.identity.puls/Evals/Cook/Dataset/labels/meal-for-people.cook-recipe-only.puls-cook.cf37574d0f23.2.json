@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n resep.My kok is terug, hier is wat hy gekry het:\n\n### Die gereg\nBobotie is 'n klassieke Suid-Afrikaanse gereg wat in ongeveer 1½ uur klaar is en vir 4 mense maklik genoeg is. Dit werk goed met maalvleis, wat 'n goedkoop hoofbestanddeel is.\n\n### Resep\n![Bobotie vir ete](https://marindakook.co.za/wp-content/uploads/2017/10/featured-bobotie-blog-018.jpg)\n\nDien 4 · ongeveer 1½ uur\n\n1. Verhit die oond tot 190 °C en smeer 'n oondbak liggies.\n2. Sit die brood in 'n diep bord en gooi 70 ml melk oor.\n3. Braai die fyn gesnyde ui in die kookolie tot glasagtig.\n4. Meng die maalvleis, kerriepoeier, Worcester-sous, appelkooskonfyt, asyn, komyn, sout en peper in 'n mengbak.\n5. Druk die melk uit die brood en voeg die brood saam met die ui by die vleismengsel. Meng goed deur.\n6. Skep die mengsel in die gesmeerde oondbak.\n7. Klits die eier met die res van die melk (40 ml) en gooi dit oor die vleis.\n8. Sit die suurlemoenskywe of lourierblare bo-op.\n9. Bak 60 minute by 190 °C tot die bolaag gestol en goudbruin is. Bedien met geelrys en blatjang.\n\nSkakel: https://marindakook.co.za/bobotie/\n\n### Inkopielys\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Beesmaalvleis | 670 g | beef mince 1 kg | ± R125 |\n| Uie | 1 groot | onions 1 kg | ± R25 |\n| Brood | 2 snye | white bread loaf 700 g | ± R22 |\n| Melk | 110 ml | full cream milk 1 l | ± R26 |\n| Kerriepoeier | 25 ml | curry powder 100 g | ± R35 |\n| Worcester-sous (borrie) | 10 ml | Worcestershire sauce 150 ml | ± R40 |\n| Appelkooskonfyt | 50 ml | apricot jam 450 g | ± R40 |\n| Suurlemoene | 2 | lemons, loose, 2 | ± R10 |\n| Eiers | 1 | eggs 6 pack × 1 | ± R55 |\n| **Totaal** | | | **± R378** |\n| **Per persoon** | | | **± R95** |\n\nUit die voorraadkas: kookolie, sout, peper, suiker, asyn, komyn en speserye.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n### Waar om te koop\nEnige supermark naby jou.\n\n### Onseker\n\n| Wat | Hoekom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is vir nou nagegaan nie. |\n| Hoeveelheid | Die resep is oorspronklik vir 'n gesin van ongeveer 6 (1 kg vleis); ek het dit vir 4 geskaal (±2/3). |\n| Borrie | Ek het borrie as Worcester-sous verstaan; as jy dit anders ken, pas die ry aan. |\n| Eier | Die resep vra vir 1 eier; 'n eierpak van 6 is die kleinste pak wat ek gevind het, so die res bly oor. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

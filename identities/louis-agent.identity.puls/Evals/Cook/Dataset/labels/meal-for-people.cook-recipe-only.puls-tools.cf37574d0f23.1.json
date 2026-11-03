@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-tools",
+  "run": "cf37574d0f23",
+  "repeat": 1,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek kan nie nou my kok inroep nie, so ek soek self 'n betroubare bobotie-resep op die web.Ek kon nie my kok inroep nie, so ek het self 'n resep gesoek. Hierdie een het ek volledig gelees: Maklike Bobotie Resep van Bak en Brou. Dit is vir sowat vier mense, met 1 kg maalvleis.\n\n**Bestanddele**\n\n*Deel 1 (kruie en vet):*\n- 20 ml fyn gemmer\n- 30 ml sagte bruinsuiker\n- 10 ml kerriepoeier\n- 15 ml borrie\n- 10 ml sout\n- 1 ml peper\n- 60 ml margarien\n- 5 middelslaguie, gekap\n\n*Deel 2 (vleis en vrugte):*\n- 2 snye wit brood, in water geweek\n- 1 kg maer maalvleis\n- 150 ml pitlose rosyne\n- 60 ml blatjang\n- 30 ml fyn appelkooskonfyt\n- 30 ml asyn\n- 30 ml worcestersous\n- 30 ml tamatiepasta\n\n*Deel 3 (eiermengsel):*\n- 375 ml melk\n- 2 eiers\n- Vars suurlemoenblare of lourierblare\n\n**Metode**\n\n1. Verhit die margarien en uie in 'n swaarboomkastrol en voeg al die droë bestanddele van Deel 1 by. Braai totdat die uie sag is.\n2. Voorverhit die oond tot 180 °C.\n3. Druk die water uit die brood uit en roer dan al die bestanddele van Deel 2 by die uiemengsel.\n4. Kook vir 20 minute oor 'n lae hitte, roer so af en toe.\n5. Skep die mengsel in 'n gesmeerde oondbraaipan.\n6. Klits die melk en eiers saam en gooi dit oor die vleis.\n7. Druk 'n paar suurlemoen- of lourierblare in die vleismengsel en bak 45 minute op 180 °C.\n8. Sit dit warm voor, gewoonlik met geelrys.\n\n**Koste en waar koop**\n\nEk kyk nie nou na winkels se pryse nie (ek het hulle om toestemming gevra), so ek gee nie 'n rand-skatting nie. Omdat jy sê dit maak nie saak waar jy koop nie, hoef ek ook nie 'n winkel te kies nie. Die grootste uitgawe is die 1 kg maalvleis; die res is kaste-goed wat jy waarskynlik al het.\n\n**Bron:** https://bakenbrou.co.za/recipies/view/433\n\nWil jy hê ek moet die resep aanpas, byvoorbeeld minder suiker of 'n ander vleissoort?"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}
