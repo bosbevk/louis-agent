@@ -137,3 +137,7 @@
 .verdict-mode.is-down .verdict-change { color: var(--danger); }
 .verdict-facts { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 13px; }
 .verdict-grade { color: var(--orange-text); }
+/* F53.1 step 2: the run page's tabs are links (the tab is in the address), lit like the chat's page tabs light a button. */
+.run-tabs { margin-bottom: 0; }
+.run-tabs a.active { color: #fff; background: var(--cta); border-color: transparent; }
+.judge-none { font-size: 13.5px; }

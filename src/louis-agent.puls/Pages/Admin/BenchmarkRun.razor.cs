@@ -4,6 +4,7 @@ using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
+using LouisAgent.Puls.Admin.RunPage;
 using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Storage;
@@ -13,13 +14,14 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Puls.Pages.Admin;
 
 /// <summary>
-/// One stored run: its head, notes, roll-up, explorer, agreement, rates, trends and settings, read from the store. The
-/// page reads the run as the contract's <c>StoredRunReply</c> and its check's trend as <c>TrendReply</c>, and hands
-/// each panel the records it was written for.
+/// One stored run: its head and verdict, then one tab at a time (the summary, the explorer, the judge, the notes,
+/// the settings), read from the store. The page reads the run as the contract's <c>StoredRunReply</c> and its check's
+/// trend as <c>TrendReply</c>, and hands each panel the records it was written for.
 /// </summary>
 /// <remarks>
 /// ADR 0042: after a grade or a note the page fetches the run again, so every panel shows what the store holds; the
-/// explorer keeps its open conversation.
+/// explorer keeps its open conversation. The run is fetched when its id changes, not on every change of the address:
+/// a tab is a link to the same run, and the page would otherwise flash "Loading…" and read the run again on each.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
@@ -42,6 +44,9 @@ public partial class BenchmarkRun : IDisposable
 
     /// <summary>Why the run can't be shown.</summary>
     private string? _error;
+
+    /// <summary>The run the page last fetched, so a change of tab doesn't fetch it again.</summary>
+    private string? _fetched;
 
     /// <summary>The API the page reads.</summary>
     [Inject]
@@ -71,6 +76,13 @@ public partial class BenchmarkRun : IDisposable
     [SupplyParameterFromQuery(Name = "task")]
     public string? FocusTask { get; set; }
 
+    /// <summary>The tab the address names (`?tab=`); the summary when it names none.</summary>
+    [SupplyParameterFromQuery(Name = "tab")]
+    public string? Tab { get; set; }
+
+    /// <summary>The open tab, read once from the address.</summary>
+    private RunTab ActiveTab => RunTabs.Parse(Tab);
+
     /// <summary>The run's address in the API.</summary>
     private string RunUrl => $"v1/admin/benchmarks/runs/{Uri.EscapeDataString(RunId)}";
 
@@ -81,9 +93,14 @@ public partial class BenchmarkRun : IDisposable
         NoteState.Changed += Refetch;
     }
 
-    /// <summary>Fetches the run, its check's title and its trend, and shows an error if the run isn't there.</summary>
+    /// <summary>
+    /// Fetches the run, its check's title and its trend when the run is another than the one shown, and shows an error
+    /// if the run isn't there.
+    /// </summary>
     protected override async Task OnParametersSetAsync()
     {
+        if (_fetched == RunId) return;
+        _fetched = RunId;
         if (!Store.Loaded) await Store.LoadAsync();
         Currency.Changed += StateHasChanged;
         await Currency.LoadAsync();
