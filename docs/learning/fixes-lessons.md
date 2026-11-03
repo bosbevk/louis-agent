@@ -185,6 +185,15 @@ same rule. The second lesson is where a fact like "this run was recorded" comes 
 setting reads it back (Information Expert, as CL26 chose for `replay_of`), so the web app never spells the setting's
 name or the mode's word, and a test on that one class covers every page. Skill 12 (evaluation) and 13 (cost).
 
+## FX30 · A path written from a file breaks when the file moves
+
+CL26 split one stylesheet into folders and proved the move byte for byte: the same rules, in the same order. The one
+thing a byte check can't see is a rule whose meaning depends on where it sits, and a relative `url(…)` is exactly that:
+`../brand/` was right from `css/` and wrong from `css/chat/`. The browser said nothing; the tile just wasn't there. The
+lesson: when a move keeps the text, test what the text *points at*, not only the text. `PulsStylesheetTests` now
+resolves every relative `url(…)` from its own file's folder and asks whether the file is there, so the next split
+fails in the test instead of on the screen. Skill 18 (testing and shipping).
+
 ## FX23 · A pipe the child never reads is not a failure
 
 When a parent writes to a child's standard input and the child exits first, the operating system answers the write

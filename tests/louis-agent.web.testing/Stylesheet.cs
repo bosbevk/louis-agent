@@ -47,6 +47,28 @@ public sealed partial record Stylesheet(string Folder)
     /// <summary>One area file's text.</summary>
     private string Text(string file) => File.ReadAllText(Path.Combine(Folder, file));
 
+    /// <summary>
+    /// Every file path a rule points at with <c>url(…)</c> that the browser resolves from the stylesheet's own folder,
+    /// as the area file, the path written and the file on disk it reaches (FX30: a rule moved one folder deeper kept
+    /// its old path). Web addresses, data, absolute paths and fragments are left out: they don't depend on where the
+    /// file sits.
+    /// </summary>
+    public IReadOnlyList<(string File, string Url, string Target)> Urls() =>
+    [
+        .. AreaFiles().SelectMany(file => Url().Matches(Text(file)).Select(m => m.Groups["path"].Value)
+            .Where(url => !url.Contains(':') && !url.StartsWith('/') && !url.StartsWith('#'))
+            .Select(url => (file, url,
+                Path.GetFullPath(Path.Combine(Folder, Path.GetDirectoryName(file) ?? "", url)))))
+    ];
+
+    /// <summary>
+    /// A <c>url(…)</c> and the path in it, read to its own closing quote: <c>url("../../brand/tile.svg")</c> gives
+    /// <c>../../brand/tile.svg</c>, and <c>url("data:…fill='%23fff'…")</c> its whole data; an <c>@import</c> line
+    /// doesn't match, its path is <see cref="Import"/>'s.
+    /// </summary>
+    [GeneratedRegex("""(?<!@import )url\(\s*(?:"(?<path>[^"]*)"|'(?<path>[^']*)'|(?<path>[^)"'\s]+))\s*\)""")]
+    private static partial Regex Url();
+
     /// <summary>One import line, <c>@import url("chat/bars.css");</c>, and the path in it.</summary>
     [GeneratedRegex("""@import url\("([^"]+)"\);""")]
     private static partial Regex Import();
