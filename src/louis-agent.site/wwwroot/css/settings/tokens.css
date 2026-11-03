@@ -1,0 +1,33 @@
+/* The Console theme (F54, Louis's pick): black and white with metallic grays, nothing else. A near-black page, white
+   for what matters, a gray scale for the rest, and "chrome": a white-to-steel gradient on the big words. Light mode
+   is not a theme here on purpose: the films are drawn for a dark floor. Motion is off for people who ask for less. */
+
+:root {
+    --bg: #070708;              /* the page */
+    --bg-raised: #0d0e10;       /* a panel */
+    --bg-slab: #15171a;         /* a part on the film's floor */
+    --line: #1b1d21;            /* a hairline */
+    --line-strong: #2c2f35;     /* a panel's edge */
+    --line-bright: #3a3e45;     /* a hovered edge */
+    --ink: #ffffff;             /* headings, what's lit */
+    --text: #e6e8eb;            /* body text */
+    --text-soft: #c9ccd1;       /* a list in a card */
+    --muted: #9aa0a8;           /* a lead paragraph, a nav link */
+    --dim: #7c828a;             /* a kicker, a code name */
+    --faint: #5c6168;           /* a slab's small print */
+    --chrome: linear-gradient(180deg, #ffffff 0%, #b9bec6 100%);
+    --steel: linear-gradient(180deg, #e9ebee 0%, #c9ccd1 100%);
+    --glow: rgba(255, 255, 255, .12);
+
+    --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
+
+    --radius: 10px;
+    --radius-small: 8px;
+    --gutter: 48px;
+    --measure: 56ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
+}
