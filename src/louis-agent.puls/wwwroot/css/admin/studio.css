@@ -1,0 +1,16 @@
+/* F49.4: the studio's drafts in the portal's own parts (card-p, header-button, muted): the sample dialog under a
+   conversation's card, the keep buttons under a review, and an eval's drafts on its card. */
+.sample-dialog { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.sample-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.sample-head h4 { margin: 0; font-size: 15px; color: var(--ink); }
+.sample-place { margin: 0; font-size: 13px; }
+.sample-field { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.sample-field input, .sample-field textarea, .keep-reason { background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 9px; padding: 7px 10px; font: inherit; font-size: 13px; }
+.sample-field textarea { resize: vertical; font-family: var(--mono, monospace); }
+.sample-field input:focus, .sample-field textarea:focus, .keep-reason:focus { outline: none; border-color: rgba(245, 130, 32, .55); }
+.sample-make, .keep-reference, .keep-bad { align-self: flex-start; }
+.sample-make:disabled, .keep-reference:disabled, .keep-bad:disabled { opacity: .45; cursor: not-allowed; }
+.sample-done, .keep-done { margin: 0; font-size: 13px; color: var(--ink); }
+.sample-error, .keep-error { margin: 0; font-size: 13px; color: var(--danger); }
+.keep-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.keep-reason { flex: 1; min-width: 180px; }
