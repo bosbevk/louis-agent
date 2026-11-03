@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **FX31 The trend's change badge stays one pill**: on the Benchmarks page's category cards, `▲ +13%`
+  no longer breaks into a two-line blob beside the value, and the small trend panels fill their card instead of
+  three fixed columns with one empty ([lesson](docs/learning/fixes-lessons.md#fx31--a-small-copy-of-a-layout-needs-its-own-columns))
 - 2026-11-03 — **F49.5 Studio: compose, try, publish**, and with it **F49 Evals as content** is done (its five
   children F49.1 to F49.5; what lasts of the parent plan is in [the evals' architecture](docs/architecture/evals.md#where-f49-came-from)):
   the admin portal's Studio page (`/admin/studio`) composes an eval as a form over `eval.json` (the head and modes,
