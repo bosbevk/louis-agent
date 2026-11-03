@@ -1,6 +1,7 @@
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Evals;
+using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Evals.Protocol.Kinds;
@@ -93,7 +94,7 @@ public class EvalHandlersTests
                 new EvalGraderLine("judge", 2, CheckKind.Model)
             ]);
         var catalog = new EvalList(EvalList.Merge([line]));
-        var handlers = new EvalHandlers(catalog, store, ApiTestHost.RepoRoot);
+        var handlers = new EvalHandlers(catalog, store, ApiTestHost.RepoRoot, new InMemoryEvalDraftStore());
 
         var answer = await handlers.GetList(CancellationToken.None);
 

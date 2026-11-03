@@ -31,15 +31,48 @@ public enum RunnerMessage
     BadRepeat,
 
     [Description("Usage: run <eval> [--repeat N] [--web off|record|replay] [--of <runId>] [--replay <runId>] "
-                 + "[--split dev|held-out|all], run <eval> --rescore <runId>, --list, --calibrate <eval> <grader> "
-                 + "[--labels -], or --label-sheet <eval> <grader> <runId> <folder> [<count>].")]
+                 + "[--split dev|held-out|all] [--folder <path>] [--samples a,b], run <eval> --rescore <runId>, "
+                 + "--list, --checks, --check <folder>, --import-promptfoo <file> <folder>, --export-promptfoo "
+                 + "<folder>, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> "
+                 + "<folder> [<count>].")]
     Usage,
 
     [Description("Unknown argument '{Argument}'. Usage: run <eval> [--repeat N] [--web off|record|replay] "
-                 + "[--of <runId>] [--replay <runId>] [--split dev|held-out|all], run <eval> --rescore <runId>, "
-                 + "--list, --calibrate <eval> <grader> [--labels -], or --label-sheet <eval> <grader> <runId> "
-                 + "<folder> [<count>].")]
+                 + "[--of <runId>] [--replay <runId>] [--split dev|held-out|all] [--folder <path>] [--samples a,b], "
+                 + "run <eval> --rescore <runId>, --list, --checks, --check <folder>, --import-promptfoo <file> "
+                 + "<folder>, --export-promptfoo <folder>, --calibrate <eval> <grader> [--labels -], or "
+                 + "--label-sheet <eval> <grader> <runId> <folder> [<count>].")]
     UnknownArgument,
+
+    [Description("There is no eval folder at '{Folder}'.")]
+    NoEvalFolder,
+
+    [Description("The folder '{Folder}' holds the eval '{Found}', not '{Named}': run it under its own name.")]
+    FolderIsAnotherEval,
+
+    [Description("Eval {Eval} has no sample '{Sample}'. Its samples are: {Supported}.")]
+    UnknownSample,
+
+    [Description("--samples takes kebab-case ids with commas between, such as cook-af,cook-en, not '{Value}'.")]
+    BadSamples,
+
+    [Description("A re-score takes no --folder or --samples: it grades the stored run's own conversations.")]
+    RescoreExcludesFolder,
+
+    [Description("That isn't a promptfoo file: its top is no map of description, prompts, defaultTest and tests.")]
+    PromptfooNotAFile,
+
+    [Description("promptfoo's '{Type}' assert has no check of ours: left out.")]
+    PromptfooLeftOut,
+
+    [Description("promptfoo's '{Type}' assert on test {Test} has no per-scenario check of ours: left out.")]
+    PromptfooTestLeftOut,
+
+    [Description("Imported from promptfoo.")]
+    PromptfooImported,
+
+    [Description("{Date}: imported from promptfoo (F49.5)")]
+    PromptfooImportedChange,
 
     [Description("--labels takes only '-': the label files on stdin, one JSON object per line, not '{Value}'. "
                  + "Labels in a folder are the dataset's labels/, read without --labels.")]

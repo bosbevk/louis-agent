@@ -1,0 +1,45 @@
+@* F49.5: an eval's checks, each picked from the runner's catalogue, its fields drawn from its settings' schema. *@
+<section class="compose-checks card-p">
+    <h4>Checks</h4>
+    @foreach (var check in Eval.Checks)
+    {
+        <div class="compose-check">
+            <div class="compose-check-head">
+                <code>@check.Type</code>
+                <span class="muted small">@KindOf(check)</span>
+                <input class="compose-check-name" placeholder="name (optional)" @bind="check.Name" />
+                <button type="button" class="compose-remove-check link-button" @onclick="() => Remove(check)">Remove</button>
+            </div>
+            @foreach (var field in FieldsOf(check))
+            {
+                <label class="compose-field">
+                    <span class="compose-field-name">@FieldLabel(field)</span>
+                    @if (field.Kind == FieldKind.Reader)
+                    {
+                        <select class="compose-reader" value="@ValueOf(check, field)" @onchange="e => Set(check, field, e)">
+                            <option value=""></option>
+                            @foreach (var reader in Catalogue.Readers)
+                            {
+                                <option value="@reader.Name">@reader.Name</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <input class="compose-value" placeholder="@Hint(field)" value="@ValueOf(check, field)" @onchange="e => Set(check, field, e)" />
+                    }
+                </label>
+            }
+        </div>
+    }
+    <div class="compose-add">
+        <select class="compose-add-type" @bind="_adding">
+            <option value="">Add a check…</option>
+            @foreach (var type in Catalogue.Checks)
+            {
+                <option value="@type.Type">@type.Type (@type.Kind)</option>
+            }
+        </select>
+        <button type="button" class="compose-add-check header-button" disabled="@(_adding.Length == 0)" @onclick="Add">Add</button>
+    </div>
+</section>

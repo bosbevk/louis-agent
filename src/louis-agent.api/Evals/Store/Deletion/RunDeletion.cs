@@ -6,7 +6,8 @@ namespace LouisAgent.Api.Evals.Store.Deletion;
 /// <summary>
 /// Deletes a run with everything it kept and everything people said about it: the eval store's part, then people's
 /// grades and the judge's checks, which live in stores of their own (none when this instance has no Mongo for them).
-/// A run that isn't there deletes nothing, and its grades are left alone.
+/// A run that isn't there deletes nothing, and its grades are left alone. The drafts made from the run stay: a draft
+/// outlives its run, since it's on its way to becoming part of the eval.
 /// </summary>
 /// <remarks>
 /// Extract Function (Fowler): the delete button's three calls moved here, so the start-up clean-up of old runs

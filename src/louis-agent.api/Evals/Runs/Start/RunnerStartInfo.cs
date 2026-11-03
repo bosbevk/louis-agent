@@ -96,5 +96,18 @@ internal static class RunnerStartInfo
             arguments.Add("--web");
             arguments.Add(web.Wire());
         }
+
+        // A studio try (F49.5): the eval's folder the studio wrote, and the samples it runs.
+        if (run.Options.Folder is { } folder)
+        {
+            arguments.Add("--folder");
+            arguments.Add(folder);
+        }
+
+        if (run.Options.Samples is { } samples)
+        {
+            arguments.Add("--samples");
+            arguments.Add(samples);
+        }
     }
 }

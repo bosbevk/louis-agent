@@ -7,6 +7,35 @@
 - 2026-11-03 — **FX31 The trend's change badge stays one pill**: on the Benchmarks page's category cards, `▲ +13%`
   no longer breaks into a two-line blob beside the value, and the small trend panels fill their card instead of
   three fixed columns with one empty ([lesson](docs/learning/fixes-lessons.md#fx31--a-small-copy-of-a-layout-needs-its-own-columns))
+- 2026-11-03 — **F49.5 Studio: compose, try, publish**, and with it **F49 Evals as content** is done (its five
+  children F49.1 to F49.5; what lasts of the parent plan is in [the evals' architecture](docs/architecture/evals.md#where-f49-came-from)):
+  the admin portal's Studio page (`/admin/studio`) composes an eval as a form over `eval.json` (the head and modes,
+  checks picked from the runner's catalogue with their fields drawn from each settings' schema, the rubrics, *View
+  JSON*), saves it as an eval draft (the third view of `eval_drafts`), and asks the runner for everything: its
+  catalogue (`--checks`, `GET /v1/admin/evals/checks`), its verdict on the draft written out as a folder with the
+  eval's sample and transcript drafts (`--check`, which seals the manifest and runs CI's conformance gate;
+  `POST …/drafts/{id}/verdict`), a try on a few samples as a replay at no cost (`run --folder --samples --replay`;
+  `POST …/{id}/try`), and a publish that commits only a folder the runner passed beside its identity on
+  `eval/{identity}-{name}`, through git's plumbing over a temporary index so the checkout is untouched, the push and
+  the pull request left to the person, or a zip where there is no git workspace (`POST …/{id}/publish`); promptfoo in
+  and out by a mapping table (`--import-promptfoo`, `--export-promptfoo`, YamlDotNet in the runner only;
+  `POST /v1/admin/evals/drafts/promptfoo` names what it left out, `GET …/{id}/promptfoo`). The API still never
+  references the harness: every call goes through `RunnerProcess`. Steps 1 to 8 ran unattended; their picks are in
+  the PR for review. Guide [Add an eval](docs/guides/add-an-eval.md#9-or-compose-it-in-the-studio)
+  ([0062](docs/adr/0062-the-studio-writes-what-git-keeps.md), [write-up 12](docs/learning/12-evaluation.md#compose-try-publish-f495),
+  [write-up 18](docs/learning/18-testing-and-shipping.md#git-stays-the-truth-f495))
+- 2026-11-03 — **F49.4 Studio: samples from chats and human review**: on a stored run in the admin portal, a
+  conversation becomes a sample draft (*Sample* on its card: a variant of the scenario it ran, read from the eval's
+  folder the runner's listing now names; the first question the input, the later ones the follow-ups, the person's
+  id, expected values, categories and ideal answer on top, a key the scenario lacks refused) and a graded one a
+  reference or known-bad transcript draft (*Keep as reference* on a pass, *Keep as known-bad* with a kebab-case
+  reason on a fail; the API keeps it only when every decided verdict is a pass, or one is a fail; the lines are the
+  conversation cut from the run as the eval folders hold it); the drafts wait in `IEvalDraftStore` (memory, or
+  Mongo's `eval_drafts`) and on the Evals page under their eval's card, counted, listed and deleted, until F49.5
+  publishes them; the API's `SampleBody` held equal to the harness's `SampleFile`; five routes under
+  `/v1/admin/evals` (`runs/{id}/samples`, `runs/{id}/transcripts`, `runs/{id}/scenarios/{task}`, `{eval}/drafts`).
+  Steps 3 to 6 ran unattended; their picks are in the PR for review. Guide [Add an eval](docs/guides/add-an-eval.md#6-add-the-reference-transcripts)
+  ([0061](docs/adr/0061-evals-grow-from-use.md), [write-up 12](docs/learning/12-evaluation.md#evals-grow-from-use-f494))
 - 2026-10-31 — **F49.3 Checks in packs**: a pack ships the checks that prove its tools, in a registry of its own
   that the composition's `EvalChecks.All` gathers; the shops pack's `ShopsChecks.All` holds `estimates-at-shop` and
   `untooled-shops`, and `PricedAtRetailer` (`priced-at-shop`, no entry) moved beside them, with what only they read

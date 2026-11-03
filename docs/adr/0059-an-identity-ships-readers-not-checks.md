@@ -48,7 +48,7 @@ beside the key (taken).
 
 ## Links
 
-[F49 Evals as content](../plans/F49-evals-as-content.md) · [0027](0027-engine-identities-and-packs.md) ·
+[F49 Evals as content](../architecture/evals.md#where-f49-came-from) · [0027](0027-engine-identities-and-packs.md) ·
 [0055](0055-keep-it-simple.md) · [0056](0056-a-check-is-a-catalogue-entry.md) ·
 [0057](0057-regex-is-the-last-option.md) · [0058](0058-an-eval-is-a-folder-of-files.md) ·
 [Add an eval](../guides/add-an-eval.md#4-choose-the-checks) · [write-up 12](../learning/12-evaluation.md) ·

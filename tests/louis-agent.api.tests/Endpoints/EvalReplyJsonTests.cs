@@ -1,6 +1,9 @@
 using System.Net;
 using System.Text.Json;
+using LouisAgent.Api.Evals.Drafts.Store;
+using LouisAgent.Api.Evals.Drafts.Transcripts;
 using LouisAgent.Api.Evals.List;
+using LouisAgent.Evals.Protocol.Parts.Conversations;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Api.Evals.Store;
@@ -41,7 +44,8 @@ public class EvalReplyJsonTests
                                                    "graders": [
                                                      { "name": "priced", "version": 1, "kind": "fixed-rule" }
                                                    ],
-                                                   "modes": [], "models": [], "never_run": true, "runs": []
+                                                   "modes": [], "models": [], "never_run": true, "runs": [],
+                                                   "drafts": 0
                                                  }
                                                ],
                                                "store": { "configured": true, "error": null }
@@ -72,6 +76,27 @@ public class EvalReplyJsonTests
             + "rescore_of,graders,replay_of,recorded"));
         Assert.That(Names(run.GetProperty("modes")[0]), Is.EqualTo(
             "name,repeat,toolsets,role,llm,pass_at_k,pass_hat_k,k,infrastructure,retried"));
+    }
+
+    /// <summary>An eval's drafts are counted beside it, samples and transcripts together (F49.4).</summary>
+    [Test]
+    public async Task AnEvalsDrafts_AreCounted()
+    {
+        // Two transcripts kept for the eval, one for another.
+        var drafts = new InMemoryEvalDraftStore();
+        var at = new DateTimeOffset(2026, 11, 3, 9, 0, 0, TimeSpan.Zero);
+        foreach (var (id, eval) in new[] { ("t1", SampleEval.Beta), ("t2", SampleEval.Beta), ("t3", "other") })
+            await drafts.AddAsync(new TranscriptDraft(id, eval, SampleIdentity.Alpha, "r1",
+                new ConversationKey(SampleMode.Beta, 1, "cook-af"), TranscriptKind.Reference, null,
+                "cook-af.reference.txt", ["{}"], "Louis", at));
+
+        await using var app = ApiTestHost.Build(adminKey: AdminKey, store: new InMemoryEvalStore(),
+            catalog: Catalog(), drafts: drafts);
+        await app.StartAsync();
+
+        using var json = JsonDocument.Parse(await GetAsync(app, "/v1/admin/evals"));
+
+        Assert.That(json.RootElement.GetProperty("evals")[0].GetProperty("drafts").GetInt32(), Is.EqualTo(2));
     }
 
     /// <summary>A catalogue of one eval with one grader, a dataset and a category, as the runner lists it.</summary>

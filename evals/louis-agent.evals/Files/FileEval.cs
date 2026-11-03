@@ -57,7 +57,8 @@ public sealed class FileEval : IEval
         var dataset = DatasetLoader.Load(Path.Combine(folder, DatasetFolder), checks);
         return new FileEval(file, dataset, checks, file.Manual is null ? null : $"{source}/{file.Manual}")
         {
-            Transcripts = Path.Combine(folder, TranscriptsFolder)
+            Transcripts = Path.Combine(folder, TranscriptsFolder),
+            Folder = source
         };
     }
 
@@ -81,6 +82,9 @@ public sealed class FileEval : IEval
 
     /// <inheritdoc />
     public string? Manual { get; }
+
+    /// <inheritdoc />
+    public string? Folder { get; private init; }
 
     /// <inheritdoc />
     public IReadOnlyList<EvalScenario> Scenarios => _dataset.Scenarios;
