@@ -175,6 +175,14 @@ instead of hiding it from the key and was the smallest change; the price was a f
 ([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md)). When a replay misses, read *which* message changed
 first: here it pointed straight at the one line that carried numbers. Skill 12 (evaluation) and 13 (cost).
 
+## FX33 · A raw string has its file's line endings
+
+A C# raw string literal spanning lines holds the newlines of the source file it is written in, and git writes that
+file with CRLF on a Windows checkout and LF on Linux. A test that compares a raw string's text to a `\n` literal
+passes or fails by where it was checked out: here it passed in the worktree that wrote the file and failed on a fresh
+checkout of `main`. The lesson for platform-neutral tests (ADR 0014): a test that cares about line endings sets them
+itself (`ReplaceLineEndings`), and a test is proved on a fresh checkout, not only where it was written. Skill 18.
+
 ## FX31 · A small copy of a layout needs its own columns
 
 The category cards draw the same trend chart as the big panel, only smaller, and they took its grid with it: three

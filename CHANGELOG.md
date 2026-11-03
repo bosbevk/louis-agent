@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **FX33 The header test reads the same on every checkout**: CL27's `PromptHeadersTests` makes its
+  raw-string file LF before splitting it, so a Windows checkout's CRLF no longer fails it
+  ([lesson](docs/learning/fixes-lessons.md#fx33--a-raw-string-has-its-files-line-endings))
 - 2026-11-03 — **CL27 Prompt headers**: every built-in prompt (core's, Puls's and the shops pack's 26, and the
   tests' six) and the cook's judge rubric open with the Agent Skills spec's front matter: `name` (the file's),
   `description`, and under `metadata` the `level` of a mode, role or minion and the `toolsets` a role always loads
