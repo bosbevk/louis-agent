@@ -64,4 +64,20 @@ public class EvalPublisherTests
             StringSplitOptions.RemoveEmptyEntries);
         Assert.That(files, Is.EquivalentTo(new[] { "readme.md", $"{target.Folder}/eval.json" }));
     }
+
+    /// <summary>
+    /// A git that takes too long is a refusal in words, as a failing one is, never a cancellation the route lets
+    /// through as a 500.
+    /// </summary>
+    [Test]
+    public void AGitThatTakesTooLong_IsARefusalInWords()
+    {
+        using var repo = new TempGitRepo();
+        var publisher = new EvalPublisher(repo.Path, TimeSpan.Zero);
+
+        var refusal = Assert.ThrowsAsync<InvalidOperationException>(() =>
+            publisher.PublishAsync(Folder(("eval.json", "{}\n")), PublishTarget.Of("weather-agent", "w"), "Late"));
+
+        Assert.That(refusal!.Message, Does.Contain("git rev-parse took longer than 0 seconds"));
+    }
 }

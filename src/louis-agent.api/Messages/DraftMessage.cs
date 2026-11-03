@@ -99,6 +99,9 @@ public enum DraftMessage
     [Description("git {Command} failed while publishing: {Reason}")]
     PublishGitFailed,
 
+    [Description("git {Command} took longer than {Seconds} seconds while publishing, so it was stopped.")]
+    PublishGitTimedOut,
+
     [Description(
         "The eval isn't ready to publish: the runner's check found {Count} problem(s), the first: {First}. Check it on the Studio page, fix it, then publish.")]
     PublishNeedsAPassingCheck,

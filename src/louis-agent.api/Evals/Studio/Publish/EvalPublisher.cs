@@ -20,10 +20,10 @@ public sealed record Published(string Branch, string Commit);
 /// deleted after.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
-public sealed class EvalPublisher(string workspaceRoot)
+public sealed class EvalPublisher(string workspaceRoot, TimeSpan? timeout = null)
 {
-    /// <summary>The longest any one git call may take.</summary>
-    private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(30);
+    /// <summary>The longest any one git call may take: thirty seconds unless a test says otherwise.</summary>
+    private readonly TimeSpan _timeout = timeout ?? TimeSpan.FromSeconds(30);
 
     /// <summary>Whether the workspace is a git checkout a publish can commit in.</summary>
     public bool CanCommit => Directory.Exists(Path.Combine(workspaceRoot, ".git")) ||
@@ -58,7 +58,9 @@ public sealed class EvalPublisher(string workspaceRoot)
     }
 
     /// <summary>Runs git in the workspace over the temporary index and hands back what it printed, trimmed.</summary>
-    /// <remarks>A git that fails or takes too long throws with what it said: the route turns it into a 503.</remarks>
+    /// <remarks>
+    /// A git that fails or takes too long throws in words, never as a cancellation: the route turns it into a 503.
+    /// </remarks>
     private async Task<string> GitAsync(string index, params string[] args)
     {
         var start = new ProcessStartInfo("git")
@@ -77,8 +79,13 @@ public sealed class EvalPublisher(string workspaceRoot)
         using var process = Process.Start(start)!;
         var output = process.StandardOutput.ReadToEndAsync();
         var error = process.StandardError.ReadToEndAsync();
-        using var timeout = new CancellationTokenSource(Timeout);
-        await process.WaitForExitAsync(timeout.Token);
+        if (!await ExitsInTimeAsync(process))
+            throw new InvalidOperationException(MessageText.Format(DraftMessage.PublishGitTimedOut,
+                new
+                {
+                    Command = args[0],
+                    Seconds = _timeout.TotalSeconds
+                }));
         if (process.ExitCode != 0)
             throw new InvalidOperationException(MessageText.Format(DraftMessage.PublishGitFailed,
                 new
@@ -87,5 +94,21 @@ public sealed class EvalPublisher(string workspaceRoot)
                     Reason = (await error).Trim()
                 }));
         return (await output).Trim();
+    }
+
+    /// <summary>Whether git finished in time; one that didn't is stopped, so no git is left running.</summary>
+    private async Task<bool> ExitsInTimeAsync(Process process)
+    {
+        using var timeout = new CancellationTokenSource(_timeout);
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            process.Kill(entireProcessTree: true);
+            return false;
+        }
     }
 }
