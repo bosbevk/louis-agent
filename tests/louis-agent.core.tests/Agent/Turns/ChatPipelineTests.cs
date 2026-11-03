@@ -10,25 +10,34 @@ using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Tests.Agent.Turns;
 
-// F18 step 4d: a turn's trace. The spans are Microsoft.Extensions.AI's own, named by the OpenTelemetry GenAI conventions
-// (the span name is "{gen_ai.operation.name} {target}", so the tests read the operation tag, not the name). No exporter
-// is wired (F44); an ActivityListener stands in for one.
+/// <summary>
+/// A turn's trace (F18 step 4d): a span per model request and per tool call, under the turn's own span (F52 step 3),
+/// with nothing of the conversation on them. The spans are Microsoft.Extensions.AI's own, named by the OpenTelemetry
+/// GenAI conventions (the span name is "{gen_ai.operation.name} {target}", so the tests read the operation tag, not
+/// the name); an <see cref="ActivityListener"/> stands in for an exporter.
+/// </summary>
 public class ChatPipelineTests
 {
+    /// <summary>The operation tag every GenAI span carries.</summary>
     private const string Operation = "gen_ai.operation.name";
+
+    /// <summary>The test's own root span, so each test reads only its own trace.</summary>
     private static readonly ActivitySource TestSource = new("louis-agent.core.tests.chat-pipeline");
 
+    /// <summary>The GenAI tags that would carry the conversation, which no span may hold.</summary>
     private static readonly string[] ContentTags =
     [
         "gen_ai.input.messages", "gen_ai.output.messages", "gen_ai.system_instructions",
         "gen_ai.tool.call.arguments", "gen_ai.tool.call.result",
     ];
 
+    /// <summary>An engine on the fake model with the file tools, recording into the sink given.</summary>
     private static AgentEngine Engine(IChatClient client, IUsageSink sink) =>
         new(new MarkdownSkillProvider(Path.Combine(TestPaths.RepoRoot, "Skills", "HelloWorld.md")), client,
             TestPaths.Agent(),
             toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: sink);
 
+    /// <summary>The model asks to read one file.</summary>
     private static ChatResponse Read(string relative, string callId) =>
         new(new ChatMessage(ChatRole.Assistant,
         [
@@ -36,9 +45,12 @@ public class ChatPipelineTests
                 new Dictionary<string, object?> { ["relativePath"] = relative })
         ]));
 
+    /// <summary>The model says something.</summary>
     private static ChatResponse Say(string text) => new(new ChatMessage(ChatRole.Assistant, text));
 
-    /// <summary>Runs a turn under a root span and returns the spans of that trace only, so parallel tests don't mix.</summary>
+    /// <summary>
+    /// Runs a turn under a root span and returns the spans of that trace only, so parallel tests don't mix.
+    /// </summary>
     private static async Task<(Activity Root, List<Activity> Spans)> Trace(AgentEngine engine, string prompt,
         bool streamed)
     {
@@ -68,9 +80,11 @@ public class ChatPipelineTests
         lock (spans) return (root, spans.Where(a => a.TraceId == root.TraceId).ToList());
     }
 
+    /// <summary>The spans whose GenAI operation is the one named.</summary>
     private static List<Activity> WithOperation(IEnumerable<Activity> spans, string operation) =>
         spans.Where(a => a.GetTagItem(Operation) as string == operation).ToList();
 
+    /// <summary>A file in the workspace for the model to read; the test deletes it.</summary>
     private static string Written(string content, out string relative, string prefix = "trace")
     {
         relative = $"{prefix}-{Guid.NewGuid():N}.txt";
@@ -79,6 +93,9 @@ public class ChatPipelineTests
         return path;
     }
 
+    /// <summary>
+    /// One span per model request and one per tool call, every one under the turn's span, whole and streamed.
+    /// </summary>
     [TestCase(false)]
     [TestCase(true)]
     public async Task Turn_MakesOneChatSpanPerRequestAndOneToolSpanPerCall(bool streamed)
@@ -97,7 +114,8 @@ public class ChatPipelineTests
 
             var chats = WithOperation(spans, "chat");
             var tools = WithOperation(spans, "execute_tool");
-            var loop = spans.Single(a => a.OperationName == "orchestrate_tools");
+            // The turn's own span (F52 step 3) is the loop: under an invoke_agent, MEAI opens no orchestrate_tools.
+            var loop = WithOperation(spans, "invoke_agent").Single();
             Assert.That(chats, Has.Count.EqualTo(2));
             Assert.That(chats.Select(a => a.Kind), Is.All.EqualTo(ActivityKind.Client));
             Assert.That(tools.Select(a => (string?)a.GetTagItem("gen_ai.tool.name")),
@@ -114,6 +132,10 @@ public class ChatPipelineTests
         }
     }
 
+    /// <summary>
+    /// A summary of an oversized result is a model request too: its span sits under the call it summarises, and the
+    /// traces and the ledger count the same requests.
+    /// </summary>
     [Test]
     public async Task Turn_SummaryIsATracedRequestToo()
     {
@@ -140,6 +162,10 @@ public class ChatPipelineTests
         }
     }
 
+    /// <summary>
+    /// No span carries a word of the conversation, the file's name and content included, even with the capture
+    /// variable on for the whole process.
+    /// </summary>
     [Test]
     public async Task Turn_SpansCarryNoConversation_EvenWithTheCaptureVariableOn()
     {

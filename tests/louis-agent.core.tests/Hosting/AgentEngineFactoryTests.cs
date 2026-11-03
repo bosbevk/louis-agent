@@ -13,9 +13,13 @@ using LouisAgent.Core.Tools.Web.Replay;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
-// F5 step 5: one engine per toolset profile, cached by its normalised list, with only its tools and its guides.
+/// <summary>
+/// One engine per toolset profile (F5 step 5), cached by its normalised list, its role, level, model and tool, with
+/// only its tools and its guides, and named for the agent it is (F52).
+/// </summary>
 public class AgentEngineFactoryTests
 {
+    /// <summary>Settings over the repo, its skills, a Paymo key if given, and no rates download.</summary>
     private static AgentOptions Options(string? paymoKey = null) => new()
     {
         WorkspaceRoot = TestPaths.RepoRoot,
@@ -24,13 +28,17 @@ public class AgentEngineFactoryTests
         RatesUrl = null,
     };
 
+    /// <summary>A factory on the fake model, with the cache size given.</summary>
     private static AgentEngineFactory Factory(int capacity = AgentEngineFactory.DefaultCapacity,
         string? paymoKey = null) =>
         new(new FakeChatClient(), Options(paymoKey), capacity: capacity);
 
+    /// <summary>The names of an engine's tools.</summary>
     private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
 
-    /// <summary>A factory with only <paramref name="enabled"/> roles on (F29); every one is built in (CL8 step 4).</summary>
+    /// <summary>
+    /// A factory with only <paramref name="enabled"/> roles on (F29); every one is built in (CL8 step 4).
+    /// </summary>
     private static AgentEngineFactory FactoryEnabling(IReadOnlyList<string> enabled)
     {
         var options = Options();
@@ -38,11 +46,12 @@ public class AgentEngineFactoryTests
         return new AgentEngineFactory(new FakeChatClient(), options);
     }
 
+    /// <summary>Only the enabled roles are offered, per level, and one that isn't is refused before a build.</summary>
     [Test]
     public void OnlyTheEnabledRoles_AreOffered_AndAnotherIsRefused()
     {
-        // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate is
-        // a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
+        // F29: Louis switched every specialist but the cook off until it has passed a check like the cook's. The gate
+        // is a setting the API enforces, so a prompt slip that names the researcher fails at the peer, not quietly.
         var factory = FactoryEnabling(["testprod/voice-af", "testprod-specialist"]);
 
         Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "testprod/voice-af" }),
@@ -61,26 +70,53 @@ public class AgentEngineFactoryTests
                 .SkillDocumentation, Does.Contain("Never invent a fact"));
     }
 
+    /// <summary>
+    /// An engine is named for the agent it is (F52 step 3, G1), so a trace tells Puls from its cook: a role's engine
+    /// after its role, a session with none after the default mode.
+    /// </summary>
+    [Test]
+    public void AnEngine_IsNamedForItsRole_OrTheDefaultMode()
+    {
+        var factory = FactoryEnabling(["testprod-specialist"]);
 
+        var specialist = factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-specialist", RoleLevel.Specialist);
+        var mode = factory.GetOrCreate([CoreToolset.Web.Wire()]);
+
+        Assert.That((specialist.Name, mode.Name), Is.EqualTo(("testprod-specialist", factory.DefaultVoice)));
+    }
+
+
+    /// <summary>The tools' context holds a replay store only where a recording folder is set.</summary>
     [Test]
     public void TheContextHoldsAStoreOnlyWhereARecordingDirectoryIsSet()
     {
-        // F18 step 4b.1: one store per process, built from REPLAY_DIRECTORY in one place (ReplayStore.From) and handed to the context.
+        // F18 step 4b.1: one store per process, built from REPLAY_DIRECTORY in one place (ReplayStore.From) and handed
+        // to the context.
         var without = new AgentEngineFactory(new FakeChatClient(), Options());
         var with = new AgentEngineFactory(new FakeChatClient(),
-            new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = "/data/replay" });
+            new AgentOptions
+            {
+                WorkspaceRoot = TestPaths.RepoRoot,
+                RatesUrl = null,
+                ReplayDirectory = "/data/replay"
+            });
 
         Assert.That(without.Context.Replay, Is.Null);
         Assert.That(with.Context.Replay, Is.Not.Null);
     }
 
+    /// <summary>The search provider is recorded only where a store is kept, a host's own provider included.</summary>
     [Test]
     public void TheSearchProvider_IsRecordedAroundOnlyWhereAStoreIsKept_AHostsOwnIncluded()
     {
         // F18 step 4b.2: a fake given by a host records like a real provider, so a test can prove a replay with one.
         var own = new CountingSearch(name: "Own");
         var options = new AgentOptions
-        { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = "/data/replay" };
+        {
+            WorkspaceRoot = TestPaths.RepoRoot,
+            RatesUrl = null,
+            ReplayDirectory = "/data/replay"
+        };
 
         var recorded = new AgentEngineFactory(new FakeChatClient(), options, webSearch: own).Context.WebSearch;
         var plain = new AgentEngineFactory(new FakeChatClient(), Options(), webSearch: own).Context.WebSearch;
@@ -90,11 +126,12 @@ public class AgentEngineFactoryTests
         Assert.That(plain, Is.SameAs(own));
     }
 
+    /// <summary>An engine's GetToday is recorded and replayed through the factory's one clock.</summary>
     [Test]
     public async Task TheEnginesGetToday_IsRecordedAndReplayedThroughTheFactorysClock()
     {
-        // F18 step 4b.4: one ReplayClock per factory (so per process) reaches the engine's own GetToday. A second factory over the same folder
-        // stands in for a later process: it replays the saved time, not its own.
+        // F18 step 4b.4: one ReplayClock per factory (so per process) reaches the engine's own GetToday. A second
+        // factory over the same folder stands in for a later process: it replays the saved time, not its own.
         string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
         try
         {
@@ -127,17 +164,23 @@ public class AgentEngineFactoryTests
         }
     }
 
+    /// <summary>An engine's model answers are recorded and replayed through the factory's one store.</summary>
     [Test]
     public async Task TheEnginesModelAnswers_AreRecordedAndReplayedThroughTheFactorysStore()
     {
-        // F18 step 4e.3: the factory hands its one store to every engine, so a recording run's answers replay on a later factory (a later
-        // process) over the same folder, with a client that throws if the model is asked.
+        // F18 step 4e.3: the factory hands its one store to every engine, so a recording run's answers replay on a
+        // later factory (a later process) over the same folder, with a client that throws if the model is asked.
         string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
         try
         {
             AgentEngineFactory Factory(Microsoft.Extensions.AI.IChatClient client) =>
                 new(client,
-                    new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot, RatesUrl = null, ReplayDirectory = folder });
+                    new AgentOptions
+                    {
+                        WorkspaceRoot = TestPaths.RepoRoot,
+                        RatesUrl = null,
+                        ReplayDirectory = folder
+                    });
 
             async Task<string> AskAsync(AgentEngineFactory factory)
             {
@@ -161,14 +204,16 @@ public class AgentEngineFactoryTests
         }
     }
 
+    /// <summary>The model says something.</summary>
     private static Microsoft.Extensions.AI.ChatResponse Answer(string text) =>
         new(new Microsoft.Extensions.AI.ChatMessage(Microsoft.Extensions.AI.ChatRole.Assistant, text));
 
+    /// <summary>A session naming an LLM profile runs on its model; one naming none, on the instance's.</summary>
     [Test]
     public async Task ASessionNamingAnLlmProfile_RunsOnItsModel_AndOneWithout_OnTheInstances()
     {
-        // F30 (Louis: "can we switch it on session?"): one instance serves Haiku to the cook and a local model to a price
-        // lookup, so the model is chosen when a session opens, not per container.
+        // F30 (Louis: "can we switch it on session?"): one instance serves Haiku to the cook and a local model to a
+        // price lookup, so the model is chosen when a session opens, not per container.
         var own = new FakeChatClient(_ => Answer("haiku"));
         var local = new FakeChatClient(_ => Answer("qwen"));
         var factory = new AgentEngineFactory(own, Options(), sessionLlms: [new SessionLlm("ollama-puls", local)]);
@@ -185,6 +230,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.SessionLlms, Is.EqualTo(new[] { "ollama-puls" }));
     }
 
+    /// <summary>An LLM profile the instance doesn't offer is refused, naming those it does, before a build.</summary>
     [Test]
     public void AnUnknownLlmProfile_IsRefused_BeforeAnythingIsBuilt()
     {
@@ -198,6 +244,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.Profiles, Is.Empty);
     }
 
+    /// <summary>The session profiles are read from the environment, trimmed, lowercased and once each.</summary>
     [Test]
     public void TheSessionProfiles_AreReadFromTheEnvironment_TrimmedAndLowercase()
     {
@@ -208,6 +255,7 @@ public class AgentEngineFactoryTests
         Assert.That(AgentOptions.FromEnvironment(_ => null).SessionLlmProfiles, Is.Empty);
     }
 
+    /// <summary>An empty list of enabled roles means every role is on.</summary>
     [Test]
     public void AnEmptyEnabledList_MeansEveryRole()
     {
@@ -215,11 +263,14 @@ public class AgentEngineFactoryTests
 
         Assert.That(factory.AvailableRoles(RoleLevel.Agent),
             Is.EqualTo(new[]
-                { "louis-agent/voice", "louis-agent/voice-orchestrator", "testprod/voice-af", "testprod/voice-en" }));
+            {
+                "louis-agent/voice", "louis-agent/voice-orchestrator", "testprod/voice-af", "testprod/voice-en"
+            }));
         Assert.That(factory.DefaultVoice, Is.EqualTo("louis-agent/voice"), "GET /v1/roles' default");
         Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Does.Contain("testprod-specialist"));
     }
 
+    /// <summary>The enabled roles are read from the environment, trimmed and lowercased.</summary>
     [Test]
     public void TheEnabledList_IsReadFromTheEnvironment_TrimmedAndLowercase()
     {
@@ -232,6 +283,7 @@ public class AgentEngineFactoryTests
         Assert.That(AgentOptions.FromEnvironment(_ => null).RolesEnabled, Is.Empty);
     }
 
+    /// <summary>The same toolsets in any order or case give the same engine, built once.</summary>
     [Test]
     public void TheSameList_InAnyOrderOrCase_GivesTheSameEngine()
     {
@@ -244,10 +296,12 @@ public class AgentEngineFactoryTests
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "files,git" }));
     }
 
+    /// <summary>A role, or another level, is a profile of its own with its own prompt.</summary>
     [Test]
     public void ARole_IsItsOwnProfile_WithItsOwnPrompt()
     {
-        // F21: the same toolsets with another role, or at another level (CL8: no router below level 0), is another engine.
+        // F21: the same toolsets with another role, or at another level (CL8: no router below level 0), is another
+        // engine.
         var factory = Factory();
 
         var plain = factory.GetOrCreate([CoreToolset.Files.Wire()]);
@@ -263,6 +317,7 @@ public class AgentEngineFactoryTests
             Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), "files|testprod/voice-af", "files|specialist" }));
     }
 
+    /// <summary>A role nobody knows is refused before anything is built.</summary>
     [Test]
     public void AnUnknownRole_IsRefused_BeforeAnythingIsBuilt()
     {
@@ -273,6 +328,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.Profiles, Is.Empty);
     }
 
+    /// <summary>Different toolsets give engines with different tools.</summary>
     [Test]
     public void DifferentLists_GiveDifferentTools()
     {
@@ -287,6 +343,7 @@ public class AgentEngineFactoryTests
             "no skills toolset, no self-extension");
     }
 
+    /// <summary>The skills toolset brings the tools an agent extends itself with.</summary>
     [Test]
     public void TheSkillsToolset_AddsTheSelfExtensionTools()
     {
@@ -294,6 +351,7 @@ public class AgentEngineFactoryTests
             Does.Contain("CreateTool").And.Contain("CreateSkillFile"));
     }
 
+    /// <summary>An engine's prompt holds only its toolsets' guides, and a reload keeps them so.</summary>
     [Test]
     public void AnEngine_HasOnlyItsToolsetsGuides_AndReloadingKeepsThem()
     {
@@ -304,6 +362,7 @@ public class AgentEngineFactoryTests
         Assert.That(engine.SkillDocumentation, Does.Contain("# Files Skills").And.Not.Contain("# Python Skills"));
     }
 
+    /// <summary>A toolset nobody knows, or one whose settings aren't set, throws before anything is built.</summary>
     [Test]
     public void AnUnknownOrUnavailableToolset_ThrowsBeforeAnythingIsBuilt()
     {
@@ -316,6 +375,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.Profiles, Is.Empty);
     }
 
+    /// <summary>A full cache drops the profile used least recently, never refusing the new one.</summary>
     [Test]
     public void AFullCache_DropsTheLeastRecentlyUsed_NotTheNewList()
     {
@@ -335,6 +395,7 @@ public class AgentEngineFactoryTests
         Assert.That(factory.GetOrCreate([CoreToolset.Git.Wire()]), Is.Not.Null, "a dropped one is built again");
     }
 
+    /// <summary>The available toolsets are only those whose settings are all set.</summary>
     [Test]
     public void Available_ListsOnlyToolsetsWhoseSettingsAreSet()
     {
@@ -343,17 +404,23 @@ public class AgentEngineFactoryTests
         Assert.That(Factory(paymoKey: "key").Available, Does.Contain(CoreToolset.Paymo.Wire()));
     }
 
+    /// <summary>With no toolsets an engine has only the tools every session gets.</summary>
     [Test]
     public void NoToolsets_GivesOnlyExecuteSkill()
     {
         Assert.That(Names(Factory().GetOrCreate([])), Is.EquivalentTo(new[] { "ExecuteSkill", "GetToday" }));
     }
 
+    /// <summary>
+    /// A minion's engine has its one tool and its role on the minion base, no guide and no router, under a key of
+    /// its own.
+    /// </summary>
     [Test]
     public void AMinionsEngine_HasOneTool_TheRoleOnTheBase_NoGuides_AndItsOwnKey()
     {
-        // F30 step 4 (Louis: a specialist hands a minion one task and one of its own tools): the engine is the role on
-        // the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can follow.
+        // F30 step 4 (Louis: a specialist hands a minion one task and one of its own tools): the engine is the role
+        // on the minion base with that one tool, no toolset guide and no router, so a 4B model reads a prompt it can
+        // follow.
         var factory = Factory();
 
         var minion = factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
@@ -374,6 +441,7 @@ public class AgentEngineFactoryTests
             "the tool is part of the key");
     }
 
+    /// <summary>A minion's tool that its toolsets don't have is refused before anything is built.</summary>
     [Test]
     public void AToolTheToolsetsDontHave_IsRefused_BeforeAnythingIsBuilt()
     {
