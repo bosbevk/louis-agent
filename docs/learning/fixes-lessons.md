@@ -260,5 +260,16 @@ or a declaration on each tool) fixes the cause in three lines. The second lesson
 symptom with a cause, and the way to find it is to make it certain (a megabyte of input makes the child close the
 pipe every time), then write that as the red test. Skill 15 (safety: the tool loop's guards) and 11 (test first).
 
+## FX35 · A setting honoured too hard hides the content
+
+A visitor's "animations off" setting reaches a website as `prefers-reduced-motion`, and a site is right to honour
+it. The mistake was the blanket rule: every animation cut to a millisecond, which for a thirty-six-second film means
+its end frame, with no card, caption or light, and a visitor asking where everything is. The setting is about
+decoration that moves without being asked (a typing effect, a bounce); a film the visitor came to see is content,
+and a video player doesn't stop playing because of it. So the rule now leaves the stage out, and a test holds that
+every selector in it does. Two lessons: a check the browser can switch on is a case to render, not to assume (one
+screenshot with `reducedMotion: 'reduce'` reproduced the PC exactly); and an accessibility rule needs the same
+"what does this mean for the reader" question as any other. Skill 18 (shipping: what the visitor's machine changes).
+
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)

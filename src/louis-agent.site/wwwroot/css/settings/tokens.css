@@ -28,6 +28,8 @@
     --measure: 56ch;
 }
 
+/* Animations off on the PC stills the decoration (the hero's typing), never a film: the films are the content and
+   play as a video would (FX35). */
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
+    *:not(.stage *), *:not(.stage *)::before, *:not(.stage *)::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
 }

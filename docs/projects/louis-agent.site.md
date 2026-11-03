@@ -34,7 +34,7 @@ that order.
 
 **The theme** is `settings/tokens.css`: one dark ground, white for what matters, a gray scale, and "chrome" (a
 white-to-steel gradient clipped to the big words). No light mode: the films are drawn for a dark floor. Motion is
-off under `prefers-reduced-motion`.
+off under `prefers-reduced-motion` for the decoration only: the films are the content and play as a video would (FX35).
 
 ## Parts
 
