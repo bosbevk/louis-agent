@@ -175,6 +175,13 @@ Every required check must fail at least one known-bad (a `Fail`; an `Unknown` do
 every required check, and any other file is stray and refused. Cut them from a stored run where one passed
 (`GET /v1/admin/evals/runs/{id}/protocol` with the admin key in `x-api-key`), or write them by hand, as the template's are.
 
+**From the portal, instead of by hand** (F49.4): on a stored run's conversation, *Sample* makes a new sample from
+it (a variant of the scenario it ran: change the id, the expected values, the categories, add an ideal answer), and
+after you grade a conversation, *Keep as reference* (a pass) or *Keep as known-bad* (a fail, with a reason in
+kebab-case) keeps its transcript. Both wait as drafts on the Evals page, under the eval's card, until F49.5 publishes
+them as files ([ADR 0061](../adr/0061-evals-grow-from-use.md)); today you copy a draft's JSON or text into the folder
+yourself.
+
 ## 7. Test it
 
 `EvalConformanceTests` (in the runner's tests) runs every eval folder it finds, so your references and known-bads are

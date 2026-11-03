@@ -67,6 +67,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0058](0058-an-eval-is-a-folder-of-files.md) | An eval is a folder of files (`eval.json`, its manual, dataset and transcripts) beside the identity or pack it proves, found by the runner through the composition, its checks named from the catalogue; a new eval starts as a copy of the template folder | Accepted |
 | [0059](0059-an-identity-ships-readers-not-checks.md) | The harness ships every family of check an eval tool ships; a compare reads its value through a reader the file names beside the key, from a second registry; an identity ships readers, not checks; a swap of checks is proven on pinned grades and a replay | Accepted |
 | [0060](0060-a-pack-ships-its-checks.md) | A pack ships the checks that prove its tools, in a registry the composition gathers; plain markdown reading is the check contract's; what only an identity knows comes in through a reader the file names; a small shared table lives twice, held equal by a test | Accepted |
+| [0061](0061-evals-grow-from-use.md) | Evals grow from use: a sample or transcript made in the portal is a draft in a store until F49.5 publishes it; a sample is a variant of its conversation's scenario; a transcript is kept only when people's verdicts back it | Accepted |
 
 ## When to write one
 

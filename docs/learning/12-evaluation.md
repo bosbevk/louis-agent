@@ -188,6 +188,38 @@ new line; the outcomes didn't move. That's the difference between "it looks the 
 tell. Similarity by meaning needs embeddings, which no eval asks for yet and the provider we use doesn't offer, so it
 waits (TODO); `near` covers closeness to a short fixed text with the edit distance.
 
+## Evals grow from use (F49.4)
+
+The advice every eval guide gives, Anthropic's *Develop test cases* first among them, is: don't invent your test
+cases in a quiet room, grow them from what real use turns up. A wrong answer someone noticed is worth ten made-up
+questions, because it's a mistake the agent actually makes. Until F49.4 that advice cost a trip to Rider: you saw a
+bad conversation in the portal, then wrote its scenario file or its transcript by hand.
+
+Now the portal does it. Two moves, both from a stored run:
+
+- **A conversation becomes a sample.** Press *Sample* on its card. The dialog starts from the scenario the
+  conversation ran (its place, time zone, expected values and categories), you give the new sample an id and change
+  what you want (cook for six instead of four, a smaller budget), and it's kept as a draft. Its first question becomes
+  the sample's input and the later ones its follow-ups. It's a *variant* of a scenario that already works, so the
+  checks know its keys; a key the scenario doesn't have is refused, because nothing would read it.
+- **A reviewed conversation becomes a transcript.** After you grade it, a pass offers *Keep as reference* and a fail
+  *Keep as known-bad*, with a reason in kebab-case (`no-shop`) that becomes part of its file name. These are the
+  transcripts the pinned-grades test reads (`CookGradesTests`): a known-bad is a regression test for a grader, an
+  answer it must keep failing.
+
+**Why drafts, not files.** A draft waits in a store until F49.5 publishes it as files in a pull request. Writing the
+file straight into the checkout would be simpler on this PC, but the hosted Puls has no checkout, and a half-made
+sample in your working tree is easy to commit by accident. Git stays the truth; the store is a waiting room
+([ADR 0061](../adr/0061-evals-grow-from-use.md)).
+
+**The person is the gate.** Nothing becomes part of an eval because a model said so: a transcript is kept only when
+people's verdicts back it (every decided verdict a pass for a reference, a fail for a known-bad), and an unsure keeps
+nothing. That's the field's "human in the loop" for datasets: the model may suggest, a person decides.
+
+**In the field's words:** this is *dataset curation from production traces* (LangSmith calls it "add to dataset",
+Braintrust "log to dataset"); the known-bads are *negative examples* or *regression cases*; and keeping the person
+as the gate is how you stop a dataset drifting toward what the judge already likes.
+
 ## The limits, said plainly
 
 - **36 labels, one judge, one person.** Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is

@@ -4,6 +4,18 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **F49.4 Studio: samples from chats and human review**: on a stored run in the admin portal, a
+  conversation becomes a sample draft (*Sample* on its card: a variant of the scenario it ran, read from the eval's
+  folder the runner's listing now names; the first question the input, the later ones the follow-ups, the person's
+  id, expected values, categories and ideal answer on top, a key the scenario lacks refused) and a graded one a
+  reference or known-bad transcript draft (*Keep as reference* on a pass, *Keep as known-bad* with a kebab-case
+  reason on a fail; the API keeps it only when every decided verdict is a pass, or one is a fail; the lines are the
+  conversation cut from the run as the eval folders hold it); the drafts wait in `IEvalDraftStore` (memory, or
+  Mongo's `eval_drafts`) and on the Evals page under their eval's card, counted, listed and deleted, until F49.5
+  publishes them; the API's `SampleBody` held equal to the harness's `SampleFile`; five routes under
+  `/v1/admin/evals` (`runs/{id}/samples`, `runs/{id}/transcripts`, `runs/{id}/scenarios/{task}`, `{eval}/drafts`).
+  Steps 3 to 6 ran unattended; their picks are in the PR for review. Guide [Add an eval](docs/guides/add-an-eval.md#6-add-the-reference-transcripts)
+  ([0061](docs/adr/0061-evals-grow-from-use.md), [write-up 12](docs/learning/12-evaluation.md#evals-grow-from-use-f494))
 - 2026-10-31 — **F49.3 Checks in packs**: a pack ships the checks that prove its tools, in a registry of its own
   that the composition's `EvalChecks.All` gathers; the shops pack's `ShopsChecks.All` holds `estimates-at-shop` and
   `untooled-shops`, and `PricedAtRetailer` (`priced-at-shop`, no entry) moved beside them, with what only they read

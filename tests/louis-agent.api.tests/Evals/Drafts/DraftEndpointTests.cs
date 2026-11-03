@@ -44,7 +44,7 @@ public class DraftEndpointTests
         // The run, in one mode.
         var store = new InMemoryEvalStore();
         await store.SaveRunAsync(new Run(RunId, "cook", 1, EvalRunStatus.Done, T0, T0.AddMinutes(5), 0,
-            Modes: [new Mode(SampleMode.Beta, 1, ["web"], "puls/voice-af", null, Conversations: 3, At: T0)]));
+            Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], "puls/voice-af", null, Conversations: 3, At: T0)]));
 
         // Each conversation with its turns, each turn with one stream event, and a person's verdict on it.
         var reviews = new InMemoryHumanReviewStore();
@@ -70,7 +70,7 @@ public class DraftEndpointTests
 
         // The cook eval as the runner lists it, its folder the repo's own.
         var catalog = new EvalList([
-            new EvalEntry("cook", "Cooks", null, new EvalLine("cook", 1, "Cooks", Identity: "puls", Folder: Cook))
+            new EvalEntry("cook", "Cooks", null, new EvalLine("cook", 1, "Cooks", Identity: SampleIdentity.Alpha, Folder: Cook))
         ]);
         var drafts = new InMemoryEvalDraftStore();
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, catalog: catalog, reviews: reviews,
@@ -145,7 +145,7 @@ public class DraftEndpointTests
         var row = await JsonOf(response);
         Assert.That((row.GetProperty("sample_id").GetString(), row.GetProperty("question").GetString(),
                 row.GetProperty("eval").GetString(), row.GetProperty("identity").GetString()),
-            Is.EqualTo(("cook-af-six", "Wat kan ek kook?", "cook", "puls")));
+            Is.EqualTo(("cook-af-six", "Wat kan ek kook?", "cook", SampleIdentity.Alpha)));
         var file = JsonDocument.Parse(row.GetProperty("json").GetString()!).RootElement;
         Assert.That(file.GetProperty("metadata").GetProperty("follow_ups")[0].GetString(), Is.EqualTo("Vir ses?"));
         Assert.That(file.GetProperty("metadata").GetProperty("expected").GetProperty("budget").GetInt32(),

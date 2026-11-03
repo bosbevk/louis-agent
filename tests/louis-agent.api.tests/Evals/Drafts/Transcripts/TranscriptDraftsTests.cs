@@ -26,7 +26,7 @@ public class TranscriptDraftsTests
 
     /// <summary>Keeps the conversation as the given kind, over these decided verdicts.</summary>
     private static TranscriptDraft Keep(TranscriptKind kind, string? reason, params HumanVerdict[] verdicts) =>
-        TranscriptDrafts.Of("d1", "cook", "puls", "run-1", CookAf, verdicts, kind, reason, Lines, "Louis", At);
+        TranscriptDrafts.Of("d1", "cook", SampleIdentity.Alpha, "run-1", CookAf, verdicts, kind, reason, Lines, "Louis", At);
 
     /// <summary>A passed conversation is kept as a reference, named for its scenario, its lines whole.</summary>
     [Test]
@@ -38,7 +38,7 @@ public class TranscriptDraftsTests
             Is.EqualTo(("cook-af.reference.txt", TranscriptKind.Reference, (string?)null)));
         Assert.That(draft.Lines, Is.EqualTo(Lines));
         Assert.That((draft.Id, draft.Eval, draft.Identity, draft.Run, draft.Conversation, draft.Author, draft.At),
-            Is.EqualTo(("d1", "cook", "puls", "run-1", CookAf, "Louis", At)));
+            Is.EqualTo(("d1", "cook", SampleIdentity.Alpha, "run-1", CookAf, "Louis", At)));
     }
 
     /// <summary>A failed conversation is kept as a known-bad, its reason in its name.</summary>
