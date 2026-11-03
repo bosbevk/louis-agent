@@ -66,7 +66,11 @@ of people asked for?* A judge model reads the ask (how many people, the town), t
 steps to cook the dish. It is **not told the budget**: it judges the meal, and `within-budget` judges the cost.
 
 - It is **shown and counted but not required**: the trial's outcome does not wait on it until its answers agree with a
-  person's, in each class, at 90% (F18 step 6.3). It has passed that check against 36 labels.
+  person's, in each class, at 90% (F18 step 6.3). The first rubric passed that check against the dataset's 36
+  labels, but against 60 answers graded in the portal (run `cf37574d0f23`) it failed only 8 of the 15 that were no
+  meal: Puls alone refusing, asking a question back, or listing ideas. Since eval version 12 the rubric is an ordered
+  decision (a chosen dish with a way to cook it, then a main dish, then enough for the people) that says such an
+  answer is `false`, never "can't tell".
 - **Unknown is an answer.** With no judge configured (`EVAL_JUDGE_MODEL` unset), a reply it can't read, or a judge that
   can't tell, the grade is Unknown with the reason, never a guessed pass. A scenario that asks for no number of people
   has no meal to judge and passes without a request.

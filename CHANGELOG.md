@@ -4,6 +4,10 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **The cook's judge recalibrated**: against 60 answers Louis graded in the portal (run
+  `cf37574d0f23`), `meal-for-people` agreed on 43 of 45 passes but only 8 of 15 fails, all of them Puls alone
+  refusing, asking back or listing ideas; its rubric is now a short ordered decision that calls those `false` and
+  keeps "can't tell" for a recipe with no amounts (rubric hash `2ab944be4e29`, was `438a8deb91f4`; eval version 12)
 - 2026-11-03 — **FX34 A live run shows each turn's cost**: the Benchmarks page's live table priced its turns only
   once the whole run had ended; now the API answers a run's requests so far from the usage ledger
   (`GET …/runs/{id}/requests`), joined as the run's end joins them, and the table asks after each turn's end, so a
