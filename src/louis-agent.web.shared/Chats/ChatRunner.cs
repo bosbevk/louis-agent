@@ -6,6 +6,7 @@ using LouisAgent.Web.Shared.Storage;
 using LouisAgent.Web.Shared.Text;
 
 namespace LouisAgent.Web.Shared.Chats;
+
 /// <summary>
 /// A turn's life, the same for every chat page (W2): the draft and its attachments, the session opened on the first
 /// message, the stream folded into the turn with a redraw raised no more than every 50 ms, stop, the chat saved at
@@ -37,8 +38,8 @@ public sealed class ChatRunner(
     public string? Notice { get; set; }
 
     /// <summary>
-    /// Raised when the page should redraw: the turn started, text arrived (throttled), the turn ended, or a send could
-    /// not open its session (FX29).
+    /// Raised when the page should redraw: the turn started, text arrived (throttled), the turn ended, files were
+    /// attached, or a send or stop failed with a notice (FX29).
     /// </summary>
     public event Action? Changed;
 
@@ -84,8 +85,7 @@ public sealed class ChatRunner(
             }
             catch (Exception ex)
             {
-                // The message goes back to the box and the page says why (FX29): the page shows the notice, not the
-                // box the click came from, so it is told to redraw, or the send would look dead.
+                // The draft goes back and the page is told to redraw, or the notice never shows (FX29).
                 Draft = message;
                 Attachments.AddRange(attachments);
                 Notice = Describe(ex);
@@ -149,11 +149,16 @@ public sealed class ChatRunner(
         }
         catch (Exception ex)
         {
+            // The stop button can sit in a child component; the page is told to redraw so the notice shows (FX29).
             Notice = Describe(ex);
+            Changed?.Invoke();
         }
     }
 
-    /// <summary>Attaches the chosen text files, each capped at 1 MB; a larger one is refused with a notice.</summary>
+    /// <summary>
+    /// Attaches the chosen text files, each capped at 1 MB; a larger one is refused with a notice, and the page is
+    /// told to redraw so the notice shows (FX29).
+    /// </summary>
     public async Task AddFilesAsync(InputFileChangeEventArgs e)
     {
         foreach (var file in e.GetMultipleFiles(maximumFileCount: 10))
@@ -167,6 +172,8 @@ public sealed class ChatRunner(
             using var reader = new StreamReader(file.OpenReadStream(MaxAttachmentBytes));
             Attachments.Add(new Attachment(file.Name, await reader.ReadToEndAsync()));
         }
+
+        Changed?.Invoke();
     }
 
     /// <summary>Deletes a chat here and on the server; true when it was the one shown, so the page leaves it.</summary>

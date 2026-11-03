@@ -103,6 +103,18 @@ public class ChatRunnerTests
         Assert.That(h.Handler.Requests, Is.Empty);
     }
 
+    // FX29: in Puls the stop button sits in the message box, so a failed cancel's notice shows only if the page is told.
+    [Test]
+    public async Task AStopTheApiRefuses_SaysWhy_AndRedrawsThePage()
+    {
+        var h = new Harness { Runner = { Chat = new ChatModel { SessionId = "sess_other" } } };
+
+        await h.Runner.StopAsync();
+
+        Assert.That(h.Runner.Notice, Is.Not.Null);
+        Assert.That(h.Changed, Is.EqualTo(1), "the page redraws, so the notice shows");
+    }
+
     [Test]
     public async Task AGoneSession_EndsTheChat_WithTheAppsWords()
     {
@@ -168,6 +180,7 @@ public class ChatRunnerTests
         Assert.That(h.Runner.Attachments, Is.EqualTo(new[] { new Attachment("notes.md", "# Notes") }));
         Assert.That(h.Runner.Notice, Is.EqualTo("huge.log is larger than 1 MB and was not attached."));
         Assert.That(h.Runner.CanSend, Is.True, "an attachment alone can be sent");
+        Assert.That(h.Changed, Is.EqualTo(1), "the page redraws, so the notice shows (FX29)");
     }
 
     [Test]
