@@ -87,6 +87,31 @@ public static class EvalText
             _ => "other"
         };
 
+    /// <summary>
+    /// How far a mode's pass@k moved from the run before, in points: "▲ 25", "▼ 10", "= same"; nothing to compare
+    /// with is "".
+    /// </summary>
+    public static string Delta(double? change) => change switch
+    {
+        null => "",
+        0 => "= same",
+        > 0 => $"▲ {Points(change.Value)}",
+        _ => $"▼ {Points(-change.Value)}"
+    };
+
+    /// <summary>The class that colours a change: up, down, the same, or nothing to compare with.</summary>
+    public static string DeltaTone(double? change) => change switch
+    {
+        null => "is-first",
+        0 => "is-same",
+        > 0 => "is-up",
+        _ => "is-down"
+    };
+
+    /// <summary>A share's move as whole points, "25".</summary>
+    private static string Points(double change) =>
+        Math.Round(change * 100, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.InvariantCulture);
+
     /// <summary>When a run started, as a day and a time in the reader's own zone.</summary>
     public static string When(DateTimeOffset at) =>
         at.ToLocalTime().ToString("d MMM yyyy, HH:mm", CultureInfo.InvariantCulture);

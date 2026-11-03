@@ -1,6 +1,7 @@
 using System.Net;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Evals;
+using LouisAgent.Puls.Admin.Evals.List;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Storage;
 using LouisAgent.Web.Shared.Usage;
@@ -26,6 +27,19 @@ public partial class Evals : IDisposable
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
     [Inject] private CurrencyState Currency { get; set; } = null!;
+
+    /// <summary>The eval whose details are open (`?eval=`); none opens the eval that ran last.</summary>
+    [SupplyParameterFromQuery(Name = "eval")]
+    public string? Eval { get; set; }
+
+    /// <summary>
+    /// The eval the details pane shows: the one in the address when the list has it, else the default
+    /// one.
+    /// </summary>
+    private EvalRow? Chosen => _data is { } data
+        ? data.Evals.FirstOrDefault(e => e.Name == Eval) ??
+          data.Evals.FirstOrDefault(e => e.Name == EvalListView.DefaultEval(data))
+        : null;
 
     /// <summary>Loads the admin key and the currency, then the list.</summary>
     protected override async Task OnInitializedAsync()

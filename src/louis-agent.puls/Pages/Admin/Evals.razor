@@ -1,8 +1,10 @@
 @page "/admin/evals"
 @layout AdminLayout
+@implements IDisposable
 
 @* F18 step 7b (i): every eval the runner's catalogue has, from GET /v1/admin/evals; one that never ran is listed as
-   never run, not hidden. Its runs and the trend open on the Benchmarks page. *@
+   never run, not hidden. F53.2: list and details: the list pane names every eval with its last result, the details
+   pane holds the chosen one (the eval in the address, `?eval=`; none opens the eval that ran last). *@
 
 <PageTitle>Evals · Puls Admin</PageTitle>
 
@@ -29,13 +31,11 @@ else if (_data is { } data)
 {
     <StoreBanner Store="data.Store" />
 
-    @if (data.Evals.Count == 0)
-    {
-        <section class="card-p evals-empty"><span class="muted">The runner lists no evals.</span></section>
-    }
-
-    @foreach (var eval in data.Evals)
-    {
-        <EvalCard Eval="eval" Currency="Currency.Current" OnChanged="LoadAsync" />
-    }
+    <div class="eval-split">
+        <EvalList Evals="EvalListView.Of(data).Evals" Selected="@Chosen?.Name" />
+        @if (Chosen is { } chosen)
+        {
+            <EvalDetails Eval="chosen" Currency="Currency.Current" OnChanged="LoadAsync" />
+        }
+    </div>
 }

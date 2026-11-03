@@ -2,15 +2,19 @@ using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Puls.Components.Admin.EvalsPage;
+using LouisAgent.Puls.Components.Admin.EvalsPage.Details;
+using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Shared.Storage;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.EvalsPage;
 
 /// <summary>
-/// The eval card as a person sees it (CL26): the latest run up top with a ring per mode, the runs before it as a
-/// timeline where a replay links to its recording, and every grader in the fold.
+/// An eval's details as a person sees them (CL26's card, F53.2's details pane): the latest run up top with a ring
+/// per mode, the runs before it as a timeline where a replay links to its recording, and every grader in the fold.
 /// </summary>
-public class EvalCardTests
+public class EvalDetailsTests
 {
     /// <summary>When the runs started; the card only shows it.</summary>
     private static readonly DateTimeOffset T0 = new(2026, 10, 29, 12, 0, 0, TimeSpan.Zero);
@@ -33,9 +37,18 @@ public class EvalCardTests
             new("meal.human", 2, CheckKind.Human.Wire())
         ], [SampleMode.Alpha, SampleMode.Beta], [], runs.Count == 0, runs);
 
-    /// <summary>The card for an eval with these runs.</summary>
-    private static IRenderedComponent<EvalCard> Render(BunitContext ctx, IReadOnlyList<EvalRunRow> runs) =>
-        ctx.Render<EvalCard>(p => p.Add(x => x.Eval, Eval(runs)));
+    /// <summary>The details of an eval with these runs, over an API that has no trend for it.</summary>
+    private static IRenderedComponent<EvalDetails> Render(BunitContext ctx, IReadOnlyList<EvalRunRow> runs)
+    {
+        ctx.Services.AddSingleton(new AgentApi(
+            new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.NotFound)
+            {
+                Content = new StringContent("""{"type":"error","error":{"type":"not_found","message":"no"}}""",
+                    System.Text.Encoding.UTF8, "application/json")
+            }))
+            { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
+        return ctx.Render<EvalDetails>(p => p.Add(x => x.Eval, Eval(runs)));
+    }
 
     /// <summary>The latest run's scorecard has a ring per mode, each with its pass@k in the middle.</summary>
     [Test]
