@@ -1,8 +1,8 @@
 # 18 · Testing and shipping: how the cut was proved
 
 > **Skill:** #18 in the [goal](../GOAL.md)'s map, with #12 (evaluation) for the goldens · **Stage:** the platform
-> plan's Phase 2, CL15 *Engine, identities and packs* (2026-10-19), and CL19 *Config and Docker by place*
-> (2026-10-24) · **Written by** Claude, for Louis to read (2026-10-19, 2026-10-24) · **Next:** simulations in C# as the release gate (F18, Phase 3); the web app's first tests (F40,
+> plan's Phase 2, CL15 *Engine, identities and packs* (2026-10-19), CL19 *Config and Docker by place*
+> (2026-10-24), and F54 *The engine's website* (PR #133, 2026-11-03) · **Written by** Claude, for Louis to read (2026-10-19, 2026-10-24, 2026-11-04) · **Next:** simulations in C# as the release gate (F18, Phase 3); the web app's first tests (F40,
 > Phase 4); a deploy pipeline with versioned contracts (F44, Phase 9)
 
 What this answers: how a refactor that moved 30 files, split prompts and changed two contracts was shown to change
@@ -128,6 +128,31 @@ request ([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)).
 - **Where there's no checkout, a zip.** The hosted Puls has no git workspace, so a publish there hands you the folder
   as a zip to add in a pull request. It's more work, but it still ends in git.
 
+## A host that is only content (F54)
+
+The engine's website is the first host with no engine in it: `src/louis-agent.site` references nothing of ours and
+runs no model. It is ASP.NET Core with **static server rendering**: a Razor component is rendered once on the server
+into plain HTML and sent, no WebAssembly, no interactivity, no script. A page is its markup and one stylesheet, and
+the two films of how the engine works are CSS keyframes over CSS 3D transforms. What that gave the tests:
+
+- **A page is a string.** `WebApplicationFactory<Program>` starts the site in memory and the test asks each route and
+  reads the HTML: the title, the film's class, no `blazor.web.js`. No browser in the test, no port, a second for all
+  five pages. `/health` answers the container's check the same way.
+- **The behaviour is in the stylesheet, so the stylesheet is tested.** The films' logic (where a part stands, when
+  the camera flies in, when a caption shows) is CSS. `SiteStylesheetTests` reads `app.css`'s import list against the
+  files on disk, holds tokens first, and refuses a keyframe name the two films could share (every name ends in `-s`
+  or `-d`). A rule a file could break silently is a test, whatever language the file is in.
+- **A golden per film**, as for the prompts: bUnit renders the markup and `Snapshots.Match` pins it, so a change to a
+  film is read in a diff. The detailed film's six slabs inside core are checked against the chat pipeline's order as
+  a plain array in the test, which is the one honest way to couple a project that must not reference core.
+- **Headless eyes for a CSS animation.** A film can't be looked at by waiting for it. Playwright pauses every
+  animation and sets its time (`document.getAnimations()`, `currentTime`), so a scene's midpoint is one screenshot
+  and the whole film is 1,800 frames ffmpeg joins into the MP4; the stylesheet stays the one source.
+- **Numbers in parallel branches collide.** Two branches opened the same day both took ADR 0065; the clash was caught
+  by a colleague's note before the push, not by a test. Next free is read from `main` *and* the open PRs, and a test
+  that refuses two ADR files with one number on merge is cheap.
+- **Measured: $0.** The site calls no model; the only spend was the time to render frames.
+
 ## What was learned
 
 - **Fakes are a dependency.** Three test projects referencing `core.tests` for `FakeChatClient` and `StubHandler` made
@@ -154,4 +179,4 @@ request ([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)).
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../deploy/azure/README.md) ·
-[Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md)
+[Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../adr/0066-the-site-is-static-razor.md) · [The site](../projects/louis-agent.site.md)

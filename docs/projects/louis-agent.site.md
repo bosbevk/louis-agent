@@ -36,6 +36,19 @@ that order.
 white-to-steel gradient clipped to the big words). No light mode: the films are drawn for a dark floor. Motion is
 off under `prefers-reduced-motion`.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    browser["A visitor's browser"] -->|GET /, /how-it-works, …| site["src/louis-agent.site<br/>Kestrel · static server rendering"]
+    site --> pages["Components/Pages<br/>Home · HowItWorks · Proof · BuiltOnIt · Contact"]
+    pages --> landing["Components/Landing<br/>Hero · LiveTurn · ProofTiles · BuiltOnIt · ContactStrip"]
+    pages --> films["Components/Movies<br/>ShortMovie · DetailedMovie"]
+    site --> css["wwwroot/css<br/>app.css imports: tokens · elements · shell · landing · movie · responsive"]
+    docker["docker/images/Dockerfile.site"] --> site
+    site -. references no engine project .-> core["louis-agent.core"]
+```
+
 ## Parts
 
 | Folder | Holds |
