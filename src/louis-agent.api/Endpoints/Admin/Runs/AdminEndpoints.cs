@@ -1,8 +1,10 @@
+using LouisAgent.Api.Endpoints.Admin.Drafts;
 using LouisAgent.Api.Endpoints.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
@@ -35,7 +37,7 @@ internal static class AdminEndpoints
         Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
         string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null,
         CalibrationRecorder? calibrationRecorder = null,
-        TimeProvider? time = null)
+        TimeProvider? time = null, IEvalDraftStore? drafts = null)
     {
         var handlers = new AdminHandlers(catalog, runner, adminKey, store, recorder, settingsOf, workspaceRoot);
         // One group for all of them, so the key check runs before any route's own work.
@@ -44,6 +46,9 @@ internal static class AdminEndpoints
         // The two lists: every eval (GET /evals), and the checks with their latest runs the Benchmarks page reads.
         admin.MapEvals(catalog, store, workspaceRoot);
         admin.MapGet("/benchmarks", handlers.GetList);
+
+        // One draft store for both names, so a draft made under one is listed under the other.
+        var draftStore = drafts ?? new InMemoryEvalDraftStore();
 
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.
@@ -56,6 +61,7 @@ internal static class AdminEndpoints
             evals.MapNotes(store, time ?? TimeProvider.System);
             evals.MapRescore(catalog, runner, store, recorder, settingsOf);
             evals.MapCalibrations(catalog, runner, store, reviews, calibrations, calibrationRecorder);
+            evals.MapDrafts(catalog, store, reviews, draftStore, workspaceRoot, time ?? TimeProvider.System);
             evals.MapPost("/{check}/runs", handlers.StartRun);
             evals.MapGet("/runs/current", handlers.GetCurrent);
             evals.MapGet("/runs/{id}/events", handlers.GetEvents);

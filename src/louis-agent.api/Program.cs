@@ -77,7 +77,7 @@ IHumanReviewStore? reviewStore = admin.EvalsMongoUrl is { } reviewsUrl
     : null;
 
 // The drafts made from stored runs wait beside the grades until F49.5 publishes them; without Mongo they live in
-// memory. Step 3's endpoints take the store.
+// memory.
 IEvalDraftStore draftStore = admin.EvalsMongoUrl is { } draftsUrl
     ? new MongoEvalDraftStore(draftsUrl, admin.EvalsDatabase)
     : new InMemoryEvalDraftStore();
@@ -127,7 +127,7 @@ api.MapAdmin(evals,
         WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
         WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
     host.Engine.WorkspaceRoot, reviewStore,
-    calibrationStore, calibrationRecorder);
+    calibrationStore, calibrationRecorder, drafts: draftStore);
 
 // Listen until the host is stopped.
 app.Run();

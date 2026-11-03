@@ -46,7 +46,7 @@ public sealed record TranscriptDraft(
         if (kind == TranscriptKind.Reference) return $"{scenario}.reference.txt";
         if (string.IsNullOrWhiteSpace(reason))
             throw new ArgumentException(MessageText.Format(DraftMessage.KnownBadNeedsAReason,
-                new { Scenario = scenario }), nameof(reason));
+                new { Scenario = scenario }));
         return $"{scenario}.bad.{reason}.txt";
     }
 }

@@ -20,4 +20,43 @@ public enum DraftMessage
     [Description(
         "'{Key}' is not an expected key of scenario {Scenario}, so no check would read it. Its keys are: {Keys}.")]
     ExpectedKeyUnknown,
+
+    [Description(
+        "The sample's id '{Id}' must be kebab-case (lowercase letters and digits joined by single dashes): it names the scenario's file.")]
+    SampleIdNotKebabCase,
+
+    [Description(
+        "The reason '{Reason}' must be kebab-case (lowercase letters and digits joined by single dashes): it becomes part of the transcript's file name.")]
+    ReasonNotKebabCase,
+
+    [Description("Name the conversation the draft comes from: its mode, repeat and task.")]
+    NeedsAConversation,
+
+    [Description("Say who made the draft: the author is blank.")]
+    AuthorBlank,
+
+    [Description(
+        "Eval '{Eval}' has no scenario '{Scenario}' in its folder, so there is nothing to make a sample from.")]
+    NoScenario,
+
+    [Description("The runner's catalogue has no eval '{Eval}'.")]
+    NoEval,
+
+    [Description("Eval '{Eval}' has no draft '{Id}'.")]
+    NoDraft,
+
+    [Description("'{Kind}' is not a kind of transcript. Supported: {Supported}.")]
+    TranscriptKindUnknown,
+
+    [Description(
+        "Nobody has passed or failed conversation {Mode}/{Repeat}/{Task} yet, so it can be kept as neither a reference nor a known-bad.")]
+    NotDecided,
+
+    [Description(
+        "A reference needs every person's verdict on {Task} to be a pass, and it has a fail: keep it as a known-bad instead.")]
+    ReferenceNeedsPasses,
+
+    [Description(
+        "A known-bad needs a person's fail on {Task}, and it has only passes: keep it as a reference instead.")]
+    KnownBadNeedsAFail,
 }

@@ -139,4 +139,17 @@ public class SampleDraftsTests
     [Test]
     public void AConversationWithNoTurns_IsRefused() =>
         Assert.Throws<ArgumentException>(() => Make(Choices()));
+
+    /// <summary>An id that can't name a scenario file (a capital, a space, a path) is refused, saying so.</summary>
+    [TestCase("Cook-af")]
+    [TestCase("cook af")]
+    [TestCase("../cook")]
+    [TestCase("")]
+    public void AnIdThatCantNameAFile_IsRefused(string id)
+    {
+        var refused = Assert.Throws<ArgumentException>(() =>
+            Make(Choices() with { SampleId = id }, Turn(1, "Wat kan ek kook?")));
+
+        Assert.That(refused!.Message, Does.Contain("kebab-case"));
+    }
 }

@@ -19,10 +19,16 @@ namespace LouisAgent.Api.Evals.Drafts.Samples;
 public static class SampleDrafts
 {
     /// <summary>The draft of a sample made from these turns, over this scenario, with what the person chose.</summary>
-    /// <remarks>Guard clause: a conversation with no turns has no question to make a sample of.</remarks>
+    /// <remarks>
+    /// Guard clauses: an id that can't name a file, then a conversation with no turns, which has no question to make a
+    /// sample of. The refusals' messages are what the person reads, so they carry no parameter name.
+    /// </remarks>
     public static SampleDraft Of(string id, string eval, string identity, string run, ConversationKey conversation,
         IReadOnlyList<EvalDocuments.Turn> turns, SampleBody scenario, SampleChoices choices, DateTimeOffset at)
     {
+        if (!KebabCase.Is(choices.SampleId))
+            throw new ArgumentException(MessageText.Format(DraftMessage.SampleIdNotKebabCase,
+                new { Id = choices.SampleId }));
         if (turns.Count == 0)
             throw new ArgumentException(MessageText.Format(DraftMessage.ConversationHasNoTurns,
                 new
@@ -30,7 +36,7 @@ public static class SampleDrafts
                     conversation.Mode,
                     conversation.Repeat,
                     conversation.Task
-                }), nameof(turns));
+                }));
 
         // The questions in the order they were asked: the first opens the sample, the rest follow up.
         var questions = turns.OrderBy(t => t.Key.Turn).Select(t => t.Question).ToList();
@@ -49,7 +55,7 @@ public static class SampleDrafts
     {
         if (given is not { } changes) return scenario.Metadata.Expected;
         if (changes.ValueKind != JsonValueKind.Object)
-            throw new ArgumentException(MessageText.Format(DraftMessage.ExpectedNotAnObject), nameof(given));
+            throw new ArgumentException(MessageText.Format(DraftMessage.ExpectedNotAnObject));
 
         // The scenario's object, each given key replacing its value; JsonObject since the keys are the scenario's own.
         var expected = JsonSerializer.SerializeToNode(scenario.Metadata.Expected)!.AsObject();
@@ -62,7 +68,7 @@ public static class SampleDrafts
                         Key = change.Name,
                         Scenario = scenario.Id,
                         Keys = string.Join(", ", expected.Select(pair => pair.Key))
-                    }), nameof(given));
+                    }));
             expected[change.Name] = JsonSerializer.SerializeToNode(change.Value);
         }
 
