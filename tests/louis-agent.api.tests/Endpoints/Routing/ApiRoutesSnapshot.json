@@ -21,6 +21,7 @@
   "GET /v1/admin/benchmarks/{check}/manual (AdminKey)",
   "GET /v1/admin/benchmarks/{eval}/drafts (AdminKey)",
   "GET /v1/admin/evals (AdminKey)",
+  "GET /v1/admin/evals/checks (AdminKey)",
   "GET /v1/admin/evals/runs/current (AdminKey)",
   "GET /v1/admin/evals/runs/{id} (AdminKey)",
   "GET /v1/admin/evals/runs/{id}/calibrations (AdminKey)",

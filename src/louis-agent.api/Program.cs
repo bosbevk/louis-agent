@@ -12,6 +12,7 @@ using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Api.Evals.Store.Mongo;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Api.Messages;
 using LouisAgent.Composition;
 using LouisAgent.Core.Guardrails.Auth;
@@ -127,7 +128,8 @@ api.MapAdmin(evals,
         WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
         WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
     host.Engine.WorkspaceRoot, reviewStore,
-    calibrationStore, calibrationRecorder, drafts: draftStore);
+    calibrationStore, calibrationRecorder, drafts: draftStore,
+    checks: new CheckList(CheckListing.ForRunner(admin.EvalRunner).Read));
 
 // Listen until the host is stopped.
 app.Run();

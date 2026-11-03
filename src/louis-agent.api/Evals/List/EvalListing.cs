@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using LouisAgent.Api.Messages;
@@ -43,7 +42,7 @@ public sealed record EvalListingResult(IReadOnlyList<EvalLine> Evals, string? Fa
 /// </summary>
 /// <remarks>
 /// The API can't reference the runner, so it reads the runner's lines into its own <see cref="EvalLine"/>. The runner
-/// is started with an argument list, never through a shell.
+/// is started by <see cref="RunnerProcess"/>, with an argument list, never through a shell.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class EvalListing(
@@ -72,53 +71,8 @@ public sealed class EvalListing(
     /// <summary>Runs the listing and reads what it wrote, or says why it couldn't.</summary>
     public EvalListingResult Read()
     {
-        if (requiredFile is not null && !File.Exists(requiredFile))
-            return Failed(EvalListingMessage.Missing, new { Path = requiredFile });
-
-        var start = new ProcessStartInfo(command)
-        {
-            UseShellExecute = false,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            CreateNoWindow = true,
-        };
-        foreach (string argument in arguments) start.ArgumentList.Add(argument);
-
-        // A runner that can't start is the same warning as one that isn't there.
-        try
-        {
-            using var process = Process.Start(start)!;
-            // Both pipes are read while the process runs, so neither can fill and hang it.
-            var output = process.StandardOutput.ReadToEndAsync();
-            var errors = process.StandardError.ReadToEndAsync();
-            if (!process.WaitForExit(timeout))
-            {
-                process.Kill(entireProcessTree: true);
-                return Failed(EvalListingMessage.TimedOut, new { Seconds = timeout.TotalSeconds });
-            }
-
-            if (process.ExitCode != 0)
-            {
-                // The runner's refusal is the last line it writes to stderr: that line is the reason, when there is
-                // one.
-                string? reason = errors.Result
-                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                    .LastOrDefault();
-                return reason is null
-                    ? Failed(EvalListingMessage.ExitCode, new { Code = process.ExitCode })
-                    : Failed(EvalListingMessage.ExitCodeWithReason, new
-                    {
-                        Code = process.ExitCode,
-                        Reason = reason
-                    });
-            }
-
-            return Parse(output.Result);
-        }
-        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
-        {
-            return Failed(EvalListingMessage.Missing, new { Path = command });
-        }
+        var output = RunnerProcess.Run(command, arguments, timeout, requiredFile, "--list");
+        return output.Failure is { } failure ? new EvalListingResult([], failure) : Parse(output.Stdout);
     }
 
     /// <summary>

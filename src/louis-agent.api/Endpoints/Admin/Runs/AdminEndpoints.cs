@@ -1,6 +1,7 @@
 using LouisAgent.Api.Endpoints.Admin.Drafts;
 using LouisAgent.Api.Endpoints.Admin.Evals;
 using LouisAgent.Api.Endpoints.Admin.Reviews;
+using LouisAgent.Api.Endpoints.Admin.Studio;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
@@ -10,6 +11,7 @@ using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 
@@ -37,7 +39,7 @@ internal static class AdminEndpoints
         Func<EvalEntry, IReadOnlyDictionary<string, string>> settingsOf,
         string workspaceRoot, IHumanReviewStore? reviews = null, ICalibrationStore? calibrations = null,
         CalibrationRecorder? calibrationRecorder = null,
-        TimeProvider? time = null, IEvalDraftStore? drafts = null)
+        TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null)
     {
         var handlers = new AdminHandlers(catalog, runner, adminKey, store, recorder, settingsOf, workspaceRoot);
         // One group for all of them, so the key check runs before any route's own work.
@@ -49,6 +51,10 @@ internal static class AdminEndpoints
         // The two lists: every eval (GET /evals), and the checks with their latest runs the Benchmarks page reads.
         admin.MapEvals(catalog, store, workspaceRoot, draftStore);
         admin.MapGet("/benchmarks", handlers.GetList);
+
+        // The studio's catalogue of checks and readers (F49.5); with no runner given, it says the runner isn't there.
+        admin.MapStudio(checks ?? new CheckList(() => new CheckListingResult([], [],
+            MessageText.Format(EvalListingMessage.Missing, new { Path = "(none)" }))));
 
         // The eval routes under their name, and again under their old one, so a saved link or an older page keeps
         // working until a TODO line removes the old name.
