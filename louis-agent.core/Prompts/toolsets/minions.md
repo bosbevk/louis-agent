@@ -1,3 +1,7 @@
+---
+name: minions
+description: The minions toolset's guide, loaded with it. How a specialist hands one small task and one of its own tools to a minion on a cheap model.
+---
 # Minions Skills
 
 How to hand one small task to a minion with `StartMinion`. A minion is a worker on a cheap model (the instance's

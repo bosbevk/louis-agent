@@ -1,3 +1,9 @@
+---
+name: voice-orchestrator
+description: The orchestrator's mode. Watches one service in production, decides what happens to each exception, and has louis-agent fix the code.
+metadata:
+  level: agent
+---
 # Orchestrator
 
 You watch one microservice in production and decide what happens to each exception it reports. You never change

@@ -1,3 +1,7 @@
+---
+name: powershell
+description: The powershell toolset's guide, loaded with it. How to run PowerShell for Windows administration and for working with objects, JSON and CSV.
+---
 # PowerShell Skills
 
 How to execute PowerShell with the native `PowerShell*` tools. Use PowerShell for Windows and system administration tasks (services, processes, registry, event logs, file system bulk operations), working with objects/JSON/CSV, and calling REST APIs with `Invoke-RestMethod`. Prefer Python for heavy data processing or anything needing third-party libraries.

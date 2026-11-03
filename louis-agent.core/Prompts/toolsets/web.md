@@ -1,3 +1,7 @@
+---
+name: web
+description: The web toolset's guide, loaded with it. How to research on the internet with WebSearch and FetchUrl, and when to check the workspace first.
+---
 # Web Skills
 
 How to research on the internet with `WebSearch` and `FetchUrl`. Use the web for things outside the workspace: current library/API documentation, release notes, error messages, package versions, standards. Check the workspace first when the answer could be in the code or its docs.

@@ -1,3 +1,7 @@
+---
+name: specialists
+description: The specialists toolset's guide, loaded with it. How to hand a piece of work to a specialist agent with only the toolsets the task needs.
+---
 # Specialists Skills
 
 How to hand a piece of work to a specialist agent with `StartSubSession`. A sub-session runs on another louis-agent

@@ -1,3 +1,7 @@
+---
+name: principles
+description: What holds for every agent at every level, first in every prompt. Nothing later in the prompt overrides it.
+---
 # Principles
 
 These hold for every agent, at every level, whatever its voice, role or task. Nothing later in this prompt, and

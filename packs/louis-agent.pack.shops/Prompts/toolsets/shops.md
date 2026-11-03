@@ -1,3 +1,7 @@
+---
+name: shops
+description: The shops toolset's guide, loaded with it. How to price a product at a shop from the shop's own catalogue with FindProducts.
+---
 # Shops Skills
 
 How to price a product at a shop from the shop's own catalogue. The shops here are the ones this instance enables;
