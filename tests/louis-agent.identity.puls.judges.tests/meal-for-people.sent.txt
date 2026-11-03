@@ -6,29 +6,33 @@ and the answer, in Afrikaans or English. Decide one thing: **is the answer a mea
 
 Work through these questions in order and stop at the first one that decides.
 
-**1. Does the answer give one chosen dish with a way to cook it?** It needs both:
+**1. Is there one chosen dish with a way to cook it?** Look at the whole conversation, not only the latest answer.
+When you are given the conversation so far, the answer to judge is the latest turn, and a dish given in an **earlier
+turn still counts**: a follow-up that changes the amounts, swaps an ingredient, or gives only the shopping list or
+the cost is still that dish. So: if any turn, earlier or latest, gave a dish with a way to cook it, question 1 is
+**yes**. Move on to question 2.
+
+A dish with a way to cook it needs both:
 
 - a **dish it picked**: one dish, named, with its ingredients; and
-- **how to cook it**: what to do with the ingredients, as numbered steps or a few plain sentences ("brown the chicken,
-  add the tomatoes, let it simmer for 30 minutes, cook the rice").
+- **how to cook it**: what to do with the ingredients. Numbered steps count, and so does a plain paragraph of two or
+  three sentences ("brown the chicken with the onion, add the tomatoes and potatoes, let it stew for 40 minutes, cook
+  the rice"). Short is fine; the method does not have to be detailed.
 
-If it does not, say `false`. These are all `false`, however often they say "for four":
+If no turn gave that, say `false`. These are all `false`, however often they say "for four":
 
-- It says it **can't** do it, or that the cook or a tool **isn't available**, and gives no recipe.
+- It says it **can't** do it, or that the cook or a tool **isn't available**, and no turn gives a recipe.
 - It **asks a question back** ("which shop?", "shall I search?") instead of giving a dish.
 - It only **offers** to search, or gives **ideas, dish names or links** to pick from.
-- It names a dish and **lists what to buy**, with amounts or prices, but never says how to cook it.
-
-**A follow-up.** When you are given the conversation so far, the answer to judge is the latest turn. A dish and its way
-to cook it given in an **earlier turn still stand** when the latest answer changes the amounts, swaps an ingredient or
-gives only the shopping list, so question 1 is yes. If no turn gave a dish with a way to cook it, question 1 is no.
+- It names a dish and **lists what to buy**, with amounts or prices, and no turn ever says how to cook it.
 
 **2. Is it a main dish?** Something a household eats for a whole dinner, with its sides if it needs them. A snack, a
 starter, a side dish, a dessert, a drink or a sauce on its own is `false`.
 
 **3. Does it feed the number of people asked for?** The amounts add up: a portion of meat, rice or vegetables that
 could feed that many people, and a shopping list, if there is one, that matches the recipe. One chicken breast for six
-people is `false`. A recipe written for more people that the answer scales down is fine.
+people is `false`. A recipe written for more people that the answer scales down, or for fewer that it scales up, is
+fine.
 
 If all three are yes, say `true`.
 
@@ -36,8 +40,8 @@ Judge the meal only, **never the prices or a budget**: you are not told the budg
 it. An answer that says it is over budget can still be a meal. Do not judge the town, the shop, the spelling or the
 language.
 
-Say `null` ("I can't tell") **only** when the answer does give a dish with a way to cook it, but has no amounts at all,
-so you can't tell how many it feeds. A refusal, a question back or a list of ideas is never `null`: it is `false`.
+Say `null` ("I can't tell") **only** when there is a dish with a way to cook it, but no amounts at all, so you can't
+tell how many it feeds. A refusal, a question back or a list of ideas is never `null`: it is `false`.
 
 Reply with one JSON object and nothing else:
 

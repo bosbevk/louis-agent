@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-recipe-only",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 5,
+  "turns": [
+    {
+      "question": "Gee my net 'n resep vir bobotie vir vier mense in Stellenbosch. Dit maak nie saak waar ek koop nie.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n resep vir vier.My kok is terug, hier is wat hy gekry het:\n\n### Die gereg\nBobotie is 'n klassieke Suid-Afrikaanse gereg met maalvleis en 'n eierlaag, en dit vul vir vier mense sonder baie moeite. Dit is 'n goeie keuse vir 'n gewone aand: een pan vleis, een ovenbak, en daar is geen begroting of tydsbeperking gegee nie.\n\n### Resep\n\n![Bobotie vir ete - Marinda Kook](https://marindakook.co.za/wp-content/uploads/2017/10/featured-bobotie-blog-018.jpg)\n\nDien 4 · ongeveer 1 uur 30\n\n1. Verhit die oond tot 190 °C.\n2. Sit die brood in 'n diep bord en gooi die 100 ml melk oor die brood.\n3. Braai die uie in 'n bietjie olie op die stoof tot glaserig.\n4. Gooi die res van die bestanddele (behalwe die eier, die 60 ml melk en die lourierblare) in 'n mengbak en meng deeglik.\n5. Druk die melk uit die brood en meng die brood saam met die uie by die vleismengsel.\n6. Skep die mengsel in 'n gesmeerde ovenbak.\n7. Klits die eier met die 60 ml melk en gooi dit oor die vleis.\n8. Sit die lourierblare bo-op.\n9. Bak vir 60 minute by 190 °C.\n\nSkakel: https://marindakook.co.za/bobotie/\n\n### Inkopielys\n\n| Bestanddeel | Vir die resep | Om te koop | Geskatte prys |\n|---|---|---|---|\n| Beesmaalvleis | 1 kg | beesmaalvleis 1 kg | ± R115 |\n| Uie | 2 | uie 1 kg | ± R25 |\n| Brood | 2 snye | witbrood 700 g | ± R22 |\n| Melk | 160 ml | melk 1 l | ± R20 |\n| Appelkooskonfyt | 80 ml | appelkooskonfyt 450 g | ± R40 |\n| Kerriepoeier | 40 ml | kerriepoeier 100 g | ± R30 |\n| Borrie | 15 ml | borrie (speserye) 50 g | ± R20 |\n| Eiers | 1 | eiers 6 stuks | ± R55 |\n| Lourierblare | 3 | lourierblare 10 g | ± R15 |\n| **Totaal** | | | **± R342** |\n| **Per persoon** | | | **± R86** |\n\nUit die voorraadkas: kookolie, sout, peper, komyn, asyn en suiker.\n\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n### Waar om te koop\nEnige supermark naby jou.\n\n### Onseker\n\n| Wat | Waarom |\n|---|---|\n| Pryse | Skattings: geen winkel se pryse is nagegaan nie. |\n| Borrie | Die resep gee nie 'n Engelse naam nie, en ek kon dit nie bevestig nie. Kyk na die etiket by die winkel, of vra die winkelpersoneel. |\n| Porsies | Die resep noem nie hoeveel porsies dit lewer nie. Ek het die hoeveelhede soos geskryf gebruik; 1 kg vleis is genoeg vir vier. |"
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}

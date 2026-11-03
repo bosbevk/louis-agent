@@ -1,0 +1,17 @@
+{
+  "grader": "meal-for-people",
+  "scenario": "cook-shops",
+  "mode": "puls-cook",
+  "run": "cf37574d0f23",
+  "repeat": 2,
+  "turns": [
+    {
+      "question": "Ek is in Stellenbosch, kook vanaand vir vier mense en het so 'n uur. Ek koop by PnP en Woolworths. Wat moet ek maak? Gee my die resep, ongeveer wat dit kos, en die takke se adresse.",
+      "answer": "Ek gee dit gou vir my kok; hy's nou-nou terug met 'n resep en 'n lys.My kok is terug, hier is wat hy gekry het:\n\n**Die gereg**\nHoenderkerrie met aartappels en baba-wortels, in een pot. Dit kan binne ongeveer 45 minute klaar wees, en die resep is vir 4 mense aangepas.\n\n**Resep**\n![Maklike Kerrie Hoender Resep](https://idata.hiloved.com/imgs/71c8af47bc3e39b6-1024x681.jpg)\n\nDien 4 · ongeveer 45 minute\n\n1. Verhit 2 eetlepels olie in 'n wok of diep braaipan oor medium-hoë hitte. Braai die gekapte ui sag en deurskynend.\n2. Voeg 3 eetlepels kerriepasta by en roerbraai tot dit geurig is.\n3. Voeg die hoender by en roerbraai sowat 5 minute tot dit bruin is en met die kerrie bedek.\n4. Voeg die aartappels, wortels, 1½ koppie hoenderbouillon, 1½ teelepel suiker, sout en peper by.\n5. Bedek en prut oor lae hitte 15–20 minute, tot die hoender gaar is. Proe en pas die speserye aan.\n6. Strooi koljander oor (opsioneel) en bedien met rys.\n\nSkakel: https://af.hiloved.com/maklike-kerrie-hoender-resep/\n\n**Inkopielys**\n\n| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Hoenderborsies, botteloos en velloos | 800 g | chicken breast fillets 1 kg | ± R129 |\n| Rooi ui | 1 | red onions 1 kg | ± R30 |\n| Aartappels | 4 | potatoes 2 kg | ± R35 |\n| Baba-wortels | 20 | baby carrots 400 g | ± R22 |\n| Kerriepasta | 3 eetlepels | curry paste 200 g | ± R35 |\n| **Totaal** | | | **± R251** |\n| **Per persoon** | | | **± R63** |\n\nUit die voorraadkas: kookolie, sout, peper, suiker, hoenderbouillon-blokkie en speserye.\nPryse is skattings, nie by 'n winkel nagegaan nie.\n\n**Waar om te koop**\n\n| Shop | Branch | Street or mall | Website |\n|---|---|---|---|\n| Pick n Pay | Pick n Pay Bird Street | Bird Street, Stellenbosch Sentraal | [pnp.co.za](https://www.pnp.co.za) |\n| Woolworths | Woolworths Bird Street | Bird Street, Stellenbosch Sentraal | [woolworths.co.za](https://www.woolworths.co.za) |\n\n**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Alle pryse | Skattings: geen winkel se pryse is opgesoek nie. Woolworths is gewoonlik duurder as Pick n Pay. |\n| Rys | Die resep se lys sluit rys nie in nie. 'n Pak rys van 500 g kos ± R25 bykomend. |\n| Hoeveelhede | Die resep is vir 2–4 mense; ek het die hoender tot 800 g en die ander bestanddele na 4 mense opgeskaal. |\n| Takke | Die adresse kom uit OpenStreetMap. Ek het nie die takke se oopure of voorraad nagegaan nie. |\n\nDit is 'n maklike pot wat binne 'n uur kan wees, so jy het mooi tyd. Let net op die takke se oopure voor jy ry, en vat rys saam as jy dit nie al in die huis het nie."
+    }
+  ],
+  "label": {
+    "pass": true,
+    "note": ""
+  }
+}
