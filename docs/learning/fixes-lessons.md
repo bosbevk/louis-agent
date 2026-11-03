@@ -185,6 +185,16 @@ same rule. The second lesson is where a fact like "this run was recorded" comes 
 setting reads it back (Information Expert, as CL26 chose for `replay_of`), so the web app never spells the setting's
 name or the mode's word, and a test on that one class covers every page. Skill 12 (evaluation) and 13 (cost).
 
+## FX29 · A failure has to reach the screen that shows it
+
+The send button looked dead, but it worked: the click opened the session, the API refused the key, and the runner
+did the right thing (the draft back in the box, a notice saying the key is missing). Nobody saw it, because in Blazor
+an event redraws only the component it was raised in, here the message box, while the notice belongs to the page.
+The happy path told the page (`Changed`), the failure path didn't. The lesson: every path out of a state change,
+the early `return` in a `catch` above all, raises the same "I changed" signal, and a test pins the signal, not only
+the state (`ChatRunnerTests`: the notice *and* one `Changed`). A failure that is caught well but shown nowhere is
+worse than one that throws: it reads as a dead button. Skill 18 (testing and shipping).
+
 ## FX23 · A pipe the child never reads is not a failure
 
 When a parent writes to a child's standard input and the child exits first, the operating system answers the write

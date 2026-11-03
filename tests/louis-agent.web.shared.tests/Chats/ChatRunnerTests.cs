@@ -60,10 +60,12 @@ public class ChatRunnerTests
         Assert.That(turn.Error, Is.Null);
         Assert.That(h.Js.Calls, Does.Contain("localStorage.setItem"), "saved when the stream ended");
         Assert.That(h.Ended, Is.EqualTo(1));
-        Assert.That(h.Handler.Requests.Select(r => $"{r.Method} {r.Url}"), Is.EqualTo(new[]
-        {
-            "POST http://localhost/v1/sessions", $"POST http://localhost/v1/sessions/{FixtureApi.SessionId}/messages",
-        }));
+        Assert.That(h.Handler.Requests.Select(r => $"{r.Method} {r.Url}"),
+            Is.EqualTo(new[]
+            {
+                "POST http://localhost/v1/sessions",
+                $"POST http://localhost/v1/sessions/{FixtureApi.SessionId}/messages",
+            }));
     }
 
     [Test]
@@ -106,7 +108,13 @@ public class ChatRunnerTests
     {
         var text = new ChatText { SessionGone = "Die sessie is weg." };
         var h = new Harness(sessionGone: true, text)
-        { Runner = { Chat = new ChatModel { SessionId = FixtureApi.SessionId }, Draft = "nog iets" } };
+        {
+            Runner =
+            {
+                Chat = new ChatModel { SessionId = FixtureApi.SessionId },
+                Draft = "nog iets"
+            }
+        };
 
         await h.Runner.SendAsync();
 
@@ -119,7 +127,12 @@ public class ChatRunnerTests
     [Test]
     public void Describe_UsesTheAppsWords_ForTheErrorsItKnows()
     {
-        var text = new ChatText { NeedsKey = "Sleutel!", StillAnswering = "Wag!", ApiUnreachable = "Weg!" };
+        var text = new ChatText
+        {
+            NeedsKey = "Sleutel!",
+            StillAnswering = "Wag!",
+            ApiUnreachable = "Weg!"
+        };
         var h = new Harness(text: text);
 
         Assert.That(h.Runner.Describe(new AgentApiException(HttpStatusCode.Unauthorized, "401")),
@@ -199,6 +212,28 @@ public class ChatRunnerTests
         Assert.That(failing.Draft, Is.EqualTo("Hallo"), "the message comes back to the box");
         Assert.That(failing.Attachments, Has.Count.EqualTo(1));
         Assert.That(failing.Notice, Is.EqualTo("Can't reach the agent API. Is the api container running?"));
+    }
+
+    // FX29: the send button seemed dead when the API refused the key. The session open failed, the notice was set and
+    // the draft put back, but nothing told the page to redraw, so the notice (shown by the page, not the box the click
+    // came from) never appeared. A failed open must say so out loud.
+    [Test]
+    public async Task ASessionOpenTheApiRefuses_SaysItNeedsAKey_AndRedrawsThePage()
+    {
+        var h = new Harness();
+        var refused = new ChatRunner(FixtureApi.Client(h.Settings), h.Store, new ChatText(),
+            () => throw new AgentApiException(HttpStatusCode.Unauthorized, "Missing or invalid API key"), h.Clock)
+        {
+            Draft = "toets",
+        };
+        int changed = 0;
+        refused.Changed += () => changed++;
+
+        await refused.SendAsync();
+
+        Assert.That(refused.Notice, Is.EqualTo(new ChatText().NeedsKey));
+        Assert.That(refused.Draft, Is.EqualTo("toets"), "the message comes back to the box");
+        Assert.That(changed, Is.EqualTo(1), "the page redraws, so the notice and the draft show");
     }
 
     [Test]
