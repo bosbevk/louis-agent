@@ -4,6 +4,23 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **F49.5 Studio: compose, try, publish**, and with it **F49 Evals as content** is done (its five
+  children F49.1 to F49.5; what lasts of the parent plan is in [the evals' architecture](docs/architecture/evals.md#where-f49-came-from)):
+  the admin portal's Studio page (`/admin/studio`) composes an eval as a form over `eval.json` (the head and modes,
+  checks picked from the runner's catalogue with their fields drawn from each settings' schema, the rubrics, *View
+  JSON*), saves it as an eval draft (the third view of `eval_drafts`), and asks the runner for everything: its
+  catalogue (`--checks`, `GET /v1/admin/evals/checks`), its verdict on the draft written out as a folder with the
+  eval's sample and transcript drafts (`--check`, which seals the manifest and runs CI's conformance gate;
+  `POST …/drafts/{id}/verdict`), a try on a few samples as a replay at no cost (`run --folder --samples --replay`;
+  `POST …/{id}/try`), and a publish that commits only a folder the runner passed beside its identity on
+  `eval/{identity}-{name}`, through git's plumbing over a temporary index so the checkout is untouched, the push and
+  the pull request left to the person, or a zip where there is no git workspace (`POST …/{id}/publish`); promptfoo in
+  and out by a mapping table (`--import-promptfoo`, `--export-promptfoo`, YamlDotNet in the runner only;
+  `POST /v1/admin/evals/drafts/promptfoo` names what it left out, `GET …/{id}/promptfoo`). The API still never
+  references the harness: every call goes through `RunnerProcess`. Steps 1 to 8 ran unattended; their picks are in
+  the PR for review. Guide [Add an eval](docs/guides/add-an-eval.md#9-or-compose-it-in-the-studio)
+  ([0062](docs/adr/0062-the-studio-writes-what-git-keeps.md), [write-up 12](docs/learning/12-evaluation.md#compose-try-publish-f495),
+  [write-up 18](docs/learning/18-testing-and-shipping.md#git-stays-the-truth-f495))
 - 2026-11-03 — **F49.4 Studio: samples from chats and human review**: on a stored run in the admin portal, a
   conversation becomes a sample draft (*Sample* on its card: a variant of the scenario it ran, read from the eval's
   folder the runner's listing now names; the first question the input, the later ones the follow-ups, the person's

@@ -220,6 +220,41 @@ nothing. That's the field's "human in the loop" for datasets: the model may sugg
 Braintrust "log to dataset"); the known-bads are *negative examples* or *regression cases*; and keeping the person
 as the gate is how you stop a dataset drifting toward what the judge already likes.
 
+## Compose, try, publish (F49.5)
+
+This is the last piece of skill #12's "evals as data": a new eval is made in the browser, not in Rider. The Studio
+page (`/admin/studio`) is a form over `eval.json`. You pick checks from the catalogue, each check's fields drawn from
+its settings' schema, and type the rubric. Then you **check** it, **try** it and **publish** it
+([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)).
+
+**One reader of eval files, behind a process.** The tempting shortcut was to let the API read and validate an eval
+itself. But then two programs would read eval files, and two readers drift: one would accept a file the other refuses.
+So the runner, the program that runs evals anyway, is the only one that reads them. The API starts it as a child
+process and reads its lines: `--checks` for the catalogue, `--check {folder}` for the verdict. A check is the same
+strict load and the same conformance gate CI runs, so "the studio says it's fine" and "CI says it's fine" can't
+disagree. The cost is a process start per click, about a second. In the field's words, the runner is a *Facade* over
+the harness, and the process boundary is the seam every host goes through.
+
+**One folder for everything.** A draft is written out as one folder (`DraftFolder`) every time the runner must read
+it, with the samples and transcripts you kept from runs (F49.4). Check, try, publish and export all read that folder,
+so what you checked is what you tried and what you published.
+
+**A try is a replay.** "Try on three samples" replays a stored run on just those samples (`--folder`, `--samples`),
+so the model's answers come from the recording and it costs $0. If a question isn't in the recording, it ends as a
+replay miss. It never quietly calls the model. This is the *frozen input* idea from F18 again: you're testing the
+eval's checks, not the agent, so the agent's answers should hold still.
+
+**promptfoo in and out: an Adapter with a table.** promptfoo is the eval tool people most often already have.
+Importing its file is a translation: its tests become our scenarios, its assert types map to our check types by one
+table (`PromptfooAssertion`, an enum of promptfoo's names), and an `llm-rubric` becomes a rubric file our `judge`
+reads. Anything with no counterpart, such as a JavaScript assert, is **named as left out**, never dropped without a
+word. A silent drop would leave you with an eval that looks complete and grades less than you think. Export runs the
+same table backwards. The pattern is Gang of Four's *Adapter*: two interfaces that mean nearly the same thing, and
+one small class in between that knows the difference.
+
+**In the field's words:** evals as code in a repository (*evals-as-code*), a *pre-flight validation* that is the same
+gate CI runs, and *interoperability* with a common format instead of a format of our own that only we can read.
+
 ## The limits, said plainly
 
 - **36 labels, one judge, one person.** Nine fails is "few labels" by the card's own rule. A pass at 100% on nine is

@@ -178,9 +178,9 @@ every required check, and any other file is stray and refused. Cut them from a s
 **From the portal, instead of by hand** (F49.4): on a stored run's conversation, *Sample* makes a new sample from
 it (a variant of the scenario it ran: change the id, the expected values, the categories, add an ideal answer), and
 after you grade a conversation, *Keep as reference* (a pass) or *Keep as known-bad* (a fail, with a reason in
-kebab-case) keeps its transcript. Both wait as drafts on the Evals page, under the eval's card, until F49.5 publishes
-them as files ([ADR 0061](../adr/0061-evals-grow-from-use.md)); today you copy a draft's JSON or text into the folder
-yourself.
+kebab-case) keeps its transcript. Both wait as drafts on the Evals page, under the eval's card
+([ADR 0061](../adr/0061-evals-grow-from-use.md)), and the studio's publish writes them into the eval's folder with
+it ([section 9](#9-or-compose-it-in-the-studio)).
 
 ## 7. Test it
 
@@ -205,6 +205,34 @@ EVALS=acme dotnet run --project evals/louis-agent.evals.runner -- --list
 Running one talks to the API and spends money, so ask first. The flags, recording and replaying, the dev and held-out
 scenarios, and the portal are in [Run the evals](run-the-evals.md); the portal shows a new eval with no change in the
 API ([Change the API](change-the-api.md#add-an-eval-to-the-portal)).
+
+## 9. Or compose it in the studio
+
+The steps above work in any editor. The admin portal's **Studio** page (`/admin/studio`, *Studio* in the admin
+menu) does the same from the browser, and ends in the same folder of files
+([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)):
+
+1. **Compose.** *New eval* opens a form over `eval.json`: the name, the identity, the version, what a pass means, the
+   manual's file name, the modes; *Add a check…* lists the runner's catalogue, and each check's fields come from its
+   settings (a reader is picked from the readers the runner has); the rubrics are text boxes. *View JSON* shows the
+   file the form makes.
+2. **Save.** The eval is kept as a draft under your reviewer's name, with the sample and transcript drafts made for
+   it from runs (section 6). Nothing in the repository changes yet.
+3. **Check.** The runner loads the draft's folder as strictly as a run would and holds it to the conformance gate the
+   tests run (section 7); every problem shows in its own words. Fix them and check again.
+4. **Try.** Name a stored run to replay and, if you like, a few samples (commas between). A try is always a replay,
+   so it costs nothing; follow it on the Benchmarks page. A fresh run stays the Run button's, and spends money.
+5. **Publish.** Only a draft the runner found no problem with is published. On a machine whose workspace is a git
+   checkout, the folder is committed to `identities/louis-agent.identity.{identity}/Evals/{Name}/` on the branch
+   `eval/{identity}-{name}`, without touching your checkout; push the branch and open the pull request yourself.
+   Where the API has no git workspace (Azure), the folder comes as a zip to add in a pull request.
+
+**promptfoo in and out.** Paste a `promptfooconfig.yaml` in the studio's *promptfoo* box and *Import*: its tests
+become the draft's scenarios, its asserts our checks by a table (`contains`, `not-contains`, `starts-with`,
+`is-json`, `levenshtein`, `latency`, `cost`), each `llm-rubric` a rubric the `judge` reads, and everything else is
+listed as left out, so you know what to add by hand. *Export the open draft* saves it, then downloads it as a
+promptfoo file. The command line has the same two: `--import-promptfoo {file} {folder}` and
+`--export-promptfoo {folder}`.
 
 ## Before you ask for a review
 
