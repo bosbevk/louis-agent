@@ -11,7 +11,8 @@ namespace LouisAgent.Core.Telemetry;
 /// model request and tool call Microsoft.Extensions.AI traces, every request ASP.NET Core serves and
 /// <c>HttpClient</c> sends, and our own spans, named for the host. Every host starts it once, right after its
 /// settings load; with no endpoint nothing listens, so a host with no collector pays nothing for its spans. At exit
-/// the last spans and log lines go out, waiting a few seconds at most.
+/// the last spans and log lines go out, waiting a few seconds at most, and a crash is logged once first
+/// (<see cref="LastChance"/>), collector or not.
 /// </summary>
 /// <remarks>
 /// Composition Root (Seemann): the one entry a process calls while it is put together, so no host builds a tracer of
@@ -50,7 +51,12 @@ public static class AgentTelemetry
     /// </summary>
     public static IDisposable Start()
     {
-        lock (Gate) return _current ??= new Tracing(Build());
+        lock (Gate)
+        {
+            // Before the tracer, so a host with no collector still logs a crash.
+            LastChance.Install();
+            return _current ??= new Tracing(Build());
+        }
     }
 
     /// <summary>Sends the spans the tracer still holds, waiting a few seconds at most.</summary>

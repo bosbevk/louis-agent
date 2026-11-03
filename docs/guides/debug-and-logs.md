@@ -19,7 +19,9 @@
   `OTEL_EXPORTER_OTLP_PROTOCOL` picks gRPC (the default) or `http/protobuf`. The JSON-lines records stay out. The
   traces go to the same collector: every turn is a span, `invoke_agent {agent}` named for the agent (its role, or
   the default mode) and tagged with its session, host, turn, run and task, holding a span per model request and tool
-  call, with no prompt or answer on any of them. F52's step 6 adds the dashboard to send them to.
+  call, with no prompt or answer on any of them. A crash is one `[FATAL]` line with its stack, and the last lines
+  and spans still leave; a failed task nothing awaited is one `[ERROR]`. F52's step 6 adds the dashboard to send them
+  to.
 - stdout is a protocol for the ACP and MCP servers, so every log goes through `ILogger` to stderr
   ([ADR 0009](../adr/0009-message-text-as-enum-templates.md)).
 
