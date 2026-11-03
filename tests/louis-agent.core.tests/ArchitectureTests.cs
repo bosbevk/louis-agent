@@ -30,6 +30,7 @@ public partial class ArchitectureTests
         ["Usage"] = 2,
         ["Pricing"] = 2,
         ["Protocols"] = 2,
+        ["Telemetry"] = 2,
         ["Agent"] = 3,
         ["Hosting"] = 4,
     };
