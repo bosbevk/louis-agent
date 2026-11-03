@@ -9,6 +9,7 @@ using LouisAgent.Api.Evals.Drafts.Composed;
 using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Studio;
+using LouisAgent.Api.Evals.Studio.Publish;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Messages;
 using ImportAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
@@ -35,7 +36,8 @@ internal sealed class DraftPromptfooHandlers(
     IEvalDraftStore drafts,
     PromptfooRunner promptfoo,
     TimeProvider time,
-    string scratch)
+    string scratch,
+    EvalHomes homes)
 {
     /// <summary>Makes a new eval draft from a promptfoo file.</summary>
     public async Task<ImportAnswer> PostImport(PromptfooImportRequest? request, CancellationToken cancellationToken)
@@ -69,7 +71,8 @@ internal sealed class DraftPromptfooHandlers(
             if (await drafts.GetEvalAsync(id, cancellationToken) is not { } draft)
                 return ApiErrors.NotFound(MessageText.Format(DraftMessage.NoEvalDraft, new { Id = id }));
 
-            string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch);
+            string folder = DraftFolder.Write(draft, await drafts.OfEvalAsync(draft.Name, cancellationToken), scratch,
+                homes.Existing(draft));
             var exported = promptfoo.Export(folder);
             if (exported.Failure is { } failure) return ApiErrors.Unavailable(failure);
             return TypedResults.Text(exported.Stdout, "application/yaml", Encoding.UTF8);

@@ -175,6 +175,19 @@ instead of hiding it from the key and was the smallest change; the price was a f
 ([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md)). When a replay misses, read *which* message changed
 first: here it pointed straight at the one line that carried numbers. Skill 12 (evaluation) and 13 (cost).
 
+## FX32 · An edit starts from what is already there
+
+The studio wrote a draft out as a folder made only of what it keeps: the eval's file, its rubrics, its scenarios and
+the transcripts kept from runs. For a new eval that is everything. For an edit of an eval git already holds it was a
+stripped copy: no references, no held-out scenarios, no labels, no manual. Every unit test passed, because each
+one checked a new eval; it took an end-to-end run on the real cook eval to see it. Two lessons. An editor writes over
+what exists, it doesn't rebuild it from its own fields, so the folder now starts as a copy of the eval's folder and
+the draft goes on top (the runner stays the one that reads it, finding R). And a feature that edits real content is
+tested on real content, not only on a made-up one: the first fix passed every unit test too, and the second run on
+the cook showed its folder is `Cook`, not the `PulsCook` the studio worked out from the eval's name. Where a thing
+lives is asked of the one that knows (the runner's listing), never derived from its name. Skill 18 (shipping:
+end-to-end checks) and 12 (evaluation).
+
 ## FX33 · A raw string has its file's line endings
 
 A C# raw string literal spanning lines holds the newlines of the source file it is written in, and git writes that

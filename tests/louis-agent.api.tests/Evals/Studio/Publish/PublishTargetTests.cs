@@ -21,6 +21,29 @@ public class PublishTargetTests
                 "eval/weather-agent-weather-eval")));
     }
 
+    /// <summary>
+    /// An eval the runner already lists keeps the folder it is in (FX32): the cook's is <c>Cook</c>, not
+    /// <c>PulsCook</c>, so an edit replaces it instead of making a second eval of the same name beside it.
+    /// </summary>
+    [Test]
+    public void AnEvalTheRunnerLists_KeepsItsFolder()
+    {
+        var target = PublishTarget.Of("weather-agent", "weather-eval",
+            "identities/louis-agent.identity.weather-agent/Evals/Weather");
+
+        Assert.That((target.Folder, target.FolderName, target.Branch),
+            Is.EqualTo(("identities/louis-agent.identity.weather-agent/Evals/Weather", "Weather",
+                "eval/weather-agent-weather-eval")));
+    }
+
+    /// <summary>A listed folder outside its identity's <c>Evals/</c> isn't taken: it goes where new ones go.</summary>
+    [TestCase("identities/louis-agent.identity.other-agent/Evals/Weather")]
+    [TestCase("evals/template/Example")]
+    [TestCase("identities/louis-agent.identity.weather-agent/Evals/../../escape")]
+    public void AListedFolderOutsideItsIdentity_IsNotTaken(string listed) =>
+        Assert.That(PublishTarget.Of("weather-agent", "weather-eval", listed).Folder,
+            Is.EqualTo("identities/louis-agent.identity.weather-agent/Evals/WeatherEval"));
+
     /// <summary>The zip holds the folder's files under the folder's name, paths with forward slashes.</summary>
     [Test]
     public void TheZip_HoldsTheFolderUnderItsName()

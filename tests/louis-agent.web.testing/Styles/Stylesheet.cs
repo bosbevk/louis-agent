@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using LouisAgent.Testing;
 
-namespace LouisAgent.Web.Testing;
+namespace LouisAgent.Web.Testing.Styles;
 
 /// <summary>
 /// A web app's stylesheet as the browser sees it: the files its app.css imports, read in their order and joined.

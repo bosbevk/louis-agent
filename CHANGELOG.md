@@ -4,6 +4,12 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **FX32 An edit in the studio keeps its eval's folder**: a draft of an eval the workspace has starts
+  from a copy of the folder the runner lists it in (the cook's `Cook`), so its references, held-out scenarios, labels,
+  manual and manifest are checked and published back into that folder with the draft's changes on top (an edit that
+  changes a scenario bumps the manifest's version, for the runner to seal); a refused
+  publish no longer ends its quote with `..`
+  ([lesson](docs/learning/fixes-lessons.md#fx32--an-edit-starts-from-what-is-already-there))
 - 2026-11-03 — **FX30 The delegation card's tile**: back in place (`../../brand/` from `css/chat/`), and every relative
   `url(…)` in Puls's stylesheet is tested to point at a file the app serves
   ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx30--a-path-written-from-a-file-breaks-when-the-file-moves))
