@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **FX31 The trend's change badge stays one pill**: on the Benchmarks page's category cards, `▲ +13%`
+  no longer breaks into a two-line blob beside the value, and the small trend panels fill their card instead of
+  three fixed columns with one empty ([lesson](docs/learning/fixes-lessons.md#fx31--a-small-copy-of-a-layout-needs-its-own-columns))
 - 2026-10-31 — **F49.3 Checks in packs**: a pack ships the checks that prove its tools, in a registry of its own
   that the composition's `EvalChecks.All` gathers; the shops pack's `ShopsChecks.All` holds `estimates-at-shop` and
   `untooled-shops`, and `PricedAtRetailer` (`priced-at-shop`, no entry) moved beside them, with what only they read
