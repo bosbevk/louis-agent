@@ -175,6 +175,21 @@ instead of hiding it from the key and was the smallest change; the price was a f
 ([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md)). When a replay misses, read *which* message changed
 first: here it pointed straight at the one line that carried numbers. Skill 12 (evaluation) and 13 (cost).
 
+## FX34 · A cost is worth most while it's being spent
+
+A live run's table showed every turn's role, calls and seconds, and "—" for its cost, until the whole run had ended:
+the costs came from the stored run's requests, and those are written at the end. Nothing was wrong with the numbers;
+they just arrived after the money was gone, and "—" meant both "not priced yet" and "no price known" (the second is
+ADR 0007's meaning). Three lessons. A measure belongs where the decision is made: a paid run is watched while it
+runs, so that's when its cost must show. Find where the data lives before choosing who should send it: the first
+proposal had the runner price its turns, but the agent's requests are written to the ledger by the API's sessions,
+so the runner never had them; checking that premise changed the design before any code. And when a live view and a
+final view show the same number, give them one join and one sum (`EvalLedger.Join`, `LiveTurns.CostsFrom`), so they
+can't drift; a sum that is asked again and again starts from empty each time, or it counts twice. A detail on the
+way: a map that a background fold writes and a request reads is a `ConcurrentDictionary`, and a reader that can meet
+a half-written file line says so instead of answering "nothing", which would have blanked the costs already shown.
+Skill 13 (cost and token economics) and 17 (observability).
+
 ## FX32 · An edit starts from what is already there
 
 The studio wrote a draft out as a folder made only of what it keeps: the eval's file, its rubrics, its scenarios and
