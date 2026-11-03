@@ -45,7 +45,8 @@ in C# from role to toolsets (a prompt's needs kept apart from the prompt, agains
 - Which tools a session has now depends on the instance as well as the request. The session's record lists the
   toolsets it actually loaded, not the names it was asked for.
 - Role files have a small format of their own (`RoleHeader`); only `toolsets:` is read, and any other key in it is
-  ignored.
+  ignored. **Since CL27** ([0063](0063-a-prompt-says-what-it-is.md)) the list sits under `metadata` in the front matter
+  every prompt opens with, read by one strict reader that refuses an unknown key; `RoleHeader` is gone.
 
 ## Links
 

@@ -4,6 +4,18 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **CL27 Prompt headers**: every built-in prompt (core's, Puls's and the shops pack's 26, and the
+  tests' six) and the cook's judge rubric open with the Agent Skills spec's front matter: `name` (the file's),
+  `description`, and under `metadata` the `level` of a mode, role or minion and the `toolsets` a role always loads
+  (F33's line, moved there); one strict reader in core, `PromptHeaders` (YamlDotNet, newly in core), refuses an
+  unknown key, a wrong name or level, a missing description or an unclosed fence, naming the file; `PromptCatalog`
+  reads every header once, so a faulty one stops the host at start; the model and the judge get only the body (the
+  prompt goldens unchanged, the rubric's hash still `438a8deb91f4`, no calibration moved); `RoleHeader` deleted,
+  `RoleLevel` at the top of `Skills/`, a role's toolsets from `SkillLoader.ToolsetsOf`; `GET /v1/admin/prompts` and
+  Puls's admin *Prompts* page list them. Ran unattended; its picks are in the PR for review. Guide
+  [Build an identity](docs/guides/build-an-identity.md#3-write-its-mode)
+  ([0063](docs/adr/0063-a-prompt-says-what-it-is.md), [write-up 07](docs/learning/07-context-engineering.md#a-prompt-says-what-it-is-cl27))
+
 - 2026-10-31 — **F49.3 Checks in packs**: a pack ships the checks that prove its tools, in a registry of its own
   that the composition's `EvalChecks.All` gathers; the shops pack's `ShopsChecks.All` holds `estimates-at-shop` and
   `untooled-shops`, and `PricedAtRetailer` (`priced-at-shop`, no entry) moved beside them, with what only they read

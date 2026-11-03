@@ -156,6 +156,19 @@ are message enum members (ADR 0009), and a turn that failed for the infrastructu
 so it goes in a project of its own beside the identity that only the runner references, as
 `identities/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
 
+**A rubric file** (`Rubrics/{name}.md`) opens with the header every prompt has
+([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its `name` (the file's) and a `description` of what it judges.
+The judge is sent only the body after it, and the rubric's hash, which a calibration records, is the body's, so the
+header can change without moving a calibration:
+
+```markdown
+---
+name: meal-for-people
+description: The cook eval's judge rubric. Is the answer a main dish that feeds the number of people asked for.
+---
+# Judge: is this a meal for the people asked for
+```
+
 ## 5. Write the manual
 
 `manual.md` is what the portal opens from the eval's card: what it asks, each mode, each check and what its failure

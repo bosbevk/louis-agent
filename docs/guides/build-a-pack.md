@@ -102,10 +102,16 @@ A big toolset is several classes, one concern each (the 200-line limit, [ADR 003
 ## 3. Write the guide
 
 The guide is a markdown file the model reads whenever a session loads the toolset: `Prompts/toolsets/units.md`.
-Open it with the one line that routes work here, because a pack can't add a row to an identity's routing; then the
-tools, one line each; then how to use them well.
+It opens with the header every prompt has ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its `name` (the
+file's, `units`) and a `description` of the guide, no level, since every level may load it. Then the one line that
+routes work here, because a pack can't add a row to an identity's routing; then the tools, one line each; then how to
+use them well.
 
 ```markdown
+---
+name: units
+description: The units toolset's guide, loaded with it. How to convert a measurement between units with ConvertUnits.
+---
 # Units Skills
 
 Route here a request to convert a measurement between units.
