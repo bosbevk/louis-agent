@@ -4,6 +4,13 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F54 The engine's website**: `src/louis-agent.site`, a public site for .NET developers in the
+  Console theme (black, white and metallic grays) with five pages and two films of how the engine works, a short
+  one (36 s) and a detailed one (60 s) whose slabs are the chat pipeline's middleware in its real order; static
+  server-rendered Razor with no WebAssembly and no script of ours, the films CSS keyframes over CSS 3D, the site
+  referencing no engine project and showing only what works today; 21 tests (the pages in memory, a golden per
+  film, the stylesheet's rules), `Dockerfile.site`. PR #133; [ADR 0066](docs/adr/0066-the-site-is-static-razor.md);
+  [write-up](docs/learning/18-testing-and-shipping.md#a-host-that-is-only-content-f54)
 - 2026-11-04 — **F52 Observability through OpenTelemetry**: every host sends its logs (Serilog's OTLP sink) and
   traces (the OpenTelemetry SDK) to the collector `OTEL_EXPORTER_OTLP_ENDPOINT` names, on the standard settings
   alone; a turn is an `invoke_agent` span named for its agent and tagged with its session and turn, never its words; a
