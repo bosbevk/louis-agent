@@ -62,6 +62,26 @@ public class RunnerEnvironmentTests
     }
 
     /// <summary>
+    /// The collector's address and protocol come through, so the runner's own spans (a judge's model calls) reach the
+    /// dashboard (F52 step 6, Louis's pick B); the API's service name doesn't, as the runner is named by its own
+    /// assembly, and a collector's key never travels.
+    /// </summary>
+    [Test]
+    public void TheCollectorsAddress_ComesThrough_NotItsKeyOrTheApisName()
+    {
+        var env = RunnerEnvironment.Select(new Dictionary<string, string>(Api)
+        {
+            ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://host.docker.internal:4317",
+            ["OTEL_EXPORTER_OTLP_PROTOCOL"] = "grpc",
+            ["OTEL_SERVICE_NAME"] = "puls",
+            ["OTEL_EXPORTER_OTLP_HEADERS"] = "x-api-key=collector-secret",
+        });
+
+        Assert.That(env.Keys, Is.SupersetOf(new[] { "OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_PROTOCOL" }));
+        Assert.That(env.Keys, Has.None.AnyOf("OTEL_SERVICE_NAME", "OTEL_EXPORTER_OTLP_HEADERS"));
+    }
+
+    /// <summary>
     /// Proxy and certificate settings come through, in either case. Behind a company proxy or CA, a judge can't reach
     /// Anthropic without them; none is a secret, they're what the process needs to reach the network, like the path.
     /// </summary>
@@ -154,6 +174,7 @@ public class RunnerEnvironmentTests
         Assert.That(read, Has.Count.GreaterThanOrEqualTo(8),
             "the scan found the settings the runner reads: " + string.Join(", ", read.Order()));
         Assert.That(read.Except(handledAnotherWay).Where(name => !RunnerEnvironment.Names.Contains(name)), Is.Empty,
-            "a setting the runner reads that the allowlist doesn't carry would silently never arrive: add it to RunnerEnvironment.Names");
+            "a setting the runner reads that the allowlist doesn't carry would silently never arrive: " +
+            "add it to RunnerEnvironment.Names");
     }
 }

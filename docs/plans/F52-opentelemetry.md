@@ -488,6 +488,10 @@ a replay, and the measurement in step 8 replays a recorded eval run.
   Critical, and the logs and spans flush, as the process ends; a faulted task nobody awaited is an Error with no
   flush, marked observed, because since .NET 4.5 it doesn't end the process. The level says whether the process
   lived on, which is what the level table (F1) is for.
+- **2026-11-03, step 6, each host's name in the dashboard** (Louis's pick J1 of three, 21:55): every host is named
+  by its project's short name (`api`, `acp-server`, `mcp-server`, `cli`, `evals.runner`), so compose sets
+  `OTEL_SERVICE_NAME` only for `puls`, whose project is the API's. The runner's own name (pick B) is its project's,
+  so the allowlist lets the endpoint and protocol through and keeps `OTEL_SERVICE_NAME` out, else it would be `puls`.
 
 ## Concepts this teaches (GOAL skill 17, with 15 and 18)
 

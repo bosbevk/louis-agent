@@ -28,12 +28,14 @@ internal static class RunnerEnvironment
 
     /// <summary>
     /// What the eval runner reads itself, and through core for the judge's ledger rows; a Python check reads
-    /// <c>AGENT_API_KEY</c> of these.
+    /// <c>AGENT_API_KEY</c> of these. The collector's address and protocol too (F52), never its key or the API's
+    /// service name: the runner is named by its own assembly.
     /// </summary>
     private static readonly string[] Runner =
     [
         "EVALS", "CI", "EVAL_JUDGE_PROVIDER", "EVAL_JUDGE_MODEL", "EVAL_JUDGE_ENDPOINT", "EVAL_JUDGE_API_KEY",
-        "AGENT_API_KEY", "LOG_DIRECTORY", "USAGE_LEDGER", "PRICES_FILE", "PRICES_URL"
+        "AGENT_API_KEY", "LOG_DIRECTORY", "USAGE_LEDGER", "PRICES_FILE", "PRICES_URL",
+        "OTEL_EXPORTER_OTLP_ENDPOINT", "OTEL_EXPORTER_OTLP_PROTOCOL"
     ];
 
     /// <summary>Every name the process may see; <see cref="Prefixes"/> add the runtime's own family.</summary>
@@ -45,6 +47,7 @@ internal static class RunnerEnvironment
     /// </summary>
     public static readonly string[] Prefixes = ["DOTNET_"];
 
+    /// <summary>The judge's own key, and the API's Anthropic key it falls back to.</summary>
     private const string JudgeKey = "EVAL_JUDGE_API_KEY", AnthropicKey = "ANTHROPIC_API_KEY";
 
     /// <summary>

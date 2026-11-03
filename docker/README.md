@@ -8,6 +8,7 @@
 |---|---|
 | `docker-compose.yml` | The code-review app and Rider's servers: `api` (5080), `acp-server`, `mcp-server`, `local-agent`; Ollama under the `ollama`, `ollama-nvidia` and `ollama-amd` profiles |
 | `docker-compose.puls.yml` | The Puls stack: `puls` (5070), `puls-mongo` (the benchmark store), `puls-searxng` and `puls-browser` (the web it reads, on their own network). Its browser and Mongo also serve the Azure app, through `tailscale serve` on this PC ([the tunnel](../deploy/azure/README.md#the-tunnel)) |
+| `docker-compose.observability.yml` | The dashboard both stacks and Rider send their logs and traces to (F52): the standalone Aspire dashboard, its page on 18888 and OTLP over gRPC on 4317, kept in memory only. Started once with `docker compose -f docker/docker-compose.observability.yml up -d`, the one command that takes no `--env-file` |
 | `images/Dockerfile.*` | One per host: `api`, `puls` (the same API serving Puls's web app), `acp-server`, `mcp-server`, `agent` (the CLI), `orchestrator`. All build from the repo root |
 | `images/ollama/` | Ollama with its model pulled on first start: CPU, NVIDIA and AMD variants, and their entrypoint |
 | `searxng/settings.yml` | The SearXNG settings, mounted read-only into `puls-searxng` here and uploaded to the Azure one |
