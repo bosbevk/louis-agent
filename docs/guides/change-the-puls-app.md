@@ -53,6 +53,13 @@ The portal is English, for the builders: `Layout/AdminLayout.razor`, `Pages/Admi
 admin endpoints, which need the admin key. `ChartInfo` and `RunExplorer` still carry an `@code` block
 (`RazorHasNoCodeTests`' pending list): move it to a `.razor.cs` when you change them.
 
+**The run page is tabs, and what it shows is in its address** (F53.1, [ADR 0065](../adr/0065-the-view-is-in-the-address.md)).
+A new block on the run page is a tab: a member of `RunTab` with its wire name, an entry in `RunTabs.All`, and a case
+in `BenchmarkRun.razor`'s switch. A new thing the explorer can open goes on `ExplorerPlace` (written by `Query()`,
+read by `Of`) and into `RunExplorer.Apply` and `Shown`, so Back and a link carry it. A link to a run goes through
+`RunAddress.Of`, never a string of its own. The page fetches the run only when its id changes, so a tab or a view
+costs no read.
+
 **A new eval's grades show with nothing to add.** The run page reads only the standard records the API sends (the run's eval,
 version, commit and graders; each conversation's grades and outcome), so an eval added beside any identity shows its grades
 the way every other does: `GraderList` above the explorer, `GradeChips` on each conversation's row (F18 step 4.5c). Don't

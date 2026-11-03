@@ -19,6 +19,11 @@
   (`docker-compose.observability.yml`), and `deploy.ps1 telemetry` sends Azure's to Application Insights; the guide
   has the table of what to log at which level. PRs #121, #122, #124, #126 to #130;
   [ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)
+- 2026-11-03 — **F53.1 The run page opens on its answer**: a verdict card under the head (per mode passed of
+  graded and the change against the eval's run before, from the trend the page already fetched; the cost, the
+  requests, the answers still to grade), the page's blocks as tabs, and the tab and the explorer's place in the
+  address, so Back goes up a level and a link opens the same view; the run is fetched only when its id changes
+  ([ADR 0065](docs/adr/0065-the-view-is-in-the-address.md); the first child of F53, the portal organised by job)
 - 2026-11-03 — **The cook's judge recalibrated**: against 60 answers Louis graded in the portal (run
   `cf37574d0f23`), `meal-for-people` agreed on 43 of 45 passes but only 8 of 15 fails, all of them Puls alone
   refusing, asking back or listing ideas; its rubric is now a short ordered decision that calls those `false` and

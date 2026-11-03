@@ -34,8 +34,14 @@ as you go: every answer shows what it cost, specialists included.
   *replay of …* (`ReplayedFrom`), the card's *Last run* line gets a *replay* chip, the Run button's estimate comes from
   the last run that asked the model (`RunEstimate`: not a re-score, not a replay), and a recorded run's row has a
   *Replay* button that starts one through the page's one start path (`ReplayButton`, `StartRequest.Replay`; FX28);
-  `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
-  request), the trend (`TrendChart`) and what the run ran with. Each chart explains itself on hover (`ChartInfo`).
+  `/admin/benchmarks/{run}` is one run (F53.1, [ADR 0065](../adr/0065-the-view-is-in-the-address.md)): under its
+  head the verdict (`RunVerdict`: per mode passed of graded and the change against the eval's run before, from the
+  trend; the cost, the requests, the answers still to grade; the numbers in `RunVerdictView`, a Presentation Model),
+  then one tab at a time, the tab in the address (`?tab=`: Summary with the results by category, the pass rates and
+  the trends, `TrendChart`; Conversations with the explorer; Judge; Notes; Settings). The explorer (`RunExplorer`:
+  the run, its conversations side by side, a turn, a request) reports every move as an `ExplorerPlace` and the page
+  puts it in the address (`?view=…&task=…&turn=…`), so Back goes up a level and a link opens the same view;
+  `RunAddress` is the one class that spells a run's address. Each chart explains itself on hover (`ChartInfo`).
   `/admin/prompts` lists every built-in prompt by its header (CL27). The old `/admin/maatstawwe` addresses still open. **The grades view** (F18 step 4.5c) shows every eval the same way, from
   the standard records alone: `GraderList` above the explorer (the run's eval, version, commit and graders, or one line saying
   it recorded none) and `GradeChips` on each conversation's row (its outcome and one chip per grade, in the run's grader order,
@@ -63,8 +69,9 @@ as you go: every answer shows what it cost, specialists included.
 | `Layout/AdminLayout.razor` | The admin portal's sidebar (*Measure*: Benchmarks and Evals; *Build*: Prompts, CL27) and content column |
 | `Pages/Admin/Prompts.razor`, `Prompts.razor.cs` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none); styles at the end of `css/admin/shell.css` |
 | `Text/PulsWebRole.cs` | The roles the web app has words for (the cook's work phases), as an enum of its own (ADR 0043) |
-| `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run |
-| `Components/Admin/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level, a check's trend, a chart's explanation |
+| `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run: the head, the verdict, the tab bar and the open tab, the tab and the explorer's place read from the address and the run fetched only when its id changes (F53.1) |
+| `Components/Admin/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level (its place handed in as `Place` and reported on every move as `OnMoved`), a check's trend, a chart's explanation |
+| `Components/Admin/RunPage/`, `Admin/RunPage/`, `Admin/Verdict/`, `Admin/Explorer/Place/` | The run page's parts (F53.1): `RunHead`, `RunVerdict` (the card under the head) and `RunTabBar` (a link per tab); `RunTab` and `RunTabs` (the tab, parsed once from `?tab=`, and the bar's entries), `RunAddress` (the one writer of a run's address); `RunVerdictView` and `ModeVerdict` (the verdict's numbers, worked out from the run and its trend) with `VerdictText`; `ExplorerView` and `ExplorerPlace` (where you are in the explorer, written to and read from the address) |
 | `Components/Admin/Grades/` | `GradeChips`, `GraderList`: a conversation's outcome and grades, the run's eval and graders, from the standard records (F18 step 4.5c) |
 | `Components/Admin/Charts/` | `Ring`, `TokenStack`, `TokenLegend`: the explorer's donut, stacked token bar and token legend, markup only (F18 step 6a.3b) |
 | `Components/Admin/Reviews/` | `ReviewPanel` (a conversation's blind review), `ReviewPill`, `AgreementPanel` (per judge, how often it agreed with the people), `CalibrationCard` (the judge check from the portal: the button, the latest report in sentences, the earlier ones folded; F18 step 6a.5c) |

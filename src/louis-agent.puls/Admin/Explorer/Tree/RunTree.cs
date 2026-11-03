@@ -55,6 +55,14 @@ public sealed class RunTree
     /// Each pass hangs its rows on what the pass before made: a conversation or turn naming a mode the run's list
     /// didn't gets one, a turn whose conversation never came gets one, and a request with no turn is left out.
     /// </remarks>
+    /// <summary>The request made at this time in this mode, with its mode; none when we don't have it.</summary>
+    public (RequestNode? Request, ModeNode? Mode) Request(string? mode, DateTimeOffset? at)
+    {
+        var m = Modes.FirstOrDefault(x => x.Name == mode);
+        var request = m?.Rows.FirstOrDefault(r => r.At == at);
+        return request is null ? (null, null) : (request, m);
+    }
+
     public static RunTree Of(StoredRunReply run, int repeat)
     {
         // One node per mode of this repeat, in the run's order.

@@ -1,4 +1,5 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Puls.Admin.Explorer.Place;
 using LouisAgent.Puls.Admin.Explorer.Replay;
 using LouisAgent.Puls.Admin.Explorer.Tree;
 using LouisAgent.Puls.Admin.Grades;
@@ -21,7 +22,9 @@ namespace LouisAgent.Puls.Components.Admin;
 /// The run arrives as the contract's <c>StoredRunReply</c>, the page's one read of the API, and is built into a
 /// <c>RunTree</c> per repeat, so no part of the explorer picks JSON apart by name; the review panels and the notes
 /// get the records they were written for. State flows down as parameters and up as callbacks (the unattended run's
-/// finding 8); the replay of a turn stays here, because any move stops it (finding 12).
+/// finding 8); the replay of a turn stays here, because any move stops it (finding 12). Where you are is reported
+/// as an <c>ExplorerPlace</c> on every move and taken back as <c>Place</c> (F53.1: the view is in the address): the
+/// explorer keeps its own state so it still works alone, and the page keeps the address.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class RunExplorer : IDisposable
@@ -44,8 +47,8 @@ public partial class RunExplorer : IDisposable
     /// <summary>How many repeats the run has, and which one is shown.</summary>
     private int _repeats = 1, _repeat = 1;
 
-    /// <summary>The task we last opened from <c>OpenTask</c>, so a redraw doesn't open it again.</summary>
-    private string? _opened;
+    /// <summary>The place we last reported or were handed, so a redraw with the same one changes nothing.</summary>
+    private ExplorerPlace? _place;
 
     /// <summary>
     /// Where you are: 0 the modes, 1 the conversations, 2 one conversation, 3 one turn, 4 one request.
@@ -104,14 +107,22 @@ public partial class RunExplorer : IDisposable
     [Parameter]
     public CurrencyChoice? Currency { get; set; }
 
-    /// <summary>A task to open at once, when a category's line sends you here.</summary>
+    /// <summary>Where to be, from the address: applied when it differs from where we are.</summary>
     [Parameter]
-    public string? OpenTask { get; set; }
+    public ExplorerPlace? Place { get; set; }
+
+    /// <summary>Says where we are after every move, for the page to put in the address.</summary>
+    [Parameter]
+    public EventCallback<ExplorerPlace> OnMoved { get; set; }
+
+    /// <summary>Where we are now.</summary>
+    private ExplorerPlace Shown =>
+        new((ExplorerView)_level, _task, _turn, _request?.At, _requestMode?.Name, _onlyToReview);
 
     /// <summary>A key for the level and whatever is open in it, so a new level slides in.</summary>
     private string LevelKey => $"{_repeat}|{_level}|{_task}|{_turn}|{_request?.At:O}";
 
-    /// <summary>Takes the run, keeps the repeat in range, builds the tree, and opens <c>OpenTask</c> once.</summary>
+    /// <summary>Takes the run, keeps the repeat in range, builds the tree, and goes where <c>Place</c> says.</summary>
     protected override void OnParametersSet()
     {
         _run = Run;
@@ -124,10 +135,32 @@ public partial class RunExplorer : IDisposable
         _repeat = Math.Clamp(_repeat, 1, _repeats);
         _tree = RunTree.Of(_run, _repeat);
 
-        // Open the task we were sent to, once (a redraw must not open it again).
-        if (OpenTask is null || OpenTask == _opened) return;
-        _opened = OpenTask;
-        OpenConversation(OpenTask);
+        // Go where the address says, when that isn't where we already are (Back, or a link).
+        if (Place is null || Place == _place) return;
+        _place = Place;
+        Apply(Place);
+    }
+
+    /// <summary>Moves to a place handed in: the level and what is open in it, a request found by its time.</summary>
+    private void Apply(ExplorerPlace place)
+    {
+        _dir = place.Level < _level ? "out" : "in";
+        ResetReplay();
+        _task = place.Task;
+        _turn = place.Turn;
+        _onlyToReview = place.Review;
+        (_request, _requestMode) = _tree.Request(place.Mode, place.RequestAt);
+        // A request the tree doesn't have opens its turn instead.
+        _level = place.View == ExplorerView.Request && _request is null ? (int)ExplorerView.Turn : place.Level;
+    }
+
+    /// <summary>Tells the page where we are now, when that changed.</summary>
+    private void Report()
+    {
+        var now = Shown;
+        if (now == _place) return;
+        _place = now;
+        _ = OnMoved.InvokeAsync(now);
     }
 
     /// <summary>After each draw, makes the cost numbers count up.</summary>
@@ -156,12 +189,13 @@ public partial class RunExplorer : IDisposable
         Go(to, stay: to > 0);
     }
 
-    /// <summary>Goes one level deeper: stops any replay, then does what <paramref name="set"/> says.</summary>
+    /// <summary>Goes one level deeper: stops any replay, does what <paramref name="set"/> says, reports it.</summary>
     private void Open(Action set)
     {
         _dir = "in";
         ResetReplay();
         set();
+        Report();
     }
 
     /// <summary>Opens the conversations.</summary>
@@ -200,14 +234,21 @@ public partial class RunExplorer : IDisposable
         _level = level;
         if (level < 2) _task = null;
         if (level < 3) _turn = null;
-        if (level >= 4) return;
+        if (level < 4)
+        {
+            _request = null;
+            _requestMode = null;
+        }
 
-        _request = null;
-        _requestMode = null;
+        Report();
     }
 
     /// <summary>Shows all the conversations, or only those still to review.</summary>
-    private void Filter(bool onlyToReview) => _onlyToReview = onlyToReview;
+    private void Filter(bool onlyToReview)
+    {
+        _onlyToReview = onlyToReview;
+        Report();
+    }
 
     /// <summary>Stops any replay and forgets what it had played.</summary>
     private void ResetReplay()
