@@ -1,6 +1,6 @@
-using LouisAgent.Api.Evals.Drafts;
+using LouisAgent.Api.Evals.Drafts.Transcripts;
 
-namespace LouisAgent.Api.Tests.Evals.Drafts;
+namespace LouisAgent.Api.Tests.Evals.Drafts.Transcripts;
 
 /// <summary>
 /// A kept transcript is named the way the eval folders name theirs, so F49.5 can write it as it is: a reference is

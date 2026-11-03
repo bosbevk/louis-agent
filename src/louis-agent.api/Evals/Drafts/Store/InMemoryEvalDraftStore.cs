@@ -1,3 +1,6 @@
+using LouisAgent.Api.Evals.Drafts.Samples;
+using LouisAgent.Api.Evals.Drafts.Transcripts;
+
 namespace LouisAgent.Api.Evals.Drafts.Store;
 
 /// <summary>

@@ -1,3 +1,4 @@
+using LouisAgent.Api.Evals.Drafts.Transcripts;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 using MongoDB.Bson.Serialization.Attributes;
 

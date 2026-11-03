@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using LouisAgent.Api.Evals.Drafts;
+using LouisAgent.Api.Evals.Drafts.Samples;
 using LouisAgent.Evals.Datasets.Samples;
 
 namespace LouisAgent.Evals.Tests.Datasets;

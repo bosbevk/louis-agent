@@ -1,6 +1,7 @@
 using System.Text.Json;
-using LouisAgent.Api.Evals.Drafts;
+using LouisAgent.Api.Evals.Drafts.Samples;
 using LouisAgent.Api.Evals.Drafts.Store;
+using LouisAgent.Api.Evals.Drafts.Transcripts;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 
 namespace LouisAgent.Api.Testing;

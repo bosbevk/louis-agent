@@ -3,7 +3,7 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 
-namespace LouisAgent.Api.Evals.Drafts;
+namespace LouisAgent.Api.Evals.Drafts.Transcripts;
 
 /// <summary>What a kept transcript stands for: a reference answer, or a known-bad one with its reason.</summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>

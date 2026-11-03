@@ -1,6 +1,6 @@
 using LouisAgent.Evals.Protocol.Parts.Conversations;
 
-namespace LouisAgent.Api.Evals.Drafts;
+namespace LouisAgent.Api.Evals.Drafts.Samples;
 
 /// <summary>
 /// A new sample a person made from a stored run's conversation, waiting to be published: which eval and identity it is

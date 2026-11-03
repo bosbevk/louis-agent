@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Evals.List;
 
 /// <summary>
 /// One eval as the runner's <c>--list</c> describes it: its name, version and what it proves, whose it is, where its
-/// manual is, and what the portal shows before it ever ran (its dataset, categories and graders).
+/// manual and its folder are, and what the portal shows before it ever ran (its dataset, categories and graders).
 /// </summary>
 /// <remarks>
 /// Data Transfer Object (Fowler, PoEAA): the API can't reference the runner, so it reads the runner's line into its own
@@ -24,7 +24,8 @@ public sealed record EvalLine(
     string? Manual = null,
     EvalDatasetLine? Dataset = null,
     IReadOnlyList<string>? Categories = null,
-    IReadOnlyList<EvalGraderLine>? Graders = null);
+    IReadOnlyList<EvalGraderLine>? Graders = null,
+    string? Folder = null);
 
 /// <summary>The dataset an eval's scenarios came from, by name and version.</summary>
 public sealed record EvalDatasetLine(string Name, int Version);

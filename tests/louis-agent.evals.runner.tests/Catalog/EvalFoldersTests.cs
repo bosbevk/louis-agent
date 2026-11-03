@@ -66,7 +66,10 @@ public class EvalFoldersTests
             Does.Contain("plus").And.Contain(SampleIdentity.Alpha).And.Contain(SampleIdentity.Beta));
     }
 
-    /// <summary>A found folder joins the catalogue as an eval, with the identity it names, before the stub.</summary>
+    /// <summary>
+    /// A found folder joins the catalogue as an eval, with the identity it names, before the stub; its line names the
+    /// folder, so the API can read the eval's scenarios, and its manual inside it. The stub is no folder.
+    /// </summary>
     [Test]
     public void AFoundFolder_JoinsTheCatalogue_WithItsIdentity()
     {
@@ -77,6 +80,8 @@ public class EvalFoldersTests
         Assert.That(listing.Select(line => (line.Name, line.Identity)),
             Is.EqualTo(new[] { (SampleEval.Alpha, (string?)SampleIdentity.Alpha), ("stub", null) }));
         Assert.That(listing[0].Manual, Is.EqualTo("identities/sample/Evals/Greet/manual.md"));
+        Assert.That(listing.Select(line => line.Folder),
+            Is.EqualTo(new[] { "identities/sample/Evals/Greet", null }));
     }
 
     /// <summary>Two sample evals, of two identities.</summary>

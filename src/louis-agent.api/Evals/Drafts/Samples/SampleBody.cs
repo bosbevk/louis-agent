@@ -2,7 +2,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace LouisAgent.Api.Evals.Drafts;
+namespace LouisAgent.Api.Evals.Drafts.Samples;
 
 /// <summary>
 /// A sample as an eval's scenario file holds it (Inspect's <c>Sample</c>): its id, the user's first question as a

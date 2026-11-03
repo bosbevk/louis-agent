@@ -1,3 +1,5 @@
+using LouisAgent.Api.Evals.Drafts.Samples;
+using LouisAgent.Api.Evals.Drafts.Transcripts;
 using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Mongo;
 using MongoDB.Driver;
