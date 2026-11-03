@@ -14,7 +14,10 @@ public class PromptHeadersTests
 {
     private const string Path = "specialists/acme-cook.md", Name = "acme-cook";
 
-    /// <summary>A role's file with its header: the web always, the shops where this instance has them.</summary>
+    /// <summary>
+    /// A role's file with its header: the web always, the shops where this instance has them. In LF, whatever line
+    /// endings git gave this test file (FX33): a raw string takes the file's own, CRLF on a Windows checkout.
+    /// </summary>
     private static string Cook => $"""
         ---
         name: {Name}
@@ -25,7 +28,7 @@ public class PromptHeadersTests
         ---
         # Acme specialist: Local cook
 
-        """;
+        """.ReplaceLineEndings("\n");
 
     /// <summary>A header gives its fields, and the body is the text after it, as it was.</summary>
     [Test]

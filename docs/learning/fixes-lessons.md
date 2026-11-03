@@ -188,6 +188,14 @@ the cook showed its folder is `Cook`, not the `PulsCook` the studio worked out f
 lives is asked of the one that knows (the runner's listing), never derived from its name. Skill 18 (shipping:
 end-to-end checks) and 12 (evaluation).
 
+## FX33 · A raw string has its file's line endings
+
+A C# raw string literal spanning lines holds the newlines of the source file it is written in, and git writes that
+file with CRLF on a Windows checkout and LF on Linux. A test that compares a raw string's text to a `\n` literal
+passes or fails by where it was checked out: here it passed in the worktree that wrote the file and failed on a fresh
+checkout of `main`. The lesson for platform-neutral tests (ADR 0014): a test that cares about line endings sets them
+itself (`ReplaceLineEndings`), and a test is proved on a fresh checkout, not only where it was written. Skill 18.
+
 ## FX31 · A small copy of a layout needs its own columns
 
 The category cards draw the same trend chart as the big panel, only smaller, and they took its grid with it: three
@@ -206,6 +214,25 @@ it is shown or summed, and every reader of the runs (the estimate, the trend, th
 same rule. The second lesson is where a fact like "this run was recorded" comes from: the class that writes the
 setting reads it back (Information Expert, as CL26 chose for `replay_of`), so the web app never spells the setting's
 name or the mode's word, and a test on that one class covers every page. Skill 12 (evaluation) and 13 (cost).
+
+## FX30 · A path written from a file breaks when the file moves
+
+CL26 split one stylesheet into folders and proved the move byte for byte: the same rules, in the same order. The one
+thing a byte check can't see is a rule whose meaning depends on where it sits, and a relative `url(…)` is exactly that:
+`../brand/` was right from `css/` and wrong from `css/chat/`. The browser said nothing; the tile just wasn't there. The
+lesson: when a move keeps the text, test what the text *points at*, not only the text. `PulsStylesheetTests` now
+resolves every relative `url(…)` from its own file's folder and asks whether the file is there, so the next split
+fails in the test instead of on the screen. Skill 18 (testing and shipping).
+
+## FX29 · A failure has to reach the screen that shows it
+
+The send button looked dead, but it worked: the click opened the session, the API refused the key, and the runner
+did the right thing (the draft back in the box, a notice saying the key is missing). Nobody saw it, because in Blazor
+an event redraws only the component it was raised in, here the message box, while the notice belongs to the page.
+The happy path told the page (`Changed`), the failure path didn't. The lesson: every path out of a state change,
+the early `return` in a `catch` above all, raises the same "I changed" signal, and a test pins the signal, not only
+the state (`ChatRunnerTests`: the notice *and* one `Changed`). A failure that is caught well but shown nowhere is
+worse than one that throws: it reads as a dead button. Skill 18 (testing and shipping).
 
 ## FX23 · A pipe the child never reads is not a failure
 
