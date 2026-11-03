@@ -8,7 +8,7 @@ using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Usage;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Admin.BenchmarksPage.LiveRun;
+namespace LouisAgent.Puls.Components.Admin.LiveRun;
 
 /// <summary>
 /// The run in progress: it follows the run's events as they come, a row per turn with the open turn typing out, and

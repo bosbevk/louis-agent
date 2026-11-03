@@ -5,5 +5,5 @@ namespace LouisAgent.Puls.Admin.Evals.List;
 public static class EvalAddress
 {
     /// <summary>The Evals page open on this eval.</summary>
-    public static string Of(string eval) => $"admin/evals?eval={Uri.EscapeDataString(eval)}";
+    public static string Of(string eval) => $"admin?eval={Uri.EscapeDataString(eval)}";
 }

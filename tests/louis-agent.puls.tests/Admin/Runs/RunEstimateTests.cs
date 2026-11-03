@@ -63,18 +63,6 @@ public class RunEstimateTests
             Is.Null);
     }
 
-    [Test]
-    public void TheDefaultCheck_IsTheOneWithTheNewestRun_ElseTheFirstCheck()
-    {
-        var checks = new[] { "stub", SampleEval.Beta, SampleEval.Gamma };
-        var runs = new[]
-            { Run("a", SampleEval.Gamma, 1, 1m, hoursAgo: 3), Run("b", SampleEval.Beta, 1, 1m, hoursAgo: 1) };
-
-        Assert.That(RunEstimate.DefaultCheck(checks, runs), Is.EqualTo(SampleEval.Beta));
-        Assert.That(RunEstimate.DefaultCheck(checks, []), Is.EqualTo("stub"));
-        Assert.That(RunEstimate.DefaultCheck([], []), Is.Null);
-    }
-
     // 6.0b (the 30ab27f..6533d8d review): the text beside the Run button left the razor page for this class. Written first: only the page had it.
     private static string Dollars(decimal cost) =>
         "$" + cost.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);

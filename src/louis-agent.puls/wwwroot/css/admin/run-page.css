@@ -1,15 +1,10 @@
 .check-script { margin: 0; font-size: 12px; }
-.check-last { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; color: var(--text); text-decoration: none; padding: 6px 10px; margin: 0 -10px; border-radius: 9px; transition: background .15s, color .15s; }
-.check-last:hover { background: rgba(255, 255, 255, .05); color: var(--ink); }
-.check-last strong { color: var(--ink); }
-.check-last-go { color: var(--orange-text); margin-left: 2px; }
-.checks-hint { font-size: 12.5px; margin-left: 6px; }
 .run-estimate { font-size: 12.5px; }
 .status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--green-soft); color: var(--green-light); white-space: nowrap; }
 .status-pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .status-pill.running { background: var(--orange-soft); color: var(--orange-text); }
 .status-pill.failed { background: rgba(242, 107, 79, .14); color: var(--danger); }
-.runs-head, .run-row { display: grid; grid-template-columns: 130px 150px 70px 100px 80px minmax(0, 1fr) 90px; align-items: center; gap: 12px; padding: 8px 10px; }
+.runs-head, .run-row { display: grid; grid-template-columns: 100px 130px 50px 90px 70px minmax(0, 1fr) 70px; align-items: center; gap: 12px; padding: 8px 10px; }
 .runs-head { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); }
 .runs-head .num, .run-row .num { text-align: right; font-variant-numeric: tabular-nums; }
 .run-row { border-radius: 10px; border-bottom: 1px solid rgba(255, 255, 255, .05); transition: background .15s; }
@@ -79,14 +74,6 @@
 .segmented button.active { background: var(--orange-soft); color: var(--orange-text); }
 /* A check's card rolls up and down: its header is the summary, with the chip and the last cost; a chevron turns. */
 /* F31: one fold for every check card (Louis), not a fold per card. */
-.checks-head { display: flex; align-items: center; gap: 8px; margin: 0 2px 6px; }
-.checks-head .sidebar-label { margin: 0; padding: 0; }
-.checks-toggle { background: none; border: 0; padding: 4px 6px; border-radius: 8px; line-height: 0; }
-.checks-toggle:hover { background: rgba(255, 255, 255, .06); }
-.checks-toggle .chevron { display: inline-block; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .2s var(--ease); margin-bottom: 3px; }
-.checks-toggle.open .chevron { transform: rotate(-135deg); margin-bottom: -3px; }
-.check-card-meta { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
-.check-card:not(.open) { gap: 0; }
 /* The live run's conversations, rendered by the chat's TurnView; while a run goes the page is one column. */
 .admin-cols.single { grid-template-columns: minmax(0, 1fr); }
 .live-chat { display: flex; flex-direction: column; gap: 14px; padding: 14px 0 6px; border-top: 1px solid var(--border); }
@@ -120,9 +107,6 @@
 .tree-turn-body { padding: 6px 0 10px 14px; display: flex; flex-direction: column; gap: 12px; }
 .tree-turn-body .user-message { max-width: 70%; }
 /* A check card's title stays on one line; the cost, chip and chevron sit at the right and never push it down. */
-.check-card > .card-head { flex-wrap: nowrap; }
-.check-card > .card-head > strong { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-.check-card-meta { margin-left: auto; flex: 0 0 auto; }
 /* F53.1 step 1: the verdict card on top of a run: a line per mode (passed of graded, the change against the run before, coloured up, down, the same or first), then the cost, the requests and the answers to grade. */
 .run-verdict { gap: 12px; }
 .verdict-modes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }

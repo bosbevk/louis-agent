@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
-namespace LouisAgent.Puls.Components.Admin.BenchmarksPage.Checks;
+namespace LouisAgent.Puls.Components.Admin.EvalsPage.Details;
 
 /// <summary>
 /// A check's manual in a dialog over the page. It takes the focus when it opens, so Esc reaches it and a screen

@@ -1,6 +1,6 @@
-@* One eval's details (CL26's card, F53.2's details pane): its name, whose it is and what it proves; its latest run as
-   a scorecard, the runs before it as a timeline, its trend, and what it checks in a fold. An eval that never ran
-   shows only what it checks. *@
+@* One eval's details (CL26's card, F53.2's details pane): its name, whose it is and what it proves; the controls
+   that run it; its latest run as a scorecard, the runs before it as a timeline, its trend, and what it checks in a
+   fold; under the card, every stored run as a table. An eval that never ran shows only what it checks. *@
 
 <section class="card-p eval-details">
     <header class="eval-head">
@@ -12,6 +12,9 @@
         <span class="status-pill @(Eval.NeverRun == true ? "never-run" : "")">@EvalText.Runs(Eval.NeverRun, Eval.Runs.Count)</span>
     </header>
     <p class="eval-proves">@Eval.Proves</p>
+
+    <EvalRunControls Eval="@Eval.Name" HasManual="Eval.Manual" Runs="Runs" Running="Running" CanRun="CanRun"
+                     Currency="Currency" OnRun="OnRun" />
 
     @if (View.Latest is { } latest)
     {
@@ -37,3 +40,5 @@
         <DraftList Eval="@Eval.Name" Count="Eval.Drafts" OnChanged="OnChanged" />
     }
 </section>
+
+<RunsList Eval="@Eval.Name" Runs="Runs" Running="Running" Currency="Currency" OnRescored="OnRescored" OnReplay="OnRun" />

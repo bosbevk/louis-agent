@@ -1,25 +1,27 @@
-using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Web.Shared.Usage;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Admin.BenchmarksPage.Runs;
+namespace LouisAgent.Puls.Components.Admin.Runs.Table;
 
 /// <summary>
-/// The chosen check's stored runs, newest first, with a filter by model and what they cost together; each run can be
-/// opened or re-scored, a recorded one replayed (FX28).
+/// The eval's stored runs, newest first, with a filter by model and what they cost together; each run can be opened
+/// or re-scored, a recorded one replayed (FX28).
 /// </summary>
 public partial class RunsList
 {
+    /// <summary>The model the filter is on; none shows every run.</summary>
     private string? _model;
+
+    /// <summary>The runs as the filter leaves them, with the models and the cost together.</summary>
     private CheckRuns _list = new([], [], [], null);
 
-    /// <summary>The check whose runs to list; none until one is chosen.</summary>
-    [Parameter]
-    public CheckRow? Check { get; set; }
+    /// <summary>The eval whose runs to list.</summary>
+    [Parameter, EditorRequired]
+    public string Eval { get; set; } = "";
 
-    /// <summary>Every stored run, newest first.</summary>
+    /// <summary>The eval's stored runs, newest first.</summary>
     [Parameter, EditorRequired]
     public IReadOnlyList<RunSummary> Runs { get; set; } = [];
 
@@ -46,10 +48,10 @@ public partial class RunsList
         set
         {
             _model = value;
-            _list = CheckRuns.For(Check?.Id, Runs, _model);
+            _list = CheckRuns.For(Eval, Runs, _model);
         }
     }
 
-    /// <summary>Works the list out again for the check and runs handed down.</summary>
-    protected override void OnParametersSet() => _list = CheckRuns.For(Check?.Id, Runs, _model);
+    /// <summary>Works the list out again for the eval and runs handed down.</summary>
+    protected override void OnParametersSet() => _list = CheckRuns.For(Eval, Runs, _model);
 }

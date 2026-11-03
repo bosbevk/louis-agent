@@ -2,13 +2,14 @@ using LouisAgent.Api.Contracts.Admin.Evals;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Protocol.Kinds;
+using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Puls.Components.Admin.EvalsPage.Details;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
 using LouisAgent.Web.Shared.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Puls.Tests.Components.Admin.EvalsPage;
+namespace LouisAgent.Puls.Tests.Components.Admin.EvalsPage.Details;
 
 /// <summary>
 /// An eval's details as a person sees them (CL26's card, F53.2's details pane): the latest run up top with a ring
@@ -38,8 +39,10 @@ public class EvalDetailsTests
         ], [SampleMode.Alpha, SampleMode.Beta], [], runs.Count == 0, runs);
 
     /// <summary>The details of an eval with these runs, over an API that has no trend for it.</summary>
-    private static IRenderedComponent<EvalDetails> Render(BunitContext ctx, IReadOnlyList<EvalRunRow> runs)
+    private static IRenderedComponent<EvalDetails> Render(BunitContext ctx, IReadOnlyList<EvalRunRow> runs,
+        Action<StartRequest>? onRun = null, bool canRun = true)
     {
+        ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         ctx.Services.AddSingleton(new AgentApi(
             new HttpClient(new StubHandler(_ => new HttpResponseMessage(System.Net.HttpStatusCode.NotFound)
             {
@@ -47,7 +50,8 @@ public class EvalDetailsTests
                     System.Text.Encoding.UTF8, "application/json")
             }))
             { BaseAddress = new Uri("http://localhost/") }, new ChatSettings()));
-        return ctx.Render<EvalDetails>(p => p.Add(x => x.Eval, Eval(runs)));
+        return ctx.Render<EvalDetails>(p => p.Add(x => x.Eval, Eval(runs)).Add(x => x.CanRun, canRun)
+            .Add(x => x.OnRun, onRun ?? (_ => { })));
     }
 
     /// <summary>The latest run's scorecard has a ring per mode, each with its pass@k in the middle.</summary>
@@ -101,5 +105,42 @@ public class EvalDetailsTests
         Assert.That(cut.FindAll(".eval-score"), Is.Empty);
         Assert.That(cut.FindAll(".eval-timeline"), Is.Empty);
         Assert.That(cut.FindAll(".eval-checks"), Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// The Run button asks for a run of this eval at the repeats chosen (F53.2 step 3: what the check's card did).
+    /// </summary>
+    [Test]
+    public void TheRunButton_AsksForARun_AtTheRepeatsChosen()
+    {
+        using var ctx = new BunitContext();
+        StartRequest? asked = null;
+        var cut = Render(ctx, [Run("run_1")], request => asked = request);
+
+        cut.FindAll(".run-controls .segmented button").First(b => b.TextContent == "3").Click();
+        cut.Find(".run-controls .run-button").Click();
+
+        Assert.That(asked, Is.EqualTo(new StartRequest("cook", 3)));
+    }
+
+    /// <summary>When the store doesn't answer no run may start: the Run button is off.</summary>
+    [Test]
+    public void WithoutTheStore_TheRunButtonIsOff()
+    {
+        using var ctx = new BunitContext();
+        var cut = Render(ctx, [Run("run_1")], canRun: false);
+
+        Assert.That(cut.Find(".run-controls .run-button").HasAttribute("disabled"), Is.True);
+    }
+
+    /// <summary>The runs table in the details holds every run of the eval, newest first, and names the eval.</summary>
+    [Test]
+    public void TheRunsTable_HoldsEveryRun()
+    {
+        using var ctx = new BunitContext();
+        var cut = Render(ctx, [Run("run_2"), Run("run_1")]);
+
+        Assert.That(cut.Find(".runs-list strong").TextContent, Is.EqualTo("Runs · cook"));
+        Assert.That(cut.FindAll(".runs-list .runs > li"), Has.Count.EqualTo(2));
     }
 }

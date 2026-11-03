@@ -1,12 +1,9 @@
-@* The selected check's runs, newest first; nothing until a check is chosen (Louis). *@
+@* The eval's runs, newest first, under its details (F53.2 step 3; before that, the chosen check's on the Benchmarks
+   page). *@
 
 <section class="card-p runs-list">
     <div class="card-head">
-        @* "Runs" is written as an expression: Razor reads Runs@if as an e-mail address and prints the code. *@
-        <strong>@("Runs")@if (Check is { } chosen)
-            {
-                <span> · </span><code>@chosen.Id</code>
-            }</strong>
+        <strong>Runs <span>· </span><code>@Eval</code></strong>
         @if (_list.Models.Count > 0)
         {
             <select class="model-filter" @bind="Model" aria-label="Model">
@@ -14,15 +11,11 @@
                 @foreach (var model in _list.Models) { <option value="@model">@model</option> }
             </select>
         }
-        @if (Check is not null) { <span class="muted">@_list.Runs.Count @(_list.Runs.Count == 1 ? "run" : "runs")@(_list.Cost is { } cost ? $" · {RunText.Money(cost, Currency)} together" : "")</span> }
+        <span class="muted">@_list.Runs.Count @(_list.Runs.Count == 1 ? "run" : "runs")@(_list.Cost is { } cost ? $" · {RunText.Money(cost, Currency)} together" : "")</span>
     </div>
-    @if (Check is null)
+    @if (_list.Runs.Count == 0)
     {
-        <p class="muted">Click a check above to see its runs.</p>
-    }
-    else if (_list.Runs.Count == 0)
-    {
-        <p class="muted">No runs for this check yet.</p>
+        <p class="muted">No runs for this eval yet.</p>
     }
     else
     {

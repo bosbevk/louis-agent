@@ -1,0 +1,29 @@
+@* F53.2 step 3: run the eval from its details (what a check's card did on the Benchmarks page): the repeats as a
+   segmented control (not a native select: the browser's dropdown ignores the theme), the Run button saying roughly
+   what a run will cost, and the Manual button when the eval has one. *@
+<div class="run-controls eval-run-controls">
+    <span class="muted">Repeats</span>
+    <div class="segmented" role="radiogroup" aria-label="Repeats">
+        @foreach (int count in RepeatChoices)
+        {
+            <button type="button" role="radio" aria-checked="@(_repeats == count)" class="@(_repeats == count ? "active" : "")" disabled="@Running" @onclick="() => _repeats = count">@count</button>
+        }
+    </div>
+    <button class="header-button run-button" type="button" disabled="@(Running || !CanRun)"
+            title="@(Free ? "Free: no session, no model" : "Spends money: every run asks the model")" @onclick="RunAsync">
+        <span class="ic i-pulse" aria-hidden="true"></span>Run
+    </button>
+    <span class="muted run-estimate">@Estimate</span>
+    @if (HasManual)
+    {
+        <button type="button" class="manual-button" title="The manual" @onclick="ManualAsync">Manual</button>
+    }
+    @if (_error is { } error)
+    {
+        <span class="muted run-error">@error</span>
+    }
+</div>
+@if (_manual is { } manual)
+{
+    <ManualDialog Manual="manual" OnClose="CloseManual" />
+}

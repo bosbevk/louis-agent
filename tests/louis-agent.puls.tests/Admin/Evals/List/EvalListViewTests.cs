@@ -87,5 +87,5 @@ public class EvalListViewTests
     /// <summary>An eval's address names it, escaped.</summary>
     [Test]
     public void AnEvalsAddress_NamesIt() =>
-        Assert.That(EvalAddress.Of("puls cook"), Is.EqualTo("admin/evals?eval=puls%20cook"));
+        Assert.That(EvalAddress.Of("puls cook"), Is.EqualTo("admin?eval=puls%20cook"));
 }

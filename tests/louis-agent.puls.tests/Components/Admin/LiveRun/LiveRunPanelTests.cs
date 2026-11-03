@@ -6,14 +6,14 @@ using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Puls.Admin.Runs;
-using LouisAgent.Puls.Components.Admin.BenchmarksPage.LiveRun;
+using LouisAgent.Puls.Components.Admin.LiveRun;
 using LouisAgent.Puls.Text;
 using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LouisAgent.Puls.Tests.Components.Admin.BenchmarksPage.LiveRun;
+namespace LouisAgent.Puls.Tests.Components.Admin.LiveRun;
 
 /// <summary>
 /// The live run's panel asks for the costs so far each time a turn ends (FX34), and a question that fails on the way

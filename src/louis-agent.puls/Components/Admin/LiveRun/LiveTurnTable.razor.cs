@@ -3,7 +3,7 @@ using LouisAgent.Puls.Admin.LiveRuns;
 using LouisAgent.Web.Shared.Usage;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Admin.BenchmarksPage.LiveRun;
+namespace LouisAgent.Puls.Components.Admin.LiveRun;
 
 /// <summary>
 /// The run in progress as a table: a row per turn (its mode, conversation and question, who answered, its calls, its
