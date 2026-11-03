@@ -11,7 +11,8 @@ namespace LouisAgent.Puls.Tests.Admin.LiveRuns;
 
 /// <summary>
 /// The table of a run in progress: a row per turn as the runner's events arrive (the contract's own records), the
-/// store's turns for a run picked up again, each turn's cost once the run has ended, and the turn that is open.
+/// store's turns for a run picked up again, each turn's cost from its requests (as each turn ends, and when the run
+/// has), and the turn that is open.
 /// </summary>
 public class LiveTurnsTests
 {
@@ -115,11 +116,28 @@ public class LiveTurnsTests
     {
         var turns = new LiveTurns();
 
-        turns.CostsFrom(Stored);
+        turns.CostsFrom(Stored.Requests);
 
         Assert.That(turns.CostOf(Bobotie), Is.EqualTo(0.03m));
         Assert.That(turns.CostOf(Bobotie with { Task = "chat" }), Is.Null);
         Assert.That(turns.CostOf(Bobotie with { Task = "other" }), Is.Null);
+    }
+
+    /// <summary>
+    /// While the run goes on the page asks for the requests again after every turn (FX34): each time the costs are
+    /// the requests it was given, so a request is never counted twice, and a turn's new requests are added.
+    /// </summary>
+    [Test]
+    public void TheRequestsAgain_AreCountedOnce()
+    {
+        var turns = new LiveTurns();
+
+        turns.CostsFrom([.. Stored.Requests.Take(1)]);
+        Assert.That(turns.CostOf(Bobotie), Is.EqualTo(0.01m));
+        turns.CostsFrom(Stored.Requests);
+        turns.CostsFrom(Stored.Requests);
+
+        Assert.That(turns.CostOf(Bobotie), Is.EqualTo(0.03m));
     }
 
     /// <summary>A start empties the table, its costs and the open turn.</summary>
@@ -128,7 +146,7 @@ public class LiveTurnsTests
     {
         var turns = new LiveTurns();
         turns.FromStore(Stored);
-        turns.CostsFrom(Stored);
+        turns.CostsFrom(Stored.Requests);
         turns.Choose(Bobotie);
 
         turns.Start();

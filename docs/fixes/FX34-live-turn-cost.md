@@ -42,6 +42,11 @@ caller, and the route says why (step 2) while the page keeps what it had.
   here answers its rows, another is a 404, no recorder a 503; a half-written ledger is a 503 with the ledger's
   reason. Red first: `CS1061 'AdminHandlers' does not contain a definition for 'GetRequests'`. The routes golden
   gains `GET /v1/admin/benchmarks/runs/{id}/requests (AdminKey)` and its `/evals/` twin.
+- `LiveTurnsTests` (puls.tests, step 3): a turn's cost is its requests summed, given as requests (the stored run's
+  or the live reply's); the same requests given again after every turn count once, and a turn's later requests are
+  added. Red first: `CS1503 cannot convert from 'IReadOnlyList<RequestRow>' to 'StoredRunReply'`. The panel asks
+  after each `TurnEvent`, one question at a time and once more if a turn ended meanwhile; a refused ask keeps the
+  costs shown.
 
 ## Confirmed
 
