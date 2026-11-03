@@ -36,6 +36,8 @@ down, everything works as before and no error line appears.
 
 ## What to log at which level
 
+The why is [ADR 0064](../adr/0064-observability-through-opentelemetry.md).
+
 | Level | Means | Ours, examples |
 |---|---|---|
 | **Critical** | The process can't go on | an unhandled exception at the top of a host, a store that won't open |
