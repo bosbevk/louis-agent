@@ -2,6 +2,8 @@ using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
+using LouisAgent.Api.Evals.Drafts.Store;
+using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
@@ -42,7 +44,8 @@ internal static class ApiTestHost
         EvalProcess? runner = null, EvalRecorder? recorder = null, EvalList? catalog = null,
         IHumanReviewStore? reviews = null,
         ICalibrationStore? calibrations = null, CalibrationRecorder? calibrationRecorder = null,
-        TimeProvider? time = null)
+        TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
+        DraftChecker? checker = null, PromptfooRunner? promptfoo = null)
     {
         // The same services as Program.cs, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot);
@@ -61,7 +64,9 @@ internal static class ApiTestHost
             runner ?? new EvalProcess(benchmarks, host.Engine.WorkspaceRoot, "http://127.0.0.1:1/"), adminKey,
             store, recorder,
             _ => new Dictionary<string, string>(), host.Engine.WorkspaceRoot, reviews, calibrations,
-            calibrationRecorder, time);
+            calibrationRecorder, time, drafts ?? new InMemoryEvalDraftStore(),
+            new StudioRunner(checks ?? StudioRunner.None.Checks, checker ?? StudioRunner.None.Checker,
+                promptfoo ?? StudioRunner.None.Promptfoo));
         return app;
     }
 

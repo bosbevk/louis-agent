@@ -4,6 +4,7 @@ using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
 using LouisAgent.Api.Evals.Calibrations.Store;
 using LouisAgent.Api.Evals.List;
+using LouisAgent.Api.Evals.Drafts.Store;
 using LouisAgent.Api.Evals.Reviews.Store;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Runs.Start;
@@ -11,6 +12,7 @@ using LouisAgent.Api.Evals.Store;
 using LouisAgent.Api.Evals.Store.Deletion;
 using LouisAgent.Api.Evals.Store.Mongo;
 using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Api.Messages;
 using LouisAgent.Composition;
 using LouisAgent.Core.Guardrails.Auth;
@@ -19,7 +21,6 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Web.Rendering;
 using LouisAgent.Core.Tools.Web.Search;
-using Microsoft.Extensions.Logging;
 
 // HTTP version of the ACP server, which also serves the web app: every API reply is JSON, and a message's answer
 // streams as Server-Sent Events shaped like Claude's (message_start, content_block_start/delta/stop for thinking,
@@ -76,6 +77,12 @@ IHumanReviewStore? reviewStore = admin.EvalsMongoUrl is { } reviewsUrl
     ? new MongoHumanReviewStore(reviewsUrl, admin.EvalsDatabase)
     : null;
 
+// The drafts made from stored runs wait beside the grades until F49.5 publishes them; without Mongo they live in
+// memory.
+IEvalDraftStore draftStore = admin.EvalsMongoUrl is { } draftsUrl
+    ? new MongoEvalDraftStore(draftsUrl, admin.EvalsDatabase)
+    : new InMemoryEvalDraftStore();
+
 // The judge checks sit beside the grades; a check's report is kept by its own recorder, never by the runs' store.
 ICalibrationStore? calibrationStore = admin.EvalsMongoUrl is { } calibrationsUrl
     ? new MongoCalibrationStore(calibrationsUrl, admin.EvalsDatabase)
@@ -121,7 +128,8 @@ api.MapAdmin(evals,
         WebSearchProviderFactory.Resolve(host.Agent), PageRendererFactory.Resolve(host.Agent),
         WebSearchProviderFactory.IsReady(host.Agent), PageRendererFactory.IsReady(host.Agent)),
     host.Engine.WorkspaceRoot, reviewStore,
-    calibrationStore, calibrationRecorder);
+    calibrationStore, calibrationRecorder, drafts: draftStore,
+    studio: StudioRunner.ForRunner(admin.EvalRunner));
 
 // Listen until the host is stopped.
 app.Run();

@@ -53,6 +53,12 @@ public partial class ConversationCard
     [Parameter]
     public EventCallback<string> OnOpenConversation { get; set; }
 
+    /// <summary>Whether the sample dialog is open under the card.</summary>
+    private bool _sampling;
+
+    /// <summary>Opens the sample dialog, or closes it (F49.4).</summary>
+    private void ToggleSample() => _sampling = !_sampling;
+
     /// <summary>What Puls's own requests cost.</summary>
     private decimal? Own => RequestSums.Cost(Conversation.Rows, specialist: false);
 

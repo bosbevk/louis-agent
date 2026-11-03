@@ -72,6 +72,21 @@ public class EvalListingTests
     }
 
     /// <summary>
+    /// The eval's folder is read when the line has one, so a sample can be made from its scenarios, and is null when
+    /// it doesn't (the stub is no folder).
+    /// </summary>
+    [Test]
+    public void AListedEvalsFolderIsRead_AndIsNullWhenTheLineLeavesItOut()
+    {
+        var with = EvalListing.Parse(
+            """{"name":"cook","version":1,"proves":"Cooks","folder":"identities/louis-agent.identity.puls/Evals/Cook"}""");
+        var without = EvalListing.Parse("""{"name":"stub","version":1,"proves":"A canned run","folder":null}""");
+
+        Assert.That(with.Evals.Single().Folder, Is.EqualTo("identities/louis-agent.identity.puls/Evals/Cook"));
+        Assert.That(without.Evals.Single().Folder, Is.Null);
+    }
+
+    /// <summary>
     /// What the portal shows before an eval ever ran is read from its line: the dataset, the categories and each
     /// grader with its kind.
     /// </summary>

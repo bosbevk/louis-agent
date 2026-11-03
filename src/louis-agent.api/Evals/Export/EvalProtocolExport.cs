@@ -40,15 +40,7 @@ public static class EvalProtocolExport
                 mode.Conversations ?? ofMode.Count));
             foreach (var conversation in ofMode)
             {
-                foreach (var turn in await store.TurnsAsync(run.Id, conversation.Key, cancellationToken))
-                {
-                    events.Add(new QuestionEvent(At(turn.AskedAt), turn.Key.Mode, turn.Key.Repeat, turn.Key.Task,
-                        turn.Key.Turn, turn.Session, turn.Question));
-                    foreach (var e in await store.TurnEventsAsync(run.Id, turn.Key, cancellationToken))
-                        events.Add(new SseEvent(At(e.At), turn.Key.Mode, turn.Key.Repeat, turn.Key.Task,
-                            turn.Key.Turn, e.Type, e.Data));
-                    events.Add(TurnOf(turn, At(turn.EndedAt)));
-                }
+                await AddTurnsAsync(store, run.Id, conversation.Key, events, clock, cancellationToken);
 
                 // A conversation that never ended has no result to give back.
                 if (ResultOf(conversation, () => At(conversation.At)) is { } result) events.Add(result);
@@ -62,6 +54,41 @@ public static class EvalProtocolExport
         }
 
         return string.Concat(events.Select(e => EvalProtocolJson.Line(e) + "\n"));
+    }
+
+    /// <summary>
+    /// One conversation of the run as a transcript file holds it: its mode's line, as if the mode ran only it, then
+    /// each turn's question, stream events and turn line. The result line stays out, as in the eval folders.
+    /// </summary>
+    public static async Task<IReadOnlyList<string>> ConversationAsync(IEvalStore store, Run run, ConversationKey key,
+        CancellationToken cancellationToken)
+    {
+        var events = new List<EvalEvent>();
+        var clock = new LastTime(run.BegunAt ?? run.StartedAt);
+
+        // The mode line the graders read the toolsets and role from; a run always stores its modes.
+        if ((run.Modes ?? []).FirstOrDefault(m => m.Name == key.Mode && m.Repeat == key.Repeat) is { } mode)
+            events.Add(new ModeEvent(clock.Of(mode.At), mode.Name, mode.Repeat, mode.Toolsets, mode.Role, mode.Llm, 1));
+        await AddTurnsAsync(store, run.Id, key, events, clock, cancellationToken);
+        return [.. events.Select(EvalProtocolJson.Line)];
+    }
+
+    /// <summary>
+    /// A conversation's turns: each one's question, its stream events and its turn line, in turn order.
+    /// </summary>
+    /// <remarks>Extract Function (Fowler): the whole run and one conversation write their turns the same way.</remarks>
+    private static async Task AddTurnsAsync(IEvalStore store, string runId, ConversationKey key, List<EvalEvent> events,
+        LastTime clock, CancellationToken cancellationToken)
+    {
+        foreach (var turn in await store.TurnsAsync(runId, key, cancellationToken))
+        {
+            events.Add(new QuestionEvent(clock.Of(turn.AskedAt), turn.Key.Mode, turn.Key.Repeat, turn.Key.Task,
+                turn.Key.Turn, turn.Session, turn.Question));
+            foreach (var e in await store.TurnEventsAsync(runId, turn.Key, cancellationToken))
+                events.Add(new SseEvent(clock.Of(e.At), turn.Key.Mode, turn.Key.Repeat, turn.Key.Task, turn.Key.Turn,
+                    e.Type, e.Data));
+            events.Add(TurnOf(turn, clock.Of(turn.EndedAt)));
+        }
     }
 
     /// <summary>The run's first line: its eval, its version and commit, its split, graders and models.</summary>
