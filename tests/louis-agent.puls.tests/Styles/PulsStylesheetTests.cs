@@ -1,3 +1,5 @@
+using LouisAgent.Testing;
+
 namespace LouisAgent.Puls.Tests.Styles;
 
 /// <summary>
@@ -40,5 +42,28 @@ public class PulsStylesheetTests
 
         Assert.That(starts, Is.All.GreaterThanOrEqualTo(0), "every file is in it");
         Assert.That(starts, Is.Ordered, "in import order");
+    }
+
+    /// <summary>
+    /// A trend's change since the run before (<c>▲ +13%</c>) stays one pill on one line (FX31): in a category card's
+    /// small panel it broke into two lines inside its round pill, a green blob beside the value. The small panels fill
+    /// their card, two or three across, instead of three fixed columns with one left empty.
+    /// </summary>
+    [Test]
+    public void ATrendsChange_StaysOnOneLine_AndTheSmallPanelsFillTheirCard()
+    {
+        Assert.That(Rule("admin/benchmarks.css", ".trend-delta {"), Does.Contain("white-space: nowrap"));
+        Assert.That(Rule("admin/run-page.css", ".trend.compact .trend-grid {"),
+            Does.Contain("repeat(auto-fit, minmax("));
+    }
+
+    /// <summary>The one rule in an area file that starts with this selector, up to its closing brace.</summary>
+    private static string Rule(string file, string selector)
+    {
+        string text = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.puls", "wwwroot", "css",
+            file));
+        int start = text.IndexOf(selector, StringComparison.Ordinal);
+        Assert.That(start, Is.GreaterThanOrEqualTo(0), $"{file} has {selector}");
+        return text[start..(text.IndexOf('}', start) + 1)];
     }
 }

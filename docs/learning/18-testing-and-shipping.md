@@ -108,6 +108,26 @@ cloud. Four things carried the shipping lesson:
   missing variable, a probe from inside the pod with curl's exit code (52 is Mongo closing an HTTP request; 7 would be
   a refused tunnel). None is a unit test; each is the cheapest check that the paths still resolve.
 
+## Git stays the truth (F49.5)
+
+Skill #18 again, with #12. When F49 finished (2026-11-03), the admin portal could make a whole eval, and the
+question was where it should end up. Several hosted eval tools kept the evals in their own store, and when the tool
+died the evals died with it. So the studio's evals live where the code lives: as files in git, changed by a pull
+request ([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)).
+
+- **Publish is a commit, not a push.** The eval's folder is committed beside its identity on a branch of its own,
+  `eval/{identity}-{name}`. You push it and open the pull request. Then a person reviews it like any other change,
+  and CI runs it. The API has no GitHub token, so it has no secret to leak and can't merge anything by itself.
+- **It never touches your checkout.** The commit is made with git's plumbing (the low-level commands under `git add`
+  and `git commit`) over a temporary index: the files are written into git's object store, a tree is built from
+  them, and the branch is pointed at a new commit off HEAD. Your current branch, your working tree and anything you
+  have staged stay exactly as they were. The git endpoints would have switched branches under you.
+- **The gate before the commit is the gate CI runs.** Only a folder the runner's `--check` passed is published, and
+  that check is the conformance test every eval folder meets in CI. A pull request from the studio shouldn't go red
+  for a reason the studio could have told you about.
+- **Where there's no checkout, a zip.** The hosted Puls has no git workspace, so a publish there hands you the folder
+  as a zip to add in a pull request. It's more work, but it still ends in git.
+
 ## What was learned
 
 - **Fakes are a dependency.** Three test projects referencing `core.tests` for `FakeChatClient` and `StubHandler` made

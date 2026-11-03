@@ -38,13 +38,19 @@ chat to see the change.
 
 ## Add a specialist
 
-1. Write `specialists/puls-{name}.md`: its function, what it may and may not do, and how it reports to Puls. If it
-   always needs a toolset, declare it in a header the loader strips before the model sees it; a `?` loads it only
-   where the instance has it ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)):
+1. Write `specialists/puls-{name}.md`: its function, what it may and may not do, and how it reports to Puls. It opens
+   with the header every prompt has ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its name, a description,
+   its level, and, if it always needs a toolset, that toolset under `metadata`; the loader strips the header before
+   the model sees it, and a `?` loads a toolset only where the instance has it
+   ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)):
 
    ```markdown
    ---
-   toolsets: shops?
+   name: puls-{name}
+   description: Puls's {name}. What it does, and when Puls hands it work.
+   metadata:
+     level: specialist
+     toolsets: shops?
    ---
    ```
 

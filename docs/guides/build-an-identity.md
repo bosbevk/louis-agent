@@ -85,6 +85,12 @@ A mode is what the agent the user talks to (level 0) reads: one markdown file un
 `Prompts/agent/acme/voice.md`:
 
 ```markdown
+---
+name: voice
+description: Acme's voice and routing, the mode a session opens with. Who Acme is, and which toolset or specialist a request needs.
+metadata:
+  level: agent
+---
 # Acme - Voice
 
 You are **Acme**, the assistant of a hardware shop. People ask you about tools, materials and jobs around the house.
@@ -105,6 +111,13 @@ Anything else (orders, stock, prices) isn't available here yet: say so in one li
 
 What to know when you write one:
 
+- **Open with the header.** Every prompt starts with the same front matter, between two `---` lines
+  ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): `name` is the file's name without `.md`, `description` says
+  in a sentence or two what it is and when it is loaded (at most 1024 characters, and no `: ` inside it, which YAML
+  reads as a new key), and under `metadata` the `level` (`agent` for a mode, `specialist`, `minion`) and, for a role,
+  the `toolsets` it always loads. The loader reads it once and strips it, so the model never sees it; the admin
+  portal's *Prompts* page lists it. A key it doesn't know, a name that isn't the file's or a wrong level stops the host
+  at its start, naming the file. `EveryPromptHasAHeaderTests` holds every prompt to it.
 - **Don't repeat the principles.** Core's `shared/principles.md` opens every prompt at every level before your mode
   ([ADR 0020](../adr/0020-principles-for-every-agent.md)).
 - **Route only what this identity does.** Each pack's guide opens with its own routing line and explains its tools, so
@@ -122,7 +135,11 @@ called it.
 
 ```markdown
 ---
-toolsets: units
+name: acme-estimator
+description: Acme's estimator. Turns a job into the amount of material to buy, with the sums shown.
+metadata:
+  level: specialist
+  toolsets: units
 ---
 # Acme specialist: Estimator
 
@@ -137,10 +154,11 @@ You turn a job ("paint a 4 by 3 metre room") into the amount of material to buy,
 One line with the amount and the unit to buy, then the sums, then anything you assumed under *Unsure*.
 ```
 
-- **The header** (between the `---` lines) names the toolsets this role always loads, added to what the parent passed;
-  the loader strips it before the model sees the file ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
-  Write `units?` for a toolset that needs settings an instance may lack: it then loads only where it can, as the
-  Puls cook's `shops?` does.
+- **The header's `metadata.toolsets`** names the toolsets this role always loads, added to what the parent passed;
+  the loader strips the header before the model sees the file
+  ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md), [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)).
+  Write `units?` for a toolset that needs settings an instance may lack: it then loads only where it can. A role that
+  needs none leaves the key out.
 - **Prefix every role with the identity's name** (`acme-estimator`). The catalogue refuses a prompt path two
   identities or packs share, so a plain `specialists/estimator.md` would clash with the next identity's.
 - **The mode needs a way to hand work over:** the `specialists` toolset in its session, and `AGENT_PEERS` naming an
@@ -252,12 +270,17 @@ is a rebuild of the images that use the identity.
    ([ADR 0019](../adr/0019-modes-one-file-per-product.md)).
 2. **A role** (level 1) is `specialists/{name}.md`: a specialist's function and how it reports to the agent that called
    it. A parent names it in `StartSubSession`; the specialists guide (`toolsets/specialists.md`) says which goes with
-   which toolsets. A role that always needs a toolset declares it in a header at the top of its file, which the
-   loader strips before the model sees it (F33, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)):
+   which toolsets. A role that always needs a toolset declares it under `metadata` in the header every prompt opens
+   with, which the loader strips before the model sees it (F33, [ADR 0025](../adr/0025-a-role-declares-its-toolsets.md),
+   CL27, [ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)):
 
    ```markdown
    ---
-   toolsets: shops?
+   name: acme-cook
+   description: Acme's cook. A meal for the people asked for, priced at the shops.
+   metadata:
+     level: specialist
+     toolsets: shops?
    ---
    ```
 

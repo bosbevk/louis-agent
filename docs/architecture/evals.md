@@ -1,11 +1,13 @@
 # The evals: architecture and communication
 
-> **Explanation.** How the evals work as built at the end of F49.2 (2026-10-30): which parts there are, how they
-> talk, what one run looks like in memory, and the lines the runner writes. **Elsewhere:** running them in
+> **Explanation.** How the evals work as built at the end of F49 (2026-11-03): which parts there are, how they
+> talk, what one run looks like in memory, the lines the runner writes, how the studio makes an eval, and where F49
+> came from. **Elsewhere:** running them in
 > [Run the evals](../guides/run-the-evals.md); adding one in [Add an eval](../guides/add-an-eval.md); each
 > project's files and settings in [projects/](../projects/README.md); why it's built this way in
-> [ADR 0029](../adr/0029-simulations-in-csharp.md), [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md) and
-> [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md).
+> [ADR 0029](../adr/0029-simulations-in-csharp.md), [ADR 0047](../adr/0047-protocol-v2-one-event-contract.md),
+> [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md) and
+> [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md).
 
 ## In one paragraph
 
@@ -65,10 +67,11 @@ flowchart LR
 | The harness | `evals/louis-agent.evals` | How an eval runs: `IEval`, `FileEval` (an eval read from its folder), the datasets, the general checks and their entries, the protocol writer, re-scoring, conformance, labels and calibration. Names no product. |
 | An identity's evals | `identities/louis-agent.identity.puls` (`Evals/`) | What proves Puls: `puls-cook` and `puls-routing` as folders of files, and Puls's own fixed-rule checks (`Evals/Checks/`), which reach the runner through the composition's `EvalChecks` ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)). |
 | An identity's judges | `identities/louis-agent.identity.puls.judges` | Puls's model judge, `meal-for-people`, apart from the identity because it needs the harness; only the runner references it. |
-| The runner | `evals/louis-agent.evals.runner` | The command: finds the eval folders and gathers the check catalogue, lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge. |
+| The runner | `evals/louis-agent.evals.runner` | The command: finds the eval folders and gathers the check catalogue, lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge; for the studio, lists the catalogue (`--checks`), judges a folder (`--check`), runs a folder's samples (`--folder`, `--samples`) and converts promptfoo files. |
 | The protocol | `evals/louis-agent.evals.protocol` | The eight line records both sides share, and their reader and writer. Records only. |
 | The API | `src/louis-agent.api` (`Evals/`, `Endpoints/Admin/`) | Starts the runner, records its lines, prices them from the ledger, serves the portal; also runs the sessions the runner opens. |
-| The portal | `src/louis-agent.puls` (`Components/Admin/`) | Start a run, watch it live, read runs and trends, review answers, calibrate a judge, write notes. |
+| The portal | `src/louis-agent.puls` (`Components/Admin/`) | Start a run, watch it live, read runs and trends, review answers, calibrate a judge, write notes; make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
+| The drafts | `src/louis-agent.api` (`Evals/Drafts/`, Mongo's `eval_drafts`) | What the studio made and hasn't published yet: samples, transcripts and evals being composed ([ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). |
 | The replay store | `louis-agent.core` (`Sessions/Replay/`, `Llm/Replay/`, `Tools/Web/Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
 
 ## The types
@@ -294,6 +297,86 @@ for people.
 | `mode-done` | `ModeDoneEvent` | A mode's repeat ends | Pass rates so far (`RatesInfo`: pass@k, pass^k), infrastructure failures, retries |
 | `summary` | `SummaryEvent` | After a mode's last repeat | The roll-up: overall, per category, per grader, per grader kind |
 
+## The studio
+
+The Studio page (`/admin/studio`, F49.5) makes a new eval without Rider. It never reads an eval file itself: the runner
+is the one reader and judge, started as a process for each question, and git is where a finished eval ends up
+([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). An eval being composed is a draft in `eval_drafts`;
+`DraftFolder` writes it out as one folder, with the samples and transcripts kept for it from runs (F49.4), and the
+check, the try, the publish and the promptfoo export all read that folder.
+
+```mermaid
+sequenceDiagram
+  actor P as Person (Studio page)
+  participant A as API (Endpoints/Admin/Studio)
+  participant S as Draft store (eval_drafts)
+  participant R as Runner (child process)
+  participant G as Git (temporary index)
+  P->>A: GET evals/checks
+  A->>R: --checks
+  R-->>A: check types, kinds, schemas, readers
+  P->>A: PUT evals/drafts/{id} (eval.json, rubrics)
+  A->>S: keep the draft
+  P->>A: POST drafts/{id}/verdict
+  A->>A: DraftFolder writes the folder
+  A->>R: --check {folder}
+  R-->>A: one line per problem, then ok
+  P->>A: POST drafts/{id}/try {replay, samples}
+  A->>R: run {eval} --folder --samples --replay {run}
+  R-->>A: protocol lines (a replay, $0)
+  P->>A: POST drafts/{id}/publish
+  A->>R: --check {folder} (must pass)
+  A->>G: hash the files, write a tree, commit on eval/{identity}-{name}
+  A-->>P: the branch (push and pull request are yours) or a zip
+```
+
+| Method | Route | Does |
+|---|---|---|
+| `GET` | `/v1/admin/evals/checks` | The runner's catalogue: types, kinds, settings' schemas, readers |
+| `POST`, `GET` | `/v1/admin/evals/drafts` | Make an eval draft; list them |
+| `GET`, `PUT`, `DELETE` | `/v1/admin/evals/drafts/{id}` | One eval draft |
+| `POST` | `/v1/admin/evals/drafts/{id}/verdict` | The runner's check of its folder |
+| `POST` | `/v1/admin/evals/drafts/{id}/try` | A replay of a stored run on the samples named |
+| `POST` | `/v1/admin/evals/drafts/{id}/publish` | A commit on its branch, or a zip where there is no git workspace |
+| `POST` | `/v1/admin/evals/drafts/promptfoo` | A promptfoo file to a new eval draft, with what was left out |
+| `GET` | `/v1/admin/evals/drafts/{id}/promptfoo` | The draft as a promptfoo file |
+
+## Where F49 came from
+
+F49 *Evals as content* (2026-10-28 to 2026-11-03) turned the evals from C# into files. Louis's goal: *"it should be
+simple to make evals, edit them and from the admin panel, living in identity."* Before it, one eval was about twenty C#
+files. Every eval tool we studied keeps three things apart, and F49 did the same:
+
+- **the eval is a data file** (`eval.json`, its dataset, its manual, its transcripts), beside the identity or pack
+  it proves: identity is who, pack is what it can do, eval is how we prove it;
+- **the checks are a catalogue of compiled C# classes**, picked by a kebab-case type, from core's harness and from
+  the packs that ship them;
+- **the judge's rubric is the one bit of free text** a person writes, kept as a markdown file.
+
+**No script engine.** .NET has no sandbox for running untrusted code in the hosted service, so the way out of the
+catalogue is a new reviewed C# class (ADR 0056), never a script in a file. A promptfoo file's JavaScript asserts are
+left out on import, by name.
+
+| Child | What it built | ADR |
+|---|---|---|
+| F49.1 The checks catalogue | The check contract in `evals/louis-agent.evals.checks` (Separated Interface), every check an entry with a typed settings record, found through a registry each owner fills | [0056](../adr/0056-a-check-is-a-catalogue-entry.md) |
+| F49.2 The cook's eval as files | `eval.json` read by `FileEval`, the cook and routing evals as folders in the Puls identity, the template folder, the general checks of every family (F49.2b) with readers an identity ships | [0058](../adr/0058-an-eval-is-a-folder-of-files.md), [0059](../adr/0059-an-identity-ships-readers-not-checks.md) |
+| F49.3 Checks in packs | The shops pack ships the checks that prove its tools, gathered by the composition | [0060](../adr/0060-a-pack-ships-its-checks.md) |
+| F49.4 Studio: samples | Sample and transcript drafts made from stored runs and human review | [0061](../adr/0061-evals-grow-from-use.md) |
+| F49.5 Studio: compose, try, publish | The Studio page, the runner's studio commands, publish to a branch, promptfoo in and out | [0062](../adr/0062-the-studio-writes-what-git-keeps.md) |
+
+**What the research of 2026-10-29 added** (the report of 2026-10-28 stood):
+
+- **Microsoft.Extensions.AI.Evaluation** keeps its scenarios in C# only, so there was no file format to reuse; its
+  judge evaluators stay reachable through the catalogue.
+- **Anthropic's *Develop test cases*:** volume over polish, grow cases from real use (F49.4), grade by code first, a
+  model second and a person last; a rubric asks for a constrained output and lets the grader think first.
+- **promptfoo's assertion** is `type`, `value`, `threshold`, `weight`, `metric`; our check entry keeps the same
+  fields, so import and export are a rename of types by a table, not a translation of shape.
+- **Inspect's `Sample`** (`input`, `target`, `id`, `metadata`) is the shape our scenarios keep.
+- **`JsonSchemaExporter`** (.NET 9 and up) makes a JSON schema from a settings record, which is how the runner's
+  `--checks` hands the studio a form for every check.
+
 ## Where the files are
 
 ```
@@ -310,13 +393,19 @@ evals/
 │   └── Trials/                     # ConversationMetrics
 ├── louis-agent.evals.checks/       # the check contract: EvalMode, EvalJson; Catalog/ (ICheckType, CheckType, CheckCatalog); Datasets/Scenarios/; Trials/; Grading/ (ICheck, Grade, Verdict); Messages/
 ├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
-├── louis-agent.evals.runner/       # Program, Arguments/, Catalog/ (EvalFolders, RunnerChecks), Calibration/, Evals/Stub/
+├── louis-agent.evals.runner/       # Program, Arguments/, Catalog/ (EvalFolders, RunnerChecks, ChecksListing), Calibration/, Evals/Stub/,
+│                                   # Studio/ (CheckCommand, ManifestSeal, RunTarget, SampleSubset), Promptfoo/ (the table, import, export)
 └── template/Example/               # the folder a new eval starts as a copy of (never listed)
-identities/louis-agent.identity.puls/Evals/   # Cook/ and Routing/ (eval.json, manual.md, Dataset/, Transcripts/), Checks/ (Puls's own)
+identities/louis-agent.identity.puls/Evals/   # Cook/ and Routing/ (eval.json, manual.md, Dataset/, Transcripts/), Checks/, Readers/ (Puls's readers)
 identities/louis-agent.identity.puls.judges/  # meal-for-people, PulsJudges
+packs/louis-agent.pack.shops/Checks/          # the shops pack's checks (F49.3)
 src/louis-agent.composition/EvalChecks.cs     # every identity's and pack's checks, for the runner
-src/louis-agent.api/Evals/          # List/, Runs/, Store/, Reviews/, Calibrations/, Reports/, Export/
-src/louis-agent.puls/Components/Admin/  # the portal's pages
+src/louis-agent.api/Evals/          # List/ (RunnerProcess), Runs/, Store/, Reviews/, Calibrations/, Reports/, Export/,
+│                                   # Drafts/ (Samples/, Transcripts/, Composed/, Store/), Studio/ (DraftFolder, the runner's parts, Publish/)
+src/louis-agent.api/Endpoints/Admin/Studio/   # the studio's routes, Promptfoo/
+src/louis-agent.puls/Pages/Admin/EvalStudio.razor  # the Studio page
+src/louis-agent.puls/Components/Admin/  # the portal's pages; Studio/ (the drafts, Compose/, Promptfoo/)
+src/louis-agent.puls/Admin/Studio/  # the studio's plain classes: Compose/ (the form), Schema/ (a check's fields from its schema)
 ```
 
 ## What to keep in mind
@@ -329,8 +418,9 @@ src/louis-agent.puls/Components/Admin/  # the portal's pages
   run waits for Louis's go.
 - **An eval is content, a check is code.** A new eval that uses existing checks is a folder of files with no C#; a
   check is a reviewed class with an entry (ADR 0056, ADR 0058).
-- **What's next changes this picture.** F49's later children move the shops' checks to the shops pack (F49.3) and add
-  a studio to the portal. Each F49 child updates this page.
+- **The runner reads eval files; git keeps them.** The API and the portal never read an eval's folder themselves,
+  and the studio's publish is a commit the person pushes (ADR 0062). F49 is done (2026-11-03); the next change to
+  this picture is the specialists' evals (F50) and the `similar` check on the TODO.
 
 ---
 [Architecture](README.md) · Related: [Building block view](05-building-block-view.md) ·

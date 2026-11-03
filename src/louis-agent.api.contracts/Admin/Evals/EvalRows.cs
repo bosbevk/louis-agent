@@ -13,8 +13,8 @@ public sealed record EvalListReply(IReadOnlyList<EvalRow> Evals, StoreRow Store)
 
 /// <summary>
 /// One eval: what it is (whose, its version, what it proves, its dataset, categories and graders), whether it has a
-/// manual, the modes and models it was run on, and its runs, newest first. <see cref="NeverRun"/> is null when there
-/// is no store to ask.
+/// manual, the modes and models it was run on, its runs, newest first, and how many drafts wait for it (F49.4).
+/// <see cref="NeverRun"/> is null when there is no store to ask.
 /// </summary>
 public sealed record EvalRow(
     string Name,
@@ -28,7 +28,8 @@ public sealed record EvalRow(
     IReadOnlyList<string> Modes,
     IReadOnlyList<string> Models,
     bool? NeverRun,
-    IReadOnlyList<EvalRunRow> Runs);
+    IReadOnlyList<EvalRunRow> Runs,
+    int Drafts = 0);
 
 /// <summary>The dataset an eval's scenarios came from, by name and version.</summary>
 public sealed record EvalDatasetRow(string Name, int Version);

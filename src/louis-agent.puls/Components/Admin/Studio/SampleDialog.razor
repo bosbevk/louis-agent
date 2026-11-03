@@ -1,0 +1,24 @@
+@* F49.4: a sample made from a conversation, starting from the scenario it ran. Opened from the conversation's card. *@
+<section class="sample-dialog card-p" aria-label="Make a sample">
+    <div class="sample-head">
+        <h4>A sample from <code>@Conversation.Task</code></h4>
+        <button type="button" class="sample-close link-button" @onclick="OnClose">Close</button>
+    </div>
+    @if (_scenario is { } scenario)
+    {
+        <p class="sample-place muted">@scenario.Place · @scenario.TimeZone</p>
+        <label class="sample-field">Id <input class="sample-id" @bind="_form.Id" /></label>
+        <label class="sample-field">Expected values <textarea class="sample-expected" rows="8" @bind="_form.Expected"></textarea></label>
+        <label class="sample-field">Categories <input class="sample-categories" @bind="_form.Categories" /></label>
+        <label class="sample-field">Ideal answer (optional) <textarea class="sample-target" rows="3" @bind="_form.Target"></textarea></label>
+        <button type="button" class="sample-make header-button" disabled="@_busy" @onclick="MakeAsync">Make the sample</button>
+    }
+    @if (_done is not null)
+    {
+        <p class="sample-done">@_done</p>
+    }
+    @if (_error is not null)
+    {
+        <p class="sample-error">@_error</p>
+    }
+</section>

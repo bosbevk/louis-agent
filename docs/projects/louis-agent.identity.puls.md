@@ -23,9 +23,10 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   `specialists` and `web`. The session reads core's principles, then the language's voice (`voice-af.md`), then Puls's
   shared routing (`voice.md`). Puls answers the world itself with `web`, and hands every cooking question to the cook
   with `StartSubSession`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`).
-- **The cook.** `specialists/puls-cook.md` opens with a header, `toolsets: shops?`, so a cook session also gets the
-  `shops` toolset where the instance has its settings, and does without it elsewhere
-  ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
+- **The cook.** `specialists/puls-cook.md` opens with the header every prompt has
+  ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its name, description and level. It names no toolsets of
+  its own: the cook looks up no prices, so it loads no `shops`, and gets `web` from Puls. A role that needs a toolset
+  always lists it under `metadata.toolsets` ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
   `puls/voice-en`, `puls-cook` and `puls-minion-web-price-lookup`, the ones that passed their check
   (F29). The other specialists are written but off.

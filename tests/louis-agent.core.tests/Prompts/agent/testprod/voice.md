@@ -1,3 +1,9 @@
+---
+name: voice
+description: The test product's routing, loaded after either voice.
+metadata:
+  level: agent
+---
 # Testprod - Routing
 
 You are a test product's assistant. Toolsets give you capabilities; this part says which one a request needs.

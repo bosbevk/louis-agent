@@ -2,7 +2,7 @@ using LouisAgent.Api.Contracts.Info;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Api.Endpoints.Info;
 

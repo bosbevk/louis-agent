@@ -3,6 +3,7 @@ using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Skills.Roles;
@@ -51,7 +52,7 @@ public class RoleCatalogTests
         Assert.That(RoleCatalog.DefaultVoice, Is.EqualTo("louis-agent/voice"));
         Assert.That(docs.IndexOf("# Testprod - Stem", StringComparison.Ordinal),
             Is.LessThan(docs.IndexOf("# Testprod - Routing", StringComparison.Ordinal)));
-        Assert.That(SkillFileSource.ReadEmbedded("agent/testprod/voice.md"), Does.StartWith("# Testprod - Routing"),
+        Assert.That(Body("agent/testprod/voice.md"), Does.StartWith("# Testprod - Routing"),
             "the product's shared part");
     }
 
@@ -221,5 +222,8 @@ public class RoleCatalogTests
 
     [TestCase("agent/louis-agent/voice.md", "# Louis's Minion - Voice")]
     public void AVoicesHeading_SaysVoice(string file, string heading) =>
-        Assert.That(SkillFileSource.ReadEmbedded(file)!, Does.StartWith(heading));
+        Assert.That(Body(file), Does.StartWith(heading));
+
+    /// <summary>A built-in prompt as the model reads it, without its header (CL27).</summary>
+    private static string Body(string path) => PromptHeaders.Split(path, SkillFileSource.ReadEmbedded(path)!).Body;
 }

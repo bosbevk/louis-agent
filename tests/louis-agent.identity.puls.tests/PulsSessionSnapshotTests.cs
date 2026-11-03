@@ -8,7 +8,7 @@ using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Skills;
 using LouisAgent.Packs.Shops;
 using Microsoft.Extensions.AI;
 

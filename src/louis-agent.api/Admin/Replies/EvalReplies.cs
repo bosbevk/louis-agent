@@ -25,14 +25,18 @@ internal static class EvalReplies
     extension(EvalListReply)
     {
         /// <summary>
-        /// Every eval in the catalogue, with its runs where the store gave them, and the store's state. With no runs
-        /// to hand (no store, or it didn't answer) nobody knows whether an eval ran.
+        /// Every eval in the catalogue, with its runs where the store gave them, its drafts counted, and the store's
+        /// state. With no runs to hand (no store, or it didn't answer) nobody knows whether an eval ran.
         /// </summary>
         public static EvalListReply Of(EvalList catalog, string workspaceRoot,
-            IReadOnlyDictionary<string, IReadOnlyList<EvalDocuments.Run>>? runs, StoreRow store) =>
+            IReadOnlyDictionary<string, IReadOnlyList<EvalDocuments.Run>>? runs, StoreRow store,
+            IReadOnlyDictionary<string, int>? drafts = null) =>
             new([
                 .. catalog.Checks.Select(check => EvalRow.Of(check, EvalManuals.Has(workspaceRoot, check),
-                    runs?.GetValueOrDefault(check.Id)))
+                        runs?.GetValueOrDefault(check.Id)) with
+                    {
+                        Drafts = drafts?.GetValueOrDefault(check.Id) ?? 0
+                    })
             ], store);
     }
 

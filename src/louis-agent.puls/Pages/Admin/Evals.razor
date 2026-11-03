@@ -36,6 +36,6 @@ else if (_data is { } data)
 
     @foreach (var eval in data.Evals)
     {
-        <EvalCard Eval="eval" Currency="Currency.Current" />
+        <EvalCard Eval="eval" Currency="Currency.Current" OnChanged="LoadAsync" />
     }
 }

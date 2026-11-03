@@ -8,6 +8,8 @@ using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Calibration;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Refusal;
+using LouisAgent.Evals.Runner.Promptfoo;
+using LouisAgent.Evals.Runner.Studio;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Runner.Evals.Stub;
 
@@ -32,6 +34,26 @@ try
                 Console.Out.WriteLine(JsonSerializer.Serialize(listed, EvalJson.SnakeCase));
             return 0;
 
+        // The catalogue the studio composes an eval from: every check type with its settings' schema, then the readers.
+        case ChecksRequest:
+            foreach (string line in ChecksListing.Lines(RunnerChecks.Catalog, RunnerReaders.Catalog))
+                Console.Out.WriteLine(line);
+            return 0;
+
+        // A folder the studio wrote, judged as a run would judge it: its problems, then whether it was ok.
+        case CheckRequest check:
+            return await CheckCommand.RunAsync(check.Folder, Console.Out, CancellationToken.None);
+
+        // promptfoo in and out: a file to a folder, naming what was left out, and a folder to a file.
+        case ImportPromptfooRequest import:
+            foreach (string left in PromptfooImport.Write(File.ReadAllText(import.File), import.Folder))
+                Console.Out.WriteLine(JsonSerializer.Serialize(new LeftOutLine(left), EvalJson.SnakeCase));
+            return 0;
+
+        case ExportPromptfooRequest export:
+            Console.Out.Write(PromptfooExport.Yaml(export.Folder));
+            return 0;
+
         // The two commands that check a model grader against a person. Neither opens a session; --calibrate asks the
         // judge, so it refuses in CI.
         case CalibrateRequest calibrate:
@@ -44,8 +66,9 @@ try
                     .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
                 Console.Out);
 
+        // A run of the catalogue's eval, or of a studio folder's on a few of its samples (a try, F49.5).
         case RunRequest run:
-            var eval = catalog.Get(run.Name);
+            var eval = RunTarget.Of(run, catalog);
             // A re-score grades the stored run's lines, which the API pipes to stdin. It opens no session, so it has
             // no client to call.
             if (run.RescoreOf is { } source)

@@ -1,3 +1,7 @@
+---
+name: meal-for-people
+description: The cook eval's judge rubric. Is the answer a main dish that feeds the number of people asked for, answered pass or fail with a reason.
+---
 # Judge: is this a meal for the people asked for
 
 You check one answer from a cooking assistant. You are given what the user asked for (how many people, a town)

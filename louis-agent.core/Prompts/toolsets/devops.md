@@ -1,3 +1,7 @@
+---
+name: devops
+description: The devops toolset's guide, loaded with it. How to query and manage Azure DevOps work items, sprints and pull requests.
+---
 # DevOps Skills
 
 ## Work Item & DevOps Management

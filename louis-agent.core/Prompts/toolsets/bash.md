@@ -1,3 +1,7 @@
+---
+name: bash
+description: The bash toolset's guide, loaded with it. How to run shell scripts with the Bash tools, for pipelines, curl and Unix tooling.
+---
 # Bash Skills
 
 How to execute shell scripts with the native `Bash*` tools. Use bash for command-line pipelines (`grep`, `find`, `sed`, `awk`, `sort`, `xargs`), quick HTTP calls with `curl`, and Unix tooling inside Docker. Prefer a dedicated tool when one fits (`Git*`, `DotNet*`, workspace file tools), Python for real data processing, and PowerShell for Windows administration.

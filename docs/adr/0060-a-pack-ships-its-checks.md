@@ -46,7 +46,7 @@ to the contract (taken), everything to the pack with a copy of the table reader 
 
 ## Links
 
-[F49 Evals as content](../plans/F49-evals-as-content.md) · [0027](0027-engine-identities-and-packs.md) ·
+[F49 Evals as content](../architecture/evals.md#where-f49-came-from) · [0027](0027-engine-identities-and-packs.md) ·
 [0043](0043-repeated-names-are-enums.md) · [0055](0055-keep-it-simple.md) · [0056](0056-a-check-is-a-catalogue-entry.md)
 · [0057](0057-regex-is-the-last-option.md) · [0059](0059-an-identity-ships-readers-not-checks.md) ·
 [write-up 20](../learning/20-extensibility.md#a-pack-ships-its-checks-f493) ·

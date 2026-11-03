@@ -15,12 +15,34 @@ public abstract record CommandLineRequest;
 public sealed record ListRequest : CommandLineRequest;
 
 /// <summary>
+/// You asked for <c>--checks</c>: every check type the runner's evals can name, with its kind and the schema of its
+/// settings, then every reader with its kind, one JSON object per line (F49.5's studio composes from it).
+/// </summary>
+public sealed record ChecksRequest : CommandLineRequest;
+
+/// <summary>
+/// <c>--check {folder}</c>: judge an eval folder the studio wrote, as strictly as a run would and against the
+/// conformance gate, one JSON line per problem and then whether it was ok (F49.5).
+/// </summary>
+public sealed record CheckRequest(string Folder) : CommandLineRequest;
+
+/// <summary>
+/// <c>--import-promptfoo {file} {folder}</c>: a promptfoo file written out as an eval folder, what has no counterpart
+/// named on stdout (F49.5).
+/// </summary>
+public sealed record ImportPromptfooRequest(string File, string Folder) : CommandLineRequest;
+
+/// <summary><c>--export-promptfoo {folder}</c>: an eval folder as a promptfoo file, on stdout (F49.5).</summary>
+public sealed record ExportPromptfooRequest(string Folder) : CommandLineRequest;
+
+/// <summary>
 /// Run one eval: <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;]
 /// [--split dev|held-out|all] | --rescore &lt;runId&gt;</c>. Each mode runs N times, and its web reads can be recorded
 /// or replayed. With no web choice the instance's <c>WEB_REPLAY</c> decides; <paramref name="Of"/> is the recorded run
 /// a replay reads. <c>--replay {runId}</c> replays that run's model answers too (<paramref name="Model"/>), so it costs
 /// nothing. <c>--rescore {runId}</c> (<paramref name="RescoreOf"/>) grades a stored run's transcripts again, read from
-/// stdin, without opening a session.
+/// stdin, without opening a session. A studio try (F49.5) adds <c>--folder {path}</c> (<paramref name="Folder"/>, the
+/// eval's folder the studio wrote) and <c>--samples a,b</c> (<paramref name="Samples"/>, the scenarios to run).
 /// </summary>
 public sealed record RunRequest(
     string Name,
@@ -29,7 +51,9 @@ public sealed record RunRequest(
     string? Of = null,
     bool Model = false,
     RunSplit Split = RunSplit.Dev,
-    string? RescoreOf = null) : CommandLineRequest;
+    string? RescoreOf = null,
+    string? Folder = null,
+    string? Samples = null) : CommandLineRequest;
 
 /// <summary>
 /// <c>--calibrate {eval} {grader} [--labels -]</c>: asks a model grader about every answer a person labelled, and
@@ -67,6 +91,11 @@ public static class CommandLine
     public static CommandLineRequest Parse(IReadOnlyList<string> args)
     {
         if (args is ["--list"]) return new ListRequest();
+        if (args is ["--checks"]) return new ChecksRequest();
+        if (args is ["--check", var evalFolder]) return new CheckRequest(evalFolder);
+        if (args is ["--import-promptfoo", var promptfoo, var target])
+            return new ImportPromptfooRequest(promptfoo, target);
+        if (args is ["--export-promptfoo", var exported]) return new ExportPromptfooRequest(exported);
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
         if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
         if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where])
@@ -93,7 +122,7 @@ public static class CommandLine
     {
         int repeat = 1;
         WebReplayMode? web = null;
-        string? of = null, replay = null, rescore = null;
+        string? of = null, replay = null, rescore = null, folder = null, samples = null;
         var split = RunSplit.Dev;
         // Whether any flag that shapes a session or a run was given, whatever its value: a re-score takes none of them.
         bool shapesARun = false;
@@ -124,24 +153,41 @@ public static class CommandLine
                     shapesARun = true;
                     break;
                 case "--rescore": rescore = ParseOf(value); break;
+                case "--folder": folder = value; break;
+                case "--samples": samples = ParseSamples(value); break;
                 default: throw Refuse(RunnerMessage.UnknownArgument, new { Argument = flag });
             }
         }
 
-        // A re-score grades what is stored, so nothing that shapes a run may come with it.
+        // A re-score grades what is stored, so nothing that shapes a run may come with it, nor a studio folder.
         if (rescore is not null && (shapesARun || of is not null))
             throw Refuse(RunnerMessage.RescoreExcludesRunFlags, null);
+        if (rescore is not null && (folder is not null || samples is not null))
+            throw Refuse(RunnerMessage.RescoreExcludesFolder, null);
         if (rescore is not null) return new RunRequest(name, repeat, RescoreOf: rescore);
 
         // --replay already names the run and replays its web, so --web and --of would only contradict it.
         if (replay is not null && (web is not null || of is not null))
             throw Refuse(RunnerMessage.ReplayExcludesWebAndOf, null);
         if (replay is not null)
-            return new RunRequest(name, repeat, WebReplayMode.Replay, replay, Model: true, Split: split);
+            return new RunRequest(name, repeat, WebReplayMode.Replay, replay, Model: true, Split: split,
+                Folder: folder, Samples: samples);
 
         if (web == WebReplayMode.Replay && of is null) throw Refuse(RunnerMessage.ReplayNeedsOf, null);
         if (web != WebReplayMode.Replay && of is not null) throw Refuse(RunnerMessage.OfNeedsReplay, null);
-        return new RunRequest(name, repeat, web, of, Split: split);
+        return new RunRequest(name, repeat, web, of, Split: split, Folder: folder, Samples: samples);
+    }
+
+    /// <summary>
+    /// The scenarios a try runs: kebab-case ids, commas between, letters and digits joined by single dashes, as the
+    /// scenario files are named.
+    /// </summary>
+    private static string ParseSamples(string value)
+    {
+        var ids = value.Split(',', StringSplitOptions.TrimEntries);
+        bool kebab = ids.All(id => id.Length > 0 && id.Split('-').All(part =>
+            part.Length > 0 && part.All(c => c is >= 'a' and <= 'z' or >= '0' and <= '9')));
+        return kebab ? string.Join(",", ids) : throw Refuse(RunnerMessage.BadSamples, new { Value = value });
     }
 
     /// <summary>
