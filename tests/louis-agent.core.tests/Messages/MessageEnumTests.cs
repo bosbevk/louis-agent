@@ -29,7 +29,7 @@ public class MessageEnumTests
             "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
             "LlmErrorMessage",
             "LoggingErrorMessage", "LoggingLogMessage", "PaymoToolMessage", "PricingErrorMessage", "PricingLogMessage",
-            "ProtocolLogMessage", "ScriptToolMessage",
+            "PromptHeaderMessage", "ProtocolLogMessage", "ScriptToolMessage",
             "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage", "SkillLogMessage", "SubSessionToolMessage",
             "ToolMessage",
             "UserText", "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage",

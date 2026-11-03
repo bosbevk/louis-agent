@@ -3,8 +3,8 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Engines;
+using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests.Hosting.Engines;
 
