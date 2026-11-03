@@ -70,6 +70,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0061](0061-evals-grow-from-use.md) | Evals grow from use: a sample or transcript made in the portal is a draft in a store until F49.5 publishes it; a sample is a variant of its conversation's scenario; a transcript is kept only when people's verdicts back it | Accepted |
 | [0062](0062-the-studio-writes-what-git-keeps.md) | The studio writes what git keeps: the runner is the one reader and judge of eval files, reached as a process; an eval being composed is a draft written out as one folder that is checked, tried (always a replay) and published (a commit on a branch, never a push, or a zip); promptfoo in and out by a mapping table that names what it leaves out | Accepted |
 | [0063](0063-a-prompt-says-what-it-is.md) | A prompt says what it is: every built-in prompt and judge rubric opens with the Agent Skills spec's front matter (name, description, our level and toolsets under metadata), read once by one strict reader in core; the model and the judge get only the body; the portal lists them | Accepted |
+| [0065](0065-the-view-is-in-the-address.md) | The view is in the address: what a portal page shows (the run page's tab, the explorer's level and what is open in it) is read from the address, parsed once and written by one class; a component that keeps state reports every move and takes a changed place back; a change of address is not a fetch (0064 is reserved for F52) | Accepted |
 
 ## When to write one
 
