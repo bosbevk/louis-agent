@@ -73,7 +73,7 @@ public class RunnerEnvironmentTests
         {
             ["OTEL_EXPORTER_OTLP_ENDPOINT"] = "http://host.docker.internal:4317",
             ["OTEL_EXPORTER_OTLP_PROTOCOL"] = "grpc",
-            ["OTEL_SERVICE_NAME"] = "puls",
+            ["OTEL_SERVICE_NAME"] = "the-api",
             ["OTEL_EXPORTER_OTLP_HEADERS"] = "x-api-key=collector-secret",
         });
 
