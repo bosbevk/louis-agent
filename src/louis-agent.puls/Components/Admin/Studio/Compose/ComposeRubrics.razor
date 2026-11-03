@@ -1,0 +1,15 @@
+@* F49.5: the rubrics a model judge reads, each a markdown file of the eval's Rubrics/ folder. *@
+<section class="compose-rubrics card-p">
+    <h4>Rubrics</h4>
+    @foreach (var rubric in Rubrics)
+    {
+        <div class="compose-rubric">
+            <div class="compose-check-head">
+                <input class="compose-rubric-name" placeholder="meal-for-people.md" @bind="rubric.Name" />
+                <button type="button" class="compose-remove-rubric link-button" @onclick="() => Rubrics.Remove(rubric)">Remove</button>
+            </div>
+            <textarea class="compose-rubric-text" rows="6" placeholder="What the judge asks, and how it answers" @bind="rubric.Text"></textarea>
+        </div>
+    }
+    <button type="button" class="compose-add-rubric header-button" @onclick="Add">Add a rubric</button>
+</section>

@@ -20,6 +20,9 @@ public static class StudioText
     public static string SampleKept(string sample, string eval) =>
         $"Kept {sample} as a draft of {eval}. It waits on the Evals page until it is published.";
 
+    /// <summary>An eval being composed was saved as a draft (F49.5).</summary>
+    public static string EvalSaved(string eval) => $"Saved {eval} as a draft.";
+
     /// <summary>A transcript was kept as a draft, under the file name it will have.</summary>
     public static string TranscriptKept(string file) =>
         $"Kept as {file}. It waits on the Evals page until it is published.";
