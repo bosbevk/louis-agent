@@ -24,7 +24,7 @@ public class CookEvalTests
         var eval = CookFile.Eval;
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version),
-            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 11)));
+            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 12)));
         Assert.That(eval.Proves, Does.StartWith("Puls routes a meal to its cook"));
         Assert.That(eval.Manual, Is.EqualTo($"{CookFile.Source}/manual.md"));
     }
