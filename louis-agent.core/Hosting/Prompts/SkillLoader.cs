@@ -6,6 +6,7 @@ using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.Logging;
@@ -76,10 +77,22 @@ public static class SkillLoader
         return composite;
     }
 
-    /// <summary>A skill file as the model reads it: a built-in one without its role header (F33), which is for the loader.</summary>
+    /// <summary>
+    /// The toolsets a role always loads (F33), from its header's metadata (CL27): none for a role that names none, or
+    /// a name that isn't a built-in role at that level.
+    /// </summary>
+    public static IReadOnlyList<string> ToolsetsOf(string? role, RoleLevel level) =>
+        RoleCatalog.IsValidName(role) && PromptCatalog.Get(RoleCatalog.FileName(role!, level))?.Header is { } header
+            ? header.Toolsets
+            : [];
+
+    /// <summary>
+    /// A skill file as the model reads it: a built-in one without its header (CL27), which is for the loader; one the
+    /// agent wrote on disk as it is.
+    /// </summary>
     internal static (string Text, bool FromDisk)? Read(AgentOptions agent, string fileName) =>
         SkillFolder.Read(agent, fileName) is { } file
-            ? (file.FromDisk ? file.Text : RoleHeader.Split(file.Text).Body, file.FromDisk)
+            ? (file.FromDisk ? file.Text : PromptCatalog.Get(fileName)?.Body ?? file.Text, file.FromDisk)
             : null;
 
     /// <summary>Adds a skill file to the prompt (<see cref="Read"/>); a missing one is skipped.</summary>

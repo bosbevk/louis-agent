@@ -2,6 +2,7 @@ using LouisAgent.Choices;
 using LouisAgent.Composition;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.FileProviders;
 
@@ -60,14 +61,17 @@ public class CrossBoundaryNamesTests
         var known = new HashSet<string> { CoreToolset.Web.Wire(), CoreToolset.Files.Wire() };
         var roles = new[]
         {
-            ("specialists/good.md",
-                $"---\ntoolsets: {CoreToolset.Web.Wire()}, {CoreToolset.Files.Wire()}?\n---\nA role."),
-            ("specialists/typo.md", $"---\ntoolsets: {CoreToolset.Web.Wire()}, fils?\n---\nA role."),
+            ("specialists/good.md", Role("good", $"{CoreToolset.Web.Wire()}, {CoreToolset.Files.Wire()}?")),
+            ("specialists/typo.md", Role("typo", $"{CoreToolset.Web.Wire()}, fils?")),
             ("specialists/none.md", "A role with no header."),
         };
 
         Assert.That(Unknown(roles, known), Is.EqualTo(new[] { "specialists/typo.md: fils" }));
     }
+
+    /// <summary>A role's file whose header (CL27) lists these toolsets.</summary>
+    private static string Role(string name, string toolsets) =>
+        $"---\nname: {name}\ndescription: A role.\nmetadata:\n  toolsets: {toolsets}\n---\nA role.";
 
     private static List<string> Unknown(IFileProvider prompts, ISet<string> known) =>
         Unknown(RoleFiles(prompts), known);
@@ -76,8 +80,8 @@ public class CrossBoundaryNamesTests
     private static List<string> Unknown(IEnumerable<(string File, string Text)> roles, ISet<string> known) =>
     [
         .. roles.SelectMany(r =>
-            RoleHeader.Split(r.Text).Toolsets.Select(ToolsetCatalog.NameOf).Where(name => !known.Contains(name))
-                .Select(name => $"{r.File}: {name}"))
+            (PromptHeaders.Split(r.File, r.Text).Header?.Toolsets ?? []).Select(ToolsetCatalog.NameOf)
+                .Where(name => !known.Contains(name)).Select(name => $"{r.File}: {name}"))
     ];
 
     private static IEnumerable<(string File, string Text)> RoleFiles(IFileProvider prompts) =>

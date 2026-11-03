@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Skills.Roles;
 
 using System.Text.RegularExpressions;
 
+namespace LouisAgent.Core.Skills.Roles;
 /// <summary>
 /// The roles a session can choose (F21), in the folder of the level that reads them (CL8, ADR 0017):
 /// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
@@ -51,13 +51,6 @@ public static partial class RoleCatalog
 
     /// <summary>The skill file of a named role at <paramref name="level"/>, relative to the skills folder.</summary>
     public static string FileName(string name, RoleLevel level) => $"{FolderOf(level)}/{name}.md";
-
-    /// <summary>
-    /// The toolsets a role always loads (F33), from its file's header (<see cref="RoleHeader"/>): none for a role without
-    /// one, or a name that isn't a built-in role.
-    /// </summary>
-    public static IReadOnlyList<string> ToolsetsOf(string? name, RoleLevel level) =>
-        IsValidName(name) && SkillFileSource.ReadEmbedded(FileName(name!, level)) is { } text ? RoleHeader.Split(text).Toolsets : [];
 
     /// <summary>
     /// The named roles at <paramref name="level"/>, all built in (CL8 step 4), sorted: at level 0 the modes,

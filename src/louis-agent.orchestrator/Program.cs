@@ -260,5 +260,5 @@ internal static class OrchestratorSkills
     }
 
     /// <summary>A built-in prompt as the model reads it: without its header (CL27), which is for the loader.</summary>
-    private static string BodyOf(string path) => PromptHeaders.Split(path, SkillFileSource.ReadEmbedded(path)!).Body;
+    private static string BodyOf(string path) => PromptCatalog.Get(path)!.Body;
 }

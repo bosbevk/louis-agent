@@ -53,7 +53,7 @@ public class PulsPromptsTests
             Does.Contain("# Puls - Stem"));
         Assert.That(SkillLoader.Load(new AgentOptions(), [], PulsRole.Cook.Wire(), RoleLevel.Specialist).Documentation,
             Does.Contain("No prices are looked up"));
-        Assert.That(RoleCatalog.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist), Is.Empty,
+        Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist), Is.Empty,
             "F18 step 5.7: the cook has no header now, it looks up no prices (the shops pack stays, off for the cook)");
     }
 
