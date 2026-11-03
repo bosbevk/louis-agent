@@ -60,7 +60,7 @@ public class EvalHomesTests
         Assert.That(homes.TargetOf(Draft("rain-eval")).FolderName, Is.EqualTo("RainEval"));
     }
 
-    /// <summary>A listed eval whose folder isn't in this workspace (a host with none) has nothing to start from.</summary>
+    /// <summary>A listed eval whose folder isn't in this workspace (a host with none) has nothing to copy.</summary>
     [Test]
     public void AListedEvalWithNoFolderHere_HasNothingToStartFrom() =>
         Assert.That(new EvalHomes(Catalog(), _workspace).Existing(Draft("weather-eval")), Is.Null);

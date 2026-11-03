@@ -15,8 +15,10 @@ namespace LouisAgent.Api.Evals.Studio.Publish;
 /// </remarks>
 public sealed record EvalHomes(EvalList Catalog, string WorkspaceRoot)
 {
-    /// <summary>The eval's folder in this workspace, when the runner lists it and it is here; none for a new eval.</summary>
-    /// <remarks>Guard clauses: not listed, listed outside its identity's <c>Evals/</c>, outside the workspace, not here.</remarks>
+    /// <summary>The eval's folder here, when the runner lists it and it's in this workspace; none if new.</summary>
+    /// <remarks>
+    /// Guard clauses: not listed, listed outside its identity's <c>Evals/</c>, outside the workspace, not here.
+    /// </remarks>
     public string? Existing(EvalDraft draft)
     {
         if (ListedFolder(draft) is not { } listed) return null;

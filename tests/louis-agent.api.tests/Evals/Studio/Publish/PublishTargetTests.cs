@@ -36,7 +36,7 @@ public class PublishTargetTests
                 "eval/weather-agent-weather-eval")));
     }
 
-    /// <summary>A listed folder outside the identity's own <c>Evals/</c> is not taken: the eval goes where a new one does.</summary>
+    /// <summary>A listed folder outside its identity's <c>Evals/</c> isn't taken: it goes where new ones go.</summary>
     [TestCase("identities/louis-agent.identity.other-agent/Evals/Weather")]
     [TestCase("evals/template/Example")]
     [TestCase("identities/louis-agent.identity.weather-agent/Evals/../../escape")]
