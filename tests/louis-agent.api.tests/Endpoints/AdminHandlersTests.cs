@@ -6,6 +6,9 @@ using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Api.Evals.Runs;
 using LouisAgent.Api.Evals.Store;
+using LouisAgent.Api.Evals.Store.Recording;
+using LouisAgent.Api.Messages;
+using LouisAgent.Core.Messages;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -35,6 +38,8 @@ public class AdminHandlersTests
             typeof(Results<JsonHttpResult<LiveRunRow>, JsonHttpResult<ApiError>>));
         yield return new TestCaseData("GetEvents",
             typeof(Results<ServerSentEventsResult<string>, JsonHttpResult<ApiError>>));
+        yield return new TestCaseData("GetRequests",
+            typeof(Results<JsonHttpResult<LiveRequestsReply>, JsonHttpResult<ApiError>>));
     }
 
     /// <summary>A handler's signature names every answer it can give.</summary>
@@ -99,13 +104,63 @@ public class AdminHandlersTests
             Is.EqualTo(StatusCodes.Status404NotFound));
     }
 
-    /// <summary>The handlers over a catalogue of one check with a manual, and the store given, if any.</summary>
-    private static AdminHandlers Handlers(IEvalStore? store = null)
+    /// <summary>
+    /// A run being recorded here says its requests so far (FX34), as the stored run's rows; one that isn't is a 404,
+    /// and with no recorder at all it's a 503.
+    /// </summary>
+    [Test]
+    public void TheRequestsSoFar_AreARecordedRunsRows_OrA404()
+    {
+        // A run recorded with no ledger: it is there, and has asked nothing yet.
+        var recorder = new EvalRecorder(new InMemoryEvalStore());
+        recorder.Attach(new RunningEval("run123456789", "stub", 1));
+        var handlers = Handlers(recorder: recorder);
+
+        var answer = Inner(handlers.GetRequests("run123456789"));
+
+        Assert.That(((JsonHttpResult<LiveRequestsReply>)answer).Value!.Requests, Is.Empty);
+        Assert.That(Status(handlers.GetRequests("other")), Is.EqualTo(StatusCodes.Status404NotFound));
+        Assert.That(Status(Handlers().GetRequests("run123456789")),
+            Is.EqualTo(StatusCodes.Status503ServiceUnavailable));
+    }
+
+    /// <summary>
+    /// A ledger that can't be read just now is a 503 that says why, so the page keeps the costs it has.
+    /// </summary>
+    [Test]
+    public void ALedgerThatCantBeRead_IsA503()
+    {
+        string ledger = Path.Combine(Path.GetTempPath(), "louis-usage-ledger-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(ledger);
+        try
+        {
+            // This month's ledger file with a line cut off half way.
+            File.WriteAllText(Path.Combine(ledger, $"usage-{DateTime.UtcNow:yyyy-MM}.jsonl"), "{\"at\":");
+            var recorder = new EvalRecorder(new InMemoryEvalStore(), ledgerDirectory: ledger);
+            recorder.Attach(new RunningEval("run123456789", "stub", 1));
+
+            var answer = Inner(Handlers(recorder: recorder).GetRequests("run123456789"));
+
+            var error = (JsonHttpResult<ApiError>)answer;
+            Assert.That(error.StatusCode, Is.EqualTo(StatusCodes.Status503ServiceUnavailable));
+            Assert.That(error.Value!.Error.Message,
+                Is.Not.EqualTo(MessageText.Format(ApiUserText.NoBenchmarkStore)), "it says why, not \"no store\"");
+        }
+        finally
+        {
+            Directory.Delete(ledger, recursive: true);
+        }
+    }
+
+    /// <summary>
+    /// The handlers over a catalogue of one check with a manual, and the store and the recorder given, if any.
+    /// </summary>
+    private static AdminHandlers Handlers(IEvalStore? store = null, EvalRecorder? recorder = null)
     {
         var catalog = new EvalList([new EvalEntry("stub", "A stub", ManualPath)]);
         var runner = new EvalProcess(catalog, ApiTestHost.RepoRoot, "http://127.0.0.1:1/");
 
-        return new AdminHandlers(catalog, runner, "admin-secret", store, null,
+        return new AdminHandlers(catalog, runner, "admin-secret", store, recorder,
             _ => new Dictionary<string, string>(), ApiTestHost.RepoRoot);
     }
 

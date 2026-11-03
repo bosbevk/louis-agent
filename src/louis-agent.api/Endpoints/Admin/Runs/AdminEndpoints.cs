@@ -87,6 +87,8 @@ internal static class AdminEndpoints
             evals.MapPost("/{check}/runs", handlers.StartRun);
             evals.MapGet("/runs/current", handlers.GetCurrent);
             evals.MapGet("/runs/{id}/events", handlers.GetEvents);
+            // What a run that's going has asked so far, so the page prices each turn as it ends (FX34).
+            evals.MapGet("/runs/{id}/requests", handlers.GetRequests);
         }
 
         // An eval's trend: its new address, and the old one that had a "checks" in it.

@@ -38,6 +38,10 @@ caller, and the route says why (step 2) while the page keeps what it had.
   run ends; a run the recorder isn't keeping has none (null); no ledger gives an empty list; a half-written ledger
   line throws `InvalidDataException`. Red first: `CS1061 'EvalRecorder' does not contain a definition for
   'RequestsSoFar'`.
+- `AdminHandlersTests` (api.tests, step 2): `GetRequests` declares `LiveRequestsReply` or `ApiError`; a run recorded
+  here answers its rows, another is a 404, no recorder a 503; a half-written ledger is a 503 with the ledger's
+  reason. Red first: `CS1061 'AdminHandlers' does not contain a definition for 'GetRequests'`. The routes golden
+  gains `GET /v1/admin/benchmarks/runs/{id}/requests (AdminKey)` and its `/evals/` twin.
 
 ## Confirmed
 

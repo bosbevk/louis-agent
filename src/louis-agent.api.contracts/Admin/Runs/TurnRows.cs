@@ -46,5 +46,11 @@ public sealed record RequestRow(
     decimal? Cost,
     long DurationMs);
 
+/// <summary>
+/// What a run that's still going has asked the model so far, each request on its turn, so the live table can show a
+/// turn's cost as soon as it ends (FX34). The same rows a stored run holds once it has ended.
+/// </summary>
+public sealed record LiveRequestsReply(IReadOnlyList<RequestRow> Requests);
+
 /// <summary>Which turn: its mode, repeat, task and number.</summary>
 public sealed record TurnKeyRow(string Mode, int Repeat, string Task, int Turn);
