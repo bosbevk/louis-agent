@@ -155,7 +155,7 @@ switch ($Verb) {
         $customerId = Invoke-Az containerapp env show -n $Environment -g $ResourceGroup --query 'properties.appLogsConfiguration.logAnalyticsConfiguration.customerId' -o tsv
         if (-not $customerId) { throw "$Environment logs to no Log Analytics workspace: see Monitoring > Logging options on the environment in the portal." }
         $workspace = Invoke-Az monitor log-analytics workspace list -g $ResourceGroup --query "[?customerId=='$customerId'].id" -o tsv
-        if (-not $workspace) { throw "No Log Analytics workspace in $ResourceGroup has the environment's id ($customerId): it logs to one in another resource group; find it in the portal and pass that group here." }
+        if (-not $workspace) { throw "No Log Analytics workspace in $ResourceGroup has the environment's id ($customerId): it logs to one in another resource group, which this verb doesn't expect; find it in the portal (the environment's Monitoring > Logging options) before going on." }
         Write-Host "The environment logs to $workspace."
 
         # Application Insights on that workspace: create is an upsert, so a second run answers the same resource. The
@@ -171,7 +171,8 @@ switch ($Verb) {
         # environment gets OTEL_EXPORTER_OTLP_ENDPOINT and _PROTOCOL (gRPC) injected, which both exporters read.
         if ($PSCmdlet.ShouldProcess($ResourceGroup, "az containerapp env telemetry app-insights set -n $Environment --connection-string <the string above> --enable-open-telemetry-traces true --enable-open-telemetry-logs true")) {
             Invoke-Az containerapp env telemetry app-insights set -n $Environment -g $ResourceGroup --connection-string $connection --enable-open-telemetry-traces true --enable-open-telemetry-logs true -o none
-            Invoke-Az containerapp env telemetry app-insights show -n $Environment -g $ResourceGroup --query '{traces:enableOpenTelemetryTraces, logs:enableOpenTelemetryLogs}' -o table
+            # show answers the whole environment; the agent's destinations are two lists that should both hold appInsights.
+            Invoke-Az containerapp env telemetry app-insights show -n $Environment -g $ResourceGroup --query 'properties.openTelemetryConfiguration.{traces:tracesConfiguration.destinations, logs:logsConfiguration.destinations}' -o json
         }
 
         Write-Host 'Once set, every app in the environment gets the agent''s OTEL_EXPORTER_OTLP_ENDPOINT and _PROTOCOL; a running'

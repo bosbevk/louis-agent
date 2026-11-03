@@ -492,7 +492,7 @@ a replay, and the measurement in step 8 replays a recorded eval run.
   by its project's short name (`api`, `acp-server`, `mcp-server`, `cli`, `evals.runner`), so compose sets
   `OTEL_SERVICE_NAME` only for `puls`, whose project is the API's. The runner's own name (pick B) is its project's,
   so the allowlist lets the endpoint and protocol through and keeps `OTEL_SERVICE_NAME` out, else it would be `puls`.
-- **2026-11-03, step 7, where Application Insights comes from** (Louis's pick K1 of three, 22:18): `deploy.ps1
+- **2026-11-03, step 7, where Application Insights comes from** (Louis's pick K1 of three, 22:14): `deploy.ps1
   telemetry` creates `puls-insights` on the Log Analytics workspace the environment already logs to, so its traces
   and logs sit beside the container logs, and switches on the environment's managed agent; Louis runs it himself
   after the merge, `-WhatIf` first.
