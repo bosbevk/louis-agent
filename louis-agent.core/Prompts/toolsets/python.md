@@ -1,3 +1,7 @@
+---
+name: python
+description: The python toolset's guide, loaded with it. How to run Python for data wrangling, calculations, parsing files and quick scripts.
+---
 # Python Skills
 
 How to execute Python with the native `Python*` tools. Use Python for data wrangling, calculations, parsing files (CSV/JSON/XML), quick prototypes and scripts — anything where running real code beats reasoning about the answer.

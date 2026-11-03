@@ -1,3 +1,7 @@
+---
+name: files
+description: The files toolset's guide, loaded with it. How to read, write and manage files in the workspace.
+---
 # Files Skills
 
 Guidance for the `files` toolset: reading, writing and managing files in the workspace.

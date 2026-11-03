@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Core.Messages;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Messages;
@@ -70,15 +71,17 @@ public sealed class JudgeCheck : IRubricCheck
     public sealed class Entry() : CheckType<Settings>("judge", CheckKind.Model)
     {
         /// <summary>
-        /// Reads the rubric from the eval's folder, refusing one that isn't there, and builds the judge over it with
-        /// the judge the environment names, built when it first grades.
+        /// Reads the rubric from the eval's folder, refusing one that isn't there, and builds the judge over its body
+        /// (its header, CL27, is for the portal: neither sent nor hashed, so no calibration moves) with the judge the
+        /// environment names, built when it first grades.
         /// </summary>
         protected override ICheck Create(Settings settings, CheckContext context)
         {
             var file = Path.Combine(context.Folder, settings.Rubric);
             if (!File.Exists(file))
                 throw new InvalidDataException(MessageText.Format(EvalErrorMessage.RubricMissing, new { File = file }));
-            return new JudgeCheck(Type, settings.Version, File.ReadAllText(file), settings.Ask ?? [],
+            string rubric = PromptHeaders.Split(settings.Rubric, File.ReadAllText(file)).Body;
+            return new JudgeCheck(Type, settings.Version, rubric, settings.Ask ?? [],
                 () => JudgeClients.FromEnvironment());
         }
     }

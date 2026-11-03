@@ -78,3 +78,11 @@
 .summary-table .s-tasks details > summary { cursor: pointer; color: var(--muted); }
 .summary-table a.s-task { display: block; padding: 2px 0; font-size: 12.5px; }
 .run-log { max-height: none; font-size: 12.5px; }
+
+/* CL27: the Prompts page's table, one row a prompt, its file under its name. */
+.prompts { overflow-x: auto; }
+.prompts-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.prompts-table th, .prompts-table td { padding: 7px 12px 7px 0; text-align: left; vertical-align: top; }
+.prompts-table th { color: var(--muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+.prompts-table tr + tr td { border-top: 1px solid var(--border); }
+.prompt-path { display: block; font-family: var(--font-code); font-size: 12px; }

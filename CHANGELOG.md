@@ -4,6 +4,17 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-03 — **CL27 Prompt headers**: every built-in prompt (core's, Puls's and the shops pack's 26, and the
+  tests' six) and the cook's judge rubric open with the Agent Skills spec's front matter: `name` (the file's),
+  `description`, and under `metadata` the `level` of a mode, role or minion and the `toolsets` a role always loads
+  (F33's line, moved there); one strict reader in core, `PromptHeaders` (YamlDotNet, newly in core), refuses an
+  unknown key, a wrong name or level, a missing description or an unclosed fence, naming the file; `PromptCatalog`
+  reads every header once, so a faulty one stops the host at start; the model and the judge get only the body (the
+  prompt goldens unchanged, the rubric's hash still `438a8deb91f4`, no calibration moved); `RoleHeader` deleted,
+  `RoleLevel` at the top of `Skills/`, a role's toolsets from `SkillLoader.ToolsetsOf`; `GET /v1/admin/prompts` and
+  Puls's admin *Prompts* page list them. Ran unattended; its picks are in the PR for review. Guide
+  [Build an identity](docs/guides/build-an-identity.md#3-write-its-mode)
+  ([0063](docs/adr/0063-a-prompt-says-what-it-is.md), [write-up 07](docs/learning/07-context-engineering.md#a-prompt-says-what-it-is-cl27))
 - 2026-11-03 — **FX31 The trend's change badge stays one pill**: on the Benchmarks page's category cards, `▲ +13%`
   no longer breaks into a two-line blob beside the value, and the small trend panels fill their card instead of
   three fixed columns with one empty ([lesson](docs/learning/fixes-lessons.md#fx31--a-small-copy-of-a-layout-needs-its-own-columns))

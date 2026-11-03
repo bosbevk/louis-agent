@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Grading.Models.Rubrics;
@@ -85,7 +86,9 @@ public class CookEvalTests
     [Test]
     public void ItsRubricAndLabels_AreTheCalibratedOnes()
     {
-        var hash = RubricHash.Of(File.ReadAllText(Path.Combine(CookFile.Folder, "Rubrics", "meal-for-people.md")));
+        // The hash is of what the judge reads: the body, after the header (CL27).
+        var hash = RubricHash.Of(PromptHeaders.Split("Rubrics/meal-for-people.md",
+            File.ReadAllText(Path.Combine(CookFile.Folder, "Rubrics", "meal-for-people.md"))).Body);
 
         Assert.That(hash, Is.EqualTo(CookFile.RubricHash));
         Assert.That(CookFile.Eval.Labels, Has.Count.EqualTo(36));

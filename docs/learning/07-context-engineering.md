@@ -121,6 +121,32 @@ and the guide itself one line per rule with the links, under 200 lines. `ClaudeM
 and rules file to 200 so it can't grow back. The lesson is skill 7's: the prompt that is always there should hold
 only what is always needed, and everything else should be a pointer that costs nothing until it is followed.
 
+## A prompt says what it is (CL27)
+
+**What it means.** Every built-in prompt (each mode, role, minion, toolset guide, the principles) and the cook's judge
+rubric now opens with a few lines of YAML between two `---` lines: its name, a sentence on what it is and when it is
+loaded, and, under `metadata`, the level it runs at and the toolsets a role always loads. It is the same front matter
+the Agent Skills spec gives a `SKILL.md`. Before, a file said what it was only through its heading and its folder, and
+one kind of file, a role, had its own one-line header that ignored anything it didn't know.
+
+**The header is for the program, the body for the model.** That split is the context-engineering lesson. The loader
+reads the header and hands the model only what comes after it, so the model's prompt is byte for byte what it was
+(the prompt goldens didn't move), while the code, the tests and the portal can now ask a file what it is without a
+model reading it. Metadata that the model would only pay for on every request has no place in what it reads.
+
+**Read once, and strict.** `PromptCatalog` reads every header when the host first asks, so a faulty one (an unknown
+key, a name that isn't the file's, a level that doesn't exist) stops the host at its start, naming the file, instead
+of surfacing the first time a chat opens that role. A misspelled `toolset` used to load nothing, silently; now it
+can't.
+
+**The hash kept.** The judge's rubric is hashed, and each calibration records the hash of the rubric it measured. The
+hash is of the body only, so the cook's stays `438a8deb91f4` and the 36 labels still describe the rubric. Adding a
+label to a file must never change what it is measured as.
+
+**Where it leads (skill 20).** Phase 7 turns the agent's own function skills into `SKILL.md` folders with this same
+header, so the skills the agent writes and the prompts we ship will read alike, by one reader
+([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)).
+
 ## Where skill 7 stands
 
 GOAL.md's row lists the catalogue table under *Have today* (F33). Still to come: a JSON-LD reader so any page's structured

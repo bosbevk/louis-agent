@@ -69,6 +69,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0060](0060-a-pack-ships-its-checks.md) | A pack ships the checks that prove its tools, in a registry the composition gathers; plain markdown reading is the check contract's; what only an identity knows comes in through a reader the file names; a small shared table lives twice, held equal by a test | Accepted |
 | [0061](0061-evals-grow-from-use.md) | Evals grow from use: a sample or transcript made in the portal is a draft in a store until F49.5 publishes it; a sample is a variant of its conversation's scenario; a transcript is kept only when people's verdicts back it | Accepted |
 | [0062](0062-the-studio-writes-what-git-keeps.md) | The studio writes what git keeps: the runner is the one reader and judge of eval files, reached as a process; an eval being composed is a draft written out as one folder that is checked, tried (always a replay) and published (a commit on a branch, never a push, or a zip); promptfoo in and out by a mapping table that names what it leaves out | Accepted |
+| [0063](0063-a-prompt-says-what-it-is.md) | A prompt says what it is: every built-in prompt and judge rubric opens with the Agent Skills spec's front matter (name, description, our level and toolsets under metadata), read once by one strict reader in core; the model and the judge get only the body; the portal lists them | Accepted |
 
 ## When to write one
 

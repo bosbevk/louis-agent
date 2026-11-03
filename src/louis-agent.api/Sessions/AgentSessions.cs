@@ -9,6 +9,7 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
@@ -77,9 +78,9 @@ internal sealed class AgentSessions(AgentEngineFactory engines)
                 ?? throw new ToolsetException(MessageText.Format(ApiErrorMessage.NoToolsetForTool, new { Tool = tool }))
             ]
             : toolsets ?? DefaultToolsets);
-        // A role's own toolsets (F33: the cook's `shops?`, from its file's header) come with it, beside what its parent
-        // passed; then every name, optional or not, is held to the same rules.
-        names = ToolsetCatalog.Normalise(names.Concat(RoleCatalog.ToolsetsOf(role, (RoleLevel)depth)));
+        // A role's own toolsets (F33: the cook's `shops?`, from its header's metadata, CL27) come with it, beside what
+        // its parent passed; then every name, optional or not, is held to the same rules.
+        names = ToolsetCatalog.Normalise(names.Concat(SkillLoader.ToolsetsOf(role, (RoleLevel)depth)));
         var plain = names.Select(ToolsetCatalog.NameOf).ToList();
         if (depth > 0 && plain.Contains(SpecialistsToolset))
             throw new ToolsetException(MessageText.Format(ApiErrorMessage.SubSessionCannotDelegate,

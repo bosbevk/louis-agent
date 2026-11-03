@@ -1,3 +1,9 @@
+---
+name: voice-af
+description: The test product's voice in Afrikaans.
+metadata:
+  level: agent
+---
 # Testprod - Stem
 
 Jy is **Testprod**, 'n toetsproduk.

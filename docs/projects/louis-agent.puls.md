@@ -36,7 +36,7 @@ as you go: every answer shows what it cost, specialists included.
   *Replay* button that starts one through the page's one start path (`ReplayButton`, `StartRequest.Replay`; FX28);
   `/admin/benchmarks/{run}` is the explorer (`RunExplorer`: the run, its conversations side by side, a turn, a
   request), the trend (`TrendChart`) and what the run ran with. Each chart explains itself on hover (`ChartInfo`).
-  The old `/admin/maatstawwe` addresses still open. **The grades view** (F18 step 4.5c) shows every eval the same way, from
+  `/admin/prompts` lists every built-in prompt by its header (CL27). The old `/admin/maatstawwe` addresses still open. **The grades view** (F18 step 4.5c) shows every eval the same way, from
   the standard records alone: `GraderList` above the explorer (the run's eval, version, commit and graders, or one line saying
   it recorded none) and `GradeChips` on each conversation's row (its outcome and one chip per grade, in the run's grader order,
   the reason on hover; "no grades" for a run from before F18 step 2a, never 0). The readers and the chip list are plain classes in
@@ -60,7 +60,8 @@ as you go: every answer shows what it cost, specialists included.
 | `Components/Chat/` | `EmptyChat` (the welcome with the message box in the middle) and `Toast` at the top; by concern (W2b): `Search/ChatSearch` (Ctrl/Cmd K over the chats in this browser, matching by `Search/ChatFinder`, tested alone), `Turns/UserActions` and `AnswerActions` (under a message and an answer), `Composing/MessageBox` (the shared Composer with Puls's toolbar, `ComposerTools`), `Panels/WorkPanel` (the Werk panel), `ChatViews`, `ExploreView`, `StudioView` and `TemplateCard` (Verken and Studio). Every component's C# is its `.razor.cs`; the page names its fragments as markup templates |
 | `Components/Chat/Sidebar/` | `ChatSidebar` (the brand, a new chat, search, the views, the chats and the settings), `ChatListItem`, `ChatMenu`, `ProfileCard`, `LocationPicker`, `MotionToggle` |
 | `Components/Chat/Header/` | `ChatHeader` (the top bar), `CreditsMenu`, `LanguageMenu`, `ProfileMenu` |
-| `Layout/AdminLayout.razor` | The admin portal's sidebar and content column |
+| `Layout/AdminLayout.razor` | The admin portal's sidebar (*Measure*: Benchmarks and Evals; *Build*: Prompts, CL27) and content column |
+| `Pages/Admin/Prompts.razor`, `Prompts.razor.cs` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none); styles at the end of `css/admin/shell.css` |
 | `Text/PulsWebRole.cs` | The roles the web app has words for (the cook's work phases), as an enum of its own (ADR 0043) |
 | `Pages/Admin/Benchmarks.razor`, `BenchmarkRun.razor` | The checks, a live run and the runs list; one stored run |
 | `Components/Admin/` | `RunExplorer`, `TrendChart`, `ChartInfo`: a run at every level, a check's trend, a chart's explanation |
