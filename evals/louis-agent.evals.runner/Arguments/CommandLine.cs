@@ -27,6 +27,15 @@ public sealed record ChecksRequest : CommandLineRequest;
 public sealed record CheckRequest(string Folder) : CommandLineRequest;
 
 /// <summary>
+/// <c>--import-promptfoo {file} {folder}</c>: a promptfoo file written out as an eval folder, what has no counterpart
+/// named on stdout (F49.5).
+/// </summary>
+public sealed record ImportPromptfooRequest(string File, string Folder) : CommandLineRequest;
+
+/// <summary><c>--export-promptfoo {folder}</c>: an eval folder as a promptfoo file, on stdout (F49.5).</summary>
+public sealed record ExportPromptfooRequest(string Folder) : CommandLineRequest;
+
+/// <summary>
 /// Run one eval: <c>run {name} [--repeat N] [--web off|record|replay] [--of &lt;runId&gt;] [--replay &lt;runId&gt;]
 /// [--split dev|held-out|all] | --rescore &lt;runId&gt;</c>. Each mode runs N times, and its web reads can be recorded
 /// or replayed. With no web choice the instance's <c>WEB_REPLAY</c> decides; <paramref name="Of"/> is the recorded run
@@ -84,6 +93,9 @@ public static class CommandLine
         if (args is ["--list"]) return new ListRequest();
         if (args is ["--checks"]) return new ChecksRequest();
         if (args is ["--check", var evalFolder]) return new CheckRequest(evalFolder);
+        if (args is ["--import-promptfoo", var promptfoo, var target])
+            return new ImportPromptfooRequest(promptfoo, target);
+        if (args is ["--export-promptfoo", var exported]) return new ExportPromptfooRequest(exported);
         if (args is ["run", var name, ..]) return ParseRun(name, args.Skip(2).ToList());
         if (args is ["--calibrate", var calibrated, var grader]) return new CalibrateRequest(calibrated, grader);
         if (args is ["--calibrate", var fromStdin, var judged, "--labels", var where])

@@ -21,6 +21,16 @@ public class CommandLineTests
     public void ChecksIsParsed() =>
         Assert.That(CommandLine.Parse(["--checks"]), Is.EqualTo(new ChecksRequest()));
 
+    /// <summary>promptfoo in names the file and the folder; out names the folder (F49.5).</summary>
+    [Test]
+    public void PromptfooInAndOut_AreParsed()
+    {
+        Assert.That(CommandLine.Parse(["--import-promptfoo", "a.yaml", "/tmp/e"]),
+            Is.EqualTo(new ImportPromptfooRequest("a.yaml", "/tmp/e")));
+        Assert.That(CommandLine.Parse(["--export-promptfoo", "/tmp/e"]),
+            Is.EqualTo(new ExportPromptfooRequest("/tmp/e")));
+    }
+
     /// <summary>A check names the folder it judges (F49.5).</summary>
     [Test]
     public void CheckIsParsed_WithItsFolder() =>

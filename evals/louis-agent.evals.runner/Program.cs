@@ -8,6 +8,7 @@ using LouisAgent.Evals.Runner.Arguments;
 using LouisAgent.Evals.Runner.Calibration;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Runner.Refusal;
+using LouisAgent.Evals.Runner.Promptfoo;
 using LouisAgent.Evals.Runner.Studio;
 using LouisAgent.Evals.Running;
 using LouisAgent.Evals.Runner.Evals.Stub;
@@ -42,6 +43,16 @@ try
         // A folder the studio wrote, judged as a run would judge it: its problems, then whether it was ok.
         case CheckRequest check:
             return await CheckCommand.RunAsync(check.Folder, Console.Out, CancellationToken.None);
+
+        // promptfoo in and out: a file to a folder, naming what was left out, and a folder to a file.
+        case ImportPromptfooRequest import:
+            foreach (string left in PromptfooImport.Write(File.ReadAllText(import.File), import.Folder))
+                Console.Out.WriteLine(JsonSerializer.Serialize(new LeftOutLine(left), EvalJson.SnakeCase));
+            return 0;
+
+        case ExportPromptfooRequest export:
+            Console.Out.Write(PromptfooExport.Yaml(export.Folder));
+            return 0;
 
         // The two commands that check a model grader against a person. Neither opens a session; --calibrate asks the
         // judge, so it refuses in CI.
