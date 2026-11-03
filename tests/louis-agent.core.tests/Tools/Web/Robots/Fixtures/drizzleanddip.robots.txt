@@ -1,0 +1,16 @@
+User-agent: *
+Disallow: /wp-content/uploads/wc-logs/
+Disallow: /wp-content/uploads/woocommerce_transient_files/
+Disallow: /wp-content/uploads/woocommerce_uploads/
+Disallow: /*?add-to-cart=
+Disallow: /*?*add-to-cart=
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+
+User-agent: MJ12bot
+Disallow: /
+
+Sitemap: https://drizzleanddip.com/news-sitemap.xml
+Sitemap: https://drizzleanddip.com/video-sitemap.xml
+Sitemap: https://drizzleanddip.com/sitemap.xml
+Sitemap: https://drizzleanddip.com/sitemap.rss
