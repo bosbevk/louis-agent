@@ -31,7 +31,7 @@ public sealed class EvalRecorder(IEvalStore store, ILogger? logger = null, strin
     public void Attach(RunningEval run, IReadOnlyDictionary<string, string>? settings = null)
     {
         var heard = new RunRecording(run, settings, store, logger, ledgerDirectory, CancellationToken.None);
-        var recording = RecordAsync(run, heard, CancellationToken.None);
+        var recording = FoldUntilEndAsync(run, heard, CancellationToken.None);
         lock (_lock)
         {
             _recordings.Add((run.Id, heard, recording));
@@ -59,11 +59,11 @@ public sealed class EvalRecorder(IEvalStore store, ILogger? logger = null, strin
     /// <summary>Records the run until it ends; the settings are what it ran with.</summary>
     public Task<Result> RecordAsync(RunningEval run, IReadOnlyDictionary<string, string>? settings = null,
         CancellationToken cancellationToken = default) =>
-        RecordAsync(run, new RunRecording(run, settings, store, logger, ledgerDirectory, cancellationToken),
+        FoldUntilEndAsync(run, new RunRecording(run, settings, store, logger, ledgerDirectory, cancellationToken),
             cancellationToken);
 
     /// <summary>Folds every line of the run into its recording, then closes it.</summary>
-    private static async Task<Result> RecordAsync(RunningEval run, RunRecording recording,
+    private static async Task<Result> FoldUntilEndAsync(RunningEval run, RunRecording recording,
         CancellationToken cancellationToken)
     {
         // Listen before the first await, so no line printed meanwhile is missed.

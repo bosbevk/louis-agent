@@ -61,7 +61,7 @@ public class RequestsSoFarTests
         var recorder = new EvalRecorder(store, ledgerDirectory: _ledger);
         recorder.Attach(_run);
         foreach (string line in FirstTurn()) _run.Add(line);
-        await Eventually(async () => (await store.TurnsAsync(RunId, Bobotie.Conversation)).Count == 1);
+        await Background.Eventually(async () => (await store.TurnsAsync(RunId, Bobotie.Conversation)).Count == 1);
 
         var requests = recorder.RequestsSoFar(RunId);
 
@@ -122,17 +122,5 @@ public class RequestsSoFarTests
                 2.0, null, null),
         ];
         return events.Select(EvalProtocolJson.Line);
-    }
-
-    /// <summary>Waits, up to two seconds, for something the recorder does in the background.</summary>
-    private static async Task Eventually(Func<Task<bool>> condition)
-    {
-        for (int i = 0; i < 200; i++)
-        {
-            if (await condition()) return;
-            await Task.Delay(10);
-        }
-
-        Assert.Fail("the store never got there");
     }
 }

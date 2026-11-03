@@ -184,7 +184,7 @@ internal sealed class AdminHandlers(
             if (recorder.RequestsSoFar(id) is not { } requests) return NoRun();
             return TypedResults.Json(new LiveRequestsReply([.. requests.Select(RequestRow.Of)]), AdminJson.SnakeCase);
         }
-        catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
+        catch (Exception ex) when (LedgerJoin.Unreadable(ex))
         {
             return ApiErrors.Unavailable(
                 MessageText.Format(ApiUserText.BenchmarkLedgerUnreadable, new { Reason = ex.Message }));

@@ -81,18 +81,6 @@ public class EvalRecorderTests
     /// <summary>The line that closes a mode's repeat.</summary>
     private static string ModeDone() => EvalProtocolJson.Line(new ModeDoneEvent(T0, SampleMode.Beta, 1, null));
 
-    /// <summary>Waits, up to two seconds, for something the recorder does in the background.</summary>
-    private static async Task Eventually(Func<Task<bool>> condition)
-    {
-        for (int i = 0; i < 200; i++)
-        {
-            if (await condition()) return;
-            await Task.Delay(10);
-        }
-
-        Assert.Fail("the store never got there");
-    }
-
     /// <summary>
     /// A whole run ends up in the store: the run, its log, its mode, its conversation, its turn and the turn's stream
     /// events.
@@ -209,7 +197,7 @@ public class EvalRecorderTests
             Question("bobotie", turn: 2), Sse("bobotie", "b", turn: 2));
 
         // The recorder writes in the background, so wait for the finished turn to land.
-        await Eventually(async () =>
+        await Background.Eventually(async () =>
             (await _store.TurnsAsync(_run.Id, new ConversationKey(SampleMode.Beta, 1, "bobotie"))).Count == 1);
 
         var run = await _store.GetRunAsync(_run.Id);

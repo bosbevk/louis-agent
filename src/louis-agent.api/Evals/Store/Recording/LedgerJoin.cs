@@ -55,7 +55,7 @@ internal static class LedgerJoin
             ofRun = EvalLedger.OfRun(run.Id,
                 EvalLedger.Read(ledgerDirectory, run.StartedAt, run.EndedAt ?? DateTimeOffset.UtcNow));
         }
-        catch (Exception ex) when (ex is IOException or InvalidDataException or UnauthorizedAccessException)
+        catch (Exception ex) when (Unreadable(ex))
         {
             // A ledger we can't read leaves the cost unknown, and the run's log says why.
             return new LedgerJoinResult(null, settings, [],
@@ -76,6 +76,13 @@ internal static class LedgerJoin
                 : [],
             AgentPrompts.Of(run.Id, ofRun));
     }
+
+    /// <summary>
+    /// Whether this is the ledger being unreadable just now (missing access, a line half written, the file held by its
+    /// writer), which leaves the cost unknown with its reason, rather than a bug that should surface.
+    /// </summary>
+    public static bool Unreadable(Exception ex) =>
+        ex is IOException or InvalidDataException or UnauthorizedAccessException;
 
     /// <summary>
     /// The run's requests up to now, while it's still going, each on its turn the way the run's end places them, so
