@@ -113,8 +113,8 @@ TODO's *F52 Observability through OpenTelemetry* · GOAL row 17 · the plan as i
 [0007](0007-measure-every-request.md) · [0009](0009-message-text-as-enum-templates.md) ·
 [0055](0055-keep-it-simple.md) · [0057](0057-regex-is-the-last-option.md) · [Debug and
 logs](../guides/debug-and-logs.md) · [louis-agent.core](../projects/louis-agent.core.md) · the research
-(`research/reports/logging-and-error-tracking.md` in the Claude project) · the write-up to come
-(`docs/learning/17-observability.md`) · OpenTelemetry's GenAI semantic conventions · W3C Trace Context
+(`research/reports/logging-and-error-tracking.md` in the Claude project) · [the
+write-up](../learning/17-observability.md) · OpenTelemetry's GenAI semantic conventions · W3C Trace Context
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)
