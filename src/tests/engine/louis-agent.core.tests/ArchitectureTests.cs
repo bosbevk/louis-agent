@@ -401,7 +401,6 @@ public partial class ArchitectureTests
     private static readonly HashSet<string> StillPointsOutside =
     [
         "louis-agent.api",
-        "louis-agent.evals.runner",
     ];
 
     /// <summary>

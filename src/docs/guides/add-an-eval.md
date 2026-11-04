@@ -143,13 +143,13 @@ required check that asks no model (a fixed rule), so a run always has a check th
 `rand-prices`, `servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements
 `IMoneyReader`, `INumberReader`, `IImageReader`, `IPriceReader` or `ILinkReader` (from the check contract,
 `src/evals/louis-agent.evals.checks`), listed in your
-evals project's list (`PulsReaders.All`), which the runner gathers in `RunnerReaders`. `name` keeps the
+evals project's list (`PulsReaders.All`), which the demo's program hands to the runner (`PulsCatalogs`). `name` keeps the
 name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
 that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its project's
 list (as the where-to-buy rules are in `WhereToBuyChecks.All`, in `packs-evals/louis-agent.pack.where-to-buy.checks/Checks/`),
-which the runner gathers in `RunnerChecks`. It lives in a project of its own, which only the runner references,
+which the demo's program hands to the runner (`PulsCatalogs`). It lives in a project of its own, which only the runner references,
 never in the pack or identity ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools),
 ADR 0073). The worked example is `EstimatesAtShop` and its tests. Its reasons
 are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
@@ -221,7 +221,7 @@ dotnet test demos/acme/tests/louis-agent.identity.acme.tests
 Listing is free and calls no model; the stub is always listed too:
 
 ```bash
-EVALS=acme dotnet run --project src/evals/louis-agent.evals.runner -- --list
+EVALS=acme dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- --list
 ```
 
 Running one talks to the API and spends money, so ask first. The flags, recording and replaying, the dev and held-out

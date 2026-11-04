@@ -302,7 +302,7 @@ which only the runner references, so someone can use your tools without the eval
    reasons are a message enum of its own (`ShopCheckMessage`).
 3. **What only an identity knows is a reader** the file names beside the check: `estimates-at-shop` takes an
    `IPriceReader` (`{"reader": "rand-prices"}`) and never names Puls.
-4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the runner's `RunnerChecks`.
+4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the catalogues the demo's eval program hands to the runner (`PulsCatalogs`).
 5. **Test it** in `packs-tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
    first. The where-to-buy project is the model.
 

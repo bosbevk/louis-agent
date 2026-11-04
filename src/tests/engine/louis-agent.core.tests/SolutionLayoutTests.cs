@@ -23,10 +23,10 @@ public class SolutionLayoutTests
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
     [TestCase("demos/puls/web", "louis-agent.puls")]
-    [TestCase("demos/puls/hosts", "louis-agent.host-packs")]
+    [TestCase("demos/puls/hosts", "louis-agent.host-packs", "louis-agent.puls-eval-runner")]
     [TestCase("demos/louis-agent/web", "louis-agent.web", "louis-agent.site")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
-        "louis-agent.coding-acp", "louis-agent.coding-mcp")]
+        "louis-agent.coding-acp", "louis-agent.coding-mcp", "louis-agent.coding-eval-runner")]
     [TestCase("src/tests/engine", "louis-agent.core.tests", "louis-agent.core.integration-tests",
         "louis-agent.choices.tests", "louis-agent.session-stream.tests")]
     [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests")]

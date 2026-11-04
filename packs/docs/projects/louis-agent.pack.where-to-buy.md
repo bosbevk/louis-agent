@@ -57,7 +57,7 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 | `Tools/` | `WhereToBuyTools.FindBranches` and `BranchPrinter`, which writes its table |
 | `Branches/` | `BranchFinder` (the town, the boxes, the nearest three), `BranchSearch` (its result), `Branch`, `Distance`, `ShopNames` |
 | `Branches/Map/` | Nominatim: `MapSearch` (the requests, the pace), `MapPlace` and `MapAddress` (its answer, as records), `MapUnavailableException` |
-| `../louis-agent.pack.where-to-buy.checks/Checks/` | The shop rules (`WhereToBuyChecks.All`, which the runner's `RunnerChecks` gathers): `EstimatesAtShop`, `UntooledShops`; `Reading/` holds what they read an answer with (`ShopSites`, `ShopLines`, `BranchReading`, `BranchFinding`, `ShopExpectation`, `ScenarioShop`) |
+| `../louis-agent.pack.where-to-buy.checks/Checks/` | The shop rules (`WhereToBuyChecks.All`, which the runner's `PulsCatalogs` gathers): `EstimatesAtShop`, `UntooledShops`; `Reading/` holds what they read an answer with (`ShopSites`, `ShopLines`, `BranchReading`, `BranchFinding`, `ShopExpectation`, `ScenarioShop`) |
 | `Messages/` | `WhereToBuyToolMessage` (what the tool returns), `WhereToBuyLogMessage` (its log line; the town shows as a hash through core's `LogContent`), `ShopCheckMessage` (the rules' reasons) |
 | `Prompts/toolsets/where-to-buy.md` | The guide the model reads with the toolset: its routing line, the tool, how to name a branch |
 

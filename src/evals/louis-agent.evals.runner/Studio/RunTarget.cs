@@ -18,9 +18,9 @@ namespace LouisAgent.Evals.Runner.Studio;
 public static class RunTarget
 {
     /// <summary>The eval the request runs.</summary>
-    public static IEval Of(RunRequest run, EvalCatalog catalog)
+    public static IEval Of(RunRequest run, EvalCatalog catalog, RunnerCatalogs catalogs)
     {
-        var eval = run.Folder is null ? catalog.Get(run.Name) : FromFolder(run.Name, run.Folder);
+        var eval = run.Folder is null ? catalog.Get(run.Name) : FromFolder(run.Name, run.Folder, catalogs);
         if (run.Samples is null) return eval;
 
         var samples = run.Samples.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
@@ -39,10 +39,10 @@ public static class RunTarget
     /// <summary>
     /// The eval in the folder, sealed and loaded as a check loads it; it must be the one the run names.
     /// </summary>
-    private static IEval FromFolder(string name, string folder)
+    private static IEval FromFolder(string name, string folder, RunnerCatalogs catalogs)
     {
         ManifestSeal.Seal(folder);
-        var eval = FileEval.Load(folder, RunnerChecks.Catalog, RunnerReaders.Catalog, "studio");
+        var eval = FileEval.Load(folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, "studio");
         if (eval.Name != name)
             throw new RunnerException(MessageText.Format(RunnerMessage.FolderIsAnotherEval,
                 new

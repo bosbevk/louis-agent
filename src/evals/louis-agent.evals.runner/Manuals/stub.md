@@ -47,5 +47,5 @@ Nothing: no requests, so the cost shows as *—* (unknown: the ledger has nothin
 From the portal, press *Run* on its card. Without the portal:
 
 ```
-dotnet run --project src/evals/louis-agent.evals.runner -- run stub --repeat 2
+dotnet run --project demos/louis-agent/hosts/louis-agent.coding-eval-runner -- run stub --repeat 2
 ```

@@ -11,7 +11,7 @@
         "WORKSPACE_ROOT": "../../..",
         "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
         "LOG_DIRECTORY": "../../../demos/louis-agent/logs",
-        "EVAL_RUNNER": "../../evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll",
+        "EVAL_RUNNER": "../../../demos/louis-agent/hosts/louis-agent.coding-eval-runner/bin/Debug/net10.0/louis-agent.coding-eval-runner.dll",
         "CONFIG_DIRECTORY": "../../../demos/louis-agent/config",
         "PRICES_FILE": "../../../demos/louis-agent/config/prices.json",
         "RATES_FILE": "../../../demos/louis-agent/config/rates.json"
@@ -29,7 +29,7 @@
         "WORKSPACE_ROOT": "../../..",
         "SKILLS_DIRECTORY": "../../../demos/puls/skills",
         "LOG_DIRECTORY": "../../../demos/puls/logs",
-        "EVAL_RUNNER": "../../evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll",
+        "EVAL_RUNNER": "../../../demos/puls/hosts/louis-agent.puls-eval-runner/bin/Debug/net10.0/louis-agent.puls-eval-runner.dll",
         "CONFIG_DIRECTORY": "../../../demos/puls/config",
         "PRICES_FILE": "../../../demos/puls/config/prices.json",
         "RATES_FILE": "../../../demos/puls/config/rates.json",

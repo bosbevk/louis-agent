@@ -27,7 +27,7 @@ public class EvalConformanceTests
     private static IEnumerable<TestCaseData> EveryEval()
     {
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, RunnerReaders.Catalog, folder.Source));
+            .Select(folder => FileEval.Load(folder.Folder, RunnerCatalogs.GeneralOnly.CheckCatalog, RunnerCatalogs.GeneralOnly.ReaderCatalog, folder.Source));
         var catalog = new EvalCatalog([.. files, new FakeEval()], new StubEval());
         foreach (var eval in catalog.Evals)
             yield return new TestCaseData(eval).SetName(eval.Name);
@@ -66,13 +66,13 @@ public class EvalConformanceTests
     };
 
     /// <summary>
-    /// An eval that isn't Puls's, with the general no-error check it would use; its references are in Transcripts/fake.
+    /// An eval of nobody in particular, with the general no-error check it would use; its references are in Transcripts/fake.
     /// </summary>
     private sealed class FakeEval : IEval
     {
         public string Name => "fake";
         public int Version => 1;
-        public string Proves => "A fake eval, to test the conformance check on an eval that isn't Puls's.";
+        public string Proves => "A fake eval, to test the conformance check on an eval from outside the harness.";
 
         /// <summary>Its one mode, the stub's delegating one.</summary>
         public ValueTask<IReadOnlyList<EvalMode>> ModesAsync(ISessionClient sessions,

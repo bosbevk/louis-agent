@@ -50,7 +50,7 @@ any identity can use it, and it could be served as an MCP server unchanged
   `estimates-at-shop` takes a price reader ([ADR 0059](../../../src/docs/adr/0059-an-identity-ships-readers-not-checks.md),
   [ADR 0073](../../../src/docs/adr/0073-packs-reference-no-evals.md)). It lives apart from the pack, in
   `packs-evals/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
-  runner's `RunnerChecks`, and the check catalogue's listing shows it with that one setting.
+  demo program's `PulsCatalogs`, and the check catalogue's listing shows it with that one setting.
 
 ## Design notes
 

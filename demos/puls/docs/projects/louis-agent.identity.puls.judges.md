@@ -19,7 +19,7 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
   the scenario expects (`CookAsk`), and reads a yes-or-no verdict with a reason (`MealVerdict`). It is shown and counted
   but not required until its calibration passes. A person's review of it (`human`) asks the rubric's title.
 - **The list** (`PulsJudges.All`) is what an eval file can name; the runner gathers it with the harness's general
-  checks and Puls's fixed rules (`Catalog/RunnerChecks`).
+  checks and Puls's fixed rules (`PulsCatalogs`).
 
 ## Extending it
 

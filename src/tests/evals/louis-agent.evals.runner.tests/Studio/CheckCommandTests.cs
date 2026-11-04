@@ -1,3 +1,4 @@
+using LouisAgent.Evals.Runner.Catalog;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using LouisAgent.Evals.Runner.Studio;
@@ -39,7 +40,7 @@ public class CheckCommandTests
     private async Task<(bool Ok, IReadOnlyList<string> Problems)> CheckAsync(string? folder = null)
     {
         var output = new StringWriter();
-        int code = await CheckCommand.RunAsync(folder ?? _folder, output, CancellationToken.None);
+        int code = await CheckCommand.RunAsync(folder ?? _folder, RunnerCatalogs.GeneralOnly, output, CancellationToken.None);
         Assert.That(code, Is.Zero, "a check that could look at the folder always ends well");
 
         var lines = output.ToString().Split('\n', StringSplitOptions.RemoveEmptyEntries)

@@ -17,7 +17,7 @@ public class ChecksListingTests
     /// <summary>The lines as JSON, read back.</summary>
     private static readonly IReadOnlyList<JsonElement> Lines =
     [
-        .. ChecksListing.Lines(RunnerChecks.Catalog, RunnerReaders.Catalog)
+        .. ChecksListing.Lines(RunnerCatalogs.GeneralOnly.CheckCatalog, RunnerCatalogs.GeneralOnly.ReaderCatalog)
             .Select(line => JsonDocument.Parse(line).RootElement.Clone())
     ];
 
@@ -32,7 +32,7 @@ public class ChecksListingTests
     public void EveryCheck_IsALine_InTheCataloguesOrder_BeforeTheReaders()
     {
         Assert.That(Checks.Select(line => line.GetProperty("type").GetString()),
-            Is.EqualTo(RunnerChecks.Catalog.Listing().Select(check => check.Type)));
+            Is.EqualTo(RunnerCatalogs.GeneralOnly.CheckCatalog.Listing().Select(check => check.Type)));
         Assert.That(Lines.TakeWhile(line => line.TryGetProperty("type", out _)).Count(),
             Is.EqualTo(Checks.Count()), "the checks come first");
     }
@@ -69,7 +69,7 @@ public class ChecksListingTests
     public void EveryReader_IsALine_WithItsKind()
     {
         Assert.That(Readers.Select(line => line.GetProperty("reader").GetString()),
-            Is.EquivalentTo(RunnerReaders.Catalog.Listing().Select(reader => reader.Name)));
+            Is.EquivalentTo(RunnerCatalogs.GeneralOnly.ReaderCatalog.Listing().Select(reader => reader.Name)));
         Assert.That(Readers.Select(line => line.GetProperty("kind").GetString()),
             Is.All.Matches<string>(SettingChoice.Names<ReaderKind>().Contains));
     }

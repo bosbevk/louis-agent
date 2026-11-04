@@ -1,10 +1,13 @@
+using LouisAgent.Evals;
 using LouisAgent.Evals.Conformance;
 using LouisAgent.Evals.Files;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Runner.Catalog;
 using LouisAgent.Evals.Trials;
 
-namespace LouisAgent.Evals.Runner.Tests.Conformance;
+using LouisAgent.PulsEvalRunner;
+
+namespace LouisAgent.Identities.Puls.Evals.Tests.Runner;
 
 /// <summary>
 /// A reference conversation is one that is right in every way the eval can tell, not only in its required checks.
@@ -22,7 +25,7 @@ public class PulsReferencesTests
     {
         foreach (var folder in EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles")))
         {
-            var eval = FileEval.Load(folder.Folder, RunnerChecks.Catalog, RunnerReaders.Catalog, folder.Source);
+            var eval = FileEval.Load(folder.Folder, PulsCatalogs.All.CheckCatalog, PulsCatalogs.All.ReaderCatalog, folder.Source);
             foreach (var conformanceCase in ConformanceCases.Load(eval.Transcripts, eval.Scenarios))
                 yield return new TestCaseData(eval, conformanceCase).SetName($"{eval.Name}/{conformanceCase.Scenario}");
         }

@@ -52,7 +52,7 @@ public class TemplateFolderTests
     public void TheRunner_NeverListsIt()
     {
         var files = EvalFolders.Find(Path.Combine(AppContext.BaseDirectory, "EvalFiles"))
-            .Select(folder => FileEval.Load(folder.Folder, RunnerChecks.Catalog, RunnerReaders.Catalog, folder.Source));
+            .Select(folder => FileEval.Load(folder.Folder, RunnerCatalogs.GeneralOnly.CheckCatalog, RunnerCatalogs.GeneralOnly.ReaderCatalog, folder.Source));
 
         Assert.That(new EvalCatalog(files, new StubEval()).Evals.Select(eval => eval.Name), Does.Not.Contain(Name));
     }

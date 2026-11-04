@@ -2,7 +2,7 @@ using LouisAgent.Evals.Datasets;
 using LouisAgent.Evals.Runner.Evals.Stub;
 using LouisAgent.Testing;
 
-namespace LouisAgent.Evals.Runner.Tests.Layout;
+namespace LouisAgent.Identities.Puls.Evals.Tests.Runner;
 
 /// <summary>
 /// How the one data item of an eval project copies its eval files: every file under <c>Evals/</c> that isn't code
@@ -36,16 +36,16 @@ public class EvalFilesCopyTests
     public void TheStubsTranscripts_ReachThisProjectsOutput_FromTheRunnersOwnItem() =>
         Assert.That(File.Exists(Path.Combine(AppContext.BaseDirectory, StubReference)), Is.True, StubReference);
 
-    /// <summary>An identity's dataset reaches the runner's own output too.</summary>
+    /// <summary>An identity's dataset reaches the output of the demo's own runner program too.</summary>
     [Test]
-    public void ADatasetReachesTheRunnersOwnOutput_ThroughItsReferenceToTheComposition()
+    public void ADatasetReachesTheProgramsOwnOutput_ThroughItsReferences()
     {
-        // This project's output is bin/{Config}/net10.0/; the runner's is the same under its own folder.
+        // This project's output is bin/{Config}/net10.0/; the program's is the same under its own folder.
         var output =
             new DirectoryInfo(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar,
                 Path.AltDirectorySeparatorChar));
-        var runnerOutput = Path.Combine(TestPaths.RepoRoot, "src", "evals",
-            "louis-agent.evals.runner", "bin", output.Parent!.Name, output.Name);
+        var runnerOutput = Path.Combine(TestPaths.RepoRoot, "demos/puls/hosts/louis-agent.puls-eval-runner", "bin",
+            output.Parent!.Name, output.Name);
 
         Assert.That(File.Exists(Path.Combine(runnerOutput, CookDataset)), Is.True,
             Path.Combine(runnerOutput, CookDataset));
