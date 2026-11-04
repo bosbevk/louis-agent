@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG EVAL_COMMIT=unknown
 WORKDIR /src
 COPY . .
-RUN dotnet publish "src/hosts/louis-agent.api/louis-agent.api.csproj" -c Release -o /app/publish
+RUN dotnet publish "demos/louis-agent/hosts/louis-agent.coding-api/louis-agent.coding-api.csproj" -c Release -o /app/publish
 # The eval runner (F18 step 4.3) publishes to its own folder: it ships its own copies of core and the session-stream reader,
 # and beside the API's they would overwrite each other.
 RUN dotnet publish "demos/louis-agent/hosts/louis-agent.coding-eval-runner/louis-agent.coding-eval-runner.csproj" -c Release -p:EvalCommit=$EVAL_COMMIT -o /app/evals-publish
@@ -19,4 +19,4 @@ ENV EVAL_RUNNER=/app/evals/louis-agent.coding-eval-runner.dll
 ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD curl -fs http://localhost:8080/health || exit 1
-ENTRYPOINT ["dotnet", "louis-agent.api.dll"]
+ENTRYPOINT ["dotnet", "louis-agent.coding-api.dll"]

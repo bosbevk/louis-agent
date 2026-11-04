@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Endpoints.Routing;
 /// any route under <c>/v1</c> must carry <c>AGENT_API_KEY</c>, in <c>x-api-key</c> or as a bearer token, unless the
 /// route is marked <see cref="RouteAccess.Open"/> or <see cref="RouteAccess.AdminKey"/> (ADR 0039, rule 6): a new
 /// route is closed until the code opens it. Whether the API starts without a key is <c>HostAuth</c>'s decision, made
-/// in <c>Program.cs</c> (core's one rule for this and the MCP server over HTTP), and this gate is mapped only when a
+/// in <c>ApiStartup</c> (core's one rule for this and the MCP server over HTTP), and this gate is mapped only when a
 /// key is set. <c>/health</c> and the web app's files are outside <c>/v1</c> and stay public: they hold no data, and
 /// the app sends the key the user enters in its settings.
 /// </summary>

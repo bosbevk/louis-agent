@@ -9,6 +9,10 @@ public enum ApiLogMessage
                  + "Only expose it on localhost.")]
     NoApiKey,
 
+    [Description("Call UseLouisAgentKey before MapLouisAgentApi: the agent behind these routes can run shell commands "
+                 + "and write files, so they won't map without the key check.")]
+    KeyCheckMissing,
+
     [Description("Turn failed in {Session}")]
     TurnFailed,
 

@@ -14,10 +14,10 @@ in `src/web/louis-agent.web.shared`, which Puls uses too.
 
 ```bash
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api      # http://127.0.0.1:5080
-dotnet run --project src/hosts/louis-agent.api --launch-profile api                             # http://127.0.0.1:5081
+dotnet run --project demos/louis-agent/hosts/louis-agent.coding-api                             # http://127.0.0.1:5081
 ```
 
-The API serves this app unless it is built with `WebApp=puls`. After a change to the app, rebuild the `api` image or
+The coding agent's program, `louis-agent.coding-api`, references this app, so that's what it serves. After a change to the app, rebuild the `api` image or
 restart the run. If the API needs `AGENT_API_KEY`, enter it under *API key* in the sidebar; it stays in this browser.
 
 ## Add a tab

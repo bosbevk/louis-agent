@@ -85,7 +85,7 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
   returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `specialists`.
 - Two web apps share one API codebase and `louis-agent.web.shared`: the code-review app (`louis-agent.web`, every
   toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load `specialists` and `web` and
-  hand cooking to the cook; served when the API is built with `-p:WebApp=puls`).
+  hand cooking to the cook; served by Puls's program, `louis-agent.puls-api`).
 - **Live delegation:** while a `StartSubSession` call runs, the specialist's own events stream to the chat as
   `sub_session` events (`SubSessionFeed` → the API's turn stream), and the delegation card shows its thinking, tool
   calls, answer and cost as they happen; the model gets only the answer.

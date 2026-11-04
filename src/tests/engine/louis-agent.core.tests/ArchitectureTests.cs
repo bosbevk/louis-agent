@@ -398,10 +398,7 @@ public partial class ArchitectureTests
     /// The framework projects that still reference a demo or a pack. CL29.2 takes them off one at a time, and the list
     /// goes with its last entry.
     /// </summary>
-    private static readonly HashSet<string> StillPointsOutside =
-    [
-        "louis-agent.api",
-    ];
+    private static readonly HashSet<string> StillPointsOutside = [];
 
     /// <summary>
     /// A framework project ships as a package, and a package can't point at someone's project: the program that uses it

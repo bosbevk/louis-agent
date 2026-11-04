@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Evals.Reports.Prompts;
 /// <c>minion:{role}</c>), and any other task is the main session; a judge or a summary asks with a prompt of its own,
 /// so it gets its purpose after the agent's name and is only ever compared with itself.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class AgentPrompts
 {
     /// <summary>The name of the session the eval talks to, whatever scenario it is on.</summary>

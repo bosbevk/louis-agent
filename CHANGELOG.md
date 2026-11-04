@@ -4,7 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
-- 2026-11-04 — **The hosts are libraries** (CL29.2): the coding agent's own programs, `louis-agent.coding-cli`, `louis-agent.coding-acp`, `louis-agent.coding-mcp` and `louis-agent.coding-eval-runner`, and Puls's `louis-agent.puls-eval-runner`, say what they load, and the framework's hosts and eval runner reference no demo. The code-review stack no longer carries Puls's evals.
+- 2026-11-04 — **The hosts are libraries** (CL29.2): the coding agent's own programs, `louis-agent.coding-cli`, `louis-agent.coding-acp`, `louis-agent.coding-mcp`, `louis-agent.coding-eval-runner` and `louis-agent.coding-api`, and Puls's `louis-agent.puls-eval-runner` and `louis-agent.puls-api`, say what they load, and no framework project references a demo. `-p:WebApp` is gone: a program serves the web app it references. The code-review stack no longer carries Puls's evals.
 - 2026-11-04 — **The folders say what ships** (CL29.1): `src/` holds only the framework, now with the eval harness in
   `src/evals/`; `packs/` holds tools and `packs-evals/` what proves them; anything that names a product moved to
   `demos/`, as someone's own project would be: `demos/puls/{identity,evals,web,hosts,tests,config,docker,skills,deploy}` and
