@@ -3,7 +3,7 @@ using LouisAgent.Api.Contracts.Admin.Checks;
 namespace LouisAgent.Puls.Admin.Store;
 
 /// <summary>
-/// What the pill at the top of the Benchmarks page says about the store, and whether a run may start: only when the
+/// What the pill at the top of the Evals page says about the store, and whether a run may start: only when the
 /// store is there and answers, since a paid run whose results are lost is the worst outcome.
 /// </summary>
 /// <remarks>Each text is a switch on the store's shape, one arm per case, instead of nested ternaries.</remarks>

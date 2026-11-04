@@ -1,0 +1,13 @@
+@* F53.2 step 2: the list pane of the Evals page: every eval the runner has, one line each, the chosen one marked.
+   A line says enough to choose: the name, what it proves, the last run and per mode where it stands. *@
+<nav class="eval-list card-p" aria-label="Evals">
+    <div class="eval-list-head"><span class="sidebar-label">Evals · @Evals.Count</span></div>
+    @if (Evals.Count == 0)
+    {
+        <p class="muted evals-empty">The runner lists no evals.</p>
+    }
+    @foreach (var (line, i) in Evals.Select((l, i) => (l, i)))
+    {
+        <EvalListItem Line="line" Selected="@(line.Name == Selected)" Index="i" />
+    }
+</nav>

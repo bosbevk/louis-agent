@@ -23,9 +23,19 @@ public class ReviewHandlersTests
 
     /// <summary>A handler's signature names every answer it can give.</summary>
     [TestCaseSource(nameof(Declared))]
-    public void AHandler_DeclaresItsAnswers(string handler, Type answers)
+    public void AHandler_DeclaresItsAnswers(string handler, Type answers) =>
+        AssertDeclared("ReviewHandlers", handler, answers);
+
+    /// <summary>The queue's handler (F53.3) names its answers too.</summary>
+    [Test]
+    public void TheQueueHandler_DeclaresItsAnswers() =>
+        AssertDeclared("ReviewQueueHandlers", "GetQueue",
+            typeof(Task<Results<JsonHttpResult<ReviewQueueReply>, JsonHttpResult<ApiError>>>));
+
+    /// <summary>The named class's handler returns exactly these answers.</summary>
+    private static void AssertDeclared(string className, string handler, Type answers)
     {
-        var type = typeof(ApiErrors).Assembly.GetTypes().SingleOrDefault(t => t.Name == "ReviewHandlers");
+        var type = typeof(ApiErrors).Assembly.GetTypes().SingleOrDefault(t => t.Name == className);
 
         Assert.That(type?.GetMethod(handler)?.ReturnType, Is.EqualTo(answers), handler);
     }

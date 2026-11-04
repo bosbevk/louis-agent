@@ -31,7 +31,7 @@ public static class StudioText
     public static string PublishedAsZip(string file) =>
         $"This instance has no git workspace, so the eval came as {file}: add its folder in a pull request.";
 
-    /// <summary>A try started; the Benchmarks page follows it.</summary>
+    /// <summary>A try started; the Evals page follows it.</summary>
     public static string TryStarted(string run) =>
         $"Try {run} started, a replay at no cost: follow it on Benchmarks ›";
 

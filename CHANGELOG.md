@@ -4,6 +4,14 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F53.3 The review queue, and F53 closed**: `/admin/review` shows the answers waiting for this
+  reviewer's grade across the stored runs, one at a time, from one new API route (`GET
+  /v1/admin/evals/reviews/queue?reviewer=&limit=`: every conversation whose human review is still pending and that
+  this reviewer, or nobody, has not graded, with what the review panel needs); where the answer is from, its place,
+  Skip, the blind review panel unchanged, a grade opening the next; the keys 1, 2 and 3 grade pass, fail or unsure;
+  the sidebar's *Review* entry counts what waits and falls as you grade. The third child of F53, the admin portal
+  organised by job (option B of the admin review, built unattended at Louis's word, PRs #132, #136 and this one);
+  [write-up](docs/learning/16-human-in-the-loop.md)
 - 2026-11-04 — **F54 The engine's website**: `src/louis-agent.site`, a public site for .NET developers in the
   Console theme (black, white and metallic grays) with five pages and two films of how the engine works, a short
   one (36 s) and a detailed one (60 s) whose slabs are the chat pipeline's middleware in its real order; static
@@ -19,6 +27,18 @@
   (`docker-compose.observability.yml`), and `deploy.ps1 telemetry` sends Azure's to Application Insights; the guide
   has the table of what to log at which level. PRs #121, #122, #124, #126 to #130;
   [ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)
+- 2026-11-03 — **F53.2 One Evals page**: `/admin` is the Evals page in list/details shape: the list names every eval
+  with its last run and per mode the pass@k with its move against the run before; the chosen eval is in the address
+  (`?eval=`, the eval that ran last when none is named) and its details hold the Run button with its estimate, the
+  manual, the scorecard, the timeline, the trend, what it checks and every stored run as a table; a run starts and is
+  followed there, and a thin strip on every admin page says a run is going; the Benchmarks page and the old
+  `/admin/benchmarks` and `/admin/maatstawwe` addresses are gone, the run page is at `/admin/runs/{id}`, and the
+  sidebar is by job (Measure: Evals; Build: Studio, Prompts) (the second child of F53)
+- 2026-11-03 — **F53.1 The run page opens on its answer**: a verdict card under the head (per mode passed of
+  graded and the change against the eval's run before, from the trend the page already fetched; the cost, the
+  requests, the answers still to grade), the page's blocks as tabs, and the tab and the explorer's place in the
+  address, so Back goes up a level and a link opens the same view; the run is fetched only when its id changes
+  ([ADR 0065](docs/adr/0065-the-view-is-in-the-address.md); the first child of F53, the portal organised by job)
 - 2026-11-03 — **The cook's judge recalibrated**: against 60 answers Louis graded in the portal (run
   `cf37574d0f23`), `meal-for-people` agreed on 43 of 45 passes but only 8 of 15 fails, all of them Puls alone
   refusing, asking back or listing ideas; its rubric is now a short ordered decision that calls those `false` and

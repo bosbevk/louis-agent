@@ -1,17 +1,26 @@
-@page "/admin/evals"
+@page "/admin"
 @layout AdminLayout
+@implements IDisposable
 
 @* F18 step 7b (i): every eval the runner's catalogue has, from GET /v1/admin/evals; one that never ran is listed as
-   never run, not hidden. Its runs and the trend open on the Benchmarks page. *@
+   never run, not hidden. F53.2: the portal's front page, as list and details: the list pane names every eval with its
+   last result, the details pane holds the chosen one (the eval in the address, `?eval=`; none opens the eval that ran
+   last) with the controls that run it, and the run in progress above the details. *@
 
 <PageTitle>Evals · Puls Admin</PageTitle>
 
 <div class="page-head">
     <div>
         <h1>Evals</h1>
-        <p>Every eval the runner has: what it proves, how it is graded, and every run the store kept.</p>
+        <p>Every eval the runner has: what it proves, how it is graded, every run the store kept, and a Run button.</p>
     </div>
     <div class="page-actions">
+        @if (_data?.Store is { } store)
+        {
+            <span class="store-pill @(StoreStatus.Up(store) ? "up" : "down")" title="@StoreStatus.Title(store)">
+                <span class="dot" aria-hidden="true"></span>@StoreStatus.Label(store)
+            </span>
+        }
         <button class="header-button" type="button" @onclick="LoadAsync" disabled="@_loading"><span class="ic i-refresh" aria-hidden="true"></span>Reload</button>
     </div>
 </div>
@@ -29,13 +38,19 @@ else if (_data is { } data)
 {
     <StoreBanner Store="data.Store" />
 
-    @if (data.Evals.Count == 0)
-    {
-        <section class="card-p evals-empty"><span class="muted">The runner lists no evals.</span></section>
-    }
-
-    @foreach (var eval in data.Evals)
-    {
-        <EvalCard Eval="eval" Currency="Currency.Current" OnChanged="LoadAsync" />
-    }
+    <div class="eval-split">
+        <EvalList Evals="EvalListView.Of(data).Evals" Selected="@Chosen?.Name" />
+        <div class="eval-pane">
+            @if (_run is { } live)
+            {
+                <LiveRunPanel Run="live" FromStore="_fromStore" Title="@ProvesOf(live.Check)" Currency="Currency.Current"
+                              OnEnded="RunEndedAsync" OnError="ShowError" />
+            }
+            @if (Chosen is { } chosen)
+            {
+                <EvalDetails Eval="chosen" Running="Running" CanRun="StoreStatus.Up(data.Store)" Currency="Currency.Current"
+                             OnChanged="LoadAsync" OnRun="StartAsync" OnRescored="FollowRescoreAsync" />
+            }
+        </div>
+    </div>
 }

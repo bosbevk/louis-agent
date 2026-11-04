@@ -234,7 +234,7 @@ menu) does the same from the browser, and ends in the same folder of files
 3. **Check.** The runner loads the draft's folder as strictly as a run would and holds it to the conformance gate the
    tests run (section 7); every problem shows in its own words. Fix them and check again.
 4. **Try.** Name a stored run to replay and, if you like, a few samples (commas between). A try is always a replay,
-   so it costs nothing; follow it on the Benchmarks page. A fresh run stays the Run button's, and spends money.
+   so it costs nothing; follow it on the Evals page. A fresh run stays the Run button's, and spends money.
 5. **Publish.** Only a draft the runner found no problem with is published. On a machine whose workspace is a git
    checkout, the folder is committed to `identities/louis-agent.identity.{identity}/Evals/{Name}/` on the branch
    `eval/{identity}-{name}`, without touching your checkout; push the branch and open the pull request yourself.

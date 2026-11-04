@@ -4,7 +4,7 @@
 <div class="eval-score">
     <div class="eval-score-head">
         <span class="eval-score-label">Latest run</span>
-        <a class="eval-run-id" href="admin/benchmarks/@Line.Run.Run.Id"><code>@RunText.Short(Line.Run.Run.Id)</code></a>
+        <a class="eval-run-id" href="@RunAddress.Of(Line.Run.Run.Id)"><code>@RunText.Short(Line.Run.Run.Id)</code></a>
         <span class="eval-when">@EvalText.When(Line.Run.Run.StartedAt)</span>
         <span class="status-pill @RunText.Status(Line.Run.Run.Status)">@RunText.Status(Line.Run.Run.Status)</span>
         <span class="chip">@RunText.Repeats(Line.Run.Run.Repeat)</span>

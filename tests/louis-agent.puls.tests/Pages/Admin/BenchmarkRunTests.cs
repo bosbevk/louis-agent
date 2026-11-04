@@ -72,9 +72,10 @@ public class BenchmarkRunTests
         ctx.Services.AddSingleton(state);
         ctx.Services.AddSingleton(new RunNotesState());
 
-        // Open the page with a conversation to focus, and wait until it has drawn the review panel, having read the run
-        // once.
-        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/benchmarks/run1?task=bobotie");
+        // Open the page on the conversations tab with a conversation to focus, and wait until it has drawn the review
+        // panel, having read the run once.
+        ctx.Services.GetRequiredService<NavigationManager>()
+            .NavigateTo("admin/runs/run1?tab=conversations&view=conversation&task=bobotie");
         var cut = ctx.Render<BenchmarkRun>(p => p.Add(x => x.RunId, "run1"));
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".review-panel"), Has.Count.EqualTo(1)));
         Assert.That(runReads, Is.EqualTo(1));
@@ -130,7 +131,8 @@ public class BenchmarkRunTests
         var notes = new RunNotesState();
         ctx.Services.AddSingleton(notes);
 
-        // The first read has no notes, so the panel says so.
+        // The first read has no notes, so the notes tab says so.
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo("admin/runs/run1?tab=notes");
         var cut = ctx.Render<BenchmarkRun>(p => p.Add(x => x.RunId, "run1"));
         cut.WaitForAssertion(() => Assert.That(cut.FindAll(".notes-empty"), Has.Count.EqualTo(1)));
         Assert.That(runReads, Is.EqualTo(1));

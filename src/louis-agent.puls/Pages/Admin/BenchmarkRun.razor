@@ -1,12 +1,10 @@
-@page "/admin/benchmarks/{RunId}"
-@* The Afrikaans address the portal had first, so links already shared still open. *@
-@page "/admin/maatstawwe/{RunId}"
+@page "/admin/runs/{RunId}"
 @layout AdminLayout
 @implements IDisposable
 
-@* F31 step 10: one stored run: what it ran with, and its explorer (RunExplorer), read from the benchmark store. The
-   sections in reading order: the roll-up first, the explorer to drill into a conversation, then the rates and the
-   trends folded, since they are long, and last what the run ran with. *@
+@* F31 step 10: one stored run, read from the benchmark store. F53.1: the answer first (the verdict under the head),
+   then one tab at a time, the tab in the address: the summary (results by category, pass rates, the trends), the
+   explorer (RunExplorer), the judge against people, the notes, and what it ran with. *@
 
 <PageTitle>Run @RunId · Puls Admin</PageTitle>
 
@@ -26,42 +24,56 @@ else
     {
         <section class="card-p store-banner"><strong>Not all of this run was stored.</strong><p>@storeError</p></section>
     }
-    @* F18 step 7a.2: why this run behaved as it did, in people's words; the notes are the store's, fetched with the run. *@
-    <section class="card-p">
-        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Notes<span class="fold-note">what changed, what you think explains it</span></summary>
-            <NotesPanel RunId="@RunId" Notes="NoteReader.Of(_run.Run.Id, _run.Notes)" />
-        </details>
-    </section>
-    <section class="card-p">
-        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Results by category<span class="fold-note">per mode: overall, then each category</span></summary>
-            <SummaryPanel Summaries="_run.Summaries" RunId="@_run.Run.Id" Currency="Currency.Current" />
-        </details>
-    </section>
-    @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed child, so the
-       explorer's chats modal would be clipped to the card and painted under the cards after it. *@
-    <section class="card-p holds-modal">
-        <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Explore the run<span class="fold-note">the modes side by side: conversations, turns, requests</span></summary>
-            <RunExplorer Run="_run" Currency="Currency.Current" OpenTask="@FocusTask" />
-        </details>
-    </section>
-    <AgreementPanel Agreement="_run.Agreement" RunId="@RunId" />
-    <section class="card-p">
-        <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates per mode<span class="fold-note">as the runner wrote them on the last repeat</span></summary>
-            <ModeRatesList Modes="_run.Modes" />
-        </details>
-    </section>
-    @if (_trend is { } trend)
+    <RunVerdict RunId="@RunId" View="RunVerdictView.Of(_run, _trend)" Currency="Currency.Current" />
+    <RunTabBar RunId="@RunId" Active="ActiveTab" />
+    @switch (ActiveTab)
     {
-        <section class="card-p">
-            <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend<span class="fold-note">this check over its runs, this run marked</span></summary>
-                <TrendChart Series="trend.Modes"Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
-            </details>
-        </section>
-        <section class="card-p">
-            <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend by category<span class="fold-note">pass@k and pass^k per category, per model</span></summary>
-                <CategoryTrends Categories="trend.Categories"Highlight="@RunId" Currency="Currency.Current" />
-            </details>
-        </section>
+        case RunTab.Conversations:
+            @* No entrance animation on this card: a filled transform animation makes it the frame of every fixed
+               child, so the explorer's chats modal would be clipped to the card and painted under the cards after it. *@
+            <section class="card-p holds-modal">
+                <RunExplorer Run="_run" Currency="Currency.Current" Place="_place" OnMoved="Moved" />
+            </section>
+            break;
+        case RunTab.Judge:
+            @if (_run.Agreement.Count == 0)
+            {
+                <section class="card-p"><p class="muted judge-none">No judge of this run has a blind review by a person yet, so there is nothing to compare.</p></section>
+            }
+            <AgreementPanel Agreement="_run.Agreement" RunId="@RunId" />
+            break;
+        case RunTab.Notes:
+            <section class="card-p">
+                <NotesPanel RunId="@RunId" Notes="NoteReader.Of(_run.Run.Id, _run.Notes)" />
+            </section>
+            break;
+        case RunTab.Settings:
+            <RunSettings Run="_run" />
+            break;
+        default:
+            <section class="card-p">
+                <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Results by category<span class="fold-note">per mode: overall, then each category</span></summary>
+                    <SummaryPanel Summaries="_run.Summaries" RunId="@_run.Run.Id" Currency="Currency.Current" />
+                </details>
+            </section>
+            <section class="card-p">
+                <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Pass rates per mode<span class="fold-note">as the runner wrote them on the last repeat</span></summary>
+                    <ModeRatesList Modes="_run.Modes" />
+                </details>
+            </section>
+            @if (_trend is { } trend)
+            {
+                <section class="card-p">
+                    <details class="fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend<span class="fold-note">this check over its runs, this run marked</span></summary>
+                        <TrendChart Series="trend.Modes" Highlight="@RunId" Labels="_labels" ShowTitle="false" Currency="Currency.Current" />
+                    </details>
+                </section>
+                <section class="card-p">
+                    <details class="fold"><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend by category<span class="fold-note">pass@k and pass^k per category, per model</span></summary>
+                        <CategoryTrends Categories="trend.Categories" Highlight="@RunId" Currency="Currency.Current" />
+                    </details>
+                </section>
+            }
+            break;
     }
-    <RunSettings Run="_run" />
 }
