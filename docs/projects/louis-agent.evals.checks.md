@@ -1,13 +1,13 @@
 # louis-agent.evals.checks — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `evals/louis-agent.evals.checks/` · **References:**
+> **Kind:** class library (`net10.0`) · **Path:** `src/evals/louis-agent.evals.checks/` · **References:**
 > louis-agent.core, louis-agent.session-stream, louis-agent.evals.protocol · **Used by:** louis-agent.evals (the
 > harness); from F49.3, the packs
 
 ## Purpose
 
 The check contract: what a check reads (a trial and its turns) and what it returns (a grade). It lives outside the
-harness (`evals/louis-agent.evals`) so a pack can reference it and ship its own check, which it can't do with the
+harness (`src/evals/louis-agent.evals`) so a pack can reference it and ship its own check, which it can't do with the
 harness, because the harness runs evals and names Puls's.
 
 The pattern is *Separated Interface* (Fowler, PoEAA): the contract sits in a small project its clients can

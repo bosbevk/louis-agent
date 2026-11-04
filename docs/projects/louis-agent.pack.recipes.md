@@ -49,7 +49,7 @@ any identity can use it, and it could be served as an MCP server unchanged
   (`{"type": "recipe-from-source", "parameters": {"reader": "recipe-link"}}`), as the shops pack's
   `estimates-at-shop` takes a price reader ([ADR 0059](../adr/0059-an-identity-ships-readers-not-checks.md),
   [ADR 0073](../adr/0073-packs-reference-no-evals.md)). It lives apart from the pack, in
-  `evals/packs/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
+  `packs-evals/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
   runner's `RunnerChecks`, and the check catalogue's listing shows it with that one setting.
 
 ## Design notes

@@ -14,7 +14,7 @@ public class ScenarioFilesTests
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
     /// <summary>The cook eval's folder, as the runner's listing names it.</summary>
-    private const string Cook = "evals/identities/louis-agent.identity.puls.evals/Evals/Cook";
+    private const string Cook = "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook";
 
     /// <summary>
     /// A dev scenario is read whole: its question, place, follow-ups, expected values and categories.

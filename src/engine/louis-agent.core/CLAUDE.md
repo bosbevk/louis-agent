@@ -168,7 +168,7 @@ each with its review checklist at the end; the rules they follow are
 [ADR 0027](../../../docs/adr/0027-engine-identities-and-packs.md) (core is the engine and names no product, shop or country;
 `ArchitectureTests` holds it in the model-visible text and in the comments, this file included) and
 [ADR 0028](../../../docs/adr/0028-packs-stay-convertible-to-mcp.md) (`PackConvertibilityTests` holds the shapes; the rest
-is reviewed by hand). Only `configured/louis-agent.host-packs` knows every identity and pack.
+is reviewed by hand). Only a configuration's own project under `configured/` knows every identity and pack.
 
 ## Building another agent on core
 

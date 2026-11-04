@@ -133,7 +133,7 @@ path parts, the drive letter), `GitRoots` and `JsonRpcWriter`.
   with `Z`, and a person's line or an unknown event reads as none.
 - **`louis-agent.evals.runner.tests`**: the arguments, the catalogue, the stub eval's run against its golden, the
   conformance of every eval folder, the data files copied beside the assembly, and the template folder
-  (`evals/template/Example/`: it loads with the general checks alone, conforms, and is never listed).
+  (`src/evals/template/Example/`: it loads with the general checks alone, conforms, and is never listed).
 - **`louis-agent.identity.puls.judges.tests`**: Puls's judge `meal-for-people` on a scripted client, the prompt it
   sends against its golden, its rubric's hash, its entry and its list.
 

@@ -1,6 +1,6 @@
 # louis-agent.orchestrator — design
 
-> **Kind:** console app · **Path:** `src/hosts/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
+> **Kind:** console app · **Path:** `configured/louis-agent/hosts/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
 > louis-agent.api over HTTP + SSE · **Docker:** `Dockerfile.orchestrator` (its demo compose file was removed in CL10) ·
 > **Status:** proof of concept
 

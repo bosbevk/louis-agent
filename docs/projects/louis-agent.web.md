@@ -1,6 +1,6 @@
 # louis-agent.web — design
 
-> **Kind:** Blazor WebAssembly app · **Path:** `src/web/louis-agent.web/` · **Served by:** louis-agent.api (same origin) ·
+> **Kind:** Blazor WebAssembly app · **Path:** `configured/louis-agent/web/louis-agent.web/` · **Served by:** louis-agent.api (same origin) ·
 > **References:** louis-agent.web.shared (with Markdig), highlight.js (from a CDN)
 
 ## Purpose

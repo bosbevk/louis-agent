@@ -17,7 +17,7 @@ public class PublishTargetTests
         var target = PublishTarget.Of("weather-agent", "weather-eval");
 
         Assert.That((target.Folder, target.Branch),
-            Is.EqualTo(("evals/identities/louis-agent.identity.weather-agent.evals/Evals/WeatherEval",
+            Is.EqualTo(("configured/weather-agent/evals/louis-agent.identity.weather-agent.evals/Evals/WeatherEval",
                 "eval/weather-agent-weather-eval")));
     }
 
@@ -29,20 +29,20 @@ public class PublishTargetTests
     public void AnEvalTheRunnerLists_KeepsItsFolder()
     {
         var target = PublishTarget.Of("weather-agent", "weather-eval",
-            "evals/identities/louis-agent.identity.weather-agent.evals/Evals/Weather");
+            "configured/weather-agent/evals/louis-agent.identity.weather-agent.evals/Evals/Weather");
 
         Assert.That((target.Folder, target.FolderName, target.Branch),
-            Is.EqualTo(("evals/identities/louis-agent.identity.weather-agent.evals/Evals/Weather", "Weather",
+            Is.EqualTo(("configured/weather-agent/evals/louis-agent.identity.weather-agent.evals/Evals/Weather", "Weather",
                 "eval/weather-agent-weather-eval")));
     }
 
     /// <summary>A listed folder outside its identity's <c>Evals/</c> isn't taken: it goes where new ones go.</summary>
     [TestCase("identities/louis-agent.identity.other-agent/Evals/Weather")]
-    [TestCase("evals/template/Example")]
-    [TestCase("evals/identities/louis-agent.identity.weather-agent.evals/Evals/../../escape")]
+    [TestCase("src/evals/template/Example")]
+    [TestCase("configured/weather-agent/evals/louis-agent.identity.weather-agent.evals/Evals/../../escape")]
     public void AListedFolderOutsideItsIdentity_IsNotTaken(string listed) =>
         Assert.That(PublishTarget.Of("weather-agent", "weather-eval", listed).Folder,
-            Is.EqualTo("evals/identities/louis-agent.identity.weather-agent.evals/Evals/WeatherEval"));
+            Is.EqualTo("configured/weather-agent/evals/louis-agent.identity.weather-agent.evals/Evals/WeatherEval"));
 
     /// <summary>The zip holds the folder's files under the folder's name, paths with forward slashes.</summary>
     [Test]

@@ -11,7 +11,7 @@ public class ReplayFolderIsPrivateTests
 {
     private static readonly Regex Names = new("ReplayDirectory|REPLAY_DIRECTORY", RegexOptions.CultureInvariant);
 
-    private static readonly string[] Scanned = ["src", "identities", "packs"];
+    private static readonly string[] Scanned = ["src", "configured", "packs"];
 
     private static readonly string[] MayName =
     [

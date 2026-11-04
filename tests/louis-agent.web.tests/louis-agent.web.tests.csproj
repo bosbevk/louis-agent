@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
+    <ProjectReference Include="..\..\configured\louis-agent\web\louis-agent.web\louis-agent.web.csproj" />
     <!-- The fixture replay, the stub API and the snapshot helper the web tests share; no test project references another. -->
     <ProjectReference Include="..\louis-agent.web.testing\louis-agent.web.testing.csproj" />
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />

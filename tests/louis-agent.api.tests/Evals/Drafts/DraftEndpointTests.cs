@@ -24,7 +24,7 @@ public class DraftEndpointTests
 {
     private const string AdminKey = "admin-secret";
     private const string RunId = "8f7802b9a72e";
-    private const string Cook = "evals/identities/louis-agent.identity.puls.evals/Evals/Cook";
+    private const string Cook = "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook";
     private static readonly DateTimeOffset T0 = new(2026, 11, 3, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>The running API with its client and the draft store, so a test can check what was kept.</summary>

@@ -22,7 +22,7 @@ public sealed record PublishTarget(string Folder, string Branch, string FolderNa
     /// </summary>
     public static PublishTarget Of(string identity, string name, string? listedFolder = null)
     {
-        string evals = $"evals/identities/louis-agent.identity.{identity}.evals/Evals/";
+        string evals = $"configured/{identity}/evals/louis-agent.identity.{identity}.evals/Evals/";
         string branch = $"eval/{identity}-{name}";
         string? listed = listedFolder?.Replace('\\', '/').TrimEnd('/');
         if (listed is not null && listed.StartsWith(evals, StringComparison.Ordinal) &&

@@ -22,18 +22,18 @@ wherever they go: leaning on the evals ties what an agent can do, and who it is,
 Someone can also take the tools or an identity and want no evals at all, or not own them, so what proves them can't
 live in the same folder.
 
-Weighed for where the existing checks go: a checks project per pack (taken), under `evals/packs/`; one project under
-`evals/` for all of them, which would know every named product and grow with each pack; and
+Weighed for where the existing checks go: a checks project per pack (taken), in `packs-evals/`; one project for all of
+them, which would know every named product and grow with each pack; and
 rewriting them as general checks with the particulars in the eval file, which is a rewrite of about 550 lines that
 could change pinned grades. The pattern is Separated Interface (Fowler, *Patterns of Enterprise Application
 Architecture*), as `louis-agent.identity.puls.judges` already did.
 
 ## Decision
 
-- **No pack and no identity references anything under `evals/`.** A pack and an identity stand on core alone.
-- **What proves one is a project under `evals/`, which only the runner references:**
-  `evals/packs/louis-agent.pack.{name}.checks`, `evals/identities/louis-agent.identity.{name}.evals` and `.judges`.
-  `packs/` holds tools and `identities/` holds who an agent is, nothing else. The arrow points at the thing proved,
+- **No pack and no identity references anything under `src/evals/`.** A pack and an identity stand on core alone.
+- **What proves one is a project of its own, which only the runner references:**
+  `packs-evals/louis-agent.pack.{name}.checks`, `configured/{name}/evals/louis-agent.identity.{name}.evals` and `.judges`.
+  `packs/` holds tools and nothing else ([ADR 0074](0074-the-folders-say-what-ships.md)). The arrow points at the thing proved,
   never the reverse; a project references what it uses and no more. The composition names none of them, so no host
   carries one.
 - **The lists meet in the runner.** `RunnerChecks` and `RunnerReaders` name each project's list; the composition's
@@ -56,7 +56,7 @@ reading is the check contract's.
   `ToolsAndIdentitiesFolders_HoldNoEvalsProject`.
 - The move kept every namespace (each new project's root namespace is the old one) and changed no rule, so the cook's
   pinned grades didn't change.
-- An eval's folder is `evals/identities/louis-agent.identity.{name}.evals/Evals/{Folder}/`, and the studio publishes there
+- An eval's folder is `configured/{name}/evals/louis-agent.identity.{name}.evals/Evals/{Folder}/`, and the studio publishes there
   (`PublishTarget`), so a new identity needs its evals project before an eval can be published for it.
 - The API references the check contract directly, for the kinds of reader its studio lists; before, it had it through
   the identity without saying so. The contract holds no check.

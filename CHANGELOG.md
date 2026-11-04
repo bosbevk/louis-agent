@@ -4,6 +4,11 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **The folders say what ships** (CL29.1): `src/` holds only the framework, now with the eval harness in
+  `src/evals/`; `packs/` holds tools and `packs-evals/` what proves them; anything that names a product moved to
+  `configured/`, as someone's own project would be: `configured/puls/{identity,evals,web,hosts}` and
+  `configured/louis-agent/{web,hosts}`. The solution's groups match, and `SolutionLayoutTests` holds it. Paths only: no
+  namespace changed. [ADR 0074](docs/adr/0074-the-folders-say-what-ships.md).
 - 2026-11-04 — **CL28 The folders mirror the solution**: `src/` is `engine/` (core, choices, session-stream, moved in
   from the repository's root), `hosts/` and `web/`, as Rider's groups are, and what proves a pack or an identity moved
   under `evals/packs/` and `evals/identities/`, because someone can take the tools without the evals, or not own them.

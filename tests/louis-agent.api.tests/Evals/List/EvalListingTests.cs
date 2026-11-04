@@ -63,11 +63,11 @@ public class EvalListingTests
     public void AListedEvalsManualPathIsRead_AndIsNullWhenTheLineLeavesItOut()
     {
         var with = EvalListing.Parse(
-            """{"name":"stub","identity":null,"version":1,"proves":"A canned run","manual":"evals/"""
+            """{"name":"stub","identity":null,"version":1,"proves":"A canned run","manual":"src/evals/"""
             + """louis-agent.evals.runner/Manuals/stub.md"}""");
         var without = EvalListing.Parse("""{"name":"stub","version":1,"proves":"A canned run"}""");
 
-        Assert.That(with.Evals.Single().Manual, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
+        Assert.That(with.Evals.Single().Manual, Is.EqualTo("src/evals/louis-agent.evals.runner/Manuals/stub.md"));
         Assert.That(without.Evals.Single().Manual, Is.Null);
     }
 

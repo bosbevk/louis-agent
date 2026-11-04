@@ -1,6 +1,6 @@
 # Change the Puls web app
 
-> **How-to.** Change `src/web/louis-agent.puls`, the general assistant's web app: run it, change the chat, the landing page
+> **How-to.** Change `configured/puls/web/louis-agent.puls`, the general assistant's web app: run it, change the chat, the landing page
 > or the admin portal, add a starter, place its words, and test it. **Elsewhere:** how it works in
 > [louis-agent.puls](../projects/louis-agent.puls.md); what it shares with the code-review app in
 > [Change the shared web library](change-the-web-shared.md); Puls's voice, roles and packs in

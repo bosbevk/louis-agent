@@ -1,6 +1,6 @@
 # Change the code-review web app
 
-> **How-to.** Change `src/web/louis-agent.web`, the browser app for chatting with the coding agent, browsing the workspace
+> **How-to.** Change `configured/louis-agent/web/louis-agent.web`, the browser app for chatting with the coding agent, browsing the workspace
 > and reviewing changes: run it, add a tab, call a new endpoint, add a theme, place its words, and test it.
 > **Elsewhere:** how it works in [louis-agent.web](../projects/louis-agent.web.md); what it shares with Puls in
 > [Change the shared web library](change-the-web-shared.md); the folder rules in [src/CLAUDE.md](../../src/CLAUDE.md).

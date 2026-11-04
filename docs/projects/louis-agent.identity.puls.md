@@ -1,9 +1,9 @@
 # louis-agent.identity.puls — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `identities/louis-agent.identity.puls/` · **References:**
+> **Kind:** class library (`net10.0`) · **Path:** `configured/puls/identity/louis-agent.identity.puls/` · **References:**
 > louis-agent.core, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
 > sets it) · **Names:** the `where-to-buy`, `shop-prices` and `recipes` packs · **Its evals:**
-> `evals/identities/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
+> `configured/puls/evals/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
 > references it, [ADR 0073](../adr/0073-packs-reference-no-evals.md))
 
 ## Purpose

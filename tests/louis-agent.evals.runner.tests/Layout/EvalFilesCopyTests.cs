@@ -19,11 +19,11 @@ public class EvalFilesCopyTests
 {
     /// <summary>The cook's manifest, copied from Puls's evals project.</summary>
     private const string CookDataset =
-        "EvalFiles/evals/identities/louis-agent.identity.puls.evals/Evals/Cook/Dataset/dataset.json";
+        "EvalFiles/configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/Dataset/dataset.json";
 
     /// <summary>One of the stub's reference transcripts, copied from the runner's own project.</summary>
     private const string StubReference =
-        "EvalFiles/evals/louis-agent.evals.runner/Evals/Stub/Transcripts/bobotie.reference.txt";
+        "EvalFiles/src/evals/louis-agent.evals.runner/Evals/Stub/Transcripts/bobotie.reference.txt";
 
     /// <summary>An identity's dataset reaches this project's output through the runner and the composition.</summary>
     [Test]
@@ -43,7 +43,7 @@ public class EvalFilesCopyTests
         var output =
             new DirectoryInfo(AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar,
                 Path.AltDirectorySeparatorChar));
-        var runnerOutput = Path.Combine(output.Parent!.Parent!.Parent!.Parent!.Parent!.FullName, "evals",
+        var runnerOutput = Path.Combine(output.Parent!.Parent!.Parent!.Parent!.Parent!.FullName, "src", "evals",
             "louis-agent.evals.runner", "bin", output.Parent.Name, output.Name);
 
         Assert.That(File.Exists(Path.Combine(runnerOutput, CookDataset)), Is.True,
@@ -54,6 +54,6 @@ public class EvalFilesCopyTests
     [Test]
     public void EvalFiles_SaysWhereTheItemPutThem() =>
         Assert.That(EvalFiles.TranscriptsOf(typeof(StubEval)),
-            Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "evals", "louis-agent.evals.runner", "Evals",
-                "Stub", "Transcripts")));
+            Is.EqualTo(Path.Combine(AppContext.BaseDirectory, "EvalFiles", "src", "evals", "louis-agent.evals.runner",
+                "Evals", "Stub", "Transcripts")));
 }

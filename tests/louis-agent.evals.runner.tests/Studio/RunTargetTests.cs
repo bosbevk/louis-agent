@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Runner.Tests.Studio;
 public class RunTargetTests
 {
     /// <summary>The template eval, as a studio folder would be.</summary>
-    private static readonly string Template = Path.Combine(TestPaths.RepoRoot, "evals", "template", "Example");
+    private static readonly string Template = Path.Combine(TestPaths.RepoRoot, "src", "evals", "template", "Example");
 
     /// <summary>The catalogue with only the stub.</summary>
     private static readonly EvalCatalog Catalogue = new([], new StubEval());

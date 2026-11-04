@@ -39,7 +39,7 @@ extension method in that app (the code-review app's `Workspace/AgentApiWorkspace
    for a chat piece both apps lay out). Logic that needs no component goes in a plain class with NUnit tests
    (`RazorHasNoCodeTests` fails on an `@code` block).
 2. Its words go in `Text/ChatText.cs` as a property whose default is the code-review app's English. Puls sets its
-   Afrikaans in `src/web/louis-agent.puls/Text/PulsText.cs`; add the property there too, or Puls shows English.
+   Afrikaans in `configured/puls/web/louis-agent.puls/Text/PulsText.cs`; add the property there too, or Puls shows English.
 3. Leave slots (`RenderFragment` parameters) where an app adds its own parts, as `Composer` and `MessageList` do.
 
 ## Markdown and links

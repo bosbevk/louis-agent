@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\evals\louis-agent.evals\louis-agent.evals.csproj" />
+    <ProjectReference Include="..\..\src\evals\louis-agent.evals\louis-agent.evals.csproj" />
     <!-- The protocol's reader is the API's BenchmarkProtocol: the lines the harness writes must parse as the API reads them. -->
     <ProjectReference Include="..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
     <ProjectReference Include="..\..\src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />

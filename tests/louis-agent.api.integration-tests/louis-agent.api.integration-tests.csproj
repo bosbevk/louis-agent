@@ -20,14 +20,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
-    <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\configured\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts the unit tests share. -->
     <ProjectReference Include="..\louis-agent.api.testing\louis-agent.api.testing.csproj" />
     <!-- The eval runner and its stand-in, built with these tests so their dlls are there to start as real child processes (no assembly referenced). -->
-    <ProjectReference Include="..\..\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\src\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\louis-agent.api.standin\louis-agent.api.standin.csproj" ReferenceOutputAssembly="false" />
   </ItemGroup>
 

@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Runner.Tests.Studio;
 public class CheckCommandTests
 {
     /// <summary>The template eval, which conforms.</summary>
-    private static readonly string Template = Path.Combine(TestPaths.RepoRoot, "evals", "template", "Example");
+    private static readonly string Template = Path.Combine(TestPaths.RepoRoot, "src", "evals", "template", "Example");
 
     /// <summary>The copy this test checks.</summary>
     private string _folder = null!;

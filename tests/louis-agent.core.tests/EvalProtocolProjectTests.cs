@@ -14,7 +14,7 @@ public partial class EvalProtocolProjectTests
     [Test]
     public void TheEvalProtocolContract_ReferencesOnlyTheChoices()
     {
-        string csproj = Csproj("evals", "louis-agent.evals.protocol", "louis-agent.evals.protocol.csproj");
+        string csproj = Csproj("src", "evals", "louis-agent.evals.protocol", "louis-agent.evals.protocol.csproj");
 
         var references = References(csproj, "ProjectReference|PackageReference");
 

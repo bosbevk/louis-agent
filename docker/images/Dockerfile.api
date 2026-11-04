@@ -6,7 +6,7 @@ COPY . .
 RUN dotnet publish "src/hosts/louis-agent.api/louis-agent.api.csproj" -c Release -o /app/publish
 # The eval runner (F18 step 4.3) publishes to its own folder: it ships its own copies of core and the session-stream reader,
 # and beside the API's they would overwrite each other.
-RUN dotnet publish "evals/louis-agent.evals.runner/louis-agent.evals.runner.csproj" -c Release -p:EvalCommit=$EVAL_COMMIT -o /app/evals-publish
+RUN dotnet publish "src/evals/louis-agent.evals.runner/louis-agent.evals.runner.csproj" -c Release -p:EvalCommit=$EVAL_COMMIT -o /app/evals-publish
 
 # The SDK image is kept for the final stage because the RunDotNet workspace tool shells out to `dotnet build/test`.
 FROM mcr.microsoft.com/dotnet/sdk:10.0

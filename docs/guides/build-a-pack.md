@@ -8,7 +8,7 @@
 A **pack** is what an agent can do: one or more toolsets, the guide that tells the model when to use them, the pack's own
 settings and state. It names no identity and references no other pack's code, so it could be served as an MCP server
 one day without changing. The engine (`louis-agent.core`) never references a pack; only the composition root
-(`configured/louis-agent.host-packs`) knows them all.
+(`configured/puls/hosts/louis-agent.host-packs`) knows them all.
 
 The steps below build a small example pack, `units`, with one tool that converts a value between units: no settings,
 no network. The real packs in the repo follow the same steps: `packs/louis-agent.pack.where-to-buy` is the closest
@@ -51,7 +51,7 @@ Delete the template's `Class1.cs`, and make the csproj look like the packs':
 ```
 
 The only project reference is core ([step 9](#9-its-checks-when-it-proves-its-tools) says why not the evals). A
-reference to another pack, an identity or anything under `evals/` fails `ArchitectureTests`.
+reference to another pack, an identity or anything under `src/evals/` fails `ArchitectureTests`.
 
 The last group shows the pack's design doc under `docs/` in the IDE's solution explorer, as every project does;
 nothing is built or copied. Write the doc (`docs/projects/louis-agent.pack.units.md`) once the pack works.
@@ -225,7 +225,7 @@ Then document each setting where people look for it: a commented line in `config
 
 ## 6. Register it in the composition root
 
-Three edits in `configured/louis-agent.host-packs`:
+Three edits in `configured/puls/hosts/louis-agent.host-packs`:
 
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:
@@ -283,14 +283,14 @@ needs `PACKS` (or `IDENTITIES`) and the pack's settings in its environment.
 
 ## 9. Its checks (when it proves its tools)
 
-A pack references nothing under `evals/` ([ADR 0073](../adr/0073-packs-reference-no-evals.md)): every host loads the
+A pack references nothing under `src/evals/` ([ADR 0073](../adr/0073-packs-reference-no-evals.md)): every host loads the
 pack, and the engine is going into its own package, so a pack stays on core.
 
 To prove what your tools do, first try a general check in your eval file, naming your tool in its settings
 ([Add an eval](add-an-eval.md#4-choose-the-checks)). `tool-rows-marked` is the model: the harness knows a table and a
 mark, and the eval file says `{"tool": "EstimatePrices", "mark": "?"}`.
 
-A rule no general check can say goes in its own project under the evals, `evals/packs/louis-agent.pack.{name}.checks`,
+A rule no general check can say goes in its own project, `packs-evals/louis-agent.pack.{name}.checks`,
 which only the runner references, so someone can use your tools without the evals:
 
 1. **Its csproj** references the check contract, `..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj`,
@@ -309,7 +309,7 @@ in `tests/louis-agent.host-packs.tests`, the one project that sees both (`Unpric
 
 ## Before you ask for a review
 
-- [ ] References core; no other pack, no identity, nothing under `evals/`.
+- [ ] References core; no other pack, no identity, nothing under `src/evals/`.
 - [ ] What it shares with an eval is in a shared project, or duplicated with a test that holds the copies equal.
 - [ ] Tools take plain data and return text; a failure is text with its reason; a waiting tool takes a `CancellationToken`.
 - [ ] Session input (the user's place) also arrives as a parameter.

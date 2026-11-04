@@ -3,18 +3,18 @@
   <ItemGroup>
     <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
     <!-- CL15: the identities and packs this host may load, chosen by IDENTITIES and PACKS at start-up. -->
-    <ProjectReference Include="..\..\..\configured\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\..\configured\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
     <!-- The web app it serves: the code-review app (louis-agent.web) by default, Puls with -p:WebApp=puls (Dockerfile.puls).
          Same API either way; only the static files differ. -->
-    <ProjectReference Include="..\..\web\louis-agent.web\louis-agent.web.csproj" Condition="'$(WebApp)' != 'puls'" />
-    <ProjectReference Include="..\..\web\louis-agent.puls\louis-agent.puls.csproj" Condition="'$(WebApp)' == 'puls'" />
+    <ProjectReference Include="..\..\..\configured\louis-agent\web\louis-agent.web\louis-agent.web.csproj" Condition="'$(WebApp)' != 'puls'" />
+    <ProjectReference Include="..\..\..\configured\puls\web\louis-agent.puls\louis-agent.puls.csproj" Condition="'$(WebApp)' == 'puls'" />
     <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
     <!-- FX26: a failed turn's kind (StreamErrorKind), written by the stream as its readers read it. -->
     <ProjectReference Include="..\..\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />
     <!-- F18 step 7c.3: the eval runner's protocol, read through the contract's own records (decision A). -->
-    <ProjectReference Include="..\..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
+    <ProjectReference Include="..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
     <!-- The kinds of reader the studio lists from the runner's catalogue; the check contract only, no check. -->
-    <ProjectReference Include="..\..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
   </ItemGroup>
 
   <ItemGroup>

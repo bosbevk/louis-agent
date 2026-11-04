@@ -156,6 +156,14 @@ flowchart LR
     RT --> B["IWebBrowser (ChromeWebBrowser)"]
 ```
 
+### Approved during the build
+
+- **Layout, 2026-11-04.** `host-packs` is one configuration, not framework ("this is only the puls config", "this would be
+  like someone projects"), and only framework stays in `src/`: see [ADR 0074](../adr/0074-the-folders-say-what-ships.md).
+  `host-packs` is at `configured/puls/hosts/`, and the composition at `src/engine/`. The trees below are from before that.
+- **Order, 2026-11-04.** `IPackContext` names the browser and search contracts, so those move first: step 4 comes before
+  step 2's new types.
+
 ### Folder trees
 
 ```

@@ -1,6 +1,6 @@
 # louis-agent.evals.runner — design
 
-> **Kind:** console app (`net10.0`) · **Path:** `evals/louis-agent.evals.runner/` · **References:**
+> **Kind:** console app (`net10.0`) · **Path:** `src/evals/louis-agent.evals.runner/` · **References:**
 > louis-agent.evals, louis-agent.composition (the toolsets an eval's modes name, ADR 0027), and what proves each identity
 > and pack, which only the runner references so no host carries it (ADR 0073): louis-agent.identity.puls.evals (its eval
 > folders and readers), louis-agent.identity.puls.judges (its judge), louis-agent.pack.where-to-buy.checks and

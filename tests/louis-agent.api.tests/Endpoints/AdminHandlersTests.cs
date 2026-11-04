@@ -22,7 +22,7 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class AdminHandlersTests
 {
-    private const string ManualPath = "evals/louis-agent.evals.runner/Manuals/stub.md";
+    private const string ManualPath = "src/evals/louis-agent.evals.runner/Manuals/stub.md";
 
     /// <summary>What each handler says it answers, as its signature declares it.</summary>
     private static IEnumerable<TestCaseData> Declared()

@@ -22,7 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
     <!-- CL15: the API's tests open Puls's sessions, so they register Puls's prompts as the Puls stack does (IDENTITIES=puls). -->
-    <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\configured\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
     <!-- F35.2 step 1: the recipes pack Puls names, as the Puls stack loads it. -->

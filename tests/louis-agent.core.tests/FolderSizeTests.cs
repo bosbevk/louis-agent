@@ -18,7 +18,7 @@ public class FolderSizeTests
     /// <summary>Where the source lives: the same roots the file-size rule reads.</summary>
     private static readonly string[] Roots =
     [
-        "identities", "packs", "src", "tools", "evals", "tests"
+        "src", "packs", "packs-evals", "configured", "tools", "tests"
     ];
 
     /// <summary>
@@ -27,8 +27,8 @@ public class FolderSizeTests
     /// </summary>
     private static readonly HashSet<string> Oversized =
     [
-        "evals/louis-agent.evals/Api",
-        "evals/louis-agent.evals/Running",
+        "src/evals/louis-agent.evals/Api",
+        "src/evals/louis-agent.evals/Running",
         "src/engine/louis-agent.core/Pricing/Prices",
         "src/engine/louis-agent.core/Tools/Agents/SubSessions",
         "src/engine/louis-agent.core/Tools/Web/Browsing",
@@ -36,11 +36,11 @@ public class FolderSizeTests
         "src/engine/louis-agent.core/Usage/Records",
         "src/hosts/louis-agent.api/Admin/Replies",
         "src/hosts/louis-agent.api/Messages",
-        "src/web/louis-agent.puls/Admin/Grades",
-        "src/web/louis-agent.puls/Admin/Reviews",
-        "src/web/louis-agent.puls/Components/Landing",
+        "configured/puls/web/louis-agent.puls/Admin/Grades",
+        "configured/puls/web/louis-agent.puls/Admin/Reviews",
+        "configured/puls/web/louis-agent.puls/Components/Landing",
         "src/web/louis-agent.web.shared/Chats",
-        "src/web/louis-agent.web/Git",
+        "configured/louis-agent/web/louis-agent.web/Git",
         "tests/louis-agent.api.tests",
         "tests/louis-agent.api.tests/Endpoints",
         "tests/louis-agent.api.tests/Sessions",

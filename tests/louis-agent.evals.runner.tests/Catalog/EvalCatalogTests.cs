@@ -131,7 +131,7 @@ public class EvalCatalogTests
         Assert.That(line.GetProperty("folder").ValueKind, Is.EqualTo(JsonValueKind.Null), "the stub is no folder");
         Assert.That(line.GetProperty("categories").GetRawText(), Is.EqualTo("[]"));
         Assert.That(line.GetProperty("manual").GetString(),
-            Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"),
+            Is.EqualTo("src/evals/louis-agent.evals.runner/Manuals/stub.md"),
             "the manual's path from the repo root, forward slashes (7.1)");
         Assert.That(line.GetProperty("name").GetString(), Is.EqualTo("stub"));
         Assert.That(line.GetProperty("identity").ValueKind, Is.EqualTo(JsonValueKind.Null));

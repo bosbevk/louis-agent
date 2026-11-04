@@ -161,9 +161,9 @@ public class RunnerEnvironmentTests
     {
         var handledAnotherWay = new[] { "AGENT_API", "PULS_API", "BENCHMARK_RUN", "ANTHROPIC_API_KEY" };
 
-        // Scan every C# file under evals/ (skipping build output) for the settings it reads by name.
+        // Scan every C# file under src/evals/ (skipping build output) for the settings it reads by name.
         var read = new HashSet<string>();
-        foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "evals"), "*.cs",
+        foreach (string file in Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "src", "evals"), "*.cs",
                          SearchOption.AllDirectories)
                      .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") &&
                                  !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")))

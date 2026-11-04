@@ -25,8 +25,8 @@ public class EvalListTests
     /// <summary>A check keeps the manual path it was given.</summary>
     [Test]
     public void AnEvalCheckHasTheManualItsEvalListed() =>
-        Assert.That(new EvalEntry("stub", "Stub", "evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath,
-            Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
+        Assert.That(new EvalEntry("stub", "Stub", "src/evals/louis-agent.evals.runner/Manuals/stub.md").ManualPath,
+            Is.EqualTo("src/evals/louis-agent.evals.runner/Manuals/stub.md"));
 
     /// <summary>The manual's path is the one the runner listed, or none.</summary>
     [Test]
@@ -34,12 +34,12 @@ public class EvalListTests
     {
         var merged = EvalList.Merge([
             new EvalLine(SampleEval.Beta, 9, "A meal", SampleIdentity.Alpha,
-                "evals/identities/louis-agent.identity.puls.evals/Evals/Cook/manual.md"),
+                "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md"),
             new EvalLine("quiet", 1, "No manual")
         ]);
 
         Assert.That(merged.Select(c => c.ManualPath),
-            Is.EqualTo(new string?[] { "evals/identities/louis-agent.identity.puls.evals/Evals/Cook/manual.md", null }));
+            Is.EqualTo(new string?[] { "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md", null }));
     }
 
     /// <summary>Each listed eval is a check under its name, titled with what it proves.</summary>

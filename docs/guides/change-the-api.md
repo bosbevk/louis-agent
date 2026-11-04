@@ -108,7 +108,7 @@ title. The eval's name is its check's id.
 
 1. Write the eval as a folder of files beside its identity (`identities/louis-agent.identity.{name}/Evals/{Eval}/`),
    with its scenarios, checks and reference transcripts; [Add an eval](add-an-eval.md) walks through it.
-2. Check the runner lists it: `dotnet evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll --list`
+2. Check the runner lists it: `dotnet src/evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll --list`
    prints one line for it (build the runner first).
 3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
    `docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`.

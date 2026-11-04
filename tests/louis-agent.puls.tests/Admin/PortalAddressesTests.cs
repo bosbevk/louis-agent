@@ -18,7 +18,7 @@ public class PortalAddressesTests
     [Test]
     public void NoPortalFile_WritesARetiredAddress()
     {
-        var writing = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.puls"), "*",
+        var writing = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "configured/puls/web/louis-agent.puls"), "*",
                 SearchOption.AllDirectories)
             .Where(file => file.EndsWith(".cs", StringComparison.Ordinal) ||
                            file.EndsWith(".razor", StringComparison.Ordinal))

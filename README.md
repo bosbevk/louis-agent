@@ -30,7 +30,7 @@ own agents.
 | **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then the sales playground, budgets, orchestration, safety and accounts |
 | An admin portal: each run opens on its answer, one Evals page, a queue of answers waiting for a person's grade | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
-| A website for the engine itself (`src/web/louis-agent.site`) | |
+| A website for the engine itself (`configured/louis-agent/web/louis-agent.site`) | |
 
 The full order is in the [TODO](TODO.md) and the [platform plan](docs/plans/platform.md); what's finished is in the
 [CHANGELOG](CHANGELOG.md).
@@ -103,18 +103,18 @@ and Paymo. It can write new skills and build its own tools, and those wait for y
 | Host | Project | What it is |
 |---|---|---|
 | **Rider** | `src/hosts/louis-agent.acp-server` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat |
-| **Web app** | `src/web/louis-agent.web` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
+| **Web app** | `configured/louis-agent/web/louis-agent.web` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
 | **HTTP API** | `src/hosts/louis-agent.api` | Sessions with answers streamed as Server-Sent Events; it also serves the web app |
 | **CLI** | `src/hosts/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
 | **MCP server** | `src/hosts/louis-agent.mcp-server` | Hands the tools to any MCP client, which brings its own model |
-| **Orchestrator** | `src/hosts/louis-agent.orchestrator` | A proof of concept: a second agent reads a service's errors and has louis-agent fix and verify them |
+| **Orchestrator** | `configured/louis-agent/hosts/louis-agent.orchestrator` | A proof of concept: a second agent reads a service's errors and has louis-agent fix and verify them |
 
 Pushing always stays with you.
 
 ## Evals
 
-An eval runs a real task and scores the outcome. Every eval runs on one C# harness (`evals/`), and each one sits beside
-the identity or pack it proves ([ADR 0029](docs/adr/0029-simulations-in-csharp.md)).
+An eval runs a real task and scores the outcome. Every eval runs on one C# harness (`src/evals/`), and each one sits with
+the project it proves, apart from what ships ([ADR 0029](docs/adr/0029-simulations-in-csharp.md)).
 
 - **An eval is files, a check is code.** A new eval is a folder: `eval.json`, its samples and its rubric, no C#. The
   checks it names come from a catalogue of C# graders, and a pack can bring its own. The portal's studio writes those

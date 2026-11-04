@@ -20,7 +20,7 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 internal static class CookFile
 {
     /// <summary>Where the cook's folder sits in the repository.</summary>
-    public const string Source = "evals/identities/louis-agent.identity.puls.evals/Evals/Cook";
+    public const string Source = "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook";
 
     /// <summary>The copy of the folder beside these tests.</summary>
     public static string Folder { get; } = Path.Combine(AppContext.BaseDirectory, "EvalFiles", Source);

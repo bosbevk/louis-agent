@@ -12,17 +12,17 @@ transcripts sit beside it. An eval that uses the harness's checks needs no C# at
 
 The example is `acme`, the hardware shop's assistant [Build an identity](build-an-identity.md) makes, with an eval that
 asks how many square metres of tile a room needs. `acme` is not in the repo. Puls's two evals are the working
-examples to open beside this guide: `evals/identities/louis-agent.identity.puls.evals/Evals/Routing/` (one general check) and
+examples to open beside this guide: `configured/puls/evals/louis-agent.identity.puls.evals/Evals/Routing/` (one general check) and
 `Evals/Cook/` (Puls's own checks, a judge and a person's review).
 
 ## 1. Copy the template
 
-`evals/template/Example/` is a working eval to copy: one mode, two general checks, one scenario, a manual and a
+`src/evals/template/Example/` is a working eval to copy: one mode, two general checks, one scenario, a manual and a
 reference with its known-bad. It loads and conforms (`TemplateFolderTests`), and no project copies it, so it never
 shows in a run. Copy it under your identity's `Evals/`, named for the task:
 
 ```bash
-cp -r evals/template/Example evals/identities/louis-agent.identity.acme.evals/Evals/Quotes
+cp -r src/evals/template/Example configured/acme/evals/louis-agent.identity.acme.evals/Evals/Quotes
 ```
 
 The identity's evals project copies every file under `Evals/` beside the build, which is how the runner finds it; a new
@@ -142,20 +142,20 @@ required check that asks no model (a fixed rule), so a run always has a check th
 `digits` and `markdown-images`; an identity ships its own when the value is written its way (Puls's `rand-total`,
 `rand-prices`, `servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements
 `IMoneyReader`, `INumberReader`, `IImageReader`, `IPriceReader` or `ILinkReader` (from the check contract,
-`evals/louis-agent.evals.checks`), listed in your
+`src/evals/louis-agent.evals.checks`), listed in your
 evals project's list (`PulsReaders.All`), which the runner gathers in `RunnerReaders`. `name` keeps the
 name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
 that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its project's
-list (as the where-to-buy rules are in `WhereToBuyChecks.All`, in `evals/packs/louis-agent.pack.where-to-buy.checks/Checks/`),
-which the runner gathers in `RunnerChecks`. It lives in a project under `evals/`, which only the runner references,
+list (as the where-to-buy rules are in `WhereToBuyChecks.All`, in `packs-evals/louis-agent.pack.where-to-buy.checks/Checks/`),
+which the runner gathers in `RunnerChecks`. It lives in a project of its own, which only the runner references,
 never in the pack or identity ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools),
 ADR 0073). The worked example is `EstimatesAtShop` and its tests. Its reasons
 are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
 (`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,
-so it goes in a project of its own under `evals/identities/` that only the runner references, as
-`evals/identities/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
+so it goes in a project of its own in your `configured/{name}/evals/` that only the runner references, as
+`configured/puls/evals/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
 
 **A judge that must see a page** (`sources`) is for a rubric that compares the answer with what a tool read, such as
 "the amounts are the page's". `"sources": ["ReadRecipe"]` adds every result of that tool in the trial to the judge's
@@ -221,7 +221,7 @@ dotnet test tests/louis-agent.identity.acme.tests
 Listing is free and calls no model; the stub is always listed too:
 
 ```bash
-EVALS=acme dotnet run --project evals/louis-agent.evals.runner -- --list
+EVALS=acme dotnet run --project src/evals/louis-agent.evals.runner -- --list
 ```
 
 Running one talks to the API and spends money, so ask first. The flags, recording and replaying, the dev and held-out
@@ -247,7 +247,7 @@ Publish), and each one saves the draft first:
    you like, a few samples (commas between). A try is always a replay, so it costs nothing; the link opens its run
    page. A fresh run stays the Run button's, and spends money.
 5. **Publish.** Only a draft the runner found no problem with is published. On a machine whose workspace is a git
-   checkout, the folder is committed to `identities/louis-agent.identity.{identity}/Evals/{Name}/` on the branch
+   checkout, the folder is committed to `configured/{identity}/evals/louis-agent.identity.{identity}.evals/Evals/{Name}/` on the branch
    `eval/{identity}-{name}`, without touching your checkout; push the branch and open the pull request yourself.
    Where the API has no git workspace (Azure), the folder comes as a zip to add in a pull request.
 

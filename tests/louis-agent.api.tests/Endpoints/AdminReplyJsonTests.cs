@@ -23,7 +23,7 @@ public class AdminReplyJsonTests
     private const string AdminKey = "admin-secret";
 
     /// <summary>A manual that is really in the repo, so the stub check has one to show.</summary>
-    private const string ManualPath = "evals/louis-agent.evals.runner/Manuals/stub.md";
+    private const string ManualPath = "src/evals/louis-agent.evals.runner/Manuals/stub.md";
 
     /// <summary>The page's first read lists each check with its title and whether it has a manual.</summary>
     [Test]

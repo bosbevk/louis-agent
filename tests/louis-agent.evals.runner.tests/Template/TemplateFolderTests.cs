@@ -17,7 +17,7 @@ namespace LouisAgent.Evals.Runner.Tests.Template;
 public class TemplateFolderTests
 {
     /// <summary>Where the template sits in the repository.</summary>
-    private const string Source = "evals/template/Example";
+    private const string Source = "src/evals/template/Example";
 
     /// <summary>The template's eval's name, as its file gives it.</summary>
     private const string Name = "template-example";
@@ -59,6 +59,6 @@ public class TemplateFolderTests
 
     /// <summary>The template's eval, read from the repository with the general checks only.</summary>
     private static FileEval Load() =>
-        FileEval.Load(Path.Combine(TestPaths.RepoRoot, "evals", "template", "Example"),
+        FileEval.Load(Path.Combine(TestPaths.RepoRoot, "src", "evals", "template", "Example"),
             new CheckCatalog(GeneralChecks.All), new ReaderCatalog(GeneralReaders.All), Source);
 }

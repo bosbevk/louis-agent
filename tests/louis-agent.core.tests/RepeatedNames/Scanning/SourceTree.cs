@@ -5,7 +5,7 @@ public static class SourceTree
 {
     public static readonly string[] Roots =
     [
-        "identities", "packs", "src", "tools", "evals", "tests"
+        "src", "packs", "packs-evals", "configured", "tools", "tests"
     ];
 
     /// <summary>Every <c>.cs</c> and <c>.razor</c> file under the roots, bin, obj and published folders left out.</summary>
@@ -24,8 +24,9 @@ public static class SourceTree
         var projects = new List<string>();
         foreach (string group in new[]
                  {
-                     "identities", "packs", "src/engine", "src/hosts", "src/web", "tools", "evals", "evals/packs",
-                     "evals/identities"
+                     "src/engine", "src/hosts", "src/web", "src/evals", "packs", "packs-evals", "tools",
+                     "configured/puls/identity", "configured/puls/evals", "configured/puls/web",
+                     "configured/puls/hosts", "configured/louis-agent/web", "configured/louis-agent/hosts"
                  })
         {
             string dir = Path.Combine(TestPaths.RepoRoot, group);

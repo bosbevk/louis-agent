@@ -237,7 +237,7 @@ public partial class ArchitectureTests
     [Test]
     public void APacksChecksProject_ReferencesOnlyItsPack_AndTheContract()
     {
-        var projects = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "evals", "packs"), "*.checks.csproj",
+        var projects = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs-evals"), "*.checks.csproj",
             SearchOption.AllDirectories).ToList();
 
         Assert.That(projects.Select(Path.GetFileName),
@@ -261,8 +261,8 @@ public partial class ArchitectureTests
     [Test]
     public void TheHostPacks_ReferenceNoChecksOrEvalsProject()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "configured", "louis-agent.host-packs",
-            "louis-agent.host-packs.csproj"));
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "configured/puls/hosts",
+            "louis-agent.host-packs", "louis-agent.host-packs.csproj"));
 
         Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".checks.") || r.Contains(".evals")), Is.Empty);
     }
@@ -282,16 +282,15 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
-    /// Someone can take the tools or an identity without the evals, or not own the evals at all, so what proves them is
-    /// never in those folders: it sits under <c>evals/</c>.
+    /// Someone can take the tools without the evals, or not own the evals at all, so what proves a pack is never in the
+    /// packs' folder: it sits in <c>packs-evals/</c>.
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
-    public void ToolsAndIdentitiesFolders_HoldNoEvalsProject()
+    public void ThePacksFolder_HoldsNoEvalsProject()
     {
-        var found = new[] { "packs", "identities" }
-            .SelectMany(folder => Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, folder), "*.csproj",
-                SearchOption.AllDirectories))
+        var found = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj",
+                SearchOption.AllDirectories)
             .Select(Path.GetFileName)
             .Where(name => name!.EndsWith(".checks.csproj") || name.EndsWith(".evals.csproj") ||
                            name.EndsWith(".judges.csproj"));
@@ -324,7 +323,7 @@ public partial class ArchitectureTests
     [Test]
     public void Checks_ReferencesOnlyTheEngineTheProtocolAndTheStream()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "evals", "louis-agent.evals.checks",
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "evals", "louis-agent.evals.checks",
             "louis-agent.evals.checks.csproj"));
 
         Assert.That(ReferencesOf(csproj),
@@ -344,8 +343,8 @@ public partial class ArchitectureTests
     [Test]
     public void TheIdentity_ReferencesOnlyTheEngine()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "identities", "louis-agent.identity.puls",
-            "louis-agent.identity.puls.csproj"));
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "configured/puls/identity",
+            "louis-agent.identity.puls", "louis-agent.identity.puls.csproj"));
 
         Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "louis-agent.core.csproj" }));
     }

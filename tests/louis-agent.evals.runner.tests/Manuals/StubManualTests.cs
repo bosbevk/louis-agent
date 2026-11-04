@@ -25,7 +25,7 @@ public class StubManualTests
     [Test]
     public void TheStubListsItsManual_BesideItself()
     {
-        Assert.That(new StubEval().Manual, Is.EqualTo("evals/louis-agent.evals.runner/Manuals/stub.md"));
+        Assert.That(new StubEval().Manual, Is.EqualTo("src/evals/louis-agent.evals.runner/Manuals/stub.md"));
     }
 
     [Test]

@@ -1,6 +1,6 @@
 # Build an identity
 
-> **How-to.** Make a new agent: a project in `identities/` with its voice, its routing, its own specialists and the
+> **How-to.** Make a new agent: a project in `configured/{name}/identity/` with its voice, its routing, its own specialists and the
 > packs it uses, loaded by a host with `IDENTITIES`. **Elsewhere:** why identities exist in
 > [ADR 0027](../adr/0027-engine-identities-and-packs.md), modes in [ADR 0019](../adr/0019-modes-one-file-per-product.md),
 > the role levels in [ADR 0017](../adr/0017-skills-by-level.md); giving an agent tools in [Build a pack](build-a-pack.md).
@@ -11,14 +11,14 @@ from core's toolsets and from packs. Like a pack, it never references a pack's c
 
 The steps below build a small example identity, `acme`: a hardware shop's assistant that talks plain English, answers
 questions itself, and hands "how much do I need?" jobs to one specialist, `acme-estimator`, which uses the `units` pack
-from [Build a pack](build-a-pack.md). The real identity in the repo, `identities/louis-agent.identity.puls`, follows the
+from [Build a pack](build-a-pack.md). The real identity in the repo, `configured/puls/identity/louis-agent.identity.puls`, follows the
 same steps and adds two languages, five specialists and a minion. Read it beside this guide.
 
 ## 1. Create the project
 
 ```bash
-dotnet new classlib -o identities/louis-agent.identity.acme
-dotnet sln louis-agent-solution.sln add identities/louis-agent.identity.acme/louis-agent.identity.acme.csproj
+dotnet new classlib -o configured/acme/identity/louis-agent.identity.acme
+dotnet sln louis-agent-solution.sln add configured/acme/identity/louis-agent.identity.acme/louis-agent.identity.acme.csproj
 ```
 
 Delete `Class1.cs`, and give the csproj the same embedding lines a pack has:
@@ -190,7 +190,7 @@ and (`CrossBoundaryNamesTests`) that each pack an identity names exists. A mode 
 
 ## 5. Register it in the composition root
 
-Three edits in `configured/louis-agent.host-packs`, as for a pack:
+Three edits in `configured/puls/hosts/louis-agent.host-packs`, as for a pack:
 
 1. A member in `IdentityKind.cs`: `Acme`.
 2. Its arm in `Plugins.Create(IdentityKind)`: `IdentityKind.Acme => new AcmeIdentity(),`.
@@ -253,7 +253,7 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 
 `GET /v1/roles` lists `acme/voice` under `agent` and `acme-estimator` under `specialists`. A session must name
 its mode: one that names none gets core's default, the coding agent's (`louis-agent/voice`). A web app of its own (as
-Puls has in `src/web/louis-agent.puls`) is a separate project and optional; any client that opens sessions this way works.
+Puls has in `configured/puls/web/louis-agent.puls`) is a separate project and optional; any client that opens sessions this way works.
 
 ## Modes, roles and minions: the rules
 

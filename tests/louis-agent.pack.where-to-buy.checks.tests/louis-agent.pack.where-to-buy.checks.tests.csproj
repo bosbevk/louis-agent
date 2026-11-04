@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\evals\packs\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj" />
+    <ProjectReference Include="..\..\packs-evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj" />
     <!-- The toolset's name, for the trials these tests build. -->
     <ProjectReference Include="..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
