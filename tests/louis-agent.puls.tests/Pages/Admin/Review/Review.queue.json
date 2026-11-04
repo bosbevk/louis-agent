@@ -1,0 +1,22 @@
+{"items":[
+  {"run":"run_2","eval":"<EvalBeta>","started_at":"2026-10-27T10:00:00+00:00",
+   "graders":[{"name":"no-error","version":1,"kind":"fixed-rule","question":null},
+              {"name":"meal-for-people","version":1,"kind":"model","question":null},
+              {"name":"meal-for-people.human","version":1,"kind":"human","question":"Is this a meal for the people asked for?"}],
+   "conversation":{"mode":"<ModeBeta>","repeat":1,"task":"bobotie","order":0,"role":null,"errors":0,"seconds":2.5,
+     "grades":[{"grader":"no-error","version":1,"score":1,"outcome":"pass","reason":"fine","judge_model":null,"judge_prompt_hash":null},
+               {"grader":"meal-for-people","version":1,"score":1,"outcome":"pass","reason":"feeds four","judge_model":null,"judge_prompt_hash":null},
+               {"grader":"meal-for-people.human","version":1,"score":0,"outcome":"pending","reason":"","judge_model":null,"judge_prompt_hash":null}],
+     "outcome":"pass","human_grades":[],"metrics":null},
+   "asked":["Wat eet ons vanaand?","Maak bobotie vir ses."],"answer":"Bobotie vir ses: 'n hoofgereg."},
+  {"run":"run_1","eval":"<EvalBeta>","started_at":"2026-10-26T10:00:00+00:00",
+   "graders":[{"name":"no-error","version":1,"kind":"fixed-rule","question":null},
+              {"name":"meal-for-people","version":1,"kind":"model","question":null},
+              {"name":"meal-for-people.human","version":1,"kind":"human","question":"Is this a meal for the people asked for?"}],
+   "conversation":{"mode":"<ModeBeta>","repeat":1,"task":"sosaties","order":1,"role":null,"errors":0,"seconds":1.5,
+     "grades":[{"grader":"no-error","version":1,"score":1,"outcome":"pass","reason":"fine","judge_model":null,"judge_prompt_hash":null},
+               {"grader":"meal-for-people","version":1,"score":0,"outcome":"fail","reason":"too little","judge_model":null,"judge_prompt_hash":null},
+               {"grader":"meal-for-people.human","version":1,"score":0,"outcome":"pending","reason":"","judge_model":null,"judge_prompt_hash":null}],
+     "outcome":"fail","human_grades":[],"metrics":null},
+   "asked":["Wat braai ons?"],"answer":"Sosaties vir twee."}
+],"total":2}

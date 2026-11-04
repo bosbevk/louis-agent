@@ -1,0 +1,14 @@
+@* F53.3: where the open answer is from, its place in the queue, and Skip. *@
+<header class="review-item-head">
+    <div class="review-where">
+        <code class="review-item-eval">@Item.Eval</code>
+        <a class="review-item-run" href="@RunAddress.Of(Item.Run)" title="Open the run"><code>@Item.Run</code></a>
+        <code class="mode-name">@Item.Conversation.Mode</code>
+        <span class="muted">repeat @Item.Conversation.Repeat</span>
+        <code class="review-item-task">@Item.Conversation.Task</code>
+    </div>
+    <div class="review-item-actions">
+        <span class="review-place muted">@Place</span>
+        <button type="button" class="review-skip header-button" @onclick="OnSkip">Skip</button>
+    </div>
+</header>
