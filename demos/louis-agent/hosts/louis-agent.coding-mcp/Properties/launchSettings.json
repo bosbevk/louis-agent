@@ -8,9 +8,9 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "MCP_TRANSPORT": "http",
-        "WORKSPACE_ROOT": "../../..",
-        "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
-        "LOG_DIRECTORY": "../../../demos/louis-agent/logs"
+        "WORKSPACE_ROOT": "../../../..",
+        "SKILLS_DIRECTORY": "../../skills",
+        "LOG_DIRECTORY": "../../logs"
       }
     },
     "mcp-stdio": {
@@ -18,9 +18,9 @@
       "dotnetRunMessages": false,
       "environmentVariables": {
         "MCP_TRANSPORT": "stdio",
-        "WORKSPACE_ROOT": "../../..",
-        "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
-        "LOG_DIRECTORY": "../../../demos/louis-agent/logs"
+        "WORKSPACE_ROOT": "../../../..",
+        "SKILLS_DIRECTORY": "../../skills",
+        "LOG_DIRECTORY": "../../logs"
       }
     }
   }

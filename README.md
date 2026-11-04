@@ -23,7 +23,7 @@ own agents.
 
 | Works today | Next |
 |---|---|
-| The engine, with identities and packs picked at start-up (`IDENTITIES`, `PACKS`) | The cook reads recipes from South African sites, then keeps its own recipe library |
+| The engine, with the identities and packs each program names | The cook reads recipes from South African sites, then keeps its own recipe library |
 | The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Recipe maths and a cook that teaches |
 | Puls with five specialists: a researcher, a reader, a historian, an analyst and a cook | Every text from localisation files |
 | A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt` | Twelve local Puls specialists (gardener, braaimaster, weatherman and more), on a shared weather and where-to-buy pack |

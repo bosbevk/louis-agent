@@ -45,8 +45,9 @@ thing still belongs to the demo: core writes skill files, and the running demo o
 - **A framework host is told where a demo's things are** (`CONFIG_DIRECTORY`, `SKILLS_DIRECTORY`), or finds them searching
   upward from where it runs.
 - **Top-level folders are lowercase**, like everything else at that level.
-- **A host ships as a library, and each demo writes the small program naming its packs** (Composition Root). Picked, not
-  built yet.
+- **A host ships as a library, and each demo writes the small program naming its packs** (Composition Root). So a pack is
+  switched on by a line in that program, and a setting does it only where a demo's program chooses to read one, as Puls's
+  `host-packs` reads `IDENTITIES` and `PACKS`.
 
 `SolutionLayoutTests` holds the map, the top-level list and what each demo carries.
 

@@ -402,7 +402,6 @@ public partial class ArchitectureTests
     [
         "louis-agent.api",
         "louis-agent.evals.runner",
-        "louis-agent.mcp-server",
     ];
 
     /// <summary>

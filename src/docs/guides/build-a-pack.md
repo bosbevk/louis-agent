@@ -1,7 +1,7 @@
 # Build a pack
 
 > **How-to.** Give an agent a new capability: a project in `packs/` with its tools, its guide, its own settings and its
-> tests, loaded by a host with `PACKS` or by an identity that names it. **Elsewhere:** why packs exist and the rules they
+> tests, named by a demo's program or by an identity. **Elsewhere:** why packs exist and the rules they
 > keep in [ADR 0027](../adr/0027-engine-identities-and-packs.md) and [ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md);
 > giving the agent a voice and roles in [Build an identity](build-an-identity.md).
 
@@ -230,9 +230,11 @@ Three edits in `demos/puls/hosts/louis-agent.host-packs`:
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:
    `new ShopPricesPack(ShopPricesOptions.FromEnvironment())`).
-3. A project reference to the pack in `louis-agent.composition.csproj`.
+3. A project reference to the pack in the demo's own list, `louis-agent.host-packs.csproj`.
 
-`PACKS=units` then loads it, and so does any identity whose `Packs` names `"units"`. The setting is matched to the enum
+In a demo with such a list, `PACKS=units` then loads it, and so does any identity whose `Packs` names `"units"`. A demo without
+one names the pack in its program: `new AgentCatalog([], [new UnitsPack()])` ([ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
+The setting is matched to the enum
 member with the case ignored, so keep a pack's name one word: a dashed name (`price-rules`) doesn't match `PriceRules`,
 and the catalogue refuses it as unknown.
 
