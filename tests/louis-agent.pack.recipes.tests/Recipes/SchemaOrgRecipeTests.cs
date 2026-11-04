@@ -204,16 +204,45 @@ public class SchemaOrgRecipeTests
     [TestCase($$"""{"@type":"Recipe","name":"Empty",{{OneLine}},"recipeInstructions":[{"@type":"HowToStep"}]}""")]
     public void ARecipeThatIsNotWhole_GivesNull(string json) => Assert.That(ReadJson(json), Is.Null);
 
-    /// <summary>A yield written as text, as a list with one text, as a number, or not at all.</summary>
+    /// <summary>
+    /// A yield written as text, as a list, as a number, or not at all. A list keeps its last text, because pages put
+    /// the bare number first and the words ("10 pies") after it. Blank entries are skipped.
+    /// </summary>
     [TestCase("\"recipeYield\":\"4 to 6\"", "4 to 6")]
     [TestCase("\"recipeYield\":[\"6\"]", "6")]
-    [TestCase("\"recipeYield\":[\"6\",\"6 servings\"]", "6")]
+    [TestCase("\"recipeYield\":[\"6\",\"6 servings\"]", "6 servings")]
+    [TestCase("\"recipeYield\":[\"10\",\"10 pies\"]", "10 pies")]
+    [TestCase("\"recipeYield\":[\"1\",\"1 9\\\" milk tart\"]", "1 9\" milk tart")]
+    [TestCase("\"recipeYield\":[\"6\",\"\"]", "6")]
     [TestCase("\"recipeYield\":6", "6")]
     [TestCase("\"recipeYield\":\"\"", null)]
     [TestCase("\"recipeYield\":\"   \"", null)]
     [TestCase("", null)]
-    public void TheYield_KeepsTheFirstText(string properties, string? expected) =>
+    public void TheYield_KeepsTheLastText(string properties, string? expected) =>
         Assert.That(ReadRecipe(properties).Yield, Is.EqualTo(expected));
+
+    /// <summary>
+    /// Some sites write their text with HTML entities, even in a script tag (<c>&amp;quot;</c> in Foodle Club's
+    /// steps). The recipe reads them as the characters they stand for, in a step, a line, the yield and an address.
+    /// </summary>
+    [Test]
+    public void AnEntityInAText_IsReadAsItsCharacter()
+    {
+        var recipe = ReadRecipe("""
+                                "recipeIngredient":["1 tablespoon Mrs Ball&#039;s chutney"],
+                                "recipeInstructions":"Grease a 9&quot; pie dish",
+                                "recipeYield":["1","1 9&quot; milk tart"],
+                                "image":"https://img.example/a.jpg?w=1&amp;h=2"
+                                """);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(recipe.Ingredients, Is.EqualTo(new[] { "1 tablespoon Mrs Ball's chutney" }));
+            Assert.That(recipe.Steps, Is.EqualTo(new[] { new RecipeStep(null, "Grease a 9\" pie dish") }));
+            Assert.That(recipe.Yield, Is.EqualTo("1 9\" milk tart"));
+            Assert.That(recipe.Image?.AbsoluteUri, Is.EqualTo("https://img.example/a.jpg?w=1&h=2"));
+        });
+    }
 
     /// <summary>Steps as plain <c>HowToStep</c>s, each with its <c>text</c>, and no section.</summary>
     [Test]

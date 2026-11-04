@@ -5,10 +5,10 @@ namespace LouisAgent.Core.Tools.Web.StructuredData;
 
 /// <summary>
 /// Gives you the data a page publishes for machines: every JSON-LD block
-/// (<c>&lt;script type="application/ld+json"&gt;</c>) of the HTML, in page order, already decoded and parsed. A block
-/// that isn't valid JSON is skipped. The caller owns the documents and disposes them. A raw
-/// <c>&lt;/script&gt;</c> can only be the end tag, because JSON escapes the slash
-/// (<c>&lt;\/script&gt;</c>) inside a string.
+/// (<c>&lt;script type="application/ld+json"&gt;</c>) of the HTML, in page order, parsed. A string keeps any HTML
+/// entity the page wrote in it, and a caller that reads a text decodes it. A block that isn't valid JSON is skipped.
+/// The caller owns the documents and disposes them. A raw <c>&lt;/script&gt;</c> can only be the end tag, because
+/// JSON escapes the slash (<c>&lt;\/script&gt;</c>) inside a string.
 /// </summary>
 /// <remarks>
 /// A plain walk over the text with <c>IndexOf</c>, no regular expression: the block's end is the next closing script
@@ -82,8 +82,33 @@ public static class JsonLdBlocks
         return type.Split(';')[0].Trim().Equals(LdJson, StringComparison.OrdinalIgnoreCase);
     }
 
-    /// <summary>The block's text decoded and parsed, or null when the page left it malformed.</summary>
+    /// <summary>
+    /// The block parsed as the page wrote it; if that isn't JSON, parsed again with its HTML entities decoded; null
+    /// when neither is. JSON in a script tag isn't HTML, so a <c>&amp;quot;</c> inside a string is the page's own
+    /// text and decoding the whole block would turn it into a bare quote and break the JSON. A few sites do write
+    /// the whole block with entities (<c>{&amp;quot;name&amp;quot;: ...}</c>), which is what the second try is for.
+    /// </summary>
+    /// <remarks>
+    /// Tolerant Reader (Fowler): accept what we are given in the shape it comes, strictest reading first, and fall
+    /// back to the lenient one only when the strict one fails. Decoding always, as this did, loses every block that
+    /// has an entity inside a string (Foodle Club, The Cinnamon Jar); parsing raw only loses the sites that wrote the
+    /// whole block with entities. A caller that reads a text out of the data decodes it itself.
+    /// </remarks>
     private static JsonDocument? Parse(string body)
+    {
+        try
+        {
+            return JsonDocument.Parse(body);
+        }
+        catch (JsonException)
+        {
+            // Not JSON as written: try it the way a page that wrote its quotes as entities would mean it.
+            return ParseDecoded(body);
+        }
+    }
+
+    /// <summary>The block with its HTML entities decoded and then parsed, or null when it still isn't JSON.</summary>
+    private static JsonDocument? ParseDecoded(string body)
     {
         try
         {

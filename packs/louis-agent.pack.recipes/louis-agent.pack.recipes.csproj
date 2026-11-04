@@ -1,13 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!-- What an agent can do with recipes (F35, ADR 0027, 0028): a recipe read from a page's own schema.org data, and
-       later from the text sources that carry none. References core only; no check contract until the pack ships
-       checks. -->
+  <!-- What an agent can do with recipes (F35, ADR 0027, 0028): a recipe read from a page's own schema.org data, or
+       from the page's text when it carries none, and a search of the recipe sites a deployment turns on. References
+       core only; no check contract until the pack ships checks. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Packs.Recipes</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, toolsets/recipes.md is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>

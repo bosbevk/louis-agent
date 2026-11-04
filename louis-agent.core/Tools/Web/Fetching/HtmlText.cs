@@ -1,13 +1,20 @@
-
 using System.Net;
 using System.Text.RegularExpressions;
 
 namespace LouisAgent.Core.Tools.Web.Fetching;
-/// <summary>HTML as readable text (S, CL15, from WebTools): what FetchUrl, the page renderer and the search providers show.</summary>
-internal static partial class HtmlText
+
+/// <summary>
+/// HTML as readable text (S, CL15, from WebTools): what FetchUrl, the page renderer and the search providers show.
+/// </summary>
+/// <remarks>
+/// Public only for <see cref="ToText"/>, which a pack reads a page's words with (F35.1); the rest stays core's.
+/// </remarks>
+public static partial class HtmlText
 {
-    /// <summary>Converts HTML to readable text: main content only, markdown-style headings, lists, links and code.</summary>
-    internal static (string? Title, string Text) ToText(string html, Uri baseUri)
+    /// <summary>
+    /// Converts HTML to readable text: main content only, markdown-style headings, lists, links and code.
+    /// </summary>
+    public static (string? Title, string Text) ToText(string html, Uri baseUri)
     {
         // Pages (and files checked out on Windows) may use CRLF; keep the output to plain \n so code blocks stay clean.
         html = html.ReplaceLineEndings("\n");
@@ -51,7 +58,8 @@ internal static partial class HtmlText
         string text = BlankLines().Replace(string.Join('\n', lines), "\n\n").Trim();
         text = Placeholder().Replace(text, m => blocks[int.Parse(m.Groups[1].Value)]);
         text = BlankLines().Replace(text, "\n\n").Trim();
-        // The page's own photo (FX24): from its main JSON-LD entity's image or og:image, first, unless the text already shows that very file.
+        // The page's own photo (FX24): from its main JSON-LD entity's image or og:image, first, unless the text
+        // already shows that very file.
         if (LeadImage.Of(html, baseUri, title) is { } lead && !text.Contains(UrlOf(lead), StringComparison.Ordinal))
             text = text.Length == 0 ? lead : lead + "\n\n" + text;
         return (title, text);
@@ -71,7 +79,8 @@ internal static partial class HtmlText
             a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
         string alt = CleanInline(attributes.GetValueOrDefault("alt")).Replace('[', '(').Replace(']', ')');
         if (alt.Length == 0) return "";
-        // A lazy-loading plugin keeps the real file in one of these while src holds a placeholder (FX24: WordPress sites use all four).
+        // A lazy-loading plugin keeps the real file in one of these while src holds a placeholder (FX24: WordPress
+        // sites use all four).
         string? file = new[] { "data-src", "data-lazy-src", "data-orig-file", "data-original" }
             .Select(name => attributes.GetValueOrDefault(name))
             .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
@@ -91,8 +100,8 @@ internal static partial class HtmlText
 
     /// <summary>
     /// The whole body with every tag a space and only what a browser never shows gone (VerifyQuote, F30): a price per
-    /// kilo can sit outside <c>main</c>, in a footer or a sidebar. Stripped with nothing between, a badge joins its price
-    /// ("newr54.99"), which then isn't seen as a price (FX16, the PR #54 re-review).
+    /// kilo can sit outside <c>main</c>, in a footer or a sidebar. Stripped with nothing between, a badge joins its
+    /// price ("newr54.99"), which then isn't seen as a price (FX16, the PR #54 re-review).
     /// </summary>
     internal static string TagsAsSpaces(string html) => Tag().Replace(ScriptOrStyle().Replace(html, " "), " ");
 

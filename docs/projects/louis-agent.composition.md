@@ -77,4 +77,4 @@ holds the eval checks' list to Puls's.
 [louis-agent.identity.puls](louis-agent.identity.puls.md) · [louis-agent.pack.shops](louis-agent.pack.shops.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.pack.shops](louis-agent.pack.shops.md) · Next: [louis-agent.cli](louis-agent.cli.md)
+[Projects](README.md) · Previous: [louis-agent.pack.recipes](louis-agent.pack.recipes.md) · Next: [louis-agent.cli](louis-agent.cli.md)

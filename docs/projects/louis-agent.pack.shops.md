@@ -128,4 +128,4 @@ in `Providers/Fixtures/`, recorded and trimmed, through a fake browser), `ShopTh
 [For site owners](../SITE_OWNERS.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md) · Next: [louis-agent.composition](louis-agent.composition.md)
+[Projects](README.md) · Previous: [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md) · Next: [louis-agent.pack.recipes](louis-agent.pack.recipes.md)

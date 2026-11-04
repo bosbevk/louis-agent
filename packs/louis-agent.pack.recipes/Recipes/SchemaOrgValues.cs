@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using System.Text.Json;
 using System.Xml;
 
@@ -72,6 +73,10 @@ internal static class SchemaOrgValues
     public static Uri? Address(string? text, Uri page) =>
         text is not null && Uri.TryCreate(page, text, out var uri) && uri.Scheme is "http" or "https" ? uri : null;
 
-    /// <summary>The text trimmed, or null when nothing is left.</summary>
-    private static string? NonBlank(string? text) => string.IsNullOrWhiteSpace(text) ? null : text.Trim();
+    /// <summary>
+    /// The text with its HTML entities read (<c>&amp;quot;</c> is a quote) and trimmed, or null when nothing is left.
+    /// Every text of the recipe comes through here, so each is decoded once.
+    /// </summary>
+    private static string? NonBlank(string? text) =>
+        string.IsNullOrWhiteSpace(text) ? null : WebUtility.HtmlDecode(text).Trim();
 }
