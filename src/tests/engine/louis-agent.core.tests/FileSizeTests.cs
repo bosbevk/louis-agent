@@ -28,7 +28,7 @@ public class FileSizeTests
     [
         "src/engine/louis-agent.core/Agent/EngineTools/AgentBuiltTools.cs",
         "src/engine/louis-agent.core/Agent/EngineTools/SkillTools.cs",
-        "src/engine/louis-agent.core/Tools/DotNet/DotNetTools.cs",
+        "packs/louis-agent.pack.dotnet/DotNetTools.cs",
         "packs/louis-agent.pack.devops/DevOpsTools.cs",
         "packs/louis-agent.pack.paymo/PaymoTools.cs",
         "src/engine/louis-agent.core/Tools/Shell/PythonTools.cs",

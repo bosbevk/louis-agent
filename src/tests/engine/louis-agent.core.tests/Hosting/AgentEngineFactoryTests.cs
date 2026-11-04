@@ -31,7 +31,7 @@ public class AgentEngineFactoryTests
     /// <summary>A factory on the fake model, with the cache size given.</summary>
     private static AgentEngineFactory Factory(int capacity = AgentEngineFactory.DefaultCapacity,
         Uri? peer = null) =>
-        new(new FakeChatClient(), Options(peer), capacity: capacity);
+        new(new FakeChatClient(), Options(peer), capacity: capacity, catalog: TestTools.Catalog);
 
     /// <summary>The names of an engine's tools.</summary>
     private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
@@ -385,10 +385,10 @@ public class AgentEngineFactoryTests
         factory.GetOrCreate([CoreToolset.Git.Wire()]);
         factory.GetOrCreate([CoreToolset.Files.Wire()]); // files is now the more recent
 
-        var dotnet = factory.GetOrCreate([CoreToolset.DotNet.Wire()]);
+        var dotnet = factory.GetOrCreate([TestToolset.DotNet.Wire()]);
 
         Assert.That(dotnet, Is.Not.Null);
-        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), CoreToolset.DotNet.Wire() }),
+        Assert.That(factory.Profiles, Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), TestToolset.DotNet.Wire() }),
             "git, the least recently used, went");
         Assert.That(factory.GetOrCreate([CoreToolset.Files.Wire()]), Is.SameAs(files),
             "a kept profile is the same engine");

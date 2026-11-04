@@ -1,7 +1,7 @@
 using LouisAgent.Composition.Tools;
-using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Packs.DotNet;
 
-namespace LouisAgent.Core.Tests.Tools.DotNet;
+namespace LouisAgent.Packs.DotNet.Tests;
 
 public class DotNetToolsTests
 {
@@ -32,8 +32,8 @@ public class DotNetToolsTests
     [Test]
     public void SplitArguments_HonoursQuotes()
     {
-        Assert.That(DotNetTools.SplitArguments("a \"b c\"  d"), Is.EqualTo(new[] { "a", "b c", "d" }));
-        Assert.That(DotNetTools.SplitArguments("  "), Is.Empty);
+        Assert.That(ProcessRunner.SplitArguments("a \"b c\"  d"), Is.EqualTo(new[] { "a", "b c", "d" }));
+        Assert.That(ProcessRunner.SplitArguments("  "), Is.Empty);
     }
 
     [Test]

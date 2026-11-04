@@ -9,7 +9,6 @@ public enum CoreToolset
 {
     Files,
     Git,
-    DotNet,
     Python,
     PowerShell,
     Bash,

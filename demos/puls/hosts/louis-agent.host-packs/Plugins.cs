@@ -6,6 +6,7 @@ using LouisAgent.HostPacks.Messages;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.DotNet;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
@@ -65,6 +66,7 @@ public static class Plugins
         PackKind.Recipes => new RecipesPack(RecipesOptions.FromEnvironment()),
         PackKind.WhereToBuy => new WhereToBuyPack(),
         PackKind.ShopPrices => new ShopPricesPack(ShopPricesOptions.FromEnvironment()),
+        PackKind.DotNet => new DotNetPack(),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 

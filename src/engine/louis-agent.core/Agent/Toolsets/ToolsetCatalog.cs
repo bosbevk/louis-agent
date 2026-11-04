@@ -11,7 +11,6 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Currency;
 using LouisAgent.Core.Tools.Documents;
-using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Git.Running;
 using LouisAgent.Core.Tools.Shell;
@@ -68,12 +67,6 @@ public static class ToolsetCatalog
                     new GitConfigTools(git)
                 ];
             }),
-
-        new(CoreToolset.DotNet.Wire(), "Build, test, run and restore .NET projects; list packages; SDK information",
-            GuideFile: SkillFiles.Guide(CoreToolset.DotNet.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(DotNetTools)],
-            CreateTools: ctx => [new DotNetTools(Root(ctx))]),
 
         new(CoreToolset.Python.Wire(),
             "Run Python code or scripts and manage packages in the agent's own virtual environment",

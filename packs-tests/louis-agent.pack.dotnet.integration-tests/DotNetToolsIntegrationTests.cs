@@ -1,6 +1,6 @@
-using LouisAgent.Core.Tools.DotNet;
+using LouisAgent.Packs.DotNet;
 
-namespace LouisAgent.Core.IntegrationTests.Tools.DotNet;
+namespace LouisAgent.Packs.DotNet.IntegrationTests;
 
 [Category("Integration")]
 public class DotNetToolsIntegrationTests

@@ -228,7 +228,7 @@ public class SkillAuthoringTests
         Assert.That(File.Exists(Path.Combine(_skillsDir, "agent", "functions", "broken.md")), Is.False);
     }
 
-    [TestCase(CoreToolset.DotNet)]
+    [TestCase(TestToolset.DotNet)]
     [TestCase(CoreToolset.Python)]
     public void CreateSkillFile_RefusesBuiltInNames(CoreToolset toolset) => RefusesAsBuiltIn(toolset.Wire());
 

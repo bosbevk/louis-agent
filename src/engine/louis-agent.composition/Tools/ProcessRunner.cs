@@ -13,6 +13,40 @@ public static class ProcessRunner
 {
     public sealed record Result(int ExitCode, string Output, bool TimedOut);
 
+    /// <summary>Splits a command-line string on spaces, honouring double quotes.</summary>
+    public static List<string> SplitArguments(string arguments)
+    {
+        var result = new List<string>();
+        if (string.IsNullOrWhiteSpace(arguments)) return result;
+
+        var current = new StringBuilder();
+        bool inQuotes = false;
+        foreach (char c in arguments)
+        {
+            if (c == '"')
+            {
+                inQuotes = !inQuotes;
+                continue;
+            }
+
+            if (char.IsWhiteSpace(c) && !inQuotes)
+            {
+                if (current.Length > 0)
+                {
+                    result.Add(current.ToString());
+                    current.Clear();
+                }
+
+                continue;
+            }
+
+            current.Append(c);
+        }
+
+        if (current.Length > 0) result.Add(current.ToString());
+        return result;
+    }
+
     public static Result Run(
         string fileName,
         IEnumerable<string> args,

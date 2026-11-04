@@ -46,9 +46,9 @@ public class EngineCacheTests
         cache.GetOrAdd(Key(CoreToolset.Git.Wire()), Engine);
         cache.GetOrAdd(Key(CoreToolset.Files.Wire()), Engine); // files is now the more recent
 
-        cache.GetOrAdd(Key(CoreToolset.DotNet.Wire()), Engine);
+        cache.GetOrAdd(Key(TestToolset.DotNet.Wire()), Engine);
 
-        Assert.That(cache.Keys, Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), CoreToolset.DotNet.Wire() }),
+        Assert.That(cache.Keys, Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), TestToolset.DotNet.Wire() }),
             "git, the least recently used, went");
         Assert.That(
             cache.GetOrAdd(Key(CoreToolset.Files.Wire()),

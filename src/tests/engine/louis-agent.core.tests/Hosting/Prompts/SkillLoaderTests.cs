@@ -19,7 +19,7 @@ public class SkillLoaderTests
     private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills };
 
     private static IReadOnlyList<ToolsetDefinition> Toolsets(params string[] names) =>
-        ToolsetCatalog.All.Where(t => names.Contains(t.Name)).ToList();
+        TestTools.Catalog.Toolsets.Where(t => names.Contains(t.Name)).ToList();
 
     [Test]
     public void FilesAndGit_HaveTheirGuides_AndNoOthers()
@@ -92,7 +92,7 @@ public class SkillLoaderTests
     [Test]
     public void EveryToolset_GivesEachGuideExactlyOnce()
     {
-        string docs = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation;
+        string docs = SkillLoader.Load(Options(), TestTools.Catalog.Toolsets).Documentation;
 
         foreach (string guide in OtherGuides.Append("# Files Skills").Append("# Git Skills").Append("# .NET Skills"))
             Assert.That(Regex.Matches(docs, "^" + Regex.Escape(guide) + @"\r?$", RegexOptions.Multiline).Count,
@@ -128,9 +128,9 @@ public class SkillLoaderTests
     [Test]
     public void ThePromptShrinks_WithTheToolset()
     {
-        int all = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation.Length;
+        int all = SkillLoader.Load(Options(), TestTools.Catalog.Toolsets).Documentation.Length;
         int coding = SkillLoader.Load(Options(),
-            Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire(), CoreToolset.DotNet.Wire(),
+            Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire(), TestToolset.DotNet.Wire(),
                 CoreToolset.Skills.Wire())).Documentation.Length;
 
         Assert.That(coding, Is.LessThan(all));

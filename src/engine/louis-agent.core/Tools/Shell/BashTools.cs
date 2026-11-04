@@ -3,7 +3,6 @@ using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text;
-using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shell.Messages;
@@ -63,7 +62,7 @@ public sealed class BashTools
                 return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
-        var result = RunScript(hasScript ? script : null, file, DotNetTools.SplitArguments(arguments), standardInput,
+        var result = RunScript(hasScript ? script : null, file, ProcessRunner.SplitArguments(arguments), standardInput,
             TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 1, 600)), strict, out string? notInstalled);
         if (notInstalled is not null) return notInstalled;
 

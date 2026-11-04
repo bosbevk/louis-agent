@@ -46,7 +46,7 @@ public class RoutingEvalTests
     [Test]
     public async Task TheBaseline_IsEveryToolsetPulsHas_ButTheDelegatingOnes()
     {
-        var puls = Plugins.FromSettings(PulsIdentityName.Puls.Wire(), null).Toolsets.Select(toolset => toolset.Name);
+        var puls = Plugins.FromSettings(PulsIdentityName.Puls.Wire(), PackKind.DotNet.Wire()).Toolsets.Select(toolset => toolset.Name);
 
         var modes = await Load().ModesAsync(null!, CancellationToken.None);
 

@@ -4,10 +4,9 @@ using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.DotNet.Messages;
+using LouisAgent.Packs.DotNet.Messages;
 
-namespace LouisAgent.Core.Tools.DotNet;
+namespace LouisAgent.Packs.DotNet;
 /// <summary>
 /// .NET SDK toolset: build, test, run and inspect projects inside the workspace.
 /// Output is condensed (diagnostics, failed tests, stack traces) so the model sees what matters, not MSBuild noise.
@@ -144,7 +143,7 @@ public sealed class DotNetTools
         if (build.ExitCode != 0) return SummarizeBuild(build, includeWarnings: false);
 
         var args = new List<string> { "run", "--project", target[0], "-c", configuration, "--no-build" };
-        var programArgs = SplitArguments(arguments);
+        var programArgs = ProcessRunner.SplitArguments(arguments);
         if (programArgs.Count > 0) args.AddRange(["--", .. programArgs]);
 
         var result = RunDotNet(args, TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 1, 600)), standardInput);
@@ -316,40 +315,6 @@ public sealed class DotNetTools
                 result.ExitCode == 0 ? MessageText.Format(DotNetToolMessage.TestsPassed) : Tail(result.Output));
         else if (result.ExitCode != 0 && failures == 0) sb.AppendLine(Tail(result.Output));
         return Truncate(sb.ToString().TrimEnd());
-    }
-
-    /// <summary>Splits a command-line string on spaces, honouring double quotes.</summary>
-    internal static List<string> SplitArguments(string arguments)
-    {
-        var result = new List<string>();
-        if (string.IsNullOrWhiteSpace(arguments)) return result;
-
-        var current = new StringBuilder();
-        bool inQuotes = false;
-        foreach (char c in arguments)
-        {
-            if (c == '"')
-            {
-                inQuotes = !inQuotes;
-                continue;
-            }
-
-            if (char.IsWhiteSpace(c) && !inQuotes)
-            {
-                if (current.Length > 0)
-                {
-                    result.Add(current.ToString());
-                    current.Clear();
-                }
-
-                continue;
-            }
-
-            current.Append(c);
-        }
-
-        if (current.Length > 0) result.Add(current.ToString());
-        return result;
     }
 
     private static readonly Dictionary<string, string> DotNetEnvironment = new()

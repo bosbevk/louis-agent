@@ -4,7 +4,6 @@ using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text.Json;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Usage.Records;
@@ -50,7 +49,7 @@ internal sealed class ServiceTools(
     /// every fix sends a smaller prefix and every fix session shares one cached engine.
     /// </summary>
     internal static readonly IReadOnlyList<string> FixToolsets =
-        [CoreToolset.DotNet.Wire(), CoreToolset.Files.Wire(), CoreToolset.Git.Wire(), CoreToolset.Skills.Wire()];
+        [FixToolset.DotNet.Wire(), FixToolset.Files.Wire(), FixToolset.Git.Wire(), FixToolset.Skills.Wire()];
 
     /// <summary>
     /// The current run's id, sent with every fix so louis-agent's usage records carry it. Internal on purpose: every

@@ -3,7 +3,6 @@ using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text;
-using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shell.Messages;
 
@@ -78,7 +77,7 @@ public sealed class PowerShellTools
         else target = "";
 
         var result = RunScript(hasScript ? script : null, hasPath ? target : null,
-            DotNetTools.SplitArguments(arguments),
+            ProcessRunner.SplitArguments(arguments),
             standardInput, TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 1, 600)), out string? notInstalled);
         if (notInstalled is not null) return notInstalled;
 

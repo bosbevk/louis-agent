@@ -7,7 +7,6 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Tools.DotNet;
 
 namespace LouisAgent.Core.Tests.Skills;
 
@@ -98,20 +97,6 @@ public class SkillFilesTests
     }
 
     [Test]
-    public void DotNetGuide_NamesOnlyToolsThatExist()
-    {
-        // Guards against the guidance drifting from DotNetTools after a rename.
-        var toolNames = typeof(DotNetTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("toolsets/dotnet.md").Documentation, @"`(DotNet[A-Za-z]+)`")
-            .Select(m => m.Groups[1].Value)
-            .Distinct()
-            .ToList();
-
-        Assert.That(referenced, Does.Contain("DotNetBuild").And.Contain("DotNetTest"));
-        Assert.That(referenced.Where(name => !toolNames.Contains(name)), Is.Empty);
-    }
-
-    [Test]
     public void EveryExecuteSkillExample_NamesASkillThatExists()
     {
         // A guide that shows ExecuteSkill("X") for a procedure nobody defines sends the model to a failing call.
@@ -134,7 +119,7 @@ public class SkillFilesTests
     {
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
-        string docs = SkillLoader.Load(options).Documentation;
+        string docs = SkillLoader.Load(options, TestTools.Catalog.Toolsets).Documentation;
 
         Assert.That(Regex.Matches(docs, "# .NET Skills").Count, Is.EqualTo(1));
     }

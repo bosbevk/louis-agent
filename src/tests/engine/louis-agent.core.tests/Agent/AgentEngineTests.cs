@@ -45,7 +45,7 @@ public class AgentEngineTests
             WorkspaceRoot = Path.GetTempPath(),
         };
         var context = new ToolsetContext(options, WebSearchProviderFactory.Create(options));
-        var toolsets = ToolsetCatalog.BuildTools(ToolsetCatalog.All, context);
+        var toolsets = ToolsetCatalog.BuildTools(TestTools.Catalog.Toolsets, context);
 
         var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(), options,
             toolsets: toolsets, selfExtension: true);

@@ -4,7 +4,6 @@ using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
-using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shell.Messages;
@@ -78,7 +77,7 @@ public sealed partial class PythonTools
                 return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
-        var result = RunScript(hasCode ? code : null, script, DotNetTools.SplitArguments(arguments), standardInput,
+        var result = RunScript(hasCode ? code : null, script, ProcessRunner.SplitArguments(arguments), standardInput,
             TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 1, 600)), out string? notInstalled);
         if (notInstalled is not null) return notInstalled;
 
