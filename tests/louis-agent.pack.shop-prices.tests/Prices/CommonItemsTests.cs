@@ -11,7 +11,7 @@ namespace LouisAgent.Packs.ShopPrices.Tests.Prices;
 /// </summary>
 public class CommonItemsTests
 {
-    /// <summary>The lines, leaving out the pantry the cook's list doesn't buy: oil, salt, pepper, sugar, flour.</summary>
+    /// <summary>The lines, leaving out the pantry the cook's list doesn't buy: oil, salt, sugar, flour.</summary>
     private static readonly string[] Lines =
     [
         "rotis 5", "flaked almonds 100 g", "almond slivers 100 g", "dried peaches 250 g", "sultanas 200 g",
