@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- What proves Puls (ADR 0073): its evals as folders of files, the readers they name and the expectations they read.
+       Beside the identity and apart from it, so the identity stands on core alone and follows the engine into a package;
+       only the runner references this, so no host carries it. It needs the check contract and none of the identity's
+       code. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Identities.Puls</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F49.2: Puls's evals are folders of files (Evals/{Folder}/: eval.json, Dataset/, Transcripts/, its manual),
+         copied as every eval project's are, to EvalFiles/{this project's path from the repository root}/Evals/{Folder}/,
+         where the runner finds them. The code beside them (Evals/Checks/, Evals/Readers/) is compiled, not copied. -->
+    <None Update="Evals\**\*" TargetPath="EvalFiles\identities\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.identity.puls.md" Link="docs\louis-agent.identity.puls.md" />
+  </ItemGroup>
+
+</Project>

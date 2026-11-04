@@ -80,9 +80,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   BSD); the simplest design that meets the step, nothing for a future no plan names. [ADR 0030](adr/0030-build-or-adopt.md), [ADR 0055](adr/0055-keep-it-simple.md).
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
   sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
-- **Engine, identities and packs** — core names no product or country; an identity is who an agent is, a pack what it
-  can do; a pack never references another pack or an identity; only `src/louis-agent.composition` knows them all
-  (`IDENTITIES`, `PACKS`). [ADR 0027](adr/0027-engine-identities-and-packs.md).
+- **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
+  references no other pack, identity or eval; only `src/louis-agent.composition` knows them all. Weigh every reference against
+  the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](adr/0027-engine-identities-and-packs.md), [0073](adr/0073-packs-reference-no-evals.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
   model**: `louis-agent.mcp-server` hands an external client the raw tools; to have the agent do a whole task, call
   the API's sessions. [ADR 0028](adr/0028-packs-stay-convertible-to-mcp.md), [AGENT_COMMUNICATION.md](AGENT_COMMUNICATION.md).

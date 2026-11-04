@@ -11,7 +11,7 @@ internal static class CookRubric
 {
     /// <summary>The copy of the cook's folder beside these tests.</summary>
     public static string Folder { get; } = Path.Combine(AppContext.BaseDirectory, "EvalFiles",
-        "identities/louis-agent.identity.puls/Evals/Cook");
+        "identities/louis-agent.identity.puls.evals/Evals/Cook");
 
     /// <summary>The rubric as the judge reads it: its file's body, after the header (CL27).</summary>
     public static string Text { get; } = PromptHeaders.Split("Rubrics/meal-for-people.md",

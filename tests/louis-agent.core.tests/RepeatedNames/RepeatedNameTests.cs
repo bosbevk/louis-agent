@@ -30,13 +30,13 @@ public class RepeatedNameTests
         "packs/louis-agent.pack.where-to-buy/WhereToBuyToolset.cs",
         "packs/louis-agent.pack.shop-prices/ShopPricesToolset.cs",
         "packs/louis-agent.pack.recipes/RecipesToolset.cs",
-        "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsToolset.cs",
+        "identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsToolset.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
         "src/louis-agent.web.shared/Api/AskedToolset.cs",
         "src/louis-agent.web.shared/Api/ScriptLanguage.cs",
-        "identities/louis-agent.identity.puls/Evals/Checks/Cook/CookMode.cs",
-        "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsEvalName.cs",
-        "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsEvalRole.cs",
+        "identities/louis-agent.identity.puls.evals/Evals/Checks/Cook/CookMode.cs",
+        "identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsEvalName.cs",
+        "identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsEvalRole.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubMode.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubRole.cs",
         "identities/louis-agent.identity.puls/PulsRole.cs",
@@ -57,7 +57,7 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly (string File, string Class)[] IdsFiles =
     [
-        ("tests/louis-agent.identity.puls.tests/Evals/Checks/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
+        ("tests/louis-agent.identity.puls.evals.tests/Evals/Checks/PulsCookScenarioIds.cs", "PulsCookScenarioIds"),
     ];
 
     /// <summary>
@@ -145,7 +145,8 @@ public class RepeatedNameTests
     {
         foreach (string file in EnumFiles)
             Assert.That(WireNames(file).ToList(), Is.Not.Empty, file);
-        Assert.That(EnumFiles.SelectMany(WireNames), Does.Contain("web").And.Contain("where-to-buy").And.Contain("powershell"),
+        Assert.That(EnumFiles.SelectMany(WireNames),
+            Does.Contain("web").And.Contain("where-to-buy").And.Contain("powershell"),
             "the scan guards the toolsets and the languages");
     }
 

@@ -56,6 +56,60 @@
   ]},
   {"product": "Chicken stock", "names": ["chicken stock", "beef stock", "vegetable stock"], "packs": [
     {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 18.4}}
+  ]},
+  {"product": "Rotis", "names": ["rotis", "roti"], "packs": [
+    {"size": "Pack Of 5", "amount": 5, "unit": "each", "prices": {"national": 39.99}}
+  ]},
+  {"product": "Almonds - flaked", "names": ["flaked almonds", "almond flakes", "almond slivers", "slivered almonds", "almond nibs", "amandels"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 59.99}}
+  ]},
+  {"product": "Dried peaches", "names": ["dried peaches", "droe perskes"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 69.99}}
+  ]},
+  {"product": "Bay leaves", "names": ["bay leaves", "bay leaf", "lourierblare"], "packs": [
+    {"size": "10 Gram", "amount": 10, "unit": "g", "prices": {"national": 24.99}}
+  ]},
+  {"product": "Vanilla essence", "names": ["vanilla essence", "vanilla extract", "vanielje"], "packs": [
+    {"size": "40 Millilitre", "amount": 40, "unit": "ml", "prices": {"national": 24.99}}
+  ]},
+  {"product": "Filo pastry", "names": ["filo pastry", "phyllo pastry", "filo"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 64.99}}
+  ]},
+  {"product": "Puff pastry", "names": ["puff pastry", "skilferkors"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 54.99}}
+  ]},
+  {"product": "Evaporated milk", "names": ["evaporated milk", "ideal milk"], "packs": [
+    {"size": "380 Gram", "amount": 380, "unit": "g", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Celery - fresh", "names": ["celery", "seldery"], "packs": [
+    {"size": "Per Bunch", "amount": 1, "unit": "each", "prices": {"national": 24.99}}
+  ]},
+  {"product": "Cornflour", "names": ["cornflour", "corn flour", "maizena", "mielieblom"], "packs": [
+    {"size": "450 Gram", "amount": 450, "unit": "g", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Dijon mustard", "names": ["dijon mustard", "dijon"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 49.99}}
+  ]},
+  {"product": "Mozzarella", "names": ["mozzarella", "mozzarella cheese"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 64.99}}
+  ]},
+  {"product": "Nutmeg", "names": ["nutmeg", "neutmeg"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Sesame seeds", "names": ["sesame seeds", "sesame", "sesamsaad"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Worcestershire sauce", "names": ["worcestershire sauce", "worcester sauce", "worcestersous"], "packs": [
+    {"size": "250 Millilitre", "amount": 250, "unit": "ml", "prices": {"national": 39.99}}
+  ]},
+  {"product": "Fish fillets - frozen", "names": ["fish fillets", "white fish", "white fish fillets", "hake", "hake fillets", "visfilette", "stokvis"], "packs": [
+    {"size": "800 Gram", "amount": 800, "unit": "g", "prices": {"national": 119.99}}
+  ]},
+  {"product": "Pork mince", "names": ["pork mince", "varkmaalvleis"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 99.99}}
+  ]},
+  {"product": "Sour cream", "names": ["sour cream", "suurroom"], "packs": [
+    {"size": "250 Millilitre", "amount": 250, "unit": "ml", "prices": {"national": 29.99}}
   ]}
  ]
 }

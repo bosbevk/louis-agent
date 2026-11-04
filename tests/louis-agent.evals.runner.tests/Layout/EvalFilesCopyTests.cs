@@ -12,14 +12,14 @@ namespace LouisAgent.Evals.Runner.Tests.Layout;
 /// <remarks>
 /// A learning test (F18 step 5.4b) kept as the item's proof: <c>%(RecursiveDir)</c> is the file's whole path from the
 /// project root, because the default None glob starts there; the files reach the runner's output and this project's
-/// output through the project references alone (an identity's through the composition); <c>TargetPath</c>, not
+/// output through the project references alone (an identity's through its evals project); <c>TargetPath</c>, not
 /// <c>Link</c>, because <c>Link</c> shows every file a second time in the IDE, under a folder named like the project.
 /// </remarks>
 public class EvalFilesCopyTests
 {
-    /// <summary>The cook's manifest, copied from the Puls identity's project.</summary>
+    /// <summary>The cook's manifest, copied from Puls's evals project.</summary>
     private const string CookDataset =
-        "EvalFiles/identities/louis-agent.identity.puls/Evals/Cook/Dataset/dataset.json";
+        "EvalFiles/identities/louis-agent.identity.puls.evals/Evals/Cook/Dataset/dataset.json";
 
     /// <summary>One of the stub's reference transcripts, copied from the runner's own project.</summary>
     private const string StubReference =

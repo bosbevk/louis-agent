@@ -1,9 +1,10 @@
 # louis-agent.evals.runner — design
 
 > **Kind:** console app (`net10.0`) · **Path:** `evals/louis-agent.evals.runner/` · **References:**
-> louis-agent.evals, louis-agent.composition (the identities' and packs' eval folders and their checks' lists,
-> `EvalChecks`, reach the runner through it, ADR 0027), louis-agent.identity.puls.judges (Puls's judge, which needs the harness, so no host
-> may reach it through the composition) · **Used by:** louis-agent.api (starts it as a child process; published to
+> louis-agent.evals, louis-agent.composition (the toolsets an eval's modes name, ADR 0027), and what proves each identity
+> and pack, which only the runner references so no host carries it (ADR 0073): louis-agent.identity.puls.evals (its eval
+> folders and readers), louis-agent.identity.puls.judges (its judge), louis-agent.pack.where-to-buy.checks and
+> louis-agent.pack.recipes.checks · **Used by:** louis-agent.api (starts it as a child process; published to
 > `/app/evals` in the API's images)
 
 ## Purpose
@@ -17,10 +18,9 @@ starts this runner and reads its stdout, so a new eval is a folder of files and 
 
 - **The catalogue.** Every eval is a folder of files (F49.2). `Catalog/EvalFolders` finds them: every `eval.json`
   under `EvalFiles/` beside the runner, whose path below it is where the folder sits in the repository. The runner
-  builds their checks from the check catalogue it gathers (`Catalog/RunnerChecks`: the general checks, then every
-  identity's and pack's own through the composition's `EvalChecks.All`, then Puls's judges `PulsJudges.All`), and a
-  check's reader from the reader catalogue
-  (`Catalog/RunnerReaders`: the general readers, then the composition's `EvalReaders.All`). `EVALS=` then keeps the evals of the identities it names (all when unset); a name no eval proves
+  builds their checks from the check catalogue it gathers (`Catalog/RunnerChecks`: the general checks, then each pack's
+  checks project, then Puls's judges `PulsJudges.All`), and a check's reader from the reader catalogue
+  (`Catalog/RunnerReaders`: the general readers, then `PulsReaders.All`). `EVALS=` then keeps the evals of the identities it names (all when unset); a name no eval proves
   is refused, naming the ones that do, so a typo runs nothing. `Catalog/EvalCatalog` lists the chosen evals, then the
   stub, and refuses a name twice and an eval with no fixed-rule check. `--list` prints one JSON line per eval (whose
   it is, what it proves, its categories and graders), which the API's eval list reads.

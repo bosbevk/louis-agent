@@ -93,7 +93,8 @@ public class DraftFolderTests
     public void AnEditOfAnEvalTheWorkspaceHas_KeepsItsFolder_UnderTheDraftsFiles()
     {
         // Named as the runner lists it, not after the eval: the cook's folder is Cook.
-        string kept = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent", "Evals", "Weather");
+        string kept = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent.evals", "Evals",
+            "Weather");
         Write(kept, "manual.md", "# Weather");
         Write(kept, "Transcripts/weather-old.reference.txt", "{\"event\":\"mode\"}\n");
         Write(kept, "Dataset/dataset.json", """{"name":"weather-eval","version":4}""");
@@ -156,11 +157,13 @@ public class DraftFolderTests
     /// <summary>An eval in the workspace with a sealed manifest at version 1, and its folder.</summary>
     private string AWorkspaceEval()
     {
-        string kept = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent", "Evals", "Weather");
+        string kept = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent.evals", "Evals",
+            "Weather");
         Write(kept, "Dataset/dataset.json", """
-            {"name":"weather-eval","version":1,"covers":"Die weer in die Boland.","content_hash":"abc123",
-             "changes":["2026-10-01: first version"]}
-            """);
+                                            {"name":"weather-eval","version":1,"covers":"Die weer in die Boland.",
+                                             "content_hash":"abc123",
+                                             "changes":["2026-10-01: first version"]}
+                                            """);
         return kept;
     }
 

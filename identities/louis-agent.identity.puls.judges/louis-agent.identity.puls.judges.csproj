@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\evals\louis-agent.evals\louis-agent.evals.csproj" />
-    <!-- The cook's expectations and messages the judge reads, beside the identity in Evals/Checks/. -->
-    <ProjectReference Include="..\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <!-- The cook's expectations and messages the judge reads, in Puls's evals project (Evals/Checks/). -->
+    <ProjectReference Include="..\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
   </ItemGroup>
 
 </Project>

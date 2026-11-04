@@ -34,10 +34,10 @@ public class GeneralChecksTests
                 ("is-json", CheckKind.FixedRule), ("routed-to", CheckKind.FixedRule),
                 ("tool-used", CheckKind.FixedRule), ("tool-not-used", CheckKind.FixedRule),
                 ("tool-used-with", CheckKind.FixedRule), ("tool-calls-under", CheckKind.FixedRule),
-                ("amount-under", CheckKind.FixedRule), ("number-named", CheckKind.FixedRule),
-                ("image-shown", CheckKind.FixedRule), ("links-to-host", CheckKind.FixedRule),
-                ("near", CheckKind.FixedRule), ("answers-in-language", CheckKind.FixedRule),
-                ("judge", CheckKind.Model), ("human", CheckKind.Human)
+                ("tool-rows-marked", CheckKind.FixedRule), ("amount-under", CheckKind.FixedRule),
+                ("number-named", CheckKind.FixedRule), ("image-shown", CheckKind.FixedRule),
+                ("links-to-host", CheckKind.FixedRule), ("near", CheckKind.FixedRule),
+                ("answers-in-language", CheckKind.FixedRule), ("judge", CheckKind.Model), ("human", CheckKind.Human)
             }));
     }
 

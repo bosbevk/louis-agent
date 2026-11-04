@@ -58,7 +58,8 @@ page, with any tool, and every answer is *Estimates* (below), whichever shop the
 buy*, in English (`beef mince 500 g`, `eggs 18`, `tinned tomatoes 410 g x 2`), the province (from `FindBranches`, or
 the place in the task) and `serves`. Copy each row's estimate, the total and the per-person price exactly as it gives
 them, written `± R65` with no link (`**± R312**` for the total); never add or round them yourself. A row it gives `?`
-keeps `?`, stays out of the total, and gets a row under *Unsure*. Under the list, one line: the credit the result ends
+keeps `?`, stays out of the total, and gets a row under *Unsure*. When the total says items are unpriced, keep those
+words in the task's language (`**± R312 + 2 items unpriced**`; Afrikaans `**± R312 + 2 items sonder prys**`). Under the list, one line: the credit the result ends
 on, *Prices are estimates from Stats SA's average prices (the Western Cape, August 2026), not checked at a shop.*
 (Afrikaans: *Pryse is skattings uit Stats SA se gemiddelde pryse (Wes-Kaap, Augustus 2026), nie by 'n winkel
 nagegaan nie.*), and *Unsure* has one row saying the prices are estimates and why.

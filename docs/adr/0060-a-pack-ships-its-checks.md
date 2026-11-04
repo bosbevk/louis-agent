@@ -1,6 +1,6 @@
 # 0060. A pack ships its checks
 
-**Status:** Accepted · **Date:** 2026-10-31 (Louis's picks on the F49.3 plan's findings K, L and M, and during its
+**Status:** Superseded by [0073](0073-packs-reference-no-evals.md) · **Date:** 2026-10-31 (Louis's picks on the F49.3 plan's findings K, L and M, and during its
 build) · **Recorded:** 2026-10-31
 
 ## Context
