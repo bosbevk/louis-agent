@@ -1,3 +1,4 @@
+using LouisAgent.Core.Agent.Catalog.Imports;
 using LouisAgent.Core.Agent.Toolsets;
 using Microsoft.Extensions.FileProviders;
 
@@ -42,4 +43,9 @@ public interface IAgentPack
     /// The data it publishes for anyone to read, apart from its tools (ADR 0070): none unless it says so.
     /// </summary>
     IReadOnlyList<IDataFeed> Feeds => [];
+
+    /// <summary>
+    /// The data a person may upload into it from the admin portal (F55): none unless it says so.
+    /// </summary>
+    IReadOnlyList<IDataImport> Imports => [];
 }
