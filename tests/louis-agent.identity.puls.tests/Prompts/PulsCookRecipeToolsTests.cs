@@ -1,11 +1,10 @@
-using System.Text.RegularExpressions;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Packs.Recipes;
 
-namespace LouisAgent.Identities.Puls.Tests.Cook;
+namespace LouisAgent.Identities.Puls.Tests.Prompts;
 
 /// <summary>
 /// What the cook's prompt says about reading a recipe now that the recipes pack does it (F35.2 step 2): the order of
@@ -16,7 +15,8 @@ public class PulsCookRecipeToolsTests
 {
     /// <summary>The cook's file as the model reads it, through the catalogue, on one line.</summary>
     private static string Cook() =>
-        Regex.Replace(PromptCatalog.Get("specialists/puls-cook.md")!.Body, @"\s+", " ");
+        string.Join(' ', PromptCatalog.Get("specialists/puls-cook.md")!.Body.Split((char[]?)null,
+            StringSplitOptions.RemoveEmptyEntries));
 
     /// <summary>The cook's role text names both tools, in the order of the work, starting on the data site.</summary>
     [Test]

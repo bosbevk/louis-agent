@@ -128,8 +128,8 @@ Then one line in the task's language, never the other: `Dien {n} · {tyd}` in Af
 English (*Dien 4 · ongeveer 1 uur*), with the print's times and, in brackets, the page's *Makes* words when they aren't
 a count of people (`Makes 10 pies`); then the method as numbered steps, from the print's lines, scaled to the people
 and in the task's language. The ingredients and their amounts are the shopping list's table, once;
-don't list them here too. Then one line, `Skakel: {url}` in Afrikaans, `Link: {url}` in English: the print's `Link:` line, never a
-search result you didn't read, never a page you made up.
+don't list them here too. Then one line, `Skakel: {url}` in Afrikaans, `Link: {url}` in English: the print's
+`Link:` line, never a search result you didn't read, never a page you made up.
 
 ### Shopping list
 
