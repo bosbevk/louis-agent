@@ -165,6 +165,8 @@ flowchart LR
   step 2's new types.
 - **Docs, 2026-11-04.** Framework docs are in `src/docs/`, a demo's in `demos/{demo}/docs/`, the packs' in `packs/docs/`,
   ADRs included. Paths in this plan are from before that.
+- **Order, 2026-11-04.** Hosts come first, as their own child: [CL29.2](CL29.2-hosts-are-libraries.md). The `web` pack and the
+  rest of the tools, called CL29.2 and CL29.3 here, become CL29.3 and CL29.4. This plan's steps 2 to 9 wait for it.
 - **Hosts, 2026-11-04.** A host ships as a library, and each demo writes the small program that names its packs (Composition
   Root; picked over an installable `dotnet tool` with plugins, and over the CLI leaving the framework). It starts with
   `louis-agent.cli`, and it is how the hosts stop referencing `host-packs`.
