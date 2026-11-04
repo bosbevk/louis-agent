@@ -163,7 +163,8 @@ public class RecipeToolsTests
         Assert.That(lines[1], Is.EqualTo("# Pork bobotie"));
         Assert.That(result, Does.Contain("Makes 4 to 6 · prep 20 min · cook 30 min\n"));
         Assert.That(result, Does.Not.Contain("· total"), "the page's total is empty, so the line leaves it out");
-        Assert.That(result, Does.Contain("1. ***Filling\n2. 500 g Pork mince"));
+        Assert.That(result, Does.Contain("## Ingredients\n### Filling\n1. 500 g Pork mince"));
+        Assert.That(result, Does.Contain("### Topping\n15. 2 Eggs").And.Not.Contain("***"));
         Assert.That(result, Does.Contain("## Method\n1. Preheat oven to 170"));
         Assert.That(result, Does.Contain("![Pork bobotie](https://www.foodandhome.co.za/wp-content/uploads/2026/09/"));
         Assert.That(result, Does.Contain("Author: SA Pork"));

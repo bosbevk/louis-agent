@@ -309,3 +309,16 @@ branches filled all 20. Two lessons. When a service caps its answer, sorting aft
 dropped, so narrow the question first (the smallest box first, then wider only if it finds nothing). And the tests
 missed it because the fake answered every box the same: a fake that ignores what it was asked can't show a bug in the
 asking, so this test's map answers each box differently, the way the real one did.
+
+## FX40 · A list from outside is not a list of one kind
+
+A recipe page's ingredient list is meant to hold ingredients, and one site also put its headings in it, as a line of
+markdown (`***Filling`) or of HTML (`<h3>CURRIED MINCE</h3>`). We had saved that page as a test and the test even
+expected the heading to be the first ingredient: the test described what the code did, and the code had never been
+asked what an ingredient is. Three lessons. When data from outside mixes two kinds of thing in one list, give the
+second kind its own place in the record (steps already had a `Section`; ingredients now have the same), instead of
+cleaning the text at the end where nobody can tell it was a heading. Take HTML out where every text passes, after
+the entities are read, because a page can write `&lt;h3&gt;`; and take out only a real tag, so that "cook for < 5 min"
+keeps its sign. And a count in a saved-page test (21 lines) is a claim about the page: read the page's lines yourself
+before you change the number. Skill 4 (tool design: shape what a tool hands the model, so it is clean before the model
+reads it).

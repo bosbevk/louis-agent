@@ -27,8 +27,14 @@ any identity can use it, and it could be served as an MCP server unchanged
 - **A page.** `ReadRecipe(url)` takes any public web address (not only the enabled sites), visits it in the guarded
   browser and reads the `Recipe` in its JSON-LD (`SchemaOrgRecipe`). `RecipePrinter` prints it: the name, one line
   *Makes {yield} · prep 20 min · cook 30 min · total 50 min* with only the parts the page gave, the ingredients as
-  written and the method as numbered lines (a section's name as a sub-heading), the photo, the author and the link,
-  with at most 60 ingredients and 60 steps and a line when it cuts.
+  written and the method as numbered lines (a section's name as a sub-heading above the ingredients as well as the
+  steps, the numbers running straight on), the photo, the author and the link, with at most 60 ingredients and 60
+  steps and a line when it cuts. An ingredient is a `RecipeIngredient(Section, Text)`, the same shape as a step: a
+  line of the page's list that is only a heading (a whole line in `<h1>` to `<h6>`, or one starting with two or more
+  `*` or `#`) is not an ingredient but the section of the lines after it, in the page's own words. A one-star bullet,
+  a line with some words in bold (`**2 eggs** (large)`) or a line ending in a colon stays an ingredient. Every other
+  HTML tag is taken out of every text, once the entities are read: a tag that breaks a line (`<br>`, `<p>`, `<div>`,
+  `<li>`) leaves a space, so two sentences stay two, and a `<` that opens no tag stays.
 - **A page without recipe data.** It comes back as the page's text (core's `HtmlText.ToText`), framed, labelled *{host}
   publishes no recipe data; this is the page's text*, cut at 8,000 characters (and said so), then the link.
 - **Failures are text.** A site's refusal, the browser's refusal (a private address, a page a site's `robots.txt`
@@ -76,7 +82,7 @@ What F35.1 settled, and why (the plan's decisions are in `docs/plans/F35-recipe-
 | `RecipesOptions.cs` | The pack's own setting, `RECIPE_SOURCES`, read once from the environment |
 | `Tools/RecipeTools.cs` | The two tools, `FindRecipes` and `ReadRecipe` |
 | `Tools/RecipePrinter.cs` | The markdown print of a `Recipe`, bounded |
-| `Recipes/` | `Recipe` and `RecipeStep` (the record), `SchemaOrgRecipe` (reads a page's JSON-LD into it), `SchemaOrgValues` (the loose shapes) |
+| `Recipes/` | `Recipe`, `RecipeIngredient` and `RecipeStep` (the record), `SchemaOrgRecipe` (reads a page's JSON-LD into it), `SchemaOrgIngredients` (the ingredient lines and their headings), `SchemaOrgValues` (the loose shapes) |
 | `Sources/` | `IRecipeSource`, `RecipeHit`, `RecipeSourceException`, `RecipeSourceFactory` (the enabled sites and the search each gets) |
 | `Sources/Sites/` | `RecipeSites` (reads the table), `RecipeSite`, the choices `RecipeReadBy` and `RecipeSearch`, and `recipe-sites.md`, the table |
 | `Providers/` | `WordPressSearch`, `SiteWebSearch`, `SearchResultLinks` (the hits out of a search page) |

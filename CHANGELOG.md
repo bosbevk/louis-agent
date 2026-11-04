@@ -4,6 +4,10 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **FX40 A recipe's headings aren't ingredients**: `ReadRecipe` numbered `<h3>CURRIED MINCE</h3>` and
+  `***Filling` as ingredients. A heading in the list is now the section of the lines under it
+  (`RecipeIngredient(Section, Text)`, like a step), printed as a sub-heading, and every other HTML tag leaves every
+  text.
 - 2026-11-04 — **F56 The packs' feeds as MCP resources**: the MCP server publishes every feed in the catalogue as a
   resource, `feed://{name}`, `application/json`, read whole when a client asks (`FeedResources`, one SDK resource per
   feed); `McpPrimitives.Add` sets up the tools and the resources once for both transports, and `Program.cs` keeps only
