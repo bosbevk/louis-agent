@@ -136,8 +136,8 @@ a test: CI grades only recorded transcripts.
   API and git endpoints end to end against a real model since CL10 removed the orchestrator demo.
 - **The orchestrator's whole loop** against a scripted louis-agent.api.
 
-Both are in the TODO backlog (*Quality and CI*). CI (`.github/workflows/ci.yml`) runs every suite here on each push
-and pull request.
+Both are in the TODO backlog (*Quality and CI*). CI (`.github/workflows/ci.yml`) runs every suite here on each pull request
+and merge to main.
 
 ## Adding tests
 
