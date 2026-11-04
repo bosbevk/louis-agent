@@ -13,7 +13,7 @@ public class PulsReadersTests
     [Test]
     public void PulssReaders_AreListedByName() =>
         Assert.That(PulsReaders.All.Select(reader => reader.Name),
-            Is.EqualTo(new[] { "rand-total", "rand-prices", "servings", "recipe-photos" }));
+            Is.EqualTo(new[] { "rand-total", "rand-prices", "servings", "recipe-photos", "recipe-link" }));
 
     /// <summary>
     /// A price linked to a shop's site is a price given as fact, and the site is the one it links to.
@@ -22,7 +22,8 @@ public class PulsReadersTests
     public void APriceLinkedToAShop_IsGivenAsFact_AtItsSite()
     {
         const string priced =
-            "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
+            "| Ingredient | For the recipe | To buy | PnP |\n|---|---|---|---|\n"
+            + "| Uie | 2 | Uie 1 kg | [R47,00](https://www.pnp.co.za/p/1) |\n";
 
         Assert.That(new RandPrices().AsFact(priced), Is.EqualTo(1));
         Assert.That(new RandPrices().LinkedSites(priced), Is.EqualTo(new[] { "pnp.co.za" }));
@@ -43,7 +44,8 @@ public class PulsReadersTests
 
     /// <summary>An estimate (± R25), or an answer with no list, gives no price as fact and links no site.</summary>
     [TestCase(
-        "| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n| Uie | 2 | onions 1 kg | ± R25 |\n")]
+        "| Ingredient | For the recipe | To buy | Estimated price |\n|---|---|---|---|\n"
+        + "| Uie | 2 | onions 1 kg | ± R25 |\n")]
     [TestCase("Bobotie, vir vier mense.")]
     public void AnEstimate_OrNoList_GivesNoPriceAsFact(string answer)
     {

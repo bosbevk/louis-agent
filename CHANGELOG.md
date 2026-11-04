@@ -4,6 +4,39 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F50.2 The prices as an open feed**: a pack can publish read-only data feeds (`IDataFeed` in core: a
+  name, a description and its JSON; `IAgentPack.Feeds`, empty by default; the catalogue gathers them and refuses a name
+  twice), and the API serves them open without knowing the pack: `GET /v1/feeds` lists each with its path, `GET
+  /v1/feeds/{name}` returns the pack's JSON as it wrote it, `404` for a name no pack publishes. The first is
+  `shop-prices`: Stats SA's tables and our own rows, read through the tool's cache, under a notice that says they are
+  averages and whose they are. [ADR 0070](docs/adr/0070-packs-publish-data-feeds.md)
+- 2026-11-04 — **F50.2 Where to buy and shop prices**: the shops pack (Checkers' catalogue read through our
+  browser, for development only, since no retailer answered the 2026-10-25 emails) is gone, and two packs with one job
+  each take its place, neither tied to food. `where-to-buy`: `FindBranches(shop, town)` finds a shop's three nearest
+  branches on OpenStreetMap (Nominatim, one request a second), says which are in the town's municipality and gives
+  the province; the shop rules (`estimates-at-shop`, `untooled-shops`, both at version 2) moved with it.
+  `shop-prices`: `EstimatePrices(items, province, serves)` prices a list from Stats SA's average prices (August 2026,
+  220 products, per province) and 18 rows of our own, the scaling, total and price per person in code, `?` for what it
+  can't match, and the credit line; kept in MongoDB (`SHOP_PRICES_MONGO_URL`) one document per source and month,
+  seeded from the shipped tables, read once an hour, the shipped tables when unset or down. The cook loads both beside
+  its recipes, prices with `EstimatePrices`, names the branch with `FindBranches` and credits both; the cook eval is
+  at version 14, the routing eval at 3. `SHOP_CATALOGUES` and `SHOP_STORE_CACHE` are gone.
+  [ADR 0069](docs/adr/0069-shop-prices-are-stats-sa-estimates.md);
+  [write-up](docs/learning/04-tool-design.md#f502-one-job-per-pack-and-the-numbers-in-code-2026-11-04)
+- 2026-11-04 — **The Studio's numbered steps** (F53's leftover): the Studio's form is four numbered steps in the
+  order they are done, 1 Compose, 2 Check, 3 Try, 4 Publish (GOV.UK's task list; the admin review's finding 6), and
+  *Try* picks the run to replay from the recorded runs the Evals page lists, this eval's own first, instead of an id
+  typed from memory; its link opens the new run's page, not Benchmarks (`TryStep`, `ReplayChoices`, `StudioVerdict`)
+- 2026-11-04 — **MCP_TRANSPORT is an enum**: the MCP server read its transport by comparing a string, so a typo
+  (`htpp`) started it on stdio without a word; `McpTransportSetting.Parse` reads it once into `McpTransport` (ADR
+  0024), unset is stdio and anything else stops start-up with the names it takes
+- 2026-11-04 — **Third-party notices, and ADR 0067 and 0068 in the rules list**: `THIRD-PARTY-NOTICES.md` names
+  every package, CDN script and font we hand out and the licence each keeps (the Blazor apps send their DLLs to every
+  visitor's browser), `LICENSE` points to it, ADR 0016 says so; `docs/CLAUDE.md` names ADR 0067 (a page's own data
+  before its text) and 0068 (every fetch obeys `robots.txt`) and stays at 200 lines; the work email left in git
+  history is a TODO line for Louis's call (licence review, findings 4 and 5)
+- 2026-11-04 — **FX38 One CI run per change**: every push to a pull request's branch started two runs in one concurrency group, so one cancelled the other (24 of the last 60 runs), and the cancelled one was usually the push run, the only one that checked formatting. CI now runs on pull requests and on `main`, the formatting check runs on both (a pull request against its base), `main`'s runs never cancel, the token is read-only, and the actions are on their Node 24 majors; the CI review's leftovers are done
+- 2026-11-04 — **FX37 A git past its deadline is always a timeout**: CI now and then failed `AGitThatTakesTooLong_IsARefusalInWords` with `git read-tree took longer than 0 seconds` where the test expected `rev-parse`: `WaitForExitAsync` lets a process that already exited through a token that already ran out, so a fast `rev-parse` counted as in time. The publisher now asks the deadline itself after the wait, and the test runs a hundred times; [lesson](docs/learning/fixes-lessons.md#fx37--a-test-that-races-is-not-a-test)
 - 2026-11-04 — **FX36 A redirect's body is observed**: the browser's log said `A task failed and nothing awaited it`
   (`Response body is unavailable for redirect responses`) at odd moments after a visit that followed a redirect:
   PuppeteerSharp sets every redirect's body task to that failure and never awaits it, and F52's last-chance handler

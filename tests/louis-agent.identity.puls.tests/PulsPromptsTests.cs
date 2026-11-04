@@ -5,6 +5,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Identities.Puls.Evals.Checks.Shared;
 using LouisAgent.Packs.Recipes;
 
 namespace LouisAgent.Identities.Puls.Tests;
@@ -55,10 +56,15 @@ public class PulsPromptsTests
         Assert.That(SkillLoader.Load(new AgentOptions(), [], "puls/voice-af").Documentation,
             Does.Contain("# Puls - Stem"));
         Assert.That(SkillLoader.Load(new AgentOptions(), [], PulsRole.Cook.Wire(), RoleLevel.Specialist).Documentation,
-            Does.Contain("No prices are looked up"));
+            Does.Contain("Prices are Stats SA's averages"));
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist),
-            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire(), CoreToolset.Minions.Wire() }),
-            "F35.2 steps 1 and 2b: the cook declares recipes and minions in its header, required (ADR 0025)");
+            Is.EqualTo(new[]
+            {
+                RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
+                CoreToolset.Minions.Wire()
+            }),
+            "F35.2 steps 1 and 2b and F50.2: the cook declares recipes, where to buy, shop prices and minions in its " +
+            "header (ADR 0025)");
     }
 
     /// <summary>
@@ -199,12 +205,12 @@ public class PulsPromptsTests
     {
         string cook = Read("specialists/puls-cook.md");
 
-        Assert.That(cook, Does.Contain("Where the user is").And.Contain("they are never a quote"));
+        Assert.That(cook, Does.Contain("Where the user is").And.Contain("never your own guess, never a search snippet"));
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
         Assert.That(cook, Does.Contain("What isn't bought is never a row"));
         Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*"));
         Assert.That(cook, Does.Contain("no brand, no photo"));
-        Assert.That(cook, Does.Contain("up by name in their town").And.Contain("q=Pick+n+Pay+Malmesbury"));
+        Assert.That(cook, Does.Contain("Look the user's shop up in their town, once, with `FindBranches`"));
         Assert.That(cook, Does.Contain("| Chicken thighs ").And.Contain("| 600 g ").And.Contain("chicken thighs 1 kg"));
     }
 
@@ -248,8 +254,9 @@ public class PulsPromptsTests
 
         Assert.That(router, Does.Contain("every cooking question").And.Contain("never from memory"));
         Assert.That(cook, Does.Contain("Where to buy").And.Contain("branches"));
-        Assert.That(cook,
-            Does.Contain("nominatim.openstreetmap.org/search").And.Contain("never fetch it, the link is for the user"));
+        Assert.That(Flat(cook), Does.Contain("*Branches from © OpenStreetMap contributors.*"),
+            "the map's licence (ODbL) asks for the credit wherever a branch is named (F50.2)");
+        Assert.That(cook, Does.Contain("`FindBranches`").And.Contain("never fetch it, the link is for the user"));
         Assert.That(cook, Does.Contain("`Pick n Pay Malmesbury`, `PnP in Paarl Mall`"),
             "a branch is named with its place");
     }
@@ -281,18 +288,18 @@ public class PulsPromptsTests
     public void TheCook_ReadsTheRecipeFirst_ForAsManyPeopleAsPulsAsked()
     {
         // 2026-10-24 (Louis): "deals first, for every meal" went; the recipe, from a real page, comes first.
-        // 2026-10-25 (step 5.7): no deals either, no shop is looked up; the shops pack's own guide is unchanged and
-        // waits for a retailer to say yes.
+        // 2026-10-25 (step 5.7): no deals either, no shop is looked up. F50.2: the shops pack is gone; the list is
+        // priced by the shop-prices pack, written first and estimated once.
         string cook = Flat(Read("specialists/puls-cook.md"));
-        string shops = Read("toolsets/shops.md");
+        string prices = Flat(Read("toolsets/shop-prices.md"));
         string router = Read("agent/puls/voice.md");
 
         Assert.That(cook,
             Does.Contain("The recipe first, from a real page.").And.Not.Contain("Deals pick the products"));
         Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
         Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `StartMinion`"));
-        Assert.That(shops, Does.Contain("Look for deals first"), "the pack's guide is unchanged");
-        Assert.That(shops, Does.Contain("the size the recipe needs"));
+        Assert.That(prices, Does.Contain("Write the list first,"), "the pack's guide prices a written list");
+        Assert.That(cook, Does.Contain("Once the list is written, call `EstimatePrices` once"));
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),
             "its own line in every meal's brief");
         Assert.That(router, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
@@ -374,7 +381,7 @@ public class PulsPromptsTests
     }
 
     /// <summary>
-    /// The cook reads no shop's site and loads no shops toolset; every price it gives is an estimate.
+    /// The cook reads no shop's site; every price it gives is an estimate, from Stats SA's averages.
     /// </summary>
     [Test]
     public void TheCook_LooksUpNoPrices_AndEstimatesForEveryShop()
@@ -382,17 +389,20 @@ public class PulsPromptsTests
         // 2026-10-25 (Louis: "keep cook but just rework it to not lookup prices but just focus on local recipes and
         // where to shop"): the task's Winkel / Shop line names the shop to name a branch of; no shop's site is read
         // (Checkers refuses our browser, PnP's and Woolworths' robots.txt disallow their search pages, ADR 0038), and
-        // the cook loads no shops toolset: the header is gone, the pack stays for when a retailer says yes.
-        string cook = Read("specialists/puls-cook.md");
+        // the cook loads no shops toolset. F50.2 (Louis, 2026-11-04: "scrap it they never came back"): the shops pack
+        // is gone; the cook loads where-to-buy for the branch and shop-prices for Stats SA's averages.
+        string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(PromptHeaders.Split("specialists/puls-cook.md", Raw("specialists/puls-cook.md")).Header!.Toolsets,
-            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire(), CoreToolset.Minions.Wire() }),
-            "its header names recipes and minions and nothing else: no shops (F35.2 steps 1 and 2b)");
+            Is.EqualTo(new[]
+            {
+                RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
+                CoreToolset.Minions.Wire()
+            }),
+            "its header names recipes, both packs and minions, and no shops");
         Assert.That(cook, Does.Contain("The user's shop, named").And.Contain("*Winkel* / *Shop*"));
-        Assert.That(cook,
-            Does.Contain(
-                "No shop's prices are looked up, for now: a shop's own site is read only with its permission " +
-                "(asked 2026-10-25)"));
+        Assert.That(cook, Does.Contain("No shop's prices are looked up: no shop has given us its prices."));
+        Assert.That(cook, Does.Contain("Every price comes from `EstimatePrices`, Stats SA's average prices"));
         Assert.That(cook, Does.Contain("every answer is *Estimates*"));
         Assert.That(cook,
             Does.Not.Contain("`FindProducts`").And.Not.Contain("`SearchSpecials`").And.Not
@@ -420,8 +430,12 @@ public class PulsPromptsTests
 
         Assert.That(cook, Does.Contain("whichever shop the user named"));
         Assert.That(cook, Does.Contain("written `± R65` with no link"));
-        Assert.That(cook, Does.Contain("*Prices are estimates, not checked at a shop.*"));
-        Assert.That(cook, Does.Contain("*Pryse is skattings, nie by 'n winkel nagegaan nie.*"));
+        Assert.That(cook,
+            Does.Contain(
+                "*Prices are estimates from Stats SA's average prices (the Western Cape, August 2026), not checked at a shop.*"));
+        Assert.That(cook,
+            Does.Contain(
+                "*Pryse is skattings uit Stats SA se gemiddelde pryse (Wes-Kaap, Augustus 2026), nie by 'n winkel nagegaan nie.*"));
         Assert.That(cook, Does.Not.Contain("public API"));
     }
 
@@ -437,7 +451,7 @@ public class PulsPromptsTests
             Does.Contain("| Ingredient ").And.Contain("| For the recipe ").And.Contain("| To buy ").And
                 .Contain("| Estimated price |"));
         Assert.That(cook, Does.Contain("one column, headed *Estimated price* /"));
-        Assert.That(cook, Does.Contain("**No branch in the town:**"), "a town without the branch");
+        Assert.That(cook, Does.Contain("**None marked yes:**"), "a town without the branch");
         Assert.That(cook, Does.Contain("| **Total**").And.Contain("**± R114**").And.Contain("| **Per person**"));
         Assert.That(cook, Does.Contain("Every price is `± R…` with no link"));
         Assert.That(cook, Does.Not.Contain("**Unpriced"));

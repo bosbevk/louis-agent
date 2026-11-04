@@ -140,14 +140,14 @@ required check that asks no model (a fixed rule), so a run always has a check th
 "within-budget", "parameters": {"key": "budget", "reader": "rand-total"}}`. The harness ships `currency-amount`,
 `digits` and `markdown-images`; an identity ships its own when the value is written its way (Puls's `rand-total`,
 `rand-prices`, `servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements
-`IMoneyReader`, `INumberReader`, `IImageReader` or `IPriceReader` (from the check contract,
+`IMoneyReader`, `INumberReader`, `IImageReader`, `IPriceReader` or `ILinkReader` (from the check contract,
 `evals/louis-agent.evals.checks`), listed in your
 identity's list (`PulsReaders.All`), which the composition hands to the runner (`EvalReaders.All`). `name` keeps the
 name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
 that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its owner's
-list (as the shops pack's rules are in `ShopsChecks.All`, in `packs/louis-agent.pack.shops/Checks/`), which the
+list (as the where-to-buy pack's rules are in `WhereToBuyChecks.All`, in `packs/louis-agent.pack.where-to-buy/Checks/`), which the
 composition hands to the runner (`EvalChecks.All`). A rule that proves a pack's tools is the pack's
 ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools), ADR 0060). The worked example is
 `EstimatesAtShop` and its tests. Its reasons
@@ -223,7 +223,8 @@ API ([Change the API](change-the-api.md#add-an-eval-to-the-portal)).
 
 The steps above work in any editor. The admin portal's **Studio** page (`/admin/studio`, *Studio* in the admin
 menu) does the same from the browser, and ends in the same folder of files
-([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)):
+([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). The page numbers its steps (Compose, Check, Try,
+Publish), and each one saves the draft first:
 
 1. **Compose.** *New eval* opens a form over `eval.json`: the name, the identity, the version, what a pass means, the
    manual's file name, the modes; *Add a check…* lists the runner's catalogue, and each check's fields come from its
@@ -233,8 +234,9 @@ menu) does the same from the browser, and ends in the same folder of files
    it from runs (section 6). Nothing in the repository changes yet.
 3. **Check.** The runner loads the draft's folder as strictly as a run would and holds it to the conformance gate the
    tests run (section 7); every problem shows in its own words. Fix them and check again.
-4. **Try.** Name a stored run to replay and, if you like, a few samples (commas between). A try is always a replay,
-   so it costs nothing; follow it on the Evals page. A fresh run stays the Run button's, and spends money.
+4. **Try.** Pick a run to replay from the list (only runs that recorded their answers, this eval's own first) and, if
+   you like, a few samples (commas between). A try is always a replay, so it costs nothing; the link opens its run
+   page. A fresh run stays the Run button's, and spends money.
 5. **Publish.** Only a draft the runner found no problem with is published. On a machine whose workspace is a git
    checkout, the folder is committed to `identities/louis-agent.identity.{identity}/Evals/{Name}/` on the branch
    `eval/{identity}-{name}`, without touching your checkout; push the branch and open the pull request yourself.

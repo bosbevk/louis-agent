@@ -8,15 +8,15 @@ using LouisAgent.Core.Tools.Web.Search;
 namespace LouisAgent.Core.Tests.Agent.Toolsets;
 
 // F33 step 4 (Louis: optional toolsets): Puls hands the cook `web` and `shops?`. A name ending in `?` loads when this
-// instance has the toolset and is skipped when it doesn't, so cooking works on a deployment without SHOP_CATALOGUES
-// (the sold endpoint: development and benchmarks first, ADR 0023). An unknown name stays an error, `?` or not: a typo
+// instance has the toolset and is skipped when it doesn't, so cooking worked on a deployment without the shops
+// pack's settings (F33; the pack is gone since F50.2, the rule stays). An unknown name stays an error, `?` or not: a typo
 // is never skipped in silence.
 public class ToolsetCatalogTests
 {
     [Test]
     public void CoresCatalogue_IsExactlyTheCoreToolsetEnum_TheShopsAreAPack()
     {
-        // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) are packs/louis-agent.pack.shops; core names no shop. The enum is core's whole list (ADR 0043).
+        // CL15 step 4: the shops (Checkers' catalogue, the town geocoder) became a pack; F50.2: packs/louis-agent.pack.where-to-buy and shop-prices; core names no shop. The enum is core's whole list (ADR 0043).
         Assert.That(ToolsetCatalog.All.Select(t => t.Name),
             Is.EquivalentTo(Enum.GetValues<CoreToolset>().Select(t => t.Wire())));
         Assert.That(AgentCatalog.CoreOnly.ToolNames, Has.None.EqualTo("FindProducts"));

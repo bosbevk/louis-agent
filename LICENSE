@@ -13,6 +13,8 @@ allow on GitHub itself (such as a fork), give no further rights.
 Versions released earlier under the MIT License or the GNU AGPL-3.0 stay under the licence they were released with;
 this notice applies to every version from 2026-10-15 onward.
 
+Third-party components keep their own licences; see THIRD-PARTY-NOTICES.md.
+
 For permission, open an issue at https://github.com/bosbevk/louis-agent or contact the copyright holder.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE COPYRIGHT

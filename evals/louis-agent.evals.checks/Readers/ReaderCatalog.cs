@@ -1,5 +1,6 @@
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Messages;
+using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.Evals.Readers.Listing;
 
 namespace LouisAgent.Evals.Readers;
@@ -44,6 +45,7 @@ public sealed class ReaderCatalog
         INumberReader => ReaderKind.Number,
         IImageReader => ReaderKind.Image,
         IPriceReader => ReaderKind.Price,
+        ILinkReader => ReaderKind.Link,
         _ => throw new InvalidDataException(MessageText.Format(CheckCatalogMessage.WrongReaderKind,
             new
             {

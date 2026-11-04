@@ -6,6 +6,7 @@ using LouisAgent.Evals.Grading.Common.Compare;
 using LouisAgent.Evals.Grading.Common.Compare.Readers;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.SessionStream;
 using static LouisAgent.Evals.Tests.Trials.TrialBuilder;
 
@@ -127,11 +128,13 @@ public class ImageShownCheckTests
 
     /// <summary>The recipe page the answer links to, with no photo.</summary>
     private const string CitedPage =
-        "URL: https://yourrecipeblog.com/recipes/pap-en-wors-tert/\nTitle: PAP EN WORS TERT\n\n### PAP EN WORS TERT\n\n- 500 g wors";
+        "URL: https://yourrecipeblog.com/recipes/pap-en-wors-tert/\nTitle: PAP EN WORS TERT\n\n"
+        + "### PAP EN WORS TERT\n\n- 500 g wors";
 
     /// <summary>Another page the agent read, which has a photo of another dish.</summary>
     private const string OtherPage =
-        "URL: https://marindakook.co.za/bobotie/\nTitle: Bobotie\n\n![Bobotie in a dish](https://marindakook.co.za/wp-content/bobotie.jpg)\n\nIngredients";
+        "URL: https://marindakook.co.za/bobotie/\nTitle: Bobotie\n\n"
+        + "![Bobotie in a dish](https://marindakook.co.za/wp-content/bobotie.jpg)\n\nIngredients";
 
     /// <summary>A photo of the linked page's dish.</summary>
     private const string Photo = "![Pap en wors tert](https://yourrecipeblog.com/wp-content/uploads/pap.jpg)";

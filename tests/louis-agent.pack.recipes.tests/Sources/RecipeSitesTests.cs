@@ -11,7 +11,28 @@ public class RecipeSitesTests
     private const string Header =
         "| slug | name | home | read by | search | checked | signals |\n|---|---|---|---|---|---|---|\n";
 
-    /// <summary>The table holds all 45 sites, 13 read from their recipe data and 32 from their text.</summary>
+    /// <summary>A site covers its own host with or without <c>www.</c>, and nothing else.</summary>
+    [TestCase("https://www.foodandhome.co.za/recipes/pork-bobotie", true)]
+    [TestCase("https://foodandhome.co.za/recipes/pork-bobotie", true)]
+    [TestCase("https://www.foodandhome.co.za", true)]
+    [TestCase("https://notfoodandhome.co.za/recipes/pork-bobotie", false)]
+    [TestCase("https://foodandhome.co.za.example.com/recipes", false)]
+    public void ASite_CoversItsOwnHost(string address, bool covered) =>
+        Assert.That(RecipeSites.Find("foodandhome")!.Covers(new Uri(address)), Is.EqualTo(covered));
+
+    /// <summary>
+    /// A site with a path in its home covers only what's under it: Rooi Rose is one section of its publisher's site,
+    /// and a section whose name only starts the same way isn't it.
+    /// </summary>
+    [TestCase("https://novanews.co.za/rooirose", true)]
+    [TestCase("https://www.novanews.co.za/rooirose/hoenderpasteitjies/", true)]
+    [TestCase("https://novanews.co.za/", false)]
+    [TestCase("https://novanews.co.za/nuus/hoender", false)]
+    [TestCase("https://novanews.co.za/rooirose-extra/hoender", false)]
+    public void ASiteWithAPathInItsHome_CoversOnlyWhatIsUnderIt(string address, bool covered) =>
+        Assert.That(RecipeSites.Find("rooirose")!.Covers(new Uri(address)), Is.EqualTo(covered));
+
+    /// <summary>The table holds all 45 sites, 13 read from their recipe data and 32 fromtheir text.</summary>
     [Test]
     public void TheTable_HasFortyFiveSites_ThirteenReadByDataAndThirtyTwoByText()
     {

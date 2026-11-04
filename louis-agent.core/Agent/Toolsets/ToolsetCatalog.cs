@@ -111,8 +111,6 @@ public static class ToolsetCatalog
             },
             ParallelSafe: true),
 
-        // CL15: the shops (F33, F34) are a pack, packs/louis-agent.pack.shops; a host loads it with PACKS=shops or an identity that names it.
-
         new(CoreToolset.Paymo.Wire(), "Paymo time tracking: time entries, tasks, projects and summaries",
             GuideFile: SkillFiles.Guide(CoreToolset.Paymo.Wire()),
             MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),

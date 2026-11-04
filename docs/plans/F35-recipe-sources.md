@@ -758,10 +758,10 @@ Each step is one PR to `main` with its test, built in Rider from its prompt (`Do
 |---|---|---|---|
 | 1 | **Puls names the pack and the cook declares the toolset.** `PulsPack.Recipes`, `PulsIdentity.Packs` adds it, `puls-cook.md`'s header gets `toolsets: recipes` (B1), `PulsToolset.Recipes` for the checks; `RECIPE_SOURCES=*` (E2, every site in the table) in `docker/docker-compose.puls.yml`, `deploy/azure/puls-app.yaml` and the Puls lines of `config/.env.example`; the plan into `docs/plans/F35-recipe-sources.md` under *F35.2* | The identity's tests: its packs, the cook's header; composition: `IDENTITIES=puls` loads `recipes` and the cook's session gets it | Haiku 5.5 high |
 | 2 | **The cook reads with the tools.** *The recipe first* rewritten: `FindRecipes` on an enabled site (start with a site that publishes recipe data, `foodandhome`; a wrong name answers with the enabled ones; at most three sites before the web), `ReadRecipe` the hit whose title is the dish (a page that comes back as text is read as prose once, else the next hit), the image line is the print's `![name](image)`, *Link* is the print's, the amounts scaled to the task's people from the print's lines; the nine-site block list, `FetchUrl` and `ReadRenderedPage` of a recipe page go; `WebSearch` stays for the branch's page and for a dish no enabled site has (then `ReadRecipe` the page it finds, any public page). The cook eval's manual and the `recipe-photos` reader checked against the print | The identity's prompt tests (the lines that must and must not be there); the cook eval's transcripts re-graded unchanged | Sonnet 5.5 medium |
-| 2b | **The `find-recipe` minion** (M1): `Prompts/minions/puls-minion-find-recipe.md` (level `minion`, the header's shape of the price-lookup minion): its one tool `FindRecipes`, its task the dish, the people's language and the enabled sites in order; it tries a site, reads the titles, and returns one line `{name} · {site} · {link}` for the first hit whose title is the dish, or `none` with the sites tried; never a recipe, never an amount. The cook's header becomes `toolsets: recipes, minions`; *The recipe first* starts the minion for the search and `ReadRecipe`s the link it returns (a `none` falls back to `WebSearch` as step 2 says); `MINION_LLMS` for the cook in the Puls compose file, the Azure app and `.env.example`, cheapest first. The first measured minion run is step 5's; step 4's checks must see the minion's `FindRecipes` call (verify what `tool-used` and `routed-to` read from a child session, and say so in the eval's manual) | The identity's prompt tests (the minion file embedded, its header, its one tool named; the cook's header); `MinionTools`' own rule that the tool must be the cook's, on `recipes` | Sonnet 5.5 medium |
-| 3 | **`recipe-from-source`, the check in the pack** (C1): `packs/louis-agent.pack.recipes/Evals/Checks/RecipeFromSourceCheck` over the first turn's *Recipe* link (`Link:` / `Skakel:`), a pass naming the site, a fail naming the host, Unknown on a broken turn; the pack references `louis-agent.evals.checks` and lists the check for the catalogue; the TODO's `local-sources` line closed | Transcripts: a link on a table site passes, another host fails, no link fails, a broken turn is Unknown | Sonnet 5.5 medium |
-| 4 | **The recipes eval as files** (D1): `identities/louis-agent.identity.puls/Evals/Recipes/` with `eval.json` (the checks above), `Dataset/` (ten dishes dev, three held out: bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei, koeksisters; held out: umngqusho, sosaties, bredie), `Rubrics/recipe-from-source.md`, `manual.md`; the eval's catalogue entry in Puls | The eval files load (`EvalFileReader`), the dataset's hash, the rubric's bytes; a `--split dev` dry run on the stub | Haiku 5.5 high |
-| 5 | **The paid run, on Louis's go.** The Puls stack rebuilt with `RECIPE_SOURCES`; the cook eval re-recorded (`--repeat 1`, dev; about 10 cents) and the recipes eval recorded (about the same); the numbers into this plan's measure table; the judge's answers labelled in the review queue | The runs themselves; a `$0` replay of both afterwards | Louis in the portal; a prompt with the commands |
+| 2b | **The `find-recipe` minion** (M1): `Prompts/minions/puls-minion-find-recipe.md` (level `minion`, the header's shape of the price-lookup minion): its one tool `FindRecipes`, its task the dish, the people's language and the enabled sites in order; it tries a site, reads the titles, and returns one line `{name} · {site} · {link}` for the first hit whose title is the dish, or `none` with the sites tried; never a recipe, never an amount. The cook's header becomes `toolsets: recipes, minions`; *The recipe first* starts the minion for the search and `ReadRecipe`s the link it returns (a `none` falls back to `WebSearch` as step 2 says); `MINION_LLMS` for the cook in the Puls compose file, the Azure app and `.env.example`, cheapest first. The first measured minion run is step 5's; step 4's checks are `StartMinion` and `ReadRecipe`, because `tool-used` reads the cook's own calls, not a call inside a minion's session (corrected 2026-11-04, *Approved during the build*). **Reviewed, then held on its own branch, unmerged, until the first paid run is recorded (2026-11-04).** | The identity's prompt tests (the minion file embedded, its header, its one tool named; the cook's header); `MinionTools`' own rule that the tool must be the cook's, on `recipes` | Sonnet 5.5 medium |
+| 3 | **`recipe-from-source`, the check in the pack** (C1): `packs/louis-agent.pack.recipes/Checks/RecipeFromSource` (the shops pack keeps its checks in `Checks/`; corrected 2026-11-04) over the first turn's *Recipe* link (`Link:` / `Skakel:`), a pass naming the site, a fail naming the host, Unknown on a broken turn; the pack references `louis-agent.evals.checks` and lists the check for the catalogue; the TODO's `local-sources` line closed | Transcripts: a link on a table site passes, another host fails, no link fails, a broken turn is Unknown | Sonnet 5.5 medium |
+| 4 | **The recipes eval as files** (D1): `identities/louis-agent.identity.puls/Evals/Recipes/` with `eval.json` (the checks above), `Dataset/` (ten dishes dev, three held out: bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei, koeksisters; held out: umngqusho, sosaties, bredie), `Rubrics/recipe-from-source.md`, `manual.md`; the eval's catalogue entry in Puls. Goes on `main` before 2b (2026-11-04), so the eval runs without the minion first | The eval files load (`EvalFileReader`), the dataset's hash, the rubric's bytes; a `--split dev` dry run on the stub | Haiku 5.5 high |
+| 5 | **The paid runs, on Louis's go, in this order (2026-11-04).** First, with steps 3 and 4 on `main` and 2b unmerged: the Puls stack rebuilt with `RECIPE_SOURCES`; the cook eval re-recorded (`--repeat 1`, dev; about 10 cents) and the recipes eval recorded without the minion, 3 repeats. Then 2b is merged, the stack rebuilt and the same recipes eval recorded again, 3 repeats. The numbers of both go into this plan's measure table, and the judge's answers are labelled in the review queue. If the minion saves nothing, 2b is not merged and M3 is the answer | The runs themselves; a `$0` replay of both afterwards | Louis in the portal; a prompt with the commands |
 | 6 | **Docs and close.** The write-up `docs/learning/05-structured-outputs.md` (skill 5; by Claude), GOAL's rows 5, 12 and 15, the Puls identity's design doc and the pack doc's *not in Puls's pack list yet* line, `TODO.md` (F35 done, the `local-sources` leftover gone), the plan's lasting parts into ADR 0067's consequences, and `docs/plans/F35-recipe-sources.md` deleted | Docs only; `ClaudeMdSizeTests` and the links check | Haiku 5.5 high |
 
 **Done when:** in the recipes eval every dev scenario passes `recipe-from-source` and `tool-used` (`ReadRecipe`), the
@@ -771,14 +771,19 @@ read.
 
 ### The measure (filled in at step 5)
 
-| | Cook eval, baseline `cf37574d0f23` | Cook eval, after step 2 | Recipes eval |
-|---|---|---|---|
-| Passes | 23 of 24 | | |
-| Recipe link on an allowed site | not measured | | |
-| Amounts and steps as the source (judge) | not measured | | |
-| Cost per answer (ledger) | | | |
-| The minion's share of it (searches, tokens) | none | | |
-| Dishes found on an enabled site (F35.3's baseline) | not measured | | of 10 |
+The two runs are compared on passes, whether `ReadRecipe` was used, the cost per answer, and the minion's share of
+the cost and of the time; 3 repeats a side.
+
+| | Cook eval, baseline `cf37574d0f23` | Cook eval, after step 2 | Recipes eval, without the minion | Recipes eval, with the minion |
+|---|---|---|---|---|
+| Passes | 23 of 24 | | | |
+| `ReadRecipe` used | not measured | | | |
+| Recipe link on an allowed site | not measured | | | |
+| Amounts and steps as the source (judge) | not measured | | | |
+| Cost per answer (ledger) | | | | |
+| The minion's share of it (searches, tokens) | none | | none | |
+| Time per answer, and the minion's share | | | | |
+| Dishes found on an enabled site (F35.3's baseline) | not measured | | of 10 | of 10 |
 
 ### Approved during the build
 
@@ -806,6 +811,22 @@ read.
   them, but the cook answers in the task's language, so an English page's method is written in Afrikaans for an Afrikaans
   task: faithful, step for step, every number, time and temperature unchanged. Step 4's judge must accept a translated
   method as matching its source. (The others were the same with a row under *Unsure* saying so, and quoting as written.)
+- **2026-11-04, the order of the steps (Louis).** Step 2b is reviewed but held on its own branch, unmerged. Steps 3 and
+  4 go on `main` first; then the first paid run, the recipes eval without the minion; then 2b is merged, the stack
+  rebuilt and the same eval run again. The two runs are compared on passes, `ReadRecipe` used, the cost per answer and
+  the minion's share of cost and time, 3 repeats a side. If the minion saves nothing, 2b is not merged and M3 is the
+  answer. The measure table has a column for each run, and steps 4 and 5 say the same order.
+- **2026-11-04, step 2b's picks, held with it.** The `find-recipe` minion tries up to three sites and answers one line per
+  site that has the dish (not one link and not the first site only), so the cook has up to three prints to read. A minion
+  that errors or times out counts as `none`, and the cook goes on to its web search. Step 4's `tool-used` names
+  `ReadRecipe` only: the cook calls it in both runs, so one eval grades both fairly. A check on `StartMinion` would fail
+  without the minion, and `tool-used` reads the cook's own calls, not a call inside a minion's session, so a check on
+  `FindRecipes` would fail with it. Whether the minion ran shows in the ledger as its share of the cost, a number and not a
+  pass or fail. The plan's row saying step 4's checks must see the minion's `FindRecipes` call is corrected.
+- **2026-11-04, step 3's picks.** The reader kinds moved to `Readers/Kinds/`, since `ILinkReader` was one too many for the
+  folder. `RecipeSite.Covers` is the one rule for what counts as a site, used by the web search and by
+  `recipe-from-source`. The reader takes the first valid `Skakel:` or `Link:` line, so a recipe link missing above a shop's
+  `Link:` line fails on the shop's host and not on "no link", which is a rare case and still a fail.
 
 ### What's left out, on purpose
 

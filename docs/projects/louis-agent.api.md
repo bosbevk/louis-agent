@@ -30,7 +30,7 @@ flowchart LR
 - **Routes** (CL20, [ADR 0039](../adr/0039-api-routes-under-v1.md)): every route is under `/v1` but `/health`, mapped
   in one place (`Endpoints/Routing/ApiMap`). Resources are nouns; a create answers `201` with `Location`, a delete is
   `DELETE`, an action is `POST /v1/{resource}/{verb}`. A route needs the key unless the code marks it
-  (`RouteAccess.Open` for the prices and the rates, `AdminKey` for `/v1/admin`); a `/v1` path no route matches is a
+  (`RouteAccess.Open` for the prices, the rates and the feeds, `AdminKey` for `/v1/admin`); a `/v1` path no route matches is a
   JSON `404`. `ApiRoutesSnapshot.json` pins the table, and `ApiRouteRuleTests` checks the rule on it.
 - **Prices** (`GET /v1/prices`, public): the price table `AgentHost.Build` loaded for this API's usage ledger, so other
   hosts can set `PRICES_URL` to it and price with the same table (the demo's orchestrator does); `404` without one.
@@ -38,6 +38,9 @@ flowchart LR
   other hosts' `RATES_URL` (`RATES_FORMAT=rates-json`); `GET /v1/rates/display` gives the web app the server's display
   currency and a symbol per currency. Usage objects add `display_cost`, `display_currency`, `display_symbol`,
   `rate_as_of` beside the charged `cost`.
+- **Feeds** (`GET /v1/feeds`, `GET /v1/feeds/{name}`, public, [ADR 0070](../adr/0070-packs-publish-data-feeds.md)): the
+  data the packs publish (`AgentCatalog.Feeds`), listed with each one's path and read as the JSON its pack wrote; the
+  API knows no pack and no feed's shape. A name no pack publishes is a `404`. The first is `shop-prices`.
 - **Sessions** (`AgentSessions`): in memory, one turn at a time per session (a second message gets `409`), cancelled by
   `POST /v1/sessions/{id}/cancel` or by the client disconnecting; idle sessions are dropped after 4 hours.
 - **Toolsets per session** (F5): `POST /v1/sessions` takes `toolsets` (none: `skills` only) and gets that profile's engine
@@ -93,7 +96,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 | File | What's in it |
 |---|---|
 | `Program.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
-| `Endpoints/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
+| `Endpoints/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
 | `Endpoints/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
 | `Endpoints/WorkspaceEndpoints.cs` | `GET /v1/workspace/entries`, `GET /v1/workspace/file` (text ≤ 1 MB; secret files listed but not readable) |
@@ -124,7 +127,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 ## Configuration
 
-Core settings (`WEB_REPLAY` and `REPLAY_DIRECTORY` among them: F18 step 4a, read through `ReplayResolution` and `AgentOptions.KeepsRecordings`), plus: `AGENT_API_KEY` (required on every `/v1` route but the prices and the rates; without it the API
+Core settings (`WEB_REPLAY` and `REPLAY_DIRECTORY` among them: F18 step 4a, read through `ReplayResolution` and `AgentOptions.KeepsRecordings`), plus: `AGENT_API_KEY` (required on every `/v1` route but the prices, the rates and the feeds; without it the API
 refuses to start unless `AGENT_AUTH=off`, FX18), `API_PORT` (host port in
 Docker, bound to `127.0.0.1`), `GIT_AUTHOR_*` / `GIT_COMMITTER_*` (identity for commits and merges from the web app),
 `ASPNETCORE_URLS` / `ASPNETCORE_ENVIRONMENT` outside Docker (an unpublished `dotnet run` only serves the web app in

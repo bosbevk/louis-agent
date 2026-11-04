@@ -20,7 +20,7 @@ dotnet test louis-agent-solution.sln --filter "Category=Integration"    # the in
 ```
 
 GitHub Actions runs the build, then the unit tests, then the integration tests (the two filters above, the second with
-`INTEGRATION_REQUIRED=1`) on Ubuntu on every push and pull request (`.github/workflows/ci.yml`); a red check on a PR is
+`INTEGRATION_REQUIRED=1`) on Ubuntu on every pull request and merge to main (`.github/workflows/ci.yml`); a red check on a PR is
 the same failure you'd see locally with that step's command. A test that starts a process, opens Mongo or needs a tool
 is an integration test: it lives in a `{name}.integration-tests` project, and the [guide](../docs/guides/write-tests.md#where-a-test-goes) says how.
 

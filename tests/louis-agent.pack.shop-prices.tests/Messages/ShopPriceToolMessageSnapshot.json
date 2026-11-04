@@ -1,0 +1,18 @@
+{
+  "Credit": "Credit the source under the list: \"Prices are estimates from Stats SA's average prices (<Region>, <Month>), not checked at a shop.\"",
+  "Header": "Estimated prices for <Region>, from Stats SA's average prices for <Month> (averages over many shops, not one shop's prices). The scaling and the sums are louis-agent's; copy the numbers as they are.",
+  "LineNotFound": "| <Item> | no price for this product | ? |",
+  "LineOtherUnit": "| <Item> | <Product> is priced only as <Sizes>: send the line with one of those sizes | ? |",
+  "LinePriced": "| <Item> | <Product>, <Size> at R<Price><Where><Ours> | ± R<Rand> |",
+  "LineTablePack": "| <Item> | <Product>, <Size> at R<Price><Where><Ours>; no size given, so one <Size> pack | ± R<Rand> |",
+  "NationalStandsIn": " (national, no price for <Region>)",
+  "NoItems": "EstimatePrices needs the shopping list: one line per item, what to buy and its pack ('beef mince 500 g', 'eggs 18', 'onions 1 kg x 2').",
+  "OurOwnRow": " (our own estimate, not Stats SA's)",
+  "PerPersonRow": "| **Per person** | for <Serves> | **± R<PerPerson>** |",
+  "ProvinceUnknown": "No province '<Province>' is known, so the national averages are used. Provinces: <Provinces>.",
+  "TableHeader": "| Item | Priced from | Estimate |",
+  "TableRule": "|---|---|---|",
+  "TooManyItems": "At most <Max> lines at once; you sent <Count>. Send the rest in a second call.",
+  "TotalRow": "| **Total** | <Priced> of <Count> items | **± R<Total>** |",
+  "Unpriced": "No estimate for: <Items>. Write ? for their price, leave them out of the total, and say so under Unsure."
+}

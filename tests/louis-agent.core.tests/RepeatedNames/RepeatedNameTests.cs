@@ -27,7 +27,8 @@ public class RepeatedNameTests
     [
         "louis-agent.core/Agent/Toolsets/CoreToolset.cs",
         "louis-agent.core/Skills/Languages/ScriptLanguage.cs",
-        "packs/louis-agent.pack.shops/ShopsToolset.cs",
+        "packs/louis-agent.pack.where-to-buy/WhereToBuyToolset.cs",
+        "packs/louis-agent.pack.shop-prices/ShopPricesToolset.cs",
         "packs/louis-agent.pack.recipes/RecipesToolset.cs",
         "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsToolset.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
@@ -144,7 +145,7 @@ public class RepeatedNameTests
     {
         foreach (string file in EnumFiles)
             Assert.That(WireNames(file).ToList(), Is.Not.Empty, file);
-        Assert.That(EnumFiles.SelectMany(WireNames), Does.Contain("web").And.Contain("shops").And.Contain("powershell"),
+        Assert.That(EnumFiles.SelectMany(WireNames), Does.Contain("web").And.Contain("where-to-buy").And.Contain("powershell"),
             "the scan guards the toolsets and the languages");
     }
 

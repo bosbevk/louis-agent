@@ -1,0 +1,61 @@
+{
+ "source": "louis-agent's own estimate for a product Stats SA doesn't price; not Stats SA's",
+ "as_of": "2026-11-01",
+ "products": [
+  {"product": "Tinned tomatoes", "names": ["tinned tomatoes", "canned tomatoes", "chopped tomatoes", "whole peeled tomatoes", "blikkie tamaties"], "packs": [
+    {"size": "410 Gram", "amount": 410, "unit": "g", "prices": {"national": 18.99}}
+  ]},
+  {"product": "Tomato paste", "names": ["tomato paste", "tomato puree", "tamatiepasta"], "packs": [
+    {"size": "115 Gram", "amount": 115, "unit": "g", "prices": {"national": 14.99}}
+  ]},
+  {"product": "Coconut milk", "names": ["coconut milk", "coconut cream", "klappermelk"], "packs": [
+    {"size": "400 Millilitre", "amount": 400, "unit": "ml", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Lentils - dried", "names": ["lentils", "red lentils", "brown lentils", "lensies"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Chickpeas - canned", "names": ["chickpeas", "chick peas", "kekerertjies"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 21.99}}
+  ]},
+  {"product": "Ginger - fresh", "names": ["ginger", "fresh ginger", "gemmer"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 89.99}}
+  ]},
+  {"product": "Chillies - fresh", "names": ["chillies", "chilli", "chili", "green chillies", "red chillies", "rissies"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 16.99}}
+  ]},
+  {"product": "Coriander - fresh", "names": ["coriander", "fresh coriander", "dhania", "cilantro", "koljander"], "packs": [
+    {"size": "20 Gram", "amount": 20, "unit": "g", "prices": {"national": 14.99}}
+  ]},
+  {"product": "Parsley - fresh", "names": ["parsley", "fresh parsley", "pietersielie"], "packs": [
+    {"size": "20 Gram", "amount": 20, "unit": "g", "prices": {"national": 14.99}}
+  ]},
+  {"product": "Lemons - fresh", "names": ["lemons", "lemon", "lemon juice", "suurlemoen"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 32.99}},
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 5.99}}
+  ]},
+  {"product": "Fresh cream", "names": ["cream", "fresh cream", "whipping cream", "room"], "packs": [
+    {"size": "250 Millilitre", "amount": 250, "unit": "ml", "prices": {"national": 34.99}}
+  ]},
+  {"product": "Raisins", "names": ["raisins", "sultanas", "rosyne"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 39.99}}
+  ]},
+  {"product": "Butternut - fresh", "names": ["butternut", "butternut squash", "botterskorsie"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 19.99}}
+  ]},
+  {"product": "Green beans - fresh", "names": ["green beans", "fine beans", "groenbone"], "packs": [
+    {"size": "300 Gram", "amount": 300, "unit": "g", "prices": {"national": 29.99}}
+  ]},
+  {"product": "Peas - frozen", "names": ["peas", "frozen peas", "ertjies"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 44.99}}
+  ]},
+  {"product": "Spring onions - fresh", "names": ["spring onions", "spring onion", "green onions", "salad onions"], "packs": [
+    {"size": "Per Bunch", "amount": 1, "unit": "each", "prices": {"national": 12.99}}
+  ]},
+  {"product": "Sweetcorn - canned", "names": ["sweetcorn", "sweet corn", "corn kernels", "whole kernel corn", "suikermielies"], "packs": [
+    {"size": "410 Gram", "amount": 410, "unit": "g", "prices": {"national": 19.99}}
+  ]},
+  {"product": "Chicken stock", "names": ["chicken stock", "beef stock", "vegetable stock"], "packs": [
+    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 18.4}}
+  ]}
+ ]
+}

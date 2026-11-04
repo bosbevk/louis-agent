@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace LouisAgent.Puls.Admin.Studio;
 
 /// <summary>
@@ -31,9 +33,20 @@ public static class StudioText
     public static string PublishedAsZip(string file) =>
         $"This instance has no git workspace, so the eval came as {file}: add its folder in a pull request.";
 
-    /// <summary>A try started; the Evals page follows it.</summary>
+    /// <summary>A try started; its run page follows it.</summary>
     public static string TryStarted(string run) =>
-        $"Try {run} started, a replay at no cost: follow it on Benchmarks ›";
+        $"Try {run} started, a replay at no cost: open its run ›";
+
+    /// <summary>A run the try can replay, as its picker shows it: whose, when it started (UTC) and its id.</summary>
+    public static string ReplayLabel(string eval, DateTime startedUtc, string run) =>
+        string.Create(CultureInfo.InvariantCulture, $"{eval} · {startedUtc:yyyy-MM-dd HH:mm} · {run}");
+
+    /// <summary>The picker's first line, before a run is picked.</summary>
+    public const string PickARun = "Pick a recorded run to replay";
+
+    /// <summary>No run recorded its answers yet, so there is nothing to replay.</summary>
+    public const string NoRunToReplay =
+        "No run has recorded its answers yet: run an eval with recording on, then try the draft on it.";
 
     /// <summary>A draft went out as a promptfoo file.</summary>
     public static string PromptfooExported(string file) =>

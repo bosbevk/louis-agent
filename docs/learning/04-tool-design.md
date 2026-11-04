@@ -69,6 +69,45 @@ rule a test can hold is held by a test, and what it can't hold is written where 
 - **Reuse before building held.** The SDK's own `McpServerTool.Create` checks what a server would publish, instead of a
   hand-written mirror of its rules; it is a test-only package, kept in step with the MCP server's.
 
+## F50.2: one job per pack, and the numbers in code (2026-11-04)
+
+The shops pack read Checkers' catalogue, which only a retailer's yes would let us ship, and none came. It became two
+packs ([ADR 0069](../adr/0069-shop-prices-are-stats-sa-estimates.md)): `where-to-buy` (`FindBranches`, the nearest
+branches on OpenStreetMap) and `shop-prices` (`EstimatePrices`, a list from Stats SA's average prices).
+
+| | The shops pack | After F50.2 |
+|---|---|---|
+| The cook's price tools | 3 (`FindProducts`, `SearchSpecials`, `SearchPromotions`), off for the cook since F18 step 5.7 | 1, `EstimatePrices`, on |
+| Where a price came from | A shop's site we may not read, so none: every price was the model's guess | Stats SA's monthly averages, per province, credited |
+| Who adds the total | The model | Code: the total is always the sum of its rows (a test holds it) |
+| The branch | The model reading the map's search page | `FindBranches`: three branches, each "in the town's municipality" or not |
+| Kept where | Code and a browser | MongoDB, one document per source and month, seeded from the shipped files |
+
+- **One job per pack.** Prices without branches (a rent estimate) and branches without prices (a pharmacy) are both
+  real asks, so the two never share a toolset. The pattern is Single Responsibility at the level of a toolset: a
+  specialist loads what it needs and its prompt only reads about that.
+- **Give the model numbers, not arithmetic.** A model adding twelve rand amounts gets one wrong now and then, and
+  differently each run. `EstimatePrices` returns each row, the total and the price per person already done; the
+  prompt says "copy them exactly". This is the same move as F33's table (*a page's own data before its text*,
+  [ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)), one step further: the tool does the work, the model
+  writes the sentence.
+- **Unknown stays unknown.** A line the table can't match is `?` and is left out of the total, listed under it, so the
+  total never looks complete when it isn't.
+- **A licence is part of the tool's text.** Stats SA asks for credit, and OpenStreetMap's ODbL too, so both tools hand
+  the model the exact credit line to copy, and the cook's prompt puts it under the table.
+- **A store with a fallback.** The tool reads MongoDB at most once an hour (Cache-Aside) and falls back to the shipped
+  tables when the store is down, so a price is always there; the store is the record and the files only seed it.
+- **Not yet measured live.** The cook eval moved to version 14 (new toolsets); its first run waits for Louis's go
+  (it costs money). The golden shows what the model now reads: the three Checkers tools gone, `FindBranches` and
+  `EstimatePrices` in.
+- **Data a pack publishes is not a tool.** Louis wanted the prices served by the API, open, "free to use". The API
+  may not know a pack (ADR 0027), so core got a third thing a pack can give besides toolsets and prompts: a read-only
+  feed (`IDataFeed`: a name, a description, its JSON). The API serves every feed at `/v1/feeds/{name}` without knowing
+  whose it is, and the pack writes its own JSON. This is the Plugin pattern (Fowler), the same seam the toolsets use,
+  and it mirrors MCP, which also splits a server into *tools* the model calls and *resources* anyone reads
+  ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)). The feed reads through the tool's cache, so the tool and the
+  feed always show the same month.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md) ·
 [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)

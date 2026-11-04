@@ -32,7 +32,7 @@ public sealed class SiteWebSearch(RecipeSite site, IWebSearchProvider search) : 
         IReadOnlyList<WebSearchResult> results;
         try
         {
-            results = await search.SearchAsync(new WebSearchQuery(query, maxResults, SearchResultLinks.Host(site.Home)),
+            results = await search.SearchAsync(new WebSearchQuery(query, maxResults, RecipeSite.HostOf(site.Home)),
                 cancellationToken);
         }
         catch (WebSearchException ex)
@@ -50,7 +50,7 @@ public sealed class SiteWebSearch(RecipeSite site, IWebSearchProvider search) : 
         [
             .. results
                 .Select(result => (result.Title, Url: Parse(result.Url)))
-                .Where(result => result.Url is not null && OnTheSite(result.Url))
+                .Where(result => result.Url is not null && site.Covers(result.Url))
                 .Select(result => new RecipeHit(result.Title, result.Url!))
         ];
     }
@@ -58,13 +58,4 @@ public sealed class SiteWebSearch(RecipeSite site, IWebSearchProvider search) : 
     /// <summary>The result's address as a web address, or null when it isn't one.</summary>
     private static Uri? Parse(string url) =>
         Uri.TryCreate(url, UriKind.Absolute, out Uri? parsed) && parsed.Scheme is "http" or "https" ? parsed : null;
-
-    /// <summary>Whether the result is on the site's host, with or without <c>www.</c>, and under its home.</summary>
-    private bool OnTheSite(Uri url) =>
-        SearchResultLinks.Host(url) == SearchResultLinks.Host(site.Home) && UnderHome(url);
-
-    /// <summary>Whether it's at or below the home's path; the slash keeps <c>/rooirose-extra</c> out.</summary>
-    private bool UnderHome(Uri url) =>
-        (url.AbsolutePath.TrimEnd('/') + "/").StartsWith(site.Home.AbsolutePath.TrimEnd('/') + "/",
-            StringComparison.Ordinal);
 }

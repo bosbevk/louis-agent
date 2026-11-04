@@ -33,8 +33,8 @@ public class MessageEnumTests
                 "DocumentToolMessage", "DotNetToolMessage", "ErrorMessage", "GitToolMessage",
                 "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
                 "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage", "PaymoToolMessage",
-                "PricingErrorMessage", "PricingLogMessage", "PromptHeaderMessage", "ProtocolLogMessage",
-                "ScriptToolMessage", "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage",
+                "PricingErrorMessage", "PricingLogMessage", "PromptHeaderMessage", "ProtocolErrorMessage",
+                "ProtocolLogMessage", "ScriptToolMessage", "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage",
                 "SkillLogMessage", "SubSessionToolMessage", "TelemetryLogMessage", "ToolMessage", "UserText",
                 "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage", "WorkspaceToolMessage",
             }));

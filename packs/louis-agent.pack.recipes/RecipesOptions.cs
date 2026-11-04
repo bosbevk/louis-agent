@@ -5,7 +5,7 @@ namespace LouisAgent.Packs.Recipes;
 /// the sites a deployment turned on.
 /// </summary>
 /// <remarks>
-/// The same shape as <c>ShopsOptions</c>: a plain options object with a reader that takes the variable lookup, so a
+/// A plain options object with a reader that takes the variable lookup, so a
 /// test needs no real environment. Nothing is enabled until a person names it, because a site is read only after
 /// its terms were checked (ADR 0023).
 /// </remarks>

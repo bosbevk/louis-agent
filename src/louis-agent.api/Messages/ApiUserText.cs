@@ -30,6 +30,9 @@ public enum ApiUserText
     [Description("No exchange rates loaded: RATES_URL couldn't be used and there is no config/rates.json.")]
     NoRates,
 
+    [Description("No feed '{Name}' here; GET /v1/feeds lists the ones there are.")]
+    UnknownFeed,
+
     [Description("Send a non-empty 'message' and/or 'attachments'.")]
     EmptyMessage,
 

@@ -36,7 +36,7 @@ cook-af.bad.no-route cook-no-error pass 1
 cook-af.bad.no-route routed-to fail 0
 cook-af.bad.no-route within-budget pass 1
 cook-af.bad.no-route estimates-at-shop fail 0
-cook-af.bad.no-route untooled-shops pass 1
+cook-af.bad.no-route untooled-shops fail 0
 cook-af.bad.no-route recipe-image unknown 0
 cook-af.bad.no-route serves-as-asked unknown 0
 cook-af.bad.no-route meal-for-people unknown 0
@@ -70,7 +70,7 @@ cook-en.bad.error-in-follow-up cook-no-error fail 0
 cook-en.bad.error-in-follow-up routed-to pass 1
 cook-en.bad.error-in-follow-up within-budget pass 1
 cook-en.bad.error-in-follow-up estimates-at-shop fail 0
-cook-en.bad.error-in-follow-up untooled-shops pass 1
+cook-en.bad.error-in-follow-up untooled-shops fail 0
 cook-en.bad.error-in-follow-up recipe-image unknown 0
 cook-en.bad.error-in-follow-up serves-as-asked pass 1
 cook-en.bad.error-in-follow-up meal-for-people unknown 0

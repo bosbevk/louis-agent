@@ -5,7 +5,7 @@
 ## Context
 
 Twice now, reading a site's data in code beat letting the model read its pages. The shops measure
-([the shops pack's design](../projects/louis-agent.pack.shops.md)) got 0 of 32 prices right when the cook read the
+([the shops pack](0069-shop-prices-are-stats-sa-estimates.md), scrapped in F50.2) got 0 of 32 prices right when the cook read the
 pages, and 31 of 31 with the user's store. Recipe pages are the
 same story: a page can publish its recipe for machines as a schema.org block, a JSON-LD script hidden in its HTML,
 beside the text people read. When the model reads prose instead, it spends more tokens, gets amounts wrong, and leaves

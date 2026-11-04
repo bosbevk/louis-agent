@@ -1,5 +1,6 @@
 using System.Globalization;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Kinds;
 
 namespace LouisAgent.Evals.Grading.Common.Compare.Readers;
 

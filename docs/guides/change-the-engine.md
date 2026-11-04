@@ -53,7 +53,7 @@ and roles live in its identity, not here.
 1. Read it once where it enters: a property in `Config/AgentOptions.cs` (or `LlmOptions` for an `LLM_*` setting),
    filled in `FromEnvironment`, with a test in `tests/louis-agent.core.tests/Config/`. `AgentOptions.cs` is over the
    200-line limit and on `FileSizeTests`' list, so a group of new settings is the moment to give them a class of their
-   own, as a pack has (`ShopsOptions`).
+   own, as a pack has (`RecipesOptions`).
 2. A choice from a fixed set is an enum, parsed with `SettingChoice` (case ignored, aliases allowed, never a number;
    [ADR 0024](../adr/0024-choices-are-enums.md)).
 3. Document it in `config/.env.example`. If a container needs it, add it to the compose file's service and to the

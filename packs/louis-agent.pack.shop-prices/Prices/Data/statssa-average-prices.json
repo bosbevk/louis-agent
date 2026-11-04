@@ -1,0 +1,909 @@
+{
+ "source": "Stats SA, CPI average prices (P0141), all urban areas and provinces",
+ "as_of": "2026-08-01",
+ "products": [
+  {"product": "White Rice", "names": ["white rice", "rice"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 27.86, "western-cape": 27.19, "eastern-cape": 27.74, "free-state": 26.78, "kwazulu-natal": 28.29, "gauteng": 28.79, "mpumalanga": 27.42}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 37.42, "western-cape": 41.74, "eastern-cape": 36.51, "northern-cape": 36.33, "free-state": 35.65, "kwazulu-natal": 39.9, "north-west": 36.75, "gauteng": 36.82, "mpumalanga": 36.04, "limpopo": 36.39}},
+    {"size": "5 Kilogram", "amount": 5000, "unit": "g", "prices": {"kwazulu-natal": 102.72}}
+  ]},
+  {"product": "Basmati Rice", "names": ["basmati rice"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 70.23, "western-cape": 72.63, "eastern-cape": 71.99, "northern-cape": 74.28, "free-state": 78.24, "kwazulu-natal": 60.12, "north-west": 65.99, "gauteng": 71.01, "mpumalanga": 69.45, "limpopo": 71.49}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 138.73, "eastern-cape": 142.99, "free-state": 144.65, "north-west": 136.99, "gauteng": 145.57, "mpumalanga": 134.82, "limpopo": 157.49}}
+  ]},
+  {"product": "Cake flour", "names": ["cake flour", "flour", "koekmeel"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 21.77, "western-cape": 22.44, "eastern-cape": 22.7, "free-state": 21.98, "kwazulu-natal": 20.62, "gauteng": 21.08}},
+    {"size": "2.5 Kilogram", "amount": 2500, "unit": "g", "prices": {"national": 42.98, "western-cape": 42.57, "eastern-cape": 42.26, "northern-cape": 43.49, "free-state": 44.13, "kwazulu-natal": 42.97, "north-west": 41.78, "gauteng": 42.92, "mpumalanga": 43.59, "limpopo": 43.37}}
+  ]},
+  {"product": "Bread flour", "names": ["bread flour"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 22.89}},
+    {"size": "2.5 Kilogram", "amount": 2500, "unit": "g", "prices": {"national": 47.32, "western-cape": 45.2, "eastern-cape": 44.8, "northern-cape": 46.66, "free-state": 50.5, "kwazulu-natal": 40.99, "north-west": 48.46, "gauteng": 48.94, "limpopo": 47.68}},
+    {"size": "2,5 Kilogram", "amount": 2500, "unit": "g", "prices": {"northern-cape": 46.66}}
+  ]},
+  {"product": "Sorghum Meal", "names": ["sorghum meal"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 32.05, "kwazulu-natal": 32.55, "gauteng": 32.87}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 58.97, "eastern-cape": 54.88, "free-state": 63.66, "kwazulu-natal": 59.53, "north-west": 58.44, "gauteng": 59.66, "mpumalanga": 59.39, "limpopo": 57.77}}
+  ]},
+  {"product": "Maize meal", "names": ["maize meal", "mielie meal", "mealie meal", "mieliemeel", "pap"], "packs": [
+    {"size": "2,5 Kilogram", "amount": 2500, "unit": "g", "prices": {"national": 38.53, "western-cape": 36.81, "eastern-cape": 40.82, "northern-cape": 40.85, "free-state": 38.54, "kwazulu-natal": 36.61, "north-west": 40.63, "gauteng": 38.82, "mpumalanga": 38.12, "limpopo": 38.66}},
+    {"size": "5 Kilogram", "amount": 5000, "unit": "g", "prices": {"national": 65.26, "northern-cape": 68.39, "free-state": 66.66, "kwazulu-natal": 62.49, "gauteng": 67.59, "mpumalanga": 58.82}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"western-cape": 21.87, "eastern-cape": 19.99, "free-state": 18.16, "kwazulu-natal": 17.56}}
+  ]},
+  {"product": "Samp", "names": ["samp"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 23.98, "western-cape": 23.12, "eastern-cape": 21.78, "northern-cape": 24.74, "free-state": 23.68, "kwazulu-natal": 21.86, "north-west": 26.28, "gauteng": 24.99, "mpumalanga": 26.66}},
+    {"size": "2,5 Kilogram", "amount": 2500, "unit": "g", "prices": {"national": 49.96, "eastern-cape": 45.92, "northern-cape": 44.99, "free-state": 48.43, "kwazulu-natal": 48.85, "north-west": 51.32, "gauteng": 51.19, "mpumalanga": 54.24, "limpopo": 50.9}}
+  ]},
+  {"product": "White bread", "names": ["white bread", "bread", "brood"], "packs": [
+    {"size": "600 Gram", "amount": 600, "unit": "g", "prices": {"national": 12.51, "gauteng": 12.56}},
+    {"size": "700 Gram", "amount": 700, "unit": "g", "prices": {"national": 19.62, "western-cape": 20.2, "eastern-cape": 19.42, "northern-cape": 19.35, "free-state": 19.33, "kwazulu-natal": 18.65, "north-west": 19.49, "gauteng": 20.15, "mpumalanga": 19.19, "limpopo": 19.8}}
+  ]},
+  {"product": "Brown bread", "names": ["brown bread"], "packs": [
+    {"size": "600 Gram", "amount": 600, "unit": "g", "prices": {"national": 11.61, "gauteng": 11.39}},
+    {"size": "700 Gram", "amount": 700, "unit": "g", "prices": {"national": 17.56, "western-cape": 17.86, "eastern-cape": 17.25, "northern-cape": 18.09, "free-state": 17.58, "kwazulu-natal": 17.16, "north-west": 18.27, "gauteng": 17.83, "mpumalanga": 17.02, "limpopo": 17.46}}
+  ]},
+  {"product": "Bread rolls", "names": ["bread rolls", "rolls"], "packs": [
+    {"size": "For 6", "amount": 6, "unit": "each", "prices": {"national": 20.73, "eastern-cape": 20.44, "northern-cape": 18.16, "kwazulu-natal": 17.74, "north-west": 22.09, "gauteng": 23.21, "limpopo": 19.79}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 3.49, "western-cape": 4.13, "eastern-cape": 3.47, "kwazulu-natal": 3.08, "north-west": 3.77, "gauteng": 3.44, "limpopo": 2.72}},
+    {"size": "Pack Of 6", "amount": 6, "unit": "each", "prices": {"free-state": 19.59, "mpumalanga": 18.66}}
+  ]},
+  {"product": "Rusks", "names": ["rusks"], "packs": [
+    {"size": "450 Gram", "amount": 450, "unit": "g", "prices": {"national": 62.96, "western-cape": 64.39, "eastern-cape": 64.87, "northern-cape": 61.35, "free-state": 58.34, "kwazulu-natal": 64.2, "north-west": 64.24, "gauteng": 62.97}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 56.9, "western-cape": 55.99, "eastern-cape": 58.24, "northern-cape": 55.66, "free-state": 60.16, "kwazulu-natal": 59.26, "north-west": 56.49, "gauteng": 53.84}}
+  ]},
+  {"product": "Savoury biscuits", "names": ["savoury biscuits"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 36.84, "western-cape": 36.09, "eastern-cape": 37.99, "northern-cape": 34.49, "free-state": 35.35, "kwazulu-natal": 38.36, "north-west": 36.78, "gauteng": 36.87}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 59.7}}
+  ]},
+  {"product": "Sweet biscuits", "names": ["sweet biscuits"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 30.03, "western-cape": 32.54, "eastern-cape": 31.18, "northern-cape": 26.57, "free-state": 28.53, "kwazulu-natal": 33.87, "north-west": 31.86, "gauteng": 30.71, "mpumalanga": 27.39, "limpopo": 22.56}}
+  ]},
+  {"product": "Cold cereals", "names": ["cold cereals"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 56.34, "western-cape": 52.16, "eastern-cape": 60.42, "free-state": 59.99, "kwazulu-natal": 54.49, "north-west": 49.99, "gauteng": 59.58, "mpumalanga": 50.89, "limpopo": 57.13}},
+    {"size": "750 Gram", "amount": 750, "unit": "g", "prices": {"national": 76.02, "free-state": 77.49, "kwazulu-natal": 72.99, "gauteng": 76.63}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"northern-cape": 83.28, "kwazulu-natal": 81.68, "mpumalanga": 81.1}}
+  ]},
+  {"product": "Hot cereals (porridge)", "names": ["hot cereals"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 53.32}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 35.32, "western-cape": 38.45, "eastern-cape": 31.68, "northern-cape": 34.81, "free-state": 36.43, "kwazulu-natal": 34.41, "north-west": 38.81, "gauteng": 37.79, "mpumalanga": 32.03, "limpopo": 31.81}}
+  ]},
+  {"product": "Spaghetti", "names": ["spaghetti", "pasta"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 20.07, "western-cape": 21.84, "eastern-cape": 20.78, "northern-cape": 16.99, "free-state": 19.43, "kwazulu-natal": 19.62, "north-west": 19.18, "gauteng": 21.92, "mpumalanga": 19.14, "limpopo": 17.42}}
+  ]},
+  {"product": "Macaroni", "names": ["macaroni"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 18.77, "western-cape": 19.18, "eastern-cape": 18.8, "northern-cape": 17.44, "free-state": 17.92, "kwazulu-natal": 18.31, "north-west": 18.71, "gauteng": 19.96, "mpumalanga": 18.61, "limpopo": 17.7}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 36.99}}
+  ]},
+  {"product": "Instant noodles", "names": ["instant noodles"], "packs": [
+    {"size": "5 X 70 Gram", "amount": 350, "unit": "g", "prices": {"national": 35.75, "kwazulu-natal": 35.19, "gauteng": 36.45, "mpumalanga": 32.54, "limpopo": 38.99}},
+    {"size": "5 X 68 Gram", "amount": 340, "unit": "g", "prices": {"national": 37.87, "eastern-cape": 36.66, "free-state": 37.98, "kwazulu-natal": 37.99, "mpumalanga": 40.24}},
+    {"size": "70 Gram", "amount": 70, "unit": "g", "prices": {"gauteng": 22.12}}
+  ]},
+  {"product": "Beef mince", "names": ["beef mince", "mince", "minced beef", "ground beef", "maalvleis"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 124.92, "western-cape": 132.63, "eastern-cape": 125.23, "northern-cape": 122.76, "free-state": 112.9, "kwazulu-natal": 109.23, "north-west": 123.57, "gauteng": 131.43, "mpumalanga": 129.83, "limpopo": 119.83}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 155.37, "gauteng": 159.49}}
+  ]},
+  {"product": "Beef Brisket", "names": ["beef brisket", "brisket"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 131.53, "western-cape": 141.1, "eastern-cape": 123.07, "northern-cape": 124.03, "free-state": 127.83, "kwazulu-natal": 134.27, "north-west": 128.17, "gauteng": 133.25, "mpumalanga": 129.39, "limpopo": 133.14}}
+  ]},
+  {"product": "Beef chuck", "names": ["beef chuck"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 132.31, "western-cape": 147.09, "eastern-cape": 124.85, "northern-cape": 123.93, "free-state": 129.41, "kwazulu-natal": 123.97, "north-west": 132.46, "gauteng": 135.47, "mpumalanga": 129.82, "limpopo": 136.48}}
+  ]},
+  {"product": "Stewing beef", "names": ["stewing beef", "beef stew", "stew beef", "beef cubes", "beef chuck cubes"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 118.28, "western-cape": 122.85, "eastern-cape": 117.73, "northern-cape": 106.74, "free-state": 117.77, "kwazulu-natal": 115.81, "north-west": 109.58, "gauteng": 123.8, "mpumalanga": 116.57, "limpopo": 119.48}}
+  ]},
+  {"product": "Beef rump steak", "names": ["beef rump steak", "rump", "rump steak", "steak"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 195.26, "western-cape": 207.41, "eastern-cape": 194.99, "northern-cape": 192.93, "free-state": 199.64, "kwazulu-natal": 192.41, "north-west": 177.51, "gauteng": 197.82, "mpumalanga": 198.47, "limpopo": 181.88}}
+  ]},
+  {"product": "Beef T - bone", "names": ["beef t"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 157.9, "western-cape": 165.34, "eastern-cape": 171.64, "free-state": 166.54, "kwazulu-natal": 148.1, "north-west": 153.29, "gauteng": 156.49, "mpumalanga": 157.23, "limpopo": 152.42}}
+  ]},
+  {"product": "Beef fillet", "names": ["beef fillet", "fillet"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 288.83, "western-cape": 377.84, "eastern-cape": 242.12, "northern-cape": 260.42, "free-state": 274.93, "kwazulu-natal": 210.68, "north-west": 274.07, "gauteng": 314.01, "mpumalanga": 281.81, "limpopo": 298.56}}
+  ]},
+  {"product": "Beef Sirloin", "names": ["beef sirloin"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 210.56, "western-cape": 285.3, "eastern-cape": 187.76, "free-state": 204.39, "kwazulu-natal": 176.4, "north-west": 204.41, "gauteng": 211.94, "mpumalanga": 190.75}}
+  ]},
+  {"product": "Pork chops", "names": ["pork chops", "pork chop"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 101.0, "western-cape": 106.66, "eastern-cape": 88.89, "northern-cape": 96.49, "free-state": 97.16, "kwazulu-natal": 98.86, "north-west": 96.55, "gauteng": 110.71, "mpumalanga": 96.81, "limpopo": 98.99}}
+  ]},
+  {"product": "Pork ribs", "names": ["pork ribs", "spare ribs"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 105.34, "western-cape": 97.66, "eastern-cape": 118.17, "northern-cape": 127.7, "free-state": 107.23, "kwazulu-natal": 105.99, "north-west": 102.99, "gauteng": 101.38, "mpumalanga": 104.05}}
+  ]},
+  {"product": "Pork fillet", "names": ["pork fillet"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 120.33, "western-cape": 130.9, "eastern-cape": 116.58, "free-state": 118.89, "north-west": 116.24, "gauteng": 125.64, "mpumalanga": 109.78}}
+  ]},
+  {"product": "Mutton/Lamb rib chop", "names": ["mutton/lamb rib chop", "lamb chops", "lamb chop", "mutton chops"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 222.81, "western-cape": 235.72, "eastern-cape": 201.07, "northern-cape": 213.32, "free-state": 230.88, "kwazulu-natal": 213.28, "north-west": 212.22, "gauteng": 231.63, "mpumalanga": 232.57, "limpopo": 201.99}}
+  ]},
+  {"product": "Mutton/Lamb loin chop", "names": ["mutton/lamb loin chop"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 230.16, "western-cape": 239.8, "eastern-cape": 221.53, "northern-cape": 234.33, "free-state": 231.33, "kwazulu-natal": 212.49, "north-west": 221.69, "gauteng": 238.82, "mpumalanga": 238.24, "limpopo": 218.99}}
+  ]},
+  {"product": "Mutton/Lamb leg", "names": ["mutton/lamb leg", "leg of lamb", "lamb leg"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 196.06, "western-cape": 193.58, "eastern-cape": 179.42, "northern-cape": 201.13, "free-state": 197.56, "kwazulu-natal": 188.46, "north-west": 195.9, "gauteng": 206.44, "mpumalanga": 187.6}}
+  ]},
+  {"product": "Mutton/Lamb neck", "names": ["mutton/lamb neck", "lamb neck", "mutton neck"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 172.3, "western-cape": 181.2, "eastern-cape": 172.65, "northern-cape": 177.21, "free-state": 172.68, "kwazulu-natal": 162.79, "north-west": 169.71, "gauteng": 172.69, "mpumalanga": 171.54}}
+  ]},
+  {"product": "Stewing mutton/lamb", "names": ["stewing mutton/lamb", "lamb stew", "mutton stew", "stewing lamb", "stewing mutton"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 165.96, "western-cape": 166.66, "eastern-cape": 141.49, "northern-cape": 171.24, "free-state": 181.27, "kwazulu-natal": 159.23, "north-west": 168.62, "gauteng": 169.02, "mpumalanga": 165.19, "limpopo": 166.87}}
+  ]},
+  {"product": "Whole Chicken - Fresh", "names": ["whole chicken"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 64.01, "western-cape": 64.15, "eastern-cape": 66.24, "northern-cape": 67.79, "free-state": 64.63, "kwazulu-natal": 58.39, "north-west": 63.9, "gauteng": 65.4, "mpumalanga": 62.66, "limpopo": 65.09}}
+  ]},
+  {"product": "Chicken Portions - Fresh", "names": ["chicken portions", "chicken", "chicken pieces", "chicken thighs", "chicken drumsticks", "chicken breasts", "chicken breast", "chicken thigh", "chicken wings", "hoender"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 87.77, "western-cape": 84.35, "eastern-cape": 88.99, "northern-cape": 83.57, "free-state": 97.06, "kwazulu-natal": 80.44, "north-west": 94.18, "gauteng": 90.16, "mpumalanga": 85.54, "limpopo": 82.49}}
+  ]},
+  {"product": "Chicken Portions - Frozen (non IQF)", "names": ["chicken portions"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 71.81}},
+    {"size": "Per kilogram", "amount": 1000, "unit": "g", "prices": {"western-cape": 49.46, "eastern-cape": 66.31, "free-state": 93.99, "kwazulu-natal": 72.4, "north-west": 77.72, "gauteng": 73.98, "mpumalanga": 68.97, "limpopo": 72.14}}
+  ]},
+  {"product": "IQF Chicken portions", "names": ["iqf chicken portions"], "packs": [
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 101.65, "western-cape": 106.07, "eastern-cape": 100.63, "free-state": 95.99, "kwazulu-natal": 96.84, "north-west": 99.12, "gauteng": 108.81, "mpumalanga": 102.77, "limpopo": 96.49}},
+    {"size": "5 Kilogram", "amount": 5000, "unit": "g", "prices": {"national": 259.68, "western-cape": 247.82, "eastern-cape": 255.49, "northern-cape": 246.24, "free-state": 241.23, "kwazulu-natal": 255.66, "north-west": 281.24, "gauteng": 270.06, "mpumalanga": 253.32}},
+    {"size": "1,5 Kilogram", "amount": 1500, "unit": "g", "prices": {"western-cape": 103.21}}
+  ]},
+  {"product": "Biltong", "names": ["biltong"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 381.22, "eastern-cape": 418.42, "northern-cape": 351.49, "free-state": 349.26, "kwazulu-natal": 382.18, "north-west": 358.81, "gauteng": 382.14, "mpumalanga": 367.66}},
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 36.66, "limpopo": 32.5}},
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"gauteng": 59.6}}
+  ]},
+  {"product": "Ham", "names": ["ham"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 63.78, "western-cape": 68.59, "eastern-cape": 63.56, "northern-cape": 71.16, "free-state": 59.74, "kwazulu-natal": 49.74, "north-west": 62.16, "gauteng": 65.82, "mpumalanga": 65.17, "limpopo": 63.24}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 107.32, "gauteng": 95.2, "limpopo": 93.32}},
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"kwazulu-natal": 144.49}}
+  ]},
+  {"product": "Bacon", "names": ["bacon", "spek"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 45.85, "western-cape": 48.3, "eastern-cape": 44.05, "northern-cape": 42.49, "free-state": 46.61, "kwazulu-natal": 45.79, "north-west": 43.99, "gauteng": 49.08, "mpumalanga": 44.63, "limpopo": 42.78}}
+  ]},
+  {"product": "Beef offal", "names": ["beef offal", "tripe", "offal"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 59.45, "western-cape": 85.63, "eastern-cape": 49.87, "northern-cape": 52.1, "free-state": 67.26, "kwazulu-natal": 54.68, "north-west": 56.47, "gauteng": 58.34, "mpumalanga": 60.78, "limpopo": 56.46}}
+  ]},
+  {"product": "Meat Bones", "names": ["meat bones"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 31.59, "western-cape": 41.32, "eastern-cape": 26.85, "free-state": 42.39, "kwazulu-natal": 28.21, "north-west": 34.93, "gauteng": 34.66, "mpumalanga": 22.5, "limpopo": 23.29}}
+  ]},
+  {"product": "Mutton/Lamb offal", "names": ["mutton/lamb offal"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 74.08, "western-cape": 76.53, "free-state": 53.99, "kwazulu-natal": 66.37, "north-west": 76.15, "gauteng": 69.58, "mpumalanga": 75.69, "limpopo": 60.99}}
+  ]},
+  {"product": "Chicken Giblets", "names": ["chicken giblets", "giblets", "chicken livers", "livers"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 48.13, "free-state": 49.78, "kwazulu-natal": 49.19, "gauteng": 46.21, "limpopo": 47.62}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 14.7, "eastern-cape": 13.68, "free-state": 14.18, "mpumalanga": 15.14}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"western-cape": 17.59}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"western-cape": 28.99, "kwazulu-natal": 26.28}}
+  ]},
+  {"product": "Sausages (beef, pork, mutton)", "names": ["sausages", "sausage"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 105.58, "western-cape": 122.06, "eastern-cape": 108.29, "free-state": 106.32, "kwazulu-natal": 93.8, "north-west": 126.29, "gauteng": 104.97, "mpumalanga": 84.86, "limpopo": 100.99}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 61.84, "gauteng": 62.6}}
+  ]},
+  {"product": "Boerewors", "names": ["boerewors", "wors"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 118.36, "western-cape": 136.63, "eastern-cape": 117.85, "northern-cape": 123.85, "free-state": 120.29, "kwazulu-natal": 107.95, "north-west": 118.61, "gauteng": 117.76, "mpumalanga": 121.1, "limpopo": 115.05}}
+  ]},
+  {"product": "Polony", "names": ["polony"], "packs": [
+    {"size": "750 Gram", "amount": 750, "unit": "g", "prices": {"national": 46.77, "eastern-cape": 47.19, "gauteng": 50.77}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 55.4, "western-cape": 55.99, "eastern-cape": 51.21, "free-state": 56.45, "kwazulu-natal": 63.81, "north-west": 53.66, "gauteng": 54.68, "mpumalanga": 52.87, "limpopo": 52.79}}
+  ]},
+  {"product": "Viennas", "names": ["viennas"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 53.83, "western-cape": 51.16, "eastern-cape": 57.39, "kwazulu-natal": 60.69, "north-west": 49.21, "gauteng": 58.19, "mpumalanga": 51.17, "limpopo": 43.99}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 97.75, "western-cape": 99.62, "northern-cape": 86.16, "kwazulu-natal": 95.17, "gauteng": 103.99, "mpumalanga": 96.41, "limpopo": 91.99}}
+  ]},
+  {"product": "Russians", "names": ["russians"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 76.32, "western-cape": 75.46, "northern-cape": 78.32, "free-state": 63.2, "kwazulu-natal": 63.66, "north-west": 78.99, "gauteng": 81.25, "mpumalanga": 78.88, "limpopo": 75.55}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 77.15, "eastern-cape": 78.49, "gauteng": 81.73}}
+  ]},
+  {"product": "Corned meat", "names": ["corned meat"], "packs": [
+    {"size": "300 Gram", "amount": 300, "unit": "g", "prices": {"national": 35.52, "western-cape": 36.05, "eastern-cape": 35.55, "northern-cape": 35.62, "free-state": 34.88, "kwazulu-natal": 34.3, "north-west": 35.81, "gauteng": 35.76, "mpumalanga": 35.6, "limpopo": 35.86}}
+  ]},
+  {"product": "Meat Patties", "names": ["meat patties"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 90.05, "western-cape": 90.16, "kwazulu-natal": 82.7, "gauteng": 97.49}},
+    {"size": "800 Gram", "amount": 800, "unit": "g", "prices": {"national": 116.93, "free-state": 117.49, "gauteng": 120.16}},
+    {"size": "600 Gram", "amount": 600, "unit": "g", "prices": {"western-cape": 130.74}}
+  ]},
+  {"product": "Chicken Nuggets, Strips And Fingers", "names": ["chicken nuggets, strips and fingers"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 65.03, "western-cape": 62.99, "eastern-cape": 62.91, "northern-cape": 68.19, "free-state": 68.28, "kwazulu-natal": 63.53, "north-west": 67.16, "gauteng": 65.52, "limpopo": 67.32}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 55.54}}
+  ]},
+  {"product": "Hake - Fresh Or Frozen", "names": ["hake", "fish", "vis"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 108.6, "western-cape": 111.26, "eastern-cape": 104.59, "gauteng": 105.82}},
+    {"size": "450 Gram", "amount": 450, "unit": "g", "prices": {"national": 127.72, "western-cape": 127.2, "eastern-cape": 124.49, "gauteng": 128.92, "mpumalanga": 127.19}},
+    {"size": "800 Gram", "amount": 800, "unit": "g", "prices": {"national": 136.79, "northern-cape": 122.49, "kwazulu-natal": 130.43, "gauteng": 124.34, "mpumalanga": 152.39, "limpopo": 125.19}}
+  ]},
+  {"product": "Tuna - canned", "names": ["tuna"], "packs": [
+    {"size": "170 Gram", "amount": 170, "unit": "g", "prices": {"national": 25.78, "western-cape": 25.72, "eastern-cape": 25.32, "northern-cape": 23.54, "free-state": 26.17, "kwazulu-natal": 25.03, "north-west": 26.77, "gauteng": 26.33}}
+  ]},
+  {"product": "Fish (Excluding Tuna) - Canned", "names": ["fish", "pilchards", "canned fish", "sardines"], "packs": [
+    {"size": "155 Gram", "amount": 155, "unit": "g", "prices": {"national": 18.08, "gauteng": 18.49}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 30.48, "western-cape": 31.04, "eastern-cape": 30.66, "northern-cape": 31.09, "free-state": 30.08, "kwazulu-natal": 29.42, "north-west": 31.14, "gauteng": 30.54, "mpumalanga": 30.29, "limpopo": 29.99}}
+  ]},
+  {"product": "Fish fingers - frozen", "names": ["fish fingers"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 78.09, "western-cape": 78.79, "eastern-cape": 74.66, "free-state": 74.39, "kwazulu-natal": 74.99, "north-west": 68.49, "gauteng": 85.29, "mpumalanga": 83.49}},
+    {"size": "600 Gram", "amount": 600, "unit": "g", "prices": {"national": 101.37, "eastern-cape": 94.43, "free-state": 92.59, "north-west": 97.99, "gauteng": 106.44, "mpumalanga": 105.32, "limpopo": 102.59}},
+    {"size": "800 Gram", "amount": 800, "unit": "g", "prices": {"free-state": 123.74, "kwazulu-natal": 118.39, "gauteng": 133.21, "limpopo": 137.49}}
+  ]},
+  {"product": "Fish Portions In Batter Or Crumbed", "names": ["fish portions in batter or crumbed"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 100.25, "western-cape": 101.99, "kwazulu-natal": 96.99, "gauteng": 103.66, "mpumalanga": 98.49}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 126.7, "western-cape": 135.49, "northern-cape": 120.99, "free-state": 128.74, "kwazulu-natal": 122.49, "gauteng": 127.99}}
+  ]},
+  {"product": "Frozen Shrimps And Prawns", "names": ["frozen shrimps and prawns"], "packs": [
+    {"size": "700 Gram", "amount": 700, "unit": "g", "prices": {"national": 227.91, "northern-cape": 249.99, "gauteng": 223.33}},
+    {"size": "800 Gram", "amount": 800, "unit": "g", "prices": {"national": 267.07, "gauteng": 246.53}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"kwazulu-natal": 129.72}}
+  ]},
+  {"product": "Full cream milk - fresh", "names": ["full cream milk", "milk", "melk"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 20.54, "western-cape": 19.07, "free-state": 20.74, "kwazulu-natal": 22.04, "north-west": 17.94, "gauteng": 22.19}},
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 36.49, "western-cape": 36.86, "eastern-cape": 35.68, "northern-cape": 34.59, "free-state": 36.47, "kwazulu-natal": 35.64, "north-west": 37.32, "gauteng": 36.64, "mpumalanga": 37.87, "limpopo": 36.88}}
+  ]},
+  {"product": "Full cream milk - longlife", "names": ["full cream milk"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 20.98, "western-cape": 20.38, "eastern-cape": 21.69, "northern-cape": 21.26, "free-state": 21.33, "kwazulu-natal": 20.07, "north-west": 21.27, "gauteng": 21.53, "mpumalanga": 20.73, "limpopo": 20.61}}
+  ]},
+  {"product": "Low fat milk - fresh", "names": ["low fat milk"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 20.31, "western-cape": 18.16, "gauteng": 22.12}},
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 37.04, "western-cape": 37.57, "eastern-cape": 35.21, "free-state": 36.99, "kwazulu-natal": 34.27, "north-west": 38.35, "gauteng": 37.56, "mpumalanga": 38.18, "limpopo": 38.12}}
+  ]},
+  {"product": "Low fat milk - longlife", "names": ["low fat milk"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 20.64, "western-cape": 20.16, "northern-cape": 21.56, "free-state": 20.74, "kwazulu-natal": 20.4, "gauteng": 20.63, "limpopo": 21.32}}
+  ]},
+  {"product": "Powdered milk", "names": ["powdered milk"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 69.31, "eastern-cape": 67.87, "free-state": 71.7, "kwazulu-natal": 68.24, "north-west": 69.99, "mpumalanga": 71.39, "limpopo": 67.66}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 98.83, "eastern-cape": 96.99, "northern-cape": 97.99, "free-state": 98.48, "kwazulu-natal": 97.49, "gauteng": 99.63, "mpumalanga": 98.87, "limpopo": 100.79}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"gauteng": 55.41}}
+  ]},
+  {"product": "Whiteners", "names": ["whiteners"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 51.78, "gauteng": 52.99, "mpumalanga": 52.39}},
+    {"size": "750 Gram", "amount": 750, "unit": "g", "prices": {"national": 66.64, "western-cape": 66.84, "eastern-cape": 64.81, "northern-cape": 70.74, "free-state": 69.04, "kwazulu-natal": 63.94, "north-west": 69.32, "gauteng": 67.04, "mpumalanga": 66.52, "limpopo": 64.22}}
+  ]},
+  {"product": "Cheddar cheese", "names": ["cheddar cheese", "cheese", "cheddar", "kaas"], "packs": [
+    {"size": "850 Gram", "amount": 850, "unit": "g", "prices": {"national": 169.38, "western-cape": 171.99, "gauteng": 167.49}},
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 159.35}},
+    {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"national": 173.09}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"western-cape": 84.99, "kwazulu-natal": 92.74, "gauteng": 84.32, "mpumalanga": 83.99}}
+  ]},
+  {"product": "Gouda cheese", "names": ["gouda cheese", "gouda"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 46.1, "eastern-cape": 45.99, "gauteng": 46.99}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 85.38, "gauteng": 90.32, "mpumalanga": 84.19}},
+    {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"national": 174.99}},
+    {"size": "850 Gram", "amount": 850, "unit": "g", "prices": {"gauteng": 168.56}}
+  ]},
+  {"product": "Cheese spread", "names": ["cheese spread"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 57.58, "western-cape": 58.59, "eastern-cape": 57.99, "northern-cape": 62.19, "free-state": 57.99, "kwazulu-natal": 55.07, "north-west": 57.99, "gauteng": 57.39, "limpopo": 55.99}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 78.16, "western-cape": 78.85, "free-state": 79.99, "kwazulu-natal": 75.85, "north-west": 78.85, "gauteng": 78.01}}
+  ]},
+  {"product": "Feta cheese", "names": ["feta cheese", "feta"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 48.07, "northern-cape": 45.49, "kwazulu-natal": 50.55, "north-west": 49.74, "gauteng": 48.99, "limpopo": 44.32}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 73.02, "western-cape": 71.63, "eastern-cape": 70.79, "northern-cape": 73.79, "free-state": 75.7, "kwazulu-natal": 74.18, "north-west": 72.89, "gauteng": 72.94}}
+  ]},
+  {"product": "Parmesan Cheese", "names": ["parmesan cheese", "parmesan"], "packs": [
+    {"size": "40 Gram", "amount": 40, "unit": "g", "prices": {"national": 29.02, "kwazulu-natal": 31.99, "gauteng": 27.37}},
+    {"size": "150 Gram", "amount": 150, "unit": "g", "prices": {"national": 97.96, "gauteng": 93.92}},
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"gauteng": 480.74}}
+  ]},
+  {"product": "Plain yogurt", "names": ["plain yogurt", "yoghurt", "yogurt", "plain yoghurt"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 28.51, "gauteng": 28.82}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 46.49, "western-cape": 48.1, "eastern-cape": 50.13, "free-state": 44.69, "kwazulu-natal": 46.32, "north-west": 46.43, "gauteng": 47.16, "mpumalanga": 45.99, "limpopo": 44.99}}
+  ]},
+  {"product": "Flavoured yogurt", "names": ["flavoured yogurt"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 30.07, "north-west": 29.49, "gauteng": 32.21, "limpopo": 29.19}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 45.53, "western-cape": 44.35, "eastern-cape": 45.49, "northern-cape": 43.28, "free-state": 41.4, "kwazulu-natal": 46.22, "north-west": 47.42, "gauteng": 46.75, "mpumalanga": 48.06}},
+    {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"kwazulu-natal": 42.79, "gauteng": 40.85, "mpumalanga": 42.32}}
+  ]},
+  {"product": "Sour milk", "names": ["sour milk", "buttermilk", "maas", "amasi"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 23.59, "gauteng": 23.72}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 36.83, "western-cape": 37.86, "eastern-cape": 34.63, "northern-cape": 35.55, "free-state": 36.4, "kwazulu-natal": 37.49, "north-west": 35.69, "gauteng": 37.41, "mpumalanga": 37.32, "limpopo": 37.37}},
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"eastern-cape": 37.44}}
+  ]},
+  {"product": "Maize based food drinks - Amageu", "names": ["maize based food drinks"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 23.07, "eastern-cape": 24.62, "northern-cape": 23.62, "free-state": 23.54, "kwazulu-natal": 19.89, "north-west": 23.1, "gauteng": 23.68, "mpumalanga": 24.1, "limpopo": 22.99}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 15.15, "eastern-cape": 15.87, "free-state": 14.79, "kwazulu-natal": 12.57, "north-west": 15.21, "gauteng": 15.44, "limpopo": 15.99}}
+  ]},
+  {"product": "Custard - prepared", "names": ["custard"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 36.44, "western-cape": 36.92, "eastern-cape": 35.99, "northern-cape": 37.99, "free-state": 34.99, "kwazulu-natal": 35.71, "north-west": 37.11, "gauteng": 36.23, "mpumalanga": 36.81, "limpopo": 36.99}},
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 33.91, "western-cape": 35.66, "kwazulu-natal": 28.99, "gauteng": 34.99, "mpumalanga": 35.49}}
+  ]},
+  {"product": "Eggs", "names": ["eggs", "egg", "eiers", "eier"], "packs": [
+    {"size": "For 6", "amount": 6, "unit": "each", "prices": {"national": 22.97, "western-cape": 23.42, "eastern-cape": 21.66, "free-state": 24.1, "kwazulu-natal": 20.37, "north-west": 18.42, "gauteng": 23.35, "mpumalanga": 27.49}},
+    {"size": "For 18", "amount": 18, "unit": "each", "prices": {"national": 60.29, "western-cape": 55.49, "eastern-cape": 62.12, "free-state": 45.38, "kwazulu-natal": 61.53, "north-west": 52.24, "gauteng": 66.6, "mpumalanga": 60.72, "limpopo": 72.74}},
+    {"size": "For 30", "amount": 30, "unit": "each", "prices": {"northern-cape": 83.99, "free-state": 76.85, "kwazulu-natal": 84.08, "mpumalanga": 89.17, "limpopo": 83.28}}
+  ]},
+  {"product": "Sunflower - seed oil (cooking oil)", "names": ["sunflower", "oil", "cooking oil", "sunflower oil", "olie"], "packs": [
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 84.7, "western-cape": 84.82, "eastern-cape": 82.55, "northern-cape": 84.24, "free-state": 83.66, "kwazulu-natal": 80.79, "north-west": 85.26, "gauteng": 87.62, "mpumalanga": 85.09, "limpopo": 79.74}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 38.0, "western-cape": 37.42, "eastern-cape": 37.82, "free-state": 37.21, "kwazulu-natal": 37.49, "north-west": 37.28, "gauteng": 38.64, "mpumalanga": 38.49, "limpopo": 39.28}}
+  ]},
+  {"product": "Olive Oil", "names": ["olive oil"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 225.32, "western-cape": 238.43, "eastern-cape": 197.13, "free-state": 231.99, "kwazulu-natal": 232.84, "north-west": 191.99, "gauteng": 231.41, "mpumalanga": 235.09, "limpopo": 187.49}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 167.74, "western-cape": 176.74, "north-west": 163.55, "gauteng": 168.32, "mpumalanga": 166.87}}
+  ]},
+  {"product": "Butter", "names": ["butter", "botter"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 80.68, "gauteng": 87.88}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 96.66, "western-cape": 96.46, "eastern-cape": 97.07, "northern-cape": 108.56, "free-state": 86.14, "kwazulu-natal": 87.28, "north-west": 90.44, "gauteng": 107.28, "limpopo": 93.13}}
+  ]},
+  {"product": "Margarine spread", "names": ["margarine spread", "margarine", "rama"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 40.12, "western-cape": 39.43, "eastern-cape": 41.99, "northern-cape": 39.24, "free-state": 36.41, "kwazulu-natal": 43.43, "north-west": 39.89, "gauteng": 39.29, "mpumalanga": 43.19, "limpopo": 38.24}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 56.88, "western-cape": 58.17, "eastern-cape": 58.17, "northern-cape": 58.28, "free-state": 50.9, "kwazulu-natal": 59.82, "north-west": 56.09, "gauteng": 57.96, "mpumalanga": 51.54, "limpopo": 58.88}}
+  ]},
+  {"product": "Brick margarine", "names": ["brick margarine"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 32.07, "western-cape": 30.94, "eastern-cape": 29.56, "northern-cape": 34.24, "free-state": 31.77, "kwazulu-natal": 31.01, "north-west": 32.99, "gauteng": 32.21, "mpumalanga": 33.99, "limpopo": 32.39}}
+  ]},
+  {"product": "Avocados - Fresh", "names": ["avocados", "avocado", "avo"], "packs": [
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 12.3, "western-cape": 13.42}}
+  ]},
+  {"product": "Bananas - fresh", "names": ["bananas", "banana"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 20.53, "western-cape": 21.63, "eastern-cape": 19.93, "northern-cape": 21.79, "free-state": 21.21, "kwazulu-natal": 19.49, "north-west": 21.59, "gauteng": 20.24, "mpumalanga": 19.72, "limpopo": 18.88}},
+    {"size": "1,2 Kilogram", "amount": 1200, "unit": "g", "prices": {"gauteng": 38.36, "mpumalanga": 38.16}}
+  ]},
+  {"product": "Oranges - Fresh", "names": ["oranges"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 20.51, "western-cape": 23.99}}
+  ]},
+  {"product": "Apples - fresh", "names": ["apples", "apple"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 25.75, "eastern-cape": 26.74}},
+    {"size": "1,5 Kilogram", "amount": 1500, "unit": "g", "prices": {"national": 36.29, "western-cape": 32.79, "eastern-cape": 33.74, "northern-cape": 33.99, "free-state": 35.85, "kwazulu-natal": 38.54, "north-west": 37.19, "gauteng": 36.41, "mpumalanga": 37.68, "limpopo": 35.39}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 5.2, "eastern-cape": 6.56, "free-state": 5.55, "kwazulu-natal": 3.83, "north-west": 5.45, "gauteng": 5.56, "mpumalanga": 4.5, "limpopo": 5.71}}
+  ]},
+  {"product": "Pears - Fresh", "names": ["pears"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 23.38, "eastern-cape": 24.7}}
+  ]},
+  {"product": "Peanuts", "names": ["peanuts"], "packs": [
+    {"size": "150 Gram", "amount": 150, "unit": "g", "prices": {"national": 27.76, "western-cape": 25.72, "eastern-cape": 26.39, "northern-cape": 33.16, "free-state": 28.32, "kwazulu-natal": 28.91, "north-west": 28.21, "gauteng": 26.08, "limpopo": 27.49}},
+    {"size": "450 Gram", "amount": 450, "unit": "g", "prices": {"national": 58.78, "western-cape": 66.66, "kwazulu-natal": 60.1, "north-west": 58.16, "gauteng": 57.09, "mpumalanga": 58.71, "limpopo": 58.33}}
+  ]},
+  {"product": "Atchar", "names": ["atchar"], "packs": [
+    {"size": "380 Gram", "amount": 380, "unit": "g", "prices": {"national": 42.57, "gauteng": 43.26, "mpumalanga": 41.99}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 48.7, "western-cape": 47.99, "northern-cape": 50.82, "free-state": 48.77, "kwazulu-natal": 47.28, "north-west": 50.99, "gauteng": 47.8, "mpumalanga": 48.63}},
+    {"size": "385 Gram", "amount": 385, "unit": "g", "prices": {"western-cape": 56.19, "free-state": 56.79, "kwazulu-natal": 51.82}},
+    {"size": "780 Gram", "amount": 780, "unit": "g", "prices": {"free-state": 87.19}}
+  ]},
+  {"product": "Cabbages - fresh (green and red)", "names": ["cabbages", "cabbage", "kool"], "packs": [
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 22.96, "western-cape": 26.61, "eastern-cape": 24.77, "free-state": 20.42, "kwazulu-natal": 23.52, "north-west": 23.06, "gauteng": 21.89, "mpumalanga": 23.62, "limpopo": 22.88}},
+    {"size": "Half cabbage", "amount": 0.5, "unit": "each", "prices": {"national": 13.54, "western-cape": 16.59, "eastern-cape": 16.79, "gauteng": 11.8, "mpumalanga": 12.25}}
+  ]},
+  {"product": "Lettuce - fresh", "names": ["lettuce"], "packs": [
+    {"size": "130 Gram", "amount": 130, "unit": "g", "prices": {"national": 22.26, "gauteng": 21.79}},
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 21.28, "western-cape": 26.28, "gauteng": 19.99, "limpopo": 21.24}},
+    {"size": "150 Gram", "amount": 150, "unit": "g", "prices": {"gauteng": 24.74}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"free-state": 21.68, "kwazulu-natal": 19.74, "north-west": 18.14, "mpumalanga": 20.56}}
+  ]},
+  {"product": "Spinach/morogo - fresh", "names": ["spinach/morogo", "spinach", "morogo", "spinasie"], "packs": [
+    {"size": "Per Bunch", "amount": 1, "unit": "each", "prices": {"national": 14.44, "eastern-cape": 18.79, "kwazulu-natal": 15.29, "gauteng": 13.41, "mpumalanga": 13.99, "limpopo": 12.87}},
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 33.07, "kwazulu-natal": 32.49, "gauteng": 32.85}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"free-state": 26.32}}
+  ]},
+  {"product": "Green/red/yellow pepper - fresh", "names": ["green/red/yellow pepper", "green pepper", "red pepper", "yellow pepper", "bell pepper", "sweet pepper"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 63.49, "western-cape": 66.12, "eastern-cape": 67.91, "free-state": 50.81, "kwazulu-natal": 62.97, "gauteng": 67.47, "mpumalanga": 70.76}},
+    {"size": "Set Of 2", "amount": 2, "unit": "each", "prices": {"national": 21.44}}
+  ]},
+  {"product": "Cucumber - fresh", "names": ["cucumber"], "packs": [
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 19.16, "western-cape": 20.51, "eastern-cape": 19.81, "kwazulu-natal": 19.2, "north-west": 17.7, "gauteng": 19.13, "mpumalanga": 18.07, "limpopo": 20.87}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"northern-cape": 18.99, "free-state": 18.31}}
+  ]},
+  {"product": "Tomatoes - fresh", "names": ["tomatoes", "tomato", "tamaties"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 30.66, "western-cape": 26.11, "eastern-cape": 34.8, "northern-cape": 28.99, "free-state": 28.99, "kwazulu-natal": 32.24, "north-west": 26.49, "gauteng": 31.61, "mpumalanga": 31.41, "limpopo": 32.13}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 28.91, "western-cape": 20.63, "eastern-cape": 33.54, "northern-cape": 27.99, "free-state": 25.98, "kwazulu-natal": 30.88, "north-west": 25.99, "gauteng": 30.1, "mpumalanga": 30.35, "limpopo": 31.28}}
+  ]},
+  {"product": "Pumpkin - fresh", "names": ["pumpkin", "pampoen"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 18.8, "western-cape": 19.99, "eastern-cape": 19.39, "northern-cape": 17.28, "free-state": 17.24, "kwazulu-natal": 17.45, "north-west": 19.49, "gauteng": 18.6, "mpumalanga": 21.72, "limpopo": 15.49}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 28.46, "western-cape": 26.11, "eastern-cape": 33.75, "gauteng": 25.36, "mpumalanga": 33.33}}
+  ]},
+  {"product": "Carrots - fresh", "names": ["carrots", "carrot", "wortels"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 11.23, "gauteng": 11.1}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 18.12, "western-cape": 19.55, "eastern-cape": 20.69, "northern-cape": 17.19, "free-state": 16.9, "kwazulu-natal": 18.28, "north-west": 17.17, "gauteng": 18.2, "mpumalanga": 17.81, "limpopo": 16.7}}
+  ]},
+  {"product": "Garlic", "names": ["garlic", "knoffel"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 147.82, "western-cape": 137.06, "eastern-cape": 154.38, "northern-cape": 168.99, "free-state": 165.07, "kwazulu-natal": 117.9, "north-west": 169.97, "gauteng": 152.9, "mpumalanga": 148.15, "limpopo": 139.95}},
+    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 38.99}}
+  ]},
+  {"product": "Onions - fresh", "names": ["onions", "onion", "uie", "ui"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 29.49, "western-cape": 34.37, "eastern-cape": 25.75, "northern-cape": 27.49, "free-state": 28.65, "kwazulu-natal": 27.22, "north-west": 30.87, "gauteng": 30.63, "mpumalanga": 28.32, "limpopo": 30.74}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 31.42, "eastern-cape": 27.49, "north-west": 28.99, "gauteng": 33.35, "mpumalanga": 31.32}}
+  ]},
+  {"product": "Mushrooms - fresh", "names": ["mushrooms", "mushroom", "sampioene"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 26.84, "kwazulu-natal": 27.7}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 34.88, "western-cape": 33.44, "eastern-cape": 35.87, "northern-cape": 32.19, "free-state": 37.66, "kwazulu-natal": 28.13, "north-west": 36.09, "gauteng": 35.82}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"gauteng": 52.32}}
+  ]},
+  {"product": "Beetroot - Fresh", "names": ["beetroot"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 21.5, "western-cape": 19.44, "eastern-cape": 25.49, "northern-cape": 22.41, "free-state": 20.58, "kwazulu-natal": 21.07, "north-west": 20.87, "gauteng": 20.93, "mpumalanga": 21.99, "limpopo": 20.7}},
+    {"size": "3 Kilogram", "amount": 3000, "unit": "g", "prices": {"national": 48.99, "gauteng": 41.99}}
+  ]},
+  {"product": "Potatoes - fresh", "names": ["potatoes", "potato", "aartappels"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 19.12, "western-cape": 17.44, "eastern-cape": 19.16, "northern-cape": 20.87, "free-state": 18.15, "kwazulu-natal": 19.64, "north-west": 19.49, "gauteng": 19.69, "mpumalanga": 19.72, "limpopo": 20.42}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 39.53, "western-cape": 42.37, "free-state": 34.77, "kwazulu-natal": 41.87, "gauteng": 38.47, "mpumalanga": 38.62}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"western-cape": 16.46, "eastern-cape": 19.21}}
+  ]},
+  {"product": "Sweet potatoes - fresh", "names": ["sweet potatoes", "sweet potato", "patats"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 24.55, "western-cape": 26.24, "eastern-cape": 28.89, "kwazulu-natal": 28.14, "gauteng": 21.99, "mpumalanga": 20.32}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 26.16, "eastern-cape": 30.82, "free-state": 27.82, "kwazulu-natal": 26.56, "north-west": 24.7, "gauteng": 25.18, "mpumalanga": 20.82, "limpopo": 21.39}}
+  ]},
+  {"product": "Beans - dried", "names": ["beans", "dried beans", "sugar beans"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 31.88, "western-cape": 27.61, "eastern-cape": 27.35, "northern-cape": 28.24, "free-state": 30.49, "kwazulu-natal": 38.49, "north-west": 30.24, "gauteng": 34.74, "mpumalanga": 33.76, "limpopo": 34.32}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 60.78, "kwazulu-natal": 63.06, "gauteng": 61.24, "limpopo": 58.49}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"kwazulu-natal": 95.99}}
+  ]},
+  {"product": "Vegetables - frozen", "names": ["vegetables", "frozen vegetables", "frozen veg", "mixed veg"], "packs": [
+    {"size": "750 Gram", "amount": 750, "unit": "g", "prices": {"national": 55.51, "eastern-cape": 52.59, "north-west": 54.19, "mpumalanga": 55.49}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 54.71, "western-cape": 55.99, "eastern-cape": 56.49, "free-state": 54.7, "kwazulu-natal": 51.24, "gauteng": 56.95, "mpumalanga": 54.16}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"northern-cape": 19.24, "gauteng": 19.66}},
+    {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"western-cape": 40.49}}
+  ]},
+  {"product": "Baked beans - canned", "names": ["baked beans"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 17.26, "western-cape": 18.49, "eastern-cape": 17.12, "northern-cape": 16.62, "free-state": 17.09, "kwazulu-natal": 17.3, "gauteng": 17.38, "mpumalanga": 17.11, "limpopo": 16.99}},
+    {"size": "410 Gram", "amount": 410, "unit": "g", "prices": {"national": 15.18, "western-cape": 15.91, "eastern-cape": 14.99, "free-state": 15.95, "kwazulu-natal": 16.42, "north-west": 15.64, "gauteng": 14.55, "mpumalanga": 14.39}}
+  ]},
+  {"product": "Potato crisps", "names": ["potato crisps"], "packs": [
+    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 23.62, "western-cape": 24.39, "eastern-cape": 22.99, "northern-cape": 22.9, "free-state": 24.12, "kwazulu-natal": 23.34, "north-west": 22.72, "gauteng": 23.51, "mpumalanga": 24.22, "limpopo": 24.87}},
+    {"size": "125 Gram", "amount": 125, "unit": "g", "prices": {"national": 21.25, "kwazulu-natal": 20.99, "gauteng": 22.56, "mpumalanga": 18.99}}
+  ]},
+  {"product": "Corn/Maize chips", "names": ["corn/maize chips"], "packs": [
+    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 21.59, "western-cape": 20.74, "eastern-cape": 21.74, "northern-cape": 22.37, "free-state": 21.85, "kwazulu-natal": 22.24, "north-west": 21.49, "gauteng": 21.13, "mpumalanga": 22.74}},
+    {"size": "150 Gram", "amount": 150, "unit": "g", "prices": {"national": 18.85}},
+    {"size": "145 Gram", "amount": 145, "unit": "g", "prices": {"national": 26.08, "eastern-cape": 25.16, "free-state": 26.16, "kwazulu-natal": 25.99, "gauteng": 26.49, "mpumalanga": 26.7}}
+  ]},
+  {"product": "White sugar", "names": ["white sugar", "sugar", "suiker"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 34.5, "western-cape": 34.74, "eastern-cape": 35.99, "northern-cape": 34.66, "free-state": 34.85, "kwazulu-natal": 31.53, "north-west": 35.42, "gauteng": 34.82, "mpumalanga": 34.79}},
+    {"size": "2.5 Kilogram", "amount": 2500, "unit": "g", "prices": {"national": 67.57, "western-cape": 66.42, "eastern-cape": 66.22, "northern-cape": 69.7, "free-state": 67.05, "kwazulu-natal": 63.99, "north-west": 68.19, "gauteng": 69.91, "mpumalanga": 69.19, "limpopo": 65.07}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"western-cape": 20.84}}
+  ]},
+  {"product": "Brown sugar", "names": ["brown sugar"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 31.58, "western-cape": 35.42, "eastern-cape": 33.87, "northern-cape": 30.74, "free-state": 30.71, "kwazulu-natal": 28.72, "north-west": 29.99, "gauteng": 31.63, "mpumalanga": 31.74}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 53.17, "northern-cape": 52.98, "free-state": 49.49, "kwazulu-natal": 51.81, "north-west": 54.16, "gauteng": 51.99, "mpumalanga": 54.24, "limpopo": 53.39}}
+  ]},
+  {"product": "Honey", "names": ["honey", "heuning"], "packs": [
+    {"size": "375 Gram", "amount": 375, "unit": "g", "prices": {"national": 69.72, "western-cape": 76.16, "free-state": 71.98, "kwazulu-natal": 72.42, "gauteng": 68.72, "limpopo": 69.81}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 91.07, "western-cape": 101.42, "free-state": 98.99, "kwazulu-natal": 98.35, "north-west": 83.74, "gauteng": 89.82, "mpumalanga": 82.49}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"mpumalanga": 167.16}}
+  ]},
+  {"product": "Jam", "names": ["jam", "apricot jam", "konfyt"], "packs": [
+    {"size": "450 Gram", "amount": 450, "unit": "g", "prices": {"national": 38.57, "western-cape": 40.21, "eastern-cape": 36.08, "free-state": 35.3, "kwazulu-natal": 41.66, "north-west": 34.69, "gauteng": 43.73, "limpopo": 35.49}},
+    {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"national": 47.76, "western-cape": 46.77, "eastern-cape": 45.66, "northern-cape": 46.99, "free-state": 46.79, "kwazulu-natal": 55.74, "north-west": 47.74, "gauteng": 48.07, "mpumalanga": 44.68, "limpopo": 55.79}}
+  ]},
+  {"product": "Peanut butter", "names": ["peanut butter"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 50.39, "western-cape": 50.8, "eastern-cape": 49.37, "northern-cape": 47.88, "free-state": 50.23, "kwazulu-natal": 52.1, "north-west": 51.59, "gauteng": 51.02, "mpumalanga": 51.18, "limpopo": 46.49}},
+    {"size": "800 Gram", "amount": 800, "unit": "g", "prices": {"national": 91.32, "eastern-cape": 93.99, "north-west": 90.74, "gauteng": 91.69, "mpumalanga": 92.19}}
+  ]},
+  {"product": "Chocolate slab (including white chocolate and chocolate with filling)", "names": ["chocolate slab"], "packs": [
+    {"size": "80 Gram", "amount": 80, "unit": "g", "prices": {"national": 24.51, "western-cape": 24.24, "eastern-cape": 23.48, "northern-cape": 24.29, "free-state": 24.68, "kwazulu-natal": 24.71, "north-west": 24.89, "gauteng": 24.51, "mpumalanga": 24.71, "limpopo": 24.7}},
+    {"size": "150 Gram", "amount": 150, "unit": "g", "prices": {"national": 49.04, "gauteng": 51.7}}
+  ]},
+  {"product": "Chocolate bar (including white chocolate bar and chocolate bar with filling)", "names": ["chocolate bar"], "packs": [
+    {"size": "40 Gram", "amount": 40, "unit": "g", "prices": {"national": 16.11, "kwazulu-natal": 15.99, "gauteng": 16.49}},
+    {"size": "48 Gram", "amount": 48, "unit": "g", "prices": {"national": 16.03, "western-cape": 15.99, "north-west": 16.19, "gauteng": 15.98}},
+    {"size": "52 Gram", "amount": 52, "unit": "g", "prices": {"kwazulu-natal": 16.24}}
+  ]},
+  {"product": "Ice cream", "names": ["ice cream"], "packs": [
+    {"size": "1.8 Litre", "amount": 1800, "unit": "ml", "prices": {"national": 77.06, "gauteng": 79.12, "mpumalanga": 80.07}},
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 92.32, "western-cape": 88.12, "north-west": 98.32, "gauteng": 98.89, "mpumalanga": 85.24}},
+    {"size": "1,8 Litre", "amount": 1800, "unit": "ml", "prices": {"eastern-cape": 72.44, "free-state": 74.14, "kwazulu-natal": 74.3, "limpopo": 81.7}}
+  ]},
+  {"product": "Sweets", "names": ["sweets"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 27.87, "western-cape": 28.87, "kwazulu-natal": 26.32, "gauteng": 28.32}},
+    {"size": "125 Gram", "amount": 125, "unit": "g", "prices": {"national": 30.61, "western-cape": 28.59, "eastern-cape": 29.28, "free-state": 31.56, "kwazulu-natal": 30.06, "north-west": 31.49, "gauteng": 32.21, "mpumalanga": 28.99}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"north-west": 28.79}}
+  ]},
+  {"product": "Chewing gum", "names": ["chewing gum"], "packs": [
+    {"size": "For 10", "amount": 10, "unit": "each", "prices": {"national": 17.06}},
+    {"size": "14 Gram", "amount": 14, "unit": "g", "prices": {"national": 18.18, "western-cape": 18.16, "northern-cape": 18.99, "free-state": 17.85, "kwazulu-natal": 17.32, "north-west": 17.57, "gauteng": 18.49, "mpumalanga": 19.43, "limpopo": 16.89}}
+  ]},
+  {"product": "Prepared salads", "names": ["prepared salads"], "packs": [
+    {"size": "Per Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 80.52, "eastern-cape": 76.75, "kwazulu-natal": 68.2, "gauteng": 81.45}},
+    {"size": "405 Gram", "amount": 405, "unit": "g", "prices": {"national": 28.03, "gauteng": 28.35}},
+    {"size": "780 Gram", "amount": 780, "unit": "g", "prices": {"national": 40.03, "kwazulu-natal": 38.49, "gauteng": 40.35}}
+  ]},
+  {"product": "Baby food - Milk formula", "names": ["baby food"], "packs": [
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"national": 103.22, "eastern-cape": 95.07, "north-west": 94.49, "gauteng": 112.43}},
+    {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"national": 232.27, "western-cape": 224.54, "eastern-cape": 221.99, "free-state": 238.37, "kwazulu-natal": 218.28, "north-west": 244.77, "gauteng": 236.16, "mpumalanga": 231.99, "limpopo": 241.66}}
+  ]},
+  {"product": "Baby food - cereal", "names": ["baby food"], "packs": [
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 35.82, "western-cape": 37.19, "eastern-cape": 35.92, "northern-cape": 33.13, "free-state": 37.77, "kwazulu-natal": 36.79, "north-west": 39.41, "gauteng": 35.18, "mpumalanga": 33.73, "limpopo": 33.3}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 36.12, "free-state": 35.74, "gauteng": 33.32}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"mpumalanga": 76.49}}
+  ]},
+  {"product": "Baby Food - Pureed", "names": ["baby food"], "packs": [
+    {"size": "110 Millilitre", "amount": 110, "unit": "ml", "prices": {"national": 16.51, "western-cape": 15.99, "eastern-cape": 16.87, "free-state": 16.86, "north-west": 15.59, "gauteng": 17.54, "mpumalanga": 16.06}},
+    {"size": "125 Millilitre", "amount": 125, "unit": "ml", "prices": {"national": 17.34, "eastern-cape": 17.74, "northern-cape": 16.99, "free-state": 16.99, "kwazulu-natal": 16.88, "gauteng": 17.53, "mpumalanga": 17.99, "limpopo": 17.99}},
+    {"size": "200 Millilitre", "amount": 200, "unit": "ml", "prices": {"north-west": 20.13, "limpopo": 21.39}}
+  ]},
+  {"product": "Salt", "names": ["salt", "sout"], "packs": [
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 18.81, "western-cape": 12.74, "eastern-cape": 17.42, "northern-cape": 16.24, "free-state": 17.32, "kwazulu-natal": 17.7, "north-west": 22.35, "gauteng": 20.24, "mpumalanga": 24.99, "limpopo": 15.99}},
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 21.65, "eastern-cape": 20.82, "free-state": 21.99, "kwazulu-natal": 17.88, "north-west": 22.35, "gauteng": 23.02, "mpumalanga": 22.05, "limpopo": 22.66}}
+  ]},
+  {"product": "Vinegar", "names": ["vinegar", "asyn"], "packs": [
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 36.32}},
+    {"size": "375 Millilitre", "amount": 375, "unit": "ml", "prices": {"national": 20.16, "kwazulu-natal": 18.49, "gauteng": 28.49}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 21.88, "western-cape": 21.35, "eastern-cape": 22.26, "northern-cape": 18.32, "free-state": 18.12, "kwazulu-natal": 19.84, "north-west": 25.22, "gauteng": 21.66, "mpumalanga": 25.26, "limpopo": 23.87}}
+  ]},
+  {"product": "Chutney", "names": ["chutney", "blatjang"], "packs": [
+    {"size": "460 Gram", "amount": 460, "unit": "g", "prices": {"national": 36.74, "northern-cape": 38.99, "free-state": 37.99, "kwazulu-natal": 31.99, "gauteng": 37.59}},
+    {"size": "470 Gram", "amount": 470, "unit": "g", "prices": {"national": 43.72, "western-cape": 45.09, "eastern-cape": 42.3, "free-state": 45.65, "kwazulu-natal": 41.99, "north-west": 45.24, "gauteng": 44.03, "limpopo": 43.66}}
+  ]},
+  {"product": "Tomato sauce", "names": ["tomato sauce", "ketchup"], "packs": [
+    {"size": "700 Millilitre", "amount": 700, "unit": "ml", "prices": {"national": 40.58, "western-cape": 42.16, "eastern-cape": 41.28, "northern-cape": 41.37, "free-state": 41.79, "kwazulu-natal": 40.56, "north-west": 37.59, "gauteng": 40.76, "mpumalanga": 40.14, "limpopo": 39.19}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 26.65}},
+    {"size": "350 Millilitre", "amount": 350, "unit": "ml", "prices": {"gauteng": 31.49}}
+  ]},
+  {"product": "Mayonnaise", "names": ["mayonnaise", "mayo"], "packs": [
+    {"size": "750 Gram", "amount": 750, "unit": "g", "prices": {"national": 48.13, "western-cape": 50.4, "eastern-cape": 45.94, "northern-cape": 47.49, "free-state": 49.18, "kwazulu-natal": 48.18, "north-west": 48.34, "gauteng": 48.03, "mpumalanga": 49.31, "limpopo": 45.06}}
+  ]},
+  {"product": "Salad dressing", "names": ["salad dressing"], "packs": [
+    {"size": "300 Millilitre", "amount": 300, "unit": "ml", "prices": {"national": 53.04, "gauteng": 53.89}},
+    {"size": "340 Millilitre", "amount": 340, "unit": "ml", "prices": {"national": 44.07, "western-cape": 43.75, "eastern-cape": 44.54, "northern-cape": 44.59, "free-state": 44.32, "kwazulu-natal": 43.3, "north-west": 44.1, "gauteng": 44.33, "mpumalanga": 43.74, "limpopo": 43.99}},
+    {"size": "375 Millilitre", "amount": 375, "unit": "ml", "prices": {"national": 46.99, "eastern-cape": 48.19, "kwazulu-natal": 44.82}}
+  ]},
+  {"product": "Natural Spices/Herbs", "names": ["natural spices/herbs", "herbs", "dried herbs", "spices", "origanum", "oregano", "thyme", "paprika", "cumin", "turmeric", "cinnamon"], "packs": [
+    {"size": "55 Gram", "amount": 55, "unit": "g", "prices": {"national": 23.23}},
+    {"size": "18 Gram", "amount": 18, "unit": "g", "prices": {"kwazulu-natal": 22.99, "gauteng": 23.49, "mpumalanga": 19.99}},
+    {"size": "45 Gram", "amount": 45, "unit": "g", "prices": {"gauteng": 30.79}}
+  ]},
+  {"product": "Curry powder", "names": ["curry powder", "masala", "kerriepoeier"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 17.91, "western-cape": 18.36, "eastern-cape": 18.17, "northern-cape": 17.99, "free-state": 18.13, "kwazulu-natal": 16.77, "north-west": 18.42, "gauteng": 17.9, "mpumalanga": 18.66, "limpopo": 16.19}},
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 28.42, "western-cape": 28.85, "eastern-cape": 28.56, "free-state": 26.37, "kwazulu-natal": 28.49, "north-west": 28.99, "gauteng": 29.34, "mpumalanga": 29.99, "limpopo": 27.49}},
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"kwazulu-natal": 40.87}}
+  ]},
+  {"product": "Mixed spices", "names": ["mixed spices", "mixed spice"], "packs": [
+    {"size": "80 Gram", "amount": 80, "unit": "g", "prices": {"national": 19.37, "north-west": 18.82, "gauteng": 19.49}},
+    {"size": "84 Gram", "amount": 84, "unit": "g", "prices": {"national": 20.03, "eastern-cape": 19.49}},
+    {"size": "100 Millilitre", "amount": 100, "unit": "ml", "prices": {"national": 31.24}},
+    {"size": "64 Gram", "amount": 64, "unit": "g", "prices": {"gauteng": 20.39, "mpumalanga": 20.19}}
+  ]},
+  {"product": "Instant yeast", "names": ["instant yeast", "yeast", "gis"], "packs": [
+    {"size": "10 Gram", "amount": 10, "unit": "g", "prices": {"national": 6.7, "western-cape": 6.7, "eastern-cape": 6.4, "northern-cape": 6.63, "free-state": 6.35, "kwazulu-natal": 7.39, "north-west": 6.26, "gauteng": 6.87, "mpumalanga": 6.52, "limpopo": 6.7}},
+    {"size": "20 Gram", "amount": 20, "unit": "g", "prices": {"national": 8.99}}
+  ]},
+  {"product": "Baking powder", "names": ["baking powder", "bakpoeier"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 12.23, "northern-cape": 11.74, "free-state": 11.86, "kwazulu-natal": 11.69, "gauteng": 13.03, "mpumalanga": 11.99}},
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 36.01, "western-cape": 33.66, "eastern-cape": 36.99, "northern-cape": 37.48, "free-state": 37.43, "kwazulu-natal": 35.26, "north-west": 35.39, "gauteng": 36.37, "mpumalanga": 35.68, "limpopo": 36.18}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"limpopo": 65.39}}
+  ]},
+  {"product": "Soup powder", "names": ["soup powder"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 7.28, "western-cape": 7.57, "eastern-cape": 7.44, "free-state": 7.1, "kwazulu-natal": 7.41, "north-west": 7.35, "gauteng": 7.1, "mpumalanga": 7.34, "limpopo": 7.13}},
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 20.75, "kwazulu-natal": 21.21, "gauteng": 20.41}}
+  ]},
+  {"product": "Stock cubes/powder", "names": ["stock cubes/powder", "stock", "stock cubes", "stock cube", "stock powder"], "packs": [
+    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 18.4, "western-cape": 19.28, "eastern-cape": 18.41, "free-state": 17.24, "kwazulu-natal": 17.91, "north-west": 18.43, "gauteng": 18.81, "mpumalanga": 18.32, "limpopo": 18.66}},
+    {"size": "240 Gram", "amount": 240, "unit": "g", "prices": {"national": 29.87, "western-cape": 29.99, "eastern-cape": 29.41, "free-state": 28.7, "gauteng": 30.79}},
+    {"size": "60 Gram", "amount": 60, "unit": "g", "prices": {"western-cape": 10.42, "kwazulu-natal": 10.7}}
+  ]},
+  {"product": "Fruit juice", "names": ["fruit juice", "juice"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 37.34, "western-cape": 35.56, "eastern-cape": 35.79, "northern-cape": 37.12, "free-state": 37.24, "kwazulu-natal": 35.87, "north-west": 38.54, "gauteng": 38.42, "mpumalanga": 38.92, "limpopo": 37.66}},
+    {"size": "1,5 Litre", "amount": 1500, "unit": "ml", "prices": {"national": 48.73}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 24.01, "gauteng": 24.08}},
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"kwazulu-natal": 63.99}}
+  ]},
+  {"product": "Fruit juice concentrate", "names": ["fruit juice concentrate"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 52.1, "western-cape": 34.99, "free-state": 45.13, "kwazulu-natal": 32.99, "north-west": 65.32, "gauteng": 64.39, "mpumalanga": 65.74}},
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 55.37, "western-cape": 45.24, "eastern-cape": 44.71, "northern-cape": 44.59, "free-state": 46.74, "kwazulu-natal": 44.32, "north-west": 69.99, "gauteng": 75.8, "mpumalanga": 54.85}},
+    {"size": "1,5 Litre", "amount": 1500, "unit": "ml", "prices": {"kwazulu-natal": 42.24, "gauteng": 43.54}}
+  ]},
+  {"product": "Instant coffee", "names": ["instant coffee", "coffee", "koffie"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 77.57, "western-cape": 80.06, "eastern-cape": 74.63, "northern-cape": 79.99, "free-state": 79.65, "kwazulu-natal": 76.06, "north-west": 78.07, "gauteng": 78.53, "mpumalanga": 77.49, "limpopo": 72.13}},
+    {"size": "750 Gram", "amount": 750, "unit": "g", "prices": {"national": 168.14, "western-cape": 162.19, "eastern-cape": 167.99, "northern-cape": 169.82, "free-state": 167.78, "kwazulu-natal": 174.98, "north-west": 164.39, "gauteng": 170.89, "mpumalanga": 167.37}}
+  ]},
+  {"product": "Cappuccino (sachets)", "names": ["cappuccino"], "packs": [
+    {"size": "180 Gram", "amount": 180, "unit": "g", "prices": {"national": 78.65, "kwazulu-natal": 79.49, "gauteng": 78.74, "mpumalanga": 77.49}},
+    {"size": "10 X 18 Gram", "amount": 180, "unit": "g", "prices": {"national": 78.99, "western-cape": 79.39, "eastern-cape": 83.74, "kwazulu-natal": 79.39, "gauteng": 77.42}}
+  ]},
+  {"product": "Ceylon/black tea", "names": ["ceylon/black tea", "tea", "tee"], "packs": [
+    {"size": "62,5 Gram", "amount": 62.5, "unit": "g", "prices": {"national": 32.05, "gauteng": 36.59}},
+    {"size": "125 Gram", "amount": 125, "unit": "g", "prices": {"national": 48.99, "limpopo": 43.59}},
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 66.49, "western-cape": 61.85, "eastern-cape": 67.12, "northern-cape": 65.1, "free-state": 70.06, "kwazulu-natal": 48.76, "north-west": 77.85, "gauteng": 71.4, "mpumalanga": 64.62, "limpopo": 70.82}}
+  ]},
+  {"product": "Rooibos tea", "names": ["rooibos tea", "rooibos"], "packs": [
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 39.93, "eastern-cape": 40.16, "free-state": 40.49, "north-west": 39.99, "gauteng": 40.29, "limpopo": 41.99}},
+    {"size": "200 Gram", "amount": 200, "unit": "g", "prices": {"national": 56.39, "western-cape": 54.12, "eastern-cape": 54.74, "northern-cape": 60.49, "free-state": 59.44, "kwazulu-natal": 54.99, "north-west": 56.54, "gauteng": 55.52, "mpumalanga": 58.91, "limpopo": 51.59}},
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"kwazulu-natal": 27.99}}
+  ]},
+  {"product": "Mineral water/spring water (aerated and still)", "names": ["mineral water/spring water"], "packs": [
+    {"size": "1,5 Litre", "amount": 1500, "unit": "ml", "prices": {"national": 17.38, "western-cape": 16.99, "eastern-cape": 17.82, "northern-cape": 16.74, "free-state": 17.29, "kwazulu-natal": 17.9, "north-west": 16.13, "gauteng": 18.07}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 11.37, "western-cape": 10.12, "eastern-cape": 9.82, "free-state": 10.66, "kwazulu-natal": 12.69, "north-west": 8.99, "gauteng": 12.77, "mpumalanga": 10.35, "limpopo": 11.49}}
+  ]},
+  {"product": "Fizzy drinks - can", "names": ["fizzy drinks"], "packs": [
+    {"size": "6 X 300 Millilitre", "amount": 1800, "unit": "ml", "prices": {"national": 82.62, "gauteng": 84.82}},
+    {"size": "300 Millilitre", "amount": 300, "unit": "ml", "prices": {"national": 14.82, "western-cape": 14.28, "eastern-cape": 14.62, "northern-cape": 14.99, "free-state": 15.19, "kwazulu-natal": 14.82, "north-west": 14.65, "gauteng": 15.09, "mpumalanga": 15.07, "limpopo": 14.99}}
+  ]},
+  {"product": "Fizzy drinks - bottle", "names": ["fizzy drinks"], "packs": [
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 24.87, "western-cape": 20.35, "eastern-cape": 26.03, "free-state": 24.67, "kwazulu-natal": 23.83, "north-west": 24.44, "gauteng": 25.67, "mpumalanga": 27.03, "limpopo": 27.32}},
+    {"size": "440 Millilitre", "amount": 440, "unit": "ml", "prices": {"national": 14.89, "western-cape": 14.82, "eastern-cape": 14.72, "northern-cape": 14.54, "kwazulu-natal": 13.59, "gauteng": 15.06, "mpumalanga": 16.82}},
+    {"size": "1,5 Litre", "amount": 1500, "unit": "ml", "prices": {"free-state": 19.7, "kwazulu-natal": 18.59}}
+  ]},
+  {"product": "Brandy", "names": ["brandy"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 272.46}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 230.74, "western-cape": 220.7, "eastern-cape": 220.86, "northern-cape": 255.9, "free-state": 223.82, "kwazulu-natal": 226.17, "north-west": 244.76, "gauteng": 228.81, "mpumalanga": 219.62, "limpopo": 262.13}}
+  ]},
+  {"product": "Whiskey", "names": ["whiskey"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 344.81}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 266.3, "western-cape": 252.3, "eastern-cape": 252.53, "northern-cape": 301.06, "free-state": 273.56, "kwazulu-natal": 265.95, "north-west": 266.76, "gauteng": 278.91, "mpumalanga": 238.16, "limpopo": 276.66}}
+  ]},
+  {"product": "Liqueur & creams", "names": ["liqueur & creams"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 225.64}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 192.86, "western-cape": 197.12, "eastern-cape": 200.55, "northern-cape": 179.33, "free-state": 210.88, "kwazulu-natal": 196.8, "north-west": 194.05, "gauteng": 183.27, "mpumalanga": 184.37, "limpopo": 189.54}}
+  ]},
+  {"product": "Vodka", "names": ["vodka"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 232.43}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 229.04, "western-cape": 244.04, "eastern-cape": 183.99, "northern-cape": 257.3, "free-state": 235.32, "kwazulu-natal": 223.06, "north-west": 265.87, "gauteng": 218.49, "mpumalanga": 216.17, "limpopo": 230.99}}
+  ]},
+  {"product": "Gin", "names": ["gin"], "packs": [
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 223.09, "western-cape": 234.12, "eastern-cape": 203.74, "northern-cape": 234.88, "free-state": 219.85, "kwazulu-natal": 246.29, "north-west": 237.89, "gauteng": 211.02, "mpumalanga": 184.61, "limpopo": 231.99}}
+  ]},
+  {"product": "Red wine", "names": ["red wine"], "packs": [
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 97.28, "western-cape": 137.19, "eastern-cape": 75.92, "northern-cape": 106.63, "free-state": 83.71, "kwazulu-natal": 111.77, "north-west": 79.99, "gauteng": 91.4, "mpumalanga": 78.07, "limpopo": 77.13}}
+  ]},
+  {"product": "White wine", "names": ["white wine"], "packs": [
+    {"size": "3 Litre", "amount": 3000, "unit": "ml", "prices": {"national": 152.85}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 77.5, "western-cape": 93.7, "eastern-cape": 77.49, "northern-cape": 74.03, "free-state": 64.56, "kwazulu-natal": 78.09, "north-west": 70.63, "gauteng": 83.11, "mpumalanga": 75.63, "limpopo": 68.49}}
+  ]},
+  {"product": "Rose Wine", "names": ["rose wine"], "packs": [
+    {"size": "3 Litre", "amount": 3000, "unit": "ml", "prices": {"national": 143.69, "gauteng": 145.99}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 78.39, "western-cape": 86.06, "eastern-cape": 74.99, "northern-cape": 85.92, "free-state": 95.63, "kwazulu-natal": 86.28, "gauteng": 72.24, "mpumalanga": 69.06, "limpopo": 65.44}},
+    {"size": "1,5 Litre", "amount": 1500, "unit": "ml", "prices": {"free-state": 110.33, "kwazulu-natal": 104.79}}
+  ]},
+  {"product": "Spirit coolers and ciders", "names": ["spirit coolers and ciders"], "packs": [
+    {"size": "6 X 330 Millilitre", "amount": 1980, "unit": "ml", "prices": {"national": 120.59, "western-cape": 116.66, "kwazulu-natal": 116.99}},
+    {"size": "330 Millilitre", "amount": 330, "unit": "ml", "prices": {"national": 22.08, "free-state": 21.66, "gauteng": 22.1, "mpumalanga": 21.79, "limpopo": 21.4}},
+    {"size": "6 X 275 Millilitre", "amount": 1650, "unit": "ml", "prices": {"eastern-cape": 98.79, "kwazulu-natal": 118.49}},
+    {"size": "440 Millilitre", "amount": 440, "unit": "ml", "prices": {"mpumalanga": 22.2}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"free-state": 27.99, "north-west": 25.92, "gauteng": 27.69}}
+  ]},
+  {"product": "Beer", "names": ["beer"], "packs": [
+    {"size": "6 X 330 Millilitre", "amount": 1980, "unit": "ml", "prices": {"national": 96.96, "western-cape": 99.58, "northern-cape": 105.0, "kwazulu-natal": 96.22, "gauteng": 94.42, "mpumalanga": 99.44}},
+    {"size": "330 Millilitre", "amount": 330, "unit": "ml", "prices": {"national": 18.34, "western-cape": 19.49, "eastern-cape": 18.66, "free-state": 19.49, "kwazulu-natal": 19.16, "north-west": 17.99, "gauteng": 17.49, "mpumalanga": 17.37, "limpopo": 18.31}},
+    {"size": "6 X 500 Millilitre", "amount": 3000, "unit": "ml", "prices": {"western-cape": 109.28, "north-west": 103.55}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"eastern-cape": 19.49, "kwazulu-natal": 19.44, "limpopo": 20.0}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"eastern-cape": 22.59, "free-state": 21.5, "north-west": 25.44, "mpumalanga": 22.48}}
+  ]},
+  {"product": "Cigarettes", "names": ["cigarettes"], "packs": [
+    {"size": "For 20", "amount": 20, "unit": "each", "prices": {"national": 52.82, "western-cape": 50.74, "eastern-cape": 51.6, "northern-cape": 51.84, "free-state": 50.73, "kwazulu-natal": 56.37, "north-west": 50.6, "gauteng": 54.35, "mpumalanga": 53.73, "limpopo": 52.12}},
+    {"size": "For 10", "amount": 10, "unit": "each", "prices": {"national": 26.71}},
+    {"size": "Pack Of 30", "amount": 30, "unit": "each", "prices": {"northern-cape": 76.99, "gauteng": 76.85}}
+  ]},
+  {"product": "Tobacco", "names": ["tobacco"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 64.59, "eastern-cape": 65.75, "free-state": 63.2, "kwazulu-natal": 66.49}},
+    {"size": "100 Gram", "amount": 100, "unit": "g", "prices": {"national": 121.68, "western-cape": 120.33, "eastern-cape": 138.8, "northern-cape": 123.89, "free-state": 121.08, "north-west": 121.12, "gauteng": 120.49, "mpumalanga": 125.43, "limpopo": 118.74}},
+    {"size": "25 Gram", "amount": 25, "unit": "g", "prices": {"kwazulu-natal": 28.44, "gauteng": 31.99}}
+  ]},
+  {"product": "Snuff", "names": ["snuff"], "packs": [
+    {"size": "15 Gram", "amount": 15, "unit": "g", "prices": {"national": 16.2, "northern-cape": 15.99, "free-state": 16.49, "kwazulu-natal": 16.45, "gauteng": 15.85, "limpopo": 15.99}}
+  ]},
+  {"product": "School Shirts", "names": ["school shirts"], "packs": [
+    {"size": "Set Of 2", "amount": 2, "unit": "each", "prices": {"national": 258.9, "eastern-cape": 241.86, "gauteng": 251.5}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 105.28, "western-cape": 92.47, "eastern-cape": 108.47, "free-state": 94.11, "kwazulu-natal": 103.08, "north-west": 101.78, "gauteng": 128.28, "mpumalanga": 87.84, "limpopo": 104.46}}
+  ]},
+  {"product": "School Jersey", "names": ["school jersey"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 153.61, "western-cape": 182.98, "eastern-cape": 130.97, "northern-cape": 112.49, "free-state": 121.6, "kwazulu-natal": 161.53, "north-west": 182.98, "gauteng": 173.47, "mpumalanga": 134.85, "limpopo": 141.13}}
+  ]},
+  {"product": "School Trouser/Shorts", "names": ["school trouser/shorts"], "packs": [
+    {"size": "Set Of 2", "amount": 2, "unit": "each", "prices": {"national": 295.67}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 145.66, "western-cape": 156.56, "eastern-cape": 140.56, "northern-cape": 126.63, "free-state": 132.72, "kwazulu-natal": 147.19, "north-west": 178.96, "gauteng": 151.09, "mpumalanga": 154.74, "limpopo": 125.97}}
+  ]},
+  {"product": "School Skirts / Dress", "names": ["school skirts / dress"], "packs": [
+    {"size": "Set Of 2", "amount": 2, "unit": "each", "prices": {"national": 260.74, "gauteng": 264.83}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 128.22, "western-cape": 180.08, "eastern-cape": 102.82, "northern-cape": 51.24, "free-state": 101.4, "kwazulu-natal": 118.32, "north-west": 199.07, "gauteng": 121.28, "mpumalanga": 91.48, "limpopo": 144.2}}
+  ]},
+  {"product": "School Socks", "names": ["school socks"], "packs": [
+    {"size": "Pack Of 3 Pairs", "unit": "other", "prices": {"national": 87.09, "western-cape": 99.57, "eastern-cape": 110.73, "free-state": 64.95, "north-west": 92.21, "gauteng": 87.68}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 27.43, "northern-cape": 18.24, "free-state": 20.99, "kwazulu-natal": 27.25, "gauteng": 36.75, "mpumalanga": 19.39}}
+  ]},
+  {"product": "School Shoes", "names": ["school shoes"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 298.3, "western-cape": 293.63, "eastern-cape": 305.71, "northern-cape": 211.1, "free-state": 300.58, "kwazulu-natal": 306.39, "north-west": 337.64, "gauteng": 279.62, "mpumalanga": 266.73, "limpopo": 368.09}}
+  ]},
+  {"product": "Paint", "names": ["paint"], "packs": [
+    {"size": "5 Litre", "amount": 5000, "unit": "ml", "prices": {"national": 523.78, "western-cape": 649.82, "eastern-cape": 519.93, "free-state": 491.55, "kwazulu-natal": 474.05, "north-west": 346.99, "gauteng": 550.88, "mpumalanga": 571.81}},
+    {"size": "20 Litre", "amount": 20000, "unit": "ml", "prices": {"national": 876.6, "eastern-cape": 621.25, "kwazulu-natal": 929.0, "north-west": 494.71, "gauteng": 896.71, "mpumalanga": 920.23, "limpopo": 902.67}},
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"western-cape": 253.38, "eastern-cape": 237.66}}
+  ]},
+  {"product": "Varnish", "names": ["varnish"], "packs": [
+    {"size": "1 Litre", "amount": 1000, "unit": "ml", "prices": {"national": 246.78, "western-cape": 258.75, "eastern-cape": 233.59, "northern-cape": 229.14, "free-state": 232.41, "kwazulu-natal": 257.18, "north-west": 238.13, "gauteng": 271.12}},
+    {"size": "5 Litre", "amount": 5000, "unit": "ml", "prices": {"national": 731.91, "western-cape": 893.25, "kwazulu-natal": 712.91, "north-west": 644.65, "gauteng": 735.25, "mpumalanga": 678.67}}
+  ]},
+  {"product": "Bricks", "names": ["bricks"], "packs": [
+    {"size": "Pallet of 1000 Bricks", "unit": "other", "prices": {"national": 6539.29, "free-state": 6133.33}}
+  ]},
+  {"product": "Cement", "names": ["cement"], "packs": [
+    {"size": "20 Kilogram", "amount": 20000, "unit": "g", "prices": {"national": 94.8, "north-west": 126.55}},
+    {"size": "50 Kilogram", "amount": 50000, "unit": "g", "prices": {"national": 119.78, "western-cape": 168.06, "eastern-cape": 122.68, "northern-cape": 119.82, "free-state": 110.4, "kwazulu-natal": 101.53, "north-west": 102.83, "gauteng": 106.6, "mpumalanga": 111.94, "limpopo": 119.68}}
+  ]},
+  {"product": "Tiles", "names": ["tiles"], "packs": [
+    {"size": "Per Square Metre", "unit": "other", "prices": {"national": 163.26, "western-cape": 187.54, "eastern-cape": 171.25, "free-state": 147.7, "gauteng": 163.28}}
+  ]},
+  {"product": "Gas In Cylinders", "names": ["gas in cylinders", "gas", "lpg"], "packs": [
+    {"size": "9 Kilogram", "amount": 9000, "unit": "g", "prices": {"national": 362.79, "western-cape": 348.8, "eastern-cape": 353.03, "free-state": 375.02, "kwazulu-natal": 343.91, "north-west": 350.92, "gauteng": 339.82, "mpumalanga": 476.49}},
+    {"size": "19 Kilogram", "amount": 19000, "unit": "g", "prices": {"national": 723.2, "north-west": 669.96, "gauteng": 671.59}}
+  ]},
+  {"product": "Paraffin", "names": ["paraffin"], "packs": [
+    {"size": "5 Litre", "amount": 5000, "unit": "ml", "prices": {"national": 246.12, "western-cape": 235.99, "free-state": 232.99, "north-west": 199.99, "gauteng": 233.87}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 51.96, "western-cape": 52.42, "eastern-cape": 59.16, "free-state": 54.16, "kwazulu-natal": 49.39, "north-west": 44.99, "gauteng": 54.15, "mpumalanga": 51.22, "limpopo": 51.66}}
+  ]},
+  {"product": "Light bulbs", "names": ["light bulbs"], "packs": [
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 41.48, "western-cape": 38.74, "eastern-cape": 30.1, "northern-cape": 39.39, "free-state": 35.09, "kwazulu-natal": 43.76, "north-west": 40.73, "gauteng": 48.04, "mpumalanga": 35.99, "limpopo": 46.27}}
+  ]},
+  {"product": "Refrigerator/ Freezer And Refrigerator Combination/Deep Freezer", "names": ["refrigerator/ freezer and refrigerator combination/deep freezer"], "packs": [
+    {"size": "323 Litre", "amount": 323000, "unit": "ml", "prices": {"national": 7137.61}},
+    {"size": "170 Litre", "amount": 170000, "unit": "ml", "prices": {"national": 4239.1}}
+  ]},
+  {"product": "Microwave Oven", "names": ["microwave oven"], "packs": [
+    {"size": "20 Litre", "amount": 20000, "unit": "ml", "prices": {"national": 1037.64, "western-cape": 1004.59, "eastern-cape": 1041.44, "north-west": 1089.4, "gauteng": 990.45, "mpumalanga": 999.59}},
+    {"size": "30 Litre", "amount": 30000, "unit": "ml", "prices": {"national": 1664.27, "kwazulu-natal": 1490.75, "north-west": 1977.57, "gauteng": 1565.67, "mpumalanga": 1656.28}}
+  ]},
+  {"product": "Washing Machine", "names": ["washing machine"], "packs": [
+    {"size": "14 Kilogram", "amount": 14000, "unit": "g", "prices": {"national": 5655.08, "gauteng": 5829.19}},
+    {"size": "15 Kilogram", "amount": 15000, "unit": "g", "prices": {"national": 6036.05, "limpopo": 5256.28}},
+    {"size": "7 Kilogram", "amount": 7000, "unit": "g", "prices": {"kwazulu-natal": 6659.0}}
+  ]},
+  {"product": "Air Fryers", "names": ["air fryers"], "packs": [
+    {"size": "6,2 Litre", "amount": 6200, "unit": "ml", "prices": {"national": 1132.51}},
+    {"size": "6 Litre", "amount": 6000, "unit": "ml", "prices": {"national": 1259.2}},
+    {"size": "7,6 Litre", "amount": 7600, "unit": "ml", "prices": {"gauteng": 1174.16}}
+  ]},
+  {"product": "Kettle", "names": ["kettle"], "packs": [
+    {"size": "1,7 Litre", "amount": 1700, "unit": "ml", "prices": {"national": 356.19, "western-cape": 508.94, "eastern-cape": 365.92, "northern-cape": 311.5, "free-state": 312.58, "kwazulu-natal": 377.38, "north-west": 394.19, "gauteng": 323.25, "mpumalanga": 294.86, "limpopo": 296.81}}
+  ]},
+  {"product": "Iron", "names": ["iron"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 329.27, "western-cape": 333.52, "eastern-cape": 302.18, "northern-cape": 351.3, "free-state": 265.07, "kwazulu-natal": 377.71, "north-west": 295.91, "gauteng": 351.0, "mpumalanga": 281.99, "limpopo": 338.58}}
+  ]},
+  {"product": "Coffee Mug", "names": ["coffee mug"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 32.03, "western-cape": 20.54, "eastern-cape": 25.53, "northern-cape": 26.87, "free-state": 29.24, "kwazulu-natal": 62.38, "north-west": 19.74, "gauteng": 27.07, "mpumalanga": 27.45, "limpopo": 39.99}}
+  ]},
+  {"product": "Crockery", "names": ["crockery"], "packs": [
+    {"size": "Box Of 16", "amount": 16, "unit": "each", "prices": {"national": 315.4, "gauteng": 299.99}},
+    {"size": "Box Of 12", "amount": 12, "unit": "each", "prices": {"national": 303.17, "western-cape": 356.33, "eastern-cape": 316.0, "northern-cape": 264.13, "free-state": 306.33, "kwazulu-natal": 295.31, "north-west": 252.99, "gauteng": 311.62, "mpumalanga": 277.38, "limpopo": 348.25}}
+  ]},
+  {"product": "Glassware", "names": ["glassware"], "packs": [
+    {"size": "Pack Of 4", "amount": 4, "unit": "each", "prices": {"national": 183.64, "western-cape": 236.57, "gauteng": 176.61, "limpopo": 188.4}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 21.26, "eastern-cape": 20.13, "northern-cape": 9.99, "free-state": 18.55, "kwazulu-natal": 57.49, "north-west": 19.49, "gauteng": 13.99, "mpumalanga": 19.75}}
+  ]},
+  {"product": "Cutlery Set", "names": ["cutlery set"], "packs": [
+    {"size": "Box Of 16", "amount": 16, "unit": "each", "prices": {"national": 235.81, "western-cape": 236.33, "eastern-cape": 261.6, "free-state": 239.66, "kwazulu-natal": 215.81, "north-west": 203.57, "gauteng": 224.18, "mpumalanga": 184.09}},
+    {"size": "For 24", "amount": 24, "unit": "each", "prices": {"national": 268.89, "eastern-cape": 287.13, "free-state": 291.79, "kwazulu-natal": 224.83, "north-west": 246.49, "gauteng": 281.86, "mpumalanga": 254.79}}
+  ]},
+  {"product": "Cooler Box", "names": ["cooler box"], "packs": [
+    {"size": "25 Litre", "amount": 25000, "unit": "ml", "prices": {"national": 277.63}},
+    {"size": "26 Litre", "amount": 26000, "unit": "ml", "prices": {"national": 228.22, "kwazulu-natal": 209.5, "gauteng": 244.28}}
+  ]},
+  {"product": "Cooking Pot", "names": ["cooking pot"], "packs": [
+    {"size": "For 5", "amount": 5, "unit": "each", "prices": {"national": 944.29, "kwazulu-natal": 1287.83}},
+    {"size": "For 3", "amount": 3, "unit": "each", "prices": {"national": 991.28}}
+  ]},
+  {"product": "Power Drills", "names": ["power drills"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 1108.96, "western-cape": 1401.0, "eastern-cape": 1462.18, "northern-cape": 661.46, "free-state": 899.22, "kwazulu-natal": 1532.15, "north-west": 712.3, "gauteng": 1033.45, "mpumalanga": 827.15, "limpopo": 1059.21}}
+  ]},
+  {"product": "Lawnmower", "names": ["lawnmower"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 4153.15, "western-cape": 3831.38, "eastern-cape": 4364.5, "northern-cape": 3599.0, "free-state": 5291.54, "kwazulu-natal": 4119.0, "north-west": 4305.8, "gauteng": 3971.39, "mpumalanga": 3904.61, "limpopo": 4144.45}}
+  ]},
+  {"product": "Laundry soap", "names": ["laundry soap"], "packs": [
+    {"size": "250 Gram", "amount": 250, "unit": "g", "prices": {"national": 15.4, "eastern-cape": 15.35, "kwazulu-natal": 15.82, "gauteng": 15.66}},
+    {"size": "500 Gram", "amount": 500, "unit": "g", "prices": {"national": 25.97, "western-cape": 24.43, "eastern-cape": 27.26, "northern-cape": 23.99, "free-state": 28.32, "kwazulu-natal": 23.87, "north-west": 25.24, "gauteng": 26.62, "mpumalanga": 27.06, "limpopo": 26.77}}
+  ]},
+  {"product": "Washing powder", "names": ["washing powder"], "packs": [
+    {"size": "1 Kilogram", "amount": 1000, "unit": "g", "prices": {"national": 41.68, "eastern-cape": 41.13, "kwazulu-natal": 41.37}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 78.06, "western-cape": 94.42, "eastern-cape": 75.14, "northern-cape": 73.99, "free-state": 78.13, "kwazulu-natal": 72.81, "north-west": 83.79, "gauteng": 76.3, "mpumalanga": 73.49, "limpopo": 73.32}}
+  ]},
+  {"product": "Dish - washing liquid", "names": ["dish"], "packs": [
+    {"size": "400 Millilitre", "amount": 400, "unit": "ml", "prices": {"national": 26.29, "gauteng": 27.59}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 34.73, "western-cape": 34.56, "eastern-cape": 33.87, "northern-cape": 33.55, "free-state": 34.74, "kwazulu-natal": 34.42, "north-west": 35.55, "gauteng": 35.57, "mpumalanga": 34.89, "limpopo": 33.69}}
+  ]},
+  {"product": "Toilet care - disinfectant bleaches eg Domestos", "names": ["toilet care"], "packs": [
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 31.61, "kwazulu-natal": 31.49, "gauteng": 31.99}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"national": 34.1, "western-cape": 36.45, "eastern-cape": 28.44, "northern-cape": 33.32, "free-state": 33.99, "kwazulu-natal": 35.14, "north-west": 35.7, "gauteng": 34.57, "mpumalanga": 35.32, "limpopo": 35.79}}
+  ]},
+  {"product": "Fabric softener", "names": ["fabric softener"], "packs": [
+    {"size": "2 Litre", "amount": 2000, "unit": "ml", "prices": {"national": 69.83, "western-cape": 70.43, "eastern-cape": 67.57, "free-state": 71.82, "kwazulu-natal": 66.37, "north-west": 64.57, "gauteng": 75.07, "mpumalanga": 75.19, "limpopo": 64.32}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 39.32, "western-cape": 37.88, "eastern-cape": 37.07, "northern-cape": 40.79, "gauteng": 42.99}}
+  ]},
+  {"product": "Swimming Pool Chlorine", "names": ["swimming pool chlorine"], "packs": [
+    {"size": "4 Kilogram", "amount": 4000, "unit": "g", "prices": {"national": 291.56, "eastern-cape": 291.42, "kwazulu-natal": 292.87, "gauteng": 284.38}},
+    {"size": "8 Kilogram", "amount": 8000, "unit": "g", "prices": {"national": 474.03, "gauteng": 474.12, "mpumalanga": 478.5}}
+  ]},
+  {"product": "Refuse Bags", "names": ["refuse bags"], "packs": [
+    {"size": "For 20", "amount": 20, "unit": "each", "prices": {"national": 52.37, "western-cape": 52.13, "eastern-cape": 55.49, "northern-cape": 48.42, "free-state": 48.07, "kwazulu-natal": 48.73, "north-west": 57.55, "gauteng": 50.88, "mpumalanga": 57.59, "limpopo": 61.87}},
+    {"size": "For 10", "amount": 10, "unit": "each", "prices": {"national": 48.76, "gauteng": 52.52}}
+  ]},
+  {"product": "Candles", "names": ["candles"], "packs": [
+    {"size": "Pack Of 6", "amount": 6, "unit": "each", "prices": {"national": 41.62, "western-cape": 37.79, "eastern-cape": 33.66, "northern-cape": 37.49, "free-state": 38.99, "north-west": 41.37, "gauteng": 44.99, "mpumalanga": 45.29}}
+  ]},
+  {"product": "Pain killers", "names": ["pain killers"], "packs": [
+    {"size": "For 24", "amount": 24, "unit": "each", "prices": {"national": 41.24, "western-cape": 40.03, "eastern-cape": 42.93, "northern-cape": 43.99, "free-state": 47.24, "kwazulu-natal": 35.66, "north-west": 42.87, "gauteng": 42.36, "mpumalanga": 36.79, "limpopo": 37.19}}
+  ]},
+  {"product": "Cough oth resp prod", "names": ["cough oth resp prod"], "packs": [
+    {"size": "100 Millilitre", "amount": 100, "unit": "ml", "prices": {"national": 84.3, "western-cape": 84.29, "eastern-cape": 81.3, "northern-cape": 83.16, "free-state": 84.01, "kwazulu-natal": 85.22, "north-west": 78.11, "gauteng": 88.49, "mpumalanga": 82.06, "limpopo": 88.42}}
+  ]},
+  {"product": "Vitamin and mineral supplements", "names": ["vitamin and mineral supplements"], "packs": [
+    {"size": "For 30", "amount": 30, "unit": "each", "prices": {"national": 152.28, "western-cape": 145.83, "eastern-cape": 122.93, "kwazulu-natal": 177.86, "gauteng": 140.84, "mpumalanga": 150.16}}
+  ]},
+  {"product": "Digestive & oth intestinal products", "names": ["digestive & oth intestinal products"], "packs": [
+    {"size": "150 Millilitre", "amount": 150, "unit": "ml", "prices": {"national": 105.69, "western-cape": 97.98, "eastern-cape": 112.24, "northern-cape": 105.79, "free-state": 107.99, "kwazulu-natal": 111.39, "north-west": 104.49, "gauteng": 108.99}}
+  ]},
+  {"product": "Condoms", "names": ["condoms"], "packs": [
+    {"size": "Box Of 12", "amount": 12, "unit": "each", "prices": {"national": 169.79}},
+    {"size": "Pack Of 3", "amount": 3, "unit": "each", "prices": {"national": 47.06, "western-cape": 46.99, "eastern-cape": 46.93, "northern-cape": 42.1, "free-state": 51.38, "kwazulu-natal": 42.6, "gauteng": 50.39, "mpumalanga": 47.49, "limpopo": 38.49}}
+  ]},
+  {"product": "Spectacles, Including Contact Lens", "names": ["spectacles, including contact lens"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 201.82, "western-cape": 751.77, "eastern-cape": 113.07, "northern-cape": 110.99, "free-state": 163.4, "kwazulu-natal": 115.13, "north-west": 137.06, "gauteng": 162.89, "mpumalanga": 139.4, "limpopo": 159.37}}
+  ]},
+  {"product": "Disc Pads", "names": ["disc pads"], "packs": [
+    {"size": "Set Of 2", "amount": 2, "unit": "each", "prices": {"national": 1940.86, "kwazulu-natal": 2054.13}},
+    {"size": "Pack Of 4", "amount": 4, "unit": "each", "prices": {"national": 1169.72, "western-cape": 1526.44, "eastern-cape": 1028.59, "northern-cape": 1376.87, "free-state": 881.98, "kwazulu-natal": 1282.09, "north-west": 796.79, "gauteng": 1296.63, "mpumalanga": 892.27, "limpopo": 1138.0}}
+  ]},
+  {"product": "Spark Plug", "names": ["spark plug"], "packs": [
+    {"size": "Pack Of 4", "amount": 4, "unit": "each", "prices": {"national": 538.77, "western-cape": 306.39, "gauteng": 1155.81}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 210.76, "western-cape": 245.97, "eastern-cape": 120.15, "northern-cape": 61.9, "free-state": 136.24, "kwazulu-natal": 393.97, "north-west": 99.37, "gauteng": 208.52, "mpumalanga": 52.5}}
+  ]},
+  {"product": "Oil Filter", "names": ["oil filter"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 235.04, "western-cape": 315.62, "eastern-cape": 229.7, "northern-cape": 307.79, "free-state": 241.24, "kwazulu-natal": 204.56, "north-west": 127.93, "gauteng": 278.73, "mpumalanga": 198.87, "limpopo": 237.13}}
+  ]},
+  {"product": "Air Filter", "names": ["air filter"], "packs": [
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"national": 433.25, "western-cape": 649.68, "eastern-cape": 604.3, "northern-cape": 735.84, "free-state": 384.19, "kwazulu-natal": 357.08, "north-west": 297.25, "gauteng": 323.84, "mpumalanga": 279.3, "limpopo": 489.17}}
+  ]},
+  {"product": "Diesel", "names": ["diesel"], "packs": [
+    {"size": "Per Litre", "amount": 1000, "unit": "ml", "prices": {"national": 29.06, "western-cape": 28.45, "eastern-cape": 28.61, "northern-cape": 29.73, "free-state": 29.35, "kwazulu-natal": 28.72, "north-west": 28.89, "gauteng": 29.08, "mpumalanga": 29.44, "limpopo": 29.46}}
+  ]},
+  {"product": "Driving Lessons", "names": ["driving lessons"], "packs": [
+    {"size": "Per Hour", "unit": "other", "prices": {"national": 264.82, "western-cape": 267.5, "eastern-cape": 267.14, "kwazulu-natal": 223.75, "north-west": 312.86, "gauteng": 224.44, "mpumalanga": 286.67}},
+    {"size": "Set Of 10", "amount": 10, "unit": "each", "prices": {"national": 2670.89, "gauteng": 2060.0}},
+    {"size": "Set Of 20", "amount": 20, "unit": "each", "prices": {"kwazulu-natal": 3760.0}},
+    {"size": "For 5", "amount": 5, "unit": "each", "prices": {"free-state": 1200.0}}
+  ]},
+  {"product": "Printer cartriges", "names": ["printer cartriges"], "packs": [
+    {"size": "Each", "amount": 1, "unit": "each", "prices": {"national": 608.91, "western-cape": 568.09, "eastern-cape": 749.09, "northern-cape": 742.75, "free-state": 516.06, "kwazulu-natal": 546.11, "north-west": 638.23, "gauteng": 554.5, "mpumalanga": 709.0, "limpopo": 799.0}}
+  ]},
+  {"product": "Television", "names": ["television"], "packs": [
+    {"size": "55 Inch", "unit": "other", "prices": {"national": 7808.77, "gauteng": 6541.99, "mpumalanga": 7249.0}},
+    {"size": "65 Inch", "unit": "other", "prices": {"national": 11056.31, "gauteng": 10165.67}},
+    {"size": "32 Inch", "unit": "other", "prices": {"gauteng": 2199.0}},
+    {"size": "43 Inch", "unit": "other", "prices": {"free-state": 4199.24}}
+  ]},
+  {"product": "Dog food - pellets", "names": ["dog food"], "packs": [
+    {"size": "1,75 Kilogram", "amount": 1750, "unit": "g", "prices": {"national": 90.3, "western-cape": 90.3, "eastern-cape": 94.99, "northern-cape": 77.49, "free-state": 89.49, "kwazulu-natal": 91.81, "gauteng": 99.72, "mpumalanga": 86.44}},
+    {"size": "8 Kilogram", "amount": 8000, "unit": "g", "prices": {"national": 230.29, "eastern-cape": 248.24, "northern-cape": 225.99, "free-state": 242.99, "kwazulu-natal": 214.19, "north-west": 235.37, "gauteng": 228.2, "mpumalanga": 220.49, "limpopo": 225.39}}
+  ]},
+  {"product": "Dog food - tinned", "names": ["dog food"], "packs": [
+    {"size": "775 Gram", "amount": 775, "unit": "g", "prices": {"national": 43.5, "western-cape": 45.82, "eastern-cape": 42.92, "northern-cape": 40.62, "free-state": 41.13, "kwazulu-natal": 43.52, "north-west": 42.29, "gauteng": 44.55, "mpumalanga": 44.56}},
+    {"size": "820 Gram", "amount": 820, "unit": "g", "prices": {"national": 36.6, "western-cape": 38.42, "free-state": 38.74, "kwazulu-natal": 32.99, "gauteng": 36.62, "mpumalanga": 37.7}}
+  ]},
+  {"product": "Cat food - pellets", "names": ["cat food"], "packs": [
+    {"size": "1.75 Kilogram", "amount": 1750, "unit": "g", "prices": {"national": 104.2}},
+    {"size": "2 Kilogram", "amount": 2000, "unit": "g", "prices": {"national": 111.15, "western-cape": 122.13, "free-state": 101.18, "kwazulu-natal": 108.19, "gauteng": 119.16}},
+    {"size": "900 Gram", "amount": 900, "unit": "g", "prices": {"western-cape": 113.99}},
+    {"size": "1,75 Kilogram", "amount": 1750, "unit": "g", "prices": {"northern-cape": 109.99, "free-state": 110.16, "kwazulu-natal": 98.79, "gauteng": 103.37, "mpumalanga": 100.42}}
+  ]},
+  {"product": "Cat food - tinned", "names": ["cat food"], "packs": [
+    {"size": "385 Gram", "amount": 385, "unit": "g", "prices": {"national": 28.17, "western-cape": 26.91, "eastern-cape": 28.99, "northern-cape": 28.12, "free-state": 28.87, "kwazulu-natal": 28.99, "gauteng": 28.09, "mpumalanga": 28.49, "limpopo": 28.39}},
+    {"size": "425 Gram", "amount": 425, "unit": "g", "prices": {"national": 24.56}},
+    {"size": "400 Gram", "amount": 400, "unit": "g", "prices": {"gauteng": 30.32}}
+  ]},
+  {"product": "Pen", "names": ["pen"], "packs": [
+    {"size": "Set Of 5", "amount": 5, "unit": "each", "prices": {"national": 40.99}},
+    {"size": "Set Of 2", "amount": 2, "unit": "each", "prices": {"national": 30.55, "western-cape": 28.62, "eastern-cape": 30.19, "free-state": 30.83, "kwazulu-natal": 29.63, "north-west": 27.87, "gauteng": 33.18, "mpumalanga": 29.99, "limpopo": 30.19}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"gauteng": 24.7}}
+  ]},
+  {"product": "Printing Paper", "names": ["printing paper"], "packs": [
+    {"size": "For 500", "amount": 500, "unit": "each", "prices": {"national": 91.39, "western-cape": 88.86, "eastern-cape": 87.21, "northern-cape": 86.66, "free-state": 86.99, "kwazulu-natal": 102.53, "north-west": 118.99, "gauteng": 86.88, "mpumalanga": 85.18, "limpopo": 86.37}},
+    {"size": "For 2500", "amount": 2500, "unit": "each", "prices": {"national": 410.97, "western-cape": 397.99, "eastern-cape": 408.12, "free-state": 398.56, "kwazulu-natal": 432.33, "gauteng": 412.49, "limpopo": 418.57}}
+  ]},
+  {"product": "Shampoo", "names": ["shampoo"], "packs": [
+    {"size": "350 Millilitre", "amount": 350, "unit": "ml", "prices": {"national": 41.89, "eastern-cape": 42.21, "kwazulu-natal": 41.99, "north-west": 43.99, "gauteng": 39.16, "limpopo": 43.56}},
+    {"size": "400 Millilitre", "amount": 400, "unit": "ml", "prices": {"national": 84.29, "western-cape": 89.83, "eastern-cape": 62.99, "northern-cape": 93.74, "free-state": 102.58, "kwazulu-natal": 74.68, "north-west": 74.66, "gauteng": 94.38, "mpumalanga": 69.49}}
+  ]},
+  {"product": "Bodywash", "names": ["bodywash"], "packs": [
+    {"size": "400 Millilitre", "amount": 400, "unit": "ml", "prices": {"national": 58.87, "western-cape": 54.85, "eastern-cape": 58.16, "free-state": 57.13, "kwazulu-natal": 55.74, "mpumalanga": 61.19}},
+    {"size": "500 Millilitre", "amount": 500, "unit": "ml", "prices": {"national": 70.47, "free-state": 63.32, "kwazulu-natal": 66.21, "gauteng": 75.91, "mpumalanga": 73.99}},
+    {"size": "750 Millilitre", "amount": 750, "unit": "ml", "prices": {"gauteng": 91.21}}
+  ]},
+  {"product": "Bar of soap", "names": ["bar of soap"], "packs": [
+    {"size": "150 Gram", "amount": 150, "unit": "g", "prices": {"national": 18.93, "western-cape": 18.99, "kwazulu-natal": 18.42, "gauteng": 18.21, "mpumalanga": 18.99}},
+    {"size": "175 Gram", "amount": 175, "unit": "g", "prices": {"national": 19.1, "western-cape": 19.62, "eastern-cape": 18.59, "northern-cape": 19.81, "free-state": 19.52, "kwazulu-natal": 19.04, "north-west": 19.13, "gauteng": 19.03, "mpumalanga": 18.6, "limpopo": 18.49}}
+  ]},
+  {"product": "Toilet paper", "names": ["toilet paper"], "packs": [
+    {"size": "Pack Of 2 Ply 9 Rolls", "unit": "other", "prices": {"national": 82.48, "western-cape": 78.99, "eastern-cape": 79.81, "northern-cape": 82.32, "free-state": 73.99, "kwazulu-natal": 88.99, "north-west": 92.79, "gauteng": 84.37, "mpumalanga": 82.66}},
+    {"size": "Pack Of 2 Ply 18 Rolls", "unit": "other", "prices": {"national": 149.75, "kwazulu-natal": 155.18, "gauteng": 149.87}},
+    {"size": "1 Unit", "amount": 1, "unit": "each", "prices": {"western-cape": 9.59, "eastern-cape": 10.2, "mpumalanga": 9.99}}
+  ]},
+  {"product": "Toothpaste", "names": ["toothpaste"], "packs": [
+    {"size": "75 Millilitre", "amount": 75, "unit": "ml", "prices": {"national": 70.79, "free-state": 73.29, "kwazulu-natal": 75.22, "north-west": 64.75, "gauteng": 75.8}},
+    {"size": "100 Millilitre", "amount": 100, "unit": "ml", "prices": {"national": 29.96, "western-cape": 28.86, "eastern-cape": 28.07, "northern-cape": 28.85, "free-state": 31.09, "kwazulu-natal": 29.85, "north-west": 28.62, "gauteng": 31.34, "mpumalanga": 30.99, "limpopo": 29.44}}
+  ]},
+  {"product": "Sanitary pads", "names": ["sanitary pads"], "packs": [
+    {"size": "Per Pack", "amount": 1, "unit": "each", "prices": {"national": 29.98, "western-cape": 29.05, "eastern-cape": 27.29, "northern-cape": 24.79, "free-state": 31.71, "kwazulu-natal": 27.54, "north-west": 28.28, "gauteng": 30.25, "mpumalanga": 37.77, "limpopo": 29.21}}
+  ]},
+  {"product": "Deodorant", "names": ["deodorant"], "packs": [
+    {"size": "50 Millilitre", "amount": 50, "unit": "ml", "prices": {"national": 32.42, "western-cape": 30.41, "eastern-cape": 28.48, "northern-cape": 28.79, "free-state": 33.14, "kwazulu-natal": 30.05, "north-west": 34.32, "gauteng": 37.41, "mpumalanga": 33.26, "limpopo": 29.37}},
+    {"size": "150 Millilitre", "amount": 150, "unit": "ml", "prices": {"national": 48.87, "western-cape": 53.99, "eastern-cape": 47.44, "northern-cape": 46.82, "free-state": 47.86, "kwazulu-natal": 48.85, "north-west": 45.32, "gauteng": 49.76, "mpumalanga": 48.91, "limpopo": 46.74}}
+  ]},
+  {"product": "Skin lotion", "names": ["skin lotion"], "packs": [
+    {"size": "400 Millilitre", "amount": 400, "unit": "ml", "prices": {"national": 52.72, "western-cape": 63.42, "eastern-cape": 50.69, "northern-cape": 44.24, "free-state": 51.18, "kwazulu-natal": 53.59, "north-west": 48.8, "gauteng": 56.9, "mpumalanga": 50.68, "limpopo": 35.81}}
+  ]}
+ ]
+}

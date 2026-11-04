@@ -1,0 +1,20 @@
+[
+  {
+    "place_id": 34239938,
+    "lat": "-33.4602780",
+    "lon": "18.7236110",
+    "category": "place",
+    "type": "town",
+    "name": "Malmesbury",
+    "display_name": "Malmesbury, Swartland Local Municipality, West Coast District Municipality, Western Cape, 7300, South Africa",
+    "address": {
+      "town": "Malmesbury",
+      "municipality": "Swartland Local Municipality",
+      "county": "West Coast District Municipality",
+      "state": "Western Cape",
+      "postcode": "7300",
+      "country": "South Africa",
+      "country_code": "za"
+    }
+  }
+]

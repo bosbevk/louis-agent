@@ -39,4 +39,4 @@ evals' tests' helpers, since no test project references another.
 [louis-agent.evals.runner](louis-agent.evals.runner.md) · [Run the evals](../guides/run-the-evals.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.identity.puls](louis-agent.identity.puls.md) · Next: [louis-agent.pack.shops](louis-agent.pack.shops.md)
+[Projects](README.md) · Previous: [louis-agent.identity.puls](louis-agent.identity.puls.md) · Next: [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)
