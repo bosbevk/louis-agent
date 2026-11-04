@@ -84,11 +84,13 @@ public class SkillsLayoutTests
             Is.EquivalentTo(guides), "no guide without its toolset");
     }
 
-    [Test]
-    public void TheReposSkillsFolder_HoldsOnlyWhatTheAgentWrites()
+    /// <summary>What the running agent writes belongs to its demo, and only that sits in the demo's folder.</summary>
+    [TestCase("demos/puls/skills")]
+    [TestCase("demos/louis-agent/skills")]
+    public void ADemosSkillsFolder_HoldsOnlyWhatTheAgentWrites(string folder)
     {
         // README.md marks the folder (AgentHost.FindSkillsDirectory).
-        string skills = Path.Combine(TestPaths.RepoRoot, "Skills");
+        string skills = Path.Combine(TestPaths.RepoRoot, folder);
         var other = FilesUnder(skills).Where(f => f != SkillFiles.FolderMarker
                                                   && !f.StartsWith(SkillFiles.FunctionsFolder + "/",
                                                       StringComparison.Ordinal)

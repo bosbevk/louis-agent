@@ -9,7 +9,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "WORKSPACE_ROOT": "../../..",
-        "SKILLS_DIRECTORY": "../../../Skills",
+        "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
         "LOG_DIRECTORY": "../../../logs",
         "EVAL_RUNNER": "../../evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll",
         "CONFIG_DIRECTORY": "../../../demos/louis-agent/config",
@@ -27,7 +27,7 @@
         "IDENTITIES": "puls",
         "HOST_TIME_ZONE": "Africa/Johannesburg",
         "WORKSPACE_ROOT": "../../..",
-        "SKILLS_DIRECTORY": "../../../Skills",
+        "SKILLS_DIRECTORY": "../../../demos/puls/skills",
         "LOG_DIRECTORY": "../../../logs/puls",
         "EVAL_RUNNER": "../../evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll",
         "CONFIG_DIRECTORY": "../../../demos/puls/config",

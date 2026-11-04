@@ -60,7 +60,7 @@ public class AgentSessionsTests
             new AgentOptions
             {
                 WorkspaceRoot = RepoRoot,
-                SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+                SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
                 RatesUrl = null,
                 BrowserUrl = "http://puls-browser:9222",
             },
@@ -388,7 +388,7 @@ public class AgentSessionsTests
             new AgentOptions
             {
                 WorkspaceRoot = RepoRoot,
-                SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+                SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
                 RatesUrl = null
             });
 

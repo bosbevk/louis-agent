@@ -18,24 +18,44 @@ packages published first.
 
 ## Decision
 
-- **The solution's groups and the folders on disk are the same map.** A project sits at the path its groups spell.
-- **`src/` holds only the framework:** `engine/`, `hosts/`, `web/` and `evals/`, grouped by function.
-- **`packs/` holds tools and nothing else;** what proves a pack sits apart in `packs-evals/`, so someone can take the tools
-  without the evals, or not own them.
-- **Anything that names a product is a demo of the framework, under `demos/`**, as someone's own project would be, by product and then by function, using
-  the same names as `src/`: `demos/puls/{identity,evals,web,hosts}` and `demos/louis-agent/{web,hosts}`. So it
-  can be lifted out as is, and a new product looks like these do.
+**Framework and implementation are split, and this comes first.** For every folder, file and reference, ask who owns it:
+the framework's code, or what one running product configures, writes or deploys. Framework code can write a thing and the
+thing still belongs to the demo: core writes skill files, and the running demo owns them.
 
-`SolutionLayoutTests` holds all of it, project by project.
+- **The solution's groups and the folders on disk are the same map.** Anything the solution lists sits at the path its
+  groups spell, so the tree a person reads in Rider is the tree on disk.
+- **`src/` holds only the framework:** `engine/`, `hosts/`, `web/`, `evals/` and `tests/`, grouped by function.
+- **`packs/` holds tools and nothing else.** What proves a pack sits apart in `packs-evals/`, so someone can take the tools
+  without the evals or not own them, and its tests in `packs-tests/`.
+- **Anything that names a product is a demo of the framework, under `demos/`**, as someone's own project would be, by
+  product and then by function, using the same names as `src/`. It can be lifted out as is, and a new product looks like
+  these do:
+
+  ```
+  demos/puls/         identity/ evals/ web/ hosts/ tests/ config/ docker/ skills/ deploy/
+  demos/louis-agent/  web/ hosts/ tests/ config/ docker/ skills/
+  ```
+
+- **A test sits on the side it proves.** `src/tests/` holds only tests of the framework alone.
+- **A framework host is told where a demo's things are** (`CONFIG_DIRECTORY`, `SKILLS_DIRECTORY`), or finds them searching
+  upward from where it runs.
+- **Top-level folders are lowercase**, like everything else at that level.
+- **A host ships as a library, and each demo writes the small program naming its packs** (Composition Root). Picked, not
+  built yet.
+
+`SolutionLayoutTests` holds the map, the top-level list and what each demo carries.
 
 ## Consequences
 
-- **Framework still points at configuration in two places, and that is a debt with a name.** The API's csproj picks a web app
-  with `-p:WebApp=puls`, and the hosts reference `host-packs`. CL29.1 inverts these, so a host takes its catalogue from
-  outside.
+- **Framework still points at implementation in three places, and each is a debt with a name.** The API's csproj picks a
+  web app with `-p:WebApp=puls`. The hosts reference `host-packs`. And the API's tests name Puls and the packs, so they sit
+  in `demos/puls/tests/` and the framework ships without API tests until the hosts are inverted (CL29.1).
 - `louis-agent.web.shared` is framework by this rule but 13 of its 49 files mention Puls, which needs its own look.
-- Tests follow the same split: `src/tests/` holds only tests of the framework alone, a demo holds its own, and `packs-tests/` the packs'. The API's tests name Puls and the packs, so they sit in `demos/puls/tests/` until the hosts are inverted; that is a second debt, and the framework ships without API tests until then.
-- A demo holds its own `config/` and `docker/`, so a host is told where its config is (`CONFIG_DIRECTORY`). `prices.json` and `rates.json` are one copy per demo, held equal by a test.
+- `prices.json` and `rates.json` are one copy per demo, held equal by a test, as are the env templates' shared settings by
+  hand.
+- Inside a project, a folder is still PascalCase, because the namespace is the folder path (the orchestrator's `Skills/`).
+- `deploy/` is Puls's because only Puls is deployed today. A second deployed demo brings its own.
+- `docs/` is still one folder. Its split is the next step, so each demo has its own Setup and its own ADRs.
 - Moving a project changes paths in project files, Docker, docs and tests, once, and `git` sees renames. Open branches
   rebase on it.
 

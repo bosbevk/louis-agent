@@ -11,7 +11,7 @@
 - **"prompt is too long"** — something put a huge result into the history; check `logs/oversized-tool-results.jsonl`.
 - **"adaptive thinking is not supported on this model"** — a pre-4.6 Claude model not listed in
   `LlmClientFactory.ThinkingBudgetModelPrefixes`; add its prefix.
-- **Skill not found** — the session doesn't have the `skills` toolset, the file isn't in `Skills/agent/functions/`, or
+- **Skill not found** — the session doesn't have the `skills` toolset, the file isn't in `demos/louis-agent/skills/agent/functions/`, or
   the name differs (case-sensitive).
 - **bash not found on Windows** — install Git for Windows or set `BASH_PATH` to `bash.exe`; WSL's bash is never used.
 - **400 "Invalid `signature` in `thinking` block … bound to a different conversation"** — the system prompt or tool list

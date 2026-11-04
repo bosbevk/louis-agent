@@ -23,7 +23,7 @@ public class AgentCatalogTests
     private static ToolsetContext Context() => new AgentEngineFactory(new FakeChatClient(), new AgentOptions
     {
         WorkspaceRoot = TestPaths.RepoRoot,
-        SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills"),
+        SkillsDirectory = TestPaths.Skills,
         RatesUrl = null,
     }).Context;
 
@@ -297,7 +297,7 @@ public class AgentCatalogTests
         var options = new AgentOptions
         {
             WorkspaceRoot = TestPaths.RepoRoot,
-            SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills"),
+            SkillsDirectory = TestPaths.Skills,
             RolesEnabled = ["testprod-specialist", "nope"]
         };
 

@@ -7,10 +7,13 @@ namespace LouisAgent.Core.Skills;
 public static class SkillFiles
 {
     /// <summary>
-    /// The file that marks the repo's <c>Skills/</c> as the skills folder when SKILLS_DIRECTORY isn't set: no built-in file
+    /// The file that marks a demo's <c>skills/</c> as the skills folder when SKILLS_DIRECTORY isn't set: no built-in file
     /// is on disk any more (CL8 step 4), and other folders are called Skills too (core's loader, the tests' mirror).
     /// </summary>
     internal const string FolderMarker = "README.md";
+
+    /// <summary>The marker from the folder that holds <c>skills/</c>, which is what a search upward looks for.</summary>
+    internal const string MarkedFolderPath = "skills/" + FolderMarker;
 
     /// <summary>The folder of what every agent loads, at every level (CL9): the principles.</summary>
     internal const string SharedFolder = "shared";

@@ -35,6 +35,10 @@ public static class TestPaths
     public static string SampleSkills { get; } =
         Path.Combine(RepoRoot, "src/tests/shared/louis-agent.testing/Fixtures", "SampleSkills.md");
 
+    /// <summary>An empty skills folder of the tests' own, since the real ones belong to the demos.</summary>
+    public static string Skills { get; } =
+        Path.Combine(RepoRoot, "src/tests/shared/louis-agent.testing/Fixtures/skills");
+
     /// <summary>The built-in prompts in core (CL8 step 4), embedded and read only from the assembly.</summary>
     public static string Prompts { get; } = Path.Combine(RepoRoot, "src", "engine", "louis-agent.core", "Prompts");
 

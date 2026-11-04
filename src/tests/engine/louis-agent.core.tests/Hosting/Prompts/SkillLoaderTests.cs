@@ -16,7 +16,7 @@ public class SkillLoaderTests
         "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills", "# Paymo Skills", "# DevOps Skills"
     ];
 
-    private static AgentOptions Options() => new() { SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills") };
+    private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills };
 
     private static IReadOnlyList<ToolsetDefinition> Toolsets(params string[] names) =>
         ToolsetCatalog.All.Where(t => names.Contains(t.Name)).ToList();
@@ -33,19 +33,23 @@ public class SkillLoaderTests
     }
 
     [Test]
-    public void TheSkillsFolder_IsSkillsDirectory_ElseTheReposSkillsFolder()
+    public void TheSkillsFolder_IsSkillsDirectory_ElseASkillsFolderAbove()
     {
         // CL8 step 4: no built-in file is on disk any more, so the folder the agent writes into is found by its README.
-        string skills = Directory.CreateTempSubdirectory("skills-root-").FullName;
+        string demo = Directory.CreateTempSubdirectory("skills-root-").FullName;
+        string marker = Path.GetFullPath(Path.Combine(demo, SkillFiles.MarkedFolderPath));
+        string skills = Directory.CreateDirectory(Path.GetDirectoryName(marker)!).FullName;
+        File.WriteAllText(marker, "");
+        string deep = Directory.CreateDirectory(Path.Combine(demo, "one", "two")).FullName;
         try
         {
-            Assert.That(SkillFolder.Find(new AgentOptions { SkillsDirectory = skills }), Is.EqualTo(skills));
-            Assert.That(SkillFolder.Find(new AgentOptions()), Is.EqualTo(Path.Combine(TestPaths.RepoRoot, "Skills")),
-                "from the tests' folder up, not the test project's own Skills/");
+            var told = new AgentOptions { SkillsDirectory = "told" };
+            Assert.That(SkillFolder.Find(told, deep), Is.EqualTo("told"));
+            Assert.That(SkillFolder.Find(new AgentOptions(), deep), Is.EqualTo(skills));
         }
         finally
         {
-            Directory.Delete(skills, recursive: true);
+            Directory.Delete(demo, recursive: true);
         }
     }
 

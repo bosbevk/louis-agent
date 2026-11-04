@@ -4,7 +4,7 @@
 #   Remove: docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env down
 # Then open http://127.0.0.1:5070. One container: a chat answers the web itself and hands cooking to a specialist on
 # this same instance (AGENT_PEERS names itself, F29; CL19 dropped the second container). puls-app on Azure reaches the
-# browser and Mongo below over Tailscale: `tailscale serve` on this PC forwards the two ports (deploy/azure/README.md).
+# browser and Mongo below over Tailscale: `tailscale serve` on this PC forwards the two ports (demos/puls/deploy/azure/README.md).
 # To see its logs and traces, start the dashboard first (F52):
 #   docker compose -f demos/louis-agent/docker/docker-compose.observability.yml up -d
 name: puls
@@ -74,7 +74,7 @@ services:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
     volumes:
       - ${PULS_WORKSPACE:-../../../}:/workspace
-      - ../../../Skills:/skills
+      - ../skills:/skills
       - ../../../logs/puls:/logs
       - ../../../data/puls:/data
     networks: [default, web]
@@ -133,7 +133,7 @@ services:
     networks: [web]
     ports:
       # Never wider than 127.0.0.1: the DevTools port has no authentication. The Azure app comes in through
-      # `tailscale serve` on this PC, which forwards the tailnet's 9222 to this loopback port (deploy/azure/README.md).
+      # `tailscale serve` on this PC, which forwards the tailnet's 9222 to this loopback port (demos/puls/deploy/azure/README.md).
       - "127.0.0.1:${PULS_BROWSER_PORT:-9222}:9222"
     command:
       - --disable-gpu

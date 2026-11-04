@@ -6,7 +6,7 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "WORKSPACE_ROOT": "../../..",
-        "SKILLS_DIRECTORY": "../../../Skills",
+        "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
         "LOG_DIRECTORY": "../../../logs",
         "CONFIG_DIRECTORY": "../../../demos/louis-agent/config",
         "PRICES_FILE": "../../../demos/louis-agent/config/prices.json",

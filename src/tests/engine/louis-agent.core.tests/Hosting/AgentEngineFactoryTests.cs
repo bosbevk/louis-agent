@@ -23,7 +23,7 @@ public class AgentEngineFactoryTests
     private static AgentOptions Options(string? paymoKey = null) => new()
     {
         WorkspaceRoot = TestPaths.RepoRoot,
-        SkillsDirectory = Path.Combine(TestPaths.RepoRoot, "Skills"),
+        SkillsDirectory = TestPaths.Skills,
         PaymoApiKey = paymoKey,
         RatesUrl = null,
     };

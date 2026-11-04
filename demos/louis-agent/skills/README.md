@@ -1,7 +1,7 @@
 # Skills: what the agent writes
 
 > **Reference.** What this folder holds, and where the built-in prompts are instead. **Elsewhere:** why, in
-> [ADR 0017](../docs/adr/0017-skills-by-level.md) and [ADR 0018](../docs/adr/0018-built-in-prompts-embedded.md).
+> [ADR 0017](../../../docs/adr/0017-skills-by-level.md) and [ADR 0018](../../../docs/adr/0018-built-in-prompts-embedded.md).
 
 This folder is the **skills folder** when `SKILLS_DIRECTORY` isn't set (the compose files set it to this folder,
 mounted at `/skills`). It holds only what the agent writes, kept on disk so it survives a rebuild:
@@ -12,7 +12,7 @@ mounted at `/skills`). It holds only what the agent writes, kept on disk so it s
 | `tools/` | Agent-built tools, pending and approved | `CreateTool`, `/approve` |
 
 **The built-in prompts are not here.** The principles, the modes, the specialists' roles and the toolset guides
-live in [`src/engine/louis-agent.core/Prompts/`](../src/engine/louis-agent.core/Prompts), one folder per level, and are
+live in [`src/engine/louis-agent.core/Prompts/`](../../../src/engine/louis-agent.core/Prompts), one folder per level, and are
 read only from the assembly: change one there and rebuild. A copy of a built-in file here is ignored, with a warning.
 
 `AgentHost` finds this folder by this file, so keep it.

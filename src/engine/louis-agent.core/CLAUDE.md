@@ -61,7 +61,7 @@ touches, and nothing else:
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
 **Skill files we control are plain markdown, always.** That covers every file in `Prompts/` (the principles, the modes,
-the roles, the toolset guides) and the function skills the agent writes into `Skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
+the roles, the toolset guides) and the function skills the agent writes into `demos/louis-agent/skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
 Every file in `Prompts/` opens with its front matter (`name`, `description`, `metadata.level` and `toolsets`; ADR 0063),
 read once by `PromptCatalog` and stripped before the model sees the file; `EveryPromptHasAHeaderTests` holds it.
 

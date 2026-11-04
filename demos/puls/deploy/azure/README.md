@@ -1,8 +1,8 @@
 # Deploying Puls to Azure Container Apps
 
 > **How-to.** What runs in the cloud, how to build and deploy it, where its secrets come from, and how it reaches the
-> browser and the benchmark store on the home PC. **Elsewhere:** the local stacks in [docker/](../../demos/louis-agent/docker/README.md),
-> every setting in [Setup](../../docs/SETUP.md), why the layout is what it is in the
+> browser and the benchmark store on the home PC. **Elsewhere:** the local stacks in [docker/](../../../louis-agent/docker/README.md),
+> every setting in [Setup](../../../../docs/SETUP.md), why the layout is what it is in the
 > [CL19 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md).
 
 Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the whole footprint: two app
@@ -135,4 +135,4 @@ afterwards: an empty list means the update wiped it, and `lock` puts it back. A 
 as a 403 from the browser; `lock` again. A spend cap on the Anthropic key, in the console, is the other half.
 
 ---
-[Docs index](../../docs/README.md) · Related: [Setup](../../docs/SETUP.md) · [Deployment view](../../docs/architecture/07-deployment-view.md)
+[Docs index](../../../../docs/README.md) · Related: [Setup](../../../../docs/SETUP.md) · [Deployment view](../../../../docs/architecture/07-deployment-view.md)

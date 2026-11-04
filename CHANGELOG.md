@@ -6,8 +6,8 @@
 
 - 2026-11-04 — **The folders say what ships** (CL29.1): `src/` holds only the framework, now with the eval harness in
   `src/evals/`; `packs/` holds tools and `packs-evals/` what proves them; anything that names a product moved to
-  `demos/`, as someone's own project would be: `demos/puls/{identity,evals,web,hosts,config,docker}` and
-  `demos/louis-agent/{web,hosts,config,docker}`, each told apart by `CONFIG_DIRECTORY`. The solution's groups match, and `SolutionLayoutTests` holds it. Paths only: no
+  `demos/`, as someone's own project would be: `demos/puls/{identity,evals,web,hosts,tests,config,docker,skills,deploy}` and
+  `demos/louis-agent/{web,hosts,tests,config,docker,skills}`, each told apart by `CONFIG_DIRECTORY`. Framework tests moved to `src/tests/`, pack tests to `packs-tests/`. The solution's groups match, and `SolutionLayoutTests` holds it. Paths only: no
   namespace changed. [ADR 0074](docs/adr/0074-the-folders-say-what-ships.md).
 - 2026-11-04 — **CL28 The folders mirror the solution**: `src/` is `engine/` (core, choices, session-stream, moved in
   from the repository's root), `hosts/` and `web/`, as Rider's groups are, and what proves a pack or an identity moved

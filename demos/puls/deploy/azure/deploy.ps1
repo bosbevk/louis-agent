@@ -7,7 +7,7 @@ Deploys Puls to Azure Container Apps (rg-puls-za): eight verbs, each a few az co
   deploy.ps1 secrets [-App puls-app|puls-searxng] copies the secrets from demos/puls/config/.env.secrets, .env.mongo and .env.searxng
                                                   onto the app (never printed); a missing value is skipped, by name
   deploy.ps1 update  -Tag 2026-10-24-1732 -Revision v018 [-App ...]
-                                                  fills TAG (an image already built) and REVISION into deploy/azure/<App>.yaml
+                                                  fills TAG (an image already built) and REVISION into demos/puls/deploy/azure/<App>.yaml
                                                   and updates the app
   deploy.ps1 searxng-settings                     uploads demos/puls/docker/searxng/settings.yml to the searxng-config share
   deploy.ps1 logs    [-App ...] [-Container ...] [-Follow]
@@ -43,7 +43,7 @@ $StorageAccount = 'pulsstorage'
 $Environment = 'puls-container-env'
 $Location = 'southafricanorth'
 $Insights = 'puls-insights'
-$Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path
+$Repo = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..\..')).Path
 $Here = $PSScriptRoot
 
 function Get-EnvValue([string]$File, [string]$Key) {
@@ -76,7 +76,7 @@ switch ($Verb) {
         Write-Host "Building louis-agent-puls:$Tag (commit $commit) from the repo root (demos/puls/docker/images/Dockerfile.puls)..."
         Invoke-Az acr build -r $Registry -t "louis-agent-puls:$Tag" --build-arg "EVAL_COMMIT=$commit" `
             -f (Join-Path $Repo 'demos\puls\docker\images\Dockerfile.puls') $Repo
-        Write-Host "Building ts-forwarder:$Tag from deploy/azure/ts-forwarder..."
+        Write-Host "Building ts-forwarder:$Tag from demos/puls/deploy/azure/ts-forwarder..."
         Invoke-Az acr build -r $Registry -t "ts-forwarder:$Tag" (Join-Path $Here 'ts-forwarder')
     }
     'secrets' {

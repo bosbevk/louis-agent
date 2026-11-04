@@ -80,6 +80,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   BSD); the simplest design that meets the step, nothing for a future no plan names. [ADR 0030](adr/0030-build-or-adopt.md), [ADR 0055](adr/0055-keep-it-simple.md).
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
   sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
+- **Framework and implementation are split, and this comes first** — `src/` is framework only, a demo holds its own
+  config, docker, skills, deploy and tests; the solution tree is the disk. [ADR 0074](adr/0074-the-folders-say-what-ships.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
   references no other pack, identity or eval; only `demos/puls/hosts/louis-agent.host-packs` knows them all. Weigh every reference against
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](adr/0027-engine-identities-and-packs.md), [0073](adr/0073-packs-reference-no-evals.md).
@@ -135,7 +137,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Edit, never a script; layout only through the formatter; a rename through Rider; Rider's tools first.**
   [ADR 0052](adr/0052-edit-never-script.md).
 - **Test first**, and tests are platform-neutral (they run on Linux in the agent's containers).
-  [ADR 0014](adr/0014-test-first.md).
+  [ADR 0014](adr/0014-test-first.md). **Test what you touch**; the whole solution before a PR. [ADR 0075](adr/0075-test-what-you-touch.md).
 
 **The web and the docs** (the how in `.claude/rules/razor.md` and `docs.md`)
 
@@ -157,12 +159,10 @@ src/evals/               # The eval harness, its protocol, the checks contract, 
 packs/                   # What an agent can do, tools only: where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these
 packs-tests/             # A pack's own tests
-demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/ and docker/ (its settings and images)
-demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC), config/, docker/
+demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/, docker/, skills/ (what the agent writes), deploy/ (Azure), tests/
+demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC), config/, docker/, skills/, tests/
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
 src/tests/               # Only the framework's tests, grouped like src/ ([tests](projects/tests.md)); a demo holds its own tests/ and packs-tests/ the packs'; the ones that leave their process are *.integration-tests
-deploy/azure/            # The cloud (Puls on Azure); on this PC, a demo's own docker/ runs it
-Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
 docs/                    # This guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
 .claude/rules/           # The how of the C#, Razor, CSS and docs rules, loaded by file path
 ```

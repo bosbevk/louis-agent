@@ -3,12 +3,12 @@
 > **Reference.** What each file here is. **Elsewhere:** the commands and settings in the
 > [development guide](../../../docs/guides/get-started.md) and [Setup](../../../docs/SETUP.md); where each service runs
 > in the [deployment view](../../../docs/architecture/07-deployment-view.md); the cloud in
-> [deploy/](../../../deploy/README.md); the dashboard both stacks send to in
+> [deploy/](../deploy/README.md); the dashboard both stacks send to in
 > [the coding agent's docker/](../../louis-agent/docker/README.md).
 
 | File | What it is |
 |---|---|
-| `docker-compose.puls.yml` | The Puls stack: `puls` (5070), `puls-mongo` (the benchmark store), `puls-searxng` and `puls-browser` (the web it reads, on their own network). Its browser and Mongo also serve the Azure app, through `tailscale serve` on this PC ([the tunnel](../../../deploy/azure/README.md#the-tunnel)) |
+| `docker-compose.puls.yml` | The Puls stack: `puls` (5070), `puls-mongo` (the benchmark store), `puls-searxng` and `puls-browser` (the web it reads, on their own network). Its browser and Mongo also serve the Azure app, through `tailscale serve` on this PC ([the tunnel](../deploy/azure/README.md#the-tunnel)) |
 | `images/Dockerfile.puls` | The API serving Puls's web app. Builds from the repo root |
 | `searxng/settings.yml` | The SearXNG settings, mounted read-only into `puls-searxng` here and uploaded to the Azure one |
 

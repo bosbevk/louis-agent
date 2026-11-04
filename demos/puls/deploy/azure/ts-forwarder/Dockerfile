@@ -3,7 +3,7 @@
 # Environment: TS_AUTHKEY (a secret; reusable and ephemeral, so a dead replica's node vanishes), TS_USERSPACE=true,
 # TS_STATE_DIR, TS_EXTRA_ARGS (--hostname=puls-app), FORWARD_TO_HOST (the PC's Tailscale IP), FORWARD_PORTS (9222,27017).
 # Built from this folder: deploy.ps1 build, or
-#   az acr build -r acrpulsza -t ts-forwarder:TAG deploy/azure/ts-forwarder
+#   az acr build -r acrpulsza -t ts-forwarder:TAG demos/puls/deploy/azure/ts-forwarder
 FROM tailscale/tailscale:stable
 RUN apk add --no-cache socat
 COPY start.sh /usr/local/bin/ts-forwarder

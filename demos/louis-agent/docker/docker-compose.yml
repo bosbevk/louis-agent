@@ -40,7 +40,7 @@ services:
       - "127.0.0.1:${MCP_PORT:-5090}:8080"
     volumes:
       - ../../../:/workspace
-      - ../../../Skills:/skills
+      - ../skills:/skills
       - ../../../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     stdin_open: true
@@ -77,7 +77,7 @@ services:
       RATES_FILE: /workspace/demos/louis-agent/config/rates.json
     volumes:
       - ../../../:/workspace
-      - ../../../Skills:/skills
+      - ../skills:/skills
       - ../../../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     stdin_open: true
@@ -124,7 +124,7 @@ services:
       - "127.0.0.1:${API_PORT:-5080}:8080"
     volumes:
       - ../../../:/workspace
-      - ../../../Skills:/skills
+      - ../skills:/skills
       - ../../../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     networks:
@@ -159,7 +159,7 @@ services:
       RATES_FILE: /workspace/demos/louis-agent/config/rates.json
     volumes:
       - ../../../:/workspace
-      - ../../../Skills:/skills
+      - ../skills:/skills
       - ../../../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     stdin_open: true

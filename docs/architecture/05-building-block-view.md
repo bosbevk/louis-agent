@@ -231,12 +231,12 @@ documentation is the system prompt; every file is plain markdown read by `Markdo
    (`puls-cook`), which says its function and how to report; no routing below level 0
 3. the guide of each of the profile's toolsets (`toolsets/files.md`, `toolsets/git.md`, …) and no other, so the prompt never
    describes tools the session doesn't have
-4. with the `skills` toolset only, every function skill the agent wrote (`Skills/agent/functions/*.md`)
+4. with the `skills` toolset only, every function skill the agent wrote (`demos/louis-agent/skills/agent/functions/*.md`)
 
 The built-in files live in `src/engine/louis-agent.core/Prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
 beside `toolsets/` (ADR 0017), and are read only from the assembly (`SkillFileSource`, `ManifestEmbeddedFileProvider`;
 ADR 0018), so what the model reads is fixed by the build. Files the agent writes (its function skills, its tools) are
-on disk only, in the skills folder: `SKILLS_DIRECTORY`, else the repo's `Skills/` (found by its README).
+on disk only, in the skills folder: `SKILLS_DIRECTORY`, else a `skills/` above the working directory (found by its README).
 
 A markdown **skill** is a named procedure with a fenced script (bash, PowerShell or Python by fence language). The model
 runs it with `ExecuteSkill(name, jsonArgs)`; arguments are passed as `SKILL_ARG_*` environment variables and are never
@@ -263,7 +263,7 @@ is exposed to the model** — helpers must be `internal` or `private`). Names an
 | `DevOpsTools` | Azure DevOps work items and sprints (empty sprint = the team's current one) — when `DEVOPS_API_KEY`, `DEVOPS_ORGANIZATION` and `DEVOPS_PROJECT` are set |
 | `AgentEngine` | `ExecuteSkill`, `CreateSkillFile`, `ReloadSkills`, `CreateTool`, `ListAgentTools` |
 
-**Agent-built tools** (`ScriptTool`): the model can write `Skills/tools/pending/{Name}.tool.md` (typed parameters + a
+**Agent-built tools** (`ScriptTool`): the model can write `demos/louis-agent/skills/tools/pending/{Name}.tool.md` (typed parameters + a
 script) with `CreateTool`. It only becomes a real tool after the user types `/approve <Name>`.
 
 ## Bootstrap: `AgentHost`

@@ -97,9 +97,11 @@ public class SolutionLayoutTests
 
     /// <summary>A demo carries its own settings and images, so someone can read it as one whole project.</summary>
     [TestCase("demos/puls", "config/.env.example", "config/prices.json", "config/rates.json",
-        "docker/docker-compose.puls.yml", "docker/images/Dockerfile.puls", "docker/searxng/settings.yml")]
+        "docker/docker-compose.puls.yml", "docker/images/Dockerfile.puls", "docker/searxng/settings.yml",
+        "skills/README.md", "deploy/README.md", "deploy/azure/deploy.ps1")]
     [TestCase("demos/louis-agent", "config/.env.example", "config/prices.json", "config/rates.json",
-        "docker/docker-compose.yml", "docker/images/Dockerfile.api", "docker/images/ollama/Dockerfile.ollama")]
+        "docker/docker-compose.yml", "docker/images/Dockerfile.api", "docker/images/ollama/Dockerfile.ollama",
+        "skills/README.md")]
     public void ADemo_CarriesItsConfigAndImages(string demo, params string[] files)
     {
         var missing = files.Where(file => !File.Exists(Path.Combine(TestPaths.RepoRoot, demo, file)));
@@ -164,6 +166,46 @@ public class SolutionLayoutTests
         Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories)
             .Select(file => Path.GetRelativePath(folder, file).Replace('\\', '/').Split('/'))
             .Any(parts => !parts.Contains("bin") && !parts.Contains("obj"));
+
+    /// <summary>
+    /// A project or a file sits at the path its groups spell, so the tree you read in Rider is the tree on disk.
+    /// </summary>
+    [Test]
+    public void EverythingInTheSolution_SitsWhereItsGroupsSay()
+    {
+        var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
+        var misplaced = new List<string>();
+
+        string? group = null;
+        foreach (string line in lines.Select(line => line.Trim()))
+        {
+            // A group's own line opens it, and every file line after it is that group's, until the next project line.
+            if (line.StartsWith("Project(") && line.Contains(SolutionFolder)) group = IdOf(line);
+            if (line.StartsWith("Project(") && !line.Contains(SolutionFolder))
+            {
+                group = null;
+                string project = line.Split('"')[5].Replace('\\', '/');
+                string where = GroupPath(lines, ParentOf(lines, IdOf(line))!);
+                if (Path.GetDirectoryName(Path.GetDirectoryName(project))!.Replace('\\', '/') != where)
+                    misplaced.Add($"{project} is in the group {where}");
+            }
+
+            if (group is null || line.StartsWith('{') || line.StartsWith("Project") || !line.Contains(" = ")) continue;
+            string item = line.Split(" = ")[0].Replace('\\', '/');
+            string folder = GroupPath(lines, group);
+            if (Path.GetDirectoryName(item)!.Replace('\\', '/') != folder)
+                misplaced.Add($"{item} is in the group {folder}");
+        }
+
+        Assert.That(misplaced, Is.Empty);
+    }
+
+    /// <summary>The path a solution folder's nesting spells, from the top.</summary>
+    private static string GroupPath(string[] lines, string id)
+    {
+        string name = lines.Single(line => line.StartsWith("Project(") && IdOf(line) == id).Split('"')[3];
+        return ParentOf(lines, id) is { } parent ? $"{GroupPath(lines, parent)}/{name}" : name;
+    }
 
     /// <summary>The id at the end of a solution file's project line.</summary>
     private static string IdOf(string line) => line.Split('"')[^2];

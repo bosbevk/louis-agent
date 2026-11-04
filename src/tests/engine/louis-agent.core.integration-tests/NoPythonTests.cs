@@ -15,10 +15,10 @@ public class NoPythonTests
 
         var python = tracked
             .Where(f => f.EndsWith(".py", StringComparison.OrdinalIgnoreCase) &&
-                        !f.StartsWith("Skills/", StringComparison.Ordinal)).Order(StringComparer.Ordinal).ToList();
+                        !f.Contains("/skills/", StringComparison.Ordinal)).Order(StringComparer.Ordinal).ToList();
 
         Assert.That(python, Is.Empty,
-            "The repo is C#: a skill's Python lives under Skills/ and nothing else is tracked (F18 step 7):\n  " +
+            "The repo is C#: a skill's Python lives under a demo's skills/ and nothing else is tracked (F18 step 7):\n  " +
             string.Join("\n  ", python));
     }
 

@@ -163,7 +163,7 @@ docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/l
 docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d         # Puls
 ```
 
-A changed file under `Skills/` needs only a restart: the containers mount the folder and read it when a chat opens.
+A changed file under a demo's `skills/` needs only a restart: the containers mount the folder and read it when a chat opens.
 
 The orchestrator reads the same two files (its demo, removed in CL10, comes back with the rewritten benchmarks).
 

@@ -20,4 +20,4 @@ cp demos/puls/config/.env.example demos/puls/config/.env
 cp demos/puls/config/.env.secrets.example demos/puls/config/.env.secrets     # then set ANTHROPIC_API_KEY and AGENT_API_KEY
 ```
 
-The stack that runs here is in [docker/](../docker/README.md); the cloud in [deploy/](../../../deploy/README.md).
+The stack that runs here is in [docker/](../docker/README.md); the cloud in [deploy/](../deploy/README.md).

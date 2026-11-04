@@ -92,7 +92,7 @@ in its own voice.
 docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
 ```
 
-Open **http://127.0.0.1:5070**. The same app runs on Azure ([deploy/azure](deploy/azure/README.md)). Design:
+Open **http://127.0.0.1:5070**. The same app runs on Azure ([demos/puls/deploy/azure](demos/puls/deploy/azure/README.md)). Design:
 [Puls's identity](docs/projects/louis-agent.identity.puls.md), [Puls's web app](docs/projects/louis-agent.puls.md).
 
 ## The coding agent

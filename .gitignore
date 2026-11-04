@@ -47,9 +47,9 @@ logs/
 **/config/.env.secrets.local
 **/config/.env.local
 
-# Agent-built tools and skill files awaiting /approve (approved ones in Skills/tools/ and Skills/agent/functions/ are committed)
-Skills/tools/pending/
-Skills/agent/functions/pending/
+# Agent-built tools and skill files awaiting /approve (approved ones in a demo's skills/ are committed)
+**/skills/tools/pending/
+**/skills/agent/functions/pending/
 
 # Working copy and state created by samples/run-demo.ps1
 .demo/

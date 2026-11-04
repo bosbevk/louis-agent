@@ -114,7 +114,7 @@ internal static class ApiTestHost
         var options = new AgentOptions
         {
             WorkspaceRoot = workspaceRoot,
-            SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+            SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
             RatesUrl = null
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
