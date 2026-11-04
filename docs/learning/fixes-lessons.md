@@ -181,7 +181,8 @@ A `Task` that ends in an exception nobody ever awaits is a lost task: when the g
 raises `TaskScheduler.UnobservedTaskException`, and F52's last-chance handler logs it as an error. PuppeteerSharp
 makes one of those on purpose for every redirect a page follows: a redirect has no body, so the library sets the
 body's task to "Response body is unavailable for redirect responses" and leaves it, where the JavaScript Puppeteer
-puts a `.catch` on the same promise. Nothing was wrong with any visit; the error showed up at an unrelated moment,
+keeps the error as a value and only makes a rejecting promise when someone asks for the body. Nothing was wrong with
+any visit; the error showed up at an unrelated moment,
 whenever the collector ran. Three lessons. An observability feature finds old faults, not only new ones: the line
 appeared the day after F52 shipped, and the bug is as old as F32. A library's fault is observed where it's made,
 with the smallest thing that awaits it (asking for the body), not silenced in the handler that reports every lost
