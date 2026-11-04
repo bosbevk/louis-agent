@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Tools;
+
 using static LouisAgent.Api.Evals.Store.EvalDocuments;
 
 namespace LouisAgent.Api.Evals.Store.Notes;

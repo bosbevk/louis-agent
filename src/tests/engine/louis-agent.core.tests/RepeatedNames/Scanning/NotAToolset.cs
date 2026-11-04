@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

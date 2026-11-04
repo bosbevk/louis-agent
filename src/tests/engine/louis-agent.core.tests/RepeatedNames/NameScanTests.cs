@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
 namespace LouisAgent.Core.Tests.RepeatedNames;

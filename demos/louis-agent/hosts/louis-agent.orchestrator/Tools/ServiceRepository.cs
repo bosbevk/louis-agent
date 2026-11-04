@@ -1,9 +1,9 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using System.Text;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools;
 using LouisAgent.Orchestrator.Messages;
 using Microsoft.Extensions.Logging;
 

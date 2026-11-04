@@ -1,14 +1,13 @@
 
+using LouisAgent.Composition.Guardrails.Messages;
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Guardrails.Messages;
-using LouisAgent.Core.Messages;
 
-namespace LouisAgent.Core.Guardrails.Workspace;
+namespace LouisAgent.Composition.Guardrails.Workspace;
 /// <summary>
 /// Keeps paths inside the workspace: relative only, never above the root, never through a symbolic link. The agent's
 /// file tools and the API's workspace and git endpoints resolve every path through it.
 /// </summary>
-internal sealed class WorkspaceBoundary
+public sealed class WorkspaceBoundary
 {
     public WorkspaceBoundary(string root)
     {

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using System.Net.ServerSentEvents;
 using System.Text.Json;
 using LouisAgent.Api.Contracts;

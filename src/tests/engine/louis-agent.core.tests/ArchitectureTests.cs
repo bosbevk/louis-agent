@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Messages;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Tests.RepeatedNames.Scanning;
 

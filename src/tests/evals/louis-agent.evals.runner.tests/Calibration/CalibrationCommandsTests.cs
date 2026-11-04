@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Evals.Runner.Evals.Stub;

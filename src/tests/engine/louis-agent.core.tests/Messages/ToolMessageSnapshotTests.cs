@@ -1,3 +1,4 @@
+using LouisAgent.Core.Config;
 using LouisAgent.Composition.Messages;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -16,7 +17,7 @@ public class ToolMessageSnapshotTests
     private static readonly string GoldenFile =
         Path.Combine(TestPaths.RepoRoot, "src/tests/engine/louis-agent.core.tests", "Messages", "ToolMessageSnapshot.json");
 
-    private static readonly Type[] ToolMessages = typeof(ToolMessage).Assembly.GetTypes()
+    private static readonly Type[] ToolMessages = typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(ToolMessage).Assembly.GetTypes())
         .Where(t => t.IsEnum && t.Name.EndsWith("ToolMessage", StringComparison.Ordinal) &&
                     t.Namespace?.Split('.').Last() == "Messages")
         .ToArray();

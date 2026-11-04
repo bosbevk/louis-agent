@@ -1,6 +1,7 @@
 
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Guardrails.Workspace;
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Guardrails.Workspace;
 using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Messages;

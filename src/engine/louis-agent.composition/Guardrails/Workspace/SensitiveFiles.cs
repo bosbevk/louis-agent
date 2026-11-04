@@ -1,11 +1,11 @@
-namespace LouisAgent.Core.Guardrails.Workspace;
+namespace LouisAgent.Composition.Guardrails.Workspace;
 
 /// <summary>
 /// Secret files that neither the agent's file tools nor the web app read or show: <c>.env*</c>, keys and certificates,
 /// and credential files. A <c>.env</c> template (<c>.env.example</c>, <c>.env.secrets.example</c>, <c>.sample</c>,
 /// <c>.template</c>) is not one: it documents the settings and is committed, so it holds no secrets (FX12).
 /// </summary>
-internal static class SensitiveFiles
+public static class SensitiveFiles
 {
     private static readonly HashSet<string> Names = new(StringComparer.OrdinalIgnoreCase)
     {
@@ -15,7 +15,7 @@ internal static class SensitiveFiles
 
     private static readonly string[] TemplateEndings = [".example", ".sample", ".template"];
 
-    internal static bool IsSensitive(string path)
+    public static bool IsSensitive(string path)
     {
         string name = Path.GetFileName(path);
         return (name.StartsWith(".env", StringComparison.OrdinalIgnoreCase) &&

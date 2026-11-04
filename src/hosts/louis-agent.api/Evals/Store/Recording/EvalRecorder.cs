@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Api.Evals.Runs;
 

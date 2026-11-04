@@ -1,7 +1,8 @@
-namespace LouisAgent.Orchestrator.Messages;
 
+using LouisAgent.Composition.Tools;
 using System.ComponentModel;
 
+namespace LouisAgent.Orchestrator.Messages;
 /// <summary>The orchestrator's log lines; written to stderr (and the run file), tagged [orchestrator].</summary>
 public enum OrchestratorLogMessage
 {

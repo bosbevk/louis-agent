@@ -1,3 +1,5 @@
+using LouisAgent.Core.Config;
+using LouisAgent.Composition.Guardrails.Messages;
 using LouisAgent.Composition.Messages;
 using System.Reflection;
 using LouisAgent.Core.Config.Messages;
@@ -15,7 +17,7 @@ public class MessageEnumTests
 {
     /// <summary>Every enum of a <c>Messages</c> namespace in core.</summary>
     private static readonly Type[] MessageEnums =
-        typeof(ToolMessage).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes()).Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
+        typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes()).Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
             .ToArray();
 
     /// <summary>Every member of every message enum.</summary>
@@ -47,7 +49,7 @@ public class MessageEnumTests
     {
         // An enum named for messages but placed outside a Messages folder would skip every check above, so it fails
         // here.
-        var stray = typeof(ToolMessage).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes())
+        var stray = typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes())
             .Where(t => t.IsEnum && (t.Name.EndsWith("Message", StringComparison.Ordinal) ||
                                      t.Name.EndsWith("Text", StringComparison.Ordinal)))
             .Where(t => t.Namespace?.Split('.').Last() != "Messages")

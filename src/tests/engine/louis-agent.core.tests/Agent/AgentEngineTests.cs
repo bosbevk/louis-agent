@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Agent.Toolsets;

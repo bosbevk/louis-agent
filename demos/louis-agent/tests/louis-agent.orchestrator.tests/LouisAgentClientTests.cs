@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Usage.Reports;
 
 namespace LouisAgent.Orchestrator.Tests;

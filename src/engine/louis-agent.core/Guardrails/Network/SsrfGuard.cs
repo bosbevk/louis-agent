@@ -1,8 +1,8 @@
 
+using LouisAgent.Composition.Guardrails.Messages;
 using LouisAgent.Composition.Messages;
 using System.Net;
 using System.Net.Sockets;
-using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Core.Guardrails.Network;

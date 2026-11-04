@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Guardrails.Workspace;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Endpoints.Git.Branches;
@@ -8,7 +9,6 @@ using LouisAgent.Api.Endpoints.Sessions;
 using LouisAgent.Api.Endpoints.Workspace;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
-using LouisAgent.Core.Guardrails.Workspace;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;

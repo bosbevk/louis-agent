@@ -2,17 +2,16 @@
 using LouisAgent.Composition.Messages;
 using System.Diagnostics;
 using System.Text;
-using LouisAgent.Core.Messages;
 
-namespace LouisAgent.Core.Tools;
+namespace LouisAgent.Composition.Tools;
 
 /// <summary>
 /// Runs an external process without a shell: arguments are passed verbatim, stdout/stderr are captured
 /// together, and on timeout the whole process tree is killed. Shared by the dotnet and python toolsets.
 /// </summary>
-internal static class ProcessRunner
+public static class ProcessRunner
 {
-    internal sealed record Result(int ExitCode, string Output, bool TimedOut);
+    public sealed record Result(int ExitCode, string Output, bool TimedOut);
 
     public static Result Run(
         string fileName,

@@ -1,4 +1,4 @@
-using LouisAgent.Core.Tools;
+using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Tools.DotNet;
 
 namespace LouisAgent.Core.Tests.Tools.DotNet;

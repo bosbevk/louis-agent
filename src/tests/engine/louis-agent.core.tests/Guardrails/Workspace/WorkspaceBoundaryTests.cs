@@ -1,4 +1,4 @@
-using LouisAgent.Core.Guardrails.Workspace;
+using LouisAgent.Composition.Guardrails.Workspace;
 
 namespace LouisAgent.Core.Tests.Guardrails.Workspace;
 

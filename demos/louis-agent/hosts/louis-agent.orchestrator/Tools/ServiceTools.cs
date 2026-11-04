@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
@@ -6,7 +7,6 @@ using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Messages;
