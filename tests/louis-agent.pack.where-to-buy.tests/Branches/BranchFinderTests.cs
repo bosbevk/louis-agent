@@ -88,8 +88,8 @@ public class BranchFinderTests
     }
 
     /// <summary>
-    /// With none near the town the box still widens, so a small town without the shop can name its nearest: Prince
-    /// Albert's nearest Pick n Pay is 43.9 km away, and that answer has to survive the smaller first box.
+    /// With none near the town the box still widens, so a town without the shop can still name its nearest: here
+    /// the nearest are the city's, over 40 km away, and that answer has to survive the smaller first box.
     /// </summary>
     [Test]
     public async Task NoBranchNearby_WidensTheBox_AndNamesTheNearest()

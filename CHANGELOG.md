@@ -4,6 +4,12 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F56 The packs' feeds as MCP resources**: the MCP server publishes every feed in the catalogue as a
+  resource, `feed://{name}`, `application/json`, read whole when a client asks (`FeedResources`, one SDK resource per
+  feed); `McpPrimitives.Add` sets up the tools and the resources once for both transports, and `Program.cs` keeps only
+  the transports and auth (`EngineToolSync`, `SkillsToolProvider` moved to `Tools/`). The server's first tests,
+  `tests/louis-agent.mcp-server.tests`, run the SDK's real client against it over in-memory pipes. Over HTTP the
+  feeds sit behind the MCP key; the API still serves them open. [ADR 0072](docs/adr/0072-feeds-are-mcp-resources.md).
 - 2026-11-04 — **F55 Stats SA's prices uploaded in the admin portal**: a pack can declare data uploads (`IDataImport`
   in core: a name, a description, the files it takes, a preview and a save, both answering a report; `IAgentPack.Imports`,
   empty by default; the catalogue gathers them and refuses a name twice), served behind the admin key at `GET

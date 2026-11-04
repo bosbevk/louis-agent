@@ -1,7 +1,7 @@
 # Change the MCP server
 
-> **How-to.** Change `src/louis-agent.mcp-server`, which hands the agent's tools to any MCP client: publish a tool, add
-> an MCP-only tool, choose the transport, and check it with a client. **Elsewhere:** how it works in
+> **How-to.** Change `src/louis-agent.mcp-server`, which hands the agent's tools to any MCP client: publish a tool or a
+> feed, add an MCP-only tool, choose the transport, and check it with a client. **Elsewhere:** how it works in
 > [louis-agent.mcp-server](../projects/louis-agent.mcp-server.md); why it has no model in
 > [MCP exposes tools, not a model](../CLAUDE.md#rules-that-always-apply).
 
@@ -15,6 +15,13 @@ Nothing to do here. Every tool the engine has is published, and kept in step by 
 pack's tool, an agent-built tool once approved. Clients are told with `notifications/tools/list_changed`. So add the
 tool in core ([Change the engine](change-the-engine.md#add-a-tool-to-a-toolset)) or in a pack ([Build a pack](build-a-pack.md)); a pack's
 tools are already held to MCP's shapes by `PackConvertibilityTests` ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)).
+
+## Publish a feed
+
+Nothing to do here either. Every feed a pack lists (`IAgentPack.Feeds`, [ADR 0070](../adr/0070-packs-publish-data-feeds.md))
+is a resource, `feed://{name}`, set up by `McpPrimitives.Add` for both transports
+([ADR 0072](../adr/0072-feeds-are-mcp-resources.md)); the API serves the same feed at `/v1/feeds/{name}`. Add the feed
+in its pack ([Build a pack](build-a-pack.md)).
 
 ## Add an MCP-only tool
 
@@ -30,8 +37,8 @@ A tool only MCP clients need (today: the three read-only skill tools, `list_skil
 4. Never expose a step that is the user's to take: approving agent-built tools or skill files stays in a chat
    ([ADR 0033](../adr/0033-what-the-agent-writes-has-a-scope.md)).
 
-`Program.cs` is over the 200-line limit and on `FileSizeTests`' list; a new class goes in a file and folder of its own
-(for example `Tools/`), not into `Program.cs`.
+`Program.cs` holds the transports and auth only; a new class goes in a file and folder of its own (`Tools/`,
+`Resources/`), and a new kind of primitive goes in `McpPrimitives.Add`, so both transports get it.
 
 ## Choose the transport
 
@@ -50,8 +57,10 @@ curl -s -o /dev/null -w "%{http_code}\n" -X POST http://127.0.0.1:5090/         
 ```
 
 For stdio, add the server to a client from `config/rider/rider-mcp-servers.example.json` and ask it to list the tools.
-The server has no tests of its own: its auth is core's `HostAuth` (`HostAuthTests`), and the tools are tested where they
-live.
+Over stdio by hand: pipe `initialize`, `notifications/initialized`, `resources/list` and `resources/read` (with
+`{"uri":"feed://shop-prices"}`) as JSON-RPC lines into the built server with `PACKS=shop-prices`. In code,
+`tests/louis-agent.mcp-server.tests` runs a real client against the server over in-memory pipes (`InMemoryMcp`); its
+auth is core's `HostAuth` (`HostAuthTests`), and the tools are tested where they live.
 
 ## Before you ask for a review
 
