@@ -1,9 +1,10 @@
 # louis-agent.identity.puls — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `identities/louis-agent.identity.puls/` · **References:**
-> louis-agent.core, louis-agent.evals.checks (the check contract its eval checks implement),
-> Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
-> sets it) · **Names:** the `shops` and `recipes` packs
+> louis-agent.core, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
+> sets it) · **Names:** the `where-to-buy`, `shop-prices` and `recipes` packs · **Its evals:**
+> `identities/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
+> references it, [ADR 0073](../adr/0073-packs-reference-no-evals.md))
 
 ## Purpose
 
@@ -93,7 +94,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `Prompts/specialists/puls-researcher.md`, `puls-reader.md`, `puls-analyst.md`, `puls-historian.md` | The web researcher, file reader, numbers and history specialists (written, off until each passes a check) |
 | `Prompts/minions/puls-minion.md` | What every Puls minion is: one task, one tool, a short answer in its role's fields |
 | `Prompts/minions/puls-minion-web-price-lookup.md` | One ingredient's price at each named shop, with `WebSearch` (F30); runs only where the instance sets `MINION_LLMS` |
-| `louis-agent.identity.puls.csproj` | References core and the check contract, never the harness (`ArchitectureTests` holds it); the two embedding lines (`GenerateEmbeddedFilesManifest`, the `Prompts\**\*.md` glob) and the item that copies `Evals/`'s files |
+| `louis-agent.identity.puls.csproj` | References core alone (`ArchitectureTests` holds it), and the two embedding lines (`GenerateEmbeddedFilesManifest`, the `Prompts\**\*.md` glob); the item that copies `Evals/`'s files is in the evals project's csproj |
 
 ## Configuration
 

@@ -22,7 +22,7 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Routing;
 public class RoutingEvalTests
 {
     /// <summary>Where the folder sits in the repository.</summary>
-    private const string Source = "identities/louis-agent.identity.puls/Evals/Routing";
+    private const string Source = "identities/louis-agent.identity.puls.evals/Evals/Routing";
 
     /// <summary>The toolsets that hand a question on to another agent.</summary>
     private static readonly string[] Delegating = [CoreToolset.Specialists.Wire(), CoreToolset.Minions.Wire()];

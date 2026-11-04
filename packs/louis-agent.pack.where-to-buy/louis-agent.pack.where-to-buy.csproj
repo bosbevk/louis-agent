@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- Where to buy (F50.2, ADR 0027, 0028, 0069): a shop's branches near the user's town from OpenStreetMap's
-       Nominatim, and the shop checks an eval names (F49.3), which prove the answer names the branch and reads no
-       shop. It took the place of the shops pack. References core, and the check contract for its checks. -->
+       Nominatim. It took the place of the shops pack. References core alone; the rules that prove it are the project
+       beside it, louis-agent.pack.where-to-buy.checks (ADR 0073). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Packs.WhereToBuy</RootNamespace>
@@ -18,9 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
-    <!-- The check contract: the pack ships the checks that prove what it does, as it ships its tools (F49.3,
-         WhereToBuyChecks.All); never the harness that runs them (ADR 0027). -->
-    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
 

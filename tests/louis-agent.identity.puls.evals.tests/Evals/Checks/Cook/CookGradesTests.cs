@@ -15,7 +15,7 @@ public class CookGradesTests
 {
     /// <summary>The golden file, beside this test in the repository.</summary>
     private static readonly string GoldenFile = Path.Combine(TestPaths.RepoRoot, "tests",
-        "louis-agent.identity.puls.tests", "Evals", "Checks", "Cook", "CookGrades.txt");
+        "louis-agent.identity.puls.evals.tests", "Evals", "Checks", "Cook", "CookGrades.txt");
 
     /// <summary>
     /// The grades match the golden file. A deliberate change is rewritten with <c>LOUIS_UPDATE_GOLDEN=1</c>, and its

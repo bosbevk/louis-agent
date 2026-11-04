@@ -79,10 +79,10 @@ public class EvalListingTests
     public void AListedEvalsFolderIsRead_AndIsNullWhenTheLineLeavesItOut()
     {
         var with = EvalListing.Parse(
-            """{"name":"cook","version":1,"proves":"Cooks","folder":"identities/louis-agent.identity.puls/Evals/Cook"}""");
+            """{"name":"cook","version":1,"proves":"Cooks","folder":"identities/an.evals/Evals/Cook"}""");
         var without = EvalListing.Parse("""{"name":"stub","version":1,"proves":"A canned run","folder":null}""");
 
-        Assert.That(with.Evals.Single().Folder, Is.EqualTo("identities/louis-agent.identity.puls/Evals/Cook"));
+        Assert.That(with.Evals.Single().Folder, Is.EqualTo("identities/an.evals/Evals/Cook"));
         Assert.That(without.Evals.Single().Folder, Is.Null);
     }
 

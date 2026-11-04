@@ -191,26 +191,25 @@ public partial class ArchitectureTests
     {
         // The rule on a fixture, read as text (never a loose csproj the build would pick up), then on every pack on
         // disk.
-        const string offending = """
-                                 <Project Sdk="Microsoft.NET.Sdk">
-                                   <ItemGroup>
-                                     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
-                                     <ProjectReference Include="..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
-                                     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
-                                   </ItemGroup>
-                                 </Project>
-                                 """;
+        const string offending =
+            """
+            <Project Sdk="Microsoft.NET.Sdk">
+              <ItemGroup>
+                <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+                <ProjectReference Include="..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+                <ProjectReference Include="..\..\identities\louis-agent.identity.an\louis-agent.identity.an.csproj" />
+              </ItemGroup>
+            </Project>
+            """;
         Assert.That(ForbiddenReferences(offending),
             Is.EqualTo(new[]
             {
                 @"..\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj",
-                @"..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj"
+                @"..\..\identities\louis-agent.identity.an\louis-agent.identity.an.csproj"
             }));
 
         string packs = Path.Combine(TestPaths.RepoRoot, "packs");
-        var found = (Directory.Exists(packs)
-                ? Directory.EnumerateFiles(packs, "*.csproj", SearchOption.AllDirectories)
-                : [])
+        var found = PackProjects()
             .SelectMany(f =>
                 ForbiddenReferences(File.ReadAllText(f)).Select(r => $"{Path.GetRelativePath(packs, f)}: {r}"))
             .ToList();
@@ -219,9 +218,71 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
+    /// A pack references nothing under <c>evals/</c>, so it can follow the engine into a package without the evals
+    /// coming along. What proves a pack lives in its own checks project, which points at the pack, never the reverse.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    [Test]
+    public void NoPack_ReferencesTheEvals()
+    {
+        var found = PackProjects()
+            .Where(f => ReferencesOf(File.ReadAllText(f)).Any(r => r.StartsWith("louis-agent.evals")))
+            .Select(Path.GetFileName);
+
+        Assert.That(found, Is.Empty);
+    }
+
+    /// <summary>A pack's checks project leans on its own pack and the check contract, and on nothing else.</summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    [Test]
+    public void APacksChecksProject_ReferencesOnlyItsPack_AndTheContract()
+    {
+        string packs = Path.Combine(TestPaths.RepoRoot, "packs");
+        var projects = Directory.EnumerateFiles(packs, "*.checks.csproj", SearchOption.AllDirectories).ToList();
+
+        Assert.That(projects.Select(Path.GetFileName),
+            Is.EquivalentTo(new[]
+            {
+                "louis-agent.pack.recipes.checks.csproj", "louis-agent.pack.where-to-buy.checks.csproj"
+            }));
+        foreach (string project in projects)
+        {
+            string pack = Path.GetFileName(project).Replace(".checks.csproj", ".csproj");
+            Assert.That(ReferencesOf(File.ReadAllText(project)),
+                Is.SubsetOf(new[] { pack, "louis-agent.evals.checks.csproj" }), project);
+        }
+    }
+
+    /// <summary>
+    /// Every host loads the composition, so it names no checks or evals project: those reach the runner alone, and a
+    /// host carries none of them.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    [Test]
+    public void TheComposition_ReferencesNoChecksOrEvalsProject()
+    {
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.composition",
+            "louis-agent.composition.csproj"));
+
+        Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".checks.") || r.Contains(".evals")), Is.Empty);
+    }
+
+    /// <summary>Every project that is a pack, leaving out the checks projects beside them.</summary>
+    private static IEnumerable<string> PackProjects() =>
+        Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj", SearchOption.AllDirectories)
+            .Where(f => !f.EndsWith(".checks.csproj", StringComparison.Ordinal));
+
+    /// <summary>
+    /// The project files a csproj references, by file name, so a test reads the same on Linux, where a backslash isn't
+    /// a folder separator.
+    /// </summary>
+    private static IEnumerable<string> ReferencesOf(string csproj) =>
+        ProjectReference().Matches(csproj).Select(m => Path.GetFileName(m.Groups[1].Value.Replace('\\', '/')));
+
+    /// <summary>
     /// The check contract may lean only on what a pack leans on already: the engine, the session stream and the eval
-    /// protocol. That's why a pack can ship its own check, and why the contract never reaches back into the harness,
-    /// a pack or an identity.
+    /// protocol. That's why a checks project stays small, and why the contract never reaches back into the harness, a
+    /// pack or an identity.
     /// </summary>
     /// <remarks>
     /// Separated Interface (Fowler, PoEAA): the contract sits in a small project its clients can reference, and the
@@ -235,11 +296,7 @@ public partial class ArchitectureTests
         string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "evals", "louis-agent.evals.checks",
             "louis-agent.evals.checks.csproj"));
 
-        // By file name, so the test reads the same on Linux, where a backslash isn't a folder separator.
-        var references = ProjectReference().Matches(csproj)
-            .Select(m => Path.GetFileName(m.Groups[1].Value.Replace('\\', '/')));
-
-        Assert.That(references,
+        Assert.That(ReferencesOf(csproj),
             Is.EquivalentTo(new[]
             {
                 "louis-agent.core.csproj", "louis-agent.session-stream.csproj", "louis-agent.evals.protocol.csproj"
@@ -248,22 +305,18 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
-    /// Puls's identity, which every host loads, leans only on the engine and the check contract its own checks
-    /// implement: never the harness that runs them, which its judges' project references instead.
+    /// Puls's identity, which every host loads, leans only on the engine. Its evals are a project of their own, which
+    /// only the runner references, so the identity can follow the engine into a package without them.
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
-    public void TheIdentity_ReferencesOnlyTheEngineAndTheCheckContract()
+    public void TheIdentity_ReferencesOnlyTheEngine()
     {
         string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "identities", "louis-agent.identity.puls",
             "louis-agent.identity.puls.csproj"));
 
-        // By file name, so the test reads the same on Linux, where a backslash isn't a folder separator.
-        var references = ProjectReference().Matches(csproj)
-            .Select(m => Path.GetFileName(m.Groups[1].Value.Replace('\\', '/')));
-
-        Assert.That(references,
-            Is.EquivalentTo(new[] { "louis-agent.core.csproj", "louis-agent.evals.checks.csproj" }));
+        Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "louis-agent.core.csproj" }));
     }
 
     /// <summary>
@@ -422,7 +475,8 @@ public partial class ArchitectureTests
     /// A top-level type: it starts at column 0 (file-scoped namespaces), while nested types are indented.
     /// </summary>
     [GeneratedRegex(
-        @"^(?:(?:public|internal|file|static|sealed|abstract|partial|readonly)\s+)*(?:class|record|enum|interface|struct)\s+\w",
+        @"^(?:(?:public|internal|file|static|sealed|abstract|partial|readonly)\s+)*" +
+        @"(?:class|record|enum|interface|struct)\s+\w",
         RegexOptions.Multiline)]
     private static partial Regex TopLevelType();
 

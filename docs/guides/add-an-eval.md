@@ -12,7 +12,7 @@ transcripts sit beside it. An eval that uses the harness's checks needs no C# at
 
 The example is `acme`, the hardware shop's assistant [Build an identity](build-an-identity.md) makes, with an eval that
 asks how many square metres of tile a room needs. `acme` is not in the repo. Puls's two evals are the working
-examples to open beside this guide: `identities/louis-agent.identity.puls/Evals/Routing/` (one general check) and
+examples to open beside this guide: `identities/louis-agent.identity.puls.evals/Evals/Routing/` (one general check) and
 `Evals/Cook/` (Puls's own checks, a judge and a person's review).
 
 ## 1. Copy the template
@@ -119,6 +119,7 @@ list also takes `required`:
 | `tool-used` · `tool-not-used` | `tool` | the tool was called · never called |
 | `tool-used-with` | `tool`, `field`, `value` | the tool was called with that input field set to the value |
 | `tool-calls-under` | `count` | fewer tool calls than the count, hand-overs included |
+| `tool-rows-marked` | `tool`, `mark` | never required, never fails: lists the rows of the tool's tables whose last cell is the mark, in its reason |
 | `routed-to` | `expected_key`, `delegating_toolsets` | the first turn went to the role under the scenario's key; a mode without a delegating toolset must answer itself |
 | **Extract, then compare** (through a reader) | | |
 | `amount-under` | `key`, `reader` | the answer's total, as the reader reads it, is at most the scenario's amount |
@@ -142,15 +143,15 @@ required check that asks no model (a fixed rule), so a run always has a check th
 `rand-prices`, `servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements
 `IMoneyReader`, `INumberReader`, `IImageReader`, `IPriceReader` or `ILinkReader` (from the check contract,
 `evals/louis-agent.evals.checks`), listed in your
-identity's list (`PulsReaders.All`), which the composition hands to the runner (`EvalReaders.All`). `name` keeps the
+evals project's list (`PulsReaders.All`), which the runner gathers in `RunnerReaders`. `name` keeps the
 name your stored grades carry when the type is a general one.
 
 **A check of your own** is for a rule no general check and reader can say. It is C#, because a rule is code: a class
-that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its owner's
-list (as the where-to-buy pack's rules are in `WhereToBuyChecks.All`, in `packs/louis-agent.pack.where-to-buy/Checks/`), which the
-composition hands to the runner (`EvalChecks.All`). A rule that proves a pack's tools is the pack's
-([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools), ADR 0060). The worked example is
-`EstimatesAtShop` and its tests. Its reasons
+that implements `ICheck`, with a nested `Entry` that builds it from a typed `Settings` record, listed in its project's
+list (as the where-to-buy rules are in `WhereToBuyChecks.All`, in `packs/louis-agent.pack.where-to-buy.checks/Checks/`),
+which the runner gathers in `RunnerChecks`. It lives in a project beside what it proves, which only the runner
+references, never in the pack or identity ([Build a pack](build-a-pack.md#9-its-checks-when-it-proves-its-tools),
+ADR 0073). The worked example is `EstimatesAtShop` and its tests. Its reasons
 are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
 (`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,
 so it goes in a project of its own beside the identity that only the runner references, as

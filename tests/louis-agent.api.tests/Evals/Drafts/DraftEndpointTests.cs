@@ -24,7 +24,7 @@ public class DraftEndpointTests
 {
     private const string AdminKey = "admin-secret";
     private const string RunId = "8f7802b9a72e";
-    private const string Cook = "identities/louis-agent.identity.puls/Evals/Cook";
+    private const string Cook = "identities/louis-agent.identity.puls.evals/Evals/Cook";
     private static readonly DateTimeOffset T0 = new(2026, 11, 3, 9, 0, 0, TimeSpan.Zero);
 
     /// <summary>The running API with its client and the draft store, so a test can check what was kept.</summary>
@@ -44,7 +44,10 @@ public class DraftEndpointTests
         // The run, in one mode.
         var store = new InMemoryEvalStore();
         await store.SaveRunAsync(new Run(RunId, "cook", 1, EvalRunStatus.Done, T0, T0.AddMinutes(5), 0,
-            Modes: [new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], "puls/voice-af", null, Conversations: 3, At: T0)]));
+            Modes:
+            [
+                new Mode(SampleMode.Beta, 1, [SampleToolset.Beta], "puls/voice-af", null, Conversations: 3, At: T0)
+            ]));
 
         // Each conversation with its turns, each turn with one stream event, and a person's verdict on it.
         var reviews = new InMemoryHumanReviewStore();
@@ -70,7 +73,8 @@ public class DraftEndpointTests
 
         // The cook eval as the runner lists it, its folder the repo's own.
         var catalog = new EvalList([
-            new EvalEntry("cook", "Cooks", null, new EvalLine("cook", 1, "Cooks", Identity: SampleIdentity.Alpha, Folder: Cook))
+            new EvalEntry("cook", "Cooks", null,
+                new EvalLine("cook", 1, "Cooks", Identity: SampleIdentity.Alpha, Folder: Cook))
         ]);
         var drafts = new InMemoryEvalDraftStore();
         var app = ApiTestHost.Build(adminKey: AdminKey, store: store, catalog: catalog, reviews: reviews,

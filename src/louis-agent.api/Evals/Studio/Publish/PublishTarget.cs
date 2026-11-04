@@ -3,9 +3,9 @@ using System.IO.Compression;
 namespace LouisAgent.Api.Evals.Studio.Publish;
 
 /// <summary>
-/// Where a published eval goes (F49.5): beside the identity it proves, in its <c>Evals/</c> folder, under its name in
-/// PascalCase as the eval folders are named (<c>Cook</c>, <c>Routing</c>), on the branch <c>eval/{identity}-{name}</c>;
-/// and, for a host with no workspace, the same folder as a zip to download.
+/// Where a published eval goes (F49.5): in the evals project beside the identity it proves, in its <c>Evals/</c>
+/// folder, under its name in PascalCase as the eval folders are named (<c>Cook</c>, <c>Routing</c>), on the branch
+/// <c>eval/{identity}-{name}</c>; and, for a host with no workspace, the same folder as a zip to download.
 /// </summary>
 /// <remarks>
 /// A value with its own rules, so the publisher, the route and a test agree on one path (ADR 0058's folder, ADR 0027's
@@ -22,7 +22,7 @@ public sealed record PublishTarget(string Folder, string Branch, string FolderNa
     /// </summary>
     public static PublishTarget Of(string identity, string name, string? listedFolder = null)
     {
-        string evals = $"identities/louis-agent.identity.{identity}/Evals/";
+        string evals = $"identities/louis-agent.identity.{identity}.evals/Evals/";
         string branch = $"eval/{identity}-{name}";
         string? listed = listedFolder?.Replace('\\', '/').TrimEnd('/');
         if (listed is not null && listed.StartsWith(evals, StringComparison.Ordinal) &&
@@ -38,7 +38,7 @@ public sealed record PublishTarget(string Folder, string Branch, string FolderNa
         folder.Length > 0 && folder.All(c => char.IsAsciiLetterOrDigit(c) || c == '-');
 
     /// <summary>
-    /// The identity's own project folder, which must be in the workspace for the eval to sit beside it.
+    /// The identity's evals project folder, which must be in the workspace for the eval to go in it.
     /// </summary>
     public string IdentityFolder => Folder[..Folder.IndexOf("/Evals/", StringComparison.Ordinal)];
 

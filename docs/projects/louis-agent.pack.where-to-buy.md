@@ -1,7 +1,7 @@
 # louis-agent.pack.where-to-buy — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.where-to-buy/` · **References:**
-> louis-agent.core, louis-agent.evals.checks, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:**
+> louis-agent.core, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:**
 > `PACKS=where-to-buy`, or an identity that names it (Puls) · **Uses:** OpenStreetMap's Nominatim
 
 ## Purpose
@@ -33,8 +33,9 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 - **Being a good guest.** `MapSearch` keeps Nominatim's usage policy: one request a second for the whole process, a
   User-Agent that names the app, a ten-second limit. A map that doesn't answer is logged and said, never retried in a
   loop (`MapUnavailableException`, `WhereToBuyLogMessage`).
-- **The shop rules.** The checks an eval file names to prove an answer about shops live here (F49.3,
-  [ADR 0060](../adr/0060-a-pack-ships-its-checks.md)): `estimates-at-shop` (no shop page read, no price given as fact,
+- **The shop rules.** The checks an eval file names to prove an answer about shops live beside the pack, in
+  `packs/louis-agent.pack.where-to-buy.checks/`, which only the runner references (F49.3,
+  [ADR 0073](../adr/0073-packs-reference-no-evals.md)): `estimates-at-shop` (no shop page read, no price given as fact,
   the estimates line, the branch under Where to buy) and `untooled-shops` (no column of a shop's prices).
 
 ## Design notes
@@ -56,7 +57,7 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 | `Tools/` | `WhereToBuyTools.FindBranches` and `BranchPrinter`, which writes its table |
 | `Branches/` | `BranchFinder` (the town, the boxes, the nearest three), `BranchSearch` (its result), `Branch`, `Distance`, `ShopNames` |
 | `Branches/Map/` | Nominatim: `MapSearch` (the requests, the pace), `MapPlace` and `MapAddress` (its answer, as records), `MapUnavailableException` |
-| `Checks/` | The shop rules (`WhereToBuyChecks.All`, which the composition's `EvalChecks` gathers): `EstimatesAtShop`, `UntooledShops`; `Reading/` holds what they read an answer with (`ShopSites`, `ShopLines`, `BranchReading`, `BranchFinding`, `ShopExpectation`, `ScenarioShop`) |
+| `../louis-agent.pack.where-to-buy.checks/Checks/` | The shop rules (`WhereToBuyChecks.All`, which the runner's `RunnerChecks` gathers): `EstimatesAtShop`, `UntooledShops`; `Reading/` holds what they read an answer with (`ShopSites`, `ShopLines`, `BranchReading`, `BranchFinding`, `ShopExpectation`, `ScenarioShop`) |
 | `Messages/` | `WhereToBuyToolMessage` (what the tool returns), `WhereToBuyLogMessage` (its log line; the town shows as a hash through core's `LogContent`), `ShopCheckMessage` (the rules' reasons) |
 | `Prompts/toolsets/where-to-buy.md` | The guide the model reads with the toolset: its routing line, the tool, how to name a branch |
 
@@ -78,8 +79,8 @@ None. The User-Agent and the pace are code, so a change to either is a reviewed 
 answer read through records, on fixtures in Nominatim's `jsonv2` shape written by hand, since the container has no
 route to Nominatim), `BranchFinderTests` (the nearest three, the second box, the municipality), `ShopNamesTests`,
 `DistanceTests`, `WhereToBuyToolsTests` (the table and every failure text), `WhereToBuyToolMessageSnapshotTests` with
-its golden of the model-facing texts, and the checks' tests under `Checks/`. `PackConvertibilityTests` (composition
-tests) checks the MCP shapes.
+its golden of the model-facing texts. The checks' tests are in `tests/louis-agent.pack.where-to-buy.checks.tests`.
+`PackConvertibilityTests` (composition tests) checks the MCP shapes.
 
 ## Limits and plans
 

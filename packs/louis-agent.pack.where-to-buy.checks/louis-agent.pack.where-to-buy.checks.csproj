@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The rules that prove the where-to-buy pack's answers (ADR 0073): the branch under Where to buy, no shop page read,
+       no price given as fact. Beside the pack and apart from it, so the pack stands on core alone and follows the engine
+       into a package; only the runner references this, so no host carries it. It needs the check contract and none of
+       the pack's code. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.WhereToBuy</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.pack.where-to-buy.checks.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.pack.where-to-buy.md" Link="docs\louis-agent.pack.where-to-buy.md" />
+  </ItemGroup>
+
+</Project>

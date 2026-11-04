@@ -49,7 +49,7 @@ public class FolderSizeTests
         "tests/louis-agent.core.tests/Agent",
         "tests/louis-agent.core.tests/RepeatedNames/Scanning",
         "tests/louis-agent.evals.tests/Running",
-        "tests/louis-agent.identity.puls.tests/Evals/Checks",
+        "tests/louis-agent.identity.puls.evals.tests/Evals/Checks",
         "tests/louis-agent.puls.tests/Admin/Reviews",
         "tests/louis-agent.testing",
         "tests/louis-agent.web.shared.tests/Chats",

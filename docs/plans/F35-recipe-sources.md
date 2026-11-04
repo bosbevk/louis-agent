@@ -789,6 +789,10 @@ the cost and of the time; 3 repeats a side.
 
 (The picks Rider raises mid-build, each with Louis's choice, as F35.1's.)
 
+- **The evals and checks moved (2026-11-04, ADR 0073).** Puls's evals are at
+  `identities/louis-agent.identity.puls.evals/Evals/` and the recipes check at `packs/louis-agent.pack.recipes.checks/`;
+  the paths above are the ones from before the move.
+
 - **2026-11-04, before step 1, the picks and the sites' terms.** A1, B1, C1 and D1 as recommended. **E2, not E1:
   `RECIPE_SOURCES=*`, all 45 sites, on this PC and on Azure** (Louis: "all everywhere this is public websites", "all
   45"). Before that pick, the terms of the 13 `read by: data` sites were read from their home pages' links (the other 32

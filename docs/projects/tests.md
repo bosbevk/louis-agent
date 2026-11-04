@@ -2,7 +2,7 @@
 
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.where-to-buy.tests/`, `tests/louis-agent.pack.shop-prices.tests/`,
-> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.composition.tests/`, `tests/louis-agent.mcp-server.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
+> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.identity.puls.evals.tests/`, `tests/louis-agent.pack.where-to-buy.checks.tests/`, `tests/louis-agent.pack.recipes.checks.tests/`, `tests/louis-agent.composition.tests/`, `tests/louis-agent.mcp-server.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
 > `tests/louis-agent.web.tests/`; the tests that leave their process in `tests/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
 > `tests/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -34,7 +34,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `RepeatedNames/` | The ratchets of ADR 0043: a wire name written as a string outside its enum (`RepeatedNameTests`, with `Scanning/`: a C# lexer, the scan, the compiled-code reader), and `.Wire()` as the one way out (`WireTextTests`: no direct `SettingChoice.Wire`, no case-folded `ToString()`, no `ToString()` of an enum in the compiled code). Five exemptions, each with its reason, narrowed rather than lengthened (F18 step 7.5) |
 | `louis-agent.testing`'s samples | `SampleToolset`, `SampleMode`, `SampleEval`, `SampleRole`, `SampleIdentity`, `SampleScenario`: neutral names (with `Fill` for a test's JSON) for a test that only stores, shows or parses a name; a test that needs the real one uses its owner's enum member |
 | `Outside` (louis-agent.testing) | How an integration test asks for the outside: `Tool` skips a missing tool locally and fails it where `INTEGRATION_REQUIRED` is set (CI), `Stack` always skips a missing Puls-stack address (F18 step 7.6.2) |
-| `PulsCookScenarioIds` (identity.puls.tests, `Evals/Checks/`) | The cook scenarios' ids as test constants, because an id is data and not an enum (ADR 0043); `PulsIdsTests` holds each to its dataset, and `RepeatedNameTests` lists the files (`IdsFiles`) and skips only that class (F18 step 7.5.4f) |
+| `PulsCookScenarioIds` (identity.puls.evals.tests, `Evals/Checks/`) | The cook scenarios' ids as test constants, because an id is data and not an enum (ADR 0043); `PulsIdsTests` holds each to its dataset, and `RepeatedNameTests` lists the files (`IdsFiles`) and skips only that class (F18 step 7.5.4f) |
 | `Tools/{Toolset}/` | Every toolset: workspace boundary and secret files, git, dotnet, Python, PowerShell, bash, web search and fetch, Paymo, DevOps, agent-built tools |
 | `Usage/` | Scopes and their totals, the ledger file, reports, the usage text and sessions, `CacheGaps` |
 | `ArchitectureTests.cs` | The layout rules on core's source: namespace = folder, one type per file, dependencies one way |

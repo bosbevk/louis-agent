@@ -1,7 +1,7 @@
 # louis-agent.pack.recipes — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.recipes/` · **References:** louis-agent.core,
-> louis-agent.evals.checks (the check contract), Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
+> Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
 > **Uses:** core's guarded browser (`BROWSER_URL`) and, for some sites, core's web search provider
 
 ## Purpose
@@ -42,8 +42,9 @@ any identity can use it, and it could be served as an MCP server unchanged
   answer writes its link is the identity's, so the file names a link reader beside the check
   (`{"type": "recipe-from-source", "parameters": {"reader": "recipe-link"}}`), as the shops pack's
   `estimates-at-shop` takes a price reader ([ADR 0059](../adr/0059-an-identity-ships-readers-not-checks.md),
-  [ADR 0060](../adr/0060-a-pack-ships-its-checks.md)). `RecipesChecks.All` lists it for the composition's
-  `EvalChecks`; the check catalogue's listing shows it with that one setting.
+  [ADR 0073](../adr/0073-packs-reference-no-evals.md)). It lives beside the pack, in
+  `packs/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
+  runner's `RunnerChecks`, and the check catalogue's listing shows it with that one setting.
 
 ## Design notes
 
@@ -79,7 +80,7 @@ What F35.1 settled, and why (the plan's decisions are in `docs/plans/F35-recipe-
 | `Sources/` | `IRecipeSource`, `RecipeHit`, `RecipeSourceException`, `RecipeSourceFactory` (the enabled sites and the search each gets) |
 | `Sources/Sites/` | `RecipeSites` (reads the table), `RecipeSite`, the choices `RecipeReadBy` and `RecipeSearch`, and `recipe-sites.md`, the table |
 | `Providers/` | `WordPressSearch`, `SiteWebSearch`, `SearchResultLinks` (the hits out of a search page) |
-| `Checks/` | `RecipeFromSource` (`recipe-from-source`) and `RecipesChecks.All`, the pack's list for the check catalogue |
+| `../louis-agent.pack.recipes.checks/Checks/` | `RecipeFromSource` (`recipe-from-source`) and `RecipesChecks.All`, the list for the check catalogue |
 | `Messages/` | `RecipeToolMessage` (what the tools return, pinned by a golden), `RecipeLogMessage`, `RecipeErrorMessage`, `RecipeCheckMessage` (the check's reasons) |
 | `Prompts/toolsets/recipes.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and read |
 

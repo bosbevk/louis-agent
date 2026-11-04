@@ -34,15 +34,15 @@ public interface IEval
 
     /// <summary>
     /// Where the eval's manual is: a markdown file beside the eval, as a path from the repository root with forward
-    /// slashes (<c>identities/louis-agent.identity.puls/Evals/Cook/manual.md</c>); the portal opens it from the eval's
-    /// card. Null for an eval with none.
+    /// slashes (<c>identities/louis-agent.identity.puls.evals/Evals/Cook/manual.md</c>); the portal opens it from the
+    /// eval's card. Null for an eval with none.
     /// </summary>
     string? Manual => null;
 
     /// <summary>
     /// The eval's folder, as a path from the repository root with forward slashes
-    /// (<c>identities/louis-agent.identity.puls/Evals/Cook</c>), where the portal reads its scenarios to make a sample
-    /// from a run. Null for an eval that is no folder, such as the stub.
+    /// (<c>identities/louis-agent.identity.puls.evals/Evals/Cook</c>), where the portal reads its scenarios to make a
+    /// sample from a run. Null for an eval that is no folder, such as the stub.
     /// </summary>
     string? Folder => null;
 

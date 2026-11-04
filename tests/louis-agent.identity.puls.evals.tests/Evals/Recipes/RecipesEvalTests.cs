@@ -1,5 +1,4 @@
 using LouisAgent.Choices;
-using LouisAgent.Composition;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Evals;
 using LouisAgent.Evals.Api;
@@ -18,9 +17,12 @@ using LouisAgent.Evals.Protocol.Events.Run;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
 using LouisAgent.Evals.Running;
+using LouisAgent.Identities.Puls.Evals;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared;
+using LouisAgent.Packs.Recipes.Checks;
+using LouisAgent.Packs.WhereToBuy.Checks;
 using LouisAgent.SessionStream;
 using Microsoft.Extensions.Logging.Abstractions;
 using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
@@ -28,14 +30,14 @@ using static LouisAgent.Identities.Puls.Tests.Evals.Checks.PulsTrials;
 namespace LouisAgent.Identities.Puls.Tests.Evals.Recipes;
 
 /// <summary>
-/// Puls's recipes eval as a folder of files beside the identity: thirteen questions for a recipe, each in a session of
+/// Puls's recipes eval as a folder of files in its evals project: thirteen questions for a recipe, each in a session of
 /// its own, asked of Puls as built. The cook should read a page with ReadRecipe, link a site we may read, show the
 /// page's photo, and write the page's amounts and steps, which a judge told what ReadRecipe gave checks.
 /// </summary>
 public class RecipesEvalTests
 {
     /// <summary>Where the folder sits in the repository.</summary>
-    private const string Source = "identities/louis-agent.identity.puls/Evals/Recipes";
+    private const string Source = "identities/louis-agent.identity.puls.evals/Evals/Recipes";
 
     /// <summary>
     /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF),
@@ -280,11 +282,11 @@ public class RecipesEvalTests
 
     /// <summary>
     /// The eval, from the folder its project copied beside these tests, with the checks the runner gathers: the
-    /// general ones, the packs' through the composition, and the readers of both.
+    /// general ones, each pack's checks project, and the readers of the harness and of Puls.
     /// </summary>
     private static FileEval Load() =>
-        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. EvalChecks.All]),
-            new ReaderCatalog([.. GeneralReaders.All, .. EvalReaders.All]), Source);
+        FileEval.Load(Folder, new CheckCatalog([.. GeneralChecks.All, .. WhereToBuyChecks.All, .. RecipesChecks.All]),
+            new ReaderCatalog([.. GeneralReaders.All, .. PulsReaders.All]), Source);
 
     /// <summary>
     /// The eval with its fixed rules only, for a dry run: the judge builds its model from the environment, and a dry

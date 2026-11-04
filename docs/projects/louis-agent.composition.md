@@ -34,8 +34,6 @@ thin and never references an identity or a pack; and which agent a host runs is 
 | `Plugins.cs` | `FromEnvironment`, `FromSettings(identities, packs)`, and one `Create` switch for identities and one for packs |
 | `IdentityKind.cs` | The identities a host may load (`Puls`) |
 | `PackKind.cs` | The compiled packs a host may load or an identity may name (`Shops`) |
-| `EvalChecks.cs` | Every identity's and pack's own eval checks an eval file can name (today the where-to-buy pack's `WhereToBuyChecks.All`, F49.3 and F50.2, and the recipes pack's `RecipesChecks.All`, F35.2; Puls ships readers, not checks), which the eval runner gathers with the harness's general checks (F49.2); a judge that needs the harness never comes here |
-| `EvalReaders.cs` | Every identity's and pack's own readers an eval file can name beside a general check (today Puls's `PulsReaders.All`: `rand-total`, `servings`, `recipe-photos`, `recipe-link`), which the runner gathers with the harness's plain readers (F49.2b) |
 | `Messages/CompositionErrorMessage.cs` | The two refusals: an unknown identity, an unknown pack |
 | `louis-agent.composition.csproj` | References core, the Puls identity and the where-to-buy, shop-prices and recipes packs |
 
@@ -52,7 +50,8 @@ compose sets `IDENTITIES`.
 ## Extending it
 
 A new identity or pack is three edits here: a member in `IdentityKind` or `PackKind`, its arm in the `Create` switch,
-and a project reference; and a fourth when it brings its own eval checks: its list in `EvalChecks.All`. The steps are the registration step of [Build a pack](../guides/build-a-pack.md#6-register-it-in-the-composition-root)
+and a project reference. What proves it never comes here: no host carries a check or an eval
+([ADR 0073](../adr/0073-packs-reference-no-evals.md)). The steps are the registration step of [Build a pack](../guides/build-a-pack.md#6-register-it-in-the-composition-root)
 and of [Build an identity](../guides/build-an-identity.md#5-register-it-in-the-composition-root). Keep the names one word: the
 setting is matched to the enum member with the case ignored, so `price-rules` would not match `PriceRules`.
 
@@ -62,8 +61,8 @@ setting is matched to the enum member with the case ignored, so `price-rules` wo
 one, unset loads none, an unknown name is refused naming the supported ones, `PACKS=where-to-buy` works without an identity,
 `config/.env` is read before the settings) and `PackConvertibilityTests`, which builds every `PackKind` and checks
 each tool against the MCP SDK's shapes ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)): plain data in, text
-out, a `CancellationToken` when it waits, an MCP-safe name, and no identity named in a description. `EvalChecksTests`
-holds the eval checks' list to Puls's.
+out, a `CancellationToken` when it waits, an MCP-safe name, and no identity named in a description. `Copies/UnpricedMarkTests` and `ShopTableTests` hold the
+copies a pack and an eval each keep equal.
 
 ## Limits and plans
 
