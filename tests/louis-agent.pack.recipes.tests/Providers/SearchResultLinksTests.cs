@@ -83,7 +83,8 @@ public class SearchResultLinksTests
     [Test]
     public void AnUnquotedHref_IsStillALink_WithoutTheSpaceAfterIt() =>
         Assert.That(Hits("""
-                         <h2 class="w-post-elm post_title"><a href=https://www.example.co.za/a/ >Top 20 Dinner Recipes</a></h2>
+                         <h2 class="w-post-elm post_title">
+                           <a href=https://www.example.co.za/a/ >Top 20 Dinner Recipes</a></h2>
                          """), Is.EqualTo(new[] { ("Top 20 Dinner Recipes", "https://www.example.co.za/a/") }));
 
     /// <summary>
@@ -93,7 +94,8 @@ public class SearchResultLinksTests
     [Test]
     public void ADataHrefBeforeTheRealHref_IsNotTheAddress() =>
         Assert.That(Hits("""
-                         <h2><a data-href="https://www.example.co.za/wrong" href="https://www.example.co.za/right">A</a></h2>
+                         <h2><a data-href="https://www.example.co.za/wrong"
+                                href="https://www.example.co.za/right">A</a></h2>
                          """).Single().Url, Is.EqualTo("https://www.example.co.za/right"));
 
     /// <summary>Once the cap is reached the walk stops.</summary>

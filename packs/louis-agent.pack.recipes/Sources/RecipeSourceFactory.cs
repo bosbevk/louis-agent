@@ -19,7 +19,7 @@ namespace LouisAgent.Packs.Recipes.Sources;
 /// <c>ShopCatalogueFactory</c>.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0023-copyleft-beside-us-permissive-linked.md">ADR 0023: copyleft beside us, permissive linked</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
 public static class RecipeSourceFactory
 {
     private static readonly ILogger Log = AgentLogging.For<LogCategory>();

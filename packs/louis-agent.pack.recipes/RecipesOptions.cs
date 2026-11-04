@@ -9,7 +9,7 @@ namespace LouisAgent.Packs.Recipes;
 /// test needs no real environment. Nothing is enabled until a person names it, because a site is read only after
 /// its terms were checked (ADR 0023).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0023-copyleft-beside-us-permissive-linked.md">ADR 0023: copyleft beside us, permissive linked</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
 public sealed class RecipesOptions
 {
     /// <summary>
