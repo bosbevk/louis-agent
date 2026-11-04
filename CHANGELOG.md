@@ -17,6 +17,10 @@
   at version 14, the routing eval at 3. `SHOP_CATALOGUES` and `SHOP_STORE_CACHE` are gone.
   [ADR 0069](docs/adr/0069-shop-prices-are-stats-sa-estimates.md);
   [write-up](docs/learning/04-tool-design.md#f502-one-job-per-pack-and-the-numbers-in-code-2026-11-04)
+- 2026-11-04 — **The Studio's numbered steps** (F53's leftover): the Studio's form is four numbered steps in the
+  order they are done, 1 Compose, 2 Check, 3 Try, 4 Publish (GOV.UK's task list; the admin review's finding 6), and
+  *Try* picks the run to replay from the recorded runs the Evals page lists, this eval's own first, instead of an id
+  typed from memory; its link opens the new run's page, not Benchmarks (`TryStep`, `ReplayChoices`, `StudioVerdict`)
 - 2026-11-04 — **MCP_TRANSPORT is an enum**: the MCP server read its transport by comparing a string, so a typo
   (`htpp`) started it on stdio without a word; `McpTransportSetting.Parse` reads it once into `McpTransport` (ADR
   0024), unset is stdio and anything else stops start-up with the names it takes

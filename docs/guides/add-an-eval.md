@@ -223,7 +223,8 @@ API ([Change the API](change-the-api.md#add-an-eval-to-the-portal)).
 
 The steps above work in any editor. The admin portal's **Studio** page (`/admin/studio`, *Studio* in the admin
 menu) does the same from the browser, and ends in the same folder of files
-([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)):
+([ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). The page numbers its steps (Compose, Check, Try,
+Publish), and each one saves the draft first:
 
 1. **Compose.** *New eval* opens a form over `eval.json`: the name, the identity, the version, what a pass means, the
    manual's file name, the modes; *Add a check…* lists the runner's catalogue, and each check's fields come from its
@@ -233,8 +234,9 @@ menu) does the same from the browser, and ends in the same folder of files
    it from runs (section 6). Nothing in the repository changes yet.
 3. **Check.** The runner loads the draft's folder as strictly as a run would and holds it to the conformance gate the
    tests run (section 7); every problem shows in its own words. Fix them and check again.
-4. **Try.** Name a stored run to replay and, if you like, a few samples (commas between). A try is always a replay,
-   so it costs nothing; follow it on the Evals page. A fresh run stays the Run button's, and spends money.
+4. **Try.** Pick a run to replay from the list (only runs that recorded their answers, this eval's own first) and, if
+   you like, a few samples (commas between). A try is always a replay, so it costs nothing; the link opens its run
+   page. A fresh run stays the Run button's, and spends money.
 5. **Publish.** Only a draft the runner found no problem with is published. On a machine whose workspace is a git
    checkout, the folder is committed to `identities/louis-agent.identity.{identity}/Evals/{Name}/` on the branch
    `eval/{identity}-{name}`, without touching your checkout; push the branch and open the pull request yourself.
