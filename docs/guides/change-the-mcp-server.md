@@ -40,6 +40,8 @@ A tool only MCP clients need (today: the three read-only skill tools, `list_skil
 | `stdio` (default) | A client that starts the server as its child process | stdout carries the protocol: log only through `ILogger` (stderr) |
 | `http` | A client elsewhere, over Streamable HTTP (`MapMcp()`) | Needs `MCP_API_KEY` (else `AGENT_API_KEY`) or it refuses to start; `127.0.0.1:${MCP_PORT:-5090}` in Docker |
 
+Any other value stops start-up with an error that names the two it takes (`McpTransportSetting`, ADR 0024).
+
 ## Check it with a client
 
 ```bash
