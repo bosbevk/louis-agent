@@ -566,16 +566,16 @@ goes in F35.2. One more request per host per day. A recorded trial from before t
 | feastandwest.com | blog | data, WP Recipe Maker | disallowed | |
 | foodleclub.com | blog | data, WP Recipe Maker | disallowed | |
 | woolworths.co.za | retailer | data, the site's own | disallowed | its `robots.txt` allows AI readers by name |
-| novanews.co.za/rooirose (Rooi Rose) | magazine, Afrikaans | data, Penci Recipe | disallowed | fixture; `Content-Signal: ai-input=yes, ai-train=no` |
+| novanews.co.za/rooirose (Rooi Rose) | magazine, Afrikaans | text (Penci Recipe's block is empty) | disallowed | fixture; `Content-Signal: ai-input=yes, ai-train=no` |
 | thelazymakoti.com | blog | text | `/?s=` | |
 | recipesfromsouthafrica.com | blog | text | `/?s=` | |
-| thekatetin.com | baking blog | text | `/?s=` | WP Recipe Maker loaded, no card on the post seen |
+| thekatetin.com | baking blog | text | `/?s=` | a whole recipe in microdata (22 lines), which we don't read |
 | cooksister.com | blog, an SA author in London | text | `/?s=` | WP Recipe Maker loaded, none on the 2010 post seen |
 | vrouekeur.co.za | magazine, Afrikaans | text | `/?s=` | |
 | thefoodfox.com (Ilse van der Merwe) | blog | text | `/?s=` | |
 | mykitchen.co.za | recipe site | text | `/?s=` | |
 | cupcakesandcouscous.com | blog | text | `/?s=` | |
-| sarahgraham.co.za | TV cook | text | `/?s=` | |
+| sarahgraham.co.za | TV cook | text | `/?s=` | a whole recipe in microdata (22 lines), which we don't read |
 | zolanene.com | TV cook | text | `/?s=` | |
 | sibamtongana.com | TV cook | text | `/?s=` | |
 | braai.com (Jan Braai) | TV cook | text | `/?s=` | |
@@ -607,6 +607,21 @@ goes in F35.2. One more request per host per day. A recorded trial from before t
   - **M1, `ToolsetCatalog.cs` keeps its one changed line:** formatted whole, the file passes 200 lines of code, so
     this step changes only the line that hands the fetcher the policy; splitting the file is a cleanup of its own.
     (M2 was the split in this step, M3 the file on `FileSizeTests`' oversized list.)
+
+- **2026-11-04, step 3, the data sites counted again, three findings (picks O1, P1, Q1).** Step 0's untrimmed pages,
+  counted by what a recipe needs: **13 of the 45 sites publish a whole recipe in JSON-LD** (not 14), 2 in microdata
+  and 30 neither. Rooi Rose moves to text: its block is empty on the full page, and a second recipe has no block. Most
+  of this rests on one page per site: a second page was only got for Bibby's and Rooi Rose, so a text site may have
+  data on other posts.
+  - **O1, a `Recipe` that isn't whole:** `SchemaOrgRecipe.Read` gives null when the block has no name, no ingredient
+    line or no step, so `ReadRecipe` falls back to labelled text (K1) on any page, not only the sites listed as text.
+    A guard on the Data Mapper (Fowler, PoEAA). (O2 was a thin record with the check in the tool, O3 no check, the
+    table's *read by* column deciding.)
+  - **P1, Bibby's fixture:** step 0 saved "Top 20 Dinner Recipes for 2024" under the name
+    `bibbyskitchenat36-bobotie-filo-parcels`; the file now holds the real page (23 lines, 6 steps, and a
+    `recipeYield` written as the number 6). (P2 also kept the list page as a fixture, P3 only renamed the file.)
+  - **Q1, microdata:** Sarah Graham and Kate Tin stay text sources; a microdata reader waits for F35.2's measure to
+    ask for it (ADR 0055). (Q2 was a hand-written reader in core, Q3 AngleSharp in core.)
 
 ## F35.2 (planned when it starts)
 
