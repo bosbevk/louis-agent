@@ -37,8 +37,8 @@ stays convertible to an MCP server ([ADR 0028](0028-packs-stay-convertible-to-mc
 ## Consequences
 
 - Another kind of data (rent, fuel) is a feed in its pack, with no route and no change to the API.
-- A feed maps one to one to an MCP resource, so a pack served over MCP can publish the same data; the MCP server
-  doesn't yet (on the TODO).
+- A feed maps one to one to an MCP resource, so a pack served over MCP can publish the same data: the MCP server
+  does since F56 ([ADR 0072](0072-feeds-are-mcp-resources.md)).
 - Open means anyone, and as many times as they like. "For now": a feed that costs us to serve, or data we may not give
   away, needs a key or a limit first, and that is a new decision, not a flag.
 - A feed is read whole. A large one would need paging or a filter (a province, a product), which no feed needs yet.
