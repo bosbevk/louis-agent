@@ -261,7 +261,7 @@ public partial class ArchitectureTests
     [Test]
     public void TheHostPacks_ReferenceNoChecksOrEvalsProject()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "hosts", "louis-agent.host-packs",
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "configured", "louis-agent.host-packs",
             "louis-agent.host-packs.csproj"));
 
         Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".checks.") || r.Contains(".evals")), Is.Empty);

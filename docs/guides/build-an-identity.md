@@ -190,7 +190,7 @@ and (`CrossBoundaryNamesTests`) that each pack an identity names exists. A mode 
 
 ## 5. Register it in the composition root
 
-Three edits in `src/hosts/louis-agent.host-packs`, as for a pack:
+Three edits in `configured/louis-agent.host-packs`, as for a pack:
 
 1. A member in `IdentityKind.cs`: `Acme`.
 2. Its arm in `Plugins.Create(IdentityKind)`: `IdentityKind.Acme => new AcmeIdentity(),`.

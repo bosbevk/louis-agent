@@ -21,7 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
     <!-- CL15: the identities and packs this host may load, chosen by IDENTITIES and PACKS at start-up. -->
-    <ProjectReference Include="..\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\..\configured\louis-agent.host-packs\louis-agent.host-packs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

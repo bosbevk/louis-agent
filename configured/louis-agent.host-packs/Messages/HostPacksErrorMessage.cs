@@ -1,7 +1,7 @@
-
 using System.ComponentModel;
 
 namespace LouisAgent.HostPacks.Messages;
+
 /// <summary>
 /// This project's own exception texts (docs/CLAUDE.md, *Messages and logging*: each project keeps its own).
 /// </summary>

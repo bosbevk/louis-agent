@@ -8,7 +8,7 @@
 A **pack** is what an agent can do: one or more toolsets, the guide that tells the model when to use them, the pack's own
 settings and state. It names no identity and references no other pack's code, so it could be served as an MCP server
 one day without changing. The engine (`louis-agent.core`) never references a pack; only the composition root
-(`src/hosts/louis-agent.host-packs`) knows them all.
+(`configured/louis-agent.host-packs`) knows them all.
 
 The steps below build a small example pack, `units`, with one tool that converts a value between units: no settings,
 no network. The real packs in the repo follow the same steps: `packs/louis-agent.pack.where-to-buy` is the closest
@@ -225,7 +225,7 @@ Then document each setting where people look for it: a commented line in `config
 
 ## 6. Register it in the composition root
 
-Three edits in `src/hosts/louis-agent.host-packs`:
+Three edits in `configured/louis-agent.host-packs`:
 
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:

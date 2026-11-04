@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\configured\louis-agent.host-packs\louis-agent.host-packs.csproj" />
     <!-- ADR 0073: the projects that prove an identity and a pack, whose copies of a shared table these tests hold equal
          to the pack's; no host references them, so this project does so itself. -->
     <ProjectReference Include="..\..\evals\identities\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />

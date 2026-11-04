@@ -284,6 +284,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs", "packs", "{7B2E4C10
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identities", "identities", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0131}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configured", "configured", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hosts", "hosts", "{6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}"
@@ -422,7 +424,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals.tests", "tests\louis-agent.identity.puls.evals.tests\louis-agent.identity.puls.evals.tests.csproj", "{B1E6B1EA-183F-4E6F-9747-63AD2303090A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.host-packs", "src\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj", "{61999E8B-9A07-42C8-9855-E84171680967}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.host-packs", "configured\louis-agent.host-packs\louis-agent.host-packs.csproj", "{61999E8B-9A07-42C8-9855-E84171680967}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1239,6 +1241,6 @@ Global
 		{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{904EE291-244B-4BE0-812E-E9B8938B0022} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{B1E6B1EA-183F-4E6F-9747-63AD2303090A} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{61999E8B-9A07-42C8-9855-E84171680967} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
+		{61999E8B-9A07-42C8-9855-E84171680967} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}
 	EndGlobalSection
 EndGlobal

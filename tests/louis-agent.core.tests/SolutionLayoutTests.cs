@@ -13,12 +13,13 @@ public class SolutionLayoutTests
     /// <summary>Each group holds the projects whose folder on disk has that name.</summary>
     [TestCase("src/engine", "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream")]
     [TestCase("src/hosts", "louis-agent.acp-server", "louis-agent.api", "louis-agent.api.contracts", "louis-agent.cli",
-        "louis-agent.composition", "louis-agent.host-packs", "louis-agent.mcp-server", "louis-agent.orchestrator")]
+        "louis-agent.composition", "louis-agent.mcp-server", "louis-agent.orchestrator")]
     [TestCase("src/web", "louis-agent.puls", "louis-agent.site", "louis-agent.web", "louis-agent.web.shared")]
+    [TestCase("configured", "louis-agent.host-packs")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)
     {
         var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
-        string group = folder.Split('/')[1];
+        string group = folder.Split('/')[^1];
 
         // Who sits in the group is the solution's nesting section; where each one is on disk is its own line.
         string groupId = IdOf(lines.Single(line => line.StartsWith($"Project(\"{SolutionFolder}\") = \"{group}\"")));

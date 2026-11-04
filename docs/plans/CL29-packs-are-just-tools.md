@@ -172,7 +172,7 @@ src/hosts/                           src/hosts/
 
 | Type | From | To (folder under `louis-agent.composition/`, namespace `LouisAgent.Composition.…`) | Step |
 |---|---|---|---|
-| `Plugins`, `IdentityKind`, `PackKind`, `CompositionErrorMessage` | composition | `src/hosts/louis-agent.host-packs/`, `LouisAgent.HostPacks` | 1 |
+| `Plugins`, `IdentityKind`, `PackKind`, `CompositionErrorMessage` | composition | `configured/louis-agent.host-packs/`, `LouisAgent.HostPacks` | 1 |
 | `IAgentPack`, `IAgentIdentity`, `IDataFeed` | core `Agent/Catalog` | `Packs/` | 2 |
 | `IDataImport`, `ImportFact`, `ImportFile`, `ImportReport`, `ImportSlot` | core `Agent/Catalog/Imports` | `Packs/Imports/` | 2 |
 | `PackToolset`, `IPackContext` | new | `Packs/` | 2 |

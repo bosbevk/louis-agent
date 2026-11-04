@@ -27,7 +27,7 @@
     <!-- The harness loads the evals from their folders, and the composition says which toolsets Puls has (its identity
          and the packs it names), which the routing eval's baseline lists. -->
     <ProjectReference Include="..\..\evals\louis-agent.evals\louis-agent.evals.csproj" />
-    <ProjectReference Include="..\..\src\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\configured\louis-agent.host-packs\louis-agent.host-packs.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>

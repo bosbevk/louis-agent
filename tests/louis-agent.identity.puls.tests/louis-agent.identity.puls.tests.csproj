@@ -29,7 +29,7 @@
     <!-- The name enums Puls's prompts tests read, kept with its evals (Evals/Checks/Shared/). -->
     <ProjectReference Include="..\..\evals\identities\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
     <!-- The host-packs project says which toolsets Puls has (its identity and the packs it names). -->
-    <ProjectReference Include="..\..\src\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\configured\louis-agent.host-packs\louis-agent.host-packs.csproj" />
   </ItemGroup>
 
   <ItemGroup>
