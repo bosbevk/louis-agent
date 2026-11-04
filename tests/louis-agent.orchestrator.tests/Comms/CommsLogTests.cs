@@ -31,7 +31,7 @@ public class CommsLogTests
 
         comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "claude-test");
         comms.StartEvent(1, 1, Error("abc123"));
-        comms.EndEvent("ignored", "expected", "DECISION: ignored - expected");
+        comms.EndEvent(TriageOutcome.Ignored, "expected", "DECISION: ignored - expected");
         comms.EndRun();
 
         string md = File.ReadAllText(path);
@@ -39,7 +39,7 @@ public class CommsLogTests
         Assert.That(md, Does.Contain("Finished 2026-11-04 18:30:00 UTC. 1 ignored."));
     }
 
-    /// <summary>Messages, replies (with their tool calls and FIX-RESULT) and checks all land in the log, then a run summary.</summary>
+    /// <summary>Messages, replies (tool calls, FIX-RESULT) and checks land in the log, then a run summary.</summary>
     [Test]
     public void RecordsMessagesRepliesChecksAndARunSummary()
     {
@@ -56,7 +56,7 @@ public class CommsLogTests
         comms.Sent("sess_1", "Please fix ```json {} ``` this");
         comms.Received(reply, LouisAgentClient.ParseFixResult(reply.Text));
         comms.Check("ReplayRequest(order-total 1003)", "`200 order-total 1003: 35.00`");
-        comms.EndEvent("fixed", "verified", "All checks passed.\nDECISION: fixed - verified");
+        comms.EndEvent(TriageOutcome.Fixed, "verified", "All checks passed.\nDECISION: fixed - verified");
         comms.EndRun();
 
         string md = File.ReadAllText(path);
@@ -102,10 +102,10 @@ public class CommsLogTests
         comms.Received(Reply(3, 1_000, 20_000, 300, 0.01m), null);
         comms.Sent("sess_1", "Continue");
         comms.Received(Reply(2, 500, 10_000, 200, 0.005m), null);
-        EventUsage first = comms.EndEvent("fixed", "verified", "DECISION: fixed - verified",
+        EventUsage first = comms.EndEvent(TriageOutcome.Fixed, "verified", "DECISION: fixed - verified",
             [Triage(2_000, 100, 0.002m), Triage(2_000, 100, 0.002m)]);
         comms.StartEvent(2, 2, Error("def456"));
-        EventUsage second = comms.EndEvent("ignored", "expected", "DECISION: ignored - expected",
+        EventUsage second = comms.EndEvent(TriageOutcome.Ignored, "expected", "DECISION: ignored - expected",
             [Triage(3_000, 50, 0.001m)]);
         comms.EndRun();
 
@@ -147,7 +147,7 @@ public class CommsLogTests
         comms.StartEvent(1, 1, Error("abc123"));
         comms.Sent("sess_1", "Please fix it");
         comms.Received(reply, null);
-        EventUsage used = comms.EndEvent("fixed", "verified", "DECISION: fixed - verified", [triage]);
+        EventUsage used = comms.EndEvent(TriageOutcome.Fixed, "verified", "DECISION: fixed - verified", [triage]);
         comms.EndRun();
 
         string md = File.ReadAllText(path);
@@ -179,9 +179,9 @@ public class CommsLogTests
 
         comms.StartRun("order-service", new Uri("http://127.0.0.1:5081"), "llama3.1");
         comms.StartEvent(1, 2, Error("abc123"));
-        EventUsage timedOut = comms.EndEvent("failed", "triage failed: timeout", "", []);
+        EventUsage timedOut = comms.EndEvent(TriageOutcome.Failed, "triage failed: timeout", "", []);
         comms.StartEvent(2, 2, Error("def456"));
-        comms.EndEvent("acknowledged", "expected", "DECISION: acknowledged - expected", [local]);
+        comms.EndEvent(TriageOutcome.Ignored, "expected", "DECISION: ignored - expected", [local]);
         comms.EndRun();
 
         string md = File.ReadAllText(path);

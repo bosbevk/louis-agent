@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Choices;
 using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Triage;
 
@@ -18,7 +19,7 @@ public class DecisionTests
     {
         var decision = Decision.Parse(answer);
 
-        Assert.That(decision.Outcome, Is.EqualTo(outcome));
+        Assert.That(decision.Outcome.Wire(), Is.EqualTo(outcome));
         Assert.That(decision.Reason, Is.EqualTo(reason));
     }
 
@@ -30,16 +31,17 @@ public class DecisionTests
 
         var decision = Decision.Parse(answer);
 
-        Assert.That((decision.Outcome, decision.Reason), Is.EqualTo(("ignored", "expected 404")));
+        Assert.That((decision.Outcome, decision.Reason), Is.EqualTo((TriageOutcome.Ignored, "expected 404")));
     }
 
-    /// <summary>A line that names no outcome, or gives no reason, isn't a decision.</summary>
+    /// <summary>A line that names no outcome the prompt offers, or gives no reason, isn't a decision.</summary>
     [TestCase("I looked at it.")]
+    [TestCase("DECISION: postponed - later")]
     [TestCase("DECISION: - nothing")]
     [TestCase("DECISION: fixed")]
     [TestCase("DECISION: fixed -   ")]
     public void Parse_WithoutADecisionLine_IsUnknown(string answer) =>
-        Assert.That(Decision.Parse(answer).Outcome, Is.EqualTo("unknown"));
+        Assert.That(Decision.Parse(answer).Outcome, Is.EqualTo(TriageOutcome.Unknown));
 
     /// <summary>Without a decision line, the reason is the answer itself, on one line, cut at 200 characters.</summary>
     [Test]

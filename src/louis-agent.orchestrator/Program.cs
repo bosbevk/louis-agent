@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
@@ -152,7 +153,7 @@ while (!stop.IsCancellationRequested)
                     ErrorId = error.Id,
                     Reason = ex.Message
                 });
-            comms.EndEvent("failed", $"triage failed: {ex.Message}", "", TriageUsage());
+            comms.EndEvent(TriageOutcome.Failed, $"triage failed: {ex.Message}", "", TriageUsage());
             continue;
         }
         finally
@@ -166,7 +167,7 @@ while (!stop.IsCancellationRequested)
         Log(OrchestratorLogMessage.Decision, new
         {
             ErrorId = error.Id,
-            decision.Outcome,
+            Outcome = decision.Outcome.Wire(),
             decision.Reason
         });
         EventUsage used = comms.EndEvent(decision.Outcome, decision.Reason, answer, TriageUsage());

@@ -1,4 +1,5 @@
 using System.Text;
+using LouisAgent.Choices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Reports;
 
@@ -33,7 +34,8 @@ internal sealed class RunSummary(IReadOnlyList<EventSummary> events, string curr
 
     /// <summary>How many errors ended each way, as "1 fixed, 2 ignored".</summary>
     private string Outcomes() =>
-        string.Join(", ", events.GroupBy(e => e.Outcome).OrderBy(g => g.Key).Select(g => $"{g.Count()} {g.Key}"));
+        string.Join(", ",
+            events.GroupBy(e => e.Outcome.Wire()).OrderBy(g => g.Key).Select(g => $"{g.Count()} {g.Key}"));
 
     /// <summary>One error's row of the table.</summary>
     private string Row(EventSummary e)
@@ -42,7 +44,7 @@ internal sealed class RunSummary(IReadOnlyList<EventSummary> events, string curr
             ? "-"
             : $"{e.Fix?.Status ?? "no result"} ({e.Messages} msg, {e.ToolCalls} tools)";
         return $"| {e.Number} | `{e.Error.Method} {e.Error.Arguments}` | {ShortType(e.Error.ExceptionType)} | " +
-               $"**{e.Outcome}** | {agent} | {Code(e.Fix?.Branch)} | {Code(e.Fix?.Commit)} | " +
+               $"**{e.Outcome.Wire()}** | {agent} | {Code(e.Fix?.Branch)} | {Code(e.Fix?.Commit)} | " +
                $"{Tokens(e.Usage.Total)} | {Cost(e.Usage.Total, currency, display)} |";
     }
 
@@ -77,7 +79,8 @@ internal sealed class RunSummary(IReadOnlyList<EventSummary> events, string curr
     /// <summary>The branches of the errors that were fixed, for a person to review and merge.</summary>
     private void Branches(StringBuilder md)
     {
-        var branches = events.Where(e => e.Outcome == "fixed").Select(e => e.Fix?.Branch).OfType<string>().ToList();
+        var branches = events.Where(e => e.Outcome == TriageOutcome.Fixed)
+            .Select(e => e.Fix?.Branch).OfType<string>().ToList();
         if (branches.Count == 0) return;
 
         md.AppendLine().AppendLine($"Branches ready to review and merge ({branches.Count}):").AppendLine();

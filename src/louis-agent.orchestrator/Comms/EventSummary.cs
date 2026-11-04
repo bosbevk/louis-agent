@@ -14,7 +14,7 @@ internal sealed class EventSummary(int number, ErrorEvent error)
     public int ToolCalls { get; private set; }
     public FixResult? Fix { get; private set; }
     public List<string> Checks { get; } = [];
-    public string Outcome { get; set; } = "unknown";
+    public TriageOutcome Outcome { get; set; } = TriageOutcome.Unknown;
     public string Reason { get; set; } = "";
 
     /// <summary>The usage louis-agent reported for each reply of this event's fix.</summary>
