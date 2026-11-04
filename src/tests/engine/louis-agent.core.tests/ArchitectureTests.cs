@@ -394,6 +394,50 @@ public partial class ArchitectureTests
             Does.Not.Contain("InternalsVisibleTo"));
     }
 
+    /// <summary>
+    /// The framework projects that still reference a demo or a pack. CL29.2 takes them off one at a time, and the list
+    /// goes with its last entry.
+    /// </summary>
+    private static readonly HashSet<string> StillPointsOutside =
+    [
+        "louis-agent.acp-server",
+        "louis-agent.api",
+        "louis-agent.evals.runner",
+        "louis-agent.mcp-server",
+    ];
+
+    /// <summary>
+    /// A framework project ships as a package, and a package can't point at someone's project: the program that uses it
+    /// names the packs, never the framework. A project that has stopped pointing out comes off the list.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0074-the-folders-say-what-ships.md">ADR 0074: framework and implementation are split</seealso>
+    [Test]
+    public void AFrameworkProject_ReferencesNoDemoOrPack()
+    {
+        string src = Path.Combine(TestPaths.RepoRoot, "src");
+        var pointing = Directory.EnumerateFiles(src, "*.csproj", SearchOption.AllDirectories)
+            .Where(file => !TestPaths.InTestProject(Path.GetRelativePath(src, file).Replace('\\', '/')))
+            .Where(file => File.ReadAllLines(file).Any(PointsOutsideTheFramework))
+            .Select(file => Path.GetFileNameWithoutExtension(file))
+            .ToHashSet();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(pointing.Except(StillPointsOutside), Is.Empty, "it references a demo or a pack");
+            Assert.That(StillPointsOutside.Except(pointing), Is.Empty, "it no longer does: take it off the list");
+        });
+    }
+
+    /// <summary>Whether a project file's line references a project in a demo or among the packs.</summary>
+    private static bool PointsOutsideTheFramework(string line)
+    {
+        string plain = line.Replace('\\', '/');
+        return plain.Contains("<ProjectReference", StringComparison.Ordinal)
+               && (plain.Contains("/demos/", StringComparison.Ordinal)
+                   || plain.Contains("/packs/", StringComparison.Ordinal)
+                   || plain.Contains("/packs-evals/", StringComparison.Ordinal));
+    }
+
     /// <summary>A product, a shop or a country that core must never name.</summary>
     [GeneratedRegex(@"\b(puls|checkers|south\s+africa|johannesburg)\b", RegexOptions.IgnoreCase)]
     private static partial Regex ProductName();

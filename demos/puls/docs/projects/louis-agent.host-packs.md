@@ -1,7 +1,7 @@
 # louis-agent.host-packs — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
-> every identity (`identities/`) and every pack (`packs/`) · **Used by:** louis-agent.cli, louis-agent.acp-server,
+> every identity (`identities/`) and every pack (`packs/`) · **Used by:** louis-agent.acp-server,
 > louis-agent.api, louis-agent.mcp-server
 
 ## Purpose

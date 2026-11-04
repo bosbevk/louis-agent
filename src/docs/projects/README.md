@@ -20,7 +20,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `packs-evals/louis-agent.pack.recipes.checks` | Class library | The rule evals name to prove a recipe's link is on a site of the pack's table; only the runner references it | [pack.recipes](../../../packs/docs/projects/louis-agent.pack.recipes.md) |
 | `demos/puls/hosts/louis-agent.host-packs` | Class library | Picks what a host runs: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | [host-packs](../../../demos/puls/docs/projects/louis-agent.host-packs.md) |
 | `src/engine/louis-agent.composition` | Class library | The contracts a pack, an identity and the engine share; it names no pack and leans on no project (empty until CL29.1's step 2) | [CL29 plan](../plans/CL29-packs-are-just-tools.md) |
-| `src/hosts/louis-agent.cli` | Console app | Chat with the agent in a terminal | [cli](louis-agent.cli.md) |
+| `src/hosts/louis-agent.cli` | Library | Chat with the agent in a terminal; a demo's program starts it | [cli](louis-agent.cli.md) |
 | `src/hosts/louis-agent.acp-server` | Console app (stdio) | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/hosts/louis-agent.api` | ASP.NET Core app | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
 | `demos/louis-agent/web/louis-agent.web` | Blazor WebAssembly | The browser app: chats, files, changes, branches | [web](../../../demos/louis-agent/docs/projects/louis-agent.web.md) |
@@ -77,7 +77,7 @@ thin adapter between its protocol and `AgentEngine`.
 | Project | Run it with | Docker service |
 |---|---|---|
 | core | (library) | — |
-| cli | `dotnet run --project src/hosts/louis-agent.cli` | `local-agent` |
+| cli | `dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli` | `local-agent` |
 | acp-server | Rider starts it per chat | `acp-server` (`docker compose run --rm -T acp-server`) |
 | api + web | `docker compose … up -d api` → http://127.0.0.1:5080 | `api` |
 | mcp-server | an MCP client starts it (stdio), or HTTP with `MCP_TRANSPORT=http` | `mcp-server` |

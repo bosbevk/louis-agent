@@ -17,7 +17,7 @@ The model is configuration only, no code changes. The LLM settings (`LLM_PROVIDE
 LLM_PROFILE=ollama
 
 # or for one run, without editing .env
-LLM_PROFILE=ollama dotnet run --project src/hosts/louis-agent.cli
+LLM_PROFILE=ollama dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli
 ```
 
 The profiles are tracked in git (they hold no secrets). Precedence, highest first: the shell, `config/.env.secrets`,

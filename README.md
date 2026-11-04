@@ -149,7 +149,7 @@ Open **http://127.0.0.1:5080**. Everything listens on `127.0.0.1` only.
 
 - **Rider:** add an agent server in the AI Assistant settings, from
   [config/rider/rider-acp.example.json](demos/louis-agent/config/rider/rider-acp.example.json). Each chat gets its own container.
-- **CLI:** `dotnet run --project src/hosts/louis-agent.cli` (interactive), or add `-- "your prompt"` for one shot.
+- **CLI:** `dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli` (interactive), or add `-- "your prompt"` for one shot.
 
 Every setting is in [src/docs/SETUP.md](src/docs/SETUP.md), and choosing a model is in [src/docs/MODELS.md](src/docs/MODELS.md). For
 prompts to try, see the [quick start](demos/louis-agent/docs/QUICK_START_AGENT.md).

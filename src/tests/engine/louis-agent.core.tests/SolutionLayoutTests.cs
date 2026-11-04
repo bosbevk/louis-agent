@@ -25,7 +25,7 @@ public class SolutionLayoutTests
     [TestCase("demos/puls/web", "louis-agent.puls")]
     [TestCase("demos/puls/hosts", "louis-agent.host-packs")]
     [TestCase("demos/louis-agent/web", "louis-agent.web", "louis-agent.site")]
-    [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator")]
+    [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli")]
     [TestCase("src/tests/engine", "louis-agent.core.tests", "louis-agent.core.integration-tests",
         "louis-agent.choices.tests", "louis-agent.session-stream.tests")]
     [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests")]
@@ -147,7 +147,8 @@ public class SolutionLayoutTests
 
     /// <summary>
     /// The folders at the top and the solution's groups at the top are the same list. Dot folders are not part of the
-    /// code, what a run leaves behind sits in its demo, and a folder holding only build output is what a past move left.
+    /// code, what a run leaves behind sits in its demo, and a folder holding only build output is what a past move
+    /// left.
     /// </summary>
     [Test]
     public void TheTopLevelFolders_AreTheSolutionsGroups()
@@ -172,8 +173,8 @@ public class SolutionLayoutTests
             .Any(parts => !parts.Contains("bin") && !parts.Contains("obj"));
 
     /// <summary>
-    /// A file a project links from outside itself is really there. The build ignores a missing one, so a moved doc would
-    /// otherwise leave a dead link behind without anyone noticing.
+    /// A file a project links from outside itself is really there. The build ignores a missing one, so a moved doc
+    /// would otherwise leave a dead link behind without anyone noticing.
     /// </summary>
     [Test]
     public void AFileAProjectLinks_IsOnDisk()
