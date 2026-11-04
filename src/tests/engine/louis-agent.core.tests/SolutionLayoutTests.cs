@@ -123,8 +123,8 @@ public class SolutionLayoutTests
     }
 
     /// <summary>
-    /// What the solution lists is on disk. A demo's <c>.env</c> is the one exception: it is yours, so a fresh checkout
-    /// doesn't have it.
+    /// What the solution lists is on disk, and nothing a person keeps to themselves is listed: a demo's <c>.env</c>
+    /// follows the folders but isn't part of the solution.
     /// </summary>
     [Test]
     public void ASolutionItem_IsAFileOnDisk()
@@ -134,8 +134,9 @@ public class SolutionLayoutTests
         // An item's line is its path, twice, inside a folder's section; a project's id never contains a slash.
         var items = lines.Select(line => line.Trim()).Where(line => line.Contains('\\') && line.Contains(" = "))
             .Where(line => !line.StartsWith("Project("))
-            .Select(line => line.Split(" = ")[0].Replace('\\', '/'))
-            .Where(item => Path.GetFileName(item) != ".env");
+            .Select(line => line.Split(" = ")[0].Replace('\\', '/')).ToList();
+        Assert.That(items.Where(item => Path.GetFileName(item) == ".env"), Is.Empty);
+
         var missing = items.Where(item => !File.Exists(Path.Combine(TestPaths.RepoRoot, item)));
 
         Assert.That(missing, Is.Empty);
