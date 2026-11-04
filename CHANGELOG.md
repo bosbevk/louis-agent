@@ -4,6 +4,12 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **FX36 A redirect's body is observed**: the browser's log said `A task failed and nothing awaited it`
+  (`Response body is unavailable for redirect responses`) at odd moments after a visit that followed a redirect:
+  PuppeteerSharp sets every redirect's body task to that failure and never awaits it, and F52's last-chance handler
+  reports such a task when the collector finds it. `Browsing/RedirectBodies` asks each redirect for its body, which
+  awaits the failure and so counts it seen; a workaround for the library (25.14, still so at 25.16), removed when a
+  release awaits its own task; [lesson](docs/learning/fixes-lessons.md#fx36--a-librarys-failed-task-is-yours-to-see)
 - 2026-11-04 — **F53.3 The review queue, and F53 closed**: `/admin/review` shows the answers waiting for this
   reviewer's grade across the stored runs, one at a time, from one new API route (`GET
   /v1/admin/evals/reviews/queue?reviewer=&limit=`: every conversation whose human review is still pending and that

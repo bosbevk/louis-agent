@@ -261,6 +261,13 @@ public sealed class ChromeWebBrowser(
             }
         };
 
+        // A redirect's body is a failed task the library never awaits (FX36): asked for here, so the runtime doesn't
+        // report it as lost when it collects it.
+        page.Response += (_, e) =>
+        {
+            if (RedirectBodies.IsRedirect(e.Response)) _ = RedirectBodies.ObserveAsync(e.Response);
+        };
+
         // The responses the caller asked for (a shop's catalogue answer): each body read by a task of its own, all of
         // them awaited before the visit ends, so none is lost to the page closing and no handler is async void.
         var captured = new List<string>();
