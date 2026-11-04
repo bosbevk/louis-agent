@@ -21,8 +21,10 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   and one tool. It needs no setting, so it loads wherever it is named.
 - **The town.** `FindBranches(shop, town)` asks Nominatim for the town (South Africa only, the first answer), which
   gives its centre, its municipality and its province.
-- **The branches.** `BranchFinder` asks for the shop by name in a box around the town, half a degree each way, then a
-  degree and a half when the first box finds none. Only places Nominatim files as a shop count, and `ShopNames` reads
+- **The branches.** `BranchFinder` asks for the shop by name in a box around the town, about 16 km each way, then half
+  a degree, then a degree and a half, widening only when a box finds none. The smallest comes first because the map
+  answers at most 20 hits in no distance order, so a box that reaches a city loses the town's own branch to the city's
+  (FX39). Only places Nominatim files as a shop count, and `ShopNames` reads
   a short name as the full one (`PnP` is `Pick n Pay`, `Woolies` is `Woolworths`). It keeps the three nearest, by the
   distance from the town's centre (`Distance`, the haversine formula).
 - **The answer.** `BranchPrinter` writes the town's municipality and province (the province is what `EstimatePrices`

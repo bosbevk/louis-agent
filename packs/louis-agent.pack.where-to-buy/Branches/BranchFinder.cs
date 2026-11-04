@@ -1,20 +1,22 @@
 using LouisAgent.Packs.WhereToBuy.Branches.Map;
+
 namespace LouisAgent.Packs.WhereToBuy.Branches;
 
 /// <summary>
 /// Finds a shop's branches near the user's town: the town first, then the shop's name in a box around it, a wider
-/// box only when the first holds none. The three nearest are kept, each marked when it is in the town's own
+/// box only when the smaller one holds none. The three nearest are kept, each marked when it is in the town's own
 /// municipality.
 /// </summary>
 /// <remarks>
-/// Two searches at most for the shop: about 55 km around the town covers a town and its neighbours, and about 165 km
-/// is enough to name "the nearest" for a small town without one. Only places the map files as shops count, so a
-/// "Checkers Street" is never a branch.
+/// The smallest box comes first because the map answers at most 20 hits in no distance order: a box that reaches a
+/// city fills with the city's branches and loses the town's own, and sorting afterwards can't bring it back. About
+/// 16 km holds a town's branches, about 55 km its neighbours, and about 165 km is enough to name "the nearest" for a
+/// small town without one. Only places the map files as shops count, so a "Checkers Street" is never a branch.
 /// </remarks>
 public sealed class BranchFinder(MapSearch map)
 {
-    /// <summary>The half-widths of the boxes searched, in degrees (a degree is about 111 km).</summary>
-    private static readonly double[] Boxes = [0.5, 1.5];
+    /// <summary>The half-widths of the boxes searched, smallest first, in degrees (a degree is about 111 km).</summary>
+    private static readonly double[] Boxes = [0.15, 0.5, 1.5];
 
     private const int Kept = 3;
 
