@@ -25,6 +25,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- A trimmed copy of Stats SA's two average-price spreadsheets (P0141, August 2026), for the sheet reader. -->
+    <None Include="Fixtures\*.xlsx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
     <Using Include="NUnit.Framework" />
     <Using Include="LouisAgent.Testing" />
   </ItemGroup>

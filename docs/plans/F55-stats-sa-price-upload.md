@@ -33,7 +33,7 @@ data without a release) and the data side of **7** (what the agent grounds its a
 - **An Excel reader is already in core.** `ExcelDataReader` 3.9.0 (MIT), used by `DocumentText` for `ReadTable`.
 - **The spreadsheets** (P0141, August 2026 release, checked 2026-11-04):
   - *Wide*: one row per product and pack, one column per month from `M201701` to `M202608`; a release adds columns.
-  - All urban areas (sheet *Average prices*, 391 rows): `H05` the product's code (`01111201`), `H06` its name
+  - All urban areas (sheet *Average prices*, 391 rows): `H03` the product's code (`01111201`), `H04` its name
     (`White Rice`), `H08` the pack (`1 Kilogram`), then the months.
   - Provinces (sheet *Provinces*, 2,455 rows): the same, `H09` the province (`Kwa-Zulu Natal`), `Province_code`.
   - A blank cell is no price. Sizes are loose (`1,5 Kilogram`, `1.75 Kilogram`, `10 X 18 Gram`, `1 Unit`), and so
@@ -198,12 +198,12 @@ flowchart TB
 | `IAgentPack.Imports`, `AgentCatalog.Imports`/`Import` (changed) | `louis-agent.core/Agent/Catalog/` | `LouisAgent.Core.Agent.Catalog` | 1 |
 | `FakeImport`, `FakePack(imports:)` | `tests/louis-agent.testing/` | `LouisAgent.Testing` | 1 |
 | `AgentCatalogTests` (more cases) | `tests/louis-agent.core.tests/Agent/Catalog/` | `LouisAgent.Core.Tests.Agent.Catalog` | 1 |
-| `StatsSaRow`, `StatsSaRows`, `StatsSaSheets` | `packs/louis-agent.pack.shop-prices/Prices/StatsSa/` | `LouisAgent.Packs.ShopPrices.Prices.StatsSa` | 2 |
+| `StatsSaSheet` (the two files), `StatsSaRow`, `StatsSaRows`, `StatsSaSheets` | `packs/louis-agent.pack.shop-prices/Prices/StatsSa/Sheets/` (its own folder: `StatsSa/` would pass six files by step 4) | `LouisAgent.Packs.ShopPrices.Prices.StatsSa.Sheets` | 2 |
+| `ShopPriceImportMessage` (the problems; the facts join in step 5) | `Messages/` | `LouisAgent.Packs.ShopPrices.Messages` | 2 |
 | `PackSize`, `StatsSaProduct` | same | same | 3 |
 | `StatsSaNames`, `StatsSaPrices`; `Prices/Data/statssa-names.json` | same | same | 4 |
 | `IPriceStore.MonthsAsync`/`SaveAsync`, `PriceBookCache.Forget` (changed) | `Prices/Store/` | `LouisAgent.Packs.ShopPrices.Prices.Store` | 5 |
 | `StatsSaImport` | `packs/louis-agent.pack.shop-prices/Imports/` | `LouisAgent.Packs.ShopPrices.Imports` | 5 |
-| `ShopPriceImportMessage` | `Messages/` | `LouisAgent.Packs.ShopPrices.Messages` | 5 |
 | tests of each, mirrored | `tests/louis-agent.pack.shop-prices.tests/…`, a trimmed `.xlsx` fixture pair | mirrored | 2-5 |
 | `ImportEndpoints`, `ImportHandlers` | `src/louis-agent.api/Endpoints/Admin/Imports/` | `LouisAgent.Api.Endpoints.Admin.Imports` | 6 |
 | `ImportListing`, `ImportReportReply` | `src/louis-agent.api.contracts/Admin/` | `LouisAgent.Api.Contracts.Admin` | 6 |
@@ -235,7 +235,7 @@ Each step is one commit, test first (seen failing, then passing), and stops for 
    `Import(name)`, a name taken twice refused. *Test:* a catalogue lists a pack's import, finds it by name (case
    ignored), refuses two of the same name.
 2. **Read the sheets.** `StatsSaSheets.Read(allUrban, provinces)` gives every month with prices and its rows; a
-   blank cell is no row; a sheet without `H05`/`H06`/`H08` or the month columns is a problem, not a throw. *Test:* a
+   blank cell is no row; a sheet without `H03`/`H04`/`H08` or the month columns is a problem, not a throw. *Test:* a
    trimmed fixture pair (a few products, two months).
 3. **Sizes and names tidied.** `PackSize.Read` and `StatsSaProduct.Tidy`. *Test:* every size in the August sheets
    reads (`1,5`, `1.75`, `10 X 18`, `Unit`, litres, millilitres); an unknown one is `Other`.
