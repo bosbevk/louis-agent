@@ -1,5 +1,5 @@
-# Every image is built with the repository root as its context (docker compose: context ..), so this file - not one in
-# docker/ - decides what reaches the build. Secrets, git history, build output and local state stay out.
+# Every image is built with the repository root as its context, so this file - not one in a demo's docker/ - decides
+# what reaches the build. Secrets, git history, build output and local state stay out.
 .git
 .idea
 .vs
@@ -8,7 +8,7 @@
 logs
 **/bin
 **/obj
-config/.env
-config/.env.*
-!config/.env.example
-!config/.env.secrets.example
+**/config/.env
+**/config/.env.*
+!**/config/.env.example
+!**/config/.env.secrets.example

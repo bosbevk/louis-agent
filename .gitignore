@@ -39,13 +39,13 @@ logs/
 # The benchmark store's data (F31: puls-mongo's data folder), at the root only: a folder named data elsewhere is code's
 /data/
 
-# Secrets and local configuration (see config/.env.secrets.example)
-config/.env
-config/.env.secrets
-config/.env.mongo
-config/.env.searxng
-config/.env.secrets.local
-config/.env.local
+# Secrets and local configuration, in any demo's config/ (see its .env.secrets.example)
+**/config/.env
+**/config/.env.secrets
+**/config/.env.mongo
+**/config/.env.searxng
+**/config/.env.secrets.local
+**/config/.env.local
 
 # Agent-built tools and skill files awaiting /approve (approved ones in Skills/tools/ and Skills/agent/functions/ are committed)
 Skills/tools/pending/

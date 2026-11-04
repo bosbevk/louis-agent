@@ -101,4 +101,45 @@ public class EnvFileTests
             Directory.Delete(dir, recursive: true);
         }
     }
+
+    /// <summary>
+    /// A host told where its config is goes there, whatever folder it runs from: a framework can't assume your folders.
+    /// </summary>
+    [Test]
+    public void TheConfigDirectorySetting_WinsOverTheSearch()
+    {
+        string dir = Directory.CreateTempSubdirectory("env-file-").FullName;
+        try
+        {
+            Directory.CreateDirectory(Path.Combine(dir, "config"));
+            File.WriteAllText(Path.Combine(dir, "config", ".env"), "A=1\n");
+            string told = Directory.CreateDirectory(Path.Combine(dir, "demo", "settings")).FullName;
+
+            Assert.That(EnvFile.FindConfigDirectory(dir, name => name == "CONFIG_DIRECTORY" ? told : null),
+                Is.EqualTo(told));
+        }
+        finally
+        {
+            Directory.Delete(dir, recursive: true);
+        }
+    }
+
+    /// <summary>With nothing set it searches upward, as before, so a demo run from its folder finds its own.</summary>
+    [Test]
+    public void NoConfigDirectorySetting_SearchesUpward()
+    {
+        string dir = Directory.CreateTempSubdirectory("env-file-").FullName;
+        try
+        {
+            string config = Directory.CreateDirectory(Path.Combine(dir, "config")).FullName;
+            File.WriteAllText(Path.Combine(config, ".env"), "A=1\n");
+            string below = Directory.CreateDirectory(Path.Combine(dir, "hosts", "api")).FullName;
+
+            Assert.That(EnvFile.FindConfigDirectory(below, _ => null), Is.EqualTo(config));
+        }
+        finally
+        {
+            Directory.Delete(dir, recursive: true);
+        }
+    }
 }

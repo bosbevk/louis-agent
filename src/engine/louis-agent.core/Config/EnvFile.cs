@@ -1,9 +1,9 @@
-
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Core.Config;
+
 /// <summary>
 /// Writes one setting into <c>config/.env</c>, the file every host and container reads (F14: <c>HOST_CULTURE</c>, written
 /// once from the PC by <c>usage-probe --host-culture</c>). Only that setting's line changes: the rest of the file, its
@@ -17,9 +17,19 @@ public static partial class EnvFile
             ? Path.Combine(dir, ".env")
             : null;
 
-    /// <summary>The nearest <c>config/</c> folder with a <c>.env</c> or <c>.env.secrets</c>, searched upward; null if none.</summary>
-    internal static string? FindConfigDirectory(string startDirectory)
+    /// <summary>
+    /// Where a host's config is: <c>CONFIG_DIRECTORY</c> when it is told, else the nearest <c>config/</c> folder with a
+    /// <c>.env</c> or <c>.env.secrets</c>, searched upward; null if none.
+    /// </summary>
+    internal static string? FindConfigDirectory(string startDirectory) =>
+        FindConfigDirectory(startDirectory, Environment.GetEnvironmentVariable);
+
+    /// <summary>The same, with the setting read through <paramref name="setting"/>, so a test needs no environment.</summary>
+    internal static string? FindConfigDirectory(string startDirectory, Func<string, string?> setting)
     {
+        // Read from the process, never a file: this is what says which files to read.
+        if (setting("CONFIG_DIRECTORY") is { Length: > 0 } told) return Path.GetFullPath(told);
+
         for (var dir = new DirectoryInfo(startDirectory); dir is not null; dir = dir.Parent)
         {
             var candidate = Path.Combine(dir.FullName, "config");
