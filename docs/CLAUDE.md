@@ -104,8 +104,9 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   calls never run, failures carry their reason). [ADR 0004](adr/0004-arguments-as-data.md), [0005](adr/0005-guard-the-context.md).
 - **History is append-only** — nothing edits the system prompt, tools or earlier messages mid-conversation; the
   finished streamed turn is appended whole, thinking blocks included. [ADR 0008](adr/0008-history-is-append-only.md).
-- **The browser says what it is** — Chrome's own user agent or an honest name set by the identity, never a disguise.
-  [ADR 0038](adr/0038-the-browser-says-what-it-is.md).
+- **The browser says what it is, and takes a site's no** — Chrome's own user agent or an honest name, never a disguise;
+  every fetch obeys `robots.txt` and the page's no-AI signals, in code; a page's own data (JSON-LD) is read in code
+  before its text. [ADR 0038](adr/0038-the-browser-says-what-it-is.md), [0068](adr/0068-every-fetch-obeys-robots-txt.md), [0067](adr/0067-a-pages-own-data-before-its-text.md).
 - **Measure every request, and show it** — the usage ledger is the only source of cost, priced by a dated table;
   unknown is `null`, never 0; every host shows the same totals. [ADR 0007](adr/0007-measure-every-request.md).
 - **Evals in C#** — every check is a C# eval on one harness, beside the identity or pack it proves; one event
@@ -193,8 +194,7 @@ modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-a
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../TODO.md#known-limitations); when work removes one, delete it there.
-**Further reading:** [the architecture](architecture/README.md), `config/.env.example` for settings, and
-[the coding agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md) for how the agent is instructed.
+**Further reading:** [the architecture](architecture/README.md), `config/.env.example` (settings), [the agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md).
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](projects/orchestrator-runbooks.md)

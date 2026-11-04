@@ -5,6 +5,7 @@ using LouisAgent.Core.Guardrails.Auth;
 using System.ComponentModel;
 using LouisAgent.Composition;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Protocols.Mcp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.AI;
@@ -21,13 +22,12 @@ using LouisAgent.Core.Messages;
 // PowerShell*, Bash*, skills, agent-built tools, ...) so that client can call them.
 var engine = AgentHost.BuildToolHost(Plugins.FromEnvironment());
 
-// Default (unset or anything but "http"): stdio, for a client that launches this as a local subprocess (Rider,
-// Claude Desktop) - unchanged from before. "http" serves Streamable HTTP instead, for a remote client that isn't
-// local (an agent built with another SDK/provider, e.g. OpenAI's Agents SDK, connecting over the network).
-bool useHttp = string.Equals(Environment.GetEnvironmentVariable("MCP_TRANSPORT"), "http",
-    StringComparison.OrdinalIgnoreCase);
+// Unset is stdio, for a client that launches this as a local subprocess (Rider, Claude Desktop). Http serves Streamable
+// HTTP instead, for a remote client (an agent built with another SDK, connecting over the network). Any other value
+// stops start-up with the names it takes.
+var transport = McpTransportSetting.Parse(Environment.GetEnvironmentVariable("MCP_TRANSPORT"));
 
-if (useHttp)
+if (transport == McpTransport.Http)
 {
     await RunHttpAsync(args, engine);
 }

@@ -17,6 +17,16 @@
   at version 14, the routing eval at 3. `SHOP_CATALOGUES` and `SHOP_STORE_CACHE` are gone.
   [ADR 0069](docs/adr/0069-shop-prices-are-stats-sa-estimates.md);
   [write-up](docs/learning/04-tool-design.md#f502-one-job-per-pack-and-the-numbers-in-code-2026-11-04)
+- 2026-11-04 — **MCP_TRANSPORT is an enum**: the MCP server read its transport by comparing a string, so a typo
+  (`htpp`) started it on stdio without a word; `McpTransportSetting.Parse` reads it once into `McpTransport` (ADR
+  0024), unset is stdio and anything else stops start-up with the names it takes
+- 2026-11-04 — **Third-party notices, and ADR 0067 and 0068 in the rules list**: `THIRD-PARTY-NOTICES.md` names
+  every package, CDN script and font we hand out and the licence each keeps (the Blazor apps send their DLLs to every
+  visitor's browser), `LICENSE` points to it, ADR 0016 says so; `docs/CLAUDE.md` names ADR 0067 (a page's own data
+  before its text) and 0068 (every fetch obeys `robots.txt`) and stays at 200 lines; the work email left in git
+  history is a TODO line for Louis's call (licence review, findings 4 and 5)
+- 2026-11-04 — **FX38 One CI run per change**: every push to a pull request's branch started two runs in one concurrency group, so one cancelled the other (24 of the last 60 runs), and the cancelled one was usually the push run, the only one that checked formatting. CI now runs on pull requests and on `main`, the formatting check runs on both (a pull request against its base), `main`'s runs never cancel, the token is read-only, and the actions are on their Node 24 majors; the CI review's leftovers are done
+- 2026-11-04 — **FX37 A git past its deadline is always a timeout**: CI now and then failed `AGitThatTakesTooLong_IsARefusalInWords` with `git read-tree took longer than 0 seconds` where the test expected `rev-parse`: `WaitForExitAsync` lets a process that already exited through a token that already ran out, so a fast `rev-parse` counted as in time. The publisher now asks the deadline itself after the wait, and the test runs a hundred times; [lesson](docs/learning/fixes-lessons.md#fx37--a-test-that-races-is-not-a-test)
 - 2026-11-04 — **FX36 A redirect's body is observed**: the browser's log said `A task failed and nothing awaited it`
   (`Response body is unavailable for redirect responses`) at odd moments after a visit that followed a redirect:
   PuppeteerSharp sets every redirect's body task to that failure and never awaits it, and F52's last-chance handler

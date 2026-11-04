@@ -18,7 +18,7 @@ dotnet test tests/louis-agent.core.tests                                     # o
 dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"   # one class
 ```
 
-GitHub Actions runs the build and the whole solution's tests on Ubuntu on every push and pull request
+GitHub Actions runs the build and the whole solution's tests on Ubuntu on every pull request and merge to main
 (`.github/workflows/ci.yml`), so a red check is the failure you'd see locally with the same command. In Rider, the
 unit-test window runs the same tests.
 

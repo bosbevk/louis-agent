@@ -23,6 +23,8 @@ change, share or host it without written permission. It is no longer open source
   notice applies from 2026-10-15 onward.
 - GitHub's Terms of Service still let anyone view the public repo and fork it on GitHub; that gives no right to use the
   code.
-- Every dependency is MIT, Apache or BSD (the reuse rule), and they allow use in closed code; their own notices still
-  apply to them.
+- Every dependency is MIT, Apache, BSD or (the fonts) SIL OFL (the reuse rule), and they allow use in closed code;
+  their own notices still apply to them, and travel with what we hand out: the Blazor apps' DLLs reach every
+  visitor's browser. [THIRD-PARTY-NOTICES.md](../../THIRD-PARTY-NOTICES.md) lists them (2026-11-04), and `LICENSE`
+  points to it.
 - An outside contribution would need a written agreement first, since no one can build on the code otherwise.
