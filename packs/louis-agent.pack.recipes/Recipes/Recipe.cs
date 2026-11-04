@@ -16,7 +16,9 @@ namespace LouisAgent.Packs.Recipes.Recipes;
 /// <param name="PrepTime">Time to get ready (the page's <c>prepTime</c>).</param>
 /// <param name="CookTime">Time on the heat (the page's <c>cookTime</c>).</param>
 /// <param name="TotalTime">Time from start to table (the page's <c>totalTime</c>).</param>
-/// <param name="Ingredients">Every ingredient line as written (the page's <c>recipeIngredient</c>).</param>
+/// <param name="Ingredients">
+/// Every ingredient line as written (the page's <c>recipeIngredient</c>), each with the heading it sits under.
+/// </param>
 /// <param name="Steps">What to do, in order (the page's <c>recipeInstructions</c>).</param>
 /// <param name="Image">The first picture, as a full address (the page's <c>image</c>).</param>
 /// <param name="Author">Who wrote it (the page's <c>author</c>, its <c>name</c> when it is an object).</param>
@@ -29,7 +31,7 @@ public sealed record Recipe(
     TimeSpan? PrepTime,
     TimeSpan? CookTime,
     TimeSpan? TotalTime,
-    IReadOnlyList<string> Ingredients,
+    IReadOnlyList<RecipeIngredient> Ingredients,
     IReadOnlyList<RecipeStep> Steps,
     Uri? Image,
     string? Author,
