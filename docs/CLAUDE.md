@@ -153,8 +153,8 @@ in [Project layout](../src/engine/louis-agent.core/CLAUDE.md#project-layout).
 src/engine/              # louis-agent.core (the loop, tools, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream
 src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model), .orchestrator (POC), .composition (knows every identity and pack; IDENTITIES, PACKS)
 src/web/                 # louis-agent.web (code review), .puls (Puls's app: the API with -p:WebApp=puls), .web.shared, .site
-identities/              # Who an agent is: louis-agent.identity.puls (its voice, modes, roles and the packs it names), .evals (what proves it)
-packs/                   # What an agent can do: where-to-buy (branches), shop-prices (estimates), recipes; each .checks proves one
+identities/              # Who an agent is: louis-agent.identity.puls (its voice, modes, roles and the packs it names)
+packs/                   # What an agent can do: where-to-buy (branches), shop-prices (estimates), recipes
 evals/                   # The eval harness, its protocol, the checks contract, the runner and the template folder; identities/ and packs/ hold what proves each one, as projects only the runner references (an eval is a folder of files in evals/identities/…/Evals/); src/engine/louis-agent.session-stream/ and src/hosts/louis-agent.api.contracts/ hold the records the API shares
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
 tests/                   # NUnit, one project per project ([tests](projects/tests.md)); the ones that leave their process are *.integration-tests

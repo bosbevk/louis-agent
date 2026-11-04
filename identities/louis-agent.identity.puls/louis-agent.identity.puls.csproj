@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- Who Puls is (CL15, ADR 0027): its modes, its specialists and its minion roles, as embedded prompts, and the packs it
-       uses by name. The web app the user sees stays src/louis-agent.puls; this is what the agent loads. -->
+       uses by name. The web app the user sees stays src/web/louis-agent.puls; this is what the agent loads. -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Identities.Puls</RootNamespace>
