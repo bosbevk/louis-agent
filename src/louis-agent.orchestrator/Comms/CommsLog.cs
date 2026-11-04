@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using LouisAgent.Choices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
@@ -152,7 +153,7 @@ internal sealed class CommsLog(string path, DisplayCurrency? display = null, Tim
     /// <param name="triage">The triage's own usage (its <see cref="UsageScope"/>'s records); null when it isn't
     /// recorded.</param>
     /// <returns>What the event used, for <c>decisions.jsonl</c>.</returns>
-    public EventUsage EndEvent(string outcome, string reason, string orchestratorAnswer,
+    public EventUsage EndEvent(TriageOutcome outcome, string reason, string orchestratorAnswer,
         IReadOnlyList<UsageRecord>? triage = null)
     {
         if (_current is not { } e) return EventUsage.None;
@@ -164,7 +165,7 @@ internal sealed class CommsLog(string path, DisplayCurrency? display = null, Tim
         var md = new StringBuilder();
         md.AppendLine().AppendLine("### Summary").AppendLine();
         md.AppendLine("| | |").AppendLine("|---|---|");
-        md.AppendLine($"| Decision | **{outcome}** — {Cell(reason, 400)} |");
+        md.AppendLine($"| Decision | **{outcome.Wire()}** — {Cell(reason, 400)} |");
         if (e.Messages > 0)
         {
             md.AppendLine($"| louis-agent said | {FixSaid(e.Fix)} · {e.Messages} message(s) · " +

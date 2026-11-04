@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using LouisAgent.Choices;
 using LouisAgent.Orchestrator.Comms;
 
 namespace LouisAgent.Orchestrator.Triage;
@@ -27,7 +28,7 @@ internal sealed record DecisionRecord(
     /// <summary>The line for one decision about one error, with what it used in the charged currency.</summary>
     public static DecisionRecord Of(Decision decision, ErrorEvent error, EventUsage used, string currency,
         DateTimeOffset at) =>
-        new(error.Id, error.Method, decision.Outcome, decision.Reason, at,
+        new(error.Id, error.Method, decision.Outcome.Wire(), decision.Reason, at,
             UsageLine.Of(used.Total, currency),
             UsageLine.Of(used.Triage, currency),
             UsageLine.Of(used.LouisAgent, currency));

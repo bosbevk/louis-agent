@@ -1,9 +1,12 @@
+using LouisAgent.Choices;
+
 namespace LouisAgent.Orchestrator.Triage;
 
 /// <summary>
 /// What the triage agent decided about one error, read from the line it ends its answer with:
-/// <c>DECISION: fixed - commit abc1234 verified</c>. If it wrote no such line, the outcome is "unknown" and the reason
-/// is the start of what it did say, so the comms log still shows something.
+/// <c>DECISION: fixed - commit abc1234 verified</c>. If it wrote no such line, or named an outcome the prompt doesn't
+/// offer, the outcome is unknown and the reason is the start of what it did say, so the comms log still shows
+/// something.
 /// </summary>
 /// <remarks>
 /// A small hand-written reader instead of a regular expression (ADR 0057): find the marker, take the word after it,
@@ -13,7 +16,7 @@ namespace LouisAgent.Orchestrator.Triage;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
-internal sealed record Decision(string Outcome, string Reason)
+internal sealed record Decision(TriageOutcome Outcome, string Reason)
 {
     /// <summary>What the triage prompt asks the agent to start its closing line with.</summary>
     private const string Marker = "DECISION:";
@@ -29,16 +32,18 @@ internal sealed record Decision(string Outcome, string Reason)
         answer.ReplaceLineEndings("\n").Split('\n').Select(FromLine).LastOrDefault(decision => decision is not null)
         ?? Unread(answer);
 
-    /// <summary>One line's decision, or nothing when the line has no marker, no outcome or no reason.</summary>
+    /// <summary>One line's decision, or nothing when the line has no marker, no known outcome or no reason.</summary>
     private static Decision? FromLine(string line)
     {
         int at = line.IndexOf(Marker, StringComparison.Ordinal);
         if (at < 0) return null;
 
-        // The outcome is the word right after the marker: letters and hyphens, as in "fixed" or "won't-fix".
+        // The outcome is the word right after the marker, parsed once into its enum (ADR 0024).
         string rest = Unbold(line[(at + Marker.Length)..]);
         int length = rest.TakeWhile(c => char.IsAsciiLetter(c) || c == '-').Count();
         if (length == 0) return null;
+        if (!SettingChoice.TryParse(rest[..length], out TriageOutcome? outcome)) return null;
+        if (outcome is not { } known) return null;
 
         // Then one separator, and everything after it is the reason.
         string tail = Unbold(rest[length..]);
@@ -46,7 +51,7 @@ internal sealed record Decision(string Outcome, string Reason)
         string reason = tail[1..].Trim();
         if (reason.Length == 0) return null;
 
-        return new Decision(rest[..length].ToLowerInvariant(), reason);
+        return new Decision(known, reason);
     }
 
     /// <summary>Drops the spaces and Markdown bold stars a model puts around the outcome.</summary>
@@ -56,6 +61,7 @@ internal sealed record Decision(string Outcome, string Reason)
     private static Decision Unread(string answer)
     {
         string text = answer.ReplaceLineEndings(" ").Trim();
-        return new Decision("unknown", text.Length > MaxReasonChars ? text[..MaxReasonChars] + "..." : text);
+        string reason = text.Length > MaxReasonChars ? text[..MaxReasonChars] + "..." : text;
+        return new Decision(TriageOutcome.Unknown, reason);
     }
 }
