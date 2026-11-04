@@ -97,18 +97,25 @@ public sealed class EvalPublisher(string workspaceRoot, TimeSpan? timeout = null
     }
 
     /// <summary>Whether git finished in time; one that didn't is stopped, so no git is left running.</summary>
+    /// <remarks>
+    /// The deadline decides, not the wait: <c>WaitForExitAsync</c> lets a git that has already exited through a token
+    /// that has already run out, so a git faster than the check would count as in time even past its deadline, and a
+    /// zero timeout would be a race (FX37). A deadline that has passed is a timeout, whoever got there first.
+    /// </remarks>
     private async Task<bool> ExitsInTimeAsync(Process process)
     {
-        using var timeout = new CancellationTokenSource(_timeout);
+        using var deadline = new CancellationTokenSource(_timeout);
         try
         {
-            await process.WaitForExitAsync(timeout.Token);
-            return true;
+            await process.WaitForExitAsync(deadline.Token);
         }
         catch (OperationCanceledException)
         {
-            process.Kill(entireProcessTree: true);
-            return false;
+            // The deadline passed while git still ran: it is stopped below.
         }
+
+        if (!deadline.IsCancellationRequested) return true;
+        if (!process.HasExited) process.Kill(entireProcessTree: true);
+        return false;
     }
 }

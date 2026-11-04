@@ -4,6 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **FX37 A git past its deadline is always a timeout**: CI now and then failed `AGitThatTakesTooLong_IsARefusalInWords` with `git read-tree took longer than 0 seconds` where the test expected `rev-parse`: `WaitForExitAsync` lets a process that already exited through a token that already ran out, so a fast `rev-parse` counted as in time. The publisher now asks the deadline itself after the wait, and the test runs a hundred times; [lesson](docs/learning/fixes-lessons.md#fx37--a-test-that-races-is-not-a-test)
 - 2026-11-04 — **FX36 A redirect's body is observed**: the browser's log said `A task failed and nothing awaited it`
   (`Response body is unavailable for redirect responses`) at odd moments after a visit that followed a redirect:
   PuppeteerSharp sets every redirect's body task to that failure and never awaits it, and F52's last-chance handler
