@@ -60,7 +60,8 @@ public class PulsPromptsTests
             {
                 RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire()
             }),
-            "F35.2 step 1 and F50.2: the cook declares its recipes, where to buy and shop prices in its header (ADR 0025)");
+            "F35.2 step 1 and F50.2: the cook declares its recipes, where to buy and shop prices in its header " +
+            "(ADR 0025)");
     }
 
     /// <summary>
@@ -200,12 +201,13 @@ public class PulsPromptsTests
     {
         string cook = Read("specialists/puls-cook.md");
 
-        Assert.That(cook, Does.Contain("Where the user is").And.Contain("never your own guess, never a search snippet"));
+        Assert.That(cook,
+            Does.Contain("Where the user is").And.Contain("never your own guess, never a search snippet"));
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
         Assert.That(cook, Does.Contain("What isn't bought is never a row"));
         Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*"));
         Assert.That(cook, Does.Contain("no brand, no photo"));
-        Assert.That(cook, Does.Contain("Look the user's shop up in their town, once, with `FindBranches`"));
+        Assert.That(cook, Does.Contain("Look the user's town up once, with `FindShops`"));
         Assert.That(cook, Does.Contain("| Chicken thighs ").And.Contain("| 600 g ").And.Contain("chicken thighs 1 kg"));
     }
 
@@ -251,9 +253,8 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("Where to buy").And.Contain("branches"));
         Assert.That(Flat(cook), Does.Contain("*Branches from © OpenStreetMap contributors.*"),
             "the map's licence (ODbL) asks for the credit wherever a branch is named (F50.2)");
-        Assert.That(cook, Does.Contain("`FindBranches`").And.Contain("never fetch it, the link is for the user"));
-        Assert.That(cook, Does.Contain("`Pick n Pay Malmesbury`, `PnP in Paarl Mall`"),
-            "a branch is named with its place");
+        Assert.That(cook, Does.Contain("`FindShops`").And.Contain("never fetch it, the link is for the user"));
+        Assert.That(cook, Does.Contain("`Pick n Pay, 55 Voortrekker Road`"), "a shop is named with its street");
     }
 
     /// <summary>The cook's labels come in the task's language, both ways, never the other one.</summary>
@@ -298,7 +299,8 @@ public class PulsPromptsTests
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),
             "its own line in every meal's brief");
         Assert.That(router, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
-        Assert.That(router, Does.Contain("ask first, both in one short question"));
+        Assert.That(router, Does.Contain("doesn't say for how many: ask first, one short question"));
+        Assert.That(router, Does.Not.Contain("where they'll shop"), "the shop is never asked (Louis, 2026-11-04)");
         Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
     }
 
@@ -426,10 +428,12 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("written `± R65` with no link"));
         Assert.That(cook,
             Does.Contain(
-                "*Prices are estimates from Stats SA's average prices (the Western Cape, August 2026), not checked at a shop.*"));
+                "*Prices are estimates from Stats SA's average prices (the Western Cape, August 2026), " +
+                "not checked at a shop.*"));
         Assert.That(cook,
             Does.Contain(
-                "*Pryse is skattings uit Stats SA se gemiddelde pryse (Wes-Kaap, Augustus 2026), nie by 'n winkel nagegaan nie.*"));
+                "*Pryse is skattings uit Stats SA se gemiddelde pryse (Wes-Kaap, Augustus 2026), " +
+                "nie by 'n winkel nagegaan nie.*"));
         Assert.That(cook, Does.Not.Contain("public API"));
     }
 

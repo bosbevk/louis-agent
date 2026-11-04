@@ -47,9 +47,10 @@ public class PulsEstimatesPromptsTests
         string router = Flat(Read("agent/puls/voice.md"));
 
         Assert.That(router, Does.Not.Contain("The cook prices at that shop alone"));
-        Assert.That(router, Does.Contain("names that shop's branch under *Where to buy* and estimates the prices"));
-        Assert.That(router, Does.Contain("Waar gaan jy inkopies doen"),
-            "still asked when missing: the branch needs the shop");
+        Assert.That(router, Does.Contain("Never ask where the user will shop"));
+        Assert.That(router, Does.Contain("puts the shop the user named first"));
+        Assert.That(router, Does.Not.Contain("Waar gaan jy inkopies doen").And.Not.Contain("Where will you shop"),
+            "Louis, 2026-11-04: the question is gone, the cook lists every shop in the town");
         Assert.That(router, Does.Contain("A follow-up keeps the shop until the user changes it"));
     }
 
@@ -61,8 +62,8 @@ public class PulsEstimatesPromptsTests
             .Where(row => row.StartsWith("| `web`, for every") && row.Contains("`puls-cook`")).ToArray();
 
         Assert.That(rows, Has.Length.EqualTo(2), "cooking and shopping");
-        Assert.That(rows, Is.All.Contain("estimates the costs and names the branch of the shop the user will buy at"));
-        Assert.That(rows, Is.All.Contain("put their town and their shop in the task"));
+        Assert.That(rows, Is.All.Contain("estimates the costs and lists the supermarkets near the user"));
+        Assert.That(rows, Is.All.Contain("put their town in the task, and their shop only when they named one"));
         Assert.That(rows,
             Is.All.Not.Contain("prices the ingredients").And.Not.Contain("prices/compares").And.Not
                 .Contain("prices/comparison"));

@@ -21,18 +21,33 @@ public static class BranchPrinter
         var text = new StringBuilder();
         text.AppendLine(MessageText.Format(WhereToBuyToolMessage.UntrustedFrame));
         text.AppendLine(MessageText.Format(WhereToBuyToolMessage.TownFound,
-            new { Town = search.Town.Name ?? town, Area = area, Province = province }));
+            new
+            {
+                Town = search.Town.Name ?? town,
+                Area = area,
+                Province = province
+            }));
         text.AppendLine();
         if (search.Branches.Count == 0)
         {
             text.AppendLine(MessageText.Format(WhereToBuyToolMessage.NoBranch,
-                new { search.Shop, Km = search.SearchedKm, Town = search.Town.Name ?? town }));
+                new
+                {
+                    search.Shop,
+                    Km = search.SearchedKm,
+                    Town = search.Town.Name ?? town
+                }));
             text.Append(MessageText.Format(WhereToBuyToolMessage.FrameEnd));
             return text.ToString();
         }
 
         text.AppendLine(MessageText.Format(WhereToBuyToolMessage.BranchesFound,
-            new { search.Shop, Town = search.Town.Name ?? town, search.Branches.Count }));
+            new
+            {
+                search.Shop,
+                Town = search.Town.Name ?? town,
+                search.Branches.Count
+            }));
         text.AppendLine(MessageText.Format(WhereToBuyToolMessage.TableHeader, new { Area = area }));
         text.AppendLine(MessageText.Format(WhereToBuyToolMessage.TableRule));
         foreach (var branch in search.Branches) text.AppendLine(Row(branch));
@@ -43,7 +58,7 @@ public static class BranchPrinter
     }
 
     /// <summary>One branch's row; what the map leaves out is a dash.</summary>
-    private static string Row(Branch branch) => MessageText.Format(WhereToBuyToolMessage.BranchRow, new
+    internal static string Row(Branch branch) => MessageText.Format(WhereToBuyToolMessage.BranchRow, new
     {
         Name = Cell(branch.Name),
         Street = Cell(branch.Street),

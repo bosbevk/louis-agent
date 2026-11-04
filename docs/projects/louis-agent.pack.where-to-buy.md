@@ -6,9 +6,9 @@
 
 ## Purpose
 
-What an agent can do to say where to buy something: find a shop's branches near the user, with their streets and
-places, and say which one is the town's. A model reading a map's search page guesses at what's near; this pack asks
-the map in code and hands the model a short table. It is a pack
+What an agent can do to say where to buy something: find the supermarkets near the user, or one shop's branches, with
+their streets and places, and say which one is the town's. A model reading a map's search page guesses at what's
+near; this pack asks the map in code and hands the model a short table. It is a pack
 ([ADR 0027](../adr/0027-engine-identities-and-packs.md)), so any identity can use it, and it could be served as an MCP
 server unchanged ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)). It isn't tied to food: any shop with a
 name on the map is the same call. It replaced the shops pack, which read Checkers' own catalogue, in F50.2
@@ -18,15 +18,24 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 ## How it works
 
 - **One toolset, `where-to-buy`.** `WhereToBuyPack` defines it with its guide (`Prompts/toolsets/where-to-buy.md`)
-  and one tool. It needs no setting, so it loads wherever it is named.
-- **The town.** `FindBranches(shop, town)` asks Nominatim for the town (South Africa only, the first answer), which
-  gives its centre, its municipality and its province.
+  and two tools. It needs no setting, so it loads wherever it is named.
+- **Every supermarket near the town.** `FindShops(town)` (`ShopTools`, `Shops/ShopFinder`) is one map search for
+  "supermarket", no shop named (Louis, 2026-11-04: "just get all shops for that location"; the cook uses this one).
+  The map answers a box with at most twenty places in no order of distance, so the finder starts with a small box (0.05
+  degrees, about 5.5 km, a town's own shops) and widens to 0.15 (about 17 km) only while it has fewer than eight,
+  adding what the wider box finds, so the near ones are never cut off; with none at all, one last box of 0.5. Only
+  places filed as a shop of the type supermarket, with a name, count; the nearest eight stay, nearest first. Two
+  shops of one chain are two rows (Malmesbury's two Pick n Pays, Louis: "it must show both then"); only the same place
+  twice is dropped. The map can call a fabric shop a supermarket, and code can't tell (*Limits and plans*).
+- **The town.** `FindBranches(shop, town)` (the older tool, kept: "we can use it later
+  maybe") asks Nominatim for the town (South Africa only, the first answer), which gives its centre, its municipality
+  and its province.
 - **The branches.** `BranchFinder` asks for the shop by name in a box around the town, half a degree each way, then a
   degree and a half when the first box finds none. Only places Nominatim files as a shop count, and `ShopNames` reads
   a short name as the full one (`PnP` is `Pick n Pay`, `Woolies` is `Woolworths`). It keeps the three nearest, by the
   distance from the town's centre (`Distance`, the haversine formula).
-- **The answer.** `BranchPrinter` writes the town's municipality and province (the province is what `EstimatePrices`
-  needs), then a table: each branch's name, street, place, distance and whether it is in the town's municipality,
+- **The answer.** `BranchPrinter` (and `ShopPrinter` for `FindShops`, with the same rows) writes the town's
+  municipality and province (the province is what `EstimatePrices` needs), then a table: each branch's name, street, place, distance and whether it is in the town's municipality,
   framed as untrusted map data. With none in the town, the note says so and names the nearest.
 - **Being a good guest.** `MapSearch` keeps Nominatim's usage policy: one request a second for the whole process, a
   User-Agent that names the app, a ten-second limit. A map that doesn't answer is logged and said, never retried in a
@@ -51,7 +60,8 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 | Path | What's in it |
 |---|---|
 | `WhereToBuyPack.cs`, `WhereToBuyToolset.cs` | The pack and its toolset enum (ADR 0043) |
-| `Tools/` | `WhereToBuyTools.FindBranches` and `BranchPrinter`, which writes its table |
+| `Tools/` | `WhereToBuyTools.FindBranches` and `BranchPrinter` (its table); `ShopTools.FindShops` and `ShopPrinter` |
+| `Shops/` | `ShopFinder` (the town, the boxes, the nearest eight), `ShopsNearby` (its result) |
 | `Branches/` | `BranchFinder` (the town, the boxes, the nearest three), `BranchSearch` (its result), `Branch`, `Distance`, `ShopNames` |
 | `Branches/Map/` | Nominatim: `MapSearch` (the requests, the pace), `MapPlace` and `MapAddress` (its answer, as records), `MapUnavailableException` |
 | `Checks/` | The shop rules (`WhereToBuyChecks.All`, which the composition's `EvalChecks` gathers): `EstimatesAtShop`, `UntooledShops`; `Reading/` holds what they read an answer with (`ShopSites`, `ShopLines`, `BranchReading`, `BranchFinding`, `ShopExpectation`, `ScenarioShop`) |
@@ -74,7 +84,10 @@ None. The User-Agent and the pace are code, so a change to either is a reviewed 
 
 `tests/louis-agent.pack.where-to-buy.tests`, mirroring the folders: `MapSearchTests` (the requests' addresses and the
 answer read through records, on fixtures in Nominatim's `jsonv2` shape written by hand, since the container has no
-route to Nominatim), `BranchFinderTests` (the nearest three, the second box, the municipality), `ShopNamesTests`,
+route to Nominatim), `Shops/ShopFinderTests` and `Tools/ShopToolsTests` (on the three real answers saved on
+2026-11-04, trimmed, with a fake map that answers a box as Nominatim does: Malmesbury's six shops, Prince Albert's two
+hits, Sea Point's twenty scattered ones), `BranchFinderTests` (the nearest three, the second box, the
+municipality), `ShopNamesTests`,
 `DistanceTests`, `WhereToBuyToolsTests` (the table and every failure text), `WhereToBuyToolMessageSnapshotTests` with
 its golden of the model-facing texts, and the checks' tests under `Checks/`. `PackConvertibilityTests` (composition
 tests) checks the MCP shapes.
@@ -83,6 +96,10 @@ tests) checks the MCP shapes.
 
 - Nominatim's public service allows one request a second; Puls in public needs its own instance.
 - The map holds what its mappers added: a branch it lacks can't be named, and the note says so.
+- A mapper's wrong tag shows: Sea Point's list has *AVN Fabric Shop* and *Fabric World*, tagged supermarket. Code
+  can't tell, and the note warns the model a name may be a mistake.
+- A place's "suburb" can be a ward (`Swartland Ward 10`, `Cape Town Ward 54`), which is what the *Place* column then
+  shows.
 - The fixtures are hand-written in Nominatim's shape; a live check against the real service is a hand check.
 
 ## Related docs

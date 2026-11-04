@@ -1,0 +1,8 @@
+[
+  {"name":"Checkers","category":"shop","type":"supermarket","lat":"-33.4403136","lon":"18.7204445","address":{"road":"N7","suburb":"Swartland Ward 12","city":"Swartland Local Municipality","state":"Western Cape"}},
+  {"name":"Malmesbury Superspar","category":"shop","type":"supermarket","lat":"-33.4586284","lon":"18.7297229","address":{"road":"Rood Street","suburb":"Swartland Ward 10","town":"Malmesbury","city":"Swartland Local Municipality","state":"Western Cape"}},
+  {"name":"Food Lover's Market","category":"shop","type":"supermarket","lat":"-33.4415894","lon":"18.7207691","address":{"road":"N7","suburb":"Wesbank","town":"Malmesbury","city":"Swartland Local Municipality","state":"Western Cape"}},
+  {"name":"Pick n Pay","category":"shop","type":"supermarket","lat":"-33.4624948","lon":"18.7286152","address":{"house_number":"55","road":"Voortrekker Road","suburb":"Swartland Ward 10","town":"Malmesbury","city":"Swartland Local Municipality","state":"Western Cape"}},
+  {"name":"Usave","category":"shop","type":"supermarket","lat":"-33.4660385","lon":"18.7264071","address":{"road":"Saint Francis Street","town":"Malmesbury","city":"Swartland Local Municipality","state":"Western Cape"}},
+  {"name":"Pick n Pay","category":"shop","type":"supermarket","lat":"-33.3503545","lon":"18.8694544","address":{"road":"Voortrekker Street","suburb":"Swartland Ward 3","village":"Riebeek-Wes","city":"Swartland Local Municipality","state":"Western Cape"}}
+]

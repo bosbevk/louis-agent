@@ -7,7 +7,7 @@ namespace LouisAgent.Packs.WhereToBuy.Tests;
 /// <summary>The pack is one toolset with its guide, and needs nothing set to load.</summary>
 public class WhereToBuyPackTests
 {
-    /// <summary>Its name, its toolset and its guide are the pack's own, read through the one reader, not core's.</summary>
+    /// <summary>Its name, toolset and guide are the pack's own, read through the one reader, not core's.</summary>
     [Test]
     public void TheGuide_ComesFromThePack_NotFromCore()
     {
@@ -21,7 +21,7 @@ public class WhereToBuyPackTests
             Does.Contain("Route here a question about where to buy something").And.Not.Contain("## Skill:"));
     }
 
-    /// <summary>No setting and no browser: it loads wherever it is named, and its lookups can run side by side.</summary>
+    /// <summary>No setting and no browser: it loads wherever it is named, and its lookups run side by side.</summary>
     [Test]
     public void ItNeedsNoSetting_AndRunsInParallel()
     {
@@ -29,6 +29,7 @@ public class WhereToBuyPackTests
 
         Assert.That(toolset.MissingSettings(null!), Is.Empty);
         Assert.That(toolset.ParallelSafe, Is.True);
-        Assert.That(toolset.ToolTypes, Is.EqualTo(new[] { typeof(WhereToBuyTools) }));
+        Assert.That(toolset.ToolTypes, Is.EqualTo(new[] { typeof(WhereToBuyTools), typeof(ShopTools) }),
+            "FindBranches stays, and FindShops sits beside it");
     }
 }

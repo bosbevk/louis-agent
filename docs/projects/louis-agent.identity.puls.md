@@ -56,8 +56,10 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
   shape, a relay rule, an eval).
 - **Cooking is never answered from memory** (Louis, 2026-10-15, after Puls answered "ek wil bobotie maak" itself):
   every cooking question goes to the cook, which takes the dish through the whole report and adds *Where to buy*, the
-  shops' branches in the user's town. Branches come from OpenStreetMap (Nominatim's search, as JSON), since the shops'
-  own store finders draw their content with JavaScript.
+  supermarkets in the user's town. They come from OpenStreetMap (Nominatim's search, as JSON), since the shops' own
+  store finders draw their content with JavaScript. Puls never asks where the user will shop (Louis, 2026-11-04: "just
+  get all shops for that location"): it asks only how many people, passes on a shop only when the user named one, and
+  the cook lists every supermarket the `where-to-buy` pack's `FindShops` gives, a named shop's rows first.
 - **The user's place travels with the session,** not through the model: Ligging in the web app (typed, or the
   browser's position sent to Nominatim at two decimals, about a town), the time zone with every new chat, and the
   specialists get it in their task. Attachments go by name: the model names the file, the session hands it over and

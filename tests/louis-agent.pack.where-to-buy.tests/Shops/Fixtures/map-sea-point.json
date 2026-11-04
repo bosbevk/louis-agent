@@ -1,0 +1,22 @@
+[
+  {"name":"Jumbo Wholesale","category":"shop","type":"supermarket","lat":"-33.9993425","lon":"18.5380129","address":{"house_number":"1","road":"Heinz Road","suburb":"Cape Town Ward 47","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Shoprite","category":"shop","type":"supermarket","lat":"-33.9617714","lon":"18.5022973","address":{"house_number":"1","road":"Tembe Road","suburb":"Gleemoor","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Checkers","category":"shop","type":"supermarket","lat":"-33.9212177","lon":"18.4230671","address":{"road":"Saint George's Mall","suburb":"Cape Town Ward 115","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Checkers","category":"shop","type":"supermarket","lat":"-34.0296232","lon":"18.4454797","address":{"house_number":"Constantia Emporium","road":"Ladies Mile Road","suburb":"Sillery","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Woolworths","category":"shop","type":"supermarket","lat":"-34.0292088","lon":"18.4451922","address":{"house_number":"Constantia Emporium","road":"Ladies Mile Road","suburb":"Sillery","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Food Lover's Market","category":"shop","type":"supermarket","lat":"-34.0199616","lon":"18.5174670","address":{"road":"Ottery Road","suburb":"Cape Town Ward 66","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Elite Cash n Carry","category":"shop","type":"supermarket","lat":"-33.9812392","lon":"18.5323561","address":{"road":"Reen Avenue","suburb":"Cape Town Ward 46","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Woolworths","category":"shop","type":"supermarket","lat":"-33.8131783","lon":"18.5084041","address":{"road":"Parklands Main Road","suburb":"Cape Town Ward 113","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Elite","category":"shop","type":"supermarket","lat":"-33.9606178","lon":"18.5383809","address":{"road":"Jakes Gerwel Drive","suburb":"Cape Town Ward 44","city":"Cape Town","state":"Western Cape"}},
+  {"category":"shop","type":"supermarket","lat":"-33.9202429","lon":"18.4335428","address":{"road":"Martin Hammerschlag Way","suburb":"Foreshore","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Crazy Store","category":"shop","type":"supermarket","lat":"-33.8482826","lon":"18.5387689","address":{"road":"Plattekloof Road","suburb":"Milnerton","town":"Milnerton","state":"Western Cape"}},
+  {"name":"Pick n Pay","category":"shop","type":"supermarket","lat":"-33.7923277","lon":"18.4581567","address":{"road":"Beach Estate Boulevard","suburb":"Bloubergstrand","state":"Western Cape"}},
+  {"name":"Checkers","category":"shop","type":"supermarket","lat":"-33.9206554","lon":"18.3834687","address":{"house_number":"76","road":"Regent Road","suburb":"Cape Town Ward 54","city":"Cape Town","state":"Western Cape"}},
+  {"name":"AVN Fabric Shop","category":"shop","type":"supermarket","lat":"-34.0051215","lon":"18.4721534","address":{"road":"Mosque Road","suburb":"Cape Town Ward 63","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Game","category":"shop","type":"supermarket","lat":"-33.8911471","lon":"18.5125745","address":{"road":"Century City Drive","suburb":"Milnerton","town":"Milnerton","state":"Western Cape"}},
+  {"name":"Pick n Pay","category":"shop","type":"supermarket","lat":"-33.9775673","lon":"18.4657231","address":{"road":"Draper Street","suburb":"Claremont","state":"Western Cape"}},
+  {"name":"Pick n Pay","category":"shop","type":"supermarket","lat":"-34.0077882","lon":"18.4686598","address":{"road":"Egglestone Road","suburb":"Wynberg","state":"Western Cape"}},
+  {"name":"Woolworths","category":"shop","type":"supermarket","lat":"-33.9218561","lon":"18.4222065","address":{"road":"Saint George's Mall","suburb":"Cape Town Ward 115","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Fabric World","category":"shop","type":"supermarket","lat":"-34.0071136","lon":"18.4689594","address":{"road":"Piers Road","suburb":"Cape Town Ward 62","city":"Cape Town","state":"Western Cape"}},
+  {"name":"Pick n Pay Hyper","category":"shop","type":"supermarket","lat":"-34.0195580","lon":"18.5175455","address":{"road":"Ottery Road","suburb":"Ottery","state":"Western Cape"}}
+]

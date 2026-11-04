@@ -3,6 +3,7 @@ using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Skills;
 using LouisAgent.Packs.WhereToBuy.Branches;
+using LouisAgent.Packs.WhereToBuy.Shops;
 using LouisAgent.Packs.WhereToBuy.Tools;
 using Microsoft.Extensions.FileProviders;
 using LouisAgent.Packs.WhereToBuy.Branches.Map;
@@ -30,11 +31,17 @@ public sealed class WhereToBuyPack : IAgentPack
         Toolsets =
         [
             new(WhereToBuyToolset.WhereToBuy.Wire(),
-                "A shop's branches near the user's town, with the town's municipality and province (OpenStreetMap)",
+                "The supermarkets near the user's town, or one shop's branches, with the town's municipality and " +
+                "province (OpenStreetMap)",
                 GuideFile: SkillFiles.Guide(WhereToBuyToolset.WhereToBuy.Wire()),
                 MissingSettings: _ => [],
-                ToolTypes: [typeof(WhereToBuyTools)],
-                CreateTools: _ => [new WhereToBuyTools(new BranchFinder(MapSearch.Default))],
+                ToolTypes: [typeof(WhereToBuyTools), typeof(ShopTools)],
+                CreateTools:
+                _ =>
+                [
+                    new WhereToBuyTools(new BranchFinder(MapSearch.Default)),
+                    new ShopTools(new ShopFinder(MapSearch.Default)),
+                ],
                 // Lookups change nothing, and the map's pace is kept inside MapSearch.
                 ParallelSafe: true),
         ];

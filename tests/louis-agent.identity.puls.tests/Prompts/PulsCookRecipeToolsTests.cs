@@ -62,8 +62,8 @@ public class PulsCookRecipeToolsTests
     }
 
     /// <summary>
-    /// A recipe page is read with <c>ReadRecipe</c>, never <c>FetchUrl</c> or <c>ReadRenderedPage</c>; the map is
-    /// <c>FindBranches</c> now (F50.2), so the cook fetches nothing.
+    /// A recipe page is read with <c>ReadRecipe</c>, never <c>FetchUrl</c> or <c>ReadRenderedPage</c>; the map is a
+    /// tool now, so the cook fetches nothing.
     /// </summary>
     [Test]
     public void TheCook_ReadsARecipePage_WithReadRecipe_AndFetchesNothing()
@@ -73,8 +73,63 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Not.Contain("ReadRenderedPage"));
         Assert.That(cook, Does.Not.Contain("`FetchUrl` a page").And.Not.Contain("`FetchUrl` for the recipe page"));
         Assert.That(cook, Does.Not.Contain("`FetchUrl`").And.Not.Contain("nominatim"), "the map is a tool now");
-        Assert.That(cook, Does.Contain("`FindBranches` for the shop's branch"));
+        Assert.That(cook, Does.Contain("`FindShops` for the supermarkets near the user"));
         Assert.That(cook, Does.Not.Contain("never a link you didn't fetch"));
+    }
+
+    /// <summary>
+    /// The list keeps only the nearest few, so in a city a chain the user named can fall outside it. Saying "no branch"
+    /// then would be wrong, so the cook looks that one shop up, only then, and only once.
+    /// </summary>
+    [Test]
+    public void TheCook_LooksUpANamedShop_OnlyWhenTheListLacksIt()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("**Not in the list:** look that shop up once with `FindBranches`"));
+        Assert.That(cook, Does.Contain("`FindBranches` only for a shop the user named that `FindShops` didn't list"));
+        Assert.That(cook, Does.Contain("A shop neither of them lists is never named"));
+        Assert.That(cook, Does.Not.Contain("A shop it didn't list is never named"));
+    }
+
+    /// <summary>
+    /// What the model reads says the rule, never who decided it or when: Puls's voice, the cook and the where-to-buy
+    /// guide carry no "Louis" and no ISO date ("2026-11-04"). It does not check ticket or step notes (F50.2, step 3),
+    /// a month named in an example ("August 2026"), or the tools' descriptions and message texts: none of those holds
+    /// such a note today (searched by hand), but nothing here would catch one.
+    /// </summary>
+    [Test]
+    public void WhatTheModelReads_NamesNoOneAndNoDate()
+    {
+        string[] texts =
+        [
+            string.Join(' ', PromptCatalog.Get("agent/puls/voice.md")!.Body.Split((char[]?)null)),
+            Cook(),
+            SkillFileSource.ReadEmbedded("toolsets/where-to-buy.md")!,
+        ];
+
+        foreach (string text in texts)
+        {
+            Assert.That(text, Does.Not.Contain("Louis"));
+            Assert.That(text, Does.Not.Contain("2026-").And.Not.Contain("2025-"));
+        }
+    }
+
+    /// <summary>
+    /// The cook looks the town up once and lists every supermarket it gives, two of one chain as two rows (Louis,
+    /// 2026-11-04: "it must show both then"); a shop the user named is picked out of the list.
+    /// </summary>
+    [Test]
+    public void TheCook_ListsEveryShopTheTownHas_MergingNone_AndPicksANamedOneOut()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("once, with `FindShops`").And.Contain("`town`, the user's town; no shop"));
+        Assert.That(cook, Does.Contain("one row for each shop it lists"));
+        Assert.That(cook, Does.Contain("two Pick n Pays are two rows, each with its own street"));
+        Assert.That(cook, Does.Contain("pick that shop's rows out of the list"));
+        Assert.That(cook, Does.Not.Contain("Any supermarket near you"), "the one line is gone: the shops are listed");
+        Assert.That(cook, Does.Contain("found no supermarket"), "and what to say when the map has none");
     }
 
     /// <summary>

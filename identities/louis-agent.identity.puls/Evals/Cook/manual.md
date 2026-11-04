@@ -18,6 +18,10 @@ link) from the page's own data, or the page's text when the site publishes none.
 refuses readers any more: the browser refuses them in code (ADR 0068). `FetchUrl` stays for the map. The recorded
 trials below were made before this change and are graded unchanged; the re-recorded ones are step 5's.
 
+Since F50.2 the cook no longer asks where the user shops (Louis, 2026-11-04: "just get all shops for that
+location"): it calls `FindShops` once for the town and *Where to buy* lists every supermarket it gives, a shop the
+scenario names first and picked out of that list. The scenarios, the modes and the checks are unchanged.
+
 ## The modes
 
 | Mode | Puls's tools | The cook's tools | What it is |

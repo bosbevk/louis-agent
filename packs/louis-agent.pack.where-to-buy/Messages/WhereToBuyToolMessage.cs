@@ -36,17 +36,14 @@ public enum WhereToBuyToolMessage
     [Description("| Branch | Street | Place | Distance | In {Area} |")]
     TableHeader,
 
-    [Description("|---|---|---|---|---|")]
-    TableRule,
+    [Description("|---|---|---|---|---|")] TableRule,
 
     [Description("| {Name} | {Street} | {Place} | {Km} km | {InArea} |")]
     BranchRow,
 
-    [Description("yes")]
-    Yes,
+    [Description("yes")] Yes,
 
-    [Description("no")]
-    No,
+    [Description("no")] No,
 
     [Description(
         "A branch marked yes is the town's branch. With none marked yes, the town has no {Shop} branch: say so, and " +
@@ -58,4 +55,24 @@ public enum WhereToBuyToolMessage
         "OpenStreetMap lists no {Shop} branch within about {Km} km of {Town}. Say the town has no {Shop} branch " +
         "nearby, and name none.")]
     NoBranch,
+
+    [Description("FindShops needs the user's town ('Malmesbury').")]
+    TownEmpty,
+
+    [Description("Supermarkets near {Town} on OpenStreetMap ({Count}), the nearest first:")]
+    ShopsFound,
+
+    [Description("| Shop | Street | Place | Distance | In {Area} |")]
+    ShopsTableHeader,
+
+    [Description(
+        "Two shops with one name are two shops: list each, with its own street. A shop marked yes is in {Area}. " +
+        "OpenStreetMap holds what its mappers added, so a shop it lacks may still exist, and a name may be a " +
+        "mapper's mistake; never name one it didn't list.")]
+    ShopsNote,
+
+    [Description(
+        "OpenStreetMap lists no supermarket within about {Km} km of {Town}. Say no supermarket was found near the " +
+        "town, and name none.")]
+    NoShop,
 }

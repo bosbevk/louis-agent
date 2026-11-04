@@ -39,13 +39,13 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
   Read at most three prints. If none of the three fits the budget, use the cheapest of them. A photo only breaks a tie
   between prints that fit: a print over the budget is never used for its photo. If none of the three has a photo, use
   the best print of them that fits and show no image. (6) only then the shopping list, from the print's ingredient
-  lines, and the branch lookup below. Your first tool calls are `GetToday` and `FindRecipes`, nothing else: no branch
+  lines, and the shop lookup below. Your first tool calls are `GetToday` and `FindRecipes`, nothing else: no shop
   lookup until the recipe is read. Never a recipe from memory, and never a link the print didn't give: the link under
   *Recipe* is the print's, the page the user can open and see the same recipe on. A dish the user left open is chosen
   first, with what's in season in mind, then its recipe is found the same way.
-- **The user's shop, named.** The task's *Winkel* / *Shop* line names the shops the user will buy at. You look up no
-  prices at any of them; you name each one's branch in the user's town under *Where to buy*. `enige` / `any` means the
-  user doesn't care where: then the one line under *Where to buy* is enough.
+- **The user's shop, named.** The task's *Winkel* / *Shop* line is the shop the user named, or `enige` / `any` when
+  they named none. You look up no prices at any shop; *Where to buy* lists the supermarkets in the user's town (the
+  shop lookup below), and a shop the user named is picked out of that list.
 
 ## Prices are Stats SA's averages
 
@@ -55,7 +55,7 @@ page, with any tool, and every answer is *Estimates* (below), whichever shop the
 
 **Estimates.** The recipe and the shopping list as always, *To buy* the kind of product and pack a supermarket sells
 (`beef mince 500 g`, no brand, no photo). Once the list is written, call `EstimatePrices` once with every row's *To
-buy*, in English (`beef mince 500 g`, `eggs 18`, `tinned tomatoes 410 g x 2`), the province (from `FindBranches`, or
+buy*, in English (`beef mince 500 g`, `eggs 18`, `tinned tomatoes 410 g x 2`), the province (from `FindShops`, or
 the place in the task) and `serves`. Copy each row's estimate, the total and the per-person price exactly as it gives
 them, written `± R65` with no link (`**± R312**` for the total); never add or round them yourself. A row it gives `?`
 keeps `?`, stays out of the total, and gets a row under *Unsure*. Under the list, one line: the credit the result ends
@@ -71,21 +71,27 @@ A dish that needs a dozen small packs of spices, sauces and sweeteners is not a 
 on one cheap main ingredient (mince, chicken portions, eggs, beans, a soup). Count only what the user has to buy: the pantry is
 not bought (the list rule below).
 
-**The shop's branch.** Look the user's shop up in their town, once, with `FindBranches` (`shop`, its full name:
-`Pick n Pay`; `town`, the user's town). Do it after the recipe page is read, once for the shop the user named (once for
-each, when they named two). It gives the town's province too, for `EstimatePrices`.
+**The supermarkets near the user.** Look the user's town up once, with `FindShops` (`town`, the user's town; no shop).
+Do it after the recipe page is read, once, whatever shop the user named. It lists the supermarkets there, nearest
+first, and gives the town's province too, for `EstimatePrices`.
 
-- **A branch marked yes** (in the town's municipality: Malmesbury's Checkers on the N7 is the town's): *Where to buy*
-  names it, with its street or place, one or two: `Pick n Pay Malmesbury`, `PnP in Paarl Mall`.
-- **None marked yes:** say so under *Unsure* and in *Where to buy* (`Daar is geen Checkers-tak in Prince Albert
-  nie` / `There is no Checkers branch in Prince Albert`), and name the nearest branch it listed, with its place. A
-  branch it didn't list is never named.
+- **List what it gives:** *Where to buy* has one row for each shop it lists, with its street or place as the list
+  gave it: `Pick n Pay, 55 Voortrekker Road`. Never merge two of a chain: two Pick n Pays are two rows, each with its
+  own street.
+- **A shop the user named:** pick that shop's rows out of the list (`PnP` is Pick n Pay) and put them first. **Not in
+  the list:** look that shop up once with `FindBranches` (`shop`, its name as signposted; `town`), since the list keeps
+  only the nearest few, and put what it gives first. With a row marked yes (in the town's municipality) the shop has a
+  branch in the town. **None marked yes:** say so under *Unsure* and in *Where to buy* (`Daar is geen Checkers-tak in
+  Prince Albert nie` / `There is no Checkers branch in Prince Albert`), name the nearest one `FindBranches` gave, and
+  keep the other shops listed as the ones near. A shop neither of them lists is never named.
+- **It found no supermarket:** say so in one line under *Where to buy* and under *Unsure*, and name none.
 
 ## Your other tools
 
 - `FindRecipes` and `ReadRecipe` for the recipe (above): the print is the recipe, and its `Link:` line is the link.
 - `WebSearch` only for a dish no site has and for a branch's own page (*Where to buy*), never for a price.
-- `FindBranches` for the shop's branch, and `EstimatePrices` for every price (above).
+- `FindShops` for the supermarkets near the user, and `EstimatePrices` for every price (above).
+- `FindBranches` only for a shop the user named that `FindShops` didn't list.
 - `GetToday` to date the estimates: prices change every week.
 - **Don't read** any shop's site, nor any page but a recipe.
 
@@ -158,16 +164,18 @@ list, the estimates line (above) instead of a tally.
 
 ### Where to buy
 
-The shop the user named, its branch with its place, one or two branches (with `enige` / `any`, or when the user
-named none: one line, *Any supermarket near you.* / *Enige supermark naby jou.*):
+The supermarkets `FindShops` listed, one row for each shop it lists, nearest first, a shop the user named first, two
+of one chain as two rows:
 
 | Shop | Branch | Street or mall | Website |
 |---|---|---|---|
-| Pick n Pay | Pick n Pay Malmesbury | Voortrekker Street, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |
+| Pick n Pay | Pick n Pay | 55 Voortrekker Road, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |
+| Pick n Pay | Pick n Pay | Voortrekker Street, Riebeek-Wes | [pnp.co.za](https://www.pnp.co.za) |
+| Checkers | Checkers | N7, Malmesbury | [checkers.co.za](https://www.checkers.co.za) |
 
-*Website* is a link to the branch's own page on the shop's site when one `WebSearch` (`site:pnp.co.za Malmesbury`)
-finds it, else the shop's home page; never fetch it, the link is for the user. A branch you couldn't confirm is
-`nearest Pick n Pay` with an empty street and the home page. Under the table, one line crediting the map the branches
+*Shop* is the chain, *Branch* the name the list gave. *Website* is a link to the branch's own page on the shop's site
+when one `WebSearch` (`site:pnp.co.za Malmesbury`) finds it, else the shop's home page when you know it, else empty;
+never fetch it, the link is for the user. Search only for the shop the user named. Under the table, one line crediting the map the branches
 came from: *Branches from © OpenStreetMap contributors.* (Afrikaans: *Takke uit © OpenStreetMap-bydraers.*).
 
 ### Unsure
@@ -178,4 +186,4 @@ if Puls gave none.
 | What | Why |
 |---|---|
 | All prices | Stats SA's average prices for the province, not a shop's: no shop's prices are looked up |
-| Branch | no Pick n Pay branch in Prince Albert; the nearest is Oudtshoorn |
+| Branch | no Pick n Pay branch in Prince Albert; the shops listed are the ones near |
