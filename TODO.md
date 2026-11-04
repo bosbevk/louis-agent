@@ -78,7 +78,6 @@ Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a tim
 - [ ] A retailer's own prices, only with its permission or feed (emails to PnP, Woolworths and Checkers sent 2026-10-25, no answer by 2026-11-04): a new price source in the `shop-prices` store beside Stats SA's (ADR 0069), never a scraper
 - [ ] Louis to check the 18 rows of our own in `own-prices.json` (F50.2); Stats SA's releases now come in on the admin portal's Uploads page (F55, ADR 0071)
 - [ ] Our own Nominatim, or a paid geocoder, before Puls is public: the public service allows one request a second (F50.2's `where-to-buy`)
-- [ ] The MCP server publishes the packs' feeds as MCP resources (ADR 0070: a feed is a name, a description and its JSON, one to one with a resource); today only the API serves them
 - [ ] The open feeds have no key and no limit ("for now", Louis 2026-11-04): before a feed costs us to serve or holds data we may not give away, a key or a rate limit (ADR 0070)
 
 ### Later for Puls

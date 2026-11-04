@@ -1,14 +1,12 @@
-using LouisAgent.Choices;
-using LouisAgent.Core.Skills.Languages;
-using LouisAgent.Core.Skills;
 using LouisAgent.Core.Guardrails.Auth;
-using System.ComponentModel;
 using LouisAgent.Composition;
 using LouisAgent.Core.Agent;
+using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.McpServer;
+using LouisAgent.McpServer.Tools;
 using LouisAgent.Core.Protocols.Mcp;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -19,8 +17,10 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 
 // The MCP client brings its own model; this server publishes the agent's tools (workspace, git, DotNet*, Python*,
-// PowerShell*, Bash*, skills, agent-built tools, ...) so that client can call them.
-var engine = AgentHost.BuildToolHost(Plugins.FromEnvironment());
+// PowerShell*, Bash*, skills, agent-built tools, ...) so that client can call them, and the packs' feeds as resources
+// it can read (F56).
+var catalog = Plugins.FromEnvironment();
+var engine = AgentHost.BuildToolHost(catalog);
 
 // Unset is stdio, for a client that launches this as a local subprocess (Rider, Claude Desktop). Http serves Streamable
 // HTTP instead, for a remote client (an agent built with another SDK, connecting over the network). Any other value
@@ -29,17 +29,17 @@ var transport = McpTransportSetting.Parse(Environment.GetEnvironmentVariable("MC
 
 if (transport == McpTransport.Http)
 {
-    await RunHttpAsync(args, engine);
+    await RunHttpAsync(args, engine, catalog);
 }
 else
 {
-    await RunStdioAsync(args, engine);
+    await RunStdioAsync(args, engine, catalog);
 }
 
 /// <summary>
 /// Serves the tools over stdin and stdout, for a client on this machine that starts us as its own child process.
 /// </summary>
-static async Task RunStdioAsync(string[] args, AgentEngine engine)
+static async Task RunStdioAsync(string[] args, AgentEngine engine, AgentCatalog catalog)
 {
     var builder = Host.CreateApplicationBuilder(args);
 
@@ -53,12 +53,8 @@ static async Task RunStdioAsync(string[] args, AgentEngine engine)
         .WithStdioServerTransport()
         .WithTools<SkillsToolProvider>();
 
-    // Publish the engine's tools and keep them in sync as the agent builds, approves or rejects tools.
-    builder.Services.PostConfigure<McpServerOptions>(options =>
-    {
-        options.ToolCollection ??= [];
-        EngineToolSync.Attach(engine, options.ToolCollection);
-    });
+    // Publish the engine's tools (kept in sync as the agent builds, approves or rejects tools) and the packs' feeds.
+    builder.Services.PostConfigure<McpServerOptions>(options => McpPrimitives.Add(options, engine, catalog));
 
     var host = builder.Build();
     await host.RunAsync();
@@ -67,7 +63,7 @@ static async Task RunStdioAsync(string[] args, AgentEngine engine)
 /// <summary>
 /// Serves the tools over the network, behind an API key, for a client somewhere else.
 /// </summary>
-static async Task RunHttpAsync(string[] args, AgentEngine engine)
+static async Task RunHttpAsync(string[] args, AgentEngine engine, AgentCatalog catalog)
 {
     var builder = WebApplication.CreateBuilder(args);
 
@@ -80,11 +76,7 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
         .WithHttpTransport()
         .WithTools<SkillsToolProvider>();
 
-    builder.Services.PostConfigure<McpServerOptions>(options =>
-    {
-        options.ToolCollection ??= [];
-        EngineToolSync.Attach(engine, options.ToolCollection);
-    });
+    builder.Services.PostConfigure<McpServerOptions>(options => McpPrimitives.Add(options, engine, catalog));
 
     var app = builder.Build();
 
@@ -127,134 +119,4 @@ static async Task RunHttpAsync(string[] args, AgentEngine engine)
 
     app.MapMcp();
     await app.RunAsync();
-}
-
-/// <summary>
-/// Mirrors <see cref="AgentEngine.Tools"/> into the MCP tool collection. Changing the collection makes the server
-/// send notifications/tools/list_changed, so clients pick up agent-built tools without reconnecting.
-/// </summary>
-internal static class EngineToolSync
-{
-    /// <summary>
-    /// Publishes the engine's tools now, and again every time the engine's tool list changes.
-    /// </summary>
-    public static void Attach(AgentEngine engine, McpServerPrimitiveCollection<McpServerTool> collection)
-    {
-        // Name -> (engine function, its published MCP tool, description at publish time).
-        var published =
-            new Dictionary<string, (AIFunction Function, McpServerTool Tool, string Description)>(
-                StringComparer.Ordinal);
-        object gate = new();
-
-        /// <summary>
-        /// Takes down the tools that are gone or changed, and puts up the ones the client doesn't have yet.
-        /// </summary>
-        void Sync()
-        {
-            lock (gate)
-            {
-                // One list_changed notification per sync, not one per added/removed tool.
-                using var _ = collection.DeferChangedEvents();
-                var current = engine.Tools.OfType<AIFunction>().ToDictionary(f => f.Name, StringComparer.Ordinal);
-
-                foreach (var (name, entry) in published.ToList())
-                {
-                    // Replaced (overwrite) or re-described (approval removes "pending approval") tools are republished.
-                    if (current.TryGetValue(name, out var function) && ReferenceEquals(function, entry.Function) &&
-                        function.Description == entry.Description)
-                        continue;
-
-                    collection.Remove(entry.Tool);
-                    published.Remove(name);
-                }
-
-                foreach (var (name, function) in current)
-                {
-                    if (published.ContainsKey(name)) continue;
-
-                    var tool = McpServerTool.Create(function);
-                    if (collection.TryAdd(tool)) published[name] = (function, tool, function.Description);
-                    else
-                        AgentLogging.LoggerFactory.CreateLogger("LouisAgent.McpServer").Log(LogLevel.Information,
-                            McpServerLogMessage.ToolNameTaken, new { Name = name }, tag: "MCP");
-                }
-            }
-        }
-
-        Sync();
-        engine.ToolsChanged += Sync;
-    }
-}
-
-/// <summary>
-/// Read-only views of the loaded skills. Running a skill is done by the engine's ExecuteSkill tool.
-/// </summary>
-[McpServerToolType]
-public class SkillsToolProvider
-{
-    private readonly AgentEngine _engine;
-
-    /// <summary>
-    /// Reads the skills from the engine the server already built.
-    /// </summary>
-    public SkillsToolProvider(AgentEngine engine)
-    {
-        _engine = engine;
-    }
-
-    /// <summary>
-    /// Lists every skill by name, with its language and what it does.
-    /// </summary>
-    [McpServerTool]
-    [Description("List all available skills (run one with ExecuteSkill)")]
-    public string ListSkills()
-    {
-        // One line per skill in name order, under the header (which keeps its newline even when there are none).
-        var lines = _engine.Skills.OrderBy(s => s.Name).Select(s => MessageText.Format(McpServerText.SkillListLine,
-            new
-            {
-                s.Name,
-                Language = s.Language.Wire(),
-                s.Description
-            }));
-        return $"{MessageText.Format(McpServerText.SkillListHeader)}\n{string.Join("\n", lines)}";
-    }
-
-    /// <summary>
-    /// Shows one skill in full, its command included, so the client can see what it would run.
-    /// </summary>
-    [McpServerTool]
-    [Description("Get detailed information about a specific skill, including its command")]
-    public string GetSkillInfo(
-        [Description("Name of the skill to get information about")]
-        string skillName)
-    {
-        var skill = _engine.Skills.FirstOrDefault(s =>
-            s.Name.Equals(skillName, StringComparison.OrdinalIgnoreCase));
-
-        if (skill == null)
-        {
-            return MessageText.Format(McpServerText.UnknownSkill, new { Name = skillName });
-        }
-
-        return MessageText.Format(McpServerText.SkillInfo,
-            new
-            {
-                skill.Name,
-                skill.Description,
-                Language = skill.Language.Wire(),
-                skill.Command
-            });
-    }
-
-    /// <summary>
-    /// Hands over all the guidance the agent itself reads, so the client's model can use the tools the same way.
-    /// </summary>
-    [McpServerTool]
-    [Description("Get the agent's full guidance: default instructions plus the .NET, Python, PowerShell, Bash, "
-                 + "self-extension and skill documentation")]
-    public string GetSkillDocumentation()
-    {
-        return _engine.SkillDocumentation;
-    }
 }
