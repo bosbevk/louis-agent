@@ -3,8 +3,281 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core", "louis-agent.core\louis-agent.core.csproj", "{D75EE941-E529-4772-A167-BAB95713163A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DCC1CE0E-F809-478D-B076-F2C64A71CDFB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}"
 	ProjectSection(SolutionItems) = preProject
-		.env = .env
+		config\.env = config\.env
+		config\.env.anthropic = config\.env.anthropic
+		config\.env.example = config\.env.example
+		config\.env.mongo.example = config\.env.mongo.example
+		config\.env.ollama = config\.env.ollama
+		config\.env.ollama-puls = config\.env.ollama-puls
+		config\.env.ollama-triage = config\.env.ollama-triage
+		config\.env.searxng.example = config\.env.searxng.example
+		config\.env.secrets.example = config\.env.secrets.example
+		config\README.md = config\README.md
+		config\prices.json = config\prices.json
+		config\rates.json = config\rates.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rider", "rider", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111}"
+	ProjectSection(SolutionItems) = preProject
+		config\rider\rider-acp.example.json = config\rider\rider-acp.example.json
+		config\rider\rider-mcp-servers.example.json = config\rider\rider-mcp-servers.example.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}"
+	ProjectSection(SolutionItems) = preProject
+		docker\README.md = docker\README.md
+		docker\docker-compose.observability.yml = docker\docker-compose.observability.yml
+		docker\docker-compose.puls.yml = docker\docker-compose.puls.yml
+		docker\docker-compose.yml = docker\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121}"
+	ProjectSection(SolutionItems) = preProject
+		docker\images\Dockerfile.acp-server = docker\images\Dockerfile.acp-server
+		docker\images\Dockerfile.agent = docker\images\Dockerfile.agent
+		docker\images\Dockerfile.api = docker\images\Dockerfile.api
+		docker\images\Dockerfile.mcp-server = docker\images\Dockerfile.mcp-server
+		docker\images\Dockerfile.orchestrator = docker\images\Dockerfile.orchestrator
+		docker\images\Dockerfile.puls = docker\images\Dockerfile.puls
+		docker\images\Dockerfile.site = docker\images\Dockerfile.site
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ollama", "ollama", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122}"
+	ProjectSection(SolutionItems) = preProject
+		docker\images\ollama\Dockerfile.ollama = docker\images\ollama\Dockerfile.ollama
+		docker\images\ollama\Dockerfile.ollama-amd = docker\images\ollama\Dockerfile.ollama-amd
+		docker\images\ollama\Dockerfile.ollama-nvidia = docker\images\ollama\Dockerfile.ollama-nvidia
+		docker\images\ollama\entrypoint.sh = docker\images\ollama\entrypoint.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "searxng", "searxng", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0123}"
+	ProjectSection(SolutionItems) = preProject
+		docker\searxng\settings.yml = docker\searxng\settings.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
+	ProjectSection(SolutionItems) = preProject
+		docs\AGENT_COMMUNICATION.md = docs\AGENT_COMMUNICATION.md
+		docs\CLAUDE.md = docs\CLAUDE.md
+		docs\GOAL.md = docs\GOAL.md
+		docs\MODELS.md = docs\MODELS.md
+		docs\QUICK_START_AGENT.md = docs\QUICK_START_AGENT.md
+		docs\README.md = docs\README.md
+		docs\SETUP.md = docs\SETUP.md
+		docs\SITE_OWNERS.md = docs\SITE_OWNERS.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0101}"
+	ProjectSection(SolutionItems) = preProject
+		docs\adr\README.md = docs\adr\README.md
+		docs\adr\0001-record-architecture-decisions.md = docs\adr\0001-record-architecture-decisions.md
+		docs\adr\0002-messages-api-tier-with-our-own-loop.md = docs\adr\0002-messages-api-tier-with-our-own-loop.md
+		docs\adr\0003-provider-strategies.md = docs\adr\0003-provider-strategies.md
+		docs\adr\0004-arguments-as-data.md = docs\adr\0004-arguments-as-data.md
+		docs\adr\0005-guard-the-context.md = docs\adr\0005-guard-the-context.md
+		docs\adr\0006-toolsets-per-session.md = docs\adr\0006-toolsets-per-session.md
+		docs\adr\0007-measure-every-request.md = docs\adr\0007-measure-every-request.md
+		docs\adr\0008-history-is-append-only.md = docs\adr\0008-history-is-append-only.md
+		docs\adr\0009-message-text-as-enum-templates.md = docs\adr\0009-message-text-as-enum-templates.md
+		docs\adr\0010-folders-by-concern.md = docs\adr\0010-folders-by-concern.md
+		docs\adr\0011-prompts-are-content.md = docs\adr\0011-prompts-are-content.md
+		docs\adr\0012-one-orchestrator-per-microservice.md = docs\adr\0012-one-orchestrator-per-microservice.md
+		docs\adr\0013-documentation-structure.md = docs\adr\0013-documentation-structure.md
+		docs\adr\0014-test-first.md = docs\adr\0014-test-first.md
+		docs\adr\0015-licence-agpl.md = docs\adr\0015-licence-agpl.md
+		docs\adr\0016-licence-all-rights-reserved.md = docs\adr\0016-licence-all-rights-reserved.md
+		docs\adr\0017-skills-by-level.md = docs\adr\0017-skills-by-level.md
+		docs\adr\0018-built-in-prompts-embedded.md = docs\adr\0018-built-in-prompts-embedded.md
+		docs\adr\0019-modes-one-file-per-product.md = docs\adr\0019-modes-one-file-per-product.md
+		docs\adr\0020-principles-for-every-agent.md = docs\adr\0020-principles-for-every-agent.md
+		docs\adr\0021-minions-one-task-one-tool.md = docs\adr\0021-minions-one-task-one-tool.md
+		docs\adr\0022-benchmarks-recorded-from-the-protocol.md = docs\adr\0022-benchmarks-recorded-from-the-protocol.md
+		docs\adr\0023-copyleft-service-beside-us.md = docs\adr\0023-copyleft-service-beside-us.md
+		docs\adr\0024-choices-are-enums.md = docs\adr\0024-choices-are-enums.md
+		docs\adr\0025-a-role-declares-its-toolsets.md = docs\adr\0025-a-role-declares-its-toolsets.md
+		docs\adr\0026-parallel-tool-calls-for-read-only-toolsets.md = docs\adr\0026-parallel-tool-calls-for-read-only-toolsets.md
+		docs\adr\0027-engine-identities-and-packs.md = docs\adr\0027-engine-identities-and-packs.md
+		docs\adr\0028-packs-stay-convertible-to-mcp.md = docs\adr\0028-packs-stay-convertible-to-mcp.md
+		docs\adr\0029-simulations-in-csharp.md = docs\adr\0029-simulations-in-csharp.md
+		docs\adr\0030-build-or-adopt.md = docs\adr\0030-build-or-adopt.md
+		docs\adr\0031-orchestration-is-an-engine-function.md = docs\adr\0031-orchestration-is-an-engine-function.md
+		docs\adr\0033-what-the-agent-writes-has-a-scope.md = docs\adr\0033-what-the-agent-writes-has-a-scope.md
+		docs\adr\0034-code-a-person-can-maintain.md = docs\adr\0034-code-a-person-can-maintain.md
+		docs\adr\0037-one-agent-api-products-get-a-front-door.md = docs\adr\0037-one-agent-api-products-get-a-front-door.md
+		docs\adr\0038-the-browser-says-what-it-is.md = docs\adr\0038-the-browser-says-what-it-is.md
+		docs\adr\0039-api-routes-under-v1.md = docs\adr\0039-api-routes-under-v1.md
+		docs\adr\0040-records-for-values-classes-for-things.md = docs\adr\0040-records-for-values-classes-for-things.md
+		docs\adr\0041-json-through-records-by-hand-only-for-bytes.md = docs\adr\0041-json-through-records-by-hand-only-for-bytes.md
+		docs\adr\0042-the-web-shows-the-live-results.md = docs\adr\0042-the-web-shows-the-live-results.md
+		docs\adr\0043-repeated-names-are-enums.md = docs\adr\0043-repeated-names-are-enums.md
+		docs\adr\0044-the-size-limit-counts-code.md = docs\adr\0044-the-size-limit-counts-code.md
+		docs\adr\0045-typed-answers-and-a-shared-contract.md = docs\adr\0045-typed-answers-and-a-shared-contract.md
+		docs\adr\0046-dates-are-utc.md = docs\adr\0046-dates-are-utc.md
+		docs\adr\0047-protocol-v2-one-event-contract.md = docs\adr\0047-protocol-v2-one-event-contract.md
+		docs\adr\0048-mongo-through-records.md = docs\adr\0048-mongo-through-records.md
+		docs\adr\0049-nothing-is-compatible-before-a-sale.md = docs\adr\0049-nothing-is-compatible-before-a-sale.md
+		docs\adr\0050-summaries-like-a-person.md = docs\adr\0050-summaries-like-a-person.md
+		docs\adr\0051-flat-conditionals-and-named-endpoints.md = docs\adr\0051-flat-conditionals-and-named-endpoints.md
+		docs\adr\0052-edit-never-script.md = docs\adr\0052-edit-never-script.md
+		docs\adr\0053-stylesheets-by-concern.md = docs\adr\0053-stylesheets-by-concern.md
+		docs\adr\0054-a-move-may-copy-line-ranges.md = docs\adr\0054-a-move-may-copy-line-ranges.md
+		docs\adr\0055-keep-it-simple.md = docs\adr\0055-keep-it-simple.md
+		docs\adr\0056-a-check-is-a-catalogue-entry.md = docs\adr\0056-a-check-is-a-catalogue-entry.md
+		docs\adr\0057-regex-is-the-last-option.md = docs\adr\0057-regex-is-the-last-option.md
+		docs\adr\0058-an-eval-is-a-folder-of-files.md = docs\adr\0058-an-eval-is-a-folder-of-files.md
+		docs\adr\0059-an-identity-ships-readers-not-checks.md = docs\adr\0059-an-identity-ships-readers-not-checks.md
+		docs\adr\0060-a-pack-ships-its-checks.md = docs\adr\0060-a-pack-ships-its-checks.md
+		docs\adr\0061-evals-grow-from-use.md = docs\adr\0061-evals-grow-from-use.md
+		docs\adr\0062-the-studio-writes-what-git-keeps.md = docs\adr\0062-the-studio-writes-what-git-keeps.md
+		docs\adr\0063-a-prompt-says-what-it-is.md = docs\adr\0063-a-prompt-says-what-it-is.md
+		docs\adr\0064-observability-through-opentelemetry.md = docs\adr\0064-observability-through-opentelemetry.md
+		docs\adr\0065-the-view-is-in-the-address.md = docs\adr\0065-the-view-is-in-the-address.md
+		docs\adr\0066-the-site-is-static-razor.md = docs\adr\0066-the-site-is-static-razor.md
+		docs\adr\0067-a-pages-own-data-before-its-text.md = docs\adr\0067-a-pages-own-data-before-its-text.md
+		docs\adr\0068-every-fetch-obeys-robots-txt.md = docs\adr\0068-every-fetch-obeys-robots-txt.md
+		docs\adr\0069-shop-prices-are-stats-sa-estimates.md = docs\adr\0069-shop-prices-are-stats-sa-estimates.md
+		docs\adr\0070-packs-publish-data-feeds.md = docs\adr\0070-packs-publish-data-feeds.md
+		docs\adr\0071-packs-take-data-uploads.md = docs\adr\0071-packs-take-data-uploads.md
+		docs\adr\0072-feeds-are-mcp-resources.md = docs\adr\0072-feeds-are-mcp-resources.md
+		docs\adr\0073-packs-reference-no-evals.md = docs\adr\0073-packs-reference-no-evals.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"
+	ProjectSection(SolutionItems) = preProject
+		docs\architecture\README.md = docs\architecture\README.md
+		docs\architecture\01-introduction-and-goals.md = docs\architecture\01-introduction-and-goals.md
+		docs\architecture\02-constraints.md = docs\architecture\02-constraints.md
+		docs\architecture\03-context-and-scope.md = docs\architecture\03-context-and-scope.md
+		docs\architecture\04-solution-strategy.md = docs\architecture\04-solution-strategy.md
+		docs\architecture\05-building-block-view.md = docs\architecture\05-building-block-view.md
+		docs\architecture\06-runtime-view.md = docs\architecture\06-runtime-view.md
+		docs\architecture\07-deployment-view.md = docs\architecture\07-deployment-view.md
+		docs\architecture\08-crosscutting-concepts.md = docs\architecture\08-crosscutting-concepts.md
+		docs\architecture\09-architecture-decisions.md = docs\architecture\09-architecture-decisions.md
+		docs\architecture\10-quality-requirements.md = docs\architecture\10-quality-requirements.md
+		docs\architecture\11-risks-and-technical-debt.md = docs\architecture\11-risks-and-technical-debt.md
+		docs\architecture\12-glossary.md = docs\architecture\12-glossary.md
+		docs\architecture\evals.md = docs\architecture\evals.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0103}"
+	ProjectSection(SolutionItems) = preProject
+		docs\features\README.md = docs\features\README.md
+		docs\features\F06-estimates.md = docs\features\F06-estimates.md
+		docs\features\F07-budgets.md = docs\features\F07-budgets.md
+		docs\features\F08-reliability.md = docs\features\F08-reliability.md
+		docs\features\F09-context-management.md = docs\features\F09-context-management.md
+		docs\features\F10-route-settings.md = docs\features\F10-route-settings.md
+		docs\features\F11-usage-tab-and-reconciliation.md = docs\features\F11-usage-tab-and-reconciliation.md
+		docs\features\F12-response-speed.md = docs\features\F12-response-speed.md
+		docs\features\F13-local-models.md = docs\features\F13-local-models.md
+		docs\features\F15-model-limits.md = docs\features\F15-model-limits.md
+		docs\features\F16-summariser.md = docs\features\F16-summariser.md
+		docs\features\F17-orchestrator-agent.md = docs\features\F17-orchestrator-agent.md
+		docs\features\F28-team-talk.md = docs\features\F28-team-talk.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fixes", "fixes", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0104}"
+	ProjectSection(SolutionItems) = preProject
+		docs\fixes\README.md = docs\fixes\README.md
+		docs\fixes\FX04-append-only-history.md = docs\fixes\FX04-append-only-history.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0105}"
+	ProjectSection(SolutionItems) = preProject
+		docs\guides\README.md = docs\guides\README.md
+		docs\guides\add-a-skill.md = docs\guides\add-a-skill.md
+		docs\guides\add-an-eval.md = docs\guides\add-an-eval.md
+		docs\guides\build-a-pack.md = docs\guides\build-a-pack.md
+		docs\guides\build-an-identity.md = docs\guides\build-an-identity.md
+		docs\guides\change-puls.md = docs\guides\change-puls.md
+		docs\guides\change-the-acp-server.md = docs\guides\change-the-acp-server.md
+		docs\guides\change-the-api.md = docs\guides\change-the-api.md
+		docs\guides\change-the-cli.md = docs\guides\change-the-cli.md
+		docs\guides\change-the-engine.md = docs\guides\change-the-engine.md
+		docs\guides\change-the-mcp-server.md = docs\guides\change-the-mcp-server.md
+		docs\guides\change-the-orchestrator.md = docs\guides\change-the-orchestrator.md
+		docs\guides\change-the-puls-app.md = docs\guides\change-the-puls-app.md
+		docs\guides\change-the-site.md = docs\guides\change-the-site.md
+		docs\guides\change-the-usage-probe.md = docs\guides\change-the-usage-probe.md
+		docs\guides\change-the-web-app.md = docs\guides\change-the-web-app.md
+		docs\guides\change-the-web-shared.md = docs\guides\change-the-web-shared.md
+		docs\guides\common-errors.md = docs\guides\common-errors.md
+		docs\guides\debug-and-logs.md = docs\guides\debug-and-logs.md
+		docs\guides\finish-a-step.md = docs\guides\finish-a-step.md
+		docs\guides\get-started.md = docs\guides\get-started.md
+		docs\guides\run-the-evals.md = docs\guides\run-the-evals.md
+		docs\guides\write-tests.md = docs\guides\write-tests.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "learning", "learning", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0106}"
+	ProjectSection(SolutionItems) = preProject
+		docs\learning\README.md = docs\learning\README.md
+		docs\learning\04-tool-design.md = docs\learning\04-tool-design.md
+		docs\learning\07-context-engineering.md = docs\learning\07-context-engineering.md
+		docs\learning\10-multi-agent-orchestration.md = docs\learning\10-multi-agent-orchestration.md
+		docs\learning\11-protocols.md = docs\learning\11-protocols.md
+		docs\learning\12-evaluation.md = docs\learning\12-evaluation.md
+		docs\learning\13-cost-and-token-economics.md = docs\learning\13-cost-and-token-economics.md
+		docs\learning\15-safety-and-security.md = docs\learning\15-safety-and-security.md
+		docs\learning\16-human-in-the-loop.md = docs\learning\16-human-in-the-loop.md
+		docs\learning\17-observability.md = docs\learning\17-observability.md
+		docs\learning\18-testing-and-shipping.md = docs\learning\18-testing-and-shipping.md
+		docs\learning\20-extensibility.md = docs\learning\20-extensibility.md
+		docs\learning\fixes-lessons.md = docs\learning\fixes-lessons.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0107}"
+	ProjectSection(SolutionItems) = preProject
+		docs\plans\README.md = docs\plans\README.md
+		docs\plans\F28-team-talk.md = docs\plans\F28-team-talk.md
+		docs\plans\F35-recipe-sources.md = docs\plans\F35-recipe-sources.md
+		docs\plans\F48-cook-and-teacher.md = docs\plans\F48-cook-and-teacher.md
+		docs\plans\platform-summary.md = docs\plans\platform-summary.md
+		docs\plans\platform.md = docs\plans\platform.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108}"
+	ProjectSection(SolutionItems) = preProject
+		docs\projects\README.md = docs\projects\README.md
+		docs\projects\louis-agent.acp-server.md = docs\projects\louis-agent.acp-server.md
+		docs\projects\louis-agent.api.md = docs\projects\louis-agent.api.md
+		docs\projects\louis-agent.cli.md = docs\projects\louis-agent.cli.md
+		docs\projects\louis-agent.composition.md = docs\projects\louis-agent.composition.md
+		docs\projects\louis-agent.core.md = docs\projects\louis-agent.core.md
+		docs\projects\louis-agent.evals.checks.md = docs\projects\louis-agent.evals.checks.md
+		docs\projects\louis-agent.evals.md = docs\projects\louis-agent.evals.md
+		docs\projects\louis-agent.evals.protocol.md = docs\projects\louis-agent.evals.protocol.md
+		docs\projects\louis-agent.evals.runner.md = docs\projects\louis-agent.evals.runner.md
+		docs\projects\louis-agent.identity.puls.judges.md = docs\projects\louis-agent.identity.puls.judges.md
+		docs\projects\louis-agent.identity.puls.md = docs\projects\louis-agent.identity.puls.md
+		docs\projects\louis-agent.mcp-server.md = docs\projects\louis-agent.mcp-server.md
+		docs\projects\louis-agent.orchestrator.md = docs\projects\louis-agent.orchestrator.md
+		docs\projects\louis-agent.pack.recipes.md = docs\projects\louis-agent.pack.recipes.md
+		docs\projects\louis-agent.pack.shop-prices.md = docs\projects\louis-agent.pack.shop-prices.md
+		docs\projects\louis-agent.pack.where-to-buy.md = docs\projects\louis-agent.pack.where-to-buy.md
+		docs\projects\louis-agent.puls.md = docs\projects\louis-agent.puls.md
+		docs\projects\louis-agent.site.md = docs\projects\louis-agent.site.md
+		docs\projects\louis-agent.usage-probe.md = docs\projects\louis-agent.usage-probe.md
+		docs\projects\louis-agent.web.md = docs\projects\louis-agent.web.md
+		docs\projects\louis-agent.web.shared.md = docs\projects\louis-agent.web.shared.md
+		docs\projects\orchestrator-runbooks.md = docs\projects\orchestrator-runbooks.md
+		docs\projects\tests.md = docs\projects\tests.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "specs", "specs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0109}"
+	ProjectSection(SolutionItems) = preProject
+		docs\specs\ORCHESTRATOR_DESIGN.md = docs\specs\ORCHESTRATOR_DESIGN.md
+		docs\specs\PDF_SEARCH.md = docs\specs\PDF_SEARCH.md
+		docs\specs\PULS_COOK.md = docs\specs\PULS_COOK.md
+		docs\specs\RESPONSE_OPTIMISATION.md = docs\specs\RESPONSE_OPTIMISATION.md
+		docs\specs\SESSION_ARCHITECTURE.md = docs\specs\SESSION_ARCHITECTURE.md
+		docs\specs\USAGE_AND_BUDGETS.md = docs\specs\USAGE_AND_BUDGETS.md
+		docs\specs\images\agentsession-architecture.svg = docs\specs\images\agentsession-architecture.svg
+		docs\specs\images\pdf-search-pipeline.webp = docs\specs\images\pdf-search-pipeline.webp
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}"
@@ -868,6 +1141,19 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0123} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0101} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0103} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0104} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0105} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0106} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0107} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0109} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{6F1D3A52-8C47-4E19-9B20-3A7C51E0D401} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{6F1D3A52-8C47-4E19-9B20-3A7C51E0D402} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{6F1D3A52-8C47-4E19-9B20-3A7C51E0D403} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
