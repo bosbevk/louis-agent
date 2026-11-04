@@ -32,8 +32,9 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
   `puls/voice-en`, `puls-cook` and `puls-minion-web-price-lookup`, the ones that passed their check
   (F29). The other specialists are written but off.
-- **Its evals and their checks.** Puls's two evals, `puls-routing` and `puls-cook`, are folders of files under
-  `Evals/` (F49.2). Puls ships **readers, not checks** (F49.2b): the cook's file names the general checks
+- **Its evals and their checks.** Puls's three evals, `puls-routing`, `puls-cook` and `puls-recipes` (F35.2: the
+  cook reads a recipe with `ReadRecipe`; thirteen dishes, a judge told what `ReadRecipe` gave back, not yet recorded),
+  are folders of files under `Evals/` (F49.2). Puls ships **readers, not checks** (F49.2b): the cook's file names the general checks
   (`no-error`, `amount-under`, `image-shown`, `number-named`) under the names its grades carry, over Puls's readers
   in `Evals/Readers/` (`rand-total`, `rand-prices`, `servings`, `recipe-photos`: Adapters over the cook's scoring
   code; `recipe-link` reads the `Skakel:` / `Link:` line for the recipes pack's `recipe-from-source`), listed in `PulsReaders.All`, which reaches the runner through the composition's `EvalReaders`. The shop
