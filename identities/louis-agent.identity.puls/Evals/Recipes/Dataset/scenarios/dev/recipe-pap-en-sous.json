@@ -1,0 +1,22 @@
+{
+  "id": "recipe-pap-en-sous",
+  "input": [
+    {
+      "role": "user",
+      "content": "I want to make pap and sous (tomato and onion gravy) for four people. I'm in Johannesburg and any shop will do. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Johannesburg, Gauteng, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 4,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en"
+    ]
+  }
+}

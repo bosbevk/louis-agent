@@ -19,6 +19,7 @@ public class EvalManualTests
     [TestCase("stub", "evals/louis-agent.evals.runner/Manuals/stub.md")]
     [TestCase("puls-cook", "identities/louis-agent.identity.puls/Evals/Cook/manual.md")]
     [TestCase("puls-routing", "identities/louis-agent.identity.puls/Evals/Routing/manual.md")]
+    [TestCase("puls-recipes", "identities/louis-agent.identity.puls/Evals/Recipes/manual.md")]
     public void AnEvalsManual_IsReadFromBesideTheEval(string eval, string path)
     {
         var check = new EvalEntry(eval, "An eval", path);
