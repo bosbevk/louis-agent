@@ -1,0 +1,22 @@
+{
+  "id": "recipe-potjiekos",
+  "input": [
+    {
+      "role": "user",
+      "content": "I'd like to make potjiekos for six people on Saturday. I'm in Pretoria and any shop will do. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Pretoria, Gauteng, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 6,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en"
+    ]
+  }
+}

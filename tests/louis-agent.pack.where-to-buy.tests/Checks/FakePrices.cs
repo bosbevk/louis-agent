@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Kinds;
 
 namespace LouisAgent.Packs.WhereToBuy.Tests.Checks;
 

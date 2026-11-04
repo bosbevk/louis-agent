@@ -1,0 +1,22 @@
+{
+  "id": "recipe-umngqusho",
+  "input": [
+    {
+      "role": "user",
+      "content": "Ek is in Gqeberha en wil umngqusho maak vir ses mense. Dit maak nie saak waar ek koop nie. Wat is die resep?"
+    }
+  ],
+  "metadata": {
+    "place": "Gqeberha, Oos-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 6,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af"
+    ]
+  }
+}

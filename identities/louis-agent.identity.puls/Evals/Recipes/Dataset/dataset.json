@@ -1,0 +1,9 @@
+{
+  "name": "puls-recipes",
+  "version": 1,
+  "covers": "Puls's cook reading a recipe from a page: ten South African dishes to work on (five asked in Afrikaans, five in English, for four to ten people, any shop) and three held out (two in Afrikaans, one in English); each answer is a recipe from a real page.",
+  "content_hash": "aa04284dedc6b7d7c80649851c0701527b8cfca03750e4d55fd865ab0c81cf89",
+  "changes": [
+    "2026-11-04: first version, the recipes eval of F35.2 step 4: bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei and koeksisters to work on; umngqusho, sosaties and bredie held out"
+  ]
+}

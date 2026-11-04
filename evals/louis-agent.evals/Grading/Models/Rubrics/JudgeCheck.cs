@@ -3,6 +3,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading.Common;
+using LouisAgent.Evals.Grading.Models.Rubrics.Sources;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Trials;
@@ -10,9 +11,10 @@ using LouisAgent.Evals.Trials;
 namespace LouisAgent.Evals.Grading.Models.Rubrics;
 
 /// <summary>
-/// A model judges the last answer against a rubric file, told only the scenario keys the eval lists, and answers
-/// yes or no with a reason. A scenario without those keys has nothing to judge, so it passes without a request. It
-/// is never required: a judge counts once a person's labels have calibrated it.
+/// A model judges the last answer against a rubric file, told only the scenario keys the eval lists (and, when the
+/// file names tools, what those tools gave back in the trial), and answers yes or no with a reason. A scenario
+/// without those keys has nothing to judge, so it passes without a request. It is never required: a judge counts
+/// once a person's labels have calibrated it.
 /// </summary>
 /// <remarks>
 /// A Decorator over <see cref="EvaluatorCheck"/> (Gang of Four): the evaluator check does the asking and the mapping,
@@ -31,22 +33,37 @@ public sealed class JudgeCheck : IRubricCheck
     private readonly EvaluatorCheck _inner;
 
     /// <summary>
-    /// A judge named <paramref name="name"/> over the rubric's text, telling it the keys in <paramref name="ask"/>.
+    /// A judge named <paramref name="name"/> over the rubric's text, telling it the keys in <paramref name="ask"/> and
+    /// what the tools in <paramref name="sources"/> gave back in the trial (none when it is left out).
     /// </summary>
-    public JudgeCheck(string name, int version, string rubric, IReadOnlyList<string> ask, Func<ConfiguredJudge?> judge)
+    public JudgeCheck(string name, int version, string rubric, IReadOnlyList<string> ask, Func<ConfiguredJudge?> judge,
+        IReadOnlyList<string>? sources = null)
     {
-        (_ask, Rubric) = (ask, rubric);
+        (_ask, Rubric, Sources) = (ask, rubric, sources ?? []);
+        var tools = Sources;
         _inner = new EvaluatorCheck(new RubricJudge(name, rubric), judge, name, version, RubricHash.Of(rubric),
-            new HashSet<string>(ask), trial => [JudgeAsk.Of(trial.Scenario, ask)]);
+            new HashSet<string>(ask), trial => [JudgeAsk.Of(trial.Scenario, ask), JudgeSources.Of(trial, tools)]);
     }
 
     /// <inheritdoc />
     public string Rubric { get; }
 
+    /// <summary>The tools whose results the judge is told, in the order the file lists them.</summary>
+    public IReadOnlyList<string> Sources { get; }
+
+    /// <summary>The name its grades carry: the file's, or <c>judge</c>.</summary>
     public string Name => _inner.Name;
+
+    /// <summary>The version its grades carry: the file's, bumped when what the judge is sent changes.</summary>
     public int Version => _inner.Version;
+
+    /// <summary>A model judges it.</summary>
     public CheckKind Kind => CheckKind.Model;
+
+    /// <summary>Never required: a judge counts once a person's labels have calibrated it.</summary>
     public bool Required => false;
+
+    /// <summary>The scenario keys it is told, which the loader checks every scenario sets.</summary>
     public IReadOnlySet<string> ExpectedKeys => _inner.ExpectedKeys;
 
     /// <summary>Asks the judge, unless the scenario sets none of what it would be told.</summary>
@@ -62,10 +79,20 @@ public sealed class JudgeCheck : IRubricCheck
                             _ask.All(key => trial.Scenario.Expected.TryGetProperty(key, out _)));
 
     /// <summary>
-    /// What a file can set: the rubric's path in the eval's folder, the scenario keys the judge is told, and the
-    /// judge's version, bumped when what it is sent changes in a way the rubric's hash doesn't show.
+    /// What a file can set: the rubric's path in the eval's folder, the scenario keys the judge is told, the judge's
+    /// version, and <c>sources</c>, the names of tools whose results from the trial the judge is told too.
     /// </summary>
-    public sealed record Settings(string Rubric, IReadOnlyList<string>? Ask = null, int Version = 1);
+    /// <remarks>
+    /// The version is the file's to bump: the rubric's hash covers the rubric only, so a file that adds <c>sources</c>
+    /// (or changes them) bumps its judge's version, and a grade made without them is not counted with one made with.
+    /// Each result is cut at <see cref="JudgeSources.ResultLimit"/> characters and the request says where it was cut.
+    /// A tool that was never called is told in one line. A specialist's calls count, as for <c>tool-used</c>.
+    /// </remarks>
+    public sealed record Settings(
+        string Rubric,
+        IReadOnlyList<string>? Ask = null,
+        int Version = 1,
+        IReadOnlyList<string>? Sources = null);
 
     /// <summary>The check as a file names it, <c>judge</c>.</summary>
     public sealed class Entry() : CheckType<Settings>("judge", CheckKind.Model)
@@ -82,7 +109,7 @@ public sealed class JudgeCheck : IRubricCheck
                 throw new InvalidDataException(MessageText.Format(EvalErrorMessage.RubricMissing, new { File = file }));
             string rubric = PromptHeaders.Split(settings.Rubric, File.ReadAllText(file)).Body;
             return new JudgeCheck(Type, settings.Version, rubric, settings.Ask ?? [],
-                () => JudgeClients.FromEnvironment());
+                () => JudgeClients.FromEnvironment(), settings.Sources);
         }
     }
 }

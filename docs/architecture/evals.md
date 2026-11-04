@@ -65,7 +65,7 @@ flowchart LR
 |---|---|---|
 | The check contract | `evals/louis-agent.evals.checks` | What a check reads and returns (`Trial`, `ICheck`, `Grade`), and the catalogue a file names a check from (`ICheckType`, `CheckCatalog`). What a pack can reference to ship a check ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md)). |
 | The harness | `evals/louis-agent.evals` | How an eval runs: `IEval`, `FileEval` (an eval read from its folder), the datasets, the general checks and their entries, the protocol writer, re-scoring, conformance, labels and calibration. Names no product. |
-| An identity's evals | `identities/louis-agent.identity.puls` (`Evals/`) | What proves Puls: `puls-cook` and `puls-routing` as folders of files, and Puls's own fixed-rule checks (`Evals/Checks/`), which reach the runner through the composition's `EvalChecks` ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)). |
+| An identity's evals | `identities/louis-agent.identity.puls` (`Evals/`) | What proves Puls: `puls-cook`, `puls-routing` and `puls-recipes` as folders of files, and Puls's own fixed-rule checks (`Evals/Checks/`), which reach the runner through the composition's `EvalChecks` ([ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)). |
 | An identity's judges | `identities/louis-agent.identity.puls.judges` | Puls's model judge, `meal-for-people`, apart from the identity because it needs the harness; only the runner references it. |
 | The runner | `evals/louis-agent.evals.runner` | The command: finds the eval folders and gathers the check catalogue, lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge; for the studio, lists the catalogue (`--checks`), judges a folder (`--check`), runs a folder's samples (`--folder`, `--samples`) and converts promptfoo files. |
 | The protocol | `evals/louis-agent.evals.protocol` | The eight line records both sides share, and their reader and writer. Records only. |
@@ -182,7 +182,8 @@ An eval's file names its checks by type (`within-time`, `{"seconds": 120}`): eac
 builds it from a typed settings record, and `CheckCatalog` finds the entry. The runner's catalogue is three lists
 (`RunnerChecks`): the harness's `GeneralChecks.All` (24 types by family, from `no-error` to `judge` and `human`; the
 table is in [Add an eval](../guides/add-an-eval.md#4-choose-the-checks)), every identity's and pack's own through the
-composition's `EvalChecks.All` (the where-to-buy pack's rules, `WhereToBuyChecks.All`, F49.3 and F50.2), and Puls's judges
+composition's `EvalChecks.All` (the where-to-buy pack's rules, `WhereToBuyChecks.All`, F49.3 and F50.2, and the recipes
+pack's `recipe-from-source`, `RecipesChecks.All`, F35.2), and Puls's judges
 (`PulsJudges.All`)
 ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md), [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)).
 
@@ -190,7 +191,7 @@ composition's `EvalChecks.All` (the where-to-buy pack's rules, `WhereToBuyChecks
 budget, a number of people, an image with the pages read) is a general compare plus a *reader* the file names beside
 the key (`"reader": "rand-total"`). Readers are a second registry, `ReaderCatalog` (`RunnerReaders`): the harness's
 `GeneralReaders.All` (`currency-amount`, `digits`, `markdown-images`) and every identity's through the composition's
-`EvalReaders.All` (Puls's `rand-total`, `rand-prices`, `servings`, `recipe-photos`). So an identity ships readers, not
+`EvalReaders.All` (Puls's `rand-total`, `rand-prices`, `servings`, `recipe-photos`, `recipe-link`). So an identity ships readers, not
 checks, and its eval file keeps its stored names with `name` (`{"type": "amount-under", "name": "within-budget", …}`).
 
 **A pack ships its checks** (F49.3, [ADR 0060](../adr/0060-a-pack-ships-its-checks.md)): the rules that prove a pack's

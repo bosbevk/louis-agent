@@ -1,4 +1,5 @@
 using LouisAgent.Core.Messages;
+using LouisAgent.Evals.Grading.Models.Rubrics.Sources;
 using LouisAgent.Evals.Messages;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.AI.Evaluation;
@@ -7,8 +8,9 @@ namespace LouisAgent.Evals.Grading.Models.Rubrics;
 
 /// <summary>
 /// The evaluator behind a rubric's judge: it sends the judge model the rubric as the system message and, as the user
-/// message, what it was told about the scenario, the earlier turns when there are any and the answer; then it reads
-/// one <see cref="JudgeVerdict"/> from the reply as a yes-or-no metric.
+/// message, what it was told about the scenario, the earlier turns when there are any, what the tools it was told about
+/// gave back when there are any (<see cref="JudgeSources"/>) and the answer; then it reads one
+/// <see cref="JudgeVerdict"/> from the reply as a yes-or-no metric.
 /// </summary>
 /// <remarks>
 /// An <see cref="IEvaluator"/> from Microsoft.Extensions.AI.Evaluation, so <see cref="EvaluatorCheck"/> maps its
@@ -28,10 +30,13 @@ public sealed class RubricJudge(string metric, string rubric) : IEvaluator
         IEnumerable<EvaluationContext>? additionalContext = null, CancellationToken cancellationToken = default)
     {
         var ask = additionalContext?.OfType<JudgeAsk>().FirstOrDefault()?.Lines ?? "";
+        // What the tools gave back, when the file names tools; without them this adds nothing, so the request
+        // is as it was.
+        var sources = additionalContext?.OfType<JudgeSources>().FirstOrDefault()?.Lines ?? "";
         var request = new List<ChatMessage>
         {
             new(ChatRole.System, rubric),
-            new(ChatRole.User, Told(ask) + SoFar(messages) + $"The answer to judge:\n{modelResponse.Text}")
+            new(ChatRole.User, Told(ask) + SoFar(messages) + sources + $"The answer to judge:\n{modelResponse.Text}")
         };
         var reply = await chatConfiguration!.ChatClient.GetResponseAsync(request, new ChatOptions { Temperature = 0 },
             cancellationToken);

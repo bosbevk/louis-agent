@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Readers;
+namespace LouisAgent.Evals.Readers.Kinds;
 
 /// <summary>Reads the whole numbers an answer names, such as how many people a meal is for.</summary>
 public interface INumberReader : IReader

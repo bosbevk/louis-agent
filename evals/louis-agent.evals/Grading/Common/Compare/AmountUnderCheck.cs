@@ -6,6 +6,7 @@ using LouisAgent.Evals.Datasets.Scenarios;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Grading.Common.Compare;

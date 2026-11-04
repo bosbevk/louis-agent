@@ -69,7 +69,7 @@ Never the harness, a pack, an identity or a package: the harness keeps `Microsof
 | `Trials/` | `Trial`, `Transcript`, `TurnTranscript`, `TurnFacts`, `EngineEvents` |
 | `Grading/` | `ICheck`, `Grade` and `GradeJudge`; `Common/Verdict` |
 | `Markdown/` | `Lists` (an answer's tables, and its shopping list by the agents' Afrikaans and English headers) and `Links` (inline and reference-style links, images, and `IsHost`, the site or a subdomain): the plain reading an identity, a pack and the harness share (F49.3) |
-| `Readers/` | `IReader` and its three kinds, `IMoneyReader`, `INumberReader` and `IImageReader`: what a general compare reads a value with; `ReaderCatalog`, the readers found by name and kind (F49.2b) |
+| `Readers/` | `IReader` and `ReaderCatalog`, the readers found by name and kind (F49.2b). `Kinds/` holds each kind: `IMoneyReader`, `INumberReader`, `IImageReader` and `IPriceReader`, what a general compare reads a value with, and `ILinkReader`, the recipe's link, which the recipes pack's `recipe-from-source` reads with (F35.2) |
 | `Messages/` | `CommonGradeMessage`: the reasons a grade gives; `CheckCatalogMessage`: what the catalogue refuses |
 
 ## Tests
