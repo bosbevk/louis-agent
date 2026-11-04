@@ -54,7 +54,7 @@ public static class FixtureApi
             ("/v1/git/commits", true, _) => Json("""{"commits":[]}"""),
             ("/v1/workspace/entries", true, _) => Json("""{"path":"","entries":[]}"""),
             // The code-review app's theme list, as its wwwroot ships it.
-            ("/css/themes/themes.json", true, _) => Json(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.web", "wwwroot", "css", "themes", "themes.json"))),
+            ("/css/themes/themes.json", true, _) => Json(File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.web", "wwwroot", "css", "themes", "themes.json"))),
             _ => new HttpResponseMessage(HttpStatusCode.NotFound)
             {
                 Content = new StringContent("""{"type":"error","error":{"type":"not_found_error","message":"not in the fixture"}}""", Encoding.UTF8, "application/json"),

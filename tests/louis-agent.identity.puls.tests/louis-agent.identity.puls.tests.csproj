@@ -27,9 +27,9 @@
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- The name enums Puls's prompts tests read, kept with its evals (Evals/Checks/Shared/). -->
-    <ProjectReference Include="..\..\identities\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
+    <ProjectReference Include="..\..\evals\identities\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
     <!-- The composition says which toolsets Puls has (its identity and the packs it names). -->
-    <ProjectReference Include="..\..\src\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\src\hosts\louis-agent.composition\louis-agent.composition.csproj" />
   </ItemGroup>
 
   <ItemGroup>

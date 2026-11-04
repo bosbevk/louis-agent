@@ -1,6 +1,6 @@
 # Change the API
 
-> **How-to.** Change the HTTP host, `src/louis-agent.api`: add an endpoint, add a session option, change the event
+> **How-to.** Change the HTTP host, `src/hosts/louis-agent.api`: add an endpoint, add a session option, change the event
 > stream, serve the other web app, and test it. **Elsewhere:** how it works in
 > [louis-agent.api](../projects/louis-agent.api.md); every endpoint and event in
 > [How the agents and endpoints talk](../AGENT_COMMUNICATION.md).
@@ -13,7 +13,7 @@ stream in `Sessions/`. Behaviour that every host needs belongs in core.
 
 ```bash
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api   # http://127.0.0.1:5080
-dotnet run --project src/louis-agent.api --launch-profile puls --property:WebApp=puls  # Puls's settings and web app
+dotnet run --project src/hosts/louis-agent.api --launch-profile puls --property:WebApp=puls  # Puls's settings and web app
 ```
 
 Every route is under `/v1` but `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)), and every `/v1` call needs
@@ -62,7 +62,7 @@ A session's options are fixed when it opens, as its toolsets are, so its prompt 
    `AgentSessionsTests` with the fake model client.
 4. If it is a choice of a fixed set, it is an enum parsed once with `SettingChoice`
    ([ADR 0024](../adr/0024-choices-are-enums.md)). Add the field to `AgentApi.CreateSessionAsync` in
-   `src/louis-agent.web.shared` if the web apps send it.
+   `src/web/louis-agent.web.shared` if the web apps send it.
 
 ## Change the event stream
 

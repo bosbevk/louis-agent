@@ -11,12 +11,12 @@ public class ReplayFolderIsPrivateTests
 {
     private static readonly Regex Names = new("ReplayDirectory|REPLAY_DIRECTORY", RegexOptions.CultureInvariant);
 
-    private static readonly string[] Scanned = ["louis-agent.core", "src", "identities", "packs"];
+    private static readonly string[] Scanned = ["src", "identities", "packs"];
 
     private static readonly string[] MayName =
     [
-        "louis-agent.core/Config/AgentOptions.cs",
-        "louis-agent.core/Sessions/Replay/Store/ReplayStore.cs",
+        "src/engine/louis-agent.core/Config/AgentOptions.cs",
+        "src/engine/louis-agent.core/Sessions/Replay/Store/ReplayStore.cs",
     ];
 
     [Test]

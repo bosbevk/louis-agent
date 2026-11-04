@@ -2,7 +2,7 @@
 
 > **How-to.** Find what the agent did: the tool log, the run files, the usage ledger, and the Docker habits that keep
 > a rebuild honest. **Elsewhere:** how the messages and logs are built in
-> [core's guide](../../louis-agent.core/CLAUDE.md#messages-and-logging); the ledger's design in
+> [core's guide](../../src/engine/louis-agent.core/CLAUDE.md#messages-and-logging); the ledger's design in
 > [ADR 0007](../adr/0007-measure-every-request.md).
 
 ## Logs
@@ -65,7 +65,7 @@ dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-M
 - After changing the web app or API, rebuild the `api` image; after changing core, rebuild every image you use. Rider
   chats keep their container until you start a **New Chat**.
 - After changing `config/.env.secrets`, recreate the containers with `docker compose … up -d`: `restart` keeps the old
-  environment, so the new key never arrives. A changed prompt (`louis-agent.core/Prompts/`) is a change to core:
+  environment, so the new key never arrives. A changed prompt (`src/engine/louis-agent.core/Prompts/`) is a change to core:
   rebuild the images that use it.
 - Every image rebuild leaves build cache behind; a day of rebuilds filled Docker Desktop's disk (120 GB of cache) and
   stopped its engine (2026-10-15). `docker system df` shows it; `docker builder prune -af` clears it, safely, and

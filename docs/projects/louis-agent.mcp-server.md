@@ -1,6 +1,6 @@
 # louis-agent.mcp-server — design
 
-> **Kind:** console app (stdio) or ASP.NET Core (Streamable HTTP) · **Path:** `src/louis-agent.mcp-server/` ·
+> **Kind:** console app (stdio) or ASP.NET Core (Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp-server/` ·
 > **References:** louis-agent.core, louis-agent.composition, the ModelContextProtocol SDK · **Docker service:** `mcp-server`
 
 ## Purpose

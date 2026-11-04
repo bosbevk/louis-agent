@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\packs\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj" />
+    <ProjectReference Include="..\..\evals\packs\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>

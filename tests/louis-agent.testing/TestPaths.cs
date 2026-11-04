@@ -13,7 +13,7 @@ public static class TestPaths
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
     /// <summary>The built-in prompts in core (CL8 step 4), embedded and read only from the assembly.</summary>
-    public static string Prompts { get; } = Path.Combine(RepoRoot, "louis-agent.core", "Prompts");
+    public static string Prompts { get; } = Path.Combine(RepoRoot, "src", "engine", "louis-agent.core", "Prompts");
 
     public static AgentOptions Agent(string? paymoKey = null) => new()
     {

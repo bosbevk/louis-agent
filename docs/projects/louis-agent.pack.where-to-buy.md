@@ -33,8 +33,8 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 - **Being a good guest.** `MapSearch` keeps Nominatim's usage policy: one request a second for the whole process, a
   User-Agent that names the app, a ten-second limit. A map that doesn't answer is logged and said, never retried in a
   loop (`MapUnavailableException`, `WhereToBuyLogMessage`).
-- **The shop rules.** The checks an eval file names to prove an answer about shops live beside the pack, in
-  `packs/louis-agent.pack.where-to-buy.checks/`, which only the runner references (F49.3,
+- **The shop rules.** The checks an eval file names to prove an answer about shops live apart from the pack, in
+  `evals/packs/louis-agent.pack.where-to-buy.checks/`, which only the runner references (F49.3,
   [ADR 0073](../adr/0073-packs-reference-no-evals.md)): `estimates-at-shop` (no shop page read, no price given as fact,
   the estimates line, the branch under Where to buy) and `untooled-shops` (no column of a shop's prices).
 

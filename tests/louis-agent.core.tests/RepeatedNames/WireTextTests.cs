@@ -10,7 +10,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames;
 public class WireTextTests
 {
     private static readonly string[] OutsideChoices =
-        ["louis-agent.choices/", "tests/louis-agent.choices.tests/", "tests/louis-agent.core.tests/RepeatedNames/"];
+        ["src/engine/louis-agent.choices/", "tests/louis-agent.choices.tests/", "tests/louis-agent.core.tests/RepeatedNames/"];
 
     /// <summary>The code of each source file outside the choices project, with the comments cut off the end of a line.</summary>
     private static IEnumerable<(string File, int Line, string Code)> Code() =>

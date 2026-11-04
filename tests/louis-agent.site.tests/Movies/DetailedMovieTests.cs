@@ -8,7 +8,7 @@ namespace LouisAgent.Site.Tests.Movies;
 /// </summary>
 public class DetailedMovieTests
 {
-    /// <summary>The middleware a turn runs through, outermost first (louis-agent.core/Agent/Turns/ChatPipeline.cs).</summary>
+    /// <summary>The middleware a turn runs through, outermost first (core's <c>Agent/Turns/ChatPipeline.cs</c>).</summary>
     private static readonly string[] Pipeline =
     [
         "Tool loop + guards", "Usage recording", "Cut-off marking", "Tracing", "Replay", "Prompt caching"

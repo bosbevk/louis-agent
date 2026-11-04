@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+    <ProjectReference Include="..\..\src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 

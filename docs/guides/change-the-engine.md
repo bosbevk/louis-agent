@@ -3,7 +3,7 @@
 > **How-to.** Change `louis-agent.core`, the engine every agent runs on: add a tool or a toolset, change a built-in
 > prompt, add a setting or a message, handle a provider difference, add a model, and test it. **Elsewhere:** how it
 > works in [louis-agent.core](../projects/louis-agent.core.md); the rules these steps follow in
-> [core's development guide](../../louis-agent.core/CLAUDE.md); a capability of its own in [Build a pack](build-a-pack.md).
+> [core's development guide](../../src/engine/louis-agent.core/CLAUDE.md); a capability of its own in [Build a pack](build-a-pack.md).
 
 Core is the engine: the tool loop (`Agent/`), the toolsets and their guides (`Tools/`, `Prompts/`), skills, the model
 providers (`Llm/`), usage and prices (`Usage/`, `Pricing/`), the guards (`Guardrails/`) and the start-up every host
@@ -37,7 +37,7 @@ A toolset is guide, then tools, then guide: a mode's routing sends a task to the
 and each tool's description stays short. You add a tool class, a `ToolsetDefinition` in
 `Agent/Toolsets/ToolsetCatalog.cs` (its name, description, needed settings, tool classes and guide file), the guide
 in `Prompts/toolsets/`, and a routing row in each mode that uses it. The full list, and what is reserved, is in
-[Adding a toolset](../../louis-agent.core/CLAUDE.md#adding-a-toolset). A session picks its toolsets when it opens and
+[Adding a toolset](../../src/engine/louis-agent.core/CLAUDE.md#adding-a-toolset). A session picks its toolsets when it opens and
 keeps them, so its prompt stays cacheable ([ADR 0006](../adr/0006-toolsets-per-session.md)).
 
 ## Change a built-in prompt
@@ -66,7 +66,7 @@ Pick the enum by kind and area: `{Area}ErrorMessage`, `{Area}LogMessage` or `{Ar
 `ToolMessage`, `UserText`). Name the member for what happened, not for its wording; its `[Description]` is the text,
 with named holes: `MessageText.Format(ConfigErrorMessage.UnknownCacheTtl, new { Value = other })`. A host's own texts live in that host's
 `Messages/` folder. Log through `ILogger` (`AgentLogging.For<T>()`): stderr only, since stdout carries the ACP and MCP
-protocols. The rules are in [Messages and logging](../../louis-agent.core/CLAUDE.md#messages-and-logging).
+protocols. The rules are in [Messages and logging](../../src/engine/louis-agent.core/CLAUDE.md#messages-and-logging).
 
 ## Handle a provider difference
 

@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet publish "src/louis-agent.acp-server/louis-agent.acp-server.csproj" -c Release -o /app/publish
+RUN dotnet publish "src/hosts/louis-agent.acp-server/louis-agent.acp-server.csproj" -c Release -o /app/publish
 
 # The SDK image is kept for the final stage because the RunDotNet workspace tool shells out to `dotnet build/test`.
 FROM mcr.microsoft.com/dotnet/sdk:10.0

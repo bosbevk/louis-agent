@@ -1,6 +1,6 @@
 # louis-agent.composition — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `src/louis-agent.composition/` · **References:** louis-agent.core,
+> **Kind:** class library (`net10.0`) · **Path:** `src/hosts/louis-agent.composition/` · **References:** louis-agent.core,
 > every identity (`identities/`) and every pack (`packs/`) · **Used by:** louis-agent.cli, louis-agent.acp-server,
 > louis-agent.api, louis-agent.mcp-server
 

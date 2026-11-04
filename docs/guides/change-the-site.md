@@ -6,7 +6,7 @@
 ## Run it
 
 ```bash
-dotnet run --project src/louis-agent.site          # http://localhost:5000 (or the port it prints)
+dotnet run --project src/web/louis-agent.site          # http://localhost:5000 (or the port it prints)
 dotnet test tests/louis-agent.site.tests
 docker build -f docker/images/Dockerfile.site -t louis-agent-site . && docker run -p 5091:8080 louis-agent-site
 ```

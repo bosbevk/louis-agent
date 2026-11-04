@@ -1,6 +1,6 @@
 # louis-agent.web.shared — design
 
-> **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/louis-agent.web.shared/` ·
+> **Kind:** Razor class library (`net10.0`, runs in the browser) · **Path:** `src/web/louis-agent.web.shared/` ·
 > **References:** Markdig, Microsoft.AspNetCore.Components.Web and .WebAssembly · **Used by:** louis-agent.web (code
 > review) and louis-agent.puls (the general assistant)
 

@@ -28,7 +28,7 @@ public partial class EvalProtocolProjectTests
     [Test]
     public void TheApi_NeverReferencesTheHarness()
     {
-        string csproj = Csproj("src", "louis-agent.api", "louis-agent.api.csproj");
+        string csproj = Csproj("src", "hosts", "louis-agent.api", "louis-agent.api.csproj");
 
         var references = References(csproj, "ProjectReference");
 

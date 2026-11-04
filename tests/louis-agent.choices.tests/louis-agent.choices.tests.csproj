@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.choices\louis-agent.choices.csproj" />
+    <ProjectReference Include="..\..\src\engine\louis-agent.choices\louis-agent.choices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

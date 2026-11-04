@@ -4,7 +4,7 @@
 > it in [Change the site](../guides/change-the-site.md); why it's a static Razor site in
 > [ADR 0066](../adr/0066-the-site-is-static-razor.md).
 
-> **Kind:** ASP.NET Core app (`net10.0`, static server-rendered Razor components) · **Path:** `src/louis-agent.site/` ·
+> **Kind:** ASP.NET Core app (`net10.0`, static server-rendered Razor components) · **Path:** `src/web/louis-agent.site/` ·
 > **References:** nothing of ours, on purpose · **Used by:** nobody in the solution; a visitor's browser
 
 ## Purpose

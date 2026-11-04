@@ -32,7 +32,7 @@ you need otherwise.
 | [Add a skill](guides/add-a-skill.md) | How-to | Give the agent a function skill and approve it |
 | [Debug and logs](guides/debug-and-logs.md) | How-to | The tool log, the run files, the usage ledger, the Docker habits |
 | [Common errors](guides/common-errors.md) | How-to | The errors a developer meets most, by their message |
-| [Core guide](../louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
+| [Core guide](../src/engine/louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
 | [Guides](guides/README.md) | How-to | Find the step-by-step guide for the project you are changing, or for what you are building |
 | [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
 | [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its specialists, the packs it names, its tests, and running it |

@@ -19,7 +19,7 @@ public class ContractsProjectTests
     [Test]
     public void TheContracts_ReferenceNothing()
     {
-        string path = Path.Combine(ApiTestHost.RepoRoot, "src", Assembly, $"{Assembly}.csproj");
+        string path = Path.Combine(ApiTestHost.RepoRoot, "src", "hosts", Assembly, $"{Assembly}.csproj");
         Assert.That(File.Exists(path), Is.True, path);
 
         var references = Regex
@@ -34,7 +34,7 @@ public class ContractsProjectTests
     [Test]
     public void TheApi_ReferencesTheContracts()
     {
-        Assert.That(Csproj("src", "louis-agent.api", "louis-agent.api.csproj"),
+        Assert.That(Csproj("src", "hosts", "louis-agent.api", "louis-agent.api.csproj"),
             Does.Contain($@"{Assembly}\{Assembly}.csproj"));
     }
 

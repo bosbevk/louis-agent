@@ -17,7 +17,7 @@ namespace LouisAgent.Api.Tests;
 public class ApiNamesNoProductTests
 {
     /// <summary>The API's own projects: its host, and the contract its clients read.</summary>
-    private static readonly string[] Projects = ["src/louis-agent.api", "src/louis-agent.api.contracts"];
+    private static readonly string[] Projects = ["src/hosts/louis-agent.api", "src/hosts/louis-agent.api.contracts"];
 
     /// <summary>
     /// What may name a product for good (until its TODO line or Phase 9): a whole file, or a word in any file.
@@ -25,7 +25,7 @@ public class ApiNamesNoProductTests
     private static readonly (string? File, string? Word)[] Allowed =
     [
         // The API serves Puls's web app when built with -p:WebApp=puls, until Phase 9 gives each product its own host.
-        ("src/louis-agent.api/louis-agent.api.csproj", null),
+        ("src/hosts/louis-agent.api/louis-agent.api.csproj", null),
     ];
 
     /// <summary>Nothing in the API names a product, except what is allowed on purpose.</summary>

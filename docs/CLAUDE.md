@@ -81,7 +81,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
   sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
-  references no other pack, identity or eval; only `src/louis-agent.composition` knows them all. Weigh every reference against
+  references no other pack, identity or eval; only `src/hosts/louis-agent.composition` knows them all. Weigh every reference against
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](adr/0027-engine-identities-and-packs.md), [0073](adr/0073-packs-reference-no-evals.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
   model**: `louis-agent.mcp-server` hands an external client the raw tools; to have the agent do a whole task, call
@@ -109,7 +109,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
   before its text. [ADR 0038](adr/0038-the-browser-says-what-it-is.md), [0068](adr/0068-every-fetch-obeys-robots-txt.md), [0067](adr/0067-a-pages-own-data-before-its-text.md).
 - **Measure every request, and show it** — the usage ledger is the only source of cost, priced by a dated table;
   unknown is `null`, never 0; every host shows the same totals. [ADR 0007](adr/0007-measure-every-request.md).
-- **Evals in C#** — every check is a C# eval on one harness, beside the identity or pack it proves; one event
+- **Evals in C#** — every check is a C# eval on one harness, under `evals/`, apart from what it proves; one event
   contract; a live run waits for Louis's go. [ADR 0029](adr/0029-simulations-in-csharp.md),
   [ADR 0047](adr/0047-protocol-v2-one-event-contract.md).
 - **Nothing is backward compatible until something is sold** — no migration, alias, lenient reader or second parser
@@ -147,24 +147,15 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 ## Project structure
 
 Where things are. What's inside each project is in its design doc in [projects/](projects/README.md); core's folders
-in [Project layout](../louis-agent.core/CLAUDE.md#project-layout).
+in [Project layout](../src/engine/louis-agent.core/CLAUDE.md#project-layout).
 
 ```
-louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/ (no product)
-louis-agent.choices/     # SettingChoice and [WireName]: the one parser for a name that is an enum member; references nothing
-identities/              # Who an agent is: louis-agent.identity.puls (its voice, modes, roles and the packs it names)
-packs/                   # What an agent can do: where-to-buy (branches), shop-prices (estimates), recipes
-src/
-├── louis-agent.cli/          # Terminal host
-├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)
-├── louis-agent.api/          # Minimal API: sessions + SSE, workspace and git endpoints; serves a web app
-├── louis-agent.web/          # Blazor WebAssembly app for code review
-├── louis-agent.puls/         # Puls: the general assistant's web app (the API built with -p:WebApp=puls)
-├── louis-agent.web.shared/   # What both web apps share
-├── louis-agent.mcp-server/   # Publishes the tools over MCP (no model)
-├── louis-agent.orchestrator/ # POC: a second agent on core that has louis-agent fix a service's errors
-└── louis-agent.composition/  # The one project that knows every identity and pack; a host picks with IDENTITIES and PACKS
-evals/                   # The eval harness, its protocol, the checks contract, the runner and the template folder; an eval is a folder of files beside its identity (identities/…/Evals/); louis-agent.session-stream/ and src/louis-agent.api.contracts/ hold the records the API shares
+src/engine/              # louis-agent.core (the loop, tools, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream
+src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model), .orchestrator (POC), .composition (knows every identity and pack; IDENTITIES, PACKS)
+src/web/                 # louis-agent.web (code review), .puls (Puls's app: the API with -p:WebApp=puls), .web.shared, .site
+identities/              # Who an agent is: louis-agent.identity.puls (its voice, modes, roles and the packs it names), .evals (what proves it)
+packs/                   # What an agent can do: where-to-buy (branches), shop-prices (estimates), recipes; each .checks proves one
+evals/                   # The eval harness, its protocol, the checks contract, the runner and the template folder; identities/ and packs/ hold what proves each one, as projects only the runner references (an eval is a folder of files in evals/identities/…/Evals/); src/engine/louis-agent.session-stream/ and src/hosts/louis-agent.api.contracts/ hold the records the API shares
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
 tests/                   # NUnit, one project per project ([tests](projects/tests.md)); the ones that leave their process are *.integration-tests
 docker/, deploy/azure/, config/ # This PC's images and compose stacks; the cloud (Puls on Azure); what the app reads at run time
@@ -182,7 +173,7 @@ the how of a kind of file in `.claude/rules/`; Claude Code loads each only when 
 |---|---|---|
 | [tests/CLAUDE.md](../tests/CLAUDE.md) | `tests/` | Running the tests, the golden files, fakes and platform-neutral tests |
 | [src/CLAUDE.md](../src/CLAUDE.md) | `src/` | The hosts' own message enums, adding a web theme |
-| [louis-agent.core/CLAUDE.md](../louis-agent.core/CLAUDE.md) | `louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
+| [src/engine/louis-agent.core/CLAUDE.md](../src/engine/louis-agent.core/CLAUDE.md) | `src/engine/louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
 | `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: summaries, conditionals, records, enums, size, formatting |
 | `.claude/rules/razor.md` | `**/*.razor`, `**/*.razor.cs` | Markup only, split by a hundred lines, the live results |
 | `.claude/rules/css.md` | `**/*.css` | 200 lines of rules a file, `app.css` the import list in cascade order, the byte-checked move |
@@ -194,7 +185,7 @@ modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-a
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../TODO.md#known-limitations); when work removes one, delete it there.
-**Further reading:** [the architecture](architecture/README.md), `config/.env.example` (settings), [the agent's mode](../louis-agent.core/Prompts/agent/louis-agent/voice.md).
+**Further reading:** [the architecture](architecture/README.md), `config/.env.example` (settings), [the agent's mode](../src/engine/louis-agent.core/Prompts/agent/louis-agent/voice.md).
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](projects/orchestrator-runbooks.md)

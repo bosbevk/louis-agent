@@ -190,7 +190,7 @@ and (`CrossBoundaryNamesTests`) that each pack an identity names exists. A mode 
 
 ## 5. Register it in the composition root
 
-Three edits in `src/louis-agent.composition`, as for a pack:
+Three edits in `src/hosts/louis-agent.composition`, as for a pack:
 
 1. A member in `IdentityKind.cs`: `Acme`.
 2. Its arm in `Plugins.Create(IdentityKind)`: `IdentityKind.Acme => new AcmeIdentity(),`.
@@ -253,7 +253,7 @@ curl -s -H "x-api-key: $AGENT_API_KEY" -H "Content-Type: application/json" \
 
 `GET /v1/roles` lists `acme/voice` under `agent` and `acme-estimator` under `specialists`. A session must name
 its mode: one that names none gets core's default, the coding agent's (`louis-agent/voice`). A web app of its own (as
-Puls has in `src/louis-agent.puls`) is a separate project and optional; any client that opens sessions this way works.
+Puls has in `src/web/louis-agent.puls`) is a separate project and optional; any client that opens sessions this way works.
 
 ## Modes, roles and minions: the rules
 

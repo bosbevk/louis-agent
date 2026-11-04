@@ -48,7 +48,7 @@ problems, so the test is tested too.
 
 It can't see behaviour: a tool that throws instead of returning text, one that reads the user's place from the session
 instead of a parameter, outside data returned without its frame, output without a bound. Those are the review
-checklist in [core's guide](../../louis-agent.core/CLAUDE.md#building-an-identity-or-a-pack). The split matters: a
+checklist in [core's guide](../../src/engine/louis-agent.core/CLAUDE.md#building-an-identity-or-a-pack). The split matters: a
 rule a test can hold is held by a test, and what it can't hold is written where the reviewer looks, not left implied.
 
 ## What was learned

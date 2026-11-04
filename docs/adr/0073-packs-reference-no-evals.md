@@ -3,7 +3,9 @@
 **Status:** Accepted · **Date:** 2026-11-04 (Louis, shown a new reference from the shop-prices pack to the check
 contract: "this is not good for our spilt we intend", then *Change ADR 0060 now*, "always take the engien split into
 account", "if we need to schare contract it needs to be in a shared project or duplicated", "fix this now here", *a
-checks project per pack* and, for Puls, "do it for identities also now") · **Recorded:** 2026-11-04
+checks project per pack*, for Puls "do it for identities also now", and then "checks is there to do evals and should be
+seperate, someone could for instance use the tool but do not want the evals. Or do not own evals") · **Recorded:**
+2026-11-04
 
 Supersedes [ADR 0060](0060-a-pack-ships-its-checks.md).
 
@@ -17,8 +19,11 @@ The split is the engine as its own repo and package (Phase 10 in the [TODO](../.
 packaged in place, F44.4 its own repo). Every host loads a pack and an identity, so whatever they reference comes along
 wherever they go: leaning on the evals ties what an agent can do, and who it is, to how we prove it.
 
-Weighed for where the existing checks go: a checks project per pack, beside it (taken); one project under `evals/` for
-all of them, which is the one place in the evals that would know every named product and grow with each pack; and
+Someone can also take the tools or an identity and want no evals at all, or not own them, so what proves them can't
+live in the same folder.
+
+Weighed for where the existing checks go: a checks project per pack (taken), under `evals/packs/`; one project under
+`evals/` for all of them, which would know every named product and grow with each pack; and
 rewriting them as general checks with the particulars in the eval file, which is a rewrite of about 550 lines that
 could change pinned grades. The pattern is Separated Interface (Fowler, *Patterns of Enterprise Application
 Architecture*), as `louis-agent.identity.puls.judges` already did.
@@ -26,9 +31,11 @@ Architecture*), as `louis-agent.identity.puls.judges` already did.
 ## Decision
 
 - **No pack and no identity references anything under `evals/`.** A pack and an identity stand on core alone.
-- **What proves one is a project beside it, which only the runner references:** `packs/louis-agent.pack.{name}.checks`,
-  `identities/louis-agent.identity.{name}.evals`. The arrow points at the thing proved, never the reverse; a project
-  references what it uses and no more. The composition names none of them, so no host carries one.
+- **What proves one is a project under `evals/`, which only the runner references:**
+  `evals/packs/louis-agent.pack.{name}.checks`, `evals/identities/louis-agent.identity.{name}.evals` and `.judges`.
+  `packs/` holds tools and `identities/` holds who an agent is, nothing else. The arrow points at the thing proved,
+  never the reverse; a project references what it uses and no more. The composition names none of them, so no host
+  carries one.
 - **The lists meet in the runner.** `RunnerChecks` and `RunnerReaders` name each project's list; the composition's
   `EvalChecks` and `EvalReaders` are gone.
 - **A new check is a general one in the harness when it can be said generally** (`tool-rows-marked`), with the
@@ -45,10 +52,11 @@ reading is the check contract's.
 ## Consequences
 
 - `ArchitectureTests` holds it: `NoPack_ReferencesTheEvals`, `APacksChecksProject_ReferencesOnlyItsPack_AndTheContract`,
-  `TheIdentity_ReferencesOnlyTheEngine` and `TheComposition_ReferencesNoChecksOrEvalsProject`.
+  `TheIdentity_ReferencesOnlyTheEngine`, `TheComposition_ReferencesNoChecksOrEvalsProject` and
+  `ToolsAndIdentitiesFolders_HoldNoEvalsProject`.
 - The move kept every namespace (each new project's root namespace is the old one) and changed no rule, so the cook's
   pinned grades didn't change.
-- An eval's folder is `identities/louis-agent.identity.{name}.evals/Evals/{Folder}/`, and the studio publishes there
+- An eval's folder is `evals/identities/louis-agent.identity.{name}.evals/Evals/{Folder}/`, and the studio publishes there
   (`PublishTarget`), so a new identity needs its evals project before an eval can be published for it.
 - The API references the check contract directly, for the kinds of reader its studio lists; before, it had it through
   the identity without saying so. The contract holds no check.

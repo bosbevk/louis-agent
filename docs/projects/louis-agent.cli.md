@@ -1,6 +1,6 @@
 # louis-agent.cli — design
 
-> **Kind:** console app · **Path:** `src/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
+> **Kind:** console app · **Path:** `src/hosts/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
 > `local-agent`
 
 ## Purpose

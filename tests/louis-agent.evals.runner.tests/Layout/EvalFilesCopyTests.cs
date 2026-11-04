@@ -19,7 +19,7 @@ public class EvalFilesCopyTests
 {
     /// <summary>The cook's manifest, copied from Puls's evals project.</summary>
     private const string CookDataset =
-        "EvalFiles/identities/louis-agent.identity.puls.evals/Evals/Cook/Dataset/dataset.json";
+        "EvalFiles/evals/identities/louis-agent.identity.puls.evals/Evals/Cook/Dataset/dataset.json";
 
     /// <summary>One of the stub's reference transcripts, copied from the runner's own project.</summary>
     private const string StubReference =

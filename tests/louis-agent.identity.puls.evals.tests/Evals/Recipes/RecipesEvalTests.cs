@@ -37,7 +37,7 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Recipes;
 public class RecipesEvalTests
 {
     /// <summary>Where the folder sits in the repository.</summary>
-    private const string Source = "identities/louis-agent.identity.puls.evals/Evals/Recipes";
+    private const string Source = "evals/identities/louis-agent.identity.puls.evals/Evals/Recipes";
 
     /// <summary>
     /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF),

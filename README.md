@@ -30,7 +30,7 @@ own agents.
 | **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then the sales playground, budgets, orchestration, safety and accounts |
 | An admin portal: each run opens on its answer, one Evals page, a queue of answers waiting for a person's grade | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
-| A website for the engine itself (`src/louis-agent.site`) | |
+| A website for the engine itself (`src/web/louis-agent.site`) | |
 
 The full order is in the [TODO](TODO.md) and the [platform plan](docs/plans/platform.md); what's finished is in the
 [CHANGELOG](CHANGELOG.md).
@@ -102,12 +102,12 @@ and Paymo. It can write new skills and build its own tools, and those wait for y
 
 | Host | Project | What it is |
 |---|---|---|
-| **Rider** | `src/louis-agent.acp-server` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat |
-| **Web app** | `src/louis-agent.web` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
-| **HTTP API** | `src/louis-agent.api` | Sessions with answers streamed as Server-Sent Events; it also serves the web app |
-| **CLI** | `src/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
-| **MCP server** | `src/louis-agent.mcp-server` | Hands the tools to any MCP client, which brings its own model |
-| **Orchestrator** | `src/louis-agent.orchestrator` | A proof of concept: a second agent reads a service's errors and has louis-agent fix and verify them |
+| **Rider** | `src/hosts/louis-agent.acp-server` | [Agent Client Protocol](https://agentclientprotocol.com) server for Rider's AI chat |
+| **Web app** | `src/web/louis-agent.web` | Blazor chat with a file browser, a Changes view (review, stage, commit) and a Branches view (review, merge) |
+| **HTTP API** | `src/hosts/louis-agent.api` | Sessions with answers streamed as Server-Sent Events; it also serves the web app |
+| **CLI** | `src/hosts/louis-agent.cli` | Interactive or one-shot prompts in the terminal |
+| **MCP server** | `src/hosts/louis-agent.mcp-server` | Hands the tools to any MCP client, which brings its own model |
+| **Orchestrator** | `src/hosts/louis-agent.orchestrator` | A proof of concept: a second agent reads a service's errors and has louis-agent fix and verify them |
 
 Pushing always stays with you.
 
@@ -149,7 +149,7 @@ Open **http://127.0.0.1:5080**. Everything listens on `127.0.0.1` only.
 
 - **Rider:** add an agent server in the AI Assistant settings, from
   [config/rider/rider-acp.example.json](config/rider/rider-acp.example.json). Each chat gets its own container.
-- **CLI:** `dotnet run --project src/louis-agent.cli` (interactive), or add `-- "your prompt"` for one shot.
+- **CLI:** `dotnet run --project src/hosts/louis-agent.cli` (interactive), or add `-- "your prompt"` for one shot.
 
 Every setting is in [docs/SETUP.md](docs/SETUP.md), and choosing a model is in [docs/MODELS.md](docs/MODELS.md). For
 prompts to try, see the [quick start](docs/QUICK_START_AGENT.md).

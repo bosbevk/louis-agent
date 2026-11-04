@@ -79,7 +79,7 @@ public static class CommandLine
     /// <summary>
     /// The most repeats one run may ask for; more is cut down to this, as the API's <c>EvalProcess</c> does. The API
     /// can't reference the runner, so this is a copy and the two must match
-    /// (src/louis-agent.api/Evals/Runs/EvalProcess.cs).
+    /// (src/hosts/louis-agent.api/Evals/Runs/EvalProcess.cs).
     /// </summary>
     public const int MaxRepeat = 5;
 

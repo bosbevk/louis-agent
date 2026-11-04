@@ -68,7 +68,7 @@ public partial class ArchitectureTests
     /// </summary>
     private static IEnumerable<string> Violations()
     {
-        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        string core = Path.Combine(TestPaths.RepoRoot, "src", "engine", "louis-agent.core");
         IEnumerable<string> files = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
             .Select(f => Path.GetRelativePath(core, f).Replace('\\', '/'))
             .Where(f => !f.StartsWith("bin/") && !f.StartsWith("obj/"))
@@ -116,7 +116,7 @@ public partial class ArchitectureTests
     [Test]
     public void InsideSkills_TheTopUsesNothingBelow_AndItsFoldersOnlyTheTop()
     {
-        string skills = Path.Combine(TestPaths.RepoRoot, "louis-agent.core", "Skills");
+        string skills = Path.Combine(TestPaths.RepoRoot, "src", "engine", "louis-agent.core", "Skills");
         var found = new List<string>();
         foreach (string path in Directory.EnumerateFiles(skills, "*.cs", SearchOption.AllDirectories))
         {
@@ -145,7 +145,7 @@ public partial class ArchitectureTests
     [Test]
     public void NoFileInCore_BuildsAProcessCommandLineAsOneString()
     {
-        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        string core = Path.Combine(TestPaths.RepoRoot, "src", "engine", "louis-agent.core");
         var found = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
             .Select(f => Path.GetRelativePath(core, f).Replace('\\', '/'))
             .Where(f => !f.StartsWith("bin/") && !f.StartsWith("obj/"))
@@ -172,7 +172,7 @@ public partial class ArchitectureTests
     [Test]
     public void Core_ReferencesNoIdentityOrPack()
     {
-        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        string core = Path.Combine(TestPaths.RepoRoot, "src", "engine", "louis-agent.core");
         Assert.That(ForbiddenReferences(File.ReadAllText(Path.Combine(core, "louis-agent.core.csproj"))), Is.Empty,
             "core's csproj references an identity or a pack");
 
@@ -237,8 +237,8 @@ public partial class ArchitectureTests
     [Test]
     public void APacksChecksProject_ReferencesOnlyItsPack_AndTheContract()
     {
-        string packs = Path.Combine(TestPaths.RepoRoot, "packs");
-        var projects = Directory.EnumerateFiles(packs, "*.checks.csproj", SearchOption.AllDirectories).ToList();
+        var projects = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "evals", "packs"), "*.checks.csproj",
+            SearchOption.AllDirectories).ToList();
 
         Assert.That(projects.Select(Path.GetFileName),
             Is.EquivalentTo(new[]
@@ -261,16 +261,33 @@ public partial class ArchitectureTests
     [Test]
     public void TheComposition_ReferencesNoChecksOrEvalsProject()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.composition",
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "hosts", "louis-agent.composition",
             "louis-agent.composition.csproj"));
 
         Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".checks.") || r.Contains(".evals")), Is.Empty);
     }
 
-    /// <summary>Every project that is a pack, leaving out the checks projects beside them.</summary>
+    /// <summary>
+    /// Someone can take the tools or an identity without the evals, or not own the evals at all, so what proves them is
+    /// never in those folders: it sits under <c>evals/</c>.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    [Test]
+    public void ToolsAndIdentitiesFolders_HoldNoEvalsProject()
+    {
+        var found = new[] { "packs", "identities" }
+            .SelectMany(folder => Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, folder), "*.csproj",
+                SearchOption.AllDirectories))
+            .Select(Path.GetFileName)
+            .Where(name => name!.EndsWith(".checks.csproj") || name.EndsWith(".evals.csproj") ||
+                           name.EndsWith(".judges.csproj"));
+
+        Assert.That(found, Is.Empty);
+    }
+
+    /// <summary>Every project that is a pack.</summary>
     private static IEnumerable<string> PackProjects() =>
-        Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj", SearchOption.AllDirectories)
-            .Where(f => !f.EndsWith(".checks.csproj", StringComparison.Ordinal));
+        Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj", SearchOption.AllDirectories);
 
     /// <summary>
     /// The project files a csproj references, by file name, so a test reads the same on Linux, where a backslash isn't
@@ -326,7 +343,7 @@ public partial class ArchitectureTests
     [Test]
     public void CoresSource_NamesNoProduct()
     {
-        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        string core = Path.Combine(TestPaths.RepoRoot, "src", "engine", "louis-agent.core");
         var found = Directory.EnumerateFiles(core, "*.cs", SearchOption.AllDirectories)
             .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}") &&
                         !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
@@ -420,7 +437,7 @@ public partial class ArchitectureTests
     /// </summary>
     private static IEnumerable<string> ProductText()
     {
-        string core = Path.Combine(TestPaths.RepoRoot, "louis-agent.core");
+        string core = Path.Combine(TestPaths.RepoRoot, "src", "engine", "louis-agent.core");
         var pieces = new SortedSet<string>(StringComparer.Ordinal);
         foreach (string file in Directory.EnumerateFiles(Path.Combine(core, "Prompts"), "*.md",
                      SearchOption.AllDirectories))

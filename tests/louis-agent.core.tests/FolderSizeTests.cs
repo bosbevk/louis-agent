@@ -18,8 +18,7 @@ public class FolderSizeTests
     /// <summary>Where the source lives: the same roots the file-size rule reads.</summary>
     private static readonly string[] Roots =
     [
-        "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream", "identities", "packs", "src", "tools",
-        "evals", "tests"
+        "identities", "packs", "src", "tools", "evals", "tests"
     ];
 
     /// <summary>
@@ -30,18 +29,18 @@ public class FolderSizeTests
     [
         "evals/louis-agent.evals/Api",
         "evals/louis-agent.evals/Running",
-        "louis-agent.core/Pricing/Prices",
-        "louis-agent.core/Tools/Agents/SubSessions",
-        "louis-agent.core/Tools/Web/Browsing",
-        "louis-agent.core/Tools/Web/Search",
-        "louis-agent.core/Usage/Records",
-        "src/louis-agent.api/Admin/Replies",
-        "src/louis-agent.api/Messages",
-        "src/louis-agent.puls/Admin/Grades",
-        "src/louis-agent.puls/Admin/Reviews",
-        "src/louis-agent.puls/Components/Landing",
-        "src/louis-agent.web.shared/Chats",
-        "src/louis-agent.web/Git",
+        "src/engine/louis-agent.core/Pricing/Prices",
+        "src/engine/louis-agent.core/Tools/Agents/SubSessions",
+        "src/engine/louis-agent.core/Tools/Web/Browsing",
+        "src/engine/louis-agent.core/Tools/Web/Search",
+        "src/engine/louis-agent.core/Usage/Records",
+        "src/hosts/louis-agent.api/Admin/Replies",
+        "src/hosts/louis-agent.api/Messages",
+        "src/web/louis-agent.puls/Admin/Grades",
+        "src/web/louis-agent.puls/Admin/Reviews",
+        "src/web/louis-agent.puls/Components/Landing",
+        "src/web/louis-agent.web.shared/Chats",
+        "src/web/louis-agent.web/Git",
         "tests/louis-agent.api.tests",
         "tests/louis-agent.api.tests/Endpoints",
         "tests/louis-agent.api.tests/Sessions",

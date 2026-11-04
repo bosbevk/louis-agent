@@ -19,7 +19,7 @@ public partial class HostMessageEnumTests
     /// an identity's enums left core in CL15).
     /// </summary>
     private static IEnumerable<string> HostMessageFiles() =>
-        new[] { "src", "tools", "packs", "identities", "evals" }
+        new[] { "src/hosts", "src/web", "tools", "packs", "identities", "evals" }
             .Select(root => Path.Combine(TestPaths.RepoRoot, root))
             .Where(Directory.Exists)
             .SelectMany(root => Directory.EnumerateDirectories(root, "Messages", SearchOption.AllDirectories))

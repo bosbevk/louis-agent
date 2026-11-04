@@ -17,7 +17,7 @@ public sealed partial record Stylesheet(string Folder)
 {
     /// <summary>The stylesheet of one of our web apps, by its project's name.</summary>
     public static Stylesheet Of(string project) =>
-        new(Path.Combine(TestPaths.RepoRoot, "src", project, "wwwroot", "css"));
+        new(Path.Combine(TestPaths.RepoRoot, "src/web", project, "wwwroot", "css"));
 
     /// <summary>Every rule the app loads, file after file in app.css's order.</summary>
     public string Read() => string.Join("\n", Imports().Select(Text));

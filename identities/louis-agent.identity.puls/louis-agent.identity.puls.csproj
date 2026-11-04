@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <ProjectReference Include="..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
 

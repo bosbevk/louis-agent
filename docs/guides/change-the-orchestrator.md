@@ -1,6 +1,6 @@
 # Change the orchestrator
 
-> **How-to.** Change `src/louis-agent.orchestrator`, the agent that watches a service's errors and has louis-agent fix
+> **How-to.** Change `src/hosts/louis-agent.orchestrator`, the agent that watches a service's errors and has louis-agent fix
 > them: a runbook, a tool, a setting, its tests, and a run. **Elsewhere:** how it works in
 > [louis-agent.orchestrator](../projects/louis-agent.orchestrator.md); how it decides and how to write a runbook in
 > [Runbooks](../projects/orchestrator-runbooks.md).
@@ -40,7 +40,7 @@ there with its default, a test, and a line in the design doc's *Configuration*.
 
 ```bash
 dotnet test tests/louis-agent.orchestrator.tests
-dotnet run --project src/louis-agent.orchestrator -- --once     # one pass over the service's new errors
+dotnet run --project src/hosts/louis-agent.orchestrator -- --once     # one pass over the service's new errors
 ```
 
 The tests cover the feed, the SSE client and `FIX-RESULT`, the decisions, loading the runbooks, the comms log, and the

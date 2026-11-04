@@ -47,7 +47,8 @@ public partial class ApiRoutesSnapshotTests
     public void Program_MapsNoRouteOfItsOwn()
     {
         // The tests' table is the one that runs only while Program.cs adds no route beside ApiMap's and the admin portal's.
-        string program = File.ReadAllText(Path.Combine(ApiTestHost.RepoRoot, "src", "louis-agent.api", "Program.cs"));
+        string program = File.ReadAllText(Path.Combine(ApiTestHost.RepoRoot, "src", "hosts", "louis-agent.api",
+            "Program.cs"));
         var calls = MapCall().Matches(program).Select(m => m.Groups[1].Value).Distinct().Order(StringComparer.Ordinal).ToList();
 
         Assert.That(calls.Except(AllowedInProgram), Is.Empty,

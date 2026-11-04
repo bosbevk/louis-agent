@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\louis-agent.acp-server\louis-agent.acp-server.csproj" />
+    <ProjectReference Include="..\..\src\hosts\louis-agent.acp-server\louis-agent.acp-server.csproj" />
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
