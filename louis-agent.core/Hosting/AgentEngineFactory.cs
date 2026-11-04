@@ -18,6 +18,8 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Replay;
+using LouisAgent.Core.Tools.Web.Fetching;
+using LouisAgent.Core.Tools.Web.Robots;
 using LouisAgent.Core.Sessions.Replay.Store;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Hosting.Messages;
@@ -104,10 +106,12 @@ public sealed class AgentEngineFactory
         // shared by every engine and sub-session.
         var replay = _replay = ReplayStore.From(agent);
         _clock = replay is null ? null : new ReplayClock(replay);
+        // One robots.txt policy too (F35, ADR 0068), reading the file through a fetcher of its own that has no policy.
+        var robots = new RobotsPolicy(RobotsFileFetch.Through(new PageFetcher(replay: replay)));
         Context = new ToolsetContext(agent,
             RecordedSearchProvider.Around(webSearch ?? WebSearchProviderFactory.Create(agent), replay), rates,
             usageSink,
-            WebBrowser: WebBrowserFactory.Create(agent, replay), Replay: replay);
+            WebBrowser: WebBrowserFactory.Create(agent, replay, robots), Replay: replay, Robots: robots);
     }
 
     /// <summary>What the catalogue builds this instance's tools from (settings, the search provider).</summary>

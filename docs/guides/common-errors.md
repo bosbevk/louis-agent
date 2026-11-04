@@ -22,6 +22,11 @@
 - **"Price table …"** stopping start-up (not valid, empty, a negative price, or a bad `long_prompt.above_tokens`) — fix
   `config/prices.json` (or the `PRICES_FILE` / `PRICES_URL` table): every model needs all five prices, none negative.
   **"[WARN] No price table"** means costs are recorded as unknown.
+- **"…'s robots.txt disallows reading …", "…'s robots.txt couldn't be read …" or "… says no to AI readers …"** — the
+  site (or the page) said no to automated readers, or its `robots.txt` was down, and every fetch and browser visit
+  obeys that ([ADR 0068](../adr/0068-every-fetch-obeys-robots-txt.md)); nothing to fix, the page isn't read. A replay
+  that ends in "couldn't be read" is an old recording with no `robots.txt` in it: the cook eval's recordings are
+  re-recorded in F35.2.
 - **"Model '…' isn't pulled into Ollama"** (usage probe) or a 404 from Ollama — `docker exec louis_ollama ollama pull <model>`.
 
 ---

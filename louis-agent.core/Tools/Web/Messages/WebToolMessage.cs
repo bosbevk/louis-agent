@@ -1,4 +1,3 @@
-
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Tools.Web.Messages;
@@ -165,4 +164,13 @@ public enum WebToolMessage
     [Description(
         "Page empty: {Url} has no readable text (a page drawn with JavaScript that couldn't be rendered), so the quote can't be checked. Treat the value as unconfirmed.")]
     QuotePageEmpty,
+
+    [Description("{Host}'s robots.txt disallows reading {Path}; not read.")]
+    RobotsDisallows,
+
+    [Description("{Host}'s robots.txt couldn't be read ({Reason}); its pages are not read for an hour.")]
+    RobotsUnreachable,
+
+    [Description("{Host} says no to AI readers ({Signal}); not read.")]
+    PageRefusesAiReaders,
 }
