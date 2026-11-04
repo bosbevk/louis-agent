@@ -145,8 +145,8 @@ public class SolutionLayoutTests
     }
 
     /// <summary>
-    /// The folders at the top and the solution's groups at the top are the same list. Dot folders and what a run leaves
-    /// behind are not part of the code, and a folder holding only build output is what a past move left.
+    /// The folders at the top and the solution's groups at the top are the same list. Dot folders are not part of the
+    /// code, what a run leaves behind sits in its demo, and a folder holding only build output is what a past move left.
     /// </summary>
     [Test]
     public void TheTopLevelFolders_AreTheSolutionsGroups()
@@ -159,7 +159,7 @@ public class SolutionLayoutTests
         var folders = Directory.EnumerateDirectories(TestPaths.RepoRoot)
             .Where(HoldsMoreThanBuildOutput)
             .Select(path => Path.GetFileName(path))
-            .Where(name => !name.StartsWith('.') && name is not ("data" or "logs"));
+            .Where(name => !name.StartsWith('.'));
 
         Assert.That(folders, Is.EquivalentTo(groups));
     }

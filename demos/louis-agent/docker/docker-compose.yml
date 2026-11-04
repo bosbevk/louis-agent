@@ -41,7 +41,7 @@ services:
     volumes:
       - ../../../:/workspace
       - ../skills:/skills
-      - ../../../logs:/logs
+      - ../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     stdin_open: true
     tty: true
@@ -78,7 +78,7 @@ services:
     volumes:
       - ../../../:/workspace
       - ../skills:/skills
-      - ../../../logs:/logs
+      - ../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     stdin_open: true
     networks:
@@ -125,7 +125,7 @@ services:
     volumes:
       - ../../../:/workspace
       - ../skills:/skills
-      - ../../../logs:/logs
+      - ../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     networks:
       - default
@@ -160,7 +160,7 @@ services:
     volumes:
       - ../../../:/workspace
       - ../skills:/skills
-      - ../../../logs:/logs
+      - ../logs:/logs
       - ${REPOSITORIES_PATH}:/repositories
     stdin_open: true
     tty: true

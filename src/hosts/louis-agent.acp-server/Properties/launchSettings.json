@@ -7,7 +7,7 @@
       "environmentVariables": {
         "WORKSPACE_ROOT": "../../..",
         "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
-        "LOG_DIRECTORY": "../../../logs",
+        "LOG_DIRECTORY": "../../../demos/louis-agent/logs",
         "CONFIG_DIRECTORY": "../../../demos/louis-agent/config",
         "PRICES_FILE": "../../../demos/louis-agent/config/prices.json",
         "RATES_FILE": "../../../demos/louis-agent/config/rates.json",

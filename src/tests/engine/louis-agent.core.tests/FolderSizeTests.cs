@@ -106,6 +106,6 @@ public class FolderSizeTests
     private static bool InBuildOutput(string path)
     {
         var parts = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        return parts.Contains("bin") || parts.Contains("obj");
+        return parts.Contains("bin") || parts.Contains("obj") || parts.Contains("data") || parts.Contains("logs");
     }
 }

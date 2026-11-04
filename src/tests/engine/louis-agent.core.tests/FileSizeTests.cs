@@ -124,5 +124,7 @@ public class FileSizeTests
     /// <summary>What the build wrote (bin/, obj/) isn't ours to size.</summary>
     private static bool InBuildOutput(string path) =>
         path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
-        || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}");
+        || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
+        || path.Contains($"{Path.DirectorySeparatorChar}data{Path.DirectorySeparatorChar}")
+        || path.Contains($"{Path.DirectorySeparatorChar}logs{Path.DirectorySeparatorChar}");
 }

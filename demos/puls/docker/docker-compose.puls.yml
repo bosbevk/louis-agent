@@ -75,8 +75,8 @@ services:
     volumes:
       - ${PULS_WORKSPACE:-../../../}:/workspace
       - ../skills:/skills
-      - ../../../logs/puls:/logs
-      - ../../../data/puls:/data
+      - ../logs:/logs
+      - ../data/puls:/data
     networks: [default, web]
     depends_on:
       # Mongo answering before puls asks it, so the store's first call doesn't fail on start-up.
@@ -84,7 +84,7 @@ services:
         condition: service_healthy
 
   # The benchmark store (F31): the admin portal's runs, recorded by puls from each check's output. Its data is a folder
-  # on the host (data/mongo, git-ignored), so it outlives the container and the image. Localhost only. The root user is
+  # on the host (this demo's data/mongo, git-ignored), so it outlives the container and the image. Localhost only. The root user is
   # MONGO_INITDB_ROOT_USERNAME and _PASSWORD in config/.env.mongo, its own file: the database never sees the model's or
   # the search's keys in config/.env.secrets. Read when the data folder is first created; puls reaches it at
   # EVALS_MONGO_URL (the service name, puls-mongo; BENCHMARKS_MONGO_URL, its old name, still works). The server is MongoDB Community (SSPL): used as
@@ -98,7 +98,7 @@ services:
     ports:
       - "127.0.0.1:${PULS_MONGO_PORT:-27017}:27017"
     volumes:
-      - ../../../data/mongo:/data/db
+      - ../data/mongo:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 10s

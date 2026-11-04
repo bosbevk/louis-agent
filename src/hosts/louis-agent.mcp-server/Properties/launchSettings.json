@@ -10,7 +10,7 @@
         "MCP_TRANSPORT": "http",
         "WORKSPACE_ROOT": "../../..",
         "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
-        "LOG_DIRECTORY": "../../../logs"
+        "LOG_DIRECTORY": "../../../demos/louis-agent/logs"
       }
     },
     "mcp-stdio": {
@@ -20,7 +20,7 @@
         "MCP_TRANSPORT": "stdio",
         "WORKSPACE_ROOT": "../../..",
         "SKILLS_DIRECTORY": "../../../demos/louis-agent/skills",
-        "LOG_DIRECTORY": "../../../logs"
+        "LOG_DIRECTORY": "../../../demos/louis-agent/logs"
       }
     }
   }

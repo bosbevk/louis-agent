@@ -6,9 +6,9 @@
       "dotnetRunMessages": true,
       "environmentVariables": {
         "LOUIS_AGENT_URL": "http://127.0.0.1:5081",
-        "ORCHESTRATOR_STATE_DIRECTORY": "../../../../.demo/state",
-        "ORCHESTRATOR_COMMS_LOG": "../../../../.demo/comms.md",
-        "LOG_DIRECTORY": "../../../../logs",
+        "ORCHESTRATOR_STATE_DIRECTORY": "../../data/orchestrator/state",
+        "ORCHESTRATOR_COMMS_LOG": "../../data/orchestrator/comms.md",
+        "LOG_DIRECTORY": "../../logs",
         "CONFIG_DIRECTORY": "../../config",
         "PRICES_FILE": "../../config/prices.json",
         "RATES_FILE": "../../config/rates.json"
