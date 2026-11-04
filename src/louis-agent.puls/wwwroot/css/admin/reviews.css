@@ -49,3 +49,18 @@
 .calibration-where { color: var(--ink); }
 .calibration-reason { display: block; font-size: 12.5px; }
 .calibration-none { margin: 0; font-size: 13px; }
+/* F53.3: the Review page, one answer at a time: where it is from, its place, Skip; the panel below without its own top margin. */
+.review-item { gap: 12px; }
+.review-item-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.review-where { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; font-size: 13px; }
+.review-item-eval { font-size: 15px; font-weight: 800; color: var(--ink); background: none; padding: 0; }
+.review-item-run code { color: var(--orange-text); background: none; padding: 0; }
+.review-item-run:hover code { text-decoration: underline; }
+.review-item-task { font-weight: 700; color: var(--ink); }
+.review-item-actions { display: flex; align-items: center; gap: 10px; }
+.review-place { font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.review-item .review-panel { margin-top: 0; border: 0; padding: 0; background: none; animation: none; }
+.review-progress { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.review-empty p { margin: 0; color: var(--muted); }
+.review-page { outline: none; display: flex; flex-direction: column; gap: 18px; }
+.review-count { margin-left: auto; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 999px; background: var(--orange-soft); color: var(--orange-text); font-variant-numeric: tabular-nums; }

@@ -4,6 +4,14 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F53.3 The review queue, and F53 closed**: `/admin/review` shows the answers waiting for this
+  reviewer's grade across the stored runs, one at a time, from one new API route (`GET
+  /v1/admin/evals/reviews/queue?reviewer=&limit=`: every conversation whose human review is still pending and that
+  this reviewer, or nobody, has not graded, with what the review panel needs); where the answer is from, its place,
+  Skip, the blind review panel unchanged, a grade opening the next; the keys 1, 2 and 3 grade pass, fail or unsure;
+  the sidebar's *Review* entry counts what waits and falls as you grade. The third child of F53, the admin portal
+  organised by job (option B of the admin review, built unattended at Louis's word, PRs #132, #136 and this one);
+  [write-up](docs/learning/16-human-in-the-loop.md)
 - 2026-11-04 — **F54 The engine's website**: `src/louis-agent.site`, a public site for .NET developers in the
   Console theme (black, white and metallic grays) with five pages and two films of how the engine works, a short
   one (36 s) and a detailed one (60 s) whose slabs are the chat pipeline's middleware in its real order; static

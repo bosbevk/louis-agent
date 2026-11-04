@@ -62,6 +62,14 @@ with a test, placed by `EvalListItem`). The chosen eval is in the address (`?eva
 strip in the layout (`LiveRunStrip`) polls the runner's current run; a page that follows a run keeps the event stream.
 No puls `.cs` or `.razor` may spell `admin/benchmarks` or `admin/maatstawwe` (`PortalAddressesTests`).
 
+**Grading is one job on one page** (F53.3): the Review page (`Pages/Admin/Review.razor`) reads the queue the API
+keeps and shows one answer at a time through the explorer's `ReviewPanel`, unchanged. Something new about *which*
+answers wait goes in the API's `ReviewQueue` (the one rule, shared with the explorer's `ReviewStatus`), not in the
+page; something new about the page's flow (what opens next, what is counted) goes in `ReviewQueueView` with a test,
+and its words in `ReviewQueueText`. A key goes in `ReviewKeys`; a field that takes typing inside the page stops its
+keys (`@onkeydown:stopPropagation`), or a number typed in it grades. The count in the sidebar is `ReviewQueueState`:
+set it where the number changes, never poll for it.
+
 **The run page is tabs, and what it shows is in its address** (F53.1, [ADR 0065](../adr/0065-the-view-is-in-the-address.md)).
 A new block on the run page is a tab: a member of `RunTab` with its wire name, an entry in `RunTabs.All`, and a case
 in `BenchmarkRun.razor`'s switch. A new thing the explorer can open goes on `ExplorerPlace` (written by `Query()`,
