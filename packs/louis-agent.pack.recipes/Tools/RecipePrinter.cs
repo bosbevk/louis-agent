@@ -65,11 +65,14 @@ internal static class RecipePrinter
             ? MessageText.Format(message, new { Minutes = (int)Math.Round(t.TotalMinutes) })
             : null;
 
-    /// <summary>The ingredient lines as written, numbered, with the cut said when there are too many.</summary>
+    /// <summary>
+    /// The ingredient lines as written, numbered straight on, with a sub-heading each time the section changes and the
+    /// cut said when there are too many.
+    /// </summary>
     private static string Ingredients(Recipe recipe)
     {
         var lines = new List<string> { MessageText.Format(RecipeToolMessage.IngredientsHeading) };
-        lines.AddRange(recipe.Ingredients.Take(MaxLines).Select(Numbered));
+        lines.AddRange(Sectioned(recipe.Ingredients.Take(MaxLines).Select(i => (i.Section, i.Text))));
         if (recipe.Ingredients.Count > MaxLines)
             lines.Add(MessageText.Format(RecipeToolMessage.IngredientsCut,
                 new
@@ -87,15 +90,7 @@ internal static class RecipePrinter
     private static string Method(Recipe recipe)
     {
         var lines = new List<string> { MessageText.Format(RecipeToolMessage.MethodHeading) };
-        string? section = null;
-        foreach (var (step, index) in recipe.Steps.Take(MaxLines).Select((step, index) => (step, index)))
-        {
-            // A new section gets its name once; a step with no section adds nothing.
-            if (step.Section is { } name && name != section)
-                lines.Add(MessageText.Format(RecipeToolMessage.SectionHeading, new { Section = name }));
-            section = step.Section ?? section;
-            lines.Add(Numbered(step.Text, index));
-        }
+        lines.AddRange(Sectioned(recipe.Steps.Take(MaxLines).Select(s => (s.Section, s.Text))));
 
         if (recipe.Steps.Count > MaxLines)
             lines.Add(MessageText.Format(RecipeToolMessage.StepsCut,
@@ -105,6 +100,23 @@ internal static class RecipePrinter
                     Shown = MaxLines
                 }));
         return string.Join('\n', lines);
+    }
+
+    /// <summary>
+    /// The lines numbered straight on, with the section's name above the first line of each new section. Ingredients
+    /// and steps both come through here, so they are laid out the same way.
+    /// </summary>
+    private static IEnumerable<string> Sectioned(IEnumerable<(string? Section, string Text)> items)
+    {
+        string? section = null;
+        foreach (var (item, index) in items.Select((item, index) => (item, index)))
+        {
+            // A new section gets its name once; a line with no section adds nothing.
+            if (item.Section is { } name && name != section)
+                yield return MessageText.Format(RecipeToolMessage.SectionHeading, new { Section = name });
+            section = item.Section ?? section;
+            yield return Numbered(item.Text, index);
+        }
     }
 
     /// <summary>A line of the list with its number, which counts from 1.</summary>

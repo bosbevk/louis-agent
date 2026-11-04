@@ -55,10 +55,12 @@ public class SchemaOrgRecipeTests
             Assert.That(recipe.Yield, Is.EqualTo("4 to 6"));
             Assert.That(recipe.PrepTime, Is.EqualTo(TimeSpan.FromMinutes(20)));
             Assert.That(recipe.CookTime, Is.EqualTo(TimeSpan.FromMinutes(30)));
-            Assert.That(recipe.Ingredients, Has.Count.EqualTo(21));
-            Assert.That(recipe.Ingredients[0], Is.EqualTo("***Filling"));
-            Assert.That(recipe.Ingredients[1],
-                Is.EqualTo("500 g Pork mince (you can ask your butcher to prepare this for you)"));
+            Assert.That(recipe.Ingredients, Has.Count.EqualTo(19));
+            Assert.That(recipe.Ingredients[0], Is.EqualTo(new RecipeIngredient("Filling",
+                "500 g Pork mince (you can ask your butcher to prepare this for you)")));
+            Assert.That(recipe.Ingredients.GroupBy(i => i.Section).Select(g => (g.Key, g.Count())),
+                Is.EqualTo(new[] { ("Filling", 14), ("Topping", 5) }));
+            Assert.That(recipe.Ingredients.Select(i => i.Text), Has.None.Contain("*"));
             Assert.That(recipe.Steps, Has.Count.EqualTo(11));
             Assert.That(recipe.Steps[0].Section, Is.Null);
             Assert.That(recipe.Steps[0].Text, Does.StartWith("Preheat oven to 170"));
@@ -91,9 +93,9 @@ public class SchemaOrgRecipeTests
             Assert.That(recipe.CookTime, Is.EqualTo(TimeSpan.FromHours(1)));
             Assert.That(recipe.TotalTime, Is.Null);
             Assert.That(recipe.Ingredients, Has.Count.EqualTo(23));
-            Assert.That(recipe.Ingredients[0],
+            Assert.That(recipe.Ingredients[0].Text,
                 Is.EqualTo("2 slices white bread, crusts removed and soaked in 200ml milk"));
-            Assert.That(recipe.Ingredients[16], Is.EqualTo("1 tablespoon Mrs Ball's chutney"));
+            Assert.That(recipe.Ingredients[16].Text, Is.EqualTo("1 tablespoon Mrs Ball's chutney"));
             Assert.That(recipe.Steps, Has.Count.EqualTo(6));
             Assert.That(recipe.Steps[0].Text,
                 Is.EqualTo("Place the sultanas in a small bowl, cover with the orange juice and set aside."));
@@ -186,7 +188,7 @@ public class SchemaOrgRecipeTests
         Assert.Multiple(() =>
         {
             Assert.That(recipe.Name, Is.EqualTo("Melktert"));
-            Assert.That(recipe.Ingredients, Is.EqualTo(new[] { "1 liter melk" }));
+            Assert.That(recipe.Ingredients, Is.EqualTo(new[] { new RecipeIngredient(null, "1 liter melk") }));
             Assert.That(recipe.Steps, Is.EqualTo(new[] { new RecipeStep(null, "Bak tot gaar.") }));
         });
     }
@@ -237,10 +239,124 @@ public class SchemaOrgRecipeTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(recipe.Ingredients, Is.EqualTo(new[] { "1 tablespoon Mrs Ball's chutney" }));
+            Assert.That(recipe.Ingredients,
+                Is.EqualTo(new[] { new RecipeIngredient(null, "1 tablespoon Mrs Ball's chutney") }));
             Assert.That(recipe.Steps, Is.EqualTo(new[] { new RecipeStep(null, "Grease a 9\" pie dish") }));
             Assert.That(recipe.Yield, Is.EqualTo("1 9\" milk tart"));
             Assert.That(recipe.Image?.AbsoluteUri, Is.EqualTo("https://img.example/a.jpg?w=1&h=2"));
+        });
+    }
+
+    /// <summary>
+    /// A line that is only a heading (in tags, in entities, or with two or more stars or hashes) is the name of the
+    /// group under it, in the page's own words, and is no ingredient.
+    /// </summary>
+    [TestCase("<h3>CURRIED MINCE</h3>", "CURRIED MINCE")]
+    [TestCase("<H2 class='x'> Sauce </H2>", "Sauce")]
+    [TestCase("<h4>Dressing</h4>", "Dressing")]
+    [TestCase("&lt;h3&gt;Sauce&lt;/h3&gt;", "Sauce")]
+    [TestCase("***Filling", "Filling")]
+    [TestCase("***Topping ", "Topping")]
+    [TestCase("### Sauce", "Sauce")]
+    [TestCase("**Crust**", "Crust")]
+    public void AHeadingLine_IsTheSectionOfTheLinesAfterIt(string heading, string name) =>
+        Assert.That(ReadRecipe($"\"recipeIngredient\":[\"{heading}\",\"1 egg\",\"2 cups flour\"]").Ingredients,
+            Is.EqualTo(new[] { new RecipeIngredient(name, "1 egg"), new RecipeIngredient(name, "2 cups flour") }));
+
+    /// <summary>
+    /// Lines before the first heading have no section, and a new heading starts a new one, as in Food &amp; Home's
+    /// curried mince.
+    /// </summary>
+    [Test]
+    public void TwoHeadings_GiveTwoSections_AndLinesBeforeThemHaveNone() =>
+        Assert.That(ReadRecipe("""
+                               "recipeIngredient":["1 onion","<h3>CURRIED MINCE</h3>","30ml oil",
+                                                   "&lt;h3&gt;Sauce&lt;/h3&gt;","1 cup cream"]
+                               """).Ingredients,
+            Is.EqualTo(new[]
+            {
+                new RecipeIngredient(null, "1 onion"), new RecipeIngredient("CURRIED MINCE", "30ml oil"),
+                new RecipeIngredient("Sauce", "1 cup cream")
+            }));
+
+    /// <summary>
+    /// A bullet of one star or one dash is a line of its own, not a heading, and so is a line that ends in a colon.
+    /// Both stay ingredients as written.
+    /// </summary>
+    [TestCase("* 2 eggs")]
+    [TestCase("- 2 eggs")]
+    [TestCase("For the sauce:")]
+    public void ALineThatLooksLikeABullet_IsStillAnIngredient(string line) =>
+        Assert.That(ReadRecipe($"\"recipeIngredient\":[\"{line}\"]").Ingredients,
+            Is.EqualTo(new[] { new RecipeIngredient(null, line) }));
+
+    /// <summary>A heading with nothing under it adds nothing, and a line that is only tags is a blank.</summary>
+    [Test]
+    public void AHeadingWithNothingUnderIt_AddsNothing() =>
+        Assert.That(ReadRecipe("\"recipeIngredient\":[\"<b></b>\",\"1 egg\",\"***Topping\"]").Ingredients,
+            Is.EqualTo(new[] { new RecipeIngredient(null, "1 egg") }));
+
+    /// <summary>A page whose only lines are headings has nothing to cook with, so it gives no recipe.</summary>
+    [Test]
+    public void APageOfOnlyHeadings_GivesNull() =>
+        Assert.That(ReadJson($$"""
+                               {"@type":"Recipe","name":"Headings",
+                                "recipeIngredient":["***Filling","<h3>Topping</h3>"],{{OneStep}}}
+                               """), Is.Null);
+
+    /// <summary>Any other tag is taken out of a line and of a step, and the words stay.</summary>
+    [Test]
+    public void OtherHtmlTags_AreRemovedFromLinesAndSteps()
+    {
+        var recipe = ReadRecipe("""
+                                "recipeIngredient":["<b>2 eggs</b>","1 cup <a href='/x'>flour</a>"],
+                                "recipeInstructions":"<p>Mix <i>well</i>.</p>"
+                                """);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(recipe.Ingredients.Select(i => i.Text), Is.EqualTo(new[] { "2 eggs", "1 cup flour" }));
+            Assert.That(recipe.Steps, Is.EqualTo(new[] { new RecipeStep(null, "Mix well.") }));
+        });
+    }
+
+    /// <summary>A line that only opens with bold words is an ingredient, not a heading: it stays, as written.</summary>
+    [TestCase("**2 eggs** (large)")]
+    [TestCase("**Optional** 50 g almonds")]
+    public void BoldWordsInALine_AreNotAHeading(string line) =>
+        Assert.That(ReadRecipe($"\"recipeIngredient\":[\"{line}\",\"1 cup milk\"]").Ingredients,
+            Is.EqualTo(new[] { new RecipeIngredient(null, line), new RecipeIngredient(null, "1 cup milk") }));
+
+    /// <summary>A tag that breaks a line leaves a space, so two sentences never run together.</summary>
+    [TestCase("Mix.<br>Bake.", "Mix. Bake.")]
+    [TestCase("Mix.<br/>Bake.", "Mix. Bake.")]
+    [TestCase("<p>Mix.</p><p>Bake.</p>", "Mix. Bake.")]
+    [TestCase("<ul><li>Mix.</li><li>Bake.</li></ul>", "Mix. Bake.")]
+    [TestCase("<div>Mix.</div>Bake.", "Mix. Bake.")]
+    [TestCase("<b>Mix</b>, then bake.", "Mix, then bake.")]
+    public void ATagThatBreaksALine_LeavesASpace(string step, string read) =>
+        Assert.That(ReadRecipe($"\"recipeInstructions\":\"{step}\"").Steps,
+            Is.EqualTo(new[] { new RecipeStep(null, read) }));
+
+    /// <summary>A tag written as entities is found after the entities are read, and taken out too.</summary>
+    [Test]
+    public void ATagWrittenAsEntities_IsRemovedToo() =>
+        Assert.That(ReadRecipe("\"recipeInstructions\":\"&lt;b&gt;Bake&lt;/b&gt; it.\"").Steps,
+            Is.EqualTo(new[] { new RecipeStep(null, "Bake it.") }));
+
+    /// <summary>A less-than sign that doesn't open a tag is the page's own character and stays.</summary>
+    [TestCase("cook for < 5 min")]
+    [TestCase("<5 min")]
+    [TestCase("1 < 2 and 3 > 2")]
+    [TestCase("serve at 5 <")]
+    public void ALessThanSign_ThatIsNotATag_Stays(string text)
+    {
+        var recipe = ReadRecipe($"\"recipeIngredient\":[\"{text}\"],\"recipeInstructions\":\"{text}\"");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(recipe.Ingredients, Is.EqualTo(new[] { new RecipeIngredient(null, text) }));
+            Assert.That(recipe.Steps, Is.EqualTo(new[] { new RecipeStep(null, text) }));
         });
     }
 

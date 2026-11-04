@@ -4,6 +4,10 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **FX40 A recipe's headings aren't ingredients**: `ReadRecipe` numbered `<h3>CURRIED MINCE</h3>` and
+  `***Filling` as ingredients. A heading in the list is now the section of the lines under it
+  (`RecipeIngredient(Section, Text)`, like a step), printed as a sub-heading, and every other HTML tag leaves every
+  text.
 - 2026-11-04 — **F55 Stats SA's prices uploaded in the admin portal**: a pack can declare data uploads (`IDataImport`
   in core: a name, a description, the files it takes, a preview and a save, both answering a report; `IAgentPack.Imports`,
   empty by default; the catalogue gathers them and refuses a name twice), served behind the admin key at `GET

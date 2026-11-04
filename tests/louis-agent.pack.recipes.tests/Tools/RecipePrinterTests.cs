@@ -14,14 +14,15 @@ public class RecipePrinterTests
     /// <summary>A recipe with only a name, one line and one step, and whatever else the test sets.</summary>
     private static Recipe Bare(string? yield = null, TimeSpan? prep = null, TimeSpan? cook = null,
         TimeSpan? total = null, Uri? image = null, string? author = null) => new(
-        "Malva pudding", yield, prep, cook, total, ["1 egg"], [new RecipeStep(null, "Bake it.")], image, author, Page);
+        "Malva pudding", yield, prep, cook, total, [new RecipeIngredient(null, "1 egg")],
+        [new RecipeStep(null, "Bake it.")], image, author, Page);
 
     /// <summary>A recipe with everything: times, two sections, a photo and an author.</summary>
     [Test]
     public void ARecipeWithEverything_IsPrintedInFullAndInOrder()
     {
         var recipe = new Recipe("Malva pudding", "8", TimeSpan.FromMinutes(30), TimeSpan.FromMinutes(45),
-            TimeSpan.FromMinutes(75), ["1 cup sugar", "1 egg"],
+            TimeSpan.FromMinutes(75), [new RecipeIngredient(null, "1 cup sugar"), new RecipeIngredient(null, "1 egg")],
             [new RecipeStep("Pudding", "Mix."), new RecipeStep("Pudding", "Bake."), new RecipeStep("Sauce", "Heat.")],
             new Uri("https://img.example/a.jpg"), "Ouma", Page);
 
@@ -97,13 +98,46 @@ public class RecipePrinterTests
             Does.Contain("### A\n1. One.\n### B\n2. Two.\n### A\n3. Three."));
     }
 
+    /// <summary>
+    /// A heading among the ingredients is printed once where the section changes, and the lines are numbered straight
+    /// on, so one number is one ingredient.
+    /// </summary>
+    [Test]
+    public void TheIngredients_GetASubHeadingWhereTheSectionChanges_AndAreNumberedStraightOn()
+    {
+        var recipe = Bare() with
+        {
+            Ingredients =
+            [
+                new RecipeIngredient("Filling", "1 onion"), new RecipeIngredient("Filling", "2 cloves garlic"),
+                new RecipeIngredient("Topping", "2 eggs"), new RecipeIngredient("Filling", "1 tsp salt")
+            ]
+        };
+
+        Assert.That(RecipePrinter.Print(recipe), Does.Contain(
+            "## Ingredients\n### Filling\n1. 1 onion\n2. 2 cloves garlic\n### Topping\n3. 2 eggs\n"
+            + "### Filling\n4. 1 tsp salt\n\n## Method"));
+    }
+
+    /// <summary>Lines before the first heading are numbered with no sub-heading above them.</summary>
+    [Test]
+    public void IngredientsBeforeTheFirstHeading_HaveNoSubHeading()
+    {
+        var recipe = Bare() with
+        {
+            Ingredients = [new RecipeIngredient(null, "1 onion"), new RecipeIngredient("Sauce", "1 cup cream")]
+        };
+
+        Assert.That(RecipePrinter.Print(recipe), Does.Contain("## Ingredients\n1. 1 onion\n### Sauce\n2. 1 cup cream"));
+    }
+
     /// <summary>More than 60 ingredient lines or steps are cut at 60, and the print says how many there were.</summary>
     [Test]
     public void MoreThanSixtyLines_AreCut_AndTheCutIsSaid()
     {
         var recipe = Bare() with
         {
-            Ingredients = [.. Enumerable.Range(1, 70).Select(n => $"ingredient {n}")],
+            Ingredients = [.. Enumerable.Range(1, 70).Select(n => new RecipeIngredient(null, $"ingredient {n}"))],
             Steps = [.. Enumerable.Range(1, 65).Select(n => new RecipeStep(null, $"step {n}"))]
         };
 
@@ -119,7 +153,10 @@ public class RecipePrinterTests
     [Test]
     public void SixtyLines_AreNotCut()
     {
-        var recipe = Bare() with { Ingredients = [.. Enumerable.Range(1, 60).Select(n => $"ingredient {n}")] };
+        var recipe = Bare() with
+        {
+            Ingredients = [.. Enumerable.Range(1, 60).Select(n => new RecipeIngredient(null, $"ingredient {n}"))]
+        };
 
         Assert.That(RecipePrinter.Print(recipe), Does.Contain("60. ingredient 60").And.Not.Contain("The page lists"));
     }
