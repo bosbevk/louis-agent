@@ -37,9 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\..\docs\projects\tests.md" Link="docs\tests.md" />
-    <None Include="..\..\..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
-    <None Include="..\..\..\..\docs\guides\add-an-eval.md" Link="docs\add-an-eval.md" />
+    <None Include="..\..\..\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+    <None Include="..\..\..\docs\guides\add-an-eval.md" Link="docs\add-an-eval.md" />
   </ItemGroup>
 
 </Project>

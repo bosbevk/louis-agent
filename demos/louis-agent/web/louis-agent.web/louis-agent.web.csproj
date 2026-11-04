@@ -19,8 +19,8 @@
   <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <None Include="..\..\..\..\docs\projects\louis-agent.web.md" Link="docs\louis-agent.web.md" />
-    <None Include="..\..\..\..\docs\guides\change-the-web-app.md" Link="docs\change-the-web-app.md" />
+    <None Include="..\..\docs\projects\louis-agent.web.md" Link="docs\louis-agent.web.md" />
+    <None Include="..\..\docs\guides\change-the-web-app.md" Link="docs\change-the-web-app.md" />
   </ItemGroup>
 
 </Project>

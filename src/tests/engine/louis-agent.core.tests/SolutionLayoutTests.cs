@@ -172,6 +172,32 @@ public class SolutionLayoutTests
             .Any(parts => !parts.Contains("bin") && !parts.Contains("obj"));
 
     /// <summary>
+    /// A file a project links from outside itself is really there. The build ignores a missing one, so a moved doc would
+    /// otherwise leave a dead link behind without anyone noticing.
+    /// </summary>
+    [Test]
+    public void AFileAProjectLinks_IsOnDisk()
+    {
+        var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
+        var projects = lines.Where(line => line.StartsWith("Project(") && !line.Contains(SolutionFolder))
+            .Select(line => Path.Combine(TestPaths.RepoRoot, line.Split('"')[5].Replace('\\', '/')));
+
+        var missing = projects.SelectMany(project => LinkedFiles(project)
+                .Where(file => !File.Exists(Path.Combine(Path.GetDirectoryName(project)!, file)))
+                .Select(file => $"{Path.GetFileName(project)}: {file}"))
+            .ToList();
+
+        Assert.That(missing, Is.Empty);
+    }
+
+    /// <summary>What a project file's <c>None</c> items name outside its own folder, wildcards left out.</summary>
+    private static IEnumerable<string> LinkedFiles(string project) =>
+        File.ReadAllLines(project).Select(line => line.Trim())
+            .Where(line => line.StartsWith("<None Include=\"..", StringComparison.Ordinal))
+            .Select(line => line.Split('"')[1].Replace('\\', '/'))
+            .Where(file => !file.Contains('*') && !file.Contains('$'));
+
+    /// <summary>
     /// A project or a file sits at the path its groups spell, so the tree you read in Rider is the tree on disk.
     /// </summary>
     [Test]

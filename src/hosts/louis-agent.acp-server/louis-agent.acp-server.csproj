@@ -22,8 +22,8 @@
   <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <None Include="..\..\..\docs\projects\louis-agent.acp-server.md" Link="docs\louis-agent.acp-server.md" />
-    <None Include="..\..\..\docs\guides\change-the-acp-server.md" Link="docs\change-the-acp-server.md" />
+    <None Include="..\..\docs\projects\louis-agent.acp-server.md" Link="docs\louis-agent.acp-server.md" />
+    <None Include="..\..\docs\guides\change-the-acp-server.md" Link="docs\change-the-acp-server.md" />
   </ItemGroup>
 
 </Project>

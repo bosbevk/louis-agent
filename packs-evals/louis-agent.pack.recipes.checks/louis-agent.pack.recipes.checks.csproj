@@ -17,7 +17,7 @@
 
   <ItemGroup>
     <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built or copied. -->
-    <None Include="..\..\docs\projects\louis-agent.pack.recipes.md" Link="docs\louis-agent.pack.recipes.md" />
+    <None Include="..\..\packs\docs\projects\louis-agent.pack.recipes.md" Link="docs\louis-agent.pack.recipes.md" />
   </ItemGroup>
 
 </Project>

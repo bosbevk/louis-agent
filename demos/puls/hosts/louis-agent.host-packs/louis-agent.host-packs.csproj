@@ -25,9 +25,9 @@
   <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <None Include="..\..\..\..\docs\projects\louis-agent.host-packs.md" Link="docs\louis-agent.host-packs.md" />
-    <None Include="..\..\..\..\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
-    <None Include="..\..\..\..\docs\guides\build-an-identity.md" Link="docs\build-an-identity.md" />
+    <None Include="..\..\docs\projects\louis-agent.host-packs.md" Link="docs\louis-agent.host-packs.md" />
+    <None Include="..\..\..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+    <None Include="..\..\..\..\src\docs\guides\build-an-identity.md" Link="docs\build-an-identity.md" />
   </ItemGroup>
 
 </Project>

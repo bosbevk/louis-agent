@@ -27,7 +27,7 @@
 
   <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built from it. -->
   <ItemGroup>
-    <None Include="..\..\..\docs\projects\louis-agent.evals.checks.md" Link="docs\louis-agent.evals.checks.md" />
+    <None Include="..\..\docs\projects\louis-agent.evals.checks.md" Link="docs\louis-agent.evals.checks.md" />
   </ItemGroup>
 
 </Project>

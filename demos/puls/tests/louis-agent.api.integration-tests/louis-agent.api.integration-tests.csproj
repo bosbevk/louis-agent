@@ -38,8 +38,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\..\docs\projects\tests.md" Link="docs\tests.md" />
-    <None Include="..\..\..\..\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+    <None Include="..\..\..\..\src\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\..\..\src\docs\guides\write-tests.md" Link="docs\write-tests.md" />
   </ItemGroup>
 
 </Project>

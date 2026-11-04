@@ -13,8 +13,8 @@
   <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <None Include="..\..\..\..\docs\projects\louis-agent.site.md" Link="docs\louis-agent.site.md" />
-    <None Include="..\..\..\..\docs\guides\change-the-site.md" Link="docs\change-the-site.md" />
+    <None Include="..\..\docs\projects\louis-agent.site.md" Link="docs\louis-agent.site.md" />
+    <None Include="..\..\docs\guides\change-the-site.md" Link="docs\change-the-site.md" />
   </ItemGroup>
 
 </Project>
