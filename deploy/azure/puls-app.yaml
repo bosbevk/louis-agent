@@ -1,6 +1,6 @@
 # puls-app: Puls on Azure Container Apps (rg-puls-za), deployed with deploy.ps1 (CL19; the how-to is README.md here).
 #   deploy.ps1 update -Tag 2026-10-24 -Revision v017     # fills TAG and REVISION below, then az containerapp update --yaml
-# Two containers in one pod: the app, on the same image as docker/docker-compose.puls.yml builds, and the ts-forwarder
+# Two containers in one pod: the app, on the same image as demos/puls/docker/docker-compose.puls.yml builds, and the ts-forwarder
 # sidecar that carries its browser and Mongo ports over Tailscale to the home PC (`tailscale serve` there is the
 # other end). No secret value lives in this file: every key is a secretRef to a secret deploy.ps1 secrets has set on
 # the app, and the file sets no `secrets:` block, so an update never overwrites one.
@@ -25,7 +25,7 @@ properties:
   template:
     revisionSuffix: 'REVISION'
     containers:
-      # The app. Its settings mirror the puls service in docker/docker-compose.puls.yml, less what only this PC needs
+      # The app. Its settings mirror the puls service in demos/puls/docker/docker-compose.puls.yml, less what only this PC needs
       # (the git line-ending config for a Windows checkout, a skills folder); what differs is where its web and its
       # store are: the loopback ports the sidecar forwards, and a SearXNG that is its own Container App.
       - name: puls-app

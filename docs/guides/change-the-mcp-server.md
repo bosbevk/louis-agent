@@ -52,7 +52,7 @@ Any other value stops start-up with an error that names the two it takes (`McpTr
 ## Check it with a client
 
 ```bash
-MCP_TRANSPORT=http docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build mcp-server
+MCP_TRANSPORT=http docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build mcp-server
 curl -s -o /dev/null -w "%{http_code}\n" -X POST http://127.0.0.1:5090/                             # 401 without the key
 ```
 

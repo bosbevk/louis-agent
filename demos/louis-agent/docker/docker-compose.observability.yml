@@ -1,7 +1,7 @@
 # The dashboard every host sends its logs and traces to (F52): the standalone Aspire dashboard, its own stack, started
 # once beside the others. The code-review stack and Puls send to it at host.docker.internal:4317, and Rider's runs at
 # localhost:4317 when config/.env sets OTEL_EXPORTER_OTLP_ENDPOINT. It keeps everything in memory: a restart forgets it.
-#   Start: docker compose -f docker/docker-compose.observability.yml up -d
+#   Start: docker compose -f demos/louis-agent/docker/docker-compose.observability.yml up -d
 #   Then open http://127.0.0.1:18888. No --env-file: it reads none of our settings.
 name: louis-agent-observability
 

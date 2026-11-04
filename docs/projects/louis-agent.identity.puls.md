@@ -98,7 +98,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 
 ## Configuration
 
-None of its own. A Puls stack (`docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
+None of its own. A Puls stack (`demos/puls/docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
 `AGENT_PEERS` (itself), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
 [ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), plus the shop prices' store
 (`SHOP_PRICES_MONGO_URL`, [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table

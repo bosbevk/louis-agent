@@ -26,7 +26,7 @@
 
 ## Traces and the dashboard
 
-Start it once, beside the stacks: `docker compose -f docker/docker-compose.observability.yml up -d`, then open
+Start it once, beside the stacks: `docker compose -f demos/louis-agent/docker/docker-compose.observability.yml up -d`, then open
 `http://127.0.0.1:18888`. Every container already sends to it. One Puls question shows as one trace: the request
 span, `invoke_agent puls`, a `chat` span per model request and an `execute_tool` per tool call, and nested under the
 tool call that handed it over, the cook's own `invoke_agent`. The *Structured logs* tab has the same turn's lines,

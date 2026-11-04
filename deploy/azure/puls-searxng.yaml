@@ -1,5 +1,5 @@
 # puls-searxng: the SearXNG puls-app searches with, as its own Container App (CL19 pulled this from Azure, where F32 had
-# made it by hand). The same settings file as the local stack, docker/searxng/settings.yml, uploaded to the share
+# made it by hand). The same settings file as the local stack, demos/puls/docker/searxng/settings.yml, uploaded to the share
 # searxng-config (deploy.ps1 searxng-settings); its secret is the app's secret searxng-secret (deploy.ps1 secrets
 # -App puls-searxng, from config/.env.searxng). Development and benchmarks only (ADR 0023): the sold endpoint keeps a
 # licensed search API. The image is SearXNG's own, copied into the registry; it is not ours to rebuild, so no TAG here.

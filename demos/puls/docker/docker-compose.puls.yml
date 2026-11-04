@@ -1,12 +1,12 @@
 # Puls: the general assistant (chat only), its own stack beside the code-review app and the demo.
-#   Start:  docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
-#   Stop:   docker compose -f docker/docker-compose.puls.yml --env-file config/.env stop
-#   Remove: docker compose -f docker/docker-compose.puls.yml --env-file config/.env down
+#   Start:  docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
+#   Stop:   docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env stop
+#   Remove: docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env down
 # Then open http://127.0.0.1:5070. One container: a chat answers the web itself and hands cooking to a specialist on
 # this same instance (AGENT_PEERS names itself, F29; CL19 dropped the second container). puls-app on Azure reaches the
 # browser and Mongo below over Tailscale: `tailscale serve` on this PC forwards the two ports (deploy/azure/README.md).
 # To see its logs and traces, start the dashboard first (F52):
-#   docker compose -f docker/docker-compose.observability.yml up -d
+#   docker compose -f demos/louis-agent/docker/docker-compose.observability.yml up -d
 name: puls
 
 x-puls-env: &puls-env
@@ -19,8 +19,8 @@ x-puls-env: &puls-env
 services:
   puls:
     build:
-      context: ..
-      dockerfile: docker/images/Dockerfile.puls
+      context: ../../..
+      dockerfile: demos/puls/docker/images/Dockerfile.puls
       args:
         # The commit the eval runner stamps on a run: EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose … up -d --build
         EVAL_COMMIT: ${EVAL_COMMIT:-unknown}
@@ -43,8 +43,9 @@ services:
       GIT_CONFIG_VALUE_0: "true"
       # Its own logs and usage ledger, apart from the code-review app's
       LOG_DIRECTORY: /logs
-      PRICES_FILE: /workspace/config/prices.json
-      RATES_FILE: /workspace/config/rates.json
+      CONFIG_DIRECTORY: /workspace/demos/puls/config
+      PRICES_FILE: /workspace/demos/puls/config/prices.json
+      RATES_FILE: /workspace/demos/puls/config/rates.json
       # Chats hand cooking to a specialist on this same instance and answer the web themselves (F29)
       AGENT_PEERS: puls=http://puls:8080
       # Only a role that has passed its check is on (F29): the cook, its price minion (F30) and Puls's own voice. Set
@@ -72,10 +73,10 @@ services:
     ports:
       - "127.0.0.1:${PULS_PORT:-5070}:8080"
     volumes:
-      - ${PULS_WORKSPACE:-../}:/workspace
-      - ../Skills:/skills
-      - ../logs/puls:/logs
-      - ../data/puls:/data
+      - ${PULS_WORKSPACE:-../../../}:/workspace
+      - ../../../Skills:/skills
+      - ../../../logs/puls:/logs
+      - ../../../data/puls:/data
     networks: [default, web]
     depends_on:
       # Mongo answering before puls asks it, so the store's first call doesn't fail on start-up.
@@ -97,7 +98,7 @@ services:
     ports:
       - "127.0.0.1:${PULS_MONGO_PORT:-27017}:27017"
     volumes:
-      - ../data/mongo:/data/db
+      - ../../../data/mongo:/data/db
     healthcheck:
       test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
       interval: 10s
@@ -108,7 +109,7 @@ services:
   # pinned by digest, so benchmark runs compare. 127.0.0.1 only: the ports are for the live tests on this machine.
   #
   # SearXNG (AGPL-3.0, run unchanged beside us, ADR 0023): metasearch for development, tests and benchmarks; the sold
-  # endpoint keeps a licensed search API. Its settings are docker/searxng/settings.yml; its secret, and nothing else,
+  # endpoint keeps a licensed search API. Its settings are demos/puls/docker/searxng/settings.yml; its secret, and nothing else,
   # comes from config/.env.searxng, which must exist (copy config/.env.searxng.example): without it SearXNG would sign
   # with the placeholder committed in settings.yml (re-review of PR #56).
   puls-searxng:

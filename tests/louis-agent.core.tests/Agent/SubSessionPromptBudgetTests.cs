@@ -135,7 +135,7 @@ public class SubSessionPromptBudgetTests
     {
         // The forced last request still carries the last round's tool results, so the budget sits below the price step
         // with room for a round (PR #28 review): at the step itself, that request would be priced at the long rate.
-        var prices = PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "config", "prices.json"));
+        var prices = PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config", "prices.json"));
         long step = prices.Find(new LlmOptions().Model)!.LongPrompt!.AboveTokens;
 
         Assert.That(step - 20_000, Is.GreaterThanOrEqualTo(AgentOptions.DefaultSubSessionPromptBudget));

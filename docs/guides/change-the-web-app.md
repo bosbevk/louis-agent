@@ -13,7 +13,7 @@ in `src/web/louis-agent.web.shared`, which Puls uses too.
 ## Run it
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api      # http://127.0.0.1:5080
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api      # http://127.0.0.1:5080
 dotnet run --project src/hosts/louis-agent.api --launch-profile api                             # http://127.0.0.1:5081
 ```
 

@@ -1,7 +1,7 @@
 # Deploying Puls to Azure Container Apps
 
 > **How-to.** What runs in the cloud, how to build and deploy it, where its secrets come from, and how it reaches the
-> browser and the benchmark store on the home PC. **Elsewhere:** the local stacks in [docker/](../../docker/README.md),
+> browser and the benchmark store on the home PC. **Elsewhere:** the local stacks in [docker/](../../demos/louis-agent/docker/README.md),
 > every setting in [Setup](../../docs/SETUP.md), why the layout is what it is in the
 > [CL19 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md).
 
@@ -12,7 +12,7 @@ definitions, the tunnel's sidecar image and one script. No secret value is in an
 
 | Resource | Name | What it is |
 |---|---|---|
-| Container App | `puls-app` | Puls: the `louis-agent-puls` image (the same one `docker/images/Dockerfile.puls` builds) and its `ts-forwarder` sidecar, in one pod. Public address `puls-app.greenwater-cdd33adc.southafricanorth.azurecontainerapps.io` |
+| Container App | `puls-app` | Puls: the `louis-agent-puls` image (the same one `demos/puls/docker/images/Dockerfile.puls` builds) and its `ts-forwarder` sidecar, in one pod. Public address `puls-app.greenwater-cdd33adc.southafricanorth.azurecontainerapps.io` |
 | Container App | `puls-searxng` | The SearXNG it searches with (development and benchmarks only, ADR 0023) |
 | Environment | `puls-container-env` | The Container Apps environment both run in; its storages name the file shares below |
 | Registry | `acrpulsza` | `louis-agent-puls`, `ts-forwarder` (ours, built by `deploy.ps1 build`) and `searxng/searxng` (SearXNG's own image, copied in) |
@@ -51,7 +51,7 @@ stay for a deploy of an image already built (`update -Tag 2026-10-22b -Revision 
 `secrets:` block and names every secret by `secretRef`, and the update is a patch, so the secrets set on the app stay.
 The running revision is in `az containerapp revision list -n puls-app -g rg-puls-za -o table`; the app is up when
 `https://puls-app.…/health` answers 200. The same for SearXNG with `-App puls-searxng`; its settings file is the local
-stack's `docker/searxng/settings.yml`, uploaded with `deploy.ps1 searxng-settings` and read on its next restart.
+stack's `demos/puls/docker/searxng/settings.yml`, uploaded with `deploy.ps1 searxng-settings` and read on its next restart.
 
 ## Telemetry
 

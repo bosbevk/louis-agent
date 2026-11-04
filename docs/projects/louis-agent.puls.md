@@ -1,7 +1,7 @@
 # louis-agent.puls — design
 
 > **Kind:** Blazor WebAssembly app · **Path:** `demos/puls/web/louis-agent.puls/` · **Served by:** louis-agent.api built with
-> `-p:WebApp=puls` (`docker/images/Dockerfile.puls`, `docker/docker-compose.puls.yml`, port 5070) · **References:**
+> `-p:WebApp=puls` (`demos/puls/docker/images/Dockerfile.puls`, `demos/puls/docker/docker-compose.puls.yml`, port 5070) · **References:**
 > louis-agent.web.shared, Bootstrap 5.3 (CDN, SRI-pinned), highlight.js (CDN), Montserrat (Google Fonts)
 
 ## Purpose
@@ -148,7 +148,7 @@ What the look (F20) and the motion (F24) settled, so a change keeps it:
 None of its own: the API it's served by holds the settings (`AGENT_PEERS` names itself: the specialists, and the minions
 they hand pages to (F30), run on the same instance since CL19). The compose file runs `puls` (5070, the app and its API),
 `puls-mongo` (the benchmark store, F31) and, on their own `web` network with `puls` (F32),
-`puls-searxng` (8888: the search we run, for development and benchmarks; settings in `docker/searxng/settings.yml`, its
+`puls-searxng` (8888: the search we run, for development and benchmarks; settings in `demos/puls/docker/searxng/settings.yml`, its
 secret in `config/.env.searxng`) and `puls-browser` (9222: the headless Chrome that renders pages). Both images are
 pinned by digest.
 

@@ -1,9 +1,9 @@
 namespace LouisAgent.Core.Tests;
 
 /// <summary>
-/// The folders on disk say what the solution says, and they say what ships. <c>src/</c> holds only the framework; a pack
-/// is a tool someone takes, its checks sit apart so they can take it without them; and anything that names a product is
-/// someone's own project under <c>demos/</c>.
+/// The folders on disk say what the solution says, and they say what ships. <c>src/</c> holds only the framework; a
+/// pack is a tool someone takes, its checks sit apart so they can take it without them; and anything that names a
+/// product is someone's own project under <c>demos/</c>.
 /// </summary>
 public class SolutionLayoutTests
 {
@@ -63,7 +63,9 @@ public class SolutionLayoutTests
         lines.Select(line => line.Trim()).Where(line => line.StartsWith($"{id} = "))
             .Select(line => line.Split(" = ")[1]).SingleOrDefault();
 
-    /// <summary>The framework's own projects never live outside <c>src/</c>, so the old top-level folders are gone.</summary>
+    /// <summary>
+    /// The framework's own projects never live outside <c>src/</c>, so the old top-level folders are gone.
+    /// </summary>
     [TestCase("evals")]
     [TestCase("identities")]
     public void AnOldTopLevelFolder_HoldsNoProject(string folder)
@@ -75,6 +77,50 @@ public class SolutionLayoutTests
             : [];
 
         Assert.That(found, Is.Empty);
+    }
+
+    /// <summary>A demo carries its own settings and images, so someone can read it as one whole project.</summary>
+    [TestCase("demos/puls", "config/.env.example", "config/prices.json", "config/rates.json",
+        "docker/docker-compose.puls.yml", "docker/images/Dockerfile.puls", "docker/searxng/settings.yml")]
+    [TestCase("demos/louis-agent", "config/.env.example", "config/prices.json", "config/rates.json",
+        "docker/docker-compose.yml", "docker/images/Dockerfile.api", "docker/images/ollama/Dockerfile.ollama")]
+    public void ADemo_CarriesItsConfigAndImages(string demo, params string[] files)
+    {
+        var missing = files.Where(file => !File.Exists(Path.Combine(TestPaths.RepoRoot, demo, file)));
+
+        Assert.That(missing, Is.Empty);
+    }
+
+    /// <summary>
+    /// Each demo keeps its own copy, and until one has a reason to differ they can't drift apart by accident.
+    /// </summary>
+    [TestCase("prices.json")]
+    [TestCase("rates.json")]
+    public void TheDemos_ShipTheSameFile(string file)
+    {
+        string puls = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/config", file));
+        string coding = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config", file));
+
+        Assert.That(puls.ReplaceLineEndings(), Is.EqualTo(coding.ReplaceLineEndings()));
+    }
+
+    /// <summary>
+    /// What the solution lists is on disk. A demo's <c>.env</c> is the one exception: it is yours, so a fresh checkout
+    /// doesn't have it.
+    /// </summary>
+    [Test]
+    public void ASolutionItem_IsAFileOnDisk()
+    {
+        var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
+
+        // An item's line is its path, twice, inside a folder's section; a project's id never contains a slash.
+        var items = lines.Select(line => line.Trim()).Where(line => line.Contains('\\') && line.Contains(" = "))
+            .Where(line => !line.StartsWith("Project("))
+            .Select(line => line.Split(" = ")[0].Replace('\\', '/'))
+            .Where(item => Path.GetFileName(item) != ".env");
+        var missing = items.Where(item => !File.Exists(Path.Combine(TestPaths.RepoRoot, item)));
+
+        Assert.That(missing, Is.Empty);
     }
 
     /// <summary>The id at the end of a solution file's project line.</summary>

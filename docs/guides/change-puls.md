@@ -32,7 +32,7 @@ chat to see the change.
 
 1. Copy `voice-af.md` to `voice-{xx}.md` and translate it, keeping every section and the heading's form
    (`# Puls - Voice` in English). The routing stays in `voice.md`, shared by every language.
-2. Add `puls/voice-{xx}` to `ROLES_ENABLED` where it is set: `docker/docker-compose.puls.yml`, the API's `puls`
+2. Add `puls/voice-{xx}` to `ROLES_ENABLED` where it is set: `demos/puls/docker/docker-compose.puls.yml`, the API's `puls`
    launch profile, and `config/.env` if you set it there.
 3. `GET /v1/roles` then lists it, and the web app's language menu offers it with no change to the app.
 

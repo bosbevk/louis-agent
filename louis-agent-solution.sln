@@ -6,56 +6,76 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DCC1CE0E-F80
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}"
 	ProjectSection(SolutionItems) = preProject
-		config\.env = config\.env
-		config\.env.anthropic = config\.env.anthropic
-		config\.env.example = config\.env.example
-		config\.env.mongo.example = config\.env.mongo.example
-		config\.env.ollama = config\.env.ollama
-		config\.env.ollama-puls = config\.env.ollama-puls
-		config\.env.ollama-triage = config\.env.ollama-triage
-		config\.env.searxng.example = config\.env.searxng.example
-		config\.env.secrets.example = config\.env.secrets.example
-		config\README.md = config\README.md
-		config\prices.json = config\prices.json
-		config\rates.json = config\rates.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rider", "rider", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111}"
-	ProjectSection(SolutionItems) = preProject
-		config\rider\rider-acp.example.json = config\rider\rider-acp.example.json
-		config\rider\rider-mcp-servers.example.json = config\rider\rider-mcp-servers.example.json
+		demos\puls\config\.env = demos\puls\config\.env
+		demos\puls\config\.env.anthropic = demos\puls\config\.env.anthropic
+		demos\puls\config\.env.example = demos\puls\config\.env.example
+		demos\puls\config\.env.mongo.example = demos\puls\config\.env.mongo.example
+		demos\puls\config\.env.ollama-puls = demos\puls\config\.env.ollama-puls
+		demos\puls\config\.env.searxng.example = demos\puls\config\.env.searxng.example
+		demos\puls\config\.env.secrets.example = demos\puls\config\.env.secrets.example
+		demos\puls\config\README.md = demos\puls\config\README.md
+		demos\puls\config\prices.json = demos\puls\config\prices.json
+		demos\puls\config\rates.json = demos\puls\config\rates.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}"
 	ProjectSection(SolutionItems) = preProject
-		docker\README.md = docker\README.md
-		docker\docker-compose.observability.yml = docker\docker-compose.observability.yml
-		docker\docker-compose.puls.yml = docker\docker-compose.puls.yml
-		docker\docker-compose.yml = docker\docker-compose.yml
+		demos\puls\docker\README.md = demos\puls\docker\README.md
+		demos\puls\docker\docker-compose.puls.yml = demos\puls\docker\docker-compose.puls.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121}"
 	ProjectSection(SolutionItems) = preProject
-		docker\images\Dockerfile.acp-server = docker\images\Dockerfile.acp-server
-		docker\images\Dockerfile.agent = docker\images\Dockerfile.agent
-		docker\images\Dockerfile.api = docker\images\Dockerfile.api
-		docker\images\Dockerfile.mcp-server = docker\images\Dockerfile.mcp-server
-		docker\images\Dockerfile.orchestrator = docker\images\Dockerfile.orchestrator
-		docker\images\Dockerfile.puls = docker\images\Dockerfile.puls
-		docker\images\Dockerfile.site = docker\images\Dockerfile.site
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ollama", "ollama", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122}"
-	ProjectSection(SolutionItems) = preProject
-		docker\images\ollama\Dockerfile.ollama = docker\images\ollama\Dockerfile.ollama
-		docker\images\ollama\Dockerfile.ollama-amd = docker\images\ollama\Dockerfile.ollama-amd
-		docker\images\ollama\Dockerfile.ollama-nvidia = docker\images\ollama\Dockerfile.ollama-nvidia
-		docker\images\ollama\entrypoint.sh = docker\images\ollama\entrypoint.sh
+		demos\puls\docker\images\Dockerfile.puls = demos\puls\docker\images\Dockerfile.puls
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "searxng", "searxng", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0123}"
 	ProjectSection(SolutionItems) = preProject
-		docker\searxng\settings.yml = docker\searxng\settings.yml
+		demos\puls\docker\searxng\settings.yml = demos\puls\docker\searxng\settings.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0150}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\config\.env = demos\louis-agent\config\.env
+		demos\louis-agent\config\.env.anthropic = demos\louis-agent\config\.env.anthropic
+		demos\louis-agent\config\.env.example = demos\louis-agent\config\.env.example
+		demos\louis-agent\config\.env.ollama = demos\louis-agent\config\.env.ollama
+		demos\louis-agent\config\.env.ollama-triage = demos\louis-agent\config\.env.ollama-triage
+		demos\louis-agent\config\.env.secrets.example = demos\louis-agent\config\.env.secrets.example
+		demos\louis-agent\config\README.md = demos\louis-agent\config\README.md
+		demos\louis-agent\config\prices.json = demos\louis-agent\config\prices.json
+		demos\louis-agent\config\rates.json = demos\louis-agent\config\rates.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rider", "rider", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\config\rider\rider-acp.example.json = demos\louis-agent\config\rider\rider-acp.example.json
+		demos\louis-agent\config\rider\rider-mcp-servers.example.json = demos\louis-agent\config\rider\rider-mcp-servers.example.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0151}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docker\README.md = demos\louis-agent\docker\README.md
+		demos\louis-agent\docker\docker-compose.observability.yml = demos\louis-agent\docker\docker-compose.observability.yml
+		demos\louis-agent\docker\docker-compose.yml = demos\louis-agent\docker\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0152}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docker\images\Dockerfile.acp-server = demos\louis-agent\docker\images\Dockerfile.acp-server
+		demos\louis-agent\docker\images\Dockerfile.agent = demos\louis-agent\docker\images\Dockerfile.agent
+		demos\louis-agent\docker\images\Dockerfile.api = demos\louis-agent\docker\images\Dockerfile.api
+		demos\louis-agent\docker\images\Dockerfile.mcp-server = demos\louis-agent\docker\images\Dockerfile.mcp-server
+		demos\louis-agent\docker\images\Dockerfile.orchestrator = demos\louis-agent\docker\images\Dockerfile.orchestrator
+		demos\louis-agent\docker\images\Dockerfile.site = demos\louis-agent\docker\images\Dockerfile.site
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ollama", "ollama", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docker\images\ollama\Dockerfile.ollama = demos\louis-agent\docker\images\ollama\Dockerfile.ollama
+		demos\louis-agent\docker\images\ollama\Dockerfile.ollama-amd = demos\louis-agent\docker\images\ollama\Dockerfile.ollama-amd
+		demos\louis-agent\docker\images\ollama\Dockerfile.ollama-nvidia = demos\louis-agent\docker\images\ollama\Dockerfile.ollama-nvidia
+		demos\louis-agent\docker\images\ollama\entrypoint.sh = demos\louis-agent\docker\images\ollama\entrypoint.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
@@ -246,7 +266,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B
 		docs\projects\louis-agent.acp-server.md = docs\projects\louis-agent.acp-server.md
 		docs\projects\louis-agent.api.md = docs\projects\louis-agent.api.md
 		docs\projects\louis-agent.cli.md = docs\projects\louis-agent.cli.md
-		docs\projects\louis-agent.composition.md = docs\projects\louis-agent.composition.md
+		docs\projects\louis-agent.host-packs.md = docs\projects\louis-agent.host-packs.md
 		docs\projects\louis-agent.core.md = docs\projects\louis-agent.core.md
 		docs\projects\louis-agent.evals.checks.md = docs\projects\louis-agent.evals.checks.md
 		docs\projects\louis-agent.evals.md = docs\projects\louis-agent.evals.md
@@ -1173,11 +1193,16 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{D75EE941-E529-4772-A167-BAB95713163A} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
-		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}
-		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0123} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0150} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0150}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0151} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0152} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0151}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0152}
+		{D75EE941-E529-4772-A167-BAB95713163A} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0101} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0103} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}

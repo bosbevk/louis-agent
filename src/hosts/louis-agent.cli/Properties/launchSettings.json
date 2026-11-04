@@ -8,8 +8,9 @@
         "WORKSPACE_ROOT": "../../..",
         "SKILLS_DIRECTORY": "../../../Skills",
         "LOG_DIRECTORY": "../../../logs",
-        "PRICES_FILE": "../../../config/prices.json",
-        "RATES_FILE": "../../../config/rates.json"
+        "CONFIG_DIRECTORY": "../../../demos/louis-agent/config",
+        "PRICES_FILE": "../../../demos/louis-agent/config/prices.json",
+        "RATES_FILE": "../../../demos/louis-agent/config/rates.json"
       }
     }
   }

@@ -34,7 +34,8 @@ packages published first.
   with `-p:WebApp=puls`, and the hosts reference `host-packs`. CL29.1 inverts these, so a host takes its catalogue from
   outside.
 - `louis-agent.web.shared` is framework by this rule but 13 of its 49 files mention Puls, which needs its own look.
-- `tests/` stays one folder for now. When the framework moves to its own repo, its tests go with it.
+- `tests/` stays one folder for now, and gets the same split next. When the framework moves to its own repo, its tests go with it.
+- A demo holds its own `config/` and `docker/`, so a host is told where its config is (`CONFIG_DIRECTORY`). `prices.json` and `rates.json` are one copy per demo, held equal by a test.
 - Moving a project changes paths in project files, Docker, docs and tests, once, and `git` sees renames. Open branches
   rebase on it.
 

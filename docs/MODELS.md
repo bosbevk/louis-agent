@@ -79,7 +79,7 @@ Run models on your own machine; nothing leaves it. Set `LLM_PROFILE=ollama` (`co
 `ollama` service behind a compose profile, which pulls the Ollama profile's `LLM_MODEL` on first start:
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama up -d ollama
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env --profile ollama up -d ollama
 ```
 
 The profile's endpoint, `http://host.docker.internal:11434`, reaches the published port 11434 both from the host
@@ -90,8 +90,8 @@ setting. With Ollama installed natively and no Docker Desktop, set `LLM_ENDPOINT
 models volume):
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama-nvidia up -d ollama-nvidia
-docker compose -f docker/docker-compose.yml --env-file config/.env --profile ollama-amd up -d ollama-amd
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env --profile ollama-nvidia up -d ollama-nvidia
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env --profile ollama-amd up -d ollama-amd
 ```
 
 - **NVIDIA** reserves the GPU in compose (needs an NVIDIA driver; Docker Desktop's WSL 2 backend passes it through).
@@ -178,7 +178,7 @@ Works with anything that speaks the OpenAI Chat Completions API. Tool calling de
 1. Set `LLM_PROFILE` in `config/.env` (or edit the profile file; `config/.env.secrets` for a new key).
 2. Restart what you use:
    - Rider: start a **New Chat** (each chat starts a fresh container with the new settings).
-   - Web app / API: `docker compose -f docker/docker-compose.yml --env-file config/.env up -d api`
+   - Web app / API: `docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d api`
    - CLI: just run it again.
 3. Check the startup line in the logs (`logs/agent-*.log`):
    `[INFO] LLM: anthropic:claude-haiku-5-5 (...); tools=on; thinking=medium`

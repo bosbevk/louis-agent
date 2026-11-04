@@ -17,16 +17,16 @@ dotnet run --project src/hosts/louis-agent.cli               # interactive CLI
 Docker (web app + API on http://127.0.0.1:5080):
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api
 ```
 
 Puls (its web app on http://127.0.0.1:5070):
 
 ```bash
-docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
 ```
 
-Always pass `--env-file config/.env`; compose needs it for `REPOSITORIES_PATH`. After changing
+Always pass `--env-file demos/{demo}/config/.env`; compose needs it for `REPOSITORIES_PATH`. After changing
 `config/.env.secrets`, recreate the containers with `up -d`: `restart` keeps the old environment, so the new key
 never arrives.
 

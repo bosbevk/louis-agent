@@ -8,7 +8,7 @@
 All images build and run on the .NET 10 SDK image (the `DotNet*` tools shell out to `dotnet`), with `git` and Python
 installed and `Skills/` copied in.
 
-| Service (`docker/docker-compose.yml`) | Dockerfile (`docker/images/`) | Notes |
+| Service (`demos/louis-agent/docker/docker-compose.yml`) | Dockerfile (`demos/louis-agent/docker/images/`) | Notes |
 |---|---|---|
 | `acp-server` | `Dockerfile.acp-server` | Run per Rider chat with `docker compose run --rm -T acp-server` |
 | `api` | `Dockerfile.api` | API + web app on `127.0.0.1:${API_PORT:-5080}`; health check on `/health` |
@@ -24,7 +24,7 @@ Every agent service above mounts the repo at `/workspace`, `Skills/` at `/skills
 for git (the repo is a Windows checkout). Always pass the env file:
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api
 ```
 
 The orchestrator demo (its own compose file, a demo service with ten bugs) was removed in CL10 and comes back with

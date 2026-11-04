@@ -89,7 +89,7 @@ in its own voice.
 - **It's checked.** The cook and the routing are evals, so a prompt change shows up as a score.
 
 ```bash
-docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
 ```
 
 Open **http://127.0.0.1:5070**. The same app runs on Azure ([deploy/azure](deploy/azure/README.md)). Design:
@@ -142,7 +142,7 @@ cp config/.env.example config/.env
 cp config/.env.secrets.example config/.env.secrets   # set ANTHROPIC_API_KEY and AGENT_API_KEY
 # in config/.env, set REPOSITORIES_PATH to the folder that holds your repos
 
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api   # web app + API
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api   # web app + API
 ```
 
 Open **http://127.0.0.1:5080**. Everything listens on `127.0.0.1` only.

@@ -4,12 +4,12 @@ Deploys Puls to Azure Container Apps (rg-puls-za): eight verbs, each a few az co
 
 .DESCRIPTION
   deploy.ps1 build   [-Tag 2026-10-24-1732]       builds louis-agent-puls and ts-forwarder in the registry, tagged alike
-  deploy.ps1 secrets [-App puls-app|puls-searxng] copies the secrets from config/.env.secrets, .env.mongo and .env.searxng
+  deploy.ps1 secrets [-App puls-app|puls-searxng] copies the secrets from demos/puls/config/.env.secrets, .env.mongo and .env.searxng
                                                   onto the app (never printed); a missing value is skipped, by name
   deploy.ps1 update  -Tag 2026-10-24-1732 -Revision v018 [-App ...]
                                                   fills TAG (an image already built) and REVISION into deploy/azure/<App>.yaml
                                                   and updates the app
-  deploy.ps1 searxng-settings                     uploads docker/searxng/settings.yml to the searxng-config share
+  deploy.ps1 searxng-settings                     uploads demos/puls/docker/searxng/settings.yml to the searxng-config share
   deploy.ps1 logs    [-App ...] [-Container ...] [-Follow]
   deploy.ps1 lock    [-Ip 1.2.3.4]                 allows only this PC's public IP (or -Ip) on puls-app's ingress: the
                                                   app answers without a key (AGENT_AUTH=off), so nobody else may reach it
@@ -73,16 +73,16 @@ switch ($Verb) {
         try { $commit = git -C $Repo rev-parse --short HEAD 2>$null } catch { $commit = $null }
         $ErrorActionPreference = 'Stop'
         if ($LASTEXITCODE -ne 0 -or -not $commit) { $commit = 'unknown' }
-        Write-Host "Building louis-agent-puls:$Tag (commit $commit) from the repo root (docker/images/Dockerfile.puls)..."
+        Write-Host "Building louis-agent-puls:$Tag (commit $commit) from the repo root (demos/puls/docker/images/Dockerfile.puls)..."
         Invoke-Az acr build -r $Registry -t "louis-agent-puls:$Tag" --build-arg "EVAL_COMMIT=$commit" `
-            -f (Join-Path $Repo 'docker\images\Dockerfile.puls') $Repo
+            -f (Join-Path $Repo 'demos\puls\docker\images\Dockerfile.puls') $Repo
         Write-Host "Building ts-forwarder:$Tag from deploy/azure/ts-forwarder..."
         Invoke-Az acr build -r $Registry -t "ts-forwarder:$Tag" (Join-Path $Here 'ts-forwarder')
     }
     'secrets' {
-        $secretsFile = Join-Path $Repo 'config\.env.secrets'
-        $mongoFile = Join-Path $Repo 'config\.env.mongo'
-        $searxngFile = Join-Path $Repo 'config\.env.searxng'
+        $secretsFile = Join-Path $Repo 'demos\puls\config\.env.secrets'
+        $mongoFile = Join-Path $Repo 'demos\puls\config\.env.mongo'
+        $searxngFile = Join-Path $Repo 'demos\puls\config\.env.searxng'
         $wanted = @()
         if ($App -eq 'puls-app') {
             $wanted += @{ name = 'anthropic-api-key'; value = Get-EnvValue $secretsFile 'ANTHROPIC_API_KEY' }
@@ -144,7 +144,7 @@ switch ($Verb) {
     'searxng-settings' {
         $key = (& az storage account keys list -g $ResourceGroup -n $StorageAccount --query '[0].value' -o tsv)
         if ($LASTEXITCODE -ne 0) { throw 'Could not read the storage account key.' }
-        $settings = Join-Path $Repo 'docker\searxng\settings.yml'
+        $settings = Join-Path $Repo 'demos\puls\docker\searxng\settings.yml'
         Write-Host "Uploading $settings to share searxng-config (the SearXNG app reads it at /etc/searxng/settings.yml)..."
         Invoke-Az storage file upload --account-name $StorageAccount --account-key $key --share-name 'searxng-config' --source $settings --path 'settings.yml' --only-show-errors
         Write-Host 'Restart puls-searxng (a new revision, or az containerapp revision restart) for it to read the file again.'

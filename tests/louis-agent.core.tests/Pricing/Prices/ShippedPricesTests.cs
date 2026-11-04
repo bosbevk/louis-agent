@@ -5,7 +5,8 @@ namespace LouisAgent.Core.Tests.Pricing.Prices;
 // The tracked config/prices.json must load and price the models the profiles use.
 public class ShippedPricesTests
 {
-    private static PriceTable Shipped() => PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "config", "prices.json"));
+    private static PriceTable Shipped() =>
+        PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config", "prices.json"));
 
     [Test]
     public void ShippedTable_Loads()
@@ -16,9 +17,9 @@ public class ShippedPricesTests
         Assert.That(table.AsOf, Is.Not.Null.And.Not.Empty);
     }
 
-    [TestCase("claude-haiku-5-5")]         // config/.env.anthropic
+    [TestCase("claude-haiku-5-5")] // config/.env.anthropic
     [TestCase("claude-haiku-4-5-20251001")]
-    [TestCase("llama3.1")]                 // config/.env.ollama
+    [TestCase("llama3.1")] // config/.env.ollama
     [TestCase("qwen2.5:0.5b")]
     public void ShippedTable_PricesTheProfilesModels(string model) =>
         Assert.That(Shipped().Find(model), Is.Not.Null);

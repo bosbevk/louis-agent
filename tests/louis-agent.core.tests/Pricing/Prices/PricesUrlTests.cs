@@ -9,14 +9,14 @@ namespace LouisAgent.Core.Tests.Pricing.Prices;
 public class PricesUrlTests
 {
     private const string UrlTable = """
-        { "as_of": "2026-10-11", "currency": "USD",
-          "models": { "claude-haiku-5-5": { "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20 } } }
-        """;
+                                    { "as_of": "2026-10-11", "currency": "USD",
+                                      "models": { "claude-haiku-5-5": { "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20 } } }
+                                    """;
 
     private const string FileTable = """
-        { "as_of": "2026-10-10", "currency": "USD",
-          "models": { "claude-haiku-5-5": { "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20 } } }
-        """;
+                                     { "as_of": "2026-10-10", "currency": "USD",
+                                       "models": { "claude-haiku-5-5": { "input": 0.10, "output": 0.50, "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20 } } }
+                                     """;
 
     private string _dir = null!;
     private string _file = null!;
@@ -32,7 +32,11 @@ public class PricesUrlTests
     [TearDown]
     public void TearDown() => Directory.Delete(_dir, recursive: true);
 
-    private AgentOptions Options(string url) => new() { PricesUrl = url, PricesFile = _file };
+    private AgentOptions Options(string url) => new()
+    {
+        PricesUrl = url,
+        PricesFile = _file
+    };
 
     private static (PriceTable Prices, string Stderr) Load(AgentOptions options, HttpMessageHandler handler)
     {
@@ -92,16 +96,19 @@ public class PricesUrlTests
     public void LoadPrices_UrlAnswersSomethingThatIsNotATable_Throws()
     {
         // Reached, but wrong: like a malformed file, the host doesn't start on it.
-        var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("<html>") });
+        var handler = new StubHandler(_ =>
+            new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("<html>") });
 
-        var ex = Assert.Throws<InvalidDataException>(() => PriceTableLoader.Load(Options("http://demo-api:8080/prices"), handler));
+        var ex = Assert.Throws<InvalidDataException>(() =>
+            PriceTableLoader.Load(Options("http://demo-api:8080/prices"), handler));
         Assert.That(ex!.Message, Does.Contain("http://demo-api:8080/prices"));
     }
 
     [TestCase("demo-api:8080/prices")]
     [TestCase("file:///etc/prices.json")]
     public void LoadPrices_NotAnHttpUrl_Throws(string url) =>
-        Assert.Throws<InvalidDataException>(() => PriceTableLoader.Load(Options(url), new StubHandler(_ => throw new InvalidOperationException())));
+        Assert.Throws<InvalidDataException>(() =>
+            PriceTableLoader.Load(Options(url), new StubHandler(_ => throw new InvalidOperationException())));
 
     [Test]
     public void PricesUrlSetting_IsReadFromTheEnvironment()
@@ -115,13 +122,16 @@ public class PricesUrlTests
     public void PriceTable_WrittenAsJson_ReadsBackTheSame()
     {
         // GET /v1/prices serves the API's table as JSON; another host must read back exactly the same prices.
-        PriceTable shipped = PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "config", "prices.json"));
+        PriceTable shipped =
+            PriceTable.Load(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config", "prices.json"));
 
         PriceTable copy = PriceTable.Parse(JsonSerializer.Serialize(shipped, PriceTable.Json), "GET /v1/prices");
 
         Assert.That(copy.AsOf, Is.EqualTo(shipped.AsOf));
         Assert.That(copy.Models.Keys, Is.EquivalentTo(shipped.Models.Keys));
-        Assert.That(copy.Find("claude-haiku-5-5")!.LongPrompt!.Output, Is.EqualTo(shipped.Find("claude-haiku-5-5")!.LongPrompt!.Output));
-        Assert.That(copy.Find("claude-opus-5-5")!.CacheWrite1h, Is.EqualTo(shipped.Find("claude-opus-5-5")!.CacheWrite1h));
+        Assert.That(copy.Find("claude-haiku-5-5")!.LongPrompt!.Output,
+            Is.EqualTo(shipped.Find("claude-haiku-5-5")!.LongPrompt!.Output));
+        Assert.That(copy.Find("claude-opus-5-5")!.CacheWrite1h,
+            Is.EqualTo(shipped.Find("claude-opus-5-5")!.CacheWrite1h));
     }
 }

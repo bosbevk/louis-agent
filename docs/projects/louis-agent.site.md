@@ -45,7 +45,7 @@ flowchart LR
     pages --> landing["Components/Landing<br/>Hero · LiveTurn · ProofTiles · BuiltOnIt · ContactStrip"]
     pages --> films["Components/Movies<br/>ShortMovie · DetailedMovie"]
     site --> css["wwwroot/css<br/>app.css imports: tokens · elements · shell · landing · movie · responsive"]
-    docker["docker/images/Dockerfile.site"] --> site
+    docker["demos/louis-agent/docker/images/Dockerfile.site"] --> site
     site -. references no engine project .-> core["louis-agent.core"]
 ```
 

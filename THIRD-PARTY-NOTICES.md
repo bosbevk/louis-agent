@@ -47,7 +47,7 @@ The pages fetch these from a CDN at run time, so no copy is in the repo; their n
 ## Container images
 
 The Docker images build on others' images (Microsoft's .NET and Aspire dashboard images, MongoDB, Chromium's
-headless shell, SearXNG and Ollama, named in `docker/images/` and the compose files). Each keeps its own licence; we run them, we don't ship
+headless shell, SearXNG and Ollama, named in `demos/louis-agent/docker/images/` and the compose files). Each keeps its own licence; we run them, we don't ship
 them inside our code.
 
 ---

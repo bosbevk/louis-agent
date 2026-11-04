@@ -12,7 +12,7 @@ stream in `Sessions/`. Behaviour that every host needs belongs in core.
 ## Run it
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api   # http://127.0.0.1:5080
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api   # http://127.0.0.1:5080
 dotnet run --project src/hosts/louis-agent.api --launch-profile puls --property:WebApp=puls  # Puls's settings and web app
 ```
 
@@ -111,7 +111,7 @@ title. The eval's name is its check's id.
 2. Check the runner lists it: `dotnet src/evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll --list`
    prints one line for it (build the runner first).
 3. Rebuild the image that serves the portal. The runner is in the image, so the new eval comes with the rebuild:
-   `docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build`.
+   `docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build`.
 4. Open the admin portal: the check is listed with its `proves` as its title. Its manual is the file the eval's `Manual`
    names (`evals/{project}/Manuals/{name}.md`, F18 step 7.1), which the runner's listing hands to the API.
 

@@ -13,7 +13,7 @@ notifications. Behaviour belongs in core.
 
 1. Add the agent server from `config/rider/rider-acp.example.json` in Rider's AI Assistant settings, with your paths
    ([Quick start](../QUICK_START_AGENT.md)). It starts `docker compose run --rm -T acp-server`, one container per chat.
-2. After a change, rebuild the image (`docker compose -f docker/docker-compose.yml --env-file config/.env build
+2. After a change, rebuild the image (`docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env build
    acp-server`) and start a **New Chat**: a chat keeps its container, and so its old build, until then.
 3. To debug without Docker, use the project's run profile in `Properties/launchSettings.json`.
 

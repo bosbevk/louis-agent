@@ -156,11 +156,11 @@ src/web/                 # louis-agent.web.shared: what any web app shares
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
 packs/                   # What an agent can do, tools only: where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these
-demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs)
-demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC)
+demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/ and docker/ (its settings and images)
+demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC), config/, docker/
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
 tests/                   # NUnit, one project per project ([tests](projects/tests.md)); the ones that leave their process are *.integration-tests
-docker/, deploy/azure/, config/ # This PC's images and compose stacks; the cloud (Puls on Azure); what the app reads at run time
+deploy/azure/            # The cloud (Puls on Azure); on this PC, a demo's own docker/ runs it
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
 docs/                    # This guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
 .claude/rules/           # The how of the C#, Razor, CSS and docs rules, loaded by file path
@@ -187,7 +187,7 @@ modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-a
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../TODO.md#known-limitations); when work removes one, delete it there.
-**Further reading:** [the architecture](architecture/README.md), `config/.env.example` (settings), [the agent's mode](../src/engine/louis-agent.core/Prompts/agent/louis-agent/voice.md).
+**Further reading:** [the architecture](architecture/README.md), a demo's `config/.env.example` (settings), [the agent's mode](../src/engine/louis-agent.core/Prompts/agent/louis-agent/voice.md).
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](projects/orchestrator-runbooks.md)

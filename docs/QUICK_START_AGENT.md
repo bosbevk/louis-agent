@@ -14,7 +14,7 @@ Set up `config/` first ([SETUP.md](SETUP.md)): at least `ANTHROPIC_API_KEY` in `
 ### Web app
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api
 ```
 
 Open **http://127.0.0.1:5080**.
@@ -31,7 +31,7 @@ Open **http://127.0.0.1:5080**.
 ### Puls (the general assistant, in Afrikaans)
 
 ```bash
-docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build
+docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
 ```
 
 Open **http://127.0.0.1:5070** and ask anything, in Afrikaans or English: *"Wat is die nuutste weergawe van .NET?"*,

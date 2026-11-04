@@ -11,16 +11,17 @@ public class ExchangeRatesTests
         """{"amount":1.0,"base":"USD","date":"2026-10-09","rates":{"EUR":0.89238,"GBP":0.75641,"JPY":158.25,"ZAR":16.5331}}""";
 
     private const string OurFormat = """
-        // comments are allowed, as in prices.json
-        { "as_of": "2026-10-09", "base": "USD", "source": "test", "rates": { "ZAR": 16.5331, "EUR": 0.89238, } }
-        """;
+                                     // comments are allowed, as in prices.json
+                                     { "as_of": "2026-10-09", "base": "USD", "source": "test", "rates": { "ZAR": 16.5331, "EUR": 0.89238, } }
+                                     """;
 
     [Test]
     public void Parse_ReadsOurFormat_WithCommentsAndTrailingCommas()
     {
         ExchangeRates rates = ExchangeRates.Parse(OurFormat, "test");
 
-        Assert.That((rates.AsOf, rates.Base, rates.Source, rates.Rates.Count), Is.EqualTo(("2026-10-09", "USD", "test", 2)));
+        Assert.That((rates.AsOf, rates.Base, rates.Source, rates.Rates.Count),
+            Is.EqualTo(("2026-10-09", "USD", "test", 2)));
     }
 
     [Test]
@@ -61,14 +62,16 @@ public class ExchangeRatesTests
 
         ExchangeRates again = ExchangeRates.Parse(rates.ToJson(), "test");
 
-        Assert.That((again.AsOf, again.Base, again.Source, again.RateFor("ZAR")), Is.EqualTo((rates.AsOf, rates.Base, rates.Source, rates.RateFor("ZAR"))));
+        Assert.That((again.AsOf, again.Base, again.Source, again.RateFor("ZAR")),
+            Is.EqualTo((rates.AsOf, rates.Base, rates.Source, rates.RateFor("ZAR"))));
     }
 
     [Test]
     public void ShippedRatesFile_IsValid_FromUsd_WithRand()
     {
         // config/rates.json is the fallback every clone and container uses offline.
-        ExchangeRates rates = ExchangeRates.Load(Path.Combine(TestPaths.RepoRoot, "config", "rates.json"));
+        ExchangeRates rates =
+            ExchangeRates.Load(Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/config", "rates.json"));
 
         Assert.That(rates.Base, Is.EqualTo("USD"));
         Assert.That(rates.RateFor("ZAR"), Is.GreaterThan(0));

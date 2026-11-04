@@ -7,5 +7,5 @@
 |---|---|---|
 | [azure/](azure/README.md) | Puls on Azure Container Apps (`rg-puls-za`): the app yamls, the Tailscale sidecar, `deploy.ps1` | [Deploying Puls to Azure](azure/README.md) |
 
-What runs on this PC is in [docker/](../docker/README.md); what the app reads wherever it runs is in
-[config/](../config/README.md).
+What runs on this PC is in [docker/](../demos/louis-agent/docker/README.md); what the app reads wherever it runs is in
+[config/](../demos/louis-agent/config/README.md).

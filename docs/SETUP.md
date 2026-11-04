@@ -43,8 +43,12 @@ See [MODELS.md](MODELS.md) for other providers.
 
 ## How settings are loaded
 
-**Outside Docker** (CLI, `dotnet run`): `AgentHost.LoadEnvironment()` searches upward from the working directory for a
-`config/` folder and loads, in order, `config/.env.secrets`, `config/.env`, a legacy `./.env` if present, then the LLM
+**Each demo has its own `config/`** (`demos/puls/config/`, `demos/louis-agent/config/`), and the paths below are inside
+it. `CONFIG_DIRECTORY` tells a host which one; every launch profile and compose service sets it. It comes from the
+process, never a file, since it says which files to read.
+
+**Outside Docker** (CLI, `dotnet run`): `AgentHost.LoadEnvironment()` uses `CONFIG_DIRECTORY`, or else searches upward
+from the working directory for a `config/` folder, and loads, in order, `config/.env.secrets`, `config/.env`, a legacy `./.env` if present, then the LLM
 profile `config/.env.{LLM_PROFILE}`. A variable that is already set is never overwritten, so the precedence is:
 
 1. Variables already in the process environment (shell, CI) — highest, so `LLM_PROFILE=ollama dotnet run …` switches
@@ -60,7 +64,7 @@ of them. `LLM_PROFILE` comes from the `--env-file`, or from the shell for one co
 fill in paths such as `REPOSITORIES_PATH`:
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api
 ```
 
 `.env.example`, `.env.secrets.example` and `.env.local` are never loaded.
@@ -95,7 +99,7 @@ to `127.0.0.1` in the shell. Which web app the API serves is the build's choice 
 | `ACP_MOUNT_MAPPINGS` | `HOST_PATH=/container/path` pairs, so Rider's Windows paths (attachments, open file) resolve in the container |
 | `RIDER_MCP_ENDPOINT`, `RIDER_MCP_AUTO_DISCOVER` | Rider MCP discovery (off by default; it only logs Rider's tools for now) |
 | `API_PORT` | Host port for the API and web app (default `5080`, always bound to `127.0.0.1`) |
-| `PULS_PORT`, `PULS_WORKSPACE` | Puls (`docker/docker-compose.puls.yml`): its port (default `5070`, bound to `127.0.0.1`) and the folder mounted as its workspace (default the repo) |
+| `PULS_PORT`, `PULS_WORKSPACE` | Puls (`demos/puls/docker/docker-compose.puls.yml`): its port (default `5070`, bound to `127.0.0.1`) and the folder mounted as its workspace (default the repo) |
 | `PULS_MONGO_PORT`, `EVALS_MONGO_DATABASE` | The eval store (F31): `puls-mongo`'s host port (default `27017`, on `127.0.0.1`) and its database (the API's default `evals`; Puls's compose, its Azure app and its Rider profile name `puls_benchmarks`, where its runs are; `BENCHMARKS_MONGO_DATABASE`, the old name, is still read; the Mongo contract tests use `puls_benchmarks_test`) |
 | `MCP_TRANSPORT`, `MCP_PORT` | MCP server transport: `stdio` (default) or `http`; host port in HTTP mode (default `5090`, bound to `127.0.0.1`) |
 | `AGENT_AUTH` | `required` (default) or `off` (FX18): whether the API, and the MCP server over HTTP, may start without a key. `off` is for a development machine whose ports stay on `127.0.0.1`; a key that is set is checked either way. Never set in a compose file |
@@ -155,8 +159,8 @@ After changing a secret, **recreate** the container that uses it with `up -d`; `
 container's old environment, so a new key never reaches it that way (found with `TAVILY_API_KEY`, 2026-10-15):
 
 ```bash
-docker compose -f docker/docker-compose.yml --env-file config/.env up -d api          # the API
-docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d         # Puls
+docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d api          # the API
+docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d         # Puls
 ```
 
 A changed file under `Skills/` needs only a restart: the containers mount the folder and read it when a chat opens.
@@ -192,8 +196,8 @@ The unit tests need no secrets, network or Docker.
 `grep ANTHROPIC_API_KEY config/.env.secrets`, then recreate the container with `up -d` (not `restart`, which keeps the
 old environment).
 
-**Wrong settings in Docker** — run compose with `--env-file config/.env`, and remember that `environment:` in
-`docker/docker-compose.yml` wins over the env files. `docker compose ... config` shows the resolved values.
+**Wrong settings in Docker** — run compose with `--env-file demos/{demo}/config/.env`, and remember that `environment:` in
+`demos/louis-agent/docker/docker-compose.yml` wins over the env files. `docker compose ... config` shows the resolved values.
 
 **"must include the anthropic-workspace-id header"** — set `ANTHROPIC_WORKSPACE_ID` in `config/.env.secrets`.
 

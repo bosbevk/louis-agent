@@ -14,7 +14,7 @@ the specialists' work in the Werk panel, and what each answer cost.
 ## Run it
 
 ```bash
-docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build          # http://127.0.0.1:5070
+docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build          # http://127.0.0.1:5070
 dotnet run --project src/hosts/louis-agent.api --launch-profile puls --property:WebApp=puls         # http://127.0.0.1:5071
 ```
 
