@@ -121,7 +121,7 @@ classDiagram
 // core, Agent/Catalog/Imports (step 1)
 public interface IDataImport
 {
-    string Name { get; }                      // "statssa-average-prices"
+    string Name { get; }                      // "shop-prices"
     string Description { get; }
     IReadOnlyList<ImportSlot> Files { get; }  // "all-urban", "provinces"
     Task<ImportReport> PreviewAsync(IReadOnlyList<ImportFile> files, CancellationToken cancellationToken);
@@ -158,7 +158,7 @@ sequenceDiagram
     participant Store as MongoPriceStore
     participant Cache as PriceBookCache
     Louis->>Page: picks the two files, Preview
-    Page->>Api: POST /v1/admin/imports/statssa-average-prices/preview (2 files)
+    Page->>Api: POST /v1/admin/imports/shop-prices/preview (2 files)
     Api->>Imp: PreviewAsync(files)
     Imp->>Imp: read sheets, every month, sizes, names, a PriceFile a month
     Imp->>Store: MonthsAsync(Stats SA)
@@ -203,7 +203,8 @@ flowchart TB
 | `PackSize`, `StatsSaProduct` | `packs/louis-agent.pack.shop-prices/Prices/StatsSa/` | `LouisAgent.Packs.ShopPrices.Prices.StatsSa` | 3 |
 | `StatsSaName`, `StatsSaNames`, `StatsSaPrices`, `PlainNumber`; `Prices/Data/statssa-names.json` | same | same | 4 |
 | `IPriceStore.MonthsAsync`/`SaveAsync`, `PriceBookCache.Forget` (changed) | `Prices/Store/` | `LouisAgent.Packs.ShopPrices.Prices.Store` | 5 |
-| `StatsSaImport` | `packs/louis-agent.pack.shop-prices/Imports/` | `LouisAgent.Packs.ShopPrices.Imports` | 5 |
+| `StatsSaImport` (named `shop-prices`, as the pack and its feed are), `StatsSaUpload`/`CorrectedMonth`, `StatsSaReport`, `MonthChanges` | `packs/louis-agent.pack.shop-prices/Imports/` | `LouisAgent.Packs.ShopPrices.Imports` | 5 |
+| `MemoryPriceStore` (a test store) | `tests/louis-agent.pack.shop-prices.tests/Prices/Store/` | mirrored | 5 |
 | tests of each, mirrored | `tests/louis-agent.pack.shop-prices.tests/…`, a trimmed `.xlsx` fixture pair | mirrored | 2-5 |
 | `ImportEndpoints`, `ImportHandlers` | `src/louis-agent.api/Endpoints/Admin/Imports/` | `LouisAgent.Api.Endpoints.Admin.Imports` | 6 |
 | `ImportListing`, `ImportReportReply` | `src/louis-agent.api.contracts/Admin/` | `LouisAgent.Api.Contracts.Admin` | 6 |

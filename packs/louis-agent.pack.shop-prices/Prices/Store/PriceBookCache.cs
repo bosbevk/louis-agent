@@ -23,7 +23,10 @@ public sealed class PriceBookCache(IPriceStore store, TimeProvider clock)
     private static readonly ILogger Log = AgentLogging.For<PriceBookCache>();
 
     private readonly SemaphoreSlim _reading = new(1, 1);
-    private (PriceBook Book, DateTimeOffset At)? _held;
+    private volatile HeldBook? _held;
+
+    // Counts the Forget calls, so a read that started before one doesn't keep the book it read (F55).
+    private int _forgotten;
 
     /// <summary>The price book, from the store at most an hour ago.</summary>
     public async Task<PriceBook> GetAsync(CancellationToken cancellationToken)
@@ -34,14 +37,25 @@ public sealed class PriceBookCache(IPriceStore store, TimeProvider clock)
         {
             // Another call may have read it while this one waited.
             if (Held() is { } again) return again;
+            int forgotten = Volatile.Read(ref _forgotten);
             var book = await ReadAsync(cancellationToken);
-            _held = (book, clock.GetUtcNow());
+            if (forgotten == Volatile.Read(ref _forgotten)) _held = new HeldBook(book, clock.GetUtcNow());
             return book;
         }
         finally
         {
             _reading.Release();
         }
+    }
+
+    /// <summary>
+    /// Drops the book held, so the next call reads the store again: an upload a person saved is priced from at once,
+    /// not an hour later (F55).
+    /// </summary>
+    public void Forget()
+    {
+        Interlocked.Increment(ref _forgotten);
+        _held = null;
     }
 
     /// <summary>The book held, while it is fresh.</summary>
@@ -62,4 +76,7 @@ public sealed class PriceBookCache(IPriceStore store, TimeProvider clock)
             return PriceBook.Default;
         }
     }
+
+    /// <summary>A book and when it was read; one reference, so a call never sees half of one.</summary>
+    private sealed record HeldBook(PriceBook Book, DateTimeOffset At);
 }

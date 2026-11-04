@@ -6,11 +6,12 @@ namespace LouisAgent.Packs.ShopPrices.Prices.Store;
 /// <summary>
 /// Keeps the price tables in MongoDB, one document per source and month. The first read adds each table the pack
 /// ships that the store doesn't have yet, so an empty store starts with them and a newly shipped month joins the
-/// history; then each source's newest month is read.
+/// history; then each source's newest month is read. An upload saves a month, or replaces it with a correction.
 /// </summary>
 /// <remarks>
 /// A strategy of <see cref="IPriceStore"/> (Gang of Four) over a typed collection (ADR 0048). A table already stored
-/// is never overwritten: the store is the record, the shipped files only seed it.
+/// is never overwritten by a seed: the store is the record, the shipped files only seed it, and only an upload a
+/// person saved replaces a month (F55).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public sealed class MongoPriceStore : IPriceStore
@@ -56,6 +57,27 @@ public sealed class MongoPriceStore : IPriceStore
             .. all.GroupBy(d => d.Source).Select(source => source.First().ToFile())
                 .OrderBy(file => Rank(file.Source)).ThenBy(file => file.Source, StringComparer.Ordinal)
         ];
+    }
+
+    /// <inheritdoc />
+    public bool CanSave => true;
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<PriceFile>> MonthsAsync(string source, CancellationToken cancellationToken)
+    {
+        await SeedOnceAsync(cancellationToken);
+        var months = await _files.Find(d => d.Source == source).SortBy(d => d.AsOf).ToListAsync(cancellationToken);
+        return [.. months.Select(d => d.ToFile())];
+    }
+
+    /// <inheritdoc />
+    public async Task SaveAsync(PriceFile file, CancellationToken cancellationToken)
+    {
+        // Seeded first, so a shipped month never lands later on top of the one saved here.
+        await SeedOnceAsync(cancellationToken);
+        var document = PriceFileDocument.Of(file);
+        await _files.ReplaceOneAsync(d => d.Id == document.Id, document, new ReplaceOptions { IsUpsert = true },
+            cancellationToken);
     }
 
     /// <summary>

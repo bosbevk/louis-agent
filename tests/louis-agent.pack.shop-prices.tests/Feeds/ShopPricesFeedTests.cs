@@ -66,5 +66,15 @@ public class ShopPricesFeedTests
         /// <inheritdoc />
         public Task<IReadOnlyList<PriceFile>> LatestAsync(CancellationToken cancellationToken) =>
             Task.FromResult<IReadOnlyList<PriceFile>>([file]);
+
+        /// <inheritdoc />
+        public bool CanSave => false;
+
+        /// <inheritdoc />
+        public Task<IReadOnlyList<PriceFile>> MonthsAsync(string source, CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<PriceFile>>([]);
+
+        /// <inheritdoc />
+        public Task SaveAsync(PriceFile file, CancellationToken cancellationToken) => throw new NotSupportedException();
     }
 }
