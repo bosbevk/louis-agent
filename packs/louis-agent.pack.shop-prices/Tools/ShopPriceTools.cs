@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
-using LouisAgent.Core.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Packs.ShopPrices.Estimates;
 using LouisAgent.Packs.ShopPrices.Messages;

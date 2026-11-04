@@ -2,7 +2,6 @@ using LouisAgent.Composition.Messages;
 using System.Globalization;
 using System.Text;
 using ExcelDataReader;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Messages;
 using LouisAgent.Packs.ShopPrices.Prices.Regions;
 

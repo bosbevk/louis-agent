@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Logging;
-using LouisAgent.Core.Logging;
 using LouisAgent.Packs.ShopPrices.Messages;
 using LouisAgent.Packs.ShopPrices.Prices.Files;
 using Microsoft.Extensions.Logging;

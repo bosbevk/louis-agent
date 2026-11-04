@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Packs.WhereToBuy.Branches;
 using LouisAgent.Packs.WhereToBuy.Tools;
 using Microsoft.Extensions.FileProviders;

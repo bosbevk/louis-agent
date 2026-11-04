@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Identities.Puls;

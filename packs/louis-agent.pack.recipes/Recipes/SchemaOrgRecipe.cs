@@ -1,5 +1,5 @@
+using LouisAgent.Packs.Recipes.Reading;
 using System.Text.Json;
-using LouisAgent.Core.Tools.Web.StructuredData;
 
 namespace LouisAgent.Packs.Recipes.Recipes;
 

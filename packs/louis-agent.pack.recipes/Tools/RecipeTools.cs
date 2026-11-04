@@ -1,9 +1,7 @@
+using LouisAgent.Packs.Recipes.Reading;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Browsing;
 using System.ComponentModel;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
 using LouisAgent.Packs.Recipes.Sources;

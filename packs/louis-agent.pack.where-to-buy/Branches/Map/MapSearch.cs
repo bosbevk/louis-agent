@@ -2,7 +2,6 @@ using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Composition.Logging;
 using System.Globalization;
 using System.Text.Json;
-using LouisAgent.Core.Logging;
 using LouisAgent.Packs.WhereToBuy.Messages;
 using Microsoft.Extensions.Logging;
 

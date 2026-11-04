@@ -342,12 +342,12 @@ public partial class ArchitectureTests
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
-    public void TheIdentity_ReferencesOnlyTheEngine()
+    public void TheIdentity_ReferencesOnlyTheContracts()
     {
         string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/identity",
             "louis-agent.identity.puls", "louis-agent.identity.puls.csproj"));
 
-        Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "louis-agent.core.csproj" }));
+        Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "louis-agent.composition.csproj" }));
     }
 
     /// <summary>
@@ -430,6 +430,21 @@ public partial class ArchitectureTests
                && (plain.Contains("/demos/", StringComparison.Ordinal)
                    || plain.Contains("/packs/", StringComparison.Ordinal)
                    || plain.Contains("/packs-evals/", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// A pack is just tools: it takes the contracts and nothing of the engine, so it ships as a package of its own.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0074-the-folders-say-what-ships.md">ADR 0074: framework and implementation are split</seealso>
+    [Test]
+    public void APack_ReferencesTheContracts_NotTheEngine()
+    {
+        var found = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj",
+                SearchOption.AllDirectories)
+            .Where(file => File.ReadAllText(file).Contains("louis-agent.core.csproj", StringComparison.Ordinal))
+            .Select(file => Path.GetFileName(file));
+
+        Assert.That(found, Is.Empty);
     }
 
     /// <summary>A product, a shop or a country that core must never name.</summary>

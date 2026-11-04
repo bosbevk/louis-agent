@@ -2,8 +2,6 @@ using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs;
 using System.Text.Json;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Messages;
 using LouisAgent.Packs.ShopPrices.Prices;
 using LouisAgent.Packs.ShopPrices.Prices.Store;

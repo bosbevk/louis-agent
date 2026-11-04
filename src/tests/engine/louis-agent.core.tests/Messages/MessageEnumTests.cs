@@ -15,7 +15,7 @@ public class MessageEnumTests
 {
     /// <summary>Every enum of a <c>Messages</c> namespace in core.</summary>
     private static readonly Type[] MessageEnums =
-        typeof(MessageText).Assembly.GetTypes().Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
+        typeof(ToolMessage).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes()).Where(t => t.IsEnum && t.Namespace?.Split('.').Last() == "Messages")
             .ToArray();
 
     /// <summary>Every member of every message enum.</summary>
@@ -36,7 +36,7 @@ public class MessageEnumTests
                 "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage", "PaymoToolMessage",
                 "PricingErrorMessage", "PricingLogMessage", "PromptHeaderMessage", "ProtocolErrorMessage",
                 "ProtocolLogMessage", "ScriptToolMessage", "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage",
-                "SkillLogMessage", "SubSessionToolMessage", "TelemetryLogMessage", "ToolMessage", "UserText",
+                "SkillLogMessage", "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage", "ToolMessage", "UserText",
                 "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage", "WorkspaceToolMessage",
             }));
     }
@@ -47,7 +47,7 @@ public class MessageEnumTests
     {
         // An enum named for messages but placed outside a Messages folder would skip every check above, so it fails
         // here.
-        var stray = typeof(MessageText).Assembly.GetTypes()
+        var stray = typeof(ToolMessage).Assembly.GetTypes().Concat(typeof(MessageText).Assembly.GetTypes())
             .Where(t => t.IsEnum && (t.Name.EndsWith("Message", StringComparison.Ordinal) ||
                                      t.Name.EndsWith("Text", StringComparison.Ordinal)))
             .Where(t => t.Namespace?.Split('.').Last() != "Messages")

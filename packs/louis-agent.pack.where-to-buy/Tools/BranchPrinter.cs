@@ -1,7 +1,6 @@
 using LouisAgent.Composition.Messages;
 using System.Globalization;
 using System.Text;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.WhereToBuy.Branches;
 using LouisAgent.Packs.WhereToBuy.Messages;
 

@@ -1,7 +1,6 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs.Imports;
 using System.Globalization;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Messages;
 
 namespace LouisAgent.Packs.ShopPrices.Imports;

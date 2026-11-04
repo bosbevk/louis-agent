@@ -1,6 +1,5 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Tools;
 using Microsoft.Extensions.FileProviders;
