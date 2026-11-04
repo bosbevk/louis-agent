@@ -21,6 +21,9 @@ public class InfoHandlersTests
         yield return new TestCaseData("GetModel", typeof(JsonHttpResult<ModelReply>));
         yield return new TestCaseData("GetRoles", typeof(JsonHttpResult<RolesReply>));
         yield return new TestCaseData("GetLlmProfiles", typeof(JsonHttpResult<LlmProfilesReply>));
+        yield return new TestCaseData("GetFeeds", typeof(JsonHttpResult<FeedsReply>));
+        yield return new TestCaseData("GetFeed",
+            typeof(Task<Results<ContentHttpResult, JsonHttpResult<ApiError>>>));
     }
 
     /// <summary>A handler's signature names every answer it can give.</summary>

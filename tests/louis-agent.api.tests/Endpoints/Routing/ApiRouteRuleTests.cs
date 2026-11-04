@@ -31,14 +31,20 @@ public class ApiRouteRuleTests
     }
 
     [Test]
-    public void TheOpenRoutes_AreTheProbeThePricesAndTheRates()
+    public void TheOpenRoutes_AreTheProbeThePricesTheRatesAndTheFeeds()
     {
         using var app = ApiTestHost.Build();
 
         var open = ApiTestHost.Routes(app).Where(e => ApiTestHost.Access(e) == RouteAccess.Open).Select(ApiTestHost.Line).Order(StringComparer.Ordinal);
 
-        Assert.That(open, Is.EqualTo(new[] { "GET /health", "GET /v1/prices", "GET /v1/rates", "GET /v1/rates/display" }),
-            "A route is closed until the code opens it (ADR 0039, rule 6): only the probe, the prices and the rates are open.");
+        Assert.That(open,
+            Is.EqualTo(new[]
+            {
+                "GET /health", "GET /v1/feeds", "GET /v1/feeds/{name}", "GET /v1/prices", "GET /v1/rates",
+                "GET /v1/rates/display"
+            }),
+            "A route is closed until the code opens it (ADR 0039, rule 6): only the probe, the prices, the rates and " +
+            "the packs' feeds (ADR 0070) are open.");
     }
 
     [Test]

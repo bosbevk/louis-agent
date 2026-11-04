@@ -100,6 +100,13 @@ branches on OpenStreetMap) and `shop-prices` (`EstimatePrices`, a list from Stat
 - **Not yet measured live.** The cook eval moved to version 14 (new toolsets); its first run waits for Louis's go
   (it costs money). The golden shows what the model now reads: the three Checkers tools gone, `FindBranches` and
   `EstimatePrices` in.
+- **Data a pack publishes is not a tool.** Louis wanted the prices served by the API, open, "free to use". The API
+  may not know a pack (ADR 0027), so core got a third thing a pack can give besides toolsets and prompts: a read-only
+  feed (`IDataFeed`: a name, a description, its JSON). The API serves every feed at `/v1/feeds/{name}` without knowing
+  whose it is, and the pack writes its own JSON. This is the Plugin pattern (Fowler), the same seam the toolsets use,
+  and it mirrors MCP, which also splits a server into *tools* the model calls and *resources* anyone reads
+  ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)). The feed reads through the tool's cache, so the tool and the
+  feed always show the same month.
 
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md) ·
