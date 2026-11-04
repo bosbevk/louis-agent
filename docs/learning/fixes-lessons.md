@@ -175,6 +175,20 @@ instead of hiding it from the key and was the smallest change; the price was a f
 ([ADR 0049](../adr/0049-nothing-is-compatible-before-a-sale.md)). When a replay misses, read *which* message changed
 first: here it pointed straight at the one line that carried numbers. Skill 12 (evaluation) and 13 (cost).
 
+## FX36 · A library's failed task is yours to see
+
+A `Task` that ends in an exception nobody ever awaits is a lost task: when the garbage collector finds it, the runtime
+raises `TaskScheduler.UnobservedTaskException`, and F52's last-chance handler logs it as an error. PuppeteerSharp
+makes one of those on purpose for every redirect a page follows: a redirect has no body, so the library sets the
+body's task to "Response body is unavailable for redirect responses" and leaves it, where the JavaScript Puppeteer
+puts a `.catch` on the same promise. Nothing was wrong with any visit; the error showed up at an unrelated moment,
+whenever the collector ran. Three lessons. An observability feature finds old faults, not only new ones: the line
+appeared the day after F52 shipped, and the bug is as old as F32. A library's fault is observed where it's made,
+with the smallest thing that awaits it (asking for the body), not silenced in the handler that reports every lost
+task, which would hide the next real one. And a workaround for a library says so, names the version it was checked
+against and the place in the library's code, so the day the library fixes it the class goes (TODO, small cleanups).
+Skill 17 (observability) and 14 (reliability).
+
 ## FX34 · A cost is worth most while it's being spent
 
 A live run's table showed every turn's role, calls and seconds, and "—" for its cost, until the whole run had ended:
