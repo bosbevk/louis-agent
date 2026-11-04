@@ -24,7 +24,8 @@ flowchart LR
 - **Start-up:** `AgentHost.BuildToolHost()` — the same engine, skills and agent-built tools as the other hosts, with a
   stand-in chat client that refuses to be called.
 - **Transport** by `MCP_TRANSPORT`: `stdio` (default; the client starts the server as a subprocess) or `http` (Streamable
-  HTTP via `MapMcp()`, for remote clients, port 8080 in the container → `127.0.0.1:${MCP_PORT:-5090}`).
+  HTTP via `MapMcp()`, for remote clients, port 8080 in the container → `127.0.0.1:${MCP_PORT:-5090}`); read once
+  as the `McpTransport` enum (`McpTransportSetting`, in core's `Protocols/Mcp`), and any other value stops start-up.
 - **Tools:** `EngineToolSync` mirrors `AgentEngine.Tools` into the MCP tool collection and keeps it in sync: when the
   agent builds or approves a tool, clients get `notifications/tools/list_changed`. `SkillsToolProvider` adds three
   read-only skill tools; skills themselves run through the engine's `ExecuteSkill`.

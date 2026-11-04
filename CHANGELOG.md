@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **MCP_TRANSPORT is an enum**: the MCP server read its transport by comparing a string, so a typo
+  (`htpp`) started it on stdio without a word; `McpTransportSetting.Parse` reads it once into `McpTransport` (ADR
+  0024), unset is stdio and anything else stops start-up with the names it takes
 - 2026-11-04 — **Third-party notices, and ADR 0067 and 0068 in the rules list**: `THIRD-PARTY-NOTICES.md` names
   every package, CDN script and font we hand out and the licence each keeps (the Blazor apps send their DLLs to every
   visitor's browser), `LICENSE` points to it, ADR 0016 says so; `docs/CLAUDE.md` names ADR 0067 (a page's own data
