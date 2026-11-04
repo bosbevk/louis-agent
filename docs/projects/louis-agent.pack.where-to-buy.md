@@ -27,11 +27,13 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   places filed as a shop of the type supermarket, with a name, count; the nearest eight stay, nearest first. Two
   shops of one chain are two rows (Malmesbury's two Pick n Pays, Louis: "it must show both then"); only the same place
   twice is dropped. The map can call a fabric shop a supermarket, and code can't tell (*Limits and plans*).
-- **The town.** `FindBranches(shop, town)` (the older tool, kept: "we can use it later
-  maybe") asks Nominatim for the town (South Africa only, the first answer), which gives its centre, its municipality
-  and its province.
-- **The branches.** `BranchFinder` asks for the shop by name in a box around the town, half a degree each way, then a
-  degree and a half when the first box finds none. Only places Nominatim files as a shop count, and `ShopNames` reads
+- **The town.** `FindBranches(shop, town)`, which the cook uses only for a shop the user named that `FindShops` didn't
+  list, asks Nominatim for the town (South Africa only, the first answer), which gives its centre, its municipality and
+  its province.
+- **The branches.** `BranchFinder` asks for the shop by name in a box around the town, about 16 km each way, then half
+  a degree, then a degree and a half, widening only when a box finds none. The smallest comes first because the map
+  answers at most 20 hits in no distance order, so a box that reaches a city loses the town's own branch to the city's
+  (FX39). Only places Nominatim files as a shop count, and `ShopNames` reads
   a short name as the full one (`PnP` is `Pick n Pay`, `Woolies` is `Woolworths`). It keeps the three nearest, by the
   distance from the town's centre (`Distance`, the haversine formula).
 - **The answer.** `BranchPrinter` (and `ShopPrinter` for `FindShops`, with the same rows) writes the town's

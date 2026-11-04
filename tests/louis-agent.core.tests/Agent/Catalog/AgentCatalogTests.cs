@@ -103,6 +103,39 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("Prices").And.Contain("feed"));
     }
 
+    /// <summary>
+    /// The packs' imports are gathered in the packs' order and found by name, case ignored; a pack that takes none adds
+    /// none (F55).
+    /// </summary>
+    [Test]
+    public void ThePacksImports_AreGathered_AndFoundByName()
+    {
+        var catalog = Catalog(packs:
+        [
+            new FakePack("first", toolsets: [], imports: [new FakeImport("prices"), new FakeImport("rents")]),
+            new FakePack("second", toolsets: []),
+            new FakePack("third", toolsets: [], imports: [new FakeImport("fuel")])
+        ]);
+
+        Assert.That(catalog.Imports.Select(i => i.Name), Is.EqualTo(new[] { "prices", "rents", "fuel" }));
+        Assert.That(catalog.Import("RENTS")?.Name, Is.EqualTo("rents"));
+        Assert.That(catalog.Import("nope"), Is.Null);
+        Assert.That(AgentCatalog.CoreOnly.Imports, Is.Empty);
+    }
+
+    /// <summary>Two imports with one name, in one pack or two, can't both be registered: an import has one URL.</summary>
+    [Test]
+    public void AnImportNamedTwice_IsRefused()
+    {
+        var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
+            [
+                new FakePack("first", toolsets: [], imports: [new FakeImport("prices")]),
+                new FakePack("second", toolsets: [], imports: [new FakeImport("Prices")])
+            ]))!;
+
+        Assert.That(error.Message, Does.Contain("Prices").And.Contain("import"));
+    }
+
     /// <summary>A pack can't take the name of one of core's toolsets.</summary>
     [Test]
     public void AToolsetNamedLikeCores_IsRefused()

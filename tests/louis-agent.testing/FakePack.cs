@@ -1,5 +1,6 @@
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Core.Agent.Catalog.Imports;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Testing;
@@ -13,13 +14,15 @@ public sealed class FakePack(
     IReadOnlyList<ToolsetDefinition>? toolsets = null,
     IReadOnlyDictionary<string, string>? prompts = null,
     IReadOnlyList<string>? requires = null,
-    IReadOnlyList<IDataFeed>? feeds = null) : IAgentPack
+    IReadOnlyList<IDataFeed>? feeds = null,
+    IReadOnlyList<IDataImport>? imports = null) : IAgentPack
 {
     public string Name => name;
     public IReadOnlyList<ToolsetDefinition> Toolsets { get; } = toolsets ?? [Toolset(name, typeof(FakeShopTools), _ => [new FakeShopTools()])];
     public IFileProvider Prompts { get; } = new FakePrompts(prompts ?? new Dictionary<string, string> { [$"toolsets/{name}.md"] = $"# {name}\n\nA guide.\n" });
     public IReadOnlyList<string> Requires => requires ?? [];
     public IReadOnlyList<IDataFeed> Feeds => feeds ?? [];
+    public IReadOnlyList<IDataImport> Imports => imports ?? [];
 
     /// <summary>A toolset definition shaped like the catalogue's own, for a tool class a test names.</summary>
     public static ToolsetDefinition Toolset(string name, Type toolType, Func<ToolsetContext, IReadOnlyList<object>> create) =>

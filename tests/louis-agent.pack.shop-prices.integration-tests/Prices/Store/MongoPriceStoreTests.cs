@@ -7,8 +7,8 @@ namespace LouisAgent.Packs.ShopPrices.IntegrationTests.Prices.Store;
 
 /// <summary>
 /// The price store against a real MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set (CI's throwaway server): an empty
-/// store is seeded from the shipped tables, each month is kept, the newest is read, and a stored table is never
-/// overwritten by a seed. Each test gets a database of its own, dropped at the end.
+/// store is seeded from the shipped tables, each month is kept, the newest is read, a stored table is never
+/// overwritten by a seed, and an upload saves or corrects a month. Each test gets a database of its own, dropped at the end.
 /// </summary>
 [Category("Integration")]
 public class MongoPriceStoreTests
@@ -81,5 +81,27 @@ public class MongoPriceStoreTests
         var latest = await MongoPriceStore.Open(Url!, _database).LatestAsync(CancellationToken.None);
 
         Assert.That(latest[0].Products, Has.Count.EqualTo(1));
+    }
+
+    /// <summary>
+    /// An upload saves a new month, replaces a stored one with its correction, and every month of a source comes back
+    /// oldest first (F55).
+    /// </summary>
+    [Test]
+    public async Task AnUpload_SavesAMonth_AndReplacesACorrectedOne()
+    {
+        var store = MongoPriceStore.Open(Url!, _database);
+        var statsSa = PriceBook.Default.Files[0];
+        var september = statsSa with { AsOf = new DateOnly(2026, 9, 1), Products = [statsSa.Products[0]] };
+        var correctedAugust = statsSa with { Products = [statsSa.Products[1]] };
+
+        await store.SaveAsync(september, CancellationToken.None);
+        await store.SaveAsync(correctedAugust, CancellationToken.None);
+        var months = await store.MonthsAsync(statsSa.Source, CancellationToken.None);
+
+        Assert.That(store.CanSave, Is.True);
+        Assert.That(months.Select(m => m.AsOf), Is.EqualTo(new[] { statsSa.AsOf, september.AsOf }));
+        Assert.That(months[0].Products.Single().Product, Is.EqualTo(statsSa.Products[1].Product),
+            "August is the corrected one, not the seed");
     }
 }

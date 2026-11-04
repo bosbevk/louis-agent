@@ -89,5 +89,30 @@ every finding took the *recommended* option and the pull request named it, so th
 review of decisions, not an archaeology of them; every step was test-first with the failing run kept; and nothing
 paid ran. The pattern is the same as a person's: decide out loud, leave the trail.
 
+## F55: the preview is the check (2026-11-04)
+
+The same idea, used on data instead of grades. Stats SA's average prices are what the cook's estimates stand on, and
+Stats SA doesn't release every month; each release also repeats every month back to 2017, sometimes with an earlier
+month corrected. Louis: "I need to upload it via admin", and "we need to pick up the corrections".
+
+- **A person, not a schedule, decides a release is in.** The admin portal's Uploads page (`/admin/imports`) takes the
+  two spreadsheets. Preview reads them and says what saving would do: the new months, each corrected month with the
+  prices that changed, the unchanged ones, and any product with no names yet. Save writes exactly that. Choosing a
+  file again hides Save until the next preview, so nothing is written that the person didn't see.
+- **No tick.** The first plan replaced a stored month only when a box was ticked. Once the preview listed the
+  corrections, the tick added nothing: the preview *is* the check, and a second upload of the same files changes
+  nothing. One fewer thing to get wrong.
+- **Data as content, not code** (#7, #18). A new release used to be a JSON file made by hand and a build. Now it is
+  an operator's upload, and the code that turns sheets into price files is tested against the shipped August table,
+  price for price.
+- **A plugin seam again.** The API may not know a pack (ADR 0027), so core got a fourth thing a pack can give,
+  `IDataImport`, beside toolsets, prompts and feeds; the portal shows every upload without knowing whose it is
+  ([ADR 0071](../adr/0071-packs-take-data-uploads.md)).
+- **An old price beats no price, if it says so.** A product the newest month lacks is priced from the newest month
+  that has it, and the line names that month. Nothing is copied forward, so a stored month stays what Stats SA
+  published.
+- **Left out:** the files travel twice (preview, then save), fine at a few megabytes; an upload isn't served over MCP,
+  since it is a portal job.
+
 ---
 [Write-ups](README.md) · [Goal](../GOAL.md) · [12 · Evaluation](12-evaluation.md)
