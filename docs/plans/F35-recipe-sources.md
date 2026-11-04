@@ -798,6 +798,14 @@ read.
   worth having before customers depend on it. Of the 45, 25 search through the web provider, so on Azure those are paid
   queries (Tavily), not free as finding B says. The step-5 measure runs on all 45, so expect most answers to come from
   text sites. (E1 was the 13 data sites, E3 the 13 and two text sites.)
+- **2026-11-04, step 2, the photo rules stay** (Louis: "we need photo rules"). The brief dropped them because a print has
+  one image line or none, but that holds for a data print only: a text print is page text, and 32 of the 45 sites answer
+  as text, with logos and share icons among its images. A data print's image line is used whole; a text print keeps the
+  old rules (the image link itself, the same page, no icon or logo, a photo only breaks a tie).
+- **2026-11-04, step 2, the method is translated, the amounts exact** (Louis's pick). The print's lines are as the page wrote
+  them, but the cook answers in the task's language, so an English page's method is written in Afrikaans for an Afrikaans
+  task: faithful, step for step, every number, time and temperature unchanged. Step 4's judge must accept a translated
+  method as matching its source. (The others were the same with a row under *Unsure* saying so, and quoting as written.)
 
 ### What's left out, on purpose
 
