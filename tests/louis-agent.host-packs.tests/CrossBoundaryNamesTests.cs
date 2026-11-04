@@ -1,12 +1,12 @@
 using LouisAgent.Choices;
-using LouisAgent.Composition;
+using LouisAgent.HostPacks;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.FileProviders;
 
-namespace LouisAgent.Composition.Tests;
+namespace LouisAgent.HostPacks.Tests;
 
 // F18 step 7.5.3 (ADR 0043): a name that crosses a boundary stays text there: an identity names its packs, a role file's header lists the toolsets it adds (`toolsets: shops?`).
 // The composition root is the one place that sees every identity and pack, so it checks that each such name is one the catalogue knows, and a typo fails here and not when a chat opens.

@@ -1,7 +1,7 @@
 using LouisAgent.Identities.Puls.Evals.Checks.Shared.Scoring;
 using LouisAgent.Packs.WhereToBuy.Checks.Reading;
 
-namespace LouisAgent.Composition.Tests;
+namespace LouisAgent.HostPacks.Tests;
 
 /// <summary>
 /// The shops' names and sites live twice: in the where-to-buy pack, for its shop rules, and in Puls, for its price reading,

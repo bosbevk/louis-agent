@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 
-namespace LouisAgent.Composition;
+namespace LouisAgent.HostPacks;
 
 /// <summary>
 /// The compiled packs a host may load with <c>PACKS</c>, or an identity may name (ADR 0024): F35 <c>Recipes</c>, F50.2

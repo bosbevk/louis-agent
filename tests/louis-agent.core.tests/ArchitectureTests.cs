@@ -254,17 +254,31 @@ public partial class ArchitectureTests
     }
 
     /// <summary>
-    /// Every host loads the composition, so it names no checks or evals project: those reach the runner alone, and a
-    /// host carries none of them.
+    /// Every host loads the project that picks the packs, so it names no checks or evals project: those reach the
+    /// runner alone, and a host carries none of them.
     /// </summary>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
-    public void TheComposition_ReferencesNoChecksOrEvalsProject()
+    public void TheHostPacks_ReferenceNoChecksOrEvalsProject()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "hosts", "louis-agent.composition",
-            "louis-agent.composition.csproj"));
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "hosts", "louis-agent.host-packs",
+            "louis-agent.host-packs.csproj"));
 
         Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".checks.") || r.Contains(".evals")), Is.Empty);
+    }
+
+    /// <summary>
+    /// The composition is what everything agrees on, so it names no pack and no identity: a tool author takes it and
+    /// no product comes along. The host picks the packs.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+    [Test]
+    public void TheComposition_NamesNoPackOrIdentity()
+    {
+        string csproj = File.ReadAllText(Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "src"),
+            "louis-agent.composition.csproj", SearchOption.AllDirectories).Single());
+
+        Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".pack.") || r.Contains(".identity.")), Is.Empty);
     }
 
     /// <summary>

@@ -1,9 +1,11 @@
-namespace LouisAgent.Composition.Messages;
 
 using System.ComponentModel;
 
-/// <summary>The composition root's own exception texts (docs/CLAUDE.md, *Messages and logging*: each project keeps its own).</summary>
-public enum CompositionErrorMessage
+namespace LouisAgent.HostPacks.Messages;
+/// <summary>
+/// This project's own exception texts (docs/CLAUDE.md, *Messages and logging*: each project keeps its own).
+/// </summary>
+public enum HostPacksErrorMessage
 {
     [Description("Unknown identity '{Name}' in IDENTITIES. Supported: {Supported}.")]
     UnknownIdentity,

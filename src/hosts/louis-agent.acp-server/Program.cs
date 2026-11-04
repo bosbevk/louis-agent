@@ -1,5 +1,5 @@
 using LouisAgent.AcpServer;
-using LouisAgent.Composition;
+using LouisAgent.HostPacks;
 using LouisAgent.Core.Hosting;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.Core.Logging;

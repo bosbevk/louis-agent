@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>LouisAgent.Composition.Tests</RootNamespace>
+    <RootNamespace>LouisAgent.HostPacks.Tests</RootNamespace>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\hosts\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\src\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
     <!-- ADR 0073: the projects that prove an identity and a pack, whose copies of a shared table these tests hold equal
          to the pack's; no host references them, so this project does so itself. -->
     <ProjectReference Include="..\..\evals\identities\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />

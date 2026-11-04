@@ -1,6 +1,6 @@
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Composition.Messages;
+using LouisAgent.HostPacks.Messages;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls;
@@ -9,12 +9,12 @@ using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
 using LouisAgent.Choices;
 
-namespace LouisAgent.Composition;
+namespace LouisAgent.HostPacks;
 
 /// <summary>
-/// The composition root (CL15, ADR 0027): the one place that knows every identity and pack. A host calls
-/// <see cref="FromEnvironment"/> once at start-up and hands the catalogue to <c>AgentHost.Build</c>; the catalogue then
-/// checks that what was named fits together. Synchronous in CL15: nothing to await yet (F36's MCP packs connect here).
+/// The host's side of the framework (CL15, CL29.1, ADR 0027): the one place that knows every identity and pack. A host
+/// calls <see cref="FromEnvironment"/> once at start-up and hands the catalogue to <c>AgentHost.Build</c>; the catalogue
+/// then checks that what was named fits together. Synchronous in CL15: nothing to await yet (F36's MCP packs connect here).
 /// </summary>
 public static class Plugins
 {
@@ -37,8 +37,8 @@ public static class Plugins
     /// </summary>
     public static AgentCatalog FromSettings(string? identities, string? packs)
     {
-        var identityKinds = Parse<IdentityKind>(identities, CompositionErrorMessage.UnknownIdentity);
-        var packKinds = Parse<PackKind>(packs, CompositionErrorMessage.UnknownPack);
+        var identityKinds = Parse<IdentityKind>(identities, HostPacksErrorMessage.UnknownIdentity);
+        var packKinds = Parse<PackKind>(packs, HostPacksErrorMessage.UnknownPack);
 
         var chosen = identityKinds.Select(Create).ToList();
         var named = packKinds
@@ -70,7 +70,7 @@ public static class Plugins
     /// Reads a comma separated setting as members of the enum, each once, or refuses a name that isn't one and says
     /// which are.
     /// </summary>
-    private static IReadOnlyList<T> Parse<T>(string? setting, CompositionErrorMessage unknown) where T : struct, Enum
+    private static IReadOnlyList<T> Parse<T>(string? setting, HostPacksErrorMessage unknown) where T : struct, Enum
     {
         var kinds = new List<T>();
         foreach (string name in (setting ?? "").Split(',',

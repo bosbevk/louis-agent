@@ -2,7 +2,7 @@
 
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.where-to-buy.tests/`, `tests/louis-agent.pack.shop-prices.tests/`,
-> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.identity.puls.evals.tests/`, `tests/louis-agent.pack.where-to-buy.checks.tests/`, `tests/louis-agent.pack.recipes.checks.tests/`, `tests/louis-agent.composition.tests/`, `tests/louis-agent.mcp-server.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
+> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.identity.puls.evals.tests/`, `tests/louis-agent.pack.where-to-buy.checks.tests/`, `tests/louis-agent.pack.recipes.checks.tests/`, `tests/louis-agent.host-packs.tests/`, `tests/louis-agent.mcp-server.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
 > `tests/louis-agent.web.tests/`; the tests that leave their process in `tests/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
 > `tests/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -72,7 +72,7 @@ an `AgentEngineFactory` with a client that throws if called.
 
 `InternalsVisibleTo` gives the test projects access to `internal` types in core and the orchestrator.
 
-## louis-agent.identity.puls.tests, the packs' tests, louis-agent.composition.tests
+## louis-agent.identity.puls.tests, the packs' tests, louis-agent.host-packs.tests
 
 CL15 cut the engine into identities and packs, and each got its tests beside it: the identity's prove its prompts are
 its own and read through `SkillFileSource` (`PulsPromptsTests`, the Puls golden `PulsSessionSnapshot.json`), and,

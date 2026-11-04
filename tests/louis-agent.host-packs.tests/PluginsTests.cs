@@ -10,7 +10,7 @@ using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Identities.Puls;
 using Microsoft.Extensions.FileProviders;
 
-namespace LouisAgent.Composition.Tests;
+namespace LouisAgent.HostPacks.Tests;
 
 /// <summary>
 /// Checks that the composition root chooses: <c>IDENTITIES</c> and <c>PACKS</c>, parsed once as enums (ADR 0024),

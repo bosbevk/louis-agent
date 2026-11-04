@@ -4,7 +4,7 @@ using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.FileProviders;
 
-namespace LouisAgent.Composition.Tests;
+namespace LouisAgent.HostPacks.Tests;
 
 /// <summary>
 /// CL27: every built-in prompt, core's and every identity's and pack's, opens with its header: the Agent Skills spec's

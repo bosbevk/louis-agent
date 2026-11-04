@@ -12,8 +12,8 @@ namespace LouisAgent.Evals.Runner.Catalog;
 /// start.
 /// </summary>
 /// <remarks>
-/// Registry (Fowler, PoEAA). The runner is the one project that knows every evals project, as the composition is for
-/// identities and packs (ADR 0027), so it is where the lists meet. These projects are beside their owners and only the
+/// Registry (Fowler, PoEAA). The runner is the one project that knows every evals project, as host-packs is for
+/// identities and packs (ADR 0027), so it is where the lists meet. These projects sit under <c>evals/</c> and only the
 /// runner references them, so no host ever carries a check (ADR 0073).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>

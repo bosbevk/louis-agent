@@ -1,6 +1,6 @@
 using System.Text.Json;
 using LouisAgent.Choices;
-using LouisAgent.Composition;
+using LouisAgent.HostPacks;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Conformance;

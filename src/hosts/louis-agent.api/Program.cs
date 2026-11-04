@@ -14,7 +14,7 @@ using LouisAgent.Api.Evals.Store.Mongo;
 using LouisAgent.Api.Evals.Store.Recording;
 using LouisAgent.Api.Evals.Studio;
 using LouisAgent.Api.Messages;
-using LouisAgent.Composition;
+using LouisAgent.HostPacks;
 using LouisAgent.Core.Guardrails.Auth;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;

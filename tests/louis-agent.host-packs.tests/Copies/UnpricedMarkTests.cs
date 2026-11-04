@@ -2,7 +2,7 @@ using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Messages;
 
-namespace LouisAgent.Composition.Tests.Copies;
+namespace LouisAgent.HostPacks.Tests.Copies;
 
 /// <summary>
 /// The mark for a line with no price lives twice: the shop-prices pack writes it in its table, and the eval files name

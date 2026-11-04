@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Picks the identities and packs a host runs (CL15, ADR 0027): a host calls Plugins.FromEnvironment() once at start-up
+       and hands the catalogue to AgentHost. Core and the composition name no identity or pack; this project does, so it
+       is the host's side of the framework and never ships with a pack. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.HostPacks</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.host-packs.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
+    <ProjectReference Include="..\..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+    <ProjectReference Include="..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\..\docs\projects\louis-agent.host-packs.md" Link="docs\louis-agent.host-packs.md" />
+    <None Include="..\..\..\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+    <None Include="..\..\..\docs\guides\build-an-identity.md" Link="docs\build-an-identity.md" />
+  </ItemGroup>
+
+</Project>

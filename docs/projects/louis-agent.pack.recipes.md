@@ -145,4 +145,4 @@ listing and the settings).
 [For site owners](../SITE_OWNERS.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md) · Next: [louis-agent.composition](louis-agent.composition.md)
+[Projects](README.md) · Previous: [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md) · Next: [louis-agent.host-packs](louis-agent.host-packs.md)

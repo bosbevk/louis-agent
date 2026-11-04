@@ -4,12 +4,12 @@ using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using LouisAgent.Composition;
+using LouisAgent.HostPacks;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 using ModelContextProtocol.Server;
 
-namespace LouisAgent.Composition.Tests;
+namespace LouisAgent.HostPacks.Tests;
 
 // CL15 step 4 (ADR 0028): every pack the composition root can build stays convertible to an MCP server. The test sees
 // shapes, not behaviour: each tool's function is built as the engine builds it (AgentCatalog.ToolMethodsOf and

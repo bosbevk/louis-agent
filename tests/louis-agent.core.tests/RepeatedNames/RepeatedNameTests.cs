@@ -42,9 +42,9 @@ public class RepeatedNameTests
         "identities/louis-agent.identity.puls/PulsRole.cs",
         "src/web/louis-agent.puls/Text/PulsWebRole.cs",
         "identities/louis-agent.identity.puls/PulsIdentity.cs",
-        "src/hosts/louis-agent.composition/IdentityKind.cs",
+        "src/hosts/louis-agent.host-packs/IdentityKind.cs",
         "identities/louis-agent.identity.puls/PulsPack.cs",
-        "src/hosts/louis-agent.composition/PackKind.cs",
+        "src/hosts/louis-agent.host-packs/PackKind.cs",
         "src/hosts/louis-agent.api/Endpoints/ApiErrorKind.cs",
         "src/engine/louis-agent.session-stream/StreamErrorKind.cs",
     ];

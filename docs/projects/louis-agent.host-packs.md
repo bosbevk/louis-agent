@@ -1,12 +1,12 @@
-# louis-agent.composition — design
+# louis-agent.host-packs — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `src/hosts/louis-agent.composition/` · **References:** louis-agent.core,
+> **Kind:** class library (`net10.0`) · **Path:** `src/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
 > every identity (`identities/`) and every pack (`packs/`) · **Used by:** louis-agent.cli, louis-agent.acp-server,
 > louis-agent.api, louis-agent.mcp-server
 
 ## Purpose
 
-The composition root: the one project that knows every identity and every pack, so that nothing else has to
+The host's side of the framework: the one project that knows every identity and every pack, so that nothing else has to
 ([ADR 0027](../adr/0027-engine-identities-and-packs.md)). Core stays the engine and names no product; a host stays
 thin and never references an identity or a pack; and which agent a host runs is a setting, not a build.
 
@@ -17,7 +17,7 @@ thin and never references an identity or a pack; and which agent a host runs is 
   after this, then reads `IDENTITIES` and `PACKS`.
 - **Names become enums once.** `IDENTITIES=puls` and `PACKS=where-to-buy` are comma separated, case ignored, each name once,
   and parsed with `SettingChoice` into `IdentityKind` and `PackKind` ([ADR 0024](../adr/0024-choices-are-enums.md)).
-  An unknown name stops start-up with `CompositionErrorMessage`, naming the supported ones. Unset loads nothing: the
+  An unknown name stops start-up with `HostPacksErrorMessage`, naming the supported ones. Unset loads nothing: the
   code-review stack never carries Puls.
 - **Identities bring their packs.** Each chosen identity is created, and every pack it names in `Packs` is added to the
   packs named on their own; one instance per pack, however often it is named. A pack is created with its own settings
@@ -34,8 +34,8 @@ thin and never references an identity or a pack; and which agent a host runs is 
 | `Plugins.cs` | `FromEnvironment`, `FromSettings(identities, packs)`, and one `Create` switch for identities and one for packs |
 | `IdentityKind.cs` | The identities a host may load (`Puls`) |
 | `PackKind.cs` | The compiled packs a host may load or an identity may name (`Shops`) |
-| `Messages/CompositionErrorMessage.cs` | The two refusals: an unknown identity, an unknown pack |
-| `louis-agent.composition.csproj` | References core, the Puls identity and the where-to-buy, shop-prices and recipes packs |
+| `Messages/HostPacksErrorMessage.cs` | The two refusals: an unknown identity, an unknown pack |
+| `louis-agent.host-packs.csproj` | References core, the Puls identity and the where-to-buy, shop-prices and recipes packs |
 
 ## Configuration
 
@@ -57,7 +57,7 @@ setting is matched to the enum member with the case ignored, so `price-rules` wo
 
 ## Tests
 
-`tests/louis-agent.composition.tests`: `PluginsTests` (the named identities load with their packs, a name twice is
+`tests/louis-agent.host-packs.tests`: `PluginsTests` (the named identities load with their packs, a name twice is
 one, unset loads none, an unknown name is refused naming the supported ones, `PACKS=where-to-buy` works without an identity,
 `config/.env` is read before the settings) and `PackConvertibilityTests`, which builds every `PackKind` and checks
 each tool against the MCP SDK's shapes ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)): plain data in, text

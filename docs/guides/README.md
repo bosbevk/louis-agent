@@ -36,7 +36,7 @@
 | [Change the shared web library](change-the-web-shared.md) | `src/web/louis-agent.web.shared` | Decide what is shared, add an API call, follow a new event, add a component |
 | [Change the engine](change-the-engine.md) | `louis-agent.core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
 | [Change Puls](change-puls.md) | `identities/louis-agent.identity.puls` | Change what Puls says or routes, add a language, a specialist or a minion's function |
-| [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `src/hosts/louis-agent.composition` | Register a new pack or identity: its enum member, its arm, its reference |
+| [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `src/hosts/louis-agent.host-packs` | Register a new pack or identity: its enum member, its arm, its reference |
 | [Write and run tests](write-tests.md) | `tests/` | Everything about the test projects |
 
 Each project also links its guide and design doc in its `.csproj`, so they show under `docs/` in the IDE's solution

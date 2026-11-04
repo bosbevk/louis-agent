@@ -19,7 +19,7 @@
     <ProjectReference Include="..\packs\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj" />
     <ProjectReference Include="..\packs\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj" />
     <!-- F49.2: the one project that knows every identity and pack (ADR 0027), for the toolsets an eval's modes name. -->
-    <ProjectReference Include="..\..\src\hosts\louis-agent.composition\louis-agent.composition.csproj" />
+    <ProjectReference Include="..\..\src\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

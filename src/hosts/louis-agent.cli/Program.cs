@@ -1,5 +1,5 @@
 using LouisAgent.Cli;
-using LouisAgent.Composition;
+using LouisAgent.HostPacks;
 using LouisAgent.Core.Hosting;
 
 // Usage: louis-agent.cli [prompt]. Provider/model come from LLM_PROVIDER / LLM_MODEL (see config/.env.example).

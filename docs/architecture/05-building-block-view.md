@@ -44,7 +44,7 @@ flowchart TB
 Every host is thin: it maps the agent's stream to its protocol, and all behaviour is in core
 ([0010](../adr/0010-folders-by-concern.md)). Core is the engine and names no product: who an agent is (its voice, modes,
 roles and the packs it uses, by name) is an identity in `identities/`, what it can do (toolsets, guides, settings) is a
-pack in `packs/`, and only the composition root (`src/hosts/louis-agent.composition`) knows them all; a host picks with
+pack in `packs/`, and only the composition root (`src/hosts/louis-agent.host-packs`) knows them all; a host picks with
 `IDENTITIES` and `PACKS` at start-up and hands one `AgentCatalog` to `AgentHost.Build` (CL15,
 [0027](../adr/0027-engine-identities-and-packs.md)). Every pack stays convertible to an MCP server, held by
 `PackConvertibilityTests` ([0028](../adr/0028-packs-stay-convertible-to-mcp.md)).

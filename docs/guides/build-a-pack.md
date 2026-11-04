@@ -8,7 +8,7 @@
 A **pack** is what an agent can do: one or more toolsets, the guide that tells the model when to use them, the pack's own
 settings and state. It names no identity and references no other pack's code, so it could be served as an MCP server
 one day without changing. The engine (`louis-agent.core`) never references a pack; only the composition root
-(`src/hosts/louis-agent.composition`) knows them all.
+(`src/hosts/louis-agent.host-packs`) knows them all.
 
 The steps below build a small example pack, `units`, with one tool that converts a value between units: no settings,
 no network. The real packs in the repo follow the same steps: `packs/louis-agent.pack.where-to-buy` is the closest
@@ -207,7 +207,7 @@ public enum UnitsToolset
 
 Write the name out with `.Wire()` (`using LouisAgent.Choices;`): `new(UnitsToolset.Units.Wire(), …)`, `public string Name => UnitsToolset.Units.Wire();`.
 Read one in with `SettingChoice.TryParse`. Never `ToString()`, `ToLowerInvariant()` or a naming policy. The text stays text where it travels
-(an environment variable, a role file's `toolsets: units?`, a request body); `CrossBoundaryNamesTests` in `tests/louis-agent.composition.tests`
+(an environment variable, a role file's `toolsets: units?`, a request body); `CrossBoundaryNamesTests` in `tests/louis-agent.host-packs.tests`
 checks that every pack an identity names and every toolset a role's header lists is one the catalogue has.
 
 Add your enum's file to the list in `RepeatedNameTests` (`tests/louis-agent.core.tests/RepeatedNames/`): from then on a typed `"units"` anywhere in the sources and tests
@@ -225,7 +225,7 @@ Then document each setting where people look for it: a commented line in `config
 
 ## 6. Register it in the composition root
 
-Three edits in `src/hosts/louis-agent.composition`:
+Three edits in `src/hosts/louis-agent.host-packs`:
 
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:
@@ -255,7 +255,7 @@ the pack's folders, and write:
 - **A golden of its texts**, so a changed word the model reads is a reviewed change
   (`Messages/ShopToolMessageSnapshotTests.cs` and its JSON; regenerate with `LOUIS_UPDATE_GOLDEN=1`, review the diff).
 
-Two checks come for free once the pack is in `PackKind`: `PackConvertibilityTests` (`tests/louis-agent.composition.tests`)
+Two checks come for free once the pack is in `PackKind`: `PackConvertibilityTests` (`tests/louis-agent.host-packs.tests`)
 builds every pack and checks the shapes in step 2 against the MCP SDK, and `ArchitectureTests` checks its references.
 Run them with the rest:
 
@@ -305,7 +305,7 @@ which only the runner references, so someone can use your tools without the eval
    first. The where-to-buy project is the model.
 
 A contract your pack and the eval share lives in a shared project, or is duplicated. A duplicate is held equal by a test
-in `tests/louis-agent.composition.tests`, the one project that sees both (`UnpricedMarkTests`, `ShopTableTests`).
+in `tests/louis-agent.host-packs.tests`, the one project that sees both (`UnpricedMarkTests`, `ShopTableTests`).
 
 ## Before you ask for a review
 
