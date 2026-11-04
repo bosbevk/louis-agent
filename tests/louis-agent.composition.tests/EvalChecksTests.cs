@@ -1,4 +1,4 @@
-using LouisAgent.Packs.Shops.Checks;
+using LouisAgent.Packs.WhereToBuy.Checks;
 
 namespace LouisAgent.Composition.Tests;
 
@@ -9,19 +9,19 @@ namespace LouisAgent.Composition.Tests;
 public class EvalChecksTests
 {
     /// <summary>
-    /// The list is the shops pack's, in the pack's order: Puls ships readers, not checks, since F49.3.
+    /// The list is the where-to-buy pack's, in the pack's order: Puls ships readers, not checks, since F49.3.
     /// </summary>
     [Test]
-    public void TheList_IsTheShopsPacks() =>
+    public void TheList_IsTheWhereToBuyPacks() =>
         Assert.That(EvalChecks.All.Select(entry => entry.Type),
-            Is.EqualTo(ShopsChecks.All.Select(entry => entry.Type)));
+            Is.EqualTo(WhereToBuyChecks.All.Select(entry => entry.Type)));
 
     /// <summary>
-    /// <c>untooled-shops</c> and <c>estimates-at-shop</c> are the shops pack's: the composition's entries are the ones
+    /// <c>untooled-shops</c> and <c>estimates-at-shop</c> are the where-to-buy pack's: the composition's entries are the ones
     /// the pack lists.
     /// </summary>
     [TestCase("untooled-shops")]
     [TestCase("estimates-at-shop")]
-    public void AShopRule_IsTheShopsPacks(string type) =>
-        Assert.That(ShopsChecks.All, Has.Member(EvalChecks.All.Single(each => each.Type == type)));
+    public void AShopRule_IsTheWhereToBuyPacks(string type) =>
+        Assert.That(WhereToBuyChecks.All, Has.Member(EvalChecks.All.Single(each => each.Type == type)));
 }

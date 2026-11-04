@@ -9,16 +9,18 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.ShopPrices;
+using LouisAgent.Packs.WhereToBuy;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Identities.Puls.Tests;
 
 /// <summary>
 /// Pins what the model is sent in a Puls session: the chat (puls/voice-af with specialists and web, as the web app
-/// opens it) and the cook (puls-cook with web and what its header declares, as Puls hands it the work). Core's
-/// golden never saw a Puls session, so this one is the proof that the identity keeps what it sends. A deliberate
-/// change regenerates it with LOUIS_UPDATE_GOLDEN=1: run, review the diff, commit.
+/// opens it) and the cook (puls-cook with web and what its header declares, as Puls hands it the work: the recipes,
+/// where to buy and the shop prices). Core's golden never saw a Puls session, so this one is the proof that the
+/// identity keeps what it sends. A deliberate change regenerates it with LOUIS_UPDATE_GOLDEN=1: run, review the diff,
+/// commit.
 /// </summary>
 public class PulsSessionSnapshotTests
 {
@@ -50,7 +52,7 @@ public class PulsSessionSnapshotTests
     private AgentEngineFactory Factory()
     {
         // The Puls stack's settings, as far as building an engine reads them: a peer for the specialists toolset, and a
-        // shop with a browser for the shops toolset (F33; nothing is connected while an engine is built).
+        // browser (nothing is connected while an engine is built).
         var options = new AgentOptions
         {
             WorkspaceRoot = _skillsDir,
@@ -59,12 +61,12 @@ public class PulsSessionSnapshotTests
             AgentPeers = new Dictionary<string, Uri> { [SampleIdentity.Alpha] = new("http://puls-agent.test/") },
             BrowserUrl = "http://browser.test:9222",
         };
-        // The shops are a pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.
+        // Where to buy and shop prices are packs Puls names (F50.2); the catalogue is what IDENTITIES=puls builds.
         // The recipes pack is the other one Puls names, with every site on as the deployments have it
         // (RECIPE_SOURCES=*), because the cook's header asks for its toolset.
         var catalog = new AgentCatalog([new PulsIdentity()],
         [
-            new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" }),
+            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
             new RecipesPack(new RecipesOptions { RecipeSources = "*" })
         ]);
         return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);

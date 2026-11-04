@@ -50,7 +50,7 @@ to the contract (taken), everything to the pack with a copy of the table reader 
 [0043](0043-repeated-names-are-enums.md) · [0055](0055-keep-it-simple.md) · [0056](0056-a-check-is-a-catalogue-entry.md)
 · [0057](0057-regex-is-the-last-option.md) · [0059](0059-an-identity-ships-readers-not-checks.md) ·
 [write-up 20](../learning/20-extensibility.md#a-pack-ships-its-checks-f493) ·
-[louis-agent.pack.shops](../projects/louis-agent.pack.shops.md)
+[louis-agent.pack.where-to-buy](../projects/louis-agent.pack.where-to-buy.md) (the shops pack's checks moved there in F50.2)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)

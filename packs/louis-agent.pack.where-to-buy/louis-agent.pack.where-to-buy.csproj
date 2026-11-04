@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Where to buy (F50.2, ADR 0027, 0028, 0069): a shop's branches near the user's town from OpenStreetMap's
+       Nominatim, and the shop checks an eval names (F49.3), which prove the answer names the branch and reads no
+       shop. It took the place of the shops pack. References core, and the check contract for its checks. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Packs.WhereToBuy</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Keeps the embedded guide's folder path: without it, toolsets/where-to-buy.md is never found. -->
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="louis-agent.pack.where-to-buy.tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <!-- The check contract: the pack ships the checks that prove what it does, as it ships its tools (F49.3,
+         WhereToBuyChecks.All); never the harness that runs them (ADR 0027). -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Prompts\**\*.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.pack.where-to-buy.md" Link="docs\louis-agent.pack.where-to-buy.md" />
+    <None Include="..\..\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+  </ItemGroup>
+
+</Project>

@@ -9,6 +9,7 @@ namespace LouisAgent.Identities.Puls;
 /// </summary>
 public enum PulsPack
 {
-    [WireName("shops")] Shops,
+    [WireName("where-to-buy")] WhereToBuy,
+    [WireName("shop-prices")] ShopPrices,
     [WireName("recipes")] Recipes,
 }

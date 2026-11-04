@@ -16,7 +16,8 @@ using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.ShopPrices;
+using LouisAgent.Packs.WhereToBuy;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -106,7 +107,7 @@ internal static class ApiTestHost
 
     /// <summary>
     /// What the API runs on: an engine over the model given (one that is never called, unless a test sends a message),
-    /// with the Puls identity and the shops pack.
+    /// with the Puls identity and the packs it names.
     /// </summary>
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model)
     {
@@ -118,7 +119,7 @@ internal static class ApiTestHost
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new ShopsPack(new ShopsOptions()), new RecipesPack(new RecipesOptions())]);
+            [new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
         var engines = new AgentEngineFactory(model, options, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,

@@ -79,25 +79,25 @@ properties:
           # What the browser tells the sites it reads for a user (FX21): who reads, where to learn more, and why; never a person.
           - name: BROWSER_USER_AGENT
             value: "Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)"
-          - name: SHOP_CATALOGUES
-            value: checkers
           # The recipe sites the recipes toolset may search: every site in the table (F35.2, Louis's pick E2), as the compose sets it.
           - name: RECIPE_SOURCES
             value: "*"
-          - name: SHOP_STORE_CACHE
-            value: /data/shop-stores.json
           # The benchmark store: the home PC's puls-mongo, through the sidecar; the URL carries the password, so it is a secret.
           - name: EVALS_MONGO_URL
             secretRef: benchmarks-mongo-url
           # Its database: the API's default is `evals` now (F18 step 7b (iii)), so Puls names the one its runs are in.
           - name: EVALS_MONGO_DATABASE
             value: puls_benchmarks
+          # The shop prices' store (F50.2): the same server and user as the eval store, so the same secret; the
+          # database is the pack's default, shop_prices.
+          - name: SHOP_PRICES_MONGO_URL
+            secretRef: benchmarks-mongo-url
         resources:
           cpu: 1
           memory: 2Gi
           ephemeralStorage: 4Gi
         # The share puls-app-workspace (storage puls-app-vol on the environment): config/ with the price tables at the
-        # paths above, logs/ for the run files and the usage ledger, data/ for the shop store cache.
+        # paths above, logs/ for the run files and the usage ledger, data/ for the pages an eval run saves.
         volumeMounts:
           - volumeName: puls-app-vol
             mountPath: /workspace
