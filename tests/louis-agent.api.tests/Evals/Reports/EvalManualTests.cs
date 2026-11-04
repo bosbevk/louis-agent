@@ -17,9 +17,9 @@ public class EvalManualTests
 
     /// <summary>Each real eval's manual is found beside the eval and opens with a heading.</summary>
     [TestCase("stub", "src/evals/louis-agent.evals.runner/Manuals/stub.md")]
-    [TestCase("puls-cook", "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md")]
-    [TestCase("puls-routing", "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Routing/manual.md")]
-    [TestCase("puls-recipes", "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Recipes/manual.md")]
+    [TestCase("puls-cook", "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md")]
+    [TestCase("puls-routing", "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Routing/manual.md")]
+    [TestCase("puls-recipes", "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Recipes/manual.md")]
     public void AnEvalsManual_IsReadFromBesideTheEval(string eval, string path)
     {
         var check = new EvalEntry(eval, "An eval", path);

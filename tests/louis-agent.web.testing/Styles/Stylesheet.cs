@@ -17,7 +17,7 @@ public sealed partial record Stylesheet(string Folder)
 {
     /// <summary>The stylesheet of one of our web apps, by its project's name.</summary>
     public static Stylesheet Of(string project) =>
-        new(Path.Combine(Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "configured"), project,
+        new(Path.Combine(Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "demos"), project,
             SearchOption.AllDirectories).Single(), "wwwroot", "css"));
 
     /// <summary>Every rule the app loads, file after file in app.css's order.</summary>

@@ -20,10 +20,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\configured\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\demos\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
     <!-- ADR 0073: the projects that prove an identity and a pack, whose copies of a shared table these tests hold equal
          to the pack's; no host references them, so this project does so itself. -->
-    <ProjectReference Include="..\..\configured\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
+    <ProjectReference Include="..\..\demos\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
     <ProjectReference Include="..\..\packs-evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />

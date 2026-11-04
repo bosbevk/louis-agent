@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\configured\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\demos\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <!-- The packs Puls names, so its golden builds the cook with them as the Puls stack does. -->
     <ProjectReference Include="..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
@@ -27,9 +27,9 @@
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- The name enums Puls's prompts tests read, kept with its evals (Evals/Checks/Shared/). -->
-    <ProjectReference Include="..\..\configured\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
+    <ProjectReference Include="..\..\demos\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
     <!-- The host-packs project says which toolsets Puls has (its identity and the packs it names). -->
-    <ProjectReference Include="..\..\configured\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\demos\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

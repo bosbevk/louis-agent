@@ -3,11 +3,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\engine\louis-agent.core\louis-agent.core.csproj" />
     <!-- CL15: the identities and packs this host may load, chosen by IDENTITIES and PACKS at start-up. -->
-    <ProjectReference Include="..\..\..\configured\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\..\demos\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
     <!-- The web app it serves: the code-review app (louis-agent.web) by default, Puls with -p:WebApp=puls (Dockerfile.puls).
          Same API either way; only the static files differ. -->
-    <ProjectReference Include="..\..\..\configured\louis-agent\web\louis-agent.web\louis-agent.web.csproj" Condition="'$(WebApp)' != 'puls'" />
-    <ProjectReference Include="..\..\..\configured\puls\web\louis-agent.puls\louis-agent.puls.csproj" Condition="'$(WebApp)' == 'puls'" />
+    <ProjectReference Include="..\..\..\demos\louis-agent\web\louis-agent.web\louis-agent.web.csproj" Condition="'$(WebApp)' != 'puls'" />
+    <ProjectReference Include="..\..\..\demos\puls\web\louis-agent.puls\louis-agent.puls.csproj" Condition="'$(WebApp)' == 'puls'" />
     <ProjectReference Include="..\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
     <!-- FX26: a failed turn's kind (StreamErrorKind), written by the stream as its readers read it. -->
     <ProjectReference Include="..\..\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />

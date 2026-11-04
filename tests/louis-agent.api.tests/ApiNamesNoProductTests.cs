@@ -85,7 +85,7 @@ public class ApiNamesNoProductTests
 
     /// <summary>Each identity's product name, from its project folder's name.</summary>
     private static IReadOnlyList<string> Products() =>
-        Directory.GetDirectories(Path.Combine(ApiTestHost.RepoRoot, "configured"), "louis-agent.identity.*",
+        Directory.GetDirectories(Path.Combine(ApiTestHost.RepoRoot, "demos"), "louis-agent.identity.*",
                 SearchOption.AllDirectories)
             .Where(dir => !dir.EndsWith(".evals", StringComparison.Ordinal))
             .Where(dir => !dir.EndsWith(".judges", StringComparison.Ordinal))

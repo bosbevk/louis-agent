@@ -32,7 +32,7 @@ Architecture*), as `louis-agent.identity.puls.judges` already did.
 
 - **No pack and no identity references anything under `src/evals/`.** A pack and an identity stand on core alone.
 - **What proves one is a project of its own, which only the runner references:**
-  `packs-evals/louis-agent.pack.{name}.checks`, `configured/{name}/evals/louis-agent.identity.{name}.evals` and `.judges`.
+  `packs-evals/louis-agent.pack.{name}.checks`, `demos/{name}/evals/louis-agent.identity.{name}.evals` and `.judges`.
   `packs/` holds tools and nothing else ([ADR 0074](0074-the-folders-say-what-ships.md)). The arrow points at the thing proved,
   never the reverse; a project references what it uses and no more. The composition names none of them, so no host
   carries one.
@@ -56,7 +56,7 @@ reading is the check contract's.
   `ToolsAndIdentitiesFolders_HoldNoEvalsProject`.
 - The move kept every namespace (each new project's root namespace is the old one) and changed no rule, so the cook's
   pinned grades didn't change.
-- An eval's folder is `configured/{name}/evals/louis-agent.identity.{name}.evals/Evals/{Folder}/`, and the studio publishes there
+- An eval's folder is `demos/{name}/evals/louis-agent.identity.{name}.evals/Evals/{Folder}/`, and the studio publishes there
   (`PublishTarget`), so a new identity needs its evals project before an eval can be published for it.
 - The API references the check contract directly, for the kinds of reader its studio lists; before, it had it through
   the identity without saying so. The contract holds no check.

@@ -106,7 +106,7 @@ The portal lists the C# evals the runner lists, so a new eval needs no change in
 `--list` gives each eval its name, identity, version and `proves` line, and the portal shows the `proves` as the check's
 title. The eval's name is its check's id.
 
-1. Write the eval as a folder of files beside its identity (`identities/louis-agent.identity.{name}/Evals/{Eval}/`),
+1. Write the eval as a folder of files in its demo (`demos/{name}/evals/louis-agent.identity.{name}.evals/Evals/{Eval}/`),
    with its scenarios, checks and reference transcripts; [Add an eval](add-an-eval.md) walks through it.
 2. Check the runner lists it: `dotnet src/evals/louis-agent.evals.runner/bin/Debug/net10.0/louis-agent.evals.runner.dll --list`
    prints one line for it (build the runner first).

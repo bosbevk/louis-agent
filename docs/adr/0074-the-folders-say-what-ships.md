@@ -3,7 +3,8 @@
 **Status:** Accepted · **Date:** 2026-11-04 (Louis, reading the solution in Rider: "can we group this via function",
 "can we make the folder structure mirror it", "this is only the puls config", "this would be like someone projects",
 "only framework stuff should be in source right?", "if evals is framework it should move", "the folder structure must
-match, these two items could be put in one ADR") · **Recorded:** 2026-11-04
+match, these two items could be put in one ADR", "this is actually demos", "should be called demos") · **Recorded:**
+2026-11-04
 
 ## Context
 
@@ -21,8 +22,8 @@ packages published first.
 - **`src/` holds only the framework:** `engine/`, `hosts/`, `web/` and `evals/`, grouped by function.
 - **`packs/` holds tools and nothing else;** what proves a pack sits apart in `packs-evals/`, so someone can take the tools
   without the evals, or not own them.
-- **Anything that names a product is someone's own project under `configured/`**, by product and then by function, using
-  the same names as `src/`: `configured/puls/{identity,evals,web,hosts}` and `configured/louis-agent/{web,hosts}`. So it
+- **Anything that names a product is a demo of the framework, under `demos/`**, as someone's own project would be, by product and then by function, using
+  the same names as `src/`: `demos/puls/{identity,evals,web,hosts}` and `demos/louis-agent/{web,hosts}`. So it
   can be lifted out as is, and a new product looks like these do.
 
 `SolutionLayoutTests` holds all of it, project by project.

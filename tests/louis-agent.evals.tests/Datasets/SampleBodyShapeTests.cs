@@ -22,7 +22,7 @@ public class SampleBodyShapeTests
     /// copies a build puts under bin are left out).
     /// </summary>
     private static IEnumerable<string> ScenarioFiles() =>
-        Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "configured"))
+        Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "demos"))
             .Select(product => Path.Combine(product, "evals"))
             .Where(Directory.Exists)
             .SelectMany(evals => Directory.EnumerateDirectories(evals, "louis-agent.identity.*.evals"))

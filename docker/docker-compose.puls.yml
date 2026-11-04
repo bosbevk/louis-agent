@@ -32,7 +32,7 @@ services:
       # puls, as its project is the API's (Louis's pick J1); the eval runner it starts is named by its own.
       OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       OTEL_SERVICE_NAME: puls
-      # Who this agent is (CL15): Puls, from configured/puls/identity/louis-agent.identity.puls; the code-review stack sets none.
+      # Who this agent is (CL15): Puls, from demos/puls/identity/louis-agent.identity.puls; the code-review stack sets none.
       IDENTITIES: puls
       # The time GetToday tells when the user shared no zone (CL15: core names no country).
       HOST_TIME_ZONE: Africa/Johannesburg

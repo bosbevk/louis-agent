@@ -282,7 +282,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "specs", "specs", "{7B2E4C10
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs-evals", "packs-evals", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configured", "configured", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "puls", "puls", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}"
 EndProject
@@ -316,9 +316,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api", "src\hosts\louis-agent.api\louis-agent.api.csproj", "{00E53CA6-5EF8-4D7A-8928-6749C7C0B942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "configured\louis-agent\web\louis-agent.web\louis-agent.web.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "demos\louis-agent\web\louis-agent.web\louis-agent.web.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator", "configured\louis-agent\hosts\louis-agent.orchestrator\louis-agent.orchestrator.csproj", "{99135CF2-B1A3-40D9-89B4-802289451175}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator", "demos\louis-agent\hosts\louis-agent.orchestrator\louis-agent.orchestrator.csproj", "{99135CF2-B1A3-40D9-89B4-802289451175}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator.tests", "tests\louis-agent.orchestrator.tests\louis-agent.orchestrator.tests.csproj", "{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}"
 EndProject
@@ -338,9 +338,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.tests", "te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.shared", "src\web\louis-agent.web.shared\louis-agent.web.shared.csproj", "{2A96C62E-D01A-4172-A1A7-0E809148723B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls", "configured\puls\web\louis-agent.puls\louis-agent.puls.csproj", "{B7678750-A3A4-4B29-AA77-E1E1E1682E68}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls", "demos\puls\web\louis-agent.puls\louis-agent.puls.csproj", "{B7678750-A3A4-4B29-AA77-E1E1E1682E68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls", "configured\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj", "{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls", "demos\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj", "{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.composition", "src\engine\louis-agent.composition\louis-agent.composition.csproj", "{06007296-284A-4A6E-A166-0555BB47408F}"
 EndProject
@@ -404,11 +404,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.checks", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.checks.tests", "tests\louis-agent.evals.checks.tests\louis-agent.evals.checks.tests.csproj", "{6ACC91F9-F0E4-4696-A704-FE0D5730F872}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges", "configured\puls\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj", "{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges", "demos\puls\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj", "{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges.tests", "tests\louis-agent.identity.puls.judges.tests\louis-agent.identity.puls.judges.tests.csproj", "{44951A66-A812-46C2-982F-78B4B9B60CE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site", "configured\louis-agent\web\louis-agent.site\louis-agent.site.csproj", "{2AF9206D-FA47-452E-BFB5-909E16B0B283}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site", "demos\louis-agent\web\louis-agent.site\louis-agent.site.csproj", "{2AF9206D-FA47-452E-BFB5-909E16B0B283}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site.tests", "tests\louis-agent.site.tests\louis-agent.site.tests.csproj", "{019CBDE7-1B72-4A30-8722-EA790CB43F1D}"
 EndProject
@@ -428,7 +428,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-b
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks", "packs-evals\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj", "{D83A4AAF-492F-42CB-8C09-13197A073043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals", "configured\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj", "{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals", "demos\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj", "{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks.tests", "tests\louis-agent.pack.where-to-buy.checks.tests\louis-agent.pack.where-to-buy.checks.tests.csproj", "{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764}"
 EndProject
@@ -436,7 +436,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals.tests", "tests\louis-agent.identity.puls.evals.tests\louis-agent.identity.puls.evals.tests.csproj", "{B1E6B1EA-183F-4E6F-9747-63AD2303090A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.host-packs", "configured\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj", "{61999E8B-9A07-42C8-9855-E84171680967}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.host-packs", "demos\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj", "{61999E8B-9A07-42C8-9855-E84171680967}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

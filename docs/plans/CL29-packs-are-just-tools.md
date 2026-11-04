@@ -160,7 +160,7 @@ flowchart LR
 
 - **Layout, 2026-11-04.** `host-packs` is one configuration, not framework ("this is only the puls config", "this would be
   like someone projects"), and only framework stays in `src/`: see [ADR 0074](../adr/0074-the-folders-say-what-ships.md).
-  `host-packs` is at `configured/puls/hosts/`, and the composition at `src/engine/`. The trees below are from before that.
+  `host-packs` is at `demos/puls/hosts/`, and the composition at `src/engine/`. The trees below are from before that.
 - **Order, 2026-11-04.** `IPackContext` names the browser and search contracts, so those move first: step 4 comes before
   step 2's new types.
 
@@ -180,7 +180,7 @@ src/hosts/                           src/hosts/
 
 | Type | From | To (folder under `louis-agent.composition/`, namespace `LouisAgent.Composition.…`) | Step |
 |---|---|---|---|
-| `Plugins`, `IdentityKind`, `PackKind`, `CompositionErrorMessage` | composition | `configured/louis-agent.host-packs/`, `LouisAgent.HostPacks` | 1 |
+| `Plugins`, `IdentityKind`, `PackKind`, `CompositionErrorMessage` | composition | `demos/louis-agent.host-packs/`, `LouisAgent.HostPacks` | 1 |
 | `IAgentPack`, `IAgentIdentity`, `IDataFeed` | core `Agent/Catalog` | `Packs/` | 2 |
 | `IDataImport`, `ImportFact`, `ImportFile`, `ImportReport`, `ImportSlot` | core `Agent/Catalog/Imports` | `Packs/Imports/` | 2 |
 | `PackToolset`, `IPackContext` | new | `Packs/` | 2 |

@@ -4,7 +4,7 @@
 > it in [Change the site](../guides/change-the-site.md); why it's a static Razor site in
 > [ADR 0066](../adr/0066-the-site-is-static-razor.md).
 
-> **Kind:** ASP.NET Core app (`net10.0`, static server-rendered Razor components) · **Path:** `configured/louis-agent/web/louis-agent.site/` ·
+> **Kind:** ASP.NET Core app (`net10.0`, static server-rendered Razor components) · **Path:** `demos/louis-agent/web/louis-agent.site/` ·
 > **References:** nothing of ours, on purpose · **Used by:** nobody in the solution; a visitor's browser
 
 ## Purpose
@@ -40,7 +40,7 @@ off under `prefers-reduced-motion` for the decoration only: the films are the co
 
 ```mermaid
 flowchart LR
-    browser["A visitor's browser"] -->|GET /, /how-it-works, …| site["src/web/louis-agent.site<br/>Kestrel · static server rendering"]
+    browser["A visitor's browser"] -->|GET /, /how-it-works, …| site["demos/louis-agent/web/louis-agent.site<br/>Kestrel · static server rendering"]
     site --> pages["Components/Pages<br/>Home · HowItWorks · Proof · BuiltOnIt · Contact"]
     pages --> landing["Components/Landing<br/>Hero · LiveTurn · ProofTiles · BuiltOnIt · ContactStrip"]
     pages --> films["Components/Movies<br/>ShortMovie · DetailedMovie"]

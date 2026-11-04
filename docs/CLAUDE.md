@@ -81,7 +81,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
   sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
-  references no other pack, identity or eval; only `configured/puls/hosts/louis-agent.host-packs` knows them all. Weigh every reference against
+  references no other pack, identity or eval; only `demos/puls/hosts/louis-agent.host-packs` knows them all. Weigh every reference against
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](adr/0027-engine-identities-and-packs.md), [0073](adr/0073-packs-reference-no-evals.md).
 - **Packs stay convertible to MCP** (`PackConvertibilityTests` holds the shapes) and **MCP exposes tools, not a
   model**: `louis-agent.mcp-server` hands an external client the raw tools; to have the agent do a whole task, call
@@ -156,8 +156,8 @@ src/web/                 # louis-agent.web.shared: what any web app shares
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
 packs/                   # What an agent can do, tools only: where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these
-configured/puls/         # Puls, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs)
-configured/louis-agent/  # Our own: web/ (code review, the site), hosts/ (the orchestrator POC)
+demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs)
+demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC)
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
 tests/                   # NUnit, one project per project ([tests](projects/tests.md)); the ones that leave their process are *.integration-tests
 docker/, deploy/azure/, config/ # This PC's images and compose stacks; the cloud (Puls on Azure); what the app reads at run time

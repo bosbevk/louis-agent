@@ -1,6 +1,6 @@
 # louis-agent.identity.puls.judges — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `configured/puls/evals/louis-agent.identity.puls.judges/` · **References:**
+> **Kind:** class library (`net10.0`) · **Path:** `demos/puls/evals/louis-agent.identity.puls.judges/` · **References:**
 > louis-agent.evals (the harness), louis-agent.identity.puls (the cook's expectations and messages) · **Used by:**
 > louis-agent.evals.runner only
 
@@ -15,7 +15,7 @@ so no host (the API, the CLI, the ACP and MCP servers) carries the harness.
 ## How it works
 
 - **The judge** (`MealForPeopleCheck`) reads its rubric from the cook's eval folder
-  (`configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/Rubrics/meal-for-people.md`), asks with the people and the town
+  (`demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/Rubrics/meal-for-people.md`), asks with the people and the town
   the scenario expects (`CookAsk`), and reads a yes-or-no verdict with a reason (`MealVerdict`). It is shown and counted
   but not required until its calibration passes. A person's review of it (`human`) asks the rubric's title.
 - **The list** (`PulsJudges.All`) is what an eval file can name; the runner gathers it with the harness's general

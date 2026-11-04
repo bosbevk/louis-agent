@@ -18,7 +18,7 @@ public class FolderSizeTests
     /// <summary>Where the source lives: the same roots the file-size rule reads.</summary>
     private static readonly string[] Roots =
     [
-        "src", "packs", "packs-evals", "configured", "tools", "tests"
+        "src", "packs", "packs-evals", "demos", "tools", "tests"
     ];
 
     /// <summary>
@@ -36,11 +36,11 @@ public class FolderSizeTests
         "src/engine/louis-agent.core/Usage/Records",
         "src/hosts/louis-agent.api/Admin/Replies",
         "src/hosts/louis-agent.api/Messages",
-        "configured/puls/web/louis-agent.puls/Admin/Grades",
-        "configured/puls/web/louis-agent.puls/Admin/Reviews",
-        "configured/puls/web/louis-agent.puls/Components/Landing",
+        "demos/puls/web/louis-agent.puls/Admin/Grades",
+        "demos/puls/web/louis-agent.puls/Admin/Reviews",
+        "demos/puls/web/louis-agent.puls/Components/Landing",
         "src/web/louis-agent.web.shared/Chats",
-        "configured/louis-agent/web/louis-agent.web/Git",
+        "demos/louis-agent/web/louis-agent.web/Git",
         "tests/louis-agent.api.tests",
         "tests/louis-agent.api.tests/Endpoints",
         "tests/louis-agent.api.tests/Sessions",

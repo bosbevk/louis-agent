@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.List;
 public static class EvalPaths
 {
     /// <summary>The folders, from the workspace root, the catalogue's paths may lead into.</summary>
-    private static readonly string[] Roots = ["src/evals", "configured", "packs", "packs-evals"];
+    private static readonly string[] Roots = ["src/evals", "demos", "packs", "packs-evals"];
 
     /// <summary>The full path, if it lies inside one of the eval folders.</summary>
     public static string? Inside(string workspaceRoot, string relative)

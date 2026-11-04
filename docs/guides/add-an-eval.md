@@ -12,7 +12,7 @@ transcripts sit beside it. An eval that uses the harness's checks needs no C# at
 
 The example is `acme`, the hardware shop's assistant [Build an identity](build-an-identity.md) makes, with an eval that
 asks how many square metres of tile a room needs. `acme` is not in the repo. Puls's two evals are the working
-examples to open beside this guide: `configured/puls/evals/louis-agent.identity.puls.evals/Evals/Routing/` (one general check) and
+examples to open beside this guide: `demos/puls/evals/louis-agent.identity.puls.evals/Evals/Routing/` (one general check) and
 `Evals/Cook/` (Puls's own checks, a judge and a person's review).
 
 ## 1. Copy the template
@@ -22,7 +22,7 @@ reference with its known-bad. It loads and conforms (`TemplateFolderTests`), and
 shows in a run. Copy it under your identity's `Evals/`, named for the task:
 
 ```bash
-cp -r src/evals/template/Example configured/acme/evals/louis-agent.identity.acme.evals/Evals/Quotes
+cp -r src/evals/template/Example demos/acme/evals/louis-agent.identity.acme.evals/Evals/Quotes
 ```
 
 The identity's evals project copies every file under `Evals/` beside the build, which is how the runner finds it; a new
@@ -154,8 +154,8 @@ never in the pack or identity ([Build a pack](build-a-pack.md#9-its-checks-when-
 ADR 0073). The worked example is `EstimatesAtShop` and its tests. Its reasons
 are message enum members (ADR 0009), and a turn that failed for the infrastructure is `Unknown`
 (`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,
-so it goes in a project of its own in your `configured/{name}/evals/` that only the runner references, as
-`configured/puls/evals/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
+so it goes in a project of its own in your `demos/{name}/evals/` that only the runner references, as
+`demos/puls/evals/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
 
 **A judge that must see a page** (`sources`) is for a rubric that compares the answer with what a tool read, such as
 "the amounts are the page's". `"sources": ["ReadRecipe"]` adds every result of that tool in the trial to the judge's
@@ -247,7 +247,7 @@ Publish), and each one saves the draft first:
    you like, a few samples (commas between). A try is always a replay, so it costs nothing; the link opens its run
    page. A fresh run stays the Run button's, and spends money.
 5. **Publish.** Only a draft the runner found no problem with is published. On a machine whose workspace is a git
-   checkout, the folder is committed to `configured/{identity}/evals/louis-agent.identity.{identity}.evals/Evals/{Name}/` on the branch
+   checkout, the folder is committed to `demos/{identity}/evals/louis-agent.identity.{identity}.evals/Evals/{Name}/` on the branch
    `eval/{identity}-{name}`, without touching your checkout; push the branch and open the pull request yourself.
    Where the API has no git workspace (Azure), the folder comes as a zip to add in a pull request.
 

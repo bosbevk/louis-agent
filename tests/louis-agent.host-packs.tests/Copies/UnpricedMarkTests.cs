@@ -15,7 +15,7 @@ public class UnpricedMarkTests
     /// <summary>The check's settings in an eval file, by the name that file gives it.</summary>
     private static JsonElement UnpricedItems(string eval)
     {
-        string path = Path.Combine(TestPaths.RepoRoot, "configured/puls/evals", "louis-agent.identity.puls.evals", "Evals",
+        string path = Path.Combine(TestPaths.RepoRoot, "demos/puls/evals", "louis-agent.identity.puls.evals", "Evals",
             eval, "eval.json");
         using var file = JsonDocument.Parse(File.ReadAllText(path));
         return file.RootElement.GetProperty("checks").EnumerateArray()

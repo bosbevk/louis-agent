@@ -12,14 +12,14 @@
     <!-- F18 step 4 (ADR 0027): the runner, like the composition root, is the one project that knows every evals project. -->
     <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
     <!-- F49.2 step 9a: Puls's judge, which needs the harness and so is never reached through the composition. -->
-    <ProjectReference Include="..\..\..\configured\puls\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />
+    <ProjectReference Include="..\..\..\demos\puls\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />
     <!-- ADR 0073: what proves each identity and pack is a project beside it that only the runner references, so no host
          carries it: Puls's evals (its eval folders and readers) and each pack's checks. -->
-    <ProjectReference Include="..\..\..\configured\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
+    <ProjectReference Include="..\..\..\demos\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj" />
     <ProjectReference Include="..\..\..\packs-evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj" />
     <ProjectReference Include="..\..\..\packs-evals\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj" />
     <!-- F49.2: the one project that knows every identity and pack (ADR 0027), for the toolsets an eval's modes name. -->
-    <ProjectReference Include="..\..\..\configured\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
+    <ProjectReference Include="..\..\..\demos\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj" />
   </ItemGroup>
 
   <ItemGroup>

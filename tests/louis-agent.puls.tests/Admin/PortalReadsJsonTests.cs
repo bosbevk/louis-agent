@@ -15,9 +15,9 @@ public class PortalReadsJsonTests
     /// <summary>The portal's folders: its plain classes, its components and its pages.</summary>
     private static readonly string[] Folders =
     [
-        "configured/puls/web/louis-agent.puls/Admin",
-        "configured/puls/web/louis-agent.puls/Components/Admin",
-        "configured/puls/web/louis-agent.puls/Pages/Admin"
+        "demos/puls/web/louis-agent.puls/Admin",
+        "demos/puls/web/louis-agent.puls/Components/Admin",
+        "demos/puls/web/louis-agent.puls/Pages/Admin"
     ];
 
     /// <summary>

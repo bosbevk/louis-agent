@@ -261,7 +261,7 @@ public partial class ArchitectureTests
     [Test]
     public void TheHostPacks_ReferenceNoChecksOrEvalsProject()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "configured/puls/hosts",
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/hosts",
             "louis-agent.host-packs", "louis-agent.host-packs.csproj"));
 
         Assert.That(ReferencesOf(csproj).Where(r => r.Contains(".checks.") || r.Contains(".evals")), Is.Empty);
@@ -343,7 +343,7 @@ public partial class ArchitectureTests
     [Test]
     public void TheIdentity_ReferencesOnlyTheEngine()
     {
-        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "configured/puls/identity",
+        string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/identity",
             "louis-agent.identity.puls", "louis-agent.identity.puls.csproj"));
 
         Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "louis-agent.core.csproj" }));

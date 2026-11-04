@@ -33,7 +33,7 @@ public class PulsManualTests
     private static IEval Eval(PulsEvalName name) => new[] { CookFile.Eval }.Single(e => e.Name == name.Wire());
 
     /// <summary>An eval lists its manual beside itself.</summary>
-    [TestCase(PulsEvalName.Cook, "configured/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md")]
+    [TestCase(PulsEvalName.Cook, "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/manual.md")]
     public void AnEvalListsItsManual_BesideItself(PulsEvalName eval, string path) =>
         Assert.That(Eval(eval).Manual, Is.EqualTo(path));
 

@@ -3,7 +3,7 @@ namespace LouisAgent.Core.Tests;
 /// <summary>
 /// The folders on disk say what the solution says, and they say what ships. <c>src/</c> holds only the framework; a pack
 /// is a tool someone takes, its checks sit apart so they can take it without them; and anything that names a product is
-/// someone's own project under <c>configured/</c>.
+/// someone's own project under <c>demos/</c>.
 /// </summary>
 public class SolutionLayoutTests
 {
@@ -20,12 +20,12 @@ public class SolutionLayoutTests
         "louis-agent.evals.runner")]
     [TestCase("packs", "louis-agent.pack.recipes", "louis-agent.pack.shop-prices", "louis-agent.pack.where-to-buy")]
     [TestCase("packs-evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
-    [TestCase("configured/puls/identity", "louis-agent.identity.puls")]
-    [TestCase("configured/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
-    [TestCase("configured/puls/web", "louis-agent.puls")]
-    [TestCase("configured/puls/hosts", "louis-agent.host-packs")]
-    [TestCase("configured/louis-agent/web", "louis-agent.web", "louis-agent.site")]
-    [TestCase("configured/louis-agent/hosts", "louis-agent.orchestrator")]
+    [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
+    [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
+    [TestCase("demos/puls/web", "louis-agent.puls")]
+    [TestCase("demos/puls/hosts", "louis-agent.host-packs")]
+    [TestCase("demos/louis-agent/web", "louis-agent.web", "louis-agent.site")]
+    [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)
     {
         var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));

@@ -18,7 +18,7 @@
     <!-- F49.2: Puls's evals are folders of files (Evals/{Folder}/: eval.json, Dataset/, Transcripts/, its manual),
          copied as every eval project's are, to EvalFiles/{this project's path from the repository root}/Evals/{Folder}/,
          where the runner finds them. The code beside them (Evals/Checks/, Evals/Readers/) is compiled, not copied. -->
-    <None Update="Evals\**\*" TargetPath="EvalFiles\configured\puls\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Evals\**\*" TargetPath="EvalFiles\demos\puls\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
