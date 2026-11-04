@@ -40,7 +40,7 @@ off under `prefers-reduced-motion` for the decoration only: the films are the co
 
 ```mermaid
 flowchart LR
-    browser["A visitor's browser"] -->|GET /, /how-it-works, …| site["src/louis-agent.site<br/>Kestrel · static server rendering"]
+    browser["A visitor's browser"] -->|GET /, /how-it-works, …| site["src/web/louis-agent.site<br/>Kestrel · static server rendering"]
     site --> pages["Components/Pages<br/>Home · HowItWorks · Proof · BuiltOnIt · Contact"]
     pages --> landing["Components/Landing<br/>Hero · LiveTurn · ProofTiles · BuiltOnIt · ContactStrip"]
     pages --> films["Components/Movies<br/>ShortMovie · DetailedMovie"]

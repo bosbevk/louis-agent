@@ -150,8 +150,8 @@ Where things are. What's inside each project is in its design doc in [projects/]
 in [Project layout](../src/engine/louis-agent.core/CLAUDE.md#project-layout).
 
 ```
-src/engine/              # louis-agent.core (the loop, tools, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream
-src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model), .orchestrator (POC), .composition (knows every identity and pack; IDENTITIES, PACKS)
+src/engine/              # louis-agent.core (the loop, tools, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on)
+src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model)
 src/web/                 # louis-agent.web.shared: what any web app shares
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
 packs/                   # What an agent can do, tools only: where-to-buy (branches), shop-prices (estimates), recipes
