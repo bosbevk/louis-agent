@@ -280,12 +280,12 @@ is a rebuild of the images that use the identity.
    description: Acme's cook. A meal for the people asked for, priced at the shops.
    metadata:
      level: specialist
-     toolsets: shops?
+     toolsets: recipes?
    ---
    ```
 
-   Those toolsets are added to what the parent passed; `?` loads one only where this instance has it (`shops` needs
-   `SHOP_CATALOGUES` and `BROWSER_URL`), and skips it with a log line elsewhere.
+   Those toolsets are added to what the parent passed; `?` loads one only where this instance has it (`recipes` needs
+   `RECIPE_SOURCES` and `BROWSER_URL`), and skips it with a log line elsewhere.
 
    **A minion's function** (level 2, F30) is `minions/{product}-minion-{function}.md`, loaded after its product's base
    (`minions/{product}-minion.md`: what every minion is, which is no role itself); the specialist hands the minion one
