@@ -4,6 +4,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Packs.Recipes;
 
 namespace LouisAgent.Identities.Puls.Tests;
 
@@ -53,8 +54,9 @@ public class PulsPromptsTests
             Does.Contain("# Puls - Stem"));
         Assert.That(SkillLoader.Load(new AgentOptions(), [], PulsRole.Cook.Wire(), RoleLevel.Specialist).Documentation,
             Does.Contain("No prices are looked up"));
-        Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist), Is.Empty,
-            "F18 step 5.7: the cook has no header now, it looks up no prices (the shops pack stays, off for the cook)");
+        Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist),
+            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }),
+            "F35.2 step 1: the cook declares its recipes toolset in its header, required (ADR 0025)");
     }
 
     /// <summary>
@@ -406,7 +408,8 @@ public class PulsPromptsTests
         string cook = Read("specialists/puls-cook.md");
 
         Assert.That(PromptHeaders.Split("specialists/puls-cook.md", Raw("specialists/puls-cook.md")).Header!.Toolsets,
-            Is.Empty, "no toolsets in its header: the cook loads the shops no more");
+            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }),
+            "its header names recipes and nothing else: the cook loads the shops no more (F35.2 step 1)");
         Assert.That(cook, Does.Contain("The user's shop, named").And.Contain("*Winkel* / *Shop*"));
         Assert.That(cook,
             Does.Contain(

@@ -3,7 +3,7 @@
 > **Kind:** class library (`net10.0`) · **Path:** `identities/louis-agent.identity.puls/` · **References:**
 > louis-agent.core, louis-agent.evals.checks (the check contract its eval checks implement),
 > Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
-> sets it) · **Names:** the `shops` pack
+> sets it) · **Names:** the `shops` and `recipes` packs
 
 ## Purpose
 
@@ -15,18 +15,20 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
 ## How it works
 
 - **One class, the rest is content.** `PulsIdentity` answers three questions: its name (`puls`), its prompts (a
-  `ManifestEmbeddedFileProvider` over `Prompts/`, so the files keep their folder paths) and its packs (`["shops"]`).
-- **Start-up.** With `IDENTITIES=puls`, the composition root builds it and the `shops` pack it names; the catalogue
-  checks that the pack is registered and that no prompt path is also core's or a pack's. From then on Puls's prompts
+  `ManifestEmbeddedFileProvider` over `Prompts/`, so the files keep their folder paths) and its packs
+  (`["shops", "recipes"]`).
+- **Start-up.** With `IDENTITIES=puls`, the composition root builds it and the packs it names (`shops`, `recipes`); the
+  catalogue checks that each pack is registered and that no prompt path is also core's or a pack's. From then on Puls's prompts
   are read through the same reader as core's (`SkillFileSource`).
 - **A chat.** The web app opens a session with `role: "puls/voice-af"` (or `puls/voice-en`) and the toolsets
   `specialists` and `web`. The session reads core's principles, then the language's voice (`voice-af.md`), then Puls's
   shared routing (`voice.md`). Puls answers the world itself with `web`, and hands every cooking question to the cook
   with `StartSubSession`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`).
 - **The cook.** `specialists/puls-cook.md` opens with the header every prompt has
-  ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its name, description and level. It names no toolsets of
-  its own: the cook looks up no prices, so it loads no `shops`, and gets `web` from Puls. A role that needs a toolset
-  always lists it under `metadata.toolsets` ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
+  ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its toolset, `recipes`,
+  required (no `?`): a cook that can't read recipes is refused, not left without them. It loads no `shops`, since the
+  cook looks up no prices, and gets `web` from Puls. A role that needs a toolset always lists it under
+  `metadata.toolsets` ([ADR 0025](../adr/0025-a-role-declares-its-toolsets.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
   `puls/voice-en`, `puls-cook` and `puls-minion-web-price-lookup`, the ones that passed their check
   (F29). The other specialists are written but off.
@@ -97,7 +99,8 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 None of its own. A Puls stack (`docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
 `AGENT_PEERS` (itself), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
 [ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), plus the shops pack's settings
-([louis-agent.pack.shops](louis-agent.pack.shops.md)). Every setting is in [Setup](../SETUP.md).
+([louis-agent.pack.shops](louis-agent.pack.shops.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
+([louis-agent.pack.recipes](louis-agent.pack.recipes.md)). Every setting is in [Setup](../SETUP.md).
 
 ## Extending it
 
@@ -110,7 +113,7 @@ session golden: regenerate it and read the diff.
 ## Tests
 
 `tests/louis-agent.identity.puls.tests`: `PulsIdentityTests` (name, packs, one prompt per folder found, the catalogue
-refusing Puls without its pack), `PulsPromptsTests` (the modes and roles listed, a language loading its voice then the
+refusing Puls without its packs, the cook's declared toolset and no other role's), `PulsPromptsTests` (the modes and roles listed, a language loading its voice then the
 routing, the languages with the same sections, the cook's header) and `PulsSessionSnapshotTests` with
 `PulsSessionSnapshot.json`, the golden of exactly what the model is sent in Puls's chat and in its cook. `PulsPrompts`
 registers the identity's and the pack's prompts first, as a host does. Puls's behaviour is measured by its evals:
@@ -129,7 +132,8 @@ identity doesn't.
   `puls-routing` 72 of 72; the local judge agrees 31 of 36 with a blind labeller, below the 90% bar
   ([louis-agent.evals](louis-agent.evals.md#design-notes)). The held-out scenarios still have their older, hand-cut
   references.
-- Recipes come from the web today → F35 adds the `recipes` pack; CL16 moves the cook into a `cooking` pack; the area
+- The cook's recipes: F35.2 step 1 names the `recipes` pack and gives the cook its toolset; step 2 has the cook's prompt
+  read recipes with those tools, until then it still reads the web. CL16 moves the cook into a `cooking` pack; the area
   guide moves here with the Places pack ([TODO](../../TODO.md), *Puls*).
 - Louis's corrections to the Afrikaans, and the eleven official languages, measured → [TODO](../../TODO.md).
 

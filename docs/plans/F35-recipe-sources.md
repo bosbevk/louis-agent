@@ -658,10 +658,152 @@ goes in F35.2. One more request per host per day. A recorded trial from before t
   - **Z1, the `recipes` name scan:** three unrelated tests used the word, so their examples changed and they are fixed
     whole in this commit. (Z2 exempted the lines, Z3 skipped their summaries.)
 
-## F35.2 (planned when it starts)
+## F35.2 The cook reads recipes: Puls's cook on the recipes pack, measured
 
-The cook: `recipes` in Puls's packs and the cook's toolsets, `puls-cook.md` finds and reads a recipe with the tools
-and links it (its nine-site block list and its photo rules shrink); the `local-sources` check in the pack (the recipe
-link is on an enabled source); the recipes eval, the three-way measure (page text, the block, a screenshot) on
-recorded pages; the write-up `docs/learning/18-structured-data.md`. Vision (`ScreenshotPage`) is its own feature if
-the measure wants it.
+> **What this answers:** how Puls's cook stops reading a recipe out of a page's prose and starts asking the recipes
+> pack for it (F35.1: `FindRecipes` over the sites we may read, `ReadRecipe` over any public page), how an eval
+> proves the recipe came from a source we're allowed to read, and what the change is worth, measured. The last part
+> of F35; when it's done, F35 is done and its plan goes. Branch `feature/F35.2-the-cook-reads-recipes`, one PR per
+> step to `main` (rule 2 of `docs/CLAUDE.md`: a child feature, each step its own PR).
+
+Status: **draft for Louis, 2026-11-04.** Six findings below, each on its own card; the plan is written with the
+recommended option of each. **M picked 2026-11-04 14:40: M1**, a minion for the search only (step 2b). **E picked 2026-11-04 14:51: E2**, every site
+(`RECIPE_SOURCES=*`), told to Rider during step 1; the steps below say `*`.
+
+### The goal, in Louis's words
+
+"Recipe providers like shops providers, so it has all the details" and "benchmarks need them" (the pages kept, so a
+run replays). The platform plan's row for it: *the same SA dishes, the old way (search snippets and `FetchUrl`) against
+`ReadRecipe` of the page's own block, on recorded pages; measured: the cost per answer and the share of answers that
+match their source.* The TODO adds: *once they land, a `local-sources` grader on the cook eval* (the old
+`sources_local` score, dropped in F18 step 7c.2d).
+
+GOAL skills **5** (structured outputs: a page's own data, not its prose, is what the model works from), **12**
+(evaluation: a code check on the source, a judge on the recipe, a before-and-after on the same scenarios) and **15**
+(safety: every recipe from a site whose terms we read).
+
+### Context, checked in the code on 2026-11-04
+
+- **The cook today** (`identities/louis-agent.identity.puls/Prompts/specialists/puls-cook.md`): `WebSearch` for
+  *{dish} resep*, skip nine sites that refuse readers, `FetchUrl` up to three pages, read the amounts and steps from
+  the text, pick the photo from the text's `![alt](url)` lines by rules in the prompt. Its header declares no toolset;
+  the eval's `puls-cook` mode gives it `web` (the manual's table). The `shops` toolset is off since F18 step 5.7.
+- **The pack is there and off** (F35.1, PRs #138 to #144): `PACKS=recipes` and `RECIPE_SOURCES` turn it on; Puls's
+  identity names only `shops` (`PulsPack`, `PulsIdentity.Packs`); the Puls compose file and the Azure app set
+  `BROWSER_URL` but no `RECIPE_SOURCES`.
+- **A role declares its toolsets** in its header (ADR 0025, CL27): `metadata: toolsets: shops?`, read by
+  `PromptHeaders`, added to what the caller passed; `?` where an instance may lack it.
+- **Minions** (F30, `MinionTools.StartMinion`): a specialist hands one task and one of its own tools to a minion on a
+  cheap model (`MINION_LLMS`, a cascade, cheapest first); only the minion's short answer comes back, its usage rolls
+  up to the turn; at most 16 a turn, two minutes each; the tool must be one the specialist holds. Puls has one minion
+  prompt (`puls-minion-web-price-lookup.md`, unused since the shops went off). No measured minion run yet (the TODO's
+  Later item: four hand checks on 2026-10-17, a 4B local model invented facts, Haiku 5.5 was fine).
+- **The checks** (F49): a check is a catalogue entry (ADR 0056); the generic ones live in `evals/louis-agent.evals`
+  (`links-to-host`, `tool-used`, `image-shown`, `routed-to`, `no-error`, the model judge with a rubric); an identity's
+  or a pack's own checks sit beside it and are registered through the composition root; an eval is a folder of files
+  (`eval.json`, a dataset with `dev` and `held-out` splits, rubrics, `manual.md`). A new eval is files only; a new
+  kind of check is C#.
+- **The cook eval** (`Evals/Cook`, v13, eight dev scenarios and three held out, modes `puls-tools` and `puls-cook`)
+  can't replay its old recordings since step 2 (no `robots.txt` was recorded), so its next run records afresh. Its
+  baseline: 23 of 24 with the cook, on run `cf37574d0f23`.
+
+### The findings, one card each
+
+**A. What comes first.** A1 (recommended): F35.2 now, six steps, then F48.1; the cook only benefits from F35.1 once
+it calls the tools, and F48's scaler and list work on a recipe the cook got as data. A2: F48.1 first (the TODO's
+order), the cook reads recipes after. A3: F35.2's steps 1 and 2 only (the cook calls the tools), the eval and the
+measure after F48.1.
+
+**B. How the cook gets `recipes`.** B1 (recommended): the role's header declares `toolsets: recipes`, required: a
+Puls that can't read recipes shouldn't offer a cook; every Puls instance sets `RECIPE_SOURCES` (free sites, nothing to
+ask, unlike shops). B2: `recipes?`, optional, and the prompt keeps the old search-and-fetch path for an instance
+without it (two paths to test and keep right). B3: Puls passes it in the hand-off (`StartSubSession`), so every
+caller must know (what ADR 0025 rejected).
+
+**C. The `local-sources` check.** C1 (recommended): one check in the pack, `recipe-from-source`, beside what it proves
+(ADR 0029): the answer's *Recipe* link is on a site of the pack's table (the contract's host rule, `Links.IsHost`); the
+pack references the checks contract and registers it as F49.1's registry wants; one source of truth for the sites.
+C2: the generic `links-to-host` with the sites' hosts listed in `eval.json` (no C#, but 45 hosts copied from the table
+and drifting from it). C3: a Puls check beside the cook's (`Evals/Checks/Cook`), reading the pack's table through a
+reference from the identity to the pack (an identity reading a pack's internals).
+
+**D. The measure.** D1 (recommended): a new eval `puls-recipes`, files only, ten SA dishes in `dev` and three held
+out, one mode (Puls as built, routing to the cook), checks: `no-error`, `routed-to`, `tool-used` (`ReadRecipe`),
+`recipe-from-source` (C), `recipe-image`, and the judge on a rubric *recipe-from-source.md* (the amounts and steps in
+the answer are the tool's print, scaled to the people); the before-and-after is the cook eval's own re-run against
+its baseline on the same scenarios. D2: no new eval, only `recipe-from-source` added to the cook eval and a re-run.
+D3: three ways as the platform plan once said (snippets, the page's text, a screenshot read by vision), which needs
+`ScreenshotPage` (its own feature) first.
+
+**M. Minions for the recipes (Louis, 2026-11-04: "the cook will make use of the minions"; picked M1).** M1: a
+`find-recipe` minion with `FindRecipes` only, which tries the enabled sites and returns one link whose title is the
+dish; the cook reads it with `ReadRecipe` itself, so the recipe reaches the cook as the tool printed it and nothing
+the minion says is trusted on amounts; the search's misses stay out of the cook's context. M2: a second minion for
+the reading, returning the print verbatim or the lines it finds in a text page (amounts through a cheap model). M3:
+no minion until step 5's run shows what the search loop costs.
+
+**E. Which sites Puls turns on.** E1 (recommended): the 13 sites that publish a whole recipe in their data
+(`read by: data` in the table: taste, foodandhome, bibbyskitchenat36, tantalisemytastebuds, wandercapetown,
+thecinnamonjar, saltyginger, thebigtastybite, bitsofcarey, simply-delicious-food, feastandwest, foodleclub,
+woolworths), so one `ReadRecipe` gives a whole recipe and the cook never reads prose; the text
+sites come in when the measure says the data sites miss too many dishes. E2: `*`, every site in the table (45 slugs
+for the model to pick from, most answering text). E3: the 13 plus the two text sites of F35.1's first draft
+(thelazymakoti, recipesfromsouthafrica) for SA home food.
+
+### The steps
+
+Each step is one PR to `main` with its test, built in Rider from its prompt (`Downloads\F35\prompts\F35.2-step-N.md`).
+
+| Step | What | Test first | Model |
+|---|---|---|---|
+| 1 | **Puls names the pack and the cook declares the toolset.** `PulsPack.Recipes`, `PulsIdentity.Packs` adds it, `puls-cook.md`'s header gets `toolsets: recipes` (B1), `PulsToolset.Recipes` for the checks; `RECIPE_SOURCES=*` (E2, every site in the table) in `docker/docker-compose.puls.yml`, `deploy/azure/puls-app.yaml` and the Puls lines of `config/.env.example`; the plan into `docs/plans/F35-recipe-sources.md` under *F35.2* | The identity's tests: its packs, the cook's header; composition: `IDENTITIES=puls` loads `recipes` and the cook's session gets it | Haiku 5.5 high |
+| 2 | **The cook reads with the tools.** *The recipe first* rewritten: `FindRecipes` on an enabled site (start with a site that publishes recipe data, `foodandhome`; a wrong name answers with the enabled ones; at most three sites before the web), `ReadRecipe` the hit whose title is the dish (a page that comes back as text is read as prose once, else the next hit), the image line is the print's `![name](image)`, *Link* is the print's, the amounts scaled to the task's people from the print's lines; the nine-site block list, `FetchUrl` and `ReadRenderedPage` of a recipe page go; `WebSearch` stays for the branch's page and for a dish no enabled site has (then `ReadRecipe` the page it finds, any public page). The cook eval's manual and the `recipe-photos` reader checked against the print | The identity's prompt tests (the lines that must and must not be there); the cook eval's transcripts re-graded unchanged | Sonnet 5.5 medium |
+| 2b | **The `find-recipe` minion** (M1): `Prompts/minions/puls-minion-find-recipe.md` (level `minion`, the header's shape of the price-lookup minion): its one tool `FindRecipes`, its task the dish, the people's language and the enabled sites in order; it tries a site, reads the titles, and returns one line `{name} · {site} · {link}` for the first hit whose title is the dish, or `none` with the sites tried; never a recipe, never an amount. The cook's header becomes `toolsets: recipes, minions`; *The recipe first* starts the minion for the search and `ReadRecipe`s the link it returns (a `none` falls back to `WebSearch` as step 2 says); `MINION_LLMS` for the cook in the Puls compose file, the Azure app and `.env.example`, cheapest first. The first measured minion run is step 5's; step 4's checks must see the minion's `FindRecipes` call (verify what `tool-used` and `routed-to` read from a child session, and say so in the eval's manual) | The identity's prompt tests (the minion file embedded, its header, its one tool named; the cook's header); `MinionTools`' own rule that the tool must be the cook's, on `recipes` | Sonnet 5.5 medium |
+| 3 | **`recipe-from-source`, the check in the pack** (C1): `packs/louis-agent.pack.recipes/Evals/Checks/RecipeFromSourceCheck` over the first turn's *Recipe* link (`Link:` / `Skakel:`), a pass naming the site, a fail naming the host, Unknown on a broken turn; the pack references `louis-agent.evals.checks` and lists the check for the catalogue; the TODO's `local-sources` line closed | Transcripts: a link on a table site passes, another host fails, no link fails, a broken turn is Unknown | Sonnet 5.5 medium |
+| 4 | **The recipes eval as files** (D1): `identities/louis-agent.identity.puls/Evals/Recipes/` with `eval.json` (the checks above), `Dataset/` (ten dishes dev, three held out: bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei, koeksisters; held out: umngqusho, sosaties, bredie), `Rubrics/recipe-from-source.md`, `manual.md`; the eval's catalogue entry in Puls | The eval files load (`EvalFileReader`), the dataset's hash, the rubric's bytes; a `--split dev` dry run on the stub | Haiku 5.5 high |
+| 5 | **The paid run, on Louis's go.** The Puls stack rebuilt with `RECIPE_SOURCES`; the cook eval re-recorded (`--repeat 1`, dev; about 10 cents) and the recipes eval recorded (about the same); the numbers into this plan's measure table; the judge's answers labelled in the review queue | The runs themselves; a `$0` replay of both afterwards | Louis in the portal; a prompt with the commands |
+| 6 | **Docs and close.** The write-up `docs/learning/05-structured-outputs.md` (skill 5; by Claude), GOAL's rows 5, 12 and 15, the Puls identity's design doc and the pack doc's *not in Puls's pack list yet* line, `TODO.md` (F35 done, the `local-sources` leftover gone), the plan's lasting parts into ADR 0067's consequences, and `docs/plans/F35-recipe-sources.md` deleted | Docs only; `ClaudeMdSizeTests` and the links check | Haiku 5.5 high |
+
+**Done when:** in the recipes eval every dev scenario passes `recipe-from-source` and `tool-used` (`ReadRecipe`), the
+minion's search is on the run's ledger (the first measured minion run), and
+the cook eval's score with the cook is not below its baseline (23 of 24) on the re-recorded run; the write-up is
+read.
+
+### The measure (filled in at step 5)
+
+| | Cook eval, baseline `cf37574d0f23` | Cook eval, after step 2 | Recipes eval |
+|---|---|---|---|
+| Passes | 23 of 24 | | |
+| Recipe link on an allowed site | not measured | | |
+| Amounts and steps as the source (judge) | not measured | | |
+| Cost per answer (ledger) | | | |
+| The minion's share of it (searches, tokens) | none | | |
+| Dishes found on an enabled site (F35.3's baseline) | not measured | | of 10 |
+
+### Approved during the build
+
+(The picks Rider raises mid-build, each with Louis's choice, as F35.1's.)
+
+- **2026-11-04, before step 1, the picks and the sites' terms.** A1, B1, C1 and D1 as recommended. **E2, not E1:
+  `RECIPE_SOURCES=*`, all 45 sites, on this PC and on Azure** (Louis: "all everywhere this is public websites", "all
+  45"). Before that pick, the terms of the 13 `read by: data` sites were read from their home pages' links (the other 32
+  were not read), because this plan's B1 said "free sites, nothing to ask" and ADR 0023 asks for terms to be read first.
+  Food & Home (clause 2.9.1: "any non-personal or commercial use of any robot, spider... to monitor or copy" without
+  written authority), Taste ("for your personal use only"), Tantalise My Taste Buds ("for commercial use... my direct
+  written consent is needed") and Salty Ginger (an excerpt of up to 100 words with a link; "We do not allow re-posting
+  an entire recipe") say no to reuse without consent; Feast + West restricts its images; Bibby's, Foodle Club, Wander Cape
+  Town, The Cinnamon Jar, Bits of Carey and Simply Delicious give no terms on use and carry a copyright notice; The Big
+  Tasty Bite showed neither; Woolworths' terms pages weren't readable. The cook already reads such pages on Azure through
+  `FetchUrl`. Louis chose with this in front of him; a reading of terms is not legal advice, and a qualified check is
+  worth having before customers depend on it. Of the 45, 25 search through the web provider, so on Azure those are paid
+  queries (Tavily), not free as finding B says. The step-5 measure runs on all 45, so expect most answers to come from
+  text sites. (E1 was the 13 data sites, E3 the 13 and two text sites.)
+
+### What's left out, on purpose
+
+- A number out of the yield (*4 to 6* stays words): F48.1's scaler.
+- The text sites' recipes as data (an ingredient-line reader over a page's text): F48.1's reader, if it wants it.
+- Vision over a page (`ScreenshotPage`): its own feature when a measure asks for it.
+- The pack in the engine's website and in Puls's front end: F50.7 (the specialists shown).
+- Our own recipe library in Mongo, filled as people search (F35.3, in the TODO since 2026-11-04): planned after
+  this feature's measure says how often the sites have the dish.

@@ -15,6 +15,7 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.Shops;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -115,7 +116,9 @@ internal static class ApiTestHost
             SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
             RatesUrl = null
         };
-        var catalog = new AgentCatalog([new PulsIdentity()], [new ShopsPack(new ShopsOptions())]);
+        // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
+        var catalog = new AgentCatalog([new PulsIdentity()],
+            [new ShopsPack(new ShopsOptions()), new RecipesPack(new RecipesOptions())]);
         var engines = new AgentEngineFactory(model, options, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,

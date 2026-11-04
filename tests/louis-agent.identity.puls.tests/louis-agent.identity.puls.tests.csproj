@@ -21,6 +21,8 @@
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <!-- The pack Puls names, so its golden builds the cook with the shops as the Puls stack does. -->
     <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+    <!-- The other pack Puls names (F35.2 step 1): the catalogue the tests build holds it. -->
+    <ProjectReference Include="..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- F49.2: the harness loads the identity's evals from their folders, and the composition says which toolsets Puls

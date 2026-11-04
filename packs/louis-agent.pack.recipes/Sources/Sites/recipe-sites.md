@@ -1,10 +1,11 @@
 # The recipe sites
 
-The South African recipe sites the recipes pack may search and read. A site is here only when it *allows us*: nothing
-it publishes says no. That means its `robots.txt` (the `*` group and the groups for AI readers), the robots meta and
-`X-Robots-Tag` of a recipe page (`noai`, `noimageai`), and any text-and-data-mining reservation. All were read on the
-day in the `checked` column, before the site was added (ADR 0023, ADR 0068). A site that later says no is taken out of
-this table, or its row changed: that is a content change, not a code change.
+The South African recipe sites the recipes pack may search and read. A site is here when it *allows us*, which means
+what was checked: its `robots.txt` (the `*` group and the groups for AI readers), the robots meta and `X-Robots-Tag` of
+a recipe page (`noai`, `noimageai`), and any text-and-data-mining reservation. All were read on the day in the `checked`
+column, before the site was added (ADR 0023, ADR 0068). A site's terms of use are a separate matter, not part of that
+check: Louis's decision on them is in the plan's F35.2 *Approved during the build* (2026-11-04). A site that later says
+no is taken out of this table, or its row changed: that is a content change, not a code change.
 
 Each row is one site. The columns are:
 

@@ -24,6 +24,8 @@
     <!-- CL15: the API's tests open Puls's sessions, so they register Puls's prompts as the Puls stack does (IDENTITIES=puls). -->
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+    <!-- F35.2 step 1: the recipes pack Puls names, as the Puls stack loads it. -->
+    <ProjectReference Include="..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <!-- F18 step 1e: the scripted turns of the stream golden run on the shared fake model. -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
     <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts both the unit and the integration tests use. -->

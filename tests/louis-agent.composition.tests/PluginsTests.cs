@@ -3,9 +3,11 @@ using LouisAgent.Packs.Shops;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Composition;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Skills.Headers;
 using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Identities.Puls;
+using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Composition.Tests;
 
@@ -22,8 +24,9 @@ public class PluginsTests
     {
         AgentCatalog puls = Plugins.FromSettings(IdentityKind.Puls.Wire(), null);
         Assert.That(puls.Identities.Select(i => i.Name), Is.EqualTo(new[] { IdentityKind.Puls.Wire() }));
-        Assert.That(puls.Packs.Select(p => p.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }),
-            "Puls names the shops pack (step 4)");
+        Assert.That(puls.Packs.Select(p => p.Name),
+            Is.EqualTo(new[] { ShopsToolset.Shops.Wire(), RecipesToolset.Recipes.Wire() }),
+            "Puls names the shops pack (step 4) and the recipes pack (F35.2 step 1)");
 
         Assert.That(Plugins.FromSettings($"{IdentityKind.Puls.Wire()}, PULS", null).Identities, Has.Count.EqualTo(1),
             "a name twice, any case, is one identity");
@@ -114,6 +117,47 @@ public class PluginsTests
         {
             Environment.SetEnvironmentVariable("RECIPE_SOURCES", null);
         }
+    }
+
+    /// <summary>
+    /// With Puls and its recipes sites set, the recipes pack loads once beside the shops, and the toolset the cook
+    /// declares in its header resolves to it.
+    /// </summary>
+    [Test]
+    public void PulsWithRecipeSources_LoadsTheRecipesPackOnce_AndTheCookResolvesIt()
+    {
+        Assume.That(Environment.GetEnvironmentVariable("RECIPE_SOURCES"), Is.Null,
+            "the process has no RECIPE_SOURCES of its own");
+        Environment.SetEnvironmentVariable("RECIPE_SOURCES", "*");
+        try
+        {
+            // Named twice, once as a pack and once by the identity: still one instance of each.
+            AgentCatalog catalog = Plugins.FromSettings(IdentityKind.Puls.Wire(), RecipesToolset.Recipes.Wire());
+            Assert.That(catalog.Packs.Select(p => p.Name),
+                Is.EquivalentTo(new[] { ShopsToolset.Shops.Wire(), RecipesToolset.Recipes.Wire() }));
+
+            // The cook's header names the recipes toolset; with the browser given, the catalogue resolves it.
+            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
+                new NoSearch());
+            Assert.That(catalog.Resolve(CookToolsets(catalog), withBrowser).Select(t => t.Name),
+                Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("RECIPE_SOURCES", null);
+        }
+    }
+
+    /// <summary>
+    /// The toolsets the cook's header declares, read from the prompts the catalogue holds with the same reader the
+    /// engine uses. The composition root registers no prompts with the engine, so the catalogue's own folders are read.
+    /// </summary>
+    private static IReadOnlyList<string> CookToolsets(AgentCatalog catalog)
+    {
+        string path = $"specialists/{PulsRole.Cook.Wire()}.md";
+        IFileInfo file = catalog.Prompts.Select(provider => provider.GetFileInfo(path)).First(info => info.Exists);
+        using var reader = new StreamReader(file.CreateReadStream());
+        return PromptHeaders.Split(path, reader.ReadToEnd()).Header!.Toolsets;
     }
 
     /// <summary>A search provider that finds nothing; these tests only need one to hand over.</summary>

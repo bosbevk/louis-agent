@@ -1,5 +1,3 @@
-using LouisAgent.Testing;
-using LouisAgent.Identities.Puls;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -9,16 +7,18 @@ using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
+using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.Shops;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Identities.Puls.Tests;
 
-// CL15 step 0: what the model is sent in a Puls session must not change while Puls and the shops leave core, except
-// where a step says it does. The coding agent's golden (ModelRequestSnapshotTests) never pinned a Puls session, so the
-// cut had no proof; this one pins the two sessions Puls runs: the chat (puls/voice-af with specialists and web, as the
-// web app opens it) and the cook (puls-cook with web and shops, as Puls hands it the work). Written from main before
-// the first move, in core's tests; here, with Puls's identity, from step 2. A deliberate change regenerates it: LOUIS_UPDATE_GOLDEN=1, run, review the diff, commit.
+/// <summary>
+/// Pins what the model is sent in a Puls session: the chat (puls/voice-af with specialists and web, as the web app
+/// opens it) and the cook (puls-cook with web and shops, as Puls hands it the work). Core's golden never saw a Puls
+/// session, so this one is the proof that the identity keeps what it sends. A deliberate change regenerates it with
+/// LOUIS_UPDATE_GOLDEN=1: run, review the diff, commit.
+/// </summary>
 public class PulsSessionSnapshotTests
 {
     private static readonly string GoldenFile =
@@ -32,15 +32,20 @@ public class PulsSessionSnapshotTests
 
     private string _skillsDir = null!;
 
+    /// <summary>Gives each test a folder of its own for the skills, so no test sees another's files.</summary>
     [SetUp]
     public void SetUp()
     {
         _skillsDir = Directory.CreateTempSubdirectory("puls-session-").FullName;
     }
 
+    /// <summary>Removes the folder the test wrote its skills into.</summary>
     [TearDown]
     public void TearDown() => Directory.Delete(_skillsDir, recursive: true);
 
+    /// <summary>
+    /// The engine factory with the Puls stack's settings and packs, over a fake model that is never called.
+    /// </summary>
     private AgentEngineFactory Factory()
     {
         // The Puls stack's settings, as far as building an engine reads them: a peer for the specialists toolset, and a
@@ -53,21 +58,31 @@ public class PulsSessionSnapshotTests
             AgentPeers = new Dictionary<string, Uri> { [SampleIdentity.Alpha] = new("http://puls-agent.test/") },
             BrowserUrl = "http://browser.test:9222",
         };
-        // CL15 step 4: the shops are the pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.
+        // The shops are a pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.
+        // The recipes pack is the other one Puls names; the cook's session here doesn't name it, so its settings stay
+        // unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" })]);
+            [new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" }), new RecipesPack(new RecipesOptions())]);
         return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);
     }
 
+    /// <summary>What the model is sent from an engine: its tools with their schemas, and its system prompt.</summary>
     private static object View(AgentEngine engine) => new
     {
         Tools = engine.Tools.OfType<AIFunction>()
             .Select(t => new
-            { t.Name, t.Description, Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement }),
+            {
+                t.Name,
+                t.Description,
+                Schema = JsonDocument.Parse(t.JsonSchema.GetRawText()).RootElement
+            }),
         SystemPrompt = engine.SkillDocumentation,
     };
 
-    /// <summary>Both sessions, with this machine's temporary folder replaced so the file is the same everywhere.</summary>
+    /// <summary>
+    /// Both sessions as one JSON text, with this machine's temporary folder replaced so the file is the same
+    /// everywhere.
+    /// </summary>
     private string Snapshot()
     {
         var factory = Factory();
@@ -84,6 +99,7 @@ public class PulsSessionSnapshotTests
             .ReplaceLineEndings("\n") + "\n";
     }
 
+    /// <summary>The snapshot matches the golden file, or with LOUIS_UPDATE_GOLDEN=1 rewrites it.</summary>
     [Test]
     public void WhatTheModelSees_InAPulsSession_MatchesTheGoldenFile()
     {
@@ -97,9 +113,11 @@ public class PulsSessionSnapshotTests
         Assert.That(File.Exists(GoldenFile), $"No golden file; run with LOUIS_UPDATE_GOLDEN=1 to write {GoldenFile}.");
         string expected = File.ReadAllText(GoldenFile).ReplaceLineEndings("\n");
         Assert.That(actual, Is.EqualTo(expected),
-            "What a Puls session's model is sent changed. If that is intended, rerun with LOUIS_UPDATE_GOLDEN=1 and review the diff.");
+            "What a Puls session's model is sent changed. If that is intended, rerun with " +
+            "LOUIS_UPDATE_GOLDEN=1 and review the diff.");
     }
 
+    /// <summary>Building the snapshot again, in a fresh folder, gives the same text.</summary>
     [Test]
     public void TheSnapshot_IsTheSameOnEveryBuild()
     {

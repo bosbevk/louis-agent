@@ -54,7 +54,8 @@ What F35.1 settled, and why (the plan's decisions are in `docs/plans/F35-recipe-
 - **A numbered print, not JSON.** A model quotes a line by its number, and reads a list better than braces. The same
   recipe always prints the same text, so a test can hold it.
 - **Off until named** ([ADR 0023](../adr/0023-copyleft-service-beside-us.md)): nothing is enabled until
-  `RECIPE_SOURCES` names it, so a site whose terms nobody read is not read.
+  `RECIPE_SOURCES` names it. Puls's stacks name `*`, every site in the table; a site's terms of use are a separate
+  reading, not part of its row (Louis's decision on them is in the plan's F35.2 *Approved during the build*, 2026-11-04).
 
 ## Structure
 
@@ -114,7 +115,8 @@ blocks), `WordPressSearchTests`, `SiteWebSearchTests`, `SearchResultLinksTests` 
 - A recipe whose page marks it up as microdata, not JSON-LD, is read as text (`thekatetin`, in the table's signals).
 - The recipe's yield stays text (*4 to 6*, *10 pies*); a number comes later, when something has to scale it.
 - Searching through the web costs what the search provider charges, and a result on another host is dropped.
-- The pack is not in Puls's pack list yet; F35.2 adds it with the cook's use of it.
+- Puls names the pack from F35.2 step 1, so the cook's session holds its tools; the cook's prompt starts using them in
+  step 2, until then it still reads pages the old way.
 
 ## Related docs
 
