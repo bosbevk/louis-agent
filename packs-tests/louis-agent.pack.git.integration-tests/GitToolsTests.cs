@@ -1,9 +1,9 @@
 using LouisAgent.Composition.Tools;
 using LouisAgent.Testing;
-using LouisAgent.Core.Tools.Git;
-using LouisAgent.Core.Tools.Git.Running;
+using LouisAgent.Packs.Git;
+using LouisAgent.Packs.Git.Running;
 
-namespace LouisAgent.Core.IntegrationTests.Tools.Git;
+namespace LouisAgent.Packs.Git.IntegrationTests;
 
 // FX19: every git call takes a list, the model's values come after --end-of-options (paths after --), a value that
 // starts with "-" is refused before git runs, and SetConfig sets only user.name and user.email. Run on real git in a

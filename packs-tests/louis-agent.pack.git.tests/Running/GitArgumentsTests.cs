@@ -1,6 +1,6 @@
-using LouisAgent.Core.Tools.Git.Running;
+using LouisAgent.Packs.Git.Running;
 
-namespace LouisAgent.Core.Tests.Tools.Git.Running;
+namespace LouisAgent.Packs.Git.Tests.Running;
 
 // FX19, by rule (S, CL15): a value from the model that names something (a ref, branch, tag, remote, URL, path or config
 // key) is refused before git runs when git would read it as an option; a branch that is really a refspec is refused

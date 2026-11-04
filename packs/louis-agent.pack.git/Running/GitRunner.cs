@@ -1,10 +1,9 @@
 
 using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Git.Messages;
+using LouisAgent.Packs.Git.Messages;
 
-namespace LouisAgent.Core.Tools.Git.Running;
+namespace LouisAgent.Packs.Git.Running;
 /// <summary>
 /// The one way git runs (ADR 0004; S, CL15, from GitTools): each argument separate (no command line to split), in the
 /// workspace or the folder ACP set (<c>AGENT_WORKING_DIRECTORY</c>), 30 seconds at most. A non-zero exit carries git's

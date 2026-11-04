@@ -40,7 +40,7 @@ public class AgentSessionsTests
     /// </summary>
     private static AgentCatalog PulsCatalog() =>
         new([new PulsIdentity()],
-        [
+        [TestTools.Pack,
             new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
             new FakePack(OffPack, [FakePack.Toolset(OffPack, typeof(FakeShopTools), _ => [new FakeShopTools()]) with
             {
@@ -114,7 +114,7 @@ public class AgentSessionsTests
         var sessions = Sessions();
 
         var files = sessions.Create([CoreToolset.Files.Wire()]);
-        var git = sessions.Create([CoreToolset.Git.Wire()]);
+        var git = sessions.Create([TestToolset.Git.Wire()]);
         var filesAgain = sessions.Create(["FILES"]);
 
         Assert.That(git.Engine, Is.Not.SameAs(files.Engine));

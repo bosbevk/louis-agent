@@ -289,7 +289,7 @@ public class AgentEngineFactoryTests
     {
         var factory = Factory();
 
-        var first = factory.GetOrCreate([CoreToolset.Git.Wire(), CoreToolset.Files.Wire()]);
+        var first = factory.GetOrCreate([TestToolset.Git.Wire(), CoreToolset.Files.Wire()]);
         var second = factory.GetOrCreate(["Files", " git ", CoreToolset.Files.Wire()]);
 
         Assert.That(second, Is.SameAs(first));
@@ -335,7 +335,7 @@ public class AgentEngineFactoryTests
         var factory = Factory();
 
         var files = factory.GetOrCreate([CoreToolset.Files.Wire()]);
-        var git = factory.GetOrCreate([CoreToolset.Git.Wire()]);
+        var git = factory.GetOrCreate([TestToolset.Git.Wire()]);
 
         Assert.That(Names(files), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
         Assert.That(Names(git), Does.Contain("GetStatus").And.Not.Contain("ReadWorkspaceFile"));
@@ -382,7 +382,7 @@ public class AgentEngineFactoryTests
         // PR #27 review: on a specialist the model chooses the lists; refusing the 17th would stop it until a restart.
         var factory = Factory(capacity: 2);
         var files = factory.GetOrCreate([CoreToolset.Files.Wire()]);
-        factory.GetOrCreate([CoreToolset.Git.Wire()]);
+        factory.GetOrCreate([TestToolset.Git.Wire()]);
         factory.GetOrCreate([CoreToolset.Files.Wire()]); // files is now the more recent
 
         var dotnet = factory.GetOrCreate([TestToolset.DotNet.Wire()]);
@@ -392,7 +392,7 @@ public class AgentEngineFactoryTests
             "git, the least recently used, went");
         Assert.That(factory.GetOrCreate([CoreToolset.Files.Wire()]), Is.SameAs(files),
             "a kept profile is the same engine");
-        Assert.That(factory.GetOrCreate([CoreToolset.Git.Wire()]), Is.Not.Null, "a dropped one is built again");
+        Assert.That(factory.GetOrCreate([TestToolset.Git.Wire()]), Is.Not.Null, "a dropped one is built again");
     }
 
     /// <summary>The available toolsets are only those whose settings are all set.</summary>

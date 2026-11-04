@@ -36,12 +36,12 @@ public class SpecialistToolsTests
     {
         var handler = Peer();
 
-        string result = await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire(), CoreToolset.Git.Wire()],
+        string result = await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire(), TestToolset.Git.Wire()],
             "Fix order 1006.", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result,
-            Does.EndWith($"\n\n[Sub-session on coder ({CoreToolset.Files.Wire()}, {CoreToolset.Git.Wire()})]"),
+            Does.EndWith($"\n\n[Sub-session on coder ({CoreToolset.Files.Wire()}, {TestToolset.Git.Wire()})]"),
             "the footer names the specialist and what it loaded, never what it used (FX27)");
         Assert.That(handler.Requests.Select(r => $"{r.Method} {new Uri(r.Url).AbsolutePath}"),
             Is.EqualTo(new[]
@@ -51,7 +51,7 @@ public class SpecialistToolsTests
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("depth").GetInt32(), Is.EqualTo(1), "one level deep");
         Assert.That(create.RootElement.GetProperty("toolsets").EnumerateArray().Select(t => t.GetString()),
-            Is.EqualTo(new[] { CoreToolset.Files.Wire(), CoreToolset.Git.Wire() }));
+            Is.EqualTo(new[] { CoreToolset.Files.Wire(), TestToolset.Git.Wire() }));
         Assert.That(create.RootElement.GetProperty("role").ValueKind, Is.EqualTo(JsonValueKind.Null),
             "none named: the peer's default");
         Assert.That(create.RootElement.GetProperty("llm").ValueKind, Is.EqualTo(JsonValueKind.Null),

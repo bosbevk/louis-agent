@@ -8,7 +8,6 @@ namespace LouisAgent.Core.Agent.Toolsets;
 public enum CoreToolset
 {
     Files,
-    Git,
     Python,
     PowerShell,
     Bash,

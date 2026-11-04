@@ -17,6 +17,7 @@ public class PulsPrompts
     public void Register() => SkillFileSource.Use(
     [
         new PulsIdentity().Prompts,
+        TestTools.Pack.Prompts,
         new WhereToBuyPack().Prompts,
         new ShopPricesPack(new ShopPricesOptions()).Prompts,
         new RecipesPack(new RecipesOptions()).Prompts,

@@ -11,6 +11,7 @@ namespace LouisAgent.Testing;
 public enum TestToolset
 {
     DotNet,
+    Git,
 }
 
 /// <summary>
@@ -26,10 +27,12 @@ public static class TestTools
     public static FakePack Pack { get; } = new("test-tools",
         [
             FakePack.Toolset(TestToolset.DotNet.Wire(), typeof(FakeDotNetTools), _ => [new FakeDotNetTools()]),
+            FakePack.Toolset(TestToolset.Git.Wire(), typeof(FakeGitTools), _ => [new FakeGitTools()]),
         ],
         new Dictionary<string, string>
         {
             [$"toolsets/{TestToolset.DotNet.Wire()}.md"] = "# .NET Skills\n\nBuilds things.",
+            [$"toolsets/{TestToolset.Git.Wire()}.md"] = "# Git Skills\n\nKeeps history.",
         });
 
     /// <summary>A catalogue holding it, and what core has.</summary>
@@ -42,4 +45,12 @@ public sealed class FakeDotNetTools
     /// <summary>Pretends to build.</summary>
     [Description("Builds a project.")]
     public string DotNetBuild() => "built";
+}
+
+/// <summary>The fake git toolset.</summary>
+public sealed class FakeGitTools
+{
+    /// <summary>Pretends to read the status.</summary>
+    [Description("Shows the repository's status.")]
+    public string GetStatus() => "clean";
 }

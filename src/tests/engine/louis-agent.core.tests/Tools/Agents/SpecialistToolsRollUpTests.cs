@@ -33,7 +33,7 @@ public class SpecialistToolsRollUpTests
         UsageTotal total;
         using (var scope = UsageScope.Begin(host: "api", session: "sess_parent", turn: 2))
         {
-            await ToolsOn(handler, sink: sink).StartSubSession([CoreToolset.Files.Wire(), CoreToolset.Git.Wire()],
+            await ToolsOn(handler, sink: sink).StartSubSession([CoreToolset.Files.Wire(), TestToolset.Git.Wire()],
                 "Fix order 1006.", agent: "coder");
             total = scope.Total();
         }

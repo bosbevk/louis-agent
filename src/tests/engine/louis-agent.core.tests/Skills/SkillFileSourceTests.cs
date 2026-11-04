@@ -43,8 +43,8 @@ public class SkillFileSourceTests
     [Test]
     public void TheEmbeddedText_IsTheFilesText()
     {
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/git.md")!.ReplaceLineEndings("\n"),
-            Is.EqualTo(Repo("toolsets/git.md").ReplaceLineEndings("\n")));
+        Assert.That(SkillFileSource.ReadEmbedded("toolsets/self-extension.md")!.ReplaceLineEndings("\n"),
+            Is.EqualTo(Repo("toolsets/self-extension.md").ReplaceLineEndings("\n")));
     }
 
     [Test]

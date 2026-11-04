@@ -1,12 +1,11 @@
 
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Git.Messages;
-using static LouisAgent.Core.Tools.Git.Running.GitArguments;
-using LouisAgent.Core.Tools.Git.Running;
+using LouisAgent.Packs.Git.Messages;
+using static LouisAgent.Packs.Git.Running.GitArguments;
+using LouisAgent.Packs.Git.Running;
 
-namespace LouisAgent.Core.Tools.Git;
+namespace LouisAgent.Packs.Git;
 /// <summary>
 /// The git toolset's configuration (S, CL15: one of its five classes). <c>SetConfig</c> sets only <c>user.name</c> and
 /// <c>user.email</c> (FX19): other keys (core.fsmonitor, core.sshCommand, core.hooksPath, alias.*) make git run commands.

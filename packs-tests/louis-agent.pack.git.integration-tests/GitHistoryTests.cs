@@ -1,9 +1,9 @@
 using LouisAgent.Composition.Tools;
 using LouisAgent.Testing;
-using LouisAgent.Core.Tools.Git;
-using LouisAgent.Core.Tools.Git.Running;
+using LouisAgent.Packs.Git;
+using LouisAgent.Packs.Git.Running;
 
-namespace LouisAgent.Core.IntegrationTests.Tools.Git;
+namespace LouisAgent.Packs.Git.IntegrationTests;
 
 // F22 step 4: the historian's tools on a small repository made for the test. Skipped when git isn't installed.
 [Category("Integration")]

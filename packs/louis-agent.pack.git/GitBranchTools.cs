@@ -1,9 +1,9 @@
-namespace LouisAgent.Core.Tools.Git;
 
 using System.ComponentModel;
-using LouisAgent.Core.Tools.Git.Running;
-using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Packs.Git.Running;
+using static LouisAgent.Packs.Git.Running.GitArguments;
 
+namespace LouisAgent.Packs.Git;
 /// <summary>The git toolset's branches and tags, and what joins them (S, CL15: one of its five classes): merge, rebase, cherry-pick. Every value from the model passes <see cref="GitArguments"/> (FX19) and runs on <see cref="GitRunner"/> (ADR 0004).</summary>
 public sealed class GitBranchTools(GitRunner git)
 {

@@ -43,7 +43,7 @@ public class EngineCacheTests
     {
         var cache = new EngineCache(2);
         var files = cache.GetOrAdd(Key(CoreToolset.Files.Wire()), Engine);
-        cache.GetOrAdd(Key(CoreToolset.Git.Wire()), Engine);
+        cache.GetOrAdd(Key(TestToolset.Git.Wire()), Engine);
         cache.GetOrAdd(Key(CoreToolset.Files.Wire()), Engine); // files is now the more recent
 
         cache.GetOrAdd(Key(TestToolset.DotNet.Wire()), Engine);
@@ -61,10 +61,10 @@ public class EngineCacheTests
         var cache = new EngineCache(1);
         cache.GetOrAdd(Key(CoreToolset.Files.Wire()), Engine);
 
-        var git = cache.GetOrAdd(Key(CoreToolset.Git.Wire()), Engine);
+        var git = cache.GetOrAdd(Key(TestToolset.Git.Wire()), Engine);
 
-        Assert.That(cache.Keys, Is.EqualTo(new[] { CoreToolset.Git.Wire() }));
-        Assert.That(cache.GetOrAdd(Key(CoreToolset.Git.Wire()), () => throw new InvalidOperationException("kept")),
+        Assert.That(cache.Keys, Is.EqualTo(new[] { TestToolset.Git.Wire() }));
+        Assert.That(cache.GetOrAdd(Key(TestToolset.Git.Wire()), () => throw new InvalidOperationException("kept")),
             Is.SameAs(git));
     }
 

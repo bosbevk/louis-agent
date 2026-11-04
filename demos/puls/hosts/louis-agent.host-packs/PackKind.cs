@@ -12,5 +12,6 @@ public enum PackKind
     [WireName("recipes")] Recipes,
     [WireName("where-to-buy")] WhereToBuy,
     [WireName("shop-prices")] ShopPrices,
+    [WireName("git")] Git,
     [WireName("dotnet")] DotNet,
 }

@@ -271,8 +271,8 @@ public class AgentCatalogTests
         Assert.That(core.Toolsets, Is.EqualTo(ToolsetCatalog.All));
         Assert.That(core.ToolNames,
             Does.Contain("FetchUrl").And.Contain("ReadWorkspaceFile").And.Not.Contain("CreateTool"));
-        Assert.That(core.Resolve([CoreToolset.Files.Wire(), CoreToolset.Git.Wire()], Context()).Select(t => t.Name),
-            Is.EqualTo(new[] { CoreToolset.Files.Wire(), CoreToolset.Git.Wire() }));
+        Assert.That(core.Resolve([CoreToolset.Skills.Wire()], Context()).Select(t => t.Name),
+            Is.EqualTo(new[] { CoreToolset.Skills.Wire() }));
     }
 
     /// <summary>The prompt reader takes the same providers again quietly, and refuses new ones after a read.</summary>

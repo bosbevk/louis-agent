@@ -35,7 +35,7 @@ services:
       # Who this agent is (CL15): Puls, from demos/puls/identity/louis-agent.identity.puls; the code-review stack sets none.
       IDENTITIES: puls
       # The general tools the routing eval's baseline names; Puls itself needs none of them.
-      PACKS: dotnet
+      PACKS: dotnet,git
       # The time GetToday tells when the user shared no zone (CL15: core names no country).
       HOST_TIME_ZONE: Africa/Johannesburg
       WORKSPACE_ROOT: /workspace

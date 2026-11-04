@@ -11,8 +11,6 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Currency;
 using LouisAgent.Core.Tools.Documents;
-using LouisAgent.Core.Tools.Git;
-using LouisAgent.Core.Tools.Git.Running;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Fetching;
@@ -47,26 +45,6 @@ public static class ToolsetCatalog
                 new WorkspaceBrowseTools(Root(ctx)),
                 new WorkspaceSearchTools(Root(ctx)), new DocumentTools(Root(ctx)),
             ]),
-
-        new(CoreToolset.Git.Wire(),
-            "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
-            GuideFile: SkillFiles.Guide(CoreToolset.Git.Wire()),
-            MissingSettings: _ => [],
-            // S (CL15): five classes (changes, branches, remotes, history, config) on one runner.
-            ToolTypes:
-            [
-                typeof(GitChangeTools), typeof(GitBranchTools), typeof(GitRemoteTools), typeof(GitHistoryTools),
-                typeof(GitConfigTools)
-            ],
-            CreateTools: ctx =>
-            {
-                var git = new GitRunner(Root(ctx));
-                return
-                [
-                    new GitChangeTools(git), new GitBranchTools(git), new GitRemoteTools(git), new GitHistoryTools(git),
-                    new GitConfigTools(git)
-                ];
-            }),
 
         new(CoreToolset.Python.Wire(),
             "Run Python code or scripts and manage packages in the agent's own virtual environment",

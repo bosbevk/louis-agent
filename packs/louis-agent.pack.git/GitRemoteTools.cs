@@ -1,9 +1,9 @@
-namespace LouisAgent.Core.Tools.Git;
 
 using System.ComponentModel;
-using LouisAgent.Core.Tools.Git.Running;
-using static LouisAgent.Core.Tools.Git.Running.GitArguments;
+using LouisAgent.Packs.Git.Running;
+using static LouisAgent.Packs.Git.Running.GitArguments;
 
+namespace LouisAgent.Packs.Git;
 /// <summary>The git toolset's remotes (S, CL15: one of its five classes): push, pull, fetch, and the remotes themselves. Every value from the model passes <see cref="GitArguments"/> (FX19; a branch that is a refspec too) and runs on <see cref="GitRunner"/> (ADR 0004).</summary>
 public sealed class GitRemoteTools(GitRunner git)
 {
