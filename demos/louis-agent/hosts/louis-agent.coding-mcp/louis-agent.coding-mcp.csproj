@@ -11,6 +11,7 @@
     <ItemGroup>
         <!-- The framework's MCP host; this program only says what it loads. -->
         <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.mcp-server\louis-agent.mcp-server.csproj" />
+        <ProjectReference Include="..\louis-agent.coding-catalog\louis-agent.coding-catalog.csproj" />
     </ItemGroup>
 
 </Project>

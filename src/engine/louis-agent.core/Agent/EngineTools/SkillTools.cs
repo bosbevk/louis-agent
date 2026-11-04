@@ -88,18 +88,6 @@ internal sealed partial class SkillTools
             // Values are handed to the shell as environment variables and referenced as "${SKILL_ARG_x}",
             // so model-supplied text is never parsed as shell syntax.
             var env = new Dictionary<string, string>();
-            if (!string.IsNullOrWhiteSpace(_options.PaymoApiKey))
-            {
-                env["PAYMO_API_KEY"] = _options.PaymoApiKey;
-                env["PAYMO_API_KEY_BASE64"] =
-                    Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_options.PaymoApiKey}:X"));
-            }
-
-            if (!string.IsNullOrWhiteSpace(_options.DevopsApiKey))
-            {
-                env["DEVOPS_API_KEY"] = _options.DevopsApiKey;
-            }
-
             if (!string.IsNullOrWhiteSpace(jsonArgs))
             {
                 try
@@ -128,7 +116,7 @@ internal sealed partial class SkillTools
             string resolvedCommand = PlaceholderPattern().Replace(skill.Command, m =>
             {
                 string name = m.Groups[1].Value;
-                string variable = name is "PAYMO_API_KEY" or "PAYMO_API_KEY_BASE64" ? name : $"SKILL_ARG_{name}";
+                string variable = $"SKILL_ARG_{name}";
                 return skill.Language switch
                 {
                     ScriptLanguage.PowerShell => $"$env:{variable}",

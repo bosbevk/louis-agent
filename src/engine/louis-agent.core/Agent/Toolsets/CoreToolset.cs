@@ -14,8 +14,6 @@ public enum CoreToolset
     PowerShell,
     Bash,
     Web,
-    Paymo,
-    DevOps,
     Specialists,
     Minions,
     Skills,

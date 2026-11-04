@@ -1,5 +1,5 @@
-using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Coding;
 using LouisAgent.McpServer;
 
-// The coding agent's tools for an MCP client. It names no packs, so it publishes the engine's own tools.
-await McpHost.RunAsync(args, AgentCatalog.CoreOnly);
+// The coding agent's tools for an MCP client. It publishes what this demo's catalogue names.
+await McpHost.RunAsync(args, CodingCatalog.Create());

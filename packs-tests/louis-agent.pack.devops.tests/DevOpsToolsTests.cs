@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text.Json;
-using LouisAgent.Core.Tools.Integrations.DevOps;
+using LouisAgent.Packs.DevOps;
 
-namespace LouisAgent.Core.Tests.Tools.Integrations.DevOps;
+namespace LouisAgent.Packs.DevOps.Tests;
 
 public class DevOpsToolsTests
 {

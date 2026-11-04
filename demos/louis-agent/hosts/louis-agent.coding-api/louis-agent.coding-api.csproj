@@ -12,6 +12,7 @@
         <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
         <!-- The web app this program serves. Its files reach this project's output through this reference. -->
         <ProjectReference Include="..\..\web\louis-agent.web\louis-agent.web.csproj" />
+        <ProjectReference Include="..\louis-agent.coding-catalog\louis-agent.coding-catalog.csproj" />
     </ItemGroup>
 
     <ItemGroup>

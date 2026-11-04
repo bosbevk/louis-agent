@@ -17,12 +17,10 @@ public class AgentEngineTests
     private static ISkillProvider HelloSkills() =>
         new MarkdownSkillProvider(TestPaths.SampleSkills);
 
-    private static AgentEngine Engine(IChatClient client, bool supportsTools = true, string? paymoKey = null)
+    private static AgentEngine Engine(IChatClient client, bool supportsTools = true)
     {
-        var options = TestPaths.Agent(paymoKey);
-        string[] toolsets = paymoKey is null
-            ? [CoreToolset.Files.Wire()]
-            : [CoreToolset.Files.Wire(), CoreToolset.Paymo.Wire()];
+        var options = TestPaths.Agent();
+        string[] toolsets = [CoreToolset.Files.Wire()];
         return new(HelloSkills(), client, options, supportsTools, toolsets: TestPaths.Toolsets(options, toolsets),
             selfExtension: true);
     }
@@ -45,10 +43,6 @@ public class AgentEngineTests
         var options = new AgentOptions
         {
             WorkspaceRoot = Path.GetTempPath(),
-            PaymoApiKey = "test-key",
-            DevopsApiKey = "test-key",
-            DevopsOrganization = "org",
-            DevopsProject = "project",
         };
         var context = new ToolsetContext(options, WebSearchProviderFactory.Create(options));
         var toolsets = ToolsetCatalog.BuildTools(ToolsetCatalog.All, context);
@@ -116,19 +110,6 @@ public class AgentEngineTests
     {
         [System.ComponentModel.Description("Replies pong")]
         public string Ping() => "pong";
-    }
-
-    [Test]
-    public void PaymoTool_UsesExactParameterNames()
-    {
-        var engine = Engine(new FakeChatClient(), paymoKey: "test-key");
-        var tool = engine.Tools.OfType<AIFunction>().Single(t => t.Name == "LogTimeByTaskName");
-
-        string schema = tool.JsonSchema.GetRawText();
-        foreach (string parameter in new[] { "taskName", "startTime", "endTime", "hours", "notes", "date" })
-        {
-            Assert.That(schema, Does.Contain($"\"{parameter}\""));
-        }
     }
 
     [Test]

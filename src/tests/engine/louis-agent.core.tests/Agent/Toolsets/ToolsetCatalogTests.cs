@@ -56,10 +56,6 @@ public class ToolsetCatalogTests
             WorkspaceRoot = Path.GetTempPath(),
             SkillsDirectory = Path.GetTempPath(),
             RatesUrl = null,
-            PaymoApiKey = "key",
-            DevopsApiKey = "key",
-            DevopsOrganization = "org",
-            DevopsProject = "project",
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
             MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
             BrowserUrl = "http://browser.test:9222",
@@ -105,31 +101,31 @@ public class ToolsetCatalogTests
             Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 
-    // CL15: the shops are a pack, so core's own optional toolset here is Paymo, which needs a key the same way.
-    private static readonly ToolsetContext WithoutPaymo = new(new AgentOptions(), new NoSearch());
-    private static readonly ToolsetContext WithPaymo = new(new AgentOptions { PaymoApiKey = "key" }, new NoSearch());
+    // CL15: the shops are a pack, so core's own optional toolset here is specialists, which needs a peer the same way.
+    private static readonly ToolsetContext WithoutPeers = new(new AgentOptions(), new NoSearch());
+    private static readonly ToolsetContext WithPeers = new(new AgentOptions { AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") } }, new NoSearch());
 
     private static string[] Resolved(IEnumerable<string> names, ToolsetContext context) =>
         ToolsetCatalog.Resolve(names, context).Select(t => t.Name).ToArray();
 
     [Test]
     public void AnOptionalToolsetThisInstanceHas_Loads() =>
-        Assert.That(Resolved([CoreToolset.Web.Wire(), "paymo?"], WithPaymo),
-            Is.EqualTo(new[] { CoreToolset.Web.Wire(), CoreToolset.Paymo.Wire() }));
+        Assert.That(Resolved([CoreToolset.Web.Wire(), "specialists?"], WithPeers),
+            Is.EqualTo(new[] { CoreToolset.Web.Wire(), CoreToolset.Specialists.Wire() }));
 
     [Test]
     public void AnOptionalToolsetThisInstanceLacks_IsSkipped() =>
-        Assert.That(Resolved([CoreToolset.Web.Wire(), "paymo?"], WithoutPaymo),
+        Assert.That(Resolved([CoreToolset.Web.Wire(), "specialists?"], WithoutPeers),
             Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
 
     [Test]
     public void ARequiredToolsetThisInstanceLacks_IsStillRefused() =>
-        Assert.That(() => Resolved([CoreToolset.Web.Wire(), CoreToolset.Paymo.Wire()], WithoutPaymo),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("PAYMO_API_KEY"));
+        Assert.That(() => Resolved([CoreToolset.Web.Wire(), CoreToolset.Specialists.Wire()], WithoutPeers),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("AGENT_PEERS"));
 
     [Test]
     public void AnUnknownName_IsRefused_EvenOptional() =>
-        Assert.That(() => Resolved([CoreToolset.Web.Wire(), "shop?"], WithPaymo),
+        Assert.That(() => Resolved([CoreToolset.Web.Wire(), "shop?"], WithPeers),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("shop").And.Message.Contain("Valid names"));
 
     [TestCase(new[] { SampleToolset.Beta + "?", " " + SampleToolset.Beta + "? " }, new[] { SampleToolset.Beta + "?" })]

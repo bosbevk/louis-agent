@@ -230,7 +230,6 @@ public class SkillAuthoringTests
 
     [TestCase(CoreToolset.DotNet)]
     [TestCase(CoreToolset.Python)]
-    [TestCase(CoreToolset.Paymo)]
     public void CreateSkillFile_RefusesBuiltInNames(CoreToolset toolset) => RefusesAsBuiltIn(toolset.Wire());
 
     [TestCase("self-extension")]

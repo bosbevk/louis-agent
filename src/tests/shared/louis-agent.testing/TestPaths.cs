@@ -43,10 +43,9 @@ public static class TestPaths
     /// <summary>The built-in prompts in core (CL8 step 4), embedded and read only from the assembly.</summary>
     public static string Prompts { get; } = Path.Combine(RepoRoot, "src", "engine", "louis-agent.core", "Prompts");
 
-    public static AgentOptions Agent(string? paymoKey = null) => new()
+    public static AgentOptions Agent() => new()
     {
         WorkspaceRoot = RepoRoot,
-        PaymoApiKey = paymoKey,
         // No network in tests: AgentHost.Build would otherwise fetch exchange rates from Frankfurter (F14).
         RatesUrl = null,
     };

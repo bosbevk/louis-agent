@@ -4,10 +4,9 @@ using System.ComponentModel;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Integrations.DevOps.Messages;
+using LouisAgent.Packs.DevOps.Messages;
 
-namespace LouisAgent.Core.Tools.Integrations.DevOps;
+namespace LouisAgent.Packs.DevOps;
 /// <summary>
 /// Azure DevOps work items for one project (DEVOPS_ORGANIZATION / DEVOPS_PROJECT, optional DEVOPS_TEAM). Sprints are
 /// iterations under the project, or under the team when one is set; an empty sprint means the team's current sprint.

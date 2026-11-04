@@ -4,7 +4,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 
-namespace LouisAgent.Core.Tests.Messages;
+namespace LouisAgent.Coding.Tests.Golden;
 
 // CL3: the texts tools return to the model (errors, timeouts, what to do instead) are part of what the model reads, like
 // the tool descriptions in ModelRequestSnapshotTests. Every *ToolMessage enum (the shared one and each area's, from the
@@ -15,9 +15,10 @@ namespace LouisAgent.Core.Tests.Messages;
 public class ToolMessageSnapshotTests
 {
     private static readonly string GoldenFile =
-        Path.Combine(TestPaths.RepoRoot, "src/tests/engine/louis-agent.core.tests", "Messages", "ToolMessageSnapshot.json");
+        Path.Combine(TestPaths.RepoRoot, "demos/louis-agent/tests/louis-agent.coding-catalog.tests/Golden", "ToolMessageSnapshot.json");
 
-    private static readonly Type[] ToolMessages = typeof(AgentOptions).Assembly.GetTypes().Concat(typeof(ToolMessage).Assembly.GetTypes())
+    private static readonly Type[] ToolMessages = new[] { typeof(AgentOptions).Assembly, typeof(ToolMessage).Assembly }
+        .Concat(CodingCatalog.Packs().Select(pack => pack.GetType().Assembly)).Distinct().SelectMany(assembly => assembly.GetTypes())
         .Where(t => t.IsEnum && t.Name.EndsWith("ToolMessage", StringComparison.Ordinal) &&
                     t.Namespace?.Split('.').Last() == "Messages")
         .ToArray();

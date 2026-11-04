@@ -32,10 +32,10 @@ public class MessageEnumTests
             Is.EquivalentTo(new[]
             {
                 "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage",
-                "ConfigErrorMessage", "ConfigLogMessage", "CurrencyToolMessage", "DevOpsToolMessage",
+                "ConfigErrorMessage", "ConfigLogMessage", "CurrencyToolMessage",
                 "DocumentToolMessage", "DotNetToolMessage", "ErrorMessage", "GitToolMessage",
                 "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
-                "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage", "PaymoToolMessage",
+                "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage",
                 "PricingErrorMessage", "PricingLogMessage", "PromptHeaderMessage", "ProtocolErrorMessage",
                 "ProtocolLogMessage", "ScriptToolMessage", "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage",
                 "SkillLogMessage", "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage", "ToolMessage", "UserText",

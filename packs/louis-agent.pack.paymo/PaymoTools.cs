@@ -5,11 +5,9 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Globalization;
-using LouisAgent.Core.Config;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Integrations.Paymo.Messages;
+using LouisAgent.Packs.Paymo.Messages;
 
-namespace LouisAgent.Core.Tools.Integrations.Paymo;
+namespace LouisAgent.Packs.Paymo;
 /// <summary>
 /// Native C# client for Paymo API, replacing bash curl scripts.
 /// Handles task lookup, time entry creation, and error handling.
@@ -20,9 +18,9 @@ public sealed class PaymoTools
     private readonly string _apiKey;
     private const string BaseUrl = "https://app.paymoapp.com/api";
 
-    public PaymoTools(AgentOptions options, HttpClient? httpClient = null)
+    public PaymoTools(PaymoOptions options, HttpClient? httpClient = null)
     {
-        _apiKey = options.PaymoApiKey ?? string.Empty;
+        _apiKey = options.ApiKey ?? string.Empty;
         _httpClient = httpClient ?? new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
         _httpClient.DefaultRequestHeaders.Authorization ??= new System.Net.Http.Headers.AuthenticationHeaderValue(
             "Basic", Convert.ToBase64String(System.Text.Encoding.ASCII.GetBytes($"{_apiKey}:x")));

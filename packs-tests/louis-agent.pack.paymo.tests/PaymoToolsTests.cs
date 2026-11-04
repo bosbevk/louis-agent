@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text.Json;
-using LouisAgent.Core.Tools.Integrations.Paymo;
+using LouisAgent.Packs.Paymo;
 
-namespace LouisAgent.Core.Tests.Tools.Integrations.Paymo;
+namespace LouisAgent.Packs.Paymo.Tests;
 
 public class PaymoToolsTests
 {
@@ -30,7 +30,7 @@ public class PaymoToolsTests
     private static (PaymoTools Client, StubHandler Handler) Create(string? key, Func<HttpRequestMessage, HttpResponseMessage>? respond = null)
     {
         var handler = new StubHandler(respond ?? (_ => new HttpResponseMessage(HttpStatusCode.Created) { Content = new StringContent("{}") }));
-        return (new PaymoTools(TestPaths.Agent(key), new HttpClient(handler)), handler);
+        return (new PaymoTools(new PaymoOptions(key), new HttpClient(handler)), handler);
     }
 
     [Test]

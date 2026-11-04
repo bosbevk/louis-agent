@@ -1,5 +1,5 @@
 using LouisAgent.AcpServer;
-using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Coding;
 
-// The coding agent inside Rider. It names no packs, so it works with the engine's own tools.
-await AcpHost.RunAsync(AgentCatalog.CoreOnly);
+// The coding agent inside Rider. It loads what this demo's catalogue names.
+await AcpHost.RunAsync(CodingCatalog.Create());

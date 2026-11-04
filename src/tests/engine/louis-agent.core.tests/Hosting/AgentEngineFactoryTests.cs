@@ -19,19 +19,19 @@ namespace LouisAgent.Core.Tests.Hosting;
 /// </summary>
 public class AgentEngineFactoryTests
 {
-    /// <summary>Settings over the repo, its skills, a Paymo key if given, and no rates download.</summary>
-    private static AgentOptions Options(string? paymoKey = null) => new()
+    /// <summary>Settings over the repo, its skills, a peer if given, and no rates download.</summary>
+    private static AgentOptions Options(Uri? peer = null) => new()
     {
         WorkspaceRoot = TestPaths.RepoRoot,
         SkillsDirectory = TestPaths.Skills,
-        PaymoApiKey = paymoKey,
+        AgentPeers = peer is null ? [] : new Dictionary<string, Uri> { ["coder"] = peer },
         RatesUrl = null,
     };
 
     /// <summary>A factory on the fake model, with the cache size given.</summary>
     private static AgentEngineFactory Factory(int capacity = AgentEngineFactory.DefaultCapacity,
-        string? paymoKey = null) =>
-        new(new FakeChatClient(), Options(paymoKey), capacity: capacity);
+        Uri? peer = null) =>
+        new(new FakeChatClient(), Options(peer), capacity: capacity);
 
     /// <summary>The names of an engine's tools.</summary>
     private static string[] Names(AgentEngine engine) => engine.Tools.Select(t => t.Name).ToArray();
@@ -370,8 +370,8 @@ public class AgentEngineFactoryTests
 
         Assert.That(() => factory.GetOrCreate([CoreToolset.Files.Wire(), "nope"]),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("Valid names"));
-        Assert.That(() => factory.GetOrCreate([CoreToolset.Paymo.Wire()]),
-            Throws.TypeOf<ToolsetException>().With.Message.Contain("PAYMO_API_KEY"));
+        Assert.That(() => factory.GetOrCreate([CoreToolset.Specialists.Wire()]),
+            Throws.TypeOf<ToolsetException>().With.Message.Contain("AGENT_PEERS"));
         Assert.That(factory.Profiles, Is.Empty);
     }
 
@@ -400,8 +400,8 @@ public class AgentEngineFactoryTests
     public void Available_ListsOnlyToolsetsWhoseSettingsAreSet()
     {
         Assert.That(Factory().Available,
-            Does.Contain(CoreToolset.Files.Wire()).And.Not.Contain(CoreToolset.Paymo.Wire()));
-        Assert.That(Factory(paymoKey: "key").Available, Does.Contain(CoreToolset.Paymo.Wire()));
+            Does.Contain(CoreToolset.Files.Wire()).And.Not.Contain(CoreToolset.Specialists.Wire()));
+        Assert.That(Factory(peer: new Uri("http://coder.test/")).Available, Does.Contain(CoreToolset.Specialists.Wire()));
     }
 
     /// <summary>With no toolsets an engine has only the tools every session gets.</summary>

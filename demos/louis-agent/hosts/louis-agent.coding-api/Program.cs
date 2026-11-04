@@ -1,9 +1,9 @@
 using LouisAgent.Api;
-using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Coding;
 using LouisAgent.Core.Hosting;
 
-// The coding agent's API. It names no packs, so it works with the engine's own tools, and serves the code-review app.
-var host = AgentHost.Build(AgentCatalog.CoreOnly);
+// The coding agent's API. It loads what this demo's catalogue names, and serves the code-review app.
+var host = AgentHost.Build(CodingCatalog.Create());
 var builder = WebApplication.CreateBuilder(args);
 builder.AddLouisAgentApi(host);
 var app = builder.Build();

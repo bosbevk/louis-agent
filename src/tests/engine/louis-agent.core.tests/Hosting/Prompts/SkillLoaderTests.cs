@@ -13,7 +13,7 @@ public class SkillLoaderTests
 {
     private static readonly string[] OtherGuides =
     [
-        "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills", "# Paymo Skills", "# DevOps Skills"
+        "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills"
     ];
 
     private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills };

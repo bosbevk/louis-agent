@@ -34,7 +34,7 @@ public class RoutingEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Identity, eval.Version),
-            Is.EqualTo((eval.Dataset.Name, PulsIdentityName.Puls.Wire(), 3)));
+            Is.EqualTo((eval.Dataset.Name, PulsIdentityName.Puls.Wire(), 4)));
         Assert.That(eval.Proves, Does.StartWith("Puls sends each kind of question to the right place"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }

@@ -8,7 +8,6 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Core.Tools.DotNet;
-using LouisAgent.Core.Tools.Integrations.Paymo;
 
 namespace LouisAgent.Core.Tests.Skills;
 
@@ -113,19 +112,6 @@ public class SkillFilesTests
     }
 
     [Test]
-    public void PaymoGuide_NamesOnlyToolsThatExist()
-    {
-        var toolNames = typeof(PaymoTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("toolsets/paymo.md").Documentation, @"`([A-Z][A-Za-z]+)\(")
-            .Select(m => m.Groups[1].Value)
-            .Distinct()
-            .ToList();
-
-        Assert.That(referenced, Does.Contain("LogTimeByTaskName"));
-        Assert.That(referenced.Where(name => !toolNames.Contains(name)), Is.Empty);
-    }
-
-    [Test]
     public void EveryExecuteSkillExample_NamesASkillThatExists()
     {
         // A guide that shows ExecuteSkill("X") for a procedure nobody defines sends the model to a failing call.
@@ -151,7 +137,6 @@ public class SkillFilesTests
         string docs = SkillLoader.Load(options).Documentation;
 
         Assert.That(Regex.Matches(docs, "# .NET Skills").Count, Is.EqualTo(1));
-        Assert.That(Regex.Matches(docs, "# Paymo Skills").Count, Is.EqualTo(1));
     }
 
     [Test]

@@ -20,20 +20,6 @@ public sealed class AgentOptions
     public string? SkillsDirectory { get; set; }
 
 
-    public string? PaymoApiKey { get; set; }
-
-    /// <summary>API key for DevOps operations (work item retrieval, project management, etc.).</summary>
-    public string? DevopsApiKey { get; set; }
-
-    /// <summary>DEVOPS_ORGANIZATION: the Azure DevOps organisation (dev.azure.com/{organisation}).</summary>
-    public string? DevopsOrganization { get; set; }
-
-    /// <summary>DEVOPS_PROJECT: the project whose work items the DevOps tools query.</summary>
-    public string? DevopsProject { get; set; }
-
-    /// <summary>DEVOPS_TEAM (optional): the team whose sprints are used; sprints live under {project}\{team}.</summary>
-    public string? DevopsTeam { get; set; }
-
     /// <summary>WEB_SEARCH_PROVIDER: tavily, google, searxng or duckduckgo; null picks Tavily when its key is set, else Google when its key and engine ID are, else SearXNG when its URL is, else DuckDuckGo.</summary>
     public string? WebSearchProvider { get; set; }
 
@@ -230,11 +216,6 @@ public sealed class AgentOptions
         var options = new AgentOptions
         {
             SkillsDirectory = Get("SKILLS_DIRECTORY"),
-            PaymoApiKey = Get("PAYMO_API_KEY"),
-            DevopsApiKey = Get("DEVOPS_API_KEY"),
-            DevopsOrganization = Get("DEVOPS_ORGANIZATION"),
-            DevopsProject = Get("DEVOPS_PROJECT"),
-            DevopsTeam = Get("DEVOPS_TEAM"),
             WebSearchProvider = Get("WEB_SEARCH_PROVIDER"),
             SearxngUrl = Get("SEARXNG_URL"),
             BrowserUrl = Get("BROWSER_URL"),

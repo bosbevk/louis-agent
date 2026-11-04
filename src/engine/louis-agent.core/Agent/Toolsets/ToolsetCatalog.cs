@@ -14,8 +14,6 @@ using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.DotNet;
 using LouisAgent.Core.Tools.Git;
 using LouisAgent.Core.Tools.Git.Running;
-using LouisAgent.Core.Tools.Integrations.DevOps;
-using LouisAgent.Core.Tools.Integrations.Paymo;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Fetching;
@@ -112,26 +110,6 @@ public static class ToolsetCatalog
                 ];
             },
             ParallelSafe: true),
-
-        new(CoreToolset.Paymo.Wire(), "Paymo time tracking: time entries, tasks, projects and summaries",
-            GuideFile: SkillFiles.Guide(CoreToolset.Paymo.Wire()),
-            MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),
-            ToolTypes: [typeof(PaymoTools)],
-            CreateTools: ctx => [new PaymoTools(ctx.Options)]),
-
-        new(CoreToolset.DevOps.Wire(), "Azure DevOps work items, sprints and team queries",
-            GuideFile: SkillFiles.Guide(CoreToolset.DevOps.Wire()),
-            MissingSettings: ctx => Missing(ctx,
-                ("DEVOPS_API_KEY", ctx.Options.DevopsApiKey),
-                ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
-                ("DEVOPS_PROJECT", ctx.Options.DevopsProject)),
-            ToolTypes: [typeof(DevOpsTools)],
-            CreateTools: ctx =>
-            [
-                new DevOpsTools(
-                    ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!,
-                    ctx.Options.DevopsTeam)
-            ]),
 
         new(CoreToolset.Specialists.Wire(),
             "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",

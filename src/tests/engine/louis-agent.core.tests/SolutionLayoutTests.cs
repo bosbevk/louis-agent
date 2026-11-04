@@ -18,7 +18,7 @@ public class SolutionLayoutTests
     [TestCase("src/web", "louis-agent.web.shared")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
-    [TestCase("packs", "louis-agent.pack.recipes", "louis-agent.pack.shop-prices", "louis-agent.pack.where-to-buy")]
+    [TestCase("packs", "louis-agent.pack.devops", "louis-agent.pack.paymo", "louis-agent.pack.recipes", "louis-agent.pack.shop-prices", "louis-agent.pack.where-to-buy")]
     [TestCase("packs-evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
@@ -27,7 +27,7 @@ public class SolutionLayoutTests
     [TestCase("demos/louis-agent/web", "louis-agent.web", "louis-agent.site")]
     [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
         "louis-agent.coding-acp", "louis-agent.coding-mcp", "louis-agent.coding-eval-runner",
-        "louis-agent.coding-api")]
+        "louis-agent.coding-api", "louis-agent.coding-catalog")]
     [TestCase("src/tests/engine", "louis-agent.core.tests", "louis-agent.core.integration-tests",
         "louis-agent.choices.tests", "louis-agent.session-stream.tests")]
     [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests")]
@@ -40,9 +40,9 @@ public class SolutionLayoutTests
         "louis-agent.api.testing",
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
-    [TestCase("demos/louis-agent/tests", "louis-agent.web.tests", "louis-agent.site.tests",
+    [TestCase("demos/louis-agent/tests", "louis-agent.coding-catalog.tests", "louis-agent.web.tests", "louis-agent.site.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
-    [TestCase("packs-tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.shop-prices.tests",
+    [TestCase("packs-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.shop-prices.tests",
         "louis-agent.pack.shop-prices.integration-tests", "louis-agent.pack.where-to-buy.tests",
         "louis-agent.pack.recipes.checks.tests", "louis-agent.pack.where-to-buy.checks.tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)

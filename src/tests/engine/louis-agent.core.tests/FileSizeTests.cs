@@ -29,14 +29,14 @@ public class FileSizeTests
         "src/engine/louis-agent.core/Agent/EngineTools/AgentBuiltTools.cs",
         "src/engine/louis-agent.core/Agent/EngineTools/SkillTools.cs",
         "src/engine/louis-agent.core/Tools/DotNet/DotNetTools.cs",
-        "src/engine/louis-agent.core/Tools/Integrations/DevOps/DevOpsTools.cs",
-        "src/engine/louis-agent.core/Tools/Integrations/Paymo/PaymoTools.cs",
+        "packs/louis-agent.pack.devops/DevOpsTools.cs",
+        "packs/louis-agent.pack.paymo/PaymoTools.cs",
         "src/engine/louis-agent.core/Tools/Shell/PythonTools.cs",
         "src/engine/louis-agent.core/Tools/Web/Browsing/ChromeWebBrowser.cs",
         "demos/puls/web/louis-agent.puls/Pages/ChatPage.razor.cs",
         "demos/louis-agent/web/louis-agent.web/Pages/ChatPage.razor.cs",
-        "src/tests/engine/louis-agent.core.tests/Tools/Integrations/DevOps/DevOpsToolsTests.cs",
-        "src/tests/engine/louis-agent.core.tests/Tools/Integrations/Paymo/PaymoToolsTests.cs",
+        "packs-tests/louis-agent.pack.devops.tests/DevOpsToolsTests.cs",
+        "packs-tests/louis-agent.pack.paymo.tests/PaymoToolsTests.cs",
         "src/tools/louis-agent.usage-probe/Program.cs",
     ];
 
