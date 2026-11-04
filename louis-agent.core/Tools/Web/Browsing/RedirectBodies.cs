@@ -11,9 +11,10 @@ namespace LouisAgent.Core.Tools.Web.Browsing;
 /// as seen; the failure itself is expected and dropped. Goes when a PuppeteerSharp release awaits its own task.
 /// </summary>
 /// <remarks>
-/// The observer Puppeteer itself puts on the same task in JavaScript (<c>.catch(debugError)</c> in its
-/// <c>NetworkManager</c>), which the C# port left out; written beside the browser, not in the last-chance handler,
-/// so an unawaited task anywhere else is still reported.
+/// A fault observer. Puppeteer's JavaScript keeps the error as a value in its <c>Deferred</c> and only makes a
+/// rejecting promise when someone asks for the body, so nothing is left unhandled there; the C# port faults the
+/// task up front, so the awaiting has to happen here. Beside the browser, not in the last-chance handler, so an
+/// unawaited task anywhere else is still reported.
 /// </remarks>
 internal static class RedirectBodies
 {

@@ -113,7 +113,7 @@ Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a tim
 
 ## Small cleanups (each when its code is next touched)
 
-- [ ] `Tools/Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body task (FX36; `NetworkManager.HandleRequestRedirect` sets it failed and nothing awaits it at 25.14 and 25.16; report it upstream first, as Puppeteer's JavaScript has the `.catch`)
+- [ ] `Tools/Web/Browsing/RedirectBodies` goes when a PuppeteerSharp release awaits its own redirect body task (FX36; `NetworkManager.HandleRequestRedirect` sets it failed and nothing awaits it at 25.14 and 25.16; reported there as [#891](https://github.com/hardkoded/puppeteer-sharp/issues/891) and [#2642](https://github.com/hardkoded/puppeteer-sharp/issues/2642), both closed without a fix, "PRs are welcome": the one-line fix is in `/mnt/project-files/upstream/`)
 - [ ] Design docs for the three projects that have none: `louis-agent.choices`, `louis-agent.session-stream`, `louis-agent.api.contracts` (CL24 found them; [projects](docs/projects/README.md))
 - [ ] The orchestrator's `Program.cs` up to the rules (F52 step 2 found it, Louis's pick A, 2026-11-03): `Decision.ToRecord` writes decisions.jsonl from an anonymous object (ADR 0041: a record), `Decision.Parse` has a nested `?:` (ADR 0051), several members have no summary (ADR 0050), and the file holds four types besides the program (one per file)
 - [ ] F16-S1: the oversized-results report, and the worst offenders paged
