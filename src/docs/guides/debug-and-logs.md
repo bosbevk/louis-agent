@@ -57,7 +57,7 @@ Every model request is in `{LOG_DIRECTORY}/usage-YYYY-MM.jsonl` (tokens, cost, h
 prompt text). Total one with:
 
 ```bash
-dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl
+dotnet run --project src/tools/louis-agent.usage-probe -- --ledger logs/usage-YYYY-MM.jsonl
 ```
 
 ## Docker

@@ -182,7 +182,7 @@ has one). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the 
 
 Configuration only — see [MODELS.md](../../docs/MODELS.md): `LLM_PROFILE` picks `config/.env.anthropic` or `config/.env.ollama`.
 A new model also needs its prices in each demo's `config/prices.json` (else its cost is recorded as unknown); run
-`tools/louis-agent.usage-probe` before trusting a new provider's usage numbers. Provider differences belong in
+`src/tools/louis-agent.usage-probe` before trusting a new provider's usage numbers. Provider differences belong in
 `LlmClientFactory` (the client, and `CreateUsageMapper` for how it reports usage), never in `AgentEngine` or the tools.
 Where providers need different logic for the same concern, write it as a **strategy**: an interface, one implementation
 per provider that differs (plus a default), chosen once in `LlmClientFactory`, as `IUsageMapper` is

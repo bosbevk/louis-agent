@@ -5,7 +5,7 @@ public static class SourceTree
 {
     public static readonly string[] Roots =
     [
-        "src", "packs", "packs-evals", "packs-tests", "demos", "tools"
+        "src", "packs", "packs-evals", "packs-tests", "demos"
     ];
 
     /// <summary>Every <c>.cs</c> and <c>.razor</c> file under the roots, bin, obj and published folders left out.</summary>
@@ -24,7 +24,7 @@ public static class SourceTree
         var projects = new List<string>();
         foreach (string group in new[]
                  {
-                     "src/engine", "src/hosts", "src/web", "src/evals", "packs", "packs-evals", "tools",
+                     "src/engine", "src/hosts", "src/web", "src/evals", "src/tools", "packs", "packs-evals",
                      "demos/puls/identity", "demos/puls/evals", "demos/puls/web", "demos/puls/hosts",
                      "demos/louis-agent/web", "demos/louis-agent/hosts"
                  })

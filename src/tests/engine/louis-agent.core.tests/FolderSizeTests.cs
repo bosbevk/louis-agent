@@ -18,7 +18,7 @@ public class FolderSizeTests
     /// <summary>Where the source lives: the same roots the file-size rule reads.</summary>
     private static readonly string[] Roots =
     [
-        "src", "packs", "packs-evals", "packs-tests", "demos", "tools"
+        "src", "packs", "packs-evals", "packs-tests", "demos"
     ];
 
     /// <summary>

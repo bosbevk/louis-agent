@@ -161,7 +161,7 @@ packs-evals/             # What proves a pack, apart so someone can take the too
 packs-tests/             # A pack's own tests; packs/docs/ holds the packs' docs
 demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/, docker/, skills/ (what the agent writes), deploy/ (Azure), tests/, docs/, and git-ignored data/ and logs/
 demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC), config/, docker/, skills/, tests/, docs/, and git-ignored data/ and logs/
-tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
+src/tools/               # louis-agent.usage-probe: a provider's raw usage; prices and totals a ledger
 src/tests/               # Only the framework's tests, grouped like src/ ([tests](projects/tests.md)); a demo holds its own tests/ and packs-tests/ the packs'; the ones that leave their process are *.integration-tests
 src/docs/                # The framework's docs: this guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
 .claude/rules/           # The how of the C#, Razor, CSS and docs rules, loaded by file path

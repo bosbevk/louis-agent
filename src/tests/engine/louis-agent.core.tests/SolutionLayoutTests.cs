@@ -33,6 +33,7 @@ public class SolutionLayoutTests
     [TestCase("src/tests/evals", "louis-agent.evals.tests", "louis-agent.evals.checks.tests",
         "louis-agent.evals.protocol.tests", "louis-agent.evals.runner.tests")]
     [TestCase("src/tests/shared", "louis-agent.testing")]
+    [TestCase("src/tools", "louis-agent.usage-probe")]
     [TestCase("demos/puls/tests", "louis-agent.api.tests", "louis-agent.api.integration-tests",
         "louis-agent.api.testing",
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",

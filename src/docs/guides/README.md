@@ -29,7 +29,7 @@
 | [Change the API](change-the-api.md) | `src/hosts/louis-agent.api` | Add an endpoint (and protect it), a session option, an event; serve the other web app |
 | [Change the MCP server](change-the-mcp-server.md) | `src/hosts/louis-agent.mcp-server` | Publish a tool, add an MCP-only tool, pick the transport, check it with a client |
 | [Change the orchestrator](../../../demos/louis-agent/docs/guides/change-the-orchestrator.md) | `demos/louis-agent/hosts/louis-agent.orchestrator` | Change a runbook, add a tool or a setting, test and run it |
-| [Change the usage probe](change-the-usage-probe.md) | `tools/louis-agent.usage-probe` | Check a provider's usage, fix a mapper, total a ledger, add a command |
+| [Change the usage probe](change-the-usage-probe.md) | `src/tools/louis-agent.usage-probe` | Check a provider's usage, fix a mapper, total a ledger, add a command |
 | [Change the code-review web app](../../../demos/louis-agent/docs/guides/change-the-web-app.md) | `demos/louis-agent/web/louis-agent.web` | Add a tab, call a new endpoint, add a theme, test the page |
 | [Change the Puls web app](../../../demos/puls/docs/guides/change-the-puls-app.md) | `demos/puls/web/louis-agent.puls` | Run it, change the chat, the landing page or the admin portal, add a starter |
 | [Change the site](../../../demos/louis-agent/docs/guides/change-the-site.md) | `demos/louis-agent/web/louis-agent.site` | Run it, add a page, change the theme, change a film, export a film as a video |

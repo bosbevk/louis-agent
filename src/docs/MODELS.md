@@ -44,7 +44,7 @@ tokens for prompts up to 100,000 tokens, 5× that above), and good at tool calli
 It counts the same text as more tokens than Haiku 4.5 (+52% on the usage probe), and is still about 7.5× cheaper for
 the same work. `claude-haiku-4-5-20251001` still works. Any current Claude model id works in `LLM_MODEL` (Sonnet or Opus
 for harder work, at a higher price per token); check Anthropic's documentation (https://docs.claude.com) for ids and
-pricing, and run `tools/louis-agent.usage-probe` before relying on a new model's usage numbers. A model also needs its
+pricing, and run `src/tools/louis-agent.usage-probe` before relying on a new model's usage numbers. A model also needs its
 prices in `config/prices.json` (matched by longest prefix); until then the usage ledger records its cost as unknown.
 
 **Thinking.** `LLM_THINKING` (`off` / `low` / `medium` / `high`, default `medium` for Anthropic) sets how much the model
@@ -58,7 +58,7 @@ system prompt (~48,000 tokens); with caching the API reads them at a tenth of th
 and each tool round reads the round before. On the demo it cut the input cost by 87%. Two markers: the system prompt,
 whose lifetime is `LLM_CACHE_TTL` (`5m` default; `1h` when requests sharing it come 5–60 minutes apart, as in a chat
 with pauses), and the conversation, always 5 minutes. To choose the lifetime from your own traffic:
-`dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps logs/usage-YYYY-MM.jsonl`. A cache miss raises no
+`dotnet run --project src/tools/louis-agent.usage-probe -- --cache-gaps logs/usage-YYYY-MM.jsonl`. A cache miss raises no
 error; the ledger shows `cache_read: 0` (compare with [the F4 smoke run at `pre-cl10`](https://github.com/bosbevk/louis-agent/tree/pre-cl10/samples/smoke-f4-caching)). Ollama and OpenAI-compatible
 endpoints get no markers. Haiku 5.5 caches from 512 tokens, Haiku 4.5 from 4,096.
 

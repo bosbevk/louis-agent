@@ -16,11 +16,11 @@ using LouisAgent.UsageProbe.Messages;
 // Prints what a provider's adapter reports in UsageDetails, streaming and not, and what its IUsageMapper makes of it.
 // Run it before trusting the usage ledger for a new provider or after upgrading an adapter (F1 step 1).
 //
-//   dotnet run --project tools/louis-agent.usage-probe [-- --lines N]
-//   dotnet run --project tools/louis-agent.usage-probe -- --think     (2 requests that need reasoning: is thinking text returned?)
-//   dotnet run --project tools/louis-agent.usage-probe -- --ledger <usage-YYYY-MM.jsonl>   (price and total a ledger; no model call)
-//   dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps <usage-YYYY-MM.jsonl>   (which LLM_CACHE_TTL; F4; no model call)
-//   dotnet run --project tools/louis-agent.usage-probe -- --host-culture [en-ZA]   (write the PC's culture to config/.env; F14)
+//   dotnet run --project src/tools/louis-agent.usage-probe [-- --lines N]
+//   dotnet run --project src/tools/louis-agent.usage-probe -- --think     (2 requests that need reasoning: is thinking text returned?)
+//   dotnet run --project src/tools/louis-agent.usage-probe -- --ledger <usage-YYYY-MM.jsonl>   (price and total a ledger; no model call)
+//   dotnet run --project src/tools/louis-agent.usage-probe -- --cache-gaps <usage-YYYY-MM.jsonl>   (which LLM_CACHE_TTL; F4; no model call)
+//   dotnet run --project src/tools/louis-agent.usage-probe -- --host-culture [en-ZA]   (write the PC's culture to config/.env; F14)
 //
 // Uses LLM_PROVIDER / LLM_MODEL / LLM_ENDPOINT from config/.env; variables set in the shell win. Every request goes to the
 // real provider, so with Anthropic this costs money (about $0.05 on Haiku 4.5 with the default prompt). --ledger only

@@ -1,6 +1,6 @@
 # louis-agent.usage-probe — design
 
-> **Kind:** console app (developer tool) · **Path:** `tools/louis-agent.usage-probe/` · **References:** louis-agent.core
+> **Kind:** console app (developer tool) · **Path:** `src/tools/louis-agent.usage-probe/` · **References:** louis-agent.core
 > · **Docker service:** none
 
 ## Purpose
@@ -25,14 +25,14 @@ few one-word requests with a long system prompt, both non-streaming and streamin
 | Others | Plain, then the same prompt again, to see whether the provider reports any caching itself. 4 requests |
 
 ```bash
-dotnet run --project tools/louis-agent.usage-probe                          # provider from config/.env
-LLM_PROFILE=ollama dotnet run --project tools/louis-agent.usage-probe     # another LLM profile for one run
-LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project tools/louis-agent.usage-probe   # and another model
-dotnet run --project tools/louis-agent.usage-probe -- --think           # 2 reasoning requests: is thinking text returned?
-dotnet run --project tools/louis-agent.usage-probe -- --lines 100           # prompt size (default 600 Anthropic, 40 others)
-dotnet run --project tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-2026-10.jsonl   # price and total a ledger
-dotnet run --project tools/louis-agent.usage-probe -- --host-culture   # write the PC's culture to config/.env (F14)
-dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps .demo/logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL (F4)
+dotnet run --project src/tools/louis-agent.usage-probe                          # provider from config/.env
+LLM_PROFILE=ollama dotnet run --project src/tools/louis-agent.usage-probe     # another LLM profile for one run
+LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project src/tools/louis-agent.usage-probe   # and another model
+dotnet run --project src/tools/louis-agent.usage-probe -- --think           # 2 reasoning requests: is thinking text returned?
+dotnet run --project src/tools/louis-agent.usage-probe -- --lines 100           # prompt size (default 600 Anthropic, 40 others)
+dotnet run --project src/tools/louis-agent.usage-probe -- --ledger .demo/logs/usage-2026-10.jsonl   # price and total a ledger
+dotnet run --project src/tools/louis-agent.usage-probe -- --host-culture   # write the PC's culture to config/.env (F14)
+dotnet run --project src/tools/louis-agent.usage-probe -- --cache-gaps .demo/logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL (F4)
 ```
 
 **`--cache-gaps <file>` makes no model call either** (F4). Per host and model (each its own cached prefix, shared by

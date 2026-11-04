@@ -458,7 +458,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator.te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{07C2787E-EAC7-C090-1BA3-A61EC2A24D84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.usage-probe", "tools\louis-agent.usage-probe\louis-agent.usage-probe.csproj", "{B570E980-4301-4AFF-9273-3A6F2D17B2AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.usage-probe", "src\tools\louis-agent.usage-probe\louis-agent.usage-probe.csproj", "{B570E980-4301-4AFF-9273-3A6F2D17B2AF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
@@ -1301,6 +1301,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{07C2787E-EAC7-C090-1BA3-A61EC2A24D84} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{88F3C49C-BB16-514A-9985-0A54746EA3BB} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
 		{4993F08C-6B0C-5111-B0E2-4B0A8CC72B9B} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
 		{77EF2112-329B-5606-8AAF-CED6069FF272} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}

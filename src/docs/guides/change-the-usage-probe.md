@@ -1,6 +1,6 @@
 # Change the usage probe
 
-> **How-to.** Use and change `tools/louis-agent.usage-probe`, the developer tool that shows what a provider reports as
+> **How-to.** Use and change `src/tools/louis-agent.usage-probe`, the developer tool that shows what a provider reports as
 > token usage and what the ledger makes of it: check a new provider or model, fix a usage mapper, total a ledger, add a
 > command. **Elsewhere:** what it prints in [louis-agent.usage-probe](../projects/louis-agent.usage-probe.md); why every
 > request is measured in [ADR 0007](../adr/0007-measure-every-request.md).
@@ -16,9 +16,9 @@ no model call.
    they are real: they cost a little.
 
    ```bash
-   LLM_PROFILE=ollama dotnet run --project tools/louis-agent.usage-probe
-   LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project tools/louis-agent.usage-probe
-   dotnet run --project tools/louis-agent.usage-probe -- --think        # is thinking text returned?
+   LLM_PROFILE=ollama dotnet run --project src/tools/louis-agent.usage-probe
+   LLM_PROFILE=ollama LLM_MODEL=qwen2.5:0.5b dotnet run --project src/tools/louis-agent.usage-probe
+   dotnet run --project src/tools/louis-agent.usage-probe -- --think        # is thinking text returned?
    ```
 
 2. Compare each `ledger:` line with the raw counts above it: input, output, cache reads and writes. They must say the
@@ -43,8 +43,8 @@ tokens):
 ## Read a ledger
 
 ```bash
-dotnet run --project tools/louis-agent.usage-probe -- --ledger logs/usage-2026-10.jsonl       # price and total it
-dotnet run --project tools/louis-agent.usage-probe -- --cache-gaps logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL fits
+dotnet run --project src/tools/louis-agent.usage-probe -- --ledger logs/usage-2026-10.jsonl       # price and total it
+dotnet run --project src/tools/louis-agent.usage-probe -- --cache-gaps logs/usage-2026-10.jsonl   # which LLM_CACHE_TTL fits
 ```
 
 Both use the same records and totals as every host (`UsageReport.Total`), so their numbers agree with what a chat showed.
