@@ -30,6 +30,16 @@ public class PriceBookCacheTests
             Reads++;
             return Task.FromResult(answer());
         }
+
+        /// <inheritdoc />
+        public bool CanSave => false;
+
+        /// <inheritdoc />
+        public Task<IReadOnlyList<PriceFile>> MonthsAsync(string source, CancellationToken cancellationToken) =>
+            Task.FromResult<IReadOnlyList<PriceFile>>([]);
+
+        /// <inheritdoc />
+        public Task SaveAsync(PriceFile file, CancellationToken cancellationToken) => throw new NotSupportedException();
     }
 
     /// <summary>Two calls within the hour read the store once; after the hour, it is read again.</summary>

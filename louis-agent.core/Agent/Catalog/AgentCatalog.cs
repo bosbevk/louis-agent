@@ -1,4 +1,5 @@
 
+using LouisAgent.Core.Agent.Catalog.Imports;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using System.ComponentModel;
@@ -56,6 +57,9 @@ public sealed class AgentCatalog
         Feeds = packs.SelectMany(p => p.Feeds).ToList();
         CheckUnique(Feeds.Select(f => f.Name), "feed");
 
+        Imports = packs.SelectMany(p => p.Imports).ToList();
+        CheckUnique(Imports.Select(i => i.Name), "import");
+
         Prompts = identities.Select(i => i.Prompts).Concat(packs.Select(p => p.Prompts)).ToList();
         CheckUnique(SkillFileSource.CoreFiles.Concat(Prompts.SelectMany(SkillFileSource.FilesOf)), "prompt path");
 
@@ -88,6 +92,13 @@ public sealed class AgentCatalog
     /// <summary>The feed by that name, case ignored; null when no pack publishes one.</summary>
     public IDataFeed? Feed(string name) =>
         Feeds.FirstOrDefault(feed => string.Equals(feed.Name, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>The data a person may upload into the packs (F55), each pack's in its order.</summary>
+    public IReadOnlyList<IDataImport> Imports { get; }
+
+    /// <summary>The import by that name, case ignored; null when no pack takes one.</summary>
+    public IDataImport? Import(string name) =>
+        Imports.FirstOrDefault(import => string.Equals(import.Name, name, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>).</summary>
     public IReadOnlyList<IFileProvider> Prompts { get; }

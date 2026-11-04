@@ -4,7 +4,7 @@ using LouisAgent.Packs.ShopPrices.Tools;
 
 namespace LouisAgent.Packs.ShopPrices.Tests;
 
-/// <summary>The pack is one toolset with its guide, and needs nothing set to load.</summary>
+/// <summary>The pack is one toolset with its guide, a feed and an upload, and needs nothing set to load.</summary>
 public class ShopPricesPackTests
 {
     /// <summary>Its name, its one toolset and its guide are the pack's own, read through the one reader.</summary>
@@ -29,5 +29,15 @@ public class ShopPricesPackTests
         Assert.That(toolset.MissingSettings(null!), Is.Empty);
         Assert.That(toolset.ParallelSafe, Is.True);
         Assert.That(toolset.ToolTypes, Is.EqualTo(new[] { typeof(ShopPriceTools) }));
+    }
+
+    /// <summary>It publishes one feed and takes one upload, both named for the pack (ADR 0070, F55).</summary>
+    [Test]
+    public void ItPublishesOneFeed_AndTakesOneUpload()
+    {
+        var pack = new ShopPricesPack(new ShopPricesOptions());
+
+        Assert.That(pack.Feeds.Select(f => f.Name), Is.EqualTo(new[] { ShopPricesToolset.ShopPrices.Wire() }));
+        Assert.That(pack.Imports.Select(i => i.Name), Is.EqualTo(new[] { ShopPricesToolset.ShopPrices.Wire() }));
     }
 }

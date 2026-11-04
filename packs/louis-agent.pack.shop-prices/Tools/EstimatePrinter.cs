@@ -62,7 +62,10 @@ public static class EstimatePrinter
         _ => MessageText.Format(ShopPriceToolMessage.LineNotFound, new { Item = line.Item.Text }),
     };
 
-    /// <summary>A priced line's row, saying when the national price stood in and when the row is our own.</summary>
+    /// <summary>
+    /// A priced line's row, saying when the national price stood in, when it is from an older month, and when the row is
+    /// our own.
+    /// </summary>
     private static string Priced(ShopPriceToolMessage row, PriceEstimate line, Region region, PriceBook table) =>
         MessageText.Format(row, new
         {
@@ -73,7 +76,10 @@ public static class EstimatePrinter
             Where = line.Price.Region != region
                 ? MessageText.Format(ShopPriceToolMessage.NationalStandsIn, new { Region = MessageText.Template(region) })
                 : "",
-            Ours = line.Match.File != table.Files[0] ? MessageText.Format(ShopPriceToolMessage.OurOwnRow) : "",
+            Ours = line.Match.File.Source != table.Files[0].Source ? MessageText.Format(ShopPriceToolMessage.OurOwnRow) : "",
+            When = table.Files.Contains(line.Match.File)
+                ? ""
+                : MessageText.Format(ShopPriceToolMessage.OlderMonth, new { Month = MonthOf(line.Match.File.AsOf) }),
             Rand = Rand(line.Rand!.Value),
         });
 
@@ -81,6 +87,8 @@ public static class EstimatePrinter
     private static string Rand(decimal rand) => rand.ToString("0", CultureInfo.InvariantCulture);
 
     /// <summary>The month Stats SA's prices are for, as a person says it: "August 2026".</summary>
-    private static string Month(PriceBook table) =>
-        table.Files[0].AsOf.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
+    private static string Month(PriceBook table) => MonthOf(table.Files[0].AsOf);
+
+    /// <summary>A month as a person says it.</summary>
+    private static string MonthOf(DateOnly month) => month.ToString("MMMM yyyy", CultureInfo.InvariantCulture);
 }

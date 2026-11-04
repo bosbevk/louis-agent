@@ -76,7 +76,7 @@ Phases 0 to 3 are done (the CHANGELOG has each one). In this order, one at a tim
 - [ ] [F21](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F21-personalities.md): Louis's corrections to the Afrikaans
 - [ ] [F28 Team talk](docs/features/F28-team-talk.md), the rest: the mood switch, off by default (question 4: switch), the card as a thread and the Werk chip, the briefing and the mood graded by Puls's simulations
 - [ ] A retailer's own prices, only with its permission or feed (emails to PnP, Woolworths and Checkers sent 2026-10-25, no answer by 2026-11-04): a new price source in the `shop-prices` store beside Stats SA's (ADR 0069), never a scraper
-- [ ] Stats SA's monthly refresh (F50.2): a C# command that turns P0141's two spreadsheets (all urban areas, provinces) into the next month's price file and saves it into the `shop-prices` store; until then a new `statssa-average-prices.json` is shipped by hand. Louis to check the 18 rows of our own in `own-prices.json`
+- [ ] Louis to check the 18 rows of our own in `own-prices.json` (F50.2); Stats SA's releases now come in on the admin portal's Uploads page (F55, ADR 0071)
 - [ ] Our own Nominatim, or a paid geocoder, before Puls is public: the public service allows one request a second (F50.2's `where-to-buy`)
 - [ ] The MCP server publishes the packs' feeds as MCP resources (ADR 0070: a feed is a name, a description and its JSON, one to one with a resource); today only the API serves them
 - [ ] The open feeds have no key and no limit ("for now", Louis 2026-11-04): before a feed costs us to serve or holds data we may not give away, a key or a rate limit (ADR 0070)

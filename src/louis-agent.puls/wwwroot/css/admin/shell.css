@@ -91,3 +91,12 @@
 .admin-main .live-run-strip:hover { color: var(--ink); border-color: rgba(245, 130, 32, .65); }
 .live-run-strip code { color: var(--ink); background: none; padding: 0; font-weight: 700; }
 .live-run-strip-go { margin-left: auto; color: var(--orange-text); font-weight: 600; }
+/* F55: a pack's upload in the portal's own parts (card-p, header-button, admin-table): a file box per slot, the
+   report's facts as a two-column table. */
+.import-slots { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.import-slot { display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px dashed var(--border); border-radius: 10px; }
+.import-slot-name { font-weight: 700; color: var(--ink); }
+.import-facts th { width: 34%; text-transform: none; letter-spacing: 0; font-size: 13px; }
+.import-problems { margin: 0; padding-left: 18px; }
+.import-error { margin: 0; }
+.import-card .danger { color: var(--danger); }

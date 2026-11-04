@@ -27,13 +27,18 @@ public sealed class PriceBook
 
     private readonly List<(IReadOnlyList<string> Words, PriceMatch Match)> _names;
 
-    /// <summary>A table over these files, the first file's rows winning a tie.</summary>
-    public PriceBook(IReadOnlyList<PriceFile> files)
+    /// <summary>
+    /// A table over these files, the first file's rows winning a tie, and the older months of their sources, newest
+    /// first, which price only a product the newest months lack (Louis's pick E1, 2026-11-04).
+    /// </summary>
+    public PriceBook(IReadOnlyList<PriceFile> files, IReadOnlyList<PriceFile>? older = null)
     {
         Files = files;
+        Older = older ?? [];
+        // The newest months come first, so a name they have wins over the same name in an older month.
         _names =
         [
-            .. files.SelectMany(file => file.Products.SelectMany(product =>
+            .. files.Concat(Older).SelectMany(file => file.Products.SelectMany(product =>
                 product.Names.Select(name => (ProductWords.Of(name), new PriceMatch(product, file)))))
         ];
     }
@@ -41,8 +46,11 @@ public sealed class PriceBook
     /// <summary>The tables the pack ships: Stats SA's month and our own rows.</summary>
     public static PriceBook Default => Embedded.Value;
 
-    /// <summary>The tables, in the order a tie is settled.</summary>
+    /// <summary>The tables, each source's newest month, in the order a tie is settled.</summary>
     public IReadOnlyList<PriceFile> Files { get; }
+
+    /// <summary>Every older month of those sources, newest first: a product the newest month lacks is found here.</summary>
+    public IReadOnlyList<PriceFile> Older { get; }
 
     /// <summary>The product a line is about, or nothing when no name fits it.</summary>
     public PriceMatch? Find(IReadOnlyList<string> lineWords)
