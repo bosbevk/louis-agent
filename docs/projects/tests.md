@@ -2,7 +2,7 @@
 
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.where-to-buy.tests/`, `tests/louis-agent.pack.shop-prices.tests/`,
-> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
+> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.composition.tests/`, `tests/louis-agent.mcp-server.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
 > `tests/louis-agent.web.tests/`; the tests that leave their process in `tests/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
 > `tests/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -61,6 +61,14 @@ an `AgentEngineFactory` with a client that throws if called.
 |---|---|
 | `LouisAgentClientTests.cs` | Parsing the SSE stream (text, tool calls with inputs and results, stop reason, errors, separate text blocks) and `FIX-RESULT` lines |
 | `OrchestratorTests.cs` | The error feed (processed ids survive restarts, unsafe ids ignored), decisions, runbook loading, the fix prompt, tool guards, the comms log, returning to `main`, and `VerifyFixCommit` against a throwaway git repository |
+
+## louis-agent.mcp-server.tests
+
+| File | Covers |
+|---|---|
+| `InMemoryMcp.cs` | Not a test: the SDK's real server and client joined by two in-memory pipes, no port or process (F56) |
+| `Resources/FeedResourcesTests.cs` | Each feed listed as `feed://{name}` with its description and `application/json`, read back as its JSON, an unknown URI the protocol's error |
+| `McpPrimitivesTests.cs` | The one setup both transports use: the catalogue's feeds as resources beside the engine's tools |
 
 `InternalsVisibleTo` gives the test projects access to `internal` types in core and the orchestrator.
 

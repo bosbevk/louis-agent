@@ -1,11 +1,11 @@
 # louis-agent.mcp-server — design
 
 > **Kind:** console app (stdio) or ASP.NET Core (Streamable HTTP) · **Path:** `src/louis-agent.mcp-server/` ·
-> **References:** louis-agent.core, the ModelContextProtocol SDK · **Docker service:** `mcp-server`
+> **References:** louis-agent.core, louis-agent.composition, the ModelContextProtocol SDK · **Docker service:** `mcp-server`
 
 ## Purpose
 
-Hands louis-agent's tools to any [Model Context Protocol](https://modelcontextprotocol.io) client — Claude Desktop, Rider,
+Hands louis-agent's tools, and the packs' data feeds, to any [Model Context Protocol](https://modelcontextprotocol.io) client — Claude Desktop, Rider,
 or an agent built on another SDK. It has **no model of its own**: the client's model decides which tool to call, one
 call at a time. (To have louis-agent do a whole task itself, use the API's sessions instead —
 [which interface to use](../AGENT_COMMUNICATION.md#which-interface-to-use).)
@@ -14,8 +14,10 @@ call at a time. (To have louis-agent do a whole task itself, use the API's sessi
 
 ```mermaid
 flowchart LR
-    Client["MCP client<br/>(its own model)"] -- "tools/list, tools/call" --> Server["MCP server<br/>(stdio or Streamable HTTP)"]
-    Server --> Sync["EngineToolSync<br/>engine tools → MCP tools"]
+    Client["MCP client<br/>(its own model)"] -- "tools/list, tools/call,<br/>resources/list, resources/read" --> Server["MCP server<br/>(stdio or Streamable HTTP)"]
+    Server --> Prims["McpPrimitives<br/>one setup, both transports"]
+    Prims --> Sync["EngineToolSync<br/>engine tools → MCP tools"]
+    Prims --> Feeds["FeedResources<br/>catalogue feeds → feed://{name}"]
     Sync --> Engine["AgentEngine<br/>(BuildToolHost: no model)"]
     Server --> Skills["SkillsToolProvider<br/>list_skills · get_skill_info · get_skill_documentation"]
     Engine -- "ToolsChanged" --> Sync -- "notifications/tools/list_changed" --> Client
@@ -29,6 +31,10 @@ flowchart LR
 - **Tools:** `EngineToolSync` mirrors `AgentEngine.Tools` into the MCP tool collection and keeps it in sync: when the
   agent builds or approves a tool, clients get `notifications/tools/list_changed`. `SkillsToolProvider` adds three
   read-only skill tools; skills themselves run through the engine's `ExecuteSkill`.
+- **Resources (F56, [ADR 0072](../adr/0072-feeds-are-mcp-resources.md)):** `FeedResources` makes one resource per feed
+  in the catalogue (`AgentCatalog.Feeds`, [ADR 0070](../adr/0070-packs-publish-data-feeds.md)): `feed://{name}`, the
+  feed's description, `application/json`, read whole when asked. Built once at start-up; the SDK answers
+  `resources/list` and `resources/read`. `McpPrimitives.Add` sets up the tools and the resources for both transports.
 - **Auth (HTTP only):** `MCP_API_KEY` (falls back to `AGENT_API_KEY`) as `x-api-key` or `Authorization: Bearer`,
   compared in constant time by core's `HostAuth`, the API's rule too. Without a key it refuses to start (FX18), unless
   `AGENT_AUTH=off` says a machine may run it open on purpose — then keep it on `127.0.0.1`. Over stdio no key: the
@@ -39,7 +45,10 @@ flowchart LR
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | Transport choice, `RunStdioAsync`, `RunHttpAsync` (with the key middleware), `EngineToolSync`, `SkillsToolProvider` |
+| `Program.cs` | Transport choice, `RunStdioAsync`, `RunHttpAsync` (with the key middleware) |
+| `McpPrimitives.cs` | What both transports publish, in one call: the engine's tools and the feeds |
+| `Tools/` | `EngineToolSync` (engine tools → MCP tools, kept in sync), `SkillsToolProvider` (the three skill tools) |
+| `Resources/` | `FeedResources` (feeds → resources), `ResourceScheme` (`feed`) |
 
 ## Configuration
 
@@ -55,8 +64,9 @@ themselves; an MCP-only tool is an `[McpServerToolType]` class registered in bot
 
 ## Tests
 
-None for the server itself; its auth rule is core's `HostAuth` (`HostAuthTests`), and the tools it publishes are tested
-in `tests/louis-agent.core.tests`. Checked with an MCP client and, for HTTP, with curl (no key → 401, right key → 200).
+`tests/louis-agent.mcp-server.tests` (F56) runs the SDK's real client against the server's setup over two in-memory
+pipes: the feeds as resources and the tools beside them. Its auth rule is core's `HostAuth` (`HostAuthTests`), and the
+tools it publishes are tested where they live. Checked with an MCP client and, for HTTP, with curl (no key → 401, right key → 200).
 
 ## Limits and plans
 
