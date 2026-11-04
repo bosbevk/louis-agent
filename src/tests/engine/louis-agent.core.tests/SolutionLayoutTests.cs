@@ -123,8 +123,8 @@ public class SolutionLayoutTests
     }
 
     /// <summary>
-    /// What the solution lists is on disk, and nothing a person keeps to themselves is listed: a demo's <c>.env</c>
-    /// follows the folders but isn't part of the solution.
+    /// What the solution lists is on disk, and no secret is listed: secrets only follow the folders. A demo's
+    /// <c>.env</c> is listed but is yours, so a fresh checkout doesn't have it.
     /// </summary>
     [Test]
     public void ASolutionItem_IsAFileOnDisk()
@@ -135,9 +135,11 @@ public class SolutionLayoutTests
         var items = lines.Select(line => line.Trim()).Where(line => line.Contains('\\') && line.Contains(" = "))
             .Where(line => !line.StartsWith("Project("))
             .Select(line => line.Split(" = ")[0].Replace('\\', '/')).ToList();
-        Assert.That(items.Where(item => Path.GetFileName(item) == ".env"), Is.Empty);
+        string[] secrets = [".env.secrets", ".env.mongo", ".env.searxng"];
+        Assert.That(items.Where(item => secrets.Contains(Path.GetFileName(item))), Is.Empty);
 
-        var missing = items.Where(item => !File.Exists(Path.Combine(TestPaths.RepoRoot, item)));
+        var missing = items.Where(item => Path.GetFileName(item) != ".env")
+            .Where(item => !File.Exists(Path.Combine(TestPaths.RepoRoot, item)));
 
         Assert.That(missing, Is.Empty);
     }
