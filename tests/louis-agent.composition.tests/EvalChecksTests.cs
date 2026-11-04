@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Recipes.Checks;
 using LouisAgent.Packs.WhereToBuy.Checks;
 
 namespace LouisAgent.Composition.Tests;
@@ -9,12 +10,13 @@ namespace LouisAgent.Composition.Tests;
 public class EvalChecksTests
 {
     /// <summary>
-    /// The list is the where-to-buy pack's, in the pack's order: Puls ships readers, not checks, since F49.3.
+    /// The list is the where-to-buy pack's, then the recipes pack's, each in its own order: Puls ships readers, not
+    /// checks, since F49.3.
     /// </summary>
     [Test]
-    public void TheList_IsTheWhereToBuyPacks() =>
+    public void TheList_IsTheWhereToBuyPacksThenTheRecipesPacks() =>
         Assert.That(EvalChecks.All.Select(entry => entry.Type),
-            Is.EqualTo(WhereToBuyChecks.All.Select(entry => entry.Type)));
+            Is.EqualTo(WhereToBuyChecks.All.Concat(RecipesChecks.All).Select(entry => entry.Type)));
 
     /// <summary>
     /// <c>untooled-shops</c> and <c>estimates-at-shop</c> are the where-to-buy pack's: the composition's entries are the ones
@@ -24,4 +26,12 @@ public class EvalChecksTests
     [TestCase("estimates-at-shop")]
     public void AShopRule_IsTheWhereToBuyPacks(string type) =>
         Assert.That(WhereToBuyChecks.All, Has.Member(EvalChecks.All.Single(each => each.Type == type)));
+
+    /// <summary>
+    /// <c>recipe-from-source</c> is the recipes pack's: the composition's entry is the one the pack lists.
+    /// </summary>
+    [Test]
+    public void TheRecipeRule_IsTheRecipesPacks() =>
+        Assert.That(RecipesChecks.All,
+            Has.Member(EvalChecks.All.Single(each => each.Type == "recipe-from-source")));
 }

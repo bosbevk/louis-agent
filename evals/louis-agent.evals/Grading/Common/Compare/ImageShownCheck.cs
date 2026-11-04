@@ -4,6 +4,7 @@ using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.Evals.Trials;
 
 namespace LouisAgent.Evals.Grading.Common.Compare;
@@ -128,7 +129,8 @@ public sealed class ImageShownCheck(IImageReader reader, string? key = null, boo
         protected override ICheck Create(Settings settings, CheckContext context)
         {
             if (string.IsNullOrWhiteSpace(settings.Reader)) throw Refused(CheckCatalogMessage.NoText, "reader");
-            if (settings.Key is not null && string.IsNullOrWhiteSpace(settings.Key)) throw Refused(CheckCatalogMessage.NoText, "key");
+            if (settings.Key is not null && string.IsNullOrWhiteSpace(settings.Key))
+                throw Refused(CheckCatalogMessage.NoText, "key");
             return new ImageShownCheck(context.Readers.Get<IImageReader>(settings.Reader), settings.Key,
                 settings.Required);
         }

@@ -182,7 +182,8 @@ An eval's file names its checks by type (`within-time`, `{"seconds": 120}`): eac
 builds it from a typed settings record, and `CheckCatalog` finds the entry. The runner's catalogue is three lists
 (`RunnerChecks`): the harness's `GeneralChecks.All` (24 types by family, from `no-error` to `judge` and `human`; the
 table is in [Add an eval](../guides/add-an-eval.md#4-choose-the-checks)), every identity's and pack's own through the
-composition's `EvalChecks.All` (the where-to-buy pack's rules, `WhereToBuyChecks.All`, F49.3 and F50.2), and Puls's judges
+composition's `EvalChecks.All` (the where-to-buy pack's rules, `WhereToBuyChecks.All`, F49.3 and F50.2, and the recipes
+pack's `recipe-from-source`, `RecipesChecks.All`, F35.2), and Puls's judges
 (`PulsJudges.All`)
 ([ADR 0056](../adr/0056-a-check-is-a-catalogue-entry.md), [ADR 0058](../adr/0058-an-eval-is-a-folder-of-files.md)).
 
@@ -190,7 +191,7 @@ composition's `EvalChecks.All` (the where-to-buy pack's rules, `WhereToBuyChecks
 budget, a number of people, an image with the pages read) is a general compare plus a *reader* the file names beside
 the key (`"reader": "rand-total"`). Readers are a second registry, `ReaderCatalog` (`RunnerReaders`): the harness's
 `GeneralReaders.All` (`currency-amount`, `digits`, `markdown-images`) and every identity's through the composition's
-`EvalReaders.All` (Puls's `rand-total`, `rand-prices`, `servings`, `recipe-photos`). So an identity ships readers, not
+`EvalReaders.All` (Puls's `rand-total`, `rand-prices`, `servings`, `recipe-photos`, `recipe-link`). So an identity ships readers, not
 checks, and its eval file keeps its stored names with `name` (`{"type": "amount-under", "name": "within-budget", …}`).
 
 **A pack ships its checks** (F49.3, [ADR 0060](../adr/0060-a-pack-ships-its-checks.md)): the rules that prove a pack's

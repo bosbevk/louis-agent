@@ -2,7 +2,7 @@
 
   <!-- What an agent can do with recipes (F35, ADR 0027, 0028): a recipe read from a page's own schema.org data, or
        from the page's text when it carries none, and a search of the recipe sites a deployment turns on. References
-       core only; no check contract until the pack ships checks. -->
+       core, and the check contract for the check that proves its tools (F35.2). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Packs.Recipes</RootNamespace>
@@ -18,6 +18,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <!-- The check contract: the pack ships the check that proves what its tools do (F35.2, RecipesChecks.All); never
+         the harness that runs it (ADR 0027). -->
+    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
 
