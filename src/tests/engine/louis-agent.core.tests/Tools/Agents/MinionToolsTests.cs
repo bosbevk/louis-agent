@@ -439,7 +439,7 @@ public class MinionToolsTests
         Assert.That(minions.IsAvailable(with), Is.True);
         Assert.That(minions.GuideFile, Is.EqualTo("toolsets/minions.md"));
         Assert.That(AgentCatalog.CoreOnly.ToolsetOf("FetchUrl"), Is.EqualTo(CoreToolset.Web.Wire()));
-        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(CoreToolset.Files.Wire()));
+        Assert.That(TestTools.Catalog.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(TestToolset.Files.Wire()));
         Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
     }
 

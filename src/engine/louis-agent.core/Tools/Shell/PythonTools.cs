@@ -4,7 +4,6 @@ using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;
-using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shell.Messages;
 

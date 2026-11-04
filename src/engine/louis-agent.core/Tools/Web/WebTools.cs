@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Text;
 using LouisAgent.Core.Guardrails.Network;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Messages;
 using LouisAgent.Core.Tools.Web.Rendering;
@@ -187,7 +186,7 @@ public sealed class WebTools
                 await using var pdf = await response.Content.ReadAsStreamAsync();
                 try
                 {
-                    text = DocumentText.Read(pdf, ".pdf");
+                    text = PdfText.Read(pdf);
                 }
                 catch (Exception ex) when (ex is not OutOfMemoryException)
                 {

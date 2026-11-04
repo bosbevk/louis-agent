@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.dotnet\louis-agent.pack.dotnet.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.git\louis-agent.pack.git.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.files\louis-agent.pack.files.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />

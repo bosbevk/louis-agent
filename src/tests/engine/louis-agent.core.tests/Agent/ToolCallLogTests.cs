@@ -84,7 +84,7 @@ public class ToolCallLogTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
             var skills = new MarkdownSkillProvider(TestPaths.SampleSkills);
             var engine = new AgentEngine(skills, client, TestPaths.Agent(),
-                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]));
+                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]));
 
             await engine.ProcessPromptAsync(engine.NewHistory(), "Ek is in Malmesbury, wat kan ek kook?");
         }

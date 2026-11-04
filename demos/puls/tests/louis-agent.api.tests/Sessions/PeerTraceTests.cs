@@ -68,7 +68,7 @@ public class PeerTraceTests
     private static async Task<string> OpenSessionAsync(HttpClient client)
     {
         using var opened =
-            await client.PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { CoreToolset.Files.Wire() } });
+            await client.PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { TestToolset.Files.Wire() } });
         using var body = JsonDocument.Parse(await opened.Content.ReadAsStringAsync());
         return body.RootElement.GetProperty("session_id").GetString()!;
     }

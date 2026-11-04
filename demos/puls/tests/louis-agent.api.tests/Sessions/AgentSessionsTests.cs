@@ -77,9 +77,9 @@ public class AgentSessionsTests
     [Test]
     public void ASessionWithFiles_HasNoGitTools()
     {
-        var session = Sessions().Create([CoreToolset.Files.Wire()]);
+        var session = Sessions().Create([TestToolset.Files.Wire()]);
 
-        Assert.That(session.Toolsets, Is.EqualTo(new[] { CoreToolset.Files.Wire() }));
+        Assert.That(session.Toolsets, Is.EqualTo(new[] { TestToolset.Files.Wire() }));
         Assert.That(Names(session), Does.Contain("ReadWorkspaceFile").And.Not.Contain("GetStatus"));
     }
 
@@ -113,7 +113,7 @@ public class AgentSessionsTests
     {
         var sessions = Sessions();
 
-        var files = sessions.Create([CoreToolset.Files.Wire()]);
+        var files = sessions.Create([TestToolset.Files.Wire()]);
         var git = sessions.Create([TestToolset.Git.Wire()]);
         var filesAgain = sessions.Create(["FILES"]);
 
@@ -129,9 +129,9 @@ public class AgentSessionsTests
     [Test]
     public void AnUnknownToolset_IsRefused_WithTheValidNames()
     {
-        Assert.That(() => Sessions().Create([CoreToolset.Files.Wire(), "nope"]),
+        Assert.That(() => Sessions().Create([TestToolset.Files.Wire(), "nope"]),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("Valid names").And.Message
-                .Contain(CoreToolset.Files.Wire()));
+                .Contain(TestToolset.Files.Wire()));
     }
 
     /// <summary>
@@ -185,9 +185,9 @@ public class AgentSessionsTests
 
         Assert.That(() => sessions.Create([CoreToolset.Specialists.Wire()], depth: 1),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("delegates"));
-        Assert.That(() => sessions.Create([CoreToolset.Files.Wire()], depth: 3),
+        Assert.That(() => sessions.Create([TestToolset.Files.Wire()], depth: 3),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"));
-        Assert.That(sessions.Create([CoreToolset.Files.Wire()], depth: 1).Depth, Is.EqualTo(1));
+        Assert.That(sessions.Create([TestToolset.Files.Wire()], depth: 1).Depth, Is.EqualTo(1));
         // CL9 step 5: a client still sending the old name gets the 400 that lists the valid toolsets.
         Assert.That(() => sessions.Create(["agents"]),
             Throws.TypeOf<ToolsetException>().With.Message.Contain(CoreToolset.Specialists.Wire()));
@@ -200,7 +200,7 @@ public class AgentSessionsTests
     public void ASession_IsFoundById_UntilRemoved()
     {
         var sessions = Sessions();
-        var session = sessions.Create([CoreToolset.Files.Wire()]);
+        var session = sessions.Create([TestToolset.Files.Wire()]);
 
         Assert.That(sessions.Get(session.Id), Is.SameAs(session));
         Assert.That(sessions.Remove(session.Id), Is.True);
@@ -246,8 +246,8 @@ public class AgentSessionsTests
         // delegate.
         var sessions = Sessions();
 
-        var top = sessions.Create([CoreToolset.Files.Wire()]);
-        var sub = sessions.Create([CoreToolset.Files.Wire()], depth: 1);
+        var top = sessions.Create([TestToolset.Files.Wire()]);
+        var sub = sessions.Create([TestToolset.Files.Wire()], depth: 1);
 
         Assert.That(top.Engine.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
         Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
@@ -261,7 +261,7 @@ public class AgentSessionsTests
     public void AnUnknownRole_IsRefused()
     {
         Assert.Throws<RoleException>(() =>
-            Sessions().Create([CoreToolset.Files.Wire()], role: "nobody-here"));
+            Sessions().Create([TestToolset.Files.Wire()], role: "nobody-here"));
     }
 
     /// <summary>
@@ -288,7 +288,7 @@ public class AgentSessionsTests
     [Test]
     public void NoRole_IsTheDefault()
     {
-        var session = Sessions().Create([CoreToolset.Files.Wire()], role: "");
+        var session = Sessions().Create([TestToolset.Files.Wire()], role: "");
 
         Assert.That(session.Role, Is.Null);
         Assert.That(session.Engine.SkillDocumentation, Does.Contain("Louis's Minion"));
@@ -301,7 +301,7 @@ public class AgentSessionsTests
     public void ASession_RemembersItsAttachments_ByName_Capped()
     {
         // F22: a later turn can still hand an earlier attachment to a specialist.
-        var session = Sessions().Create([CoreToolset.Files.Wire()]);
+        var session = Sessions().Create([TestToolset.Files.Wire()]);
 
         session.Remember("Verslag.txt", "eerste");
         session.Remember("verslag.txt", "tweede");
@@ -325,7 +325,7 @@ public class AgentSessionsTests
             Is.EqualTo(new LouisAgent.Core.Sessions.UserPlace(null, "Europe/London")));
         Assert.That(new CreateSessionRequest(null, null, null).Place(), Is.Null);
 
-        var session = Sessions().Create([CoreToolset.Files.Wire()],
+        var session = Sessions().Create([TestToolset.Files.Wire()],
             place: new LouisAgent.Core.Sessions.UserPlace("Pretoria", null));
         Assert.That(session.Place!.Location, Is.EqualTo("Pretoria"));
     }
@@ -341,8 +341,8 @@ public class AgentSessionsTests
             new LouisAgent.Core.Sessions.Replay.SessionReplay(WebReplayMode.Record,
                 "run_1:cook:1/bobotie", false);
 
-        Assert.That(Sessions().Create([CoreToolset.Files.Wire()], replay: replay).Replay, Is.EqualTo(replay));
-        Assert.That(Sessions().Create([CoreToolset.Files.Wire()]).Replay, Is.Null);
+        Assert.That(Sessions().Create([TestToolset.Files.Wire()], replay: replay).Replay, Is.EqualTo(replay));
+        Assert.That(Sessions().Create([TestToolset.Files.Wire()]).Replay, Is.Null);
     }
 
     /// <summary>
@@ -370,7 +370,7 @@ public class AgentSessionsTests
     [Test]
     public async Task ASubSessionTheChatKeeps_IsListedWithItsRole()
     {
-        var session = Sessions().Create([CoreToolset.Files.Wire()]);
+        var session = Sessions().Create([TestToolset.Files.Wire()]);
         await session.SubSessions.AddAsync(Kept("sess_cook", []));
 
         Assert.That(Json(SessionReply.Of(session)),
@@ -420,7 +420,7 @@ public class AgentSessionsTests
         // F26 step 3 (F26-S3): the chat is deleted, so its specialists are deleted on the peer too.
         var sessions = Sessions();
         var session =
-            sessions.Create([CoreToolset.Files.Wire()]); // the test factory has no peers; the registry doesn't care
+            sessions.Create([TestToolset.Files.Wire()]); // the test factory has no peers; the registry doesn't care
         var closed = new List<string>();
         await session.SubSessions.AddAsync(Kept("sess_cook", closed));
 
@@ -437,7 +437,7 @@ public class AgentSessionsTests
     public async Task AnIdleSession_IsDropped_WithItsSubSessions()
     {
         var sessions = Sessions();
-        var session = sessions.Create([CoreToolset.Files.Wire()]);
+        var session = sessions.Create([TestToolset.Files.Wire()]);
         var closed = new List<string>();
         await session.SubSessions.AddAsync(Kept("sess_cook", closed));
 
@@ -534,8 +534,8 @@ public class AgentSessionsTests
         // Capability delegation: a minion can never do more than the specialist that sent it. The parent's toolbox is
         // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
         var sessions = Sessions();
-        var withFiles = sessions.Create([CoreToolset.Files.Wire()], depth: 1, role: PulsRole.Cook.Wire());
-        var withWeb = sessions.Create([CoreToolset.Web.Wire(), CoreToolset.Files.Wire()], depth: 1,
+        var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var withWeb = sessions.Create([CoreToolset.Web.Wire(), TestToolset.Files.Wire()], depth: 1,
             role: PulsRole.Cook.Wire());
 
         Assert.That(
@@ -543,7 +543,7 @@ public class AgentSessionsTests
                 role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent session has no 'FetchUrl'"));
         Assert.That(
-            sessions.Create([CoreToolset.Files.Wire()], ParentOf(withWeb), depth: 2,
+            sessions.Create([TestToolset.Files.Wire()], ParentOf(withWeb), depth: 2,
                 role: PulsRole.MinionWebPriceLookup.Wire(), tool: "ReadWorkspaceFile").Tool,
             Is.EqualTo("ReadWorkspaceFile"), "any tool of the parent's own: which one is the specialist's call");
         Assert.That(

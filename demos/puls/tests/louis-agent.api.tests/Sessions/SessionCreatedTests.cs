@@ -19,7 +19,7 @@ public class SessionCreatedTests
         var client = app.GetTestClient();
 
         using var response =
-            await client.PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { CoreToolset.Files.Wire() } });
+            await client.PostAsJsonAsync("/v1/sessions", new { toolsets = new[] { TestToolset.Files.Wire() } });
         using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         string id = body.RootElement.GetProperty("session_id").GetString()!;
 

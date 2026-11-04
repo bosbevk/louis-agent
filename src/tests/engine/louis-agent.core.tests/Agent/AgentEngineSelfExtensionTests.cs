@@ -1,27 +1,21 @@
-namespace LouisAgent.Core.Tests;
 
 using System.Reflection;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Tools.Documents;
-using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.AI;
 using NUnit.Framework;
 
+namespace LouisAgent.Core.Tests;
 /// <summary>F5 step 3: the self-extension tools are registered only when asked for on a toolsets engine.</summary>
 [TestFixture]
 public sealed class AgentEngineSelfExtensionTests
 {
     private static readonly string[] SelfExtensionTools = ["CreateSkillFile", "ReloadSkills", "CreateTool", "ListAgentTools"];
 
-    /// <summary>The files toolset's objects (S, CL15: five classes), on a root the tests never write to.</summary>
-    private static object[] FilesTools() =>
-    [
-        new WorkspaceFileTools(Path.GetTempPath()), new WorkspaceOrganiseTools(Path.GetTempPath()), new WorkspaceBrowseTools(Path.GetTempPath()),
-        new WorkspaceSearchTools(Path.GetTempPath()), new DocumentTools(Path.GetTempPath()),
-    ];
+    /// <summary>The files toolset's objects.</summary>
+    private static object[] FilesTools() => [new FakeFileTools(Path.GetTempPath())];
 
     [Test]
     public void EmptyToolsetsGivesOnlyExecuteSkill()

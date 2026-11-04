@@ -27,7 +27,7 @@ public class EngineCacheTests
         int builds = 0;
 
         var engines = Enumerable.Range(0, 20).AsParallel().WithDegreeOfParallelism(20)
-            .Select(_ => cache.GetOrAdd(Key(CoreToolset.Files.Wire()), () =>
+            .Select(_ => cache.GetOrAdd(Key(TestToolset.Files.Wire()), () =>
             {
                 Interlocked.Increment(ref builds);
                 Thread.Sleep(20);
@@ -42,16 +42,16 @@ public class EngineCacheTests
     public void PastTheCapacity_TheLeastRecentlyUsedGoes_NotTheOldest()
     {
         var cache = new EngineCache(2);
-        var files = cache.GetOrAdd(Key(CoreToolset.Files.Wire()), Engine);
+        var files = cache.GetOrAdd(Key(TestToolset.Files.Wire()), Engine);
         cache.GetOrAdd(Key(TestToolset.Git.Wire()), Engine);
-        cache.GetOrAdd(Key(CoreToolset.Files.Wire()), Engine); // files is now the more recent
+        cache.GetOrAdd(Key(TestToolset.Files.Wire()), Engine); // files is now the more recent
 
         cache.GetOrAdd(Key(TestToolset.DotNet.Wire()), Engine);
 
-        Assert.That(cache.Keys, Is.EquivalentTo(new[] { CoreToolset.Files.Wire(), TestToolset.DotNet.Wire() }),
+        Assert.That(cache.Keys, Is.EquivalentTo(new[] { TestToolset.Files.Wire(), TestToolset.DotNet.Wire() }),
             "git, the least recently used, went");
         Assert.That(
-            cache.GetOrAdd(Key(CoreToolset.Files.Wire()),
+            cache.GetOrAdd(Key(TestToolset.Files.Wire()),
                 () => throw new InvalidOperationException("kept, so not built again")), Is.SameAs(files));
     }
 
@@ -59,7 +59,7 @@ public class EngineCacheTests
     public void TheKeyBeingAdded_IsNeverTheOneDropped()
     {
         var cache = new EngineCache(1);
-        cache.GetOrAdd(Key(CoreToolset.Files.Wire()), Engine);
+        cache.GetOrAdd(Key(TestToolset.Files.Wire()), Engine);
 
         var git = cache.GetOrAdd(Key(TestToolset.Git.Wire()), Engine);
 

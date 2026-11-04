@@ -35,7 +35,7 @@ public class ChatPipelineTests
     private static AgentEngine Engine(IChatClient client, IUsageSink sink) =>
         new(new MarkdownSkillProvider(TestPaths.SampleSkills), client,
             TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: sink);
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]), usageSink: sink);
 
     /// <summary>The model asks to read one file.</summary>
     private static ChatResponse Read(string relative, string callId) =>

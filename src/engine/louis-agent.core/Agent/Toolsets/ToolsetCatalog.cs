@@ -10,12 +10,10 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Currency;
-using LouisAgent.Core.Tools.Documents;
 using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Quotes;
-using LouisAgent.Core.Tools.Workspace;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent.Toolsets;
@@ -30,22 +28,6 @@ public static class ToolsetCatalog
     /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
-        new(CoreToolset.Files.Wire(), "Read, write, search, copy, rename and delete files in the workspace",
-            GuideFile: SkillFiles.Guide(CoreToolset.Files.Wire()),
-            MissingSettings: _ => [],
-            // S (CL15): five classes, one concern each (a file's content, the tree's shape, browsing, searching, documents).
-            ToolTypes:
-            [
-                typeof(WorkspaceFileTools), typeof(WorkspaceOrganiseTools), typeof(WorkspaceBrowseTools),
-                typeof(WorkspaceSearchTools), typeof(DocumentTools)
-            ],
-            CreateTools: ctx =>
-            [
-                new WorkspaceFileTools(Root(ctx)), new WorkspaceOrganiseTools(Root(ctx)),
-                new WorkspaceBrowseTools(Root(ctx)),
-                new WorkspaceSearchTools(Root(ctx)), new DocumentTools(Root(ctx)),
-            ]),
-
         new(CoreToolset.Python.Wire(),
             "Run Python code or scripts and manage packages in the agent's own virtual environment",
             GuideFile: SkillFiles.Guide(CoreToolset.Python.Wire()),

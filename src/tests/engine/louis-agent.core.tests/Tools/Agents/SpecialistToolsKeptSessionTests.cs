@@ -62,7 +62,7 @@ public class SpecialistToolsKeptSessionTests
         var registry = new SubSessionRegistry();
 
         using (SubSessionRegistry.Use(registry))
-            await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
+            await ToolsOn(handler).StartSubSession([TestToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(handler.Requests.Last().Method, Is.EqualTo(HttpMethod.Delete));
         Assert.That(registry.Open, Is.Empty);
@@ -81,7 +81,7 @@ public class SpecialistToolsKeptSessionTests
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
             for (int i = 0; i < 3; i++)
-                Assert.That(await tools.StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder"),
+                Assert.That(await tools.StartSubSession([TestToolset.Files.Wire()], "x", agent: "coder"),
                     Does.Not.StartWith("Error"));
         }
 

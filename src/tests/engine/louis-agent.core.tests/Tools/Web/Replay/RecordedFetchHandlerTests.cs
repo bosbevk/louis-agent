@@ -1,3 +1,4 @@
+using LouisAgent.Core.Tests.Tools.Web;
 using System.Net;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web;
@@ -54,7 +55,7 @@ public class RecordedFetchHandlerTests
     public async Task RecordingThenReplayingAPdf_GivesTheSameToolText()
     {
         using var folder = new ReplayFolder();
-        byte[] pdf = LouisAgent.Core.Tests.Tools.Documents.DocumentFiles.Pdf(["Jaarverslag 2026"]);
+        byte[] pdf = PdfFixture.Of("Jaarverslag 2026");
 
         var (recorded, replayed) = await RecordThenReplayAsync(
             _ => new HttpResponseMessage(HttpStatusCode.OK)

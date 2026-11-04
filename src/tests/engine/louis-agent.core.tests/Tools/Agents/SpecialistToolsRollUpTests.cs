@@ -33,7 +33,7 @@ public class SpecialistToolsRollUpTests
         UsageTotal total;
         using (var scope = UsageScope.Begin(host: "api", session: "sess_parent", turn: 2))
         {
-            await ToolsOn(handler, sink: sink).StartSubSession([CoreToolset.Files.Wire(), TestToolset.Git.Wire()],
+            await ToolsOn(handler, sink: sink).StartSubSession([TestToolset.Files.Wire(), TestToolset.Git.Wire()],
                 "Fix order 1006.", agent: "coder");
             total = scope.Total();
         }
@@ -59,7 +59,7 @@ public class SpecialistToolsRollUpTests
         using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
         {
             await ToolsOn(Peer(Replies(EmptyStream, AnswerStream)), sink: sink)
-                .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
+                .StartSubSession([TestToolset.Files.Wire()], "x", agent: "coder");
             total = scope.Total();
         }
 
@@ -75,7 +75,7 @@ public class SpecialistToolsRollUpTests
         string result;
         using (var scope = UsageScope.Begin(session: "sess_parent", turn: 1))
             result = await ToolsOn(Peer(Replies(FailedStream)), sink: sink)
-                .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
+                .StartSubSession([TestToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(result, Does.StartWith("Error").And.Contain("the model refused"));
         Assert.That((sink.Records.Single().Requests, sink.Records.Single().Cost?.Amount),
@@ -91,7 +91,7 @@ public class SpecialistToolsRollUpTests
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
             await new SpecialistTools(Peers, null, new HttpClient(new SlowPeer()), TimeSpan.FromMilliseconds(200),
                     usageSink: sink)
-                .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
+                .StartSubSession([TestToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(sink.Records, Is.Empty);
     }
@@ -115,7 +115,7 @@ public class SpecialistToolsRollUpTests
                 _ => Reply(new FunctionCallContent("call_1", "StartSubSession",
                     new Dictionary<string, object?>
                     {
-                        ["toolsets"] = new[] { CoreToolset.Files.Wire() },
+                        ["toolsets"] = new[] { TestToolset.Files.Wire() },
                         ["message"] = "Fix order 1006.",
                         ["agent"] = "coder"
                     })),
@@ -142,7 +142,7 @@ public class SpecialistToolsRollUpTests
         var sink = new ListUsageSink();
 
         string result = await ToolsOn(Peer(), sink: sink)
-            .StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
+            .StartSubSession([TestToolset.Files.Wire()], "x", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check"));
         Assert.That((sink.Records.Single().Session, sink.Records.Single().Requests),
@@ -156,7 +156,7 @@ public class SpecialistToolsRollUpTests
         var handler = Peer();
 
         using (UsageScope.Begin(session: "sess_parent", turn: 4, tags: new UsageTags(null, "run-1", "order-service")))
-            await ToolsOn(handler).StartSubSession([CoreToolset.Files.Wire()], "x", agent: "coder");
+            await ToolsOn(handler).StartSubSession([TestToolset.Files.Wire()], "x", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("parent").GetString(), Is.EqualTo("sess_parent#4"));

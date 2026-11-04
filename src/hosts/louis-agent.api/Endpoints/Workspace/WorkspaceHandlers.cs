@@ -6,7 +6,7 @@ using LouisAgent.Api.Contracts.Workspace;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Workspace.Listing;
+using LouisAgent.Composition.Tools.Listing;
 using Microsoft.AspNetCore.Http.HttpResults;
 using EntriesAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.Workspace.EntriesReply>,

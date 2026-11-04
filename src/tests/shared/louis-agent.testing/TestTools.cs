@@ -12,6 +12,7 @@ public enum TestToolset
 {
     DotNet,
     Git,
+    Files,
 }
 
 /// <summary>
@@ -26,13 +27,16 @@ public static class TestTools
     /// <summary>The fake pack.</summary>
     public static FakePack Pack { get; } = new("test-tools",
         [
-            FakePack.Toolset(TestToolset.DotNet.Wire(), typeof(FakeDotNetTools), _ => [new FakeDotNetTools()]),
+            FakePack.Toolset(TestToolset.Files.Wire(), typeof(FakeFileTools),
+                context => [new FakeFileTools(context.WorkspaceRoot)]),
             FakePack.Toolset(TestToolset.Git.Wire(), typeof(FakeGitTools), _ => [new FakeGitTools()]),
+            FakePack.Toolset(TestToolset.DotNet.Wire(), typeof(FakeDotNetTools), _ => [new FakeDotNetTools()]),
         ],
         new Dictionary<string, string>
         {
             [$"toolsets/{TestToolset.DotNet.Wire()}.md"] = "# .NET Skills\n\nBuilds things.",
             [$"toolsets/{TestToolset.Git.Wire()}.md"] = "# Git Skills\n\nKeeps history.",
+            [$"toolsets/{TestToolset.Files.Wire()}.md"] = "# Files Skills\n\nReads and writes.",
         });
 
     /// <summary>A catalogue holding it, and what core has.</summary>
@@ -53,4 +57,22 @@ public sealed class FakeGitTools
     /// <summary>Pretends to read the status.</summary>
     [Description("Shows the repository's status.")]
     public string GetStatus() => "clean";
+}
+
+/// <summary>The fake files toolset: it really reads and writes, as an engine test may read a file it just made.</summary>
+public sealed class FakeFileTools(string workspaceRoot)
+{
+    /// <summary>Reads the file.</summary>
+    [Description("Reads a file.")]
+    public string ReadWorkspaceFile([Description("Its path")] string relativePath) =>
+        File.ReadAllText(Path.Combine(workspaceRoot, relativePath));
+
+    /// <summary>Writes the file.</summary>
+    [Description("Writes a file.")]
+    public string WriteWorkspaceFile([Description("Its path")] string relativePath,
+        [Description("Its text")] string content)
+    {
+        File.WriteAllText(Path.Combine(workspaceRoot, relativePath), content);
+        return $"wrote {relativePath}";
+    }
 }

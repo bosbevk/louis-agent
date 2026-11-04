@@ -19,7 +19,7 @@ public class AgentEngineUsageTests
     private static AgentEngine Engine(IChatClient client, IUsageSink sink, IUsageMapper? mapper = null) =>
         new(new MarkdownSkillProvider(TestPaths.SampleSkills), client,
             TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]), usageSink: sink,
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]), usageSink: sink,
             usageMapper: mapper);
 
     private static ChatResponse CallSayHello(string callId) =>

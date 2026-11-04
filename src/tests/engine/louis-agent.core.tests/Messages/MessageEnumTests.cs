@@ -33,13 +33,13 @@ public class MessageEnumTests
             {
                 "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage",
                 "ConfigErrorMessage", "ConfigLogMessage", "CurrencyToolMessage",
-                "DocumentToolMessage", "ErrorMessage",
+                "ErrorMessage",
                 "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
                 "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage",
                 "PricingErrorMessage", "PricingLogMessage", "PromptHeaderMessage", "ProtocolErrorMessage",
                 "ProtocolLogMessage", "ScriptToolMessage", "SessionErrorMessage", "ShellToolMessage", "SkillErrorMessage",
                 "SkillLogMessage", "SubSessionToolMessage", "TelemetryLogMessage", "TextErrorMessage", "ToolMessage", "UserText",
-                "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage", "WorkspaceToolMessage",
+                "UsageErrorMessage", "UsageLogMessage", "WebLogMessage", "WebToolMessage",
             }));
     }
 

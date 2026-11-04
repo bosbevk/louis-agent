@@ -166,7 +166,7 @@ public class AgentTelemetryTests
         var client = new FakeChatClient(_ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hallo")));
         var engine = new AgentEngine(
             new MarkdownSkillProvider(TestPaths.SampleSkills), client,
-            TestPaths.Agent(), toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]),
+            TestPaths.Agent(), toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]),
             usageSink: new ListUsageSink());
 
         using (UsageScope.Begin())

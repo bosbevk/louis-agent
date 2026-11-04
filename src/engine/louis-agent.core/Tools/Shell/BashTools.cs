@@ -3,7 +3,6 @@ using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text;
-using LouisAgent.Core.Tools.Workspace;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Tools.Shell.Messages;
 

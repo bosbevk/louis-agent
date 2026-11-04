@@ -24,7 +24,7 @@ public class SkillLoaderTests
     [Test]
     public void FilesAndGit_HaveTheirGuides_AndNoOthers()
     {
-        string docs = SkillLoader.Load(Options(), Toolsets(CoreToolset.Files.Wire(), TestToolset.Git.Wire()))
+        string docs = SkillLoader.Load(Options(), Toolsets(TestToolset.Files.Wire(), TestToolset.Git.Wire()))
             .Documentation;
 
         Assert.That(docs, Does.Contain("# Files Skills").And.Contain("# Git Skills"));
@@ -113,7 +113,7 @@ public class SkillLoaderTests
             var options = new AgentOptions { SkillsDirectory = skills };
 
             Assert.That(
-                SkillLoader.Load(options, Toolsets(CoreToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
+                SkillLoader.Load(options, Toolsets(TestToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
                 Does.Contain("# Greeting Skills"));
             Assert.That(
                 SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()))
@@ -130,7 +130,7 @@ public class SkillLoaderTests
     {
         int all = SkillLoader.Load(Options(), TestTools.Catalog.Toolsets).Documentation.Length;
         int coding = SkillLoader.Load(Options(),
-            Toolsets(CoreToolset.Files.Wire(), TestToolset.Git.Wire(), TestToolset.DotNet.Wire(),
+            Toolsets(TestToolset.Files.Wire(), TestToolset.Git.Wire(), TestToolset.DotNet.Wire(),
                 CoreToolset.Skills.Wire())).Documentation.Length;
 
         Assert.That(coding, Is.LessThan(all));

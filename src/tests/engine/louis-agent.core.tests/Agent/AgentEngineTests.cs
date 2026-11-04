@@ -20,7 +20,7 @@ public class AgentEngineTests
     private static AgentEngine Engine(IChatClient client, bool supportsTools = true)
     {
         var options = TestPaths.Agent();
-        string[] toolsets = [CoreToolset.Files.Wire()];
+        string[] toolsets = [TestToolset.Files.Wire()];
         return new(HelloSkills(), client, options, supportsTools, toolsets: TestPaths.Toolsets(options, toolsets),
             selfExtension: true);
     }

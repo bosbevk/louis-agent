@@ -24,7 +24,7 @@ public class FetchUrlTests
     public async Task APdf_IsReadAsText()
     {
         // F22 step 3: a PDF on the web reads like a document, framed as untrusted content.
-        byte[] pdf = LouisAgent.Core.Tests.Tools.Documents.DocumentFiles.Pdf(["Jaarverslag 2026"]);
+        byte[] pdf = PdfFixture.Of("Jaarverslag 2026");
         var tools = WebToolsOn(_ => new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new ByteArrayContent(pdf) { Headers = { ContentType = new("application/pdf") } },

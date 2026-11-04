@@ -51,13 +51,13 @@ public static class TestPaths
     };
 
     /// <summary>
-    /// The tool objects of the named toolsets, built by the catalogue as a session's are (F5: an engine has only the
+    /// The tool objects of the named toolsets, core's or the fake pack's, built as a session's are (F5: an engine has only the
     /// toolsets it is given). <paramref name="webSearch"/> replaces the configured search provider.
     /// </summary>
     public static IReadOnlyList<object> Toolsets(AgentOptions options, IEnumerable<string> names,
         IWebSearchProvider? webSearch = null)
     {
         var context = new ToolsetContext(options, webSearch ?? WebSearchProviderFactory.Create(options));
-        return ToolsetCatalog.BuildTools(ToolsetCatalog.Resolve(names, context), context);
+        return ToolsetCatalog.BuildTools(TestTools.Catalog.Resolve(names, context), context);
     }
 }
