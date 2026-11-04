@@ -56,6 +56,10 @@ services:
       # it) and the headless Chrome that renders pages drawn with JavaScript.
       SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
       BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
+      # The recipe sites the recipes toolset may search (F35.2, Louis's pick E2): every site in the table, `*`, on this PC
+      # and on Azure. A value in config/.env (which compose reads for these defaults) names fewer; it is quoted because a
+      # bare `*` is a YAML alias.
+      RECIPE_SOURCES: "${RECIPE_SOURCES-*}"
       # What the browser tells the sites it reads for a user (FX21): who reads, where to learn more, and why; never a person.
       BROWSER_USER_AGENT: "${BROWSER_USER_AGENT-Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)}"
       # F34: each town's store at a shop, kept a day in a file both containers share, so a rebuild doesn't look it up again.

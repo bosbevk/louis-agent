@@ -1,19 +1,20 @@
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Recipes;
+using LouisAgent.Packs.Shops;
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Info;
 using LouisAgent.Api.Contracts.Sessions;
-using LouisAgent.Api.Endpoints;
 using LouisAgent.Api.Endpoints.Info;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Api.Sessions.Requests;
 using LouisAgent.Core.Hosting.SessionLlms;
-using LouisAgent.Core.Sessions.SubSessions;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Sessions.Replay;
+using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -31,25 +32,32 @@ public class AgentSessionsTests
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
     /// <summary>
-    /// What the Puls stack runs with: Puls and the shops pack it names. Without SHOP_CATALOGUES the shops toolset is
-    /// known but off, so the cook's optional `shops?` is skipped, as on an instance without it.
+    /// What the Puls stack runs with: Puls and the two packs it names. Without SHOP_CATALOGUES the shops toolset is
+    /// known but off, so the cook's optional `shops?` is skipped, as on an instance without it. The recipes pack has
+    /// every site on (RECIPE_SOURCES=*, as the compose sets it), so the cook's required `recipes` resolves once a
+    /// browser is given (BrowserUrl in Sessions).
     /// </summary>
     private static AgentCatalog PulsCatalog() =>
-        new([new LouisAgent.Identities.Puls.PulsIdentity()],
-            [new LouisAgent.Packs.Shops.ShopsPack(new LouisAgent.Packs.Shops.ShopsOptions())]);
+        new([new PulsIdentity()],
+        [
+            new ShopsPack(new ShopsOptions()),
+            new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
+        ]);
 
     /// <summary>
     /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called.
     /// </summary>
-    private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) => new(new AgentEngineFactory(
-        new NoModel(),
-        new AgentOptions
-        {
-            WorkspaceRoot = RepoRoot,
-            SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
-            RatesUrl = null
-        },
-        sessionLlms: llms, catalog: PulsCatalog()));
+    private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) =>
+        new(new AgentEngineFactory(
+            new NoModel(),
+            new AgentOptions
+            {
+                WorkspaceRoot = RepoRoot,
+                SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+                RatesUrl = null,
+                BrowserUrl = "http://puls-browser:9222",
+            },
+            sessionLlms: llms, catalog: PulsCatalog()));
 
     /// <summary>
     /// The names of the tools a session's model can call.
@@ -134,7 +142,8 @@ public class AgentSessionsTests
     }
 
     /// <summary>
-    /// The cook looks up no prices, so it gets only the web, even on an instance where the shops are set up.
+    /// The cook looks up no prices, so it gets its web and its recipes and never the shops, even on an instance where
+    /// the shops are set up.
     /// </summary>
     [Test]
     public void TheCook_LoadsNoShops_EvenWhereTheInstanceHasThem()
@@ -142,7 +151,7 @@ public class AgentSessionsTests
         // F18 step 5.7 (Louis, 2026-10-25): the cook looks up no prices, so its `shops?` header is gone (F33 step 4
         // had it always load the shops); the pack stays, off for the cook, until a retailer gives access. Here
         // SHOP_CATALOGUES is set, on the shops pack this instance loads (CL15), with the browser the pack reaches
-        // through core: the cook still gets `web` only.
+        // through core. F35.2 step 1: the cook's header names recipes, so the recipes pack is in this catalogue too.
         var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), new AgentOptions
         {
             WorkspaceRoot = RepoRoot,
@@ -150,25 +159,27 @@ public class AgentSessionsTests
             RatesUrl = null,
             BrowserUrl = "http://puls-browser:9222",
         },
-            catalog: new LouisAgent.Core.Agent.Catalog.AgentCatalog([],
+            catalog: new AgentCatalog([],
             [
-                new LouisAgent.Packs.Shops.ShopsPack(
-                    new LouisAgent.Packs.Shops.ShopsOptions { ShopCatalogues = "checkers" })
+                new ShopsPack(
+                    new ShopsOptions { ShopCatalogues = "checkers" }),
+                new RecipesPack(
+                    new RecipesOptions { RecipeSources = "*" }),
             ])));
 
         var cook = sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
-        Assert.That(cook.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
+        Assert.That(cook.Toolsets, Is.EquivalentTo(new[] { CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire() }));
         Assert.That(Names(cook), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
     }
 
     /// <summary>
-    /// Where there are no shops, the cook still opens, with the web.
+    /// Where there are no shops, the cook still opens, with the web and its recipes.
     /// </summary>
     [Test]
     public void TheCook_WithoutShopsOnThisInstance_StillCooks_WithTheWeb() =>
         Assert.That(Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Toolsets,
-            Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
+            Is.EquivalentTo(new[] { CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire() }));
 
     /// <summary>
     /// Marking specialists as optional doesn't sneak delegation into a sub-session.
@@ -263,7 +274,7 @@ public class AgentSessionsTests
     [Test]
     public void AnUnknownRole_IsRefused()
     {
-        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() =>
+        Assert.Throws<RoleException>(() =>
             Sessions().Create([CoreToolset.Files.Wire()], role: "nobody-here"));
     }
 
@@ -276,9 +287,9 @@ public class AgentSessionsTests
         // CL8: a session's level is its depth; the cook is a specialist (level 1), Puls's voice is level 0's.
         var sessions = Sessions();
 
-        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() =>
+        Assert.Throws<RoleException>(() =>
             sessions.Create([CoreToolset.Web.Wire()], role: PulsRole.Cook.Wire()));
-        Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() =>
+        Assert.Throws<RoleException>(() =>
             sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: "puls/voice-af"));
         Assert.That(sessions.Create([CoreToolset.Web.Wire()], role: "puls/voice-af").Role, Is.EqualTo("puls/voice-af"));
         Assert.That(sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
@@ -341,7 +352,7 @@ public class AgentSessionsTests
     {
         // F18 step 4a: resolved once when the session opens (ReplayResolution), then kept for its turns.
         var replay =
-            new LouisAgent.Core.Sessions.Replay.SessionReplay(LouisAgent.Core.Sessions.Replay.WebReplayMode.Record,
+            new LouisAgent.Core.Sessions.Replay.SessionReplay(WebReplayMode.Record,
                 "run_1:cook:1/bobotie", false);
 
         Assert.That(Sessions().Create([CoreToolset.Files.Wire()], replay: replay).Replay, Is.EqualTo(replay));
@@ -576,12 +587,12 @@ public class AgentSessionsTests
         Assert.That(
             () => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2, role: PulsRole.Cook.Wire(),
                 tool: "FetchUrl"),
-            Throws.TypeOf<LouisAgent.Core.Skills.Roles.RoleException>(), "a specialist's role is no minion role");
+            Throws.TypeOf<RoleException>(), "a specialist's role is no minion role");
         Assert.That(
             () => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2, role: "puls-minion", tool: "FetchUrl"),
-            Throws.TypeOf<LouisAgent.Core.Skills.Roles.RoleException>(), "the base is no role");
+            Throws.TypeOf<RoleException>(), "the base is no role");
         Assert.That(() => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2, tool: "FetchUrl"),
-            Throws.TypeOf<LouisAgent.Core.Skills.Roles.RoleException>(), "a minion always has a role");
+            Throws.TypeOf<RoleException>(), "a minion always has a role");
         Assert.That(
             () => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2,
                 role: PulsRole.MinionWebPriceLookup.Wire()),

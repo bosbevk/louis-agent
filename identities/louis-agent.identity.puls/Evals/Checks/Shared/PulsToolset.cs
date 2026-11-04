@@ -14,4 +14,5 @@ public enum PulsToolset
     Specialists,
     Minions,
     Skills,
+    Recipes,
 }

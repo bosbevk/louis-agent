@@ -21,6 +21,7 @@
     <ProjectReference Include="..\..\src\louis-agent.api\louis-agent.api.csproj" />
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
     <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+    <ProjectReference Include="..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>
 
