@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Llm.Caching;
 
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.Core.Llm.Caching;
 /// <summary>
 /// How one provider marks a request for its prompt cache (F4). <see cref="PromptCachingChatClient"/> asks it for every
 /// request; <see cref="LlmClientFactory"/> picks it once per provider, as it picks the usage mapper.

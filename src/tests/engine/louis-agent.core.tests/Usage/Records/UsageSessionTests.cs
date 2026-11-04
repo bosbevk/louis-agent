@@ -35,7 +35,11 @@ public class UsageSessionTests
         var session = new UsageSession();
         UsageRecord rollUp = Record(0.0123m) with
         {
-            Purpose = UsagePurpose.SubSession, Round = 0, Model = "sub-session:puls", Stop = "sub_session", Requests = 3,
+            Purpose = UsagePurpose.SubSession,
+            Round = 0,
+            Model = "sub-session:puls",
+            Stop = "sub_session",
+            Requests = 3,
             Tokens = new UsageTokens(1_000, 0, 9_000, 200, null),
         };
 
