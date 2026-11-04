@@ -288,3 +288,14 @@ screenshot with `reducedMotion: 'reduce'` reproduced the PC exactly); and an acc
 
 ---
 [Learning](README.md) · [Fixes](../fixes/README.md) · [Docs index](../README.md)
+
+## FX37 · A test that races is not a test
+
+A flaky test is a test whose answer depends on timing, not on the code: here the publisher's timeout test set a
+timeout of zero and expected the first git call, `rev-parse`, to be the one refused. But .NET's `WaitForExitAsync`
+looks at the cancellation token only while the process is still running, so a `rev-parse` that finished in the
+millisecond before the check slipped through, and the next call was refused instead. Run once it passed; run a
+hundred times it failed. Three lessons. Reproduce a flake by repetition before you touch it (`[Repeat(100)]` failed in
+seconds, and that output is the "red" of test-first). Fix the cause, not the assertion: loosening the test to accept
+any git call would have hidden that the code's idea of "in time" was wrong at the edge; the code now asks the deadline
+itself. And keep the repetition in the test, because a race that a single run can't show is only caught by many runs.

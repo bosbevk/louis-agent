@@ -67,9 +67,11 @@ public class EvalPublisherTests
 
     /// <summary>
     /// A git that takes too long is a refusal in words, as a failing one is, never a cancellation the route lets
-    /// through as a 500.
+    /// through as a 500. Repeated, because it was a race (FX37): a <c>rev-parse</c> that exited before the wait looked
+    /// counted as in time, and the refusal named <c>read-tree</c> instead, now and then on CI and within a hundred tries locally.
     /// </summary>
     [Test]
+    [Repeat(100)]
     public void AGitThatTakesTooLong_IsARefusalInWords()
     {
         using var repo = new TempGitRepo();
