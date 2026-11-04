@@ -1,0 +1,22 @@
+{
+  "id": "recipe-sosaties",
+  "input": [
+    {
+      "role": "user",
+      "content": "I want to braai sosaties for eight people. I'm in Port Elizabeth and any shop will do. What's the recipe?"
+    }
+  ],
+  "metadata": {
+    "place": "Port Elizabeth, Eastern Cape, South Africa",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 8,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:en"
+    ]
+  }
+}

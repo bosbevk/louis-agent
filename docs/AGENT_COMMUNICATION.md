@@ -284,6 +284,9 @@ Because stdout carries the protocol, all logging goes to stderr.
 `louis-agent.mcp-server` publishes the engine's tools — files, git, `DotNet*`, scripts, web, skills, agent-built tools
 — plus `list_skills`, `get_skill_info` and `get_skill_documentation`. It has no model: the client's own model decides
 which tool to call (`tools/list`, `tools/call`), and the tool list updates live (`notifications/tools/list_changed`).
+It also publishes every pack's data feed as a resource, `feed://{name}` (`resources/list`, `resources/read`): the same
+JSON the API serves at `/v1/feeds/{name}`, for the client's application to put in front of its model
+([ADR 0072](adr/0072-feeds-are-mcp-resources.md)).
 
 | Transport | For | Auth |
 |---|---|---|

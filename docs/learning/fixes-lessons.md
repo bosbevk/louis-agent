@@ -299,3 +299,26 @@ hundred times it failed. Three lessons. Reproduce a flake by repetition before y
 seconds, and that output is the "red" of test-first). Fix the cause, not the assertion: loosening the test to accept
 any git call would have hidden that the code's idea of "in time" was wrong at the edge; the code now asks the deadline
 itself. And keep the repetition in the test, because a race that a single run can't show is only caught by many runs.
+
+## FX39 · A cap on an unsorted answer loses what you were looking for
+
+Asked for Pick n Pay in Malmesbury, the tool said the town had none and named one 42.9 km away. One is 0.5 km from the
+centre. The code sorted by distance and kept the nearest, which looks right, but it sorted what the map had already
+cut: the map answers at most 20 hits, in no distance order, and a box half a degree wide reaches Cape Town, whose
+branches filled all 20. Two lessons. When a service caps its answer, sorting afterwards can't bring back what it
+dropped, so narrow the question first (the smallest box first, then wider only if it finds nothing). And the tests
+missed it because the fake answered every box the same: a fake that ignores what it was asked can't show a bug in the
+asking, so this test's map answers each box differently, the way the real one did.
+
+## FX40 · A list from outside is not a list of one kind
+
+A recipe page's ingredient list is meant to hold ingredients, and one site also put its headings in it, as a line of
+markdown (`***Filling`) or of HTML (`<h3>CURRIED MINCE</h3>`). We had saved that page as a test and the test even
+expected the heading to be the first ingredient: the test described what the code did, and the code had never been
+asked what an ingredient is. Three lessons. When data from outside mixes two kinds of thing in one list, give the
+second kind its own place in the record (steps already had a `Section`; ingredients now have the same), instead of
+cleaning the text at the end where nobody can tell it was a heading. Take HTML out where every text passes, after
+the entities are read, because a page can write `&lt;h3&gt;`; and take out only a real tag, so that "cook for < 5 min"
+keeps its sign. And a count in a saved-page test (21 lines) is a claim about the page: read the page's lines yourself
+before you change the number. Skill 4 (tool design: shape what a tool hands the model, so it is clean before the model
+reads it).

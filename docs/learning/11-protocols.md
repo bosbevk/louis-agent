@@ -1,7 +1,7 @@
 # 11 · Protocols: an API is a contract
 
 > **Skill:** #11 in the [goal](../GOAL.md)'s map, with #15 (deny by default) and #18 (a pinned surface) · **Stages:**
-> CL20 API standards, steps 0 to 6 (2026-10-25) · **Written by** Claude, for Louis to read (2026-10-25) · **Next:** an
+> CL20 API standards, steps 0 to 6 (2026-10-25); F56 the packs' feeds as MCP resources (2026-11-04) · **Written by** Claude, for Louis to read (2026-10-25) · **Next:** an
 > OpenAPI document for the engine package's `Hosts.Api`; someone else's MCP server as a pack (F36, Phase 8)
 
 What this answers: why the agent API's routes changed shape before the evals' client and the engine package are built
@@ -112,6 +112,55 @@ write-up [15](15-safety-and-security.md)) applied to routes: fail closed, and op
   how it was made. The version prefix separated them. The trap that stays: a page's `href="admin/benchmarks"` is a page,
   not a call, and step 3 had to leave it alone.
 
+
+## MCP resources: data beside the tools (F56)
+
+### Tools, resources and prompts
+
+MCP gives a server three ways to offer something, and they differ in **who chooses**:
+
+- A **tool** is chosen by the *model*, in the middle of its reasoning, and it may act (write a file, run git).
+- A **resource** is chosen by the *application* or the *user*: data, read by a URI, that the app decides to put in
+  front of the model (attach it, show it in a picker, keep it in the context). Reading one changes nothing.
+- A **prompt** is chosen by the *user*: a template, like a slash command.
+
+Our server published only tools. The packs' feeds (the shop-prices tables, ADR 0070) are plainly resources: read-only
+data with a name, a description and a text. Now `resources/list` shows `feed://shop-prices` and `resources/read`
+returns the same JSON the API serves at `/v1/feeds/shop-prices`. The same tables now reach a model two ways: the
+`EstimatePrices` *tool* for the model to price a list, the `feed://` *resource* for an app that wants the whole table.
+
+### One shape, two protocols
+
+The work was small because the shape was right first. A feed in core is a name, a description and
+`ReadJsonAsync`, nothing about HTTP. So the API maps it to a route in a few lines, and the MCP server maps it to a
+resource with one Adapter (`FeedResources`), and no pack changed. That is what ADR 0028's "packs stay convertible to
+MCP" buys: the convertibility was designed in before anything was converted.
+
+| | The API | The MCP server |
+|---|---|---|
+| Find the feeds | `GET /v1/feeds` | `resources/list` |
+| Read one | `GET /v1/feeds/shop-prices` | `resources/read feed://shop-prices` |
+| Not there | `404` | the protocol's "resource not found" error |
+| Who | anyone (open) | whoever holds the MCP key (HTTP); the parent process (stdio) |
+
+### Testing a protocol in process
+
+The server had no tests: its doc said "checked with an MCP client". F56 added a project that starts the SDK's real
+server and real client joined by two in-memory pipes (`InMemoryMcp`), so a test sends `resources/list` exactly as
+Claude Desktop would, with no port and no child process. Written first, the tests failed with the server's own answer,
+"Method 'resources/list' is not available", which is the protocol telling us nothing was registered: a better failure
+than a null in our own mapping. A hand check over stdio (`initialize`, `resources/list`, `resources/read` as JSON-RPC
+lines into the built server) then read the real 167 KB of tables.
+
+### Trade-offs and what's next
+
+- **Behind the key over HTTP, open on the API.** One gate for the whole MCP endpoint, rather than a rule that reads
+  each JSON-RPC body to let `resources/*` through. The data is still free to anyone on the API.
+- **Read whole, no updates.** A feed doesn't send `notifications/resources/updated` when Stats SA's new month is
+  uploaded; a client re-reads. A large feed would become a resource template (`feed://shop-prices/{province}`).
+- **Set up once.** Both transports used to register the tools on their own; `McpPrimitives.Add` is now the one place,
+  so the next primitive (a prompt, say) can't be forgotten in one of them.
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md) ·
-[ADR 0039](../adr/0039-api-routes-under-v1.md)
+[ADR 0039](../adr/0039-api-routes-under-v1.md) · [ADR 0072](../adr/0072-feeds-are-mcp-resources.md)

@@ -1,0 +1,61 @@
+@* F55: one pack's upload: a file box for each slot, Preview to see what the files hold and would change, Save to keep
+   them. Save shows only after a clean preview that changes something, and choosing a file again hides it. *@
+<section class="card-p import-card">
+    <div class="card-head">
+        <strong><code>@Form.Upload.Name</code></strong>
+    </div>
+    <p class="muted">@Form.Upload.Description</p>
+
+    <div class="import-slots">
+        @foreach (var slot in Form.Upload.Files)
+        {
+            <label class="import-slot">
+                <span class="import-slot-name">@slot.Description</span>
+                <InputFile accept=".xlsx" OnChange="@(e => ChooseAsync(slot.Name, e))" disabled="@_busy" />
+                <small class="muted">@(Form.FileName(slot.Name) ?? "No file chosen")</small>
+            </label>
+        }
+    </div>
+
+    <div class="page-actions">
+        <button class="header-button" type="button" @onclick="PreviewAsync" disabled="@(_busy || !Form.CanPreview)"><span class="ic i-search" aria-hidden="true"></span>Preview</button>
+        @if (Form.CanSave)
+        {
+            <button class="header-button" type="button" @onclick="SaveAsync" disabled="@_busy"><span class="ic i-check" aria-hidden="true"></span>Save</button>
+        }
+        @if (_busy)
+        {
+            <span class="muted">Reading the files…</span>
+        }
+    </div>
+
+    @if (_error is { } error)
+    {
+        <p class="danger import-error">@error</p>
+    }
+
+    @if (Form.Report is { } report)
+    {
+        <div class="card-head">
+            <strong>@(report.Period ?? "No months")</strong>
+            <span class="muted">@(report.Saved ? "Saved" : "Preview, nothing saved yet") · @report.Changes to store</span>
+        </div>
+        @if (report.Problems.Count > 0)
+        {
+            <ul class="import-problems">
+                @foreach (var problem in report.Problems)
+                {
+                    <li class="danger">@problem</li>
+                }
+            </ul>
+        }
+        <table class="admin-table import-facts">
+            <tbody>
+                @foreach (var fact in report.Facts)
+                {
+                    <tr><th>@fact.Label</th><td>@fact.Value</td></tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

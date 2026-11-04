@@ -430,7 +430,7 @@
     {"size": "125 Gram", "amount": 125, "unit": "g", "prices": {"national": 21.25, "kwazulu-natal": 20.99, "gauteng": 22.56, "mpumalanga": 18.99}}
   ]},
   {"product": "Corn/Maize chips", "names": ["corn/maize chips"], "packs": [
-    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 21.59, "western-cape": 20.74, "eastern-cape": 21.74, "northern-cape": 22.37, "free-state": 21.85, "kwazulu-natal": 22.24, "north-west": 21.49, "gauteng": 21.13, "mpumalanga": 22.74}},
+    {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 21.59, "western-cape": 20.74, "eastern-cape": 21.74, "northern-cape": 22.37, "free-state": 21.85, "kwazulu-natal": 22.24, "north-west": 21.49, "gauteng": 21.13, "mpumalanga": 22.74, "limpopo": 20.28}},
     {"size": "150 Gram", "amount": 150, "unit": "g", "prices": {"national": 18.85}},
     {"size": "145 Gram", "amount": 145, "unit": "g", "prices": {"national": 26.08, "eastern-cape": 25.16, "free-state": 26.16, "kwazulu-natal": 25.99, "gauteng": 26.49, "mpumalanga": 26.7}}
   ]},

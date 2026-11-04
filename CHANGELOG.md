@@ -4,6 +4,27 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **FX40 A recipe's headings aren't ingredients**: `ReadRecipe` numbered `<h3>CURRIED MINCE</h3>` and
+  `***Filling` as ingredients. A heading in the list is now the section of the lines under it
+  (`RecipeIngredient(Section, Text)`, like a step), printed as a sub-heading, and every other HTML tag leaves every
+  text.
+- 2026-11-04 — **F56 The packs' feeds as MCP resources**: the MCP server publishes every feed in the catalogue as a
+  resource, `feed://{name}`, `application/json`, read whole when a client asks (`FeedResources`, one SDK resource per
+  feed); `McpPrimitives.Add` sets up the tools and the resources once for both transports, and `Program.cs` keeps only
+  the transports and auth (`EngineToolSync`, `SkillsToolProvider` moved to `Tools/`). The server's first tests,
+  `tests/louis-agent.mcp-server.tests`, run the SDK's real client against it over in-memory pipes. Over HTTP the
+  feeds sit behind the MCP key; the API still serves them open. [ADR 0072](docs/adr/0072-feeds-are-mcp-resources.md).
+- 2026-11-04 — **F55 Stats SA's prices uploaded in the admin portal**: a pack can declare data uploads (`IDataImport`
+  in core: a name, a description, the files it takes, a preview and a save, both answering a report; `IAgentPack.Imports`,
+  empty by default; the catalogue gathers them and refuses a name twice), served behind the admin key at `GET
+  /v1/admin/imports` and `POST /v1/admin/imports/{name}/preview` and `/save`, and shown on the portal's new Uploads
+  page (`/admin/imports`). The first is `shop-prices`: Stats SA's two P0141 spreadsheets (all urban areas,
+  provinces), every month in them read by column name; the preview lists the new months, the corrected ones with the
+  prices that changed, the unchanged and any product with no names, and Save writes the new and the corrected. The
+  names a list may use are kept in `statssa-names.json` by Stats SA's code. A product the newest month lacks is
+  priced from the newest month that has it, and the line names that month. The shipped August table gains the
+  Limpopo price the hand-made file missed. [ADR 0071](docs/adr/0071-packs-take-data-uploads.md);
+  [write-up](docs/learning/16-human-in-the-loop.md#f55-the-preview-is-the-check-2026-11-04)
 - 2026-11-04 — **F50.2 The prices as an open feed**: a pack can publish read-only data feeds (`IDataFeed` in core: a
   name, a description and its JSON; `IAgentPack.Feeds`, empty by default; the catalogue gathers them and refuses a name
   twice), and the API serves them open without knowing the pack: `GET /v1/feeds` lists each with its path, `GET

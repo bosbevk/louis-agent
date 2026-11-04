@@ -186,6 +186,12 @@ records. The API lists every feed at `GET /v1/feeds` and serves each, open, at `
 pack ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)); a feed is the pack's MCP resource. Publish only what
 anyone may read. The shop-prices pack's `ShopPricesFeed` is the example.
 
+`Imports` (optional, empty unless you list some) is data a person uploads into the pack from the admin portal: an
+`IDataImport` with a name, a description, the files it takes (`ImportSlot`), `PreviewAsync` (what the files hold and
+would change, saving nothing) and `SaveAsync`, both answering an `ImportReport`. The portal lists every upload at
+`/admin/imports` without knowing the pack ([ADR 0071](../adr/0071-packs-take-data-uploads.md)). Make the preview say
+exactly what Save will do. The shop-prices pack's `StatsSaImport` is the example.
+
 ### Your names are an enum
 
 A name that is written in more than one place is an enum ([ADR 0043](../adr/0043-repeated-names-are-enums.md)). The pack keeps **its own**

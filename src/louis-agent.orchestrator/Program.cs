@@ -1,24 +1,20 @@
+using System.Text.Json;
+using LouisAgent.Core.Agent;
+using LouisAgent.Core.Config;
+using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.EnvFiles;
+using LouisAgent.Core.Llm;
+using LouisAgent.Core.Logging;
+using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using LouisAgent.Core.Config;
-using LouisAgent.Core.Skills;
-using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Agent;
 using LouisAgent.Orchestrator;
-using LouisAgent.Orchestrator.Tools;
-using LouisAgent.Core.Llm;
-using LouisAgent.Core.Hosting;
-using LouisAgent.Core.Messages;
 using LouisAgent.Orchestrator.Messages;
-using LouisAgent.Core.Logging;
-using LouisAgent.Core.Telemetry;
+using LouisAgent.Orchestrator.Tools;
+using LouisAgent.Orchestrator.Triage;
 using Microsoft.Extensions.Logging;
 
 // Watches one service's error feed. Each new exception is triaged by an agent built on louis-agent.core whose system
@@ -28,7 +24,6 @@ using Microsoft.Extensions.Logging;
 HostEnvironment.Load();
 var options = OrchestratorOptions.FromEnvironment(args);
 var llm = LlmOptions.FromEnvironment();
-
 
 var (skills, methods) = OrchestratorSkills.Load(options.SkillsDirectory, options.Service);
 var feed = new ErrorFeed(options.ErrorLogPath, options.StateDirectory);
@@ -42,8 +37,7 @@ var louisAgent = new LouisAgentClient(http, options.LouisAgentApiKey);
 // LOG_DIRECTORY and USAGE_LEDGER come from the environment, so triage lands in the same usage ledger as the fixes.
 var agentOptions = AgentOptions.FromEnvironment();
 agentOptions.WorkspaceRoot = options.ServiceRoot;
-AgentLogging.Configure(agentOptions.LogDirectory,
-    LouisAgent.Core.Logging.Content.LogContent.ModeOf(agentOptions.LogContent));
+AgentLogging.Configure(agentOptions.LogDirectory, LogContent.ModeOf(agentOptions.LogContent));
 // It isn't built through AgentHost, so it starts its own traces; after the .env load above, so OTEL_* there count.
 AgentTelemetry.Start();
 var log = AgentLogging.LoggerFactory.CreateLogger("LouisAgent.Orchestrator");
@@ -184,7 +178,7 @@ while (!stop.IsCancellationRequested)
                 });
         Directory.CreateDirectory(options.StateDirectory);
         await File.AppendAllTextAsync(Path.Combine(options.StateDirectory, "decisions.jsonl"),
-            JsonSerializer.Serialize(decision.ToRecord(error, used, comms.Currency, DateTimeOffset.UtcNow)) +
+            JsonSerializer.Serialize(DecisionRecord.Of(decision, error, used, comms.Currency, DateTimeOffset.UtcNow)) +
             Environment.NewLine);
         feed.MarkProcessed(error.Id);
     }
@@ -214,91 +208,3 @@ string TriagePrompt(ErrorEvent error) =>
      ```
      Triage it with the runbook for method `{error.Method}` and act on it, following your workflow.
      """;
-
-/// <summary>
-/// Tells the user stopping the orchestrator (Ctrl+C) from a request that was cancelled for another reason.
-/// </summary>
-internal static class Stopping
-{
-    /// <summary>
-    /// True only when the run's own stop token was cancelled. An HTTP timeout is also an
-    /// <see cref="OperationCanceledException"/> (<see cref="TaskCanceledException"/>), but it is one error's failure,
-    /// not a reason to end the run (FX7).
-    /// </summary>
-    public static bool ByUser(Exception ex, CancellationToken stop) =>
-        ex is OperationCanceledException && stop.IsCancellationRequested;
-}
-
-/// <summary>The orchestrator's closing "DECISION: outcome - reason" line.</summary>
-internal sealed partial record Decision(string Outcome, string Reason)
-{
-    public static Decision Parse(string answer)
-    {
-        var match = DecisionLine().Matches(answer).LastOrDefault();
-        return match is null
-            ? new Decision("unknown",
-                answer.ReplaceLineEndings(" ").Trim() is { Length: > 200 } text ? text[..200] + "..." : answer.Trim())
-            : new Decision(match.Groups[1].Value.ToLowerInvariant(), match.Groups[2].Value.Trim());
-    }
-
-    /// <summary>
-    /// The decision's line in decisions.jsonl, snake_case like every orchestrator record (fixes.jsonl,
-    /// escalations.jsonl): what was decided, and (F3) what the error cost, triage and fix together, and each part.
-    /// </summary>
-    public object ToRecord(ErrorEvent error, EventUsage used, string currency, DateTimeOffset at) => new
-    {
-        error_id = error.Id,
-        method = error.Method,
-        outcome = Outcome,
-        reason = Reason,
-        at,
-        usage = CommsLog.Json(used.Total, currency),
-        triage_usage = CommsLog.Json(used.Triage, currency),
-        louis_agent_usage = CommsLog.Json(used.LouisAgent, currency),
-    };
-
-    [GeneratedRegex(@"DECISION:\s*\**\s*([A-Za-z-]+)\s*\**\s*[-–—:]\s*(.+)$", RegexOptions.Multiline)]
-    private static partial Regex DecisionLine();
-}
-
-/// <summary>
-/// Builds the system prompt: the shared principles every agent gets first (ADR 0020), the orchestrator's mode (CL9:
-/// louis-agent/voice-orchestrator, built into core), then Skills/{service}/service.md and one runbook per API method.
-/// </summary>
-internal static class OrchestratorSkills
-{
-    /// <summary>The orchestrator's mode in core's Prompts (CL9): its workflow, the same for every service.</summary>
-    internal const string Mode = "louis-agent/voice-orchestrator";
-
-    public static (ISkillProvider Skills, IReadOnlySet<string> Methods) Load(string skillsDirectory, string service)
-    {
-        string serviceDirectory = Path.Combine(skillsDirectory, service);
-        if (!Directory.Exists(serviceDirectory))
-            throw new InvalidOperationException(MessageText.Format(OrchestratorErrorMessage.NoRunbooks,
-                new
-                {
-                    Service = service,
-                    Directory = serviceDirectory
-                }));
-
-        var composite = new CompositeSkillProvider();
-        composite.AddProvider(MarkdownSkillProvider.FromText(BodyOf(SkillFiles.Principles)));
-        composite.AddProvider(MarkdownSkillProvider.FromText(BodyOf(RoleCatalog.FileName(Mode, RoleLevel.Agent))));
-
-        string serviceFile = Path.Combine(serviceDirectory, "service.md");
-        if (File.Exists(serviceFile)) composite.AddProvider(new MarkdownSkillProvider(serviceFile));
-
-        var methods = new SortedSet<string>(StringComparer.Ordinal);
-        foreach (string file in Directory.EnumerateFiles(serviceDirectory, "*.md").Order(StringComparer.Ordinal))
-        {
-            if (Path.GetFileName(file) == "service.md") continue;
-            composite.AddProvider(new MarkdownSkillProvider(file));
-            methods.Add(Path.GetFileNameWithoutExtension(file));
-        }
-
-        return (composite, methods);
-    }
-
-    /// <summary>A built-in prompt as the model reads it: without its header (CL27), which is for the loader.</summary>
-    private static string BodyOf(string path) => PromptCatalog.Get(path)!.Body;
-}

@@ -31,10 +31,10 @@ public enum ShopPriceToolMessage
     [Description("|---|---|---|")]
     TableRule,
 
-    [Description("| {Item} | {Product}, {Size} at R{Price}{Where}{Ours} | ± R{Rand} |")]
+    [Description("| {Item} | {Product}, {Size} at R{Price}{Where}{When}{Ours} | ± R{Rand} |")]
     LinePriced,
 
-    [Description("| {Item} | {Product}, {Size} at R{Price}{Where}{Ours}; no size given, so one {Size} pack | ± R{Rand} |")]
+    [Description("| {Item} | {Product}, {Size} at R{Price}{Where}{When}{Ours}; no size given, so one {Size} pack | ± R{Rand} |")]
     LineTablePack,
 
     [Description("| {Item} | {Product} is priced only as {Sizes}: send the line with one of those sizes | ? |")]
@@ -48,6 +48,9 @@ public enum ShopPriceToolMessage
 
     [Description(" (our own estimate, not Stats SA's)")]
     OurOwnRow,
+
+    [Description(" (from {Month}, the newest month that prices it)")]
+    OlderMonth,
 
     [Description("| **Total** | {Priced} of {Count} items | **± R{Total}** |")]
     TotalRow,

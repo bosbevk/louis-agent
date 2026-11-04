@@ -71,7 +71,7 @@ public static class SchemaOrgRecipe
         PrepTime: SchemaOrgValues.Duration(SchemaOrgValues.Property(entity, "prepTime")),
         CookTime: SchemaOrgValues.Duration(SchemaOrgValues.Property(entity, "cookTime")),
         TotalTime: SchemaOrgValues.Duration(SchemaOrgValues.Property(entity, "totalTime")),
-        Ingredients: SchemaOrgValues.Texts(SchemaOrgValues.Property(entity, "recipeIngredient")).ToList(),
+        Ingredients: SchemaOrgIngredients.Read(SchemaOrgValues.Property(entity, "recipeIngredient")).ToList(),
         Steps: Steps(SchemaOrgValues.Property(entity, "recipeInstructions"), null).ToList(),
         Image: SchemaOrgValues.Address(
             SchemaOrgValues.Text(SchemaOrgValues.Property(entity, "image"), objectKey: "url"), source),

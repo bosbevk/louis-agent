@@ -1,0 +1,22 @@
+{
+  "id": "recipe-hoenderpastei",
+  "input": [
+    {
+      "role": "user",
+      "content": "Gee my 'n resep vir hoenderpastei vir vier mense. Ek is in Wellington en dit maak nie saak waar ek koop nie."
+    }
+  ],
+  "metadata": {
+    "place": "Wellington, Wes-Kaap, Suid-Afrika",
+    "time_zone": "Africa/Johannesburg",
+    "follow_ups": [],
+    "expected": {
+      "routes_to": "puls-cook",
+      "serves": 4,
+      "recipe_image": true
+    },
+    "categories": [
+      "language:af"
+    ]
+  }
+}

@@ -137,6 +137,19 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     }
 
     /// <summary>
+    /// Posts a record to one of an app's own routes and reads the reply as its record, both on the wire's options
+    /// (the admin portal's snake_case, such as an upload's preview, F55).
+    /// </summary>
+    public async Task<T> PostAsync<T>(string url, object body, JsonSerializerOptions options)
+    {
+        using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Post, url)
+        {
+            Content = JsonContent.Create(body, body.GetType(), options: options)
+        });
+        return (await response.Content.ReadFromJsonAsync<T>(options))!;
+    }
+
+    /// <summary>
     /// Follows a stream of server-sent events whose data is plain text, such as the admin portal's run lines (F27):
     /// each event's type and data.
     /// </summary>

@@ -4,6 +4,7 @@ using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using System.Diagnostics;
 using LouisAgent.Orchestrator.Tools;
+using LouisAgent.Orchestrator.Triage;
 
 namespace LouisAgent.Orchestrator.Tests;
 
@@ -55,42 +56,11 @@ public class OrchestratorTests
         Assert.That(new ErrorFeed(log, _dir).ReadNew().Select(e => e.Id), Is.EqualTo(new[] { "ok_1" }));
     }
 
-    [TestCase("Done.\nDECISION: fixed - commit abc1234 verified", "fixed", "commit abc1234 verified")]
-    [TestCase("**DECISION:** ignored — expected 404", "ignored", "expected 404")]
-    [TestCase("DECISION: Escalated: payments must check the refund", "escalated", "payments must check the refund")]
-    public void Decision_ParsesTheClosingLine(string answer, string outcome, string reason)
-    {
-        var decision = Decision.Parse(answer);
-
-        Assert.That(decision.Outcome, Is.EqualTo(outcome));
-        Assert.That(decision.Reason, Is.EqualTo(reason));
-    }
-
-    [Test]
-    public void Decision_Record_UsesSnakeCaseKeys_LikeTheOtherRecords()
-    {
-        var error = FeedWith(Event("abc123")).Find("abc123")!;
-        var used = new EventUsage(null, null, null);
-
-        string json = System.Text.Json.JsonSerializer.Serialize(
-            Decision.Parse("DECISION: fixed - verified").ToRecord(error, used, "USD",
-                new DateTimeOffset(2026, 10, 12, 8, 0, 0, TimeSpan.Zero)));
-
-        Assert.That(json,
-            Does.StartWith(
-                """{"error_id":"abc123","method":"order-total","outcome":"fixed","reason":"verified","at":"2026-10-12T08:00:00+00:00","""));
-        Assert.That(json, Does.EndWith(""","usage":null,"triage_usage":null,"louis_agent_usage":null}"""));
-    }
-
-    [Test]
-    public void Decision_WithoutALine_IsUnknown() =>
-        Assert.That(Decision.Parse("I looked at it.").Outcome, Is.EqualTo("unknown"));
-
     [Test]
     public void TheWorkflow_IsBuiltIn_OnlyTheRunbooksAreOnDisk()
     {
-        // CL9 step 7: the orchestrator's prompt is a mode in core (louis-agent/voice-orchestrator), read from the assembly;
-        // its own Skills/ keeps the per-service runbooks.
+        // CL9 step 7: the orchestrator's prompt is a mode in core (louis-agent/voice-orchestrator), read from the
+        // assembly; its own Skills/ keeps the per-service runbooks.
         string skills = Directory.CreateTempSubdirectory("orchestrator-skills-").FullName;
         try
         {
@@ -280,7 +250,8 @@ public class OrchestratorTests
     [Test]
     public void CommsLog_InRands_ShowsTheRateAndWhatWasCharged()
     {
-        // F14: the comms log in the display currency, with the rate and the charged total; the jsonl figures stay in USD.
+        // F14: the comms log in the display currency, with the rate and the charged total; the jsonl figures stay in
+        // USD.
         var rands = new DisplayCurrency("ZAR", "R", 16.5331m, "2026-10-09", "USD", "HOST_CULTURE en-ZA");
         var feed = FeedWith(Event("abc123"));
         string path = Path.Combine(_dir, "comms.md");
@@ -343,8 +314,8 @@ public class OrchestratorTests
     [Test]
     public void Stopping_OnlyTheUsersStopEndsTheRun()
     {
-        // FX7: a model request that times out throws TaskCanceledException, an OperationCanceledException; it must count
-        // as that error's failure, not end the run as Ctrl+C does.
+        // FX7: a model request that times out throws TaskCanceledException, an OperationCanceledException; it must
+        // count as that error's failure, not end the run as Ctrl+C does.
         var timeout = new TaskCanceledException(
             "The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.",
             new TimeoutException());

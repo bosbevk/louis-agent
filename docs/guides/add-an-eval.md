@@ -129,7 +129,7 @@ list also takes `required`:
 | `near` | `text`, `distance` | the whole answer is at most that many edits from the text (Levenshtein, case ignored) |
 | `answers-in-language` | `language` (`af`, `en`) | the answer has more of that language's common small words than of any other's |
 | **Model and person** | | |
-| `judge` | `rubric`, `ask`, `version` | a model, given the rubric file as its prompt and the scenario's `ask` keys, says yes |
+| `judge` | `rubric`, `ask`, `version`, `sources` | a model, given the rubric file as its prompt, the scenario's `ask` keys and, for each tool in `sources`, what it gave back in the trial (below), says yes |
 | `human` | `reviews` | a person's review of the named judge (shown, never required) |
 
 Each is required unless you say `"required": false`, a `judge` never is, and a timeout or a dropped connection is
@@ -155,6 +155,14 @@ are message enum members (ADR 0009), and a turn that failed for the infrastructu
 (`Verdict.InfrastructureFailure`). A model judge of your own needs the harness, which an identity never references,
 so it goes in a project of its own beside the identity that only the runner references, as
 `identities/louis-agent.identity.puls.judges` does; the general `judge` with a rubric file usually does instead.
+
+**A judge that must see a page** (`sources`) is for a rubric that compares the answer with what a tool read, such as
+"the amounts are the page's". `"sources": ["ReadRecipe"]` adds every result of that tool in the trial to the judge's
+request, the agent's calls and its specialists' together, each labelled `ReadRecipe, result 1 of 2:` in the order the
+calls were made; a tool that was never called is told in one line, so the judge isn't left guessing. Each result is
+cut at 12,000 characters and the request says where. Without `sources` the request is as it always was. The rubric's
+hash covers the rubric only, so **a file that adds or changes `sources` bumps its judge's `version`**, or an old
+grade is counted with a new one.
 
 **A rubric file** (`Rubrics/{name}.md`) opens with the header every prompt has
 ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)): its `name` (the file's) and a `description` of what it judges.

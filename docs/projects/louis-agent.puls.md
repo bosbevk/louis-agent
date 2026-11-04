@@ -58,7 +58,7 @@ as you go: every answer shows what it cost, specialists included.
   the run, its conversations side by side, a turn, a request) reports every move as an `ExplorerPlace` and the page
   puts it in the address (`?view=…&task=…&turn=…`), so Back goes up a level and a link opens the same view;
   `RunAddress` is the one class that spells a run's address. Each chart explains itself on hover (`ChartInfo`).
-  `/admin/prompts` lists every built-in prompt by its header (CL27); the old `/admin/benchmarks` and `/admin/maatstawwe`
+  `/admin/prompts` lists every built-in prompt by its header (CL27); `/admin/imports` takes the packs' data uploads (F55); the old `/admin/benchmarks` and `/admin/maatstawwe`
   addresses are gone (ADR 0049). **The grades view** (F18 step 4.5c) shows every eval the same way, from
   the standard records alone: `GraderList` above the explorer (the run's eval, version, commit and graders, or one line saying
   it recorded none) and `GradeChips` on each conversation's row (its outcome and one chip per grade, in the run's grader order,
@@ -86,6 +86,7 @@ as you go: every answer shows what it cost, specialists included.
 | `Layout/AdminLayout.razor` | The admin portal's sidebar by job (*Measure*: Evals, Review with its count; *Build*: Studio, Prompts; F53.2, F53.3), the live-run strip and the content column |
 | `Pages/Admin/Review.razor`, `Review.razor.cs` | The Review page at `/admin/review` (F53.3): the queue read for the kept name, one answer open with its head and the blind review panel, the keys 1, 2 and 3, the count kept current for the sidebar |
 | `Pages/Admin/Prompts.razor`, `Prompts.razor.cs` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none); styles at the end of `css/admin/shell.css` |
+| `Pages/Admin/Imports.razor`, `Components/Admin/Imports/ImportCard.razor`, `Admin/Imports/ImportForm.cs` | The packs' uploads (F55, ADR 0071), from `GET /v1/admin/imports`: a card each with a file box per slot, Preview and the report's facts and problems, and Save only after a clean preview that changes something (`ImportForm` holds those rules); the sidebar's Data section; styles at the end of `css/admin/shell.css` |
 | `Text/PulsWebRole.cs` | The roles the web app has words for (the cook's work phases), as an enum of its own (ADR 0043) |
 | `Pages/Admin/Evals.razor`, `BenchmarkRun.razor` | The Evals page at `/admin`: the list, the chosen eval's details, the run it starts and follows (F53.2); one stored run: the head, the verdict, the tab bar and the open tab, the tab and the explorer's place read from the address and the run fetched only when its id changes (F53.1) |
 | `Components/Admin/EvalsPage/`, `List/`, `Details/`, `Admin/Evals/`, `Admin/Evals/List/` | The Evals page's parts: `EvalList` and `EvalListItem` (the list pane; `EvalLine`, `ModeChange`, `EvalListView`, `EvalAddress`), `EvalDetails`, `EvalRunControls` and `ManualDialog` (the details pane), `EvalScorecard`, `EvalRunTimeline`, `EvalRunOrigin`, `EvalChecks` (`EvalCardView`, `RunLine`, `RunOrigin`, `GraderGroup`, `EvalText`) |

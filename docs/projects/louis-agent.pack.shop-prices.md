@@ -1,7 +1,7 @@
 # louis-agent.pack.shop-prices — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.shop-prices/` · **References:**
-> louis-agent.core, MongoDB.Driver, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=shop-prices`, or
+> louis-agent.core, MongoDB.Driver, ExcelDataReader, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=shop-prices`, or
 > an identity that names it (Puls) · **Uses:** MongoDB when `SHOP_PRICES_MONGO_URL` is set
 
 ## Purpose
@@ -40,6 +40,18 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
   [ADR 0070](../adr/0070-packs-publish-data-feeds.md)), which the API serves open at `GET /v1/feeds/shop-prices`:
   `{"notice": …, "tables": [ … ]}`, each table in the shipped JSON's shape, read through the tool's cache. The notice
   (`ShopPriceFeedMessage`) says the prices are averages and whose they are.
+- **The upload** (F55, [ADR 0071](../adr/0071-packs-take-data-uploads.md)). The pack declares one upload,
+  `shop-prices` (`StatsSaImport`), which the admin portal shows at `/admin/imports`: Stats SA's two P0141
+  spreadsheets, all urban areas and provinces. `StatsSaSheets` reads them by column name (`H03` the code, `H04` the
+  product, `H08` the size, `H09` the province, `M201701`… a column per month); `PackSize` and `StatsSaProduct` tidy
+  sizes and names; `StatsSaNames` adds the names a list may use, kept in `statssa-names.json` by Stats SA's code;
+  `StatsSaPrices` makes one price file per month. The preview compares each month with the stored one
+  (`StatsSaUpload`, `MonthChanges`) and lists the new, the corrected (with the prices that changed) and the
+  unchanged months and any product with no names; Save writes the new and the corrected and makes the cache read
+  again (`PriceBookCache.Forget`). Only the MongoDB store can save; without it the preview works and Save says why.
+- **An older month fills a gap.** The cache reads every stored month of each source; `PriceBook` looks in the newest
+  months first, then the older ones, newest first, so a product the newest month lacks is priced from the newest
+  month that has it, and the line names that month (`from July 2026, the newest month that prices it`).
 
 ## Design notes
 
@@ -66,8 +78,10 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 | `Prices/Regions/` | `Region` (the country and the nine provinces), `RegionNames` (English and Afrikaans names), `RegionPrice` |
 | `Prices/Store/` | `IPriceStore` with `ShippedPrices` and `MongoPriceStore`, `PriceFileDocument`, `PriceBookCache` |
 | `Prices/Data/` | The shipped tables (embedded) |
+| `Prices/StatsSa/`, `Prices/StatsSa/Sheets/` | Stats SA's release read: the sheets (`StatsSaSheets`, `StatsSaRow`), sizes and names tidied (`PackSize`, `StatsSaProduct`), the names file (`StatsSaNames`) and the months as price files (`StatsSaPrices`) |
+| `Imports/` | `StatsSaImport` (the upload), `StatsSaUpload` (what the files change), `StatsSaReport`, `MonthChanges` |
 | `Feeds/` | `ShopPricesFeed` (the tables as a feed) and `PriceFeed` (what it sends) |
-| `Messages/` | `ShopPriceToolMessage` (what the tool returns), `ShopPriceLogMessage` (its log line), `ShopPriceFeedMessage` (the feed's description and notice) |
+| `Messages/` | `ShopPriceToolMessage` (what the tool returns), `ShopPriceLogMessage` (its log line), `ShopPriceFeedMessage` (the feed's description and notice), `ShopPriceImportMessage` (the upload's texts) |
 
 ## Configuration
 
@@ -80,9 +94,10 @@ The Puls stack uses the eval store's server and user, on its own database.
 
 ## Extending it
 
-- **A new Stats SA month:** the new release's two spreadsheets turned into `statssa-average-prices.json` (the same
-  shape, the new `as_of`), shipped; the store picks it up as a new month on its next start. A C# refresh tool is on
-  the TODO.
+- **A new Stats SA release:** upload its two spreadsheets on the admin portal's Uploads page, check the preview,
+  Save. A product Stats SA adds shows in the preview as having no names; add its row to `statssa-names.json` by its
+  code. The shipped `statssa-average-prices.json` only seeds an empty store.
+- **Another upload** (a retailer's feed): another `IDataImport` in `Imports/`, listed in `ShopPricesPack.Imports`.
 - **Another kind of price** (rent, fuel): a price file of the same shape, with its source and date, seeded or saved
   into the same store. A unit it needs that `PackUnit` lacks is a new member.
 - **Our own rows** are `own-prices.json`; each needs a person's check.
@@ -93,22 +108,25 @@ The Puls stack uses the eval store's server and user, on its own database.
 `tests/louis-agent.pack.shop-prices.tests`, mirroring the folders: the line reader, the matcher, the estimator (the
 scaling, the province fallback, `?`), the tool's table and texts with `ShopPriceToolMessageSnapshotTests`' golden, the
 cache (once an hour, the fallback, on a fake clock), the feed (its name, its shape, what the store holds) and the
-options. `tests/louis-agent.pack.shop-prices.integration-tests` runs `MongoPriceStore` against a real MongoDB
+options, and the upload: the sheets read from a trimmed fixture pair, every size in the August release, the August
+release giving back the shipped table, the preview and save over an in-memory store, and an older month filling a
+gap. `tests/louis-agent.pack.shop-prices.integration-tests` runs `MongoPriceStore` against a real MongoDB
 (`BENCHMARKS_MONGO_URL`, CI's throwaway server): the seed, a newer month read with the older kept, and a stored table
-never overwritten. The API's `FeedRouteTests` read the feed over HTTP.
+never overwritten, and an upload saving a month and replacing a corrected one. The API's `FeedRouteTests` read the
+feed over HTTP, and `ImportRouteTests` list, preview and save the upload.
 
 ## Limits and plans
 
 - The averages are over many shops and a whole province: a shop's real price can differ a lot, and the answer says
   so.
 - Stats SA prices 220 products in set packs; the rest is our own rows or `?`.
-- The monthly refresh is a hand step until the refresh tool exists.
+- An upload travels twice (preview, then save); fine at a few megabytes ([ADR 0071](../adr/0071-packs-take-data-uploads.md)).
 
 ## Related docs
 
 [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) · [Build a pack](../guides/build-a-pack.md) ·
 [louis-agent.identity.puls](louis-agent.identity.puls.md) · [ADR 0069](../adr/0069-shop-prices-are-stats-sa-estimates.md) ·
-[ADR 0070](../adr/0070-packs-publish-data-feeds.md)
+[ADR 0070](../adr/0070-packs-publish-data-feeds.md) · [ADR 0071](../adr/0071-packs-take-data-uploads.md)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) · Next: [louis-agent.pack.recipes](louis-agent.pack.recipes.md)
