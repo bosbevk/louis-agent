@@ -1,0 +1,10 @@
+using System.ComponentModel;
+
+namespace LouisAgent.Packs.Recipes.Messages;
+
+/// <summary>The recipe pack's log lines (ADR 0009).</summary>
+public enum RecipeLogMessage
+{
+    [Description("RECIPE_SOURCES names '{Slug}', which is not a recipe site; it is ignored.")]
+    SourceUnknown,
+}
