@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using LouisAgent.Packs.ShopPrices.Prices.Regions;
 
 namespace LouisAgent.Packs.ShopPrices.Messages;
 
@@ -21,20 +20,21 @@ public enum ShopPriceToolMessage
     ProvinceUnknown,
 
     [Description(
-        "Estimated prices for {Region}, from Stats SA's average prices for {Month} (averages over many shops, not one " +
-        "shop's prices). The scaling and the sums are louis-agent's; copy the numbers as they are.")]
+        "Estimated prices for {Region}, from Stats SA's average prices for {Month} (averages over many shops, not " +
+        "one shop's prices). The scaling and the sums are louis-agent's; copy the numbers as they are.")]
     Header,
 
     [Description("| Item | Priced from | Estimate |")]
     TableHeader,
 
-    [Description("|---|---|---|")]
-    TableRule,
+    [Description("|---|---|---|")] TableRule,
 
     [Description("| {Item} | {Product}, {Size} at R{Price}{Where}{When}{Ours} | ± R{Rand} |")]
     LinePriced,
 
-    [Description("| {Item} | {Product}, {Size} at R{Price}{Where}{When}{Ours}; no size given, so one {Size} pack | ± R{Rand} |")]
+    [Description(
+        "| {Item} | {Product}, {Size} at R{Price}{Where}{When}{Ours}; no size given, so one {Size} pack " +
+        "| ± R{Rand} |")]
     LineTablePack,
 
     [Description("| {Item} | {Product} is priced only as {Sizes}: send the line with one of those sizes | ? |")]
@@ -52,18 +52,23 @@ public enum ShopPriceToolMessage
     [Description(" (from {Month}, the newest month that prices it)")]
     OlderMonth,
 
-    [Description("| **Total** | {Priced} of {Count} items | **± R{Total}** |")]
+    [Description("| **Total** | {Priced} of {Count} items | **± R{Total}{LeftOut}** |")]
     TotalRow,
 
-    [Description("| **Per person** | for {Serves} | **± R{PerPerson}** |")]
+    [Description("| **Per person** | for {Serves} | **± R{PerPerson}{LeftOut}** |")]
     PerPersonRow,
+
+    [Description(" + 1 item unpriced")] LeftOutOne,
+
+    [Description(" + {Unpriced} items unpriced")]
+    LeftOutMany,
 
     [Description(
         "No estimate for: {Items}. Write ? for their price, leave them out of the total, and say so under Unsure.")]
     Unpriced,
 
     [Description(
-        "Credit the source under the list: \"Prices are estimates from Stats SA's average prices ({Region}, {Month}), " +
-        "not checked at a shop.\"")]
+        "Credit the source under the list: \"Prices are estimates from Stats SA's average prices ({Region}, " +
+        "{Month}), not checked at a shop.\"")]
     Credit,
 }

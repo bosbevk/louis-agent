@@ -23,7 +23,8 @@ one shop's price. Route here a request for roughly what something costs.
 3. **Copy the numbers as they come:** each line's estimate, the total and the price per person. Never add, round or
    scale them yourself.
 4. **A line with `?`** has no estimate: try it once more with the size the table names (the result says which), else
-   keep the `?`, leave it out of the total and say so.
+   keep the `?`, leave it out of the total and say so. When the total says items are unpriced
+   (`± R312 + 2 items unpriced`), keep those words in the user's language (Afrikaans `+ 2 items sonder prys`).
 5. **Credit the source** with the line the result ends on.
 
 ## Rules

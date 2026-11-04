@@ -59,8 +59,9 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
   same list gives the same numbers every run, and a total always equals its rows.
 - **An estimate says it is one.** `± R65`, never linked, never a shop's name beside it, and the credit names the
   province and the month.
-- **Unknown is `?`.** A line with no price stays out of the total and is listed, so the total never looks complete
-  when it isn't ([ADR 0007](../adr/0007-measure-every-request.md)'s rule).
+- **Unknown is `?`.** A line with no price stays out of the total and is listed, and the total and the price per
+  person say so in the cell the agent copies (`± R312 + 2 items unpriced`), so the total never looks complete when it
+  isn't ([ADR 0007](../adr/0007-measure-every-request.md)'s rule).
 - **The store is the record, the files only seed it.** A month corrected in the store stays corrected after a
   restart; a newly shipped month joins the history.
 - **The unit is kept by its member's name in MongoDB** (`Gram`), the amounts as decimals; the shipped JSON uses the

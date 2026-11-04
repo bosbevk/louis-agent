@@ -63,6 +63,19 @@ public class PricesTotalTests
             "a bold total row of the list is read as the list's total row (FX24)");
     }
 
+    /// <summary>A total row that says how many items it left out still reads its amount, in both languages.</summary>
+    [TestCase("| **Total** | 5 of 7 items | **± R312 + 2 items unpriced** |")]
+    [TestCase("| **Total** | 6 of 7 items | **± R312 + 1 item unpriced** |")]
+    [TestCase("| **Totaal** | 5 van 7 | **± R312 + 2 items sonder prys** |")]
+    [TestCase("| **Totaal** | 6 van 7 | **± R312 + 1 item sonder prys** |")]
+    public void ATotalRow_ThatSaysWhatItLeftOut_StillReadsItsAmount(string row)
+    {
+        string answer = "| Item | To buy | Estimate |\n|---|---|---|\n| rice | rice 1 kg | ± R40 |\n" + row + "\n"
+                        + "| **Per person** | for 4 | **± R78 + 2 items unpriced** |\n";
+
+        Assert.That(Prices.Total(answer), Is.EqualTo(new BasketTotal(312m, TotalSource.ListTotalRow)));
+    }
+
     /// <summary>Two total lines that disagree give no total.</summary>
     [Test]
     public void TotalLinesThatDisagree_AreNoTotal()
@@ -81,7 +94,8 @@ public class PricesTotalTests
     public void ARowPricedAtTwoShops_IsNoSum_BecauseWhichShopIsTheBasketsIsUnknown()
     {
         string answer = "| Bestanddeel | Checkers | Pick n Pay |\n|---|---|---|\n"
-                        + "| uie | R45,99 [a](https://www.checkers.co.za/p/1) | R47,00 [b](https://www.pnp.co.za/p/1) |\n";
+                        + "| uie | R45,99 [a](https://www.checkers.co.za/p/1) "
+                        + "| R47,00 [b](https://www.pnp.co.za/p/1) |\n";
 
         Assert.That(Prices.Total(answer), Is.Null);
     }
