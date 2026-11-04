@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Info;
 using LouisAgent.Api.Endpoints.Routing;

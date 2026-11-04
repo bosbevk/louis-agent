@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Endpoints.Git.Branches;
 using LouisAgent.Api.Endpoints.Git.Changes;

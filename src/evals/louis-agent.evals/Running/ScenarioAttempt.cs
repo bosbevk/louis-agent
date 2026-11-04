@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Evals.Api;

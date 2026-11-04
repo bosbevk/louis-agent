@@ -1,12 +1,11 @@
 
+using LouisAgent.Composition.Messages;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using LouisAgent.Core.Logging.Messages;
-using LouisAgent.Core.Messages;
 using LouisAgent.Choices;
 
-namespace LouisAgent.Core.Logging.Content;
+namespace LouisAgent.Composition.Logging.Content;
 /// <summary>
 /// What a log line shows of a value it was given (F18 step 4f; GOAL skill 17, with skill 15's practice). A user's words reach a log
 /// through any argument, because the model copies them into a search query or a sub-session's task, so no list of "personal" fields
@@ -23,13 +22,13 @@ public static class LogContent
     private static readonly byte[] Key = RandomNumberGenerator.GetBytes(32);
     private static volatile LogContentMode _mode = LogContentMode.Hashed;
 
-    internal static void Use(LogContentMode mode) => _mode = mode;
+    public static void Use(LogContentMode mode) => _mode = mode;
 
     /// <summary>LOG_CONTENT, parsed once where it enters: unset or blank is <see cref="LogContentMode.Hashed"/>; anything unknown throws.</summary>
     public static LogContentMode ModeOf(string? setting)
     {
         if (!SettingChoice.TryParse(setting, out LogContentMode? mode))
-            throw new ArgumentException(MessageText.Format(LoggingErrorMessage.UnknownLogContent,
+            throw new ArgumentException(MessageText.Format(TextErrorMessage.UnknownLogContent,
                 new
                 {
                     Value = setting?.Trim(),

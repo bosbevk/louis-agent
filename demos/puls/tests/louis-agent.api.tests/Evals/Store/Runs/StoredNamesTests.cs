@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Evals.Runs.Kinds;
 using LouisAgent.Api.Evals.Store.Mongo;
 using LouisAgent.Api.Evals.Store.Runs;

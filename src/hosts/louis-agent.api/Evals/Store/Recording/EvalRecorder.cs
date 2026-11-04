@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Api.Evals.Runs;
 
 namespace LouisAgent.Api.Evals.Store.Recording;

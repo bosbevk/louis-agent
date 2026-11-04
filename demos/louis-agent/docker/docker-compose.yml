@@ -16,7 +16,7 @@ services:
         required: false
     environment:
       # Logs and traces to the dashboard stack on the host (F52); with it down, the exporters drop them quietly.
-      # Each service is named by its project (mcp-server, acp-server, api, cli).
+      # Each service is named by its program (coding-mcp, coding-acp, coding-api, coding-cli).
       OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
       WORKSPACE_ROOT: /workspace
       CONFIG_DIRECTORY: /workspace/demos/louis-agent/config

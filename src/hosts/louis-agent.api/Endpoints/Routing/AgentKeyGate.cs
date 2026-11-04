@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Guardrails.Auth;
 using LouisAgent.Core.Messages;

@@ -1,9 +1,10 @@
-namespace LouisAgent.AcpServer.Paths;
 
+using LouisAgent.Composition.Logging;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.AcpServer.Paths;
 /// <summary>
 /// A Windows path from the IDE as the same file inside the container (S, CL15, from AcpServer): by ACP_MOUNT_MAPPINGS
 /// (<c>C:\Users\you\RiderProjects=/repositories</c>) when one applies, else found under a mount root by its last path

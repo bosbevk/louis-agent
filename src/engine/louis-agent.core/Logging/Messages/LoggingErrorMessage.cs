@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Logging.Messages;
@@ -8,6 +9,4 @@ namespace LouisAgent.Core.Logging.Messages;
 /// <summary>Exception texts for the logging area: what is wrong and how to fix it.</summary>
 public enum LoggingErrorMessage
 {
-    [Description("Unknown LOG_CONTENT '{Value}'. Use {Supported}.")]
-    UnknownLogContent,
 }

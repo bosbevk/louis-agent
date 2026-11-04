@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
 

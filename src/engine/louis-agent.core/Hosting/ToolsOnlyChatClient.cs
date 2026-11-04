@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.AI;

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Diagnostics;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.SubSessions;

@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Messages;
@@ -9,12 +10,6 @@ namespace LouisAgent.Core.Messages;
 /// <summary>The message system's own texts, and the one text two hosts share (ApiKeyRequired, the API's and the MCP server's).</summary>
 public enum ErrorMessage
 {
-    [Description("{Message} needs a value for '{Hole}'.")]
-    MessageNeedsValue,
-
-    [Description("{Message} has no [Description].")]
-    MessageHasNoTemplate,
-
     [Description(
         "{Setting} is required: set it in config/.env.secrets, or set AGENT_AUTH=off to serve without a key on purpose.")]
     ApiKeyRequired,

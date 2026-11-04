@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 
 namespace LouisAgent.Core.Protocols.Messages;

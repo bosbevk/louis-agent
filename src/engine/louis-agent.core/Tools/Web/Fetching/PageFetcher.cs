@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using System.Net;
 using LouisAgent.Core.Guardrails.Network;

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Net.ServerSentEvents;
 using System.Runtime.CompilerServices;
 using System.Text.Json;

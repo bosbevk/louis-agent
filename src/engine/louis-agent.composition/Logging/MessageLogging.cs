@@ -1,14 +1,17 @@
 
-using LouisAgent.Core.Messages;
+using LouisAgent.Composition.Messages;
 using Microsoft.Extensions.Logging;
 
-namespace LouisAgent.Core.Logging;
+namespace LouisAgent.Composition.Logging;
 /// <summary>
 /// Logging a message enum member (an area's <c>{Area}LogMessage</c>, or a host's own): its template is the message template, so
 /// the logger keeps each hole as a field.
 /// </summary>
 public static class MessageLogging
 {
+    /// <summary>The scope property that carries a line's tag.</summary>
+    public const string TagProperty = "Tag";
+
     /// <summary>
     /// Logs <paramref name="message"/> with the values of <paramref name="values"/>' properties named like its holes, in the
     /// template's order, so a name can't drift from its argument: <c>logger.Log(LogLevel.Warning, AreaLogMessage.X, new { Url })</c>.
@@ -23,7 +26,7 @@ public static class MessageLogging
         object?[] arguments = MessageText.Holes(template)
             .Select(hole => values?.GetType().GetProperty(hole) is { } property
                 ? property.GetValue(values)
-                : throw new ArgumentException(MessageText.Format(ErrorMessage.MessageNeedsValue,
+                : throw new ArgumentException(MessageText.Format(TextErrorMessage.MessageNeedsValue,
                     new { Message = $"{message.GetType().Name}.{message}", Hole = $"{{{hole}}}" }), nameof(values)))
             .ToArray();
         if (tag is null)
@@ -32,7 +35,7 @@ public static class MessageLogging
             return;
         }
 
-        using (logger.BeginScope(new Dictionary<string, object> { [AgentLogging.TagProperty] = tag }))
+        using (logger.BeginScope(new Dictionary<string, object> { [TagProperty] = tag }))
             logger.Log(level, exception, template, arguments);
     }
 }

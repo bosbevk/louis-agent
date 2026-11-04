@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text.Json;
 using LouisAgent.Choices;

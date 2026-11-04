@@ -1,8 +1,9 @@
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using Microsoft.Extensions.AI;

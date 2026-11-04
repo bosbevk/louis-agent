@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Llm.Caching;
 using LouisAgent.Core.Llm.Messages;
 using LouisAgent.Core.Llm.UsageMapping;

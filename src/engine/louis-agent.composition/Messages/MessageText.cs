@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace LouisAgent.Core.Messages;
+namespace LouisAgent.Composition.Messages;
 /// <summary>
 /// The text of every message, kept in message enums: the shared <see cref="ErrorMessage"/>, <see cref="ToolMessage"/> and
 /// <see cref="UserText"/>, and an area's <c>{Area}ToolMessage</c>, <c>{Area}LogMessage</c> or <c>{Area}ErrorMessage</c>. Each member's
@@ -32,7 +32,7 @@ public static partial class MessageText
             PropertyInfo? property = values?.GetType().GetProperty(name);
             if (property is null)
                 throw new ArgumentException(
-                    Format(ErrorMessage.MessageNeedsValue, new { Message = Name(message), Hole = $"{{{name}}}" }),
+                    Format(TextErrorMessage.MessageNeedsValue, new { Message = Name(message), Hole = $"{{{name}}}" }),
                     nameof(values));
             return Convert.ToString(property.GetValue(values), System.Globalization.CultureInfo.InvariantCulture) ?? "";
         });
@@ -44,7 +44,7 @@ public static partial class MessageText
 
     private static string Read(Enum message) =>
         message.GetType().GetField(message.ToString())?.GetCustomAttribute<DescriptionAttribute>()?.Description
-        ?? throw new InvalidOperationException(Format(ErrorMessage.MessageHasNoTemplate,
+        ?? throw new InvalidOperationException(Format(TextErrorMessage.MessageHasNoTemplate,
             new { Message = Name(message) }));
 
     private static string Name(Enum message) => $"{message.GetType().Name}.{message}";

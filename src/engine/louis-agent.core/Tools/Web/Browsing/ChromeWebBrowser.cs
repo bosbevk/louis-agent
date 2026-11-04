@@ -1,4 +1,6 @@
 
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Browsing;
 using System.Net;
 using LouisAgent.Core.Logging;

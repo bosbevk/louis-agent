@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;

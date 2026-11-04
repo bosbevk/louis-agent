@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Config;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;

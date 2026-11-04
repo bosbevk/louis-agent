@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using System.Security.Cryptography;
 using System.Text;
 using LouisAgent.Choices;

@@ -1,10 +1,11 @@
-namespace LouisAgent.Core.Usage.Reports;
 
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using System.Globalization;
 using LouisAgent.Core.Messages;
 
+namespace LouisAgent.Core.Usage.Reports;
 /// <summary>
 /// The usage text every host shows (F3): the line after an answer and the <c>/usage</c> reply. One format in core, so the
 /// CLI, the API and Rider say the same thing; totals come from <see cref="UsageReport.Total"/>, like a ledger report.
@@ -48,7 +49,9 @@ public static class UsageText
             .Select(p => MessageText.Format(UserText.UsagePurpose, new { Purpose = p.Key, Usage = Describe(p, currency, display) })));
         lines.Add(MessageText.Format(UserText.UsageTokensByKind, new
         {
-            Input = Tokens(total.Input), CacheWrite = Tokens(total.CacheWrite), CacheRead = Tokens(total.CacheRead),
+            Input = Tokens(total.Input),
+            CacheWrite = Tokens(total.CacheWrite),
+            CacheRead = Tokens(total.CacheRead),
             Output = Tokens(total.Output),
         }));
         if (display is { Converts: true } && total.Cost is { } charged)

@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Text;
 using System.Text.RegularExpressions;

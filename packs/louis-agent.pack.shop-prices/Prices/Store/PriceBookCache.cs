@@ -1,5 +1,6 @@
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Packs.ShopPrices.Messages;
 using LouisAgent.Packs.ShopPrices.Prices.Files;
 using Microsoft.Extensions.Logging;
@@ -21,7 +22,7 @@ public sealed class PriceBookCache(IPriceStore store, TimeProvider clock)
     /// <summary>How long a book read from the store is kept.</summary>
     public static readonly TimeSpan Fresh = TimeSpan.FromHours(1);
 
-    private static readonly ILogger Log = AgentLogging.For<PriceBookCache>();
+    private static readonly ILogger Log = PackLog.For<PriceBookCache>();
 
     private readonly SemaphoreSlim _reading = new(1, 1);
     private volatile HeldBook? _held;

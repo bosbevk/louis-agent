@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Logging.Content;
 using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
@@ -6,7 +8,6 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Telemetry;

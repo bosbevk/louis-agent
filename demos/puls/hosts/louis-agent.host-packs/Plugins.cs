@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Agent.Catalog;

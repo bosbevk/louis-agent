@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Reflection;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Messages;

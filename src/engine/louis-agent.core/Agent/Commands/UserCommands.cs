@@ -1,11 +1,12 @@
-namespace LouisAgent.Core.Agent.Commands;
 
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 
+namespace LouisAgent.Core.Agent.Commands;
 /// <summary>
 /// What the user types that the model never sees (S, CL15, from AgentEngine): /tools, /approve &lt;Name&gt;,
 /// /reject &lt;Name&gt; and /usage, answered from the agent-built tools, the skill files and the session's usage.

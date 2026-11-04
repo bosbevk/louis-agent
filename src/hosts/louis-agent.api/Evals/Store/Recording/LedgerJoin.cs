@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Reports.Prompts;
 using LouisAgent.Api.Evals.Runs;

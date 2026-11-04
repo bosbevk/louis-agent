@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using LouisAgent.Core.Sessions;
 using System.Globalization;

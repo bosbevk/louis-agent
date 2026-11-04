@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Logging;
 

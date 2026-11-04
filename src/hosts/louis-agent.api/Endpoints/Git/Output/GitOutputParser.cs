@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Text;
 using System.Text.RegularExpressions;
 using LouisAgent.Api.Contracts.Git.Output;

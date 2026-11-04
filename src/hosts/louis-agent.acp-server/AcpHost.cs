@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Hosting;

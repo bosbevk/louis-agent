@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Net;
 using System.Text;
 using LouisAgent.Core.Guardrails.Network;

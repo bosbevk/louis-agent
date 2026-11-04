@@ -1,4 +1,7 @@
 
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Globalization;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Logging;

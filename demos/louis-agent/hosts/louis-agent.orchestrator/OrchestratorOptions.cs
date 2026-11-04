@@ -1,8 +1,9 @@
-namespace LouisAgent.Orchestrator;
 
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Orchestrator.Messages;
 
+namespace LouisAgent.Orchestrator;
 /// <summary>Which service this orchestrator watches and where louis-agent is; resolved once at startup.</summary>
 internal sealed class OrchestratorOptions
 {

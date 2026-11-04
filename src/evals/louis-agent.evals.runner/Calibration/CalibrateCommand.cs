@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Protocol.Kinds;

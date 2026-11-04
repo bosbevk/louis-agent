@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions.Streaming;

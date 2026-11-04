@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;

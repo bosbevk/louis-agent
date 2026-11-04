@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
 using LouisAgent.McpServer.Messages;

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin.Checks;
 using LouisAgent.Api.Contracts.Admin.Runs;

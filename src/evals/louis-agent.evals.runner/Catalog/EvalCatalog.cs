@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Runner.Messages;

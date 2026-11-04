@@ -1,5 +1,6 @@
-namespace LouisAgent.AcpServer.Prompting;
 
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Globalization;
 using System.Text.Json;
 using LouisAgent.AcpServer.Messages;
@@ -8,6 +9,7 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.AcpServer.Prompting;
 /// <summary>The model's prompt from the ACP content blocks (S, CL15, from AcpServer).</summary>
 internal sealed class PromptBuilder(ContainerPaths paths)
 {

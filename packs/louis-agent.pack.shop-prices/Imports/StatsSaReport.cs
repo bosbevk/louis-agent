@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs.Imports;
 using System.Globalization;
 using LouisAgent.Core.Messages;

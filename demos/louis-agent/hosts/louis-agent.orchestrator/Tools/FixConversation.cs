@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator.Comms;

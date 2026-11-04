@@ -1,5 +1,5 @@
+using LouisAgent.Composition.Logging.Content;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 
 namespace LouisAgent.Core.Tests.Logging;
 

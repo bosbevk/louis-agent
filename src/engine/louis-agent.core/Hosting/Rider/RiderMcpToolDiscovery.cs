@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Protocols.Mcp;

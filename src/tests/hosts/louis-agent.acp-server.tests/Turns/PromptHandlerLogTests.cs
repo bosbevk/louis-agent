@@ -1,7 +1,7 @@
+using LouisAgent.Composition.Logging.Content;
 using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Skills.Providers;
 using Microsoft.Extensions.AI;
 

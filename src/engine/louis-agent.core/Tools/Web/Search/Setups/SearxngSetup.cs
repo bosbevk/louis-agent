@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Messages;

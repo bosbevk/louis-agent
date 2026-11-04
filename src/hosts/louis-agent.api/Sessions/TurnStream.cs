@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Globalization;
 using System.Net.ServerSentEvents;
 using System.Threading.Channels;

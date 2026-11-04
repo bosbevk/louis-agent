@@ -1,5 +1,6 @@
 
-using LouisAgent.Core.Logging.Content;
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;

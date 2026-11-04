@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Search;
 using System.ComponentModel;
 using System.Text;

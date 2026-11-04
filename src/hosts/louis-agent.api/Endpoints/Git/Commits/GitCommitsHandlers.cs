@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Git.Replies;
 using LouisAgent.Api.Contracts.Git.Requests;

@@ -1,8 +1,9 @@
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Hosting.Rider;

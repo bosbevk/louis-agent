@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting.Messages;
 using LouisAgent.Core.Logging;
