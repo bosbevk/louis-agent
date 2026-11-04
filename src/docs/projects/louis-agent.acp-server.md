@@ -1,6 +1,6 @@
 # louis-agent.acp-server — design
 
-> **Kind:** console app (JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp-server/` · **References:**
+> **Kind:** library (JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp-server/` · **References:**
 > louis-agent.core · **Docker service:** `acp-server`, one container per Rider chat
 
 ## Purpose
@@ -55,7 +55,7 @@ sequenceDiagram
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | `AgentHost.Build()` and `new AcpServer(engine).RunAsync()` |
+| `AcpHost.cs` | The one call a program makes: takes the catalogue, then `AgentHost.Build` and `new AcpServer(engine).RunAsync()` |
 | `AcpServer.cs` | The message loop and the dispatch (S, CL15: the flow only); its reader and writer are constructor arguments (stdin and stdout in Rider, a script and a buffer in the transcript test) |
 | `Protocol/` | `JsonRpcWriter` (one JSON-RPC message per line on stdout, under a lock), `AcpCapabilities` (the `initialize` reply) |
 | `Prompting/PromptBuilder.cs` | The model's prompt from the content blocks: text, embedded resources, attached files read and capped, the file open in the IDE left out |

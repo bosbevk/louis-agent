@@ -4,7 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
-- 2026-11-04 — **The CLI is a library** (CL29.2, step 1): the coding agent's program, `louis-agent.coding-cli`, says what it loads, and the framework's `louis-agent.cli` references no demo.
+- 2026-11-04 — **The hosts are libraries** (CL29.2): the coding agent's own programs, `louis-agent.coding-cli` and `louis-agent.coding-acp`, say what they load, and the framework's hosts reference no demo.
 - 2026-11-04 — **The folders say what ships** (CL29.1): `src/` holds only the framework, now with the eval harness in
   `src/evals/`; `packs/` holds tools and `packs-evals/` what proves them; anything that names a product moved to
   `demos/`, as someone's own project would be: `demos/puls/{identity,evals,web,hosts,tests,config,docker,skills,deploy}` and

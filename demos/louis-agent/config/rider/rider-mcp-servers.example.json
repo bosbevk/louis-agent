@@ -5,9 +5,9 @@
       "args": [
         "compose",
         "-f",
-        "C:\\path\\to\\louis-agent-solution\\docker\\docker-compose.yml",
+        "C:\\path\\to\\louis-agent-solution\\demos\\louis-agent\\docker\\docker-compose.yml",
         "--env-file",
-        "C:\\path\\to\\louis-agent-solution\\config\\.env",
+        "C:\\path\\to\\louis-agent-solution\\demos\\louis-agent\\config\\.env",
         "run",
         "--rm",
         "-T",

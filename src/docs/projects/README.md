@@ -21,7 +21,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `demos/puls/hosts/louis-agent.host-packs` | Class library | Picks what a host runs: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | [host-packs](../../../demos/puls/docs/projects/louis-agent.host-packs.md) |
 | `src/engine/louis-agent.composition` | Class library | The contracts a pack, an identity and the engine share; it names no pack and leans on no project (empty until CL29.1's step 2) | [CL29 plan](../plans/CL29-packs-are-just-tools.md) |
 | `src/hosts/louis-agent.cli` | Library | Chat with the agent in a terminal; a demo's program starts it | [cli](louis-agent.cli.md) |
-| `src/hosts/louis-agent.acp-server` | Console app (stdio) | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
+| `src/hosts/louis-agent.acp-server` | Library (stdio); a demo's program starts it | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
 | `src/hosts/louis-agent.api` | ASP.NET Core app | HTTP API with streamed answers, workspace and git endpoints; serves the web app | [api](louis-agent.api.md) |
 | `demos/louis-agent/web/louis-agent.web` | Blazor WebAssembly | The browser app: chats, files, changes, branches | [web](../../../demos/louis-agent/docs/projects/louis-agent.web.md) |
 | `demos/puls/web/louis-agent.puls` | Blazor WebAssembly | Puls: the general assistant in Afrikaans; a landing page and a three-panel chat that delegates every task | [puls](../../../demos/puls/docs/projects/louis-agent.puls.md) |

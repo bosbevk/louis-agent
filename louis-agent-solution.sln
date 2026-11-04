@@ -568,6 +568,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.host-packs", "d
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.coding-cli", "demos\louis-agent\hosts\louis-agent.coding-cli\louis-agent.coding-cli.csproj", "{A1A5F8CF-EF96-5974-B347-FA21F4B8E53D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.coding-acp", "demos\louis-agent\hosts\louis-agent.coding-acp\louis-agent.coding-acp.csproj", "{80611B6E-1704-5B08-9D07-6C529E226607}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -578,6 +580,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Debug|x64.Build.0 = Debug|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Debug|x86.Build.0 = Debug|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Release|x64.ActiveCfg = Release|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Release|x64.Build.0 = Release|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Release|x86.ActiveCfg = Release|Any CPU
+		{80611B6E-1704-5B08-9D07-6C529E226607}.Release|x86.Build.0 = Release|Any CPU
 		{A1A5F8CF-EF96-5974-B347-FA21F4B8E53D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1A5F8CF-EF96-5974-B347-FA21F4B8E53D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1A5F8CF-EF96-5974-B347-FA21F4B8E53D}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -1315,6 +1329,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{80611B6E-1704-5B08-9D07-6C529E226607} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148}
 		{A1A5F8CF-EF96-5974-B347-FA21F4B8E53D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148}
 		{07C2787E-EAC7-C090-1BA3-A61EC2A24D84} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{88F3C49C-BB16-514A-9985-0A54746EA3BB} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
