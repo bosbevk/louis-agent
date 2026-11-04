@@ -29,6 +29,8 @@ public enum PulsRole
     [WireName("puls-minion-web-price-lookup")]
     MinionWebPriceLookup,
 
-    /// <summary>The minion that searches the recipe sites for one dish and answers with one link.</summary>
+    /// <summary>
+    /// The minion that searches the recipe sites for one dish and answers one line per site that has it.
+    /// </summary>
     [WireName("puls-minion-find-recipe")] MinionFindRecipe,
 }
