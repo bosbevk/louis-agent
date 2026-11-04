@@ -18,7 +18,7 @@ public enum AgentErrorMessage
     [Description("Toolset '{Name}' needs {Settings} to be set on this instance.")]
     ToolsetSettingsMissing,
 
-    [Description("'{Name}' is registered twice as a {Kind}: a pack, toolset, role or prompt path has one home.")]
+    [Description("'{Name}' is registered twice as a {Kind}: a pack, toolset, feed, role or prompt path has one home.")]
     CatalogNameTwice,
 
     [Description("'{Owner}' names the pack '{Name}', which isn't registered. Registered: {Registered}.")]

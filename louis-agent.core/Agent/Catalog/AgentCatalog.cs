@@ -53,6 +53,9 @@ public sealed class AgentCatalog
         foreach (var pack in packs) CheckNamed(pack.Name, pack.Requires, registered);
         CheckNoCycle(packs);
 
+        Feeds = packs.SelectMany(p => p.Feeds).ToList();
+        CheckUnique(Feeds.Select(f => f.Name), "feed");
+
         Prompts = identities.Select(i => i.Prompts).Concat(packs.Select(p => p.Prompts)).ToList();
         CheckUnique(SkillFileSource.CoreFiles.Concat(Prompts.SelectMany(SkillFileSource.FilesOf)), "prompt path");
 
@@ -78,6 +81,13 @@ public sealed class AgentCatalog
     public IReadOnlyList<IAgentIdentity> Identities { get; }
 
     public IReadOnlyList<IAgentPack> Packs { get; }
+
+    /// <summary>The data the packs publish (ADR 0070), each pack's in its order.</summary>
+    public IReadOnlyList<IDataFeed> Feeds { get; }
+
+    /// <summary>The feed by that name, case ignored; null when no pack publishes one.</summary>
+    public IDataFeed? Feed(string name) =>
+        Feeds.FirstOrDefault(feed => string.Equals(feed.Name, name, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>).</summary>
     public IReadOnlyList<IFileProvider> Prompts { get; }

@@ -10,9 +10,10 @@ when you're about to change a particular project. Each project's `.csproj` links
 | Project | Kind | In one line | Doc |
 |---|---|---|---|
 | `louis-agent.core` | Class library | The engine: tools, skills, the tool loop, providers, bootstrap; names no product (CL15) | [core](louis-agent.core.md) |
-| `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`shops`); its prompts embedded with their paths | [identity.puls](louis-agent.identity.puls.md) |
+| `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`where-to-buy`, `shop-prices`, `recipes`); its prompts embedded with their paths | [identity.puls](louis-agent.identity.puls.md) |
 | `identities/louis-agent.identity.puls.judges` | Class library | Puls's model judge, the cook's `meal-for-people`, apart from the identity because it needs the harness; only the runner references it | [identity.puls.judges](louis-agent.identity.puls.judges.md) |
-| `packs/louis-agent.pack.shops` | Class library | What the shops are: the `shops` toolset (a shop's products, specials and promotions from its own catalogue), its guide, its settings (`SHOP_CATALOGUES`, `SHOP_STORE_CACHE`) and its texts | [pack.shops](louis-agent.pack.shops.md) |
+| `packs/louis-agent.pack.where-to-buy` | Class library | Where to buy: the `where-to-buy` toolset (a shop's nearest branches on OpenStreetMap, and which is the town's), its guide, the shop rules evals name, and its texts | [pack.where-to-buy](louis-agent.pack.where-to-buy.md) |
+| `packs/louis-agent.pack.shop-prices` | Class library | Shop prices: the `shop-prices` toolset (a list estimated from Stats SA's average prices, totals in code), its tables, its store (`SHOP_PRICES_MONGO_URL`), its guide and its texts | [pack.shop-prices](louis-agent.pack.shop-prices.md) |
 | `packs/louis-agent.pack.recipes` | Class library | What the recipes are: the `recipes` toolset (search an enabled South African recipe site, read any recipe page), its guide, its setting (`RECIPE_SOURCES`) and its texts | [pack.recipes](louis-agent.pack.recipes.md) |
 | `src/louis-agent.composition` | Class library | The composition root: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | [composition](louis-agent.composition.md) |
 | `src/louis-agent.cli` | Console app | Chat with the agent in a terminal | [cli](louis-agent.cli.md) |
@@ -32,7 +33,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `louis-agent.session-stream` | Class library | Reads a session's server-sent events into records, for core's sub-sessions, the web apps and the eval runner | — (to write) |
 | `src/louis-agent.api.contracts` | Class library | The API's replies and bodies as records, and each wire's options object, shared by the API and its clients ([ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md)) | — (to write) |
 | `src/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [web.shared](louis-agent.web.shared.md) |
-| `tests/louis-agent.*.tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the shops pack, the composition root and the three web projects (bUnit); `tests/louis-agent.testing` and `tests/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
+| `tests/louis-agent.*.tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the packs, the composition root and the three web projects (bUnit); `tests/louis-agent.testing` and `tests/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other
 
@@ -52,9 +53,10 @@ flowchart BT
     Probe["louis-agent.usage-probe"] --> Core
     Orch -. "HTTP + SSE<br/>(sessions)" .-> API
     Comp["louis-agent.composition"] --> Core
-    Comp --> Puls_id["louis-agent.identity.puls"] & Shops["louis-agent.pack.shops"] & Recipes["louis-agent.pack.recipes"]
+    Comp --> Puls_id["louis-agent.identity.puls"] & WhereToBuy["louis-agent.pack.where-to-buy"] & ShopPrices["louis-agent.pack.shop-prices"] & Recipes["louis-agent.pack.recipes"]
     Puls_id --> Core
-    Shops --> Core
+    WhereToBuy --> Core
+    ShopPrices --> Core
     Recipes --> Core
     CLI & ACP & API & MCP --> Comp
     CoreTests["louis-agent.core.tests"] --> Core

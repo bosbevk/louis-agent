@@ -13,7 +13,6 @@
 | [Build an identity](build-an-identity.md) | Make a new agent: its voice and routing, its specialists, the packs it names, its tests, running it; the rules for modes, roles and minions |
 | [Add an eval](add-an-eval.md) | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, pick its checks, and list it with `EVALS=` |
 | [Run the evals](run-the-evals.md) | Run an eval from the command line or the portal: the flags, record and replay, dev and held-out, what a run costs |
-| [Add a shop](add-a-shop.md) | Price a list at another retailer: its catalogue, throttle, tests on recorded answers, and turning it on |
 | [Write and run tests](write-tests.md) | Run the tests, write one first, use the shared fakes, regenerate a golden, add a test project |
 | [Get started](get-started.md) | Build and run the agent on your machine for the first time: the settings files, the build, the tests, the CLI, the Docker stacks |
 | [Finish a step](finish-a-step.md) | Get a step from "the test passes" to "committed": build, goldens, docs, formatting with Rider's tools in order, showing it, the commit |
@@ -37,7 +36,6 @@
 | [Change the shared web library](change-the-web-shared.md) | `src/louis-agent.web.shared` | Decide what is shared, add an API call, follow a new event, add a component |
 | [Change the engine](change-the-engine.md) | `louis-agent.core` | Add a tool or a toolset, change a built-in prompt, add a setting or a message, handle a provider difference |
 | [Change Puls](change-puls.md) | `identities/louis-agent.identity.puls` | Change what Puls says or routes, add a language, a specialist or a minion's function |
-| [Add a shop](add-a-shop.md) | `packs/louis-agent.pack.shops` | Add a retailer to the shops pack |
 | [Build a pack](build-a-pack.md#6-register-it-in-the-composition-root), [Build an identity](build-an-identity.md#5-register-it-in-the-composition-root) | `src/louis-agent.composition` | Register a new pack or identity: its enum member, its arm, its reference |
 | [Write and run tests](write-tests.md) | `tests/` | Everything about the test projects |
 

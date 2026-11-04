@@ -8,7 +8,7 @@ using LouisAgent.Identities.Puls.Evals.Checks.Cook.Expectations;
 using LouisAgent.Identities.Puls.Evals.Checks.Cook.Scoring;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared;
 using LouisAgent.Identities.Puls.Evals.Checks.Shared.Expectations;
-using LouisAgent.Packs.Shops.Checks.Reading;
+using LouisAgent.Packs.WhereToBuy.Checks.Reading;
 
 namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 

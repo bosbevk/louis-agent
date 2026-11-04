@@ -7,7 +7,7 @@ namespace LouisAgent.Packs.Recipes.Checks;
 /// pack puts into the check catalogue, as it lists its tools for the agent.
 /// </summary>
 /// <remarks>
-/// Registry (Fowler, PoEAA), as <c>ShopsChecks</c> is for the shops pack (Louis's pick, F49.3 finding K): each owner
+/// Registry (Fowler, PoEAA), as <c>WhereToBuyChecks</c> is for its pack (Louis's pick, F49.3 finding K): each owner
 /// lists its entries in one place, and the composition's <c>EvalChecks</c> gathers the lists, so the runner never names
 /// a pack. The pack references the check contract for them, never the harness.
 /// </remarks>

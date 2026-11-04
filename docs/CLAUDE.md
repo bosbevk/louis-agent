@@ -153,7 +153,7 @@ in [Project layout](../louis-agent.core/CLAUDE.md#project-layout).
 louis-agent.core/        # The engine: the loop, tools, skills, providers, usage and prices, bootstrap; Prompts/ (no product)
 louis-agent.choices/     # SettingChoice and [WireName]: the one parser for a name that is an enum member; references nothing
 identities/              # Who an agent is: louis-agent.identity.puls (its voice, modes, roles and the packs it names)
-packs/                   # What an agent can do: louis-agent.pack.shops (shops), louis-agent.pack.recipes (recipes)
+packs/                   # What an agent can do: where-to-buy (branches), shop-prices (estimates), recipes
 src/
 ├── louis-agent.cli/          # Terminal host
 ├── louis-agent.acp-server/   # Rider (Agent Client Protocol over stdio)

@@ -35,7 +35,6 @@ public class FolderSizeTests
         "louis-agent.core/Tools/Web/Browsing",
         "louis-agent.core/Tools/Web/Search",
         "louis-agent.core/Usage/Records",
-        "packs/louis-agent.pack.shops/Catalogues",
         "src/louis-agent.api/Admin/Replies",
         "src/louis-agent.api/Messages",
         "src/louis-agent.puls/Admin/Grades",

@@ -14,7 +14,7 @@ namespace LouisAgent.Packs.Recipes;
 /// context hands over.
 /// </summary>
 /// <remarks>
-/// The same shape as <c>ShopsPack</c> (ADR 0027): the pack is a list of toolsets and the files the model reads, and it
+/// The same shape as every pack (ADR 0027): the pack is a list of toolsets and the files the model reads, and it
 /// names no identity and no other pack, so it can be served as an MCP server unchanged (ADR 0028). Its tools take plain
 /// data and return text, and its guide is prose.
 /// </remarks>

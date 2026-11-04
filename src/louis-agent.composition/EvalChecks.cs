@@ -1,13 +1,13 @@
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Packs.Recipes.Checks;
-using LouisAgent.Packs.Shops.Checks;
+using LouisAgent.Packs.WhereToBuy.Checks;
 
 namespace LouisAgent.Composition;
 
 /// <summary>
 /// Every identity's and pack's own checks that an eval file can name, which the runner gathers with the harness's
-/// general checks: today the shops pack's (F49.3) and the recipes pack's (F35.2). Puls ships readers, not checks
-/// (<see cref="EvalReaders"/>).
+/// general checks: today the where-to-buy pack's (F49.3, F50.2) and the recipes pack's (F35.2). Puls ships readers,
+/// not checks (<see cref="EvalReaders"/>).
 /// </summary>
 /// <remarks>
 /// Registry (Fowler, PoEAA): each owner lists its checks in one place, and this is where the lists meet, since the
@@ -22,5 +22,5 @@ public static class EvalChecks
     /// Every identity's and pack's check types, the identities' first, then the packs' in the order the composition
     /// names them, each in the order its owner's list gives.
     /// </summary>
-    public static IReadOnlyList<ICheckType> All { get; } = [.. ShopsChecks.All, .. RecipesChecks.All];
+    public static IReadOnlyList<ICheckType> All { get; } = [.. WhereToBuyChecks.All, .. RecipesChecks.All];
 }

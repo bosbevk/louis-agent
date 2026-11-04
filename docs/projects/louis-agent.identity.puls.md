@@ -82,7 +82,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `PulsPack.cs` | The packs Puls names as an enum of its own (the shops pack), never the pack's enum; the composition root's `PackKind` is checked against the packs it builds (F18 step 7.5.4e) |
 | `Prompts/agent/puls/voice-af.md`, `voice-en.md` | The voice in each language (*Puls - Stem*, *Puls - Voice*): who Puls is and how it talks; the two have the same sections |
 | `Prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one, what isn't available yet; no mode of its own |
-| `Evals/Cook/` | The cook's eval as a folder of files (F49.2): `eval.json` (version 13: its two modes and nine checks: general checks over Puls's readers under the cook's names, the shops pack's two shop rules, `routed-to`, the cook's judge `meal-for-people` and a person's review of it), `manual.md`, `Rubrics/meal-for-people.md` (the judge's calibrated rubric), `Dataset/` with the 60 labels, and `Transcripts/` |
+| `Evals/Cook/` | The cook's eval as a folder of files (F49.2): `eval.json` (version 14, F50.2: its two modes, the cook's tools now `where-to-buy` and `shop-prices`, and nine checks: general checks over Puls's readers under the cook's names, the where-to-buy pack's two shop rules, `routed-to`, the cook's judge `meal-for-people` and a person's review of it), `manual.md`, `Rubrics/meal-for-people.md` (the judge's calibrated rubric), `Dataset/` with the 60 labels, and `Transcripts/` |
 | `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition |
 | `Evals/Readers/`, `Evals/PulsReaders.cs` | Puls's readers (F49.2b, F49.3): `RandTotal` (`rand-total`), `RandPrices` (`rand-prices`), `PeopleServed` (`servings`) and `RecipePhotos` (`recipe-photos`), Adapters over the scoring code below, `RecipeLinkLine` (`recipe-link`, string methods over the cook's link line, F35.2), and their list |
 | `Evals/Checks/Cook/` | The scenario's expectations (`Expectations/`: the route, the town, the people, the budget), the scoring of prices and servings (`Scoring/`), and `CookMode` |
@@ -98,8 +98,8 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 
 None of its own. A Puls stack (`docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
 `AGENT_PEERS` (itself), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
-[ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), plus the shops pack's settings
-([louis-agent.pack.shops](louis-agent.pack.shops.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
+[ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), plus the shop prices' store
+(`SHOP_PRICES_MONGO_URL`, [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
 ([louis-agent.pack.recipes](louis-agent.pack.recipes.md)). Every setting is in [Setup](../SETUP.md).
 
 ## Extending it
@@ -140,7 +140,7 @@ identity doesn't.
 ## Related docs
 
 [Build an identity](../guides/build-an-identity.md) · [louis-agent.puls](louis-agent.puls.md) (the web app) ·
-[louis-agent.pack.shops](louis-agent.pack.shops.md) · [ADR 0019 modes](../adr/0019-modes-one-file-per-product.md)
+[louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) · [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md) · [ADR 0019 modes](../adr/0019-modes-one-file-per-product.md)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.core](louis-agent.core.md) · Next: [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md)

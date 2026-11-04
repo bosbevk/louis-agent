@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Agent.Catalog;
-
 using LouisAgent.Core.Agent.Toolsets;
 using Microsoft.Extensions.FileProviders;
+
+namespace LouisAgent.Core.Agent.Catalog;
 
 /// <summary>
 /// What an agent can do (CL15, ADR 0027): one capability's toolsets, their guides, its own settings and state. A pack
@@ -37,4 +37,9 @@ public interface IAgentPack
 
     /// <summary>Other packs, by name: cooking requires "recipes".</summary>
     IReadOnlyList<string> Requires { get; }
+
+    /// <summary>
+    /// The data it publishes for anyone to read, apart from its tools (ADR 0070): none unless it says so.
+    /// </summary>
+    IReadOnlyList<IDataFeed> Feeds => [];
 }

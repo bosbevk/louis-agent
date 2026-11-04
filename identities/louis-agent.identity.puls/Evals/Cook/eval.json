@@ -2,11 +2,11 @@
   "schema_version": 1,
   "name": "puls-cook",
   "identity": "puls",
-  "version": 13,
+  "version": 14,
   "proves": "Puls routes a meal to its cook, within the budget and at the shop that serves the town, and the conversation runs without a failed turn.",
   "manual": "manual.md",
   "modes": [
-    { "name": "puls-tools", "role": "puls/voice-af", "toolsets": ["web", "shops"] },
+    { "name": "puls-tools", "role": "puls/voice-af", "toolsets": ["web", "where-to-buy", "shop-prices"] },
     { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["specialists", "web"] }
   ],
   "checks": [

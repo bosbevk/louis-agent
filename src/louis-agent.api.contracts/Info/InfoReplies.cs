@@ -28,6 +28,12 @@ public sealed record ToolsetsReply(IReadOnlyList<string> Default, IReadOnlyList<
 /// </summary>
 public sealed record ToolsetRow(string Name, string Description, bool Available, IReadOnlyList<string> MissingSettings);
 
+/// <summary>The data the packs publish for anyone to read (ADR 0070), each read at its own path.</summary>
+public sealed record FeedsReply(IReadOnlyList<FeedRow> Feeds);
+
+/// <summary>One feed: its name, what it is, and the path to read it at (<c>/v1/feeds/shop-prices</c>).</summary>
+public sealed record FeedRow(string Name, string Description, string Path);
+
 /// <summary>
 /// What the web app needs to show costs in another currency: the display currency and its symbol, the base it converts
 /// from, the rate's date, and a symbol for every currency it knows a rate for.

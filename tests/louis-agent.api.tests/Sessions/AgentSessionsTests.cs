@@ -1,6 +1,5 @@
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.Shops;
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Info;
 using LouisAgent.Api.Contracts.Sessions;
@@ -15,6 +14,8 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Packs.ShopPrices;
+using LouisAgent.Packs.WhereToBuy;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -32,17 +33,23 @@ public class AgentSessionsTests
         Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", "..", "..", "..", ".."));
 
     /// <summary>
-    /// What the Puls stack runs with: Puls and the two packs it names. Without SHOP_CATALOGUES the shops toolset is
-    /// known but off, so the cook's optional `shops?` is skipped, as on an instance without it. The recipes pack has
-    /// every site on (RECIPE_SOURCES=*, as the compose sets it), so the cook's required `recipes` resolves once a
-    /// browser is given (BrowserUrl in Sessions).
+    /// What the Puls stack runs with: Puls and the packs it names (where to buy and shop prices, F50.2, and the
+    /// recipes, with every site on: RECIPE_SOURCES=*, as the compose sets it, so the cook's required `recipes`
+    /// resolves once a browser is given, BrowserUrl in Sessions), and a pack whose toolset is known but off on this
+    /// instance, as a pack that misses its setting is.
     /// </summary>
     private static AgentCatalog PulsCatalog() =>
         new([new PulsIdentity()],
         [
-            new ShopsPack(new ShopsOptions()),
-            new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
+            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
+            new FakePack(OffPack, [FakePack.Toolset(OffPack, typeof(FakeShopTools), _ => [new FakeShopTools()]) with
+            {
+                MissingSettings = _ => ["OFF_PACK_URL"]
+            }])
         ]);
+
+    /// <summary>The pack this instance knows but hasn't set up.</summary>
+    private const string OffPack = "offpack";
 
     /// <summary>
     /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called.
@@ -133,53 +140,32 @@ public class AgentSessionsTests
     [Test]
     public void AnOptionalToolset_ThisInstanceLacks_IsLeftOut_AndTheSessionSaysWhatItLoaded()
     {
-        // F33 step 4: Puls hands the cook `web` and `shops?`; here SHOP_CATALOGUES isn't set, so the cook gets web
-        // alone.
-        var session = Sessions().Create([CoreToolset.Web.Wire(), "shops?"], depth: 1);
+        // F33 step 4: a parent may hand an optional toolset; here its pack misses its setting, so the session gets
+        // the web alone.
+        var session = Sessions().Create([CoreToolset.Web.Wire(), OffPack + "?"], depth: 1);
 
         Assert.That(session.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
         Assert.That(Names(session), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
     }
 
     /// <summary>
-    /// The cook looks up no prices, so it gets its web and its recipes and never the shops, even on an instance where
-    /// the shops are set up.
+    /// The cook brings its own toolsets: Puls hands it the web, and its role adds the recipes, where to buy and the
+    /// shop prices.
     /// </summary>
     [Test]
-    public void TheCook_LoadsNoShops_EvenWhereTheInstanceHasThem()
+    public void TheCook_LoadsWhereToBuyAndShopPrices_FromItsRole()
     {
-        // F18 step 5.7 (Louis, 2026-10-25): the cook looks up no prices, so its `shops?` header is gone (F33 step 4
-        // had it always load the shops); the pack stays, off for the cook, until a retailer gives access. Here
-        // SHOP_CATALOGUES is set, on the shops pack this instance loads (CL15), with the browser the pack reaches
-        // through core. F35.2 step 1: the cook's header names recipes, so the recipes pack is in this catalogue too.
-        var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), new AgentOptions
+        // F35.2 step 1 and F50.2: the cook's header names its recipes and both packs' toolsets, so they come with the
+        // role, beside what Puls passed.
+        var cook = Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+
+        Assert.That(cook.Toolsets, Is.EquivalentTo(new[]
         {
-            WorkspaceRoot = RepoRoot,
-            SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
-            RatesUrl = null,
-            BrowserUrl = "http://puls-browser:9222",
-        },
-            catalog: new AgentCatalog([],
-            [
-                new ShopsPack(
-                    new ShopsOptions { ShopCatalogues = "checkers" }),
-                new RecipesPack(
-                    new RecipesOptions { RecipeSources = "*" }),
-            ])));
-
-        var cook = sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
-
-        Assert.That(cook.Toolsets, Is.EquivalentTo(new[] { CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire() }));
-        Assert.That(Names(cook), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
+            CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
+            ShopPricesToolset.ShopPrices.Wire()
+        }));
+        Assert.That(Names(cook), Does.Contain("FindBranches").And.Contain("EstimatePrices").And.Contain("WebSearch"));
     }
-
-    /// <summary>
-    /// Where there are no shops, the cook still opens, with the web and its recipes.
-    /// </summary>
-    [Test]
-    public void TheCook_WithoutShopsOnThisInstance_StillCooks_WithTheWeb() =>
-        Assert.That(Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Toolsets,
-            Is.EquivalentTo(new[] { CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire() }));
 
     /// <summary>
     /// Marking specialists as optional doesn't sneak delegation into a sub-session.

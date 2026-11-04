@@ -70,6 +70,39 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("same").And.Contain("pack"));
     }
 
+    /// <summary>
+    /// The packs' feeds are gathered in the packs' order and found by name, case ignored; a pack that publishes none
+    /// adds none (ADR 0070).
+    /// </summary>
+    [Test]
+    public void ThePacksFeeds_AreGathered_AndFoundByName()
+    {
+        var catalog = Catalog(packs:
+        [
+            new FakePack("first", toolsets: [], feeds: [new FakeFeed("prices"), new FakeFeed("rents")]),
+            new FakePack("second", toolsets: []),
+            new FakePack("third", toolsets: [], feeds: [new FakeFeed("fuel")])
+        ]);
+
+        Assert.That(catalog.Feeds.Select(f => f.Name), Is.EqualTo(new[] { "prices", "rents", "fuel" }));
+        Assert.That(catalog.Feed("RENTS")?.Name, Is.EqualTo("rents"));
+        Assert.That(catalog.Feed("nope"), Is.Null);
+        Assert.That(AgentCatalog.CoreOnly.Feeds, Is.Empty);
+    }
+
+    /// <summary>Two feeds with one name, in one pack or two, can't both be registered: a feed has one URL.</summary>
+    [Test]
+    public void AFeedNamedTwice_IsRefused()
+    {
+        var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
+            [
+                new FakePack("first", toolsets: [], feeds: [new FakeFeed("prices")]),
+                new FakePack("second", toolsets: [], feeds: [new FakeFeed("Prices")])
+            ]))!;
+
+        Assert.That(error.Message, Does.Contain("Prices").And.Contain("feed"));
+    }
+
     /// <summary>A pack can't take the name of one of core's toolsets.</summary>
     [Test]
     public void AToolsetNamedLikeCores_IsRefused()
