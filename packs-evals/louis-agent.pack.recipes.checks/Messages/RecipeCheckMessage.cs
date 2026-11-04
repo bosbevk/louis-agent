@@ -6,7 +6,7 @@ namespace LouisAgent.Packs.Recipes.Messages;
 /// Why the recipe check passed or failed a conversation, in words a person reads in the portal: the pack's own checks'
 /// reasons (F35.2), as its tools' texts are <see cref="RecipeToolMessage"/>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum RecipeCheckMessage
 {
     [Description("turn {Turn} gave no answer to read the recipe link from")]

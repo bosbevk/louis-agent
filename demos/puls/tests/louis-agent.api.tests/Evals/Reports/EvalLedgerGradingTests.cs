@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Tests.Evals.Reports;
 /// conversation's session and last turn. So the join puts each on its conversation, the run's total counts it, and a
 /// slice's cost includes the judging. Unpriced requests are still counted apart, as for any total.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class EvalLedgerGradingTests
 {
     /// <summary>The id of the run the rows belong to.</summary>

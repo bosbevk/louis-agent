@@ -16,7 +16,7 @@ namespace LouisAgent.Api.Tests.Admin;
 /// that never recorded these sends null, never [] or 0, so "unknown" can't pass for "none" (ADR 0007). Written with
 /// the admin wire's options, as the endpoints write them.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class AdminRowsTests
 {
     /// <summary>When the stored run started; the rows only pass it through.</summary>

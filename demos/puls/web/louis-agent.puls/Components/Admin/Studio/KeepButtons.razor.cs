@@ -17,7 +17,7 @@ namespace LouisAgent.Puls.Components.Admin.Studio;
 /// Parameters down: the review panel says which conversation and what this person said; which button shows is
 /// <see cref="KeepOffers"/>'s rule, a plain class with its own tests (ADR 0034).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
 public partial class KeepButtons : IDisposable
 {
     [Inject] private AgentApi Api { get; set; } = null!;

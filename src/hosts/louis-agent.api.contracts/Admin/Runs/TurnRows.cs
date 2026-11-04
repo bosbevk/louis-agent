@@ -4,7 +4,7 @@ namespace LouisAgent.Api.Contracts.Admin.Runs;
 /// One turn of a stored conversation: what its tools did, which turn it is, the question and the answer, the calls it
 /// made, the sites it read, its time and its error.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record TurnRow(
     TurnToolsRow Tools,
     string Mode,

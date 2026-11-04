@@ -8,7 +8,7 @@ namespace LouisAgent.Packs.WhereToBuy.Checks.Reading;
 /// Moved from Puls's <c>Shops</c> with <c>estimates-at-shop</c>, the rule that reads them (F49.3 step 3). Read by plain
 /// scans, no pattern (ADR 0057), pinned by <c>ShopLinesTests</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public static class ShopLines
 {
     /// <summary>

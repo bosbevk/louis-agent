@@ -2,14 +2,14 @@ namespace LouisAgent.Core.Tests;
 
 /// <summary>
 /// Keeps files small enough to read: at most 200 lines of code, a test file 400 (blank and comment lines don't count).
-/// A bigger class is split by what it does (docs/CLAUDE.md, *Separate by concern*).
+/// A bigger class is split by what it does (src/docs/CLAUDE.md, *Separate by concern*).
 /// </summary>
 /// <remarks>
 /// A ratchet (S, CL15): the files over their limit today are listed in Oversized, a new one fails the test, and a
 /// listed file that has come under its limit fails too, so the list can only shrink until it is deleted and the test
 /// is a plain rule. Counted from the source files, bin/ and obj/ skipped.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0044-the-size-limit-counts-code.md">ADR 0044: the size limit counts code</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0044-the-size-limit-counts-code.md">ADR 0044: the size limit counts code</seealso>
 public class FileSizeTests
 {
     private const int SourceLimit = 200;
@@ -67,7 +67,7 @@ public class FileSizeTests
         {
             Assert.That(newOffenders, Is.Empty,
                 $"A file holds at most {SourceLimit} lines (a test file {TestLimit}): split by responsibility "
-                + "(docs/CLAUDE.md, Separate by concern):\n  "
+                + "(src/docs/CLAUDE.md, Separate by concern):\n  "
                 + string.Join("\n  ", newOffenders));
             Assert.That(shrunk, Is.Empty,
                 "Within its limit now: remove from Oversized so the list only shrinks:\n  " +

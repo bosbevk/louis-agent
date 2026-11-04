@@ -10,7 +10,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 /// in a class asked for by name, is where it is written once, and a string that is really a program or a key is let
 /// through (<see cref="NotAToolset"/>).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class NameScan
 {
     /// <summary>A string that spells a name: what it says, the line it is on, and that line's text.</summary>

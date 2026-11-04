@@ -15,7 +15,7 @@ namespace LouisAgent.Api.Evals.Store.Notes;
 /// driver does the copying, as <see cref="Runs.RunDocument"/> explains. Its id is a new ObjectId per note, the one the
 /// driver used to add on insert: it rises with each note, so sorting on it gives the order written (Louis's pick).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record NoteDocument(
     [property: BsonId] ObjectId Id,

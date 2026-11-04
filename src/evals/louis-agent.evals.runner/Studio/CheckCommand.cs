@@ -18,7 +18,7 @@ namespace LouisAgent.Evals.Runner.Studio;
 /// the runner's process (finding R). A refusal the loader throws is a problem like any other, in the words a run would
 /// give, so the command ends well whenever it could look at the folder and the API reads every problem from stdout.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
 public static class CheckCommand
 {
     /// <summary>Checks the folder and writes its lines to <paramref name="output"/>.</summary>

@@ -19,8 +19,8 @@ namespace LouisAgent.Core.Tools.Web.Robots;
 /// one line (ADR 0046). The fetch of the file is a function handed in: the policy never fetches through a fetcher
 /// that has a policy, which is why checking robots.txt itself would loop and is never done.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc9309">RFC 9309: the Robots Exclusion Protocol</seealso>
 public sealed class RobotsPolicy(Func<Uri, CancellationToken, Task<RobotsFile>> fetchRobots, TimeProvider? clock = null)
 {

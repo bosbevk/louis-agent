@@ -14,7 +14,7 @@ namespace LouisAgent.Puls.Admin.Studio.Schema;
 /// (ADR 0041's one case for a node). A switch on the schema's type, one arm per kind (ADR 0051); a type given as
 /// <c>["number","null"]</c> is its first non-null type.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class SchemaFields
 {
     /// <summary>The fields of one check type, in its schema's order.</summary>

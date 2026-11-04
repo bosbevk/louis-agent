@@ -11,7 +11,7 @@ namespace LouisAgent.Evals.Grading;
 /// Strategy: each check is one way of scoring a trial, and an eval holds a list of them. It is the check contract,
 /// kept outside the harness so a pack can ship a check (Separated Interface, Fowler).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public interface ICheck
 {
     /// <summary>Its name, as the scores document names the key it fills ("priced-with-source").</summary>

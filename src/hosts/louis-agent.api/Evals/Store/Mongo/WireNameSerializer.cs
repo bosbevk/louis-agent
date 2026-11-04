@@ -15,8 +15,8 @@ namespace LouisAgent.Api.Evals.Store.Mongo;
 /// needs no attribute per field and the stored text is the same <c>.Wire()</c> the protocol and the replies use. The
 /// driver's own string representation would store the C# name, which is not the wire name.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 internal sealed class WireNameSerializer<TEnum> : StructSerializerBase<TEnum> where TEnum : struct, Enum
 {
     /// <summary>Writes the member's wire name.</summary>

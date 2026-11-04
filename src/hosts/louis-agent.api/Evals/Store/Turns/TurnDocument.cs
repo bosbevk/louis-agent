@@ -19,8 +19,8 @@ namespace LouisAgent.Api.Evals.Store.Turns;
 /// driver does the copying, as <see cref="Runs.RunDocument"/> explains. The properties keep the order the hand mapper
 /// wrote, so a document is the same field for field. The events may be missing when a query leaves them out.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record TurnDocument(
     [property: BsonId] TurnIdDocument Id,
@@ -63,7 +63,7 @@ internal sealed record TurnDocument(
 }
 
 /// <summary>A turn's id: the run it belongs to, its conversation's key and its number.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 internal sealed record TurnIdDocument(
     [property: BsonElement("run")] string Run,
     [property: BsonElement("mode")] string Mode,
@@ -76,7 +76,7 @@ internal sealed record TurnIdDocument(
 }
 
 /// <summary>What a turn's tools did: how many calls, how many failed, and why.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record ToolsDocument(
     [property: BsonElement("calls")] int Calls,
@@ -92,7 +92,7 @@ internal sealed record ToolsDocument(
 }
 
 /// <summary>One reason a tool failed in a turn, and how often.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record ToolFailureDocument(
     [property: BsonElement("tool")] string Tool,
@@ -114,7 +114,7 @@ internal sealed record ToolFailureDocument(
 /// ADR 0048 keeps a shape decided at run time out of the record's typed fields: the data is a <see cref="BsonValue"/>
 /// property, and only it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record EventDocument(
     [property: BsonElement("type")] string Type,

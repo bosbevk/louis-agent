@@ -32,7 +32,7 @@ namespace LouisAgent.Api.Endpoints.Info;
 /// <c>InfoJson.SnakeCase</c>, the price table with its own options, the rates as the text of our rates.json, and a
 /// feed as the text its pack wrote.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class InfoHandlers(AgentHostContext host)
 {
     // Worked out once: looking a symbol up goes through every culture .NET knows.

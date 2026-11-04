@@ -5,8 +5,8 @@ namespace LouisAgent.Api.Contracts.Admin.Trends;
 /// agents whose prompts changed since the point before. That last one is empty when nothing changed, and null when we
 /// can't tell (the first point, or a run from before prompts were kept per agent).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record TrendPointRow(
     string Run,
     DateTimeOffset At,

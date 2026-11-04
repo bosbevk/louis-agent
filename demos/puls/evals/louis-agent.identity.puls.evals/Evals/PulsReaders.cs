@@ -12,7 +12,7 @@ namespace LouisAgent.Identities.Puls.Evals;
 /// Registry (Fowler, PoEAA), as <c>PulsChecks</c> is for checks: Puls lists its readers in one place, and the
 /// composition's <c>EvalReaders</c> gathers them for the runner, so the runner never names Puls.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class PulsReaders
 {
     /// <summary>Every reader of Puls's, by name.</summary>

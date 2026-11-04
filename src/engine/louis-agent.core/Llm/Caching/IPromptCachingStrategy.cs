@@ -10,7 +10,7 @@ public interface IPromptCachingStrategy
 {
     /// <summary>
     /// The messages and options to send instead of the caller's. Never changes the caller's list, messages or options:
-    /// they are the conversation's history, which is append-only (docs/CLAUDE.md, *Key design decisions*).
+    /// they are the conversation's history, which is append-only (src/docs/CLAUDE.md, *Key design decisions*).
     /// </summary>
     (IEnumerable<ChatMessage> Messages, ChatOptions? Options) Prepare(IEnumerable<ChatMessage> messages, ChatOptions? options);
 }

@@ -8,7 +8,7 @@ namespace LouisAgent.Evals.Readers.Kinds;
 /// how its agents write that line (the word before it, in its languages, and how the link is dressed), the pack's
 /// check knows what makes a link good, so the pack never names an identity.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
 public interface ILinkReader : IReader
 {
     /// <summary>

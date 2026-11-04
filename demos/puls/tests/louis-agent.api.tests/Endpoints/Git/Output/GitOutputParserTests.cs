@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Tests.Endpoints.Git.Output;
 /// Git's formats are pure logic, so they have their own tests (CL20 step 4, ADR 0034). These pin what the parser did
 /// inside the endpoints before it moved.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
 public class GitOutputParserTests
 {
     /// <summary>

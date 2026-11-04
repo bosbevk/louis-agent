@@ -11,8 +11,8 @@ namespace LouisAgent.Api.Evals.Drafts.Composed;
 /// The file stays text, not a parsed record: the runner is the one reader of eval files (finding R), so the API keeps
 /// what was typed, layout and all, and only reads the two names it files the draft under.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
 public sealed record EvalDraft(
     string Id,
     string Identity,

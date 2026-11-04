@@ -9,7 +9,7 @@ namespace LouisAgent.Puls.Tests.Admin;
 /// A ratchet, as <c>FileSizeTests</c>: a file that reads <c>JsonElement</c> fails unless it is listed, and a listed one
 /// that no longer reads it fails too, so the list can only shrink.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class PortalReadsJsonTests
 {
     /// <summary>The portal's folders: its plain classes, its components and its pages.</summary>

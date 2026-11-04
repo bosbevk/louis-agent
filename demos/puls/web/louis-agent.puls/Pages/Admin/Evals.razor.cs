@@ -21,9 +21,9 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// ADR 0042: the page shows what it last fetched; Reload, and a run's end, fetch again. The eval that is open is in
 /// the address (ADR 0065), so a link opens the same one and Back goes to the one before.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0065-the-view-is-in-the-address.md">ADR 0065: the view is in the address</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0065-the-view-is-in-the-address.md">ADR 0065: the view is in the address</seealso>
 public partial class Evals : IDisposable
 {
     /// <summary>The run in progress, as the API names it.</summary>

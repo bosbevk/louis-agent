@@ -6,7 +6,7 @@ namespace LouisAgent.Identities.Puls.Judges;
 /// <summary>
 /// What the judge answers: <c>meal</c> is yes, no, or null for "can't tell", with the reason in a sentence.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record MealVerdict(
     [property: JsonPropertyName("meal")] bool? Meal,
     [property: JsonPropertyName("reason")] string? Reason)

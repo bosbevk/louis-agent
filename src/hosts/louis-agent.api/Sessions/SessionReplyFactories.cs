@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Sessions;
 /// replies give (the unattended run's finding 1): the records live in the contract, which can't see a session, so each
 /// <c>Of</c> lives here beside it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class SessionReplyFactories
 {
     /// <summary>A session's read carries its usage in its stream format's shape, which only the format knows.</summary>

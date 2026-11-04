@@ -16,7 +16,7 @@ namespace LouisAgent.Puls.Admin.Explorer.Rings;
 /// A figure per chart, so the charts are one component that draws whichever it is handed, and the sums live where a
 /// test can reach them. An unknown cost stays unknown (ADR 0007): the ring draws what is known, the titles say "—".
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class ModeRings
 {
     /// <summary>What Puls's own requests cost against the specialist's, the mode's cost in the middle.</summary>

@@ -15,7 +15,7 @@ namespace LouisAgent.Evals.Grading.Common.Tools;
 /// The negation of <c>tool-used</c>, reading the same calls the same way, so the two can't disagree about what was
 /// called. Its <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class ToolNotUsedCheck(string tool, bool required = true) : ICheck
 {
     /// <inheritdoc />

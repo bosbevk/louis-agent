@@ -7,7 +7,7 @@ paths:
 
 Loaded when a `.cs` file is read or edited. The why of each rule is its ADR: 0009 message enums, 0024 and 0043 choices
 are enums, 0034 and 0044 size, 0040 records, 0041 JSON, 0045 typed answers, 0046 UTC, 0048 Mongo, 0050 summaries,
-0051 flat conditionals, 0052 edit never script (`docs/adr/`). **Scope of every "fix as you touch" rule:** only the
+0051 flat conditionals, 0052 edit never script (`src/docs/adr/`). **Scope of every "fix as you touch" rule:** only the
 files in the step's own commit (`git diff --name-only`), each fixed whole, the parts the step didn't change too; a
 file the step only read waits; never a big refactor of its own.
 
@@ -46,8 +46,8 @@ A whole class, `ChromeSetup`:
 /// two switches. When Chrome isn't set up it hands back a renderer that explains what's missing, so nothing has to
 /// check for null and the model still gets a useful answer.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
 internal sealed class ChromeSetup : IPageRendererSetup
 ```
 
@@ -94,7 +94,7 @@ return new Host(app, app.GetTestClient(), store);
 - It returns `TypedResults`, its answers declared (`Results<JsonHttpResult<TrendReply>, JsonHttpResult<ApiError>>`,
   named once with a `using` alias), errors as the `ApiError` record; the records and each wire's options object live
   in `louis-agent.api.contracts`, so a client reads `TrendReply`, never a `JsonElement` picked apart by name.
-- **A regular expression is the last option** ([ADR 0057](../../docs/adr/0057-regex-is-the-last-option.md)): plain
+- **A regular expression is the last option** ([ADR 0057](../../src/docs/adr/0057-regex-is-the-last-option.md)): plain
   string methods, a small reader or a typed parser first; when nothing plainer does it, a named `[GeneratedRegex]`
   with one matching and one non-matching example in its summary, `NonBacktracking` on outside input; replaced as
   the code is touched, never in a sweep.
@@ -147,6 +147,6 @@ way. `FileSizeTests`, `FolderSizeTests` and `ArchitectureTests` hold it.
   ADR 0054). A `//` or `///` line over 120 is wrapped by hand (Rider never wraps a comment), as is every long line
   where no Rider runs. A rename goes through Rider's rename refactoring,
   never search and replace. **In Rider, Rider's tools come first** for any job they cover; the order and the
-  tool-to-job table are in [Finish a step](../../docs/guides/finish-a-step.md).
+  tool-to-job table are in [Finish a step](../../src/docs/guides/finish-a-step.md).
 - **Test first** (0014): a step that changes behaviour starts with its test, run and seen failing for the expected
-  reason, then the code; one commit with both. Tests run on Linux too ([Write and run tests](../../docs/guides/write-tests.md)).
+  reason, then the code; one commit with both. Tests run on Linux too ([Write and run tests](../../src/docs/guides/write-tests.md)).

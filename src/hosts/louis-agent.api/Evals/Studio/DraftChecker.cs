@@ -15,7 +15,7 @@ public sealed record DraftCheck(bool Ok, IReadOnlyList<string> Problems, string?
 /// listings are. The process is a function handed in, so a test answers with the lines a runner writes and no runner
 /// at all. Two minutes is the most a check may take: it loads the catalogue and grades every transcript.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class DraftChecker(Func<string, RunnerOutput> run)
 {
     /// <summary>A checker over the runner at this path.</summary>

@@ -15,8 +15,8 @@ namespace LouisAgent.Identities.Puls.Evals.Readers;
 /// markdown link, <c>**Link:**</c> or <c>**Link**:</c>, an address in angle brackets, a list dash and a full stop
 /// after the address.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
 public sealed class RecipeLinkLine : ILinkReader
 {
     /// <summary>The words that open the line: Afrikaans, then English.</summary>

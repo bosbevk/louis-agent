@@ -6,7 +6,7 @@ namespace LouisAgent.Api.Contracts.Admin.Reviews;
 /// The answers waiting for a person's grade across the stored runs (F53.3): the first so many as items, newest run
 /// first, and how many wait in all.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record ReviewQueueReply(IReadOnlyList<ReviewQueueItem> Items, int Total);
 
 /// <summary>

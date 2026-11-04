@@ -5,7 +5,7 @@ namespace LouisAgent.Evals.Protocol.Parts.Conversations;
 /// in and out, its seconds and its cost. Measured, never graded, so none of them fails a run. Each is null when it
 /// isn't known, never 0.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record Metrics(
     int? AgentCalls,
     int? SpecialistCalls,

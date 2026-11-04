@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 /// and the formatter broke them by moving the text to another line. Without it a new way to excuse a string would be
 /// another pattern in a regex, not another rule with a name.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class NotAToolset
 {
     /// <summary>What a call is named when its first argument is a program or a key, not a toolset.</summary>

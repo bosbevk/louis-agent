@@ -15,7 +15,7 @@ namespace LouisAgent.Api.Tests.Endpoints.Routing;
 /// the code marks it Open or AdminKey, so a new route is closed until someone opens it; <c>/health</c> and the web
 /// app's files are outside <c>/v1</c>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 public partial class AgentKeyGateTests
 {
     /// <summary>The agent's key the test API is built with.</summary>

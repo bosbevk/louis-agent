@@ -14,7 +14,7 @@ namespace LouisAgent.Identities.Puls.Evals.Readers;
 /// <c>amount-under</c> over this reader grades as <c>within-budget</c> did. The eval file names it
 /// <c>rand-total</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class RandTotal : IMoneyReader
 {
     /// <inheritdoc />

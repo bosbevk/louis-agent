@@ -13,7 +13,7 @@ namespace LouisAgent.Puls.Admin.Starting;
 /// <c>StartRunRequest</c> for now, with the eval's web settings this page doesn't send (the unattended run's
 /// finding 9). <see cref="Of"/> is Fowler's <i>Replace Constructor with Factory Function</i>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record StartRunBody(
     int Repeat,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

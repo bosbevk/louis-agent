@@ -9,7 +9,7 @@ namespace LouisAgent.HostPacks.Tests.Copies;
 /// it for <c>tool-rows-marked</c>, since a pack references no evals. This is the one project that sees both, so it
 /// holds them equal: a tool that changed its mark would otherwise leave every run saying nothing was missing.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
 public class UnpricedMarkTests
 {
     /// <summary>The check's settings in an eval file, by the name that file gives it.</summary>

@@ -13,7 +13,7 @@ namespace LouisAgent.Identities.Puls.Evals.Readers;
 /// <c>number-named</c> over this reader grades as <c>serves-as-asked</c> did. The eval file names it
 /// <c>servings</c>; the class is <c>PeopleServed</c> because <see cref="Servings"/> is the reading it wraps.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class PeopleServed : INumberReader
 {
     /// <inheritdoc />

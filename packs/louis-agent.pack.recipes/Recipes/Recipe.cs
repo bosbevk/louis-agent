@@ -23,8 +23,8 @@ namespace LouisAgent.Packs.Recipes.Recipes;
 /// <param name="Image">The first picture, as a full address (the page's <c>image</c>).</param>
 /// <param name="Author">Who wrote it (the page's <c>author</c>, its <c>name</c> when it is an object).</param>
 /// <param name="Source">The page the recipe was read from, as it was given to us.</param>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0067-a-pages-own-data-before-its-text.md">ADR 0067: a page's own data before its text</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0067-a-pages-own-data-before-its-text.md">ADR 0067: a page's own data before its text</seealso>
 public sealed record Recipe(
     string Name,
     string? Yield,

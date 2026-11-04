@@ -26,7 +26,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Drafts;
 /// the catalogue and the draft store. Split from <c>DraftHandlers</c> by what changes them: these read and remove
 /// drafts by eval, those make them from a run.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class DraftListHandlers(EvalList catalog, IEvalDraftStore drafts)
 {
     /// <summary>Every draft of the eval, oldest first.</summary>

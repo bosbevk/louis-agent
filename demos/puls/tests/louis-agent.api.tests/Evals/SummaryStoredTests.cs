@@ -21,7 +21,7 @@ namespace LouisAgent.Api.Tests.Evals;
 /// written back by the export just as the runner wrote them, and served with the run with each slice's cost from the
 /// ledger. The API works out no rate, and a run with no summary has none, never zeros.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class SummaryStoredTests
 {
     /// <summary>The id of the run every test records.</summary>

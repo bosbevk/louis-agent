@@ -8,7 +8,7 @@ namespace LouisAgent.Core.Tools.Web.Robots.Rules;
 /// A plain walk over the pattern and the path, no regular expression: robots.txt has only two special characters, and
 /// an outside site writes the pattern, so a pattern language that can backtrack has no business reading it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 internal static class RobotsPattern
 {
     /// <summary>

@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Tools.Web.Fetching;
 /// there; one the recording never saw is a miss, which comes back here as no answer and refuses the site, loudly
 /// (ADR 0049). It sits in Fetching because it needs the fetcher, and the policy in Robots needs nothing from Fetching.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
 public static class RobotsFileFetch
 {
     /// <summary>The fetch the policy is built with, reading robots.txt through this fetcher.</summary>

@@ -16,7 +16,7 @@ namespace LouisAgent.Puls.Admin.LiveRuns;
 /// The page's live state as a plain class, so what an event does to the table is tested without a browser; the panel
 /// that shows it only reads the events and the store and hands them in.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed class LiveTurns
 {
     /// <summary>The turns, in the order they first came.</summary>

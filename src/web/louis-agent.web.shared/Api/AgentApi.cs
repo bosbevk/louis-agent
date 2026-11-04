@@ -23,7 +23,7 @@ namespace LouisAgent.Web.Shared.Api;
 /// streaming switch are handled in one place. What it sends and reads is a named record: the bodies its own
 /// (<see cref="CreateSessionBody"/>, <see cref="MessageBody"/>), the replies the contract's (ADR 0045).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed class AgentApi(HttpClient http, ChatSettings settings)
 {
     /// <summary>

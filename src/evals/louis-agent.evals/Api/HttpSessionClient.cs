@@ -14,7 +14,7 @@ namespace LouisAgent.Evals.Api;
 /// It owns the <see cref="HttpClient"/> it is handed; <see cref="CreateHttp"/> builds the one the runner uses. The
 /// stream is read with the shared session-stream reader rather than our own parser.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0030-build-or-adopt.md">ADR 0030: build or adopt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0030-build-or-adopt.md">ADR 0030: build or adopt</seealso>
 public sealed class HttpSessionClient(HttpClient http, TimeSpan? streamIdle = null) : ISessionClient
 {
     /// <summary>Where the API runs when no address is set: Puls on this machine.</summary>

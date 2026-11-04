@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Drafts;
 /// from, and an eval's drafts listed and deleted. They sit in the admin group, so the key covers them; the work is in
 /// <c>DraftHandlers</c> and <c>DraftListHandlers</c>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class DraftEndpoints
 {
     /// <summary>Adds the draft routes to the group the eval routes hang on.</summary>

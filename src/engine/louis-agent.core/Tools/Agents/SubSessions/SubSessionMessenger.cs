@@ -14,7 +14,7 @@ namespace LouisAgent.Core.Tools.Agents.SubSessions;
 /// Extract Class (CL15): talking to a child is one job, so <c>SpecialistTools</c> and <c>MinionTools</c> share it
 /// instead of each keeping a copy of the retry and the roll-up.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal sealed class SubSessionMessenger(PeerHttp http, UsageRollUp rollUp)
 {
     /// <summary>

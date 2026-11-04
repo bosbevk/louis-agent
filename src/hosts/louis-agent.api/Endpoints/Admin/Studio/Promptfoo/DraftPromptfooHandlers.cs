@@ -31,7 +31,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Studio.Promptfoo;
 /// promptfoo bridge, the clock and the scratch folder. Guard clauses (ADR 0051): the file, the runner, then the draft
 /// rule in <see cref="ComposedEvals"/>, so an import is held to what a hand-made draft is.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class DraftPromptfooHandlers(
     IEvalDraftStore drafts,
     PromptfooRunner promptfoo,

@@ -15,7 +15,7 @@ namespace LouisAgent.Core.Telemetry;
 /// Decorator would, so every host gets it, sub-sessions included, and none opens its own. With nobody listening there
 /// is no span at all (the SDK's rule), so a host with no collector pays nothing.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
 public static class TurnSpans
 {
     /// <summary>The GenAI operation a turn is.</summary>

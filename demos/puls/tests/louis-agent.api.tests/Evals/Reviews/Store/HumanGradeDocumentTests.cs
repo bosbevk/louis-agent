@@ -15,7 +15,7 @@ namespace LouisAgent.Api.Tests.Evals.Reviews.Store;
 /// it reads its own document back as the grade it was, whatever the verdict. Stored eval data is disposable until
 /// Phase 9 (ADR 0049), so no document from before is read.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class HumanGradeDocumentTests
 {
     /// <summary>When the person graded; whole milliseconds, as a BSON date keeps it.</summary>

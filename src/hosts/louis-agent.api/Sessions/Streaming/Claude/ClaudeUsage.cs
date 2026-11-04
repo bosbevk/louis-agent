@@ -8,8 +8,8 @@ namespace LouisAgent.Api.Sessions.Streaming.Claude;
 /// Data Transfer Object (Fowler, PoEAA): the usage is a named record, so the turn's stream and the session view write
 /// the same shape from one place.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record ClaudeUsage(
     long InputTokens,
     long CacheCreationInputTokens,

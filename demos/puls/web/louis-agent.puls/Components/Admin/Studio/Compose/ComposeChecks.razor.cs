@@ -14,7 +14,7 @@ namespace LouisAgent.Puls.Components.Admin.Studio.Compose;
 /// Parameters down: the page hands the eval and the catalogue, and this changes the eval in place (a class the page
 /// owns, ADR 0040); what a field is and how it becomes JSON is the plain classes' (ADR 0034).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
 public partial class ComposeChecks
 {
     /// <summary>The eval being composed.</summary>

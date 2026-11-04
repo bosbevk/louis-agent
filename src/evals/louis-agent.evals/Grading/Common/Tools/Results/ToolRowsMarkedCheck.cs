@@ -19,8 +19,8 @@ namespace LouisAgent.Evals.Grading.Common.Tools.Results;
 /// sent, and an eval's lists are test data, safe to name. The rows are told apart by their words, and a retried line
 /// has other words, so a row the agent fixed on a retry still shows here.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
 public sealed class ToolRowsMarkedCheck(string tool, string mark) : ICheck
 {
     /// <inheritdoc />

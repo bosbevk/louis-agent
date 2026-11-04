@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Evals.Reports.Trends;
 /// Computed in C# over the store, so it's the same on the in-memory store as on MongoDB. The score comes from each
 /// conversation's outcome, not an eval's own keys, so the trend works for every eval (Louis's pick, F18 step 7c.3).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class EvalTrends
 {
     /// <summary>

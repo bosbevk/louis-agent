@@ -11,7 +11,7 @@ namespace LouisAgent.Evals.Grading;
 /// <remarks>
 /// A Decorator (Gang of Four): no entry learns about names; the eval wraps the one check its file renames.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class NamedCheck(string name, ICheck inner) : ICheck
 {
     /// <summary>

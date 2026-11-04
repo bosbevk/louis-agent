@@ -8,7 +8,7 @@ namespace LouisAgent.Puls.Admin.Reviews.Queue;
 /// Observer, as <c>ReviewerState</c> and <c>RunNotesState</c>: a scoped service the badge and the page share; one
 /// sets the count, the other draws it, and neither knows the other.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public sealed class ReviewQueueState
 {
     /// <summary>How many wait, or null before the first read.</summary>

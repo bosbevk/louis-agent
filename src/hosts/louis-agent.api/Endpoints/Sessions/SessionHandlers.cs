@@ -46,8 +46,8 @@ namespace LouisAgent.Api.Endpoints.Sessions;
 /// replies are written with <c>SessionJson.SnakeCase</c>, which writes the sessions API's JSON exactly as before, and
 /// opening a session answers <c>CreatedJson</c> (the unattended run's finding 2).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class SessionHandlers(AgentHostContext host)
 {
     private readonly WebReplayMode _defaultReplay = SessionReplay.DefaultMode(host.Agent.WebReplay);

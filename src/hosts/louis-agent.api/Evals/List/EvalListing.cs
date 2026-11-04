@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Evals.List;
 /// Data Transfer Object (Fowler, PoEAA): the API can't reference the runner, so it reads the runner's line into its own
 /// record. Everything after <c>Proves</c> is optional, so an older line that leaves a part out still reads.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record EvalLine(
     string Name,
     int Version,
@@ -30,7 +30,7 @@ public sealed record EvalLine(
 public sealed record EvalDatasetLine(string Name, int Version);
 
 /// <summary>One of an eval's graders: its name, its version and what it judges with.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public sealed record EvalGraderLine(string Name, int Version, CheckKind Kind);
 
 /// <summary>What reading the runner's listing gave: its evals, or why it couldn't be read, in words.</summary>
@@ -44,7 +44,7 @@ public sealed record EvalListingResult(IReadOnlyList<EvalLine> Evals, string? Fa
 /// The API can't reference the runner, so it reads the runner's lines into its own <see cref="EvalLine"/>. The runner
 /// is started by <see cref="RunnerProcess"/>, with an argument list, never through a shell.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class EvalListing(
     string command,
     IReadOnlyList<string> arguments,

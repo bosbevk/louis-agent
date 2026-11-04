@@ -16,7 +16,7 @@ namespace LouisAgent.Puls.Admin.Studio;
 /// changes over time). The expected values are checked to be a JSON object here, so a typo never leaves the page;
 /// the API checks the keys.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed class SampleForm
 {
     /// <summary>How the expected values are shown: indented, so each key sits on its own line.</summary>

@@ -18,7 +18,7 @@ internal sealed record StoredLine(string Raw, EvalEvent Event);
 /// A stored run's protocol lines, read for a re-score or a label sheet: the split and the models its first line
 /// names, and every event in order. The lines are only read, never changed.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed class StoredRun
 {
     /// <summary>Keeps the lines, and reads the split and the models off the first line.</summary>

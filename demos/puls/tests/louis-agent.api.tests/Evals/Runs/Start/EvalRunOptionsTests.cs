@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Tests.Evals.Runs.Start;
 /// The portal passes on how a run treats the web: record it, or replay an earlier run. The choice is parsed once
 /// where it comes in, and the eval runner is started with <c>--web record</c> or <c>--replay {runId}</c>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public class EvalRunOptionsTests
 {
     /// <summary>The eval every runner test starts.</summary>

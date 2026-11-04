@@ -9,7 +9,7 @@ namespace LouisAgent.Core.Messages;
 /// The text of every message, kept in message enums: the shared <see cref="ErrorMessage"/>, <see cref="ToolMessage"/> and
 /// <see cref="UserText"/>, and an area's <c>{Area}ToolMessage</c>, <c>{Area}LogMessage</c> or <c>{Area}ErrorMessage</c>. Each member's
 /// <see cref="DescriptionAttribute"/> is a template with named holes, e.g. <c>"Unknown LLM_CACHE_TTL '{Value}'. Use 5m or 1h."</c>
-/// (docs/CLAUDE.md, *Messages and logging*).
+/// (src/docs/CLAUDE.md, *Messages and logging*).
 /// </summary>
 public static partial class MessageText
 {

@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Tests.Messages;
 /// their enums are checked here, like ArchitectureTests: every member has a [Description] template, and its braces are
 /// well-formed named holes.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public partial class HostMessageEnumTests
 {
     /// <summary>

@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Evals.Store.Deletion;
 /// Extract Function (Fowler): the delete button's three calls moved here, so the start-up clean-up of old runs
 /// deletes exactly what the button does and says how much of each went (Louis's pick).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
 public sealed class RunDeletion(IEvalStore store, IHumanReviewStore? reviews, ICalibrationStore? calibrations)
 {
     /// <summary>Deletes the run and what was said about it, and says how much of each went.</summary>

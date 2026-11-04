@@ -14,7 +14,7 @@ namespace LouisAgent.Evals.Runner.Studio;
 /// studio leaves it empty and the runner, its one reader of eval files, fills it in. The manifest is read as a
 /// <see cref="JsonObject"/> to change one field and keep the rest as written (ADR 0041: a node for an edit in place).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class ManifestSeal
 {
     /// <summary>The field that holds the scenarios' hash.</summary>

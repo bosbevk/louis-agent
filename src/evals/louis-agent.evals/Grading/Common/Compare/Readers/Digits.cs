@@ -12,7 +12,7 @@ namespace LouisAgent.Evals.Grading.Common.Compare.Readers;
 /// The plain number reader any eval can name, <c>digits</c>. It walks the text a character at a time, with no pattern
 /// (ADR 0057), and skips a run of digits too long to be a whole number.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public sealed class Digits : INumberReader
 {
     /// <inheritdoc />

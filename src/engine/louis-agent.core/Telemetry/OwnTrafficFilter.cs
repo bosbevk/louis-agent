@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Telemetry;
 /// A filter stage in the export pipeline (Pipes and Filters, Hohpe and Woolf): the SDK hands each ended span to its
 /// processors before the exporter, and this one drops a span the way the SDK documents, by marking it not recorded.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
 internal sealed class OwnTrafficFilter : BaseProcessor<Activity>
 {
     /// <summary>The source .NET's <c>HttpClient</c> traces its calls on.</summary>

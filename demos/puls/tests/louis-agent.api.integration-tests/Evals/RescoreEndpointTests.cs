@@ -15,7 +15,7 @@ namespace LouisAgent.Api.IntegrationTests.Evals;
 /// while another run runs, and 400 for a run of an eval the runner doesn't list. The new run is recorded as a
 /// re-score and costs nothing, known as nothing because no model was asked.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API's routes follow one rule, under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API's routes follow one rule, under /v1</seealso>
 [Category("Integration")]
 public class RescoreEndpointTests
 {

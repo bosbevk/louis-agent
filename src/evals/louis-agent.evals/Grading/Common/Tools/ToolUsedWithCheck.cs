@@ -18,7 +18,7 @@ namespace LouisAgent.Evals.Grading.Common.Tools;
 /// (Louis's pick): a check of a shop or a mode should not match a longer name. With no matching call found, a broken
 /// turn makes it Unknown. Its <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class ToolUsedWithCheck(string tool, string field, string value, bool required = true) : ICheck
 {
     /// <summary>Ignore case and accents: a letter with a mark matches the same letter without one.</summary>

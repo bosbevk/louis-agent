@@ -14,7 +14,7 @@ namespace LouisAgent.Evals.Grading.Common.Compare.Readers;
 /// identity that writes its totals another way ships its own reader. It walks the text a character at a time, with no
 /// pattern (ADR 0057).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public sealed class CurrencyAmount : IMoneyReader
 {
     /// <summary>The signs an amount may follow.</summary>

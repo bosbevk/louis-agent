@@ -16,8 +16,8 @@ namespace LouisAgent.Evals.Runner.Catalog;
 /// identities and packs (ADR 0027), so it is where the lists meet. These projects sit under <c>evals/</c> and only the
 /// runner references them, so no host ever carries a check (ADR 0073).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
 public static class RunnerChecks
 {
     /// <summary>Every check type the runner's evals can name.</summary>

@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Admin.Replies;
 /// Replace Constructor with Factory Function (Fowler), as C# 14 static extension members, as the other replies: the
 /// contract's records stay plain and the API knows how to fill them.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public static class ReviewQueueReplies
 {
     /// <summary>A queue item is where the answer is from, with the rows the review panel reads.</summary>

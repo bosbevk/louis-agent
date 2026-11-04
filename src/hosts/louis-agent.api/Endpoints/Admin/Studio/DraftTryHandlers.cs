@@ -30,7 +30,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Studio;
 /// Introduce Parameter Object (Fowler), as the run handlers: the route shares the draft store, the runner, the
 /// recorder and the settings each run reports. Guard clauses (ADR 0051), one per refusal, before anything starts.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class DraftTryHandlers(
     IEvalDraftStore drafts,
     EvalProcess runner,

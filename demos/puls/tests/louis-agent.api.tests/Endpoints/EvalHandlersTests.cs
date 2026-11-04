@@ -16,7 +16,7 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// The admin's eval list shows every eval the catalogue has, with what it is, and its runs once there are any: an eval
 /// that never ran is listed as never run, not hidden.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class EvalHandlersTests
 {
     /// <summary>When the recorded run started.</summary>

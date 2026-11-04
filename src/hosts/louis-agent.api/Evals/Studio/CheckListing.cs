@@ -35,7 +35,7 @@ public sealed record CheckListingResult(
 /// reads the runner's lines into its own records (finding R). A line that is neither, or names a kind the API doesn't
 /// know, refuses the whole listing, quoting it, so a half-read catalogue never reaches a form.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class CheckListing(
     string command,
     IReadOnlyList<string> arguments,

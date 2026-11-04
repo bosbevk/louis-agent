@@ -16,7 +16,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames;
 /// (<c>GetProperty("web")</c>). Anything else is listed in Exemptions with its reason; if that list passes a dozen,
 /// the scan is too eager and gets narrowed instead.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public class RepeatedNameTests
 {
     /// <summary>

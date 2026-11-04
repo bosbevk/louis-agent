@@ -18,8 +18,8 @@ namespace LouisAgent.Evals.Grading.Common.Language;
 /// <see cref="LanguageWords"/>. Its <see cref="Entry"/> builds it from a file's settings (Factory Method), the
 /// language by its code.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class AnswersInLanguageCheck(AnswerLanguage language, bool required = true) : ICheck
 {
     /// <summary>The fewest common words an answer needs before its language is told: below it, a guess.</summary>

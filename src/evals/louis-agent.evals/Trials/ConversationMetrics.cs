@@ -6,7 +6,7 @@ namespace LouisAgent.Evals.Trials;
 /// Adds up what a conversation's turns did into what the conversation measured. A run and a re-score build it the
 /// same way, so a re-score's numbers are the run's. The tokens and the cost are the ledger's, so they stay unknown.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class ConversationMetrics
 {
     /// <summary>The calls added up, each site once in the order it was first read, and one turn per fact.</summary>

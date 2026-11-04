@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// Pins the shape every error goes out in, which the web apps and the orchestrator read, and that it is now built as
 /// the contract's <c>ApiError</c> record rather than an anonymous object.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class ApiErrorJsonTests
 {
     /// <summary>

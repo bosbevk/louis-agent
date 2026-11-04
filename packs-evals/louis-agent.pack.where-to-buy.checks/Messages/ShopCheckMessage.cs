@@ -6,7 +6,7 @@ namespace LouisAgent.Packs.WhereToBuy.Messages;
 /// Why a shop rule passed or failed a conversation, in words a person reads in the portal: the pack's own checks'
 /// reasons (F49.3), as its tool's texts are <see cref="WhereToBuyToolMessage"/>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ShopCheckMessage
 {
     [Description("the list has a price column for a shop, though no shop's prices are read: {Shops}")]

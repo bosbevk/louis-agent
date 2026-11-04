@@ -22,7 +22,7 @@ namespace LouisAgent.Evals.Grading.Human;
 /// is asked, the judge prompt's own title (<see cref="ReviewQuestion"/>), so the two are not typed twice. Its
 /// <see cref="Entry"/> builds it from a file's settings (Factory Method), after the judge it reviews.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class HumanReviewCheck : ICheck
 {
     /// <summary>A review of the named model check, asking this question, about scenarios with these keys.</summary>

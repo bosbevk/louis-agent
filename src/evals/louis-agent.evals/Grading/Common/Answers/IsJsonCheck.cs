@@ -18,8 +18,8 @@ namespace LouisAgent.Evals.Grading.Common.Answers;
 /// own JSON reader, and the fences are found line by line with plain string methods (ADR 0057). Its
 /// <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public sealed class IsJsonCheck(bool required = true) : ICheck
 {
     /// <summary>What a fence line starts with.</summary>

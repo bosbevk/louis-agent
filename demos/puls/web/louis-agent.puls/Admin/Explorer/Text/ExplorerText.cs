@@ -4,7 +4,7 @@ using LouisAgent.Web.Shared.Usage;
 namespace LouisAgent.Puls.Admin.Explorer.Text;
 
 /// <summary>How the explorer writes its numbers: money, seconds, counts, and a question cut to fit a heading.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class ExplorerText
 {
     /// <summary>A cost in the chosen currency, or a dash when nobody knows it (never a zero).</summary>

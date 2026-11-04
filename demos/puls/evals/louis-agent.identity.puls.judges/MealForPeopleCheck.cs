@@ -28,7 +28,7 @@ namespace LouisAgent.Identities.Puls.Judges;
 /// eval's folder (Factory Method); the same words give the same prompt hash on every platform
 /// (<see cref="RubricHash"/>).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class MealForPeopleCheck : IRubricCheck
 {
     /// <summary>

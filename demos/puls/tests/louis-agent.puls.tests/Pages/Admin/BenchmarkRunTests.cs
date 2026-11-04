@@ -16,7 +16,7 @@ namespace LouisAgent.Puls.Tests.Pages.Admin;
 /// <summary>
 /// The run page shows what it last fetched, and after a grade or a note it fetches the run again, so the chips, the review panel, the notes and the judge-against-people card show what the store holds, not the copy the page opened with.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public class BenchmarkRunTests
 {
     /// <summary>A run with one conversation and a human review.</summary>

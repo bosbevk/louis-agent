@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Evals;
 /// shares the catalogue, the stores and the workspace, so it can be a named method a test calls with no HTTP. It
 /// returns <c>TypedResults</c> with its answer declared.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class EvalHandlers(EvalList catalog, IEvalStore? store, string workspaceRoot, IEvalDraftStore drafts)
 {
     /// <summary>How many of an eval's newest runs the list carries.</summary>

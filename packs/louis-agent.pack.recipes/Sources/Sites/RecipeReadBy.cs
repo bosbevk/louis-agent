@@ -8,7 +8,7 @@ namespace LouisAgent.Packs.Recipes.Sources.Sites;
 /// <c>ReadRecipe</c> decides page by page whether a page has data, so the column only records what step 0 saw on
 /// one page of each site, and F35.2's measure uses it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum RecipeReadBy
 {
     /// <summary>The page publishes a whole recipe in its schema.org data.</summary>

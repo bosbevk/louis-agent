@@ -23,7 +23,7 @@ namespace LouisAgent.Evals.Files;
 /// (<see cref="CheckContext"/>), and one the file renames is wrapped in a <see cref="NamedCheck"/>. The dataset loads
 /// with those checks, so a key no check reads, or a key a check reads that no scenario sets, is refused as before.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class FileEval : IEval
 {
     /// <summary>The folder beside <c>eval.json</c> that holds the dataset.</summary>

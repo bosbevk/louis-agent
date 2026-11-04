@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Tests.Evals.Runs;
 /// An eval runs as a child process, from an argument list and never through a shell, one at a time. The API starts
 /// only evals now, through the eval runner, so there's no script and no interpreter to hand it.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public class EvalProcessTests
 {
     /// <summary>The test's own working folder.</summary>

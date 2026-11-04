@@ -12,7 +12,7 @@ namespace LouisAgent.Packs.WhereToBuy.Checks.Reading;
 /// composition's <c>ShopTableTests</c> holds the two equal (Louis's pick). Named for what it holds, since a class
 /// <c>Shops</c> would read as the pack's namespace.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
 public static class ShopSites
 {
     /// <summary>

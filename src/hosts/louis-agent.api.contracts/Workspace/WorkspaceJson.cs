@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Contracts.Workspace;
 /// One options object per wire (ADR 0041). This wire has always been ASP.NET's defaults; naming them here lets the API
 /// pass them on purpose and the app read with the same ones.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class WorkspaceJson
 {
     /// <summary>

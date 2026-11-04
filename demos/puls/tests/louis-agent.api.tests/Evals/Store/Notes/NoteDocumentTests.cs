@@ -16,7 +16,7 @@ namespace LouisAgent.Api.Tests.Evals.Store.Notes;
 /// fixtures are what that mapper wrote for a note on a conversation and for one on the whole run. Stored eval data is
 /// disposable until Phase 9 (ADR 0049), so no document from before is read.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class NoteDocumentTests
 {
     /// <summary>The run the notes are on.</summary>

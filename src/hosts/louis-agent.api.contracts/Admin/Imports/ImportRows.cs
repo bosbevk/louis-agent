@@ -1,7 +1,7 @@
 namespace LouisAgent.Api.Contracts.Admin.Imports;
 
 /// <summary>Every upload the packs take (F55): <c>GET /v1/admin/imports</c>.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record ImportsReply(IReadOnlyList<ImportRow> Imports);
 
 /// <summary>One upload: its name (the last part of its URL), what it is, and the files it takes.</summary>

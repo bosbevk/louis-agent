@@ -10,7 +10,7 @@ namespace LouisAgent.Evals.Grading.Common.Compare.Readers;
 /// Registry (Fowler, PoEAA), as <c>GeneralChecks</c> is for checks: each owner lists its readers in one place, and the
 /// runner gathers the lists.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class GeneralReaders
 {
     /// <summary>Every general reader, by name.</summary>

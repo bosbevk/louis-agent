@@ -16,7 +16,7 @@ namespace LouisAgent.Evals.Grading.Common.Facts;
 /// it measures how much context the agent pulled in, which a cost hides once caching makes tokens cheap. Its
 /// <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class TokensUnderCheck(long count, bool required = true) : ICheck
 {
     /// <inheritdoc />

@@ -12,7 +12,7 @@ namespace LouisAgent.Evals.Readers;
 /// the verdict, and a reader holds what a domain knows about writing the value, so an identity ships a reader, not a
 /// check. It lives in the check contract (Louis's pick) so an identity can implement one without the harness.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public interface IReader
 {
     /// <summary>The name an eval file uses for it, in kebab case (<c>currency-amount</c>).</summary>

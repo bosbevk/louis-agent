@@ -14,7 +14,7 @@ namespace LouisAgent.Evals.Grading.Common.Facts;
 /// Its <see cref="Entry"/> builds it from a file's settings (Factory Method), nested here so the check and the way
 /// it's named from a file sit in one place.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class NoErrorCheck(bool required = true) : ICheck
 {
     public string Name => "no-error";

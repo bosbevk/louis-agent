@@ -5,8 +5,8 @@ paths:
 
 # CSS: the how of every rule
 
-Loaded when a `.css` file is read or edited. The why: [ADR 0053](../../docs/adr/0053-stylesheets-by-concern.md)
-(stylesheets by concern) and [ADR 0054](../../docs/adr/0054-a-move-may-copy-line-ranges.md) (a move may copy line
+Loaded when a `.css` file is read or edited. The why: [ADR 0053](../../src/docs/adr/0053-stylesheets-by-concern.md)
+(stylesheets by concern) and [ADR 0054](../../src/docs/adr/0054-a-move-may-copy-line-ranges.md) (a move may copy line
 ranges).
 
 - **A `.css` file holds at most 200 lines of rules**; a comment line (`/* … */`, one line or many) and a blank line

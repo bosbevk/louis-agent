@@ -15,7 +15,7 @@ namespace LouisAgent.Puls.Components.Admin.EvalsPage.Details;
 /// reply carries is placed through <see cref="EvalCardView" />; the trend is fetched here, once per eval; a run is
 /// the page's to start and follow, so this pane only says what to start.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class EvalDetails
 {
     /// <summary>The eval's trend; none when the API has none for it.</summary>

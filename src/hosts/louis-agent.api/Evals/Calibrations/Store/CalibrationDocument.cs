@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Calibrations.Store;
 /// driver does the copying, as the eval store's <c>RunDocument</c> does. The properties keep the order the hand
 /// mapping wrote, so a document is the same field for field.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record CalibrationDocument(
     [property: BsonElement("run")] string Run,
@@ -41,7 +41,7 @@ internal sealed record CalibrationDocument(
 }
 
 /// <summary>How the judge answered on the conversations a person put in one class.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record ClassCountsDocument(
     [property: BsonElement("judge_pass")] int JudgePass,
@@ -57,7 +57,7 @@ internal sealed record ClassCountsDocument(
 }
 
 /// <summary>One conversation where the judge and the person disagreed, with the judge's reason.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record DisagreementDocument(
     [property: BsonElement("scenario")] string Scenario,

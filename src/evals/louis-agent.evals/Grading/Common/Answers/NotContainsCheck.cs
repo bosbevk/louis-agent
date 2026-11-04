@@ -17,8 +17,8 @@ namespace LouisAgent.Evals.Grading.Common.Answers;
 /// (ADR 0057), the negation of <c>contains</c>. Its <see cref="Entry"/> builds it from a file's settings (Factory
 /// Method).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public sealed class NotContainsCheck(IReadOnlyList<string> texts, bool required = true) : ICheck
 {
     /// <summary>Ignore case and accents: a letter with a mark matches the same letter without one.</summary>

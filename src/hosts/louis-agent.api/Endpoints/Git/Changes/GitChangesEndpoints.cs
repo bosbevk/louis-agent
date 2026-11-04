@@ -5,7 +5,7 @@ namespace LouisAgent.Api.Endpoints.Git.Changes;
 /// without a shell and every path goes through the agent's workspace checks; pushing is left to the user. The work is
 /// <c>GitChangesHandlers</c>'.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class GitChangesEndpoints
 {
     /// <summary>Adds the changes routes.</summary>

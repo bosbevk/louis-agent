@@ -14,7 +14,7 @@ Everything is C#, on purpose. It runs on Claude by default; Ollama and OpenAI-co
 
 It's a learning project first. I'm a software engineer becoming an AI engineer, and every layer of a real agent
 (tools, context, evals, cost, safety, orchestration) gets built here by hand, measured, and written up.
-[docs/GOAL.md](docs/GOAL.md) has the skill map, and [docs/learning/](docs/learning/README.md) has the write-ups.
+[src/docs/GOAL.md](src/docs/GOAL.md) has the skill map, and [src/docs/learning/](src/docs/learning/README.md) has the write-ups.
 
 It's also heading for a public release: Puls for the public, and the engine for .NET teams who want to build their
 own agents.
@@ -32,7 +32,7 @@ own agents.
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
 | A website for the engine itself (`demos/louis-agent/web/louis-agent.site`) | |
 
-The full order is in the [TODO](TODO.md) and the [platform plan](docs/plans/platform.md); what's finished is in the
+The full order is in the [TODO](TODO.md) and the [platform plan](src/docs/plans/platform.md); what's finished is in the
 [CHANGELOG](CHANGELOG.md).
 
 ## How it's built
@@ -54,26 +54,26 @@ flowchart TB
 ```
 
 The engine names no product and no country. A pack never knows about another pack or an identity, and only the
-composition project knows them all ([ADR 0027](docs/adr/0027-engine-identities-and-packs.md)). A few rules hold
+composition project knows them all ([ADR 0027](src/docs/adr/0027-engine-identities-and-packs.md)). A few rules hold
 everywhere:
 
 - **Every request is measured.** The usage ledger records each model call with its tokens and its cost. Every host
   shows what a turn cost (`turn: 3 requests · 28k tokens (26k cached) · $0.006`), and an unknown price stays unknown
-  instead of turning into 0 ([ADR 0007](docs/adr/0007-measure-every-request.md)).
+  instead of turning into 0 ([ADR 0007](src/docs/adr/0007-measure-every-request.md)).
 - **Guards live in code, not in the prompt.** Model text never reaches a shell, file tools stay inside the workspace,
   calls that got cut off never run, and anything the agent writes waits for your `/approve`
-  ([ADR 0004](docs/adr/0004-arguments-as-data.md), [ADR 0005](docs/adr/0005-guard-the-context.md)).
+  ([ADR 0004](src/docs/adr/0004-arguments-as-data.md), [ADR 0005](src/docs/adr/0005-guard-the-context.md)).
 - **Everything streams, and is traced.** You see the thinking and every tool call as they happen, in every host; with
   an OpenTelemetry collector set, each turn and tool call is also a span on a dashboard
-  ([ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)).
+  ([ADR 0064](src/docs/adr/0064-observability-through-opentelemetry.md)).
 - **A site's no is obeyed.** Every page the agent fetches checks the site's `robots.txt` and its no-AI signals first,
-  in code ([ADR 0068](docs/adr/0068-every-fetch-obeys-robots-txt.md)).
+  in code ([ADR 0068](src/docs/adr/0068-every-fetch-obeys-robots-txt.md)).
 - **A session keeps its tools.** It names its toolsets when it opens, so its prompt prefix stays cacheable. Prompt
-  caching took the old benchmark from $0.66 to $0.13 a run ([ADR 0006](docs/adr/0006-toolsets-per-session.md)).
+  caching took the old benchmark from $0.66 to $0.13 a run ([ADR 0006](src/docs/adr/0006-toolsets-per-session.md)).
 - **Packs stay convertible to MCP.** A pack could be served as an MCP server, and an MCP server could stand in for a
-  pack ([ADR 0028](docs/adr/0028-packs-stay-convertible-to-mcp.md)).
+  pack ([ADR 0028](src/docs/adr/0028-packs-stay-convertible-to-mcp.md)).
 
-More detail is in [the architecture](docs/architecture/README.md) and in [the docs for each project](docs/projects/README.md).
+More detail is in [the architecture](src/docs/architecture/README.md) and in [the docs for each project](src/docs/projects/README.md).
 
 ## Puls
 
@@ -93,7 +93,7 @@ docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/pul
 ```
 
 Open **http://127.0.0.1:5070**. The same app runs on Azure ([demos/puls/deploy/azure](demos/puls/deploy/azure/README.md)). Design:
-[Puls's identity](docs/projects/louis-agent.identity.puls.md), [Puls's web app](docs/projects/louis-agent.puls.md).
+[Puls's identity](demos/puls/docs/projects/louis-agent.identity.puls.md), [Puls's web app](demos/puls/docs/projects/louis-agent.puls.md).
 
 ## The coding agent
 
@@ -114,7 +114,7 @@ Pushing always stays with you.
 ## Evals
 
 An eval runs a real task and scores the outcome. Every eval runs on one C# harness (`src/evals/`), and each one sits with
-the project it proves, apart from what ships ([ADR 0029](docs/adr/0029-simulations-in-csharp.md)).
+the project it proves, apart from what ships ([ADR 0029](src/docs/adr/0029-simulations-in-csharp.md)).
 
 - **An eval is files, a check is code.** A new eval is a folder: `eval.json`, its samples and its rubric, no C#. The
   checks it names come from a catalogue of C# graders, and a pack can bring its own. The portal's studio writes those
@@ -129,8 +129,8 @@ the project it proves, apart from what ships ([ADR 0029](docs/adr/0029-simulatio
   answers still waiting for their grade.
 
 The first baseline: Puls's cook passed 23 of 24, its routing 72 of 72, for $0.37 together. How to:
-[run the evals](docs/guides/run-the-evals.md) · [add an eval](docs/guides/add-an-eval.md); design:
-[the evals design doc](docs/projects/louis-agent.evals.md).
+[run the evals](src/docs/guides/run-the-evals.md) · [add an eval](src/docs/guides/add-an-eval.md); design:
+[the evals design doc](src/docs/projects/louis-agent.evals.md).
 
 ## Quick start
 
@@ -148,27 +148,27 @@ docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/l
 Open **http://127.0.0.1:5080**. Everything listens on `127.0.0.1` only.
 
 - **Rider:** add an agent server in the AI Assistant settings, from
-  [config/rider/rider-acp.example.json](config/rider/rider-acp.example.json). Each chat gets its own container.
+  [config/rider/rider-acp.example.json](demos/louis-agent/config/rider/rider-acp.example.json). Each chat gets its own container.
 - **CLI:** `dotnet run --project src/hosts/louis-agent.cli` (interactive), or add `-- "your prompt"` for one shot.
 
-Every setting is in [docs/SETUP.md](docs/SETUP.md), and choosing a model is in [docs/MODELS.md](docs/MODELS.md). For
-prompts to try, see the [quick start](docs/QUICK_START_AGENT.md).
+Every setting is in [src/docs/SETUP.md](src/docs/SETUP.md), and choosing a model is in [src/docs/MODELS.md](src/docs/MODELS.md). For
+prompts to try, see the [quick start](demos/louis-agent/docs/QUICK_START_AGENT.md).
 
 ## Documentation
 
-All the docs, in reading order, are in **[docs/README.md](docs/README.md)**. The ones you'll want first:
+All the docs, in reading order, are in **[src/docs/README.md](src/docs/README.md)**. The ones you'll want first:
 
 | To… | Read |
 |---|---|
-| See what happens when you send a message | [How a turn works](docs/architecture/06-runtime-view.md) |
-| Connect another program or agent (HTTP API, MCP, agent to agent) | [How the agents and endpoints talk](docs/AGENT_COMMUNICATION.md) |
-| Build your own identity or pack | [Build an identity](docs/guides/build-an-identity.md) · [Build a pack](docs/guides/build-a-pack.md) |
-| Know why it's built this way | [Architecture decisions](docs/adr/README.md) |
-| Change the code | [Development guide](docs/CLAUDE.md) · [how-tos per project](docs/guides/README.md) |
+| See what happens when you send a message | [How a turn works](src/docs/architecture/06-runtime-view.md) |
+| Connect another program or agent (HTTP API, MCP, agent to agent) | [How the agents and endpoints talk](src/docs/AGENT_COMMUNICATION.md) |
+| Build your own identity or pack | [Build an identity](src/docs/guides/build-an-identity.md) · [Build a pack](src/docs/guides/build-a-pack.md) |
+| Know why it's built this way | [Architecture decisions](src/docs/adr/README.md) |
+| Change the code | [Development guide](src/docs/CLAUDE.md) · [how-tos per project](src/docs/guides/README.md) |
 
 ## Licence
 
 **All rights reserved** ([LICENSE](LICENSE), since 2026-10-15). The code is public to read, but you may not use, copy,
 change, share or host it without written permission; open an issue to ask. Versions released before under MIT or the
-AGPL-3.0 keep that licence. Why: [ADR 0016](docs/adr/0016-licence-all-rights-reserved.md). The parts others wrote keep
+AGPL-3.0 keep that licence. Why: [ADR 0016](src/docs/adr/0016-licence-all-rights-reserved.md). The parts others wrote keep
 their own licences: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).

@@ -24,7 +24,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 /// Hangs every admin portal route on the API: the checks, starting a run, and reading back what it recorded. All of
 /// them sit behind the admin key, and without a store no run starts.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class AdminEndpoints
 {
     /// <summary>

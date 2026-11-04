@@ -10,8 +10,8 @@ namespace LouisAgent.Core.Tools.Agents.Messages;
 /// A footer names the child, never what it used: that goes to the ledger and the parent's turn. Numbers that change
 /// from run to run would make the parent's next request differ, and a replay could no longer match it (FX27).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public enum SubSessionToolMessage
 {
     [Description("No attachment named '{Name}' in this conversation. Attached: {Attached}.")]

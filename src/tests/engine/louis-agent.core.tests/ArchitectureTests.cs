@@ -11,8 +11,8 @@ namespace LouisAgent.Core.Tests;
 /// <remarks>
 /// Architecture tests as a fence: a rule held by a test can't drift the way a rule held only by a doc does.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0010-folders-by-concern.md">ADR 0010: folders by concern</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0010-folders-by-concern.md">ADR 0010: folders by concern</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
 public partial class ArchitectureTests
 {
     private const string RootNamespace = "LouisAgent.Core";
@@ -49,7 +49,7 @@ public partial class ArchitectureTests
         List<string> unexpected = Violations().Where(v => !Pending.Contains(v)).ToList();
 
         Assert.That(unexpected, Is.Empty,
-            "Layout violations (docs/CLAUDE.md, Project layout):\n" + string.Join("\n", unexpected));
+            "Layout violations (src/docs/CLAUDE.md, Project layout):\n" + string.Join("\n", unexpected));
     }
 
     /// <summary>A fixed violation leaves the known list, so the list only ever shrinks.</summary>
@@ -142,7 +142,7 @@ public partial class ArchitectureTests
     /// Setting ProcessStartInfo.Arguments is the one way to build such a string, so this fails on it anywhere in core
     /// (FX19). Other types have an Arguments property too, so only a file that starts a process is read.
     /// </remarks>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
     [Test]
     public void NoFileInCore_BuildsAProcessCommandLineAsOneString()
     {
@@ -222,7 +222,7 @@ public partial class ArchitectureTests
     /// A pack references nothing under <c>evals/</c>, so it can follow the engine into a package without the evals
     /// coming along. What proves a pack lives in its own checks project, which points at the pack, never the reverse.
     /// </summary>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
     public void NoPack_ReferencesTheEvals()
     {
@@ -234,7 +234,7 @@ public partial class ArchitectureTests
     }
 
     /// <summary>A pack's checks project leans on its own pack and the check contract, and on nothing else.</summary>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
     public void APacksChecksProject_ReferencesOnlyItsPack_AndTheContract()
     {
@@ -258,7 +258,7 @@ public partial class ArchitectureTests
     /// Every host loads the project that picks the packs, so it names no checks or evals project: those reach the
     /// runner alone, and a host carries none of them.
     /// </summary>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
     public void TheHostPacks_ReferenceNoChecksOrEvalsProject()
     {
@@ -272,7 +272,7 @@ public partial class ArchitectureTests
     /// The composition is what everything agrees on, so it names no pack and no identity: a tool author takes it and
     /// no product comes along. The host picks the packs.
     /// </summary>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
     [Test]
     public void TheComposition_NamesNoPackOrIdentity()
     {
@@ -286,7 +286,7 @@ public partial class ArchitectureTests
     /// Someone can take the tools without the evals, or not own the evals at all, so what proves a pack is never in the
     /// packs' folder: it sits in <c>packs-evals/</c>.
     /// </summary>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
     public void ThePacksFolder_HoldsNoEvalsProject()
     {
@@ -319,8 +319,8 @@ public partial class ArchitectureTests
     /// Separated Interface (Fowler, PoEAA): the contract sits in a small project its clients can reference, and the
     /// checks live elsewhere. The references are the whole fence, so this test holds them by name.
     /// </remarks>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
     [Test]
     public void Checks_ReferencesOnlyTheEngineTheProtocolAndTheStream()
     {
@@ -339,8 +339,8 @@ public partial class ArchitectureTests
     /// Puls's identity, which every host loads, leans only on the engine. Its evals are a project of their own, which
     /// only the runner references, so the identity can follow the engine into a package without them.
     /// </summary>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
     public void TheIdentity_ReferencesOnlyTheEngine()
     {

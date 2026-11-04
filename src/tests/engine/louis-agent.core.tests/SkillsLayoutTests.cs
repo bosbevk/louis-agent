@@ -5,7 +5,7 @@ using LouisAgent.Core.Skills.Roles;
 
 namespace LouisAgent.Core.Tests;
 
-// docs/CLAUDE.md, "Skill files follow the levels" (CL8, ADR 0017 and 0018): a built-in prompt lives in core's Prompts/,
+// src/docs/CLAUDE.md, "Skill files follow the levels" (CL8, ADR 0017 and 0018): a built-in prompt lives in core's Prompts/,
 // in the folder of the level that reads it, or in toolsets/ when every level shares it; the repo's Skills/ holds only
 // what the agent writes. Read from the folders, so a misplaced file fails here before a session ever loads it.
 public class SkillsLayoutTests

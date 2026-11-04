@@ -6,7 +6,7 @@ namespace LouisAgent.Api.Contracts.Admin.Runs;
 /// A stored run's whole read, the explorer's page: the run, its settings and modes, its log and notes, each mode's
 /// roll-up, its conversations, how often each judge agreed with the people, its turns and its model requests.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record StoredRunReply(
     StoredRunRow Run,
     IReadOnlyDictionary<string, string>? Settings,

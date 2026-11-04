@@ -19,7 +19,7 @@ namespace LouisAgent.Evals.Grading.Common;
 /// Registry (Fowler, PoEAA): each owner lists its entries in one place, and the composition gathers the lists; this
 /// is the harness's.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class GeneralChecks
 {
     /// <summary>

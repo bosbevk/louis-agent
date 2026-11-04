@@ -24,8 +24,8 @@ namespace LouisAgent.Orchestrator.Comms;
 /// <param name="display">The currency costs are shown in (F14); null shows them as charged. jsonl files keep what was
 /// charged.</param>
 /// <param name="time">The clock for the run's start and end; the system's unless a test gives its own.</param>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
 internal sealed class CommsLog(string path, DisplayCurrency? display = null, TimeProvider? time = null)
 {
     private static readonly JsonSerializerOptions Indented = new() { WriteIndented = true };

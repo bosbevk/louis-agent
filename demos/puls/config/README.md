@@ -1,7 +1,7 @@
 # config/: what Puls reads at run time
 
 > **Reference.** What each file here is and which are yours to fill. **Elsewhere:** every setting and how the files
-> are loaded in [Setup](../../../docs/SETUP.md); the model in [Models](../../../docs/MODELS.md).
+> are loaded in [Setup](../docs/SETUP.md); the model in [Models](../../../src/docs/MODELS.md).
 
 A host is told this folder with `CONFIG_DIRECTORY`; with nothing set it searches upward for a folder named `config`, so
 the env files stay at its root.

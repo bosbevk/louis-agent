@@ -5,7 +5,7 @@ using LouisAgent.Core.Messages;
 namespace LouisAgent.Core.Tests.Messages;
 
 /// <summary>
-/// Every message is an enum member whose [Description] is its template, with named holes (docs/CLAUDE.md, *Messages
+/// Every message is an enum member whose [Description] is its template, with named holes (src/docs/CLAUDE.md, *Messages
 /// and logging*). This checks every message enum in core, so a member added without text, or with a broken hole,
 /// fails here. The message enums are the enums of a <c>Messages</c> folder at any depth (the split by area, F18): an
 /// area's enum sits in its own area's <c>Messages</c> namespace, and the shared ones in core's.

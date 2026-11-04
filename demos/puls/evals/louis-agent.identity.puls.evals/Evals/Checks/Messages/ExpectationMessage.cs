@@ -5,7 +5,7 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Messages;
 /// <summary>
 /// What you're told when a scenario's <c>expected</c> asks for something the checks can't read.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ExpectationMessage
 {
     [Description(

@@ -6,7 +6,7 @@ namespace LouisAgent.Core.Agent.Catalog.Imports;
 /// it is all stored already), whether this call saved them, the facts a person checks before saving, and the problems
 /// (a wrong file). Nothing is saved while there is a problem; a warning the pack can live with is a fact.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values</seealso>
 public sealed record ImportReport(
     string? Period,
     int Changes,

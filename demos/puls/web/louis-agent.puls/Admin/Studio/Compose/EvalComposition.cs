@@ -16,7 +16,7 @@ namespace LouisAgent.Puls.Admin.Studio.Compose;
 /// this class, judges the file (finding R), so a value that doesn't parse as its kind is written as text and the
 /// runner's check names it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
 public sealed class EvalComposition
 {
     /// <summary>How the file is written: indented, as the eval folders keep theirs.</summary>

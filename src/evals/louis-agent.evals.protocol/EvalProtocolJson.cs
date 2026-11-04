@@ -14,7 +14,7 @@ namespace LouisAgent.Evals.Protocol;
 /// (a missing field, or a null where the record has none, is not an event) and tolerant about everything else (an
 /// unknown member is skipped, and the event's name may come anywhere in the object).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class EvalProtocolJson
 {
     /// <summary>The protocol's one set of serializer options.</summary>

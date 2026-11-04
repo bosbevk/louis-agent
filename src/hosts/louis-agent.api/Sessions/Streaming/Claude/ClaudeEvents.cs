@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Sessions.Streaming.Claude;
 /// shape a test can name and a reader can share, where an anonymous object was neither. Every event puts its
 /// <c>type</c> first, as Claude's own stream does.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record MessageStartEvent(MessageStartBody Message)
 {
     /// <summary>The event's name inside its data, as Claude writes it.</summary>

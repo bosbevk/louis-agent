@@ -14,8 +14,8 @@ namespace LouisAgent.Orchestrator.Triage;
 /// of those is one plain trim or one character in <see cref="Separators"/>, which reads easier than the pattern it
 /// replaces. Guard clauses keep each way a line can fail to one <c>return null</c> (ADR 0051).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 internal sealed record Decision(TriageOutcome Outcome, string Reason)
 {
     /// <summary>What the triage prompt asks the agent to start its closing line with.</summary>

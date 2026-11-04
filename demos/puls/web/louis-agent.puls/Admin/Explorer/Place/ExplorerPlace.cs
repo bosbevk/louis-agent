@@ -13,8 +13,8 @@ namespace LouisAgent.Puls.Admin.Explorer.Place;
 /// browser's history does the undo. A request is named by its time, since that is what the explorer keys it on
 /// (<c>LevelKey</c>), in UTC round-trip form; a time that isn't one is no request, so a broken link opens the turn.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed record ExplorerPlace(
     ExplorerView View,
     string? Task = null,

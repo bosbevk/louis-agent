@@ -20,7 +20,7 @@ namespace LouisAgent.Evals.Grading.Common.Answers;
 /// <see cref="ExpectedKeys"/>, so the dataset loader checks the key is read and fed, as for <c>routed-to</c>. Its
 /// <see cref="Entry"/> builds it from a file's settings (Factory Method).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class MentionsExpectedCheck(string key, bool required = true) : ICheck
 {
     /// <summary>Ignore case and accents: a letter with a mark matches the same letter without one.</summary>

@@ -22,7 +22,7 @@ namespace LouisAgent.Evals.Protocol;
 /// Each method builds the contract's record for its event and hands it to <see cref="EvalProtocolJson"/>, so the
 /// runner and the API share one shape and one set of words, and no line is written by hand (CL22).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed class ProtocolWriter(TextWriter stdout, TimeProvider clock)
 {
     /// <summary>The version the runner writes; the run says it in its first line.</summary>

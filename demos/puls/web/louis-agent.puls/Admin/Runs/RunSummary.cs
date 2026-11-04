@@ -6,7 +6,7 @@ namespace LouisAgent.Puls.Admin.Runs;
 /// What a run cost and how many requests it made. The cost is null when a price was unknown, and 0 only when nothing
 /// was asked.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record TotalSummary(decimal? Cost, int Requests);
 
 /// <summary>
@@ -19,7 +19,7 @@ public sealed record TotalSummary(decimal? Cost, int Requests);
 /// <c>StoredRunRow</c>, so the page reads the API through the contract while the run's row, the estimate and the
 /// filter keep the small shape they were written and tested for (the unattended run's finding 7).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record RunSummary(
     string Id,
     string Check,

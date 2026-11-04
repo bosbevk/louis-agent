@@ -1,9 +1,9 @@
 # Tests: development guide
 
 > **How-to.** Running the tests, the golden files that pin what the model reads, and how tests are written here.
-> **Elsewhere:** what each test project covers in the [tests design doc](../../docs/projects/tests.md), the same for a
-> person in [Write and run tests](../../docs/guides/write-tests.md), the steps for a change in the
-> [development guide](../../docs/CLAUDE.md). Claude Code loads this file when it works on files in this
+> **Elsewhere:** what each test project covers in the [tests design doc](../docs/projects/tests.md), the same for a
+> person in [Write and run tests](../docs/guides/write-tests.md), the steps for a change in the
+> [development guide](../docs/CLAUDE.md). Claude Code loads this file when it works on files in this
 > folder.
 
 ## Running the tests
@@ -22,11 +22,11 @@ dotnet test louis-agent-solution.sln --filter "Category=Integration"    # the in
 GitHub Actions runs the build, then the unit tests, then the integration tests (the two filters above, the second with
 `INTEGRATION_REQUIRED=1`) on Ubuntu on every pull request and merge to main (`.github/workflows/ci.yml`); a red check on a PR is
 the same failure you'd see locally with that step's command. A test that starts a process, opens Mongo or needs a tool
-is an integration test: it lives in a `{name}.integration-tests` project, and the [guide](../../docs/guides/write-tests.md#where-a-test-goes) says how.
+is an integration test: it lives in a `{name}.integration-tests` project, and the [guide](../docs/guides/write-tests.md#where-a-test-goes) says how.
 
 ## Test first
 
-A step that changes behaviour starts here ([ADR 0014](../../docs/adr/0014-test-first.md)):
+A step that changes behaviour starts here ([ADR 0014](../docs/adr/0014-test-first.md)):
 
 1. **Write the test** for the behaviour the step adds, in the folder that mirrors the source
    (`src/tests/engine/louis-agent.core.tests/Tools/Git/…` tests `Tools/Git/…`). A fix starts with a test that reproduces the bug.

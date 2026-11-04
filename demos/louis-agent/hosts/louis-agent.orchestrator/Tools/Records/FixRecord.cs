@@ -11,7 +11,7 @@ namespace LouisAgent.Orchestrator.Tools.Records;
 /// <remarks>
 /// A named record instead of an anonymous object (ADR 0041), with the snake_case keys every orchestrator file uses.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record FixRecord(
     [property: JsonPropertyName("error_id")] string ErrorId,
     [property: JsonPropertyName("session_id")] string SessionId,

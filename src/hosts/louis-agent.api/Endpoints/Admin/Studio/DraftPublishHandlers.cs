@@ -24,7 +24,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Studio;
 /// would fix them: the draft, the runner, its verdict, the identity's project. Git stays the truth (ADR 0061): the
 /// draft is kept after a publish, until the person deletes it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class DraftPublishHandlers(
     IEvalDraftStore drafts,
     DraftChecker checker,

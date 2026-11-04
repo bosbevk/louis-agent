@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Drafts.Store.Documents;
 /// Metadata Mapping on a Data Transfer Object (Fowler, PoEAA), the third typed view of the one collection, beside
 /// <see cref="SampleDraftDocument"/> and <see cref="TranscriptDraftDocument"/>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record EvalDraftDocument(
     [property: BsonId] string Id,

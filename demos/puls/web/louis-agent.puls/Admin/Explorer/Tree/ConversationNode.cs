@@ -8,7 +8,7 @@ namespace LouisAgent.Puls.Admin.Explorer.Tree;
 /// One conversation as the explorer holds it: its task, who handled it, its errors, its grades and outcome, and its
 /// turns.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed class ConversationNode
 {
     /// <summary>Which task it is.</summary>

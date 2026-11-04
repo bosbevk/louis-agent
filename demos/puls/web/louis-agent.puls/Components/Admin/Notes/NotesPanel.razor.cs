@@ -9,7 +9,7 @@ namespace LouisAgent.Puls.Components.Admin.Notes;
 /// <summary>
 /// Shows a run's notes, or one conversation's, with a small form to add one. It never adds the note to its own list: it says one was written, and the run page fetches again.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public partial class NotesPanel
 {
     [Inject] private AgentApi Api { get; set; } = null!;

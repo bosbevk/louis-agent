@@ -16,8 +16,8 @@ namespace LouisAgent.Api.Evals.Runs.Start;
 /// (<see cref="ReplayOf"/>, <see cref="Recorded"/>), so its name lives in one place and the run row and the trend
 /// can't spell it differently.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class EvalSettings
 {
     /// <summary>Where a replay keeps the run it replayed.</summary>

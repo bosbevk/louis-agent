@@ -15,7 +15,7 @@ namespace LouisAgent.Orchestrator.Triage;
 /// Composite: each part is its own skill provider, added in the order the model should read them, so the shared parts
 /// come from core's built-in prompts and only the per-service runbooks live on disk.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0020-principles-for-every-agent.md">ADR 0020: principles for every agent</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0020-principles-for-every-agent.md">ADR 0020: principles for every agent</seealso>
 internal static class OrchestratorSkills
 {
     /// <summary>The orchestrator's mode in core's prompts (CL9): its workflow, the same for every service.</summary>

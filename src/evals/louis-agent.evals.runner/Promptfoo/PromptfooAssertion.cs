@@ -10,7 +10,7 @@ namespace LouisAgent.Evals.Runner.Promptfoo;
 /// An enum, as ADR 0043 says of a name that repeats: promptfoo's names are wire names, parsed once with
 /// <see cref="SettingChoice"/>; the import and the export switch on it, so the table is in one place each way.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public enum PromptfooAssertion
 {
     [WireName("contains")] Contains,

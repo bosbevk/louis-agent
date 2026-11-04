@@ -12,7 +12,7 @@ using LouisAgent.Core.Tools.Integrations.Paymo;
 
 namespace LouisAgent.Core.Tests.Skills;
 
-// docs/CLAUDE.md, *Adding a toolset*: our own skill files are plain markdown read by MarkdownSkillProvider, with no
+// src/docs/CLAUDE.md, *Adding a toolset*: our own skill files are plain markdown read by MarkdownSkillProvider, with no
 // provider class each. These check the pattern holds and that the files say what their tools are.
 public class SkillFilesTests
 {

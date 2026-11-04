@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Tests;
 /// an older shape before a sale. The product names come from the identities folder, so a new identity is checked with
 /// no change here.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0037-one-agent-api-products-get-a-front-door.md">ADR 0037: one agent API; products get a front door</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0037-one-agent-api-products-get-a-front-door.md">ADR 0037: one agent API; products get a front door</seealso>
 public class ApiNamesNoProductTests
 {
     /// <summary>The API's own projects: its host, and the contract its clients read.</summary>

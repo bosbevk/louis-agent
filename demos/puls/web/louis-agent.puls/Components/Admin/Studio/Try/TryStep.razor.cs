@@ -19,7 +19,7 @@ namespace LouisAgent.Puls.Components.Admin.Studio.Try;
 /// save first. The rows come from <see cref="ReplayChoices"/>, a Presentation Model (Fowler). ADR 0042: the list is
 /// what the API answered when the page opened.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public partial class TryStep
 {
     [Inject] private AgentApi Api { get; set; } = null!;

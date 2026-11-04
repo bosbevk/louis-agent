@@ -15,8 +15,8 @@ namespace LouisAgent.Packs.WhereToBuy.Tools;
 /// the same every run, keeps to the map's usage policy, and the answer comes back as a short table instead of the
 /// map's raw JSON. It takes plain data and returns text, so the pack converts to an MCP server unchanged (ADR 0028).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
 public sealed class WhereToBuyTools(BranchFinder finder)
 {
     /// <summary>Finds a shop's nearest branches to the user's town.</summary>

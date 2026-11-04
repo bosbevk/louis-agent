@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Tests.Evals.Store.Mongo;
 /// wire name, never its C# name or a number, and read back from it; a time is stored as a BSON date in UTC and read
 /// back at offset zero. No Mongo is needed: the driver's own serializer does the round trip in memory.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class MongoMappingsTests
 {
     /// <summary>A document with an enum, an enum that may be missing, and a time.</summary>

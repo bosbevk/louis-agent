@@ -11,5 +11,5 @@ namespace LouisAgent.Packs.Recipes.Recipes;
 /// What the page calls the group (a <c>HowToSection</c>'s <c>name</c>); null when it has none.
 /// </param>
 /// <param name="Text">What to do, as the page wrote it (a <c>HowToStep</c>'s <c>text</c>).</param>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed record RecipeStep(string? Section, string Text);

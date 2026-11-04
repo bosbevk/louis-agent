@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Evals.Store.Runs;
 /// when it started and ended, and its pass rates once it ended.
 /// </summary>
 /// <remarks>Metadata Mapping on a Data Transfer Object, as <see cref="RunDocument"/> explains.</remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record ModeDocument(
     [property: BsonElement("name")] string Name,
@@ -35,7 +35,7 @@ internal sealed record ModeDocument(
 }
 
 /// <summary>A mode's pass rates as the runner wrote them; a rate no trial made stays null, never 0.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record RatesDocument(
     [property: BsonElement("pass_at_k")] double? PassAtK,
@@ -53,7 +53,7 @@ internal sealed record RatesDocument(
 }
 
 /// <summary>What a run cost from the ledger; an unknown price keeps the cost null, never 0.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record TotalDocument(
     [property: BsonElement("cost"), BsonRepresentation(BsonType.Decimal128)]
@@ -70,7 +70,7 @@ internal sealed record TotalDocument(
 }
 
 /// <summary>One of the eval's graders, as the run started; a human review carries its question.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record GraderDocument(
     [property: BsonElement("name")] string Name,
@@ -86,7 +86,7 @@ internal sealed record GraderDocument(
 }
 
 /// <summary>Which model one level of a mode ran on.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record ModelDocument(
     [property: BsonElement("mode")] string Mode,
@@ -102,7 +102,7 @@ internal sealed record ModelDocument(
 }
 
 /// <summary>Which prompts one agent used in one mode, as their hashes; a grading agent has no mode.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record PromptDocument(
     [property: BsonElement("mode")] string? Mode,
@@ -117,7 +117,7 @@ internal sealed record PromptDocument(
 }
 
 /// <summary>The dataset a run's scenarios came from: its name, version and hash.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record DatasetDocument(
     [property: BsonElement("name")] string Name,

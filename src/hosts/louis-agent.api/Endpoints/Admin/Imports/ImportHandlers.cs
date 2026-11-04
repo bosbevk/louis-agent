@@ -20,7 +20,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Imports;
 /// Named endpoints returning <c>TypedResults</c> (ADR 0045, 0051), guard clauses first. The files come as JSON with
 /// their bytes in base64, as a session's attachments do, so the page needs no form and the API no antiforgery.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class ImportHandlers
 {
     /// <summary>The most an upload's files may come to, all together: Stats SA's two come to about 1.1 MB.</summary>

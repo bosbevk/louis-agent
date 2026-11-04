@@ -13,7 +13,7 @@ namespace LouisAgent.Api.IntegrationTests.Endpoints;
 /// Pins the error JSON of the two kinds of error that need a process to happen: git refusing, and a run started while
 /// another one is going. The other kinds are pinned in the API's unit tests.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 [Category("Integration")]
 public class ApiErrorRouteTests
 {

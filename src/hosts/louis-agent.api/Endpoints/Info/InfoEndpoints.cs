@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Endpoints.Info;
 /// publish (public, for other hosts, the web app and anyone), the toolsets a session can load, the model, the roles and the LLM profiles. The work is
 /// <c>InfoHandlers</c>'.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class InfoEndpoints
 {
     /// <summary>

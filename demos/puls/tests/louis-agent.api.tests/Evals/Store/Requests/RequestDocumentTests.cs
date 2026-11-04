@@ -15,8 +15,8 @@ namespace LouisAgent.Api.Tests.Evals.Store.Requests;
 /// request it was. The fixtures are what that mapper wrote for a priced request tied to its turn and for one with
 /// nothing known. Stored eval data is disposable until Phase 9 (ADR 0049), so no document from before is read.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class RequestDocumentTests
 {
     /// <summary>When the request was made; whole milliseconds, as a BSON date keeps it.</summary>

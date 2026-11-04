@@ -25,9 +25,9 @@ namespace LouisAgent.Packs.Recipes.Checks;
 /// it (a Strategy, ADR 0059), as <c>estimates-at-shop</c> takes its price reader. Its <see cref="Entry"/> builds it
 /// from a file's settings (Factory Method). The turn is read from the engine's events (<see cref="EngineEvents"/>).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0060-a-pack-ships-its-checks.md">ADR 0060: a pack ships its checks</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0060-a-pack-ships-its-checks.md">ADR 0060: a pack ships its checks</seealso>
 public sealed class RecipeFromSource(ILinkReader links) : ICheck
 {
     /// <inheritdoc />

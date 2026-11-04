@@ -7,7 +7,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices.Regions;
 /// Where an average price is for: the country, or one of the nine provinces Stats SA prices separately. The wire
 /// name is the key in the price table; the description is how an answer names it.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum Region
 {
     [WireName("national")][Description("South Africa")] National,

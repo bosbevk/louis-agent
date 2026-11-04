@@ -23,7 +23,7 @@ namespace LouisAgent.Evals.Grading.Common.Compare;
 /// optional (Louis's pick): left out, every scenario is asked. Its <see cref="Entry"/> builds it from a file's
 /// settings (Factory Method).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class ImageShownCheck(IImageReader reader, string? key = null, bool required = true) : ICheck
 {
     /// <summary>The line a fetched page's text starts with, naming its address.</summary>

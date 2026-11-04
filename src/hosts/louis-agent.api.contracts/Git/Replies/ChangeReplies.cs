@@ -6,7 +6,7 @@ namespace LouisAgent.Api.Contracts.Git.Replies;
 /// The Changes tab: the checked-out branch and every changed file, and after a commit, what was committed. It is also
 /// the answer to every change, so the app refreshes in one call.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record StatusReply(string? Branch, IReadOnlyList<GitFileStatus> Files, string? Committed);
 
 /// <summary>

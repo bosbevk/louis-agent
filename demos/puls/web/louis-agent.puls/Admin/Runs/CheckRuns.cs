@@ -8,7 +8,7 @@ namespace LouisAgent.Puls.Admin.Runs;
 /// <param name="Models">The models those runs name, for the filter.</param>
 /// <param name="Shown">The runs on the model picked; all of them when none is.</param>
 /// <param name="Cost">The known costs of every run added up.</param>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record CheckRuns(
     IReadOnlyList<RunSummary> Runs,
     IReadOnlyList<string> Models,

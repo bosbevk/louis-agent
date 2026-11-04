@@ -6,7 +6,7 @@ namespace LouisAgent.Puls.Admin.Explorer.Tree;
 /// One model request from the ledger, the way the explorer draws it: when it ended, why, who asked, the model, its
 /// tokens, what it cost and how long it took.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record RequestNode(
     DateTimeOffset At,
     string Purpose,

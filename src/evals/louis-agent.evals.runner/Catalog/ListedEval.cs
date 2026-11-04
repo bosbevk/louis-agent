@@ -11,7 +11,7 @@ namespace LouisAgent.Evals.Runner.Catalog;
 /// Data Transfer Object (Fowler, PoEAA): the API can't reference the runner, so this record is the listing's whole
 /// contract, written as snake_case JSON and read back by the API's own <c>EvalLine</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record ListedEval(
     string Name,
     string? Identity,

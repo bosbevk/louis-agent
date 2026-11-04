@@ -5,7 +5,7 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 /// one constant here; <c>PulsIdsTests</c> holds each to the dataset, so a typo fails there instead of quietly finding
 /// no scenario.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class PulsCookScenarioIds
 {
     /// <summary>The cook scenario asked in Afrikaans.</summary>

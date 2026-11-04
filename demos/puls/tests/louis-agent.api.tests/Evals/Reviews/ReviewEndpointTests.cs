@@ -20,7 +20,7 @@ namespace LouisAgent.Api.Tests.Evals.Reviews;
 /// grades beside the judge's and counts how often they agreed, and the labels export the passes and fails as a zip.
 /// Bad verdicts, graders and reviewers are a 400; an unknown run or conversation is a 404.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: API routes under v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: API routes under v1</seealso>
 public class ReviewEndpointTests
 {
     private const string AdminKey = "admin-secret";

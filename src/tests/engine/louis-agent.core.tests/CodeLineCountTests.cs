@@ -2,7 +2,7 @@ namespace LouisAgent.Core.Tests;
 
 /// <summary>
 /// Pins what the size rule counts: code only, so a summary or a blank line between groups never forces a split
-/// (docs/CLAUDE.md, Separate by concern; ADR 0044).
+/// (src/docs/CLAUDE.md, Separate by concern; ADR 0044).
 /// </summary>
 public class CodeLineCountTests
 {

@@ -19,7 +19,7 @@ namespace LouisAgent.Packs.WhereToBuy.Checks;
 /// entries do; it takes no settings. The where-to-buy pack's own (F49.3, F50.2), listed in
 /// <see cref="WhereToBuyChecks.All"/>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class UntooledShops : ICheck
 {
     /// <inheritdoc />

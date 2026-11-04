@@ -9,7 +9,7 @@ namespace LouisAgent.Identities.Puls.Evals.Checks.Cook;
 /// <remarks>
 /// The checks keep their own enum of the names they use rather than borrowing another project's (ADR 0043).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public enum CookMode
 {
     [WireName("puls-tools")] Tools,

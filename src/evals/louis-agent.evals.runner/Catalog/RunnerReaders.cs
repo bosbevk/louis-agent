@@ -12,8 +12,8 @@ namespace LouisAgent.Evals.Runner.Catalog;
 /// Registry (Fowler, PoEAA), beside <see cref="RunnerChecks"/>, where the lists meet for the same reason: the runner is
 /// the one project that knows every evals project, and no host carries an identity's readers (ADR 0073).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
 public static class RunnerReaders
 {
     /// <summary>Every reader the runner's evals can name.</summary>

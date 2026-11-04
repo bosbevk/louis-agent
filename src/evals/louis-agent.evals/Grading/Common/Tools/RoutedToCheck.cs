@@ -21,7 +21,7 @@ namespace LouisAgent.Evals.Grading.Common.Tools;
 /// can do. Its <see cref="Entry"/> builds that from a file's settings (Factory Method), nested here as the other
 /// general checks' are.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class RoutedToCheck(
     Func<Trial, string?> expectedRole,
     bool required = true,

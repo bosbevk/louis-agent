@@ -10,7 +10,7 @@ namespace LouisAgent.Puls.Admin.Explorer.Tree;
 /// Built once per repeat from the contract's <c>StoredRunReply</c>, so no component picks the run's JSON apart; the
 /// components ask the tree (the tasks, a question, the dearest conversation) instead of walking it themselves.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed class RunTree
 {
     /// <summary>A tree with nothing in it, for before the run is read.</summary>

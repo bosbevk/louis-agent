@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Store.Recording;
 /// calling the store, so a run knows nothing about where it's kept. What one run has heard so far lives in
 /// <see cref="RunRecording"/>, which was split off when this class passed 200 lines.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class EvalRecorder(IEvalStore store, ILogger? logger = null, string? ledgerDirectory = null)
 {
     /// <summary>Whether everything was kept, and if not, why.</summary>

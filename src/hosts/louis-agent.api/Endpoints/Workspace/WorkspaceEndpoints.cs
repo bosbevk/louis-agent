@@ -4,7 +4,7 @@ namespace LouisAgent.Api.Endpoints.Workspace;
 /// Read-only browsing of the agent's workspace for the web app: a folder's entries and a file's text. The work is
 /// <c>WorkspaceHandlers</c>'.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class WorkspaceEndpoints
 {
     /// <summary>Adds the workspace routes.</summary>

@@ -8,7 +8,7 @@ namespace LouisAgent.Evals;
 /// The JSON every eval record uses, snake_case by contract: the scores written into the protocol's lines, the
 /// datasets read from files, and a check's settings. One set of options, so they can't drift apart.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class EvalJson
 {
     /// <summary>Field names in snake_case, the way every eval file and protocol line writes them.</summary>

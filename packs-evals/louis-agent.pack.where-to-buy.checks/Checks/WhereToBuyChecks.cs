@@ -11,8 +11,8 @@ namespace LouisAgent.Packs.WhereToBuy.Checks;
 /// owner lists its entries in one place, and the composition's <c>EvalChecks</c> gathers the lists, so the runner
 /// never names a pack. The pack references the check contract for them, never the harness.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class WhereToBuyChecks
 {
     /// <summary>Every check of the pack's, in the order the cook's eval lists them.</summary>

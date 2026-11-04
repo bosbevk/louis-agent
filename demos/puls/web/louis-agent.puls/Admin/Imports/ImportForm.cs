@@ -12,7 +12,7 @@ namespace LouisAgent.Puls.Admin.Imports;
 /// only binds to it. A class, not a record: it changes as the person picks files (ADR 0040).
 /// </remarks>
 /// <seealso href="https://martinfowler.com/eaaDev/PresentationModel.html">Fowler: Presentation Model</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed class ImportForm(ImportRow upload)
 {
     /// <summary>The files chosen so far, by slot name.</summary>

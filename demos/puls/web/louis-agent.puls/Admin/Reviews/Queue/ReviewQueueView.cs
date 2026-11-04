@@ -11,7 +11,7 @@ namespace LouisAgent.Puls.Admin.Reviews.Queue;
 /// Presentation Model (Fowler): the page's state as a plain record with its own tests, placed by the components.
 /// Each move is a new value, as <c>EvalListView</c> and <c>RunVerdictView</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed record ReviewQueueView(IReadOnlyList<ReviewQueueItem> Items, int Total, int Open, int Graded)
 {
     /// <summary>The answer that is open, or none past the last one handed over.</summary>

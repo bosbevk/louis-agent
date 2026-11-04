@@ -6,8 +6,8 @@ namespace LouisAgent.Core.Tests;
 /// The eval protocol's contract stays a leaf that the API reads instead of the harness. The runner, the API and the
 /// portal all read it, so it takes in nothing but the choices, and the API never reaches past it into the harness.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmarks recorded from the protocol</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmarks recorded from the protocol</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class EvalProtocolProjectTests
 {
     /// <summary>The contract references the choices and nothing else, or one side would drag the others in.</summary>

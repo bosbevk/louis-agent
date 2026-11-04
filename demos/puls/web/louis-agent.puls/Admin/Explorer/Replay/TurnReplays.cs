@@ -14,7 +14,7 @@ namespace LouisAgent.Puls.Admin.Explorer.Replay;
 /// The turn and the chats side by side both replay this way, so the fetch and the pace live here once. The events
 /// are read as the contract's <c>TurnEventsReply</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public static class TurnReplays
 {
     /// <summary>A turn's stored events; none when the store can't give them, so that mode just doesn't play.</summary>

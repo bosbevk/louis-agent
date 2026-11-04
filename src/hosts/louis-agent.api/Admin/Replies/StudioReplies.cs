@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Admin.Replies;
 /// Replace Constructor with Factory Function (Fowler), as C# 14 static extension members, for the reason
 /// <c>AdminReplies</c> gives: the records live in the contract, which can't see the runner's lines.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class StudioReplies
 {
     /// <summary>The catalogue's reply.</summary>

@@ -23,7 +23,7 @@ namespace LouisAgent.Api.Evals.Store.Recording;
 /// event, picked by a switch expression on the contract's record. It was split off the recorder when that passed 200
 /// lines.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 internal sealed class RunRecording(
     RunningEval run,
     IReadOnlyDictionary<string, string>? settings,

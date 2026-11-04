@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Tests.Evals.Reports.Trends;
 /// out, as the overall trend leaves them out, and older runs with no slices add nothing. Each line is one mode on one
 /// model, and the rates are the runner's: the API works none out.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class CategoryTrendTests
 {
     /// <summary>When the first run started; each run starts some hours after.</summary>

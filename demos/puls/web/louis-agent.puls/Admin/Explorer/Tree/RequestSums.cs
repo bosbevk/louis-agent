@@ -6,7 +6,7 @@ namespace LouisAgent.Puls.Admin.Explorer.Tree;
 /// Adds up some requests the ways the explorer's charts split them: Puls's own part against the specialists', and the
 /// four kinds of token.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class RequestSums
 {
     /// <summary>What Puls's own requests cost, or the specialists': nothing if none was priced, never zero.</summary>

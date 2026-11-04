@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Grading.Models.Rubrics;
 /// Twelve digits: as long as a prompt hash is anywhere else in the ledger and the portal. Line endings are the one
 /// thing normalised, since git changes them per platform and a rubric's words don't.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0014-test-first.md">ADR 0014: tests are platform-neutral</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0014-test-first.md">ADR 0014: tests are platform-neutral</seealso>
 public static class RubricHash
 {
     /// <summary>The rubric's hash, the same on every platform.</summary>

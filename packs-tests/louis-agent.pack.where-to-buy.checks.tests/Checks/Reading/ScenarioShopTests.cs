@@ -8,7 +8,7 @@ namespace LouisAgent.Packs.WhereToBuy.Tests.Checks.Reading;
 /// The shop a scenario says the user chose, and the town they shop in, read once from its <c>expected</c>: a bad value
 /// is refused by its key, naming the scenario. Moved from Puls's <c>ExpectationsTests</c> with the reading (F49.3).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public class ScenarioShopTests
 {
     /// <summary>A cook scenario in Malmesbury that expects what this JSON says.</summary>

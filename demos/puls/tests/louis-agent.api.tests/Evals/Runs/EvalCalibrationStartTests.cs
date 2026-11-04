@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Tests.Evals.Runs;
 /// lines on its stdin. It takes the runner's one run at a time, and its row says what it is, so the page listing
 /// the runs can leave it alone.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public class EvalCalibrationStartTests
 {
     /// <summary>

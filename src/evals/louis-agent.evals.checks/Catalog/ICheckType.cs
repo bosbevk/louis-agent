@@ -12,7 +12,7 @@ namespace LouisAgent.Evals.Catalog;
 /// Factory Method: the catalogue only knows this interface, and each entry decides how its own check is built. That
 /// is what lets a pack add a check type later without the harness learning about it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public interface ICheckType
 {
     /// <summary>The name a file uses for it, in kebab case ("within-time").</summary>

@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Sessions;
 /// <c>SessionReplyFactories</c>. It has a class of its own because a static extension member compiles to a plain
 /// static method on its class: two <c>Of(AgentSession)</c>, one per record, can't share one.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class SessionCreatedReplyFactory
 {
     /// <summary>The answer to opening a session.</summary>

@@ -2,14 +2,14 @@ namespace LouisAgent.Core.Tests;
 
 /// <summary>
 /// Keeps folders small enough to find your way in: at most six source files each, a component's markup and its
-/// code-behind counting as one. A bigger folder gets subfolders by concern (docs/CLAUDE.md, *Separate by concern*).
+/// code-behind counting as one. A bigger folder gets subfolders by concern (src/docs/CLAUDE.md, *Separate by concern*).
 /// </summary>
 /// <remarks>
 /// A ratchet, as <see cref="FileSizeTests"/> and over the same roots, tests included: the folders over the limit today
 /// are listed in Oversized, a new one fails the test, and a listed folder that has come under it fails too, so the
 /// list can only shrink. A listed folder is split when a step next touches it, never in a sweep of its own.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0010-folders-by-concern.md">ADR 0010: folders by concern</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0010-folders-by-concern.md">ADR 0010: folders by concern</seealso>
 public class FolderSizeTests
 {
     /// <summary>How many source files a folder may hold.</summary>
@@ -74,7 +74,7 @@ public class FolderSizeTests
         Assert.Multiple(() =>
         {
             Assert.That(newOffenders, Is.Empty,
-                $"A folder holds at most {Limit} source files: give it subfolders by concern (docs/CLAUDE.md, "
+                $"A folder holds at most {Limit} source files: give it subfolders by concern (src/docs/CLAUDE.md, "
                 + "Separate by concern):\n  " + string.Join("\n  ", newOffenders));
             Assert.That(shrunk, Is.Empty,
                 "Within the limit now: remove from Oversized so the list only shrinks:\n  " +

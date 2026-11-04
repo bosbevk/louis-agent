@@ -8,7 +8,7 @@ namespace LouisAgent.Puls.Tests.Admin;
 /// <remarks>
 /// A ratchet, as <c>PortalReadsJsonTests</c>: a file that writes a retired address fails, with no list to grow.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0065-the-view-is-in-the-address.md">ADR 0065: the view is in the address</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0065-the-view-is-in-the-address.md">ADR 0065: the view is in the address</seealso>
 public class PortalAddressesTests
 {
     /// <summary>The addresses no file may write any more.</summary>

@@ -10,7 +10,7 @@ namespace LouisAgent.Puls.Components.Admin.Trends;
 /// run has notes or a changed prompt. The trend is read once as the contract's <c>TrendReply</c>, never picked apart by
 /// name; each panel is a <c>TrendPanel</c>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class TrendChart
 {
     /// <summary>

@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Contracts.Sessions;
 /// One options object per wire (ADR 0041). The session replies have always been snake_case; naming the rule here keeps
 /// the records in plain C# names, and the JSON every client reads stays as it was, byte for byte.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class SessionJson
 {
     /// <summary>Pass this to <c>TypedResults.Json</c> for a session reply, and to a client reading one.</summary>

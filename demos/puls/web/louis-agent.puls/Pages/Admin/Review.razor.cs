@@ -22,8 +22,8 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// ADR 0042: the page shows what it last fetched. The model is <see cref="ReviewQueueView"/>; the panel is the
 /// explorer's <c>ReviewPanel</c> unchanged but for the grade it reports, so the blind rule holds here too.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class Review : IDisposable
 {
     /// <summary>How many answers the page asks for at a time.</summary>

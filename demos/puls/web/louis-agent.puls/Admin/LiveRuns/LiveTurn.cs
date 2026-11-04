@@ -14,7 +14,7 @@ namespace LouisAgent.Puls.Admin.LiveRuns;
 /// A class, not a record: the row is a thing that changes while the run goes on (its stream grows, its end comes),
 /// and the table keeps the same row from its question to its end.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed class LiveTurn(TurnKey key)
 {
     /// <summary>Which turn it is.</summary>

@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Evals.Calibrations;
 /// A run that failed, or printed no report, stores nothing and the result says why, so a half-finished run never
 /// reads as a verdict. A store that fails is logged, never thrown at the run.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text lives in enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text lives in enum templates</seealso>
 public sealed class CalibrationRecorder(ICalibrationStore store, ILogger? logger = null)
 {
     /// <summary>Whether a report was kept, and if not, why.</summary>

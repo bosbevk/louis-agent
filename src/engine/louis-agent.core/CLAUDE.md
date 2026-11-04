@@ -2,7 +2,7 @@
 
 > **How-to.** What to know before changing `louis-agent.core`: tools and toolsets, the layout and message rules,
 > another agent on core, a new model provider. **Elsewhere:** how to work, steps, commits and tests in the
-> [development guide](../../../docs/CLAUDE.md). Claude Code loads this file when it works on files in this folder.
+> [development guide](../../docs/CLAUDE.md). Claude Code loads this file when it works on files in this folder.
 
 ## Adding a C# tool
 
@@ -40,7 +40,7 @@ touches, and nothing else:
 
 1. **Tools:** a class in `src/engine/louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*), or in the pack's project when the
    toolset is a capability of its own (*Building an identity or a pack*); every public method is a tool.
-2. **Catalogue entry:** a `ToolsetDefinition` (the name, a member of an enum: `CoreToolset` for core's, a pack's own enum for a pack's, written with `.Wire()`, [ADR 0043](../../../docs/adr/0043-repeated-names-are-enums.md); a one-line description, the settings it needs
+2. **Catalogue entry:** a `ToolsetDefinition` (the name, a member of an enum: `CoreToolset` for core's, a pack's own enum for a pack's, written with `.Wire()`, [ADR 0043](../../docs/adr/0043-repeated-names-are-enums.md); a one-line description, the settings it needs
    (`MissingSettings`), its tool classes (`ToolTypes`), the factory for their objects (`CreateTools`) and its guide
    (`GuideFile`)) in `Agent/Toolsets/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
    lists both, core's first, and stops start-up on a tool name two toolsets or the engine already use.
@@ -163,11 +163,11 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 
 ## Building an identity or a pack
 
-The steps are [Build a pack](../../../docs/guides/build-a-pack.md) and [Build an identity](../../../docs/guides/build-an-identity.md),
+The steps are [Build a pack](../../docs/guides/build-a-pack.md) and [Build an identity](../../docs/guides/build-an-identity.md),
 each with its review checklist at the end; the rules they follow are
-[ADR 0027](../../../docs/adr/0027-engine-identities-and-packs.md) (core is the engine and names no product, shop or country;
+[ADR 0027](../../docs/adr/0027-engine-identities-and-packs.md) (core is the engine and names no product, shop or country;
 `ArchitectureTests` holds it in the model-visible text and in the comments, this file included) and
-[ADR 0028](../../../docs/adr/0028-packs-stay-convertible-to-mcp.md) (`PackConvertibilityTests` holds the shapes; the rest
+[ADR 0028](../../docs/adr/0028-packs-stay-convertible-to-mcp.md) (`PackConvertibilityTests` holds the shapes; the rest
 is reviewed by hand). Only a demo's own project under `demos/` knows its identities and packs.
 
 ## Building another agent on core
@@ -180,11 +180,11 @@ has one). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the 
 
 ## Changing the LLM
 
-Configuration only — see [MODELS.md](../../../docs/MODELS.md): `LLM_PROFILE` picks `config/.env.anthropic` or `config/.env.ollama`.
+Configuration only — see [MODELS.md](../../docs/MODELS.md): `LLM_PROFILE` picks `config/.env.anthropic` or `config/.env.ollama`.
 A new model also needs its prices in each demo's `config/prices.json` (else its cost is recorded as unknown); run
 `tools/louis-agent.usage-probe` before trusting a new provider's usage numbers. Provider differences belong in
 `LlmClientFactory` (the client, and `CreateUsageMapper` for how it reports usage), never in `AgentEngine` or the tools.
 Where providers need different logic for the same concern, write it as a **strategy**: an interface, one implementation
 per provider that differs (plus a default), chosen once in `LlmClientFactory`, as `IUsageMapper` is
-([Architecture: Provider strategies](../../../docs/architecture/05-building-block-view.md#provider-strategies)). Never branch on the provider's name
+([Architecture: Provider strategies](../../docs/architecture/05-building-block-view.md#provider-strategies)). Never branch on the provider's name
 anywhere else.

@@ -20,7 +20,7 @@ namespace LouisAgent.Puls.Components.Admin.LiveRun;
 /// when it has ended: state flows down as parameters and up as callbacks, and the page's own code keeps to the list
 /// (the unattended run's finding 8).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class LiveRunPanel
 {
     /// <summary>The table of turns as the events come in.</summary>

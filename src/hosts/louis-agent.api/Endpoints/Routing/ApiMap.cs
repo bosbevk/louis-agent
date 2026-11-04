@@ -21,7 +21,7 @@ namespace LouisAgent.Api.Endpoints.Routing;
 /// version is written. The admin portal's parts (F27, F31) are built by the host and mapped on what
 /// <see cref="MapApi"/> returns.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class ApiMap
 {
     /// <summary>

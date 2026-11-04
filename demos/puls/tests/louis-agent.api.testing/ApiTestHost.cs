@@ -31,7 +31,7 @@ namespace LouisAgent.Api.Testing;
 /// admin parts. The agent behind it never calls a model, and the admin parts have no store and no admin key unless the
 /// test gives them.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class ApiTestHost
 {
     /// <summary>The repository's folder, found from where the tests run.</summary>

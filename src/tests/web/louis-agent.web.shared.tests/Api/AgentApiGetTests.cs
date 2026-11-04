@@ -10,7 +10,7 @@ namespace LouisAgent.Web.Shared.Tests.Api;
 /// The portal reads a reply straight into its record with the wire's options, instead of reading a
 /// <c>JsonElement</c> first and turning it into the record after.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class AgentApiGetTests
 {
     /// <summary>A reply on a snake_case wire, as the admin routes write it.</summary>

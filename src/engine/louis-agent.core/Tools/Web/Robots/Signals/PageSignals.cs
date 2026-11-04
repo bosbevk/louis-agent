@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Tools.Web.Robots.Signals;
 /// that only says no to training lets us in (ADR 0068). <c>noimageai</c> is about pictures, so it doesn't refuse
 /// either.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
 public static class PageSignals
 {
     /// <summary>

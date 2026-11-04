@@ -10,7 +10,7 @@ namespace LouisAgent.Evals.Grading.Models.Rubrics;
 /// A record the serializer reads (ADR 0041). A model's reply isn't a file a person wrote, so the reading is not
 /// strict: an extra field is left alone, while a reply with no verdict in it is no verdict, never a pass.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record JudgeVerdict(bool? Pass, string? Reason)
 {
     /// <summary>

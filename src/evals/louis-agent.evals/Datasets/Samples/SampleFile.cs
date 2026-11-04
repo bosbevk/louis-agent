@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Datasets.Samples;
 /// <see cref="Scenarios.EvalScenario"/>, so the rest of the harness never sees the file's shape. Following Inspect's
 /// field names means its tools, and anyone who knows them, can read our datasets ("our datasets should also comply").
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record SampleFile
 {
     /// <summary>The scenario's id, unique in its dataset.</summary>

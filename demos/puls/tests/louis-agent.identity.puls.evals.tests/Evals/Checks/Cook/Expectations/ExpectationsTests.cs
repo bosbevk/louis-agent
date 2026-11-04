@@ -12,7 +12,7 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Checks.Cook.Expectations;
 /// it serves and a budget. A bad value is refused by its key, naming the scenario. The shop the user chose is the
 /// shops pack's to read (its <c>ScenarioShopTests</c>).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public class ExpectationsTests
 {
     /// <summary>A cook scenario in Malmesbury that expects what this JSON says.</summary>

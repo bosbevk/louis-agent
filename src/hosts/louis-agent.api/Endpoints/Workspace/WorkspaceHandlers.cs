@@ -26,7 +26,7 @@ namespace LouisAgent.Api.Endpoints.Workspace;
 /// only the workspace and the engine the framework hands each call, so the class holds nothing. Each returns
 /// <c>TypedResults</c> with its answers declared, written with <c>WorkspaceJson.Web</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class WorkspaceHandlers
 {
     // Bigger files aren't useful to read in a browser and would be slow to render.

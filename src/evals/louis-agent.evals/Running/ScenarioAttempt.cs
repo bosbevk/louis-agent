@@ -23,7 +23,7 @@ namespace LouisAgent.Evals.Running;
 /// clock and the log. Kept inside the runner, that job and its helpers took the runner past two hundred lines and hid
 /// the flow.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0010-folders-by-concern.md">ADR 0010: folders by concern</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0010-folders-by-concern.md">ADR 0010: folders by concern</seealso>
 public sealed class ScenarioAttempt(
     ISessionClient sessions,
     ProtocolWriter protocol,

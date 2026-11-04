@@ -7,7 +7,7 @@ namespace LouisAgent.Orchestrator.Tools;
 /// comes from production, so nothing written inside it is followed.
 /// </summary>
 /// <remarks>A prompt, not a message, so it stays as text here rather than in a message enum (ADR 0009).</remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 internal static class FixPrompt
 {
     private static readonly JsonSerializerOptions IndentedJson = new() { WriteIndented = true };

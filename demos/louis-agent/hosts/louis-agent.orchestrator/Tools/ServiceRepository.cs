@@ -11,8 +11,8 @@ namespace LouisAgent.Orchestrator.Tools;
 /// The service's git repository, as the orchestrator checks it: back to main between fixes, and a fix commit verified
 /// against what louis-agent said it did. Git always gets its arguments as a list, never through a shell (ADR 0004).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 internal sealed class ServiceRepository(OrchestratorOptions options)
 {
     private static readonly ILogger Log = AgentLogging.For<ServiceRepository>();

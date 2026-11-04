@@ -15,8 +15,8 @@ namespace LouisAgent.Api.Evals.Store.Conversations;
 /// driver does the copying, as <see cref="Runs.RunDocument"/> explains. The properties keep the order the hand mapper
 /// wrote, so a document is the same field for field.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record ConversationDocument(
     [property: BsonId] ConversationIdDocument Id,
@@ -46,7 +46,7 @@ internal sealed record ConversationDocument(
 }
 
 /// <summary>A conversation's id: the run it belongs to and its key.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 internal sealed record ConversationIdDocument(
     [property: BsonElement("run")] string Run,
     [property: BsonElement("mode")] string Mode,
@@ -59,7 +59,7 @@ internal sealed record ConversationIdDocument(
 }
 
 /// <summary>What a conversation measured; a field it didn't know stays null, never 0.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record MetricsDocument(
     [property: BsonElement("agent_calls")] int? AgentCalls,
@@ -82,7 +82,7 @@ internal sealed record MetricsDocument(
 }
 
 /// <summary>One grader's grade on a conversation, with the judge model and prompt when a model gave it.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record GradeDocument(
     [property: BsonElement("grader")] string Grader,

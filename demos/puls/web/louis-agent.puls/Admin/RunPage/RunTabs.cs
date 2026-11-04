@@ -9,7 +9,7 @@ public sealed record RunTabEntry(RunTab Tab, string Name, string Note);
 /// The run page's tabs: the one the address names (the summary when it names none or one that doesn't exist), and
 /// the bar's entries in reading order, the answer first.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class RunTabs
 {
     /// <summary>The bar, in reading order.</summary>

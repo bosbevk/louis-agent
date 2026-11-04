@@ -14,7 +14,7 @@ namespace LouisAgent.Identities.Puls.Evals.Readers;
 /// knowledge of the sites it reads, so it stays in the identity, untouched, rather than move into the harness. The
 /// eval file names it <c>recipe-photos</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class RecipePhotos : IImageReader
 {
     /// <inheritdoc />

@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// orchestrator keep reading what they read today. The git failure and the conflict need a process, so they are pinned
 /// in the integration tests.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class ApiErrorRouteTests
 {
     /// <summary>The admin key the test API is built with.</summary>

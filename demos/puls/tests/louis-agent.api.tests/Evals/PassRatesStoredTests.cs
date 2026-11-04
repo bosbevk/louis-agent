@@ -21,7 +21,7 @@ namespace LouisAgent.Api.Tests.Evals;
 /// the export, carried by each trend point and served with the run. The API works none of them out itself, and a mode
 /// whose end carries no rates has none, never 0.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class PassRatesStoredTests
 {
     /// <summary>The id of the run every test records.</summary>

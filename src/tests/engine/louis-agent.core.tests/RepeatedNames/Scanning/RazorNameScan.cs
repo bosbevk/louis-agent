@@ -7,7 +7,7 @@ namespace LouisAgent.Core.Tests.RepeatedNames.Scanning;
 /// lexer and looks at the text before the string. A razor file holds markup only, so there are no enum or class bodies
 /// to skip.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class RazorNameScan
 {
     /// <summary>

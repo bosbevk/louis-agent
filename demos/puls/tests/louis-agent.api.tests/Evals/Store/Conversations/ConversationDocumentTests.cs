@@ -16,7 +16,7 @@ namespace LouisAgent.Api.Tests.Evals.Store.Conversations;
 /// conversation it was. The fixtures are what that mapper wrote for a conversation with every field set and for one
 /// that hasn't ended. Stored eval data is disposable until Phase 9, so no document from before is read.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class ConversationDocumentTests
 {
     /// <summary>The run the conversations belong to.</summary>

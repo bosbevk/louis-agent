@@ -26,7 +26,7 @@ namespace LouisAgent.Puls.Components.Admin;
 /// as an <c>ExplorerPlace</c> on every move and taken back as <c>Place</c> (F53.1: the view is in the address): the
 /// explorer keeps its own state so it still works alone, and the page keeps the address.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class RunExplorer : IDisposable
 {
     /// <summary>The run we were handed last.</summary>

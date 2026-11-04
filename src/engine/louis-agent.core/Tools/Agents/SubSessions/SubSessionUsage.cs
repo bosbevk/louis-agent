@@ -8,7 +8,7 @@ namespace LouisAgent.Core.Tools.Agents.SubSessions;
 /// never into the text the model reads: on a replay it is zero, and the parent's next request must still match its
 /// recording (FX27).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 /// <param name="Requests">Null when the peer didn't report a count (then the roll-up counts as one request).</param>
 internal sealed record SubSessionUsage(
     long Input,

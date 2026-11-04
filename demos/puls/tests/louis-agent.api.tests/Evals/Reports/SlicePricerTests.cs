@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Tests.Evals.Reports;
 /// trial and per pass. One unknown price makes the slice's cost unknown; a re-score asked nothing, so it costs a
 /// known 0. The ledger rows arrive already placed on their conversations, specialists and minions included.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class SlicePricerTests
 {
     /// <summary>A run's total with a known cost.</summary>

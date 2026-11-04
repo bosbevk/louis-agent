@@ -6,8 +6,8 @@ paths:
 
 # Razor: the how of every rule
 
-Loaded when a `.razor` or `.razor.cs` file is read or edited. The why: [ADR 0034](../../docs/adr/0034-code-a-person-can-maintain.md)
-(code a person can maintain) and [ADR 0042](../../docs/adr/0042-the-web-shows-the-live-results.md) (the web shows the
+Loaded when a `.razor` or `.razor.cs` file is read or edited. The why: [ADR 0034](../../src/docs/adr/0034-code-a-person-can-maintain.md)
+(code a person can maintain) and [ADR 0042](../../src/docs/adr/0042-the-web-shows-the-live-results.md) (the web shows the
 live results). The C# rules in `csharp.md` apply to the code-behind.
 
 - **A `.razor` holds markup only, no `@code` block:** a component's C# goes in its `.razor.cs` code-behind, and logic
@@ -24,4 +24,4 @@ live results). The C# rules in `csharp.md` apply to the code-behind.
   ([Hosts guide](../../src/CLAUDE.md#each-hosts-own-texts)); F46 moves every text to localisation files, enums stay
   the keys.
 - **A theme** is added as [Hosts guide: Adding a web theme](../../src/CLAUDE.md#adding-a-web-theme) says; a bUnit
-  test pins each component's markup to a golden file ([Write and run tests](../../docs/guides/write-tests.md)).
+  test pins each component's markup to a golden file ([Write and run tests](../../src/docs/guides/write-tests.md)).

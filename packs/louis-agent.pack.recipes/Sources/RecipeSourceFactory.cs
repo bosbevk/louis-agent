@@ -18,8 +18,8 @@ namespace LouisAgent.Packs.Recipes.Sources;
 /// switch, so nothing else branches on how a site is searched (ADR 0003). It is the pack's counterpart of the shops'
 /// <c>ShopCatalogueFactory</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
 public static class RecipeSourceFactory
 {
     private static readonly ILogger Log = AgentLogging.For<LogCategory>();

@@ -18,8 +18,8 @@ namespace LouisAgent.Puls.Admin.Verdict;
 /// trend's latest point of the mode that started earlier than this run, on any of the mode's lines (a line is a
 /// mode on one model), because "did it get better since last time?" is asked of the eval, not of a model.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0030-build-or-adopt.md">ADR 0030: build or adopt</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0030-build-or-adopt.md">ADR 0030: build or adopt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed record RunVerdictView(IReadOnlyList<ModeVerdict> Modes, int ToGrade, decimal? Cost, int? Requests)
 {
     /// <summary>Works the verdict out of the run and its eval's trend (none when the trend couldn't be read).</summary>

@@ -17,7 +17,7 @@ namespace LouisAgent.Puls.Components.Admin.LiveRun;
 /// follows the run on the Evals page keeps the stream. The layout lives across the admin pages, so one strip serves
 /// them all.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public partial class LiveRunStrip : IDisposable
 {
     /// <summary>The runner's last answer: the run going now, or one that has ended; none when it has none.</summary>

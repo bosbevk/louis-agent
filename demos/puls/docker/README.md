@@ -1,8 +1,8 @@
 # docker/: Puls's image and the stack that runs on this PC
 
 > **Reference.** What each file here is. **Elsewhere:** the commands and settings in the
-> [development guide](../../../docs/guides/get-started.md) and [Setup](../../../docs/SETUP.md); where each service runs
-> in the [deployment view](../../../docs/architecture/07-deployment-view.md); the cloud in
+> [development guide](../../../src/docs/guides/get-started.md) and [Setup](../docs/SETUP.md); where each service runs
+> in the [deployment view](../../../src/docs/architecture/07-deployment-view.md); the cloud in
 > [deploy/](../deploy/README.md); the dashboard both stacks send to in
 > [the coding agent's docker/](../../louis-agent/docker/README.md).
 

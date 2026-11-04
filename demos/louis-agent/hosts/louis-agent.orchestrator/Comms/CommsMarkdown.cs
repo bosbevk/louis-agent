@@ -7,7 +7,7 @@ namespace LouisAgent.Orchestrator.Comms;
 /// The small pieces of Markdown the comms log is built from: a table cell, a quote, a code span, a usage figure. Table
 /// formatting, not messages, so it stays here rather than in a message enum (ADR 0009).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 internal static class CommsMarkdown
 {
     /// <summary>How long a tool's input or result may be in a table cell.</summary>

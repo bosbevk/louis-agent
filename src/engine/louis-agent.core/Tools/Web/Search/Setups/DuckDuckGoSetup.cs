@@ -9,7 +9,7 @@ namespace LouisAgent.Core.Tools.Web.Search.Setups;
 /// <remarks>
 /// Strategy. It needs nothing, so it is the engine of last resort and the list always ends with a ready one. That is why it has no stand-in.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 internal sealed class DuckDuckGoSetup : ISearchProviderSetup
 {
     /// <summary>This is the DuckDuckGo one.</summary>

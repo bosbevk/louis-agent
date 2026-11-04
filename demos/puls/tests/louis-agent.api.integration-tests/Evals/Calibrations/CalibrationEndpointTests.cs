@@ -23,7 +23,7 @@ namespace LouisAgent.Api.IntegrationTests.Evals.Calibrations;
 /// of an eval the runner doesn't list, a 409 while a run runs, and a 503 without a store. A GET lists the reports
 /// kept, newest first. The runner judges; the API only starts it, keeps its report and shows it.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API's routes follow one rule, under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API's routes follow one rule, under /v1</seealso>
 [Category("Integration")]
 public class CalibrationEndpointTests
 {

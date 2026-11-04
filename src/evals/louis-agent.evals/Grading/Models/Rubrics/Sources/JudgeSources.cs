@@ -17,8 +17,8 @@ namespace LouisAgent.Evals.Grading.Models.Rubrics.Sources;
 /// bounds a result that is not one (ADR 0005). It is not a count of results: a trial's tools are bounded by the
 /// agent's own prompt.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0005-guard-the-context.md">ADR 0005: guard the context</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0005-guard-the-context.md">ADR 0005: guard the context</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public sealed class JudgeSources(string lines) : EvaluationContext("sources", lines)
 {
     /// <summary>How many characters of one tool result the judge is sent; what is past it is cut, and said.</summary>

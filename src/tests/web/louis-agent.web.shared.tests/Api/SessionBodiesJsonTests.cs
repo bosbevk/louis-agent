@@ -9,7 +9,7 @@ namespace LouisAgent.Web.Shared.Tests.Api;
 /// Pins what the web apps send to open a session and to send a message, byte for byte, as the API reads it: the
 /// records write what the anonymous objects they replaced wrote.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public class SessionBodiesJsonTests
 {
     /// <summary>Opening a session sends the toolsets, the role and where the user is, nulls included.</summary>

@@ -13,7 +13,7 @@ namespace LouisAgent.Api.IntegrationTests.Endpoints.Git;
 /// however the endpoints are shaped. Shas, dates and diffs change from run to run, so the names are pinned and the
 /// values only where they are fixed. What the tests send is the contract's request records, as the app sends them.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 [Category("Integration")]
 public class GitReplyJsonTests
 {

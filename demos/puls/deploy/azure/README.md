@@ -2,7 +2,7 @@
 
 > **How-to.** What runs in the cloud, how to build and deploy it, where its secrets come from, and how it reaches the
 > browser and the benchmark store on the home PC. **Elsewhere:** the local stacks in [docker/](../../../louis-agent/docker/README.md),
-> every setting in [Setup](../../../../docs/SETUP.md), why the layout is what it is in the
+> every setting in [Setup](../../../../src/docs/SETUP.md), why the layout is what it is in the
 > [CL19 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md).
 
 Everything here is in resource group `rg-puls-za` (South Africa North). This folder is the whole footprint: two app
@@ -120,7 +120,7 @@ az containerapp exec -n puls-app -g rg-puls-za --container puls-app --command "c
 ## What the browser says it is
 
 The home PC's browser reads shops' pages for the app's users, and tells every site so: `BROWSER_USER_AGENT` in
-`puls-app.yaml` is `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)`, who reads, a public page to learn more, and
+`puls-app.yaml` is `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/demos/puls/docs/SITE_OWNERS.md; reads a page on a user's behalf)`, who reads, a public page to learn more, and
 why (FX21). Never a person's name or place: the string reaches every site and tracker a page touches. A site that
 refuses automated readers refuses this one; the cook then falls back to the catalogue tool and estimates.
 
@@ -135,4 +135,4 @@ afterwards: an empty list means the update wiped it, and `lock` puts it back. A 
 as a 403 from the browser; `lock` again. A spend cap on the Anthropic key, in the console, is the other half.
 
 ---
-[Docs index](../../../../docs/README.md) · Related: [Setup](../../../../docs/SETUP.md) · [Deployment view](../../../../docs/architecture/07-deployment-view.md)
+[Docs index](../../../../src/docs/README.md) · Related: [Setup](../../../../src/docs/SETUP.md) · [Deployment view](../../../../src/docs/architecture/07-deployment-view.md)

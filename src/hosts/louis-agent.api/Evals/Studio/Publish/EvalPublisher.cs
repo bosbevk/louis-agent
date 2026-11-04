@@ -19,7 +19,7 @@ public sealed record Published(string Branch, string Commit);
 /// one replaces the folder on the branch. Arguments as data, never a shell (ADR 0004); the index is a temp file,
 /// deleted after.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class EvalPublisher(string workspaceRoot, TimeSpan? timeout = null)
 {
     /// <summary>The longest any one git call may take: thirty seconds unless a test says otherwise.</summary>

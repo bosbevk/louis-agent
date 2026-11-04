@@ -20,7 +20,7 @@ namespace LouisAgent.Puls.Components.Admin.Explorer.Chats;
 /// <see cref="Play"/> when a button asks for it again: parameters down, callbacks up, as the live run's panel does
 /// (the unattended run's findings 8 and 12).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class ChatsDialog : IDisposable
 {
     private readonly Dictionary<string, List<Turn>> _chats = [];

@@ -22,7 +22,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Studio;
 /// the scratch folder the drafts are written under and the workspace an edited eval starts from, so it is a named
 /// method a test calls with a stand-in runner.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class DraftCheckHandlers(
     IEvalDraftStore drafts,
     DraftChecker checker,

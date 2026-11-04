@@ -9,7 +9,7 @@ namespace LouisAgent.Api.IntegrationTests.Evals.Runs;
 /// lines to whoever listens. The child here is a stand-in for the eval runner, a real process on every platform:
 /// the eval's name picks what it does, so each test names the behaviour it wants by the eval it starts.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 [Category("Integration")]
 public class EvalProcessIntegrationTests
 {

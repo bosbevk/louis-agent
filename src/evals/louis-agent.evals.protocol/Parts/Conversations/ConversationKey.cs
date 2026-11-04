@@ -6,5 +6,5 @@ namespace LouisAgent.Evals.Protocol.Parts.Conversations;
 /// (a shared Data Transfer Object contract, Fowler, PoEAA). No line carries it whole: the events keep its three fields
 /// flat, and a turn's key and a conversation's event hand it out.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed record ConversationKey(string Mode, int Repeat, string Task);

@@ -11,7 +11,7 @@ namespace LouisAgent.Puls.Admin.Explorer.Tree;
 /// <remarks>
 /// A class, not a record: the tree is built in passes, and the requests are hung on their turn after it is made.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed class TurnNode
 {
     /// <summary>The turn's number in its conversation.</summary>

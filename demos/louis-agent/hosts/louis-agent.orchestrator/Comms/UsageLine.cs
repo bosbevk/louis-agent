@@ -11,7 +11,7 @@ namespace LouisAgent.Orchestrator.Comms;
 /// A named record instead of an anonymous object (ADR 0041): the shape is written down once, and the files that carry
 /// it can be named records too. The currency is left out when nothing was priced, so an unpriced line never claims one.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record UsageLine(
     [property: JsonPropertyName("requests")] int Requests,
     [property: JsonPropertyName("input_tokens")] long InputTokens,

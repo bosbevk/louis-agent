@@ -7,7 +7,7 @@ namespace LouisAgent.Identities.Puls.Tests.Evals.Checks;
 /// The names of Puls's evals are an enum of the checks' own; the portal, the store and a run's protocol carry their
 /// text, and the eval's file says it.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public class PulsEvalNameTests
 {
     /// <summary>The cook's file names the eval as the enum does, under the name its stored runs carry.</summary>

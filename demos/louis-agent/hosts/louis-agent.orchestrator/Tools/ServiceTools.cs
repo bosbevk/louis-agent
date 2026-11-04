@@ -24,7 +24,7 @@ namespace LouisAgent.Orchestrator.Tools;
 /// and the fix task in <see cref="FixPrompt"/>. The tools and their descriptions stay exactly as they were, so the
 /// model's view doesn't change with the split (ADR 0034).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
 internal sealed class ServiceTools(
     OrchestratorOptions options,
     ErrorFeed feed,

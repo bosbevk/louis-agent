@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Protocol;
 /// <c>+00:00</c>, so the one place that writes a time on this wire says how, and no caller formats a time of its own.
 /// Reading stays the serializer's own parse, which already takes both forms.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed class UtcZTimeConverter : JsonConverter<DateTimeOffset>
 {
     /// <summary>

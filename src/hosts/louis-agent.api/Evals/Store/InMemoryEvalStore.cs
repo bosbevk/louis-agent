@@ -17,7 +17,7 @@ namespace LouisAgent.Api.Evals.Store;
 /// Facade, the in-memory side: it hands each record to its own store, so tests and an API with no database see one
 /// store, and each record store is held to its own contract test.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class InMemoryEvalStore : IEvalStore
 {
     /// <summary>The runs themselves.</summary>

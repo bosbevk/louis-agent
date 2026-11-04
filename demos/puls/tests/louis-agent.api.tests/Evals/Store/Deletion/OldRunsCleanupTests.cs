@@ -16,7 +16,7 @@ namespace LouisAgent.Api.Tests.Evals.Store.Deletion;
 /// and everything people said about it; a run of this version stays. Stored eval data is disposable until a sale
 /// (ADR 0049), so nothing older is read or kept.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
 public class OldRunsCleanupTests
 {
     /// <summary>When everything happened.</summary>

@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Tests.Evals.Drafts;
 /// known-bad transcript draft, and an eval's drafts are listed and deleted. A run, conversation, scenario, eval or
 /// draft that isn't there is a 404; a bad id, reason, expected key or a kind the verdicts don't back is a 400.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: API routes under v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: API routes under v1</seealso>
 public class DraftEndpointTests
 {
     private const string AdminKey = "admin-secret";

@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Evals.Store.Turns;
 /// Repository, the in-memory side: the same turns as MongoDB behind the same interface, held to the same contract
 /// test.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class InMemoryTurnStore : ITurnStore
 {
     /// <summary>The one lock over the turns.</summary>

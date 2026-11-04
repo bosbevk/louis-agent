@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Tools.Web.Search.Setups;
 /// <remarks>
 /// Strategy, with a Null Object. Google only works with both settings, so only this class can say whether it's ready, and when one is missing the search says which.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 internal sealed class GoogleSetup : ISearchProviderSetup
 {
     /// <summary>This is the Google one.</summary>

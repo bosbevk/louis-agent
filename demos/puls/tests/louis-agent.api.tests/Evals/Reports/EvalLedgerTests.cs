@@ -21,7 +21,7 @@ namespace LouisAgent.Api.Tests.Evals.Reports;
 /// through the specialist that sent it. The sub-session roll-up rows are skipped, since they repeat what the
 /// specialist's own rows already say and would count it twice.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public class EvalLedgerTests
 {
     /// <summary>The id of the run the rows belong to.</summary>

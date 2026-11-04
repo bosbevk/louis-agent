@@ -11,7 +11,7 @@ using LouisAgent.Cli.Messages;
 /// <summary>
 /// The CLI's chat on the console: the interactive loop and single-prompt mode. It maps the engine's stream to the
 /// terminal (the answer on stdout, thinking and tool status in grey, the usage line on stderr); the engine holds no
-/// console code (docs/CLAUDE.md, Project layout, rule 4: hosts stay thin).
+/// console code (src/docs/CLAUDE.md, Project layout, rule 4: hosts stay thin).
 /// </summary>
 internal sealed class ConsoleChat(AgentEngine engine)
 {

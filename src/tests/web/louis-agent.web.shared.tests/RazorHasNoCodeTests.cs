@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 namespace LouisAgent.Web.Shared.Tests;
 
 /// <summary>
-/// A .razor holds markup only (docs/CLAUDE.md, *Separate by concern*): a component's C# lives in its .razor.cs
+/// A .razor holds markup only (src/docs/CLAUDE.md, *Separate by concern*): a component's C# lives in its .razor.cs
 /// code-behind, and logic that needs no component in a plain class with its own tests. A ratchet: the files that still
 /// carry an @code block today are listed in <see cref="PendingCode"/>, a new one fails the test, and a listed file that
 /// has lost its block fails too, so the list can only shrink until it is deleted and the test is a plain rule (W2b).

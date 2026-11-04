@@ -12,7 +12,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices.StatsSa;
 /// Content, not code (ADR 0011): a person reviews the file in git, like <c>own-prices.json</c>. A class, not a
 /// record: it owns the lookup by code (ADR 0040).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0011-prompts-are-content.md">ADR 0011: content, not code</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0011-prompts-are-content.md">ADR 0011: content, not code</seealso>
 public sealed class StatsSaNames
 {
     /// <summary>The names file the pack ships, read once for the process.</summary>

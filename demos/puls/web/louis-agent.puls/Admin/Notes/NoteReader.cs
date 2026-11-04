@@ -6,7 +6,7 @@ namespace LouisAgent.Puls.Admin.Notes;
 /// <summary>
 /// Turns the run reply's notes into the entries the notes panel shows, a conversation's note with a link to it.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public static class NoteReader
 {
     /// <summary>The notes of a run read as the contract's record, in the order written.</summary>

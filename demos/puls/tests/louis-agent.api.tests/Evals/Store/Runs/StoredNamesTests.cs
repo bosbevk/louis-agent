@@ -15,8 +15,8 @@ namespace LouisAgent.Api.Tests.Evals.Store.Runs;
 /// know is a document this build can't read, and the error names the enum, the value it found and the property it
 /// was reading. We spoil the store's own document by hand, so no Mongo is needed.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public class StoredNamesTests
 {
     /// <summary>When the run started.</summary>

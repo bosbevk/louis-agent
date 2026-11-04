@@ -15,7 +15,7 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// <remarks>
 /// ADR 0042: the page shows what it last fetched, and Reload fetches again, starting each upload afresh.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public partial class Imports
 {
     private IReadOnlyList<ImportForm>? _forms;

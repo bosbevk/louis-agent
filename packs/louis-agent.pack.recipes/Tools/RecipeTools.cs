@@ -19,9 +19,9 @@ namespace LouisAgent.Packs.Recipes.Tools;
 /// browser is the host's one guarded browser, which already refuses private addresses and what a site's
 /// <c>robots.txt</c> disallows, so this class checks only that the address is a web address.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0005-guard-the-context.md">ADR 0005: guard the context</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0067-a-pages-own-data-before-its-text.md">ADR 0067: a page's own data before its text</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0005-guard-the-context.md">ADR 0005: guard the context</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0067-a-pages-own-data-before-its-text.md">ADR 0067: a page's own data before its text</seealso>
 public sealed class RecipeTools
 {
     private const int MaxResults = 10;

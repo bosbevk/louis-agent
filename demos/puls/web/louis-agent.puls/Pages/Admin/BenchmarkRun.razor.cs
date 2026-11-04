@@ -24,8 +24,8 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// explorer keeps its open conversation. The run is fetched when its id changes, not on every change of the address:
 /// a tab is a link to the same run, and the page would otherwise flash "Loading…" and read the run again on each.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public partial class BenchmarkRun : IDisposable
 {
     /// <summary>The check's trend; none when it can't be read.</summary>

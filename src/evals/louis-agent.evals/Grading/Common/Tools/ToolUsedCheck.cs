@@ -17,7 +17,7 @@ namespace LouisAgent.Evals.Grading.Common.Tools;
 /// might have been in it. Its <see cref="Entry"/> builds it from a file's settings (Factory Method), nested here as
 /// the other general checks' are.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class ToolUsedCheck(string tool, bool required = true) : ICheck
 {
     public string Name => "tool-used";

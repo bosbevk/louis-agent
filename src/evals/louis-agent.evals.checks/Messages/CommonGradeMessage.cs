@@ -6,7 +6,7 @@ namespace LouisAgent.Evals.Messages;
 /// The reasons the harness's grades give, in words a person reads: the general checks' reasons, and the runner's for
 /// a check that threw.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum CommonGradeMessage
 {
     [Description("no turn raised an error")]

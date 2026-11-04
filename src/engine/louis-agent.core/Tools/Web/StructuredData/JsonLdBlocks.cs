@@ -15,7 +15,7 @@ namespace LouisAgent.Core.Tools.Web.StructuredData;
 /// tag, so there is nothing for a pattern to backtrack on, and every caller (the lead image, a recipe reader) shares
 /// this one reader instead of keeping its own pattern.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 public static class JsonLdBlocks
 {
     private const string LdJson = "application/ld+json";

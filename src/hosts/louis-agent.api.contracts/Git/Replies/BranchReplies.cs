@@ -5,7 +5,7 @@ namespace LouisAgent.Api.Contracts.Git.Replies;
 /// <summary>
 /// The Branches tab: the checked-out branch, every branch, and after a merge or a delete, what was done.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record BranchesReply(string? Current, IReadOnlyList<GitBranchInfo> Branches, string? Message);
 
 /// <summary>

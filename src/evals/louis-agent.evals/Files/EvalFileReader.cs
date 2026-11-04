@@ -14,8 +14,8 @@ namespace LouisAgent.Evals.Files;
 /// itself, naming the field, and a typo can't become a default. Each check after that is a guard clause (ADR 0051).
 /// Whether a name suits MCP is the catalogue's and the conformance check's to say, not this reader's.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public static class EvalFileReader
 {
     /// <summary>The file every eval folder holds.</summary>

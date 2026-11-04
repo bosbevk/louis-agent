@@ -6,7 +6,7 @@ namespace LouisAgent.Evals.Protocol.Kinds;
 /// How a whole conversation came out. Infrastructure means something on our side broke, so it isn't counted against
 /// the agent.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public enum TrialOutcome
 {
     [WireName("pass")] Pass,

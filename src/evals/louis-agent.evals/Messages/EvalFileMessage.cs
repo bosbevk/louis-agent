@@ -5,7 +5,7 @@ namespace LouisAgent.Evals.Messages;
 /// <summary>
 /// What the eval file's reader says when it turns a file away, in words the person who wrote it reads.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum EvalFileMessage
 {
     [Description("eval folder '{Folder}' has no eval.json")]

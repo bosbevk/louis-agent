@@ -13,8 +13,8 @@ namespace LouisAgent.Orchestrator.Triage;
 /// A named record instead of the anonymous object it was (ADR 0041), so the file's shape is written down in one place
 /// and a test can hold it. The usage parts are <see cref="UsageLine"/>s, the same shape fixes.jsonl uses.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record DecisionRecord(
     [property: JsonPropertyName("error_id")] string ErrorId,
     [property: JsonPropertyName("method")] string Method,

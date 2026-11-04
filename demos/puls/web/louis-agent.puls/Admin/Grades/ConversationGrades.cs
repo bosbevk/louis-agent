@@ -9,7 +9,7 @@ namespace LouisAgent.Puls.Admin.Grades;
 /// A conversation from before graders were kept has none, and one nobody graded, or from an API that doesn't send
 /// them, has no people's grades.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record ConversationGrades(
     IReadOnlyList<GradeRow>? Grades,
     GradeOutcome? Outcome,

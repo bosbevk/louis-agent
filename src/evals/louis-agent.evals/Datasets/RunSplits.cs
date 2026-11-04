@@ -7,7 +7,7 @@ namespace LouisAgent.Evals.Datasets;
 /// What a run's split means for the dataset: which of its scenarios a run asks for. The contract knows the split, but
 /// not a scenario's own split, so this rule stays with the datasets.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public static class RunSplits
 {
     /// <summary>

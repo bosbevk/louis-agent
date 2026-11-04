@@ -22,8 +22,8 @@ namespace LouisAgent.Evals.Grading.Models.Rubrics;
 /// the rubric from the eval's folder. The grade carries the rubric's hash, so a grade made with another rubric is
 /// another measure.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0029-simulations-in-csharp.md">ADR 0029: a judge counts once calibrated</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0029-simulations-in-csharp.md">ADR 0029: a judge counts once calibrated</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class JudgeCheck : IRubricCheck
 {
     /// <summary>The keys the judge is told, in the order the file lists them.</summary>

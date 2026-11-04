@@ -15,8 +15,8 @@ namespace LouisAgent.Core.Tools.Web.Browsing;
 /// (ADR 0049). It checks the page the browser is asked to open, not the images, scripts and frames that page loads;
 /// those are what any visitor's browser loads for it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
 public sealed class RobotsWebBrowser(IWebBrowser inner, RobotsPolicy robots) : IWebBrowser
 {
     /// <summary>

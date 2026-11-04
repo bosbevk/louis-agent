@@ -24,7 +24,7 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// to a copy. The form is plain classes (<see cref="EvalComposition"/>), the components change it in place, and the
 /// page turns it into the file when it saves, checks or shows it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 public partial class EvalStudio : IDisposable
 {
     [Inject] private AgentApi Api { get; set; } = null!;

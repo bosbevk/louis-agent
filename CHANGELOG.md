@@ -1,14 +1,15 @@
 # Changelog
 
 > **Reference.** What was finished, newest first, one entry per feature, fix or cleanup. **Elsewhere:** what's still
-> open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
+> open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
 - 2026-11-04 — **The folders say what ships** (CL29.1): `src/` holds only the framework, now with the eval harness in
   `src/evals/`; `packs/` holds tools and `packs-evals/` what proves them; anything that names a product moved to
   `demos/`, as someone's own project would be: `demos/puls/{identity,evals,web,hosts,tests,config,docker,skills,deploy}` and
-  `demos/louis-agent/{web,hosts,tests,config,docker,skills}`, each told apart by `CONFIG_DIRECTORY`. Framework tests moved to `src/tests/`, pack tests to `packs-tests/`. The solution's groups match, and `SolutionLayoutTests` holds it. Paths only: no
-  namespace changed. [ADR 0074](docs/adr/0074-the-folders-say-what-ships.md).
+  `demos/louis-agent/{web,hosts,tests,config,docker,skills}`, each told apart by `CONFIG_DIRECTORY`. Framework tests moved to `src/tests/`, pack tests to `packs-tests/`, framework docs to `src/docs/`, and a demo's or the
+  packs' docs and ADRs to their own `docs/`, with a Setup per demo. The solution's groups match, and `SolutionLayoutTests` holds it. Paths only: no
+  namespace changed. [ADR 0074](src/docs/adr/0074-the-folders-say-what-ships.md).
 - 2026-11-04 — **CL28 The folders mirror the solution**: `src/` is `engine/` (core, choices, session-stream, moved in
   from the repository's root), `hosts/` and `web/`, as Rider's groups are, and what proves a pack or an identity moved
   under `evals/packs/` and `evals/identities/`, because someone can take the tools without the evals, or not own them.
@@ -18,7 +19,7 @@
   rows of our own for what the saved recipe pages missed or priced from the wrong product (white fish had been priced as
   beef fillet); the rows are our own estimates, checked by Louis. What proves a pack or an identity moved to a
   project beside it that only the runner references (`….checks`, `….evals`), so they stand on core alone, ready for the
-  engine's split. [ADR 0073](docs/adr/0073-packs-reference-no-evals.md).
+  engine's split. [ADR 0073](src/docs/adr/0073-packs-reference-no-evals.md).
 - 2026-11-04 — **FX40 A recipe's headings aren't ingredients**: `ReadRecipe` numbered `<h3>CURRIED MINCE</h3>` and
   `***Filling` as ingredients. A heading in the list is now the section of the lines under it
   (`RecipeIngredient(Section, Text)`, like a step), printed as a sub-heading, and every other HTML tag leaves every
@@ -28,7 +29,7 @@
   feed); `McpPrimitives.Add` sets up the tools and the resources once for both transports, and `Program.cs` keeps only
   the transports and auth (`EngineToolSync`, `SkillsToolProvider` moved to `Tools/`). The server's first tests,
   `tests/louis-agent.mcp-server.tests`, run the SDK's real client against it over in-memory pipes. Over HTTP the
-  feeds sit behind the MCP key; the API still serves them open. [ADR 0072](docs/adr/0072-feeds-are-mcp-resources.md).
+  feeds sit behind the MCP key; the API still serves them open. [ADR 0072](src/docs/adr/0072-feeds-are-mcp-resources.md).
 - 2026-11-04 — **F55 Stats SA's prices uploaded in the admin portal**: a pack can declare data uploads (`IDataImport`
   in core: a name, a description, the files it takes, a preview and a save, both answering a report; `IAgentPack.Imports`,
   empty by default; the catalogue gathers them and refuses a name twice), served behind the admin key at `GET
@@ -38,14 +39,14 @@
   prices that changed, the unchanged and any product with no names, and Save writes the new and the corrected. The
   names a list may use are kept in `statssa-names.json` by Stats SA's code. A product the newest month lacks is
   priced from the newest month that has it, and the line names that month. The shipped August table gains the
-  Limpopo price the hand-made file missed. [ADR 0071](docs/adr/0071-packs-take-data-uploads.md);
-  [write-up](docs/learning/16-human-in-the-loop.md#f55-the-preview-is-the-check-2026-11-04)
+  Limpopo price the hand-made file missed. [ADR 0071](src/docs/adr/0071-packs-take-data-uploads.md);
+  [write-up](src/docs/learning/16-human-in-the-loop.md#f55-the-preview-is-the-check-2026-11-04)
 - 2026-11-04 — **F50.2 The prices as an open feed**: a pack can publish read-only data feeds (`IDataFeed` in core: a
   name, a description and its JSON; `IAgentPack.Feeds`, empty by default; the catalogue gathers them and refuses a name
   twice), and the API serves them open without knowing the pack: `GET /v1/feeds` lists each with its path, `GET
   /v1/feeds/{name}` returns the pack's JSON as it wrote it, `404` for a name no pack publishes. The first is
   `shop-prices`: Stats SA's tables and our own rows, read through the tool's cache, under a notice that says they are
-  averages and whose they are. [ADR 0070](docs/adr/0070-packs-publish-data-feeds.md)
+  averages and whose they are. [ADR 0070](src/docs/adr/0070-packs-publish-data-feeds.md)
 - 2026-11-04 — **F50.2 Where to buy and shop prices**: the shops pack (Checkers' catalogue read through our
   browser, for development only, since no retailer answered the 2026-10-25 emails) is gone, and two packs with one job
   each take its place, neither tied to food. `where-to-buy`: `FindBranches(shop, town)` finds a shop's three nearest
@@ -57,8 +58,8 @@
   seeded from the shipped tables, read once an hour, the shipped tables when unset or down. The cook loads both beside
   its recipes, prices with `EstimatePrices`, names the branch with `FindBranches` and credits both; the cook eval is
   at version 14, the routing eval at 3. `SHOP_CATALOGUES` and `SHOP_STORE_CACHE` are gone.
-  [ADR 0069](docs/adr/0069-shop-prices-are-stats-sa-estimates.md);
-  [write-up](docs/learning/04-tool-design.md#f502-one-job-per-pack-and-the-numbers-in-code-2026-11-04)
+  [ADR 0069](packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md);
+  [write-up](src/docs/learning/04-tool-design.md#f502-one-job-per-pack-and-the-numbers-in-code-2026-11-04)
 - 2026-11-04 — **The Studio's numbered steps** (F53's leftover): the Studio's form is four numbered steps in the
   order they are done, 1 Compose, 2 Check, 3 Try, 4 Publish (GOV.UK's task list; the admin review's finding 6), and
   *Try* picks the run to replay from the recorded runs the Evals page lists, this eval's own first, instead of an id
@@ -72,13 +73,13 @@
   before its text) and 0068 (every fetch obeys `robots.txt`) and stays at 200 lines; the work email left in git
   history is a TODO line for Louis's call (licence review, findings 4 and 5)
 - 2026-11-04 — **FX38 One CI run per change**: every push to a pull request's branch started two runs in one concurrency group, so one cancelled the other (24 of the last 60 runs), and the cancelled one was usually the push run, the only one that checked formatting. CI now runs on pull requests and on `main`, the formatting check runs on both (a pull request against its base), `main`'s runs never cancel, the token is read-only, and the actions are on their Node 24 majors; the CI review's leftovers are done
-- 2026-11-04 — **FX37 A git past its deadline is always a timeout**: CI now and then failed `AGitThatTakesTooLong_IsARefusalInWords` with `git read-tree took longer than 0 seconds` where the test expected `rev-parse`: `WaitForExitAsync` lets a process that already exited through a token that already ran out, so a fast `rev-parse` counted as in time. The publisher now asks the deadline itself after the wait, and the test runs a hundred times; [lesson](docs/learning/fixes-lessons.md#fx37--a-test-that-races-is-not-a-test)
+- 2026-11-04 — **FX37 A git past its deadline is always a timeout**: CI now and then failed `AGitThatTakesTooLong_IsARefusalInWords` with `git read-tree took longer than 0 seconds` where the test expected `rev-parse`: `WaitForExitAsync` lets a process that already exited through a token that already ran out, so a fast `rev-parse` counted as in time. The publisher now asks the deadline itself after the wait, and the test runs a hundred times; [lesson](src/docs/learning/fixes-lessons.md#fx37--a-test-that-races-is-not-a-test)
 - 2026-11-04 — **FX36 A redirect's body is observed**: the browser's log said `A task failed and nothing awaited it`
   (`Response body is unavailable for redirect responses`) at odd moments after a visit that followed a redirect:
   PuppeteerSharp sets every redirect's body task to that failure and never awaits it, and F52's last-chance handler
   reports such a task when the collector finds it. `Browsing/RedirectBodies` asks each redirect for its body, which
   awaits the failure and so counts it seen; a workaround for the library (25.14, still so at 25.16), removed when a
-  release awaits its own task; [lesson](docs/learning/fixes-lessons.md#fx36--a-librarys-failed-task-is-yours-to-see)
+  release awaits its own task; [lesson](src/docs/learning/fixes-lessons.md#fx36--a-librarys-failed-task-is-yours-to-see)
 - 2026-11-04 — **F53.3 The review queue, and F53 closed**: `/admin/review` shows the answers waiting for this
   reviewer's grade across the stored runs, one at a time, from one new API route (`GET
   /v1/admin/evals/reviews/queue?reviewer=&limit=`: every conversation whose human review is still pending and that
@@ -86,14 +87,14 @@
   Skip, the blind review panel unchanged, a grade opening the next; the keys 1, 2 and 3 grade pass, fail or unsure;
   the sidebar's *Review* entry counts what waits and falls as you grade. The third child of F53, the admin portal
   organised by job (option B of the admin review, built unattended at Louis's word, PRs #132, #136 and this one);
-  [write-up](docs/learning/16-human-in-the-loop.md)
+  [write-up](src/docs/learning/16-human-in-the-loop.md)
 - 2026-11-04 — **F54 The engine's website**: `src/louis-agent.site`, a public site for .NET developers in the
   Console theme (black, white and metallic grays) with five pages and two films of how the engine works, a short
   one (36 s) and a detailed one (60 s) whose slabs are the chat pipeline's middleware in its real order; static
   server-rendered Razor with no WebAssembly and no script of ours, the films CSS keyframes over CSS 3D, the site
   referencing no engine project and showing only what works today; 21 tests (the pages in memory, a golden per
-  film, the stylesheet's rules), `Dockerfile.site`. PR #133; [ADR 0066](docs/adr/0066-the-site-is-static-razor.md);
-  [write-up](docs/learning/18-testing-and-shipping.md#a-host-that-is-only-content-f54)
+  film, the stylesheet's rules), `Dockerfile.site`. PR #133; [ADR 0066](demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md);
+  [write-up](src/docs/learning/18-testing-and-shipping.md#a-host-that-is-only-content-f54)
 - 2026-11-04 — **F52 Observability through OpenTelemetry**: every host sends its logs (Serilog's OTLP sink) and
   traces (the OpenTelemetry SDK) to the collector `OTEL_EXPORTER_OTLP_ENDPOINT` names, on the standard settings
   alone; a turn is an `invoke_agent` span named for its agent and tagged with its session and turn, never its words; a
@@ -101,7 +102,7 @@
   stack and the last lines and spans still leave; the Aspire dashboard runs as its own stack on the PC
   (`docker-compose.observability.yml`), and `deploy.ps1 telemetry` sends Azure's to Application Insights; the guide
   has the table of what to log at which level. PRs #121, #122, #124, #126 to #130;
-  [ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)
+  [ADR 0064](src/docs/adr/0064-observability-through-opentelemetry.md)
 - 2026-11-03 — **F53.2 One Evals page**: `/admin` is the Evals page in list/details shape: the list names every eval
   with its last run and per mode the pass@k with its move against the run before; the chosen eval is in the address
   (`?eval=`, the eval that ran last when none is named) and its details hold the Run button with its estimate, the
@@ -113,7 +114,7 @@
   graded and the change against the eval's run before, from the trend the page already fetched; the cost, the
   requests, the answers still to grade), the page's blocks as tabs, and the tab and the explorer's place in the
   address, so Back goes up a level and a link opens the same view; the run is fetched only when its id changes
-  ([ADR 0065](docs/adr/0065-the-view-is-in-the-address.md); the first child of F53, the portal organised by job)
+  ([ADR 0065](src/docs/adr/0065-the-view-is-in-the-address.md); the first child of F53, the portal organised by job)
 - 2026-11-03 — **The cook's judge recalibrated**: against 60 answers Louis graded in the portal (run
   `cf37574d0f23`), `meal-for-people` agreed on 43 of 45 passes but only 8 of 15 fails, all of them Puls alone
   refusing, asking back or listing ideas; its rubric is now a short ordered decision that calls those `false` and
@@ -126,22 +127,22 @@
   once the whole run had ended; now the API answers a run's requests so far from the usage ledger
   (`GET …/runs/{id}/requests`), joined as the run's end joins them, and the table asks after each turn's end, so a
   paid run's spend shows turn by turn and the live and final costs can't disagree
-  ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx34--a-cost-is-worth-most-while-its-being-spent))
+  ([fixes](src/docs/fixes/README.md), [lesson](src/docs/learning/fixes-lessons.md#fx34--a-cost-is-worth-most-while-its-being-spent))
 - 2026-11-03 — **FX32 An edit in the studio keeps its eval's folder**: a draft of an eval the workspace has starts
   from a copy of the folder the runner lists it in (the cook's `Cook`), so its references, held-out scenarios, labels,
   manual and manifest are checked and published back into that folder with the draft's changes on top (an edit that
   changes a scenario bumps the manifest's version, for the runner to seal); a refused
   publish no longer ends its quote with `..`
-  ([lesson](docs/learning/fixes-lessons.md#fx32--an-edit-starts-from-what-is-already-there))
+  ([lesson](src/docs/learning/fixes-lessons.md#fx32--an-edit-starts-from-what-is-already-there))
 - 2026-11-03 — **FX30 The delegation card's tile**: back in place (`../../brand/` from `css/chat/`), and every relative
   `url(…)` in Puls's stylesheet is tested to point at a file the app serves
-  ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx30--a-path-written-from-a-file-breaks-when-the-file-moves))
+  ([fixes](src/docs/fixes/README.md), [lesson](src/docs/learning/fixes-lessons.md#fx30--a-path-written-from-a-file-breaks-when-the-file-moves))
 - 2026-11-03 — **FX29 A failed send says why**: Puls's send button seemed dead when the API refused the chat's key;
   the runner set its notice but never redrew the page, which shows it. It does now
-  ([fixes](docs/fixes/README.md), [lesson](docs/learning/fixes-lessons.md#fx29--a-failure-has-to-reach-the-screen-that-shows-it))
+  ([fixes](src/docs/fixes/README.md), [lesson](src/docs/learning/fixes-lessons.md#fx29--a-failure-has-to-reach-the-screen-that-shows-it))
 - 2026-11-03 — **FX33 The header test reads the same on every checkout**: CL27's `PromptHeadersTests` makes its
   raw-string file LF before splitting it, so a Windows checkout's CRLF no longer fails it
-  ([lesson](docs/learning/fixes-lessons.md#fx33--a-raw-string-has-its-files-line-endings))
+  ([lesson](src/docs/learning/fixes-lessons.md#fx33--a-raw-string-has-its-files-line-endings))
 - 2026-11-03 — **CL27 Prompt headers**: every built-in prompt (core's, Puls's and the shops pack's 26, and the
   tests' six) and the cook's judge rubric open with the Agent Skills spec's front matter: `name` (the file's),
   `description`, and under `metadata` the `level` of a mode, role or minion and the `toolsets` a role always loads
@@ -151,13 +152,13 @@
   prompt goldens unchanged, the rubric's hash still `438a8deb91f4`, no calibration moved); `RoleHeader` deleted,
   `RoleLevel` at the top of `Skills/`, a role's toolsets from `SkillLoader.ToolsetsOf`; `GET /v1/admin/prompts` and
   Puls's admin *Prompts* page list them. Ran unattended; its picks are in the PR for review. Guide
-  [Build an identity](docs/guides/build-an-identity.md#3-write-its-mode)
-  ([0063](docs/adr/0063-a-prompt-says-what-it-is.md), [write-up 07](docs/learning/07-context-engineering.md#a-prompt-says-what-it-is-cl27))
+  [Build an identity](src/docs/guides/build-an-identity.md#3-write-its-mode)
+  ([0063](src/docs/adr/0063-a-prompt-says-what-it-is.md), [write-up 07](src/docs/learning/07-context-engineering.md#a-prompt-says-what-it-is-cl27))
 - 2026-11-03 — **FX31 The trend's change badge stays one pill**: on the Benchmarks page's category cards, `▲ +13%`
   no longer breaks into a two-line blob beside the value, and the small trend panels fill their card instead of
-  three fixed columns with one empty ([lesson](docs/learning/fixes-lessons.md#fx31--a-small-copy-of-a-layout-needs-its-own-columns))
+  three fixed columns with one empty ([lesson](src/docs/learning/fixes-lessons.md#fx31--a-small-copy-of-a-layout-needs-its-own-columns))
 - 2026-11-03 — **F49.5 Studio: compose, try, publish**, and with it **F49 Evals as content** is done (its five
-  children F49.1 to F49.5; what lasts of the parent plan is in [the evals' architecture](docs/architecture/evals.md#where-f49-came-from)):
+  children F49.1 to F49.5; what lasts of the parent plan is in [the evals' architecture](src/docs/architecture/evals.md#where-f49-came-from)):
   the admin portal's Studio page (`/admin/studio`) composes an eval as a form over `eval.json` (the head and modes,
   checks picked from the runner's catalogue with their fields drawn from each settings' schema, the rubrics, *View
   JSON*), saves it as an eval draft (the third view of `eval_drafts`), and asks the runner for everything: its
@@ -170,9 +171,9 @@
   and out by a mapping table (`--import-promptfoo`, `--export-promptfoo`, YamlDotNet in the runner only;
   `POST /v1/admin/evals/drafts/promptfoo` names what it left out, `GET …/{id}/promptfoo`). The API still never
   references the harness: every call goes through `RunnerProcess`. Steps 1 to 8 ran unattended; their picks are in
-  the PR for review. Guide [Add an eval](docs/guides/add-an-eval.md#9-or-compose-it-in-the-studio)
-  ([0062](docs/adr/0062-the-studio-writes-what-git-keeps.md), [write-up 12](docs/learning/12-evaluation.md#compose-try-publish-f495),
-  [write-up 18](docs/learning/18-testing-and-shipping.md#git-stays-the-truth-f495))
+  the PR for review. Guide [Add an eval](src/docs/guides/add-an-eval.md#9-or-compose-it-in-the-studio)
+  ([0062](src/docs/adr/0062-the-studio-writes-what-git-keeps.md), [write-up 12](src/docs/learning/12-evaluation.md#compose-try-publish-f495),
+  [write-up 18](src/docs/learning/18-testing-and-shipping.md#git-stays-the-truth-f495))
 - 2026-11-03 — **F49.4 Studio: samples from chats and human review**: on a stored run in the admin portal, a
   conversation becomes a sample draft (*Sample* on its card: a variant of the scenario it ran, read from the eval's
   folder the runner's listing now names; the first question the input, the later ones the follow-ups, the person's
@@ -183,8 +184,8 @@
   Mongo's `eval_drafts`) and on the Evals page under their eval's card, counted, listed and deleted, until F49.5
   publishes them; the API's `SampleBody` held equal to the harness's `SampleFile`; five routes under
   `/v1/admin/evals` (`runs/{id}/samples`, `runs/{id}/transcripts`, `runs/{id}/scenarios/{task}`, `{eval}/drafts`).
-  Steps 3 to 6 ran unattended; their picks are in the PR for review. Guide [Add an eval](docs/guides/add-an-eval.md#6-add-the-reference-transcripts)
-  ([0061](docs/adr/0061-evals-grow-from-use.md), [write-up 12](docs/learning/12-evaluation.md#evals-grow-from-use-f494))
+  Steps 3 to 6 ran unattended; their picks are in the PR for review. Guide [Add an eval](src/docs/guides/add-an-eval.md#6-add-the-reference-transcripts)
+  ([0061](src/docs/adr/0061-evals-grow-from-use.md), [write-up 12](src/docs/learning/12-evaluation.md#evals-grow-from-use-f494))
 - 2026-10-31 — **F49.3 Checks in packs**: a pack ships the checks that prove its tools, in a registry of its own
   that the composition's `EvalChecks.All` gathers; the shops pack's `ShopsChecks.All` holds `estimates-at-shop` and
   `untooled-shops`, and `PricedAtRetailer` (`priced-at-shop`, no entry) moved beside them, with what only they read
@@ -193,8 +194,8 @@
   (`Markdown/`), and the harness's `links-to-host` uses its `IsHost`; whether a price is given as fact comes in through
   a new `IPriceReader` the file names, Puls's `rand-prices`; the shops' site table lives in the pack and in Puls,
   held equal by `ShopTableTests`; Puls keeps no check (`PulsChecks` deleted) and no shop reading; `ToolHosts` deleted;
-  the cook's 230 pinned grades unchanged throughout. Guide [Build a pack](docs/guides/build-a-pack.md#9-its-checks-when-it-proves-its-tools)
-  ([0060](docs/adr/0060-a-pack-ships-its-checks.md), [write-up 20](docs/learning/20-extensibility.md))
+  the cook's 230 pinned grades unchanged throughout. Guide [Build a pack](src/docs/guides/build-a-pack.md#9-its-checks-when-it-proves-its-tools)
+  ([0060](src/docs/adr/0060-a-pack-ships-its-checks.md), [write-up 20](src/docs/learning/20-extensibility.md))
 - 2026-10-31 — **F49.2b The generic checks**: every family an eval tool ships has a general check, 24 in
   `GeneralChecks.All` by family (`Facts/`, `Answers/`, `Tools/`, `Compare/`, `Similarity/`, `Language/`): new
   `turns-under`, `tokens-under`, `not-contains`, `starts-with`, `length-under`, `mentions-expected`, `is-json`,
@@ -206,8 +207,8 @@
   `recipe-photos`, Adapters over its scoring code), its `CookNoError`, `WithinBudget`, `RecipeImage` and
   `ServesAsAsked` deleted and the cook's file naming the general types under the old names (version 11); no grade
   moved: 230 pinned on the 26 transcripts (`CookGradesTests`) and 140 of 140 on a $0 replay of the baseline;
-  `similar` (embeddings) left for when an eval needs it. Guide [Add an eval](docs/guides/add-an-eval.md#4-choose-the-checks)
-  ([write-up 12](docs/learning/12-evaluation.md), [write-up 20](docs/learning/20-extensibility.md))
+  `similar` (embeddings) left for when an eval needs it. Guide [Add an eval](src/docs/guides/add-an-eval.md#4-choose-the-checks)
+  ([write-up 12](src/docs/learning/12-evaluation.md), [write-up 20](src/docs/learning/20-extensibility.md))
 - 2026-10-30 — **F49.2 Evals as files**: an eval is a folder with an `eval.json` (its name, the identity it proves,
   a hand-bumped version, its modes and its checks by type with their settings), its manual, dataset, rubric and
   transcripts beside it, read strictly by `FileEval`; Puls's `puls-routing` and `puls-cook` live in
@@ -218,16 +219,16 @@
   which references only core and the check contract, reaching the runner through the composition's `EvalChecks`;
   its judge `meal-for-people` in `identities/louis-agent.identity.puls.judges`, which only the runner references;
   `evals/louis-agent.evals.puls` deleted; the template is a folder to copy (`evals/template/Example/`, zero C#); a
-  turn's facts read by the harness for every eval. Guide [Add an eval](docs/guides/add-an-eval.md)
-  ([0058](docs/adr/0058-an-eval-is-a-folder-of-files.md), [write-up 20](docs/learning/20-extensibility.md))
+  turn's facts read by the harness for every eval. Guide [Add an eval](src/docs/guides/add-an-eval.md)
+  ([0058](src/docs/adr/0058-an-eval-is-a-folder-of-files.md), [write-up 20](src/docs/learning/20-extensibility.md))
 - 2026-10-30 — **F49.1 The checks catalogue**: the check contract (`ICheck`, `Grade`, `Trial` and the turn types) out
   of the harness into `evals/louis-agent.evals.checks`, which a pack can reference; grader became check in C# (the
   wire keeps `grader`); a check type is named in kebab case and built from a strict typed settings record
   (`CheckType<TParameters>`), found in `CheckCatalog`, which lists each entry's JSON schema; the harness's entries are
   `GeneralChecks.All`: `no-error`, `within-time`, `cost-under`, and two new checks, `contains` (one of a list of
   texts, case and accents ignored) and `tool-used` (by the agent or a specialist). No regex check
-  ([0057](docs/adr/0057-regex-is-the-last-option.md)); `routed-to` waits for F49.2
-  ([0056](docs/adr/0056-a-check-is-a-catalogue-entry.md), [write-up 20](docs/learning/20-extensibility.md))
+  ([0057](src/docs/adr/0057-regex-is-the-last-option.md)); `routed-to` waits for F49.2
+  ([0056](src/docs/adr/0056-a-check-is-a-catalogue-entry.md), [write-up 20](src/docs/learning/20-extensibility.md))
 - 2026-10-29 — **FX23 A script that never reads its input keeps its exit code and output**: `ProcessRunner` guards the
   stdin write and close, so a child that exits first ("Broken pipe") no longer reports as a failed run with its output
   lost; `CreatedTool_SupportsPowerShellAndBash` is no longer flaky (ten green runs on the fix, eight of ten red before)
@@ -241,13 +242,13 @@
   recorded, replay or re-score (a run row says what it replayed, `ReplayOf`), and what it checks in a fold
   (`EvalCardView`, a Presentation Model); both web apps' `app.css` became an `@import` list of area files (Puls 18,
   the code-review app 8), byte-identical when joined, and a `.css` file holds at most 200 lines of rules
-  ([0053](docs/adr/0053-stylesheets-by-concern.md); the byte-checked move is
-  [0054](docs/adr/0054-a-move-may-copy-line-ranges.md))
+  ([0053](src/docs/adr/0053-stylesheets-by-concern.md); the byte-checked move is
+  [0054](src/docs/adr/0054-a-move-may-copy-line-ranges.md))
 - 2026-10-29 — **CL25 Every CLAUDE.md in 200 lines**: `docs/CLAUDE.md` from 558 lines to under 200 and every
   `CLAUDE.md` and `.claude/rules/` file held to 200 by `ClaudeMdSizeTests`; the why of each rule in its ADR (new:
-  [0050](docs/adr/0050-summaries-like-a-person.md) summaries like a person, [0051](docs/adr/0051-flat-conditionals-and-named-endpoints.md)
-  flat conditionals and named endpoints, [0052](docs/adr/0052-edit-never-script.md) edit, never a script), the how in
-  path-scoped rules files (`csharp.md`, `razor.md`, `docs.md`), the how-tos in [guides](docs/guides/README.md)
+  [0050](src/docs/adr/0050-summaries-like-a-person.md) summaries like a person, [0051](src/docs/adr/0051-flat-conditionals-and-named-endpoints.md)
+  flat conditionals and named endpoints, [0052](src/docs/adr/0052-edit-never-script.md) edit, never a script), the how in
+  path-scoped rules files (`csharp.md`, `razor.md`, `docs.md`), the how-tos in [guides](src/docs/guides/README.md)
   (get started, finish a step, add a skill, debug and logs, common errors); one rule, *Rider's tools first*, in
   place of the list of Rider's tools
 - 2026-10-29 — **FX27 A sub-session's answer carries no usage**: the footer under a specialist's or minion's answer
@@ -260,20 +261,20 @@
   ([fix doc as it was](https://github.com/bosbevk/louis-agent/blob/deb14797f4be3e6b8fa0b66eab9900aedb5f87c9/docs/fixes/FX26-replay-miss-kind.md))
 - 2026-10-29 — **CL24 Done docs folded**: the docs of built features and done fixes folded into the project design docs
   and the write-ups, then deleted; the plans of built work deleted; every link to them at the tag `pre-cl24`. Each
-  fix's row keeps its symptom and cause; the lessons are in [Lessons from the fixes](docs/learning/fixes-lessons.md);
-  [platform.md](docs/plans/platform.md) is the living roadmap with Phases 0 to 3 done; the rule *a feature holds at most
-  about ten steps* and its sub-features ([docs/CLAUDE.md](docs/CLAUDE.md), rules 2 and 3) are TODO lines
+  fix's row keeps its symptom and cause; the lessons are in [Lessons from the fixes](src/docs/learning/fixes-lessons.md);
+  [platform.md](src/docs/plans/platform.md) is the living roadmap with Phases 0 to 3 done; the rule *a feature holds at most
+  about ten steps* and its sub-features ([docs/CLAUDE.md](src/docs/CLAUDE.md), rules 2 and 3) are TODO lines
   ([plan](https://github.com/bosbevk/louis-agent/blob/113501480e9df53e94a84a447f4c3abc5c93e081/docs/plans/CL24-done-docs-folded.md))
 - 2026-10-29 — **F18 Evaluation**: every check is a C# eval on one harness (`evals/louis-agent.evals/`): `IEval` and
   `IEvalSet`, datasets in Inspect's Sample shape with a held-out split and a hash, code graders first, a model judge
   calibrated against people's labels (90% of each class), human review in the portal, pass@k and pass^k, a roll-up by
   category, re-scores and replays for $0; the runner and the API share one event contract, protocol v2 (`evals/
-  louis-agent.evals.protocol`, [ADR 0047](docs/adr/0047-protocol-v2-one-event-contract.md)); the store goes through
-  typed records ([ADR 0048](docs/adr/0048-mongo-through-records.md)) and keeps nothing older than its build ([ADR
-  0049](docs/adr/0049-nothing-is-compatible-before-a-sale.md)); the portal reads only the contract's records. First
+  louis-agent.evals.protocol`, [ADR 0047](src/docs/adr/0047-protocol-v2-one-event-contract.md)); the store goes through
+  typed records ([ADR 0048](src/docs/adr/0048-mongo-through-records.md)) and keeps nothing older than its build ([ADR
+  0049](src/docs/adr/0049-nothing-is-compatible-before-a-sale.md)); the portal reads only the contract's records. First
   v2 baseline: `puls-cook` 23 of 24 in its cook mode, `puls-routing` 72 of 72, $0.37 together; the local judge 31 of
   36, below the bar ([feature](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/features/F18-evaluation.md), [plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F18-evals.md), write-ups
-  [12](docs/learning/12-evaluation.md) and [13](docs/learning/13-cost-and-token-economics.md))
+  [12](src/docs/learning/12-evaluation.md) and [13](src/docs/learning/13-cost-and-token-economics.md))
 - 2026-10-27 — **FX25 The eval runner sees only what it reads**: a run's process got the API's whole environment; `RunnerEnvironment`
   keeps an allowlist (the runtime's, the runner's settings, and an Anthropic judge's key under the judge's name only), so the Mongo
   login, the admin key and the provider keys never reach an eval or a script ([fix](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX25-runner-environment.md))
@@ -287,10 +288,10 @@
   is closed, and an unknown `/v1` path is a JSON 404, not the web app's page; every client names the whole route
   (`v1/sessions`), its setting only the host; CL14's `GET /personalities` and `personality` field gone; the git
   endpoints split by resource (`Endpoints/Git/`); the route table pinned by a golden file, ADR 0039's rule checked on
-  it by tests ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md), [ADR 0039](docs/adr/0039-api-routes-under-v1.md), write-up
-  [11](docs/learning/11-protocols.md))
+  it by tests ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL20-api-standards.md), [ADR 0039](src/docs/adr/0039-api-routes-under-v1.md), write-up
+  [11](src/docs/learning/11-protocols.md))
 - 2026-10-24 — **FX21 The browser says what it is**: `BROWSER_USER_AGENT`, what the headless browser tells every site it
-  reads for a user; the Puls stack, its launch profile and the Azure app set `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md;
+  reads for a user; the Puls stack, its launch profile and the Azure app set `Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/demos/puls/docs/SITE_OWNERS.md;
   reads a page on a user's behalf)`, unset sends Chrome's own, the automation marker is never touched, and never a
   person's name or place ([fix](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX21-the-browser-says-what-it-is.md))
 - 2026-10-24 — **CL19 Config and Docker by place**: a folder is one kind of thing for one place. `config/` is what the
@@ -308,12 +309,12 @@
   server, held by `PackConvertibilityTests`; the fakes the test projects share in `tests/louis-agent.testing`. During the
   build Louis added two rules, held by ratchet tests: a `.razor` holds markup only (`RazorHasNoCodeTests`) and a file
   holds at most 200 lines, a test file 400 (`FileSizeTests`), with core, the API, ACP and the web apps sorted and split
-  by concern ([ADR 0034](docs/adr/0034-code-a-person-can-maintain.md)); the ACP host pinned by a transcript test before
+  by concern ([ADR 0034](src/docs/adr/0034-code-a-person-can-maintain.md)); the ACP host pinned by a transcript test before
   it moved. Proved
   by three goldens and one paid cook run on the finished branch, `b4a6ea22b178`, read against the two runs on main in
-  write-up [07](docs/learning/07-context-engineering.md) ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md),
-  [ADR 0027](docs/adr/0027-engine-identities-and-packs.md), [ADR 0028](docs/adr/0028-packs-stay-convertible-to-mcp.md),
-  PR #71, write-ups [04](docs/learning/04-tool-design.md) and [18](docs/learning/18-testing-and-shipping.md))
+  write-up [07](src/docs/learning/07-context-engineering.md) ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md),
+  [ADR 0027](src/docs/adr/0027-engine-identities-and-packs.md), [ADR 0028](src/docs/adr/0028-packs-stay-convertible-to-mcp.md),
+  PR #71, write-ups [04](src/docs/learning/04-tool-design.md) and [18](src/docs/learning/18-testing-and-shipping.md))
 - 2026-10-19 — **FX20 Skill files wait for approval** (the platform plan's Phase 1, its last door): a skill file the
   agent writes goes to `Skills/agent/functions/pending/`, active only in the engine that wrote it, until the user's
   `/approve <name>` moves it up for every later session; `/reject` deletes it and `/tools` lists it, as agent-built
@@ -321,11 +322,11 @@
 - 2026-10-19 — **FX19 Git arguments as data** (the platform plan's Phase 1): every git tool runs from a list of
   arguments, the model's values after `--end-of-options` and paths after `--`, a value that starts with `-` refused
   before git runs, and `SetConfig` limited to `user.name` and `user.email`; `ArchitectureTests` keeps a command-line
-  string out of core ([fix](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX19-git-arguments-as-data.md), [ADR 0004](docs/adr/0004-arguments-as-data.md) amended)
+  string out of core ([fix](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX19-git-arguments-as-data.md), [ADR 0004](src/docs/adr/0004-arguments-as-data.md) amended)
 - 2026-10-19 — **FX18 Auth fails closed** (the platform plan's Phase 1): the API, and the MCP server over HTTP, refuse
   to start without a key unless `AGENT_AUTH=off` says so on purpose; a key that is set is always checked. One pure
   rule in core, `Guardrails/HostAuth`, replaces the two hosts' own checks ([fix](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/fixes/FX18-auth-fails-closed.md))
-- 2026-10-19 — **F29 Validated specialists**, closed by [the platform plan](docs/plans/platform.md) (Phase 0): its
+- 2026-10-19 — **F29 Validated specialists**, closed by [the platform plan](src/docs/plans/platform.md) (Phase 0): its
   four steps were in git (`d79dbb1`, `ae257c5`, `d7afa23`, `28c4901`) though its doc said *planned*. `ROLES_ENABLED`
   (`PERSONALITIES_ENABLED` before CL14) gates the roles an instance may use; Puls opens with `specialists` (then
   `agents`) and `web`, answers the web itself and hands only cooking to the cook, until each other role has a report
@@ -410,18 +411,18 @@
   `agents` toolset is `specialists`. Measured from the start-up logs: the coding agent's fixed prefix 29,464 → 28,663
   tokens, the cook's 4,518 → 4,773 (the principles), Puls's chat 6,703 (Afrikaans) and 6,694 (English); the paid
   checks were skipped until they're rewritten after F30 ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL9-modes-per-product.md),
-  [ADR 0019](docs/adr/0019-modes-one-file-per-product.md), [ADR 0020](docs/adr/0020-principles-for-every-agent.md))
+  [ADR 0019](src/docs/adr/0019-modes-one-file-per-product.md), [ADR 0020](src/docs/adr/0020-principles-for-every-agent.md))
 - 2026-10-16 — **CL8 Skills by level**: the built-in prompts move into `louis-agent.core/Prompts/`, one folder per
   level a session runs at (`agent/` level 0, `specialists/` level 1, `minions/` level 2 for F30) beside the shared
   `toolsets/`, and are read only from the assembly (`Microsoft.Extensions.FileProviders.Embedded`): a role opens only at
   its own level, a copy on disk no longer overrides one, and a wording change is a rebuild. The repo's `Skills/` keeps
   what the agent writes; the placeholder time-logging skill goes; `SkillsLayoutTests` holds the layout
-  ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL8-skills-by-level.md), [ADR 0017](docs/adr/0017-skills-by-level.md),
-  [ADR 0018](docs/adr/0018-built-in-prompts-embedded.md))
+  ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL8-skills-by-level.md), [ADR 0017](src/docs/adr/0017-skills-by-level.md),
+  [ADR 0018](src/docs/adr/0018-built-in-prompts-embedded.md))
 - 2026-10-15 — **Licence: all rights reserved** (was AGPL-3.0): public to read, but no use, copying, changes or hosting
-  without written permission; earlier versions keep their licence ([ADR 0016](docs/adr/0016-licence-all-rights-reserved.md))
+  without written permission; earlier versions keep their licence ([ADR 0016](src/docs/adr/0016-licence-all-rights-reserved.md))
 - 2026-10-15 — **Licence: AGPL-3.0** (was MIT): still free to use, change and share; whoever changes it and runs it as a
-  service must publish the changes, so a hosted Puls's improvements stay open ([ADR 0015](docs/adr/0015-licence-agpl.md))
+  service must publish the changes, so a hosted Puls's improvements stay open ([ADR 0015](src/docs/adr/0015-licence-agpl.md))
 - 2026-10-15 — **F24 Landing motion**: Puls's landing page as a moving page on the brand's idea (a puls is a disturbance
   that travels from its source): dark water behind it, the app's three panels playing a scripted turn in the page, a
   pinned *In die app* tour, a Kenmerke bento over two marquees, Syfers counting up the measured numbers, an accordion
@@ -446,7 +447,7 @@
   to `docs/specs/images/` (the 43 KB SVG; the 1.1 MB PNG of it goes), How a turn works joins arc42's runtime view, and
   the runbooks move beside the orchestrator's project doc; every link repointed ([plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL7-docs-tidy.md))
 - 2026-10-14 — **Test first**: a step that changes behaviour starts with its tests, run and seen failing, then the
-  code; one commit with both, the red output in the step's explanation ([ADR 0014](docs/adr/0014-test-first.md))
+  code; one commit with both, the red output in the step's explanation ([ADR 0014](src/docs/adr/0014-test-first.md))
 - 2026-10-14 — **CL6 arc42, ADRs and C4**: the architecture in arc42's twelve sections in `docs/architecture/`
   (ARCHITECTURE.md's text moved unchanged, plus goals, constraints, C4 context, container and component diagrams,
   quality scenarios and a glossary), and 13 decisions as ADRs in `docs/adr/`, each written from where it was
@@ -534,7 +535,7 @@
   thinking text checked with `tools/louis-agent.usage-probe`); LLM profiles `config/.env.anthropic` / `.env.ollama`
 - 2026-10-07 — Specs and feature plan for usage, budgets and cheaper responses (`docs/specs/`, `docs/features/`); the
   session-architecture and orchestrator designs moved from this list into `docs/specs/`
-- 2026-10-07 — Docs: [how the agents and endpoints talk](docs/AGENT_COMMUNICATION.md), [runbooks](docs/projects/orchestrator-runbooks.md), a
+- 2026-10-07 — Docs: [how the agents and endpoints talk](src/docs/AGENT_COMMUNICATION.md), [runbooks](demos/louis-agent/docs/projects/orchestrator-runbooks.md), a
   docs index in reading order
 - 2026-10-07 — Web app Branches tab: merges and deletes are queued instead of silently dropped while another runs
 - 2026-10-07 — Comms log keeps louis-agent's text blocks apart

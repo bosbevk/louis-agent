@@ -4,7 +4,7 @@ namespace LouisAgent.Puls.Admin.Evals;
 /// Where a run's results came from: the model answered live, a recording was played back, or old transcripts were
 /// graded again. Only a recorded run measures the model anew.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum RunOrigin
 {
     /// <summary>The model answered live.</summary>

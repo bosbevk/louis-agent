@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Store.Runs;
 /// Embedded Value (PoEAA): the slices are a small summary of the run, so they live inside its document. Metadata
 /// Mapping on a Data Transfer Object, as <see cref="RunDocument"/> explains.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record SliceDocument(
     [property: BsonElement("mode")] string Mode,
@@ -45,7 +45,7 @@ internal sealed record SliceDocument(
 }
 
 /// <summary>One grader's counts in a slice, and its mean score.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record SliceGraderDocument(
     [property: BsonElement("grader")] string Grader,
@@ -64,7 +64,7 @@ internal sealed record SliceGraderDocument(
 }
 
 /// <summary>One kind of grader's counts in a slice.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record SliceKindDocument(
     [property: BsonElement("kind")] CheckKind Kind,

@@ -7,7 +7,7 @@ namespace LouisAgent.Api.IntegrationTests.Evals.Runs;
 /// A judge check starts like a re-score: the eval runner as a child process with an argument list, told to calibrate,
 /// with the labels piped in on its input. Only one runs at a time, since the judge is shared.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 [Category("Integration")]
 public class EvalCalibrationStartIntegrationTests
 {

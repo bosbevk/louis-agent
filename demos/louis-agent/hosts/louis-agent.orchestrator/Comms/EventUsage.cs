@@ -8,7 +8,7 @@ namespace LouisAgent.Orchestrator.Comms;
 /// reported for each reply), and both together. A part is null when it wasn't measured: no triage ledger, or no fix
 /// asked for.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal sealed record EventUsage(UsageTotal? Triage, UsageTotal? LouisAgent, UsageTotal? Total)
 {
     /// <summary>Nothing measured at all.</summary>

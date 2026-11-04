@@ -9,7 +9,7 @@ namespace LouisAgent.Orchestrator;
 /// An enum, not a string (ADR 0043): the outcome is read once, where the model's line comes in, and the comms log
 /// counts and filters on the member, so "fixed" can't be spelled two ways.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 internal enum TriageOutcome
 {
     /// <summary>The runbook calls the error expected: nothing to do.</summary>

@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Contracts.Admin.Studio;
 /// Data Transfer Object (Fowler, PoEAA), built by the API's <c>CheckListReply.Of</c> beside its own records
 /// (<c>StudioReplies</c>), so this project needs none of them.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record CheckListReply(IReadOnlyList<CheckTypeRow> Checks, IReadOnlyList<ReaderRow> Readers);
 
 /// <summary>

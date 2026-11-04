@@ -15,7 +15,7 @@ namespace LouisAgent.McpServer;
 /// forgotten in; now each transport makes one call. The MCP-only skill tools stay a <c>WithTools</c> registration in
 /// each transport, since the SDK builds that class from its services.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
 public static class McpPrimitives
 {
     /// <summary>Puts the engine's tools and the catalogue's feeds into the server's options.</summary>

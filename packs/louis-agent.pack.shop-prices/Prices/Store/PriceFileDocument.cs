@@ -12,7 +12,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices.Store;
 /// Metadata Mapping on a Data Transfer Object (Fowler, PoEAA): the record says how each field is stored and the driver
 /// does the copying; the products inside are the pack's own records, which carry their field names too (ADR 0048).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 public sealed record PriceFileDocument(
     [property: BsonId] string Id,

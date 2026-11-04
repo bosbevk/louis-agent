@@ -16,7 +16,7 @@ namespace LouisAgent.Evals.Runner.Catalog;
 /// process (finding R): the API reads these lines and never the catalogues themselves. A line is a check when it has
 /// a <c>type</c>, a reader when it has a <c>reader</c>, so one reader of the lines tells them apart.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public static class ChecksListing
 {
     /// <summary>The check lines, then the reader lines.</summary>

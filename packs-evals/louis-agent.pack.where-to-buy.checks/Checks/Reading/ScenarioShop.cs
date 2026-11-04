@@ -12,7 +12,7 @@ namespace LouisAgent.Packs.WhereToBuy.Checks.Reading;
 /// refused, naming the scenario.
 /// </summary>
 /// <remarks>Parsed once with <see cref="SettingChoice"/> (ADR 0024), as Puls's cook read it before F49.3.</remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class ScenarioShop
 {
     /// <summary>The scenario key that names the shop.</summary>

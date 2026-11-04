@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Protocol;
 /// session, question, time and failure from its turn line. If a turn was run twice (a retried trial), you get the last
 /// go. Only the contract's events count; anything else, a version 1 <c>@</c> line too, is a line for people.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class ProtocolTranscripts
 {
     /// <summary>One conversation's turns, picked out of a log that holds many.</summary>

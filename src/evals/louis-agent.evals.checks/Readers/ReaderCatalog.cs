@@ -16,7 +16,7 @@ namespace LouisAgent.Evals.Readers;
 /// takes no settings, so there is nothing for a factory to build. Its refusals are <see cref="InvalidDataException"/>s,
 /// which the runner reports as a refusal, as the entries' own are.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0056-a-check-is-a-catalogue-entry.md">ADR 0056: a check is a catalogue entry</seealso>
 public sealed class ReaderCatalog
 {
     /// <summary>The readers, by name.</summary>

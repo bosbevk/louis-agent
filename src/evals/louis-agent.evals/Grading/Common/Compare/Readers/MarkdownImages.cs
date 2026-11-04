@@ -13,7 +13,7 @@ namespace LouisAgent.Evals.Grading.Common.Compare.Readers;
 /// <c>Links.ImageUrls</c> pattern does (<c>!\[[^\]]*\]\((https?://[^)\s]+)\)</c>), by walking the text instead (ADR
 /// 0057): the alt text runs to the first closing bracket, and the address to its closing parenthesis, with no space.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public sealed class MarkdownImages : IImageReader
 {
     /// <summary>What opens an image.</summary>

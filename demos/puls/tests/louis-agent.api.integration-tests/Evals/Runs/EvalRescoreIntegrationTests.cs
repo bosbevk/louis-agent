@@ -12,7 +12,7 @@ namespace LouisAgent.Api.IntegrationTests.Evals.Runs;
 /// argument. The API reads, stores, starts and shows; it grades nothing. The end-to-end test runs the real runner on
 /// the C# stub, which opens no session and costs nothing.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 [Category("Integration")]
 public class EvalRescoreIntegrationTests
 {

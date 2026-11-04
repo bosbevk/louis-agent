@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Tests.Evals.Runs;
 /// A stored run is re-scored by the eval runner, which gets the run's export on its stdin and the run's id in an
 /// argument list. The API reads, stores, starts and shows; it grades nothing.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public class EvalRescoreTests
 {
     /// <summary>The export writes back which run a re-score came from, and none for an ordinary run.</summary>

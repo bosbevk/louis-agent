@@ -13,7 +13,7 @@ namespace LouisAgent.Identities.Puls.Evals.Readers;
 /// <see cref="Prices.PriceLinkHosts"/>, the reading the cook's <c>estimates-at-shop</c> did before it moved to the
 /// shops pack, unchanged, so the rule over this reader grades as it did. The eval file names it <c>rand-prices</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0059-an-identity-ships-readers-not-checks.md">ADR 0059: an identity ships readers, not checks</seealso>
 public sealed class RandPrices : IPriceReader
 {
     /// <inheritdoc />

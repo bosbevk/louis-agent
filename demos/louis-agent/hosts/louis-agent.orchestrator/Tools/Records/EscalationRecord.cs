@@ -4,7 +4,7 @@ namespace LouisAgent.Orchestrator.Tools.Records;
 
 /// <summary>One line of escalations.jsonl: an error handed to a human team, with why and what the error was.</summary>
 /// <remarks>A named record, not an anonymous object (ADR 0041), snake_case like every orchestrator file.</remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record EscalationRecord(
     [property: JsonPropertyName("error_id")] string ErrorId,
     [property: JsonPropertyName("team")] string Team,

@@ -16,7 +16,7 @@ namespace LouisAgent.Puls.Components.Admin.Studio;
 /// Parameters down, callbacks up, as the chats dialog: the card says which conversation and hears when to close. The
 /// form's rules live in <see cref="SampleForm"/>, a plain class with its own tests (ADR 0034).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0034-code-a-person-can-maintain.md">ADR 0034: code a person can maintain</seealso>
 public partial class SampleDialog : IDisposable
 {
     [Inject] private AgentApi Api { get; set; } = null!;

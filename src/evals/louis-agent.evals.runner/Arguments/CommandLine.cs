@@ -73,7 +73,7 @@ public sealed record LabelSheetRequest(string Eval, string Grader, string RunId,
 /// Reads the runner's command line into one request. Anything it can't make sense of is refused with a message that
 /// says why.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class CommandLine
 {
     /// <summary>

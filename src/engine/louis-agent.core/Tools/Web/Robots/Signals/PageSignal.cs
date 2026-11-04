@@ -6,8 +6,8 @@ namespace LouisAgent.Core.Tools.Web.Robots.Signals;
 /// The four ways a page can tell us on its own that it doesn't want AI readers: each says which one it was, in words
 /// the refusal shows the model.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
 public enum PageSignal
 {
     /// <summary>A <c>&lt;meta name="robots"&gt;</c> tag whose content has <c>noai</c>.</summary>

@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Tests.Endpoints;
 /// Each admin handler declares what it can answer (ADR 0045), and a call answers one of those, with no HTTP in
 /// between: the handler is a plain method on a plain object.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public class AdminHandlersTests
 {
     private const string ManualPath = "src/evals/louis-agent.evals.runner/Manuals/stub.md";
