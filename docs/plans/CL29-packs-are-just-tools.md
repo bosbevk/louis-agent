@@ -163,6 +163,9 @@ flowchart LR
   `host-packs` is at `demos/puls/hosts/`, and the composition at `src/engine/`. The trees below are from before that.
 - **Order, 2026-11-04.** `IPackContext` names the browser and search contracts, so those move first: step 4 comes before
   step 2's new types.
+- **Hosts, 2026-11-04.** A host ships as a library, and each demo writes the small program that names its packs (Composition
+  Root; picked over an installable `dotnet tool` with plugins, and over the CLI leaving the framework). It starts with
+  `louis-agent.cli`, and it is how the hosts stop referencing `host-packs`.
 
 ### Folder trees
 

@@ -123,6 +123,32 @@ public class SolutionLayoutTests
         Assert.That(missing, Is.Empty);
     }
 
+    /// <summary>
+    /// The folders at the top and the solution's groups at the top are the same list. Dot folders and what a run leaves
+    /// behind are not part of the code, and a folder holding only build output is what a past move left.
+    /// </summary>
+    [Test]
+    public void TheTopLevelFolders_AreTheSolutionsGroups()
+    {
+        var lines = File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, "louis-agent-solution.sln"));
+
+        var groups = lines.Where(line => line.StartsWith($"Project(\"{SolutionFolder}\")"))
+            .Where(line => ParentOf(lines, IdOf(line)) is null)
+            .Select(line => line.Split('"')[3]);
+        var folders = Directory.EnumerateDirectories(TestPaths.RepoRoot)
+            .Where(HoldsMoreThanBuildOutput)
+            .Select(path => Path.GetFileName(path))
+            .Where(name => !name.StartsWith('.') && name is not ("data" or "logs"));
+
+        Assert.That(folders, Is.EquivalentTo(groups));
+    }
+
+    /// <summary>Whether a folder has anything in it besides what a build wrote.</summary>
+    private static bool HoldsMoreThanBuildOutput(string folder) =>
+        Directory.EnumerateFiles(folder, "*", SearchOption.AllDirectories)
+            .Select(file => Path.GetRelativePath(folder, file).Replace('\\', '/').Split('/'))
+            .Any(parts => !parts.Contains("bin") && !parts.Contains("obj"));
+
     /// <summary>The id at the end of a solution file's project line.</summary>
     private static string IdOf(string line) => line.Split('"')[^2];
 }

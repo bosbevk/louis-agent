@@ -78,6 +78,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ollama", "ollama", "{7B2E4C
 		demos\louis-agent\docker\images\ollama\entrypoint.sh = demos\louis-agent\docker\images\ollama\entrypoint.sh
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0160}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\README.md = deploy\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\azure\README.md = deploy\azure\README.md
+		deploy\azure\deploy.ps1 = deploy\azure\deploy.ps1
+		deploy\azure\puls-app.yaml = deploy\azure\puls-app.yaml
+		deploy\azure\puls-searxng.yaml = deploy\azure\puls-searxng.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ts-forwarder", "ts-forwarder", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0162}"
+	ProjectSection(SolutionItems) = preProject
+		deploy\azure\ts-forwarder\Dockerfile = deploy\azure\ts-forwarder\Dockerfile
+		deploy\azure\ts-forwarder\start.sh = deploy\azure\ts-forwarder\start.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Skills", "Skills", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0163}"
+	ProjectSection(SolutionItems) = preProject
+		Skills\HelloWorld.md = Skills\HelloWorld.md
+		Skills\README.md = Skills\README.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
 	ProjectSection(SolutionItems) = preProject
 		docs\AGENT_COMMUNICATION.md = docs\AGENT_COMMUNICATION.md
@@ -1193,6 +1218,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0160}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0162} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}
