@@ -19,8 +19,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
-    <!-- The pack Puls names, so its golden builds the cook with the shops as the Puls stack does. -->
-    <ProjectReference Include="..\..\packs\louis-agent.pack.shops\louis-agent.pack.shops.csproj" />
+    <!-- The packs Puls names, so its golden builds the cook with them as the Puls stack does. -->
+    <ProjectReference Include="..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
     <!-- The other pack Puls names (F35.2 step 1): the catalogue the tests build holds it. -->
     <ProjectReference Include="..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <!-- The fakes every test project shares (CL15 step 5). -->

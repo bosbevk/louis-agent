@@ -22,7 +22,7 @@ internal static class PulsTrials
 
     /// <summary>The tools mode: Puls answers a meal itself, with the shop tools.</summary>
     public static readonly EvalMode ToolsEvalMode =
-        new(CookMode.Tools.Wire(), Role, [PulsToolset.Web.Wire(), PulsToolset.Shops.Wire()]);
+        new(CookMode.Tools.Wire(), Role, [PulsToolset.Web.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire()]);
 
     /// <summary>A trial of a scenario with the given <c>expected</c> JSON and place (none by default).</summary>
     public static Trial Trial(EvalMode mode, string task, string expected, string? place,

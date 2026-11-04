@@ -5,7 +5,8 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.ShopPrices;
+using LouisAgent.Packs.WhereToBuy;
 using LouisAgent.Choices;
 
 namespace LouisAgent.Composition;
@@ -30,7 +31,7 @@ public static class Plugins
     }
 
     /// <summary>
-    /// <c>IDENTITIES=puls</c> and <c>PACKS=shops</c>, comma separated, case ignored, each name once: every identity
+    /// <c>IDENTITIES=puls</c> and <c>PACKS=where-to-buy</c>, comma separated, case ignored, each name once: every identity
     /// with the packs it names, plus the packs named on their own; one instance per pack, however often it is named.
     /// An unknown name is refused before anything is built; unset loads nothing.
     /// </summary>
@@ -59,8 +60,9 @@ public static class Plugins
     /// <summary>Builds the pack of that kind, with the settings it reads from the environment.</summary>
     private static IAgentPack Create(PackKind kind) => kind switch
     {
-        PackKind.Shops => new ShopsPack(ShopsOptions.FromEnvironment()),
         PackKind.Recipes => new RecipesPack(RecipesOptions.FromEnvironment()),
+        PackKind.WhereToBuy => new WhereToBuyPack(),
+        PackKind.ShopPrices => new ShopPricesPack(),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 

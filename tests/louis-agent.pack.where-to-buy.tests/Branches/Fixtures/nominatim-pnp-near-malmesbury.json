@@ -1,0 +1,47 @@
+[
+  {
+    "lat": "-33.5667000",
+    "lon": "18.4833000",
+    "category": "shop",
+    "type": "supermarket",
+    "name": "Pick n Pay Atlantis",
+    "display_name": "Pick n Pay Atlantis, Wesfleur Circle, Atlantis, City of Cape Town, Western Cape, 7349, South Africa",
+    "address": { "road": "Wesfleur Circle", "suburb": "Atlantis", "city": "City of Cape Town", "state": "Western Cape" }
+  },
+  {
+    "lat": "-33.4625000",
+    "lon": "18.7279000",
+    "category": "shop",
+    "type": "supermarket",
+    "name": "Pick n Pay Malmesbury",
+    "display_name": "Pick n Pay Malmesbury, 12, Voortrekker Road, Malmesbury, Swartland Local Municipality, Western Cape, 7300, South Africa",
+    "address": { "house_number": "12", "road": "Voortrekker Road", "town": "Malmesbury", "municipality": "Swartland Local Municipality", "state": "Western Cape" }
+  },
+  {
+    "lat": "-33.4610000",
+    "lon": "18.7250000",
+    "category": "highway",
+    "type": "residential",
+    "name": "Pick n Pay Lane",
+    "display_name": "Pick n Pay Lane, Malmesbury, Swartland Local Municipality, Western Cape, South Africa",
+    "address": { "road": "Pick n Pay Lane", "town": "Malmesbury", "municipality": "Swartland Local Municipality", "state": "Western Cape" }
+  },
+  {
+    "lat": "-33.3833000",
+    "lon": "18.8963000",
+    "category": "shop",
+    "type": "supermarket",
+    "name": "PnP Family Riebeek Kasteel",
+    "display_name": "PnP Family Riebeek Kasteel, Main Street, Riebeek Kasteel, Swartland Local Municipality, Western Cape, South Africa",
+    "address": { "road": "Main Street", "village": "Riebeek Kasteel", "municipality": "Swartland Local Municipality", "state": "Western Cape" }
+  },
+  {
+    "lat": "-33.5000000",
+    "lon": "18.6000000",
+    "category": "shop",
+    "type": "convenience",
+    "name": "Pick n Pay Express",
+    "display_name": "Pick n Pay Express, Swartland Local Municipality, Western Cape, South Africa",
+    "address": { "municipality": "Swartland Local Municipality", "state": "Western Cape" }
+  }
+]

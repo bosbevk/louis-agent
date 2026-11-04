@@ -1,11 +1,13 @@
 using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.ShopPrices;
+using LouisAgent.Packs.WhereToBuy;
 
 /// <summary>
 /// The API's tests open Puls's sessions (puls-cook, puls/voice-af), so they register Puls's prompts as the Puls stack
-/// does with IDENTITIES=puls, with the shops and recipes packs Puls names, before the first prompt is read.
+/// does with IDENTITIES=puls, with the packs Puls names (where to buy, shop prices and recipes), before the first prompt
+/// is read.
 /// </summary>
 [SetUpFixture]
 public class PulsPrompts
@@ -15,7 +17,8 @@ public class PulsPrompts
     public void Register() => SkillFileSource.Use(
     [
         new PulsIdentity().Prompts,
-        new ShopsPack(new ShopsOptions()).Prompts,
+        new WhereToBuyPack().Prompts,
+        new ShopPricesPack().Prompts,
         new RecipesPack(new RecipesOptions()).Prompts,
     ]);
 }

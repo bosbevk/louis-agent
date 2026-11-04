@@ -8,16 +8,17 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.ShopPrices;
+using LouisAgent.Packs.WhereToBuy;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Identities.Puls.Tests;
 
 /// <summary>
 /// Pins what the model is sent in a Puls session: the chat (puls/voice-af with specialists and web, as the web app
-/// opens it) and the cook (puls-cook with web and shops, as Puls hands it the work). Core's golden never saw a Puls
-/// session, so this one is the proof that the identity keeps what it sends. A deliberate change regenerates it with
-/// LOUIS_UPDATE_GOLDEN=1: run, review the diff, commit.
+/// opens it) and the cook (puls-cook with web, where-to-buy and shop-prices, as Puls hands it the work). Core's golden
+/// never saw a Puls session, so this one is the proof that the identity keeps what it sends. A deliberate change
+/// regenerates it with LOUIS_UPDATE_GOLDEN=1: run, review the diff, commit.
 /// </summary>
 public class PulsSessionSnapshotTests
 {
@@ -49,7 +50,7 @@ public class PulsSessionSnapshotTests
     private AgentEngineFactory Factory()
     {
         // The Puls stack's settings, as far as building an engine reads them: a peer for the specialists toolset, and a
-        // shop with a browser for the shops toolset (F33; nothing is connected while an engine is built).
+        // browser (nothing is connected while an engine is built).
         var options = new AgentOptions
         {
             WorkspaceRoot = _skillsDir,
@@ -58,11 +59,11 @@ public class PulsSessionSnapshotTests
             AgentPeers = new Dictionary<string, Uri> { [SampleIdentity.Alpha] = new("http://puls-agent.test/") },
             BrowserUrl = "http://browser.test:9222",
         };
-        // The shops are a pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.
+        // Where to buy and shop prices are packs Puls names (F50.2); the catalogue is what IDENTITIES=puls builds.
         // The recipes pack is the other one Puls names; the cook's session here doesn't name it, so its settings stay
         // unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" }), new RecipesPack(new RecipesOptions())]);
+            [new WhereToBuyPack(), new ShopPricesPack(), new RecipesPack(new RecipesOptions())]);
         return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);
     }
 
@@ -90,8 +91,9 @@ public class PulsSessionSnapshotTests
         {
             Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()], "puls/voice-af",
                 RoleLevel.Agent)),
-            Cook = View(factory.GetOrCreate([CoreToolset.Web.Wire(), ShopsToolset.Shops.Wire()], PulsRole.Cook.Wire(),
-                RoleLevel.Specialist)),
+            Cook = View(factory.GetOrCreate(
+                [CoreToolset.Web.Wire(), WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire()],
+                PulsRole.Cook.Wire(), RoleLevel.Specialist)),
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")

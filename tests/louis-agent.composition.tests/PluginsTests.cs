@@ -1,5 +1,6 @@
 using LouisAgent.Packs.Recipes;
-using LouisAgent.Packs.Shops;
+using LouisAgent.Packs.ShopPrices;
+using LouisAgent.Packs.WhereToBuy;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -25,8 +26,11 @@ public class PluginsTests
         AgentCatalog puls = Plugins.FromSettings(IdentityKind.Puls.Wire(), null);
         Assert.That(puls.Identities.Select(i => i.Name), Is.EqualTo(new[] { IdentityKind.Puls.Wire() }));
         Assert.That(puls.Packs.Select(p => p.Name),
-            Is.EqualTo(new[] { ShopsToolset.Shops.Wire(), RecipesToolset.Recipes.Wire() }),
-            "Puls names the shops pack (step 4) and the recipes pack (F35.2 step 1)");
+            Is.EqualTo(new[]
+            {
+                WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(), RecipesToolset.Recipes.Wire()
+            }),
+            "Puls names the where-to-buy and shop-prices packs (F50.2) and the recipes pack (F35.2 step 1)");
 
         Assert.That(Plugins.FromSettings($"{IdentityKind.Puls.Wire()}, PULS", null).Identities, Has.Count.EqualTo(1),
             "a name twice, any case, is one identity");
@@ -55,36 +59,20 @@ public class PluginsTests
     }
 
     /// <summary>
-    /// <c>PACKS=shops</c> loads the shops pack on its own, reading its own <c>SHOP_CATALOGUES</c>; the toolset needs
-    /// the browser as well, and names <c>BROWSER_URL</c> when there is none.
+    /// <c>PACKS=where-to-buy,shop-prices</c> loads both packs on their own; neither needs a setting or the browser, so
+    /// both toolsets resolve on a host with nothing set.
     /// </summary>
     [Test]
-    public void PacksShops_GivesTheCodingAgentShops_WhenItsSettingsAreThere()
+    public void PacksWhereToBuyAndShopPrices_LoadOnTheirOwn_WithNothingSet()
     {
-        // CL15 step 4: the pack loads on its own, with no identity, and reads its own setting at the composition root.
-        Assume.That(Environment.GetEnvironmentVariable("SHOP_CATALOGUES"), Is.Null,
-            "the process has no SHOP_CATALOGUES of its own");
-        Environment.SetEnvironmentVariable("SHOP_CATALOGUES", "checkers");
-        try
-        {
-            AgentCatalog catalog = Plugins.FromSettings(null, ShopsToolset.Shops.Wire());
-            Assert.That(catalog.Identities, Is.Empty);
-            Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }));
+        AgentCatalog catalog = Plugins.FromSettings(null,
+            $"{WhereToBuyToolset.WhereToBuy.Wire()},{ShopPricesToolset.ShopPrices.Wire()}");
 
-            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
-                new NoSearch());
-            Assert.That(catalog.Resolve([ShopsToolset.Shops.Wire()], withBrowser).Select(t => t.Name),
-                Is.EqualTo(new[] { ShopsToolset.Shops.Wire() }));
-
-            var withoutBrowser = new ToolsetContext(new AgentOptions(), new NoSearch());
-            var refused =
-                Assert.Throws<ToolsetException>(() => catalog.Resolve([ShopsToolset.Shops.Wire()], withoutBrowser))!;
-            Assert.That(refused.Message, Does.Contain(ShopsToolset.Shops.Wire()).And.Contain("BROWSER_URL"));
-        }
-        finally
-        {
-            Environment.SetEnvironmentVariable("SHOP_CATALOGUES", null);
-        }
+        Assert.That(catalog.Identities, Is.Empty);
+        Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire() }));
+        var bare = new ToolsetContext(new AgentOptions(), new NoSearch());
+        Assert.That(catalog.Resolve([WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire()], bare).Select(t => t.Name),
+            Is.EqualTo(new[] { WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire() }));
     }
 
     /// <summary>
@@ -120,8 +108,8 @@ public class PluginsTests
     }
 
     /// <summary>
-    /// With Puls and its recipes sites set, the recipes pack loads once beside the shops, and the toolset the cook
-    /// declares in its header resolves to it.
+    /// With Puls and its recipes sites set, the recipes pack loads once beside where to buy and the shop prices, and the
+    /// toolsets the cook declares in its header resolve to them.
     /// </summary>
     [Test]
     public void PulsWithRecipeSources_LoadsTheRecipesPackOnce_AndTheCookResolvesIt()
@@ -134,13 +122,21 @@ public class PluginsTests
             // Named twice, once as a pack and once by the identity: still one instance of each.
             AgentCatalog catalog = Plugins.FromSettings(IdentityKind.Puls.Wire(), RecipesToolset.Recipes.Wire());
             Assert.That(catalog.Packs.Select(p => p.Name),
-                Is.EquivalentTo(new[] { ShopsToolset.Shops.Wire(), RecipesToolset.Recipes.Wire() }));
+                Is.EquivalentTo(new[]
+                {
+                    WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
+                    RecipesToolset.Recipes.Wire()
+                }));
 
-            // The cook's header names the recipes toolset; with the browser given, the catalogue resolves it.
+            // The cook's header names its three toolsets; with the browser given, the catalogue resolves them.
             var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
                 new NoSearch());
             Assert.That(catalog.Resolve(CookToolsets(catalog), withBrowser).Select(t => t.Name),
-                Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
+                Is.EqualTo(new[]
+                {
+                    RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
+                    ShopPricesToolset.ShopPrices.Wire()
+                }));
         }
         finally
         {
