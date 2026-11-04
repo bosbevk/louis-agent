@@ -1,0 +1,26 @@
+@* One eval in the list: a link to its details (the eval in the address), its name and what it proves, its last run's
+   status and when, and per mode the last pass@k with its move against the run before, coloured up or down. *@
+<a class="eval-list-item @(Selected ? "selected" : "")" href="@EvalAddress.Of(Line.Name)" aria-current="@(Selected ? "page" : null)" style="--i: @Index">
+    <span class="eval-list-top">
+        <code class="eval-list-name">@Line.Name</code>
+        <span class="status-pill @(Line.Status ?? "never-run")">@(Line.Status is { } status ? RunText.Status(status) : EvalText.Runs(Line.NeverRun, Line.Runs))</span>
+    </span>
+    <span class="eval-list-proves">@Line.Proves</span>
+    @if (Line.LastAt is { } at)
+    {
+        <span class="eval-list-when muted">@EvalText.When(at) · @EvalText.Runs(Line.NeverRun, Line.Runs)</span>
+    }
+    @if (Line.Modes.Count > 0)
+    {
+        <span class="eval-list-modes">
+            @foreach (var mode in Line.Modes)
+            {
+                <span class="eval-list-mode @EvalText.DeltaTone(mode.Change)" title="@RatesText.PassAt(mode.K) on the last run, and its move against the run before">
+                    <code>@mode.Mode</code>
+                    <strong>@RatesText.Share(mode.PassAtK)</strong>
+                    <span class="eval-list-delta">@EvalText.Delta(mode.Change)</span>
+                </span>
+            }
+        </span>
+    }
+</a>

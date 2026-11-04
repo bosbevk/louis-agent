@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Puls.Components.Admin.Reviews;
 
 /// <summary>
-/// A conversation's blind review (F18 step 6a.3): the question, what was asked, the answer, pass / fail / unsure and a note. The judge's verdict and reason are not drawn until this reviewer
-/// has graded it (<see cref="BlindReview"/>), then they are, with whether the person agreed.
+/// A conversation's blind review (F18 step 6a.3): the question, what was asked, the answer, pass / fail / unsure and
+/// a note. The judge's verdict and reason are not drawn until this reviewer has graded it
+/// (<see cref="BlindReview"/>), then they are, with whether the person agreed. A grade given is reported
+/// (<see cref="OnGraded"/>), so the Review page (F53.3) can open the next answer.
 /// </summary>
 public partial class ReviewPanel : IDisposable
 {
@@ -20,6 +22,9 @@ public partial class ReviewPanel : IDisposable
     [Parameter] public IReadOnlyList<string> Asked { get; set; } = [];
     [Parameter] public string? Answer { get; set; }
     [Parameter] public ConversationGrades Grades { get; set; } = ConversationGrades.None;
+
+    /// <summary>A grade was stored: its verdict (pass, fail or unsure).</summary>
+    [Parameter] public EventCallback<string> OnGraded { get; set; }
 
     private string _note = "";
     private string _typedName = "";
@@ -69,7 +74,11 @@ public partial class ReviewPanel : IDisposable
     /// <summary>"Not you?": lets the kept name go, so the panel asks for one again (6a.4).</summary>
     private Task ChangeNameAsync() => Reviewer.ClearAsync();
 
-    private async Task GradeAsync(string verdict)
+    /// <summary>
+    /// Stores this reviewer's verdict (pass, fail or unsure) with the note, then reports it. The Review page's keys
+    /// call it; the panel's own buttons do too.
+    /// </summary>
+    public async Task GradeAsync(string verdict)
     {
         if (Reviewer.Name is not { } name || _busy) return;
         _busy = true;
@@ -87,6 +96,7 @@ public partial class ReviewPanel : IDisposable
             using var _ = await Api.SendAsync(request);
             _verdict = verdict;
             Reviewer.Record(Conversation, Judge);
+            await OnGraded.InvokeAsync(verdict);
         }
         catch (AgentApiException ex)
         {

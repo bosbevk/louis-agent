@@ -26,7 +26,7 @@ is the only thing they share.
 ```mermaid
 flowchart LR
   subgraph Portal["Portal (louis-agent.puls, Components/Admin)"]
-    Bench["Benchmarks page<br/>checks, runs, live run"]
+    Bench["Evals page<br/>evals, runs, live run"]
     Explorer["Run explorer<br/>conversations, turns, reviews"]
   end
   subgraph API["louis-agent.api"]
@@ -70,7 +70,7 @@ flowchart LR
 | The runner | `evals/louis-agent.evals.runner` | The command: finds the eval folders and gathers the check catalogue, lists the evals (`--list`), runs one, re-scores a stored run, writes a label sheet, calibrates a judge; for the studio, lists the catalogue (`--checks`), judges a folder (`--check`), runs a folder's samples (`--folder`, `--samples`) and converts promptfoo files. |
 | The protocol | `evals/louis-agent.evals.protocol` | The eight line records both sides share, and their reader and writer. Records only. |
 | The API | `src/louis-agent.api` (`Evals/`, `Endpoints/Admin/`) | Starts the runner, records its lines, prices them from the ledger, serves the portal; also runs the sessions the runner opens. |
-| The portal | `src/louis-agent.puls` (`Components/Admin/`) | Start a run, watch it live, read runs and trends, review answers, calibrate a judge, write notes; make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
+| The portal | `src/louis-agent.puls` (`Components/Admin/`) | Start a run, watch it live, read runs and trends, grade the answers that wait (one at a time on the Review page, F53.3), calibrate a judge, write notes; make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
 | The drafts | `src/louis-agent.api` (`Evals/Drafts/`, Mongo's `eval_drafts`) | What the studio made and hasn't published yet: samples, transcripts and evals being composed ([ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). |
 | The replay store | `louis-agent.core` (`Sessions/Replay/`, `Llm/Replay/`, `Tools/Web/Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
 

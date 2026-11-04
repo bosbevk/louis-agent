@@ -31,7 +31,7 @@
                                 <summary>@slice.Tasks.Count</summary>
                                 @foreach (var task in slice.Tasks)
                                 {
-                                    <a class="s-task" href="admin/benchmarks/@RunId?task=@Uri.EscapeDataString(task)">@task</a>
+                                    <a class="s-task" href="@RunAddress.Of(RunId, RunTab.Conversations, ExplorerPlace.Conversation(task))">@task</a>
                                 }
                             </details>
                         </td>

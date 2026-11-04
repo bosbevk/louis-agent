@@ -2,6 +2,7 @@ using LouisAgent.Testing;
 using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Puls.Admin.Explorer.Place;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
@@ -59,7 +60,7 @@ public class BlindInTheExplorerTests
 
         // Render it on the run. With no task to open we are at the run's tiles, so click through to the list of
         // conversations.
-        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(Run)).Add(x => x.OpenTask, openTask));
+        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(Run)).Add(x => x.Place, openTask is null ? null : ExplorerPlace.Conversation(openTask)));
         if (openTask is null) cut.Find(".tile").Click();
 
         // Wait until the reviewer's name has loaded, so the blind rules know who is looking.
@@ -130,7 +131,7 @@ public class BlindInTheExplorerTests
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
 
-        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(run)).Add(x => x.OpenTask, "bobotie"));
+        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(run)).Add(x => x.Place, ExplorerPlace.Conversation("bobotie")));
 
         Assert.That(cut.FindAll(".review-panel"), Is.Empty);
     }
@@ -152,7 +153,7 @@ public class BlindInTheExplorerTests
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         ctx.Services.AddSingleton(new RunNotesState());
 
-        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(run)).Add(x => x.OpenTask, null));
+        var cut = ctx.Render<RunExplorer>(p => p.Add(x => x.Run, Stored(run)).Add(x => x.Place, null));
         cut.Find(".tile").Click();
 
         Assert.That(cut.FindAll(".review-panel"), Is.Empty);

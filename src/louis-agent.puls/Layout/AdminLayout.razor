@@ -18,19 +18,18 @@
             <button class="icon d-lg-none" type="button" data-bs-dismiss="offcanvas" data-bs-target="#admin-sidebar" aria-label="Close the menu">×</button>
         </div>
 
+        @* F53.2: the sidebar by job: Measure holds the evals and their runs, and the answers to grade (F53.3); Build what makes them better. *@
         <div class="sidebar-label">Measure</div>
         <nav class="side-nav">
-            <NavLink class="side-link" href="admin" Match="NavLinkMatch.All"><span class="ic i-chart" aria-hidden="true"></span>Benchmarks</NavLink>
-            <NavLink class="side-link" href="admin/evals"><span class="ic i-check" aria-hidden="true"></span>Evals</NavLink>
-            <NavLink class="side-link" href="admin/studio"><span class="ic i-sparkle" aria-hidden="true"></span>Studio</NavLink>
+            <NavLink class="side-link" href="admin" Match="NavLinkMatch.All"><span class="ic i-check" aria-hidden="true"></span>Evals</NavLink>
+            <NavLink class="side-link" href="admin/review"><span class="ic i-user" aria-hidden="true"></span>Review<ReviewCountBadge /></NavLink>
         </nav>
 
         <div class="sidebar-label">Build</div>
         <nav class="side-nav">
+            <NavLink class="side-link" href="admin/studio"><span class="ic i-sparkle" aria-hidden="true"></span>Studio</NavLink>
             <NavLink class="side-link" href="admin/prompts"><span class="ic i-file" aria-hidden="true"></span>Prompts</NavLink>
         </nav>
-
-        <div class="admin-side-note">More sections join here as the portal grows: the ledger, prices, skills.</div>
 
         <div class="side-footer">
             <nav class="side-nav admin-side-back">
@@ -40,6 +39,7 @@
     </aside>
 
     <main class="admin-main">
+        <LiveRunStrip />
         @Body
     </main>
 </div>

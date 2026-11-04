@@ -129,8 +129,12 @@ public class SummaryPanelTests
         Assert.That(links.Select(a => (a.TextContent, a.GetAttribute("href"))),
             Is.EqualTo(new[]
             {
-                (SampleScenario.Alpha, SampleScenario.Fill("admin/benchmarks/run123456789?task=<ScenarioAlpha>")),
-                (SampleScenario.Beta, SampleScenario.Fill("admin/benchmarks/run123456789?task=<ScenarioBeta>")),
+                (SampleScenario.Alpha,
+                    SampleScenario.Fill(
+                        "admin/runs/run123456789?tab=conversations&view=conversation&task=<ScenarioAlpha>")),
+                (SampleScenario.Beta,
+                    SampleScenario.Fill(
+                        "admin/runs/run123456789?tab=conversations&view=conversation&task=<ScenarioBeta>")),
             }));
     }
 

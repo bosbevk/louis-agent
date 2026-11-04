@@ -115,7 +115,7 @@ public class RunListItemTests
 
         var note = cut.Find("a.rescored-from");
         Assert.That(note.TextContent, Is.EqualTo("re-scored from old12345"));
-        Assert.That(note.GetAttribute("href"), Is.EqualTo("admin/benchmarks/old123456789"));
+        Assert.That(note.GetAttribute("href"), Is.EqualTo("admin/runs/old123456789"));
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("$0"));
     }
 
@@ -130,7 +130,7 @@ public class RunListItemTests
 
         var note = cut.Find("a.replayed-from");
         Assert.That(note.TextContent, Is.EqualTo("replay of old12345"));
-        Assert.That(note.GetAttribute("href"), Is.EqualTo("admin/benchmarks/old123456789"));
+        Assert.That(note.GetAttribute("href"), Is.EqualTo("admin/runs/old123456789"));
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("$0"));
     }
 
@@ -142,6 +142,6 @@ public class RunListItemTests
         Assert.That(cut.FindAll(".rescored-from"), Is.Empty);
         Assert.That(cut.FindAll(".replayed-from"), Is.Empty);
         Assert.That(cut.Find(".run-row-cost").TextContent, Is.EqualTo("—"));
-        Assert.That(cut.Find("a.run-row-main").GetAttribute("href"), Is.EqualTo("admin/benchmarks/abcdef123456"));
+        Assert.That(cut.Find("a.run-row-main").GetAttribute("href"), Is.EqualTo("admin/runs/abcdef123456"));
     }
 }

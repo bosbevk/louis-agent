@@ -1,0 +1,8 @@
+@* F53.1 step 2: the run page's tabs, each a link to the same run with the tab in the address, so Back and a shared
+   link land on the tab you were on. The active one is lit like the chat's page tabs. *@
+<nav class="page-tabs run-tabs" aria-label="This run">
+    @foreach (var entry in RunTabs.All)
+    {
+        <a class="@(entry.Tab == Active ? "active" : "")" href="@Href(entry.Tab)" title="@entry.Note">@entry.Name</a>
+    }
+</nav>

@@ -1,0 +1,44 @@
+@* One eval's details (CL26's card, F53.2's details pane): its name, whose it is and what it proves; the controls
+   that run it; its latest run as a scorecard, the runs before it as a timeline, its trend, and what it checks in a
+   fold; under the card, every stored run as a table. An eval that never ran shows only what it checks. *@
+
+<section class="card-p eval-details">
+    <header class="eval-head">
+        <div class="eval-title">
+            <code>@Eval.Name</code>
+            <span class="eval-version">@EvalText.Version(Eval.Version)</span>
+            <span class="eval-whose">for @EvalText.Whose(Eval.Identity)</span>
+        </div>
+        <span class="status-pill @(Eval.NeverRun == true ? "never-run" : "")">@EvalText.Runs(Eval.NeverRun, Eval.Runs.Count)</span>
+    </header>
+    <p class="eval-proves">@Eval.Proves</p>
+
+    <EvalRunControls Eval="@Eval.Name" HasManual="Eval.Manual" Runs="Runs" Running="Running" CanRun="CanRun"
+                     Currency="Currency" OnRun="OnRun" />
+
+    @if (View.Latest is { } latest)
+    {
+        <EvalScorecard Line="latest" Currency="Currency" />
+    }
+
+    @if (View.Runs.Count > 0)
+    {
+        <EvalRunTimeline Runs="View.Runs" Currency="Currency" />
+    }
+
+    @if (_trend is { } trend)
+    {
+        <details class="fold eval-trend-fold" open><summary class="fold-head"><span class="fold-chevron" aria-hidden="true"></span>Trend<span class="fold-note">this eval over its runs</span></summary>
+            <TrendChart Series="trend.Modes" ShowTitle="false" Currency="Currency" />
+        </details>
+    }
+
+    <EvalChecks Eval="Eval" Graders="View.Graders" />
+
+    @if (Eval.Drafts > 0)
+    {
+        <DraftList Eval="@Eval.Name" Count="Eval.Drafts" OnChanged="OnChanged" />
+    }
+</section>
+
+<RunsList Eval="@Eval.Name" Runs="Runs" Running="Running" Currency="Currency" OnRescored="OnRescored" OnReplay="OnRun" />

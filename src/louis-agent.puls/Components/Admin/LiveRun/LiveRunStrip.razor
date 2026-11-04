@@ -1,0 +1,19 @@
+@* F53.2 step 4: one line on every admin page while a run is going: what is running, since when, how far it is, and
+   a link to the page that follows it (the eval's details; a judge's calibration, the run it checks). Nothing when no
+   run is going. *@
+@if (_run is { Status: "running" } run)
+{
+    <a class="live-run-strip" href="@Href(run)">
+        <span class="status-pill running">running</span>
+        @if (run.CalibrationOf is { } of)
+        {
+            <span>judge check of <code>@run.Grader</code> on <code>@of</code></span>
+        }
+        else
+        {
+            <code>@run.Check</code>
+        }
+        <span class="muted">· @RunText.Repeats(run.Repeat) · started @run.StartedAt.ToLocalTime().ToString("HH:mm") · @run.Lines @(run.Lines == 1 ? "line" : "lines")</span>
+        <span class="live-run-strip-go">Open ›</span>
+    </a>
+}
