@@ -163,7 +163,8 @@ named none: one line, *Any supermarket near you.* / *Enige supermark naby jou.*)
 
 *Website* is a link to the branch's own page on the shop's site when one `WebSearch` (`site:pnp.co.za Malmesbury`)
 finds it, else the shop's home page; never fetch it, the link is for the user. A branch you couldn't confirm is
-`nearest Pick n Pay` with an empty street and the home page.
+`nearest Pick n Pay` with an empty street and the home page. Under the table, one line crediting the map the branches
+came from: *Branches from © OpenStreetMap contributors.* (Afrikaans: *Takke uit © OpenStreetMap-bydraers.*).
 
 ### Unsure
 

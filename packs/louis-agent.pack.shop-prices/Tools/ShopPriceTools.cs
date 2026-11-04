@@ -3,7 +3,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Packs.ShopPrices.Estimates;
 using LouisAgent.Packs.ShopPrices.Messages;
-using LouisAgent.Packs.ShopPrices.Prices;
+using LouisAgent.Packs.ShopPrices.Prices.Store;
 using LouisAgent.Packs.ShopPrices.Prices.Regions;
 
 namespace LouisAgent.Packs.ShopPrices.Tools;
@@ -14,13 +14,14 @@ namespace LouisAgent.Packs.ShopPrices.Tools;
 /// numbers are the same every run and never the model's own.
 /// </summary>
 /// <remarks>
-/// It reads no shop's site and calls nothing outside the process: the prices are a table the pack ships (ADR 0069),
-/// so the tool can't fail on a network and is safe to run beside any other. It takes plain data and returns text, so
+/// It reads no shop's site: the prices are Stats SA's tables (ADR 0069), from the price store at most an hour ago, or
+/// the ones the pack ships when the store is unset or doesn't answer, so a price is always there. It only reads, so it
+/// is safe to run beside any other tool. It takes plain data and returns text, so
 /// the pack converts to an MCP server unchanged (ADR 0028).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
-public sealed class ShopPriceTools(PriceBook table)
+public sealed class ShopPriceTools(PriceBookCache books)
 {
     private const int MaxItems = 60;
 
@@ -30,7 +31,7 @@ public sealed class ShopPriceTools(PriceBook table)
         "national average): each line priced from the nearest pack Stats SA prices, scaled to the line's size, then the " +
         "total and the price per person, worked out in code. Averages over many shops, never one shop's price. Lines it " +
         "can't price come back as ?, never R0.")]
-    public string EstimatePrices(
+    public async Task<string> EstimatePrices(
         [Description(
             "The shopping list, one line per item, in English: what to buy and its pack, 'beef mince 500 g', " +
             "'eggs 18', 'rice 1 kg', 'tinned tomatoes 410 g x 2' (x 2 for two packs). Leave out what isn't bought.")]
@@ -38,7 +39,8 @@ public sealed class ShopPriceTools(PriceBook table)
         [Description("The user's province, 'Western Cape' or 'Gauteng'; unset uses the national average")]
         string? province = null,
         [Description("How many people the list feeds, for the price per person; unset gives none")]
-        int? serves = null)
+        int? serves = null,
+        CancellationToken cancellationToken = default)
     {
         var lines = (items ?? []).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
         if (lines.Count == 0) return MessageText.Format(ShopPriceToolMessage.NoItems);
@@ -51,6 +53,7 @@ public sealed class ShopPriceTools(PriceBook table)
             : MessageText.Format(ShopPriceToolMessage.ProvinceUnknown,
                 new { Province = province!.Trim(), Provinces = string.Join(", ", SettingChoice.Names<Region>()) });
 
-        return EstimatePrinter.Print(BasketEstimate.Of(lines, table, region, serves), table, unknown);
+        var book = await books.GetAsync(cancellationToken);
+        return EstimatePrinter.Print(BasketEstimate.Of(lines, book, region, serves), book, unknown);
     }
 }

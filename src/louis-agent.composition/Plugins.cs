@@ -62,7 +62,7 @@ public static class Plugins
     {
         PackKind.Recipes => new RecipesPack(RecipesOptions.FromEnvironment()),
         PackKind.WhereToBuy => new WhereToBuyPack(),
-        PackKind.ShopPrices => new ShopPricesPack(),
+        PackKind.ShopPrices => new ShopPricesPack(ShopPricesOptions.FromEnvironment()),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 

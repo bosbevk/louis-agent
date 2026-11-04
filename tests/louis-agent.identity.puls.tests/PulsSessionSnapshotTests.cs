@@ -63,7 +63,7 @@ public class PulsSessionSnapshotTests
         // The recipes pack is the other one Puls names; the cook's session here doesn't name it, so its settings stay
         // unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new WhereToBuyPack(), new ShopPricesPack(), new RecipesPack(new RecipesOptions())]);
+            [new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
         return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);
     }
 

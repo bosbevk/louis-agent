@@ -10,5 +10,5 @@ public class PulsPrompts
 {
     [OneTimeSetUp]
     public void Register() => SkillFileSource.Use([new PulsIdentity().Prompts, new WhereToBuyPack().Prompts,
-        new ShopPricesPack().Prompts]);
+        new ShopPricesPack(new ShopPricesOptions()).Prompts]);
 }

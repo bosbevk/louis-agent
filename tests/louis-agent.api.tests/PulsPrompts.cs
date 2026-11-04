@@ -18,7 +18,7 @@ public class PulsPrompts
     [
         new PulsIdentity().Prompts,
         new WhereToBuyPack().Prompts,
-        new ShopPricesPack().Prompts,
+        new ShopPricesPack(new ShopPricesOptions()).Prompts,
         new RecipesPack(new RecipesOptions()).Prompts,
     ]);
 }

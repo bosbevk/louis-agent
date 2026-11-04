@@ -119,7 +119,7 @@ internal static class ApiTestHost
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new WhereToBuyPack(), new ShopPricesPack(), new RecipesPack(new RecipesOptions())]);
+            [new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
         var engines = new AgentEngineFactory(model, options, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,

@@ -11,7 +11,7 @@ public class ShopPricesPackTests
     [Test]
     public void TheToolset_AndItsGuide_AreThePacks()
     {
-        var pack = new ShopPricesPack();
+        var pack = new ShopPricesPack(new ShopPricesOptions());
 
         Assert.That(pack.Name, Is.EqualTo(ShopPricesToolset.ShopPrices.Wire()));
         Assert.That(pack.Toolsets.Select(t => t.Name), Is.EqualTo(new[] { ShopPricesToolset.ShopPrices.Wire() }));
@@ -24,7 +24,7 @@ public class ShopPricesPackTests
     [Test]
     public void ItNeedsNoSetting_AndRunsInParallel()
     {
-        var toolset = new ShopPricesPack().Toolsets[0];
+        var toolset = new ShopPricesPack(new ShopPricesOptions()).Toolsets[0];
 
         Assert.That(toolset.MissingSettings(null!), Is.Empty);
         Assert.That(toolset.ParallelSafe, Is.True);

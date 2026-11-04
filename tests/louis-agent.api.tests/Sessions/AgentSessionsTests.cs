@@ -41,7 +41,7 @@ public class AgentSessionsTests
     private static AgentCatalog PulsCatalog() =>
         new([new PulsIdentity()],
         [
-            new WhereToBuyPack(), new ShopPricesPack(), new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
+            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
             new FakePack(OffPack, [FakePack.Toolset(OffPack, typeof(FakeShopTools), _ => [new FakeShopTools()]) with
             {
                 MissingSettings = _ => ["OFF_PACK_URL"]

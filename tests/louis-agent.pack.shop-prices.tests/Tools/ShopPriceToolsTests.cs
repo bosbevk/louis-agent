@@ -1,4 +1,4 @@
-using LouisAgent.Packs.ShopPrices.Prices;
+using LouisAgent.Packs.ShopPrices.Prices.Store;
 using LouisAgent.Packs.ShopPrices.Tools;
 
 namespace LouisAgent.Packs.ShopPrices.Tests.Tools;
@@ -9,13 +9,14 @@ namespace LouisAgent.Packs.ShopPrices.Tests.Tools;
 /// </summary>
 public class ShopPriceToolsTests
 {
-    private static readonly ShopPriceTools Tools = new(PriceBook.Default);
+    /// <summary>The tool over the shipped tables, as a host without a price store runs it.</summary>
+    private static readonly ShopPriceTools Tools = new(new PriceBookCache(new ShippedPrices(), TimeProvider.System));
 
     /// <summary>A Western Cape list: Stats SA's provincial prices, scaled, totalled and shared, with the credit.</summary>
     [Test]
-    public void AList_IsPricedTotalledAndCredited()
+    public async Task AList_IsPricedTotalledAndCredited()
     {
-        string result = Tools.EstimatePrices(["beef mince 500 g", "eggs 18", "coconut milk 400 ml", "saffron 1 g"],
+        string result = await Tools.EstimatePrices(["beef mince 500 g", "eggs 18", "coconut milk 400 ml", "saffron 1 g"],
             "Western Cape", 4);
 
         Assert.That(result, Does.Contain("Estimated prices for the Western Cape, from Stats SA's average prices for August 2026"));
@@ -30,9 +31,9 @@ public class ShopPriceToolsTests
 
     /// <summary>The total in the result is the sum of the rows above it, to the rand.</summary>
     [Test]
-    public void TheTotal_IsTheSumOfTheRows()
+    public async Task TheTotal_IsTheSumOfTheRows()
     {
-        string result = Tools.EstimatePrices(["rice 1 kg", "onions 1 kg", "beef mince 500 g", "tinned tomatoes 410 g x 2"]);
+        string result = await Tools.EstimatePrices(["rice 1 kg", "onions 1 kg", "beef mince 500 g", "tinned tomatoes 410 g x 2"]);
         var rows = result.Split('\n').Where(l => l.StartsWith("| ") && l.Contains("± R")).ToList();
         decimal Rand(string row) => decimal.Parse(row[(row.LastIndexOf("± R", StringComparison.Ordinal) + 3)..]
             .TrimEnd(' ', '|', '*', '\r'));
@@ -43,9 +44,9 @@ public class ShopPriceToolsTests
 
     /// <summary>An unknown province says so and uses the country's averages, rather than failing the list.</summary>
     [Test]
-    public void AnUnknownProvince_IsSaid_AndTheCountryAnswers()
+    public async Task AnUnknownProvince_IsSaid_AndTheCountryAnswers()
     {
-        string result = Tools.EstimatePrices(["eggs 18"], "Stellenbosch");
+        string result = await Tools.EstimatePrices(["eggs 18"], "Stellenbosch");
 
         Assert.That(result, Does.StartWith("No province 'Stellenbosch' is known, so the national averages are used."));
         Assert.That(result, Does.Contain("western-cape"));
@@ -54,9 +55,9 @@ public class ShopPriceToolsTests
 
     /// <summary>An empty list asks for one; a list too long asks for a second call.</summary>
     [Test]
-    public void AnEmptyOrTooLongList_SaysWhatToSend()
+    public async Task AnEmptyOrTooLongList_SaysWhatToSend()
     {
-        Assert.That(Tools.EstimatePrices([" ", ""]), Does.StartWith("EstimatePrices needs the shopping list"));
-        Assert.That(Tools.EstimatePrices([.. Enumerable.Repeat("eggs 6", 61)]), Does.StartWith("At most 60 lines"));
+        Assert.That(await Tools.EstimatePrices([" ", ""]), Does.StartWith("EstimatePrices needs the shopping list"));
+        Assert.That(await Tools.EstimatePrices([.. Enumerable.Repeat("eggs 6", 61)]), Does.StartWith("At most 60 lines"));
     }
 }

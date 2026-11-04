@@ -9,5 +9,5 @@ public class ShopPricesPrompts
 {
     /// <summary>The pack's guide, read through the one prompt reader.</summary>
     [OneTimeSetUp]
-    public void Register() => SkillFileSource.Use([new ShopPricesPack().Prompts]);
+    public void Register() => SkillFileSource.Use([new ShopPricesPack(new ShopPricesOptions()).Prompts]);
 }

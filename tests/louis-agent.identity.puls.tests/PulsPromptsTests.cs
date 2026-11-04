@@ -252,6 +252,8 @@ public class PulsPromptsTests
 
         Assert.That(router, Does.Contain("every cooking question").And.Contain("never from memory"));
         Assert.That(cook, Does.Contain("Where to buy").And.Contain("branches"));
+        Assert.That(Flat(cook), Does.Contain("*Branches from © OpenStreetMap contributors.*"),
+            "the map's licence (ODbL) asks for the credit wherever a branch is named (F50.2)");
         Assert.That(cook, Does.Contain("`FindBranches`").And.Contain("never fetch it, the link is for the user"));
         Assert.That(cook, Does.Contain("`Pick n Pay Malmesbury`, `PnP in Paarl Mall`"),
             "a branch is named with its place");

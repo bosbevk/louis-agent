@@ -35,7 +35,7 @@ public class PulsIdentityTests
         // The catalogue refuses an identity whose pack isn't there; with the packs, all are in.
         Assert.Throws<AgentCatalogException>(() => new AgentCatalog([puls], []), "packs named, none registered");
         var catalog = new AgentCatalog([puls],
-            [new WhereToBuyPack(), new ShopPricesPack(), new RecipesPack(new RecipesOptions())]);
+            [new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
         Assert.That(catalog.Identities, Is.EqualTo(new[] { puls }));
         Assert.That(catalog.Toolsets.Select(t => t.Name),
             Does.Contain(WhereToBuyToolset.WhereToBuy.Wire()).And.Contain(ShopPricesToolset.ShopPrices.Wire()));
