@@ -200,8 +200,8 @@ flowchart TB
 | `AgentCatalogTests` (more cases) | `tests/louis-agent.core.tests/Agent/Catalog/` | `LouisAgent.Core.Tests.Agent.Catalog` | 1 |
 | `StatsSaSheet` (the two files), `StatsSaRow`, `StatsSaRows`, `StatsSaSheets` | `packs/louis-agent.pack.shop-prices/Prices/StatsSa/Sheets/` (its own folder: `StatsSa/` would pass six files by step 4) | `LouisAgent.Packs.ShopPrices.Prices.StatsSa.Sheets` | 2 |
 | `ShopPriceImportMessage` (the problems; the facts join in step 5) | `Messages/` | `LouisAgent.Packs.ShopPrices.Messages` | 2 |
-| `PackSize`, `StatsSaProduct` | same | same | 3 |
-| `StatsSaNames`, `StatsSaPrices`; `Prices/Data/statssa-names.json` | same | same | 4 |
+| `PackSize`, `StatsSaProduct` | `packs/louis-agent.pack.shop-prices/Prices/StatsSa/` | `LouisAgent.Packs.ShopPrices.Prices.StatsSa` | 3 |
+| `StatsSaName`, `StatsSaNames`, `StatsSaPrices`, `PlainNumber`; `Prices/Data/statssa-names.json` | same | same | 4 |
 | `IPriceStore.MonthsAsync`/`SaveAsync`, `PriceBookCache.Forget` (changed) | `Prices/Store/` | `LouisAgent.Packs.ShopPrices.Prices.Store` | 5 |
 | `StatsSaImport` | `packs/louis-agent.pack.shop-prices/Imports/` | `LouisAgent.Packs.ShopPrices.Imports` | 5 |
 | tests of each, mirrored | `tests/louis-agent.pack.shop-prices.tests/…`, a trimmed `.xlsx` fixture pair | mirrored | 2-5 |

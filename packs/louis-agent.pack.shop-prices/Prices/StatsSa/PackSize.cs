@@ -46,14 +46,14 @@ public sealed record PackSize(decimal? Amount, PackUnit Unit)
     {
         if (words.Length != 2 || !Measures.TryGetValue(words[1], out var measure)) return null;
         decimal? number = Is(words[0], "per") ? 1m : Number(words[0]);
-        return number is { } n ? new PackSize(n * measure.Factor, measure.Unit) : null;
+        return number is { } n ? new PackSize(PlainNumber.Of(n * measure.Factor), measure.Unit) : null;
     }
 
     /// <summary>"10 X 18 Gram": so many packs of a weight or a volume, as one.</summary>
     private static PackSize? Multiple(string[] words)
     {
         if (words.Length != 4 || !Is(words[1], "x") || Number(words[0]) is not { } count) return null;
-        return Measure([words[2], words[3]]) is { Amount: { } amount } each ? each with { Amount = count * amount } : null;
+        return Measure([words[2], words[3]]) is { Amount: { } amount } each ? each with { Amount = PlainNumber.Of(count * amount) } : null;
     }
 
     /// <summary>"Box Of 12", "For 20", "1 Unit", "Half cabbage": a number of items.</summary>
@@ -82,7 +82,7 @@ public sealed record PackSize(decimal? Amount, PackUnit Unit)
     private static decimal? Number(string text) =>
         decimal.TryParse(text.Replace(',', '.'), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture,
             out decimal number)
-            ? number
+            ? PlainNumber.Of(number)
             : null;
 
     /// <summary>The word is that word, case ignored.</summary>

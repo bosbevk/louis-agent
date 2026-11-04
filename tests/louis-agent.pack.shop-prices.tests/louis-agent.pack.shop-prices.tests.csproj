@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- A trimmed copy of Stats SA's two average-price spreadsheets (P0141, August 2026), for the sheet reader. -->
+    <!-- Stats SA's two average-price spreadsheets (P0141): the August 2026 release whole, and a trimmed copy of it. -->
     <None Include="Fixtures\*.xlsx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>

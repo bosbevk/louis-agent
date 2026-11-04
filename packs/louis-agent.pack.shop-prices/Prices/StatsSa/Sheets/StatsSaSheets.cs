@@ -132,9 +132,9 @@ public static class StatsSaSheets
     /// <summary>A price as Stats SA writes it: a number cell, or text such as "27.86".</summary>
     private static decimal? PriceOf(object value, string text) => value switch
     {
-        double number => (decimal)number,
+        double number => PlainNumber.Of((decimal)number),
         _ => decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal parsed)
-            ? parsed
+            ? PlainNumber.Of(parsed)
             : null,
     };
 
