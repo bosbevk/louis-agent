@@ -47,11 +47,15 @@ public class RobotsFileFetchTests
         Assert.That(file.Text, Is.Null);
     }
 
-    /// <summary>A network failure is not an exception to the policy, it is a file with no answer.</summary>
-    [Test]
-    public async Task ANetworkFailure_GivesNoStatusAndNoText()
+    /// <summary>
+    /// A network failure is not an exception to the policy, it is a file with no answer; so is a connection cut while
+    /// the body is read, which the stream reports as an IOException, not an HttpRequestException.
+    /// </summary>
+    [TestCase(typeof(HttpRequestException))]
+    [TestCase(typeof(IOException))]
+    public async Task ANetworkFailure_GivesNoStatusAndNoText(Type failure)
     {
-        var fetch = Over(_ => throw new HttpRequestException("connection refused"));
+        var fetch = Over(_ => throw (Exception)Activator.CreateInstance(failure, "connection cut")!);
 
         var file = await fetch(RobotsUrl, CancellationToken.None);
 

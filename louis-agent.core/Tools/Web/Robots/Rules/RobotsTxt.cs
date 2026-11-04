@@ -59,7 +59,7 @@ public static class RobotsTxt
         Group? current = null;
         bool lastWasAgent = false;
 
-        foreach (string raw in text.TrimStart('﻿').Split('\n'))
+        foreach (string raw in text.TrimStart('\uFEFF').Split('\n'))
         {
             if (Field(raw) is not (var field, var value)) continue;
 

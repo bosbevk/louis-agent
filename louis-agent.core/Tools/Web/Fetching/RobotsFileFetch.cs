@@ -35,9 +35,11 @@ public static class RobotsFileFetch
                     : new RobotsFile(status, null);
             }
         }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or BlockedAddressException)
+        catch (Exception ex) when (ex is HttpRequestException or IOException or TaskCanceledException
+                                       or BlockedAddressException)
         {
-            // No answer at all: the policy treats the site as unreachable for an hour.
+            // No answer at all, or one cut off while its body was read (an IOException from the stream): the policy
+            // treats the site as unreachable for an hour; nothing may poison its once-per-site reading.
             return new RobotsFile(null, null);
         }
     }
