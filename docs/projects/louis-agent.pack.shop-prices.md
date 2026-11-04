@@ -19,7 +19,7 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 - **One toolset, `shop-prices`.** `ShopPricesPack` defines it with its guide (`Prompts/toolsets/shop-prices.md`) and
   one tool. It needs no setting, so it loads wherever it is named.
 - **The tables.** Two price files ship embedded in `Prices/Data/`: Stats SA's average prices for August 2026 (P0141,
-  220 products in 463 packs, nationally and per province) and 18 rows of our own for what Stats SA doesn't price
+  220 products in 463 packs, nationally and per province) and 36 rows of our own for what Stats SA doesn't price
   (tinned tomatoes, coconut milk), marked as ours. A file is a source, a date and its products, each with the names a
   list may call it by and its packs (`PriceFile`, `PriceProduct`, `PricePack`).
 - **A line to a product.** `BasketItem` reads a line (`beef mince 500 g`, `eggs 18`, `tinned tomatoes 410 g x 2`): its
@@ -101,7 +101,8 @@ The Puls stack uses the eval store's server and user, on its own database.
 - **Another upload** (a retailer's feed): another `IDataImport` in `Imports/`, listed in `ShopPricesPack.Imports`.
 - **Another kind of price** (rent, fuel): a price file of the same shape, with its source and date, seeded or saved
   into the same store. A unit it needs that `PackUnit` lacks is a new member.
-- **Our own rows** are `own-prices.json`; each needs a person's check.
+- **Our own rows** are `own-prices.json`, our own estimates, each checked by a person when it is added; the print marks
+  them as ours.
 - **Another feed** (one table on its own, a province's): another `IDataFeed` in `Feeds/`, listed in `ShopPricesPack.Feeds`.
 
 ## Tests

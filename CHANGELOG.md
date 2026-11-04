@@ -4,6 +4,12 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F50.2 What a list couldn't price, and packs and identities off the evals**: a total with unpriced rows
+  says so (`± R312 + 2 items unpriced`), each eval run lists those rows (`tool-rows-marked`, never required), and 18 new
+  rows of our own for what the saved recipe pages missed or priced from the wrong product (white fish had been priced as
+  beef fillet); the rows are our own estimates, checked by Louis. What proves a pack or an identity moved to a
+  project beside it that only the runner references (`….checks`, `….evals`), so they stand on core alone, ready for the
+  engine's split. [ADR 0073](docs/adr/0073-packs-reference-no-evals.md).
 - 2026-11-04 — **FX40 A recipe's headings aren't ingredients**: `ReadRecipe` numbered `<h3>CURRIED MINCE</h3>` and
   `***Filling` as ingredients. A heading in the list is now the section of the lines under it
   (`RecipeIngredient(Section, Text)`, like a step), printed as a sub-heading, and every other HTML tag leaves every
