@@ -52,8 +52,11 @@ the judge's calibration. It names no identity and no product: Puls's evals live 
 - **The route and the judge.** `routed-to` reads the expected role from a scenario key (`expected_key`), and a mode with none of the
   `delegating_toolsets` is expected to answer itself (`RoutedToCheck.ByScenarioKey`). `judge`
   (`Grading/Models/Rubrics/JudgeCheck`) sends a rubric file from the eval's folder as the system prompt, only the
-  scenario keys it lists (`ask`), the conversation so far and the answer, and reads `{"pass", "reason"}` from the
-  reply: null or no verdict is Unknown, and it is never required. `human` reviews a judge the eval lists before it,
+  scenario keys it lists (`ask`), the conversation so far, what the tools it names in `sources` gave back
+  (`Rubrics/Sources/JudgeSources`: each result labelled, in call order, a specialist's too, cut at 12,000 characters
+  with the cut said, a tool never called told in one line; none named, nothing added) and the answer, and reads
+  `{"pass", "reason"}` from the reply: null or no verdict is Unknown, and it is never required. A file that adds
+  `sources` bumps its judge's `version`, as the rubric's hash doesn't cover them. `human` reviews a judge the eval lists before it,
   asking the rubric's title as its question.
 - **The protocol is written once.** `Protocol/ProtocolWriter` writes each event as one JSON line through the
   contract's `EvalProtocolJson` ([ADR 0047](../adr/0047-protocol-v2-one-event-contract.md)); `ProtocolTranscripts`

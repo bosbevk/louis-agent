@@ -38,7 +38,8 @@ public static class EngineEvents
     public static bool HasUsage(TurnTranscript turn) => Usage(turn) is not null;
 
     /// <summary>The currency the turn's usage is in, or null when it doesn't say.</summary>
-    public static string? CurrencyOf(TurnTranscript turn) => Usage(turn) is { } usage ? TextOf(usage, "currency") : null;
+    public static string? CurrencyOf(TurnTranscript turn) =>
+        Usage(turn) is { } usage ? TextOf(usage, "currency") : null;
 
     /// <summary>
     /// The turn's cost in the ledger's currency; null when unknown (no usage, no cost, or a request with no price).
@@ -92,8 +93,9 @@ public static class EngineEvents
         {
             if (e is not ContentBlockStarted || !Field(e.Data, "content_block", out var block)) continue;
             if (TextOf(block, "type") == "tool_use" && TextOf(block, "name") == StartSubSession
-                                                  && Field(block, "input", out var input) &&
-                                                  TextOf(input, "role") is { } role && !string.IsNullOrWhiteSpace(role))
+                                                    && Field(block, "input", out var input) &&
+                                                    TextOf(input, "role") is { } role &&
+                                                    !string.IsNullOrWhiteSpace(role))
                 return role;
         }
 
@@ -127,6 +129,27 @@ public static class EngineEvents
     [
         .. Blocks(turn.Events, "tool_result").Concat(Blocks(SpecialistEvents(turn), "tool_result")).Select(ResultText)
     ];
+
+    /// <summary>
+    /// The texts one tool gave back in the turn, the agent's calls and its specialists' together in the order the
+    /// calls were made, each result found by its call's id. A call that got no result adds nothing.
+    /// </summary>
+    public static IReadOnlyList<string> ResultsOfTool(TurnTranscript turn, string tool)
+    {
+        // A specialist's events sit in the stream where it made them, so unwrapping them in place keeps the order.
+        var events = turn.Events.Select(e => e is SubSessionStreamed sub ? sub.Inner : e).ToList();
+        var results = new Dictionary<string, string>();
+        foreach (var block in Blocks(events, "tool_result"))
+            if (TextOf(block, "tool_use_id") is { } id)
+                results.TryAdd(id, ResultText(block));
+
+        return
+        [
+            .. ToolBlocks(events).Where(block => TextOf(block, "name") == tool)
+                .Select(block => TextOf(block, "id")).OfType<string>()
+                .Where(results.ContainsKey).Select(id => results[id])
+        ];
+    }
 
     /// <summary>
     /// The handle of the sub-session the turn's agent went back to (its first ContinueSubSession call that names
