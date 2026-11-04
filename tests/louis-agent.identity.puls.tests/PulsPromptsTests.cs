@@ -223,10 +223,7 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("take the image link itself, whole").And.Contain("never one from another site"));
         Assert.That(cook, Does.Contain("never a share button, a print or PDF icon, a logo or an avatar"));
         Assert.That(cook, Does.Contain("no image, and nothing said about it"));
-        // FX24 (Louis, 2026-10-26: "there might be some websites who do not have images, we should just exclude
-        // them"): a page with no photo is dropped for the next result.
-        Assert.That(Flat(cook), Does.Contain("Stop at the first page that has the recipe, a photo of the dish"));
-        Assert.That(Flat(cook), Does.Contain("use the best recipe page of them that fits and show no image"));
+        // The stop rule (a print with no photo) is PulsCookRecipeToolsTests', now that it reads prints.
     }
 
     /// <summary>
@@ -295,7 +292,7 @@ public class PulsPromptsTests
         Assert.That(cook,
             Does.Contain("The recipe first, from a real page.").And.Not.Contain("Deals pick the products"));
         Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
-        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and that search"));
+        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `FindRecipes`"));
         Assert.That(prices, Does.Contain("Write the list first,"), "the pack's guide prices a written list");
         Assert.That(cook, Does.Contain("Once the list is written, call `EstimatePrices` once"));
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),
@@ -303,28 +300,6 @@ public class PulsPromptsTests
         Assert.That(router, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
         Assert.That(router, Does.Contain("ask first, both in one short question"));
         Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
-    }
-
-    /// <summary>
-    /// The cook searches ten results, skips the blocked sites, reads them in order and stops at the first page with a
-    /// recipe and a photo.
-    /// </summary>
-    [Test]
-    public void TheCook_SearchesTen_SkipsTheBlockedSites_ReadsInOrder_AndStopsAtTheFirstPageWithAPhoto()
-    {
-        // Louis, 2026-10-26: "search 10, skip the blocked sites, read the results in order, and stop at the first page
-        // with a recipe and a photo (at most three pages)".
-        string cook = Flat(Read("specialists/puls-cook.md"));
-
-        Assert.That(cook, Does.Contain("`WebSearch` for one with `maxResults` 10"));
-        Assert.That(cook, Does.Contain("Skip the results on these sites").And.Contain("`boerekos.co.za`"));
-        Assert.That(cook,
-            Does.Contain("Read the rest in the order the search gave them, the best first; never at random"));
-        Assert.That(cook, Does.Contain("Stop at the first page that has the recipe, a photo of the dish"));
-        Assert.That(cook, Does.Contain("Read at most three pages"));
-        Assert.That(cook,
-            Does.Contain(
-                "If none of the three has a photo, use the best recipe page of them that fits and show no image"));
     }
 
     /// <summary>
@@ -343,7 +318,7 @@ public class PulsPromptsTests
             "the old rule is gone");
         Assert.That(cook, Does.Contain("and, with a budget, an estimated total within it"));
         Assert.That(cook, Does.Contain("If none of the three fits the budget, use the cheapest of them"));
-        Assert.That(cook, Does.Contain("A photo only breaks a tie between pages that fit"));
+        Assert.That(cook, Does.Contain("A photo only breaks a tie between prints that fit"));
         Assert.That(cook, Does.Contain("The stop rule under *The recipe first* decides which page to use"));
         Assert.That(cook, Does.Not.Contain("is dropped for the next page you read, within the three pages"),
             "the budget paragraph no longer says when to stop");
