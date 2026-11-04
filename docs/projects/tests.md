@@ -2,7 +2,7 @@
 
 > **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
 > `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.shops.tests/`,
-> `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
+> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.composition.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
 > `tests/louis-agent.web.tests/`; the tests that leave their process in `tests/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shops.integration-tests/` (F18 step 7.6); the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
 > `tests/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
@@ -64,13 +64,15 @@ an `AgentEngineFactory` with a client that throws if called.
 
 `InternalsVisibleTo` gives the test projects access to `internal` types in core and the orchestrator.
 
-## louis-agent.identity.puls.tests, louis-agent.pack.shops.tests, louis-agent.composition.tests
+## louis-agent.identity.puls.tests, louis-agent.pack.shops.tests, louis-agent.pack.recipes.tests, louis-agent.composition.tests
 
 CL15 cut the engine into identities and packs, and each got its tests beside it: the identity's prove its prompts are
 its own and read through `SkillFileSource` (`PulsPromptsTests`, the Puls golden `PulsSessionSnapshot.json`), and,
 since F49.2, its evals and their checks (`Evals/Routing/`, and `Evals/Checks/` with each check on hand-cut answers,
 the cook's dataset, ids and conformance; the judge's tests are in `louis-agent.identity.puls.judges.tests`); the pack's
 are the shop tests that left core, with their fixtures and their own golden (`ShopToolMessageSnapshot.json`); the
+recipes pack's (F35.1) read a `Recipe` from recorded pages of sites that allow us (`Recipes/Fixtures/`, trimmed copies
+under 30 KB, never served) and from small inline blocks for the shapes no page shows; the
 composition root's prove `IDENTITIES` and `PACKS` pick (`PluginsTests`) and that every pack stays convertible to an
 MCP server (`PackConvertibilityTests`, through the MCP SDK's own `McpServerTool.Create`, a test-only package), and
 that every built-in prompt of every identity and pack opens with its header, its level its folder's
