@@ -16,6 +16,17 @@ public class BranchFinderTests
             ? Fixture("nominatim-town-malmesbury.json")
             : near);
 
+    /// <summary>The map as it really answers: the smallest box with this, any wider box with the city's 20 hits.</summary>
+    private static (MapSearch Map, List<Uri> Asked) MapBySize(string smallestBox) =>
+        Answering(url => AnswerTo(url, smallestBox));
+
+    /// <summary>One answer per kind of question, one guard clause each (ADR 0051).</summary>
+    private static string AnswerTo(Uri url, string smallestBox)
+    {
+        if (url.Query.Contains("limit=1&")) return Fixture("nominatim-town-malmesbury.json");
+        return url.Query.Contains("viewbox=18.5") ? smallestBox : TwentyInACity();
+    }
+
     /// <summary>The nearest three shops of the name, nearest first, a street that shares the name left out.</summary>
     [Test]
     public async Task TheNearestThreeBranches_AreKept_NearestFirst()
@@ -67,11 +78,7 @@ public class BranchFinderTests
     [Test]
     public async Task ATownsOwnBranch_IsFound_WhenACityFillsTheWiderBox()
     {
-        var (map, asked) = Answering(url => url.Query.Contains("limit=1&")
-            ? Fixture("nominatim-town-malmesbury.json")
-            : url.Query.Contains("viewbox=18.5")
-                ? Fixture("nominatim-pnp-near-malmesbury.json")
-                : TwentyInACity());
+        var (map, asked) = MapBySize(Fixture("nominatim-pnp-near-malmesbury.json"));
 
         var search = await new BranchFinder(map).FindAsync("Pick n Pay", "Malmesbury", CancellationToken.None);
 
@@ -87,11 +94,7 @@ public class BranchFinderTests
     [Test]
     public async Task NoBranchNearby_WidensTheBox_AndNamesTheNearest()
     {
-        var (map, asked) = Answering(url => url.Query.Contains("limit=1&")
-            ? Fixture("nominatim-town-malmesbury.json")
-            : url.Query.Contains("viewbox=18.5")
-                ? "[]"
-                : TwentyInACity());
+        var (map, asked) = MapBySize("[]");
 
         var search = await new BranchFinder(map).FindAsync("Pick n Pay", "Malmesbury", CancellationToken.None);
 
