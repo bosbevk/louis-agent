@@ -1,18 +1,29 @@
-
 using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using LouisAgent.Core.Tools.Web.StructuredData;
 
 namespace LouisAgent.Core.Tools.Web.Fetching;
+
 /// <summary>
-/// A page's lead image as <c>![title](url)</c> (FX24): the page's own declared photo, found where a page declares it, not where its body shows it. A page's
-/// photo is often a lazy-loaded image outside <c>main</c>, or one with no alt text, which the page text keeps none of; the page's JSON-LD (the <c>image</c> of its
-/// main item) or its <c>og:image</c> names it for machines. Only an http(s) file that isn't an SVG
+/// Finds a page's lead image and hands it back as <c>![title](url)</c> (FX24). It looks where the page declares its
+/// photo for machines, not where the body shows it, because a page's photo is often a lazy-loaded image outside
+/// <c>main</c> or one with no alt text, which the page text keeps none of. Only an http(s) file that isn't an SVG
 /// counts, so a data URI or a logo is no lead image.
 /// </summary>
+/// <remarks>
+/// Chain of fallbacks. The page's JSON-LD (the <c>image</c> of its main item, read through
+/// <see cref="JsonLdBlocks"/>) is tried first because it names the photo of the page's subject; the <c>og:image</c>
+/// meta tag comes second because every page that shares a link has one. Without the chain a page that declares only
+/// one of them would show no photo.
+/// </remarks>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 internal static partial class LeadImage
 {
-    /// <summary>The lead image's markdown, or null when the page declares none the text can show.</summary>
+    /// <summary>
+    /// Gives you the page's lead image as markdown, or nothing when the page declares none the text can show.
+    /// </summary>
     internal static string? Of(string html, Uri baseUri, string? title)
     {
         string? file = MainEntityImage(html) ?? OpenGraphImage(html);
@@ -20,32 +31,33 @@ internal static partial class LeadImage
                          || target.Scheme is not ("http" or "https") ||
                          target.AbsolutePath.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
             return null;
+
         string alt = (title ?? "").Replace('[', '(').Replace(']', ')');
         return $"![{(alt.Length > 0 ? alt : "image")}]({target})";
     }
 
     /// <summary>
-    /// The first <c>image</c> of a JSON-LD entity that is the page's subject, wherever it sits (the document, an array, a <c>@graph</c>). Core names no type of
-    /// subject (ADR 0027): any is taken, but the entities that describe the site, not the page, are skipped (<see cref="SiteEntities"/>).
+    /// Finds the first image of whatever the page is about, wherever its JSON-LD puts it (the document, an array, a
+    /// <c>@graph</c>). Core names no type of subject (ADR 0027), so any is taken, but the entities that describe the
+    /// site and not the page are skipped (<see cref="SiteEntities"/>).
     /// </summary>
     private static string? MainEntityImage(string html)
     {
-        foreach (Match block in JsonLd().Matches(html))
+        foreach (var document in JsonLdBlocks.In(html))
         {
-            try
+            // The documents are ours to dispose; the first block that names an image wins.
+            using (document)
             {
-                using var document = JsonDocument.Parse(WebUtility.HtmlDecode(block.Groups[1].Value));
                 if (ImageOfEntity(document.RootElement) is { } file) return file;
-            }
-            catch (JsonException)
-            {
-                // A script the page left malformed says nothing; the next block, or the og:image, may.
             }
         }
 
         return null;
     }
 
+    /// <summary>
+    /// Looks through a JSON-LD node (an array, or an object and its <c>@graph</c>) for its subject's image.
+    /// </summary>
     private static string? ImageOfEntity(JsonElement node)
     {
         switch (node.ValueKind)
@@ -60,14 +72,21 @@ internal static partial class LeadImage
         }
     }
 
-    /// <summary>The types of entity that describe the site or the page's furniture, never its subject: their image is a logo, an author's face or the page's own.</summary>
+    /// <summary>
+    /// The kinds of entity that describe the site or the page's furniture, never its subject: their image is a logo,
+    /// an author's face or the page's own.
+    /// </summary>
     private static readonly HashSet<string> SiteEntities =
         new(["Organization", "WebSite", "WebPage", "Person", "ImageObject", "BreadcrumbList"], StringComparer.Ordinal);
 
-    /// <summary>Whether an entity is a page's subject: it has a type, and not only site types (<c>["Article","WebPage"]</c> is an article).</summary>
+    /// <summary>
+    /// Whether an entity is what the page is about: it has a type, and not only site types
+    /// (<c>["Article","WebPage"]</c> is an article).
+    /// </summary>
     private static bool IsSubject(JsonElement node)
     {
         if (!node.TryGetProperty("@type", out var type)) return false;
+
         var types = type.ValueKind switch
         {
             JsonValueKind.String => [type.GetString()!],
@@ -78,7 +97,10 @@ internal static partial class LeadImage
         return types.Any(t => !SiteEntities.Contains(t));
     }
 
-    /// <summary>An <c>image</c> is a URL, an ImageObject with a <c>url</c>, or a list of either: the first one that names a file.</summary>
+    /// <summary>
+    /// An <c>image</c> is a URL, an ImageObject with a <c>url</c>, or a list of either: this takes the first one that
+    /// names a file.
+    /// </summary>
     private static string? FirstFile(JsonElement image) => image.ValueKind switch
     {
         JsonValueKind.String => image.GetString() is { Length: > 0 } text ? text : null,
@@ -87,7 +109,10 @@ internal static partial class LeadImage
         _ => null,
     };
 
-    /// <summary>The <c>content</c> of the page's <c>og:image</c> (or <c>twitter:image</c>) meta tag, whichever order its attributes are in.</summary>
+    /// <summary>
+    /// Finds the <c>content</c> of the page's <c>og:image</c> (or <c>twitter:image</c>) meta tag, whichever order its
+    /// attributes are in.
+    /// </summary>
     private static string? OpenGraphImage(string html)
     {
         foreach (Match tag in Meta().Matches(html))
@@ -103,13 +128,17 @@ internal static partial class LeadImage
         return null;
     }
 
-    [GeneratedRegex(@"<script\b[^>]*type\s*=\s*[""']application/ld\+json[""'][^>]*>(.*?)</script>",
-        RegexOptions.IgnoreCase | RegexOptions.Singleline)]
-    private static partial Regex JsonLd();
-
+    /// <summary>
+    /// Matches one <c>&lt;meta ...&gt;</c> tag. Matches <c>&lt;meta property="og:image" content="a.jpg"&gt;</c>; does
+    /// not match <c>&lt;metadata&gt;</c>.
+    /// </summary>
     [GeneratedRegex(@"<meta\b[^>]*>", RegexOptions.IgnoreCase)]
     private static partial Regex Meta();
 
+    /// <summary>
+    /// Matches one quoted attribute and splits it into <c>name</c> and <c>value</c>. Matches <c>content="a.jpg"</c>
+    /// and <c>content='a.jpg'</c>; does not match <c>content=a.jpg</c>.
+    /// </summary>
     [GeneratedRegex(@"(?<name>[\w:-]+)\s*=\s*(?:""(?<value>[^""]*)""|'(?<value>[^']*)')")]
     private static partial Regex Attribute();
 }

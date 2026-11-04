@@ -73,6 +73,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0064](0064-observability-through-opentelemetry.md) | Observability through OpenTelemetry: logs through Serilog's OTLP sink and traces through the OpenTelemetry SDK, on the standard `OTEL_*` settings alone; a turn is an `invoke_agent` span with no content, a sub-session nests across the HTTP hop, a crash is one Critical line; the Aspire dashboard on the PC, Application Insights on Azure; and the table of what to log at which level | Accepted |
 | [0065](0065-the-view-is-in-the-address.md) | The view is in the address: what a portal page shows (the run page's tab, the explorer's level and what is open in it) is read from the address, parsed once and written by one class; a component that keeps state reports every move and takes a changed place back; a change of address is not a fetch | Accepted |
 | [0066](0066-the-site-is-static-razor.md) | The engine's site is static Razor, and its films are CSS: `src/louis-agent.site` renders plain HTML on the server with no WebAssembly and no script of ours, references no engine project, shows only what works today, and draws the two films with CSS keyframes over CSS 3D, what both share in one stylesheet and each film's timing in its own | Accepted |
+| [0067](0067-a-pages-own-data-before-its-text.md) | A page's own data before its text: a tool reads the page's structured data in code and gives the model a short, framed print; the model reads the text only where there is no data | Accepted |
 
 ## When to write one
 
