@@ -166,8 +166,10 @@ One line with the amount and the unit to buy, then the sums, then anything you a
 
 A **minion** (level 2) is smaller still: one task with one tool, which a specialist hands out. It needs a base file
 `Prompts/minions/acme-minion.md` (what every Acme minion is) and one file per function,
-`Prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's price lookup
-(`minions/puls-minion-web-price-lookup.md`) is the worked example when you need one.
+`Prompts/minions/acme-minion-{function}.md`, plus the `MINION_LLMS` setting. Start without one. Puls's recipe search
+(`minions/puls-minion-find-recipe.md`, which the cook starts with `FindRecipes` as its tool) and its price lookup
+(`minions/puls-minion-web-price-lookup.md`) are the worked examples when you need one; a role that lists `minions` in
+its header is refused where `MINION_LLMS` isn't set.
 
 ### Your names are an enum
 
@@ -238,7 +240,7 @@ file or `config/.env`:
 | Setting | For `acme` | Why |
 |---|---|---|
 | `IDENTITIES` | `acme` | Loads the identity and the packs it names |
-| `ROLES_ENABLED` | `acme/voice,acme-estimator` | Only roles that have passed their check are on; empty turns every role on |
+| `ROLES_ENABLED` | `acme/voice,acme-estimator` | Only roles that have passed their check are on; empty turns every role on (Puls's list holds its two minion roles too) |
 | `AGENT_PEERS` | `acme=http://acme:8080` | Where the mode hands work to its specialists (itself) |
 | `HOST_TIME_ZONE` | the shop's zone | The time the agent tells when the user shares none; core names no country |
 | `BROWSER_USER_AGENT` | `Acme/1.0 (+link; reads a page on a user's behalf)` | Only if it reads the web: says who reads and why, never a person ([ADR 0038](../adr/0038-the-browser-says-what-it-is.md)) |

@@ -1,4 +1,5 @@
 using LouisAgent.Choices;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
@@ -25,7 +26,8 @@ public class PulsPromptsTests
         SkillFileSource.ReadEmbedded(path) ?? throw new FileNotFoundException(path);
 
     /// <summary>A prompt with its line breaks and indents as single spaces, for a phrase the file wraps.</summary>
-    private static string Flat(string text) => System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ");
+    private static string Flat(string text) =>
+        string.Join(' ', text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 
     /// <summary>Puls's prompts live in its identity now; core holds none of them.</summary>
     [Test]
@@ -49,14 +51,14 @@ public class PulsPromptsTests
                 PulsRole.Researcher.Wire()
             }));
         Assert.That(RoleCatalog.Available(RoleLevel.Minion),
-            Is.EqualTo(new[] { PulsRole.MinionWebPriceLookup.Wire() }));
+            Is.EquivalentTo(new[] { PulsRole.MinionWebPriceLookup.Wire(), PulsRole.MinionFindRecipe.Wire() }));
         Assert.That(SkillLoader.Load(new AgentOptions(), [], "puls/voice-af").Documentation,
             Does.Contain("# Puls - Stem"));
         Assert.That(SkillLoader.Load(new AgentOptions(), [], PulsRole.Cook.Wire(), RoleLevel.Specialist).Documentation,
             Does.Contain("No prices are looked up"));
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist),
-            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }),
-            "F35.2 step 1: the cook declares its recipes toolset in its header, required (ADR 0025)");
+            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire(), CoreToolset.Minions.Wire() }),
+            "F35.2 steps 1 and 2b: the cook declares recipes and minions in its header, required (ADR 0025)");
     }
 
     /// <summary>
@@ -80,6 +82,7 @@ public class PulsPromptsTests
     [Test]
     public void ThePulsLanguages_HaveTheSameSections()
     {
+        // The headings of one voice, in order.
         static string[] Sections(string text) => text.Split('\n').Where(l => l.StartsWith("## ")).ToArray();
         string af = Read("agent/puls/voice-af.md"), en = Read("agent/puls/voice-en.md");
 
@@ -145,7 +148,7 @@ public class PulsPromptsTests
 
         Assert.That(cook, Does.Not.Contain(PulsRole.MinionWebPriceLookup.Wire()).And.Not.Contain("## Minions"));
         Assert.That(RoleCatalog.Available(RoleLevel.Minion),
-            Is.EqualTo(new[] { PulsRole.MinionWebPriceLookup.Wire() }));
+            Does.Contain(PulsRole.MinionWebPriceLookup.Wire()), "the role stays");
     }
 
     /// <summary>
@@ -287,7 +290,7 @@ public class PulsPromptsTests
         Assert.That(cook,
             Does.Contain("The recipe first, from a real page.").And.Not.Contain("Deals pick the products"));
         Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
-        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `FindRecipes`"));
+        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `StartMinion`"));
         Assert.That(shops, Does.Contain("Look for deals first"), "the pack's guide is unchanged");
         Assert.That(shops, Does.Contain("the size the recipe needs"));
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),
@@ -383,8 +386,8 @@ public class PulsPromptsTests
         string cook = Read("specialists/puls-cook.md");
 
         Assert.That(PromptHeaders.Split("specialists/puls-cook.md", Raw("specialists/puls-cook.md")).Header!.Toolsets,
-            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }),
-            "its header names recipes and nothing else: the cook loads the shops no more (F35.2 step 1)");
+            Is.EqualTo(new[] { RecipesToolset.Recipes.Wire(), CoreToolset.Minions.Wire() }),
+            "its header names recipes and minions and nothing else: no shops (F35.2 steps 1 and 2b)");
         Assert.That(cook, Does.Contain("The user's shop, named").And.Contain("*Winkel* / *Shop*"));
         Assert.That(cook,
             Does.Contain(

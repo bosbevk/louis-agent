@@ -15,6 +15,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Tools.Agents;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Tests.Sessions;
@@ -48,16 +49,26 @@ public class AgentSessionsTests
     /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called.
     /// </summary>
     private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) =>
-        new(new AgentEngineFactory(
-            new NoModel(),
-            new AgentOptions
+        new(new AgentEngineFactory(new NoModel(), PulsOptions(), sessionLlms: llms, catalog: PulsCatalog()));
+
+    /// <summary>
+    /// The settings a Puls stack gives the cook: the browser the recipes toolset reads through, a peer for its minions
+    /// (this instance itself) and the find-recipe minion on the instance's own model (F35.2 step 2b: the cook's header
+    /// asks for `minions`, which needs both).
+    /// </summary>
+    private static AgentOptions PulsOptions() =>
+        new()
+        {
+            WorkspaceRoot = RepoRoot,
+            SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
+            RatesUrl = null,
+            BrowserUrl = "http://puls-browser:9222",
+            AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
+            MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                WorkspaceRoot = RepoRoot,
-                SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
-                RatesUrl = null,
-                BrowserUrl = "http://puls-browser:9222",
+                [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
             },
-            sessionLlms: llms, catalog: PulsCatalog()));
+        };
 
     /// <summary>
     /// The names of the tools a session's model can call.
@@ -152,13 +163,7 @@ public class AgentSessionsTests
         // had it always load the shops); the pack stays, off for the cook, until a retailer gives access. Here
         // SHOP_CATALOGUES is set, on the shops pack this instance loads (CL15), with the browser the pack reaches
         // through core. F35.2 step 1: the cook's header names recipes, so the recipes pack is in this catalogue too.
-        var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), new AgentOptions
-        {
-            WorkspaceRoot = RepoRoot,
-            SkillsDirectory = Path.Combine(RepoRoot, "Skills"),
-            RatesUrl = null,
-            BrowserUrl = "http://puls-browser:9222",
-        },
+        var sessions = new AgentSessions(new AgentEngineFactory(new NoModel(), PulsOptions(),
             catalog: new AgentCatalog([],
             [
                 new ShopsPack(
@@ -169,17 +174,26 @@ public class AgentSessionsTests
 
         var cook = sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
-        Assert.That(cook.Toolsets, Is.EquivalentTo(new[] { CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire() }));
+        Assert.That(cook.Toolsets, Is.EquivalentTo(CookToolsets));
         Assert.That(Names(cook), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
     }
 
     /// <summary>
-    /// Where there are no shops, the cook still opens, with the web and its recipes.
+    /// What the cook opens with where there are no shops: the web from Puls, and the recipes and minions its header
+    /// names (F35.2 step 2b).
+    /// </summary>
+    private static readonly string[] CookToolsets =
+    [
+        CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), CoreToolset.Minions.Wire()
+    ];
+
+    /// <summary>
+    /// Where there are no shops, the cook still opens, with the web, its recipes and the minions that search them.
     /// </summary>
     [Test]
     public void TheCook_WithoutShopsOnThisInstance_StillCooks_WithTheWeb() =>
         Assert.That(Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Toolsets,
-            Is.EquivalentTo(new[] { CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire() }));
+            Is.EquivalentTo(CookToolsets));
 
     /// <summary>
     /// Marking specialists as optional doesn't sneak delegation into a sub-session.

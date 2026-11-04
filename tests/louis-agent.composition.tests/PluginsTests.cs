@@ -5,6 +5,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Headers;
+using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Identities.Puls;
 using Microsoft.Extensions.FileProviders;
@@ -120,8 +121,8 @@ public class PluginsTests
     }
 
     /// <summary>
-    /// With Puls and its recipes sites set, the recipes pack loads once beside the shops, and the toolset the cook
-    /// declares in its header resolves to it.
+    /// With Puls and its recipes sites set, the recipes pack loads once beside the shops, and the toolsets the cook
+    /// declares in its header resolve: recipes to the pack, minions to core's.
     /// </summary>
     [Test]
     public void PulsWithRecipeSources_LoadsTheRecipesPackOnce_AndTheCookResolvesIt()
@@ -136,11 +137,28 @@ public class PluginsTests
             Assert.That(catalog.Packs.Select(p => p.Name),
                 Is.EquivalentTo(new[] { ShopsToolset.Shops.Wire(), RecipesToolset.Recipes.Wire() }));
 
-            // The cook's header names the recipes toolset; with the browser given, the catalogue resolves it.
-            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
-                new NoSearch());
+            // The cook's header names the recipes and minions toolsets; with the browser, a peer and the find-recipe
+            // minion's model given, as a Puls stack has them, the catalogue resolves both (F35.2 step 2b).
+            var withBrowser = new ToolsetContext(new AgentOptions
+            {
+                BrowserUrl = "http://puls-browser:9222",
+                AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
+                MinionLlms = new Dictionary<string, IReadOnlyList<string>>
+                {
+                    [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
+                },
+            }, new NoSearch());
             Assert.That(catalog.Resolve(CookToolsets(catalog), withBrowser).Select(t => t.Name),
-                Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
+                Is.EquivalentTo(new[] { RecipesToolset.Recipes.Wire(), CoreToolset.Minions.Wire() }));
+
+            // Without MINION_LLMS the header's `minions` has no `?`, so the cook is refused, naming the setting.
+            var noModels = new ToolsetContext(new AgentOptions
+            {
+                BrowserUrl = "http://puls-browser:9222",
+                AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
+            }, new NoSearch());
+            Assert.That(() => catalog.Resolve(CookToolsets(catalog), noModels),
+                Throws.TypeOf<ToolsetException>().With.Message.Contain("MINION_LLMS"));
         }
         finally
         {
