@@ -24,6 +24,12 @@ public class StudioPageTests
     private const string Draft =
         """{"id":"d1","identity":"weather-agent","name":"weather-eval","json":"{\"name\":\"weather-eval\",\"identity\":\"weather-agent\",\"version\":3,\"proves\":\"Weather\",\"modes\":[],\"checks\":[{\"type\":\"amount-under\",\"parameters\":{\"key\":\"budget\"}}]}","rubrics":[{"name":"weather-right.md","text":"Is die weer reg?"}],"author":"Louis","at":"2026-11-03T10:00:00Z","scenarios":[{"name":"test-1.json","text":"{}"}]}""";
 
+    /// <summary>
+    /// The Evals page's reply: one eval with a recorded run, which a try can replay, and one that recorded nothing.
+    /// </summary>
+    private const string Evals =
+        """{"evals":[{"name":"weather-eval","identity":"weather-agent","version":3,"proves":"Weather","manual":false,"categories":[],"graders":[],"modes":[],"models":[],"never_run":false,"runs":[{"run":{"id":"c0362ff73151","check":"weather-eval","repeat":1,"status":"completed","started_at":"2026-11-04T09:00:00Z","recorded":true},"modes":[]},{"run":{"id":"live01","check":"weather-eval","repeat":1,"status":"completed","started_at":"2026-11-04T10:00:00Z","recorded":false},"modes":[]}]}],"store":{"configured":true}}""";
+
     /// <summary>Renders the page over a stand-in API, with the reviewer's name kept.</summary>
     private static (IRenderedComponent<EvalStudio> Cut, StubHandler Handler) Render()
     {
@@ -34,6 +40,7 @@ public class StudioPageTests
         {
             ("GET", "/v1/admin/evals/checks") => Json(Checks),
             ("GET", "/v1/admin/evals/drafts") => Json($$"""{"drafts":[{{Draft}}]}"""),
+            ("GET", "/v1/admin/evals") => Json(Evals),
             ("PUT", "/v1/admin/evals/drafts/d1") => Json(Draft),
             ("POST", "/v1/admin/evals/drafts/d1/publish") => Json(
                 """{"branch":"eval/weather-agent-weather-eval","commit":"abc123","folder":"identities/louis-agent.identity.weather-agent/Evals/WeatherEval"}"""),
@@ -92,18 +99,52 @@ public class StudioPageTests
             Is.EqualTo(("weather-eval", 3, "budget")));
     }
 
-    /// <summary>Try saves the draft, then starts a replay on the samples typed, and links to where it runs.</summary>
+    /// <summary>
+    /// The form is four numbered steps in the order they are done: compose, check, try, publish (the admin review's
+    /// finding 6: the order on the page, not in the person's head).
+    /// </summary>
     [Test]
-    public void Try_SavesTheDraft_ThenStartsAReplay_OnTheSamplesTyped()
+    public void TheForm_IsFourStepsInOrder()
+    {
+        var (cut, _) = Render();
+
+        cut.Find(".studio-draft").Click();
+
+        Assert.That(cut.FindAll(".studio-step > h4").Select(h => h.TextContent.Trim()),
+            Is.EqualTo(new[] { "1 Compose", "2 Check", "3 Try", "4 Publish" }));
+    }
+
+    /// <summary>
+    /// Try offers only the recorded runs to replay, picked from a list instead of an id typed from memory.
+    /// </summary>
+    [Test]
+    public void Try_OffersTheRecordedRuns_ToPickFrom()
+    {
+        var (cut, _) = Render();
+
+        cut.Find(".studio-draft").Click();
+
+        cut.WaitForAssertion(() => Assert.That(
+            cut.FindAll(".studio-try-replay option").Select(o => o.GetAttribute("value")),
+            Is.EqualTo(new[] { "", "c0362ff73151" })));
+    }
+
+    /// <summary>
+    /// Try saves the draft, then starts a replay of the run picked on the samples typed, and links to its run.
+    /// </summary>
+    [Test]
+    public void Try_SavesTheDraft_ThenStartsAReplay_OfTheRunPicked()
     {
         var (cut, handler) = Render();
         cut.Find(".studio-draft").Click();
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".studio-try-replay option"), Has.Count.EqualTo(2)));
         cut.Find(".studio-try-replay").Change("c0362ff73151");
         cut.Find(".studio-try-samples").Change("weather-paarl, weather-af");
 
         cut.Find(".studio-try-start").Click();
 
-        cut.WaitForAssertion(() => Assert.That(cut.Find(".studio-tried").TextContent, Does.Contain("run_9")));
+        cut.WaitForAssertion(() => Assert.That(cut.Find(".studio-tried").GetAttribute("href"),
+            Is.EqualTo("admin/runs/run_9")));
         var sent = JsonDocument.Parse(handler.Requests.Single(r => r.Url.EndsWith("/try")).Body!).RootElement;
         Assert.That((sent.GetProperty("replay").GetString(), sent.GetProperty("samples").GetArrayLength()),
             Is.EqualTo(("c0362ff73151", 2)));

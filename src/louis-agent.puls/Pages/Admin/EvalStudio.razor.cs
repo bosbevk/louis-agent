@@ -1,7 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
 using LouisAgent.Api.Contracts.Admin;
-using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Api.Contracts.Admin.Studio;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Studio;
@@ -17,7 +16,8 @@ namespace LouisAgent.Puls.Pages.Admin;
 /// <summary>
 /// The Studio page (F49.5): the evals being composed, and the form for one: its head and modes, its checks picked from
 /// the runner's catalogue, its rubrics. It shows the file the form makes, saves it under the reviewer's name, and asks
-/// the runner's verdict, every problem in the runner's words.
+/// the runner's verdict, every problem in the runner's words. The form is four numbered steps in the order they are
+/// done, compose, check, try, publish (GOV.UK's task list pattern; the admin review's finding 6).
 /// </summary>
 /// <remarks>
 /// ADR 0042: the page shows what it last fetched and fetches the list again after a save; it never adds its own write
@@ -43,10 +43,7 @@ public partial class EvalStudio : IDisposable
     private DraftCheckReply? _verdict;
     private string? _error;
     private string? _saved;
-    private string? _tried;
     private string? _published;
-    private string _tryReplay = "";
-    private string _trySamples = "";
     private bool _needsKey, _busy, _showJson;
 
     /// <summary>The file the form makes now.</summary>
@@ -118,36 +115,6 @@ public partial class EvalStudio : IDisposable
             using var response = await Api.SendAsync(new HttpRequestMessage(HttpMethod.Post,
                 $"{Drafts}/{Uri.EscapeDataString(id)}/verdict"));
             _verdict = await response.Content.ReadFromJsonAsync<DraftCheckReply>(AdminJson.SnakeCase);
-        }
-        catch (AgentApiException ex)
-        {
-            _error = ex.Message;
-        }
-        finally
-        {
-            _busy = false;
-        }
-    }
-
-    /// <summary>
-    /// Saves the draft, then starts its try: a replay of the run named, on the samples named, which the Benchmarks
-    /// page follows as it runs.
-    /// </summary>
-    private async Task TryAsync()
-    {
-        if (await SaveDraftAsync() is not { } id) return;
-        _busy = true;
-        try
-        {
-            var samples = _trySamples.Split(',',
-                StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            using var request = new HttpRequestMessage(HttpMethod.Post, $"{Drafts}/{Uri.EscapeDataString(id)}/try")
-            {
-                Content = JsonContent.Create(new TryRequest(_tryReplay.Trim(), samples), options: AdminJson.SnakeCase)
-            };
-            using var response = await Api.SendAsync(request);
-            var run = await response.Content.ReadFromJsonAsync<LiveRunRow>(AdminJson.SnakeCase);
-            _tried = StudioText.TryStarted(run!.Id);
         }
         catch (AgentApiException ex)
         {
