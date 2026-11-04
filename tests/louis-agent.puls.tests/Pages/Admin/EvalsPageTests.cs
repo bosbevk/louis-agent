@@ -9,13 +9,15 @@ using LouisAgent.Web.Shared.Storage;
 using LouisAgent.Web.Shared.Usage;
 using LouisAgent.Web.Testing;
 using EvalsPage = LouisAgent.Puls.Pages.Admin.Evals;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Pages.Admin;
 
 /// <summary>
-/// Pins what the Evals page shows: every eval the API lists, what it is, and its runs; an eval that never ran is
-/// listed as never run (goldens: <c>Evals.empty.html</c>, <c>Evals.two.html</c>).
+/// Pins what the Evals page shows (F53.2: list and details): every eval the API lists in the list pane with its last
+/// result, and the chosen one's details beside it, the eval that ran last when the address names none; an eval that
+/// never ran is listed as never run (goldens: <c>Evals.empty.html</c>, <c>Evals.two.html</c>).
 /// </summary>
 public partial class EvalsPageTests
 {
@@ -41,21 +43,38 @@ public partial class EvalsPageTests
         Snapshots.Match("louis-agent.puls.tests", "Pages/Admin/Evals.empty.html", Stable(cut.Markup));
     }
 
-    /// <summary>Two evals: one with its run, one never run, each with what it is.</summary>
+    /// <summary>
+    /// Two evals in the list, one never run; with no eval in the address the one that ran last is open in the details.
+    /// </summary>
     [Test]
-    public void TwoEvals_OneNeverRun_AreBothListed()
+    public void TwoEvals_AreListed_AndTheOneThatRanLastIsOpen()
     {
         using var ctx = new BunitContext();
         var cut = Render(ctx, Two);
 
-        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".eval-card"), Has.Count.EqualTo(2)),
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".eval-list-item"), Has.Count.EqualTo(2)),
             TimeSpan.FromSeconds(10));
-        Assert.That(cut.FindAll(".eval-card")[1].TextContent, Does.Contain("never run"));
+        Assert.That(cut.FindAll(".eval-list-item")[1].TextContent, Does.Contain("never run"));
+        Assert.That(cut.Find(".eval-list-item.selected").TextContent, Does.Contain(SampleEval.Beta));
+        Assert.That(cut.Find(".eval-details .eval-title code").TextContent, Is.EqualTo(SampleEval.Beta));
         Snapshots.Match("louis-agent.puls.tests", "Pages/Admin/Evals.two.html", Stable(cut.Markup));
     }
 
-    /// <summary>The page over an API that serves this list; it waits for nothing else.</summary>
-    private static IRenderedComponent<EvalsPage> Render(BunitContext ctx, string list)
+    /// <summary>The eval the address names is the open one, and the list marks it.</summary>
+    [Test]
+    public void TheEvalInTheAddress_IsTheOpenOne()
+    {
+        using var ctx = new BunitContext();
+        var cut = Render(ctx, Two, "admin?eval=stub");
+
+        cut.WaitForAssertion(() => Assert.That(cut.FindAll(".eval-details"), Has.Count.EqualTo(1)),
+            TimeSpan.FromSeconds(10));
+        Assert.That(cut.Find(".eval-details .eval-title code").TextContent, Is.EqualTo("stub"));
+        Assert.That(cut.Find(".eval-list-item.selected").TextContent, Does.Contain("stub"));
+    }
+
+    /// <summary>The page at this address over an API that serves this list; it waits for nothing else.</summary>
+    private static IRenderedComponent<EvalsPage> Render(BunitContext ctx, string list, string address = "admin")
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var handler = new StubHandler(request => request.RequestUri!.AbsolutePath.EndsWith("/v1/admin/evals")
@@ -72,6 +91,7 @@ public partial class EvalsPageTests
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new CurrencyState(api, ctx.JSInterop.JSRuntime));
 
+        ctx.Services.GetRequiredService<NavigationManager>().NavigateTo(address);
         return ctx.Render<EvalsPage>();
     }
 

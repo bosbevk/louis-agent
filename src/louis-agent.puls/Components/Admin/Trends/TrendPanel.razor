@@ -31,7 +31,7 @@ else
                 @foreach (var p in Known(s))
                 {
                     double y = Geometry.Y(Measure.Value(p)!.Value);
-                    <a class="trend-run" href="admin/benchmarks/@p.Run" @onmouseenter="() => Enter(p.Run)">
+                    <a class="trend-run" href="@RunAddress.Of(p.Run)" @onmouseenter="() => Enter(p.Run)">
                         <line class="trend-point @(p.Run == Highlight ? "here" : "") @(p.Run == _hover ? "hovered" : "")" x1="@F(Geometry.X(p.Run))" y1="@F(y)" x2="@F(Geometry.X(p.Run))" y2="@F(y)" style="--i: @i; stroke: @ChartPalette.Series(i)">
                             <title>@s.Name · @p.At.ToLocalTime().ToString("yyyy-MM-dd HH:mm") · @Measure.Label(Measure.Value(p)!.Value)</title>
                         </line>

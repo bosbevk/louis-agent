@@ -1,4 +1,5 @@
 using LouisAgent.Api.Contracts.Admin.Runs;
+using LouisAgent.Puls.Admin.RunPage;
 using LouisAgent.Puls.Admin.Summary;
 using LouisAgent.Web.Shared.Usage;
 using Microsoft.AspNetCore.Components;
@@ -28,5 +29,5 @@ public partial class SummaryPanel
     private IReadOnlyList<ModeSlices>? Modes => SummaryReader.Read(Summaries);
 
     /// <summary>The re-scored run is a new run: open its page, where its categories are.</summary>
-    private void OpenRescored(string id) => Navigation.NavigateTo($"admin/benchmarks/{Uri.EscapeDataString(id)}");
+    private void OpenRescored(string id) => Navigation.NavigateTo(RunAddress.Of(id));
 }

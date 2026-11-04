@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Components;
 namespace LouisAgent.Puls.Components.Admin.Runs;
 
 /// <summary>
-/// One stored run's row in the Benchmarks page (F18 step 5b.2): a finished run can be re-scored, a recorded one
-/// replayed (FX28).
+/// One stored run's row under an eval's details (F18 step 5b.2; on the Benchmarks page until F53.2): a finished run
+/// can be re-scored, a recorded one replayed (FX28).
 /// </summary>
 public partial class RunListItem
 {

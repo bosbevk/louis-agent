@@ -10,7 +10,7 @@ namespace LouisAgent.Puls.Admin.Runs;
 public sealed record TotalSummary(decimal? Cost, int Requests);
 
 /// <summary>
-/// One stored run as the Benchmarks page lists it: what ran, how it ended, what it cost, the models it ran on, the
+/// One stored run as the Evals page lists it: what ran, how it ended, what it cost, the models it ran on, the
 /// run it re-scored (F18 step 5b.2) or replayed (FX28; null for a run that asked the model), and whether it recorded
 /// its answers, so it can be replayed.
 /// </summary>

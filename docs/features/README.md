@@ -136,7 +136,7 @@ drift apart:
 4. **Limitations:** if the feature removes a known limitation (F10: tool rounds), delete it from the
    TODO's [Known limitations](../../TODO.md#known-limitations) (the one list).
 5. **Benchmark:** for features that change cost or quality, run the check from the admin portal
-   (`/admin/benchmarks`, on Louis's go). The run is kept in the benchmark store (F31), so the feature's doc names the
+   (`/admin`, on Louis's go). The run is kept in the benchmark store (F31), so the feature's doc names the
    run's id and its numbers; the runs before CL10 stay in
    [BENCHMARKS.md at `pre-cl10`](https://github.com/bosbevk/louis-agent/blob/pre-cl10/docs/BENCHMARKS.md).
 6. **User docs:** settings in README / [SETUP](../SETUP.md), and anything the feature changes for users.

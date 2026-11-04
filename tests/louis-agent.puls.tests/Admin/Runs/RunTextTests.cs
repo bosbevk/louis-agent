@@ -3,7 +3,7 @@ using LouisAgent.Puls.Admin.Runs;
 namespace LouisAgent.Puls.Tests.Admin.Runs;
 
 /// <summary>
-/// How the Benchmarks page writes a run's status, its repeats, its money and a question too long for a cell.
+/// How the Evals page writes a run's status, its repeats, its money and a question too long for a cell.
 /// </summary>
 public class RunTextTests
 {
