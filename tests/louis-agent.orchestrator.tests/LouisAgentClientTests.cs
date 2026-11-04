@@ -224,7 +224,7 @@ public class LouisAgentClientTests
     [Test]
     public void TheFollowUp_AsksForTheFixResult()
     {
-        Assert.That(Tools.ServiceTools.ContinueMessage,
+        Assert.That(LouisAgent.Orchestrator.Tools.ServiceTools.ContinueMessage,
             Is.EqualTo("Continue the fix from where you stopped. Finish with the FIX-RESULT line."));
     }
 

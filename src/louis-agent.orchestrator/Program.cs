@@ -12,6 +12,7 @@ using LouisAgent.Core.Telemetry;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using LouisAgent.Orchestrator;
+using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Messages;
 using LouisAgent.Orchestrator.Tools;
 using LouisAgent.Orchestrator.Triage;
