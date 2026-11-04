@@ -4,6 +4,12 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F50.2 The prices as an open feed**: a pack can publish read-only data feeds (`IDataFeed` in core: a
+  name, a description and its JSON; `IAgentPack.Feeds`, empty by default; the catalogue gathers them and refuses a name
+  twice), and the API serves them open without knowing the pack: `GET /v1/feeds` lists each with its path, `GET
+  /v1/feeds/{name}` returns the pack's JSON as it wrote it, `404` for a name no pack publishes. The first is
+  `shop-prices`: Stats SA's tables and our own rows, read through the tool's cache, under a notice that says they are
+  averages and whose they are. [ADR 0070](docs/adr/0070-packs-publish-data-feeds.md)
 - 2026-11-04 — **F50.2 Where to buy and shop prices**: the shops pack (Checkers' catalogue read through our
   browser, for development only, since no retailer answered the 2026-10-25 emails) is gone, and two packs with one job
   each take its place, neither tied to food. `where-to-buy`: `FindBranches(shop, town)` finds a shop's three nearest

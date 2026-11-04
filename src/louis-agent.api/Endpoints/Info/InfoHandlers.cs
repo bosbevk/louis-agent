@@ -1,5 +1,6 @@
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Info;
+using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Messages;
 using LouisAgent.Api.Sessions;
 using LouisAgent.Core.Hosting;
@@ -13,18 +14,23 @@ using PricesAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
 using RatesAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
     Microsoft.AspNetCore.Http.HttpResults.ContentHttpResult,
     Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
+using FeedAnswer = Microsoft.AspNetCore.Http.HttpResults.Results<
+    Microsoft.AspNetCore.Http.HttpResults.ContentHttpResult,
+    Microsoft.AspNetCore.Http.HttpResults.JsonHttpResult<LouisAgent.Api.Contracts.ApiError>>;
 
 namespace LouisAgent.Api.Endpoints.Info;
 
 /// <summary>
 /// What this instance is and has, as named methods: its health, the price table and exchange rates it loaded, its
-/// display currency, the toolsets a session can load, its model, its roles and its LLM profiles.
+/// display currency, the data its packs publish, the toolsets a session can load, its model, its roles and its LLM
+/// profiles.
 /// </summary>
 /// <remarks>
 /// Introduce Parameter Object (Fowler), with the object owning the behaviour: the routes share the host the agent was
 /// built as (its prices, rates, display currency and model), so it lives here and each route is a named method a test
 /// can call with no HTTP. Each returns <c>TypedResults</c> with its answers declared; the info replies are written with
-/// <c>InfoJson.SnakeCase</c>, the price table with its own options, and the rates as the text of our rates.json.
+/// <c>InfoJson.SnakeCase</c>, the price table with its own options, the rates as the text of our rates.json, and a
+/// feed as the text its pack wrote.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class InfoHandlers(AgentHostContext host)
@@ -87,6 +93,26 @@ internal sealed class InfoHandlers(AgentHostContext host)
     /// <summary>The LLM profiles a session can name besides this instance's model.</summary>
     public JsonHttpResult<LlmProfilesReply> GetLlmProfiles(AgentEngineFactory engines) =>
         TypedResults.Json(new LlmProfilesReply(null, engines.SessionLlms), InfoJson.SnakeCase);
+
+    /// <summary>The data the packs publish (ADR 0070): each feed's name, what it is, and where to read it.</summary>
+    public static JsonHttpResult<FeedsReply> GetFeeds(AgentEngineFactory engines)
+    {
+        var feeds = engines.Catalog.Feeds
+            .Select(feed => new FeedRow(feed.Name, feed.Description, $"{ApiMap.Version}/feeds/{feed.Name}")).ToList();
+        return TypedResults.Json(new FeedsReply(feeds), InfoJson.SnakeCase);
+    }
+
+    /// <summary>
+    /// One feed's data, as the pack wrote it: the API passes the JSON on and knows nothing of its shape. A 404 for a
+    /// name no pack publishes.
+    /// </summary>
+    public static async Task<FeedAnswer> GetFeed(string name, AgentEngineFactory engines,
+        CancellationToken cancellationToken)
+    {
+        if (engines.Catalog.Feed(name) is not { } feed)
+            return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownFeed, new { Name = name }));
+        return TypedResults.Text(await feed.ReadJsonAsync(cancellationToken), "application/json");
+    }
 
     /// <summary>A symbol for each currency the rates and the price table name, told apart from the base's.</summary>
     private static Dictionary<string, string> SymbolsOf(AgentHostContext host) =>

@@ -12,12 +12,14 @@ public sealed class FakePack(
     string name = "fakeshop",
     IReadOnlyList<ToolsetDefinition>? toolsets = null,
     IReadOnlyDictionary<string, string>? prompts = null,
-    IReadOnlyList<string>? requires = null) : IAgentPack
+    IReadOnlyList<string>? requires = null,
+    IReadOnlyList<IDataFeed>? feeds = null) : IAgentPack
 {
     public string Name => name;
     public IReadOnlyList<ToolsetDefinition> Toolsets { get; } = toolsets ?? [Toolset(name, typeof(FakeShopTools), _ => [new FakeShopTools()])];
     public IFileProvider Prompts { get; } = new FakePrompts(prompts ?? new Dictionary<string, string> { [$"toolsets/{name}.md"] = $"# {name}\n\nA guide.\n" });
     public IReadOnlyList<string> Requires => requires ?? [];
+    public IReadOnlyList<IDataFeed> Feeds => feeds ?? [];
 
     /// <summary>A toolset definition shaped like the catalogue's own, for a tool class a test names.</summary>
     public static ToolsetDefinition Toolset(string name, Type toolType, Func<ToolsetContext, IReadOnlyList<object>> create) =>

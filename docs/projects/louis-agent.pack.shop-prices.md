@@ -36,6 +36,10 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
   first read adds each shipped table the store doesn't have; one it has is never overwritten. Without the setting,
   `ShippedPrices` hands over the shipped tables in memory. `PriceBookCache` reads the store at most once an hour and
   falls back to the shipped tables when the store fails or is empty, with a log line (`ShopPriceLogMessage`).
+- **The feed.** The pack publishes the same tables as one feed, `shop-prices` (`ShopPricesFeed`,
+  [ADR 0070](../adr/0070-packs-publish-data-feeds.md)), which the API serves open at `GET /v1/feeds/shop-prices`:
+  `{"notice": …, "tables": [ … ]}`, each table in the shipped JSON's shape, read through the tool's cache. The notice
+  (`ShopPriceFeedMessage`) says the prices are averages and whose they are.
 
 ## Design notes
 
@@ -62,7 +66,8 @@ job ([louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md)).
 | `Prices/Regions/` | `Region` (the country and the nine provinces), `RegionNames` (English and Afrikaans names), `RegionPrice` |
 | `Prices/Store/` | `IPriceStore` with `ShippedPrices` and `MongoPriceStore`, `PriceFileDocument`, `PriceBookCache` |
 | `Prices/Data/` | The shipped tables (embedded) |
-| `Messages/` | `ShopPriceToolMessage` (what the tool returns), `ShopPriceLogMessage` (its log line) |
+| `Feeds/` | `ShopPricesFeed` (the tables as a feed) and `PriceFeed` (what it sends) |
+| `Messages/` | `ShopPriceToolMessage` (what the tool returns), `ShopPriceLogMessage` (its log line), `ShopPriceFeedMessage` (the feed's description and notice) |
 
 ## Configuration
 
@@ -81,14 +86,16 @@ The Puls stack uses the eval store's server and user, on its own database.
 - **Another kind of price** (rent, fuel): a price file of the same shape, with its source and date, seeded or saved
   into the same store. A unit it needs that `PackUnit` lacks is a new member.
 - **Our own rows** are `own-prices.json`; each needs a person's check.
+- **Another feed** (one table on its own, a province's): another `IDataFeed` in `Feeds/`, listed in `ShopPricesPack.Feeds`.
 
 ## Tests
 
 `tests/louis-agent.pack.shop-prices.tests`, mirroring the folders: the line reader, the matcher, the estimator (the
 scaling, the province fallback, `?`), the tool's table and texts with `ShopPriceToolMessageSnapshotTests`' golden, the
-cache (once an hour, the fallback, on a fake clock) and the options. `tests/louis-agent.pack.shop-prices.integration-tests`
-runs `MongoPriceStore` against a real MongoDB (`BENCHMARKS_MONGO_URL`, CI's throwaway server): the seed, a newer month
-read with the older kept, and a stored table never overwritten.
+cache (once an hour, the fallback, on a fake clock), the feed (its name, its shape, what the store holds) and the
+options. `tests/louis-agent.pack.shop-prices.integration-tests` runs `MongoPriceStore` against a real MongoDB
+(`BENCHMARKS_MONGO_URL`, CI's throwaway server): the seed, a newer month read with the older kept, and a stored table
+never overwritten. The API's `FeedRouteTests` read the feed over HTTP.
 
 ## Limits and plans
 
@@ -100,7 +107,8 @@ read with the older kept, and a stored table never overwritten.
 ## Related docs
 
 [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) · [Build a pack](../guides/build-a-pack.md) ·
-[louis-agent.identity.puls](louis-agent.identity.puls.md) · [ADR 0069](../adr/0069-shop-prices-are-stats-sa-estimates.md)
+[louis-agent.identity.puls](louis-agent.identity.puls.md) · [ADR 0069](../adr/0069-shop-prices-are-stats-sa-estimates.md) ·
+[ADR 0070](../adr/0070-packs-publish-data-feeds.md)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) · Next: [louis-agent.pack.recipes](louis-agent.pack.recipes.md)

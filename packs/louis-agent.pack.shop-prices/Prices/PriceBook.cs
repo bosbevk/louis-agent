@@ -18,8 +18,8 @@ namespace LouisAgent.Packs.ShopPrices.Prices;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
 public sealed class PriceBook
 {
-    /// <summary>The one options object for the price files: units by their wire names (ADR 0041).</summary>
-    private static readonly JsonSerializerOptions Json = new() { Converters = { new JsonStringEnumConverter() } };
+    /// <summary>The one options object for the price files, read and written (the feed): units by their wire names (ADR 0041).</summary>
+    internal static readonly JsonSerializerOptions Json = new() { Converters = { new JsonStringEnumConverter() } };
 
     /// <summary>The pack's own tables, Stats SA's first, read once for the process.</summary>
     private static readonly Lazy<PriceBook> Embedded = new(() =>

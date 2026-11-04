@@ -180,6 +180,12 @@ What each part of a `ToolsetDefinition` is for:
 registered and a cycle. The pack must be ready when built: anything slow (a connection, a listing) happens once at
 start-up, and its toolsets never change afterwards, so every chat keeps a cacheable prompt.
 
+`Feeds` (optional, empty unless you list some) is data the pack publishes for anyone to read, apart from its tools: an
+`IDataFeed` with a name, a one-line description and `ReadJsonAsync`, which writes the data from the pack's own
+records. The API lists every feed at `GET /v1/feeds` and serves each, open, at `/v1/feeds/{name}`, without knowing the
+pack ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)); a feed is the pack's MCP resource. Publish only what
+anyone may read. The shop-prices pack's `ShopPricesFeed` is the example.
+
 ### Your names are an enum
 
 A name that is written in more than one place is an enum ([ADR 0043](../adr/0043-repeated-names-are-enums.md)). The pack keeps **its own**

@@ -76,6 +76,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0067](0067-a-pages-own-data-before-its-text.md) | A page's own data before its text: a tool reads the page's structured data in code and gives the model a short, framed print; the model reads the text only where there is no data | Accepted |
 | [0068](0068-every-fetch-obeys-robots-txt.md) | Every fetch obeys robots.txt: one policy checks a site's file (our group, else the strictest AI-reader group, else `*`; read a day, an hour if unreachable) and the page's own no-AI signals, on every fetcher hop and every browser visit | Accepted |
 | [0069](0069-shop-prices-are-stats-sa-estimates.md) | Shop prices are Stats SA's averages, and where to buy is the public map: the shops pack goes for `where-to-buy` (OpenStreetMap's branches) and `shop-prices` (Stats SA's averages, totals in code, kept in MongoDB per source and month, seeded from the shipped tables), each credited | Accepted |
+| [0070](0070-packs-publish-data-feeds.md) | Packs publish data feeds, and the API serves them open: a pack lists read-only feeds (`IDataFeed`: a name, a description, its JSON), the catalogue gathers them, and `GET /v1/feeds` and `/v1/feeds/{name}` serve them without knowing the pack; the first is `shop-prices` | Accepted |
 
 ## When to write one
 
