@@ -74,7 +74,11 @@ public partial class ReviewPanel : IDisposable
     /// <summary>"Not you?": lets the kept name go, so the panel asks for one again (6a.4).</summary>
     private Task ChangeNameAsync() => Reviewer.ClearAsync();
 
-    private async Task GradeAsync(string verdict)
+    /// <summary>
+    /// Stores this reviewer's verdict (pass, fail or unsure) with the note, then reports it. The Review page's keys
+    /// call it; the panel's own buttons do too.
+    /// </summary>
+    public async Task GradeAsync(string verdict)
     {
         if (Reviewer.Name is not { } name || _busy) return;
         _busy = true;

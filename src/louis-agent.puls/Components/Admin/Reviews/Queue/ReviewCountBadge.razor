@@ -1,0 +1,5 @@
+@* F53.3: how many answers wait for this reviewer, beside Review in the sidebar; nothing when none do. *@
+@if (State.Count is > 0 and var count)
+{
+    <span class="review-count" title="@count waiting for your grade">@count</span>
+}

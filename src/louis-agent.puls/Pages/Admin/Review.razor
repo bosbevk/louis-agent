@@ -7,6 +7,9 @@
 
 <PageTitle>Review · Puls Admin</PageTitle>
 
+@* The keys 1, 2 and 3 grade the open answer: the page listens on its own box, which takes the focus when an answer
+   opens; the panel's note and name fields keep their keys to themselves (stopPropagation), so typing never grades. *@
+<div class="review-page" tabindex="-1" @ref="_box" @onkeydown="KeyAsync">
 <div class="page-head">
     <div>
         <h1>Review</h1>
@@ -34,7 +37,7 @@ else if (_view?.Current is { } item)
 {
     <section class="card-p review-item" @key="Key(item)">
         <ReviewItemHead Item="item" Place="@ReviewQueueText.Place(_view)" OnSkip="SkipAsync" />
-        <ReviewPanel Conversation="Where(item)" Review="ReviewOf(item)" Asked="item.Asked" Answer="@item.Answer"
+        <ReviewPanel @ref="_panel" Conversation="Where(item)" Review="ReviewOf(item)" Asked="item.Asked" Answer="@item.Answer"
                      Grades="ConversationGrades.Of(item.Conversation)" OnGraded="GradedAsync" />
     </section>
 }
@@ -42,3 +45,4 @@ else if (_view is not null)
 {
     <section class="card-p review-empty"><p>@ReviewQueueText.Empty(Reviewer.Name)</p></section>
 }
+</div>

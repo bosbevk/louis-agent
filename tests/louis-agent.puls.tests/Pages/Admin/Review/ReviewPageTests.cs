@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Puls.Admin.Reviews;
+using LouisAgent.Puls.Admin.Reviews.Queue;
 using LouisAgent.Testing;
 using LouisAgent.Web.Shared.Api;
 using LouisAgent.Web.Shared.Chats;
@@ -74,6 +75,50 @@ public class ReviewPageTests
         Assert.That(cut.Find(".review-progress").TextContent, Is.EqualTo("0 graded · 2 left"));
     }
 
+    /// <summary>The keys: 1 grades pass without a click, and the next answer opens (F53.3 step 3).</summary>
+    [Test]
+    public void PressingOne_GradesPass_AndOpensTheNext()
+    {
+        using var ctx = new BunitContext();
+        var (cut, handler) = Render(ctx, Two);
+        cut.WaitForState(() => cut.FindAll(".review-pass").Count == 1, TimeSpan.FromSeconds(10));
+
+        cut.Find(".review-page").KeyDown("1");
+
+        cut.WaitForState(() => cut.Find(".review-item-task").TextContent == "sosaties", TimeSpan.FromSeconds(10));
+        var put = handler.Requests.Single(r => r.Method == HttpMethod.Put);
+        Assert.That(put.Body, Does.Contain("\"verdict\":\"pass\""));
+    }
+
+    /// <summary>A key typed in the note stays a letter in the note: it never grades.</summary>
+    [Test]
+    public void AKeyInTheNote_DoesNotGrade()
+    {
+        using var ctx = new BunitContext();
+        var (cut, handler) = Render(ctx, Two);
+        cut.WaitForState(() => cut.FindAll(".review-note").Count == 1, TimeSpan.FromSeconds(10));
+
+        // The note stops the key (stopPropagation): bUnit reports that no handler took it, which is the point.
+        Assert.Throws<MissingEventHandlerException>(() => cut.Find(".review-note").KeyDown("1"));
+
+        Assert.That(cut.Find(".review-item-task").TextContent, Is.EqualTo("bobotie"));
+        Assert.That(handler.Requests.Any(r => r.Method == HttpMethod.Put), Is.False);
+    }
+
+    /// <summary>The shared count the sidebar's badge shows falls by one after a grade (F53.3 step 3).</summary>
+    [Test]
+    public void AGrade_LowersTheSharedCount()
+    {
+        using var ctx = new BunitContext();
+        var (cut, _) = Render(ctx, Two);
+        var state = ctx.Services.GetRequiredService<ReviewQueueState>();
+        cut.WaitForState(() => state.Count == 2, TimeSpan.FromSeconds(10));
+
+        cut.Find(".review-pass").Click();
+
+        cut.WaitForState(() => state.Count == 1, TimeSpan.FromSeconds(10));
+    }
+
     /// <summary>With nothing waiting the page says so, by name.</summary>
     [Test]
     public void WithNothingWaiting_ThePageSaysSo()
@@ -114,6 +159,7 @@ public class ReviewPageTests
         ctx.Services.AddSingleton(api);
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
+        ctx.Services.AddSingleton(new ReviewQueueState());
         return (ctx.Render<ReviewPage>(), handler);
     }
 }
