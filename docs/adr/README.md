@@ -74,6 +74,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0065](0065-the-view-is-in-the-address.md) | The view is in the address: what a portal page shows (the run page's tab, the explorer's level and what is open in it) is read from the address, parsed once and written by one class; a component that keeps state reports every move and takes a changed place back; a change of address is not a fetch | Accepted |
 | [0066](0066-the-site-is-static-razor.md) | The engine's site is static Razor, and its films are CSS: `src/louis-agent.site` renders plain HTML on the server with no WebAssembly and no script of ours, references no engine project, shows only what works today, and draws the two films with CSS keyframes over CSS 3D, what both share in one stylesheet and each film's timing in its own | Accepted |
 | [0067](0067-a-pages-own-data-before-its-text.md) | A page's own data before its text: a tool reads the page's structured data in code and gives the model a short, framed print; the model reads the text only where there is no data | Accepted |
+| [0068](0068-every-fetch-obeys-robots-txt.md) | Every fetch obeys robots.txt: one policy checks a site's file (our group, else the strictest AI-reader group, else `*`; read a day, an hour if unreachable) and the page's own no-AI signals, on every fetcher hop and every browser visit | Accepted |
 
 ## When to write one
 

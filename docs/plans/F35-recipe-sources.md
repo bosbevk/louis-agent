@@ -9,7 +9,7 @@
 > take the next free numbers on `main` the day they are written, and nothing else changes).
 
 Status: **draft for Louis, 2026-11-03.** Six findings below, each on its own card. Picked 2026-11-03: A1, B1, **C2** (the
-guarded browser, not the HTTP fetcher; the plan below is rewritten for it), D2, F1, **E3** (a robots policy on every fetch, in core: a new step 2 and ADR 0068, written in below) and **G1** (an unreachable `robots.txt` refuses the page for an hour). **Approved on every finding, 2026-11-03 23:32.**
+guarded browser, not the HTTP fetcher; the plan below is rewritten for it), D2, F1, **E3** (a robots policy on every fetch, in core: a new step 2 and ADR 0068, written in below) and **G1** (an unreachable `robots.txt` refuses the page for an hour). **Approved on every finding, 2026-11-03 23:32; H to L approved 2026-11-04 (*Approved during the build*).**
 
 ## The goal, in Louis's words
 
@@ -522,6 +522,35 @@ goes in F35.2. One more request per host per day. A recorded trial from before t
   is found from (12 disallow their search or have none, 4 weren't tried, and 11 aren't WordPress), and whether 45 sites are an
   enum or a table are findings for steps 3 to 5, put to Louis there.
 
+- **2026-11-04, after step 0's review, the five findings the check opened, on cards (picks H2, I1, J2, K1, L1).**
+  They settle the design of steps 2 to 5 where the text above still says `DrizzleAndDip` and `LazyMakoti`; the
+  prompts carry them, the steps' text above stays as approved.
+  - **H2, which `robots.txt` groups bind us:** our own group (`louis-agent`) when the file has one; else the
+    **strictest** of the AI-reader groups it names (GPTBot, ClaudeBot, anthropic-ai, Claude-Web, CCBot,
+    Google-Extended, Applebot-Extended, Bytespider, PerplexityBot, Meta-ExternalAgent: a path any of them may not
+    read, we don't read); else `*`. Beyond RFC 9309 on purpose: we are an AI reader, so a site that says no to the
+    named ones says no to us. The token list lives in `RobotsTxt`, its reason in ADR 0068. (H1 was the RFC's own
+    group selection, H3 the list as a setting.)
+  - **I1, the page's own no-AI signals:** after the fetch, before the page is read, `RobotsPolicy` reads what rides
+    on the response and refuses with the reason: `<meta name="robots" content="… noai …">`, `X-Robots-Tag: noai`,
+    `Content-Signal: ai-input=no` (Cloudflare's content signals; `ai-train=no` alone allows us, we don't train) and
+    `tdm-reservation: 1`. No extra request. (I2 was `robots.txt` only, I3 added `/.well-known/tdmrep.json` per host.)
+  - **J2, the 45 sites as content:** no `RecipeSourceKind` enum. A content file in the pack,
+    `Prompts/sources/recipe-sites.md`, a table embedded like a prompt (ADR 0011) and read once into `RecipeSite`
+    rows: slug, name, home, read by (`data` or `text`), search (`wordpress`, `web` or `none`), checked on, signals
+    seen. `RECIPE_SOURCES` names slugs or `*` for every row. A Registry loaded from content (Fowler, PoEAA); the
+    stated exception to ADR 0043: a site is a row, not a code path, so a site turning `noai` is a content change.
+    (J1 was a 45-member enum, J3 an enum for the 14 data sites and a list in the cook's prompt.)
+  - **K1, the text path:** for a page with no `Recipe` data, `ReadRecipe` returns the page's text (core's
+    `HtmlText`, as `FetchUrl` makes it), bounded, under its frame and labelled *text, no recipe data*. Nothing new to
+    parse; F48 works on the model's rewrite for those sites. (K2 was a heuristic C# reader of the `<ul>` and `<ol>`,
+    K3 a model call inside the tool.)
+  - **L1, a site with no search we may use (23 of 45):** `IWebSearchProvider`, already on `ToolsetContext`, asked
+    with the query limited to the site (`site:thedaleyplate.com bobotie`); two `IRecipeSource` implementations
+    picked by the row's search column: `WordPressSearch` where `/?s=` is allowed, `SiteWebSearch` elsewhere (GoF
+    Strategy, ADR 0003). The provider's own limits and cost per query hold (Tavily on the sold endpoint, SearXNG for
+    dev). (L2 was a sitemap index, L3 no search for those sites.)
+
 | Site | Kind | Read by | Its own search | Notes |
 |---|---|---|---|---|
 | taste.co.za (Woolworths TASTE) | magazine | data, the site's own | `/?s=` | |
@@ -569,6 +598,15 @@ goes in F35.2. One more request per host per day. A recorded trial from before t
 | koesister.com | heritage food site | text | not tried | Wix |
 | shirleybanting.blogspot.com | blog | text | disallowed | Blogger |
 | thesouthafricancookbook.blogspot.com | blog | text | disallowed | Blogger |
+
+- **2026-11-04, step 2's review, two findings (picks M1 and N2).**
+  - **N2, `*` binds beside the AI-reader groups:** with no group of our own, the `*` group and every AI-reader group
+    bind us together, each read on its own, and a path any of them closes is closed; H2's "else `*`" read literally
+    would let us into a path a site closes to everyone whenever it also names an AI reader. (N1 was H2 as written, N3
+    `*` plus only an AI group's whole-site `Disallow: /`.)
+  - **M1, `ToolsetCatalog.cs` keeps its one changed line:** formatted whole, the file passes 200 lines of code, so
+    this step changes only the line that hands the fetcher the policy; splitting the file is a cleanup of its own.
+    (M2 was the split in this step, M3 the file on `FileSizeTests`' oversized list.)
 
 ## F35.2 (planned when it starts)
 
