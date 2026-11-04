@@ -138,9 +138,9 @@ You need Docker Desktop and an [Anthropic API key](https://console.anthropic.com
 without Docker.
 
 ```bash
-cp config/.env.example config/.env
-cp config/.env.secrets.example config/.env.secrets   # set ANTHROPIC_API_KEY and AGENT_API_KEY
-# in config/.env, set REPOSITORIES_PATH to the folder that holds your repos
+cp demos/louis-agent/config/.env.example demos/louis-agent/config/.env
+cp demos/louis-agent/config/.env.secrets.example demos/louis-agent/config/.env.secrets   # set ANTHROPIC_API_KEY and AGENT_API_KEY
+# in demos/louis-agent/config/.env, set REPOSITORIES_PATH to the folder that holds your repos
 
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api   # web app + API
 ```

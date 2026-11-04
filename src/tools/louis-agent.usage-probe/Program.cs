@@ -293,7 +293,8 @@ static void PrintLedger(string path, PriceTable prices)
         UsageTotal delegated = UsageReport.Total("sub_session", rollUps);
         Console.WriteLine(MessageText.Format(ProbeUserText.LedgerRollUps, new
         {
-            Rows = rollUps.Count, delegated.Requests,
+            Rows = rollUps.Count,
+            delegated.Requests,
             Cost = delegated.Cost is { } cost ? $"${cost:0.0000}" : "unknown",
         }));
     }

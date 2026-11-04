@@ -40,8 +40,13 @@ public class ModelRequestSnapshotTests
         // Every toolset: Paymo and DevOps load only with their keys (nothing is called while building the engine).
         var options = new AgentOptions
         {
-            WorkspaceRoot = _skillsDir, SkillsDirectory = _skillsDir, RatesUrl = null,
-            PaymoApiKey = "snapshot", DevopsApiKey = "snapshot", DevopsOrganization = "org", DevopsProject = "project",
+            WorkspaceRoot = _skillsDir,
+            SkillsDirectory = _skillsDir,
+            RatesUrl = null,
+            PaymoApiKey = "snapshot",
+            DevopsApiKey = "snapshot",
+            DevopsOrganization = "org",
+            DevopsProject = "project",
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
             // F30: the minions toolset needs a model map too; the snapshot then holds StartMinion and ContinueMinion.
             MinionLlms = new Dictionary<string, IReadOnlyList<string>> { ["*"] = ["instance"] },
