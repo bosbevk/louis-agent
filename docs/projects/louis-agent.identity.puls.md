@@ -36,7 +36,7 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   `Evals/` (F49.2). Puls ships **readers, not checks** (F49.2b): the cook's file names the general checks
   (`no-error`, `amount-under`, `image-shown`, `number-named`) under the names its grades carry, over Puls's readers
   in `Evals/Readers/` (`rand-total`, `rand-prices`, `servings`, `recipe-photos`: Adapters over the cook's scoring
-  code), listed in `PulsReaders.All`, which reaches the runner through the composition's `EvalReaders`. The shop
+  code; `recipe-link` reads the `Skakel:` / `Link:` line for the recipes pack's `recipe-from-source`), listed in `PulsReaders.All`, which reaches the runner through the composition's `EvalReaders`. The shop
   rules are the shops pack's (F49.3), with the reading of the scenario's shop: Puls has no check of its own left.
   Its readers implement the check contract only; the cook's model judge needs the harness, so it lives apart in
   [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md), which only the runner references.
@@ -84,7 +84,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 | `Prompts/agent/puls/voice.md` | The shared routing (*Puls - Routing*): which work goes to which toolset or specialist, how to brief one, what isn't available yet; no mode of its own |
 | `Evals/Cook/` | The cook's eval as a folder of files (F49.2): `eval.json` (version 13: its two modes and nine checks: general checks over Puls's readers under the cook's names, the shops pack's two shop rules, `routed-to`, the cook's judge `meal-for-people` and a person's review of it), `manual.md`, `Rubrics/meal-for-people.md` (the judge's calibrated rubric), `Dataset/` with the 60 labels, and `Transcripts/` |
 | `Evals/Routing/` | The routing eval as a folder of files (F49.2): `eval.json` (its modes, the baseline's toolsets listed, and `routed-to` with only `specialists` delegating), `manual.md`, `Dataset/` and `Transcripts/`; copied to `EvalFiles/identities/louis-agent.identity.puls/…`, where the runner finds it through the composition |
-| `Evals/Readers/`, `Evals/PulsReaders.cs` | Puls's readers (F49.2b, F49.3): `RandTotal` (`rand-total`), `RandPrices` (`rand-prices`), `PeopleServed` (`servings`) and `RecipePhotos` (`recipe-photos`), Adapters over the scoring code below, and their list |
+| `Evals/Readers/`, `Evals/PulsReaders.cs` | Puls's readers (F49.2b, F49.3): `RandTotal` (`rand-total`), `RandPrices` (`rand-prices`), `PeopleServed` (`servings`) and `RecipePhotos` (`recipe-photos`), Adapters over the scoring code below, `RecipeLinkLine` (`recipe-link`, string methods over the cook's link line, F35.2), and their list |
 | `Evals/Checks/Cook/` | The scenario's expectations (`Expectations/`: the route, the town, the people, the budget), the scoring of prices and servings (`Scoring/`), and `CookMode` |
 | `Evals/Checks/Shared/` | Reading a turn (`TurnView`), the shops and their links (`Shops`, `PriceLinks`, `RecipeLinks`), and the names the checks use as enums of their own (`PulsEvalName`, `PulsEvalRole`, `PulsToolset`, `PulsVoice`; ADR 0043) |
 | `Evals/Checks/Messages/` | The checks' reasons (`GradeMessage`, `ExpectationMessage`; ADR 0009) |

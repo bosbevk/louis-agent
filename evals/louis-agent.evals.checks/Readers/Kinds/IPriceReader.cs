@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Readers;
+namespace LouisAgent.Evals.Readers.Kinds;
 
 /// <summary>
 /// Reads whether an answer gives prices as fact, where it should give estimates: how many of its list's rows state a

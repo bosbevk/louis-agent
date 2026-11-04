@@ -1,4 +1,5 @@
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.Evals.Readers.Listing;
 
 namespace LouisAgent.Evals.Checks.Tests.Readers;
@@ -89,5 +90,30 @@ public class ReaderCatalogTests
 
         /// <inheritdoc />
         public IReadOnlyList<int> Numbers(string answer) => [];
+    }
+
+    /// <summary>A link reader that reads nothing, under a name.</summary>
+    private sealed class FakeLink(string name) : ILinkReader
+    {
+        /// <inheritdoc />
+        public string Name { get; } = name;
+
+        /// <inheritdoc />
+        public string? RecipeLink(string answer) => null;
+    }
+
+    /// <summary>A link reader is found as the link kind, listed with it, and refused as another kind.</summary>
+    [Test]
+    public void ALinkReader_IsFoundAsALinkReader_AndListedAsOne()
+    {
+        var catalog = new ReaderCatalog([new FakeLink("a-link"), new FakeMoney("a-money")]);
+
+        Assert.That(catalog.Get<ILinkReader>("a-link").Name, Is.EqualTo("a-link"));
+        Assert.That(catalog.Listing(),
+            Is.EqualTo(new[]
+            {
+                new ListedReader("a-link", ReaderKind.Link), new ListedReader("a-money", ReaderKind.Money)
+            }));
+        Assert.Throws<InvalidDataException>(() => catalog.Get<ILinkReader>("a-money"));
     }
 }

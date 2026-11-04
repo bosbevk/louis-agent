@@ -6,6 +6,7 @@ using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Markdown;
 using LouisAgent.Evals.Protocol.Kinds;
 using LouisAgent.Evals.Readers;
+using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Packs.Shops.Checks.Reading;
 using LouisAgent.Packs.Shops.Messages;

@@ -1,9 +1,11 @@
+using LouisAgent.Evals.Readers.Kinds;
+
 namespace LouisAgent.Evals.Readers;
 
 /// <summary>
 /// Something that reads one kind of value out of an answer's text, under a name an eval file uses beside its key
 /// (<c>"reader": "currency-amount"</c>). The kinds are <see cref="IMoneyReader"/>, <see cref="INumberReader"/>,
-/// <see cref="IImageReader"/> and <see cref="IPriceReader"/>.
+/// <see cref="IImageReader"/>, <see cref="IPriceReader"/> and <see cref="ILinkReader"/>.
 /// </summary>
 /// <remarks>
 /// Strategy (Gang of Four), chosen by name from a <see cref="ReaderCatalog"/>: a generic check holds the compare and

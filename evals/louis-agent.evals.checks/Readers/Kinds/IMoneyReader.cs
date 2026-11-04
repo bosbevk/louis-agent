@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Readers;
+namespace LouisAgent.Evals.Readers.Kinds;
 
 /// <summary>Reads the total an answer gives in money, such as a basket's price.</summary>
 public interface IMoneyReader : IReader

@@ -140,7 +140,7 @@ required check that asks no model (a fixed rule), so a run always has a check th
 "within-budget", "parameters": {"key": "budget", "reader": "rand-total"}}`. The harness ships `currency-amount`,
 `digits` and `markdown-images`; an identity ships its own when the value is written its way (Puls's `rand-total`,
 `rand-prices`, `servings` and `recipe-photos`, in `Evals/Readers/`). A reader is a small class that implements
-`IMoneyReader`, `INumberReader`, `IImageReader` or `IPriceReader` (from the check contract,
+`IMoneyReader`, `INumberReader`, `IImageReader`, `IPriceReader` or `ILinkReader` (from the check contract,
 `evals/louis-agent.evals.checks`), listed in your
 identity's list (`PulsReaders.All`), which the composition hands to the runner (`EvalReaders.All`). `name` keeps the
 name your stored grades carry when the type is a general one.

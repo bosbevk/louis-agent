@@ -1,4 +1,4 @@
-namespace LouisAgent.Evals.Readers;
+namespace LouisAgent.Evals.Readers.Kinds;
 
 /// <summary>
 /// Reads the images a text shows, on a page the agent read or in its answer, leaving out what the reader's domain

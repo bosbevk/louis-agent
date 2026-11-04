@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text;
 using LouisAgent.Packs.Recipes.Sources;
+using LouisAgent.Packs.Recipes.Sources.Sites;
 
 namespace LouisAgent.Packs.Recipes.Providers;
 
@@ -119,12 +120,7 @@ internal static class SearchResultLinks
 
     /// <summary>The same site is the same host, a leading <c>www.</c> not counted.</summary>
     private static bool SameSite(Uri url, Uri home) =>
-        string.Equals(Host(url), Host(home), StringComparison.OrdinalIgnoreCase);
-
-    /// <summary>The address's host without a leading <c>www.</c>.</summary>
-    public static string Host(Uri url) => url.Host.StartsWith("www.", StringComparison.OrdinalIgnoreCase)
-        ? url.Host[4..]
-        : url.Host;
+        string.Equals(RecipeSite.HostOf(url), RecipeSite.HostOf(home), StringComparison.OrdinalIgnoreCase);
 
     /// <summary>The text of some HTML: tags taken out, entities decoded, runs of whitespace made one space.</summary>
     private static string Words(string html)

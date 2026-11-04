@@ -1,7 +1,7 @@
 # louis-agent.pack.recipes — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.recipes/` · **References:** louis-agent.core,
-> Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
+> louis-agent.evals.checks (the check contract), Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
 > **Uses:** core's guarded browser (`BROWSER_URL`) and, for some sites, core's web search provider
 
 ## Purpose
@@ -34,6 +34,16 @@ any identity can use it, and it could be served as an MCP server unchanged
 - **Failures are text.** A site's refusal, the browser's refusal (a private address, a page a site's `robots.txt`
   disallows), a bad address or an unknown site comes back as a result with its reason (`RecipeToolMessage`), never an
   exception. A bad address is refused before the browser is asked for anything.
+
+- **A check that the recipe came from a site.** `recipe-from-source` (`Checks/`, F35.2) passes when the recipe link in
+  the first turn's answer is on a site of the table (the host with or without `www.`, under the site's home, so
+  Rooi Rose's `novanews.co.za/rooirose` doesn't let the publisher's other sections through), and says which site by
+  its short name; another host fails and is named, no link fails, and a first turn that broke is Unknown. How an
+  answer writes its link is the identity's, so the file names a link reader beside the check
+  (`{"type": "recipe-from-source", "parameters": {"reader": "recipe-link"}}`), as the shops pack's
+  `estimates-at-shop` takes a price reader ([ADR 0059](../adr/0059-an-identity-ships-readers-not-checks.md),
+  [ADR 0060](../adr/0060-a-pack-ships-its-checks.md)). `RecipesChecks.All` lists it for the composition's
+  `EvalChecks`; the check catalogue's listing shows it with that one setting.
 
 ## Design notes
 
@@ -69,7 +79,8 @@ What F35.1 settled, and why (the plan's decisions are in `docs/plans/F35-recipe-
 | `Sources/` | `IRecipeSource`, `RecipeHit`, `RecipeSourceException`, `RecipeSourceFactory` (the enabled sites and the search each gets) |
 | `Sources/Sites/` | `RecipeSites` (reads the table), `RecipeSite`, the choices `RecipeReadBy` and `RecipeSearch`, and `recipe-sites.md`, the table |
 | `Providers/` | `WordPressSearch`, `SiteWebSearch`, `SearchResultLinks` (the hits out of a search page) |
-| `Messages/` | `RecipeToolMessage` (what the tools return, pinned by a golden), `RecipeLogMessage`, `RecipeErrorMessage` |
+| `Checks/` | `RecipeFromSource` (`recipe-from-source`) and `RecipesChecks.All`, the pack's list for the check catalogue |
+| `Messages/` | `RecipeToolMessage` (what the tools return, pinned by a golden), `RecipeLogMessage`, `RecipeErrorMessage`, `RecipeCheckMessage` (the check's reasons) |
 | `Prompts/toolsets/recipes.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and read |
 
 ## Configuration
@@ -99,7 +110,9 @@ browser, the guide and the table are embedded, the guide routes here and says a 
 `RecipeToolsTests` (the search and the reading on fake sites and a fake browser: the frame, the numbering, every
 refusal, the text path and its cut), `RecipePrinterTests`, `SchemaOrgRecipeTests` (on recorded pages and made-up
 blocks), `WordPressSearchTests`, `SiteWebSearchTests`, `SearchResultLinksTests` and `RecipeSitesTests`,
-`RecipeSourceFactoryTests`, and `RecipeToolMessageSnapshotTests` with its golden of the model-facing texts.
+`RecipeSourceFactoryTests`, `RecipeToolMessageSnapshotTests` with its golden of the model-facing texts, and
+`Checks/` (`RecipeFromSourceTests` on canned turns with a fake link reader, `RecipesChecksTests` for the list, the
+listing and the settings).
 `PackConvertibilityTests` (composition tests) checks the MCP shapes.
 
 ## Limits and plans

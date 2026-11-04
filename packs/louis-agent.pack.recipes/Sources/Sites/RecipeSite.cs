@@ -22,4 +22,22 @@ public sealed record RecipeSite(
     RecipeReadBy ReadBy,
     RecipeSearch Search,
     DateOnly Checked,
-    string? Signals);
+    string? Signals)
+{
+    /// <summary>
+    /// Whether a page is on this site: its host, with or without <c>www.</c>, and at or under its home. The search and
+    /// the eval's check both ask here, so they can't drift apart on what counts as a site.
+    /// </summary>
+    /// <remarks>
+    /// The home's path matters because Rooi Rose lives under <c>novanews.co.za/rooirose</c>: the publisher's other
+    /// sections aren't Rooi Rose. The added slash keeps <c>/rooirose-extra</c> out.
+    /// </remarks>
+    public bool Covers(Uri page) =>
+        string.Equals(HostOf(page), HostOf(Home), StringComparison.OrdinalIgnoreCase)
+        && (page.AbsolutePath.TrimEnd('/') + "/").StartsWith(Home.AbsolutePath.TrimEnd('/') + "/",
+            StringComparison.Ordinal);
+
+    /// <summary>The address's host without a leading <c>www.</c>.</summary>
+    public static string HostOf(Uri address) =>
+        address.Host.StartsWith("www.", StringComparison.OrdinalIgnoreCase) ? address.Host[4..] : address.Host;
+}
