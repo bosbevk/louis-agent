@@ -35,7 +35,6 @@ public class FileSizeTests
         "louis-agent.core/Tools/Shell/PythonTools.cs",
         "louis-agent.core/Tools/Web/Browsing/ChromeWebBrowser.cs",
         "src/louis-agent.orchestrator/CommsLog.cs",
-        "src/louis-agent.orchestrator/Program.cs",
         "src/louis-agent.orchestrator/Tools/ServiceTools.cs",
         "src/louis-agent.puls/Pages/ChatPage.razor.cs",
         "src/louis-agent.web/Pages/ChatPage.razor.cs",
