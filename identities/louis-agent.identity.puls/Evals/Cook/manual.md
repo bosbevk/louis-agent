@@ -61,6 +61,7 @@ A trial passes only when every **required** grader passes; an Unknown never coun
 | `untooled-shops` | fixed rule | yes | No turn's list has a price column for a shop the cook can't read (it reads Checkers through its tools, and PnP and Woolworths as a rendered page); a fail names the shops' sites |
 | `recipe-image` | fixed rule | yes | The answer shows an image the recipe page gave, never one the model made up; the `recipe-photos` reader reads the print's `![name](url)` line from `ReadRecipe` (a text print's logos and share icons are left out); when no page the cook read had an image the grade is Unknown, never a Fail |
 | `serves-as-asked` | fixed rule | no | Each turn's answer names the number of people the scenario asks for |
+| `unpriced-items` | fixed rule | no | Lists the items `EstimatePrices` gave a `?` in the conversation (`tool-rows-marked`: `2 marked ? by EstimatePrices: rotis 5, flaked almonds 100 g`); it only measures, so it always passes and never changes the pass rate |
 | `meal-for-people` | model | no | Is the last answer a meal for the number of people asked for? See below |
 | `meal-for-people.human` | human review | no | The same question put to a person, in the portal; Pending until someone grades it (F18 step 6a) |
 

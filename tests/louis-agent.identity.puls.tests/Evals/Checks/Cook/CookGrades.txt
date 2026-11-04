@@ -5,6 +5,7 @@ control-web.reference estimates-at-shop pass 1
 control-web.reference untooled-shops pass 1
 control-web.reference recipe-image pass 1
 control-web.reference serves-as-asked pass 1
+control-web.reference unpriced-items pass 1
 control-web.reference meal-for-people pass 1
 control-web.bad.delegated cook-no-error pass 1
 control-web.bad.delegated routed-to fail 0
@@ -13,6 +14,7 @@ control-web.bad.delegated estimates-at-shop pass 1
 control-web.bad.delegated untooled-shops pass 1
 control-web.bad.delegated recipe-image pass 1
 control-web.bad.delegated serves-as-asked pass 1
+control-web.bad.delegated unpriced-items pass 1
 control-web.bad.delegated meal-for-people pass 1
 cook-af.reference cook-no-error pass 1
 cook-af.reference routed-to pass 1
@@ -21,6 +23,7 @@ cook-af.reference estimates-at-shop pass 1
 cook-af.reference untooled-shops pass 1
 cook-af.reference recipe-image pass 1
 cook-af.reference serves-as-asked pass 1
+cook-af.reference unpriced-items pass 1
 cook-af.reference meal-for-people unknown 0
 cook-af.reference meal-for-people.human pending 0
 cook-af.bad.error cook-no-error fail 0
@@ -30,6 +33,7 @@ cook-af.bad.error estimates-at-shop unknown 0
 cook-af.bad.error untooled-shops pass 1
 cook-af.bad.error recipe-image unknown 0
 cook-af.bad.error serves-as-asked unknown 0
+cook-af.bad.error unpriced-items pass 1
 cook-af.bad.error meal-for-people unknown 0
 cook-af.bad.error meal-for-people.human pending 0
 cook-af.bad.no-route cook-no-error pass 1
@@ -39,6 +43,7 @@ cook-af.bad.no-route estimates-at-shop fail 0
 cook-af.bad.no-route untooled-shops fail 0
 cook-af.bad.no-route recipe-image unknown 0
 cook-af.bad.no-route serves-as-asked unknown 0
+cook-af.bad.no-route unpriced-items pass 1
 cook-af.bad.no-route meal-for-people unknown 0
 cook-af.bad.no-route meal-for-people.human pending 0
 cook-asks-first.reference cook-no-error pass 1
@@ -48,6 +53,7 @@ cook-asks-first.reference estimates-at-shop pass 1
 cook-asks-first.reference untooled-shops pass 1
 cook-asks-first.reference recipe-image pass 1
 cook-asks-first.reference serves-as-asked pass 1
+cook-asks-first.reference unpriced-items pass 1
 cook-asks-first.reference meal-for-people pass 1
 cook-asks-first.bad.delegated cook-no-error pass 1
 cook-asks-first.bad.delegated routed-to fail 0
@@ -56,6 +62,7 @@ cook-asks-first.bad.delegated estimates-at-shop pass 1
 cook-asks-first.bad.delegated untooled-shops pass 1
 cook-asks-first.bad.delegated recipe-image pass 1
 cook-asks-first.bad.delegated serves-as-asked pass 1
+cook-asks-first.bad.delegated unpriced-items pass 1
 cook-asks-first.bad.delegated meal-for-people pass 1
 cook-en.reference cook-no-error pass 1
 cook-en.reference routed-to pass 1
@@ -64,6 +71,7 @@ cook-en.reference estimates-at-shop pass 1
 cook-en.reference untooled-shops pass 1
 cook-en.reference recipe-image pass 1
 cook-en.reference serves-as-asked pass 1
+cook-en.reference unpriced-items pass 1
 cook-en.reference meal-for-people unknown 0
 cook-en.reference meal-for-people.human pending 0
 cook-en.bad.error-in-follow-up cook-no-error fail 0
@@ -73,6 +81,7 @@ cook-en.bad.error-in-follow-up estimates-at-shop fail 0
 cook-en.bad.error-in-follow-up untooled-shops fail 0
 cook-en.bad.error-in-follow-up recipe-image unknown 0
 cook-en.bad.error-in-follow-up serves-as-asked pass 1
+cook-en.bad.error-in-follow-up unpriced-items pass 1
 cook-en.bad.error-in-follow-up meal-for-people unknown 0
 cook-en.bad.error-in-follow-up meal-for-people.human pending 0
 cook-malmesbury.reference cook-no-error pass 1
@@ -82,6 +91,7 @@ cook-malmesbury.reference estimates-at-shop pass 1
 cook-malmesbury.reference untooled-shops pass 1
 cook-malmesbury.reference recipe-image pass 1
 cook-malmesbury.reference serves-as-asked pass 1
+cook-malmesbury.reference unpriced-items pass 1
 cook-malmesbury.reference meal-for-people unknown 0
 cook-malmesbury.reference meal-for-people.human pending 0
 cook-malmesbury.bad.no-branch-named cook-no-error pass 1
@@ -91,6 +101,7 @@ cook-malmesbury.bad.no-branch-named estimates-at-shop fail 0
 cook-malmesbury.bad.no-branch-named untooled-shops pass 1
 cook-malmesbury.bad.no-branch-named recipe-image pass 1
 cook-malmesbury.bad.no-branch-named serves-as-asked pass 1
+cook-malmesbury.bad.no-branch-named unpriced-items pass 1
 cook-malmesbury.bad.no-branch-named meal-for-people unknown 0
 cook-malmesbury.bad.no-branch-named meal-for-people.human pending 0
 cook-malmesbury.bad.no-image cook-no-error pass 1
@@ -100,6 +111,7 @@ cook-malmesbury.bad.no-image estimates-at-shop pass 1
 cook-malmesbury.bad.no-image untooled-shops pass 1
 cook-malmesbury.bad.no-image recipe-image fail 0
 cook-malmesbury.bad.no-image serves-as-asked pass 1
+cook-malmesbury.bad.no-image unpriced-items pass 1
 cook-malmesbury.bad.no-image meal-for-people unknown 0
 cook-malmesbury.bad.no-image meal-for-people.human pending 0
 cook-malmesbury.bad.over-budget cook-no-error pass 1
@@ -109,6 +121,7 @@ cook-malmesbury.bad.over-budget estimates-at-shop pass 1
 cook-malmesbury.bad.over-budget untooled-shops pass 1
 cook-malmesbury.bad.over-budget recipe-image pass 1
 cook-malmesbury.bad.over-budget serves-as-asked pass 1
+cook-malmesbury.bad.over-budget unpriced-items pass 1
 cook-malmesbury.bad.over-budget meal-for-people unknown 0
 cook-malmesbury.bad.over-budget meal-for-people.human pending 0
 cook-malmesbury.bad.price-linked cook-no-error pass 1
@@ -118,6 +131,7 @@ cook-malmesbury.bad.price-linked estimates-at-shop fail 0
 cook-malmesbury.bad.price-linked untooled-shops pass 1
 cook-malmesbury.bad.price-linked recipe-image pass 1
 cook-malmesbury.bad.price-linked serves-as-asked pass 1
+cook-malmesbury.bad.price-linked unpriced-items pass 1
 cook-malmesbury.bad.price-linked meal-for-people unknown 0
 cook-malmesbury.bad.price-linked meal-for-people.human pending 0
 cook-malmesbury.bad.shop-page-read cook-no-error pass 1
@@ -127,6 +141,7 @@ cook-malmesbury.bad.shop-page-read estimates-at-shop fail 0
 cook-malmesbury.bad.shop-page-read untooled-shops pass 1
 cook-malmesbury.bad.shop-page-read recipe-image pass 1
 cook-malmesbury.bad.shop-page-read serves-as-asked pass 1
+cook-malmesbury.bad.shop-page-read unpriced-items pass 1
 cook-malmesbury.bad.shop-page-read meal-for-people unknown 0
 cook-malmesbury.bad.shop-page-read meal-for-people.human pending 0
 cook-malmesbury.bad.untooled-shop cook-no-error pass 1
@@ -136,6 +151,7 @@ cook-malmesbury.bad.untooled-shop estimates-at-shop pass 1
 cook-malmesbury.bad.untooled-shop untooled-shops fail 0
 cook-malmesbury.bad.untooled-shop recipe-image pass 1
 cook-malmesbury.bad.untooled-shop serves-as-asked pass 1
+cook-malmesbury.bad.untooled-shop unpriced-items pass 1
 cook-malmesbury.bad.untooled-shop meal-for-people unknown 0
 cook-malmesbury.bad.untooled-shop meal-for-people.human pending 0
 cook-no-branch.reference cook-no-error pass 1
@@ -145,6 +161,7 @@ cook-no-branch.reference estimates-at-shop pass 1
 cook-no-branch.reference untooled-shops pass 1
 cook-no-branch.reference recipe-image pass 1
 cook-no-branch.reference serves-as-asked pass 1
+cook-no-branch.reference unpriced-items pass 1
 cook-no-branch.reference meal-for-people unknown 0
 cook-no-branch.reference meal-for-people.human pending 0
 cook-no-branch.bad.priced cook-no-error pass 1
@@ -154,6 +171,7 @@ cook-no-branch.bad.priced estimates-at-shop fail 0
 cook-no-branch.bad.priced untooled-shops pass 1
 cook-no-branch.bad.priced recipe-image pass 1
 cook-no-branch.bad.priced serves-as-asked pass 1
+cook-no-branch.bad.priced unpriced-items pass 1
 cook-no-branch.bad.priced meal-for-people unknown 0
 cook-no-branch.bad.priced meal-for-people.human pending 0
 cook-recipe-only.reference cook-no-error pass 1
@@ -163,6 +181,7 @@ cook-recipe-only.reference estimates-at-shop pass 1
 cook-recipe-only.reference untooled-shops pass 1
 cook-recipe-only.reference recipe-image pass 1
 cook-recipe-only.reference serves-as-asked pass 1
+cook-recipe-only.reference unpriced-items pass 1
 cook-recipe-only.reference meal-for-people unknown 0
 cook-recipe-only.reference meal-for-people.human pending 0
 cook-recipe-only.bad.priced cook-no-error pass 1
@@ -172,6 +191,7 @@ cook-recipe-only.bad.priced estimates-at-shop fail 0
 cook-recipe-only.bad.priced untooled-shops pass 1
 cook-recipe-only.bad.priced recipe-image pass 1
 cook-recipe-only.bad.priced serves-as-asked pass 1
+cook-recipe-only.bad.priced unpriced-items pass 1
 cook-recipe-only.bad.priced meal-for-people unknown 0
 cook-recipe-only.bad.priced meal-for-people.human pending 0
 cook-shops.reference cook-no-error pass 1
@@ -181,6 +201,7 @@ cook-shops.reference estimates-at-shop pass 1
 cook-shops.reference untooled-shops pass 1
 cook-shops.reference recipe-image pass 1
 cook-shops.reference serves-as-asked pass 1
+cook-shops.reference unpriced-items pass 1
 cook-shops.reference meal-for-people unknown 0
 cook-shops.reference meal-for-people.human pending 0
 cook-follow-up.reference cook-no-error pass 1
@@ -190,6 +211,7 @@ cook-follow-up.reference estimates-at-shop pass 1
 cook-follow-up.reference untooled-shops pass 1
 cook-follow-up.reference recipe-image pass 1
 cook-follow-up.reference serves-as-asked pass 1
+cook-follow-up.reference unpriced-items pass 1
 cook-follow-up.reference meal-for-people unknown 0
 cook-follow-up.reference meal-for-people.human pending 0
 cook-paarl.reference cook-no-error pass 1
@@ -199,6 +221,7 @@ cook-paarl.reference estimates-at-shop pass 1
 cook-paarl.reference untooled-shops pass 1
 cook-paarl.reference recipe-image pass 1
 cook-paarl.reference serves-as-asked pass 1
+cook-paarl.reference unpriced-items pass 1
 cook-paarl.reference meal-for-people unknown 0
 cook-paarl.reference meal-for-people.human pending 0
 cook-paarl.bad.image-not-from-page cook-no-error pass 1
@@ -208,6 +231,7 @@ cook-paarl.bad.image-not-from-page estimates-at-shop pass 1
 cook-paarl.bad.image-not-from-page untooled-shops pass 1
 cook-paarl.bad.image-not-from-page recipe-image fail 0
 cook-paarl.bad.image-not-from-page serves-as-asked pass 1
+cook-paarl.bad.image-not-from-page unpriced-items pass 1
 cook-paarl.bad.image-not-from-page meal-for-people unknown 0
 cook-paarl.bad.image-not-from-page meal-for-people.human pending 0
 cook-worcester-budget.reference cook-no-error pass 1
@@ -217,6 +241,7 @@ cook-worcester-budget.reference estimates-at-shop pass 1
 cook-worcester-budget.reference untooled-shops pass 1
 cook-worcester-budget.reference recipe-image pass 1
 cook-worcester-budget.reference serves-as-asked pass 1
+cook-worcester-budget.reference unpriced-items pass 1
 cook-worcester-budget.reference meal-for-people unknown 0
 cook-worcester-budget.reference meal-for-people.human pending 0
 cook-worcester-budget.bad.over-budget cook-no-error pass 1
@@ -226,5 +251,6 @@ cook-worcester-budget.bad.over-budget estimates-at-shop pass 1
 cook-worcester-budget.bad.over-budget untooled-shops pass 1
 cook-worcester-budget.bad.over-budget recipe-image pass 1
 cook-worcester-budget.bad.over-budget serves-as-asked pass 1
+cook-worcester-budget.bad.over-budget unpriced-items pass 1
 cook-worcester-budget.bad.over-budget meal-for-people unknown 0
 cook-worcester-budget.bad.over-budget meal-for-people.human pending 0

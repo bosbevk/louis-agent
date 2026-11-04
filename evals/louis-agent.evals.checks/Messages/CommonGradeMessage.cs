@@ -126,6 +126,12 @@ public enum CommonGradeMessage
     [Description("{Tool} was called, but never with {Field} '{Value}'")]
     ToolCalledOtherwise,
 
+    [Description("{Count} marked {Mark} by {Tool}: {Rows}")]
+    ToolRowsMarked,
+
+    [Description("none marked {Mark} by {Tool}")]
+    ToolRowsMarkedNone,
+
     [Description("{Calls} tool calls, under {Limit}")]
     ToolCallsUnderPass,
 

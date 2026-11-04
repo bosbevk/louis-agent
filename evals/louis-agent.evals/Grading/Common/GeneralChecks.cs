@@ -5,6 +5,7 @@ using LouisAgent.Evals.Grading.Common.Facts;
 using LouisAgent.Evals.Grading.Common.Language;
 using LouisAgent.Evals.Grading.Common.Similarity;
 using LouisAgent.Evals.Grading.Common.Tools;
+using LouisAgent.Evals.Grading.Common.Tools.Results;
 using LouisAgent.Evals.Grading.Human;
 using LouisAgent.Evals.Grading.Models.Rubrics;
 
@@ -35,7 +36,7 @@ public static class GeneralChecks
         new IsJsonCheck.Entry(),
         new RoutedToCheck.Entry(), new ToolUsedCheck.Entry(), new ToolNotUsedCheck.Entry(),
         new ToolUsedWithCheck.Entry(),
-        new ToolCallsUnderCheck.Entry(),
+        new ToolCallsUnderCheck.Entry(), new ToolRowsMarkedCheck.Entry(),
         new AmountUnderCheck.Entry(), new NumberNamedCheck.Entry(), new ImageShownCheck.Entry(),
         new LinksToHostCheck.Entry(),
         new NearCheck.Entry(), new AnswersInLanguageCheck.Entry(),

@@ -42,6 +42,7 @@ A trial passes only when every **required** check passes; an Unknown never count
 | `tool-used` | fixed rule | yes | `ReadRecipe` was called, by the cook or by Puls. Only this tool is named: the cook calls it with and without the `find-recipe` minion, so one eval grades both runs |
 | `recipe-from-source` | fixed rule | yes | The link under the recipe (`Skakel:` or `Link:`) is on a site of the recipes pack's table; a fail names the host it was on instead |
 | `recipe-image` | fixed rule | yes | The answer shows an image a page the cook read gave (`image-shown` over the `recipe-photos` reader); when no page the cook read had an image, the grade is Unknown, never a fail |
+| `unpriced-items` | fixed rule | no | Lists the items `EstimatePrices` gave a `?` in the conversation (`tool-rows-marked`: `2 marked ? by EstimatePrices: rotis 5, flaked almonds 100 g`); it only measures, so it always passes and never changes the pass rate |
 | `recipe-as-source` | model | no | Are the answer's ingredients, amounts and steps the page's, scaled to `serves`? See below |
 | `recipe-as-source.human` | human review | no | The same question put to a person, in the portal; Pending until someone grades it |
 

@@ -53,14 +53,14 @@ public class RecipesEvalTests
     /// <summary>The dishes held out for a release check.</summary>
     private static readonly string[] HeldOut = ["recipe-umngqusho", "recipe-sosaties", "recipe-bredie"];
 
-    /// <summary>It is the identity's eval, under its dataset's name, at version 1, with a manual beside it.</summary>
+    /// <summary>It is the identity's eval, under its dataset's name, at its version, with a manual beside it.</summary>
     [Test]
     public void ItIsPulssRecipesEval_UnderItsDatasetsName()
     {
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 1, 1)));
+            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 2, 1)));
         Assert.That(eval.Proves, Does.StartWith("Puls's cook reads a recipe from a real page"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
@@ -76,8 +76,8 @@ public class RecipesEvalTests
     }
 
     /// <summary>
-    /// The fixed rules that must hold come first, the judge and its review, which are measured but never fail a run,
-    /// last; the image rule keeps the name it has in the cook's eval.
+    /// The fixed rules that must hold come first, the list of unpriced items, the judge and its review, which are
+    /// measured but never fail a run, last; the image and unpriced rules keep the names they have in the cook's eval.
     /// </summary>
     [Test]
     public void ItsChecks_AreTheRequiredRulesFirst_ThenTheJudgeAndItsReview() =>
@@ -86,7 +86,8 @@ public class RecipesEvalTests
             {
                 ("no-error", 1, true, CheckKind.FixedRule), ("routed-to", 1, true, CheckKind.FixedRule),
                 ("tool-used", 1, true, CheckKind.FixedRule), ("recipe-from-source", 1, true, CheckKind.FixedRule),
-                ("recipe-image", 1, true, CheckKind.FixedRule), ("recipe-as-source", 1, false, CheckKind.Model),
+                ("recipe-image", 1, true, CheckKind.FixedRule), ("unpriced-items", 1, false, CheckKind.FixedRule),
+                ("recipe-as-source", 1, false, CheckKind.Model),
                 ("recipe-as-source.human", 2, false, CheckKind.Human)
             }));
 
