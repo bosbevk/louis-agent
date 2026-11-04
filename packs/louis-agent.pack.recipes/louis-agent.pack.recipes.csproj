@@ -20,6 +20,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Prompts\**\*.md" />
+    <!-- The recipe sites as content (J2, ADR 0011): a row is a site, so a site turning noai is a content change. -->
+    <EmbeddedResource Include="Sources\Sites\recipe-sites.md" />
   </ItemGroup>
 
   <ItemGroup>

@@ -623,6 +623,26 @@ goes in F35.2. One more request per host per day. A recorded trial from before t
   - **Q1, microdata:** Sarah Graham and Kate Tin stay text sources; a microdata reader waits for F35.2's measure to
     ask for it (ADR 0055). (Q2 was a hand-written reader in core, Q3 AngleSharp in core.)
 
+- **2026-11-04, step 4, three findings from step 0's saved search pages (picks R1, S1, T1).** Measured on the saved
+  pages of the 28 sites listed with `/?s=`, and three live searches.
+  - **R1, how results are found:** every `h2` or `h3` holding a same-site link is a hit. 20 of the 28 give results that
+    way; the 8 that give none (Salty Ginger, The Big Tasty Bite, Bits of Carey, MyKitchen, Food Lover's Market, The South
+    African, The Starlit Path, Look At What I Made) use web search, so `recipe-sites.md` has 20 `wordpress` and 25 `web`.
+    A heading is a hit whatever it links to, so a search can list a page that isn't a recipe. (R2 was articles first,
+    then headings, which gave wrong names such as "Main"; R3 a results rule per site.)
+  - **S1, no single-post path:** The Lazy Makoti's `/?s=chakalaka` answers with a results list, with no redirect, and
+    none of 47 saved search pages jumps to the post; the plan's fact and step 4's case were wrong. (S2 kept the path
+    as briefed, S3 kept it only when a page has no result links.)
+  - **T1, `read by` stays in the table and the record:** since O1 decides data or text page by page, nothing acts on
+    it yet; F35.2's measure uses it. (T2 kept it unparsed, T3 dropped it.)
+  - **U1, the site types in `Sources/Sites/`:** the six-file limit on a folder (`FolderSizeTests`) splits `Sources/`, so
+    `RecipeSite`, `RecipeReadBy`, `RecipeSearch`, `RecipeSites` and `recipe-sites.md` are in
+    `LouisAgent.Packs.Recipes.Sources.Sites`: what a site is, beside how one is searched. (U2 moved the search contract
+    to `Searching/` instead, U3 put the folder on the oversized list.)
+  - **V1, a home with a path holds its results:** `SiteWebSearch` limits the provider by host, then keeps only results
+    under the row's home, so the rest of `novanews.co.za` isn't listed as Rooi Rose. (V2 left it as a note, V3 removed
+    the site.)
+
 ## F35.2 (planned when it starts)
 
 The cook: `recipes` in Puls's packs and the cook's toolsets, `puls-cook.md` finds and reads a recipe with the tools
