@@ -65,7 +65,8 @@ data without a release) and the data side of **7** (what the agent grounds its a
    `PriceBookCache.Forget()` drops the book, so the next tool call reads the new month. `StatsSaImport` is the pack's
    `IDataImport`.
 7. **The API** (generic, admin key): `GET /v1/admin/imports`, `POST /v1/admin/imports/{name}/preview` and
-   `POST /v1/admin/imports/{name}/save` (multipart: one part per file slot; 10 MB a file).
+   `POST /v1/admin/imports/{name}/save` (JSON: each file with its slot, its name and its bytes in base64, as a
+   session's attachments are, so no form and no antiforgery; 20 MB in all).
 8. **The admin page** `/admin/imports` in Puls: each import, its file pickers, Preview, the report (new months,
    corrected months and what changed in them), and Save, off when there are no changes.
 
@@ -139,7 +140,7 @@ public sealed record ImportReport(string? Period, int Changes, bool Saved,
 ```mermaid
 flowchart LR
     Louis([Louis, a browser]) -->|two .xlsx| Page[Puls admin page /admin/imports<br/>step 7]
-    Page -->|multipart, admin key| Api[louis-agent.api<br/>/v1/admin/imports, step 6]
+    Page -->|JSON, admin key| Api[louis-agent.api<br/>/v1/admin/imports, step 6]
     Api -->|AgentCatalog.Import name| Import[StatsSaImport<br/>shop-prices pack, steps 2-5]
     Import -->|SaveAsync| Mongo[(MongoDB shop_prices.price_files)]
     Import -->|Forget| Cache[PriceBookCache]
@@ -158,7 +159,7 @@ sequenceDiagram
     participant Store as MongoPriceStore
     participant Cache as PriceBookCache
     Louis->>Page: picks the two files, Preview
-    Page->>Api: POST /v1/admin/imports/shop-prices/preview (2 files)
+    Page->>Api: POST /v1/admin/imports/shop-prices/preview (2 files, JSON)
     Api->>Imp: PreviewAsync(files)
     Imp->>Imp: read sheets, every month, sizes, names, a PriceFile a month
     Imp->>Store: MonthsAsync(Stats SA)
@@ -206,8 +207,8 @@ flowchart TB
 | `StatsSaImport` (named `shop-prices`, as the pack and its feed are), `StatsSaUpload`/`CorrectedMonth`, `StatsSaReport`, `MonthChanges` | `packs/louis-agent.pack.shop-prices/Imports/` | `LouisAgent.Packs.ShopPrices.Imports` | 5 |
 | `MemoryPriceStore` (a test store) | `tests/louis-agent.pack.shop-prices.tests/Prices/Store/` | mirrored | 5 |
 | tests of each, mirrored | `tests/louis-agent.pack.shop-prices.tests/…`, a trimmed `.xlsx` fixture pair | mirrored | 2-5 |
-| `ImportEndpoints`, `ImportHandlers` | `src/louis-agent.api/Endpoints/Admin/Imports/` | `LouisAgent.Api.Endpoints.Admin.Imports` | 6 |
-| `ImportListing`, `ImportReportReply` | `src/louis-agent.api.contracts/Admin/` | `LouisAgent.Api.Contracts.Admin` | 6 |
+| `ImportEndpoints`, `ImportHandlers` | `src/louis-agent.api/Endpoints/Admin/Imports/` | `LouisAgent.Api.Endpoints.Admin.Imports` | 7 |
+| `ImportsReply`, `ImportRow`, `ImportSlotRow`, `ImportRequest`, `ImportFileBody`, `ImportReportReply`, `ImportFactRow` | `src/louis-agent.api.contracts/Admin/Imports/` | `LouisAgent.Api.Contracts.Admin.Imports` | 7 |
 | `Imports.razor`, `Imports.razor.cs`; `Admin/Imports/` helpers | `src/louis-agent.puls/Pages/Admin/`, `src/louis-agent.puls/Admin/Imports/` | `LouisAgent.Puls.Pages.Admin`, `LouisAgent.Puls.Admin.Imports` | 7 |
 
 ### Folder trees (the shop-prices pack)

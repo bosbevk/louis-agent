@@ -33,6 +33,15 @@ public enum ApiUserText
     [Description("No feed '{Name}' here; GET /v1/feeds lists the ones there are.")]
     UnknownFeed,
 
+    [Description("No upload '{Name}' here; GET /v1/admin/imports lists the ones there are.")]
+    UnknownImport,
+
+    [Description("Send the files to upload: 'files', each with its 'slot', 'file_name' and 'content'.")]
+    ImportNoFiles,
+
+    [Description("The files come to {Megabytes} MB; an upload takes at most {Max} MB.")]
+    ImportTooLarge,
+
     [Description("Send a non-empty 'message' and/or 'attachments'.")]
     EmptyMessage,
 
