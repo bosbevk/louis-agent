@@ -64,7 +64,7 @@ sequenceDiagram
 
 ## Tests
 
-`tests/louis-agent.acp-server.tests`: `AcpTranscriptTests` pins what the server writes for a recorded conversation to
+`src/tests/hosts/louis-agent.acp-server.tests`: `AcpTranscriptTests` pins what the server writes for a recorded conversation to
 `AcpTranscript.json`, with the prompt the model received; the pure parts have their own tests (`ToolCards`, `PromptBuilder`,
 `ContainerPaths`, `GitRoots`, `JsonRpcWriter`) ([tests](tests.md#louis-agent.acp-server.tests)).
 

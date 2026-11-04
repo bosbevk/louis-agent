@@ -10,7 +10,6 @@ mounted at `/skills`). It holds only what the agent writes, kept on disk so it s
 |---|---|---|
 | `agent/functions/{name}.md` | A function skill: procedures `ExecuteSkill` runs | `CreateSkillFile` |
 | `tools/` | Agent-built tools, pending and approved | `CreateTool`, `/approve` |
-| `HelloWorld.md` | A test fixture, never loaded by a host | — |
 
 **The built-in prompts are not here.** The principles, the modes, the specialists' roles and the toolset guides
 live in [`src/engine/louis-agent.core/Prompts/`](../src/engine/louis-agent.core/Prompts), one folder per level, and are

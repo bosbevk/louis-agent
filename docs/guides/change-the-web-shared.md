@@ -24,8 +24,8 @@ extension method in that app (the code-review app's `Workspace/AgentApiWorkspace
 ## Follow a new event in the stream
 
 1. Map the event to its record in `src/engine/louis-agent.session-stream/SessionEventMapper.cs` (and its record in `SessionEvents.cs`), with a test
-   in `tests/louis-agent.session-stream.tests`. The reader hands the web apps `SessionEvent`s, so the event exists there first.
-2. Write the test first in `tests/louis-agent.web.shared.tests/Chats/TurnStreamTests.cs`, with the event as the API
+   in `src/tests/engine/louis-agent.session-stream.tests`. The reader hands the web apps `SessionEvent`s, so the event exists there first.
+2. Write the test first in `src/tests/web/louis-agent.web.shared.tests/Chats/TurnStreamTests.cs`, with the event as the API
    sends it ([the event stream](../AGENT_COMMUNICATION.md#the-event-stream)).
 3. `Chats/TurnStream.cs` folds the events into the `Turn` and its `Block`s. A specialist's events arrive wrapped in
    `sub_session` and go to that call's `Delegation`. Add the case there, and keep an unknown event harmless: it is
@@ -51,14 +51,14 @@ elsewhere. Widen any of these only with a test in `MarkdownTests` that shows the
 ## Test it
 
 ```bash
-dotnet test tests/louis-agent.web.shared.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.web.shared.tests   # after a deliberate markup change
-dotnet test tests/louis-agent.web.tests tests/louis-agent.puls.tests  # both apps render through it
+dotnet test src/tests/web/louis-agent.web.shared.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.shared.tests   # after a deliberate markup change
+dotnet test demos/louis-agent/tests/louis-agent.web.tests demos/puls/tests/louis-agent.puls.tests  # both apps render through it
 ```
 
 The tests mirror the folders: `Chats/` (the stream, the runner, delegations, a specialist's status and answer),
 `Components/` (bUnit, each pinned to an `.html` golden beside its test, from the recorded Puls turn in
-`tests/louis-agent.session-stream.tests/Fixtures/session-stream.sse`), `Text/` and `Usage/`. `tests/louis-agent.web.testing` holds what the three
+`src/tests/engine/louis-agent.session-stream.tests/Fixtures/session-stream.sse`), `Text/` and `Usage/`. `src/tests/web/louis-agent.web.testing` holds what the three
 web test projects share: `FixtureApi`, `SessionStreamFixture`, `Snapshots`, `FakeClock` and `RecordingJSRuntime`.
 
 `Usage/UsageFormat` repeats core's `UsageText` number rules (the app doesn't reference core), so a change to one must

@@ -65,7 +65,7 @@ None. `ASPNETCORE_URLS` as for any ASP.NET Core app; the container listens on 80
 
 ## Testing
 
-`tests/louis-agent.site.tests`: the site started in memory with `WebApplicationFactory` (every page answers with its
+`demos/louis-agent/tests/louis-agent.site.tests`: the site started in memory with `WebApplicationFactory` (every page answers with its
 title and its film, no Blazor script, `/health`); bUnit renders of both films (the scenes counted, the parts numbered
 in the order the turn reaches them, core's slabs in the pipeline's order, the markup pinned to a golden beside the
 test, `LOUIS_UPDATE_GOLDEN=1` to rewrite); the stylesheet's import list, tokens first, each film's keyframes its own.

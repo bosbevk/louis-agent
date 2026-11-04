@@ -45,8 +45,8 @@ Log lines are `Messages/AcpLogMessage`, what the user sees `AcpUserText`, what t
 ## Test it
 
 ```bash
-dotnet test tests/louis-agent.acp-server.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.acp-server.tests   # after a deliberate change: then read the diff
+dotnet test src/tests/hosts/louis-agent.acp-server.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/hosts/louis-agent.acp-server.tests   # after a deliberate change: then read the diff
 ```
 
 The tests mirror the folders: `Paths/`, `Prompting/`, `Protocol/`, `Turns/`, and the transcript at the root. Then check

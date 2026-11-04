@@ -161,7 +161,7 @@ replaces its "kom binnekort" toast and keeps the label. Puls's voice and roles a
 
 ## Tests
 
-`tests/louis-agent.puls.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the chat against `FixtureApi`, streams
+`demos/puls/tests/louis-agent.puls.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the chat against `FixtureApi`, streams
 the recorded Puls turn, lists the page's JavaScript calls and pins `ChatPage.empty.html` and `ChatPage.turn.html`;
 `Pages/LandingPageTests` pins the landing page; `Components/` pins `WorkPanel`, `TemplateCard` and `PulsTile`;
 `Search/ChatFinderTests` tests the search. The layout at 1440, 1100 and 420 px wide is still checked by hand.

@@ -51,7 +51,7 @@ core's `UserCommands`, shared with Rider and the API; `Program.cs` stays a boots
 
 ## Tests
 
-No CLI-specific tests; the loop and commands are covered through `AgentEngine` in `tests/louis-agent.core.tests`.
+No CLI-specific tests; the loop and commands are covered through `AgentEngine` in `src/tests/engine/louis-agent.core.tests`.
 
 ## Limits and plans
 

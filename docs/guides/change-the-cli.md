@@ -32,7 +32,7 @@ It finds `config/.env` and the repository root from any folder inside the reposi
 
 Commands such as `/tools`, `/approve`, `/reject` and `/usage` are core's (`Agent/Commands/UserCommands.cs`), so Rider
 and the API get them too. Add one there, in its `switch`, with its reply in core's `UserText`, and its test in
-`tests/louis-agent.core.tests/Agent/Commands/UserCommandsTests.cs`, test first. The CLI passes every line to
+`src/tests/engine/louis-agent.core.tests/Agent/Commands/UserCommandsTests.cs`, test first. The CLI passes every line to
 `AgentEngine.HandleUserCommand` before the model, so it needs no code; add the command to the banner's list
 (`CliUserText.BannerCommands`) so people find it.
 
@@ -43,7 +43,7 @@ run it by hand, once as a chat and once with a prompt, and check a tool call, a 
 
 ```bash
 dotnet build louis-agent-solution.sln
-dotnet test tests/louis-agent.core.tests
+dotnet test src/tests/engine/louis-agent.core.tests
 ```
 
 ## Before you ask for a review

@@ -47,7 +47,7 @@ A new field is added to its record on both sides at once (the build says where).
 
 ## Tests
 
-`tests/louis-agent.evals.protocol.tests`: every event round-trips through `EvalProtocolJson`, `event` comes first,
+`src/tests/evals/louis-agent.evals.protocol.tests`: every event round-trips through `EvalProtocolJson`, `event` comes first,
 the time is written with `Z`, a person's line and an unknown event read as none. The harness's writer is pinned to a
 golden in `louis-agent.evals.tests`, and the API's reader in its `RecordedV2RunTests`.
 

@@ -64,7 +64,7 @@ themselves; an MCP-only tool is an `[McpServerToolType]` class registered in bot
 
 ## Tests
 
-`tests/louis-agent.mcp-server.tests` (F56) runs the SDK's real client against the server's setup over two in-memory
+`src/tests/hosts/louis-agent.mcp-server.tests` (F56) runs the SDK's real client against the server's setup over two in-memory
 pipes: the feeds as resources and the tools beside them. Its auth rule is core's `HostAuth` (`HostAuthTests`), and the
 tools it publishes are tested where they live. Checked with an MCP client and, for HTTP, with curl (no key → 401, right key → 200).
 

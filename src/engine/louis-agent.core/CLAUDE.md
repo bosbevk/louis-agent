@@ -15,7 +15,7 @@
 
 2. A new class is a new toolset: follow *Adding a toolset* below. The engine doesn't register tool classes itself.
 3. Name it in its toolset's guide (`Prompts/toolsets/{toolset}.md`) so the model knows when to use it.
-4. Test it in `tests/louis-agent.core.tests/Tools/{Toolset}/`.
+4. Test it in `src/tests/engine/louis-agent.core.tests/Tools/{Toolset}/`.
 
 **Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private` (the test project and
 `louis-agent.api` can see internals). Tool names must be unique across all classes: a duplicate stops the engine at
@@ -30,7 +30,7 @@ two areas return stays in core's `Messages/ToolMessage`:
 `return MessageText.Format(WorkspaceToolMessage.FileWritten, new { Path = relativePath, Length = content.Length });`. Its
 descriptions are attributes.
 A new tool or text changes the golden files on purpose: regenerate them and review the diff
-([golden files](../../../tests/CLAUDE.md#golden-files)).
+([golden files](../../tests/CLAUDE.md#golden-files)).
 
 ## Adding a toolset
 
@@ -55,8 +55,8 @@ touches, and nothing else:
    identity's `agent/{name}/voice.md` in its own project). A pack can't add a row to a router it doesn't own, so a
    pack's guide opens with the one line that routes to it, read only where the toolset loads (the TODO's small cleanups).
 6. **Tests:** `SkillFilesTests` checks the coding agent's routing names core's toolset, the toolset's tests in
-   `tests/louis-agent.core.tests/Tools/{Toolset}/` (a pack's in `tests/louis-agent.pack.{name}.tests/`), and the golden
-   files regenerated ([golden files](../../../tests/CLAUDE.md#golden-files)).
+   `src/tests/engine/louis-agent.core.tests/Tools/{Toolset}/` (a pack's in `packs-tests/louis-agent.pack.{name}.tests/`), and the golden
+   files regenerated ([golden files](../../tests/CLAUDE.md#golden-files)).
 
 Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
 
@@ -107,10 +107,10 @@ The rules:
    `Program.cs` is start-up only; its routes are in `Endpoints/`, one file per group, and the rest sits in a folder per
    concern (the API: `Sessions/`, `Admin/`, `Evals/`, `Config/`, `Messages/`), never a `Services/` folder, which
    names a kind of thing, not a concern; another agent on core (the orchestrator) keeps its own `Tools/` and `Skills/` the same way.
-5. **Tests mirror the source:** `tests/louis-agent.core.tests/Llm/Providers/AnthropicProvider/…` tests `Llm/Providers/AnthropicProvider/…`.
+5. **Tests mirror the source:** `src/tests/engine/louis-agent.core.tests/Llm/Providers/AnthropicProvider/…` tests `Llm/Providers/AnthropicProvider/…`.
 6. **An architecture test enforces 1 and 2:** namespaces match folders, and no type depends against the arrow.
 
-**Held by a test:** `tests/louis-agent.core.tests/ArchitectureTests.cs` reads core's source and fails on a file whose
+**Held by a test:** `src/tests/engine/louis-agent.core.tests/ArchitectureTests.cs` reads core's source and fails on a file whose
 namespace isn't its folder path, a file with two top-level types, a folder that isn't in the table, or a `using` against
 the arrow. A new concern is a new row here and in the test's layers. Every other project's namespace is PascalCase too
 (`LouisAgent.Api`, `LouisAgent.Orchestrator.Tools`); a type never shares its namespace's name (hence `MessageText` in
@@ -146,7 +146,7 @@ Log.Log(LogLevel.Information, McpServerLogMessage.ToolNameTaken, new { Name = na
 - **Text the model reads is pinned:** `ToolMessageSnapshotTests` renders every `*ToolMessage` enum's template (the shared one
   and each area's) into `Messages/ToolMessageSnapshot.json`, keyed by member name, as the model-request snapshot does for the
   tools and prompt; no two of them share a member name (a test holds that). A deliberate change regenerates it
-  ([golden files](../../../tests/CLAUDE.md#golden-files)). Numbers in messages are invariant (`12,345`).
+  ([golden files](../../tests/CLAUDE.md#golden-files)). Numbers in messages are invariant (`12,345`).
 - **Logging goes through `ILogger` (Microsoft.Extensions.Logging) with Serilog behind it**, configured in code by
   `Logging/AgentLogging` (`AgentHost` calls `Configure`; another agent on core calls it itself). Get a logger with
   `AgentLogging.For<T>()` and log a message member with `logger.Log(level, Member, new { Hole = value })`

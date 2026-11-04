@@ -7,7 +7,7 @@
 
 ```bash
 dotnet run --project demos/louis-agent/web/louis-agent.site          # http://localhost:5000 (or the port it prints)
-dotnet test tests/louis-agent.site.tests
+dotnet test demos/louis-agent/tests/louis-agent.site.tests
 docker build -f demos/louis-agent/docker/images/Dockerfile.site -t louis-agent-site . && docker run -p 5091:8080 louis-agent-site
 ```
 

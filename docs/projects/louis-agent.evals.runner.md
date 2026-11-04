@@ -79,7 +79,7 @@ A new eval is a folder of files beside its identity or pack, which reaches the r
 
 ## Tests
 
-`tests/louis-agent.evals.runner.tests`: the arguments (clamped repeats, an unknown name refused), the catalogue (no
+`src/tests/evals/louis-agent.evals.runner.tests`: the arguments (clamped repeats, an unknown name refused), the catalogue (no
 grader refused, each eval once), the folders found and chosen by `EVALS=` (`EvalFoldersTests`), the stub's run
 against its golden, the conformance of every eval folder, the data files copied beside the assembly, the studio's
 commands (`--checks`, `--check`, `--folder`, `--samples`) and a promptfoo file's round trip (`PromptfooRoundTripTests`). `StubCheckTests` (api integration) runs the real runner through the API.

@@ -55,14 +55,14 @@ class of the app's words rather than inline, as Puls keeps its own in `Text/`
 ## Test it
 
 ```bash
-dotnet test tests/louis-agent.web.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.web.tests     # after a deliberate markup change: then read the diff
+dotnet test demos/louis-agent/tests/louis-agent.web.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.web.tests     # after a deliberate markup change: then read the diff
 ```
 
 - `Git/` and `Workspace/` test the plain classes (`UnifiedDiff`, `Patch`, `RelativeTime`, `ReviewActions`,
   `CodeLanguage`, `FileSize`).
 - `Pages/ChatPageTests` renders the whole page with bUnit against `FixtureApi`, a stub of the API from
-  `tests/louis-agent.web.testing`. The client is the real `AgentApi`, and the message streams a recorded Puls turn.
+  `src/tests/web/louis-agent.web.testing`. The client is the real `AgentApi`, and the message streams a recorded Puls turn.
   The empty page and the page with the turn are pinned to `ChatPage.empty.html` and `ChatPage.turn.html`. The test
   also lists every JavaScript call the page makes, so a new call shows up as a review point.
 - The tests run in the invariant culture (`TestCulture`), so the golden files never depend on the machine.

@@ -72,8 +72,8 @@ A minion (F30) does one small task for a specialist, with one tool the specialis
 ## Test it
 
 ```bash
-dotnet test tests/louis-agent.identity.puls.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.identity.puls.tests    # after a deliberate prompt change: then read the diff
+dotnet test demos/puls/tests/louis-agent.identity.puls.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.identity.puls.tests    # after a deliberate prompt change: then read the diff
 ```
 
 - `PulsIdentityTests`: its name and packs, one prompt found per folder, the catalogue refusing Puls without its pack.

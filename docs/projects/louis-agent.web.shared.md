@@ -61,10 +61,10 @@ default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain c
 
 ## Tests
 
-`tests/louis-agent.web.shared.tests`, NUnit with bUnit for the components, mirroring the folders: `ChatRunnerTests`,
+`src/tests/web/louis-agent.web.shared.tests`, NUnit with bUnit for the components, mirroring the folders: `ChatRunnerTests`,
 `TurnStreamTests`, `DelegationTests`, `WorkStatusTests`, `SpecialistAnswerTests`; `TurnViewTests`, `BlocksViewTests`,
 `DelegationCardTests`, `CurrencySwitcherTests`; `MarkdownTests`, `ToolArgsTests`, `UsageFormatTests`; and
-`RazorHasNoCodeTests`, which fails on a `@code` block in a `.razor`. `tests/louis-agent.web.testing` holds the fakes the
+`RazorHasNoCodeTests`, which fails on a `@code` block in a `.razor`. `src/tests/web/louis-agent.web.testing` holds the fakes the
 web test projects share.
 
 ## Limits and plans

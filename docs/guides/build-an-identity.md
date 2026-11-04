@@ -203,12 +203,12 @@ the enum member with the case ignored, so a dashed name (`acme-shop`) wouldn't m
 ## 6. Test it
 
 ```bash
-dotnet new nunit -o tests/louis-agent.identity.acme.tests
-dotnet sln louis-agent-solution.sln add tests/louis-agent.identity.acme.tests/louis-agent.identity.acme.tests.csproj
+dotnet new nunit -o demos/acme/tests/louis-agent.identity.acme.tests
+dotnet sln louis-agent-solution.sln add demos/acme/tests/louis-agent.identity.acme.tests/louis-agent.identity.acme.tests.csproj
 ```
 
 The test project references the identity, every pack it names (so its sessions build as the host builds them), and
-`tests/louis-agent.testing` for the shared fakes; `tests/louis-agent.identity.puls.tests` is the model. Write:
+`src/tests/shared/louis-agent.testing` for the shared fakes; `demos/puls/tests/louis-agent.identity.puls.tests` is the model. Write:
 
 - **A prompts fixture** that registers the identity's prompts and its packs' before any test reads one, as a host does
   at start-up (`PulsPrompts.cs`):

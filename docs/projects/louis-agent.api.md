@@ -155,7 +155,7 @@ regenerated; a session option in `CreateSessionRequest`; new stream events added
 
 ## Tests
 
-`tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `specialists` rule, shared
+`demos/puls/tests/louis-agent.api.tests`: the sessions' toolsets, the default, unknown names, depth and the `specialists` rule, shared
 engines and separate histories, roles, a role opening only at its own level, and a sub-session with no role getting none (a model client that is
 never called). The benchmarks (F31): the protocol, the recorder, the ledger join, the runner, the catalogue, the
 manuals, the trends, the tool failures, and one store contract run against the in-memory store and, when

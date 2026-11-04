@@ -75,11 +75,11 @@ None. The User-Agent and the pace are code, so a change to either is a reviewed 
 
 ## Tests
 
-`tests/louis-agent.pack.where-to-buy.tests`, mirroring the folders: `MapSearchTests` (the requests' addresses and the
+`packs-tests/louis-agent.pack.where-to-buy.tests`, mirroring the folders: `MapSearchTests` (the requests' addresses and the
 answer read through records, on fixtures in Nominatim's `jsonv2` shape written by hand, since the container has no
 route to Nominatim), `BranchFinderTests` (the nearest three, the second box, the municipality), `ShopNamesTests`,
 `DistanceTests`, `WhereToBuyToolsTests` (the table and every failure text), `WhereToBuyToolMessageSnapshotTests` with
-its golden of the model-facing texts. The checks' tests are in `tests/louis-agent.pack.where-to-buy.checks.tests`.
+its golden of the model-facing texts. The checks' tests are in `packs-tests/louis-agent.pack.where-to-buy.checks.tests`.
 `PackConvertibilityTests` (composition tests) checks the MCP shapes.
 
 ## Limits and plans

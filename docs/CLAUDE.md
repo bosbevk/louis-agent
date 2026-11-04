@@ -156,10 +156,11 @@ src/web/                 # louis-agent.web.shared: what any web app shares
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
 packs/                   # What an agent can do, tools only: where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these
+packs-tests/             # A pack's own tests
 demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/ and docker/ (its settings and images)
 demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC), config/, docker/
 tools/louis-agent.usage-probe/ # A provider's raw usage; prices and totals a ledger
-tests/                   # NUnit, one project per project ([tests](projects/tests.md)); the ones that leave their process are *.integration-tests
+src/tests/               # Only the framework's tests, grouped like src/ ([tests](projects/tests.md)); a demo holds its own tests/ and packs-tests/ the packs'; the ones that leave their process are *.integration-tests
 deploy/azure/            # The cloud (Puls on Azure); on this PC, a demo's own docker/ runs it
 Skills/                  # What the agent writes: agent/functions/ (CreateSkillFile), tools/ (agent-built tools)
 docs/                    # This guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
@@ -173,7 +174,7 @@ the how of a kind of file in `.claude/rules/`; Claude Code loads each only when 
 
 | Guide | Loads for | Holds |
 |---|---|---|
-| [tests/CLAUDE.md](../tests/CLAUDE.md) | `tests/` | Running the tests, the golden files, fakes and platform-neutral tests |
+| [src/tests/CLAUDE.md](../src/tests/CLAUDE.md) | `src/tests/` | Running the tests, the golden files, fakes and platform-neutral tests |
 | [src/CLAUDE.md](../src/CLAUDE.md) | `src/` | The hosts' own message enums, adding a web theme |
 | [src/engine/louis-agent.core/CLAUDE.md](../src/engine/louis-agent.core/CLAUDE.md) | `src/engine/louis-agent.core/` | Adding a C# tool or a toolset, the project layout, messages and logging, changing the LLM |
 | `.claude/rules/csharp.md` | `**/*.cs` | The how of every C# rule: summaries, conditionals, records, enums, size, formatting |

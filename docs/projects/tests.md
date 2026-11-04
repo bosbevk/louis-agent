@@ -1,10 +1,10 @@
 # Test projects — design
 
-> **Kind:** NUnit test projects · **Paths:** `tests/louis-agent.core.tests/`, `tests/louis-agent.api.tests/`,
-> `tests/louis-agent.orchestrator.tests/`, `tests/louis-agent.identity.puls.tests/`, `tests/louis-agent.pack.where-to-buy.tests/`, `tests/louis-agent.pack.shop-prices.tests/`,
-> `tests/louis-agent.pack.recipes.tests/`, `tests/louis-agent.identity.puls.evals.tests/`, `tests/louis-agent.pack.where-to-buy.checks.tests/`, `tests/louis-agent.pack.recipes.checks.tests/`, `tests/louis-agent.host-packs.tests/`, `tests/louis-agent.mcp-server.tests/`, `tests/louis-agent.web.shared.tests/`, `tests/louis-agent.puls.tests/`,
-> `tests/louis-agent.web.tests/`; the tests that leave their process in `tests/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `tests/louis-agent.testing/` and, for the web apps,
-> `tests/louis-agent.web.testing/` (class libraries, CL15) ·
+> **Kind:** NUnit test projects · **Paths:** `src/tests/engine/louis-agent.core.tests/`, `demos/puls/tests/louis-agent.api.tests/`,
+> `demos/louis-agent/tests/louis-agent.orchestrator.tests/`, `demos/puls/tests/louis-agent.identity.puls.tests/`, `packs-tests/louis-agent.pack.where-to-buy.tests/`, `packs-tests/louis-agent.pack.shop-prices.tests/`,
+> `packs-tests/louis-agent.pack.recipes.tests/`, `demos/puls/tests/louis-agent.identity.puls.evals.tests/`, `packs-tests/louis-agent.pack.where-to-buy.checks.tests/`, `packs-tests/louis-agent.pack.recipes.checks.tests/`, `demos/puls/tests/louis-agent.host-packs.tests/`, `src/tests/hosts/louis-agent.mcp-server.tests/`, `src/tests/web/louis-agent.web.shared.tests/`, `demos/puls/tests/louis-agent.puls.tests/`,
+> `demos/louis-agent/tests/louis-agent.web.tests/`; the tests that leave their process in `src/tests/engine/louis-agent.core.integration-tests/`, `.api.`, `.orchestrator.` and `.pack.shop-prices.integration-tests/` (F18 step 7.6); the fakes they share in `src/tests/shared/louis-agent.testing/` and, for the web apps,
+> `src/tests/web/louis-agent.web.testing/` (class libraries, CL15) ·
 > **Run:** `dotnet test louis-agent-solution.sln` (or each project)
 
 ## Unit and integration, apart (F18 step 7.6)
@@ -40,7 +40,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 | `ArchitectureTests.cs` | The layout rules on core's source: namespace = folder, one type per file, dependencies one way |
 | `FileSizeTests.cs` | A file holds at most 200 lines, a test file 400, over every project (*Separate by concern*): a ratchet whose `Oversized` list names the files S still has to split and can only shrink |
 | `SkillsLayoutTests.cs` | Skill files follow the levels (CL8): every built-in prompt in a known folder of `Prompts/` and embedded, no name at two levels, a guide per toolset, and the repo's `Skills/` holding only what the agent writes |
-| `TestPrompts.cs` | The `[SetUpFixture]` that registers the tests' own prompts (`Prompts/`: a product, a specialist, a minion) before the first is read; the shared fakes are in `tests/louis-agent.testing` (below) |
+| `TestPrompts.cs` | The `[SetUpFixture]` that registers the tests' own prompts (`Prompts/`: a product, a specialist, a minion) before the first is read; the shared fakes are in `src/tests/shared/louis-agent.testing` (below) |
 
 - HTTP is stubbed with handlers, so Paymo, DevOps and web tests never call out.
 - A few tests skip themselves when an external tool (git, pip, a live network) isn't available.
@@ -49,7 +49,7 @@ The folders mirror `louis-agent.core`'s, and each test's namespace is its folder
 
 ## louis-agent.api.tests
 
-`tests/louis-agent.api.standin` (F18 step 7.4) is a small console app, not a test project, that stands in for the eval runner where a test starts a real child process: the check's id picks what it does (print its arguments, dump the environment's names, stream lines, fail, sleep, never read its stdin). It is built with these tests through a project reference that brings no assembly, like the runner itself, and replaces the Python scripts the runner tests used to start.
+`demos/puls/tests/louis-agent.api.standin` (F18 step 7.4) is a small console app, not a test project, that stands in for the eval runner where a test starts a real child process: the check's id picks what it does (print its arguments, dump the environment's names, stream lines, fail, sleep, never read its stdin). It is built with these tests through a project reference that brings no assembly, like the runner itself, and replaces the Python scripts the runner tests used to start.
 
 `AgentSessionsTests` (F5): a session's toolsets and tools, the `skills` default, an empty list, unknown names, depth and
 the `specialists` rule, sessions sharing an engine but not a history. No web host, network or model: the sessions are built on
@@ -90,7 +90,7 @@ that every built-in prompt of every identity and pack opens with its header, its
 (`EveryPromptHasAHeaderTests`, CL27). Each
 registers the prompts its identity or pack brings in a `[SetUpFixture]`, as a host's `Build` does.
 
-`tests/louis-agent.testing` is a class library, not a test project: the fakes and paths every test project shares
+`src/tests/shared/louis-agent.testing` is a class library, not a test project: the fakes and paths every test project shares
 (`FakeChatClient`, `FailingStreamClient`, `StubHandler`, `ListUsageSink`, `FakePrompts`, `FakeIdentity`, `FakePack`,
 `TestPaths`), a global using in each test project that uses them (all but the API's and the orchestrator's). No test project references another test project, and `core.tests` opens its
 internals to none; `ArchitectureTests` holds both.
@@ -106,7 +106,7 @@ tests pin `WorkPanel`, `PulsTile` and `TemplateCard`, and render `ChatPage` end 
 session and streams the recorded turn: the empty page and the page with the turn, each a golden, and the JS calls the
 page makes, listed; its landing page is a golden too. The code-review app's tests (T1b) pin its chat page the same way,
 empty and with the turn, before W2 splits it; its components get tests when Phase 4 adds the Branches queue.
-`tests/louis-agent.web.testing` holds what the three share: the fixture replay, the stub API (`FixtureApi`: fixed JSON
+`src/tests/web/louis-agent.web.testing` holds what the three share: the fixture replay, the stub API (`FixtureApi`: fixed JSON
 for what the apps read at start-up, one session, the recorded turn streamed, the workspace and git reads empty) and the
 snapshot helper. The shared library's tests also hold the web layer's rule: `RazorHasNoCodeTests` scans every `.razor`
 under `src/` for an `@code` block (*Separate by concern*), a ratchet whose `PendingCode` list names the files W2b still
@@ -143,7 +143,7 @@ a test: CI grades only recorded transcripts.
 ## What isn't covered yet
 
 - **The API's endpoints and the MCP server** have no automated tests (only the API's sessions do); they're checked by
-  hand (curl, Rider). The ACP server has its transcript (`tests/louis-agent.acp-server.tests`) and no more yet. Nothing has exercised the
+  hand (curl, Rider). The ACP server has its transcript (`src/tests/hosts/louis-agent.acp-server.tests`) and no more yet. Nothing has exercised the
   API and git endpoints end to end against a real model since CL10 removed the orchestrator demo.
 - **The orchestrator's whole loop** against a scripted louis-agent.api.
 
@@ -153,12 +153,12 @@ and merge to main.
 ## Adding tests
 
 The steps are in [Write and run tests](../guides/write-tests.md). In short: the test goes in the folder that mirrors
-the class it tests, with the matching namespace; it uses the fakes in `tests/louis-agent.testing`; and every feature
+the class it tests, with the matching namespace; it uses the fakes in `src/tests/shared/louis-agent.testing`; and every feature
 doc in [docs/features/](../features/README.md) names the tests each step adds.
 
 ## Related docs
 
-[Tests guide](../../tests/CLAUDE.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
+[Tests guide](../../src/tests/CLAUDE.md) · [Architecture § Testing](../architecture/08-crosscutting-concepts.md#testing)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.evals.runner](louis-agent.evals.runner.md)

@@ -25,7 +25,7 @@ ranges).
   then proves it: the new files joined in their order are `cmp`-identical to the old one, and the step says so. Any
   change to the text itself is an edit.
 - **Every area file is imported and every import is there:** each app's `StylesheetTests` (Puls's
-  `PulsStylesheetTests`) checks it through `Stylesheet` in `tests/louis-agent.web.testing`; a style test finds its
+  `PulsStylesheetTests`) checks it through `Stylesheet` in `src/tests/web/louis-agent.web.testing`; a style test finds its
   rule through `Stylesheet.Of(project).Read()`, never by opening one file.
 - **Checked in the browser:** a step that changes a style looks at the page, at desktop and at phone width (390 px,
   no sideways scroll), before it is shown.

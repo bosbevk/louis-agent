@@ -23,7 +23,7 @@ refuses to start unless `AGENT_AUTH=off` ([FX18](https://github.com/bosbevk/loui
 ## Add an endpoint
 
 1. **Test first.** A rule the endpoint keeps (a limit, a parse, a refusal) goes in a plain class with NUnit tests in
-   `tests/louis-agent.api.tests`, mirroring the folder; what the route answers (its status, its `Location`, its `401`)
+   `demos/puls/tests/louis-agent.api.tests`, mirroring the folder; what the route answers (its status, its `Location`, its `401`)
    is tested in memory with `ApiTestHost`, as `SessionCreatedTests` does.
 2. **Name it by the rule** ([ADR 0039](../adr/0039-api-routes-under-v1.md)): a noun, one plural name for a collection
    and its items (`/v1/git/branches`, `/v1/git/branches/{name}`); a create is a `POST` to the collection that answers
@@ -37,7 +37,7 @@ refuses to start unless `AGENT_AUTH=off` ([FX18](https://github.com/bosbevk/loui
 4. **Protect it.** A route under `/v1` needs the key unless the code marks it otherwise, so a new one is closed until
    you open it. Mark it `.WithAccess(RouteAccess.Open)` only when it holds nothing private, and say why in a comment,
    as the prices and the rates do. The admin endpoints have their own key (`AdminGate`, `RouteAccess.AdminKey`).
-5. **Regenerate the route golden** (`LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.api.tests --filter
+5. **Regenerate the route golden** (`LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.api.tests --filter
    ApiRoutesSnapshotTests`) and review its diff: one line per route, with its method and who may call it.
    `ApiRouteRuleTests` checks the rule on the real table.
 6. **Keep the guards.** A path from a client goes through `WorkspaceBoundary`; a git call through
@@ -73,7 +73,7 @@ with `"stream"` on `POST /v1/sessions` (`StreamFormat`; Claude by default), and 
 stream: the web apps (through the session-stream reader, `louis-agent.session-stream`), the orchestrator, and the benchmarks.
 
 To add a new event or field to the Claude format, add it without changing an existing one, test it, and regenerate
-`tests/louis-agent.api.tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.api.tests --filter
+`demos/puls/tests/louis-agent.api.tests/Sessions/StreamGolden.sse` with `LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.api.tests --filter
 StreamGoldenTests`. Read the golden's diff before you commit it. A new format is a new `StreamFormat` member and its
 `ITurnStreamFormat` writer, tested beside `StreamGoldenTests`. Then update the stream's section in
 [How the agents and endpoints talk](../AGENT_COMMUNICATION.md#the-event-stream).
@@ -86,7 +86,7 @@ Nothing in the API names the app beyond the csproj's two conditional references,
 ## Test it
 
 ```bash
-dotnet test tests/louis-agent.api.tests
+dotnet test demos/puls/tests/louis-agent.api.tests
 ```
 
 The sessions run against a fake model client that is never called; the benchmark store's contract runs against the

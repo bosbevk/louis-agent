@@ -81,7 +81,7 @@ tests' shared `TrialBuilder`, and a test project may not reference another, so t
 needs the builder (F49.3). `Verdict` is tested from outside, by the checks that use it (`FactsChecksTests` and the other general checks' tests) and by
 an identity's (`VerdictFromOutsideTests`).
 
-`tests/louis-agent.evals.checks.tests/Catalog/CheckTypeTests` builds a check from its settings and refuses a field of
+`src/tests/evals/louis-agent.evals.checks.tests/Catalog/CheckTypeTests` builds a check from its settings and refuses a field of
 the wrong type, a missing field, an unknown field and no settings at all, each naming the check type (and the field).
 `CheckCatalogTests` finds entries by type, refuses an unknown type (naming the known ones), a duplicate and an unsafe
 type, and lists each entry with its settings' schema.

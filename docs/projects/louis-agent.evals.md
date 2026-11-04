@@ -128,7 +128,7 @@ the identity's checks. A language for `answers-in-language` is one member of `An
 
 ## Tests
 
-`tests/louis-agent.evals.tests`: the loader (both shapes refused or read, the hash, the expected keys), the general
+`src/tests/evals/louis-agent.evals.tests`: the loader (both shapes refused or read, the hash, the expected keys), the general
 checks and their entries (`GeneralChecksTests`, and one test class per check under `Grading/Common/`, by family),
 the roll-up, the conformance cases, the label sheet and the calibration, the protocol writer against its
 golden. The runner's tests run the stub end to end ([tests](tests.md)).

@@ -2,7 +2,7 @@
 
 > **How-to.** Run the tests, write a test before the code, put it in the right place, use the shared fakes, regenerate
 > a golden file, keep the rule tests green, and add a test project. **Elsewhere:** what each test project covers in the
-> [tests design doc](../projects/tests.md); the same rules in the agent's words in [tests/CLAUDE.md](../../tests/CLAUDE.md).
+> [tests design doc](../projects/tests.md); the same rules in the agent's words in [src/tests/CLAUDE.md](../../src/tests/CLAUDE.md).
 
 Every test runs offline: no network, no model, no Docker. A fake chat client plays the model and a stub handler
 answers HTTP, so a run costs nothing and needs no keys.
@@ -14,8 +14,8 @@ dotnet build louis-agent-solution.sln
 dotnet test louis-agent-solution.sln                                         # everything
 dotnet test louis-agent-solution.sln --filter "Category!=Integration"        # the unit tests, as CI's first test step
 dotnet test louis-agent-solution.sln --filter "Category=Integration"         # the integration tests, as its second
-dotnet test tests/louis-agent.core.tests                                     # one project
-dotnet test tests/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"   # one class
+dotnet test src/tests/engine/louis-agent.core.tests                                     # one project
+dotnet test src/tests/engine/louis-agent.core.tests --filter "FullyQualifiedName~AgentEngineTests"   # one class
 ```
 
 GitHub Actions runs the build and the whole solution's tests on Ubuntu on every pull request and merge to main
@@ -37,15 +37,15 @@ write first.
 ## Where a test goes
 
 - **The folder mirrors the source**, and the namespace is the folder: a test of `src/engine/louis-agent.core/Tools/Git/GitTools.cs`
-  is `tests/louis-agent.core.tests/Tools/Git/GitToolsTests.cs`, in `LouisAgent.Core.Tests.Tools.Git`.
-- **A test that leaves its process is an integration test** (F18 step 7.6): it starts a real process (git, bash, an interpreter, `dotnet`, the eval runner), opens Mongo or needs the Puls stack. It lives in a sibling project, `{name}.integration-tests` (`tests/louis-agent.core.integration-tests`, `.api.`, `.orchestrator.`, `.pack.shop-prices.`), its class is `[Category("Integration")]`, and it asks for the tool through `Outside.Tool` (a missing tool skips the test on your machine and fails it on CI) or `Outside.Stack` (the Puls stack's browser or SearXNG: always skips when its address is not set). What a unit and an integration project share goes in a library beside them (`louis-agent.api.testing`: the in-memory API host, the built runner dlls, the store contracts that run against memory and Mongo). `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests` hold it. In the solution they sit in the folders `unit`, `integration` and `shared`.
-- **The project mirrors the project:** a pack's tests in `tests/louis-agent.pack.{name}.tests`, an identity's in
-  `tests/louis-agent.identity.{name}.tests`. No test project references another.
+  is `src/tests/engine/louis-agent.core.tests/Tools/Git/GitToolsTests.cs`, in `LouisAgent.Core.Tests.Tools.Git`.
+- **A test that leaves its process is an integration test** (F18 step 7.6): it starts a real process (git, bash, an interpreter, `dotnet`, the eval runner), opens Mongo or needs the Puls stack. It lives in a sibling project, `{name}.integration-tests` (`src/tests/engine/louis-agent.core.integration-tests`, `.api.`, `.orchestrator.`, `.pack.shop-prices.`), its class is `[Category("Integration")]`, and it asks for the tool through `Outside.Tool` (a missing tool skips the test on your machine and fails it on CI) or `Outside.Stack` (the Puls stack's browser or SearXNG: always skips when its address is not set). What a unit and an integration project share goes in a library beside them (`louis-agent.api.testing`: the in-memory API host, the built runner dlls, the store contracts that run against memory and Mongo). `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests` hold it. In the solution they sit in the folders `unit`, `integration` and `shared`.
+- **The project mirrors the project:** a pack's tests in `packs-tests/louis-agent.pack.{name}.tests`, an identity's in
+  `demos/{name}/tests/louis-agent.identity.{name}.tests`. No test project references another.
 - A test file holds at most 400 lines; split a long one by what it tests.
 
 ## Use the shared fakes
 
-`tests/louis-agent.testing` is a class library every test project can reference:
+`src/tests/shared/louis-agent.testing` is a class library every test project can reference:
 
 | Fake | Use it for |
 |---|---|
@@ -56,7 +56,7 @@ write first.
 | `FakePrompts`, `FakeIdentity`, `FakePack`, `FakeTools` | A prompt source, an identity, a pack and its tool classes built in the test |
 | `TestPaths` | The repository root, `Agent()` (options on the repo with no network) and `Toolsets(…)` (a session's tool objects) |
 
-The web apps' tests use `tests/louis-agent.web.testing` as well: `FixtureApi` (a stub API that streams the recorded
+The web apps' tests use `src/tests/web/louis-agent.web.testing` as well: `FixtureApi` (a stub API that streams the recorded
 Puls turn), `SessionStreamFixture`, `Snapshots`, `FakeClock` and `RecordingJSRuntime`. Components render with bUnit.
 
 ## Regenerate a golden file
@@ -77,12 +77,12 @@ markup, can't happen by accident:
 After a deliberate change, regenerate, then read the diff before committing: the diff is the review of the change.
 
 ```bash
-LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/engine/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
 ```
 
 ```powershell
 $env:LOUIS_UPDATE_GOLDEN = '1'
-try { dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests" }
+try { dotnet test src/tests/engine/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests" }
 finally { Remove-Item Env:LOUIS_UPDATE_GOLDEN }
 ```
 
@@ -116,7 +116,7 @@ normalised. A test that needs a tool the machine may lack (git, Python, the Mong
 
 ## Add a test project
 
-Copy an existing one's `.csproj` (`tests/louis-agent.pack.shop-prices.tests` is a small one): `net10.0`, NUnit 4.3.2 with its
+Copy an existing one's `.csproj` (`packs-tests/louis-agent.pack.shop-prices.tests` is a small one): `net10.0`, NUnit 4.3.2 with its
 analyzers and adapter, `Microsoft.NET.Test.Sdk`, `IsPackable` false, a reference to the project under test and to
 `louis-agent.testing`, and both as global usings:
 

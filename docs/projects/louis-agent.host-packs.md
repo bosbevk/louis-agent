@@ -57,7 +57,7 @@ setting is matched to the enum member with the case ignored, so `price-rules` wo
 
 ## Tests
 
-`tests/louis-agent.host-packs.tests`: `PluginsTests` (the named identities load with their packs, a name twice is
+`demos/puls/tests/louis-agent.host-packs.tests`: `PluginsTests` (the named identities load with their packs, a name twice is
 one, unset loads none, an unknown name is refused naming the supported ones, `PACKS=where-to-buy` works without an identity,
 `config/.env` is read before the settings) and `PackConvertibilityTests`, which builds every `PackKind` and checks
 each tool against the MCP SDK's shapes ([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)): plain data in, text

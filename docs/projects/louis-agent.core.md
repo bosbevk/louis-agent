@@ -221,7 +221,7 @@ variables, never model text spliced into a command line; `FetchUrl` blocks priva
 
 ## Tests
 
-`tests/louis-agent.core.tests` — see [tests](tests.md). No network, model or Docker needed.
+`src/tests/engine/louis-agent.core.tests` — see [tests](tests.md). No network, model or Docker needed.
 
 ## Limits and plans
 

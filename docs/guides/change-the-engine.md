@@ -16,7 +16,7 @@ too (CL17), so add to core only what every agent needs.
 
 ## Add a tool to a toolset
 
-1. **Test first** in `tests/louis-agent.core.tests/Tools/{Toolset}/`, with `FakeChatClient` or `StubHandler` for
+1. **Test first** in `src/tests/engine/louis-agent.core.tests/Tools/{Toolset}/`, with `FakeChatClient` or `StubHandler` for
    anything it would call. No network.
 2. Add a public method with a `[Description]` on it and on each parameter to the toolset's class in
    `Tools/{Toolset}/`. **Every public method on a tool class is a tool**, so helpers stay `private` or `internal`.
@@ -51,7 +51,7 @@ and roles live in its identity, not here.
 ## Add a setting
 
 1. Read it once where it enters: a property in `Config/AgentOptions.cs` (or `LlmOptions` for an `LLM_*` setting),
-   filled in `FromEnvironment`, with a test in `tests/louis-agent.core.tests/Config/`. `AgentOptions.cs` is over the
+   filled in `FromEnvironment`, with a test in `src/tests/engine/louis-agent.core.tests/Config/`. `AgentOptions.cs` is over the
    200-line limit and on `FileSizeTests`' list, so a group of new settings is the moment to give them a class of their
    own, as a pack has (`RecipesOptions`).
 2. A choice from a fixed set is an enum, parsed with `SettingChoice` (case ignored, aliases allowed, never a number;
@@ -88,8 +88,8 @@ new provider's numbers.
 ## Test it
 
 ```bash
-dotnet test tests/louis-agent.core.tests
-LOUIS_UPDATE_GOLDEN=1 dotnet test tests/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
+dotnet test src/tests/engine/louis-agent.core.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/engine/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
 ```
 
 Two golden files pin what the model reads: `Agent/ModelRequestSnapshot.json` (the tools, their descriptions, the

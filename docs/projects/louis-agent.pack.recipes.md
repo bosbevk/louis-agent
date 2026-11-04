@@ -112,7 +112,7 @@ showed (`data` or `text`) and `search` to `wordpress` when the site's own `/?s=`
 
 ## Tests
 
-`tests/louis-agent.pack.recipes.tests`, mirroring the folders: `RecipesPackTests` (the toolset needs a site and a
+`packs-tests/louis-agent.pack.recipes.tests`, mirroring the folders: `RecipesPackTests` (the toolset needs a site and a
 browser, the guide and the table are embedded, the guide routes here and says a hit may not be a recipe),
 `RecipeToolsTests` (the search and the reading on fake sites and a fake browser: the frame, the numbering, every
 refusal, the text path and its cut), `RecipePrinterTests`, `SchemaOrgRecipeTests` (on recorded pages and made-up

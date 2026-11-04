@@ -2,7 +2,7 @@
 
 > **Explanation.** The rules every part follows: security, messages, logging, testing, configuration. **Elsewhere:**
 > how to apply them when changing core in the [core guide](../../src/engine/louis-agent.core/CLAUDE.md); tests in the
-> [tests guide](../../tests/CLAUDE.md).
+> [tests guide](../../src/tests/CLAUDE.md).
 
 ## Security
 
@@ -45,22 +45,22 @@ The usage ledger is data, not logs: `JsonlUsageSink` writes it in its own format
 
 ## Testing
 
-`tests/louis-agent.core.tests` (NUnit): options and provider factory, skill loading and providers, the engine (tool-call
+`src/tests/engine/louis-agent.core.tests` (NUnit): options and provider factory, skill loading and providers, the engine (tool-call
 loop, streaming, thinking, summarising, cut-off guards) with a scripted fake `IChatClient`, every toolset, web search and
 fetch with stubbed HTTP, and Rider MCP discovery with mocked HTTP. No network or Docker needed; a few tests skip
 themselves when an external tool (git, pip, live network) isn't available.
 
-`tests/louis-agent.api.tests` (NUnit): the API's sessions (F5): toolsets per session, the default, unknown names,
+`demos/puls/tests/louis-agent.api.tests` (NUnit): the API's sessions (F5): toolsets per session, the default, unknown names,
 depth, shared engines and separate histories, with a model client that is never called.
 
-`tests/louis-agent.orchestrator.tests` (NUnit): the error feed, the louis-agent API client (event stream and
+`demos/louis-agent/tests/louis-agent.orchestrator.tests` (NUnit): the error feed, the louis-agent API client (event stream and
 `FIX-RESULT` parsing), the decision line, runbook loading, the comms log, and the verification tools against a
 throwaway git repository.
 
 ```bash
-dotnet test tests/louis-agent.core.tests
-dotnet test tests/louis-agent.api.tests
-dotnet test tests/louis-agent.orchestrator.tests
+dotnet test src/tests/engine/louis-agent.core.tests
+dotnet test demos/puls/tests/louis-agent.api.tests
+dotnet test demos/louis-agent/tests/louis-agent.orchestrator.tests
 ```
 
 The API and web app have no automated tests; the orchestrator demo exercises them end to end against a real model.

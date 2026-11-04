@@ -10,7 +10,7 @@ Requires the .NET 10 SDK.
 cp config/.env.example config/.env
 cp config/.env.secrets.example config/.env.secrets   # add ANTHROPIC_API_KEY and AGENT_API_KEY
 dotnet build louis-agent-solution.sln
-dotnet test tests/louis-agent.core.tests
+dotnet test src/tests/engine/louis-agent.core.tests
 dotnet run --project src/hosts/louis-agent.cli               # interactive CLI
 ```
 

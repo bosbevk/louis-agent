@@ -5,4 +5,4 @@
 benchmarks/fixtures/*.sse -text
 
 # The stream golden is written by the endpoint's SseFormatter and compared byte for byte (F18 step 1e).
-tests/louis-agent.api.tests/Sessions/StreamGolden.sse -text
+demos/puls/tests/louis-agent.api.tests/Sessions/StreamGolden.sse -text

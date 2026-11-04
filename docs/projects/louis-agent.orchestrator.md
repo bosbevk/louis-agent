@@ -70,7 +70,7 @@ runbook where it can be; a tool is a public method on `ServiceTools`.
 
 ## Tests
 
-`tests/louis-agent.orchestrator.tests` — see [tests](tests.md): the feed, the SSE client and `FIX-RESULT`, decisions,
+`demos/louis-agent/tests/louis-agent.orchestrator.tests` — see [tests](tests.md): the feed, the SSE client and `FIX-RESULT`, decisions,
 runbook loading, the comms log, and the git checks against a throwaway repository. The whole loop against a real model
 ran in the demo, removed in CL10; it returns with the evals.
 

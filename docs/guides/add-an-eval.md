@@ -212,8 +212,8 @@ checked with no edit. Beside the identity's tests, add one test file for the eva
 modes, checks and the shape of its dataset. A check of your own gets a pass and a fail on made-up transcripts.
 
 ```bash
-dotnet test tests/louis-agent.evals.runner.tests --filter "FullyQualifiedName~EvalConformance"
-dotnet test tests/louis-agent.identity.acme.tests
+dotnet test src/tests/evals/louis-agent.evals.runner.tests --filter "FullyQualifiedName~EvalConformance"
+dotnet test demos/acme/tests/louis-agent.identity.acme.tests
 ```
 
 ## 8. List it, and run it

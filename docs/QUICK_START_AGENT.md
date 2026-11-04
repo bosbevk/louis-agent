@@ -69,7 +69,7 @@ Add XML doc comments to the public methods in WorkspaceTools.cs
 **Build and test**
 ```
 Build the solution and fix any compile errors
-Run the tests in tests/louis-agent.core.tests and explain any failures
+Run the tests in src/tests/engine/louis-agent.core.tests and explain any failures
 ```
 
 **Git**

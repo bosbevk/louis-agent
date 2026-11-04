@@ -114,7 +114,7 @@ session golden: regenerate it and read the diff.
 
 ## Tests
 
-`tests/louis-agent.identity.puls.tests`: `PulsIdentityTests` (name, packs, one prompt per folder found, the catalogue
+`demos/puls/tests/louis-agent.identity.puls.tests`: `PulsIdentityTests` (name, packs, one prompt per folder found, the catalogue
 refusing Puls without its packs, the cook's declared toolset and no other role's), `PulsPromptsTests` (the modes and roles listed, a language loading its voice then the
 routing, the languages with the same sections, the cook's header) and `PulsSessionSnapshotTests` with
 `PulsSessionSnapshot.json`, the golden of exactly what the model is sent in Puls's chat and in its cook. `PulsPrompts`

@@ -207,11 +207,11 @@ public enum UnitsToolset
 
 Write the name out with `.Wire()` (`using LouisAgent.Choices;`): `new(UnitsToolset.Units.Wire(), …)`, `public string Name => UnitsToolset.Units.Wire();`.
 Read one in with `SettingChoice.TryParse`. Never `ToString()`, `ToLowerInvariant()` or a naming policy. The text stays text where it travels
-(an environment variable, a role file's `toolsets: units?`, a request body); `CrossBoundaryNamesTests` in `tests/louis-agent.host-packs.tests`
+(an environment variable, a role file's `toolsets: units?`, a request body); `CrossBoundaryNamesTests` in `demos/puls/tests/louis-agent.host-packs.tests`
 checks that every pack an identity names and every toolset a role's header lists is one the catalogue has.
 
-Add your enum's file to the list in `RepeatedNameTests` (`tests/louis-agent.core.tests/RepeatedNames/`): from then on a typed `"units"` anywhere in the sources and tests
-fails, so a typo cannot compile. A test that only stores or shows a toolset's name uses a sample (`SampleToolset` in `tests/louis-agent.testing`); a test
+Add your enum's file to the list in `RepeatedNameTests` (`src/tests/engine/louis-agent.core.tests/RepeatedNames/`): from then on a typed `"units"` anywhere in the sources and tests
+fails, so a typo cannot compile. A test that only stores or shows a toolset's name uses a sample (`SampleToolset` in `src/tests/shared/louis-agent.testing`); a test
 that needs the real toolset uses your enum member, never a sample and never a string.
 
 ## 5. Give it settings (when it needs them)
@@ -239,15 +239,15 @@ and the catalogue refuses it as unknown.
 ## 7. Test it
 
 ```bash
-dotnet new nunit -o tests/louis-agent.pack.units.tests
-dotnet sln louis-agent-solution.sln add tests/louis-agent.pack.units.tests/louis-agent.pack.units.tests.csproj
+dotnet new nunit -o packs-tests/louis-agent.pack.units.tests
+dotnet sln louis-agent-solution.sln add packs-tests/louis-agent.pack.units.tests/louis-agent.pack.units.tests.csproj
 ```
 
-Give the test project the packs' tests' references (the pack, and `tests/louis-agent.testing` for the shared fakes), mirror
+Give the test project the packs' tests' references (the pack, and `src/tests/shared/louis-agent.testing` for the shared fakes), mirror
 the pack's folders, and write:
 
 - **A prompts fixture** that registers the pack's prompts before any test reads one, as a host does at start-up
-  (`tests/louis-agent.pack.where-to-buy.tests/WhereToBuyPrompts.cs`):
+  (`packs-tests/louis-agent.pack.where-to-buy.tests/WhereToBuyPrompts.cs`):
   `[SetUpFixture] … SkillFileSource.Use([new UnitsPack().Prompts]);`
 - **A pack test** (`WhereToBuyPackTests` is the model): its name, its toolsets, that `toolsets/units.md` is in its prompts,
   and that the guide routes here and holds no `## Skill:`.
@@ -255,7 +255,7 @@ the pack's folders, and write:
 - **A golden of its texts**, so a changed word the model reads is a reviewed change
   (`Messages/ShopToolMessageSnapshotTests.cs` and its JSON; regenerate with `LOUIS_UPDATE_GOLDEN=1`, review the diff).
 
-Two checks come for free once the pack is in `PackKind`: `PackConvertibilityTests` (`tests/louis-agent.host-packs.tests`)
+Two checks come for free once the pack is in `PackKind`: `PackConvertibilityTests` (`demos/puls/tests/louis-agent.host-packs.tests`)
 builds every pack and checks the shapes in step 2 against the MCP SDK, and `ArchitectureTests` checks its references.
 Run them with the rest:
 
@@ -301,11 +301,11 @@ which only the runner references, so someone can use your tools without the eval
 3. **What only an identity knows is a reader** the file names beside the check: `estimates-at-shop` takes an
    `IPriceReader` (`{"reader": "rand-prices"}`) and never names Puls.
 4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the runner's `RunnerChecks`.
-5. **Test it** in `tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
+5. **Test it** in `packs-tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
    first. The where-to-buy project is the model.
 
 A contract your pack and the eval share lives in a shared project, or is duplicated. A duplicate is held equal by a test
-in `tests/louis-agent.host-packs.tests`, the one project that sees both (`UnpricedMarkTests`, `ShopTableTests`).
+in `demos/puls/tests/louis-agent.host-packs.tests`, the one project that sees both (`UnpricedMarkTests`, `ShopTableTests`).
 
 ## Before you ask for a review
 

@@ -19,7 +19,7 @@ into the build, so rebuild after a change.
 
 ## Add a tool
 
-1. Write its test first in `tests/louis-agent.orchestrator.tests`.
+1. Write its test first in `demos/louis-agent/tests/louis-agent.orchestrator.tests`.
 2. Add a public method to `Tools/ServiceTools.cs` with a `[Description]` on it and on each parameter. Every public
    method there is a tool the model can call, so a helper stays `private` or `internal`.
 3. It returns text; a failure is text with its reason, from `Messages/OrchestratorToolMessage`
@@ -39,7 +39,7 @@ there with its default, a test, and a line in the design doc's *Configuration*.
 ## Test and run it
 
 ```bash
-dotnet test tests/louis-agent.orchestrator.tests
+dotnet test demos/louis-agent/tests/louis-agent.orchestrator.tests
 dotnet run --project demos/louis-agent/hosts/louis-agent.orchestrator -- --once     # one pass over the service's new errors
 ```
 

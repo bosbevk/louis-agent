@@ -79,9 +79,9 @@ and a viewer wired in `ChatPage`, with shared data in a `…State` service; call
 
 ## Tests
 
-`tests/louis-agent.web.tests`, NUnit with bUnit, mirroring the folders: `Git/` (`UnifiedDiffTests`, `PatchTests`,
+`demos/louis-agent/tests/louis-agent.web.tests`, NUnit with bUnit, mirroring the folders: `Git/` (`UnifiedDiffTests`, `PatchTests`,
 `RelativeTimeTests`, `ReviewActionsTests`) and `Workspace/` (`CodeLanguageTests`, `FileSizeTests`) test the plain
-classes; `Pages/ChatPageTests` renders the page against `FixtureApi` (`tests/louis-agent.web.testing`), streams the
+classes; `Pages/ChatPageTests` renders the page against `FixtureApi` (`src/tests/web/louis-agent.web.testing`), streams the
 recorded turn, lists the page's JavaScript calls and pins the markup to `ChatPage.empty.html` and `ChatPage.turn.html`.
 The panels' own behaviour (the merge queue, staging) is still checked in a browser.
 
