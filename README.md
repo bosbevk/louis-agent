@@ -23,12 +23,14 @@ own agents.
 
 | Works today | Next |
 |---|---|
-| The engine, with identities and packs picked at start-up (`IDENTITIES`, `PACKS`) | Evals as files that belong to their identity, plus an eval studio in the portal |
-| The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Puls's cook gets recipe sources, recipe maths and teaching |
+| The engine, with identities and packs picked at start-up (`IDENTITIES`, `PACKS`) | The cook reads recipes from South African sites, then keeps its own recipe library |
+| The coding agent in Rider, the web app, the CLI, the HTTP API and over MCP | Recipe maths and a cook that teaches |
 | Puls with five specialists: a researcher, a reader, a historian, an analyst and a cook | Every text from localisation files |
-| A shops pack (Checkers prices and deals) and self-hosted web search | Twelve local Puls specialists (gardener, braaimaster, weatherman and more) |
-| **Evals in C#:** one harness for every check, graders, replays for $0, results in the admin portal | Then the sales playground, budgets, orchestration, safety and accounts |
-| Cost on every answer, from a usage ledger priced by date | |
+| A recipes pack: 45 South African sites that allow readers, every fetch obeying `robots.txt` | Twelve local Puls specialists (gardener, braaimaster, weatherman and more), on a shared weather and where-to-buy pack |
+| **Evals as files:** an eval is a folder of JSON beside its identity, graded by a catalogue of C# checks, written in the portal's studio, replayed for $0 | Then the sales playground, budgets, orchestration, safety and accounts |
+| An admin portal: each run opens on its answer, one Evals page, a queue of answers waiting for a person's grade | |
+| Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
+| A website for the engine itself (`src/louis-agent.site`) | |
 
 The full order is in the [TODO](TODO.md) and the [platform plan](docs/plans/platform.md); what's finished is in the
 [CHANGELOG](CHANGELOG.md).
@@ -40,7 +42,7 @@ flowchart TB
     hosts["Hosts<br/>Rider (ACP) · web app · Puls · HTTP API · CLI · MCP server"]
     comp["louis-agent.composition<br/>the only project that knows every identity and pack"]
     ids["Identities<br/>who an agent is: puls, the coding agent"]
-    packs["Packs<br/>what it can do: shops, …"]
+    packs["Packs<br/>what it can do: recipes, prices, …"]
     core["louis-agent.core: the engine<br/>tool loop · streaming · providers · usage ledger · guards"]
     llm["Claude · Ollama · OpenAI-compatible"]
     hosts --> comp
@@ -61,7 +63,11 @@ everywhere:
 - **Guards live in code, not in the prompt.** Model text never reaches a shell, file tools stay inside the workspace,
   calls that got cut off never run, and anything the agent writes waits for your `/approve`
   ([ADR 0004](docs/adr/0004-arguments-as-data.md), [ADR 0005](docs/adr/0005-guard-the-context.md)).
-- **Everything streams.** You see the thinking and every tool call as they happen, in every host.
+- **Everything streams, and is traced.** You see the thinking and every tool call as they happen, in every host; with
+  an OpenTelemetry collector set, each turn and tool call is also a span on a dashboard
+  ([ADR 0064](docs/adr/0064-observability-through-opentelemetry.md)).
+- **A site's no is obeyed.** Every page the agent fetches checks the site's `robots.txt` and its no-AI signals first,
+  in code ([ADR 0068](docs/adr/0068-every-fetch-obeys-robots-txt.md)).
 - **A session keeps its tools.** It names its toolsets when it opens, so its prompt prefix stays cacheable. Prompt
   caching took the old benchmark from $0.66 to $0.13 a run ([ADR 0006](docs/adr/0006-toolsets-per-session.md)).
 - **Packs stay convertible to MCP.** A pack could be served as an MCP server, and an MCP server could stand in for a
@@ -107,17 +113,20 @@ Pushing always stays with you.
 
 ## Evals
 
-An eval runs a real task and scores the outcome.
-Every check, regression and demo is a C# eval on one harness (`evals/`), and each one sits beside the identity or pack
-it proves ([ADR 0029](docs/adr/0029-simulations-in-csharp.md)).
+An eval runs a real task and scores the outcome. Every eval runs on one C# harness (`evals/`), and each one sits beside
+the identity or pack it proves ([ADR 0029](docs/adr/0029-simulations-in-csharp.md)).
 
+- **An eval is files, a check is code.** A new eval is a folder: `eval.json`, its samples and its rubric, no C#. The
+  checks it names come from a catalogue of C# graders, and a pack can bring its own. The portal's studio writes those
+  files for you: samples taken from real chats and human review, then compose, try and publish.
 - **Code graders first.** Fixed rules are free and give the same score every time. A model judge comes in only where
   code can't decide, and only after it agrees with human labels.
 - **pass@k and pass^k.** Run a task k times: did it pass at least once, and did it pass every time? An agent you sell
   needs the second.
 - **Re-runs for $0.** A run records the web pages it read, so it can be replayed and re-scored for nothing. Cost always
   comes from the ledger, never from a grader.
-- **Everything shows in the admin portal**, including human review.
+- **Everything shows in the admin portal**: each run opens on its answer, and a review queue hands a person the
+  answers still waiting for their grade.
 
 The first baseline: Puls's cook passed 23 of 24, its routing 72 of 72, for $0.37 together. How to:
 [run the evals](docs/guides/run-the-evals.md) · [add an eval](docs/guides/add-an-eval.md); design:
@@ -161,4 +170,5 @@ All the docs, in reading order, are in **[docs/README.md](docs/README.md)**. The
 
 **All rights reserved** ([LICENSE](LICENSE), since 2026-10-15). The code is public to read, but you may not use, copy,
 change, share or host it without written permission; open an issue to ask. Versions released before under MIT or the
-AGPL-3.0 keep that licence. Why: [ADR 0016](docs/adr/0016-licence-all-rights-reserved.md).
+AGPL-3.0 keep that licence. Why: [ADR 0016](docs/adr/0016-licence-all-rights-reserved.md). The parts others wrote keep
+their own licences: [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
