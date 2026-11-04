@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Evals.Store.Recording;
 /// Puts the ledger's numbers into what a conversation measured: the tokens it sent and got back, and what it cost.
 /// Only the agent's own requests count; a judge's grading is the grader's cost, not the conversation's.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class ConversationUsage
 {
     /// <summary>

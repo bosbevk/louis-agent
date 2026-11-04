@@ -13,7 +13,7 @@ namespace LouisAgent.Packs.ShopPrices.Tools;
 /// with what it was priced from, the total and the price per person, what couldn't be priced, and the credit line
 /// Stats SA's terms ask for.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public static class EstimatePrinter
 {
     /// <summary>The whole result, the line about an unknown province first when there is one.</summary>

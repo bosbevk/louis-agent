@@ -13,5 +13,5 @@ namespace LouisAgent.Packs.Recipes.Recipes;
 /// <c>&lt;h3&gt;Sauce&lt;/h3&gt;</c> gives "Filling" or "Sauce"); null when the page has no headings above this line.
 /// </param>
 /// <param name="Text">The ingredient as the page wrote it, with no HTML left in it.</param>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed record RecipeIngredient(string? Section, string Text);

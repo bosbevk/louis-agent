@@ -27,7 +27,7 @@ namespace LouisAgent.Core.Skills.Headers;
 /// clauses (ADR 0051), each refusal naming the file. The metadata values are text, as the spec's map of strings is;
 /// the toolsets a comma list, as F33's line was.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is backward compatible until something is sold</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is backward compatible until something is sold</seealso>
 public static class PromptHeaders
 {
     /// <summary>The longest description the spec takes.</summary>

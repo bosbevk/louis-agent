@@ -19,8 +19,8 @@ namespace LouisAgent.Packs.ShopPrices.Tools;
 /// is safe to run beside any other tool. It takes plain data and returns text, so
 /// the pack converts to an MCP server unchanged (ADR 0028).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
 public sealed class ShopPriceTools(PriceBookCache books)
 {
     private const int MaxItems = 60;

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- What everything agrees on (CL29.1): the contracts a pack, an identity and the engine share. It names no pack and no
+       identity and leans on no project, so a tool author takes it and nothing else comes along. The contracts move in
+       from core in the next steps. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Composition</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

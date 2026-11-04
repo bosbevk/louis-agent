@@ -25,8 +25,8 @@ namespace LouisAgent.Core.Tools.Agents;
 /// <see cref="PeerSession"/>, shared with <see cref="MinionTools"/> (F30), which opens a minion at depth 2 the same
 /// way; only the body, the limits and the answer's footer differ (<see cref="SubSessionKind"/>).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed class SpecialistTools(
     IReadOnlyDictionary<string, Uri> peers,
     string? apiKey,

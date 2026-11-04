@@ -12,8 +12,8 @@ namespace LouisAgent.Api.Endpoints;
 /// sees a change. One member per text on the wire: a 400 and a 415 both say <c>invalid_request_error</c>, so they
 /// share <see cref="InvalidRequest"/>, and <c>ApiErrors</c>' methods say which status goes with it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 internal enum ApiErrorKind
 {
     /// <summary>The request asked for something we can't do as asked (a 400, or a 415 for a binary file).</summary>

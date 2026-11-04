@@ -11,8 +11,8 @@ namespace LouisAgent.SessionStream;
 /// (the eval runner) reads it, so the name is written once (FX26, Louis's pick). Claude's own error event names its
 /// kind the same way, <c>api_error</c>, <c>overloaded_error</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public enum StreamErrorKind
 {
     /// <summary>The API's own failure: the turn threw something that isn't a replay miss.</summary>

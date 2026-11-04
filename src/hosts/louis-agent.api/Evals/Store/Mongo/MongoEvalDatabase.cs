@@ -16,8 +16,8 @@ namespace LouisAgent.Api.Evals.Store.Mongo;
 /// recorder gives up quickly and the run carries on. It also registers how enums and times are stored, and holds the
 /// replace-or-insert option every record store saves with.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public static class MongoEvalDatabase
 {
     /// <summary>How long a call waits for the server before giving up.</summary>

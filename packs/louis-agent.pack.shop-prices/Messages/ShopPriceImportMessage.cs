@@ -6,7 +6,7 @@ namespace LouisAgent.Packs.ShopPrices.Messages;
 /// What the Stats SA upload tells the person who uploads it (ADR 0009): what it is, the files it takes, the facts its
 /// preview shows (each a label and a value), and the problems that keep it from saving, each naming its file.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ShopPriceImportMessage
 {
     [Description("The {Sheet} file couldn't be read as a spreadsheet ({Reason}).")]

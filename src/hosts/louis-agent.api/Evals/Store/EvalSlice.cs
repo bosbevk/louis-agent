@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Evals.Store;
 /// as one call. No cost here on purpose: the ledger prices a slice when it's read (<c>SlicePricer</c>), so an export
 /// carries no cost and grading it again can't smuggle an old cost into a new run.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record EvalSlice(
     string Mode,
     string Slice,

@@ -47,8 +47,8 @@ namespace LouisAgent.Api.Endpoints.Admin.Runs;
 /// Each method returns <c>TypedResults</c> with its answers declared (<c>ManualAnswer</c> and the rest, named once
 /// above), Microsoft's preferred minimal-API style, so the build checks that a handler only answers what it says.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class AdminHandlers(
     EvalList catalog,
     EvalProcess runner,

@@ -28,8 +28,8 @@ namespace LouisAgent.Core.Tools.Agents;
 /// next one (a cascade, FrugalGPT) and can never name a model. The child's path (open, ask, delete, roll up) is
 /// <see cref="PeerSession"/>, as for the specialists.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0031-orchestration-is-an-engine-function.md">ADR 0031: orchestration is an engine function</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed class MinionTools
 {
     /// <summary>Minions one user turn may open, counted across every specialist of that turn.</summary>

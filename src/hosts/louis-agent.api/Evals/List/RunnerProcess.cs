@@ -19,7 +19,7 @@ public sealed record RunnerOutput(string Stdout, string? Failure);
 /// <c>CheckListing</c> starts the runner the same way. The runner is started with an argument list, never through a
 /// shell (ADR 0004).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public static class RunnerProcess
 {
     /// <summary>

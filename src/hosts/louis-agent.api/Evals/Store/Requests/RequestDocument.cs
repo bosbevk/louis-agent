@@ -15,8 +15,8 @@ namespace LouisAgent.Api.Evals.Store.Requests;
 /// driver does the copying, as <see cref="Runs.RunDocument"/> explains. The properties keep the order the hand mapper
 /// wrote, so a document is the same field for field.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record RequestDocument(
     [property: BsonElement("run")] string Run,
@@ -50,7 +50,7 @@ internal sealed record RequestDocument(
 }
 
 /// <summary>The turn a request belongs to: its conversation's key and its number.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record TurnKeyDocument(
     [property: BsonElement("mode")] string Mode,

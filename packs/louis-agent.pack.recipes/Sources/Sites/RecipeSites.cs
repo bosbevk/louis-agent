@@ -16,8 +16,8 @@ namespace LouisAgent.Packs.Recipes.Sources.Sites;
 /// The table is read with a plain walk over its lines and a split on <c>|</c>, never a regex (ADR 0057), and a row
 /// that does not fit throws with its number, so a broken site is never skipped quietly.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0011-prompts-are-content.md">ADR 0011: prompts are content</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0011-prompts-are-content.md">ADR 0011: prompts are content</seealso>
 public static class RecipeSites
 {
     private const int Columns = 7;

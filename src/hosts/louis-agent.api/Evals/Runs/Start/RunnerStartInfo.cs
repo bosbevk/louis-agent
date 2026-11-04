@@ -20,7 +20,7 @@ internal sealed record RunnerPaths(string WorkspaceRoot, string AgentApi, string
 /// settings (<see cref="RunnerEnvironment"/>) plus what the run is told. Kept apart from <see cref="EvalProcess"/>,
 /// which is about keeping one run at a time, not about how a process starts.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 internal static class RunnerStartInfo
 {
     /// <summary>Everything the process for this run needs to start: program, arguments, folder and settings.</summary>

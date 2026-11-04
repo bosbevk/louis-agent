@@ -5,7 +5,7 @@ namespace LouisAgent.Packs.ShopPrices.Messages;
 /// <summary>
 /// The shop-price tool's texts the model reads (ADR 0009), pinned by <c>ShopPriceToolMessageSnapshot.json</c>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ShopPriceToolMessage
 {
     [Description(

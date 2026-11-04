@@ -25,7 +25,7 @@ public sealed record PromptfooImported(
 /// <see cref="DraftChecker"/> is; the process is a function handed in, so a test answers as a runner would with no
 /// runner at all. The import works in a folder of its own under the scratch folder, deleted when it is read.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 public sealed class PromptfooRunner(Func<IReadOnlyList<string>, RunnerOutput> run)
 {
     /// <summary>The bridge over the runner at this path; neither command takes more than a minute.</summary>

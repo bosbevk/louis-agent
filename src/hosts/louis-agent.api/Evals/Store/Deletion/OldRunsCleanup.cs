@@ -15,7 +15,7 @@ namespace LouisAgent.Api.Evals.Store.Deletion;
 /// version of the protocol it was written under, and a run of an older one is deleted, never read (ADR 0049; 7c's
 /// pick E). It deletes through <see cref="RunDeletion"/>, so it takes exactly what the delete button takes.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
 public sealed class OldRunsCleanup(IRunStore runs, RunDeletion deletion, ILogger log)
 {
     /// <summary>Deletes every run from before this protocol version, and says how much of each went.</summary>

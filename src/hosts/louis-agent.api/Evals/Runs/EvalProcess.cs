@@ -17,7 +17,7 @@ namespace LouisAgent.Api.Evals.Runs;
 /// <c>BENCHMARK_RUN</c> set to the run's id (<see cref="RunnerStartInfo"/> builds it). Saving the results to the store
 /// is someone else's job (<c>EvalRecorder</c>); this class only starts the run and keeps its lines.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 /// <param name="evalHost">What runs the eval runner's dll: <c>dotnet</c>; a test gives a stand-in.</param>
 public sealed class EvalProcess(
     EvalList catalog,

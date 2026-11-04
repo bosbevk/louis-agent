@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Skills.Headers;
 /// again. Every header is read at once, so one faulty header stops the host when it starts, not when a chat opens
 /// that role.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0018-built-in-prompts-embedded.md">ADR 0018: the built-in prompts are embedded</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0018-built-in-prompts-embedded.md">ADR 0018: the built-in prompts are embedded</seealso>
 public static class PromptCatalog
 {
     private static readonly Lazy<IReadOnlyDictionary<string, PromptFile>> Files = new(Read);

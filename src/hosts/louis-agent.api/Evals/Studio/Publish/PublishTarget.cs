@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Studio.Publish;
 /// identity projects). The name and identity are kebab-case already (<c>ComposedEvals</c> held them to it), so the
 /// paths they make can't climb out of the workspace.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
 public sealed record PublishTarget(string Folder, string Branch, string FolderName)
 {
     /// <summary>
@@ -22,7 +22,7 @@ public sealed record PublishTarget(string Folder, string Branch, string FolderNa
     /// </summary>
     public static PublishTarget Of(string identity, string name, string? listedFolder = null)
     {
-        string evals = $"evals/identities/louis-agent.identity.{identity}.evals/Evals/";
+        string evals = $"demos/{identity}/evals/louis-agent.identity.{identity}.evals/Evals/";
         string branch = $"eval/{identity}-{name}";
         string? listed = listedFolder?.Replace('\\', '/').TrimEnd('/');
         if (listed is not null && listed.StartsWith(evals, StringComparison.Ordinal) &&

@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Evals.Store.Deletion;
 /// Replace Primitive with Object (Fowler): deleting a run used to say only "there was something". The counts let the
 /// start-up clean-up say what it removed, while the delete button still asks only <see cref="Any"/>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0049-nothing-is-compatible-before-a-sale.md">ADR 0049: nothing is compatible before a sale</seealso>
 public sealed record DeletedRun(
     int Runs,
     int Conversations,

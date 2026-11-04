@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Evals.Calibrations.Store;
 /// (<see cref="MongoEvalDatabase.Open"/>), with the same short timeouts and the same mappings. The index is made on
 /// first use.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public sealed class MongoCalibrationStore : ICalibrationStore
 {
     /// <summary>The reports.</summary>

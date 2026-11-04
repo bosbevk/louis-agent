@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Reports.Trends;
 /// It uses the same runs as the overall trend (<see cref="EvalTrends.FinishedRunsAsync"/>), so a replay, a
 /// re-score, a held-out run and a run still going are no point. A run from before slices were kept adds nothing.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class CategoryTrends
 {
     /// <summary>One run on one line: the runner's rates for the slice, and how many trials it had.</summary>

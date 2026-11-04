@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Evals.Store;
 /// test. A caller that needs only one record can take that record's interface instead, since this one is all of them
 /// (Interface Segregation). Without the facade every handler and test would have to be handed four stores.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public interface IEvalStore : IRunStore, IConversationStore, ITurnStore, IRequestStore
 {
     /// <summary>

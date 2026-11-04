@@ -11,8 +11,8 @@ namespace LouisAgent.Core.Tools.Web.Search.Setups;
 /// <remarks>
 /// Strategy, with a Null Object. The sold endpoint reaches Tavily with a key; without one, the first search says what to set instead of start-up failing.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
 internal sealed class TavilySetup : ISearchProviderSetup
 {
     /// <summary>This is the Tavily one.</summary>

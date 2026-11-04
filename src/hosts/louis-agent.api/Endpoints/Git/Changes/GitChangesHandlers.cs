@@ -27,8 +27,8 @@ namespace LouisAgent.Api.Endpoints.Git.Changes;
 /// only the engine and the workspace the framework hands each call, so the class holds nothing. Each returns
 /// <c>TypedResults</c> with its answers declared (<c>StatusAnswer</c>, <c>DiffAnswer</c>).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class GitChangesHandlers
 {
     /// <summary>The checked-out branch and every changed file.</summary>

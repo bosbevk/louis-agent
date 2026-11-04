@@ -17,7 +17,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Studio;
 /// the runner's catalogue, which isn't a service, so the route is a named method a test calls with no HTTP. It returns
 /// <c>TypedResults</c> with its answers declared.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class StudioHandlers(CheckList checks)
 {
     /// <summary>The runner's checks and readers, or a 503 with the runner's reason.</summary>

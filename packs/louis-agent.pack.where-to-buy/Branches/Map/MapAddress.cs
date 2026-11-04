@@ -6,7 +6,7 @@ namespace LouisAgent.Packs.WhereToBuy.Branches.Map;
 /// A place's address as OpenStreetMap's Nominatim breaks it up: the street, the suburb and town it is in, its local
 /// municipality and its province. Any part may be missing; a mapper fills in what they know.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record MapAddress(
     [property: JsonPropertyName("house_number")] string? HouseNumber = null,
     [property: JsonPropertyName("road")] string? Road = null,

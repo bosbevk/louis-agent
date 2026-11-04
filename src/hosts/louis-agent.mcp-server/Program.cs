@@ -1,5 +1,5 @@
 using LouisAgent.Core.Guardrails.Auth;
-using LouisAgent.Composition;
+using LouisAgent.HostPacks;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.McpServer;

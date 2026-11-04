@@ -17,8 +17,8 @@ namespace LouisAgent.Api.Admin.Replies;
 /// sits here beside those types and still reads as <c>Record.Of</c> where it's called. Without it, either the
 /// contract would drag the server into every client or every call site would build the record by hand.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class AdminReplies
 {
     /// <summary>A check's row says whether it has a manual, which the check can't tell by itself.</summary>

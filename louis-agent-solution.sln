@@ -6,283 +6,433 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DCC1CE0E-F80
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}"
 	ProjectSection(SolutionItems) = preProject
-		config\.env = config\.env
-		config\.env.anthropic = config\.env.anthropic
-		config\.env.example = config\.env.example
-		config\.env.mongo.example = config\.env.mongo.example
-		config\.env.ollama = config\.env.ollama
-		config\.env.ollama-puls = config\.env.ollama-puls
-		config\.env.ollama-triage = config\.env.ollama-triage
-		config\.env.searxng.example = config\.env.searxng.example
-		config\.env.secrets.example = config\.env.secrets.example
-		config\README.md = config\README.md
-		config\prices.json = config\prices.json
-		config\rates.json = config\rates.json
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rider", "rider", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111}"
-	ProjectSection(SolutionItems) = preProject
-		config\rider\rider-acp.example.json = config\rider\rider-acp.example.json
-		config\rider\rider-mcp-servers.example.json = config\rider\rider-mcp-servers.example.json
+		demos\puls\config\.env = demos\puls\config\.env
+		demos\puls\config\.env.anthropic = demos\puls\config\.env.anthropic
+		demos\puls\config\.env.example = demos\puls\config\.env.example
+		demos\puls\config\.env.mongo.example = demos\puls\config\.env.mongo.example
+		demos\puls\config\.env.ollama-puls = demos\puls\config\.env.ollama-puls
+		demos\puls\config\.env.searxng.example = demos\puls\config\.env.searxng.example
+		demos\puls\config\.env.secrets.example = demos\puls\config\.env.secrets.example
+		demos\puls\config\README.md = demos\puls\config\README.md
+		demos\puls\config\prices.json = demos\puls\config\prices.json
+		demos\puls\config\rates.json = demos\puls\config\rates.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}"
 	ProjectSection(SolutionItems) = preProject
-		docker\README.md = docker\README.md
-		docker\docker-compose.observability.yml = docker\docker-compose.observability.yml
-		docker\docker-compose.puls.yml = docker\docker-compose.puls.yml
-		docker\docker-compose.yml = docker\docker-compose.yml
+		demos\puls\docker\README.md = demos\puls\docker\README.md
+		demos\puls\docker\docker-compose.puls.yml = demos\puls\docker\docker-compose.puls.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121}"
 	ProjectSection(SolutionItems) = preProject
-		docker\images\Dockerfile.acp-server = docker\images\Dockerfile.acp-server
-		docker\images\Dockerfile.agent = docker\images\Dockerfile.agent
-		docker\images\Dockerfile.api = docker\images\Dockerfile.api
-		docker\images\Dockerfile.mcp-server = docker\images\Dockerfile.mcp-server
-		docker\images\Dockerfile.orchestrator = docker\images\Dockerfile.orchestrator
-		docker\images\Dockerfile.puls = docker\images\Dockerfile.puls
-		docker\images\Dockerfile.site = docker\images\Dockerfile.site
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ollama", "ollama", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122}"
-	ProjectSection(SolutionItems) = preProject
-		docker\images\ollama\Dockerfile.ollama = docker\images\ollama\Dockerfile.ollama
-		docker\images\ollama\Dockerfile.ollama-amd = docker\images\ollama\Dockerfile.ollama-amd
-		docker\images\ollama\Dockerfile.ollama-nvidia = docker\images\ollama\Dockerfile.ollama-nvidia
-		docker\images\ollama\entrypoint.sh = docker\images\ollama\entrypoint.sh
+		demos\puls\docker\images\Dockerfile.puls = demos\puls\docker\images\Dockerfile.puls
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "searxng", "searxng", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0123}"
 	ProjectSection(SolutionItems) = preProject
-		docker\searxng\settings.yml = docker\searxng\settings.yml
+		demos\puls\docker\searxng\settings.yml = demos\puls\docker\searxng\settings.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0150}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\config\.env = demos\louis-agent\config\.env
+		demos\louis-agent\config\.env.anthropic = demos\louis-agent\config\.env.anthropic
+		demos\louis-agent\config\.env.example = demos\louis-agent\config\.env.example
+		demos\louis-agent\config\.env.ollama = demos\louis-agent\config\.env.ollama
+		demos\louis-agent\config\.env.ollama-triage = demos\louis-agent\config\.env.ollama-triage
+		demos\louis-agent\config\.env.secrets.example = demos\louis-agent\config\.env.secrets.example
+		demos\louis-agent\config\README.md = demos\louis-agent\config\README.md
+		demos\louis-agent\config\prices.json = demos\louis-agent\config\prices.json
+		demos\louis-agent\config\rates.json = demos\louis-agent\config\rates.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "rider", "rider", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\config\rider\rider-acp.example.json = demos\louis-agent\config\rider\rider-acp.example.json
+		demos\louis-agent\config\rider\rider-mcp-servers.example.json = demos\louis-agent\config\rider\rider-mcp-servers.example.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0151}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docker\README.md = demos\louis-agent\docker\README.md
+		demos\louis-agent\docker\docker-compose.observability.yml = demos\louis-agent\docker\docker-compose.observability.yml
+		demos\louis-agent\docker\docker-compose.yml = demos\louis-agent\docker\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0152}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docker\images\Dockerfile.acp-server = demos\louis-agent\docker\images\Dockerfile.acp-server
+		demos\louis-agent\docker\images\Dockerfile.agent = demos\louis-agent\docker\images\Dockerfile.agent
+		demos\louis-agent\docker\images\Dockerfile.api = demos\louis-agent\docker\images\Dockerfile.api
+		demos\louis-agent\docker\images\Dockerfile.mcp-server = demos\louis-agent\docker\images\Dockerfile.mcp-server
+		demos\louis-agent\docker\images\Dockerfile.orchestrator = demos\louis-agent\docker\images\Dockerfile.orchestrator
+		demos\louis-agent\docker\images\Dockerfile.site = demos\louis-agent\docker\images\Dockerfile.site
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ollama", "ollama", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docker\images\ollama\Dockerfile.ollama = demos\louis-agent\docker\images\ollama\Dockerfile.ollama
+		demos\louis-agent\docker\images\ollama\Dockerfile.ollama-amd = demos\louis-agent\docker\images\ollama\Dockerfile.ollama-amd
+		demos\louis-agent\docker\images\ollama\Dockerfile.ollama-nvidia = demos\louis-agent\docker\images\ollama\Dockerfile.ollama-nvidia
+		demos\louis-agent\docker\images\ollama\entrypoint.sh = demos\louis-agent\docker\images\ollama\entrypoint.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0160}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\deploy\README.md = demos\puls\deploy\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "azure", "azure", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\deploy\azure\README.md = demos\puls\deploy\azure\README.md
+		demos\puls\deploy\azure\deploy.ps1 = demos\puls\deploy\azure\deploy.ps1
+		demos\puls\deploy\azure\puls-app.yaml = demos\puls\deploy\azure\puls-app.yaml
+		demos\puls\deploy\azure\puls-searxng.yaml = demos\puls\deploy\azure\puls-searxng.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ts-forwarder", "ts-forwarder", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0162}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\deploy\azure\ts-forwarder\Dockerfile = demos\puls\deploy\azure\ts-forwarder\Dockerfile
+		demos\puls\deploy\azure\ts-forwarder\start.sh = demos\puls\deploy\azure\ts-forwarder\start.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hosts", "hosts", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0171}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0172}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "evals", "evals", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0173}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{3D1F1916-118A-47A6-AB54-311D91B2F260}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs-tests", "packs-tests", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skills", "skills", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0163}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\skills\README.md = demos\puls\skills\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "skills", "skills", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0164}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\skills\README.md = demos\louis-agent\skills\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0165}"
+	ProjectSection(SolutionItems) = preProject
+		src\docs\specs\images\agentsession-architecture.svg = src\docs\specs\images\agentsession-architecture.svg
+		src\docs\specs\images\pdf-search-pipeline.webp = src\docs\specs\images\pdf-search-pipeline.webp
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{88F3C49C-BB16-514A-9985-0A54746EA3BB}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docs\QUICK_START_AGENT.md = demos\louis-agent\docs\QUICK_START_AGENT.md
+		demos\louis-agent\docs\README.md = demos\louis-agent\docs\README.md
+		demos\louis-agent\docs\SETUP.md = demos\louis-agent\docs\SETUP.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{4993F08C-6B0C-5111-B0E2-4B0A8CC72B9B}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docs\adr\0012-one-orchestrator-per-microservice.md = demos\louis-agent\docs\adr\0012-one-orchestrator-per-microservice.md
+		demos\louis-agent\docs\adr\0066-the-site-is-static-razor.md = demos\louis-agent\docs\adr\0066-the-site-is-static-razor.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{77EF2112-329B-5606-8AAF-CED6069FF272}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docs\features\F17-orchestrator-agent.md = demos\louis-agent\docs\features\F17-orchestrator-agent.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{D505C3C5-ADE9-5577-ABD3-D119436FEE43}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docs\guides\change-the-orchestrator.md = demos\louis-agent\docs\guides\change-the-orchestrator.md
+		demos\louis-agent\docs\guides\change-the-site.md = demos\louis-agent\docs\guides\change-the-site.md
+		demos\louis-agent\docs\guides\change-the-web-app.md = demos\louis-agent\docs\guides\change-the-web-app.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{E284BDE8-0318-590D-8B82-47C355EC0D92}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docs\projects\louis-agent.orchestrator.md = demos\louis-agent\docs\projects\louis-agent.orchestrator.md
+		demos\louis-agent\docs\projects\louis-agent.site.md = demos\louis-agent\docs\projects\louis-agent.site.md
+		demos\louis-agent\docs\projects\louis-agent.web.md = demos\louis-agent\docs\projects\louis-agent.web.md
+		demos\louis-agent\docs\projects\orchestrator-runbooks.md = demos\louis-agent\docs\projects\orchestrator-runbooks.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "specs", "specs", "{D9D25646-A759-52BF-8F8E-D79A8FA366B8}"
+	ProjectSection(SolutionItems) = preProject
+		demos\louis-agent\docs\specs\ORCHESTRATOR_DESIGN.md = demos\louis-agent\docs\specs\ORCHESTRATOR_DESIGN.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\docs\README.md = demos\puls\docs\README.md
+		demos\puls\docs\SETUP.md = demos\puls\docs\SETUP.md
+		demos\puls\docs\SITE_OWNERS.md = demos\puls\docs\SITE_OWNERS.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{BF0BB87E-459C-5406-868C-E885960DA333}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\docs\features\F28-team-talk.md = demos\puls\docs\features\F28-team-talk.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{F3A57EA0-14CA-5147-A980-DCEBCF35FF37}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\docs\guides\change-puls.md = demos\puls\docs\guides\change-puls.md
+		demos\puls\docs\guides\change-the-puls-app.md = demos\puls\docs\guides\change-the-puls-app.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{FAC76245-0EC6-5B8A-97AB-269AB866204F}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\docs\plans\F28-team-talk.md = demos\puls\docs\plans\F28-team-talk.md
+		demos\puls\docs\plans\F35-recipe-sources.md = demos\puls\docs\plans\F35-recipe-sources.md
+		demos\puls\docs\plans\F48-cook-and-teacher.md = demos\puls\docs\plans\F48-cook-and-teacher.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{47D7AC85-780B-5876-BB42-669EB7301C70}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\docs\projects\louis-agent.host-packs.md = demos\puls\docs\projects\louis-agent.host-packs.md
+		demos\puls\docs\projects\louis-agent.identity.puls.judges.md = demos\puls\docs\projects\louis-agent.identity.puls.judges.md
+		demos\puls\docs\projects\louis-agent.identity.puls.md = demos\puls\docs\projects\louis-agent.identity.puls.md
+		demos\puls\docs\projects\louis-agent.puls.md = demos\puls\docs\projects\louis-agent.puls.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "specs", "specs", "{40A7E11D-7BA0-58DC-93A8-E4C5585AC7FB}"
+	ProjectSection(SolutionItems) = preProject
+		demos\puls\docs\specs\PULS_COOK.md = demos\puls\docs\specs\PULS_COOK.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A230FA11-8B13-51C6-82ED-ED4E5BDDE653}"
+	ProjectSection(SolutionItems) = preProject
+		packs\docs\README.md = packs\docs\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{67D12025-5001-5F15-8E4B-ECFCA01E1D26}"
+	ProjectSection(SolutionItems) = preProject
+		packs\docs\adr\0069-shop-prices-are-stats-sa-estimates.md = packs\docs\adr\0069-shop-prices-are-stats-sa-estimates.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{5350B428-1572-5C72-8D7F-D5EF1438F8CC}"
+	ProjectSection(SolutionItems) = preProject
+		packs\docs\projects\louis-agent.pack.recipes.md = packs\docs\projects\louis-agent.pack.recipes.md
+		packs\docs\projects\louis-agent.pack.shop-prices.md = packs\docs\projects\louis-agent.pack.shop-prices.md
+		packs\docs\projects\louis-agent.pack.where-to-buy.md = packs\docs\projects\louis-agent.pack.where-to-buy.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}"
 	ProjectSection(SolutionItems) = preProject
-		docs\AGENT_COMMUNICATION.md = docs\AGENT_COMMUNICATION.md
-		docs\CLAUDE.md = docs\CLAUDE.md
-		docs\GOAL.md = docs\GOAL.md
-		docs\MODELS.md = docs\MODELS.md
-		docs\QUICK_START_AGENT.md = docs\QUICK_START_AGENT.md
-		docs\README.md = docs\README.md
-		docs\SETUP.md = docs\SETUP.md
-		docs\SITE_OWNERS.md = docs\SITE_OWNERS.md
+		src\docs\AGENT_COMMUNICATION.md = src\docs\AGENT_COMMUNICATION.md
+		src\docs\CLAUDE.md = src\docs\CLAUDE.md
+		src\docs\GOAL.md = src\docs\GOAL.md
+		src\docs\MODELS.md = src\docs\MODELS.md
+		src\docs\README.md = src\docs\README.md
+		src\docs\SETUP.md = src\docs\SETUP.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "adr", "adr", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0101}"
 	ProjectSection(SolutionItems) = preProject
-		docs\adr\README.md = docs\adr\README.md
-		docs\adr\0001-record-architecture-decisions.md = docs\adr\0001-record-architecture-decisions.md
-		docs\adr\0002-messages-api-tier-with-our-own-loop.md = docs\adr\0002-messages-api-tier-with-our-own-loop.md
-		docs\adr\0003-provider-strategies.md = docs\adr\0003-provider-strategies.md
-		docs\adr\0004-arguments-as-data.md = docs\adr\0004-arguments-as-data.md
-		docs\adr\0005-guard-the-context.md = docs\adr\0005-guard-the-context.md
-		docs\adr\0006-toolsets-per-session.md = docs\adr\0006-toolsets-per-session.md
-		docs\adr\0007-measure-every-request.md = docs\adr\0007-measure-every-request.md
-		docs\adr\0008-history-is-append-only.md = docs\adr\0008-history-is-append-only.md
-		docs\adr\0009-message-text-as-enum-templates.md = docs\adr\0009-message-text-as-enum-templates.md
-		docs\adr\0010-folders-by-concern.md = docs\adr\0010-folders-by-concern.md
-		docs\adr\0011-prompts-are-content.md = docs\adr\0011-prompts-are-content.md
-		docs\adr\0012-one-orchestrator-per-microservice.md = docs\adr\0012-one-orchestrator-per-microservice.md
-		docs\adr\0013-documentation-structure.md = docs\adr\0013-documentation-structure.md
-		docs\adr\0014-test-first.md = docs\adr\0014-test-first.md
-		docs\adr\0015-licence-agpl.md = docs\adr\0015-licence-agpl.md
-		docs\adr\0016-licence-all-rights-reserved.md = docs\adr\0016-licence-all-rights-reserved.md
-		docs\adr\0017-skills-by-level.md = docs\adr\0017-skills-by-level.md
-		docs\adr\0018-built-in-prompts-embedded.md = docs\adr\0018-built-in-prompts-embedded.md
-		docs\adr\0019-modes-one-file-per-product.md = docs\adr\0019-modes-one-file-per-product.md
-		docs\adr\0020-principles-for-every-agent.md = docs\adr\0020-principles-for-every-agent.md
-		docs\adr\0021-minions-one-task-one-tool.md = docs\adr\0021-minions-one-task-one-tool.md
-		docs\adr\0022-benchmarks-recorded-from-the-protocol.md = docs\adr\0022-benchmarks-recorded-from-the-protocol.md
-		docs\adr\0023-copyleft-service-beside-us.md = docs\adr\0023-copyleft-service-beside-us.md
-		docs\adr\0024-choices-are-enums.md = docs\adr\0024-choices-are-enums.md
-		docs\adr\0025-a-role-declares-its-toolsets.md = docs\adr\0025-a-role-declares-its-toolsets.md
-		docs\adr\0026-parallel-tool-calls-for-read-only-toolsets.md = docs\adr\0026-parallel-tool-calls-for-read-only-toolsets.md
-		docs\adr\0027-engine-identities-and-packs.md = docs\adr\0027-engine-identities-and-packs.md
-		docs\adr\0028-packs-stay-convertible-to-mcp.md = docs\adr\0028-packs-stay-convertible-to-mcp.md
-		docs\adr\0029-simulations-in-csharp.md = docs\adr\0029-simulations-in-csharp.md
-		docs\adr\0030-build-or-adopt.md = docs\adr\0030-build-or-adopt.md
-		docs\adr\0031-orchestration-is-an-engine-function.md = docs\adr\0031-orchestration-is-an-engine-function.md
-		docs\adr\0033-what-the-agent-writes-has-a-scope.md = docs\adr\0033-what-the-agent-writes-has-a-scope.md
-		docs\adr\0034-code-a-person-can-maintain.md = docs\adr\0034-code-a-person-can-maintain.md
-		docs\adr\0037-one-agent-api-products-get-a-front-door.md = docs\adr\0037-one-agent-api-products-get-a-front-door.md
-		docs\adr\0038-the-browser-says-what-it-is.md = docs\adr\0038-the-browser-says-what-it-is.md
-		docs\adr\0039-api-routes-under-v1.md = docs\adr\0039-api-routes-under-v1.md
-		docs\adr\0040-records-for-values-classes-for-things.md = docs\adr\0040-records-for-values-classes-for-things.md
-		docs\adr\0041-json-through-records-by-hand-only-for-bytes.md = docs\adr\0041-json-through-records-by-hand-only-for-bytes.md
-		docs\adr\0042-the-web-shows-the-live-results.md = docs\adr\0042-the-web-shows-the-live-results.md
-		docs\adr\0043-repeated-names-are-enums.md = docs\adr\0043-repeated-names-are-enums.md
-		docs\adr\0044-the-size-limit-counts-code.md = docs\adr\0044-the-size-limit-counts-code.md
-		docs\adr\0045-typed-answers-and-a-shared-contract.md = docs\adr\0045-typed-answers-and-a-shared-contract.md
-		docs\adr\0046-dates-are-utc.md = docs\adr\0046-dates-are-utc.md
-		docs\adr\0047-protocol-v2-one-event-contract.md = docs\adr\0047-protocol-v2-one-event-contract.md
-		docs\adr\0048-mongo-through-records.md = docs\adr\0048-mongo-through-records.md
-		docs\adr\0049-nothing-is-compatible-before-a-sale.md = docs\adr\0049-nothing-is-compatible-before-a-sale.md
-		docs\adr\0050-summaries-like-a-person.md = docs\adr\0050-summaries-like-a-person.md
-		docs\adr\0051-flat-conditionals-and-named-endpoints.md = docs\adr\0051-flat-conditionals-and-named-endpoints.md
-		docs\adr\0052-edit-never-script.md = docs\adr\0052-edit-never-script.md
-		docs\adr\0053-stylesheets-by-concern.md = docs\adr\0053-stylesheets-by-concern.md
-		docs\adr\0054-a-move-may-copy-line-ranges.md = docs\adr\0054-a-move-may-copy-line-ranges.md
-		docs\adr\0055-keep-it-simple.md = docs\adr\0055-keep-it-simple.md
-		docs\adr\0056-a-check-is-a-catalogue-entry.md = docs\adr\0056-a-check-is-a-catalogue-entry.md
-		docs\adr\0057-regex-is-the-last-option.md = docs\adr\0057-regex-is-the-last-option.md
-		docs\adr\0058-an-eval-is-a-folder-of-files.md = docs\adr\0058-an-eval-is-a-folder-of-files.md
-		docs\adr\0059-an-identity-ships-readers-not-checks.md = docs\adr\0059-an-identity-ships-readers-not-checks.md
-		docs\adr\0060-a-pack-ships-its-checks.md = docs\adr\0060-a-pack-ships-its-checks.md
-		docs\adr\0061-evals-grow-from-use.md = docs\adr\0061-evals-grow-from-use.md
-		docs\adr\0062-the-studio-writes-what-git-keeps.md = docs\adr\0062-the-studio-writes-what-git-keeps.md
-		docs\adr\0063-a-prompt-says-what-it-is.md = docs\adr\0063-a-prompt-says-what-it-is.md
-		docs\adr\0064-observability-through-opentelemetry.md = docs\adr\0064-observability-through-opentelemetry.md
-		docs\adr\0065-the-view-is-in-the-address.md = docs\adr\0065-the-view-is-in-the-address.md
-		docs\adr\0066-the-site-is-static-razor.md = docs\adr\0066-the-site-is-static-razor.md
-		docs\adr\0067-a-pages-own-data-before-its-text.md = docs\adr\0067-a-pages-own-data-before-its-text.md
-		docs\adr\0068-every-fetch-obeys-robots-txt.md = docs\adr\0068-every-fetch-obeys-robots-txt.md
-		docs\adr\0069-shop-prices-are-stats-sa-estimates.md = docs\adr\0069-shop-prices-are-stats-sa-estimates.md
-		docs\adr\0070-packs-publish-data-feeds.md = docs\adr\0070-packs-publish-data-feeds.md
-		docs\adr\0071-packs-take-data-uploads.md = docs\adr\0071-packs-take-data-uploads.md
-		docs\adr\0072-feeds-are-mcp-resources.md = docs\adr\0072-feeds-are-mcp-resources.md
-		docs\adr\0073-packs-reference-no-evals.md = docs\adr\0073-packs-reference-no-evals.md
+		src\docs\adr\README.md = src\docs\adr\README.md
+		src\docs\adr\0001-record-architecture-decisions.md = src\docs\adr\0001-record-architecture-decisions.md
+		src\docs\adr\0002-messages-api-tier-with-our-own-loop.md = src\docs\adr\0002-messages-api-tier-with-our-own-loop.md
+		src\docs\adr\0003-provider-strategies.md = src\docs\adr\0003-provider-strategies.md
+		src\docs\adr\0004-arguments-as-data.md = src\docs\adr\0004-arguments-as-data.md
+		src\docs\adr\0005-guard-the-context.md = src\docs\adr\0005-guard-the-context.md
+		src\docs\adr\0006-toolsets-per-session.md = src\docs\adr\0006-toolsets-per-session.md
+		src\docs\adr\0007-measure-every-request.md = src\docs\adr\0007-measure-every-request.md
+		src\docs\adr\0008-history-is-append-only.md = src\docs\adr\0008-history-is-append-only.md
+		src\docs\adr\0009-message-text-as-enum-templates.md = src\docs\adr\0009-message-text-as-enum-templates.md
+		src\docs\adr\0010-folders-by-concern.md = src\docs\adr\0010-folders-by-concern.md
+		src\docs\adr\0011-prompts-are-content.md = src\docs\adr\0011-prompts-are-content.md
+		src\docs\adr\0013-documentation-structure.md = src\docs\adr\0013-documentation-structure.md
+		src\docs\adr\0014-test-first.md = src\docs\adr\0014-test-first.md
+		src\docs\adr\0015-licence-agpl.md = src\docs\adr\0015-licence-agpl.md
+		src\docs\adr\0016-licence-all-rights-reserved.md = src\docs\adr\0016-licence-all-rights-reserved.md
+		src\docs\adr\0017-skills-by-level.md = src\docs\adr\0017-skills-by-level.md
+		src\docs\adr\0018-built-in-prompts-embedded.md = src\docs\adr\0018-built-in-prompts-embedded.md
+		src\docs\adr\0019-modes-one-file-per-product.md = src\docs\adr\0019-modes-one-file-per-product.md
+		src\docs\adr\0020-principles-for-every-agent.md = src\docs\adr\0020-principles-for-every-agent.md
+		src\docs\adr\0021-minions-one-task-one-tool.md = src\docs\adr\0021-minions-one-task-one-tool.md
+		src\docs\adr\0022-benchmarks-recorded-from-the-protocol.md = src\docs\adr\0022-benchmarks-recorded-from-the-protocol.md
+		src\docs\adr\0023-copyleft-service-beside-us.md = src\docs\adr\0023-copyleft-service-beside-us.md
+		src\docs\adr\0024-choices-are-enums.md = src\docs\adr\0024-choices-are-enums.md
+		src\docs\adr\0025-a-role-declares-its-toolsets.md = src\docs\adr\0025-a-role-declares-its-toolsets.md
+		src\docs\adr\0026-parallel-tool-calls-for-read-only-toolsets.md = src\docs\adr\0026-parallel-tool-calls-for-read-only-toolsets.md
+		src\docs\adr\0027-engine-identities-and-packs.md = src\docs\adr\0027-engine-identities-and-packs.md
+		src\docs\adr\0028-packs-stay-convertible-to-mcp.md = src\docs\adr\0028-packs-stay-convertible-to-mcp.md
+		src\docs\adr\0029-simulations-in-csharp.md = src\docs\adr\0029-simulations-in-csharp.md
+		src\docs\adr\0030-build-or-adopt.md = src\docs\adr\0030-build-or-adopt.md
+		src\docs\adr\0031-orchestration-is-an-engine-function.md = src\docs\adr\0031-orchestration-is-an-engine-function.md
+		src\docs\adr\0033-what-the-agent-writes-has-a-scope.md = src\docs\adr\0033-what-the-agent-writes-has-a-scope.md
+		src\docs\adr\0034-code-a-person-can-maintain.md = src\docs\adr\0034-code-a-person-can-maintain.md
+		src\docs\adr\0037-one-agent-api-products-get-a-front-door.md = src\docs\adr\0037-one-agent-api-products-get-a-front-door.md
+		src\docs\adr\0038-the-browser-says-what-it-is.md = src\docs\adr\0038-the-browser-says-what-it-is.md
+		src\docs\adr\0039-api-routes-under-v1.md = src\docs\adr\0039-api-routes-under-v1.md
+		src\docs\adr\0040-records-for-values-classes-for-things.md = src\docs\adr\0040-records-for-values-classes-for-things.md
+		src\docs\adr\0041-json-through-records-by-hand-only-for-bytes.md = src\docs\adr\0041-json-through-records-by-hand-only-for-bytes.md
+		src\docs\adr\0042-the-web-shows-the-live-results.md = src\docs\adr\0042-the-web-shows-the-live-results.md
+		src\docs\adr\0043-repeated-names-are-enums.md = src\docs\adr\0043-repeated-names-are-enums.md
+		src\docs\adr\0044-the-size-limit-counts-code.md = src\docs\adr\0044-the-size-limit-counts-code.md
+		src\docs\adr\0045-typed-answers-and-a-shared-contract.md = src\docs\adr\0045-typed-answers-and-a-shared-contract.md
+		src\docs\adr\0046-dates-are-utc.md = src\docs\adr\0046-dates-are-utc.md
+		src\docs\adr\0047-protocol-v2-one-event-contract.md = src\docs\adr\0047-protocol-v2-one-event-contract.md
+		src\docs\adr\0048-mongo-through-records.md = src\docs\adr\0048-mongo-through-records.md
+		src\docs\adr\0049-nothing-is-compatible-before-a-sale.md = src\docs\adr\0049-nothing-is-compatible-before-a-sale.md
+		src\docs\adr\0050-summaries-like-a-person.md = src\docs\adr\0050-summaries-like-a-person.md
+		src\docs\adr\0051-flat-conditionals-and-named-endpoints.md = src\docs\adr\0051-flat-conditionals-and-named-endpoints.md
+		src\docs\adr\0052-edit-never-script.md = src\docs\adr\0052-edit-never-script.md
+		src\docs\adr\0053-stylesheets-by-concern.md = src\docs\adr\0053-stylesheets-by-concern.md
+		src\docs\adr\0054-a-move-may-copy-line-ranges.md = src\docs\adr\0054-a-move-may-copy-line-ranges.md
+		src\docs\adr\0055-keep-it-simple.md = src\docs\adr\0055-keep-it-simple.md
+		src\docs\adr\0056-a-check-is-a-catalogue-entry.md = src\docs\adr\0056-a-check-is-a-catalogue-entry.md
+		src\docs\adr\0057-regex-is-the-last-option.md = src\docs\adr\0057-regex-is-the-last-option.md
+		src\docs\adr\0058-an-eval-is-a-folder-of-files.md = src\docs\adr\0058-an-eval-is-a-folder-of-files.md
+		src\docs\adr\0059-an-identity-ships-readers-not-checks.md = src\docs\adr\0059-an-identity-ships-readers-not-checks.md
+		src\docs\adr\0060-a-pack-ships-its-checks.md = src\docs\adr\0060-a-pack-ships-its-checks.md
+		src\docs\adr\0061-evals-grow-from-use.md = src\docs\adr\0061-evals-grow-from-use.md
+		src\docs\adr\0062-the-studio-writes-what-git-keeps.md = src\docs\adr\0062-the-studio-writes-what-git-keeps.md
+		src\docs\adr\0063-a-prompt-says-what-it-is.md = src\docs\adr\0063-a-prompt-says-what-it-is.md
+		src\docs\adr\0064-observability-through-opentelemetry.md = src\docs\adr\0064-observability-through-opentelemetry.md
+		src\docs\adr\0065-the-view-is-in-the-address.md = src\docs\adr\0065-the-view-is-in-the-address.md
+		src\docs\adr\0067-a-pages-own-data-before-its-text.md = src\docs\adr\0067-a-pages-own-data-before-its-text.md
+		src\docs\adr\0068-every-fetch-obeys-robots-txt.md = src\docs\adr\0068-every-fetch-obeys-robots-txt.md
+		src\docs\adr\0070-packs-publish-data-feeds.md = src\docs\adr\0070-packs-publish-data-feeds.md
+		src\docs\adr\0071-packs-take-data-uploads.md = src\docs\adr\0071-packs-take-data-uploads.md
+		src\docs\adr\0072-feeds-are-mcp-resources.md = src\docs\adr\0072-feeds-are-mcp-resources.md
+		src\docs\adr\0073-packs-reference-no-evals.md = src\docs\adr\0073-packs-reference-no-evals.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "architecture", "architecture", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102}"
 	ProjectSection(SolutionItems) = preProject
-		docs\architecture\README.md = docs\architecture\README.md
-		docs\architecture\01-introduction-and-goals.md = docs\architecture\01-introduction-and-goals.md
-		docs\architecture\02-constraints.md = docs\architecture\02-constraints.md
-		docs\architecture\03-context-and-scope.md = docs\architecture\03-context-and-scope.md
-		docs\architecture\04-solution-strategy.md = docs\architecture\04-solution-strategy.md
-		docs\architecture\05-building-block-view.md = docs\architecture\05-building-block-view.md
-		docs\architecture\06-runtime-view.md = docs\architecture\06-runtime-view.md
-		docs\architecture\07-deployment-view.md = docs\architecture\07-deployment-view.md
-		docs\architecture\08-crosscutting-concepts.md = docs\architecture\08-crosscutting-concepts.md
-		docs\architecture\09-architecture-decisions.md = docs\architecture\09-architecture-decisions.md
-		docs\architecture\10-quality-requirements.md = docs\architecture\10-quality-requirements.md
-		docs\architecture\11-risks-and-technical-debt.md = docs\architecture\11-risks-and-technical-debt.md
-		docs\architecture\12-glossary.md = docs\architecture\12-glossary.md
-		docs\architecture\evals.md = docs\architecture\evals.md
+		src\docs\architecture\README.md = src\docs\architecture\README.md
+		src\docs\architecture\01-introduction-and-goals.md = src\docs\architecture\01-introduction-and-goals.md
+		src\docs\architecture\02-constraints.md = src\docs\architecture\02-constraints.md
+		src\docs\architecture\03-context-and-scope.md = src\docs\architecture\03-context-and-scope.md
+		src\docs\architecture\04-solution-strategy.md = src\docs\architecture\04-solution-strategy.md
+		src\docs\architecture\05-building-block-view.md = src\docs\architecture\05-building-block-view.md
+		src\docs\architecture\06-runtime-view.md = src\docs\architecture\06-runtime-view.md
+		src\docs\architecture\07-deployment-view.md = src\docs\architecture\07-deployment-view.md
+		src\docs\architecture\08-crosscutting-concepts.md = src\docs\architecture\08-crosscutting-concepts.md
+		src\docs\architecture\09-architecture-decisions.md = src\docs\architecture\09-architecture-decisions.md
+		src\docs\architecture\10-quality-requirements.md = src\docs\architecture\10-quality-requirements.md
+		src\docs\architecture\11-risks-and-technical-debt.md = src\docs\architecture\11-risks-and-technical-debt.md
+		src\docs\architecture\12-glossary.md = src\docs\architecture\12-glossary.md
+		src\docs\architecture\evals.md = src\docs\architecture\evals.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "features", "features", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0103}"
 	ProjectSection(SolutionItems) = preProject
-		docs\features\README.md = docs\features\README.md
-		docs\features\F06-estimates.md = docs\features\F06-estimates.md
-		docs\features\F07-budgets.md = docs\features\F07-budgets.md
-		docs\features\F08-reliability.md = docs\features\F08-reliability.md
-		docs\features\F09-context-management.md = docs\features\F09-context-management.md
-		docs\features\F10-route-settings.md = docs\features\F10-route-settings.md
-		docs\features\F11-usage-tab-and-reconciliation.md = docs\features\F11-usage-tab-and-reconciliation.md
-		docs\features\F12-response-speed.md = docs\features\F12-response-speed.md
-		docs\features\F13-local-models.md = docs\features\F13-local-models.md
-		docs\features\F15-model-limits.md = docs\features\F15-model-limits.md
-		docs\features\F16-summariser.md = docs\features\F16-summariser.md
-		docs\features\F17-orchestrator-agent.md = docs\features\F17-orchestrator-agent.md
-		docs\features\F28-team-talk.md = docs\features\F28-team-talk.md
+		src\docs\features\README.md = src\docs\features\README.md
+		src\docs\features\F06-estimates.md = src\docs\features\F06-estimates.md
+		src\docs\features\F07-budgets.md = src\docs\features\F07-budgets.md
+		src\docs\features\F08-reliability.md = src\docs\features\F08-reliability.md
+		src\docs\features\F09-context-management.md = src\docs\features\F09-context-management.md
+		src\docs\features\F10-route-settings.md = src\docs\features\F10-route-settings.md
+		src\docs\features\F11-usage-tab-and-reconciliation.md = src\docs\features\F11-usage-tab-and-reconciliation.md
+		src\docs\features\F12-response-speed.md = src\docs\features\F12-response-speed.md
+		src\docs\features\F13-local-models.md = src\docs\features\F13-local-models.md
+		src\docs\features\F15-model-limits.md = src\docs\features\F15-model-limits.md
+		src\docs\features\F16-summariser.md = src\docs\features\F16-summariser.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "fixes", "fixes", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0104}"
 	ProjectSection(SolutionItems) = preProject
-		docs\fixes\README.md = docs\fixes\README.md
-		docs\fixes\FX04-append-only-history.md = docs\fixes\FX04-append-only-history.md
+		src\docs\fixes\README.md = src\docs\fixes\README.md
+		src\docs\fixes\FX04-append-only-history.md = src\docs\fixes\FX04-append-only-history.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "guides", "guides", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0105}"
 	ProjectSection(SolutionItems) = preProject
-		docs\guides\README.md = docs\guides\README.md
-		docs\guides\add-a-skill.md = docs\guides\add-a-skill.md
-		docs\guides\add-an-eval.md = docs\guides\add-an-eval.md
-		docs\guides\build-a-pack.md = docs\guides\build-a-pack.md
-		docs\guides\build-an-identity.md = docs\guides\build-an-identity.md
-		docs\guides\change-puls.md = docs\guides\change-puls.md
-		docs\guides\change-the-acp-server.md = docs\guides\change-the-acp-server.md
-		docs\guides\change-the-api.md = docs\guides\change-the-api.md
-		docs\guides\change-the-cli.md = docs\guides\change-the-cli.md
-		docs\guides\change-the-engine.md = docs\guides\change-the-engine.md
-		docs\guides\change-the-mcp-server.md = docs\guides\change-the-mcp-server.md
-		docs\guides\change-the-orchestrator.md = docs\guides\change-the-orchestrator.md
-		docs\guides\change-the-puls-app.md = docs\guides\change-the-puls-app.md
-		docs\guides\change-the-site.md = docs\guides\change-the-site.md
-		docs\guides\change-the-usage-probe.md = docs\guides\change-the-usage-probe.md
-		docs\guides\change-the-web-app.md = docs\guides\change-the-web-app.md
-		docs\guides\change-the-web-shared.md = docs\guides\change-the-web-shared.md
-		docs\guides\common-errors.md = docs\guides\common-errors.md
-		docs\guides\debug-and-logs.md = docs\guides\debug-and-logs.md
-		docs\guides\finish-a-step.md = docs\guides\finish-a-step.md
-		docs\guides\get-started.md = docs\guides\get-started.md
-		docs\guides\run-the-evals.md = docs\guides\run-the-evals.md
-		docs\guides\write-tests.md = docs\guides\write-tests.md
+		src\docs\guides\README.md = src\docs\guides\README.md
+		src\docs\guides\add-a-skill.md = src\docs\guides\add-a-skill.md
+		src\docs\guides\add-an-eval.md = src\docs\guides\add-an-eval.md
+		src\docs\guides\build-a-pack.md = src\docs\guides\build-a-pack.md
+		src\docs\guides\build-an-identity.md = src\docs\guides\build-an-identity.md
+		src\docs\guides\change-the-acp-server.md = src\docs\guides\change-the-acp-server.md
+		src\docs\guides\change-the-api.md = src\docs\guides\change-the-api.md
+		src\docs\guides\change-the-cli.md = src\docs\guides\change-the-cli.md
+		src\docs\guides\change-the-engine.md = src\docs\guides\change-the-engine.md
+		src\docs\guides\change-the-mcp-server.md = src\docs\guides\change-the-mcp-server.md
+		src\docs\guides\change-the-usage-probe.md = src\docs\guides\change-the-usage-probe.md
+		src\docs\guides\change-the-web-shared.md = src\docs\guides\change-the-web-shared.md
+		src\docs\guides\common-errors.md = src\docs\guides\common-errors.md
+		src\docs\guides\debug-and-logs.md = src\docs\guides\debug-and-logs.md
+		src\docs\guides\finish-a-step.md = src\docs\guides\finish-a-step.md
+		src\docs\guides\get-started.md = src\docs\guides\get-started.md
+		src\docs\guides\run-the-evals.md = src\docs\guides\run-the-evals.md
+		src\docs\guides\write-tests.md = src\docs\guides\write-tests.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "learning", "learning", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0106}"
 	ProjectSection(SolutionItems) = preProject
-		docs\learning\README.md = docs\learning\README.md
-		docs\learning\04-tool-design.md = docs\learning\04-tool-design.md
-		docs\learning\07-context-engineering.md = docs\learning\07-context-engineering.md
-		docs\learning\10-multi-agent-orchestration.md = docs\learning\10-multi-agent-orchestration.md
-		docs\learning\11-protocols.md = docs\learning\11-protocols.md
-		docs\learning\12-evaluation.md = docs\learning\12-evaluation.md
-		docs\learning\13-cost-and-token-economics.md = docs\learning\13-cost-and-token-economics.md
-		docs\learning\15-safety-and-security.md = docs\learning\15-safety-and-security.md
-		docs\learning\16-human-in-the-loop.md = docs\learning\16-human-in-the-loop.md
-		docs\learning\17-observability.md = docs\learning\17-observability.md
-		docs\learning\18-testing-and-shipping.md = docs\learning\18-testing-and-shipping.md
-		docs\learning\20-extensibility.md = docs\learning\20-extensibility.md
-		docs\learning\fixes-lessons.md = docs\learning\fixes-lessons.md
+		src\docs\learning\README.md = src\docs\learning\README.md
+		src\docs\learning\04-tool-design.md = src\docs\learning\04-tool-design.md
+		src\docs\learning\07-context-engineering.md = src\docs\learning\07-context-engineering.md
+		src\docs\learning\10-multi-agent-orchestration.md = src\docs\learning\10-multi-agent-orchestration.md
+		src\docs\learning\11-protocols.md = src\docs\learning\11-protocols.md
+		src\docs\learning\12-evaluation.md = src\docs\learning\12-evaluation.md
+		src\docs\learning\13-cost-and-token-economics.md = src\docs\learning\13-cost-and-token-economics.md
+		src\docs\learning\15-safety-and-security.md = src\docs\learning\15-safety-and-security.md
+		src\docs\learning\16-human-in-the-loop.md = src\docs\learning\16-human-in-the-loop.md
+		src\docs\learning\17-observability.md = src\docs\learning\17-observability.md
+		src\docs\learning\18-testing-and-shipping.md = src\docs\learning\18-testing-and-shipping.md
+		src\docs\learning\20-extensibility.md = src\docs\learning\20-extensibility.md
+		src\docs\learning\fixes-lessons.md = src\docs\learning\fixes-lessons.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0107}"
 	ProjectSection(SolutionItems) = preProject
-		docs\plans\README.md = docs\plans\README.md
-		docs\plans\F28-team-talk.md = docs\plans\F28-team-talk.md
-		docs\plans\F35-recipe-sources.md = docs\plans\F35-recipe-sources.md
-		docs\plans\F48-cook-and-teacher.md = docs\plans\F48-cook-and-teacher.md
-		docs\plans\platform-summary.md = docs\plans\platform-summary.md
-		docs\plans\platform.md = docs\plans\platform.md
+		src\docs\plans\README.md = src\docs\plans\README.md
+		src\docs\plans\platform-summary.md = src\docs\plans\platform-summary.md
+		src\docs\plans\platform.md = src\docs\plans\platform.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "projects", "projects", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108}"
 	ProjectSection(SolutionItems) = preProject
-		docs\projects\README.md = docs\projects\README.md
-		docs\projects\louis-agent.acp-server.md = docs\projects\louis-agent.acp-server.md
-		docs\projects\louis-agent.api.md = docs\projects\louis-agent.api.md
-		docs\projects\louis-agent.cli.md = docs\projects\louis-agent.cli.md
-		docs\projects\louis-agent.composition.md = docs\projects\louis-agent.composition.md
-		docs\projects\louis-agent.core.md = docs\projects\louis-agent.core.md
-		docs\projects\louis-agent.evals.checks.md = docs\projects\louis-agent.evals.checks.md
-		docs\projects\louis-agent.evals.md = docs\projects\louis-agent.evals.md
-		docs\projects\louis-agent.evals.protocol.md = docs\projects\louis-agent.evals.protocol.md
-		docs\projects\louis-agent.evals.runner.md = docs\projects\louis-agent.evals.runner.md
-		docs\projects\louis-agent.identity.puls.judges.md = docs\projects\louis-agent.identity.puls.judges.md
-		docs\projects\louis-agent.identity.puls.md = docs\projects\louis-agent.identity.puls.md
-		docs\projects\louis-agent.mcp-server.md = docs\projects\louis-agent.mcp-server.md
-		docs\projects\louis-agent.orchestrator.md = docs\projects\louis-agent.orchestrator.md
-		docs\projects\louis-agent.pack.recipes.md = docs\projects\louis-agent.pack.recipes.md
-		docs\projects\louis-agent.pack.shop-prices.md = docs\projects\louis-agent.pack.shop-prices.md
-		docs\projects\louis-agent.pack.where-to-buy.md = docs\projects\louis-agent.pack.where-to-buy.md
-		docs\projects\louis-agent.puls.md = docs\projects\louis-agent.puls.md
-		docs\projects\louis-agent.site.md = docs\projects\louis-agent.site.md
-		docs\projects\louis-agent.usage-probe.md = docs\projects\louis-agent.usage-probe.md
-		docs\projects\louis-agent.web.md = docs\projects\louis-agent.web.md
-		docs\projects\louis-agent.web.shared.md = docs\projects\louis-agent.web.shared.md
-		docs\projects\orchestrator-runbooks.md = docs\projects\orchestrator-runbooks.md
-		docs\projects\tests.md = docs\projects\tests.md
+		src\docs\projects\README.md = src\docs\projects\README.md
+		src\docs\projects\louis-agent.acp-server.md = src\docs\projects\louis-agent.acp-server.md
+		src\docs\projects\louis-agent.api.md = src\docs\projects\louis-agent.api.md
+		src\docs\projects\louis-agent.cli.md = src\docs\projects\louis-agent.cli.md
+		src\docs\projects\louis-agent.core.md = src\docs\projects\louis-agent.core.md
+		src\docs\projects\louis-agent.evals.checks.md = src\docs\projects\louis-agent.evals.checks.md
+		src\docs\projects\louis-agent.evals.md = src\docs\projects\louis-agent.evals.md
+		src\docs\projects\louis-agent.evals.protocol.md = src\docs\projects\louis-agent.evals.protocol.md
+		src\docs\projects\louis-agent.evals.runner.md = src\docs\projects\louis-agent.evals.runner.md
+		src\docs\projects\louis-agent.mcp-server.md = src\docs\projects\louis-agent.mcp-server.md
+		src\docs\projects\louis-agent.usage-probe.md = src\docs\projects\louis-agent.usage-probe.md
+		src\docs\projects\louis-agent.web.shared.md = src\docs\projects\louis-agent.web.shared.md
+		src\docs\projects\tests.md = src\docs\projects\tests.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "specs", "specs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0109}"
 	ProjectSection(SolutionItems) = preProject
-		docs\specs\ORCHESTRATOR_DESIGN.md = docs\specs\ORCHESTRATOR_DESIGN.md
-		docs\specs\PDF_SEARCH.md = docs\specs\PDF_SEARCH.md
-		docs\specs\PULS_COOK.md = docs\specs\PULS_COOK.md
-		docs\specs\RESPONSE_OPTIMISATION.md = docs\specs\RESPONSE_OPTIMISATION.md
-		docs\specs\SESSION_ARCHITECTURE.md = docs\specs\SESSION_ARCHITECTURE.md
-		docs\specs\USAGE_AND_BUDGETS.md = docs\specs\USAGE_AND_BUDGETS.md
-		docs\specs\images\agentsession-architecture.svg = docs\specs\images\agentsession-architecture.svg
-		docs\specs\images\pdf-search-pipeline.webp = docs\specs\images\pdf-search-pipeline.webp
+		src\docs\specs\PDF_SEARCH.md = src\docs\specs\PDF_SEARCH.md
+		src\docs\specs\RESPONSE_OPTIMISATION.md = src\docs\specs\RESPONSE_OPTIMISATION.md
+		src\docs\specs\SESSION_ARCHITECTURE.md = src\docs\specs\SESSION_ARCHITECTURE.md
+		src\docs\specs\USAGE_AND_BUDGETS.md = src\docs\specs\USAGE_AND_BUDGETS.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs", "packs", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs-evals", "packs-evals", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identities", "identities", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0131}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demos", "demos", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "puls", "puls", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "louis-agent", "louis-agent", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity", "identity", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0143}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "evals", "evals", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0144}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0145}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hosts", "hosts", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0146}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0147}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hosts", "hosts", "{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "engine", "engine", "{6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}"
 EndProject
@@ -292,7 +442,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "web", "web", "{6F1D3A52-8C4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.cli", "src\hosts\louis-agent.cli\louis-agent.cli.csproj", "{10926F76-8821-4486-B41B-DBA0769F3E53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.tests", "tests\louis-agent.core.tests\louis-agent.core.tests.csproj", "{29C21C18-8D45-4F52-862F-604E694DD9FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.tests", "src\tests\engine\louis-agent.core.tests\louis-agent.core.tests.csproj", "{29C21C18-8D45-4F52-862F-604E694DD9FC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server", "src\hosts\louis-agent.mcp-server\louis-agent.mcp-server.csproj", "{A2CB6834-DB10-4DD8-817F-12377FD055E4}"
 EndProject
@@ -300,127 +450,121 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api", "src\hosts\louis-agent.api\louis-agent.api.csproj", "{00E53CA6-5EF8-4D7A-8928-6749C7C0B942}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "src\web\louis-agent.web\louis-agent.web.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web", "demos\louis-agent\web\louis-agent.web\louis-agent.web.csproj", "{D77B32E0-6DCF-4CBF-8268-EB7FAC492052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator", "src\hosts\louis-agent.orchestrator\louis-agent.orchestrator.csproj", "{99135CF2-B1A3-40D9-89B4-802289451175}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator", "demos\louis-agent\hosts\louis-agent.orchestrator\louis-agent.orchestrator.csproj", "{99135CF2-B1A3-40D9-89B4-802289451175}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator.tests", "tests\louis-agent.orchestrator.tests\louis-agent.orchestrator.tests.csproj", "{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator.tests", "demos\louis-agent\tests\louis-agent.orchestrator.tests\louis-agent.orchestrator.tests.csproj", "{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{07C2787E-EAC7-C090-1BA3-A61EC2A24D84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.usage-probe", "tools\louis-agent.usage-probe\louis-agent.usage-probe.csproj", "{B570E980-4301-4AFF-9273-3A6F2D17B2AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.usage-probe", "src\tools\louis-agent.usage-probe\louis-agent.usage-probe.csproj", "{B570E980-4301-4AFF-9273-3A6F2D17B2AF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit", "unit", "{7A2C9860-6875-4A13-B6EF-31F49A37FE86}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integration", "integration", "{12AC58C2-F5D8-4B9B-BFEA-136C25B9BF9E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "shared", "shared", "{3D1F1916-118A-47A6-AB54-311D91B2F260}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.tests", "tests\louis-agent.api.tests\louis-agent.api.tests.csproj", "{25003D68-7FA2-4C3E-B862-13791FCE8D4A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.tests", "demos\puls\tests\louis-agent.api.tests\louis-agent.api.tests.csproj", "{25003D68-7FA2-4C3E-B862-13791FCE8D4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.shared", "src\web\louis-agent.web.shared\louis-agent.web.shared.csproj", "{2A96C62E-D01A-4172-A1A7-0E809148723B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls", "src\web\louis-agent.puls\louis-agent.puls.csproj", "{B7678750-A3A4-4B29-AA77-E1E1E1682E68}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls", "demos\puls\web\louis-agent.puls\louis-agent.puls.csproj", "{B7678750-A3A4-4B29-AA77-E1E1E1682E68}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identities", "identities", "{BC639B58-5972-83DB-AA37-6AC134055B25}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls", "demos\puls\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj", "{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls", "identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj", "{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.composition", "src\engine\louis-agent.composition\louis-agent.composition.csproj", "{06007296-284A-4A6E-A166-0555BB47408F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.composition", "src\hosts\louis-agent.composition\louis-agent.composition.csproj", "{06007296-284A-4A6E-A166-0555BB47408F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.host-packs.tests", "demos\puls\tests\louis-agent.host-packs.tests\louis-agent.host-packs.tests.csproj", "{847B52E1-8CAE-4974-99D3-D47EBF359C20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.composition.tests", "tests\louis-agent.composition.tests\louis-agent.composition.tests.csproj", "{847B52E1-8CAE-4974-99D3-D47EBF359C20}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.tests", "tests\louis-agent.identity.puls.tests\louis-agent.identity.puls.tests.csproj", "{210EC629-B8AC-4D15-9E18-8BC289C96F57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.tests", "demos\puls\tests\louis-agent.identity.puls.tests\louis-agent.identity.puls.tests.csproj", "{210EC629-B8AC-4D15-9E18-8BC289C96F57}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packs", "packs", "{13F83573-227E-2BB1-530B-3E26FFFFAA85}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy", "packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj", "{F649C1D9-659D-43D4-B3B7-E53E589B15AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.tests", "tests\louis-agent.pack.where-to-buy.tests\louis-agent.pack.where-to-buy.tests.csproj", "{13F596D6-E3AF-4C7F-ACAC-1A7C266FCFA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.tests", "packs-tests\louis-agent.pack.where-to-buy.tests\louis-agent.pack.where-to-buy.tests.csproj", "{13F596D6-E3AF-4C7F-ACAC-1A7C266FCFA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.testing", "tests\louis-agent.testing\louis-agent.testing.csproj", "{57E3BAD7-2851-4611-9D17-97D957ED1E74}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.testing", "src\tests\shared\louis-agent.testing\louis-agent.testing.csproj", "{57E3BAD7-2851-4611-9D17-97D957ED1E74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.shared.tests", "tests\louis-agent.web.shared.tests\louis-agent.web.shared.tests.csproj", "{58DD87D4-4C08-4C58-8E0A-888771B72642}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.shared.tests", "src\tests\web\louis-agent.web.shared.tests\louis-agent.web.shared.tests.csproj", "{58DD87D4-4C08-4C58-8E0A-888771B72642}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls.tests", "tests\louis-agent.puls.tests\louis-agent.puls.tests.csproj", "{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.puls.tests", "demos\puls\tests\louis-agent.puls.tests\louis-agent.puls.tests.csproj", "{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.testing", "tests\louis-agent.web.testing\louis-agent.web.testing.csproj", "{B6B1BB26-4D84-4825-B807-3ED6D46E31D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.testing", "src\tests\web\louis-agent.web.testing\louis-agent.web.testing.csproj", "{B6B1BB26-4D84-4825-B807-3ED6D46E31D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.tests", "tests\louis-agent.web.tests\louis-agent.web.tests.csproj", "{D85F0454-8101-4372-A7EE-A7A4032B92A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.web.tests", "demos\louis-agent\tests\louis-agent.web.tests\louis-agent.web.tests.csproj", "{D85F0454-8101-4372-A7EE-A7A4032B92A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server.tests", "tests\louis-agent.acp-server.tests\louis-agent.acp-server.tests.csproj", "{1F423FC5-B911-4FA6-AEFD-28BF3C392533}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.acp-server.tests", "src\tests\hosts\louis-agent.acp-server.tests\louis-agent.acp-server.tests.csproj", "{1F423FC5-B911-4FA6-AEFD-28BF3C392533}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.session-stream", "src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj", "{BCB772FE-E1BB-492A-BCCF-3BFC61C732AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.session-stream.tests", "tests\louis-agent.session-stream.tests\louis-agent.session-stream.tests.csproj", "{EF4BF4DA-E0B6-4FC1-B0C6-9CD86518A137}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.session-stream.tests", "src\tests\engine\louis-agent.session-stream.tests\louis-agent.session-stream.tests.csproj", "{EF4BF4DA-E0B6-4FC1-B0C6-9CD86518A137}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "evals", "evals", "{33F416D4-75A6-5DA4-5B8E-78754CDB7034}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals", "evals\louis-agent.evals\louis-agent.evals.csproj", "{9D8E25B4-C4BC-4EED-97D7-CEEF606156AA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals", "src\evals\louis-agent.evals\louis-agent.evals.csproj", "{9D8E25B4-C4BC-4EED-97D7-CEEF606156AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.tests", "tests\louis-agent.evals.tests\louis-agent.evals.tests.csproj", "{DB1EFA1C-8905-4684-87CC-209DEDDB7193}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.tests", "src\tests\evals\louis-agent.evals.tests\louis-agent.evals.tests.csproj", "{DB1EFA1C-8905-4684-87CC-209DEDDB7193}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.runner", "evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj", "{DB2E212A-B775-459B-A8EB-5BEFB55B3AE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.runner", "src\evals\louis-agent.evals.runner\louis-agent.evals.runner.csproj", "{DB2E212A-B775-459B-A8EB-5BEFB55B3AE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.runner.tests", "tests\louis-agent.evals.runner.tests\louis-agent.evals.runner.tests.csproj", "{AAC1DF7C-3097-4B37-869A-20F086F079D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.runner.tests", "src\tests\evals\louis-agent.evals.runner.tests\louis-agent.evals.runner.tests.csproj", "{AAC1DF7C-3097-4B37-869A-20F086F079D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.standin", "tests\louis-agent.api.standin\louis-agent.api.standin.csproj", "{3B70A357-F110-4E6B-B70E-F803B900726D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.standin", "demos\puls\tests\louis-agent.api.standin\louis-agent.api.standin.csproj", "{3B70A357-F110-4E6B-B70E-F803B900726D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.choices", "src\engine\louis-agent.choices\louis-agent.choices.csproj", "{6194FC00-7522-4F99-8F02-A904A7855485}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.choices.tests", "tests\louis-agent.choices.tests\louis-agent.choices.tests.csproj", "{321F8CEB-7100-4A29-A8EB-48D21184DE6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.choices.tests", "src\tests\engine\louis-agent.choices.tests\louis-agent.choices.tests.csproj", "{321F8CEB-7100-4A29-A8EB-48D21184DE6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.integration-tests", "tests\louis-agent.core.integration-tests\louis-agent.core.integration-tests.csproj", "{4E20043E-41C6-43C4-919E-AC70125893B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.core.integration-tests", "src\tests\engine\louis-agent.core.integration-tests\louis-agent.core.integration-tests.csproj", "{4E20043E-41C6-43C4-919E-AC70125893B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator.integration-tests", "tests\louis-agent.orchestrator.integration-tests\louis-agent.orchestrator.integration-tests.csproj", "{FB99853A-0EF9-4D72-81C1-05643195B937}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.orchestrator.integration-tests", "demos\louis-agent\tests\louis-agent.orchestrator.integration-tests\louis-agent.orchestrator.integration-tests.csproj", "{FB99853A-0EF9-4D72-81C1-05643195B937}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.testing", "tests\louis-agent.api.testing\louis-agent.api.testing.csproj", "{5541626B-763C-44B3-9CFE-B805A495E917}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.testing", "demos\puls\tests\louis-agent.api.testing\louis-agent.api.testing.csproj", "{5541626B-763C-44B3-9CFE-B805A495E917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.integration-tests", "tests\louis-agent.api.integration-tests\louis-agent.api.integration-tests.csproj", "{D2ED09D7-CE47-4424-A59F-213764419A08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.integration-tests", "demos\puls\tests\louis-agent.api.integration-tests\louis-agent.api.integration-tests.csproj", "{D2ED09D7-CE47-4424-A59F-213764419A08}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.api.contracts", "src\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj", "{094DFC73-1830-474A-BA50-12BE0DD463AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.protocol", "evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj", "{ED87A0A6-93F8-4F3B-B3B9-9BB3DFA78A3A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.protocol", "src\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj", "{ED87A0A6-93F8-4F3B-B3B9-9BB3DFA78A3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.protocol.tests", "tests\louis-agent.evals.protocol.tests\louis-agent.evals.protocol.tests.csproj", "{50AC53C3-81C0-4187-8F4E-802303B95253}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.protocol.tests", "src\tests\evals\louis-agent.evals.protocol.tests\louis-agent.evals.protocol.tests.csproj", "{50AC53C3-81C0-4187-8F4E-802303B95253}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.checks", "evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj", "{4E129E05-751C-41CF-87CE-9A2E232B707D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.checks", "src\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj", "{4E129E05-751C-41CF-87CE-9A2E232B707D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.checks.tests", "tests\louis-agent.evals.checks.tests\louis-agent.evals.checks.tests.csproj", "{6ACC91F9-F0E4-4696-A704-FE0D5730F872}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.evals.checks.tests", "src\tests\evals\louis-agent.evals.checks.tests\louis-agent.evals.checks.tests.csproj", "{6ACC91F9-F0E4-4696-A704-FE0D5730F872}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges", "evals\identities\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj", "{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges", "demos\puls\evals\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj", "{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges.tests", "tests\louis-agent.identity.puls.judges.tests\louis-agent.identity.puls.judges.tests.csproj", "{44951A66-A812-46C2-982F-78B4B9B60CE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.judges.tests", "demos\puls\tests\louis-agent.identity.puls.judges.tests\louis-agent.identity.puls.judges.tests.csproj", "{44951A66-A812-46C2-982F-78B4B9B60CE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site", "src\web\louis-agent.site\louis-agent.site.csproj", "{2AF9206D-FA47-452E-BFB5-909E16B0B283}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site", "demos\louis-agent\web\louis-agent.site\louis-agent.site.csproj", "{2AF9206D-FA47-452E-BFB5-909E16B0B283}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site.tests", "tests\louis-agent.site.tests\louis-agent.site.tests.csproj", "{019CBDE7-1B72-4A30-8722-EA790CB43F1D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.site.tests", "demos\louis-agent\tests\louis-agent.site.tests\louis-agent.site.tests.csproj", "{019CBDE7-1B72-4A30-8722-EA790CB43F1D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes", "packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj", "{3F3B547E-FD64-40B0-B2EB-927CAE30AD69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.tests", "tests\louis-agent.pack.recipes.tests\louis-agent.pack.recipes.tests.csproj", "{0A63FD85-04F5-4A18-AC61-BC7C9B319791}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.tests", "packs-tests\louis-agent.pack.recipes.tests\louis-agent.pack.recipes.tests.csproj", "{0A63FD85-04F5-4A18-AC61-BC7C9B319791}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices", "packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj", "{2FCE5E63-43C3-4FE1-9711-17C0AE33A639}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.tests", "tests\louis-agent.pack.shop-prices.tests\louis-agent.pack.shop-prices.tests.csproj", "{24BE9DBB-A080-4355-8541-E07316E974E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.tests", "packs-tests\louis-agent.pack.shop-prices.tests\louis-agent.pack.shop-prices.tests.csproj", "{24BE9DBB-A080-4355-8541-E07316E974E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.integration-tests", "tests\louis-agent.pack.shop-prices.integration-tests\louis-agent.pack.shop-prices.integration-tests.csproj", "{F5A6DA99-85A7-4CE4-B051-62798C6F91D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.shop-prices.integration-tests", "packs-tests\louis-agent.pack.shop-prices.integration-tests\louis-agent.pack.shop-prices.integration-tests.csproj", "{F5A6DA99-85A7-4CE4-B051-62798C6F91D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server.tests", "tests\louis-agent.mcp-server.tests\louis-agent.mcp-server.tests.csproj", "{4AE69194-B225-4449-A313-BDE4E510B69C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.mcp-server.tests", "src\tests\hosts\louis-agent.mcp-server.tests\louis-agent.mcp-server.tests.csproj", "{4AE69194-B225-4449-A313-BDE4E510B69C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks", "evals\packs\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj", "{D17ECC33-4647-413E-AB3C-E56C38278590}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks", "packs-evals\louis-agent.pack.where-to-buy.checks\louis-agent.pack.where-to-buy.checks.csproj", "{D17ECC33-4647-413E-AB3C-E56C38278590}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks", "evals\packs\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj", "{D83A4AAF-492F-42CB-8C09-13197A073043}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks", "packs-evals\louis-agent.pack.recipes.checks\louis-agent.pack.recipes.checks.csproj", "{D83A4AAF-492F-42CB-8C09-13197A073043}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals", "evals\identities\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj", "{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals", "demos\puls\evals\louis-agent.identity.puls.evals\louis-agent.identity.puls.evals.csproj", "{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks.tests", "tests\louis-agent.pack.where-to-buy.checks.tests\louis-agent.pack.where-to-buy.checks.tests.csproj", "{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.where-to-buy.checks.tests", "packs-tests\louis-agent.pack.where-to-buy.checks.tests\louis-agent.pack.where-to-buy.checks.tests.csproj", "{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks.tests", "tests\louis-agent.pack.recipes.checks.tests\louis-agent.pack.recipes.checks.tests.csproj", "{904EE291-244B-4BE0-812E-E9B8938B0022}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.recipes.checks.tests", "packs-tests\louis-agent.pack.recipes.checks.tests\louis-agent.pack.recipes.checks.tests.csproj", "{904EE291-244B-4BE0-812E-E9B8938B0022}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals.tests", "tests\louis-agent.identity.puls.evals.tests\louis-agent.identity.puls.evals.tests.csproj", "{B1E6B1EA-183F-4E6F-9747-63AD2303090A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.puls.evals.tests", "demos\puls\tests\louis-agent.identity.puls.evals.tests\louis-agent.identity.puls.evals.tests.csproj", "{B1E6B1EA-183F-4E6F-9747-63AD2303090A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.host-packs", "demos\puls\hosts\louis-agent.host-packs\louis-agent.host-packs.csproj", "{61999E8B-9A07-42C8-9855-E84171680967}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1140,17 +1284,56 @@ Global
 		{B1E6B1EA-183F-4E6F-9747-63AD2303090A}.Release|x64.Build.0 = Release|Any CPU
 		{B1E6B1EA-183F-4E6F-9747-63AD2303090A}.Release|x86.ActiveCfg = Release|Any CPU
 		{B1E6B1EA-183F-4E6F-9747-63AD2303090A}.Release|x86.Build.0 = Release|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Debug|x64.Build.0 = Debug|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Debug|x86.Build.0 = Debug|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Release|x64.ActiveCfg = Release|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Release|x64.Build.0 = Release|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Release|x86.ActiveCfg = Release|Any CPU
+		{61999E8B-9A07-42C8-9855-E84171680967}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
-		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0131} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
-		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110}
+		{07C2787E-EAC7-C090-1BA3-A61EC2A24D84} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
+		{88F3C49C-BB16-514A-9985-0A54746EA3BB} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{4993F08C-6B0C-5111-B0E2-4B0A8CC72B9B} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
+		{77EF2112-329B-5606-8AAF-CED6069FF272} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
+		{D505C3C5-ADE9-5577-ABD3-D119436FEE43} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
+		{E284BDE8-0318-590D-8B82-47C355EC0D92} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
+		{D9D25646-A759-52BF-8F8E-D79A8FA366B8} = {88F3C49C-BB16-514A-9985-0A54746EA3BB}
+		{24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{BF0BB87E-459C-5406-868C-E885960DA333} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
+		{F3A57EA0-14CA-5147-A980-DCEBCF35FF37} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
+		{FAC76245-0EC6-5B8A-97AB-269AB866204F} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
+		{47D7AC85-780B-5876-BB42-669EB7301C70} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
+		{40A7E11D-7BA0-58DC-93A8-E4C5585AC7FB} = {24FCCBCD-52C8-52F2-8DE6-8CE5B3213A6A}
+		{A230FA11-8B13-51C6-82ED-ED4E5BDDE653} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
+		{67D12025-5001-5F15-8E4B-ECFCA01E1D26} = {A230FA11-8B13-51C6-82ED-ED4E5BDDE653}
+		{5350B428-1572-5C72-8D7F-D5EF1438F8CC} = {A230FA11-8B13-51C6-82ED-ED4E5BDDE653}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0160} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0163} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0164} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0165} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0109}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0160}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0162} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0161}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0110} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}
-		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0121}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0123} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0120}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0150} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0111} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0150}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0151} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0152} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0151}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0122} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0152}
+		{D75EE941-E529-4772-A167-BAB95713163A} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0101} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0102} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0103} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
@@ -1160,70 +1343,84 @@ Global
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0107} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0108} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
 		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0109} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0100}
+		{33F416D4-75A6-5DA4-5B8E-78754CDB7034} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0140}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0143} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0144} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0145} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0146} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0147} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
 		{6F1D3A52-8C47-4E19-9B20-3A7C51E0D401} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{6F1D3A52-8C47-4E19-9B20-3A7C51E0D402} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
 		{6F1D3A52-8C47-4E19-9B20-3A7C51E0D403} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
-		{D75EE941-E529-4772-A167-BAB95713163A} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{10926F76-8821-4486-B41B-DBA0769F3E53} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
-		{29C21C18-8D45-4F52-862F-604E694DD9FC} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{A2CB6834-DB10-4DD8-817F-12377FD055E4} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
 		{5377CA27-525C-4228-ABAB-88D1C63C2A46} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
 		{00E53CA6-5EF8-4D7A-8928-6749C7C0B942} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
-		{D77B32E0-6DCF-4CBF-8268-EB7FAC492052} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D403}
-		{99135CF2-B1A3-40D9-89B4-802289451175} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
-		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
+		{D77B32E0-6DCF-4CBF-8268-EB7FAC492052} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0147}
+		{99135CF2-B1A3-40D9-89B4-802289451175} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0148}
 		{B570E980-4301-4AFF-9273-3A6F2D17B2AF} = {07C2787E-EAC7-C090-1BA3-A61EC2A24D84}
-		{7A2C9860-6875-4A13-B6EF-31F49A37FE86} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
-		{12AC58C2-F5D8-4B9B-BFEA-136C25B9BF9E} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
-		{3D1F1916-118A-47A6-AB54-311D91B2F260} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
-		{25003D68-7FA2-4C3E-B862-13791FCE8D4A} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{2A96C62E-D01A-4172-A1A7-0E809148723B} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D403}
-		{B7678750-A3A4-4B29-AA77-E1E1E1682E68} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D403}
-		{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82} = {BC639B58-5972-83DB-AA37-6AC134055B25}
-		{06007296-284A-4A6E-A166-0555BB47408F} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
-		{847B52E1-8CAE-4974-99D3-D47EBF359C20} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{210EC629-B8AC-4D15-9E18-8BC289C96F57} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
+		{B7678750-A3A4-4B29-AA77-E1E1E1682E68} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0145}
+		{C2C4FD4D-1F6B-457D-8CA2-4F76855FBA82} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0143}
+		{06007296-284A-4A6E-A166-0555BB47408F} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
 		{F649C1D9-659D-43D4-B3B7-E53E589B15AD} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
-		{13F596D6-E3AF-4C7F-ACAC-1A7C266FCFA3} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{57E3BAD7-2851-4611-9D17-97D957ED1E74} = {3D1F1916-118A-47A6-AB54-311D91B2F260}
-		{58DD87D4-4C08-4C58-8E0A-888771B72642} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{B6B1BB26-4D84-4825-B807-3ED6D46E31D3} = {3D1F1916-118A-47A6-AB54-311D91B2F260}
-		{D85F0454-8101-4372-A7EE-A7A4032B92A8} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{1F423FC5-B911-4FA6-AEFD-28BF3C392533} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{BCB772FE-E1BB-492A-BCCF-3BFC61C732AB} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
-		{EF4BF4DA-E0B6-4FC1-B0C6-9CD86518A137} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{9D8E25B4-C4BC-4EED-97D7-CEEF606156AA} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
-		{DB1EFA1C-8905-4684-87CC-209DEDDB7193} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{DB2E212A-B775-459B-A8EB-5BEFB55B3AE5} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
-		{AAC1DF7C-3097-4B37-869A-20F086F079D9} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{3B70A357-F110-4E6B-B70E-F803B900726D} = {3D1F1916-118A-47A6-AB54-311D91B2F260}
 		{6194FC00-7522-4F99-8F02-A904A7855485} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D401}
-		{321F8CEB-7100-4A29-A8EB-48D21184DE6C} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{4E20043E-41C6-43C4-919E-AC70125893B6} = {12AC58C2-F5D8-4B9B-BFEA-136C25B9BF9E}
-		{FB99853A-0EF9-4D72-81C1-05643195B937} = {12AC58C2-F5D8-4B9B-BFEA-136C25B9BF9E}
-		{5541626B-763C-44B3-9CFE-B805A495E917} = {3D1F1916-118A-47A6-AB54-311D91B2F260}
-		{D2ED09D7-CE47-4424-A59F-213764419A08} = {12AC58C2-F5D8-4B9B-BFEA-136C25B9BF9E}
 		{094DFC73-1830-474A-BA50-12BE0DD463AD} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D402}
 		{ED87A0A6-93F8-4F3B-B3B9-9BB3DFA78A3A} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
-		{50AC53C3-81C0-4187-8F4E-802303B95253} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{4E129E05-751C-41CF-87CE-9A2E232B707D} = {33F416D4-75A6-5DA4-5B8E-78754CDB7034}
-		{6ACC91F9-F0E4-4696-A704-FE0D5730F872} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0131}
-		{44951A66-A812-46C2-982F-78B4B9B60CE3} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{2AF9206D-FA47-452E-BFB5-909E16B0B283} = {6F1D3A52-8C47-4E19-9B20-3A7C51E0D403}
-		{019CBDE7-1B72-4A30-8722-EA790CB43F1D} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
+		{8EA27BEC-91FE-4ADD-AE5C-15D1AD53C316} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0144}
+		{2AF9206D-FA47-452E-BFB5-909E16B0B283} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0147}
 		{3F3B547E-FD64-40B0-B2EB-927CAE30AD69} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
-		{0A63FD85-04F5-4A18-AC61-BC7C9B319791} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{2FCE5E63-43C3-4FE1-9711-17C0AE33A639} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
-		{24BE9DBB-A080-4355-8541-E07316E974E2} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{F5A6DA99-85A7-4CE4-B051-62798C6F91D9} = {12AC58C2-F5D8-4B9B-BFEA-136C25B9BF9E}
-		{4AE69194-B225-4449-A313-BDE4E510B69C} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
 		{D17ECC33-4647-413E-AB3C-E56C38278590} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}
 		{D83A4AAF-492F-42CB-8C09-13197A073043} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0130}
-		{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0131}
-		{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{904EE291-244B-4BE0-812E-E9B8938B0022} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
-		{B1E6B1EA-183F-4E6F-9747-63AD2303090A} = {7A2C9860-6875-4A13-B6EF-31F49A37FE86}
+		{C2BB65DD-4D0D-4F6B-B7B2-8474B8D44DC4} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0144}
+		{61999E8B-9A07-42C8-9855-E84171680967} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0146}
+		{29C21C18-8D45-4F52-862F-604E694DD9FC} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}
+		{4E20043E-41C6-43C4-919E-AC70125893B6} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}
+		{321F8CEB-7100-4A29-A8EB-48D21184DE6C} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}
+		{EF4BF4DA-E0B6-4FC1-B0C6-9CD86518A137} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170}
+		{1F423FC5-B911-4FA6-AEFD-28BF3C392533} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0171}
+		{4AE69194-B225-4449-A313-BDE4E510B69C} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0171}
+		{58DD87D4-4C08-4C58-8E0A-888771B72642} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0172}
+		{B6B1BB26-4D84-4825-B807-3ED6D46E31D3} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0172}
+		{DB1EFA1C-8905-4684-87CC-209DEDDB7193} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0173}
+		{6ACC91F9-F0E4-4696-A704-FE0D5730F872} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0173}
+		{50AC53C3-81C0-4187-8F4E-802303B95253} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0173}
+		{AAC1DF7C-3097-4B37-869A-20F086F079D9} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0173}
+		{57E3BAD7-2851-4611-9D17-97D957ED1E74} = {3D1F1916-118A-47A6-AB54-311D91B2F260}
+		{25003D68-7FA2-4C3E-B862-13791FCE8D4A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{D2ED09D7-CE47-4424-A59F-213764419A08} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{5541626B-763C-44B3-9CFE-B805A495E917} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{3B70A357-F110-4E6B-B70E-F803B900726D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{210EC629-B8AC-4D15-9E18-8BC289C96F57} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{B1E6B1EA-183F-4E6F-9747-63AD2303090A} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{44951A66-A812-46C2-982F-78B4B9B60CE3} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{52B51573-C1E1-40FC-8AA7-7D9F3F9C4358} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{847B52E1-8CAE-4974-99D3-D47EBF359C20} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174}
+		{D85F0454-8101-4372-A7EE-A7A4032B92A8} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
+		{019CBDE7-1B72-4A30-8722-EA790CB43F1D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
+		{D89F7C1A-D1E8-405E-AE71-1F3BAFA6F687} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
+		{FB99853A-0EF9-4D72-81C1-05643195B937} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175}
+		{0A63FD85-04F5-4A18-AC61-BC7C9B319791} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
+		{24BE9DBB-A080-4355-8541-E07316E974E2} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
+		{F5A6DA99-85A7-4CE4-B051-62798C6F91D9} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
+		{13F596D6-E3AF-4C7F-ACAC-1A7C266FCFA3} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
+		{904EE291-244B-4BE0-812E-E9B8938B0022} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
+		{8A7CE7C1-10F8-40B0-9E13-B0F1D89DB764} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
+		{0AB3BF05-4346-4AA6-1389-037BE0695223} = {DCC1CE0E-F809-478D-B076-F2C64A71CDFB}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0170} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0171} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0172} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0173} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{3D1F1916-118A-47A6-AB54-311D91B2F260} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0174} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0141}
+		{7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0175} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
 	EndGlobalSection
 EndGlobal

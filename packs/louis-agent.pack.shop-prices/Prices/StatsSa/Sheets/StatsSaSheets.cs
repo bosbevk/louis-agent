@@ -18,7 +18,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices.StatsSa.Sheets;
 /// after it works on <see cref="StatsSaRow"/>s. The cells are read by ExcelDataReader (MIT), already core's reader for
 /// <c>ReadTable</c>; the month names are read with plain string methods (ADR 0057).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public static class StatsSaSheets
 {
     private const string CodeColumn = "H03";

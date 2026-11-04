@@ -19,7 +19,7 @@ namespace LouisAgent.Packs.Recipes.Providers;
 /// (Rooi Rose lives under <c>novanews.co.za/rooirose</c>) is held here too: without that, the publisher's other
 /// sections would be listed as Rooi Rose.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
 public sealed class SiteWebSearch(RecipeSite site, IWebSearchProvider search) : IRecipeSource
 {
     /// <inheritdoc />

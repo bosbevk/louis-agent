@@ -10,7 +10,7 @@ namespace LouisAgent.Packs.WhereToBuy.Tools;
 /// Writes a branch lookup for the model, framed as data since the map's names are what its mappers typed: the town's
 /// municipality and province, a row per branch nearest first, and what to say when none is the town's own.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public static class BranchPrinter
 {
     /// <summary>The whole result.</summary>

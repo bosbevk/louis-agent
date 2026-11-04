@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Evals.Runs.Start;
 /// model's answers too, so it costs nothing. The runner gets them as <c>--web record</c> and <c>--replay {runId}</c>.
 /// A studio try (F49.5) also names the eval's folder and the samples to run (<c>--folder</c>, <c>--samples</c>).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public sealed record EvalRunOptions(
     WebReplayMode? Web = null,
     string? Replay = null,

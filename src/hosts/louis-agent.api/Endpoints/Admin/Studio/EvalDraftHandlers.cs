@@ -34,8 +34,8 @@ namespace LouisAgent.Api.Endpoints.Admin.Studio;
 /// share the draft store and the clock, so each is a named method a test calls with no HTTP. What a draft may hold is
 /// <see cref="ComposedEvals"/>' rule; its refusals come back as a 400 in their own words.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
 internal sealed class EvalDraftHandlers(IEvalDraftStore drafts, TimeProvider time)
 {
     /// <summary>Where the drafts are, below the API's root.</summary>

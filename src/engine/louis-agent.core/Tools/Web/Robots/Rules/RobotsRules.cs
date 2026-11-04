@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Tools.Web.Robots.Rules;
 /// allows it.
 /// That is the strictest reading, on purpose (ADR 0068).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc9309#name-the-allow-and-disallow-lines">RFC 9309, the Allow and Disallow lines</seealso>
 public sealed record RobotsRules(IReadOnlyList<RobotsRule> Rules, IReadOnlyList<RobotsRules>? AlsoBinding = null)
 {

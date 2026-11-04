@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace LouisAgent.Api.Messages;
 
 /// <summary>What the API answers its clients and the web app: error messages, merge and delete results.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ApiUserText
 {
     [Description("{Name} is larger than 1 MB.")]

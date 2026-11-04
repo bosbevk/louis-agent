@@ -6,7 +6,7 @@ namespace LouisAgent.Packs.ShopPrices.Messages;
 /// What the shop-prices feed says about itself (ADR 0009, ADR 0070): its line in the list of feeds, and the notice above
 /// its tables for whoever reads them.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0009-message-text-as-enum-templates.md">ADR 0009: message text as enum templates</seealso>
 public enum ShopPriceFeedMessage
 {
     [Description(

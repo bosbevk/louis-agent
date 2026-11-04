@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Contracts.Admin.Runs;
 /// never 0; the cost per pass is left out when it is null, which is when nothing passed or a price was unknown (a
 /// reader tells them apart by the passed count).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public sealed record SummaryRow(
     string Mode,
     string Slice,

@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Agent.Catalog.Imports;
 /// <see cref="ImportReport"/>, never a thrown exception, as a tool's failure is text (ADR 0005); the pack writes the
 /// report's facts and problems from its own message enums (ADR 0009).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
 /// <seealso href="https://martinfowler.com/eaaCatalog/plugin.html">Plugin (Fowler, PoEAA)</seealso>
 public interface IDataImport
 {

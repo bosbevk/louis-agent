@@ -6,7 +6,7 @@ using LouisAgent.Evals.Protocol.Parts.Conversations;
 namespace LouisAgent.Api.Evals.Drafts.Transcripts;
 
 /// <summary>What a kept transcript stands for: a reference answer, or a known-bad one with its reason.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public enum TranscriptKind
 {
     [WireName("reference")] Reference,
@@ -21,8 +21,8 @@ public enum TranscriptKind
 /// <remarks>
 /// A draft belongs to one eval (ADR 0033), and outlives its run: deleting the run leaves it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0046-dates-are-utc.md">ADR 0046: dates are UTC</seealso>
 public sealed record TranscriptDraft(
     string Id,
     string Eval,

@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Endpoints.Routing;
 /// key is set. <c>/health</c> and the web app's files are outside <c>/v1</c> and stay public: they hold no data, and
 /// the app sends the key the user enters in its settings.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class AgentKeyGate
 {
     /// <summary>

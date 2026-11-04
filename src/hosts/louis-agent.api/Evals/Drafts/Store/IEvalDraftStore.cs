@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Drafts.Store;
 /// a get names its kind, since whoever reads one knows which it wants (Louis's pick). <c>EvalDraftStoreContract</c>
 /// holds every store to the same behaviour.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public interface IEvalDraftStore
 {
     /// <summary>Adds a sample draft.</summary>

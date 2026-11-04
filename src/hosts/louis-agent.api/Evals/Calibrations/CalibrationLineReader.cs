@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Evals.Calibrations;
 /// It reads by hand with <see cref="JsonElement"/>, as the protocol reader does: the runner is another process, so its
 /// line is input the API doesn't own, and a missing field becomes empty instead of failing the whole line.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class CalibrationLineReader
 {
     /// <summary>The judge check this line reports, or nothing when it isn't one.</summary>

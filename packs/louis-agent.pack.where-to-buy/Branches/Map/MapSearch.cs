@@ -17,7 +17,7 @@ namespace LouisAgent.Packs.WhereToBuy.Branches.Map;
 /// browser: it is a data service with a usage policy, not a page to read.
 /// </remarks>
 /// <seealso href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim usage policy</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: say what we are</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: say what we are</seealso>
 public sealed class MapSearch(HttpClient http, TimeSpan pace)
 {
     private static readonly ILogger Log = AgentLogging.For<MapSearch>();

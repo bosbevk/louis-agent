@@ -20,7 +20,7 @@ namespace LouisAgent.Core.Telemetry;
 /// protocol and headers from the environment itself (the spec's settings), so on Azure the managed agent's injected
 /// ones work with nothing of ours. The handle is the process's one: a second start gets it again.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
 public static class AgentTelemetry
 {
     /// <summary>Our own spans' source: a turn opens its span here (step 3).</summary>

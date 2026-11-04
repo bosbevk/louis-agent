@@ -13,7 +13,7 @@ namespace LouisAgent.Api.Evals.Reviews.Store;
 /// driver does the copying, as the eval store's <c>RunDocument</c> does. The properties keep the order the hand
 /// mapping wrote, so a document is the same field for field.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 [BsonIgnoreExtraElements]
 internal sealed record HumanGradeDocument(
     [property: BsonElement("run")] string Run,

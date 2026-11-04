@@ -16,7 +16,7 @@ namespace LouisAgent.Api.Evals.Reports;
 /// <c>{id}:{mode}:{repeat}</c>, and a specialist or a minion inherits its parent's tag. A child row names its parent
 /// turn as <c>{session}#{turn}</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class EvalLedger
 {
     /// <summary>

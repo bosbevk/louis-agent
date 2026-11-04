@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Evals.Store.Notes;
 /// Result object. Whoever adds a note gets one of three answers and has to handle each, so a refusal is part of the
 /// normal return and not an exception to catch. A closed set of cases means the compiler tells you when one is missed.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public abstract record NoteResult
 {
     /// <summary>Private, so the three answers below are the only ones there can be.</summary>

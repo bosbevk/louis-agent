@@ -1,7 +1,7 @@
 namespace LouisAgent.Api.Contracts.Info;
 
 /// <summary>The probe's answer: the instance is up.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record HealthReply(string Status);
 
 /// <summary>The model this instance answers with, and its provider (a web app's model picker shows it).</summary>

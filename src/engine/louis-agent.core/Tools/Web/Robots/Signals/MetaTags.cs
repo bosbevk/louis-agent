@@ -8,7 +8,7 @@ namespace LouisAgent.Core.Tools.Web.Robots.Signals;
 /// A plain walk over the HTML with <c>IndexOf</c>, no regular expression and no HTML parser: a page's head is outside
 /// text we don't control, and all we need is two attributes of one tag.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 internal static class MetaTags
 {
     private const string Open = "<meta";

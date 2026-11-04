@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!-- The engine's public website (F54): static server-rendered Razor pages, no WebAssembly and no interactivity, so a
+       page is plain HTML and CSS and the two animations are CSS alone. It references no engine project on purpose: the
+       site talks about the engine, it does not run it. -->
+  <PropertyGroup>
+    <RootNamespace>LouisAgent.Site</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\docs\projects\louis-agent.site.md" Link="docs\louis-agent.site.md" />
+    <None Include="..\..\docs\guides\change-the-site.md" Link="docs\change-the-site.md" />
+  </ItemGroup>
+
+</Project>

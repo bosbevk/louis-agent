@@ -20,7 +20,7 @@ namespace LouisAgent.Api.Evals.Drafts.Store;
 /// kind it is. It opens the database as the eval store does (<see cref="MongoEvalDatabase.Open"/>), with the same
 /// short timeouts and mappings; the index on eval then time serves both views and is made on first use.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public sealed class MongoEvalDraftStore : IEvalDraftStore
 {
     /// <summary>The collection both kinds share.</summary>

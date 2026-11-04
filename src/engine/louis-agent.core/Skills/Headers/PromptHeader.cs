@@ -6,7 +6,7 @@ namespace LouisAgent.Core.Skills.Headers;
 /// loads (F33's <c>shops?</c>, a <c>?</c> loaded only where this instance has it). A guide or the principles name
 /// neither.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0017-skills-by-level.md">ADR 0017: skill files follow the levels</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0017-skills-by-level.md">ADR 0017: skill files follow the levels</seealso>
 public sealed record PromptHeader(
     string Name,
     string Description,

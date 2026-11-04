@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Evals.Reports;
 /// unpriced request, a request that couldn't be placed on a conversation, or a run whose own total is unknown. A
 /// re-score asked nothing, so its total is a known 0, and so are its slices'.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 public static class SlicePricer
 {
     /// <summary>A slice's cost per trial and per passed trial; null where unknown or undefined.</summary>

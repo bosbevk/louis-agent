@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Evals.Reviews;
 /// own, on the same snake_case wire; <c>ExportedLabelFixtureTests</c> and the harness's
 /// <c>ExportedLabelLoadingTests</c> hold the two to one fixture until CL22 makes them one type.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class ReviewLabels
 {
     private static readonly JsonSerializerOptions Wire = new()

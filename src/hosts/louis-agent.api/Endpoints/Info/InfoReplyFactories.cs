@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Endpoints.Info;
 /// replies give (the unattended run's finding 1): the records live in the contract, which can't see the engine
 /// factory, a toolset or the LLM settings, so each <c>Of</c> lives here and still reads as <c>Record.Of</c>.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class InfoReplyFactories
 {
     /// <summary>The model reply names the provider and the model from the LLM settings.</summary>

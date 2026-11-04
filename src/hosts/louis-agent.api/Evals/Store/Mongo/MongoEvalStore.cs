@@ -22,7 +22,7 @@ namespace LouisAgent.Api.Evals.Store.Mongo;
 /// store stays one collection with its own contract test. Every store makes its index the first time it is needed, so
 /// starting the API never waits on Mongo.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class MongoEvalStore : IEvalStore
 {
     /// <summary>The runs themselves.</summary>

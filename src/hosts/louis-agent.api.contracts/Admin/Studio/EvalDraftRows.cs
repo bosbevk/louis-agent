@@ -1,7 +1,7 @@
 namespace LouisAgent.Api.Contracts.Admin.Studio;
 
 /// <summary>Every eval being composed in the studio, oldest first.</summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record EvalDraftsReply(IReadOnlyList<EvalDraftRow> Drafts);
 
 /// <summary>

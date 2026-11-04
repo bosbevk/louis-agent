@@ -15,7 +15,7 @@ namespace LouisAgent.Core.Tools.Web.Rendering;
 /// Strategy, with a Null Object. The renderers are a list of setups instead of a switch on the name, so adding a renderer is one new class.
 /// A renderer that isn't set up gives one that explains what's missing, so nothing has to check for null.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class PageRendererFactory
 {
     /// <summary>The renderer names you may put in `PAGE_RENDERER`, for the error message.</summary>

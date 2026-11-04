@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Endpoints.Git;
 /// Runs git for an endpoint, with its arguments as a list and never through a shell, and answers a failed run in the
 /// API's error shape (<c>git_error</c>).
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
 internal static class GitProcess
 {
     private static readonly TimeSpan GitTimeout = TimeSpan.FromSeconds(30);

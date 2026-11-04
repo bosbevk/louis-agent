@@ -41,8 +41,8 @@ namespace LouisAgent.Api.Endpoints.Admin.Drafts;
 /// fix them; the factories' own refusals (an id, a key, a kind the verdicts don't back) come back as a 400 with their
 /// words. A new draft answers <c>CreatedJson</c>, a 201 on the admin wire.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: flat conditionals and named endpoints</seealso>
 internal sealed class DraftHandlers(
     EvalList catalog,
     IEvalStore? store,

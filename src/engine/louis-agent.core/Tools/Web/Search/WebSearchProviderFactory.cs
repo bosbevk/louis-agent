@@ -15,7 +15,7 @@ namespace LouisAgent.Core.Tools.Web.Search;
 /// Strategy, with a Null Object. The engines are a list of setups instead of a switch on the name, so adding an engine is one new class.
 /// An engine that isn't set up gives a provider that explains what's missing, so nothing has to check for null.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class WebSearchProviderFactory
 {
     /// <summary>The engine names you may put in `WEB_SEARCH_PROVIDER`, for the error message.</summary>

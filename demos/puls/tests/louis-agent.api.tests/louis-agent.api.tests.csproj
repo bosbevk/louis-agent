@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Api.Tests</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
+    <!-- CL20: the route tests run the API in memory (no port, no Docker); the same 10.0.x as the API's other ASP.NET packages. -->
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.12" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageReference Include="NUnit" Version="4.3.2" />
+    <PackageReference Include="NUnit.Analyzers" Version="4.7.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
+    <!-- CL15: the API's tests open Puls's sessions, so they register Puls's prompts as the Puls stack does (IDENTITIES=puls). -->
+    <ProjectReference Include="..\..\identity\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
+    <!-- F35.2 step 1: the recipes pack Puls names, as the Puls stack loads it. -->
+    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
+    <!-- F18 step 1e: the scripted turns of the stream golden run on the shared fake model. -->
+    <ProjectReference Include="..\..\..\..\src\tests\shared\louis-agent.testing\louis-agent.testing.csproj" />
+    <!-- F18 step 7.6.3: the in-memory API host, the built dlls and the store contracts both the unit and the integration tests use. -->
+    <ProjectReference Include="..\louis-agent.api.testing\louis-agent.api.testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="NUnit.Framework" />
+    <Using Include="LouisAgent.Testing" />
+    <Using Include="LouisAgent.Api.Testing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- F18 step 7c.3: the runner's own golden of the stub's run and the contract's golden, which the API records and
+         exports back line for line; linked from their projects, never copied. -->
+    <None Include="..\..\..\..\src\tests\evals\louis-agent.evals.runner.tests\Fixtures\stub-run.txt" Link="Fixtures\stub-run.txt"
+          CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\src\tests\evals\louis-agent.evals.protocol.tests\Fixtures\eval-protocol.jsonl"
+          Link="Fixtures\eval-protocol.jsonl" CopyToOutputDirectory="PreserveNewest" />
+    <!-- F55: the trimmed Stats SA release the shop-prices pack's tests read, for the upload's routes. -->
+    <None Include="..\..\..\..\packs-tests\louis-agent.pack.shop-prices.tests\Fixtures\statssa-all-urban.xlsx"
+          Link="Fixtures\statssa-all-urban.xlsx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\packs-tests\louis-agent.pack.shop-prices.tests\Fixtures\statssa-provinces.xlsx"
+          Link="Fixtures\statssa-provinces.xlsx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+         built or copied. -->
+    <None Include="..\..\..\..\src\docs\projects\tests.md" Link="docs\tests.md" />
+    <None Include="..\..\..\..\src\docs\guides\write-tests.md" Link="docs\write-tests.md" />
+  </ItemGroup>
+
+</Project>

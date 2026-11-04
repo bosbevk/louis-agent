@@ -18,8 +18,8 @@ namespace LouisAgent.Packs.Recipes;
 /// names no identity and no other pack, so it can be served as an MCP server unchanged (ADR 0028). Its tools take plain
 /// data and return text, and its guide is prose.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
 public sealed class RecipesPack : IAgentPack
 {
     /// <summary>Builds the pack from the sites the deployment turned on.</summary>

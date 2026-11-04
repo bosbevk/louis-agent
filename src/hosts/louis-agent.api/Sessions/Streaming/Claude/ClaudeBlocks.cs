@@ -9,7 +9,7 @@ namespace LouisAgent.Api.Sessions.Streaming.Claude;
 /// Data Transfer Object (Fowler, PoEAA), as the events in <c>ClaudeEvents</c>: a block and its deltas are named
 /// records, written in the order Claude writes them, <c>type</c> first.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed record ContentBlockStartEvent(int Index, object ContentBlock)
 {
     /// <summary>The event's name inside its data.</summary>

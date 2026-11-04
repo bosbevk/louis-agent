@@ -3,7 +3,7 @@ namespace LouisAgent.Api.Contracts.Git.Output;
 /// <summary>
 /// A local branch, and how many commits it is ahead of and behind the checked-out one; ahead 0 means it's merged.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record GitBranchInfo(
     string Name,
     string Commit,

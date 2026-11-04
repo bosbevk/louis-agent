@@ -19,7 +19,7 @@ namespace LouisAgent.Api.Sessions.Streaming.Claude;
 /// format it is writing, and another format is one more class. Each event is a record of its own
 /// (<c>ClaudeEvents</c>, <c>ClaudeBlocks</c>, <see cref="ClaudeUsage"/>), never an anonymous object.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 internal sealed class ClaudeStreamFormat(
     string sessionId,
     IReadOnlyList<string>? toolsets = null,

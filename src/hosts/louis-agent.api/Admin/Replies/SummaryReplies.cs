@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Admin.Replies;
 /// Replace Constructor with Factory Function (Fowler), as C# 14 static extension members, for the reason
 /// <c>AdminReplies</c> gives: the records live in the contract, which can't see a slice or the ledger.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class SummaryReplies
 {
     /// <summary>A run's roll-up comes from the runner's slices, priced with the ledger's requests.</summary>

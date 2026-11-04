@@ -23,7 +23,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews.Queue;
 /// Introduce Parameter Object (Fowler), as <c>ReviewHandlers</c>: the stores aren't services, so they live here and
 /// the route is a named method a test can call with no HTTP, returning <c>TypedResults</c> with its answers declared.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal sealed class ReviewQueueHandlers(IEvalStore? store, IHumanReviewStore? reviews)
 {
     /// <summary>How many items the queue hands back when the page doesn't say, and the most it ever will.</summary>

@@ -18,7 +18,7 @@ namespace LouisAgent.McpServer.Resources;
 /// server runs, so the list is built once, unlike the tools (<c>EngineToolSync</c>). The feed names no pack, so neither
 /// does this (ADR 0027), and a pack stays convertible to MCP (ADR 0028).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
 /// <seealso href="https://modelcontextprotocol.io/specification/2025-06-18/server/resources">MCP resources</seealso>
 public static class FeedResources
 {

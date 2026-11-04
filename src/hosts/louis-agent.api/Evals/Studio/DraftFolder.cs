@@ -25,7 +25,7 @@ namespace LouisAgent.Api.Evals.Studio;
 /// edit in Rider would until the person deletes it. The scenarios and the manifest are written with the scenario
 /// files' own wire (<see cref="SampleBody.FileJson"/>), snake_case and indented.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0058-an-eval-is-a-folder-of-files.md">ADR 0058: an eval is a folder of files</seealso>
 public static class DraftFolder
 {
     /// <summary>How a bumped manifest is written back: indented, as the eval folders keep theirs.</summary>

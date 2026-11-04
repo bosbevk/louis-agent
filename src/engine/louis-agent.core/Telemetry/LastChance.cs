@@ -15,7 +15,7 @@ namespace LouisAgent.Core.Telemetry;
 /// Microsoft's guidance places one. The rule it holds: log an exception once, where it is handled; a host that
 /// catches its own main task logs there, and this never sees it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0064-observability-through-opentelemetry.md">ADR 0064: observability through OpenTelemetry</seealso>
 internal static class LastChance
 {
     /// <summary>Guards the subscription, so a second start doesn't log a crash twice.</summary>

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "usage-probe": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "LOG_DIRECTORY": "../../../demos/louis-agent/logs",
+        "CONFIG_DIRECTORY": "../../../demos/louis-agent/config",
+        "PRICES_FILE": "../../../demos/louis-agent/config/prices.json",
+        "RATES_FILE": "../../../demos/louis-agent/config/rates.json"
+      }
+    },
+    "usage-probe --host-culture": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "commandLineArgs": "--host-culture"
+    }
+  }
+}

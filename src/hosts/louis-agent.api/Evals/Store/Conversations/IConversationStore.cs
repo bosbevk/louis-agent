@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Evals.Store.Conversations;
 /// Repository, one per record (Fowler, PoEAA): its MongoDB class holds one collection, one mapping and one index, and
 /// a test of conversations needs nothing else. <see cref="IEvalStore"/> puts the record stores back together.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public interface IConversationStore
 {
     /// <summary>Saves one conversation of a run, replacing the one under its key.</summary>

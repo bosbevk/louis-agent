@@ -12,7 +12,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices.StatsSa;
 /// An Interpreter for a tiny language (Gang of Four), written as plain checks on the words (ADR 0057): a size is one
 /// of a few shapes, each tried in turn. Every shape in the releases from January 2017 to August 2026 is in the tests.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public sealed record PackSize(decimal? Amount, PackUnit Unit)
 {
     /// <summary>What we can't scale by.</summary>

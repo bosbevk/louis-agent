@@ -14,8 +14,8 @@ namespace LouisAgent.Core.Tools.Web.Rendering.Setups;
 /// and a new renderer is one new class instead of another case in two switches. When Chrome isn't set up it hands back a renderer that explains what's missing,
 /// so nothing has to check for null and the model still gets a useful answer.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
 internal sealed class ChromeSetup : IPageRendererSetup
 {
     /// <summary>This is the Chrome one.</summary>

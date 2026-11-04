@@ -5,7 +5,7 @@ namespace LouisAgent.Api.Endpoints.Git.Branches;
 /// merging a branch into the checked-out one, and deleting a merged branch. Branch names are only accepted if they
 /// exist. Nothing here pushes; the work is <c>GitBranchesHandlers</c>'.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class GitBranchesEndpoints
 {
     /// <summary>Adds the branch routes.</summary>

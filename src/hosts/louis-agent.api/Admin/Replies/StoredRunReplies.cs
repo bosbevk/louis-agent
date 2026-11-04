@@ -16,8 +16,8 @@ namespace LouisAgent.Api.Admin.Replies;
 /// <c>AdminReplies</c> gives: the records live in the contract, which can't see the store's documents. The enums are
 /// spelt with <c>Wire()</c>, as the protocol and the store spell them.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class StoredRunReplies
 {
     /// <summary>A mode's row carries its runner rates, null on a mode from before them.</summary>

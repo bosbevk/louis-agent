@@ -13,7 +13,7 @@ namespace LouisAgent.Core.Tools.Web.Robots.Rules;
 /// what the site closes to everyone stays closed (Louis's pick N2). The list is code, not a
 /// setting, so it changes in a commit someone reviews (ADR 0068).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0068-every-fetch-obeys-robots-txt.md">ADR 0068: every fetch obeys robots.txt</seealso>
 /// <seealso href="https://datatracker.ietf.org/doc/html/rfc9309#name-the-user-agent-line">RFC 9309, the User-agent line</seealso>
 public static class RobotsTxt
 {

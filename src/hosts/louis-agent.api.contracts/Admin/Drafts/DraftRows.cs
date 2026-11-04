@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Contracts.Admin.Drafts;
 /// Data Transfer Object (Fowler, PoEAA): a plain shape both sides read. The API builds it with <c>DraftsReply.Of</c>,
 /// beside its own draft records (<c>DraftReplies</c>), so this project needs none of them.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 public sealed record DraftsReply(IReadOnlyList<SampleDraftRow> Samples, IReadOnlyList<TranscriptDraftRow> Transcripts);
 
 /// <summary>

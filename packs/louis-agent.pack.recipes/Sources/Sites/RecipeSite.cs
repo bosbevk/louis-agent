@@ -14,7 +14,7 @@ namespace LouisAgent.Packs.Recipes.Sources.Sites;
 /// <param name="Search">How we search the site.</param>
 /// <param name="Checked">The day its <c>robots.txt</c> and page signals were read.</param>
 /// <param name="Signals">What those showed that is worth keeping, or null.</param>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
 public sealed record RecipeSite(
     string Slug,
     string Name,

@@ -17,7 +17,7 @@ namespace LouisAgent.Api.Evals.Export;
 /// The store keeps each event's time, so a line gets the time it came with. A run stored without one (cut off before
 /// the line came) gets the last time known, starting from the run's start, so the times never go backwards.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public static class EvalProtocolExport
 {
     /// <summary>

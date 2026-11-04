@@ -14,7 +14,7 @@ namespace LouisAgent.Core.Logging;
 
 /// <summary>
 /// Logging for every host: <see cref="Microsoft.Extensions.Logging.ILogger"/> with Serilog behind it, configured once
-/// per process by <c>AgentHost</c> (docs/CLAUDE.md, *Messages and logging*). Everything goes to <b>stderr</b>, never
+/// per process by <c>AgentHost</c> (src/docs/CLAUDE.md, *Messages and logging*). Everything goes to <b>stderr</b>, never
 /// stdout, which carries the ACP and MCP protocols. With a log directory, events marked as records
 /// (<see cref="RecordProperty"/>) go to their own JSON-lines files instead of the console. With
 /// <c>OTEL_EXPORTER_OTLP_ENDPOINT</c> set, every line also goes to that OpenTelemetry collector, named for its host

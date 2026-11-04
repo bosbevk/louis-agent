@@ -7,7 +7,7 @@ namespace LouisAgent.Packs.ShopPrices.Imports;
 /// doesn't have, the stored months it corrects (with what changed), how many it holds unchanged, the products the names
 /// file lacks, and the problems that keep it from being saved.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values</seealso>
 public sealed record StatsSaUpload(
     IReadOnlyList<PriceFile> Months,
     IReadOnlyList<PriceFile> New,

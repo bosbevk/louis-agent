@@ -10,7 +10,7 @@ namespace LouisAgent.Api.Evals.Store.Requests;
 /// Repository, the in-memory side: the same requests as MongoDB behind the same interface, held to the same contract
 /// test.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public sealed class InMemoryRequestStore : IRequestStore
 {
     /// <summary>The one lock over the requests.</summary>

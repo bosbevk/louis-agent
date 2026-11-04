@@ -28,12 +28,12 @@
     <!-- The API's replies as records (ADR 0045): the client reads what the API writes, never a JSON picked apart. -->
     <ProjectReference Include="..\..\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
     <!-- F18 step 7c.3 (decision A): the eval protocol's kinds, so the portal reads a grader's kind by its wire name. -->
-    <ProjectReference Include="..\..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
+    <ProjectReference Include="..\..\evals\louis-agent.evals.protocol\louis-agent.evals.protocol.csproj" />
 
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <None Include="..\..\..\docs\projects\louis-agent.web.shared.md" Link="docs\louis-agent.web.shared.md" />
-    <None Include="..\..\..\docs\guides\change-the-web-shared.md" Link="docs\change-the-web-shared.md" />
+    <None Include="..\..\docs\projects\louis-agent.web.shared.md" Link="docs\louis-agent.web.shared.md" />
+    <None Include="..\..\docs\guides\change-the-web-shared.md" Link="docs\change-the-web-shared.md" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,7 @@ namespace LouisAgent.Core.Telemetry;
 /// The tags a turn's span carries: the GenAI conventions' names where they have one, ours under <c>louis_agent.</c>
 /// for the rest. Ids and numbers only, never a word of the conversation.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0043-repeated-names-are-enums.md">ADR 0043: repeated names are enums</seealso>
 public enum SpanTag
 {
     /// <summary>What the span is: <c>invoke_agent</c> for a turn.</summary>

@@ -16,15 +16,21 @@ public static class SkillFolder
 
     /// <summary>
     /// The skills folder, where what the agent writes is kept (CreateSkillFile's agent/functions/, approved tools/):
-    /// <see cref="AgentOptions.SkillsDirectory"/>, else the first <c>Skills/</c> with its <see cref="SkillFiles.FolderMarker"/>
-    /// in the working directory or its parents (the repo's, when run from it); null when there is none.
+    /// <see cref="AgentOptions.SkillsDirectory"/>, else the first <c>skills/</c> with its
+    /// <see cref="SkillFiles.FolderMarker"/> in the working directory or its parents; null when there is none.
     /// </summary>
-    public static string? Find(AgentOptions agent)
+    public static string? Find(AgentOptions agent) => Find(agent, Environment.CurrentDirectory);
+
+    /// <summary>The same, searching up from <paramref name="startDirectory"/>, so a test needn't move.</summary>
+    internal static string? Find(AgentOptions agent, string startDirectory)
     {
         if (!string.IsNullOrWhiteSpace(agent.SkillsDirectory)) return agent.SkillsDirectory;
-        for (var dir = new DirectoryInfo(Environment.CurrentDirectory); dir is not null; dir = dir.Parent)
-            if (File.Exists(Path.Combine(dir.FullName, "Skills", SkillFiles.FolderMarker)))
-                return Path.Combine(dir.FullName, "Skills");
+        for (var dir = new DirectoryInfo(startDirectory); dir is not null; dir = dir.Parent)
+        {
+            string marker = Path.GetFullPath(Path.Combine(dir.FullName, SkillFiles.MarkedFolderPath));
+            if (File.Exists(marker)) return Path.GetDirectoryName(marker);
+        }
+
         return null;
     }
 

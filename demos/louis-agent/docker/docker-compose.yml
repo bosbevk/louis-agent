@@ -1,0 +1,249 @@
+# The code-review stack. To see its logs and traces, start the dashboard first (F52):
+#   docker compose -f demos/louis-agent/docker/docker-compose.observability.yml up -d
+name: louis-agent
+
+services:
+  mcp-server:
+    build:
+      context: ../../..
+      dockerfile: demos/louis-agent/docker/images/Dockerfile.mcp-server
+    container_name: rider_mcp_server
+    env_file:
+      # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
+      - path: ../config/.env.${LLM_PROFILE:-anthropic}
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      # Logs and traces to the dashboard stack on the host (F52); with it down, the exporters drop them quietly.
+      # Each service is named by its project (mcp-server, acp-server, api, cli).
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
+      WORKSPACE_ROOT: /workspace
+      CONFIG_DIRECTORY: /workspace/demos/louis-agent/config
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
+      LOG_DIRECTORY: /logs
+      # stdio (default): a local client launches this container and speaks over stdin/stdout, e.g. `docker compose run`.
+      # http: serves Streamable HTTP instead, for a remote MCP client (an agent on another provider's SDK) - needs
+      # MCP_API_KEY (falls back to AGENT_API_KEY) set in .env.secrets, since the same shell/git/file-write tools
+      # are then reachable over the network; without one it refuses to start (FX18; AGENT_AUTH=off in config/.env
+      # lets a development machine run it open on purpose).
+      MCP_TRANSPORT: ${MCP_TRANSPORT:-stdio}
+    ports:
+      # No-op unless MCP_TRANSPORT=http. Bound to localhost by default, like the api service - only widen this
+      # deliberately, and only with MCP_API_KEY (or AGENT_API_KEY) set.
+      - "127.0.0.1:${MCP_PORT:-5090}:8080"
+    volumes:
+      - ../../../:/workspace
+      - ../skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    stdin_open: true
+    tty: true
+    networks:
+      - default
+
+  acp-server:
+    build:
+      context: ../../..
+      dockerfile: demos/louis-agent/docker/images/Dockerfile.acp-server
+    image: louis-agent-acp:latest
+    env_file:
+      # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
+      - path: ../config/.env.${LLM_PROFILE:-anthropic}
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
+      WORKSPACE_ROOT: /workspace
+      CONFIG_DIRECTORY: /workspace/demos/louis-agent/config
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
+      LOG_DIRECTORY: /logs
+      # The price table for the usage ledger's costs (the repository is mounted at /workspace)
+      PRICES_FILE: /workspace/demos/louis-agent/config/prices.json
+      # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
+      RATES_FILE: /workspace/demos/louis-agent/config/rates.json
+    volumes:
+      - ../../../:/workspace
+      - ../skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    stdin_open: true
+    networks:
+      - default
+
+  api:
+    build:
+      context: ../../..
+      dockerfile: demos/louis-agent/docker/images/Dockerfile.api
+      args:
+        # The commit the eval runner stamps on a run: EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose … up -d --build api
+        EVAL_COMMIT: ${EVAL_COMMIT:-unknown}
+    image: louis-agent-api:latest
+    container_name: louis_agent_api
+    env_file:
+      # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
+      - path: ../config/.env.${LLM_PROFILE:-anthropic}
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
+      WORKSPACE_ROOT: /workspace
+      CONFIG_DIRECTORY: /workspace/demos/louis-agent/config
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after the container is removed
+      LOG_DIRECTORY: /logs
+      # The price table for the usage ledger's costs (the repository is mounted at /workspace)
+      PRICES_FILE: /workspace/demos/louis-agent/config/prices.json
+      # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
+      RATES_FILE: /workspace/demos/louis-agent/config/rates.json
+      # Sub-sessions (F5): peers StartSubSession may call, from config/.env (empty: none). The general assistant that
+      # delegates everything is Puls (demos/puls/docker/docker-compose.puls.yml); this is the code-review app, with every toolset.
+      AGENT_PEERS: ${AGENT_PEERS:-}
+    # Localhost only: the agent can run shell commands and write files. AGENT_API_KEY in .env.secrets is required
+    # (FX18): without it the container refuses to start, unless AGENT_AUTH=off in config/.env says so on purpose.
+    ports:
+      - "127.0.0.1:${API_PORT:-5080}:8080"
+    volumes:
+      - ../../../:/workspace
+      - ../skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    networks:
+      - default
+
+  local-agent:
+    build:
+      context: ../../..
+      dockerfile: demos/louis-agent/docker/images/Dockerfile.agent
+    container_name: rider_csharp_agent
+    env_file:
+      # LLM settings: config/.env.anthropic or .env.ollama, chosen by LLM_PROFILE in config/.env
+      - path: ../config/.env.${LLM_PROFILE:-anthropic}
+      - path: ../config/.env
+      - path: ../config/.env.secrets
+        required: false
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
+      WORKSPACE_ROOT: /workspace
+      CONFIG_DIRECTORY: /workspace/demos/louis-agent/config
+      # Skills and agent-built tools live in the repo, so anything created or approved in a container is kept
+      SKILLS_DIRECTORY: /skills
+      # The repo is a Windows checkout (CRLF); match Git for Windows so git in the container doesn't see every file as changed
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Run logs and oversized-tool-result records, kept on the host after --rm containers exit
+      LOG_DIRECTORY: /logs
+      # The price table for the usage ledger's costs (the repository is mounted at /workspace)
+      PRICES_FILE: /workspace/demos/louis-agent/config/prices.json
+      # Exchange rates' fallback when RATES_URL (Frankfurter by default) can't be reached (F14)
+      RATES_FILE: /workspace/demos/louis-agent/config/rates.json
+    volumes:
+      - ../../../:/workspace
+      - ../skills:/skills
+      - ../logs:/logs
+      - ${REPOSITORIES_PATH}:/repositories
+    stdin_open: true
+    tty: true
+    networks:
+      - default
+
+  ollama:
+    build:
+      context: images/ollama
+      dockerfile: Dockerfile.ollama
+    container_name: louis_ollama
+    ports:
+      - "11434:11434"
+    # The entrypoint pulls LLM_MODEL from the Ollama profile on first start (OLLAMA_MODEL overrides it).
+    env_file:
+      - path: ../config/.env.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - default
+    profiles:
+      - ollama  # Only starts with: docker-compose --profile ollama up
+    # Set LLM_PROFILE=ollama in config/.env, then:
+    # docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env --profile ollama up -d ollama
+
+  # The same Ollama on a GPU, sized for a 4 GB card (32k-token context, see their Dockerfiles). Run one of
+  # ollama, ollama-nvidia and ollama-amd at a time: they share the port and the models volume.
+  ollama-nvidia:
+    build:
+      context: images/ollama
+      dockerfile: Dockerfile.ollama-nvidia
+    container_name: louis_ollama_nvidia
+    ports:
+      - "11434:11434"
+    env_file:
+      - path: ../config/.env.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - default
+    profiles:
+      - ollama-nvidia
+    # docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env --profile ollama-nvidia up -d ollama-nvidia
+
+  ollama-amd:
+    build:
+      context: images/ollama
+      dockerfile: Dockerfile.ollama-amd
+    container_name: louis_ollama_amd
+    ports:
+      - "11434:11434"
+    env_file:
+      - path: ../config/.env.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    # ROCm reaches the GPU through these devices (Linux hosts only; Docker Desktop on Windows has no AMD passthrough).
+    devices:
+      - /dev/kfd
+      - /dev/dri
+    group_add:
+      - video
+    networks:
+      - default
+    profiles:
+      - ollama-amd
+    # docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env --profile ollama-amd up -d ollama-amd
+
+volumes:
+  ollama_data:
+
+networks:
+  default:
+    driver: bridge

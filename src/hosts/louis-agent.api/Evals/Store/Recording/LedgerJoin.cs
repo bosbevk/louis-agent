@@ -31,7 +31,7 @@ internal sealed record LedgerJoinResult(
 /// Taken out of <see cref="EvalRecorder"/> (Fowler's Extract Class), which was past 200 lines: the recorder keeps
 /// the flow of a run, this keeps what the ledger says about it.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0007-measure-every-request.md">ADR 0007: measure every request</seealso>
 internal static class LedgerJoin
 {
     /// <summary>

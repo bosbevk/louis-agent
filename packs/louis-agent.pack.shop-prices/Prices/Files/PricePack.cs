@@ -12,8 +12,8 @@ namespace LouisAgent.Packs.ShopPrices.Prices.Files;
 /// is simply missing. The same names in the shipped file and in MongoDB, where the unit is kept as its member's name
 /// and the amounts as decimals.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public sealed record PricePack(
     [property: JsonPropertyName("size")][property: BsonElement("size")] string Size,
     [property: JsonPropertyName("amount")]

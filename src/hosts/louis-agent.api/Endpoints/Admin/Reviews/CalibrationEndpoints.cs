@@ -12,7 +12,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Reviews;
 /// one, and list the reports kept. They sit in the admin group, so the key covers them; the work is in
 /// <c>CalibrationHandlers</c>.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class CalibrationEndpoints
 {
     /// <summary>Adds the judge-check routes to the group the eval routes hang on.</summary>

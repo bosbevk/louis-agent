@@ -10,7 +10,7 @@ namespace LouisAgent.Core.Tools.Web.Rendering.Setups;
 /// Strategy, with a Null Object. "Is it ready?" and "build it" live in the same class, so they can't drift apart, and a new renderer is one new class instead of another case in two switches.
 /// A setup that isn't ready hands back a renderer that explains what's missing, so nothing has to check for null and the model still gets a useful answer.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public interface IPageRendererSetup
 {
     /// <summary>Which renderer this is.</summary>

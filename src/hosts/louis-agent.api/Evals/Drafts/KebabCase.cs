@@ -8,7 +8,7 @@ namespace LouisAgent.Api.Evals.Drafts;
 /// A small reader instead of a regular expression (ADR 0057): one pass over the characters, each part between dashes
 /// non-empty, so nothing like <c>../</c>, a space or a capital gets into a path.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 public static class KebabCase
 {
     /// <summary>The longest name we take, so one request can't make a file name the disk refuses.</summary>

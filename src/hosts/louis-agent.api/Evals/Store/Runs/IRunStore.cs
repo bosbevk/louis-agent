@@ -11,7 +11,7 @@ namespace LouisAgent.Api.Evals.Store.Runs;
 /// collection, one mapping and one index, and a test of runs needs nothing else.
 /// <see cref="IEvalStore"/> puts the four record stores back together for the callers that want all of them.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0022-benchmarks-recorded-from-the-protocol.md">ADR 0022: benchmark results in MongoDB</seealso>
 public interface IRunStore
 {
     /// <summary>Saves the run, replacing whatever was kept under its id.</summary>

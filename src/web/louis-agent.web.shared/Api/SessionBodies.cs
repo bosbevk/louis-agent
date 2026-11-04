@@ -12,7 +12,7 @@ namespace LouisAgent.Web.Shared.Api;
 /// (finding 9), since the API's own request records stay in the API for now (finding 3). Written with the web's
 /// default options, camelCase, as the anonymous object it replaces was.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record CreateSessionBody(
     IEnumerable<string> Toolsets,
     string? Role,

@@ -1,0 +1,93 @@
+# louis-agent.acp-server — design
+
+> **Kind:** console app (JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp-server/` · **References:**
+> louis-agent.core · **Docker service:** `acp-server`, one container per Rider chat
+
+## Purpose
+
+Puts louis-agent inside JetBrains Rider's AI chat, using the [Agent Client Protocol](https://agentclientprotocol.com):
+Rider sends prompts (with attached files), and the server streams back thinking, text and tool cards.
+
+## How it works
+
+```mermaid
+sequenceDiagram
+    participant R as Rider
+    participant S as AcpServer
+    participant E as AgentEngine
+    R->>S: initialize
+    S-->>R: capabilities
+    R->>S: session/new (cwd)
+    S-->>R: sessionId
+    R->>S: session/prompt (text + resource / resource_link blocks)
+    S->>E: StreamPromptAsync(history, prompt)
+    loop as the reply streams
+        S-->>R: session/update: agent_thought_chunk · agent_message_chunk · tool_call · tool_call_update
+    end
+    S-->>R: prompt result (stopReason)
+    R->>S: session/cancel (optional)
+```
+
+- **One line = one JSON-RPC message** on stdin/stdout. Requests run concurrently; `session/cancel` is handled
+  immediately and cancels that session's turn.
+- **Sessions** (`SessionState`: working directory + history) live in memory for the container's lifetime; Rider starts a
+  new container for each new chat (`docker compose run --rm -T acp-server`).
+- **Prompt building:** `text` blocks are used as-is; embedded `resource` blocks are inlined; a `resource_link` is read
+  from disk **only when the user attached it** (the file merely open in the editor is not sent). Attachments are capped
+  at 100,000 characters.
+- **Windows paths** from Rider are mapped to the container's mounts with `ACP_MOUNT_MAPPINGS`
+  (`C:\Users\you\RiderProjects=/repositories`), falling back to a search under `/repositories`; a file that still isn't
+  found is passed to the model as "could not be read — not inside a mounted folder", never guessed.
+- **Tool cards:** each tool call becomes a `tool_call` (in progress) and a `tool_call_update` (completed or failed, with
+  an output preview); the card's kind (read, edit, execute, search, fetch…) is guessed from the tool's name so Rider shows
+  a fitting icon.
+- `/tools`, `/approve`, `/reject` and `/usage` are answered by the engine without the model.
+- **Usage** (F3): every turn's usage line goes to stderr (`[ACP] Usage: …`, in Rider's `idea.log`); with
+  `USAGE_IN_CHAT=true` it is also added to the chat after the answer, in italics, as its own message chunk. Off by
+  default, since in Rider it becomes part of the conversation. A cancelled or failed turn counts toward the session
+  but adds nothing to the chat.
+- **What the log shows of a prompt** (F18 step 4f): the raw parameters and the prompt's first 300 characters are logged as a keyed hash
+  and a length (`Prompt: 412 chars: #3f9c0a1b2d4e (412)`), since what a developer types is personal data once the host runs for anyone
+  else; `LOG_CONTENT=full` shows the text, on your own machine. The protocol on stdout is unchanged. Paths to a developer's own files
+  stay in the log: they are out of scope.
+
+## Structure
+
+| File | What's in it |
+|---|---|
+| `Program.cs` | `AgentHost.Build()` and `new AcpServer(engine).RunAsync()` |
+| `AcpServer.cs` | The message loop and the dispatch (S, CL15: the flow only); its reader and writer are constructor arguments (stdin and stdout in Rider, a script and a buffer in the transcript test) |
+| `Protocol/` | `JsonRpcWriter` (one JSON-RPC message per line on stdout, under a lock), `AcpCapabilities` (the `initialize` reply) |
+| `Prompting/PromptBuilder.cs` | The model's prompt from the content blocks: text, embedded resources, attached files read and capped, the file open in the IDE left out |
+| `Paths/` | `ContainerPaths` (a Windows path from the IDE as the file in the container: `ACP_MOUNT_MAPPINGS`, the mount roots, the drive letter), `GitRoots` (the repository the active file is in) |
+| `Turns/` | `PromptHandler` (one prompt's turn: the git root, a command or the model, the usage scope, the stop reason), `TurnRelay` (thinking, text and tool cards as `session/update`), `ToolCards` (a card's kind and output preview), `AcpSession` |
+
+## Tests
+
+`src/tests/hosts/louis-agent.acp-server.tests`: `AcpTranscriptTests` pins what the server writes for a recorded conversation to
+`AcpTranscript.json`, with the prompt the model received; the pure parts have their own tests (`ToolCards`, `PromptBuilder`,
+`ContainerPaths`, `GitRoots`, `JsonRpcWriter`) ([tests](tests.md#louis-agent.acp-server.tests)).
+
+## Configuration
+
+Core settings plus `ACP_MOUNT_MAPPINGS` and `USAGE_IN_CHAT`. Rider's agent-server entry: `config/rider/rider-acp.example.json`.
+
+**stdout carries the protocol:** anything written to `Console.Out` corrupts it — all logging goes to stderr.
+
+## Extending it
+
+The steps are in [Change the ACP server](../guides/change-the-acp-server.md). In short: a method is a `case` in
+`AcpServer.HandleRequestAsync` with its handler in its concern's folder; an update kind a case in `TurnRelay`; the
+server only translates.
+
+## Limits and plans
+
+- Sessions end with the container → [session architecture](../specs/SESSION_ARCHITECTURE.md) (backlog).
+
+## Related docs
+
+[How the agents and endpoints talk § Rider](../AGENT_COMMUNICATION.md#rider-and-the-acp-server) ·
+[Quick start § Rider](../../../demos/louis-agent/docs/QUICK_START_AGENT.md) · [Setup](../SETUP.md)
+
+---
+[Projects](README.md) · Previous: [louis-agent.cli](louis-agent.cli.md) · Next: [louis-agent.api](louis-agent.api.md)
