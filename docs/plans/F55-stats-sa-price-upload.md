@@ -246,9 +246,10 @@ Each step is one commit, test first (seen failing, then passing), and stops for 
    pack lists it. *Test:* the preview lists new, corrected (with the prices that changed) and unchanged months and the
    unnamed products; save writes only the new and corrected ones, a second upload of the same files changes nothing,
    and the cache reads the new month; integration test on CI's MongoDB.
-6. **Older months fill the gaps (E1).** `IPriceStore.MonthsAsync` hands over every stored month of each source,
-   newest first; `PriceBook` prices a line from the newest month that has that product and pack in that province (or
-   nationally), and the estimate names the month it used (`± R62, Aug 2026`). *Test:* a product missing from September
+6. **Older months fill the gaps (E1).** The cache reads every stored month of each source (`MonthsAsync`);
+   `PriceBook.Older` holds the older ones, newest first, and a product the newest month lacks is found in the newest
+   month that has it (the newest month still wins a name both have, and its province-else-national rule is kept); the
+   line names that month (`(from July 2026, the newest month that prices it)`). *Test:* a product missing from September
    is priced from August and says August; one in September uses September.
 7. **The API.** The three routes behind the admin key, typed answers, `ApiRoutesSnapshot.json` regenerated. *Test:*
    list, preview and save over HTTP with the fixture files; an unknown import is 404, a missing file 400.

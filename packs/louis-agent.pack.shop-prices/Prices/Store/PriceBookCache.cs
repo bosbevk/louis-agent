@@ -1,6 +1,7 @@
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Logging.Content;
 using LouisAgent.Packs.ShopPrices.Messages;
+using LouisAgent.Packs.ShopPrices.Prices.Files;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Packs.ShopPrices.Prices.Store;
@@ -61,13 +62,22 @@ public sealed class PriceBookCache(IPriceStore store, TimeProvider clock)
     /// <summary>The book held, while it is fresh.</summary>
     private PriceBook? Held() => _held is { } held && clock.GetUtcNow() - held.At < Fresh ? held.Book : null;
 
-    /// <summary>The store's tables as a book; the shipped tables when the store fails or holds none.</summary>
+    /// <summary>
+    /// The store's tables as a book, with their older months; the shipped tables when the store fails or holds none.
+    /// </summary>
     private async Task<PriceBook> ReadAsync(CancellationToken cancellationToken)
     {
         try
         {
             var files = await store.LatestAsync(cancellationToken);
-            return files.Count == 0 ? PriceBook.Default : new PriceBook(files);
+            if (files.Count == 0) return PriceBook.Default;
+
+            // Every older month of each source, newest first, for a product its newest month lacks (E1).
+            var older = new List<PriceFile>();
+            foreach (var file in files)
+                older.AddRange((await store.MonthsAsync(file.Source, cancellationToken))
+                    .Where(month => month.AsOf < file.AsOf).OrderByDescending(month => month.AsOf));
+            return new PriceBook(files, [.. older.OrderByDescending(month => month.AsOf)]);
         }
         catch (Exception ex) when (ex is not OperationCanceledException || !cancellationToken.IsCancellationRequested)
         {
