@@ -1,6 +1,6 @@
 # louis-agent.acp-server — design
 
-> **Kind:** console app (JSON-RPC over stdio) · **Path:** `src/louis-agent.acp-server/` · **References:**
+> **Kind:** console app (JSON-RPC over stdio) · **Path:** `src/hosts/louis-agent.acp-server/` · **References:**
 > louis-agent.core · **Docker service:** `acp-server`, one container per Rider chat
 
 ## Purpose

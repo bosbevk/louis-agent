@@ -49,8 +49,8 @@ the AI chat. Attach files with the paperclip; the agent reads them. Each new cha
 ### CLI
 
 ```bash
-dotnet run --project src/louis-agent.cli                     # interactive; Ctrl+C stops a reply, 'exit' quits
-dotnet run --project src/louis-agent.cli -- "Your prompt here" # one-shot
+dotnet run --project src/hosts/louis-agent.cli                     # interactive; Ctrl+C stops a reply, 'exit' quits
+dotnet run --project src/hosts/louis-agent.cli -- "Your prompt here" # one-shot
 ```
 
 ### HTTP API
@@ -61,7 +61,7 @@ See the [README](../README.md#http-api): create a session, then POST messages an
 
 **Code and files**
 ```
-Review src/louis-agent.api/Endpoints/Git/GitBranchesEndpoints.cs for bugs, most important first
+Review src/hosts/louis-agent.api/Endpoints/Git/GitBranchesEndpoints.cs for bugs, most important first
 Find all TODO comments in the codebase
 Add XML doc comments to the public methods in WorkspaceTools.cs
 ```

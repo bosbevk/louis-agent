@@ -1,7 +1,7 @@
 # 8. Crosscutting concepts
 
 > **Explanation.** The rules every part follows: security, messages, logging, testing, configuration. **Elsewhere:**
-> how to apply them when changing core in the [core guide](../../louis-agent.core/CLAUDE.md); tests in the
+> how to apply them when changing core in the [core guide](../../src/engine/louis-agent.core/CLAUDE.md); tests in the
 > [tests guide](../../tests/CLAUDE.md).
 
 ## Security
@@ -27,7 +27,7 @@
 Every exception, log line, tool result and user-facing text is a member of a message enum, its `[Description]` a
 template with named holes; the texts the model reads are pinned by a golden file
 ([0009](../adr/0009-message-text-as-enum-templates.md); the rules in
-[Messages and logging](../../louis-agent.core/CLAUDE.md#messages-and-logging)).
+[Messages and logging](../../src/engine/louis-agent.core/CLAUDE.md#messages-and-logging)).
 
 ## Logging
 

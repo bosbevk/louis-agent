@@ -1,6 +1,6 @@
 # Change the code-review web app
 
-> **How-to.** Change `src/louis-agent.web`, the browser app for chatting with the coding agent, browsing the workspace
+> **How-to.** Change `src/web/louis-agent.web`, the browser app for chatting with the coding agent, browsing the workspace
 > and reviewing changes: run it, add a tab, call a new endpoint, add a theme, place its words, and test it.
 > **Elsewhere:** how it works in [louis-agent.web](../projects/louis-agent.web.md); what it shares with Puls in
 > [Change the shared web library](change-the-web-shared.md); the folder rules in [src/CLAUDE.md](../../src/CLAUDE.md).
@@ -8,13 +8,13 @@
 The app is Blazor WebAssembly, served by the API on the same origin, so it has no settings of its own. One page,
 `Pages/ChatPage.razor`, holds a sidebar with four tabs (Chats, Files, Changes, Branches) and a main area that shows a
 chat, a file, a diff or a commit. What a chat needs (the API client, a turn's life, the turn views, markdown, usage) is
-in `src/louis-agent.web.shared`, which Puls uses too.
+in `src/web/louis-agent.web.shared`, which Puls uses too.
 
 ## Run it
 
 ```bash
 docker compose -f docker/docker-compose.yml --env-file config/.env up -d --build api      # http://127.0.0.1:5080
-dotnet run --project src/louis-agent.api --launch-profile api                             # http://127.0.0.1:5081
+dotnet run --project src/hosts/louis-agent.api --launch-profile api                             # http://127.0.0.1:5081
 ```
 
 The API serves this app unless it is built with `WebApp=puls`. After a change to the app, rebuild the `api` image or

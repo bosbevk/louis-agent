@@ -22,7 +22,7 @@ public class SampleBodyShapeTests
     /// copies a build puts under bin are left out).
     /// </summary>
     private static IEnumerable<string> ScenarioFiles() =>
-        Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "identities"))
+        Directory.EnumerateDirectories(Path.Combine(TestPaths.RepoRoot, "evals", "identities"))
             .Select(identity => Path.Combine(identity, "Evals"))
             .Where(Directory.Exists)
             .SelectMany(evals => Directory.EnumerateFiles(evals, "*.json", SearchOption.AllDirectories))

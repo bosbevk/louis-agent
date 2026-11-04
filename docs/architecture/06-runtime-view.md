@@ -3,15 +3,15 @@
 > **Explanation.** How the parts work together at run time: what the model can use (tools and skills), one chat turn
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
-> [a C# tool](../../louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../../louis-agent.core/CLAUDE.md#adding-a-toolset),
+> [a C# tool](../../src/engine/louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../../src/engine/louis-agent.core/CLAUDE.md#adding-a-toolset),
 > [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
-> [another agent on core](../../louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
+> [another agent on core](../../src/engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 
 ## Two kinds of capability
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on the tool classes in `louis-agent.core/Tools/{Toolset}/` | Markdown in `louis-agent.core/Prompts/` |
+| What | Public C# methods on the tool classes in `src/engine/louis-agent.core/Tools/{Toolset}/` | Markdown in `src/engine/louis-agent.core/Prompts/` |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
 | Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md`, `agent/functions/code-review.md` |
@@ -42,7 +42,7 @@ Every **public** instance method becomes a tool, named after the method, with it
 documentation. Keep helpers `internal` or `private`. `ToolRegistry` keeps every tool in name order, so the start of
 every request is the same bytes and the prompt cache holds (F4). A toolset whose settings are missing (Paymo or DevOps
 without its API key) can't be loaded. An agent built on core, like the orchestrator, passes its own tool objects as
-`toolsets:` the same way (the guide's [Building another agent on core](../../louis-agent.core/CLAUDE.md#building-another-agent-on-core)).
+`toolsets:` the same way (the guide's [Building another agent on core](../../src/engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core)).
 
 ### How skills are loaded
 
@@ -54,7 +54,7 @@ without its API key) can't be loaded. An agent built on core, like the orchestra
 3. **the guide of each toolset the session loaded** (`toolsets/{toolset}.md`) and no other (F5);
 4. **with the `skills` toolset only**, every function skill the agent wrote.
 
-The combined text is the system prompt. The built-in files are in `louis-agent.core/Prompts/` and read only from the
+The combined text is the system prompt. The built-in files are in `src/engine/louis-agent.core/Prompts/` and read only from the
 assembly (ADR 0018), so a wording change is a rebuild.
 
 ## A chat turn

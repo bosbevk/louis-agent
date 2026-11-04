@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <ProjectReference Include="..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
     <!-- The fakes every test project shares (CL15 step 5), and Outside, which asks for the tool a test needs (F18 step 7.6). -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>

@@ -8,7 +8,7 @@
 A **pack** is what an agent can do: one or more toolsets, the guide that tells the model when to use them, the pack's own
 settings and state. It names no identity and references no other pack's code, so it could be served as an MCP server
 one day without changing. The engine (`louis-agent.core`) never references a pack; only the composition root
-(`src/louis-agent.composition`) knows them all.
+(`src/hosts/louis-agent.composition`) knows them all.
 
 The steps below build a small example pack, `units`, with one tool that converts a value between units: no settings,
 no network. The real packs in the repo follow the same steps: `packs/louis-agent.pack.where-to-buy` is the closest
@@ -225,7 +225,7 @@ Then document each setting where people look for it: a commented line in `config
 
 ## 6. Register it in the composition root
 
-Three edits in `src/louis-agent.composition`:
+Three edits in `src/hosts/louis-agent.composition`:
 
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:
@@ -290,8 +290,8 @@ To prove what your tools do, first try a general check in your eval file, naming
 ([Add an eval](add-an-eval.md#4-choose-the-checks)). `tool-rows-marked` is the model: the harness knows a table and a
 mark, and the eval file says `{"tool": "EstimatePrices", "mark": "?"}`.
 
-A rule no general check can say goes in a project beside the pack, `packs/louis-agent.pack.{name}.checks`, which only the
-runner references:
+A rule no general check can say goes in its own project under the evals, `evals/packs/louis-agent.pack.{name}.checks`,
+which only the runner references, so someone can use your tools without the evals:
 
 1. **Its csproj** references the check contract, `..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj`,
    and your pack only if it uses the pack's code. Its root namespace is the pack's.

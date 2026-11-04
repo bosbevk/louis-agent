@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG EVAL_COMMIT=unknown
 WORKDIR /src
 COPY . .
-RUN dotnet publish "src/louis-agent.api/louis-agent.api.csproj" -c Release -o /app/publish
+RUN dotnet publish "src/hosts/louis-agent.api/louis-agent.api.csproj" -c Release -o /app/publish
 # The eval runner (F18 step 4.3) publishes to its own folder: it ships its own copies of core and the session-stream reader,
 # and beside the API's they would overwrite each other.
 RUN dotnet publish "evals/louis-agent.evals.runner/louis-agent.evals.runner.csproj" -c Release -p:EvalCommit=$EVAL_COMMIT -o /app/evals-publish

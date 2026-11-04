@@ -26,4 +26,4 @@ and the JSON-lines records as sinks, holes kept as fields. Serilog was chosen ov
 ## Links
 
 [CL3 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL3-messages-and-logging.md) ·
-[Messages and logging](../../louis-agent.core/CLAUDE.md#messages-and-logging)
+[Messages and logging](../../src/engine/louis-agent.core/CLAUDE.md#messages-and-logging)

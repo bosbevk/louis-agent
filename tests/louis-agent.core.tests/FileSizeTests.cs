@@ -17,8 +17,7 @@ public class FileSizeTests
 
     private static readonly string[] SourceRoots =
     [
-        "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream", "identities", "packs", "src", "tools",
-        "evals"
+        "identities", "packs", "src", "tools", "evals"
     ];
 
     /// <summary>
@@ -27,15 +26,15 @@ public class FileSizeTests
     /// </summary>
     private static readonly HashSet<string> Oversized =
     [
-        "louis-agent.core/Agent/EngineTools/AgentBuiltTools.cs",
-        "louis-agent.core/Agent/EngineTools/SkillTools.cs",
-        "louis-agent.core/Tools/DotNet/DotNetTools.cs",
-        "louis-agent.core/Tools/Integrations/DevOps/DevOpsTools.cs",
-        "louis-agent.core/Tools/Integrations/Paymo/PaymoTools.cs",
-        "louis-agent.core/Tools/Shell/PythonTools.cs",
-        "louis-agent.core/Tools/Web/Browsing/ChromeWebBrowser.cs",
-        "src/louis-agent.puls/Pages/ChatPage.razor.cs",
-        "src/louis-agent.web/Pages/ChatPage.razor.cs",
+        "src/engine/louis-agent.core/Agent/EngineTools/AgentBuiltTools.cs",
+        "src/engine/louis-agent.core/Agent/EngineTools/SkillTools.cs",
+        "src/engine/louis-agent.core/Tools/DotNet/DotNetTools.cs",
+        "src/engine/louis-agent.core/Tools/Integrations/DevOps/DevOpsTools.cs",
+        "src/engine/louis-agent.core/Tools/Integrations/Paymo/PaymoTools.cs",
+        "src/engine/louis-agent.core/Tools/Shell/PythonTools.cs",
+        "src/engine/louis-agent.core/Tools/Web/Browsing/ChromeWebBrowser.cs",
+        "src/web/louis-agent.puls/Pages/ChatPage.razor.cs",
+        "src/web/louis-agent.web/Pages/ChatPage.razor.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/DevOps/DevOpsToolsTests.cs",
         "tests/louis-agent.core.tests/Tools/Integrations/Paymo/PaymoToolsTests.cs",
         "tools/louis-agent.usage-probe/Program.cs",

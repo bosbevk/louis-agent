@@ -48,8 +48,8 @@ any identity can use it, and it could be served as an MCP server unchanged
   answer writes its link is the identity's, so the file names a link reader beside the check
   (`{"type": "recipe-from-source", "parameters": {"reader": "recipe-link"}}`), as the shops pack's
   `estimates-at-shop` takes a price reader ([ADR 0059](../adr/0059-an-identity-ships-readers-not-checks.md),
-  [ADR 0073](../adr/0073-packs-reference-no-evals.md)). It lives beside the pack, in
-  `packs/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
+  [ADR 0073](../adr/0073-packs-reference-no-evals.md)). It lives apart from the pack, in
+  `evals/packs/louis-agent.pack.recipes.checks/`, which only the runner references; `RecipesChecks.All` lists it for the
   runner's `RunnerChecks`, and the check catalogue's listing shows it with that one setting.
 
 ## Design notes

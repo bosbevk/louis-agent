@@ -15,7 +15,7 @@ ADR 0053). Everything is C# on purpose. The site is content: no accounts, no API
 
 ## Decision
 
-- The site is **`src/louis-agent.site`, ASP.NET Core with static server-rendered Razor components**: no WebAssembly,
+- The site is **`src/web/louis-agent.site`, ASP.NET Core with static server-rendered Razor components**: no WebAssembly,
   no interactivity, no script of our own. A page is HTML and CSS.
 - It **references no engine project**. It talks about the engine; it doesn't run it.
 - It **shows only what works today**, as Puls's landing page does; what's planned is at most one honest line.

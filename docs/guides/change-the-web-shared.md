@@ -1,6 +1,6 @@
 # Change the shared web library
 
-> **How-to.** Change `src/louis-agent.web.shared`, the Razor class library both web apps use: decide what belongs here,
+> **How-to.** Change `src/web/louis-agent.web.shared`, the Razor class library both web apps use: decide what belongs here,
 > add an API call, follow a new event in the stream, add a component, give it words, and test it. **Elsewhere:** how
 > it works in [louis-agent.web.shared](../projects/louis-agent.web.shared.md); the two apps in
 > [Change the code-review web app](change-the-web-app.md) and [Change the Puls web app](change-the-puls-app.md).
@@ -23,7 +23,7 @@ extension method in that app (the code-review app's `Workspace/AgentApiWorkspace
 
 ## Follow a new event in the stream
 
-1. Map the event to its record in `louis-agent.session-stream/SessionEventMapper.cs` (and its record in `SessionEvents.cs`), with a test
+1. Map the event to its record in `src/engine/louis-agent.session-stream/SessionEventMapper.cs` (and its record in `SessionEvents.cs`), with a test
    in `tests/louis-agent.session-stream.tests`. The reader hands the web apps `SessionEvent`s, so the event exists there first.
 2. Write the test first in `tests/louis-agent.web.shared.tests/Chats/TurnStreamTests.cs`, with the event as the API
    sends it ([the event stream](../AGENT_COMMUNICATION.md#the-event-stream)).
@@ -39,7 +39,7 @@ extension method in that app (the code-review app's `Workspace/AgentApiWorkspace
    for a chat piece both apps lay out). Logic that needs no component goes in a plain class with NUnit tests
    (`RazorHasNoCodeTests` fails on an `@code` block).
 2. Its words go in `Text/ChatText.cs` as a property whose default is the code-review app's English. Puls sets its
-   Afrikaans in `src/louis-agent.puls/Text/PulsText.cs`; add the property there too, or Puls shows English.
+   Afrikaans in `src/web/louis-agent.puls/Text/PulsText.cs`; add the property there too, or Puls shows English.
 3. Leave slots (`RenderFragment` parameters) where an app adds its own parts, as `Composer` and `MessageList` do.
 
 ## Markdown and links

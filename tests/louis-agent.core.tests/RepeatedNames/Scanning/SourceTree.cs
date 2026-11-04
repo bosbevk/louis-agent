@@ -5,8 +5,7 @@ public static class SourceTree
 {
     public static readonly string[] Roots =
     [
-        "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream", "identities", "packs", "src", "tools",
-        "evals", "tests"
+        "identities", "packs", "src", "tools", "evals", "tests"
     ];
 
     /// <summary>Every <c>.cs</c> and <c>.razor</c> file under the roots, bin, obj and published folders left out.</summary>
@@ -22,8 +21,12 @@ public static class SourceTree
     /// <summary>The compiled assembly of each project that is not a test project (its newest build), when the solution has been built.</summary>
     public static IReadOnlyList<string> BuiltAssemblies()
     {
-        var projects = new List<string> { "louis-agent.core", "louis-agent.choices", "louis-agent.session-stream" };
-        foreach (string group in new[] { "identities", "packs", "src", "tools", "evals" })
+        var projects = new List<string>();
+        foreach (string group in new[]
+                 {
+                     "identities", "packs", "src/engine", "src/hosts", "src/web", "tools", "evals", "evals/packs",
+                     "evals/identities"
+                 })
         {
             string dir = Path.Combine(TestPaths.RepoRoot, group);
             if (Directory.Exists(dir))

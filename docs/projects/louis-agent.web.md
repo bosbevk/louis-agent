@@ -1,6 +1,6 @@
 # louis-agent.web — design
 
-> **Kind:** Blazor WebAssembly app · **Path:** `src/louis-agent.web/` · **Served by:** louis-agent.api (same origin) ·
+> **Kind:** Blazor WebAssembly app · **Path:** `src/web/louis-agent.web/` · **Served by:** louis-agent.api (same origin) ·
 > **References:** louis-agent.web.shared (with Markdig), highlight.js (from a CDN)
 
 ## Purpose
@@ -63,7 +63,7 @@ flowchart TB
 | `wwwroot/` | `index.html`, `css/` (`app.css` the `@import` list, the rules in area files under `base/`, `layout/`, `workspace/`, `git/`, `chat/`, at most 200 lines each; CL26), themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
 
 **Shared with Puls:** the chat as data, the API client, a turn's life, the turn and delegation views, markdown, usage
-and currency are in `src/louis-agent.web.shared/`, a Razor class library both apps reference; its design is in
+and currency are in `src/web/louis-agent.web.shared/`, a Razor class library both apps reference; its design is in
 [louis-agent.web.shared](louis-agent.web.shared.md).
 
 ## Configuration

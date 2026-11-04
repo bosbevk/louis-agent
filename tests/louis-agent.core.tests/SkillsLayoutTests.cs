@@ -81,6 +81,6 @@ public class SkillsLayoutTests
         var other = FilesUnder(skills).Where(f => f is not (SkillFiles.FolderMarker or "HelloWorld.md")
             && !f.StartsWith(SkillFiles.FunctionsFolder + "/", StringComparison.Ordinal) && !f.StartsWith("tools/", StringComparison.Ordinal));
 
-        Assert.That(other, Is.Empty, "a built-in prompt goes in louis-agent.core/Prompts/");
+        Assert.That(other, Is.Empty, "a built-in prompt goes in src/engine/louis-agent.core/Prompts/");
     }
 }

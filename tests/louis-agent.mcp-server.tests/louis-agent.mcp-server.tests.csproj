@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\louis-agent.mcp-server\louis-agent.mcp-server.csproj" />
+    <ProjectReference Include="..\..\src\hosts\louis-agent.mcp-server\louis-agent.mcp-server.csproj" />
     <!-- The fakes every test project shares (CL15 step 5): FakeFeed here. -->
     <ProjectReference Include="..\louis-agent.testing\louis-agent.testing.csproj" />
   </ItemGroup>

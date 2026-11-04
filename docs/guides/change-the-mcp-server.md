@@ -1,6 +1,6 @@
 # Change the MCP server
 
-> **How-to.** Change `src/louis-agent.mcp-server`, which hands the agent's tools to any MCP client: publish a tool or a
+> **How-to.** Change `src/hosts/louis-agent.mcp-server`, which hands the agent's tools to any MCP client: publish a tool or a
 > feed, add an MCP-only tool, choose the transport, and check it with a client. **Elsewhere:** how it works in
 > [louis-agent.mcp-server](../projects/louis-agent.mcp-server.md); why it has no model in
 > [MCP exposes tools, not a model](../CLAUDE.md#rules-that-always-apply).

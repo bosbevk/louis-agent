@@ -11,7 +11,7 @@ cp config/.env.example config/.env
 cp config/.env.secrets.example config/.env.secrets   # add ANTHROPIC_API_KEY and AGENT_API_KEY
 dotnet build louis-agent-solution.sln
 dotnet test tests/louis-agent.core.tests
-dotnet run --project src/louis-agent.cli               # interactive CLI
+dotnet run --project src/hosts/louis-agent.cli               # interactive CLI
 ```
 
 Docker (web app + API on http://127.0.0.1:5080):

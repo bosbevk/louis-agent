@@ -4,6 +4,10 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **CL28 The folders mirror the solution**: `src/` is `engine/` (core, choices, session-stream, moved in
+  from the repository's root), `hosts/` and `web/`, as Rider's groups are, and what proves a pack or an identity moved
+  under `evals/packs/` and `evals/identities/`, because someone can take the tools without the evals, or not own them.
+  `SolutionLayoutTests` holds it. Paths only: no namespace changed.
 - 2026-11-04 — **F50.2 What a list couldn't price, and packs and identities off the evals**: a total with unpriced rows
   says so (`± R312 + 2 items unpriced`), each eval run lists those rows (`tool-rows-marked`, never required), and 18 new
   rows of our own for what the saved recipe pages missed or priced from the wrong product (white fish had been priced as

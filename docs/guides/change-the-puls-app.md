@@ -1,6 +1,6 @@
 # Change the Puls web app
 
-> **How-to.** Change `src/louis-agent.puls`, the general assistant's web app: run it, change the chat, the landing page
+> **How-to.** Change `src/web/louis-agent.puls`, the general assistant's web app: run it, change the chat, the landing page
 > or the admin portal, add a starter, place its words, and test it. **Elsewhere:** how it works in
 > [louis-agent.puls](../projects/louis-agent.puls.md); what it shares with the code-review app in
 > [Change the shared web library](change-the-web-shared.md); Puls's voice, roles and packs in
@@ -15,7 +15,7 @@ the specialists' work in the Werk panel, and what each answer cost.
 
 ```bash
 docker compose -f docker/docker-compose.puls.yml --env-file config/.env up -d --build          # http://127.0.0.1:5070
-dotnet run --project src/louis-agent.api --launch-profile puls --property:WebApp=puls         # http://127.0.0.1:5071
+dotnet run --project src/hosts/louis-agent.api --launch-profile puls --property:WebApp=puls         # http://127.0.0.1:5071
 ```
 
 The launch profile gives the API Puls's settings (`IDENTITIES=puls`, its roles, SearXNG and the browser on the

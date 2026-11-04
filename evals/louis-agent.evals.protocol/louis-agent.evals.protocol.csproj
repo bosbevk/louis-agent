@@ -11,7 +11,7 @@
        portal read, so a mismatch between them is a compile error. Records and enums only; it references
        louis-agent.choices (for [WireName]) and nothing else, so each side takes it without the others. -->
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.choices\louis-agent.choices.csproj" />
+    <ProjectReference Include="..\..\src\engine\louis-agent.choices\louis-agent.choices.csproj" />
   </ItemGroup>
 
   <!-- This project's design doc, shown under docs/ in the IDE's solution explorer; nothing is built from it. -->

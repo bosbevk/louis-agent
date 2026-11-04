@@ -36,15 +36,15 @@ public class EvalHomesTests
     private static EvalList Catalog() => new([
         new EvalEntry("weather-eval", "Weather",
             Eval: new EvalLine("weather-eval", 1, "Weather", "weather-agent",
-                Folder: "identities/louis-agent.identity.weather-agent.evals/Evals/Weather"))
+                Folder: "evals/identities/louis-agent.identity.weather-agent.evals/Evals/Weather"))
     ]);
 
     /// <summary>An edit starts from the listed folder and publishes back into it.</summary>
     [Test]
     public void AListedEval_IsInItsListedFolder()
     {
-        string listed = Path.Combine(_workspace, "identities", "louis-agent.identity.weather-agent.evals", "Evals",
-            "Weather");
+        string listed = Path.Combine(_workspace, "evals", "identities", "louis-agent.identity.weather-agent.evals",
+            "Evals", "Weather");
         Directory.CreateDirectory(listed);
         var homes = new EvalHomes(Catalog(), _workspace);
 

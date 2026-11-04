@@ -44,7 +44,7 @@ flowchart TB
 Every host is thin: it maps the agent's stream to its protocol, and all behaviour is in core
 ([0010](../adr/0010-folders-by-concern.md)). Core is the engine and names no product: who an agent is (its voice, modes,
 roles and the packs it uses, by name) is an identity in `identities/`, what it can do (toolsets, guides, settings) is a
-pack in `packs/`, and only the composition root (`src/louis-agent.composition`) knows them all; a host picks with
+pack in `packs/`, and only the composition root (`src/hosts/louis-agent.composition`) knows them all; a host picks with
 `IDENTITIES` and `PACKS` at start-up and hands one `AgentCatalog` to `AgentHost.Build` (CL15,
 [0027](../adr/0027-engine-identities-and-packs.md)). Every pack stays convertible to an MCP server, held by
 `PackConvertibilityTests` ([0028](../adr/0028-packs-stay-convertible-to-mcp.md)).
@@ -57,11 +57,11 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
 
 | Host | Project | Bootstrap | Transport |
 |---|---|---|---|
-| CLI | `src/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |
-| ACP server | `src/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
-| HTTP API + web app | `src/louis-agent.api`, `src/louis-agent.web` or `src/louis-agent.puls` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves one of the two Blazor WebAssembly apps |
-| MCP server | `src/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
-| Orchestrator (POC) | `src/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
+| CLI | `src/hosts/louis-agent.cli` | `AgentHost.Build()` | Terminal; interactive or one-shot (`louis-agent.cli [prompt]`) |
+| ACP server | `src/hosts/louis-agent.acp-server` | `AgentHost.Build()` | [Agent Client Protocol](https://agentclientprotocol.com) JSON-RPC over stdio, for Rider's AI chat |
+| HTTP API + web app | `src/hosts/louis-agent.api`, `src/web/louis-agent.web` or `src/web/louis-agent.puls` | `AgentHost.Build()` | ASP.NET Core minimal API; Server-Sent Events; serves one of the two Blazor WebAssembly apps |
+| MCP server | `src/hosts/louis-agent.mcp-server` | `AgentHost.BuildToolHost()` | Model Context Protocol over stdio (default) or Streamable HTTP (`MCP_TRANSPORT=http`); publishes the tools, the client brings its own model |
+| Orchestrator (POC) | `src/hosts/louis-agent.orchestrator` | Own `AgentEngine` with `toolsets:` | Not a host for users: an agent that reads a service's error log and calls louis-agent.api for fixes ([samples/README.md](https://github.com/bosbevk/louis-agent/blob/pre-cl10/samples/README.md)) |
 
 ### CLI
 - Streams the answer as it is written, thinking in grey, one status line per tool call; Ctrl+C stops the current reply.
@@ -233,7 +233,7 @@ documentation is the system prompt; every file is plain markdown read by `Markdo
    describes tools the session doesn't have
 4. with the `skills` toolset only, every function skill the agent wrote (`Skills/agent/functions/*.md`)
 
-The built-in files live in `louis-agent.core/Prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
+The built-in files live in `src/engine/louis-agent.core/Prompts/`, one folder per level (`agent/`, `specialists/`, `minions/`)
 beside `toolsets/` (ADR 0017), and are read only from the assembly (`SkillFileSource`, `ManifestEmbeddedFileProvider`;
 ADR 0018), so what the model reads is fixed by the build. Files the agent writes (its function skills, its tools) are
 on disk only, in the skills folder: `SKILLS_DIRECTORY`, else the repo's `Skills/` (found by its README).

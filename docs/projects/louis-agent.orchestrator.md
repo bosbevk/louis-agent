@@ -1,6 +1,6 @@
 # louis-agent.orchestrator — design
 
-> **Kind:** console app · **Path:** `src/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
+> **Kind:** console app · **Path:** `src/hosts/louis-agent.orchestrator/` · **References:** louis-agent.core · **Talks to:**
 > louis-agent.api over HTTP + SSE · **Docker:** `Dockerfile.orchestrator` (its demo compose file was removed in CL10) ·
 > **Status:** proof of concept
 
@@ -53,7 +53,7 @@ flowchart TD
 | `CommsLog.cs` | The Markdown conversation log: per error, messages, replies, checks, summary; a run summary table |
 | `OrchestratorOptions.cs` | Settings |
 | `Messages/` | `OrchestratorToolMessage` (what its tools return and send louis-agent), `OrchestratorLogMessage` (its log lines: stderr, tagged `[orchestrator]`, and the run file with `LOG_DIRECTORY`), `OrchestratorErrorMessage` |
-| `louis-agent.core/Prompts/agent/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, built into core (CL9) |
+| `src/engine/louis-agent.core/Prompts/agent/louis-agent/voice-orchestrator.md` | The workflow every error goes through: its mode, built into core (CL9) |
 | `Skills/<service>/` | `service.md` (owners, policies) and one runbook per API method — see [Runbooks](orchestrator-runbooks.md) |
 
 ## Configuration

@@ -25,28 +25,28 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly string[] EnumFiles =
     [
-        "louis-agent.core/Agent/Toolsets/CoreToolset.cs",
-        "louis-agent.core/Skills/Languages/ScriptLanguage.cs",
+        "src/engine/louis-agent.core/Agent/Toolsets/CoreToolset.cs",
+        "src/engine/louis-agent.core/Skills/Languages/ScriptLanguage.cs",
         "packs/louis-agent.pack.where-to-buy/WhereToBuyToolset.cs",
         "packs/louis-agent.pack.shop-prices/ShopPricesToolset.cs",
         "packs/louis-agent.pack.recipes/RecipesToolset.cs",
-        "identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsToolset.cs",
+        "evals/identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsToolset.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
-        "src/louis-agent.web.shared/Api/AskedToolset.cs",
-        "src/louis-agent.web.shared/Api/ScriptLanguage.cs",
-        "identities/louis-agent.identity.puls.evals/Evals/Checks/Cook/CookMode.cs",
-        "identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsEvalName.cs",
-        "identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsEvalRole.cs",
+        "src/web/louis-agent.web.shared/Api/AskedToolset.cs",
+        "src/web/louis-agent.web.shared/Api/ScriptLanguage.cs",
+        "evals/identities/louis-agent.identity.puls.evals/Evals/Checks/Cook/CookMode.cs",
+        "evals/identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsEvalName.cs",
+        "evals/identities/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsEvalRole.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubMode.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubRole.cs",
         "identities/louis-agent.identity.puls/PulsRole.cs",
-        "src/louis-agent.puls/Text/PulsWebRole.cs",
+        "src/web/louis-agent.puls/Text/PulsWebRole.cs",
         "identities/louis-agent.identity.puls/PulsIdentity.cs",
-        "src/louis-agent.composition/IdentityKind.cs",
+        "src/hosts/louis-agent.composition/IdentityKind.cs",
         "identities/louis-agent.identity.puls/PulsPack.cs",
-        "src/louis-agent.composition/PackKind.cs",
-        "src/louis-agent.api/Endpoints/ApiErrorKind.cs",
-        "louis-agent.session-stream/StreamErrorKind.cs",
+        "src/hosts/louis-agent.composition/PackKind.cs",
+        "src/hosts/louis-agent.api/Endpoints/ApiErrorKind.cs",
+        "src/engine/louis-agent.session-stream/StreamErrorKind.cs",
     ];
 
     /// <summary>
@@ -66,7 +66,7 @@ public class RepeatedNameTests
     /// </summary>
     private static readonly (string File, string Line, string Reason)[] Exemptions =
     [
-        ("src/louis-agent.puls/Components/Landing/", "",
+        ("src/web/louis-agent.puls/Components/Landing/", "",
             "the landing page's display content: a mock of a chat, with the toolsets it pretends to use"),
         ("tests/louis-agent.evals.tests/Protocol/ProtocolWriterTests.cs", "",
             "the writer's lines are compared with the Python-recorded fixture, which holds these names: "

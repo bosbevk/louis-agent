@@ -65,13 +65,14 @@ jobs:
       - name: Formatting
         # docs/CLAUDE.md "Formatting": the .editorconfig's rules, checked only on the C# files the change's commits touched
         # (merges left out, so files that came in from main aren't counted); untouched files keep their old layout until
-        # a step changes them. A pull request compares with its base, a push to main with the commit before it; a force
-        # push has no earlier commit to compare with.
+        # a step changes them, and a file only moved (a rename with no change, R100) counts as untouched (CL28 moved
+        # 900+). A pull request compares with its base, a push to main with the commit before it; a force push has no
+        # earlier commit to compare with.
         env:
           BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then echo "No earlier commit to compare with; skipped."; exit 0; fi
-          files=$(git log --no-merges --name-only --format= --diff-filter=AMR "$BEFORE..HEAD" -- '*.cs' | sort -u)
+          files=$(git log --no-merges -M --name-status --format= --diff-filter=AMR "$BEFORE..HEAD" -- '*.cs' | awk '$1 != "R100" {print $NF}' | sort -u)
           if [ -z "$files" ]; then echo "No C# files changed."; exit 0; fi
           dotnet format louis-agent-solution.sln --verify-no-changes --no-restore --include $files
 

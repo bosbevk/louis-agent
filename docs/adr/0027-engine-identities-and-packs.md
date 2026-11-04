@@ -22,7 +22,7 @@ Considered: a copy of the engine per product (two engines drift apart); packs lo
 - **A pack** (`IAgentPack`) is what an agent can do: toolsets, providers, guides, settings, and the packs it requires,
   by name. A pack never references another pack or an identity. An identity may hold workflow code that uses its own
   packs' public types (voorman's `TriageWorkflow`). `ArchitectureTests` holds both.
-- **One composition project**, `src/louis-agent.composition`, knows them all; a host chooses with `IDENTITIES` and
+- **One composition project**, `src/hosts/louis-agent.composition`, knows them all; a host chooses with `IDENTITIES` and
   `PACKS` at start-up, and an `AgentCatalog` object is passed down, not a static.
 
 ## Consequences

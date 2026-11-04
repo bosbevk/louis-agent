@@ -17,7 +17,7 @@ strings, not markdown).
 
 ## Decision
 
-We keep the built-in prompts in `louis-agent.core/Prompts/`, one folder per level (ADR 0017) beside `toolsets/`, embed
+We keep the built-in prompts in `src/engine/louis-agent.core/Prompts/`, one folder per level (ADR 0017) beside `toolsets/`, embed
 them with a manifest (`GenerateEmbeddedFilesManifest`), and read them only through `ManifestEmbeddedFileProvider`, by
 their own paths. A file on disk never overrides one: a copy with a built-in's name is ignored, with a warning. The
 skills folder (`SKILLS_DIRECTORY`, else the repo's `Skills/`, found by its README) holds only what the agent writes:

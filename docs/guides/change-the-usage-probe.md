@@ -32,7 +32,7 @@ When the standard mapping misreads a provider (cache writes under a key of its o
 tokens):
 
 1. Write the failing case first in core's usage mapper tests (`UsageMapperTests`), with the raw counts the probe printed.
-2. Add a mapper in its provider's folder under `louis-agent.core/Llm/Providers/` (Anthropic's is
+2. Add a mapper in its provider's folder under `src/engine/louis-agent.core/Llm/Providers/` (Anthropic's is
    `AnthropicProvider/AnthropicUsageMapper.cs`), and choose it in
    `LlmClientFactory.CreateUsageMapper`: the one place a provider is picked, never a check on its name elsewhere
    ([ADR 0003](../adr/0003-provider-strategies.md)).

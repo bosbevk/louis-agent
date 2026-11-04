@@ -1,6 +1,6 @@
 # Change the ACP server
 
-> **How-to.** Change the Rider host, `src/louis-agent.acp-server`: run it in Rider, add a protocol method or a
+> **How-to.** Change the Rider host, `src/hosts/louis-agent.acp-server`: run it in Rider, add a protocol method or a
 > `session/update` kind, its texts and its tests. **Elsewhere:** how it works in
 > [louis-agent.acp-server](../projects/louis-agent.acp-server.md); the protocol at
 > [agentclientprotocol.com](https://agentclientprotocol.com).
@@ -18,7 +18,7 @@ notifications. Behaviour belongs in core.
 3. To debug without Docker, use the project's run profile in `Properties/launchSettings.json`.
 
 **stdout is the protocol.** One stray `Console.Write` corrupts it for Rider. Log through `ILogger`, which writes to
-stderr ([Messages and logging](../../louis-agent.core/CLAUDE.md#messages-and-logging)).
+stderr ([Messages and logging](../../src/engine/louis-agent.core/CLAUDE.md#messages-and-logging)).
 
 ## Add a protocol method
 

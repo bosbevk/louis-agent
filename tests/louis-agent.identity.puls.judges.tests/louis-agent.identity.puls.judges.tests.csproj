@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\identities\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />
+    <ProjectReference Include="..\..\evals\identities\louis-agent.identity.puls.judges\louis-agent.identity.puls.judges.csproj" />
     <!-- Test-only: the identity's eval files are copied beside these tests through it, so the tests read the cook's
          rubric from the file the runner reads. -->
     <ProjectReference Include="..\..\identities\louis-agent.identity.puls\louis-agent.identity.puls.csproj" />

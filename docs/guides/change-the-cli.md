@@ -1,6 +1,6 @@
 # Change the CLI
 
-> **How-to.** Change the terminal host, `src/louis-agent.cli`: how a turn is shown, a chat command, its texts, and
+> **How-to.** Change the terminal host, `src/hosts/louis-agent.cli`: how a turn is shown, a chat command, its texts, and
 > trying it. **Elsewhere:** how it works in [louis-agent.cli](../projects/louis-agent.cli.md); the engine it runs in
 > [Change the engine](change-the-engine.md).
 
@@ -11,8 +11,8 @@ do in every host belongs in core.
 ## Run it
 
 ```bash
-dotnet run --project src/louis-agent.cli                      # a chat; exit or Ctrl+D to quit
-dotnet run --project src/louis-agent.cli -- "What branch am I on?"   # one prompt, the answer alone on stdout
+dotnet run --project src/hosts/louis-agent.cli                      # a chat; exit or Ctrl+D to quit
+dotnet run --project src/hosts/louis-agent.cli -- "What branch am I on?"   # one prompt, the answer alone on stdout
 ```
 
 It finds `config/.env` and the repository root from any folder inside the repository. In Rider, its run profile is in

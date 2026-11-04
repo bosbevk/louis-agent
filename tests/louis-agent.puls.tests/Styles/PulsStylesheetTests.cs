@@ -60,7 +60,7 @@ public class PulsStylesheetTests
     /// <summary>The one rule in an area file that starts with this selector, up to its closing brace.</summary>
     private static string Rule(string file, string selector)
     {
-        string text = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src", "louis-agent.puls", "wwwroot", "css",
+        string text = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "src/web/louis-agent.puls", "wwwroot", "css",
             file));
         int start = text.IndexOf(selector, StringComparison.Ordinal);
         Assert.That(start, Is.GreaterThanOrEqualTo(0), $"{file} has {selector}");

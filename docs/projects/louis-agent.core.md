@@ -1,6 +1,6 @@
 # louis-agent.core — design
 
-> **Kind:** class library (`net10.0`) · **Path:** `louis-agent.core/` · **References:** Microsoft.Extensions.AI,
+> **Kind:** class library (`net10.0`) · **Path:** `src/engine/louis-agent.core/` · **References:** Microsoft.Extensions.AI,
 > Anthropic SDK, OpenAI and Ollama clients, dotenv.net, YamlDotNet (a prompt's header, CL27) · **Used by:** every host, the orchestrator, the tests
 
 ## Purpose
@@ -174,7 +174,7 @@ The full step-by-step is in [How a turn works](../architecture/06-runtime-view.m
 
 Folders split the code by concern and the namespace is the folder path (`LouisAgent.Core.Tools.Web`); dependencies
 point one way (Hosting → Agent → Llm, Tools, Skills, Usage, Pricing, Protocols → Guardrails → Config, Messages,
-Logging). `ArchitectureTests` holds both rules ([louis-agent.core/CLAUDE.md, Project layout](../../louis-agent.core/CLAUDE.md#project-layout)).
+Logging). `ArchitectureTests` holds both rules ([src/engine/louis-agent.core/CLAUDE.md, Project layout](../../src/engine/louis-agent.core/CLAUDE.md#project-layout)).
 
 ## Key types
 
@@ -211,7 +211,7 @@ The steps are in [Change the engine](../guides/change-the-engine.md). In short: 
 is a strategy chosen in `LlmClientFactory`, with the provider's own classes in `Llm/Providers/{Name}Provider/`
 ([Architecture: Provider strategies](../architecture/05-building-block-view.md#provider-strategies)); a new capability
 for one agent is a pack, not core. Another agent on core is
-[Building another agent on core](../../louis-agent.core/CLAUDE.md#building-another-agent-on-core).
+[Building another agent on core](../../src/engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core).
 
 ## Security
 
