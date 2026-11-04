@@ -12,16 +12,22 @@ Since F18 step 5.7 the cook looks up no shop's prices (ADR 0038: Checkers refuse
 Woolworths' robots.txt disallow their search pages). It gives estimates, marked as estimates, and names the shop's
 branch under *Where to buy*.
 
+Since F35.2 the cook no longer reads recipe pages with `FetchUrl` or `ReadRenderedPage`: it searches a recipe site
+with `FindRecipes` and reads the hit with `ReadRecipe`, which prints the recipe (ingredients, method, the photo and the
+link) from the page's own data, or the page's text when the site publishes none. The cook's prompt names no site that
+refuses readers any more: the browser refuses them in code (ADR 0068). `FetchUrl` stays for the map. The recorded
+trials below were made before this change and are graded unchanged; the re-recorded ones are step 5's.
+
 ## The modes
 
 | Mode | Puls's tools | The cook's tools | What it is |
 |---|---|---|---|
 | `puls-tools` | `web`, `shops` | — | Puls alone with the cook's tools: can't hand over, cooks itself |
-| `puls-cook` | `specialists`, `web` | `web`, `shops` | Puls as built: the web itself, cooking to the cook |
+| `puls-cook` | `specialists`, `web` | `web`, `recipes` | Puls as built: the web itself, cooking to the cook |
 
 `specialists` is not something the cook uses: it is Puls's ability to hand over. Without it Puls can only cook
 itself, which is `puls-tools`. The cook gets `web` from Puls (the recorded turn shows `toolsets: ["web"]`), and its
-role adds `shops` (F33, ADR 0025).
+role adds `recipes` (F35.2, ADR 0025; it was `shops` from F33 until F18 step 5.7 and F35.2 took them out of its header).
 
 ## The conversations
 
@@ -53,7 +59,7 @@ A trial passes only when every **required** grader passes; an Unknown never coun
 | `within-budget` | fixed rule | yes | The first turn's basket costs no more than the scenario's `budget`; a scenario that sets none passes; an answer with no amount it can read is Unknown |
 | `estimates-at-shop` | fixed rule | yes | The conversation gives estimates and says where to buy, and looks up no shop's prices: no shop tool called, no shop page read, no price given as fact, and the answer names the shop's branch under *Where to buy* (or says there is none) |
 | `untooled-shops` | fixed rule | yes | No turn's list has a price column for a shop the cook can't read (it reads Checkers through its tools, and PnP and Woolworths as a rendered page); a fail names the shops' sites |
-| `recipe-image` | fixed rule | yes | The answer shows an image the recipe page gave, never one the model made up; when no page the cook read had an image the grade is Unknown, never a Fail |
+| `recipe-image` | fixed rule | yes | The answer shows an image the recipe page gave, never one the model made up; the `recipe-photos` reader reads the print's `![name](url)` line from `ReadRecipe` (a text print's logos and share icons are left out); when no page the cook read had an image the grade is Unknown, never a Fail |
 | `serves-as-asked` | fixed rule | no | Each turn's answer names the number of people the scenario asks for |
 | `meal-for-people` | model | no | Is the last answer a meal for the number of people asked for? See below |
 | `meal-for-people.human` | human review | no | The same question put to a person, in the portal; Pending until someone grades it (F18 step 6a) |

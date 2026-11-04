@@ -3,16 +3,20 @@ using LouisAgent.Core.Skills;
 
 namespace LouisAgent.Identities.Puls.Tests;
 
-// F18 step 5.7.2 (Louis, 2026-10-25: "update the router voice.md too all prompts to work with the new functionality"): step 5.7 made the cook look up no prices
-// and name the shop's branch; the router and the cook's reading rule say the same. Written first: the router still promised prices and photos.
+/// <summary>
+/// The router and the cook say the same about prices (F18 step 5.7.2, Louis, 2026-10-25: "update the router voice.md
+/// too all prompts to work with the new functionality"): the cook looks up no prices and names the shop's branch.
+/// </summary>
 public class PulsEstimatesPromptsTests
 {
+    /// <summary>One built-in prompt's text, header and all.</summary>
     private static string Read(string path) =>
         SkillFileSource.ReadEmbedded(path) ?? throw new FileNotFoundException(path);
 
     /// <summary>A prompt with its line breaks and indents as single spaces, for a phrase the file wraps.</summary>
     private static string Flat(string text) => Regex.Replace(text, @"\s+", " ");
 
+    /// <summary>Puls promises estimates and where to buy, never today's prices.</summary>
     [Test]
     public void TheRouter_PromisesEstimatesAndWhereToBuy_NotTodaysPrices()
     {
@@ -24,16 +28,19 @@ public class PulsEstimatesPromptsTests
         Assert.That(router, Does.Not.Contain("It has the pages and prices you never saw"));
     }
 
+    /// <summary>Puls's brief to the cook asks for no product photos; the recipe image is the cook's own rule.</summary>
     [Test]
     public void TheBrief_AsksForNoProductPhotos()
     {
-        // The cook shows no product photos ("no brand, no photo"); its one recipe image is its own rule, the brief doesn't ask for it.
+        // The cook shows no product photos ("no brand, no photo"); its one recipe image is its own rule, the brief
+        // doesn't ask for it.
         string router = Read("agent/puls/voice.md");
 
         Assert.That(router, Does.Not.Contain("sy foto").And.Not.Contain("its photo").And.Not.Contain("with its photo"));
         Assert.That(router, Does.Not.Contain("elke produk"));
     }
 
+    /// <summary>The shop line in the brief makes the cook name the branch and estimate the prices.</summary>
     [Test]
     public void TheShopLine_NamesTheBranch_AndEstimatesThePrices()
     {
@@ -46,6 +53,7 @@ public class PulsEstimatesPromptsTests
         Assert.That(router, Does.Contain("A follow-up keeps the shop until the user changes it"));
     }
 
+    /// <summary>The routing rows for cooking and shopping estimate the costs and compare no shop's prices.</summary>
     [Test]
     public void TheRolesRows_EstimateTheCosts_AndNameTheBranch_ComparingNoShopsPrices()
     {
@@ -62,6 +70,7 @@ public class PulsEstimatesPromptsTests
             Does.Contain("no comparison of shops' prices"));
     }
 
+    /// <summary>A user who asks for a real price is told, in either language, that none is looked up for now.</summary>
     [Test]
     public void AUserAskingForARealPrice_IsToldPulsDoesNotLookShopsPricesUpForNow()
     {
@@ -69,28 +78,11 @@ public class PulsEstimatesPromptsTests
 
         Assert.That(router,
             Does.Contain(
-                "Ek soek vir eers nie winkels se pryse op nie (ek het hulle om toestemming gevra); die koste is skattings."));
+                "Ek soek vir eers nie winkels se pryse op nie (ek het hulle om toestemming gevra); " +
+                "die koste is skattings."));
         Assert.That(router,
             Does.Contain(
                 "I don't look up shops' prices for now (I asked them for permission); the costs are estimates."));
         Assert.That(router, Does.Contain("Never offer another shop's prices instead"));
-    }
-
-    [Test]
-    public void TheCook_SkipsTheSitesThatRefuseAiReaders_ADecisionOfADR0038()
-    {
-        // 5.7.0 found these disallow Claude by name in robots.txt (Huisgenoot and SARIE are netwerk24.com, Food24 is News24), or answer with a captcha
-        // (Boerekos) or a 429 (News24): a site that refuses automated readers refuses this one. The check in code is Sources as data's RobotsPolicy.
-        string cook = Flat(Read("specialists/puls-cook.md"));
-
-        foreach (string domain in new[]
-                 {
-                     "huisgenoot.com", "sarie.com", "netwerk24.com", "news24.com", "food24.com", "maroelamedia.co.za",
-                     "eatout.co.za", "halaal.recipes", "boerekos.co.za"
-                 })
-            Assert.That(cook, Does.Contain($"`{domain}`"), domain);
-        Assert.That(cook, Does.Contain("Skip the results on these sites"));
-        Assert.That(cook,
-            Does.Contain("answers with a captcha or a block, or holds no recipe is dropped for the next result"));
     }
 }

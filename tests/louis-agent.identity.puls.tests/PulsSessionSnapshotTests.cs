@@ -6,6 +6,7 @@ using System.Text.Json;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
+using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.Shops;
@@ -15,9 +16,9 @@ namespace LouisAgent.Identities.Puls.Tests;
 
 /// <summary>
 /// Pins what the model is sent in a Puls session: the chat (puls/voice-af with specialists and web, as the web app
-/// opens it) and the cook (puls-cook with web and shops, as Puls hands it the work). Core's golden never saw a Puls
-/// session, so this one is the proof that the identity keeps what it sends. A deliberate change regenerates it with
-/// LOUIS_UPDATE_GOLDEN=1: run, review the diff, commit.
+/// opens it) and the cook (puls-cook with web and what its header declares, as Puls hands it the work). Core's
+/// golden never saw a Puls session, so this one is the proof that the identity keeps what it sends. A deliberate
+/// change regenerates it with LOUIS_UPDATE_GOLDEN=1: run, review the diff, commit.
 /// </summary>
 public class PulsSessionSnapshotTests
 {
@@ -59,10 +60,13 @@ public class PulsSessionSnapshotTests
             BrowserUrl = "http://browser.test:9222",
         };
         // The shops are a pack Puls names, with its own settings; the catalogue is what IDENTITIES=puls builds.
-        // The recipes pack is the other one Puls names; the cook's session here doesn't name it, so its settings stay
-        // unset.
+        // The recipes pack is the other one Puls names, with every site on as the deployments have it
+        // (RECIPE_SOURCES=*), because the cook's header asks for its toolset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" }), new RecipesPack(new RecipesOptions())]);
+        [
+            new ShopsPack(new ShopsOptions { ShopCatalogues = "checkers" }),
+            new RecipesPack(new RecipesOptions { RecipeSources = "*" })
+        ]);
         return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);
     }
 
@@ -80,6 +84,16 @@ public class PulsSessionSnapshotTests
     };
 
     /// <summary>
+    /// The toolsets the cook's session opens with, as Puls hands it the work: <c>web</c> from Puls, plus whatever the
+    /// cook's own header declares (ADR 0025), so a change to the header changes the golden and no list is typed here.
+    /// </summary>
+    private static IEnumerable<string> CookToolsets() =>
+        ToolsetCatalog.Normalise([
+            CoreToolset.Web.Wire(), .. SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(),
+                RoleLevel.Specialist)
+        ]);
+
+    /// <summary>
     /// Both sessions as one JSON text, with this machine's temporary folder replaced so the file is the same
     /// everywhere.
     /// </summary>
@@ -90,8 +104,7 @@ public class PulsSessionSnapshotTests
         {
             Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()], "puls/voice-af",
                 RoleLevel.Agent)),
-            Cook = View(factory.GetOrCreate([CoreToolset.Web.Wire(), ShopsToolset.Shops.Wire()], PulsRole.Cook.Wire(),
-                RoleLevel.Specialist)),
+            Cook = View(factory.GetOrCreate(CookToolsets(), PulsRole.Cook.Wire(), RoleLevel.Specialist)),
         };
         return JsonSerializer.Serialize(snapshot, Json)
             .Replace(JsonEncodedText.Encode(_skillsDir).ToString(), "<skills>")
