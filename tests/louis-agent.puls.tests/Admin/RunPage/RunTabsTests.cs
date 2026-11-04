@@ -20,7 +20,7 @@ public class RunTabsTests
     /// <summary>No tab in the address, or one that doesn't exist, opens the summary.</summary>
     [TestCase(null)]
     [TestCase("")]
-    [TestCase("recipes")]
+    [TestCase("pantry")]
     public void NoTabOrAnUnknownOne_OpensTheSummary(string? query) =>
         Assert.That(RunTabs.Parse(query), Is.EqualTo(RunTab.Summary));
 

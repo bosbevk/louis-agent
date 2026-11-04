@@ -642,6 +642,21 @@ goes in F35.2. One more request per host per day. A recorded trial from before t
   - **V1, a home with a path holds its results:** `SiteWebSearch` limits the provider by host, then keeps only results
     under the row's home, so the rest of `novanews.co.za` isn't listed as Rooi Rose. (V2 left it as a note, V3 removed
     the site.)
+- **2026-11-04, step 5, two findings from the saved pages and the shops' shape (picks W1, X1).**
+  - **W1, how much a recipe makes:** the record keeps the page's last yield text and the print says *Makes*, never
+    *Serves*. The first text was wrong on real pages: Foodle Club writes `["1", "1 9\" milk tart"]`, which printed
+    *Serves 1* for a whole tart, and The Big Tasty Bite `["10", "10 pies"]`. (W2 kept the first text and printed
+    *Makes*, W3 was the brief's *Serves*.)
+  - **X1, how the model learns the sites:** `source`'s description is a fixed text with examples and an unknown name
+    answers with the enabled ones, as shops does; a description can't name what a deployment turned on. (X2 listed
+    every site in the guide, X3 built the description at run time.)
+  - **Y1, a quote mark no longer loses a recipe:** the hand check and the saved pages showed `JsonLdBlocks` decoding a
+    whole block before parsing it, so `&quot;` inside a string broke the JSON and the block was dropped: Foodle Club and
+    The Cinnamon Jar fell to text. It now parses the raw text first and decodes the whole block only if that fails, and
+    the mapper decodes each text value (Tolerant Reader, Fowler). Fixed in step 5 by Louis's pick. (Y2 was its own fix
+    first, Y3 leaving it as a limit.)
+  - **Z1, the `recipes` name scan:** three unrelated tests used the word, so their examples changed and they are fixed
+    whole in this commit. (Z2 exempted the lines, Z3 skipped their summaries.)
 
 ## F35.2 (planned when it starts)
 

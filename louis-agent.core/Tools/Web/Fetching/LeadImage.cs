@@ -103,7 +103,7 @@ internal static partial class LeadImage
     /// </summary>
     private static string? FirstFile(JsonElement image) => image.ValueKind switch
     {
-        JsonValueKind.String => image.GetString() is { Length: > 0 } text ? text : null,
+        JsonValueKind.String => image.GetString() is { Length: > 0 } text ? WebUtility.HtmlDecode(text) : null,
         JsonValueKind.Object => image.TryGetProperty("url", out var url) ? FirstFile(url) : null,
         JsonValueKind.Array => image.EnumerateArray().Select(FirstFile).FirstOrDefault(file => file is not null),
         _ => null,

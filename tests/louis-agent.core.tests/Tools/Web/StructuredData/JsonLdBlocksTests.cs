@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.StructuredData;
 
 namespace LouisAgent.Core.Tests.Tools.Web.StructuredData;
@@ -77,6 +78,45 @@ public class JsonLdBlocksTests
         {
             DisposeAll(blocks);
         }
+    }
+
+    /// <summary>
+    /// A script tag's JSON isn't HTML, so a page that writes a real quote as <c>&amp;quot;</c> inside a string (and
+    /// the rest of the block as plain JSON) must not lose the block. The entity stays as the page wrote it; reading
+    /// it is the caller's job.
+    /// </summary>
+    [Test]
+    public void AnEntityInsideAString_DoesNotDropTheBlock()
+    {
+        string html = Block("""{"@type":"Recipe","recipeInstructions":"Grease a 9&quot; pie dish"}""");
+
+        var blocks = JsonLdBlocks.In(html);
+
+        try
+        {
+            Assert.That(blocks, Has.Count.EqualTo(1));
+            Assert.That(blocks[0].RootElement.GetProperty("recipeInstructions").GetString(),
+                Is.EqualTo("Grease a 9&quot; pie dish"));
+        }
+        finally
+        {
+            DisposeAll(blocks);
+        }
+    }
+
+    /// <summary>
+    /// The lead image reads its address from this data, so an address written <c>?w=1&amp;amp;h=2</c> in it is
+    /// <c>?w=1&amp;h=2</c>: the file the page means.
+    /// </summary>
+    [Test]
+    public void AnEntityInTheLeadImageAddress_IsReadAsItsCharacter()
+    {
+        const string json = """{"@type":"Recipe","image":"https://r.example.co.za/a.jpg?w=1&amp;h=2"}""";
+        string html = $"<html><head><title>Tart</title>{Block(json)}</head></html>";
+
+        string? image = LeadImage.Of(html, new Uri("https://r.example.co.za/tart/"), "Tart");
+
+        Assert.That(image, Is.EqualTo("![Tart](https://r.example.co.za/a.jpg?w=1&h=2)"));
     }
 
     /// <summary>A broken block is left out without a fuss, and the good one after it still comes back.</summary>

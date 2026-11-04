@@ -10,7 +10,8 @@ namespace LouisAgent.Packs.Recipes.Recipes;
 /// </remarks>
 /// <param name="Name">The recipe's title (the page's <c>name</c>).</param>
 /// <param name="Yield">
-/// How much it makes, as written (the page's <c>recipeYield</c>); the first one if it lists several.
+/// How much it makes, as written (the page's <c>recipeYield</c>); the last one if it lists several, because pages put
+/// the bare number first and the words after it (<c>["10", "10 pies"]</c>).
 /// </param>
 /// <param name="PrepTime">Time to get ready (the page's <c>prepTime</c>).</param>
 /// <param name="CookTime">Time on the heat (the page's <c>cookTime</c>).</param>

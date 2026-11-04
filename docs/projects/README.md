@@ -13,6 +13,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `identities/louis-agent.identity.puls` | Class library | Who Puls is: its voice and modes, its roles, the packs it names (`shops`); its prompts embedded with their paths | [identity.puls](louis-agent.identity.puls.md) |
 | `identities/louis-agent.identity.puls.judges` | Class library | Puls's model judge, the cook's `meal-for-people`, apart from the identity because it needs the harness; only the runner references it | [identity.puls.judges](louis-agent.identity.puls.judges.md) |
 | `packs/louis-agent.pack.shops` | Class library | What the shops are: the `shops` toolset (a shop's products, specials and promotions from its own catalogue), its guide, its settings (`SHOP_CATALOGUES`, `SHOP_STORE_CACHE`) and its texts | [pack.shops](louis-agent.pack.shops.md) |
+| `packs/louis-agent.pack.recipes` | Class library | What the recipes are: the `recipes` toolset (search an enabled South African recipe site, read any recipe page), its guide, its setting (`RECIPE_SOURCES`) and its texts | [pack.recipes](louis-agent.pack.recipes.md) |
 | `src/louis-agent.composition` | Class library | The composition root: the one project that references every identity and pack; `Plugins.FromEnvironment()` builds the `AgentCatalog` a host runs with, from `IDENTITIES` and `PACKS` | [composition](louis-agent.composition.md) |
 | `src/louis-agent.cli` | Console app | Chat with the agent in a terminal | [cli](louis-agent.cli.md) |
 | `src/louis-agent.acp-server` | Console app (stdio) | The agent inside JetBrains Rider's AI chat (Agent Client Protocol) | [acp-server](louis-agent.acp-server.md) |
@@ -51,9 +52,10 @@ flowchart BT
     Probe["louis-agent.usage-probe"] --> Core
     Orch -. "HTTP + SSE<br/>(sessions)" .-> API
     Comp["louis-agent.composition"] --> Core
-    Comp --> Puls_id["louis-agent.identity.puls"] & Shops["louis-agent.pack.shops"]
+    Comp --> Puls_id["louis-agent.identity.puls"] & Shops["louis-agent.pack.shops"] & Recipes["louis-agent.pack.recipes"]
     Puls_id --> Core
     Shops --> Core
+    Recipes --> Core
     CLI & ACP & API & MCP --> Comp
     CoreTests["louis-agent.core.tests"] --> Core
     OrchTests["louis-agent.orchestrator.tests"] --> Orch

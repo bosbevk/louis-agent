@@ -1,0 +1,126 @@
+# louis-agent.pack.recipes — design
+
+> **Kind:** class library (`net10.0`) · **Path:** `packs/louis-agent.pack.recipes/` · **References:** louis-agent.core,
+> Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `PACKS=recipes` (an identity names it from F35.2) ·
+> **Uses:** core's guarded browser (`BROWSER_URL`) and, for some sites, core's web search provider
+
+## Purpose
+
+What an agent can do with recipes: search a South African recipe site, and read a recipe page into numbered
+ingredients and method lines. A model that reads a recipe page as raw text wastes its context on menus and comments
+and can slip on an amount; this pack reads the recipe the page publishes for machines (schema.org's `Recipe`) in code
+and hands the model a short, exact print. It is a pack ([ADR 0027](../adr/0027-engine-identities-and-packs.md)), so
+any identity can use it, and it could be served as an MCP server unchanged
+([ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md)).
+
+## How it works
+
+- **One toolset, `recipes`.** `RecipesPack` defines it with its guide (`Prompts/toolsets/recipes.md`) and its two
+  tools. It loads only where `RECIPE_SOURCES` names a site and `BROWSER_URL` gives a browser; otherwise
+  `GET /v1/toolsets` lists it with the setting it lacks. Its calls only read, so a round's calls run at once.
+- **A search.** `RecipeTools.FindRecipes(source, query, maxResults)` looks the site up by its short name (any case),
+  asks that site's `IRecipeSource` and prints the pages it lists, numbered `1. {title} · {link}`, in the site's own
+  order, at most 10 and five by default. The result is framed `--- untrusted recipe data … ---`. A hit can be a page
+  that is not a recipe (an article, a round-up), and the description and the guide say so.
+- **Two ways to search.** A site's row says how: `WordPressSearch` opens the site's own `/?s=` page through the browser
+  and reads the headings that link back to the site; `SiteWebSearch` asks the web search provider for that site only.
+- **A page.** `ReadRecipe(url)` takes any public web address (not only the enabled sites), visits it in the guarded
+  browser and reads the `Recipe` in its JSON-LD (`SchemaOrgRecipe`). `RecipePrinter` prints it: the name, one line
+  *Makes {yield} · prep 20 min · cook 30 min · total 50 min* with only the parts the page gave, the ingredients as
+  written and the method as numbered lines (a section's name as a sub-heading), the photo, the author and the link,
+  with at most 60 ingredients and 60 steps and a line when it cuts.
+- **A page without recipe data.** It comes back as the page's text (core's `HtmlText.ToText`), framed, labelled *{host}
+  publishes no recipe data; this is the page's text*, cut at 8,000 characters (and said so), then the link.
+- **Failures are text.** A site's refusal, the browser's refusal (a private address, a page a site's `robots.txt`
+  disallows), a bad address or an unknown site comes back as a result with its reason (`RecipeToolMessage`), never an
+  exception. A bad address is refused before the browser is asked for anything.
+
+## Design notes
+
+What F35.1 settled, and why (the plan's decisions are in `docs/plans/F35-recipe-sources.md` until the feature ends):
+
+- **Data first, text second** ([ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md)). A page that publishes a
+  whole recipe is printed from that data; one that doesn't, or whose `Recipe` has no ingredients or no steps, is served
+  as its text and labelled, so the model never takes a page's words for a recipe the page didn't mark up.
+- **It makes, it does not serve.** The record keeps the page's last yield text and the print says *Makes*. The first
+  text was wrong on real pages: Foodle Club writes `["1", "1 9\" milk tart"]` (printed *Serves 1* for a whole tart) and
+  The Big Tasty Bite `["10", "10 pies"]`.
+- **The sites are content, not code** ([ADR 0011](../adr/0011-prompts-are-content.md)). A site is a row in
+  `Sources/Sites/recipe-sites.md`, with the day its `robots.txt` and pages were read, and a site that later says no is a
+  change to the table. The model learns the slugs from the `source` parameter's description (two examples and `*`) and
+  from the answer to an unknown name, which names the enabled ones; the guide does not list them.
+- **Every fetch obeys `robots.txt`** ([ADR 0068](../adr/0068-every-fetch-obeys-robots-txt.md)) in the browser, and the
+  browser says what it is ([ADR 0038](../adr/0038-the-browser-says-what-it-is.md)); this pack adds nothing there.
+- **A numbered print, not JSON.** A model quotes a line by its number, and reads a list better than braces. The same
+  recipe always prints the same text, so a test can hold it.
+- **Off until named** ([ADR 0023](../adr/0023-copyleft-service-beside-us.md)): nothing is enabled until
+  `RECIPE_SOURCES` names it, so a site whose terms nobody read is not read.
+
+## Structure
+
+| Path | What's in it |
+|---|---|
+| `RecipesPack.cs`, `RecipesToolset.cs` | The pack: the `recipes` toolset, what it needs, how its tools are built; its own toolset enum (ADR 0043) |
+| `RecipesOptions.cs` | The pack's own setting, `RECIPE_SOURCES`, read once from the environment |
+| `Tools/RecipeTools.cs` | The two tools, `FindRecipes` and `ReadRecipe` |
+| `Tools/RecipePrinter.cs` | The markdown print of a `Recipe`, bounded |
+| `Recipes/` | `Recipe` and `RecipeStep` (the record), `SchemaOrgRecipe` (reads a page's JSON-LD into it), `SchemaOrgValues` (the loose shapes) |
+| `Sources/` | `IRecipeSource`, `RecipeHit`, `RecipeSourceException`, `RecipeSourceFactory` (the enabled sites and the search each gets) |
+| `Sources/Sites/` | `RecipeSites` (reads the table), `RecipeSite`, the choices `RecipeReadBy` and `RecipeSearch`, and `recipe-sites.md`, the table |
+| `Providers/` | `WordPressSearch`, `SiteWebSearch`, `SearchResultLinks` (the hits out of a search page) |
+| `Messages/` | `RecipeToolMessage` (what the tools return, pinned by a golden), `RecipeLogMessage`, `RecipeErrorMessage` |
+| `Prompts/toolsets/recipes.md` | The guide the model reads with the toolset: its routing line, the tools, how to search and read |
+
+## Configuration
+
+| Setting | What it does |
+|---|---|
+| `RECIPE_SOURCES` | The sites that may be searched, comma separated slugs (`foodandhome,thelazymakoti`), or `*` for every site in the table. Unset: the toolset is off |
+| `BROWSER_URL` | Core's headless browser, which pages and WordPress searches are read through (core's setting) |
+
+A site searched through the web needs a search provider configured (core's `WEB_SEARCH_PROVIDER` settings). On a
+machine whose `config/.env` sets `ROLES_ENABLED` for Puls, a server started with only `PACKS=recipes` refuses to start
+(the roles it names aren't there), so it needs `IDENTITIES=puls` too. Details in [Setup](../SETUP.md).
+
+## Extending it
+
+A new site is a row in `Sources/Sites/recipe-sites.md`, added only after its `robots.txt` (the `*` group and the
+groups for AI readers), the robots meta and `X-Robots-Tag` of a recipe page (`noai`, `noimageai`) and any
+text-and-data-mining reservation were read, with that day in the `checked` column. Set `read by` to what a recipe page
+showed (`data` or `text`) and `search` to `wordpress` when the site's own `/?s=` page is allowed and readable, else
+`web`. The table's tests then pick it up. A pack like this one from scratch is
+[Build a pack](../guides/build-a-pack.md).
+
+## Tests
+
+`tests/louis-agent.pack.recipes.tests`, mirroring the folders: `RecipesPackTests` (the toolset needs a site and a
+browser, the guide and the table are embedded, the guide routes here and says a hit may not be a recipe),
+`RecipeToolsTests` (the search and the reading on fake sites and a fake browser: the frame, the numbering, every
+refusal, the text path and its cut), `RecipePrinterTests`, `SchemaOrgRecipeTests` (on recorded pages and made-up
+blocks), `WordPressSearchTests`, `SiteWebSearchTests`, `SearchResultLinksTests` and `RecipeSitesTests`,
+`RecipeSourceFactoryTests`, and `RecipeToolMessageSnapshotTests` with its golden of the model-facing texts.
+`PackConvertibilityTests` (composition tests) checks the MCP shapes.
+
+## Limits and plans
+
+- **Measured and not.** The table comes from step 0's saved pages and `curl`: 13 of the 45 sites publish a whole recipe
+  in their data, 20 are searched through WordPress and 25 through the web search. None of it has yet gone through the
+  real Chrome container except the one hand check of step 5; a site that draws its recipe with JavaScript, or answers
+  Chrome differently from `curl`, shows only on a live run.
+- A page's text starts with the site's navigation (menus, basket), because the text reader keeps the page as a person
+  would see it, so the recipe may begin well into the 8,000 characters.
+- SearXNG's site-limited results can be weak: The Daley Plate's bobotie search gave its home page and a category.
+- A hit may not be a recipe (an article, a category, a home page); the model reads the titles first.
+- A recipe whose page marks it up as microdata, not JSON-LD, is read as text (`thekatetin`, in the table's signals).
+- The recipe's yield stays text (*4 to 6*, *10 pies*); a number comes later, when something has to scale it.
+- Searching through the web costs what the search provider charges, and a result on another host is dropped.
+- The pack is not in Puls's pack list yet; F35.2 adds it with the cook's use of it.
+
+## Related docs
+
+[Build a pack](../guides/build-a-pack.md) · [louis-agent.pack.shops](louis-agent.pack.shops.md) ·
+[ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md) · [ADR 0068](../adr/0068-every-fetch-obeys-robots-txt.md) ·
+[For site owners](../SITE_OWNERS.md)
+
+---
+[Projects](README.md) · Previous: [louis-agent.pack.shops](louis-agent.pack.shops.md) · Next: [louis-agent.composition](louis-agent.composition.md)

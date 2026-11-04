@@ -1,14 +1,15 @@
-
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.Shops;
 using LouisAgent.Choices;
 
 namespace LouisAgent.Composition;
+
 /// <summary>
 /// The composition root (CL15, ADR 0027): the one place that knows every identity and pack. A host calls
 /// <see cref="FromEnvironment"/> once at start-up and hands the catalogue to <c>AgentHost.Build</c>; the catalogue then
@@ -29,9 +30,9 @@ public static class Plugins
     }
 
     /// <summary>
-    /// <c>IDENTITIES=puls</c> and <c>PACKS=shops</c>, comma separated, case ignored, each name once: every identity with the
-    /// packs it names, plus the packs named on their own; one instance per pack, however often it is named. An unknown
-    /// name is refused before anything is built; unset loads nothing.
+    /// <c>IDENTITIES=puls</c> and <c>PACKS=shops</c>, comma separated, case ignored, each name once: every identity
+    /// with the packs it names, plus the packs named on their own; one instance per pack, however often it is named.
+    /// An unknown name is refused before anything is built; unset loads nothing.
     /// </summary>
     public static AgentCatalog FromSettings(string? identities, string? packs)
     {
@@ -48,18 +49,25 @@ public static class Plugins
         return new AgentCatalog(chosen, named.Select(Create).ToList());
     }
 
+    /// <summary>Builds the identity of that kind.</summary>
     private static IAgentIdentity Create(IdentityKind kind) => kind switch
     {
         IdentityKind.Puls => new PulsIdentity(),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 
+    /// <summary>Builds the pack of that kind, with the settings it reads from the environment.</summary>
     private static IAgentPack Create(PackKind kind) => kind switch
     {
         PackKind.Shops => new ShopsPack(ShopsOptions.FromEnvironment()),
+        PackKind.Recipes => new RecipesPack(RecipesOptions.FromEnvironment()),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 
+    /// <summary>
+    /// Reads a comma separated setting as members of the enum, each once, or refuses a name that isn't one and says
+    /// which are.
+    /// </summary>
     private static IReadOnlyList<T> Parse<T>(string? setting, CompositionErrorMessage unknown) where T : struct, Enum
     {
         var kinds = new List<T>();

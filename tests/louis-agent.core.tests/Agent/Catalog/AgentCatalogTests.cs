@@ -12,11 +12,14 @@ using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Core.Tests.Agent.Catalog;
 
-// CL15 step 1: one catalogue object, built once by the host from the identities and packs it was given, checked as it
-// is built, and passed down; core's own toolsets stay in ToolsetCatalog. Every test builds its own catalogue from a
-// FakeIdentity and a FakePack: no global state.
+/// <summary>
+/// Checks the one catalogue a host builds from the identities and packs it was given: it is checked as it is built
+/// and passed down, and core's own toolsets stay in <c>ToolsetCatalog</c>. Every test builds its own catalogue from a
+/// fake identity and a fake pack, so there is no global state.
+/// </summary>
 public class AgentCatalogTests
 {
+    /// <summary>A toolset context from a real engine factory, for resolving toolsets.</summary>
     private static ToolsetContext Context() => new AgentEngineFactory(new FakeChatClient(), new AgentOptions
     {
         WorkspaceRoot = TestPaths.RepoRoot,
@@ -24,10 +27,12 @@ public class AgentCatalogTests
         RatesUrl = null,
     }).Context;
 
+    /// <summary>A catalogue of the identities and packs given, none if left out.</summary>
     private static AgentCatalog Catalog(IReadOnlyList<IAgentIdentity>? identities = null,
         IReadOnlyList<IAgentPack>? packs = null) =>
         new(identities ?? [], packs ?? []);
 
+    /// <summary>A pack's toolset is found beside core's, in the catalogue's order.</summary>
     [Test]
     public void APacksToolset_ResolvesThroughTheCatalogue_BesideCores()
     {
@@ -44,6 +49,7 @@ public class AgentCatalogTests
         Assert.That(catalog.Prompts, Has.Count.EqualTo(2), "the identity's and the pack's, for the prompt reader");
     }
 
+    /// <summary>Two identities that name the same pack get one pack, not two.</summary>
     [Test]
     public void TwoIdentities_NamingOnePack_ShareIt()
     {
@@ -54,6 +60,7 @@ public class AgentCatalogTests
         Assert.That(catalog.Toolsets.Count(t => t.Name == "fakeshop"), Is.EqualTo(1));
     }
 
+    /// <summary>Two packs with the same name can't both be registered.</summary>
     [Test]
     public void APackNamedTwice_IsRefused()
     {
@@ -63,6 +70,7 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("same").And.Contain("pack"));
     }
 
+    /// <summary>A pack can't take the name of one of core's toolsets.</summary>
     [Test]
     public void AToolsetNamedLikeCores_IsRefused()
     {
@@ -74,6 +82,7 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain(CoreToolset.Web.Wire()).And.Contain("toolset"));
     }
 
+    /// <summary>The same prompt file in two places is refused, so the reader never has to choose.</summary>
     [Test]
     public void APromptPathInTwoPlaces_IsRefused()
     {
@@ -88,6 +97,7 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("agent/shared/voice.md"));
     }
 
+    /// <summary>A pack an identity or a pack asks for that nobody registered is refused, naming what is.</summary>
     [Test]
     public void ANameThatResolvesToNothing_IsRefused_ListingTheRegisteredOnes()
     {
@@ -96,10 +106,11 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("nothing").And.Contain("fakeid").And.Contain("fakeshop"));
 
         var required = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
-            [new FakePack("cooking", requires: ["recipes"])]))!;
-        Assert.That(required.Message, Does.Contain("recipes").And.Contain("cooking"));
+            [new FakePack("cooking", requires: ["pantry"])]))!;
+        Assert.That(required.Message, Does.Contain("pantry").And.Contain("cooking"));
     }
 
+    /// <summary>Packs that need each other in a circle are refused.</summary>
     [Test]
     public void ARequiresCycle_IsRefused()
     {
@@ -111,6 +122,7 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("cycle").And.Contain("a").And.Contain("b"));
     }
 
+    /// <summary>A tool name two toolsets share, or one the engine already has, stops start-up.</summary>
     [Test]
     public void AToolNameInTwoToolsets_OrTheEngines_IsRefusedAtStartUp()
     {
@@ -126,6 +138,7 @@ public class AgentCatalogTests
         Assert.That(taken.Message, Does.Contain("GetToday").And.Contain("engine"), "named as the engine's own");
     }
 
+    /// <summary>The packs' tools count as taken, so a tool the agent builds can't reuse one's name.</summary>
     [Test]
     public void ToolNames_CountThePacksTools_SoAnAgentBuiltToolCantTakeOne()
     {
@@ -142,9 +155,17 @@ public class AgentCatalogTests
         string skills = Directory.CreateTempSubdirectory("catalog-").FullName;
         try
         {
-            var options = new AgentOptions { WorkspaceRoot = skills, SkillsDirectory = skills, RatesUrl = null };
+            var options = new AgentOptions
+            {
+                WorkspaceRoot = skills,
+                SkillsDirectory = skills,
+                RatesUrl = null
+            };
             var engine = new AgentEngine(SkillLoader.Load(options), new FakeChatClient(), options)
-            { SkillsDirectory = skills, ReservedToolNames = catalog.ToolNames };
+            {
+                SkillsDirectory = skills,
+                ReservedToolNames = catalog.ToolNames
+            };
             string refused =
                 engine.CreateTool(
                     "# Tool: FindFakeProducts\n- Description: mine\n- Implementation:\n```python\nprint(1)\n```\n");
@@ -156,6 +177,7 @@ public class AgentCatalogTests
         }
     }
 
+    /// <summary>Public methods of the tool class are the tools; each becomes a function with its description.</summary>
     [Test]
     public void TheOneRule_ForWhichMethodsAreTools_AndHowEachBecomesAFunction()
     {
@@ -171,6 +193,7 @@ public class AgentCatalogTests
         Assert.That(function.JsonSchema.GetRawText(), Does.Contain("query"));
     }
 
+    /// <summary>With no identity and no pack, the catalogue is core's toolsets and nothing else.</summary>
     [Test]
     public void CoreOnly_IsEverythingAsToday()
     {
@@ -185,6 +208,7 @@ public class AgentCatalogTests
             Is.EqualTo(new[] { CoreToolset.Files.Wire(), CoreToolset.Git.Wire() }));
     }
 
+    /// <summary>The prompt reader takes the same providers again quietly, and refuses new ones after a read.</summary>
     [Test]
     public void Prompts_UsedAgain_DoNothing_AndNewOnesAfterARead_AreRefused()
     {
@@ -200,6 +224,7 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("after"));
     }
 
+    /// <summary>A role named in <c>ROLES_ENABLED</c> that this instance doesn't have stops start-up.</summary>
     [Test]
     public void StartUp_RefusesARolesEnabledName_ThisInstanceDoesntHave()
     {
@@ -217,10 +242,14 @@ public class AgentCatalogTests
         Assert.DoesNotThrow(() =>
             RoleFiles.Check(
                 new AgentOptions
-                { WorkspaceRoot = TestPaths.RepoRoot, RolesEnabled = ["testprod-specialist", "testprod/voice-af"] },
+                {
+                    WorkspaceRoot = TestPaths.RepoRoot,
+                    RolesEnabled = ["testprod-specialist", "testprod/voice-af"]
+                },
                 RoleCatalog.DefaultVoice));
     }
 
+    /// <summary>A default mode that points at no file stops start-up.</summary>
     [Test]
     public void StartUp_RefusesADefaultMode_ThatResolvesToNoFile()
     {

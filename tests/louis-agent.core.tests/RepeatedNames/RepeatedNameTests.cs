@@ -28,6 +28,7 @@ public class RepeatedNameTests
         "louis-agent.core/Agent/Toolsets/CoreToolset.cs",
         "louis-agent.core/Skills/Languages/ScriptLanguage.cs",
         "packs/louis-agent.pack.shops/ShopsToolset.cs",
+        "packs/louis-agent.pack.recipes/RecipesToolset.cs",
         "identities/louis-agent.identity.puls/Evals/Checks/Shared/PulsToolset.cs",
         "evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
         "src/louis-agent.web.shared/Api/AskedToolset.cs",

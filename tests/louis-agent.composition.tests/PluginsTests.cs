@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.Shops;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
@@ -8,12 +9,14 @@ using LouisAgent.Core.Tools.Web.Search;
 
 namespace LouisAgent.Composition.Tests;
 
-// CL15 step 2: the composition root chooses. IDENTITIES and PACKS, parsed once as enums (ADR 0024), become one
-// catalogue; an unknown name is refused before anything is built; unset loads nothing, so the code-review stack never
-// carries Puls. Run in order where the environment is touched: the one test that reads config/.env sets a process
-// variable, which it clears again.
+/// <summary>
+/// Checks that the composition root chooses: <c>IDENTITIES</c> and <c>PACKS</c>, parsed once as enums (ADR 0024),
+/// become one catalogue; an unknown name is refused before anything is built; unset loads nothing, so the code-review
+/// stack never carries Puls. The tests that touch the environment set a process variable and clear it again.
+/// </summary>
 public class PluginsTests
 {
+    /// <summary>The identities named are loaded, once each, and unset loads none.</summary>
     [Test]
     public void Identities_LoadsTheNamedOnes_AndUnsetNone()
     {
@@ -28,6 +31,7 @@ public class PluginsTests
         Assert.That(Plugins.FromSettings("", "").Identities, Is.Empty);
     }
 
+    /// <summary>A name that is no identity or pack is refused, and the message lists the ones there are.</summary>
     [Test]
     public void AnUnknownIdentity_OrPack_IsRefused_NamingTheSupportedOnes()
     {
@@ -39,6 +43,7 @@ public class PluginsTests
         Assert.That(pack.Message, Does.Contain("nope").And.Contain("PACKS"));
     }
 
+    /// <summary>With no pack named, none is loaded.</summary>
     [Test]
     public void Packs_UnsetLoadsNone()
     {
@@ -46,6 +51,10 @@ public class PluginsTests
         Assert.That(Plugins.FromSettings(null, " ").Packs, Is.Empty);
     }
 
+    /// <summary>
+    /// <c>PACKS=shops</c> loads the shops pack on its own, reading its own <c>SHOP_CATALOGUES</c>; the toolset needs
+    /// the browser as well, and names <c>BROWSER_URL</c> when there is none.
+    /// </summary>
     [Test]
     public void PacksShops_GivesTheCodingAgentShops_WhenItsSettingsAreThere()
     {
@@ -75,15 +84,54 @@ public class PluginsTests
         }
     }
 
+    /// <summary>
+    /// <c>PACKS=recipes</c> loads the recipes pack on its own, reading its own <c>RECIPE_SOURCES</c>; the toolset
+    /// needs the browser as well, and names <c>BROWSER_URL</c> when there is none.
+    /// </summary>
+    [Test]
+    public void PacksRecipes_LoadsTheRecipesPack_WhenItsSettingsAreThere()
+    {
+        Assume.That(Environment.GetEnvironmentVariable("RECIPE_SOURCES"), Is.Null,
+            "the process has no RECIPE_SOURCES of its own");
+        Environment.SetEnvironmentVariable("RECIPE_SOURCES", "foodandhome");
+        try
+        {
+            AgentCatalog catalog = Plugins.FromSettings(null, RecipesToolset.Recipes.Wire());
+            Assert.That(catalog.Identities, Is.Empty);
+            Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
+
+            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
+                new NoSearch());
+            Assert.That(catalog.Resolve([RecipesToolset.Recipes.Wire()], withBrowser).Select(t => t.Name),
+                Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
+
+            var withoutBrowser = new ToolsetContext(new AgentOptions(), new NoSearch());
+            var refused = Assert.Throws<ToolsetException>(() =>
+                catalog.Resolve([RecipesToolset.Recipes.Wire()], withoutBrowser))!;
+            Assert.That(refused.Message, Does.Contain(RecipesToolset.Recipes.Wire()).And.Contain("BROWSER_URL"));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("RECIPE_SOURCES", null);
+        }
+    }
+
+    /// <summary>A search provider that finds nothing; these tests only need one to hand over.</summary>
     private sealed class NoSearch : IWebSearchProvider
     {
+        /// <summary>What it calls itself.</summary>
         public string Name => "none";
 
+        /// <summary>Answers every question with no results.</summary>
         public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
             CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
     }
 
+    /// <summary>
+    /// The composition root loads <c>config/.env</c> itself before it reads the settings, because the hosts only load
+    /// it later.
+    /// </summary>
     [Test]
     public void FromEnvironment_ReadsConfigEnv_BeforeTheSettings()
     {

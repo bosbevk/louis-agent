@@ -67,7 +67,7 @@ public static class SchemaOrgRecipe
     /// <summary>Builds the record from the entity, one reader per field.</summary>
     private static Recipe Map(JsonElement entity, Uri source) => new(
         Name: SchemaOrgValues.Text(SchemaOrgValues.Property(entity, "name")) ?? "",
-        Yield: SchemaOrgValues.Text(SchemaOrgValues.Property(entity, "recipeYield")),
+        Yield: SchemaOrgValues.Texts(SchemaOrgValues.Property(entity, "recipeYield")).LastOrDefault(),
         PrepTime: SchemaOrgValues.Duration(SchemaOrgValues.Property(entity, "prepTime")),
         CookTime: SchemaOrgValues.Duration(SchemaOrgValues.Property(entity, "cookTime")),
         TotalTime: SchemaOrgValues.Duration(SchemaOrgValues.Property(entity, "totalTime")),
