@@ -4,6 +4,19 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-04 — **F50.2 Where to buy and shop prices**: the shops pack (Checkers' catalogue read through our
+  browser, for development only, since no retailer answered the 2026-10-25 emails) is gone, and two packs with one job
+  each take its place, neither tied to food. `where-to-buy`: `FindBranches(shop, town)` finds a shop's three nearest
+  branches on OpenStreetMap (Nominatim, one request a second), says which are in the town's municipality and gives
+  the province; the shop rules (`estimates-at-shop`, `untooled-shops`, both at version 2) moved with it.
+  `shop-prices`: `EstimatePrices(items, province, serves)` prices a list from Stats SA's average prices (August 2026,
+  220 products, per province) and 18 rows of our own, the scaling, total and price per person in code, `?` for what it
+  can't match, and the credit line; kept in MongoDB (`SHOP_PRICES_MONGO_URL`) one document per source and month,
+  seeded from the shipped tables, read once an hour, the shipped tables when unset or down. The cook loads both beside
+  its recipes, prices with `EstimatePrices`, names the branch with `FindBranches` and credits both; the cook eval is
+  at version 14, the routing eval at 3. `SHOP_CATALOGUES` and `SHOP_STORE_CACHE` are gone.
+  [ADR 0069](docs/adr/0069-shop-prices-are-stats-sa-estimates.md);
+  [write-up](docs/learning/04-tool-design.md#f502-one-job-per-pack-and-the-numbers-in-code-2026-11-04)
 - 2026-11-04 — **FX36 A redirect's body is observed**: the browser's log said `A task failed and nothing awaited it`
   (`Response body is unavailable for redirect responses`) at odd moments after a visit that followed a redirect:
   PuppeteerSharp sets every redirect's body task to that failure and never awaits it, and F52's last-chance handler

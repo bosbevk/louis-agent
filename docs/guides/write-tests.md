@@ -38,7 +38,7 @@ write first.
 
 - **The folder mirrors the source**, and the namespace is the folder: a test of `louis-agent.core/Tools/Git/GitTools.cs`
   is `tests/louis-agent.core.tests/Tools/Git/GitToolsTests.cs`, in `LouisAgent.Core.Tests.Tools.Git`.
-- **A test that leaves its process is an integration test** (F18 step 7.6): it starts a real process (git, bash, an interpreter, `dotnet`, the eval runner), opens Mongo or needs the Puls stack. It lives in a sibling project, `{name}.integration-tests` (`tests/louis-agent.core.integration-tests`, `.api.`, `.orchestrator.`, `.pack.shops.`), its class is `[Category("Integration")]`, and it asks for the tool through `Outside.Tool` (a missing tool skips the test on your machine and fails it on CI) or `Outside.Stack` (the Puls stack's browser or SearXNG: always skips when its address is not set). What a unit and an integration project share goes in a library beside them (`louis-agent.api.testing`: the in-memory API host, the built runner dlls, the store contracts that run against memory and Mongo). `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests` hold it. In the solution they sit in the folders `unit`, `integration` and `shared`.
+- **A test that leaves its process is an integration test** (F18 step 7.6): it starts a real process (git, bash, an interpreter, `dotnet`, the eval runner), opens Mongo or needs the Puls stack. It lives in a sibling project, `{name}.integration-tests` (`tests/louis-agent.core.integration-tests`, `.api.`, `.orchestrator.`, `.pack.shop-prices.`), its class is `[Category("Integration")]`, and it asks for the tool through `Outside.Tool` (a missing tool skips the test on your machine and fails it on CI) or `Outside.Stack` (the Puls stack's browser or SearXNG: always skips when its address is not set). What a unit and an integration project share goes in a library beside them (`louis-agent.api.testing`: the in-memory API host, the built runner dlls, the store contracts that run against memory and Mongo). `IntegrationTestsAreMarkedTests` and `IntegrationPlacementTests` hold it. In the solution they sit in the folders `unit`, `integration` and `shared`.
 - **The project mirrors the project:** a pack's tests in `tests/louis-agent.pack.{name}.tests`, an identity's in
   `tests/louis-agent.identity.{name}.tests`. No test project references another.
 - A test file holds at most 400 lines; split a long one by what it tests.
@@ -68,7 +68,8 @@ markup, can't happen by accident:
 |---|---|---|
 | `Agent/ModelRequestSnapshot.json` (core) | `ModelRequestSnapshotTests` | The tools, their descriptions, the system prompt |
 | `Messages/ToolMessageSnapshot.json` (core) | `ToolMessageSnapshotTests` | Every text a tool returns |
-| `ShopToolMessageSnapshot.json` (shops pack) | `ShopToolMessageSnapshotTests` | The shop tools' texts |
+| `WhereToBuyToolMessageSnapshot.json` (where-to-buy pack) | `WhereToBuyToolMessageSnapshotTests` | The branch tool's texts |
+| `ShopPriceToolMessageSnapshot.json` (shop-prices pack) | `ShopPriceToolMessageSnapshotTests` | The price tool's texts |
 | `PulsSessionSnapshot.json` (Puls identity) | `PulsSessionSnapshotTests` | What the model is sent in Puls's chat and its cook |
 | `AcpTranscript.json` (ACP server) | `AcpTranscriptTests` | Everything the server writes to Rider |
 | `.html` beside each component test (web) | bUnit tests | A component's or page's markup |
@@ -115,7 +116,7 @@ normalised. A test that needs a tool the machine may lack (git, Python, the Mong
 
 ## Add a test project
 
-Copy an existing one's `.csproj` (`tests/louis-agent.pack.shops.tests` is a small one): `net10.0`, NUnit 4.3.2 with its
+Copy an existing one's `.csproj` (`tests/louis-agent.pack.shop-prices.tests` is a small one): `net10.0`, NUnit 4.3.2 with its
 analyzers and adapter, `Microsoft.NET.Test.Sdk`, `IsPackable` false, a reference to the project under test and to
 `louis-agent.testing`, and both as global usings:
 

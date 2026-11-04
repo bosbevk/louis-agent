@@ -120,9 +120,9 @@ blocks), `WordPressSearchTests`, `SiteWebSearchTests`, `SearchResultLinksTests` 
 
 ## Related docs
 
-[Build a pack](../guides/build-a-pack.md) · [louis-agent.pack.shops](louis-agent.pack.shops.md) ·
+[Build a pack](../guides/build-a-pack.md) · [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) ·
 [ADR 0067](../adr/0067-a-pages-own-data-before-its-text.md) · [ADR 0068](../adr/0068-every-fetch-obeys-robots-txt.md) ·
 [For site owners](../SITE_OWNERS.md)
 
 ---
-[Projects](README.md) · Previous: [louis-agent.pack.shops](louis-agent.pack.shops.md) · Next: [louis-agent.composition](louis-agent.composition.md)
+[Projects](README.md) · Previous: [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md) · Next: [louis-agent.composition](louis-agent.composition.md)

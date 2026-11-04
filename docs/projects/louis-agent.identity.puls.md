@@ -98,8 +98,8 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 
 None of its own. A Puls stack (`docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
 `AGENT_PEERS` (itself), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
-[ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), plus the shops pack's settings
-([louis-agent.pack.shops](louis-agent.pack.shops.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
+[ADR 0038](../adr/0038-the-browser-says-what-it-is.md)), plus the shop prices' store
+(`SHOP_PRICES_MONGO_URL`, [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
 ([louis-agent.pack.recipes](louis-agent.pack.recipes.md)). Every setting is in [Setup](../SETUP.md).
 
 ## Extending it
@@ -140,7 +140,7 @@ identity doesn't.
 ## Related docs
 
 [Build an identity](../guides/build-an-identity.md) · [louis-agent.puls](louis-agent.puls.md) (the web app) ·
-[louis-agent.pack.shops](louis-agent.pack.shops.md) · [ADR 0019 modes](../adr/0019-modes-one-file-per-product.md)
+[louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) · [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md) · [ADR 0019 modes](../adr/0019-modes-one-file-per-product.md)
 
 ---
 [Projects](README.md) · Previous: [louis-agent.core](louis-agent.core.md) · Next: [louis-agent.identity.puls.judges](louis-agent.identity.puls.judges.md)
