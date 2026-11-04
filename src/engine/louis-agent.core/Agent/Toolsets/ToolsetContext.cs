@@ -1,3 +1,6 @@
+using LouisAgent.Composition.Packs;
+using LouisAgent.Composition.Web.Search;
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Config;
@@ -25,12 +28,15 @@ public sealed record ToolsetContext(
     IPageRenderer? PageRenderer = null,
     IWebBrowser? WebBrowser = null,
     ReplayStore? Replay = null,
-    RobotsPolicy? Robots = null)
+    RobotsPolicy? Robots = null) : IPackContext
 {
     /// <summary>
     /// The page renderer for the web toolset (F25): the one given, else the one configuration picks, reading through
     /// <see cref="Browser"/> (F18 step 4a).
     /// </summary>
+    /// <inheritdoc/>
+    public string WorkspaceRoot => Options.WorkspaceRoot;
+
     public IPageRenderer Renderer => PageRenderer ?? PageRendererFactory.Create(Options, browser: Browser);
 
     /// <summary>

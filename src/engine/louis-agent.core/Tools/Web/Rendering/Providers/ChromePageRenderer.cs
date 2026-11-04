@@ -1,9 +1,10 @@
-namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
 
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Rendering;
 
+namespace LouisAgent.Core.Tools.Web.Rendering.Providers;
 /// <summary>
 /// A page rendered by the headless Chrome we run (F32 step 2; Louis: "ReadRenderedPage we need this for all pages from
 /// all providers"), read through the guarded browser (<see cref="IWebBrowser"/>, F33 step 1: where the address rule, the

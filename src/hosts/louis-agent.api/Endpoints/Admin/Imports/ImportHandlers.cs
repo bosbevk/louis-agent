@@ -1,8 +1,8 @@
+using LouisAgent.Composition.Packs.Imports;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Api.Messages;
-using LouisAgent.Core.Agent.Catalog.Imports;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Browsing;
 using System.Security.Cryptography;
 using System.Text.Json;
 using LouisAgent.Core.Sessions.Replay;

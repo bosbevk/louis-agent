@@ -1,8 +1,7 @@
-using LouisAgent.Core.Agent.Catalog.Imports;
-using LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Composition.Packs.Imports;
 using Microsoft.Extensions.FileProviders;
 
-namespace LouisAgent.Core.Agent.Catalog;
+namespace LouisAgent.Composition.Packs;
 
 /// <summary>
 /// What an agent can do (CL15, ADR 0027): one capability's toolsets, their guides, its own settings and state. A pack
@@ -27,8 +26,8 @@ public interface IAgentPack
     /// <summary>"shops": lowercase letters, digits and dashes.</summary>
     string Name { get; }
 
-    /// <summary>The seam: an MCP server arrives as one more <see cref="ToolsetDefinition"/> (F36).</summary>
-    IReadOnlyList<ToolsetDefinition> Toolsets { get; }
+    /// <summary>The seam: an MCP server arrives as one more <see cref="PackToolset"/> (F36).</summary>
+    IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <summary>
     /// Its guides (<c>toolsets/{name}.md</c>) and, from CL16, its roles (the cook); over MCP only its tools convert, and a

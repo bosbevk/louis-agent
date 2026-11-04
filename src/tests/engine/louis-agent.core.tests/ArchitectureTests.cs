@@ -168,7 +168,7 @@ public partial class ArchitectureTests
     // Pending's. ----
 
     /// <summary>
-    /// The engine never reaches for an identity, a pack or the composition, by reference or by namespace.
+    /// The engine never reaches for an identity or a pack, by reference or by namespace; the contracts are what they share.
     /// </summary>
     [Test]
     public void Core_ReferencesNoIdentityOrPack()
@@ -183,7 +183,7 @@ public partial class ArchitectureTests
             .Where(f => OutsideCoreUsing().IsMatch(File.ReadAllText(f)))
             .Select(f => Path.GetRelativePath(core, f))
             .ToList();
-        Assert.That(usings, Is.Empty, "core uses an identity's, a pack's or the composition's namespace");
+        Assert.That(usings, Is.Empty, "core uses an identity's or a pack's namespace");
     }
 
     /// <summary>A pack stands on its own: it never references another pack or an identity.</summary>
@@ -525,7 +525,7 @@ public partial class ArchitectureTests
     private static partial Regex PackOrIdentityPath();
 
     /// <summary>A using of an identity's, a pack's or the composition's namespace.</summary>
-    [GeneratedRegex(@"^using\s+LouisAgent\.(Identities|Packs|Composition)\b", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^using\s+LouisAgent\.(Identities|Packs)\b", RegexOptions.Multiline)]
     private static partial Regex OutsideCoreUsing();
 
     /// <summary>

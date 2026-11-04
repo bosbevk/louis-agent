@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Web.Search.Providers;
 

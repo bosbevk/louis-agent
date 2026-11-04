@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Agent.Catalog.Imports;
+namespace LouisAgent.Composition.Packs.Imports;
 
 /// <summary>
 /// One uploaded file: the slot it was given for, the name it had on the person's computer, and its bytes. The host caps

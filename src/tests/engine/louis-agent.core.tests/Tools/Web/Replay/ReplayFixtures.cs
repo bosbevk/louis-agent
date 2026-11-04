@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Web.Search;
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Core.Sessions.Replay.Store;

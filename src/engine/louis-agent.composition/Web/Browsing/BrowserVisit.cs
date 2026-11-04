@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Browsing;
+namespace LouisAgent.Composition.Web.Browsing;
 
 /// <summary>
 /// A page as the browser left it: its address after any redirect, its HTML, the response bodies captured; and, from a

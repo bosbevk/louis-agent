@@ -1,7 +1,6 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
 using LouisAgent.Packs.WhereToBuy.Branches;
 using LouisAgent.Packs.WhereToBuy.Tools;
 using Microsoft.Extensions.FileProviders;
@@ -31,7 +30,7 @@ public sealed class WhereToBuyPack : IAgentPack
         [
             new(WhereToBuyToolset.WhereToBuy.Wire(),
                 "A shop's branches near the user's town, with the town's municipality and province (OpenStreetMap)",
-                GuideFile: SkillFiles.Guide(WhereToBuyToolset.WhereToBuy.Wire()),
+                GuideFile: PackToolset.Guide(WhereToBuyToolset.WhereToBuy.Wire()),
                 MissingSettings: _ => [],
                 ToolTypes: [typeof(WhereToBuyTools)],
                 CreateTools: _ => [new WhereToBuyTools(new BranchFinder(MapSearch.Default))],
@@ -44,7 +43,7 @@ public sealed class WhereToBuyPack : IAgentPack
     public string Name => WhereToBuyToolset.WhereToBuy.Wire();
 
     /// <inheritdoc />
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
+    public IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } =

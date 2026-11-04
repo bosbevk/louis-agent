@@ -1,7 +1,8 @@
-namespace LouisAgent.Core.Agent.Toolsets;
+using LouisAgent.Composition.Packs;
 
 using LouisAgent.Core.Agent.Catalog;
 
+namespace LouisAgent.Core.Agent.Toolsets;
 /// <summary>
 /// One named toolset: what it is, which settings it needs on this instance, its guide, and how to build its tools.
 /// </summary>
@@ -35,6 +36,11 @@ public sealed record ToolsetDefinition(
     bool ParallelSafe = false)
 {
     /// <summary>True when the engine adds these tools itself rather than from <see cref="CreateTools"/>.</summary>
+    /// <summary>A pack's toolset, as the engine holds it: the pack sees the context only through its contract.</summary>
+    public static ToolsetDefinition Of(PackToolset toolset) =>
+        new(toolset.Name, toolset.Description, toolset.GuideFile, context => toolset.MissingSettings(context),
+            context => toolset.CreateTools(context), toolset.ToolTypes, toolset.ParallelSafe);
+
     public bool IsEngineProvided => CreateTools is null;
 
     /// <summary>True when this instance has every setting the toolset needs.</summary>

@@ -1,8 +1,9 @@
-namespace LouisAgent.Core.Tools.Web.Search.Providers;
 
+using LouisAgent.Composition.Web.Search;
 using System.Net;
 using LouisAgent.Core.Tools.Web.Search;
 
+namespace LouisAgent.Core.Tools.Web.Search.Providers;
 /// <summary>Stands in for a provider that is selected but not usable, so the agent can tell the user why.</summary>
 public sealed class UnavailableSearchProvider(string name, string reason) : IWebSearchProvider
 {

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Browsing;

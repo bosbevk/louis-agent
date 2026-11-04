@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Web.Search;
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Tools.Web.Browsing;

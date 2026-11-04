@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
@@ -51,7 +52,7 @@ public class PackConvertibilityTests
     private static IReadOnlyList<string> Problems(IAgentPack pack)
     {
         var problems = new List<string>();
-        foreach (ToolsetDefinition toolset in pack.Toolsets)
+        foreach (PackToolset toolset in pack.Toolsets)
         {
             problems.AddRange(GuideProblems(pack, toolset));
             if (toolset.ToolTypes is null or { Count: 0 })
@@ -71,7 +72,7 @@ public class PackConvertibilityTests
         return problems;
     }
 
-    private static IEnumerable<string> GuideProblems(IAgentPack pack, ToolsetDefinition toolset)
+    private static IEnumerable<string> GuideProblems(IAgentPack pack, PackToolset toolset)
     {
         if (toolset.GuideFile is null)
         {
@@ -177,7 +178,7 @@ internal sealed class FakeUnconvertiblePack : IAgentPack
 {
     public string Name => "fakeunconvertible";
 
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; } =
+    public IReadOnlyList<PackToolset> Toolsets { get; } =
     [
         new("fakebad", "Breaks the tool rules", GuideFile: "toolsets/fakebad.md", MissingSettings: _ => [],
             CreateTools: _ => [new FakeUnconvertibleTools()], ToolTypes: [typeof(FakeUnconvertibleTools)]),

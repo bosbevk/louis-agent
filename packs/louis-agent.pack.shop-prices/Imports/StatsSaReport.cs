@@ -1,5 +1,5 @@
+using LouisAgent.Composition.Packs.Imports;
 using System.Globalization;
-using LouisAgent.Core.Agent.Catalog.Imports;
 using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Messages;
 

@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Browsing;
+namespace LouisAgent.Composition.Web.Browsing;
 
 /// <summary>
 /// What a visit starts with (F34 step 1a): the cookies a site keeps a visitor's choice in, as a shop keeps the store

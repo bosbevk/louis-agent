@@ -1,8 +1,7 @@
+using LouisAgent.Composition.Packs.Imports;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Catalog.Imports;
-using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
 using LouisAgent.Packs.ShopPrices.Feeds;
 using LouisAgent.Packs.ShopPrices.Imports;
 using LouisAgent.Packs.ShopPrices.Prices.StatsSa;
@@ -39,7 +38,7 @@ public sealed class ShopPricesPack : IAgentPack
         [
             new(ShopPricesToolset.ShopPrices.Wire(),
                 "What a shopping list costs, estimated from Stats SA's average prices in the user's province",
-                GuideFile: SkillFiles.Guide(ShopPricesToolset.ShopPrices.Wire()),
+                GuideFile: PackToolset.Guide(ShopPricesToolset.ShopPrices.Wire()),
                 MissingSettings: _ => [],
                 ToolTypes: [typeof(ShopPriceTools)],
                 CreateTools: _ => [new ShopPriceTools(books)],
@@ -56,7 +55,7 @@ public sealed class ShopPricesPack : IAgentPack
     public string Name => ShopPricesToolset.ShopPrices.Wire();
 
     /// <inheritdoc />
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
+    public IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } =

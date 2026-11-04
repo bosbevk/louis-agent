@@ -1,7 +1,7 @@
-namespace LouisAgent.Core.Agent.Catalog;
 
 using Microsoft.Extensions.FileProviders;
 
+namespace LouisAgent.Composition.Packs;
 /// <summary>
 /// Who an agent is (CL15, ADR 0027): its name, its modes, its own roles, and the packs it uses, by name. It has no tools
 /// of its own: everything it can do comes from packs. It may hold workflow code that uses its own packs' public types

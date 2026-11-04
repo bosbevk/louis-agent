@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.EngineTools;

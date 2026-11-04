@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Tools.Web.Browsing;
 
 namespace LouisAgent.Packs.Recipes.Tests.Providers;

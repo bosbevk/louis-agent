@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Agent.Catalog;
+namespace LouisAgent.Composition.Packs;
 
 /// <summary>
 /// Data a pack publishes for anyone to read, apart from its tools: the shop-prices pack's price tables, say. The API

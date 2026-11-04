@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;

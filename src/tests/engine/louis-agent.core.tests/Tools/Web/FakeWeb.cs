@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Pricing.Rates;
 using System.Net;
 using System.Text;

@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Web.Search;
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Tools.Web.Browsing;
@@ -8,13 +10,13 @@ namespace LouisAgent.Core.Tests.Agent.Toolsets;
 // (a test's fake), else the Chrome BROWSER_URL names, else none (a toolset that needs one is then unavailable).
 public class ToolsetContextTests
 {
-    private sealed class NoSearch : LouisAgent.Core.Tools.Web.Search.IWebSearchProvider
+    private sealed class NoSearch : LouisAgent.Composition.Web.Search.IWebSearchProvider
     {
         public string Name => "none";
 
-        public Task<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>> SearchAsync(
-            LouisAgent.Core.Tools.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
-            Task.FromResult<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>>([]);
+        public Task<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>> SearchAsync(
+            LouisAgent.Composition.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>>([]);
     }
 
     private sealed class FakeBrowser : IWebBrowser

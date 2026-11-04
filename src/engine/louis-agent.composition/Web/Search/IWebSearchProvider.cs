@@ -1,11 +1,10 @@
-namespace LouisAgent.Core.Tools.Web.Search;
 
 using System.Net;
-using LouisAgent.Core.Tools.Web;
 
+namespace LouisAgent.Composition.Web.Search;
 /// <summary>
-/// A web search engine behind <see cref="WebTools.WebSearch"/>. Implement this to plug in another engine
-/// (Bing, SearXNG, an internal search, a test fake) and pass it to <see cref="AgentEngine"/>.
+/// A web search engine behind the web search tool. Implement this to plug in another engine
+/// (Bing, SearXNG, an internal search, a test fake) and pass it to the engine.
 /// </summary>
 public interface IWebSearchProvider
 {

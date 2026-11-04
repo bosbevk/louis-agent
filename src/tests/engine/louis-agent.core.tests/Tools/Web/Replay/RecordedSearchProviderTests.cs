@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Search;
 using System.Text.Json;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Tools.Web.Replay;

@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Agent.Catalog.Imports;
+namespace LouisAgent.Composition.Packs.Imports;
 
 /// <summary>
 /// What an import found in the files and what it did: the period the data covers ("January 2017 to September 2026",

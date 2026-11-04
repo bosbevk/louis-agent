@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.SessionLlms;
@@ -442,14 +443,14 @@ public class MinionToolsTests
     }
 
     /// <summary>A search provider that finds nothing, so the toolsets can be checked without one.</summary>
-    private sealed class NoSearch : LouisAgent.Core.Tools.Web.Search.IWebSearchProvider
+    private sealed class NoSearch : LouisAgent.Composition.Web.Search.IWebSearchProvider
     {
         /// <summary>It has no real name.</summary>
         public string Name => "none";
 
         /// <summary>Finds nothing.</summary>
-        public Task<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>> SearchAsync(
-            LouisAgent.Core.Tools.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
-            Task.FromResult<IReadOnlyList<LouisAgent.Core.Tools.Web.Search.WebSearchResult>>([]);
+        public Task<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>> SearchAsync(
+            LouisAgent.Composition.Web.Search.WebSearchQuery query, CancellationToken cancellationToken = default) =>
+            Task.FromResult<IReadOnlyList<LouisAgent.Composition.Web.Search.WebSearchResult>>([]);
     }
 }

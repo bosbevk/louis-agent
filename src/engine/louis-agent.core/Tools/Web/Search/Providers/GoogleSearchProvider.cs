@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Core.Tools.Web.Fetching;
 using System.Net;
 using System.Text.Json;

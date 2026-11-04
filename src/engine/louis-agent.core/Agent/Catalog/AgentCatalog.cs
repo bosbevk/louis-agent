@@ -1,5 +1,6 @@
 
-using LouisAgent.Core.Agent.Catalog.Imports;
+using LouisAgent.Composition.Packs.Imports;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using System.ComponentModel;
@@ -46,7 +47,7 @@ public sealed class AgentCatalog
         CheckUnique(identities.Select(i => i.Name), "identity");
         CheckUnique(packs.Select(p => p.Name), "pack");
 
-        Toolsets = ToolsetCatalog.All.Concat(packs.SelectMany(p => p.Toolsets)).ToList();
+        Toolsets = ToolsetCatalog.All.Concat(packs.SelectMany(p => p.Toolsets).Select(ToolsetDefinition.Of)).ToList();
         CheckUnique(Toolsets.Select(t => t.Name), "toolset");
 
         var registered = packs.Select(p => p.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -122,6 +123,9 @@ public sealed class AgentCatalog
 
     /// <summary>The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.</summary>
     public string? ToolsetOf(string tool) => _toolsetOfTool.TryGetValue(tool, out var toolset) ? toolset.Name : null;
+
+    /// <summary>The same for a pack's toolset, before the engine holds it.</summary>
+    public static IEnumerable<MethodInfo> ToolMethodsOf(PackToolset toolset) => ToolMethodsOf(ToolsetDefinition.Of(toolset));
 
     /// <summary>
     /// The one rule for which methods are tools: the public instance methods a toolset's class declares. The engine

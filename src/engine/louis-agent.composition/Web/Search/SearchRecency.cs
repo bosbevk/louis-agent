@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Tools.Web.Search;
+namespace LouisAgent.Composition.Web.Search;
 
 /// <summary>
 /// How recent a search's results must be (F32 step 1b; ADR 0024): parsed once from <c>WebSearch</c>'s

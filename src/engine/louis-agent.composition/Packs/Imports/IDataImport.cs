@@ -1,4 +1,4 @@
-namespace LouisAgent.Core.Agent.Catalog.Imports;
+namespace LouisAgent.Composition.Packs.Imports;
 
 /// <summary>
 /// Data a person uploads into a pack, apart from its tools: Stats SA's price spreadsheets into the shop-prices pack,

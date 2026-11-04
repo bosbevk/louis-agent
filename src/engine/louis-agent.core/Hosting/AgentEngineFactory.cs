@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
