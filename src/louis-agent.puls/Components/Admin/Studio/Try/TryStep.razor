@@ -1,0 +1,27 @@
+@* The Studio's third step: replay a recorded run on the draft, picked from a list, on the samples named. *@
+<div class="studio-try">
+    @if (Choices.Count == 0 && _loaded)
+    {
+        <p class="studio-try-none muted small">@StudioText.NoRunToReplay</p>
+    }
+    else
+    {
+        <select class="studio-try-replay" @bind="_replay">
+            <option value="">@StudioText.PickARun</option>
+            @foreach (var choice in Choices)
+            {
+                <option value="@choice.Run">@choice.Label</option>
+            }
+        </select>
+    }
+    <input class="studio-try-samples" placeholder="samples, commas between (all when empty)" @bind="_samples" />
+    <button type="button" class="studio-try-start header-button" disabled="@(_busy || _replay.Length == 0)" @onclick="TryAsync">Try</button>
+    @if (_tried is { } run)
+    {
+        <a class="studio-tried small" href="@RunLink(run)">@StudioText.TryStarted(run)</a>
+    }
+    @if (_error is { } error)
+    {
+        <p class="studio-try-error small">@error</p>
+    }
+</div>

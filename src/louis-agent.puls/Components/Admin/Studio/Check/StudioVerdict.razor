@@ -1,0 +1,17 @@
+@* The Studio's second step's answer: the runner's verdict on the draft, every problem in its words. *@
+@if (Verdict is { } verdict)
+{
+    @if (verdict.Ok)
+    {
+        <p class="studio-ok">The runner checked it: it loads and conforms, as a run would want.</p>
+    }
+    else
+    {
+        <ul class="studio-problems">
+            @foreach (var problem in verdict.Problems)
+            {
+                <li>@problem</li>
+            }
+        </ul>
+    }
+}

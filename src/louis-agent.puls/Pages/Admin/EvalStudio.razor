@@ -39,57 +39,54 @@
 
     @if (_eval is { } eval && _catalogue is { } catalogue)
     {
-        <div class="studio-editor">
-            <ComposeHead Eval="eval" />
-            <ComposeChecks Eval="eval" Catalogue="catalogue" />
-            <ComposeRubrics Rubrics="_rubrics" />
-            @if (_scenarios.Count > 0)
-            {
-                <p class="studio-scenarios muted small">@_scenarios.Count scenario file(s) of its own, as an import brought them: kept with the draft.</p>
-            }
-            <div class="studio-actions">
-                <button type="button" class="studio-save header-button" disabled="@_busy" @onclick="SaveAsync">Save</button>
-                <button type="button" class="studio-check header-button" disabled="@_busy" @onclick="CheckAsync">Check</button>
-                <button type="button" class="studio-publish header-button" disabled="@_busy" @onclick="PublishAsync">Publish</button>
-                <button type="button" class="studio-view-json link-button" @onclick="() => _showJson = !_showJson">@JsonLabel</button>
-                @if (_saved is not null)
+        @* The admin review's finding 6: the steps in the order they are done, numbered (GOV.UK's task list). *@
+        <ol class="studio-editor">
+            <li class="studio-step">
+                <h4><span class="studio-step-n">1</span> Compose</h4>
+                <ComposeHead Eval="eval" />
+                <ComposeChecks Eval="eval" Catalogue="catalogue" />
+                <ComposeRubrics Rubrics="_rubrics" />
+                @if (_scenarios.Count > 0)
                 {
-                    <span class="muted small">@_saved</span>
+                    <p class="studio-scenarios muted small">@_scenarios.Count scenario file(s) of its own, as an import brought them: kept with the draft.</p>
                 }
-            </div>
-            @if (_published is not null)
-            {
-                <p class="studio-published">@_published</p>
-            }
-            <div class="studio-try">
-                <input class="studio-try-replay" placeholder="run to replay, such as c0362ff73151" @bind="_tryReplay" />
-                <input class="studio-try-samples" placeholder="samples, commas between (all when empty)" @bind="_trySamples" />
-                <button type="button" class="studio-try-start header-button" disabled="@_busy" @onclick="TryAsync">Try</button>
-                @if (_tried is not null)
+                <div class="studio-actions">
+                    <button type="button" class="studio-save header-button" disabled="@_busy" @onclick="SaveAsync">Save</button>
+                    <button type="button" class="studio-view-json link-button" @onclick="() => _showJson = !_showJson">@JsonLabel</button>
+                    @if (_saved is not null)
+                    {
+                        <span class="muted small">@_saved</span>
+                    }
+                </div>
+                @if (_showJson)
                 {
-                    <a class="studio-tried small" href="admin">@_tried</a>
+                    <pre class="studio-json">@Json</pre>
                 }
-            </div>
-            @if (_verdict is { } verdict)
-            {
-                @if (verdict.Ok)
+            </li>
+            <li class="studio-step">
+                <h4><span class="studio-step-n">2</span> Check</h4>
+                <p class="muted small">The runner loads it as a run would, and names every problem.</p>
+                <div class="studio-actions">
+                    <button type="button" class="studio-check header-button" disabled="@_busy" @onclick="CheckAsync">Check</button>
+                </div>
+                <StudioVerdict Verdict="_verdict" />
+            </li>
+            <li class="studio-step">
+                <h4><span class="studio-step-n">3</span> Try</h4>
+                <p class="muted small">Replay a recorded run on the draft, on a few samples, at no cost.</p>
+                <TryStep Eval="@eval.Name" SaveDraft="SaveDraftAsync" />
+            </li>
+            <li class="studio-step">
+                <h4><span class="studio-step-n">4</span> Publish</h4>
+                <p class="muted small">Commit its folder on a branch, for a pull request.</p>
+                <div class="studio-actions">
+                    <button type="button" class="studio-publish header-button" disabled="@_busy" @onclick="PublishAsync">Publish</button>
+                </div>
+                @if (_published is not null)
                 {
-                    <p class="studio-ok">The runner checked it: it loads and conforms, as a run would want.</p>
+                    <p class="studio-published">@_published</p>
                 }
-                else
-                {
-                    <ul class="studio-problems">
-                        @foreach (var problem in verdict.Problems)
-                        {
-                            <li>@problem</li>
-                        }
-                    </ul>
-                }
-            }
-            @if (_showJson)
-            {
-                <pre class="studio-json">@Json</pre>
-            }
-        </div>
+            </li>
+        </ol>
     }
 </div>
