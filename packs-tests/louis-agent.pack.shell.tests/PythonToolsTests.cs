@@ -1,7 +1,7 @@
 using LouisAgent.Testing;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Packs.Shell;
 
-namespace LouisAgent.Core.Tests.Tools.Shell;
+namespace LouisAgent.Packs.Shell.Tests;
 
 public class PythonToolsTests
 {

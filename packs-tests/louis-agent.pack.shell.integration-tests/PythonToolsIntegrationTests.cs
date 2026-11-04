@@ -1,7 +1,8 @@
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Testing;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Packs.Shell;
 
-namespace LouisAgent.Core.IntegrationTests.Tools.Shell;
+namespace LouisAgent.Packs.Shell.IntegrationTests;
 
 [Category("Integration")]
 public class PythonToolsIntegrationTests
@@ -91,5 +92,5 @@ public class PythonToolsIntegrationTests
     }
 
     private void RequirePython() =>
-        Outside.Tool(_tools.ResolveInterpreter() is not null, "Python 3 is not installed on this machine");
+        Outside.Tool(new PythonRunner(Path.GetTempPath()).ResolveInterpreter() is not null, "Python 3 is not installed on this machine");
 }

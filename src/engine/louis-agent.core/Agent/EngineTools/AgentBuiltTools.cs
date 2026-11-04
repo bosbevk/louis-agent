@@ -6,8 +6,8 @@ using LouisAgent.Core.Skills.Languages;
 
 using System.ComponentModel;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Tools.Scripts;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Agent.EngineTools.Scripts;
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using Microsoft.Extensions.Logging;
@@ -27,8 +27,8 @@ internal sealed class AgentBuiltTools(
     ToolRegistry registry,
     bool supportsTools,
     string workspaceRoot,
-    PythonTools python,
-    PowerShellTools powerShell,
+    PythonRunner python,
+    PowerShellRunner powerShell,
     Func<string?> skillsDirectory,
     Func<IReadOnlySet<string>> reservedNames)
 {
@@ -239,7 +239,7 @@ internal sealed class AgentBuiltTools(
                 env),
             ScriptLanguage.PowerShell => powerShell.RunScript(definition.Code, null, [], inputJson, timeout,
                 out notInstalled, env),
-            _ => ProcessRunner.Run(BashTools.ResolveShell(), ["-c", definition.Code], workspaceRoot, timeout, inputJson,
+            _ => ProcessRunner.Run(BashRunner.ResolveShell(), ["-c", definition.Code], workspaceRoot, timeout, inputJson,
                 env),
         };
 

@@ -13,6 +13,9 @@ public enum TestToolset
     DotNet,
     Git,
     Files,
+    Python,
+    PowerShell,
+    Bash,
 }
 
 /// <summary>
@@ -31,12 +34,18 @@ public static class TestTools
                 context => [new FakeFileTools(context.WorkspaceRoot)]),
             FakePack.Toolset(TestToolset.Git.Wire(), typeof(FakeGitTools), _ => [new FakeGitTools()]),
             FakePack.Toolset(TestToolset.DotNet.Wire(), typeof(FakeDotNetTools), _ => [new FakeDotNetTools()]),
+            FakePack.Toolset(TestToolset.Python.Wire(), typeof(FakePythonTools), _ => [new FakePythonTools()]),
+            FakePack.Toolset(TestToolset.PowerShell.Wire(), typeof(FakePowerShellTools), _ => [new FakePowerShellTools()]),
+            FakePack.Toolset(TestToolset.Bash.Wire(), typeof(FakeBashTools), _ => [new FakeBashTools()]),
         ],
         new Dictionary<string, string>
         {
             [$"toolsets/{TestToolset.DotNet.Wire()}.md"] = "# .NET Skills\n\nBuilds things.",
             [$"toolsets/{TestToolset.Git.Wire()}.md"] = "# Git Skills\n\nKeeps history.",
             [$"toolsets/{TestToolset.Files.Wire()}.md"] = "# Files Skills\n\nReads and writes.",
+            [$"toolsets/{TestToolset.Python.Wire()}.md"] = "# Python Skills\n\nRuns Python.",
+            [$"toolsets/{TestToolset.PowerShell.Wire()}.md"] = "# PowerShell Skills\n\nRuns PowerShell.",
+            [$"toolsets/{TestToolset.Bash.Wire()}.md"] = "# Bash Skills\n\nRuns bash.",
         });
 
     /// <summary>A catalogue holding it, and what core has.</summary>
@@ -75,4 +84,28 @@ public sealed class FakeFileTools(string workspaceRoot)
         File.WriteAllText(Path.Combine(workspaceRoot, relativePath), content);
         return $"wrote {relativePath}";
     }
+}
+
+/// <summary>The fake python toolset.</summary>
+public sealed class FakePythonTools
+{
+    /// <summary>Pretends to run.</summary>
+    [Description("Runs Python.")]
+    public string PythonRun() => "ran";
+}
+
+/// <summary>The fake powershell toolset.</summary>
+public sealed class FakePowerShellTools
+{
+    /// <summary>Pretends to run.</summary>
+    [Description("Runs PowerShell.")]
+    public string PowerShellRun() => "ran";
+}
+
+/// <summary>The fake bash toolset.</summary>
+public sealed class FakeBashTools
+{
+    /// <summary>Pretends to run.</summary>
+    [Description("Runs bash.")]
+    public string BashRun() => "ran";
 }

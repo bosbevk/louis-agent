@@ -7,11 +7,11 @@ using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Tools.Scripts;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Agent.EngineTools.Scripts;
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Hosting;
 
-namespace LouisAgent.Core.Tests.Tools.Scripts;
+namespace LouisAgent.Core.Tests.Agent.EngineTools.Scripts;
 
 public class ScriptToolTests
 {
@@ -151,7 +151,7 @@ public class ScriptToolTests
         var engine = Engine();
 
         Assert.That(engine.CreateTool("# Tool: Nope"), Does.Contain("invalid tool definition"));
-        Assert.That(engine.CreateTool(AddTool.Replace("AddNumbers", "PythonRun")), Does.Contain("built-in tool"));
+        Assert.That(engine.CreateTool(AddTool.Replace("AddNumbers", "StartSubSession")), Does.Contain("built-in tool"));
     }
 
     [Test]

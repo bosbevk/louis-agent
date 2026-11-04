@@ -10,7 +10,6 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
 using LouisAgent.Core.Tools.Currency;
-using LouisAgent.Core.Tools.Shell;
 using LouisAgent.Core.Tools.Web;
 using LouisAgent.Core.Tools.Web.Fetching;
 using LouisAgent.Core.Tools.Web.Quotes;
@@ -28,26 +27,6 @@ public static class ToolsetCatalog
     /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
-        new(CoreToolset.Python.Wire(),
-            "Run Python code or scripts and manage packages in the agent's own virtual environment",
-            GuideFile: SkillFiles.Guide(CoreToolset.Python.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(PythonTools)],
-            CreateTools: ctx => [new PythonTools(Root(ctx))]),
-
-        new(CoreToolset.PowerShell.Wire(),
-            "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
-            GuideFile: SkillFiles.Guide(CoreToolset.PowerShell.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(PowerShellTools)],
-            CreateTools: ctx => [new PowerShellTools(Root(ctx))]),
-
-        new(CoreToolset.Bash.Wire(), "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
-            GuideFile: SkillFiles.Guide(CoreToolset.Bash.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(BashTools)],
-            CreateTools: ctx => [new BashTools(Root(ctx))]),
-
         new(CoreToolset.Web.Wire(), "Search the web and fetch web pages",
             GuideFile: SkillFiles.Guide(CoreToolset.Web.Wire()),
             MissingSettings: _ => [],

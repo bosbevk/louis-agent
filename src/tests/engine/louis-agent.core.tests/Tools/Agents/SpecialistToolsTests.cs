@@ -126,7 +126,7 @@ public class SpecialistToolsTests
         var handler = Peer(Replies(EmptyStream, AnswerStream));
 
         string result = await ToolsOn(handler).StartSubSession(
-            [TestToolset.Files.Wire(), CoreToolset.Python.Wire()], "Count the test methods.", agent: "coder");
+            [TestToolset.Files.Wire(), TestToolset.Python.Wire()], "Count the test methods.", agent: "coder");
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
         Assert.That(result, Does.Not.Contain("requests"), "both turns' usage goes to the ledger, not the answer");

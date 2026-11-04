@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Agent.Messages;
 
@@ -26,16 +26,16 @@ internal sealed partial class SkillTools
 
     private readonly AgentOptions _options;
     private readonly string _workspaceRoot;
-    private readonly PythonTools _python;
-    private readonly PowerShellTools _powerShell;
+    private readonly PythonRunner _python;
+    private readonly PowerShellRunner _powerShell;
     private Dictionary<string, MarkdownSkillLoader.SkillDef> _skills;
 
     // Files created this session, so they load even when discovery wouldn't pick them up: a pending file (FX20) lives
     // here until /approve moves it, and the entry follows the move.
     private readonly List<string> _createdSkillFiles = [];
 
-    public SkillTools(ISkillProvider skillProvider, AgentOptions options, string workspaceRoot, PythonTools python,
-        PowerShellTools powerShell)
+    public SkillTools(ISkillProvider skillProvider, AgentOptions options, string workspaceRoot, PythonRunner python,
+        PowerShellRunner powerShell)
     {
         _skills = ToSkillMap(skillProvider);
         Documentation = AgentEngine.Normalise(skillProvider.Documentation);
@@ -342,7 +342,7 @@ internal sealed partial class SkillTools
     {
         var startInfo = new ProcessStartInfo
         {
-            FileName = BashTools.ResolveShell(),
+            FileName = BashRunner.ResolveShell(),
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,

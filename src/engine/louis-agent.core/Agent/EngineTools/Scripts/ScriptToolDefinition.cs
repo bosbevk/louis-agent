@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Scripts.Messages;
+using LouisAgent.Core.Agent.EngineTools.Scripts.Messages;
 
-namespace LouisAgent.Core.Tools.Scripts;
+namespace LouisAgent.Core.Agent.EngineTools.Scripts;
 /// <summary>
 /// An agent-built tool defined in a *.tool.md file: name, description, typed parameters and a script implementation
 /// (python, powershell or bash) that receives its arguments as a JSON object on stdin.

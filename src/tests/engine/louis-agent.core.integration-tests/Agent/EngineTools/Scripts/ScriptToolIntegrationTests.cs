@@ -8,11 +8,11 @@ using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Tools.Scripts;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Core.Agent.EngineTools.Scripts;
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Hosting;
 
-namespace LouisAgent.Core.IntegrationTests.Tools.Scripts;
+namespace LouisAgent.Core.IntegrationTests.Agent.EngineTools.Scripts;
 
 [Category("Integration")]
 public class ScriptToolIntegrationTests
@@ -57,7 +57,7 @@ public class ScriptToolIntegrationTests
     }
 
     private static void RequirePython() =>
-        Outside.Tool(new PythonTools(Path.GetTempPath()).ResolveInterpreter() is not null, "Python 3 is not installed");
+        Outside.Tool(new PythonRunner(Path.GetTempPath()).ResolveInterpreter() is not null, "Python 3 is not installed");
 
     private static AIFunction Tool(AgentEngine engine, string name) =>
         engine.Tools.OfType<AIFunction>().Single(t => t.Name == name);
@@ -79,7 +79,7 @@ public class ScriptToolIntegrationTests
     public async Task CreatedTool_SupportsPowerShellAndBash(ScriptLanguage language, string code)
     {
         if (language == ScriptLanguage.PowerShell)
-            Outside.Tool(new PowerShellTools(_skillsDir).ResolveInterpreter() is not null,
+            Outside.Tool(new PowerShellRunner(_skillsDir).ResolveInterpreter() is not null,
                 "PowerShell is not installed");
         var engine = Engine();
         string definition =

@@ -2,46 +2,28 @@
 using LouisAgent.Composition.Tools;
 using LouisAgent.Composition.Messages;
 using System.ComponentModel;
+using LouisAgent.Composition.Tools.Scripts;
 using System.Text;
 using System.Text.RegularExpressions;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Shell.Messages;
+using LouisAgent.Packs.Shell.Messages;
 
-namespace LouisAgent.Core.Tools.Shell;
+namespace LouisAgent.Packs.Shell;
 /// <summary>
 /// Python toolset: run inline code or workspace scripts and manage packages in a dedicated virtual environment,
 /// so installs never touch the system Python or the repository.
 /// </summary>
 public sealed partial class PythonTools
 {
+    private readonly PythonRunner _runner;
+
+    /// <param name="workspaceRoot">Where scripts run.</param>
+    /// <param name="venvDirectory">Virtual environment for installed packages; defaults to PYTHON_VENV or a per-user folder.</param>
+    public PythonTools(string workspaceRoot, string? venvDirectory = null) =>
+        _runner = new PythonRunner(workspaceRoot, venvDirectory);
+
     private const int MaxOutputChars = 12_000;
     private static readonly TimeSpan ProbeTimeout = TimeSpan.FromSeconds(15);
     private static readonly TimeSpan InstallTimeout = TimeSpan.FromMinutes(5);
-
-    private static readonly Dictionary<string, string> PythonEnvironment = new()
-    {
-        ["PYTHONIOENCODING"] = "utf-8",
-        ["PYTHONUNBUFFERED"] = "1",
-        ["PYTHONDONTWRITEBYTECODE"] = "1",
-        ["PIP_DISABLE_PIP_VERSION_CHECK"] = "1",
-    };
-
-    private readonly string _workspaceRoot;
-    private readonly string _venvDirectory;
-    private Interpreter? _baseInterpreter;
-
-    /// <param name="venvDirectory">Virtual environment for installed packages; defaults to PYTHON_VENV or a per-user folder.</param>
-    public PythonTools(string workspaceRoot, string? venvDirectory = null)
-    {
-        _workspaceRoot = Path.GetFullPath(workspaceRoot);
-        _venvDirectory = Path.GetFullPath(venvDirectory ?? DefaultVenvDirectory());
-    }
-
-    private static string DefaultVenvDirectory() =>
-        Environment.GetEnvironmentVariable("PYTHON_VENV") is { Length: > 0 } configured
-            ? configured
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "louis-agent",
-                "python-venv");
 
     [Description("Runs Python code, either inline via 'code' or an existing workspace-relative '.py' file via " +
                  "'scriptPath' — pass exactly one of the two. Uses the agent's own virtual environment once " +
@@ -76,7 +58,7 @@ public sealed partial class PythonTools
                 return MessageText.Format(ShellToolMessage.ScriptNotFound, new { Path = scriptPath });
         }
 
-        var result = RunScript(hasCode ? code : null, script, ProcessRunner.SplitArguments(arguments), standardInput,
+        var result = _runner.RunScript(hasCode ? code : null, script, ProcessRunner.SplitArguments(arguments), standardInput,
             TimeSpan.FromSeconds(Math.Clamp(timeoutSeconds, 1, 600)), out string? notInstalled);
         if (notInstalled is not null) return notInstalled;
 
@@ -87,53 +69,6 @@ public sealed partial class PythonTools
         sb.AppendLine("--- output ---");
         sb.Append(result.Output.Trim());
         return ProcessRunner.Truncate(sb.ToString(), MaxOutputChars);
-    }
-
-    /// <summary>
-    /// Runs inline code (written to a temp .py) or an existing script file. Shared with ExecuteSkill and agent-built tools.
-    /// Returns null with <paramref name="notInstalled"/> set when no Python 3 is available.
-    /// </summary>
-    internal ProcessRunner.Result? RunScript(
-        string? inlineCode,
-        string? scriptFile,
-        IReadOnlyList<string> arguments,
-        string? standardInput,
-        TimeSpan timeout,
-        out string? notInstalled,
-        IReadOnlyDictionary<string, string>? environment = null)
-    {
-        notInstalled = null;
-        if (ResolveInterpreter() is not { } python)
-        {
-            notInstalled = NotInstalledMessage;
-            return null;
-        }
-
-        string? tempFile = null;
-        if (inlineCode is not null)
-        {
-            string tempDir = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "louis-agent-python")).FullName;
-            tempFile = Path.Combine(tempDir, $"snippet_{Guid.NewGuid():N}.py");
-            File.WriteAllText(tempFile, inlineCode, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
-        }
-
-        var env = new Dictionary<string, string>(PythonEnvironment);
-        if (environment is not null)
-            foreach (var (key, value) in environment)
-                env[key] = value;
-
-        try
-        {
-            var result = ProcessRunner.Run(python.FileName,
-                [.. python.PrefixArgs, tempFile ?? scriptFile!, .. arguments],
-                WorkingDirectory, timeout, standardInput, env);
-            // Inline snippets run from a temp file; show a stable name in tracebacks instead.
-            return tempFile is null ? result : result with { Output = result.Output.Replace(tempFile, "<snippet>") };
-        }
-        finally
-        {
-            if (tempFile is not null) TryDelete(tempFile);
-        }
     }
 
     [Description(
@@ -156,8 +91,8 @@ public sealed partial class PythonTools
 
         if (EnsureVirtualEnvironment() is { } venvError) return venvError;
 
-        var result = ProcessRunner.Run(VenvPython, ["-m", "pip", "install", "--disable-pip-version-check", .. specs],
-            WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
+        var result = ProcessRunner.Run(_runner.VenvPython, ["-m", "pip", "install", "--disable-pip-version-check", .. specs],
+            _runner.WorkingDirectory, InstallTimeout, environment: PythonRunner.PythonEnvironment);
         if (result.TimedOut)
             return MessageText.Format(ShellToolMessage.PipTimedOut, new { Output = ProcessRunner.Tail(result.Output) });
 
@@ -176,21 +111,21 @@ public sealed partial class PythonTools
                  "arbitrary commands.")]
     public string PythonInfo()
     {
-        if (ResolveInterpreter() is not { } python) return NotInstalledMessage;
+        if (_runner.ResolveInterpreter() is not { } python) return PythonRunner.NotInstalledMessage;
 
-        var version = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "--version"], WorkingDirectory,
+        var version = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "--version"], _runner.WorkingDirectory,
             ProbeTimeout);
         var sb = new StringBuilder();
         sb.AppendLine($"Interpreter: {python.FileName} {string.Join(' ', python.PrefixArgs)}".TrimEnd());
         sb.AppendLine($"Version: {version.Output.Trim()}");
         sb.AppendLine(
-            $"Virtual environment: {_venvDirectory} ({(File.Exists(VenvPython) ? MessageText.Format(ShellToolMessage.VenvCreated) : MessageText.Format(ShellToolMessage.VenvNotCreatedYet))})");
+            $"Virtual environment: {_runner.VenvDirectory} ({(File.Exists(_runner.VenvPython) ? MessageText.Format(ShellToolMessage.VenvCreated) : MessageText.Format(ShellToolMessage.VenvNotCreatedYet))})");
 
-        if (File.Exists(VenvPython))
+        if (File.Exists(_runner.VenvPython))
         {
-            var packages = ProcessRunner.Run(VenvPython,
+            var packages = ProcessRunner.Run(_runner.VenvPython,
                 ["-m", "pip", "list", "--format=freeze", "--disable-pip-version-check"],
-                WorkingDirectory, TimeSpan.FromMinutes(1), environment: PythonEnvironment);
+                _runner.WorkingDirectory, TimeSpan.FromMinutes(1), environment: PythonRunner.PythonEnvironment);
             sb.AppendLine("Installed packages:");
             sb.Append(string.IsNullOrWhiteSpace(packages.Output) ? "(none)" : packages.Output.Trim());
         }
@@ -198,57 +133,25 @@ public sealed partial class PythonTools
         return ProcessRunner.Truncate(sb.ToString().TrimEnd(), MaxOutputChars);
     }
 
-    internal sealed record Interpreter(string FileName, string[] PrefixArgs);
-
-    private static string NotInstalledMessage => MessageText.Format(ShellToolMessage.PythonNotInstalled);
-
-    private string WorkingDirectory =>
-        Environment.GetEnvironmentVariable("AGENT_WORKING_DIRECTORY") is { Length: > 0 } dir ? dir : _workspaceRoot;
-
-    private string VenvPython => OperatingSystem.IsWindows()
-        ? Path.Combine(_venvDirectory, "Scripts", "python.exe")
-        : Path.Combine(_venvDirectory, "bin", "python");
-
-    /// <summary>The venv interpreter once it exists, otherwise the first working Python 3 on this machine.</summary>
-    internal Interpreter? ResolveInterpreter() =>
-        File.Exists(VenvPython) ? new Interpreter(VenvPython, []) : _baseInterpreter ??= FindBaseInterpreter();
-
-    private Interpreter? FindBaseInterpreter()
-    {
-        var candidates = new List<Interpreter>();
-        if (Environment.GetEnvironmentVariable("PYTHON_PATH") is { Length: > 0 } configured)
-            candidates.Add(new(configured, []));
-        if (OperatingSystem.IsWindows())
-            candidates.AddRange([new("py", ["-3"]), new("python", []), new("python3", [])]);
-        else candidates.AddRange([new("python3", []), new("python", [])]);
-
-        // Probing with --version also rejects the Windows Store stub, which prints an install hint and exits non-zero.
-        return candidates.FirstOrDefault(c =>
-        {
-            var probe = ProcessRunner.Run(c.FileName, [.. c.PrefixArgs, "--version"], WorkingDirectory, ProbeTimeout);
-            return probe.ExitCode == 0 && probe.Output.TrimStart().StartsWith("Python 3", StringComparison.Ordinal);
-        });
-    }
-
     private string? EnsureVirtualEnvironment()
     {
-        if (File.Exists(VenvPython)) return null;
-        if (ResolveInterpreter() is not { } python) return NotInstalledMessage;
+        if (File.Exists(_runner.VenvPython)) return null;
+        if (_runner.ResolveInterpreter() is not { } python) return PythonRunner.NotInstalledMessage;
 
-        Directory.CreateDirectory(Path.GetDirectoryName(_venvDirectory)!);
-        var result = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "-m", "venv", _venvDirectory],
-            WorkingDirectory, InstallTimeout, environment: PythonEnvironment);
-        if (result.ExitCode != 0 || !File.Exists(VenvPython))
+        Directory.CreateDirectory(Path.GetDirectoryName(_runner.VenvDirectory)!);
+        var result = ProcessRunner.Run(python.FileName, [.. python.PrefixArgs, "-m", "venv", _runner.VenvDirectory],
+            _runner.WorkingDirectory, InstallTimeout, environment: PythonRunner.PythonEnvironment);
+        if (result.ExitCode != 0 || !File.Exists(_runner.VenvPython))
             return MessageText.Format(ShellToolMessage.VenvNotCreated,
-                new { Directory = _venvDirectory, Output = ProcessRunner.Tail(result.Output) });
+                new { Directory = _runner.VenvDirectory, Output = ProcessRunner.Tail(result.Output) });
 
-        _baseInterpreter = null;
+        _runner.ForgetBaseInterpreter();
         return null;
     }
 
     internal bool TryResolveWorkspacePath(string relativePath, out string fullPath, out string error)
     {
-        string root = Path.GetFullPath(WorkingDirectory);
+        string root = Path.GetFullPath(_runner.WorkingDirectory);
         fullPath = Path.GetFullPath(Path.Combine(root, relativePath));
         error = "";
 
@@ -260,20 +163,6 @@ public sealed partial class PythonTools
 
         error = MessageText.Format(ToolMessage.PathOutsideWorkspaceNamed, new { Path = relativePath });
         return false;
-    }
-
-    private static void TryDelete(string path)
-    {
-        try
-        {
-            File.Delete(path);
-        }
-        catch (IOException)
-        {
-        }
-        catch (UnauthorizedAccessException)
-        {
-        }
     }
 
     // name[extras] followed by optional version constraints, e.g. requests, uvicorn[standard], numpy>=2,<3

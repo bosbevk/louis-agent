@@ -40,7 +40,7 @@ public class ToolsetCatalogTests
             ]), Is.False, "Puls");
         Assert.That(
             ToolsetCatalog.RunsInParallel([
-                ToolsetCatalog.Find(CoreToolset.Python.Wire())!, ToolsetCatalog.Find(CoreToolset.Web.Wire())!
+                ToolsetCatalog.Find(CoreToolset.Skills.Wire())!, ToolsetCatalog.Find(CoreToolset.Web.Wire())!
             ]), Is.False);
         Assert.That(ToolsetCatalog.RunsInParallel([]), Is.False, "no toolsets: the coding agent's default tools");
     }

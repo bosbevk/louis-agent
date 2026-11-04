@@ -1,7 +1,8 @@
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Testing;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Packs.Shell;
 
-namespace LouisAgent.Core.IntegrationTests.Tools.Shell;
+namespace LouisAgent.Packs.Shell.IntegrationTests;
 
 [Category("Integration")]
 public class BashToolsIntegrationTests
@@ -32,7 +33,7 @@ public class BashToolsIntegrationTests
     [Test]
     public void FindBash_NeverReturnsTheWslStub()
     {
-        var bash = BashTools.FindBash();
+        var bash = BashRunner.FindBash();
         Outside.Tool(bash is not null, "bash is not installed");
 
         Assert.That(bash, Does.Not.Contain("System32").IgnoreCase);
@@ -146,5 +147,5 @@ public class BashToolsIntegrationTests
         Assert.That(info, Does.Match("git: (available|missing)"));
     }
 
-    private static void RequireBash() => Outside.Tool(BashTools.FindBash() is not null, "bash is not installed");
+    private static void RequireBash() => Outside.Tool(BashRunner.FindBash() is not null, "bash is not installed");
 }

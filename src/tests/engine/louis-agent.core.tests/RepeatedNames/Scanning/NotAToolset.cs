@@ -32,7 +32,7 @@ public static class NotAToolset
 
     /// <summary>The names that, when they come first in a statement, make the strings after them programs.</summary>
     private static readonly string[] NamesOfProgramLists =
-        ["candidates", "CommonCommands", "ResolveShell", "_venvDirectory"];
+        ["candidates", "CommonCommands", "ResolveShell", "_venvDirectory", "fenceTag"];
 
     /// <summary>Whether this string is one of the things that are not a toolset or a language.</summary>
     public static bool Excuses(LiteralExpressionSyntax literal) =>

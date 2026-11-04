@@ -7,9 +7,6 @@ namespace LouisAgent.Core.Agent.Toolsets;
 /// </summary>
 public enum CoreToolset
 {
-    Python,
-    PowerShell,
-    Bash,
     Web,
     Specialists,
     Minions,

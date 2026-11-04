@@ -5,9 +5,9 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.AI;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Scripts.Messages;
+using LouisAgent.Core.Agent.EngineTools.Scripts.Messages;
 
-namespace LouisAgent.Core.Tools.Scripts;
+namespace LouisAgent.Core.Agent.EngineTools.Scripts;
 /// <summary>
 /// Exposes a <see cref="ScriptToolDefinition"/> to the model as a real function with a JSON schema.
 /// Arguments are validated against the declared types, then passed to the script as JSON on stdin

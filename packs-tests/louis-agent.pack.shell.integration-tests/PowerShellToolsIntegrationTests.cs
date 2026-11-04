@@ -1,7 +1,8 @@
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Testing;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Packs.Shell;
 
-namespace LouisAgent.Core.IntegrationTests.Tools.Shell;
+namespace LouisAgent.Packs.Shell.IntegrationTests;
 
 [Category("Integration")]
 public class PowerShellToolsIntegrationTests
@@ -87,5 +88,5 @@ public class PowerShellToolsIntegrationTests
     }
 
     private void RequirePowerShell() =>
-        Outside.Tool(_tools.ResolveInterpreter() is not null, "PowerShell is not installed on this machine");
+        Outside.Tool(new PowerShellRunner(Path.GetTempPath()).ResolveInterpreter() is not null, "PowerShell is not installed on this machine");
 }

@@ -11,6 +11,7 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Packs.DevOps;
+using LouisAgent.Packs.Shell;
 using LouisAgent.Packs.Files;
 using LouisAgent.Packs.Git;
 using LouisAgent.Packs.DotNet;
@@ -40,8 +41,8 @@ public class ModelRequestSnapshotTests
     /// <summary>The order of the golden file, whichever order the catalogue lists them in.</summary>
     private static readonly string[] Order =
     [
-        FilesToolset.Files.Wire(), GitToolset.Git.Wire(), DotNetToolset.DotNet.Wire(), CoreToolset.Python.Wire(),
-        CoreToolset.PowerShell.Wire(), CoreToolset.Bash.Wire(), CoreToolset.Web.Wire(), PaymoToolset.Paymo.Wire(),
+        FilesToolset.Files.Wire(), GitToolset.Git.Wire(), DotNetToolset.DotNet.Wire(), ShellToolset.Python.Wire(),
+        ShellToolset.PowerShell.Wire(), ShellToolset.Bash.Wire(), CoreToolset.Web.Wire(), PaymoToolset.Paymo.Wire(),
         DevOpsToolset.DevOps.Wire(), CoreToolset.Specialists.Wire(), CoreToolset.Minions.Wire(),
         CoreToolset.Skills.Wire(),
     ];
