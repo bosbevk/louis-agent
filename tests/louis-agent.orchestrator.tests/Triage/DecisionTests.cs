@@ -1,4 +1,5 @@
 using System.Text.Json;
+using LouisAgent.Orchestrator.Comms;
 using LouisAgent.Orchestrator.Triage;
 
 namespace LouisAgent.Orchestrator.Tests.Triage;
