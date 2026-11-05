@@ -45,7 +45,8 @@ still always runs a local model. The `puls-minion-find-recipe` role file stays t
 
 - [ADR 0021: minions, one task, one tool](../../../../src/docs/adr/0021-minions-one-task-one-tool.md)
 - [ADR 0078: a recipe search asks several sites](../../../../packs/docs/adr/0078-a-recipe-search-asks-several-sites.md)
-- [The F35 plan](../plans/F35-recipe-sources.md), *Approved during the build*
+- [The F35 plan](https://github.com/bosbevk/louis-agent/blob/cc45cd85/demos/puls/docs/plans/F35-recipe-sources.md), now deleted, *Approved during the build*
+- [The write-up](../../../../src/docs/learning/05-structured-outputs.md)
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [ADR index](../../../../src/docs/adr/README.md)

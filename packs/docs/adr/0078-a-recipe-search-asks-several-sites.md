@@ -42,6 +42,6 @@ The pattern is Scatter-Gather: one request goes to several places and the answer
 
 ## Links
 
-- The plan: [F35.4](../../../demos/puls/docs/plans/F35.4-many-recipe-sites.md), with the options not taken.
+- The plan, now deleted: [F35.4](https://github.com/bosbevk/louis-agent/blob/cc45cd85/demos/puls/docs/plans/F35.4-many-recipe-sites.md), with the options not taken.
 - [ADR 0067](../../../src/docs/adr/0067-a-pages-own-data-before-its-text.md): a page's own data before its text.
 - [Scatter-Gather](https://www.enterpriseintegrationpatterns.com/patterns/messaging/BroadcastAggregate.html).

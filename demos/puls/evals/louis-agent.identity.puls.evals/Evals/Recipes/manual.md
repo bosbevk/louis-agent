@@ -72,8 +72,8 @@ counts as the page's. No page read, or one that is no recipe, is a no.
 
 ## The two runs this eval is for
 
-F35.2's step 5 records it twice, on Louis's go, with 3 repeats each, and the numbers go into the measure table of the
-F35 plan (`docs/plans/F35-recipe-sources.md`):
+F35.2's step 5 recorded it twice, on Louis's go, with 3 repeats each, and the numbers are in the
+[write-up](../../../../../../src/docs/learning/05-structured-outputs.md):
 
 1. **Without the minion:** the stack rebuilt with `RECIPE_SOURCES`, the cook alone searching several sites at once with `FindRecipes` and
    reading with `ReadRecipe`.

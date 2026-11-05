@@ -61,7 +61,7 @@ The refusal reaches the model as text, with the reason, as a private address doe
 
 ## Links
 
-The plan, [F35-recipe-sources.md](../../../demos/puls/docs/plans/F35-recipe-sources.md) (finding E3, G1, H2 and I1), step 2 of F35.1.
+The plan, [F35-recipe-sources.md](https://github.com/bosbevk/louis-agent/blob/cc45cd85/demos/puls/docs/plans/F35-recipe-sources.md), now deleted (finding E3, G1, H2 and I1), step 2 of F35.1.
 [RFC 9309](https://datatracker.ietf.org/doc/html/rfc9309), the Robots Exclusion Protocol. Also
 [ADR 0005](0005-guard-the-context.md) (failures carry their reason) and [ADR 0067](0067-a-pages-own-data-before-its-text.md).
 
