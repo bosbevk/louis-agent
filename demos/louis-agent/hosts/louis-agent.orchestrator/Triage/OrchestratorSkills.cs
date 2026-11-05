@@ -19,7 +19,7 @@ namespace LouisAgent.Orchestrator.Triage;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0020-principles-for-every-agent.md">ADR 0020: principles for every agent</seealso>
 internal static class OrchestratorSkills
 {
-    /// <summary>The orchestrator's mode in core's prompts (CL9): its workflow, the same for every service.</summary>
+    /// <summary>The orchestrator's mode, in the coding identity's prompts: its workflow, the same for every service.</summary>
     internal const string Mode = "louis-agent/voice-orchestrator";
 
     /// <summary>The service's own page in its runbook folder; every other file there is one method's runbook.</summary>

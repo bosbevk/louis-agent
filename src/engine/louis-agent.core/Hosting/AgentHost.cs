@@ -49,7 +49,8 @@ public static class AgentHost
         // After the .env files load, so OTEL_* there reach the tracer under Rider too (F52).
         AgentTelemetry.Start();
         SkillFileSource.Use(catalog.Prompts);
-        RoleFiles.Check(agent, RoleCatalog.DefaultVoice);
+        agent.DefaultVoice ??= catalog.DefaultVoice;
+        RoleFiles.Check(agent, agent.DefaultVoice);
         var engines = new AgentEngineFactory(new ToolsOnlyChatClient(), agent, catalog: catalog);
         return engines.GetOrCreate(engines.Available);
     }
@@ -89,7 +90,8 @@ public static class AgentHost
         // The identities' and packs' prompts, before any is read (CL15); then every ROLES_ENABLED name and the default
         // mode must resolve, so a missing identity stops the host here, not at its first chat.
         SkillFileSource.Use(catalog.Prompts);
-        RoleFiles.Check(agent, RoleCatalog.DefaultVoice);
+        agent.DefaultVoice ??= catalog.DefaultVoice;
+        RoleFiles.Check(agent, agent.DefaultVoice);
         var chatClient = clientFactory.Create(llm);
         PriceTable prices = PriceTableLoader.Load(agent);
         ExchangeRates rates = ExchangeRatesLoader.Load(agent, prices.Currency);

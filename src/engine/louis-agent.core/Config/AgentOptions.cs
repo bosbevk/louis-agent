@@ -121,6 +121,9 @@ public sealed class AgentOptions
     /// </summary>
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
+    /// <summary>The mode a session that names none runs. Not a setting: the host takes it from its catalogue.</summary>
+    public string? DefaultVoice { get; set; }
+
     /// <summary>
     /// ROLES_ENABLED: the roles this instance may use (F29), comma separated and lowercase, e.g.
     /// <c>acme/voice-en,acme-cook</c>; a session or sub-session asking for another is refused as for an unknown one.

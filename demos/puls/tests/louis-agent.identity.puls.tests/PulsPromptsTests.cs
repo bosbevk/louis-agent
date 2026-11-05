@@ -16,7 +16,7 @@ namespace LouisAgent.Identities.Puls.Tests;
 public class PulsPromptsTests
 {
     /// <summary>Every level-0 mode this test run offers, core's and Puls's.</summary>
-    private const string Modes = "louis-agent/voice, louis-agent/voice-orchestrator, puls/voice-af, puls/voice-en";
+    private const string Modes = "puls/voice-af, puls/voice-en";
 
     /// <summary>One prompt as the model reads it, through the same readers the engine uses: its body (CL27).</summary>
     private static string Read(string path) => PromptHeaders.Split(path, Raw(path)).Body;

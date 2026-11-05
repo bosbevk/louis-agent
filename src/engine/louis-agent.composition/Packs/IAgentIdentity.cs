@@ -20,4 +20,7 @@ public interface IAgentIdentity
     /// server named "shops" (F36); the identity can't tell.
     /// </summary>
     IReadOnlyList<string> Packs { get; }
+
+    /// <summary>The mode a session that names none runs, as <c>{name}/{mode}</c>. None: a session names its own.</summary>
+    string? DefaultVoice => null;
 }

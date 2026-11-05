@@ -1,5 +1,3 @@
-using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.Toolsets;
@@ -10,13 +8,6 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Web.Search;
-using LouisAgent.Packs.DevOps;
-using LouisAgent.Packs.Web;
-using LouisAgent.Packs.Shell;
-using LouisAgent.Packs.Files;
-using LouisAgent.Packs.Git;
-using LouisAgent.Packs.DotNet;
-using LouisAgent.Packs.Paymo;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Coding.Tests.Golden;
@@ -35,23 +26,8 @@ public class ModelRequestSnapshotTests
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     };
 
-    /// <summary>What this demo loads, with keys that are never used: nothing is called while building the engine.</summary>
-    private static readonly AgentCatalog Catalog = new([],
-        CodingCatalog.Packs(new PaymoOptions("snapshot"), new DevOpsOptions("snapshot", "org", "project")));
-
-    /// <summary>The order of the golden file, whichever order the catalogue lists them in.</summary>
-    private static readonly string[] Order =
-    [
-        FilesToolset.Files.Wire(), GitToolset.Git.Wire(), DotNetToolset.DotNet.Wire(), ShellToolset.Python.Wire(),
-        ShellToolset.PowerShell.Wire(), ShellToolset.Bash.Wire(), WebToolset.Web.Wire(), PaymoToolset.Paymo.Wire(),
-        DevOpsToolset.DevOps.Wire(), CoreToolset.Specialists.Wire(), CoreToolset.Minions.Wire(),
-        CoreToolset.Skills.Wire(),
-    ];
-
     private string _skillsDir = null!;
 
-    [OneTimeSetUp]
-    public void UseThePacksPrompts() => SkillFileSource.Use(Catalog.Prompts);
 
     [SetUp]
     public void SetUp()
@@ -68,6 +44,7 @@ public class ModelRequestSnapshotTests
         var options = new AgentOptions
         {
             WorkspaceRoot = _skillsDir,
+            DefaultVoice = CodingPrompts.Catalog.DefaultVoice,
             SkillsDirectory = _skillsDir,
             RatesUrl = null,
             AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") },
@@ -76,10 +53,9 @@ public class ModelRequestSnapshotTests
             // F33: a browser for the web toolset's renderer; building the engine connects to nothing. (The shops are a pack, CL15.)
             BrowserUrl = "http://browser.test:9222",
         };
-        // The snapshot names every toolset (F5: an engine has only what it's given), in the order the file holds them.
+        // Every toolset (F5: an engine has only what it's given), in the catalogue's order, which is the file's.
         var context = new ToolsetContext(options, WebSearchProviderFactory.Create(options));
-        var resolved = Catalog.Resolve(Order, context);
-        var toolsets = Order.Select(name => resolved.Single(t => t.Name == name)).ToList();
+        var toolsets = CodingPrompts.Catalog.Resolve(CodingPrompts.Catalog.Toolsets.Select(t => t.Name), context);
         return new AgentEngine(SkillLoader.Load(options, toolsets), new FakeChatClient(), options, supportsTools,
             toolsets: ToolsetCatalog.BuildTools(toolsets, context), selfExtension: true)
         {

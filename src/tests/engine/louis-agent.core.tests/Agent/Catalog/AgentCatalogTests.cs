@@ -316,7 +316,7 @@ public class AgentCatalogTests
             RolesEnabled = ["testprod-specialist", "nope"]
         };
 
-        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, RoleCatalog.DefaultVoice))!;
+        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "testprod/voice-af"))!;
 
         Assert.That(error.Message, Does.StartWith("ROLES_ENABLED names roles this instance doesn't have: nope."),
             "only the unknown name is named; the known ones follow under Available");
@@ -327,7 +327,7 @@ public class AgentCatalogTests
                     WorkspaceRoot = TestPaths.RepoRoot,
                     RolesEnabled = ["testprod-specialist", "testprod/voice-af"]
                 },
-                RoleCatalog.DefaultVoice));
+                "testprod/voice-af"));
     }
 
     /// <summary>A default mode that points at no file stops start-up.</summary>
@@ -336,9 +336,9 @@ public class AgentCatalogTests
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot };
 
-        Assert.DoesNotThrow(() => RoleFiles.Check(options, RoleCatalog.DefaultVoice),
-            "core embeds louis-agent/voice until CL17");
-        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "louis-agent/nothing"))!;
-        Assert.That(error.Message, Does.Contain("louis-agent/nothing"));
+        Assert.DoesNotThrow(() => RoleFiles.Check(options, "testprod/voice-af"),
+            "its file is there");
+        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "testprod/nothing"))!;
+        Assert.That(error.Message, Does.Contain("testprod/nothing"));
     }
 }

@@ -19,6 +19,9 @@ public sealed class PulsIdentity : IAgentIdentity
     /// Puls's prompts, embedded with their paths (<c>agent/puls/voice.md</c>, <c>specialists/puls-cook.md</c>), read
     /// only from this assembly.
     /// </summary>
+    /// <inheritdoc/>
+    public string DefaultVoice => $"{Name}/voice-af";
+
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(PulsIdentity).Assembly, "Prompts");
 
     /// <summary>

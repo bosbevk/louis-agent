@@ -618,6 +618,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.web", "pac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.pack.web.tests", "packs-tests\louis-agent.pack.web.tests\louis-agent.pack.web.tests.csproj", "{05F4A614-C6A6-5FE5-86BD-64A414503C7B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity", "identity", "{44238E49-E4B6-5358-8A71-78820C764D6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "louis-agent.identity.coding", "demos\louis-agent\identity\louis-agent.identity.coding\louis-agent.identity.coding.csproj", "{53415676-2C15-5714-A2B2-03C39121F699}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -628,6 +632,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53415676-2C15-5714-A2B2-03C39121F699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Debug|x64.Build.0 = Debug|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Debug|x86.Build.0 = Debug|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Release|x64.ActiveCfg = Release|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Release|x64.Build.0 = Release|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Release|x86.ActiveCfg = Release|Any CPU
+		{53415676-2C15-5714-A2B2-03C39121F699}.Release|x86.Build.0 = Release|Any CPU
 		{05F4A614-C6A6-5FE5-86BD-64A414503C7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05F4A614-C6A6-5FE5-86BD-64A414503C7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05F4A614-C6A6-5FE5-86BD-64A414503C7B}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -1665,6 +1681,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{44238E49-E4B6-5358-8A71-78820C764D6D} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0142}
+		{53415676-2C15-5714-A2B2-03C39121F699} = {44238E49-E4B6-5358-8A71-78820C764D6D}
 		{05F4A614-C6A6-5FE5-86BD-64A414503C7B} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}
 		{E124B4F8-44EE-578B-83F0-DD03727783F1} = {13F83573-227E-2BB1-530B-3E26FFFFAA85}
 		{ADA04BED-0F68-55A9-956E-AA8EF29C7DB0} = {7B2E4C10-9D31-4F6A-8A11-5C0E2F7D0176}

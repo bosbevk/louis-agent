@@ -16,7 +16,7 @@ public class SkillLoaderTests
         "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills"
     ];
 
-    private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills };
+    private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills, DefaultVoice = "testprod/voice-en" };
 
     private static IReadOnlyList<ToolsetDefinition> Toolsets(params string[] names) =>
         TestTools.Catalog.Toolsets.Where(t => names.Contains(t.Name)).ToList();
@@ -83,7 +83,7 @@ public class SkillLoaderTests
     {
         string docs = SkillLoader.Load(Options(), []).Documentation;
 
-        Assert.That(docs, Does.Contain("# Louis Agent - Default Instructions"), "default.md, the toolset router");
+        Assert.That(docs, Does.Contain("# Testprod - Routing"), "default.md, the toolset router");
         Assert.That(docs.Length, Is.GreaterThan(0));
         foreach (string guide in OtherGuides)
             Assert.That(docs, Does.Not.Contain(guide));

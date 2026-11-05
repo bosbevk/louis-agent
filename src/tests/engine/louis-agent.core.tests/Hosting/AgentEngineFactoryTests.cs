@@ -24,6 +24,7 @@ public class AgentEngineFactoryTests
     {
         WorkspaceRoot = TestPaths.RepoRoot,
         SkillsDirectory = TestPaths.Skills,
+        DefaultVoice = "testprod/voice-en",
         AgentPeers = peer is null ? [] : new Dictionary<string, Uri> { ["coder"] = peer },
         RatesUrl = null,
     };
@@ -55,7 +56,7 @@ public class AgentEngineFactoryTests
         var factory = FactoryEnabling(["testprod/voice-af", "testprod-specialist"]);
 
         Assert.That(factory.AvailableRoles(RoleLevel.Agent), Is.EqualTo(new[] { "testprod/voice-af" }),
-            "louis-agent/voice is built in but off");
+            "the other language is built in but off");
         Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Is.EqualTo(new[] { "testprod-specialist" }),
             "another role is refused");
 
@@ -264,9 +265,9 @@ public class AgentEngineFactoryTests
         Assert.That(factory.AvailableRoles(RoleLevel.Agent),
             Is.EqualTo(new[]
             {
-                "louis-agent/voice", "louis-agent/voice-orchestrator", "testprod/voice-af", "testprod/voice-en"
+                "testprod/voice-af", "testprod/voice-en"
             }));
-        Assert.That(factory.DefaultVoice, Is.EqualTo("louis-agent/voice"), "GET /v1/roles' default");
+        Assert.That(factory.DefaultVoice, Is.EqualTo("testprod/voice-en"), "GET /v1/roles' default");
         Assert.That(factory.AvailableRoles(RoleLevel.Specialist), Does.Contain("testprod-specialist"));
     }
 
@@ -310,9 +311,9 @@ public class AgentEngineFactoryTests
 
         Assert.That(voiced, Is.Not.SameAs(plain));
         Assert.That(factory.GetOrCreate([TestToolset.Files.Wire()], "testprod/voice-af"), Is.SameAs(voiced));
-        Assert.That(voiced.SkillDocumentation, Does.Contain("# Testprod - Stem").And.Not.Contain("Louis's Minion"));
-        Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
-        Assert.That(plain.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(voiced.SkillDocumentation, Does.Contain("# Testprod - Stem").And.Not.Contain("# Testprod - Voice"));
+        Assert.That(noRouter.SkillDocumentation, Does.Not.Contain("# Testprod - Routing"));
+        Assert.That(plain.SkillDocumentation, Does.Contain("# Testprod - Routing"));
         Assert.That(factory.Profiles,
             Is.EquivalentTo(new[] { TestToolset.Files.Wire(), "files|testprod/voice-af", "files|specialist" }));
     }
@@ -430,7 +431,7 @@ public class AgentEngineFactoryTests
             "one tool: no clock, no ExecuteSkill, no WebSearch");
         Assert.That(minion.SkillDocumentation, Does.Contain("# Testprod minion: Lookup").And
             .Contain("You are a **minion**")
-            .And.Not.Contain("# Web Skills").And.Not.Contain("# Louis Agent - Default Instructions"));
+            .And.Not.Contain("# Web Skills").And.Not.Contain("# Testprod - Routing"));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod-minion-lookup|minion|tool:FetchUrl" }));
         Assert.That(
             factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl"),

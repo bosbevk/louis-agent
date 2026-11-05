@@ -29,7 +29,7 @@ internal static class InfoReplyFactories
     {
         /// <summary>The roles a session here can choose, per level.</summary>
         public static RolesReply Of(AgentEngineFactory engines) => new(
-            engines.DefaultVoice,
+            engines.DefaultVoice ?? "",
             engines.AvailableRoles(RoleLevel.Agent),
             engines.AvailableRoles(RoleLevel.Specialist),
             engines.AvailableRoles(RoleLevel.Minion));

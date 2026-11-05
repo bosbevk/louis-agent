@@ -20,7 +20,7 @@ public class SkillLoaderHeadersTests
         Assert.That(SkillLoader.ToolsetsOf("testprod-specialist", RoleLevel.Specialist), Is.EqualTo(new[] { "web?" }));
 
     /// <summary>A role whose header names none, or a name that isn't a role, loads none of its own.</summary>
-    [TestCase("louis-agent/voice", RoleLevel.Agent)]
+    [TestCase("testprod/voice-af", RoleLevel.Agent)]
     [TestCase("no-such-role", RoleLevel.Specialist)]
     [TestCase("../shared/principles", RoleLevel.Specialist)]
     public void ARoleThatNamesNone_LoadsNoneOfItsOwn(string role, RoleLevel level) =>

@@ -13,7 +13,7 @@ public static class RoleFiles
     /// <paramref name="level"/>'s folder, which must be built in. A name from another level is refused as an unknown one
     /// (CL8), so a role never opens at the wrong level; at level 0 only a mode is a name (CL9), never a function skill.
     /// </summary>
-    internal static string FileOf(AgentOptions agent, string? role, RoleLevel level)
+    internal static string? FileOf(AgentOptions agent, string? role, RoleLevel level)
     {
         if (string.IsNullOrEmpty(role))
         {
@@ -21,7 +21,7 @@ public static class RoleFiles
             if (level == RoleLevel.Minion)
                 throw new RoleException(MessageText.Format(SkillErrorMessage.MinionNeedsRole,
                     new { Available = string.Join(", ", Enabled(agent, level)) }));
-            return RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent);
+            return agent.DefaultVoice is { } voice ? RoleCatalog.FileName(voice, RoleLevel.Agent) : null;
         }
 
         if (!RoleCatalog.IsValidName(role))
@@ -42,7 +42,7 @@ public static class RoleFiles
     /// cut an unknown name was dropped in silence (it simply never matched), and a session with no role was handed the
     /// default before any check, so an identity missing from <c>IDENTITIES</c> would have shown as a 400 at the first chat.
     /// </summary>
-    internal static void Check(AgentOptions agent, string defaultMode)
+    internal static void Check(AgentOptions agent, string? defaultMode)
     {
         var known = Enum.GetValues<RoleLevel>().SelectMany(RoleCatalog.Available)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -54,6 +54,9 @@ public static class RoleFiles
                     Names = string.Join(", ", unknown),
                     Available = string.Join(", ", known.Order(StringComparer.Ordinal))
                 }));
+
+        // A framework host with no identity has no default: its sessions name their own.
+        if (defaultMode is null) return;
 
         string file = RoleCatalog.FileName(defaultMode, RoleLevel.Agent);
         if (SkillFolder.Read(agent, file) is null)

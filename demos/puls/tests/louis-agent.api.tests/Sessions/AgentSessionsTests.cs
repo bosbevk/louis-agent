@@ -250,8 +250,8 @@ public class AgentSessionsTests
         var top = sessions.Create([TestToolset.Files.Wire()]);
         var sub = sessions.Create([TestToolset.Files.Wire()], depth: 1);
 
-        Assert.That(top.Engine.SkillDocumentation, Does.Contain("# Louis Agent - Default Instructions"));
-        Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain("# Louis Agent - Default Instructions"));
+        Assert.That(top.Engine.SkillDocumentation, Does.Contain("# Puls - Routing"));
+        Assert.That(sub.Engine.SkillDocumentation, Does.Not.Contain("# Puls - Routing"));
         Assert.That(sub.Engine.SkillDocumentation, Does.Contain("# Files Skills"), "its toolsets' guides stay");
     }
 
@@ -292,7 +292,7 @@ public class AgentSessionsTests
         var session = Sessions().Create([TestToolset.Files.Wire()], role: "");
 
         Assert.That(session.Role, Is.Null);
-        Assert.That(session.Engine.SkillDocumentation, Does.Contain("Louis's Minion"));
+        Assert.That(session.Engine.SkillDocumentation, Does.Contain("# Puls - Stem"));
     }
 
     /// <summary>
@@ -391,12 +391,12 @@ public class AgentSessionsTests
                 WorkspaceRoot = RepoRoot,
                 SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
                 RatesUrl = null
-            });
+            }, catalog: PulsCatalog());
 
         string roles = System.Text.Json.JsonSerializer.Serialize(RolesReply.Of(engines), InfoJson.SnakeCase);
 
         Assert.That(roles,
-            Does.Contain("\"default\":\"louis-agent/voice\"").And.Contain("\"specialists\":[").And
+            Does.Contain("\"default\":\"puls/voice-af\"").And.Contain("\"specialists\":[").And
                 .Contain(PulsRole.Cook.Wire()));
     }
 
@@ -462,7 +462,7 @@ public class AgentSessionsTests
         var unnamed = sessions.Create([TestToolset.Web.Wire()], depth: 1);
         Assert.That(unnamed.Role, Is.Null);
         Assert.That(unnamed.Engine.SkillDocumentation,
-            Does.Contain("Louis's Minion").And.Not.Contain("# Louis Agent - Default Instructions"));
+            Does.Contain("# Puls - Stem").And.Not.Contain("# Puls - Routing"));
         Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
             Is.EqualTo(PulsRole.Cook.Wire()));
         Assert.That(sessions.Create([TestToolset.Web.Wire()]).Role, Is.Null,

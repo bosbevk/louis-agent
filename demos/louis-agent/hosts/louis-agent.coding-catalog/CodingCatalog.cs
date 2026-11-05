@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Hosting.EnvFiles;
+using LouisAgent.Identities.Coding;
 using LouisAgent.Packs.DevOps;
 using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Shell;
@@ -33,5 +34,5 @@ public static class CodingCatalog
         ];
 
     /// <summary>The catalogue a program hands to its host.</summary>
-    public static AgentCatalog Create() => new([], Packs());
+    public static AgentCatalog Create() => new([new CodingIdentity()], Packs());
 }

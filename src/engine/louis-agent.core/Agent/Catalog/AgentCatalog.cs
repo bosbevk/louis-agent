@@ -39,6 +39,9 @@ public sealed class AgentCatalog
     /// <summary>A host given no identity and no pack: core's toolsets and prompts, as before the cut.</summary>
     public static AgentCatalog CoreOnly { get; } = new([], []);
 
+    /// <summary>The first identity's default mode: who a session is when it doesn't say.</summary>
+    public string? DefaultVoice => Identities.Select(i => i.DefaultVoice).FirstOrDefault(v => v is not null);
+
     private readonly Dictionary<string, ToolsetDefinition> _toolsetOfTool = new(StringComparer.Ordinal);
 
     public AgentCatalog(IReadOnlyList<IAgentIdentity> identities, IReadOnlyList<IAgentPack> packs)

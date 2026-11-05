@@ -75,8 +75,10 @@ public class ApiNamesNoProductTests
         }
     }
 
-    /// <summary>A hit the API may keep: one in an allowed file, or an allowed word.</summary>
+    /// <summary>A hit the API may keep: one in an allowed file, or an allowed word. The coding identity's name is inside every encoding and decoding.</summary>
     private static bool IsAllowed((string File, string Word) hit) =>
+        hit.Word.Contains("encoding", StringComparison.OrdinalIgnoreCase) ||
+        hit.Word.Contains("decoding", StringComparison.OrdinalIgnoreCase) ||
         Allowed.Any(a => a.File == hit.File || a.Word == hit.Word);
 
     /// <summary>Each identity's product name, from its project folder's name.</summary>
