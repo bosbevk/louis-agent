@@ -32,20 +32,30 @@ public class RecipeSitesTests
     public void ASiteWithAPathInItsHome_CoversOnlyWhatIsUnderIt(string address, bool covered) =>
         Assert.That(RecipeSites.Find("rooirose")!.Covers(new Uri(address)), Is.EqualTo(covered));
 
-    /// <summary>The table holds all 45 sites, 13 read from their recipe data and 32 fromtheir text.</summary>
+    /// <summary>The table holds all 46 sites, 14 read from their recipe data and 32 from their text.</summary>
     [Test]
-    public void TheTable_HasFortyFiveSites_ThirteenReadByDataAndThirtyTwoByText()
+    public void TheTable_HasFortySixSites_FourteenReadByDataAndThirtyTwoByText()
     {
-        Assert.That(RecipeSites.All, Has.Count.EqualTo(45));
-        Assert.That(RecipeSites.All.Count(s => s.ReadBy == RecipeReadBy.Data), Is.EqualTo(13));
+        Assert.That(RecipeSites.All, Has.Count.EqualTo(46));
+        Assert.That(RecipeSites.All.Count(s => s.ReadBy == RecipeReadBy.Data), Is.EqualTo(14));
         Assert.That(RecipeSites.All.Count(s => s.ReadBy == RecipeReadBy.Text), Is.EqualTo(32));
     }
 
-    /// <summary>Twenty sites are searched through their own WordPress search, the other 25 through the web.</summary>
+    /// <summary>Best Recipes has pap en sous, as whole recipe data; the other sites only use other names.</summary>
     [Test]
-    public void TheTable_SearchesTwentySitesThroughWordPress_AndTwentyFiveThroughTheWeb()
+    public void BestRecipes_IsInTheTable_ReadByDataThroughItsOwnSearch()
     {
-        Assert.That(RecipeSites.All.Count(s => s.Search == RecipeSearch.WordPress), Is.EqualTo(20));
+        var site = RecipeSites.Find("bestrecipes")!;
+
+        Assert.That(site.Covers(new Uri("https://www.bestrecipes.co.za/pap-en-sous-recipe/")), Is.True);
+        Assert.That((site.ReadBy, site.Search), Is.EqualTo((RecipeReadBy.Data, RecipeSearch.WordPress)));
+    }
+
+    /// <summary>21 sites are searched through their own WordPress search, the other 25 through the web.</summary>
+    [Test]
+    public void TheTable_SearchesTwentyOneSitesThroughWordPress_AndTwentyFiveThroughTheWeb()
+    {
+        Assert.That(RecipeSites.All.Count(s => s.Search == RecipeSearch.WordPress), Is.EqualTo(21));
         Assert.That(RecipeSites.All.Count(s => s.Search == RecipeSearch.Web), Is.EqualTo(25));
     }
 
@@ -101,12 +111,14 @@ public class RecipeSitesTests
     }
 
     /// <summary>
-    /// Every site was checked on 4 November 2026, and a site keeps a note only where its pages gave one.
+    /// Every site says the day it was checked, 4 November 2026 for the first ones, and a site keeps a note only where
+    /// its pages gave one.
     /// </summary>
     [Test]
-    public void EverySite_WasCheckedOnTheSameDay_AndKeepsOnlyWhatItSaw()
+    public void EverySite_SaysWhenItWasChecked_AndKeepsOnlyWhatItSaw()
     {
-        Assert.That(RecipeSites.All.Select(s => s.Checked), Is.All.EqualTo(new DateOnly(2026, 11, 4)));
+        Assert.That(RecipeSites.All.Select(s => s.Checked), Is.All.GreaterThanOrEqualTo(new DateOnly(2026, 11, 4)));
+        Assert.That(RecipeSites.Find("bestrecipes")!.Checked, Is.EqualTo(new DateOnly(2026, 11, 5)));
         Assert.That(RecipeSites.Find("pnp")!.Signals, Is.EqualTo("Crawl-delay: 10"));
         Assert.That(RecipeSites.Find("foodandhome")!.Signals, Is.Null);
     }

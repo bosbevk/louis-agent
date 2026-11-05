@@ -63,3 +63,4 @@ Each row is one site. The columns are:
 | koesister | Koesister | https://www.koesister.com | text | web | 2026-11-04 | |
 | shirleybanting | Shirley Banting | https://shirleybanting.blogspot.com | text | web | 2026-11-04 | |
 | thesouthafricancookbook | The South African Cookbook | https://thesouthafricancookbook.blogspot.com | text | web | 2026-11-04 | |
+| bestrecipes | Best Recipes | https://www.bestrecipes.co.za | data | wordpress | 2026-11-05 | |

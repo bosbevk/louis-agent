@@ -47,8 +47,25 @@ public class QueryWordsTests
     [TestCase("Melktert", "milk tart")]
     [TestCase("Chicken pie", "hoenderpastei")]
     [TestCase("Hoenderpastei", "chicken pie")]
+    [TestCase("Ushatini", "pap en sous")]
+    [TestCase("Sausages in tomato and onion gravy", "pap and sous")]
+    [TestCase("Sheba relish", "pap sous")]
     public void TheDishsOtherName_IsAnAnswer(string title, string query) =>
         Assert.That(QueryWords.Answers(title, Plain, query), Is.True);
+
+    /// <summary>A search for pap en sous can hear what else to try, whichever way it's spelled.</summary>
+    [TestCase("pap en sous")]
+    [TestCase("pap and sous")]
+    [TestCase("Pap Sous")]
+    public void PapEnSous_HasOtherNamesToTry(string query) =>
+        Assert.That(QueryWords.AlsoCalled(query), Does.Contain("pap and sheba").And.Contain("ushatini"));
+
+    /// <summary>Other dishes have nothing to add, so their results don't grow.</summary>
+    [TestCase("bobotie")]
+    [TestCase("melktert")]
+    [TestCase("stywe pap")]
+    public void OtherDishes_HaveNoOtherNamesToTry(string query) =>
+        Assert.That(QueryWords.AlsoCalled(query), Is.Empty);
 
     /// <summary>The other name counts whole: a tart that isn't milk tart is no melktert.</summary>
     [TestCase("Apple tart", "melktert")]
@@ -62,7 +79,7 @@ public class QueryWordsTests
     public void AWordInTheAddress_Counts() =>
         Assert.That(QueryWords.Answers("Milk tart", new Uri("https://example.com/recipes/melktert/"), "melktert"), Is.True);
 
-    /// <summary>The site's own name in the address doesn't count, or every page of Jan Braai would answer "braai".</summary>
+    /// <summary>The site's name in the address doesn't count, or every page of Jan Braai would answer "braai".</summary>
     [Test]
     public void TheSitesOwnName_DoesntCount() =>
         Assert.That(QueryWords.Answers("Puttanesca", new Uri("https://braai.com/puttanesca/"), "braai chicken"), Is.False);
