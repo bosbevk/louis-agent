@@ -1,6 +1,6 @@
-using LouisAgent.Packs.Recipes.Reading;
+using LouisAgent.Packs.Recipes.Reading.Photos;
 
-namespace LouisAgent.Packs.Recipes.Tests.Reading;
+namespace LouisAgent.Packs.Recipes.Tests.Reading.Photos;
 
 /// <summary>
 /// Where a page's photo might be, best first. Each case here is a real page: Zola Nene declares none and its photo has

@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace LouisAgent.Packs.Recipes.Reading;
+namespace LouisAgent.Packs.Recipes.Reading.Photos;
 
 /// <summary>
 /// Finds where a page's photo of the dish might be, best guess first, and takes the other images out of its text. The
