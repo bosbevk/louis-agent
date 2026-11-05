@@ -1,6 +1,6 @@
 ---
 name: where-to-buy
-description: The where-to-buy toolset's guide, loaded with it. How to name a shop's branch near the user with FindBranches, from OpenStreetMap.
+description: The where-to-buy toolset's guide, loaded with it. How to name a shop's branch, or the supermarkets near the user, with FindBranches and FindShopsNear, from OpenStreetMap.
 ---
 # Where to buy Skills
 
@@ -12,10 +12,12 @@ site is read. Route here a question about where to buy something, or which branc
 | Tool | Use it to |
 |------|-----------|
 | `FindBranches` | Find a shop's branches near the user (`shop`, its name as signposted: `Pick n Pay`; `town`, the user's town or suburb only). Returns the town's municipality and province, then the three nearest branches, each with its street, its place, its distance and whether it is in the town's municipality. |
+| `FindShopsNear` | Find the supermarkets nearest the user, of any chain, when they named no shop (`town`, the user's town or suburb only). Returns the town's municipality and province and the ten nearest, with street, place and distance. |
 
 ## Workflow
 
-1. **Once per shop** the user named, with their town. `any` shop needs no lookup.
+1. **Once per shop** the user named, with their town. With `any` shop, or none named, `FindShopsNear` once instead, and name
+   the shops it lists, nearest first.
 2. **A branch marked yes** is the town's branch: name it with its street or mall, one or two of them.
 3. **None marked yes:** the town has no branch of that shop. Say so, and name the nearest branch the result lists as
    *the nearest*, with its place and distance.

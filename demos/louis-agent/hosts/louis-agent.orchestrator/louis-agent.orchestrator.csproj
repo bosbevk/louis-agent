@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>LouisAgent.Orchestrator</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <InternalsVisibleTo Include="louis-agent.orchestrator.tests" />
+      <InternalsVisibleTo Include="louis-agent.orchestrator.integration-tests" />
+      <ProjectReference Include="..\..\identity\louis-agent.identity.coding\louis-agent.identity.coding.csproj" />
+      <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
+      <!-- F18 step 1d: the orchestrator reads a session's stream through the reader itself, so it references it directly. -->
+      <ProjectReference Include="..\..\..\..\src\engine\louis-agent.session-stream\louis-agent.session-stream.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="Skills\**\*.md" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
+             built or copied. -->
+        <None Include="..\..\docs\projects\louis-agent.orchestrator.md" Link="docs\louis-agent.orchestrator.md" />
+        <None Include="..\..\docs\projects\orchestrator-runbooks.md" Link="docs\orchestrator-runbooks.md" />
+        <None Include="..\..\docs\guides\change-the-orchestrator.md" Link="docs\change-the-orchestrator.md" />
+    </ItemGroup>
+
+</Project>

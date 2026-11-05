@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "name": "puls-cook",
+  "identity": "puls",
+  "version": 17,
+  "proves": "Puls routes a meal to its cook, within the budget and at the shop that serves the town, and the conversation runs without a failed turn.",
+  "manual": "manual.md",
+  "modes": [
+    { "name": "puls-tools", "role": "puls/voice-af", "toolsets": ["web", "where-to-buy", "shop-prices"] },
+    { "name": "puls-cook", "role": "puls/voice-af", "toolsets": ["specialists", "web"] }
+  ],
+  "checks": [
+    { "type": "no-error", "name": "cook-no-error" },
+    { "type": "routed-to", "parameters": { "expected_key": "routes_to", "delegating_toolsets": ["specialists"] } },
+    { "type": "amount-under", "name": "within-budget", "parameters": { "key": "budget", "reader": "rand-total" } },
+    { "type": "estimates-at-shop", "parameters": { "reader": "rand-prices" } },
+    { "type": "untooled-shops" },
+    { "type": "image-shown", "name": "recipe-image", "parameters": { "reader": "recipe-photos", "key": "recipe_image" } },
+    { "type": "number-named", "name": "serves-as-asked", "parameters": { "key": "serves", "reader": "servings", "required": false } },
+    { "type": "tool-rows-marked", "name": "unpriced-items", "parameters": { "tool": "EstimatePrices", "mark": "?" } },
+    { "type": "meal-for-people", "parameters": { "rubric": "Rubrics/meal-for-people.md" } },
+    { "type": "human", "parameters": { "reviews": "meal-for-people" } }
+  ]
+}

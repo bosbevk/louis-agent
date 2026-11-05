@@ -13,7 +13,7 @@ namespace LouisAgent.Packs.ShopPrices.Estimates;
 /// size; a number next to "x" is how many packs; any other number counts items (eggs 18). Every other word is the
 /// product's name.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public sealed record BasketItem(string Text, IReadOnlyList<string> Words, decimal? Amount, PackUnit Unit, int Packs)
 {
     /// <summary>The weight and volume words, and what one of each is in grams or millilitres.</summary>

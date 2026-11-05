@@ -1,0 +1,158 @@
+# Puls: the general assistant (chat only), its own stack beside the code-review app and the demo.
+#   Start:  docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build
+#   Stop:   docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env stop
+#   Remove: docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env down
+# Then open http://127.0.0.1:5070. One container: a chat answers the web itself and hands cooking to a specialist on
+# this same instance (AGENT_PEERS names itself, F29; CL19 dropped the second container). puls-app on Azure reaches the
+# browser and Mongo below over Tailscale: `tailscale serve` on this PC forwards the two ports (demos/puls/deploy/azure/README.md).
+# To see its logs and traces, start the dashboard first (F52):
+#   docker compose -f demos/louis-agent/docker/docker-compose.observability.yml up -d
+name: puls
+
+x-puls-env: &puls-env
+  env_file:
+    - path: ../config/.env.${LLM_PROFILE:-anthropic}
+    - path: ../config/.env
+    - path: ../config/.env.secrets
+      required: false
+
+services:
+  puls:
+    build:
+      context: ../../..
+      dockerfile: demos/puls/docker/images/Dockerfile.puls
+      args:
+        # The commit the eval runner stamps on a run: EVAL_COMMIT=$(git rev-parse --short HEAD) docker compose … up -d --build
+        EVAL_COMMIT: ${EVAL_COMMIT:-unknown}
+    image: louis-agent-puls:latest
+    container_name: puls
+    <<: *puls-env
+    environment:
+      # Logs and traces to the dashboard stack on the host (F52); with it down, the exporters drop them quietly. Named
+      # puls, as its project is the API's (Louis's pick J1); the eval runner it starts is named by its own.
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4317
+      OTEL_SERVICE_NAME: puls
+      # Who this agent is (CL15): Puls, from demos/puls/identity/louis-agent.identity.puls; the code-review stack sets none.
+      IDENTITIES: puls
+      # The general tools the routing eval's baseline names; Puls itself needs none of them.
+      PACKS: files,git,dotnet,shell
+      # The time GetToday tells when the user shared no zone (CL15: core names no country).
+      HOST_TIME_ZONE: Africa/Johannesburg
+      WORKSPACE_ROOT: /workspace
+      SKILLS_DIRECTORY: /skills
+      GIT_CONFIG_COUNT: "1"
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: "true"
+      # Its own logs and usage ledger, apart from the code-review app's
+      LOG_DIRECTORY: /logs
+      CONFIG_DIRECTORY: /workspace/demos/puls/config
+      PRICES_FILE: /workspace/demos/puls/config/prices.json
+      RATES_FILE: /workspace/demos/puls/config/rates.json
+      # Chats hand cooking to a specialist on this same instance and answer the web themselves (F29)
+      AGENT_PEERS: puls=http://puls:8080
+      # Only a role that has passed its check is on (F29): the cook, its two minions (F30; F35.2 step 2b) and Puls's own
+      # voice. Set ROLES_ENABLED in config/.env to change it (an empty value turns every role on), then `up -d`.
+      # PERSONALITIES_ENABLED, its name before CL14, is still passed on when ROLES_ENABLED is unset; set either way, the
+      # old name reaches the container through env_file too, and it warns that it's to be renamed.
+      ROLES_ENABLED: ${ROLES_ENABLED-${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup,puls-minion-find-recipe}}
+      # The model each minion runs on (F30), cheapest first: the find-recipe minion, the cook's search (F35.2 step 2b),
+      # on this instance's own model (Haiku 5.5), which needs no LLM_SESSION_PROFILES. The cook asks for the minions
+      # toolset, so without this the cook is refused. A value in config/.env wins.
+      MINION_LLMS: ${MINION_LLMS-puls-minion-find-recipe=instance}
+      # The web we run (F32): SearXNG for search (development and benchmarks only, ADR 0023; WEB_SEARCH_PROVIDER picks
+      # it) and the headless Chrome that renders pages drawn with JavaScript.
+      SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}
+      BROWSER_URL: ${BROWSER_URL-http://puls-browser:9222}
+      # The recipe sites the recipes toolset may search (F35.2, Louis's pick E2): every site in the table, `*`, on this PC
+      # and on Azure. A value in config/.env (which compose reads for these defaults) names fewer; it is quoted because a
+      # bare `*` is a YAML alias.
+      RECIPE_SOURCES: "${RECIPE_SOURCES-*}"
+      # What the browser tells the sites it reads for a user (FX21): who reads, where to learn more, and why; never a person.
+      BROWSER_USER_AGENT: "${BROWSER_USER_AGENT-Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/demos/puls/docs/SITE_OWNERS.md; reads a page on a user's behalf)}"
+      # F18 step 4a: the pages an eval run saves (--web record) and replays; private, on the host's data/puls (git-ignored), never served.
+      REPLAY_DIRECTORY: ${REPLAY_DIRECTORY-/data/replay}
+      # The eval store's database (F18 step 7b (iii)): the API's default is `evals` now, so Puls names the one its runs
+      # have always been in. BENCHMARKS_MONGO_DATABASE, its name before, is still honoured when set in config/.env.
+      EVALS_MONGO_DATABASE: ${EVALS_MONGO_DATABASE-${BENCHMARKS_MONGO_DATABASE-puls_benchmarks}}
+    # Localhost only. AGENT_API_KEY in config/.env.secrets is required (FX18): without it the container refuses to
+    # start, unless AGENT_AUTH=off in config/.env says so on purpose. puls sends the same key to its peer, itself.
+    ports:
+      - "127.0.0.1:${PULS_PORT:-5070}:8080"
+    volumes:
+      - ${PULS_WORKSPACE:-../../../}:/workspace
+      - ../skills:/skills
+      - ../logs:/logs
+      - ../data/puls:/data
+    networks: [default, web]
+    depends_on:
+      # Mongo answering before puls asks it, so the store's first call doesn't fail on start-up.
+      puls-mongo:
+        condition: service_healthy
+
+  # The benchmark store (F31): the admin portal's runs, recorded by puls from each check's output. Its data is a folder
+  # on the host (this demo's data/mongo, git-ignored), so it outlives the container and the image. Localhost only. The root user is
+  # MONGO_INITDB_ROOT_USERNAME and _PASSWORD in config/.env.mongo, its own file: the database never sees the model's or
+  # the search's keys in config/.env.secrets. Read when the data folder is first created; puls reaches it at
+  # EVALS_MONGO_URL (the service name, puls-mongo; BENCHMARKS_MONGO_URL, its old name, still works). The server is MongoDB Community (SSPL): used as
+  # is, for Louis's own benchmark results, and part of no customer's instance.
+  puls-mongo:
+    image: mongo:8
+    container_name: puls_mongo
+    env_file:
+      - path: ../config/.env.mongo
+        required: false
+    ports:
+      - "127.0.0.1:${PULS_MONGO_PORT:-27017}:27017"
+    volumes:
+      - ../data/mongo:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # The web we run (F32), on their own network with puls and never with puls-mongo. Both images are
+  # pinned by digest, so benchmark runs compare. 127.0.0.1 only: the ports are for the live tests on this machine.
+  #
+  # SearXNG (AGPL-3.0, run unchanged beside us, ADR 0023): metasearch for development, tests and benchmarks; the sold
+  # endpoint keeps a licensed search API. Its settings are demos/puls/docker/searxng/settings.yml; its secret, and nothing else,
+  # comes from config/.env.searxng, which must exist (copy config/.env.searxng.example): without it SearXNG would sign
+  # with the placeholder committed in settings.yml (re-review of PR #56).
+  puls-searxng:
+    image: searxng/searxng@sha256:79180616c984f39524f6f27f19625a46f82c8ad4aa6a2e553db52b14e1b4a768   # 2026.10.17-2a6fc07be
+    container_name: puls_searxng
+    env_file:
+      - path: ../config/.env.searxng
+        required: true
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+    networks: [web]
+    ports:
+      - "127.0.0.1:${PULS_SEARXNG_PORT:-8888}:8080"
+
+  # The headless Chrome (Chromium's headless shell, BSD-style) that renders pages drawn with JavaScript; puls drives it
+  # over its DevTools port. Every request a page makes is put to the address rule (RenderPolicy), and a page can't open
+  # a WebSocket; this network keeps it away from puls-mongo.
+  puls-browser:
+    image: chromedp/headless-shell@sha256:53cc0f33c0598ff244f6e45458f6dfaf0ae4206d388ae7364903afd1d9d14f0a   # Chrome 156.0.8078.36
+    container_name: puls_browser
+    networks: [web]
+    ports:
+      # Never wider than 127.0.0.1: the DevTools port has no authentication. The Azure app comes in through
+      # `tailscale serve` on this PC, which forwards the tailnet's 9222 to this loopback port (demos/puls/deploy/azure/README.md).
+      - "127.0.0.1:${PULS_BROWSER_PORT:-9222}:9222"
+    command:
+      - --disable-gpu
+      - --disable-dev-shm-usage
+      - --no-sandbox
+      - --mute-audio
+      - --disable-background-networking
+      - --disable-default-apps
+      - --disable-extensions
+      - --disable-sync
+      - --disable-translate
+      - --enable-unsafe-swiftshader
+      - --disable-webgl
+      - --log-level=0
+networks:
+  web:

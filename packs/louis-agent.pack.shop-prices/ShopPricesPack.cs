@@ -1,8 +1,6 @@
+using LouisAgent.Composition.Packs.Imports;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Catalog.Imports;
-using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
 using LouisAgent.Packs.ShopPrices.Feeds;
 using LouisAgent.Packs.ShopPrices.Imports;
 using LouisAgent.Packs.ShopPrices.Prices.StatsSa;
@@ -23,8 +21,8 @@ namespace LouisAgent.Packs.ShopPrices;
 /// no other pack. Where to buy is the <c>where-to-buy</c> pack's job, so a specialist can have prices without
 /// branches, or branches without prices (Louis, 2026-11-04: one job each).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
 public sealed class ShopPricesPack : IAgentPack
 {
     /// <summary>Builds the pack over the price store its settings name, or the tables it ships when they name none.</summary>
@@ -39,7 +37,7 @@ public sealed class ShopPricesPack : IAgentPack
         [
             new(ShopPricesToolset.ShopPrices.Wire(),
                 "What a shopping list costs, estimated from Stats SA's average prices in the user's province",
-                GuideFile: SkillFiles.Guide(ShopPricesToolset.ShopPrices.Wire()),
+                GuideFile: PackToolset.Guide(ShopPricesToolset.ShopPrices.Wire()),
                 MissingSettings: _ => [],
                 ToolTypes: [typeof(ShopPriceTools)],
                 CreateTools: _ => [new ShopPriceTools(books)],
@@ -56,7 +54,7 @@ public sealed class ShopPricesPack : IAgentPack
     public string Name => ShopPricesToolset.ShopPrices.Wire();
 
     /// <inheritdoc />
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
+    public IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } =

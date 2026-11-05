@@ -1,5 +1,5 @@
+using LouisAgent.Packs.Recipes.Reading;
 using System.Text.Json;
-using LouisAgent.Core.Tools.Web.StructuredData;
 
 namespace LouisAgent.Packs.Recipes.Recipes;
 
@@ -17,8 +17,8 @@ namespace LouisAgent.Packs.Recipes.Recipes;
 /// steps left empty, or a list page as a Recipe. The check lives here so that no caller can hand the cook an empty
 /// recipe, and such a page is read as text like any page without the data.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0067-a-pages-own-data-before-its-text.md">ADR 0067: a page's own data before its text</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0040-records-for-values-classes-for-things.md">ADR 0040: records for values, classes for things</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0067-a-pages-own-data-before-its-text.md">ADR 0067: a page's own data before its text</seealso>
 public static class SchemaOrgRecipe
 {
     private const string RecipeType = "Recipe";

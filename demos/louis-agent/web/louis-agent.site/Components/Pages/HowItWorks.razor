@@ -1,0 +1,40 @@
+@page "/how-it-works"
+
+<PageTitle>How the engine works · louis-agent</PageTitle>
+
+<section class="band band-movie">
+    <span class="kicker">How it works · in detail</span>
+    <h2 class="chrome">One turn, through every layer.</h2>
+    <p class="lede">Sixty seconds, ten scenes. The six slabs inside core are the real middleware in its real order, outermost first, the way <code>ChatPipeline.cs</code> builds it.</p>
+    <DetailedMovie />
+</section>
+
+<section class="band">
+    <span class="kicker">The parts, in plain words</span>
+    <div class="grid-3">
+        <article class="panel">
+            <h3>Engine</h3>
+            <p>The loop: streaming, the providers, the usage ledger, handing work to other sessions, and the guards around every tool and fetch. It holds no agent and no tools, and names no product and no country. Everything goes through one <code>IChatClient</code> from Microsoft.Extensions.AI, so the provider is configuration: Claude by default, Ollama or an OpenAI-compatible endpoint by a setting.</p>
+        </article>
+        <article class="panel">
+            <h3>Identity</h3>
+            <p>Who an agent is: its voice, its modes and its roles. Puls and the coding agent are identities, and your own program names yours. Every identity's prompt opens with the same principles file.</p>
+        </article>
+        <article class="panel">
+            <h3>Pack</h3>
+            <p>What an agent can do: toolsets and their guides, each pack its own package. A pack needs only the contracts, never the engine. It never knows about another pack or an identity, and it can be served over MCP as it is.</p>
+        </article>
+    </div>
+</section>
+
+<section class="band">
+    <span class="kicker">The rules every turn keeps</span>
+    <ul class="rules">
+        <li><strong>Arguments are data.</strong> Model text never reaches a shell; a tool gets typed arguments.</li>
+        <li><strong>The context is guarded.</strong> A result over 50,000 characters is summarised by a separate call; a call cut off by the output limit never runs; a failure goes back to the model with its reason.</li>
+        <li><strong>History is append-only.</strong> Nothing edits the system prompt, the tools or earlier messages mid-conversation, so the prompt prefix stays cacheable.</li>
+        <li><strong>Every request is measured.</strong> One priced record per model request, from a dated price table; an unknown price stays unknown, never 0.</li>
+        <li><strong>A session keeps its tools.</strong> It names its toolsets when it opens; one engine per toolset list, in a fixed order, so the same list always sends the same prefix.</li>
+        <li><strong>A pack can't skip a guard.</strong> It asks the engine for a fetcher, which refuses internal addresses and obeys a site's <code>robots.txt</code> on every request.</li>
+    </ul>
+</section>

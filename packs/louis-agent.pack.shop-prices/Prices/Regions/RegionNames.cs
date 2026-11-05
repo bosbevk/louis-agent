@@ -6,7 +6,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices.Regions;
 /// Reads the province a model names, the way a person writes it ("Western Cape", "Wes-Kaap", "KZN"), into a
 /// <see cref="Region"/>. Spaces count as dashes, so "Western Cape" is the wire name "western-cape".
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0024-choices-are-enums.md">ADR 0024: choices are enums</seealso>
 public static class RegionNames
 {
     /// <summary>The Afrikaans names and the usual short forms, beside the wire names the enum already reads.</summary>

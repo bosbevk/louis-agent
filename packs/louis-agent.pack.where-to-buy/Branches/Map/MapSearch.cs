@@ -1,7 +1,7 @@
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using System.Globalization;
 using System.Text.Json;
-using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Packs.WhereToBuy.Messages;
 using Microsoft.Extensions.Logging;
 
@@ -17,10 +17,10 @@ namespace LouisAgent.Packs.WhereToBuy.Branches.Map;
 /// browser: it is a data service with a usage policy, not a page to read.
 /// </remarks>
 /// <seealso href="https://operations.osmfoundation.org/policies/nominatim/">Nominatim usage policy</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: say what we are</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: say what we are</seealso>
 public sealed class MapSearch(HttpClient http, TimeSpan pace)
 {
-    private static readonly ILogger Log = AgentLogging.For<MapSearch>();
+    private static readonly ILogger Log = PackLog.For<MapSearch>();
     private const string Base = "https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&countrycodes=za";
 
     private readonly SemaphoreSlim _turn = new(1, 1);

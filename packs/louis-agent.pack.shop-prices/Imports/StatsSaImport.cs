@@ -1,6 +1,6 @@
+using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs.Imports;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog.Imports;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Messages;
 using LouisAgent.Packs.ShopPrices.Prices.Files;
 using LouisAgent.Packs.ShopPrices.Prices.StatsSa;
@@ -20,7 +20,7 @@ namespace LouisAgent.Packs.ShopPrices.Imports;
 /// pack (ADR 0027). Preview and Save take the same files, so nothing is held between them; a person checks the
 /// preview, and Save writes what it listed (Louis's pick F1, 2026-11-04).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
 public sealed class StatsSaImport(IPriceStore store, PriceBookCache books, StatsSaNames names) : IDataImport
 {
     /// <inheritdoc />

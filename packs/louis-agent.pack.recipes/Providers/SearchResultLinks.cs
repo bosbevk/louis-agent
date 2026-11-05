@@ -16,7 +16,7 @@ namespace LouisAgent.Packs.Recipes.Providers;
 /// is not a recipe (a travel post, a category) is a hit too; the cook reads the title and sees that. A heading with no
 /// link, a link to another site (a share button, an advert) and a link with no words are not hits.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 internal static class SearchResultLinks
 {
     private static readonly string[] Tags = ["h2", "h3"];

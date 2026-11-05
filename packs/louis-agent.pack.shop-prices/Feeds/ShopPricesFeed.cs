@@ -1,7 +1,7 @@
+using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs;
 using System.Text.Json;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Messages;
 using LouisAgent.Packs.ShopPrices.Prices;
 using LouisAgent.Packs.ShopPrices.Prices.Store;
@@ -17,8 +17,8 @@ namespace LouisAgent.Packs.ShopPrices.Feeds;
 /// pack. It shares the tool's <see cref="PriceBookCache"/>, so a busy feed reads the store at most once an hour too,
 /// and a store that is down answers with the shipped tables, as the tool does.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
 public sealed class ShopPricesFeed(PriceBookCache books) : IDataFeed
 {
     /// <inheritdoc />

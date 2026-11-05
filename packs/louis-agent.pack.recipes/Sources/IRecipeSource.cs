@@ -10,7 +10,7 @@ namespace LouisAgent.Packs.Recipes.Sources;
 /// Strategy (GoF), picked by the row's <c>search</c> column (ADR 0003): the callers hold the interface and never
 /// ask which way a site is searched.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
 public interface IRecipeSource
 {
     /// <summary>The site this source searches.</summary>

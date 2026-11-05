@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>LouisAgent.Evals.Runner</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\louis-agent.evals\louis-agent.evals.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- An eval's files are beside it (Evals/{Folder}/: eval.json, Dataset/, Transcripts/, rubrics, its manual). One item, the same in every
+         eval project, copies every one that isn't code to EvalFiles/{this project's path from the repository root}/Evals/{Folder}/..., so a copy's
+         path below EvalFiles/ is where it sits in the repository (F49.2). TargetPath, not Link: Link would show the files a second time in the IDE
+         under a folder named like the project. -->
+    <None Update="Evals\**\*" TargetPath="EvalFiles\src\evals\$(MSBuildProjectName)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\projects\louis-agent.evals.runner.md" Link="docs\louis-agent.evals.runner.md" />
+    <None Include="..\..\docs\guides\add-an-eval.md" Link="docs\add-an-eval.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="18.1.0" />
+  </ItemGroup>
+
+</Project>

@@ -6,7 +6,7 @@
 
 Why this file exists: Puls and the review web app run as Blazor WebAssembly, so their DLLs are downloaded into every
 visitor's browser. That counts as handing the code out, and MIT, BSD and Apache all ask that their notice travels with
-it ([ADR 0016](docs/adr/0016-licence-all-rights-reserved.md)). The exact version of each package is in the `.csproj`
+it ([ADR 0016](src/docs/adr/0016-licence-all-rights-reserved.md)). The exact version of each package is in the `.csproj`
 that references it; the full licence texts are at the links.
 
 ## NuGet packages
@@ -40,15 +40,15 @@ The pages fetch these from a CDN at run time, so no copy is in the repo; their n
 
 | What | Licence | Where |
 |---|---|---|
-| Bootstrap 5.3 (Puls) | [MIT](https://github.com/twbs/bootstrap/blob/main/LICENSE) | `src/louis-agent.puls/wwwroot/index.html` |
+| Bootstrap 5.3 (Puls) | [MIT](https://github.com/twbs/bootstrap/blob/main/LICENSE) | `demos/puls/web/louis-agent.puls/wwwroot/index.html` |
 | highlight.js 11.11 (Puls, review web app) | [BSD-3-Clause](https://github.com/highlightjs/highlight.js/blob/main/LICENSE) | both apps' `wwwroot/index.html` |
 | Fonts: Montserrat, JetBrains Mono, IBM Plex Mono, VT323, Geist, Geist Mono | [SIL OFL 1.1](https://openfontlicense.org) | Google Fonts, linked from the pages' CSS |
 
 ## Container images
 
 The Docker images build on others' images (Microsoft's .NET and Aspire dashboard images, MongoDB, Chromium's
-headless shell, SearXNG and Ollama, named in `docker/images/` and the compose files). Each keeps its own licence; we run them, we don't ship
+headless shell, SearXNG and Ollama, named in `demos/louis-agent/docker/images/` and the compose files). Each keeps its own licence; we run them, we don't ship
 them inside our code.
 
 ---
-[Docs index](docs/README.md) · Related: [LICENSE](LICENSE) · [ADR 0016](docs/adr/0016-licence-all-rights-reserved.md)
+[Docs index](src/docs/README.md) · Related: [LICENSE](LICENSE) · [ADR 0016](src/docs/adr/0016-licence-all-rights-reserved.md)

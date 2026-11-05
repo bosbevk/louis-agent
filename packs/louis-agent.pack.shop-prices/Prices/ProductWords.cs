@@ -8,7 +8,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices;
 /// A plain scan, no pattern (ADR 0057). The singular is a rough English one ("tomatoes" to "tomato", "cherries" to
 /// "cherry", "eggs" to "egg"); both sides go through it, so a word it gets wrong is still the same word on both.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 public static class ProductWords
 {
     /// <summary>The words of a name, in order.</summary>

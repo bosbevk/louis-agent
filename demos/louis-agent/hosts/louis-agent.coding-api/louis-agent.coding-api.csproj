@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>LouisAgent.CodingApi</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- The framework's API; this program says what it loads, and serves what this project references. -->
+        <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api\louis-agent.api.csproj" />
+        <!-- The web app this program serves. Its files reach this project's output through this reference. -->
+        <ProjectReference Include="..\..\web\louis-agent.web\louis-agent.web.csproj" />
+        <ProjectReference Include="..\louis-agent.coding-catalog\louis-agent.coding-catalog.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="10.0.13" />
+    </ItemGroup>
+
+</Project>

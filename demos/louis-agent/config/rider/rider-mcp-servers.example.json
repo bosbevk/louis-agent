@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "louis-skills": {
+      "command": "C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe",
+      "args": [
+        "compose",
+        "-f",
+        "C:\\path\\to\\louis-agent-solution\\demos\\louis-agent\\docker\\docker-compose.yml",
+        "--env-file",
+        "C:\\path\\to\\louis-agent-solution\\demos\\louis-agent\\config\\.env",
+        "run",
+        "--rm",
+        "-T",
+        "mcp-server"
+      ],
+      "cwd": "C:\\path\\to\\louis-agent-solution"
+    }
+  }
+}

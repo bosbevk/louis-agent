@@ -1,7 +1,5 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
 using LouisAgent.Packs.WhereToBuy.Branches;
 using LouisAgent.Packs.WhereToBuy.Tools;
 using Microsoft.Extensions.FileProviders;
@@ -19,9 +17,9 @@ namespace LouisAgent.Packs.WhereToBuy;
 /// no other pack. What things cost is the <c>shop-prices</c> pack's job (Louis, 2026-11-04: one job each). It took
 /// the place of the shops pack, whose Checkers catalogue was dropped once no shop gave permission (ADR 0069).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
 public sealed class WhereToBuyPack : IAgentPack
 {
     /// <summary>Builds the pack over the map the process shares.</summary>
@@ -30,8 +28,8 @@ public sealed class WhereToBuyPack : IAgentPack
         Toolsets =
         [
             new(WhereToBuyToolset.WhereToBuy.Wire(),
-                "A shop's branches near the user's town, with the town's municipality and province (OpenStreetMap)",
-                GuideFile: SkillFiles.Guide(WhereToBuyToolset.WhereToBuy.Wire()),
+                "A shop's branches or the supermarkets near the user's town, with its municipality and province (OpenStreetMap)",
+                GuideFile: PackToolset.Guide(WhereToBuyToolset.WhereToBuy.Wire()),
                 MissingSettings: _ => [],
                 ToolTypes: [typeof(WhereToBuyTools)],
                 CreateTools: _ => [new WhereToBuyTools(new BranchFinder(MapSearch.Default))],
@@ -44,7 +42,7 @@ public sealed class WhereToBuyPack : IAgentPack
     public string Name => WhereToBuyToolset.WhereToBuy.Wire();
 
     /// <inheritdoc />
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
+    public IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } =

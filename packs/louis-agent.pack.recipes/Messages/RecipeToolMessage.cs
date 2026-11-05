@@ -28,6 +28,23 @@ public enum RecipeToolMessage
     [Description("{Number}. {Name} · {Url}")]
     HitLine,
 
+    [Description("Pages for the search at {Sites} ({Count}), the sites taking turns, not ranked:")]
+    HitsFoundAcrossSites,
+
+    [Description("{Number}. {Name} · {Site} · {Url}")]
+    HitLineWithSite,
+
+    [Description(
+        "None of {Sites} has a recipe for '{Query}'. Search again: each search asks other sites. " +
+        "Or try fewer or other words.")]
+    NoSiteHasIt,
+
+    [Description("{Sites} couldn't be searched ({Reasons}). Search again: each search asks other sites.")]
+    EverySiteRefused,
+
+    [Description("No site with its own search is enabled here, so name one with source. Enabled: {Enabled}.")]
+    NoSiteInTheDraw,
+
     [Description("ReadRecipe needs the address of a recipe page, starting with http:// or https://.")]
     AddressRefused,
 

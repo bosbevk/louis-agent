@@ -63,33 +63,35 @@ jobs:
         run: dotnet build louis-agent-solution.sln
 
       - name: Formatting
-        # docs/CLAUDE.md "Formatting": the .editorconfig's rules, checked only on the C# files the change's commits touched
+        # src/docs/CLAUDE.md "Formatting": the .editorconfig's rules, checked only on the C# files the change's commits touched
         # (merges left out, so files that came in from main aren't counted); untouched files keep their old layout until
-        # a step changes them. A pull request compares with its base, a push to main with the commit before it; a force
-        # push has no earlier commit to compare with.
+        # a step changes them, and a file only moved (a rename with no change, R100) counts as untouched (CL28 moved
+        # 900+). A pull request compares with its base, a push to main with the commit before it; a force push has no
+        # earlier commit to compare with.
         env:
           BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then echo "No earlier commit to compare with; skipped."; exit 0; fi
-          files=$(git log --no-merges --name-only --format= --diff-filter=AMR "$BEFORE..HEAD" -- '*.cs' | sort -u)
+          files=$(git log --no-merges -M --name-status --format= --diff-filter=AMR "$BEFORE..HEAD" -- '*.cs' | awk '$1 != "R100" {print $NF}' | sort -u)
           if [ -z "$files" ]; then echo "No C# files changed."; exit 0; fi
           dotnet format louis-agent-solution.sln --verify-no-changes --no-restore --include $files
 
       - name: Unit tests
         # The unit tests start no process and need no tool (F18 step 7.6): every integration test carries the Integration mark and lives in a `.integration-tests` project, so the filter leaves them out.
-        # One .trx per test project, named by the logger, so they don't overwrite each other.
-        run: dotnet test louis-agent-solution.sln --no-build --filter "Category!=Integration" --logger trx --results-directory TestResults/unit
+        # One .trx per test project, named by the logger, so they don't overwrite each other. The results go outside the
+        # checkout: a folder at the top that isn't a solution group fails SolutionLayoutTests (ADR 0074).
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category!=Integration" --logger trx --results-directory "$RUNNER_TEMP/TestResults/unit"
 
       - name: Integration tests
         # The tests that leave their process: real git, bash, interpreters, dotnet child processes and Mongo. A tool this image has that a test cannot find fails the test here, not skips it
         # (INTEGRATION_REQUIRED); only the Puls stack's browser and SearXNG tests still skip, since this image has no such stack.
         env:
           INTEGRATION_REQUIRED: 1
-        run: dotnet test louis-agent-solution.sln --no-build --filter "Category=Integration" --logger trx --results-directory TestResults/integration
+        run: dotnet test louis-agent-solution.sln --no-build --filter "Category=Integration" --logger trx --results-directory "$RUNNER_TEMP/TestResults/integration"
 
       - name: Keep the test results
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results
-          path: TestResults
+          path: ${{ runner.temp }}/TestResults

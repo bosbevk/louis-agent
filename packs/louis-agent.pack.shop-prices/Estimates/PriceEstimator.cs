@@ -12,7 +12,7 @@ namespace LouisAgent.Packs.ShopPrices.Estimates;
 /// 500 g sits as near to 250 g as to 1 kg, and on a tie the table's first pack wins (Stats SA's price per kilogram
 /// comes before its 1 kg pack).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: no nested conditionals</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0051-flat-conditionals-and-named-endpoints.md">ADR 0051: no nested conditionals</seealso>
 public static class PriceEstimator
 {
     /// <summary>The line's estimate in the region, from the tables.</summary>

@@ -1,4 +1,4 @@
-using LouisAgent.Core.Messages;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
 

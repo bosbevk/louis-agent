@@ -6,19 +6,34 @@ namespace LouisAgent.Packs.WhereToBuy.Branches.Map;
 /// A place's address as OpenStreetMap's Nominatim breaks it up: the street, the suburb and town it is in, its local
 /// municipality and its province. Any part may be missing; a mapper fills in what they know.
 /// </summary>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record MapAddress(
-    [property: JsonPropertyName("house_number")] string? HouseNumber = null,
+    [property: JsonPropertyName("house_number")]
+    string? HouseNumber = null,
     [property: JsonPropertyName("road")] string? Road = null,
     [property: JsonPropertyName("suburb")] string? Suburb = null,
-    [property: JsonPropertyName("village")] string? Village = null,
+    [property: JsonPropertyName("village")]
+    string? Village = null,
     [property: JsonPropertyName("town")] string? Town = null,
     [property: JsonPropertyName("city")] string? City = null,
-    [property: JsonPropertyName("municipality")] string? Municipality = null,
+    [property: JsonPropertyName("municipality")]
+    string? Municipality = null,
     [property: JsonPropertyName("state")] string? State = null)
 {
-    /// <summary>The town or city it is in, the smallest a mapper named.</summary>
-    public string? Place => Suburb ?? Village ?? Town ?? City;
+    /// <summary>
+    /// The town or city it is in, the smallest a mapper named. The map files an election ward as a suburb, and nobody
+    /// shops in "Swartland Ward 10", so a ward gives way to the next name up.
+    /// </summary>
+    public string? Place => (IsWard(Suburb) ? null : Suburb) ?? Village ?? Town ?? City;
+
+    /// <summary>A name ending in "Ward" and a number: <c>Cape Town Ward 115</c>, never <c>Ward Park</c>.</summary>
+    private static bool IsWard(string? name)
+    {
+        string[] words = name?.Split(' ', StringSplitOptions.RemoveEmptyEntries) ?? [];
+        return words.Length >= 2
+               && words[^2].Equals("Ward", StringComparison.OrdinalIgnoreCase)
+               && words[^1].All(char.IsAsciiDigit);
+    }
 
     /// <summary>
     /// The local municipality it falls under, which is what "the town's branch" means (a town's shop can stand just

@@ -1,7 +1,5 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Tools;
 using Microsoft.Extensions.FileProviders;
@@ -18,8 +16,8 @@ namespace LouisAgent.Packs.Recipes;
 /// names no identity and no other pack, so it can be served as an MCP server unchanged (ADR 0028). Its tools take plain
 /// data and return text, and its guide is prose.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0028-packs-stay-convertible-to-mcp.md">ADR 0028: packs stay convertible to MCP</seealso>
 public sealed class RecipesPack : IAgentPack
 {
     /// <summary>Builds the pack from the sites the deployment turned on.</summary>
@@ -28,8 +26,8 @@ public sealed class RecipesPack : IAgentPack
         Toolsets =
         [
             new(RecipesToolset.Recipes.Wire(),
-                "Recipes from South African recipe sites: search one, or read any recipe page",
-                GuideFile: SkillFiles.Guide(RecipesToolset.Recipes.Wire()),
+                "Recipes from South African recipe sites: search a few at once or one by name, or read any recipe page",
+                GuideFile: PackToolset.Guide(RecipesToolset.Recipes.Wire()),
                 MissingSettings: ctx => new[]
                 {
                     RecipeSourceFactory.Enabled(options.RecipeSources).Count > 0 ? null : "RECIPE_SOURCES",
@@ -52,7 +50,7 @@ public sealed class RecipesPack : IAgentPack
     public string Name => RecipesToolset.Recipes.Wire();
 
     /// <inheritdoc />
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
+    public IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(RecipesPack).Assembly, "Prompts");

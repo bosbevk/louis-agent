@@ -1,6 +1,6 @@
+using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Web.Browsing;
 using System.Net;
-using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Web.Browsing;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Sources.Sites;
@@ -19,8 +19,8 @@ namespace LouisAgent.Packs.Recipes.Providers;
 /// browser already speaks for us honestly, and applies the robots policy and the page signals on every page
 /// (ADR 0038, ADR 0068), so this class adds nothing there.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0003-provider-strategies.md">ADR 0003: provider strategies</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0038-the-browser-says-what-it-is.md">ADR 0038: the browser says what it is</seealso>
 public sealed class WordPressSearch(RecipeSite site, IWebBrowser browser) : IRecipeSource
 {
     /// <inheritdoc />

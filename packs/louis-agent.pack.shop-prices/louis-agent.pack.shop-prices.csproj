@@ -18,9 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
+    <ProjectReference Include="..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
     <!-- The price store (SHOP_PRICES_MONGO_URL), the same driver as the API's eval store. -->
+    <PackageReference Include="ExcelDataReader" Version="3.9.0" />
     <PackageReference Include="MongoDB.Driver" Version="3.12.0" />
   </ItemGroup>
 
@@ -33,8 +34,8 @@
   <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <None Include="..\..\docs\projects\louis-agent.pack.shop-prices.md" Link="docs\louis-agent.pack.shop-prices.md" />
-    <None Include="..\..\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+    <None Include="..\docs\projects\louis-agent.pack.shop-prices.md" Link="docs\louis-agent.pack.shop-prices.md" />
+    <None Include="..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
   </ItemGroup>
 
 </Project>

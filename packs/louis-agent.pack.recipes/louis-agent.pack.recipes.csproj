@@ -2,7 +2,7 @@
 
   <!-- What an agent can do with recipes (F35, ADR 0027, 0028): a recipe read from a page's own schema.org data, or
        from the page's text when it carries none, and a search of the recipe sites a deployment turns on. References
-       core, and the check contract for the check that proves its tools (F35.2). -->
+       core alone; the rule that proves it is the project beside it, louis-agent.pack.recipes.checks (ADR 0073). -->
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>LouisAgent.Packs.Recipes</RootNamespace>
@@ -17,10 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\louis-agent.core\louis-agent.core.csproj" />
-    <!-- The check contract: the pack ships the check that proves what its tools do (F35.2, RecipesChecks.All); never
-         the harness that runs it (ADR 0027). -->
-    <ProjectReference Include="..\..\evals\louis-agent.evals.checks\louis-agent.evals.checks.csproj" />
+    <ProjectReference Include="..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
   </ItemGroup>
 
@@ -33,8 +30,8 @@
   <ItemGroup>
     <!-- This project's design doc and how-to, shown under docs/ in the IDE's solution explorer; nothing is
          built or copied. -->
-    <None Include="..\..\docs\projects\louis-agent.pack.recipes.md" Link="docs\louis-agent.pack.recipes.md" />
-    <None Include="..\..\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
+    <None Include="..\docs\projects\louis-agent.pack.recipes.md" Link="docs\louis-agent.pack.recipes.md" />
+    <None Include="..\..\src\docs\guides\build-a-pack.md" Link="docs\build-a-pack.md" />
   </ItemGroup>
 
 </Project>

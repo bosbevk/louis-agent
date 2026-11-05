@@ -13,9 +13,9 @@ namespace LouisAgent.Packs.ShopPrices.Prices;
 /// The tables are content embedded in the pack (ADR 0011), read once through records (ADR 0041), so a month's new
 /// prices are a data change with no code. A class, not a record: it owns the loaded tables and the word index.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0011-prompts-are-content.md">ADR 0011: content, not code</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0011-prompts-are-content.md">ADR 0011: content, not code</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/packs/docs/adr/0069-shop-prices-are-stats-sa-estimates.md">ADR 0069: shop prices are Stats SA's averages</seealso>
 public sealed class PriceBook
 {
     /// <summary>The one options object for the price files, read and written (the feed): units by their wire names (ADR 0041).</summary>

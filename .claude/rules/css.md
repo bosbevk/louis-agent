@@ -5,8 +5,8 @@ paths:
 
 # CSS: the how of every rule
 
-Loaded when a `.css` file is read or edited. The why: [ADR 0053](../../docs/adr/0053-stylesheets-by-concern.md)
-(stylesheets by concern) and [ADR 0054](../../docs/adr/0054-a-move-may-copy-line-ranges.md) (a move may copy line
+Loaded when a `.css` file is read or edited. The why: [ADR 0053](../../src/docs/adr/0053-stylesheets-by-concern.md)
+(stylesheets by concern) and [ADR 0054](../../src/docs/adr/0054-a-move-may-copy-line-ranges.md) (a move may copy line
 ranges).
 
 - **A `.css` file holds at most 200 lines of rules**; a comment line (`/* … */`, one line or many) and a blank line
@@ -25,7 +25,7 @@ ranges).
   then proves it: the new files joined in their order are `cmp`-identical to the old one, and the step says so. Any
   change to the text itself is an edit.
 - **Every area file is imported and every import is there:** each app's `StylesheetTests` (Puls's
-  `PulsStylesheetTests`) checks it through `Stylesheet` in `tests/louis-agent.web.testing`; a style test finds its
+  `PulsStylesheetTests`) checks it through `Stylesheet` in `src/tests/web/louis-agent.web.testing`; a style test finds its
   rule through `Stylesheet.Of(project).Read()`, never by opening one file.
 - **Checked in the browser:** a step that changes a style looks at the page, at desktop and at phone width (390 px,
   no sideways scroll), before it is shown.

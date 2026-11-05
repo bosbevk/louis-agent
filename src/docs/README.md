@@ -1,0 +1,106 @@
+# Louis Agent documentation
+
+Read them in this order: each doc ends with a link to the next one. Start at the top if you are new; jump to the part
+you need otherwise.
+
+## 1. Use it
+
+| Doc | Type | Read it to… |
+|---|---|---|
+| [Project README](../../README.md) | Tutorial | Get the overview: what Louis Agent and Puls are, the ways to use them, quick start, settings and endpoints at a glance |
+| [Quick start](../../demos/louis-agent/docs/QUICK_START_AGENT.md) | Tutorial | Start the web app, Rider or the CLI, try example prompts, approve agent-built tools, troubleshoot |
+| [Setup](SETUP.md) | Reference | Configure `config/.env` and `config/.env.secrets`: every setting, how they are loaded, keeping secrets safe |
+| [Models](MODELS.md) | How-to | Choose and switch the model: Claude (default), Ollama, OpenAI-compatible servers; thinking and limits |
+| [For site owners](../../demos/puls/docs/SITE_OWNERS.md) | Reference | What a site sees when Puls reads a page for a user: the user agent, what is read and how much, how to ask us to stop or to offer a feed |
+
+## 2. Understand it
+
+| Doc | Type | Read it to… |
+|---|---|---|
+| [How a turn works](architecture/06-runtime-view.md) | Explanation | Follow one message through the agent: tools vs skills, the tool loop, guards, what each host shows |
+| [How the agents and endpoints talk](AGENT_COMMUNICATION.md) | Reference | See who connects to louis-agent and how: the HTTP API and its event stream, the web app, Rider (ACP), MCP, and the orchestrator ↔ louis-agent conversation |
+| [Architecture](architecture/README.md) | Explanation | Know how it is built and why, in arc42's twelve sections: goals, context, building blocks (C4), runtime, deployment, crosscutting concepts, quality, risks, glossary |
+| [Architecture decisions](adr/README.md) | Explanation | See why each lasting choice was made and what it cost, one record (ADR) each |
+
+## 3. Change it
+
+| Doc | Type | Read it to… |
+|---|---|---|
+| [Development guide](CLAUDE.md) | How-to | Work with Louis step by step, the rules that always apply (one line each, the why in its ADR, the how in `.claude/rules/`), find your way around the code |
+| [Get started](guides/get-started.md) | How-to | Build and run the agent on your machine for the first time |
+| [Finish a step](guides/finish-a-step.md) | How-to | Build, goldens, docs, formatting with Rider's tools, showing the step, the commit |
+| [Add a skill](guides/add-a-skill.md) | How-to | Give the agent a function skill and approve it |
+| [Debug and logs](guides/debug-and-logs.md) | How-to | The tool log, the run files, the usage ledger, the Docker habits |
+| [Common errors](guides/common-errors.md) | How-to | The errors a developer meets most, by their message |
+| [Core guide](../engine/louis-agent.core/CLAUDE.md) | How-to | Change `louis-agent.core`: add a tool or a toolset, the layout and message rules, another agent on core, a new model provider |
+| [Guides](guides/README.md) | How-to | Find the step-by-step guide for the project you are changing, or for what you are building |
+| [Build a pack](guides/build-a-pack.md) | How-to | Give an agent a new capability: a pack's project, tools, guide, settings, registration and tests, step by step |
+| [Build an identity](guides/build-an-identity.md) | How-to | Make a new agent: an identity's project, its voice and routing, its specialists, the packs it names, its tests, and running it |
+| [Add an eval](guides/add-an-eval.md) | How-to | Give an identity an eval: copy the template folder, write its `eval.json`, dataset, manual and transcripts, and pick its checks from the catalogue |
+| [Tests guide](../tests/CLAUDE.md) | How-to | Run the tests, regenerate the golden files (bash or PowerShell), write tests that run on Linux too |
+| [Hosts guide](../CLAUDE.md) | How-to | Change a host in `src/`: its own message enums, adding a web theme |
+| [Deploying Puls to Azure](../../demos/puls/deploy/azure/README.md) | How-to | Build, deploy and watch Puls on Azure Container Apps, set its secrets, and run the home end of its tunnel to this PC's browser and Mongo |
+
+## 4. The orchestrator
+
+| Doc | Type | Read it to… |
+|---|---|---|
+| [Runbooks](../../demos/louis-agent/docs/projects/orchestrator-runbooks.md) | Explanation | Understand how the orchestrator decides what each error needs, with real examples, and write your own runbook |
+
+## 5. See it work: Puls and its specialists
+
+| Doc | Type | Read it to… |
+|---|---|---|
+| [Puls's web app](../../demos/puls/docs/projects/louis-agent.puls.md) | Reference | Know Puls: the assistant in Afrikaans that hands each task to a specialist and shows the work in its Werk panel |
+| [Multi-agent write-up](learning/10-multi-agent-orchestration.md) | Explanation | Read what building Puls taught: roles, routing, measured delegation (a draft) |
+
+## 6. Project by project
+
+| Doc | Type | Read it to… |
+|---|---|---|
+| [Project design docs](projects/README.md) | Reference | Before changing one project: its purpose, how it works, files, key types, settings, extension points, tests and limits — core, the Puls identity, the shops pack, the composition root, CLI, ACP server, API, web app, Puls, the shared web library, MCP server, orchestrator, usage probe, the eval harness, its protocol, runner and Puls's evals, and the tests |
+
+## 7. What's next: plans and designs
+
+Start with the goal and the TODO: the goal says what the work is for and when it's done; the TODO lists everything
+planned, next and in the backlog, and links to the rest.
+
+| Doc | Type | Read it to… |
+|---|---|---|
+| [Goal](GOAL.md) | Explanation | See what the whole plan is for: the skills it teaches, when one counts as learned, and how the work is done |
+| [TODO](../../TODO.md) | Plan | See what's still open, one item per line: now and next (the platform plan's phases), Puls's track, later, small cleanups, and the known limitations |
+| [Changelog](../../CHANGELOG.md) | Reference | See what was finished and when, newest first, each entry linking to its feature, fix or plan |
+| [Features](features/README.md) | Plan | Follow the features still to build: each with user stories, design and steps; a built feature keeps one row, its doc folded into its project's design doc (CL24) |
+| [Learning write-ups](learning/README.md) | Explanation | Read what each skill in the goal taught: what was measured before and after, the trade-offs, what didn't work |
+| [Plans](plans/README.md) | Plan | Read the roadmap and the plans being built now: what each changes from its doc, the steps and how they're checked; a done plan is deleted (the old ones are at the tag `pre-cl24`) |
+| [Fixes](fixes/README.md) | Explanation | Look up an error: what broke and why, one row per fix with its symptom and cause, and the fixes still open; their lessons in [Lessons from the fixes](learning/fixes-lessons.md) |
+| [Spec: usage, estimates and budgets](specs/USAGE_AND_BUDGETS.md) | Explanation | Read the design for recording what every request costs, estimating runs before they start, and budgets that warn, ask or stop |
+| [Spec: response optimisation](specs/RESPONSE_OPTIMISATION.md) | Explanation | Read the design for cheaper, faster responses: prompt caching, smaller toolsets, clearing and summarising history, reliability |
+| [Design: session architecture](specs/SESSION_ARCHITECTURE.md) | Explanation | Read the longer-term idea for durable sessions, a context-building pipeline and memory (not planned yet) |
+| [Design: searching PDFs](specs/PDF_SEARCH.md) | Explanation | See what searching PDFs by meaning takes today (ingest, hybrid search, cited answers, measuring it) and how it might fit the engine (not planned yet) |
+| [Design: orchestrators and self-healing](../../demos/louis-agent/docs/specs/ORCHESTRATOR_DESIGN.md) | Explanation | See the orchestrator design decisions, what the POC proved, and what's still open |
+
+## Writing docs: one type per doc
+
+Every doc is one of the four [Diátaxis](https://diataxis.fr) types, so a reader (a person or a model) opens only the
+kind of doc its question needs:
+
+| Type | Answers | Holds |
+|---|---|---|
+| **Tutorial** | Get me started | Steps that work the first time, nothing optional |
+| **How-to** | How do I do X? | One task's steps; links for the why |
+| **Reference** | What exactly is X? | Settings, endpoints, types, results: complete and plain |
+| **Explanation** | Why is it like this? | Design, trade-offs, what was measured and learned |
+
+The project's planning docs (the TODO, features, plans) are a fifth kind, **Plan**: what is still to be built. Each doc
+opens with a quoted line or two: its type, what it answers, and where the rest is. A section that answers a different
+question moves to the doc of that type, and the two link to each other.
+
+## Docs that live elsewhere
+
+Docs follow what they are about. Anything about one demo or the packs sits with it: [Puls](../../demos/puls/docs/README.md),
+[the coding agent](../../demos/louis-agent/docs/README.md), [the packs](../../packs/docs/README.md). ADR numbers are shared
+across all of them, so [the ADR index](adr/README.md) lists every one.
+
+---
+Next: [Quick start](../../demos/louis-agent/docs/QUICK_START_AGENT.md)

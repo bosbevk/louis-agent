@@ -2,9 +2,9 @@
 
 > **How-to.** What to know before changing a host in `src/` (the CLI, ACP server, API, web apps, MCP server,
 > orchestrator): their own texts and the web themes. **Elsewhere:** the message rule itself in
-> [Messages and logging](../louis-agent.core/CLAUDE.md#messages-and-logging), hosts staying thin in
-> [Project layout](../louis-agent.core/CLAUDE.md#project-layout), how to work in the
-> [development guide](../docs/CLAUDE.md). Claude Code loads this file when it works on files in this folder.
+> [Messages and logging](engine/louis-agent.core/CLAUDE.md#messages-and-logging), hosts staying thin in
+> [Project layout](engine/louis-agent.core/CLAUDE.md#project-layout), how to work in the
+> [development guide](docs/CLAUDE.md). Claude Code loads this file when it works on files in this folder.
 
 ## Each host's own texts
 
@@ -33,9 +33,9 @@ a namespace named like a type shadows the type for every file under its parent.
 Each host's `Properties/launchSettings.json` holds its run profiles: the settings its compose service gets, as paths
 relative to the project folder (`../../logs`), on a port beside the container's (5071, 5081, 5091), and (`WORKSPACE_ROOT`, `SKILLS_DIRECTORY`, `LOG_DIRECTORY`, the price and rates
 files; the API's `puls` profile adds Puls's own). A new setting a compose file passes to a container goes in the host's
-profile too, so a debug run sees what the container sees ([Setup](../docs/SETUP.md#how-settings-are-loaded)).
+profile too, so a debug run sees what the container sees ([Setup](docs/SETUP.md#how-settings-are-loaded)).
 
 ## Adding a web theme
 
-Copy `src/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of
+Copy `demos/louis-agent/web/louis-agent.web/wwwroot/css/themes/paper.css` to `{id}.css`, set the variables listed at the top of
 `css/base/page.css`, and add `{ "id": "{id}", "name": "…" }` to `themes.json`. Ids are lowercase letters, digits and dashes.

@@ -13,7 +13,7 @@ namespace LouisAgent.Packs.ShopPrices.Prices.Store;
 /// is never overwritten by a seed: the store is the record, the shipped files only seed it, and only an upload a
 /// person saved replaces a month (F55).
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: MongoDB goes through records</seealso>
 public sealed class MongoPriceStore : IPriceStore
 {
     /// <summary>The collection the tables are kept in.</summary>
