@@ -789,6 +789,8 @@ the cost and of the time; 3 repeats a side.
 
 (The picks Rider raises mid-build, each with Louis's choice, as F35.1's.)
 
+- **2026-11-05, the done-when, Louis's pick.** It said every dev scenario passes `recipe-from-source`. Run `0722c7408705` scored 25 of 30: `pap en sous` failed all 3 repeats, since a rough check found it on one site of the 20 searched, and `boerewors rolls` and `chakalaka` failed once each the same way. It now reads: **every dish a table site holds passes; a dish no table site holds may come from the web, when the answer says so under *Unsure*.** F35.3's library is what fills that gap later. This isn't enforced yet: only 2 of those 5 web recipes said so, the prompt doesn't ask for it, and the check doesn't read it. Both change after the measure, since a prompt change now would shift its numbers. Until then the check's score stays as it is and the 5 are read by hand.
+
 - **2026-11-05, F35.4 before the measure.** Louis, looking at the app: "almost every recipe comes from, this is not random". 19 of 21 recipes came from Food & Home, so the measure would have priced a one-site cook. He stopped the run and picked [F35.4](F35.4-many-recipe-sites.md), a search over several sites, first. The measure's table gains a row: **different sites the recipes came from, and the largest site's share**. The minion (2b) changes when the measure reaches it: its task becomes the dish alone, one search with no site names (finding G1).
 
 - **The evals and checks moved (2026-11-04, ADR 0073).** Puls's evals are at
