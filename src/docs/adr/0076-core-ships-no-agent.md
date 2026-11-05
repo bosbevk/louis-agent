@@ -1,6 +1,6 @@
 # 0076. Core ships no agent, and every tool the model asks for is a pack
 
-**Status:** Accepted, for Louis's review · **Date:** 2026-11-05 (Louis: "the coding agent is also just a demo, so it should
+**Status:** Accepted · **Date:** 2026-11-05 (Louis: "the coding agent is also just a demo, so it should
 be a pack identity", then pick C, every tool in core becomes a pack) · **Recorded:** 2026-11-05
 
 ## Context

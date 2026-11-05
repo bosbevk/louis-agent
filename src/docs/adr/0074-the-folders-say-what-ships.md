@@ -70,7 +70,7 @@ thing still belongs to the demo: core writes skill files, and the running demo o
 ## Links
 
 [0010](0010-folders-by-concern.md) · [0027](0027-engine-identities-and-packs.md) · [0073](0073-packs-reference-no-evals.md) ·
-[CL29 plan](../plans/CL29-packs-are-just-tools.md)
+[0076](0076-core-ships-no-agent.md)
 
 ---
 [Docs index](../README.md) · Related: [Architecture](../architecture/README.md) · [Plans](../plans/README.md)
