@@ -43,7 +43,7 @@ public static partial class BranchReading
 
         if (sawTable) return nearest ? BranchFinding.OnlyNearest : BranchFinding.NoBranchOfShop;
 
-        string text = InlineLinkText().Replace(section, " ").Replace("*", "");
+        string text = InlineLinkText().Replace(section, "$1 ").Replace("*", "");
         foreach (Match name in names.Matches(text))
             if (PlaceAfter(text[(name.Index + name.Length)..].Split('\n')[0]) is not null)
                 return BranchFinding.Named;
@@ -118,7 +118,7 @@ public static partial class BranchReading
     /// </summary>
     private static bool HoldsAPlace(string cell, Regex names)
     {
-        string text = names.Replace(InlineLinkText().Replace(cell, " ").Replace("*", ""), " ");
+        string text = names.Replace(InlineLinkText().Replace(cell, "$1 ").Replace("*", ""), " ");
         return SplitAtPlace().Split(text).Any(token =>
             token.Length > 0 && char.IsUpper(token[0]) && !NoPlaceWords.Contains(token.ToLowerInvariant())
             && !ShopSites.Hosts.Any(known => known.Name.StartsWith(token, StringComparison.OrdinalIgnoreCase)));
@@ -148,8 +148,12 @@ public static partial class BranchReading
     [GeneratedRegex(@"^\s*(?:#{1,6}\s|\*\*[^*\n]+\*\*\s*:?\s*$)")]
     private static partial Regex EndsSection();
 
-    /// <summary>A markdown link or a bare web address, taken out so its words aren't read as a place.</summary>
-    [GeneratedRegex(@"\[[^\]]*\]\([^)]*\)|https?://\S+")]
+    /// <summary>
+    /// A markdown link, keeping its text since a street can be a link, or a bare web address, so an address's words
+    /// aren't read as a place: matches <c>[Rood Street](https://a.b)</c> and <c>https://a.b</c>, not <c>Rood
+    /// Street</c>.
+    /// </summary>
+    [GeneratedRegex(@"\[([^\]]*)\]\([^)]*\)|https?://\S+")]
     private static partial Regex InlineLinkText();
 
     /// <summary>What splits a line into words: spaces, table bars, punctuation and dashes.</summary>

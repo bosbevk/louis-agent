@@ -103,6 +103,16 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Not.Contain("after the recipe page is read"));
     }
 
+    /// <summary>A shop's street opens directions, and the cook copies the tool's link instead of building one.</summary>
+    [Test]
+    public void TheStreet_KeepsTheToolsDirectionsLink()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("[Voortrekker Street, Malmesbury](https://www.google.com/maps/dir/?api=1&destination="));
+        Assert.That(cook, Does.Contain("copy its link as the tool wrote it, and never build one"));
+    }
+
     /// <summary>The stop rule counts the prints read, wherever their links came from: at most three.</summary>
     [Test]
     public void TheStopRule_CountsPrintsRead_WhereverTheirLinksCameFrom() =>
@@ -206,25 +216,23 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("`FindShopsNear` (`town`, the user's town)"));
         Assert.That(cook, Does.Contain("Gebruik my ligging"));
         Assert.That(cook, Does.Contain("*Usave*, never *Usave Malmesbury*"), "a branch's name is the map's own");
-        Assert.That(cook, Does.Contain("| Pick n Pay | Pick n Pay | Voortrekker Street, Malmesbury |"),
+        Assert.That(cook, Does.Contain("| Pick n Pay | Pick n Pay | [Voortrekker Street, Malmesbury]("),
             "the format's example doesn't teach a made-up name");
         Assert.That(cook, Does.Not.Contain("Any supermarket near you").And.Not.Contain("Enige supermark naby jou"));
     }
 
     /// <summary>
-    /// A text print is page text with every image the page has, so the photo rules stay for it (Louis, 2026-11-04):
-    /// no share button, no icon, no logo, nothing from another site, nothing built from a pattern.
+    /// A print holds at most one photo, which the tool has checked, so the cook shows that one or none, and the prompt
+    /// no longer warns about share buttons and logos that can't reach it.
     /// </summary>
     [Test]
-    public void TheCook_KeepsThePhotoRules_ForATextPrint()
+    public void TheCook_ShowsThePrintsOnePhoto_AndNoOther()
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("take the image link itself, whole"));
-        Assert.That(cook,
-            Does.Contain("never one you build from a pattern").And.Contain("never one from another site"));
-        Assert.That(cook, Does.Contain("never a share button, a print or PDF icon, a logo or an avatar"));
-        Assert.That(cook, Does.Contain("no image, and nothing said about it"));
+        Assert.That(cook, Does.Contain("it is the print's `![name](url)` line, whole, and never any other image"));
+        Assert.That(cook, Does.Contain("A print with no image: no image, and nothing said about it"));
+        Assert.That(cook, Does.Not.Contain("a share button"), "the tool keeps those out of the print now");
     }
 
     /// <summary>

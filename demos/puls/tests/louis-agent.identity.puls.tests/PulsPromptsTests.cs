@@ -221,11 +221,10 @@ public class PulsPromptsTests
     {
         // Louis, 2026-10-25: "i want at least one image to render from the recipe". FetchUrl and ReadRenderedPage both
         // return images as `![alt](url)`.
-        string cook = Read("specialists/puls-cook.md");
+        string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(cook, Does.Contain("one image of the dish").And.Contain("![Bobotie](https://…)"));
-        Assert.That(cook, Does.Contain("take the image link itself, whole").And.Contain("never one from another site"));
-        Assert.That(cook, Does.Contain("never a share button, a print or PDF icon, a logo or an avatar"));
+        Assert.That(cook, Does.Contain("line, whole, and never any other image"));
         Assert.That(cook, Does.Contain("no image, and nothing said about it"));
         // The stop rule (a print with no photo) is PulsCookRecipeToolsTests', now that it reads prints.
     }

@@ -139,12 +139,9 @@ Two sentences: the dish, and why it fits the request (the time, the people, the 
 ### Recipe
 
 First, **one image of the dish**, on a line of its own above everything else in *Recipe*, `![Bobotie](https://…)`.
-From a print with the recipe's data, it is the print's `![name](url)` line, whole, or none when the print has none.
-From a print that is the page's text, it is the image link that shows the dish: the text shows an image as
-`![alt](url)`, often wrapped in the link to its page; take the image link itself, whole, never one you build from a
-pattern, never one from another site, never a share button, a print or PDF icon, a logo or an avatar. It is the photo
-of the page you got the recipe from, the same page as the link under *Recipe*. A print with no image of the dish:
-no image, and nothing said about it.
+A print holds at most one, already checked: it is the print's `![name](url)` line, whole, and never any other image. It is
+the photo of the page you got the recipe from, the same page as the link under *Recipe*. A print with no image: no image,
+and nothing said about it.
 
 Then one line in the task's language, never the other: `Dien {n} · {tyd}` in Afrikaans, `Serves {n} · {time}` in
 English (*Dien 4 · ongeveer 1 uur*), with the print's times and, in brackets, the page's *Makes* words when they aren't
@@ -189,7 +186,10 @@ dan noem ek die winkels naby jou.*):
 
 | Shop | Branch | Street or mall | Website |
 |---|---|---|---|
-| Pick n Pay | Pick n Pay | Voortrekker Street, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |
+| Pick n Pay | Pick n Pay | [Voortrekker Street, Malmesbury](https://www.google.com/maps/dir/?api=1&destination=-33.46%2C18.72) | [pnp.co.za](https://www.pnp.co.za) |
+
+*Street or mall* opens directions to the shop: the tool's street or place, with the town beside it in the link's words;
+copy its link as the tool wrote it, and never build one.
 
 *Website* is a link to the branch's own page on the shop's site when one `WebSearch` (`site:pnp.co.za Malmesbury`)
 finds it, else the shop's home page (for shops near the user, the home page with no search, and only one you know for certain, such as pnp.co.za or checkers.co.za: empty otherwise, and never guess an address); never fetch it, the link is for the user. A branch you couldn't confirm is

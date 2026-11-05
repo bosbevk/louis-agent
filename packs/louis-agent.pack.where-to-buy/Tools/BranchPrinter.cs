@@ -76,15 +76,36 @@ public static class BranchPrinter
         return text.ToString();
     }
 
-    /// <summary>One branch's row; what the map leaves out is a dash.</summary>
-    private static string Row(Branch branch) => MessageText.Format(WhereToBuyToolMessage.BranchRow, new
+    /// <summary>
+    /// One branch's row; what the map leaves out is a dash. The street opens directions to the shop, or the place when
+    /// the map gives no street.
+    /// </summary>
+    private static string Row(Branch branch)
     {
-        Name = Cell(branch.Name),
-        Street = Cell(branch.Street),
-        Place = Cell(branch.Place),
-        Km = branch.Km.ToString("0.0", CultureInfo.InvariantCulture),
-        InArea = MessageText.Format(branch.InTownsArea ? WhereToBuyToolMessage.Yes : WhereToBuyToolMessage.No),
-    });
+        bool hasStreet = !string.IsNullOrWhiteSpace(branch.Street);
+        return MessageText.Format(WhereToBuyToolMessage.BranchRow, new
+        {
+            Name = Cell(branch.Name),
+            Street = hasStreet ? Directions(branch.Street, branch) : Cell(null),
+            Place = hasStreet ? Cell(branch.Place) : Directions(branch.Place, branch),
+            Km = branch.Km.ToString("0.0", CultureInfo.InvariantCulture),
+            InArea = MessageText.Format(branch.InTownsArea ? WhereToBuyToolMessage.Yes : WhereToBuyToolMessage.No),
+        });
+    }
+
+    /// <summary>
+    /// A cell as a link to Google Maps directions to the branch. The tool writes it, so the model copies an address and
+    /// never builds one. A cell with nothing in it stays a dash.
+    /// </summary>
+    private static string Directions(string? text, Branch branch) =>
+        string.IsNullOrWhiteSpace(text)
+            ? Cell(text)
+            : MessageText.Format(WhereToBuyToolMessage.DirectionsLink, new
+            {
+                Text = Cell(text).Replace('[', '(').Replace(']', ')'),
+                Latitude = branch.Latitude.ToString(CultureInfo.InvariantCulture),
+                Longitude = branch.Longitude.ToString(CultureInfo.InvariantCulture),
+            });
 
     /// <summary>A table cell: a dash for nothing, and no pipe that would break the row.</summary>
     private static string Cell(string? value) =>
