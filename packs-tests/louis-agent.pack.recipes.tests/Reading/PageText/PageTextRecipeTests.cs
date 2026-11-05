@@ -245,7 +245,7 @@ public class PageTextRecipeTests
         Assert.That(recipe.Steps[1].Section, Is.EqualTo("Oven Roasted Potatoes"));
     }
 
-    /// <summary>Zola Nene's kebabs: a "Serves" among plain steps means a second recipe, so the page stays out.</summary>
+    /// <summary>Zola Nene's kebabs: a "Serves" among plain steps means a second recipe, so the page's out.</summary>
     [Test]
     public void AServesLineAmongPlainSteps_IsNothing()
     {

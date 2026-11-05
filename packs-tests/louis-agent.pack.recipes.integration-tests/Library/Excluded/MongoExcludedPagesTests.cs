@@ -6,8 +6,8 @@ namespace LouisAgent.Packs.Recipes.IntegrationTests.Library.Excluded;
 
 /// <summary>
 /// The excluded pages against a real MongoDB, when <c>BENCHMARKS_MONGO_URL</c> is set: a listed page comes back by its
-/// id, however its link is spelled, and listing it twice at once fails nothing. Each test gets its own database, dropped
-/// after.
+/// id, however its link is spelled, and listing it twice at once fails nothing. Each test gets its own database,
+/// dropped after.
 /// </summary>
 [Category("Integration")]
 public class MongoExcludedPagesTests
