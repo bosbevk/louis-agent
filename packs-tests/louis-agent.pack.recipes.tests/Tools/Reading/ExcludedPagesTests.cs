@@ -59,6 +59,21 @@ public class ExcludedPagesTests
         Assert.That(list.Pages.Single().Page, Is.EqualTo(new Uri(Article)));
     }
 
+    /// <summary>
+    /// A page off our sites is refused too, but never listed: <c>ReadRecipe</c> reads any public link, a user's own
+    /// included, and only our sites' pages are written down, as for the library (ADR 0082).
+    /// </summary>
+    [Test]
+    public async Task APageOffOurSites_IsRefused_ButNotListed()
+    {
+        var list = new FakeList();
+
+        string print = await Over(list, ArticlePage).Tools.ReadRecipe("https://example.com/someones-own-page/");
+
+        Assert.That(print, Does.Contain("Read another hit"));
+        Assert.That(list.Pages, Is.Empty);
+    }
+
     /// <summary>Once it's listed nobody opens it again, however its link is spelled.</summary>
     [Test]
     public async Task AListedPage_OpensNoBrowser()
