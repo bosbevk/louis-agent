@@ -31,6 +31,8 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   box of about 3 km, then 16, then 55, keeping what the map files as a supermarket and has a name for, the three nearest.
   The first box is small because a city's 16 km box holds 20 hits in no order: Sea Point's real answer held a fabric shop
   and lost the nearest (FX41).
+- **The place.** A branch's place is the smallest name the map gives, but never an election ward: the map files
+  *Swartland Ward 10* where a suburb goes, so `MapAddress` skips it for the town or city above it.
 - **The answer.** `BranchPrinter` writes the town's municipality and province (the province is what `EstimatePrices`
   needs), then a table: each branch's name, street, place, distance and whether it is in the town's municipality,
   framed as untrusted map data. With none in the town, the note says so and names the nearest.
