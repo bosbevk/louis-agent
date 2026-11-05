@@ -28,7 +28,7 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   a short name as the full one (`PnP` is `Pick n Pay`, `Woolies` is `Woolworths`). It keeps the three nearest, by the
   distance from the town's centre (`Distance`, the haversine formula).
 - **Shops near the user.** `FindShopsNear(town)` is the same search for someone who named no shop: `q=supermarket` in a
-  box of about 3 km, then 16, then 55, keeping what the map files as a supermarket and has a name for, the three nearest.
+  box of about 3 km, then 16, then 55, keeping what the map files as a supermarket and has a name for, the ten nearest.
   The first box is small because a city's 16 km box holds 20 hits in no order: Sea Point's real answer held a fabric shop
   and lost the nearest (FX43).
 - **The place.** A branch's place is the smallest name the map gives, but never an election ward: the map files
