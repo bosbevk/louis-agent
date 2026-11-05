@@ -30,11 +30,14 @@ public sealed class ImageShownCheck(IImageReader reader, string? key = null, boo
     /// <summary>The line a fetched page's text starts with, naming its address.</summary>
     private const string UrlLine = "URL:";
 
+    /// <summary>The line that names a printed page's address, wherever it stands in the print.</summary>
+    private const string LinkLine = "Link:";
+
     /// <inheritdoc />
     public string Name => "image-shown";
 
     /// <inheritdoc />
-    public int Version => 1;
+    public int Version => 2;
 
     /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
@@ -67,11 +70,14 @@ public sealed class ImageShownCheck(IImageReader reader, string? key = null, boo
             return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.ImageNothingToRead));
 
         var answer = EngineEvents.AnswerOf(first);
-        var onPages = CitedPages(first, answer).SelectMany(reader.Images).ToHashSet();
+        var pages = CitedPages(first, answer).Where(page => reader.Images(page).Count > 0).ToList();
+        var onPages = pages.SelectMany(reader.Images).ToHashSet();
         if (onPages.Count == 0)
             return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.ImageNoneOnPages));
 
         var shown = reader.Images(answer);
+        if (shown.Count == 0 && !pages.Any(reader.KnowsThePhoto))
+            return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.ImageCantTell));
         if (shown.Count == 0)
             return Verdict.Fail(Name, Version, MessageText.Format(CommonGradeMessage.ImageMissing));
         return shown.Any(onPages.Contains)
@@ -93,12 +99,15 @@ public sealed class ImageShownCheck(IImageReader reader, string? key = null, boo
         return cited.Count > 0 ? cited : results;
     }
 
-    /// <summary>The address on a fetched page's first line, or null when it has none.</summary>
+    /// <summary>The address a page's text names, on its first line or a print's link line; null when it has none.</summary>
     private static string? UrlOf(string result)
     {
-        if (!result.StartsWith(UrlLine, StringComparison.Ordinal)) return null;
-        var url = result.Split('\n', 2)[0][UrlLine.Length..].Trim();
-        return url.Length > 0 ? url : null;
+        string? line = result.Split('\n').Select(text => text.Trim()).FirstOrDefault(text =>
+            text.StartsWith(LinkLine, StringComparison.Ordinal));
+        if (result.StartsWith(UrlLine, StringComparison.Ordinal))
+            return result.Split('\n', 2)[0][UrlLine.Length..].Trim() is { Length: > 0 } url ? url : null;
+
+        return line?[LinkLine.Length..].Trim() is { Length: > 0 } link ? link : null;
     }
 
     /// <summary>

@@ -21,6 +21,12 @@ internal static class QueryWords
     private const int ShortestPart = 4;
 
     /// <summary>
+    /// Dishes with an Afrikaans and an English name that share no word: a site printing <c>Milk tart</c> has a melktert,
+    /// and without these it was dropped, which took melktert from ten sites to six.
+    /// </summary>
+    private static readonly string[][] TwoNames = [["melktert", "milk tart"], ["hoenderpastei", "chicken pie"]];
+
+    /// <summary>
     /// Whether a hit answers the search. The address counts for its path alone, or every page of Jan Braai, at
     /// braai.com, would answer "braai". A search with no real word in it can't tell, so it keeps the hit.
     /// </summary>
@@ -30,8 +36,16 @@ internal static class QueryWords
         if (wanted.Count == 0) return true;
 
         var found = Words(title).Concat(Words(Uri.UnescapeDataString(page.AbsolutePath))).ToList();
-        return wanted.Any(word => found.Any(other => Same(word, other)));
+        return wanted.Any(word => found.Any(other => Same(word, other))) || IsTheOtherName(Words(query), found);
     }
+
+    /// <summary>The search names a dish and the hit its other name, whole: an apple tart is no melktert.</summary>
+    private static bool IsTheOtherName(IEnumerable<string> query, IEnumerable<string> found) =>
+        TwoNames.Any(names => names.Any(name => Holds(query, name)) && names.Any(name => Holds(found, name)));
+
+    /// <summary>Whether a name stands in these words, as words of their own.</summary>
+    private static bool Holds(IEnumerable<string> words, string name) =>
+        $" {string.Join(' ', words)} ".Contains($" {name} ", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>The same word, or one holding the other when the shorter is long enough: potjie and potjiekos.</summary>
     private static bool Same(string one, string other)

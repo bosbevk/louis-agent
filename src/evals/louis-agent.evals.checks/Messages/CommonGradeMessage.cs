@@ -174,6 +174,9 @@ public enum CommonGradeMessage
     [Description("no page the agent read had an image to show")]
     ImageNoneOnPages,
 
+    [Description("the answer shows no image, and the page's images can't be told from other recipes' photos")]
+    ImageCantTell,
+
     [Description("the answer shows no image, though a page it read had one")]
     ImageMissing,
 

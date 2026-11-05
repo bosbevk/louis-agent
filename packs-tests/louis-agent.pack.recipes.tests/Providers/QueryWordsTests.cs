@@ -41,6 +41,22 @@ public class QueryWordsTests
     public void APluralOrALongerName_IsTheWord(string title, string query) =>
         Assert.That(QueryWords.Answers(title, Plain, query), Is.True);
 
+    /// <summary>A dish goes by two names here, and a site may print either one.</summary>
+    [TestCase("Milk tart", "melktert")]
+    [TestCase("Traditional milk tart", "melktert")]
+    [TestCase("Melktert", "milk tart")]
+    [TestCase("Chicken pie", "hoenderpastei")]
+    [TestCase("Hoenderpastei", "chicken pie")]
+    public void TheDishsOtherName_IsAnAnswer(string title, string query) =>
+        Assert.That(QueryWords.Answers(title, Plain, query), Is.True);
+
+    /// <summary>The other name counts whole: a tart that isn't milk tart is no melktert.</summary>
+    [TestCase("Apple tart", "melktert")]
+    [TestCase("Chicken curry", "hoenderpastei")]
+    [TestCase("Pork pie", "hoenderpastei")]
+    public void HalfOfTheOtherName_IsNoAnswer(string title, string query) =>
+        Assert.That(QueryWords.Answers(title, Plain, query), Is.False);
+
     /// <summary>The address counts too: <c>Milk tart</c> at <c>/melktert/</c> is a melktert.</summary>
     [Test]
     public void AWordInTheAddress_Counts() =>

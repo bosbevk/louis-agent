@@ -22,4 +22,10 @@ public sealed class RecipePhotos : IImageReader
 
     /// <inheritdoc />
     public IReadOnlyList<string> Images(string text) => RecipeLinks.RecipePhotos(text);
+
+    /// <summary>
+    /// A print from a page's own data names its photo. A page's plain text mixes the dish's photo with related recipes'
+    /// and the site's logos: Vrouekeur's bobotie page shows only other dishes, so showing none of them is right.
+    /// </summary>
+    public bool KnowsThePhoto(string page) => !page.Contains("publishes no recipe data", StringComparison.Ordinal);
 }
