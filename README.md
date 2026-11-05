@@ -69,7 +69,7 @@ never the engine, and never knows about another pack or an identity. Only a demo
 ```
 src/                 the framework: the engine, the hosts as libraries, the eval harness, its tests and docs
 packs/               what an agent can do, tools only; packs-evals/ proves them, packs-tests/ tests them
-demos/louis-agent/   the coding agent, as your own project would be: identity, programs, web apps, settings, images, tests
+demos/louis-agent/   the coding agent, as your own project would be: identity, programs, web apps, settings, images, a film export tool, tests
 demos/puls/          Puls, the same way
 ```
 
