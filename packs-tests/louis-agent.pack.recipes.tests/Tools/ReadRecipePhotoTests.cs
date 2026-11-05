@@ -1,4 +1,5 @@
 using System.Net;
+using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Tests.Providers;
 using LouisAgent.Packs.Recipes.Tools;
@@ -47,6 +48,41 @@ public class ReadRecipePhotoTests
 
             Assert.That(print, Does.Contain(Good).And.Not.Contain(Dead));
         }
+    }
+
+    /// <summary>
+    /// Food &amp; Home's photos sit on a host whose robots.txt answers 500, so the rules say we may not fetch them, yet
+    /// they load fine in the user's browser. Not being able to check isn't the same as gone, so the photo stays: we
+    /// fetch nothing, and the user's browser does the loading.
+    /// </summary>
+    [Test]
+    public async Task APhotoWeMayNotCheck_StaysInThePrint()
+    {
+        foreach (string page in new[] { TextPage, DataPage })
+        {
+            string print = await ReadAsync(page, () => throw new BlockedAddressException("robots.txt couldn't be read"));
+
+            Assert.That(print, Does.Contain(Dead));
+        }
+    }
+
+    /// <summary>A server error says the server had trouble, not that the photo is gone, so it stays too.</summary>
+    [TestCase(HttpStatusCode.InternalServerError)]
+    [TestCase(HttpStatusCode.ServiceUnavailable)]
+    public async Task AServerError_KeepsThePhoto(HttpStatusCode status) =>
+        Assert.That(await ReadAsync(TextPage, FakePhotoFetcher.Answers(status, "text/html")), Does.Contain(Dead));
+
+    /// <summary>An internal address is another matter: it's refused for safety, and never reaches the user.</summary>
+    [Test]
+    public async Task AnInternalAddress_IsNeverShown()
+    {
+        var fetcher = new FakePhotoFetcher(internalAddresses: [Dead]);
+
+        string print = await new RecipeTools(new Dictionary<string, IRecipeSource>(), new FakeSiteBrowser(TextPage), fetcher)
+            .ReadRecipe("https://example.com/recipes/pie/");
+
+        Assert.That(print, Does.Contain(Good).And.Not.Contain(Dead));
+        Assert.That(fetcher.Asked, Has.None.EqualTo(Dead), "nothing is sent to it");
     }
 
     /// <summary>A server that never answers costs the check its time limit, and nothing else.</summary>

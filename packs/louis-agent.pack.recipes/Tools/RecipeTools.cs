@@ -163,8 +163,8 @@ public sealed class RecipeTools
         var page = Uri.TryCreate(visit.Url, UriKind.Absolute, out var ended) ? ended : address;
         var recipe = SchemaOrgRecipe.Read(visit.Html, page);
 
-        // One photo goes in the print, and only one that loads: a dead address shows the user a broken image.
-        var photo = await _photos.FirstThatLoadsAsync(PagePhotos.Candidates(visit.Html, page, recipe?.Image),
+        // One photo goes in the print, never one we know is gone: a dead address shows the user a broken image.
+        var photo = await _photos.FirstNotGoneAsync(PagePhotos.Candidates(visit.Html, page, recipe?.Image),
             cancellationToken);
         return recipe is not null
             ? RecipeHitPrinter.Framed(RecipePrinter.Print(recipe with { Image = photo }))
@@ -172,7 +172,7 @@ public sealed class RecipeTools
     }
 
     /// <summary>
-    /// The page's words, labelled as the page's text, under the photo that loads, cut at the most we show (and said
+    /// The page's words, labelled as the page's text, under the page's photo, cut at the most we show (and said
     /// so), then the link. This is for a page that publishes no recipe data. Its own images stay out: most are related
     /// recipes and logos, and the cook took them for the dish's.
     /// </summary>
