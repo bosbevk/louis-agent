@@ -397,6 +397,20 @@ public class PulsPromptsTests
     }
 
     /// <summary>
+    /// A refused page is no print, so it can't use up the cook's reads: three refusals in a row left it answering with
+    /// no recipe, with hits and searches still to try. It keeps going until it has one.
+    /// </summary>
+    [Test]
+    public void TheCook_KeepsLookingUntilItHasARecipe()
+    {
+        string cook = Flat(Read("specialists/puls-cook.md"));
+
+        Assert.That(cook, Does.Contain("a page that says it has no recipe we can read is no print and doesn't count"));
+        Assert.That(cook, Does.Contain("Keep going until you have a recipe"));
+        Assert.That(cook, Does.Contain("Never answer without a recipe while any of those is left"));
+    }
+
+    /// <summary>
     /// The cook reads no shop's site; every price it gives is an estimate, from Stats SA's averages.
     /// </summary>
     [Test]

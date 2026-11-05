@@ -24,6 +24,8 @@ search would stop at the few kinds of melktert it already had.
   from then on a read refuses it without opening it and a search leaves it out. A search hit can't show whether a page has a
   recipe, so each page costs one look and only one. Only a page we truly read counts: a site that's down, a refusal or an empty
   page says nothing about the page, and never goes on the list. It's private, and clearing it gives those pages another chance.
+- **A refused page doesn't count as a read.** The cook keeps going until it has a recipe: every hit that fits, another search,
+  then a web search. Three refusals in a row once left it answering with no recipe, with hits still to try.
 - **The library is the recipes pack's feed**, open with no key at `/v1/feeds/recipes` (ADR 0070), and the MCP server offers it
   as a resource (ADR 0072). Each recipe carries its site's name and a link to its own page, and nothing about who asked.
 - **Each recipe has its own address on our API,** `/v1/feeds/recipes/{id}`, and a search hands the cook that address. `ReadRecipe`

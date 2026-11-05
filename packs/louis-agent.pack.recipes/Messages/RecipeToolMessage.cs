@@ -34,7 +34,7 @@ public enum RecipeToolMessage
     [Description("our library")]
     OurLibrary,
 
-    [Description("That page has no recipe we can read. Read another hit.")]
+    [Description("That page has no recipe we can read, so it doesn't count as a read. Read another hit, or search again.")]
     NoRecipeOnThePage,
 
     [Description("This dish also goes by {Names}. If nothing here fits, search for one of those.")]

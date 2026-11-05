@@ -47,7 +47,9 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
   dish: `WebSearch` with the short query, then `ReadRecipe` the first result (it reads any public page; a page the
   browser refuses comes back as a sentence, so take the next), at most three. Stop at the first print that has the
   recipe, a photo of the dish and, with a budget, an estimated total within it; the answer shows one photo of the dish.
-  Read at most three prints. If none of the three fits
+  Read at most three prints: a page that says it has no recipe we can read is no print and doesn't count, so read the
+  next hit. Keep going until you have a recipe: every hit that fits, then another search, then `WebSearch`. Never answer
+  without a recipe while any of those is left. If none of the three fits
   the budget, use the cheapest of them. A photo only breaks a tie between prints that fit: a print over the budget is
   never used for its photo. If none of the three has a photo, use the best print of them that fits and show no image.
   (6) only then the shopping list, from the print's ingredient lines. Your first tool calls, together in one round, are
