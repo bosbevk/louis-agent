@@ -42,11 +42,21 @@ public sealed class RecipeShelf(
     /// <summary>The address a search hands out for a recipe we hold.</summary>
     public Uri AddressOf(StoredRecipe recipe) => library.AddressOf(recipe);
 
-    /// <summary>The recipe at one of our addresses, if we can get it.</summary>
-    public async Task<StoredRecipe?> ReadAsync(Uri address, CancellationToken cancellationToken) =>
-        library.IdIn(address) is { } id
-            ? await QuietlyAsync(() => library.ReadAsync(id, cancellationToken), null, cancellationToken)
-            : null;
+    /// <summary>
+    /// The recipe at one of our addresses, if we can get it. The log says which way it went, so we can tell the library
+    /// is working outside an eval.
+    /// </summary>
+    public async Task<StoredRecipe?> ReadAsync(Uri address, CancellationToken cancellationToken)
+    {
+        if (library.IdIn(address) is not { } id) return null;
+
+        var recipe = await QuietlyAsync(() => library.ReadAsync(id, cancellationToken), null, cancellationToken);
+        if (recipe is null)
+            Log.Log(LogLevel.Warning, RecipeLogMessage.LibraryCantServe, new { Id = id });
+        else
+            Log.Log(LogLevel.Information, RecipeLogMessage.LibraryServed, new { Id = id, Site = recipe.SiteSlug });
+        return recipe;
+    }
 
     /// <summary>The pages we hold that answer a search.</summary>
     public async Task<IReadOnlyList<StoredRecipe>> SearchAsync(string query, int most, CancellationToken cancellationToken) =>
