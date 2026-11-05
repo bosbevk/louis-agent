@@ -262,6 +262,8 @@ on github.com, and changing a film without re-exporting fails a test.
 | The tool's folders | `Films/` and `Rendering/`, with their own namespaces, since seven files is over the folder limit | An exception to the limit |
 | Testing the real render | By hand this step (4.99 MB), and for real in step 8. The unit tests hold the hash, the arguments and the frame count | An integration project that needs Chrome and Docker on CI and takes minutes |
 
+**Step 3, decided unattended.** The overlap 12.5 s in was real: for all of scene 3, the card hid the Model, the part that scene is about. The camera pulls back for that scene (`scale(0.92)`), so the part stands clear below the card. Not taken: moving the card, which is shared by every scene; or leaving the slab half hidden.
+
 ## Not in this plan
 
 - F54's leftovers: the contact page's `[YOUR EMAIL]`, a domain and where the site runs. The site stays local until Louis picks; the

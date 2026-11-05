@@ -53,7 +53,7 @@
     0% { transform: rotateX(38deg) rotateZ(-12deg) scale(1) translate(0, 0); }
     4%, 13% { transform: rotateX(22deg) rotateZ(-5deg) scale(1.7) translate(480px, 20px); }
     18%, 30% { transform: rotateX(22deg) rotateZ(-5deg) scale(1.3) translate(210px, 35px); }
-    35%, 47% { transform: rotateX(22deg) rotateZ(-5deg) scale(1.3) translate(-265px, 110px); }
+    35%, 47% { transform: rotateX(22deg) rotateZ(-5deg) scale(0.92) translate(-200px, 185px); }
     52%, 64% { transform: rotateX(22deg) rotateZ(-5deg) scale(1.3) translate(-265px, 10px); }
     69%, 81% { transform: rotateX(22deg) rotateZ(-5deg) scale(1.3) translate(-265px, -90px); }
     86%, 97% { transform: rotateX(22deg) rotateZ(-5deg) scale(1.7) translate(480px, 20px); }

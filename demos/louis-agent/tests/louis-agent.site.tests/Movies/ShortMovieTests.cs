@@ -20,7 +20,7 @@ public class ShortMovieTests
         Assert.That(cut.FindAll(".card b").Select(b => b.TextContent[..1]), Is.EqualTo(Enumerable.Range(1, 6).Select(n => $"{n}")));
     }
 
-    /// <summary>The parts the turn reaches are numbered in that order: host, composition, core, tools, ledger.</summary>
+    /// <summary>The parts the turn reaches are numbered in that order: your program, the catalogue, core, a tool, the ledger.</summary>
     [Test]
     public void TheParts_AreNumbered_InTheOrderTheTurnReachesThem()
     {
