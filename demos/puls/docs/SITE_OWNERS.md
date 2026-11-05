@@ -8,7 +8,8 @@
 
 Puls is an assistant for people in South Africa, built in this repository. When a person asks it something that
 needs a web page, such as a recipe, it fetches that page on the person's behalf and reads it, the way the person's
-own browser would if they opened the page themselves. It does not crawl, index or republish sites.
+own browser would if they opened the page themselves. It does not crawl a site. **It does keep what it reads:** a recipe
+page from one of the sites in its table is kept and published, as below.
 
 ## What it sends
 
@@ -30,6 +31,13 @@ person's name, address or anything else about them.
 - It does not read `robots.txt` yet (that comes with *Sources as data* in the TODO). If your site disallows automated
   readers there, tell us (below): your domain goes on our list of sites the browser won't read.
 
+## What it keeps and publishes
+
+When Puls reads a recipe page from a site in its table for the first time, it keeps what it read, for good, and doesn't read
+that page again. For a page with no recipe data, that's the page's text up to the end of the recipe; readers' comments are left
+out. Kept recipes are published openly at `/v1/feeds/recipes`, each with your site's name and a link to your page, and its image
+still loads from your own host. Nothing about who asked is kept.
+
 ## Where it comes from
 
 During development it runs from one home connection in South Africa and from one Azure Container Apps instance in
@@ -39,5 +47,6 @@ South Africa North; the browser that reads pages runs on the home connection. Th
 
 Open an issue at <https://github.com/bosbevk/louis-agent/issues> with your domain and what you'd like: to be excluded,
 rate-limited, or to offer a feed or an API instead, which we would far rather use than your pages. A request to stop is
-honoured without argument. Today that list is a change to the code, shipped in the next release; a list the browser
+honoured without argument, and it covers what we keep: your site's recipes stop being published and their copies are
+deleted. Today that list is a change to the code, shipped in the next release; a list the browser
 reads at run time is planned (the TODO's *A domain stop-list for the browser*).
