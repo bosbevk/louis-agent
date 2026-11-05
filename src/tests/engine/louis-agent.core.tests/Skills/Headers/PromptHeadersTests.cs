@@ -24,7 +24,7 @@ public class PromptHeadersTests
         description: Acme's local cook. A recipe for the people and town asked for.
         metadata:
           level: {RoleLevel.Specialist.Wire()}
-          toolsets: {CoreToolset.Web.Wire()}, shops?
+          toolsets: {TestToolset.Web.Wire()}, shops?
         ---
         # Acme specialist: Local cook
 
@@ -38,7 +38,7 @@ public class PromptHeadersTests
 
         Assert.That(file.Header, Is.EqualTo(new PromptHeader(Name,
             "Acme's local cook. A recipe for the people and town asked for.", RoleLevel.Specialist,
-            [CoreToolset.Web.Wire(), "shops?"])).Using<PromptHeader>(SameHeader));
+            [TestToolset.Web.Wire(), "shops?"])).Using<PromptHeader>(SameHeader));
         Assert.That(file.Body, Is.EqualTo("# Acme specialist: Local cook\n"));
     }
 

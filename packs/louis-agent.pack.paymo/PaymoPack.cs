@@ -21,6 +21,9 @@ public sealed class PaymoPack(PaymoOptions options) : IAgentPack
     ];
 
     /// <inheritdoc/>
+    public bool ComesBeforeTheEngine => true;
+
+    /// <inheritdoc/>
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(PaymoPack).Assembly, "Prompts");
 
     /// <inheritdoc/>

@@ -15,9 +15,11 @@ public sealed class FakePack(
     IReadOnlyDictionary<string, string>? prompts = null,
     IReadOnlyList<string>? requires = null,
     IReadOnlyList<IDataFeed>? feeds = null,
-    IReadOnlyList<IDataImport>? imports = null) : IAgentPack
+    IReadOnlyList<IDataImport>? imports = null,
+    bool comesBeforeTheEngine = false) : IAgentPack
 {
     public string Name => name;
+    public bool ComesBeforeTheEngine => comesBeforeTheEngine;
     public IReadOnlyList<PackToolset> Toolsets { get; } = toolsets ?? [Toolset(name, typeof(FakeShopTools), _ => [new FakeShopTools()])];
     public IFileProvider Prompts { get; } = new FakePrompts(prompts ?? new Dictionary<string, string> { [$"toolsets/{name}.md"] = $"# {name}\n\nA guide.\n" });
     public IReadOnlyList<string> Requires => requires ?? [];

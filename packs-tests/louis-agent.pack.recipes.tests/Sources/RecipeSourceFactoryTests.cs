@@ -1,5 +1,5 @@
 using LouisAgent.Composition.Web.Search;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Search;
 using LouisAgent.Packs.Recipes.Providers;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Sources.Sites;

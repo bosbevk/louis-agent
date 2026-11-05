@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Composition.Guardrails.Messages;
 using LouisAgent.Composition.Messages;
 using System.Net;

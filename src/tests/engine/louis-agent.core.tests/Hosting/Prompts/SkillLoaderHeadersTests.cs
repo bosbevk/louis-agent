@@ -33,7 +33,7 @@ public class SkillLoaderHeadersTests
         foreach (var level in Enum.GetValues<RoleLevel>())
             foreach (string role in RoleCatalog.Available(level))
                 foreach (string toolset in SkillLoader.ToolsetsOf(role, level))
-                    Assert.That(ToolsetCatalog.Find(ToolsetCatalog.NameOf(toolset)), Is.Not.Null,
+                    Assert.That(TestTools.Catalog.Toolsets.Any(t => t.Name == ToolsetCatalog.NameOf(toolset)), Is.True,
                         $"{role} names '{toolset}'");
     }
 

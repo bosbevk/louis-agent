@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Web;
 using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Recipes;
@@ -17,6 +18,7 @@ public class PulsPrompts
     public void Register() => SkillFileSource.Use(
     [
         new PulsIdentity().Prompts,
+        new WebPack().Prompts,
         TestTools.Pack.Prompts,
         new WhereToBuyPack().Prompts,
         new ShopPricesPack(new ShopPricesOptions()).Prompts,

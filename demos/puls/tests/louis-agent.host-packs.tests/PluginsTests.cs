@@ -7,7 +7,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Search;
 using LouisAgent.Identities.Puls;
 using Microsoft.Extensions.FileProviders;
 
@@ -29,7 +29,7 @@ public class PluginsTests
         Assert.That(puls.Packs.Select(p => p.Name),
             Is.EqualTo(new[]
             {
-                WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(), RecipesToolset.Recipes.Wire()
+                WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(), RecipesToolset.Recipes.Wire(), PackKind.Web.Wire()
             }),
             "Puls names the where-to-buy and shop-prices packs (F50.2) and the recipes pack (F35.2 step 1)");
 
@@ -126,7 +126,7 @@ public class PluginsTests
                 Is.EquivalentTo(new[]
                 {
                     WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
-                    RecipesToolset.Recipes.Wire()
+                    RecipesToolset.Recipes.Wire(), PackKind.Web.Wire()
                 }));
 
             // The cook's header names its three toolsets; with the browser given, the catalogue resolves them.

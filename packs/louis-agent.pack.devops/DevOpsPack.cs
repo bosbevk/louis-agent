@@ -21,6 +21,9 @@ public sealed class DevOpsPack(DevOpsOptions options) : IAgentPack
     ];
 
     /// <inheritdoc/>
+    public bool ComesBeforeTheEngine => true;
+
+    /// <inheritdoc/>
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(DevOpsPack).Assembly, "Prompts");
 
     /// <inheritdoc/>

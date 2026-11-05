@@ -95,7 +95,7 @@ public static partial class HtmlText
     }
 
     /// <summary>An inline fragment (a title, a snippet) as one line, tags gone and entities decoded.</summary>
-    internal static string CleanInline(string? html) =>
+    public static string CleanInline(string? html) =>
         Whitespace().Replace(WebUtility.HtmlDecode(Tag().Replace(html ?? "", "")), " ").Trim();
 
     /// <summary>
@@ -103,7 +103,7 @@ public static partial class HtmlText
     /// kilo can sit outside <c>main</c>, in a footer or a sidebar. Stripped with nothing between, a badge joins its
     /// price ("newr54.99"), which then isn't seen as a price (FX16, the PR #54 re-review).
     /// </summary>
-    internal static string TagsAsSpaces(string html) => Tag().Replace(ScriptOrStyle().Replace(html, " "), " ");
+    public static string TagsAsSpaces(string html) => Tag().Replace(ScriptOrStyle().Replace(html, " "), " ");
 
     [GeneratedRegex(@"<title[^>]*>(.*?)</title>", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex TitleTag();

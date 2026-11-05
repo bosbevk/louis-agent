@@ -25,7 +25,7 @@ public sealed class PulsIdentity : IAgentIdentity
     /// Where to buy and shop prices (F50.2) and the recipes (F35); CL16 adds <c>cooking</c>, later <c>places</c>.
     /// </summary>
     public IReadOnlyList<string> Packs =>
-        [PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire()];
+        [PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire()];
 }
 
 /// <summary>

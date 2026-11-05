@@ -39,7 +39,7 @@ public class SpecialistToolsKeptSessionTests
 
         string result;
         using (SubSessionRegistry.Use(registry))
-            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?",
+            result = await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "Wat kan ek vanaand kook?",
                 agent: "coder", role: SampleRole.Alpha);
 
         Assert.That(result, Does.StartWith("Fixed the null check; 14/14 tests pass."));
@@ -51,7 +51,7 @@ public class SpecialistToolsKeptSessionTests
         OpenSubSession open = registry.Open.Single();
         Assert.That((open.Handle, open.SessionId, open.Agent, open.Role),
             Is.EqualTo(("sub-1", "sess_child", "coder", SampleRole.Alpha)));
-        Assert.That(open.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
+        Assert.That(open.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
     }
 
     /// <summary>A start that failed isn't kept: it's deleted on the peer.</summary>
@@ -108,7 +108,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            await tools.StartSubSession([CoreToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder",
+            await tools.StartSubSession([TestToolset.Web.Wire()], "Wat kan ek vanaand kook?", agent: "coder",
                 role: SampleRole.Alpha);
             result = await tools.ContinueSubSession("sub-1", "Maak dit vir ses mense.");
         }
@@ -153,7 +153,7 @@ public class SpecialistToolsKeptSessionTests
 
         using (SubSessionRegistry.Use(registry))
             await ToolsOn(handler)
-                .StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: SampleRole.Alpha);
+                .StartSubSession([TestToolset.Web.Wire()], "x", agent: "coder", role: SampleRole.Alpha);
 
         Assert.That(registry.Open.Single().Role, Is.EqualTo(SampleRole.Alpha));
     }
@@ -169,7 +169,7 @@ public class SpecialistToolsKeptSessionTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder", role: SampleRole.Alpha);
+            await tools.StartSubSession([TestToolset.Web.Wire()], "x", agent: "coder", role: SampleRole.Alpha);
             int before = handler.Requests.Count;
             result = await tools.ContinueSubSession("sub-7", "y");
             Assert.That(handler.Requests, Has.Count.EqualTo(before));
@@ -217,7 +217,7 @@ public class SpecialistToolsKeptSessionTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder");
+            await tools.StartSubSession([TestToolset.Web.Wire()], "x", agent: "coder");
             result = await tools.ContinueSubSession("sub-1", "y");
         }
 
@@ -240,7 +240,7 @@ public class SpecialistToolsKeptSessionTests
         string result;
         using (SubSessionRegistry.Use(registry))
         {
-            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder");
+            await tools.StartSubSession([TestToolset.Web.Wire()], "x", agent: "coder");
             result = await tools.ContinueSubSession("sub-1", "y");
         }
 
@@ -260,7 +260,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
         using (UsageScope.Begin(session: "sess_parent", turn: 1))
         {
-            Assert.That(await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder"),
+            Assert.That(await tools.StartSubSession([TestToolset.Web.Wire()], "x", agent: "coder"),
                 Does.Not.StartWith("Error"));
             Assert.That(await tools.ContinueSubSession("sub-1", "y"), Does.Not.StartWith("Error"));
             Assert.That(await tools.ContinueSubSession("sub-1", "z"), Does.Not.StartWith("Error"));
@@ -284,7 +284,7 @@ public class SpecialistToolsKeptSessionTests
         using (SubSessionRegistry.Use(registry))
         using (SessionAttachments.Use(attached))
         {
-            await tools.StartSubSession([CoreToolset.Web.Wire()], "x", agent: "coder");
+            await tools.StartSubSession([TestToolset.Web.Wire()], "x", agent: "coder");
             await tools.ContinueSubSession("sub-1", "Hier is my lys.", attachments: ["lys.txt"]);
         }
 

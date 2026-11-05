@@ -11,6 +11,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\..\src\engine\louis-agent.core\louis-agent.core.csproj" />
     <!-- packs -->
+    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shell\louis-agent.pack.shell.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.files\louis-agent.pack.files.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.git\louis-agent.pack.git.csproj" />

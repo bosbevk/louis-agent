@@ -74,7 +74,7 @@ public class EngineCacheTests
         var cache = new EngineCache(16);
         var web = ProfileKey.Of(
         [
-            new ToolsetDefinition(CoreToolset.Web.Wire(), "a toolset", GuideFile: null, MissingSettings: _ => [],
+            new ToolsetDefinition(TestToolset.Web.Wire(), "a toolset", GuideFile: null, MissingSettings: _ => [],
                 CreateTools: _ => [])
         ], "cook", RoleLevel.Specialist, "ollama-puls", null);
 

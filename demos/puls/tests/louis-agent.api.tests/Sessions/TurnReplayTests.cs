@@ -26,7 +26,7 @@ public class TurnReplayTests
                     [new FunctionCallContent("call_1", "WhichTrial", new Dictionary<string, object?>())])),
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, [new TextContent("done")]))),
             TestPaths.Agent(), toolsets: [new WhichTrialTools()], usageSink: new ListUsageSink());
-        var session = new AgentSession("sess_replay", engine, [CoreToolset.Web.Wire()], 0, UsageTags.None,
+        var session = new AgentSession("sess_replay", engine, [TestToolset.Web.Wire()], 0, UsageTags.None,
             replay: replay);
         Assert.That(session.TryStartTurn(CancellationToken.None, out var turn), Is.True);
 

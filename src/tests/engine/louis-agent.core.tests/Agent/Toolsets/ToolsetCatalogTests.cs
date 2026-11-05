@@ -4,7 +4,7 @@ using LouisAgent.Testing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Core.Tests.Agent.Toolsets;
 
@@ -30,17 +30,16 @@ public class ToolsetCatalogTests
     {
         var shops = new ToolsetDefinition(SampleToolset.Beta, "a pack's", GuideFile: null, MissingSettings: _ => [],
             CreateTools: _ => [], ParallelSafe: true);
-        Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe).Select(t => t.Name),
-            Is.EquivalentTo(new[] { CoreToolset.Web.Wire() }));
-        Assert.That(ToolsetCatalog.RunsInParallel([ToolsetCatalog.Find(CoreToolset.Web.Wire())!, shops]), Is.True,
+        Assert.That(ToolsetCatalog.All.Where(t => t.ParallelSafe), Is.Empty, "core's own hand work on");
+        Assert.That(ToolsetCatalog.RunsInParallel([TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire()), shops]), Is.True,
             "the cook");
         Assert.That(
             ToolsetCatalog.RunsInParallel([
-                ToolsetCatalog.Find(CoreToolset.Specialists.Wire())!, ToolsetCatalog.Find(CoreToolset.Web.Wire())!
+                ToolsetCatalog.Find(CoreToolset.Specialists.Wire())!, TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire())
             ]), Is.False, "Puls");
         Assert.That(
             ToolsetCatalog.RunsInParallel([
-                ToolsetCatalog.Find(CoreToolset.Skills.Wire())!, ToolsetCatalog.Find(CoreToolset.Web.Wire())!
+                ToolsetCatalog.Find(CoreToolset.Skills.Wire())!, TestTools.Catalog.Toolsets.Single(t => t.Name == TestToolset.Web.Wire())
             ]), Is.False);
         Assert.That(ToolsetCatalog.RunsInParallel([]), Is.False, "no toolsets: the coding agent's default tools");
     }
@@ -73,25 +72,6 @@ public class ToolsetCatalogTests
         });
     }
 
-    [Test]
-    public async Task TheWebToolset_FetchesThroughTheContextsStore()
-    {
-        // F18 step 4b.3: ToolsetCatalog hands ctx.Replay to the fetcher. In a replay of a trial that fetched nothing, an address that
-        // cannot resolve is a recorded-run miss, not a lookup that fails.
-        string folder = Path.Combine(Path.GetTempPath(), "louis-replay-" + Guid.NewGuid().ToString("N"));
-        var context = new ToolsetContext(new AgentOptions(), new NoSearch(),
-            Replay: new LouisAgent.Core.Sessions.Replay.Store.ReplayStore(folder));
-        var web = (LouisAgent.Core.Tools.Web.WebTools)ToolsetCatalog
-            .BuildTools([ToolsetCatalog.Find(CoreToolset.Web.Wire())!], context)
-            .Single(t => t is LouisAgent.Core.Tools.Web.WebTools);
-
-        using (LouisAgent.Core.Sessions.Replay.SessionReplay.Use(
-                   new LouisAgent.Core.Sessions.Replay.SessionReplay(
-                       LouisAgent.Core.Sessions.Replay.WebReplayMode.Replay, "t", Model: false)))
-            Assert.That(await web.FetchUrl("https://no-such-host.invalid/page"),
-                Does.Contain("was not read in the recorded run"));
-    }
-
     private sealed class NoSearch : IWebSearchProvider
     {
         public string Name => "none";
@@ -106,26 +86,26 @@ public class ToolsetCatalogTests
     private static readonly ToolsetContext WithPeers = new(new AgentOptions { AgentPeers = new Dictionary<string, Uri> { ["coder"] = new("http://coder.test/") } }, new NoSearch());
 
     private static string[] Resolved(IEnumerable<string> names, ToolsetContext context) =>
-        ToolsetCatalog.Resolve(names, context).Select(t => t.Name).ToArray();
+        TestTools.Catalog.Resolve(names, context).Select(t => t.Name).ToArray();
 
     [Test]
     public void AnOptionalToolsetThisInstanceHas_Loads() =>
-        Assert.That(Resolved([CoreToolset.Web.Wire(), "specialists?"], WithPeers),
-            Is.EqualTo(new[] { CoreToolset.Web.Wire(), CoreToolset.Specialists.Wire() }));
+        Assert.That(Resolved([TestToolset.Web.Wire(), "specialists?"], WithPeers),
+            Is.EqualTo(new[] { TestToolset.Web.Wire(), CoreToolset.Specialists.Wire() }));
 
     [Test]
     public void AnOptionalToolsetThisInstanceLacks_IsSkipped() =>
-        Assert.That(Resolved([CoreToolset.Web.Wire(), "specialists?"], WithoutPeers),
-            Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
+        Assert.That(Resolved([TestToolset.Web.Wire(), "specialists?"], WithoutPeers),
+            Is.EqualTo(new[] { TestToolset.Web.Wire() }));
 
     [Test]
     public void ARequiredToolsetThisInstanceLacks_IsStillRefused() =>
-        Assert.That(() => Resolved([CoreToolset.Web.Wire(), CoreToolset.Specialists.Wire()], WithoutPeers),
+        Assert.That(() => Resolved([TestToolset.Web.Wire(), CoreToolset.Specialists.Wire()], WithoutPeers),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("AGENT_PEERS"));
 
     [Test]
     public void AnUnknownName_IsRefused_EvenOptional() =>
-        Assert.That(() => Resolved([CoreToolset.Web.Wire(), "shop?"], WithPeers),
+        Assert.That(() => Resolved([TestToolset.Web.Wire(), "shop?"], WithPeers),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("shop").And.Message.Contain("Valid names"));
 
     [TestCase(new[] { SampleToolset.Beta + "?", " " + SampleToolset.Beta + "? " }, new[] { SampleToolset.Beta + "?" })]

@@ -9,10 +9,6 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Tools.Agents;
-using LouisAgent.Core.Tools.Currency;
-using LouisAgent.Core.Tools.Web;
-using LouisAgent.Core.Tools.Web.Fetching;
-using LouisAgent.Core.Tools.Web.Quotes;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent.Toolsets;
@@ -27,22 +23,6 @@ public static class ToolsetCatalog
     /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
-        new(CoreToolset.Web.Wire(), "Search the web and fetch web pages",
-            GuideFile: SkillFiles.Guide(CoreToolset.Web.Wire()),
-            MissingSettings: _ => [],
-            // S (CL15): three classes (finding and reading, a quote's provenance, currency); one guarded fetcher for the two that fetch.
-            ToolTypes: [typeof(WebTools), typeof(QuoteTools), typeof(CurrencyTools)],
-            CreateTools: ctx =>
-            {
-                var fetcher = new PageFetcher(replay: ctx.Replay, robots: ctx.Robots);
-                return
-                [
-                    new WebTools(ctx.WebSearch, fetcher, ctx.Renderer), new QuoteTools(fetcher, ctx.Renderer),
-                    new CurrencyTools(ctx.Rates)
-                ];
-            },
-            ParallelSafe: true),
-
         new(CoreToolset.Specialists.Wire(),
             "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
             GuideFile: SkillFiles.Guide(CoreToolset.Specialists.Wire()),

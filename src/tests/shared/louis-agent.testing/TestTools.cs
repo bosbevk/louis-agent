@@ -16,6 +16,7 @@ public enum TestToolset
     Python,
     PowerShell,
     Bash,
+    Web,
 }
 
 /// <summary>
@@ -46,10 +47,23 @@ public static class TestTools
             [$"toolsets/{TestToolset.Python.Wire()}.md"] = "# Python Skills\n\nRuns Python.",
             [$"toolsets/{TestToolset.PowerShell.Wire()}.md"] = "# PowerShell Skills\n\nRuns PowerShell.",
             [$"toolsets/{TestToolset.Bash.Wire()}.md"] = "# Bash Skills\n\nRuns bash.",
-        });
+        }, comesBeforeTheEngine: true);
 
-    /// <summary>A catalogue holding it, and what core has.</summary>
-    public static AgentCatalog Catalog { get; } = new([], [Pack]);
+    /// <summary>A fake pack named as the real web pack is, for a test whose identity names it.</summary>
+    public static FakePack WebPack { get; } = new(TestToolset.Web.Wire(),
+        [
+            FakePack.Toolset(TestToolset.Web.Wire(), typeof(FakeWebTools), _ => [new FakeWebTools()]) with
+            {
+                ParallelSafe = true,
+            },
+        ],
+        new Dictionary<string, string>
+        {
+            [$"toolsets/{TestToolset.Web.Wire()}.md"] = "# Web Skills\n\nSearches and reads.",
+        }, comesBeforeTheEngine: true);
+
+    /// <summary>A catalogue holding them, and what core has.</summary>
+    public static AgentCatalog Catalog { get; } = new([], [Pack, WebPack]);
 }
 
 /// <summary>The fake dotnet toolset.</summary>
@@ -108,4 +122,16 @@ public sealed class FakeBashTools
     /// <summary>Pretends to run.</summary>
     [Description("Runs bash.")]
     public string BashRun() => "ran";
+}
+
+/// <summary>The fake web toolset.</summary>
+public sealed class FakeWebTools
+{
+    /// <summary>Pretends to fetch.</summary>
+    [Description("Fetches a page.")]
+    public string FetchUrl([Description("Its address")] string url) => $"the page at {url}";
+
+    /// <summary>Pretends to render, as a second tool a minion can be handed.</summary>
+    [Description("Reads a page a browser has to draw.")]
+    public string ReadRenderedPage([Description("Its address")] string url) => $"the drawn page at {url}";
 }

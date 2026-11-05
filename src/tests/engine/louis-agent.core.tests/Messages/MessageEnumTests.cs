@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Messages;
 using LouisAgent.Core.Config;
 using LouisAgent.Composition.Guardrails.Messages;
 using LouisAgent.Composition.Messages;
@@ -32,7 +33,7 @@ public class MessageEnumTests
             Is.EquivalentTo(new[]
             {
                 "AgentErrorMessage", "AgentLogMessage", "AgentToolMessage", "ClockToolMessage",
-                "ConfigErrorMessage", "ConfigLogMessage", "CurrencyToolMessage",
+                "ConfigErrorMessage", "ConfigLogMessage",
                 "ErrorMessage",
                 "GuardrailErrorMessage", "GuardrailToolMessage", "HostingErrorMessage", "HostingLogMessage",
                 "LlmErrorMessage", "LoggingErrorMessage", "LoggingLogMessage",

@@ -19,12 +19,12 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Replay;
-using LouisAgent.Core.Tools.Web.Fetching;
-using LouisAgent.Core.Tools.Web.Robots;
+using LouisAgent.Core.Web.Browsing;
+using LouisAgent.Core.Web.Replay;
+using LouisAgent.Core.Web.Fetching;
+using LouisAgent.Core.Web.Robots;
 using LouisAgent.Core.Sessions.Replay.Store;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Search;
 using LouisAgent.Core.Hosting.Messages;
 
 namespace LouisAgent.Core.Hosting;

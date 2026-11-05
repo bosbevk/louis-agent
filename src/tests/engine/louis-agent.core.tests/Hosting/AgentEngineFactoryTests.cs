@@ -8,8 +8,8 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Tests.Tools.Web.Replay;
-using LouisAgent.Core.Tools.Web.Replay;
+using LouisAgent.Core.Tests.Web.Replay;
+using LouisAgent.Core.Web.Replay;
 
 namespace LouisAgent.Core.Tests.Hosting;
 
@@ -43,7 +43,7 @@ public class AgentEngineFactoryTests
     {
         var options = Options();
         options.RolesEnabled = enabled;
-        return new AgentEngineFactory(new FakeChatClient(), options);
+        return new AgentEngineFactory(new FakeChatClient(), options, catalog: TestTools.Catalog);
     }
 
     /// <summary>Only the enabled roles are offered, per level, and one that isn't is refused before a build.</summary>
@@ -60,13 +60,13 @@ public class AgentEngineFactoryTests
             "another role is refused");
 
         var refused = Assert.Throws<LouisAgent.Core.Skills.Roles.RoleException>(() =>
-            factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-other", RoleLevel.Specialist))!;
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-other", RoleLevel.Specialist))!;
         Assert.That(refused.Message, Does.Contain("testprod-other").And.EndWith("Available: testprod-specialist."),
             "named as unknown, with what's on");
         Assert.That(factory.Profiles, Is.Empty, "refused before anything is built");
 
         Assert.That(
-            factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-specialist", RoleLevel.Specialist)
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-specialist", RoleLevel.Specialist)
                 .SkillDocumentation, Does.Contain("Never invent a fact"));
     }
 
@@ -79,8 +79,8 @@ public class AgentEngineFactoryTests
     {
         var factory = FactoryEnabling(["testprod-specialist"]);
 
-        var specialist = factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-specialist", RoleLevel.Specialist);
-        var mode = factory.GetOrCreate([CoreToolset.Web.Wire()]);
+        var specialist = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-specialist", RoleLevel.Specialist);
+        var mode = factory.GetOrCreate([TestToolset.Web.Wire()]);
 
         Assert.That((specialist.Name, mode.Name), Is.EqualTo(("testprod-specialist", factory.DefaultVoice)));
     }
@@ -423,7 +423,7 @@ public class AgentEngineFactoryTests
         // follow.
         var factory = Factory();
 
-        var minion = factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
+        var minion = factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
             tool: "FetchUrl");
 
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }),
@@ -433,10 +433,10 @@ public class AgentEngineFactoryTests
             .And.Not.Contain("# Web Skills").And.Not.Contain("# Louis Agent - Default Instructions"));
         Assert.That(factory.Profiles, Is.EqualTo(new[] { "web|testprod-minion-lookup|minion|tool:FetchUrl" }));
         Assert.That(
-            factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl"),
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion, tool: "FetchUrl"),
             Is.SameAs(minion));
         Assert.That(
-            factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
                 tool: "ReadRenderedPage"), Is.Not.SameAs(minion),
             "the tool is part of the key");
     }
@@ -448,10 +448,10 @@ public class AgentEngineFactoryTests
         var factory = Factory();
 
         var ex = Assert.Throws<ToolsetException>(() =>
-            factory.GetOrCreate([CoreToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
+            factory.GetOrCreate([TestToolset.Web.Wire()], "testprod-minion-lookup", RoleLevel.Minion,
                 tool: "ReadWorkspaceFile"))!;
 
-        Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain(CoreToolset.Web.Wire()));
+        Assert.That(ex.Message, Does.Contain("ReadWorkspaceFile").And.Contain(TestToolset.Web.Wire()));
         Assert.That(factory.Profiles, Is.Empty);
     }
 }

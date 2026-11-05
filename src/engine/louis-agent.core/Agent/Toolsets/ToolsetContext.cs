@@ -1,13 +1,17 @@
+using LouisAgent.Composition.Web.Fetching;
+using LouisAgent.Composition.Web.Rendering;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Composition.Web.Search;
 using LouisAgent.Composition.Web.Browsing;
+using LouisAgent.Composition.Pricing;
 using LouisAgent.Core.Pricing.Rates;
+using LouisAgent.Core.Web.Fetching;
 using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Tools.Web.Search;
-using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Rendering;
-using LouisAgent.Core.Tools.Web.Robots;
+using LouisAgent.Core.Web.Search;
+using LouisAgent.Core.Web.Browsing;
+using LouisAgent.Core.Web.Rendering;
+using LouisAgent.Core.Web.Robots;
 using LouisAgent.Core.Sessions.Replay.Store;
 
 namespace LouisAgent.Core.Agent.Toolsets;
@@ -36,6 +40,11 @@ public sealed record ToolsetContext(
     /// </summary>
     /// <inheritdoc/>
     public string WorkspaceRoot => Options.WorkspaceRoot;
+
+    public ICurrencyRates? CurrencyRates => Rates;
+
+    /// <inheritdoc/>
+    public IPageFetcher NewFetcher() => new PageFetcher(replay: Replay, robots: Robots);
 
     public IPageRenderer Renderer => PageRenderer ?? PageRendererFactory.Create(Options, browser: Browser);
 

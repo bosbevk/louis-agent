@@ -48,7 +48,11 @@ public sealed class AgentCatalog
         CheckUnique(identities.Select(i => i.Name), "identity");
         CheckUnique(packs.Select(p => p.Name), "pack");
 
-        Toolsets = ToolsetCatalog.All.Concat(packs.SelectMany(p => p.Toolsets).Select(ToolsetDefinition.Of)).ToList();
+        // General tools, the engine's, then a product's: a pack's place says which (see ComesBeforeTheEngine).
+        Toolsets = packs.Where(p => p.ComesBeforeTheEngine).SelectMany(p => p.Toolsets).Select(ToolsetDefinition.Of)
+            .Concat(ToolsetCatalog.All)
+            .Concat(packs.Where(p => !p.ComesBeforeTheEngine).SelectMany(p => p.Toolsets).Select(ToolsetDefinition.Of))
+            .ToList();
         CheckUnique(Toolsets.Select(t => t.Name), "toolset");
 
         var registered = packs.Select(p => p.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);

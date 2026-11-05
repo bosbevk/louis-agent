@@ -36,6 +36,9 @@ public sealed class GitPack : IAgentPack
     ];
 
     /// <inheritdoc/>
+    public bool ComesBeforeTheEngine => true;
+
+    /// <inheritdoc/>
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(GitPack).Assembly, "Prompts");
 
     /// <inheritdoc/>

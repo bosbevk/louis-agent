@@ -30,6 +30,12 @@ public interface IAgentPack
     IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <summary>
+    /// Whether its toolsets come before the engine's own in a session's tools and prompt. The order is part of the
+    /// prefix the model's cache keys on, so it stays fixed: general tools first, then the engine's, then a product's.
+    /// </summary>
+    bool ComesBeforeTheEngine => false;
+
+    /// <summary>
     /// Its guides (<c>toolsets/{name}.md</c>) and, from CL16, its roles (the cook); over MCP only its tools convert, and a
     /// role runs with the identity that loads it (ADR 0028, rule 8).
     /// </summary>

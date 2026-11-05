@@ -22,7 +22,7 @@ public class TurnFailureKindTests
     {
         var engine = new AgentEngine(new CompositeSkillProvider(), new FakeChatClient(_ => throw thrown),
             TestPaths.Agent(), toolsets: [], usageSink: new ListUsageSink());
-        var session = new AgentSession("sess_fail", engine, [CoreToolset.Web.Wire()], 0, UsageTags.None);
+        var session = new AgentSession("sess_fail", engine, [TestToolset.Web.Wire()], 0, UsageTags.None);
         Assert.That(session.TryStartTurn(CancellationToken.None, out var turn), Is.True);
 
         var written = new List<string>();

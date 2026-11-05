@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Web;
 using LouisAgent.Identities.Puls;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Choices;
@@ -40,7 +41,7 @@ public class AgentSessionsTests
     /// </summary>
     private static AgentCatalog PulsCatalog() =>
         new([new PulsIdentity()],
-        [TestTools.Pack,
+        [new WebPack(), TestTools.Pack,
             new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
             new FakePack(OffPack, [FakePack.Toolset(OffPack, typeof(FakeShopTools), _ => [new FakeShopTools()]) with
             {
@@ -142,9 +143,9 @@ public class AgentSessionsTests
     {
         // F33 step 4: a parent may hand an optional toolset; here its pack misses its setting, so the session gets
         // the web alone.
-        var session = Sessions().Create([CoreToolset.Web.Wire(), OffPack + "?"], depth: 1);
+        var session = Sessions().Create([TestToolset.Web.Wire(), OffPack + "?"], depth: 1);
 
-        Assert.That(session.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
+        Assert.That(session.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(session), Does.Contain("WebSearch").And.Not.Contain("FindProducts"));
     }
 
@@ -157,11 +158,11 @@ public class AgentSessionsTests
     {
         // F35.2 step 1 and F50.2: the cook's header names its recipes and both packs' toolsets, so they come with the
         // role, beside what Puls passed.
-        var cook = Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = Sessions().Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
         Assert.That(cook.Toolsets, Is.EquivalentTo(new[]
         {
-            CoreToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
+            TestToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
             ShopPricesToolset.ShopPrices.Wire()
         }));
         Assert.That(Names(cook), Does.Contain("FindBranches").And.Contain("EstimatePrices").And.Contain("WebSearch"));
@@ -274,11 +275,11 @@ public class AgentSessionsTests
         var sessions = Sessions();
 
         Assert.Throws<RoleException>(() =>
-            sessions.Create([CoreToolset.Web.Wire()], role: PulsRole.Cook.Wire()));
+            sessions.Create([TestToolset.Web.Wire()], role: PulsRole.Cook.Wire()));
         Assert.Throws<RoleException>(() =>
-            sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: "puls/voice-af"));
-        Assert.That(sessions.Create([CoreToolset.Web.Wire()], role: "puls/voice-af").Role, Is.EqualTo("puls/voice-af"));
-        Assert.That(sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
+            sessions.Create([TestToolset.Web.Wire()], depth: 1, role: "puls/voice-af"));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], role: "puls/voice-af").Role, Is.EqualTo("puls/voice-af"));
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
             Is.EqualTo(PulsRole.Cook.Wire()));
     }
 
@@ -356,7 +357,7 @@ public class AgentSessionsTests
     [Test]
     public void TheSessionJson_SaysRole_NotPersonality()
     {
-        var cook = Sessions().Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = Sessions().Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
         Assert.That(Json(SessionCreatedReply.Of(cook)),
             Does.Contain("\"role\":\"puls-cook\"").And.Not.Contain("personality"));
@@ -404,7 +405,7 @@ public class AgentSessionsTests
     /// was closed.
     /// </summary>
     private static LouisAgent.Core.Sessions.SubSessions.OpenSubSession Kept(string sessionId, List<string> closed) =>
-        new(new Uri("http://puls-agent/"), sessionId, "puls-agent", [CoreToolset.Web.Wire()], PulsRole.Cook.Wire(),
+        new(new Uri("http://puls-agent/"), sessionId, "puls-agent", [TestToolset.Web.Wire()], PulsRole.Cook.Wire(),
             () =>
             {
                 closed.Add(sessionId);
@@ -458,13 +459,13 @@ public class AgentSessionsTests
         // only.
         var sessions = Sessions();
 
-        var unnamed = sessions.Create([CoreToolset.Web.Wire()], depth: 1);
+        var unnamed = sessions.Create([TestToolset.Web.Wire()], depth: 1);
         Assert.That(unnamed.Role, Is.Null);
         Assert.That(unnamed.Engine.SkillDocumentation,
             Does.Contain("Louis's Minion").And.Not.Contain("# Louis Agent - Default Instructions"));
-        Assert.That(sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
+        Assert.That(sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire()).Role,
             Is.EqualTo(PulsRole.Cook.Wire()));
-        Assert.That(sessions.Create([CoreToolset.Web.Wire()]).Role, Is.Null,
+        Assert.That(sessions.Create([TestToolset.Web.Wire()]).Role, Is.Null,
             "a top-level session that names none gets the default voice");
     }
 
@@ -477,8 +478,8 @@ public class AgentSessionsTests
         // F30: a price lookup runs on the local model, the chat that asked for it on the instance's.
         var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
 
-        var local = sessions.Create([CoreToolset.Web.Wire()], depth: 1, llm: "ollama-puls");
-        var own = sessions.Create([CoreToolset.Web.Wire()], depth: 1);
+        var local = sessions.Create([TestToolset.Web.Wire()], depth: 1, llm: "ollama-puls");
+        var own = sessions.Create([TestToolset.Web.Wire()], depth: 1);
 
         Assert.That(local.Llm, Is.EqualTo("ollama-puls"));
         Assert.That(own.Llm, Is.Null);
@@ -493,7 +494,7 @@ public class AgentSessionsTests
     {
         var sessions = Sessions([new SessionLlm("ollama-puls", new NoModel())]);
 
-        var ex = Assert.Throws<SessionLlmException>(() => sessions.Create([CoreToolset.Web.Wire()], llm: "gpt-9"));
+        var ex = Assert.Throws<SessionLlmException>(() => sessions.Create([TestToolset.Web.Wire()], llm: "gpt-9"));
         Assert.That(ex!.Message, Does.Contain("gpt-9").And.Contain("ollama-puls"));
     }
 
@@ -511,9 +512,9 @@ public class AgentSessionsTests
         // F30 step 4: a specialist hands a minion one task and one of its own tools; the peer checks the tool against
         // the parent session it finds here (minions run on the specialist's own instance).
         var sessions = Sessions();
-        var cook = sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
-        var minion = sessions.Create([CoreToolset.Web.Wire()], ParentOf(cook), depth: 2,
+        var minion = sessions.Create([TestToolset.Web.Wire()], ParentOf(cook), depth: 2,
             role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl");
 
         Assert.That(minion.Depth, Is.EqualTo(2));
@@ -535,11 +536,11 @@ public class AgentSessionsTests
         // the only list (Louis: "the specialist must give him its tools"); delegation and self-extension never go down.
         var sessions = Sessions();
         var withFiles = sessions.Create([TestToolset.Files.Wire()], depth: 1, role: PulsRole.Cook.Wire());
-        var withWeb = sessions.Create([CoreToolset.Web.Wire(), TestToolset.Files.Wire()], depth: 1,
+        var withWeb = sessions.Create([TestToolset.Web.Wire(), TestToolset.Files.Wire()], depth: 1,
             role: PulsRole.Cook.Wire());
 
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], ParentOf(withFiles), depth: 2,
+            () => sessions.Create([TestToolset.Web.Wire()], ParentOf(withFiles), depth: 2,
                 role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent session has no 'FetchUrl'"));
         Assert.That(
@@ -559,36 +560,36 @@ public class AgentSessionsTests
     public void AMinion_NeedsAParentItCanFind_AMinionRole_AndATool_AndNothingDeeper()
     {
         var sessions = Sessions();
-        var cook = sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
         var parent = ParentOf(cook);
 
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], depth: 2, role: PulsRole.MinionWebPriceLookup.Wire(),
+            () => sessions.Create([TestToolset.Web.Wire()], depth: 2, role: PulsRole.MinionWebPriceLookup.Wire(),
                 tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("parent"), "no parent");
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], new UsageTags(null, null, null, "sess_gone#1"), depth: 2,
+            () => sessions.Create([TestToolset.Web.Wire()], new UsageTags(null, null, null, "sess_gone#1"), depth: 2,
                 role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("sess_gone"), "a parent it can't find");
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2, role: PulsRole.Cook.Wire(),
+            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: PulsRole.Cook.Wire(),
                 tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "a specialist's role is no minion role");
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2, role: "puls-minion", tool: "FetchUrl"),
+            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, role: "puls-minion", tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "the base is no role");
-        Assert.That(() => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2, tool: "FetchUrl"),
+        Assert.That(() => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2, tool: "FetchUrl"),
             Throws.TypeOf<RoleException>(), "a minion always has a role");
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 2,
+            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 2,
                 role: PulsRole.MinionWebPriceLookup.Wire()),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"), "a minion always has its one tool");
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire(), tool: "FetchUrl"),
+            () => sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire(), tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("'tool'"),
             "a specialist loads toolsets, not a tool");
         Assert.That(
-            () => sessions.Create([CoreToolset.Web.Wire()], parent, depth: 3,
+            () => sessions.Create([TestToolset.Web.Wire()], parent, depth: 3,
                 role: PulsRole.MinionWebPriceLookup.Wire(), tool: "FetchUrl"),
             Throws.TypeOf<ToolsetException>().With.Message.Contain("between 0 and 2"), "a minion never delegates");
     }
@@ -602,11 +603,11 @@ public class AgentSessionsTests
         // F30 step 5: StartMinion sends no toolsets, only the tool; the peer finds the toolset that builds it. The
         // minions toolset is a specialist's: never the chat's (level 0), never a minion's (the end of the tree).
         var sessions = Sessions();
-        var cook = sessions.Create([CoreToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
+        var cook = sessions.Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
         var minion = sessions.Create(null, ParentOf(cook), depth: 2, role: PulsRole.MinionWebPriceLookup.Wire(),
             tool: "FetchUrl");
-        Assert.That(minion.Toolsets, Is.EqualTo(new[] { CoreToolset.Web.Wire() }));
+        Assert.That(minion.Toolsets, Is.EqualTo(new[] { TestToolset.Web.Wire() }));
         Assert.That(Names(minion), Is.EqualTo(new[] { "FetchUrl" }));
 
         Assert.That(() => sessions.Create([CoreToolset.Minions.Wire()]),

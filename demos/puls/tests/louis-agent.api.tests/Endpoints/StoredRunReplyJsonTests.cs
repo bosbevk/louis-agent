@@ -77,7 +77,7 @@ public class StoredRunReplyJsonTests
         await store.SaveRunAsync(new Run("run_1", SampleEval.Beta, 1, EvalRunStatus.Done, At, At.AddMinutes(5),
             0, new Dictionary<string, string> { ["WEB"] = "record" },
             [
-                new Mode(SampleMode.Beta, 1, [CoreToolset.Web.Wire()], SampleRole.Alpha, "haiku",
+                new Mode(SampleMode.Beta, 1, [TestToolset.Web.Wire()], SampleRole.Alpha, "haiku",
                     new ModeRates(0.5, 0.25, 2, 0, 1))
             ],
             new Total(1.25m, "USD", 1200, 4), ["started"], Eval: SampleEval.Beta, EvalVersion: 3, Commit: "abc1234",

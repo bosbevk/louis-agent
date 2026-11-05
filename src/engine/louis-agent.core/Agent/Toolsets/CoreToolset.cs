@@ -7,7 +7,6 @@ namespace LouisAgent.Core.Agent.Toolsets;
 /// </summary>
 public enum CoreToolset
 {
-    Web,
     Specialists,
     Minions,
     Skills,

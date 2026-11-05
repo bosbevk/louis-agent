@@ -35,6 +35,9 @@ public sealed class FilesPack : IAgentPack
     ];
 
     /// <inheritdoc/>
+    public bool ComesBeforeTheEngine => true;
+
+    /// <inheritdoc/>
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(FilesPack).Assembly, "Prompts");
 
     /// <inheritdoc/>

@@ -2,7 +2,7 @@ using LouisAgent.Composition.Web.Search;
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Tools.Web.Browsing;
+using LouisAgent.Core.Web.Browsing;
 
 namespace LouisAgent.Core.Tests.Agent.Toolsets;
 

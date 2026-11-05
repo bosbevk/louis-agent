@@ -10,6 +10,7 @@ using LouisAgent.Packs.DotNet;
 using LouisAgent.Packs.Git;
 using LouisAgent.Packs.Files;
 using LouisAgent.Packs.Shell;
+using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
@@ -73,6 +74,7 @@ public static class Plugins
         PackKind.Git => new GitPack(),
         PackKind.Files => new FilesPack(),
         PackKind.Shell => new ShellPack(),
+        PackKind.Web => new WebPack(),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 

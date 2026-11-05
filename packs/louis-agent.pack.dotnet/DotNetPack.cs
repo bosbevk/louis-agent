@@ -21,6 +21,9 @@ public sealed class DotNetPack : IAgentPack
     ];
 
     /// <inheritdoc/>
+    public bool ComesBeforeTheEngine => true;
+
+    /// <inheritdoc/>
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(DotNetPack).Assembly, "Prompts");
 
     /// <inheritdoc/>

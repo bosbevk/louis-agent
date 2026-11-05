@@ -1,4 +1,7 @@
+using LouisAgent.Composition.Pricing;
 using LouisAgent.Composition.Web.Browsing;
+using LouisAgent.Composition.Web.Fetching;
+using LouisAgent.Composition.Web.Rendering;
 using LouisAgent.Composition.Web.Search;
 
 namespace LouisAgent.Composition.Packs;
@@ -20,4 +23,13 @@ public interface IPackContext
 
     /// <summary>The web search this instance uses.</summary>
     IWebSearchProvider WebSearch { get; }
+
+    /// <summary>What reads a page a browser has to draw; one that says so when this instance has none.</summary>
+    IPageRenderer Renderer { get; }
+
+    /// <summary>The day's exchange rates, when this instance loaded some.</summary>
+    ICurrencyRates? CurrencyRates { get; }
+
+    /// <summary>A fetcher with the engine's guards around it. One per toolset, shared by its tools.</summary>
+    IPageFetcher NewFetcher();
 }

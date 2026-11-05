@@ -178,7 +178,7 @@ public class DelegationTests
         var delegation = Delegation.From(block)!;
 
         Assert.That(delegation.Role, Is.EqualTo(SessionStreamFixture.CookRole));
-        Assert.That(delegation.Toolsets, Does.Contain(CoreToolset.Web.Wire()), "the recorded turn is Puls's own");
+        Assert.That(delegation.Toolsets, Does.Contain(TestToolset.Web.Wire()), "the recorded turn is Puls's own");
         Assert.That(delegation.Answer, Is.Not.Null.And.Not.Empty.And.Not.Contain("[Sub-session"));
         Assert.That(block.SubTurn?.Usage?.Requests, Is.GreaterThan(0), "the cook's own events carry what it used");
         Assert.That(delegation.Failed, Is.False);

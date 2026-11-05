@@ -116,7 +116,7 @@ public class SkillLoaderTests
                 SkillLoader.Load(options, Toolsets(TestToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
                 Does.Contain("# Greeting Skills"));
             Assert.That(
-                SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()))
+                SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), TestToolset.Web.Wire()))
                     .Documentation, Does.Not.Contain("# Greeting Skills"));
         }
         finally

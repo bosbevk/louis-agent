@@ -12,4 +12,5 @@ public enum PulsPack
     [WireName("where-to-buy")] WhereToBuy,
     [WireName("shop-prices")] ShopPrices,
     [WireName("recipes")] Recipes,
+    [WireName("web")] Web,
 }

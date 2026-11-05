@@ -15,7 +15,7 @@ using System.Text.Json;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Tools.Agents;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Core.Tests.Tools.Agents;
 
@@ -438,7 +438,7 @@ public class MinionToolsTests
         Assert.That(minions.MissingSettings(without), Is.EqualTo(new[] { "AGENT_PEERS", "MINION_LLMS" }));
         Assert.That(minions.IsAvailable(with), Is.True);
         Assert.That(minions.GuideFile, Is.EqualTo("toolsets/minions.md"));
-        Assert.That(AgentCatalog.CoreOnly.ToolsetOf("FetchUrl"), Is.EqualTo(CoreToolset.Web.Wire()));
+        Assert.That(TestTools.Catalog.ToolsetOf("FetchUrl"), Is.EqualTo(TestToolset.Web.Wire()));
         Assert.That(TestTools.Catalog.ToolsetOf("ReadWorkspaceFile"), Is.EqualTo(TestToolset.Files.Wire()));
         Assert.That(AgentCatalog.CoreOnly.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
     }

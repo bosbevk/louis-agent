@@ -2,6 +2,7 @@ using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Packs.DevOps;
+using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Shell;
 using LouisAgent.Packs.Files;
 using LouisAgent.Packs.Git;
@@ -26,7 +27,10 @@ public static class CodingCatalog
 
     /// <summary>The same list with the settings given, so the golden files hold it without this machine's keys.</summary>
     public static IReadOnlyList<IAgentPack> Packs(PaymoOptions paymo, DevOpsOptions devOps) =>
-        [new DotNetPack(), new GitPack(), new FilesPack(), new ShellPack(), new PaymoPack(paymo), new DevOpsPack(devOps)];
+        [
+            new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
+            new DevOpsPack(devOps),
+        ];
 
     /// <summary>The catalogue a program hands to its host.</summary>
     public static AgentCatalog Create() => new([], Packs());

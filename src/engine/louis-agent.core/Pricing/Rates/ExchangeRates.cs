@@ -1,5 +1,6 @@
 
 using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Pricing;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
@@ -15,7 +16,7 @@ namespace LouisAgent.Core.Pricing.Rates;
 /// tracked <c>config/rates.json</c> and louis-agent.api's <c>GET /v1/rates</c> are in it already.
 /// </summary>
 /// <remarks>Costs are only converted for display: the ledger keeps what was charged, in the price table's currency.</remarks>
-public sealed partial class ExchangeRates
+public sealed partial class ExchangeRates : ICurrencyRates
 {
     /// <summary>
     /// The format's JSON names (snake_case), comments and trailing commas allowed like the price table's; a property
@@ -46,6 +47,9 @@ public sealed partial class ExchangeRates
 
     /// <summary>No rates: costs are shown in the price table's currency.</summary>
     public static ExchangeRates Empty { get; } = new();
+
+    /// <inheritdoc/>
+    IReadOnlyDictionary<string, decimal> ICurrencyRates.Rates => Rates;
 
     [JsonIgnore] public bool IsEmpty => Rates.Count == 0;
 

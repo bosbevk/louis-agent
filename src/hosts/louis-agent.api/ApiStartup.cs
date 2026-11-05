@@ -20,8 +20,8 @@ using LouisAgent.Core.Guardrails.Auth;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Web.Rendering;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Rendering;
+using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Api;
 

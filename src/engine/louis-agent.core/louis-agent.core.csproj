@@ -20,6 +20,7 @@
 
   <ItemGroup>
       <InternalsVisibleTo Include="louis-agent.core.tests" />
+    <InternalsVisibleTo Include="louis-agent.pack.web.tests" />
       <InternalsVisibleTo Include="louis-agent.coding-catalog.tests" />
       <InternalsVisibleTo Include="louis-agent.core.integration-tests" />
       <!-- The API's file browser applies the same workspace and secret-file rules as the agent's tools. -->

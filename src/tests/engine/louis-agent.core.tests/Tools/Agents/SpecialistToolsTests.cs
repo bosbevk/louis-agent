@@ -79,7 +79,7 @@ public class SpecialistToolsTests
     {
         // A kept sub-session needs the chat's registry; without one it is closed after its answer.
         using IDisposable? registry = kept ? SubSessionRegistry.Use(new SubSessionRegistry()) : null;
-        return await ToolsOn(Peer(Replies(stream))).StartSubSession([CoreToolset.Web.Wire()], "Wat kook ek?",
+        return await ToolsOn(Peer(Replies(stream))).StartSubSession([TestToolset.Web.Wire()], "Wat kook ek?",
             agent: "coder");
     }
 
@@ -106,7 +106,7 @@ public class SpecialistToolsTests
 
         string result;
         using (SubSessionRegistry.Use(registry))
-            result = await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Wat kook ek?", agent: "coder",
+            result = await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "Wat kook ek?", agent: "coder",
                 role: SampleRole.Alpha);
 
         Assert.That(result,
@@ -214,7 +214,7 @@ public class SpecialistToolsTests
 
         using (UserPlace.Use(new UserPlace("Pretoria, Gauteng, Suid-Afrika", "Africa/Johannesburg")))
             await ToolsOn(handler)
-                .StartSubSession([CoreToolset.Web.Wire()], "Watter restaurante is naby?", agent: "coder");
+                .StartSubSession([TestToolset.Web.Wire()], "Watter restaurante is naby?", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(create.RootElement.GetProperty("location").GetString(),
@@ -234,7 +234,7 @@ public class SpecialistToolsTests
         var handler = Peer();
 
         using (SessionReplay.Use(new SessionReplay(mode, SampleMode.Fill("run_1:<ModeBeta>:1/bobotie"), Model: false)))
-            await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Maak 'n bobotie.", agent: "coder");
+            await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "Maak 'n bobotie.", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         var replay = create.RootElement.GetProperty("replay");
@@ -249,7 +249,7 @@ public class SpecialistToolsTests
     {
         var handler = Peer();
 
-        await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Maak 'n bobotie.", agent: "coder");
+        await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "Maak 'n bobotie.", agent: "coder");
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
         Assert.That(
@@ -264,7 +264,7 @@ public class SpecialistToolsTests
         // F21: the specialist's role (its function) is the role its session opens with (CL14: the body says role).
         var handler = Peer();
 
-        await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "What's new in .NET 10?", agent: "coder",
+        await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "What's new in .NET 10?", agent: "coder",
             role: SampleRole.Beta);
 
         using var create = JsonDocument.Parse(handler.Requests[0].Body!);
@@ -278,7 +278,7 @@ public class SpecialistToolsTests
         // F30: the price lookup names the peer's local model; the peer refuses a profile it doesn't offer.
         var handler = Peer();
 
-        await ToolsOn(handler).StartSubSession([CoreToolset.Web.Wire()], "Prys van 1 kg uie in Stellenbosch?",
+        await ToolsOn(handler).StartSubSession([TestToolset.Web.Wire()], "Prys van 1 kg uie in Stellenbosch?",
             agent: "coder", role: "puls-prices",
             llm: " ollama-puls ");
 

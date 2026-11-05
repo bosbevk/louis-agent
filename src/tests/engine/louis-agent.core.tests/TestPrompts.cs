@@ -8,5 +8,5 @@ using Microsoft.Extensions.FileProviders;
 public class TestPrompts
 {
     [OneTimeSetUp]
-    public void Register() => SkillFileSource.Use([new ManifestEmbeddedFileProvider(typeof(TestPrompts).Assembly, "Prompts"), TestTools.Pack.Prompts]);
+    public void Register() => SkillFileSource.Use([new ManifestEmbeddedFileProvider(typeof(TestPrompts).Assembly, "Prompts"), TestTools.Pack.Prompts, TestTools.WebPack.Prompts]);
 }
