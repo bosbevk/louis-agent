@@ -33,12 +33,11 @@ internal static class RecipeHitPrinter
                     Query = query
                 });
 
-        // Only the sites that answered: one that refused has no pages here to name.
-        string answered = string.Join(", ", gather.Hits.Select(hit => hit.Site.Name).Distinct());
+        // Every site asked, those with no hits too, so a next try can skip them.
         var heading = MessageText.Format(RecipeToolMessage.HitsFoundAcrossSites,
             new
             {
-                Sites = answered,
+                Sites = asked,
                 gather.Hits.Count
             });
         var lines = gather.Hits.Select((hit, index) => MessageText.Format(RecipeToolMessage.HitLineWithSite,

@@ -62,11 +62,9 @@ properties:
             value: puls=http://127.0.0.1:8080
           - name: ROLES_ENABLED
             value: puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup,puls-minion-find-recipe
-          # The model each minion runs on, cheapest first (F35.2 step 2b): the find-recipe minion on this instance's own
-          # model, Haiku 5.5 ("instance"), which needs no LLM_SESSION_PROFILES. The cook asks for the minions toolset,
-          # so without this the cook is refused.
-          - name: MINION_LLMS
-            value: puls-minion-find-recipe=instance
+          # Puls shows a specialist's report as it is and ends its turn there, instead of retyping it.
+          - name: SHOW_SPECIALIST_REPORTS
+            value: 'true'
           # OPEN TO THE INTERNET WITHOUT A KEY. AGENT_AUTH=off is meant for a port that stays on 127.0.0.1; here the
           # ingress is public, so anyone who finds the address chats on the Anthropic key above. Kept only until the Puls
           # web app can send AGENT_API_KEY (the TODO's "The Azure app behind a key"); point no one but Louis at it.

@@ -34,7 +34,8 @@ public sealed class SpecialistTools(
     HttpClient? http = null,
     TimeSpan? timeout = null,
     TimeProvider? time = null,
-    IUsageSink? usageSink = null)
+    IUsageSink? usageSink = null,
+    bool showReports = false)
 {
     /// <summary>Sub-sessions one turn may open; outside a turn (an MCP call), the most a minute may.</summary>
     public const int MaxPerTurn = 3;
@@ -60,7 +61,7 @@ public sealed class SpecialistTools(
     /// The engine's ledger, for the roll-up of each sub-session's usage (F5); null writes none.
     /// </param>
     public SpecialistTools(AgentOptions options, IUsageSink? usageSink = null) : this(options.AgentPeers,
-        options.AgentApiKey, usageSink: usageSink)
+        options.AgentApiKey, usageSink: usageSink, showReports: options.ShowSpecialistReports)
     {
     }
 
@@ -99,7 +100,7 @@ public sealed class SpecialistTools(
         string? llm = null,
         CancellationToken cancellationToken = default)
     {
-        if (ForwardAttachments(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
+        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
         if (ResolvePeer(peers, agent, out Uri peer, out string name) is { } noPeer) return noPeer;
 
         UsageScope? scope = UsageScope.Current;
@@ -125,13 +126,16 @@ public sealed class SpecialistTools(
             replay = SessionReplay.ForSubSession(),
         };
         // The footer names the specialist, never what it used: those numbers differ on a replay (FX27).
-        var kind = new SubSessionKind(Kind, name, $"sub-session:{name}", KeptAnswer, reply =>
-            MessageText.Format(SubSessionToolMessage.SubSessionAnswer, new
+        var kind = new SubSessionKind(Kind, name, $"sub-session:{name}", Kept, reply =>
+        {
+            EndTheTurn(reply);
+            return MessageText.Format(SubSessionToolMessage.SubSessionAnswer, new
             {
                 Answer = reply.Text,
                 Agent = name,
                 Toolsets = string.Join(", ", toolsets),
-            }));
+            });
+        });
         return await _session.OpenAsync(peer, name, createBody, new
         {
             message,
@@ -167,13 +171,13 @@ public sealed class SpecialistTools(
                     Handle = handle.Trim(),
                     Open = OpenList(registry, Kind)
                 });
-        if (ForwardAttachments(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
+        if (ForwardedAttachments.Take(attachments, out var forwarded) is { } unknownAttachment) return unknownAttachment;
 
         UsageScope? scope = UsageScope.Current;
         string? toolUseId = FunctionInvokingChatClient.CurrentContext?.CallContent.CallId;
         if (_slots.Take(scope, out _) is { } limit) return limit;
 
-        var kind = new SubSessionKind(Kind, open.Agent, $"sub-session:{open.Agent}", KeptAnswer, _ => "");
+        var kind = new SubSessionKind(Kind, open.Agent, $"sub-session:{open.Agent}", Kept, _ => "");
         return await _session.ContinueAsync(registry, open, new
         {
             message,
@@ -211,6 +215,23 @@ public sealed class SpecialistTools(
     /// The footer under a kept sub-session's answer: its handle, and how to continue it. Never what it used: those
     /// numbers differ on a replay (FX27).
     /// </summary>
+    private string Kept(OpenSubSession open, SubSessionMessenger.SubSessionReply reply)
+    {
+        EndTheTurn(reply);
+        return KeptAnswer(open, reply);
+    }
+
+    /// <summary>
+    /// When this instance shows reports, a real answer ends the tool loop, so the model isn't asked to write it out
+    /// again. A failure never gets here, and an empty answer stays with the model, which says what to do about them.
+    /// </summary>
+    private void EndTheTurn(SubSessionMessenger.SubSessionReply reply)
+    {
+        if (!showReports || string.IsNullOrWhiteSpace(reply.Text)) return;
+        if (FunctionInvokingChatClient.CurrentContext is { } call) call.Terminate = true;
+    }
+
+    /// <summary>The answer with the footer that tells the model its handle.</summary>
     private static string KeptAnswer(OpenSubSession open, SubSessionMessenger.SubSessionReply reply) =>
         MessageText.Format(SubSessionToolMessage.SubSessionAnswerKept, new
         {
@@ -232,31 +253,5 @@ public sealed class SpecialistTools(
         string defaultRole = MessageText.Format(SubSessionToolMessage.SubSessionDefaultRole);
         return string.Join(", ",
             open.Select(o => $"{o.Handle} ({o.Agent}: {string.Join(", ", o.Toolsets)}; {o.Role ?? defaultRole})"));
-    }
-
-    /// <summary>
-    /// The model names the attachments; their contents come from the session, never through the model's output. A
-    /// name the session doesn't have gets the refusal that lists what is attached.
-    /// </summary>
-    private static string? ForwardAttachments(string[]? attachments, out List<object> forwarded)
-    {
-        var available = SessionAttachments.Current;
-        forwarded = [];
-        foreach (string name in attachments ?? [])
-        {
-            if (!available.TryGetValue(name.Trim(), out string? content))
-                return MessageText.Format(SubSessionToolMessage.AttachmentUnknown, new
-                {
-                    Name = name,
-                    Attached = available.Count == 0 ? "(none)" : string.Join(", ", available.Keys.Order()),
-                });
-            forwarded.Add(new
-            {
-                name = name.Trim(),
-                content
-            });
-        }
-
-        return null;
     }
 }

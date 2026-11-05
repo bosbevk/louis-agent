@@ -18,6 +18,9 @@ namespace LouisAgent.Packs.Recipes.Tests.Providers;
 /// </remarks>
 public class WordPressSearchTests
 {
+    /// <summary>A search with no real word in it keeps every hit, for the tests of how a page is read.</summary>
+    private const string NoRealWord = "the";
+
     /// <summary>The site with this slug, from the table.</summary>
     private static RecipeSite Site(string slug) => RecipeSites.Find(slug)!;
 
@@ -33,7 +36,7 @@ public class WordPressSearchTests
     [Test]
     public async Task FoodAndHome_GivesTheHeadingsThatLinkToItself_InPageOrder()
     {
-        var hits = await Find("foodandhome", "foodandhome-search-bobotie");
+        var hits = await Find("foodandhome", "foodandhome-search-bobotie", NoRealWord);
 
         Assert.That(hits, Has.Count.EqualTo(15), "the page's first heading, 'bobotie', links nowhere");
         Assert.That(hits[0], Is.EqualTo(new RecipeHit("Pork bobotie",
@@ -47,7 +50,7 @@ public class WordPressSearchTests
     [Test]
     public async Task ATitle_HasItsEntitiesDecoded()
     {
-        var names = (await Find("foodandhome", "foodandhome-search-bobotie")).Select(h => h.Name).ToList();
+        var names = (await Find("foodandhome", "foodandhome-search-bobotie", NoRealWord)).Select(h => h.Name).ToList();
 
         Assert.That(names, Does.Contain("[CLOSED] WIN Warren Mendes’ Food Trail South Africa cookbook"));
         Assert.That(names, Does.Contain("Quick & Easy Ramadan recipes"));
@@ -59,12 +62,27 @@ public class WordPressSearchTests
     [Test]
     public async Task Tantalise_GivesItsNineResults_WithTheLinkAcrossTheWhitespaceInTheHeading()
     {
-        var hits = await Find("tantalisemytastebuds", "tantalisemytastebuds-search-bobotie");
+        var hits = await Find("tantalisemytastebuds", "tantalisemytastebuds-search-bobotie", NoRealWord);
 
         Assert.That(hits, Has.Count.EqualTo(9));
         Assert.That(hits[1], Is.EqualTo(new RecipeHit("Cape Malay Pickled Fish (Ingelegde vis)",
             new Uri("https://www.tantalisemytastebuds.com/cape-malay-pickled-fish/"))));
         Assert.That(hits[4].Name, Is.EqualTo("The way we were – Traditions"));
+    }
+
+    /// <summary>
+    /// Only what answers the search stays, on these saved pages: Food &amp; Home's six bobotie pages, without
+    /// <c>The best pies in Joburg</c>, and none of Tantalise's nine, among them <c>Solo Singapore Itinerary</c>.
+    /// </summary>
+    [Test]
+    public async Task OnlyWhatAnswersTheSearch_Stays()
+    {
+        var foodAndHome = await Find("foodandhome", "foodandhome-search-bobotie");
+        var tantalise = await Find("tantalisemytastebuds", "tantalisemytastebuds-search-bobotie");
+
+        Assert.That(foodAndHome, Has.Count.EqualTo(6));
+        Assert.That(foodAndHome.Select(h => h.Name), Has.All.Contain("obotie"));
+        Assert.That(tantalise, Is.Empty);
     }
 
     /// <summary>You never get more hits than you asked for.</summary>

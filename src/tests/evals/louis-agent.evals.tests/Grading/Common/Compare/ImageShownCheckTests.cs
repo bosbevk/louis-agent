@@ -56,6 +56,22 @@ public class ImageShownCheckTests
         Assert.That((await GradeAsync(Expected, ToolCall("ReadRenderedPage"), ToolResult(Page), Text(Shown))).Outcome,
             Is.EqualTo(GradeOutcome.Pass));
 
+    /// <summary>
+    /// A recipe print names its page on a <c>Link:</c> line, so only the page the answer linked counts: the cook passed
+    /// through a page with a photo and used one with none, and that isn't a missing image.
+    /// </summary>
+    [Test]
+    public async Task OnlyThePageTheAnswerLinksTo_Counts_ByItsLinkLine()
+    {
+        const string passedThrough = "# Bobotie\n\n" + Shown + "\n\nLink: https://taste.co.za/bobotie/\n";
+        const string used = "# Bobotie\n\nNo photo here.\n\nLink: https://www.vrouekeur.co.za/bobotie\n";
+
+        var grade = await GradeAsync(Expected, Reads, SubToolResult(passedThrough), SubToolResult(used),
+            Text("### Recipe\n\nServes 4\n\nSkakel: https://www.vrouekeur.co.za/bobotie"));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
+    }
+
     /// <summary>The page had a photo and the answer shows none: a fail that says so.</summary>
     [Test]
     public async Task ItFails_WhenThePageHadAnImageAndTheAnswerShowsNone()
@@ -195,7 +211,7 @@ public class ImageShownCheckTests
         var always = Build("""{"reader": "markdown-images"}""");
 
         Assert.That(keyed, Is.TypeOf<ImageShownCheck>());
-        Assert.That((keyed.Name, keyed.Version, keyed.Required), Is.EqualTo(("image-shown", 1, false)));
+        Assert.That((keyed.Name, keyed.Version, keyed.Required), Is.EqualTo(("image-shown", 3, false)));
         Assert.That(keyed.ExpectedKeys, Is.EqualTo(new[] { Key }));
         Assert.That(always.ExpectedKeys, Is.Empty);
     }

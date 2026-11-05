@@ -40,7 +40,7 @@ A trial passes only when every **required** check passes; an Unknown never count
 | `no-error` | fixed rule | yes | No turn of the conversation failed |
 | `routed-to` | fixed rule | yes | The meal went to `puls-cook` |
 | `tool-used` | fixed rule | yes | `ReadRecipe` was called, by the cook or by Puls. Only this tool is named: the cook calls it with and without the `find-recipe` minion, so one eval grades both runs |
-| `recipe-from-source` | fixed rule | yes | The link under the recipe (`Skakel:` or `Link:`) is on a site of the recipes pack's table; a fail names the host it was on instead |
+| `recipe-from-source` | fixed rule | yes | The link under the recipe (`Skakel:` or `Link:`) is on a site of the recipes pack's table, or elsewhere when the answer says under *Unsure* that it came from a web search; a fail names the host it was on instead |
 | `recipe-image` | fixed rule | yes | The answer shows an image a page the cook read gave (`image-shown` over the `recipe-photos` reader); when no page the cook read had an image, the grade is Unknown, never a fail |
 | `unpriced-items` | fixed rule | no | Lists the items `EstimatePrices` gave a `?` in the conversation (`tool-rows-marked`: `2 marked ? by EstimatePrices: rotis 5, flaked almonds 100 g`); it only measures, so it always passes and never changes the pass rate |
 | `recipe-as-source` | model | no | Are the answer's ingredients, amounts and steps the page's, scaled to `serves`? See below |
@@ -77,7 +77,8 @@ F35 plan (`docs/plans/F35-recipe-sources.md`):
 
 1. **Without the minion:** the stack rebuilt with `RECIPE_SOURCES`, the cook alone searching several sites at once with `FindRecipes` and
    reading with `ReadRecipe`.
-2. **With the minion:** the `find-recipe` minion merged, the stack rebuilt, the same eval run again.
+2. **With the minion:** the `find-recipe` minion merged, the stack rebuilt, the same eval run again. The minion lost that
+   comparison and went (ADR 0081), so the eval now runs the cook alone.
 
 They are compared on passes, whether `ReadRecipe` was used, the cost per answer and the minion's share of the cost
 and the time (the ledger's, not a check's).
@@ -93,8 +94,8 @@ step 5's, and records afresh. Its answers are then the ones to label for the jud
 | Check that failed | Usually means |
 |---|---|
 | `tool-used` | The cook wrote a recipe without reading a page, or read it with another tool. Look at its tool calls |
-| `recipe-from-source` | The link is on a site the table doesn't have, or there is none |
-| `recipe-image` | The answer shows no photo, or one the page did not give |
+| `recipe-from-source` | The link is on a site the table doesn't have and the answer doesn't say it came from the web, or there is none |
+| `recipe-image` | The answer shows no photo though the print had one, or one the print did not give. `ReadRecipe` prints only a photo that loads, so a pass means it loads (version 3) |
 | `recipe-as-source` | Open its reason: the ingredient or step it says is added, dropped or changed, and the page it compared with |
 
 ## Run it

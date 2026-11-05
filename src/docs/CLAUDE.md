@@ -78,6 +78,8 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 
 - **Reuse before building, and keep it simple** — reuse the repo's components and maintained packages (MIT, Apache,
   BSD); the simplest design that meets the step, nothing for a future no plan names. [ADR 0030](adr/0030-build-or-adopt.md), [ADR 0055](adr/0055-keep-it-simple.md).
+- **A tool when it improves the prompt** — if a tool would make a prompt's job work better or more accurately, make the
+  tool instead of another prompt rule; judgement stays in the prompt. [ADR 0080](adr/0080-a-tool-when-it-improves-the-prompt.md).
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
   sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
 - **Framework and implementation are split, and this comes first** — `src/` is framework only, a demo holds its own
@@ -156,7 +158,7 @@ src/engine/              # louis-agent.core (the loop, delegation, web access an
 src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model)
 src/web/                 # louis-agent.web.shared: what any web app shares
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
-packs/                   # What an agent can do, tools only: files, git, dotnet, shell, web, paymo, devops, where-to-buy (branches), shop-prices (estimates), recipes
+packs/                   # What an agent can do, tools only: files, git, dotnet, shell, web, paymo, devops, calculator, where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these
 packs-tests/             # A pack's own tests; packs/docs/ holds the packs' docs
 demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/, docker/, skills/ (what the agent writes), deploy/ (Azure), tests/, docs/, and git-ignored data/ and logs/

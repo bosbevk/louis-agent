@@ -80,6 +80,12 @@ public sealed class AgentOptions
     /// </summary>
     public bool UsageInChat { get; set; }
 
+    /// <summary>
+    /// SHOW_SPECIALIST_REPORTS: true shows a specialist's report to the user as it is and ends the turn there, so the
+    /// model isn't asked to write it out again. Off by default, since an agent may need to act on what came back.
+    /// </summary>
+    public bool ShowSpecialistReports { get; set; }
+
     /// <summary>PRICES_FILE: the price table for the ledger's costs; null means config/prices.json, found like config/.env.</summary>
     public string? PricesFile { get; set; }
 
@@ -238,6 +244,7 @@ public sealed class AgentOptions
             LogDirectory = Get("LOG_DIRECTORY"),
             UsageLedger = !string.Equals(Get("USAGE_LEDGER"), "off", StringComparison.OrdinalIgnoreCase),
             UsageInChat = bool.TryParse(Get("USAGE_IN_CHAT"), out bool usageInChat) && usageInChat,
+            ShowSpecialistReports = bool.TryParse(Get("SHOW_SPECIALIST_REPORTS"), out bool showReports) && showReports,
             PricesFile = Get("PRICES_FILE"),
             PricesUrl = Get("PRICES_URL"),
             RatesUrl = Get("RATES_URL") switch

@@ -20,4 +20,7 @@ public enum RecipeCheckMessage
 
     [Description("the recipe link is on {Host}, which is no recipe site in the table")]
     SourceOnAnotherHost,
+
+    [Description("the recipe link is on {Host}, from the web, and the answer says so under Unsure")]
+    SourceFromTheWebSaid,
 }

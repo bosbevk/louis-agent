@@ -42,7 +42,7 @@ public class RecipesChecksTests
         var built = Build("""{"reader": "fake-links"}""");
 
         Assert.That(built, Is.TypeOf<RecipeFromSource>());
-        Assert.That((built.Name, built.Version, built.Required), Is.EqualTo(("recipe-from-source", 1, true)));
+        Assert.That((built.Name, built.Version, built.Required), Is.EqualTo(("recipe-from-source", 2, true)));
     }
 
     /// <summary>

@@ -29,8 +29,8 @@ public class WhereToBuyToolsTests
                 "Malmesbury is in Swartland Local Municipality, Western Cape. Use Western Cape for estimated prices."));
         Assert.That(result,
             Does.Contain("Pick n Pay branches near Malmesbury on OpenStreetMap (3), the nearest first:"));
-        Assert.That(result,
-            Does.Contain("| Pick n Pay Malmesbury | 12 Voortrekker Road | Malmesbury | 0.5 km | yes |"));
+        Assert.That(result, Does.Contain("| Pick n Pay Malmesbury | [12 Voortrekker Road]("));
+        Assert.That(result, Does.Contain(") | Malmesbury | 0.5 km | yes |"));
         Assert.That(result, Does.Contain("| Pick n Pay Express | - | - |"));
         Assert.That(result, Does.Contain("A branch marked yes is the town's branch."));
         Assert.That(result, Does.EndWith("--- end of map data ---"));
@@ -79,8 +79,26 @@ public class WhereToBuyToolsTests
         Assert.That(result, Does.StartWith("--- untrusted map data from OpenStreetMap"));
         Assert.That(result, Does.Contain("Use Western Cape for estimated prices."));
         Assert.That(result, Does.Contain("Supermarkets near Malmesbury on OpenStreetMap (1), the nearest first:"));
-        Assert.That(result, Does.Contain("| Malmesbury Superspar | Rood Street | Malmesbury |"));
+        Assert.That(result, Does.Contain(
+            "| Malmesbury Superspar | [Rood Street](https://www.google.com/maps/dir/?api=1&destination=-33.462%2C18.73) | Malmesbury |"));
         Assert.That(result, Does.EndWith("--- end of map data ---"));
+    }
+
+    /// <summary>
+    /// A shop's street opens directions to it, so the user can just go. With no street, the place carries the link; the
+    /// tool writes the address, so the model never has to build one.
+    /// </summary>
+    [TestCase("""{"road":"Rood Street","town":"Malmesbury"}""", "[Rood Street](", "| Malmesbury |")]
+    [TestCase("""{"town":"Malmesbury"}""", "| - | [Malmesbury](", ") |")]
+    public async Task TheStreet_OpensDirectionsToTheShop(string address, string first, string second)
+    {
+        string near = """[{"name":"Superspar","lat":"-33.462","lon":"18.73","category":"shop","type":"supermarket","address":"""
+                      + address + "}]";
+
+        string result = await Tools(near).FindShopsNear("Malmesbury");
+
+        Assert.That(result, Does.Contain(first + "https://www.google.com/maps/dir/?api=1&destination=-33.462%2C18.73)"));
+        Assert.That(result, Does.Contain(second));
     }
 
     /// <summary>None nearby, no town, or no map each say what to do.</summary>

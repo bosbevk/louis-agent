@@ -100,6 +100,18 @@ public class BranchReadingTests
     public void ATableRowThatNamesNoPlace_OrAnotherShop_IsNoBranch(string row, BranchFinding expected) =>
         Assert.That(BranchReading.Of(Heading + Table + row + "\n", "pnp"), Is.EqualTo(expected));
 
+    /// <summary>A street that's a link is still a street: its words name the place, and its address doesn't.</summary>
+    [TestCase("| Pick n Pay | Pick n Pay | [Voortrekker Street, Malmesbury](https://www.google.com/maps/dir/?api=1&destination=-33.4%2C18.7) |", BranchFinding.Named)]
+    [TestCase("| Pick n Pay | nearest Pick n Pay | [](https://www.google.com/maps/dir/?api=1&destination=-33.4%2C18.7) |", BranchFinding.OnlyNearest)]
+    public void AStreetThatIsALink_IsStillAStreet(string row, BranchFinding expected) =>
+        Assert.That(BranchReading.Of(Heading + Table + row + "\n", "pnp"), Is.EqualTo(expected));
+
+    /// <summary>A shop's own site in a link names no place, so a row with only that is no branch.</summary>
+    [Test]
+    public void AShopsSiteInALink_NamesNoPlace() =>
+        Assert.That(BranchReading.Of(Heading + Table + "| Pick n Pay | | [pnp.co.za](https://www.pnp.co.za) |\n", "pnp"),
+            Is.EqualTo(BranchFinding.NoBranchOfShop));
+
     /// <summary>A table decides, so another shop's branch in the text beside it doesn't count.</summary>
     [Test]
     public void TheTableDecides_WhenThereIsOne_SoAnotherShopsBranchInTheTextBesideItDoesNotCount() =>

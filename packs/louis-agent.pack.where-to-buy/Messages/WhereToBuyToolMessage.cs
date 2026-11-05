@@ -44,6 +44,9 @@ public enum WhereToBuyToolMessage
 
     [Description("|---|---|---|---|---|")] TableRule,
 
+    [Description("[{Text}](https://www.google.com/maps/dir/?api=1&destination={Latitude}%2C{Longitude})")]
+    DirectionsLink,
+
     [Description("| {Name} | {Street} | {Place} | {Km} km | {InArea} |")]
     BranchRow,
 

@@ -34,7 +34,7 @@ public static class SchemaOrgRecipe
         {
             // The first block that holds a recipe wins; the rest of the page's data is about something else.
             return blocks.Select(b => FindRecipe(b.RootElement)).FirstOrDefault(e => e is not null) is { } entity
-                ? WholeOrNull(Map(entity, source))
+                ? WholeOrNull(PageYield.Checked(Map(entity, source), html, source))
                 : null;
         }
         finally

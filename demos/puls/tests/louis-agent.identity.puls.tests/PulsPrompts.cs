@@ -1,6 +1,7 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Calculator;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
 
@@ -11,5 +12,5 @@ public class PulsPrompts
 {
     [OneTimeSetUp]
     public void Register() => SkillFileSource.Use([new WebPack().Prompts, new PulsIdentity().Prompts, new WhereToBuyPack().Prompts,
-        new ShopPricesPack(new ShopPricesOptions()).Prompts]);
+        new ShopPricesPack(new ShopPricesOptions()).Prompts, new CalculatorPack().Prompts]);
 }

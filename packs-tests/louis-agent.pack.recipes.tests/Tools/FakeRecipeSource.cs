@@ -10,7 +10,7 @@ namespace LouisAgent.Packs.Recipes.Tests.Tools;
 internal sealed class FakeRecipeSource(
     string slug,
     IReadOnlyList<RecipeHit>? hits = null,
-    RecipeSourceException? fails = null) : IRecipeSource
+    Exception? fails = null) : IRecipeSource
 {
     /// <summary>The words it was last asked to search for.</summary>
     public string? Query { get; private set; }

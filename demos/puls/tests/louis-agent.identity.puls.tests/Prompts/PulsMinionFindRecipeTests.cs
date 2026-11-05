@@ -57,6 +57,27 @@ public class PulsMinionFindRecipeTests
             Assert.That(minion, Does.Not.Contain(other), $"no other tool: {other}");
     }
 
+    /// <summary>
+    /// A real chat's minion gave three links from one site, one of them a roti for a bobotie, and another said
+    /// <c>none</c> with <c>Orange Chicken Marinade</c> in front of it. So: one line per site, the plain dish first, a
+    /// variant labelled, a different dish never.
+    /// </summary>
+    [Test]
+    public void TheMinion_RanksThePlainDishFirst_AndNeverGivesADifferentDish()
+    {
+        string minion = Minion();
+
+        Assert.That(minion, Does.Contain("one line per site"));
+        Assert.That(minion, Does.Contain("the plain dish first"));
+        Assert.That(minion, Does.Contain("(variant)"));
+        Assert.That(minion, Does.Contain("A roti is not a bobotie"));
+    }
+
+    /// <summary>Its next try skips the sites it was just shown, and that list is for this dish only.</summary>
+    [Test]
+    public void TheMinion_SkipsTheSitesItAsked_WhenItSearchesAgain() =>
+        Assert.That(Minion(), Does.Contain("`skip`").And.Contain("the sites the result says it asked"));
+
     /// <summary>It answers in two shapes: a line for the dish it found, or <c>none</c> with the sites tried.</summary>
     [Test]
     public void TheMinion_AnswersInTwoShapes_AFoundLine_OrNoneWithTheSitesTried()
@@ -65,6 +86,9 @@ public class PulsMinionFindRecipeTests
 
         Assert.That(minion, Does.Contain("`{name} · {site} · {link}`"));
         Assert.That(minion, Does.Contain("`none · tried: {sites}`"));
+        Assert.That(minion, Does.Not.Contain("tried: A Recipe Site"),
+            "a local model whose search failed copied the example's site names as the ones it tried");
+        Assert.That(minion, Does.Contain("never a name from these instructions"));
         Assert.That(minion, Does.Contain("exactly as the hit gives them"), "the name and the link are the hit's");
     }
 

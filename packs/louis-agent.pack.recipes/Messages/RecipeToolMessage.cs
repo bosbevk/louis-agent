@@ -28,7 +28,7 @@ public enum RecipeToolMessage
     [Description("{Number}. {Name} · {Url}")]
     HitLine,
 
-    [Description("Pages for the search at {Sites} ({Count}), the sites taking turns, not ranked:")]
+    [Description("Asked {Sites}. Pages for the search ({Count}), the sites taking turns, not ranked:")]
     HitsFoundAcrossSites,
 
     [Description("{Number}. {Name} · {Site} · {Url}")]
@@ -63,6 +63,8 @@ public enum RecipeToolMessage
     [Description("# {Name}")] RecipeHeading,
 
     [Description("Makes {Yield}")] RecipeMakes,
+
+    [Description("{People} servings")] RecipeServings,
 
     [Description("prep {Minutes} min")] RecipePrep,
 

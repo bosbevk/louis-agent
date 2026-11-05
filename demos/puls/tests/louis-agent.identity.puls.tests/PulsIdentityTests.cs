@@ -6,6 +6,7 @@ using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using LouisAgent.Packs.Recipes;
+using LouisAgent.Packs.Calculator;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
 
@@ -27,7 +28,7 @@ public class PulsIdentityTests
 
         Assert.That(puls.Name, Is.EqualTo(PulsIdentityName.Puls.Wire()));
         Assert.That(puls.Packs,
-            Is.EqualTo(new[] { PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire() }),
+            Is.EqualTo(new[] { PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire(), PulsPack.Calculator.Wire() }),
             "the cook's branches, prices (F50.2) and recipes are packs Puls names, in the identity's own enum " +
             "(ADR 0043), in this order");
         // Step 3: its prompts are its own, embedded with their paths (the manifest lines in its csproj work).
@@ -37,7 +38,7 @@ public class PulsIdentityTests
         // The catalogue refuses an identity whose pack isn't there; with the packs, all are in.
         Assert.Throws<AgentCatalogException>(() => new AgentCatalog([puls], []), "packs named, none registered");
         var catalog = new AgentCatalog([puls],
-            [new WebPack(), new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
+            [new WebPack(), new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions()), new CalculatorPack()]);
         Assert.That(catalog.Identities, Is.EqualTo(new[] { puls }));
         Assert.That(catalog.Toolsets.Select(t => t.Name),
             Does.Contain(WhereToBuyToolset.WhereToBuy.Wire()).And.Contain(ShopPricesToolset.ShopPrices.Wire()));
@@ -45,9 +46,9 @@ public class PulsIdentityTests
     }
 
     /// <summary>
-    /// The cook declares its recipes, where-to-buy, shop-prices and minions toolsets in its header, required, and no
+    /// The cook declares its recipes, where-to-buy, shop-prices and calculator toolsets in its header, required, and no
     /// other role declares one: a role carries what it always needs, so the cook can't run without the tools that read
-    /// recipes, find the branch and estimate the prices, nor the minion that searches for the recipe.
+    /// recipes, find the branch, estimate the prices and do the sums.
     /// </summary>
     [Test]
     public void TheCookDeclaresItsToolsets_AndNoOtherRoleDoes()
@@ -58,7 +59,7 @@ public class PulsIdentityTests
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
-                CoreToolset.Minions.Wire()
+                PulsPack.Calculator.Wire()
             }));
 
         foreach (string role in RoleCatalog.Available(RoleLevel.Specialist)

@@ -26,7 +26,8 @@ public class RecipeToolsTests
 
     /// <summary>The tools over the sites given and a browser that answers every address with one page.</summary>
     private static RecipeTools Tools(FakeSiteBrowser browser, params FakeRecipeSource[] sources) =>
-        new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), browser);
+        new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), browser,
+            new FakePhotoFetcher());
 
     /// <summary>The tools over the Food &amp; Home site, which answers with two hits.</summary>
     private static RecipeTools Search(FakeRecipeSource source) => Tools(new FakeSiteBrowser(), source);
@@ -154,7 +155,7 @@ public class RecipeToolsTests
     /// <summary>The tools over these sites, with a seeded draw so a test can repeat.</summary>
     private static RecipeTools Seeded(params FakeRecipeSource[] sources) =>
         new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), new FakeSiteBrowser(),
-            new Random(1));
+            new FakePhotoFetcher(), new Random(1));
 
     /// <summary>A site with one hit named after it.</summary>
     private static FakeRecipeSource WithHit(string slug) =>
@@ -177,6 +178,31 @@ public class RecipeToolsTests
             .EqualTo("1. taste bobotie · Woolworths TASTE · https://example.com/taste/bobotie")
             .Or.Some.EqualTo("2. taste bobotie · Woolworths TASTE · https://example.com/taste/bobotie"));
         Assert.That(lines[^1], Is.EqualTo(Text(RecipeToolMessage.FrameEnd)));
+    }
+
+    /// <summary>The list says every site it asked, those with no hits too, so the next try can skip them.</summary>
+    [Test]
+    public async Task NoSiteNamed_SaysEverySiteItAsked_EvenOnesWithNoHits()
+    {
+        var tools = Seeded(WithHit("taste"), new FakeRecipeSource("foodandhome", []));
+
+        string result = await tools.FindRecipes("bobotie");
+
+        Assert.That(result, Does.Contain("Food & Home"), "it had no hits, and was still asked");
+    }
+
+    /// <summary>Sites named in <c>skip</c> aren't asked, and the same search without it is back to them all.</summary>
+    [Test]
+    public async Task TheSitesToSkip_AreLeftOut_ForThatSearchOnly()
+    {
+        var skipped = WithHit("foodandhome");
+        var tools = Seeded(WithHit("taste"), skipped);
+
+        await tools.FindRecipes("bobotie", skip: "Food & Home, nosuchsite");
+        Assert.That(skipped.Query, Is.Null);
+
+        await tools.FindRecipes("bobotie");
+        Assert.That(skipped.Query, Is.EqualTo("bobotie"));
     }
 
     /// <summary>Spaces are no name: the model leaving it blank means the same as leaving it out.</summary>
@@ -277,7 +303,7 @@ public class RecipeToolsTests
         var browser = new RedirectingBrowser(Page("foodandhome-pork-bobotie"),
             "https://www.foodandhome.co.za/recipes/pork-bobotie-final");
 
-        string result = await new RecipeTools(new Dictionary<string, IRecipeSource>(), browser)
+        string result = await new RecipeTools(new Dictionary<string, IRecipeSource>(), browser, new FakePhotoFetcher())
             .ReadRecipe("https://foodandhome.co.za/old");
 
         Assert.That(result, Does.Contain("Link: https://www.foodandhome.co.za/recipes/pork-bobotie-final"));

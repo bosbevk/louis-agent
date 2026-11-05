@@ -55,10 +55,8 @@ services:
       # PERSONALITIES_ENABLED, its name before CL14, is still passed on when ROLES_ENABLED is unset; set either way, the
       # old name reaches the container through env_file too, and it warns that it's to be renamed.
       ROLES_ENABLED: ${ROLES_ENABLED-${PERSONALITIES_ENABLED-puls/voice-af,puls/voice-en,puls-cook,puls-minion-web-price-lookup,puls-minion-find-recipe}}
-      # The model each minion runs on (F30), cheapest first: the find-recipe minion, the cook's search (F35.2 step 2b),
-      # on this instance's own model (Haiku 5.5), which needs no LLM_SESSION_PROFILES. The cook asks for the minions
-      # toolset, so without this the cook is refused. A value in config/.env wins.
-      MINION_LLMS: ${MINION_LLMS-puls-minion-find-recipe=instance}
+      # Puls shows a specialist's report as it is and ends its turn there, instead of retyping it at the output rate.
+      SHOW_SPECIALIST_REPORTS: ${SHOW_SPECIALIST_REPORTS-true}
       # The web we run (F32): SearXNG for search (development and benchmarks only, ADR 0023; WEB_SEARCH_PROVIDER picks
       # it) and the headless Chrome that renders pages drawn with JavaScript.
       SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}

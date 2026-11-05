@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "puls-recipes",
   "identity": "puls",
-  "version": 3,
+  "version": 6,
   "proves": "Puls's cook reads a recipe from a real page with ReadRecipe, links a site we may read, shows its photo, and writes the amounts and steps the page gave.",
   "manual": "manual.md",
   "modes": [
@@ -18,7 +18,7 @@
     {
       "type": "judge",
       "name": "recipe-as-source",
-      "parameters": { "rubric": "Rubrics/recipe-as-source.md", "ask": ["serves"], "sources": ["ReadRecipe"], "version": 1 }
+      "parameters": { "rubric": "Rubrics/recipe-as-source.md", "ask": ["serves"], "sources": ["ReadRecipe"], "version": 3 }
     },
     { "type": "human", "parameters": { "reviews": "recipe-as-source" } }
   ]

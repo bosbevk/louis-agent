@@ -39,7 +39,7 @@ public sealed class RecipesPack : IAgentPack
                     new RecipeTools(
                         RecipeSourceFactory.Create(RecipeSourceFactory.Enabled(options.RecipeSources), ctx.Browser!,
                             ctx.WebSearch),
-                        ctx.Browser!)
+                        ctx.Browser!, ctx.NewFetcher())
                 ],
                 // Searches and page reads change nothing, and the browser opens at most four pages at once.
                 ParallelSafe: true),

@@ -2,6 +2,7 @@
   "BranchRow": "| <Name> | <Street> | <Place> | <Km> km | <InArea> |",
   "BranchesFound": "<Shop> branches near <Town> on OpenStreetMap (<Count>), the nearest first:",
   "BranchesNote": "A branch marked yes is the town's branch. With none marked yes, the town has no <Shop> branch: say so, and name the nearest one above as the nearest. OpenStreetMap holds what its mappers added, so a branch it lacks may still exist; never name one it didn't list.",
+  "DirectionsLink": "[<Text>](https://www.google.com/maps/dir/?api=1&destination=<Latitude>%2C<Longitude>)",
   "FrameEnd": "--- end of map data ---",
   "MapUnavailable": "OpenStreetMap didn't answer (<Reason>). Try once more; if it still doesn't, say the branch couldn't be looked up and name none.",
   "No": "no",

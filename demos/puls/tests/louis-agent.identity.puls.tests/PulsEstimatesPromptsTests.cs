@@ -48,8 +48,9 @@ public class PulsEstimatesPromptsTests
 
         Assert.That(router, Does.Not.Contain("The cook prices at that shop alone"));
         Assert.That(router, Does.Contain("names that shop's branch under *Where to buy* and estimates the prices"));
-        Assert.That(router, Does.Contain("Waar gaan jy inkopies doen"),
-            "still asked when missing: the branch needs the shop");
+        Assert.That(router, Does.Not.Contain("Waar gaan jy inkopies doen"),
+            "never asked: the prices are the same estimates wherever they shop");
+        Assert.That(router, Does.Contain("brief the cook with `enige` / `any` and never ask"));
         Assert.That(router, Does.Contain("A follow-up keeps the shop until the user changes it"));
     }
 

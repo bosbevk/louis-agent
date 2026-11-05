@@ -18,4 +18,5 @@ public enum PulsToolset
     Minions,
     Skills,
     Recipes,
+    Calculator,
 }
