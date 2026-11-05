@@ -57,6 +57,9 @@
   {"product": "Chicken stock", "names": ["chicken stock", "beef stock", "vegetable stock"], "packs": [
     {"size": "120 Gram", "amount": 120, "unit": "g", "prices": {"national": 18.4}}
   ]},
+  {"product": "Black pepper", "names": ["black pepper", "ground pepper", "swartpeper"], "packs": [
+    {"size": "50 Gram", "amount": 50, "unit": "g", "prices": {"national": 39.99}}
+  ]},
   {"product": "Rotis", "names": ["rotis", "roti"], "packs": [
     {"size": "Pack Of 5", "amount": 5, "unit": "each", "prices": {"national": 39.99}}
   ]},
