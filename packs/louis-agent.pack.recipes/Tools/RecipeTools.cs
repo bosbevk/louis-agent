@@ -176,12 +176,14 @@ public sealed class RecipeTools
         // One photo goes in the print, never one we know is gone: a dead address shows the user a broken image.
         var photo = await _photos.FirstNotGoneAsync(PagePhotos.Candidates(visit.Html, page, recipe?.Image),
             cancellationToken);
-        if (recipe is null) return RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo));
+        // A proper recipe goes in the library, from the page's data or from headings that plainly show one. The cook
+        // still reads a page with no data as its text, so what it sees doesn't depend on what we could keep.
+        if ((recipe ?? PageTextRecipe.Read(visit.Html, page)) is { } whole)
+            await _shelf.KeepAsync(whole with { Image = photo }, cancellationToken);
 
-        // A proper recipe goes in the library; a page with no recipe data stays the site's to serve.
-        var whole = recipe with { Image = photo };
-        await _shelf.KeepAsync(whole, cancellationToken);
-        return RecipeHitPrinter.Framed(RecipePrinter.Print(whole));
+        return recipe is null
+            ? RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo))
+            : RecipeHitPrinter.Framed(RecipePrinter.Print(recipe with { Image = photo }));
     }
 
     /// <summary>

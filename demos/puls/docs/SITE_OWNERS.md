@@ -33,9 +33,10 @@ person's name, address or anything else about them.
 
 ## What it keeps and publishes
 
-When Puls reads a recipe page from a site in its table for the first time, and the page publishes its recipe as data
-(schema.org), it keeps that recipe, for good: the name, the yield, the times, the ingredients, the method, the photo's address, the
-author and the page's link. A page with no recipe data isn't kept, and neither are readers' comments. Kept recipes are published
+When Puls reads a recipe page from a site in its table for the first time, it keeps the recipe, for good: the name, the yield, the
+times, the ingredients, the method, the photo's address, the author and the page's link. It takes these from the recipe data the
+page publishes (schema.org), or, with no data, from the page's own *Ingredients* and *Method* headings. A page without either isn't
+kept, and neither are readers' comments. Kept recipes are published
 openly at `/v1/feeds/recipes`, each with your site's name and a link to your page, and its image still loads from your own host.
 Answers that use a kept recipe link to your page. Nothing about who asked is kept.
 

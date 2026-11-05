@@ -15,9 +15,11 @@ search would stop at the few kinds of melktert it already had.
 ## Decision
 
 - **Each new read from a site in our table is kept for good, as a proper recipe.** What's kept is the page's own recipe, field
-  by field: the name, the yield, the times, each ingredient, each step, the photo, the author and the page. A page with no recipe
-  data is read for the cook and not kept, because a guess at its structure would be served for good. A page from anywhere else is
-  read and never kept, because a stored page reaches other people and could carry instructions.
+  by field: the name, the yield, the times, each ingredient, each step, the photo, the author and the page. A page from anywhere
+  else is read and never kept, because a stored page reaches other people and could carry instructions.
+- **A page with no recipe data is kept only if it plainly lays one out.** `PageTextRecipe` looks for an ingredients heading, the
+  lines under it, a method heading and the steps, in code, and anything doubtful gives nothing, because what's kept is served for
+  good. The cook's first read of such a page stays its text, so what it sees doesn't depend on what we could keep.
 - **The library is the recipes pack's feed**, open with no key at `/v1/feeds/recipes` (ADR 0070), and the MCP server offers it
   as a resource (ADR 0072). Each recipe carries its site's name and a link to its own page, and nothing about who asked.
 - **Each recipe has its own address on our API,** `/v1/feeds/recipes/{id}`, and a search hands the cook that address. `ReadRecipe`
@@ -36,9 +38,11 @@ search would stop at the few kinds of melktert it already had.
 ## Consequences
 
 - A hit from the library opens no browser. A search takes as long as before: that's the price of always finding new recipes.
-- **A page with no recipe data never enters.** In one measured run 12 of 30 answers used such a page, so the library can't serve
-  those however often they're read, and the live print still ends at the recipe (`PrintedRecipeText`), which spares the cook the
-  readers' comments.
+- **Some pages with no recipe data still can't enter.** In one measured run 12 of 30 answers used such a page. Of the 12 real
+  pages tried, the reader keeps 8, which covers 8 of those 12 answers; the other 4 have no headings, so they're read live every
+  time. The live print still ends at the recipe (`PrintedRecipeText`), which spares the cook the readers' comments.
+- **A page read this way has no times and no author,** and a reading mistake would last. On the 12 real pages, the first version
+  kept a cookie notice as a step, which is why a line after a list now ends it and a long line between steps keeps the page out.
 - `IDataFeed` gained `ReadItemJsonAsync`, with a default that gives nothing, and the API `GET /v1/feeds/{name}/{id}`, open like the
   feed. A feed's items have no MCP resource of their own.
 - A copy never changes. If a site corrects a recipe we keep the old one, and a photo that later disappears shows as broken.

@@ -25,6 +25,10 @@ public class ReadRecipeLibraryTests
 
     private const string TextPage = "<html><head><title>Pie</title></head><body><main><h1>Pie</h1><p>1 kg mince. Bake it.</p></main></body></html>";
 
+    private const string HeadingsPage =
+        "<html><head><title>Pie</title></head><body><main><h1>Pie</h1><h2>Ingredients</h2><ul><li>1 kg mince</li><li>2 eggs</li></ul>"
+        + "<h2>Method</h2><ol><li>Bake it.</li></ol></main></body></html>";
+
     /// <summary>The tools over a browser with this page, and the library.</summary>
     private static (RecipeTools Tools, FakeSiteBrowser Browser) Over(FakeRecipeLibrary library, string page, Func<bool>? skip = null)
     {
@@ -81,9 +85,9 @@ public class ReadRecipeLibraryTests
         Assert.That(kept.Page, Is.EqualTo(new Uri(OnOurSite)));
     }
 
-    /// <summary>A page with no recipe data is read for the cook, but isn't a proper recipe, so it stays out.</summary>
+    /// <summary>A page with no data and no headings is read for the cook, but it stays out of the library.</summary>
     [Test]
-    public async Task APageWithNoRecipeData_IsReadButNotKept()
+    public async Task APageWithNoDataAndNoHeadings_IsReadButNotKept()
     {
         var library = new FakeRecipeLibrary();
 
@@ -91,6 +95,26 @@ public class ReadRecipeLibraryTests
 
         Assert.That(print, Does.Contain("1 kg mince"));
         Assert.That(library.Kept, Is.Empty);
+    }
+
+    /// <summary>
+    /// A page with no data whose headings show a whole recipe is kept as one, with its checked photo. The cook's first
+    /// read stays the page's text, and a read from us is the recipe, with the site's link.
+    /// </summary>
+    [Test]
+    public async Task APageWithHeadings_IsKeptAsARecipe_AndItsFirstReadStaysItsText()
+    {
+        var library = new FakeRecipeLibrary();
+        var (tools, _) = Over(library, HeadingsPage);
+
+        string first = await tools.ReadRecipe(OnOurSite);
+        string ours = await tools.ReadRecipe(library.AddressOf(library.Kept.Single()).AbsoluteUri);
+
+        Assert.That(first, Does.Contain("publishes no recipe data"));
+        Assert.That(library.Kept.Single().Recipe.Ingredients.Select(line => line.Text),
+            Is.EqualTo(new[] { "1 kg mince", "2 eggs" }));
+        Assert.That(ours, Does.Not.Contain("publishes no recipe data"));
+        Assert.That(ours, Does.Contain("## Ingredients").And.Contain("1. 1 kg mince").And.Contain(OnOurSite));
     }
 
     /// <summary>A stored page reaches other people, so only our own sites' pages enter.</summary>
