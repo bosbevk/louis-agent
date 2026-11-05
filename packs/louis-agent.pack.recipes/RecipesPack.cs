@@ -1,6 +1,7 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
 using LouisAgent.Packs.Recipes.Library;
+using LouisAgent.Packs.Recipes.Library.Excluded;
 using LouisAgent.Packs.Recipes.Library.Feed;
 using LouisAgent.Packs.Recipes.Library.Store;
 using LouisAgent.Packs.Recipes.Sources;
@@ -29,6 +30,9 @@ public sealed class RecipesPack : IAgentPack
         IRecipeStore store = options.MongoUrl is { } url
             ? MongoRecipeStore.Open(url, options.MongoDatabase)
             : new NoRecipeStore();
+        IExcludedPages excluded = options.MongoUrl is { } listUrl
+            ? MongoExcludedPages.Open(listUrl, options.MongoDatabase)
+            : new NoExcludedPages();
         var enabled = RecipeSourceFactory.Enabled(options.RecipeSources);
         // With no database there's nothing to publish, so there's no feed to list.
         Feeds = options.MongoUrl is null ? [] : [new RecipesFeed(store, enabled)];
@@ -55,7 +59,7 @@ public sealed class RecipesPack : IAgentPack
                         ctx.Browser!, ctx.NewFetcher(),
                         // An eval's trial leaves the library alone, unless a run that measures it says otherwise.
                         new RecipeShelf(library, store, enabled, TimeProvider.System,
-                            () => ctx.InATrial && !options.LibraryInEvals))
+                            () => ctx.InATrial && !options.LibraryInEvals, excluded))
                 ],
                 // Searches and page reads change nothing, and the browser opens at most four pages at once.
                 ParallelSafe: true),

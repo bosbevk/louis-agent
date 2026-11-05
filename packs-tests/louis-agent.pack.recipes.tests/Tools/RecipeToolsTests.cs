@@ -317,8 +317,10 @@ public class RecipeToolsTests
     public async Task APageWithNoRecipeData_ComesBackAsItsText_Labelled()
     {
         const string address = "https://thelazymakoti.com/chakalaka/";
+        const string page = "<html><head><title>Chakalaka | The Lazy Makoti</title></head><body><main><h1>Chakalaka</h1><p>Ingredients:</p>" +
+                            "<ul><li>Oil for frying</li><li>1 onion, finely chopped</li></ul><p>Method:</p><ul><li>Fry the onion.</li></ul></main></body></html>";
 
-        string[] lines = (await Reader("thelazymakoti-chakalaka").ReadRecipe(address)).Split('\n');
+        string[] lines = (await Tools(new FakeSiteBrowser(page)).ReadRecipe(address)).Split('\n');
 
         Assert.That(lines[0], Is.EqualTo(Text(RecipeToolMessage.UntrustedFrame)));
         Assert.That(lines[1], Is.EqualTo("thelazymakoti.com publishes no recipe data; this is the page's text."));
@@ -331,12 +333,13 @@ public class RecipeToolsTests
     [Test]
     public async Task APagesTextOverTheBound_IsCut_AndSaysSo()
     {
-        string html = $"<html><body><main><p>{new string('a', 20_000)}</p></main></body></html>";
+        string html = "<html><head><title>Long</title></head><body><main><h2>Ingredients</h2><p>1 egg</p><p>1 cup flour</p><h2>Method</h2><p>Bake it.</p>" +
+                      $"<p>{new string('a', 20_000)}</p></main></body></html>";
         var tools = Tools(new FakeSiteBrowser(html));
 
         string result = await tools.ReadRecipe("https://example.co.za/long");
 
-        Assert.That(result, Does.Contain(new string('a', 8_000) + "\n"));
+        Assert.That(result, Does.Contain(new string('a', 7_000)));
         Assert.That(result, Does.Not.Contain(new string('a', 8_001)));
         Assert.That(result, Does.Contain(Text(RecipeToolMessage.PageCut, new { Shown = 8_000 })));
     }

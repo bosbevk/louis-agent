@@ -19,7 +19,7 @@ public class ReadRecipePhotoTests
     private static readonly string TextPage =
         $"""
          <head><meta property="og:image" content="{Dead}"></head>
-         <body><main><h1>Pie</h1><p>Mince and pastry.</p>
+         <body><main><h1>Pie</h1><h2>Ingredients</h2><p>Mince</p><p>Pastry</p><h2>Method</h2><p>Bake it.</p>
          <img src="{Good}" alt="">
          <p><img src="https://example.com/other-dish.jpg" alt="Another recipe"></p></main></body>
          """;
@@ -116,7 +116,7 @@ public class ReadRecipePhotoTests
 
         Assert.That(print, Does.Not.Contain("other-dish.jpg").And.Not.Contain("Another recipe"));
         Assert.That(print.Split("![").Length - 1, Is.EqualTo(1), "one image");
-        Assert.That(print, Does.Contain("Mince and pastry."));
+        Assert.That(print, Does.Contain("Bake it."));
     }
 
     /// <summary>A photo that loads is taken at once, so the check costs one small request.</summary>

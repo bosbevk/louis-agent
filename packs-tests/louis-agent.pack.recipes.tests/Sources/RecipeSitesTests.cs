@@ -32,14 +32,19 @@ public class RecipeSitesTests
     public void ASiteWithAPathInItsHome_CoversOnlyWhatIsUnderIt(string address, bool covered) =>
         Assert.That(RecipeSites.Find("rooirose")!.Covers(new Uri(address)), Is.EqualTo(covered));
 
-    /// <summary>The table holds all 46 sites, 14 read from their recipe data and 32 from their text.</summary>
+    /// <summary>The table holds all 45 sites, 14 read from their recipe data and 31 from their text.</summary>
     [Test]
-    public void TheTable_HasFortySixSites_FourteenReadByDataAndThirtyTwoByText()
+    public void TheTable_HasFortyFiveSites_FourteenReadByDataAndThirtyOneByText()
     {
-        Assert.That(RecipeSites.All, Has.Count.EqualTo(46));
+        Assert.That(RecipeSites.All, Has.Count.EqualTo(45));
         Assert.That(RecipeSites.All.Count(s => s.ReadBy == RecipeReadBy.Data), Is.EqualTo(14));
-        Assert.That(RecipeSites.All.Count(s => s.ReadBy == RecipeReadBy.Text), Is.EqualTo(32));
+        Assert.That(RecipeSites.All.Count(s => s.ReadBy == RecipeReadBy.Text), Is.EqualTo(31));
     }
+
+    /// <summary>Recipes from South Africa is out: every page we opened gave no readable text.</summary>
+    [Test]
+    public void RecipesFromSouthAfrica_IsOutOfTheTable() =>
+        Assert.That(RecipeSites.Find("recipesfromsouthafrica"), Is.Null);
 
     /// <summary>Best Recipes has pap en sous, as whole recipe data; the other sites only use other names.</summary>
     [Test]
@@ -51,11 +56,11 @@ public class RecipeSitesTests
         Assert.That((site.ReadBy, site.Search), Is.EqualTo((RecipeReadBy.Data, RecipeSearch.WordPress)));
     }
 
-    /// <summary>21 sites are searched through their own WordPress search, the other 25 through the web.</summary>
+    /// <summary>20 sites are searched through their own WordPress search, the other 25 through the web.</summary>
     [Test]
-    public void TheTable_SearchesTwentyOneSitesThroughWordPress_AndTwentyFiveThroughTheWeb()
+    public void TheTable_SearchesTwentySitesThroughWordPress_AndTwentyFiveThroughTheWeb()
     {
-        Assert.That(RecipeSites.All.Count(s => s.Search == RecipeSearch.WordPress), Is.EqualTo(21));
+        Assert.That(RecipeSites.All.Count(s => s.Search == RecipeSearch.WordPress), Is.EqualTo(20));
         Assert.That(RecipeSites.All.Count(s => s.Search == RecipeSearch.Web), Is.EqualTo(25));
     }
 
