@@ -188,7 +188,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plans", "plans", "{FAC76245-0EC6-5B8A-97AB-269AB866204F}"
 	ProjectSection(SolutionItems) = preProject
 		demos\puls\docs\plans\F28-team-talk.md = demos\puls\docs\plans\F28-team-talk.md
-		demos\puls\docs\plans\F35-recipe-sources.md = demos\puls\docs\plans\F35-recipe-sources.md
 		demos\puls\docs\plans\F48-cook-and-teacher.md = demos\puls\docs\plans\F48-cook-and-teacher.md
 	EndProjectSection
 EndProject

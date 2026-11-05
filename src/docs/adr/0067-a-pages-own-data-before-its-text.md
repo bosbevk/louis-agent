@@ -9,7 +9,7 @@ Twice now, reading a site's data in code beat letting the model read its pages. 
 pages, and 31 of 31 with the user's store. Recipe pages are the
 same story: a page can publish its recipe for machines as a schema.org block, a JSON-LD script hidden in its HTML,
 beside the text people read. When the model reads prose instead, it spends more tokens, gets amounts wrong, and leaves
-nothing that code can check. The F35 plan ([plan](../../../demos/puls/docs/plans/F35-recipe-sources.md)) needs the cook to get a whole,
+nothing that code can check. The F35 plan ([plan, now deleted](https://github.com/bosbevk/louis-agent/blob/cc45cd85/demos/puls/docs/plans/F35-recipe-sources.md)) needed the cook to get a whole,
 exact recipe from the site that published it, so the amounts are the page's and not the model's memory.
 
 ## Decision
@@ -32,8 +32,8 @@ pack. The record belongs to the pack that uses it.
 
 ## Links
 
-The F35 plan, [F35-recipe-sources.md](../../../demos/puls/docs/plans/F35-recipe-sources.md), and its steps; the TODO's F35 line
-([TODO](../../../TODO.md)). The robots policy that every fetch obeys is ADR 0068, written in F35.1's step 2. Also
+The F35 plan, [F35-recipe-sources.md](https://github.com/bosbevk/louis-agent/blob/cc45cd85/demos/puls/docs/plans/F35-recipe-sources.md), deleted when F35 closed, holds the sites' data as checked by hand; the
+[write-up](../learning/05-structured-outputs.md) has what it taught. The robots policy that every fetch obeys is ADR 0068, written in F35.1's step 2. Also
 [ADR 0003](0003-provider-strategies.md) (one interface, one implementation per provider) and
 [ADR 0055](0055-keep-it-simple.md) (nothing for a future nobody planned).
 

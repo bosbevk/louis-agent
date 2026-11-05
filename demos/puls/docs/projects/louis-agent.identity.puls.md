@@ -137,9 +137,11 @@ identity doesn't.
   `puls-routing` 72 of 72; the local judge agrees 31 of 36 with a blind labeller, below the 90% bar
   ([louis-agent.evals](../../../../src/docs/projects/louis-agent.evals.md#design-notes)). The held-out scenarios still have their older, hand-cut
   references.
-- The cook's recipes: F35.2 step 1 names the `recipes` pack and gives the cook its toolset; step 2 has the cook's prompt
-  read recipes with those tools, until then it still reads the web. CL16 moves the cook into a `cooking` pack; the area
-  guide moves here with the Places pack ([TODO](../../../../TODO.md), *Puls*).
+- The cook reads its recipes with the `recipes` pack, and goes to the web only for a dish no site has (F35,
+  [write-up](../../../../src/docs/learning/05-structured-outputs.md)). The last full recipes run, `79ea99b3ec08`, had 30 of
+  30 from a page it read and 27 of 30 by the judge, in 52 s at $0.0059 an answer. The fixes after it are unmeasured: the
+  next paid run is the first on them. CL16 moves the cook into a `cooking` pack; the area guide moves here with the
+  Places pack ([TODO](../../../../TODO.md), *Puls*).
 - Louis's corrections to the Afrikaans, and the eleven official languages, measured → [TODO](../../../../TODO.md).
 
 ## Related docs

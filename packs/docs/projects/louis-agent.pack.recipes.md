@@ -56,7 +56,7 @@ any identity can use it, and it could be served as an MCP server unchanged
 
 ## Design notes
 
-What F35.1 settled, and why (the plan's decisions are in `demos/puls/docs/plans/F35-recipe-sources.md` until the feature ends):
+What F35 settled, and why (the [plan](https://github.com/bosbevk/louis-agent/blob/cc45cd85/demos/puls/docs/plans/F35-recipe-sources.md) is deleted; what it taught is in the [write-up](../../../src/docs/learning/05-structured-outputs.md)):
 
 - **Data first, text second** ([ADR 0067](../../../src/docs/adr/0067-a-pages-own-data-before-its-text.md)). A page that publishes a
   whole recipe is printed from that data; one that doesn't, or whose `Recipe` has no ingredients or no steps, is served
@@ -148,6 +148,13 @@ listing and the settings).
 [Build a pack](../../../src/docs/guides/build-a-pack.md) · [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) ·
 [ADR 0067](../../../src/docs/adr/0067-a-pages-own-data-before-its-text.md) · [ADR 0068](../../../src/docs/adr/0068-every-fetch-obeys-robots-txt.md) ·
 [For site owners](../../../demos/puls/docs/SITE_OWNERS.md)
+
+## Left out, on purpose
+
+- A number out of the yield (*4 to 6* stays words): F48.1's scaler.
+- The text sites' recipes as data (an ingredient-line reader over a page's text): F48.1's reader, if it wants it.
+- Vision over a page (`ScreenshotPage`): its own feature when a measure asks for it.
+- Keeping what it reads: F35.3's library, as one more source.
 
 ---
 [Projects](../../../src/docs/projects/README.md) · Previous: [louis-agent.pack.shop-prices](louis-agent.pack.shop-prices.md) · Next: [louis-agent.host-packs](../../../demos/puls/docs/projects/louis-agent.host-packs.md)
