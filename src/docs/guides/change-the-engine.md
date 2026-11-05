@@ -37,7 +37,7 @@ A toolset is guide, then tools, then guide: a mode's routing sends a task to the
 and each tool's description stays short. You add a tool class, a `ToolsetDefinition` in
 `Agent/Toolsets/ToolsetCatalog.cs` (its name, description, needed settings, tool classes and guide file), the guide
 in `Prompts/toolsets/`, and a routing row in each mode that uses it. The full list, and what is reserved, is in
-[Adding a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-toolset). A session picks its toolsets when it opens and
+[Adding a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool). A session picks its toolsets when it opens and
 keeps them, so its prompt stays cacheable ([ADR 0006](../adr/0006-toolsets-per-session.md)).
 
 ## Change a built-in prompt

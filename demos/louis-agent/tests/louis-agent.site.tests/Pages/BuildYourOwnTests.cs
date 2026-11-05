@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace LouisAgent.Site.Tests.Pages;
 
-/// <summary>The code on Build your own is the real code, and the page is honest about where the packages stand.</summary>
+/// <summary>The code on Build your own is the real code, and the page is honest about the packages.</summary>
 public class BuildYourOwnTests
 {
     private const string Hosts = "demos/louis-agent/hosts";
@@ -25,9 +25,10 @@ public class BuildYourOwnTests
 
     /// <summary>A repo file's lines, without their indentation or the blank ones.</summary>
     private static IEnumerable<string> LinesOf(string file) =>
-        File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, file)).Select(line => line.Trim()).Where(line => line.Length > 0);
+        File.ReadAllLines(Path.Combine(TestPaths.RepoRoot, file)).Select(line => line.Trim())
+            .Where(line => line.Length > 0);
 
-    /// <summary>The program shown is the coding agent's, every line of it, so the page can't drift from the code.</summary>
+    /// <summary>The program shown is the coding agent's, every line, so the page can't drift from the code.</summary>
     [Test]
     public async Task TheProgramShown_IsTheRealOne()
     {
@@ -46,7 +47,8 @@ public class BuildYourOwnTests
         string page = await PageAsync();
 
         var lines = LinesOf($"{Hosts}/louis-agent.coding-catalog/CodingCatalog.cs")
-            .Where(line => (line.StartsWith("new ") && line.Contains("Pack(")) || line.Contains("AgentCatalog Create()"))
+            .Where(line =>
+                (line.StartsWith("new ") && line.Contains("Pack(")) || line.Contains("AgentCatalog Create()"))
             .ToList();
 
         Assert.That(lines, Has.Count.EqualTo(3), "the pack list's two lines, and Create");

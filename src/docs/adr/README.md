@@ -83,6 +83,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0074](0074-the-folders-say-what-ships.md) | Framework and implementation are split, and this comes first: the solution's groups and the disk are one map; `src/` holds only the framework; `packs/` holds tools and `packs-evals/` what proves them; anything naming a product is someone's project under `demos/`, by product then function | Accepted |
 | [0075](0075-test-what-you-touch.md) | Test what you touch while working: the touched projects, plus the repo-wide rules when files move; the whole solution before a pull request |
 | [0076](0076-core-ships-no-agent.md) | Core ships no agent: the coding agent is an identity in its demo, a tool the model asks for is a pack, and what every pack relies on stays in the engine, reached through a contract |
+| [0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md) | The films on GitHub are animated WebP, rendered from the site's CSS, with a still for reduced motion; a stale export fails a test |
 
 ## When to write one
 

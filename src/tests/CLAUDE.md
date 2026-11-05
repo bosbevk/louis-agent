@@ -29,7 +29,7 @@ is an integration test: it lives in a `{name}.integration-tests` project, and th
 A step that changes behaviour starts here ([ADR 0014](../docs/adr/0014-test-first.md)):
 
 1. **Write the test** for the behaviour the step adds, in the folder that mirrors the source
-   (`src/tests/engine/louis-agent.core.tests/Tools/Git/…` tests `Tools/Git/…`). A fix starts with a test that reproduces the bug.
+   (`src/tests/engine/louis-agent.core.tests/Web/Robots/…` tests `Web/Robots/…`). A fix starts with a test that reproduces the bug.
 2. **See it fail for the right reason:** run just that test (`dotnet test … --filter "FullyQualifiedName~MyTests"`).
    It should fail on an assertion, not a compile error: give a new member a stub (`throw new
    NotImplementedException()`) so the test compiles. Keep the failing output for the step's explanation.

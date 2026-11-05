@@ -3,7 +3,7 @@
 > **Explanation.** How the parts work together at run time: what the model can use (tools and skills), one chat turn
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
-> [a C# tool](../../engine/louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-toolset),
+> [a C# tool](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool), [a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool),
 > [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
 > [another agent on core](../../engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
 

@@ -177,6 +177,23 @@ the two films of how the engine works are CSS keyframes over CSS 3D transforms. 
 - **A shell script in a container is a test surface.** `wait -n` is bash, the sidecar's shell is busybox; `nc` was
   assumed and absent. `sh -n` and a look at the base image cost seconds; a crash loop cost an afternoon.
 
+## Docs a test holds to the code
+
+The site went stale without anything failing: CL29 changed the structure, and the films kept saying the old one. Prose can't be
+compiled, so the fix was to make the parts that mirror code checkable (F57):
+
+- **Say it once, and test the copy.** The program on *Build your own* is shown as text, so a test reads the real `Program.cs` and
+  demands every line of it on the page. Change the program and the page fails.
+- **Test the list against the source.** Every folder under `packs/` must be on the *Packs* page. A new pack can't be forgotten.
+- **A generated file records what made it.** A rendered film takes minutes and a test can't read its pixels, so the export stores a
+  hash of the film's source files, and comparing two hashes is instant. It's the same idea as a lock file.
+
+Looking still found what tests couldn't. Frame by frame, one scene's card hid the very part the scene was about, and it had been
+that way since the film was built. A test can hold words to the code; it takes eyes to see a picture is wrong.
+
+What it measures: size decided the format. The same film was 22 MB as a GIF and under 3 MB as WebP at the same frame rate, which
+settled a choice that opinion wouldn't have. Concept: *18 Testing and shipping* in the [goal](../GOAL.md).
+
 ---
 [Learning write-ups](README.md) · [Goal](../GOAL.md) · [Plans](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL15-engine-identities-packs.md), [CL19](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/CL19-config-by-place.md) · [Deploying to Azure](../../../demos/puls/deploy/azure/README.md) ·
 [Tests](../../tests/CLAUDE.md) · [ADR 0027](../adr/0027-engine-identities-and-packs.md) · [ADR 0066](../../../demos/louis-agent/docs/adr/0066-the-site-is-static-razor.md) · [The site](../../../demos/louis-agent/docs/projects/louis-agent.site.md)

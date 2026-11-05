@@ -9,16 +9,17 @@
 
 ## Purpose
 
-Tells a .NET developer what the louis-agent engine is, why they'd want it, and shows that it works, in the Console
+Tells a .NET developer what the louis-agent framework is, why they'd want it, how they'd build on it, and shows that it works, in the Console
 theme (black, white and metallic grays). It talks about the engine; it doesn't run it. It shows only what works
 today, the same rule as Puls's landing page: no feature tile for anything that hasn't shipped.
 
 ## How it works
 
 Every page is rendered once on the server into plain HTML and sent; there is no WebAssembly, no interactivity and no
-script of our own, so a page is its markup and `css/app.css`. Five pages: `/` (the hero with the live turn, the
+script of our own, so a page is its markup and `css/app.css`. Seven pages: `/` (the hero with the live turn, the
 numbers, the short film, what's built on it, the contact strip), `/how-it-works` (the detailed film, the parts in
-plain words, the rules every turn keeps), `/proof`, `/built-on-it`, `/contact`. `/health` answers a container's check.
+plain words, the rules every turn keeps), `/packs` (every pack, and the rules a pack keeps), `/build-your-own` (a real
+program and catalogue, whose is what, where it stands), `/proof`, `/built-on-it`, `/contact`. `/health` answers a container's check.
 
 **The two films** are CSS alone. `movie/stage.css` is what they share: a 1280×720 stage scaled to its container
 (`tan(atan2(100cqw, 1280px))` turns the width ratio into a number), a floor seen from above (`perspective` on the
@@ -41,12 +42,14 @@ off under `prefers-reduced-motion` for the decoration only: the films are the co
 ```mermaid
 flowchart LR
     browser["A visitor's browser"] -->|GET /, /how-it-works, …| site["demos/louis-agent/web/louis-agent.site<br/>Kestrel · static server rendering"]
-    site --> pages["Components/Pages<br/>Home · HowItWorks · Proof · BuiltOnIt · Contact"]
+    site --> pages["Components/Pages<br/>Home · HowItWorks · Packs · BuildYourOwn · Proof · BuiltOnIt · Contact"]
     pages --> landing["Components/Landing<br/>Hero · LiveTurn · ProofTiles · BuiltOnIt · ContactStrip"]
     pages --> films["Components/Movies<br/>ShortMovie · DetailedMovie"]
     site --> css["wwwroot/css<br/>app.css imports: tokens · elements · shell · landing · movie · responsive"]
     docker["demos/louis-agent/docker/images/Dockerfile.site"] --> site
     site -. references no engine project .-> core["louis-agent.core"]
+    tool["demos/louis-agent/tools/louis-agent.film-export"] -->|renders the films| site
+    tool --> films2["demos/louis-agent/docs/films<br/>short.webp · detail.webp · stills · films.sha256"]
 ```
 
 ## Parts
@@ -70,11 +73,17 @@ title and its film, no Blazor script, `/health`); bUnit renders of both films (t
 in the order the turn reaches them, core's slabs in the pipeline's order, the markup pinned to a golden beside the
 test, `LOUIS_UPDATE_GOLDEN=1` to rewrite); the stylesheet's import list, tokens first, each film's keyframes its own.
 
+Three tests keep the words true of the code: every type a film's card names is in the repo (`FilmNamesTests`), the program
+on *Build your own* is the real one (`BuildYourOwnTests`), and every folder under `packs/` is on the *Packs* page
+(`PacksPageTests`). `TheExports_MatchTheFilms` fails when a film changes and nobody re-exported it.
+
 ## Limits
 
 - The contact page holds a `[YOUR EMAIL]` placeholder until Louis sets the address.
 - No light theme, no localisation (F46 will move the texts too), no analytics.
-- The films are CSS: no play, pause or scrubbing. The MP4 exports are rendered from the same CSS frame by frame.
+- The films are CSS: no play, pause or scrubbing. The exports for GitHub are animated WebP, rendered from the same CSS frame by frame
+  ([ADR 0077](../adr/0077-films-on-github-are-rendered-webp.md)).
+- *Build your own* says the packages aren't on NuGet yet, and has to change the day they are.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [Projects](../../../../src/docs/projects/README.md) · [Change the site](../guides/change-the-site.md)

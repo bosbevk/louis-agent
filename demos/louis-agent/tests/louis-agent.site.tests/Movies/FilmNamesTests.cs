@@ -14,7 +14,7 @@ public partial class FilmNamesTests
             .Where(file => !file.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}"))
             .Select(File.ReadAllText)));
 
-    /// <summary>A type or a member on a card: <c>ToolCallGuards</c> matches, and the plain word <c>Claude</c> doesn't.</summary>
+    /// <summary>A type or a member on a card: <c>ToolCallGuards</c> matches, the word <c>Claude</c> doesn't.</summary>
     [GeneratedRegex(@"\b[A-Z][A-Za-z]*[a-z][A-Z][A-Za-z]*\b")]
     private static partial Regex CodeName();
 

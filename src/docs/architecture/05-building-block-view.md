@@ -243,8 +243,8 @@ spliced into the script text.
 
 ## Tools
 
-Every session also has `GetToday` (`Tools/Clock`, F22): the date and time in the user's time zone when they shared it
-(`UserPlace`), else South African time. `Tools/Documents/DocumentText` reads PDF, Word and spreadsheets for
+Every session also has `GetToday` (`Agent/EngineTools/Clock`, F22): the date and time in the user's time zone when they shared it
+(`UserPlace`), else South African time. The files pack's `Documents/DocumentText` reads PDF, Word and spreadsheets for
 `ReadDocument`, `ReadTable` and `FetchUrl` (PdfPig, DocumentFormat.OpenXml, ExcelDataReader). A sub-session gets the
 user's attachments by name (`SessionAttachments`) and their place (`UserPlace`), both set by the API for each turn.
 

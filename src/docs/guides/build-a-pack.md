@@ -227,7 +227,9 @@ Then document each setting where people look for it: a commented line in `config
 
 ## 6. Register it in the composition root
 
-Three edits in `demos/puls/hosts/louis-agent.host-packs`:
+A demo's own program names its packs. Our coding agent lists them in one class, `CodingCatalog`
+(`demos/louis-agent/hosts/louis-agent.coding-catalog`): one more `new UnitsPack()`, and a project reference. Puls picks them by
+setting, so it takes three edits in `demos/puls/hosts/louis-agent.host-packs`:
 
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:

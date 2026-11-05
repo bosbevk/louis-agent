@@ -35,7 +35,7 @@ public class SitePagesTests
         Assert.That(await reply.Content.ReadAsStringAsync(), Does.Contain($"<title>{title}"));
     }
 
-    /// <summary>The words from before the split: a shops pack that went, a list that isn't sorted, tools in the engine.</summary>
+    /// <summary>The words from before the split: a shops pack, a list that isn't sorted, tools in the engine.</summary>
     [TestCase("/built-on-it", "A shops pack")]
     [TestCase("/how-it-works", "tools sorted by name")]
     [TestCase("/how-it-works", "The tool loop, streaming, the providers, the usage ledger and the guards.")]
