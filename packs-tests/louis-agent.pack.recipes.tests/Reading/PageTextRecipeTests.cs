@@ -116,6 +116,49 @@ public class PageTextRecipeTests
         Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Stel oond op 220 °C.", "Draai die wors.", "Bak dit." }));
     }
 
+    /// <summary>
+    /// Vrouekeur's bobotie: a short line before the list is the first step and not a part, or the oven would vanish
+    /// from a recipe that looks whole. A "read also" link isn't an ingredient, and a line in capitals names a part.
+    /// </summary>
+    [Test]
+    public void AFirstStepBeforeTheList_StaysAStep_AndAReadAlsoLineIsNoIngredient()
+    {
+        var recipe = Read("<h1>Bobotie</h1><h2>Bestanddele</h2><p>2 uie</p><p>800 g maalvleis</p><p>EIERBOLAAG</p><p>2 eiers</p>" +
+                          "<p>LEES OOK: <a href=\"https://example.com/x\">Iets anders</a></p><h2>Metode</h2><p>Stel oond op 180 °C.</p>" +
+                          "<ul><li>Braai die uie.</li><li>Bak dit.</li></ul>");
+
+        Assert.That(recipe, Is.Not.Null);
+        Assert.That(Texts(recipe!.Ingredients), Is.EqualTo(new[] { "2 uie", "800 g maalvleis", "2 eiers" }));
+        Assert.That(recipe.Ingredients.Last().Section, Is.EqualTo("EIERBOLAAG"));
+        Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Stel oond op 180 °C.", "Braai die uie.", "Bak dit." }));
+    }
+
+    /// <summary>A short line in the middle of the steps could be anything, and guessing could lose a step.</summary>
+    [Test]
+    public void AShortLineInTheMiddleOfTheSteps_IsNothing()
+    {
+        Assert.That(Read("<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li></ul><h3>Method</h3>" +
+                         "<ul><li>Mix it.</li></ul><p>Then rest it.</p><ul><li>Bake it.</li></ul>"), Is.Null);
+    }
+
+    /// <summary>Sarah Graham's sambal: an instruction in the list shows it isn't plain, so the page stays out.</summary>
+    [TestCase("Mix together and check for seasoning")]
+    [TestCase("Meng alles saam")]
+    public void AnInstructionAmongTheIngredients_IsNothing(string line)
+    {
+        Assert.That(Read($"<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li><li>{line}</li></ul><h3>Method</h3><ul><li>Bake it.</li></ul>"), Is.Null);
+    }
+
+    /// <summary>An ingredient that only starts like an instruction stays, by its other word or its amount.</summary>
+    [TestCase("Mixed herbs, a handful")]
+    [TestCase("Add 2 eggs if the mix is dry")]
+    public void AnIngredientThatOnlyLooksLikeOne_Stays(string line)
+    {
+        var recipe = Read($"<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>{line}</li></ul><h3>Method</h3><ul><li>Bake it.</li></ul>");
+
+        Assert.That(recipe, Is.Not.Null);
+    }
+
     /// <summary>With no heading, as on Rhodes's pages, the page's title names it, without the site's name.</summary>
     [Test]
     public void WithNoHeadingForTheName_ThePagesTitleNamesIt()
