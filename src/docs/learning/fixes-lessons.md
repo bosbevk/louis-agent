@@ -322,3 +322,13 @@ the entities are read, because a page can write `&lt;h3&gt;`; and take out only 
 keeps its sign. And a count in a saved-page test (21 lines) is a claim about the page: read the page's lines yourself
 before you change the number. Skill 4 (tool design: shape what a tool hands the model, so it is clean before the model
 reads it).
+
+## FX43 · A check that always passes hides a design nobody wanted
+
+Someone who said "any shop" got *Any supermarket near you.* under *Where to buy*, in every chat. Nothing had broken: the
+prompt asked for that line, and the check `estimates-at-shop` passed `any` whatever the answer said, so no eval could
+ever object. Louis saw it by using the app. Two lessons. A branch of a check that passes without reading the answer is a
+hole, not a rule: ask of each arm what answer would fail it. And ask what the user can do with an output: a line that
+sends them off to look for themselves is no answer. The fix is a tool that does the looking (`FindShopsNear`), and it was
+tried on the real map first, where Sea Point's answer held a fabric shop and lost the nearest supermarket in a wide box,
+which set its filter and its small first box. Skill 4 (tool design) and skill 12 (evaluation: a check has to be able to fail).

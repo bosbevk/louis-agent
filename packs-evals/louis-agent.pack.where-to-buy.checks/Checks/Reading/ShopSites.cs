@@ -28,6 +28,9 @@ public static class ShopSites
     /// <summary>The engine's tool that reads a page in the browser.</summary>
     public const string RenderedPageTool = "ReadRenderedPage";
 
+    /// <summary>The pack's tool that finds the supermarkets near the user.</summary>
+    public const string ShopsNearTool = "FindShopsNear";
+
     /// <summary>The engine's tools that read a page, a shop's site among them: rendered, or fetched.</summary>
     public static readonly IReadOnlyList<string> PageTools = [RenderedPageTool, "FetchUrl"];
 

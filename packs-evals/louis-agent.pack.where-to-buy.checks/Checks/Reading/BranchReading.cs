@@ -50,6 +50,35 @@ public static partial class BranchReading
         return Nearest().IsMatch(text) ? BranchFinding.OnlyNearest : BranchFinding.NoBranchOfShop;
     }
 
+    /// <summary>
+    /// Whether the section's shop table has a row of any shop with its place: what a user who named none needs. The
+    /// row's own shop name doesn't count as its place.
+    /// </summary>
+    public static bool NamesAShopNearby(string? answer)
+    {
+        if (Section(answer) is not { } section) return false;
+
+        foreach (var table in Lists.Tables(section))
+        {
+            var header = Lists.Cells(table[0]);
+            int shopColumn = header.FindIndex(cell => ShopHeader().IsMatch(cell)),
+                branchColumn = header.FindIndex(cell => BranchHeader().IsMatch(cell));
+            if (shopColumn < 0 || branchColumn < 0) continue;
+            var placeColumns = header.Select((cell, index) => (cell, index))
+                .Where(c => c.index == branchColumn || StreetHeader().IsMatch(c.cell)).Select(c => c.index).ToList();
+            foreach (var row in table.Skip(1).Where(row => !Lists.IsSeparator(row)).Select(Lists.Cells))
+            {
+                if (shopColumn >= row.Count) continue;
+                var shop = new Regex(Regex.Escape(row[shopColumn]),
+                    RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+                if (placeColumns.Where(index => index < row.Count).Any(index => HoldsAPlace(row[index], shop)))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>The shop's names as a pattern (<c>Pick n Pay</c> and <c>PnP</c> are one shop).</summary>
     private static Regex NamesOf(string shop)
     {

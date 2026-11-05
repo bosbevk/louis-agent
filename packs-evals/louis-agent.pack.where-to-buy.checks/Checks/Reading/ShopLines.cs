@@ -57,6 +57,9 @@ public static class ShopLines
     public static bool NamesBranch(string? answer, string shop) =>
         BranchReading.Of(answer, shop) == BranchFinding.Named;
 
+    /// <summary>The answer names a shop near the user, of any chain, with its place, under Where to buy.</summary>
+    public static bool NamesAShopNearby(string? answer) => BranchReading.NamesAShopNearby(answer);
+
     /// <summary>The estimates line's words, in English and Afrikaans.</summary>
     private static readonly string[] EstimatesWords = ["Prices are estimates", "Pryse is skattings"];
 

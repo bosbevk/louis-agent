@@ -28,7 +28,7 @@ public sealed class WhereToBuyPack : IAgentPack
         Toolsets =
         [
             new(WhereToBuyToolset.WhereToBuy.Wire(),
-                "A shop's branches near the user's town, with the town's municipality and province (OpenStreetMap)",
+                "A shop's branches or the supermarkets near the user's town, with its municipality and province (OpenStreetMap)",
                 GuideFile: PackToolset.Guide(WhereToBuyToolset.WhereToBuy.Wire()),
                 MissingSettings: _ => [],
                 ToolTypes: [typeof(WhereToBuyTools)],

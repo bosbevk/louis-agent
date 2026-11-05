@@ -1,3 +1,4 @@
+using System.Globalization;
 using LouisAgent.Packs.WhereToBuy.Branches;
 using static LouisAgent.Packs.WhereToBuy.Tests.Branches.Map.MapSearchTests;
 using LouisAgent.Packs.WhereToBuy.Branches.Map;
@@ -16,7 +17,9 @@ public class BranchFinderTests
             ? Fixture("nominatim-town-malmesbury.json")
             : near);
 
-    /// <summary>The map as it really answers: the smallest box with this, any wider box with the city's 20 hits.</summary>
+    /// <summary>
+    /// The map as it really answers: the smallest box with this, any wider box with the city's 20 hits.
+    /// </summary>
     private static (MapSearch Map, List<Uri> Asked) MapBySize(string smallestBox) =>
         Answering(url => AnswerTo(url, smallestBox));
 
@@ -119,4 +122,57 @@ public class BranchFinderTests
         Assert.That(
             await new BranchFinder(Answering(_ => "[]").Map).FindAsync("Spar", "Nowhere", CancellationToken.None),
             Is.Null);
+
+    /// <summary>A map answer: one place, as Nominatim writes it.</summary>
+    private static string Place(string name, string category, string type, double latitude, double longitude) =>
+        $$"""{"name":"{{name}}","lat":"{{latitude.ToString(CultureInfo.InvariantCulture)}}","lon":"{{longitude.ToString(CultureInfo.InvariantCulture)}}","category":"{{category}}","type":"{{type}}"}""";
+
+    /// <summary>
+    /// Any chain counts, the nearest first and three at most. A shop that isn't a supermarket, one the map has no name
+    /// for and a street are left out: Sea Point's real answer held a fabric shop.
+    /// </summary>
+    [Test]
+    public async Task TheNearestSupermarkets_AreKept_WhateverTheirChain()
+    {
+        string near = "[" + string.Join(",",
+            Place("Usave", "shop", "supermarket", -33.47, 18.73),
+            Place("Far Spar", "shop", "supermarket", -33.60, 18.73),
+            Place("Malmesbury Superspar", "shop", "supermarket", -33.462, 18.73),
+            Place("Fabric Shop", "shop", "fabric", -33.461, 18.73),
+            Place("", "shop", "supermarket", -33.461, 18.73),
+            Place("Supermarket Street", "highway", "residential", -33.461, 18.73),
+            Place("Checkers", "shop", "supermarket", -33.48, 18.73),
+            Place("Pick n Pay", "shop", "supermarket", -33.50, 18.73)) + "]";
+        var (map, _) = Map(near);
+
+        var search = await new BranchFinder(map).FindShopsAsync("Malmesbury", CancellationToken.None);
+
+        Assert.That(search!.Branches.Select(b => b.Name),
+            Is.EqualTo(new[] { "Malmesbury Superspar", "Usave", "Checkers" }));
+    }
+
+    /// <summary>
+    /// In a city a wide box holds 20 hits in no order and loses the nearest, so the first box is a small one.
+    /// </summary>
+    [Test]
+    public async Task TheFirstBox_IsAFewKilometres_AndWiderOnlyWhenItHoldsNone()
+    {
+        var (map, asked) = Map("[]");
+
+        var search = await new BranchFinder(map).FindShopsAsync("Malmesbury", CancellationToken.None);
+
+        var boxes = asked.Where(url => url.Query.Contains("q=supermarket")).ToList();
+        Assert.That(boxes, Has.Count.EqualTo(3));
+        Assert.That(search!.Branches, Is.Empty);
+        Assert.That(search.SearchedKm, Is.EqualTo(55));
+    }
+
+    /// <summary>A town the map doesn't know is nothing, as for a shop's branches.</summary>
+    [Test]
+    public async Task AnUnknownTown_IsNothing()
+    {
+        var (map, _) = Answering(_ => "[]");
+
+        Assert.That(await new BranchFinder(map).FindShopsAsync("Nowhere", CancellationToken.None), Is.Null);
+    }
 }

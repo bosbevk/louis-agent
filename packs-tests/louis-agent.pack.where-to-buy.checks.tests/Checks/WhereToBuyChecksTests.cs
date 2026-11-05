@@ -29,7 +29,7 @@ public class WhereToBuyChecksTests
     }
 
     /// <summary>Each type, from its settings, builds today's check under today's name, version and required.</summary>
-    [TestCase("estimates-at-shop", """{"reader": "fake-prices"}""", typeof(EstimatesAtShop), 2)]
+    [TestCase("estimates-at-shop", """{"reader": "fake-prices"}""", typeof(EstimatesAtShop), 3)]
     [TestCase("untooled-shops", "{}", typeof(UntooledShops), 2)]
     public void EachType_BuildsTodaysCheck(string type, string settings, Type check, int version)
     {

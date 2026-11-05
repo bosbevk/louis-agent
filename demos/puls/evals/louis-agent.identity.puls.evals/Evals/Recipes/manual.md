@@ -3,7 +3,7 @@
 ## What it measures
 
 Does Puls's cook write the recipe a real page gave? Each conversation asks for a recipe for one South African dish
-and some people, in Afrikaans or English, and says any shop will do, so the answer's work is the recipe. The cook
+and some people, in Afrikaans or English, and says any shop will do, so the answer's work is the recipe (the cook still names the supermarkets nearest them). The cook
 should find the dish on a recipe site, read the page with `ReadRecipe`, and write its ingredients and method scaled to
 the people, with the page's photo and link. What is counted is what the cook *did* (which tool it read the page with,
 which site its link is on, whether its photo came from the page) and then, with a model's help, whether its amounts
@@ -100,5 +100,5 @@ step 5's, and records afresh. Its answers are then the ones to label for the jud
 A run talks to the API and spends money (the cook's, and the judge's), so it waits for Louis's go:
 
 ```
-EVALS=puls BENCHMARK_RUN=local AGENT_API=http://127.0.0.1:5070/ dotnet run --project evals/louis-agent.evals.runner -- run puls-recipes --repeat 1
+EVALS=puls BENCHMARK_RUN=local AGENT_API=http://127.0.0.1:5070/ dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- run puls-recipes --repeat 1
 ```

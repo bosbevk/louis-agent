@@ -18,7 +18,7 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 ## How it works
 
 - **One toolset, `where-to-buy`.** `WhereToBuyPack` defines it with its guide (`Prompts/toolsets/where-to-buy.md`)
-  and one tool. It needs no setting, so it loads wherever it is named.
+  and two tools. It needs no setting, so it loads wherever it is named.
 - **The town.** `FindBranches(shop, town)` asks Nominatim for the town (South Africa only, the first answer), which
   gives its centre, its municipality and its province.
 - **The branches.** `BranchFinder` asks for the shop by name in a box around the town, about 16 km each way, then half
@@ -27,6 +27,12 @@ name on the map is the same call. It replaced the shops pack, which read Checker
   (FX39). Only places Nominatim files as a shop count, and `ShopNames` reads
   a short name as the full one (`PnP` is `Pick n Pay`, `Woolies` is `Woolworths`). It keeps the three nearest, by the
   distance from the town's centre (`Distance`, the haversine formula).
+- **Shops near the user.** `FindShopsNear(town)` is the same search for someone who named no shop: `q=supermarket` in a
+  box of about 3 km, then 16, then 55, keeping what the map files as a supermarket and has a name for, the three nearest.
+  The first box is small because a city's 16 km box holds 20 hits in no order: Sea Point's real answer held a fabric shop
+  and lost the nearest (FX43).
+- **The place.** A branch's place is the smallest name the map gives, but never an election ward: the map files
+  *Swartland Ward 10* where a suburb goes, so `MapAddress` skips it for the town or city above it.
 - **The answer.** `BranchPrinter` writes the town's municipality and province (the province is what `EstimatePrices`
   needs), then a table: each branch's name, street, place, distance and whether it is in the town's municipality,
   framed as untrusted map data. With none in the town, the note says so and names the nearest.
@@ -54,7 +60,7 @@ name on the map is the same call. It replaced the shops pack, which read Checker
 | Path | What's in it |
 |---|---|
 | `WhereToBuyPack.cs`, `WhereToBuyToolset.cs` | The pack and its toolset enum (ADR 0043) |
-| `Tools/` | `WhereToBuyTools.FindBranches` and `BranchPrinter`, which writes its table |
+| `Tools/` | `WhereToBuyTools.FindBranches` and `FindShopsNear`, and `BranchPrinter`, which writes their table |
 | `Branches/` | `BranchFinder` (the town, the boxes, the nearest three), `BranchSearch` (its result), `Branch`, `Distance`, `ShopNames` |
 | `Branches/Map/` | Nominatim: `MapSearch` (the requests, the pace), `MapPlace` and `MapAddress` (its answer, as records), `MapUnavailableException` |
 | `../louis-agent.pack.where-to-buy.checks/Checks/` | The shop rules (`WhereToBuyChecks.All`, which the runner's `PulsCatalogs` gathers): `EstimatesAtShop`, `UntooledShops`; `Reading/` holds what they read an answer with (`ShopSites`, `ShopLines`, `BranchReading`, `BranchFinding`, `ShopExpectation`, `ScenarioShop`) |
