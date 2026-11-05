@@ -2,7 +2,7 @@
 
 > **Plan.** How we put the framework's site on `louis-agent.dev` and a Puls placeholder on `mypuls.co.za`, served by
 > Docker on Louis's PC through a Cloudflare Tunnel. Drafted 2026-11-05 in the thread "Plan domain names for each site";
-> **waiting for Louis's approval.** Deleted when the work is done (its why moves to an ADR).
+> **Approved by Louis 2026-11-05.** Deleted when the work is done (its why moves to an ADR).
 
 ## Context
 
