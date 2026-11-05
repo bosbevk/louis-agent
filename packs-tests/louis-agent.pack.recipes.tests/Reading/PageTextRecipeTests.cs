@@ -141,7 +141,7 @@ public class PageTextRecipeTests
                          "<ul><li>Mix it.</li></ul><p>Then rest it.</p><ul><li>Bake it.</li></ul>"), Is.Null);
     }
 
-    /// <summary>Sarah Graham's sambal: an instruction in the list shows it isn't plain, so the page stays out.</summary>
+    /// <summary>Sarah Graham's sambal: an instruction in the list shows it isn't plain, so the page's out.</summary>
     [TestCase("Mix together and check for seasoning")]
     [TestCase("Meng alles saam")]
     public void AnInstructionAmongTheIngredients_IsNothing(string line)

@@ -79,7 +79,7 @@ public class QueryWordsTests
     public void AWordInTheAddress_Counts() =>
         Assert.That(QueryWords.Answers("Milk tart", new Uri("https://example.com/recipes/melktert/"), "melktert"), Is.True);
 
-    /// <summary>The site's name in the address doesn't count, or every page of Jan Braai would answer "braai".</summary>
+    /// <summary>The site's name in the address doesn't count, or all of Jan Braai's pages would answer "braai".</summary>
     [Test]
     public void TheSitesOwnName_DoesntCount() =>
         Assert.That(QueryWords.Answers("Puttanesca", new Uri("https://braai.com/puttanesca/"), "braai chicken"), Is.False);
