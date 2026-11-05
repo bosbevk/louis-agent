@@ -70,8 +70,8 @@ public sealed class RecipeTools
             "Leave this out to search a few sites at once. Or one site's short name, to search only that one; a " +
             "name that isn't enabled answers with the ones that are.")]
         string source = "",
-        [Description("How many pages to return (default 8, max 10)")]
-        int maxResults = 8,
+        [Description("How many pages to return (default 10, max 10)")]
+        int maxResults = 10,
         [Description(
             "When searching again for the same dish, the sites the last searches asked, separated by commas, so this " +
             "one asks others. For this dish only: leave it out for a new dish.")]

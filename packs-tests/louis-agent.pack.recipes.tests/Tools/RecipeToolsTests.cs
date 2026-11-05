@@ -117,13 +117,13 @@ public class RecipeToolsTests
         Assert.That(source.Query, Is.Null);
     }
 
-    /// <summary>The default is eight results, and more than ten is cut to ten; less than one gives one.</summary>
-    [TestCase(null, 8)]
+    /// <summary>The default is ten results, and more than ten is cut to ten; less than one gives one.</summary>
+    [TestCase(null, 10)]
     [TestCase(3, 3)]
     [TestCase(10, 10)]
     [TestCase(50, 10)]
     [TestCase(0, 1)]
-    public async Task TheNumberOfResults_IsEightByDefault_AndAtMostTen(int? asked, int expected)
+    public async Task TheNumberOfResults_IsTenByDefault_AndAtMostTen(int? asked, int expected)
     {
         var source = new FakeRecipeSource("foodandhome", BobotieHits);
 

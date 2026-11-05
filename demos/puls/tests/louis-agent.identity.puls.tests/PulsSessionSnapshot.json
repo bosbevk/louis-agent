@@ -434,9 +434,9 @@
               "default": ""
             },
             "maxResults": {
-              "description": "How many pages to return (default 8, max 10)",
+              "description": "How many pages to return (default 10, max 10)",
               "type": "integer",
-              "default": 8
+              "default": 10
             },
             "skip": {
               "description": "When searching again for the same dish, the sites the last searches asked, separated by commas, so this one asks others. For this dish only: leave it out for a new dish.",
