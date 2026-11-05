@@ -74,7 +74,7 @@ public class CookEvalTests
                 ("cook-no-error", 1, true, CheckKind.FixedRule), ("routed-to", 1, true, CheckKind.FixedRule),
                 ("within-budget", 1, true, CheckKind.FixedRule),
                 ("estimates-at-shop", 3, true, CheckKind.FixedRule),
-                ("untooled-shops", 2, true, CheckKind.FixedRule), ("recipe-image", 2, true, CheckKind.FixedRule),
+                ("untooled-shops", 2, true, CheckKind.FixedRule), ("recipe-image", 3, true, CheckKind.FixedRule),
                 ("serves-as-asked", 1, false, CheckKind.FixedRule),
                 ("unpriced-items", 1, false, CheckKind.FixedRule), ("meal-for-people", 2, false, CheckKind.Model),
                 ("meal-for-people.human", 2, false, CheckKind.Human)

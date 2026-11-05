@@ -1,6 +1,7 @@
 using LouisAgent.Packs.Recipes.Reading;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Browsing;
+using LouisAgent.Composition.Web.Fetching;
 using System.ComponentModel;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
@@ -31,16 +32,20 @@ public sealed class RecipeTools
 
     private readonly Dictionary<string, IRecipeSource> _sources;
     private readonly IWebBrowser _browser;
+    private readonly PhotoCheck _photos;
     private readonly RecipeScatter _scatter;
 
     /// <summary>
-    /// The enabled sites by short name (looked up in any case), and the browser pages open in. The random is only so a
-    /// test can repeat a draw. Only sites with their own search are drawn: the others use the web provider per search.
+    /// The enabled sites by short name (looked up in any case), the browser pages open in, and the fetcher that checks a
+    /// photo loads. The random is only so a test can repeat a draw. Only sites with their own search are drawn: the
+    /// others use the web provider per search.
     /// </summary>
-    public RecipeTools(IReadOnlyDictionary<string, IRecipeSource> sources, IWebBrowser browser, Random? random = null)
+    public RecipeTools(IReadOnlyDictionary<string, IRecipeSource> sources, IWebBrowser browser, IPageFetcher fetcher,
+        Random? random = null)
     {
         _sources = new Dictionary<string, IRecipeSource>(sources, StringComparer.OrdinalIgnoreCase);
         _browser = browser;
+        _photos = new PhotoCheck(fetcher);
         _scatter = new RecipeScatter(
             [.. sources.Values.Where(source => source.Site.Search == RecipeSearch.WordPress)],
             random ?? Random.Shared);
@@ -156,25 +161,35 @@ public sealed class RecipeTools
 
         // Where the browser ended is the page's address, after any redirect.
         var page = Uri.TryCreate(visit.Url, UriKind.Absolute, out var ended) ? ended : address;
-        return SchemaOrgRecipe.Read(visit.Html, page) is { } recipe
-            ? RecipeHitPrinter.Framed(RecipePrinter.Print(recipe))
-            : RecipeHitPrinter.Framed(PageWords(visit.Html, page));
+        var recipe = SchemaOrgRecipe.Read(visit.Html, page);
+
+        // One photo goes in the print, and only one that loads: a dead address shows the user a broken image.
+        var photo = await _photos.FirstThatLoadsAsync(PagePhotos.Candidates(visit.Html, page, recipe?.Image),
+            cancellationToken);
+        return recipe is not null
+            ? RecipeHitPrinter.Framed(RecipePrinter.Print(recipe with { Image = photo }))
+            : RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo));
     }
 
     /// <summary>
-    /// The page's words, labelled as the page's text, cut at the most we show (and said so), then the link. This is
-    /// for a page that publishes no recipe data.
+    /// The page's words, labelled as the page's text, under the photo that loads, cut at the most we show (and said
+    /// so), then the link. This is for a page that publishes no recipe data. Its own images stay out: most are related
+    /// recipes and logos, and the cook took them for the dish's.
     /// </summary>
-    private static string[] PageWords(string html, Uri page)
+    private static string[] PageWords(string html, Uri page, Uri? photo)
     {
-        string text = HtmlText.ToText(html, page).Text;
+        var (title, words) = HtmlText.ToText(html, page);
+        string text = PagePhotos.WithoutImages(words);
         string shown = text.Length > MaxPageChars ? text[..MaxPageChars] : text;
         string body = shown.Length == 0 ? MessageText.Format(RecipeToolMessage.PageEmpty) : shown;
-        var lines = new List<string>
-        {
-            MessageText.Format(RecipeToolMessage.TextNoRecipeData, new { page.Host }),
-            body
-        };
+        var lines = new List<string> { MessageText.Format(RecipeToolMessage.TextNoRecipeData, new { page.Host }) };
+        if (photo is not null)
+            lines.Add(MessageText.Format(RecipeToolMessage.RecipeImage, new
+            {
+                Name = title ?? page.Host,
+                Image = photo.AbsoluteUri
+            }));
+        lines.Add(body);
         if (text.Length > MaxPageChars)
             lines.Add(MessageText.Format(RecipeToolMessage.PageCut, new { Shown = MaxPageChars }));
         lines.Add(MessageText.Format(RecipeToolMessage.RecipeLink, new { Url = page.AbsoluteUri }));

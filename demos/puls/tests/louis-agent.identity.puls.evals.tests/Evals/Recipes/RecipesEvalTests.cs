@@ -88,7 +88,7 @@ public class RecipesEvalTests
             {
                 ("no-error", 1, true, CheckKind.FixedRule), ("routed-to", 1, true, CheckKind.FixedRule),
                 ("tool-used", 1, true, CheckKind.FixedRule), ("recipe-from-source", 2, true, CheckKind.FixedRule),
-                ("recipe-image", 2, true, CheckKind.FixedRule), ("unpriced-items", 1, false, CheckKind.FixedRule),
+                ("recipe-image", 3, true, CheckKind.FixedRule), ("unpriced-items", 1, false, CheckKind.FixedRule),
                 ("recipe-as-source", 3, false, CheckKind.Model),
                 ("recipe-as-source.human", 2, false, CheckKind.Human)
             }));

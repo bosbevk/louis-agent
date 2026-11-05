@@ -11,9 +11,9 @@ namespace LouisAgent.Packs.Recipes.Reading;
 /// </summary>
 /// <remarks>
 /// The one exception to reading a page's data before its text (ADR 0067): a yield of exactly one serving looks like a
-/// template's default, not something a person wrote. <c>1 cake</c> or <c>1 loaf</c> stays, since those are real. It's a
-/// plain line reader, not a regex (ADR 0057), and it lives in code because a prompt rule can't see that the two disagree
-/// (ADR 0080).
+/// template's default, not something a person wrote. <c>1 cake</c> or <c>1 loaf</c> stays, since those are real. It's
+/// a plain line reader, not a regex (ADR 0057), and it lives in code because a prompt rule can't see that the two
+/// disagree (ADR 0080).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0067-a-pages-own-data-before-its-text.md">ADR 0067: a page's own data before its text</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md">ADR 0080: a tool when it improves the prompt</seealso>
@@ -34,7 +34,7 @@ internal static class PageYield
     private static bool SaysOneServing(string? yield) =>
         yield?.Trim().ToLowerInvariant() is "1" or "1 serving" or "1 servings";
 
-    /// <summary>What the page itself says: its marked-up number first, then the first line of its text that gives one.</summary>
+    /// <summary>What the page says: its marked-up number first, then the first line of text that gives one.</summary>
     private static string? FromWords(string html, Uri page) =>
         Marked(html) ?? HtmlText.ToText(html, page).Text.Split('\n').Select(line => Yield(line.Trim()))
             .FirstOrDefault(yield => yield is not null);

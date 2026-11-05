@@ -70,6 +70,8 @@ What F35.1 settled, and why (the plan's decisions are in `demos/puls/docs/plans/
   from the answer to an unknown name, which names the enabled ones; the guide does not list them.
 - **Every fetch obeys `robots.txt`** ([ADR 0068](../../../src/docs/adr/0068-every-fetch-obeys-robots-txt.md)) in the browser, and the
   browser says what it is ([ADR 0038](../../../src/docs/adr/0038-the-browser-says-what-it-is.md)); this pack adds nothing there.
+- **One photo, and it loads** ([ADR 0080](../../../src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md)). `Reading/PagePhotos.cs` lists where a page's photo might be, best first: what it declares, then the first real image after its title, with the site's own copy before an image server's. `Reading/PhotoCheck.cs` takes the first that answers OK with an image, within 3 seconds, through the guarded fetcher, and otherwise the print has no photo. A page's text keeps no images of its own, since most are related recipes and logos. In a record run each checked photo is saved with the recording, so recordings grow by about one photo per page read.
+- **A yield of one is doubted** (`Reading/PageYield.cs`): Taste's data says `1 serving` where its page says `Serves 6 to 8`, so when the data says exactly one serving, the page's own words decide; with none, the yield is unknown. It's the one exception to reading a page's data first ([ADR 0067](../../../src/docs/adr/0067-a-pages-own-data-before-its-text.md)).
 - **A numbered print, not JSON.** A model quotes a line by its number, and reads a list better than braces. The same
   recipe always prints the same text, so a test can hold it.
 - **Off until named** ([ADR 0023](../../../src/docs/adr/0023-copyleft-service-beside-us.md)): nothing is enabled until

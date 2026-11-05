@@ -72,35 +72,6 @@ public class ImageShownCheckTests
         Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
     }
 
-    /// <summary>
-    /// On a page the reader can't tell the dish's own photo from a related recipe's, showing none is no fault: a fail
-    /// would punish the cook for not showing someone else's dish.
-    /// </summary>
-    [Test]
-    public async Task APageThatCantTellItsPhoto_ShowingNone_IsUnknown()
-    {
-        var check = new ImageShownCheck(new CantTellPages(), Key);
-
-        var grade = await check.GradeAsync(
-            Trial(Mode, Expected, Turn(1, [Reads, SubToolResult(Page), Text("### Recipe\n\nServes 4")])),
-            CancellationToken.None);
-
-        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Unknown));
-    }
-
-    /// <summary>The same page still fails an image that isn't on it: that one is made up, whatever else the page holds.</summary>
-    [Test]
-    public async Task APageThatCantTellItsPhoto_StillFailsAnImageNotOnIt()
-    {
-        var check = new ImageShownCheck(new CantTellPages(), Key);
-
-        var grade = await check.GradeAsync(
-            Trial(Mode, Expected, Turn(1, [Reads, SubToolResult(Page), Text("![x](https://made.up/x.jpg)")])),
-            CancellationToken.None);
-
-        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
-    }
-
     /// <summary>The page had a photo and the answer shows none: a fail that says so.</summary>
     [Test]
     public async Task ItFails_WhenThePageHadAnImageAndTheAnswerShowsNone()
@@ -240,7 +211,7 @@ public class ImageShownCheckTests
         var always = Build("""{"reader": "markdown-images"}""");
 
         Assert.That(keyed, Is.TypeOf<ImageShownCheck>());
-        Assert.That((keyed.Name, keyed.Version, keyed.Required), Is.EqualTo(("image-shown", 2, false)));
+        Assert.That((keyed.Name, keyed.Version, keyed.Required), Is.EqualTo(("image-shown", 3, false)));
         Assert.That(keyed.ExpectedKeys, Is.EqualTo(new[] { Key }));
         Assert.That(always.ExpectedKeys, Is.Empty);
     }
@@ -269,18 +240,5 @@ public class ImageShownCheckTests
         /// <inheritdoc />
         public IReadOnlyList<string> Images(string text) =>
             [.. new MarkdownImages().Images(text).Where(url => !url.Contains("logo", StringComparison.Ordinal))];
-    }
-
-    /// <summary>A reader that finds images but can't say which of them is the page's own.</summary>
-    private sealed class CantTellPages : IImageReader
-    {
-        /// <inheritdoc />
-        public string Name => "cant-tell";
-
-        /// <inheritdoc />
-        public IReadOnlyList<string> Images(string text) => new MarkdownImages().Images(text);
-
-        /// <inheritdoc />
-        public bool KnowsThePhoto(string page) => false;
     }
 }

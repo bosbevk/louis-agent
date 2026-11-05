@@ -37,7 +37,7 @@ public sealed class ImageShownCheck(IImageReader reader, string? key = null, boo
     public string Name => "image-shown";
 
     /// <inheritdoc />
-    public int Version => 2;
+    public int Version => 3;
 
     /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
@@ -76,8 +76,6 @@ public sealed class ImageShownCheck(IImageReader reader, string? key = null, boo
             return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.ImageNoneOnPages));
 
         var shown = reader.Images(answer);
-        if (shown.Count == 0 && !pages.Any(reader.KnowsThePhoto))
-            return Verdict.Unknown(Name, Version, MessageText.Format(CommonGradeMessage.ImageCantTell));
         if (shown.Count == 0)
             return Verdict.Fail(Name, Version, MessageText.Format(CommonGradeMessage.ImageMissing));
         return shown.Any(onPages.Contains)

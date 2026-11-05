@@ -1,4 +1,3 @@
-using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.Identities.Puls.Evals;
 using LouisAgent.Identities.Puls.Evals.Readers;
 
@@ -72,16 +71,6 @@ public class PulsReadersTests
     [TestCase("Bobotie vir 6 mense.", 6)]
     public void ThePeopleServed_AreReadInDigitsOrWords(string answer, int people) =>
         Assert.That(new PeopleServed().Numbers(answer), Does.Contain(people));
-
-    /// <summary>A print names its photo; a page's plain text mixes the dish's with related recipes'.</summary>
-    [Test]
-    public void APrint_KnowsItsPhoto_ButAPagesPlainTextDoesnt()
-    {
-        IImageReader reader = new RecipePhotos();
-
-        Assert.That(reader.KnowsThePhoto("# Bobotie\n![a](https://a.co.za/b.jpg)\n## Ingredients"), Is.True);
-        Assert.That(reader.KnowsThePhoto("a.co.za publishes no recipe data; this is the page's text."), Is.False);
-    }
 
     /// <summary>A recipe photo is an image of the text, but a share button, a print icon or a logo is none.</summary>
     [Test]

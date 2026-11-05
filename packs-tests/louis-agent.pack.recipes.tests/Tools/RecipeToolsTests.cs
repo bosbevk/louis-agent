@@ -26,7 +26,8 @@ public class RecipeToolsTests
 
     /// <summary>The tools over the sites given and a browser that answers every address with one page.</summary>
     private static RecipeTools Tools(FakeSiteBrowser browser, params FakeRecipeSource[] sources) =>
-        new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), browser);
+        new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), browser,
+            new FakePhotoFetcher());
 
     /// <summary>The tools over the Food &amp; Home site, which answers with two hits.</summary>
     private static RecipeTools Search(FakeRecipeSource source) => Tools(new FakeSiteBrowser(), source);
@@ -154,7 +155,7 @@ public class RecipeToolsTests
     /// <summary>The tools over these sites, with a seeded draw so a test can repeat.</summary>
     private static RecipeTools Seeded(params FakeRecipeSource[] sources) =>
         new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), new FakeSiteBrowser(),
-            new Random(1));
+            new FakePhotoFetcher(), new Random(1));
 
     /// <summary>A site with one hit named after it.</summary>
     private static FakeRecipeSource WithHit(string slug) =>
@@ -302,7 +303,7 @@ public class RecipeToolsTests
         var browser = new RedirectingBrowser(Page("foodandhome-pork-bobotie"),
             "https://www.foodandhome.co.za/recipes/pork-bobotie-final");
 
-        string result = await new RecipeTools(new Dictionary<string, IRecipeSource>(), browser)
+        string result = await new RecipeTools(new Dictionary<string, IRecipeSource>(), browser, new FakePhotoFetcher())
             .ReadRecipe("https://foodandhome.co.za/old");
 
         Assert.That(result, Does.Contain("Link: https://www.foodandhome.co.za/recipes/pork-bobotie-final"));

@@ -95,7 +95,7 @@ step 5's, and records afresh. Its answers are then the ones to label for the jud
 |---|---|
 | `tool-used` | The cook wrote a recipe without reading a page, or read it with another tool. Look at its tool calls |
 | `recipe-from-source` | The link is on a site the table doesn't have and the answer doesn't say it came from the web, or there is none |
-| `recipe-image` | The answer shows no photo, or one the page did not give |
+| `recipe-image` | The answer shows no photo though the print had one, or one the print did not give. `ReadRecipe` prints only a photo that loads, so a pass means it loads (version 3) |
 | `recipe-as-source` | Open its reason: the ingredient or step it says is added, dropped or changed, and the page it compared with |
 
 ## Run it
