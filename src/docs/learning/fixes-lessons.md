@@ -341,3 +341,14 @@ answer never named it. Louis saw it in the app, so give each question its own nu
 answer that showed the gap. The same fix took a made-up branch name, *Pick n Pay Malmesbury*, out of the cook's format
 example: a model copies the example's shape, names included, so an example has to be true too. Skill 4 (tool design:
 how much a result holds) and skill 3 (prompt design: an example teaches more than the rule around it).
+
+## FX45 · A judge shown only good answers hasn't been tested
+
+The local judge agreed with Louis on 26 of 30 recipes, which looked like a pass, but all 30 were good answers. Twelve
+answers broken on purpose (an amount changed, a step dropped) showed what it really did: it caught 5, and no changed
+amount. Agreement on one class says nothing about the other, so a judge's check needs bad answers too, made by hand
+if no run has produced them. The paid judge that replaced it had never run at all: every judge sent temperature 0,
+Anthropic refuses that for this model, and the grade came back Unknown, which an eval counts as nothing rather than
+as a failure. An Unknown that never goes away is a failure nobody sees. Then the strict judge failed good recipes
+over water, salt and a serving line, so the rubric said those don't change a recipe. Skill 12 (evaluation: calibrate
+on both classes) and skill 1 (models and providers: a provider's limits are the factory's business).
