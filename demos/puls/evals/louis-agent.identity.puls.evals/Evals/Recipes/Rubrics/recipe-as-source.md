@@ -38,6 +38,8 @@ of prices. Judge the ingredient and the amount the recipe needs. Do not judge wh
 - A swap the answer says it makes (it names what it replaces and why, for something hard to find) is not an ingredient
   added or dropped. An ingredient the print does not have, with no such swap, is added: `false`. One the print has,
   that is neither a row nor a pantry staple the answer names, is dropped: `false`.
+- Water, and salt and pepper to taste, are never added or dropped: nobody shops for water, and seasoning a dish doesn't
+  change the recipe.
 
 **3. Are the amounts the print's, scaled?** Every amount in the list and in the steps is the print's amount multiplied
 by one factor for the whole recipe. When the print says how many people or servings it makes, the factor is `serves`
@@ -53,7 +55,8 @@ answer adds none the print does not have. A step written in the task's language,
 time and temperature unchanged (`180 °C`, `45 minutes`, `2 tablespoons` scaled by the factor), is the print's step:
 the words may differ, the meaning and the numbers may not. Two steps joined into one, or one split into two, with
 nothing added or left out, are the same steps. A step added that the print does not have (a tip, a different
-method), or a print's step left out, or a time or temperature changed, is `false`. What the answer writes around the
+method), or a print's step left out, or a time or temperature changed, is `false`. A last line on how to serve the dish,
+which cooks nothing, is not an added step. What the answer writes around the
 recipe, such as the dish's name and why it fits, where to buy, a line on estimates, and its doubts, is not a step, and
 you do not judge it.
 

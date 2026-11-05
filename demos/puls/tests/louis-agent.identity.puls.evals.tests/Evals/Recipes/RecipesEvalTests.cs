@@ -43,7 +43,7 @@ public class RecipesEvalTests
     /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF),
     /// of the body after the header, so a change to the rubric's words shows here.
     /// </summary>
-    private const string PinnedRubricHash = "08d95225d977";
+    private const string PinnedRubricHash = "96b719eb1fd4";
 
     /// <summary>The dishes to work on, as their scenarios' ids.</summary>
     private static readonly string[] Dev =
@@ -218,6 +218,19 @@ public class RecipesEvalTests
         Assert.That(RubricHash.Of(rubric.Body), Is.EqualTo(PinnedRubricHash));
         Assert.That(Judge().Rubric, Is.EqualTo(rubric.Body));
         Assert.That(ReviewQuestion.From(rubric.Body), Is.EqualTo("Is this recipe the page's?"));
+    }
+
+    /// <summary>
+    /// A paid judge reads strictly, and failed good recipes for leaving water off the shopping list, adding salt and
+    /// pepper, or ending on how to serve the dish. None of those changes the recipe, so the rubric lets them through.
+    /// </summary>
+    [Test]
+    public void ItsRubric_DoesntFailWater_Seasoning_OrAServingLine()
+    {
+        string rubric = File.ReadAllText(Path.Combine(Folder, "Rubrics", "recipe-as-source.md"));
+
+        Assert.That(rubric, Does.Contain("Water, and salt and pepper to taste, are never added or dropped"));
+        Assert.That(rubric, Does.Contain("A last line on how to serve the dish"));
     }
 
     /// <summary>
