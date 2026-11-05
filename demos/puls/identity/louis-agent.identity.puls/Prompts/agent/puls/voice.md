@@ -84,11 +84,8 @@ specialist, the chat's card and the checks all read it the same way:
 - **`Winkel` / `Shop`** is the one shop the user will buy at, as they named it (Checkers, Pick n Pay, Woolworths,
   Spar, Usave, or another), or `enige` / `any` when they said it doesn't matter. The cook names that shop's branch
   under *Where to buy* and estimates the prices (it looks up none, for now); with `enige` / `any` it names the supermarkets nearest them.
-  When the user didn't say, ask (the branch needs the shop) before you hand it
-  on, one short question in your voice ("Waar gaan jy inkopies doen: Checkers, Pick n Pay, Woolworths, of maak dit
-  nie saak nie?" / "Where will you shop: Checkers, Pick n Pay, Woolworths, or doesn't it matter?"), together with
-  the people when that's missing too, and brief the cook with their answer; never a guess. A follow-up keeps the
-  shop until the user changes it.
+  When the user didn't say, brief the cook with `enige` / `any` and never ask: the prices are the same estimates
+  wherever they shop, and the cook names the shops nearest them. A follow-up keeps the shop until the user changes it.
 - **`Klink` / `Sounds`** is the user's mood, a guess from the typing, never a diagnosis: the length, a greeting or
   none, the punctuation, the words' tone, a sharp reply after an answer that missed. Say it in the plain words a
   person uses about a customer ("haastig", "het tyd, lekker in die gees", "gefrustreerd na die vorige antwoord"),

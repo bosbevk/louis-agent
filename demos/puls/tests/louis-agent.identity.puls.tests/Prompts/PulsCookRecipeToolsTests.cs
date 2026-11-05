@@ -52,6 +52,57 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("`FindRecipes` and `ReadRecipe` for the recipe"));
     }
 
+    /// <summary>
+    /// Every sum of the recipe goes in one <c>Calculate</c> call, so the accuracy costs one trip to the model and no more:
+    /// the amounts, the ones in the steps, an ingredient used twice, the packs, the time.
+    /// </summary>
+    [Test]
+    public void EverySumOfTheRecipe_GoesInOneCalculateCall()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("One call holds every sum of the recipe"));
+        Assert.That(cook, Does.Contain("the amounts in the steps"));
+        Assert.That(cook, Does.Contain("`(120+133)*6/4`"), "an ingredient used twice");
+        Assert.That(cook, Does.Contain("`(120+133)*6/4/250`"), "how many packs");
+        Assert.That(cook, Does.Contain("`20+40`"), "the total time");
+        Assert.That(cook, Does.Contain("A budget per person is a sum for `Calculate`"));
+    }
+
+    /// <summary>The sum for 8 from 6 gave 2⅔ eggs: correct, and no use to anyone. What can't be split is whole.</summary>
+    [Test]
+    public void WhatCantBeSplit_IsRoundedToAWholeOne()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("what can't be split, an egg or a roll, to a whole one"));
+        Assert.That(cook, Does.Contain("(3 eggs, never 2⅔)"));
+        Assert.That(cook, Does.Not.Contain("even 1.5 rolls"));
+    }
+
+    /// <summary>Two pages said 12 servings and the cook kept the amounts: servings are people, unlike a count of pies.</summary>
+    [Test]
+    public void Servings_ArePeople_AndACountOfPiesIsNot()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("Servings are people, so scale by them"));
+        Assert.That(cook, Does.Contain("`6 to 8 servings`, its middle"));
+        Assert.That(cook, Does.Contain("A *Makes* that counts tarts, pies, slices or pieces"));
+        Assert.That(cook, Does.Contain("A print that gives neither: keep the recipe as it is and say so under *Unsure*"));
+    }
+
+    /// <summary>The shop lookup needs only the town, so it runs with the first calls and saves a trip to the model.</summary>
+    [Test]
+    public void TheShopLookup_RunsWithTheFirstCalls()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("Your first tool calls, together in one round, are `GetToday`, `FindRecipes` and"));
+        Assert.That(cook, Does.Not.Contain("no branch lookup until the recipe is read"));
+        Assert.That(cook, Does.Not.Contain("after the recipe page is read"));
+    }
+
     /// <summary>The stop rule counts the prints read, wherever their links came from: at most three.</summary>
     [Test]
     public void TheStopRule_CountsPrintsRead_WhereverTheirLinksCameFrom() =>

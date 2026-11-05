@@ -296,7 +296,7 @@ public class PulsPromptsTests
         Assert.That(cook,
             Does.Contain("The recipe first, from a real page.").And.Not.Contain("Deals pick the products"));
         Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
-        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `FindRecipes`"));
+        Assert.That(cook, Does.Contain("Your first tool calls, together in one round, are `GetToday`, `FindRecipes`"));
         Assert.That(prices, Does.Contain("Write the list first,"), "the pack's guide prices a written list");
         Assert.That(cook, Does.Contain("Once the list is written, call `EstimatePrices` once"));
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),

@@ -23,6 +23,7 @@
   "RecipeLink": "Link: <Url>",
   "RecipeMakes": "Makes <Yield>",
   "RecipePrep": "prep <Minutes> min",
+  "RecipeServings": "<People> servings",
   "RecipeTotal": "total <Minutes> min",
   "SectionHeading": "### <Section>",
   "SourceNoResults": "<Source> has no recipe for '<Query>'. Try fewer or other words.",

@@ -43,7 +43,7 @@ of prices. Judge the ingredient and the amount the recipe needs. Do not judge wh
 
 **3. Are the amounts the print's, scaled?** Every amount in the list and in the steps is the print's amount multiplied
 by one factor for the whole recipe. When the print says how many people or servings it makes, the factor is `serves`
-divided by that number; when what it makes isn't people (`Makes 10 pies`, a bare `Makes 12`) or it says nothing, any
+divided by that number, and for a range (`6 to 8 servings`) any number in it; when what it makes isn't people (`Makes 10 pies`, a bare `Makes 12`) or it says nothing, any
 one factor that is the same for every amount is fine, and amounts that do not follow one factor are `false`. An amount scaled by the right
 factor is the same amount: `500 g` for four is `750 g` for six, and an amount rounded to a measure a cook can use
 (half an egg to one egg, 1.5 teaspoons to 2) is still the same amount. A different unit for the same quantity
