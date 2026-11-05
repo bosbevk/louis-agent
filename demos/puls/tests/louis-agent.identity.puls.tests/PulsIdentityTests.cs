@@ -1,6 +1,7 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
+using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
@@ -44,19 +45,20 @@ public class PulsIdentityTests
     }
 
     /// <summary>
-    /// The cook declares its recipes, where-to-buy and shop-prices toolsets in its header, required, and no other role
-    /// declares one: a role carries what it always needs, so the cook can't run without the tools that read recipes,
-    /// find the branch and estimate the prices.
+    /// The cook declares its recipes, where-to-buy, shop-prices and minions toolsets in its header, required, and no
+    /// other role declares one: a role carries what it always needs, so the cook can't run without the tools that read
+    /// recipes, find the branch and estimate the prices, nor the minion that searches for the recipe.
     /// </summary>
     [Test]
     public void TheCookDeclaresItsToolsets_AndNoOtherRoleDoes()
     {
         // ADR 0025: the header's toolsets are read through the catalogue, with no `?`, so a missing pack refuses the
-        // cook instead of quietly leaving its tools out.
+        // cook instead of quietly leaving its tools out. F35.2 step 2b: the same for minions.
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist),
             Is.EqualTo(new[]
             {
-                RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire()
+                RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
+                CoreToolset.Minions.Wire()
             }));
 
         foreach (string role in RoleCatalog.Available(RoleLevel.Specialist)

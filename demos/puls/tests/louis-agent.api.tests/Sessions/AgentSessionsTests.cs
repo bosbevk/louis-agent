@@ -15,6 +15,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Roles;
+using LouisAgent.Core.Delegation;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
 using Microsoft.Extensions.AI;
@@ -61,16 +62,26 @@ public class AgentSessionsTests
     /// Fresh sessions on the repo's skills and the Puls catalogue, with a model that's never called.
     /// </summary>
     private static AgentSessions Sessions(IReadOnlyList<SessionLlm>? llms = null) =>
-        new(new AgentEngineFactory(
-            new NoModel(),
-            new AgentOptions
+        new(new AgentEngineFactory(new NoModel(), PulsOptions(), sessionLlms: llms, catalog: PulsCatalog()));
+
+    /// <summary>
+    /// The settings a Puls stack gives the cook: the browser the recipes toolset reads through, a peer for its minions
+    /// (this instance itself) and the find-recipe minion on the instance's own model (F35.2 step 2b: the cook's header
+    /// asks for `minions`, which needs both).
+    /// </summary>
+    private static AgentOptions PulsOptions() =>
+        new()
+        {
+            WorkspaceRoot = RepoRoot,
+            SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
+            RatesUrl = null,
+            BrowserUrl = "http://puls-browser:9222",
+            AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
+            MinionLlms = new Dictionary<string, IReadOnlyList<string>>
             {
-                WorkspaceRoot = RepoRoot,
-                SkillsDirectory = Path.Combine(RepoRoot, "demos/puls/skills"),
-                RatesUrl = null,
-                BrowserUrl = "http://puls-browser:9222",
+                [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
             },
-            sessionLlms: llms, catalog: PulsCatalog()));
+        };
 
     /// <summary>
     /// The names of the tools a session's model can call.
@@ -161,19 +172,19 @@ public class AgentSessionsTests
     [Test]
     public void TheCook_LoadsWhereToBuyAndShopPrices_FromItsRole()
     {
-        // F35.2 step 1 and F50.2: the cook's header names its recipes and both packs' toolsets, so they come with the
-        // role, beside what Puls passed.
+        // F35.2 steps 1 and 2b and F50.2: the cook's header names its recipes, both packs' toolsets and the minions,
+        // so they come with the role, beside what Puls passed.
         var cook = Sessions().Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
         Assert.That(cook.Toolsets,
             Is.EquivalentTo(new[]
             {
                 TestToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-                ShopPricesToolset.ShopPrices.Wire()
+                ShopPricesToolset.ShopPrices.Wire(), CoreToolset.Minions.Wire()
             }));
         Assert.That(Names(cook),
             Does.Contain("FindBranches").And.Contain("FindShopsNear").And.Contain("EstimatePrices").And
-                .Contain("WebSearch"));
+                .Contain("WebSearch").And.Contain("StartMinion"));
     }
 
     /// <summary>
@@ -214,35 +225,6 @@ public class AgentSessionsTests
         Assert.That(sessions.Get(session.Id), Is.SameAs(session));
         Assert.That(sessions.Remove(session.Id), Is.True);
         Assert.That(sessions.Get(session.Id), Is.Null);
-    }
-
-    /// <summary>The sessions never prompt a model in these tests.</summary>
-    private sealed class NoModel : IChatClient
-    {
-        /// <summary>
-        /// Never asked: these tests open sessions, they don't talk to a model.
-        /// </summary>
-        public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null,
-            CancellationToken cancellationToken = default) => throw new NotSupportedException();
-
-        /// <summary>
-        /// Never asked either, streaming or not.
-        /// </summary>
-        public IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> messages,
-            ChatOptions? options = null, CancellationToken cancellationToken = default) =>
-            throw new NotSupportedException();
-
-        /// <summary>
-        /// Offers no extra services.
-        /// </summary>
-        public object? GetService(Type serviceType, object? serviceKey = null) => null;
-
-        /// <summary>
-        /// Holds nothing, so there's nothing to let go of.
-        /// </summary>
-        public void Dispose()
-        {
-        }
     }
 
     /// <summary>

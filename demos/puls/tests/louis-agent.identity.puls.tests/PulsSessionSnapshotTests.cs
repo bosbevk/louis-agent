@@ -9,6 +9,7 @@ using LouisAgent.Core.Config;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
+using LouisAgent.Core.Delegation;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
@@ -52,14 +53,19 @@ public class PulsSessionSnapshotTests
     /// </summary>
     private AgentEngineFactory Factory()
     {
-        // The Puls stack's settings, as far as building an engine reads them: a peer for the specialists toolset, and a
-        // browser (nothing is connected while an engine is built).
+        // The Puls stack's settings, as far as building an engine reads them: a peer for the specialists and minions
+        // toolsets, the find-recipe minion on the instance's own model (the cook's header asks for `minions`, F35.2
+        // step 2b), and a browser (nothing is connected while an engine is built).
         var options = new AgentOptions
         {
             WorkspaceRoot = _skillsDir,
             SkillsDirectory = _skillsDir,
             RatesUrl = null,
             AgentPeers = new Dictionary<string, Uri> { [SampleIdentity.Alpha] = new("http://puls-agent.test/") },
+            MinionLlms = new Dictionary<string, IReadOnlyList<string>>
+            {
+                [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
+            },
             BrowserUrl = "http://browser.test:9222",
         };
         // Where to buy and shop prices are packs Puls names (F50.2); the catalogue is what IDENTITIES=puls builds.

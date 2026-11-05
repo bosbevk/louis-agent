@@ -23,11 +23,25 @@ trials below were made before this change and are graded unchanged; the re-recor
 | Mode | Puls's tools | The cook's tools | What it is |
 |---|---|---|---|
 | `puls-tools` | `web`, `shops` | — | Puls alone with the cook's tools: can't hand over, cooks itself |
-| `puls-cook` | `specialists`, `web` | `web`, `recipes` | Puls as built: the web itself, cooking to the cook |
+| `puls-cook` | `specialists`, `web` | `web`, `recipes`, `minions` | Puls as built: the web, cooking to the cook |
 
 `specialists` is not something the cook uses: it is Puls's ability to hand over. Without it Puls can only cook
 itself, which is `puls-tools`. The cook gets `web` from Puls (the recorded turn shows `toolsets: ["web"]`), and its
-role adds `recipes` (F35.2, ADR 0025; it was `shops` from F33 until F18 step 5.7 and F35.2 took them out of its header).
+role adds `recipes` and `minions` (F35.2, ADR 0025; it was `shops` from F33 until F18 step 5.7 and F35.2 took them out
+of its header). The cook hands the search to the `puls-minion-find-recipe` minion (`StartMinion` with `FindRecipes` as
+its tool) and reads the link it answers with `ReadRecipe`; the minion runs on `MINION_LLMS`'s model (Haiku 5.5, the
+instance's own).
+
+**What the checks see of a minion** (read in `EngineEvents` and the checks, 2026-11-04, not run on a recording). A
+trial's checks read the first-level turn's events and the specialist's, which Puls's stream carries as `sub_session`
+events. A minion's own events are one level deeper (the cook's stream carries them, and Puls's stream carries the
+cook's), and `tool-used`, `tool-not-used` and `tool-calls-under` unwrap one level only. So the cook's `StartMinion` call
+(with `FindRecipes` as its tool) and its `ReadRecipe` call are seen as specialist calls, and `routed-to` reads only
+Puls's own first `StartSubSession`; but the `FindRecipes` call the minion makes is not seen by `tool-used`, nor are its
+results or the sites it searched by the counts that read `ToolResultsOf` and `UrlsGiven`. **A check on the search
+names `StartMinion`, never `FindRecipes`:** a `tool-used` on `FindRecipes` would fail even when the search ran.
+The identity's own `TurnView` unwraps every level, so a check built on it would see the minion's calls. What the
+minion cost is on the run's ledger as a `sub_session` request under the cook's turn.
 
 ## The conversations
 

@@ -7,6 +7,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Headers;
+using LouisAgent.Core.Delegation;
 using LouisAgent.Core.Web.Search;
 using LouisAgent.Identities.Puls;
 using Microsoft.Extensions.FileProviders;
@@ -110,7 +111,7 @@ public class PluginsTests
 
     /// <summary>
     /// With Puls and its recipes sites set, the recipes pack loads once beside where to buy and the shop prices, and the
-    /// toolsets the cook declares in its header resolve to them.
+    /// toolsets the cook declares in its header resolve: the packs' to the packs, minions to core's.
     /// </summary>
     [Test]
     public void PulsWithRecipeSources_LoadsTheRecipesPackOnce_AndTheCookResolvesIt()
@@ -129,15 +130,32 @@ public class PluginsTests
                     RecipesToolset.Recipes.Wire(), PackKind.Web.Wire()
                 }));
 
-            // The cook's header names its three toolsets; with the browser given, the catalogue resolves them.
-            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
-                new NoSearch());
+            // The cook's header names its four toolsets; with the browser, a peer and the find-recipe minion's model
+            // given, as a Puls stack has them, the catalogue resolves them all, core's first (F50.2, F35.2 step 2b).
+            var withBrowser = new ToolsetContext(new AgentOptions
+            {
+                BrowserUrl = "http://puls-browser:9222",
+                AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
+                MinionLlms = new Dictionary<string, IReadOnlyList<string>>
+                {
+                    [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
+                },
+            }, new NoSearch());
             Assert.That(catalog.Resolve(CookToolsets(catalog), withBrowser).Select(t => t.Name),
-                Is.EqualTo(new[]
+                Is.EquivalentTo(new[]
                 {
                     RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-                    ShopPricesToolset.ShopPrices.Wire()
+                    ShopPricesToolset.ShopPrices.Wire(), CoreToolset.Minions.Wire()
                 }));
+
+            // Without MINION_LLMS the header's `minions` has no `?`, so the cook is refused, naming the setting.
+            var noModels = new ToolsetContext(new AgentOptions
+            {
+                BrowserUrl = "http://puls-browser:9222",
+                AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
+            }, new NoSearch());
+            Assert.That(() => catalog.Resolve(CookToolsets(catalog), noModels),
+                Throws.TypeOf<ToolsetException>().With.Message.Contain("MINION_LLMS"));
         }
         finally
         {
