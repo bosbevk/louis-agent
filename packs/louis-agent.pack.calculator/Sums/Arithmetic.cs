@@ -5,13 +5,13 @@ using System.Text;
 namespace LouisAgent.Packs.Calculator.Sums;
 
 /// <summary>
-/// Works out one sum in code, to four decimals, which is finer than anyone cooks or shops by. A sum it can't work out is
-/// refused, so nothing comes back that could be mistaken for a result.
+/// Works out one sum in code, to four decimals, which is finer than anyone cooks or shops by. A sum it can't work out
+/// is refused, so nothing comes back that could be mistaken for a result.
 /// </summary>
 /// <remarks>
-/// Reuses .NET's own expression evaluator (<see cref="DataTable.Compute"/>) rather than a package or a parser of our own
-/// (ADR 0030). That evaluator also does strings, comparisons and functions, so only arithmetic's characters get through to
-/// it, and a model's sum can't become anything else (ADR 0004).
+/// Reuses .NET's own expression evaluator (<see cref="DataTable.Compute"/>) rather than a package or a parser of our
+/// own (ADR 0030). That evaluator also does strings, comparisons and functions, so only arithmetic's characters get
+/// through to it, and a model's sum can't become anything else (ADR 0004).
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0080-a-tool-when-it-improves-the-prompt.md">ADR 0080: a tool when it improves the prompt</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0004-arguments-as-data.md">ADR 0004: arguments as data</seealso>
@@ -36,7 +36,7 @@ internal static class Arithmetic
             result = Math.Round(value, 4).ToString("0.####", CultureInfo.InvariantCulture);
             return true;
         }
-        // A sum that doesn't parse, divides by zero or outgrows a number: the evaluator throws, and all of them are a no.
+        // A sum that doesn't parse, divides by zero or outgrows a number: the evaluator throws, and each is a no.
         catch (Exception ex) when (ex is InvalidExpressionException or ArithmeticException or InvalidCastException)
         {
             return false;

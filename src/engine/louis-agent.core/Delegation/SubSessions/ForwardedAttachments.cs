@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Delegation.SubSessions;
 /// </summary>
 internal static class ForwardedAttachments
 {
-    /// <summary>The named files with their contents to send on, or the refusal when one of them isn't attached.</summary>
+    /// <summary>The named files with their contents to send on, or the refusal when one isn't attached.</summary>
     public static string? Take(string[]? attachments, out List<object> forwarded)
     {
         var available = SessionAttachments.Current;

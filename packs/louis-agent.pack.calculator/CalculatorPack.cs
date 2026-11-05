@@ -6,8 +6,8 @@ using Microsoft.Extensions.FileProviders;
 namespace LouisAgent.Packs.Calculator;
 
 /// <summary>
-/// A calculator as a pack: one toolset, <c>calculator</c>, so a model hands its sums to code instead of doing them in its
-/// head. It needs no setting and no network, so it loads wherever it is named.
+/// A calculator as a pack: one toolset, <c>calculator</c>, so a model hands its sums to code instead of doing them in
+/// its head. It needs no setting and no network, so it loads wherever it is named.
 /// </summary>
 /// <remarks>
 /// The same shape as every pack (ADR 0027): a list of toolsets and the files the model reads, naming no identity and no

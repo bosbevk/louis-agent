@@ -29,7 +29,7 @@ public class ArithmeticTests
     public void ASumThatCantBeWorkedOut_IsRefused(string sum) =>
         Assert.That(Arithmetic.TryWorkOut(sum, out _), Is.False);
 
-    /// <summary>It's a calculator and no more: the expression language underneath does strings and functions too.</summary>
+    /// <summary>It's a calculator and no more, though the evaluator underneath does strings and functions too.</summary>
     [TestCase("Len('abc')")]
     [TestCase("IIF(1=1,2,3)")]
     [TestCase("Convert(1,'System.String')")]

@@ -7,7 +7,7 @@ namespace LouisAgent.Packs.Calculator.Tests;
 /// <summary>The pack is one toolset with its guide, and needs nothing set to load.</summary>
 public class CalculatorPackTests
 {
-    /// <summary>Its name, its toolset and its guide are the pack's own, and the guide says what to route here.</summary>
+    /// <summary>Its name, its toolset and its guide are the pack's own, and the guide says what comes here.</summary>
     [Test]
     public void TheGuide_ComesFromThePack_NotFromCore()
     {
