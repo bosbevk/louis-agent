@@ -125,19 +125,17 @@ public class PulsDatasetsTests
     }
 
     /// <summary>
-    /// The prompts ask first about a meal that doesn't say for how many or where they'll shop, and never hand it on;
-    /// so a question that should reach the cook states them, and its criteria repeat them for the graders.
+    /// The prompts ask first about a meal that doesn't say for how many, and never hand it on; so a question that
+    /// should reach the cook states them, and its criteria repeat them for the graders.
     /// </summary>
     [Test]
-    public void EveryQuestionForTheCook_NamesItsTownItsPeopleAndItsShop_ElsePulsWouldAskFirst()
+    public void EveryQuestionForTheCook_NamesItsTownAndItsPeople_ElsePulsWouldAskFirst()
     {
         foreach (var name in Enum.GetValues<PulsEvalName>())
             foreach (EvalScenario scenario in Load(name).Scenarios.Where(s => ExpectedRoute.Of(s) is not null))
             {
                 string first = scenario.Input.Messages[0];
                 Assert.That(Servings.Of(first), Is.Not.Empty, $"{scenario.Id}: the people");
-                Assert.That(first, Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"),
-                    $"{scenario.Id}: the shop");
                 if (name == PulsEvalName.Cook) AssertTheCriteriaMatchTheQuestion(scenario, first);
             }
     }
@@ -154,10 +152,10 @@ public class PulsDatasetsTests
     }
 
     /// <summary>
-    /// A question that leaves out the people and the shop is one Puls answers itself, by asking first.
+    /// A question that leaves out the people is one Puls answers itself, by asking first.
     /// </summary>
     [Test]
-    public void AQuestionThatLeavesOutThePeopleAndTheShop_IsOneWherePulsAsksFirst()
+    public void AQuestionThatLeavesOutThePeople_IsOneWherePulsAsksFirst()
     {
         var asks = Load(PulsEvalName.Cook).Scenarios.Single(s => s.Id == "cook-asks-first");
 
