@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
+using LouisAgent.Packs.Recipes.Library;
 using LouisAgent.Packs.Recipes.Library.Feed;
 using LouisAgent.Packs.Recipes.Library.Store;
 using LouisAgent.Packs.Recipes.Sources;
@@ -28,8 +29,13 @@ public sealed class RecipesPack : IAgentPack
         IRecipeStore store = options.MongoUrl is { } url
             ? MongoRecipeStore.Open(url, options.MongoDatabase)
             : new NoRecipeStore();
+        var enabled = RecipeSourceFactory.Enabled(options.RecipeSources);
         // With no database there's nothing to publish, so there's no feed to list.
-        Feeds = options.MongoUrl is null ? [] : [new RecipesFeed(store, RecipeSourceFactory.Enabled(options.RecipeSources))];
+        Feeds = options.MongoUrl is null ? [] : [new RecipesFeed(store, enabled)];
+        // The cook reads the library the way anyone would: over HTTP, from the open feed.
+        IRecipeLibrary library = options.LibraryUrl is { } api
+            ? new FeedRecipeLibrary(new HttpClient(), api, TimeProvider.System)
+            : new NoRecipeLibrary();
         Toolsets =
         [
             new(RecipesToolset.Recipes.Wire(),
@@ -46,7 +52,10 @@ public sealed class RecipesPack : IAgentPack
                     new RecipeTools(
                         RecipeSourceFactory.Create(RecipeSourceFactory.Enabled(options.RecipeSources), ctx.Browser!,
                             ctx.WebSearch),
-                        ctx.Browser!, ctx.NewFetcher())
+                        ctx.Browser!, ctx.NewFetcher(),
+                        // An eval's trial leaves the library alone, unless a run that measures it says otherwise.
+                        new RecipeShelf(library, store, enabled, TimeProvider.System,
+                            () => ctx.InATrial && !options.LibraryInEvals))
                 ],
                 // Searches and page reads change nothing, and the browser opens at most four pages at once.
                 ParallelSafe: true),

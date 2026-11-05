@@ -2,9 +2,42 @@ using LouisAgent.Composition.Web.Search;
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Web.Browsing;
 
 namespace LouisAgent.Core.Tests.Agent.Toolsets;
+
+/// <summary>A pack can tell an eval's trial from a real chat: only recording or replaying the web counts.</summary>
+public class ToolsetContextTrialTests
+{
+    private static ToolsetContext Context() => new(new AgentOptions(), new TrialNoSearch());
+
+    /// <summary>What counts as a trial, by how the session's web is set.</summary>
+    [TestCase(WebReplayMode.Record, true)]
+    [TestCase(WebReplayMode.Replay, true)]
+    [TestCase(WebReplayMode.Off, false)]
+    public void ATrial_IsAWebThatIsRecordedOrReplayed(WebReplayMode web, bool expected)
+    {
+        using var _ = SessionReplay.Use(new SessionReplay(web, "trial-1", false));
+
+        Assert.That(Context().InATrial, Is.EqualTo(expected));
+    }
+
+    /// <summary>A real chat has none of it.</summary>
+    [Test]
+    public void ARealChat_IsNoTrial() => Assert.That(Context().InATrial, Is.False);
+
+    /// <summary>A search provider these tests never ask.</summary>
+    private sealed class TrialNoSearch : IWebSearchProvider
+    {
+        /// <inheritdoc />
+        public string Name => "None";
+
+        /// <inheritdoc />
+        public Task<IReadOnlyList<WebSearchResult>> SearchAsync(WebSearchQuery query,
+            CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<WebSearchResult>>([]);
+    }
+}
 
 // F33 step 1: a toolset gets the guarded browser from its context, as it gets the search and the renderer: the one given
 // (a test's fake), else the Chrome BROWSER_URL names, else none (a toolset that needs one is then unavailable).

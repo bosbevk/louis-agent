@@ -95,6 +95,12 @@ properties:
           # database is the pack's default, shop_prices.
           - name: SHOP_PRICES_MONGO_URL
             secretRef: benchmarks-mongo-url
+          # The recipe library (ADR 0082): kept on the same server in its own database, recipe_library, and read back
+          # from this instance's own open feed.
+          - name: RECIPES_MONGO_URL
+            secretRef: benchmarks-mongo-url
+          - name: RECIPE_LIBRARY_URL
+            value: http://127.0.0.1:8080/
         resources:
           cpu: 1
           memory: 2Gi
