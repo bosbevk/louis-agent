@@ -30,6 +30,18 @@ two places were read 24% of the time, and 8% lower down. Louis chose not to, bec
 than the saving. A win test measures what you said you wanted, and sometimes the honest answer is that you want
 something else more.
 
+Then a full library changed the picture, with no push at all:
+
+| | Library off | Library on, from empty | Full library |
+|---|---|---|---|
+| Judge passed | 43 of 50 | 40 of 50 | 42 of 50 |
+| Time per answer | 56 s | 55 s | 52 s |
+| Cost per answer | $0.00633 | $0.00649 | $0.00628 |
+| Answers built from a copy | | 9 | 31 |
+
+The cook read a copy once there were copies worth reading: a memory earns its keep when it's full, and a test on an empty one
+mostly measures the filling.
+
 ## What changed
 
 - **Each new read from a site in our table is kept for good, as a proper recipe:** field by field, from the page's data or
@@ -66,8 +78,8 @@ something else more.
 
 ## What's left
 
-- Nothing measured the changes made after the run: the 10 results, the 3 places, the new site, the other names and the reader's
-  fixes. The next paid recipes run is the first on them.
+- About 11 of the 16 excluded pages are real recipes the reader can't see, so they want a better reader, and the list cleared.
+- New pages fell from 10 to 3 a repeat: 10 dishes run out, and real chats are what will grow it.
 - The cook's scaling, which is its most serious accuracy problem and has nothing to do with the library.
 
 ---
