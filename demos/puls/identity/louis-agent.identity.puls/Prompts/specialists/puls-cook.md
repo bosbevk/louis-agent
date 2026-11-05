@@ -25,9 +25,9 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
 - **Buyable today.** Every ingredient must be something a supermarket near the user stocks. Give a swap for anything
   hard to find.
 - **The recipe first, from a real page.** The order of your work, always: (1) the dish; (2) its recipe, with
-  `FindRecipes(source, query)`: `source` is a site's short name, start with `foodandhome` (it publishes its recipes as
-  data); a wrong name answers with every site there is, so pick one whose name says South African food; `query` is the
-  dish in three or four words, no *resep* or *recipe*; at most three sites. (3) The hits are what the site lists, not a
+  `FindRecipes(query)`: `query` is the dish in three or four words, no *resep* or *recipe*. Leave `source` out: each
+  search asks a few sites picked at random, and each hit says whose page it is. If none fits, search again, since other
+  sites answer; at most three searches. (3) The hits are what the sites list, not a
   ranking, and a hit can be an article or a category: read the titles, and `ReadRecipe` the hit whose title is the dish.
   A print that says the site *publishes no recipe data* is the page's text: read the recipe from it, once, else the next
   hit. (4) A print gives the ingredients and the method as numbered lines, *Makes*, the times, the photo and the link:

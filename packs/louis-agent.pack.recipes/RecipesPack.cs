@@ -26,7 +26,7 @@ public sealed class RecipesPack : IAgentPack
         Toolsets =
         [
             new(RecipesToolset.Recipes.Wire(),
-                "Recipes from South African recipe sites: search one, or read any recipe page",
+                "Recipes from South African recipe sites: search a few at once or one by name, or read any recipe page",
                 GuideFile: PackToolset.Guide(RecipesToolset.Recipes.Wire()),
                 MissingSettings: ctx => new[]
                 {

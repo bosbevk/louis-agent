@@ -19,18 +19,31 @@ public class PulsCookRecipeToolsTests
         string.Join(' ', PromptCatalog.Get("specialists/puls-cook.md")!.Body.Split((char[]?)null,
             StringSplitOptions.RemoveEmptyEntries));
 
-    /// <summary>The cook's role text names both tools, in the order of the work, starting on the data site.</summary>
+    /// <summary>The cook's role text names both tools, in the order of the work.</summary>
     [Test]
     public void TheCook_NamesTheTwoRecipeTools_InTheOrderOfTheWork()
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("`FindRecipes(source, query)`").And.Contain("`ReadRecipe`"));
-        Assert.That(cook, Does.Contain("start with `foodandhome`"));
-        Assert.That(cook, Does.Contain("at most three sites"));
+        Assert.That(cook, Does.Contain("`FindRecipes(query)`").And.Contain("`ReadRecipe`"));
+        Assert.That(cook, Does.Contain("at most three searches"));
         Assert.That(cook, Does.Contain("*publishes no recipe data*"), "a text print is read as the page's text, once");
-        Assert.That(cook.IndexOf("`FindRecipes(source, query)`", StringComparison.Ordinal),
+        Assert.That(cook.IndexOf("`FindRecipes(query)`", StringComparison.Ordinal),
             Is.LessThan(cook.IndexOf("`ReadRecipe` the hit", StringComparison.Ordinal)));
+    }
+
+    /// <summary>
+    /// The cook names no first site: the prompt said to start with one, the model obeyed, and 19 of 21 recipes came
+    /// from it. A site's name here would bring that back.
+    /// </summary>
+    [Test]
+    public void TheCook_NamesNoSiteToStartWith()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Not.Contain("foodandhome"));
+        Assert.That(cook, Does.Not.Contain("`FindRecipes(source, query)`"));
+        Assert.That(cook, Does.Contain("Leave `source` out"));
     }
 
     /// <summary>The image line and the link come from the tool's print, and the amounts from its lines.</summary>
