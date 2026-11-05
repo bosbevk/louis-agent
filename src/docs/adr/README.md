@@ -85,6 +85,8 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0076](0076-core-ships-no-agent.md) | Core ships no agent: the coding agent is an identity in its demo, a tool the model asks for is a pack, and what every pack relies on stays in the engine, reached through a contract |
 | [0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md) | The films on GitHub are animated WebP, rendered from the site's CSS, with a still for reduced motion; a stale export fails a test |
 | [0078](../../../packs/docs/adr/0078-a-recipe-search-asks-several-sites.md) | A recipe search asks several sites and the model doesn't pick which: four at random from those with their own search, merged taking turns; no prompt names a site to start with |
+| [0079](0079-show-a-specialists-report.md) | An instance can show a specialist's report as it is and end the turn there, so its model never retypes it (`SHOW_SPECIALIST_REPORTS`); off by default, since an agent that checks the work has to read it | Accepted |
+| [0080](0080-a-tool-when-it-improves-the-prompt.md) | If a tool would make a prompt's job work better or more accurately, make the tool instead of another prompt rule; judgement stays in the prompt | Accepted |
 
 ## When to write one
 

@@ -1,0 +1,6 @@
+{
+  "NoSums": "Calculate needs at least one sum, such as '500*3/2'.",
+  "SumRefused": "<Sum>: can't be worked out. Use only numbers, + - * / and brackets, with a point for decimals and a division for a fraction (2/3).",
+  "SumWorkedOut": "<Sum> = <Result>",
+  "TooManySums": "At most <Most> sums in one call; this one had <Count>. Split them into two calls."
+}

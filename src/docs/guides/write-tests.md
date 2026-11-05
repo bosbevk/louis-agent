@@ -68,6 +68,7 @@ markup, can't happen by accident:
 |---|---|---|
 | `Agent/ModelRequestSnapshot.json` (core) | `ModelRequestSnapshotTests` | The tools, their descriptions, the system prompt |
 | `Messages/ToolMessageSnapshot.json` (core) | `ToolMessageSnapshotTests` | Every text a tool returns |
+| `CalculatorToolMessageSnapshot.json` (calculator pack) | `CalculatorToolMessageSnapshotTests` | The calculator's texts |
 | `WhereToBuyToolMessageSnapshot.json` (where-to-buy pack) | `WhereToBuyToolMessageSnapshotTests` | The branch tool's texts |
 | `ShopPriceToolMessageSnapshot.json` (shop-prices pack) | `ShopPriceToolMessageSnapshotTests` | The price tool's texts |
 | `PulsSessionSnapshot.json` (Puls identity) | `PulsSessionSnapshotTests` | What the model is sent in Puls's chat and its cook |

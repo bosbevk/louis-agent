@@ -30,6 +30,7 @@ public class RepeatedNameTests
         "packs/louis-agent.pack.where-to-buy/WhereToBuyToolset.cs",
         "packs/louis-agent.pack.shop-prices/ShopPricesToolset.cs",
         "packs/louis-agent.pack.recipes/RecipesToolset.cs",
+        "packs/louis-agent.pack.calculator/CalculatorToolset.cs",
         "demos/puls/evals/louis-agent.identity.puls.evals/Evals/Checks/Shared/PulsToolset.cs",
         "src/evals/louis-agent.evals.runner/Evals/Stub/StubToolset.cs",
         "src/web/louis-agent.web.shared/Api/AskedToolset.cs",

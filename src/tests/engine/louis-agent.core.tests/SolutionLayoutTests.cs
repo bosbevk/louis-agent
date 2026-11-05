@@ -18,7 +18,7 @@ public class SolutionLayoutTests
     [TestCase("src/web", "louis-agent.web.shared")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
-    [TestCase("packs", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files", "louis-agent.pack.git", "louis-agent.pack.dotnet", "louis-agent.pack.devops", "louis-agent.pack.paymo", "louis-agent.pack.recipes", "louis-agent.pack.shop-prices", "louis-agent.pack.where-to-buy")]
+    [TestCase("packs", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files", "louis-agent.pack.git", "louis-agent.pack.dotnet", "louis-agent.pack.devops", "louis-agent.pack.paymo", "louis-agent.pack.recipes", "louis-agent.pack.calculator", "louis-agent.pack.shop-prices", "louis-agent.pack.where-to-buy")]
     [TestCase("packs-evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
@@ -44,7 +44,7 @@ public class SolutionLayoutTests
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
     [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests", "louis-agent.web.tests", "louis-agent.site.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
-    [TestCase("packs-tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests", "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests", "louis-agent.pack.git.integration-tests", "louis-agent.pack.dotnet.tests", "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.shop-prices.tests",
+    [TestCase("packs-tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests", "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests", "louis-agent.pack.git.integration-tests", "louis-agent.pack.dotnet.tests", "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.calculator.tests", "louis-agent.pack.shop-prices.tests",
         "louis-agent.pack.shop-prices.integration-tests", "louis-agent.pack.where-to-buy.tests",
         "louis-agent.pack.recipes.checks.tests", "louis-agent.pack.where-to-buy.checks.tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)

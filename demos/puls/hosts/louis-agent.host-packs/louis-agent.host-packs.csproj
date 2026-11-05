@@ -24,6 +24,7 @@
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.web\louis-agent.pack.web.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.recipes\louis-agent.pack.recipes.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.where-to-buy\louis-agent.pack.where-to-buy.csproj" />
+    <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.calculator\louis-agent.pack.calculator.csproj" />
     <ProjectReference Include="..\..\..\..\packs\louis-agent.pack.shop-prices\louis-agent.pack.shop-prices.csproj" />
   </ItemGroup>
 
