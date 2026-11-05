@@ -1,12 +1,17 @@
 # Louis Agent
 
-**An AI agent engine in C#, and the agents built on it.**
+**An AI agent framework in C#, and the agents built on it.**
 
-louis-agent is the engine: the tool loop, streaming, providers, cost tracking and safety guards, built on
-[Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai). On top of it you put an
-**identity** (who the agent is: its voice, its modes, its roles) and **packs** (what it can do: tools, guides,
-settings). Two agents run on it today: a **coding agent** that works on your repository, and **Puls**, a South African
-assistant in everyday Afrikaans.
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="demos/louis-agent/docs/films/short.png">
+  <img alt="A 36-second film of one turn: your program starts a host and a prompt comes in, the catalogue says who the agent is and what it can do, core asks the model, a pack's tool runs behind a guard, the ledger prices every request, and the answer streams back with its bill." src="demos/louis-agent/docs/films/short.webp" width="960">
+</picture>
+
+louis-agent is a framework: the engine (the tool loop, streaming, providers, cost tracking and safety guards, built on
+[Microsoft.Extensions.AI](https://learn.microsoft.com/dotnet/ai/microsoft-extensions-ai)), the hosts that serve it, and
+packs of tools. A few lines of your own say who the agent is (an **identity**: its voice, its modes, its roles) and what
+it can do (**packs**: tools and their guides), and start a host. Two agents run on it today: a **coding agent** that works
+on your repository, and **Puls**, a South African assistant in everyday Afrikaans.
 
 Everything is C#, on purpose. It runs on Claude by default; Ollama and OpenAI-compatible endpoints work too.
 
@@ -31,6 +36,7 @@ own agents.
 | An admin portal: each run opens on its answer, one Evals page, a queue of answers waiting for a person's grade | |
 | Cost on every answer, from a usage ledger priced by date; every turn and tool call traced with OpenTelemetry | |
 | A website for the engine itself (`demos/louis-agent/web/louis-agent.site`) | |
+| A pack runs from a package, with no engine in its dependencies | Publishing the packages to NuGet |
 
 The full order is in the [TODO](TODO.md) and the [platform plan](src/docs/plans/platform.md); what's finished is in the
 [CHANGELOG](CHANGELOG.md).
@@ -39,23 +45,35 @@ The full order is in the [TODO](TODO.md) and the [platform plan](src/docs/plans/
 
 ```mermaid
 flowchart TB
-    hosts["Hosts<br/>Rider (ACP) · web app · Puls · HTTP API · CLI · MCP server"]
-    comp["louis-agent.composition<br/>the only project that knows every identity and pack"]
+    program["Your program<br/>a few lines: names an identity and its packs, starts a host"]
+    hosts["Hosts, as libraries<br/>Rider (ACP) · HTTP API · CLI · MCP server"]
     ids["Identities<br/>who an agent is: puls, the coding agent"]
-    packs["Packs<br/>what it can do: recipes, prices, …"]
+    packs["Packs<br/>what it can do: files, git, dotnet, shell, web, recipes, …"]
+    contracts["louis-agent.composition<br/>the contracts an identity or a pack needs"]
     core["louis-agent.core: the engine<br/>tool loop · streaming · providers · usage ledger · guards"]
     llm["Claude · Ollama · OpenAI-compatible"]
-    hosts --> comp
-    comp --> ids
-    comp --> packs
-    ids --> core
-    packs --> core
+    program --> hosts
+    program --> ids
+    program --> packs
+    hosts --> core
+    ids --> contracts
+    packs --> contracts
+    core --> contracts
     core --> llm
 ```
 
-The engine names no product and no country. A pack never knows about another pack or an identity, and only the
-composition project knows them all ([ADR 0027](src/docs/adr/0027-engine-identities-and-packs.md)). A few rules hold
-everywhere:
+The engine ships no agent and holds no tools, and it names no product and no country. A pack needs only the contracts,
+never the engine, and never knows about another pack or an identity. Only a demo's own program knows them all
+([ADR 0027](src/docs/adr/0027-engine-identities-and-packs.md), [ADR 0076](src/docs/adr/0076-core-ships-no-agent.md)).
+
+```
+src/                 the framework: the engine, the hosts as libraries, the eval harness, its tests and docs
+packs/               what an agent can do, tools only; packs-evals/ proves them, packs-tests/ tests them
+demos/louis-agent/   the coding agent, as your own project would be: identity, programs, web apps, settings, images, tests
+demos/puls/          Puls, the same way
+```
+
+A few rules hold everywhere:
 
 - **Every request is measured.** The usage ledger records each model call with its tokens and its cost. Every host
   shows what a turn cost (`turn: 3 requests · 28k tokens (26k cached) · $0.006`), and an unknown price stays unknown
@@ -109,7 +127,8 @@ and Paymo. It can write new skills and build its own tools, and those wait for y
 | **MCP server** | `src/hosts/louis-agent.mcp-server` | Hands the tools to any MCP client, which brings its own model |
 | **Orchestrator** | `demos/louis-agent/hosts/louis-agent.orchestrator` | A proof of concept: a second agent reads a service's errors and has louis-agent fix and verify them |
 
-Pushing always stays with you.
+Each host is a library; a small program in `demos/louis-agent/hosts` names what it loads and starts it. Pushing always stays
+with you.
 
 ## Evals
 
