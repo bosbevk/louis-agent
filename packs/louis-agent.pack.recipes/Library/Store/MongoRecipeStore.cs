@@ -3,18 +3,19 @@ using MongoDB.Driver;
 namespace LouisAgent.Packs.Recipes.Library.Store;
 
 /// <summary>
-/// Keeps the recipes in MongoDB, one document per page, for good. A page already there stays exactly as it was first read,
-/// so the first copy is the one we keep, even when two cooks read it at the same moment.
+/// Keeps the recipes in MongoDB, one document per page, for good. A page already there stays exactly as it was first
+/// read, so the first copy is the one we keep, even when two cooks read it at the same moment.
 /// </summary>
 /// <remarks>
 /// A strategy of <see cref="IRecipeStore"/> (Gang of Four) over a typed collection (ADR 0048). Keeping relies on the
-/// document's id, the page's one spelling, instead of looking first: asking the database to refuse a second copy can't race.
+/// document's id, the page's one spelling, instead of looking first: asking the database to refuse a second copy can't
+/// race.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0048-mongo-through-records.md">ADR 0048: Mongo through records</seealso>
 public sealed class MongoRecipeStore(IMongoCollection<StoredRecipeDocument> recipes) : IRecipeStore
 {
     /// <summary>The collection the recipes are kept in.</summary>
-    public const string Collection = "recipes";
+    public const string Collection = "kept_recipes";
 
     /// <summary>How long a call waits for the server before giving up, so a tool call never hangs.</summary>
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);

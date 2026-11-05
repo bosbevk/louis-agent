@@ -4,7 +4,7 @@ using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Tests.Providers;
 using LouisAgent.Packs.Recipes.Tools;
 
-namespace LouisAgent.Packs.Recipes.Tests.Tools;
+namespace LouisAgent.Packs.Recipes.Tests.Tools.Reading;
 
 /// <summary>
 /// <c>ReadRecipe</c> prints one photo, and only one that loads. The Food Fox's photo sat on a dead server and at a 403,

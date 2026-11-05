@@ -2,14 +2,14 @@ namespace LouisAgent.Packs.Recipes.Reading;
 
 /// <summary>
 /// Ends a text page's print where the recipe ends. Real pages run on into readers' comments with their names, related
-/// recipes and newsletter boxes: The Kate Tin's bobotie's neighbour had 92 comments. None of that helps the cook, and an
+/// recipes and newsletter boxes: The Kate Tin's koeksister page had 92 comments. None of that helps the cook, and an
 /// open feed must not publish it.
 /// </summary>
 /// <remarks>
-/// A plain line reader, not a regex (ADR 0057), and one filter in the print (Pipes and Filters). The endings are what real
-/// prints showed. A heading only ends the recipe after a real part of the page, so one in a menu above it can't take the
-/// recipe with it, and a sentence that mentions comments isn't a heading, so it stays. Better to keep a little too much
-/// than to cut a method.
+/// A plain line reader, not a regex (ADR 0057), and one filter in the print (Pipes and Filters). The endings are what
+/// real prints showed. A heading only ends the recipe after a real part of the page, so one in a menu above it can't
+/// take the recipe with it, and a sentence that mentions comments isn't a heading, so it stays. Better to keep a little
+/// too much than to cut a method.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: regex is the last option</seealso>
 internal static class PrintedRecipeText

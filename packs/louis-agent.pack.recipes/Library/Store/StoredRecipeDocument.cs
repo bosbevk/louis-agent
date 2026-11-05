@@ -3,8 +3,8 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace LouisAgent.Packs.Recipes.Library.Store;
 
 /// <summary>
-/// One recipe as MongoDB keeps it in the <c>recipes</c> collection. Its id is the page's one spelling, so a page can
-/// only be kept once, whoever reads it at the same moment.
+/// One recipe as MongoDB keeps it in the <c>kept_recipes</c> collection. Its id is the page's one spelling, so a page
+/// can only be kept once, whoever reads it at the same moment.
 /// </summary>
 /// <remarks>
 /// Metadata Mapping on a Data Transfer Object (Fowler, PoEAA): the record says how each field is stored and the driver

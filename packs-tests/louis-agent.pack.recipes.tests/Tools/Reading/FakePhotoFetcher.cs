@@ -1,7 +1,7 @@
 using System.Net;
 using LouisAgent.Composition.Web.Fetching;
 
-namespace LouisAgent.Packs.Recipes.Tests.Tools;
+namespace LouisAgent.Packs.Recipes.Tests.Tools.Reading;
 
 /// <summary>
 /// A fetcher for the tests that says whether a photo loads: every address is a real image unless the test says what
