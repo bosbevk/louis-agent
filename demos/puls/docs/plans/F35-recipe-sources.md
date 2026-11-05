@@ -764,7 +764,8 @@ Each step is one PR to `main` with its test, built in Rider from its prompt (`Do
 | 5 | **The paid runs, on Louis's go, in this order (2026-11-04).** First, with steps 3 and 4 on `main` and 2b unmerged: the Puls stack rebuilt with `RECIPE_SOURCES`; the cook eval re-recorded (`--repeat 1`, dev; about 10 cents) and the recipes eval recorded without the minion, 3 repeats. Its judge's answers are labelled in the review queue, text-page answers among them, and the judge calibrated to the 90% bar. Then 2b is merged, the stack rebuilt and the same recipes eval recorded again, 3 repeats. The numbers of both go into this plan's measure table. If the minion saves nothing, 2b is not merged and M3 is the answer | The runs themselves; a `$0` replay of both afterwards | Louis in the portal; a prompt with the commands |
 | 6 | **Docs and close.** The write-up `docs/learning/05-structured-outputs.md` (skill 5; by Claude), GOAL's rows 5, 12 and 15, the Puls identity's design doc and the pack doc's *not in Puls's pack list yet* line, `TODO.md` (F35 done, the `local-sources` leftover gone), the plan's lasting parts into ADR 0067's consequences, and `docs/plans/F35-recipe-sources.md` deleted | Docs only; `ClaudeMdSizeTests` and the links check | Haiku 5.5 high |
 
-**Done when:** in the recipes eval every dev scenario passes `recipe-from-source` and `tool-used` (`ReadRecipe`), the
+**Done when:** in the recipes eval every dev scenario passes `recipe-from-source` (a dish no table site holds may come
+from the web when the answer says so; changed 2026-11-05, *Approved during the build*) and `tool-used` (`ReadRecipe`), the
 minion's search is on the run's ledger (the first measured minion run), and
 the cook eval's score with the cook is not below its baseline (23 of 24) on the re-recorded run; the write-up is
 read.
@@ -788,6 +789,10 @@ the cost and of the time; 3 repeats a side.
 ### Approved during the build
 
 (The picks Rider raises mid-build, each with Louis's choice, as F35.1's.)
+
+- **2026-11-05, the judge, Louis's picks.** Against his 30 labels the local judge agreed on 26, but all 30 were passes, so nothing tested whether it caught a bad answer. 12 answers broken on purpose showed it didn't: 5 of 12, and no changed amount. He picked a paid judge. Haiku 5.5 with the rubric's water, seasoning and serving-line fix: 27 of 30 on the labels (90%) and 12 of 12 on the broken answers, the bar being 90% of each class. The rubric was fixed on these same 30, so the number may flatter it a little. The before-run is re-scored with this judge, so both sides of the measure have the same one.
+
+- **2026-11-05, the done-when, Louis's pick.** It said every dev scenario passes `recipe-from-source`. Run `0722c7408705` scored 25 of 30: `pap en sous` failed all 3 repeats, since a rough check found it on one site of the 20 searched, and `boerewors rolls` and `chakalaka` failed once each the same way. It now reads: **every dish a table site holds passes; a dish no table site holds may come from the web, when the answer says so under *Unsure*.** F35.3's library is what fills that gap later. This isn't enforced yet: only 2 of those 5 web recipes said so, the prompt doesn't ask for it, and the check doesn't read it. Both change after the measure, since a prompt change now would shift its numbers. Until then the check's score stays as it is and the 5 are read by hand.
 
 - **2026-11-05, F35.4 before the measure.** Louis, looking at the app: "almost every recipe comes from, this is not random". 19 of 21 recipes came from Food & Home, so the measure would have priced a one-site cook. He stopped the run and picked [F35.4](F35.4-many-recipe-sites.md), a search over several sites, first. The measure's table gains a row: **different sites the recipes came from, and the largest site's share**. The minion (2b) changes when the measure reaches it: its task becomes the dish alone, one search with no site names (finding G1).
 
