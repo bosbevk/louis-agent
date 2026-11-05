@@ -33,6 +33,9 @@ search would stop at the few kinds of melktert it already had.
   any order. A page we hold that a site also lists gets our link, so savings grow as it fills, and new recipes keep coming.
 - **A search gives 10 pages, and 3 places stay for pages from outside the library,** when there are that many, so a full library
   can't crowd out a new recipe.
+- **The cook isn't pushed towards the library.** Our links keep their random places, and the cook reads one when its title fits
+  best. Louis's call, 2026-11-05, over marking them or giving them the first places: "it will make sure we get more recipes".
+  Finding new recipes matters more than the saving.
 - **The site's own address still goes to the site.** A search that names one site, or a web search, gives a site's link, and
   `ReadRecipe` follows it. What it finds is ignored if we hold that page, so the first copy stays.
 - **An eval's trial leaves the library alone** unless `RECIPE_LIBRARY_IN_EVALS=true`, so one run doesn't change the next.
@@ -51,6 +54,9 @@ search would stop at the few kinds of melktert it already had.
   the cook read only 10 of the 69 recipes it was offered. The 9 answers built from a library copy did better than the same dishes
   with the library off: 45 s against 56 s, the cook's cost $0.00556 against $0.00617, judge 8 of 9. Pages new to the run scored 29
   of 36 in both.
+- **So the library saves little for now, and we accepted that.** Our links in places 1 and 2 were read 24% of the time and lower
+  down 8%, so first places would raise its use, at the cost of new recipes. The 10 results, the 3 places, Best Recipes, the
+  other names for pap en sous and the reader's later fixes weren't measured after this run.
 - `IDataFeed` gained `ReadItemJsonAsync`, with a default that gives nothing, and the API `GET /v1/feeds/{name}/{id}`, open like the
   feed. A feed's items have no MCP resource of their own.
 - A copy never changes. If a site corrects a recipe we keep the old one, and a photo that later disappears shows as broken.
