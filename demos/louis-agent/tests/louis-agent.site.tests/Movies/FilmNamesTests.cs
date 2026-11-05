@@ -36,6 +36,18 @@ public partial class FilmNamesTests
         Assert.That(names.Where(name => !Regex.IsMatch(Source.Value, $@"\b{name}\b")), Is.Empty);
     }
 
+    /// <summary>The same for the long film, which names the catalogue's real types too.</summary>
+    [Test]
+    public void TheDetailedFilm_TellsTheStructureAsItIs()
+    {
+        using var ctx = new BunitContext();
+
+        string film = ctx.Render<DetailedMovie>().Markup;
+
+        Assert.That(film, Does.Not.Contain("IDENTITIES").And.Not.Contain("PACKS").And.Not.Contain("Composition"));
+        Assert.That(film, Does.Contain("Your program").And.Contain("AgentCatalog").And.Contain("Delegation"));
+    }
+
     /// <summary>A demo's program names its packs, so the film must not say settings pick them.</summary>
     [Test]
     public void TheShortFilm_TellsTheStructureAsItIs()
