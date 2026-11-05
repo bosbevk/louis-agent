@@ -5,6 +5,7 @@ using LouisAgent.Core.Web.Browsing;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Tests.Providers;
+using LouisAgent.Packs.Recipes.Tests.Tools.Reading;
 using LouisAgent.Packs.Recipes.Tools;
 
 namespace LouisAgent.Packs.Recipes.Tests.Tools;
@@ -155,7 +156,7 @@ public class RecipeToolsTests
     /// <summary>The tools over these sites, with a seeded draw so a test can repeat.</summary>
     private static RecipeTools Seeded(params FakeRecipeSource[] sources) =>
         new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), new FakeSiteBrowser(),
-            new FakePhotoFetcher(), new Random(1));
+            new FakePhotoFetcher(), random: new Random(1));
 
     /// <summary>A site with one hit named after it.</summary>
     private static FakeRecipeSource WithHit(string slug) =>

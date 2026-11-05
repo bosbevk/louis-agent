@@ -1,8 +1,10 @@
 using LouisAgent.Packs.Recipes.Reading;
+using LouisAgent.Packs.Recipes.Reading.Photos;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Composition.Web.Fetching;
 using System.ComponentModel;
+using LouisAgent.Packs.Recipes.Library;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
 using LouisAgent.Packs.Recipes.Sources;
@@ -33,22 +35,24 @@ public sealed class RecipeTools
     private readonly Dictionary<string, IRecipeSource> _sources;
     private readonly IWebBrowser _browser;
     private readonly PhotoCheck _photos;
+    private readonly RecipeShelf _shelf;
     private readonly RecipeScatter _scatter;
 
     /// <summary>
-    /// The enabled sites by short name (looked up in any case), the browser pages open in, and the fetcher that checks a
-    /// photo loads. The random is only so a test can repeat a draw. Only sites with their own search are drawn: the
+    /// The enabled sites by short name (looked up in any case), the browser pages open in, and the fetcher that checks
+    /// a photo loads. The random is only so a test can repeat a draw. Only sites with their own search are drawn: the
     /// others use the web provider per search.
     /// </summary>
     public RecipeTools(IReadOnlyDictionary<string, IRecipeSource> sources, IWebBrowser browser, IPageFetcher fetcher,
-        Random? random = null)
+        RecipeShelf? shelf = null, Random? random = null)
     {
+        _shelf = shelf ?? RecipeShelf.Empty;
         _sources = new Dictionary<string, IRecipeSource>(sources, StringComparer.OrdinalIgnoreCase);
         _browser = browser;
         _photos = new PhotoCheck(fetcher);
         _scatter = new RecipeScatter(
             [.. sources.Values.Where(source => source.Site.Search == RecipeSearch.WordPress)],
-            random ?? Random.Shared);
+            random ?? Random.Shared, shelf);
     }
 
     /// <summary>Searches a few enabled sites, or the one named, and numbers the pages, with their links.</summary>
@@ -144,6 +148,10 @@ public sealed class RecipeTools
             address.Scheme is not ("http" or "https"))
             return MessageText.Format(RecipeToolMessage.AddressRefused);
 
+        // A page we hold opens no browser: a copy never goes stale (Cache-Aside).
+        if (await _shelf.FindAsync(address, cancellationToken) is { } stored)
+            return RecipeHitPrinter.Framed(stored.Print);
+
         // The browser refuses private addresses and what a site's robots.txt disallows; its reason is the answer.
         BrowserVisit visit;
         try
@@ -166,9 +174,16 @@ public sealed class RecipeTools
         // One photo goes in the print, never one we know is gone: a dead address shows the user a broken image.
         var photo = await _photos.FirstNotGoneAsync(PagePhotos.Candidates(visit.Html, page, recipe?.Image),
             cancellationToken);
-        return recipe is not null
-            ? RecipeHitPrinter.Framed(RecipePrinter.Print(recipe with { Image = photo }))
-            : RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo));
+        string[] print = recipe is not null
+            ? [RecipePrinter.Print(recipe with { Image = photo })]
+            : PageWords(visit.Html, page, photo);
+
+        // A new read goes in the library, unless the page had nothing on it to keep.
+        var (title, words) = HtmlText.ToText(visit.Html, page);
+        if (recipe is not null || words.Length > 0)
+            await _shelf.KeepAsync(page, recipe?.Name ?? title ?? page.Host, string.Join('\n', print), cancellationToken);
+
+        return RecipeHitPrinter.Framed(print);
     }
 
     /// <summary>

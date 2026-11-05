@@ -14,11 +14,14 @@ internal static class RecipeHitPrinter
     /// <summary>The answer for a search over several sites; the enabled sites can still be named.</summary>
     public static string Print(RecipeGather gather, string query, string enabled)
     {
-        if (gather.Asked.Count == 0)
+        if (gather.Asked.Count == 0 && gather.Hits.Count == 0)
             return MessageText.Format(RecipeToolMessage.NoSiteInTheDraw, new { Enabled = enabled });
 
-        string asked = string.Join(", ", gather.Asked.Select(site => site.Name));
-        if (gather.Refusals.Count == gather.Asked.Count)
+        // The sites by name, so a next try can skip them, and our library, which a next try asks anyway.
+        var names = gather.Asked.Select(site => site.Name);
+        string asked = string.Join(", ",
+            gather.AskedLibrary ? names.Append(MessageText.Format(RecipeToolMessage.OurLibrary)) : names);
+        if (gather.Hits.Count == 0 && gather.Refusals.Count == gather.Asked.Count)
             return MessageText.Format(RecipeToolMessage.EverySiteRefused,
                 new
                 {
