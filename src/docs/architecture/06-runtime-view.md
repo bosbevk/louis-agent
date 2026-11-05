@@ -3,15 +3,25 @@
 > **Explanation.** How the parts work together at run time: what the model can use (tools and skills), one chat turn
 > step by step with its guards, what each host shows, and the scenarios that span several agents. **Elsewhere:** every
 > message on the wire in [AGENT_COMMUNICATION.md](../AGENT_COMMUNICATION.md); adding
-> [a C# tool](../../engine/louis-agent.core/CLAUDE.md#adding-a-c-tool), [a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-toolset),
+> [a C# tool](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool), [a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool),
 > [a skill](../guides/add-a-skill.md), [a mode or a role](../guides/build-an-identity.md#modes-roles-and-minions-the-rules) or
 > [another agent on core](../../engine/louis-agent.core/CLAUDE.md#building-another-agent-on-core) in the development guides.
+
+## One turn, as a film
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="../../../demos/louis-agent/docs/films/detail.png">
+  <img alt="A 60-second film of one turn in detail: your program and its host, the catalogue, the six layers of the chat pipeline inside core in their real order, a pack's tool, a guard, the ledger, a specialist, the answer streaming back with its bill, and a replay for nothing." src="../../../demos/louis-agent/docs/films/detail.webp" width="960">
+</picture>
+
+The six slabs inside core are the real middleware in its real order, and a test holds that. The film is rendered from the
+site's CSS, so it can't drift from what the site plays ([ADR 0077](../../../demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md)).
 
 ## Two kinds of capability
 
 | | **Tools** | **Skills** |
 |---|---|---|
-| What | Public C# methods on the tool classes in `src/engine/louis-agent.core/Tools/{Toolset}/` | Markdown in `src/engine/louis-agent.core/Prompts/` |
+| What | Public C# methods on a pack's tool classes in `packs/louis-agent.pack.{name}/` | Markdown in `src/engine/louis-agent.core/Prompts/` |
 | The model sees | A function with typed parameters and a description | Text in the system prompt; named procedures it can run |
 | How it's used | The model calls it; the result comes back | The model follows the guidance, or runs a procedure with `ExecuteSkill` |
 | Examples | `ReadWorkspaceFile`, `GetStatus`, `DotNetTest`, `WebSearch`, `LogTimeByTaskName` | `agent/louis-agent/voice.md` (the coding agent's mode: voice, routing), `toolsets/dotnet.md`, `agent/functions/code-review.md` |

@@ -73,7 +73,7 @@ flowchart LR
 | The API | `src/hosts/louis-agent.api` (`Evals/`, `Endpoints/Admin/`) | Starts the runner, records its lines, prices them from the ledger, serves the portal; also runs the sessions the runner opens. |
 | The portal | `demos/puls/web/louis-agent.puls` (`Components/Admin/`) | Start a run, watch it live, read runs and trends, grade the answers that wait (one at a time on the Review page, F53.3), calibrate a judge, write notes; make samples and transcripts from runs, and compose, check, try and publish an eval in the Studio. |
 | The drafts | `src/hosts/louis-agent.api` (`Evals/Drafts/`, Mongo's `eval_drafts`) | What the studio made and hasn't published yet: samples, transcripts and evals being composed ([ADR 0061](../adr/0061-evals-grow-from-use.md), [ADR 0062](../adr/0062-the-studio-writes-what-git-keeps.md)). |
-| The replay store | `louis-agent.core` (`Sessions/Replay/`, `Llm/Replay/`, `Tools/Web/Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
+| The replay store | `louis-agent.core` (`Sessions/Replay/`, `Llm/Replay/`, `Web/Replay/`) | Records a run's web answers, clock and model answers, so the same run can be replayed for free. |
 
 ## The types
 

@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-05 — **F57 The site tells the new structure**: every page and both films now describe the framework: a demo's program, its catalogue, and a pack's tool. Two new pages, *Packs* and *Build your own*, the second honest that the
+  packages aren't on NuGet yet. The films play at the top of the README and in the runtime view as animated WebP, rendered from the site's CSS by `louis-agent.film-export`, with a still for reduced motion. Tests hold the film's names, the program
+  shown and the pack list to the code, and a stale export fails one. [ADR 0077](demos/louis-agent/docs/adr/0077-films-on-github-are-rendered-webp.md).
 - 2026-11-05 — **Core ships no agent** (CL29.3): the coding agent is an identity in `demos/louis-agent/identity`, and every tool the model asks for is a pack: `files`, `git`, `dotnet`, `shell`, `web`, `paymo`, `devops`.
   Core has no `Tools/`: it keeps delegation, skills and the clock, which need its insides, and web access with its guards, which a pack reaches through `IPackContext`. A console app runs a pack from a NuGet package with no
   engine in its dependencies (`APackInstallsAsAPackageTests`). The golden files moved to the coding agent's tests and stayed byte-equal. [ADR 0076](src/docs/adr/0076-core-ships-no-agent.md).

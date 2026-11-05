@@ -15,7 +15,8 @@ docker build -f demos/louis-agent/docker/images/Dockerfile.site -t louis-agent-s
 
 1. A `.razor` under `Components/Pages/` with `@page "/its-route"` and a `<PageTitle>`; markup only, no `@code`.
 2. Its link in `Components/Layout/SiteLayout.razor`'s menu.
-3. A row in `SitePagesTests.APage_Answers_WithItsTitle` with the route and the title.
+3. A row in `SitePagesTests.APage_Answers_WithItsTitle` with the route and the title. Code or a list that mirrors the repo gets a
+   test holding it to the repo, as `BuildYourOwnTests` and `PacksPageTests` do.
 4. A new section's styles go in the file of their concern under `wwwroot/css/` (a landing part in `landing/`, a
    layout rule in `layout/`); a new file is added to `app.css`'s import list where it belongs in the cascade, and
    `SiteStylesheetTests` checks the two match.
@@ -42,13 +43,22 @@ A film is markup (`Components/Movies/*.razor`) and three stylesheets:
 
 To add a scene: its card and caption in the markup (`c7`, `7 / 7`), a step mark (`k7`), the windows re-cut in the
 film's stylesheet, the counts in `ShortMovieTests` or `DetailedMovieTests`, and the golden rewritten with
-`LOUIS_UPDATE_GOLDEN=1`. To see the result frame by frame without waiting, pause the page's animations in the
+`LOUIS_UPDATE_GOLDEN=1`. Then export the films (below). To see the result frame by frame without waiting, pause the page's animations in the
 browser's console and set their time: `document.getAnimations().forEach(a => { a.pause(); a.currentTime = 12000 })`.
 
-## Export a film as a video
+## Export the films
 
-A headless browser steps the animations frame by frame and ffmpeg joins the frames (the script is in the project
-files, `plans/website/`): 30 frames a second, 1280×720, H.264. Re-export after a change to a film.
+After changing a film, run the tool and commit what it writes, or `TheExports_MatchTheFilms` fails:
+
+```bash
+dotnet run --project demos/louis-agent/tools/louis-agent.film-export          # both, into demos/louis-agent/docs/films
+dotnet run --project demos/louis-agent/tools/louis-agent.film-export -- short # one
+```
+
+It needs Docker running, for the encoder. `CHROME_PATH` names the browser; without it, a Chrome for Testing is downloaded once into
+the temp folder. It starts the site itself, from the code as it is, and takes several minutes a film. Each re-export adds the
+films' size to git history, so group changes. [ADR 0077](../adr/0077-films-on-github-are-rendered-webp.md) says why it works
+this way.
 
 ---
 [Docs index](../../../../src/docs/README.md) · Related: [Guides](../../../../src/docs/guides/README.md) · [louis-agent.site](../projects/louis-agent.site.md)

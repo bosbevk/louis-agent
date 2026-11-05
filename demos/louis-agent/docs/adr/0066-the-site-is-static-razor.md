@@ -15,7 +15,7 @@ ADR 0053). Everything is C# on purpose. The site is content: no accounts, no API
 
 ## Decision
 
-- The site is **`src/web/louis-agent.site`, ASP.NET Core with static server-rendered Razor components**: no WebAssembly,
+- The site is **`demos/louis-agent/web/louis-agent.site`, ASP.NET Core with static server-rendered Razor components**: no WebAssembly,
   no interactivity, no script of our own. A page is HTML and CSS.
 - It **references no engine project**. It talks about the engine; it doesn't run it.
 - It **shows only what works today**, as Puls's landing page does; what's planned is at most one honest line.
@@ -24,7 +24,7 @@ ADR 0053). Everything is C# on purpose. The site is content: no accounts, no API
 - **The films are CSS keyframes** over CSS 3D transforms: the parts as slabs on a floor, the turn as a travelling
   light, a flat card per scene. What both films share is one stylesheet; each film's positions, camera and timing are
   its own file under its own class, with keyframe names that end in the film's letter.
-- A video export is rendered from the same CSS by a headless browser, frame by frame; the CSS stays the source.
+- An export is rendered from the same CSS by a headless browser, frame by frame; the CSS stays the source ([ADR 0077](0077-films-on-github-are-rendered-webp.md)).
 
 ## Consequences
 

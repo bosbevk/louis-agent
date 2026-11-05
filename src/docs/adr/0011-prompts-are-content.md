@@ -25,5 +25,5 @@ is only for a skill format we don't control.
 
 ## Links
 
-[Adding a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-toolset) ·
+[Adding a toolset](../../engine/louis-agent.core/CLAUDE.md#adding-a-tool) ·
 [Project layout](../../engine/louis-agent.core/CLAUDE.md#project-layout) · [F5 plan](https://github.com/bosbevk/louis-agent/blob/pre-cl24/docs/plans/F05-toolset-profiles.md)
