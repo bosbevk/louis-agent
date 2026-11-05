@@ -113,6 +113,15 @@ public class RecipesPackTests
         Assert.That(guide, Does.Contain("Route here a request").And.Not.Contain("## Skill:"));
     }
 
+    /// <summary>The guide names no site to start with: a name here is the one the model would always pick.</summary>
+    [Test]
+    public void TheGuide_NamesNoSiteToStartWith()
+    {
+        using var reader = new StreamReader(Pack().Prompts.GetFileInfo("toolsets/recipes.md").CreateReadStream());
+
+        Assert.That(reader.ReadToEnd(), Does.Not.Contain("foodandhome").And.Contain("each search asks"));
+    }
+
     /// <summary>
     /// The guide says plainly that a hit can be a page that is not a recipe, and that the search finds only the
     /// enabled sites while ReadRecipe reads any public page.

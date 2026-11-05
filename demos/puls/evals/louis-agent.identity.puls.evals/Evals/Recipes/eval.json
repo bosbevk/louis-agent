@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "puls-recipes",
   "identity": "puls",
-  "version": 2,
+  "version": 3,
   "proves": "Puls's cook reads a recipe from a real page with ReadRecipe, links a site we may read, shows its photo, and writes the amounts and steps the page gave.",
   "manual": "manual.md",
   "modes": [

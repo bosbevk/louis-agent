@@ -18,9 +18,11 @@ any identity can use it, and it could be served as an MCP server unchanged
 - **One toolset, `recipes`.** `RecipesPack` defines it with its guide (`Prompts/toolsets/recipes.md`) and its two
   tools. It loads only where `RECIPE_SOURCES` names a site and `BROWSER_URL` gives a browser; otherwise
   `GET /v1/toolsets` lists it with the setting it lacks. Its calls only read, so a round's calls run at once.
-- **A search.** `RecipeTools.FindRecipes(source, query, maxResults)` looks the site up by its short name (any case),
-  asks that site's `IRecipeSource` and prints the pages it lists, numbered `1. {title} · {link}`, in the site's own
-  order, at most 10 and five by default. The result is framed `--- untrusted recipe data … ---`. A hit can be a page
+- **A search.** `RecipeTools.FindRecipes(query, source, maxResults)` with no `source` hands the search to `RecipeScatter`:
+  four enabled sites with their own search, at random, asked at once, their hits taking turns and printed
+  `1. {title} · {site} · {link}` ([ADR 0078](../adr/0078-a-recipe-search-asks-several-sites.md)). A named `source` looks the
+  site up by its short name (any case), asks that site's `IRecipeSource` and prints `1. {title} · {link}`. At most 10, and
+  eight by default. The result is framed `--- untrusted recipe data … ---`. A hit can be a page
   that is not a recipe (an article, a round-up), and the description and the guide say so.
 - **Two ways to search.** A site's row says how: `WordPressSearch` opens the site's own `/?s=` page through the browser
   and reads the headings that link back to the site; `SiteWebSearch` asks the web search provider for that site only.
@@ -80,7 +82,8 @@ What F35.1 settled, and why (the plan's decisions are in `demos/puls/docs/plans/
 |---|---|
 | `RecipesPack.cs`, `RecipesToolset.cs` | The pack: the `recipes` toolset, what it needs, how its tools are built; its own toolset enum (ADR 0043) |
 | `RecipesOptions.cs` | The pack's own setting, `RECIPE_SOURCES`, read once from the environment |
-| `Tools/RecipeTools.cs` | The two tools, `FindRecipes` and `ReadRecipe` |
+| `Tools/RecipeTools.cs` | The two tools, `FindRecipes` and `ReadRecipe`; `RecipeHitPrinter` writes a search over several sites |
+| `Sources/Gathering/` | `RecipeScatter` (the draw, the search at once, the merge), `RecipeGather` and `SiteHit` (its answer) |
 | `Tools/RecipePrinter.cs` | The markdown print of a `Recipe`, bounded |
 | `Recipes/` | `Recipe`, `RecipeIngredient` and `RecipeStep` (the record), `SchemaOrgRecipe` (reads a page's JSON-LD into it), `SchemaOrgIngredients` (the ingredient lines and their headings), `SchemaOrgValues` (the loose shapes) |
 | `Sources/` | `IRecipeSource`, `RecipeHit`, `RecipeSourceException`, `RecipeSourceFactory` (the enabled sites and the search each gets) |

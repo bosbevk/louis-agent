@@ -62,7 +62,7 @@ public class RecipesEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 2, 1)));
+            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 3, 1)));
         Assert.That(eval.Proves, Does.StartWith("Puls's cook reads a recipe from a real page"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }

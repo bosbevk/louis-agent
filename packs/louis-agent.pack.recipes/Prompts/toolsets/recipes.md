@@ -12,13 +12,13 @@ method, from a recipe site.
 
 | Tool | Use it to |
 |------|-----------|
-| `FindRecipes` | Search one enabled recipe site (`source`, its short name such as `foodandhome`; `query`, the dish in three or four words). Returns the pages the site lists, numbered, each with its title and link, in the site's own order. A hit can be a page that isn't a recipe (an article, a round-up, a category), so read the titles. |
+| `FindRecipes` | Search the enabled recipe sites (`query`, the dish in three or four words; leave `source` out and each search asks a few sites picked at random, or give one site's short name). Returns the pages the sites list, numbered, each with its title and link, in the site's own order. A hit can be a page that isn't a recipe (an article, a round-up, a category), so read the titles. |
 | `ReadRecipe` | Read one recipe page from its address (`url`). It reads any public recipe page, not only the sites `FindRecipes` searches. Returns the recipe with its ingredients and method as numbered lines, how much it makes, the times, the photo, the author and the link. |
 
 ## Workflow
 
-1. **Search the enabled site first,** with three or four words as a cook would say them (`bobotie`, `chicken pie`).
-   Too many words find nothing; try fewer, or another enabled site.
+1. **Search with no site named,** in three or four words as a cook would say them (`bobotie`, `chicken pie`).
+   Too many words find nothing; try fewer, or search again, since each search asks other sites.
 2. **Read the titles before you read a page.** The hits are what the site lists, not a ranking, and a hit can be a page
    that isn't a recipe. Pick the one whose title is the dish.
 3. **Read the hit with `ReadRecipe`.** Quote ingredient and method lines by their number, as written; give how much
