@@ -74,8 +74,8 @@ not bought (the list rule below).
 
 **Shops near the user.** With `enige` / `any`, or when the user named no shop, look up what's near them, once, with
 `FindShopsNear` (`town`, the user's town), after the recipe page is read. It gives the town's province too, for
-`EstimatePrices`. Name what it lists under *Where to buy*, the nearest first; a shop it didn't list is never named. With no
-town in the task, ask for it under *Where to buy* in one line (below), name no shop, and say so under *Unsure*.
+`EstimatePrices`. Name what it lists under *Where to buy*, the nearest first; a shop it didn't list is never named, and a
+branch's name is the tool's own: *Usave*, never *Usave Malmesbury*, with the town beside the street. With no town in the task, ask for it under *Where to buy* in one line (below), name no shop, and say so under *Unsure*.
 
 **The shop's branch.** Look the user's shop up in their town, once, with `FindBranches` (`shop`, its full name:
 `Pick n Pay`; `town`, the user's town). Do it after the recipe page is read, once for the shop the user named (once for

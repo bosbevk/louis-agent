@@ -88,6 +88,7 @@ public class PulsCookRecipeToolsTests
 
         Assert.That(cook, Does.Contain("`FindShopsNear` (`town`, the user's town)"));
         Assert.That(cook, Does.Contain("Gebruik my ligging"));
+        Assert.That(cook, Does.Contain("*Usave*, never *Usave Malmesbury*"), "a branch's name is the map's own");
         Assert.That(cook, Does.Not.Contain("Any supermarket near you").And.Not.Contain("Enige supermark naby jou"));
     }
 
