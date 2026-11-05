@@ -764,7 +764,8 @@ Each step is one PR to `main` with its test, built in Rider from its prompt (`Do
 | 5 | **The paid runs, on Louis's go, in this order (2026-11-04).** First, with steps 3 and 4 on `main` and 2b unmerged: the Puls stack rebuilt with `RECIPE_SOURCES`; the cook eval re-recorded (`--repeat 1`, dev; about 10 cents) and the recipes eval recorded without the minion, 3 repeats. Its judge's answers are labelled in the review queue, text-page answers among them, and the judge calibrated to the 90% bar. Then 2b is merged, the stack rebuilt and the same recipes eval recorded again, 3 repeats. The numbers of both go into this plan's measure table. If the minion saves nothing, 2b is not merged and M3 is the answer | The runs themselves; a `$0` replay of both afterwards | Louis in the portal; a prompt with the commands |
 | 6 | **Docs and close.** The write-up `docs/learning/05-structured-outputs.md` (skill 5; by Claude), GOAL's rows 5, 12 and 15, the Puls identity's design doc and the pack doc's *not in Puls's pack list yet* line, `TODO.md` (F35 done, the `local-sources` leftover gone), the plan's lasting parts into ADR 0067's consequences, and `docs/plans/F35-recipe-sources.md` deleted | Docs only; `ClaudeMdSizeTests` and the links check | Haiku 5.5 high |
 
-**Done when:** in the recipes eval every dev scenario passes `recipe-from-source` and `tool-used` (`ReadRecipe`), the
+**Done when:** in the recipes eval every dev scenario passes `recipe-from-source` (a dish no table site holds may come
+from the web when the answer says so; changed 2026-11-05, *Approved during the build*) and `tool-used` (`ReadRecipe`), the
 minion's search is on the run's ledger (the first measured minion run), and
 the cook eval's score with the cook is not below its baseline (23 of 24) on the re-recorded run; the write-up is
 read.
