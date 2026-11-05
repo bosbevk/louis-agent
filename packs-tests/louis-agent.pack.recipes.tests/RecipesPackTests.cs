@@ -34,7 +34,7 @@ public class RecipesPackTests
     private static ToolsetContext Context(bool withBrowser) =>
         new(new AgentOptions(), new NoSearch(), WebBrowser: withBrowser ? new FakeSiteBrowser() : null);
 
-    /// <summary>With a database the library is a feed, under the pack's name. Without one there's nothing to publish.</summary>
+    /// <summary>With a database the library is a feed under the pack's name; without one, nothing to publish.</summary>
     [Test]
     public void TheFeed_IsThereOnlyWithADatabase()
     {

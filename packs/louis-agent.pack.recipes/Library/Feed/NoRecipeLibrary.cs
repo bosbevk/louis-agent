@@ -5,10 +5,16 @@ namespace LouisAgent.Packs.Recipes.Library.Feed;
 public sealed class NoRecipeLibrary : IRecipeLibrary
 {
     /// <inheritdoc />
-    public Task<StoredRecipe?> FindAsync(Uri page, CancellationToken cancellationToken) =>
-        Task.FromResult<StoredRecipe?>(null);
-
-    /// <inheritdoc />
     public Task<IReadOnlyList<StoredRecipe>> SearchAsync(string query, int most, CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<StoredRecipe>>([]);
+
+    /// <summary>It has no address of its own, so a recipe stays at the site's.</summary>
+    public Uri AddressOf(StoredRecipe recipe) => recipe.Page;
+
+    /// <inheritdoc />
+    public string? IdIn(Uri address) => null;
+
+    /// <inheritdoc />
+    public Task<StoredRecipe?> ReadAsync(string id, CancellationToken cancellationToken) =>
+        Task.FromResult<StoredRecipe?>(null);
 }

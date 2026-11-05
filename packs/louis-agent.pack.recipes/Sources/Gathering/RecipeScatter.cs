@@ -48,15 +48,21 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
         var kept = shelf?.SearchAsync(query, LibraryLook, cancellationToken) ?? Task.FromResult<IReadOnlyList<StoredRecipe>>([]);
         var answers = await Task.WhenAll(drawn.Select(site => AskAsync(site, query, maxResults, cancellationToken)));
 
+        // A page we hold is read from us, whoever listed it.
+        var keptRecipes = await kept;
+        var ours = OurLinks(keptRecipes);
+
         // The sites' voices, and the library's among them in a random place, so it doesn't always speak first.
         var voices = answers
-            .Select(answer => Mixed(answer.Hits).Select(hit => new SiteHit(answer.Site.Site, hit)).ToList())
+            .Select(answer => Mixed(answer.Hits)
+                .Select(hit => new SiteHit(answer.Site.Site, FromUsIfOurs(hit, ours)))
+                .ToList())
             .ToList();
-        var held = Held(await kept);
+        var held = Held(keptRecipes);
         if (held.Count > 0) voices.Insert(random.Next(voices.Count + 1), held);
 
         // Each voice's first hit, then each one's second: the sort keeps the order within a turn. A page that both a
-        // site and the library offer appears once.
+        // site and the library offer has one link by now, so it appears once.
         var hits = voices
             .SelectMany(voice => voice.Select((hit, turn) => (Turn: turn, Hit: hit)))
             .OrderBy(entry => entry.Turn)
@@ -78,11 +84,21 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
         [
             .. kept.Select(recipe => (Recipe: recipe, Site: RecipeSites.Find(recipe.SiteSlug)))
                 .Where(entry => entry.Site is not null)
-                .Select(entry => new SiteHit(entry.Site!, new RecipeHit(entry.Recipe.Title, entry.Recipe.Page)))
+                .Select(entry => new SiteHit(entry.Site!, new RecipeHit(entry.Recipe.Title, shelf!.AddressOf(entry.Recipe))))
         ];
         random.Shuffle(held);
         return [.. held];
     }
+
+    /// <summary>Our link for each page we hold, by the page's one spelling.</summary>
+    private Dictionary<string, Uri> OurLinks(IReadOnlyList<StoredRecipe> kept) => shelf is null
+        ? new Dictionary<string, Uri>()
+        : kept.DistinctBy(recipe => recipe.Id)
+            .ToDictionary(recipe => RecipeAddress.Of(recipe.Page), recipe => shelf.AddressOf(recipe));
+
+    /// <summary>The site's hit, with our link in place of the site's when we hold that page.</summary>
+    private static RecipeHit FromUsIfOurs(RecipeHit hit, Dictionary<string, Uri> ours) =>
+        ours.TryGetValue(RecipeAddress.Of(hit.Url), out var ourLink) ? hit with { Url = ourLink } : hit;
 
     /// <summary>Whether a site is one to leave out; the words given may be its name or its short name.</summary>
     private static bool Skipped(IRecipeSource source, IReadOnlyCollection<string>? skip) =>

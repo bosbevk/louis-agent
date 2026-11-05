@@ -10,13 +10,14 @@ using Microsoft.Extensions.Logging;
 namespace LouisAgent.Packs.Recipes.Library.Feed;
 
 /// <summary>
-/// The library, open to anyone at <c>/v1/feeds/recipes</c>: every kept recipe, with its site's name and link. Taking a site
-/// out of the table stops its recipes here at once, and our own cook reads this feed like anyone else.
+/// The library, open to anyone at <c>/v1/feeds/recipes</c>: every kept recipe, with its site's name and link, and each
+/// one at its own address too. Taking a site out of the table stops its recipes here at once, and our own cook reads
+/// this feed like anyone else.
 /// </summary>
 /// <remarks>
-/// A plug-in of the contract's <see cref="IDataFeed"/> (Plugin, Fowler): the API lists and serves it without knowing this
-/// pack, and the MCP server offers it as a resource (ADR 0072). A feed answers with what it has, so a store that's down is
-/// an empty feed.
+/// A plug-in of the contract's <see cref="IDataFeed"/> (Plugin, Fowler): the API lists and serves it without knowing
+/// this pack, and the MCP server offers it as a resource (ADR 0072). A feed answers with what it has, so a store that's
+/// down is an empty feed.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
 public sealed class RecipesFeed(IRecipeStore store, IReadOnlyList<RecipeSite> enabled) : IDataFeed
@@ -37,6 +38,29 @@ public sealed class RecipesFeed(IRecipeStore store, IReadOnlyList<RecipeSite> en
             .Where(recipe => sites.ContainsKey(recipe.SiteSlug))
             .Select(recipe => RecipeFeedRow.Of(recipe, sites[recipe.SiteSlug]));
         return new RecipeFeedReply(MessageText.Format(RecipeFeedMessage.Notice), [.. rows]).Write();
+    }
+
+    /// <summary>One recipe at its own address; a site no longer in the table has no recipes here either.</summary>
+    public async Task<string?> ReadItemJsonAsync(string id, CancellationToken cancellationToken)
+    {
+        if (await OneAsync(id, cancellationToken) is not { } recipe) return null;
+
+        var site = enabled.FirstOrDefault(found => found.Slug == recipe.SiteSlug);
+        return site is null ? null : RecipeFeedRow.Of(recipe, site).Write();
+    }
+
+    /// <summary>The recipe with this id; a store that's down has none to give.</summary>
+    private async Task<StoredRecipe?> OneAsync(string id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await store.FindAsync(id, cancellationToken);
+        }
+        catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            Log.Log(LogLevel.Warning, RecipeLogMessage.LibraryUnavailable, new { Reason = ex.GetType().Name });
+            return null;
+        }
     }
 
     /// <summary>What the store holds; nothing, and a line in the log, when it can't answer.</summary>

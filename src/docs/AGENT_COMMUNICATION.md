@@ -78,7 +78,7 @@ answers `201` with a `Location` header, a delete is `DELETE`, and an action no m
 
 **Authentication.** Every `/v1` call must send `AGENT_API_KEY` as `x-api-key: <key>` or `Authorization: Bearer <key>`,
 unless the route is marked open; otherwise the reply is `401`. The open ones are `/v1/prices`, `/v1/rates`,
-`/v1/rates/display` and the packs' feeds, `/v1/feeds` and `/v1/feeds/{name}` ([ADR 0070](adr/0070-packs-publish-data-feeds.md)); the admin portal's `/v1/admin` routes take the admin key instead. `/health` and the web app's own
+`/v1/rates/display` and the packs' feeds, `/v1/feeds`, `/v1/feeds/{name}` and `/v1/feeds/{name}/{id}` ([ADR 0070](adr/0070-packs-publish-data-feeds.md)); the admin portal's `/v1/admin` routes take the admin key instead. `/health` and the web app's own
 files never need a key. The key is required: without one the API refuses to start, unless `AGENT_AUTH=off` says a
 machine may run it open on purpose (FX18).
 

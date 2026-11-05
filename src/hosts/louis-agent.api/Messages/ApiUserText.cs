@@ -33,6 +33,9 @@ public enum ApiUserText
     [Description("No feed '{Name}' here; GET /v1/feeds lists the ones there are.")]
     UnknownFeed,
 
+    [Description("The feed '{Name}' has no item '{Id}'.")]
+    UnknownFeedItem,
+
     [Description("No upload '{Name}' here; GET /v1/admin/imports lists the ones there are.")]
     UnknownImport,
 

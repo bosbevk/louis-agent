@@ -14,21 +14,33 @@ search would stop at the few kinds of melktert it already had.
 
 ## Decision
 
-- **Each new read from a site in our table is kept for good.** What's kept is the print as the cook read it, text pages too. A
-  page from anywhere else is read and never kept, because a stored page reaches other people and could carry instructions.
+- **Each new read from a site in our table is kept for good, as a proper recipe.** What's kept is the page's own recipe, field
+  by field: the name, the yield, the times, each ingredient, each step, the photo, the author and the page. A page with no recipe
+  data is read for the cook and not kept, because a guess at its structure would be served for good. A page from anywhere else is
+  read and never kept, because a stored page reaches other people and could carry instructions.
 - **The library is the recipes pack's feed**, open with no key at `/v1/feeds/recipes` (ADR 0070), and the MCP server offers it
   as a resource (ADR 0072). Each recipe carries its site's name and a link to its own page, and nothing about who asked.
-- **Our cook reads that feed over HTTP**, as anyone would, and holds it for five minutes. The store and the reader meet only at
-  the feed, so the feed's first customer is ourselves.
+- **Each recipe has its own address on our API,** `/v1/feeds/recipes/{id}`, and a search hands the cook that address. `ReadRecipe`
+  reads it over HTTP, as anyone would, so the library is a real source and not a lookup behind the site's link. The store and the
+  reader meet only at the feed, so the feed's first customer is ourselves. A search holds the list for five minutes.
+- **The credit stays the site's.** A kept recipe prints exactly as the live page did, and its `Link:` line is the site's page, so
+  the answer links the site. Our address is only how the cook fetches it.
+- **An address counts as ours only on our own path, with a real id,** and the request is built from our setting, not from what the
+  model gave. Anything else goes through the browser and its guards.
 - **The sites are still asked on every search.** The library is one more voice among them, in a random place, with its pages in
-  any order. A page we hold costs no browser read whoever listed it, so savings grow as it fills, and new recipes keep coming.
-- **A text page's print ends at the recipe,** because real pages run on into readers' comments with their names, which an open
-  feed must not publish.
+  any order. A page we hold that a site also lists gets our link, so savings grow as it fills, and new recipes keep coming.
+- **The site's own address still goes to the site.** A search that names one site, or a web search, gives a site's link, and
+  `ReadRecipe` follows it. What it finds is ignored if we hold that page, so the first copy stays.
 - **An eval's trial leaves the library alone** unless `RECIPE_LIBRARY_IN_EVALS=true`, so one run doesn't change the next.
 
 ## Consequences
 
-- A second read of a page opens no browser. A search takes as long as before: that's the price of always finding new recipes.
+- A hit from the library opens no browser. A search takes as long as before: that's the price of always finding new recipes.
+- **A page with no recipe data never enters.** In one measured run 12 of 30 answers used such a page, so the library can't serve
+  those however often they're read, and the live print still ends at the recipe (`PrintedRecipeText`), which spares the cook the
+  readers' comments.
+- `IDataFeed` gained `ReadItemJsonAsync`, with a default that gives nothing, and the API `GET /v1/feeds/{name}/{id}`, open like the
+  feed. A feed's items have no MCP resource of their own.
 - A copy never changes. If a site corrects a recipe we keep the old one, and a photo that later disappears shows as broken.
 - Search is `QueryWords` over the feed in memory. That's fine for thousands of recipes, and the whole feed comes over on each
   refresh, so it will want paging when it's several MB. Search by meaning is F35.6.

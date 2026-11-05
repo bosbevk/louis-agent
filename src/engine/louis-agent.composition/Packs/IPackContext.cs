@@ -7,7 +7,8 @@ using LouisAgent.Composition.Web.Search;
 namespace LouisAgent.Composition.Packs;
 
 /// <summary>
-/// What the running agent offers a pack's tools when it builds them. The engine implements it, and a pack sees only this.
+/// What the running agent offers a pack's tools when it builds them. The engine implements it, and a pack sees only
+/// this.
 /// </summary>
 /// <remarks>
 /// Separated Interface (Fowler, PoEAA): the contract sits apart from what implements it, so a pack needs this small

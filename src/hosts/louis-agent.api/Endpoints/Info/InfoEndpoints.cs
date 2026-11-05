@@ -5,8 +5,8 @@ namespace LouisAgent.Api.Endpoints.Info;
 
 /// <summary>
 /// What this instance is and has: its health, the price table and exchange rates it loaded and the data its packs
-/// publish (public, for other hosts, the web app and anyone), the toolsets a session can load, the model, the roles and the LLM profiles. The work is
-/// <c>InfoHandlers</c>'.
+/// publish (public, for other hosts, the web app and anyone), the toolsets a session can load, the model, the roles and
+/// the LLM profiles. The work is <c>InfoHandlers</c>'.
 /// </summary>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0039-api-routes-under-v1.md">ADR 0039: the API routes live under /v1</seealso>
 internal static class InfoEndpoints
@@ -31,6 +31,7 @@ internal static class InfoEndpoints
         // Open too: what the packs publish is free to read (ADR 0070), and the API serves it without knowing the pack.
         routes.MapGet("/feeds", InfoHandlers.GetFeeds).WithAccess(RouteAccess.Open);
         routes.MapGet("/feeds/{name}", InfoHandlers.GetFeed).WithAccess(RouteAccess.Open);
+        routes.MapGet("/feeds/{name}/{id}", InfoHandlers.GetFeedItem).WithAccess(RouteAccess.Open);
 
         routes.MapGet("/toolsets", handlers.GetToolsets);
         routes.MapGet("/model", handlers.GetModel);

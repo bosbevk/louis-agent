@@ -148,9 +148,11 @@ public sealed class RecipeTools
             address.Scheme is not ("http" or "https"))
             return MessageText.Format(RecipeToolMessage.AddressRefused);
 
-        // A page we hold opens no browser: a copy never goes stale (Cache-Aside).
-        if (await _shelf.FindAsync(address, cancellationToken) is { } stored)
-            return RecipeHitPrinter.Framed(stored.Print);
+        // Our own link opens no browser: a copy never goes stale, and its print still links the site's page.
+        if (_shelf.IsOurs(address))
+            return await _shelf.ReadAsync(address, cancellationToken) is { } stored
+                ? RecipeHitPrinter.Framed(RecipePrinter.Print(stored.Recipe))
+                : MessageText.Format(RecipeToolMessage.LibraryRecipeGone);
 
         // The browser refuses private addresses and what a site's robots.txt disallows; its reason is the answer.
         BrowserVisit visit;
@@ -174,16 +176,12 @@ public sealed class RecipeTools
         // One photo goes in the print, never one we know is gone: a dead address shows the user a broken image.
         var photo = await _photos.FirstNotGoneAsync(PagePhotos.Candidates(visit.Html, page, recipe?.Image),
             cancellationToken);
-        string[] print = recipe is not null
-            ? [RecipePrinter.Print(recipe with { Image = photo })]
-            : PageWords(visit.Html, page, photo);
+        if (recipe is null) return RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo));
 
-        // A new read goes in the library, unless the page had nothing on it to keep.
-        var (title, words) = HtmlText.ToText(visit.Html, page);
-        if (recipe is not null || words.Length > 0)
-            await _shelf.KeepAsync(page, recipe?.Name ?? title ?? page.Host, string.Join('\n', print), cancellationToken);
-
-        return RecipeHitPrinter.Framed(print);
+        // A proper recipe goes in the library; a page with no recipe data stays the site's to serve.
+        var whole = recipe with { Image = photo };
+        await _shelf.KeepAsync(whole, cancellationToken);
+        return RecipeHitPrinter.Framed(RecipePrinter.Print(whole));
     }
 
     /// <summary>

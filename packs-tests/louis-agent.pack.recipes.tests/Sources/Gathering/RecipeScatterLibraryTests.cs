@@ -2,6 +2,7 @@ using LouisAgent.Packs.Recipes.Library;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Sources.Gathering;
 using LouisAgent.Packs.Recipes.Sources.Sites;
+using LouisAgent.Packs.Recipes.Tests.Library;
 using LouisAgent.Packs.Recipes.Tests.Tools;
 using LouisAgent.Packs.Recipes.Tests.Tools.Reading;
 using Microsoft.Extensions.Time.Testing;
@@ -23,7 +24,7 @@ public class RecipeScatterLibraryTests
 
     /// <summary>A kept melktert on a site.</summary>
     private static StoredRecipe Kept(string slug, string name) =>
-        new(new Uri($"https://example.com/kept/{name}"), slug, $"{name} melktert", "print", DateTimeOffset.UnixEpoch);
+        KeptRecipes.Of($"https://example.com/kept/{name}", slug, $"{name} melktert");
 
     /// <summary>The scatter over these sites and a library holding these.</summary>
     private static RecipeScatter Scatter(IEnumerable<IRecipeSource> sites, FakeRecipeLibrary library, int seed = 1) =>
@@ -41,36 +42,37 @@ public class RecipeScatterLibraryTests
 
         Assert.That(gather.Asked, Has.Count.EqualTo(4));
         Assert.That(sites.Count(site => site.Query == "melktert"), Is.EqualTo(4));
-        Assert.That(gather.Hits.Count(hit => hit.Hit.Url.AbsolutePath.StartsWith("/kept/", StringComparison.Ordinal)),
+        Assert.That(gather.Hits.Count(hit => hit.Hit.Url.Host == "library.example"),
             Is.LessThan(8), "new pages keep a place beside what we hold");
     }
 
-    /// <summary>A kept page takes its turn like a site's, and names the site it came from.</summary>
+    /// <summary>A kept page takes its turn like a site's, links to our API, and names the site it came from.</summary>
     [Test]
-    public async Task AKeptPage_TakesItsTurn_AndNamesItsSite()
+    public async Task AKeptPage_TakesItsTurn_WithOurLink_AndNamesItsSite()
     {
         var library = new FakeRecipeLibrary();
-        library.Kept.Add(Kept("foodandhome", "kept"));
+        var kept = Kept("foodandhome", "kept");
+        library.Kept.Add(kept);
 
         var gather = await Scatter(Slugs.Take(1).Select(Site), library).FindAsync("melktert", 8);
 
-        var hit = gather.Hits.Single(found => found.Hit.Url.AbsolutePath == "/kept/kept");
+        var hit = gather.Hits.Single(found => found.Hit.Url == library.AddressOf(kept));
         Assert.That(hit.Site.Slug, Is.EqualTo("foodandhome"));
         Assert.That(hit.Hit.Name, Is.EqualTo("kept melktert"));
         Assert.That(gather.AskedLibrary, Is.True);
     }
 
-    /// <summary>A page we hold that a site also lists appears once, however it's spelled.</summary>
+    /// <summary>A page we hold that a site also lists appears once, however spelled, and is read from us.</summary>
     [Test]
-    public async Task APageFromBoth_AppearsOnce()
+    public async Task APageFromBoth_AppearsOnce_WithOurLink()
     {
         var library = new FakeRecipeLibrary();
-        library.Kept.Add(new StoredRecipe(new Uri("https://www.example.com/taste/melktert/"), "taste", "melktert", "print",
-            DateTimeOffset.UnixEpoch));
+        var kept = KeptRecipes.Of("https://www.example.com/taste/melktert/", "taste", "melktert");
+        library.Kept.Add(kept);
 
         var gather = await Scatter([Site("taste")], library).FindAsync("melktert", 8);
 
-        Assert.That(gather.Hits, Has.Count.EqualTo(1));
+        Assert.That(gather.Hits.Select(hit => hit.Hit.Url), Is.EqualTo(new[] { library.AddressOf(kept) }));
     }
 
     /// <summary>Every kept page gets its chance, or the library would freeze on its first few.</summary>

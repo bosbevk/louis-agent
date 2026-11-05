@@ -14,6 +14,9 @@ public interface IRecipeStore
     /// <summary>Everything kept, for the feed.</summary>
     Task<IReadOnlyList<StoredRecipe>> AllAsync(CancellationToken cancellationToken);
 
+    /// <summary>The one recipe with this id, for its own address on the feed.</summary>
+    Task<StoredRecipe?> FindAsync(string id, CancellationToken cancellationToken);
+
     /// <summary>Keeps a page we don't have yet; one we already hold stays exactly as it was.</summary>
     Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken);
 

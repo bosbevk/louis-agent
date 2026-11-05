@@ -39,6 +39,13 @@ public sealed class MongoRecipeStore(IMongoCollection<StoredRecipeDocument> reci
     }
 
     /// <inheritdoc />
+    public async Task<StoredRecipe?> FindAsync(string id, CancellationToken cancellationToken)
+    {
+        var document = await recipes.Find(found => found.Id == id).FirstOrDefaultAsync(cancellationToken);
+        return document?.ToRecipe();
+    }
+
+    /// <inheritdoc />
     public async Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken)
     {
         try

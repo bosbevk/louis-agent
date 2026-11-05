@@ -115,6 +115,17 @@ internal sealed class InfoHandlers(AgentHostContext host)
         return TypedResults.Text(await feed.ReadJsonAsync(cancellationToken), "application/json");
     }
 
+    /// <summary>One item of a feed, as the pack wrote it. A 404 for an unknown feed or item.</summary>
+    public static async Task<FeedAnswer> GetFeedItem(string name, string id, AgentEngineFactory engines,
+        CancellationToken cancellationToken)
+    {
+        if (engines.Catalog.Feed(name) is not { } feed)
+            return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownFeed, new { Name = name }));
+        if (await feed.ReadItemJsonAsync(id, cancellationToken) is not { } item)
+            return ApiErrors.NotFound(MessageText.Format(ApiUserText.UnknownFeedItem, new { Name = name, Id = id }));
+        return TypedResults.Text(item, "application/json");
+    }
+
     /// <summary>A symbol for each currency the rates and the price table name, told apart from the base's.</summary>
     private static Dictionary<string, string> SymbolsOf(AgentHostContext host) =>
         host.Rates.Rates.Keys

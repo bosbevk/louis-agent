@@ -2,6 +2,7 @@ using LouisAgent.Composition.Logging;
 using LouisAgent.Packs.Recipes.Library.Feed;
 using LouisAgent.Packs.Recipes.Library.Store;
 using LouisAgent.Packs.Recipes.Messages;
+using LouisAgent.Packs.Recipes.Recipes;
 using LouisAgent.Packs.Recipes.Sources.Sites;
 using Microsoft.Extensions.Logging;
 
@@ -13,8 +14,8 @@ namespace LouisAgent.Packs.Recipes.Library;
 /// </summary>
 /// <remarks>
 /// Facade over the two halves, so a read and a search never deal with a store, a feed, a clock or a failure. Only our
-/// own sites' pages enter because <c>ReadRecipe</c> reads any public page, and a stored page reaches other people's chats
-/// and the open feed, so a page from an unknown site could carry instructions to them.
+/// own sites' pages enter because <c>ReadRecipe</c> reads any public page, and a stored page reaches other people's
+/// chats and the open feed, so a page from an unknown site could carry instructions to them.
 /// </remarks>
 /// <param name="library">Where it reads from: the open feed.</param>
 /// <param name="store">Where it keeps new reads.</param>
@@ -35,23 +36,31 @@ public sealed class RecipeShelf(
     public static RecipeShelf Empty { get; } =
         new(new NoRecipeLibrary(), new NoRecipeStore(), [], TimeProvider.System);
 
-    /// <summary>The page, if we hold it.</summary>
-    public async Task<StoredRecipe?> FindAsync(Uri page, CancellationToken cancellationToken) =>
-        await QuietlyAsync(() => library.FindAsync(page, cancellationToken), null, cancellationToken);
+    /// <summary>Whether this address is one the library handed out, so it's read from us and not from a site.</summary>
+    public bool IsOurs(Uri address) => library.IdIn(address) is not null;
+
+    /// <summary>The address a search hands out for a recipe we hold.</summary>
+    public Uri AddressOf(StoredRecipe recipe) => library.AddressOf(recipe);
+
+    /// <summary>The recipe at one of our addresses, if we can get it.</summary>
+    public async Task<StoredRecipe?> ReadAsync(Uri address, CancellationToken cancellationToken) =>
+        library.IdIn(address) is { } id
+            ? await QuietlyAsync(() => library.ReadAsync(id, cancellationToken), null, cancellationToken)
+            : null;
 
     /// <summary>The pages we hold that answer a search.</summary>
     public async Task<IReadOnlyList<StoredRecipe>> SearchAsync(string query, int most, CancellationToken cancellationToken) =>
         await QuietlyAsync(() => library.SearchAsync(query, most, cancellationToken), [], cancellationToken);
 
     /// <summary>Keeps a read if it's from one of our sites. The store's id stops a page entering twice.</summary>
-    public async Task KeepAsync(Uri page, string title, string print, CancellationToken cancellationToken)
+    public async Task KeepAsync(Recipe recipe, CancellationToken cancellationToken)
     {
-        if (SiteOf(page) is not { } site) return;
+        if (SiteOf(recipe.Source) is not { } site) return;
 
-        var recipe = new StoredRecipe(page, site.Slug, title, print, clock.GetUtcNow());
+        var stored = new StoredRecipe(recipe, site.Slug, clock.GetUtcNow());
         await QuietlyAsync<object?>(async () =>
         {
-            await store.KeepAsync(recipe, cancellationToken);
+            await store.KeepAsync(stored, cancellationToken);
             return null;
         }, null, cancellationToken);
     }

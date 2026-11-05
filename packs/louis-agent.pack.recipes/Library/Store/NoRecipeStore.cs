@@ -9,6 +9,10 @@ public sealed class NoRecipeStore : IRecipeStore
         Task.FromResult<IReadOnlyList<StoredRecipe>>([]);
 
     /// <inheritdoc />
+    public Task<StoredRecipe?> FindAsync(string id, CancellationToken cancellationToken) =>
+        Task.FromResult<StoredRecipe?>(null);
+
+    /// <inheritdoc />
     public Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken) => Task.CompletedTask;
 
     /// <inheritdoc />

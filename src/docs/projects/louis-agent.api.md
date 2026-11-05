@@ -38,9 +38,11 @@ flowchart LR
   other hosts' `RATES_URL` (`RATES_FORMAT=rates-json`); `GET /v1/rates/display` gives the web app the server's display
   currency and a symbol per currency. Usage objects add `display_cost`, `display_currency`, `display_symbol`,
   `rate_as_of` beside the charged `cost`.
-- **Feeds** (`GET /v1/feeds`, `GET /v1/feeds/{name}`, public, [ADR 0070](../adr/0070-packs-publish-data-feeds.md)): the
-  data the packs publish (`AgentCatalog.Feeds`), listed with each one's path and read as the JSON its pack wrote; the
-  API knows no pack and no feed's shape. A name no pack publishes is a `404`. The first is `shop-prices`.
+- **Feeds** (`GET /v1/feeds`, `GET /v1/feeds/{name}`, `GET /v1/feeds/{name}/{id}`, public,
+  [ADR 0070](../adr/0070-packs-publish-data-feeds.md)): the data the packs publish (`AgentCatalog.Feeds`), listed with
+  each one's path and read as the JSON its pack wrote; the API knows no pack and no feed's shape. A name no pack
+  publishes, or an item a feed doesn't have, is a `404`. The first is `shop-prices`; `recipes` gives each item an address
+  ([ADR 0082](../../../packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md)).
 - **Uploads** (`GET /v1/admin/imports`, `POST /v1/admin/imports/{name}/preview` and `/save`, behind the admin key,
   [ADR 0071](../adr/0071-packs-take-data-uploads.md)): the data uploads the packs declare (`AgentCatalog.Imports`),
   the files as base64 in the body (20 MB at most, else `413`); the pack's report comes back as it wrote it. An
@@ -100,7 +102,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 | File | What's in it |
 |---|---|
 | `ApiStartup.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
-| `Endpoints/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
+| `Endpoints/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/feeds/{name}/{id}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
 | `Endpoints/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |
 | `Endpoints/WorkspaceEndpoints.cs` | `GET /v1/workspace/entries`, `GET /v1/workspace/file` (text ≤ 1 MB; secret files listed but not readable) |

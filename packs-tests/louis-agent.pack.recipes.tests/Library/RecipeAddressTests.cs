@@ -5,8 +5,8 @@ using LouisAgent.Packs.Recipes.Library.Store;
 namespace LouisAgent.Packs.Recipes.Tests.Library;
 
 /// <summary>
-/// One page has one address in the library, however a link spells it, or we'd keep it twice and miss it when we look. And
-/// with nothing set up, the library holds nothing.
+/// One page has one address in the library, however a link spells it, or we'd keep it twice and miss it when we look.
+/// And with nothing set up, the library holds nothing.
 /// </summary>
 public class RecipeAddressTests
 {
@@ -24,15 +24,36 @@ public class RecipeAddressTests
     public void ADifferentPage_StaysDifferent(string url, string key) =>
         Assert.That(RecipeAddress.Of(new Uri(url)), Is.EqualTo(key));
 
+    /// <summary>A page's id is the same however its link is spelled, and other pages get other ids.</summary>
+    [Test]
+    public void OnePage_HasOneId()
+    {
+        string id = RecipeAddress.IdOf(new Uri("https://www.a.co.za/recipes/bobotie/"));
+
+        Assert.That(RecipeAddress.IdOf(new Uri("http://a.co.za/recipes/bobotie")), Is.EqualTo(id));
+        Assert.That(RecipeAddress.IdOf(new Uri("https://a.co.za/recipes/melktert")), Is.Not.EqualTo(id));
+        Assert.That(RecipeAddress.IsId(id), Is.True);
+    }
+
+    /// <summary>Only what an id looks like counts as one.</summary>
+    [TestCase("")]
+    [TestCase("0123456789abcde")]
+    [TestCase("0123456789ABCDEF")]
+    [TestCase("0123456789abcdeg")]
+    [TestCase("../../../../etc/")]
+    public void AnythingElse_IsNoId(string text) => Assert.That(RecipeAddress.IsId(text), Is.False);
+
     /// <summary>With no database there's nothing to read and nowhere to keep, and nothing fails.</summary>
     [Test]
     public async Task WithNoLibrary_NothingIsThere_AndNothingFails()
     {
-        var page = new Uri("https://a.co.za/x");
-        await new NoRecipeStore().KeepAsync(new StoredRecipe(page, "a", "X", "print", DateTimeOffset.UnixEpoch), default);
+        var recipe = KeptRecipes.Of("https://a.co.za/x");
+        await new NoRecipeStore().KeepAsync(recipe, default);
 
         Assert.That(await new NoRecipeStore().AllAsync(default), Is.Empty);
-        Assert.That(await new NoRecipeLibrary().FindAsync(page, default), Is.Null);
+        Assert.That(await new NoRecipeStore().FindAsync(recipe.Id, default), Is.Null);
+        Assert.That(await new NoRecipeLibrary().ReadAsync(recipe.Id, default), Is.Null);
+        Assert.That(new NoRecipeLibrary().IdIn(recipe.Page), Is.Null);
         Assert.That(await new NoRecipeLibrary().SearchAsync("x", 8, default), Is.Empty);
     }
 }

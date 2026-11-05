@@ -5,11 +5,13 @@ using LouisAgent.Packs.Recipes.Library.Store;
 namespace LouisAgent.Packs.Recipes.Tests.Tools.Reading;
 
 /// <summary>
-/// The library's two halves in one list, for the tests: what's kept can be found straight away, with the feed's five
+/// The library's two halves in one list, for the tests: what's kept can be read straight away, with the feed's five
 /// minutes left out, or it fails the way a server that's down does.
 /// </summary>
 internal sealed class FakeRecipeLibrary(bool fails = false) : IRecipeStore, IRecipeLibrary
 {
+    private const string Address = "https://library.example/v1/feeds/recipes/";
+
     /// <summary>Everything kept, in order.</summary>
     public List<StoredRecipe> Kept { get; } = [];
 
@@ -17,22 +19,33 @@ internal sealed class FakeRecipeLibrary(bool fails = false) : IRecipeStore, IRec
     public Task<IReadOnlyList<StoredRecipe>> AllAsync(CancellationToken cancellationToken) =>
         Task.FromResult<IReadOnlyList<StoredRecipe>>(Kept);
 
-    /// <summary>Keeps it, or fails.</summary>
+    /// <summary>The kept recipe with this id.</summary>
+    public Task<StoredRecipe?> FindAsync(string id, CancellationToken cancellationToken) =>
+        Task.FromResult(Kept.FirstOrDefault(recipe => recipe.Id == id));
+
+    /// <summary>Keeps a page it doesn't have yet, or fails.</summary>
     public Task KeepAsync(StoredRecipe recipe, CancellationToken cancellationToken)
     {
         if (fails) throw new TimeoutException("no Mongo");
-        Kept.Add(recipe);
+        if (Kept.All(kept => kept.Id != recipe.Id)) Kept.Add(recipe);
         return Task.CompletedTask;
     }
 
     /// <inheritdoc />
     public Task PurgeSiteAsync(string slug, CancellationToken cancellationToken) => Task.CompletedTask;
 
-    /// <summary>The page by its one spelling, or fails.</summary>
-    public Task<StoredRecipe?> FindAsync(Uri page, CancellationToken cancellationToken)
+    /// <inheritdoc />
+    public Uri AddressOf(StoredRecipe recipe) => new(Address + recipe.Id);
+
+    /// <inheritdoc />
+    public string? IdIn(Uri address) =>
+        address.AbsoluteUri.StartsWith(Address, StringComparison.Ordinal) ? address.AbsoluteUri[Address.Length..] : null;
+
+    /// <summary>The kept recipe with this id, or fails.</summary>
+    public Task<StoredRecipe?> ReadAsync(string id, CancellationToken cancellationToken)
     {
         if (fails) throw new TimeoutException("no feed");
-        return Task.FromResult(Kept.FirstOrDefault(recipe => RecipeAddress.Of(recipe.Page) == RecipeAddress.Of(page)));
+        return FindAsync(id, cancellationToken);
     }
 
     /// <summary>Every kept page whose title holds the words, or fails.</summary>

@@ -184,8 +184,9 @@ start-up, and its toolsets never change afterwards, so every chat keeps a cachea
 `Feeds` (optional, empty unless you list some) is data the pack publishes for anyone to read, apart from its tools: an
 `IDataFeed` with a name, a one-line description and `ReadJsonAsync`, which writes the data from the pack's own
 records. The API lists every feed at `GET /v1/feeds` and serves each, open, at `/v1/feeds/{name}`, without knowing the
-pack ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)); a feed is the pack's MCP resource. Publish only what
-anyone may read. The shop-prices pack's `ShopPricesFeed` is the example.
+pack ([ADR 0070](../adr/0070-packs-publish-data-feeds.md)); a feed is the pack's MCP resource. A feed whose items need
+an address of their own also writes `ReadItemJsonAsync`, served at `/v1/feeds/{name}/{id}`. Publish only what anyone may
+read. The shop-prices pack's `ShopPricesFeed` is the example; the recipes pack's `RecipesFeed` has items.
 
 `Imports` (optional, empty unless you list some) is data a person uploads into the pack from the admin portal: an
 `IDataImport` with a name, a description, the files it takes (`ImportSlot`), `PreviewAsync` (what the files hold and
