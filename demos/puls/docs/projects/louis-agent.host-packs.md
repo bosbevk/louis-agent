@@ -35,7 +35,7 @@ thin and never references an identity or a pack; and which agent a host runs is 
 | `IdentityKind.cs` | The identities a host may load (`Puls`) |
 | `PackKind.cs` | The compiled packs a host may load or an identity may name (`Shops`) |
 | `Messages/HostPacksErrorMessage.cs` | The two refusals: an unknown identity, an unknown pack |
-| `louis-agent.host-packs.csproj` | References core, the Puls identity and the where-to-buy, shop-prices and recipes packs |
+| `louis-agent.host-packs.csproj` | References core, the Puls identity and the where-to-buy, shop-prices, recipes and calculator packs |
 
 ## Configuration
 

@@ -1,6 +1,7 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Core.Skills;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Calculator;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
@@ -23,5 +24,6 @@ public class PulsPrompts
         new WhereToBuyPack().Prompts,
         new ShopPricesPack(new ShopPricesOptions()).Prompts,
         new RecipesPack(new RecipesOptions()).Prompts,
+        new CalculatorPack().Prompts,
     ]);
 }

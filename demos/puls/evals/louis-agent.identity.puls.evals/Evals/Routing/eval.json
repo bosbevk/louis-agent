@@ -2,14 +2,14 @@
   "schema_version": 1,
   "name": "puls-routing",
   "identity": "puls",
-  "version": 4,
+  "version": 5,
   "proves": "Puls sends each kind of question to the right place: a meal to its cook, the rest answered itself.",
   "manual": "manual.md",
   "modes": [
     {
       "name": "baseline",
       "role": "puls/voice-af",
-      "toolsets": ["files", "git", "dotnet", "python", "powershell", "bash", "web", "skills", "where-to-buy", "shop-prices", "recipes"]
+      "toolsets": ["files", "git", "dotnet", "python", "powershell", "bash", "web", "skills", "where-to-buy", "shop-prices", "recipes", "calculator"]
     },
     {
       "name": "delegated",

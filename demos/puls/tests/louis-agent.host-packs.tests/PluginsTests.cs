@@ -30,7 +30,8 @@ public class PluginsTests
         Assert.That(puls.Packs.Select(p => p.Name),
             Is.EqualTo(new[]
             {
-                WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(), RecipesToolset.Recipes.Wire(), PackKind.Web.Wire()
+                WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(), RecipesToolset.Recipes.Wire(), PackKind.Web.Wire(),
+                PackKind.Calculator.Wire()
             }),
             "Puls names the where-to-buy and shop-prices packs (F50.2) and the recipes pack (F35.2 step 1)");
 
@@ -127,10 +128,10 @@ public class PluginsTests
                 Is.EquivalentTo(new[]
                 {
                     WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
-                    RecipesToolset.Recipes.Wire(), PackKind.Web.Wire()
+                    RecipesToolset.Recipes.Wire(), PackKind.Web.Wire(), PackKind.Calculator.Wire()
                 }));
 
-            // The cook's header names its four toolsets; with the browser, a peer and the find-recipe minion's model
+            // The cook's header names its five toolsets; with the browser, a peer and the find-recipe minion's model
             // given, as a Puls stack has them, the catalogue resolves them all, core's first (F50.2, F35.2 step 2b).
             var withBrowser = new ToolsetContext(new AgentOptions
             {
@@ -145,7 +146,7 @@ public class PluginsTests
                 Is.EquivalentTo(new[]
                 {
                     RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-                    ShopPricesToolset.ShopPrices.Wire(), CoreToolset.Minions.Wire()
+                    ShopPricesToolset.ShopPrices.Wire(), PackKind.Calculator.Wire(), CoreToolset.Minions.Wire()
                 }));
 
             // Without MINION_LLMS the header's `minions` has no `?`, so the cook is refused, naming the setting.

@@ -61,10 +61,10 @@ public class PulsPromptsTests
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                CoreToolset.Minions.Wire()
+                PulsToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
             }),
-            "F35.2 steps 1 and 2b and F50.2: the cook declares recipes, where to buy, shop prices and minions in its " +
-            "header (ADR 0025)");
+            "F35.2 steps 1 and 2b and F50.2: the cook declares recipes, where to buy, shop prices, the calculator and " +
+            "minions in its header (ADR 0025)");
     }
 
     /// <summary>
@@ -208,7 +208,7 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("never your own guess, never a search snippet"));
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
         Assert.That(cook, Does.Contain("What isn't bought is never a row"));
-        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*"));
+        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en borrie.*"));
         Assert.That(cook, Does.Contain("no brand, no photo"));
         Assert.That(cook, Does.Contain("Look the user's shop up in their town, once, with `FindBranches`"));
         Assert.That(cook, Does.Contain("| Chicken thighs ").And.Contain("| 600 g ").And.Contain("chicken thighs 1 kg"));
@@ -376,8 +376,14 @@ public class PulsPromptsTests
             Does.Contain(
                 "pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the " +
                 "usual dried spices and herbs)"));
-        Assert.That(cook, Does.Contain("*From the pantry: cooking oil, salt, pepper, sugar and spices.*"));
-        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout, peper, suiker en speserye.*"));
+        Assert.That(cook, Does.Contain("*From the pantry: cooking oil, salt and turmeric.*"));
+        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en borrie.*"));
+        Assert.That(cook, Does.Contain("never just *spices*").And.Contain("nothing it doesn't"),
+            "the line names what this recipe uses: a copied example added sugar to a recipe without any");
+        Assert.That(cook, Does.Contain("500 g or 500 ml or more"), "a lot of a staple is bought");
+        Assert.That(cook, Does.Contain("`Calculate`").And.Contain("never in your head"),
+            "the scaling is a tool's job, with every amount in one call");
+        Assert.That(cook, Does.Match(@"toolsets: [^\r\n]*calculator"), "and the cook has the tool");
     }
 
     /// <summary>
@@ -397,9 +403,9 @@ public class PulsPromptsTests
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                CoreToolset.Minions.Wire()
+                PulsToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
             }),
-            "its header names recipes, both packs and minions, and no shops");
+            "its header names recipes, both packs, the calculator and minions, and no shops");
         Assert.That(cook, Does.Contain("The user's shop, named").And.Contain("*Winkel* / *Shop*"));
         Assert.That(cook, Does.Contain("No shop's prices are looked up: no shop has given us its prices."));
         Assert.That(cook, Does.Contain("Every price comes from `EstimatePrices`, Stats SA's average prices"));
@@ -481,9 +487,10 @@ public class PulsPromptsTests
         string voice = Read("agent/puls/voice-af.md");
         string router = Read("agent/puls/voice.md");
 
-        Assert.That(router, Does.Contain("as the cook wrote it"), "the one choosing is told to hand it on whole");
-        Assert.That(router, Does.Contain("Ek gee dit gou vir my kok").And.Contain("My kok is terug"),
-            "the relay lines, in Puls's words");
+        Assert.That(router, Does.Contain("as the cook wrote it").And.Contain("you aren't asked to"),
+            "the report goes straight to the user, so the one choosing doesn't retype it");
+        Assert.That(router, Does.Contain("Ek gee dit gou vir my kok").And.Not.Contain("My kok is terug"),
+            "the line before the call, in Puls's words, and none above a report it doesn't write");
         Assert.That(router, Does.Contain("puls-cook). It stays open"),
             "the footer example names its own cook, and no cost (FX27)");
         Assert.That(voice, Does.Not.Contain("Moet nooit 'n spesialis se verslag net so aanstuur nie"));

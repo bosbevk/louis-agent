@@ -10,6 +10,7 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Delegation;
+using LouisAgent.Packs.Calculator;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
@@ -73,7 +74,7 @@ public class PulsSessionSnapshotTests
         // (RECIPE_SOURCES=*), because the cook's header asks for its toolset.
         var catalog = new AgentCatalog([new PulsIdentity()],
         [new WebPack(),
-            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
+            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new CalculatorPack(),
             new RecipesPack(new RecipesOptions { RecipeSources = "*" })
         ]);
         return new AgentEngineFactory(new FakeChatClient(), options, catalog: catalog);

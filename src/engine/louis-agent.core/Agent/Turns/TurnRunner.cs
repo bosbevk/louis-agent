@@ -1,3 +1,4 @@
+using LouisAgent.Core.Delegation;
 using LouisAgent.Composition.Logging;
 using LouisAgent.Composition.Messages;
 using System.Diagnostics;
@@ -73,7 +74,11 @@ internal sealed class TurnRunner(
 
             // Includes assistant tool-call and tool-result messages so follow-up turns keep their context.
             history.AddRange(response.Messages);
-            return response.Text;
+            if (ShownReport.In([.. response.Messages.SelectMany(message => message.Contents)]) is not { } report)
+                return response.Text;
+
+            history.Add(new ChatMessage(ChatRole.Assistant, report));
+            return response.Text + report;
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -102,6 +107,14 @@ internal sealed class TurnRunner(
             {
                 updates.Add(stream.Current);
                 yield return stream.Current;
+            }
+
+            // The turn ended on a specialist's report: it's shown as it is, and no request is made to retype it.
+            if (ShownReport.In([.. updates.SelectMany(update => update.Contents)]) is { } report)
+            {
+                var shown = new ChatResponseUpdate(ChatRole.Assistant, report) { MessageId = Guid.NewGuid().ToString() };
+                updates.Add(shown);
+                yield return shown;
             }
 
             history.AddMessages(updates);

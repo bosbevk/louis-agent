@@ -59,6 +59,8 @@ services:
       # The cook asks for the minions toolset, so without this the cook is refused. A value in config/.env wins.
       LLM_SESSION_PROFILES: ${LLM_SESSION_PROFILES-ollama-puls}
       MINION_LLMS: ${MINION_LLMS-*=ollama-puls}
+      # Puls shows a specialist's report as it is and ends its turn there, instead of retyping it at the output rate.
+      SHOW_SPECIALIST_REPORTS: ${SHOW_SPECIALIST_REPORTS-true}
       # The web we run (F32): SearXNG for search (development and benchmarks only, ADR 0023; WEB_SEARCH_PROVIDER picks
       # it) and the headless Chrome that renders pages drawn with JavaScript.
       SEARXNG_URL: ${SEARXNG_URL-http://puls-searxng:8080}

@@ -2,7 +2,7 @@
 
 > **Kind:** class library (`net10.0`) · **Path:** `demos/puls/identity/louis-agent.identity.puls/` · **References:**
 > louis-agent.core, Microsoft.Extensions.FileProviders.Embedded · **Loaded by:** `IDENTITIES=puls` (the Puls compose
-> sets it) · **Names:** the `where-to-buy`, `shop-prices` and `recipes` packs · **Its evals:**
+> sets it) · **Names:** the `where-to-buy`, `shop-prices`, `recipes` and `calculator` packs · **Its evals:**
 > `demos/puls/evals/louis-agent.identity.puls.evals/` (`Evals/` below; references the check contract; only the runner
 > references it, [ADR 0073](../../../../src/docs/adr/0073-packs-reference-no-evals.md))
 
@@ -56,6 +56,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 - **The prompts and the gate say the same:** the routing keeps the cook, makes the web Puls's own work, and marks the
   rest *not yet*; the specialists guide lists those under *Waiting for validation*, with what each needs (a report
   shape, a relay rule, an eval).
+- **Puls shows the cook's report; it doesn't retype it** ([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)): the turn ends on the report, and Puls's one line of its own comes before the call.
 - **Cooking is never answered from memory** (Louis, 2026-10-15, after Puls answered "ek wil bobotie maak" itself):
   every cooking question goes to the cook, which takes the dish through the whole report and adds *Where to buy*, the
   shops' branches in the user's town. Branches come from OpenStreetMap (Nominatim's search, as JSON), since the shops'

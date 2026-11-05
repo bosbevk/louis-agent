@@ -68,6 +68,9 @@ properties:
           # so without this the cook is refused.
           - name: MINION_LLMS
             value: puls-minion-find-recipe=instance
+          # Puls shows a specialist's report as it is and ends its turn there, instead of retyping it.
+          - name: SHOW_SPECIALIST_REPORTS
+            value: 'true'
           # OPEN TO THE INTERNET WITHOUT A KEY. AGENT_AUTH=off is meant for a port that stays on 127.0.0.1; here the
           # ingress is public, so anyone who finds the address chats on the Anthropic key above. Kept only until the Puls
           # web app can send AGENT_API_KEY (the TODO's "The Azure app behind a key"); point no one but Louis at it.

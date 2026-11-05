@@ -1,5 +1,6 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.Calculator;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Choices;
 using LouisAgent.Api.Contracts.Info;
@@ -44,7 +45,7 @@ public class AgentSessionsTests
         new([new PulsIdentity()],
         [
             new WebPack(), TestTools.Pack,
-            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
+            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new CalculatorPack(),
             new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
             new FakePack(OffPack,
             [
@@ -180,7 +181,7 @@ public class AgentSessionsTests
             Is.EquivalentTo(new[]
             {
                 TestToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-                ShopPricesToolset.ShopPrices.Wire(), CoreToolset.Minions.Wire()
+                ShopPricesToolset.ShopPrices.Wire(), CalculatorToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
             }));
         Assert.That(Names(cook),
             Does.Contain("FindBranches").And.Contain("FindShopsNear").And.Contain("EstimatePrices").And

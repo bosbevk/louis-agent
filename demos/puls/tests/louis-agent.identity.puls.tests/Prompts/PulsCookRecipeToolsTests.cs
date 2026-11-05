@@ -247,12 +247,12 @@ public class PulsCookRecipeToolsTests
     {
         var header = PromptCatalog.Get("specialists/puls-cook.md")!.Header!;
 
-        Assert.That(Cook(), Does.Contain("(toolsets: `web`, `recipes`, `where-to-buy`, `shop-prices` and `minions`)"));
+        Assert.That(Cook(), Does.Contain("(toolsets: `web`, `recipes`, `where-to-buy`, `shop-prices`, `calculator` and `minions`)"));
         Assert.That(header.Toolsets,
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                CoreToolset.Minions.Wire()
+                PulsToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
             }), "web comes from Puls, the rest from the header, all required");
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist), Is.EqualTo(header.Toolsets));
     }
