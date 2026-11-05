@@ -53,8 +53,8 @@ public class PulsCookRecipeToolsTests
     }
 
     /// <summary>
-    /// Every sum of the recipe goes in one <c>Calculate</c> call, so the accuracy costs one trip to the model and no more:
-    /// the amounts, the ones in the steps, an ingredient used twice, the packs, the time.
+    /// Every sum of the recipe goes in one <c>Calculate</c> call, so the accuracy costs one trip to the model and no
+    /// more: the amounts, the ones in the steps, an ingredient used twice, the packs, the time.
     /// </summary>
     [Test]
     public void EverySumOfTheRecipe_GoesInOneCalculateCall()
@@ -69,7 +69,7 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("A budget per person is a sum for `Calculate`"));
     }
 
-    /// <summary>The sum for 8 from 6 gave 2⅔ eggs: correct, and no use to anyone. What can't be split is whole.</summary>
+    /// <summary>The sum for 8 from 6 gave 2⅔ eggs: correct, and no use to anyone. What can't split is whole.</summary>
     [Test]
     public void WhatCantBeSplit_IsRoundedToAWholeOne()
     {
@@ -80,7 +80,7 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Not.Contain("even 1.5 rolls"));
     }
 
-    /// <summary>Two pages said 12 servings and the cook kept the amounts: servings are people, unlike a count of pies.</summary>
+    /// <summary>Two pages said 12 servings and the cook kept the amounts: servings are people, not pies.</summary>
     [Test]
     public void Servings_ArePeople_AndACountOfPiesIsNot()
     {
@@ -92,7 +92,7 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("A print that gives neither: keep the recipe as it is and say so under *Unsure*"));
     }
 
-    /// <summary>The shop lookup needs only the town, so it runs with the first calls and saves a trip to the model.</summary>
+    /// <summary>The shop lookup needs only the town, so it runs with the first calls and saves a trip.</summary>
     [Test]
     public void TheShopLookup_RunsWithTheFirstCalls()
     {
@@ -103,7 +103,7 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Not.Contain("after the recipe page is read"));
     }
 
-    /// <summary>A shop's street opens directions, and the cook copies the tool's link instead of building one.</summary>
+    /// <summary>A shop's street opens directions, and the cook copies the tool's link, never building one.</summary>
     [Test]
     public void TheStreet_KeepsTheToolsDirectionsLink()
     {
@@ -116,7 +116,7 @@ public class PulsCookRecipeToolsTests
     /// <summary>The stop rule counts the prints read, wherever their links came from: at most three.</summary>
     [Test]
     public void TheStopRule_CountsPrintsRead_WhereverTheirLinksCameFrom() =>
-        Assert.That(Cook(), Does.Contain("Read at most three prints."));
+        Assert.That(Cook(), Does.Contain("Read at most three prints:"));
 
     /// <summary>
     /// The cook names no first site: the prompt said to start with one, the model obeyed, and 19 of 21 recipes came
@@ -145,7 +145,7 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("Never `WebSearch` while a hit that fits is left"));
     }
 
-    /// <summary>A web recipe says so under Unsure, in words the check reads, and a shop's site is never a guess.</summary>
+    /// <summary>A web recipe says so under Unsure, in words the check reads; a shop's site is never a guess.</summary>
     [Test]
     public void TheCook_SaysAWebRecipeUnderUnsure_AndNeverGuessesAShopsSite()
     {
