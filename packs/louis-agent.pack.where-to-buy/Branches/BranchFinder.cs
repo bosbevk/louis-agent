@@ -4,7 +4,7 @@ namespace LouisAgent.Packs.WhereToBuy.Branches;
 
 /// <summary>
 /// Finds a shop's branches near the user's town, or the supermarkets near it when they named no shop: the town first,
-/// then a search in a box around it, a wider box only when the smaller one holds none. The three nearest are kept, each
+/// then a search in a box around it, a wider box only when the smaller one holds none. The nearest are kept, each
 /// marked when it is in the town's own municipality.
 /// </summary>
 /// <remarks>
@@ -26,24 +26,28 @@ public sealed class BranchFinder(MapSearch map)
 
     private const string Supermarket = "supermarket";
 
-    private const int Kept = 3;
+    /// <summary>Three branches of one shop are plenty.</summary>
+    private const int BranchesKept = 3;
+
+    /// <summary>"Which shops are near me" has more answers: three would hide Malmesbury's Checkers.</summary>
+    private const int ShopsKept = 10;
 
     /// <summary>The branches near the town, or nothing when the map doesn't know the town.</summary>
     public Task<BranchSearch?> FindAsync(string shop, string town, CancellationToken cancellationToken)
     {
         var names = ShopNames.Of(shop);
-        return SearchAsync(town, names[0], Boxes, place => ShopNames.IsBranch(place.Name, names), cancellationToken);
+        return SearchAsync(town, names[0], Boxes, BranchesKept, place => ShopNames.IsBranch(place.Name, names),
+            cancellationToken);
     }
 
     /// <summary>The supermarkets nearest the town, of any chain, or nothing when the map doesn't know it.</summary>
     public Task<BranchSearch?> FindShopsAsync(string town, CancellationToken cancellationToken) =>
-        SearchAsync(town, Supermarket, ShopBoxes,
+        SearchAsync(town, Supermarket, ShopBoxes, ShopsKept,
             place => place.Type == Supermarket && !string.IsNullOrWhiteSpace(place.Name), cancellationToken);
 
     /// <summary>The town first, then what's asked in each box until one holds some.</summary>
-    private async Task<BranchSearch?> SearchAsync(string town, string query, double[] boxes,
-        Func<MapPlace, bool> counts,
-        CancellationToken cancellationToken)
+    private async Task<BranchSearch?> SearchAsync(string town, string query, double[] boxes, int kept,
+        Func<MapPlace, bool> counts, CancellationToken cancellationToken)
     {
         if (await map.TownAsync(town, cancellationToken) is not { } place) return null;
 
@@ -54,7 +58,7 @@ public sealed class BranchFinder(MapSearch map)
                 .Where(p => p.Category == "shop" && counts(p))
                 .Select(p => Branch.Of(p, place))
                 .OrderBy(b => b.Km)
-                .Take(Kept)
+                .Take(kept)
                 .ToList();
             if (branches.Count > 0) return new BranchSearch(place, query, branches, Km(degrees));
         }
