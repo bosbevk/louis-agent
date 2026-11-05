@@ -27,8 +27,8 @@ separate project ([louis-agent.puls](louis-agent.puls.md)).
   with `StartSubSession`, on the same instance (`AGENT_PEERS: puls=http://puls:8080`).
 - **The cook.** `specialists/puls-cook.md` opens with the header every prompt has
   ([ADR 0063](../../../../src/docs/adr/0063-a-prompt-says-what-it-is.md)): its name, description and level, and its toolsets, `recipes`
-  and `minions`, required (no `?`): a cook that can't read recipes, or has no minion to search them, is refused, not
-  left without them (`minions` needs `AGENT_PEERS` and `MINION_LLMS`). It loads no `shops`, since the cook looks up no
+  and `calculator`, required (no `?`): a cook that can't read recipes or do its sums is refused, not
+  left without them. It loads no `shops`, since the cook looks up no
   prices, and gets `web` from Puls. A role that needs a toolset always lists it under
   `metadata.toolsets` ([ADR 0025](../../../../src/docs/adr/0025-a-role-declares-its-toolsets.md)).
 - **Only checked roles are on.** `ROLES_ENABLED` lists them; the Puls compose defaults to `puls/voice-af`,
@@ -71,12 +71,11 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
   fails or times out closes the sub-session; starts and continues count against the same per-turn limit.
 - **The local model reads English, not Afrikaans:** a role written for a small local model is in English, Puls briefs it
   in English and writes the Afrikaans answer itself.
-- **One minion is used, one is not** (F30, F35.2 step 2b): a specialist hands one task and one of its own tools to a
-  minion on the model `MINION_LLMS` names, and the web app draws a minion's card inside its specialist's. The cook
-  hands the recipe search to `puls-minion-find-recipe` (the tool `FindRecipes`, one line per site that has the dish, never an amount), so the
-  search's misses stay out of its context, and reads the link itself with `ReadRecipe`. The price-lookup minion
-  (`puls-minion-web-price-lookup`) is built and unused: four hand checks found a small local model unreliable at
-  pricing (wrong products, invented dates), and Haiku minions no better than the cook's own searches.
+- **No minion is used** (F30, F35.2 step 2b, [ADR 0081](../adr/0081-the-cook-searches-for-itself.md)): a specialist can hand
+  one task and one of its own tools to a minion on the model `MINION_LLMS` names, and the web app draws its card inside
+  the specialist's. The cook searches with `FindRecipes` itself, because the find-recipe minion cost 7% more and took 8 s
+  longer at the same accuracy. The price-lookup minion is built and unused too: four hand checks found a small local
+  model unreliable at pricing (wrong products, invented dates), and Haiku minions no better than the cook's own searches.
 
 ## Structure
 
@@ -103,8 +102,7 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 ## Configuration
 
 None of its own. A Puls stack (`demos/puls/docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
-`AGENT_PEERS` (itself), `LLM_SESSION_PROFILES=ollama-puls` and `MINION_LLMS=*=ollama-puls` (the cook's header asks for `minions`, so
-without it the cook is refused; a minion always runs a local model), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
+`AGENT_PEERS` (itself), `SHOW_SPECIALIST_REPORTS=true` ([ADR 0079](../../../../src/docs/adr/0079-show-a-specialists-report.md)), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
 [ADR 0038](../../../../src/docs/adr/0038-the-browser-says-what-it-is.md)), plus the shop prices' store
 (`SHOP_PRICES_MONGO_URL`, [louis-agent.pack.shop-prices](../../../../packs/docs/projects/louis-agent.pack.shop-prices.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
 ([louis-agent.pack.recipes](../../../../packs/docs/projects/louis-agent.pack.recipes.md)). Every setting is in [Setup](../../../../src/docs/SETUP.md).

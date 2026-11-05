@@ -181,11 +181,11 @@ public class AgentSessionsTests
             Is.EquivalentTo(new[]
             {
                 TestToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-                ShopPricesToolset.ShopPrices.Wire(), CalculatorToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
+                ShopPricesToolset.ShopPrices.Wire(), CalculatorToolset.Calculator.Wire()
             }));
         Assert.That(Names(cook),
             Does.Contain("FindBranches").And.Contain("FindShopsNear").And.Contain("EstimatePrices").And
-                .Contain("WebSearch").And.Contain("StartMinion"));
+                .Contain("WebSearch").And.Contain("Calculate").And.Not.Contain("StartMinion"));
     }
 
     /// <summary>

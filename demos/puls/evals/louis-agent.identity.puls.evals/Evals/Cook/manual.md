@@ -27,10 +27,8 @@ trials below were made before this change and are graded unchanged; the re-recor
 
 `specialists` is not something the cook uses: it is Puls's ability to hand over. Without it Puls can only cook
 itself, which is `puls-tools`. The cook gets `web` from Puls (the recorded turn shows `toolsets: ["web"]`), and its
-role adds `recipes` and `minions` (F35.2, ADR 0025; it was `shops` from F33 until F18 step 5.7 and F35.2 took them out
-of its header). The cook hands the search to the `puls-minion-find-recipe` minion (`StartMinion` with `FindRecipes` as
-its tool) and reads the link it answers with `ReadRecipe`; the minion runs on `MINION_LLMS`'s model (Haiku 5.5, the
-instance's own).
+role adds `recipes` and `calculator` (F35.2, ADR 0025; it was `shops` from F33 until F18 step 5.7 and F35.2 took them out
+of its header). The cook searches with `FindRecipes` and reads the hit with `ReadRecipe`; it uses no minion (ADR 0081).
 
 **What the checks see of a minion** (read in `EngineEvents` and the checks, 2026-11-04, not run on a recording). A
 trial's checks read the first-level turn's events and the specialist's, which Puls's stream carries as `sub_session`

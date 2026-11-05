@@ -131,32 +131,16 @@ public class PluginsTests
                     RecipesToolset.Recipes.Wire(), PackKind.Web.Wire(), PackKind.Calculator.Wire()
                 }));
 
-            // The cook's header names its five toolsets; with the browser, a peer and the find-recipe minion's model
-            // given, as a Puls stack has them, the catalogue resolves them all, core's first (F50.2, F35.2 step 2b).
-            var withBrowser = new ToolsetContext(new AgentOptions
-            {
-                BrowserUrl = "http://puls-browser:9222",
-                AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
-                MinionLlms = new Dictionary<string, IReadOnlyList<string>>
-                {
-                    [PulsRole.MinionFindRecipe.Wire()] = [MinionTools.InstanceLlm]
-                },
-            }, new NoSearch());
+            // The cook's header names its four toolsets; with the browser, as a Puls stack has it, the catalogue resolves
+            // them all. No minion model is needed: the cook uses no minion (ADR 0081).
+            var withBrowser = new ToolsetContext(new AgentOptions { BrowserUrl = "http://puls-browser:9222" },
+                new NoSearch());
             Assert.That(catalog.Resolve(CookToolsets(catalog), withBrowser).Select(t => t.Name),
                 Is.EquivalentTo(new[]
                 {
                     RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-                    ShopPricesToolset.ShopPrices.Wire(), PackKind.Calculator.Wire(), CoreToolset.Minions.Wire()
+                    ShopPricesToolset.ShopPrices.Wire(), PackKind.Calculator.Wire()
                 }));
-
-            // Without MINION_LLMS the header's `minions` has no `?`, so the cook is refused, naming the setting.
-            var noModels = new ToolsetContext(new AgentOptions
-            {
-                BrowserUrl = "http://puls-browser:9222",
-                AgentPeers = new Dictionary<string, Uri> { ["puls"] = new("http://puls:8080/") },
-            }, new NoSearch());
-            Assert.That(() => catalog.Resolve(CookToolsets(catalog), noModels),
-                Throws.TypeOf<ToolsetException>().With.Message.Contain("MINION_LLMS"));
         }
         finally
         {

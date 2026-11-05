@@ -61,10 +61,9 @@ public class PulsPromptsTests
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                PulsToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
+                PulsToolset.Calculator.Wire()
             }),
-            "F35.2 steps 1 and 2b and F50.2: the cook declares recipes, where to buy, shop prices, the calculator and " +
-            "minions in its header (ADR 0025)");
+            "the cook declares recipes, where to buy, shop prices and the calculator in its header (ADR 0025)");
     }
 
     /// <summary>
@@ -297,7 +296,7 @@ public class PulsPromptsTests
         Assert.That(cook,
             Does.Contain("The recipe first, from a real page.").And.Not.Contain("Deals pick the products"));
         Assert.That(cook, Does.Not.Contain("when cost matters"), "not only for a budget");
-        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `StartMinion`"));
+        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `FindRecipes`"));
         Assert.That(prices, Does.Contain("Write the list first,"), "the pack's guide prices a written list");
         Assert.That(cook, Does.Contain("Once the list is written, call `EstimatePrices` once"));
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),
@@ -403,9 +402,9 @@ public class PulsPromptsTests
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                PulsToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
+                PulsToolset.Calculator.Wire()
             }),
-            "its header names recipes, both packs, the calculator and minions, and no shops");
+            "its header names recipes, both packs and the calculator, and no shops");
         Assert.That(cook, Does.Contain("The user's shop, named").And.Contain("*Winkel* / *Shop*"));
         Assert.That(cook, Does.Contain("No shop's prices are looked up: no shop has given us its prices."));
         Assert.That(cook, Does.Contain("Every price comes from `EstimatePrices`, Stats SA's average prices"));

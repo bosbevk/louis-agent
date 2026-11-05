@@ -77,7 +77,8 @@ F35 plan (`docs/plans/F35-recipe-sources.md`):
 
 1. **Without the minion:** the stack rebuilt with `RECIPE_SOURCES`, the cook alone searching several sites at once with `FindRecipes` and
    reading with `ReadRecipe`.
-2. **With the minion:** the `find-recipe` minion merged, the stack rebuilt, the same eval run again.
+2. **With the minion:** the `find-recipe` minion merged, the stack rebuilt, the same eval run again. The minion lost that
+   comparison and went (ADR 0081), so the eval now runs the cook alone.
 
 They are compared on passes, whether `ReadRecipe` was used, the cost per answer and the minion's share of the cost
 and the time (the ledger's, not a check's).

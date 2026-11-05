@@ -22,70 +22,40 @@ public class PulsCookRecipeToolsTests
             StringSplitOptions.RemoveEmptyEntries));
 
     /// <summary>
-    /// The cook starts the find-recipe minion for the search, with one example task, and reads the link it gives with
-    /// <c>ReadRecipe</c>, in that order.
+    /// The cook searches for itself and reads the hit whose title is the dish with <c>ReadRecipe</c>, in that order. A
+    /// minion for the search cost more and took longer, with the same accuracy, so it went (ADR 0081).
     /// </summary>
     [Test]
-    public void TheCook_StartsTheMinionForTheSearch_ThenReadsItsLinkWithReadRecipe()
+    public void TheCook_SearchesForItself_ThenReadsTheHitWithReadRecipe()
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("`StartMinion(\"puls-minion-find-recipe\", \"FindRecipes\", "));
-        Assert.That(cook, Does.Contain("Dish: bobotie. The user's language: Afrikaans."),
-            "one example task: the dish and the language");
-        Assert.That(cook, Does.Contain("`{name} · {site} · {link}`").And.Contain("`none · tried: {sites}`"));
-        Assert.That(cook, Does.Contain("`ReadRecipe` its links in order"));
+        Assert.That(cook, Does.Contain("`FindRecipes(query)`"));
+        Assert.That(cook, Does.Not.Contain("StartMinion").And.Not.Contain("minion").IgnoreCase);
+        Assert.That(cook, Does.Contain("`ReadRecipe` the hit whose title is the dish"));
         Assert.That(cook, Does.Contain("*publishes no recipe data*"), "a text print is read as the page's text, once");
-        Assert.That(cook.IndexOf("`StartMinion(", StringComparison.Ordinal),
-            Is.LessThan(cook.IndexOf("`ReadRecipe` its links in order", StringComparison.Ordinal)));
+        Assert.That(cook.IndexOf("`FindRecipes(query)`", StringComparison.Ordinal),
+            Is.LessThan(cook.IndexOf("`ReadRecipe` the hit whose title is the dish", StringComparison.Ordinal)));
     }
 
     /// <summary>
-    /// The cook no longer calls <c>FindRecipes</c> itself (the minion does) and says so plainly, since the tool stays
-    /// in its toolset for the minion to hold; a <c>none</c> still falls back to <c>WebSearch</c> then
-    /// <c>ReadRecipe</c>.
+    /// A search that finds nothing fitting is asked again of other sites, at most three times, and only then does the
+    /// cook go to <c>WebSearch</c> and <c>ReadRecipe</c>.
     /// </summary>
     [Test]
-    public void TheCook_NeverCallsFindRecipesItself_AndFallsBackToWebSearchOnNone()
+    public void TheCook_SearchesOtherSitesAgain_ThenFallsBackToWebSearch()
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Not.Contain("`FindRecipes(source, query)`"), "the minion's call, not the cook's");
-        Assert.That(cook, Does.Contain("you never call it yourself"));
-        Assert.That(cook, Does.Contain("`none`").And.Contain("`WebSearch` with the short query, then `ReadRecipe`"));
-        Assert.That(cook, Does.Contain("Your first tool calls are `GetToday` and `StartMinion`, nothing else"));
-        Assert.That(cook, Does.Contain("`StartMinion` for the search"));
-        Assert.That(cook, Does.Not.Contain("`FindRecipes` and `ReadRecipe` for the recipe"));
+        Assert.That(cook, Does.Contain("`skip` set to the sites").And.Contain("at most three searches"));
+        Assert.That(cook, Does.Contain("`WebSearch` with the short query, then `ReadRecipe`"));
+        Assert.That(cook, Does.Contain("`FindRecipes` and `ReadRecipe` for the recipe"));
     }
 
-    /// <summary>
-    /// The minion gives one link per site, so the cook reads the links in order under the stop and tie rules, and goes
-    /// to <c>WebSearch</c> on <c>none</c>, on a minion that errors or times out, or when every link is used up with
-    /// none fitting.
-    /// </summary>
+    /// <summary>The stop rule counts the prints read, wherever their links came from: at most three.</summary>
     [Test]
-    public void TheCook_ReadsTheMinionsLinksInOrder_AndTreatsAnErrorAsNone()
-    {
-        string cook = Cook();
-
-        Assert.That(cook, Does.Contain("one line per site that has the dish"));
-        Assert.That(cook, Does.Contain("`ReadRecipe` its links in order"));
-        Assert.That(cook, Does.Contain("when every link is used up with none fitting, go to (5)"));
-        Assert.That(cook, Does.Contain("A minion that errors or times out counts as `none`: go to (5)"));
-    }
-
-    /// <summary>
-    /// The stop rule counts the prints read, whether their links came from the minion or from <c>WebSearch</c>, at
-    /// most three, so how many links the minion gives is left to its own file.
-    /// </summary>
-    [Test]
-    public void TheStopRule_CountsPrintsRead_WhereverTheirLinksCameFrom()
-    {
-        string cook = Cook();
-
-        Assert.That(cook,
-            Does.Contain("Read at most three prints, whether their links come from the minion or from `WebSearch`"));
-    }
+    public void TheStopRule_CountsPrintsRead_WhereverTheirLinksCameFrom() =>
+        Assert.That(Cook(), Does.Contain("Read at most three prints."));
 
     /// <summary>
     /// The cook names no first site: the prompt said to start with one, the model obeyed, and 19 of 21 recipes came
@@ -98,20 +68,20 @@ public class PulsCookRecipeToolsTests
 
         Assert.That(cook, Does.Not.Contain("foodandhome"));
         Assert.That(cook, Does.Not.Contain("`FindRecipes(source, query)`"));
-        Assert.That(cook, Does.Contain("You name no site"));
+        Assert.That(cook, Does.Contain("Leave `source` out"));
     }
 
     /// <summary>
-    /// In a real chat the cook dropped the minion's chicken bobotie because "the user asked for the classic", which they
-    /// hadn't, and went to the web. A variant is the dish, and the minion's links come before the web.
+    /// In a real chat the cook dropped a chicken bobotie because "the user asked for the classic", which they hadn't,
+    /// and went to the web. A variant is the dish, and the recipe sites come before the web.
     /// </summary>
     [Test]
-    public void TheCook_TakesAVariant_AndUsesTheMinionsLinksBeforeTheWeb()
+    public void TheCook_TakesAVariant_AndUsesTheHitsBeforeTheWeb()
     {
         string cook = Cook();
 
         Assert.That(cook, Does.Contain("A variant of the dish is the dish, unless the task asks for a particular kind"));
-        Assert.That(cook, Does.Contain("Never `WebSearch` while a link is left"));
+        Assert.That(cook, Does.Contain("Never `WebSearch` while a hit that fits is left"));
     }
 
     /// <summary>A web recipe says so under Unsure, in words the check reads, and a shop's site is never a guess.</summary>
@@ -247,12 +217,12 @@ public class PulsCookRecipeToolsTests
     {
         var header = PromptCatalog.Get("specialists/puls-cook.md")!.Header!;
 
-        Assert.That(Cook(), Does.Contain("(toolsets: `web`, `recipes`, `where-to-buy`, `shop-prices`, `calculator` and `minions`)"));
+        Assert.That(Cook(), Does.Contain("(toolsets: `web`, `recipes`, `where-to-buy`, `shop-prices` and `calculator`)"));
         Assert.That(header.Toolsets,
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), PulsToolset.WhereToBuy.Wire(), PulsToolset.ShopPrices.Wire(),
-                PulsToolset.Calculator.Wire(), CoreToolset.Minions.Wire()
+                PulsToolset.Calculator.Wire()
             }), "web comes from Puls, the rest from the header, all required");
         Assert.That(SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(), RoleLevel.Specialist), Is.EqualTo(header.Toolsets));
     }

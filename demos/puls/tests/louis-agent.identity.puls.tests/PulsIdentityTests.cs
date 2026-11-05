@@ -46,9 +46,9 @@ public class PulsIdentityTests
     }
 
     /// <summary>
-    /// The cook declares its recipes, where-to-buy, shop-prices, calculator and minions toolsets in its header, required,
-    /// and no other role declares one: a role carries what it always needs, so the cook can't run without the tools that
-    /// read recipes, find the branch, estimate the prices and do the sums, nor the minion that searches for the recipe.
+    /// The cook declares its recipes, where-to-buy, shop-prices and calculator toolsets in its header, required, and no
+    /// other role declares one: a role carries what it always needs, so the cook can't run without the tools that read
+    /// recipes, find the branch, estimate the prices and do the sums.
     /// </summary>
     [Test]
     public void TheCookDeclaresItsToolsets_AndNoOtherRoleDoes()
@@ -59,7 +59,7 @@ public class PulsIdentityTests
             Is.EqualTo(new[]
             {
                 RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(), ShopPricesToolset.ShopPrices.Wire(),
-                PulsPack.Calculator.Wire(), CoreToolset.Minions.Wire()
+                PulsPack.Calculator.Wire()
             }));
 
         foreach (string role in RoleCatalog.Available(RoleLevel.Specialist)
