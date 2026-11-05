@@ -323,7 +323,7 @@ keeps its sign. And a count in a saved-page test (21 lines) is a claim about the
 before you change the number. Skill 4 (tool design: shape what a tool hands the model, so it is clean before the model
 reads it).
 
-## FX41 · A check that always passes hides a design nobody wanted
+## FX43 · A check that always passes hides a design nobody wanted
 
 Someone who said "any shop" got *Any supermarket near you.* under *Where to buy*, in every chat. Nothing had broken: the
 prompt asked for that line, and the check `estimates-at-shop` passed `any` whatever the answer said, so no eval could

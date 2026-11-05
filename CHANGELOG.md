@@ -4,7 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
-- 2026-11-05 — **FX41 Shops near the user**: someone who named no shop got *Any supermarket near you.*, which tells them nothing. A new tool, `FindShopsNear`, lists the three supermarkets nearest their town from OpenStreetMap,
+- 2026-11-05 — **FX43 Shops near the user**: someone who named no shop got *Any supermarket near you.*, which tells them nothing. A new tool, `FindShopsNear`, lists the three supermarkets nearest their town from OpenStreetMap,
   and the cook names them under *Where to buy*. With no town it asks for one. `estimates-at-shop` version 3 needs the call and a shop with its place when the town is known; it used to pass `any` whatever the answer said.
 - 2026-11-05 — **F57 The site tells the new structure**: every page and both films now describe the framework: a demo's program, its catalogue, and a pack's tool. Two new pages, *Packs* and *Build your own*, the second honest that the
   packages aren't on NuGet yet. The films play at the top of the README and in the runtime view as animated WebP, rendered from the site's CSS by `louis-agent.film-export`, with a still for reduced motion. Tests hold the film's names, the program
