@@ -21,6 +21,7 @@ public class SitePagesTests
     /// <summary>Each page of the menu answers.</summary>
     [TestCase("/", "louis-agent · an AI agent framework in C#")]
     [TestCase("/how-it-works", "How the engine works")]
+    [TestCase("/packs", "Packs")]
     [TestCase("/proof", "Measured, not assumed")]
     [TestCase("/built-on-it", "Built on it")]
     [TestCase("/contact", "Contact")]
