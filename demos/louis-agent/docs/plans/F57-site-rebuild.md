@@ -251,6 +251,17 @@ on github.com, and changing a film without re-exporting fails a test.
 - The README uses `<picture>`: GitHub wraps a bare image in a link to the raw file, and leaves `<picture>` alone.
 - **Firefox and Safari are not tested yet.** They get checked on the PR's branch before merging (*Verification*).
 
+**Step 2, decided unattended.** Each kept the plan's shape and took the simplest way that works:
+
+| Choice | Taken | Not taken |
+|---|---|---|
+| The ffmpeg image | `jrottenberg/ffmpeg:7.1-alpine`, pinned by digest; it has the WebP encoder | Another image; a tag that can change |
+| The still | A copy of the first frame | The plan's `StillAsync`, a second render of what's already on disk |
+| Starting the site | `SiteProcess`, a small class of its own, since the plan's diagram held it without naming it | Pointing at a running container, which may be an older film |
+| A film's name | The enum `FilmName` (ADR 0024) | The plan's `string` |
+| The tool's folders | `Films/` and `Rendering/`, with their own namespaces, since seven files is over the folder limit | An exception to the limit |
+| Testing the real render | By hand this step (4.99 MB), and for real in step 8. The unit tests hold the hash, the arguments and the frame count | An integration project that needs Chrome and Docker on CI and takes minutes |
+
 ## Not in this plan
 
 - F54's leftovers: the contact page's `[YOUR EMAIL]`, a domain and where the site runs. The site stays local until Louis picks; the
