@@ -47,6 +47,18 @@ public class HtmlTextTests
         </main></body></html>
         """;
 
+    /// <summary>A real page wrote an attribute twice on one tag: the first counts, and the page still reads.</summary>
+    [Test]
+    public void ATagWithAnAttributeTwice_StillReads()
+    {
+        const string page = "<html><head><meta property=\"og:image\" property=\"og:image\" content=\"/lead.jpg\"></head><body><main>" +
+                            "<img alt=\"Bobotie\" fetchpriority=\"high\" fetchpriority=\"low\" src=\"/pie.jpg\"><p>Words</p></main></body></html>";
+
+        var (_, text) = HtmlText.ToText(page, new Uri("https://www.example.com/a"));
+
+        Assert.That(text, Does.Contain("Words").And.Contain("https://www.example.com/pie.jpg"));
+    }
+
     [Test]
     public void AnImage_WithAltText_BecomesAMarkdownImage()
     {
@@ -87,7 +99,7 @@ public class HtmlTextTests
     [Test]
     public void AWholeBody_WithEveryTagASpace_KeepsABadgeApartFromItsPrice()
     {
-        // FX16: stripped with nothing between, a badge joined its price ("newr54.99"), which then wasn't seen as a price.
+        // FX16: stripped with nothing between, a badge joined its price ("newr54.99"), and wasn't seen as a price.
         string all = HtmlText.TagsAsSpaces("<style>.a{}</style><footer><span>new</span><b>R54.99</b> per kg</footer>");
 
         Assert.That(all, Does.Contain("new").And.Contain("R54.99").And.Not.Contain("newR54").And.Not.Contain(".a{}"));

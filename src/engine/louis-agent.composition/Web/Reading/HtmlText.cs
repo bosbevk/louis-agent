@@ -75,8 +75,10 @@ public static partial class HtmlText
     /// </summary>
     private static string ImageMarkdown(string tag, Uri baseUri)
     {
-        var attributes = Attribute().Matches(tag).ToDictionary(a => a.Groups["name"].Value.ToLowerInvariant(),
-            a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
+        // A page can write an attribute twice; the first one counts, as in a browser.
+        var attributes = Attribute().Matches(tag).DistinctBy(a => a.Groups["name"].Value.ToLowerInvariant())
+            .ToDictionary(a => a.Groups["name"].Value.ToLowerInvariant(),
+                a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
         string alt = CleanInline(attributes.GetValueOrDefault("alt")).Replace('[', '(').Replace(']', ')');
         if (alt.Length == 0) return "";
         // A lazy-loading plugin keeps the real file in one of these while src holds a placeholder (FX24: WordPress
