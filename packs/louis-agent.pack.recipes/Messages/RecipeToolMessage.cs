@@ -31,6 +31,12 @@ public enum RecipeToolMessage
     [Description("Asked {Sites}. Pages for the search ({Count}), the sites taking turns, not ranked:")]
     HitsFoundAcrossSites,
 
+    [Description("our library")]
+    OurLibrary,
+
+    [Description("That recipe couldn't be read from our library just now. Read another hit.")]
+    LibraryRecipeGone,
+
     [Description("{Number}. {Name} · {Site} · {Url}")]
     HitLineWithSite,
 

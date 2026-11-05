@@ -55,7 +55,7 @@ internal static class PageYield
 
     /// <summary>One line as a yield, when it's short and a number follows the word.</summary>
     /// <remarks>Guard clauses, one per case (ADR 0051).</remarks>
-    private static string? Yield(string line)
+    public static string? Yield(string line)
     {
         if (line.Length > LongestLine) return null;
         if (Follows(line, Serves))

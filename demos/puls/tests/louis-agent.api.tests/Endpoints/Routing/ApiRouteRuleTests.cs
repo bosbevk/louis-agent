@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Routing;
 
 namespace LouisAgent.Api.Tests.Endpoints.Routing;
 
-// CL20 steps 2 and 5 (ADR 0039, rules 1, 2, 4, 5 and 6): the rules of the API's route table, checked on the real table, not on a
-// list kept beside it.
+// CL20 steps 2 and 5 (ADR 0039, rules 1, 2, 4, 5 and 6): the rules of the API's route table, checked on the real table,
+// not on a list kept beside it.
 public class ApiRouteRuleTests
 {
     // Rules 2 and 4: a path names a resource, and the method says what is done to it, so no segment is a verb for it.
@@ -13,7 +13,9 @@ public class ApiRouteRuleTests
     // Rule 5: an action that is no create, read, replace or delete is the last segment of a POST.
     private static readonly string[] Actions = ["cancel", "stage", "unstage", "discard", "merge"];
 
-    /// <summary>A route's literal segments: its pattern split on slashes, without the parameters (<c>{id}</c>, <c>{**name}</c>).</summary>
+    /// <summary>
+    /// A route's literal segments: its pattern split on slashes, without the parameters (<c>{id}</c>, <c>{**name}</c>).
+    /// </summary>
     private static string[] Words(RouteEndpoint endpoint) =>
         ApiTestHost.Pattern(endpoint).Split('/', StringSplitOptions.RemoveEmptyEntries).Where(s => !s.StartsWith('{')).ToArray();
 
@@ -40,8 +42,8 @@ public class ApiRouteRuleTests
         Assert.That(open,
             Is.EqualTo(new[]
             {
-                "GET /health", "GET /v1/feeds", "GET /v1/feeds/{name}", "GET /v1/prices", "GET /v1/rates",
-                "GET /v1/rates/display"
+                "GET /health", "GET /v1/feeds", "GET /v1/feeds/{name}", "GET /v1/feeds/{name}/{id}", "GET /v1/prices",
+                "GET /v1/rates", "GET /v1/rates/display"
             }),
             "A route is closed until the code opens it (ADR 0039, rule 6): only the probe, the prices, the rates and " +
             "the packs' feeds (ADR 0070) are open.");

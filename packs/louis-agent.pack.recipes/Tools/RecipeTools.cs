@@ -1,8 +1,10 @@
 using LouisAgent.Packs.Recipes.Reading;
+using LouisAgent.Packs.Recipes.Reading.Photos;
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Composition.Web.Fetching;
 using System.ComponentModel;
+using LouisAgent.Packs.Recipes.Library;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Recipes;
 using LouisAgent.Packs.Recipes.Sources;
@@ -33,22 +35,24 @@ public sealed class RecipeTools
     private readonly Dictionary<string, IRecipeSource> _sources;
     private readonly IWebBrowser _browser;
     private readonly PhotoCheck _photos;
+    private readonly RecipeShelf _shelf;
     private readonly RecipeScatter _scatter;
 
     /// <summary>
-    /// The enabled sites by short name (looked up in any case), the browser pages open in, and the fetcher that checks a
-    /// photo loads. The random is only so a test can repeat a draw. Only sites with their own search are drawn: the
+    /// The enabled sites by short name (looked up in any case), the browser pages open in, and the fetcher that checks
+    /// a photo loads. The random is only so a test can repeat a draw. Only sites with their own search are drawn: the
     /// others use the web provider per search.
     /// </summary>
     public RecipeTools(IReadOnlyDictionary<string, IRecipeSource> sources, IWebBrowser browser, IPageFetcher fetcher,
-        Random? random = null)
+        RecipeShelf? shelf = null, Random? random = null)
     {
+        _shelf = shelf ?? RecipeShelf.Empty;
         _sources = new Dictionary<string, IRecipeSource>(sources, StringComparer.OrdinalIgnoreCase);
         _browser = browser;
         _photos = new PhotoCheck(fetcher);
         _scatter = new RecipeScatter(
             [.. sources.Values.Where(source => source.Site.Search == RecipeSearch.WordPress)],
-            random ?? Random.Shared);
+            random ?? Random.Shared, shelf);
     }
 
     /// <summary>Searches a few enabled sites, or the one named, and numbers the pages, with their links.</summary>
@@ -144,6 +148,12 @@ public sealed class RecipeTools
             address.Scheme is not ("http" or "https"))
             return MessageText.Format(RecipeToolMessage.AddressRefused);
 
+        // Our own link opens no browser: a copy never goes stale, and its print still links the site's page.
+        if (_shelf.IsOurs(address))
+            return await _shelf.ReadAsync(address, cancellationToken) is { } stored
+                ? RecipeHitPrinter.Framed(RecipePrinter.Print(stored.Recipe))
+                : MessageText.Format(RecipeToolMessage.LibraryRecipeGone);
+
         // The browser refuses private addresses and what a site's robots.txt disallows; its reason is the answer.
         BrowserVisit visit;
         try
@@ -166,9 +176,14 @@ public sealed class RecipeTools
         // One photo goes in the print, never one we know is gone: a dead address shows the user a broken image.
         var photo = await _photos.FirstNotGoneAsync(PagePhotos.Candidates(visit.Html, page, recipe?.Image),
             cancellationToken);
-        return recipe is not null
-            ? RecipeHitPrinter.Framed(RecipePrinter.Print(recipe with { Image = photo }))
-            : RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo));
+        // A proper recipe goes in the library, from the page's data or from headings that plainly show one. The cook
+        // still reads a page with no data as its text, so what it sees doesn't depend on what we could keep.
+        if ((recipe ?? PageTextRecipe.Read(visit.Html, page)) is { } whole)
+            await _shelf.KeepAsync(whole with { Image = photo }, cancellationToken);
+
+        return recipe is null
+            ? RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo))
+            : RecipeHitPrinter.Framed(RecipePrinter.Print(recipe with { Image = photo }));
     }
 
     /// <summary>
@@ -179,7 +194,7 @@ public sealed class RecipeTools
     private static string[] PageWords(string html, Uri page, Uri? photo)
     {
         var (title, words) = HtmlText.ToText(html, page);
-        string text = PagePhotos.WithoutImages(words);
+        string text = PrintedRecipeText.Cut(PagePhotos.WithoutImages(words));
         string shown = text.Length > MaxPageChars ? text[..MaxPageChars] : text;
         string body = shown.Length == 0 ? MessageText.Format(RecipeToolMessage.PageEmpty) : shown;
         var lines = new List<string> { MessageText.Format(RecipeToolMessage.TextNoRecipeData, new { page.Host }) };

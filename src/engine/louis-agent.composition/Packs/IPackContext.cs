@@ -7,7 +7,8 @@ using LouisAgent.Composition.Web.Search;
 namespace LouisAgent.Composition.Packs;
 
 /// <summary>
-/// What the running agent offers a pack's tools when it builds them. The engine implements it, and a pack sees only this.
+/// What the running agent offers a pack's tools when it builds them. The engine implements it, and a pack sees only
+/// this.
 /// </summary>
 /// <remarks>
 /// Separated Interface (Fowler, PoEAA): the contract sits apart from what implements it, so a pack needs this small
@@ -32,4 +33,10 @@ public interface IPackContext
 
     /// <summary>A fetcher with the engine's guards around it. One per toolset, shared by its tools.</summary>
     IPageFetcher NewFetcher();
+
+    /// <summary>
+    /// Whether this turn is an eval's trial. A pack that remembers things leaves them alone during one, or each run
+    /// would change the next. Read it on each call, because the same tools serve trials and real chats.
+    /// </summary>
+    bool InATrial => false;
 }

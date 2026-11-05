@@ -1,0 +1,101 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Packs.Recipes.Library.Feed;
+using LouisAgent.Packs.Recipes.Library.Store;
+using LouisAgent.Packs.Recipes.Messages;
+using LouisAgent.Packs.Recipes.Recipes;
+using LouisAgent.Packs.Recipes.Sources.Sites;
+using Microsoft.Extensions.Logging;
+
+namespace LouisAgent.Packs.Recipes.Library;
+
+/// <summary>
+/// The library as the tools use it: look for a page, search, and keep a new read. It holds the rules in one place: only
+/// a page from one of our sites is kept, a library that's down costs nothing, and an eval's trial leaves it alone.
+/// </summary>
+/// <remarks>
+/// Facade over the two halves, so a read and a search never deal with a store, a feed, a clock or a failure. Only our
+/// own sites' pages enter because <c>ReadRecipe</c> reads any public page, and a stored page reaches other people's
+/// chats and the open feed, so a page from an unknown site could carry instructions to them.
+/// </remarks>
+/// <param name="library">Where it reads from: the open feed.</param>
+/// <param name="store">Where it keeps new reads.</param>
+/// <param name="enabled">The sites whose pages may enter.</param>
+/// <param name="clock">When a read happened.</param>
+/// <param name="skip">Whether to leave the library alone right now, as an eval's trial does; null never skips.</param>
+/// <seealso href="https://refactoring.guru/design-patterns/facade">Facade</seealso>
+public sealed class RecipeShelf(
+    IRecipeLibrary library,
+    IRecipeStore store,
+    IReadOnlyList<RecipeSite> enabled,
+    TimeProvider clock,
+    Func<bool>? skip = null)
+{
+    private static readonly ILogger Log = PackLog.For<RecipeShelf>();
+
+    /// <summary>A shelf with nothing on it, for where no library is set up.</summary>
+    public static RecipeShelf Empty { get; } =
+        new(new NoRecipeLibrary(), new NoRecipeStore(), [], TimeProvider.System);
+
+    /// <summary>Whether this address is one the library handed out, so it's read from us and not from a site.</summary>
+    public bool IsOurs(Uri address) => library.IdIn(address) is not null;
+
+    /// <summary>The address a search hands out for a recipe we hold.</summary>
+    public Uri AddressOf(StoredRecipe recipe) => library.AddressOf(recipe);
+
+    /// <summary>
+    /// The recipe at one of our addresses, if we can get it. The log says which way it went, so we can tell the library
+    /// is working outside an eval.
+    /// </summary>
+    public async Task<StoredRecipe?> ReadAsync(Uri address, CancellationToken cancellationToken)
+    {
+        if (library.IdIn(address) is not { } id) return null;
+
+        var recipe = await QuietlyAsync(() => library.ReadAsync(id, cancellationToken), null, cancellationToken);
+        if (recipe is null)
+            Log.Log(LogLevel.Warning, RecipeLogMessage.LibraryCantServe, new { Id = id });
+        else
+            Log.Log(LogLevel.Information, RecipeLogMessage.LibraryServed, new { Id = id, Site = recipe.SiteSlug });
+        return recipe;
+    }
+
+    /// <summary>The pages we hold that answer a search.</summary>
+    public async Task<IReadOnlyList<StoredRecipe>> SearchAsync(string query, int most, CancellationToken cancellationToken) =>
+        await QuietlyAsync(() => library.SearchAsync(query, most, cancellationToken), [], cancellationToken);
+
+    /// <summary>Keeps a read if it's from one of our sites. The store's id stops a page entering twice.</summary>
+    public async Task KeepAsync(Recipe recipe, CancellationToken cancellationToken)
+    {
+        if (SiteOf(recipe.Source) is not { } site) return;
+
+        var stored = new StoredRecipe(recipe, site.Slug, clock.GetUtcNow());
+        await QuietlyAsync<object?>(async () =>
+        {
+            await store.KeepAsync(stored, cancellationToken);
+            return null;
+        }, null, cancellationToken);
+    }
+
+    /// <summary>The enabled site this page is on, or null when it's on none of them.</summary>
+    private RecipeSite? SiteOf(Uri page)
+    {
+        string host = RecipeAddress.Of(new Uri(page.GetLeftPart(UriPartial.Authority)));
+        return enabled.FirstOrDefault(site => RecipeAddress.Of(new Uri(site.Home.GetLeftPart(UriPartial.Authority))) == host);
+    }
+
+    /// <summary>Does the work unless told to skip, and logs a failure and gives the fallback.</summary>
+    private async Task<T> QuietlyAsync<T>(Func<Task<T>> work, T fallback, CancellationToken cancellationToken)
+    {
+        if (skip?.Invoke() == true) return fallback;
+
+        try
+        {
+            return await work();
+        }
+        // The recipe matters more than the library, so its failure never reaches the cook; a cancel still does.
+        catch (Exception ex) when (!cancellationToken.IsCancellationRequested)
+        {
+            Log.Log(LogLevel.Warning, RecipeLogMessage.LibraryUnavailable, new { Reason = ex.GetType().Name });
+            return fallback;
+        }
+    }
+}

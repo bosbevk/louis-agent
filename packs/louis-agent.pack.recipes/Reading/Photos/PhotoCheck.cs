@@ -3,7 +3,7 @@ using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Packs.Recipes.Messages;
 using Microsoft.Extensions.Logging;
 
-namespace LouisAgent.Packs.Recipes.Reading;
+namespace LouisAgent.Packs.Recipes.Reading.Photos;
 
 /// <summary>
 /// Finds the first photo that isn't known to be gone, so the user doesn't get a broken image. A page's data can point

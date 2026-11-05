@@ -13,4 +13,16 @@ public enum RecipeLogMessage
 
     [Description("A photo on '{Host}' is gone; the next place to look is tried.")]
     PhotoGone,
+
+    [Description("The recipe library didn't answer ({Reason}); carrying on without it.")]
+    LibraryUnavailable,
+
+    [Description("A search offered {Count} recipes from our library.")]
+    LibraryOffered,
+
+    [Description("Our library served {Id}, a recipe from {Site}.")]
+    LibraryServed,
+
+    [Description("Our library couldn't serve {Id}.")]
+    LibraryCantServe,
 }

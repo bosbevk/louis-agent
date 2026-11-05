@@ -57,6 +57,35 @@ public class FeedRouteTests
         Assert.That(reply.RootElement.GetProperty("tables")[0].GetProperty("source").GetString(), Does.StartWith("Stats SA"));
     }
 
+    /// <summary>An item's address is open too; a feed with no such item is the API's 404, naming both.</summary>
+    [Test]
+    public async Task AFeedThatHasNoSuchItem_IsTheApisNotFound_WithoutTheKey()
+    {
+        var (app, client) = await StartAsync();
+        await using var _ = app;
+
+        var response = await client.GetAsync($"/v1/feeds/{ShopPricesToolset.ShopPrices.Wire()}/no-such-thing");
+        using var reply = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        var error = reply.RootElement.GetProperty("error");
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        Assert.That(error.GetProperty("type").GetString(), Is.EqualTo(ApiErrorKind.NotFound.Wire()));
+        Assert.That(error.GetProperty("message").GetString(),
+            Does.Contain(ShopPricesToolset.ShopPrices.Wire()).And.Contain("no-such-thing"));
+    }
+
+    /// <summary>An item of a feed no pack publishes is the same 404 as the feed itself.</summary>
+    [Test]
+    public async Task AnItemOfAnUnknownFeed_IsTheApisNotFound()
+    {
+        var (app, client) = await StartAsync();
+        await using var _ = app;
+
+        var response = await client.GetAsync("/v1/feeds/rent-prices/one");
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+    }
+
     /// <summary>A name no pack publishes is the API's 404, naming it.</summary>
     [Test]
     public async Task AnUnknownFeed_IsTheApisNotFound()

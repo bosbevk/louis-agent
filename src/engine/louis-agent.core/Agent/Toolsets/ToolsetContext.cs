@@ -8,6 +8,7 @@ using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Web.Fetching;
 using LouisAgent.Core.Usage.Sinks;
 using LouisAgent.Core.Config;
+using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Web.Search;
 using LouisAgent.Core.Web.Browsing;
 using LouisAgent.Core.Web.Rendering;
@@ -47,6 +48,9 @@ public sealed record ToolsetContext(
     public IPageFetcher NewFetcher() => new PageFetcher(replay: Replay, robots: Robots);
 
     public IPageRenderer Renderer => PageRenderer ?? PageRendererFactory.Create(Options, browser: Browser);
+
+    /// <inheritdoc/>
+    public bool InATrial => SessionReplay.Current is { Web: not WebReplayMode.Off };
 
     /// <summary>
     /// The guarded browser (F33): the one given (a host builds one per process, so every engine shares it and its

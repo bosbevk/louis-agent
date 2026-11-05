@@ -34,6 +34,43 @@ public class RecipesPackTests
     private static ToolsetContext Context(bool withBrowser) =>
         new(new AgentOptions(), new NoSearch(), WebBrowser: withBrowser ? new FakeSiteBrowser() : null);
 
+    /// <summary>With a database the library is a feed under the pack's name; without one, nothing to publish.</summary>
+    [Test]
+    public void TheFeed_IsThereOnlyWithADatabase()
+    {
+        var withOne = new RecipesPack(new RecipesOptions
+        {
+            RecipeSources = "taste",
+            MongoUrl = "mongodb://127.0.0.1:1"
+        });
+
+        Assert.That(withOne.Feeds.Select(feed => feed.Name), Is.EqualTo(new[] { RecipesToolset.Recipes.Wire() }));
+        Assert.That(Pack().Feeds, Is.Empty);
+    }
+
+    /// <summary>The library's settings are read from where a deployment sets them, and none are needed.</summary>
+    [Test]
+    public void TheLibrarysSettings_AreRead()
+    {
+        var settings = new Dictionary<string, string>
+        {
+            ["RECIPES_MONGO_URL"] = "mongodb://m",
+            ["RECIPES_MONGO_DATABASE"] = "mine",
+            ["RECIPE_LIBRARY_URL"] = "http://127.0.0.1:8080/",
+            ["RECIPE_LIBRARY_IN_EVALS"] = "true",
+        };
+
+        var options = RecipesOptions.FromEnvironment(name => settings.GetValueOrDefault(name));
+        var none = RecipesOptions.FromEnvironment(_ => null);
+
+        Assert.That(options.MongoUrl, Is.EqualTo("mongodb://m"));
+        Assert.That(options.MongoDatabase, Is.EqualTo("mine"));
+        Assert.That(options.LibraryUrl, Is.EqualTo(new Uri("http://127.0.0.1:8080/")));
+        Assert.That(options.LibraryInEvals, Is.True);
+        Assert.That((none.MongoUrl, none.LibraryUrl, none.LibraryInEvals), Is.EqualTo(((string?)null, (Uri?)null, false)));
+        Assert.That(none.MongoDatabase, Is.EqualTo(RecipesOptions.DefaultDatabase));
+    }
+
     /// <summary>The pack and its one toolset go by the name <c>recipes</c>.</summary>
     [Test]
     public void ThePack_AndItsToolset_AreCalledRecipes()

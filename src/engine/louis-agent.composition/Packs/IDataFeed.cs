@@ -5,21 +5,29 @@ namespace LouisAgent.Composition.Packs;
 /// serves each one, open, at <c>/v1/feeds/{name}</c>, without knowing which pack it belongs to.
 /// </summary>
 /// <remarks>
-/// Plugin (Fowler, PoEAA): core names the shape and each pack plugs its own in, the way it plugs in its toolsets, so the
-/// API never references a pack (ADR 0027). A feed is read-only and reads the pack's own data, so it maps one to one to
-/// an MCP resource (a name, a description and the text it reads), and a pack stays convertible (ADR 0028). The pack
+/// Plugin (Fowler, PoEAA): core names the shape and each pack plugs its own in, the way it plugs in its toolsets, so
+/// the API never references a pack (ADR 0027). A feed is read-only and reads the pack's own data, so it maps one to one
+/// to an MCP resource (a name, a description and the text it reads), and a pack stays convertible (ADR 0028). The pack
 /// writes its own JSON from its own records (ADR 0041), so a feed's shape is the pack's, not core's.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0070-packs-publish-data-feeds.md">ADR 0070: packs publish data feeds</seealso>
 /// <seealso href="https://modelcontextprotocol.io/specification/2025-06-18/server/resources">MCP resources</seealso>
 public interface IDataFeed
 {
-    /// <summary>"shop-prices": lowercase letters, digits and dashes, unique in the catalogue; the last part of its URL.</summary>
+    /// <summary>"shop-prices": lowercase letters, digits and dashes, unique in the catalogue; ends its URL.</summary>
     string Name { get; }
 
     /// <summary>What the data is and where it is from, one sentence, for the list of feeds.</summary>
     string Description { get; }
 
-    /// <summary>The data as JSON text, read now. A feed answers with what it has; it doesn't throw for a store that's down.</summary>
+    /// <summary>
+    /// The data as JSON text, read now. A feed answers with what it has; it doesn't throw for a store that's down.
+    /// </summary>
     Task<string> ReadJsonAsync(CancellationToken cancellationToken);
+
+    /// <summary>
+    /// One item of the data by its id, read now, for a feed whose items have an address of their own. A feed that has
+    /// none, or no such item, gives nothing. The default keeps every other feed as it is.
+    /// </summary>
+    Task<string?> ReadItemJsonAsync(string id, CancellationToken cancellationToken) => Task.FromResult<string?>(null);
 }

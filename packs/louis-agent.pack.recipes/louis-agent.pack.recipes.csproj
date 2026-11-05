@@ -19,6 +19,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\engine\louis-agent.composition\louis-agent.composition.csproj" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="10.0.13" />
+    <!-- The recipe library, the same driver as the shop-prices pack's store and the API's eval store. -->
+    <PackageReference Include="MongoDB.Driver" Version="3.12.0" />
   </ItemGroup>
 
   <ItemGroup>
