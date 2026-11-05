@@ -239,6 +239,18 @@ One commit each, test first, with Louis's review stop after each.
 **Done when:** every page and both films describe the structure on `main`, the short film plays by itself at the top of the README
 on github.com, and changing a film without re-exporting fails a test.
 
+## Approved during the build
+
+**Step 1, 2026-11-05: animated WebP works on real GitHub.** Tested on a throwaway branch, now deleted.
+
+- Louis picked **24 frames a second, quality 75**: 5.13 MB for the short film, about 8.5 MB estimated for the long one. The tool exports
+  at those settings.
+- In Chrome and Edge the film plays by itself, from `<picture>`, `<img>` or a plain Markdown image.
+- GitHub keeps `<picture>` and its `prefers-reduced-motion` source: with reduced motion on, the viewer gets the still and it stays still.
+  The still is the film's first frame, the wide view with every part.
+- The README uses `<picture>`: GitHub wraps a bare image in a link to the raw file, and leaves `<picture>` alone.
+- **Firefox and Safari are not tested yet.** They get checked on the PR's branch before merging (*Verification*).
+
 ## Not in this plan
 
 - F54's leftovers: the contact page's `[YOUR EMAIL]`, a domain and where the site runs. The site stays local until Louis picks; the
