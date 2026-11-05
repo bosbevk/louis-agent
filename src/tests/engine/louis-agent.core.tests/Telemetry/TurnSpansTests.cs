@@ -136,7 +136,7 @@ public class TurnSpansTests
     /// <summary>An engine on the fake model with the file tools, named for these tests.</summary>
     private static AgentEngine Engine(IChatClient client) =>
         new(new MarkdownSkillProvider(TestPaths.SampleSkills), client,
-            TestPaths.Agent(), toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]),
+            TestPaths.Agent(), toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]),
             usageSink: new ListUsageSink())
         { Name = Agent };
 

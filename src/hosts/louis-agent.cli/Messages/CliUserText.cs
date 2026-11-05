@@ -1,7 +1,8 @@
-namespace LouisAgent.Cli.Messages;
 
+using LouisAgent.Composition.Tools;
 using System.ComponentModel;
 
+namespace LouisAgent.Cli.Messages;
 /// <summary>The CLI's screen text: the banner, the prompts, a reply's status lines.</summary>
 public enum CliUserText
 {

@@ -59,13 +59,9 @@ public class AgentOptionsTests
         var options = new AgentOptions
         {
             WorkspaceRoot = "/test/workspace",
-            PaymoApiKey = "paymo-123",
-            DevopsApiKey = "devops-456"
         };
 
         Assert.That(options.WorkspaceRoot, Is.EqualTo("/test/workspace"));
-        Assert.That(options.PaymoApiKey, Is.EqualTo("paymo-123"));
-        Assert.That(options.DevopsApiKey, Is.EqualTo("devops-456"));
     }
 
     // CL14 step 1: ROLES_ENABLED is the setting's name; PERSONALITIES_ENABLED, its name before, is still read, with a

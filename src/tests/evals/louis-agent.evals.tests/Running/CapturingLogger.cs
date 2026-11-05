@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Evals.Tests.Running;

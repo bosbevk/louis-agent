@@ -34,6 +34,8 @@ services:
       OTEL_SERVICE_NAME: puls
       # Who this agent is (CL15): Puls, from demos/puls/identity/louis-agent.identity.puls; the code-review stack sets none.
       IDENTITIES: puls
+      # The general tools the routing eval's baseline names; Puls itself needs none of them.
+      PACKS: files,git,dotnet,shell
       # The time GetToday tells when the user shared no zone (CL15: core names no country).
       HOST_TIME_ZONE: Africa/Johannesburg
       WORKSPACE_ROOT: /workspace
@@ -62,7 +64,7 @@ services:
       # bare `*` is a YAML alias.
       RECIPE_SOURCES: "${RECIPE_SOURCES-*}"
       # What the browser tells the sites it reads for a user (FX21): who reads, where to learn more, and why; never a person.
-      BROWSER_USER_AGENT: "${BROWSER_USER_AGENT-Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/docs/SITE_OWNERS.md; reads a page on a user's behalf)}"
+      BROWSER_USER_AGENT: "${BROWSER_USER_AGENT-Puls/1.0 (+https://github.com/bosbevk/louis-agent/blob/main/demos/puls/docs/SITE_OWNERS.md; reads a page on a user's behalf)}"
       # F18 step 4a: the pages an eval run saves (--web record) and replays; private, on the host's data/puls (git-ignored), never served.
       REPLAY_DIRECTORY: ${REPLAY_DIRECTORY-/data/replay}
       # The eval store's database (F18 step 7b (iii)): the API's default is `evals` now, so Puls names the one its runs

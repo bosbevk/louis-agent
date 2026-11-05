@@ -1,7 +1,5 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
-using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Core.Skills;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Tools;
 using Microsoft.Extensions.FileProviders;
@@ -29,7 +27,7 @@ public sealed class RecipesPack : IAgentPack
         [
             new(RecipesToolset.Recipes.Wire(),
                 "Recipes from South African recipe sites: search one, or read any recipe page",
-                GuideFile: SkillFiles.Guide(RecipesToolset.Recipes.Wire()),
+                GuideFile: PackToolset.Guide(RecipesToolset.Recipes.Wire()),
                 MissingSettings: ctx => new[]
                 {
                     RecipeSourceFactory.Enabled(options.RecipeSources).Count > 0 ? null : "RECIPE_SOURCES",
@@ -52,7 +50,7 @@ public sealed class RecipesPack : IAgentPack
     public string Name => RecipesToolset.Recipes.Wire();
 
     /// <inheritdoc />
-    public IReadOnlyList<ToolsetDefinition> Toolsets { get; }
+    public IReadOnlyList<PackToolset> Toolsets { get; }
 
     /// <inheritdoc />
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(RecipesPack).Assembly, "Prompts");

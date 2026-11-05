@@ -79,7 +79,7 @@ public class AdminOptionsTests
     /// <summary>Without EVAL_RUNNER we look where the image puts the runner.</summary>
     [Test]
     public void TheEvalRunnerDefaultsToTheImagesPath() =>
-        Assert.That(From().EvalRunner, Is.EqualTo("/app/evals/louis-agent.evals.runner.dll"));
+        Assert.That(From().EvalRunner, Is.EqualTo("/app/evals/eval-runner.dll"));
 
     /// <summary>A relative runner path is made absolute as soon as it's read, so it can't drift later.</summary>
     [Test]

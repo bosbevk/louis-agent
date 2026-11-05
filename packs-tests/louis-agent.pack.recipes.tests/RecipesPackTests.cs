@@ -1,8 +1,9 @@
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Headers;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Search;
 using LouisAgent.Packs.Recipes.Tests.Providers;
 using LouisAgent.Packs.Recipes.Tools;
 

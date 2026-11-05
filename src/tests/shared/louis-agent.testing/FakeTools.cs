@@ -22,3 +22,10 @@ public sealed class FakeEngineNameTools
     [Description("Takes the engine's name.")]
     public string GetToday() => "";
 }
+
+/// <summary>A second fake pack's tools, whose name no other fake takes.</summary>
+public sealed class FakeOtherShopTools
+{
+    [Description("Finds other fake products.")]
+    public string FindOtherFakeProducts([Description("What to find")] string query) => $"found {query}";
+}

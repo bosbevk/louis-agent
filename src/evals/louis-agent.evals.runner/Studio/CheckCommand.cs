@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Text.Json;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Conformance;
@@ -22,9 +23,10 @@ namespace LouisAgent.Evals.Runner.Studio;
 public static class CheckCommand
 {
     /// <summary>Checks the folder and writes its lines to <paramref name="output"/>.</summary>
-    public static async Task<int> RunAsync(string folder, TextWriter output, CancellationToken cancellationToken)
+    public static async Task<int> RunAsync(string folder, RunnerCatalogs catalogs, TextWriter output,
+        CancellationToken cancellationToken)
     {
-        var problems = await ProblemsAsync(folder, cancellationToken);
+        var problems = await ProblemsAsync(folder, catalogs, cancellationToken);
         foreach (string problem in problems)
             await output.WriteLineAsync(JsonSerializer.Serialize(new ProblemLine(problem), EvalJson.SnakeCase));
         await output.WriteLineAsync(JsonSerializer.Serialize(new OkLine(problems.Count == 0), EvalJson.SnakeCase));
@@ -33,14 +35,15 @@ public static class CheckCommand
 
     /// <summary>What's wrong with the folder, in the order a run would meet it; none when it conforms.</summary>
     /// <remarks>Guard clause: a folder that isn't there; then a refusal from the loader is the one problem.</remarks>
-    private static async Task<IReadOnlyList<string>> ProblemsAsync(string folder, CancellationToken cancellationToken)
+    private static async Task<IReadOnlyList<string>> ProblemsAsync(string folder, RunnerCatalogs catalogs,
+        CancellationToken cancellationToken)
     {
         if (!Directory.Exists(folder))
             return [MessageText.Format(RunnerMessage.NoEvalFolder, new { Folder = folder })];
         try
         {
             ManifestSeal.Seal(folder);
-            var eval = FileEval.Load(folder, RunnerChecks.Catalog, RunnerReaders.Catalog, "studio");
+            var eval = FileEval.Load(folder, catalogs.CheckCatalog, catalogs.ReaderCatalog, "studio");
             var cases = ConformanceCases.Load(eval.Transcripts, eval.Scenarios);
             return await EvalConformance.CheckAsync(eval, cases, cancellationToken);
         }

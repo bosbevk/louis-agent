@@ -3,7 +3,7 @@ using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Composition.Tools.Scripts;
 
 namespace LouisAgent.Core.Tests.Agent.Commands;
 
@@ -14,8 +14,8 @@ public class UserCommandsTests
     private static UserCommands Commands()
     {
         string root = Path.GetTempPath();
-        var python = new PythonTools(root);
-        var powerShell = new PowerShellTools(root);
+        var python = new PythonRunner(root);
+        var powerShell = new PowerShellRunner(root);
         var skills = new SkillTools(new CompositeSkillProvider(), new AgentOptions { WorkspaceRoot = root }, root, python, powerShell);
         var tools = new AgentBuiltTools(new ToolRegistry(), supportsTools: true, root, python, powerShell, () => null, () => new HashSet<string>());
         return new UserCommands(tools, skills, () => null);

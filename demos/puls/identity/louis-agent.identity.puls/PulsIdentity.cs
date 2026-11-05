@@ -1,5 +1,5 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
 
 namespace LouisAgent.Identities.Puls;
@@ -19,13 +19,16 @@ public sealed class PulsIdentity : IAgentIdentity
     /// Puls's prompts, embedded with their paths (<c>agent/puls/voice.md</c>, <c>specialists/puls-cook.md</c>), read
     /// only from this assembly.
     /// </summary>
+    /// <inheritdoc/>
+    public string DefaultVoice => $"{Name}/voice-af";
+
     public IFileProvider Prompts { get; } = new ManifestEmbeddedFileProvider(typeof(PulsIdentity).Assembly, "Prompts");
 
     /// <summary>
     /// Where to buy and shop prices (F50.2) and the recipes (F35); CL16 adds <c>cooking</c>, later <c>places</c>.
     /// </summary>
     public IReadOnlyList<string> Packs =>
-        [PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire()];
+        [PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire()];
 }
 
 /// <summary>

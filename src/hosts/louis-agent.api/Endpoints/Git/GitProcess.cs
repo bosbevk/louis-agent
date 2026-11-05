@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Diagnostics;
 using System.Text;
 using LouisAgent.Api.Contracts;

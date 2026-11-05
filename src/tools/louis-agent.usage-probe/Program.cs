@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Llm.UsageMapping;
 using LouisAgent.Core.Pricing.Prices;

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 
 namespace LouisAgent.Testing;

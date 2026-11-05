@@ -58,11 +58,11 @@ public class CrossBoundaryNamesTests
     [Test]
     public void ARoleHeader_ThatListsATypo_IsReported_AndOneThatListsAKnownNameIsNot()
     {
-        var known = new HashSet<string> { CoreToolset.Web.Wire(), CoreToolset.Files.Wire() };
+        var known = new HashSet<string> { TestToolset.Web.Wire(), TestToolset.Files.Wire() };
         var roles = new[]
         {
-            ("specialists/good.md", Role("good", $"{CoreToolset.Web.Wire()}, {CoreToolset.Files.Wire()}?")),
-            ("specialists/typo.md", Role("typo", $"{CoreToolset.Web.Wire()}, fils?")),
+            ("specialists/good.md", Role("good", $"{TestToolset.Web.Wire()}, {TestToolset.Files.Wire()}?")),
+            ("specialists/typo.md", Role("typo", $"{TestToolset.Web.Wire()}, fils?")),
             ("specialists/none.md", "A role with no header."),
         };
 

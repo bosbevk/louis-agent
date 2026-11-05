@@ -13,18 +13,18 @@ public class SkillLoaderTests
 {
     private static readonly string[] OtherGuides =
     [
-        "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills", "# Paymo Skills", "# DevOps Skills"
+        "# Python Skills", "# PowerShell Skills", "# Bash Skills", "# Web Skills"
     ];
 
-    private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills };
+    private static AgentOptions Options() => new() { SkillsDirectory = TestPaths.Skills, DefaultVoice = "testprod/voice-en" };
 
     private static IReadOnlyList<ToolsetDefinition> Toolsets(params string[] names) =>
-        ToolsetCatalog.All.Where(t => names.Contains(t.Name)).ToList();
+        TestTools.Catalog.Toolsets.Where(t => names.Contains(t.Name)).ToList();
 
     [Test]
     public void FilesAndGit_HaveTheirGuides_AndNoOthers()
     {
-        string docs = SkillLoader.Load(Options(), Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire()))
+        string docs = SkillLoader.Load(Options(), Toolsets(TestToolset.Files.Wire(), TestToolset.Git.Wire()))
             .Documentation;
 
         Assert.That(docs, Does.Contain("# Files Skills").And.Contain("# Git Skills"));
@@ -83,7 +83,7 @@ public class SkillLoaderTests
     {
         string docs = SkillLoader.Load(Options(), []).Documentation;
 
-        Assert.That(docs, Does.Contain("# Louis Agent - Default Instructions"), "default.md, the toolset router");
+        Assert.That(docs, Does.Contain("# Testprod - Routing"), "default.md, the toolset router");
         Assert.That(docs.Length, Is.GreaterThan(0));
         foreach (string guide in OtherGuides)
             Assert.That(docs, Does.Not.Contain(guide));
@@ -92,7 +92,7 @@ public class SkillLoaderTests
     [Test]
     public void EveryToolset_GivesEachGuideExactlyOnce()
     {
-        string docs = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation;
+        string docs = SkillLoader.Load(Options(), TestTools.Catalog.Toolsets).Documentation;
 
         foreach (string guide in OtherGuides.Append("# Files Skills").Append("# Git Skills").Append("# .NET Skills"))
             Assert.That(Regex.Matches(docs, "^" + Regex.Escape(guide) + @"\r?$", RegexOptions.Multiline).Count,
@@ -113,10 +113,10 @@ public class SkillLoaderTests
             var options = new AgentOptions { SkillsDirectory = skills };
 
             Assert.That(
-                SkillLoader.Load(options, Toolsets(CoreToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
+                SkillLoader.Load(options, Toolsets(TestToolset.Files.Wire(), CoreToolset.Skills.Wire())).Documentation,
                 Does.Contain("# Greeting Skills"));
             Assert.That(
-                SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()))
+                SkillLoader.Load(options, Toolsets(CoreToolset.Specialists.Wire(), TestToolset.Web.Wire()))
                     .Documentation, Does.Not.Contain("# Greeting Skills"));
         }
         finally
@@ -128,9 +128,9 @@ public class SkillLoaderTests
     [Test]
     public void ThePromptShrinks_WithTheToolset()
     {
-        int all = SkillLoader.Load(Options(), ToolsetCatalog.All).Documentation.Length;
+        int all = SkillLoader.Load(Options(), TestTools.Catalog.Toolsets).Documentation.Length;
         int coding = SkillLoader.Load(Options(),
-            Toolsets(CoreToolset.Files.Wire(), CoreToolset.Git.Wire(), CoreToolset.DotNet.Wire(),
+            Toolsets(TestToolset.Files.Wire(), TestToolset.Git.Wire(), TestToolset.DotNet.Wire(),
                 CoreToolset.Skills.Wire())).Documentation.Length;
 
         Assert.That(coding, Is.LessThan(all));

@@ -2,7 +2,7 @@ using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Delegation;
 
 namespace LouisAgent.Core.Tests.Sessions.SubSessions;
 
@@ -11,7 +11,7 @@ namespace LouisAgent.Core.Tests.Sessions.SubSessions;
 public class SubSessionRegistryTests
 {
     private static OpenSubSession Entry(string sessionId, List<string> closed) =>
-        new(new Uri("http://coder.test/"), sessionId, "coder", [CoreToolset.Web.Wire()], SampleRole.Alpha, () =>
+        new(new Uri("http://coder.test/"), sessionId, "coder", [TestToolset.Web.Wire()], SampleRole.Alpha, () =>
         {
             closed.Add(sessionId);
             return Task.CompletedTask;

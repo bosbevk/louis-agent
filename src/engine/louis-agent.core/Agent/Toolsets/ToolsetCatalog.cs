@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 
@@ -6,19 +8,7 @@ using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Tools.Agents;
-using LouisAgent.Core.Tools.Currency;
-using LouisAgent.Core.Tools.Documents;
-using LouisAgent.Core.Tools.DotNet;
-using LouisAgent.Core.Tools.Git;
-using LouisAgent.Core.Tools.Git.Running;
-using LouisAgent.Core.Tools.Integrations.DevOps;
-using LouisAgent.Core.Tools.Integrations.Paymo;
-using LouisAgent.Core.Tools.Shell;
-using LouisAgent.Core.Tools.Web;
-using LouisAgent.Core.Tools.Web.Fetching;
-using LouisAgent.Core.Tools.Web.Quotes;
-using LouisAgent.Core.Tools.Workspace;
+using LouisAgent.Core.Delegation;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent.Toolsets;
@@ -33,104 +23,6 @@ public static class ToolsetCatalog
     /// <summary>Every toolset, in the order <c>GET /v1/toolsets</c> lists them.</summary>
     public static IReadOnlyList<ToolsetDefinition> All { get; } =
     [
-        new(CoreToolset.Files.Wire(), "Read, write, search, copy, rename and delete files in the workspace",
-            GuideFile: SkillFiles.Guide(CoreToolset.Files.Wire()),
-            MissingSettings: _ => [],
-            // S (CL15): five classes, one concern each (a file's content, the tree's shape, browsing, searching, documents).
-            ToolTypes:
-            [
-                typeof(WorkspaceFileTools), typeof(WorkspaceOrganiseTools), typeof(WorkspaceBrowseTools),
-                typeof(WorkspaceSearchTools), typeof(DocumentTools)
-            ],
-            CreateTools: ctx =>
-            [
-                new WorkspaceFileTools(Root(ctx)), new WorkspaceOrganiseTools(Root(ctx)),
-                new WorkspaceBrowseTools(Root(ctx)),
-                new WorkspaceSearchTools(Root(ctx)), new DocumentTools(Root(ctx)),
-            ]),
-
-        new(CoreToolset.Git.Wire(),
-            "Status, diffs, branches, staging, commits, merges and history for the workspace repository",
-            GuideFile: SkillFiles.Guide(CoreToolset.Git.Wire()),
-            MissingSettings: _ => [],
-            // S (CL15): five classes (changes, branches, remotes, history, config) on one runner.
-            ToolTypes:
-            [
-                typeof(GitChangeTools), typeof(GitBranchTools), typeof(GitRemoteTools), typeof(GitHistoryTools),
-                typeof(GitConfigTools)
-            ],
-            CreateTools: ctx =>
-            {
-                var git = new GitRunner(Root(ctx));
-                return
-                [
-                    new GitChangeTools(git), new GitBranchTools(git), new GitRemoteTools(git), new GitHistoryTools(git),
-                    new GitConfigTools(git)
-                ];
-            }),
-
-        new(CoreToolset.DotNet.Wire(), "Build, test, run and restore .NET projects; list packages; SDK information",
-            GuideFile: SkillFiles.Guide(CoreToolset.DotNet.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(DotNetTools)],
-            CreateTools: ctx => [new DotNetTools(Root(ctx))]),
-
-        new(CoreToolset.Python.Wire(),
-            "Run Python code or scripts and manage packages in the agent's own virtual environment",
-            GuideFile: SkillFiles.Guide(CoreToolset.Python.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(PythonTools)],
-            CreateTools: ctx => [new PythonTools(Root(ctx))]),
-
-        new(CoreToolset.PowerShell.Wire(),
-            "Run PowerShell scripts (PowerShell 7, or Windows PowerShell 5.1 on Windows)",
-            GuideFile: SkillFiles.Guide(CoreToolset.PowerShell.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(PowerShellTools)],
-            CreateTools: ctx => [new PowerShellTools(Root(ctx))]),
-
-        new(CoreToolset.Bash.Wire(), "Run bash scripts (Git Bash on Windows, /bin/bash elsewhere)",
-            GuideFile: SkillFiles.Guide(CoreToolset.Bash.Wire()),
-            MissingSettings: _ => [],
-            ToolTypes: [typeof(BashTools)],
-            CreateTools: ctx => [new BashTools(Root(ctx))]),
-
-        new(CoreToolset.Web.Wire(), "Search the web and fetch web pages",
-            GuideFile: SkillFiles.Guide(CoreToolset.Web.Wire()),
-            MissingSettings: _ => [],
-            // S (CL15): three classes (finding and reading, a quote's provenance, currency); one guarded fetcher for the two that fetch.
-            ToolTypes: [typeof(WebTools), typeof(QuoteTools), typeof(CurrencyTools)],
-            CreateTools: ctx =>
-            {
-                var fetcher = new PageFetcher(replay: ctx.Replay, robots: ctx.Robots);
-                return
-                [
-                    new WebTools(ctx.WebSearch, fetcher, ctx.Renderer), new QuoteTools(fetcher, ctx.Renderer),
-                    new CurrencyTools(ctx.Rates)
-                ];
-            },
-            ParallelSafe: true),
-
-        new(CoreToolset.Paymo.Wire(), "Paymo time tracking: time entries, tasks, projects and summaries",
-            GuideFile: SkillFiles.Guide(CoreToolset.Paymo.Wire()),
-            MissingSettings: ctx => Missing(ctx, ("PAYMO_API_KEY", ctx.Options.PaymoApiKey)),
-            ToolTypes: [typeof(PaymoTools)],
-            CreateTools: ctx => [new PaymoTools(ctx.Options)]),
-
-        new(CoreToolset.DevOps.Wire(), "Azure DevOps work items, sprints and team queries",
-            GuideFile: SkillFiles.Guide(CoreToolset.DevOps.Wire()),
-            MissingSettings: ctx => Missing(ctx,
-                ("DEVOPS_API_KEY", ctx.Options.DevopsApiKey),
-                ("DEVOPS_ORGANIZATION", ctx.Options.DevopsOrganization),
-                ("DEVOPS_PROJECT", ctx.Options.DevopsProject)),
-            ToolTypes: [typeof(DevOpsTools)],
-            CreateTools: ctx =>
-            [
-                new DevOpsTools(
-                    ctx.Options.DevopsApiKey!, ctx.Options.DevopsOrganization!, ctx.Options.DevopsProject!,
-                    ctx.Options.DevopsTeam)
-            ]),
-
         new(CoreToolset.Specialists.Wire(),
             "Hand a separate task to a specialist agent: a sub-session on a peer with only the toolsets it needs",
             GuideFile: SkillFiles.Guide(CoreToolset.Specialists.Wire()),

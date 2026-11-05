@@ -44,8 +44,7 @@ flowchart TB
 Every host is thin: it maps the agent's stream to its protocol, and all behaviour is in core
 ([0010](../adr/0010-folders-by-concern.md)). Core is the engine and names no product: who an agent is (its voice, modes,
 roles and the packs it uses, by name) is an identity in `identities/`, what it can do (toolsets, guides, settings) is a
-pack in `packs/`, and only the composition root (`demos/puls/hosts/louis-agent.host-packs`) knows them all; a host picks with
-`IDENTITIES` and `PACKS` at start-up and hands one `AgentCatalog` to `AgentHost.Build` (CL15,
+pack in `packs/`, and a framework host knows none of them: a demo's program names what it loads and hands one `AgentCatalog` to the host (CL15,
 [0027](../adr/0027-engine-identities-and-packs.md)). Every pack stays convertible to an MCP server, held by
 `PackConvertibilityTests` ([0028](../adr/0028-packs-stay-convertible-to-mcp.md)).
 
@@ -86,7 +85,7 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
   returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `specialists`.
 - Two web apps share one API codebase and `louis-agent.web.shared`: the code-review app (`louis-agent.web`, every
   toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load `specialists` and `web` and
-  hand cooking to the cook; served when the API is built with `-p:WebApp=puls`).
+  hand cooking to the cook; served by Puls's program, `louis-agent.puls-api`).
 - **Live delegation:** while a `StartSubSession` call runs, the specialist's own events stream to the chat as
   `sub_session` events (`SubSessionFeed` → the API's turn stream), and the delegation card shows its thinking, tool
   calls, answer and cost as they happen; the model gets only the answer.
@@ -268,8 +267,7 @@ script) with `CreateTool`. It only becomes a real tool after the user types `/ap
 
 ## Bootstrap: `AgentHost`
 
-`AgentHost.Build(catalog)` (CLI, ACP, API), with the catalogue the host got from `Plugins.FromEnvironment()`
-(`IDENTITIES` and `PACKS`, read after `config/.env`; CL15):
+`AgentHost.Build(catalog)` (CLI, ACP, API), with the catalogue the host got from its program (CL15):
 1. Load `config/.env.secrets` then `config/.env` (searching upward from the working directory) and a legacy `./.env`;
    variables already set in the process win.
 2. Bind `LlmOptions` and `AgentOptions`; configure logging (`AgentLogging.Configure(LOG_DIRECTORY)`); register the

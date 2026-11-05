@@ -34,7 +34,7 @@ public class RoutingEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Identity, eval.Version),
-            Is.EqualTo((eval.Dataset.Name, PulsIdentityName.Puls.Wire(), 3)));
+            Is.EqualTo((eval.Dataset.Name, PulsIdentityName.Puls.Wire(), 4)));
         Assert.That(eval.Proves, Does.StartWith("Puls sends each kind of question to the right place"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
@@ -46,13 +46,13 @@ public class RoutingEvalTests
     [Test]
     public async Task TheBaseline_IsEveryToolsetPulsHas_ButTheDelegatingOnes()
     {
-        var puls = Plugins.FromSettings(PulsIdentityName.Puls.Wire(), null).Toolsets.Select(toolset => toolset.Name);
+        var puls = Plugins.FromSettings(PulsIdentityName.Puls.Wire(), $"{PackKind.DotNet.Wire()},{PackKind.Git.Wire()},{PackKind.Files.Wire()},{PackKind.Shell.Wire()}").Toolsets.Select(toolset => toolset.Name);
 
         var modes = await Load().ModesAsync(null!, CancellationToken.None);
 
         Assert.That(modes.Select(mode => mode.Role).Distinct(), Is.EqualTo(new[] { "puls/voice-af" }));
         Assert.That(modes[0].Toolsets, Is.EquivalentTo(puls.Except(Delegating)));
-        Assert.That(modes[1].Toolsets, Is.EqualTo(new[] { CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire() }));
+        Assert.That(modes[1].Toolsets, Is.EqualTo(new[] { CoreToolset.Specialists.Wire(), TestToolset.Web.Wire() }));
     }
 
     /// <summary>Its one check is the route, required, where only the specialists hand a question on.</summary>

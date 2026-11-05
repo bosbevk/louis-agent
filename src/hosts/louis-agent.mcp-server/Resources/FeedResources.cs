@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs;
 using System.Net.Mime;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;

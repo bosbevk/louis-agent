@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Agent.Commands;
 using LouisAgent.Core.Agent.EngineTools;
@@ -9,7 +10,7 @@ using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Sinks;
 using Microsoft.Extensions.AI;
@@ -150,8 +151,8 @@ public class AgentEngine
         SupportsTools = supportsTools;
         WorkspaceRoot = Path.GetFullPath(options.WorkspaceRoot);
         _registry = new ToolRegistry(supportsTools);
-        var python = new PythonTools(WorkspaceRoot);
-        var powerShell = new PowerShellTools(WorkspaceRoot);
+        var python = new PythonRunner(WorkspaceRoot);
+        var powerShell = new PowerShellRunner(WorkspaceRoot);
         _skillTools = new SkillTools(skillProvider, options, WorkspaceRoot, python, powerShell);
         _agentBuiltTools = new AgentBuiltTools(_registry, supportsTools, WorkspaceRoot, python, powerShell,
             () => SkillsDirectory, () => ReservedToolNames);

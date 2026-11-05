@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Prompts;
 using LouisAgent.Core.Agent.EngineTools;
@@ -36,17 +37,18 @@ public class AgentCatalogTests
     [Test]
     public void APacksToolset_ResolvesThroughTheCatalogue_BesideCores()
     {
-        var catalog = Catalog([new FakeIdentity(packs: ["fakeshop"])], [new FakePack()]);
+        var catalog = Catalog([new FakeIdentity(packs: ["fakeshop"])], [TestTools.WebPack, new FakePack()]);
 
-        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain("fakeshop").And.Contain(CoreToolset.Web.Wire()),
+        Assert.That(catalog.Toolsets.Select(t => t.Name), Does.Contain("fakeshop").And.Contain(TestToolset.Web.Wire()),
             "core's and the pack's");
-        Assert.That(catalog.Toolsets.Take(ToolsetCatalog.All.Count).Select(t => t.Name),
-            Is.EqualTo(ToolsetCatalog.All.Select(t => t.Name)), "core's first, in order");
-        Assert.That(catalog.Resolve(["fakeshop", CoreToolset.Web.Wire()], Context()).Select(t => t.Name),
-            Is.EqualTo(new[] { CoreToolset.Web.Wire(), "fakeshop" }), "resolved in catalogue order");
+        Assert.That(catalog.Toolsets.Select(t => t.Name),
+            Is.EqualTo(ToolsetCatalog.All.Select(t => t.Name).Prepend(TestToolset.Web.Wire()).Append("fakeshop")),
+            "general tools, core's, then a product's");
+        Assert.That(catalog.Resolve(["fakeshop", TestToolset.Web.Wire()], Context()).Select(t => t.Name),
+            Is.EqualTo(new[] { TestToolset.Web.Wire(), "fakeshop" }), "resolved in catalogue order");
         Assert.That(catalog.Identities.Single().Name, Is.EqualTo("fakeid"));
-        Assert.That(catalog.Packs.Single().Name, Is.EqualTo("fakeshop"));
-        Assert.That(catalog.Prompts, Has.Count.EqualTo(2), "the identity's and the pack's, for the prompt reader");
+        Assert.That(catalog.Packs.Select(p => p.Name), Is.EqualTo(new[] { TestToolset.Web.Wire(), "fakeshop" }));
+        Assert.That(catalog.Prompts, Has.Count.EqualTo(3), "the identity's and the packs', for the prompt reader");
     }
 
     /// <summary>Two identities that name the same pack get one pack, not two.</summary>
@@ -141,11 +143,24 @@ public class AgentCatalogTests
     public void AToolsetNamedLikeCores_IsRefused()
     {
         var pack = new FakePack("mine",
-            [FakePack.Toolset(CoreToolset.Web.Wire(), typeof(FakeShopTools), _ => [new FakeShopTools()])]);
+            [FakePack.Toolset(CoreToolset.Skills.Wire(), typeof(FakeShopTools), _ => [new FakeShopTools()])]);
 
         var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs: [pack]))!;
 
-        Assert.That(error.Message, Does.Contain(CoreToolset.Web.Wire()).And.Contain("toolset"));
+        Assert.That(error.Message, Does.Contain(CoreToolset.Skills.Wire()).And.Contain("toolset"));
+    }
+
+    /// <summary>General tools come before the engine's and a product's after, so the prefix the model reads stays fixed.</summary>
+    [Test]
+    public void APackThatComesBeforeTheEngine_ListsFirst()
+    {
+        var general = new FakePack("general",
+            [FakePack.Toolset("general", typeof(FakeShopTools), _ => [new FakeShopTools()])], comesBeforeTheEngine: true);
+
+        var names = Catalog(packs: [new FakePack("fakeshop", [FakePack.Toolset("fakeshop", typeof(FakeOtherShopTools), _ => [new FakeOtherShopTools()])]), general]).Toolsets.Select(t => t.Name).ToList();
+
+        Assert.That(names.First(), Is.EqualTo(general.Name));
+        Assert.That(names.Last(), Is.EqualTo("fakeshop"));
     }
 
     /// <summary>The same prompt file in two places is refused, so the reader never has to choose.</summary>
@@ -154,7 +169,7 @@ public class AgentCatalogTests
     {
         // A pack that ships core's own web guide, and two identities with the same mode file.
         var pack = new FakePack("mine", prompts: new Dictionary<string, string> { ["toolsets/web.md"] = "# web" });
-        Assert.That(Assert.Throws<AgentCatalogException>(() => Catalog(packs: [pack]))!.Message,
+        Assert.That(Assert.Throws<AgentCatalogException>(() => Catalog(packs: [TestTools.WebPack, pack]))!.Message,
             Does.Contain("toolsets/web.md"));
 
         var voice = new Dictionary<string, string> { ["agent/shared/voice.md"] = "# shared" };
@@ -194,8 +209,8 @@ public class AgentCatalogTests
     {
         var clashing = new FakePack("mine",
             [FakePack.Toolset("mine", typeof(FakeClashingTools), _ => [new FakeClashingTools()])]);
-        var twice = Assert.Throws<AgentCatalogException>(() => Catalog(packs: [clashing]))!;
-        Assert.That(twice.Message, Does.Contain("FetchUrl").And.Contain(CoreToolset.Web.Wire()).And.Contain("mine"),
+        var twice = Assert.Throws<AgentCatalogException>(() => Catalog(packs: [TestTools.WebPack, clashing]))!;
+        Assert.That(twice.Message, Does.Contain("FetchUrl").And.Contain(TestToolset.Web.Wire()).And.Contain("mine"),
             "both toolsets named");
 
         var engines = new FakePack("clock",
@@ -208,11 +223,11 @@ public class AgentCatalogTests
     [Test]
     public void ToolNames_CountThePacksTools_SoAnAgentBuiltToolCantTakeOne()
     {
-        var catalog = Catalog(packs: [new FakePack()]);
+        var catalog = Catalog(packs: [new FakePack(), TestTools.WebPack]);
 
         Assert.That(catalog.ToolNames, Does.Contain("FindFakeProducts").And.Contain("FetchUrl"));
         Assert.That(catalog.ToolsetOf("FindFakeProducts"), Is.EqualTo("fakeshop"));
-        Assert.That(catalog.ToolsetOf("FetchUrl"), Is.EqualTo(CoreToolset.Web.Wire()));
+        Assert.That(catalog.ToolsetOf("FetchUrl"), Is.EqualTo(TestToolset.Web.Wire()));
         Assert.That(catalog.ToolsetOf("CreateTool"), Is.Null, "engine-provided: no toolset builds it");
         Assert.That(catalog.ToolNamesOf(catalog.Resolve(["fakeshop"], Context())),
             Is.EqualTo(new[] { "FindFakeProducts" }), "a minion may be handed it");
@@ -269,9 +284,9 @@ public class AgentCatalogTests
         Assert.That(core.Packs, Is.Empty);
         Assert.That(core.Toolsets, Is.EqualTo(ToolsetCatalog.All));
         Assert.That(core.ToolNames,
-            Does.Contain("FetchUrl").And.Contain("ReadWorkspaceFile").And.Not.Contain("CreateTool"));
-        Assert.That(core.Resolve([CoreToolset.Files.Wire(), CoreToolset.Git.Wire()], Context()).Select(t => t.Name),
-            Is.EqualTo(new[] { CoreToolset.Files.Wire(), CoreToolset.Git.Wire() }));
+            Does.Contain("StartSubSession").And.Not.Contain("CreateTool"));
+        Assert.That(core.Resolve([CoreToolset.Skills.Wire()], Context()).Select(t => t.Name),
+            Is.EqualTo(new[] { CoreToolset.Skills.Wire() }));
     }
 
     /// <summary>The prompt reader takes the same providers again quietly, and refuses new ones after a read.</summary>
@@ -301,7 +316,7 @@ public class AgentCatalogTests
             RolesEnabled = ["testprod-specialist", "nope"]
         };
 
-        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, RoleCatalog.DefaultVoice))!;
+        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "testprod/voice-af"))!;
 
         Assert.That(error.Message, Does.StartWith("ROLES_ENABLED names roles this instance doesn't have: nope."),
             "only the unknown name is named; the known ones follow under Available");
@@ -312,7 +327,7 @@ public class AgentCatalogTests
                     WorkspaceRoot = TestPaths.RepoRoot,
                     RolesEnabled = ["testprod-specialist", "testprod/voice-af"]
                 },
-                RoleCatalog.DefaultVoice));
+                "testprod/voice-af"));
     }
 
     /// <summary>A default mode that points at no file stops start-up.</summary>
@@ -321,9 +336,9 @@ public class AgentCatalogTests
     {
         var options = new AgentOptions { WorkspaceRoot = TestPaths.RepoRoot };
 
-        Assert.DoesNotThrow(() => RoleFiles.Check(options, RoleCatalog.DefaultVoice),
-            "core embeds louis-agent/voice until CL17");
-        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "louis-agent/nothing"))!;
-        Assert.That(error.Message, Does.Contain("louis-agent/nothing"));
+        Assert.DoesNotThrow(() => RoleFiles.Check(options, "testprod/voice-af"),
+            "its file is there");
+        var error = Assert.Throws<RoleException>(() => RoleFiles.Check(options, "testprod/nothing"))!;
+        Assert.That(error.Message, Does.Contain("testprod/nothing"));
     }
 }

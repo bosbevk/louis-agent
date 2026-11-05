@@ -1,9 +1,10 @@
-namespace LouisAgent.AcpServer.Paths;
 
+using LouisAgent.Composition.Logging;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.Core.Logging;
 using Microsoft.Extensions.Logging;
 
+namespace LouisAgent.AcpServer.Paths;
 /// <summary>The repository a file from the IDE belongs to (S, CL15, from AcpServer): the nearest folder above it with a .git.</summary>
 internal sealed class GitRoots(ContainerPaths paths)
 {

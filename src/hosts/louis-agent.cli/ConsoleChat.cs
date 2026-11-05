@@ -1,4 +1,6 @@
 
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;

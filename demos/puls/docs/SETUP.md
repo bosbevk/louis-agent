@@ -40,8 +40,7 @@ What the stack keeps stays in this demo, git-ignored: `demos/puls/data/` (the ev
 
 The API's `puls` profile (port 5071) sets what the stack sets, plus `IDENTITIES=puls`, its peers, roles, SearXNG at
 `127.0.0.1:8888` and the browser at `127.0.0.1:9222` from this stack. `EVALS_MONGO_URL` in `.env.secrets` names `puls-mongo`,
-the compose service, so for a local run set it to `127.0.0.1` in the shell. Which web app the API serves is the build's choice
-(`-p:WebApp=puls`).
+the compose service, so for a local run set it to `127.0.0.1` in the shell. The web app is the program's project reference.
 
 ## Puls's own settings
 

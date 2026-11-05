@@ -37,7 +37,7 @@ flowchart LR
     Replay["ReplayResolution"]
   end
   subgraph Runner["louis-agent.evals.runner (child process)"]
-    Cat["EvalCatalog<br/>EvalFolders, RunnerChecks"]
+    Cat["EvalCatalog<br/>EvalFolders, RunnerCatalogs"]
     Harness["EvalRunner<br/>(louis-agent.evals)"]
     Files["FileEval<br/>eval folders copied beside it"]
   end
@@ -181,7 +181,7 @@ The three kinds of check (`CheckKind`; on the wire a check is still a `grader`, 
 
 An eval's file names its checks by type (`within-time`, `{"seconds": 120}`): each check's entry, an `ICheckType`,
 builds it from a typed settings record, and `CheckCatalog` finds the entry. The runner's catalogue is three lists
-(`RunnerChecks`): the harness's `GeneralChecks.All` (24 types by family, from `no-error` to `judge` and `human`; the
+(`RunnerCatalogs`): the harness's `GeneralChecks.All` (24 types by family, from `no-error` to `judge` and `human`; the
 table is in [Add an eval](../guides/add-an-eval.md#4-choose-the-checks)), each pack's checks project (the where-to-buy
 rules, `WhereToBuyChecks.All`, F49.3 and F50.2, and the recipes rule `recipe-from-source`, `RecipesChecks.All`, F35.2),
 and Puls's judges
@@ -190,7 +190,7 @@ and Puls's judges
 
 **Extract, then compare** (F49.2b): a check that compares a value in the answer with the scenario's (a total with a
 budget, a number of people, an image with the pages read) is a general compare plus a *reader* the file names beside
-the key (`"reader": "rand-total"`). Readers are a second registry, `ReaderCatalog` (`RunnerReaders`): the harness's
+the key (`"reader": "rand-total"`). Readers are a second registry, `ReaderCatalog` (`RunnerCatalogs`): the harness's
 `GeneralReaders.All` (`currency-amount`, `digits`, `markdown-images`) and each identity's evals project's
 (`PulsReaders.All`: `rand-total`, `rand-prices`, `servings`, `recipe-photos`, `recipe-link`). So an identity ships readers, not
 checks, and its eval file keeps its stored names with `name` (`{"type": "amount-under", "name": "within-budget", …}`).
@@ -396,7 +396,7 @@ evals/
 │   └── Trials/                     # ConversationMetrics
 ├── louis-agent.evals.checks/       # the check contract: EvalMode, EvalJson; Catalog/ (ICheckType, CheckType, CheckCatalog); Datasets/Scenarios/; Trials/; Grading/ (ICheck, Grade, Verdict); Messages/
 ├── louis-agent.evals.protocol/     # Events/, Parts/, Kinds/, EvalProtocolJson
-├── louis-agent.evals.runner/       # Program, Arguments/, Catalog/ (EvalFolders, RunnerChecks, ChecksListing), Calibration/, Evals/Stub/,
+├── louis-agent.evals.runner/       # EvalRunnerHost, Arguments/, Catalog/ (EvalFolders, RunnerCatalogs, ChecksListing), Calibration/, Evals/Stub/,
 │                                   # Studio/ (CheckCommand, ManifestSeal, RunTarget, SampleSubset), Promptfoo/ (the table, import, export)
 └── template/Example/               # the folder a new eval starts as a copy of (never listed)
 demos/puls/evals/louis-agent.identity.puls.evals/Evals/  # Cook/, Recipes/ and Routing/ (eval.json, manual.md, Dataset/, Transcripts/), Checks/, Readers/ (Puls's readers)

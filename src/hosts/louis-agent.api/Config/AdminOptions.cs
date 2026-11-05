@@ -30,7 +30,7 @@ public sealed record AdminOptions(
     string EvalRunner)
 {
     /// <summary>Where the eval runner's dll sits in the image; the API starts it with <c>dotnet</c>.</summary>
-    public const string DefaultEvalRunner = "/app/evals/louis-agent.evals.runner.dll";
+    public const string DefaultEvalRunner = "/app/evals/eval-runner.dll";
 
     /// <summary>The API's own port inside the container, where a run calls back when nothing else is set.</summary>
     public const string DefaultBenchmarkApiUrl = "http://127.0.0.1:8080/";

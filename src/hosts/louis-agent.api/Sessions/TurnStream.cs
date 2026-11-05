@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Globalization;
 using System.Net.ServerSentEvents;
 using System.Threading.Channels;
@@ -10,7 +12,7 @@ using LouisAgent.Core.Messages;
 using LouisAgent.Core.Sessions;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Delegation;
 using LouisAgent.Api.Sessions.Streaming;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.SessionStream;

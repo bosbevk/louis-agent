@@ -1,10 +1,11 @@
-namespace LouisAgent.AcpServer.Turns;
 
+using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Agent.Turns;
 using LouisAgent.AcpServer.Protocol;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
 
+namespace LouisAgent.AcpServer.Turns;
 /// <summary>
 /// Relays a turn to the client as it happens (S, CL15, from AcpServer): the model's thinking (agent_thought_chunk),
 /// text as it is written, and each tool call as a tool_call that is updated to completed/failed when its result arrives.

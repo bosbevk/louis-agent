@@ -1,12 +1,14 @@
 
-using LouisAgent.Core.Agent.Catalog.Imports;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs.Imports;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Toolsets;
 using System.ComponentModel;
 using System.Reflection;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Tools.Clock;
+using LouisAgent.Core.Agent.EngineTools.Clock;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.FileProviders;
 
@@ -37,6 +39,9 @@ public sealed class AgentCatalog
     /// <summary>A host given no identity and no pack: core's toolsets and prompts, as before the cut.</summary>
     public static AgentCatalog CoreOnly { get; } = new([], []);
 
+    /// <summary>The first identity's default mode: who a session is when it doesn't say.</summary>
+    public string? DefaultVoice => Identities.Select(i => i.DefaultVoice).FirstOrDefault(v => v is not null);
+
     private readonly Dictionary<string, ToolsetDefinition> _toolsetOfTool = new(StringComparer.Ordinal);
 
     public AgentCatalog(IReadOnlyList<IAgentIdentity> identities, IReadOnlyList<IAgentPack> packs)
@@ -46,7 +51,11 @@ public sealed class AgentCatalog
         CheckUnique(identities.Select(i => i.Name), "identity");
         CheckUnique(packs.Select(p => p.Name), "pack");
 
-        Toolsets = ToolsetCatalog.All.Concat(packs.SelectMany(p => p.Toolsets)).ToList();
+        // General tools, the engine's, then a product's: a pack's place says which (see ComesBeforeTheEngine).
+        Toolsets = packs.Where(p => p.ComesBeforeTheEngine).SelectMany(p => p.Toolsets).Select(ToolsetDefinition.Of)
+            .Concat(ToolsetCatalog.All)
+            .Concat(packs.Where(p => !p.ComesBeforeTheEngine).SelectMany(p => p.Toolsets).Select(ToolsetDefinition.Of))
+            .ToList();
         CheckUnique(Toolsets.Select(t => t.Name), "toolset");
 
         var registered = packs.Select(p => p.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -122,6 +131,9 @@ public sealed class AgentCatalog
 
     /// <summary>The toolset whose class builds <paramref name="tool"/> (a minion's one tool names its toolset, F30); null for none.</summary>
     public string? ToolsetOf(string tool) => _toolsetOfTool.TryGetValue(tool, out var toolset) ? toolset.Name : null;
+
+    /// <summary>The same for a pack's toolset, before the engine holds it.</summary>
+    public static IEnumerable<MethodInfo> ToolMethodsOf(PackToolset toolset) => ToolMethodsOf(ToolsetDefinition.Of(toolset));
 
     /// <summary>
     /// The one rule for which methods are tools: the public instance methods a toolset's class declares. The engine

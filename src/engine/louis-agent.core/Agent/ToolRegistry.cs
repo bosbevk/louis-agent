@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Agent.Catalog;
 using System.Reflection;
 using LouisAgent.Core.Messages;

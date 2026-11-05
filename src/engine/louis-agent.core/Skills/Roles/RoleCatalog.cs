@@ -7,7 +7,7 @@ namespace LouisAgent.Core.Skills.Roles;
 /// <c>agent/{name}.md</c> (level 0, a voice), <c>specialists/{name}.md</c> (level 1, a role),
 /// <c>minions/{name}.md</c> (level 2, F30), under core's <c>Prompts/</c> and read only from the assembly (CL8
 /// step 4). At level 0 a role is a mode (CL9, ADR 0019): one file, its voice then its routing, in a folder per
-/// product (<c>agent/acme/voice-en.md</c>), named <c>{product}/{mode}</c>; <see cref="DefaultVoice"/> is the mode of a
+/// product (<c>agent/acme/voice-en.md</c>), named <c>{product}/{mode}</c>; an identity's default is the mode of a
 /// session that names none. A name is lowercase letters, digits and dashes, with one <c>/</c> between a product and its
 /// mode, so it never reaches outside its folder.
 /// </summary>
@@ -23,9 +23,6 @@ public static partial class RoleCatalog
     public const string MinionsFolder = "minions";
 
     private const int MaxNameLength = 40;
-
-    /// <summary>The mode of a level-0 session that names none (CL9): the coding agent's (CLI, Rider, MCP).</summary>
-    public const string DefaultVoice = "louis-agent/voice";
 
     /// <summary>
     /// The base a minion role sits on (F30): <c>{product}-minion</c> for <c>{product}-minion-{function}</c>

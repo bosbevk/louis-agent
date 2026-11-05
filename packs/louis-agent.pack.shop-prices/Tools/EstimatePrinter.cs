@@ -1,6 +1,6 @@
+using LouisAgent.Composition.Messages;
 using System.Globalization;
 using System.Text;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.ShopPrices.Estimates;
 using LouisAgent.Packs.ShopPrices.Messages;
 using LouisAgent.Packs.ShopPrices.Prices;

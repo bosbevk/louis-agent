@@ -32,7 +32,7 @@ public class MinionRolesTests
         Assert.That(principles, Is.GreaterThanOrEqualTo(0), "the principles open every prompt (ADR 0020)");
         Assert.That(@base, Is.GreaterThan(principles), "the base after the principles");
         Assert.That(role, Is.GreaterThan(@base), "the role after the base");
-        Assert.That(docs, Does.Not.Contain("# Louis Agent - Default Instructions"), "no router: a minion never delegates");
+        Assert.That(docs, Does.Not.Contain("# Testprod - Routing"), "no router: a minion never delegates");
     }
 
     [Test]

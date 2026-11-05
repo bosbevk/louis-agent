@@ -20,7 +20,7 @@ public class SkillLoaderHeadersTests
         Assert.That(SkillLoader.ToolsetsOf("testprod-specialist", RoleLevel.Specialist), Is.EqualTo(new[] { "web?" }));
 
     /// <summary>A role whose header names none, or a name that isn't a role, loads none of its own.</summary>
-    [TestCase("louis-agent/voice", RoleLevel.Agent)]
+    [TestCase("testprod/voice-af", RoleLevel.Agent)]
     [TestCase("no-such-role", RoleLevel.Specialist)]
     [TestCase("../shared/principles", RoleLevel.Specialist)]
     public void ARoleThatNamesNone_LoadsNoneOfItsOwn(string role, RoleLevel level) =>
@@ -33,7 +33,7 @@ public class SkillLoaderHeadersTests
         foreach (var level in Enum.GetValues<RoleLevel>())
             foreach (string role in RoleCatalog.Available(level))
                 foreach (string toolset in SkillLoader.ToolsetsOf(role, level))
-                    Assert.That(ToolsetCatalog.Find(ToolsetCatalog.NameOf(toolset)), Is.Not.Null,
+                    Assert.That(TestTools.Catalog.Toolsets.Any(t => t.Name == ToolsetCatalog.NameOf(toolset)), Is.True,
                         $"{role} names '{toolset}'");
     }
 

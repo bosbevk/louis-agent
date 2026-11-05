@@ -171,5 +171,22 @@ exporter · promptfoo, *assertions* (`icontains-any`) · Inspect AI, *scorers* (
 [ADR 0057](../adr/0057-regex-is-the-last-option.md) · [ADR 0060](../adr/0060-a-pack-ships-its-checks.md) · Fowler,
 *Refactoring* (Move Method, Extract Class) · Feathers, *Working Effectively with Legacy Code* (characterisation tests)
 
+## Core ships no agent
+
+The test of an extensible engine is whether its own first product could be anyone's. Ours couldn't: the coding agent lived in
+core. Moving it out showed three kinds of code that all looked like "tools":
+
+- **What the model asks for** is a plugin. It needs only a contract, so it can ship alone: a console app ran the git pack from
+  a NuGet package with no engine in its dependency graph.
+- **What every plugin relies on** is a platform service. The guards around a fetch stay in the engine, and a plugin asks for a
+  guarded fetcher. That is safer than a shared helper, because the plugin has no way to skip the check.
+- **What needs the engine's insides** stays. Delegation opens sessions and rolls up their usage; making it a plugin would have
+  pushed those insides into the contract, which is the coupling the split exists to remove.
+
+The golden files were the safety net. A move this size should change nothing the model reads, and when one did change, the
+order of a Puls session's guides, the test caught it. The order looks cosmetic, but it is part of the prefix the prompt cache
+keys on, so it became a rule in the code. Concept: *20 Extensibility* and *18 Testing and shipping* in the [goal](../GOAL.md);
+pattern: Separated Interface (Fowler, *PoEAA*), Composition Root (Seemann).
+
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)

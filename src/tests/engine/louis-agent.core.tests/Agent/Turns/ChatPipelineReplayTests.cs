@@ -5,7 +5,7 @@ using LouisAgent.Core.Agent.Turns;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Sessions.Replay;
 using LouisAgent.Core.Skills.Providers;
-using LouisAgent.Core.Tests.Tools.Web.Replay;
+using LouisAgent.Core.Tests.Web.Replay;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.AI;
 
@@ -29,7 +29,7 @@ public class ChatPipelineReplayTests
     private AgentEngine Engine(IChatClient client, ListUsageSink ledger) =>
         new(new MarkdownSkillProvider(TestPaths.SampleSkills), client,
             TestPaths.Agent(),
-            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]),
+            toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]),
             // Priced the way the ledger is, from a table that knows no model: a hit must still be a known 0, and a live request unknown.
             usageSink: new PricingUsageSink(ledger, new PriceTable { AsOf = "2026-10-25", Currency = "USD" }),
             replay: _folder.Store);

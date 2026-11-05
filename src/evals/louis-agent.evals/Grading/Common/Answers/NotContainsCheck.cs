@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Globalization;
 using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Catalog;

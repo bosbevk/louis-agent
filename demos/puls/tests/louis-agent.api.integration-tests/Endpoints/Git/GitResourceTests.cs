@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Testing;
 using System.Diagnostics;
 using System.Net;

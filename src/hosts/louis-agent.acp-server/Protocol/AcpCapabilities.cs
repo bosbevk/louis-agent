@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Tools;
+
 namespace LouisAgent.AcpServer.Protocol;
 
 /// <summary>The <c>initialize</c> reply (S, CL15, from AcpServer): the one place the protocol version and what this agent can do are stated.</summary>

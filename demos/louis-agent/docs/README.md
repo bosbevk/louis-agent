@@ -4,6 +4,7 @@
 > it needs. **Elsewhere:** everything about the framework in the [framework's docs](../../../src/docs/README.md).
 
 - [Setup](SETUP.md), [Quick start](QUICK_START_AGENT.md)
+- Its programs, each naming what the framework's host loads: `hosts/louis-agent.coding-cli`, `hosts/louis-agent.coding-acp`, `hosts/louis-agent.coding-mcp`, `hosts/louis-agent.coding-eval-runner`, `hosts/louis-agent.coding-api`
 - Change it: [the web app](guides/change-the-web-app.md), [the site](guides/change-the-site.md),
   [the orchestrator](guides/change-the-orchestrator.md)
 - How it works: [web app](projects/louis-agent.web.md), [site](projects/louis-agent.site.md),

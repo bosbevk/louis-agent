@@ -81,7 +81,7 @@ The design decisions every change keeps, one line each: the *why* is its ADR in 
 - **Microsoft.Extensions.AI** — one `IChatClient` across providers; `FunctionInvokingChatClient` runs the tool loop; we
   sit at the Messages API tier with our own loop. [ADR 0002](adr/0002-messages-api-tier-with-our-own-loop.md).
 - **Framework and implementation are split, and this comes first** — `src/` is framework only, a demo holds its own
-  config, docker, skills, deploy and tests; the solution tree is the disk. [ADR 0074](adr/0074-the-folders-say-what-ships.md).
+  config, docker, skills, deploy and tests; the solution tree is the disk; core ships no agent and every tool the model asks for is a pack. [ADR 0074](adr/0074-the-folders-say-what-ships.md), [0076](adr/0076-core-ships-no-agent.md).
 - **Engine, identities and packs** — core names no product or country; an identity is who, a pack what it can do; a pack
   references no other pack, identity or eval; only `demos/puls/hosts/louis-agent.host-packs` knows them all. Weigh every reference against
   the engine split; a shared contract is a shared project or a tested duplicate. [ADR 0027](adr/0027-engine-identities-and-packs.md), [0073](adr/0073-packs-reference-no-evals.md).
@@ -152,15 +152,15 @@ Where things are. What's inside each project is in its design doc in [projects/]
 in [Project layout](../engine/louis-agent.core/CLAUDE.md#project-layout).
 
 ```
-src/engine/              # louis-agent.core (the loop, tools, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on)
+src/engine/              # louis-agent.core (the loop, delegation, web access and its guards, skills, providers, usage, bootstrap), .choices (the one enum-name parser), .session-stream, .composition (the contracts everything agrees on)
 src/hosts/               # louis-agent.cli, .acp-server (Rider), .api (sessions + SSE; serves a web app), .api.contracts, .mcp-server (the tools, no model)
 src/web/                 # louis-agent.web.shared: what any web app shares
 src/evals/               # The eval harness, its protocol, the checks contract, the runner and the template folder
-packs/                   # What an agent can do, tools only: where-to-buy (branches), shop-prices (estimates), recipes
+packs/                   # What an agent can do, tools only: files, git, dotnet, shell, web, paymo, devops, where-to-buy (branches), shop-prices (estimates), recipes
 packs-evals/             # What proves a pack, apart so someone can take the tools without it; only the runner references these
 packs-tests/             # A pack's own tests; packs/docs/ holds the packs' docs
 demos/puls/              # A demo, as someone's own project would be: identity/ (who it is), evals/ (an eval is a folder of files), web/ (its app), hosts/ (host-packs picks its packs), config/, docker/, skills/ (what the agent writes), deploy/ (Azure), tests/, docs/, and git-ignored data/ and logs/
-demos/louis-agent/       # Our own demo: web/ (code review, the site), hosts/ (the orchestrator POC), config/, docker/, skills/, tests/, docs/, and git-ignored data/ and logs/
+demos/louis-agent/       # Our own demo: identity/ (the coding agent), web/ (code review, the site), hosts/ (the orchestrator POC, and the programs that start the framework's hosts), config/, docker/, skills/, tests/, docs/, and git-ignored data/ and logs/
 src/tools/               # louis-agent.usage-probe: a provider's raw usage; prices and totals a ledger
 src/tests/               # Only the framework's tests, grouped like src/ ([tests](projects/tests.md)); a demo holds its own tests/ and packs-tests/ the packs'; the ones that leave their process are *.integration-tests
 src/docs/                # The framework's docs: this guide, adr/, guides/, projects/, plans/, fixes/, learning/, architecture/
@@ -188,7 +188,7 @@ modes and roles in [Build an identity](guides/build-an-identity.md#modes-roles-a
 [Debug and logs](guides/debug-and-logs.md), [Common errors](guides/common-errors.md).
 
 **Known limitations** are the TODO's [list](../../TODO.md#known-limitations); when work removes one, delete it there.
-**Further reading:** [the architecture](architecture/README.md), a demo's `config/.env.example` (settings), [the agent's mode](../engine/louis-agent.core/Prompts/agent/louis-agent/voice.md).
+**Further reading:** [the architecture](architecture/README.md), a demo's `config/.env.example` (settings), [the coding agent's mode](../../demos/louis-agent/identity/louis-agent.identity.coding/Prompts/agent/louis-agent/voice.md).
 
 ---
 [Docs index](README.md) · Previous: [Architecture](architecture/README.md) · Next: [Orchestrator runbooks](../../demos/louis-agent/docs/projects/orchestrator-runbooks.md)

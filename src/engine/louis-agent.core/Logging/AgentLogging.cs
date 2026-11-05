@@ -1,6 +1,7 @@
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using System.Globalization;
 using System.Reflection;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Logging.Messages;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -28,7 +29,7 @@ public static class AgentLogging
     /// <summary>
     /// The bracketed tag on a console line; <see cref="LevelTagEnricher"/> sets it from the level unless the call did.
     /// </summary>
-    public const string TagProperty = "Tag";
+    public const string TagProperty = MessageLogging.TagProperty;
 
     /// <summary>
     /// The property that marks an event as a record for a JSON-lines file, its value the record's kind.
@@ -56,7 +57,11 @@ public static class AgentLogging
     private static readonly SerilogLoggerFactory Factory = new(Root);
 
     /// <summary>The console from the start, before any host has configured logging.</summary>
-    static AgentLogging() => Configure(null);
+    static AgentLogging()
+    {
+        Configure(null);
+        PackLog.Use(Factory);
+    }
 
     /// <summary>The factory a host gives to whatever wants one (ASP.NET Core, the MCP SDK).</summary>
     public static ILoggerFactory LoggerFactory => Factory;

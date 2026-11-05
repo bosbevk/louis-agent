@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Web.Fetching;
 using LouisAgent.Core.Guardrails.Network;
 using System.Net;
 

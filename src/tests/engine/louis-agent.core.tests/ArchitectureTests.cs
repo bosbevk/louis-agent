@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Messages;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Tests.RepeatedNames.Scanning;
 
@@ -25,7 +27,8 @@ public partial class ArchitectureTests
         ["Logging"] = 0,
         ["Guardrails"] = 1,
         ["Llm"] = 2,
-        ["Tools"] = 2,
+        ["Delegation"] = 2,
+        ["Web"] = 2,
         ["Sessions"] = 2,
         ["Skills"] = 2,
         ["Usage"] = 2,
@@ -98,7 +101,7 @@ public partial class ArchitectureTests
             {
                 if (Layers.TryGetValue(used, out int usedLayer) && usedLayer > layer)
                     yield return $"{file}: {concern} (layer {layer}) uses {used} (layer {usedLayer})";
-                if (concern == "Tools" && used is "Llm" or "Agent")
+                if (concern is "Delegation" or "Web" && used is "Llm" or "Agent")
                     yield return $"{file}: Tools uses {used}";
             }
         }
@@ -168,7 +171,7 @@ public partial class ArchitectureTests
     // Pending's. ----
 
     /// <summary>
-    /// The engine never reaches for an identity, a pack or the composition, by reference or by namespace.
+    /// The engine never reaches for an identity or a pack, by reference or by namespace; the contracts are what they share.
     /// </summary>
     [Test]
     public void Core_ReferencesNoIdentityOrPack()
@@ -183,7 +186,7 @@ public partial class ArchitectureTests
             .Where(f => OutsideCoreUsing().IsMatch(File.ReadAllText(f)))
             .Select(f => Path.GetRelativePath(core, f))
             .ToList();
-        Assert.That(usings, Is.Empty, "core uses an identity's, a pack's or the composition's namespace");
+        Assert.That(usings, Is.Empty, "core uses an identity's or a pack's namespace");
     }
 
     /// <summary>A pack stands on its own: it never references another pack or an identity.</summary>
@@ -342,12 +345,12 @@ public partial class ArchitectureTests
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0027-engine-identities-and-packs.md">ADR 0027: engine, identities and packs</seealso>
     /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0073-packs-reference-no-evals.md">ADR 0073: packs reference no evals</seealso>
     [Test]
-    public void TheIdentity_ReferencesOnlyTheEngine()
+    public void TheIdentity_ReferencesOnlyTheContracts()
     {
         string csproj = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/identity",
             "louis-agent.identity.puls", "louis-agent.identity.puls.csproj"));
 
-        Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "louis-agent.core.csproj" }));
+        Assert.That(ReferencesOf(csproj), Is.EquivalentTo(new[] { "louis-agent.composition.csproj" }));
     }
 
     /// <summary>
@@ -392,6 +395,59 @@ public partial class ArchitectureTests
         Assert.That(File.ReadAllText(Path.Combine(TestPaths.RepoRoot,
                 "src/tests/engine/louis-agent.core.tests/louis-agent.core.tests.csproj")),
             Does.Not.Contain("InternalsVisibleTo"));
+    }
+
+    /// <summary>
+    /// The framework projects that still reference a demo or a pack. CL29.2 takes them off one at a time, and the list
+    /// goes with its last entry.
+    /// </summary>
+    private static readonly HashSet<string> StillPointsOutside = [];
+
+    /// <summary>
+    /// A framework project ships as a package, and a package can't point at someone's project: the program that uses it
+    /// names the packs, never the framework. A project that has stopped pointing out comes off the list.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0074-the-folders-say-what-ships.md">ADR 0074: framework and implementation are split</seealso>
+    [Test]
+    public void AFrameworkProject_ReferencesNoDemoOrPack()
+    {
+        string src = Path.Combine(TestPaths.RepoRoot, "src");
+        var pointing = Directory.EnumerateFiles(src, "*.csproj", SearchOption.AllDirectories)
+            .Where(file => !TestPaths.InTestProject(Path.GetRelativePath(src, file).Replace('\\', '/')))
+            .Where(file => File.ReadAllLines(file).Any(PointsOutsideTheFramework))
+            .Select(file => Path.GetFileNameWithoutExtension(file))
+            .ToHashSet();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(pointing.Except(StillPointsOutside), Is.Empty, "it references a demo or a pack");
+            Assert.That(StillPointsOutside.Except(pointing), Is.Empty, "it no longer does: take it off the list");
+        });
+    }
+
+    /// <summary>Whether a project file's line references a project in a demo or among the packs.</summary>
+    private static bool PointsOutsideTheFramework(string line)
+    {
+        string plain = line.Replace('\\', '/');
+        return plain.Contains("<ProjectReference", StringComparison.Ordinal)
+               && (plain.Contains("/demos/", StringComparison.Ordinal)
+                   || plain.Contains("/packs/", StringComparison.Ordinal)
+                   || plain.Contains("/packs-evals/", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// A pack is just tools: it takes the contracts and nothing of the engine, so it ships as a package of its own.
+    /// </summary>
+    /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0074-the-folders-say-what-ships.md">ADR 0074: framework and implementation are split</seealso>
+    [Test]
+    public void APack_ReferencesTheContracts_NotTheEngine()
+    {
+        var found = Directory.EnumerateFiles(Path.Combine(TestPaths.RepoRoot, "packs"), "*.csproj",
+                SearchOption.AllDirectories)
+            .Where(file => File.ReadAllText(file).Contains("louis-agent.core.csproj", StringComparison.Ordinal))
+            .Select(file => Path.GetFileName(file));
+
+        Assert.That(found, Is.Empty);
     }
 
     /// <summary>A product, a shop or a country that core must never name.</summary>
@@ -487,7 +543,7 @@ public partial class ArchitectureTests
     private static partial Regex PackOrIdentityPath();
 
     /// <summary>A using of an identity's, a pack's or the composition's namespace.</summary>
-    [GeneratedRegex(@"^using\s+LouisAgent\.(Identities|Packs|Composition)\b", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^using\s+LouisAgent\.(Identities|Packs)\b", RegexOptions.Multiline)]
     private static partial Regex OutsideCoreUsing();
 
     /// <summary>

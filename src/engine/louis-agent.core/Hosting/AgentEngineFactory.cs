@@ -1,3 +1,6 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Web.Search;
 using LouisAgent.Choices;
 using LouisAgent.Core.Hosting.Engines;
 using LouisAgent.Core.Hosting.Prompts;
@@ -16,12 +19,12 @@ using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
-using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Replay;
-using LouisAgent.Core.Tools.Web.Fetching;
-using LouisAgent.Core.Tools.Web.Robots;
+using LouisAgent.Core.Web.Browsing;
+using LouisAgent.Core.Web.Replay;
+using LouisAgent.Core.Web.Fetching;
+using LouisAgent.Core.Web.Robots;
 using LouisAgent.Core.Sessions.Replay.Store;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Search;
 using LouisAgent.Core.Hosting.Messages;
 
 namespace LouisAgent.Core.Hosting;
@@ -94,6 +97,7 @@ public sealed class AgentEngineFactory
         Catalog = catalog ?? AgentCatalog.CoreOnly;
         _chatClient = chatClient;
         _agent = agent;
+        _agent.DefaultVoice ??= Catalog.DefaultVoice;
         _supportsTools = supportsTools;
         _usageSink = usageSink;
         _usageMapper = usageMapper;
@@ -136,7 +140,7 @@ public sealed class AgentEngineFactory
     public IReadOnlyList<string> AvailableRoles(RoleLevel level) => RoleFiles.Enabled(_agent, level);
 
     /// <summary>The mode of a level-0 session that names none (CL9): <c>GET /v1/roles</c>' <c>default</c>.</summary>
-    public string DefaultVoice => RoleCatalog.DefaultVoice;
+    public string? DefaultVoice => _agent.DefaultVoice;
 
     /// <summary>
     /// The profiles built so far: each its toolsets joined with commas, then |role, |level below level 0,
@@ -219,7 +223,7 @@ public sealed class AgentEngineFactory
             Thinking = model is null ? _thinking : model.Thinking,
             Display = _display,
             // A trace names the agent (F52): the role it plays, or the mode a session without one runs.
-            Name = role ?? DefaultVoice,
+            Name = role ?? DefaultVoice ?? AgentLogging.ServiceName,
         };
         // Approved agent-built tools come with the skills toolset (CreateTool, /approve).
         if (selfExtension) engine.LoadApprovedTools();

@@ -1,7 +1,7 @@
 # louis-agent.api — design
 
-> **Kind:** ASP.NET Core minimal API · **Path:** `src/hosts/louis-agent.api/` · **References:** louis-agent.core, and the web
-> app it serves as static files: louis-agent.web by default, louis-agent.puls when built with `-p:WebApp=puls` ·
+> **Kind:** library, ASP.NET Core minimal API · **Path:** `src/hosts/louis-agent.api/` · **References:** louis-agent.core, and no web
+> app: a demo's program references the one it serves ·
 > **Docker services:** `api` (http://127.0.0.1:5080); `demo-api` in the demo; `puls` (5070)
 
 ## Purpose
@@ -22,7 +22,7 @@ flowchart LR
     Static["MapStaticAssets + index.html fallback"] --> Client
 ```
 
-- **Start-up** (`Program.cs`): `AgentHost.Build()`, the services with `ApiMap.AddApi` (the engine, `AgentSessions` and
+- **Start-up** (`ApiStartup.cs`, called by a demo's program): `AgentHost.Build()`, the services with `ApiMap.AddApi` (the engine, `AgentSessions` and
   a `WorkspaceBoundary` for path checks); decide the auth with core's `HostAuth` (FX18: no `AGENT_API_KEY` stops
   start-up unless `AGENT_AUTH=off`; a key adds `AgentKeyGate`, whose check is `HostAuth.HasKey`); map static assets,
   then the API with `ApiMap.MapApi`, and the admin portal on the `/v1` group it returns. Nothing else: the routes and
@@ -99,7 +99,7 @@ The full endpoint and event reference: [How the agents and endpoints talk](../AG
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
+| `ApiStartup.cs` | Start-up only (CL15, the core layout review): `AgentHost.Build`, the services, the API-key middleware (FX18), the web app's files, then each endpoint group mapped |
 | `Endpoints/InfoEndpoints.cs` | `/health`, `/v1/prices`, `/v1/rates`, `/v1/rates/display`, `/v1/feeds`, `/v1/feeds/{name}`, `/v1/toolsets`, `/v1/model`, `/v1/roles`, `/v1/llm-profiles`: what this instance is and has |
 | `Endpoints/SessionEndpoints.cs` | `POST /v1/sessions` (`201` with `Location`; with `"stream"`, the format, refused as a 400 when unknown), `GET` and `DELETE /v1/sessions/{id}`, `POST /v1/sessions/{id}/cancel` and `/messages` (the turn as SSE, through `TurnStream`) |
 | `Endpoints/ApiErrors.cs` | The one error body every endpoint returns |

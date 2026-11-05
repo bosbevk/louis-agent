@@ -193,7 +193,7 @@ public class UsageScopeTotalsTests
             var engine = new AgentEngine(
                 new MarkdownSkillProvider(TestPaths.SampleSkills), client,
                 TestPaths.Agent(),
-                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]),
+                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]),
                 usageSink: new ListUsageSink());
             var history = engine.NewHistory();
 

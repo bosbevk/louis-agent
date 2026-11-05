@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls.Evals.Checks.Messages;
 using Microsoft.Extensions.AI;

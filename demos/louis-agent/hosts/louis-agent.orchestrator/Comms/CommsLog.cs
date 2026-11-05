@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using System.Text;
 using System.Text.Json;
 using LouisAgent.Choices;

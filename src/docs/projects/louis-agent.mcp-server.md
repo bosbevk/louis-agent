@@ -1,6 +1,6 @@
 # louis-agent.mcp-server — design
 
-> **Kind:** console app (stdio) or ASP.NET Core (Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp-server/` ·
+> **Kind:** library, serving stdio or ASP.NET Core (Streamable HTTP) · **Path:** `src/hosts/louis-agent.mcp-server/` ·
 > **References:** louis-agent.core, louis-agent.composition, the ModelContextProtocol SDK · **Docker service:** `mcp-server`
 
 ## Purpose
@@ -45,7 +45,7 @@ flowchart LR
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | Transport choice, `RunStdioAsync`, `RunHttpAsync` (with the key middleware) |
+| `McpHost.cs` | The one call a program makes: transport choice, `RunStdioAsync`, `RunHttpAsync` (with the key middleware) |
 | `McpPrimitives.cs` | What both transports publish, in one call: the engine's tools and the feeds |
 | `Tools/` | `EngineToolSync` (engine tools → MCP tools, kept in sync), `SkillsToolProvider` (the three skill tools) |
 | `Resources/` | `FeedResources` (feeds → resources), `ResourceScheme` (`feed`) |

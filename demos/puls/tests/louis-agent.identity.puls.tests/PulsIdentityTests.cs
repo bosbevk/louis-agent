@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.Core.Hosting.Prompts;
@@ -25,7 +26,7 @@ public class PulsIdentityTests
 
         Assert.That(puls.Name, Is.EqualTo(PulsIdentityName.Puls.Wire()));
         Assert.That(puls.Packs,
-            Is.EqualTo(new[] { PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire() }),
+            Is.EqualTo(new[] { PulsPack.WhereToBuy.Wire(), PulsPack.ShopPrices.Wire(), PulsPack.Recipes.Wire(), PulsPack.Web.Wire() }),
             "the cook's branches, prices (F50.2) and recipes are packs Puls names, in the identity's own enum " +
             "(ADR 0043), in this order");
         // Step 3: its prompts are its own, embedded with their paths (the manifest lines in its csproj work).
@@ -35,7 +36,7 @@ public class PulsIdentityTests
         // The catalogue refuses an identity whose pack isn't there; with the packs, all are in.
         Assert.Throws<AgentCatalogException>(() => new AgentCatalog([puls], []), "packs named, none registered");
         var catalog = new AgentCatalog([puls],
-            [new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
+            [new WebPack(), new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
         Assert.That(catalog.Identities, Is.EqualTo(new[] { puls }));
         Assert.That(catalog.Toolsets.Select(t => t.Name),
             Does.Contain(WhereToBuyToolset.WhereToBuy.Wire()).And.Contain(ShopPricesToolset.ShopPrices.Wire()));

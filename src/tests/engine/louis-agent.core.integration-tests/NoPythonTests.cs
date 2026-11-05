@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using System.Diagnostics;
 
 namespace LouisAgent.Core.IntegrationTests;

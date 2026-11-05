@@ -1,9 +1,10 @@
 
+using LouisAgent.Composition.Guardrails.Messages;
+using LouisAgent.Composition.Messages;
 using System.Security.Cryptography;
 using System.Text;
 using LouisAgent.Choices;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Guardrails.Messages;
 using LouisAgent.Core.Messages;
 
 namespace LouisAgent.Core.Guardrails.Auth;

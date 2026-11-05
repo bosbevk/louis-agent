@@ -1,3 +1,7 @@
+using LouisAgent.Core.Skills;
+using LouisAgent.Identities.Coding;
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Logging.Content;
 using System.Text.Json;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent;
@@ -6,7 +10,6 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Pricing.Prices;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Telemetry;
@@ -23,6 +26,7 @@ using Microsoft.Extensions.Logging;
 // prompt is the service's runbooks (one skill file per API method) and whose only tools are ServiceTools: it ignores,
 // escalates, or delegates the fix to louis-agent.api and then verifies the commit and the fix itself.
 //   ORCHESTRATOR_SERVICE_ROOT=<service repo> dotnet run --project src/hosts/louis-agent.orchestrator [-- --once]
+SkillFileSource.Use([new CodingIdentity().Prompts]);
 HostEnvironment.Load();
 var options = OrchestratorOptions.FromEnvironment(args);
 var llm = LlmOptions.FromEnvironment();

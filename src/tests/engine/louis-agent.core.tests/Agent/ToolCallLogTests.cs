@@ -1,8 +1,9 @@
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using Microsoft.Extensions.AI;
@@ -83,7 +84,7 @@ public class ToolCallLogTests
                 _ => new ChatResponse(new ChatMessage(ChatRole.Assistant, "done")));
             var skills = new MarkdownSkillProvider(TestPaths.SampleSkills);
             var engine = new AgentEngine(skills, client, TestPaths.Agent(),
-                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [CoreToolset.Files.Wire()]));
+                toolsets: TestPaths.Toolsets(TestPaths.Agent(), [TestToolset.Files.Wire()]));
 
             await engine.ProcessPromptAsync(engine.NewHistory(), "Ek is in Malmesbury, wat kan ek kook?");
         }

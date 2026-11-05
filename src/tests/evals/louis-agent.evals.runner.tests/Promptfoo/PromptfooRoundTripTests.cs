@@ -66,7 +66,7 @@ public class PromptfooRoundTripTests
         var skipped = PromptfooImport.Write(File, _folder);
         ManifestSeal.Seal(_folder);
 
-        var eval = FileEval.Load(_folder, RunnerChecks.Catalog, RunnerReaders.Catalog, "studio");
+        var eval = FileEval.Load(_folder, RunnerCatalogs.GeneralOnly.CheckCatalog, RunnerCatalogs.GeneralOnly.ReaderCatalog, "studio");
 
         Assert.That(eval.Name, Is.EqualTo("cook-answers-in-afrikaans"));
         Assert.That(eval.Checks.Select(c => c.Name),

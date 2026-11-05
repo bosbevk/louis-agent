@@ -28,7 +28,7 @@ public class AdminPromptsTests
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK), await response.Content.ReadAsStringAsync());
         var rows = JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.GetProperty("prompts")
             .EnumerateArray().ToDictionary(row => row.GetProperty("path").GetString()!);
-        var voice = rows["agent/louis-agent/voice.md"];
+        var voice = rows["agent/puls/voice.md"];
         var principles = rows["shared/principles.md"];
         Assert.That((voice.GetProperty("name").GetString(), voice.GetProperty("level").GetString()),
             Is.EqualTo(("voice", RoleLevel.Agent.Wire())));

@@ -24,7 +24,7 @@ public class SkillFileSourceTests
     public void EveryBuiltInFile_IsEmbedded_UnderItsOwnPath()
     {
         var builtIn = ToolsetCatalog.All.Select(t => t.GuideFile).OfType<string>()
-            .Concat(["shared/principles.md", "agent/louis-agent/voice.md", "agent/louis-agent/voice-orchestrator.md"]);
+            .Concat(["shared/principles.md"]);
 
         Assert.That(SkillFileSource.EmbeddedFiles, Is.SupersetOf(builtIn));
         Assert.That(SkillFileSource.EmbeddedFiles, Has.None.Contains("SampleSkills"), "a test fixture, not a built-in");
@@ -43,8 +43,8 @@ public class SkillFileSourceTests
     [Test]
     public void TheEmbeddedText_IsTheFilesText()
     {
-        Assert.That(SkillFileSource.ReadEmbedded("toolsets/git.md")!.ReplaceLineEndings("\n"),
-            Is.EqualTo(Repo("toolsets/git.md").ReplaceLineEndings("\n")));
+        Assert.That(SkillFileSource.ReadEmbedded("toolsets/self-extension.md")!.ReplaceLineEndings("\n"),
+            Is.EqualTo(Repo("toolsets/self-extension.md").ReplaceLineEndings("\n")));
     }
 
     [Test]

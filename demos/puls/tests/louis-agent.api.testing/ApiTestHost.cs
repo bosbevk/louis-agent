@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Web;
 using LouisAgent.Api.Endpoints.Admin.Runs;
 using LouisAgent.Api.Endpoints.Routing;
 using LouisAgent.Api.Evals.Calibrations;
@@ -27,7 +28,7 @@ using Microsoft.Extensions.AI;
 namespace LouisAgent.Api.Testing;
 
 /// <summary>
-/// The API as `Program.cs` builds it, but in memory on a test server with no port: the same key gate, routes and
+/// The API as `ApiStartup` builds it, but in memory on a test server with no port: the same key gate, routes and
 /// admin parts. The agent behind it never calls a model, and the admin parts have no store and no admin key unless the
 /// test gives them.
 /// </summary>
@@ -39,7 +40,7 @@ internal static class ApiTestHost
         TestPaths.RepoRoot;
 
     /// <summary>
-    /// Starts the API in memory the way Program.cs builds it, on a test server with no port. Give it an admin key and a
+    /// Starts the API in memory the way ApiStartup builds it, on a test server with no port. Give it an admin key and a
     /// store to open the admin portal, and a clock to fix the time notes are stamped with. A test that writes or
     /// commits gives its own workspace folder, and one that sends a message gives the model that answers it.
     /// </summary>
@@ -51,7 +52,7 @@ internal static class ApiTestHost
         TimeProvider? time = null, IEvalDraftStore? drafts = null, CheckList? checks = null,
         DraftChecker? checker = null, PromptfooRunner? promptfoo = null, IChatClient? model = null)
     {
-        // The same services as Program.cs, on an in-memory test server instead of a port.
+        // The same services as ApiStartup, on an in-memory test server instead of a port.
         var host = HostContext(workspaceRoot ?? RepoRoot, model ?? new NoModel());
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
@@ -109,6 +110,9 @@ internal static class ApiTestHost
     /// What the API runs on: an engine over the model given (one that is never called, unless a test sends a message),
     /// with the Puls identity and the packs it names.
     /// </summary>
+    /// <summary>An agent with no model, for a test about how the API starts up.</summary>
+    public static AgentHostContext BareHost() => HostContext(RepoRoot, new NoModel());
+
     private static AgentHostContext HostContext(string workspaceRoot, IChatClient model)
     {
         var options = new AgentOptions
@@ -119,7 +123,7 @@ internal static class ApiTestHost
         };
         // Puls names the recipes pack too (F35.2 step 1), so the catalogue holds it, with its settings unset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-            [new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
+            [new WebPack(), TestTools.Pack, new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions())]);
         var engines = new AgentEngineFactory(model, options, catalog: catalog);
         var engine = engines.GetOrCreate(engines.Available);
         return new AgentHostContext(engine, new LlmOptions(), options, PriceTable.Empty, ExchangeRates.Empty,

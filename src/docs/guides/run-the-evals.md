@@ -12,9 +12,9 @@ read the cost in the ledger afterwards, never from a grader. Listing the evals i
 ## From the command line
 
 ```bash
-EVALS=puls dotnet run --project src/evals/louis-agent.evals.runner -- --list     # free: Puls's evals (unset: every eval)
+EVALS=puls dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- --list     # free: Puls's evals (unset: every eval)
 BENCHMARK_RUN=cook-1 AGENT_API=http://127.0.0.1:5070/ \
-  dotnet run --project src/evals/louis-agent.evals.runner -- run puls-cook --repeat 1 --web record
+  dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- run puls-cook --repeat 1 --web record
 ```
 
 | Flag | What it does |
@@ -132,7 +132,7 @@ The check costs nothing on a local model (Ollama), and it **never runs in CI**: 
 
 ```bash
 # run.txt is GET /v1/admin/evals/runs/8f7802b9a72e/protocol (the same file a re-score reads)
-EVALS=puls dotnet run --project src/evals/louis-agent.evals.runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/Dataset/labels 10 < run.txt
+EVALS=puls dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- --label-sheet puls-cook meal-for-people 8f7802b9a72e   demos/puls/evals/louis-agent.identity.puls.evals/Evals/Cook/Dataset/labels 10 < run.txt
 ```
 
 The sheet holds only scenarios that ask for a number of people (a meal for four can't be labelled where no four is asked), one conversation of each scenario before a second of any, so ten labels are not ten repeats of one dish. Asking twice gives the same sheet.
@@ -148,7 +148,7 @@ The sheet holds only scenarios that ask for a number of people (a meal for four 
 **3. Calibrate.** `dotnet run` builds first, which copies the labels beside the runner. Then:
 
 ```bash
-EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project src/evals/louis-agent.evals.runner -- --calibrate puls-cook meal-for-people
+EVALS=puls EVAL_JUDGE_MODEL=qwen3:8b EVAL_JUDGE_ENDPOINT=http://localhost:11434   dotnet run --project demos/puls/hosts/louis-agent.puls-eval-runner -- --calibrate puls-cook meal-for-people
 ```
 
 It prints the headline (`Agreement: 17 of 18`), then the agreement in each class of your labels, the result, and each answer where the judge differed:

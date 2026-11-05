@@ -6,7 +6,7 @@
 > [Change the shared web library](../../../../src/docs/guides/change-the-web-shared.md); Puls's voice, roles and packs in
 > [Build an identity](../../../../src/docs/guides/build-an-identity.md).
 
-Puls is a Blazor WebAssembly app, served by the API when the API is built with `WebApp=puls`. It has three parts: the
+Puls is a Blazor WebAssembly app, served by Puls's program, `louis-agent.puls-api`, which references it. It has three parts: the
 landing page at `/`, the chat at `/gesels` (with Verken and Studio), and the admin portal at `/admin` for the builders.
 What Puls says and which specialists it calls are the Puls identity's prompts, not this app. The app shows the chat,
 the specialists' work in the Werk panel, and what each answer cost.
@@ -15,12 +15,11 @@ the specialists' work in the Werk panel, and what each answer cost.
 
 ```bash
 docker compose -f demos/puls/docker/docker-compose.puls.yml --env-file demos/puls/config/.env up -d --build          # http://127.0.0.1:5070
-dotnet run --project src/hosts/louis-agent.api --launch-profile puls --property:WebApp=puls         # http://127.0.0.1:5071
+dotnet run --project demos/puls/hosts/louis-agent.puls-api         # http://127.0.0.1:5071
 ```
 
 The launch profile gives the API Puls's settings (`IDENTITIES=puls`, its roles, SearXNG and the browser on the
-compose stack's ports). It doesn't pick the web app: that is the build property, so without `WebApp=puls` the same
-API serves the code-review app. The compose stack also runs the store (`puls-mongo`), the search (`puls-searxng`) and
+compose stack's ports). The web app is the program's project reference. The compose stack also runs the store (`puls-mongo`), the search (`puls-searxng`) and
 the headless browser (`puls-browser`) that the specialists use.
 
 ## Change the chat

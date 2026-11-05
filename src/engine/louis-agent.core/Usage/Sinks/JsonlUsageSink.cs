@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Usage.Records;
 using System.Text;
 using System.Text.Json;

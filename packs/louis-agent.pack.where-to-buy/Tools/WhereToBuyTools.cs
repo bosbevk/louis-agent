@@ -1,5 +1,5 @@
+using LouisAgent.Composition.Messages;
 using System.ComponentModel;
-using LouisAgent.Core.Messages;
 using LouisAgent.Packs.WhereToBuy.Branches;
 using LouisAgent.Packs.WhereToBuy.Messages;
 using LouisAgent.Packs.WhereToBuy.Branches.Map;

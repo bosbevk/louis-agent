@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using LouisAgent.Core.Agent.Messages;

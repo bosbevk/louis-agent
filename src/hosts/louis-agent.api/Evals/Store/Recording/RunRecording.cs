@@ -1,3 +1,6 @@
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
 using LouisAgent.Api.Evals.Reports;
 using LouisAgent.Api.Evals.Runs;

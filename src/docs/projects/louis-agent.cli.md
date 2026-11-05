@@ -1,6 +1,6 @@
 # louis-agent.cli — design
 
-> **Kind:** console app · **Path:** `src/hosts/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
+> **Kind:** library · **Path:** `src/hosts/louis-agent.cli/` · **References:** louis-agent.core · **Docker service:**
 > `local-agent`
 
 ## Purpose
@@ -37,8 +37,11 @@ You: exit
 
 | File | What's in it |
 |---|---|
-| `Program.cs` | Bootstrap and the choice between one-shot and interactive |
+| `CliHost.cs` | The one call a program makes: takes the catalogue, then picks one-shot or interactive |
 | `louis-agent.cli.csproj` | References core only |
+
+The program that starts it is your own. The coding agent's is `demos/louis-agent/hosts/louis-agent.coding-cli`, which names no
+packs ([ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
 
 ## Configuration
 

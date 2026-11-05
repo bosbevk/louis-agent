@@ -7,15 +7,6 @@ namespace LouisAgent.Core.Agent.Toolsets;
 /// </summary>
 public enum CoreToolset
 {
-    Files,
-    Git,
-    DotNet,
-    Python,
-    PowerShell,
-    Bash,
-    Web,
-    Paymo,
-    DevOps,
     Specialists,
     Minions,
     Skills,

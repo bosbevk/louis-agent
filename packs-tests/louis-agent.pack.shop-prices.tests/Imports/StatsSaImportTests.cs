@@ -1,5 +1,5 @@
+using LouisAgent.Composition.Packs.Imports;
 using LouisAgent.Choices;
-using LouisAgent.Core.Agent.Catalog.Imports;
 using LouisAgent.Packs.ShopPrices.Imports;
 using LouisAgent.Packs.ShopPrices.Prices.Files;
 using LouisAgent.Packs.ShopPrices.Prices.StatsSa;

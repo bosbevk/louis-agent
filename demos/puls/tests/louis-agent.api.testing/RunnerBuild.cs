@@ -13,8 +13,8 @@ public static class RunnerBuild
         {
             // {project}/bin/{configuration}/{framework}: the runner is built in the same two folders.
             var build = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-            return Path.Combine(TestPaths.RepoRoot, "src", "evals", "louis-agent.evals.runner", "bin", build.Parent!.Name,
-                build.Name, "louis-agent.evals.runner.dll");
+            return Path.Combine(TestPaths.RepoRoot, "demos/puls/hosts/louis-agent.puls-eval-runner", "bin", build.Parent!.Name,
+                build.Name, "louis-agent.puls-eval-runner.dll");
         }
     }
 }

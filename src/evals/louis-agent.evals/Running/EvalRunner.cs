@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging;
 using LouisAgent.Evals.Api;
 using LouisAgent.Evals.Grading;

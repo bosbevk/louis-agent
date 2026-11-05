@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Web.Shared.Api;
@@ -11,14 +12,12 @@ namespace LouisAgent.Api.Tests;
 public class BrowserSideNamesTests
 {
     [Test]
-    public void EveryToolsetTheAppsAsk_IsACoreToolset_UnderTheSameName()
+    public void EveryToolsetTheAppsAsk_IsAToolset_UnderTheSameName()
     {
+        var known = SettingChoice.Names<CoreToolset>().Concat(SettingChoice.Names<WebToolset>()).ToList();
+
         foreach (var asked in Enum.GetValues<AskedToolset>())
-        {
-            Assert.That(SettingChoice.TryParse(asked.Wire(), out CoreToolset? core), Is.True,
-                $"{asked}: core has no toolset of that name");
-            Assert.That(core!.Value.Wire(), Is.EqualTo(asked.Wire()), asked.ToString());
-        }
+            Assert.That(known, Does.Contain(asked.Wire()), $"{asked}: no toolset has that name");
     }
 
     [Test]

@@ -1,4 +1,6 @@
 
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
 using System.Text.Json;
 using LouisAgent.AcpServer.Messages;
 using LouisAgent.AcpServer.Paths;
@@ -6,7 +8,6 @@ using LouisAgent.AcpServer.Prompting;
 using LouisAgent.AcpServer.Protocol;
 using LouisAgent.Core.Agent;
 using LouisAgent.Core.Logging;
-using LouisAgent.Core.Logging.Content;
 using LouisAgent.Core.Usage.Records;
 using Microsoft.Extensions.Logging;
 

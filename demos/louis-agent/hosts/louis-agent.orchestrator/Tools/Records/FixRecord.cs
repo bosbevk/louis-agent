@@ -1,5 +1,5 @@
+using LouisAgent.Composition.Tools;
 using System.Text.Json.Serialization;
-using LouisAgent.Core.Tools;
 using LouisAgent.Orchestrator.Comms;
 
 namespace LouisAgent.Orchestrator.Tools.Records;

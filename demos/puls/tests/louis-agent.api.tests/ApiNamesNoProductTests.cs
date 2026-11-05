@@ -22,11 +22,7 @@ public class ApiNamesNoProductTests
     /// <summary>
     /// What may name a product for good (until its TODO line or Phase 9): a whole file, or a word in any file.
     /// </summary>
-    private static readonly (string? File, string? Word)[] Allowed =
-    [
-        // The API serves Puls's web app when built with -p:WebApp=puls, until Phase 9 gives each product its own host.
-        ("src/hosts/louis-agent.api/louis-agent.api.csproj", null),
-    ];
+    private static readonly (string? File, string? Word)[] Allowed = [];
 
     /// <summary>Nothing in the API names a product, except what is allowed on purpose.</summary>
     [Test]
@@ -79,8 +75,10 @@ public class ApiNamesNoProductTests
         }
     }
 
-    /// <summary>A hit the API may keep: one in an allowed file, or an allowed word.</summary>
+    /// <summary>A hit the API may keep: one in an allowed file, or an allowed word. The coding identity's name is inside every encoding and decoding.</summary>
     private static bool IsAllowed((string File, string Word) hit) =>
+        hit.Word.Contains("encoding", StringComparison.OrdinalIgnoreCase) ||
+        hit.Word.Contains("decoding", StringComparison.OrdinalIgnoreCase) ||
         Allowed.Any(a => a.File == hit.File || a.Word == hit.Word);
 
     /// <summary>Each identity's product name, from its project folder's name.</summary>

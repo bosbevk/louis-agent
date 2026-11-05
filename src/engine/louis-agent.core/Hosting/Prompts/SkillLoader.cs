@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Choices;
 
 using LouisAgent.Core.Agent.Toolsets;
@@ -32,7 +33,7 @@ public static class SkillLoader
     /// wrote (its function files) comes from the skills folder (<see cref="SkillFolder"/>).
     /// </summary>
     /// <param name="role">The session's role (F21): at level 0 a mode, one file of voice and routing (CL9:
-    /// <c>acme/voice-en</c>); below it a role. Null: the default mode (<see cref="RoleCatalog.DefaultVoice"/>), and below
+    /// <c>acme/voice-en</c>); below it a role. Null: the default mode (the identity's), and below
     /// level 0 only its voice, since a sub-session's toolsets were chosen for it (F21). <see cref="RoleException"/>
     /// for a name that isn't valid or has no file there.</param>
     /// <param name="level">The session's level (CL8): where its role is.</param>
@@ -44,17 +45,21 @@ public static class SkillLoader
         // The principles first, for every agent at every level (ADR 0020); then the role, so who the agent is (and,
         // for a mode, how it routes) frames everything after it
         AddBuiltIn(agent, composite, SkillFiles.Principles);
-        string roleFile = RoleFiles.FileOf(agent, role, level);
+        string? roleFile = RoleFiles.FileOf(agent, role, level);
         // A minion's base ({product}-minion.md) frames its role (F30): what every minion is, then what this one does
         if (level == RoleLevel.Minion && role is not null && RoleCatalog.MinionBaseOf(role) is { } minionBase)
             AddBuiltIn(agent, composite, RoleCatalog.FileName(minionBase, RoleLevel.Minion));
-        if (role is null && level != RoleLevel.Agent && Read(agent, roleFile) is { } mode)
+        if (roleFile is null)
+        {
+            // No role and no identity's default: only the principles and the guides.
+        }
+        else if (role is null && level != RoleLevel.Agent && Read(agent, roleFile) is { } mode)
             composite.AddProvider(MarkdownSkillProvider.FromText(RoleCatalog.ModeParts(mode.Text).Voice));
         else
             AddBuiltIn(agent, composite, roleFile);
         // A language mode ({product}/voice-{xx}) says how it talks; its product's shared voice.md routes (CL9 step 6)
-        if (level == RoleLevel.Agent && role is not null && RoleCatalog.LanguageOf(role) is not null)
-            AddBuiltIn(agent, composite, RoleCatalog.FileName(RoleCatalog.SharedOf(role), RoleLevel.Agent));
+        if (level == RoleLevel.Agent && (role ?? agent.DefaultVoice) is { } named && RoleCatalog.LanguageOf(named) is not null)
+            AddBuiltIn(agent, composite, RoleCatalog.FileName(RoleCatalog.SharedOf(named), RoleLevel.Agent));
 
         // The guides of this profile's toolsets only, so the prompt never describes tools the session doesn't have
         var profile = toolsets.ToList();

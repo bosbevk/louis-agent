@@ -7,7 +7,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.IntegrationTests.Agent.EngineTools;
@@ -45,9 +45,9 @@ public class SkillAuthoringIntegrationTests
     public void ExecuteSkill_RunsSkillInItsFenceLanguage(ScriptLanguage language, string code)
     {
         if (language == ScriptLanguage.Python)
-            Outside.Tool(new PythonTools(_skillsDir).ResolveInterpreter() is not null, "Python 3 is not installed");
+            Outside.Tool(new PythonRunner(_skillsDir).ResolveInterpreter() is not null, "Python 3 is not installed");
         if (language == ScriptLanguage.PowerShell)
-            Outside.Tool(new PowerShellTools(_skillsDir).ResolveInterpreter() is not null,
+            Outside.Tool(new PowerShellRunner(_skillsDir).ResolveInterpreter() is not null,
                 "PowerShell is not installed");
         var engine = Engine();
         string markdown =

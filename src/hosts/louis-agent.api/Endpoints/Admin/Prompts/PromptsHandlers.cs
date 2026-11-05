@@ -14,7 +14,7 @@ namespace LouisAgent.Api.Endpoints.Admin.Prompts;
 /// A named endpoint returning <c>TypedResults</c> (ADR 0045, 0051) over <see cref="PromptCatalog"/>, which read the
 /// headers once when the host started; a static class, since the route shares nothing but the catalogue.
 /// </remarks>
-/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
+/// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0045-typed-answers-and-a-shared-contract.md">ADR 0045: typed answers and a shared contract</seealso>
 internal static class PromptsHandlers
 {
     /// <summary>Every built-in prompt with a header, by its path.</summary>

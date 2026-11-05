@@ -1,9 +1,16 @@
+using LouisAgent.Composition.Messages;
+using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Agent.Catalog;
 using LouisAgent.HostPacks.Messages;
 using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Identities.Puls;
+using LouisAgent.Packs.DotNet;
+using LouisAgent.Packs.Git;
+using LouisAgent.Packs.Files;
+using LouisAgent.Packs.Shell;
+using LouisAgent.Packs.Web;
 using LouisAgent.Packs.Recipes;
 using LouisAgent.Packs.ShopPrices;
 using LouisAgent.Packs.WhereToBuy;
@@ -63,6 +70,11 @@ public static class Plugins
         PackKind.Recipes => new RecipesPack(RecipesOptions.FromEnvironment()),
         PackKind.WhereToBuy => new WhereToBuyPack(),
         PackKind.ShopPrices => new ShopPricesPack(ShopPricesOptions.FromEnvironment()),
+        PackKind.DotNet => new DotNetPack(),
+        PackKind.Git => new GitPack(),
+        PackKind.Files => new FilesPack(),
+        PackKind.Shell => new ShellPack(),
+        PackKind.Web => new WebPack(),
         _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null),
     };
 

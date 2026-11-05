@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Tools;
 using LouisAgent.Core.Pricing.Rates;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;

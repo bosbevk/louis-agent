@@ -1,4 +1,7 @@
 
+using LouisAgent.Composition.Logging.Content;
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Globalization;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Logging;
@@ -16,20 +19,6 @@ public sealed class AgentOptions
     /// <summary>The skills folder (agent/, specialists/, toolsets/); null means the working dir, then /app.</summary>
     public string? SkillsDirectory { get; set; }
 
-
-    public string? PaymoApiKey { get; set; }
-
-    /// <summary>API key for DevOps operations (work item retrieval, project management, etc.).</summary>
-    public string? DevopsApiKey { get; set; }
-
-    /// <summary>DEVOPS_ORGANIZATION: the Azure DevOps organisation (dev.azure.com/{organisation}).</summary>
-    public string? DevopsOrganization { get; set; }
-
-    /// <summary>DEVOPS_PROJECT: the project whose work items the DevOps tools query.</summary>
-    public string? DevopsProject { get; set; }
-
-    /// <summary>DEVOPS_TEAM (optional): the team whose sprints are used; sprints live under {project}\{team}.</summary>
-    public string? DevopsTeam { get; set; }
 
     /// <summary>WEB_SEARCH_PROVIDER: tavily, google, searxng or duckduckgo; null picks Tavily when its key is set, else Google when its key and engine ID are, else SearXNG when its URL is, else DuckDuckGo.</summary>
     public string? WebSearchProvider { get; set; }
@@ -132,6 +121,9 @@ public sealed class AgentOptions
     /// </summary>
     public IReadOnlyDictionary<string, Uri> AgentPeers { get; set; } = new Dictionary<string, Uri>();
 
+    /// <summary>The mode a session that names none runs. Not a setting: the host takes it from its catalogue.</summary>
+    public string? DefaultVoice { get; set; }
+
     /// <summary>
     /// ROLES_ENABLED: the roles this instance may use (F29), comma separated and lowercase, e.g.
     /// <c>acme/voice-en,acme-cook</c>; a session or sub-session asking for another is refused as for an unknown one.
@@ -227,11 +219,6 @@ public sealed class AgentOptions
         var options = new AgentOptions
         {
             SkillsDirectory = Get("SKILLS_DIRECTORY"),
-            PaymoApiKey = Get("PAYMO_API_KEY"),
-            DevopsApiKey = Get("DEVOPS_API_KEY"),
-            DevopsOrganization = Get("DEVOPS_ORGANIZATION"),
-            DevopsProject = Get("DEVOPS_PROJECT"),
-            DevopsTeam = Get("DEVOPS_TEAM"),
             WebSearchProvider = Get("WEB_SEARCH_PROVIDER"),
             SearxngUrl = Get("SEARXNG_URL"),
             BrowserUrl = Get("BROWSER_URL"),

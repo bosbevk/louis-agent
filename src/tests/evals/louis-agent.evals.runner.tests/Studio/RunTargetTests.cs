@@ -34,15 +34,18 @@ public class RunTargetTests
     /// <summary>Without a folder, the run's eval is the catalogue's.</summary>
     [Test]
     public void WithoutAFolder_TheEvalIsTheCatalogues() =>
-        Assert.That(RunTarget.Of(new RunRequest("stub", 1), Catalogue).Name, Is.EqualTo("stub"));
+        Assert.That(RunTarget.Of(new RunRequest("stub", 1), Catalogue, RunnerCatalogs.GeneralOnly).Name,
+            Is.EqualTo("stub"));
 
     /// <summary>With a folder, the eval is the folder's, which must be the one the run names.</summary>
     [Test]
     public void WithAFolder_TheEvalIsTheFolders_AndMustBeTheOneNamed()
     {
-        Assert.That(RunTarget.Of(new RunRequest("template-example", 1, Folder: Template), Catalogue).Name,
+        var general = RunnerCatalogs.GeneralOnly;
+
+        Assert.That(RunTarget.Of(new RunRequest("template-example", 1, Folder: Template), Catalogue, general).Name,
             Is.EqualTo("template-example"));
-        Assert.That(() => RunTarget.Of(new RunRequest("other", 1, Folder: Template), Catalogue),
+        Assert.That(() => RunTarget.Of(new RunRequest("other", 1, Folder: Template), Catalogue, general),
             Throws.InstanceOf<RunnerException>().With.Message.Contains("template-example"));
     }
 
@@ -50,11 +53,13 @@ public class RunTargetTests
     [Test]
     public void WithSamples_OnlyThoseAreRun_AndAnUnknownOneIsRefused()
     {
+        var general = RunnerCatalogs.GeneralOnly;
+
         var eval = RunTarget.Of(new RunRequest("template-example", 1, Folder: Template, Samples: "example"),
-            Catalogue);
+            Catalogue, general);
 
         Assert.That(eval.Scenarios.Select(s => s.Id), Is.EqualTo(new[] { "example" }));
         Assert.That(() => RunTarget.Of(new RunRequest("template-example", 1, Folder: Template, Samples: "nope"),
-            Catalogue), Throws.InstanceOf<RunnerException>().With.Message.Contains("nope"));
+            Catalogue, general), Throws.InstanceOf<RunnerException>().With.Message.Contains("nope"));
     }
 }

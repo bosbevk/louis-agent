@@ -1,7 +1,7 @@
 # louis-agent.host-packs — design
 
 > **Kind:** class library (`net10.0`) · **Path:** `demos/puls/hosts/louis-agent.host-packs/` · **References:** louis-agent.core,
-> every identity (`identities/`) and every pack (`packs/`) · **Used by:** louis-agent.cli, louis-agent.acp-server,
+> every identity (`identities/`) and every pack (`packs/`) · **Used by:**
 > louis-agent.api, louis-agent.mcp-server
 
 ## Purpose
@@ -42,7 +42,7 @@ thin and never references an identity or a pack; and which agent a host runs is 
 | Setting | What it does |
 |---|---|
 | `IDENTITIES` | The identities to load, with the packs they name (`puls`). Unset: none |
-| `PACKS` | Packs to load on their own (`shop-prices` gives the coding agent the price estimates). Unset: none beyond the identities' |
+| `PACKS` | Packs to load on their own. Unset: none beyond the identities' |
 
 Each pack's own settings are read by the pack (see its design doc). Both are in [Setup](../../../../src/docs/SETUP.md); only the Puls
 compose sets `IDENTITIES`.

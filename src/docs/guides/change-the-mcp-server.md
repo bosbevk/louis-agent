@@ -37,7 +37,7 @@ A tool only MCP clients need (today: the three read-only skill tools, `list_skil
 4. Never expose a step that is the user's to take: approving agent-built tools or skill files stays in a chat
    ([ADR 0033](../adr/0033-what-the-agent-writes-has-a-scope.md)).
 
-`Program.cs` holds the transports and auth only; a new class goes in a file and folder of its own (`Tools/`,
+`McpHost.cs` holds the transports and auth only; a new class goes in a file and folder of its own (`Tools/`,
 `Resources/`), and a new kind of primitive goes in `McpPrimitives.Add`, so both transports get it.
 
 ## Choose the transport
@@ -65,7 +65,7 @@ auth is core's `HostAuth` (`HostAuthTests`), and the tools are tested where they
 ## Before you ask for a review
 
 - [ ] A new tool lives in core or a pack, unless only MCP clients need it.
-- [ ] An MCP-only tool class is registered in both transports, outside `Program.cs`.
+- [ ] An MCP-only tool class is registered in both transports, outside `McpHost.cs`.
 - [ ] Nothing writes to stdout in stdio mode.
 
 ---

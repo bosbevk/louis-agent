@@ -1,7 +1,7 @@
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Web.Search;
+using LouisAgent.Composition.Web.Browsing;
 using LouisAgent.Choices;
-using LouisAgent.Core.Logging;
-using LouisAgent.Core.Tools.Web.Browsing;
-using LouisAgent.Core.Tools.Web.Search;
 using LouisAgent.Packs.Recipes.Messages;
 using LouisAgent.Packs.Recipes.Providers;
 using LouisAgent.Packs.Recipes.Sources.Sites;
@@ -22,7 +22,7 @@ namespace LouisAgent.Packs.Recipes.Sources;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0023-copyleft-service-beside-us.md">ADR 0023: a copyleft service may run beside us</seealso>
 public static class RecipeSourceFactory
 {
-    private static readonly ILogger Log = AgentLogging.For<LogCategory>();
+    private static readonly ILogger Log = PackLog.For<LogCategory>();
 
     /// <summary>
     /// The sites <c>RECIPE_SOURCES</c> turns on: slugs separated by commas, case ignored, each once, or <c>*</c> for

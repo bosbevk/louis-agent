@@ -7,8 +7,6 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Providers;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Tools.DotNet;
-using LouisAgent.Core.Tools.Integrations.Paymo;
 
 namespace LouisAgent.Core.Tests.Skills;
 
@@ -32,51 +30,11 @@ public class SkillFilesTests
             Assert.That(guide, Does.StartWith("toolsets/"),
                 "CL8: every level shares the guides, so they're in toolsets/");
             Assert.That(File.Exists(Path.Combine(SkillsDirectory, guide)), Is.True, $"{guide} exists");
-            string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First();
+            string title = File.ReadLines(Path.Combine(SkillsDirectory, guide)).First(line => line.StartsWith("# "));
             Assert.That(SkillLoader.Load(options, [toolset]).Documentation, Does.Contain(title),
                 $"{guide} loads with {toolset.Name}");
             Assert.That(SkillFiles.IsBuiltIn(guide), Is.True, $"{guide} can't be overwritten by the agent");
         }
-    }
-
-    /// <summary>
-    /// The router names every toolset and describes no tools, so the prompt never shows a session tools it doesn't load
-    /// (F5 step 4). Read from the assembly, as every session reads it (ADR 0018).
-    /// </summary>
-    [Test]
-    public void TheRouter_NamesEveryToolsetAndDescribesNoTools()
-    {
-        // The coding agent's routing (CL9): Puls's routes only what Puls does.
-        string doc = RoleCatalog
-            .ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!)
-            .Routing;
-
-        // Every toolset but minions (F30): a specialist's toolset, never a chat's, and the coding product has no minion roles.
-        foreach (string toolset in ToolsetCatalog.All.Select(t => t.Name)
-                     .Where(name => name != CoreToolset.Minions.Wire()))
-            Assert.That(doc, Does.Contain($"`{toolset}`"), $"the router should name the '{toolset}' toolset");
-        Assert.That(doc, Does.Not.Contain("`minions`"), "a chat never holds minions");
-
-        string[] tools =
-        [
-            "ReadWorkspaceFile", "WriteWorkspaceFile", "GetStatus", "Commit(",
-            "PythonRun", "WebSearch", "CreateSkillFile",
-            "LogTimeByTaskName", "GetWorkItemsByAssignee",
-        ];
-        foreach (string tool in tools)
-            Assert.That(doc, Does.Not.Contain(tool), $"the router should not describe the {tool} tool");
-    }
-
-    [Test]
-    public void CodeReview_IsPartOfTheCodingAgentsMode()
-    {
-        // CL9 step 4: the placeholder code-review skills (they only echoed) go; how to review a change is in the mode.
-        string routing = RoleCatalog
-            .ModeParts(SkillFileSource.ReadEmbedded(RoleCatalog.FileName(RoleCatalog.DefaultVoice, RoleLevel.Agent))!)
-            .Routing;
-
-        Assert.That(SkillFileSource.ReadEmbedded(SkillFiles.Function("code-review")), Is.Null);
-        Assert.That(routing, Does.Contain("Reviewing a change").And.Contain("`git`"));
     }
 
     [Test]
@@ -96,33 +54,6 @@ public class SkillFilesTests
         Assert.That(providers.Select(t => t.Name),
             Is.EquivalentTo(new[] { nameof(CompositeSkillProvider), nameof(MarkdownSkillProvider) }));
         Assert.That(providers.Select(t => t.Namespace), Has.All.EqualTo("LouisAgent.Core.Skills.Providers"));
-    }
-
-    [Test]
-    public void DotNetGuide_NamesOnlyToolsThatExist()
-    {
-        // Guards against the guidance drifting from DotNetTools after a rename.
-        var toolNames = typeof(DotNetTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("toolsets/dotnet.md").Documentation, @"`(DotNet[A-Za-z]+)`")
-            .Select(m => m.Groups[1].Value)
-            .Distinct()
-            .ToList();
-
-        Assert.That(referenced, Does.Contain("DotNetBuild").And.Contain("DotNetTest"));
-        Assert.That(referenced.Where(name => !toolNames.Contains(name)), Is.Empty);
-    }
-
-    [Test]
-    public void PaymoGuide_NamesOnlyToolsThatExist()
-    {
-        var toolNames = typeof(PaymoTools).GetMethods().Select(m => m.Name).ToHashSet();
-        var referenced = Regex.Matches(Load("toolsets/paymo.md").Documentation, @"`([A-Z][A-Za-z]+)\(")
-            .Select(m => m.Groups[1].Value)
-            .Distinct()
-            .ToList();
-
-        Assert.That(referenced, Does.Contain("LogTimeByTaskName"));
-        Assert.That(referenced.Where(name => !toolNames.Contains(name)), Is.Empty);
     }
 
     [Test]
@@ -148,10 +79,9 @@ public class SkillFilesTests
     {
         var options = new AgentOptions { SkillsDirectory = SkillsDirectory };
 
-        string docs = SkillLoader.Load(options).Documentation;
+        string docs = SkillLoader.Load(options, TestTools.Catalog.Toolsets).Documentation;
 
         Assert.That(Regex.Matches(docs, "# .NET Skills").Count, Is.EqualTo(1));
-        Assert.That(Regex.Matches(docs, "# Paymo Skills").Count, Is.EqualTo(1));
     }
 
     [Test]

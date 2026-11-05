@@ -7,7 +7,7 @@ using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Config;
 using LouisAgent.Core.Agent;
 using Microsoft.Extensions.AI;
-using LouisAgent.Core.Tools.Shell;
+using LouisAgent.Composition.Tools.Scripts;
 using LouisAgent.Core.Hosting;
 
 namespace LouisAgent.Core.Tests.Agent.EngineTools;
@@ -228,10 +228,9 @@ public class SkillAuthoringTests
         Assert.That(File.Exists(Path.Combine(_skillsDir, "agent", "functions", "broken.md")), Is.False);
     }
 
-    [TestCase(CoreToolset.DotNet)]
-    [TestCase(CoreToolset.Python)]
-    [TestCase(CoreToolset.Paymo)]
-    public void CreateSkillFile_RefusesBuiltInNames(CoreToolset toolset) => RefusesAsBuiltIn(toolset.Wire());
+    [TestCase(TestToolset.DotNet)]
+    [TestCase(TestToolset.Python)]
+    public void CreateSkillFile_RefusesBuiltInNames(TestToolset toolset) => RefusesAsBuiltIn(toolset.Wire());
 
     [TestCase("self-extension")]
     public void CreateSkillFile_RefusesBuiltInNames_ThatAreAGuidesOwnFile(string name) => RefusesAsBuiltIn(name);

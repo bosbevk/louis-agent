@@ -1,4 +1,5 @@
 
+using LouisAgent.Composition.Logging;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config;

@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Logging.Messages;
 using LouisAgent.Core.Tests.TestOtlp;
@@ -65,6 +66,22 @@ public class AgentLoggingOtlpTests
         Assert.That(_receiver.Holds("Path"), Is.True, "the template's hole, as a field");
         // Given the base address, the sink adds the logs' own path, as the spec says for the shared endpoint.
         Assert.That(_receiver.Received.Select(r => r.Path).Distinct(), Is.EqualTo(new[] { "/v1/logs" }));
+    }
+
+    /// <summary>
+    /// A pack writes through the contract alone and knows nothing of Serilog or OTLP, and its line still reaches the
+    /// collector, because the engine decides where lines go.
+    /// </summary>
+    [Test]
+    public async Task APacksLine_ReachesTheCollector_ThroughTheContract()
+    {
+        AgentLogging.Configure(null);
+
+        PackLog.For<AgentLoggingOtlpTests>().Log(LogLevel.Information, LoggingLogMessage.LoggingTo,
+            new { Path = "from-a-pack" });
+        AgentLogging.Flush();
+
+        Assert.That(await _receiver.EventuallyHoldsAsync("from-a-pack"), Is.True, "the pack's line never arrived");
     }
 
     /// <summary><c>OTEL_SERVICE_NAME</c> names the service instead of ours, as the spec says it wins.</summary>

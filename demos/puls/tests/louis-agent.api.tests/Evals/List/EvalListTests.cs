@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Api.Evals.List;
 using Microsoft.Extensions.Logging;
 

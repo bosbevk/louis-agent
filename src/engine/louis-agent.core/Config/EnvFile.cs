@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Messages;
 using System.Text.RegularExpressions;
 using LouisAgent.Core.Config.Messages;
 using LouisAgent.Core.Messages;

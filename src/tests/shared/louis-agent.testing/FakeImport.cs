@@ -1,4 +1,4 @@
-using LouisAgent.Core.Agent.Catalog.Imports;
+using LouisAgent.Composition.Packs.Imports;
 
 namespace LouisAgent.Testing;
 

@@ -13,7 +13,7 @@ stream in `Sessions/`. Behaviour that every host needs belongs in core.
 
 ```bash
 docker compose -f demos/louis-agent/docker/docker-compose.yml --env-file demos/louis-agent/config/.env up -d --build api   # http://127.0.0.1:5080
-dotnet run --project src/hosts/louis-agent.api --launch-profile puls --property:WebApp=puls  # Puls's settings and web app
+dotnet run --project demos/puls/hosts/louis-agent.puls-api  # Puls's settings and web app
 ```
 
 Every route is under `/v1` but `/health` ([ADR 0039](../adr/0039-api-routes-under-v1.md)), and every `/v1` call needs
@@ -80,8 +80,9 @@ StreamGoldenTests`. Read the golden's diff before you commit it. A new format is
 
 ## Serve the other web app
 
-The API serves the code-review app by default and Puls when built with `-p:WebApp=puls` (`Dockerfile.puls` does).
-Nothing in the API names the app beyond the csproj's two conditional references, so keep it that way.
+The API serves whatever web app the program references, and nothing in the API names one, so keep it that way. A program calls
+`AddLouisAgentApi`, `UseLouisAgentKey`, its own `MapStaticAssets` and `MapFallbackToFile`, then `MapLouisAgentApi`, which refuses to
+map without the key check.
 
 ## Test it
 

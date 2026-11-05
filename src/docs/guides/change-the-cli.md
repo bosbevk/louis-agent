@@ -11,8 +11,8 @@ do in every host belongs in core.
 ## Run it
 
 ```bash
-dotnet run --project src/hosts/louis-agent.cli                      # a chat; exit or Ctrl+D to quit
-dotnet run --project src/hosts/louis-agent.cli -- "What branch am I on?"   # one prompt, the answer alone on stdout
+dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli                      # a chat; exit or Ctrl+D to quit
+dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli -- "What branch am I on?"   # one prompt, the answer alone on stdout
 ```
 
 It finds `config/.env` and the repository root from any folder inside the repository. In Rider, its run profile is in

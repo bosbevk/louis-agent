@@ -1,10 +1,11 @@
+using LouisAgent.Composition.Guardrails.Workspace;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Api.Contracts;
 using LouisAgent.Api.Contracts.Git.Replies;
 using LouisAgent.Api.Contracts.Git.Requests;
 using LouisAgent.Api.Contracts.Workspace;
 using LouisAgent.Api.Messages;
 using LouisAgent.Core.Agent;
-using LouisAgent.Core.Guardrails.Workspace;
 using LouisAgent.Core.Messages;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static LouisAgent.Api.Endpoints.Git.GitProcess;

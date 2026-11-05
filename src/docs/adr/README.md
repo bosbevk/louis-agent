@@ -82,6 +82,7 @@ afterwards from the docs that hold them (each ADR links its sources), with the d
 | [0073](0073-packs-reference-no-evals.md) | Packs and identities reference no evals: what proves one is a project beside it that only the runner references (`….checks`, `….evals`); a new check is general when it can be; a contract two sides share is a shared project or a duplicate held equal by a test; every placement is weighed against the engine split | Accepted |
 | [0074](0074-the-folders-say-what-ships.md) | Framework and implementation are split, and this comes first: the solution's groups and the disk are one map; `src/` holds only the framework; `packs/` holds tools and `packs-evals/` what proves them; anything naming a product is someone's project under `demos/`, by product then function | Accepted |
 | [0075](0075-test-what-you-touch.md) | Test what you touch while working: the touched projects, plus the repo-wide rules when files move; the whole solution before a pull request |
+| [0076](0076-core-ships-no-agent.md) | Core ships no agent: the coding agent is an identity in its demo, a tool the model asks for is a pack, and what every pack relies on stays in the engine, reached through a contract |
 
 ## When to write one
 

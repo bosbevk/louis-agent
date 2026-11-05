@@ -1,3 +1,5 @@
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Messages;
 using LouisAgent.Core.Usage.Records;
 using LouisAgent.Core.Usage.Reports;
 using System.Net.Http.Json;

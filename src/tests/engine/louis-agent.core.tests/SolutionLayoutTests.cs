@@ -18,14 +18,17 @@ public class SolutionLayoutTests
     [TestCase("src/web", "louis-agent.web.shared")]
     [TestCase("src/evals", "louis-agent.evals", "louis-agent.evals.checks", "louis-agent.evals.protocol",
         "louis-agent.evals.runner")]
-    [TestCase("packs", "louis-agent.pack.recipes", "louis-agent.pack.shop-prices", "louis-agent.pack.where-to-buy")]
+    [TestCase("packs", "louis-agent.pack.web", "louis-agent.pack.shell", "louis-agent.pack.files", "louis-agent.pack.git", "louis-agent.pack.dotnet", "louis-agent.pack.devops", "louis-agent.pack.paymo", "louis-agent.pack.recipes", "louis-agent.pack.shop-prices", "louis-agent.pack.where-to-buy")]
     [TestCase("packs-evals", "louis-agent.pack.recipes.checks", "louis-agent.pack.where-to-buy.checks")]
     [TestCase("demos/puls/identity", "louis-agent.identity.puls")]
     [TestCase("demos/puls/evals", "louis-agent.identity.puls.evals", "louis-agent.identity.puls.judges")]
     [TestCase("demos/puls/web", "louis-agent.puls")]
-    [TestCase("demos/puls/hosts", "louis-agent.host-packs")]
+    [TestCase("demos/puls/hosts", "louis-agent.host-packs", "louis-agent.puls-eval-runner", "louis-agent.puls-api")]
+    [TestCase("demos/louis-agent/identity", "louis-agent.identity.coding")]
     [TestCase("demos/louis-agent/web", "louis-agent.web", "louis-agent.site")]
-    [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator")]
+    [TestCase("demos/louis-agent/hosts", "louis-agent.orchestrator", "louis-agent.coding-cli",
+        "louis-agent.coding-acp", "louis-agent.coding-mcp", "louis-agent.coding-eval-runner",
+        "louis-agent.coding-api", "louis-agent.coding-catalog")]
     [TestCase("src/tests/engine", "louis-agent.core.tests", "louis-agent.core.integration-tests",
         "louis-agent.choices.tests", "louis-agent.session-stream.tests")]
     [TestCase("src/tests/hosts", "louis-agent.acp-server.tests", "louis-agent.mcp-server.tests")]
@@ -38,9 +41,9 @@ public class SolutionLayoutTests
         "louis-agent.api.testing",
         "louis-agent.api.standin", "louis-agent.identity.puls.tests", "louis-agent.identity.puls.evals.tests",
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
-    [TestCase("demos/louis-agent/tests", "louis-agent.web.tests", "louis-agent.site.tests",
+    [TestCase("demos/louis-agent/tests", "louis-agent.coding-catalog.tests", "louis-agent.web.tests", "louis-agent.site.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
-    [TestCase("packs-tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.shop-prices.tests",
+    [TestCase("packs-tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests", "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests", "louis-agent.pack.git.integration-tests", "louis-agent.pack.dotnet.tests", "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.shop-prices.tests",
         "louis-agent.pack.shop-prices.integration-tests", "louis-agent.pack.where-to-buy.tests",
         "louis-agent.pack.recipes.checks.tests", "louis-agent.pack.where-to-buy.checks.tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)
@@ -147,7 +150,8 @@ public class SolutionLayoutTests
 
     /// <summary>
     /// The folders at the top and the solution's groups at the top are the same list. Dot folders are not part of the
-    /// code, what a run leaves behind sits in its demo, and a folder holding only build output is what a past move left.
+    /// code, what a run leaves behind sits in its demo, and a folder holding only build output is what a past move
+    /// left.
     /// </summary>
     [Test]
     public void TheTopLevelFolders_AreTheSolutionsGroups()
@@ -172,8 +176,8 @@ public class SolutionLayoutTests
             .Any(parts => !parts.Contains("bin") && !parts.Contains("obj"));
 
     /// <summary>
-    /// A file a project links from outside itself is really there. The build ignores a missing one, so a moved doc would
-    /// otherwise leave a dead link behind without anyone noticing.
+    /// A file a project links from outside itself is really there. The build ignores a missing one, so a moved doc
+    /// would otherwise leave a dead link behind without anyone noticing.
     /// </summary>
     [Test]
     public void AFileAProjectLinks_IsOnDisk()

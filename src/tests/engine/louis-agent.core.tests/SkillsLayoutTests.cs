@@ -77,7 +77,7 @@ public class SkillsLayoutTests
     [Test]
     public void EveryToolset_HasItsGuideInToolsets_AndEveryGuideItsToolset()
     {
-        var guides = ToolsetCatalog.All.Select(t => t.GuideFile).ToList();
+        var guides = TestTools.Catalog.Toolsets.Select(t => t.GuideFile).ToList();
 
         Assert.That(guides, Has.All.StartsWith(SkillFiles.ToolsetsFolder + "/"));
         Assert.That(SkillFileSource.Files(SkillFiles.ToolsetsFolder).Select(f => $"{SkillFiles.ToolsetsFolder}/{f}"),

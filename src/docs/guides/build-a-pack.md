@@ -1,7 +1,7 @@
 # Build a pack
 
 > **How-to.** Give an agent a new capability: a project in `packs/` with its tools, its guide, its own settings and its
-> tests, loaded by a host with `PACKS` or by an identity that names it. **Elsewhere:** why packs exist and the rules they
+> tests, named by a demo's program or by an identity. **Elsewhere:** why packs exist and the rules they
 > keep in [ADR 0027](../adr/0027-engine-identities-and-packs.md) and [ADR 0028](../adr/0028-packs-stay-convertible-to-mcp.md);
 > giving the agent a voice and roles in [Build an identity](build-an-identity.md).
 
@@ -172,8 +172,10 @@ What each part of a `ToolsetDefinition` is for:
 | `GuideFile` | `SkillFiles.Guide("units")`, which is `toolsets/units.md` in the pack's `Prompts/` |
 | `MissingSettings` | The settings this instance lacks, by name; empty when the toolset can load. The recipes pack returns `RECIPE_SOURCES` until a site is named, and `BROWSER_URL` until there is a browser |
 | `ToolTypes` | The tool classes, so the catalogue knows the tool names without building anything |
-| `CreateTools` | Builds one object per tool class for an engine. The `ToolsetContext` it receives holds core's shared services: `Browser`, `WebSearch`, `Rates` |
+| `CreateTools` | Builds one object per tool class for an engine. The `IPackContext` it receives holds what the engine shares: `WorkspaceRoot`, `Browser`, `WebSearch`, `Renderer`, `CurrencyRates`, and `NewFetcher()` for a fetcher with the guards around it |
 | `ParallelSafe` | True when the calls only read and don't depend on each other's order, so a round's calls run at once |
+
+A pack of general tools also says `ComesBeforeTheEngine => true`: a session's tools keep their order, general ones, then the engine's, then a product's, because the order is part of the prefix the model's cache keys on.
 
 `Requires` names other packs this one needs, by name only (never their code). The catalogue refuses a name nobody
 registered and a cycle. The pack must be ready when built: anything slow (a connection, a listing) happens once at
@@ -230,9 +232,11 @@ Three edits in `demos/puls/hosts/louis-agent.host-packs`:
 1. A member in `PackKind.cs`: `Units`.
 2. Its arm in `Plugins.Create(PackKind)`: `PackKind.Units => new UnitsPack(),` (with options:
    `new ShopPricesPack(ShopPricesOptions.FromEnvironment())`).
-3. A project reference to the pack in `louis-agent.composition.csproj`.
+3. A project reference to the pack in the demo's own list, `louis-agent.host-packs.csproj`.
 
-`PACKS=units` then loads it, and so does any identity whose `Packs` names `"units"`. The setting is matched to the enum
+In a demo with such a list, `PACKS=units` then loads it, and so does any identity whose `Packs` names `"units"`. A demo without
+one names the pack in its program: `new AgentCatalog([], [new UnitsPack()])` ([ADR 0074](../adr/0074-the-folders-say-what-ships.md)).
+The setting is matched to the enum
 member with the case ignored, so keep a pack's name one word: a dashed name (`price-rules`) doesn't match `PriceRules`,
 and the catalogue refuses it as unknown.
 
@@ -300,7 +304,7 @@ which only the runner references, so someone can use your tools without the eval
    reasons are a message enum of its own (`ShopCheckMessage`).
 3. **What only an identity knows is a reader** the file names beside the check: `estimates-at-shop` takes an
    `IPriceReader` (`{"reader": "rand-prices"}`) and never names Puls.
-4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the runner's `RunnerChecks`.
+4. **List it** in the project's registry (`WhereToBuyChecks.All`), and add that list to the catalogues the demo's eval program hands to the runner (`PulsCatalogs`).
 5. **Test it** in `packs-tests/louis-agent.pack.{name}.checks.tests`, on trials built from canned events (`ShopTrials`), test
    first. The where-to-buy project is the model.
 

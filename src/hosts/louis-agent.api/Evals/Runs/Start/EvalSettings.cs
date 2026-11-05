@@ -1,8 +1,8 @@
 using LouisAgent.Api.Evals.List;
 using LouisAgent.Choices;
 using LouisAgent.Core.Sessions.Replay;
-using LouisAgent.Core.Tools.Web.Rendering;
-using LouisAgent.Core.Tools.Web.Search;
+using LouisAgent.Core.Web.Rendering;
+using LouisAgent.Core.Web.Search;
 
 namespace LouisAgent.Api.Evals.Runs.Start;
 

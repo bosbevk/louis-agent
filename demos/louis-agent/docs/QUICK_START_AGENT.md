@@ -49,8 +49,8 @@ the AI chat. Attach files with the paperclip; the agent reads them. Each new cha
 ### CLI
 
 ```bash
-dotnet run --project src/hosts/louis-agent.cli                     # interactive; Ctrl+C stops a reply, 'exit' quits
-dotnet run --project src/hosts/louis-agent.cli -- "Your prompt here" # one-shot
+dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli                     # interactive; Ctrl+C stops a reply, 'exit' quits
+dotnet run --project demos/louis-agent/hosts/louis-agent.coding-cli -- "Your prompt here" # one-shot
 ```
 
 ### HTTP API

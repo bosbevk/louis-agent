@@ -1,3 +1,6 @@
+using LouisAgent.Composition.Tools;
+using LouisAgent.Composition.Logging;
+using LouisAgent.Composition.Messages;
 using System.Collections.Concurrent;
 using System.Text.Json;
 using LouisAgent.AcpServer.Messages;

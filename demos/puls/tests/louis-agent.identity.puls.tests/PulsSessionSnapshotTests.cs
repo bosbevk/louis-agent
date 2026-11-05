@@ -1,3 +1,4 @@
+using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Agent.Catalog;
@@ -65,7 +66,7 @@ public class PulsSessionSnapshotTests
         // The recipes pack is the other one Puls names, with every site on as the deployments have it
         // (RECIPE_SOURCES=*), because the cook's header asks for its toolset.
         var catalog = new AgentCatalog([new PulsIdentity()],
-        [
+        [new WebPack(),
             new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
             new RecipesPack(new RecipesOptions { RecipeSources = "*" })
         ]);
@@ -91,7 +92,7 @@ public class PulsSessionSnapshotTests
     /// </summary>
     private static IEnumerable<string> CookToolsets() =>
         ToolsetCatalog.Normalise([
-            CoreToolset.Web.Wire(), .. SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(),
+            TestToolset.Web.Wire(), .. SkillLoader.ToolsetsOf(PulsRole.Cook.Wire(),
                 RoleLevel.Specialist)
         ]);
 
@@ -104,7 +105,7 @@ public class PulsSessionSnapshotTests
         var factory = Factory();
         var snapshot = new
         {
-            Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), CoreToolset.Web.Wire()], "puls/voice-af",
+            Chat = View(factory.GetOrCreate([CoreToolset.Specialists.Wire(), TestToolset.Web.Wire()], "puls/voice-af",
                 RoleLevel.Agent)),
             Cook = View(factory.GetOrCreate(CookToolsets(), PulsRole.Cook.Wire(), RoleLevel.Specialist)),
         };

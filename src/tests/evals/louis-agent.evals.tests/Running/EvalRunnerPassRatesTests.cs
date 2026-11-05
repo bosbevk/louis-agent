@@ -1,3 +1,4 @@
+using LouisAgent.Composition.Logging;
 using LouisAgent.Testing;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
