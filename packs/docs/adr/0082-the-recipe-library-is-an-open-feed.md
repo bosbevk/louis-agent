@@ -20,6 +20,10 @@ search would stop at the few kinds of melktert it already had.
 - **A page with no recipe data is kept only if it plainly lays one out.** `PageTextRecipe` looks for an ingredients heading, the
   lines under it, a method heading and the steps, in code, and anything doubtful gives nothing, because what's kept is served for
   good. The cook's first read of such a page stays its text, so what it sees doesn't depend on what we could keep.
+- **A page we opened and found no recipe on is excluded, in Mongo.** `ReadRecipe` refuses it and the cook reads another hit, and
+  from then on a read refuses it without opening it and a search leaves it out. A search hit can't show whether a page has a
+  recipe, so each page costs one look and only one. Only a page we truly read counts: a site that's down, a refusal or an empty
+  page says nothing about the page, and never goes on the list. It's private, and clearing it gives those pages another chance.
 - **The library is the recipes pack's feed**, open with no key at `/v1/feeds/recipes` (ADR 0070), and the MCP server offers it
   as a resource (ADR 0072). Each recipe carries its site's name and a link to its own page, and nothing about who asked.
 - **Each recipe has its own address on our API,** `/v1/feeds/recipes/{id}`, and a search hands the cook that address. `ReadRecipe`
@@ -43,8 +47,10 @@ search would stop at the few kinds of melktert it already had.
 ## Consequences
 
 - A hit from the library opens no browser. A search takes as long as before: that's the price of always finding new recipes.
-- **Some pages with no recipe data still can't enter:** those with no headings, or with their steps among the ingredients. They're
-  read live every time. The live print still ends at the recipe (`PrintedRecipeText`), which spares the cook the readers' comments.
+- **Some pages with no recipe data can't enter:** those with no headings, or with their steps among the ingredients. They're
+  excluded, which costs the cook those pages, though answers from a page's text did no worse on the judge than answers from
+  recipe data. Louis's call: every answer should be a proper recipe that gets saved. A check of 123 pages across our sites, 3 a
+  site, kept 80 after the reader's fixes; Recipes from South Africa gave no text on any page and left the table.
 - **A page read this way has no times and no author, and a reading mistake lasts.** Real pages showed a cookie notice kept as a
   step, an oven step stored as a part's name, and an instruction stored as an ingredient. So a line after a list ends it, a short
   line before the list is the first step, a line in the middle or an instruction among the ingredients keeps the page out, and
@@ -63,7 +69,7 @@ search would stop at the few kinds of melktert it already had.
 - Search is `QueryWords` over the feed in memory. That's fine for thousands of recipes, and the whole feed comes over on each
   refresh, so it will want paging when it's several MB. Search by meaning is F35.6.
 - **Publishing whole copies goes further on the sites' terms than reading them.** Some name commercial copying, Food & Home's
-  clause 2.9.1 for one. Louis made this call knowing that, on 2026-11-05, for all 45 sites, and for Best Recipes, the 46th, whose terms claim ownership and are silent on reuse. Afrifood Network stays out of the table: its terms bar republishing substantial parts without written permission, with each site credited and linked
+  clause 2.9.1 for one. Louis made this call knowing that, on 2026-11-05, for the 45 sites then in the table, and for Best Recipes, added after, whose terms claim ownership and are silent on reuse. Afrifood Network stays out of the table: its terms bar republishing substantial parts without written permission, with each site credited and linked
   and removed on request. It isn't legal advice, and a qualified check is worth having before customers depend on it.
 - A site leaves by coming out of the table, which stops its recipes at once, and by `PurgeSiteAsync`, which deletes its copies.
   No page is removed for any other reason.

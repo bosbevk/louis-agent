@@ -1,7 +1,7 @@
-using LouisAgent.Packs.Recipes.Reading;
+using LouisAgent.Packs.Recipes.Reading.PageText;
 using LouisAgent.Packs.Recipes.Recipes;
 
-namespace LouisAgent.Packs.Recipes.Tests.Reading;
+namespace LouisAgent.Packs.Recipes.Tests.Reading.PageText;
 
 /// <summary>
 /// A page with no recipe data can still lay its recipe out plainly, under headings. These follow the shapes of real
@@ -131,6 +131,178 @@ public class PageTextRecipeTests
         Assert.That(Texts(recipe!.Ingredients), Is.EqualTo(new[] { "2 uie", "800 g maalvleis", "2 eiers" }));
         Assert.That(recipe.Ingredients.Last().Section, Is.EqualTo("EIERBOLAAG"));
         Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Stel oond op 180 °C.", "Braai die uie.", "Bak dit." }));
+    }
+
+    /// <summary>
+    /// Cooksister's bobotie: an ingredient can carry a long note, a second recipe on the page ends the first one's
+    /// steps with its name staying out, and the site's sharing buttons are no steps.
+    /// </summary>
+    [Test]
+    public void ALongNote_AndASecondRecipeOnThePage_LeaveTheFirstWhole()
+    {
+        string note = "6 lemon leaves (or 3 bay leaves as a poor substitute) -you could grate a bit of the rind of the lemon " +
+                      "before you squeeze it for the juice and add it to the bay leaves but add carefully so as not to allow " +
+                      "the lemon to dominate";
+        var recipe = Read($"<h1>Bobotie revisited</h1><p>Ingredients:</p><p>1kg mince</p><p>{note}</p><p>Method:</p>" +
+                          "<p>Fry the onion in oil till golden.</p><p>Bake it uncovered.</p><p>YELLOW RICE Serves 4</p>" +
+                          "<p>Ingredients:</p><p>2 cups rice</p><p>Method:</p><p>Cook the rice.</p>");
+
+        Assert.That(recipe, Is.Not.Null);
+        Assert.That(Texts(recipe!.Ingredients), Is.EqualTo(new[] { "1kg mince", note }));
+        Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Fry the onion in oil till golden.", "Bake it uncovered." }));
+    }
+
+    /// <summary>A plain list of steps ends at the page's sharing buttons, which start with a lone dash.</summary>
+    [Test]
+    public void SharingButtonsAfterPlainSteps_AreNoSteps()
+    {
+        var recipe = Read("<h1>Pie</h1><p>Ingredients:</p><p>1 egg</p><p>1 cup flour</p><p>Method:</p><p>Mix it well.</p><p>Bake it.</p>" +
+                          "<p>-</p><p>Share</p><p>-</p><p>Pin</p>");
+
+        Assert.That(Texts(recipe!.Steps), Is.EqualTo(new[] { "Mix it well.", "Bake it." }));
+    }
+
+    /// <summary>Woolworths: its own wording for the method, with its site's note between the lists.</summary>
+    [Test]
+    public void CookingInstructions_IsAMethod()
+    {
+        var recipe = Read("<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>2 cups flour</li></ul><p>We are committed to a good business journey.</p>" +
+                          "<h3>Cooking Instructions</h3><ol><li>1. Mix it</li><li>2. Bake it</li></ol><p>You could enjoy this too</p>");
+
+        Assert.That(Texts(recipe!.Ingredients), Is.EqualTo(new[] { "1 egg", "2 cups flour" }));
+        Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Mix it", "Bake it" }));
+    }
+
+    /// <summary>Rooi Rose: a short line ending in a colon names a part, and a long first line is a step.</summary>
+    [Test]
+    public void AColonNamesAPart_AndALongFirstLineIsAStep()
+    {
+        var recipe = Read("<h1>Melktert</h1><h4>Bestanddele</h4><p>Deeg:</p><ul><li>500 ml meel</li></ul><p>Vulsel:</p><ul><li>3 eiers</li></ul>" +
+                          "<h4>Metode</h4><p>Voorverhit die oond tot 180 °C. Spuit 'n pan van 20 cm met kleefwerende kossproei.</p><ul><li>Sif die meel.</li><li>Bak dit.</li></ul>" +
+                          "<p><a href=\"https://example.com/tag\">melktert</a></p>");
+
+        Assert.That(recipe!.Ingredients.Select(line => line.Section), Is.EqualTo(new[] { "Deeg", "Vulsel" }));
+        Assert.That(recipe.Steps, Has.Count.EqualTo(3));
+        Assert.That(recipe.Steps[0].Text, Does.StartWith("Voorverhit"));
+    }
+
+    /// <summary>Food Lover's Market: tab labels above the real headings hold nothing, so they're no list.</summary>
+    [Test]
+    public void TabLabelsAboveTheHeadings_AreSkipped()
+    {
+        var recipe = Read("<h1>Bobotie</h1><p>Ingredients</p><p>Directions</p><p>Ingredients</p><h4>Bobotie</h4><p>1 onion</p><p>500g mince</p>" +
+                          "<p>Custard topping:</p><p>2 eggs</p><p>Directions</p><p>Fry the onion.</p><p>Bake it.</p>");
+
+        Assert.That(Texts(recipe!.Ingredients), Is.EqualTo(new[] { "1 onion", "500g mince", "2 eggs" }));
+        Assert.That(recipe.Ingredients[2].Section, Is.EqualTo("Custard topping"));
+        Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Fry the onion.", "Bake it." }));
+    }
+
+    /// <summary>Clover: a short plain line among numbered steps names a part, wherever it stands.</summary>
+    [Test]
+    public void AShortNameAmongTheSteps_NamesAPart()
+    {
+        var recipe = Read("<h1>Cups</h1><h3>INGREDIENTS</h3><p>Bobotie</p><p>• 1 onion</p><p>• 400 g mince</p><h3>Method</h3><p>Bobotie</p><p>1. Fry it.</p>" +
+                          "<p>Pancake Cups</p><p>2. Line the pan.</p><p>3. Bake it.</p>");
+
+        Assert.That(Texts(recipe!.Steps), Is.EqualTo(new[] { "Fry it.", "Line the pan.", "Bake it." }));
+        Assert.That(recipe.Steps.Select(step => step.Section), Is.EqualTo(new[] { "Bobotie", "Pancake Cups", "Pancake Cups" }));
+    }
+
+    /// <summary>A first line with an amount or an instruction's word is a step, even with no full stop.</summary>
+    [TestCase("Stel oond op 180 °C")]
+    [TestCase("Preheat the oven")]
+    public void AnOvenLineBeforeTheList_StaysAStep_WithNoFullStop(string first)
+    {
+        var recipe = Read($"<h1>Pie</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li></ul><h3>Method</h3><p>{first}</p><ul><li>Mix it.</li></ul>");
+
+        Assert.That(Texts(recipe!.Steps), Is.EqualTo(new[] { first, "Mix it." }));
+    }
+
+    /// <summary>FinGlobal: headings written as phrases, and each list's opening sentence isn't part of it.</summary>
+    [Test]
+    public void HeadingsAsPhrases_AndAListsOpeningLine()
+    {
+        var recipe = Read("<h1>Bobotie</h1><h3>Ingredients needed for chicken bobotie</h3><p>To prepare this easy recipe, gather the following ingredients:</p><ul><li>500g mince</li><li>1 onion</li></ul>" +
+                          "<h3>What are the steps for this bobotie recipe?</h3><p>Follow these simple instructions to recreate this beloved bobotie:</p><ul><li>Fry it.</li><li>Bake it.</li></ul><h3>Frequently asked questions</h3><ul><li>Taste: mild.</li></ul>");
+
+        Assert.That(Texts(recipe!.Ingredients), Is.EqualTo(new[] { "500g mince", "1 onion" }));
+        Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Fry it.", "Bake it." }));
+    }
+
+    /// <summary>
+    /// Inspired Living: an ingredient in a list may link to another recipe and keeps its words, and a heading in the
+    /// method that names a part of the ingredients doesn't end the steps, or half the recipe would go.
+    /// </summary>
+    [Test]
+    public void ALinkedIngredient_AndAMethodHeadingForAKnownPart()
+    {
+        var recipe = Read("<h1>Chicken</h1><h3>Ingredients:</h3><ul><li>6 chicken breasts</li><li>1 tsp <a href=\"https://example.com/p\">Coriander Pesto</a></li></ul><h3>Oven Roasted Potatoes:</h3><ul><li>8 potatoes</li></ul>" +
+                          "<h3>Method</h3><p>Coat the chicken.</p><h4>Oven Roasted Potatoes</h4><p>Roast the potatoes.</p><p>Images: ©2018 the site.</p><h3>Disclosure</h3>");
+
+        Assert.That(Texts(recipe!.Ingredients), Is.EqualTo(new[] { "6 chicken breasts", "1 tsp Coriander Pesto", "8 potatoes" }));
+        Assert.That(Texts(recipe.Steps), Is.EqualTo(new[] { "Coat the chicken.", "Roast the potatoes." }));
+        Assert.That(recipe.Steps[1].Section, Is.EqualTo("Oven Roasted Potatoes"));
+    }
+
+    /// <summary>Zola Nene's kebabs: a "Serves" among plain steps means a second recipe, so the page's out.</summary>
+    [Test]
+    public void AServesLineAmongPlainSteps_IsNothing()
+    {
+        Assert.That(Read("<h1>Kebabs</h1><h3>Ingredients</h3><p>Serves 4</p><p>1 chicken</p><p>2 apricots</p><h3>Instructions</h3><p>Soak the sticks.</p>" +
+                         "<p>Cook them.</p><p>Serves 4</p><p>For the Kebabs:</p><p>500g mince</p>"), Is.Null);
+    }
+
+    /// <summary>Clover and others: in plain lines, a part's name or a label in capitals isn't a step.</summary>
+    [Test]
+    public void InPlainSteps_APartsNameIsNoStep_AndALabelIsLeftOut()
+    {
+        var recipe = Read("<h1>Tart</h1><h3>Ingredients</h3><p>1 egg</p><p>1 cup flour</p><h3>Method</h3><p>For the pastry:</p><p>Rub in the butter.</p>" +
+                          "<p>CRUST:</p><p>Bake it blind.</p><p>CLOVER INGREDIENTS USED IN THIS RECIPE</p>");
+
+        Assert.That(Texts(recipe!.Steps), Is.EqualTo(new[] { "Rub in the butter.", "Bake it blind." }));
+        Assert.That(recipe.Steps.Select(step => step.Section), Is.EqualTo(new[] { "For the pastry", "CRUST" }));
+    }
+
+    /// <summary>Lucky Star: a list item that's only a label names a part, and isn't a step.</summary>
+    [Test]
+    public void AListItemThatIsOnlyALabel_NamesAPart()
+    {
+        var recipe = Read("<h1>Tart</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li></ul><h3>Method</h3><ul><li>CRUST:</li><li>Rub it in.</li><li>Bake it.</li></ul>");
+
+        Assert.That(Texts(recipe!.Steps), Is.EqualTo(new[] { "Rub it in.", "Bake it." }));
+        Assert.That(recipe.Steps[0].Section, Is.EqualTo("CRUST"));
+    }
+
+    /// <summary>A list that starts its count again in each part keeps no number in its steps.</summary>
+    [Test]
+    public void ACountThatStartsAgain_LeavesNoNumberInTheSteps()
+    {
+        var recipe = Read("<h1>Rolls</h1><h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li></ul><h3>Method</h3><p>Dough</p><ol><li>1. Mix it.</li><li>2. Roll it.</li></ol>" +
+                          "<p>Filling</p><ol><li>1. Fry it.</li><li>2. Bake it.</li></ol>");
+
+        Assert.That(Texts(recipe!.Steps), Is.EqualTo(new[] { "Mix it.", "Roll it.", "Fry it.", "Bake it." }));
+    }
+
+    /// <summary>A heading such as "Recipes" names no dish: the next heading does, or the page's title.</summary>
+    [TestCase("<h1>Recipes</h1><h2>Bobotie Bake</h2>", "Bobotie Bake")]
+    [TestCase("<h1>Recipes</h1>", "Pie")]
+    public void AHeadingThatNamesNoDish_IsSkipped(string headings, string name)
+    {
+        var recipe = Read($"{headings}<h3>Ingredients</h3><ul><li>1 egg</li><li>1 cup flour</li></ul><h3>Method</h3><ul><li>Bake it.</li></ul>");
+
+        Assert.That(recipe?.Name, Is.EqualTo(name));
+    }
+
+    /// <summary>A real page wrote an attribute twice on one tag: the page still reads.</summary>
+    [Test]
+    public void ATagWithAnAttributeTwice_StillReads()
+    {
+        var recipe = PageTextRecipe.Read("<html><head><title>Pie</title><meta property=\"og:image\" property=\"og:image\" content=\"/a.jpg\"></head>" +
+                                         "<body><main><img alt=\"Pie\" fetchpriority=\"high\" fetchpriority=\"low\" src=\"/b.jpg\"><h3>Ingredients</h3>" +
+                                         "<p>1 egg</p><p>1 cup flour</p><h3>Method</h3><p>Mix it.</p></main></body></html>", Page);
+
+        Assert.That(recipe?.Name, Is.EqualTo("Pie"));
     }
 
     /// <summary>A short line in the middle of the steps could be anything, and guessing could lose a step.</summary>

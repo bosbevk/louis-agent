@@ -33,7 +33,6 @@ Each row is one site. The columns are:
 | woolworths | Woolworths | https://www.woolworths.co.za | data | web | 2026-11-04 | |
 | rooirose | Rooi Rose | https://novanews.co.za/rooirose | text | web | 2026-11-04 | Content-Signal: ai-input=yes, ai-train=no |
 | thelazymakoti | The Lazy Makoti | https://thelazymakoti.com | text | wordpress | 2026-11-04 | |
-| recipesfromsouthafrica | Recipes from South Africa | https://recipesfromsouthafrica.com | text | wordpress | 2026-11-04 | |
 | thekatetin | The Kate Tin | https://thekatetin.com | text | wordpress | 2026-11-04 | recipe in microdata, not read |
 | cooksister | Cooksister | https://www.cooksister.com | text | wordpress | 2026-11-04 | |
 | vrouekeur | Vrouekeur | https://vrouekeur.co.za | text | wordpress | 2026-11-04 | |

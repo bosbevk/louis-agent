@@ -1,4 +1,5 @@
 using LouisAgent.Composition.Logging;
+using LouisAgent.Packs.Recipes.Library.Excluded;
 using LouisAgent.Packs.Recipes.Library.Feed;
 using LouisAgent.Packs.Recipes.Library.Store;
 using LouisAgent.Packs.Recipes.Messages;
@@ -28,8 +29,11 @@ public sealed class RecipeShelf(
     IRecipeStore store,
     IReadOnlyList<RecipeSite> enabled,
     TimeProvider clock,
-    Func<bool>? skip = null)
+    Func<bool>? skip = null,
+    IExcludedPages? excluded = null)
 {
+    private readonly IExcludedPages _excluded = excluded ?? new NoExcludedPages();
+
     private static readonly ILogger Log = PackLog.For<RecipeShelf>();
 
     /// <summary>A shelf with nothing on it, for where no library is set up.</summary>
@@ -56,6 +60,25 @@ public sealed class RecipeShelf(
         else
             Log.Log(LogLevel.Information, RecipeLogMessage.LibraryServed, new { Id = id, Site = recipe.SiteSlug });
         return recipe;
+    }
+
+    /// <summary>The ids of the pages we opened and found no recipe on, which nobody needs to open again.</summary>
+    public Task<IReadOnlySet<string>> ExcludedIdsAsync(CancellationToken cancellationToken) =>
+        QuietlyAsync(() => _excluded.IdsAsync(cancellationToken), new HashSet<string>(), cancellationToken);
+
+    /// <summary>
+    /// Lists a page we opened and found no recipe on, if it's on one of our sites: a read can be any public link, a
+    /// user's own too, and only our sites' pages are written down.
+    /// </summary>
+    public async Task ExcludeAsync(Uri page, CancellationToken cancellationToken)
+    {
+        if (SiteOf(page) is null) return;
+
+        await QuietlyAsync<object?>(async () =>
+        {
+            await _excluded.AddAsync(new ExcludedPage(page, clock.GetUtcNow()), cancellationToken);
+            return null;
+        }, null, cancellationToken);
     }
 
     /// <summary>The pages we hold that answer a search.</summary>

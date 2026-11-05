@@ -96,15 +96,15 @@ public class ReadRecipeLibraryTests
         Assert.That(kept.Page, Is.EqualTo(new Uri(OnOurSite)));
     }
 
-    /// <summary>A page with no data and no headings is read for the cook, but it stays out of the library.</summary>
+    /// <summary>A page with no data and no headings has no recipe to give, so it's refused and not kept.</summary>
     [Test]
-    public async Task APageWithNoDataAndNoHeadings_IsReadButNotKept()
+    public async Task APageWithNoDataAndNoHeadings_IsRefusedAndNotKept()
     {
         var library = new FakeRecipeLibrary();
 
         string print = await Over(library, TextPage).Tools.ReadRecipe(OnOurSite);
 
-        Assert.That(print, Does.Contain("1 kg mince"));
+        Assert.That(print, Does.Contain("Read another hit"));
         Assert.That(library.Kept, Is.Empty);
     }
 

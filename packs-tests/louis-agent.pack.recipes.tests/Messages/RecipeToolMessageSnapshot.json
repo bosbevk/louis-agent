@@ -11,6 +11,7 @@
   "IngredientsHeading": "## Ingredients",
   "LibraryRecipeGone": "That recipe couldn't be read from our library just now. Read another hit.",
   "MethodHeading": "## Method",
+  "NoRecipeOnThePage": "That page has no recipe we can read. Read another hit.",
   "NoSiteHasIt": "None of <Sites> has a recipe for '<Query>'. Search again: each search asks other sites. Or try fewer or other words.",
   "NoSiteInTheDraw": "No site with its own search is enabled here, so name one with source. Enabled: <Enabled>.",
   "NumberedLine": "<Number>. <Text>",

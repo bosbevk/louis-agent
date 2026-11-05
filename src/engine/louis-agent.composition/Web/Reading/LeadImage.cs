@@ -117,8 +117,10 @@ internal static partial class LeadImage
     {
         foreach (Match tag in Meta().Matches(html))
         {
-            var attributes = Attribute().Matches(tag.Value).ToDictionary(a => a.Groups["name"].Value.ToLowerInvariant(),
-                a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
+            // A page can write an attribute twice; the first one counts, as in a browser.
+            var attributes = Attribute().Matches(tag.Value).DistinctBy(a => a.Groups["name"].Value.ToLowerInvariant())
+                .ToDictionary(a => a.Groups["name"].Value.ToLowerInvariant(),
+                    a => WebUtility.HtmlDecode(a.Groups["value"].Value), StringComparer.Ordinal);
             string? name = attributes.GetValueOrDefault("property") ?? attributes.GetValueOrDefault("name");
             if (name is "og:image" or "og:image:secure_url" or "twitter:image" &&
                 attributes.GetValueOrDefault("content") is { Length: > 0 } content)

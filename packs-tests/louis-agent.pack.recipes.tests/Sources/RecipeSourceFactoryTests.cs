@@ -37,7 +37,7 @@ public class RecipeSourceFactoryTests
     /// <summary>A star turns on every site in the table.</summary>
     [Test]
     public void AStar_GivesEverySite() =>
-        Assert.That(RecipeSourceFactory.Enabled("*"), Has.Count.EqualTo(46));
+        Assert.That(RecipeSourceFactory.Enabled("*"), Has.Count.EqualTo(45));
 
     /// <summary>With no setting, or a blank one, no site is on.</summary>
     [Test]
