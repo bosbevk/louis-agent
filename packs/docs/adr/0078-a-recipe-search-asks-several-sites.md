@@ -32,6 +32,10 @@ The pattern is Scatter-Gather: one request goes to several places and the answer
 - Recipes come from many sites. 14 of the 20 sites in the draw give page text rather than clean data (ADR 0067), which
   costs more to read and may lose a clean amount; the measure in the F35 plan says by how much.
 - A run varies from one repeat to the next, by design, so a recipes eval needs its repeats to mean anything.
+- **The cook and recipes evals run live only** (Louis, 2026-11-05). A replay keys each request on what the model reads,
+  and a new draw changes the search's result, so a $0 replay or a studio try of those evals misses at the request after
+  the first search. Live pages could already change under a replay; the draw makes it certain. CI grades recorded
+  transcripts, so it isn't affected. A seed for eval runs can come later if the studio needs one.
 - A rare dish can miss. `pap en sous` and `hoenderpastei` turned up on one site of the 20 in a rough check, about one
   search in five, so the web fallback stays.
 - Variety only shows across a run, so it's a number in the measure rather than a check on one conversation.
