@@ -10,4 +10,7 @@ public enum RecipeLogMessage
 
     [Description("Recipe site '{Slug}' refused a search; the other sites' hits are used.")]
     SiteSkipped,
+
+    [Description("A photo on '{Host}' is gone; the next place to look is tried.")]
+    PhotoGone,
 }

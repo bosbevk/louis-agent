@@ -7,7 +7,9 @@ namespace LouisAgent.Packs.Recipes.Tests.Tools;
 /// A fetcher for the tests that says whether a photo loads: every address is a real image unless the test says what
 /// it does instead, and it remembers what it was asked for.
 /// </summary>
-internal sealed class FakePhotoFetcher(Dictionary<string, Func<HttpResponseMessage>>? answers = null) : IPageFetcher
+internal sealed class FakePhotoFetcher(
+    Dictionary<string, Func<HttpResponseMessage>>? answers = null,
+    string[]? internalAddresses = null) : IPageFetcher
 {
     /// <summary>The addresses it was asked to fetch, in order.</summary>
     public List<string> Asked { get; } = [];
@@ -20,8 +22,11 @@ internal sealed class FakePhotoFetcher(Dictionary<string, Func<HttpResponseMessa
         return response;
     };
 
-    /// <inheritdoc />
-    public Task EnsurePublicAsync(Uri uri) => Task.CompletedTask;
+    /// <summary>Refuses the addresses the test calls internal, as the real guard does.</summary>
+    public Task EnsurePublicAsync(Uri uri) =>
+        internalAddresses?.Contains(uri.AbsoluteUri) == true
+            ? Task.FromException(new BlockedAddressException("not a public address"))
+            : Task.CompletedTask;
 
     /// <summary>Answers as the test said, else with a photo.</summary>
     public Task<(HttpResponseMessage Response, Uri FinalUri)> GetFollowingRedirectsAsync(Uri uri,
