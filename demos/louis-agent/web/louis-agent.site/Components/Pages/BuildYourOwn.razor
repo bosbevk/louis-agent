@@ -1,0 +1,52 @@
+@page "/build-your-own"
+
+<PageTitle>Build your own · louis-agent</PageTitle>
+
+<section class="band">
+    <span class="kicker">Build your own</span>
+    <h2 class="chrome">A few lines of your own.</h2>
+    <p class="lede">The framework is the engine, the hosts and the packs. Your project says who its agent is and what it can do, and starts a host. This is how our own coding agent does it, exactly as the code stands.</p>
+</section>
+
+<section class="band">
+    <span class="kicker">The whole program</span>
+    <pre class="listing"><code>using LouisAgent.Cli;
+using LouisAgent.Coding;
+
+// Usage: louis-agent.coding-cli [prompt]. It loads what this demo's catalogue names.
+await CliHost.RunAsync(args, CodingCatalog.Create());</code></pre>
+    <p class="band-note">The same catalogue starts Rider's host, the HTTP API and the MCP server, each in a small program of its own.</p>
+</section>
+
+<section class="band">
+    <span class="kicker">What it loads</span>
+    <pre class="listing"><code>public static AgentCatalog Create() => new([new CodingIdentity()], Packs());
+
+// The packs:
+new FilesPack(), new GitPack(), new DotNetPack(), new ShellPack(), new WebPack(), new PaymoPack(paymo),
+new DevOpsPack(devOps),</code></pre>
+    <p class="band-note">The identity is who it is. The packs are what it can do. <a href="/packs">Every pack</a></p>
+</section>
+
+<section class="band">
+    <span class="kicker">Whose is what</span>
+    <div class="grid-2">
+        <article class="panel">
+            <h3>The framework</h3>
+            <p>The engine: the loop, streaming, the providers, the usage ledger, the guards, and handing work to other sessions. The hosts, as libraries: a CLI, Rider's protocol, an HTTP API and an MCP server. The general packs, and the harness your evals run on.</p>
+        </article>
+        <article class="panel">
+            <h3>Yours</h3>
+            <p>Your program, a few lines. Your identity: its voice, its modes and its roles, as markdown. Your own packs for the tools nobody else has. Your settings, your images, your evals and your web app, in your own project.</p>
+        </article>
+    </div>
+</section>
+
+<section class="band">
+    <span class="kicker">Where it stands</span>
+    <div class="panel">
+        <h3>The packages aren't on NuGet yet.</h3>
+        <p>Today you build from the repository. What's proved so far: a test packs the git pack and the two small packages it needs into a local feed, and a plain console app runs it from there with no engine in its dependencies.</p>
+        <p class="band-note"><a href="https://github.com/bosbevk/louis-agent">The repository</a> · <a href="/contact">Tell us what you'd build</a></p>
+    </div>
+</section>

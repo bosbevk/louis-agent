@@ -33,7 +33,7 @@
 <section class="band">
     <span class="kicker">The rules a pack keeps</span>
     <ul class="rules">
-        <li><strong>Only the contracts.</strong> A pack references one small package, never the engine, so it can ship on its own. A console app runs one from a package with no engine in its dependencies.</li>
+        <li><strong>Only the contracts.</strong> A pack references the small contracts package, never the engine, so it can ship on its own. A console app runs one from a package with no engine in its dependencies.</li>
         <li><strong>No other pack.</strong> A pack never knows about another pack or an identity. Only a demo's own program knows them all.</li>
         <li><strong>The engine's guards, not its own.</strong> It asks the engine for a browser, a search and a fetcher, so every request stays inside the rules: no internal addresses, and a site's <code>robots.txt</code> obeyed.</li>
         <li><strong>What proves it sits apart.</strong> A pack's evals are in a project of their own, so you can take the tools without them.</li>
