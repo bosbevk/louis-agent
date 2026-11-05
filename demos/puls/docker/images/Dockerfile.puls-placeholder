@@ -1,0 +1,8 @@
+# Puls's public placeholder on mypuls.co.za (F58): one static page, nothing of Puls's app inside. nginx's stable line,
+# pinned by digest so the image is the same on every build; it serves only index.html and answers 404 to the rest.
+# Builds from the repo root: docker build -f demos/puls/docker/images/Dockerfile.puls-placeholder .
+FROM nginx:1.30.6-alpine@sha256:0e52bd054126cdc040b1276c0af347aeb02a41b9cfe305d6094767ac30e97949
+RUN rm -rf /usr/share/nginx/html/*
+COPY demos/puls/web/puls-placeholder/index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s CMD wget -qO /dev/null http://127.0.0.1/ || exit 1
