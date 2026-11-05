@@ -8,7 +8,7 @@ namespace LouisAgent.Packs.WhereToBuy.Tests.Branches.Map;
 /// </summary>
 public class MapAddressTests
 {
-    /// <summary>A ward gives way to the town, or to the city when the map names no town, as the real map has them.</summary>
+    /// <summary>A ward gives way to the town, or to the city when the map names no town.</summary>
     [TestCase("Swartland Ward 10", "Malmesbury", "Swartland Local Municipality", "Malmesbury")]
     [TestCase("Swartland Ward 12", null, "Swartland Local Municipality", "Swartland Local Municipality")]
     [TestCase("Cape Town Ward 115", null, "Cape Town", "Cape Town")]
