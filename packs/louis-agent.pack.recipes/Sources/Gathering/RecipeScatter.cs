@@ -70,7 +70,10 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
         return top.Concat(hits.Skip(TopHits));
     }
 
-    /// <summary>One site's answer, with its refusal as a value, so it can't take the other sites down.</summary>
+    /// <summary>
+    /// One site's answer, with its refusal as a value, so it can't take the other sites down. A page that hangs counts
+    /// as a refusal, since the browser can time out in places its own failure doesn't cover.
+    /// </summary>
     private static async Task<SiteAnswer> AskAsync(IRecipeSource site, string query, int maxResults,
         CancellationToken cancellationToken)
     {
@@ -78,7 +81,7 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
         {
             return new SiteAnswer(site, await site.FindAsync(query, maxResults, cancellationToken), null);
         }
-        catch (RecipeSourceException ex)
+        catch (Exception ex) when (ex is RecipeSourceException or TimeoutException)
         {
             // Only the site's name in the log: the refusal's text holds the user's words.
             Log.Log(LogLevel.Warning, RecipeLogMessage.SiteSkipped, new { site.Site.Slug });

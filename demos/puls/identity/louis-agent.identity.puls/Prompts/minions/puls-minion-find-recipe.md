@@ -37,11 +37,7 @@ chicken bobotie (variant) · Another Site · https://example.org/chicken-bobotie
 ```
 
 That is `{name} · {site} · {link}`: the hit's name, site and link exactly as the hit gives them.
-Answer `none` only when no site you were shown has the dish: one line with the word and the sites you were shown:
-
-```
-none · tried: A Recipe Site, Another Site
-```
-
-That is `none · tried: {sites}`. Never a recipe, an amount, a method or a link you didn't see: the specialist reads the
+Answer `none` only when no site you were shown has the dish: one line, `none · tried: {sites}`, with the sites the result
+said it asked, never a name from these instructions. If the tool failed and showed you no sites, answer `none · tried:
+nothing`. Never a recipe, an amount, a method or a link you didn't see: the specialist reads the
 page itself, and what you answer is only where to find it.

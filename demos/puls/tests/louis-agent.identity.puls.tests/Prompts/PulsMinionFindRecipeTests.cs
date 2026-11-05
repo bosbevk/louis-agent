@@ -86,6 +86,9 @@ public class PulsMinionFindRecipeTests
 
         Assert.That(minion, Does.Contain("`{name} · {site} · {link}`"));
         Assert.That(minion, Does.Contain("`none · tried: {sites}`"));
+        Assert.That(minion, Does.Not.Contain("tried: A Recipe Site"),
+            "a local model whose search failed copied the example's site names as the ones it tried");
+        Assert.That(minion, Does.Contain("never a name from these instructions"));
         Assert.That(minion, Does.Contain("exactly as the hit gives them"), "the name and the link are the hit's");
     }
 

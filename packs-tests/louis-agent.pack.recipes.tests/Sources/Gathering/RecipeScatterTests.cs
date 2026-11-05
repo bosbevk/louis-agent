@@ -177,6 +177,22 @@ public class RecipeScatterTests
     }
 
     /// <summary>
+    /// A site whose page hangs times out instead of refusing. That sank the whole search, and the cook went to the web
+    /// for bobotie when other sites had it.
+    /// </summary>
+    [Test]
+    public async Task ASiteThatTimesOut_IsSkipped_AndTheOthersStillAnswer()
+    {
+        var hanging = new FakeRecipeSource("taste", fails: new TimeoutException("The operation has timed out."));
+        var sites = new IRecipeSource[] { hanging, Site("foodandhome") };
+
+        var gather = await new RecipeScatter(sites, new Random(1)).FindAsync("bobotie", 8);
+
+        Assert.That(gather.Hits.Select(hit => hit.Site.Slug), Is.EqualTo(new[] { "foodandhome" }));
+        Assert.That(gather.Refusals, Is.EqualTo(new[] { "The operation has timed out." }));
+    }
+
+    /// <summary>
     /// The sites are asked at once: each of these only answers when all four have been asked, so asking them one after
     /// another would never finish.
     /// </summary>
