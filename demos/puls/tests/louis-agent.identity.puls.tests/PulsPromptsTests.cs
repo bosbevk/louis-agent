@@ -301,7 +301,6 @@ public class PulsPromptsTests
         Assert.That(router, Does.Contain("**Vir hoeveel:**").And.Contain("**Serves:**"),
             "its own line in every meal's brief");
         Assert.That(router, Does.Contain("Vir hoeveel mense kook jy?"), "Puls asks first, never a guess");
-        Assert.That(router, Does.Contain("ask first, both in one short question"));
         Assert.That(cook, Does.Contain("cook for exactly that many").And.Not.Contain("cook for one"));
     }
 
@@ -382,6 +381,19 @@ public class PulsPromptsTests
         Assert.That(cook, Does.Contain("`Calculate`").And.Contain("never in your head"),
             "the scaling is a tool's job, with every amount in one call");
         Assert.That(cook, Does.Match(@"toolsets: [^\r\n]*calculator"), "and the cook has the tool");
+    }
+
+    /// <summary>
+    /// Puls never asks where someone will shop: the prices are the same estimates wherever they buy. The file said both
+    /// for a while, and the model followed the line that asked.
+    /// </summary>
+    [Test]
+    public void Puls_DoesNotAskWhereTheyWillShop()
+    {
+        string voice = Flat(Read("agent/puls/voice.md"));
+
+        Assert.That(voice, Does.Not.Contain("where they'll shop: ask first"));
+        Assert.That(voice, Does.Contain("brief the cook with `enige` / `any` and never ask"));
     }
 
     /// <summary>

@@ -90,19 +90,16 @@ public class RoutingEvalTests
     }
 
     /// <summary>
-    /// Puls asks first about a meal that doesn't say for how many or where they'll shop, and never hands it on; so a
-    /// question that should reach the cook names its people (read as the cook's checks read them, in words too) and its
-    /// shop.
+    /// Puls asks first about a meal that doesn't say for how many, and never hands it on; so a question that should
+    /// reach the cook names its people, read as the cook's checks read them, in words too.
     /// </summary>
     [Test]
-    public void EveryQuestionForTheCook_NamesItsPeopleAndItsShop_ElsePulsWouldAskFirst()
+    public void EveryQuestionForTheCook_NamesItsPeople_ElsePulsWouldAskFirst()
     {
         foreach (var scenario in Load().Scenarios.Where(scenario => RouteOf(scenario) is not null))
         {
             var first = scenario.Input.Messages[0];
             Assert.That(Servings.Of(first), Is.Not.Empty, $"{scenario.Id}: the people");
-            Assert.That(first, Does.Contain("PnP").Or.Contain("maak nie saak").Or.Contain("doesn't matter"),
-                $"{scenario.Id}: the shop");
         }
     }
 
