@@ -39,6 +39,7 @@ public static class JudgeClients
             ApiKey = settings.ApiKey,
         };
         IChatClient client = factory.Create(options);
+        if (settings.Provider == JudgeProvider.Anthropic) client = new NoTemperatureChatClient(client);
         if (sink is not null)
             client = new UsageRecordingChatClient(client, sink, settings.Model, factory.CreateUsageMapper(options));
         return new ConfiguredJudge(new ChatConfiguration(client), settings.Model);
