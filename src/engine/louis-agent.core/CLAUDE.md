@@ -4,72 +4,35 @@
 > another agent on core, a new model provider. **Elsewhere:** how to work, steps, commits and tests in the
 > [development guide](../../docs/CLAUDE.md). Claude Code loads this file when it works on files in this folder.
 
-## Adding a C# tool
+## Adding a tool
 
-1. Add a public method with `[Description]`s to a tool class (or a new class in `src/engine/louis-agent.core/Tools/{Toolset}/`):
+**A tool the model asks for is a pack's** ([ADR 0076](../../docs/adr/0076-core-ships-no-agent.md)): core has none. The steps are
+[Build a pack](../../docs/guides/build-a-pack.md). What holds for any tool class:
 
-   ```csharp
-   [Description("What this tool does")]
-   public string MyTool([Description("What the parameter is")] string input, int limit = 10) => "result";
-   ```
+- **Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private`. Tool names must be
+  unique across all classes: a duplicate stops the engine at start-up.
+- Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded: results over
+  50,000 characters get summarised; most toolsets cap their own output at 12,000.
+- **The texts a tool returns are members of its own `{Area}ToolMessage`** (*Messages and logging*), errors and results alike.
+  A new tool or text changes the golden files on purpose: regenerate them and review the diff
+  ([golden files](../../tests/CLAUDE.md#golden-files)).
 
-2. A new class is a new toolset: follow *Adding a toolset* below. The engine doesn't register tool classes itself.
-3. Name it in its toolset's guide (`Prompts/toolsets/{toolset}.md`) so the model knows when to use it.
-4. Test it in `src/tests/engine/louis-agent.core.tests/Tools/{Toolset}/`.
+**Every toolset follows one pattern: guide, then tools, then guide.** A mode's routing sends a task to a toolset, the
+toolset's guide names its tools and when to use them, and each tool's `[Description]` stays short. A guide is plain markdown,
+embedded, and loads only when a session has the toolset (`SkillLoader.Load(agent, toolsets)`). **No provider class per
+toolset.**
 
-**Every public method on a tool class becomes a tool.** Helpers must be `internal` or `private` (the test project and
-`louis-agent.api` can see internals). Tool names must be unique across all classes: a duplicate stops the engine at
-start-up.
+**Core's own toolsets** are `specialists` and `minions` (`Delegation/`, in `Agent/Toolsets/ToolsetCatalog.cs`) and `skills`
+(`Agent/EngineTools/`, registered by `AgentEngine` because it needs the registry). Only something that needs the engine's own
+insides belongs here; anything else is a pack.
 
-Return strings the model can act on: say what went wrong and what to do instead. Keep output bounded — results over
-50,000 characters get summarised; most toolsets cap their own output at 12,000.
+**Skill files we control are plain markdown, always.** That covers every file in `Prompts/` and the function skills the agent
+writes into a demo's `skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears. Every
+file in `Prompts/` opens with its front matter (`name`, `description`, `metadata.level` and `toolsets`; ADR 0063), read once
+by `PromptCatalog` and stripped before the model sees the file; `EveryPromptHasAHeaderTests` holds it.
 
-**The texts a tool returns are members of its toolset's own `{Area}ToolMessage`** (*Messages and logging*), errors and results
-alike. The enum sits in the toolset's folder beside its tools (`Tools/Workspace/Messages/WorkspaceToolMessage`), and a text that
-two areas return stays in core's `Messages/ToolMessage`:
-`return MessageText.Format(WorkspaceToolMessage.FileWritten, new { Path = relativePath, Length = content.Length });`. Its
-descriptions are attributes.
-A new tool or text changes the golden files on purpose: regenerate them and review the diff
-([golden files](../../tests/CLAUDE.md#golden-files)).
-
-## Adding a toolset
-
-**Every toolset follows one pattern: guide → tools → guide.** A mode's routing sends a task to a toolset, the toolset's
-guide names its tools and when to use them, and each tool's `[Description]` stays short. The files a new toolset
-touches, and nothing else:
-
-1. **Tools:** a class in `src/engine/louis-agent.core/Tools/{Toolset}/` (*Adding a C# tool*), or in the pack's project when the
-   toolset is a capability of its own (*Building an identity or a pack*); every public method is a tool.
-2. **Catalogue entry:** a `ToolsetDefinition` (the name, a member of an enum: `CoreToolset` for core's, a pack's own enum for a pack's, written with `.Wire()`, [ADR 0043](../../docs/adr/0043-repeated-names-are-enums.md); a one-line description, the settings it needs
-   (`MissingSettings`), its tool classes (`ToolTypes`), the factory for their objects (`CreateTools`) and its guide
-   (`GuideFile`)) in `Agent/Toolsets/ToolsetCatalog.cs` for core's, or in the pack's `Toolsets` for a pack's. `AgentCatalog`
-   lists both, core's first, and stops start-up on a tool name two toolsets or the engine already use.
-3. **Guide:** `Prompts/toolsets/{toolset}.md`, plain markdown, embedded with the other built-in prompts (a pack's in
-   its own `Prompts/`): what the toolset is for, its tools grouped with one line each, and its workflows. Core's guides
-   may also hold `## Skill:` procedures; a pack's may not, because a guide must be able to travel as an MCP server's
-   instructions (ADR 0028): a procedure a pack needs becomes a tool. `SkillLoader.Load(agent, toolsets)` adds the
-   guide to the prompt, through `MarkdownSkillProvider`, only when a session loads the toolset. **No provider class per
-   toolset.**
-4. **Reserved by itself:** the guide is embedded, so the agent can't take its name (`SkillFiles.IsBuiltIn`).
-5. **Routing:** a row in the routing of each mode whose product uses it (`agent/louis-agent/voice.md` in core; an
-   identity's `agent/{name}/voice.md` in its own project). A pack can't add a row to a router it doesn't own, so a
-   pack's guide opens with the one line that routes to it, read only where the toolset loads (the TODO's small cleanups).
-6. **Tests:** `SkillFilesTests` checks the coding agent's routing names core's toolset, the toolset's tests in
-   `src/tests/engine/louis-agent.core.tests/Tools/{Toolset}/` (a pack's in `packs-tests/louis-agent.pack.{name}.tests/`), and the golden
-   files regenerated ([golden files](../../tests/CLAUDE.md#golden-files)).
-
-Every catalogue toolset follows it; `SkillFilesTests` checks that each has a guide that loads with it.
-
-**Skill files we control are plain markdown, always.** That covers every file in `Prompts/` (the principles, the modes,
-the roles, the toolset guides) and the function skills the agent writes into `demos/louis-agent/skills/agent/functions/`. `SkillFilesTests` fails if a provider class for one of them appears.
-Every file in `Prompts/` opens with its front matter (`name`, `description`, `metadata.level` and `toolsets`; ADR 0063),
-read once by `PromptCatalog` and stripped before the model sees the file; `EveryPromptHasAHeaderTests` holds it.
-
-**The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we
-must read someone else's skill format; a toolset's tools may be registered differently only when a tool class can't
-express them (`skills`: `CreateSkillFile`, `ReloadSkills`, `CreateTool` and `ListAgentTools` are registered by
-`AgentEngine`, because they need its registry; its guide is still a plain file). The difference and its reason go in
-the class's doc comment and in the feature's plan. A copy of `MarkdownSkillProvider` under another name is not one.
+**The exception: our own implementation.** A provider class of its own is only for skills we don't control, when we must read
+someone else's skill format. A copy of `MarkdownSkillProvider` under another name is not one.
 
 ## Project layout
 
@@ -78,9 +41,10 @@ a change to one (a new provider, a new tool, a new guard) touches one folder:
 
 | Folder (core) | Concern |
 |---|---|
-| `Agent/` | The engine (`AgentEngine`, the facade that wires one agent) and its tool registry at the top; one folder per thing it does, one layer: `Turns/` (one turn: `TurnRunner`, the `ChatPipeline` middleware order, the tool-call guards that call the model, a call's text for displays), `Commands/` (what the user types that the model never sees: `/tools`, `/approve`, `/reject`, `/usage`), `EngineTools/` (what the engine registers itself: the skill tools and the agent-built tools), `Toolsets/` (a toolset's definition, context and core's catalogue), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
+| `Agent/` | The engine (`AgentEngine`, the facade that wires one agent) and its tool registry at the top; one folder per thing it does, one layer: `Turns/` (one turn: `TurnRunner`, the `ChatPipeline` middleware order, the tool-call guards that call the model, a call's text for displays), `Commands/` (what the user types that the model never sees: `/tools`, `/approve`, `/reject`, `/usage`), `EngineTools/` (what the engine registers itself: the skill tools, the agent-built tools with their `Scripts/`, and the `Clock/`), `Toolsets/` (a toolset's definition, context and core's catalogue), `Catalog/` (the contracts an identity or a pack implements, and the catalogue built from them: the seam a later contracts project would be cut from) |
 | `Llm/` | The model: the client factory at the top (`ILlmClientFactory`, `LlmClientFactory`, with the thinking middleware); `Caching/` (how a provider marks a request for its prompt cache: the strategy, the no-op default, the middleware); `UsageMapping/` (a provider's usage into our record: the mapper and the recording middleware); one folder per provider under `Providers/`, `{Name}Provider/` (`Providers/AnthropicProvider/`: a folder named `Anthropic` would hide the SDK's own `Anthropic` namespace) |
-| `Tools/{Toolset}/` | What the model can do: one folder per toolset (`Workspace`, `Git`, `DotNet`, `Shell`, `Web`, `Scripts`, `Agents`, `Integrations/Paymo`, `Integrations/DevOps`), plus `Clock` (every session), `Documents` (shared by two toolsets) and `Currency` (listed by the web toolset, no web of its own); `ProcessRunner` beside them |
+| `Delegation/` | Handing work to a specialist or a minion: their tools, the sub-sessions and the usage they roll up. The engine's own (ADR 0031) |
+| `Web/` | What the engine gives every pack: the browser, search, the page renderer, recordings for replay, and the guards around each fetch (`Fetching/`, `Robots/`). No tools: those are the web pack's |
 | `Sessions/` | What a host sets for one session's turn and the tools read: the user's place (F22) and the attachments at the top; `SubSessions/` (the sub-sessions a chat keeps, F26, and the live feed of a child's events). Not what the model can do, and not the loop |
 | `Skills/` | Loading the markdown skills and a session's role into the prompt: the contract at the top (`ISkillProvider`, the embedded files, `SkillFolder`: where a file comes from), its implementations in `Providers/`, in `Languages/` the script languages a fence can name (`ScriptLanguage`, a leaf every other folder may use), in `Headers/` every prompt's front matter (`PromptHeaders`, `PromptCatalog`, CL27), and in `Roles/` what a session is (`RoleCatalog`, CL13; `RoleFiles`: which roles this instance offers); `RoleLevel` sits at the top |
 | `Guardrails/` | Pure safety checks, no model: `Auth/` (the hosts' key check, failing closed, FX18), `Network/` (the SSRF guard and the address it blocks), `Workspace/` (the workspace boundary, sensitive files). The guards that call a model are in `Agent/` |
@@ -96,8 +60,8 @@ The rules:
 1. **Namespace = folder path**, PascalCase (`LouisAgent.Core.Llm.AnthropicProvider`), one top-level type per file, the file
    named after the type. No `Helpers/`, `Utils/`, `Common/` or `Interfaces/` folders: an interface lives beside its
    implementations, a helper beside its one user.
-2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Tools`, `Skills`, `Usage`, `Pricing`,
-   `Protocols` → `Guardrails` → `Config`, `Messages`, `Logging`. A tool never references the agent loop or a model;
+2. **Dependencies point one way:** hosts → `Hosting` → `Agent` → `Llm`, `Delegation`, `Web`, `Skills`, `Usage`, `Pricing`,
+   `Protocols` → `Guardrails` → `Config`, `Messages`, `Logging`. Delegation and web access never reference the agent loop or a model;
    `Agent` never references a provider's SDK (provider differences stay in `Llm/{Name}Provider/`, as in *Changing the
    LLM*).
 3. **Prompts are content, not code:** system prompt text and procedures stay in `Prompts/`, in the folder of the level
@@ -173,7 +137,7 @@ is reviewed by hand). Only a demo's own project under `demos/` knows its identit
 ## Building another agent on core
 
 Pass `toolsets:` to the `AgentEngine` constructor to give an agent only your tool objects (plus `ExecuteSkill`) instead
-of the built-in coding tools, and build its system prompt from your own skill files (`CompositeSkillProvider` +
+of the toolsets a catalogue names, and build its system prompt from your own skill files (`CompositeSkillProvider` +
 `MarkdownSkillProvider`). To record its usage, pass `usageSink: AgentHost.CreateUsageSink(options)` and
 `usageMapper: clientFactory.CreateUsageMapper(llm)`, and open a `UsageScope` per turn (with a `UsageTags` run id if it
 has one). `louis-agent.orchestrator` does exactly this; its `Program.cs` is the example.

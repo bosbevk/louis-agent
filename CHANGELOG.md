@@ -4,6 +4,9 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-05 — **Core ships no agent** (CL29.3): the coding agent is an identity in `demos/louis-agent/identity`, and every tool the model asks for is a pack: `files`, `git`, `dotnet`, `shell`, `web`, `paymo`, `devops`.
+  Core has no `Tools/`: it keeps delegation, skills and the clock, which need its insides, and web access with its guards, which a pack reaches through `IPackContext`. A console app runs a pack from a NuGet package with no
+  engine in its dependencies (`APackInstallsAsAPackageTests`). The golden files moved to the coding agent's tests and stayed byte-equal. [ADR 0076](src/docs/adr/0076-core-ships-no-agent.md).
 - 2026-11-04 — **The hosts are libraries** (CL29.2): the coding agent's own programs, `louis-agent.coding-cli`, `louis-agent.coding-acp`, `louis-agent.coding-mcp`, `louis-agent.coding-eval-runner` and `louis-agent.coding-api`, and Puls's `louis-agent.puls-eval-runner` and `louis-agent.puls-api`, say what they load, and no framework project references a demo. `-p:WebApp` is gone: a program serves the web app it references. The code-review stack no longer carries Puls's evals.
 - 2026-11-04 — **The folders say what ships** (CL29.1): `src/` holds only the framework, now with the eval harness in
   `src/evals/`; `packs/` holds tools and `packs-evals/` what proves them; anything that names a product moved to

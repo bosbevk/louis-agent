@@ -1,6 +1,6 @@
 # CL29: packs are just tools
 
-> **Plan, approved 2026-11-04.** How a pack comes to depend on one small package and not on the engine, so that each can
+> **Plan, approved 2026-11-04; built by 2026-11-05 ([CL29.3](CL29.3-core-is-just-the-loop.md) holds what changed).** How a pack comes to depend on one small package and not on the engine, so that each can
 > ship as a NuGet package. **Elsewhere:** why evals are apart in [ADR 0073](../adr/0073-packs-reference-no-evals.md).
 
 ## Context

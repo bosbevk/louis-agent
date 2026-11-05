@@ -41,18 +41,18 @@ app) says so in its explanation, with how it was checked instead.
 ## Golden files
 
 **What the model reads is pinned by two golden files:** `ModelRequestSnapshotTests` compares the tools, their
-descriptions, the system prompt and the engine's fixed texts with `Agent/ModelRequestSnapshot.json`;
-`ToolMessageSnapshotTests` compares every `*ToolMessage` enum's template (the shared one and each area's) with `Messages/ToolMessageSnapshot.json`. A deliberate
+descriptions, the system prompt and the engine's fixed texts with `Golden/ModelRequestSnapshot.json`;
+`ToolMessageSnapshotTests` compares every `*ToolMessage` enum's template (the shared one and each area's) with `Golden/ToolMessageSnapshot.json`, both in `demos/louis-agent/tests/louis-agent.coding-catalog.tests`, since what the model reads depends on what a demo loads. A deliberate
 change (a new tool or text, an edited description or skill file) regenerates them, and you review their diff before
 committing:
 
 ```bash
-LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/engine/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
+LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.coding-catalog.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests"
 ```
 
 ```powershell
 $env:LOUIS_UPDATE_GOLDEN = '1'
-try { dotnet test src/tests/engine/louis-agent.core.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests" }
+try { dotnet test demos/louis-agent/tests/louis-agent.coding-catalog.tests --filter "ModelRequestSnapshotTests|ToolMessageSnapshotTests" }
 finally { Remove-Item Env:LOUIS_UPDATE_GOLDEN }
 ```
 
@@ -84,7 +84,7 @@ components keeps its golden; a space between tags stays, since it can be seen) a
 
 Tests use `FakeChatClient` (a scripted `IChatClient` that also streams) and `StubHandler` for HTTP — no network, model or
 Docker. The web apps' components render with bUnit (MIT, 2.12.5), its JS interop in loose mode where a component calls
-the page's scripts, so a call is answered with nothing and listed, never a failure. Those, `FakePrompts`, `FakeIdentity`, `FakePack` and `TestPaths` live in `src/tests/shared/louis-agent.testing`, a class library the
+the page's scripts, so a call is answered with nothing and listed, never a failure. Those, `FakePrompts`, `FakeIdentity`, `FakePack`, `TestTools` (a fake pack under the real toolset names, for tests of the engine) and `TestPaths` live in `src/tests/shared/louis-agent.testing`, a class library the
 test projects that use them reference as a global using (CL15); no test project references another, and `ArchitectureTests` holds it. A few tests skip themselves when git, pip or the network isn't available. The agent runs tests on Linux inside
 its containers, so keep them platform-neutral (forward slashes, no Windows-only paths).
 

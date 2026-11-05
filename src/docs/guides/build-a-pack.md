@@ -172,8 +172,10 @@ What each part of a `ToolsetDefinition` is for:
 | `GuideFile` | `SkillFiles.Guide("units")`, which is `toolsets/units.md` in the pack's `Prompts/` |
 | `MissingSettings` | The settings this instance lacks, by name; empty when the toolset can load. The recipes pack returns `RECIPE_SOURCES` until a site is named, and `BROWSER_URL` until there is a browser |
 | `ToolTypes` | The tool classes, so the catalogue knows the tool names without building anything |
-| `CreateTools` | Builds one object per tool class for an engine. The `ToolsetContext` it receives holds core's shared services: `Browser`, `WebSearch`, `Rates` |
+| `CreateTools` | Builds one object per tool class for an engine. The `IPackContext` it receives holds what the engine shares: `WorkspaceRoot`, `Browser`, `WebSearch`, `Renderer`, `CurrencyRates`, and `NewFetcher()` for a fetcher with the guards around it |
 | `ParallelSafe` | True when the calls only read and don't depend on each other's order, so a round's calls run at once |
+
+A pack of general tools also says `ComesBeforeTheEngine => true`: a session's tools keep their order, general ones, then the engine's, then a product's, because the order is part of the prefix the model's cache keys on.
 
 `Requires` names other packs this one needs, by name only (never their code). The catalogue refuses a name nobody
 registered and a cycle. The pack must be ready when built: anything slow (a connection, a listing) happens once at
