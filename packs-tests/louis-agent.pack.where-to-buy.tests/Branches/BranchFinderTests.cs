@@ -148,7 +148,23 @@ public class BranchFinderTests
         var search = await new BranchFinder(map).FindShopsAsync("Malmesbury", CancellationToken.None);
 
         Assert.That(search!.Branches.Select(b => b.Name),
-            Is.EqualTo(new[] { "Malmesbury Superspar", "Usave", "Checkers" }));
+            Is.EqualTo(new[] { "Malmesbury Superspar", "Usave", "Checkers", "Pick n Pay", "Far Spar" }));
+    }
+
+    /// <summary>
+    /// Ten shops, the nearest: Malmesbury's real answer has a Checkers fifth, 2.2 km away, and three would hide it.
+    /// </summary>
+    [Test]
+    public async Task TheTenNearestShops_AreKept()
+    {
+        var places = Enumerable.Range(1, 12)
+            .Select(i => Place($"Shop {i}", "shop", "supermarket", -33.46 - i * 0.001, 18.73));
+        var (map, _) = Map("[" + string.Join(",", places) + "]");
+
+        var search = await new BranchFinder(map).FindShopsAsync("Malmesbury", CancellationToken.None);
+
+        Assert.That(search!.Branches.Select(b => b.Name),
+            Is.EqualTo(Enumerable.Range(1, 10).Select(i => $"Shop {i}")));
     }
 
     /// <summary>

@@ -4,6 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-05 — **FX44 Ten shops near the user**: `FindShopsNear` lists the ten nearest supermarkets, since three hid Malmesbury's Checkers, 2.2 km away. The cook's format example no longer shows a made-up branch name.
 - 2026-11-05 — **FX43 Shops near the user**: someone who named no shop got *Any supermarket near you.*, which tells them nothing. A new tool, `FindShopsNear`, lists the three supermarkets nearest their town from OpenStreetMap,
   and the cook names them under *Where to buy*. With no town it asks for one. `estimates-at-shop` version 3 needs the call and a shop with its place when the town is known; it used to pass `any` whatever the answer said.
 - 2026-11-05 — **F57 The site tells the new structure**: every page and both films now describe the framework: a demo's program, its catalogue, and a pack's tool. Two new pages, *Packs* and *Build your own*, the second honest that the

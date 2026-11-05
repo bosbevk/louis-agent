@@ -172,7 +172,7 @@ dan noem ek die winkels naby jou.*):
 
 | Shop | Branch | Street or mall | Website |
 |---|---|---|---|
-| Pick n Pay | Pick n Pay Malmesbury | Voortrekker Street, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |
+| Pick n Pay | Pick n Pay | Voortrekker Street, Malmesbury | [pnp.co.za](https://www.pnp.co.za) |
 
 *Website* is a link to the branch's own page on the shop's site when one `WebSearch` (`site:pnp.co.za Malmesbury`)
 finds it, else the shop's home page (for shops near the user, the home page with no search; empty if you don't know it); never fetch it, the link is for the user. A branch you couldn't confirm is
