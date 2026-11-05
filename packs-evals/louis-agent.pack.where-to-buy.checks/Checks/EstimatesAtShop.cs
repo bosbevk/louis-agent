@@ -1,13 +1,11 @@
 using LouisAgent.Composition.Messages;
 using System.Collections.Frozen;
 using LouisAgent.Choices;
-using LouisAgent.Core.Messages;
 using LouisAgent.Evals.Catalog;
 using LouisAgent.Evals.Grading;
 using LouisAgent.Evals.Grading.Common;
 using LouisAgent.Evals.Messages;
 using LouisAgent.Evals.Protocol.Kinds;
-using LouisAgent.Evals.Readers;
 using LouisAgent.Evals.Readers.Kinds;
 using LouisAgent.Evals.Trials;
 using LouisAgent.Packs.WhereToBuy.Checks.Reading;
@@ -20,8 +18,8 @@ namespace LouisAgent.Packs.WhereToBuy.Checks;
 /// cook but just rework it to not lookup prices but just focus on local recipes and where to shop"). Whatever shop the
 /// scenario names (or <c>any</c>), no shop's page was read (ReadRenderedPage or FetchUrl), no
 /// price links to a shop or is given as fact, and the answer says the prices are estimates. A scenario that names a
-/// shop also needs the answer to name that shop's branch under Where to buy; <c>no-branch</c> needs the answer to say
-/// there is none.
+/// shop also needs the answer to name that shop's branch under Where to buy; <c>any</c> in a known town needs the shops
+/// near the user, looked up on the map; <c>no-branch</c> needs it to say there is none.
 /// </summary>
 /// <remarks>
 /// A fixed rule over the calls and the answer, the where-to-buy pack's own (F49.3, F50.2), listed in
@@ -39,7 +37,7 @@ public sealed class EstimatesAtShop(IPriceReader prices) : ICheck
     public string Name => "estimates-at-shop";
 
     /// <inheritdoc />
-    public int Version => 2;
+    public int Version => 3;
 
     /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
@@ -84,13 +82,35 @@ public sealed class EstimatesAtShop(IPriceReader prices) : ICheck
 
         return shop switch
         {
-            ShopExpectation.Any => Verdict.Pass(Name, Version, MessageText.Format(ShopCheckMessage.ShopAnyRight)),
+            ShopExpectation.Any => AnyVerdict(trial, answer),
             ShopExpectation.NoBranch => ShopLines.NoBranchLine(answer)
                 ? Verdict.Pass(Name, Version, MessageText.Format(ShopCheckMessage.ShopAnyRight))
                 : Verdict.Fail(Name, Version, MessageText.Format(ShopCheckMessage.ShopNoBranchNotSaid)),
-            _ => BranchVerdict(answer, shop.Wire()),
+            _ => BranchVerdict(answer, shop.Wire())
         };
     }
+
+    /// <summary>
+    /// A user who named no shop: with a town to look up, the shops near them, from the map and not from memory. With no
+    /// town there's nothing to look up, so nothing more is asked.
+    /// </summary>
+    /// <remarks>Guard clauses, one per way it falls short (ADR 0051).</remarks>
+    private Grade AnyVerdict(Trial trial, string answer)
+    {
+        if (ScenarioShop.TownOf(trial.Scenario) is null)
+            return Verdict.Pass(Name, Version, MessageText.Format(ShopCheckMessage.ShopAnyRight));
+        if (!trial.Transcript.Turns.Any(LooksUpShops))
+            return Verdict.Fail(Name, Version,
+                MessageText.Format(ShopCheckMessage.ShopAnyNotLookedUp, new { Tool = ShopSites.ShopsNearTool }));
+
+        return ShopLines.NamesAShopNearby(answer)
+            ? Verdict.Pass(Name, Version, MessageText.Format(ShopCheckMessage.ShopAnyRight))
+            : Verdict.Fail(Name, Version, MessageText.Format(ShopCheckMessage.ShopAnyNamesNone));
+    }
+
+    /// <summary>Whether the turn asked the map for the shops near the user.</summary>
+    private static bool LooksUpShops(TurnTranscript turn) =>
+        EngineEvents.ToolInputsOf(turn, ShopSites.ShopsNearTool).Count > 0;
 
     /// <summary>
     /// The branch under Where to buy: named, or the case it is not (no section, no branch with a place, only a nearest
@@ -105,7 +125,7 @@ public sealed class EstimatesAtShop(IPriceReader prices) : ICheck
         BranchFinding.OnlyNearest => Verdict.Fail(Name, Version,
             MessageText.Format(ShopCheckMessage.ShopOnlyNearestBranch, new { Shop = shop })),
         _ => Verdict.Fail(Name, Version,
-            MessageText.Format(ShopCheckMessage.ShopNoBranchWithPlace, new { Shop = shop })),
+            MessageText.Format(ShopCheckMessage.ShopNoBranchWithPlace, new { Shop = shop }))
     };
 
     /// <summary>

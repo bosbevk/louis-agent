@@ -121,4 +121,25 @@ public class BranchReadingTests
     public void ABoldLineEndsTheSection_AsAHeadingDoes() =>
         Assert.That(BranchReading.Of("**Where to buy**\n\nAny supermarket.\n\n**Unsure**\n\nPick n Pay Menlyn", "pnp"),
             Is.EqualTo(BranchFinding.NoBranchOfShop));
+
+    /// <summary>With no shop named, a row of any shop with its place counts.</summary>
+    [TestCase(
+        "| Shop | Branch | Street or mall |\n|---|---|---|\n| Usave | Usave | Saint Francis Street, Malmesbury |")]
+    [TestCase(
+        "| Winkel | Tak | Straat of winkelsentrum |\n|---|---|---|\n| Spar | Malmesbury Superspar | Rood Street |")]
+    public void AnyShopWithItsPlace_IsAShopNearby(string table) =>
+        Assert.That(ShopLines.NamesAShopNearby(Heading + table), Is.True);
+
+    /// <summary>The line that sends the user off to look for themselves names no shop.</summary>
+    [TestCase("Any supermarket near you.")]
+    [TestCase("Enige supermark naby jou.")]
+    [TestCase("| Shop | Branch | Street or mall |\n|---|---|---|\n| Spar | Spar | |")]
+    public void NoPlace_IsNoShopNearby(string text) =>
+        Assert.That(ShopLines.NamesAShopNearby(Heading + text), Is.False);
+
+    /// <summary>A shop named outside the section, or no section at all, isn't one.</summary>
+    [Test]
+    public void OutsideTheSection_IsNoShopNearby() =>
+        Assert.That(ShopLines.NamesAShopNearby("### Recipe\n\n| Shop | Branch |\n|---|---|\n| Spar | Spar Paarl |"),
+            Is.False);
 }

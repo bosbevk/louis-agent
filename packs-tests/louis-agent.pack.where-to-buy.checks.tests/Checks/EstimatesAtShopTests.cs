@@ -59,14 +59,14 @@ public class EstimatesAtShopTests
     private static Task<Grade> Grade(FakePrices prices, string expected, params SessionEvent[] events) =>
         new EstimatesAtShop(prices).GradeAsync(Trial(expected, Turn(1, events)), CancellationToken.None).AsTask();
 
-    /// <summary>It's a required fixed rule, at version 2, that reads the shop and the town.</summary>
+    /// <summary>It's a required fixed rule, at version 3, that reads the shop and the town.</summary>
     [Test]
     public void ItIsARequiredFixedRule_ThatReadsTheShopAndTheTownKeys()
     {
         var grader = new EstimatesAtShop(FakePrices.None);
 
         Assert.That((grader.Name, grader.Version, grader.Kind, grader.Required),
-            Is.EqualTo(("estimates-at-shop", 2, CheckKind.FixedRule, true)));
+            Is.EqualTo(("estimates-at-shop", 3, CheckKind.FixedRule, true)));
         Assert.That(grader.ExpectedKeys, Is.EquivalentTo(new[] { "shop", "town" }));
     }
 
@@ -204,4 +204,54 @@ public class EstimatesAtShopTests
         Assert.That((await Grade(Pnp, ReadsRecipe, Text(Estimates + EstimatesLine
                                                                   + "\n**Where to buy**\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| PnP | Pick n Pay Menlyn | Menlyn Park |\n")))
             .Outcome, Is.EqualTo(GradeOutcome.Pass));
+
+    /// <summary>The cook asking the map for the shops near the user.</summary>
+    private static readonly SessionEvent LooksUpShops =
+        SpecialistCall("FindShopsNear", """{"town":"Stellenbosch"}""");
+
+    /// <summary>A user in a town who named no shop, or none they mind.</summary>
+    private const string AnyInTown = """{"town":"Stellenbosch","shop":"any"}""";
+
+    /// <summary>The same with no town in the scenario: there's nothing to look shops up near.</summary>
+    private const string AnyNoTown = """{"shop":"any"}""";
+
+    /// <summary>The old line, which sends the user off to look for themselves.</summary>
+    private const string AnySupermarket = "\n### Where to buy\n\nAny supermarket near you.\n";
+
+    /// <summary>A shop near the user, with its place.</summary>
+    private const string ShopNearby =
+        "\n### Where to buy\n\n| Shop | Branch | Street or mall |\n|---|---|---|\n| Spar | Eikestad Spar | Andringa Street |\n";
+
+    /// <summary>Knowing the user's town, the old line is a fail: this is the bug the check let through.</summary>
+    [Test]
+    public async Task AnyShop_InATown_FailsTheOldLine()
+    {
+        var grade = await Grade(AnyInTown, ReadsRecipe, LooksUpShops, Text(Estimates + EstimatesLine + AnySupermarket));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
+        Assert.That(grade.Reason, Does.Contain("names none near them"));
+    }
+
+    /// <summary>Knowing the user's town, a shop near them with its place, from the map, passes.</summary>
+    [Test]
+    public async Task AnyShop_InATown_PassesAShopNearby() =>
+        Assert.That(
+            (await Grade(AnyInTown, ReadsRecipe, LooksUpShops, Text(Estimates + EstimatesLine + ShopNearby))).Outcome,
+            Is.EqualTo(GradeOutcome.Pass));
+
+    /// <summary>A shop named with no look-up came from the model's memory, and it may not be there at all.</summary>
+    [Test]
+    public async Task AnyShop_InATown_FailsAShopNamedWithNoLookup()
+    {
+        var grade = await Grade(AnyInTown, ReadsRecipe, Text(Estimates + EstimatesLine + ShopNearby));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
+        Assert.That(grade.Reason, Does.Contain("FindShopsNear"));
+    }
+
+    /// <summary>With no town to look up, there's nothing to call and no shop to name.</summary>
+    [Test]
+    public async Task AnyShop_WithNoTown_NeedsNoLookup() =>
+        Assert.That((await Grade(AnyNoTown, ReadsRecipe, Text(Estimates + EstimatesLine + AnySupermarket))).Outcome,
+            Is.EqualTo(GradeOutcome.Pass));
 }

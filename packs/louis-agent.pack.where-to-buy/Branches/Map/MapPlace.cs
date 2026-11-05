@@ -9,10 +9,16 @@ namespace LouisAgent.Packs.WhereToBuy.Branches.Map;
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0041-json-through-records-by-hand-only-for-bytes.md">ADR 0041: JSON through records</seealso>
 public sealed record MapPlace(
     [property: JsonPropertyName("name")] string? Name,
-    [property: JsonPropertyName("display_name")] string? DisplayName,
-    [property: JsonPropertyName("lat")] [property: JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    [property: JsonPropertyName("display_name")]
+    string? DisplayName,
+    [property: JsonPropertyName("lat")]
+    [property: JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     double Latitude,
-    [property: JsonPropertyName("lon")] [property: JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
+    [property: JsonPropertyName("lon")]
+    [property: JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     double Longitude,
-    [property: JsonPropertyName("category")] string? Category,
-    [property: JsonPropertyName("address")] MapAddress? Address);
+    [property: JsonPropertyName("category")]
+    string? Category,
+    [property: JsonPropertyName("address")]
+    MapAddress? Address,
+    [property: JsonPropertyName("type")] string? Type = null);

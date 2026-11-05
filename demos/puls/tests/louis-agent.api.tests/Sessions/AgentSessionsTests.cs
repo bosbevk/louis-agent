@@ -41,12 +41,17 @@ public class AgentSessionsTests
     /// </summary>
     private static AgentCatalog PulsCatalog() =>
         new([new PulsIdentity()],
-        [new WebPack(), TestTools.Pack,
-            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()), new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
-            new FakePack(OffPack, [FakePack.Toolset(OffPack, typeof(FakeShopTools), _ => [new FakeShopTools()]) with
-            {
-                MissingSettings = _ => ["OFF_PACK_URL"]
-            }])
+        [
+            new WebPack(), TestTools.Pack,
+            new WhereToBuyPack(), new ShopPricesPack(new ShopPricesOptions()),
+            new RecipesPack(new RecipesOptions { RecipeSources = "*" }),
+            new FakePack(OffPack,
+            [
+                FakePack.Toolset(OffPack, typeof(FakeShopTools), _ => [new FakeShopTools()]) with
+                {
+                    MissingSettings = _ => ["OFF_PACK_URL"]
+                }
+            ])
         ]);
 
     /// <summary>The pack this instance knows but hasn't set up.</summary>
@@ -160,12 +165,15 @@ public class AgentSessionsTests
         // role, beside what Puls passed.
         var cook = Sessions().Create([TestToolset.Web.Wire()], depth: 1, role: PulsRole.Cook.Wire());
 
-        Assert.That(cook.Toolsets, Is.EquivalentTo(new[]
-        {
-            TestToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
-            ShopPricesToolset.ShopPrices.Wire()
-        }));
-        Assert.That(Names(cook), Does.Contain("FindBranches").And.Contain("EstimatePrices").And.Contain("WebSearch"));
+        Assert.That(cook.Toolsets,
+            Is.EquivalentTo(new[]
+            {
+                TestToolset.Web.Wire(), RecipesToolset.Recipes.Wire(), WhereToBuyToolset.WhereToBuy.Wire(),
+                ShopPricesToolset.ShopPrices.Wire()
+            }));
+        Assert.That(Names(cook),
+            Does.Contain("FindBranches").And.Contain("FindShopsNear").And.Contain("EstimatePrices").And
+                .Contain("WebSearch"));
     }
 
     /// <summary>

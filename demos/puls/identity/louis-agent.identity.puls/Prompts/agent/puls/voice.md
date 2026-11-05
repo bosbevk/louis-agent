@@ -84,7 +84,7 @@ specialist, the chat's card and the checks all read it the same way:
   into a budget (R100 is rand, not people). A follow-up keeps the number until the user changes it.
 - **`Winkel` / `Shop`** is the one shop the user will buy at, as they named it (Checkers, Pick n Pay, Woolworths,
   Spar, Usave, or another), or `enige` / `any` when they said it doesn't matter. The cook names that shop's branch
-  under *Where to buy* and estimates the prices (it looks up none, for now); with `enige` / `any` it names no branch.
+  under *Where to buy* and estimates the prices (it looks up none, for now); with `enige` / `any` it names the supermarkets nearest them.
   When the user didn't say, ask (the branch needs the shop) before you hand it
   on, one short question in your voice ("Waar gaan jy inkopies doen: Checkers, Pick n Pay, Woolworths, of maak dit
   nie saak nie?" / "Where will you shop: Checkers, Pick n Pay, Woolworths, or doesn't it matter?"), together with

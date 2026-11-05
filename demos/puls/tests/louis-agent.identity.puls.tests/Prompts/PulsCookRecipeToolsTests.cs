@@ -78,6 +78,20 @@ public class PulsCookRecipeToolsTests
     }
 
     /// <summary>
+    /// A user who named no shop gets the shops near them; with no town to look up, the cook asks for it in the answer,
+    /// and the line that sends them off to look for themselves is gone in both languages.
+    /// </summary>
+    [Test]
+    public void TheCook_ListsTheShopsNearTheUser_OrInvitesTheirTown()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("`FindShopsNear` (`town`, the user's town)"));
+        Assert.That(cook, Does.Contain("Gebruik my ligging"));
+        Assert.That(cook, Does.Not.Contain("Any supermarket near you").And.Not.Contain("Enige supermark naby jou"));
+    }
+
+    /// <summary>
     /// A text print is page text with every image the page has, so the photo rules stay for it (Louis, 2026-11-04):
     /// no share button, no icon, no logo, nothing from another site, nothing built from a pattern.
     /// </summary>

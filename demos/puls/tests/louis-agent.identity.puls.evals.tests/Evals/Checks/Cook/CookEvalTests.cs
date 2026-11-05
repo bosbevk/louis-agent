@@ -24,7 +24,7 @@ public class CookEvalTests
         var eval = CookFile.Eval;
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version),
-            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 15)));
+            Is.EqualTo((PulsEvalName.Cook.Wire(), PulsEvalName.Cook.Wire(), PulsIdentityName.Puls.Wire(), 16)));
         Assert.That(eval.Proves, Does.StartWith("Puls routes a meal to its cook"));
         Assert.That(eval.Manual, Is.EqualTo($"{CookFile.Source}/manual.md"));
     }
@@ -73,7 +73,7 @@ public class CookEvalTests
             {
                 ("cook-no-error", 1, true, CheckKind.FixedRule), ("routed-to", 1, true, CheckKind.FixedRule),
                 ("within-budget", 1, true, CheckKind.FixedRule),
-                ("estimates-at-shop", 2, true, CheckKind.FixedRule),
+                ("estimates-at-shop", 3, true, CheckKind.FixedRule),
                 ("untooled-shops", 2, true, CheckKind.FixedRule), ("recipe-image", 1, true, CheckKind.FixedRule),
                 ("serves-as-asked", 1, false, CheckKind.FixedRule),
                 ("unpriced-items", 1, false, CheckKind.FixedRule), ("meal-for-people", 2, false, CheckKind.Model),

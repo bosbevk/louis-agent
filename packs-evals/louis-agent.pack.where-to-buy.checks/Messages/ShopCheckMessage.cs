@@ -33,8 +33,15 @@ public enum ShopCheckMessage
     [Description("the answer doesn't say the prices are estimates")]
     ShopEstimatesNotSaid,
 
-    [Description("nothing was searched, no price is linked, and the answer says the prices are estimates")]
+    [Description("no shop's page was read, no price is linked, and the answer says the prices are estimates")]
     ShopAnyRight,
+
+
+    [Description("the user named no shop, and the answer names none near them under Where to buy")]
+    ShopAnyNamesNone,
+
+    [Description("the user named no shop, and the shops near them were never looked up with {Tool}")]
+    ShopAnyNotLookedUp,
 
     [Description("the answer has no Where to buy section")]
     ShopNoWhereToBuySection,
