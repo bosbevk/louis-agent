@@ -28,7 +28,7 @@ pack. The record belongs to the pack that uses it.
 - A site without the data falls back to its text, and the answer says that the text is all there is.
 - The shape of each site's data is checked once by hand and written down in the plan, not assumed.
 
-**One exception (2026-11-05):** a yield of exactly one serving gives way to the page's own words, because Taste's data says `1 serving` on a bobotie whose page says `Serves 6 to 8`. A photo the data names is used only if it loads.
+**One exception (2026-11-05):** a yield of exactly one serving gives way to the page's own words, because Taste's data says `1 serving` on a bobotie whose page says `Serves 6 to 8`. A photo the data names is dropped only when it's known to be gone.
 
 ## Links
 
