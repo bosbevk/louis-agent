@@ -12,8 +12,8 @@ using PuppeteerSharp;
 //
 //   dotnet run --project demos/louis-agent/tools/louis-agent.film-export [short] [detail] [--out <folder>]
 //
-// It needs Docker running, for the encoder. CHROME_PATH names the browser; without it, a Chrome for Testing is downloaded
-// once.
+// It needs Docker running, for the encoder. CHROME_PATH names the browser; without it, a Chrome for Testing is
+// downloaded once.
 const int fps = 24;
 const int quality = 75;
 const int width = 960;

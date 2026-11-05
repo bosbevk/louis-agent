@@ -1,8 +1,9 @@
+using LouisAgent.Choices;
 using LouisAgent.FilmExport.Films;
 
 namespace LouisAgent.Site.Tests.Movies;
 
-/// <summary>The films in the README are what the site plays: change a film and this fails until it's re-exported.</summary>
+/// <summary>The README's films are what the site plays: change a film and this fails until it's re-exported.</summary>
 public class FilmExportTests
 {
     private const string Folder = "demos/louis-agent/docs/films";
@@ -15,7 +16,7 @@ public class FilmExportTests
 
         foreach (var film in FilmSource.All)
             Assert.That(FilmHash.Read(recorded, film.Name), Is.EqualTo(FilmHash.Of(film, TestPaths.RepoRoot)),
-                $"The {film.Name} film changed: run demos/louis-agent/tools/louis-agent.film-export and commit its files.");
+                $"The {film.Name} film changed: run louis-agent.film-export and commit its files.");
     }
 
     /// <summary>Each film has its animation, and the still for people who asked for less motion.</summary>
@@ -23,7 +24,7 @@ public class FilmExportTests
     [TestCase(FilmName.Detail)]
     public void AFilm_HasItsAnimationAndItsStill(FilmName film)
     {
-        string name = film.ToString().ToLowerInvariant();
+        string name = film.Wire();
 
         Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, Folder, $"{name}.webp")), Is.True, $"{name}.webp");
         Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, Folder, $"{name}.png")), Is.True, $"{name}.png");

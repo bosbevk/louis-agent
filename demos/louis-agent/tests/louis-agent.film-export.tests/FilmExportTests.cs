@@ -16,7 +16,7 @@ public class FilmExportTests
         Assert.That(dockerfile, Does.Match(@"libwebp-tools=[\d.]+-r\d+"));
     }
 
-    /// <summary>The settings reach the encoder, the frames go in read-only, and the file lands where it was asked.</summary>
+    /// <summary>The settings reach the encoder, the frames go in read-only, and the file lands as asked.</summary>
     [Test]
     public void TheEncoder_AsksForTheFilmAsAsked()
     {
@@ -30,8 +30,8 @@ public class FilmExportTests
     }
 
     /// <summary>
-    /// A keyframe every half second: between keyframes the encoder treats a small change as no change, so a slow fade on
-    /// low-contrast text would never be written, and a card would keep the last card's words.
+    /// A keyframe every half second: between keyframes the encoder treats a small change as no change, so a slow fade
+    /// on low-contrast text would never be written, and a card would keep the last card's words.
     /// </summary>
     [Test]
     public void TheEncoder_ForcesAKeyframeEveryHalfSecond()
@@ -65,7 +65,7 @@ public class FilmExportTests
             Assert.That(File.Exists(Path.Combine(TestPaths.RepoRoot, file)), Is.True, file);
     }
 
-    /// <summary>The tool's length is the stylesheet's loop, or the export would cut a film short or freeze it.</summary>
+    /// <summary>The tool's length is the stylesheet's loop, or the export would cut a film short.</summary>
     [TestCase(FilmName.Short, "short.css", "--loop: 36s")]
     [TestCase(FilmName.Detail, "detail.css", "--loop: 60s")]
     public void AFilmsLength_IsItsStylesheetsLoop(FilmName name, string sheet, string loop)

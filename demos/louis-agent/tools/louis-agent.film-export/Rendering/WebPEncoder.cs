@@ -6,10 +6,10 @@ namespace LouisAgent.FilmExport.Rendering;
 
 /// <summary>Turns a folder of frames into an animated WebP, with libwebp's own tool from a Docker image.</summary>
 /// <remarks>
-/// libwebp's <c>img2webp</c>, because it can force keyframes and ffmpeg can't. Between keyframes the encoder treats a small
-/// change as no change, so a slow fade on low-contrast text never gets written, and a card keeps the last card's words
-/// (ADR 0077). From an image so nobody has to install it, and it stays a tool a person runs, never part of a product. The
-/// arguments go as a list, never through a shell (ADR 0004).
+/// libwebp's <c>img2webp</c>, because it can force keyframes and ffmpeg can't. Between keyframes the encoder treats a
+/// small change as no change, so a slow fade on low-contrast text never gets written, and a card keeps the last card's
+/// words (ADR 0077). From an image so nobody has to install it, and it stays a tool a person runs, never part of a
+/// product. The arguments go as a list, never through a shell (ADR 0004).
 /// </remarks>
 public static class WebPEncoder
 {
