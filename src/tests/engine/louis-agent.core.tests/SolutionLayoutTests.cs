@@ -44,7 +44,7 @@ public class SolutionLayoutTests
         "louis-agent.identity.puls.judges.tests", "louis-agent.puls.tests", "louis-agent.host-packs.tests")]
     [TestCase("demos/louis-agent/tests", "louis-agent.film-export.tests", "louis-agent.coding-catalog.tests", "louis-agent.web.tests", "louis-agent.site.tests",
         "louis-agent.orchestrator.tests", "louis-agent.orchestrator.integration-tests")]
-    [TestCase("packs-tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests", "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests", "louis-agent.pack.git.integration-tests", "louis-agent.pack.dotnet.tests", "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.calculator.tests", "louis-agent.pack.shop-prices.tests",
+    [TestCase("packs-tests", "louis-agent.pack.web.tests", "louis-agent.pack.shell.tests", "louis-agent.pack.shell.integration-tests", "louis-agent.pack.files.tests", "louis-agent.pack.git.tests", "louis-agent.pack.git.integration-tests", "louis-agent.pack.dotnet.tests", "louis-agent.pack.dotnet.integration-tests", "louis-agent.pack.devops.tests", "louis-agent.pack.paymo.tests", "louis-agent.pack.recipes.tests", "louis-agent.pack.recipes.integration-tests", "louis-agent.pack.calculator.tests", "louis-agent.pack.shop-prices.tests",
         "louis-agent.pack.shop-prices.integration-tests", "louis-agent.pack.where-to-buy.tests",
         "louis-agent.pack.recipes.checks.tests", "louis-agent.pack.where-to-buy.checks.tests")]
     public void AGroup_IsAFolderOnDisk(string folder, params string[] projects)

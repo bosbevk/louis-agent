@@ -18,11 +18,28 @@ public sealed class RecipesOptions
     /// </summary>
     public string? RecipeSources { get; init; }
 
+    /// <summary>The database the recipes are kept in when none is named.</summary>
+    public const string DefaultDatabase = "recipes";
+
+    /// <summary>
+    /// RECIPES_MONGO_URL: the MongoDB the library keeps its recipes in; unset, nothing is kept. A secret, so it lives in
+    /// <c>config/.env.secrets</c>.
+    /// </summary>
+    public string? MongoUrl { get; init; }
+
+    /// <summary>RECIPES_MONGO_DATABASE: the database on that server; unset, <c>recipes</c>.</summary>
+    public string MongoDatabase { get; init; } = DefaultDatabase;
+
     /// <summary>Reads the settings; the variable lookup is replaceable for tests.</summary>
     public static RecipesOptions FromEnvironment(Func<string, string?>? getVariable = null)
     {
         getVariable ??= Environment.GetEnvironmentVariable;
         string? Get(string name) => string.IsNullOrWhiteSpace(getVariable(name)) ? null : getVariable(name)!.Trim();
-        return new RecipesOptions { RecipeSources = Get("RECIPE_SOURCES") };
+        return new RecipesOptions
+        {
+            RecipeSources = Get("RECIPE_SOURCES"),
+            MongoUrl = Get("RECIPES_MONGO_URL"),
+            MongoDatabase = Get("RECIPES_MONGO_DATABASE") ?? DefaultDatabase,
+        };
     }
 }
