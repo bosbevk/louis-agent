@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!-- Renders the site's CSS films to animated WebP for the README, frame by frame. A person runs it after changing a film;
-       nothing ships it. ffmpeg runs from a Docker image, so nobody installs it and it never reaches a product. -->
+       nothing ships it. libwebp's encoder runs from a Docker image, so nobody installs it and it never reaches a product. -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>

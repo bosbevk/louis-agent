@@ -255,7 +255,7 @@ on github.com, and changing a film without re-exporting fails a test.
 
 | Choice | Taken | Not taken |
 |---|---|---|
-| The ffmpeg image | `jrottenberg/ffmpeg:7.1-alpine`, pinned by digest; it has the WebP encoder | Another image; a tag that can change |
+| The ffmpeg image | `jrottenberg/ffmpeg:7.1-alpine`, pinned by digest; replaced in step 8 | Another image; a tag that can change |
 | The still | A copy of the first frame | The plan's `StillAsync`, a second render of what's already on disk |
 | Starting the site | `SiteProcess`, a small class of its own, since the plan's diagram held it without naming it | Pointing at a running container, which may be an older film |
 | A film's name | The enum `FilmName` (ADR 0024) | The plan's `string` |
@@ -263,6 +263,17 @@ on github.com, and changing a film without re-exporting fails a test.
 | Testing the real render | By hand this step (4.99 MB), and for real in step 8. The unit tests hold the hash, the arguments and the frame count | An integration project that needs Chrome and Docker on CI and takes minutes |
 
 **Step 3, decided unattended.** The overlap 12.5 s in was real: for all of scene 3, the card hid the Model, the part that scene is about. The camera pulls back for that scene (`scale(0.92)`), so the part stands clear below the card. Not taken: moving the card, which is shared by every scene; or leaving the slab half hidden.
+
+**Step 8, decided unattended: `img2webp` instead of ffmpeg, which keeps Louis's quality 75.** The first real export at 75 had a defect the test encode didn't: scene 3's card kept a ghost of scene 2's code line and lost its border. Between keyframes the encoder treats a small change as no change, so a slow fade on low-contrast text never gets written, and ffmpeg offers no keyframe control. Scored against the source frames on that line (lower is truer):
+
+| Encode | Code line | Clip size |
+|---|---|---|
+| ffmpeg, quality 75 | 6.27 | 1,024 KB |
+| The test encode Louis approved | 2.74 | 1,052 KB |
+| ffmpeg, quality 85 | 2.10 | 1,434 KB |
+| **`img2webp`, quality 75, a keyframe every half second** | **2.48** | **1,253 KB** |
+
+The encoder is libwebp's own tool in a pinned image (`Dockerfile.film-encoder`), so `FfmpegEncoder` became `WebPEncoder`. Not taken: raising the quality to 85, which cost more and still left text showing through cards; another ffmpeg image (7.1 and 9.0.2 gave the same bytes).
 
 ## Not in this plan
 

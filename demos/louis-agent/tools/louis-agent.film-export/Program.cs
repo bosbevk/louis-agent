@@ -7,11 +7,12 @@ using LouisAgent.FilmExport.Rendering;
 using PuppeteerSharp;
 
 // Renders the site's films to animated WebP for the README, with a still of each for people who asked for less motion,
-// and records a hash of what each was made of. Run it after changing a film, and commit what it writes (Change the site).
+// and records a hash of what each was made of. Run it after changing a film, and commit what it writes (Change the
+// site).
 //
 //   dotnet run --project demos/louis-agent/tools/louis-agent.film-export [short] [detail] [--out <folder>]
 //
-// It needs Docker running, for ffmpeg. CHROME_PATH names the browser; without it, a Chrome for Testing is downloaded
+// It needs Docker running, for the encoder. CHROME_PATH names the browser; without it, a Chrome for Testing is downloaded
 // once.
 const int fps = 24;
 const int quality = 75;
@@ -73,7 +74,7 @@ foreach (var film in films)
 
         Console.WriteLine(MessageText.Format(FilmExportUserText.Encoding, new { Film = name }));
         string webp = Path.Combine(output, $"{name}.webp");
-        FfmpegEncoder.ToWebP(frames, webp, fps, quality);
+        WebPEncoder.ToWebP(repoRoot, frames, webp, FilmRenderer.FrameCount(film, fps), fps, quality);
 
         // The first frame is the wide view with every part: the still for reduced motion.
         File.Copy(Path.Combine(frames, FilmRenderer.FrameName(0)), Path.Combine(output, $"{name}.png"),

@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\tools\louis-agent.film-export\louis-agent.film-export.csproj" />
     <ProjectReference Include="..\..\web\louis-agent.site\louis-agent.site.csproj" />
     <!-- The stylesheet reader and the snapshot helper the web tests share; no test project references another. -->
     <ProjectReference Include="..\..\..\..\src\tests\web\louis-agent.web.testing\louis-agent.web.testing.csproj" />

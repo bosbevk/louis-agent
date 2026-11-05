@@ -14,7 +14,7 @@ public enum FilmExportUserText
     [Description("The site didn't answer at {Address}.")]
     SiteNotReady,
 
-    [Description("ffmpeg failed. Is Docker running? {Output}")]
+    [Description("The encoder failed. Is Docker running? {Output}")]
     EncodeFailed,
 
     [Description("{Film}: rendering {Frames} frames")]
