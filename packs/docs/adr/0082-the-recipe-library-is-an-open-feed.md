@@ -31,6 +31,8 @@ search would stop at the few kinds of melktert it already had.
   model gave. Anything else goes through the browser and its guards.
 - **The sites are still asked on every search.** The library is one more voice among them, in a random place, with its pages in
   any order. A page we hold that a site also lists gets our link, so savings grow as it fills, and new recipes keep coming.
+- **A search gives 10 pages, and 3 places stay for pages from outside the library,** when there are that many, so a full library
+  can't crowd out a new recipe.
 - **The site's own address still goes to the site.** A search that names one site, or a web search, gives a site's link, and
   `ReadRecipe` follows it. What it finds is ignored if we hold that page, so the first copy stays.
 - **An eval's trial leaves the library alone** unless `RECIPE_LIBRARY_IN_EVALS=true`, so one run doesn't change the next.
@@ -38,18 +40,24 @@ search would stop at the few kinds of melktert it already had.
 ## Consequences
 
 - A hit from the library opens no browser. A search takes as long as before: that's the price of always finding new recipes.
-- **Some pages with no recipe data still can't enter.** In one measured run 12 of 30 answers used such a page. Of the 12 real
-  pages tried, the reader keeps 8, which covers 8 of those 12 answers; the other 4 have no headings, so they're read live every
-  time. The live print still ends at the recipe (`PrintedRecipeText`), which spares the cook the readers' comments.
-- **A page read this way has no times and no author,** and a reading mistake would last. On the 12 real pages, the first version
-  kept a cookie notice as a step, which is why a line after a list now ends it and a long line between steps keeps the page out.
+- **Some pages with no recipe data still can't enter:** those with no headings, or with their steps among the ingredients. They're
+  read live every time. The live print still ends at the recipe (`PrintedRecipeText`), which spares the cook the readers' comments.
+- **A page read this way has no times and no author, and a reading mistake lasts.** Real pages showed a cookie notice kept as a
+  step, an oven step stored as a part's name, and an instruction stored as an ingredient. So a line after a list ends it, a short
+  line before the list is the first step, a line in the middle or an instruction among the ingredients keeps the page out, and
+  the two records already wrong were deleted by hand. A copy that never goes stale also never corrects itself.
+- **Measured, library off against on, 5 repeats, 50 answers each** (`e2b47743f792`, `24635786d616`): judge 43 against 40, time 56 s
+  against 55 s, cost $0.00633 against $0.00649, biggest site 20% against 14%. That missed the win test on accuracy and cost, because
+  the cook read only 10 of the 69 recipes it was offered. The 9 answers built from a library copy did better than the same dishes
+  with the library off: 45 s against 56 s, the cook's cost $0.00556 against $0.00617, judge 8 of 9. Pages new to the run scored 29
+  of 36 in both.
 - `IDataFeed` gained `ReadItemJsonAsync`, with a default that gives nothing, and the API `GET /v1/feeds/{name}/{id}`, open like the
   feed. A feed's items have no MCP resource of their own.
 - A copy never changes. If a site corrects a recipe we keep the old one, and a photo that later disappears shows as broken.
 - Search is `QueryWords` over the feed in memory. That's fine for thousands of recipes, and the whole feed comes over on each
   refresh, so it will want paging when it's several MB. Search by meaning is F35.6.
 - **Publishing whole copies goes further on the sites' terms than reading them.** Some name commercial copying, Food & Home's
-  clause 2.9.1 for one. Louis made this call knowing that, on 2026-11-05, for all 45 sites, with each site credited and linked
+  clause 2.9.1 for one. Louis made this call knowing that, on 2026-11-05, for all 45 sites, and for Best Recipes, the 46th, whose terms claim ownership and are silent on reuse. Afrifood Network stays out of the table: its terms bar republishing substantial parts without written permission, with each site credited and linked
   and removed on request. It isn't legal advice, and a qualified check is worth having before customers depend on it.
 - A site leaves by coming out of the table, which stops its recipes at once, and by `PurgeSiteAsync`, which deletes its copies.
   No page is removed for any other reason.
