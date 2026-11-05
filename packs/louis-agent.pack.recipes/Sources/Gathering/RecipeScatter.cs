@@ -30,6 +30,9 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
     /// <summary>How many pages the library offers to be mixed, more than a search shows, so all get a chance.</summary>
     private const int LibraryLook = 50;
 
+    /// <summary>How many places in a list stay for pages from outside the library.</summary>
+    private const int PlacesForOthers = 3;
+
     /// <summary>
     /// The hits of a few sites picked at random, at most <paramref name="maxResults"/> of them, leaving out the sites
     /// to <paramref name="skip"/> (by name or short name) unless that leaves none to ask. Nothing is remembered here:
@@ -63,13 +66,12 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
 
         // Each voice's first hit, then each one's second: the sort keeps the order within a turn. A page that both a
         // site and the library offer has one link by now, so it appears once.
-        var hits = voices
+        var hits = WithPlacesForOthers(voices
             .SelectMany(voice => voice.Select((hit, turn) => (Turn: turn, Hit: hit)))
             .OrderBy(entry => entry.Turn)
             .Select(entry => entry.Hit)
             .DistinctBy(hit => RecipeAddress.Of(hit.Hit.Url))
-            .Take(maxResults)
-            .ToList();
+            .ToList(), maxResults);
 
         // How many the cook was offered from us: a count only, since the search's words are the user's.
         int offered = hits.Count(hit => shelf?.IsOurs(hit.Hit.Url) == true);
@@ -93,6 +95,29 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
         ];
         random.Shuffle(held);
         return [.. held];
+    }
+
+    /// <summary>
+    /// At most this many hits in their order, with places kept for pages from outside the library when there are any,
+    /// so a full library can't crowd out a new recipe. With fewer of those, the library fills the list.
+    /// </summary>
+    private List<SiteHit> WithPlacesForOthers(List<SiteHit> all, int most)
+    {
+        bool Ours(SiteHit hit) => shelf?.IsOurs(hit.Hit.Url) == true;
+
+        int forOurs = most - Math.Min(PlacesForOthers, all.Count(hit => !Ours(hit)));
+        int ours = 0;
+        var shown = new List<SiteHit>();
+        foreach (var hit in all)
+        {
+            if (shown.Count == most) break;
+            if (Ours(hit) && ours == forOurs) continue;
+
+            if (Ours(hit)) ours++;
+            shown.Add(hit);
+        }
+
+        return shown;
     }
 
     /// <summary>Our link for each page we hold, by the page's one spelling.</summary>

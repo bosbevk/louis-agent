@@ -69,6 +69,17 @@ public class ReadRecipeLibraryTests
         Assert.That(result, Does.Contain($"1. Pie · {Taste.Name} · {library.AddressOf(library.Kept.Single())}"));
     }
 
+    /// <summary>A search for pap en sous says what else it's called, since most sites use another name.</summary>
+    [Test]
+    public async Task ASearchForPapEnSous_SaysWhatElseItsCalled()
+    {
+        var sources = new Dictionary<string, IRecipeSource> { ["foodandhome"] = new FakeRecipeSource("foodandhome") };
+
+        string result = await new RecipeTools(sources, new FakeSiteBrowser(), new FakePhotoFetcher()).FindRecipes("pap en sous");
+
+        Assert.That(result, Does.Contain("pap and sheba").And.Contain("ushatini"));
+    }
+
     /// <summary>What's kept is the recipe itself, line by line, not the words we printed about it.</summary>
     [Test]
     public async Task WhatIsKept_IsAProperRecipe()

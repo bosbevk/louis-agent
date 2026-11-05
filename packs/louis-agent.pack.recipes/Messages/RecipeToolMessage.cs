@@ -34,6 +34,9 @@ public enum RecipeToolMessage
     [Description("our library")]
     OurLibrary,
 
+    [Description("This dish also goes by {Names}. If nothing here fits, search for one of those.")]
+    DishAlsoCalled,
+
     [Description("That recipe couldn't be read from our library just now. Read another hit.")]
     LibraryRecipeGone,
 

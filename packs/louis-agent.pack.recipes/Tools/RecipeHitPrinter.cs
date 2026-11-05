@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Packs.Recipes.Messages;
+using LouisAgent.Packs.Recipes.Providers;
 using LouisAgent.Packs.Recipes.Sources.Gathering;
 
 namespace LouisAgent.Packs.Recipes.Tools;
@@ -29,12 +30,16 @@ internal static class RecipeHitPrinter
                     Reasons = string.Join(' ', gather.Refusals)
                 });
         if (gather.Hits.Count == 0)
-            return MessageText.Format(RecipeToolMessage.NoSiteHasIt,
-                new
-                {
-                    Sites = asked,
-                    Query = query
-                });
+            return string.Join('\n',
+            [
+                MessageText.Format(RecipeToolMessage.NoSiteHasIt,
+                    new
+                    {
+                        Sites = asked,
+                        Query = query
+                    }),
+                .. OtherNames(query)
+            ]);
 
         // Every site asked, those with no hits too, so a next try can skip them.
         var heading = MessageText.Format(RecipeToolMessage.HitsFoundAcrossSites,
@@ -51,8 +56,13 @@ internal static class RecipeHitPrinter
                 Site = hit.Site.Name,
                 Url = hit.Hit.Url.AbsoluteUri
             }));
-        return Framed([heading, .. lines]);
+        return Framed([heading, .. lines, .. OtherNames(query)]);
     }
+
+    /// <summary>The line naming what else the dish is called, when most sites call it something else.</summary>
+    private static string[] OtherNames(string query) => QueryWords.AlsoCalled(query) is { Count: > 0 } names
+        ? [MessageText.Format(RecipeToolMessage.DishAlsoCalled, new { Names = string.Join(", ", names) })]
+        : [];
 
     /// <summary>The lines between the opening and closing marks of untrusted data.</summary>
     public static string Framed(params string[] lines) => string.Join('\n',

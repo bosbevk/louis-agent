@@ -27,7 +27,16 @@ internal static class PageTextRecipe
         "aanwysings", "instruksies"
     ];
 
-    private static readonly string[] PartStarts = ["for ", "vir "];
+    private static readonly string[] PartStarts = ["for ", "vir ", "step ", "stap "];
+    private static readonly string[] ReadAlso = ["lees ook", "read also", "also read", "read more"];
+
+    /// <summary>Words that start an instruction: with no amount on the line, it's a step in the wrong list.</summary>
+    private static readonly string[] Instructions =
+    [
+        "mix", "stir", "add", "combine", "blend", "whisk", "season", "heat", "cook", "bake", "fry", "boil", "serve",
+        "meng", "roer", "voeg", "klits", "kook", "bak", "verhit", "bedien"
+    ];
+
     private static readonly string[] Bullets = ["- ", "* ", "• "];
     private const string Link = "](";
     private const string Serves = "Serves ";
@@ -81,7 +90,7 @@ internal static class PageTextRecipe
         bool listed = lines.Any(IsItem);
         var kept = new List<RecipeIngredient>();
         string? part = null;
-        foreach (string line in lines)
+        foreach (string line in lines.Where(line => !IsReadAlso(line)))
         {
             if (IsIngredientsHeading(line))
             {
@@ -89,7 +98,7 @@ internal static class PageTextRecipe
                 continue;
             }
 
-            if (line.Contains(Link, StringComparison.Ordinal)) return null;
+            if (line.Contains(Link, StringComparison.Ordinal) || IsAnInstruction(line)) return null;
 
             if (line.StartsWith('#') || (!IsItem(line) && IsPartLine(line)))
             {
@@ -110,16 +119,17 @@ internal static class PageTextRecipe
     }
 
     /// <summary>
-    /// The steps, up to whatever comes after them: a heading or a link always ends them. In a list, a short line just
-    /// before more items names a part, and any other line ends the list, which is how a page's cookie notice and
-    /// adverts stay out. A long line with more items after it could be anything, and stopping there would keep half a
-    /// recipe as if it were whole, so that gives nothing.
+    /// The steps, up to whatever comes after them: a heading or a link always ends them. In a list, the last line that
+    /// isn't an item ends it, which is how a page's cookie notice and adverts stay out. With more items to come, a line
+    /// that names a part is one, and a short line before the first item is the first step. Anything else could be
+    /// anything, and guessing could keep half a recipe as if it were whole, so that gives nothing.
     /// </summary>
     private static List<RecipeStep>? Steps(string[] lines)
     {
         string[] own =
         [
-            .. lines.TakeWhile(line => !line.StartsWith('#') && !line.Contains(Link, StringComparison.Ordinal))
+            .. lines.Where(line => !IsReadAlso(line))
+                .TakeWhile(line => !line.StartsWith('#') && !line.Contains(Link, StringComparison.Ordinal))
         ];
         bool listed = own.Any(line => IsStepItem(line, 0));
         var steps = new List<RecipeStep>();
@@ -131,10 +141,14 @@ internal static class PageTextRecipe
             if (listed && !IsStepItem(line, counted))
             {
                 if (!own.Skip(at + 1).Any(later => IsStepItem(later, counted))) break;
-                if (line.Length > LongestHeading) return null;
 
-                part = Words(line);
-                continue;
+                if (IsPartLine(line))
+                {
+                    part = Words(line);
+                    continue;
+                }
+
+                if (steps.Count > 0 || line.Length > LongestHeading) return null;
             }
 
             // Only a number that counts the list comes off, so "10 minutes before baking" keeps its own.
@@ -202,12 +216,25 @@ internal static class PageTextRecipe
         return start is null ? null : words[start.Length..];
     }
 
-    /// <summary>Whether a plain line names a part: "For the sauce", "Vir die sous".</summary>
+    /// <summary>Whether a plain line names a part: "For the sauce", "Step 1: the stew", "EIERBOLAAG".</summary>
     private static bool IsPartLine(string line)
     {
         string words = Words(line);
+        bool capitals = words.Any(char.IsLetter) && words.Where(char.IsLetter).All(char.IsUpper);
         return words.Length <= LongestHeading &&
-               PartStarts.Any(start => words.StartsWith(start, StringComparison.OrdinalIgnoreCase));
+               (capitals || PartStarts.Any(start => words.StartsWith(start, StringComparison.OrdinalIgnoreCase)));
+    }
+
+    /// <summary>Whether a line points at another page: "LEES OOK: …".</summary>
+    private static bool IsReadAlso(string line) =>
+        ReadAlso.Any(start => Words(line).StartsWith(start, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>Whether a line among the ingredients is an instruction: it starts like one, with no amount.</summary>
+    private static bool IsAnInstruction(string line)
+    {
+        string text = WithoutMarker(line);
+        string first = text.Split(' ', 2)[0].TrimEnd(',', ':');
+        return !text.Any(char.IsAsciiDigit) && Instructions.Contains(first, StringComparer.OrdinalIgnoreCase);
     }
 
     /// <summary>Whether the line is a list item: a bullet, or a number such as "1." but not "1 onion".</summary>

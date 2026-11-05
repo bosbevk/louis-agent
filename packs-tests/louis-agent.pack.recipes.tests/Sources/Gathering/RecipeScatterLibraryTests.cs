@@ -75,6 +75,54 @@ public class RecipeScatterLibraryTests
         Assert.That(gather.Hits.Select(hit => hit.Hit.Url), Is.EqualTo(new[] { library.AddressOf(kept) }));
     }
 
+    /// <summary>A site with this many new pages on melktert.</summary>
+    private static FakeRecipeSource SiteWith(string slug, int pages) =>
+        new(slug, [.. Enumerable.Range(1, pages).Select(i => new RecipeHit($"{slug} melktert {i}", new Uri($"https://example.com/{slug}/melktert-{i}")))]);
+
+    /// <summary>
+    /// However full the library, three places stay for pages from outside it, so it can't crowd out a new recipe.
+    /// </summary>
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    [TestCase(4)]
+    public async Task ThreePlaces_StayForPagesFromOutsideTheLibrary(int seed)
+    {
+        var library = new FakeRecipeLibrary();
+        library.Kept.AddRange(Enumerable.Range(1, 30).Select(i => Kept("taste", $"kept{i}")));
+
+        var gather = await Scatter([SiteWith("taste", 1), SiteWith("foodandhome", 1), SiteWith("wandercapetown", 1)], library, seed)
+            .FindAsync("melktert", 10);
+
+        Assert.That(gather.Hits, Has.Count.EqualTo(10));
+        Assert.That(gather.Hits.Count(hit => hit.Hit.Url.Host != "library.example"), Is.EqualTo(3));
+    }
+
+    /// <summary>With fewer outside pages than that, the library fills the list: an empty place helps nobody.</summary>
+    [Test]
+    public async Task WithFewerOutsidePages_TheLibraryFillsTheList()
+    {
+        var library = new FakeRecipeLibrary();
+        library.Kept.AddRange(Enumerable.Range(1, 30).Select(i => Kept("taste", $"kept{i}")));
+
+        var gather = await Scatter([SiteWith("taste", 1)], library).FindAsync("melktert", 10);
+
+        Assert.That(gather.Hits, Has.Count.EqualTo(10));
+        Assert.That(gather.Hits.Count(hit => hit.Hit.Url.Host != "library.example"), Is.EqualTo(1));
+    }
+
+    /// <summary>A short list keeps its places for outside pages first.</summary>
+    [Test]
+    public async Task AShortList_IsOutsidePagesFirst()
+    {
+        var library = new FakeRecipeLibrary();
+        library.Kept.AddRange(Enumerable.Range(1, 30).Select(i => Kept("taste", $"kept{i}")));
+
+        var gather = await Scatter([SiteWith("taste", 5)], library).FindAsync("melktert", 3);
+
+        Assert.That(gather.Hits.Select(hit => hit.Hit.Url.Host), Is.All.EqualTo("example.com"));
+    }
+
     /// <summary>Every kept page gets its chance, or the library would freeze on its first few.</summary>
     [Test]
     public async Task EveryKeptPage_GetsAChance()

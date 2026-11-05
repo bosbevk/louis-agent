@@ -1,5 +1,6 @@
 {
   "AddressRefused": "ReadRecipe needs the address of a recipe page, starting with http:// or https://.",
+  "DishAlsoCalled": "This dish also goes by <Names>. If nothing here fits, search for one of those.",
   "EverySiteRefused": "<Sites> couldn't be searched (<Reasons>). Search again: each search asks other sites.",
   "FrameEnd": "--- end of recipe data ---",
   "HitLine": "<Number>. <Name> · <Url>",

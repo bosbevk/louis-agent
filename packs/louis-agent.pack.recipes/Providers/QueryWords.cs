@@ -20,11 +20,34 @@ internal static class QueryWords
     /// <summary>Under this length a word must match whole: <c>pap</c> is no <c>paprika</c>.</summary>
     private const int ShortestPart = 4;
 
+    /// <summary>Pap en sous by every name it goes by: a page may print any of them and none of the others.</summary>
+    private static readonly string[] PapEnSous =
+    [
+        "pap en sous", "pap and sous", "pap sous", "pap met sous", "pap and sheba", "pap sheba", "sheba", "ushatini",
+        "tomato and onion gravy", "tomato onion gravy", "tomato gravy"
+    ];
+
+    /// <summary>The names of pap en sous worth another search, because most of our sites use them instead.</summary>
+    private static readonly string[] PapEnSousToTry = ["pap and sheba", "ushatini", "tomato and onion gravy"];
+
     /// <summary>
-    /// Dishes with an Afrikaans and an English name that share no word: a site printing <c>Milk tart</c> has a melktert,
-    /// and without these it was dropped, which took melktert from ten sites to six.
+    /// Dishes with names that share no word: a site printing <c>Milk tart</c> has a melktert, and without these it was
+    /// dropped, which took melktert from ten sites to six.
     /// </summary>
-    private static readonly string[][] TwoNames = [["melktert", "milk tart"], ["hoenderpastei", "chicken pie"]];
+    private static readonly string[][] TwoNames =
+        [["melktert", "milk tart"], ["hoenderpastei", "chicken pie"], PapEnSous];
+
+    /// <summary>
+    /// Other names to try for a dish most sites call something else. A site's own search only finds the word it's
+    /// given, so the cook has to be told: a filter can't bring back a page the site never returned.
+    /// </summary>
+    public static IReadOnlyList<string> AlsoCalled(string query)
+    {
+        string[] words = Words(query);
+        return PapEnSous.Any(name => Holds(words, name))
+            ? [.. PapEnSousToTry.Where(name => !Holds(words, name))]
+            : [];
+    }
 
     /// <summary>
     /// Whether a hit answers the search. The address counts for its path alone, or every page of Jan Braai, at
@@ -47,7 +70,7 @@ internal static class QueryWords
     private static bool Holds(IEnumerable<string> words, string name) =>
         $" {string.Join(' ', words)} ".Contains($" {name} ", StringComparison.OrdinalIgnoreCase);
 
-    /// <summary>The same word, or one holding the other when the shorter is long enough: potjie and potjiekos.</summary>
+    /// <summary>The same word, or one holding the other when the shorter is long enough: potjie, potjiekos.</summary>
     private static bool Same(string one, string other)
     {
         var (shorter, longer) = one.Length <= other.Length ? (one, other) : (other, one);
