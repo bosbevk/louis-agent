@@ -9,7 +9,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "IDENTITIES": "puls",
-        "PACKS": "dotnet,git,files,shell",
+        "PACKS": "files,git,dotnet,shell",
         "HOST_TIME_ZONE": "Africa/Johannesburg",
         "WORKSPACE_ROOT": "../../../..",
         "SKILLS_DIRECTORY": "../../skills",
