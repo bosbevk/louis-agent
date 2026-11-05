@@ -332,3 +332,12 @@ hole, not a rule: ask of each arm what answer would fail it. And ask what the us
 sends them off to look for themselves is no answer. The fix is a tool that does the looking (`FindShopsNear`), and it was
 tried on the real map first, where Sea Point's answer held a fabric shop and lost the nearest supermarket in a wide box,
 which set its filter and its small first box. Skill 4 (tool design) and skill 12 (evaluation: a check has to be able to fail).
+
+## FX44 · A limit copied from another question answers the wrong one
+
+`FindShopsNear` kept three shops because `FindBranches` keeps three, and for one shop's branches three is plenty. "Which
+supermarkets are near me" is a different question: Malmesbury's Checkers was fifth on the map, 2.2 km away, and the
+answer never named it. Louis saw it in the app, so give each question its own number, and test it against the real
+answer that showed the gap. The same fix took a made-up branch name, *Pick n Pay Malmesbury*, out of the cook's format
+example: a model copies the example's shape, names included, so an example has to be true too. Skill 4 (tool design:
+how much a result holds) and skill 3 (prompt design: an example teaches more than the rule around it).
