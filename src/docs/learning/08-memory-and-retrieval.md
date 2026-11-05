@@ -1,7 +1,7 @@
 # 8 · Memory and retrieval: what the recipe library taught
 
-> **Skill:** #8 in the [goal](../GOAL.md)'s map · **Stage:** F35.3 The recipe library (2026-11-05), still open on its win
-> test · **Next:** search by meaning (F35.6), and a counter on the admin page (F35.7)
+> **Skill:** #8 in the [goal](../GOAL.md)'s map · **Stage:** F35.3 The recipe library (2026-11-05) · **Next:** search by
+> meaning (F35.6), and a counter on the admin page (F35.7)
 
 This skill is usually about embeddings and vector stores. The first lesson came before any of that: what you keep, and
 whether anyone uses it. We built the simplest memory there is, a list of recipes and keyword search, and measured it.
@@ -25,7 +25,10 @@ And the 9 answers built from a library copy, against the same dishes with the li
 | Judge passed | 8 of 9 | |
 
 So it failed the win test overall, and helped everywhere it was used. Both are true, and the gap between them is the
-lesson: the cook read 10 of the 69 recipes it was offered.
+lesson: the cook read 10 of the 69 recipes it was offered. We could have pushed it to read more: our links in the first
+two places were read 24% of the time, and 8% lower down. Louis chose not to, because finding new recipes matters more
+than the saving. A win test measures what you said you wanted, and sometimes the honest answer is that you want
+something else more.
 
 ## What changed
 
@@ -59,8 +62,8 @@ lesson: the cook read 10 of the 69 recipes it was offered.
 
 ## What's left
 
-- Getting the cook to use the library more without freezing it on what it holds: a choice waiting for a decision.
-- A re-measure with the 3 places, the new site and the other names, to see if the win test can be met.
+- Nothing measured the changes made after the run: the 10 results, the 3 places, the new site, the other names and the reader's
+  fixes. The next paid recipes run is the first on them.
 - The cook's scaling, which is its most serious accuracy problem and has nothing to do with the library.
 
 ---
