@@ -38,6 +38,7 @@ something else more.
   anyone could. The open feed's first customer is ourselves.
 - **Sites are still asked every time,** and 3 of a search's 10 places stay for pages from outside the library, so new
   recipes keep arriving: 10, 5, 8, 7 and 6 new pages across the five repeats.
+- **A page with no recipe is excluded, in Mongo:** opened once, refused, and never offered or opened again.
 - **Pap en sous** taught that a dish can go by names a site's search can't guess, so a search for it now says what else to try.
 
 ## What didn't work
@@ -47,6 +48,9 @@ something else more.
 - **Trying the reader on made-up pages missed three bugs.** Real pages showed a cookie notice kept as a step, an oven step
   stored as a part's name, and an instruction stored as an ingredient. The second had already reached the real library, and
   a memory that never goes stale keeps its mistakes for good, so we had to delete two records by hand.
+- **Only the cook's pages had been tested.** A check of every site, a few pages each, found more in an hour than the runs had:
+  a reader too strict on wordings a real page uses, labels stored as steps, a crash on an attribute written twice, and a site
+  that gives no text at all. Counting what saved wasn't enough either: reading the results found the wrong ones.
 - **Comparing two counts isn't checking.** "10 pages and 10 kept" looked like every read saved. It wasn't: 13 of 50 answers
   were on pages never kept.
 - **The first read of the numbers was unfair.** A running 77% against a finished 86% looked like the library hurting. At the
