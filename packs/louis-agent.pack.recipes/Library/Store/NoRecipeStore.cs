@@ -1,6 +1,6 @@
 namespace LouisAgent.Packs.Recipes.Library.Store;
 
-/// <summary>The store when no database is set: it keeps nothing and holds nothing, and nobody has to check for that.</summary>
+/// <summary>The store when no database is set: it keeps nothing, holds nothing, and nobody has to check.</summary>
 /// <remarks>Null Object, so the tools and the feed work the same with or without a library.</remarks>
 public sealed class NoRecipeStore : IRecipeStore
 {

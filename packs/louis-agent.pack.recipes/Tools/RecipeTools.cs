@@ -179,7 +179,7 @@ public sealed class RecipeTools
     private static string[] PageWords(string html, Uri page, Uri? photo)
     {
         var (title, words) = HtmlText.ToText(html, page);
-        string text = PagePhotos.WithoutImages(words);
+        string text = PrintedRecipeText.Cut(PagePhotos.WithoutImages(words));
         string shown = text.Length > MaxPageChars ? text[..MaxPageChars] : text;
         string body = shown.Length == 0 ? MessageText.Format(RecipeToolMessage.PageEmpty) : shown;
         var lines = new List<string> { MessageText.Format(RecipeToolMessage.TextNoRecipeData, new { page.Host }) };

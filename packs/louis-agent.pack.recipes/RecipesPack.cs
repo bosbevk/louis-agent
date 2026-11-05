@@ -1,5 +1,7 @@
 using LouisAgent.Composition.Packs;
 using LouisAgent.Choices;
+using LouisAgent.Packs.Recipes.Library.Feed;
+using LouisAgent.Packs.Recipes.Library.Store;
 using LouisAgent.Packs.Recipes.Sources;
 using LouisAgent.Packs.Recipes.Tools;
 using Microsoft.Extensions.FileProviders;
@@ -23,6 +25,11 @@ public sealed class RecipesPack : IAgentPack
     /// <summary>Builds the pack from the sites the deployment turned on.</summary>
     public RecipesPack(RecipesOptions options)
     {
+        IRecipeStore store = options.MongoUrl is { } url
+            ? MongoRecipeStore.Open(url, options.MongoDatabase)
+            : new NoRecipeStore();
+        // With no database there's nothing to publish, so there's no feed to list.
+        Feeds = options.MongoUrl is null ? [] : [new RecipesFeed(store, RecipeSourceFactory.Enabled(options.RecipeSources))];
         Toolsets =
         [
             new(RecipesToolset.Recipes.Wire(),
@@ -57,4 +64,7 @@ public sealed class RecipesPack : IAgentPack
 
     /// <inheritdoc />
     public IReadOnlyList<string> Requires => [];
+
+    /// <inheritdoc />
+    public IReadOnlyList<IDataFeed> Feeds { get; }
 }

@@ -22,8 +22,8 @@ public sealed class RecipesOptions
     public const string DefaultDatabase = "recipes";
 
     /// <summary>
-    /// RECIPES_MONGO_URL: the MongoDB the library keeps its recipes in; unset, nothing is kept. A secret, so it lives in
-    /// <c>config/.env.secrets</c>.
+    /// RECIPES_MONGO_URL: the MongoDB the library keeps its recipes in; unset, nothing is kept. A secret, so it lives
+    /// in <c>config/.env.secrets</c>.
     /// </summary>
     public string? MongoUrl { get; init; }
 
