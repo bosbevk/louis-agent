@@ -7,4 +7,7 @@ public enum RecipeLogMessage
 {
     [Description("RECIPE_SOURCES names '{Slug}', which is not a recipe site; it is ignored.")]
     SourceUnknown,
+
+    [Description("Recipe site '{Slug}' refused a search; the other sites' hits are used.")]
+    SiteSkipped,
 }

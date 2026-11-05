@@ -789,6 +789,8 @@ the cost and of the time; 3 repeats a side.
 
 (The picks Rider raises mid-build, each with Louis's choice, as F35.1's.)
 
+- **2026-11-05, F35.4 before the measure.** Louis, looking at the app: "almost every recipe comes from, this is not random". 19 of 21 recipes came from Food & Home, so the measure would have priced a one-site cook. He stopped the run and picked [F35.4](F35.4-many-recipe-sites.md), a search over several sites, first. The measure's table gains a row: **different sites the recipes came from, and the largest site's share**. The minion (2b) changes when the measure reaches it: its task becomes the dish alone, one search with no site names (finding G1).
+
 - **The evals and checks moved (2026-11-04, ADR 0073).** Puls's evals are at
   `identities/louis-agent.identity.puls.evals/Evals/` and the recipes check at `packs/louis-agent.pack.recipes.checks/`;
   the paths above are the ones from before the move.

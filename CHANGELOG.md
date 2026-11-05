@@ -4,6 +4,7 @@
 > open in the [TODO](TODO.md); what each built lives on in its project's design doc ([projects](src/docs/projects/README.md)); the
 > feature, fix and plan docs an entry links are at the tag `pre-cl24`, since CL24 folded them.
 
+- 2026-11-05 — **F35.4 Many recipe sites**: 19 of 21 recipes came from Food & Home, because the prompt said to start there. With no site named, `FindRecipes` now asks four of the sites with their own search, at random and at once, and merges the hits, each saying whose page it is. No prompt names a site to start with. [ADR 0078](packs/docs/adr/0078-a-recipe-search-asks-several-sites.md).
 - 2026-11-05 — **FX44 Ten shops near the user**: `FindShopsNear` lists the ten nearest supermarkets, since three hid Malmesbury's Checkers, 2.2 km away. The cook's format example no longer shows a made-up branch name.
 - 2026-11-05 — **FX43 Shops near the user**: someone who named no shop got *Any supermarket near you.*, which tells them nothing. A new tool, `FindShopsNear`, lists the three supermarkets nearest their town from OpenStreetMap,
   and the cook names them under *Where to buy*. With no town it asks for one. `estimates-at-shop` version 3 needs the call and a shop with its place when the town is known; it used to pass `any` whatever the answer said.
