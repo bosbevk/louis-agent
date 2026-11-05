@@ -63,6 +63,10 @@ public sealed class RecipeTools
         string source = "",
         [Description("How many pages to return (default 8, max 10)")]
         int maxResults = 8,
+        [Description(
+            "When searching again for the same dish, the sites the last searches asked, separated by commas, so this " +
+            "one asks others. For this dish only: leave it out for a new dish.")]
+        string skip = "",
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(query)) return MessageText.Format(RecipeToolMessage.QueryEmpty);
@@ -70,7 +74,9 @@ public sealed class RecipeTools
         int wanted = Math.Clamp(maxResults, 1, MaxResults);
         string named = (source ?? "").Trim();
         if (named.Length == 0)
-            return RecipeHitPrinter.Print(await _scatter.FindAsync(query.Trim(), wanted, cancellationToken),
+            return RecipeHitPrinter.Print(await _scatter.FindAsync(query.Trim(), wanted,
+                    (skip ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries),
+                    cancellationToken),
                 query.Trim(), Enabled());
         if (!_sources.TryGetValue(named, out var site))
             return MessageText.Format(RecipeToolMessage.SourceNotEnabled,

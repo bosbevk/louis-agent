@@ -48,6 +48,12 @@ public sealed class WordPressSearch(RecipeSite site, IWebBrowser browser) : IRec
                 }));
         }
 
-        return SearchResultLinks.In(visit.Html, site.Home, maxResults);
+        // A site with no results may list suggestions instead: those aren't answers, so they don't take up the list.
+        return
+        [
+            .. SearchResultLinks.In(visit.Html, site.Home)
+                .Where(hit => QueryWords.Answers(hit.Name, hit.Url, query))
+                .Take(maxResults)
+        ];
     }
 }

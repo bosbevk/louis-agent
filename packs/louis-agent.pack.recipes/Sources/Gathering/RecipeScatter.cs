@@ -22,11 +22,19 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
     /// <summary>Four, because the browser opens at most four pages at once.</summary>
     private const int SitesAsked = 4;
 
-    /// <summary>The hits of a few sites picked at random, at most <paramref name="maxResults"/> of them.</summary>
+    /// <summary>How far down a site's list its first place can come from: its own best guesses, in any order.</summary>
+    private const int TopHits = 3;
+
+    /// <summary>
+    /// The hits of a few sites picked at random, at most <paramref name="maxResults"/> of them, leaving out the sites
+    /// to <paramref name="skip"/> (by name or short name) unless that leaves none to ask. Nothing is remembered here:
+    /// the caller passes what it has already asked, so the next dish starts with every site back in the draw.
+    /// </summary>
     public async Task<RecipeGather> FindAsync(string query, int maxResults,
-        CancellationToken cancellationToken = default)
+        IReadOnlyCollection<string>? skip = null, CancellationToken cancellationToken = default)
     {
-        IRecipeSource[] shuffled = [.. sources];
+        var left = sources.Where(source => !Skipped(source, skip)).ToArray();
+        IRecipeSource[] shuffled = left.Length > 0 ? left : [.. sources];
         random.Shuffle(shuffled);
         var drawn = shuffled.Take(SitesAsked).ToList();
 
@@ -36,13 +44,30 @@ public sealed class RecipeScatter(IReadOnlyCollection<IRecipeSource> sources, Ra
         // Each site's first hit, then each site's second: the sort keeps the drawn order within a turn.
         var hits = answers
             .SelectMany(answer =>
-                answer.Hits.Select((hit, turn) => (Turn: turn, Hit: new SiteHit(answer.Site.Site, hit))))
+                Mixed(answer.Hits).Select((hit, turn) => (Turn: turn, Hit: new SiteHit(answer.Site.Site, hit))))
             .OrderBy(entry => entry.Turn)
             .Take(maxResults)
             .Select(entry => entry.Hit)
             .ToList();
         return new RecipeGather(hits, [.. drawn.Select(site => site.Site)],
             [.. answers.Select(answer => answer.Refusal).OfType<string>()]);
+    }
+
+    /// <summary>Whether a site is one to leave out; the words given may be its name or its short name.</summary>
+    private static bool Skipped(IRecipeSource source, IReadOnlyCollection<string>? skip) =>
+        skip is not null && skip.Any(name =>
+            name.Equals(source.Site.Slug, StringComparison.OrdinalIgnoreCase) ||
+            name.Equals(source.Site.Name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// A site's hits with its top few in any order, so the same site doesn't give the same page every time; the rest
+    /// stay as the site lists them. It stores nothing, so no page is ever kept out.
+    /// </summary>
+    private IEnumerable<RecipeHit> Mixed(IReadOnlyList<RecipeHit> hits)
+    {
+        RecipeHit[] top = [.. hits.Take(TopHits)];
+        random.Shuffle(top);
+        return top.Concat(hits.Skip(TopHits));
     }
 
     /// <summary>One site's answer, with its refusal as a value, so it can't take the other sites down.</summary>

@@ -102,11 +102,52 @@ public class RecipeScatterTests
         var bySlug = gather.Asked.Select(site => site.Slug).ToList();
         string[] expected =
         [
-            $"{bySlug[0]} 1", $"{bySlug[1]} 1", $"{bySlug[2]} 1",
-            $"{bySlug[0]} 2", $"{bySlug[1]} 2", $"{bySlug[2]} 2",
-            $"{bySlug[0]} 3", $"{bySlug[1]} 3"
+            bySlug[0], bySlug[1], bySlug[2],
+            bySlug[0], bySlug[1], bySlug[2],
+            bySlug[0], bySlug[1]
         ];
-        Assert.That(gather.Hits.Select(hit => hit.Hit.Name), Is.EqualTo(expected));
+        Assert.That(gather.Hits.Select(hit => hit.Site.Slug), Is.EqualTo(expected));
+    }
+
+    /// <summary>
+    /// The light random: a site's first place goes to any of its top three, so the same site doesn't give the same page
+    /// every time. Nothing is remembered for this, and a hit further down the site's list stays further down.
+    /// </summary>
+    [Test]
+    public async Task ASitesFirstHit_IsAnyOfItsTopThree_NeverOneFurtherDown()
+    {
+        var sites = new[] { Site("taste", hits: 6) };
+        var random = new Random(1);
+        var firsts = new HashSet<string>();
+
+        foreach (int _ in Enumerable.Range(0, 60))
+            firsts.Add((await new RecipeScatter(sites, random).FindAsync("bobotie", 8)).Hits[0].Hit.Name);
+
+        Assert.That(firsts, Is.EquivalentTo(new[] { "taste 1", "taste 2", "taste 3" }));
+    }
+
+    /// <summary>The sites a search has already asked for this dish aren't asked again, by short name or by name.</summary>
+    [Test]
+    public async Task TheSitesToSkip_AreNotAsked_ByNameOrShortName()
+    {
+        var sites = Slugs.Select(slug => Site(slug)).ToList();
+
+        var gather = await new RecipeScatter(sites, new Random(1))
+            .FindAsync("bobotie", 8, skip: ["TASTE", "Food & Home"]);
+
+        Assert.That(gather.Asked.Select(site => site.Slug), Has.None.EqualTo("taste").And.None.EqualTo("foodandhome"));
+        Assert.That(gather.Asked, Has.Count.EqualTo(4));
+    }
+
+    /// <summary>With too few sites left it asks those; a skip can't leave a search with nowhere to look.</summary>
+    [Test]
+    public async Task SkippingEverySite_AsksThemAllAgain_NoSiteIsLeftOutForGood()
+    {
+        var sites = Slugs.Take(2).Select(slug => Site(slug)).ToList();
+
+        var gather = await new RecipeScatter(sites, new Random(1)).FindAsync("bobotie", 8, skip: [.. Slugs]);
+
+        Assert.That(gather.Asked, Has.Count.EqualTo(2));
     }
 
     /// <summary>A site that has fewer hits just drops out of the later turns.</summary>

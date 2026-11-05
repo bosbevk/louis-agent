@@ -179,6 +179,31 @@ public class RecipeToolsTests
         Assert.That(lines[^1], Is.EqualTo(Text(RecipeToolMessage.FrameEnd)));
     }
 
+    /// <summary>The list says every site it asked, those with no hits too, so the next try can skip them.</summary>
+    [Test]
+    public async Task NoSiteNamed_SaysEverySiteItAsked_EvenOnesWithNoHits()
+    {
+        var tools = Seeded(WithHit("taste"), new FakeRecipeSource("foodandhome", []));
+
+        string result = await tools.FindRecipes("bobotie");
+
+        Assert.That(result, Does.Contain("Food & Home"), "it had no hits, and was still asked");
+    }
+
+    /// <summary>Sites named in <c>skip</c> aren't asked, and the same search without it is back to them all.</summary>
+    [Test]
+    public async Task TheSitesToSkip_AreLeftOut_ForThatSearchOnly()
+    {
+        var skipped = WithHit("foodandhome");
+        var tools = Seeded(WithHit("taste"), skipped);
+
+        await tools.FindRecipes("bobotie", skip: "Food & Home, nosuchsite");
+        Assert.That(skipped.Query, Is.Null);
+
+        await tools.FindRecipes("bobotie");
+        Assert.That(skipped.Query, Is.EqualTo("bobotie"));
+    }
+
     /// <summary>Spaces are no name: the model leaving it blank means the same as leaving it out.</summary>
     [TestCase("")]
     [TestCase("   ")]
