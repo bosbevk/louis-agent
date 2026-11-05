@@ -48,6 +48,8 @@ A trial passes only when every **required** check passes; an Unknown never count
 
 ## The judge and its review
 
+**It needs a paid judge.** On 2026-11-05 the local `qwen3:4b` caught 5 of 12 answers broken on purpose and no changed amount; Haiku 5.5 caught all 12 and agrees with a person's labels on 27 of 30, at about a tenth of a cent an answer (FX45). **Check it with a re-score, not *Check the judge now*:** that button sends the answer without the pages it read, and this judge fails an answer with no page, so it reports nonsense here. Include answers you know are wrong: a judge only ever shown good answers can't show that it catches bad ones.
+
 `recipe-as-source` is the general `judge` with `"sources": ["ReadRecipe"]`: besides the answer and `serves`, it is
 sent every result `ReadRecipe` gave in the conversation, each labelled and in the order the cook read them (a result is
 cut at 12,000 characters, and the request says so). The rubric tells it to judge against the result whose own `Link:` is

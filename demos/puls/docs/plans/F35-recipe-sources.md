@@ -789,6 +789,8 @@ the cost and of the time; 3 repeats a side.
 
 (The picks Rider raises mid-build, each with Louis's choice, as F35.1's.)
 
+- **2026-11-05, the judge, Louis's picks.** Against his 30 labels the local judge agreed on 26, but all 30 were passes, so nothing tested whether it caught a bad answer. 12 answers broken on purpose showed it didn't: 5 of 12, and no changed amount. He picked a paid judge. Haiku 5.5 with the rubric's water, seasoning and serving-line fix: 27 of 30 on the labels (90%) and 12 of 12 on the broken answers, the bar being 90% of each class. The rubric was fixed on these same 30, so the number may flatter it a little. The before-run is re-scored with this judge, so both sides of the measure have the same one.
+
 - **2026-11-05, F35.4 before the measure.** Louis, looking at the app: "almost every recipe comes from, this is not random". 19 of 21 recipes came from Food & Home, so the measure would have priced a one-site cook. He stopped the run and picked [F35.4](F35.4-many-recipe-sites.md), a search over several sites, first. The measure's table gains a row: **different sites the recipes came from, and the largest site's share**. The minion (2b) changes when the measure reaches it: its task becomes the dish alone, one search with no site names (finding G1).
 
 - **The evals and checks moved (2026-11-04, ADR 0073).** Puls's evals are at
