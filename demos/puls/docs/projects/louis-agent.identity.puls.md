@@ -102,8 +102,8 @@ What building Puls's specialists settled (F21, F22, F25, F26, F29, F30); the mea
 ## Configuration
 
 None of its own. A Puls stack (`demos/puls/docker/docker-compose.puls.yml`) sets `IDENTITIES=puls`, `ROLES_ENABLED`,
-`AGENT_PEERS` (itself), `MINION_LLMS=puls-minion-find-recipe=instance` (the cook's header asks for `minions`, so
-without it the cook is refused; `instance` needs no `LLM_SESSION_PROFILES`), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
+`AGENT_PEERS` (itself), `LLM_SESSION_PROFILES=ollama-puls` and `MINION_LLMS=*=ollama-puls` (the cook's header asks for `minions`, so
+without it the cook is refused; a minion always runs a local model), `HOST_TIME_ZONE=Africa/Johannesburg` and `BROWSER_USER_AGENT` (who reads and why,
 [ADR 0038](../../../../src/docs/adr/0038-the-browser-says-what-it-is.md)), plus the shop prices' store
 (`SHOP_PRICES_MONGO_URL`, [louis-agent.pack.shop-prices](../../../../packs/docs/projects/louis-agent.pack.shop-prices.md)), and the recipes pack's `RECIPE_SOURCES=*`, every site in the table
 ([louis-agent.pack.recipes](../../../../packs/docs/projects/louis-agent.pack.recipes.md)). Every setting is in [Setup](../../../../src/docs/SETUP.md).

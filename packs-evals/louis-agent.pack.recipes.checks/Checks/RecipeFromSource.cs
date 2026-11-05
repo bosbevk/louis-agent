@@ -15,8 +15,9 @@ namespace LouisAgent.Packs.Recipes.Checks;
 
 /// <summary>
 /// The cook's recipe comes from a recipe site we may read: the link in the first turn's answer is on a site of the
-/// sites table. The grade says which site, by its short name, or which host the link was on instead. No link is a
-/// fail, and a first turn that broke is Unknown, never a fail. Required.
+/// sites table, or on another host when the answer says under Unsure that it came from a web search, since a dish no
+/// table site holds may. The grade says which site, by its short name, or which host the link was on instead. No link
+/// is a fail, and a first turn that broke is Unknown, never a fail. Required.
 /// </summary>
 /// <remarks>
 /// A fixed rule over the answer, the recipes pack's own (F35.2), listed in <see cref="RecipesChecks.All"/>. Which
@@ -35,7 +36,7 @@ public sealed class RecipeFromSource(ILinkReader links) : ICheck
     public string Name => "recipe-from-source";
 
     /// <inheritdoc />
-    public int Version => 1;
+    public int Version => 2;
 
     /// <inheritdoc />
     public CheckKind Kind => CheckKind.FixedRule;
@@ -71,9 +72,28 @@ public sealed class RecipeFromSource(ILinkReader links) : ICheck
             return Verdict.Pass(Name, Version,
                 MessageText.Format(RecipeCheckMessage.SourceOnASite, new { Site = site.Slug }));
 
+        string host = address is null ? link : RecipeSite.HostOf(address);
+        if (SaysItCameFromTheWeb(EngineEvents.AnswerOf(turns[0])))
+            return Verdict.Pass(Name, Version,
+                MessageText.Format(RecipeCheckMessage.SourceFromTheWebSaid, new { Host = host }));
+
         return Verdict.Fail(Name, Version,
-            MessageText.Format(RecipeCheckMessage.SourceOnAnotherHost,
-                new { Host = address is null ? link : RecipeSite.HostOf(address) }));
+            MessageText.Format(RecipeCheckMessage.SourceOnAnotherHost, new { Host = host }));
+    }
+
+    /// <summary>
+    /// Whether the answer's Unsure section says the recipe came from a web search: a dish no table site holds may, as
+    /// long as the user is told, there, where they look for doubts.
+    /// </summary>
+    private static bool SaysItCameFromTheWeb(string answer)
+    {
+        int unsure = Math.Max(answer.LastIndexOf("Unsure", StringComparison.OrdinalIgnoreCase),
+            answer.LastIndexOf("Onseker", StringComparison.OrdinalIgnoreCase));
+        if (unsure < 0) return false;
+
+        string section = answer[unsure..];
+        return section.Contains("web search", StringComparison.OrdinalIgnoreCase)
+               || section.Contains("websoektog", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>The site of the table the address is on, or null when it is on none.</summary>

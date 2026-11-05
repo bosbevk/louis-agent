@@ -20,12 +20,12 @@ any identity can use it, and it could be served as an MCP server unchanged
   `GET /v1/toolsets` lists it with the setting it lacks. Its calls only read, so a round's calls run at once.
 - **A search.** `RecipeTools.FindRecipes(query, source, maxResults)` with no `source` hands the search to `RecipeScatter`:
   four enabled sites with their own search, at random, asked at once, their hits taking turns and printed
-  `1. {title} · {site} · {link}` ([ADR 0078](../adr/0078-a-recipe-search-asks-several-sites.md)). A named `source` looks the
+  `1. {title} · {site} · {link}` ([ADR 0078](../adr/0078-a-recipe-search-asks-several-sites.md)). Its top three hits per site come in any order, so a site doesn't give the same page every time; `skip` leaves out sites already asked for this dish. A named `source` looks the
   site up by its short name (any case), asks that site's `IRecipeSource` and prints `1. {title} · {link}`. At most 10, and
   eight by default. The result is framed `--- untrusted recipe data … ---`. A hit can be a page
   that is not a recipe (an article, a round-up), and the description and the guide say so.
 - **Two ways to search.** A site's row says how: `WordPressSearch` opens the site's own `/?s=` page through the browser
-  and reads the headings that link back to the site; `SiteWebSearch` asks the web search provider for that site only.
+  and reads the headings that link back to the site, keeping those that share a word with the search (`QueryWords`), since three sites answer no results with suggestions; `SiteWebSearch` asks the web search provider for that site only.
 - **A page.** `ReadRecipe(url)` takes any public web address (not only the enabled sites), visits it in the guarded
   browser and reads the `Recipe` in its JSON-LD (`SchemaOrgRecipe`). `RecipePrinter` prints it: the name, one line
   *Makes {yield} · prep 20 min · cook 30 min · total 50 min* with only the parts the page gave, the ingredients as

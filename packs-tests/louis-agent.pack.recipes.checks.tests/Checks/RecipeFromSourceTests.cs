@@ -28,7 +28,7 @@ public class RecipeFromSourceTests
         var check = new RecipeFromSource(FakeLinks.None);
 
         Assert.That((check.Name, check.Version, check.Kind, check.Required),
-            Is.EqualTo(("recipe-from-source", 1, CheckKind.FixedRule, true)));
+            Is.EqualTo(("recipe-from-source", 2, CheckKind.FixedRule, true)));
         Assert.That(check.ExpectedKeys, Is.Empty);
     }
 
@@ -44,6 +44,28 @@ public class RecipeFromSourceTests
 
         Assert.That((grade.Outcome, grade.Score), Is.EqualTo((GradeOutcome.Pass, 1d)));
         Assert.That(grade.Reason, Does.Contain(slug));
+    }
+
+    /// <summary>
+    /// A dish no table site holds may come from the web, when the answer says so under Unsure: that is the done-when.
+    /// </summary>
+    [TestCase("### Unsure\n\n| What | Why |\n|---|---|\n| Recipe source | None of the sites had it: from a web search. |\n")]
+    [TestCase("**Onseker**\n\n| Wat | Waarom |\n|---|---|\n| Resepbron | Uit 'n websoektog. |\n")]
+    public async Task ALinkOnAnotherHost_Passes_WhenTheAnswerSaysItCameFromTheWeb(string unsure)
+    {
+        var grade = await Grade("https://www.example.com/bobotie", Text(Answer + unsure));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Pass));
+        Assert.That(grade.Reason, Does.Contain("example.com").And.Contain("from the web"));
+    }
+
+    /// <summary>Saying so anywhere but under Unsure doesn't count: that's where the user looks for doubts.</summary>
+    [Test]
+    public async Task SayingItOutsideUnsure_DoesntCount()
+    {
+        var grade = await Grade("https://www.example.com/bobotie", Text("I did a web search.\n" + Answer));
+
+        Assert.That(grade.Outcome, Is.EqualTo(GradeOutcome.Fail));
     }
 
     /// <summary>A link on another host fails, naming the host.</summary>

@@ -101,6 +101,34 @@ public class PulsCookRecipeToolsTests
         Assert.That(cook, Does.Contain("You name no site"));
     }
 
+    /// <summary>
+    /// In a real chat the cook dropped the minion's chicken bobotie because "the user asked for the classic", which they
+    /// hadn't, and went to the web. A variant is the dish, and the minion's links come before the web.
+    /// </summary>
+    [Test]
+    public void TheCook_TakesAVariant_AndUsesTheMinionsLinksBeforeTheWeb()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("A variant of the dish is the dish, unless the task asks for a particular kind"));
+        Assert.That(cook, Does.Contain("Never `WebSearch` while a link is left"));
+    }
+
+    /// <summary>A web recipe says so under Unsure, in words the check reads, and a shop's site is never a guess.</summary>
+    [Test]
+    public void TheCook_SaysAWebRecipeUnderUnsure_AndNeverGuessesAShopsSite()
+    {
+        string cook = Cook();
+
+        Assert.That(cook, Does.Contain("from a web search").And.Contain("uit 'n websoektog"));
+        Assert.That(cook, Does.Contain("never guess an address"));
+    }
+
+    /// <summary>The user is "you" to the cook, never someone it talks about: an answer said "die gebruiker".</summary>
+    [Test]
+    public void TheCook_TalksToTheUser_NeverAboutThem() =>
+        Assert.That(Cook(), Does.Contain("Write to the user as *you* / *jy*, never *the user* / *die gebruiker*"));
+
     /// <summary>The image line and the link come from the tool's print, and the amounts from its lines.</summary>
     [Test]
     public void TheCook_TakesTheImageLine_AndTheLink_FromThePrint()
