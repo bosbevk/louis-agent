@@ -51,7 +51,7 @@ public class RecipeToolsTests
     {
         var source = new FakeRecipeSource("foodandhome", BobotieHits);
 
-        string[] lines = (await Search(source).FindRecipes("foodandhome", "bobotie")).Split('\n');
+        string[] lines = (await Search(source).FindRecipes("bobotie", "foodandhome")).Split('\n');
 
         Assert.That(lines[0], Is.EqualTo(Text(RecipeToolMessage.UntrustedFrame)));
         Assert.That(lines[1], Is.EqualTo(Text(RecipeToolMessage.HitsFound, new
@@ -73,7 +73,7 @@ public class RecipeToolsTests
     {
         var source = new FakeRecipeSource("foodandhome", BobotieHits);
 
-        string result = await Search(source).FindRecipes("  FoodAndHome ", "  bobotie ");
+        string result = await Search(source).FindRecipes("  bobotie ", "  FoodAndHome ");
 
         Assert.That(result, Does.Contain("1. Pork bobotie"));
         Assert.That(source.Query, Is.EqualTo("bobotie"));
@@ -86,7 +86,7 @@ public class RecipeToolsTests
         var tools = Tools(new FakeSiteBrowser(), new FakeRecipeSource("thelazymakoti"),
             new FakeRecipeSource("foodandhome"));
 
-        string result = await tools.FindRecipes("nosuchsite", "bobotie");
+        string result = await tools.FindRecipes("bobotie", "nosuchsite");
 
         Assert.That(result, Is.EqualTo(Text(RecipeToolMessage.SourceNotEnabled,
             new
@@ -99,7 +99,7 @@ public class RecipeToolsTests
     /// <summary>With no site on at all, it says none.</summary>
     [Test]
     public async Task WithNoSiteEnabled_ItSaysNone() =>
-        Assert.That(await Tools(new FakeSiteBrowser()).FindRecipes("foodandhome", "bobotie"),
+        Assert.That(await Tools(new FakeSiteBrowser()).FindRecipes("bobotie", "foodandhome"),
             Does.Contain("Enabled: none."));
 
     /// <summary>An empty query is asked for again, and no site is searched.</summary>
@@ -109,25 +109,25 @@ public class RecipeToolsTests
     {
         var source = new FakeRecipeSource("foodandhome", BobotieHits);
 
-        string result = await Search(source).FindRecipes("foodandhome", query);
+        string result = await Search(source).FindRecipes(query, "foodandhome");
 
         Assert.That(result, Is.EqualTo(Text(RecipeToolMessage.QueryEmpty)));
         Assert.That(source.Query, Is.Null);
     }
 
-    /// <summary>The default is five results, and more than ten is cut to ten; less than one gives one.</summary>
-    [TestCase(null, 5)]
+    /// <summary>The default is eight results, and more than ten is cut to ten; less than one gives one.</summary>
+    [TestCase(null, 8)]
     [TestCase(3, 3)]
     [TestCase(10, 10)]
     [TestCase(50, 10)]
     [TestCase(0, 1)]
-    public async Task TheNumberOfResults_IsFiveByDefault_AndAtMostTen(int? asked, int expected)
+    public async Task TheNumberOfResults_IsEightByDefault_AndAtMostTen(int? asked, int expected)
     {
         var source = new FakeRecipeSource("foodandhome", BobotieHits);
 
         _ = asked is { } count
-            ? await Search(source).FindRecipes("foodandhome", "bobotie", count)
-            : await Search(source).FindRecipes("foodandhome", "bobotie");
+            ? await Search(source).FindRecipes("bobotie", "foodandhome", count)
+            : await Search(source).FindRecipes("bobotie", "foodandhome");
 
         Assert.That(source.MaxResults, Is.EqualTo(expected));
     }
@@ -135,7 +135,7 @@ public class RecipeToolsTests
     /// <summary>A site that finds nothing says so, and what to try.</summary>
     [Test]
     public async Task ASearchWithNoHits_SaysSo() =>
-        Assert.That(await Search(new FakeRecipeSource("foodandhome", [])).FindRecipes("foodandhome", "zzz"),
+        Assert.That(await Search(new FakeRecipeSource("foodandhome", [])).FindRecipes("zzz", "foodandhome"),
             Is.EqualTo(Text(RecipeToolMessage.SourceNoResults, new
             {
                 Source = "Food & Home",
@@ -148,7 +148,103 @@ public class RecipeToolsTests
     {
         var source = new FakeRecipeSource("foodandhome", fails: new RecipeSourceException("Food & Home said no."));
 
-        Assert.That(await Search(source).FindRecipes("foodandhome", "bobotie"), Is.EqualTo("Food & Home said no."));
+        Assert.That(await Search(source).FindRecipes("bobotie", "foodandhome"), Is.EqualTo("Food & Home said no."));
+    }
+
+    /// <summary>The tools over these sites, with a seeded draw so a test can repeat.</summary>
+    private static RecipeTools Seeded(params FakeRecipeSource[] sources) =>
+        new(sources.ToDictionary(source => source.Site.Slug, source => (IRecipeSource)source), new FakeSiteBrowser(),
+            new Random(1));
+
+    /// <summary>A site with one hit named after it.</summary>
+    private static FakeRecipeSource WithHit(string slug) =>
+        new(slug, [new RecipeHit($"{slug} bobotie", new Uri($"https://example.com/{slug}/bobotie"))]);
+
+    /// <summary>
+    /// With no site named it searches several, and each line says whose page it is, because the model is choosing
+    /// between sites now: this is what stops every recipe coming from one.
+    /// </summary>
+    [Test]
+    public async Task NoSiteNamed_ListsTheHitsOfSeveralSites_EachWithItsSite()
+    {
+        var tools = Seeded(WithHit("taste"), WithHit("foodandhome"));
+
+        string[] lines = (await tools.FindRecipes("bobotie")).Split('\n');
+
+        Assert.That(lines[0], Is.EqualTo(Text(RecipeToolMessage.UntrustedFrame)));
+        Assert.That(lines[1], Does.Contain("Woolworths TASTE").And.Contain("Food & Home").And.Contain("(2)"));
+        Assert.That(lines[2..4], Has.Some
+            .EqualTo("1. taste bobotie · Woolworths TASTE · https://example.com/taste/bobotie")
+            .Or.Some.EqualTo("2. taste bobotie · Woolworths TASTE · https://example.com/taste/bobotie"));
+        Assert.That(lines[^1], Is.EqualTo(Text(RecipeToolMessage.FrameEnd)));
+    }
+
+    /// <summary>Spaces are no name: the model leaving it blank means the same as leaving it out.</summary>
+    [TestCase("")]
+    [TestCase("   ")]
+    public async Task ABlankSite_IsNoSiteNamed(string source)
+    {
+        var site = WithHit("foodandhome");
+
+        await Seeded(site).FindRecipes("  bobotie ", source);
+
+        Assert.That(site.Query, Is.EqualTo("bobotie"));
+    }
+
+    /// <summary>A site searched through the web provider stays out of the draw, and can still be named.</summary>
+    [Test]
+    public async Task ASiteWithNoSearchOfItsOwn_IsOutOfTheDraw_ButCanBeNamed()
+    {
+        var webSearched = WithHit("saltyginger");
+        var ownSearch = WithHit("foodandhome");
+        var tools = Seeded(webSearched, ownSearch);
+
+        await tools.FindRecipes("bobotie");
+        Assert.That(webSearched.Query, Is.Null);
+        Assert.That(ownSearch.Query, Is.EqualTo("bobotie"));
+
+        string named = await tools.FindRecipes("bobotie", "saltyginger");
+        Assert.That(named, Does.Contain("saltyginger bobotie"));
+    }
+
+    /// <summary>Nothing on the sites asked says which they were, and that another search asks others.</summary>
+    [Test]
+    public async Task NoHitsOnAnySite_NamesThem_AndSaysToSearchAgain()
+    {
+        string result = await Seeded(new FakeRecipeSource("foodandhome", [])).FindRecipes("zzz");
+
+        Assert.That(result, Does.Contain("Food & Home").And.Contain("'zzz'").And.Contain("Search again"));
+    }
+
+    /// <summary>Every site refusing gives their reasons, never an exception.</summary>
+    [Test]
+    public async Task EverySiteRefusing_GivesTheirReasons()
+    {
+        var refusing = new FakeRecipeSource("foodandhome", fails: new RecipeSourceException("Food & Home said no."));
+
+        string result = await Seeded(refusing).FindRecipes("bobotie");
+
+        Assert.That(result, Does.Contain("Food & Home said no.").And.Contain("Search again"));
+    }
+
+    /// <summary>With some sites answering, a refusal doesn't reach the model.</summary>
+    [Test]
+    public async Task OneSiteRefusing_IsLeftOut_WhenAnotherAnswers()
+    {
+        var refusing = new FakeRecipeSource("taste", fails: new RecipeSourceException("TASTE said no."));
+
+        string result = await Seeded(refusing, WithHit("foodandhome")).FindRecipes("bobotie");
+
+        Assert.That(result, Does.Contain("foodandhome bobotie").And.Not.Contain("TASTE said no."));
+    }
+
+    /// <summary>With only web-searched sites on, there is no draw: it says so and which can be named.</summary>
+    [Test]
+    public async Task NoSiteInTheDraw_SaysWhichCanBeNamed()
+    {
+        string result = await Seeded(WithHit("saltyginger")).FindRecipes("bobotie");
+
+        Assert.That(result, Does.Contain("saltyginger").And.Contain("source"));
     }
 
     /// <summary>
