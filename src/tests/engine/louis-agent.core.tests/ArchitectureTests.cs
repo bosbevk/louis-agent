@@ -27,7 +27,7 @@ public partial class ArchitectureTests
         ["Logging"] = 0,
         ["Guardrails"] = 1,
         ["Llm"] = 2,
-        ["Tools"] = 2,
+        ["Delegation"] = 2,
         ["Web"] = 2,
         ["Sessions"] = 2,
         ["Skills"] = 2,
@@ -101,7 +101,7 @@ public partial class ArchitectureTests
             {
                 if (Layers.TryGetValue(used, out int usedLayer) && usedLayer > layer)
                     yield return $"{file}: {concern} (layer {layer}) uses {used} (layer {usedLayer})";
-                if (concern is "Tools" or "Web" && used is "Llm" or "Agent")
+                if (concern is "Delegation" or "Web" && used is "Llm" or "Agent")
                     yield return $"{file}: Tools uses {used}";
             }
         }

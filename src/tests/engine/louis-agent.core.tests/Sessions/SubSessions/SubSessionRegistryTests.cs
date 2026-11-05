@@ -2,7 +2,7 @@ using LouisAgent.Testing;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
 using LouisAgent.Core.Sessions.SubSessions;
-using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Delegation;
 
 namespace LouisAgent.Core.Tests.Sessions.SubSessions;
 

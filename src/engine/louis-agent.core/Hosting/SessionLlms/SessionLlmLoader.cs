@@ -8,7 +8,7 @@ using LouisAgent.Core.Hosting.EnvFiles;
 using LouisAgent.Core.Llm;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
-using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Delegation;
 using Microsoft.Extensions.Logging;
 using LouisAgent.Core.Hosting.Messages;
 

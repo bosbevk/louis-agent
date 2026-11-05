@@ -8,7 +8,7 @@ using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Logging;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
-using LouisAgent.Core.Tools.Agents;
+using LouisAgent.Core.Delegation;
 using Microsoft.Extensions.Logging;
 
 namespace LouisAgent.Core.Agent.Toolsets;

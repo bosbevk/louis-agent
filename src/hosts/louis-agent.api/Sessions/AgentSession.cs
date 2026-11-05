@@ -10,8 +10,8 @@ using LouisAgent.Core.Hosting;
 using LouisAgent.Core.Messages;
 using LouisAgent.Core.Skills;
 using LouisAgent.Core.Skills.Roles;
-using LouisAgent.Core.Tools.Agents;
-using LouisAgent.Core.Tools.Clock;
+using LouisAgent.Core.Delegation;
+using LouisAgent.Core.Agent.EngineTools.Clock;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Api.Sessions;

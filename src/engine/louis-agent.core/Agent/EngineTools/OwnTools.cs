@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using LouisAgent.Core.Config;
-using LouisAgent.Core.Tools.Clock;
+using LouisAgent.Core.Agent.EngineTools.Clock;
 using Microsoft.Extensions.AI;
 
 namespace LouisAgent.Core.Agent.EngineTools;
