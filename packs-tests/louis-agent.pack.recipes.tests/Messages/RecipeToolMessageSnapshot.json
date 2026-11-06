@@ -27,6 +27,7 @@
   "RecipeLink": "Link: <Url>",
   "RecipeMakes": "Makes <Yield>",
   "RecipePrep": "prep <Minutes> min",
+  "RecipeServes": "Serves <Yield>",
   "RecipeServings": "<People> servings",
   "RecipeTotal": "total <Minutes> min",
   "SectionHeading": "### <Section>",

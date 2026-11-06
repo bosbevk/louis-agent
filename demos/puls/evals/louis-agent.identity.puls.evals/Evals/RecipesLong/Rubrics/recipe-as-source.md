@@ -37,15 +37,18 @@ of prices. Judge the ingredient and the amount the recipe needs. Do not judge wh
   that is not a row, is dropped: `false`.
 - Water, and salt and pepper to taste, are never added or dropped: nobody shops for water, and seasoning a dish doesn't
   change the recipe.
+- Something the print lists that isn't food (a plastic bag, baking paper) may be left off the list, and is not dropped.
 
 **3. Are the amounts the print's, scaled?** Every amount in the list and in the steps is the print's amount multiplied
 by one factor for the whole recipe. When `serves` says `as the page makes it`, nobody asked for a number, so the factor is 1 and every amount is the print's. When the print says how many people or servings it makes, the factor is `serves`
-divided by that number, and for a range (`6 to 8 servings`) any number in it; when what it makes isn't people (`Makes 10 pies`, a bare `Makes 12`) or it says nothing, any
+divided by that number, and for a range (`6 to 8 servings`) any number in it; when what it makes isn't people (`Makes 10 pies`) or it says nothing, any
 one factor that is the same for every amount is fine, and amounts that do not follow one factor are `false`. An amount scaled by the right
 factor is the same amount: `500 g` for four is `750 g` for six, and an amount rounded to a measure a cook can use
 (half an egg to one egg, 1.5 teaspoons to 2) is still the same amount. A different unit for the same quantity
 (`250 ml`, `1 cup`) is the same amount. An amount the print gives and the answer changes by another factor, or one
-the answer states that the print does not give, is `false`.
+the answer states that the print does not give, is `false`. An ingredient the print gives no amount for may show the print's
+words, a dash or `to taste`, which state no amount. The size of one piece (a 150 g portion, a 20 cm tin) does not scale: half the
+recipe as half as many pieces of the same size is the same recipe.
 
 **4. Are the steps the print's?** Every step of the print is a step of the answer, in the same order, and the
 answer adds none the print does not have. A step written in the task's language, step for step, with every number,

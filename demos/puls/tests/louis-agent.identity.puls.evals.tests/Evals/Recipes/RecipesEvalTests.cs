@@ -43,7 +43,7 @@ public class RecipesEvalTests
     /// The rubric's hash, the one the judge's grades carry on every platform (<c>RubricHash</c>: line endings made LF),
     /// of the body after the header, so a change to the rubric's words shows here.
     /// </summary>
-    private const string PinnedRubricHash = "60d49fd07136";
+    private const string PinnedRubricHash = "21be20d3f55a";
 
     /// <summary>The dishes to work on, as their scenarios' ids.</summary>
     private static readonly string[] Dev =
@@ -62,7 +62,7 @@ public class RecipesEvalTests
         var eval = Load();
 
         Assert.That((eval.Name, eval.Dataset.Name, eval.Identity, eval.Version, eval.Dataset.Version),
-            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 7, 1)));
+            Is.EqualTo(("puls-recipes", "puls-recipes", PulsIdentityName.Puls.Wire(), 8, 1)));
         Assert.That(eval.Proves, Does.StartWith("Puls's cook reads a recipe from a real page"));
         Assert.That(eval.Manual, Is.EqualTo($"{Source}/manual.md"));
     }
@@ -89,7 +89,7 @@ public class RecipesEvalTests
                 ("no-error", 1, true, CheckKind.FixedRule), ("routed-to", 1, true, CheckKind.FixedRule),
                 ("tool-used", 1, true, CheckKind.FixedRule), ("recipe-from-source", 2, true, CheckKind.FixedRule),
                 ("recipe-image", 3, true, CheckKind.FixedRule), ("unpriced-items", 1, false, CheckKind.FixedRule),
-                ("recipe-as-source", 4, false, CheckKind.Model),
+                ("recipe-as-source", 5, false, CheckKind.Model),
                 ("recipe-as-source.human", 2, false, CheckKind.Human)
             }));
 

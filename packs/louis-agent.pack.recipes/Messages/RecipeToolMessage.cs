@@ -76,6 +76,8 @@ public enum RecipeToolMessage
 
     [Description("Makes {Yield}")] RecipeMakes,
 
+    [Description("Serves {Yield}")] RecipeServes,
+
     [Description("{People} servings")] RecipeServings,
 
     [Description("prep {Minutes} min")] RecipePrep,
