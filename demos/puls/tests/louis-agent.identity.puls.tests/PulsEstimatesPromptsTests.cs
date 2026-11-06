@@ -50,7 +50,7 @@ public class PulsEstimatesPromptsTests
         Assert.That(router, Does.Contain("names that shop's branch under *Where to buy* and estimates the prices"));
         Assert.That(router, Does.Not.Contain("Waar gaan jy inkopies doen"),
             "never asked: the prices are the same estimates wherever they shop");
-        Assert.That(router, Does.Contain("brief the cook with `enige` / `any` and never ask"));
+        Assert.That(router, Does.Contain("brief the cook with *any* and never ask"));
         Assert.That(router, Does.Contain("A follow-up keeps the shop until the user changes it"));
     }
 
@@ -77,11 +77,11 @@ public class PulsEstimatesPromptsTests
     {
         string router = Flat(Read("agent/puls/voice.md"));
 
-        Assert.That(router,
+        Assert.That(Flat(Read("agent/puls/voice-af.md")),
             Does.Contain(
                 "Ek soek vir eers nie winkels se pryse op nie (ek het hulle om toestemming gevra); " +
                 "die koste is skattings."));
-        Assert.That(router,
+        Assert.That(Flat(Read("agent/puls/voice-en.md")),
             Does.Contain(
                 "I don't look up shops' prices for now (I asked them for permission); the costs are estimates."));
         Assert.That(router, Does.Contain("Never offer another shop's prices instead"));
