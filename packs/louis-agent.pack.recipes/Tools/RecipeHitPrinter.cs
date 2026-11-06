@@ -52,7 +52,7 @@ internal static class RecipeHitPrinter
             new
             {
                 Number = index + 1,
-                hit.Hit.Name,
+                Name = HitTitle.Shown(hit.Hit.Name),
                 Site = hit.Site.Name,
                 Url = hit.Hit.Url.AbsoluteUri
             }));
