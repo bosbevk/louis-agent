@@ -20,11 +20,7 @@ public static partial class HtmlText
         html = html.ReplaceLineEndings("\n");
         string? title = TitleTag().Match(html) is { Success: true } t ? CleanInline(t.Groups[1].Value) : null;
 
-        // Prefer the main content region when the page marks one.
-        string content = MainOrArticle().Match(html) is { Success: true } main ? main.Groups["body"].Value
-            : BodyTag().Match(html) is { Success: true } body ? body.Groups[1].Value : html;
-
-        content = Comment().Replace(content, "");
+        string content = Comment().Replace(MainContent(html), "");
         content = NonContent().Replace(content, " ");
 
         // Code blocks keep their line breaks; park them so the whitespace cleanup below leaves them alone.
@@ -63,6 +59,36 @@ public static partial class HtmlText
         if (LeadImage.Of(html, baseUri, title) is { } lead && !text.Contains(UrlOf(lead), StringComparison.Ordinal))
             text = text.Length == 0 ? lead : lead + "\n\n" + text;
         return (title, text);
+    }
+
+    /// <summary>
+    /// The part of the page that's its own: what it marks as main, or its one article. Several articles and no main are
+    /// cards, such as related posts, and the page's own words are outside them, so that's the whole body.
+    /// </summary>
+    /// <remarks>Guard clauses, one per case (ADR 0051).</remarks>
+    private static string MainContent(string html)
+    {
+        bool cards = TagCount(html, "<main") == 0 && TagCount(html, "<article") > 1;
+        if (!cards && MainOrArticle().Match(html) is { Success: true } main) return main.Groups["body"].Value;
+
+        return BodyTag().Match(html) is { Success: true } body ? body.Groups[1].Value : html;
+    }
+
+    /// <summary>
+    /// How many times a tag opens, by plain search (ADR 0057): "&lt;article" counts in "&lt;article class=card&gt;" and
+    /// "&lt;ARTICLE&gt;", never in "&lt;articles&gt;".
+    /// </summary>
+    private static int TagCount(string html, string open)
+    {
+        int count = 0;
+        for (int at = html.IndexOf(open, StringComparison.OrdinalIgnoreCase); at >= 0;
+             at = html.IndexOf(open, at + open.Length, StringComparison.OrdinalIgnoreCase))
+        {
+            int after = at + open.Length;
+            if (after == html.Length || !char.IsLetterOrDigit(html[after])) count++;
+        }
+
+        return count;
     }
 
     private static string UrlOf(string imageMarkdown) =>

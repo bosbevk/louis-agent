@@ -1,4 +1,3 @@
-using LouisAgent.Packs.Recipes.Reading.Photos;
 using LouisAgent.Packs.Recipes.Recipes;
 using static LouisAgent.Packs.Recipes.Reading.PageText.PageTextLines;
 
@@ -11,9 +10,9 @@ namespace LouisAgent.Packs.Recipes.Reading.PageText;
 /// </summary>
 /// <remarks>
 /// A small reader over plain string methods, not a regular expression (ADR 0057), walking the page's lines with guard
-/// clauses (ADR 0051). The shapes come from a check of all our sites' real pages. A page that gives nothing here is
-/// refused, and never read again. Asking a model would reach more pages, at a cost on every read and with mistakes
-/// nothing here could see.
+/// clauses (ADR 0051). The shapes come from a check of all our sites' real pages. A page that gives nothing here goes
+/// on to <see cref="PlainRunRecipe"/>, and if that gives nothing too it's refused, and never read again. Asking a model
+/// would reach more pages, at a cost on every read and with mistakes nothing here could see.
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0057-regex-is-the-last-option.md">ADR 0057: a regular expression is the last option</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/packs/docs/adr/0082-the-recipe-library-is-an-open-feed.md">ADR 0082: the recipe library is an open feed</seealso>
@@ -21,7 +20,8 @@ internal static class PageTextRecipe
 {
     private const string Serves = "Serves ";
     private const string Makes = "Makes ";
-    private const string Portions = " porsies";
+    private const string Feeds = "Feeds ";
+    private static readonly string[] Portions = [" porsies", " servings"];
 
     /// <summary>A line longer than this is a story about the ingredients, not one of them.</summary>
     private const int LongestIngredient = 300;
@@ -40,12 +40,7 @@ internal static class PageTextRecipe
     public static Recipe? Read(string html, Uri page)
     {
         var (title, words) = HtmlText.ToText(html, page);
-        string[] lines =
-        [
-            .. PrintedRecipeText.Cut(PagePhotos.WithoutImages(words)).Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0)
-        ];
+        string[] lines = LinesOf(words);
 
         // A heading with another heading straight under it is a tab's label, with nothing of its own.
         int ingredientsAt = Enumerable.Range(0, lines.Length).Where(at => IsIngredientsHeading(lines[at]) &&
@@ -105,11 +100,11 @@ internal static class PageTextRecipe
     /// <summary>
     /// The steps, up to whatever comes after them. In a list, the last line that isn't an item ends it, which is how a
     /// page's cookie notice and adverts stay out. With more items to come, a name is a part, an opening sentence is
-    /// skipped, and a line before the first item is the first step. Anything else could be anything, and guessing could
-    /// keep half a recipe as if it were whole, so that gives nothing. So does a "Serves" among plain steps: a second
-    /// recipe whose lines we can't tell from the first's.
+    /// skipped, as is a sentence straight under a part, and a line before the first item is the first step. Anything
+    /// else could be anything, and guessing could keep half a recipe as if it were whole, so that gives nothing. So
+    /// does a "Serves" among plain steps: a second recipe whose lines we can't tell from the first's.
     /// </summary>
-    private static List<RecipeStep>? Steps(string[] lines, HashSet<string> parts)
+    public static List<RecipeStep>? Steps(string[] lines, HashSet<string> parts)
     {
         string[] own = OwnLines(lines, parts);
         bool listed = own.Any(line => IsStepItem(line, 0));
@@ -119,6 +114,8 @@ internal static class PageTextRecipe
         for (int at = 0; at < own.Length; at++)
         {
             string line = own[at];
+            if (!line.Any(char.IsLetterOrDigit)) continue;
+
             if (line.StartsWith('#'))
             {
                 part = Words(line);
@@ -126,6 +123,9 @@ internal static class PageTextRecipe
             }
 
             if (!listed && YieldOf(line) is not null) return null;
+
+            // A last line ending in a colon promises something that isn't there, such as a video.
+            if (line.EndsWith(':') && at + 1 == own.Length) break;
 
             if (IsItem(line) && line.EndsWith(':'))
             {
@@ -141,7 +141,9 @@ internal static class PageTextRecipe
 
             if (listed && !IsStepItem(line, counted))
             {
-                if (!own.Skip(at + 1).Any(later => IsStepItem(later, counted))) break;
+                if (!own.Skip(at + 1).Any(later => IsStepItem(later, counted))) return [.. steps, .. LastPart(own, at)];
+
+                if (at > 0 && IsStepPart(own[at - 1])) continue;
 
                 if (IsPartLine(line) || LooksLikeAName(line))
                 {
@@ -149,7 +151,7 @@ internal static class PageTextRecipe
                     continue;
                 }
 
-                if (line.EndsWith(':')) continue;
+                if (line.EndsWith(':') || (at > 0 && IsPartLine(own[at - 1]))) continue;
                 if (steps.Count > 0 || line.Length > LongestFirstLine) return null;
             }
 
@@ -168,15 +170,21 @@ internal static class PageTextRecipe
         return steps;
     }
 
+    /// <summary>A last numbered part with one sentence under it, "Step 5: serve", has that step to give.</summary>
+    private static RecipeStep[] LastPart(string[] own, int at) =>
+        IsStepPart(own[at]) && at + 1 < own.Length ? [new RecipeStep(Words(own[at]), WithoutMarker(own[at + 1]))] : [];
+
     /// <summary>
     /// The lines that can be this recipe's steps: up to a heading that names none of its parts, a link, a credit, a
-    /// lone dash starting the page's sharing buttons, or a second recipe's ingredients, whose name stays out too.
+    /// lone dash starting the page's sharing buttons, a piece of the page's own HTML, a cook's aside, or a second
+    /// recipe's ingredients, whose name stays out too.
     /// </summary>
-    private static string[] OwnLines(string[] lines, HashSet<string> parts)
+    public static string[] OwnLines(string[] lines, HashSet<string> parts)
     {
-        string[] own = [.. lines.Where(line => !IsReadAlso(line))];
+        string[] own = [.. DashesJoined(lines).Where(line => !IsReadAlso(line))];
         int end = Array.FindIndex(own, line => (line.StartsWith('#') && !parts.Contains(Words(line))) || line == "-" ||
-                                               HasLink(line) || line.Contains('©') || IsIngredientsHeading(line));
+                                               line.StartsWith('<') || HasLink(line) || line.Contains('©') ||
+                                               IsAside(line) || IsIngredientsHeading(line));
         if (end < 0) return own;
 
         bool namesTheNext = end > 0 && IsIngredientsHeading(own[end]) && own[end - 1].Length <= LongestHeading &&
@@ -184,8 +192,26 @@ internal static class PageTextRecipe
         return own[..(namesTheNext ? end - 1 : end)];
     }
 
+    /// <summary>
+    /// A list that starts with a lone dash has each item's dash on the line above it, as Jan Braai's can: then a dash
+    /// starts a step, and joins the line under it. Anywhere else a lone dash is the sharing buttons.
+    /// </summary>
+    private static List<string> DashesJoined(string[] lines)
+    {
+        if (lines is not ["-", ..]) return [.. lines];
+
+        var joined = new List<string>();
+        for (int at = 0; at < lines.Length; at++)
+        {
+            bool dash = lines[at] == "-" && at + 1 < lines.Length;
+            joined.Add(dash ? $"- {lines[++at]}" : lines[at]);
+        }
+
+        return joined;
+    }
+
     /// <summary>The first heading before the ingredients, else the page's title without the site's name.</summary>
-    private static string? Name(string[] before, string? title)
+    public static string? Name(string[] before, string? title)
     {
         string? heading = before
             .Where(line => line.StartsWith("# ", StringComparison.Ordinal) || line.StartsWith("## ", StringComparison.Ordinal))
@@ -201,16 +227,30 @@ internal static class PageTextRecipe
     private static string? YieldIn(string[] lines) => lines.Select(YieldOf).FirstOrDefault(found => found is not null);
 
     /// <summary>One line as a yield, in the ways these pages write it.</summary>
-    private static string? YieldOf(string line)
+    public static string? YieldOf(string line)
     {
-        string words = WithoutBullet(line).Replace("Serves:", Serves, StringComparison.Ordinal).Trim();
-        if (words.EndsWith(Portions, StringComparison.Ordinal) && char.IsAsciiDigit(words[0]))
-            words = Serves + words[..^Portions.Length];
+        string words = InBrackets(WithoutBullet(line)).Replace("Servings:", "Serves:", StringComparison.Ordinal)
+            .Replace("Serves: ", Serves, StringComparison.Ordinal).Replace("Serves:", Serves, StringComparison.Ordinal)
+            .Replace(Feeds, Serves, StringComparison.Ordinal).Trim();
+        string? portions = Portions.FirstOrDefault(word => words.EndsWith(word, StringComparison.OrdinalIgnoreCase));
+        if (portions is not null && char.IsAsciiDigit(words[0])) words = Serves + words[..^portions.Length];
 
         // "Serves 20 vetkoekies" counts things, not people.
         if (words.StartsWith(Serves, StringComparison.Ordinal) && char.IsLetter(words[^1]))
             words = Makes + words[Serves.Length..];
 
         return PageYield.Yield(words);
+    }
+
+    /// <summary>A yield alone in brackets: "what you need (makes 6)". Any other line as it came.</summary>
+    private static string InBrackets(string line)
+    {
+        int open = line.IndexOf('(');
+        int close = line.IndexOf(')', Math.Max(open, 0));
+        if (open < 0 || close < 0) return line;
+
+        string inside = line[(open + 1)..close];
+        bool says = new[] { Serves, Makes, Feeds }.Any(word => inside.StartsWith(word, StringComparison.OrdinalIgnoreCase));
+        return says ? char.ToUpperInvariant(inside[0]) + inside[1..] : line;
     }
 }

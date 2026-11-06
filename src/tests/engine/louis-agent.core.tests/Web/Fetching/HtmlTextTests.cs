@@ -36,6 +36,27 @@ public class HtmlTextTests
         Assert.That(text, Does.Not.Contain("alert").And.Not.Contain("color:red").And.Not.Contain("Home").And.Not.Contain("Copyright"));
     }
 
+    /// <summary>Several articles and no main are cards: the page's own words are outside them.</summary>
+    [Test]
+    public void SeveralArticles_AndNoMain_AreCards_SoTheBodyIsRead()
+    {
+        var (_, text) = HtmlText.ToText("<html><body><p>The recipe.</p><article>Card one</article>" +
+                                        "<article>Card two</article></body></html>", new Uri("https://example.com/"));
+
+        Assert.That(text, Does.Contain("The recipe.").And.Contain("Card one"));
+    }
+
+    /// <summary>One article is the page, and a main still wins over any articles.</summary>
+    [TestCase("<body><p>The menu.</p><article>The recipe.</article></body>", TestName = "one article")]
+    [TestCase("<body><p>The menu.</p><main>The recipe.<article>Card</article><article>Card</article></main></body>",
+        TestName = "a main with articles")]
+    public void ThePagesOwnPart_StillWins(string body)
+    {
+        var (_, text) = HtmlText.ToText($"<html>{body}</html>", new Uri("https://example.com/"));
+
+        Assert.That(text, Does.Contain("The recipe.").And.Not.Contain("The menu."));
+    }
+
     // A shop's product tile (the cook, F33): its photo is an image, often the only content of the link to the product,
     // and lazy-loaded, so the real file is in data-src or srcset while src holds a placeholder.
     private const string ProductTileHtml = """
