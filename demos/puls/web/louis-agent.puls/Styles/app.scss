@@ -29,10 +29,10 @@
 @forward "web/chat/pages";
 @forward "chat/pages";
 
-@forward "admin/shell";
-@forward "admin/benchmarks";
-@forward "admin/evals";
-@forward "admin/run-page";
-@forward "admin/explorer";
-@forward "admin/reviews";
-@forward "admin/studio";
+@forward "web/admin/shell";
+@forward "web/admin/benchmarks";
+@forward "web/admin/evals";
+@forward "web/admin/run-page";
+@forward "web/admin/explorer";
+@forward "web/admin/reviews";
+@forward "web/admin/studio";
