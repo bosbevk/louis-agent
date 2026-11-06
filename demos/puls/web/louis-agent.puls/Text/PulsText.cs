@@ -136,6 +136,17 @@ public static class PulsText
         SourceOne = "bron",
         SourceMany = "bronne",
 
+        HideWork = "Versteek die werkpaneel",
+        CloseWork = "Maak die werkpaneel toe",
+        NoWorkYet = "Nog geen werk nie",
+        WorkEmpty = "Wanneer Puls 'n taak oordra, sien jy hier die spesialis se stappe, gereedskap en koste, terwyl dit gebeur.",
+        StepsLabel = "Stappe",
+        Requests = "versoeke",
+        Cost = "Koste",
+        Sources = "Bronne",
+        OwnCost = "Puls",
+        Specialists = "Spesialiste",
+
         SessionGone =
             "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.",
         NeedsKey = "Die API het 'n sleutel nodig: maak Instellings oop en vul AGENT_API_KEY in.",

@@ -147,6 +147,18 @@ public sealed record ChatText
     public string SourceOne { get; init; } = "source";
     public string SourceMany { get; init; } = "sources";
 
+    public string HideWork { get; init; } = "Hide the work panel";
+    public string CloseWork { get; init; } = "Close the work panel";
+    public string NoWorkYet { get; init; } = "No work yet";
+    public string WorkEmpty { get; init; } =
+        "When a task is handed over, you see the specialist's steps, tools and cost here, as it happens.";
+    public string StepsLabel { get; init; } = "Steps";
+    public string Requests { get; init; } = "requests";
+    public string Cost { get; init; } = "Cost";
+    public string Sources { get; init; } = "Sources";
+    public string OwnCost { get; init; } = "This chat";
+    public string Specialists { get; init; } = "Specialists";
+
 
     /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>
     public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";
