@@ -32,6 +32,7 @@
   "RecipeTotal": "total <Minutes> min",
   "ScaleKept": "<Name>, kept as the page wrote it, since it doesn't say how many people it feeds. If that plainly won't feed them, call this again with `times`.",
   "ScaleLineNotScaled": "<Line> (not scaled)",
+  "ScaleLinePartly": "<Line> (only the first amount scaled)",
   "ScaleNotHeld": "We don't hold that page's recipe, so it can't be scaled here. Do the sums with Calculate.",
   "ScaleStepAmount": "Step <Number>: <From> becomes <To>",
   "ScaleStepsHeading": "## Amounts in the steps",

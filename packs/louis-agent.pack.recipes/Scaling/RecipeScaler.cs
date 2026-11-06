@@ -43,12 +43,17 @@ internal static class RecipeScaler
             : [line, RecipePrinter.Ingredients(scaled), MessageText.Format(RecipeToolMessage.ScaleStepsHeading), .. amounts];
     }
 
-    /// <summary>A line scaled, or marked when it holds an amount this couldn't scale.</summary>
+    /// <summary>A line scaled, and marked when it holds an amount this couldn't scale or a number it left.</summary>
+    /// <remarks>Guard clauses (ADR 0051). With a factor of one nothing was scaled, so nothing is marked.</remarks>
     private static string Scaled(string line, double factor)
     {
         string scaled = RecipeAmount.Scale(line, factor);
-        return factor != 1 && scaled == line && RecipeAmount.HoldsAnAmount(line)
-            ? MessageText.Format(RecipeToolMessage.ScaleLineNotScaled, new { Line = line })
+        if (factor == 1) return scaled;
+        if (scaled == line && RecipeAmount.HoldsAnAmount(line))
+            return MessageText.Format(RecipeToolMessage.ScaleLineNotScaled, new { Line = line });
+
+        return RecipeAmount.LeavesAnAmount(line)
+            ? MessageText.Format(RecipeToolMessage.ScaleLinePartly, new { Line = scaled })
             : scaled;
     }
 

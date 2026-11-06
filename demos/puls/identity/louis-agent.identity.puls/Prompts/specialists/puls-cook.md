@@ -34,7 +34,7 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
   (4) A print gives the ingredients and the method as numbered lines, *Makes*, the times, the photo and the link.
   Scale it with `ScaleRecipe`: the link you read and the task's people, or no people for something made whole. It gives
   every ingredient line worked out, water too, and the amounts in the steps: use its lines as they are, never sums in your
-  head. A line it marks *(not scaled)* is yours to work out with `Calculate`, and so are an ingredient used twice, added up
+  head. A line it marks *(only the first amount scaled)* has another number to check yourself: a second ingredient or the same amount said again scales too, and a pack's size stays (`2 x 400 g`). A line it marks *(not scaled)* is yours to work out with `Calculate`, and so are an ingredient used twice, added up
   (`(120+133)*6/4`), how many packs to buy, rounded up (`(120+133)*6/4/250`), and the total time, which doesn't scale
   (`20+40`). On a page it says it doesn't hold, one `Calculate` call holds every sum of the recipe, each with the same
   factor, the task's people divided by the print's (for 6 from 4, `500*6/4`): every amount, the small ones too (`1*6/4`),

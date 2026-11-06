@@ -30,7 +30,8 @@ public class ScaleRecipeTests
             Ingredients =
             [
                 new RecipeIngredient(null, "1 kg mince"), new RecipeIngredient("Sauce", "2 cups water"),
-                new RecipeIngredient("Sauce", "salt, to taste"), new RecipeIngredient("Sauce", "zest of 1 lemon")
+                new RecipeIngredient("Sauce", "salt, to taste"), new RecipeIngredient("Sauce", "zest of 1 lemon"),
+                new RecipeIngredient("Sauce", "2 cups stock (500ml in total)")
             ],
             Steps = [new RecipeStep(null, "Add 1 cup water and bake for 40 minutes.")]
         };
@@ -56,6 +57,16 @@ public class ScaleRecipeTests
         Assert.That(result, Does.Contain("### Sauce\n2. 3 cups water"));
         Assert.That(result, Does.Contain("3. salt, to taste\n"), "no number, nothing to say");
         Assert.That(result, Does.Contain("4. zest of 1 lemon (not scaled)"), "the cook must know to do this one");
+        Assert.That(result, Does.Contain("5. 3 cups stock (500ml in total) (only the first amount scaled)"));
+    }
+
+    /// <summary>A line isn't marked when nothing was scaled at all: the recipe stays as the page wrote it.</summary>
+    [Test]
+    public async Task WithNothingScaled_NoLineIsMarked()
+    {
+        var (tools, link) = Holding("1 cake");
+
+        Assert.That(await tools.ScaleRecipe(link), Does.Not.Contain("scaled)"));
     }
 
     /// <summary>The site's own link finds the same recipe, since the cook may have read that one.</summary>

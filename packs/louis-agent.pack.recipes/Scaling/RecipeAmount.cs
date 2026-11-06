@@ -70,25 +70,49 @@ internal static class RecipeAmount
     /// <summary>The line with its amount multiplied, and a second measure in brackets straight after it too.</summary>
     public static string Scale(string line, double factor)
     {
-        string? hedge = Hedges.FirstOrDefault(word => line.StartsWith(word, StringComparison.OrdinalIgnoreCase));
-        if (hedge is not null) return line[..hedge.Length] + Scale(line[hedge.Length..], factor);
+        if (HedgeOn(line) is { } hedge) return line[..hedge.Length] + Scale(line[hedge.Length..], factor);
         if (factor == 1 || ReadAmount(line, 0) is not { } amount) return line;
 
         string rest = line[amount.Length..];
-        var kind = KindOf(rest);
-        string written = Write(amount, factor, kind);
-
-        // "125 ml (1/2 cup)" is one amount said twice. "1 packet (10g)" is a pack's size, which stays.
-        int bracket = rest.IndexOf('(');
-        bool saidTwice = bracket > 0 && kind != Kind.Whole && IsAUnit(rest[..bracket].Trim());
-        return saidTwice
+        string written = Write(amount, factor, KindOf(rest));
+        return SaidTwiceAt(rest) is { } bracket
             ? written + rest[..(bracket + 1)] + Scale(rest[(bracket + 1)..], factor)
             : written + rest;
+    }
+
+    /// <summary>The word hedging this line's amount, if one does.</summary>
+    private static string? HedgeOn(string line) =>
+        Hedges.FirstOrDefault(word => line.StartsWith(word, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Where a bracket says the same amount again: "125 ml (1/2 cup)" is one amount said twice, where "1 packet (10g)"
+    /// is a pack's size, which stays.
+    /// </summary>
+    private static int? SaidTwiceAt(string rest)
+    {
+        int bracket = rest.IndexOf('(');
+        return bracket > 0 && IsAUnit(rest[..bracket].Trim()) ? bracket : null;
     }
 
     /// <summary>Whether a line holds an amount at all: a digit, a fraction or a number in words.</summary>
     public static bool HoldsAnAmount(string line) =>
         line.Any(c => char.IsAsciiDigit(c) || FractionOf(c) is not null) || Words(line).Any(NumberWords.Contains);
+
+    /// <summary>
+    /// Whether a number is left on the line after the amount <see cref="Scale"/> scales. It can't tell a pack's size
+    /// from a second ingredient run into the line, so it says so and the cook decides, since a wrong number that looks
+    /// right is worse than a marked line.
+    /// </summary>
+    public static bool LeavesAnAmount(string line)
+    {
+        if (HedgeOn(line) is { } hedge) return LeavesAnAmount(line[hedge.Length..]);
+        if (ReadAmount(line, 0) is not { } amount) return false;
+
+        string rest = line[amount.Length..];
+        return SaidTwiceAt(rest) is { } bracket
+            ? LeavesAnAmount(rest[(bracket + 1)..])
+            : rest.Any(c => char.IsAsciiDigit(c) || FractionOf(c) is not null);
+    }
 
     /// <summary>How many people a yield is for: a range's middle, and nothing when it counts something else.</summary>
     public static double? PeopleIn(string? yield)

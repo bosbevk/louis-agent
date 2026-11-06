@@ -23,6 +23,8 @@ public class PulsAmountsTests
         Assert.That(cook, Does.Contain("Scale it with `ScaleRecipe`"));
         Assert.That(cook, Does.Contain("use its lines as they are"));
         Assert.That(cook, Does.Contain("A line it marks *(not scaled)* is yours to work out with `Calculate`"));
+        Assert.That(cook, Does.Contain("*(only the first amount scaled)*"));
+        Assert.That(cook, Does.Contain("a pack's size stays (`2 x 400 g`)"));
         Assert.That(cook, Does.Contain("On a page it says it doesn't hold"));
     }
 

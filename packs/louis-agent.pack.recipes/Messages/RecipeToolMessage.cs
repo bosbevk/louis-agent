@@ -93,6 +93,9 @@ public enum RecipeToolMessage
     [Description("{Line} (not scaled)")]
     ScaleLineNotScaled,
 
+    [Description("{Line} (only the first amount scaled)")]
+    ScaleLinePartly,
+
     [Description("## Amounts in the steps")]
     ScaleStepsHeading,
 

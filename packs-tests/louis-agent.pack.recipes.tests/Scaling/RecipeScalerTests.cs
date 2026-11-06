@@ -81,6 +81,24 @@ public class RecipeScalerTests
     public void ALineWithAnAmount_IsKnownEvenIfItCantBeScaled(string line, bool hasOne) =>
         Assert.That(RecipeAmount.HoldsAnAmount(line), Is.EqualTo(hasOne));
 
+    /// <summary>
+    /// A number left on the line after the amount that was scaled has to be told apart, or the line reads as done: a
+    /// real page had "1 cups water (250ml cups) (500ml in total)", and the cook wrote "1 cup (500 ml)". A second
+    /// measure of the same amount was scaled with it, so it leaves nothing.
+    /// </summary>
+    [TestCase("2 cups lukewarm water (250ml cups) (500ml in total)", true)]
+    [TestCase("2 medium onions, thinly sliced 15ml (1 tbsp) white sugar", true)]
+    [TestCase("4 garlic cloves (or 2 teaspoons garlic paste)", true)]
+    [TestCase("1 x 400g can tomatoes", true)]
+    [TestCase("1 packet (10g) instant yeast", true)]
+    [TestCase("about 200g pastry, or 2 sheets", true)]
+    [TestCase("125 ml (1/2 cup) dry white wine", false)]
+    [TestCase("500 g beef mince", false)]
+    [TestCase("1 onion, cut in half", false)]
+    [TestCase("salt and pepper", false)]
+    public void ANumberLeftOnTheLine_IsKnown(string line, bool leavesOne) =>
+        Assert.That(RecipeAmount.LeavesAnAmount(line), Is.EqualTo(leavesOne));
+
     /// <summary>A pot's size in a step is no amount of food.</summary>
     [Test]
     public void APotsSize_IsNoAmount() =>
