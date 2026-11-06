@@ -6,6 +6,7 @@ using LouisAgent.Web.Text;
 using ChatModel = LouisAgent.Web.Chats.Chat;
 using LouisAgent.Testing;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Time.Testing;
 
 namespace LouisAgent.Web.Tests.Chats;
 
@@ -21,7 +22,7 @@ public class ChatRunnerTests
     {
         public readonly ChatSettings Settings = new();
         public readonly RecordingJSRuntime Js = new();
-        public readonly FakeClock Clock = new(new DateTimeOffset(2026, 10, 19, 12, 0, 0, TimeSpan.Zero));
+        public readonly FakeTimeProvider Clock = new(new DateTimeOffset(2026, 10, 19, 12, 0, 0, TimeSpan.Zero));
         public readonly ChatStore Store;
         public readonly StubHandler Handler;
         public readonly ChatRunner Runner;
@@ -81,6 +82,8 @@ public class ChatRunnerTests
         await frozen.Runner.SendAsync();
         // The clock never moves: once when the turn is added, once for the first event, once when it ended.
         Assert.That(frozen.Changed, Is.EqualTo(3));
+        frozen.Clock.Advance(TimeSpan.FromSeconds(1));
+        Assert.That(frozen.Changed, Is.EqualTo(3), "the turn's end drew it all, so no catch-up is left waiting");
 
         var ticking = new Harness { Runner = { Draft = "x" } };
         ticking.Runner.Changed += () => ticking.Clock.Advance(TimeSpan.FromMilliseconds(60));
