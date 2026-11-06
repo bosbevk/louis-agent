@@ -6,16 +6,24 @@
 
 ## Purpose
 
-The framework's web: what every site shares ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). So far that's what a chat needs to work the same on each: the chat as data, the API client, a turn's life from the
-first message to the saved answer, the views of a turn and of a specialist's work, markdown, usage and currency. For now each
-site keeps its own pages, look (CSS) and JavaScript, which F59 moves here; the components only emit class names, and their
-words come from a `ChatText` each site fills in.
+The framework's web: what every site shares ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). So far that's the
+admin's frame, the chat's frame and what a chat needs to work the same on each site: the chat as data, the API client, a turn's life from
+the first message to the saved answer, the views of a turn and of a specialist's work, markdown, usage and currency. For now each site
+keeps its look (CSS) and JavaScript, which F59 moves here; the components only emit class names, and their words come from a `ChatText`,
+English by default, that a site can replace.
 
 ## How it works
 
 - **The admin's frame.** `AdminShell` is the sidebar, the phone's top bar and the content column, with slots a site's small layout
   fills: `Brand`, `Links`, `Top` and the page, plus the way back. An empty slot leaves no gap. A framework page names `AdminFrame`,
   which draws inside the layout the site set in `SiteFrames`. The frame's words are English on every site.
+- **The chat's frame.** `ChatShell` is the whole chat: the sidebar, the phone's top bar, the messages, the message box, search, the toast
+  and the work panel. A site writes a small page with its addresses and fills the slots: `Logo`, `Views`, `Profile`, `Background`, `Empty`,
+  `ViewContent` and `UsageLine`. An empty slot leaves no gap, and with no `Empty` a new chat is just the message box. The site also says how a
+  session opens (`OpenSession`), since the toolsets it asks for are its own; the frame hands it the voice, the place and the time zone as
+  a `ChatOpening`. A site can reach in for two things through `@ref`: put a draft in the message box, and say something's coming soon.
+- **Small state classes.** What the frame keeps that can be tested without drawing it is a plain class in `Shell/`: renaming a chat,
+  this browser's settings, choosing a language, a chat's costs. `ChatShell` holds them and only passes them on.
 - **One client.** `AgentApi` is the only code that calls the API: it opens a session (its toolsets, role, place and
   time zone), streams a message's events over SSE, stops and deletes sessions, and reads the toolsets, rates and other
   GETs. Components never touch `HttpClient`.
@@ -45,8 +53,14 @@ words come from a `ChatText` each site fills in.
 | `Api/AskedToolset.cs`, `Api/ScriptLanguage.cs` | The browser side's own copies of the names it uses (it cannot reference core); a test in `api.tests` checks them against core's, so they cannot drift (ADR 0043) |
 | `Chats/` | The records (`Chat`, `Turn`, `Block`, `BlockKind`, `Attachment`), the stream's folding (`TurnStream`, `Delegation`, `WorkStatus`, `RolePhases`, `SpecialistAnswer`) and `ChatRunner` |
 | `Components/` | `TurnView`, `BlocksView`, `DelegationCard`, `CurrencySwitcher`; each component's C# in its `.razor.cs` |
-| `Components/Chat/` | `MessageList`, `Composer`, `ComposerButtons`, `ChatUsageBar`, `Notice` |
-| `Text/` | `ChatText` (the components' words, the code-review app's by default), `ToolArgs` (a tool call's input on one line), `Markdown` |
+| `Components/Admin/`, `Layout/` | `AdminShell`, `AdminGate` and `SiteFrames`; `AdminFrame`, the layout that hands over to the site's |
+| `Components/Chat/` | `MessageList`, `Composer`, `ComposerButtons`, `ChatUsageBar`, `Notice`, `Toast` |
+| `Components/Chat/Shell/` | `ChatShell`, the whole frame, with `ChatOpening` and `ChatShellEmpty`, the two records it hands a site |
+| `Components/Chat/Sidebar/`, `Header/`, `Search/` | `ChatSidebar`, `ChatListItem`, `ChatMenu`, `LocationPicker`, `MotionToggle`; `ChatHeader`, `CreditsMenu`, `LanguageMenu`, `ProfileMenu`; `ChatSearch` |
+| `Components/Chat/Composing/`, `Turns/`, `Panels/` | `MessageBox`, `ComposerTools`; `UserActions`, `AnswerActions`; `WorkPanel`, `WorkItem`, `WorkStep` |
+| `Shell/` | The frame's state as plain classes: `ChatRenaming`, `ChatPreferences` (with `LocatedPlace`), `ChatLanguages`, `ChatCosts` |
+| `Search/`, `Content/` | `ChatFinder`, which matches the search; `Source` and `Sources`, a turn's sources |
+| `Text/` | `ChatText` (the components' words, English by default), `StepMarks` (a work step's mark), `ToolArgs` (a tool call's input on one line), `Markdown` |
 | `Usage/` | `TurnUsage`, `UsageFormat`, `CurrencyState`, `CurrencyChoice`, `RatesTable`, `RatesDisplay` |
 | `Storage/` | `ChatStore`, `ChatSettings` |
 
@@ -66,7 +80,8 @@ default) and in Puls's `PulsText`; markup only in a `.razor`, logic in a plain c
 
 `src/tests/web/louis-agent.web.tests`, NUnit with bUnit for the components, mirroring the folders: `ChatRunnerTests`,
 `TurnStreamTests`, `DelegationTests`, `WorkStatusTests`, `SpecialistAnswerTests`; `TurnViewTests`, `BlocksViewTests`,
-`DelegationCardTests`, `CurrencySwitcherTests`; `MarkdownTests`, `ToolArgsTests`, `UsageFormatTests`; and
+`DelegationCardTests`, `CurrencySwitcherTests`; `AdminShellTests`, `ChatShellTests` and a test for each part of the chat's frame;
+`MarkdownTests`, `ToolArgsTests`, `UsageFormatTests`; and
 `RazorHasNoCodeTests`, which fails on a `@code` block in a `.razor`. `src/tests/web/louis-agent.web.testing` holds the fakes the
 web test projects share.
 

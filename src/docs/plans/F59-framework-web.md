@@ -616,6 +616,10 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   frame (new)**, F59.5 base styles, F59.6 described screens, F59.7 the git and file controls, F59.8 recipe management, F59.9 Uploads, F59.10
   the eval pages, F59.11 spawning a site. Where earlier text uses other numbers, these win.
 
+- **2026-11-06, `ChatShell` and its parts sit by concern.** As Louis reviewed each step of F59.3: `Components/Chat/Shell/` for the frame and its
+  two records, a folder each for the sidebar, header, search, composing, turns and panels, and the state classes in `Shell/`, not all in
+  `Components/Chat/` as the namespace map says. F59.3 took twelve steps with the state classes, each its own commit.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

@@ -236,5 +236,33 @@ test didn't draw, such as the live strip showing a run, so those lean on their o
 
 Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method and Bridge (Gang of Four).
 
+## The chat's frame (F59.3, 2026-11-06)
+
+Puls's chat page was the whole chat, so a new site would have started by copying about 300 lines. Now the frame is `ChatShell` in the
+framework, and Puls's page is 28 lines of markup that fill its slots. The same two golden files pinned that page all the way through. They
+moved once, when an `<img>` built from values started closing with `>` instead of `/>`, and that was the only difference; the last step,
+the frame itself, moved neither.
+
+**Move the parts first, and the frame last.** Each small move was easy to check: the sidebar, the header, the message box, the work panel,
+each taking its words and brand from outside. By the last step the frame was only wiring, and the step that sounds biggest was one of the
+quieter ones. Doing it the other way round means one huge change that nobody can review.
+
+**Pull the state out before you move the page.** Renaming a chat, this browser's settings, choosing a language and a chat's costs each became
+a small plain class. That's a *Presentation Model* (Fowler): the rules live in a class you can test without drawing anything, and the
+screen only shows them. Without that step `ChatShell` would have been over the size limit, with its rules only testable through a page.
+
+**A move can change when your code runs.** Puls's page used to read the chat from the address in `OnParametersSet`, which Blazor called
+only when the address changed. Inside `ChatShell` the same code runs far more often, because a parent that redraws sets its child's parameters
+again whenever one of them is a slot. Puls's page redraws on every address change, so a redraw that still carried the old empty address made
+the frame look that address up and drop the open chat. Nothing about the code looks wrong; only its caller changed. So the frame now remembers
+which chat it opened. Taking that line out fails `ARedrawFromTheSite_KeepsTheOpenChat` and Puls's page test with the turn, which is how we know
+the line does its job: a test written alongside a fix hasn't proved anything until you've seen it fail without the fix.
+
+**What the tests can't see.** bUnit answers every script call with nothing, so a test can't tell whether the sidebar's edge really drags. The
+look in a browser covered that: the views, a template's draft, renaming, a favourite, search, the toast, the old address and the phone's
+width. Sending a message needs the API key and costs money, so the turn itself leans on the recorded turn in the golden file.
+
+Concept: *20 Extensibility* in the [goal](../GOAL.md); patterns: Template Method (Gang of Four), Presentation Model (Fowler).
+
 ---
 [Docs index](../README.md) · Related: [Learning](README.md) · [louis-agent.evals.checks](../projects/louis-agent.evals.checks.md)

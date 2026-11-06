@@ -15,6 +15,14 @@ Ask whether it would be the same on every site. If so it belongs here, even if o
 in from the site, and the framework names no site ([ADR 0084](../adr/0084-every-site-is-built-on-the-frameworks-web.md)). For
 now a component still emits class names and no CSS of its own: each site styles it in its `app.css`.
 
+## Change the chat's frame
+
+`Components/Chat/Shell/ChatShell.razor` is the frame, and each part is a component in the folder of its concern. Something every site
+should get is a change here. Something that differs per site is a slot or a parameter on `ChatShell`, which the site fills, never a check
+of which site this is. A new word goes in `ChatText` in English. State the frame keeps goes in a small plain class in `Shell/`, with its
+own test. A site's page redraws for its own reasons, which sets the frame's parameters again, so `OnParametersSet` there can't assume
+the address changed.
+
 ## Add an API call
 
 `Api/AgentApi.cs` is the only code that calls the API. Add a method there for a call both apps make, using
@@ -39,7 +47,7 @@ extension method in that app (the code-review app's `Workspace/AgentApiWorkspace
 1. A `.razor` with markup only, and its C# in the `.razor.cs` code-behind, in `Components/` (or `Components/Chat/`
    for a chat piece both apps lay out). Logic that needs no component goes in a plain class with NUnit tests
    (`RazorHasNoCodeTests` fails on an `@code` block).
-2. Its words go in `Text/ChatText.cs` as a property whose default is the code-review app's English. Puls sets its
+2. Its words go in `Text/ChatText.cs` as a property whose default is English. Puls sets its
    Afrikaans in `demos/puls/web/louis-agent.puls/Text/PulsText.cs`; add the property there too, or Puls shows English.
 3. Leave slots (`RenderFragment` parameters) where an app adds its own parts, as `Composer` and `MessageList` do.
 

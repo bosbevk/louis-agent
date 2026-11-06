@@ -44,7 +44,7 @@ ratchet: what's still too long is listed, and the list can only shrink.
 
 ## Consequences
 
-- **The rule is ahead of the code.** Most of Puls's frame, chat, styles and admin are still in Puls, and F59.2 to F59.8 move them.
+- **The rule is ahead of the code.** Most of Puls's styles and admin pages are still in Puls, and F59's children move them.
   Until then the old sentence "each app keeps its own pages and look" stays true in places, and those docs say *for now*.
 - **The name test finds names, not words.** An Afrikaans sentence added to the framework wouldn't fail it. Words come in through
   `ChatText`, and a review has to catch one that doesn't.

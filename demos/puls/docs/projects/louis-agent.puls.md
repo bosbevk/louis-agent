@@ -14,9 +14,10 @@ as you go: every answer shows what it cost, specialists included.
 
 ## How it works
 
-- **Pages:** `/` is the landing page (`LandingPage.razor`). The app is one page, `ChatPage.razor`, at `/gesels`,
-  `/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`; it redraws on every address change, since
-  Blazor wouldn't for the same page with the same parameters.
+- **Pages:** `/` is the landing page (`LandingPage.razor`). The app is one small page, `ChatPage.razor`, at `/gesels`,
+  `/gesels/{id}` (old `/chat/{id}` links move there), `/verken` and `/studio`. It fills the framework's `ChatShell` with what's Puls's own
+  (see [louis-agent.web](../../../../src/docs/projects/louis-agent.web.md)), and redraws on every address change, since Blazor wouldn't for
+  the same page with the same parameters.
 - **A chat** opens `POST /v1/sessions` with `toolsets: ["specialists", "web"]` where the instance has them (F29), `role: "puls/voice-{language}"` (`puls/voice-af` by default; F21, CL9, CL14) and, when the user shared it,
   `location` and `time_zone` (F22). Messages stream over SSE; `TurnStream` (shared) folds them, sub-session events
   included, into the turn the page shows.
@@ -79,10 +80,8 @@ as you go: every answer shows what it cost, specialists included.
 | `Components/Landing/` | One component per section (W2): `LandingNav`, `Hero`, `Showcase`, `HowItWorks`, `InsideTheApp` (the pinned tour), `Features` (the Kenmerke bento and marquees), `Numbers` (Syfers), `Pricing`, `About`, `Faq` (the accordion), `CallToAction`, `LandingFooter`; a section's copy is a C# array in its own file. `MiniChat` is the little picture of the app the stages and the tour show (a question, a delegation card, the body, sources, usage), six panels from one component; `LandingBars` the example bar heights two sections share. Every section's copy and the brand components' per-instance ids are in `.razor.cs` files (W2b) |
 | `Components/Landing/LandingDemo.razor` | The app's three panels in the landing page, playing three scripted turns (example data in `data-turns`, played by `landing.js`) |
 | `Components/Brand/` | `PulsLogo` (the ripple logo inline, its rings glow outward), `PulsTile` (the app icon), `PulsMark` (the mark's geometry), `Water` (the four swells behind the landing page and an empty chat) |
-| `Pages/ChatPage.razor`, `ChatPage.razor.cs` | The shell, the layout only since W2: sidebar, top bar, the chat (the shared `MessageList` and `Composer`), Verken and Studio views, the Werk panel; its own state and handlers in the code-behind, a turn's life in the shared `ChatRunner` |
-| `Components/Chat/` | `EmptyChat` (the welcome with the message box in the middle) and `Toast` at the top; by concern (W2b): `Search/ChatSearch` (Ctrl/Cmd K over the chats in this browser, matching by `Search/ChatFinder`, tested alone), `Turns/UserActions` and `AnswerActions` (under a message and an answer), `Composing/MessageBox` (the shared Composer with Puls's toolbar, `ComposerTools`), `Panels/WorkPanel` (the Werk panel), `ChatViews`, `ExploreView`, `StudioView` and `TemplateCard` (Verken and Studio). Every component's C# is its `.razor.cs`; the page names its fragments as markup templates |
-| `Components/Chat/Sidebar/` | `ChatSidebar` (the brand, a new chat, search, the views, the chats and the settings), `ChatListItem`, `ChatMenu`, `ProfileCard`, `LocationPicker`, `MotionToggle` |
-| `Components/Chat/Header/` | `ChatHeader` (the top bar), `CreditsMenu`, `LanguageMenu`, `ProfileMenu` |
+| `Pages/ChatPage.razor`, `ChatPage.razor.cs` | Puls on the framework's `ChatShell`: its addresses and what goes in the slots (the logo, Tuis, Verken and Studio, the profile card, the water, the empty chat, the cost line's words); in the code-behind which view shows, the old `/chat/{id}` address and which toolsets a session asks for |
+| `Components/Chat/` | `EmptyChat` (the welcome with the message box in the middle), `Sidebar/ProfileCard`, and `Panels/`: `ChatViews`, `ExploreView`, `StudioView` and `TemplateCard` (Verken and Studio). The rest of the chat is in `louis-agent.web` |
 | `Layout/AdminLayout.razor` | Fills the framework's `AdminShell` with Puls's own: its logo, live strip and way back, and the admin portal's sidebar by job (*Measure*: Evals, Review with its count; *Build*: Studio, Prompts; F53.2, F53.3), the live-run strip and the content column |
 | `Pages/Admin/Review.razor`, `Review.razor.cs` | The Review page at `/admin/review` (F53.3): the queue read for the kept name, one answer open with its head and the blind review panel, the keys 1, 2 and 3, the count kept current for the sidebar |
 | `Pages/Admin/Prompts.razor`, `Prompts.razor.cs` | Every built-in prompt as its header says it (CL27, ADR 0063), from `GET /v1/admin/prompts`: one table sorted by path, a row each with its name and file, level, description and the toolsets it always loads (a dash for none); styles at the end of `css/admin/shell.css` |
@@ -102,7 +101,7 @@ as you go: every answer shows what it cost, specialists included.
 | `Components/Admin/Summary/` | `SummaryPanel`, `SummaryTable`, `RateBar`: a run's results by category, a rate as a bar (F18 step 5c.3, 6a.3c) |
 | `Admin/` | `RunModelFilter`: the runs list's model filter; `Grades/`: the records both components use (`GradeOutcome`, `GraderRow`, `GradeRow`, `RunGraders`, `ConversationGrades`) and their words (`GradesText`); `Grades/Reading/`: the outcome parsed once (`GradeOutcomes`); the run's graders and a conversation's grades come from their typed rows (`RunGraders.Of`, `ConversationGrades.Of`); `Grades/Chips/`: the chip list (`GradeChip`, `GradeChipList`) and an outcome's chip class (`ChipKind`); `Charts/`: the charts' colours and maths, no markup (`ChartPalette`, the six series colours for the trend chart and the explorer, `RingArcs`, `TokenKinds`, `ChartNumbers`); `Reviews/`: the review's rules and words in plain classes: `BlindReview` (the one place that knows `.human`: `IsReview`, `JudgeOf`; who answered: `OwnGrades`, `Answered`; which review a conversation shows: `ReviewOf`; what hides the judge's verdict; whether the person agreed: `Compare`), `ReviewStatus` (to review, reviewed, no review, and the list's filter `Keeps`), `ReviewText` and `AgreementText` (the sentences), `CalibrationText` and `CalibrationView` (the judge check), `ReviewerName` and `ReviewNote` (their limits), `ReviewerState`; `Reviews/Queue/` (F53.3): `ReviewQueueView` (the Review page's model), `ReviewQueueText` (its words), `ReviewKeys` (1, 2, 3 as verdicts), `ReviewQueueState` (how many wait, shared with the badge) |
 | `Text/PulsText.cs` | The shared components' words in Afrikaans (`ChatText`) |
-| `Content/` | `Source` and `Sources` (a turn's sources: the answer's links and the pages its specialists read); `Template` and `Templates` (the starters on Verken and Studio) |
+| `Content/` | `Template` and `Templates` (the starters on Verken and Studio) |
 | `wwwroot/css/` | The dark theme (orange, green, charcoal, a charcoal-tinted white; Montserrat): `app.css` is the `@import` list in cascade order, the rules in area files at most 200 lines each (`settings/tokens.css`, `base/`, `layout/`, `chat/`, `landing/`, `admin/`; CL26, [ADR 0053](../../../../src/docs/adr/0053-stylesheets-by-concern.md)) |
 | `wwwroot/js/chat.js` | Scrolling, the sidebar and panel toggles, copy, location (browser + Nominatim), focus, the pointer spotlight and tilt, the motion switch, costs counting up |
 | `wwwroot/js/landing.js` | The landing page's motion (F24): progress line, section index, centred links, reveals, counters, the pinned tour, the demo, the accordion; started and stopped by `LandingPage.razor` |
@@ -156,16 +155,16 @@ pinned by digest.
 ## Extending it
 
 The steps are in [Change the Puls web app](../guides/change-the-puls-app.md). In short: a starter is a line in
-`Content/Templates.cs`; a chat piece is a component under `Components/Chat/` by concern; a placeholder made real
-replaces its "kom binnekort" toast and keeps the label. Puls's voice and roles are the Puls identity's prompts
+`Content/Templates.cs`; a chat piece every site would share goes in `louis-agent.web`, and only what's Puls's own goes under
+`Components/Chat/`; a placeholder made real replaces its "kom binnekort" toast and keeps the label. Puls's voice and roles are the Puls identity's prompts
 ([Build an identity](../../../../src/docs/guides/build-an-identity.md)); built in, so a change is a rebuild.
 
 ## Tests
 
 `demos/puls/tests/louis-agent.puls.tests`, NUnit with bUnit: `Pages/ChatPageTests` renders the chat against `FixtureApi`, streams
 the recorded Puls turn, lists the page's JavaScript calls and pins `ChatPage.empty.html` and `ChatPage.turn.html`;
-`Pages/LandingPageTests` pins the landing page; `Components/` pins `WorkPanel`, `TemplateCard` and `PulsTile`;
-`Search/ChatFinderTests` tests the search. The layout at 1440, 1100 and 420 px wide is still checked by hand.
+`Pages/LandingPageTests` pins the landing page; `Components/` pins `WorkPanel`, `TemplateCard` and `PulsTile`. The layout at 1440, 1100
+and 420 px wide is still checked by hand.
 
 ## Limits and plans
 
