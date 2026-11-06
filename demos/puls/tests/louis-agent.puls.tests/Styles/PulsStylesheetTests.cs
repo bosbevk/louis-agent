@@ -3,22 +3,23 @@ using LouisAgent.Testing;
 namespace LouisAgent.Puls.Tests.Styles;
 
 /// <summary>
-/// Puls's stylesheet is app.css's import list (CL26): every area file is imported once, nothing imported is missing,
-/// and the tokens come first so every later rule can use them.
+/// Puls's stylesheet is Sass: <c>app.scss</c> is the ordered list of partials, and the build makes one CSS file from
+/// it. Every partial is on the list once, nothing on the list is missing, and the colours come first so every later
+/// rule can use them. The CSS itself isn't in git, so what's checked here is what the build really made.
 /// </summary>
 public class PulsStylesheetTests
 {
     /// <summary>Puls's stylesheet.</summary>
-    private static readonly Stylesheet Css = Stylesheet.Of("louis-agent.puls");
+    private static readonly SassStylesheet Css = SassStylesheet.Of("louis-agent.puls");
 
-    /// <summary>Every area file is imported, and every import points at a file that's there.</summary>
+    /// <summary>Every partial is on the list, and everything on the list is there.</summary>
     [Test]
-    public void EveryAreaFile_IsImported_AndEveryImportIsThere() =>
-        Assert.That(Css.Imports().Order(), Is.EqualTo(Css.AreaFiles().Order()));
+    public void EveryPartial_IsOnTheList_AndEveryNameOnTheListIsThere() =>
+        Assert.That(Css.Forwards().Order(), Is.EqualTo(Css.AreaFiles().Order()));
 
     /// <summary>
-    /// Every file a rule points at is one the app serves (FX30): the delegation card's Puls tile went missing when its
-    /// rule moved from app.css into css/chat/ and kept its <c>../brand/</c>.
+    /// Every file a rule points at is one the app serves (FX30): the delegation card's Puls tile went missing once when
+    /// its rule moved and kept its old path.
     /// </summary>
     [Test]
     public void EveryUrl_PointsAtAFileTheAppServes()
@@ -29,19 +30,33 @@ public class PulsStylesheetTests
         Assert.That(urls.Where(u => !File.Exists(u.Target)).Select(u => $"{u.File}: {u.Url}"), Is.Empty);
     }
 
-    /// <summary>The tokens are imported first, then the plain elements: the rest of the files build on them.</summary>
+    /// <summary>The colours are first on the list, then the plain elements: the rest build on them.</summary>
     [Test]
-    public void TheTokensComeFirst_ThenThePlainElements() =>
-        Assert.That(Css.Imports().Take(2), Is.EqualTo(new[] { "settings/tokens.css", "base/elements.css" }));
+    public void TheColoursComeFirst_ThenThePlainElements() =>
+        Assert.That(Css.Forwards().Take(2), Is.EqualTo(new[] { "settings/tokens", "base/elements" }));
 
-    /// <summary>The stylesheet reads as the files in their import order, one after the other.</summary>
+    /// <summary>The CSS holds every partial's rules in the list's order, since that decides which rule wins.</summary>
     [Test]
-    public void TheStylesheet_IsTheFilesInImportOrder()
+    public void TheCss_HoldsEveryPartial_InTheListsOrder()
     {
-        var starts = Css.Starts();
+        string css = Css.Read();
+        int at = 0;
 
-        Assert.That(starts, Is.All.GreaterThanOrEqualTo(0), "every file is in it");
-        Assert.That(starts, Is.Ordered, "in import order");
+        foreach (string partial in Css.Forwards().Skip(1))
+        {
+            string selector = FirstSelector(Css.Source(partial));
+            int found = css.IndexOf(selector, at, StringComparison.Ordinal);
+            Assert.That(found, Is.GreaterThanOrEqualTo(0), $"{partial}'s {selector} comes after the one before");
+            at = found;
+        }
+    }
+
+    /// <summary>A colour is written once, and the build makes both its forms, so the two can't disagree.</summary>
+    [Test]
+    public void AColour_IsWrittenOnce_AndTheCssHoldsBothItsForms()
+    {
+        Assert.That(Css.Read(), Does.Contain("--bs-primary: #f58220;").And.Contain("--bs-primary-rgb: 245, 130, 32;"));
+        Assert.That(Css.Source("settings/tokens"), Does.Contain("#f58220").And.Not.Contain("245, 130, 32"));
     }
 
     /// <summary>
@@ -52,18 +67,26 @@ public class PulsStylesheetTests
     [Test]
     public void ATrendsChange_StaysOnOneLine_AndTheSmallPanelsFillTheirCard()
     {
-        Assert.That(Rule("admin/benchmarks.css", ".trend-delta {"), Does.Contain("white-space: nowrap"));
-        Assert.That(Rule("admin/run-page.css", ".trend.compact .trend-grid {"),
-            Does.Contain("repeat(auto-fit, minmax("));
+        Assert.That(Rule(".trend-delta {"), Does.Contain("white-space: nowrap"));
+        Assert.That(Rule(".trend.compact .trend-grid {"), Does.Contain("repeat(auto-fit, minmax("));
     }
 
-    /// <summary>The one rule in an area file that starts with this selector, up to its closing brace.</summary>
-    private static string Rule(string file, string selector)
+    /// <summary>The first rule in the CSS that starts with this selector, up to its closing brace.</summary>
+    private static string Rule(string selector)
     {
-        string text = File.ReadAllText(Path.Combine(TestPaths.RepoRoot, "demos/puls/web/louis-agent.puls", "wwwroot", "css",
-            file));
+        string text = Css.Read();
         int start = text.IndexOf(selector, StringComparison.Ordinal);
-        Assert.That(start, Is.GreaterThanOrEqualTo(0), $"{file} has {selector}");
+        Assert.That(start, Is.GreaterThanOrEqualTo(0), $"the CSS has {selector}");
         return text[start..(text.IndexOf('}', start) + 1)];
+    }
+
+    /// <summary>The start of a partial's first rule, comments skipped: enough to find it again in the CSS.</summary>
+    private static string FirstSelector(string source)
+    {
+        string text = source.TrimStart();
+        while (text.StartsWith("/*", StringComparison.Ordinal))
+            text = text[(text.IndexOf("*/", StringComparison.Ordinal) + 2)..].TrimStart();
+
+        return text[..text.IndexOfAny([' ', ',', '{', '\n', '\r'])];
     }
 }

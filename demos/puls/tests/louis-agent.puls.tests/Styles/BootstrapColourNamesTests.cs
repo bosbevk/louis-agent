@@ -23,8 +23,9 @@ public class BootstrapColourNamesTests
     {
         string app = Path.Combine(TestPaths.RepoRoot, "demos/puls/web/louis-agent.puls");
         string[] files = Directory.GetFiles(app, "*.*", SearchOption.AllDirectories)
-            .Where(f => f.EndsWith(".css", StringComparison.Ordinal) || f.EndsWith(".razor", StringComparison.Ordinal)
-                                                                     || f.EndsWith(".cs", StringComparison.Ordinal))
+            .Where(f => f.EndsWith(".scss", StringComparison.Ordinal) || f.EndsWith(".css", StringComparison.Ordinal)
+                                                                      || f.EndsWith(".razor", StringComparison.Ordinal)
+                                                                      || f.EndsWith(".cs", StringComparison.Ordinal))
             .Where(f => !f.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
                         && !f.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}"))
             .ToArray();
@@ -58,7 +59,7 @@ public class BootstrapColourNamesTests
     [TestCase("--web-sidebar-foot-deep", "#0d0f10")]
     [TestCase("--web-code-bg", "#2a2e33")]
     public void EachNewName_HoldsTheOldValue(string name, string value) =>
-        Assert.That(Stylesheet.Of("louis-agent.puls").Read(), Does.Contain($"{name}: {value};"));
+        Assert.That(SassStylesheet.Of("louis-agent.puls").Read(), Does.Contain($"{name}: {value};"));
 
     /// <summary>Whether this text sets or reads the name, and not a longer name that starts with it.</summary>
     private static bool Uses(string text, string name) =>

@@ -1,0 +1,15 @@
+// Writes a colour's CSS variables from one value. A rule that needs a colour see-through reads its numbers,
+// rgba(var(--bs-primary-rgb), .4), so each colour needs two forms, and writing them by hand lets them disagree: a site
+// that set only one would get its own button with Bootstrap's blue glow.
+@use "sass:color";
+
+// The colour as numbers only, for one that's only ever used see-through: --name-rgb.
+@mixin numbers($name, $value) {
+    --#{$name}-rgb: #{color.channel($value, "red", $space: rgb)}, #{color.channel($value, "green", $space: rgb)}, #{color.channel($value, "blue", $space: rgb)};
+}
+
+// Both forms: --name and --name-rgb. Bootstrap has no numbers form for a few of its names, so those give their own.
+@mixin both($name, $value, $numbers-name: $name) {
+    --#{$name}: #{$value};
+    @include numbers($numbers-name, $value);
+}

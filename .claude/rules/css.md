@@ -1,31 +1,43 @@
 ---
 paths:
   - "**/*.css"
+  - "**/*.scss"
 ---
 
-# CSS: the how of every rule
+# CSS and Sass: the how of every rule
 
-Loaded when a `.css` file is read or edited. The why: [ADR 0053](../../src/docs/adr/0053-stylesheets-by-concern.md)
-(stylesheets by concern) and [ADR 0054](../../src/docs/adr/0054-a-move-may-copy-line-ranges.md) (a move may copy line
-ranges).
+Loaded when a `.css` or `.scss` file is read or edited. The why: [ADR 0085](../../src/docs/adr/0085-styles-are-written-in-sass.md)
+(Sass, and always reuse), [ADR 0053](../../src/docs/adr/0053-stylesheets-by-concern.md) (stylesheets by concern) and
+[ADR 0054](../../src/docs/adr/0054-a-move-may-copy-line-ranges.md) (a move may copy line ranges).
 
-- **A `.css` file holds at most 200 lines of rules**; a comment line (`/* … */`, one line or many) and a blank line
-  don't count, a rule with a comment beside it does. `FileSizeTests` holds it.
-- **`app.css` is the `@import` list**, one area file a line, in folders by concern (Puls: `settings/`, `base/`,
-  `layout/`, `chat/`, `landing/`, `admin/`; the code-review app: `base/`, `layout/`, `workspace/`, `git/`, `chat/`).
-  **The import order is the cascade**: the tokens and the plain elements first, the rest in the order its rules always
-  came, so a later rule still wins where it did.
-- **A new rule goes in the file of its concern.** A file that grows past 200 lines is split, its new file imported
-  where its lines were; a move between files that would change which rule wins is checked in the browser.
-- **Colours, fonts and corners come from the tokens** (Puls's `settings/tokens.css`, a code-review theme in
-  `themes/`); a new colour is a token first. A theme stays a file of its own, loaded by the page.
+- **Always reuse.** Before writing a rule, look for a variable, mixin or partial that already does it. What repeats
+  becomes one shared piece under `tools/` that both places use, and a site `@use`s the framework's Sass and never copies
+  it. A step says what it reused and what new piece it added.
+- **Styles are Sass, under `Styles/`** (Puls; the code-review app and its themes stay on plain CSS under `wwwroot/css/`
+  until F59.7, the same rules with `@import`). The build makes `wwwroot/css/app.css`, which isn't in git, so edit the
+  partial, never that file. Existing rules take nesting as they're touched, never in a sweep.
+- **A partial or `.css` file holds at most 200 lines of rules**; a comment line (`/* … */`, one line or many) and a blank
+  line don't count, a rule with a comment beside it does. `FileSizeTests` holds it.
+- **`app.scss` is the list**, one `@forward` a line, of partials in folders by concern (`settings/`, `base/`, `layout/`,
+  `chat/`, `landing/`, `admin/`; the code-review app: `base/`, `layout/`, `workspace/`, `git/`, `chat/`). **Its order is
+  the cascade**: the colours and the plain elements first, the rest in the order its rules always came, so a later rule
+  still wins where it did. `tools/` writes no CSS of its own, so it isn't on the list.
+- **A new rule goes in the partial of its concern.** One that grows past 200 lines is split, its new partial listed where
+  its lines were; a move between partials that would change which rule wins is checked in the browser.
+- **A colour is a variable, never a value, outside the tokens** (`settings/_tokens.scss`, a code-review theme in
+  `themes/`): a rule reads Bootstrap's name, or a `--web-` name where it has none, and `FixedColourTests` holds the shared
+  rules to it. A see-through colour reads the numbers, `rgba(var(--bs-primary-rgb), .4)`; `tools/_colours.scss` writes both
+  forms from one value, so a colour is written once. What a rule reads at run time stays a CSS variable, since a Sass
+  variable is fixed when the build runs. A theme stays a file of its own, loaded by the page.
+- **A path in `url(…)` is from where the CSS ends up,** `wwwroot/css/app.css`, whichever partial holds the rule.
 - **A class name says what it is and can't clash:** a state or a kind on a shared element takes a prefix
   (`is-replay`, `is-recorded`), since a bare `.replay` was already the landing page's button.
 - **A pure move** (a split, a regrouping with no text changed) may copy whole line ranges with `sed -b -n 'a,bp'`,
   then proves it: the new files joined in their order are `cmp`-identical to the old one, and the step says so. Any
   change to the text itself is an edit.
-- **Every area file is imported and every import is there:** each app's `StylesheetTests` (Puls's
-  `PulsStylesheetTests`) checks it through `Stylesheet` in `src/tests/web/louis-agent.web.testing`; a style test finds its
-  rule through `Stylesheet.Of(project).Read()`, never by opening one file.
+- **Every partial is on the list and everything on the list is there:** `PulsStylesheetTests` checks it through
+  `SassStylesheet`, and the code-review app's `StylesheetTests` through `Stylesheet`, both in
+  `src/tests/web/louis-agent.web.testing`. A style test finds its rule through `.Read()`, never by opening one file; on
+  Sass, that's the CSS the build made.
 - **Checked in the browser:** a step that changes a style looks at the page, at desktop and at phone width (390 px,
   no sideways scroll), before it is shown.

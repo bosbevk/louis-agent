@@ -20,11 +20,11 @@ public partial class FixedColourTests
     [Test]
     public void TheSharedRules_HoldNoFixedColour()
     {
-        var css = Stylesheet.Of("louis-agent.puls");
+        var css = SassStylesheet.Of("louis-agent.puls");
 
         var found = css.AreaFiles()
             .Where(file => SharedFolders.Any(folder => file.StartsWith(folder, StringComparison.Ordinal)))
-            .Select(file => (File: file, Count: FixedColour().Count(File.ReadAllText(Path.Combine(css.Folder, file)))))
+            .Select(file => (File: file, Count: FixedColour().Count(css.Source(file))))
             .Where(file => file.Count > 0)
             .Select(file => $"{file.File}: {file.Count}");
 
@@ -58,5 +58,5 @@ public partial class FixedColourTests
     [TestCase("--web-code-comment", "#8b93ad")]
     [TestCase("--web-live-dot", "#3fb950")]
     public void EachVariable_HoldsTheValueTheRulesHad(string name, string value) =>
-        Assert.That(Stylesheet.Of("louis-agent.puls").Read(), Does.Contain($"{name}: {value};"));
+        Assert.That(SassStylesheet.Of("louis-agent.puls").Read(), Does.Contain($"{name}: {value};"));
 }

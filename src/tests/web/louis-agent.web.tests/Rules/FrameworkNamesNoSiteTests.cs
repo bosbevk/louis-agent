@@ -7,7 +7,7 @@ namespace LouisAgent.Web.Tests.Rules;
 [TestFixture]
 public class FrameworkNamesNoSiteTests
 {
-    private static readonly string[] Kinds = [".cs", ".razor", ".css", ".js", ".html", ".csproj"];
+    private static readonly string[] Kinds = [".cs", ".razor", ".scss", ".css", ".js", ".html", ".csproj"];
 
     /// <summary>Every file in the framework's web is read, and no line may hold a site's name.</summary>
     [Test]

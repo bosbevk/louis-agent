@@ -53,3 +53,6 @@ logs/
 
 # Python bytecode (the sample scripts)
 __pycache__/
+
+# What the build makes from a web app's Styles/
+demos/puls/web/louis-agent.puls/wwwroot/css/

@@ -61,6 +61,9 @@ public sealed partial record Stylesheet(string Folder)
                 Path.GetFullPath(Path.Combine(Folder, Path.GetDirectoryName(file) ?? "", url)))))
     ];
 
+    /// <summary>The relative paths the <c>url(…)</c>s in this CSS point at, for a reader that holds the CSS.</summary>
+    public IEnumerable<string> PathsOf(string css) => PathsIn(css).Where(IsRelative);
+
     /// <summary>
     /// The path inside each <c>url(…)</c> of one file, read by hand rather than by a regular expression (ADR 0057): a
     /// quoted path runs to its own closing quote, so <c>url("../../brand/tile.svg")</c> gives

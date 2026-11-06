@@ -12,6 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Compiles Styles/ into wwwroot/css/app.css on every build. Build time only: nothing of it reaches the browser. -->
+    <PackageReference Include="AspNetCore.SassCompiler" Version="1.107.1" PrivateAssets="all" ExcludeAssets="runtime;compile" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.12" PrivateAssets="all" />
   </ItemGroup>
@@ -19,6 +21,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
     <ProjectReference Include="..\..\..\..\src\hosts\louis-agent.api.contracts\louis-agent.api.contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The Sass compiler's settings are for the build, so they stay out of what's published. -->
+    <Content Update="sasscompiler.json" CopyToOutputDirectory="Never" CopyToPublishDirectory="Never" />
   </ItemGroup>
 
   <ItemGroup>

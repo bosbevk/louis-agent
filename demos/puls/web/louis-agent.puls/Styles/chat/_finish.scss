@@ -68,9 +68,9 @@ body::before {
 .hero-mark .pulse-bg { overflow: visible; z-index: 0; }
 .hero-mark .pulse-bg::before { width: min(300px, 70vw); }
 
-/* A delegation comes from Puls: its avatar is the charcoal tile instead of an initial. The path climbs out of css/chat/
-   to wwwroot/brand/ (FX30: it said ../brand/ from when the rule sat in css/app.css). */
-.delegation-avatar { background: url("../../brand/puls-icon-tile.svg") center / cover no-repeat; color: transparent; font-size: 0; }
+/* A delegation comes from Puls: its avatar is the charcoal tile instead of an initial. The path is from where the build
+   puts the CSS, wwwroot/css/app.css, whichever partial holds the rule (FX30). */
+.delegation-avatar { background: url("../brand/puls-icon-tile.svg") center / cover no-repeat; color: transparent; font-size: 0; }
 
 /* ---- Dark (F20): the glows. Soft orange and green light behind the chat, as in the Sensai look; drawn on the page so
    the sidebar, the chat and the composer's fade all sit over the same light. ---- */

@@ -81,7 +81,7 @@ public class FileSizeTests
     private static int? Lines(string file) => Path.GetExtension(file) switch
     {
         ".cs" or ".razor" => CountCodeLines(File.ReadAllLines(file)),
-        ".css" => CountCssLines(File.ReadAllLines(file)),
+        ".css" or ".scss" => CountCssLines(File.ReadAllLines(file)),
         _ => null
     };
 
@@ -119,9 +119,15 @@ public class FileSizeTests
         return count;
     }
 
-    /// <summary>What the build wrote (bin/, obj/) isn't ours to size.</summary>
+    /// <summary>A web app on Sass gets its <c>app.css</c> from the build; its partials are what's sized.</summary>
+    private static bool IsMadeFromSass(string path) =>
+        Path.GetFileName(path) == "app.css"
+        && File.Exists(Path.Combine(Path.GetDirectoryName(path)!, "..", "..", "Styles", "app.scss"));
+
+    /// <summary>What the build wrote (bin/, obj/, the CSS it makes from Sass) isn't ours to size.</summary>
     private static bool InBuildOutput(string path) =>
-        path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
+        IsMadeFromSass(path)
+        || path.Contains($"{Path.DirectorySeparatorChar}bin{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}obj{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}data{Path.DirectorySeparatorChar}")
         || path.Contains($"{Path.DirectorySeparatorChar}logs{Path.DirectorySeparatorChar}");
