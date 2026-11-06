@@ -196,7 +196,8 @@ public sealed class RecipeTools
 
         // A proper recipe goes in the library, from the page's data or from headings that plainly show one. The cook
         // still reads a page with no data as its text, so what it sees doesn't depend on what we could keep.
-        if (whole is not null) await _shelf.KeepAsync(whole with { Image = photo }, cancellationToken);
+        if (whole is not null)
+            await _shelf.KeepAsync(PageYield.Checked(whole, visit.Html, page) with { Image = photo }, cancellationToken);
 
         return recipe is null
             ? RecipeHitPrinter.Framed(PageWords(visit.Html, page, photo))

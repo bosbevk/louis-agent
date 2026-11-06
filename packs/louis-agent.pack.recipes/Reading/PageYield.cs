@@ -26,18 +26,113 @@ internal static class PageYield
     /// <summary>Longer than this is a sentence that happens to start the same way, not a yield.</summary>
     private const int LongestLine = 40;
 
-    /// <summary>The recipe as it came, or with the page's words in place of a yield of one.</summary>
+    /// <summary>Longer than this before "servings" isn't a number of them.</summary>
+    private const int LongestNumber = 10;
+
+    /// <summary>Words a page puts before the number of people it feeds.</summary>
+    private static readonly string[] PeopleWords = ["serves", "servings", "serving", "feeds", "bedien", "dien", "porsies"];
+
+    /// <summary>Words a page puts before what it makes.</summary>
+    private static readonly string[] MakesWords = ["makes", "yields", "yield"];
+
+    /// <summary>What can follow a number of people, which the yield doesn't need to say again.</summary>
+    private static readonly string[] PeopleEndings = [" persons", " people", " mense", " porsies", " servings", " serving"];
+
+    /// <summary>The recipe as it came, or with the page's words where its yield is missing or says one.</summary>
     public static Recipe Checked(Recipe recipe, string html, Uri page) =>
-        SaysOneServing(recipe.Yield) ? recipe with { Yield = FromWords(html, page) } : recipe;
+        string.IsNullOrWhiteSpace(recipe.Yield) || SaysOneServing(recipe.Yield)
+            ? recipe with { Yield = FromWords(html, page) }
+            : recipe;
 
     /// <summary>Exactly one serving, or a bare 1: nothing else is doubted.</summary>
     private static bool SaysOneServing(string? yield) =>
         yield?.Trim().ToLowerInvariant() is "1" or "1 serving" or "1 servings";
 
     /// <summary>What the page says: its marked-up number first, then the first line of text that gives one.</summary>
-    private static string? FromWords(string html, Uri page) =>
-        Marked(html) ?? HtmlText.ToText(html, page).Text.Split('\n').Select(line => Yield(line.Trim()))
-            .FirstOrDefault(yield => yield is not null);
+    private static string? FromWords(string html, Uri page)
+    {
+        if (Marked(html) is { } marked) return marked;
+
+        string[] lines =
+        [
+            .. HtmlText.ToText(html, page).Text.Replace(' ', ' ').Split('\n').Select(line => line.Trim('#', '*', ' '))
+                .Where(line => line.Length > 0)
+        ];
+        for (int at = 0; at < lines.Length; at++)
+        {
+            // Some pages put the word and its number on lines of their own.
+            bool alone = !lines[at].TrimEnd(':').Contains(' ') && at + 1 < lines.Length;
+            if (InWords(lines[at]) is { } found) return found;
+            if (alone && InWords($"{lines[at].TrimEnd(':')} {lines[at + 1]}") is { } split) return split;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// One line as a yield, however the page words it: <c>Serves: 6</c>, <c>SERVES 4 to 6 persons</c>, <c>Yield: 12
+    /// rolls</c>, <c>8 servings</c>, or any of those in a bracket, or after a dish's name in capitals.
+    /// </summary>
+    /// <remarks>Guard clauses, one per way a line can say it (ADR 0051).</remarks>
+    private static string? InWords(string line)
+    {
+        if (Plainly(line) is { } said) return said;
+        if (AfterADishsName(line) is { } named) return named;
+
+        int open = line.IndexOf('(');
+        if (open < 0) return null;
+
+        int close = line.IndexOf(')', open);
+        return Plainly(close < 0 ? line[(open + 1)..] : line[(open + 1)..close]);
+    }
+
+    /// <summary>The yield after a dish's name in capitals: <c>BOBOTIE Serves 4 to 6</c>. A sentence's isn't.</summary>
+    private static string? AfterADishsName(string line)
+    {
+        int at = line.IndexOf(" Serves ", StringComparison.Ordinal);
+        if (at <= 0) return null;
+
+        var letters = line[..at].Where(char.IsLetter).ToList();
+        return letters.Count > 0 && letters.All(char.IsUpper) ? Plainly(line[(at + 1)..]) : null;
+    }
+
+    /// <summary>A line that starts by saying the yield, with nothing before it.</summary>
+    /// <remarks>Guard clauses, one per way a line can say it (ADR 0051).</remarks>
+    private static string? Plainly(string line)
+    {
+        string text = line.Trim();
+        if (text.Length == 0) return null;
+
+        if (char.IsAsciiDigit(text[0])) return PeopleCounted(text);
+
+        int space = text.IndexOf(' ');
+        if (space < 0) return null;
+
+        string word = text[..space].TrimEnd(':');
+        string rest = text[space..].Trim();
+        if (rest.Length == 0 || rest.Length > LongestLine || !char.IsAsciiDigit(rest[0])) return null;
+
+        if (MakesWords.Contains(word, StringComparer.OrdinalIgnoreCase)) return rest;
+        return PeopleWords.Contains(word, StringComparer.OrdinalIgnoreCase) ? Servings(rest) : null;
+    }
+
+    /// <summary>A line that starts with a number of servings: <c>8-10 servings, more if a relish</c>.</summary>
+    private static string? PeopleCounted(string text)
+    {
+        string? ending = PeopleEndings.FirstOrDefault(found => text.Contains(found, StringComparison.OrdinalIgnoreCase));
+        if (ending is null) return null;
+
+        string number = text[..text.IndexOf(ending, StringComparison.OrdinalIgnoreCase)];
+        return number.Length <= LongestNumber && !number.Any(char.IsLetter) ? Servings(number) : null;
+    }
+
+    /// <summary>A number of people as the yield says it, without a word for people after it.</summary>
+    private static string Servings(string people)
+    {
+        string? ending = PeopleEndings.FirstOrDefault(found => people.EndsWith(found, StringComparison.OrdinalIgnoreCase));
+        return MessageText.Format(RecipeToolMessage.RecipeServings,
+            new { People = ending is null ? people : people[..^ending.Length] });
+    }
 
     /// <summary>The element marked <c>itemprop="recipeYield"</c>, read as a line: a bare number is people.</summary>
     private static string? Marked(string html)
