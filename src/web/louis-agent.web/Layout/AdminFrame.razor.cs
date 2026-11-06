@@ -14,5 +14,6 @@ namespace LouisAgent.Web.Layout;
 /// <seealso href="https://refactoring.guru/design-patterns/bridge">Bridge (Refactoring.Guru)</seealso>
 public partial class AdminFrame
 {
+    /// <summary>The site's layouts, set once by the site.</summary>
     [Inject] private SiteFrames Frames { get; set; } = null!;
 }
