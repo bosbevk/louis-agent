@@ -140,6 +140,20 @@ public class SampleDraftsTests
     public void AConversationWithNoTurns_IsRefused() =>
         Assert.Throws<ArgumentException>(() => Make(Choices()));
 
+    /// <summary>
+    /// The role the scenario opens in comes along, so a question in English drafted from a run still opens in English.
+    /// </summary>
+    [Test]
+    public void TheScenariosRole_IsKept()
+    {
+        var english = Scenario with { Metadata = Scenario.Metadata with { Role = "puls/voice-en" } };
+
+        var draft = SampleDrafts.Of("draft1234567", "eval-a", "identity-a", "run123456789", CookAf,
+            [Turn(1, "What can I cook?")], english, Choices(), At);
+
+        Assert.That(draft.Sample.Metadata.Role, Is.EqualTo("puls/voice-en"));
+    }
+
     /// <summary>An id that can't name a scenario file (a capital, a space, a path) is refused, saying so.</summary>
     [TestCase("Cook-af")]
     [TestCase("cook af")]
