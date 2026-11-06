@@ -1,8 +1,8 @@
-using LouisAgent.CodeReview.Workspace;
+using LouisAgent.Packs.Files.Web.Reading;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace LouisAgent.CodeReview.Components.Workspace;
+namespace LouisAgent.Packs.Files.Web.Views;
 
 /// <summary>One open file with line numbers and highlighting, and the buttons to review or ask about it.</summary>
 public partial class FileViewer

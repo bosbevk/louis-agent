@@ -1,4 +1,4 @@
-namespace LouisAgent.CodeReview.Workspace;
+namespace LouisAgent.Packs.Files.Web.Reading;
 
 /// <summary>A file's size as the viewer's header says it (W2b, from FileViewer).</summary>
 public static class FileSize

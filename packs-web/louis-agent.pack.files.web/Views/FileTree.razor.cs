@@ -1,8 +1,8 @@
-using LouisAgent.CodeReview.Workspace;
+using LouisAgent.Packs.Files.Web.Reading;
 using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.CodeReview.Components.Workspace;
+namespace LouisAgent.Packs.Files.Web.Views;
 
 /// <summary>One folder of the file browser. An opened folder shows another of these, one level deeper.</summary>
 public partial class FileTree
@@ -26,7 +26,7 @@ public partial class FileTree
         catch (Exception ex)
         {
             _error = ex is AgentApiException { Status: System.Net.HttpStatusCode.Unauthorized }
-                ? "Enter the API key below to browse files."
+                ? "Enter the API key in the chat's settings to browse files."
                 : ex.Message;
         }
     }

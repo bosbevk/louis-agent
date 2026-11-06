@@ -1,8 +1,8 @@
 using LouisAgent.Choices;
-using LouisAgent.CodeReview.Workspace;
+using LouisAgent.Packs.Files.Web.Reading;
 using LouisAgent.Web.Api;
 
-namespace LouisAgent.CodeReview.Tests.Workspace;
+namespace LouisAgent.Packs.Files.Web.Tests.Reading;
 
 /// <summary>The highlight.js language for a workspace file, by its name; none means plain text.</summary>
 public class CodeLanguageTests

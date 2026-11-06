@@ -1,6 +1,6 @@
-using LouisAgent.CodeReview.Workspace;
+using LouisAgent.Packs.Files.Web.Reading;
 
-namespace LouisAgent.CodeReview.Tests.Workspace;
+namespace LouisAgent.Packs.Files.Web.Tests.Reading;
 
 /// <summary>A file's size in the viewer's header: bytes, then KB and MB to one decimal.</summary>
 public class FileSizeTests

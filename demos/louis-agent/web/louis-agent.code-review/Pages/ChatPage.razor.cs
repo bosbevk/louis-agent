@@ -1,6 +1,7 @@
 using LouisAgent.CodeReview.Components.Git;
 using LouisAgent.CodeReview.Git;
 using LouisAgent.CodeReview.Workspace;
+using LouisAgent.Packs.Files.Web.Reading;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Storage;

@@ -1,7 +1,7 @@
 using LouisAgent.Choices;
 using LouisAgent.Web.Api;
 
-namespace LouisAgent.CodeReview.Workspace;
+namespace LouisAgent.Packs.Files.Web.Reading;
 
 /// <summary>The highlight.js language for a workspace file (W2b, from FileViewer).</summary>
 public static class CodeLanguage

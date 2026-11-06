@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\web\louis-agent.web\louis-agent.web.csproj" />
+    <ProjectReference Include="..\..\..\..\packs-web\louis-agent.pack.files.web\louis-agent.pack.files.web.csproj" />
   </ItemGroup>
 
   <ItemGroup>
