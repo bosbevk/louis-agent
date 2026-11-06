@@ -113,7 +113,7 @@ public class ScreenTableTests
         Assert.That(link.GetAttribute("rel"), Is.EqualTo("noopener noreferrer"));
     }
 
-    /// <summary>Only a web address becomes a link: what a page said about itself can't run in the admin's tab.</summary>
+    /// <summary>Only a web address becomes a link: what a page said of itself can't run in the admin's tab.</summary>
     [TestCase("javascript:alert(1)")]
     [TestCase("data:text/html,x")]
     [TestCase("not an address")]
@@ -259,7 +259,7 @@ public class ScreenTableTests
         Assert.That(empty.FindAll(".above"), Is.Empty);
     }
 
-    /// <summary>Another screen in the same table starts over: the page opening the next one reuses this component.</summary>
+    /// <summary>Another screen starts over: the page reuses this component for the next one.</summary>
     [Test]
     public void AnotherScreen_StartsOver()
     {

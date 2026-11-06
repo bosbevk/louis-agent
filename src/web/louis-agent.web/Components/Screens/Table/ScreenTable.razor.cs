@@ -2,6 +2,7 @@ using System.Net;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Packs;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Web.Components.Screens.Table;
@@ -16,7 +17,7 @@ namespace LouisAgent.Web.Components.Screens.Table;
 /// </remarks>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0042-the-web-shows-the-live-results.md">ADR 0042: the web shows the live results</seealso>
 /// <seealso href="https://github.com/bosbevk/louis-agent/blob/main/src/docs/adr/0086-a-packs-screens-are-described.md">ADR 0086: a pack's screens are described</seealso>
-public partial class ScreenTable
+public partial class ScreenTable : IScreenView
 {
     private string? _shownScreen, _error;
     private string _searchDraft = "", _search = "";
@@ -85,7 +86,7 @@ public partial class ScreenTable
         _loading = false;
     }
 
-    /// <summary>Where this page of this search is. The name and the words are escaped, as they go in the address.</summary>
+    /// <summary>Where this page of this search is. The name and the words are escaped for the address.</summary>
     private string Address()
     {
         var address = $"v1/admin/screens/{Uri.EscapeDataString(Screen.Name)}/rows?page={_pageNumber}";
