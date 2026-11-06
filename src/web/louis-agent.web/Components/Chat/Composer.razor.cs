@@ -18,13 +18,13 @@ public partial class Composer
     [Parameter] public EventCallback OnSend { get; set; }
     [Parameter] public EventCallback OnStop { get; set; }
 
-    /// <summary>The class of the box around the text: the code-review app's <c>input-row</c>, Puls's <c>input-box</c>.</summary>
+    /// <summary>The class of the box around the text, which each site styles.</summary>
     [Parameter] public string BoxClass { get; set; } = "input-row";
 
-    /// <summary>What an app puts before the text (the code-review app: the attach button and the prompt sign).</summary>
+    /// <summary>What a site puts before the text, such as an attach button and a prompt sign.</summary>
     [Parameter] public RenderFragment? BeforeInput { get; set; }
 
-    /// <summary>An app's toolbar after the text (Puls); the Send and Stop buttons then close it.</summary>
+    /// <summary>A site's toolbar after the text; the Send and Stop buttons then close it.</summary>
     [Parameter] public RenderFragment? Tools { get; set; }
 
     [Parameter] public string SendLabel { get; set; } = "Send";

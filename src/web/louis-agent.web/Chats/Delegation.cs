@@ -5,7 +5,7 @@ namespace LouisAgent.Web.Chats;
 
 /// <summary>
 /// A specialist or minion call as its card shows it: who it went to, its role, toolsets and task, and once it
-/// returned, the answer and what the footer says about the child (<c>[Sub-session sub-1 on puls (web; puls-cook). It
+/// returned, the answer and what the footer says about the child (<c>[Sub-session sub-1 on helper (web; cook). It
 /// stays open: …]</c>, or <c>[Minion {role} on {llm} with {tool}]</c>). What the child cost isn't read here: the card
 /// takes it from the child's own events (<see cref="Block.SubTurn"/>), never back out of the model's text (FX27).
 /// </summary>
@@ -81,7 +81,7 @@ public sealed partial record Delegation(
             answer = result[..match.Index].TrimEnd();
             resultAgent = match.Groups["agent"].Value;
             handle ??= Blank(match.Groups["handle"].Value);
-            // The footer's "(web; puls-cook)": the toolsets, then the role; a start that isn't kept has no role there.
+            // The footer's "(web; cook)": the toolsets, then the role; a start that isn't kept has no role there.
             string[] inside = match.Groups["inside"].Value.Split(';', 2, StringSplitOptions.TrimEntries);
             if (inside.Length == 2) role ??= Blank(inside[1]);
             // F34: the footer names what the specialist loaded (its role may add some), so it wins over what was sent.
@@ -143,7 +143,7 @@ public sealed partial record Delegation(
 
     /// <summary>
     /// A specialist's footer at the end of its answer: <c>[Sub-session on coder (files)]</c>, or for a kept one
-    /// <c>[Sub-session sub-1 on puls (web; puls-cook). It stays open: …]</c>.
+    /// <c>[Sub-session sub-1 on helper (web; cook). It stays open: …]</c>.
     /// </summary>
     [GeneratedRegex(
         @"\n\n\[Sub-session (?:(?<handle>\S+) )?on (?<agent>\S+) \((?<inside>[^)]*)\)" +

@@ -15,11 +15,11 @@ public sealed class Turn
     public List<string>? Toolsets { get; set; }
 
     /// <summary>
-    /// The session's role, from <c>message_start</c> (FX17): on a specialist's sub-turn its role (<c>puls-cook</c>), on the
-    /// chat's own turn its mode (<c>puls/voice-af</c>); null without one, or from an older API.
+    /// The session's role, from <c>message_start</c> (FX17): on a specialist's sub-turn its role, on the chat's own
+    /// turn its mode; null without one, or from an older API.
     /// </summary>
     public string? Role { get; set; }
 
-    /// <summary>What the turn's model requests used, from <c>message_delta.usage</c>; null for commands and older chats.</summary>
+    /// <summary>What the turn's model requests used, from <c>message_delta.usage</c>; null for commands.</summary>
     public TurnUsage? Usage { get; set; }
 }

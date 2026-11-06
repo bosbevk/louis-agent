@@ -27,8 +27,8 @@ namespace LouisAgent.Web.Api;
 public sealed class AgentApi(HttpClient http, ChatSettings settings)
 {
     /// <summary>
-    /// Opens a session with the toolsets it keeps (F5): the code-review app asks for every available toolset, Puls
-    /// only <c>specialists</c>, since it delegates. The role is its voice (F21; none is the API's default), and the
+    /// Opens a session with the toolsets it keeps (F5): one site asks for every available toolset, another only
+    /// <c>specialists</c>, since it delegates. The role is its voice (F21; none is the API's default), and the
     /// place is where the user is, only when they shared it (F22).
     /// </summary>
     public async Task<string> CreateSessionAsync(IEnumerable<string> toolsets, string? role = null,
@@ -75,7 +75,7 @@ public sealed class AgentApi(HttpClient http, ChatSettings settings)
     /// <summary>The server's display currency and a symbol for each currency (F14).</summary>
     public Task<RatesDisplay> GetRatesDisplayAsync() => GetAsync<RatesDisplay>("v1/rates/display");
 
-    /// <summary>Reads JSON from one of an app's own routes (the code-review app's workspace and git).</summary>
+    /// <summary>Reads JSON from one of a site's own routes.</summary>
     public async Task<T> GetAsync<T>(string url)
     {
         using var response = await SendAsync(new HttpRequestMessage(HttpMethod.Get, url));

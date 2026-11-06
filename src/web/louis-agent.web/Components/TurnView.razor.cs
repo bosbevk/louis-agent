@@ -10,10 +10,10 @@ public partial class TurnView
     [Parameter, EditorRequired] public Turn Turn { get; set; } = default!;
     [Parameter] public bool Streaming { get; set; }
 
-    /// <summary>An app's actions under the user's message (Puls: copy, edit); none by default.</summary>
+    /// <summary>A site's actions under the user's message, such as copy and edit; none by default.</summary>
     [Parameter] public RenderFragment<Turn>? UserActions { get; set; }
 
-    /// <summary>An app's actions under a finished answer (Puls: copy, regenerate, good/bad, share, sources); none by default.</summary>
+    /// <summary>A site's actions under a finished answer, such as copy and regenerate; none by default.</summary>
     [Parameter] public RenderFragment<Turn>? AnswerActions { get; set; }
 
     /// <summary>The currency costs are shown in (F14); a change re-draws finished turns too.</summary>
@@ -36,7 +36,10 @@ public partial class TurnView
 
     protected override bool ShouldRender() => _shouldRender;
 
-    /// <summary>The images the turn's tools gave, its cook's included (FX22): drawn as images wherever the turn's text or a delegation card's answer shows them.</summary>
+    /// <summary>
+    /// The images the turn's tools gave, its specialists' included (FX22): drawn as images wherever the turn's text or
+    /// a delegation card's answer shows them.
+    /// </summary>
     private IReadOnlySet<string> Shown => ImageSources.Of(Turn);
 
     private ElementReference _answer;

@@ -11,7 +11,7 @@ namespace LouisAgent.Web.Chats;
 /// message, the stream folded into the turn with a redraw raised no more than every 50 ms, stop, the chat saved at
 /// the end, and the errors in the app's words. The page keeps the layout: it hands the runner how to open a session
 /// (which toolsets, which role, where the user is), navigates when <see cref="SessionOpened"/> fires, and redraws on
-/// <see cref="Changed"/>. Both pages carried a copy of this; Puls's behaviour is the one kept.
+/// <see cref="Changed"/>.
 /// </summary>
 public sealed class ChatRunner(
     AgentApi api,
@@ -45,7 +45,7 @@ public sealed class ChatRunner(
     /// <summary>A new chat's session was opened: the page navigates to it.</summary>
     public event Action<string>? SessionOpened;
 
-    /// <summary>A turn ended, however it ended: the code-review app refreshes its git state here.</summary>
+    /// <summary>A turn ended, however it ended: a site refreshes whatever the agent may have changed here.</summary>
     public event Action? TurnEnded;
 
     public bool CanSend => !Streaming && Chat?.Ended != true && (Draft.Trim().Length > 0 || Attachments.Count > 0);

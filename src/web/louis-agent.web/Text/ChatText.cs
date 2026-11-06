@@ -4,7 +4,7 @@ namespace LouisAgent.Web.Text;
 
 /// <summary>
 /// The words the shared chat components show (TurnView, BlocksView, DelegationCard, CurrencySwitcher), so each app can
-/// show them in its own language. English by default; an app registers its own copy (Puls: <c>PulsText.Afrikaans</c>).
+/// show them in its own language. English by default; a site registers its own copy.
 /// Templates use numbered holes for <see cref="string.Format(string, object?[])"/>.
 /// </summary>
 public sealed record ChatText
@@ -15,7 +15,7 @@ public sealed record ChatText
     public string Result { get; init; } = "Result";
     public string Processing { get; init; } = "PROCESSING";
 
-    /// <summary>What a running specialist is doing, per role (F34), in place of <see cref="Processing"/>; none by default.</summary>
+    /// <summary>What a running specialist is doing, per role (F34), in place of processing; none by default.</summary>
     public IReadOnlyDictionary<string, RolePhases> RolePhases { get; init; } = new Dictionary<string, RolePhases>();
     public string Stopped { get; init; } = "Stopped";
 
@@ -24,10 +24,10 @@ public sealed record ChatText
     /// <summary>A minion's card and Werk line (F30): the specialist handed one page to a minion.</summary>
     public string MinionLabel { get; init; } = "Minion";
 
-    /// <summary>Between a minion's role and its model: "puls-minion-web-price-lookup on ollama-puls".</summary>
+    /// <summary>Between a minion's role and its model: "web-price-lookup on ollama".</summary>
     public string OnModel { get; init; } = "on";
 
-    /// <summary>The chip on a continued sub-session (F26): a follow-up to a specialist that was already working.</summary>
+    /// <summary>The chip on a continued sub-session (F26): a follow-up to a specialist already working.</summary>
     public string FollowUp { get; init; } = "follow-up";
     public string Specialist { get; init; } = "specialist";
     public string Task { get; init; } = "Task";
@@ -44,7 +44,7 @@ public sealed record ChatText
     /// <summary>A chat's title when its first message is empty and no attachment names it (W2: ChatRunner).</summary>
     public string NewChat { get; init; } = "New chat";
 
-    /// <summary>The page's notices and a turn's errors, as the pages wrote them (W2: ChatRunner). {0} is the file's name.</summary>
+    /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>
     public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";
     public string SessionGone { get; init; } = "This chat's session no longer exists on the server (the API was restarted). Start a new chat to continue.";
     public string NeedsKey { get; init; } = "The API needs a key: enter AGENT_API_KEY under API key in the sidebar.";

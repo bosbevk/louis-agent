@@ -18,7 +18,7 @@ public partial class MessageList
     /// <summary>What to show instead of the turns, when the app's view isn't the chat.</summary>
     [Parameter] public RenderFragment? Content { get; set; }
 
-    /// <summary>Classes after <c>messages</c>; <c>hidden</c> while the code-review app shows a file or a diff instead.</summary>
+    /// <summary>Classes after <c>messages</c>; <c>hidden</c> while a site shows something else instead.</summary>
     [Parameter] public string? Class { get; set; }
 
     [Parameter] public RenderFragment<Turn>? UserActions { get; set; }
