@@ -1,5 +1,6 @@
 using LouisAgent.Composition.Packs.Imports;
 using LouisAgent.Composition.Packs.Reports;
+using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Catalog;
 using Microsoft.Extensions.FileProviders;
@@ -18,7 +19,8 @@ public sealed class FakePack(
     IReadOnlyList<IDataFeed>? feeds = null,
     IReadOnlyList<IDataImport>? imports = null,
     bool comesBeforeTheEngine = false,
-    IReadOnlyList<IDataReport>? reports = null) : IAgentPack
+    IReadOnlyList<IDataReport>? reports = null,
+    IReadOnlyList<IDataScreen>? screens = null) : IAgentPack
 {
     public string Name => name;
     public bool ComesBeforeTheEngine => comesBeforeTheEngine;
@@ -28,6 +30,7 @@ public sealed class FakePack(
     public IReadOnlyList<IDataFeed> Feeds => feeds ?? [];
     public IReadOnlyList<IDataImport> Imports => imports ?? [];
     public IReadOnlyList<IDataReport> Reports => reports ?? [];
+    public IReadOnlyList<IDataScreen> Screens => screens ?? [];
 
     /// <summary>A toolset definition shaped like the catalogue's own, for a tool class a test names.</summary>
     public static PackToolset Toolset(string name, Type toolType, Func<IPackContext, IReadOnlyList<object>> create) =>

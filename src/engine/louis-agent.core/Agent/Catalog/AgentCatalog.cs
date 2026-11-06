@@ -2,6 +2,7 @@
 using LouisAgent.Composition.Messages;
 using LouisAgent.Composition.Packs.Imports;
 using LouisAgent.Composition.Packs.Reports;
+using LouisAgent.Composition.Packs.Screens;
 using LouisAgent.Composition.Packs;
 using LouisAgent.Core.Agent.Messages;
 using LouisAgent.Core.Agent.Toolsets;
@@ -73,6 +74,9 @@ public sealed class AgentCatalog
         Reports = packs.SelectMany(p => p.Reports).ToList();
         CheckUnique(Reports.Select(r => r.Name), "report");
 
+        Screens = packs.SelectMany(p => p.Screens).ToList();
+        CheckUnique(Screens.Select(s => s.Spec.Name), "screen");
+
         Prompts = identities.Select(i => i.Prompts).Concat(packs.Select(p => p.Prompts)).ToList();
         CheckUnique(SkillFileSource.CoreFiles.Concat(Prompts.SelectMany(SkillFileSource.FilesOf)), "prompt path");
 
@@ -115,6 +119,13 @@ public sealed class AgentCatalog
 
     /// <summary>The numbers the packs keep about themselves, each pack's in its order.</summary>
     public IReadOnlyList<IDataReport> Reports { get; }
+
+    /// <summary>The screens the packs offer, each pack's in its order.</summary>
+    public IReadOnlyList<IDataScreen> Screens { get; }
+
+    /// <summary>The screen by that name, case ignored; null when no pack offers one.</summary>
+    public IDataScreen? Screen(string name) =>
+        Screens.FirstOrDefault(screen => string.Equals(screen.Spec.Name, name, StringComparison.OrdinalIgnoreCase));
 
     /// <summary>The identities' and packs' prompts, for the prompt reader (<see cref="SkillFileSource.Use"/>).</summary>
     public IReadOnlyList<IFileProvider> Prompts { get; }

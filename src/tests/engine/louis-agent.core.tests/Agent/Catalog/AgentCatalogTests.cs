@@ -138,6 +138,36 @@ public class AgentCatalogTests
         Assert.That(error.Message, Does.Contain("Prices").And.Contain("import"));
     }
 
+    /// <summary>Each pack's screens are gathered in order; a pack with none changes nothing; core has none.</summary>
+    [Test]
+    public void ThePacksScreens_AreGathered()
+    {
+        var catalog = Catalog(packs:
+        [
+            new FakePack("first", toolsets: [], screens: [new FakeScreen("usage"), new FakeScreen("errors")]),
+            new FakePack("second", toolsets: []),
+            new FakePack("third", toolsets: [], screens: [new FakeScreen("visits")])
+        ]);
+
+        Assert.That(catalog.Screens.Select(s => s.Spec.Name), Is.EqualTo(new[] { "usage", "errors", "visits" }));
+        Assert.That(catalog.Screen("VISITS")?.Spec.Name, Is.EqualTo("visits"), "case ignored");
+        Assert.That(catalog.Screen("nothing"), Is.Null);
+        Assert.That(AgentCatalog.CoreOnly.Screens, Is.Empty);
+    }
+
+    /// <summary>Two screens with one name can't both be listed: a name means one screen and one address.</summary>
+    [Test]
+    public void AScreenNamedTwice_IsRefused()
+    {
+        var error = Assert.Throws<AgentCatalogException>(() => Catalog(packs:
+            [
+                new FakePack("first", toolsets: [], screens: [new FakeScreen("usage")]),
+                new FakePack("second", toolsets: [], screens: [new FakeScreen("Usage")])
+            ]))!;
+
+        Assert.That(error.Message, Does.Contain("Usage").And.Contain("screen"));
+    }
+
     /// <summary>Each pack's reports are gathered in order; a pack with none changes nothing; core has none.</summary>
     [Test]
     public void ThePacksReports_AreGathered()
