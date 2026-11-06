@@ -14,7 +14,7 @@ from source.
 
 ## A web app's folders
 
-A web app (`louis-agent.code-review`, `louis-agent.puls`, and `louis-agent.web.shared` between them) keeps Blazor's `Pages/`,
+A web app (`louis-agent.code-review`, `louis-agent.puls`, and `louis-agent.web` between them) keeps Blazor's `Pages/`,
 `Layout/` and `Components/`, with subfolders by concern inside `Components/` (the code-review app: `Workspace/`, `Git/`;
 Puls: `Brand/`, `Landing/`, `Chat/`, `Admin/`), and puts its C# code in a folder per concern (the shared library: `Api/`,
 `Chats/`, `Usage/`, `Storage/`, `Text/`; the code-review app: `Workspace/`, `Git/`; Puls: `Text/`, `Content/`), one type

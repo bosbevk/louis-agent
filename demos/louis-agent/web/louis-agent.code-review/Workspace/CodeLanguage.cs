@@ -1,5 +1,5 @@
 using LouisAgent.Choices;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 
 namespace LouisAgent.CodeReview.Workspace;
 

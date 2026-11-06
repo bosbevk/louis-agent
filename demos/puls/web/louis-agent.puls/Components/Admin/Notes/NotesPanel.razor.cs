@@ -1,7 +1,7 @@
 using System.Net.Http.Json;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Notes;

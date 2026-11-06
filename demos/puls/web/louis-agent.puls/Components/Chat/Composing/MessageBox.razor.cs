@@ -1,4 +1,4 @@
-using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Chats;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Chat.Composing;

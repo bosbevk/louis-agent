@@ -2,7 +2,7 @@ using System.Globalization;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.SessionStream;
-using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Puls.Admin.LiveRuns;
 

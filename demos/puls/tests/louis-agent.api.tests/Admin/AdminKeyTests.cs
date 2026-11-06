@@ -1,5 +1,5 @@
 
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Storage;
 
 namespace LouisAgent.Api.Tests.Admin;
 

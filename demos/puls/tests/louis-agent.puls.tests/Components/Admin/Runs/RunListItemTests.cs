@@ -3,8 +3,8 @@ using System.Text;
 using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Admin.Starting;
 using LouisAgent.Puls.Components.Admin.Runs;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Runs;

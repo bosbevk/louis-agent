@@ -1,8 +1,8 @@
 using LouisAgent.Puls.Content;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Panels;
 
@@ -25,15 +25,15 @@ public partial class WorkPanel
             var roles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             var items = new List<Item>();
             foreach (var (turn, live) in Chat.Turns.Select((turn, t) => (turn, Streaming && t == Chat.Turns.Count - 1)))
-            foreach (var block in turn.Blocks)
-            {
-                if (Delegation.From(block) is not { } delegation) continue;
-                if (delegation is { Handle: { } h, Role: { } r }) roles[h] = r;
-                string agent = delegation.Agent is { Length: > 0 } named ? named : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
-                string who = delegation.Role ?? (delegation.Handle is { } handle && roles.TryGetValue(handle, out var known) ? known : null) ?? delegation.Handle ?? agent;
-                string status = live && block.ToolResult is null ? "running" : block.ToolFailed || delegation.Failed ? "failed" : "done";
-                items.Add(new Item(delegation, block, who, status));
-            }
+                foreach (var block in turn.Blocks)
+                {
+                    if (Delegation.From(block) is not { } delegation) continue;
+                    if (delegation is { Handle: { } h, Role: { } r }) roles[h] = r;
+                    string agent = delegation.Agent is { Length: > 0 } named ? named : block.SubAgent ?? delegation.ResultAgent ?? Text.Specialist;
+                    string who = delegation.Role ?? (delegation.Handle is { } handle && roles.TryGetValue(handle, out var known) ? known : null) ?? delegation.Handle ?? agent;
+                    string status = live && block.ToolResult is null ? "running" : block.ToolFailed || delegation.Failed ? "failed" : "done";
+                    items.Add(new Item(delegation, block, who, status));
+                }
             items.Reverse();
             return items;
         }

@@ -10,7 +10,7 @@
     </div>
     @if (Answer is not null)
     {
-        <div class="review-answer markdown admin-markdown">@LouisAgent.Web.Shared.Text.Markdown.ToHtml(Answer)</div>
+        <div class="review-answer markdown admin-markdown">@LouisAgent.Web.Text.Markdown.ToHtml(Answer)</div>
     }
     @if (!HasName)
     {

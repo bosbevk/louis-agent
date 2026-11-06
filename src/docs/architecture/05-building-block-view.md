@@ -83,7 +83,7 @@ the protocol and an identity's eval folders) are drawn on their own page, [The e
   unavailable name is a 400 listing the valid ones. Sessions with the same list share one engine and one cacheable
   prefix. `GET /v1/toolsets` lists names, descriptions and availability (never tool definitions); `GET /v1/sessions/{id}`
   returns a session's toolsets. A session opened by another agent (`depth: 1`) may not load `specialists`.
-- Two web apps share one API codebase and `louis-agent.web.shared`: the code-review app (`louis-agent.code-review`, every
+- Two web apps share one API codebase and `louis-agent.web`: the code-review app (`louis-agent.code-review`, every
   toolset; served by default) and **Puls** (`louis-agent.puls`, the general assistant: chats load `specialists` and `web` and
   hand cooking to the cook; served by Puls's program, `louis-agent.puls-api`).
 - **Live delegation:** while a `StartSubSession` call runs, the specialist's own events stream to the chat as

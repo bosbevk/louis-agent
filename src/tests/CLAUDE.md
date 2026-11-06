@@ -60,7 +60,7 @@ The PowerShell variable lasts for the session, hence the `finally`: left set, ev
 instead of checking them. On Windows, `git status` can list a regenerated file as modified while `git diff` shows
 nothing: only its line endings changed, and `git checkout -- <file>` puts it back.
 
-**The web apps' components are pinned the same way** (T1, CL15): `src/tests/web/louis-agent.web.shared.tests` renders
+**The web apps' components are pinned the same way** (T1, CL15): `src/tests/web/louis-agent.web.tests` renders
 `TurnView`, `BlocksView`, `DelegationCard` and `CurrencySwitcher` with bUnit from the recorded Puls turn
 (`src/tests/engine/louis-agent.session-stream.tests/Fixtures/session-stream.sse`) and compares each one's markup with the `.html` golden beside its test
 (`Components/TurnView.html`); `demos/puls/tests/louis-agent.puls.tests` does the same for `WorkPanel`, `PulsTile`, `TemplateCard`,
@@ -70,7 +70,7 @@ the landing page and the chat page, empty and with the turn (`Pages/ChatPage.emp
 same switch regenerates them:
 
 ```bash
-LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.shared.tests
+LOUIS_UPDATE_GOLDEN=1 dotnet test src/tests/web/louis-agent.web.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/puls/tests/louis-agent.puls.tests
 LOUIS_UPDATE_GOLDEN=1 dotnet test demos/louis-agent/tests/louis-agent.code-review.tests
 ```

@@ -1,6 +1,6 @@
 using LouisAgent.Puls.Search;
-using LouisAgent.Web.Shared.Chats;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using LouisAgent.Web.Chats;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Tests.Search;
 
@@ -10,7 +10,8 @@ public class ChatFinderTests
 {
     private static ChatModel Chat(string title, params string[] texts) => new()
     {
-        SessionId = title, Title = title,
+        SessionId = title,
+        Title = title,
         Turns = texts.Select(t => new Turn { UserText = t, Blocks = [new Block { Kind = BlockKind.Text, Text = "Antwoord: " + t }] }).ToList(),
     };
 

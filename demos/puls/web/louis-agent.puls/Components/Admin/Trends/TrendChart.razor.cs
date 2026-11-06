@@ -1,6 +1,6 @@
 using LouisAgent.Api.Contracts.Admin.Trends;
 using LouisAgent.Puls.Admin.Trends;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Trends;

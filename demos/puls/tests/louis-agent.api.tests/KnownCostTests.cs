@@ -1,5 +1,5 @@
 
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Usage;
 
 namespace LouisAgent.Api.Tests;
 

@@ -1,10 +1,9 @@
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
 using ClaudeStreamFormat = LouisAgent.Api.Sessions.Streaming.Claude.ClaudeStreamFormat;
 using System.Text.Json;
 using LouisAgent.SessionStream;
-using LouisAgent.Web.Shared;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Api;
 
 namespace LouisAgent.Api.Tests.Sessions;
 

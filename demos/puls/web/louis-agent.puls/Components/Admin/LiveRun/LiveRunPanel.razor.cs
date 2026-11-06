@@ -4,8 +4,8 @@ using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.Puls.Admin.LiveRuns;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.LiveRun;

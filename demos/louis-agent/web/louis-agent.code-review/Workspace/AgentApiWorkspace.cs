@@ -1,6 +1,6 @@
 using System.Net.Http.Json;
 using LouisAgent.CodeReview.Git;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 
 namespace LouisAgent.CodeReview.Workspace;
 

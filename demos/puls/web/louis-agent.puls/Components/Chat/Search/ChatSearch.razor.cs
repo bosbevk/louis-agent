@@ -2,7 +2,7 @@ using LouisAgent.Puls.Search;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Search;
 

@@ -1309,7 +1309,7 @@ when it starts, and the child's done-when is one line a reader can check.
 | 3c | **F48 The cook as a home cook and teacher** (9 steps) | **F48.4** `WriteRecipe`: the ingredient-line reader, scaling, the shopping list and the prices (Stats SA first) · **F48.5** the pantry per person and the teaching (cues and whys) in every answer | 48.4 a scaled recipe and its priced list come from code, never the model · 48.5 the cook knows what's in the pantry and teaches in its eval run |
 | 3d | **F46 Localisation** | **F46.1** core and the API: the text out of `[Description]` into `.resx` beside each enum, the loader, the ADR · **F46.2** the web apps: `ChatText`, Puls's page text, Afrikaans | 46.1 no message text left in an attribute · 46.2 Puls switches language from the files alone |
 | 3e | **F50 Puls's local specialists** (two packs, twelve roles, the front end) | **F50.1** the weather pack · **F50.2** the where-to-buy pack (F33 and F48's prices generalised) · **F50.3** gardener, braaimaster, weerman · **F50.4** farmer, sonkrag, stapper · **F50.5** stargazer, padreis, hengelaar · **F50.6** voëlkyker, handyman, and the cook on the new packs · **F50.7** the front end shows them and hides every not-implemented marker | 50.1 and 50.2 a pack with its guide and checks · each role child: three role files, each with its eval as F49's files, run before it is shown · 50.7 no not-implemented marker left on Puls |
-| 4 | **F40 The sales playground** (10 steps, then one child per pitch) | **F40.1** the demo identity, the customers pack and the practice's invoice clerk with its simulation (0 to 3) · **F40.2** "get paid", the debtors agent and its simulation (3b) · **F40.3** the area guide and its simulation (4) · **F40.4** the control room in `web.shared`, any simulation's grades, *Try it*, docs (5 to 8) · **F40.5 and on** one child per remaining idea of Part 6, in rank order, each planned the week a buyer asks to see it (Phase 4's pitch table) | 40.1 `demo-invoice-batch` passes its bar on a recorded run · 40.2 `demo-get-paid` passes its bar and no send happened · 40.3 `demo-area-guide` graded · 40.4 a pitch is given from the room · 40.x its simulation passes its bar on a recorded run |
+| 4 | **F40 The sales playground** (10 steps, then one child per pitch) | **F40.1** the demo identity, the customers pack and the practice's invoice clerk with its simulation (0 to 3) · **F40.2** "get paid", the debtors agent and its simulation (3b) · **F40.3** the area guide and its simulation (4) · **F40.4** the control room in `louis-agent.web`, any simulation's grades, *Try it*, docs (5 to 8) · **F40.5 and on** one child per remaining idea of Part 6, in rank order, each planned the week a buyer asks to see it (Phase 4's pitch table) | 40.1 `demo-invoice-batch` passes its bar on a recorded run · 40.2 `demo-get-paid` passes its bar and no send happened · 40.3 `demo-area-guide` graded · 40.4 a pitch is given from the room · 40.x its simulation passes its bar on a recorded run |
 | 5 | **F7 Cost you can see and stop** (5 here, 9 in its doc) | **F7.1** a customer on every row and estimates · **F7.2** budgets that warn, ask or stop, the room's cost view, the bill check, docs | 7.1 an estimate with its basis before a run · 7.2 a budget stops a run cleanly and the ledger matches the bill |
 | 6 | **F39 Orchestration** (19 steps, A0 to B7) | **F39.1** the delegation function: transport, credentials per peer, policy and limiter, `TurnContext`, the town as a turn input (A0 to A4a) · **F39.2** typed results and the route classifier (A5, A6) · **F39.3** the voorman identity, its packs, the fix call and `ConfirmFix` (B0 to B3) · **F39.4** the triage workflow, the exceptions agent, the recovery contract, the seeded service, the measure and docs (B4 to B7) | 39.1 every host delegates through one function · 39.2 a child's answer is a typed, checked result · 39.3 voorman runs on core with no code of its own in core · 39.4 `voorman-triage` passes on the seeded service |
 | 7 | **FX4**, **F41**, **F42** | **FX4** its own plan (a fix of more than one step) · **F41** (3 steps) stays one · **F42.1** the untrusted-content frame, the audit log and rate limits (5, 6) · **F42.2** moderation and output guardrails, the egress proxy, mounts and branch protection, the injection simulations, docs (7 to 9) | FX4 a chat's prompt and tools are frozen · 41 an effect outside the app waits for a person · 42.1 every outside text arrives framed and every effect is logged · 42.2 the injection suite passes |
@@ -1484,8 +1484,8 @@ reopening it.
 | No demo identity, no customers pack and no F40 doc: the feature docs stop at F34, and no TODO line names F40 | `docs/features/`, `TODO.md` |
 | The admin portal (F27, F31), which the control room grows from, lives in Puls's web app: the page of checks and the live run (routes `/admin` and `/admin/benchmarks`, 671 lines) and one stored run (138 lines). It already follows a running check live: a row per turn, the open turn streaming in the chat's own `TurnView`, and a reloaded page picks the run up again | `src/louis-agent.puls/Pages/Admin/Benchmarks.razor:1-2,16-19`, `BenchmarkRun.razor` |
 | What ties the portal to Puls: `@layout AdminLayout` (with `PulsLogo` and "Back to Puls"); `RunExplorer` (986 lines), `TrendChart` (135) and `ChartInfo` (76), which are Puls's own components; the focus helper `pulsUi.focus`; the "· Puls Admin" titles; its styles in Puls's `css/admin/`, and Bootstrap's offcanvas, which only Puls's app loads. 47 lines across these six files name Puls, 27 of them in `RunExplorer`'s charts and legends ("Puls itself" beside the specialist) | `src/louis-agent.puls/Layout/AdminLayout.razor:11,17`; `src/louis-agent.puls/Components/`; `Benchmarks.razor:21,658`; `src/louis-agent.puls/wwwroot/js/chat.js:162`, `wwwroot/css/admin/shell.css:1-4`, `wwwroot/index.html:17,52` (counted with `grep -c Puls`) |
-| The shared web project holds no pages: "Each app keeps its own pages, look (CSS) and JavaScript; the shared components only emit class names". Both apps' routers know only their own assembly | `src/louis-agent.web.shared/louis-agent.web.shared.csproj:3-5`; `src/louis-agent.puls/App.razor:1`, `src/louis-agent.code-review/App.razor:1` |
-| Neither web app opens another identity's mode: Puls's app always opens `puls/voice-{language}`, and the code-review app passes no role, so it gets the API's default mode; the shared API client already takes a role | `src/louis-agent.puls/Pages/ChatPage.razor:326,769`; `src/louis-agent.code-review/Pages/ChatPage.razor:415`; `src/louis-agent.web.shared/Services/AgentApi.cs:26` |
+| The shared web project holds no pages: "Each app keeps its own pages, look (CSS) and JavaScript; the shared components only emit class names". Both apps' routers know only their own assembly | `src/louis-agent.web/louis-agent.web.csproj:3-5`; `src/louis-agent.puls/App.razor:1`, `src/louis-agent.code-review/App.razor:1` |
+| Neither web app opens another identity's mode: Puls's app always opens `puls/voice-{language}`, and the code-review app passes no role, so it gets the API's default mode; the shared API client already takes a role | `src/louis-agent.puls/Pages/ChatPage.razor:326,769`; `src/louis-agent.code-review/Pages/ChatPage.razor:415`; `src/louis-agent.web/Services/AgentApi.cs:26` |
 | The checks the portal offers are stub, cook and routing. A run needs the run store ("without a store no run starts"), and only Puls's stack runs one: the code-review stack has no MongoDB | `src/louis-agent.api/Services/BenchmarkCatalog.cs:12-21`; `src/louis-agent.api/Program.cs:108-109,114`; `docker/docker-compose.yml` |
 | No stack runs a demo: CL10 deleted the old order-service `docker/docker-compose.demo.yml` (commit `592e4e4`), though `docs/CLAUDE.md:175` still lists a demo compose. Puls's stack turns on only Puls's roles, and its two agent containers' workspace is the whole repository | `docker/`; `docker/docker-compose.puls.yml:40,82` (`ROLES_ENABLED`), `:51,94` (`${PULS_WORKSPACE:-../}:/workspace`) |
 | Reading a document: `ReadDocument` and `ReadTable` are tools of the `files` toolset, beside its write, copy, rename and delete tools; no toolset reads documents only. `FetchUrl` already reaches OpenStreetMap's Nominatim: the cook uses it to find a shop's branch | `louis-agent.core/Tools/Workspace/WorkspaceTools.cs:89,126,233-391`; `louis-agent.core/Agent/ToolsetCatalog.cs:28-32`; `louis-agent.core/Prompts/specialists/puls-cook.md:24-25,65` |
@@ -1561,10 +1561,10 @@ reopening it.
   nearby places within the distance it states. If it proves out, the places pack follows in its own feature (Puls's
   track), and the guide moves into Puls.
 - **The control room, the screen we sell from** (steps 5 and 6). The admin pages leave Puls's web app for
-  `louis-agent.web.shared`, so every web app has them and none carries Puls's brand: the portal's two pages,
+  `louis-agent.web`, so every web app has them and none carries Puls's brand: the portal's two pages,
   `AdminLayout` (without Puls's logo), `RunExplorer`, `TrendChart` and `ChartInfo` move, their words made
   identity-neutral ("the identity itself" where they say "Puls itself"); the focus helper and the admin's styles become
-  the shared project's own static assets (served at `_content/louis-agent.web.shared/`), the one exception to "each app
+  the shared project's own static assets (served at `_content/louis-agent.web/`), the one exception to "each app
   keeps its own look"; the sidebar's offcanvas either loads Bootstrap in both apps or stops needing it (the step
   decides; the code-review app loads no Bootstrap today); both `App.razor` routers gain `AdditionalAssemblies` for the
   shared project; and the csproj's note says what the shared project now holds. A running simulation shows live, as
@@ -1631,7 +1631,7 @@ public sealed class AreaGuideSimulation : ISimulation { public string Name => "d
 ```mermaid
 flowchart TB
     subgraph screen["The screen we sell from, in either web app"]
-        room["Control room (steps 5-6)<br/>louis-agent.web.shared: runs live, grades, cost"]
+        room["Control room (steps 5-6)<br/>louis-agent.web: runs live, grades, cost"]
         tryit["Try it (step 7)<br/>a chat in a simulation's mode"]
     end
     subgraph stack["The playground: Puls's compose plus docker-compose.demo.yml (step 1)"]
@@ -1769,7 +1769,7 @@ flowchart LR
 ```mermaid
 sequenceDiagram
     autonumber
-    participant R as Control room (web.shared)
+    participant R as Control room (louis-agent.web)
     participant A as puls: louis-agent.api
     participant N as simulation runner (own process)
     participant V as demo/voice session (on puls)
@@ -1816,12 +1816,12 @@ sequenceDiagram
 | `SimulationCatalog` (a line for the demo's project) | `simulations/louis-agent.simulation.runner/` | `LouisAgent.Simulation.Runner` | 3, changed |
 | The graders' tests on recorded transcripts | `tests/louis-agent.simulations.demo.tests/` | `LouisAgent.Simulations.Demo.Tests` | 3-4, new |
 | `BenchmarkTrends` (a cost per conversation) | `src/louis-agent.api/Services/Benchmarks/` | `LouisAgent.Api.Services.Benchmarks` | 3, changed |
-| The portal's two pages (`Benchmarks`, `BenchmarkRun` on `main`) | `src/louis-agent.web.shared/Pages/Admin/` | `LouisAgent.Web.Shared.Pages.Admin` | 5, moved from `LouisAgent.Puls.Pages.Admin` |
-| `AdminLayout` | `src/louis-agent.web.shared/Layout/` | `LouisAgent.Web.Shared.Layout` | 5, moved from `LouisAgent.Puls.Layout` |
-| `RunExplorer`, `TrendChart`, `ChartInfo` | `src/louis-agent.web.shared/Components/` | `LouisAgent.Web.Shared.Components` | 5, moved from `LouisAgent.Puls.Components`; 6, changed |
+| The portal's two pages (`Benchmarks`, `BenchmarkRun` on `main`) | `src/louis-agent.web/Pages/Admin/` | `LouisAgent.Web.Pages.Admin` | 5, moved from `LouisAgent.Puls.Pages.Admin` |
+| `AdminLayout` | `src/louis-agent.web/Layout/` | `LouisAgent.Web.Layout` | 5, moved from `LouisAgent.Puls.Layout` |
+| `RunExplorer`, `TrendChart`, `ChartInfo` | `src/louis-agent.web/Components/` | `LouisAgent.Web.Components` | 5, moved from `LouisAgent.Puls.Components`; 6, changed |
 | The two routers (`AdditionalAssemblies`) | `src/louis-agent.puls/App.razor`, `src/louis-agent.code-review/App.razor` | as now | 5, changed |
-| The room's page tests (bUnit) | `tests/louis-agent.web.shared.tests/` | `LouisAgent.Web.Shared.Tests` | 5-7, new |
-| `TryIt` (`/admin/try`) | `src/louis-agent.web.shared/Pages/Admin/` | `LouisAgent.Web.Shared.Pages.Admin` | 7, new |
+| The room's page tests (bUnit) | `tests/louis-agent.web.tests/` | `LouisAgent.Web.Tests` | 5-7, new |
+| `TryIt` (`/admin/try`) | `src/louis-agent.web/Pages/Admin/` | `LouisAgent.Web.Pages.Admin` | 7, new |
 
 #### Folder structure: before and after
 
@@ -1845,7 +1845,7 @@ louis-agent/
 │   │   └── wwwroot/                       the admin's styles in css/admin/; pulsUi.focus in js/chat.js;
 │   │                                      Bootstrap from index.html
 │   ├── louis-agent.code-review/App.razor          the code-review app: a router over its own assembly only; no /admin
-│   └── louis-agent.web.shared/            components and services only: "each app keeps its own pages, look (CSS)
+│   └── louis-agent.web/            components and services only: "each app keeps its own pages, look (CSS)
 │                                          and JavaScript"
 └── tests/                                 core, API and orchestrator tests; no web tests
 ```
@@ -1881,13 +1881,13 @@ louis-agent/
 │   ├── louis-agent.puls/                  step 5: Pages/Admin/, AdminLayout, RunExplorer, TrendChart, ChartInfo gone;
 │   │                                      App.razor gains AdditionalAssemblies; its own logo and chat stay
 │   ├── louis-agent.code-review/App.razor          step 5: AdditionalAssemblies, so the code-review app serves /admin
-│   └── louis-agent.web.shared/            step 5: Pages/Admin/, Layout/AdminLayout.razor, Components/RunExplorer,
+│   └── louis-agent.web/            step 5: Pages/Admin/, Layout/AdminLayout.razor, Components/RunExplorer,
 │                                          TrendChart, ChartInfo, wwwroot/ (the admin's styles and focus helper);
 │                                          step 7: Pages/Admin/TryIt.razor
 └── tests/
     ├── louis-agent.identity.demo.tests/   steps 1-3: the identity, the customers pack, the clerk's golden
     ├── louis-agent.simulations.demo.tests/ steps 3-4: the graders on recorded transcripts
-    └── louis-agent.web.shared.tests/      steps 5-7, new: bUnit (MIT), the repo's first web tests
+    └── louis-agent.web.tests/      steps 5-7, new: bUnit (MIT), the repo's first web tests
 ```
 
 #### Steps (one commit each, test first, stop after each)
@@ -1900,7 +1900,7 @@ louis-agent/
 | 3 | **The invoice clerk and `demo-invoice-batch`:** `specialists/demo-invoice-clerk.md`, the made-up invoices, `louis-agent.simulations.demo` with `InvoiceBatchSimulation` and its three graders, its line in `SimulationCatalog`, `BenchmarkTrends`' cost per conversation, the simulation's manual with its cost bar; a golden of the clerk's request | the graders on recorded transcripts: a right match, a wrong one, a missed "no customer", a VAT-only invoice matched without checking its number; `SimulationCatalog` lists `demo-invoice-batch` and the portal offers it; the cost per conversation from a recorded run's ledger rows, an unpriced row leaving it unknown, never 0 (ADR 0007); then **one paid run, on Louis's go** | A real task, graded on its outcome, its answer key out of the agent's reach (12) |
 | 3b | **"Get paid" and `demo-get-paid`:** `specialists/demo-debtors-clerk.md`, the made-up age analysis beside the invoices, `GetPaidSimulation` and its graders, its line in `SimulationCatalog`, the simulation's manual with its cost bar; a golden of the debtors clerk's request | the graders on recorded transcripts: a reminder for every overdue invoice, none for a paid one, an amount that differs from the book, a transcript with a send-like tool call; `SimulationCatalog` lists `demo-get-paid`; then **one paid run, on Louis's go** | The pitch that sells first, as a scored run; least agency: a send that cannot happen (12, 15) |
 | 4 | **The area guide and `demo-area-guide`:** `specialists/demo-area-guide.md`, `AreaGuideSimulation` and its three graders, the town-to-municipality table, its cases (the three towns and Phase 0 step 4's 30 Malmesbury questions, without names or contact details) | the graders on recorded transcripts fail a wrong municipality, a fact with no source or no date, a fact whose source the trial never read, and a nearby place beyond the distance it states; `SimulationCatalog` lists `demo-area-guide`; then **one paid run, on Louis's go**, recording its pages, so later runs replay them | Grounding on location, one place many sources (7, 3) |
-| 5 | **The control room moves to `louis-agent.web.shared`:** the portal's two pages, `AdminLayout`, `RunExplorer`, `TrendChart` and `ChartInfo`, their words identity-neutral; the focus helper and the admin's styles as the shared project's own assets; both routers' `AdditionalAssemblies`; the csproj's note; `tests/louis-agent.web.shared.tests` (bUnit 2.11.3, MIT, built for .NET 10; nuget.org, published 2026-09-13), the repo's first web tests | bUnit renders the moved run page from a recorded cook run with the rows, grades and cost that a hand check on `main` shows for the same run, and no Puls name or logo; hand check: Puls's web app and the code-review app both route `/admin`, and in the code-review stack, with no store, it says runs need one | A screen that sells with numbers (17) |
+| 5 | **The control room moves to `louis-agent.web`:** the portal's two pages, `AdminLayout`, `RunExplorer`, `TrendChart` and `ChartInfo`, their words identity-neutral; the focus helper and the admin's styles as the shared project's own assets; both routers' `AdditionalAssemblies`; the csproj's note; `tests/louis-agent.web.tests` (bUnit 2.11.3, MIT, built for .NET 10; nuget.org, published 2026-09-13), the repo's first web tests | bUnit renders the moved run page from a recorded cook run with the rows, grades and cost that a hand check on `main` shows for the same run, and no Puls name or logo; hand check: Puls's web app and the code-review app both route `/admin`, and in the code-review stack, with no store, it says runs need one | A screen that sells with numbers (17) |
 | 6 | **Any simulation's grades in the room:** each grader's score per mode and the cost per conversation, so the demo's runs read as clearly as the cook's; the cook keeps its own measures | bUnit renders a recorded `demo-invoice-batch` run: a row per grader per mode, the cost per invoice, and an unknown cost shown as unknown | Graders, not only one check's measures, on the screen (12, 17) |
 | 7 | ***Try it*:** a chat in one of a simulation's modes, opened from the control room | bUnit with the API stubbed: the page lists the simulations' modes and opens a session whose `POST /sessions` carries the mode's role and toolsets (`demo/voice` with `specialists`) | The pitch and its numbers on one screen (17) |
 | 8 | **Docs and the learning write-up:** the feature doc's results (each pitch against its pass and cost bars), how to give a pitch, the project docs, the TODO's web-tests line (the bUnit project exists now), CHANGELOG; **the learning write-up for skills 18, 7 and 12**, written by Louis himself without the code open: `docs/learning/18-testing-and-shipping.md` (Phase 2's) gains the playground (two identities, one pack; a stack apart for showing), `docs/learning/07-context-engineering.md` (the F32 to F34 write-up, written before Phase 2) gains the area guide's grounding (one place, many sources, each fact with its source and date), and skill 12's (`docs/learning/12-evaluation.md`, Phase 3's) gains the answer key kept out of reach and cost as a measure, not a grader; each one's row in `docs/learning/README.md` is updated to say what it now covers. The phase is done only when he has written it; if he can't explain a step, that step goes back | links checked | Writing it up (18, 7, 12) |

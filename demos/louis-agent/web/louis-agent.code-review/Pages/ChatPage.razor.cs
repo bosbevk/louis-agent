@@ -1,14 +1,14 @@
 using LouisAgent.CodeReview.Components.Git;
 using LouisAgent.CodeReview.Git;
 using LouisAgent.CodeReview.Workspace;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Storage;
-using LouisAgent.Web.Shared.Text;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Storage;
+using LouisAgent.Web.Text;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.CodeReview.Pages;
 

@@ -37,7 +37,7 @@ when you're about to change a particular project. Each project's `.csproj` links
 | `louis-agent.choices` | Class library | `SettingChoice` and `[WireName]`: the one parser for a name that is an enum member; references nothing ([ADR 0043](../adr/0043-repeated-names-are-enums.md)) | — (to write) |
 | `louis-agent.session-stream` | Class library | Reads a session's server-sent events into records, for core's sub-sessions, the web apps and the eval runner | — (to write) |
 | `src/hosts/louis-agent.api.contracts` | Class library | The API's replies and bodies as records, and each wire's options object, shared by the API and its clients ([ADR 0045](../adr/0045-typed-answers-and-a-shared-contract.md)) | — (to write) |
-| `src/web/louis-agent.web.shared` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [web.shared](louis-agent.web.shared.md) |
+| `src/web/louis-agent.web` | Razor class library | What both web apps share: chat models, the API client, the turn and delegation views, markdown, usage and currency | [louis-agent.web](louis-agent.web.md) |
 | `src/tests`, `demos/*/tests`, `packs-tests` | NUnit | The tests of core, the API's sessions, the orchestrator, the ACP server, Puls's prompts and golden, the packs, the composition root and the three web projects (bUnit); `src/tests/shared/louis-agent.testing` and `src/tests/web/louis-agent.web.testing` hold the fakes they share | [tests](tests.md) |
 
 ## How they depend on each other
@@ -50,7 +50,7 @@ flowchart BT
     API["louis-agent.api"] --> Core
     API --> Web["louis-agent.code-review<br/>(served by the API)"]
     API --> Puls["louis-agent.puls<br/>(served by the API built with -p:WebApp=puls)"]
-    Web --> Shared["louis-agent.web.shared"]
+    Web --> Shared["louis-agent.web"]
     Puls --> Shared
     API -. "HTTP + SSE<br/>(sub-sessions on a peer)" .-> API
     MCP["louis-agent.mcp-server"] --> Core

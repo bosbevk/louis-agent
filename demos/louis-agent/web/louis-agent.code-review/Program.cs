@@ -1,11 +1,11 @@
 using LouisAgent.CodeReview.Git;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Usage;
-using LouisAgent.Web.Shared.Storage;
-using LouisAgent.Web.Shared.Text;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.CodeReview;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
+using LouisAgent.Web.Text;
+using LouisAgent.Web.Usage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -19,6 +19,6 @@ builder.Services.AddScoped<AgentApi>();
 builder.Services.AddScoped<GitState>();
 builder.Services.AddScoped<GitHistory>();
 builder.Services.AddScoped<CurrencyState>();
-builder.Services.AddSingleton(new LouisAgent.Web.Shared.Text.ChatText());   // the shared components' words, in English
+builder.Services.AddSingleton(new ChatText());   // the shared components' words, in English
 
 await builder.Build().RunAsync();

@@ -1,13 +1,13 @@
 using LouisAgent.Packs.Web;
 using LouisAgent.Choices;
 using LouisAgent.Core.Agent.Toolsets;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using CoreScriptLanguage = LouisAgent.Core.Skills.Languages.ScriptLanguage;
-using WebScriptLanguage = LouisAgent.Web.Shared.Api.ScriptLanguage;
+using WebScriptLanguage = LouisAgent.Web.Api.ScriptLanguage;
 
 namespace LouisAgent.Api.Tests;
 
-// F18 step 7.5.3 (ADR 0043, Louis's card 3): the browser can't reference core, so the web apps keep their own small enums of the names they use (`AskedToolset`, `ScriptLanguage` in web.shared).
+// F18 step 7.5.3 (ADR 0043, Louis's card 3): the browser can't reference core, so the web apps keep their own small enums of the names they use (`AskedToolset`, `ScriptLanguage` in louis-agent.web).
 // This test sits where both sides are visible and checks them against core's, so the two copies cannot drift: a name the browser asks for that core does not have, or a language core gained that the browser lacks.
 public class BrowserSideNamesTests
 {

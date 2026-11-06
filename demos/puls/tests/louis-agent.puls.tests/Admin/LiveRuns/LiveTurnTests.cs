@@ -1,7 +1,7 @@
 using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.LiveRuns;
-using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Chats;
 
 namespace LouisAgent.Puls.Tests.Admin.LiveRuns;
 

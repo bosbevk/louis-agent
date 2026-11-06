@@ -56,7 +56,7 @@ thing still belongs to the demo: core writes skill files, and the running demo o
 - **Framework still points at implementation in three places, and each is a debt with a name.** The API's csproj picks a
   web app with `-p:WebApp=puls`. The hosts reference `host-packs`. And the API's tests name Puls and the packs, so they sit
   in `demos/puls/tests/` and the framework ships without API tests until the hosts are inverted (CL29.1).
-- `louis-agent.web.shared` is framework by this rule but 13 of its 49 files mention Puls, which needs its own look.
+- `louis-agent.web` is framework by this rule but 13 of its 49 files mention Puls, which needs its own look.
 - `prices.json` and `rates.json` are one copy per demo, held equal by a test, as are the env templates' shared settings by
   hand.
 - Inside a project, a folder is still PascalCase, because the namespace is the folder path (the orchestrator's `Skills/`).

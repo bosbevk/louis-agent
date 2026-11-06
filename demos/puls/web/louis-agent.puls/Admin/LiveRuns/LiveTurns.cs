@@ -2,8 +2,8 @@ using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Evals.Protocol;
 using LouisAgent.Evals.Protocol.Events.Conversations;
 using LouisAgent.SessionStream;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Usage;
 
 namespace LouisAgent.Puls.Admin.LiveRuns;
 

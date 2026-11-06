@@ -2,10 +2,10 @@ using LouisAgent.Web.Testing;
 using LouisAgent.Testing;
 using LouisAgent.Puls.Pages;
 using LouisAgent.Puls.Text;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Storage;
+using LouisAgent.Web.Usage;
 using Microsoft.Extensions.DependencyInjection;
+using LouisAgent.Web.Api;
 
 namespace LouisAgent.Puls.Tests.Pages;
 

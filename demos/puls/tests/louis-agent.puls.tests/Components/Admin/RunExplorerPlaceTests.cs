@@ -6,8 +6,8 @@ using LouisAgent.Puls.Admin.Explorer.Place;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 

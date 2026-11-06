@@ -1,6 +1,6 @@
 using LouisAgent.Puls.Content;
 using Microsoft.AspNetCore.Components;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Components.Chat.Panels;
 

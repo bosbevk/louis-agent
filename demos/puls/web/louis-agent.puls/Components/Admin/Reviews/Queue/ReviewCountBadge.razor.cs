@@ -2,7 +2,7 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Reviews;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Reviews.Queue;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.Reviews.Queue;

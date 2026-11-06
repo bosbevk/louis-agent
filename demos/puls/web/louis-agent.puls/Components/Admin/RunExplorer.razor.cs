@@ -5,9 +5,9 @@ using LouisAgent.Puls.Admin.Explorer.Tree;
 using LouisAgent.Puls.Admin.Grades;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Runs;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 

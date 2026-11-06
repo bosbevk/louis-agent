@@ -1,6 +1,7 @@
+using LouisAgent.Web.Chats;
+
 namespace LouisAgent.Puls.Search;
 
-using LouisAgent.Web.Shared.Chats;
 
 /// <summary>
 /// The search over the chats saved in this browser (F20, Ctrl/Cmd K; W2b, from the ChatSearch component): their titles,

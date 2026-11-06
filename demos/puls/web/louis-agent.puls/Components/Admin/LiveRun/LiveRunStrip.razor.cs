@@ -3,7 +3,7 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Admin.Evals.List;
 using LouisAgent.Puls.Admin.RunPage;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 
 namespace LouisAgent.Puls.Components.Admin.LiveRun;

@@ -10,8 +10,8 @@ using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Components.Admin;
 using LouisAgent.Puls.Text;
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using LouisAgent.Web.Testing;
 using Microsoft.Extensions.DependencyInjection;
 

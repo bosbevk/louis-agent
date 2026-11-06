@@ -1,8 +1,8 @@
 using LouisAgent.CodeReview.Git;
 using LouisAgent.CodeReview.Pages;
-using LouisAgent.Web.Shared.Storage;
-using LouisAgent.Web.Shared.Text;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Storage;
+using LouisAgent.Web.Text;
+using LouisAgent.Web.Usage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.CodeReview.Tests.Pages;

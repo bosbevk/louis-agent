@@ -9,8 +9,8 @@ using LouisAgent.Puls.Admin.Runs;
 using LouisAgent.Puls.Components.Admin.LiveRun;
 using LouisAgent.Puls.Text;
 using LouisAgent.Testing;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.LiveRun;

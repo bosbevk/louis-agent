@@ -1,6 +1,6 @@
 using LouisAgent.Choices;
 using LouisAgent.CodeReview.Workspace;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 
 namespace LouisAgent.CodeReview.Tests.Workspace;
 

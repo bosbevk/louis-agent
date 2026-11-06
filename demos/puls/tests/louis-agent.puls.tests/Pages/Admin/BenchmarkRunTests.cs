@@ -4,10 +4,10 @@ using System.Text;
 using LouisAgent.Puls.Admin.Notes;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Pages.Admin;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Chats;
-using LouisAgent.Web.Shared.Storage;
-using LouisAgent.Web.Shared.Usage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Chats;
+using LouisAgent.Web.Storage;
+using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 

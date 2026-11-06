@@ -1,7 +1,7 @@
 # louis-agent.code-review — design
 
 > **Kind:** Blazor WebAssembly app · **Path:** `demos/louis-agent/web/louis-agent.code-review/` · **Served by:** louis-agent.api (same origin) ·
-> **References:** louis-agent.web.shared (with Markdig), highlight.js (from a CDN)
+> **References:** louis-agent.web (with Markdig), highlight.js (from a CDN)
 
 ## Purpose
 
@@ -63,8 +63,8 @@ flowchart TB
 | `wwwroot/` | `index.html`, `css/` (`app.css` the `@import` list, the rules in area files under `base/`, `layout/`, `workspace/`, `git/`, `chat/`, at most 200 lines each; CL26), themes, `js/chat.js` (scrolling, focus, cross-tab sync of chats) |
 
 **Shared with Puls:** the chat as data, the API client, a turn's life, the turn and delegation views, markdown, usage
-and currency are in `src/web/louis-agent.web.shared/`, a Razor class library both apps reference; its design is in
-[louis-agent.web.shared](../../../../src/docs/projects/louis-agent.web.shared.md).
+and currency are in `src/web/louis-agent.web/`, a Razor class library both apps reference; its design is in
+[louis-agent.web](../../../../src/docs/projects/louis-agent.web.md).
 
 ## Configuration
 
@@ -99,4 +99,4 @@ The panels' own behaviour (the merge queue, staging) is still checked in a brows
 [README § Web app](../../../../README.md#web-app) · [Quick start](../QUICK_START_AGENT.md) · [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md)
 
 ---
-[Projects](../../../../src/docs/projects/README.md) · Previous: [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md) · Next: [louis-agent.web.shared](../../../../src/docs/projects/louis-agent.web.shared.md)
+[Projects](../../../../src/docs/projects/README.md) · Previous: [louis-agent.api](../../../../src/docs/projects/louis-agent.api.md) · Next: [louis-agent.web](../../../../src/docs/projects/louis-agent.web.md)

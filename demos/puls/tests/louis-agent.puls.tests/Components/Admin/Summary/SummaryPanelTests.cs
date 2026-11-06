@@ -4,8 +4,8 @@ using System.Text.Json;
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Runs;
 using LouisAgent.Puls.Components.Admin.Summary;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LouisAgent.Puls.Tests.Components.Admin.Summary;

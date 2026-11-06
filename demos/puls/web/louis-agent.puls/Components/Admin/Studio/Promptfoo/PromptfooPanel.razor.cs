@@ -4,7 +4,7 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Studio;
 using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Studio;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 

@@ -32,7 +32,7 @@ public class ChoicesProjectTests
     [Test]
     public void TheBrowserSide_ReferencesItDirectly_SinceItCannotReachCore()
     {
-        Assert.That(Csproj("src/web/louis-agent.web.shared", "louis-agent.web.shared.csproj"),
+        Assert.That(Csproj("src/web/louis-agent.web", "louis-agent.web.csproj"),
             Does.Contain(@"louis-agent.choices\louis-agent.choices.csproj"));
     }
 }

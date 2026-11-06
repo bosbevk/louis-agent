@@ -3,12 +3,12 @@
 > **How-to.** Change `demos/louis-agent/web/louis-agent.code-review`, the browser app for chatting with the coding agent, browsing the workspace
 > and reviewing changes: run it, add a tab, call a new endpoint, add a theme, place its words, and test it.
 > **Elsewhere:** how it works in [louis-agent.code-review](../projects/louis-agent.code-review.md); what it shares with Puls in
-> [Change the shared web library](../../../../src/docs/guides/change-the-web-shared.md); the folder rules in [src/CLAUDE.md](../../../../src/CLAUDE.md).
+> [Change the shared web library](../../../../src/docs/guides/change-the-web.md); the folder rules in [src/CLAUDE.md](../../../../src/CLAUDE.md).
 
 The app is Blazor WebAssembly, served by the API on the same origin, so it has no settings of its own. One page,
 `Pages/ChatPage.razor`, holds a sidebar with four tabs (Chats, Files, Changes, Branches) and a main area that shows a
 chat, a file, a diff or a commit. What a chat needs (the API client, a turn's life, the turn views, markdown, usage) is
-in `src/web/louis-agent.web.shared`, which Puls uses too.
+in `src/web/louis-agent.web`, which Puls uses too.
 
 ## Run it
 
@@ -37,7 +37,7 @@ restart the run. If the API needs `AGENT_API_KEY`, enter it under *API key* in t
 
 Components never use `HttpClient`. A call only this app makes is an extension method on the shared `AgentApi` in the
 app's concern folder, as `Workspace/AgentApiWorkspace.cs` adds the workspace and git calls. A call both apps make goes
-in `AgentApi` itself ([Change the shared web library](../../../../src/docs/guides/change-the-web-shared.md)). The endpoint itself is the API's
+in `AgentApi` itself ([Change the shared web library](../../../../src/docs/guides/change-the-web.md)). The endpoint itself is the API's
 ([Change the API](../../../../src/docs/guides/change-the-api.md)), protected by its key.
 
 ## Add a theme

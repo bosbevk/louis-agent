@@ -1,7 +1,7 @@
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Imports;
 using LouisAgent.Puls.Admin.Imports;
-using LouisAgent.Web.Shared.Api;
+using LouisAgent.Web.Api;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 

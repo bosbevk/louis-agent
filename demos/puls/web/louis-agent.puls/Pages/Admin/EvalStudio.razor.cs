@@ -6,8 +6,8 @@ using LouisAgent.Puls.Admin.Reviews;
 using LouisAgent.Puls.Admin.Studio;
 using LouisAgent.Puls.Admin.Studio.Compose;
 using LouisAgent.Puls.Admin.Studio.Schema;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 

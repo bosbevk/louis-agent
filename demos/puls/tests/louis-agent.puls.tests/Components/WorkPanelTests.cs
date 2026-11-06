@@ -2,9 +2,9 @@ using LouisAgent.Web.Testing;
 using LouisAgent.Testing;
 using LouisAgent.Puls.Components.Chat.Panels;
 using LouisAgent.Puls.Text;
-using LouisAgent.Web.Shared.Chats;
+using LouisAgent.Web.Chats;
 using Microsoft.Extensions.DependencyInjection;
-using ChatModel = LouisAgent.Web.Shared.Chats.Chat;
+using ChatModel = LouisAgent.Web.Chats.Chat;
 
 namespace LouisAgent.Puls.Tests.Components;
 

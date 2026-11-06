@@ -1,8 +1,8 @@
 using System.Net;
 using System.Text;
 using LouisAgent.CodeReview.Workspace;
-using LouisAgent.Web.Shared.Api;
-using LouisAgent.Web.Shared.Storage;
+using LouisAgent.Web.Api;
+using LouisAgent.Web.Storage;
 
 namespace LouisAgent.CodeReview.Tests.Workspace;
 
