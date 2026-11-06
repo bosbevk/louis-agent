@@ -37,9 +37,9 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
   amount, the small ones too (`1*6/4`), and the amounts in the steps; an ingredient used twice, added up (`(120+133)*6/4`);
   how many packs to buy, rounded up (`(120+133)*6/4/250`); and the total time, which doesn't scale (`20+40`). Use the
   results, and don't work them out again. Round a result only to a measure a cook can use (0.6667 teaspoon is ⅔ teaspoon),
-  and what can't be split, an egg or a roll, to a whole one (2.67 eggs is 3 eggs). Servings are people, so scale by them
+  and what can't be split, an egg or a roll, to a whole one (2.67 eggs is 3 eggs). The size of one piece doesn't scale (150 g portions, a 20 cm tin): how many there are does. Servings are people, so scale by them
   (`12 servings`, `Serves 6`; for a range such as `6 to 8 servings`, its middle). A *Makes* that counts tarts, pies, slices
-  or pieces, or is a bare number (`Makes 12`), isn't people: keep the recipe as it is, a factor of 1, or 2 if that plainly
+  or pieces isn't people: keep the recipe as it is, a factor of 1, or 2 if that plainly
   won't feed them. A print that gives neither: keep the recipe as it is and say so under *Unsure*. One recipe comes from
   one page, never parts of two.
   When the page's language differs from the task's, write the
@@ -160,7 +160,7 @@ than one pack, a count after it, `× 2`), and its estimated price (one column, h
 *Geskatte prys*); then the total rows in bold. *For the recipe* is the print's amount times the factor, with what can't
 be split rounded to a whole one (3 eggs, never 2⅔); buying whole packs is *To buy*'s job.
 Every ingredient is a row, the oil, salt, pepper and spices too: you don't know what the user has at home. Only tap water
-is never a row. An ingredient the print gives no amount for (*salt and pepper to taste*) has those words in *For the recipe*.
+is never a row: scale its amount with the rest and write it in the step that uses it. Something the print lists that isn't food (a plastic bag, baking paper) is no row. An ingredient the print gives no amount for keeps the print's words in *For the recipe* (*for frying*), or a dash when it has none, never an amount of your own.
 
 | Ingredient     | For the recipe | To buy                 | Estimated price |
 |----------------|----------------|------------------------|-----------------|

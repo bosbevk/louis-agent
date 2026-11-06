@@ -29,7 +29,7 @@ public class RecipePrinterTests
         Assert.That(RecipePrinter.Print(recipe), Is.EqualTo(
             """
                 # Malva pudding
-                Makes 8 · prep 30 min · cook 45 min · total 75 min
+                Serves 8 · prep 30 min · cook 45 min · total 75 min
 
                 ## Ingredients
                 1. 1 cup sugar
@@ -69,6 +69,9 @@ public class RecipePrinterTests
     [TestCase(null, 20, null, null, "prep 20 min")]
     [TestCase(null, null, 90, null, "cook 90 min")]
     [TestCase("10 pies", null, 30, 50, "Makes 10 pies · cook 30 min · total 50 min")]
+    [TestCase("6", null, null, null, "Serves 6")]
+    [TestCase("4 to 6", null, 30, null, "Serves 4 to 6 · cook 30 min")]
+    [TestCase("6-8", null, null, null, "Serves 6-8")]
     [TestCase(null, 0, null, null, null)]
     public void TheTimeLine_HasOnlyThePartsThePageGave(string? yield, int? prep, int? cook, int? total,
         string? line)
@@ -80,10 +83,10 @@ public class RecipePrinterTests
         Assert.That(lines[1], line is null ? Is.Empty : Is.EqualTo(line));
     }
 
-    /// <summary>The page never says "serves", so the print never does.</summary>
+    /// <summary>A yield in words is what the page says it makes, so it doesn't become "serves".</summary>
     [Test]
-    public void ThePrint_NeverSaysServes() =>
-        Assert.That(RecipePrinter.Print(Bare("4")), Does.Not.Contain("Serves"));
+    public void AYieldInWords_NeverSaysServes() =>
+        Assert.That(RecipePrinter.Print(Bare("4 pies")), Does.Not.Contain("Serves"));
 
     /// <summary>Steps count straight on through the sections, so a step can be quoted by one number.</summary>
     [Test]

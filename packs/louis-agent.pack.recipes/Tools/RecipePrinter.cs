@@ -51,13 +51,24 @@ internal static class RecipePrinter
     {
         var parts = new List<string?>
         {
-            recipe.Yield is null ? null : MessageText.Format(RecipeToolMessage.RecipeMakes, new { recipe.Yield }),
+            recipe.Yield is null
+                ? null
+                : MessageText.Format(IsOnlyANumber(recipe.Yield) ? RecipeToolMessage.RecipeServes : RecipeToolMessage.RecipeMakes,
+                    new { recipe.Yield }),
             Minutes(RecipeToolMessage.RecipePrep, recipe.PrepTime),
             Minutes(RecipeToolMessage.RecipeCook, recipe.CookTime),
             Minutes(RecipeToolMessage.RecipeTotal, recipe.TotalTime)
         };
         return string.Join(Separator, parts.OfType<string>());
     }
+
+    /// <summary>
+    /// A site's data giving only a number, or a range, nearly always means servings. Printed as "Makes 3" it read as
+    /// not people, and the cook doubled it for four.
+    /// </summary>
+    private static bool IsOnlyANumber(string yield) =>
+        yield.Replace(" to ", "-", StringComparison.Ordinal).All(c => char.IsAsciiDigit(c) || c is '-' or '–') &&
+        yield.Any(char.IsAsciiDigit);
 
     /// <summary>A time as its message in whole minutes, or null when the page gave none.</summary>
     private static string? Minutes(RecipeToolMessage message, TimeSpan? time) =>

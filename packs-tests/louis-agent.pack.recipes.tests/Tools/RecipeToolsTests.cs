@@ -286,7 +286,7 @@ public class RecipeToolsTests
         string[] lines = result.Split('\n');
         Assert.That(lines[0], Is.EqualTo(Text(RecipeToolMessage.UntrustedFrame)));
         Assert.That(lines[1], Is.EqualTo("# Pork bobotie"));
-        Assert.That(result, Does.Contain("Makes 4 to 6 · prep 20 min · cook 30 min\n"));
+        Assert.That(result, Does.Contain("Serves 4 to 6 · prep 20 min · cook 30 min\n"));
         Assert.That(result, Does.Not.Contain("· total"), "the page's total is empty, so the line leaves it out");
         Assert.That(result, Does.Contain("## Ingredients\n### Filling\n1. 500 g Pork mince"));
         Assert.That(result, Does.Contain("### Topping\n15. 2 Eggs").And.Not.Contain("***"));
