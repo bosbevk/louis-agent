@@ -63,8 +63,15 @@ search would stop at the few kinds of melktert it already had.
   with the library off: 45 s against 56 s, the cook's cost $0.00556 against $0.00617, judge 8 of 9. Pages new to the run scored 29
   of 36 in both.
 - **So the library saves little for now, and we accepted that.** Our links in places 1 and 2 were read 24% of the time and lower
-  down 8%, so first places would raise its use, at the cost of new recipes. The 10 results, the 3 places, Best Recipes, the
-  other names for pap en sous and the reader's later fixes weren't measured after this run.
+  down 8%, so first places would raise its use, at the cost of new recipes.
+- **Measured again on a full library** (`5188a891aa20`, 44 recipes at the start, with the 10 results, the 3 places, Best Recipes, the
+  other names and the exclusion list): judge 42 of 50, 52 s, $0.00628, against the library off's 43, 56 s and $0.00633. So it met
+  the win test on time and cost and missed accuracy by one answer, with no push towards the library: the cook built 31 of 50
+  answers from a copy, at 47.5 s against 60.3 s for answers that read none. It kept 21 new recipes, and new pages fell by repeat
+  from 10 to 3, since only 10 dishes are searched. Pap en sous went from about 68 s and outside sites to 39 s on Best Recipes.
+- **Excluding costs real recipes.** Of the 16 pages on the list after that run, about 11 are real recipes in shapes the reader
+  doesn't handle, such as a "What you need" heading or plain lines with no headings at all. A better reader, then clearing the list,
+  brings them back.
 - `IDataFeed` gained `ReadItemJsonAsync`, with a default that gives nothing, and the API `GET /v1/feeds/{name}/{id}`, open like the
   feed. A feed's items have no MCP resource of their own.
 - A copy never changes. If a site corrects a recipe we keep the old one, and a photo that later disappears shows as broken.

@@ -29,15 +29,12 @@ every other result.
 row for each, the amount the recipe needs in the column for the recipe, often with a column of what to buy and one
 of prices. Judge the ingredient and the amount the recipe needs. Do not judge what to buy, a pack size or a price.
 
-- Every row is an ingredient of the print, and every ingredient of the print is a row, or is one of the pantry staples
-  the answer says it takes from the pantry (a line under the list that names them without amounts: cooking oil, salt,
-  pepper, sugar, flour, vinegar, stock cubes, the usual dried herbs and spices). A pantry staple the answer lists in
-  that line is not dropped, and you do not judge its amount.
+- Every row is an ingredient of the print, and every ingredient of the print is a row.
 - A name may be in the other language (*Versiersuiker* for *icing sugar*) and may be shorter or longer than the
   print's line. An ingredient the print marks optional, or gives as a choice, may be taken either way.
 - A swap the answer says it makes (it names what it replaces and why, for something hard to find) is not an ingredient
   added or dropped. An ingredient the print does not have, with no such swap, is added: `false`. One the print has,
-  that is neither a row nor a pantry staple the answer names, is dropped: `false`.
+  that is not a row, is dropped: `false`.
 - Water, and salt and pepper to taste, are never added or dropped: nobody shops for water, and seasoning a dish doesn't
   change the recipe.
 

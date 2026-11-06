@@ -17,7 +17,7 @@ one shop's price. Route here a request for roughly what something costs.
 ## Workflow
 
 1. **Write the list first,** every item the user buys with its pack size, and only then call `EstimatePrices` once
-   with all of it. Leave out what isn't bought (tap water, the pantry).
+   with all of it. Leave out only tap water.
 2. **Give the province** from the user's place, or from `FindBranches` when that toolset is loaded: a province's
    averages are closer than the country's.
 3. **Copy the numbers as they come:** each line's estimate, the total and the price per person. Never add, round or

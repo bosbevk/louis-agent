@@ -11,9 +11,11 @@ namespace LouisAgent.Packs.ShopPrices.Tests.Prices;
 /// </summary>
 public class CommonItemsTests
 {
-    /// <summary>The lines, leaving out the pantry the cook's list doesn't buy: oil, salt, sugar, flour.</summary>
+    /// <summary>The lines, salt and pepper too: the cook's list leaves nothing out but tap water.</summary>
     private static readonly string[] Lines =
     [
+        "cooking oil 750 ml", "salt 500 g", "black pepper 50 g", "white sugar 1 kg", "cake flour 1 kg",
+        "white vinegar 750 ml", "stock cubes 120 g",
         "rotis 5", "flaked almonds 100 g", "almond slivers 100 g", "dried peaches 250 g", "sultanas 200 g",
         "raisins 200 g", "apricot jam 450 g", "fruit chutney 470 g", "curry powder 100 g", "turmeric 50 g",
         "bay leaves 10 g", "cinnamon 50 g", "garam masala 50 g", "vanilla essence 40 ml", "filo pastry 500 g",
@@ -46,6 +48,8 @@ public class CommonItemsTests
     [TestCase("pork mince 500 g", "Pork mince")]
     [TestCase("sour cream 250 ml", "Sour cream")]
     [TestCase("evaporated milk 380 g", "Evaporated milk")]
+    [TestCase("black pepper 50 g", "Black pepper")]
+    [TestCase("green pepper 1", "Green/red/yellow pepper - fresh")]
     public async Task ALineThatSharesAWord_IsPricedFromItsOwnProduct(string line, string product)
     {
         var book = await new PriceBookCache(new ShippedPrices(), TimeProvider.System).GetAsync(CancellationToken.None);

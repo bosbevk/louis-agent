@@ -81,12 +81,11 @@ nagegaan nie.*), and *Unsure* has one row saying the prices are estimates and wh
 
 **The budget picks the dish.** With a budget, the dish is chosen to fit it, before the list is written. A budget per
 person is a sum for `Calculate`: the amount times the people. Estimate the
-dish's total first (`EstimatePrices` on its main ingredients); a dish that comes out over the budget is swapped for a cheaper one (fewer or cheaper cuts, a pantry dish).
+dish's total first (`EstimatePrices` on its main ingredients); a dish that comes out over the budget is swapped for a cheaper one (fewer or cheaper cuts, a simpler dish).
 Only if no reasonable dish fits does the answer go over, and then *Unsure* says by how much and why. The stop rule under
 *The recipe first* decides which page to use: a recipe over the budget is dropped for the next page.
 A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small budget: choose one built
-on one cheap main ingredient (mince, chicken portions, eggs, beans, a soup). Count only what the user has to buy: the pantry is
-not bought (the list rule below).
+on one cheap main ingredient (mince, chicken portions, eggs, beans, a soup). Every ingredient counts towards the budget.
 
 **Shops near the user.** With `enige` / `any`, or when the user named no shop, look up what's near them, once, with
 `FindShopsNear` (`town`, the user's town), with your first tool calls. It gives the town's province too, for
@@ -160,13 +159,8 @@ pack, `beef mince 500 g`, with its pack size and never the size alone, no brand,
 than one pack, a count after it, `× 2`), and its estimated price (one column, headed *Estimated price* /
 *Geskatte prys*); then the total rows in bold. *For the recipe* is the print's amount times the factor, with what can't
 be split rounded to a whole one (3 eggs, never 2⅔); buying whole packs is *To buy*'s job.
-What isn't bought is never a row: tap water, and pantry staples the user has (cooking oil, salt, pepper, sugar, flour,
-vinegar, stock cubes and the usual dried spices and herbs), in the amount a cupboard holds. 500 g or 500 ml or more of
-a staple is bought, so it's a row.
-They go on one line under the list, in the task's language, each one this recipe uses by its name and nothing it doesn't
-use, never just *spices* (*From the pantry: cooking oil, salt and turmeric.*;
-Afrikaans: *Uit die voorraadkas: kookolie, sout en borrie.*). A spice, sauce or sweetener the dish is built on (the curry
-powder of a curry, for one) is still a row.
+Every ingredient is a row, the oil, salt, pepper and spices too: you don't know what the user has at home. Only tap water
+is never a row. An ingredient the print gives no amount for (*salt and pepper to taste*) has those words in *For the recipe*.
 
 | Ingredient     | For the recipe | To buy                 | Estimated price |
 |----------------|----------------|------------------------|-----------------|

@@ -206,8 +206,6 @@ public class PulsPromptsTests
 
         Assert.That(cook, Does.Contain("Where the user is").And.Contain("never your own guess, never a search snippet"));
         Assert.That(cook, Does.Contain("every ingredient named in the task's language"));
-        Assert.That(cook, Does.Contain("What isn't bought is never a row"));
-        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en borrie.*"));
         Assert.That(cook, Does.Contain("no brand, no photo"));
         Assert.That(cook, Does.Contain("Look the user's shop up in their town, once, with `FindBranches`"));
         Assert.That(cook, Does.Contain("| Chicken thighs ").And.Contain("| 600 g ").And.Contain("chicken thighs 1 kg"));
@@ -342,24 +340,30 @@ public class PulsPromptsTests
         Assert.That(cook,
             Does.Contain(
                 "Only if no reasonable dish fits does the answer go over, and then *Unsure* says by how much and why"));
-        Assert.That(cook,
-            Does.Contain(
-                "pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the " +
-                "usual dried spices and herbs)"),
-            "listed as in the pantry, with no price");
     }
 
     /// <summary>
-    /// The cook keeps a meal within its budget by dropping a recipe that goes over, and doesn't price what's already
-    /// in the pantry.
+    /// We never know what's in someone's cupboard, so every ingredient is a row with a price, spices and salt too.
+    /// Only tap water stays out, because nobody buys it.
     /// </summary>
     [Test]
-    public void TheCook_KeepsAMealWithinTheBudget_ByDroppingAnOverBudgetRecipe_AndNotPricingThePantry()
+    public void TheCook_ListsEveryIngredient_AndAssumesNoPantry()
+    {
+        string cook = Flat(Read("specialists/puls-cook.md"));
+
+        Assert.That(cook, Does.Contain("Every ingredient is a row, the oil, salt, pepper and spices too"));
+        Assert.That(cook, Does.Contain("Only tap water is never a row"));
+        Assert.That(cook, Does.Contain("Every ingredient counts towards the budget"));
+        Assert.That(cook, Does.Not.Contain("pantry").IgnoreCase);
+        Assert.That(cook, Does.Not.Contain("voorraadkas").IgnoreCase);
+    }
+
+    /// <summary>The cook keeps a meal within its budget by dropping a recipe that goes over.</summary>
+    [Test]
+    public void TheCook_KeepsAMealWithinTheBudget_ByDroppingAnOverBudgetRecipe()
     {
         // Louis, 2026-10-26, after the --repeat 3 run (cook-malmesbury: R258 and R289 on R150, and a pass at R129):
-        // the cook priced every spice, sauce and sweetener as a whole pack (R74 of spices in one answer, R163 of
-        // condiments in another), took the first recipe it read, and said so under the budget row. The budget rule
-        // picks the recipe, and the pantry is not bought.
+        // the cook took the first recipe it read and said so under the budget row. The budget rule picks the recipe.
         string cook = Flat(Read("specialists/puls-cook.md"));
 
         Assert.That(cook, Does.Contain("a recipe over the budget is dropped for the next page"));
@@ -369,15 +373,6 @@ public class PulsPromptsTests
                 "A dish that needs a dozen small packs of spices, sauces and sweeteners is not a dish for a small " +
                 "budget"));
         Assert.That(cook, Does.Contain("one cheap main ingredient (mince, chicken portions, eggs, beans, a soup)"));
-        Assert.That(cook,
-            Does.Contain(
-                "pantry staples the user has (cooking oil, salt, pepper, sugar, flour, vinegar, stock cubes and the " +
-                "usual dried spices and herbs)"));
-        Assert.That(cook, Does.Contain("*From the pantry: cooking oil, salt and turmeric.*"));
-        Assert.That(cook, Does.Contain("*Uit die voorraadkas: kookolie, sout en borrie.*"));
-        Assert.That(cook, Does.Contain("never just *spices*").And.Contain("nothing it doesn't"),
-            "the line names what this recipe uses: a copied example added sugar to a recipe without any");
-        Assert.That(cook, Does.Contain("500 g or 500 ml or more"), "a lot of a staple is bought");
         Assert.That(cook, Does.Contain("`Calculate`").And.Contain("never in your head"),
             "the scaling is a tool's job, with every amount in one call");
         Assert.That(cook, Does.Match(@"toolsets: [^\r\n]*calculator"), "and the cook has the tool");

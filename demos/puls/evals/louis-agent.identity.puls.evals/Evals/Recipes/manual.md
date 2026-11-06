@@ -55,9 +55,8 @@ sent every result `ReadRecipe` gave in the conversation, each labelled and in th
 cut at 12,000 characters, and the request says so). The rubric tells it to judge against the result whose own `Link:` is
 the answer's link, so a cook that read two or three pages is judged against the one it used. It says yes when the
 ingredients, amounts and steps are that page's, scaled by one factor, with no ingredient or step added or dropped. The
-cook's report has no ingredient list under *Recipe* (the amounts are in its shopping list, and pantry staples are one
-line with no amounts), so the rubric reads the list's *For the recipe* column and does not count a named pantry staple
-as dropped. A method written in the task's language, step for step with every number, time and temperature unchanged,
+cook's report has no ingredient list under *Recipe* (the amounts are in its shopping list), so the rubric reads the
+list's *For the recipe* column. A method written in the task's language, step for step with every number, time and temperature unchanged,
 counts as the page's. No page read, or one that is no recipe, is a no.
 
 - It is **shown and counted but not required**, and it starts with **no labels**: nobody has yet graded its answers, so
