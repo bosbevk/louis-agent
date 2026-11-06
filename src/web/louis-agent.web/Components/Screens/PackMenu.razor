@@ -1,0 +1,12 @@
+@using Microsoft.AspNetCore.Components.Routing
+@* A sidebar link for each screen the packs offer; with none, no heading is left on its own. *@
+@if (_screens.Count > 0)
+{
+    <div class="sidebar-label">Packs</div>
+    <nav class="side-nav">
+        @foreach (var screen in _screens)
+        {
+            <NavLink @key="screen.Name" class="side-link" href="@AddressOf(screen)"><span class="ic i-file" aria-hidden="true"></span>@screen.Title</NavLink>
+        }
+    </nav>
+}

@@ -72,12 +72,16 @@ public sealed class ChatStore(IJSRuntime js, ChatSettings settings)
         }
     }
 
+    /// <summary>A new admin key was saved, so what the old one couldn't read can be read again.</summary>
+    public event Action? AdminKeySaved;
+
     /// <summary>The admin portal's key, in its own entry: the chat's key is left as it is (F31).</summary>
     public async Task SaveAdminKeyAsync(string? adminKey)
     {
         settings.AdminKey = string.IsNullOrWhiteSpace(adminKey) ? null : adminKey.Trim();
         if (settings.AdminKey is null) await js.InvokeVoidAsync("localStorage.removeItem", AdminKeyKey);
         else await js.InvokeVoidAsync("localStorage.setItem", AdminKeyKey, settings.AdminKey);
+        AdminKeySaved?.Invoke();
     }
 
     /// <summary>Keeps the chat's API key in this browser.</summary>

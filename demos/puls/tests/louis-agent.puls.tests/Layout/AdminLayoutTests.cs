@@ -12,8 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace LouisAgent.Puls.Tests.Layout;
 
 /// <summary>
-/// Puls's admin layout fills the framework's frame with what's its own. The golden was written from the layout before it
-/// moved onto the frame, so a change in what the page draws fails here.
+/// Puls's admin layout fills the framework's frame with what's its own. The golden was written from the layout before
+/// it moved onto the frame, so a change in what the page draws fails here.
 /// </summary>
 public class AdminLayoutTests
 {
@@ -54,18 +54,26 @@ public class AdminLayoutTests
         Assert.That(cut.FindAll(".admin-main .page"), Has.Count.EqualTo(1));
     }
 
+    /// <summary>Nothing running, nothing to review, and no pack offering a screen.</summary>
+    private static string AnswerTo(string path)
+    {
+        if (path.EndsWith("/current")) return "null";
+
+        return path.EndsWith("/screens") ? """{"screens":[]}""" : """{"items":[],"total":0}""";
+    }
+
     /// <summary>The layout with nothing running and nothing to review, once its badge has read the queue.</summary>
     private static IRenderedComponent<AdminLayout> Render(BunitContext ctx)
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var handler = new StubHandler(request => new HttpResponseMessage(HttpStatusCode.OK)
         {
-            Content = new StringContent(request.RequestUri!.AbsolutePath.EndsWith("/current")
-                ? "null"
-                : """{"items":[],"total":0}""", Encoding.UTF8, "application/json")
+            Content = new StringContent(AnswerTo(request.RequestUri!.AbsolutePath), Encoding.UTF8, "application/json")
         });
+        var settings = new ChatSettings();
+        ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") },
-            new ChatSettings()));
+            settings));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));
         var state = new ReviewQueueState();
         ctx.Services.AddSingleton(state);
