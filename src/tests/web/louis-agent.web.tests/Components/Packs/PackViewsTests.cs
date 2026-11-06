@@ -63,6 +63,18 @@ public class PackViewsTests
         Assert.That(views.ScreenView("USAGE"), Is.EqualTo(typeof(ThePacksView)));
     }
 
+    /// <summary>A screen with columns can always be drawn; one without needs its own view.</summary>
+    [Test]
+    public void AScreenWithNoColumns_NeedsItsOwnView()
+    {
+        var withColumns = Usage with { Columns = [new ScreenColumnReply("Name", "text")] };
+        var views = new PackViews();
+
+        Assert.That(views.CanDraw(withColumns), Is.True);
+        Assert.That(views.CanDraw(Usage), Is.False);
+        Assert.That(views.UseScreen<ThePacksView>("usage").CanDraw(Usage), Is.True);
+    }
+
     /// <summary>What it hands back draws through DynamicComponent, with the screen as its parameter.</summary>
     [Test]
     public void TheView_DrawsWithTheScreen()

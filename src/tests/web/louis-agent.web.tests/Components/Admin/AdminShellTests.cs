@@ -4,6 +4,7 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,8 +22,12 @@ public class AdminShellTests
         var ctx = new BunitContext();
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var settings = new ChatSettings();
-        var screens = new ScreensReply([new ScreenReply("usage", "Usage", "What was used.", [], Searchable: false)]);
+        var screens = new ScreensReply(
+        [
+            new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")], Searchable: false)
+        ]);
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
+        ctx.Services.AddSingleton(new PackViews());
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(new StubHandler(_ =>
             new HttpResponseMessage(HttpStatusCode.OK)
             {

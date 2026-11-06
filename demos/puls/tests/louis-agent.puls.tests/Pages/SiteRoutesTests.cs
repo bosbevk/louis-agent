@@ -79,7 +79,10 @@ public class SiteRoutesTests
     {
         var path = request.RequestUri!.AbsolutePath;
         if (path.EndsWith("/v1/admin/screens"))
-            return Json(new ScreensReply([new ScreenReply("usage", "Usage", "What was used.", [], Searchable: false)]));
+            return Json(new ScreensReply(
+            [
+                new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")], Searchable: false)
+            ]));
 
         return path.EndsWith("/rows")
             ? Json(new ScreenPageReply([], 0, 50))

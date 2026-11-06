@@ -1,6 +1,7 @@
 using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using Microsoft.AspNetCore.Components;
 
@@ -17,6 +18,7 @@ public partial class PackMenu : IDisposable
 
     [Inject] private AgentApi Api { get; set; } = null!;
     [Inject] private ChatStore Store { get; set; } = null!;
+    [Inject] private PackViews Views { get; set; } = null!;
 
     /// <summary>The address of the page that draws this screen.</summary>
     private static string AddressOf(ScreenReply screen) => $"admin/screens/{Uri.EscapeDataString(screen.Name)}";
@@ -49,7 +51,7 @@ public partial class PackMenu : IDisposable
         try
         {
             var reply = await Api.GetAsync<ScreensReply>("v1/admin/screens", AdminJson.SnakeCase);
-            _screens = reply.Screens;
+            _screens = [.. reply.Screens.Where(Views.CanDraw)];
         }
         catch (AgentApiException)
         {

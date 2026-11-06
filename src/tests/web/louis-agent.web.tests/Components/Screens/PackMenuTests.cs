@@ -4,7 +4,9 @@ using LouisAgent.Api.Contracts.Admin;
 using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Api;
 using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Components.Screens;
+using LouisAgent.Web.Components.Screens.Table;
 using LouisAgent.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,10 +18,12 @@ namespace LouisAgent.Web.Tests.Components.Screens;
 /// </summary>
 public class PackMenuTests
 {
+    private static readonly ScreenColumnReply Name = new("Name", "text");
+
     private static readonly ScreensReply TwoScreens = new(
     [
-        new ScreenReply("usage", "Usage", "What was used.", [], Searchable: false),
-        new ScreenReply("visits", "Visits", "Who came.", [], Searchable: false)
+        new ScreenReply("usage", "Usage", "What was used.", [Name], Searchable: false),
+        new ScreenReply("visits", "Visits", "Who came.", [Name], Searchable: false)
     ]);
 
     /// <summary>What the fake API says: the list, or a refusal until a key is sent.</summary>
@@ -37,12 +41,14 @@ public class PackMenuTests
     }
 
     /// <summary>The menu over that API, and the store a key is saved through.</summary>
-    private static (IRenderedComponent<PackMenu> Menu, ChatStore Store) Render(BunitContext ctx, FakeScreensApi api)
+    private static (IRenderedComponent<PackMenu> Menu, ChatStore Store) Render(BunitContext ctx, FakeScreensApi api,
+        PackViews? views = null)
     {
         ctx.JSInterop.Mode = JSRuntimeMode.Loose;
         var settings = new ChatSettings();
         var store = new ChatStore(ctx.JSInterop.JSRuntime, settings);
         ctx.Services.AddSingleton(store);
+        ctx.Services.AddSingleton(views ?? new PackViews());
         ctx.Services.AddSingleton(new AgentApi(
             new HttpClient(new StubHandler(api.Answer)) { BaseAddress = new Uri("http://localhost/") }, settings));
         return (ctx.Render<PackMenu>(), store);
@@ -64,12 +70,33 @@ public class PackMenuTests
         Assert.That(links.Select(link => link.TextContent), Is.EqualTo(new[] { "Usage", "Visits" }));
     }
 
+    /// <summary>A pack's own-view screen is listed only by a site that carries the view.</summary>
+    [Test]
+    public void AScreenWithNoColumns_IsListedOnlyWithItsView()
+    {
+        var mixed = new ScreensReply(
+        [
+            new ScreenReply("usage", "Usage", "", [Name], Searchable: false),
+            new ScreenReply("own", "Own", "", [], Searchable: false)
+        ]);
+        using var without = new BunitContext();
+        using var with = new BunitContext();
+
+        var (plain, _) = Render(without, new FakeScreensApi(mixed));
+        var (carrying, _) = Render(with, new FakeScreensApi(mixed), new PackViews().UseScreen<ScreenTable>("own"));
+
+        plain.WaitForAssertion(() => Assert.That(plain.FindAll("a.side-link").Select(link => link.TextContent),
+            Is.EqualTo(new[] { "Usage" })), TimeSpan.FromSeconds(10));
+        carrying.WaitForAssertion(() => Assert.That(carrying.FindAll("a.side-link").Select(link => link.TextContent),
+            Is.EqualTo(new[] { "Usage", "Own" })), TimeSpan.FromSeconds(10));
+    }
+
     /// <summary>A name goes in the address escaped.</summary>
     [Test]
     public void AName_IsEscapedInTheAddress()
     {
         using var ctx = new BunitContext();
-        var odd = new ScreensReply([new ScreenReply("a b", "Odd", "", [], Searchable: false)]);
+        var odd = new ScreensReply([new ScreenReply("a b", "Odd", "", [Name], Searchable: false)]);
 
         var (menu, _) = Render(ctx, new FakeScreensApi(odd));
 

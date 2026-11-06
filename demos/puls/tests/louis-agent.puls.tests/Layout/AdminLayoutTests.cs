@@ -5,6 +5,7 @@ using LouisAgent.Puls.Admin.Reviews.Queue;
 using LouisAgent.Puls.Layout;
 using LouisAgent.Testing;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,6 +73,7 @@ public class AdminLayoutTests
         });
         var settings = new ChatSettings();
         ctx.Services.AddSingleton(new ChatStore(ctx.JSInterop.JSRuntime, settings));
+        ctx.Services.AddSingleton(new PackViews());
         ctx.Services.AddSingleton(new AgentApi(new HttpClient(handler) { BaseAddress = new Uri("http://localhost/") },
             settings));
         ctx.Services.AddSingleton(new ReviewerState(ctx.JSInterop.JSRuntime));

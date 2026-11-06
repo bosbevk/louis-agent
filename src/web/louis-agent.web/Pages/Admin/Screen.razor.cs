@@ -54,7 +54,8 @@ public partial class Screen
         try
         {
             var reply = await Api.GetAsync<ScreensReply>("v1/admin/screens", AdminJson.SnakeCase);
-            _screen = reply.Screens.FirstOrDefault(s => s.Name.Equals(Name, StringComparison.OrdinalIgnoreCase));
+            _screen = reply.Screens.Where(Views.CanDraw)
+                .FirstOrDefault(s => s.Name.Equals(Name, StringComparison.OrdinalIgnoreCase));
         }
         catch (AgentApiException ex)
         {

@@ -704,6 +704,13 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   - The code-review app has its small `AdminLayout` and the framework's page from here, but its screens look unstyled until F59.7 moves its CSS.
   - `RecipeLibraryView` wraps the table (Decorator), and the screen's id and column names are duplicated on each side of the wire, held by a test.
 
+- **2026-11-07, what F59.6 chose, unattended.** Each is the recommended option, for Louis to read at the end.
+  - The git and files packs offer `OwnViewScreen`s: a name and a heading, no columns and no rows, since their views read the git and workspace
+    routes. This keeps one seam rather than a second list of panels.
+  - Puls's host loads the same two packs, so a screen with no columns is listed and opened only by a site that carries its view (`PackViews.CanDraw`).
+    The alternatives were a setting per site naming its screens, or moving the packs out of Puls's host, which changes what Puls's model can do.
+  - The file browser's screen is called `workspace-files`, as the plain `files` is the toolset's name and the repeated-names rule holds it to its enum.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

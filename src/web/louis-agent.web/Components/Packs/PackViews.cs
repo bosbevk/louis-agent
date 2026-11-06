@@ -1,3 +1,4 @@
+using LouisAgent.Api.Contracts.Admin.Screens;
 using LouisAgent.Web.Components.Screens.Table;
 using Microsoft.AspNetCore.Components;
 
@@ -21,6 +22,12 @@ public sealed class PackViews
         _screens[screenName] = typeof(TView);
         return this;
     }
+
+    /// <summary>
+    /// Whether this site can draw the screen. One with no columns can only be drawn by its own view, so a site that
+    /// doesn't carry that view doesn't offer it.
+    /// </summary>
+    public bool CanDraw(ScreenReply screen) => screen.Columns.Count > 0 || _screens.ContainsKey(screen.Name);
 
     /// <summary>The component that draws this screen.</summary>
     public Type ScreenView(string screenName) => _screens.GetValueOrDefault(screenName, typeof(ScreenTable));

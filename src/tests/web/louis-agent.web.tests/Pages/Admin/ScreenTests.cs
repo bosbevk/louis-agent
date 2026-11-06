@@ -23,7 +23,8 @@ public class ScreenTests
     private static readonly ScreensReply TwoScreens = new(
     [
         new ScreenReply("usage", "Usage", "What was used.", [new ScreenColumnReply("Name", "text")], Searchable: true),
-        new ScreenReply("visits", "Visits", "Who came.", [new ScreenColumnReply("Name", "text")], Searchable: false)
+        new ScreenReply("visits", "Visits", "Who came.", [new ScreenColumnReply("Name", "text")], Searchable: false),
+        new ScreenReply("own", "Own", "Drawn by its own view.", [], Searchable: false)
     ]);
 
     /// <summary>A pack's own view: it says which screen it was handed.</summary>
@@ -114,6 +115,18 @@ public class ScreenTests
         var page = Render(ctx, "nothing");
 
         Assert.That(page.Find(".screen-unknown").TextContent, Does.Contain("nothing"));
+        Assert.That(page.FindComponents<ScreenTable>(), Is.Empty);
+    }
+
+    /// <summary>An own-view screen on a site without that view says so, rather than an empty table.</summary>
+    [Test]
+    public void AScreenThisSiteCannotDraw_SaysSo()
+    {
+        using var ctx = new BunitContext();
+
+        var page = Render(ctx, "own");
+
+        Assert.That(page.Find(".screen-unknown").TextContent, Does.Contain("own"));
         Assert.That(page.FindComponents<ScreenTable>(), Is.Empty);
     }
 
