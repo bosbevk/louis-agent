@@ -2,7 +2,10 @@ using LouisAgent.Puls.Text;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using LouisAgent.Puls;
+using LouisAgent.Puls.Layout;
 using LouisAgent.Web.Api;
+using LouisAgent.Web.Components.Admin;
+using LouisAgent.Web.Components.Packs;
 using LouisAgent.Web.Storage;
 using LouisAgent.Web.Usage;
 
@@ -20,5 +23,7 @@ builder.Services.AddScoped<LouisAgent.Puls.Admin.Reviews.ReviewerState>();
 builder.Services.AddScoped<LouisAgent.Puls.Admin.Reviews.Queue.ReviewQueueState>();
 builder.Services.AddScoped<LouisAgent.Puls.Admin.Notes.RunNotesState>();
 builder.Services.AddSingleton(PulsText.Afrikaans); // Puls speaks Afrikaans
+builder.Services.AddSingleton(new SiteFrames(Admin: typeof(AdminLayout)));
+builder.Services.AddSingleton(new PackViews());
 
 await builder.Build().RunAsync();

@@ -1,0 +1,30 @@
+@page "/admin/screens/{Name}"
+@layout AdminFrame
+
+@* The page every pack's screen opens on: the pack's heading and sentence, then whichever component draws that screen. *@
+
+<PageTitle>@(_screen?.Title ?? Name) · Admin</PageTitle>
+
+@if (_error is { } error)
+{
+    <AdminGate Error="@error" NeedsKey="_needsKey" OnSaved="LoadAsync" />
+}
+else if (_loading && _screen is null)
+{
+    <section class="card-p screen-page-loading"><span class="muted">Loading…</span></section>
+}
+else if (_screen is null)
+{
+    <section class="card-p screen-unknown"><span class="muted">No screen called <code>@Name</code> here.</span></section>
+}
+else
+{
+    <div class="page-head">
+        <div>
+            <h1>@_screen.Title</h1>
+            <p>@_screen.Description</p>
+        </div>
+    </div>
+
+    <DynamicComponent Type="Views.ScreenView(_screen.Name)" Parameters="ViewParameters" />
+}
