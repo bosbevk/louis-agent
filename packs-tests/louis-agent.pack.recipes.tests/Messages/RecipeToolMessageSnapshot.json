@@ -17,6 +17,7 @@
   "NumberedLine": "<Number>. <Text>",
   "OurLibrary": "our library",
   "PageCut": "(The page's text was cut: the first <Shown> characters are shown.)",
+  "PageCutToTheRecipe": "(The page's text was cut to the part with the recipe: up to <Shown> characters from just above its ingredients.)",
   "PageEmpty": "(The page has no readable text.)",
   "PageRefused": "The page <Url> couldn't be read (<Reason>).",
   "QueryEmpty": "FindRecipes needs a query: the dish as a cook would search for it ('bobotie', 'melktert').",

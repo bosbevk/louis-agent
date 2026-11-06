@@ -43,6 +43,30 @@ public class PrintedRecipeTextTests
         Assert.That(PrintedRecipeText.Cut(text), Is.EqualTo(text));
     }
 
+    /// <summary>
+    /// A long page's window starts just above its ingredients, so a long story can't push the recipe past the cut:
+    /// Cooksister's recipe started 8,500 characters in, and the cook had to fetch the page again.
+    /// </summary>
+    [Test]
+    public void ALongStory_DoesNotPushTheRecipePastTheWindow()
+    {
+        string story = string.Concat(Enumerable.Repeat(new string('s', 90) + "\n", 100));
+        string text = story + "Serves: 4\nIngredients\n- 1 egg\n";
+
+        int start = PrintedRecipeText.RecipeStart(text);
+
+        Assert.That(text[start..], Does.StartWith(new string('s', 90)), "starts at a whole line");
+        Assert.That(text[start..], Does.Contain("Serves: 4\nIngredients"), "with the lines just above it");
+        Assert.That(text.Length - start, Is.LessThan(500), "and not the story");
+    }
+
+    /// <summary>A page with no ingredients heading starts at the top, and so does one with it near the top.</summary>
+    [TestCase("A long story with no heading at all.\nAnd more of it.\n")]
+    [TestCase("Ingredients\n- 1 egg\n")]
+    [TestCase("# Pie\nIngredients\n- 1 egg\n")]
+    public void WithNothingToSkip_TheWindowStartsAtTheTop(string text) =>
+        Assert.That(PrintedRecipeText.RecipeStart(text), Is.EqualTo(0));
+
     /// <summary>A page with none of these comes back as it was.</summary>
     [Test]
     public void APageWithNone_StaysAsItIs() => Assert.That(PrintedRecipeText.Cut(Recipe), Is.EqualTo(Recipe));
