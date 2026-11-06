@@ -213,7 +213,10 @@ public sealed class RecipeTools
     {
         var (title, words) = HtmlText.ToText(html, page);
         string text = PrintedRecipeText.Cut(PagePhotos.WithoutImages(words));
-        string shown = text.Length > MaxPageChars ? text[..MaxPageChars] : text;
+
+        // Too long to show whole: from the recipe on, so a long story can't push it past the cut.
+        int start = text.Length > MaxPageChars ? PrintedRecipeText.RecipeStart(text) : 0;
+        string shown = text[start..Math.Min(text.Length, start + MaxPageChars)];
         string body = shown.Length == 0 ? MessageText.Format(RecipeToolMessage.PageEmpty) : shown;
         var lines = new List<string> { MessageText.Format(RecipeToolMessage.TextNoRecipeData, new { page.Host }) };
         if (photo is not null)
@@ -224,7 +227,8 @@ public sealed class RecipeTools
             }));
         lines.Add(body);
         if (text.Length > MaxPageChars)
-            lines.Add(MessageText.Format(RecipeToolMessage.PageCut, new { Shown = MaxPageChars }));
+            lines.Add(MessageText.Format(start > 0 ? RecipeToolMessage.PageCutToTheRecipe : RecipeToolMessage.PageCut,
+                new { Shown = MaxPageChars }));
         lines.Add(MessageText.Format(RecipeToolMessage.RecipeLink, new { Url = page.AbsoluteUri }));
         return [.. lines];
     }

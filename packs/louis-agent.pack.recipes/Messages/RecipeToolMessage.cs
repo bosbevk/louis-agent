@@ -69,6 +69,9 @@ public enum RecipeToolMessage
     [Description("(The page's text was cut: the first {Shown} characters are shown.)")]
     PageCut,
 
+    [Description("(The page's text was cut to the part with the recipe: up to {Shown} characters from just above its ingredients.)")]
+    PageCutToTheRecipe,
+
     [Description("(The page has no readable text.)")]
     PageEmpty,
 

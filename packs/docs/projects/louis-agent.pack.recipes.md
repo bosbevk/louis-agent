@@ -38,7 +38,8 @@ any identity can use it, and it could be served as an MCP server unchanged
   HTML tag is taken out of every text, once the entities are read: a tag that breaks a line (`<br>`, `<p>`, `<div>`,
   `<li>`) leaves a space, so two sentences stay two, and a `<` that opens no tag stays.
 - **A page without recipe data.** It comes back as the page's text (core's `HtmlText.ToText`), framed, labelled *{host}
-  publishes no recipe data; this is the page's text*, cut at 8,000 characters (and said so), then the link.
+  publishes no recipe data; this is the page's text*, cut at 8,000 characters (and said so), then the link. A page too long to show whole is shown from just above its
+  ingredients heading (`PrintedRecipeText.RecipeStart`), so a long story can't push the recipe past the cut.
 - **Failures are text.** A site's refusal, the browser's refusal (a private address, a page a site's `robots.txt`
   disallows), a bad address or an unknown site comes back as a result with its reason (`RecipeToolMessage`), never an
   exception. A bad address is refused before the browser is asked for anything.
@@ -138,7 +139,8 @@ listing and the settings).
   real Chrome container except the one hand check of step 5; a site that draws its recipe with JavaScript, or answers
   Chrome differently from `curl`, shows only on a live run.
 - A page's text starts with the site's navigation (menus, basket), because the text reader keeps the page as a person
-  would see it, so the recipe may begin well into the 8,000 characters.
+  would see it, so the recipe may begin well into the text; a page too long to show whole starts at its ingredients,
+  but one with no ingredients heading still shows its first 8,000 characters.
 - SearXNG's site-limited results can be weak: The Daley Plate's bobotie search gave its home page and a category.
 - A hit may not be a recipe (an article, a category, a home page); the model reads the titles first.
 - A recipe whose page marks it up as microdata, not JSON-LD, is read as text (`thekatetin`, in the table's signals).

@@ -91,6 +91,21 @@ public class ReadRecipeLibraryTests
         Assert.That(result, Does.Contain("apple tart"));
     }
 
+    /// <summary>A long page's text starts at the recipe, and says so, so the cook needn't fetch the page again.</summary>
+    [Test]
+    public async Task ALongPage_ShowsThePartWithTheRecipe()
+    {
+        string story = string.Concat(Enumerable.Repeat($"<p>{new string('s', 90)}</p>", 120));
+        string page = $"<html><body><main><h1>Pie</h1>{story}<h2>Ingredients</h2><ul><li>1 egg</li><li>1 cup milk</li></ul>" +
+                      "<h2>Method</h2><p>Beat the egg.</p></main></body></html>";
+        var tools = new RecipeTools(new Dictionary<string, IRecipeSource>(), new FakeSiteBrowser(page), new FakePhotoFetcher());
+
+        string result = await tools.ReadRecipe("https://example.co.za/pie");
+
+        Assert.That(result, Does.Contain("Ingredients").And.Contain("1 egg").And.Contain("Beat the egg."));
+        Assert.That(result, Does.Contain("the part with the recipe"));
+    }
+
     /// <summary>What's kept is the recipe itself, line by line, not the words we printed about it.</summary>
     [Test]
     public async Task WhatIsKept_IsAProperRecipe()

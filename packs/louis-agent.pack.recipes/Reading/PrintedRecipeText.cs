@@ -1,3 +1,5 @@
+using LouisAgent.Packs.Recipes.Reading.PageText;
+
 namespace LouisAgent.Packs.Recipes.Reading;
 
 /// <summary>
@@ -28,6 +30,11 @@ internal static class PrintedRecipeText
     /// <summary>Less than this before a heading means we haven't reached the recipe yet.</summary>
     private const int ShortestRecipe = 300;
 
+    /// <summary>
+    /// How many characters above the ingredients a long page's window keeps: the yield and the times sit there.
+    /// </summary>
+    private const int CharsAboveTheRecipe = 200;
+
     /// <summary>The text up to the first heading that ends the recipe, or all of it when none does.</summary>
     public static string Cut(string text)
     {
@@ -39,6 +46,28 @@ internal static class PrintedRecipeText
         }
 
         return text;
+    }
+
+    /// <summary>
+    /// Where a long page's window should start: just above its ingredients, with the lines that say how many it serves.
+    /// A long story can then not push the recipe past the cut. With no heading, or one near the top, it's the top.
+    /// </summary>
+    public static int RecipeStart(string text)
+    {
+        int at = 0;
+        int start = 0;
+        var starts = new Queue<int>();
+        foreach (string line in text.Split('\n'))
+        {
+            if (PageTextLines.IsIngredientsHeading(line.Trim())) return at <= CharsAboveTheRecipe ? 0 : start;
+
+            starts.Enqueue(at);
+            at += line.Length + 1;
+            while (at - starts.Peek() > CharsAboveTheRecipe) starts.Dequeue();
+            start = starts.Peek();
+        }
+
+        return 0;
     }
 
     /// <summary>Whether a line is one of the endings, with its heading marks and a count taken off.</summary>
