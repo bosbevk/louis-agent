@@ -3,7 +3,7 @@
   "input": [
     {
       "role": "user",
-      "content": "What's a good butter chicken recipe for four people? I'm in Durban and any shop will do."
+      "content": "What's a good butter chicken recipe? I'm in Durban and any shop will do."
     }
   ],
   "metadata": {
@@ -12,7 +12,7 @@
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 4,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

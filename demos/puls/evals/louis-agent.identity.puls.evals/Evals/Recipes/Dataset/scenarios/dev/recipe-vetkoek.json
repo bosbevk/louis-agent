@@ -3,7 +3,7 @@
   "input": [
     {
       "role": "user",
-      "content": "What's a good vetkoek recipe for four people? I'm in Durban and it doesn't matter where I shop."
+      "content": "What's a good vetkoek recipe? I'm in Durban and it doesn't matter where I shop."
     }
   ],
   "metadata": {
@@ -12,7 +12,7 @@
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 4,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

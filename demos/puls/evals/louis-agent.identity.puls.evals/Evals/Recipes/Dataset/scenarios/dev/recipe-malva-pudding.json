@@ -3,7 +3,7 @@
   "input": [
     {
       "role": "user",
-      "content": "Gee my 'n resep vir malvapoeding vir agt mense. Ek is in Worcester en dit maak nie saak waar ek koop nie."
+      "content": "Gee my 'n resep vir malvapoeding. Ek is in Worcester en dit maak nie saak waar ek koop nie."
     }
   ],
   "metadata": {
@@ -12,7 +12,7 @@
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 8,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

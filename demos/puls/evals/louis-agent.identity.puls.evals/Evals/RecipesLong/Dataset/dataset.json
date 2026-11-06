@@ -1,9 +1,10 @@
 {
   "name": "puls-recipes-long",
-  "version": 1,
+  "version": 2,
   "covers": "Puls's cook on dishes the recipes eval doesn't ask: fifteen baking and sweet (ten made whole, with no number of people) and fifteen everyday dishes, half in Afrikaans, half in English, any shop; each answer is a recipe from a real page.",
-  "content_hash": "4c637e01467911a30dbaddb1b5853819cc3bad5c06e36cf11a55c48a2af67eb6",
+  "content_hash": "b583850522dcfb3fbdacb2eeaf5e41a8cbbef702565c098fb36ac63f16c67fdf",
   "changes": [
-    "2026-11-06: first version: thirty dishes beyond the recipes eval's ten, so the library and the reader are measured on more than ten searches"
+    "2026-11-06: first version: thirty dishes beyond the recipes eval's ten, so the library and the reader are measured on more than ten searches",
+    "2026-11-06: five everyday dishes ask for a recipe and name no people, since a recipe is now given as the page wrote it"
   ]
 }

@@ -20,7 +20,7 @@ public class PulsAmountsTests
     {
         string cook = Cook();
 
-        Assert.That(cook, Does.Contain("Scale it with `ScaleRecipe`"));
+        Assert.That(cook, Does.Contain("scale it with `ScaleRecipe`"));
         Assert.That(cook, Does.Contain("use its lines as they are"));
         Assert.That(cook, Does.Contain("A line it marks *(not scaled)* is yours to work out with `Calculate`"));
         Assert.That(cook, Does.Contain("*(only the first amount scaled)*"));

@@ -240,9 +240,10 @@ public sealed class RecipeTools
     public async Task<string> ScaleRecipe(
         [Description("The link you read the recipe from")]
         string url,
-        [Description("How many people it's for. Leave it out for something made whole, such as a cake")]
+        [Description("How many people it's for, when a number was named")]
         int people = 0,
-        [Description("A factor of your own, only when the recipe doesn't say how many people it feeds: 2 doubles it")]
+        [Description("How many of it to make, for something made whole such as a cake (2 makes two), or a factor of " +
+                     "your own when the recipe doesn't say how many people it feeds")]
         double times = 0,
         CancellationToken cancellationToken = default)
     {

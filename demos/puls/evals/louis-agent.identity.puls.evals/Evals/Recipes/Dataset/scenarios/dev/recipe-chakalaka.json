@@ -3,7 +3,7 @@
   "input": [
     {
       "role": "user",
-      "content": "Ek is in Malmesbury en wil chakalaka maak vir ses mense. Dit maak nie saak waar ek koop nie. Wat is die resep?"
+      "content": "Ek is in Malmesbury en wil chakalaka maak. Dit maak nie saak waar ek koop nie. Wat is die resep?"
     }
   ],
   "metadata": {
@@ -12,7 +12,7 @@
     "follow_ups": [],
     "expected": {
       "routes_to": "puls-cook",
-      "serves": 6,
+      "serves": "as the page makes it",
       "recipe_image": true
     },
     "categories": [

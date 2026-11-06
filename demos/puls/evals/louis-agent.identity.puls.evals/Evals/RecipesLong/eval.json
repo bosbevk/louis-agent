@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "puls-recipes-long",
   "identity": "puls",
-  "version": 1,
+  "version": 2,
   "proves": "Puls's cook does on thirty more dishes, baking among them, what the recipes eval asks on ten: reads a real page with ReadRecipe, links it, shows its photo, and writes the amounts and steps the page gave.",
   "manual": "manual.md",
   "modes": [
@@ -67,7 +67,7 @@
         "sources": [
           "ReadRecipe"
         ],
-        "version": 1
+        "version": 2
       }
     },
     {

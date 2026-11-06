@@ -1,9 +1,10 @@
 {
   "name": "puls-recipes",
-  "version": 1,
+  "version": 2,
   "covers": "Puls's cook reading a recipe from a page: ten South African dishes to work on (five asked in Afrikaans, five in English, for four to ten people, any shop) and three held out (two in Afrikaans, one in English); each answer is a recipe from a real page.",
-  "content_hash": "aa04284dedc6b7d7c80649851c0701527b8cfca03750e4d55fd865ab0c81cf89",
+  "content_hash": "4bb26688c8fc6db0389eb844578ef35f72d77f10d570dd07bf8415b9b86b1d95",
   "changes": [
-    "2026-11-04: first version, the recipes eval of F35.2 step 4: bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei and koeksisters to work on; umngqusho, sosaties and bredie held out"
+    "2026-11-04: first version, the recipes eval of F35.2 step 4: bobotie, melktert, chakalaka, potjiekos, malva pudding, vetkoek, boerewors rolls, pap en sous, hoenderpastei and koeksisters to work on; umngqusho, sosaties and bredie held out",
+    "2026-11-06: half of the dev dishes ask for a recipe and name no people, since a recipe is now given as the page wrote it"
   ]
 }

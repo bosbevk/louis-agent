@@ -4,7 +4,7 @@
 
 The same question as the recipes eval (`puls-recipes`), on dishes it doesn't ask: does Puls's cook write the recipe a real page gave? Ten dishes there run out, so the library's search and the reader only ever see those ten. Here fifteen are baking and sweet things and fifteen are everyday dishes, half in Afrikaans, half in English.
 
-Ten of the baking questions name no people, because a cake is made whole: Puls should hand those on without asking how many, and the cook should keep the recipe as it's written. Their `serves` is `as the page makes it`, so the judge is still asked, and the rubric takes the factor as 1.
+Fifteen questions name no people, ten of the baking ones and five everyday ones, because they ask for a recipe and nothing more: Puls should hand those on without asking how many, and the cook should keep the recipe as it's written. Their `serves` is `as the page makes it`, so the judge is still asked, and the rubric takes the factor as 1.
 
 The reference transcripts start as short written ones and are meant to be replaced with real ones from a run. It is dev only, with nothing held out.
 
@@ -21,7 +21,7 @@ Thirty scenarios, one session each and one turn, all in the `dev` split. Fifteen
 |---|---|
 | Baking, made whole, no number | chocolate cake, carrot cake, lemon meringue tart, peppermint crisp tart, banana bread, rusks, brownies, scones, hertzoggies, crunchies |
 | Baking and sweet, with a number | apple tart, cupcakes, pumpkin fritters, souskluitjies, roosterkoek |
-| Everyday | bolognese, lasagne, butter chicken, Cape Malay curry, samoosas, frikkadelle, bunny chow, oxtail, pickled fish, butternut soup, cottage pie, roast chicken, macaroni cheese, fish cakes, braaibroodjies |
+| Everyday (bolognese, lasagne, butter chicken, frikkadelle and fish cakes name no number) | bolognese, lasagne, butter chicken, Cape Malay curry, samoosas, frikkadelle, bunny chow, oxtail, pickled fish, butternut soup, cottage pie, roast chicken, macaroni cheese, fish cakes, braaibroodjies |
 
 Each scenario's `expected` holds `routes_to` (always `puls-cook`), `serves` (the people asked for, or `as the page makes it`) and `recipe_image`
 (always true). A dish whose site has no photo is not a fail: see `recipe-image` below.
