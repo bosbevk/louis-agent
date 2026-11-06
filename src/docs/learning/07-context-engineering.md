@@ -147,6 +147,56 @@ label to a file must never change what it is measured as.
 header, so the skills the agent writes and the prompts we ship will read alike, by one reader
 ([ADR 0063](../adr/0063-a-prompt-says-what-it-is.md)).
 
+## What a line in a prompt does (F48.3)
+
+Written 2026-11-06, for Louis. Puls says one line before it hands a question to the cook. On English questions that line
+kept coming out in Afrikaans, and fixing it taught more about prompts than the size of the line suggests.
+
+| What the model was given | English questions with an Afrikaans hand-off | Run |
+|---|---|---|
+| One set Afrikaans line and one set English line, in the routing every chat reads | 21 of 47 | `53e4d1a38674`, stopped early, different dishes |
+| The same, plus a rule: "in the language they wrote" | 12 of 25 | `56da0f014ffc` |
+| Language moved to the voice files, the English question opened in the English voice, no set line | 0 of 25 | `d296e139eec0` |
+
+**A rule doesn't beat an example.** The rule changed nothing: 45% before, 48% after. The model had a line to copy, and it
+copied it. Louis named the real cause: the language was in the wrong file. A language now lives in its voice file, and a
+test keeps the routing free of it.
+
+**An eval has to open the way the product opens.** Moving the lines wasn't the whole of it. The eval opened every question
+as `puls/voice-af`, English ones too, while the web chat opens `voice-en` when the English menu is picked. So part of what
+we measured was the eval's own doing. Both changes went in together, so these runs can't say how much each one did. A
+person on the Afrikaans menu who types English is still untested.
+
+**No example has a cost too.** With no set line the words varied, 48 different lines in 50, and the English read well. The
+Afrikaans didn't: *"Jy is so terug"* (the user, not the cook), *"Kom so bietjie terug"* (which sends away someone whose
+report comes by itself), *"die kossKATTINGS"*, and once a Vietnamese word, *"so một oomblik"*. The set line had also been
+the only good Afrikaans the model saw for that sentence, and its Afrikaans is weaker than its English. The judge never
+reads this line, so its score showed none of it. Five examples per voice, "like these, not word for word", are in the files
+now. **No run has tested them yet.**
+
+**What else the runs showed**
+
+| | F48.1 `7c961dd456b9` | Rule and fixes `56da0f014ffc` | Language too `d296e139eec0` |
+|---|---|---|---|
+| Judge /50 | 46 | 49 | 47 |
+| Median time | 48 s | 43 s | 44 s |
+| Cost per answer | $.00640 | $.00576 | $.00585 |
+
+- **A better score isn't always better work.** Half the questions and the rubric changed for the last two columns, and a
+  plain question has no scaling to get wrong. It takes a median of 38 to 40 s against 46 s with a number, so some of the
+  speed is the mix. 49 against 47 is within the judge's noise, and none of those fails was about language.
+- **Fix the data on the way out.** Taste keeps a whole method in one step, and five of nine fails in the long run were a
+  clause dropped from a method. Tidying a recipe when it's printed and scaled needed no migration and also covered what the
+  library already held. Neither of the last two runs failed on a dropped clause, though those are fewer dishes than the long
+  run asked for, so that's a good sign rather than a proof.
+- **Read the tool's whole path before blaming a part.** A Cooksister answer failed because its text was cut before the
+  recipe. I said the reader had refused the page. It hadn't: it read and kept the recipe, and the tool still showed the cook
+  the page's text, by design. The cut now starts at the recipe; whether the cook should get our clean print instead is open.
+
+**What I got wrong along the way.** At 3 of 10 I called the hand-off "better", and at 7 of 15 had to take it back: a small
+count at the start of a run says little. I also compared an unfinished run's repeats with a finished run's, and chained a
+commit to a test run, so one commit went in red (`b4c621cb`, fixed by the next).
+
 ## Where skill 7 stands
 
 GOAL.md's row lists the catalogue table under *Have today* (F33). Still to come: a JSON-LD reader so any page's structured
