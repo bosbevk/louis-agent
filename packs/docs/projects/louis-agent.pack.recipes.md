@@ -161,8 +161,7 @@ listing and the settings).
 
 ## Left out, on purpose
 
-- A number out of the yield (*4 to 6* stays words): F48.1's scaler.
-- The text sites' recipes as data (an ingredient-line reader over a page's text): F48.1's reader, if it wants it.
+- The text sites' recipes as data (an ingredient-line reader over a page's text): F48.4's reader, if it wants it.
 - Vision over a page (`ScreenshotPage`): its own feature when a measure asks for it.
 
 ---

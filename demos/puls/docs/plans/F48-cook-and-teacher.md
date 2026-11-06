@@ -243,7 +243,7 @@ step 8 uses all of them.
 ### Decided · Wave 1 is in F48 (Louis, 2026-10-30)
 
 Wave 1 of [PULS_COOK.md](../specs/PULS_COOK.md#wave-1-with-f48-cheap-high-value) is built in F48, as its third part
-(**F48.3**, after the steps below), each idea one step or more with its test first:
+(**F48.6**, after the steps below), each idea one step or more with its test first:
 
 | # | Step | Test first |
 |---|---|---|
@@ -256,7 +256,7 @@ Wave 1 of [PULS_COOK.md](../specs/PULS_COOK.md#wave-1-with-f48-cheap-high-value)
 | 3.9 | "How did it go?": one tap and an optional line, kept with the browser id | Store test |
 | 3.10 | "Not good" opens troubleshooting and goes to the eval inbox | API test |
 
-F48.3 adds about 10 steps and almost nothing per answer (code and small tables); cook mode reads the `WriteRecipe`
+F48.6 adds about 10 steps and almost nothing per answer (code and small tables); cook mode reads the `WriteRecipe`
 result, so it makes no model call.
 
 ### Decided · Function skills follow Agent Skills (Louis, 2026-10-26)
@@ -380,7 +380,7 @@ specialists want first anyway.
   cache read): one extra `WriteRecipe` round is about 15K cached prefix ($0.00015), 1.5K new input ($0.00015) and
   600 output ($0.0003): **about $0.0006 per answer**, against roughly 1 cent a trial today. Cues and whys add about 200
   output tokens ($0.0001). So about **+5% a trial**.
-- **Building it:** 9 steps (0 to 8), about three days at your three-a-day pace; wave 1 (F48.3, decided 2026-10-30)
+- **Building it:** 9 steps (0 to 8), about three days at your three-a-day pace; wave 1 (F48.6, decided 2026-10-30)
   about 10 more, three to four days.
 - **The eval run:** a `--repeat 3` on 20 scenarios is about $0.60 (the figure F18's 6b worked out), twice for before and after: about
   **$1.20**, on your go.
