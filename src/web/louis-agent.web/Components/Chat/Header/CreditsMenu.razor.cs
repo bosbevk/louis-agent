@@ -1,9 +1,13 @@
+using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Chat.Header;
+namespace LouisAgent.Web.Components.Chat.Header;
 
+/// <summary>What this chat and this month cost, from the chats in this browser.</summary>
 public partial class CreditsMenu
 {
+    [Inject] private ChatText Text { get; set; } = null!;
+
     /// <summary>What the shown chat cost, specialists included; "—" without a chat.</summary>
     [Parameter] public string ChatCost { get; set; } = "—";
 

@@ -81,6 +81,37 @@ public sealed record ChatText
     public string ShowMotion { get; init; } = "Show animations although my system asks for less";
     public string SystemAsksNoLess { get; init; } = " (your system doesn't ask for less)";
 
+    public string ShowSidebar { get; init; } = "Show the sidebar";
+    public string MoreForThisChat { get; init; } = "More for this chat";
+    public string ToggleWork { get; init; } = "Show or hide the work panel";
+    public string ShowWork { get; init; } = "Show the work panel";
+
+    public string Credits { get; init; } = "Credits";
+    /// <summary>{0} is this month's cost.</summary>
+    public string CreditsTitle { get; init; } = "Credits and usage: {0} this month";
+    public string CreditsHeading { get; init; } = "Credits · pay as you go";
+    public string ThisChat { get; init; } = "This chat";
+    public string ThisMonth { get; init; } = "This month";
+    public string ChatOne { get; init; } = "chat";
+    public string ChatMany { get; init; } = "chats";
+    public string CreditsNote { get; init; } =
+        "No subscription: you pay only for the questions you ask, specialists included. From the chats in this browser.";
+    public string BuyCredits { get; init; } = "Buy credits";
+
+    public string Language { get; init; } = "Language";
+
+    public string Profile { get; init; } = "Profile";
+    public string GuestInitial { get; init; } = "G";
+    public string Guest { get; init; } = "Guest";
+    public string LocalOnly { get; init; } = "Local to this browser";
+    public string Theme { get; init; } = "Theme";
+    public string ThemeDark { get; init; } = "Dark";
+    public string ThemeLight { get; init; } = "Light";
+    public string ThemeLightSoon { get; init; } = "The light theme";
+    public string ThemeAuto { get; init; } = "Automatic (system)";
+    public string ThemeAutoSoon { get; init; } = "An automatic theme";
+    public string SignOut { get; init; } = "Sign out";
+
 
     /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>
     public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";

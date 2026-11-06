@@ -72,6 +72,35 @@ public static class PulsText
         ShowMotion = "Wys animasies al vra my stelsel minder",
         SystemAsksNoLess = " (jou stelsel vra nie minder nie)",
 
+        ShowSidebar = "Wys die kantbalk",
+        MoreForThisChat = "Meer vir hierdie gesprek",
+        ToggleWork = "Wys of versteek die werkpaneel",
+        ShowWork = "Wys die werkpaneel",
+
+        Credits = "Krediete",
+        CreditsTitle = "Krediete en gebruik: {0} hierdie maand",
+        CreditsHeading = "Krediete · betaal soos jy gebruik",
+        ThisChat = "Hierdie gesprek",
+        ThisMonth = "Hierdie maand",
+        ChatOne = "gesprek",
+        ChatMany = "gesprekke",
+        CreditsNote = "Geen intekening nie: jy betaal net vir die vrae wat jy vra, spesialiste ingesluit. Volgens die gesprekke in hierdie blaaier.",
+        BuyCredits = "Koop krediete",
+
+        Language = "Taal",
+
+        Profile = "Profiel",
+        GuestInitial = "G",
+        Guest = "Gas",
+        LocalOnly = "Plaaslik in hierdie blaaier",
+        Theme = "Tema",
+        ThemeDark = "Donker",
+        ThemeLight = "Lig",
+        ThemeLightSoon = "Die ligte tema",
+        ThemeAuto = "Outomaties (stelsel)",
+        ThemeAutoSoon = "Outomatiese tema",
+        SignOut = "Teken uit",
+
         SessionGone =
             "Hierdie gesprek se sessie bestaan nie meer op die bediener nie (die API het herbegin). Begin 'n nuwe gesprek om voort te gaan.",
         NeedsKey = "Die API het 'n sleutel nodig: maak Instellings oop en vul AGENT_API_KEY in.",

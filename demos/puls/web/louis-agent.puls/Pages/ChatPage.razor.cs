@@ -55,7 +55,16 @@ public partial class ChatPage : IDisposable
     /// </summary>
     private string Role => $"puls/voice-{_language}";
 
+    /// <summary>The header's title for a view that isn't the chat.</summary>
+    private string? ViewTitle => View switch
+    {
+        "verken" => "Verken",
+        "studio" => "Studio",
+        _ => null,
+    };
+
     /// <summary>Which view the shell shows (F20): the chat, Verken or Studio, from the address.</summary>
+    /// <remarks>The header's title for it comes from <see cref="ViewTitle"/>.</remarks>
     private string View => Nav.ToBaseRelativePath(Nav.Uri).Split('?', '#')[0] switch
     {
         "verken" => "verken",
