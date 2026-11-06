@@ -68,6 +68,8 @@ public static class PulsText
         LocationExample = "bv. Pretoria",
         Locating = "Soek…",
         UseMyLocation = "Gebruik my ligging",
+        LocationFound = "Ligging: {0}",
+        LocationUnknown = "Kon nie jou ligging kry nie.",
         Names = "Name",
         ShowMotion = "Wys animasies al vra my stelsel minder",
         SystemAsksNoLess = " (jou stelsel vra nie minder nie)",

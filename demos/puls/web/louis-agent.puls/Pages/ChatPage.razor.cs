@@ -40,12 +40,8 @@ public partial class ChatPage : IDisposable
     private bool _focusDraft;
     private string? _toast;
 
-    // Where the user is (F22): this browser's setting, sent with a new chat only when set.
-    private string? _location;
-    private bool _locating;
-
-    // Animations although the system asks for less (F24): this browser's choice.
-    private bool _motion, _reducedMotion;
+    // Where the user is, and whether the page may move: this browser's settings.
+    private ChatPreferences _preferences = null!;
 
     /// <summary>
     /// Puls's mode for a new chat (F21, CL9): <c>puls/voice-{code}</c>, its voice in the chosen language, then Puls's
@@ -75,16 +71,15 @@ public partial class ChatPage : IDisposable
     {
         Runner = new ChatRunner(Api, Store, Text, OpenSessionAsync);
         _renaming = new ChatRenaming(Store);
+        _preferences = new ChatPreferences(JS, Text);
         Runner.Changed += Redraw;
         Runner.SessionOpened += id => Nav.NavigateTo($"gesels/{id}");
         Currency.Changed += Redraw;
         // /gesels, /verken and /studio are this page with the same (empty) parameters, so Blazor wouldn't redraw on its own.
         Nav.LocationChanged += OnLocationChanged;
         if (!Store.Loaded) await Store.LoadAsync();
-        _location = await JS.InvokeAsync<string?>("chatUi.loadLocation");
-        _motion = await JS.InvokeAsync<bool>("chatUi.motion");
+        await _preferences.LoadAsync();
         await LoadLanguagesAsync();
-        _reducedMotion = await JS.InvokeAsync<bool>("chatUi.reducedMotion");
         try
         {
             var model = await Api.GetAsync<System.Text.Json.JsonElement>("v1/model");
@@ -109,7 +104,7 @@ public partial class ChatPage : IDisposable
         string? timeZone = await JS.InvokeAsync<string?>("chatUi.timeZone");
         return await Api.CreateSessionAsync(
             available.Contains(AskedToolset.Specialists.Wire()) ? own.Where(available.Contains).ToArray() : available,
-            Role, _location, timeZone);
+            Role, _preferences.Location, timeZone);
     }
 
     /// <summary>The languages Puls can speak: a voice for each in the API's roles, so the two agree.</summary>
@@ -258,46 +253,13 @@ public partial class ChatPage : IDisposable
     }
 
     /// <summary>Keeps the place the person typed.</summary>
-    private async Task SaveLocation(string? value)
-    {
-        value = value?.Trim();
-        _location = string.IsNullOrEmpty(value) ? null : value;
-        await JS.InvokeVoidAsync("chatUi.saveLocation", _location);
-    }
+    private Task SaveLocation(string? value) => _preferences.SaveLocationAsync(value);
 
     /// <summary>Keeps whether the page may move.</summary>
-    private async Task SaveMotion(bool motion)
-    {
-        _motion = motion;
-        await JS.InvokeVoidAsync("chatUi.setMotion", _motion);
-    }
+    private Task SaveMotion(bool motion) => _preferences.SaveMotionAsync(motion);
 
     /// <summary>Asks the browser where we are and keeps the place, or says why it can't.</summary>
-    private async Task UseMyLocation()
-    {
-        _locating = true;
-        try
-        {
-            var found = await JS.InvokeAsync<LocateResult>("chatUi.locate");
-            if (found.Place is { Length: > 0 } place)
-            {
-                _location = place;
-                await JS.InvokeVoidAsync("chatUi.saveLocation", place);
-                _ = ShowToast($"Ligging: {place}");
-            }
-            else
-            {
-                _ = ShowToast(found.Error ?? "Kon nie jou ligging kry nie.");
-            }
-        }
-        finally
-        {
-            _locating = false;
-        }
-    }
-
-    /// <summary>What the page's script answers about the location.</summary>
-    private sealed record LocateResult(string? Place, string? Error);
+    private async Task UseMyLocation() => _ = ShowToast(await _preferences.UseMyLocationAsync());
 
     /// <summary>Shows a short message, then takes it away.</summary>
     private async Task ShowToast(string text)

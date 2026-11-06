@@ -77,6 +77,9 @@ public sealed record ChatText
     public string LocationExample { get; init; } = "e.g. Cape Town";
     public string Locating { get; init; } = "Finding…";
     public string UseMyLocation { get; init; } = "Use my location";
+    /// <summary>{0} is the place.</summary>
+    public string LocationFound { get; init; } = "Location: {0}";
+    public string LocationUnknown { get; init; } = "Couldn't find your location.";
     public string Names { get; init; } = "Names";
     public string ShowMotion { get; init; } = "Show animations although my system asks for less";
     public string SystemAsksNoLess { get; init; } = " (your system doesn't ask for less)";
