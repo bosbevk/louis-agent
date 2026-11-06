@@ -48,14 +48,16 @@ internal static class PageTextRecipe
             .DefaultIfEmpty(-1).First();
         if (ingredientsAt < 0) return null;
 
-        int methodAt = Array.FindIndex(lines, ingredientsAt, IsMethodHeading);
+        // With no method heading, "Step 1" starts the method, and it's a step's part, so it stays.
+        int headingAt = Array.FindIndex(lines, ingredientsAt, IsMethodHeading);
+        int methodAt = headingAt >= 0 ? headingAt : Array.FindIndex(lines, ingredientsAt, IsStepPart);
         if (methodAt < 0) return null;
 
         if (Name(lines[..ingredientsAt], title) is not { } name) return null;
         if (Ingredients(lines[ingredientsAt..methodAt]) is not { Count: >= FewestIngredients } ingredients) return null;
 
         var parts = ingredients.Select(line => line.Section).OfType<string>().ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var steps = Steps(lines[(methodAt + 1)..], parts);
+        var steps = Steps(lines[(headingAt >= 0 ? methodAt + 1 : methodAt)..], parts);
         if (steps is not { Count: > 0 and <= MostSteps }) return null;
 
         return new Recipe(name, YieldIn(lines[..methodAt]), null, null, null, ingredients, steps, null, null, page);
@@ -78,6 +80,9 @@ internal static class PageTextRecipe
             }
 
             if ((!IsItem(line) && HasLink(line) && !listed) || IsAnInstruction(line)) return null;
+
+            // A heading too long to name a part is the page talking.
+            if (line.StartsWith('#') && Words(line).Length > LongestHeading) continue;
 
             if (line.StartsWith('#') || (!IsItem(line) && IsPartLine(line)) || (IsItem(line) && line.EndsWith(':')))
             {
@@ -106,8 +111,9 @@ internal static class PageTextRecipe
     /// </summary>
     public static List<RecipeStep>? Steps(string[] lines, HashSet<string> parts)
     {
-        string[] own = OwnLines(lines, parts);
+        string[] own = NumberedParts(OwnLines(lines, parts));
         bool listed = own.Any(line => IsStepItem(line, 0));
+        bool inParts = !listed && own.Any(IsStepPart);
         var steps = new List<RecipeStep>();
         string? part = null;
         int counted = 0;
@@ -133,7 +139,12 @@ internal static class PageTextRecipe
                 continue;
             }
 
-            if (!listed && IsLabel(line))
+            // Sentences before "Step 1" only open the method, and among plain steps a cookie notice is no step. Among
+            // listed steps it stays what it was: a line that could be anything, so the page stays out.
+            if (inParts && part is null && !IsStepPart(line)) continue;
+            if (!listed && IsCookieNotice(line)) continue;
+
+            if (!listed && (IsLabel(line) || IsStepPart(line)))
             {
                 part = Words(line);
                 continue;
@@ -145,7 +156,7 @@ internal static class PageTextRecipe
 
                 if (at > 0 && IsStepPart(own[at - 1])) continue;
 
-                if (IsPartLine(line) || LooksLikeAName(line))
+                if (IsPartLine(line) || IsStepPart(line) || LooksLikeAName(line))
                 {
                     part = Words(line);
                     continue;
@@ -168,6 +179,21 @@ internal static class PageTextRecipe
         }
 
         return steps;
+    }
+
+    /// <summary>
+    /// A method whose numbered lines name parts, with plain sentences under each: "1. Shape and fry" over "Fry them.".
+    /// Those lines become "Step 1: Shape and fry". A numbered line that's a sentence is a step itself, so the method
+    /// stays as it is.
+    /// </summary>
+    private static string[] NumberedParts(string[] own)
+    {
+        int[] numbered = [.. Enumerable.Range(0, own.Length).Where(at => WrittenNumber(own[at]) is not null)];
+        bool theyAreParts = numbered.Length >= 2 && numbered.All(at =>
+            !WithoutMarker(own[at]).EndsWith('.') && at + 1 < own.Length && !IsItem(own[at + 1]));
+        if (!theyAreParts) return own;
+
+        return [.. own.Select(line => WrittenNumber(line) is { } number ? $"Step {number}: {WithoutMarker(WithoutBullet(line))}" : line)];
     }
 
     /// <summary>A last numbered part with one sentence under it, "Step 5: serve", has that step to give.</summary>
@@ -231,7 +257,7 @@ internal static class PageTextRecipe
     {
         string words = InBrackets(WithoutBullet(line)).Replace("Servings:", "Serves:", StringComparison.Ordinal)
             .Replace("Serves: ", Serves, StringComparison.Ordinal).Replace("Serves:", Serves, StringComparison.Ordinal)
-            .Replace(Feeds, Serves, StringComparison.Ordinal).Trim();
+            .Replace(Feeds, Serves, StringComparison.Ordinal).Replace("Yields: ", Makes, StringComparison.Ordinal).Trim();
         string? portions = Portions.FirstOrDefault(word => words.EndsWith(word, StringComparison.OrdinalIgnoreCase));
         if (portions is not null && char.IsAsciiDigit(words[0])) words = Serves + words[..^portions.Length];
 
