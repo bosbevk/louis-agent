@@ -37,7 +37,7 @@ Then a full library changed the picture, with no push at all:
 | Judge passed | 43 of 50 | 40 of 50 | 42 of 50 |
 | Time per answer | 56 s | 55 s | 52 s |
 | Cost per answer | $0.00633 | $0.00649 | $0.00628 |
-| Answers built from a copy | | 9 | 31 |
+| Answers built from a copy | — | 9 | 31 |
 
 The cook read a copy once there were copies worth reading: a memory earns its keep when it's full, and a test on an empty one
 mostly measures the filling.
