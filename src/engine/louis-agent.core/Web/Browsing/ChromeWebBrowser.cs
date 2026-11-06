@@ -203,7 +203,8 @@ public sealed class ChromeWebBrowser(
         }
     }
 
-    /// <summary>Closes a page that may already be closing (cancelled) or gone with its connection; never throws.</summary>
+    /// <summary>Closes a page that may already be closing (cancelled) or gone with its connection; never
+    /// throws.</summary>
     private static async Task CloseQuietlyAsync(IPage page)
     {
         try
@@ -365,7 +366,8 @@ public sealed class ChromeWebBrowser(
         }
     }
 
-    /// <summary>Keeps one captured response's body; one that can't be read (the page moved on) is logged and left out.</summary>
+    /// <summary>Keeps one captured response's body; one that can't be read (the page moved on) is logged and left
+    /// out.</summary>
     private static async Task KeepAsync(IResponse response, List<string> captured, TaskCompletionSource answered)
     {
         try

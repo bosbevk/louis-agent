@@ -147,6 +147,10 @@ listing and the settings).
 - Puls names the pack from F35.2 step 1, so the cook's session holds its tools; the cook's prompt starts using them in
   step 2, until then it still reads pages the old way.
 
+## A recipe on its way out
+
+`Recipes/Tidying/RecipeTidy` is what the print and `ScaleRecipe` both start with, so their numbers match, and what the library already holds is tidied with nothing to migrate. `StepParts` cuts one step into the steps it holds: the page's own numbers first (in order, after a sentence, so *3 cups* is never step three), then paragraphs glued with no space, then the sentences of what's still over 400 characters, every word kept. Taste's data keeps a whole method in one step, and that's where answers dropped a clause. `IngredientHeadings` turns a heading among the ingredient lines into the section of the lines under it, unless most lines are in capitals, and drops what a page's buttons and dates left there. The stored recipe stays as it was read.
+
 ## Related docs
 
 [Build a pack](../../../src/docs/guides/build-a-pack.md) · [louis-agent.pack.where-to-buy](louis-agent.pack.where-to-buy.md) ·
