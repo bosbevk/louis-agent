@@ -578,6 +578,24 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   contract, because its rules already use only them. Two points are put to Louis when F59.4 starts: the Console theme has no colour for an
   error or a warning, and how the site and the framework share its values.
 
+- **2026-11-06, Puls and the code-review app use the same framework.** Louis: "pulse and code review must use the same framework". So each
+  child's done-when covers both sites: what moves into `louis-agent.web` is what both use, neither keeps its own copy of a part the
+  framework has, and each child ends with both working. The rule's first line gains: *every site is built on it.* Whether the code-review
+  app shows the admin frame and pack screens, which it has no pages for today, is put to Louis when F59.2 starts.
+
+- **2026-11-06, the code-review app adapts to Puls.** Louis: "code review must adapt to puls". Where the two differ, Puls's shape is the one
+  that goes into the framework, and the code-review app changes to fit it. So `ChatShell` comes from Puls's `ChatPage` and its parts, the
+  code-review app's workspace and git panels become what it puts in the slots, and its own frame goes. In F59.4 Puls's rules are the ones
+  that move, under the neutral variable names, and the code-review app's own copies of them are deleted; `retro` and `paper` stay as its
+  colours. Colours aside, F59.3 and F59.4 stop to show Louis anything the code-review app loses in that change.
+
+- **2026-11-06, the git controls move to the git pack's web project, as recipes' do.** Louis: "these control must move to the git pack web
+  project like recipes". So `packs-web/louis-agent.pack.git.web` holds the Changes, Branches and History panels and what they need, and the
+  code-review app keeps only its words, colours and which pack views it uses. This brings `packs-web/` forward from F59.5 to F59.3. Where
+  the file browser goes, and how a pack's panel reaches `ChatShell`, are put to Louis when F59.3 starts.
+- **2026-11-06, the summaries the rename's files lacked come in their own commit straight after it,** Louis's pick A, so the rename stays
+  easy to review. It adds one step to F59.1.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site
