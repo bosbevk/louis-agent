@@ -58,6 +58,12 @@ public static class PulsText
 
         HideSidebar = "Versteek die kantbalk",
         CloseMenu = "Maak die kieslys toe",
+        OpenMenu = "Maak die kieslys oop",
+        ResizeSidebar = "Sleep om die breedte te verander · dubbelklik om terug te stel",
+        ChatNotSaved = "Daardie gesprek is nie in hierdie blaaier gestoor nie.",
+        Copied = "Gekopieer.",
+        CopyFailed = "Kon nie kopieer nie.",
+        ComingSoon = "{0}: kom binnekort.",
         Favourites = "Gunstelinge",
         Projects = "Projekte",
         NewProject = "Nuwe projek",

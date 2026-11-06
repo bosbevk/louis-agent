@@ -67,6 +67,13 @@ public sealed record ChatText
 
     public string HideSidebar { get; init; } = "Hide the sidebar";
     public string CloseMenu { get; init; } = "Close the menu";
+    public string OpenMenu { get; init; } = "Open the menu";
+    public string ResizeSidebar { get; init; } = "Drag to change the width · double-click to reset";
+    public string ChatNotSaved { get; init; } = "That chat isn't saved in this browser.";
+    public string Copied { get; init; } = "Copied.";
+    public string CopyFailed { get; init; } = "Couldn't copy.";
+    /// <summary>{0} is what's coming.</summary>
+    public string ComingSoon { get; init; } = "{0}: coming soon.";
     public string Favourites { get; init; } = "Favourites";
     public string Projects { get; init; } = "Projects";
     public string NewProject { get; init; } = "New project";

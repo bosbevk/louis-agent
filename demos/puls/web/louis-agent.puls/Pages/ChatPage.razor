@@ -5,79 +5,24 @@
 @page "/chat/{SessionId}"
 @implements IDisposable
 
-@* The shell (F20): the sidebar, the top bar, the chat (or Verken or Studio), the message box, the Werk panel. W2: the
-   layout only; each piece is a component under Components/Chat, a turn's life is the shared ChatRunner, and the
-   page's own state and handlers are in ChatPage.razor.cs. *@
-
-<PageTitle>@(Runner.Chat?.Title ?? "Puls")</PageTitle>
+@* Puls on the framework's chat frame: its logo, its views, its empty chat and its words. *@
 
 @{
-    // The pieces the shared MessageList and EmptyChat take as fragments (W2b): markup only, named here once.
-    RenderFragment Views = @<ChatViews View="@View" Recent="Store.Chats.Where(c => !c.Archived).Take(5).ToList()" OnStart="StartTemplate" OnNewProject='() => ComingSoon("Projekte")' />;
-    RenderFragment MessageBox = @<MessageBox Runner="Runner" Model="@_model" OnDraft="SetDraft" OnComingSoon="ComingSoon" />;
-    RenderFragment<Turn> UserActionsOf = turn => @<UserActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoon" />;
-    RenderFragment<Turn> AnswerActionsOf = turn => @<AnswerActions Turn="turn" OnCopy="Copy" OnComingSoon="ComingSoon" />;
+    RenderFragment Explore = @<ChatViews View="@View" Recent="Store.Chats.Where(c => !c.Archived).Take(5).ToList()" OnStart="StartTemplate" OnNewProject='() => _shell.ComingSoonAsync("Projekte")' />;
 }
 
-<div class="app">
-    @* Below Bootstrap's lg breakpoint (992px) the sidebar is an offcanvas, opened from this bar. *@
-    <header class="topbar d-lg-none">
-        <button class="icon menu-button" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Maak die kieslys oop">☰</button>
-        <div class="brand"><PulsLogo /></div>
-        <button class="icon" type="button" @onclick="NewChat" aria-label="Nuwe gesprek">＋</button>
-    </header>
-
-    <ChatSidebar Chats="Store.Chats" SessionId="@SessionId" OnNewChat="NewChat" OnSearch="() => _searchOpen = true" OnComingSoon="ComingSoon"
-                 Renaming="@_renaming.SessionId" RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft" OnRenameKey="RenameKey" OnRenameBlur="FinishRename"
-                 OnFavourite="ToggleFavourite" OnRename="StartRename" OnArchive="ToggleArchive" OnDelete="DeleteChat"
-                 Location="@_preferences.Location" Locating="_preferences.Locating" OnSaveLocation="SaveLocation" OnLocate="UseMyLocation"
-                 Motion="_preferences.Motion" ReducedMotion="_preferences.ReducedMotion" OnSaveMotion="SaveMotion"
-                 ApiKeyDraft="@Store.ApiKeyDraft" OnSaveApiKey="SaveApiKey" ChatPath="gesels" BrandTitle="Puls se tuisblad">
-        <Brand><PulsLogo /><span class="tagline">Elke vraag op pad na 'n antwoord</span></Brand>
-        <Views>
-            <a class="side-link" href="./"><span class="ic i-home" aria-hidden="true"></span>Tuis</a>
-            <a class="side-link @(View == "verken" ? "active" : "")" href="verken"><span class="ic i-compass" aria-hidden="true"></span>Verken</a>
-            <a class="side-link @(View == "studio" ? "active" : "")" href="studio"><span class="ic i-sparkle" aria-hidden="true"></span>Studio</a>
-        </Views>
-        <Profile><ProfileCard /></Profile>
-    </ChatSidebar>
-
-    @* Drag to resize the sidebar; double-click to reset (chatUi in js/chat.js). *@
-    <div class="resizer d-none d-lg-block" role="separator" aria-orientation="vertical" title="Sleep om die breedte te verander · dubbelklik om terug te stel"></div>
-
-    <main class="conversation">
-        <ChatHeader ViewTitle="@ViewTitle" Chat="Runner.Chat" Renaming="@_renaming.SessionId" RenameInHeader="_renaming.InHeader" @bind-RenameDraft="_renaming.Draft"
-                    OnRenameKey="RenameKey" OnRenameBlur="FinishRename" OnFavourite="ToggleFavourite" OnRename="StartRename" OnArchive="ToggleArchive"
-                    OnDelete="DeleteChat" OnComingSoon="ComingSoon" ChatCost="@ChatCost" MonthCost="@MonthCost" MonthChats="MonthChats.Count"
-                    Language="@_languages.Current" Languages="_languages.Available" OnChooseLanguage="ChooseLanguage" />
-        @* Below lg the Werk panel slides in from this tab (the phone's top bar has the menu and New chat). *@
-        <button class="work-tab work-tab-open d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#work" aria-controls="work" title="Wys die werkpaneel">Werk</button>
-        @* The landing's water, low behind an empty chat (F24): across the column, under the messages. *@
-        @if (View is not ("verken" or "studio") && (Runner.Chat is null || Runner.Chat.Turns.Count == 0))
-        {
-            <Water />
-        }
-        <MessageList Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" Content="@(View == "chat" ? null : Views)"
-                     UserActions="UserActionsOf" AnswerActions="AnswerActionsOf">
-            <Empty><EmptyChat Composer="MessageBox" Streaming="Runner.Streaming" OnDraft="SetDraft" OnSuggest="Suggest" /></Empty>
-        </MessageList>
-
-        <Notice Text="@Runner.Notice" OnClose="() => Runner.Notice = null" />
-
-        @* The whole cost, specialists included (pay as you go: what's shown is what's paid). *@
-        <ChatUsageBar Usage="@(View == "chat" && Runner.Chat is not null ? ChatCosts.Total(Runner.Chat) : null)" Currency="Currency.Current" Context="chatUsage">Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current), spesialiste ingesluit</ChatUsageBar>
-
-        @if (View == "chat" && Runner.Chat is { Turns.Count: > 0 })
-        {
-            <div class="composer">@MessageBox</div>
-        }
-    </main>
-
-    <ChatSearch @bind-Open="_searchOpen" Chats="Store.Chats" ChatPath="gesels" />
-
-    <Toast Text="@_toast" />
-
-    <aside class="work offcanvas-xl offcanvas-end" id="work" tabindex="-1" aria-label="Werk">
-        <WorkPanel Chat="Runner.Chat" Streaming="Runner.Streaming" Currency="Currency.Current" EmptyImage="brand/puls-mark.svg" Avatar="brand/puls-icon-tile.svg" />
-    </aside>
-</div>
+<ChatShell @ref="_shell" SessionId="@SessionId" ChatPath="gesels" Title="Puls" OpenSession="OpenSessionAsync" VoicePrefix="puls/voice-" DefaultLanguage="af"
+           BrandTitle="Puls se tuisblad" Tagline="Elke vraag op pad na 'n antwoord" ViewTitle="@ViewTitle" ViewContent="@(View == "chat" ? null : Explore)"
+           EmptyWorkImage="brand/puls-mark.svg" WorkAvatar="brand/puls-icon-tile.svg">
+    <Logo><PulsLogo /></Logo>
+    <Views>
+        <a class="side-link" href="./"><span class="ic i-home" aria-hidden="true"></span>Tuis</a>
+        <a class="side-link @(View == "verken" ? "active" : "")" href="verken"><span class="ic i-compass" aria-hidden="true"></span>Verken</a>
+        <a class="side-link @(View == "studio" ? "active" : "")" href="studio"><span class="ic i-sparkle" aria-hidden="true"></span>Studio</a>
+    </Views>
+    <Profile><ProfileCard /></Profile>
+    @* The landing's water, low behind an empty chat: across the column, under the messages. *@
+    <Background><Water /></Background>
+    <Empty Context="empty"><EmptyChat Composer="empty.MessageBox" Streaming="empty.Streaming" OnDraft="empty.OnDraft" OnSuggest="empty.OnSuggest" /></Empty>
+    <UsageLine Context="chatUsage">Hierdie gesprek: @chatUsage.Requests versoeke · @UsageFormat.Tokens(chatUsage.TotalTokens) tokens · @UsageFormat.Cost(chatUsage, Currency.Current), spesialiste ingesluit</UsageLine>
+</ChatShell>
