@@ -48,6 +48,20 @@ public class RecipesPackTests
         Assert.That(Pack().Feeds, Is.Empty);
     }
 
+    /// <summary>With a database the pack lists the library's report; without one there's nothing to count.</summary>
+    [Test]
+    public void TheReport_IsThereOnlyWithADatabase()
+    {
+        var withOne = new RecipesPack(new RecipesOptions
+        {
+            RecipeSources = "taste",
+            MongoUrl = "mongodb://127.0.0.1:1"
+        });
+
+        Assert.That(withOne.Reports.Select(report => report.Name), Is.EqualTo(new[] { "recipe-library" }));
+        Assert.That(Pack().Reports, Is.Empty);
+    }
+
     /// <summary>The library's settings are read from where a deployment sets them, and none are needed.</summary>
     [Test]
     public void TheLibrarysSettings_AreRead()

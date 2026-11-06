@@ -2,8 +2,10 @@ using LouisAgent.Packs.Recipes.Library.Usage;
 
 namespace LouisAgent.Packs.Recipes.Tests.Library.Usage;
 
-/// <summary>The counter for the tests: it notes each add, or fails the way a server that's down does.</summary>
-internal sealed class FakeRecipeUsage(bool fails = false) : IRecipeUsage
+/// <summary>
+/// The counter for the tests: it notes each add and gives the days it was handed, or fails like a server that's down.
+/// </summary>
+internal sealed class FakeRecipeUsage(bool fails = false, params RecipeUsageDay[] days) : IRecipeUsage
 {
     /// <summary>Every add, in order.</summary>
     public List<(RecipeUsageKind Kind, long By, DateOnly Day)> Added { get; } = [];
@@ -16,7 +18,10 @@ internal sealed class FakeRecipeUsage(bool fails = false) : IRecipeUsage
         return Task.CompletedTask;
     }
 
-    /// <summary>These tests only count; the report's own tests read days.</summary>
-    public Task<IReadOnlyList<RecipeUsageDay>> DaysAsync(CancellationToken cancellationToken) =>
-        Task.FromResult<IReadOnlyList<RecipeUsageDay>>([]);
+    /// <summary>The days it was handed, or fails.</summary>
+    public Task<IReadOnlyList<RecipeUsageDay>> DaysAsync(CancellationToken cancellationToken)
+    {
+        if (fails) throw new TimeoutException("no Mongo");
+        return Task.FromResult<IReadOnlyList<RecipeUsageDay>>(days);
+    }
 }
