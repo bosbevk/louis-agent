@@ -37,7 +37,8 @@ internal sealed record SampleDraftDocument(
     [property: BsonElement("expected")] BsonDocument Expected,
     [property: BsonElement("categories")] IReadOnlyList<string> Categories,
     [property: BsonElement("author")] string Author,
-    [property: BsonElement("at")] DateTimeOffset At)
+    [property: BsonElement("at")] DateTimeOffset At,
+    [property: BsonElement("role")] string? Role = null)
 {
     /// <summary>How the expected values are written back out as JSON: numbers as plain numbers.</summary>
     private static readonly JsonWriterSettings RelaxedJson =
@@ -51,7 +52,8 @@ internal sealed record SampleDraftDocument(
             d.Conversation.Repeat, d.Conversation.Task, sample.Id,
             [.. sample.Input.Select(SampleMessageDocument.Of)],
             sample.Target, metadata.Place, metadata.TimeZone, metadata.FollowUps,
-            BsonDocument.Parse(JsonSerializer.Serialize(metadata.Expected)), metadata.Categories, d.Author, d.At);
+            BsonDocument.Parse(JsonSerializer.Serialize(metadata.Expected)), metadata.Categories, d.Author, d.At,
+            metadata.Role);
     }
 
     /// <summary>The sample draft this document holds.</summary>
@@ -59,7 +61,8 @@ internal sealed record SampleDraftDocument(
     {
         // The expected values back as JSON, cloned so they outlive the document they were parsed into.
         using var expected = JsonDocument.Parse(Expected.ToJson(RelaxedJson));
-        var metadata = new SampleBodyMetadata(Place, TimeZone, FollowUps, expected.RootElement.Clone(), Categories);
+        var metadata = new SampleBodyMetadata(Place, TimeZone, FollowUps, expected.RootElement.Clone(), Categories,
+            Role);
         return new SampleDraft(Id, Eval, Identity, Run, new ConversationKey(Mode, Repeat, Task),
             new SampleBody(SampleId, [.. Input.Select(m => m.ToMessage())], metadata, Target), Author, At);
     }
