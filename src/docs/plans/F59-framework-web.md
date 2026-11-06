@@ -603,6 +603,14 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
 - **2026-11-06, everything in `louis-agent.web` is in English; only Puls is in Afrikaans.** Louis's words. So `ChatWords` in F59.3 is English
   in the framework, and Puls fills its own in. The admin stays English on every site.
 
+- **2026-11-06, every pack works the same way, recipes too; the git and file controls get a child of their own.** Louis's picks A and A on
+  decisions 13 and 14: "all packs will work the same recipes also". A pack names its screens through the one seam, and its real components
+  come from its own project under `packs-web/`, found by name. So the git pack's are in `louis-agent.pack.git.web` and the file browser in
+  `louis-agent.pack.files.web`, as admin screens. They need the override list, so they come after described screens, and no pack puts a
+  panel in the chat, which makes `ChatShell` simpler. `ChatText` grows rather than a new `ChatWords`. The children's numbers from here:
+  F59.3 the chat frame, F59.4 base styles, F59.5 described screens, **F59.6 the git and file controls (new)**, F59.7 recipe management,
+  F59.8 Uploads, F59.9 the eval pages, F59.10 spawning a site. Where the sections above use the old numbers, these win.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site

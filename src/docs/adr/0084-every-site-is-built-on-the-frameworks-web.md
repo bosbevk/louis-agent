@@ -33,6 +33,8 @@ no site.**
   that writes about fifteen lines is a fair price.
 - **A framework page names a framework layout, which hands over to the site's** (Bridge). A page's layout is fixed when it's compiled,
   and a page naming none gets the site's default, so a framework page names `AdminFrame`, which draws inside what `SiteFrames` says.
+- **Every pack brings its controls the same way:** it names its screens through one seam, and a real component comes from its own
+  project under `packs-web/`, found by name. No pack puts a panel in the chat.
 - **Where two sites differ, one shape goes into the framework and the other adapts,** rather than the framework growing a
   switch. For today's two, Puls's shape is the one that goes in.
 
