@@ -160,7 +160,8 @@ One table, one row per ingredient, every ingredient of the recipe, every ingredi
 pack, `beef mince 500 g`, with its pack size and never the size alone, no brand, no photo; when the recipe needs more
 than one pack, a count after it, `× 2`), and its estimated price (one column, headed *Estimated price* /
 *Geskatte prys*); then the total rows in bold. *For the recipe* is the print's amount times the factor, with what can't
-be split rounded to a whole one (3 eggs, never 2⅔); buying whole packs is *To buy*'s job.
+be split rounded to a whole one (3 eggs, never 2⅔); buying whole packs is *To buy*'s job. An ingredient the print uses
+twice is one row with both amounts and their sum: `250 ml + 1 koppie = 500 ml`.
 Every ingredient is a row, the oil, salt, pepper and spices too: you don't know what the user has at home. Only tap water
 is never a row: scale its amount with the rest and write it in the step that uses it. Something the print lists that isn't food (a plastic bag, baking paper) is no row. An ingredient the print gives no amount for keeps the print's words in *For the recipe* (*for frying*), or a dash when it has none, never an amount of your own.
 

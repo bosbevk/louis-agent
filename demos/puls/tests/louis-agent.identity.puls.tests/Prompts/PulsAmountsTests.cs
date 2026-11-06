@@ -33,6 +33,11 @@ public class PulsAmountsTests
     public void APageWithNoYield_StillGoesToTheTool() =>
         Assert.That(Cook(), Does.Contain("A print that gives neither still goes to `ScaleRecipe`"));
 
+    /// <summary>An ingredient used twice shows its two amounts and their sum, so nobody reads the sum as a third.</summary>
+    [Test]
+    public void AnIngredientUsedTwice_ShowsItsSum() =>
+        Assert.That(Cook(), Does.Contain("`250 ml + 1 koppie = 500 ml`"));
+
     /// <summary>A line with no amount keeps the page's words or a dash, never an amount of the cook's.</summary>
     [Test]
     public void ALineWithNoAmount_GetsNoAmountOfTheCooks()
