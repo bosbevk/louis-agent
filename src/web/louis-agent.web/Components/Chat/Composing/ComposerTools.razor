@@ -1,0 +1,40 @@
+@* The message box's toolbar: Media and Tools on the left (a file, the starters), the model and the voice on the right;
+   the page's Send or Stop closes it (shared Composer). *@
+<div class="dropdown dropup">
+    <button class="tool-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="@Text.AddToMessage">
+        <span class="ic i-plus" aria-hidden="true"></span>
+    </button>
+    <ul class="dropdown-menu">
+        <li>
+            <label class="dropdown-item file-item">
+                <span class="ic i-file" aria-hidden="true"></span>@Text.UploadFile
+                <InputFile OnChange="OnFiles" multiple />
+            </label>
+        </li>
+        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ScreenshotsSoon)"><span class="ic i-screen" aria-hidden="true"></span>@Text.AddScreenshot</button></li>
+    </ul>
+</div>
+<div class="dropdown dropup">
+    <button class="tool-button tool-button-label" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <span class="ic i-sliders" aria-hidden="true"></span>@Text.Tools
+    </button>
+    <ul class="dropdown-menu">
+        <li><button class="dropdown-item" type="button" @onclick="() => OnDraft.InvokeAsync(Text.SearchWebDraft)"><span class="ic i-search" aria-hidden="true"></span>@Text.SearchWeb</button></li>
+        <li><button class="dropdown-item" type="button" @onclick="() => OnDraft.InvokeAsync(Text.ReadFileDraft)"><span class="ic i-file" aria-hidden="true"></span>@Text.ReadFile</button></li>
+        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.CreateImage)"><span class="ic i-image" aria-hidden="true"></span>@Text.CreateImage</button></li>
+        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.DeepResearch)"><span class="ic i-compass" aria-hidden="true"></span>@Text.DeepResearch</button></li>
+        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.ThinkLonger)"><span class="ic i-sparkle" aria-hidden="true"></span>@Text.ThinkLonger</button></li>
+    </ul>
+</div>
+<span class="composer-spacer"></span>
+<div class="dropdown dropup">
+    <button class="tool-button tool-button-label model-button" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="@Text.Model">
+        @(Model ?? Text.Model) <span class="ic i-chevron" aria-hidden="true"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li><h6 class="dropdown-header">@Text.Model</h6></li>
+        <li><button class="dropdown-item active" type="button">@(Model ?? Text.ServerModel) <span class="ic i-check ms-auto" aria-hidden="true"></span></button></li>
+        <li><button class="dropdown-item" type="button" @onclick="() => OnComingSoon.InvokeAsync(Text.OtherModelsSoon)">@Text.OtherModels</button></li>
+    </ul>
+</div>
+<button class="tool-button" type="button" title="@Text.VoiceMessage" @onclick="() => OnComingSoon.InvokeAsync(Text.VoiceMessagesSoon)"><span class="ic i-mic" aria-hidden="true"></span></button>

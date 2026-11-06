@@ -1,11 +1,14 @@
 using LouisAgent.Web.Chats;
+using LouisAgent.Web.Text;
 using Microsoft.AspNetCore.Components;
 
-namespace LouisAgent.Puls.Components.Chat.Composing;
+namespace LouisAgent.Web.Components.Chat.Composing;
 
-/// <summary>The message box: the shared composer with Puls's own toolbar.</summary>
+/// <summary>The message box: the composer with its toolbar.</summary>
 public partial class MessageBox
 {
+    [Inject] private ChatText Text { get; set; } = null!;
+
     /// <summary>A turn's life: the draft and its attachments flow down from it, and sending goes back to it.</summary>
     [Parameter, EditorRequired] public ChatRunner Runner { get; set; } = default!;
 

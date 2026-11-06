@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using LouisAgent.Web.Chats;
 
-namespace LouisAgent.Puls.Content;
+namespace LouisAgent.Web.Content;
 
 /// <summary>
 /// The sources of a turn (F20): the links in its answer, and the pages its specialists fetched. Read from the turn the

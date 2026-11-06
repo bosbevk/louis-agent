@@ -112,6 +112,41 @@ public sealed record ChatText
     public string ThemeAutoSoon { get; init; } = "An automatic theme";
     public string SignOut { get; init; } = "Sign out";
 
+    public string ChatEnded { get; init; } = "This chat ended when the API restarted - start a new chat";
+    public string AskAnything { get; init; } = "Ask anything…";
+    public string SendTitle { get; init; } = "Send (Enter)";
+    public string StopTitle { get; init; } = "Stop";
+    public string AddToMessage { get; init; } = "Add";
+    public string UploadFile { get; init; } = "Upload a file";
+    public string AddScreenshot { get; init; } = "Add a screenshot";
+    public string ScreenshotsSoon { get; init; } = "Screenshots";
+    public string Tools { get; init; } = "Tools";
+    public string SearchWeb { get; init; } = "Search the web";
+    public string SearchWebDraft { get; init; } = "Search online: ";
+    public string ReadFile { get; init; } = "Read a file";
+    public string ReadFileDraft { get; init; } = "Read the file ";
+    public string CreateImage { get; init; } = "Create an image";
+    public string DeepResearch { get; init; } = "Deep research";
+    public string ThinkLonger { get; init; } = "Think longer";
+    public string Model { get; init; } = "Model";
+    public string ServerModel { get; init; } = "The server's model";
+    public string OtherModels { get; init; } = "Other models…";
+    public string OtherModelsSoon { get; init; } = "Other models";
+    public string VoiceMessage { get; init; } = "Voice message";
+    public string VoiceMessagesSoon { get; init; } = "Voice messages";
+
+    public string Copy { get; init; } = "Copy";
+    public string EditMessage { get; init; } = "Edit the message";
+    public string EditSoon { get; init; } = "Editing";
+    public string CopyAnswer { get; init; } = "Copy the answer";
+    public string TryAgain { get; init; } = "Try again";
+    public string GoodAnswer { get; init; } = "Good answer";
+    public string BadAnswer { get; init; } = "Bad answer";
+    public string FeedbackSoon { get; init; } = "Feedback";
+    public string ShowSources { get; init; } = "Show the sources in the work panel";
+    public string SourceOne { get; init; } = "source";
+    public string SourceMany { get; init; } = "sources";
+
 
     /// <summary>The page's notices and a turn's errors, as the pages wrote them. {0} is the file's name.</summary>
     public string AttachmentTooLarge { get; init; } = "{0} is larger than 1 MB and was not attached.";

@@ -1,4 +1,4 @@
-using LouisAgent.Puls.Content;
+using LouisAgent.Web.Content;
 using LouisAgent.Web.Chats;
 using LouisAgent.Web.Usage;
 using Microsoft.AspNetCore.Components;
