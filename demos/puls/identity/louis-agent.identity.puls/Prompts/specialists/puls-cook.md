@@ -42,7 +42,7 @@ its recipe, the shopping list with estimated prices and where to buy, not the in
   and what can't be split, an egg or a roll, to a whole one (2.67 eggs is 3 eggs). The size of one piece doesn't scale (150 g portions, a 20 cm tin): how many there are does. Servings are people, so scale by them
   (`12 servings`, `Serves 6`; for a range such as `6 to 8 servings`, its middle). A *Makes* that counts tarts, pies, slices
   or pieces isn't people: keep the recipe as it is, a factor of 1, or `ScaleRecipe` with `times` 2 if that plainly
-  won't feed them. A print that gives neither: keep the recipe as it is and say so under *Unsure*. One recipe comes from
+  won't feed them. A print that gives neither still goes to `ScaleRecipe`: it estimates from the main ingredient when it can, which you say under *Unsure*, and otherwise keeps the recipe as it is, which you say there too. One recipe comes from
   one page, never parts of two.
   When the page's language differs from the task's, write the
   steps in the task's language, step for step, with every number, time and temperature unchanged. (5) No site has the

@@ -28,6 +28,11 @@ public class PulsAmountsTests
         Assert.That(cook, Does.Contain("On a page it says it doesn't hold"));
     }
 
+    /// <summary>A page with no yield still goes to the tool, and its estimate is said under *Unsure*.</summary>
+    [Test]
+    public void APageWithNoYield_StillGoesToTheTool() =>
+        Assert.That(Cook(), Does.Contain("A print that gives neither still goes to `ScaleRecipe`"));
+
     /// <summary>A line with no amount keeps the page's words or a dash, never an amount of the cook's.</summary>
     [Test]
     public void ALineWithNoAmount_GetsNoAmountOfTheCooks()

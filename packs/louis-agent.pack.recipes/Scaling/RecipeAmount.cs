@@ -114,6 +114,24 @@ internal static class RecipeAmount
             : rest.Any(c => char.IsAsciiDigit(c) || FractionOf(c) is not null);
     }
 
+    /// <summary>The weight a line starts with, in grams, a range's middle, or nothing if it isn't weighed.</summary>
+    public static double? GramsIn(string line)
+    {
+        if (HedgeOn(line) is { } hedge) return GramsIn(line[hedge.Length..]);
+        if (ReadAmount(line, 0) is not { } amount) return null;
+
+        double value = amount.High is { } high ? (amount.Low + high) / 2 : amount.Low;
+        return FirstWord(line[amount.Length..]).ToLowerInvariant() switch
+        {
+            "g" or "gram" or "grams" => value,
+            "kg" or "kilogram" or "kilograms" => value * 1000,
+            _ => null
+        };
+    }
+
+    /// <summary>The number a line starts with, or nothing.</summary>
+    public static double? CountIn(string line) => ReadAmount(line, 0)?.Low;
+
     /// <summary>How many people a yield is for: a range's middle, and nothing when it counts something else.</summary>
     public static double? PeopleIn(string? yield)
     {
@@ -271,6 +289,6 @@ internal static class RecipeAmount
     private static string FirstWord(string text) => Words(text).FirstOrDefault() ?? "";
 
     /// <summary>The runs of letters in a text.</summary>
-    private static string[] Words(string text) =>
+    public static string[] Words(string text) =>
         new string([.. text.Select(c => char.IsLetter(c) ? c : ' ')]).Split(' ', StringSplitOptions.RemoveEmptyEntries);
 }

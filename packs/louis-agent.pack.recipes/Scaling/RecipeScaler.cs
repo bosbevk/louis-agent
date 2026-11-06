@@ -64,6 +64,16 @@ internal static class RecipeScaler
         if (times > 0)
             return (times, MessageText.Format(RecipeToolMessage.ScaledByTimes, new { recipe.Name, Factor = Written(times) }));
         if (people <= 0) return (1, MessageText.Format(RecipeToolMessage.ScaleWhole, new { recipe.Name }));
+        if (string.IsNullOrWhiteSpace(recipe.Yield) && ServingsEstimate.Of(recipe) is { } estimate)
+            return (people / estimate.People, MessageText.Format(RecipeToolMessage.ScaleEstimated,
+                new
+                {
+                    recipe.Name,
+                    estimate.Line,
+                    Feeds = estimate.People,
+                    Factor = Written(people / estimate.People),
+                    People = people
+                }));
         if (RecipeAmount.PeopleIn(recipe.Yield) is not { } served)
             return (1, MessageText.Format(RecipeToolMessage.ScaleKept, new { recipe.Name }));
 
