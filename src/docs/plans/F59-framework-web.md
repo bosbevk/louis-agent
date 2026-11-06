@@ -611,6 +611,11 @@ a test that creates one and builds it; and `guides/spawn-a-site.md`.
   F59.3 the chat frame, F59.4 base styles, F59.5 described screens, **F59.6 the git and file controls (new)**, F59.7 recipe management,
   F59.8 Uploads, F59.9 the eval pages, F59.10 spawning a site. Where the sections above use the old numbers, these win.
 
+- **2026-11-06, the code-review app's move is its own child.** Louis's pick, since F59.3 had grown past about ten steps. F59.3 is Puls's half:
+  `ChatShell`, with Puls's page thin, merged first. The children's numbers from here: F59.3 the chat frame, **F59.4 the code-review app on the
+  frame (new)**, F59.5 base styles, F59.6 described screens, F59.7 the git and file controls, F59.8 recipe management, F59.9 Uploads, F59.10
+  the eval pages, F59.11 spawning a site. Where earlier text uses other numbers, these win.
+
 ## Verification
 
 **Free, each child:** the whole unit suite and every site's image builds. **In a browser:** each child ending in a look compares a site
