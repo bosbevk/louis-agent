@@ -28,7 +28,11 @@ no site.**
   which site this is.
 - **Everything in `louis-agent.web` is in English.** Another language is a site's own: Puls is the one in Afrikaans, and it fills its
   words in from outside.
-- **A site's layout only fills the framework's frame,** so it stays small, about 40 lines.
+- **A site's layout only fills the framework's frame,** so it stays small, about 40 lines. `AdminShell` is that frame, with ordinary
+  slots the compiler checks (Template Method). The frame couldn't be handed a settings object without losing that check, and a demo
+  that writes about fifteen lines is a fair price.
+- **A framework page names a framework layout, which hands over to the site's** (Bridge). A page's layout is fixed when it's compiled,
+  and a page naming none gets the site's default, so a framework page names `AdminFrame`, which draws inside what `SiteFrames` says.
 - **Where two sites differ, one shape goes into the framework and the other adapts,** rather than the framework growing a
   switch. For today's two, Puls's shape is the one that goes in.
 

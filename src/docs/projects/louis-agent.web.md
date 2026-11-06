@@ -13,6 +13,9 @@ words come from a `ChatText` each site fills in.
 
 ## How it works
 
+- **The admin's frame.** `AdminShell` is the sidebar, the phone's top bar and the content column, with slots a site's small layout
+  fills: `Brand`, `Links`, `Top` and the page, plus the way back. An empty slot leaves no gap. A framework page names `AdminFrame`,
+  which draws inside the layout the site set in `SiteFrames`. The frame's words are English on every site.
 - **One client.** `AgentApi` is the only code that calls the API: it opens a session (its toolsets, role, place and
   time zone), streams a message's events over SSE, stops and deletes sessions, and reads the toolsets, rates and other
   GETs. Components never touch `HttpClient`.
