@@ -30,8 +30,10 @@ internal static class PrintedRecipeText
     /// <summary>Less than this before a heading means we haven't reached the recipe yet.</summary>
     private const int ShortestRecipe = 300;
 
-    /// <summary>How much above the ingredients a long page's window keeps: the yield and the times sit there.</summary>
-    private const int LinesAboveTheRecipe = 200;
+    /// <summary>
+    /// How many characters above the ingredients a long page's window keeps: the yield and the times sit there.
+    /// </summary>
+    private const int CharsAboveTheRecipe = 200;
 
     /// <summary>The text up to the first heading that ends the recipe, or all of it when none does.</summary>
     public static string Cut(string text)
@@ -57,11 +59,11 @@ internal static class PrintedRecipeText
         var starts = new Queue<int>();
         foreach (string line in text.Split('\n'))
         {
-            if (PageTextLines.IsIngredientsHeading(line.Trim())) return at <= LinesAboveTheRecipe ? 0 : start;
+            if (PageTextLines.IsIngredientsHeading(line.Trim())) return at <= CharsAboveTheRecipe ? 0 : start;
 
             starts.Enqueue(at);
             at += line.Length + 1;
-            while (at - starts.Peek() > LinesAboveTheRecipe) starts.Dequeue();
+            while (at - starts.Peek() > CharsAboveTheRecipe) starts.Dequeue();
             start = starts.Peek();
         }
 
