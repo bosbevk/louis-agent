@@ -187,6 +187,21 @@ public class PlainRunRecipeTests
         Assert.That(Steps(recipe), Is.EqualTo(new[] { "Fry the onion.", "Bake it." }));
     }
 
+    /// <summary>A whole method in one long paragraph is still a method, as Kate Tin's cakes have it.</summary>
+    [Test]
+    public void AWholeMethodInOneLongParagraph_IsARecipe()
+    {
+        const string method = "Preheat the oven to 160C and grease and line three cake tins with baking paper. Boil the " +
+                              "water, then add the oil and the sugar and stir until the sugar has melted completely. " +
+                              "Whisk in the chocolate and the cocoa, then the eggs, then fold in the flour. Divide it " +
+                              "between the tins and bake for forty minutes, then leave to cool before you ice the cake.";
+
+        var recipe = Read("<h1>Cake</h1><p>Serves 6-8</p><p>1 litre water</p><p>240ml oil</p><p>450g sugar</p><p>4 eggs</p>" +
+                          $"<p>{method}</p><p>TIP Use a good cocoa.</p>");
+
+        Assert.That(Steps(recipe!), Is.EqualTo(new[] { method }));
+    }
+
     /// <summary>What only looks like a run of ingredients is nothing: no guess is ever served for good.</summary>
     [TestCase("<h1>Pie</h1><p>1 egg</p><p>2 cups flour</p><p>Mix it.</p><p>Bake it.</p>", TestName = "too few lines")]
     [TestCase("<h1>Pie</h1><p>1 egg</p><p>2 cups flour</p><p>1 onion</p><p>3 leeks</p>", TestName = "no steps")]
